@@ -1,5 +1,10 @@
-## Project Principles
-- Enterprise-grade, modular OHS SaaS
-- Multi-tenant (organization_id) + RLS
-- Mobile-first & fully responsive UI (future mobile app)
-- Clean API (/api/v1) + CI/lint + audit logs
+# guvenligimcepte
+
+AI destekli ISG risk analizi ve operasyon platformu frontend projesi.
+
+## Mevcut kapsam
+- Next.js + TypeScript frontend
+- Public ve protected sayfa akisi
+- Login / register / forgot-password / reset-password ekranlari
+- Dashboard ve operasyon modulleri
+- NextAuth tabanli giris altyapisi
