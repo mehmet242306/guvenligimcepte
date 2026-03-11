@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import ExcelJS from "exceljs";
 import Papa from "papaparse";
 
@@ -55,7 +55,7 @@ function normalizeRows(rows: RawRow[]) {
 
 async function parseXlsx(buffer: Buffer) {
   const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.load(buffer);
+  await workbook.xlsx.load(buffer as unknown as Parameters<typeof workbook.xlsx.load>[0]);
 
   const worksheet = workbook.worksheets[0];
   if (!worksheet) {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
@@ -69,7 +69,7 @@ function SocialButton({
   );
 }
 
-export default function LoginPage() {
+function LoginContent() {
   const searchParams = useSearchParams();
   const nextUrl = useMemo(() => searchParams.get("next") || "/dashboard", [searchParams]);
 
@@ -206,5 +206,23 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoginFallback() {
+  return (
+    <div style={{ minHeight: "calc(100vh - 120px)", display: "grid", placeItems: "center" }}>
+      <div style={{ width: "100%", maxWidth: 560, border: "1px solid #eee", borderRadius: 20, padding: 24, background: "#fff" }}>
+        <h1 style={{ fontSize: 30, marginBottom: 8 }}>Giris</h1>
+      </div>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginContent />
+    </Suspense>
   );
 }

@@ -120,39 +120,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "calc(100vh - 120px)",
-        display: "grid",
-        placeItems: "center",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 560,
-          border: "1px solid #eee",
-          borderRadius: 20,
-          padding: 24,
-          background: "#fff",
-        }}
-      >
+    <div style={{ minHeight: "calc(100vh - 120px)", display: "grid", placeItems: "center" }}>
+      <div style={{ width: "100%", maxWidth: 560, border: "1px solid #eee", borderRadius: 20, padding: 24, background: "#fff" }}>
         <h1 style={{ fontSize: 30, marginBottom: 8 }}>Giris</h1>
         <p style={{ opacity: 0.75, lineHeight: 1.7, marginBottom: 18 }}>
           Email, sifre veya sosyal hesap ile giris yap.
         </p>
 
-        <div style={{ display: "grid", gap: 12, marginBottom: 18 }}>
+        <div style={{ display: "grid", gap: 12, marginBottom: 10 }}>
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            style={{
-              width: "100%",
-              padding: 12,
-              borderRadius: 12,
-              border: "1px solid #ddd",
-            }}
+            style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd" }}
           />
 
           <input
@@ -160,12 +140,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Sifre"
-            style={{
-              width: "100%",
-              padding: 12,
-              borderRadius: 12,
-              border: "1px solid #ddd",
-            }}
+            style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd" }}
           />
 
           <label style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -180,33 +155,21 @@ export default function LoginPage() {
           <button
             onClick={handleCredentialsLogin}
             disabled={loading}
-            style={{
-              padding: "12px 14px",
-              borderRadius: 12,
-              border: "1px solid #ddd",
-              background: "#fafafa",
-              fontWeight: 700,
-              cursor: "pointer",
-            }}
+            style={{ padding: "12px 14px", borderRadius: 12, border: "1px solid #ddd", background: "#fafafa", fontWeight: 700, cursor: "pointer" }}
           >
             {loading ? "Giris yapiliyor..." : "Giris"}
           </button>
         </div>
 
+        <div style={{ marginBottom: 18, textAlign: "right" }}>
+          <Link href="/forgot-password">Sifremi unuttum</Link>
+        </div>
+
         {googleEnabled || appleEnabled || linkedinEnabled ? (
           <>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                margin: "8px 0 18px",
-              }}
-            >
+            <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "8px 0 18px" }}>
               <div style={{ height: 1, background: "#e5e7eb", flex: 1 }} />
-              <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 700 }}>
-                VEYA
-              </span>
+              <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 700 }}>VEYA</span>
               <div style={{ height: 1, background: "#e5e7eb", flex: 1 }} />
             </div>
 
@@ -233,15 +196,7 @@ export default function LoginPage() {
         ) : null}
 
         {message ? (
-          <div
-            style={{
-              marginTop: 16,
-              padding: 12,
-              borderRadius: 12,
-              border: "1px solid #eee",
-              background: "#fafafa",
-            }}
-          >
+          <div style={{ marginTop: 16, padding: 12, borderRadius: 12, border: "1px solid #eee", background: "#fafafa" }}>
             {message}
           </div>
         ) : null}

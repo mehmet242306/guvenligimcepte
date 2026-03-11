@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import AppleProvider from "next-auth/providers/apple";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { compare } from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -87,7 +86,6 @@ if (process.env.AUTH_APPLE_ID && process.env.AUTH_APPLE_SECRET) {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {

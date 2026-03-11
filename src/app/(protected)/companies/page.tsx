@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 const companies = [
   {
@@ -206,7 +206,7 @@ export default function CompaniesPage() {
 
               <div>
                 <InfoRow label="Açık Aksiyon" value={company.openActions} />
-                <InfoRow label="Doküman Durumu" value={company.documentStatus} />                <InfoRow label="Hizmet Modeli" value={company.serviceModel} />
+                <InfoRow label="Doküman Durumu" value={company.documentStatus} />
                 <InfoRow label="Firma ID" value={company.id} />
               </div>
             </div>
