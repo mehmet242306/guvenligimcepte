@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
 from api.audit import write_audit_log
@@ -21,6 +21,7 @@ class OrganizationCreateRequest(BaseModel):
 
 @router.post("")
 async def create_organization(
+    request: Request,
     payload: OrganizationCreateRequest,
     current_user: Annotated[
         CurrentAppUser,
@@ -46,7 +47,7 @@ async def create_organization(
             "name": created_row.get("name"),
             "slug": created_row.get("slug"),
         },
-        request=None,
+        request=request,
     )
 
     return success_response(

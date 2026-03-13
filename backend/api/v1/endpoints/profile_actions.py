@@ -1,10 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
 from api.audit import write_audit_log
-from api.authz import CurrentAppUser, get_current_app_user, require_roles, supabase_admin
+from api.authz import CurrentAppUser, require_roles, supabase_admin
 from api.responses import success_response
 
 router = APIRouter(prefix="/profile-actions", tags=["profile-actions"])
@@ -18,6 +18,7 @@ class ProfileUpdateRequest(BaseModel):
 
 @router.patch("/me")
 async def update_my_profile(
+    request: Request,
     payload: ProfileUpdateRequest,
     current_user: Annotated[
         CurrentAppUser,
@@ -49,7 +50,7 @@ async def update_my_profile(
         metadata_json={
             "updated_fields": list(update_data.keys()),
         },
-        request=None,
+        request=request,
     )
 
     return success_response(
