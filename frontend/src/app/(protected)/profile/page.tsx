@@ -1,53 +1,70 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/auth";
-import { prisma } from "@/lib/prisma";
-import ProfileClient from "./ProfileClient";
+﻿import Link from "next/link";
 
-export default async function ProfilePage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.email) {
-    redirect("/login");
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      emailVerified: true,
-      phone: true,
-      phoneVerifiedAt: true,
-      smsNotificationsEnabled: true,
-      recoveryPhoneEnabled: true,
-      role: true,
-      createdAt: true,
-    },
-  });
-
-  if (!user) {
-    redirect("/login");
-  }
-
+export default function ProfilePage() {
   return (
-    <div>
+    <div style={{ display: "grid", gap: 18 }}>
       <div style={{ marginBottom: 20 }}>
         <h1 style={{ fontSize: 30, marginBottom: 8 }}>Profil ve Hesap</h1>
         <p style={{ opacity: 0.8, lineHeight: 1.7, maxWidth: 980 }}>
-          Bu alanda profil bilgilerini guncelleyebilir ve oturumunu kapatabilirsin.
+          Bu sayfa Supabase Auth gecisi kapsaminda yeniden duzenleniyor.
         </p>
       </div>
 
-      <ProfileClient
-        initialUser={{
-          ...user,
-          emailVerified: user.emailVerified ? user.emailVerified.toISOString() : null,
-          phoneVerifiedAt: user.phoneVerifiedAt ? user.phoneVerifiedAt.toISOString() : null,
-          createdAt: user.createdAt.toISOString(),
+      <div
+        style={{
+          border: "1px solid #eee",
+          borderRadius: 18,
+          padding: 18,
+          background: "#fff",
+          display: "grid",
+          gap: 14,
         }}
-      />
+      >
+        <div
+          style={{
+            padding: 12,
+            borderRadius: 12,
+            border: "1px solid #eee",
+            background: "#fafafa",
+            lineHeight: 1.7,
+          }}
+        >
+          Profil bilgileri ekrani gecici olarak devre disi. Bu alan mevcut Supabase tabanli
+          kimlik dogrulama yapisina uygun sekilde yeniden baglanacak.
+        </div>
+
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <Link
+            href="/dashboard"
+            style={{
+              padding: "12px 14px",
+              borderRadius: 12,
+              border: "1px solid #ddd",
+              background: "#fafafa",
+              fontWeight: 700,
+              textDecoration: "none",
+              color: "#111827",
+            }}
+          >
+            Dashboarda Don
+          </Link>
+
+          <Link
+            href="/login"
+            style={{
+              padding: "12px 14px",
+              borderRadius: 12,
+              border: "1px solid #ddd",
+              background: "#fafafa",
+              fontWeight: 700,
+              textDecoration: "none",
+              color: "#111827",
+            }}
+          >
+            Giris Sayfasi
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
