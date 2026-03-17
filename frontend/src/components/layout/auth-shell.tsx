@@ -1,0 +1,129 @@
+﻿import type { ReactNode } from "react";
+import Link from "next/link";
+import { PublicHeader } from "./public-header";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+type AuthShellProps = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  children: ReactNode;
+  footer: ReactNode;
+};
+
+const benefits = [
+  "Organizasyon bazlı güvenli yapı",
+  "AI destekli risk değerlendirme altyapısı",
+  "Tek panelden denetim, kayıt ve raporlama",
+];
+
+const trustPoints = [
+  "Kurumsal ve modern kullanım deneyimi",
+  "Mobil, tablet ve masaüstünde uyumlu arayüz",
+  "Risk intelligence modülüne hazır ürün zemini",
+];
+
+export function AuthShell({
+  eyebrow,
+  title,
+  description,
+  children,
+  footer,
+}: AuthShellProps) {
+  return (
+    <main className="app-shell">
+      <PublicHeader />
+
+      <section className="page-shell py-8 lg:py-12">
+        <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+          <Card className="overflow-hidden border-transparent bg-[linear-gradient(135deg,#0f172a_0%,#1d4ed8_58%,#0f766e_100%)] text-white shadow-[0_24px_60px_rgba(15,23,42,0.22)]">
+            <CardHeader className="gap-4 p-8 sm:p-10">
+              <Badge className="w-fit border-white/20 bg-white/10 text-white">
+                {eyebrow}
+              </Badge>
+
+              <div className="space-y-3">
+                <CardTitle className="text-3xl leading-tight text-white sm:text-4xl">
+                  {title}
+                </CardTitle>
+
+                <CardDescription className="max-w-2xl text-sm leading-7 text-blue-50/90 sm:text-base">
+                  {description}
+                </CardDescription>
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-8 px-8 pb-8 sm:px-10 sm:pb-10">
+              <div className="grid gap-3">
+                {benefits.map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white/95 backdrop-blur-sm"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-3">
+                {trustPoints.map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-2xl border border-white/12 bg-slate-950/15 p-4 text-sm leading-6 text-white/90"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-3xl border border-white/12 bg-slate-950/20 p-5">
+                <p className="text-sm leading-7 text-blue-50/90">
+                  RiskNova, yalnızca bir panel değil; risk analizi, yorumlama,
+                  kayıt ve operasyon takibini aynı ürün dili içinde birleştiren
+                  profesyonel bir İSG SaaS altyapısıdır.
+                </p>
+
+                <div className="mt-4">
+                  <Link
+                    href="/"
+                    className="text-sm font-medium text-white underline underline-offset-4"
+                  >
+                    Ana sayfaya dön
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="self-stretch">
+            <CardHeader className="p-8 pb-4 sm:p-10 sm:pb-6">
+              <Badge variant="neutral" className="w-fit">
+                Güvenli erişim
+              </Badge>
+
+              <div className="space-y-2">
+                <CardTitle className="text-2xl sm:text-3xl">{title}</CardTitle>
+                <CardDescription className="max-w-xl text-sm leading-7 sm:text-base">
+                  {description}
+                </CardDescription>
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-6 px-8 pb-8 sm:px-10 sm:pb-10">
+              {children}
+
+              <div className="border-t border-border pt-5">{footer}</div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+    </main>
+  );
+}

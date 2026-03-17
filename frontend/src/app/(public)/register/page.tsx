@@ -1,4 +1,7 @@
 ﻿import Link from "next/link";
+import { AuthShell } from "@/components/layout/auth-shell";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { signup } from "./actions";
 
 export default async function RegisterPage({
@@ -11,70 +14,63 @@ export default async function RegisterPage({
   const checkEmail = params?.checkEmail === "1";
 
   return (
-    <main className="mx-auto max-w-md p-6 space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">Kayıt Ol</h1>
-        <p className="text-sm text-gray-600">
-          Yeni hesap oluştur. Gerekliyse e-posta kutunu kontrol et.
+    <AuthShell
+      eyebrow="Yeni hesap"
+      title="RiskNova hesabını oluştur"
+      description="Kuruluşunu, çalışma alanını ve risk yönetimi süreçlerini profesyonel bir panel içinde toplamaya başla."
+      footer={
+        <p className="text-sm leading-7 text-muted-foreground">
+          Hesabın var mı?{" "}
+          <Link
+            href="/login"
+            className="font-medium text-primary underline underline-offset-4"
+          >
+            Giriş yap
+          </Link>
         </p>
-      </div>
-
+      }
+    >
       {error ? (
-        <div className="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
           {error}
         </div>
       ) : null}
 
       {checkEmail ? (
-        <div className="rounded-md border border-green-300 bg-green-50 px-3 py-2 text-sm text-green-700">
+        <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
           Kayıt işlemi başlatıldı. Gerekliyse e-posta kutunu kontrol et.
         </div>
       ) : null}
 
-      <form className="space-y-4">
-        <div className="space-y-1">
-          <label htmlFor="email" className="block text-sm font-medium">
-            E-posta
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-            className="w-full rounded-md border px-3 py-2"
-          />
-        </div>
+      <form className="space-y-5">
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          required
+          autoComplete="email"
+          label="E-posta"
+          placeholder="ornek@kurum.com"
+          hint="Hesap doğrulama ve erişim işlemleri bu adres üzerinden yürütülür."
+        />
 
-        <div className="space-y-1">
-          <label htmlFor="password" className="block text-sm font-medium">
-            Şifre
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            minLength={8}
-            autoComplete="new-password"
-            className="w-full rounded-md border px-3 py-2"
-          />
-        </div>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          required
+          minLength={8}
+          autoComplete="new-password"
+          label="Şifre"
+          placeholder="En az 8 karakter"
+          hint="Daha güvenli bir erişim için güçlü bir şifre belirle."
+        />
 
-        <button
-          formAction={signup}
-          className="w-full rounded-md border px-4 py-2"
-        >
+        <Button type="submit" formAction={signup} className="w-full" size="lg">
           Kayıt Ol
-        </button>
+        </Button>
       </form>
-
-      <p className="text-sm text-gray-600">
-        Hesabın var mı?{" "}
-        <Link href="/login" className="underline">
-          Giriş yap
-        </Link>
-      </p>
-    </main>
+    </AuthShell>
   );
 }
+

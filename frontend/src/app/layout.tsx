@@ -1,16 +1,21 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "guvenligimcepte",
-  description: "AI Destekli ISG Risk Analizi ve Operasyon Platformu",
+  title: {
+    default: "RiskNova",
+    template: "%s | RiskNova",
+  },
+  description: "AI destekli İSG risk analizi ve operasyon platformu.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="tr">
-      <body>{children}</body>
+      <body className="min-h-screen bg-background text-foreground antialiased">
+        {children}
+      </body>
     </html>
   );
 }

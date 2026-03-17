@@ -1,257 +1,222 @@
-import Link from "next/link";
+﻿import Link from "next/link";
+import { PublicHeader } from "@/components/layout/public-header";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-const announcements = [
-  {
-    title: "Yeni moduller devrede",
-    text: "Risk analizi, saha denetimi, dokuman ve aksiyon surecleri tek akista toplandi.",
-  },
-  {
-    title: "Takvim ve bildirim alani guncellendi",
-    text: "Gorev, hatirlatma ve operasyon planlama ekranlari ayni panelde birlestirildi.",
-  },
-  {
-    title: "AI destekli belge altyapisi genisledi",
-    text: "Rapor, dokuman ve saha bulgulari icin yeni akislar hazirlandi.",
-  },
+const highlights = [
+  { label: "Risk Intelligence", value: "R-SKOR odaklı analiz akışı" },
+  { label: "AI Yorumlama", value: "Daha anlaşılır karar desteği" },
+  { label: "Kurumsal Panel", value: "Tek merkezden operasyon yönetimi" },
+  { label: "Multi-tenant", value: "Organizasyon bazlı güvenli yapı" },
 ];
 
 const features = [
-  "AI destekli risk analizi",
-  "Saha denetimi ve tespit yonetimi",
-  "Dokuman olusturma ve arsiv",
-  "RHAM ve R-SKOR 2D alanlari",
-  "Takvim, bildirim ve gorev zinciri",
-  "Kurum, lokasyon ve kullanici takibi",
+  {
+    title: "AI destekli risk analizi",
+    text: "Manuel veya modül bazlı risk girdilerini tek akışta toplayan, sonuçları daha görünür hâle getiren ürün temeli.",
+  },
+  {
+    title: "Saha bulguları ve aksiyon yönetimi",
+    text: "Denetim, bulgu, görev ve takip alanlarını operasyon ekibinin okuyabileceği düzen içinde bir araya getirir.",
+  },
+  {
+    title: "Raporlama ve kayıt altyapısı",
+    text: "Oluşturulan sonuçların geçmiş, detay ve çıktı süreçlerine bağlanabileceği tutarlı ekran omurgası sağlar.",
+  },
+  {
+    title: "Risk modülü için ürün vitrini",
+    text: "Risk analizi ekranı, sonuç ekranı ve skor geçmişi gibi alanlar için profesyonel ve güven veren zemin hazırlar.",
+  },
+  {
+    title: "Mobil, tablet ve desktop uyumu",
+    text: "Tek kolon, iki kolon ve geniş ekran yerleşimleriyle farklı cihazlarda okunabilirliğini korur.",
+  },
+  {
+    title: "Kurumsal ve modern görsel dil",
+    text: "Açık yüzeyler, kontrollü kontrast ve net CTA yapısıyla oyuncak değil, satılabilir SaaS hissi üretir.",
+  },
 ];
+
+const workflow = [
+  "Kuruma güvenli erişim",
+  "Risk verisinin girilmesi",
+  "R-SKOR sonucunun üretilmesi",
+  "AI yorum ve kayıt akışı",
+];
+
+const reasons = [
+  "Temiz, modern ve güven veren İSG görünümü",
+  "Operasyon odaklı, dikkat dağıtmayan ekran kurgusu",
+  "Risk Intelligence modülüne hazır tasarım sistemi",
+];
+
+const primaryLinkClass =
+  "inline-flex h-12 items-center justify-center rounded-2xl bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[var(--shadow-soft)] transition-opacity hover:opacity-95";
+
+const secondaryLinkClass =
+  "inline-flex h-12 items-center justify-center rounded-2xl border border-border bg-card px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary";
 
 export default function LandingPage() {
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "#f7f7f8",
-        color: "#111827",
-        fontFamily: "Arial, Helvetica, sans-serif",
-      }}
-    >
-      <header
-        style={{
-          height: 76,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 24px",
-          borderBottom: "1px solid #e5e7eb",
-          background: "#fff",
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-        }}
-      >
-        <div>
-          <div style={{ fontSize: 30, fontWeight: 800 }}>guvenligimcepte</div>
-          <div style={{ fontSize: 13, color: "#6b7280" }}>
-            AI Destekli ISG Risk Analizi ve Operasyon Platformu
-          </div>
-        </div>
+    <main className="app-shell">
+      <PublicHeader />
 
-        <div style={{ display: "flex", gap: 12 }}>
-          <Link
-            href="/login"
-            style={{
-              textDecoration: "none",
-              padding: "10px 16px",
-              borderRadius: 12,
-              border: "1px solid #d1d5db",
-              color: "#111827",
-              fontWeight: 700,
-              background: "#fff",
-            }}
-          >
-            Giris
-          </Link>
+      <section className="page-shell pt-8 lg:pt-10">
+        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="surface-card p-8 sm:p-10">
+            <span className="eyebrow">Risk Intelligence Platform</span>
 
-          <Link
-            href="/register"
-            style={{
-              textDecoration: "none",
-              padding: "10px 16px",
-              borderRadius: 12,
-              border: "1px solid #111827",
-              color: "#fff",
-              fontWeight: 700,
-              background: "#111827",
-            }}
-          >
-            Kayit Ol
-          </Link>
-        </div>
-      </header>
+            <div className="mt-6 max-w-4xl space-y-5">
+              <h1 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl xl:text-6xl">
+                İSG risk yönetimini analiz, yorum ve operasyon akışıyla tek
+                merkezde toplayın.
+              </h1>
 
-      <section
-        style={{
-          maxWidth: 1200,
-          margin: "0 auto",
-          padding: "56px 24px 24px",
-          display: "grid",
-          gridTemplateColumns: "1.2fr 0.8fr",
-          gap: 24,
-        }}
-      >
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #e5e7eb",
-            borderRadius: 24,
-            padding: 32,
-          }}
-        >
-          <div
-            style={{
-              display: "inline-block",
-              padding: "8px 12px",
-              borderRadius: 999,
-              background: "#eef2ff",
-              color: "#3730a3",
-              fontSize: 12,
-              fontWeight: 800,
-              marginBottom: 18,
-            }}
-          >
-            Yeni Nesil ISG Operasyon Altyapisi
+              <p className="max-w-3xl text-base leading-8 text-muted-foreground sm:text-lg">
+                RiskNova; risk analizi, saha takibi, kayıt, raporlama ve karar
+                desteği süreçlerini tek ürün hissi içinde birleştirmek için
+                tasarlanmış AI destekli İSG platformudur.
+              </p>
+            </div>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link href="/register" className={primaryLinkClass}>
+                Hemen Başla
+              </Link>
+
+              <Link href="/login" className={secondaryLinkClass}>
+                Platforma Giriş Yap
+              </Link>
+            </div>
+
+            <div className="mt-10 data-grid">
+              {highlights.map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]"
+                >
+                  <p className="metric-label">{item.label}</p>
+                  <p className="mt-2 text-base font-semibold leading-7 text-foreground">
+                    {item.value}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <h1
-            style={{
-              margin: 0,
-              fontSize: 46,
-              lineHeight: 1.1,
-              letterSpacing: "-0.03em",
-            }}
-          >
-            Sahadan rapora kadar tum ISG surecini tek merkezden yonetin
-          </h1>
+          <Card>
+            <CardHeader className="p-7">
+              <Badge className="w-fit">Ürün Özeti</Badge>
+              <CardTitle className="text-2xl">
+                Tek ürün, tek görsel dil, net operasyon deneyimi
+              </CardTitle>
+              <CardDescription className="text-sm leading-7 sm:text-base">
+                Risk analizinden sonuç ekranına, dashboard’dan rapor akışına
+                kadar tüm modüllerin aynı profesyonel ürün içinde görünmesi için
+                tasarlanan yapı.
+              </CardDescription>
+            </CardHeader>
 
-          <p
-            style={{
-              marginTop: 18,
-              marginBottom: 0,
-              fontSize: 18,
-              lineHeight: 1.8,
-              color: "#4b5563",
-              maxWidth: 760,
-            }}
-          >
-            guvenligimcepte; isg uzmani, isyeri hekimi ve diger saglik personeli
-            icin saha denetimi, risk yonetimi, dokuman olusturma, aksiyon takibi,
-            bildirim ve raporlama sureclerini tek platformda birlestirir.
-          </p>
+            <CardContent className="space-y-4 px-7 pb-7">
+              {workflow.map((item, index) => (
+                <div
+                  key={item}
+                  className="rounded-3xl border border-border bg-muted p-5"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+                    Adım {index + 1}
+                  </p>
+                  <p className="mt-2 text-sm font-medium leading-7 text-foreground">
+                    {item}
+                  </p>
+                </div>
+              ))}
 
-          <div style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}>
-            <Link
-              href="/login"
-              style={{
-                textDecoration: "none",
-                padding: "12px 18px",
-                borderRadius: 14,
-                background: "#111827",
-                color: "#fff",
-                fontWeight: 800,
-              }}
-            >
-              Platforma Giris Yap
-            </Link>
-
-            <Link
-              href="/register"
-              style={{
-                textDecoration: "none",
-                padding: "12px 18px",
-                borderRadius: 14,
-                border: "1px solid #d1d5db",
-                background: "#fff",
-                color: "#111827",
-                fontWeight: 800,
-              }}
-            >
-              Hesap Olustur
-            </Link>
-          </div>
-        </div>
-
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #e5e7eb",
-            borderRadius: 24,
-            padding: 24,
-          }}
-        >
-          <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 16 }}>
-            Duyurular
-          </div>
-
-          <div style={{ display: "grid", gap: 14 }}>
-            {announcements.map((item) => (
-              <div
-                key={item.title}
-                style={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 16,
-                  padding: 16,
-                  background: "#fafafa",
-                }}
-              >
-                <div style={{ fontWeight: 800, marginBottom: 8 }}>{item.title}</div>
-                <div style={{ color: "#4b5563", lineHeight: 1.7 }}>{item.text}</div>
+              <div className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
+                <p className="text-sm leading-7 text-muted-foreground">
+                  Bu landing yapısı; ürünü daha güvenilir, daha okunur ve
+                  dönüşüm odaklı göstermeye başlar. Özellikle kayıt/giriş
+                  akışına geçen kullanıcıda “profesyonel SaaS” hissi oluşturur.
+                </p>
               </div>
-            ))}
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
-      <section
-        style={{
-          maxWidth: 1200,
-          margin: "0 auto",
-          padding: "0 24px 64px",
-        }}
-      >
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #e5e7eb",
-            borderRadius: 24,
-            padding: 28,
-          }}
-        >
-          <div style={{ fontSize: 26, fontWeight: 800, marginBottom: 18 }}>
-            Platformda neler var?
-          </div>
+      <section className="page-shell pt-0">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {features.map((item) => (
+            <Card key={item.title} className="h-full">
+              <CardHeader className="p-6">
+                <CardTitle className="text-xl">{item.title}</CardTitle>
+                <CardDescription className="text-sm leading-7">
+                  {item.text}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          ))}
+        </div>
+      </section>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-              gap: 16,
-            }}
-          >
-            {features.map((item) => (
-              <div
-                key={item}
-                style={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 18,
-                  padding: 18,
-                  background: "#fafafa",
-                  fontWeight: 700,
-                  lineHeight: 1.7,
-                }}
-              >
-                {item}
+      <section className="page-shell pt-0">
+        <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
+          <Card>
+            <CardHeader className="p-7">
+              <Badge variant="neutral" className="w-fit">
+                Neden bu tema dili?
+              </Badge>
+              <CardTitle className="text-2xl">
+                Güven veren ama ağırlaşmayan bir ürün görünümü
+              </CardTitle>
+              <CardDescription className="text-sm leading-7 sm:text-base">
+                Mavi güven hissini, teal tonları ise analiz ve yapay zekâ
+                vurgusunu taşır. Açık yüzeyler ve yumuşak kontrast da profesyonel
+                bir SaaS deneyimi oluşturur.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="grid gap-3 px-7 pb-7">
+              {reasons.map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-border bg-muted px-4 py-3 text-sm font-medium leading-7 text-foreground"
+                >
+                  {item}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card className="bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_60%,#ecfeff_100%)]">
+            <CardHeader className="p-7">
+              <Badge className="w-fit">Hazır CTA Alanı</Badge>
+              <CardTitle className="text-2xl">
+                Risk modülünü ürün vitrini hâline getirin
+              </CardTitle>
+              <CardDescription className="text-sm leading-7 sm:text-base">
+                Aşama 2B’nin devamında risk formu, sonuç ekranı ve geçmiş
+                ekranları bu tasarım dili üzerinden ürün seviyesine çıkarılacak.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="px-7 pb-7">
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Link href="/register" className={primaryLinkClass}>
+                  Hesap Oluştur
+                </Link>
+                <Link href="/login" className={secondaryLinkClass}>
+                  Giriş Yap
+                </Link>
               </div>
-            ))}
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
     </main>

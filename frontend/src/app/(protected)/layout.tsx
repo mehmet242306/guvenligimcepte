@@ -1,9 +1,10 @@
 ﻿import type { ReactNode } from "react";
+import { ProtectedShell } from "@/components/layout/protected-shell";
 
 export default function ProtectedLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  return <>{children}</>;
+  return <ProtectedShell>{children}</ProtectedShell>;
 }
