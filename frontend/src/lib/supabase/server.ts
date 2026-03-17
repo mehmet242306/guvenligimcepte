@@ -11,13 +11,25 @@ function getRequiredEnv(name: string) {
   return value;
 }
 
+function getSupabasePublishableKey() {
+  const value =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!value) {
+    throw new Error(
+      "Missing required environment variable: NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    );
+  }
+
+  return value;
+}
+
 export async function createClient() {
   const cookieStore = await cookies();
 
   const supabaseUrl = getRequiredEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const supabasePublishableKey = getRequiredEnv(
-    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
-  );
+  const supabasePublishableKey = getSupabasePublishableKey();
 
   return createServerClient(supabaseUrl, supabasePublishableKey, {
     cookies: {
