@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Callable
+from typing import Annotated, Callable, Literal
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -140,3 +140,93 @@ def require_roles(*allowed_roles: str) -> Callable:
         return current_user
 
     return dependency
+
+
+PermissionLevel = Literal["none", "read", "write"]
+
+
+def is_company_member(current_user: CurrentAppUser, company_identity_id: str) -> bool:
+    rows = (
+        supabase_admin.table("company_memberships")
+        .select("id")
+        .eq("company_identity_id", company_identity_id)
+        .eq("user_id", current_user.auth_user_id)
+        .in_("status", ["active", "approved"])
+        .limit(1)
+        .execute()
+    ).data or []
+    return bool(rows)
+
+
+def can_manage_company(current_user: CurrentAppUser, company_identity_id: str) -> bool:
+    rows = (
+        supabase_admin.table("company_memberships")
+        .select("membership_role,can_approve_join_requests,status")
+        .eq("company_identity_id", company_identity_id)
+        .eq("user_id", current_user.auth_user_id)
+        .in_("status", ["active", "approved"])
+        .limit(1)
+        .execute()
+    ).data or []
+    if not rows:
+        return False
+
+    row = rows[0]
+    role = str(row.get("membership_role") or "").strip().lower()
+    if role in {"owner", "admin"}:
+        return True
+    return bool(row.get("can_approve_join_requests"))
+
+
+def require_company_member(company_identity_id: str, current_user: CurrentAppUser) -> None:
+    if not is_company_member(current_user, company_identity_id):
+        raise forbidden("Not a company member")
+
+
+def require_company_manager(company_identity_id: str, current_user: CurrentAppUser) -> None:
+    if not can_manage_company(current_user, company_identity_id):
+        raise forbidden("Insufficient company-level permissions")
+
+
+def get_member_module_permissions(company_identity_id: str, user_id: str) -> dict[str, PermissionLevel]:
+    membership_rows = (
+        supabase_admin.table("company_memberships")
+        .select("id")
+        .eq("company_identity_id", company_identity_id)
+        .eq("user_id", user_id)
+        .in_("status", ["active", "approved"])
+        .limit(1)
+        .execute()
+    ).data or []
+
+    if not membership_rows:
+        return {}
+
+    membership_id = membership_rows[0]["id"]
+    permission_rows = (
+        supabase_admin.table("company_member_module_permissions")
+        .select("module_key,permission_level")
+        .eq("company_membership_id", membership_id)
+        .execute()
+    ).data or []
+
+    output: dict[str, PermissionLevel] = {}
+    for row in permission_rows:
+        module_key = str(row.get("module_key") or "").strip()
+        level = str(row.get("permission_level") or "").strip()
+        if not module_key or level not in {"none", "read", "write"}:
+            continue
+        output[module_key] = level  # type: ignore[assignment]
+    return output
+
+
+def has_company_module_access(
+    company_identity_id: str,
+    user_id: str,
+    module_key: str,
+    required_level: PermissionLevel = "read",
+) -> bool:
+    permissions = get_member_module_permissions(company_identity_id, user_id)
+    current = permissions.get(module_key, "none")
+    rank = {"none": 0, "read": 1, "write": 2}
+    return rank[current] >= rank[required_level]

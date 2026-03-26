@@ -36,3 +36,6 @@ async def root():
         "message": "RiskNova backend is running",
         "docs": "/docs"
     }
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}

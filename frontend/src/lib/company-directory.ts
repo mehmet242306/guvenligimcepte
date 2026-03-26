@@ -178,8 +178,25 @@ export const defaultCompanyDirectory: CompanyRecord[] = [
   },
 ];
 
+function repairMojibake(value: string) {
+  return value
+    .replace(/Ä°/g, "İ")
+    .replace(/Ä±/g, "ı")
+    .replace(/Ã‡/g, "Ç")
+    .replace(/Ã§/g, "ç")
+    .replace(/Ã–/g, "Ö")
+    .replace(/Ã¶/g, "ö")
+    .replace(/Ãœ/g, "Ü")
+    .replace(/Ã¼/g, "ü")
+    .replace(/Äž/g, "Ğ")
+    .replace(/ÄŸ/g, "ğ")
+    .replace(/Åž/g, "Ş")
+    .replace(/ÅŸ/g, "ş")
+    .replace(/Â·/g, "·");
+}
+
 function normalizeText(value: string) {
-  return value.trim();
+  return repairMojibake(value).trim();
 }
 
 function normalizeNumber(value: number, fallback = 0) {

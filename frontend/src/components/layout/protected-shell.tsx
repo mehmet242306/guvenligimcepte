@@ -6,13 +6,6 @@ import { usePathname } from "next/navigation";
 import { Brand } from "./brand";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 type ProtectedShellProps = {
   children: ReactNode;
@@ -20,7 +13,7 @@ type ProtectedShellProps = {
 
 const navigation = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/companies", label: "Firmalar / Kurumlar" },
+  { href: "/companies", label: "Firmalar" },
   { href: "/risk-analysis", label: "Risk Analizi" },
   { href: "/score-history", label: "Skor Geçmişi" },
   { href: "/reports", label: "Raporlar" },
@@ -32,17 +25,7 @@ function isActivePath(pathname: string, href: string) {
   if (href === "/dashboard") {
     return pathname === "/dashboard";
   }
-
   return pathname.startsWith(href);
-}
-
-function navItemClass(isActive: boolean) {
-  return cn(
-    "flex items-center rounded-2xl px-4 py-3 text-sm font-medium transition-colors transition-shadow",
-    isActive
-      ? "border border-red-400/35 bg-[linear-gradient(90deg,#0b5fc1_0%,#2788ff_100%)] text-white shadow-[0_0_0_1px_rgba(239,68,68,0.14),0_16px_34px_rgba(11,95,193,0.22),0_0_20px_rgba(239,68,68,0.12)]"
-      : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-  );
 }
 
 export function ProtectedShell({ children }: ProtectedShellProps) {
@@ -50,41 +33,65 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
 
   return (
     <div className="app-shell">
+      {/* ── Top Header ── */}
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[linear-gradient(90deg,#0b5fc1_0%,#0f6dd2_48%,#084c9a_100%)] backdrop-blur-xl">
-        <div className="page-shell py-4">
-          <div className="flex items-center justify-between gap-4">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Brand row */}
+          <div className="flex h-16 items-center justify-between gap-4">
             <Brand href="/dashboard" compact inverted />
 
             <div className="hidden items-center gap-3 md:flex">
               <Badge className="border-white/20 bg-white/10 text-white">
                 Kurumsal Çalışma Alanı
               </Badge>
-
               <Link
                 href="/profile"
-                className="inline-flex h-10 items-center justify-center rounded-2xl border border-red-300/35 bg-white/10 px-4 text-sm font-medium text-white shadow-[0_0_0_1px_rgba(239,68,68,0.10)] transition-colors hover:bg-white/18"
+                className="inline-flex h-9 items-center justify-center rounded-xl border border-white/20 bg-white/10 px-4 text-sm font-medium text-white transition-colors hover:bg-white/18"
               >
                 Profil
               </Link>
             </div>
           </div>
+
+          {/* ── Desktop horizontal navigation ── */}
+          <nav className="hidden md:block">
+            <div className="-mb-px flex items-center gap-1 pb-0">
+              {navigation.map((item) => {
+                const active = isActivePath(pathname, item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "inline-flex h-10 items-center rounded-t-xl px-4 text-sm font-medium transition-colors",
+                      active
+                        ? "bg-white/15 text-white shadow-[inset_0_-2px_0_0_rgba(255,255,255,0.9)]"
+                        : "text-white/70 hover:bg-white/8 hover:text-white",
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
         </div>
       </header>
 
-      <section className="page-shell py-6">
-        <div className="mb-4 overflow-x-auto lg:hidden">
-          <div className="flex min-w-max gap-2 pb-1">
+      {/* ── Mobile horizontal navigation ── */}
+      <div className="border-b border-border bg-card md:hidden">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+          <div className="flex gap-1.5 overflow-x-auto py-2.5">
             {navigation.map((item) => {
               const active = isActivePath(pathname, item.href);
-
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "inline-flex items-center rounded-2xl px-4 py-2.5 text-sm font-medium transition-colors transition-shadow",
+                    "inline-flex shrink-0 items-center rounded-xl px-3.5 py-2 text-sm font-medium transition-colors",
                     active
-                      ? "border border-red-400/35 bg-[linear-gradient(90deg,#0b5fc1_0%,#2788ff_100%)] text-white shadow-[0_0_0_1px_rgba(239,68,68,0.14),0_16px_34px_rgba(11,95,193,0.22),0_0_20px_rgba(239,68,68,0.12)]"
+                      ? "bg-primary text-primary-foreground shadow-[var(--shadow-soft)]"
                       : "border border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground",
                   )}
                 >
@@ -94,41 +101,12 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
             })}
           </div>
         </div>
+      </div>
 
-        <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-          <aside className="hidden lg:block">
-            <Card className="overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(244,248,255,0.96)_100%)]">
-              <CardHeader className="p-6">
-                <Badge className="w-fit">RiskNova Paneli</Badge>
-                <CardTitle className="text-xl">Operasyon menüsü</CardTitle>
-                <CardDescription>
-                  Tüm işyeri operasyonlarını sade ve odaklı bir çalışma alanında yönet.
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent className="space-y-2 px-4 pb-4">
-                {navigation.map((item) => {
-                  const active = isActivePath(pathname, item.href);
-
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={navItemClass(active)}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </CardContent>
-            </Card>
-          </aside>
-
-          <div className="min-w-0">
-            <div className="page-stack">{children}</div>
-          </div>
-        </div>
-      </section>
+      {/* ── Main content — full width ── */}
+      <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="page-stack">{children}</div>
+      </main>
     </div>
   );
 }

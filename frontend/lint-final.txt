@@ -1,0 +1,18 @@
+
+> frontend@0.1.0 lint
+> eslint
+
+
+C:\Users\MEHMET YILDIRIM\risknova-platform\frontend\src\app\(protected)\risk-analysis\RiskAnalysisClient.tsx
+     5:3   warning  'useEffect' is defined but never used                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+    12:10  warning  'Badge' is defined but never used                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  1256:29  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  1559:33  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  1585:29  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\MEHMET YILDIRIM\risknova-platform\frontend\src\components\companies\PersonnelManagementPanel.tsx
+  75:6  warning  React Hook useCallback has a missing dependency: 'companyId'. Either include it or remove the dependency array. If 'setPpl' needs the current value of 'companyId', you can also switch to useReducer instead of useState and read 'companyId' in the reducer  react-hooks/exhaustive-deps
+
+✖ 6 problems (0 errors, 6 warnings)
+
+LINT_OK  
