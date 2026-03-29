@@ -22,9 +22,9 @@ const variantClasses: Record<ButtonVariant, string> = {
   accent:
     "border border-red-400/40 bg-[linear-gradient(135deg,#97c51f_0%,#b9e22f_100%)] text-accent-foreground shadow-[0_0_0_1px_rgba(239,68,68,0.16),0_16px_34px_rgba(151,197,31,0.28),0_0_24px_rgba(239,68,68,0.16)] hover:brightness-[1.03]",
   secondary:
-    "bg-secondary text-secondary-foreground hover:bg-[#dce8f5]",
+    "bg-secondary text-secondary-foreground hover:bg-slate-200 dark:hover:bg-slate-700",
   outline:
-    "border border-primary/25 bg-white/90 text-primary shadow-[0_0_0_1px_rgba(239,68,68,0.08)] hover:bg-secondary",
+    "border border-border bg-card text-primary shadow-[var(--shadow-soft)] hover:bg-secondary",
   ghost:
     "bg-transparent text-foreground hover:bg-secondary",
   danger:

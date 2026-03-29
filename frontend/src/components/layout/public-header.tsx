@@ -5,10 +5,10 @@ const navLinkClass =
   "text-sm font-medium text-white/88 transition-colors hover:text-white";
 
 const ghostButtonClass =
-  "inline-flex h-11 items-center justify-center rounded-2xl border border-red-300/35 bg-white/10 px-5 text-sm font-medium text-white shadow-[0_0_0_1px_rgba(239,68,68,0.12)] transition-colors hover:bg-white/18";
+  "inline-flex h-11 items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-5 text-sm font-medium text-white transition-colors hover:bg-white/20";
 
 const accentButtonClass =
-  "inline-flex h-11 items-center justify-center rounded-2xl border border-red-400/40 bg-[linear-gradient(135deg,#97c51f_0%,#b9e22f_100%)] px-5 text-sm font-medium text-[#10220a] shadow-[0_0_0_1px_rgba(239,68,68,0.16),0_16px_34px_rgba(151,197,31,0.28),0_0_24px_rgba(239,68,68,0.16)] transition-colors hover:brightness-[1.03]";
+  "inline-flex h-11 items-center justify-center rounded-2xl border border-[#97c51f]/40 bg-[linear-gradient(135deg,#97c51f_0%,#b9e22f_100%)] px-5 text-sm font-medium text-[#10220a] shadow-[0_16px_34px_rgba(151,197,31,0.28)] transition-colors hover:brightness-[1.03]";
 
 export function PublicHeader() {
   return (

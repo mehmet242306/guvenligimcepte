@@ -57,10 +57,10 @@ const reasons = [
 ];
 
 const primaryLinkClass =
-  "inline-flex h-12 items-center justify-center rounded-2xl border border-red-400/40 bg-[linear-gradient(135deg,#97c51f_0%,#b9e22f_100%)] px-6 text-sm font-medium text-[#10220a] shadow-[0_0_0_1px_rgba(239,68,68,0.16),0_16px_34px_rgba(151,197,31,0.28),0_0_24px_rgba(239,68,68,0.16)] transition-colors hover:brightness-[1.03]";
+  "inline-flex h-12 items-center justify-center rounded-2xl bg-[#0b5fc1] px-6 text-sm font-medium text-white shadow-lg transition-colors hover:bg-[#0a4fa8]";
 
 const secondaryLinkClass =
-  "inline-flex h-12 items-center justify-center rounded-2xl border border-red-400/30 bg-[linear-gradient(135deg,#0b5fc1_0%,#2788ff_100%)] px-6 text-sm font-medium text-white shadow-[0_0_0_1px_rgba(239,68,68,0.14),0_16px_34px_rgba(11,95,193,0.24),0_0_20px_rgba(239,68,68,0.14)] transition-colors hover:brightness-[1.04]";
+  "inline-flex h-12 items-center justify-center rounded-2xl border-2 border-[#0b5fc1] bg-white px-6 text-sm font-medium text-[#0b5fc1] transition-colors hover:bg-[#0b5fc1]/5";
 
 export default function LandingPage() {
   return (
@@ -99,7 +99,7 @@ export default function LandingPage() {
               {highlights.map((item) => (
                 <div
                   key={item.label}
-                  className="rounded-3xl border border-border bg-white/88 p-5 shadow-[var(--shadow-soft)] backdrop-blur-sm"
+                  className="rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-soft)] backdrop-blur-sm"
                 >
                   <p className="metric-label">{item.label}</p>
                   <p className="mt-2 text-base font-semibold leading-7 text-foreground">
@@ -140,7 +140,7 @@ export default function LandingPage() {
                 </div>
               ))}
 
-              <div className="rounded-3xl border border-border bg-white/90 p-5 shadow-[var(--shadow-soft)]">
+              <div className="rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-soft)]">
                 <p className="text-sm leading-7 text-muted-foreground">
                   Bu landing yapısı; ürünü daha güvenilir, daha okunur ve
                   dönüşüm odaklı göstermeye başlar. Özellikle kayıt/giriş
@@ -196,7 +196,7 @@ export default function LandingPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-[linear-gradient(135deg,rgba(11,95,193,0.14)_0%,#ffffff_62%,rgba(151,197,31,0.20)_100%)]">
+          <Card className="bg-[linear-gradient(135deg,rgba(11,95,193,0.14)_0%,var(--card)_62%,rgba(151,197,31,0.20)_100%)]">
             <CardHeader className="p-7">
               <Badge className="w-fit">Hazır CTA Alanı</Badge>
               <CardTitle className="text-2xl">

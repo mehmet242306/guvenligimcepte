@@ -19,14 +19,14 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "rounded-[1.5rem] border border-border text-center shadow-[var(--shadow-soft)]",
+        "rounded-2xl border border-border text-center shadow-[var(--shadow-soft)]",
         compact ? "px-5 py-6" : "px-6 py-8 sm:px-8 sm:py-10",
-        "bg-[linear-gradient(135deg,rgba(11,95,193,0.08)_0%,rgba(255,255,255,0.96)_58%,rgba(151,197,31,0.12)_100%)]",
+        "bg-card",
         className,
       )}
     >
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-4">
-        <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-primary/15 bg-white/90 text-primary shadow-[var(--shadow-soft)]">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-muted text-primary">
           <span className="text-lg font-semibold">RN</span>
         </div>
 

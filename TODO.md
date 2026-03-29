@@ -1,18 +1,9 @@
-# Phase 5 — Supabase Personnel Persistence
+# TODO - Companies/Workspace Final Fix Pass
 
-## Steps
-
-- [ ] Step 1: Update personnel-api.ts — add special_monitoring_categories mapping
-- [ ] Step 2: Rewrite PersonnelManagementPanel.tsx — Supabase-first with all features
-- [ ] Step 3: Lint validation
-- [ ] Step 4: Build validation
-- [ ] Step 5: Browser verification (7 mandatory checks)
-
-## Mandatory Browser Checks
-- [ ] Company data persists after refresh
-- [ ] Personnel data persists after refresh
-- [ ] Imported personnel persists after refresh
-- [ ] Turkish CSV import/export works correctly
-- [ ] Special monitoring categories reveal employee-level records
-- [ ] No hydration mismatch
-- [ ] No runtime/console loop issues
+- [ ] Dark mode: switch to class-based toggle on `<html>` and persist localStorage
+- [ ] Theme tokens: premium Risk/OHS color tuning in globals.css
+- [ ] Overflow fixes in CompaniesListClient
+- [ ] Overflow/layout polish in CompanyWorkspaceClient + WorkspaceTabs + PersonnelManagementPanel
+- [ ] Run lint
+- [ ] Run build
+- [ ] Ask user for final manual verification

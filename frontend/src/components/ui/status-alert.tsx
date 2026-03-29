@@ -11,13 +11,13 @@ type StatusAlertProps = {
 
 const toneClasses: Record<StatusAlertTone, string> = {
   success:
-    "border-green-200 bg-[linear-gradient(180deg,#f0fdf4_0%,#dcfce7_100%)] text-green-700",
+    "border-green-200 bg-[linear-gradient(180deg,#f0fdf4_0%,#dcfce7_100%)] text-green-700 dark:border-green-800/50 dark:bg-green-900/20 dark:text-green-400",
   warning:
-    "border-amber-200 bg-[linear-gradient(180deg,#fffbeb_0%,#fde68a_100%)] text-amber-700",
+    "border-amber-200 bg-[linear-gradient(180deg,#fffbeb_0%,#fde68a_100%)] text-amber-700 dark:border-amber-800/50 dark:bg-amber-900/20 dark:text-amber-400",
   danger:
-    "border-red-200 bg-[linear-gradient(180deg,#fef2f2_0%,#fee2e2_100%)] text-red-700",
+    "border-red-200 bg-[linear-gradient(180deg,#fef2f2_0%,#fee2e2_100%)] text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400",
   info:
-    "border-primary/20 bg-[linear-gradient(180deg,rgba(11,95,193,0.08)_0%,rgba(39,136,255,0.10)_100%)] text-primary",
+    "border-primary/20 bg-[linear-gradient(180deg,rgba(11,95,193,0.08)_0%,rgba(39,136,255,0.10)_100%)] text-primary dark:bg-primary/10",
 };
 
 export function StatusAlert({

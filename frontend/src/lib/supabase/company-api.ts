@@ -35,6 +35,7 @@ type CompanyWorkspaceRow = {
   notes: string | null;
   is_archived: boolean;
   metadata: Record<string, unknown> | null;
+  logo_url: string | null;
 };
 
 type JoinedRow = CompanyWorkspaceRow & {
@@ -89,6 +90,7 @@ function dbToCompanyRecord(ws: JoinedRow): CompanyRecord {
     lastDrillDate: str("lastDrillDate"),
     locations: arr("locations"),
     departments: arr("departments"),
+    logo_url: ws.logo_url ?? undefined,
   };
 }
 
@@ -149,7 +151,7 @@ export async function fetchCompaniesFromSupabase(): Promise<CompanyRecord[] | nu
     const { data, error } = await supabase
       .from("company_workspaces")
       .select(`
-        id, company_identity_id, display_name, notes, is_archived, metadata,
+        id, company_identity_id, display_name, notes, is_archived, metadata, logo_url,
         company_identities!inner (
           id, company_code, official_name, sector, nace_code, hazard_class,
           address, city, district, is_active, is_archived, archived_at,
@@ -186,7 +188,7 @@ export async function fetchArchivedFromSupabase(): Promise<CompanyRecord[] | nul
     const { data, error } = await supabase
       .from("company_workspaces")
       .select(`
-        id, company_identity_id, display_name, notes, is_archived, metadata,
+        id, company_identity_id, display_name, notes, is_archived, metadata, logo_url,
         company_identities!inner (
           id, company_code, official_name, sector, nace_code, hazard_class,
           address, city, district, is_active, is_archived, archived_at,
@@ -221,7 +223,7 @@ export async function fetchDeletedFromSupabase(): Promise<CompanyRecord[] | null
     const { data, error } = await supabase
       .from("company_workspaces")
       .select(`
-        id, company_identity_id, display_name, notes, is_archived, metadata,
+        id, company_identity_id, display_name, notes, is_archived, metadata, logo_url,
         company_identities!inner (
           id, company_code, official_name, sector, nace_code, hazard_class,
           address, city, district, is_active, is_archived, archived_at,
@@ -509,5 +511,52 @@ export async function permanentDeleteFromSupabase(workspaceId: string): Promise<
   } catch (err) {
     console.warn("[company-api] permanentDelete exception:", err);
     return false;
+  }
+}
+
+/**
+ * Upload a logo file to Supabase Storage and update company_workspaces.logo_url.
+ * Returns the public URL on success, null on failure.
+ */
+export async function uploadCompanyLogo(
+  workspaceId: string,
+  file: File,
+): Promise<string | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+
+  try {
+    const ext = file.name.split(".").pop()?.toLowerCase() ?? "png";
+    const path = `${workspaceId}/logo.${ext}`;
+
+    const { error: uploadErr } = await supabase.storage
+      .from("company-logos")
+      .upload(path, file, { upsert: true, contentType: file.type });
+
+    if (uploadErr) {
+      console.warn("[company-api] uploadLogo storage error:", uploadErr.message);
+      return null;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from("company-logos")
+      .getPublicUrl(path);
+
+    const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+    const { error: updateErr } = await supabase
+      .from("company_workspaces")
+      .update({ logo_url: publicUrl })
+      .eq("id", workspaceId);
+
+    if (updateErr) {
+      console.warn("[company-api] uploadLogo update error:", updateErr.message);
+      return null;
+    }
+
+    return publicUrl;
+  } catch (err) {
+    console.warn("[company-api] uploadLogo exception:", err);
+    return null;
   }
 }

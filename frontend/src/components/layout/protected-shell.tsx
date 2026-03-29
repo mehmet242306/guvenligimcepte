@@ -1,101 +1,157 @@
 ﻿"use client";
 
 import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Brand } from "./brand";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 
-type ProtectedShellProps = {
-  children: ReactNode;
-};
+type ProtectedShellProps = { children: ReactNode };
 
 const navigation = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/companies", label: "Firmalar" },
   { href: "/risk-analysis", label: "Risk Analizi" },
   { href: "/score-history", label: "Skor Geçmişi" },
+  { href: "/planner", label: "Planlayıcı" },
+  { href: "/timesheet", label: "Puantaj" },
   { href: "/reports", label: "Raporlar" },
-  { href: "/profile", label: "Profil" },
   { href: "/settings", label: "Ayarlar" },
 ];
 
-function isActivePath(pathname: string, href: string) {
-  if (href === "/dashboard") {
-    return pathname === "/dashboard";
-  }
+function isActive(pathname: string, href: string) {
+  if (href === "/dashboard") return pathname === "/dashboard";
   return pathname.startsWith(href);
 }
 
+/* ------------------------------------------------------------------ */
+/* Theme toggle – direct DOM, no React state dependency for toggling   */
+/* ------------------------------------------------------------------ */
+function ThemeToggle() {
+  const [dark, setDark] = useState(false);
+  const mountedRef = useRef(false);
+
+  /* Read initial theme on mount */
+  useEffect(() => {
+    const stored = localStorage.getItem("risknova-theme");
+    const isDark =
+      stored === "dark" ||
+      (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    setDark(isDark);
+    /* Ensure DOM is in sync */
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", isDark);
+    mountedRef.current = true;
+  }, []);
+
+  function toggle() {
+    const root = document.documentElement;
+    const currentlyDark = root.getAttribute("data-theme") === "dark";
+    const next = !currentlyDark;
+
+    /* Apply immediately to DOM */
+    root.setAttribute("data-theme", next ? "dark" : "light");
+    root.classList.toggle("dark", next);
+    localStorage.setItem("risknova-theme", next ? "dark" : "light");
+
+    /* Sync React state for icon */
+    setDark(next);
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={dark ? "Açık tema" : "Koyu tema"}
+      className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[var(--header-muted)] transition-colors hover:bg-white/10 hover:text-white"
+    >
+      {dark ? (
+        /* Sun icon */
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      ) : (
+        /* Moon icon */
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      )}
+    </button>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Shell                                                               */
+/* ------------------------------------------------------------------ */
 export function ProtectedShell({ children }: ProtectedShellProps) {
   const pathname = usePathname();
 
   return (
     <div className="app-shell">
-      {/* ── Top Header ── */}
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-[linear-gradient(90deg,#0b5fc1_0%,#0f6dd2_48%,#084c9a_100%)] backdrop-blur-xl">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Brand row */}
-          <div className="flex h-16 items-center justify-between gap-4">
-            <Brand href="/dashboard" compact inverted />
+      {/* ── Top Header — 56px, solid dark navy ── */}
+      <header
+        className="sticky top-0 z-40"
+        style={{ background: "var(--header-bg)", borderBottom: "1px solid var(--header-border)" }}
+      >
+        <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Left: Brand */}
+          <Brand href="/dashboard" compact inverted />
 
-            <div className="hidden items-center gap-3 md:flex">
-              <Badge className="border-white/20 bg-white/10 text-white">
-                Kurumsal Çalışma Alanı
-              </Badge>
-              <Link
-                href="/profile"
-                className="inline-flex h-9 items-center justify-center rounded-xl border border-white/20 bg-white/10 px-4 text-sm font-medium text-white transition-colors hover:bg-white/18"
-              >
-                Profil
-              </Link>
-            </div>
-          </div>
-
-          {/* ── Desktop horizontal navigation ── */}
-          <nav className="hidden md:block">
-            <div className="-mb-px flex items-center gap-1 pb-0">
-              {navigation.map((item) => {
-                const active = isActivePath(pathname, item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "inline-flex h-10 items-center rounded-t-xl px-4 text-sm font-medium transition-colors",
-                      active
-                        ? "bg-white/15 text-white shadow-[inset_0_-2px_0_0_rgba(255,255,255,0.9)]"
-                        : "text-white/70 hover:bg-white/8 hover:text-white",
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </div>
-          </nav>
-        </div>
-      </header>
-
-      {/* ── Mobile horizontal navigation ── */}
-      <div className="border-b border-border bg-card md:hidden">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-          <div className="flex gap-1.5 overflow-x-auto py-2.5">
+          {/* Center: Desktop navigation */}
+          <nav className="hidden items-center gap-0.5 md:flex">
             {navigation.map((item) => {
-              const active = isActivePath(pathname, item.href);
+              const act = isActive(pathname, item.href);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "inline-flex shrink-0 items-center rounded-xl px-3.5 py-2 text-sm font-medium transition-colors",
-                    active
-                      ? "bg-primary text-primary-foreground shadow-[var(--shadow-soft)]"
-                      : "border border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground",
+                    "relative inline-flex h-14 items-center px-3.5 text-sm font-medium transition-colors",
+                    act
+                      ? "text-[var(--header-active)]"
+                      : "text-[var(--header-muted)] hover:text-[var(--header-active)]",
                   )}
                 >
                   {item.label}
+                  {act && (
+                    <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[var(--primary)]" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Link
+              href="/profile"
+              className="inline-flex h-8 items-center rounded-lg px-3 text-sm font-medium text-[var(--header-muted)] transition-colors hover:bg-white/10 hover:text-white"
+            >
+              Profil
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* ── Mobile navigation ── */}
+      <div className="border-b md:hidden" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+          <div className="flex gap-0.5 overflow-x-auto py-0">
+            {navigation.map((item) => {
+              const act = isActive(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "relative inline-flex shrink-0 items-center px-3 py-3 text-sm font-medium transition-colors",
+                    act
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {item.label}
+                  {act && (
+                    <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-primary" />
+                  )}
                 </Link>
               );
             })}
@@ -103,7 +159,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
         </div>
       </div>
 
-      {/* ── Main content — full width ── */}
+      {/* ── Main content ── */}
       <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="page-stack">{children}</div>
       </main>
