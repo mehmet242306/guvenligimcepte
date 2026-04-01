@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Brand } from "./brand";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import { cn } from "@/lib/utils";
 
 type ProtectedShellProps = { children: ReactNode };
@@ -165,6 +166,9 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
       <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="page-stack">{children}</div>
       </main>
+
+      {/* ── Chat Widget ── */}
+      <ChatWidget />
     </div>
   );
 }
