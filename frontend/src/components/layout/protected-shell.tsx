@@ -168,7 +168,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
       </main>
 
       {/* ── Chat Widget ── */}
-      <ChatWidget />
+      <ChatWidget isAuthenticated />
     </div>
   );
 }

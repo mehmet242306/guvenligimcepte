@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { findBestResponse, quickActions, type QuickAction } from "@/lib/chat-knowledge";
+import { findBestResponse, findPublicResponse, quickActions, publicQuickActions, type QuickAction } from "@/lib/chat-knowledge";
 import {
   MessageCircle,
   X,
@@ -23,7 +23,7 @@ type Message = {
   timestamp: Date;
 };
 
-export function ChatWidget() {
+export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -40,13 +40,15 @@ export function ChatWidget() {
         {
           id: "welcome",
           role: "bot",
-          text: "Merhaba! Ben RiskNova asistanınız. İSG süreçlerinizle ilgili sorularınızı yanıtlayabilir, sizi doğru sayfaya yönlendirebilirim. Nasıl yardımcı olabilirim?",
-          suggestions: quickActions.slice(0, 4),
+          text: isAuthenticated
+            ? "Merhaba! Ben RiskNova asistanınız. İSG süreçlerinizle ilgili sorularınızı yanıtlayabilir, sizi doğru sayfaya yönlendirebilirim. Nasıl yardımcı olabilirim?"
+            : "Merhaba! Ben RiskNova asistanınız. Platformumuz ve İSG süreçleri hakkında bilgi alabilir, sorularınızı sorabilirsiniz. Tüm özelliklere erişmek için giriş yapın veya hesap oluşturun!",
+          suggestions: isAuthenticated ? quickActions.slice(0, 4) : publicQuickActions,
           timestamp: new Date(),
         },
       ]);
     }
-  }, [open, messages.length]);
+  }, [open, messages.length, isAuthenticated]);
 
   // Scroll to bottom
   useEffect(() => {
@@ -75,7 +77,7 @@ export function ChatWidget() {
 
     // Simulated typing delay
     setTimeout(() => {
-      const response = findBestResponse(text);
+      const response = isAuthenticated ? findBestResponse(text) : findPublicResponse(text);
       const botMsg: Message = {
         id: crypto.randomUUID(),
         role: "bot",
@@ -115,7 +117,12 @@ export function ChatWidget() {
   }
 
   function navigateTo(path: string) {
-    router.push(path);
+    // Giriş yapmamışsa korumalı sayfalara gitmesin
+    if (!isAuthenticated && !["/", "/login", "/register", "/forgot-password"].some((p) => path.startsWith(p)) && !path.startsWith("/#")) {
+      router.push("/login");
+    } else {
+      router.push(path);
+    }
     setOpen(false);
   }
 

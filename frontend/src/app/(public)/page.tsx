@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PublicHeader } from "@/components/layout/public-header";
 import { Brand } from "@/components/layout/brand";
+import { PublicChatWidget } from "@/components/chat/PublicChatWidget";
 import {
   BrainCircuit,
   Search,
@@ -532,6 +533,7 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+      <PublicChatWidget />
     </main>
   );
 }

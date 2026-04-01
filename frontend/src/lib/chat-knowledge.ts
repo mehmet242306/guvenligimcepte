@@ -254,3 +254,128 @@ export function findBestResponse(message: string): {
     suggestions: quickActions.slice(0, 4),
   };
 }
+
+/* ------------------------------------------------------------------ */
+/*  Public (giriş yapmamış) kullanıcılar için bilgi tabanı             */
+/* ------------------------------------------------------------------ */
+
+export const publicFaqs: FAQ[] = [
+  {
+    question: "RiskNova nedir?",
+    answer: "RiskNova, AI destekli İSG (İş Sağlığı ve Güvenliği) risk analizi ve operasyon platformudur. Risk değerlendirmesi, olay kaydı, DÖF, İshikawa analizi, puantaj ve raporlama gibi İSG süreçlerini tek platformda birleştirir.",
+    keywords: ["risknova", "nedir", "ne", "platform", "hakkında"],
+  },
+  {
+    question: "RiskNova ile neler yapılabilir?",
+    answer: "RiskNova ile:\n\n• AI destekli risk analizi (R-SKOR, Fine-Kinney, L-Matris)\n• İş kazası, ramak kala ve meslek hastalığı kaydı\n• DÖF (Düzeltici ve Önleyici Faaliyet) yönetimi\n• İshikawa (Balıkkılçığı) kök neden analizi\n• Firma ve personel yönetimi\n• Puantaj ve bordro takibi\n• SGK bildirim formu otomatik doldurma\n• PDF/Word rapor oluşturma\n\nyapabilirsiniz. Hemen ücretsiz hesap oluşturarak başlayın!",
+    keywords: ["ne yapılır", "özellik", "yapılabilir", "neler", "fonksiyon"],
+    route: "/register",
+  },
+  {
+    question: "Ücretsiz mi?",
+    answer: "RiskNova'ya ücretsiz kayıt olabilir ve temel özellikleri kullanabilirsiniz. Hesap oluşturmak için kayıt sayfasını ziyaret edin.",
+    keywords: ["ücretsiz", "fiyat", "ücret", "bedava", "deneme"],
+    route: "/register",
+  },
+  {
+    question: "Nasıl kayıt olunur?",
+    answer: "Sağ üstteki 'Hemen Başla' butonuna veya 'Hesap Oluştur' linkine tıklayarak e-posta ve şifre ile kayıt olabilirsiniz.",
+    keywords: ["kayıt", "hesap", "oluştur", "register", "üye"],
+    route: "/register",
+  },
+  {
+    question: "Risk analizi nedir?",
+    answer: "Risk analizi, iş yerindeki tehlikeleri belirleme, riskleri değerlendirme ve kontrol önlemlerini planlama sürecidir. RiskNova'da R-SKOR, Fine-Kinney ve L-Matris metodlarıyla AI destekli risk analizi yapabilirsiniz.",
+    keywords: ["risk analizi", "tehlike", "değerlendirme", "rskor"],
+  },
+  {
+    question: "İSG nedir?",
+    answer: "İSG (İş Sağlığı ve Güvenliği), çalışanların sağlığını ve güvenliğini korumak için alınan önlemler bütünüdür. 6331 sayılı İSG Kanunu kapsamında işverenler risk değerlendirmesi, eğitim, sağlık gözetimi ve acil durum planlaması yapmak zorundadır.",
+    keywords: ["isg", "iş sağlığı", "güvenlik", "6331", "kanun"],
+  },
+  {
+    question: "DÖF nedir?",
+    answer: "DÖF (Düzeltici ve Önleyici Faaliyet), bir olay veya uygunsuzluk sonrası kök neden analizi yaparak tekrarını önlemeye yönelik sistematik aksiyon planıdır. RiskNova'da AI destekli İshikawa analizi ile entegre çalışır.",
+    keywords: ["döf", "düzeltici", "önleyici", "faaliyet"],
+  },
+  {
+    question: "İshikawa nedir?",
+    answer: "İshikawa (Balıkkılçığı) diyagramı, 6M metoduyla (İnsan, Makine, Metot, Malzeme, Çevre, Ölçüm) bir sorunun kök nedenlerini görsel olarak analiz eden araçtır. Kaoru Ishikawa tarafından geliştirilmiştir.",
+    keywords: ["ishikawa", "balıkkılçığı", "kök neden", "6m"],
+  },
+  {
+    question: "Giriş yapamıyorum",
+    answer: "Giriş yapmak için kayıtlı e-posta adresiniz ve şifreniz gereklidir. Şifrenizi unuttuysanız 'Şifremi Unuttum' linkini kullanabilirsiniz.",
+    keywords: ["giriş", "login", "yapamıyorum", "şifre", "unuttum"],
+    route: "/login",
+  },
+];
+
+export const publicQuickActions: QuickAction[] = [
+  { label: "Hemen Başla", path: "/register", icon: "🚀" },
+  { label: "Giriş Yap", path: "/login", icon: "🔑" },
+  { label: "Neler Yapılabilir?", path: "/#features", icon: "✨" },
+  { label: "Nasıl Çalışır?", path: "/#how-it-works", icon: "📋" },
+];
+
+export function findPublicResponse(message: string): {
+  text: string;
+  route?: string;
+  suggestions?: QuickAction[];
+} {
+  const q = message.toLowerCase().trim();
+
+  // Selamlama
+  if (/^(merhaba|selam|hey|hi|hello|günaydın|iyi günler|iyi akşamlar)/.test(q)) {
+    return {
+      text: "Merhaba! Ben RiskNova asistanınız. Size platformumuz ve İSG süreçleri hakkında bilgi verebilirim. Hesap oluşturarak tüm özelliklere erişebilirsiniz!",
+      suggestions: publicQuickActions,
+    };
+  }
+
+  // Yardım
+  if (/^(yardım|help|ne yapabilirim)/.test(q)) {
+    return {
+      text: "RiskNova, AI destekli İSG platformudur. Sorularınızı yanıtlayabilirim:\n\n• \"RiskNova nedir?\"\n• \"Neler yapılabilir?\"\n• \"Risk analizi nedir?\"\n• \"DÖF nedir?\"\n• \"Nasıl kayıt olunur?\"",
+      suggestions: publicQuickActions,
+    };
+  }
+
+  // Korumalı sayfaya erişim isteme
+  if (/dashboard|firma|olay|puantaj|rapor|planlayıcı|skor/.test(q)) {
+    return {
+      text: "Bu özelliği kullanmak için giriş yapmanız gerekiyor. Henüz hesabınız yoksa ücretsiz kayıt olabilirsiniz!",
+      suggestions: [
+        { label: "Giriş Yap", path: "/login", icon: "🔑" },
+        { label: "Hesap Oluştur", path: "/register", icon: "🚀" },
+      ],
+    };
+  }
+
+  // Public FAQ eşleştirme
+  let bestFaq: FAQ | null = null;
+  let bestScore = 0;
+  for (const faq of publicFaqs) {
+    let score = 0;
+    for (const kw of faq.keywords) {
+      if (q.includes(kw.toLowerCase())) score += kw.length;
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestFaq = faq;
+    }
+  }
+
+  if (bestFaq && bestScore >= 3) {
+    return {
+      text: bestFaq.answer,
+      route: bestFaq.route,
+    };
+  }
+
+  // Fallback
+  return {
+    text: "Bu konuda size yardımcı olmak isterim. Platformumuz hakkında daha fazla bilgi için sorularınızı sorabilir veya hemen kayıt olabilirsiniz!\n\n• \"RiskNova nedir?\"\n• \"Neler yapılabilir?\"\n• \"Risk analizi nedir?\"",
+    suggestions: publicQuickActions,
+  };
+}
