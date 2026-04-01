@@ -18,6 +18,7 @@ const navigation = [
   { href: "/score-history", label: "Skor Geçmişi" },
   { href: "/planner", label: "Planlayıcı" },
   { href: "/timesheet", label: "Puantaj" },
+  { href: "/solution-center", label: "Çözüm Merkezi" },
   { href: "/reports", label: "Raporlar" },
   { href: "/settings", label: "Ayarlar" },
 ];

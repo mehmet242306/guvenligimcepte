@@ -194,7 +194,7 @@ export default function TemplatesPage() {
           <SectionCard title="Hizli Gecis">
             <div style={{ display: "grid", gap: 10 }}>
               <Link
-                href="/document-generator"
+                href="/solution-center"
                 style={{
                   textDecoration: "none",
                   padding: "12px 14px",
@@ -209,7 +209,7 @@ export default function TemplatesPage() {
               </Link>
 
               <Link
-                href="/documents"
+                href="/solution-center/documents"
                 style={{
                   textDecoration: "none",
                   padding: "12px 14px",
