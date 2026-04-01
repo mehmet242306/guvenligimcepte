@@ -3,10 +3,18 @@
   name: string;
   shortName: string;
   kind: string;
+  companyType: string;
   address: string;
+  city: string;
+  district: string;
   sector: string;
   naceCode: string;
   hazardClass: string;
+  taxNumber: string;
+  taxOffice: string;
+  sgkWorkplaceNumber: string;
+  fax: string;
+  employerTitle: string;
   employeeCount: number;
   shiftModel: string;
   phone: string;
@@ -52,10 +60,18 @@ export const defaultCompanyDirectory: CompanyRecord[] = [
     name: "Elazığ Engelsiz Yaşam, Bakım, Rehabilitasyon ve Aile Danışma Merkezi",
     shortName: "Engelsiz Yaşam Merkezi",
     kind: "Kamu Kurumu",
+    companyType: "bagimsiz",
     address: "Elazığ",
+    city: "Elazığ",
+    district: "",
     sector: "Bakım ve Rehabilitasyon Hizmetleri",
     naceCode: "87.30",
     hazardClass: "Tehlikeli",
+    taxNumber: "",
+    taxOffice: "",
+    sgkWorkplaceNumber: "",
+    fax: "",
+    employerTitle: "",
     employeeCount: 78,
     shiftModel: "7/24 vardiyalı",
     phone: "0424 000 00 00",
@@ -104,10 +120,18 @@ export const defaultCompanyDirectory: CompanyRecord[] = [
     name: "RiskNova Demo Fabrika",
     shortName: "Demo Fabrika",
     kind: "Özel Sektör",
+    companyType: "bagimsiz",
     address: "Elazığ OSB",
+    city: "Elazığ",
+    district: "Merkez",
     sector: "Metal İşleme ve İmalat",
     naceCode: "25.62",
     hazardClass: "Çok Tehlikeli",
+    taxNumber: "",
+    taxOffice: "",
+    sgkWorkplaceNumber: "",
+    fax: "",
+    employerTitle: "",
     employeeCount: 146,
     shiftModel: "3 vardiya",
     phone: "0424 111 11 11",
@@ -143,10 +167,18 @@ export const defaultCompanyDirectory: CompanyRecord[] = [
     name: "RiskNova Demo İnşaat Sahası",
     shortName: "Demo Şantiye",
     kind: "Şantiye",
+    companyType: "bagimsiz",
     address: "Elazığ Merkez",
+    city: "Elazığ",
+    district: "Merkez",
     sector: "Yapı İşleri",
     naceCode: "41.20",
     hazardClass: "Çok Tehlikeli",
+    taxNumber: "",
+    taxOffice: "",
+    sgkWorkplaceNumber: "",
+    fax: "",
+    employerTitle: "",
     employeeCount: 95,
     shiftModel: "Gündüz + fazla mesai",
     phone: "0424 222 22 22",
@@ -228,10 +260,18 @@ export function normalizeCompanyDirectory(
       name: normalizeText(company.name),
       shortName: normalizeText(company.shortName),
       kind: normalizeText(company.kind),
+      companyType: normalizeText(company.companyType ?? "bagimsiz"),
       address: normalizeText(company.address),
+      city: normalizeText(company.city ?? ""),
+      district: normalizeText(company.district ?? ""),
       sector: normalizeText(company.sector),
       naceCode: normalizeText(company.naceCode),
       hazardClass: normalizeText(company.hazardClass),
+      taxNumber: normalizeText(company.taxNumber ?? ""),
+      taxOffice: normalizeText(company.taxOffice ?? ""),
+      sgkWorkplaceNumber: normalizeText(company.sgkWorkplaceNumber ?? ""),
+      fax: normalizeText(company.fax ?? ""),
+      employerTitle: normalizeText(company.employerTitle ?? ""),
       shiftModel: normalizeText(company.shiftModel),
       phone: normalizeText(company.phone),
       email: normalizeText(company.email),

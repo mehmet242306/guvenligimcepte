@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Brand } from "./brand";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import { cn } from "@/lib/utils";
 
 type ProtectedShellProps = { children: ReactNode };
@@ -13,6 +14,7 @@ const navigation = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/companies", label: "Firmalar" },
   { href: "/risk-analysis", label: "Risk Analizi" },
+  { href: "/incidents", label: "Olaylar" },
   { href: "/score-history", label: "Skor Geçmişi" },
   { href: "/planner", label: "Planlayıcı" },
   { href: "/timesheet", label: "Puantaj" },
@@ -38,7 +40,7 @@ function ThemeToggle() {
     const isDark =
       stored === "dark" ||
       (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    setDark(isDark);
+    setDark(isDark); // eslint-disable-line react-hooks/set-state-in-effect
     /* Ensure DOM is in sync */
     document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
     document.documentElement.classList.toggle("dark", isDark);
@@ -90,6 +92,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
         className="sticky top-0 z-40"
         style={{ background: "var(--header-bg)", borderBottom: "1px solid var(--header-border)" }}
       >
+        <div className="h-0.5 w-full bg-[linear-gradient(90deg,transparent,var(--gold),transparent)]" />
         <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left: Brand */}
           <Brand href="/dashboard" compact inverted />
@@ -163,6 +166,9 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
       <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="page-stack">{children}</div>
       </main>
+
+      {/* ── Chat Widget ── */}
+      <ChatWidget isAuthenticated />
     </div>
   );
 }
