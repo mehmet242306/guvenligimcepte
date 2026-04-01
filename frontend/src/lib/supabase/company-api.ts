@@ -18,6 +18,9 @@ type CompanyIdentityRow = {
   sector: string | null;
   nace_code: string | null;
   hazard_class: string | null;
+  company_type: string | null;
+  tax_number: string | null;
+  mersis_number: string | null;
   address: string | null;
   city: string | null;
   district: string | null;

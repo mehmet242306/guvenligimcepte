@@ -45,7 +45,7 @@ export function IshikawaDiagram({ data, id }: { data: IshikawaData; id?: string 
     index: number,
     side: "top" | "bottom",
   ) {
-    const causes = data[causeMap[cat.key]] ?? [];
+    const causes = (data[causeMap[cat.key]] ?? []) as string[];
     const branchX = TAIL_X + 60 + spacing * index + spacing / 2;
     const branchEndY = side === "top" ? SPINE_Y - 130 : SPINE_Y + 130;
     const labelY = side === "top" ? branchEndY - 20 : branchEndY + 28;
