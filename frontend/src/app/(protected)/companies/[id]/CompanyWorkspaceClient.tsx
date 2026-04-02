@@ -195,7 +195,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
       </div>
 
       {/* ── Sticky Underline Tabs ── */}
-      <div className="sticky top-14 z-30 -mx-4 border-b border-border bg-card px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      <div className="sticky top-[96px] z-30 -mx-4 border-b border-border bg-card px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div className="overflow-x-auto">
           <nav className="flex min-w-max">
             {TABS.map((t) => (

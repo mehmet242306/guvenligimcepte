@@ -90,77 +90,79 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
 
   return (
     <div className="app-shell">
-      {/* ── Top Header — Brand + Primary Nav + Actions ── */}
-      <header
-        className="sticky top-0 z-40"
-        style={{ background: "var(--header-bg)", borderBottom: "1px solid var(--header-border)" }}
-      >
-        <div className="h-0.5 w-full bg-[linear-gradient(90deg,transparent,var(--gold),transparent)]" />
-        <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Left: Brand */}
-          <Brand href="/dashboard" compact inverted />
+      {/* ── Sticky header group (both bars stay fixed) ── */}
+      <div className="sticky top-0 z-40">
+        {/* ── Top Header — Brand + Primary Nav + Actions ── */}
+        <header
+          style={{ background: "var(--header-bg)", borderBottom: "1px solid var(--header-border)" }}
+        >
+          <div className="h-0.5 w-full bg-[linear-gradient(90deg,transparent,var(--gold),transparent)]" />
+          <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            {/* Left: Brand */}
+            <Brand href="/dashboard" compact inverted />
 
-          {/* Center: Primary navigation (core modules) */}
-          <nav className="hidden items-center gap-1 md:flex">
-            {primaryNav.map((item) => {
+            {/* Center: Primary navigation (core modules) */}
+            <nav className="hidden items-center gap-1 md:flex">
+              {primaryNav.map((item) => {
+                const act = isActive(pathname, item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "relative inline-flex h-14 items-center px-4 text-sm font-medium transition-colors",
+                      act
+                        ? "text-[var(--header-active)]"
+                        : "text-[var(--header-muted)] hover:text-[var(--header-active)]",
+                    )}
+                  >
+                    {t(item.key)}
+                    {act && (
+                      <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[var(--primary)]" />
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Right: Actions */}
+            <div className="flex items-center gap-2">
+              <LanguageSelector variant="dark" />
+              <ThemeToggle />
+              <Link
+                href="/profile"
+                className="inline-flex h-8 items-center rounded-lg px-3 text-sm font-medium text-[var(--header-muted)] transition-colors hover:bg-white/10 hover:text-white"
+              >
+                {t("common.profile")}
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* ── Secondary navigation bar (centered, sticky with header) ── */}
+        <div className="hidden border-b md:block" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
+          <div className="mx-auto flex w-full max-w-7xl items-center justify-center gap-0.5 overflow-x-auto px-4 sm:px-6 lg:px-8">
+            {secondaryNav.map((item) => {
               const act = isActive(pathname, item.href);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "relative inline-flex h-14 items-center px-4 text-sm font-medium transition-colors",
+                    "relative inline-flex shrink-0 items-center px-3.5 py-2.5 text-sm font-medium transition-colors",
                     act
-                      ? "text-[var(--header-active)]"
-                      : "text-[var(--header-muted)] hover:text-[var(--header-active)]",
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {t(item.key)}
                   {act && (
-                    <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-[var(--primary)]" />
+                    <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-primary" />
                   )}
                 </Link>
               );
             })}
-          </nav>
-
-          {/* Right: Actions */}
-          <div className="flex items-center gap-2">
-            <LanguageSelector variant="dark" />
-            <ThemeToggle />
-            <Link
-              href="/profile"
-              className="inline-flex h-8 items-center rounded-lg px-3 text-sm font-medium text-[var(--header-muted)] transition-colors hover:bg-white/10 hover:text-white"
-            >
-              {t("common.profile")}
-            </Link>
           </div>
-        </div>
-      </header>
-
-      {/* ── Secondary navigation bar ── */}
-      <div className="hidden border-b md:block" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-        <div className="mx-auto flex w-full max-w-7xl items-center gap-0.5 overflow-x-auto px-4 sm:px-6 lg:px-8">
-          {secondaryNav.map((item) => {
-            const act = isActive(pathname, item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "relative inline-flex shrink-0 items-center px-3.5 py-2.5 text-sm font-medium transition-colors",
-                  act
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {t(item.key)}
-                {act && (
-                  <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-primary" />
-                )}
-              </Link>
-            );
-          })}
         </div>
       </div>
 
