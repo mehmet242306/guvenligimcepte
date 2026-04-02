@@ -72,7 +72,21 @@ export function MevzuatSyncTab() {
       });
 
       if (error) {
-        setSyncResult({ id: docId, success: false, message: error.message || "Hata" });
+        // Try to extract detailed error from response
+        let msg = error.message || "Hata";
+        try {
+          if (error.context?.body) {
+            const text = await new Response(error.context.body).text();
+            const parsed = JSON.parse(text);
+            msg = parsed.error || msg;
+          }
+        } catch { /* ignore parse errors */ }
+        setSyncResult({ id: docId, success: false, message: msg });
+        return;
+      }
+
+      if (data?.error) {
+        setSyncResult({ id: docId, success: false, message: data.error });
         return;
       }
 
@@ -81,7 +95,6 @@ export function MevzuatSyncTab() {
         success: true,
         message: `${data.articles_added} madde eklendi`,
       });
-      // Refresh list
       await loadDocs();
     } catch (err) {
       setSyncResult({

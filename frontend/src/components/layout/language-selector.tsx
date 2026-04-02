@@ -5,26 +5,135 @@ import { useI18n, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
+/* SVG Flag icons                                                      */
+/* ------------------------------------------------------------------ */
+
+function FlagTR() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" className="h-4 w-6 rounded-sm">
+      <rect width="1200" height="800" fill="#E30A17"/>
+      <circle cx="425" cy="400" r="200" fill="#fff"/>
+      <circle cx="475" cy="400" r="160" fill="#E30A17"/>
+      <polygon fill="#fff" points="583,400 530,430 543,382 505,352 555,348"/>
+    </svg>
+  );
+}
+
+function FlagGB() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="h-4 w-6 rounded-sm">
+      <rect width="60" height="30" fill="#012169"/>
+      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6"/>
+      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" strokeWidth="4"/>
+      <path d="M30,0 V30 M0,15 H60" stroke="#fff" strokeWidth="10"/>
+      <path d="M30,0 V30 M0,15 H60" stroke="#C8102E" strokeWidth="6"/>
+    </svg>
+  );
+}
+
+function FlagSA() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="h-4 w-6 rounded-sm">
+      <rect width="60" height="30" fill="#006C35"/>
+      <text x="30" y="18" textAnchor="middle" fill="#fff" fontSize="10" fontFamily="Arial">AR</text>
+    </svg>
+  );
+}
+
+function FlagRU() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="h-4 w-6 rounded-sm">
+      <rect width="60" height="10" fill="#fff"/>
+      <rect width="60" height="10" y="10" fill="#0039A6"/>
+      <rect width="60" height="10" y="20" fill="#D52B1E"/>
+    </svg>
+  );
+}
+
+function FlagDE() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="h-4 w-6 rounded-sm">
+      <rect width="60" height="10" fill="#000"/>
+      <rect width="60" height="10" y="10" fill="#DD0000"/>
+      <rect width="60" height="10" y="20" fill="#FFCE00"/>
+    </svg>
+  );
+}
+
+function FlagFR() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="h-4 w-6 rounded-sm">
+      <rect width="20" height="30" fill="#002395"/>
+      <rect width="20" height="30" x="20" fill="#fff"/>
+      <rect width="20" height="30" x="40" fill="#ED2939"/>
+    </svg>
+  );
+}
+
+function FlagES() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="h-4 w-6 rounded-sm">
+      <rect width="60" height="7.5" fill="#AA151B"/>
+      <rect width="60" height="15" y="7.5" fill="#F1BF00"/>
+      <rect width="60" height="7.5" y="22.5" fill="#AA151B"/>
+    </svg>
+  );
+}
+
+function FlagCN() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="h-4 w-6 rounded-sm">
+      <rect width="60" height="30" fill="#DE2910"/>
+      <polygon fill="#FFDE00" points="12,5 13.5,9.5 18,9.5 14.5,12.5 15.8,17 12,14 8.2,17 9.5,12.5 6,9.5 10.5,9.5"/>
+    </svg>
+  );
+}
+
+function FlagJP() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="h-4 w-6 rounded-sm">
+      <rect width="60" height="30" fill="#fff"/>
+      <circle cx="30" cy="15" r="9" fill="#BC002D"/>
+    </svg>
+  );
+}
+
+function FlagIN() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" className="h-4 w-6 rounded-sm">
+      <rect width="60" height="10" fill="#FF9933"/>
+      <rect width="60" height="10" y="10" fill="#fff"/>
+      <rect width="60" height="10" y="20" fill="#138808"/>
+      <circle cx="30" cy="15" r="3" fill="#000080" fillOpacity="0.8"/>
+    </svg>
+  );
+}
+
+const flagComponents: Record<string, () => React.JSX.Element> = {
+  tr: FlagTR, en: FlagGB, ar: FlagSA, ru: FlagRU, de: FlagDE,
+  fr: FlagFR, es: FlagES, zh: FlagCN, ja: FlagJP, hi: FlagIN,
+};
+
+/* ------------------------------------------------------------------ */
 /* Supported languages                                                 */
 /* ------------------------------------------------------------------ */
 
 interface Language {
   code: Locale;
   label: string;
-  flag: string;
 }
 
 const languages: Language[] = [
-  { code: "tr", label: "Turkce", flag: "\uD83C\uDDF9\uD83C\uDDF7" },
-  { code: "en", label: "English", flag: "\uD83C\uDDEC\uD83C\uDDE7" },
-  { code: "ar", label: "\u0627\u0644\u0639\u0631\u0628\u064A\u0629", flag: "\uD83C\uDDF8\uD83C\uDDE6" },
-  { code: "ru", label: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439", flag: "\uD83C\uDDF7\uD83C\uDDFA" },
-  { code: "de", label: "Deutsch", flag: "\uD83C\uDDE9\uD83C\uDDEA" },
-  { code: "fr", label: "Francais", flag: "\uD83C\uDDEB\uD83C\uDDF7" },
-  { code: "es", label: "Espanol", flag: "\uD83C\uDDEA\uD83C\uDDF8" },
-  { code: "zh", label: "\u4E2D\u6587", flag: "\uD83C\uDDE8\uD83C\uDDF3" },
-  { code: "ja", label: "\u65E5\u672C\u8A9E", flag: "\uD83C\uDDEF\uD83C\uDDF5" },
-  { code: "hi", label: "\u0939\u093F\u0928\u094D\u0926\u0940", flag: "\uD83C\uDDEE\uD83C\uDDF3" },
+  { code: "tr", label: "T\u00fcrk\u00e7e" },
+  { code: "en", label: "English" },
+  { code: "ar", label: "\u0627\u0644\u0639\u0631\u0628\u064A\u0629" },
+  { code: "ru", label: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439" },
+  { code: "de", label: "Deutsch" },
+  { code: "fr", label: "Fran\u00e7ais" },
+  { code: "es", label: "Espa\u00f1ol" },
+  { code: "zh", label: "\u4E2D\u6587" },
+  { code: "ja", label: "\u65E5\u672C\u8A9E" },
+  { code: "hi", label: "\u0939\u093F\u0928\u094D\u0926\u0940" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -37,13 +146,11 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
   const ref = useRef<HTMLDivElement>(null);
 
   const current = languages.find((l) => l.code === locale) || languages[0];
+  const FlagIcon = flagComponents[current.code] || FlagTR;
 
-  // Close on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -69,66 +176,42 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
         )}
         aria-label="Dil secimi"
       >
-        <span className="text-base leading-none">{current.flag}</span>
+        <FlagIcon />
         <span className="hidden sm:inline">{current.code.toUpperCase()}</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={cn("transition-transform", open && "rotate-180")}
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={cn("transition-transform", open && "rotate-180")}>
           <polyline points="6 9 12 15 18 9" />
         </svg>
       </button>
 
       {open && (
-        <div
-          className={cn(
-            "absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-2xl border shadow-lg",
-            isLight
-              ? "border-border bg-card"
-              : "border-white/10 bg-[var(--navy-deep)]",
-          )}
-        >
-          {languages.map((lang) => (
-            <button
-              key={lang.code}
-              type="button"
-              onClick={() => selectLanguage(lang)}
-              className={cn(
-                "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors",
-                isLight
-                  ? "hover:bg-secondary text-foreground"
-                  : "hover:bg-white/[0.08] text-white/80 hover:text-white",
-                current.code === lang.code && (isLight ? "bg-primary/5 text-primary font-medium" : "bg-white/[0.06] text-primary font-medium"),
-              )}
-            >
-              <span className="text-base leading-none">{lang.flag}</span>
-              <span>{lang.label}</span>
-              {current.code === lang.code && (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="ml-auto text-primary"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              )}
-            </button>
-          ))}
+        <div className={cn(
+          "absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-2xl border shadow-lg",
+          isLight ? "border-border bg-card" : "border-white/10 bg-[var(--navy-deep)]",
+        )}>
+          {languages.map((lang) => {
+            const Flag = flagComponents[lang.code] || FlagTR;
+            const isActive = current.code === lang.code;
+            return (
+              <button
+                key={lang.code}
+                type="button"
+                onClick={() => selectLanguage(lang)}
+                className={cn(
+                  "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors",
+                  isLight ? "hover:bg-secondary text-foreground" : "hover:bg-white/[0.08] text-white/80 hover:text-white",
+                  isActive && (isLight ? "bg-primary/5 text-primary font-medium" : "bg-white/[0.06] text-primary font-medium"),
+                )}
+              >
+                <Flag />
+                <span>{lang.label}</span>
+                {isActive && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto text-primary">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
