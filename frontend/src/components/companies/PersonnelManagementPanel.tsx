@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -63,40 +64,73 @@ function toRecs(text: string): PersonnelRecord[] {
   } return out;
 }
 
-/* ── Hover Card for personnel ── */
+/* ── Hover Card for personnel (portal-based, no overflow clipping) ── */
 function PersonnelHoverCard({ person }: { person: PersonnelRecord }) {
+  const triggerRef = useRef<HTMLSpanElement>(null);
+  const [show, setShow] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+
+  function handleEnter() {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    setPos({ top: rect.top - 8, left: rect.left + rect.width / 2 });
+    setShow(true);
+  }
+
+  const card = show
+    ? createPortal(
+        <div
+          className="fixed z-[9999] w-72 -translate-x-1/2 -translate-y-full rounded-xl border border-border bg-card p-4 shadow-[var(--shadow-elevated)] animate-in fade-in duration-150"
+          style={{ top: pos.top, left: pos.left }}
+          onMouseEnter={() => setShow(true)}
+          onMouseLeave={() => setShow(false)}
+        >
+          {/* Arrow */}
+          <div className="absolute left-1/2 top-full -translate-x-1/2 border-[6px] border-transparent border-t-border" />
+          {/* Header */}
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+              {person.firstName.charAt(0)}{person.lastName.charAt(0)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-semibold text-foreground">{person.firstName} {person.lastName}</p>
+              <p className="truncate text-xs text-muted-foreground">{person.positionTitle || "Pozisyon belirtilmemis"}</p>
+            </div>
+          </div>
+          {/* Details grid */}
+          <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Sicil</p><p className="font-medium text-foreground">{person.employeeCode || "\u2014"}</p></div>
+            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">B\u00f6l\u00fcm</p><p className="font-medium text-foreground">{person.department || "\u2014"}</p></div>
+            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Lokasyon</p><p className="font-medium text-foreground">{person.location || "\u2014"}</p></div>
+            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Durum</p><p className="font-medium text-foreground">{STATUS_LABELS[person.employmentStatus] || person.employmentStatus}</p></div>
+            {person.phone && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Telefon</p><p className="font-medium text-foreground">{person.phone}</p></div>}
+            {person.email && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">E-posta</p><p className="truncate font-medium text-foreground">{person.email}</p></div>}
+            {person.hireDate && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">\u0130\u015fe Ba\u015flama</p><p className="font-medium text-foreground">{person.hireDate}</p></div>}
+            {person.bloodType && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Kan Grubu</p><p className="font-medium text-foreground">{person.bloodType}</p></div>}
+          </div>
+          {person.emergencyContactName && (
+            <div className="mt-2 rounded-lg bg-danger/5 px-2.5 py-1.5 text-xs">
+              <p className="text-[10px] uppercase tracking-wider text-danger">Acil Durum</p>
+              <p className="font-medium text-foreground">{person.emergencyContactName} {person.emergencyContactPhone && `\u00b7 ${person.emergencyContactPhone}`}</p>
+            </div>
+          )}
+        </div>,
+        document.body,
+      )
+    : null;
+
   return (
-    <div className="pointer-events-none absolute left-1/2 bottom-full z-50 mb-2 w-72 -translate-x-1/2 rounded-xl border border-border bg-card p-4 opacity-0 shadow-[var(--shadow-elevated)] transition-opacity duration-150 group-hover:pointer-events-auto group-hover:opacity-100">
-      {/* Arrow */}
-      <div className="absolute left-1/2 top-full -translate-x-1/2 border-[6px] border-transparent border-t-[var(--border)]" />
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
-          {person.firstName.charAt(0)}{person.lastName.charAt(0)}
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate font-semibold text-foreground">{person.firstName} {person.lastName}</p>
-          <p className="truncate text-xs text-muted-foreground">{person.positionTitle || "Pozisyon belirtilmemis"}</p>
-        </div>
-      </div>
-      {/* Details grid */}
-      <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-        <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Sicil</p><p className="font-medium text-foreground">{person.employeeCode || "\u2014"}</p></div>
-        <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">B\u00F6l\u00FCm</p><p className="font-medium text-foreground">{person.department || "\u2014"}</p></div>
-        <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Lokasyon</p><p className="font-medium text-foreground">{person.location || "\u2014"}</p></div>
-        <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Durum</p><p className="font-medium text-foreground">{STATUS_LABELS[person.employmentStatus] || person.employmentStatus}</p></div>
-        {person.phone && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Telefon</p><p className="font-medium text-foreground">{person.phone}</p></div>}
-        {person.email && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">E-posta</p><p className="truncate font-medium text-foreground">{person.email}</p></div>}
-        {person.hireDate && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">\u0130\u015Fe Ba\u015Flama</p><p className="font-medium text-foreground">{person.hireDate}</p></div>}
-        {person.bloodType && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Kan Grubu</p><p className="font-medium text-foreground">{person.bloodType}</p></div>}
-      </div>
-      {person.emergencyContactName && (
-        <div className="mt-2 rounded-lg bg-danger/5 px-2.5 py-1.5 text-xs">
-          <p className="text-[10px] uppercase tracking-wider text-danger">Acil Durum</p>
-          <p className="font-medium text-foreground">{person.emergencyContactName} {person.emergencyContactPhone && `\u00B7 ${person.emergencyContactPhone}`}</p>
-        </div>
-      )}
-    </div>
+    <>
+      <span
+        ref={triggerRef}
+        onMouseEnter={handleEnter}
+        onMouseLeave={() => setShow(false)}
+        className="cursor-pointer"
+      >
+        {person.firstName} {person.lastName}
+      </span>
+      {card}
+    </>
   );
 }
 
@@ -113,10 +147,9 @@ function EmpTbl({ rows }: { rows: PersonnelRecord[] }) {
           <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Lokasyon</th>
         </tr></thead>
         <tbody>{rows.map((p) => (
-          <tr key={p.id} className="group relative border-b border-border last:border-b-0 transition-colors hover:bg-secondary/30">
+          <tr key={p.id} className="border-b border-border last:border-b-0 transition-colors hover:bg-secondary/30">
             <td className="px-3 py-2 font-medium text-foreground">{p.employeeCode || "\u2014"}</td>
-            <td className="relative px-3 py-2 font-medium text-foreground">
-              {p.firstName} {p.lastName}
+            <td className="px-3 py-2 font-medium text-foreground">
               <PersonnelHoverCard person={p} />
             </td>
             <td className="px-3 py-2 text-muted-foreground">{p.department || "\u2014"}</td>
@@ -320,10 +353,10 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                     ))}
                   </tr></thead>
                   <tbody>{ppl.map((p) => (
-                    <tr key={p.id} className={`group relative border-b border-border transition-colors hover:bg-secondary/30 ${selectedIds.has(p.id) ? "bg-primary/5" : ""}`}>
+                    <tr key={p.id} className={`border-b border-border transition-colors hover:bg-secondary/30 ${selectedIds.has(p.id) ? "bg-primary/5" : ""}`}>
                       <td className="w-10 px-3 py-2.5 text-center"><input type="checkbox" checked={selectedIds.has(p.id)} onChange={() => toggleSelect(p.id)} className="h-4 w-4 rounded border-border accent-primary" /></td>
                       <td className="px-3 py-2.5 font-medium text-foreground">{p.employeeCode || "\u2014"}</td>
-                      <td className="relative px-3 py-2.5"><p className="font-medium text-foreground">{p.firstName} {p.lastName}</p>{p.phone && <p className="text-xs text-muted-foreground">{p.phone}</p>}<PersonnelHoverCard person={p} /></td>
+                      <td className="px-3 py-2.5"><p className="font-medium text-foreground"><PersonnelHoverCard person={p} /></p>{p.phone && <p className="text-xs text-muted-foreground">{p.phone}</p>}</td>
                       <td className="px-3 py-2.5 text-muted-foreground">{p.tcIdentityNumber ? `***${p.tcIdentityNumber.slice(-4)}` : "\u2014"}</td>
                       <td className="px-3 py-2.5 text-muted-foreground">{p.department || "—"}</td>
                       <td className="px-3 py-2.5 text-muted-foreground">{p.positionTitle || "—"}</td>
