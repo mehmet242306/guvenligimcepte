@@ -85,8 +85,6 @@ export function SocialLoginButtons({ mode = "login" }: SocialLoginProps) {
   const providers = [
     { id: "google" as Provider, label: "Google", Icon: GoogleIcon, cls: "border-border bg-card hover:bg-secondary text-foreground" },
     { id: "apple" as Provider, label: "Apple", Icon: AppleIcon, cls: "border-border bg-card hover:bg-secondary text-foreground" },
-    { id: "linkedin_oidc" as Provider, label: "LinkedIn", Icon: LinkedInIcon, cls: "border-border bg-card hover:bg-secondary text-foreground" },
-    { id: "facebook" as Provider, label: "Facebook", Icon: FacebookIcon, cls: "border-border bg-card hover:bg-secondary text-foreground" },
   ];
 
   const actionText = mode === "register" ? "ile kayıt ol" : "ile giriş yap";
