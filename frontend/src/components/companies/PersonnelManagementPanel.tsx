@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   type PersonnelRecord,
   type SpecialPolicyRecord,
+  type PersonnelHealthExam,
   fetchPersonnelFromSupabase,
   fetchSpecialPoliciesFromSupabase,
   importPersonnelToSupabase,
@@ -15,6 +16,9 @@ import {
   updateWorkspaceEmployeeCount,
   addSpecialPolicyToSupabase,
   removeSpecialPolicyFromSupabase,
+  fetchAllHealthExamsForCompany,
+  createHealthExam,
+  deleteHealthExam,
 } from "@/lib/supabase/personnel-api";
 
 export type { PersonnelRecord } from "@/lib/supabase/personnel-api";
@@ -183,7 +187,9 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
   const [impBusy, setImpBusy] = useState(false);
   const [impMsg, setImpMsg] = useState("");
   const [impOk, setImpOk] = useState(true);
-  const [sec, setSec] = useState<"list" | "import" | "special">("list");
+  const [sec, setSec] = useState<"list" | "import" | "special" | "health">("list");
+  const [healthExams, setHealthExams] = useState<(PersonnelHealthExam & { personnelName: string })[]>([]);
+  const [showHealthForm, setShowHealthForm] = useState(false);
   const [expCat, setExpCat] = useState<string | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -215,6 +221,9 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
       } catch (e) {
         console.warn("[PersonnelPanel] Policy load error:", e);
       }
+      /* 3) Health exams */
+      const exams = await fetchAllHealthExamsForCompany(companyId);
+      if (!cancelled) setHealthExams(exams);
       setMounted(true);
     }
     void load();
@@ -307,10 +316,11 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
 
       {/* Section tabs */}
       <div className="flex flex-wrap gap-2">
-        {(["list", "import", "special"] as const).map((t) => (
+        {(["list", "import", "special", "health"] as const).map((t) => (
           <button key={t} type="button" onClick={() => setSec(t)}
             className={`inline-flex h-9 items-center rounded-lg px-4 text-sm font-medium transition-colors ${sec === t ? "bg-primary text-primary-foreground shadow-[var(--shadow-soft)]" : "border border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
-            {t === "list" ? "Personel Listesi" : t === "import" ? "İçe Aktarma" : "Özel İzleme"}
+            {t === "list" ? "Personel Listesi" : t === "import" ? "İçe Aktarma" : t === "special" ? "Özel İzleme" : "Sağlık Gözetimi"}
+            {t === "health" && healthExams.length > 0 && <span className="ml-1.5 rounded-full bg-white/20 px-1.5 py-0.5 text-[10px] font-bold">{healthExams.length}</span>}
           </button>
         ))}
       </div>
@@ -466,6 +476,84 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
       )}
 
       {/* Special Policy Assignment Modal */}
+      {/* HEALTH — Sağlık Gözetimi */}
+      {sec === "health" && (
+        <div className="space-y-4">
+          <div className="overflow-hidden rounded-xl border border-border bg-card p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div>
+                <h3 className="section-title text-base">Sağlık Gözetimi</h3>
+                <p className="mt-0.5 text-xs text-muted-foreground">Personel sağlık muayene kayıtları — işe giriş, periyodik, işten ayrılma ve özel muayeneler.</p>
+              </div>
+              <button type="button" onClick={() => setShowHealthForm(!showHealthForm)}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors">
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                Yeni Muayene
+              </button>
+            </div>
+
+            {showHealthForm && (
+              <HealthExamForm
+                personnel={ppl}
+                companyId={companyId}
+                onSaved={async () => {
+                  setShowHealthForm(false);
+                  setHealthExams(await fetchAllHealthExamsForCompany(companyId));
+                }}
+                onCancel={() => setShowHealthForm(false)}
+              />
+            )}
+
+            {healthExams.length === 0 && !showHealthForm ? (
+              <p className="text-center text-sm text-muted-foreground py-8">Henüz sağlık muayenesi kaydı yok.</p>
+            ) : (
+              <div className="space-y-2">
+                {healthExams.map((h) => {
+                  const today = new Date().toISOString().split("T")[0];
+                  const isOverdue = h.nextExamDate && h.nextExamDate < today;
+                  const isDue = h.nextExamDate && !isOverdue && h.nextExamDate <= new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0];
+                  const resCls = h.result === "uygun" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                    : h.result === "uygun_degil" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                    : h.result === "izleme" ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                    : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
+                  const resLabel = h.result === "uygun" ? "Uygun" : h.result === "uygun_degil" ? "Uygun Değil" : h.result === "izleme" ? "İzleme" : "Şartlı Uygun";
+                  const typeLabel = h.examType === "ise_giris" ? "İşe Giriş" : h.examType === "periyodik" ? "Periyodik" : h.examType === "isten_ayrilma" ? "İşten Ayrılma" : "Özel";
+                  function fmtD(d: string | null) { if (!d) return "—"; try { return new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "short", year: "numeric" }); } catch { return d; } }
+
+                  return (
+                    <div key={h.id} className={`flex items-center justify-between rounded-lg border p-3 ${isOverdue ? "border-red-400/40 bg-red-50/5 dark:bg-red-950/10" : isDue ? "border-amber-400/30 bg-amber-50/5 dark:bg-amber-950/10" : "border-border bg-secondary/20"}`}>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-medium text-foreground">{h.personnelName || "İsimsiz"}</span>
+                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${resCls}`}>{resLabel}</span>
+                          <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{typeLabel}</span>
+                          {isOverdue && <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">Gecikmiş!</span>}
+                        </div>
+                        <div className="mt-0.5 flex items-center gap-3 text-[11px] text-muted-foreground">
+                          <span>Muayene: {fmtD(h.examDate)}</span>
+                          {h.nextExamDate && <span className={isOverdue ? "text-red-500 font-medium" : ""}>Sonraki: {fmtD(h.nextExamDate)}</span>}
+                          {h.physicianName && <span>Dr. {h.physicianName}</span>}
+                          {h.reportNumber && <span>Rapor: {h.reportNumber}</span>}
+                        </div>
+                        {h.restrictions && <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-400">Kısıtlama: {h.restrictions}</p>}
+                        {h.recommendedActions && <p className="mt-0.5 text-[11px] text-blue-600 dark:text-blue-400">Öneri: {h.recommendedActions}</p>}
+                      </div>
+                      <button type="button" onClick={async () => {
+                        if (await deleteHealthExam(h.id)) {
+                          setHealthExams((prev) => prev.filter((x) => x.id !== h.id));
+                        }
+                      }} className="rounded-lg p-1 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {policyModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4">
           <div className="w-full max-w-md overflow-hidden rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-elevated)]">
@@ -490,6 +578,81 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ── Sağlık Muayene Formu ── */
+function HealthExamForm({ personnel, companyId, onSaved, onCancel }: {
+  personnel: PersonnelRecord[]; companyId: string;
+  onSaved: () => void; onCancel: () => void;
+}) {
+  const [personnelId, setPersonnelId] = useState(personnel[0]?.id ?? "");
+  const [examType, setExamType] = useState("periyodik");
+  const [examDate, setExamDate] = useState(new Date().toISOString().split("T")[0]);
+  const [nextExamDate, setNextExamDate] = useState("");
+  const [result, setResult] = useState("uygun");
+  const [physicianName, setPhysicianName] = useState("");
+  const [physicianInstitution, setPhysicianInstitution] = useState("");
+  const [reportNumber, setReportNumber] = useState("");
+  const [restrictions, setRestrictions] = useState("");
+  const [recommendedActions, setRecommendedActions] = useState("");
+  const [notes, setNotes] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  async function handleSubmit() {
+    if (!personnelId || !examDate) return;
+    setSaving(true);
+    await createHealthExam(personnelId, companyId, {
+      examType, examDate, nextExamDate, result, physicianName,
+      physicianInstitution, reportNumber, restrictions, recommendedActions, notes,
+    });
+    setSaving(false);
+    onSaved();
+  }
+
+  return (
+    <div className="mb-4 rounded-lg border-2 border-primary/30 bg-primary/5 p-4 space-y-3">
+      <h4 className="text-sm font-semibold text-foreground">Yeni Sağlık Muayenesi Ekle</h4>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="text-[10px] font-medium uppercase text-muted-foreground">Personel *</label>
+          <select value={personnelId} onChange={(e) => setPersonnelId(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground">
+            {personnel.map((p) => (
+              <option key={p.id} value={p.id}>{p.firstName} {p.lastName} — {p.department || "Bölüm yok"}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="text-[10px] font-medium uppercase text-muted-foreground">Muayene Türü</label>
+          <select value={examType} onChange={(e) => setExamType(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground">
+            <option value="ise_giris">İşe Giriş</option>
+            <option value="periyodik">Periyodik</option>
+            <option value="isten_ayrilma">İşten Ayrılma</option>
+            <option value="ozel">Özel</option>
+          </select>
+        </div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Muayene Tarihi *</label><input type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Sonraki Muayene</label><input type="date" value={nextExamDate} onChange={(e) => setNextExamDate(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
+        <div>
+          <label className="text-[10px] font-medium uppercase text-muted-foreground">Sonuç</label>
+          <select value={result} onChange={(e) => setResult(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground">
+            <option value="uygun">Uygun</option>
+            <option value="sartli_uygun">Şartlı Uygun</option>
+            <option value="uygun_degil">Uygun Değil</option>
+            <option value="izleme">İzleme</option>
+          </select>
+        </div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Hekim Adı</label><input value={physicianName} onChange={(e) => setPhysicianName(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Kurum</label><input value={physicianInstitution} onChange={(e) => setPhysicianInstitution(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Rapor No</label><input value={reportNumber} onChange={(e) => setReportNumber(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
+      </div>
+      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Kısıtlamalar</label><input value={restrictions} onChange={(e) => setRestrictions(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" placeholder="Yüksekte çalışamaz, ağır kaldıramaz..." /></div>
+      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Öneriler</label><input value={recommendedActions} onChange={(e) => setRecommendedActions(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" placeholder="6 ay sonra kontrol muayenesi..." /></div>
+      <div className="flex gap-2">
+        <button type="button" onClick={handleSubmit} disabled={saving || !personnelId || !examDate} className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50">{saving ? "Kaydediliyor..." : "Kaydet"}</button>
+        <button type="button" onClick={onCancel} className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary">Vazgeç</button>
+      </div>
     </div>
   );
 }

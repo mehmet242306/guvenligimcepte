@@ -891,12 +891,126 @@ export function RiskAnalysisClient() {
       const found = companies.find((c) => c.id === urlCompanyId);
       if (found) {
         setSelectedCompanyId(urlCompanyId);
-        // Doğrudan wizard moduna geç
-        setViewMode("wizard");
-        setStep(1);
+        // loadId varsa analizi yükle, yoksa yeni analiz wizard'ı aç
+        if (!searchParams.get("loadId")) {
+          setViewMode("wizard");
+          setStep(1);
+        }
       }
     }
   }, [searchParams, companies]);
+
+  // URL'den gelen loadId parametresi — mevcut analizi düzenleme modunda aç
+  const loadIdHandled = useRef(false);
+  useEffect(() => {
+    const loadId = searchParams.get("loadId");
+    if (!loadId || loadIdHandled.current) return;
+    loadIdHandled.current = true;
+
+    (async () => {
+      const full = await loadRiskAssessment(loadId);
+      if (!full) return;
+
+      // 1. Setup state'lerini doldur
+      setAnalysisTitle(full.title);
+      setAnalysisNote(full.analysisNote);
+      setMethod(full.method as AnalysisMethod);
+      setSelectedLocation(full.locationText);
+      setSelectedDepartment(full.departmentName);
+      setCurrentAssessmentId(full.id);
+
+      // Katılımcıları doldur
+      if (Array.isArray(full.participants) && full.participants.length > 0) {
+        setParticipants(
+          (full.participants as { fullName: string; roleCode: string; title: string; certificateNo: string }[]).map((p) => ({
+            id: crypto.randomUUID(),
+            fullName: p.fullName,
+            roleCode: p.roleCode,
+            title: p.title,
+            certificateNo: p.certificateNo,
+          }))
+        );
+      }
+
+      // 2. Görselleri signed URL'den Blob olarak indir → UploadedImage oluştur
+      const newLines: RiskLine[] = [];
+      const newResults: LineResult[] = [];
+
+      for (const row of full.rows) {
+        const lineId = row.id;
+        const uploadedImages: UploadedImage[] = [];
+        // DB image ID → yeni local image ID eşleştirmesi
+        const dbImageIdToLocalId = new Map<string, string>();
+
+        for (const img of row.images) {
+          const localImgId = crypto.randomUUID();
+          dbImageIdToLocalId.set(img.id, localImgId);
+
+          if (img.signedUrl) {
+            try {
+              const resp = await fetch(img.signedUrl);
+              const blob = await resp.blob();
+              const file = new File([blob], img.fileName, { type: blob.type || "image/jpeg" });
+              uploadedImages.push({
+                id: localImgId,
+                file,
+                previewUrl: URL.createObjectURL(blob),
+              });
+            } catch {
+              // Signed URL süresi dolmuşsa veya hata varsa placeholder
+              uploadedImages.push({
+                id: localImgId,
+                file: new File([], img.fileName, { type: "image/jpeg" }),
+                previewUrl: "",
+              });
+            }
+          }
+        }
+
+        newLines.push({
+          id: lineId,
+          title: row.title,
+          description: row.description ?? "",
+          images: uploadedImages,
+        });
+
+        // 3. Findings → VisualFinding dönüşümü
+        const findings: VisualFinding[] = row.findings.map((f) => ({
+          id: f.id,
+          imageId: dbImageIdToLocalId.get(f.imageId) ?? f.imageId,
+          title: f.title,
+          category: f.category,
+          confidence: f.confidence,
+          severity: f.severity as DetectionSeverity,
+          recommendation: f.recommendation ?? "",
+          correctiveActionRequired: f.correctiveActionRequired,
+          annotations: (f.annotations ?? []) as FindingAnnotation[],
+          isManual: f.isManual,
+          legalReferences: f.legalReferences,
+          r2dValues: (f.r2dValues ?? { c1: 0.5, c2: 0.5, c3: 0.5, c4: 0.5, c5: 0.5, c6: 0.5, c7: 0.5, c8: 0.5, c9: 0.5 }) as R2DValues,
+          r2dResult: (f.r2dResult ?? null) as R2DResult | null,
+          fkValues: (f.fkValues ?? { likelihood: 3, severity: 7, exposure: 6 }) as FKValues,
+          fkResult: (f.fkResult ?? null) as FKResult | null,
+          matrixValues: (f.matrixValues ?? { likelihood: 3, severity: 3 }) as MatrixValues,
+          matrixResult: (f.matrixResult ?? null) as MatrixResult | null,
+        }));
+
+        newResults.push({
+          rowId: lineId,
+          rowTitle: row.title,
+          imageCount: uploadedImages.length,
+          findings,
+        });
+      }
+
+      setLines(newLines);
+      setResults(newResults);
+
+      // 4. Wizard moduna geç — 3. adım (sonuçlar)
+      setViewMode("wizard");
+      setStep(3);
+    })();
+  }, [searchParams]);
 
   // Firma secildiginde ekip uyelerini yukle
   useEffect(() => {

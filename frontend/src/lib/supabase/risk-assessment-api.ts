@@ -438,3 +438,147 @@ export async function deleteRiskAssessment(assessmentId: string): Promise<boolea
   if (error) { console.warn("[risk-assessment-api] deleteRiskAssessment error:", error.message); return false; }
   return true;
 }
+
+/* ================================================================== */
+/* FINDINGS BY CATEGORY                                                */
+/* ================================================================== */
+
+export type FindingWithContext = SavedFinding & {
+  assessmentId: string;
+  assessmentTitle: string;
+  trackingStatus: "open" | "in_progress" | "resolved" | "archived";
+  trackingNotes: string;
+  statusUpdatedAt: string | null;
+};
+
+/**
+ * Bir firmaya ait tüm analizlerdeki tespitleri kategoriye göre getirir.
+ * Severity sırasına göre sıralı: critical > high > medium > low
+ */
+export async function listFindingsByCategory(
+  companyWorkspaceId: string,
+  categoryKey: string,
+): Promise<FindingWithContext[]> {
+  const supabase = createClient();
+  if (!supabase) return [];
+
+  // 1. Get assessment IDs for this company
+  const { data: assessments } = await supabase
+    .from("risk_assessments")
+    .select("id, title")
+    .eq("company_workspace_id", companyWorkspaceId);
+
+  if (!assessments || assessments.length === 0) return [];
+
+  const assessmentIds = assessments.map((a) => a.id);
+  const titleMap = new Map(assessments.map((a) => [a.id, a.title]));
+
+  // 2. Get all findings for these assessments
+  const { data: findings, error } = await supabase
+    .from("risk_assessment_findings")
+    .select("*")
+    .in("assessment_id", assessmentIds)
+    .order("sort_order");
+
+  if (error || !findings) {
+    console.warn("[risk-assessment-api] listFindingsByCategory error:", error?.message);
+    return [];
+  }
+
+  // 3. Filter by category using the same mapping logic
+  const severityOrder: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 };
+
+  return findings
+    .filter((f) => mapCategoryToKey(f.category) === categoryKey)
+    .sort((a, b) => (severityOrder[a.severity] ?? 4) - (severityOrder[b.severity] ?? 4))
+    .map((f) => ({
+      id: f.id,
+      rowId: f.row_id,
+      imageId: f.image_id,
+      title: f.title,
+      category: f.category,
+      severity: f.severity,
+      confidence: f.confidence,
+      isManual: f.is_manual,
+      correctiveActionRequired: f.corrective_action_required,
+      recommendation: f.recommendation,
+      actionText: f.action_text,
+      r2dValues: f.r2d_values ?? {},
+      r2dResult: f.r2d_result,
+      fkValues: f.fk_values ?? { likelihood: 1, severity: 1, exposure: 1 },
+      fkResult: f.fk_result,
+      matrixValues: f.matrix_values ?? { likelihood: 1, severity: 1 },
+      matrixResult: f.matrix_result,
+      annotations: f.annotations ?? [],
+      legalReferences: f.legal_references ?? [],
+      sortOrder: f.sort_order,
+      assessmentId: f.assessment_id,
+      assessmentTitle: titleMap.get(f.assessment_id) ?? "",
+      trackingStatus: f.tracking_status ?? "open",
+      trackingNotes: f.tracking_notes ?? "",
+      statusUpdatedAt: f.status_updated_at ?? null,
+    }));
+}
+
+/** AI kategori adını risk sınıfı key'ine dönüştür (WorkspaceTabs.tsx ile aynı mantık) */
+function mapCategoryToKey(category: string): string {
+  const lower = (category || "").toLowerCase().trim();
+  if (lower.includes("elektrik")) return "elektrik";
+  if (lower.includes("yangın") || lower.includes("patlama") || lower.includes("yangin")) return "yangin";
+  if (lower.includes("kimyasal") || lower.includes("kimya")) return "kimyasal";
+  if (lower.includes("makine") || lower.includes("mekanik")) return "mekanik";
+  if (lower.includes("ergonomi")) return "ergonomik";
+  if (lower.includes("trafik") || lower.includes("araç")) return "trafik";
+  if (lower.includes("çevre") || lower.includes("cevre")) return "cevre";
+  if (lower.includes("biyolojik")) return "biyolojik";
+  if (lower.includes("psikososyal") || lower.includes("stres")) return "psikososyal";
+  return "fiziksel";
+}
+
+/* ================================================================== */
+/* UPDATE FINDING STATUS                                               */
+/* ================================================================== */
+
+export async function updateFindingStatus(
+  findingId: string,
+  status: "open" | "in_progress" | "resolved" | "archived",
+  notes: string,
+): Promise<boolean> {
+  const supabase = createClient();
+  if (!supabase) return false;
+
+  const { error } = await supabase
+    .from("risk_assessment_findings")
+    .update({
+      tracking_status: status,
+      tracking_notes: notes,
+      status_updated_at: new Date().toISOString(),
+    })
+    .eq("id", findingId);
+
+  if (error) {
+    console.warn("[risk-assessment-api] updateFindingStatus error:", error.message);
+    return false;
+  }
+  return true;
+}
+
+/* ================================================================== */
+/* ARCHIVE / UPDATE STATUS                                             */
+/* ================================================================== */
+
+export async function archiveRiskAssessment(assessmentId: string): Promise<boolean> {
+  const supabase = createClient();
+  if (!supabase) return false;
+
+  const { error } = await supabase
+    .from("risk_assessments")
+    .update({ status: "archived" })
+    .eq("id", assessmentId);
+
+  if (error) {
+    console.warn("[risk-assessment-api] archiveRiskAssessment error:", error.message);
+    return false;
+  }
+  return true;
+}

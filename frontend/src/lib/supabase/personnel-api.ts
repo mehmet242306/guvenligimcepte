@@ -560,3 +560,151 @@ export async function saveAllPersonnelToSupabase(
     return false;
   }
 }
+
+/* ================================================================== */
+/* HEALTH EXAMS — Sağlık Muayenesi CRUD                                */
+/* ================================================================== */
+
+export type PersonnelHealthExam = {
+  id: string;
+  personnelId: string;
+  examType: "ise_giris" | "periyodik" | "isten_ayrilma" | "ozel";
+  examDate: string;
+  nextExamDate: string | null;
+  result: "uygun" | "uygun_degil" | "sartli_uygun" | "izleme";
+  physicianName: string;
+  physicianInstitution: string;
+  reportNumber: string;
+  restrictions: string;
+  recommendedActions: string;
+  notes: string;
+  createdAt: string;
+};
+
+export async function fetchHealthExamsForPersonnel(personnelId: string): Promise<PersonnelHealthExam[]> {
+  const supabase = createClient();
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from("personnel_health_exams")
+    .select("*")
+    .eq("personnel_id", personnelId)
+    .order("exam_date", { ascending: false });
+
+  if (error) { console.warn("[personnel-api] fetchHealthExams:", error.message); return []; }
+
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    personnelId: r.personnel_id,
+    examType: r.exam_type,
+    examDate: r.exam_date,
+    nextExamDate: r.next_exam_date,
+    result: r.result,
+    physicianName: r.physician_name ?? "",
+    physicianInstitution: r.physician_institution ?? "",
+    reportNumber: r.report_number ?? "",
+    restrictions: r.restrictions ?? "",
+    recommendedActions: r.recommended_actions ?? "",
+    notes: r.notes ?? "",
+    createdAt: r.created_at,
+  }));
+}
+
+export async function fetchAllHealthExamsForCompany(companyWorkspaceId: string): Promise<(PersonnelHealthExam & { personnelName: string })[]> {
+  const supabase = createClient();
+  if (!supabase) return [];
+
+  // Resolve company_identity_id from workspace ID
+  const { data: ws } = await supabase
+    .from("company_workspaces")
+    .select("company_identity_id")
+    .eq("id", companyWorkspaceId)
+    .single();
+  const identityId = ws?.company_identity_id ?? companyWorkspaceId;
+
+  const { data, error } = await supabase
+    .from("personnel_health_exams")
+    .select("*, personnel:personnel_id(first_name, last_name)")
+    .eq("company_identity_id", identityId)
+    .order("exam_date", { ascending: false });
+
+  if (error) { console.warn("[personnel-api] fetchAllHealthExams:", error.message); return []; }
+
+  return (data ?? []).map((r) => {
+    const p = r.personnel as { first_name?: string; last_name?: string } | null;
+    return {
+      id: r.id,
+      personnelId: r.personnel_id,
+      personnelName: p ? `${p.first_name ?? ""} ${p.last_name ?? ""}`.trim() : "",
+      examType: r.exam_type,
+      examDate: r.exam_date,
+      nextExamDate: r.next_exam_date,
+      result: r.result,
+      physicianName: r.physician_name ?? "",
+      physicianInstitution: r.physician_institution ?? "",
+      reportNumber: r.report_number ?? "",
+      restrictions: r.restrictions ?? "",
+      recommendedActions: r.recommended_actions ?? "",
+      notes: r.notes ?? "",
+      createdAt: r.created_at,
+    };
+  });
+}
+
+export async function createHealthExam(personnelId: string, companyWorkspaceId: string, data: {
+  examType: string; examDate: string; nextExamDate: string;
+  result: string; physicianName: string; physicianInstitution: string;
+  reportNumber: string; restrictions: string; recommendedActions: string; notes: string;
+}): Promise<string | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+
+  // Get organization_id from personnel record
+  const { data: person } = await supabase
+    .from("personnel")
+    .select("organization_id")
+    .eq("id", personnelId)
+    .single();
+
+  if (!person) { console.warn("[personnel-api] createHealthExam: personnel not found"); return null; }
+
+  // Resolve company_identity_id from workspace ID
+  const { data: ws } = await supabase
+    .from("company_workspaces")
+    .select("company_identity_id")
+    .eq("id", companyWorkspaceId)
+    .single();
+
+  const companyIdentityId = ws?.company_identity_id ?? companyWorkspaceId;
+  console.log("[personnel-api] createHealthExam: orgId=", person.organization_id, "identityId=", companyIdentityId);
+
+  const { data: row, error } = await supabase
+    .from("personnel_health_exams")
+    .insert({
+      personnel_id: personnelId,
+      organization_id: person.organization_id,
+      company_identity_id: companyIdentityId,
+      exam_type: data.examType,
+      exam_date: data.examDate || null,
+      next_exam_date: data.nextExamDate || null,
+      result: data.result,
+      physician_name: data.physicianName,
+      physician_institution: data.physicianInstitution,
+      report_number: data.reportNumber,
+      restrictions: data.restrictions,
+      recommended_actions: data.recommendedActions,
+      notes: data.notes,
+    })
+    .select("id")
+    .single();
+
+  if (error) { console.warn("[personnel-api] createHealthExam error:", error.message, error.details); return null; }
+  return row?.id ?? null;
+}
+
+export async function deleteHealthExam(examId: string): Promise<boolean> {
+  const supabase = createClient();
+  if (!supabase) return false;
+  const { error } = await supabase.from("personnel_health_exams").delete().eq("id", examId);
+  return !error;
+}
