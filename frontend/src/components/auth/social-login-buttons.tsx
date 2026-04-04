@@ -83,8 +83,7 @@ export function SocialLoginButtons({ mode = "login" }: SocialLoginProps) {
   }
 
   const providers = [
-    { id: "google" as Provider, label: "Google", Icon: GoogleIcon, cls: "border-border bg-card hover:bg-secondary text-foreground" },
-    { id: "apple" as Provider, label: "Apple", Icon: AppleIcon, cls: "border-border bg-card hover:bg-secondary text-foreground" },
+    { id: "google" as Provider, label: "Google ile devam et", Icon: GoogleIcon, cls: "border-border bg-card hover:bg-secondary text-foreground" },
   ];
 
   const actionText = mode === "register" ? "ile kayıt ol" : "ile giriş yap";
@@ -97,7 +96,7 @@ export function SocialLoginButtons({ mode = "login" }: SocialLoginProps) {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-2.5">
+      <div className="grid gap-2.5">
         {providers.map(({ id, label, Icon, cls }) => (
           <button
             key={id}
