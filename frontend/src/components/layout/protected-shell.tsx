@@ -19,6 +19,7 @@ const primaryNav = [
   { href: "/companies", key: "nav.companies" },
   { href: "/risk-analysis", key: "nav.riskAnalysis" },
   { href: "/incidents", key: "nav.incidents" },
+  { href: "/documents", key: "nav.documents" },
 ];
 
 /* Second bar: other modules */

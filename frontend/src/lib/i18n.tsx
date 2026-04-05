@@ -42,6 +42,7 @@ const messages: Record<Locale, NestedMessages> = {
       companies: "Firmalar",
       riskAnalysis: "Risk Analizi",
       incidents: "Olaylar",
+      documents: "Dokümanlar",
       scoreHistory: "Skor Geçmişi",
       planner: "Planlayıcı",
       timesheet: "Puantaj",
@@ -178,6 +179,7 @@ const messages: Record<Locale, NestedMessages> = {
       companies: "Companies",
       riskAnalysis: "Risk Analysis",
       incidents: "Incidents",
+      documents: "Documents",
       scoreHistory: "Score History",
       planner: "Planner",
       timesheet: "Timesheet",
@@ -314,6 +316,7 @@ const messages: Record<Locale, NestedMessages> = {
       companies: "\u0627\u0644\u0634\u0631\u0643\u0627\u062A",
       riskAnalysis: "\u062A\u062D\u0644\u064A\u0644 \u0627\u0644\u0645\u062E\u0627\u0637\u0631",
       incidents: "\u0627\u0644\u062D\u0648\u0627\u062F\u062B",
+      documents: "\u0627\u0644\u0645\u0633\u062A\u0646\u062F\u0627\u062A",
       scoreHistory: "\u0633\u062C\u0644 \u0627\u0644\u0646\u0642\u0627\u0637",
       planner: "\u0627\u0644\u0645\u062E\u0637\u0637",
       timesheet: "\u0627\u0644\u062D\u0636\u0648\u0631",
@@ -355,7 +358,7 @@ const messages: Record<Locale, NestedMessages> = {
 
   de: {
     common: { login: "Anmelden", register: "Jetzt starten", save: "Speichern", cancel: "Abbrechen", delete: "Loschen", search: "Suchen", loading: "Laden...", download: "Herunterladen", copy: "Kopieren" },
-    nav: { dashboard: "Dashboard", companies: "Unternehmen", riskAnalysis: "Risikoanalyse", incidents: "Vorfalle", solutionCenter: "Losungszentrum", reports: "Berichte", settings: "Einstellungen" },
+    nav: { dashboard: "Dashboard", companies: "Unternehmen", riskAnalysis: "Risikoanalyse", incidents: "Vorfalle", documents: "Dokumente", solutionCenter: "Losungszentrum", reports: "Berichte", settings: "Einstellungen" },
     landing: { badge: "KI-GESTUTZTE ARBEITSSCHUTZ-PLATTFORM", heroTitle1: "Risikomanagement", heroTitle2: "im Arbeitsschutz", heroTitle3: "zur Kunst machen" },
     auth: { loginTitle: "Anmelden", loginEmail: "E-Mail-Adresse", loginPassword: "Passwort", loginButton: "Anmelden" },
     solutionCenter: { title: "Losungszentrum" },
@@ -363,7 +366,7 @@ const messages: Record<Locale, NestedMessages> = {
 
   fr: {
     common: { login: "Se connecter", register: "Commencer", save: "Enregistrer", cancel: "Annuler", delete: "Supprimer", search: "Rechercher", loading: "Chargement...", download: "Telecharger", copy: "Copier" },
-    nav: { dashboard: "Tableau de bord", companies: "Entreprises", riskAnalysis: "Analyse des risques", incidents: "Incidents", solutionCenter: "Centre de solutions", reports: "Rapports", settings: "Parametres" },
+    nav: { dashboard: "Tableau de bord", companies: "Entreprises", riskAnalysis: "Analyse des risques", incidents: "Incidents", documents: "Documents", solutionCenter: "Centre de solutions", reports: "Rapports", settings: "Parametres" },
     landing: { badge: "PLATEFORME SST ALIMENTEE PAR L'IA", heroTitle1: "Transformez la gestion", heroTitle2: "des risques SST", heroTitle3: "en art" },
     auth: { loginTitle: "Se connecter", loginEmail: "Adresse e-mail", loginPassword: "Mot de passe", loginButton: "Se connecter" },
     solutionCenter: { title: "Centre de solutions" },
@@ -371,7 +374,7 @@ const messages: Record<Locale, NestedMessages> = {
 
   es: {
     common: { login: "Iniciar sesion", register: "Comenzar", save: "Guardar", cancel: "Cancelar", delete: "Eliminar", search: "Buscar", loading: "Cargando...", download: "Descargar", copy: "Copiar" },
-    nav: { dashboard: "Panel", companies: "Empresas", riskAnalysis: "Analisis de riesgos", incidents: "Incidentes", solutionCenter: "Centro de soluciones", reports: "Informes", settings: "Configuracion" },
+    nav: { dashboard: "Panel", companies: "Empresas", riskAnalysis: "Analisis de riesgos", incidents: "Incidentes", documents: "Documentos", solutionCenter: "Centro de soluciones", reports: "Informes", settings: "Configuracion" },
     landing: { badge: "PLATAFORMA SST IMPULSADA POR IA", heroTitle1: "Transforme la gestion", heroTitle2: "de riesgos SST", heroTitle3: "en arte" },
     auth: { loginTitle: "Iniciar sesion", loginEmail: "Correo electronico", loginPassword: "Contrasena", loginButton: "Iniciar sesion" },
     solutionCenter: { title: "Centro de soluciones" },
@@ -409,7 +412,7 @@ const messages: Record<Locale, NestedMessages> = {
   },
   az: {
     common: { login: "Daxil ol", register: "Ba\u015Fla", save: "Saxla", cancel: "L\u0259\u011Fv et", delete: "Sil", search: "Axtar", loading: "Y\u00FCkl\u0259nir...", download: "Y\u00FCkl\u0259", copy: "Kopyala" },
-    nav: { dashboard: "\u0130dar\u0259 panel", companies: "\u015Firk\u0259tl\u0259r", riskAnalysis: "Risk t\u0259hlili", incidents: "Hadis\u0259l\u0259r", solutionCenter: "H\u0259ll m\u0259rk\u0259zi", reports: "Hesabatlar", settings: "T\u0259nziml\u0259m\u0259l\u0259r" },
+    nav: { dashboard: "\u0130dar\u0259 panel", companies: "\u015Firk\u0259tl\u0259r", riskAnalysis: "Risk t\u0259hlili", incidents: "Hadis\u0259l\u0259r", documents: "S\u0259n\u0259dl\u0259r", solutionCenter: "H\u0259ll m\u0259rk\u0259zi", reports: "Hesabatlar", settings: "T\u0259nziml\u0259m\u0259l\u0259r" },
     landing: { badge: "AI il\u0259 i\u015F sa\u011Flaml\u0131\u011F\u0131 v\u0259 t\u0259hl\u00FCk\u0259sizlik platformas\u0131", heroTitle1: "\u0130\u015F sa\u011Flaml\u0131\u011F\u0131", heroTitle2: "risk idar\u0259etm\u0259sini", heroTitle3: "d\u0259yi\u015Fdirin" },
     auth: { loginTitle: "Daxil ol", loginEmail: "E-poçt", loginPassword: "\u015Fifr\u0259", loginButton: "Daxil ol" },
     solutionCenter: { title: "H\u0259ll m\u0259rk\u0259zi" },
