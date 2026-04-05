@@ -275,14 +275,14 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
           <div className="h-[2px] w-full bg-[linear-gradient(90deg,transparent_5%,var(--gold)_50%,transparent_95%)]" />
-          <div className="mx-auto flex h-16 w-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-            {/* Left: Brand — fixed width */}
+          <div className="mx-auto grid h-16 w-full max-w-7xl grid-cols-[auto_1fr_auto] items-center px-4 sm:px-6 lg:px-8">
+            {/* Left: Brand */}
             <div className="shrink-0">
               <Brand href="/dashboard" compact inverted />
             </div>
 
-            {/* Center: Primary navigation — centered with flex-1 */}
-            <nav className="hidden flex-1 items-center justify-center gap-1 md:flex">
+            {/* Center: Primary navigation — truly centered in the page */}
+            <nav className="hidden items-center justify-center gap-1 md:flex">
               {primaryNav.map((item) => {
                 const act = isActive(pathname, item.href);
                 return (
@@ -305,8 +305,8 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
               })}
             </nav>
 
-            {/* Right: Actions — fixed width */}
-            <div className="flex shrink-0 items-center gap-2">
+            {/* Right: Actions */}
+            <div className="flex items-center justify-end gap-2">
               <LanguageSelector variant="dark" />
               <NotificationBell />
               <ThemeToggle />
