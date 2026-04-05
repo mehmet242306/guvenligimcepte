@@ -275,14 +275,14 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
           <div className="h-[2px] w-full bg-[linear-gradient(90deg,transparent_5%,var(--gold)_50%,transparent_95%)]" />
-          <div className="mx-auto grid h-[72px] w-full max-w-7xl grid-cols-[auto_1fr_auto] items-center px-4 sm:px-6 lg:px-8">
-            {/* Left: Brand */}
-            <div className="shrink-0">
+          <div className="relative mx-auto h-[72px] w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            {/* Left: Brand — absolute so it doesn't affect nav centering */}
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 sm:left-6 lg:left-8">
               <Brand href="/dashboard" inverted />
             </div>
 
-            {/* Center: Primary navigation — truly centered in the page */}
-            <nav className="hidden items-center justify-center gap-1.5 md:flex">
+            {/* Center: Primary navigation — truly centered in max-w-7xl */}
+            <nav className="hidden h-full items-center justify-center gap-1.5 md:flex">
               {primaryNav.map((item) => {
                 const act = isActive(pathname, item.href);
                 return (
@@ -305,8 +305,8 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
               })}
             </nav>
 
-            {/* Right: Actions */}
-            <div className="flex items-center justify-end gap-2.5">
+            {/* Right: Actions — absolute so it doesn't affect nav centering */}
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2.5 sm:right-6 lg:right-8">
               <LanguageSelector variant="dark" />
               <NotificationBell />
               <ThemeToggle />
@@ -323,7 +323,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
         {/* ── Secondary navigation bar (centered, sticky with header) ── */}
         {/* Gold ayraç — 1 ile 2 arası (üst üste, boşluksuz) */}
         <div className="hidden h-[2px] md:block" style={{ background: "var(--gold)", marginBottom: "-1px", position: "relative", zIndex: 1 }} />
-        <div className="hidden md:block backdrop-blur-md" style={{ background: "color-mix(in srgb, var(--secondary-nav-bg-solid) 85%, transparent)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
+        <div className="hidden md:block backdrop-blur-lg" style={{ background: "color-mix(in srgb, var(--secondary-nav-bg-solid) 65%, transparent)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
           <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-center gap-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
             {secondaryNav.map((item) => {
               const act = isActive(pathname, item.href);
