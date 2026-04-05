@@ -9,7 +9,7 @@ import {
   AlertTriangle, Mail, ClipboardList, BookOpen, Eye as SearchIcon,
   UserCog, CalendarCheck, UserPlus, Award, MapPin, Wrench,
   Clock as ClockIcon, FolderOpen, Flame, Heart,
-  Building2, User, FileSignature,
+  Building2, User, PlusCircle,
 } from 'lucide-react';
 import { PageHeader } from '@/components/ui/page-header';
 import { DOCUMENT_GROUPS, getTotalDocumentCount, type DocumentGroup, type DocumentGroupItem } from '@/lib/document-groups';
@@ -21,14 +21,6 @@ const GROUP_ICONS: Record<string, React.ElementType> = {
   AlertTriangle, Mail, ClipboardList, BookOpen, Search: SearchIcon,
   UserCog, CalendarCheck, UserPlus, Award, MapPin, Wrench,
   Clock: ClockIcon, FolderOpen, Flame, Heart,
-};
-
-const STATUS_CONFIG = {
-  taslak: { label: 'Taslak', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400', icon: FileEdit },
-  hazir: { label: 'Hazır', color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle2 },
-  onay_bekliyor: { label: 'Onay Bekliyor', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', icon: Clock },
-  revizyon: { label: 'Revizyon', color: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400', icon: AlertCircle },
-  eksik: { label: 'Henüz Oluşturulmadı', color: 'bg-gray-100 text-gray-500 dark:bg-gray-800/50 dark:text-gray-500', icon: FileText },
 };
 
 interface CompanyOption {
@@ -47,12 +39,9 @@ export function DocumentsClient() {
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [orgId, setOrgId] = useState<string | null>(null);
-
-  // Firma seçimi
   const [companies, setCompanies] = useState<CompanyOption[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>('');
 
-  // Load org + companies + documents
   useEffect(() => {
     async function load() {
       const supabase = createClient();
@@ -70,7 +59,6 @@ export function DocumentsClient() {
       if (!profile?.organization_id) { setLoading(false); return; }
       setOrgId(profile.organization_id);
 
-      // Firmaları yükle
       const { data: workspaces } = await supabase
         .from('company_workspaces')
         .select('id, company_identity_id, display_name')
@@ -96,7 +84,6 @@ export function DocumentsClient() {
             };
           });
           setCompanies(companyList);
-          if (companyList.length > 0) setSelectedCompanyId(companyList[0].id);
         }
       }
 
@@ -108,6 +95,7 @@ export function DocumentsClient() {
   }, []);
 
   const selectedCompany = companies.find((c) => c.id === selectedCompanyId);
+  const isCompanySelected = !!selectedCompanyId;
 
   const stats = useMemo(() => {
     const total = getTotalDocumentCount();
@@ -150,8 +138,17 @@ export function DocumentsClient() {
       title: item.title,
       templateId: item.id,
       mode: 'new',
+      companyId: selectedCompanyId,
     });
-    if (selectedCompanyId) params.set('companyId', selectedCompanyId);
+    router.push(`/documents/new?${params.toString()}`);
+  };
+
+  const handleAddCustomDocument = (group: DocumentGroup) => {
+    const params = new URLSearchParams({
+      group: group.key,
+      mode: 'custom',
+      companyId: selectedCompanyId,
+    });
     router.push(`/documents/new?${params.toString()}`);
   };
 
@@ -164,9 +161,7 @@ export function DocumentsClient() {
       <div className="max-w-7xl mx-auto">
         <div className="animate-pulse space-y-4">
           <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-          <div className="grid grid-cols-4 gap-3">
-            {[1,2,3,4].map(i => <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded-xl" />)}
-          </div>
+          <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded-xl" />
         </div>
       </div>
     );
@@ -182,165 +177,177 @@ export function DocumentsClient() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => router.push('/documents/new?mode=personal')}
-              className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--card-border)] rounded-lg hover:bg-[var(--bg-secondary)] transition-colors text-sm font-medium text-[var(--text-primary)]"
+              className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--gold)]/30 rounded-lg hover:bg-[var(--gold)]/10 transition-colors text-sm font-medium text-[var(--text-primary)]"
             >
               <User size={16} />
               Kişisel Doküman
-            </button>
-            <button
-              onClick={() => router.push('/documents/new')}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--gold)] text-white rounded-lg hover:bg-[var(--gold-hover)] transition-colors text-sm font-medium"
-            >
-              <Plus size={16} />
-              Yeni Doküman
             </button>
           </div>
         }
       />
 
-      {/* Firma Seçici */}
-      <div className="mt-6 mb-5 p-4 border border-[var(--card-border)] rounded-xl bg-white dark:bg-[#1e293b] shadow-sm">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Building2 size={18} className="text-[var(--gold)]" />
-            <label className="text-sm font-semibold text-[var(--text-primary)]">Firma Seçin</label>
+      {/* Firma Seçici — gold border */}
+      <div className="mt-6 mb-5 p-4 border-2 border-[var(--gold)]/40 rounded-xl bg-white dark:bg-[#1a2234] shadow-sm">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2 shrink-0">
+            <Building2 size={20} className="text-[var(--gold)]" />
+            <label className="text-sm font-bold text-[var(--text-primary)]">Firma Seçin</label>
           </div>
           <select
             value={selectedCompanyId}
             onChange={(e) => setSelectedCompanyId(e.target.value)}
-            className="flex-1 max-w-md px-3 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--bg-primary)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/50"
+            className="flex-1 max-w-md px-3 py-2.5 text-sm rounded-lg border border-[var(--gold)]/30 bg-white dark:bg-[#0f172a] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/50"
           >
-            {companies.length === 0 && <option value="">Firma bulunamadı</option>}
+            <option value="">— Firma seçin —</option>
             {companies.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
           {selectedCompany && (
-            <div className="hidden sm:flex items-center gap-3 text-xs text-[var(--text-secondary)]">
-              <span className="px-2 py-0.5 rounded bg-[var(--bg-secondary)]">{selectedCompany.sector || 'Sektör belirtilmemiş'}</span>
-              <span className="px-2 py-0.5 rounded bg-[var(--bg-secondary)]">{selectedCompany.hazard_class || 'Sınıf belirtilmemiş'}</span>
-              <span className="px-2 py-0.5 rounded bg-[var(--bg-secondary)]">{selectedCompany.city || ''}</span>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="px-2 py-1 rounded-md bg-[var(--gold)]/10 text-[var(--gold)] font-medium">{selectedCompany.sector || 'Sektör ?'}</span>
+              <span className="px-2 py-1 rounded-md bg-[var(--gold)]/10 text-[var(--gold)] font-medium">{selectedCompany.hazard_class || 'Sınıf ?'}</span>
+              {selectedCompany.city && <span className="px-2 py-1 rounded-md bg-[var(--gold)]/10 text-[var(--gold)] font-medium">{selectedCompany.city}</span>}
             </div>
           )}
         </div>
+        {!isCompanySelected && companies.length > 0 && (
+          <p className="mt-2 text-xs text-[var(--gold)]">⚠ Doküman şablonlarını görmek için önce bir firma seçin.</p>
+        )}
         {companies.length === 0 && (
-          <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
-            Henüz firma eklenmemiş. Firmalar sayfasından firma ekleyerek doküman hazırlamaya başlayabilirsiniz.
-          </p>
+          <p className="mt-2 text-xs text-amber-500">Henüz firma eklenmemiş. Firmalar sayfasından firma ekleyin.</p>
         )}
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-        <StatCard label="Toplam Belge" value={stats.total} icon={FileText} color="text-blue-600" />
-        <StatCard label="Hazır" value={stats.hazir} icon={CheckCircle2} color="text-green-600" />
-        <StatCard label="Taslak" value={stats.taslak} icon={FileEdit} color="text-yellow-600" />
-        <StatCard label="Oluşturulmamış" value={stats.eksik} icon={AlertCircle} color="text-gray-400" />
-      </div>
-
-      {/* Search */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); if (e.target.value) expandAll(); }}
-            placeholder="Doküman veya grup ara..."
-            className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-[var(--card-border)] bg-[var(--bg-primary)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/50"
-          />
+      {/* Firma seçilmeden dokümanlar gizli */}
+      {!isCompanySelected ? (
+        <div className="text-center py-16">
+          <Building2 size={56} className="mx-auto text-[var(--gold)]/30 mb-4" />
+          <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">Firma Seçimi Gerekli</h3>
+          <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto">
+            Dokümanlar firma bazlı hazırlanır. Yukarıdan bir firma seçerek şablonlara erişebilirsiniz.
+          </p>
         </div>
-        <button
-          onClick={expandedGroups.size > 0 ? collapseAll : expandAll}
-          className="px-3 py-2 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--card-border)] rounded-lg transition-colors"
-        >
-          {expandedGroups.size > 0 ? 'Tümünü Kapat' : 'Tümünü Aç'}
-        </button>
-      </div>
+      ) : (
+        <>
+          {/* Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+            <StatCard label="Toplam Belge" value={stats.total} icon={FileText} color="text-blue-500" />
+            <StatCard label="Hazır" value={stats.hazir} icon={CheckCircle2} color="text-green-500" />
+            <StatCard label="Taslak" value={stats.taslak} icon={FileEdit} color="text-yellow-500" />
+            <StatCard label="Oluşturulmamış" value={stats.eksik} icon={AlertCircle} color="text-gray-400" />
+          </div>
 
-      {/* Document Groups */}
-      <div className="space-y-2">
-        {filteredGroups.map((group) => {
-          const Icon = GROUP_ICONS[group.icon] || FileText;
-          const isExpanded = expandedGroups.has(group.key);
-          const groupDocs = documents.filter((d) => d.group_key === group.key);
-          const completedCount = groupDocs.filter((d) => d.status === 'hazir').length;
-          const hasP1 = group.items.some((i) => i.isP1);
+          {/* Search */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="relative flex-1">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); if (e.target.value) expandAll(); }}
+                placeholder="Doküman veya grup ara..."
+                className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#0f172a] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/50"
+              />
+            </div>
+            <button
+              onClick={expandedGroups.size > 0 ? collapseAll : expandAll}
+              className="px-3 py-2 text-xs text-[var(--text-secondary)] hover:text-[var(--gold)] border border-[var(--gold)]/20 rounded-lg transition-colors"
+            >
+              {expandedGroups.size > 0 ? 'Tümünü Kapat' : 'Tümünü Aç'}
+            </button>
+          </div>
 
-          return (
-            <div key={group.key} className="border border-[var(--card-border)] rounded-xl overflow-hidden bg-white dark:bg-[#1e293b] shadow-sm">
-              <button
-                type="button"
-                onClick={() => toggleGroup(group.key)}
-                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--bg-secondary)]/50 transition-colors text-left"
-              >
-                <span className={`shrink-0 ${group.color}`}><Icon size={20} /></span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-[var(--text-primary)] truncate">{group.title}</span>
-                    {hasP1 && (
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium bg-[var(--gold)]/10 text-[var(--gold)] rounded">
-                        <Sparkles size={10} /> Şablon Hazır
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-xs text-[var(--text-secondary)]">{completedCount}/{group.items.length} belge hazır</span>
-                </div>
-                <div className="hidden sm:flex items-center gap-2 w-24">
-                  <div className="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-green-500 rounded-full transition-all" style={{ width: `${group.items.length > 0 ? (completedCount / group.items.length) * 100 : 0}%` }} />
-                  </div>
-                </div>
-                {isExpanded ? <ChevronDown size={16} className="text-[var(--text-secondary)] shrink-0" /> : <ChevronRight size={16} className="text-[var(--text-secondary)] shrink-0" />}
-              </button>
+          {/* Document Groups */}
+          <div className="space-y-2">
+            {filteredGroups.map((group) => {
+              const Icon = GROUP_ICONS[group.icon] || FileText;
+              const isExpanded = expandedGroups.has(group.key);
+              const groupDocs = documents.filter((d) => d.group_key === group.key);
+              const completedCount = groupDocs.filter((d) => d.status === 'hazir').length;
+              const hasP1 = group.items.some((i) => i.isP1);
 
-              {isExpanded && (
-                <div className="border-t border-[var(--card-border)]">
-                  {group.items.map((item) => {
-                    const doc = findDocForItem(group, item);
-                    const statusKey = doc ? doc.status : 'eksik';
-                    const cfg = STATUS_CONFIG[statusKey as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.eksik;
-                    const StatusIcon = cfg.icon;
-
-                    return (
-                      <div key={item.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--bg-secondary)]/30 transition-colors border-b border-[var(--card-border)] last:border-b-0">
-                        <StatusIcon size={14} className={cfg.color.includes('green') ? 'text-green-500' : cfg.color.includes('yellow') ? 'text-yellow-500' : cfg.color.includes('blue') ? 'text-blue-500' : cfg.color.includes('orange') ? 'text-orange-500' : 'text-gray-400'} />
-                        <div className="flex-1 min-w-0">
-                          <span className="text-sm text-[var(--text-primary)] truncate block">{item.title}</span>
-                          {doc && <span className="text-[10px] text-[var(--text-secondary)]">v{doc.version} · {new Date(doc.updated_at).toLocaleDateString('tr-TR')}</span>}
-                        </div>
-                        <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${cfg.color}`}>{cfg.label}</span>
-                        {item.isP1 && <span className="text-[10px] text-[var(--gold)] font-medium">P1</span>}
-                        {doc ? (
-                          <button onClick={() => handleOpenDocument(doc)} className="px-3 py-1 text-xs font-medium text-[var(--gold)] hover:bg-[var(--gold)]/10 rounded-lg transition-colors">Düzenle</button>
-                        ) : (
-                          <button
-                            onClick={() => handleCreateDocument(group, item)}
-                            disabled={!selectedCompanyId && companies.length > 0}
-                            className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors disabled:opacity-40 ${
-                              item.isP1
-                                ? 'bg-[var(--gold)] text-white hover:bg-[var(--gold-hover)]'
-                                : 'text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] border border-[var(--card-border)]'
-                            }`}
-                          >
-                            {item.isP1 ? 'Şablondan Oluştur' : 'Oluştur'}
-                          </button>
+              return (
+                <div key={group.key} className="border border-[var(--gold)]/20 rounded-xl overflow-hidden bg-white dark:bg-[#1a2234] shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.key)}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--gold)]/5 transition-colors text-left"
+                  >
+                    <span className={`shrink-0 ${group.color}`}><Icon size={20} /></span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-[var(--text-primary)] truncate">{group.title}</span>
+                        {hasP1 && (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium bg-[var(--gold)]/15 text-[var(--gold)] rounded">
+                            <Sparkles size={10} /> Şablon Hazır
+                          </span>
                         )}
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+                      <span className="text-xs text-[var(--text-secondary)]">{completedCount}/{group.items.length} belge hazır</span>
+                    </div>
+                    <div className="hidden sm:flex items-center gap-2 w-24">
+                      <div className="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div className="h-full bg-[var(--gold)] rounded-full transition-all" style={{ width: `${group.items.length > 0 ? (completedCount / group.items.length) * 100 : 0}%` }} />
+                      </div>
+                    </div>
+                    {isExpanded ? <ChevronDown size={16} className="text-[var(--text-secondary)] shrink-0" /> : <ChevronRight size={16} className="text-[var(--text-secondary)] shrink-0" />}
+                  </button>
 
-      {filteredGroups.length === 0 && (
-        <div className="text-center py-12">
-          <FileText size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-          <p className="text-sm text-[var(--text-secondary)]">Aramanızla eşleşen doküman bulunamadı.</p>
-        </div>
+                  {isExpanded && (
+                    <div className="border-t border-[var(--gold)]/10">
+                      {group.items.map((item) => {
+                        const doc = findDocForItem(group, item);
+
+                        return (
+                          <div key={item.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--gold)]/5 transition-colors border-b border-[var(--gold)]/10 last:border-b-0">
+                            <FileText size={14} className="text-[var(--text-secondary)] shrink-0" />
+                            <span className="flex-1 text-sm text-[var(--text-primary)] truncate">{item.title}</span>
+                            {doc ? (
+                              <>
+                                <span className="text-[10px] text-[var(--text-secondary)]">v{doc.version}</span>
+                                <button onClick={() => handleOpenDocument(doc)} className="px-3 py-1 text-xs font-medium text-[var(--gold)] hover:bg-[var(--gold)]/10 rounded-lg transition-colors">Düzenle</button>
+                              </>
+                            ) : (
+                              <button
+                                onClick={() => handleCreateDocument(group, item)}
+                                className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors ${
+                                  item.isP1
+                                    ? 'bg-[var(--gold)] text-white hover:bg-[var(--gold-hover)]'
+                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
+                                }`}
+                              >
+                                {item.isP1 ? 'Şablondan Oluştur' : 'Oluştur'}
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      {/* Özel evrak ekleme */}
+                      <div className="px-4 py-2 border-t border-[var(--gold)]/10">
+                        <button
+                          onClick={() => handleAddCustomDocument(group)}
+                          className="flex items-center gap-2 text-xs text-[var(--gold)] hover:text-[var(--gold-hover)] transition-colors"
+                        >
+                          <PlusCircle size={14} />
+                          Bu gruba özel evrak ekle
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {filteredGroups.length === 0 && (
+            <div className="text-center py-12">
+              <FileText size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-3" />
+              <p className="text-sm text-[var(--text-secondary)]">Aramanızla eşleşen doküman bulunamadı.</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -348,7 +355,7 @@ export function DocumentsClient() {
 
 function StatCard({ label, value, icon: Icon, color }: { label: string; value: number; icon: React.ElementType; color: string }) {
   return (
-    <div className="border border-[var(--card-border)] rounded-xl p-3 bg-white dark:bg-[#1e293b] shadow-sm">
+    <div className="border border-[var(--gold)]/20 rounded-xl p-3 bg-white dark:bg-[#1a2234] shadow-sm">
       <div className="flex items-center gap-2 mb-1">
         <Icon size={14} className={color} />
         <span className="text-xs text-[var(--text-secondary)]">{label}</span>

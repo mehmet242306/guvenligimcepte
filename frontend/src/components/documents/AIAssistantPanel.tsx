@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { Sparkles, Send, RotateCcw, Copy, Check, FileText, Wand2 } from 'lucide-react';
+import { useState } from 'react';
+import { Sparkles, Send, RotateCcw, Copy, Check, Wand2, FileText, AlertTriangle, BookOpen } from 'lucide-react';
 import type { Editor } from '@tiptap/react';
 
 interface AIAssistantPanelProps {
@@ -11,213 +11,178 @@ interface AIAssistantPanelProps {
   companyName: string;
 }
 
-type AIMessage = {
-  role: 'user' | 'assistant';
-  content: string;
-};
+const QUICK_PROMPTS = [
+  { icon: Wand2, label: 'Tam Doküman Oluştur', prompt: 'Bu dokümanı profesyonelce oluştur. Tüm bölümleri, tabloları, yasal referansları ekle.', primary: true },
+  { icon: FileText, label: 'Giriş Bölümü Yaz', prompt: 'Bu doküman için profesyonel bir giriş/amaç bölümü yaz.' },
+  { icon: AlertTriangle, label: 'Yasal Dayanak Ekle', prompt: '6331 sayılı kanun ve ilgili yönetmeliklere göre yasal dayanak bölümü hazırla.' },
+  { icon: BookOpen, label: 'Mevzuat Referansları', prompt: 'Bu doküman türü için geçerli tüm mevzuat referanslarını listele.' },
+];
 
 export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName }: AIAssistantPanelProps) {
-  const [messages, setMessages] = useState<AIMessage[]>([]);
-  const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [customPrompt, setCustomPrompt] = useState('');
 
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-  }, [messages]);
-
-  const sendMessage = async () => {
-    if (!input.trim() || loading) return;
-    const userMsg = input.trim();
-    setInput('');
-    setMessages((prev) => [...prev, { role: 'user', content: userMsg }]);
-    setLoading(true);
-
-    try {
-      const res = await fetch('/api/analyze-risk', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: `Sen bir İSG (İş Sağlığı ve Güvenliği) uzman asistanısın. ${companyName} firması için "${documentTitle}" dokümanı hazırlanıyor (grup: ${groupKey}). Kullanıcının isteğine Türkçe yanıt ver. 6331 sayılı kanun ve ilgili mevzuata referans ver.\n\nKullanıcı: ${userMsg}`,
-        }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        const aiText = data.analysis || data.response || data.result || 'Yanıt alınamadı.';
-        setMessages((prev) => [...prev, { role: 'assistant', content: aiText }]);
-      } else {
-        setMessages((prev) => [...prev, { role: 'assistant', content: 'Bir hata oluştu. Lütfen tekrar deneyin.' }]);
-      }
-    } catch {
-      setMessages((prev) => [...prev, { role: 'assistant', content: 'Bağlantı hatası. Lütfen tekrar deneyin.' }]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const insertToEditor = (text: string) => {
-    if (!editor) return;
-    editor.chain().focus().insertContent(text).run();
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
-
-  const generateFullDocument = async () => {
+  const generateContent = async (prompt: string) => {
     if (loading) return;
     setLoading(true);
-    setMessages((prev) => [...prev, { role: 'user', content: `"${documentTitle}" dokümanını ${companyName} firması için tam olarak oluştur.` }]);
+    setResult(null);
+
+    const fullPrompt = `Sen bir İSG (İş Sağlığı ve Güvenliği) uzman asistanısın. ${companyName ? `${companyName} firması için` : ''} "${documentTitle}" dokümanı hazırlanıyor${groupKey ? ` (kategori: ${groupKey})` : ''}.\n\n${prompt}\n\n6331 sayılı İSG Kanunu ve ilgili yönetmeliklere referans ver. Türkçe, profesyonel ve doğrudan kullanılabilir içerik üret.`;
 
     try {
       const res = await fetch('/api/analyze-risk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: `Sen bir İSG uzman asistanısın. ${companyName} firması için "${documentTitle}" dokümanını profesyonelce hazırla. Tüm bölümleri, tabloları ve yasal referansları ekle. 6331 sayılı kanun ve ilgili yönetmeliklere atıf yap. Doküman doğrudan kullanılabilir olmalı. Türkçe yaz.`,
-        }),
+        body: JSON.stringify({ prompt: fullPrompt }),
       });
 
       if (res.ok) {
         const data = await res.json();
-        const aiText = data.analysis || data.response || data.result || '';
-        setMessages((prev) => [...prev, { role: 'assistant', content: aiText }]);
+        setResult(data.analysis || data.response || data.result || 'Yanıt alınamadı.');
       } else {
-        setMessages((prev) => [...prev, { role: 'assistant', content: 'Doküman oluşturulamadı.' }]);
+        setResult('Hata: AI servisi şu anda yanıt veremiyor. Lütfen tekrar deneyin.');
       }
     } catch {
-      setMessages((prev) => [...prev, { role: 'assistant', content: 'Bağlantı hatası.' }]);
+      setResult('Bağlantı hatası. Internet bağlantınızı kontrol edip tekrar deneyin.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const insertToEditor = () => {
+    if (!editor || !result) return;
+    editor.chain().focus().insertContent(result).run();
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCustomPrompt = () => {
+    if (!customPrompt.trim()) return;
+    generateContent(customPrompt.trim());
+    setCustomPrompt('');
   };
 
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-[var(--card-border)]">
+      <div className="px-4 py-3 border-b border-[var(--gold)]/20">
         <div className="flex items-center gap-2">
           <Sparkles size={16} className="text-[var(--gold)]" />
-          <h3 className="text-sm font-semibold text-[var(--text-primary)]">AI Asistan</h3>
+          <h3 className="text-sm font-bold text-[var(--text-primary)]">AI Asistan</h3>
         </div>
-        <p className="text-[10px] text-[var(--text-secondary)] mt-1">
-          İSG mevzuatına uygun içerik önerisi alın veya dokümanı tamamen oluşturun.
+        <p className="text-[11px] text-[var(--text-secondary)] mt-1">
+          {companyName ? `${companyName} için` : ''} içerik üretimi ve düzenleme
         </p>
       </div>
 
       {/* Quick Actions */}
-      <div className="px-4 py-3 space-y-2 border-b border-[var(--card-border)]">
-        <button
-          onClick={generateFullDocument}
-          disabled={loading}
-          className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-medium bg-[var(--gold)]/10 text-[var(--gold)] rounded-lg hover:bg-[var(--gold)]/20 transition-colors disabled:opacity-50"
-        >
-          <Wand2 size={14} />
-          Tam Doküman Oluştur (AI)
-        </button>
+      <div className="px-4 py-3 space-y-2 border-b border-[var(--gold)]/20">
+        {QUICK_PROMPTS.map((qp, i) => {
+          const Icon = qp.icon;
+          return (
+            <button
+              key={i}
+              onClick={() => generateContent(qp.prompt)}
+              disabled={loading}
+              className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg transition-colors disabled:opacity-50 ${
+                qp.primary
+                  ? 'bg-[var(--gold)] text-white hover:bg-[var(--gold-hover)]'
+                  : 'border border-[var(--gold)]/20 text-[var(--text-primary)] hover:bg-[var(--gold)]/10 hover:border-[var(--gold)]/40'
+              }`}
+            >
+              <Icon size={14} />
+              {qp.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Custom Prompt */}
+      <div className="px-4 py-3 border-b border-[var(--gold)]/20">
+        <label className="text-[11px] font-medium text-[var(--text-secondary)] mb-1.5 block">Özel İstek</label>
+        <div className="flex gap-2">
+          <input
+            value={customPrompt}
+            onChange={(e) => setCustomPrompt(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleCustomPrompt(); }}
+            placeholder="Ne üretmemi istersiniz?"
+            className="flex-1 text-xs px-2.5 py-2 rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#0f172a] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)] placeholder:text-[var(--text-secondary)]"
+          />
+          <button
+            onClick={handleCustomPrompt}
+            disabled={!customPrompt.trim() || loading}
+            className="p-2 bg-[var(--gold)] text-white rounded-lg hover:bg-[var(--gold-hover)] transition-colors disabled:opacity-40 shrink-0"
+          >
+            <Send size={13} />
+          </button>
+        </div>
+      </div>
+
+      {/* Result Area */}
+      <div className="flex-1 overflow-y-auto px-4 py-3">
+        {loading && (
+          <div className="flex items-center gap-2 py-8 justify-center">
+            <RotateCcw size={16} className="animate-spin text-[var(--gold)]" />
+            <span className="text-sm text-[var(--text-secondary)]">İçerik oluşturuluyor...</span>
+          </div>
+        )}
+
+        {!loading && !result && (
+          <div className="text-center py-8">
+            <Sparkles size={28} className="mx-auto text-[var(--gold)]/30 mb-3" />
+            <p className="text-xs text-[var(--text-secondary)]">
+              Yukarıdaki butonlardan birini tıklayarak<br />AI ile içerik oluşturmaya başlayın.
+            </p>
+          </div>
+        )}
+
+        {!loading && result && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-medium text-[var(--gold)]">AI Sonucu</span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => { navigator.clipboard.writeText(result); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
+                  className="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                >
+                  {copied ? <Check size={10} /> : <Copy size={10} />}
+                  Kopyala
+                </button>
+              </div>
+            </div>
+            <div className="text-xs leading-relaxed text-[var(--text-primary)] whitespace-pre-wrap bg-[var(--gold)]/5 border border-[var(--gold)]/15 rounded-lg p-3 max-h-[300px] overflow-y-auto">
+              {result}
+            </div>
+            <button
+              onClick={insertToEditor}
+              className="w-full mt-3 flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-medium bg-[var(--gold)] text-white rounded-lg hover:bg-[var(--gold-hover)] transition-colors"
+            >
+              <FileText size={14} />
+              Editöre Ekle
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Seçili Bölümü İyileştir */}
+      <div className="px-4 py-3 border-t border-[var(--gold)]/20">
         <button
           onClick={() => {
             if (!editor) return;
-            const selected = editor.state.doc.textBetween(
-              editor.state.selection.from,
-              editor.state.selection.to,
-              ' '
-            );
-            if (selected) {
-              setInput(`Bu bölümü iyileştir ve mevzuata uygun hale getir:\n\n"${selected}"`);
+            const sel = editor.state.doc.textBetween(editor.state.selection.from, editor.state.selection.to, ' ');
+            if (sel && sel.length > 3) {
+              generateContent(`Aşağıdaki metni İSG mevzuatına uygun şekilde iyileştir ve profesyonelleştir:\n\n"${sel}"`);
             }
           }}
-          className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium border border-[var(--card-border)] rounded-lg hover:bg-[var(--bg-secondary)] transition-colors text-[var(--text-secondary)]"
+          disabled={loading}
+          className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium border border-[var(--gold)]/20 rounded-lg text-[var(--text-secondary)] hover:text-[var(--gold)] hover:border-[var(--gold)]/40 transition-colors disabled:opacity-50"
         >
-          <FileText size={14} />
-          Seçili Bölümü İyileştir
+          <Wand2 size={13} />
+          Seçili Metni İyileştir
         </button>
-      </div>
-
-      {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-        {messages.length === 0 && (
-          <div className="text-center py-8">
-            <Sparkles size={24} className="mx-auto text-[var(--gold)]/40 mb-2" />
-            <p className="text-xs text-[var(--text-secondary)]">
-              Sorularınızı sorun veya &quot;Tam Doküman Oluştur&quot; ile başlayın.
-            </p>
-            <div className="mt-3 space-y-1.5">
-              {[
-                'Risk değerlendirme raporuna giriş yazısı oluştur',
-                'Acil durum planı için yasal dayanak ekle',
-                'Eğitim formuna katılımcı tablosu ekle',
-              ].map((hint) => (
-                <button
-                  key={hint}
-                  onClick={() => setInput(hint)}
-                  className="block w-full text-left px-3 py-1.5 text-[11px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] rounded-md transition-colors"
-                >
-                  → {hint}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {messages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div
-              className={`max-w-[95%] rounded-xl px-3 py-2 text-xs leading-relaxed ${
-                msg.role === 'user'
-                  ? 'bg-[var(--gold)] text-white'
-                  : 'bg-[var(--bg-secondary)] text-[var(--text-primary)]'
-              }`}
-            >
-              <div className="whitespace-pre-wrap">{msg.content}</div>
-              {msg.role === 'assistant' && (
-                <div className="flex items-center gap-1.5 mt-2 pt-1.5 border-t border-black/10 dark:border-white/10">
-                  <button
-                    onClick={() => insertToEditor(msg.content)}
-                    className="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                  >
-                    {copied ? <Check size={10} /> : <Copy size={10} />}
-                    {copied ? 'Eklendi' : 'Editöre Ekle'}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-
-        {loading && (
-          <div className="flex justify-start">
-            <div className="bg-[var(--bg-secondary)] rounded-xl px-3 py-2">
-              <div className="flex items-center gap-1.5">
-                <RotateCcw size={12} className="animate-spin text-[var(--gold)]" />
-                <span className="text-xs text-[var(--text-secondary)]">Düşünüyor...</span>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Input */}
-      <div className="px-3 py-3 border-t border-[var(--card-border)]">
-        <div className="flex items-end gap-2">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-            }}
-            placeholder="İSG sorusu sorun veya içerik isteyin..."
-            rows={2}
-            className="flex-1 resize-none text-xs px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--bg-primary)] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)] placeholder:text-[var(--text-secondary)]"
-          />
-          <button
-            onClick={sendMessage}
-            disabled={!input.trim() || loading}
-            className="p-2 bg-[var(--gold)] text-white rounded-lg hover:bg-[var(--gold-hover)] transition-colors disabled:opacity-40"
-          >
-            <Send size={14} />
-          </button>
-        </div>
+        <p className="text-[10px] text-[var(--text-secondary)] mt-1">Editörde metin seçip bu butonu tıklayın.</p>
       </div>
     </div>
   );
