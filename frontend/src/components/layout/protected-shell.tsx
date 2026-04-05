@@ -275,14 +275,14 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
           <div className="h-[2px] w-full bg-[linear-gradient(90deg,transparent_5%,var(--gold)_50%,transparent_95%)]" />
-          <div className="mx-auto grid h-16 w-full max-w-7xl grid-cols-[auto_1fr_auto] items-center px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto grid h-[72px] w-full max-w-7xl grid-cols-[auto_1fr_auto] items-center px-4 sm:px-6 lg:px-8">
             {/* Left: Brand */}
             <div className="shrink-0">
-              <Brand href="/dashboard" compact inverted />
+              <Brand href="/dashboard" inverted />
             </div>
 
             {/* Center: Primary navigation — truly centered in the page */}
-            <nav className="hidden items-center justify-center gap-1 md:flex">
+            <nav className="hidden items-center justify-center gap-1.5 md:flex">
               {primaryNav.map((item) => {
                 const act = isActive(pathname, item.href);
                 return (
@@ -290,7 +290,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "relative inline-flex h-11 items-center rounded-xl px-4 text-[15px] font-semibold tracking-[-0.01em] transition-all duration-200",
+                      "relative inline-flex h-11 items-center rounded-xl px-5 text-base font-semibold tracking-[-0.01em] transition-all duration-200",
                       act
                         ? "bg-white/12 text-white shadow-[0_0_12px_rgba(251,191,36,0.15)]"
                         : "text-[var(--header-muted)] hover:bg-[var(--header-hover-bg)] hover:text-white",
@@ -306,13 +306,13 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
             </nav>
 
             {/* Right: Actions */}
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-2.5">
               <LanguageSelector variant="dark" />
               <NotificationBell />
               <ThemeToggle />
               <Link
                 href="/profile"
-                className="inline-flex h-10 items-center rounded-xl px-3.5 text-[15px] font-medium text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/12 hover:text-white"
+                className="inline-flex h-10 items-center rounded-xl px-3.5 text-base font-medium text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/12 hover:text-white"
               >
                 {t("common.profile")}
               </Link>
