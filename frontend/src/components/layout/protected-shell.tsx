@@ -275,12 +275,12 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
           <div className="h-[2px] w-full bg-[linear-gradient(90deg,transparent_5%,var(--gold)_50%,transparent_95%)]" />
-          <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             {/* Left: Brand */}
             <Brand href="/dashboard" compact inverted />
 
             {/* Center: Primary navigation (core modules) */}
-            <nav className="hidden items-center gap-0.5 md:flex">
+            <nav className="hidden items-center gap-1 md:flex">
               {primaryNav.map((item) => {
                 const act = isActive(pathname, item.href);
                 return (
@@ -288,7 +288,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "relative inline-flex h-10 items-center rounded-xl px-4 text-sm font-semibold transition-all duration-200",
+                      "relative inline-flex h-11 items-center rounded-xl px-5 text-[15px] font-semibold tracking-[-0.01em] transition-all duration-200",
                       act
                         ? "bg-white/12 text-white shadow-[0_0_12px_rgba(251,191,36,0.15)]"
                         : "text-[var(--header-muted)] hover:bg-[var(--header-hover-bg)] hover:text-white",
@@ -304,13 +304,13 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
             </nav>
 
             {/* Right: Actions */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <LanguageSelector variant="dark" />
               <NotificationBell />
               <ThemeToggle />
               <Link
                 href="/profile"
-                className="inline-flex h-9 items-center rounded-xl px-3 text-sm font-medium text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/12 hover:text-white"
+                className="inline-flex h-10 items-center rounded-xl px-3.5 text-[15px] font-medium text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/12 hover:text-white"
               >
                 {t("common.profile")}
               </Link>
@@ -322,7 +322,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
         {/* Gold ayraç — 1 ile 2 arası (üst üste, boşluksuz) */}
         <div className="hidden h-[2px] md:block" style={{ background: "var(--gold)", marginBottom: "-1px", position: "relative", zIndex: 1 }} />
         <div className="hidden md:block" style={{ background: "var(--secondary-nav-bg-solid)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
-          <div className="mx-auto flex w-full max-w-7xl items-center justify-center gap-0.5 overflow-x-auto px-4 py-1.5 sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full max-w-7xl items-center justify-center gap-0.5 overflow-x-auto px-4 py-2 sm:px-6 lg:px-8">
             {secondaryNav.map((item) => {
               const act = isActive(pathname, item.href);
               return (
@@ -330,7 +330,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "relative inline-flex shrink-0 items-center rounded-lg px-3.5 py-2 text-[13px] font-medium transition-all duration-200",
+                    "relative inline-flex shrink-0 items-center rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200",
                     act
                       ? "text-[var(--secondary-nav-active)] bg-[var(--secondary-nav-hover-bg)]"
                       : "text-[var(--secondary-nav-text)] hover:text-[var(--secondary-nav-hover-text)] hover:bg-[var(--secondary-nav-hover-bg)]",
