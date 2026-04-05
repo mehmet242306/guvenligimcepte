@@ -275,12 +275,14 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
           <div className="h-[2px] w-full bg-[linear-gradient(90deg,transparent_5%,var(--gold)_50%,transparent_95%)]" />
-          <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            {/* Left: Brand */}
-            <Brand href="/dashboard" compact inverted />
+          <div className="mx-auto flex h-16 w-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+            {/* Left: Brand — fixed width */}
+            <div className="shrink-0">
+              <Brand href="/dashboard" compact inverted />
+            </div>
 
-            {/* Center: Primary navigation (core modules) */}
-            <nav className="hidden items-center gap-1 md:flex">
+            {/* Center: Primary navigation — centered with flex-1 */}
+            <nav className="hidden flex-1 items-center justify-center gap-1 md:flex">
               {primaryNav.map((item) => {
                 const act = isActive(pathname, item.href);
                 return (
@@ -288,7 +290,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "relative inline-flex h-11 items-center rounded-xl px-5 text-[15px] font-semibold tracking-[-0.01em] transition-all duration-200",
+                      "relative inline-flex h-11 items-center rounded-xl px-4 text-[15px] font-semibold tracking-[-0.01em] transition-all duration-200",
                       act
                         ? "bg-white/12 text-white shadow-[0_0_12px_rgba(251,191,36,0.15)]"
                         : "text-[var(--header-muted)] hover:bg-[var(--header-hover-bg)] hover:text-white",
@@ -303,8 +305,8 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
               })}
             </nav>
 
-            {/* Right: Actions */}
-            <div className="flex items-center gap-2">
+            {/* Right: Actions — fixed width */}
+            <div className="flex shrink-0 items-center gap-2">
               <LanguageSelector variant="dark" />
               <NotificationBell />
               <ThemeToggle />
