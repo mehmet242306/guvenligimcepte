@@ -39,6 +39,7 @@ export function TipTapEditor({
     ],
     content: content || undefined,
     editable,
+    immediatelyRender: false,
     onUpdate: ({ editor: ed }) => {
       onChange?.(ed.getJSON());
     },
