@@ -323,8 +323,8 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
         {/* ── Secondary navigation bar (centered, sticky with header) ── */}
         {/* Gold ayraç — 1 ile 2 arası (üst üste, boşluksuz) */}
         <div className="hidden h-[2px] md:block" style={{ background: "var(--gold)", marginBottom: "-1px", position: "relative", zIndex: 1 }} />
-        <div className="hidden md:block" style={{ background: "var(--secondary-nav-bg-solid)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
-          <div className="mx-auto flex w-full max-w-7xl items-center justify-center gap-0.5 overflow-x-auto px-4 py-2 sm:px-6 lg:px-8">
+        <div className="hidden md:block backdrop-blur-md" style={{ background: "color-mix(in srgb, var(--secondary-nav-bg-solid) 85%, transparent)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
+          <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-center gap-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
             {secondaryNav.map((item) => {
               const act = isActive(pathname, item.href);
               return (
@@ -332,7 +332,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "relative inline-flex shrink-0 items-center rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200",
+                    "relative inline-flex shrink-0 items-center rounded-lg px-4 py-2 text-[15px] font-medium transition-all duration-200",
                     act
                       ? "text-[var(--secondary-nav-active)] bg-[var(--secondary-nav-hover-bg)]"
                       : "text-[var(--secondary-nav-text)] hover:text-[var(--secondary-nav-hover-text)] hover:bg-[var(--secondary-nav-hover-bg)]",
