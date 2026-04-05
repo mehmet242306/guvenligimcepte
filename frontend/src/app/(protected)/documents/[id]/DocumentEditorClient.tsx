@@ -1,11 +1,22 @@
 'use client';
 
-import { useState, useEffect, useCallback, use } from 'react';
+import { useState, useEffect, useCallback, useRef, use, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table';
+import { Placeholder } from '@tiptap/extension-placeholder';
+import { Highlight } from '@tiptap/extension-highlight';
+import { TextAlign } from '@tiptap/extension-text-align';
+import { Underline } from '@tiptap/extension-underline';
+import { TextStyle } from '@tiptap/extension-text-style';
+import { Color } from '@tiptap/extension-color';
 import {
-  ArrowLeft, Save, Download, FileText, Clock, CheckCircle2,
-  FileEdit, AlertCircle, Sparkles, ChevronRight, Eye,
-  RotateCcw, Settings2, PanelRightOpen, PanelRightClose,
+  ArrowLeft, Save, Download, ChevronRight,
+  CheckCircle2, RotateCcw, Sparkles,
+  PanelRightOpen, PanelRightClose,
+  FileText, Clock, FileEdit, AlertCircle,
+  ZoomIn,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import {
@@ -14,12 +25,12 @@ import {
   type DocumentRecord, type DocumentVersionRecord,
 } from '@/lib/supabase/document-api';
 import { getP1Template } from '@/lib/document-templates-p1';
-import { getGroupByKey, DOCUMENT_GROUPS } from '@/lib/document-groups';
+import { getGroupByKey } from '@/lib/document-groups';
 import {
-  resolveVariables, DOCUMENT_VARIABLES,
+  resolveVariables,
   type CompanyVariableData,
 } from '@/lib/document-variables';
-import { TipTapEditor } from '@/components/documents/TipTapEditor';
+import { EditorToolbar } from '@/components/documents/EditorToolbar';
 import { VariableMenu } from '@/components/documents/VariableMenu';
 import type { JSONContent } from '@tiptap/react';
 
@@ -41,31 +52,79 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
   const documentId = resolvedParams?.id;
   const isNewDoc = !documentId;
 
-  // Query params for new doc
   const qGroup = searchParams.get('group') || '';
   const qTitle = searchParams.get('title') || '';
   const qTemplateId = searchParams.get('templateId') || '';
 
   // State
   const [doc, setDoc] = useState<DocumentRecord | null>(null);
-  const [content, setContent] = useState<JSONContent | null>(null);
   const [title, setTitle] = useState(qTitle || 'Yeni Doküman');
   const [groupKey, setGroupKey] = useState(qGroup || '');
   const [status, setStatus] = useState<DocumentRecord['status']>('taslak');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [loading, setLoading] = useState(true);
   const [showSidebar, setShowSidebar] = useState(true);
   const [versions, setVersions] = useState<DocumentVersionRecord[]>([]);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [companyData, setCompanyData] = useState<CompanyVariableData>({});
-  const [variablesResolved, setVariablesResolved] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [initialContent, setInitialContent] = useState<JSONContent | undefined>(undefined);
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load user, org, company data
+  // Word/char count
+  const [wordCount, setWordCount] = useState(0);
+  const [charCount, setCharCount] = useState(0);
+
+  // TipTap Editor — single instance shared by toolbar + content
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
+      Table.configure({ resizable: true }),
+      TableRow,
+      TableCell,
+      TableHeader,
+      Placeholder.configure({ placeholder: 'Doküman içeriğini buraya yazın...' }),
+      Highlight.configure({ multicolor: true }),
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      Underline,
+      TextStyle,
+      Color,
+    ],
+    content: initialContent,
+    immediatelyRender: false,
+    onUpdate: ({ editor: ed }) => {
+      // Word/char count
+      const text = ed.state.doc.textContent;
+      setCharCount(text.length);
+      setWordCount(text.split(/\s+/).filter(Boolean).length);
+
+      // Auto-save debounce
+      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+      autoSaveTimer.current = setTimeout(() => {
+        handleAutoSave(ed.getJSON());
+      }, 30000);
+    },
+    editorProps: {
+      attributes: {
+        class: 'focus:outline-none min-h-[800px]',
+      },
+    },
+  });
+
+  // Set initial content when loaded
   useEffect(() => {
-    async function loadContext() {
+    if (editor && initialContent) {
+      editor.commands.setContent(initialContent);
+    }
+  }, [editor, initialContent]);
+
+  // Load context
+  useEffect(() => {
+    async function load() {
       const supabase = createClient();
       if (!supabase) { setLoading(false); return; }
 
@@ -82,7 +141,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
       setOrgId(profile.organization_id);
       setUserId(profile.id);
 
-      // Load company data for variables
+      // Company data for variables
       const { data: workspaces } = await supabase
         .from('company_workspaces')
         .select('id, company_identity_id, display_name, metadata')
@@ -115,24 +174,22 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
         }
       }
 
-      // Load existing document or template
+      // Load existing doc or template
       if (documentId) {
         const existingDoc = await fetchDocument(documentId);
         if (existingDoc) {
           setDoc(existingDoc);
-          setContent(existingDoc.content_json as JSONContent);
+          setInitialContent(existingDoc.content_json as JSONContent);
           setTitle(existingDoc.title);
           setGroupKey(existingDoc.group_key);
           setStatus(existingDoc.status);
-
           const vers = await fetchVersions(documentId);
           setVersions(vers);
         }
       } else if (qTemplateId) {
-        // Load P1 template
         const template = getP1Template(qTemplateId);
         if (template) {
-          setContent(template.content);
+          setInitialContent(template.content);
           setTitle(template.title);
           setGroupKey(template.groupKey);
         }
@@ -140,17 +197,35 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
 
       setLoading(false);
     }
-    loadContext();
+    load();
   }, [documentId, qTemplateId]);
 
-  // Save document
-  const handleSave = useCallback(async () => {
-    if (!orgId || !content) return;
+  // Auto-save
+  const handleAutoSave = useCallback(async (contentJson: JSONContent) => {
+    if (!orgId || !doc) return;
     setSaving(true);
+    try {
+      await updateDocument(doc.id, {
+        title,
+        content_json: contentJson as Record<string, unknown>,
+        status,
+      });
+      setLastSavedAt(new Date());
+    } catch (err) {
+      console.error('Auto-save error:', err);
+    } finally {
+      setSaving(false);
+    }
+  }, [orgId, doc, title, status]);
+
+  // Manual save
+  const handleSave = useCallback(async () => {
+    if (!orgId || !editor) return;
+    setSaving(true);
+    const content = editor.getJSON();
 
     try {
       if (doc) {
-        // Update existing
         const updated = await updateDocument(doc.id, {
           title,
           content_json: content as Record<string, unknown>,
@@ -158,11 +233,9 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
         });
         if (updated) {
           setDoc(updated);
-          // Create version
           await createVersion(doc.id, doc.version + 1, content as Record<string, unknown>, userId);
         }
       } else {
-        // Create new
         const newDoc = await createDocument({
           organization_id: orgId,
           company_workspace_id: null,
@@ -176,10 +249,10 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
         });
         if (newDoc) {
           setDoc(newDoc);
-          // Navigate to the doc's edit URL
           router.replace(`/documents/${newDoc.id}`);
         }
       }
+      setLastSavedAt(new Date());
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {
@@ -187,20 +260,16 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
     } finally {
       setSaving(false);
     }
-  }, [orgId, content, doc, title, status, groupKey, userId, companyData, router]);
+  }, [orgId, editor, doc, title, status, groupKey, userId, companyData, router]);
 
-  // Export to DOCX
+  // Export
   const handleExport = useCallback(async () => {
-    if (!content) return;
+    if (!editor) return;
     setExporting(true);
     try {
-      // Dynamic import to reduce bundle
       const { generateDocx } = await import('@/lib/document-generator');
-
-      // Convert TipTap JSON to markdown-like content
-      const textContent = tiptapToMarkdown(content);
+      const textContent = tiptapToMarkdown(editor.getJSON());
       const resolvedContent = resolveVariables(textContent, companyData);
-
       await generateDocx({
         title: resolveVariables(title, companyData),
         content: resolvedContent,
@@ -211,22 +280,13 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
     } finally {
       setExporting(false);
     }
-  }, [content, title, groupKey, companyData]);
+  }, [editor, title, companyData]);
 
-  // Insert variable into editor
+  // Insert variable
   const handleInsertVariable = useCallback((key: string) => {
-    // This inserts the variable placeholder text
-    // The editor will show it as {{key}}
-    const text = `{{${key}}}`;
-    // We can't directly control TipTap from here easily,
-    // so we'll use a global event approach
-    window.dispatchEvent(new CustomEvent('insert-variable', { detail: text }));
-  }, []);
-
-  // Change status
-  const handleStatusChange = (newStatus: DocumentRecord['status']) => {
-    setStatus(newStatus);
-  };
+    if (!editor) return;
+    editor.chain().focus().insertContent(`{{${key}}}`).run();
+  }, [editor]);
 
   const group = getGroupByKey(groupKey);
   const statusCfg = STATUS_CONFIG[status] || STATUS_CONFIG.taslak;
@@ -234,152 +294,125 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto animate-pulse">
-        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-1/3 mb-4" />
-        <div className="h-[500px] bg-gray-200 dark:bg-gray-700 rounded-xl" />
+      <div className="flex items-center justify-center h-[60vh]">
+        <div className="text-center">
+          <div className="w-10 h-10 border-2 border-[var(--gold)] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-[var(--text-secondary)]">Doküman yükleniyor...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Header card — breadcrumb + title + actions */}
-      <div className="border border-[var(--card-border)] rounded-xl bg-white dark:bg-[#1e293b] shadow-sm mb-6 overflow-hidden">
-        {/* Top row: breadcrumb left + action buttons right */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--card-border)] bg-[var(--bg-secondary)]/30">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => router.push('/documents')}
-              className="p-1 rounded-md hover:bg-[var(--bg-secondary)] transition-colors text-[var(--text-secondary)]"
-              title="Geri"
-            >
-              <ArrowLeft size={16} />
-            </button>
-            <nav className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)]">
-              <span className="hover:text-[var(--text-primary)] cursor-pointer" onClick={() => router.push('/documents')}>Dokümanlar</span>
-              <ChevronRight size={14} className="opacity-40" />
-              {group && <span>{group.title}</span>}
-              {group && <ChevronRight size={14} className="opacity-40" />}
-              <span className="text-[var(--text-primary)] font-medium">{title}</span>
-            </nav>
-          </div>
-
-          {/* Action buttons */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowSidebar(!showSidebar)}
-              className="p-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors text-[var(--text-secondary)]"
-              title={showSidebar ? 'Paneli Kapat' : 'Değişken Paneli'}
-            >
-              {showSidebar ? <PanelRightClose size={18} /> : <PanelRightOpen size={18} />}
-            </button>
-            <button
-              onClick={handleExport}
-              disabled={exporting || !content}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-[var(--card-border)] rounded-lg hover:bg-[var(--bg-secondary)] transition-colors text-[var(--text-primary)] disabled:opacity-50"
-            >
-              <Download size={14} />
-              {exporting ? 'İndiriliyor...' : 'Word İndir'}
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={saving || !content}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium bg-[var(--gold)] text-white rounded-lg hover:bg-[var(--gold-hover)] transition-colors disabled:opacity-50"
-            >
-              {saving ? (
-                <RotateCcw size={14} className="animate-spin" />
-              ) : saved ? (
-                <CheckCircle2 size={14} />
-              ) : (
-                <Save size={14} />
-              )}
-              {saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi' : 'Kaydet'}
-            </button>
-          </div>
-        </div>
-
-        {/* Bottom row: title + status */}
-        <div className="flex items-center gap-3 px-5 py-3">
+    <div className="flex flex-col" style={{ height: 'calc(100vh - 140px)' }}>
+      {/* ── Header Bar ── */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--card-border)] bg-white dark:bg-[#1e293b]">
+        {/* Left: breadcrumb */}
+        <div className="flex items-center gap-2 min-w-0">
+          <button
+            onClick={() => router.push('/documents')}
+            className="p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-[var(--text-secondary)] shrink-0"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <nav className="flex items-center gap-1 text-sm text-[var(--text-secondary)] min-w-0">
+            <span className="hover:text-[var(--text-primary)] cursor-pointer shrink-0" onClick={() => router.push('/documents')}>Dokümanlar</span>
+            <ChevronRight size={12} className="opacity-40 shrink-0" />
+            {group && <span className="shrink-0">{group.title}</span>}
+            {group && <ChevronRight size={12} className="opacity-40 shrink-0" />}
+          </nav>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="flex-1 text-lg font-bold text-[var(--text-primary)] bg-transparent border-none outline-none min-w-0"
+            className="text-sm font-semibold text-[var(--text-primary)] bg-transparent border-none outline-none min-w-0 flex-1 truncate"
             placeholder="Doküman başlığı..."
           />
-          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium shrink-0 ${statusCfg.color}`}>
-            <StatusIcon size={12} />
+        </div>
+
+        {/* Right: status + actions */}
+        <div className="flex items-center gap-2 shrink-0">
+          <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ${statusCfg.color}`}>
+            <StatusIcon size={11} />
             {statusCfg.label}
           </div>
           <select
             value={status}
-            onChange={(e) => handleStatusChange(e.target.value as DocumentRecord['status'])}
-            className="text-xs px-2 py-1.5 rounded-lg border border-[var(--card-border)] bg-[var(--bg-primary)] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)] shrink-0"
+            onChange={(e) => setStatus(e.target.value as DocumentRecord['status'])}
+            className="text-xs px-1.5 py-1 rounded border border-[var(--card-border)] bg-transparent text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)]"
           >
             <option value="taslak">Taslak</option>
             <option value="hazir">Hazır</option>
             <option value="onay_bekliyor">Onay Bekliyor</option>
             <option value="revizyon">Revizyon</option>
           </select>
+
+          <button
+            onClick={() => setShowSidebar(!showSidebar)}
+            className="p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-[var(--text-secondary)]"
+            title={showSidebar ? 'Paneli Kapat' : 'Değişken Paneli'}
+          >
+            {showSidebar ? <PanelRightClose size={16} /> : <PanelRightOpen size={16} />}
+          </button>
+
+          <button
+            onClick={handleExport}
+            disabled={exporting}
+            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium border border-[var(--card-border)] rounded-md hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-[var(--text-primary)] disabled:opacity-50"
+          >
+            <Download size={13} />
+            {exporting ? 'İndiriliyor...' : 'Word'}
+          </button>
+
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium bg-[var(--gold)] text-white rounded-md hover:bg-[var(--gold-hover)] transition-colors disabled:opacity-50"
+          >
+            {saving ? <RotateCcw size={13} className="animate-spin" /> : saved ? <CheckCircle2 size={13} /> : <Save size={13} />}
+            {saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Kaydet'}
+          </button>
         </div>
       </div>
 
-      {/* Main Layout */}
-      <div className="flex gap-4">
-        {/* Editor */}
-        <div className="flex-1 min-w-0">
-          <TipTapEditor
-            content={content || undefined}
-            onChange={setContent}
-            placeholder="Doküman içeriğini yazın veya şablondan başlayın..."
-          />
+      {/* ── Toolbar ── */}
+      {editor && <EditorToolbar editor={editor} />}
 
-          {/* Version info */}
-          {doc && (
-            <div className="mt-3 flex items-center gap-4 text-xs text-[var(--text-secondary)]">
-              <span>Versiyon: {doc.version}</span>
-              <span>Son güncelleme: {new Date(doc.updated_at).toLocaleString('tr-TR')}</span>
-              {versions.length > 0 && (
-                <span>{versions.length} önceki sürüm</span>
-              )}
-            </div>
-          )}
+      {/* ── Main Area ── */}
+      <div className="flex flex-1 min-h-0">
+        {/* Canvas — scrollable gray bg with A4 page */}
+        <div className="flex-1 overflow-y-auto editor-canvas">
+          <div
+            className="a4-page"
+            style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }}
+          >
+            {editor && <EditorContent editor={editor} />}
+          </div>
+          {/* Bottom spacer */}
+          <div style={{ height: `${60 * zoom}px` }} />
         </div>
 
         {/* Sidebar */}
         {showSidebar && (
-          <div className="w-64 shrink-0 hidden lg:block">
-            <div className="sticky top-24 border border-[var(--card-border)] rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm max-h-[calc(100vh-8rem)] overflow-y-auto">
+          <aside className="w-[280px] shrink-0 border-l border-[var(--card-border)] bg-white dark:bg-[#1e293b] overflow-y-auto hidden lg:block">
+            <div className="p-4">
               <VariableMenu onInsert={handleInsertVariable} />
 
-              {/* Quick info */}
-              <div className="mt-6 pt-4 border-t border-[var(--card-border)]">
+              {/* Document Info */}
+              <div className="mt-5 pt-4 border-t border-[var(--card-border)]">
                 <h4 className="text-xs font-semibold text-[var(--text-primary)] mb-2">Doküman Bilgisi</h4>
-                <div className="space-y-1.5">
-                  {group && (
-                    <div className="text-[10px] text-[var(--text-secondary)]">
-                      <span className="font-medium">Grup:</span> {group.title}
-                    </div>
-                  )}
-                  <div className="text-[10px] text-[var(--text-secondary)]">
-                    <span className="font-medium">Durum:</span> {statusCfg.label}
-                  </div>
-                  {doc && (
-                    <div className="text-[10px] text-[var(--text-secondary)]">
-                      <span className="font-medium">Oluşturulma:</span>{' '}
-                      {new Date(doc.created_at).toLocaleDateString('tr-TR')}
-                    </div>
-                  )}
+                <div className="space-y-1.5 text-[11px] text-[var(--text-secondary)]">
+                  {group && <div><span className="font-medium">Grup:</span> {group.title}</div>}
+                  <div><span className="font-medium">Durum:</span> {statusCfg.label}</div>
+                  {doc && <div><span className="font-medium">Versiyon:</span> {doc.version}</div>}
+                  {doc && <div><span className="font-medium">Oluşturulma:</span> {new Date(doc.created_at).toLocaleDateString('tr-TR')}</div>}
+                  {versions.length > 0 && <div><span className="font-medium">Geçmiş:</span> {versions.length} sürüm</div>}
                 </div>
               </div>
 
-              {/* AI Suggestion placeholder */}
+              {/* AI Section */}
               <div className="mt-4 pt-4 border-t border-[var(--card-border)]">
-                <button
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--gold)] bg-[var(--gold)]/10 rounded-lg hover:bg-[var(--gold)]/20 transition-colors"
-                  onClick={() => {/* AI integration coming soon */}}
-                >
+                <button className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-[var(--gold)] bg-[var(--gold)]/10 rounded-lg hover:bg-[var(--gold)]/20 transition-colors">
                   <Sparkles size={14} />
                   AI İçerik Önerisi
                 </button>
@@ -388,25 +421,54 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
                 </p>
               </div>
             </div>
-          </div>
+          </aside>
         )}
+      </div>
+
+      {/* ── Status Bar ── */}
+      <div className="editor-statusbar flex items-center justify-between px-4 py-1.5 text-[11px] text-[var(--text-secondary)]">
+        <div className="flex items-center gap-3">
+          <span>{wordCount} kelime</span>
+          <span className="opacity-40">|</span>
+          <span>{charCount.toLocaleString('tr-TR')} karakter</span>
+        </div>
+
+        <div className="flex items-center gap-1">
+          {saving && <span className="text-[var(--gold)]">Kaydediliyor...</span>}
+          {!saving && lastSavedAt && (
+            <span>Son kayıt: {lastSavedAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</span>
+          )}
+          {!saving && !lastSavedAt && <span>Henüz kaydedilmedi</span>}
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <ZoomIn size={12} />
+          <select
+            value={zoom}
+            onChange={(e) => setZoom(Number(e.target.value))}
+            className="bg-transparent text-[11px] text-[var(--text-secondary)] cursor-pointer focus:outline-none"
+          >
+            <option value={0.75}>%75</option>
+            <option value={1}>%100</option>
+            <option value={1.25}>%125</option>
+            <option value={1.5}>%150</option>
+          </select>
+        </div>
       </div>
     </div>
   );
 }
 
-// Helper: Convert TipTap JSON to markdown-like text for export
+/* ── Helper: TipTap JSON → Markdown ── */
 function tiptapToMarkdown(json: JSONContent): string {
   if (!json.content) return '';
-
   const lines: string[] = [];
 
   for (const node of json.content) {
     switch (node.type) {
       case 'heading': {
         const level = node.attrs?.level || 1;
-        const prefix = '#'.repeat(level);
-        lines.push(`${prefix} ${extractText(node)}`);
+        lines.push(`${'#'.repeat(level)} ${extractText(node)}`);
         lines.push('');
         break;
       }
@@ -415,19 +477,11 @@ function tiptapToMarkdown(json: JSONContent): string {
         lines.push('');
         break;
       case 'bulletList':
-        if (node.content) {
-          for (const li of node.content) {
-            lines.push(`- ${extractText(li)}`);
-          }
-        }
+        if (node.content) node.content.forEach((li) => lines.push(`- ${extractText(li)}`));
         lines.push('');
         break;
       case 'orderedList':
-        if (node.content) {
-          node.content.forEach((li, i) => {
-            lines.push(`${i + 1}. ${extractText(li)}`);
-          });
-        }
+        if (node.content) node.content.forEach((li, i) => lines.push(`${i + 1}. ${extractText(li)}`));
         lines.push('');
         break;
       case 'blockquote':
@@ -442,8 +496,7 @@ function tiptapToMarkdown(json: JSONContent): string {
         if (node.content) {
           for (const row of node.content) {
             if (row.content) {
-              const cells = row.content.map((cell) => extractText(cell));
-              lines.push(`| ${cells.join(' | ')} |`);
+              lines.push(`| ${row.content.map((cell) => extractText(cell)).join(' | ')} |`);
             }
           }
         }
@@ -454,24 +507,19 @@ function tiptapToMarkdown(json: JSONContent): string {
         lines.push('');
     }
   }
-
   return lines.join('\n');
 }
 
 function extractText(node: JSONContent): string {
   if (node.text) {
-    let text = node.text;
+    let t = node.text;
     if (node.marks) {
-      for (const mark of node.marks) {
-        if (mark.type === 'bold') text = `**${text}**`;
-        if (mark.type === 'italic') text = `*${text}*`;
-        if (mark.type === 'underline') text = `__${text}__`;
+      for (const m of node.marks) {
+        if (m.type === 'bold') t = `**${t}**`;
+        if (m.type === 'italic') t = `*${t}*`;
       }
     }
-    return text;
+    return t;
   }
-  if (node.content) {
-    return node.content.map(extractText).join('');
-  }
-  return '';
+  return node.content ? node.content.map(extractText).join('') : '';
 }

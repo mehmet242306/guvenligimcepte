@@ -411,3 +411,229 @@ body,
   border: 1px solid rgba(255, 255, 255, 0.10);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
+
+/* ================================================================== */
+/* Document Editor — Google Docs Style                                 */
+/* ================================================================== */
+
+/* Canvas: gray background behind the page */
+.editor-canvas {
+  background: #F0F1F3;
+}
+.dark .editor-canvas {
+  background: #111827;
+}
+
+/* A4 page simulation */
+.a4-page {
+  width: 816px;
+  min-height: 1056px;
+  margin: 28px auto;
+  padding: 80px 72px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+  border-radius: 2px;
+  position: relative;
+}
+.dark .a4-page {
+  background: #1e293b;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* Responsive: mobile/tablet */
+@media (max-width: 900px) {
+  .a4-page {
+    width: 100%;
+    min-height: auto;
+    margin: 12px;
+    padding: 40px 24px;
+    border-radius: 8px;
+  }
+}
+
+/* TipTap prose inside A4 page */
+.a4-page .tiptap {
+  outline: none;
+  min-height: 800px;
+}
+.a4-page .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+.dark .a4-page .tiptap p.is-editor-empty:first-child::before {
+  color: #4b5563;
+}
+
+/* Table styling inside editor */
+.a4-page .tiptap table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0;
+}
+.a4-page .tiptap th,
+.a4-page .tiptap td {
+  border: 1px solid #d1d5db;
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+  min-width: 80px;
+}
+.dark .a4-page .tiptap th,
+.dark .a4-page .tiptap td {
+  border-color: #374151;
+}
+.a4-page .tiptap th {
+  background: #f3f4f6;
+  font-weight: 600;
+}
+.dark .a4-page .tiptap th {
+  background: #1f2937;
+}
+
+/* Selected table cells */
+.a4-page .tiptap .selectedCell {
+  background: rgba(212, 160, 23, 0.15);
+}
+
+/* Heading styles */
+.a4-page .tiptap h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 24px 0 12px;
+  line-height: 1.3;
+}
+.a4-page .tiptap h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 20px 0 10px;
+  line-height: 1.35;
+}
+.a4-page .tiptap h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  line-height: 1.4;
+}
+
+/* Paragraph */
+.a4-page .tiptap p {
+  margin: 0 0 8px;
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+/* Lists */
+.a4-page .tiptap ul,
+.a4-page .tiptap ol {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+.a4-page .tiptap li {
+  margin: 4px 0;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* Blockquote */
+.a4-page .tiptap blockquote {
+  border-left: 3px solid #d4a017;
+  padding-left: 16px;
+  margin: 12px 0;
+  color: #6b7280;
+  font-style: italic;
+}
+.dark .a4-page .tiptap blockquote {
+  color: #9ca3af;
+  border-left-color: #d4a017;
+}
+
+/* Horizontal rule */
+.a4-page .tiptap hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 20px 0;
+}
+.dark .a4-page .tiptap hr {
+  border-top-color: #374151;
+}
+
+/* Highlight */
+.a4-page .tiptap mark {
+  background: #fef08a;
+  padding: 1px 2px;
+  border-radius: 2px;
+}
+.dark .a4-page .tiptap mark {
+  background: rgba(254, 240, 138, 0.3);
+}
+
+/* Editor toolbar */
+.editor-toolbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+.dark .editor-toolbar {
+  background: #1e293b;
+  border-bottom-color: #334155;
+}
+
+/* Status bar */
+.editor-statusbar {
+  background: #fafbfc;
+  border-top: 1px solid #e5e7eb;
+}
+.dark .editor-statusbar {
+  background: #0f172a;
+  border-top-color: #334155;
+}
+
+/* Color picker grid */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+.color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+}
+.color-swatch:hover {
+  transform: scale(1.15);
+  border-color: var(--gold);
+}
+
+/* Table grid picker */
+.table-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+}
+.table-grid-cell {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.dark .table-grid-cell {
+  border-color: #4b5563;
+}
+.table-grid-cell.active {
+  background: rgba(212, 160, 23, 0.3);
+  border-color: var(--gold);
+}
+
+@media print {
+  body * { visibility: hidden; }
+  .a4-page, .a4-page * { visibility: visible; }
+  .a4-page { position: absolute; left: 0; top: 0; box-shadow: none; margin: 0; padding: 72px; }
+}
