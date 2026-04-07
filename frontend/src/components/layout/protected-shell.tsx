@@ -28,6 +28,7 @@ const secondaryNav = [
   { href: "/planner", key: "nav.planner" },
   { href: "/timesheet", key: "nav.timesheet" },
   { href: "/solution-center", key: "nav.solutionCenter" },
+  { href: "/training", key: "nav.training" },
   { href: "/reports", key: "nav.reports" },
   { href: "/settings", key: "nav.settings" },
 ];
@@ -272,6 +273,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
       <div className="sticky top-0 z-40">
         {/* ── Top Header — Brand + Primary Nav + Actions ── */}
         <header
+          className="relative z-10"
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
           <div className="h-[2px] w-full bg-[linear-gradient(90deg,transparent_5%,var(--gold)_50%,transparent_95%)]" />
@@ -323,7 +325,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
         {/* ── Secondary navigation bar (centered, sticky with header) ── */}
         {/* Gold ayraç — 1 ile 2 arası (üst üste, boşluksuz) */}
         <div className="hidden h-[2px] md:block" style={{ background: "var(--gold)", marginBottom: "-1px", position: "relative", zIndex: 1 }} />
-        <div className="hidden md:block backdrop-blur-lg" style={{ background: "color-mix(in srgb, var(--secondary-nav-bg-solid) 65%, transparent)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
+        <div className="hidden md:block backdrop-blur-lg relative z-0" style={{ background: "color-mix(in srgb, var(--secondary-nav-bg-solid) 65%, transparent)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
           <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-center gap-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
             {secondaryNav.map((item) => {
               const act = isActive(pathname, item.href);

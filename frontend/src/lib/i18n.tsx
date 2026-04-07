@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 /* Types                                                               */
 /* ------------------------------------------------------------------ */
 
-export type Locale = "tr" | "en" | "ar" | "ru" | "de" | "fr" | "es" | "zh" | "ja" | "hi" | "ko" | "az";
+export type Locale = "tr" | "en" | "ar" | "ru" | "de" | "fr" | "es" | "zh" | "ja" | "hi" | "ko" | "az" | "id";
 
 type NestedMessages = { [key: string]: string | NestedMessages };
 
@@ -47,6 +47,7 @@ const messages: Record<Locale, NestedMessages> = {
       planner: "Planlayıcı",
       timesheet: "Puantaj",
       solutionCenter: "Çözüm Merkezi",
+      training: "Eğitim & Sınav",
       reports: "Raporlar",
       settings: "Ayarlar",
       features: "Özellikler",
@@ -184,6 +185,7 @@ const messages: Record<Locale, NestedMessages> = {
       planner: "Planner",
       timesheet: "Timesheet",
       solutionCenter: "Solution Center",
+      training: "Training & Exams",
       reports: "Reports",
       settings: "Settings",
       features: "Features",
@@ -321,6 +323,7 @@ const messages: Record<Locale, NestedMessages> = {
       planner: "\u0627\u0644\u0645\u062E\u0637\u0637",
       timesheet: "\u0627\u0644\u062D\u0636\u0648\u0631",
       solutionCenter: "\u0645\u0631\u0643\u0632 \u0627\u0644\u062D\u0644\u0648\u0644",
+      training: "\u0627\u0644\u062A\u062F\u0631\u064A\u0628 \u0648\u0627\u0644\u0627\u0645\u062A\u062D\u0627\u0646\u0627\u062A",
       reports: "\u0627\u0644\u062A\u0642\u0627\u0631\u064A\u0631",
       settings: "\u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A",
       features: "\u0627\u0644\u0645\u0645\u064A\u0632\u0627\u062A",
@@ -350,7 +353,7 @@ const messages: Record<Locale, NestedMessages> = {
 
   ru: {
     common: { login: "\u0412\u043E\u0439\u0442\u0438", register: "\u041D\u0430\u0447\u0430\u0442\u044C", save: "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C", cancel: "\u041E\u0442\u043C\u0435\u043D\u0430", delete: "\u0423\u0434\u0430\u043B\u0438\u0442\u044C", search: "\u041F\u043E\u0438\u0441\u043A", loading: "\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430...", download: "\u0421\u043A\u0430\u0447\u0430\u0442\u044C", copy: "\u041A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C" },
-    nav: { dashboard: "\u041F\u0430\u043D\u0435\u043B\u044C", companies: "\u041A\u043E\u043C\u043F\u0430\u043D\u0438\u0438", riskAnalysis: "\u0410\u043D\u0430\u043B\u0438\u0437 \u0440\u0438\u0441\u043A\u043E\u0432", incidents: "\u0418\u043D\u0446\u0438\u0434\u0435\u043D\u0442\u044B", solutionCenter: "\u0426\u0435\u043D\u0442\u0440 \u0440\u0435\u0448\u0435\u043D\u0438\u0439", reports: "\u041E\u0442\u0447\u0435\u0442\u044B", settings: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438" },
+    nav: { dashboard: "\u041F\u0430\u043D\u0435\u043B\u044C", companies: "\u041A\u043E\u043C\u043F\u0430\u043D\u0438\u0438", riskAnalysis: "\u0410\u043D\u0430\u043B\u0438\u0437 \u0440\u0438\u0441\u043A\u043E\u0432", incidents: "\u0418\u043D\u0446\u0438\u0434\u0435\u043D\u0442\u044B", solutionCenter: "\u0426\u0435\u043D\u0442\u0440 \u0440\u0435\u0448\u0435\u043D\u0438\u0439", training: "\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435 \u0438 \u044D\u043A\u0437\u0430\u043C\u0435\u043D\u044B", reports: "\u041E\u0442\u0447\u0435\u0442\u044B", settings: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438" },
     landing: { badge: "\u041F\u041B\u0410\u0422\u0424\u041E\u0420\u041C\u0410 \u041E\u0422 \u0421 \u0418\u0418", heroTitle1: "\u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u0440\u0438\u0441\u043A\u0430\u043C\u0438", heroTitle2: "\u041E\u0422", heroTitle3: "\u043A\u0430\u043A \u0438\u0441\u043A\u0443\u0441\u0441\u0442\u0432\u043E" },
     auth: { loginTitle: "\u0412\u043E\u0439\u0442\u0438 \u0432 \u0430\u043A\u043A\u0430\u0443\u043D\u0442", loginEmail: "\u042D\u043B\u0435\u043A\u0442\u0440\u043E\u043D\u043D\u0430\u044F \u043F\u043E\u0447\u0442\u0430", loginPassword: "\u041F\u0430\u0440\u043E\u043B\u044C", loginButton: "\u0412\u043E\u0439\u0442\u0438" },
     solutionCenter: { title: "\u0426\u0435\u043D\u0442\u0440 \u0440\u0435\u0448\u0435\u043D\u0438\u0439" },
@@ -358,7 +361,7 @@ const messages: Record<Locale, NestedMessages> = {
 
   de: {
     common: { login: "Anmelden", register: "Jetzt starten", save: "Speichern", cancel: "Abbrechen", delete: "Loschen", search: "Suchen", loading: "Laden...", download: "Herunterladen", copy: "Kopieren" },
-    nav: { dashboard: "Dashboard", companies: "Unternehmen", riskAnalysis: "Risikoanalyse", incidents: "Vorfalle", documents: "Dokumente", solutionCenter: "Losungszentrum", reports: "Berichte", settings: "Einstellungen" },
+    nav: { dashboard: "Dashboard", companies: "Unternehmen", riskAnalysis: "Risikoanalyse", incidents: "Vorfalle", documents: "Dokumente", solutionCenter: "Losungszentrum", training: "Schulung & Prufungen", reports: "Berichte", settings: "Einstellungen" },
     landing: { badge: "KI-GESTUTZTE ARBEITSSCHUTZ-PLATTFORM", heroTitle1: "Risikomanagement", heroTitle2: "im Arbeitsschutz", heroTitle3: "zur Kunst machen" },
     auth: { loginTitle: "Anmelden", loginEmail: "E-Mail-Adresse", loginPassword: "Passwort", loginButton: "Anmelden" },
     solutionCenter: { title: "Losungszentrum" },
@@ -366,7 +369,7 @@ const messages: Record<Locale, NestedMessages> = {
 
   fr: {
     common: { login: "Se connecter", register: "Commencer", save: "Enregistrer", cancel: "Annuler", delete: "Supprimer", search: "Rechercher", loading: "Chargement...", download: "Telecharger", copy: "Copier" },
-    nav: { dashboard: "Tableau de bord", companies: "Entreprises", riskAnalysis: "Analyse des risques", incidents: "Incidents", documents: "Documents", solutionCenter: "Centre de solutions", reports: "Rapports", settings: "Parametres" },
+    nav: { dashboard: "Tableau de bord", companies: "Entreprises", riskAnalysis: "Analyse des risques", incidents: "Incidents", documents: "Documents", solutionCenter: "Centre de solutions", training: "Formation & Examens", reports: "Rapports", settings: "Parametres" },
     landing: { badge: "PLATEFORME SST ALIMENTEE PAR L'IA", heroTitle1: "Transformez la gestion", heroTitle2: "des risques SST", heroTitle3: "en art" },
     auth: { loginTitle: "Se connecter", loginEmail: "Adresse e-mail", loginPassword: "Mot de passe", loginButton: "Se connecter" },
     solutionCenter: { title: "Centre de solutions" },
@@ -374,7 +377,7 @@ const messages: Record<Locale, NestedMessages> = {
 
   es: {
     common: { login: "Iniciar sesion", register: "Comenzar", save: "Guardar", cancel: "Cancelar", delete: "Eliminar", search: "Buscar", loading: "Cargando...", download: "Descargar", copy: "Copiar" },
-    nav: { dashboard: "Panel", companies: "Empresas", riskAnalysis: "Analisis de riesgos", incidents: "Incidentes", documents: "Documentos", solutionCenter: "Centro de soluciones", reports: "Informes", settings: "Configuracion" },
+    nav: { dashboard: "Panel", companies: "Empresas", riskAnalysis: "Analisis de riesgos", incidents: "Incidentes", documents: "Documentos", solutionCenter: "Centro de soluciones", training: "Formacion y Examenes", reports: "Informes", settings: "Configuracion" },
     landing: { badge: "PLATAFORMA SST IMPULSADA POR IA", heroTitle1: "Transforme la gestion", heroTitle2: "de riesgos SST", heroTitle3: "en arte" },
     auth: { loginTitle: "Iniciar sesion", loginEmail: "Correo electronico", loginPassword: "Contrasena", loginButton: "Iniciar sesion" },
     solutionCenter: { title: "Centro de soluciones" },
@@ -382,7 +385,7 @@ const messages: Record<Locale, NestedMessages> = {
 
   zh: {
     common: { login: "\u767B\u5F55", register: "\u5F00\u59CB\u4F7F\u7528", save: "\u4FDD\u5B58", cancel: "\u53D6\u6D88", delete: "\u5220\u9664", search: "\u641C\u7D22", loading: "\u52A0\u8F7D\u4E2D...", download: "\u4E0B\u8F7D", copy: "\u590D\u5236" },
-    nav: { dashboard: "\u4EEA\u8868\u677F", companies: "\u516C\u53F8", riskAnalysis: "\u98CE\u9669\u5206\u6790", incidents: "\u4E8B\u6545", solutionCenter: "\u89E3\u51B3\u65B9\u6848\u4E2D\u5FC3", reports: "\u62A5\u544A", settings: "\u8BBE\u7F6E" },
+    nav: { dashboard: "\u4EEA\u8868\u677F", companies: "\u516C\u53F8", riskAnalysis: "\u98CE\u9669\u5206\u6790", incidents: "\u4E8B\u6545", solutionCenter: "\u89E3\u51B3\u65B9\u6848\u4E2D\u5FC3", training: "\u57F9\u8BAD\u4E0E\u8003\u8BD5", reports: "\u62A5\u544A", settings: "\u8BBE\u7F6E" },
     landing: { badge: "\u4EBA\u5DE5\u667A\u80FD\u9A71\u52A8\u7684\u804C\u4E1A\u5065\u5EB7\u5B89\u5168\u5E73\u53F0", heroTitle1: "\u5C06\u804C\u4E1A\u5065\u5EB7\u5B89\u5168", heroTitle2: "\u98CE\u9669\u7BA1\u7406", heroTitle3: "\u5316\u4E3A\u827A\u672F" },
     auth: { loginTitle: "\u767B\u5F55\u60A8\u7684\u8D26\u6237", loginEmail: "\u7535\u5B50\u90AE\u4EF6", loginPassword: "\u5BC6\u7801", loginButton: "\u767B\u5F55" },
     solutionCenter: { title: "\u89E3\u51B3\u65B9\u6848\u4E2D\u5FC3" },
@@ -390,7 +393,7 @@ const messages: Record<Locale, NestedMessages> = {
 
   ja: {
     common: { login: "\u30ED\u30B0\u30A4\u30F3", register: "\u59CB\u3081\u308B", save: "\u4FDD\u5B58", cancel: "\u30AD\u30E3\u30F3\u30BB\u30EB", delete: "\u524A\u9664", search: "\u691C\u7D22", loading: "\u8AAD\u307F\u8FBC\u307F\u4E2D...", download: "\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9", copy: "\u30B3\u30D4\u30FC" },
-    nav: { dashboard: "\u30C0\u30C3\u30B7\u30E5\u30DC\u30FC\u30C9", companies: "\u4F1A\u793E", riskAnalysis: "\u30EA\u30B9\u30AF\u5206\u6790", incidents: "\u30A4\u30F3\u30B7\u30C7\u30F3\u30C8", solutionCenter: "\u30BD\u30EA\u30E5\u30FC\u30B7\u30E7\u30F3\u30BB\u30F3\u30BF\u30FC", reports: "\u30EC\u30DD\u30FC\u30C8", settings: "\u8A2D\u5B9A" },
+    nav: { dashboard: "\u30C0\u30C3\u30B7\u30E5\u30DC\u30FC\u30C9", companies: "\u4F1A\u793E", riskAnalysis: "\u30EA\u30B9\u30AF\u5206\u6790", incidents: "\u30A4\u30F3\u30B7\u30C7\u30F3\u30C8", solutionCenter: "\u30BD\u30EA\u30E5\u30FC\u30B7\u30E7\u30F3\u30BB\u30F3\u30BF\u30FC", training: "\u30C8\u30EC\u30FC\u30CB\u30F3\u30B0\u3068\u8A66\u9A13", reports: "\u30EC\u30DD\u30FC\u30C8", settings: "\u8A2D\u5B9A" },
     landing: { badge: "AI\u642D\u8F09\u52B4\u50CD\u5B89\u5168\u885B\u751F\u30D7\u30E9\u30C3\u30C8\u30D5\u30A9\u30FC\u30E0", heroTitle1: "\u52B4\u50CD\u5B89\u5168\u885B\u751F", heroTitle2: "\u30EA\u30B9\u30AF\u7BA1\u7406\u3092", heroTitle3: "\u82B8\u8853\u306B" },
     auth: { loginTitle: "\u30ED\u30B0\u30A4\u30F3", loginEmail: "\u30E1\u30FC\u30EB\u30A2\u30C9\u30EC\u30B9", loginPassword: "\u30D1\u30B9\u30EF\u30FC\u30C9", loginButton: "\u30ED\u30B0\u30A4\u30F3" },
     solutionCenter: { title: "\u30BD\u30EA\u30E5\u30FC\u30B7\u30E7\u30F3\u30BB\u30F3\u30BF\u30FC" },
@@ -398,24 +401,31 @@ const messages: Record<Locale, NestedMessages> = {
 
   hi: {
     common: { login: "\u0932\u0949\u0917 \u0907\u0928", register: "\u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902", save: "\u0938\u0947\u0935 \u0915\u0930\u0947\u0902", cancel: "\u0930\u0926\u094D\u0926 \u0915\u0930\u0947\u0902", delete: "\u0939\u091F\u093E\u090F\u0902", search: "\u0916\u094B\u091C\u0947\u0902", loading: "\u0932\u094B\u0921 \u0939\u094B \u0930\u0939\u093E \u0939\u0948...", download: "\u0921\u093E\u0909\u0928\u0932\u094B\u0921", copy: "\u0915\u0949\u092A\u0940" },
-    nav: { dashboard: "\u0921\u0948\u0936\u092C\u094B\u0930\u094D\u0921", companies: "\u0915\u0902\u092A\u0928\u0940", riskAnalysis: "\u091C\u094B\u0916\u093F\u092E \u0935\u093F\u0936\u094D\u0932\u0947\u0937\u0923", incidents: "\u0918\u091F\u0928\u093E\u090F\u0902", solutionCenter: "\u0938\u092E\u093E\u0927\u093E\u0928 \u0915\u0947\u0902\u0926\u094D\u0930", reports: "\u0930\u093F\u092A\u094B\u0930\u094D\u091F", settings: "\u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938" },
+    nav: { dashboard: "\u0921\u0948\u0936\u092C\u094B\u0930\u094D\u0921", companies: "\u0915\u0902\u092A\u0928\u0940", riskAnalysis: "\u091C\u094B\u0916\u093F\u092E \u0935\u093F\u0936\u094D\u0932\u0947\u0937\u0923", incidents: "\u0918\u091F\u0928\u093E\u090F\u0902", solutionCenter: "\u0938\u092E\u093E\u0927\u093E\u0928 \u0915\u0947\u0902\u0926\u094D\u0930", training: "\u092A\u094D\u0930\u0936\u093F\u0915\u094D\u0937\u0923 \u0914\u0930 \u092A\u0930\u0940\u0915\u094D\u0937\u093E", reports: "\u0930\u093F\u092A\u094B\u0930\u094D\u091F", settings: "\u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938" },
     landing: { badge: "AI \u0938\u0902\u091A\u093E\u0932\u093F\u0924 \u0935\u094D\u092F\u093E\u0935\u0938\u093E\u092F\u093F\u0915 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u0914\u0930 \u0938\u0941\u0930\u0915\u094D\u0937\u093E \u092A\u094D\u0932\u0947\u091F\u092B\u0949\u0930\u094D\u092E", heroTitle1: "\u0935\u094D\u092F\u093E\u0935\u0938\u093E\u092F\u093F\u0915 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F", heroTitle2: "\u091C\u094B\u0916\u093F\u092E \u092A\u094D\u0930\u092C\u0902\u0927\u0928", heroTitle3: "\u0915\u094B \u0915\u0932\u093E \u092E\u0947\u0902 \u092C\u0926\u0932\u0947\u0902" },
     auth: { loginTitle: "\u0932\u0949\u0917 \u0907\u0928 \u0915\u0930\u0947\u0902", loginEmail: "\u0908\u092E\u0947\u0932", loginPassword: "\u092A\u093E\u0938\u0935\u0930\u094D\u0921", loginButton: "\u0932\u0949\u0917 \u0907\u0928" },
     solutionCenter: { title: "\u0938\u092E\u093E\u0927\u093E\u0928 \u0915\u0947\u0902\u0926\u094D\u0930" },
   },
   ko: {
     common: { login: "\uB85C\uADF8\uC778", register: "\uC2DC\uC791\uD558\uAE30", save: "\uC800\uC7A5", cancel: "\uCDE8\uC18C", delete: "\uC0AD\uC81C", search: "\uAC80\uC0C9", loading: "\uB85C\uB529 \uC911...", download: "\uB2E4\uC6B4\uB85C\uB4DC", copy: "\uBCF5\uC0AC" },
-    nav: { dashboard: "\uB300\uC2DC\uBCF4\uB4DC", companies: "\uD68C\uC0AC", riskAnalysis: "\uC704\uD5D8 \uBD84\uC11D", incidents: "\uC0AC\uACE0", solutionCenter: "\uC194\uB8E8\uC158 \uC13C\uD130", reports: "\uBCF4\uACE0\uC11C", settings: "\uC124\uC815" },
+    nav: { dashboard: "\uB300\uC2DC\uBCF4\uB4DC", companies: "\uD68C\uC0AC", riskAnalysis: "\uC704\uD5D8 \uBD84\uC11D", incidents: "\uC0AC\uACE0", solutionCenter: "\uC194\uB8E8\uC158 \uC13C\uD130", training: "\uAD50\uC721 \uBC0F \uC2DC\uD5D8", reports: "\uBCF4\uACE0\uC11C", settings: "\uC124\uC815" },
     landing: { badge: "AI \uAE30\uBC18 \uC0B0\uC5C5 \uC548\uC804\uBCF4\uAC74 \uD50C\uB7AB\uD3FC", heroTitle1: "\uC0B0\uC5C5 \uC548\uC804", heroTitle2: "\uC704\uD5D8 \uAD00\uB9AC", heroTitle3: "\uB97C \uD601\uC2E0\uD558\uB2E4" },
     auth: { loginTitle: "\uB85C\uADF8\uC778", loginEmail: "\uC774\uBA54\uC77C", loginPassword: "\uBE44\uBC00\uBC88\uD638", loginButton: "\uB85C\uADF8\uC778" },
     solutionCenter: { title: "\uC194\uB8E8\uC158 \uC13C\uD130" },
   },
   az: {
     common: { login: "Daxil ol", register: "Ba\u015Fla", save: "Saxla", cancel: "L\u0259\u011Fv et", delete: "Sil", search: "Axtar", loading: "Y\u00FCkl\u0259nir...", download: "Y\u00FCkl\u0259", copy: "Kopyala" },
-    nav: { dashboard: "\u0130dar\u0259 panel", companies: "\u015Firk\u0259tl\u0259r", riskAnalysis: "Risk t\u0259hlili", incidents: "Hadis\u0259l\u0259r", documents: "S\u0259n\u0259dl\u0259r", solutionCenter: "H\u0259ll m\u0259rk\u0259zi", reports: "Hesabatlar", settings: "T\u0259nziml\u0259m\u0259l\u0259r" },
+    nav: { dashboard: "\u0130dar\u0259 panel", companies: "\u015Firk\u0259tl\u0259r", riskAnalysis: "Risk t\u0259hlili", incidents: "Hadis\u0259l\u0259r", documents: "S\u0259n\u0259dl\u0259r", solutionCenter: "H\u0259ll m\u0259rk\u0259zi", training: "T\u0259lim v\u0259 imtahanlar", reports: "Hesabatlar", settings: "T\u0259nziml\u0259m\u0259l\u0259r" },
     landing: { badge: "AI il\u0259 i\u015F sa\u011Flaml\u0131\u011F\u0131 v\u0259 t\u0259hl\u00FCk\u0259sizlik platformas\u0131", heroTitle1: "\u0130\u015F sa\u011Flaml\u0131\u011F\u0131", heroTitle2: "risk idar\u0259etm\u0259sini", heroTitle3: "d\u0259yi\u015Fdirin" },
     auth: { loginTitle: "Daxil ol", loginEmail: "E-poçt", loginPassword: "\u015Fifr\u0259", loginButton: "Daxil ol" },
     solutionCenter: { title: "H\u0259ll m\u0259rk\u0259zi" },
+  },
+  id: {
+    common: { login: "Masuk", register: "Mulai", save: "Simpan", cancel: "Batal", delete: "Hapus", search: "Cari", loading: "Memuat...", download: "Unduh", copy: "Salin" },
+    nav: { dashboard: "Dasbor", companies: "Perusahaan", riskAnalysis: "Analisis Risiko", incidents: "Insiden", documents: "Dokumen", solutionCenter: "Pusat Solusi", training: "Pelatihan & Ujian", reports: "Laporan", settings: "Pengaturan" },
+    landing: { badge: "Platform K3 berbasis AI", heroTitle1: "Kesehatan kerja", heroTitle2: "manajemen risiko", heroTitle3: "yang inovatif" },
+    auth: { loginTitle: "Masuk", loginEmail: "Email", loginPassword: "Kata sandi", loginButton: "Masuk" },
+    solutionCenter: { title: "Pusat Solusi" },
   },
 };
 

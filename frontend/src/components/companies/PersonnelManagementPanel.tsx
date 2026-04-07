@@ -118,6 +118,15 @@ function PersonnelHoverCard({ person }: { person: PersonnelRecord }) {
               <p className="font-medium text-foreground">{person.emergencyContactName} {person.emergencyContactPhone && `\u00b7 ${person.emergencyContactPhone}`}</p>
             </div>
           )}
+          {/* Özlük Sayfası linki */}
+          <a
+            href={`/personnel/${person.id}`}
+            className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/20"
+            onClick={e => e.stopPropagation()}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Özlük Sayfası
+          </a>
         </div>,
         document.body,
       )
@@ -375,6 +384,7 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                       <td className="px-3 py-2.5 text-xs text-muted-foreground">{TYPE_LABELS[p.employmentType] || p.employmentType}</td>
                       <td className="px-3 py-2.5">
                         <div className="flex items-center gap-2">
+                          <a href={`/personnel/${p.id}`} className="text-xs font-medium text-emerald-600 hover:underline">Özlük</a>
                           <button type="button" onClick={() => setPolicyModal({ personnelId: p.id, name: `${p.firstName} ${p.lastName}` })} className="text-xs font-medium text-primary hover:underline">Özel</button>
                           <button type="button" onClick={() => void rm(p.id)} disabled={removingId === p.id} className="text-xs font-medium text-danger hover:underline disabled:opacity-50">{removingId === p.id ? "..." : "Sil"}</button>
                         </div>
