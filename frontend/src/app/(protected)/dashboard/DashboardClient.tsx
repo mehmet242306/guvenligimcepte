@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  ShieldAlert, FileText, Users, AlertTriangle, GraduationCap,
+  ShieldAlert, FileText, AlertTriangle, GraduationCap,
   Siren, ClipboardCheck, TrendingUp, Calendar, Building2,
-  ChevronRight, Plus, BarChart3, Clock, CheckCircle2,
+  ChevronRight, BarChart3,
   FileEdit, PenTool, Download, Sparkles,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';

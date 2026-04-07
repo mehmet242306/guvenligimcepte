@@ -69,7 +69,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [loading, setLoading] = useState(true);
   const [showSidebar, setShowSidebar] = useState(true);
-  const [versions, setVersions] = useState<DocumentVersionRecord[]>([]);
+  const [, setVersions] = useState<DocumentVersionRecord[]>([]);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [companyData, setCompanyData] = useState<CompanyVariableData>({});
@@ -254,6 +254,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
       setLoading(false);
     }
     load();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentId, qTemplateId]);
 
   // Auto-save
@@ -317,6 +318,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
     } finally {
       setSaving(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, editor, doc, title, status, groupKey, userId, companyData, router]);
 
   // Export

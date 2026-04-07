@@ -3,8 +3,8 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FileText, Plus, Search, ChevronDown, ChevronRight,
-  Clock, CheckCircle2, AlertCircle, FileEdit, Sparkles,
+  FileText, Search, ChevronDown, ChevronRight,
+  CheckCircle2, AlertCircle, FileEdit, Sparkles,
   UserCheck, Users, GraduationCap, ShieldAlert, Siren,
   AlertTriangle, Mail, ClipboardList, BookOpen, Eye as SearchIcon,
   UserCog, CalendarCheck, UserPlus, Award, MapPin, Wrench,
@@ -38,7 +38,7 @@ export function DocumentsClient() {
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [orgId, setOrgId] = useState<string | null>(null);
+  const [, setOrgId] = useState<string | null>(null);
   const [companies, setCompanies] = useState<CompanyOption[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>('');
 
