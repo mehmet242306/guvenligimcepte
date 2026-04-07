@@ -493,6 +493,7 @@ export function DofClient() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {photos.map((photo) => (
                 <div key={photo.id} className="group relative rounded-xl border border-border overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={photo.previewUrl} alt={photo.caption || "DÖF fotoğrafı"} className="aspect-video w-full object-cover" />
                   <button type="button" onClick={() => removePhoto(photo.id)}
                     className="absolute right-2 top-2 inline-flex size-7 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100">

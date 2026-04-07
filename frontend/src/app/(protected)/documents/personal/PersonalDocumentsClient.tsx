@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FileText, Plus, Search, ArrowLeft, Clock, CheckCircle2,
-  FileEdit, AlertCircle, Trash2, Download, Share2, PenTool,
+  FileEdit, AlertCircle, Share2,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { fetchDocuments, type DocumentRecord } from '@/lib/supabase/document-api';

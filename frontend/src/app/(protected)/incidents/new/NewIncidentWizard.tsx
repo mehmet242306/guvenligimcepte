@@ -92,7 +92,7 @@ export function NewIncidentWizard() {
   const [incidentType, setIncidentType] = usePersistedState<IncidentType | null>("incident:type", null);
 
   // Step 1: Company
-  const [companies, setCompanies] = useState<CompanyRecord[]>(() => loadCompanyDirectory());
+  const [companies] = useState<CompanyRecord[]>(() => loadCompanyDirectory());
   const [selectedCompanyId, setSelectedCompanyId] = usePersistedState<string | null>("incident:company", null);
   const [companySearch, setCompanySearch] = useState("");
 

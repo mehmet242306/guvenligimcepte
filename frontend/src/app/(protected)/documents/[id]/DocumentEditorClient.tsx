@@ -387,6 +387,7 @@ ${content}
 <script>setTimeout(()=>window.print(),500)<\/script>
 </body></html>`);
     printWindow.document.close();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor, title, companyData]);
 
 
@@ -542,6 +543,7 @@ ${content}
             {/* QR Code — sağ alt köşe */}
             {qrDataUrl && doc && (
               <div className="absolute bottom-6 right-6 flex flex-col items-center gap-1 opacity-70 hover:opacity-100 transition-opacity print:opacity-100" title={`Doğrulama: /share/${doc.share_token}`}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={qrDataUrl} alt="QR Doğrulama" className="w-16 h-16 rounded" />
                 <span className="text-[7px] text-gray-400 font-mono">RiskNova Doğrulama</span>
               </div>

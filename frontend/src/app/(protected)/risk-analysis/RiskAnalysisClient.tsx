@@ -12,9 +12,7 @@ import {
   type ChangeEvent,
   type MouseEvent as ReactMouseEvent,
 } from "react";
-import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Skeleton } from "@/components/ui/skeleton";
 import { StatusAlert } from "@/components/ui/status-alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -284,7 +282,7 @@ function severityLabel(severity: DetectionSeverity) {
   }
 }
 
-function severityBadge(severity: DetectionSeverity) {
+function _severityBadge(severity: DetectionSeverity) {
   switch (severity) {
     case "low": return "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300";
     case "medium": return "border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300";
