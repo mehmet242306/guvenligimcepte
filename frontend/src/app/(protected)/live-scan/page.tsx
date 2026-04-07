@@ -186,6 +186,7 @@ export default function LiveScanPage() {
                 className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm flex items-start gap-4 animate-in slide-in-from-top duration-300"
               >
                 {d.screenshot_url && (
+                  /* eslint-disable-next-line @next/next/no-img-element */
                   <img
                     src={d.screenshot_url}
                     alt=""

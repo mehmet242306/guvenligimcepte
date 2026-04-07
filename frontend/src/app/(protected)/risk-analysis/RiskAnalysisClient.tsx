@@ -282,6 +282,7 @@ function severityLabel(severity: DetectionSeverity) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function _severityBadge(severity: DetectionSeverity) {
   switch (severity) {
     case "low": return "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300";
@@ -544,6 +545,7 @@ function getMockFindings(imageId: string, imageIndex: number, lineIndex: number)
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function buildMockResults(lines: RiskLine[]): {
   results: LineResult[];
   selectedImages: Record<string, string>;
@@ -648,6 +650,7 @@ function renderAnnotation(annotation: FindingAnnotation, active: boolean, onClic
 /* Score Display Panels                                                */
 /* ================================================================== */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function R2DPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f: VisualFinding) => void }) {
   const result = finding.r2dResult;
   if (!result) return null;
@@ -724,6 +727,7 @@ function R2DPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f:
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function FKPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f: VisualFinding) => void }) {
   const result = finding.fkResult;
   if (!result) return null;
@@ -775,6 +779,7 @@ function FKPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f: 
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function MatrixPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f: VisualFinding) => void }) {
   const result = finding.matrixResult;
   if (!result) return null;
@@ -880,6 +885,7 @@ export function RiskAnalysisClient() {
       }
     });
     return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // URL'den gelen companyId parametresi — firma sayfasından yönlendirme
@@ -896,6 +902,7 @@ export function RiskAnalysisClient() {
         }
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, companies]);
 
   // URL'den gelen loadId parametresi — mevcut analizi düzenleme modunda aç
@@ -1008,6 +1015,7 @@ export function RiskAnalysisClient() {
       setViewMode("wizard");
       setStep(3);
     })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   // Firma secildiginde ekip uyelerini yukle

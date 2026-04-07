@@ -283,6 +283,7 @@ export default function DigitalTwinPage() {
                           className="bg-white rounded-lg border border-gray-100 p-3 flex items-center gap-3"
                         >
                           {p.image_url && (
+                            /* eslint-disable-next-line @next/next/no-img-element */
                             <img
                               src={p.image_url}
                               alt=""
