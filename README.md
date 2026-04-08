@@ -1,10 +1,28 @@
-# guvenligimcepte
+# RiskNova Platform
 
-AI destekli ISG risk analizi ve operasyon platformu frontend projesi.
+AI destekli ISG (Is Sagligi ve Guvenligi) risk analizi
+ve operasyon yonetim platformu.
 
-## Mevcut kapsam
-- Next.js + TypeScript frontend
-- Public ve protected sayfa akisi
-- Login / register / forgot-password / reset-password ekranlari
-- Dashboard ve operasyon modulleri
-- NextAuth tabanli giris altyapisi
+## Ozellikler
+- Gorsel AI risk analizi (10 farkli metodoloji)
+- Turk mevzuat RAG entegrasyonu (2347+ madde)
+- Nova AI asistan
+- Personel, egitim, KKD takibi
+- Otomatik dokuman uretimi (DOCX, PPTX, XLSX, PDF)
+- 13 dil destegi
+- Cok firmali mimari
+
+## Teknoloji
+- Next.js 16, React 19, TypeScript, Tailwind CSS
+- Supabase (Postgres, Auth, Storage, Edge Functions)
+- Claude Sonnet 4 (Anthropic API)
+
+## Kurulum
+```
+cd frontend
+npm install
+npm run dev
+```
+
+## Lisans
+Proprietary - All rights reserved

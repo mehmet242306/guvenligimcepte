@@ -1,10 +1,13 @@
-# guvenligimcepte
+# RiskNova Frontend
 
-AI destekli ISG risk analizi ve operasyon platformu frontend projesi.
+Next.js 16 + React 19 tabanli RiskNova platformu on yuzu.
 
-## Mevcut kapsam
-- Next.js + TypeScript frontend
-- Public ve protected sayfa akisi
-- Login / register / forgot-password / reset-password ekranlari
-- Dashboard ve operasyon modulleri
-- NextAuth tabanli giris altyapisi
+Daha fazla bilgi icin kok dizindeki README.md dosyasina bakin.
+
+## Gelistirme
+```
+npm install
+npm run dev
+```
+
+Tarayicida http://localhost:3000 adresini acin.

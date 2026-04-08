@@ -34,7 +34,7 @@ export const userProfile: UserProfile = {
   phone: "0532 000 00 00",
   city: "Elazığ",
   serviceModel: "Kendi Nam ve Hesabına",
-  organization: "güvenliğimcepte",
+  organization: "risknova",
   profileImage: null,
   bio: "Saha denetimi, risk analizi, dokümantasyon ve aksiyon takibi süreçlerini yöneten profesyonel kullanıcı profili.",
   activeCompanies: 4,
