@@ -10,6 +10,7 @@ import { ChatWidget } from "@/components/chat/ChatWidget";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 
 type ProtectedShellProps = { children: ReactNode };
 
@@ -23,18 +24,17 @@ const primaryNav = [
 ];
 
 /* Second bar: other modules */
-const secondaryNav = [
+type NavItem = { href: string; key: string; adminOnly?: boolean };
+const secondaryNav: NavItem[] = [
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/planner", key: "nav.planner" },
   { href: "/timesheet", key: "nav.timesheet" },
   { href: "/solution-center", key: "nav.solutionCenter" },
   { href: "/training", key: "nav.training" },
-  { href: "/digital-twin", key: "nav.digitalTwin" },
+  { href: "/digital-twin", key: "nav.digitalTwin", adminOnly: true },
   { href: "/reports", key: "nav.reports" },
   { href: "/settings", key: "nav.settings" },
 ];
-
-const allNav = [...primaryNav, ...secondaryNav];
 
 function isActive(pathname: string, href: string) {
   if (href === "/dashboard") return pathname === "/dashboard";
@@ -74,12 +74,12 @@ function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={dark ? "Acik tema" : "Koyu tema"}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/12 hover:text-white"
+      className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white"
     >
       {dark ? (
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       ) : (
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       )}
     </button>
   );
@@ -175,14 +175,14 @@ function NotificationBell() {
       <button
         type="button"
         onClick={() => { setOpen(!open); if (!open) void loadNotifications(); }}
-        className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/12 hover:text-white hover:shadow-[0_0_8px_rgba(251,191,36,0.2)]"
+        className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white"
         aria-label="Bildirimler"
       >
-        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+        <svg className="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
         </svg>
         {unreadCount > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white shadow-[0_0_6px_rgba(239,68,68,0.5)] animate-pulse" style={{ animationDuration: "2s" }}>
+          <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow-[0_0_6px_rgba(239,68,68,0.5)] animate-pulse" style={{ animationDuration: "2s" }}>
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -267,6 +267,10 @@ function NotificationBell() {
 export function ProtectedShell({ children }: ProtectedShellProps) {
   const pathname = usePathname();
   const { t } = useI18n();
+  const isAdmin = useIsAdmin();
+
+  const visibleSecondaryNav = secondaryNav.filter((i) => !i.adminOnly || isAdmin === true);
+  const visibleAllNav = [...primaryNav, ...visibleSecondaryNav];
 
   return (
     <div className="app-shell">
@@ -278,7 +282,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
           <div className="h-[2px] w-full bg-[linear-gradient(90deg,transparent_5%,var(--gold)_50%,transparent_95%)]" />
-          <div className="relative mx-auto h-[80px] w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="relative mx-auto h-[96px] w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             {/* Left: Brand — absolute so it doesn't affect nav centering */}
             <div className="absolute left-4 top-1/2 -translate-y-1/2 sm:left-6 lg:left-8">
               <Brand href="/dashboard" inverted />
@@ -309,13 +313,13 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
             </nav>
 
             {/* Right: Actions — absolute so it doesn't affect nav centering */}
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2.5 sm:right-6 lg:right-8">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 sm:right-6 lg:right-8">
               <LanguageSelector variant="dark" />
               <NotificationBell />
               <ThemeToggle />
               <Link
                 href="/profile"
-                className="inline-flex h-11 items-center rounded-xl px-4 text-[15px] font-semibold text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/12 hover:text-white"
+                className="inline-flex h-11 items-center rounded-xl px-4 text-[15px] font-semibold text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white"
               >
                 {t("common.profile")}
               </Link>
@@ -328,7 +332,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
         <div className="hidden h-[2px] md:block" style={{ background: "linear-gradient(90deg, transparent 5%, #10B981 50%, transparent 95%)", marginBottom: "-1px", position: "relative", zIndex: 1 }} />
         <div className="hidden md:block relative z-0" style={{ background: "var(--secondary-nav-bg-solid)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
           <div className="mx-auto flex h-12 w-full max-w-7xl items-center justify-center gap-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
-            {secondaryNav.map((item) => {
+            {visibleSecondaryNav.map((item) => {
               const act = isActive(pathname, item.href);
               return (
                 <Link
@@ -356,7 +360,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
       <div className="border-b md:hidden" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
           <div className="flex gap-0.5 overflow-x-auto py-0">
-            {allNav.map((item) => {
+            {visibleAllNav.map((item) => {
               const act = isActive(pathname, item.href);
               return (
                 <Link

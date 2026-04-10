@@ -1,7 +1,23 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
+
+// 3D viewer is client-only (Three.js requires DOM)
+const TwinScene3D = dynamic(() => import("./TwinScene3D"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[520px] items-center justify-center rounded-2xl border border-border bg-slate-950 text-sm text-muted-foreground">
+      3D sahne yükleniyor...
+    </div>
+  ),
+});
+
+const BimUploader = dynamic(() => import("./BimUploader"), { ssr: false });
+const LiveStreamViewer = dynamic(() => import("./LiveStreamViewer"), { ssr: false });
+const CategoryRiskView = dynamic(() => import("./CategoryRiskView"), { ssr: false });
+
 import { Badge } from "@/components/ui/badge";
 import {
   listScanSessions,
@@ -17,6 +33,7 @@ import {
   type TwinModel,
   type SessionStats,
 } from "@/lib/supabase/digital-twin-api";
+import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 
 /* ================================================================== */
 /* Constants                                                           */
@@ -48,13 +65,15 @@ const CATEGORY_LABELS: Record<string, string> = {
   diger: "Diger",
 };
 
-type ViewMode = "map" | "cloud" | "timeline";
+type ViewMode = "map" | "cloud" | "3d" | "timeline";
 
 /* ================================================================== */
 /* MAIN COMPONENT                                                      */
 /* ================================================================== */
 
 export default function DigitalTwinPage() {
+  const isAdmin = useIsAdmin();
+
   // Data states
   const [sessions, setSessions] = useState<ScanSession[]>([]);
   const [models, setModels] = useState<TwinModel[]>([]);
@@ -143,6 +162,28 @@ export default function DigitalTwinPage() {
     }));
   }, [points]);
 
+  // Admin gating — Dijital İkiz sadece admin erişimine açık (geliştirme aşamasında)
+  if (isAdmin === null) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center p-8">
+        <div className="text-sm text-muted-foreground">Yetki kontrol ediliyor...</div>
+      </div>
+    );
+  }
+  if (isAdmin === false) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center p-8">
+        <div className="max-w-md rounded-2xl border border-border bg-card p-8 text-center">
+          <div className="mb-3 text-5xl">🔒</div>
+          <h1 className="mb-2 text-xl font-bold text-foreground">Erişim Kısıtlı</h1>
+          <p className="text-sm text-muted-foreground">
+            Dijital İkiz modülü şu anda geliştirme aşamasında olup yalnızca sistem yöneticisine açıktır.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto">
       {/* ── Header ── */}
@@ -170,6 +211,16 @@ export default function DigitalTwinPage() {
             <p className={`mt-1 text-2xl font-bold tabular-nums ${m.warn ? "text-amber-500" : "text-foreground"}`}>{m.v}</p>
           </div>
         ))}
+      </div>
+
+      {/* 🔴 Canlı Saha Taraması İzleyici */}
+      <div className="mt-6">
+        <LiveStreamViewer />
+      </div>
+
+      {/* 🎯 Kategorilere Göre Riskler */}
+      <div className="mt-6">
+        <CategoryRiskView />
       </div>
 
       {loading ? (
@@ -290,10 +341,10 @@ export default function DigitalTwinPage() {
                       </p>
                     </div>
                     <div className="flex rounded-lg border border-border bg-secondary/30">
-                      {(["map", "cloud", "timeline"] as ViewMode[]).map((v) => (
+                      {(["map", "cloud", "3d", "timeline"] as ViewMode[]).map((v) => (
                         <button key={v} type="button" onClick={() => setViewMode(v)}
                           className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === v ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"} ${v === "map" ? "rounded-l-lg" : v === "timeline" ? "rounded-r-lg" : ""}`}>
-                          {v === "map" ? "Harita" : v === "cloud" ? "Nokta Bulutu" : "Zaman Cizgisi"}
+                          {v === "map" ? "Harita" : v === "cloud" ? "2.5D Bulut" : v === "3d" ? "🎮 Gerçek 3D" : "Zaman Cizgisi"}
                         </button>
                       ))}
                     </div>
@@ -510,6 +561,30 @@ export default function DigitalTwinPage() {
                     {/* Info overlay */}
                     <div className="absolute top-3 left-3 rounded-lg bg-black/60 px-3 py-2 backdrop-blur-sm">
                       <p className="text-[10px] text-slate-400">{points.length} nokta · {detections.filter((d) => !d.isResolved).length} acik risk</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── REAL 3D VIEW (Three.js) ── */}
+                {viewMode === "3d" && (
+                  <div className="space-y-3">
+                    <TwinScene3D
+                      points={points}
+                      onPointClick={(p) => setSelectedPoint(p)}
+                    />
+                    <BimUploader
+                      companyId={selectedSession?.companyId}
+                      onUploaded={(model) => {
+                        console.log("BIM model uploaded:", model);
+                      }}
+                    />
+                    <div className="rounded-xl border border-border bg-card p-4">
+                      <h4 className="text-xs font-semibold text-foreground mb-2">🎮 Gerçek 3D Görüntüleyici</h4>
+                      <p className="text-[11px] text-muted-foreground leading-relaxed">
+                        Bu mod Three.js tabanlı gerçek 3D sahne oluşturur. GPS koordinatları + altitude değerleri kullanılarak noktalar uzamsal olarak konumlandırılır.
+                        Riskli noktalar pulse animasyonlu glow efekti ile vurgulanır, yol çizgisi tarama sırasını gösterir.
+                        BIM (.ifc) dosyanızı yükleyerek sahanın 3D modelini scan verileri ile entegre edebilirsiniz.
+                      </p>
                     </div>
                   </div>
                 )}

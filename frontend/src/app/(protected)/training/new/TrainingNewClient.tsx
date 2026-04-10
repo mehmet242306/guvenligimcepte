@@ -40,6 +40,7 @@ export function TrainingNewClient() {
   const [passScore, setPassScore] = useState(70);
   const [timeLimit, setTimeLimit] = useState(30);
   const [shuffleQuestions, setShuffleQuestions] = useState(false);
+  const [autoIssueCertificate, setAutoIssueCertificate] = useState(true);
   const [selectedCompanyIds, setSelectedCompanyIds] = useState<Set<string>>(new Set());
   const [companies, setCompanies] = useState<{ id: string; name: string }[]>([]);
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
@@ -206,6 +207,7 @@ export function TrainingNewClient() {
       passScore: type === "exam" ? passScore : null,
       timeLimitMinutes: type === "exam" ? timeLimit : null,
       shuffleQuestions: type === "exam" ? shuffleQuestions : false,
+      settings: type === "exam" ? { auto_issue_certificate: autoIssueCertificate } : {},
     });
 
     if (!survey) { setSaving(false); return; }
@@ -231,7 +233,7 @@ export function TrainingNewClient() {
   const filteredCompanies = companies.filter(c => !companySearch || c.name.toLowerCase().includes(companySearch.toLowerCase()));
 
   return (
-    <div className="min-h-screen bg-[var(--page-bg,#f8f9fa)]">
+    <div className="min-h-screen bg-[var(--background)]">
       <div className="mx-auto max-w-4xl px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -395,7 +397,7 @@ export function TrainingNewClient() {
                             value={companySearch}
                             onChange={e => setCompanySearch(e.target.value)}
                             placeholder="Firma ara..."
-                            className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg,#f8f9fa)] py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--gold)]/30"
+                            className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--gold)]/30"
                             autoFocus
                           />
                         </div>
@@ -451,16 +453,30 @@ export function TrainingNewClient() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="mb-1 block text-xs text-[var(--muted-foreground)]">Geçme Puanı (%)</label>
-                    <input type="number" value={passScore} onChange={e => setPassScore(Number(e.target.value))} min={0} max={100} className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm dark:bg-[var(--card)]" />
+                    <input type="number" value={passScore} onChange={e => setPassScore(Number(e.target.value))} min={0} max={100} className="w-full rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--foreground)]" />
                   </div>
                   <div>
                     <label className="mb-1 block text-xs text-[var(--muted-foreground)]">Süre Sınırı (dk)</label>
-                    <input type="number" value={timeLimit} onChange={e => setTimeLimit(Number(e.target.value))} min={1} className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm dark:bg-[var(--card)]" />
+                    <input type="number" value={timeLimit} onChange={e => setTimeLimit(Number(e.target.value))} min={1} className="w-full rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--foreground)]" />
                   </div>
                 </div>
                 <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
                   <input type="checkbox" checked={shuffleQuestions} onChange={e => setShuffleQuestions(e.target.checked)} className="rounded border-[var(--border)]" />
                   Soruları karıştır
+                </label>
+                <label className="flex items-start gap-2 text-sm text-[var(--foreground)]">
+                  <input
+                    type="checkbox"
+                    checked={autoIssueCertificate}
+                    onChange={(e) => setAutoIssueCertificate(e.target.checked)}
+                    className="mt-0.5 rounded border-[var(--border)]"
+                  />
+                  <span>
+                    <span className="font-semibold">🏆 Otomatik Sertifika</span>
+                    <span className="ml-1 text-xs text-[var(--muted-foreground)]">
+                      (geçme puanını aşan her katılımcıya otomatik sertifika verilir)
+                    </span>
+                  </span>
                 </label>
               </div>
             )}
@@ -498,7 +514,7 @@ export function TrainingNewClient() {
                   ? "ör: 6331 sayılı İSG Kanunu, temel İSG kavramları, risk değerlendirmesi, kişisel koruyucu donanım (KKD), acil durum prosedürleri"
                   : "ör: Çalışan memnuniyeti, iş güvenliği kültürü, eğitim ihtiyaçları"}
                 rows={3}
-                className="w-full rounded-xl border border-[var(--border)] bg-[var(--page-bg,#f8f9fa)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30 resize-none"
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30 resize-none"
               />
             </div>
 
@@ -546,7 +562,7 @@ export function TrainingNewClient() {
             </div>
 
             {/* Summary */}
-            <div className="rounded-xl bg-[var(--page-bg,#f8f9fa)] p-4">
+            <div className="rounded-xl bg-[var(--background)] p-4">
               <h4 className="text-sm font-medium text-[var(--foreground)]">Özet</h4>
               <div className="mt-2 flex flex-wrap gap-3 text-xs text-[var(--muted-foreground)]">
                 <span className="rounded-full bg-[var(--card)] px-3 py-1 border border-[var(--border)]">
@@ -646,7 +662,7 @@ export function TrainingNewClient() {
                   value={q.questionText}
                   onChange={e => updateQuestion(q.id, { questionText: e.target.value })}
                   placeholder="Soruyu yazın..."
-                  className="mb-3 w-full rounded-xl border border-[var(--border)] bg-[var(--page-bg,#f8f9fa)] px-4 py-3 text-sm font-medium text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30"
+                  className="mb-3 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm font-medium text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30"
                 />
 
                 <div className="mb-3 flex flex-wrap gap-2">
@@ -678,7 +694,7 @@ export function TrainingNewClient() {
                           value={opt.label}
                           onChange={e => updateOption(q.id, oi, { label: e.target.value })}
                           placeholder={`Seçenek ${opt.value}`}
-                          className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg,#f8f9fa)] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--gold)]/30"
+                          className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--gold)]/30"
                         />
                         {type === "exam" && (
                           <button
@@ -711,21 +727,21 @@ export function TrainingNewClient() {
 
                 {q.questionType === "yes_no" && (
                   <div className="flex gap-2">
-                    <div className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-center text-sm text-[var(--muted-foreground)]">Evet</div>
-                    <div className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-3 py-2 text-center text-sm text-[var(--muted-foreground)]">Hayır</div>
+                    <div className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-center text-sm text-[var(--muted-foreground)]">Evet</div>
+                    <div className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-center text-sm text-[var(--muted-foreground)]">Hayır</div>
                   </div>
                 )}
 
                 {q.questionType === "scale" && (
                   <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map(n => (
-                      <div key={n} className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] px-2 py-2 text-center text-sm text-[var(--muted-foreground)]">{n}</div>
+                      <div key={n} className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--background)] px-2 py-2 text-center text-sm text-[var(--muted-foreground)]">{n}</div>
                     ))}
                   </div>
                 )}
 
                 {q.questionType === "open_ended" && (
-                  <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--page-bg)] px-3 py-4 text-center text-xs text-[var(--muted-foreground)]">
+                  <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--background)] px-3 py-4 text-center text-xs text-[var(--muted-foreground)]">
                     Açık uçlu metin alanı
                   </div>
                 )}
