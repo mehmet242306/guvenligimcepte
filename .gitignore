@@ -67,3 +67,8 @@ temp/
 *.bak*
 src/generated/
 generated/
+
+# Database backups (yedekler Git'e gitmez, sadece manifest/log commit edilir)
+backups/*
+!backups/backup_log.md
+!backups/.gitkeep
