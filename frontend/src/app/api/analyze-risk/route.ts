@@ -671,8 +671,19 @@ Koruma Katmanlar\u0131: Her katman i\u00E7in isim + PFD de\u011Feri
 /* Build full prompts per method                                       */
 /* ================================================================== */
 
-function buildSystemPrompt(method: AnalysisMethod): string {
-  return BASE_PROMPT + "\n" + METHOD_PROMPTS[method].systemSection + "\n" + LEGAL_PROMPT;
+function buildSystemPrompt(method: AnalysisMethod, customCategories?: string[]): string {
+  let prompt = BASE_PROMPT;
+
+  // Dinamik kategori listesi varsa, sabit listeyi değiştir
+  if (customCategories && customCategories.length > 0) {
+    const allCats = customCategories.join(", ");
+    prompt = prompt.replace(
+      /Kategori \(Türkçe\): .+$/m,
+      `Kategori (Türkçe): ${allCats}`
+    );
+  }
+
+  return prompt + "\n" + METHOD_PROMPTS[method].systemSection + "\n" + LEGAL_PROMPT;
 }
 
 function buildUserPrompt(method: AnalysisMethod): string {
@@ -735,6 +746,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { imageBase64, mimeType } = body;
     const method: AnalysisMethod = body.method ?? "r_skor";
+    const customCategories: string[] | undefined = body.categories;
 
     if (!imageBase64 || !mimeType) {
       return NextResponse.json({ error: "imageBase64 ve mimeType gerekli" }, { status: 400 });
@@ -749,7 +761,7 @@ export async function POST(request: NextRequest) {
       model: "claude-sonnet-4-20250514",
       max_tokens: 4096,
       temperature: 0,
-      system: buildSystemPrompt(method),
+      system: buildSystemPrompt(method, customCategories),
       messages: [
         {
           role: "user",

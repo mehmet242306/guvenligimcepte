@@ -54,8 +54,8 @@ const STATUS_MAP: Record<string, { label: string; cls: string; next?: string }> 
   paid:      { label: "Ödendi",     cls: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400" },
 };
 
-const selectCls = "h-10 rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-slate-800 dark:text-white dark:border-slate-600";
-const inputCls = "h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-slate-800 dark:text-white dark:border-slate-600";
+const selectCls = "h-10 rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700";
+const inputCls = "h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700";
 const btnPrimary = "inline-flex items-center gap-1.5 rounded-xl bg-[#0b5fc1] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0a4fa8] transition-colors";
 const btnSecondary = "inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors";
 
@@ -540,7 +540,7 @@ export default function TimesheetClient() {
                                   onChange={(e) => setEditValue(e.target.value)}
                                   onKeyDown={(e) => handleCellKey(e, c.id, d)}
                                   onBlur={() => saveCell(c.id, d, editValue.trim() ? parseFloat(editValue) : null)}
-                                  className="w-full h-6 rounded border border-[#0b5fc1] bg-white dark:bg-slate-800 px-1 text-center text-xs font-medium text-foreground focus:outline-none" />
+                                  className="w-full h-6 rounded border border-[#0b5fc1] bg-white dark:bg-neutral-900 px-1 text-center text-xs font-medium text-foreground focus:outline-none" />
                               ) : entry ? entry.hours : ""}
                             </td>
                           );
@@ -718,7 +718,7 @@ export default function TimesheetClient() {
           <SettingsCard title="Alt Not">
             <textarea value={settings.footer_note} onChange={(e) => setSettings((s) => ({ ...s, footer_note: e.target.value }))}
               placeholder="Excel/PDF çıktısının alt kısmında görünecek not..." rows={3}
-              className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 resize-none" />
+              className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 resize-none" />
           </SettingsCard>
 
           <div className="flex justify-end">

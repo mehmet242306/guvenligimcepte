@@ -93,15 +93,15 @@ export function PersonalDocumentsClient() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3 mb-5">
-        <div className="border border-[var(--gold)]/20 rounded-xl p-3 bg-white dark:bg-[#1a2234]">
+        <div className="border border-[var(--gold)]/20 rounded-xl p-3 bg-white dark:bg-[#111111]">
           <p className="text-xs text-[var(--text-secondary)]">Toplam</p>
           <p className="text-2xl font-bold text-[var(--text-primary)]">{stats.total}</p>
         </div>
-        <div className="border border-[var(--gold)]/20 rounded-xl p-3 bg-white dark:bg-[#1a2234]">
+        <div className="border border-[var(--gold)]/20 rounded-xl p-3 bg-white dark:bg-[#111111]">
           <p className="text-xs text-green-600">Hazır</p>
           <p className="text-2xl font-bold text-green-600">{stats.hazir}</p>
         </div>
-        <div className="border border-[var(--gold)]/20 rounded-xl p-3 bg-white dark:bg-[#1a2234]">
+        <div className="border border-[var(--gold)]/20 rounded-xl p-3 bg-white dark:bg-[#111111]">
           <p className="text-xs text-yellow-600">Taslak</p>
           <p className="text-2xl font-bold text-yellow-600">{stats.taslak}</p>
         </div>
@@ -114,13 +114,13 @@ export function PersonalDocumentsClient() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Doküman ara..."
-          className="w-full pl-9 pr-4 py-2.5 text-sm rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#0f172a] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/50"
+          className="w-full pl-9 pr-4 py-2.5 text-sm rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#000000] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/50"
         />
       </div>
 
       {/* Document List */}
       {filtered.length === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-[#1a2234] rounded-xl border border-[var(--gold)]/20">
+        <div className="text-center py-16 bg-white dark:bg-[#111111] rounded-xl border border-[var(--gold)]/20">
           <FileText size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-3" />
           <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1">
             {searchQuery ? 'Sonuç bulunamadı' : 'Henüz doküman yok'}
@@ -147,7 +147,7 @@ export function PersonalDocumentsClient() {
               <div
                 key={doc.id}
                 onClick={() => router.push(`/documents/${doc.id}`)}
-                className="flex items-center gap-4 px-4 py-3 bg-white dark:bg-[#1a2234] border border-[var(--gold)]/20 rounded-xl hover:border-[var(--gold)]/40 hover:shadow-sm cursor-pointer transition-all"
+                className="flex items-center gap-4 px-4 py-3 bg-white dark:bg-[#111111] border border-[var(--gold)]/20 rounded-xl hover:border-[var(--gold)]/40 hover:shadow-sm cursor-pointer transition-all"
               >
                 <FileText size={18} className="text-[var(--gold)] shrink-0" />
                 <div className="flex-1 min-w-0">

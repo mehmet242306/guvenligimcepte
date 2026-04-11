@@ -80,7 +80,7 @@ export function ShareModal({ isOpen, onClose, documentId, documentTitle, shareTo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white dark:bg-[#1e293b] rounded-xl shadow-2xl w-[420px] max-w-[95vw] border border-[var(--gold)]/20">
+      <div className="bg-white dark:bg-[#111111] rounded-xl shadow-2xl w-[420px] max-w-[95vw] border border-[var(--gold)]/20">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--gold)]/20">
           <div className="flex items-center gap-2">
@@ -118,7 +118,7 @@ export function ShareModal({ isOpen, onClose, documentId, documentTitle, shareTo
             <>
               {/* Link */}
               <div className="flex items-center gap-2">
-                <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-[#0f172a] rounded-lg border border-[var(--gold)]/20 overflow-hidden">
+                <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-[#000000] rounded-lg border border-[var(--gold)]/20 overflow-hidden">
                   <Link2 size={13} className="text-[var(--gold)] shrink-0" />
                   <span className="text-xs text-[var(--text-primary)] truncate">{shareUrl}</span>
                 </div>

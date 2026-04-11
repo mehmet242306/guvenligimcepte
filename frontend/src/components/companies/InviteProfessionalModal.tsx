@@ -253,7 +253,7 @@ export function InviteProfessionalModal({ open, companyId, onClose }: Props) {
 
   if (!open) return null;
 
-  const inp = "h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600";
+  const inp = "h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-neutral-900 dark:text-white dark:border-neutral-700";
 
   return (
     <div className="fixed inset-0 z-[70]">
@@ -291,7 +291,7 @@ export function InviteProfessionalModal({ open, companyId, onClose }: Props) {
                   <div className="mb-3">
                     <label className="mb-1 block text-xs font-medium text-muted-foreground">Ekipten seç</label>
                     <select
-                      className={`${inp} [&>option]:dark:bg-slate-800 [&>option]:dark:text-white`}
+                      className={`${inp} [&>option]:dark:bg-neutral-900 [&>option]:dark:text-white`}
                       value={selectedMemberId}
                       onChange={(e) => handleMemberSelect(e.target.value)}
                     >
@@ -442,7 +442,7 @@ export function InviteProfessionalModal({ open, companyId, onClose }: Props) {
                   <div>
                     <label className="mb-1 block text-xs font-medium text-muted-foreground">Geçerlilik süresi</label>
                     <select
-                      className={`${inp} [&>option]:dark:bg-slate-800 [&>option]:dark:text-white`}
+                      className={`${inp} [&>option]:dark:bg-neutral-900 [&>option]:dark:text-white`}
                       value={expiryDays}
                       onChange={(e) => setExpiryDays(Number(e.target.value) as 7 | 14 | 30)}
                     >
@@ -454,7 +454,7 @@ export function InviteProfessionalModal({ open, companyId, onClose }: Props) {
                   <div className="sm:col-span-2">
                     <label className="mb-1 block text-xs font-medium text-muted-foreground">Davet mesajı (opsiyonel)</label>
                     <textarea
-                      className="h-16 w-full resize-none rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600"
+                      className="h-16 w-full resize-none rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-neutral-900 dark:text-white dark:border-neutral-700"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="Kişiye iletmek istediğiniz bir mesaj..."

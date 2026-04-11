@@ -75,9 +75,9 @@ function Toggle({
       onClick={() => onChange(!checked)}
       className={[
         "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent",
-        "transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0b5fc1]/60",
+        "transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60",
         "disabled:cursor-not-allowed disabled:opacity-50",
-        checked ? "bg-[#0b5fc1]" : "bg-slate-300 dark:bg-slate-600",
+        checked ? "bg-primary" : "bg-slate-300 dark:bg-neutral-600",
       ].join(" ")}
     >
       <span
@@ -138,6 +138,18 @@ export default function ProfileClient() {
   }>>([]);
   const [activityLoading, setActivityLoading] = useState(false);
   const [activityFilter, setActivityFilter] = useState<"all" | "completed" | "pending" | "overdue">("all");
+
+  // Sessions
+  const [sessions, setSessions] = useState<Array<{
+    id: string;
+    device_type: string;
+    device_info: string | null;
+    ip_address: string | null;
+    last_active_at: string;
+    created_at: string;
+    session_token: string;
+  }>>([]);
+  const [currentSessionToken, setCurrentSessionToken] = useState<string | null>(null);
 
   // ─── Load profile data ───────────────────────────────────────────────────
 
@@ -227,6 +239,18 @@ export default function ProfileClient() {
           push_notifications: prefsRes.data.push_notifications ?? false,
         });
       }
+
+      // Load active sessions
+      const { data: sessData } = await supabase
+        .from("user_sessions")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (sessData) setSessions(sessData);
+
+      // Get current session token to identify "this device"
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      if (currentSession) setCurrentSessionToken(currentSession.access_token);
     } catch (err) {
       console.error("[ProfileClient] loadProfile error:", err);
     } finally {
@@ -471,12 +495,12 @@ export default function ProfileClient() {
     <div className="mx-auto max-w-4xl space-y-6">
 
       {/* ── Hero card ── */}
-      <div className="relative overflow-hidden rounded-[1.75rem] shadow-[var(--shadow-card)]">
-        <div className="bg-[linear-gradient(135deg,#0b5fc1_0%,#2788ff_50%,#97c51f_100%)] px-6 py-8 sm:px-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+      <div className="relative overflow-hidden rounded-[1.75rem] border border-border shadow-[var(--shadow-card)]">
+        <div className="bg-card px-6 py-10 sm:px-10">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
             {/* Avatar */}
             <div className="relative shrink-0">
-              <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-white text-2xl font-bold text-[#0b5fc1] shadow-xl">
+              <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-2xl border-4 border-[var(--gold)]/30 bg-secondary text-3xl font-bold text-[var(--gold)] shadow-lg">
                 {profile?.avatar_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -494,7 +518,7 @@ export default function ProfileClient() {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={avatarUploading}
-                className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-[#0b5fc1] text-white shadow-md transition hover:brightness-110 disabled:opacity-60"
+                className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[var(--gold)]/40 bg-[var(--gold)] text-[var(--primary-foreground)] shadow-md transition hover:brightness-110 disabled:opacity-60"
                 title="Fotoğraf değiştir"
               >
                 {avatarUploading ? (
@@ -520,24 +544,24 @@ export default function ProfileClient() {
 
             {/* Name / meta */}
             <div className="flex-1 pb-1">
-              <h1 className="text-2xl font-bold text-white drop-shadow-md">{displayName}</h1>
-              <p className="mt-0.5 text-sm text-white/90">{email}</p>
+              <h1 className="text-2xl font-bold text-foreground">{displayName}</h1>
+              <p className="mt-0.5 text-sm text-muted-foreground">{email}</p>
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 {profile?.title && (
-                  <span className="inline-flex items-center rounded-lg bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
+                  <span className="inline-flex items-center rounded-lg border border-border bg-secondary px-3 py-1 text-xs font-medium text-foreground shadow-sm">
                     {profile.title}
                   </span>
                 )}
                 {roles.map((r) => (
                   <span
                     key={r}
-                    className="inline-flex items-center rounded-lg bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-sm"
+                    className="inline-flex items-center rounded-lg border border-border bg-secondary px-3 py-1 text-xs font-medium text-foreground shadow-sm"
                   >
                     {ROLE_LABELS[r] ?? r}
                   </span>
                 ))}
                 {org && (
-                  <span className="inline-flex items-center gap-1 text-xs text-white/80">
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
                     </svg>
@@ -548,7 +572,7 @@ export default function ProfileClient() {
             </div>
 
             {/* Dates */}
-            <div className="hidden shrink-0 text-right text-xs text-white/80 sm:block">
+            <div className="hidden shrink-0 text-right text-xs text-muted-foreground sm:block">
               <div>Üyelik: {formatDate(profile?.created_at)}</div>
               <div>Güncelleme: {formatDate(profile?.updated_at)}</div>
             </div>
@@ -641,7 +665,7 @@ export default function ProfileClient() {
                 type="button"
                 onClick={handleProfileSave}
                 disabled={saving}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-[#0b5fc1] px-5 text-sm font-medium text-white shadow-lg hover:bg-[#0a4fa8] disabled:opacity-60 transition-colors"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-primary px-5 text-sm font-medium text-primary-foreground shadow-lg hover:bg-primary-hover disabled:opacity-60 transition-colors"
               >
                 {saving ? (
                   <>
@@ -730,7 +754,7 @@ export default function ProfileClient() {
                 type="button"
                 onClick={handlePasswordChange}
                 disabled={saving || !newPassword || !confirmPassword}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-[#0b5fc1] px-5 text-sm font-medium text-white shadow-lg hover:bg-[#0a4fa8] disabled:opacity-60 transition-colors"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-primary px-5 text-sm font-medium text-primary-foreground shadow-lg hover:bg-primary-hover disabled:opacity-60 transition-colors"
               >
                 {saving ? "Güncelleniyor..." : "Şifreyi Güncelle"}
               </button>
@@ -754,20 +778,76 @@ export default function ProfileClient() {
 
           {/* Active sessions */}
           <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-            <h2 className="mb-4 text-lg font-semibold text-foreground">Aktif Oturumlar</h2>
-            <div className="rounded-2xl border border-border bg-secondary/30 px-4 py-3">
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30">
-                  <svg className="h-4 w-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                  </svg>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">Aktif Oturumlar</h2>
+              <span className="text-xs text-muted-foreground">Maks. 1 Web + 1 Mobil</span>
+            </div>
+            <p className="mb-4 text-sm text-muted-foreground">
+              Hesabınız aynı anda en fazla bir web ve bir mobil cihazda kullanılabilir. Yeni bir cihazdan giriş yapıldığında aynı tipteki eski oturum otomatik sonlanır.
+            </p>
+            <div className="space-y-3">
+              {sessions.length === 0 && (
+                <div className="rounded-2xl border border-border bg-secondary/30 px-4 py-4 text-center text-sm text-muted-foreground">
+                  Aktif oturum bulunamadı.
                 </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">Mevcut Oturum</div>
-                  <div className="text-xs text-muted-foreground">Bu cihaz · Şu an aktif</div>
-                </div>
-                <span className="text-xs font-medium text-green-600 dark:text-green-400">Aktif</span>
-              </div>
+              )}
+              {sessions.map((s) => {
+                const isCurrent = s.session_token === currentSessionToken;
+                const isWeb = s.device_type === "web";
+                return (
+                  <div key={s.id} className="rounded-2xl border border-border bg-secondary/30 px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      {/* Device icon */}
+                      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${isCurrent ? "bg-green-100 dark:bg-green-900/30" : "bg-secondary"}`}>
+                        {isWeb ? (
+                          <svg className={`h-4 w-4 ${isCurrent ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" />
+                          </svg>
+                        ) : (
+                          <svg className={`h-4 w-4 ${isCurrent ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                          </svg>
+                        )}
+                      </div>
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-foreground">
+                            {s.device_info ?? (isWeb ? "Web Tarayıcı" : "Mobil Cihaz")}
+                          </span>
+                          {isCurrent && (
+                            <span className="inline-flex items-center rounded-md bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                              Bu cihaz
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {s.ip_address && s.ip_address !== "unknown" ? `IP: ${s.ip_address} · ` : ""}
+                          {isWeb ? "Web" : "Mobil"} · Giriş: {new Date(s.created_at).toLocaleDateString("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                        </div>
+                      </div>
+                      {/* Status / Action */}
+                      {isCurrent ? (
+                        <span className="text-xs font-medium text-green-600 dark:text-green-400">Aktif</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const supabase = createClient();
+                            if (!supabase) return;
+                            await supabase.from("user_sessions").delete().eq("id", s.id);
+                            setSessions((prev) => prev.filter((x) => x.id !== s.id));
+                            setFeedback({ type: "success", msg: "Oturum sonlandırıldı." });
+                          }}
+                          className="inline-flex items-center gap-1 rounded-lg border border-red-300 px-2.5 py-1 text-xs font-medium text-red-600 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
+                        >
+                          Sonlandır
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -894,7 +974,7 @@ export default function ProfileClient() {
               type="button"
               onClick={handlePreferencesSave}
               disabled={saving}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-[#0b5fc1] px-5 text-sm font-medium text-white shadow-lg hover:bg-[#0a4fa8] disabled:opacity-60 transition-colors"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-primary px-5 text-sm font-medium text-primary-foreground shadow-lg hover:bg-primary-hover disabled:opacity-60 transition-colors"
             >
               {saving ? (
                 <>

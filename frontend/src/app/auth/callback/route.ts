@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { registerSession } from "@/lib/session-tracker";
 
 /**
  * OAuth Callback Route
@@ -13,13 +15,21 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-    if (!error) {
+    if (!error && data.session && data.user) {
+      // Register session (max 1 web + 1 mobile)
+      const h = await headers();
+      const ua = h.get("user-agent") ?? "";
+      const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? h.get("x-real-ip") ?? "unknown";
+      await registerSession(supabase, data.user.id, data.session.access_token, ua, ip);
+
       return NextResponse.redirect(`${origin}${next}`);
     }
 
-    console.warn("[auth/callback] exchangeCodeForSession error:", error.message);
+    if (error) {
+      console.warn("[auth/callback] exchangeCodeForSession error:", error.message);
+    }
   }
 
   // Hata durumunda login sayfasına yönlendir

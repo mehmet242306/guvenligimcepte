@@ -86,10 +86,10 @@
 /* ================================================================== */
 :root.dark,
 [data-theme="dark"] {
-  --background: #0C0F1A;
+  --background: #000000;
   --foreground: #F1F5F9;
 
-  --card: #161A28;
+  --card: #111111;
   --card-foreground: #F1F5F9;
 
   --primary: #FBBF24;
@@ -100,14 +100,14 @@
   --accent-hover: #FBBF24;
   --accent-foreground: #422006;
 
-  --secondary: #161A28;
+  --secondary: #111111;
   --secondary-foreground: #F1F5F9;
 
-  --muted: #161A28;
+  --muted: #111111;
   --muted-foreground: #94A3B8;
 
-  --border: #232838;
-  --input: #161A28;
+  --border: #222222;
+  --input: #111111;
 
   --success: #34D399;
   --warning: #FB923C;
@@ -120,8 +120,8 @@
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.5);
 
-  /* ── Satır 1: Primary nav — koyu navy ── */
-  --header-bg-solid: #060810;
+  /* ── Satır 1: Primary nav — siyah ── */
+  --header-bg-solid: #000000;
   --header-muted: #8B9DC3;
   --header-active: #ffffff;
   --header-border: rgba(255, 255, 255, 0.06);
@@ -129,7 +129,7 @@
   --nav-icon-color: #B0BDD4;
 
   /* ── Satır 2: Secondary nav — koyu yeşil (dark, opak) ── */
-  --secondary-nav-bg-solid: #0a3d2f;
+  --secondary-nav-bg-solid: #0a2a1f;
   --secondary-nav-text: #6ee7b7;
   --secondary-nav-hover-text: #ecfdf5;
   --secondary-nav-hover-bg: rgba(255, 255, 255, 0.08);
@@ -137,7 +137,7 @@
   --secondary-nav-border: rgba(110, 231, 183, 0.10);
 
   /* ── Satır 3: Firma tabları — gold çerçeveli (dark) ── */
-  --tab-bar-bg-solid: #0A0E18;
+  --tab-bar-bg-solid: #0a0a0a;
   --tab-bar-text: #7B8DB0;
   --tab-bar-hover-text: #FBBF24;
   --tab-bar-hover-bg: rgba(251, 191, 36, 0.12);
@@ -149,9 +149,9 @@
   --gold: #FBBF24;
   --gold-light: #FDE68A;
   --gold-glow: rgba(251, 191, 36, 0.15);
-  --navy-deep: #080A12;
-  --navy-dark: #0C0F1A;
-  --navy-mid: #161A28;
+  --navy-deep: #000000;
+  --navy-dark: #000000;
+  --navy-mid: #111111;
 
   --hz-safe: #4ADE80;
   --hz-warn: #FB923C;
@@ -423,7 +423,7 @@ body,
   z-index: 1;
 }
 .dark .editor-canvas {
-  background: #111827;
+  background: #0a0a0a;
 }
 
 /* A4 page simulation */
@@ -438,7 +438,7 @@ body,
   position: relative;
 }
 .dark .a4-page {
-  background: #1e293b;
+  background: #111111;
   box-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
 }
 
@@ -493,7 +493,7 @@ body,
   font-weight: 600;
 }
 .dark .a4-page .tiptap th {
-  background: #1f2937;
+  background: #1a1a1a;
 }
 
 /* Selected table cells */
@@ -590,8 +590,8 @@ body,
   z-index: 30;
 }
 .dark .editor-toolbar {
-  background: #1e293b;
-  border-bottom-color: #334155;
+  background: #111111;
+  border-bottom-color: #222222;
 }
 /* Fix dark mode for native select/option */
 .editor-toolbar select {
@@ -599,7 +599,7 @@ body,
   color: #0f172a;
 }
 .dark .editor-toolbar select {
-  background: #1e293b;
+  background: #111111;
   color: #e2e8f0;
 }
 .editor-toolbar select option {
@@ -608,7 +608,7 @@ body,
   padding: 4px 8px;
 }
 .dark .editor-toolbar select option {
-  background: #1e293b;
+  background: #111111;
   color: #e2e8f0;
 }
 
@@ -618,8 +618,8 @@ body,
   border-top: 1px solid #e5e7eb;
 }
 .dark .editor-statusbar {
-  background: #0f172a;
-  border-top-color: #334155;
+  background: #000000;
+  border-top-color: #222222;
 }
 
 /* Color picker grid */

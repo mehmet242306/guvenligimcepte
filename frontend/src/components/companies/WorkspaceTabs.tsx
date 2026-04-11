@@ -7,6 +7,7 @@ import { DOCUMENT_GROUPS } from "@/lib/document-groups";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { CompanyRecord } from "@/lib/company-directory";
+import { TURKEY_CITIES, getDistricts } from "@/lib/turkey-locations";
 import { getGuidedTasks, getOverallRiskState } from "@/lib/workplace-status";
 import { listRiskAssessments, deleteRiskAssessment, loadRiskAssessment, listFindingsByCategory, updateFindingStatus, archiveRiskAssessment, type SavedAssessment, type FullAssessment, type FindingWithContext } from "@/lib/supabase/risk-assessment-api";
 import { createClient } from "@/lib/supabase/client";
@@ -93,8 +94,8 @@ export function OverviewTab({ company, upd, risk, tasks, setTab }: {
           <div><label className="text-xs font-medium text-muted-foreground">NACE Kodu</label><Input value={company.naceCode} onChange={(e) => upd({ naceCode: e.target.value })} className="mt-1" /></div>
           <div><label className="text-xs font-medium text-muted-foreground">{"Tehlike S\u0131n\u0131f\u0131"}</label><select value={company.hazardClass} onChange={(e) => upd({ hazardClass: e.target.value })} className={FC}><option value="">{"Se\u00E7iniz"}</option><option>Az Tehlikeli</option><option>Tehlikeli</option><option>{"\u00C7ok Tehlikeli"}</option></select></div>
           <div><label className="text-xs font-medium text-muted-foreground">Adres</label><Input value={company.address} onChange={(e) => upd({ address: e.target.value })} className="mt-1" /></div>
-          <div><label className="text-xs font-medium text-muted-foreground">{"İl"}</label><Input value={company.city} onChange={(e) => upd({ city: e.target.value })} className="mt-1" /></div>
-          <div><label className="text-xs font-medium text-muted-foreground">{"İlçe"}</label><Input value={company.district} onChange={(e) => upd({ district: e.target.value })} className="mt-1" /></div>
+          <div><label className="text-xs font-medium text-muted-foreground">{"İl"}</label><select value={company.city} onChange={(e) => { upd({ city: e.target.value, district: "" }); }} className={FC + " mt-1"}><option value="">İl seçin</option>{TURKEY_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}</select></div>
+          <div><label className="text-xs font-medium text-muted-foreground">{"İlçe"}</label><select value={company.district} onChange={(e) => upd({ district: e.target.value })} className={FC + " mt-1"} disabled={!company.city}><option value="">İlçe seçin</option>{getDistricts(company.city).map((d) => <option key={d} value={d}>{d}</option>)}</select></div>
           <div><label className="text-xs font-medium text-muted-foreground">Telefon</label><Input value={company.phone} onChange={(e) => upd({ phone: e.target.value })} className="mt-1" /></div>
           <div><label className="text-xs font-medium text-muted-foreground">Faks</label><Input value={company.fax} onChange={(e) => upd({ fax: e.target.value })} className="mt-1" /></div>
           <div><label className="text-xs font-medium text-muted-foreground">E-posta</label><Input value={company.email} onChange={(e) => upd({ email: e.target.value })} className="mt-1" /></div>
@@ -131,137 +132,177 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
   const locCount = company.locations.filter(Boolean).length;
   const depCount = company.departments.filter(Boolean).length;
 
+  const XBtn = ({ onClick }: { onClick: () => void }) => (
+    <button type="button" onClick={onClick} className="shrink-0 rounded-md p-1 text-muted-foreground/40 opacity-0 transition-all hover:bg-red-100 hover:text-red-600 group-hover:opacity-100 dark:hover:bg-red-900/20 dark:hover:text-red-400">
+      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+    </button>
+  );
+
+  const AddBtn = ({ label, onClick }: { label: string; onClick: () => void }) => (
+    <button type="button" onClick={onClick} className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary">
+      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+      {label}
+    </button>
+  );
+
   return (
     <div className="space-y-6">
       {/* Üst özet kartları */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-border bg-card p-4 text-center">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Lokasyon</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{locCount}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-4 text-center">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Bölüm</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{depCount}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-4 text-center">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Çalışan</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{company.employeeCount}</p>
-        </div>
+        {[
+          { label: "Lokasyon", value: locCount, icon: <svg className="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg> },
+          { label: "Birim", value: depCount, icon: <svg className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg> },
+          { label: "Personel", value: company.employeeCount, icon: <svg className="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg> },
+        ].map((s) => (
+          <div key={s.label} className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary">{s.icon}</div>
+            <div>
+              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{s.label}</p>
+              <p className="text-2xl font-bold tabular-nums text-foreground">{s.value}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Lokasyonlar ve Bölümler — yan yana */}
-      <div className="grid gap-5 lg:grid-cols-2">
-        {/* Lokasyonlar */}
-        <section className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 text-lg dark:bg-amber-900/30">📍</div>
-              <div>
-                <h3 className="text-sm font-semibold text-foreground">Lokasyonlar</h3>
-                <p className="text-[11px] text-muted-foreground">Firmanın fiziksel yerleşkeleri</p>
-              </div>
+      {/* Lokasyonlar — tam genişlik, her lokasyonun altına birim eklenebilir */}
+      <section className="rounded-xl border border-border bg-card shadow-[var(--shadow-soft)]">
+        <div className="flex items-center justify-between border-b border-border px-5 py-4">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/30">
+              <svg className="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
             </div>
-            <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{locCount}</span>
-          </div>
-          <div className="space-y-2">
-            {company.locations.map((loc, i) => (
-              <div key={i} className="group flex items-center gap-2 rounded-lg border border-border bg-secondary/30 p-2 transition-colors hover:border-primary/20">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-amber-500/10 text-[10px] font-bold text-amber-600 dark:text-amber-400">{i + 1}</span>
-                <Input
-                  value={loc}
-                  onChange={(e) => { const n = [...company.locations]; n[i] = e.target.value; upd({ locations: n }); }}
-                  className="flex-1 !border-0 !bg-transparent !shadow-none !ring-0 text-sm"
-                  placeholder="Lokasyon adı girin"
-                />
-                <button
-                  type="button"
-                  onClick={() => upd({ locations: company.locations.filter((_, j) => j !== i) })}
-                  className="shrink-0 rounded-md p-1 text-muted-foreground/40 opacity-0 transition-all hover:bg-red-100 hover:text-red-600 group-hover:opacity-100 dark:hover:bg-red-900/20 dark:hover:text-red-400"
-                >
-                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-              </div>
-            ))}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">Lokasyonlar ve Birimler</h3>
+              <p className="text-[11px] text-muted-foreground">Her lokasyonun altına bağlı birimleri ekleyin</p>
+            </div>
           </div>
           <button
             type="button"
             onClick={() => upd({ locations: [...company.locations, ""] })}
-            className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border py-2.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-medium text-primary-foreground transition hover:bg-primary-hover"
           >
             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
             Lokasyon Ekle
           </button>
-        </section>
+        </div>
 
-        {/* Bölümler */}
-        <section className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-100 text-lg dark:bg-blue-900/30">🏢</div>
-              <div>
-                <h3 className="text-sm font-semibold text-foreground">Bölümler</h3>
-                <p className="text-[11px] text-muted-foreground">Organizasyonel birimler</p>
-              </div>
+        <div className="p-5">
+          {company.locations.length === 0 ? (
+            <div className="rounded-xl border-2 border-dashed border-border py-12 text-center">
+              <svg className="mx-auto h-10 w-10 text-muted-foreground/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+              <p className="mt-3 text-sm font-medium text-muted-foreground">Henüz lokasyon eklenmedi</p>
+              <p className="mt-1 text-xs text-muted-foreground/70">Firmanın fiziksel yerleşkelerini ekleyerek başlayın</p>
             </div>
-            <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{depCount}</span>
-          </div>
-          <div className="space-y-2">
-            {company.departments.map((dep, i) => (
-              <div key={i} className="group flex items-center gap-2 rounded-lg border border-border bg-secondary/30 p-2 transition-colors hover:border-primary/20">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-blue-500/10 text-[10px] font-bold text-blue-600 dark:text-blue-400">{i + 1}</span>
-                <Input
-                  value={dep}
-                  onChange={(e) => { const n = [...company.departments]; n[i] = e.target.value; upd({ departments: n }); }}
-                  className="flex-1 !border-0 !bg-transparent !shadow-none !ring-0 text-sm"
-                  placeholder="Bölüm adı girin"
-                />
-                <button
-                  type="button"
-                  onClick={() => upd({ departments: company.departments.filter((_, j) => j !== i) })}
-                  className="shrink-0 rounded-md p-1 text-muted-foreground/40 opacity-0 transition-all hover:bg-red-100 hover:text-red-600 group-hover:opacity-100 dark:hover:bg-red-900/20 dark:hover:text-red-400"
-                >
-                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-              </div>
-            ))}
+          ) : (
+            <div className="space-y-4">
+              {company.locations.map((loc, i) => (
+                <div key={i} className="rounded-xl border border-border bg-secondary/20 overflow-hidden">
+                  {/* Lokasyon başlığı */}
+                  <div className="group flex items-center gap-3 bg-secondary/30 px-4 py-3">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/15">
+                      <svg className="h-4 w-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+                    </div>
+                    <input
+                      value={loc}
+                      onChange={(e) => { const n = [...company.locations]; n[i] = e.target.value; upd({ locations: n }); }}
+                      className="flex-1 bg-transparent text-sm font-semibold text-foreground outline-none placeholder:text-muted-foreground/50"
+                      placeholder="Lokasyon adı girin (örn: Ana Bina, Fabrika, Şantiye)"
+                    />
+                    <XBtn onClick={() => upd({ locations: company.locations.filter((_, j) => j !== i) })} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Birimler — bağımsız birim listesi */}
+      <section className="rounded-xl border border-border bg-card shadow-[var(--shadow-soft)]">
+        <div className="flex items-center justify-between border-b border-border px-5 py-4">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900/30">
+              <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">Birimler / Bölümler</h3>
+              <p className="text-[11px] text-muted-foreground">İş güvenliği değerlendirmesine dahil organizasyonel birimler</p>
+            </div>
           </div>
           <button
             type="button"
             onClick={() => upd({ departments: [...company.departments, ""] })}
-            className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border py-2.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-medium text-primary-foreground transition hover:bg-primary-hover"
           >
             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-            Bölüm Ekle
+            Birim Ekle
           </button>
-        </section>
-      </div>
+        </div>
+
+        <div className="p-5">
+          {company.departments.length === 0 ? (
+            <div className="rounded-xl border-2 border-dashed border-border py-12 text-center">
+              <svg className="mx-auto h-10 w-10 text-muted-foreground/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>
+              <p className="mt-3 text-sm font-medium text-muted-foreground">Henüz birim eklenmedi</p>
+              <p className="mt-1 text-xs text-muted-foreground/70">Üretim, Bakım, İdari İşler gibi birimleri ekleyin</p>
+            </div>
+          ) : (
+            <div className="grid gap-2 sm:grid-cols-2">
+              {company.departments.map((dep, i) => (
+                <div key={i} className="group flex items-center gap-2 rounded-lg border border-border bg-secondary/30 p-2.5 transition-colors hover:border-primary/20">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-500/10">
+                    <svg className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" /></svg>
+                  </div>
+                  <input
+                    value={dep}
+                    onChange={(e) => { const n = [...company.departments]; n[i] = e.target.value; upd({ departments: n }); }}
+                    className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/50"
+                    placeholder="Birim adı (örn: Üretim, Bakım, Kalite)"
+                  />
+                  <XBtn onClick={() => upd({ departments: company.departments.filter((_, j) => j !== i) })} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
 
 /* ── RISK ── */
-/* Risk kategori tanımları — süreç yönetimi kartları */
-const RISK_CATEGORIES = [
-  { key: "fiziksel", label: "Fiziksel", icon: "⚡", color: "#3B82F6", examples: "Gürültü, titreşim, aydınlatma, sıcaklık" },
-  { key: "kimyasal", label: "Kimyasal", icon: "🧪", color: "#8B5CF6", examples: "Gaz, toz, buhar, kimyasal madde" },
-  { key: "biyolojik", label: "Biyolojik", icon: "🦠", color: "#10B981", examples: "Bakteri, virüs, küf, biyolojik etkenler" },
-  { key: "ergonomik", label: "Ergonomik", icon: "🧍", color: "#F59E0B", examples: "Duruş bozukluğu, ağır yük, tekrarlı hareket" },
-  { key: "psikososyal", label: "Psikososyal", icon: "🧠", color: "#EC4899", examples: "Stres, mobbing, iş yükü, vardiya" },
-  { key: "mekanik", label: "Mekanik", icon: "⚙️", color: "#F97316", examples: "Makine, ekipman, düşme, sıkışma" },
-  { key: "elektrik", label: "Elektrik", icon: "🔌", color: "#EF4444", examples: "Çarpma, kısa devre, topraklama" },
-  { key: "yangin", label: "Yangın / Patlama", icon: "🔥", color: "#DC2626", examples: "Yanıcı madde, patlayıcı ortam, LPG" },
-  { key: "trafik", label: "Trafik", icon: "🚛", color: "#6366F1", examples: "Araç, forklift, yaya-araç çatışması" },
-  { key: "cevre", label: "Çevresel", icon: "🌿", color: "#059669", examples: "Atık, emisyon, gürültü kirliliği" },
+/* Risk kategori tanımları — DB'den yüklenir, fallback olarak sabit liste */
+const FALLBACK_RISK_CATEGORIES = [
+  { key: "fiziksel", label: "Fiziksel", icon: "⚡", color: "#3B82F6", examples: "Gürültü, titreşim, aydınlatma, sıcaklık, KKD, düzen, acil durum" },
+  { key: "kimyasal", label: "Kimyasal", icon: "🧪", color: "#8B5CF6", examples: "Gaz, toz, buhar, kimyasal madde, asit, baz" },
+  { key: "biyolojik", label: "Biyolojik", icon: "🦠", color: "#10B981", examples: "Bakteri, virüs, küf, biyolojik etkenler, hijyen" },
+  { key: "ergonomik", label: "Ergonomik", icon: "🧍", color: "#F59E0B", examples: "Duruş bozukluğu, ağır yük, tekrarlı hareket, elle taşıma" },
+  { key: "psikososyal", label: "Psikososyal", icon: "🧠", color: "#EC4899", examples: "Stres, mobbing, iş yükü, vardiya, tükenmişlik" },
+  { key: "mekanik", label: "Mekanik", icon: "⚙️", color: "#F97316", examples: "Makine, ekipman, düşme, sıkışma, yüksekte çalışma, iskele" },
+  { key: "elektrik", label: "Elektrik", icon: "🔌", color: "#EF4444", examples: "Çarpma, kısa devre, topraklama, elektrik panosu" },
+  { key: "yangin", label: "Yangın / Patlama", icon: "🔥", color: "#DC2626", examples: "Yanıcı madde, patlayıcı ortam, LPG, yangın söndürücü" },
+  { key: "trafik", label: "Trafik", icon: "🚛", color: "#6366F1", examples: "Araç, forklift, yaya-araç çatışması, taşıma" },
+  { key: "cevre", label: "Çevresel", icon: "🌿", color: "#059669", examples: "Atık, emisyon, gürültü kirliliği, havalandırma" },
 ];
 
+type RiskCategory = { key: string; label: string; icon: string; color: string; examples: string; is_default?: boolean; id?: string };
 type CategoryStats = { key: string; total: number; critical: number; high: number; medium: number; low: number };
 
 export function RiskTab({ company }: { company: CompanyRecord }) {
   const [analyses, setAnalyses] = useState<SavedAssessment[]>([]);
   const [catStats, setCatStats] = useState<CategoryStats[]>([]);
+  const [riskCategories, setRiskCategories] = useState<RiskCategory[]>(FALLBACK_RISK_CATEGORIES);
   const [loading, setLoading] = useState(true);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<"overview" | "analyses">("overview");
+
+  // Kategori ekleme state
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCatLabel, setNewCatLabel] = useState("");
+  const [newCatIcon, setNewCatIcon] = useState("⚠️");
+  const [newCatColor, setNewCatColor] = useState("#6B7280");
+  const [newCatExamples, setNewCatExamples] = useState("");
+  const [savingCategory, setSavingCategory] = useState(false);
 
   // Kategori detay state
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -284,24 +325,53 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
 
   useEffect(() => {
     (async () => {
+      const supabase = createClient();
       const [list] = await Promise.all([listRiskAssessments(company.id)]);
       setAnalyses(list);
 
-      const supabase = createClient();
       if (supabase) {
+        // DB'den kategorileri yükle (varsayılan + org özel)
+        const { data: dbCats } = await supabase
+          .from("risk_categories")
+          .select("id, key, label, icon, color, examples, is_default, organization_id")
+          .order("sort_order");
+
+        let activeCats: RiskCategory[] = FALLBACK_RISK_CATEGORIES;
+        if (dbCats && dbCats.length > 0) {
+          // Duplike key'leri filtrele: org özel varsa varsayılanı gizle
+          const seen = new Set<string>();
+          const uniqueCats: RiskCategory[] = [];
+          const sorted = [...dbCats].sort((a, b) => (a.is_default === b.is_default ? 0 : a.is_default ? 1 : -1));
+          for (const c of sorted) {
+            if (!seen.has(c.key)) {
+              seen.add(c.key);
+              uniqueCats.push({ key: c.key, label: c.label, icon: c.icon, color: c.color, examples: c.examples || "", is_default: c.is_default, id: c.id });
+            }
+          }
+          uniqueCats.sort((a, b) => {
+            const aIdx = dbCats.findIndex((d: any) => d.key === a.key);
+            const bIdx = dbCats.findIndex((d: any) => d.key === b.key);
+            return aIdx - bIdx;
+          });
+          activeCats = uniqueCats;
+          setRiskCategories(uniqueCats);
+        }
+
+        // Findings istatistikleri
         const assessmentIds = list.map((a) => a.id);
         if (assessmentIds.length > 0) {
           const { data: findings } = await supabase
             .from("risk_assessment_findings")
-            .select("category, severity")
+            .select("category, category_key, severity")
             .in("assessment_id", assessmentIds);
 
           if (findings) {
             const stats: Record<string, CategoryStats> = {};
-            for (const cat of RISK_CATEGORIES) stats[cat.key] = { key: cat.key, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
+            for (const cat of activeCats) stats[cat.key] = { key: cat.key, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
 
             for (const f of findings) {
-              const catKey = mapCategoryToKey(f.category);
+              // Önce category_key kullan (DB'de varsa), yoksa eski mapping
+              const catKey = f.category_key || mapCategoryToKey(f.category);
               if (!stats[catKey]) stats[catKey] = { key: catKey, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
               stats[catKey].total++;
               if (f.severity === "critical") stats[catKey].critical++;
@@ -379,7 +449,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
           .in("assessment_id", remainingIds);
         if (updatedFindings) {
           const stats: Record<string, CategoryStats> = {};
-          for (const cat of RISK_CATEGORIES) stats[cat.key] = { key: cat.key, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
+          for (const cat of riskCategories) stats[cat.key] = { key: cat.key, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
           for (const f of updatedFindings) {
             const catKey = mapCategoryToKey(f.category);
             if (!stats[catKey]) stats[catKey] = { key: catKey, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
@@ -410,7 +480,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
   function methodLabel(m: string) { return m === "r_skor" ? "R-SKOR 2D" : m === "fine_kinney" ? "Fine-Kinney" : m === "l_matrix" ? "L-Matris" : m; }
   function statusBadge(s: string) {
     if (s === "completed") return { label: "Tamamlandı", cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" };
-    if (s === "archived") return { label: "Arşivlendi", cls: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400" };
+    if (s === "archived") return { label: "Arşivlendi", cls: "bg-gray-100 text-gray-500 dark:bg-neutral-900 dark:text-gray-400" };
     return { label: "Taslak", cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" };
   }
 
@@ -438,6 +508,10 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                 Analizler ({analyses.length})
               </button>
             </div>
+            <button type="button" onClick={() => setShowAddCategory(true)} className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-secondary px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary/80 transition-colors">
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" /></svg>
+              Kategori Ekle
+            </button>
             <Link href={`/risk-analysis?companyId=${company.id}`} className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors">
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
               Yeni Analiz
@@ -470,9 +544,76 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
         <div className="flex justify-center py-12"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>
       ) : activeSection === "overview" ? (
         <>
+          {/* Kategori Ekle Modal */}
+          {showAddCategory && (
+            <div className="mb-4 rounded-xl border border-primary/30 bg-primary/5 p-4">
+              <h3 className="mb-3 text-sm font-semibold text-foreground">Yeni Kategori Ekle</h3>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="text-[10px] font-medium uppercase text-muted-foreground">Kategori Adı *</label>
+                  <input value={newCatLabel} onChange={(e) => setNewCatLabel(e.target.value)} className="mt-1 h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" placeholder="örn: Radyasyon" />
+                </div>
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <label className="text-[10px] font-medium uppercase text-muted-foreground">Ikon</label>
+                    <input value={newCatIcon} onChange={(e) => setNewCatIcon(e.target.value)} className="mt-1 h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground text-center" placeholder="⚠️" maxLength={4} />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-[10px] font-medium uppercase text-muted-foreground">Renk</label>
+                    <input type="color" value={newCatColor} onChange={(e) => setNewCatColor(e.target.value)} className="mt-1 h-9 w-full rounded-lg border border-border bg-card cursor-pointer" />
+                  </div>
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="text-[10px] font-medium uppercase text-muted-foreground">Anahtar Kelimeler / Örnekler</label>
+                  <input value={newCatExamples} onChange={(e) => setNewCatExamples(e.target.value)} className="mt-1 h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" placeholder="örn: Radyoaktif kaynak, X-ray, nükleer, iyonize radyasyon" />
+                </div>
+              </div>
+              <div className="mt-3 flex items-center gap-2">
+                <button
+                  type="button"
+                  disabled={!newCatLabel.trim() || savingCategory}
+                  onClick={async () => {
+                    setSavingCategory(true);
+                    const supabase = createClient();
+                    if (!supabase) { setSavingCategory(false); return; }
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) { setSavingCategory(false); return; }
+                    const { data: prof } = await supabase.from("user_profiles").select("organization_id").eq("auth_user_id", user.id).single();
+                    if (!prof?.organization_id) { setSavingCategory(false); return; }
+
+                    const key = newCatLabel.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_şçğüöıİ]/gi, "");
+                    const { data: inserted, error } = await supabase.from("risk_categories").insert({
+                      organization_id: prof.organization_id,
+                      key,
+                      label: newCatLabel.trim(),
+                      icon: newCatIcon || "⚠️",
+                      color: newCatColor || "#6B7280",
+                      examples: newCatExamples,
+                      is_default: false,
+                      sort_order: riskCategories.length + 1,
+                    }).select().single();
+
+                    if (!error && inserted) {
+                      setRiskCategories((prev) => [...prev, { key: inserted.key, label: inserted.label, icon: inserted.icon, color: inserted.color, examples: inserted.examples || "", is_default: false, id: inserted.id }]);
+                      setNewCatLabel(""); setNewCatIcon("⚠️"); setNewCatColor("#6B7280"); setNewCatExamples("");
+                      setShowAddCategory(false);
+                    }
+                    setSavingCategory(false);
+                  }}
+                  className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-4 text-xs font-medium text-primary-foreground disabled:opacity-50 transition-colors hover:bg-primary-hover"
+                >
+                  {savingCategory ? "Kaydediliyor..." : "Kaydet"}
+                </button>
+                <button type="button" onClick={() => setShowAddCategory(false)} className="inline-flex h-8 items-center rounded-lg border border-border px-3 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
+                  Vazgeç
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Risk Haritası — Tıklanabilir kategori kartları */}
           <div className="grid gap-3 sm:grid-cols-2">
-            {RISK_CATEGORIES.map((cat) => {
+            {riskCategories.map((cat) => {
               const stat = catStats.find((s) => s.key === cat.key);
               const total = stat?.total ?? 0;
               const hasCritical = (stat?.critical ?? 0) > 0;
@@ -481,7 +622,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
 
               return (
                 <button
-                  key={cat.key}
+                  key={cat.id || cat.key}
                   type="button"
                   onClick={() => openCategoryDetail(cat.key)}
                   className={`rounded-xl border p-4 text-left transition-all ${
@@ -532,7 +673,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
             <div ref={catDetailRef}>
               <CategoryDetailPanel
                 categoryKey={selectedCategory}
-                category={RISK_CATEGORIES.find((c) => c.key === selectedCategory)!}
+                category={riskCategories.find((c) => c.key === selectedCategory)!}
                 findings={categoryFindings}
                 loading={catDetailLoading}
                 editingFinding={editingFinding}
@@ -638,7 +779,7 @@ const TRACKING_STATUSES = [
   { value: "open" as const, label: "Açık", cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
   { value: "in_progress" as const, label: "Devam Ediyor", cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
   { value: "resolved" as const, label: "Çözüldü", cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" },
-  { value: "archived" as const, label: "Arşivlendi", cls: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400" },
+  { value: "archived" as const, label: "Arşivlendi", cls: "bg-gray-100 text-gray-500 dark:bg-neutral-900 dark:text-gray-400" },
 ];
 
 function severityBadge(s: string) {
@@ -1167,7 +1308,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                 <div className="space-y-2">
                   {trainings.map((t) => {
                     const stCls = t.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                      : t.status === "cancelled" ? "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                      : t.status === "cancelled" ? "bg-gray-100 text-gray-500 dark:bg-neutral-900 dark:text-gray-400"
                       : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
                     const stLabel = t.status === "completed" ? "Tamamlandı" : t.status === "cancelled" ? "İptal" : "Planlandı";
                     const typLabel = t.trainingType === "zorunlu" ? "Zorunlu" : t.trainingType === "yenileme" ? "Yenileme" : "İsteğe Bağlı";
@@ -1305,7 +1446,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                 <div className="space-y-3">
                   {meetings.map((m) => {
                     const stCls = m.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                      : m.status === "cancelled" ? "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                      : m.status === "cancelled" ? "bg-gray-100 text-gray-500 dark:bg-neutral-900 dark:text-gray-400"
                       : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
                     const stLabel = m.status === "completed" ? "Tamamlandı" : m.status === "cancelled" ? "İptal" : "Planlandı";
                     return (
@@ -1648,7 +1789,7 @@ export function DocumentsTab({ company, companyId }: { company: CompanyRecord; c
     hazir: { l: 'Hazır', c: 'text-green-600 bg-green-100 dark:bg-green-900/30' },
     onay_bekliyor: { l: 'Onay', c: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30' },
     revizyon: { l: 'Revizyon', c: 'text-orange-600 bg-orange-100 dark:bg-orange-900/30' },
-    arsiv: { l: 'Arşiv', c: 'text-gray-500 bg-gray-100 dark:bg-gray-800/30' },
+    arsiv: { l: 'Arşiv', c: 'text-gray-500 bg-gray-100 dark:bg-neutral-900/30' },
   };
 
   if (loading) return <Sec title="Döküman Arşivi" desc="Yükleniyor..."><div className="h-32 animate-pulse bg-muted rounded-lg" /></Sec>;
@@ -1767,7 +1908,7 @@ export function DocumentsTab({ company, companyId }: { company: CompanyRecord; c
               <Link key={d.id} href={`/documents/${d.id}`} className="flex items-center gap-3 px-3 py-2 rounded-lg border border-border hover:bg-muted/30 transition-colors">
                 <span className="text-xs text-muted-foreground flex-1 truncate line-through">{d.title}</span>
                 <span className="text-[10px] text-muted-foreground">{new Date(d.updated_at).toLocaleDateString('tr-TR')}</span>
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-medium text-gray-500 bg-gray-100 dark:bg-gray-800/30">Arşiv</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-medium text-gray-500 bg-gray-100 dark:bg-neutral-900/30">Arşiv</span>
               </Link>
             ))}
           </div>

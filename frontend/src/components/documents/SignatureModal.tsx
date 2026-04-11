@@ -92,7 +92,7 @@ export function SignatureModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white dark:bg-[#1e293b] rounded-xl shadow-2xl w-[480px] max-w-[95vw] border border-[var(--gold)]/20">
+      <div className="bg-white dark:bg-[#111111] rounded-xl shadow-2xl w-[480px] max-w-[95vw] border border-[var(--gold)]/20">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--gold)]/20">
           <div className="flex items-center gap-2">

@@ -217,7 +217,7 @@ export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName,
             onChange={(e) => setCustomPrompt(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleCustomPrompt(); }}
             placeholder="Ne üretmemi istersiniz?"
-            className="flex-1 text-xs px-2.5 py-2 rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#0f172a] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)] placeholder:text-[var(--text-secondary)]"
+            className="flex-1 text-xs px-2.5 py-2 rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#000000] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)] placeholder:text-[var(--text-secondary)]"
           />
           <button
             onClick={handleCustomPrompt}
@@ -322,7 +322,7 @@ export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName,
       {/* İyileştirme Dialog'u */}
       {showImproveDialog && savedSelection && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white dark:bg-[#1e293b] rounded-xl shadow-2xl w-[380px] max-w-[95vw] border border-[var(--gold)]/20">
+          <div className="bg-white dark:bg-[#111111] rounded-xl shadow-2xl w-[380px] max-w-[95vw] border border-[var(--gold)]/20">
             <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--gold)]/20">
               <div className="flex items-center gap-2">
                 <Wand2 size={16} className="text-[var(--gold)]" />
@@ -372,7 +372,7 @@ export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName,
                       }
                     }}
                     placeholder="Özel iyileştirme isteği..."
-                    className="flex-1 text-xs px-2.5 py-2 rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#0f172a] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)]"
+                    className="flex-1 text-xs px-2.5 py-2 rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#000000] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)]"
                   />
                   <button
                     onClick={() => {

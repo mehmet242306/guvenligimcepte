@@ -167,7 +167,19 @@ export async function fetchCompaniesFromSupabase(): Promise<CompanyRecord[] | nu
   if (!supabase) return null;
 
   try {
-    const { data, error } = await supabase
+    // Kullanicinin organization_id'sini al
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data: profile } = await supabase
+      .from("user_profiles")
+      .select("organization_id")
+      .eq("auth_user_id", user.id)
+      .single();
+
+    const orgId = profile?.organization_id;
+
+    let query = supabase
       .from("company_workspaces")
       .select(`
         id, company_identity_id, display_name, notes, is_archived, metadata, logo_url,
@@ -180,7 +192,15 @@ export async function fetchCompaniesFromSupabase(): Promise<CompanyRecord[] | nu
       .eq("is_archived", false)
       .eq("company_identities.is_active", true)
       .eq("company_identities.is_archived", false)
-      .is("company_identities.deleted_at", null);
+      .is("company_identities.deleted_at", null)
+      .neq("company_identities.official_name", "Yeni Firma / Kurum");
+
+    // Organizasyon filtresi (varsa)
+    if (orgId) {
+      query = query.eq("organization_id", orgId);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.warn("[company-api] fetchCompanies error:", error.message);
@@ -204,7 +224,12 @@ export async function fetchArchivedFromSupabase(): Promise<CompanyRecord[] | nul
   if (!supabase) return null;
 
   try {
-    const { data, error } = await supabase
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+    const { data: profile } = await supabase.from("user_profiles").select("organization_id").eq("auth_user_id", user.id).single();
+    const orgId = profile?.organization_id;
+
+    let query = supabase
       .from("company_workspaces")
       .select(`
         id, company_identity_id, display_name, notes, is_archived, metadata, logo_url,
@@ -216,6 +241,10 @@ export async function fetchArchivedFromSupabase(): Promise<CompanyRecord[] | nul
       `)
       .eq("company_identities.is_archived", true)
       .is("company_identities.deleted_at", null);
+
+    if (orgId) query = query.eq("organization_id", orgId);
+
+    const { data, error } = await query;
 
     if (error) {
       console.warn("[company-api] fetchArchived error:", error.message);
@@ -239,7 +268,12 @@ export async function fetchDeletedFromSupabase(): Promise<CompanyRecord[] | null
   if (!supabase) return null;
 
   try {
-    const { data, error } = await supabase
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+    const { data: profile } = await supabase.from("user_profiles").select("organization_id").eq("auth_user_id", user.id).single();
+    const orgId = profile?.organization_id;
+
+    let query = supabase
       .from("company_workspaces")
       .select(`
         id, company_identity_id, display_name, notes, is_archived, metadata, logo_url,
@@ -250,6 +284,10 @@ export async function fetchDeletedFromSupabase(): Promise<CompanyRecord[] | null
         )
       `)
       .not("company_identities.deleted_at", "is", null);
+
+    if (orgId) query = query.eq("organization_id", orgId);
+
+    const { data, error } = await query;
 
     if (error) {
       console.warn("[company-api] fetchDeleted error:", error.message);

@@ -331,7 +331,7 @@ export function OrganizationPanel({ companyId }: { companyId: string }) {
                     <div className="mt-3 ml-14 flex items-center gap-3 rounded-xl border border-border bg-secondary/40 px-4 py-3">
                       <label className="text-xs font-medium text-muted-foreground shrink-0">Rol:</label>
                       <select
-                        className="h-8 flex-1 rounded-lg border border-border bg-card px-2 text-xs text-foreground dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                        className="h-8 flex-1 rounded-lg border border-border bg-card px-2 text-xs text-foreground dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:dark:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary/30"
                         value={editRole}
                         onChange={(e) => setEditRole(e.target.value)}
                       >

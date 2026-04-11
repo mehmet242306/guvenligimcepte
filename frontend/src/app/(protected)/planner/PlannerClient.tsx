@@ -56,11 +56,11 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  planned:     "bg-blue-100  text-blue-700  dark:bg-blue-950  dark:text-blue-300  [&>option]:dark:bg-slate-800 [&>option]:dark:text-white",
-  in_progress: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 [&>option]:dark:bg-slate-800 [&>option]:dark:text-white",
-  completed:   "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300 [&>option]:dark:bg-slate-800 [&>option]:dark:text-white",
-  overdue:     "bg-red-100   text-red-700   dark:bg-red-950   dark:text-red-300   [&>option]:dark:bg-slate-800 [&>option]:dark:text-white",
-  cancelled:   "bg-secondary text-muted-foreground dark:bg-slate-800 dark:text-slate-400 [&>option]:dark:bg-slate-800 [&>option]:dark:text-white",
+  planned:     "bg-blue-100  text-blue-700  dark:bg-blue-950  dark:text-blue-300  [&>option]:dark:bg-neutral-900 [&>option]:dark:text-white",
+  in_progress: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 [&>option]:dark:bg-neutral-900 [&>option]:dark:text-white",
+  completed:   "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300 [&>option]:dark:bg-neutral-900 [&>option]:dark:text-white",
+  overdue:     "bg-red-100   text-red-700   dark:bg-red-950   dark:text-red-300   [&>option]:dark:bg-neutral-900 [&>option]:dark:text-white",
+  cancelled:   "bg-secondary text-muted-foreground dark:bg-neutral-900 dark:text-slate-400 [&>option]:dark:bg-neutral-900 [&>option]:dark:text-white",
 };
 
 // ─── Calendar helpers ────────────────────────────────────────────────────────
@@ -168,7 +168,7 @@ function TaskModal({
               <select
                 value={form.category_id ?? ""}
                 onChange={(e) => set("category_id", e.target.value || null)}
-                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
+                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-neutral-900 dark:[&>option]:text-white"
               >
                 <option value="">Kategori seçin...</option>
                 {categories.map((c) => (
@@ -183,7 +183,7 @@ function TaskModal({
               <select
                 value={form.status ?? "planned"}
                 onChange={(e) => set("status", e.target.value as IsgTask["status"])}
-                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
+                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-neutral-900 dark:[&>option]:text-white"
               >
                 {Object.entries(STATUS_LABELS).map(([v, l]) => (
                   <option key={v} value={v}>{l}</option>
@@ -199,7 +199,7 @@ function TaskModal({
               <select
                 value={form.company_workspace_id ?? ""}
                 onChange={(e) => set("company_workspace_id", e.target.value || null)}
-                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
+                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-neutral-900 dark:[&>option]:text-white"
               >
                 <option value="">Firma seçin...</option>
                 {companies.map((c) => (
@@ -217,7 +217,7 @@ function TaskModal({
                 type="date"
                 value={form.start_date ?? ""}
                 onChange={(e) => set("start_date", e.target.value)}
-                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
+                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-neutral-900 dark:[&>option]:text-white"
               />
             </div>
             <div className="space-y-1.5">
@@ -226,7 +226,7 @@ function TaskModal({
                 type="date"
                 value={form.end_date ?? ""}
                 onChange={(e) => set("end_date", e.target.value || null)}
-                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
+                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-neutral-900 dark:[&>option]:text-white"
               />
             </div>
           </div>
@@ -238,7 +238,7 @@ function TaskModal({
               <select
                 value={form.recurrence ?? "none"}
                 onChange={(e) => set("recurrence", e.target.value as IsgTask["recurrence"])}
-                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
+                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-neutral-900 dark:[&>option]:text-white"
               >
                 {Object.entries(RECURRENCE_LABELS).map(([v, l]) => (
                   <option key={v} value={v}>{l}</option>
@@ -253,7 +253,7 @@ function TaskModal({
                 max={365}
                 value={form.reminder_days ?? 7}
                 onChange={(e) => set("reminder_days", parseInt(e.target.value) || 0)}
-                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
+                className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-neutral-900 dark:[&>option]:text-white"
               />
             </div>
           </div>
@@ -281,7 +281,7 @@ function TaskModal({
                     value={form.timesheet_hours ?? ""}
                     onChange={(e) => set("timesheet_hours", e.target.value ? parseFloat(e.target.value) : null)}
                     placeholder="Ör: 4.5"
-                    className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-slate-800 dark:text-white dark:border-slate-600"
+                    className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -293,7 +293,7 @@ function TaskModal({
                     value={form.hourly_rate ?? ""}
                     onChange={(e) => set("hourly_rate", e.target.value ? parseFloat(e.target.value) : null)}
                     placeholder="Ör: 250"
-                    className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-slate-800 dark:text-white dark:border-slate-600"
+                    className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700"
                   />
                 </div>
               </div>
@@ -702,7 +702,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
         <select
           value={filterCategoryId}
           onChange={(e) => setFilterCategoryId(e.target.value)}
-          className="h-9 rounded-xl border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
+          className="h-9 rounded-xl border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-neutral-900 dark:[&>option]:text-white"
         >
           <option value="all">Tüm Kategoriler</option>
           {categories.map((c) => (
@@ -714,7 +714,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="h-9 rounded-xl border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
+          className="h-9 rounded-xl border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-neutral-900 dark:[&>option]:text-white"
         >
           <option value="all">Tüm Durumlar</option>
           {Object.entries(STATUS_LABELS).map(([v, l]) => (
@@ -727,7 +727,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
           <select
             value={filterCompanyId}
             onChange={(e) => setFilterCompanyId(e.target.value)}
-            className="h-9 rounded-xl border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
+            className="h-9 rounded-xl border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-neutral-900 dark:text-white dark:border-neutral-700 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-neutral-900 dark:[&>option]:text-white"
           >
             <option value="all">Tüm Firmalar</option>
             {companies.map((c) => (

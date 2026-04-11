@@ -417,6 +417,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
             organization_id: auth.orgId,
             title: f.title,
             category: f.category,
+            category_key: mapCategoryToKey(f.category),
             severity: f.severity,
             confidence: f.confidence,
             is_manual: f.isManual,

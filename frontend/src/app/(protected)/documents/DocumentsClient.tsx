@@ -262,7 +262,7 @@ export function DocumentsClient() {
       />
 
       {/* Firma Seçici — gold border */}
-      <div className="mt-6 mb-5 p-4 border-2 border-[var(--gold)]/40 rounded-xl bg-white dark:bg-[#1a2234] shadow-sm">
+      <div className="mt-6 mb-5 p-4 border-2 border-[var(--gold)]/40 rounded-xl bg-white dark:bg-[#111111] shadow-sm">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2 shrink-0">
             <Building2 size={20} className="text-[var(--gold)]" />
@@ -271,7 +271,7 @@ export function DocumentsClient() {
           <select
             value={selectedCompanyId}
             onChange={(e) => setSelectedCompanyId(e.target.value)}
-            className="flex-1 max-w-md px-3 py-2.5 text-sm rounded-lg border border-[var(--gold)]/30 bg-white dark:bg-[#0f172a] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/50"
+            className="flex-1 max-w-md px-3 py-2.5 text-sm rounded-lg border border-[var(--gold)]/30 bg-white dark:bg-[#000000] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/50"
           >
             <option value="">— Firma seçin —</option>
             {companies.map((c) => (
@@ -322,7 +322,7 @@ export function DocumentsClient() {
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); if (e.target.value) expandAll(); }}
                 placeholder="Doküman veya grup ara..."
-                className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#0f172a] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/50"
+                className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#000000] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/50"
               />
             </div>
             <button
@@ -343,7 +343,7 @@ export function DocumentsClient() {
               const hasP1 = group.items.some((i) => i.isP1);
 
               return (
-                <div key={group.key} className="border border-[var(--gold)]/20 rounded-xl overflow-hidden bg-white dark:bg-[#1a2234] shadow-sm">
+                <div key={group.key} className="border border-[var(--gold)]/20 rounded-xl overflow-hidden bg-white dark:bg-[#111111] shadow-sm">
                   <button
                     type="button"
                     onClick={() => toggleGroup(group.key)}
@@ -418,7 +418,7 @@ export function DocumentsClient() {
                                   {isMenuOpen && (
                                     <>
                                       <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
-                                      <div className="absolute right-0 top-full mt-1 z-20 w-52 bg-white dark:bg-[#1e293b] border border-[var(--gold)]/20 rounded-lg shadow-lg py-1">
+                                      <div className="absolute right-0 top-full mt-1 z-20 w-52 bg-white dark:bg-[#111111] border border-[var(--gold)]/20 rounded-lg shadow-lg py-1">
                                         <button
                                           onClick={() => handleImportFile(group, item)}
                                           className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-primary)] hover:bg-[var(--gold)]/10 transition-colors"
@@ -493,7 +493,7 @@ export function DocumentsClient() {
 
 function StatCard({ label, value, icon: Icon, color }: { label: string; value: number; icon: React.ElementType; color: string }) {
   return (
-    <div className="border border-[var(--gold)]/20 rounded-xl p-3 bg-white dark:bg-[#1a2234] shadow-sm">
+    <div className="border border-[var(--gold)]/20 rounded-xl p-3 bg-white dark:bg-[#111111] shadow-sm">
       <div className="flex items-center gap-2 mb-1">
         <Icon size={14} className={color} />
         <span className="text-xs text-[var(--text-secondary)]">{label}</span>

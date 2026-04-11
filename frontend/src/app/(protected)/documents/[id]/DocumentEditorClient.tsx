@@ -409,7 +409,7 @@ ${content}
   return (
     <div className="flex flex-col" style={{ height: 'calc(100vh - 140px)' }}>
       {/* ── Header Bar ── */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--card-border)] bg-white dark:bg-[#1e293b]">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--card-border)] bg-white dark:bg-[#111111]">
         {/* Left: breadcrumb */}
         <div className="flex items-center gap-2 min-w-0">
           <button
@@ -555,7 +555,7 @@ ${content}
 
         {/* Sidebar — AI Assistant */}
         {showSidebar && (
-          <aside className="w-[320px] shrink-0 border-l border-[var(--card-border)] bg-white dark:bg-[#1e293b] hidden lg:flex lg:flex-col">
+          <aside className="w-[320px] shrink-0 border-l border-[var(--card-border)] bg-white dark:bg-[#111111] hidden lg:flex lg:flex-col">
             <AIAssistantPanel
               editor={editor}
               documentTitle={title}

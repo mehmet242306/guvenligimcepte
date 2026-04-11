@@ -648,7 +648,7 @@ function renderAnnotation(annotation: FindingAnnotation, active: boolean, onClic
         className={`absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 text-xs font-bold shadow-lg transition-transform hover:scale-105 ${
           active
             ? "border-red-700 bg-red-600 text-white dark:border-red-400 dark:bg-red-500"
-            : "border-white bg-slate-900/90 text-white dark:border-slate-300 dark:bg-slate-800"
+            : "border-white bg-slate-900/90 text-white dark:border-neutral-600 dark:bg-neutral-900"
         }`}
         style={annotationStyle({ left: `${annotation.x}%`, top: `${annotation.y}%` }, active)}
       >
@@ -771,10 +771,10 @@ function R2DPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f:
                   max={100}
                   value={Math.round(val * 100)}
                   onChange={(e) => updateParam(param.key, Number(e.target.value) / 100)}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-[var(--accent)] dark:bg-slate-700"
+                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-[var(--accent)] dark:bg-neutral-800"
                   title={param.description}
                 />
-                <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+                <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-200 dark:bg-neutral-800">
                   <div className="h-full rounded-full bg-[var(--accent)] transition-all" style={{ width: `${Math.min(100, barWidth)}%` }} />
                 </div>
               </div>
@@ -926,21 +926,22 @@ export function RiskAnalysisClient() {
 
   useEffect(() => {
     let cancelled = false;
-    const fallback = loadCompanyDirectory();
-    setCompanies(fallback);
-    // Sadece henuz secim yapilmamissa default ata
-    setSelectedCompanyId((prev) => prev || fallback[0]?.id || "");
 
+    // Supabase'den sadece aktif firmaları yükle (silinen/arşivlenen hariç)
     fetchCompaniesFromSupabase().then((sb) => {
       if (cancelled) return;
       if (sb && sb.length > 0) {
         setCompanies(sb);
         saveCompanyDirectory(sb);
-        // Sadece mevcut secim listede yoksa degistir
         setSelectedCompanyId((prev) => {
           if (prev && sb.find((c) => c.id === prev)) return prev;
           return sb[0]?.id ?? "";
         });
+      } else {
+        // Supabase bağlantısı yoksa localStorage'dan yükle
+        const fallback = loadCompanyDirectory();
+        setCompanies(fallback);
+        setSelectedCompanyId((prev) => prev || fallback[0]?.id || "");
       }
     });
     return () => { cancelled = true; };
@@ -1356,10 +1357,20 @@ export function RiskAnalysisClient() {
   async function analyzeImageWithAI(imageFile: File, imageId: string): Promise<{ findings: VisualFinding[]; meta: ImageMeta }> {
     try {
       const { base64, mimeType } = await fileToBase64(imageFile);
+      // Dinamik kategori listesini DB'den al
+      let categoryLabels: string[] | undefined;
+      try {
+        const supabase = (await import("@/lib/supabase/client")).createClient();
+        if (supabase) {
+          const { data: cats } = await supabase.from("risk_categories").select("label").order("sort_order");
+          if (cats && cats.length > 0) categoryLabels = cats.map((c: { label: string }) => c.label);
+        }
+      } catch { /* fallback: API default list */ }
+
       const res = await fetch("/api/analyze-risk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageBase64: base64, mimeType, method }),
+        body: JSON.stringify({ imageBase64: base64, mimeType, method, categories: categoryLabels }),
       });
 
       const emptyMeta: ImageMeta = { imageId, faces: [], positiveObservations: [], photoQuality: { level: "good", note: "" }, areaSummary: "", personCount: 0, imageRelevance: "relevant", imageDescription: "" };
@@ -2268,7 +2279,7 @@ JSON formatında döndür:
                           </span>
                           <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
                             a.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                            : a.status === "archived" ? "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                            : a.status === "archived" ? "bg-gray-100 text-gray-500 dark:bg-neutral-900 dark:text-gray-400"
                             : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
                           }`}>
                             {a.status === "completed" ? "Tamamlandı" : a.status === "archived" ? "Arşivlendi" : "Taslak"}
@@ -2351,7 +2362,7 @@ JSON formatında döndür:
                 }`}
               >
                 <span className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                  isActive ? "bg-white/20 text-white" : isDone ? "bg-emerald-200 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-200" : "bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400"
+                  isActive ? "bg-white/20 text-white" : isDone ? "bg-emerald-200 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-200" : "bg-slate-200 text-slate-500 dark:bg-neutral-800 dark:text-slate-400"
                 }`}>
                   {isDone ? "✓" : stepNum}
                 </span>
@@ -2712,7 +2723,7 @@ JSON formatında döndür:
                   <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
                     {line.images.map((img) => (
                       <div key={img.id} className="overflow-hidden rounded-xl border border-border bg-card">
-                        <div className="aspect-[4/3] bg-slate-100 dark:bg-slate-800">
+                        <div className="aspect-[4/3] bg-slate-100 dark:bg-neutral-900">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={img.previewUrl} alt={img.file.name} className="h-full w-full object-cover" />
                         </div>
@@ -2793,7 +2804,7 @@ JSON formatında döndür:
                 </div>
 
                 {/* Progress bar */}
-                <div className="mb-4 h-3 w-full max-w-md overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+                <div className="mb-4 h-3 w-full max-w-md overflow-hidden rounded-full bg-slate-200 dark:bg-neutral-800">
                   <div
                     className="h-full rounded-full bg-[var(--accent)] transition-all duration-500"
                     style={{ width: `${analysisProgress}%` }}
@@ -2865,7 +2876,7 @@ JSON formatında döndür:
                               }}
                               className={`overflow-hidden rounded-2xl border text-left transition-colors ${active ? "border-primary shadow-[var(--shadow-soft)]" : "border-border hover:border-primary/40"}`}
                             >
-                              <div className="aspect-[4/3] bg-slate-100 dark:bg-slate-800">
+                              <div className="aspect-[4/3] bg-slate-100 dark:bg-neutral-900">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={img.previewUrl} alt={img.file.name} className="h-full w-full object-cover" />
                               </div>
@@ -3131,7 +3142,7 @@ JSON formatında döndür:
       )}
 
       {/* ═══════════════ NAVIGATION BUTTONS — sticky bottom bar ═══════════════ */}
-      <div className="sticky bottom-0 z-40 -mx-4 mt-6 border-t border-border bg-white/95 px-4 py-3 backdrop-blur-md dark:bg-[#0A0E18]/95 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      <div className="sticky bottom-0 z-40 -mx-4 mt-6 border-t border-border bg-white/95 px-4 py-3 backdrop-blur-md dark:bg-[#000000]/95 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div className="flex items-center justify-between">
           <div>
             {step > 1 && (

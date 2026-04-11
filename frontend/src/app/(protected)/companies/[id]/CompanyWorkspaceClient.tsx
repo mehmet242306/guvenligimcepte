@@ -15,6 +15,7 @@ import { type WTab, OverviewTab, StructureTab, RiskTab, TrackingTab, DocumentsTa
 import { CompanyPlannerTab } from "@/components/companies/CompanyPlannerTab";
 import { TeamManagementTab } from "@/components/companies/TeamManagementTab";
 import { OrganizationPanel } from "@/components/companies/OrganizationPanel";
+import CompanyScanData from "./CompanyScanData";
 
 /** Büyük resmi max boyuta küçült, JPEG olarak döndür */
 function resizeImageFile(file: File, maxPx: number, quality: number): Promise<File> {
@@ -283,7 +284,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
 
       {/* ── Sticky Tab Bar (Satır 3 — firma tabları) ── */}
       <div
-        className="sticky top-[138px] z-30 -mx-4 bg-white px-4 dark:bg-[#0A0E18] sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+        className="sticky top-[154px] z-30 -mx-4 bg-white px-4 dark:bg-[#000000] sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
         style={{
           borderTop: "2px solid var(--tab-bar-border-top)",
           borderBottom: "2px solid var(--tab-bar-border-bottom)",
@@ -320,7 +321,12 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
       {/* ── Content + Sidebar ── */}
       <div className={`mt-5 ${tab === "overview" ? "grid gap-6 lg:grid-cols-[1fr_300px]" : ""}`}>
         <main className="min-w-0 space-y-5">
-          {tab === "overview" && <OverviewTab company={company} upd={upd} risk={risk} tasks={tasks} setTab={setTab} />}
+          {tab === "overview" && (
+            <>
+              <OverviewTab company={company} upd={upd} risk={risk} tasks={tasks} setTab={setTab} />
+              <CompanyScanData companyId={companyId} />
+            </>
+          )}
           {tab === "structure" && <StructureTab company={company} upd={upd} />}
           {tab === "risk" && <RiskTab company={company} />}
           {tab === "people" && <TeamManagementTab companyId={companyId} companyName={company.name} />}

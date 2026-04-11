@@ -82,7 +82,7 @@ function MemberFormFields({
   categories: TeamCategory[];
   showCategory: boolean;
 }) {
-  const inp = "h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600";
+  const inp = "h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-neutral-900 dark:text-white dark:border-neutral-700";
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <div className="sm:col-span-2">
@@ -97,7 +97,7 @@ function MemberFormFields({
         <div>
           <label className="mb-1 block text-xs font-medium text-muted-foreground">Kategori</label>
           <select
-            className={`${inp} [&>option]:dark:bg-slate-800 [&>option]:dark:text-white`}
+            className={`${inp} [&>option]:dark:bg-neutral-900 [&>option]:dark:text-white`}
             value={form.category_id}
             onChange={(e) => onChange({ category_id: e.target.value })}
           >
@@ -127,7 +127,7 @@ function MemberFormFields({
       <div className="sm:col-span-2">
         <label className="mb-1 block text-xs font-medium text-muted-foreground">Notlar</label>
         <textarea
-          className="h-16 w-full resize-none rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600"
+          className="h-16 w-full resize-none rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-neutral-900 dark:text-white dark:border-neutral-700"
           value={form.notes}
           onChange={(e) => onChange({ notes: e.target.value })}
           placeholder="Ek bilgi..."
@@ -161,104 +161,89 @@ function MemberCard({
 }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const status = certStatus(member.cert_expiry);
+  const initials = member.full_name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
     <div
-      className={`group relative rounded-xl border bg-card p-4 shadow-sm transition-shadow hover:shadow-md ${
-        !member.is_active ? "opacity-60" : ""
+      className={`group rounded-xl border bg-card overflow-hidden transition-all hover:shadow-[var(--shadow-card)] ${
+        !member.is_active ? "opacity-50" : ""
       } ${
         status === "expired"
-          ? "border-red-300 dark:border-red-800"
+          ? "border-red-400/50 dark:border-red-800/50"
           : status === "expiring"
-          ? "border-amber-300 dark:border-amber-800"
+          ? "border-amber-400/50 dark:border-amber-800/50"
           : "border-border"
       }`}
     >
-      {/* Category color strip */}
-      {category && (
-        <div
-          className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl"
-          style={{ backgroundColor: category.color }}
-        />
-      )}
+      {/* Üst renk şerit */}
+      {category && <div className="h-1" style={{ backgroundColor: category.color }} />}
 
-      <div className="pl-1">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              {category && <span className="text-base leading-none">{category.icon}</span>}
-              <p className="text-sm font-semibold text-foreground truncate">{member.full_name}</p>
-            </div>
-            {member.title && (
-              <p className="mt-0.5 text-xs text-muted-foreground truncate">{member.title}</p>
-            )}
+      <div className="p-4">
+        {/* Üst: Avatar + İsim + Aksiyonlar */}
+        <div className="flex items-start gap-3">
+          <div
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
+            style={{ backgroundColor: category?.color || "#6B7280" }}
+          >
+            {initials}
           </div>
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              type="button"
-              onClick={() => onEdit(member)}
-              className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
-              title="Düzenle"
-            >
-              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-foreground truncate">{member.full_name}</p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              {member.title && <p className="text-xs text-muted-foreground truncate">{member.title}</p>}
+              {category && (
+                <span className="inline-flex items-center gap-1 rounded-md border border-border px-1.5 py-0.5 text-[9px] font-medium bg-secondary text-muted-foreground">
+                  {category.icon} {category.name}
+                </span>
+              )}
+            </div>
+          </div>
+          {/* Aksiyonlar */}
+          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+            <button type="button" onClick={() => onEdit(member)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors" title="Düzenle">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" /></svg>
             </button>
             {confirmDelete ? (
-              <>
-                <button type="button" onClick={() => onDelete(member.id)} className="rounded-lg px-2 py-1 text-[10px] font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-200">Sil</button>
-                <button type="button" onClick={() => setConfirmDelete(false)} className="rounded-lg px-2 py-1 text-[10px] font-medium bg-secondary text-muted-foreground hover:bg-secondary/80">İptal</button>
-              </>
+              <div className="flex items-center gap-1">
+                <button type="button" onClick={() => onDelete(member.id)} className="rounded-lg px-2 py-1 text-[10px] font-semibold bg-red-500 text-white hover:bg-red-600 transition-colors">Sil</button>
+                <button type="button" onClick={() => setConfirmDelete(false)} className="rounded-lg px-2 py-1 text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors">İptal</button>
+              </div>
             ) : (
-              <button
-                type="button"
-                onClick={() => setConfirmDelete(true)}
-                className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
-                title="Sil"
-              >
-                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
+              <button type="button" onClick={() => setConfirmDelete(true)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors" title="Sil">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
               </button>
             )}
           </div>
         </div>
 
-        {/* Contact info */}
-        <div className="mt-2.5 space-y-1">
-          {member.phone && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <svg className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <span>{member.phone}</span>
-            </div>
-          )}
-          {member.email && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <svg className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              <span className="truncate">{member.email}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Cert status */}
-        {member.cert_expiry && (
-          <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-            {member.cert_number && (
-              <span className="text-[10px] text-muted-foreground font-mono">{member.cert_number}</span>
+        {/* İletişim bilgileri */}
+        {(member.phone || member.email) && (
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border/50 pt-3">
+            {member.phone && (
+              <a href={`tel:${member.phone}`} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                <svg className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
+                <span>{member.phone}</span>
+              </a>
             )}
-            <CertBadge expiry={member.cert_expiry} />
+            {member.email && (
+              <a href={`mailto:${member.email}`} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors truncate">
+                <svg className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                <span className="truncate">{member.email}</span>
+              </a>
+            )}
           </div>
         )}
 
-        {/* Inactive badge */}
-        {!member.is_active && (
-          <div className="mt-2">
-            <span className="inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium bg-secondary text-muted-foreground">Pasif</span>
+        {/* Sertifika + Durum */}
+        {(member.cert_expiry || !member.is_active) && (
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            {member.cert_number && (
+              <span className="text-[10px] text-muted-foreground font-mono bg-secondary px-1.5 py-0.5 rounded">{member.cert_number}</span>
+            )}
+            {member.cert_expiry && <CertBadge expiry={member.cert_expiry} />}
+            {!member.is_active && (
+              <span className="inline-flex items-center rounded-md bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">Pasif</span>
+            )}
           </div>
         )}
       </div>
@@ -774,7 +759,7 @@ export function TeamManagementTab({
             <div className="mb-4 rounded-lg border border-border bg-muted/30 p-3">
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Personelden Doldur</p>
               <select
-                className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground [&>option]:dark:bg-slate-800 [&>option]:dark:text-white"
+                className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground [&>option]:dark:bg-neutral-900 [&>option]:dark:text-white"
                 value=""
                 onChange={(e) => {
                   const p = personnel.find((pp) => pp.id === e.target.value);
@@ -939,7 +924,7 @@ export function TeamManagementTab({
             <div>
               <label className="mb-1 block text-xs font-medium text-muted-foreground">Kategori Adı *</label>
               <input
-                className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600"
+                className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-neutral-900 dark:text-white dark:border-neutral-700"
                 value={catName}
                 onChange={(e) => setCatName(e.target.value)}
                 placeholder="ör. Yangın Söndürme Ekibi"
@@ -953,7 +938,7 @@ export function TeamManagementTab({
               <div className="flex-1">
                 <label className="mb-1 block text-xs font-medium text-muted-foreground">İkon (emoji)</label>
                 <input
-                  className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600"
+                  className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-neutral-900 dark:text-white dark:border-neutral-700"
                   value={catIcon}
                   onChange={(e) => setCatIcon(e.target.value)}
                   placeholder="👤"

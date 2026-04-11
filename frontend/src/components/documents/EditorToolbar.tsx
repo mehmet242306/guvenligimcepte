@@ -90,7 +90,7 @@ function ColorPicker({
         <>
           <div className="fixed inset-0 z-[100]" onClick={close} />
           <div
-            className="fixed p-2 bg-white dark:bg-[#1e293b] border border-[var(--card-border)] rounded-lg shadow-2xl z-[101]"
+            className="fixed p-2 bg-white dark:bg-[#111111] border border-[var(--card-border)] rounded-lg shadow-2xl z-[101]"
             style={{ top: pos.top, left: pos.left }}
           >
             <div className="color-grid">
@@ -133,7 +133,7 @@ function TablePicker({ editor }: { editor: Editor }) {
         <>
           <div className="fixed inset-0 z-[100]" onClick={close} />
           <div
-            className="fixed p-2 bg-white dark:bg-[#1e293b] border border-[var(--card-border)] rounded-lg shadow-2xl z-[101]"
+            className="fixed p-2 bg-white dark:bg-[#111111] border border-[var(--card-border)] rounded-lg shadow-2xl z-[101]"
             style={{ top: pos.top, left: pos.left }}
           >
             <div className="text-[10px] text-[var(--text-secondary)] text-center mb-1.5">
@@ -182,7 +182,7 @@ function FontSizeSelect({ editor }: { editor: Editor }) {
         <>
           <div className="fixed inset-0 z-[100]" onClick={close} />
           <div
-            className="fixed py-1 bg-white dark:bg-[#1e293b] border border-[var(--card-border)] rounded-lg shadow-2xl z-[101] min-w-[70px]"
+            className="fixed py-1 bg-white dark:bg-[#111111] border border-[var(--card-border)] rounded-lg shadow-2xl z-[101] min-w-[70px]"
             style={{ top: pos.top, left: pos.left }}
           >
             {FONT_SIZES.map((s) => (

@@ -141,7 +141,7 @@ export function DashboardClient() {
         {/* Left: Quick Actions + Recent Docs */}
         <div className="space-y-4">
           {/* Quick Actions */}
-          <div className="bg-white dark:bg-[#1a2234] border border-[var(--gold)]/20 rounded-xl p-5">
+          <div className="bg-white dark:bg-[#111111] border border-[var(--gold)]/20 rounded-xl p-5">
             <h2 className="text-sm font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
               <Sparkles size={16} className="text-[var(--gold)]" />
               Hızlı İşlemler
@@ -159,7 +159,7 @@ export function DashboardClient() {
           </div>
 
           {/* Recent Documents */}
-          <div className="bg-white dark:bg-[#1a2234] border border-[var(--gold)]/20 rounded-xl p-5">
+          <div className="bg-white dark:bg-[#111111] border border-[var(--gold)]/20 rounded-xl p-5">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <FileText size={16} className="text-[var(--gold)]" />
@@ -207,7 +207,7 @@ export function DashboardClient() {
         {/* Right: Module Summary */}
         <div className="space-y-4">
           {/* Company Info */}
-          <div className="bg-white dark:bg-[#1a2234] border border-[var(--gold)]/20 rounded-xl p-5">
+          <div className="bg-white dark:bg-[#111111] border border-[var(--gold)]/20 rounded-xl p-5">
             <h2 className="text-sm font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
               <Building2 size={16} className="text-[var(--gold)]" />
               Firma Bilgisi
@@ -225,7 +225,7 @@ export function DashboardClient() {
           </div>
 
           {/* İSG Modülleri */}
-          <div className="bg-white dark:bg-[#1a2234] border border-[var(--gold)]/20 rounded-xl p-5">
+          <div className="bg-white dark:bg-[#111111] border border-[var(--gold)]/20 rounded-xl p-5">
             <h2 className="text-sm font-bold text-[var(--text-primary)] mb-3">İSG Modülleri</h2>
             <div className="space-y-1.5">
               <ModuleLink icon={ShieldAlert} label="Risk Analizi" desc={`${s.riskCount} değerlendirme`} href="/risk-analysis" />
@@ -257,12 +257,12 @@ export function DashboardClient() {
 }
 
 function StatCard({ icon: Icon, label, value, sub, subColor, color, onClick }: {
-  icon: React.ElementType; label: string; value: number; sub: string; subColor?: string; color: string; onClick: () => void;
+  icon: React.ComponentType<{ size?: number }>; label: string; value: number; sub: string; subColor?: string; color: string; onClick: () => void;
 }) {
   return (
     <div
       onClick={onClick}
-      className="border border-[var(--gold)]/20 rounded-xl p-4 bg-white dark:bg-[#1a2234] shadow-sm cursor-pointer hover:border-[var(--gold)]/40 hover:shadow-md transition-all"
+      className="border border-[var(--gold)]/20 rounded-xl p-4 bg-white dark:bg-[#111111] shadow-sm cursor-pointer hover:border-[var(--gold)]/40 hover:shadow-md transition-all"
     >
       <div className="flex items-center gap-2 mb-2">
         <div className={`p-1.5 rounded-lg ${color}`}><Icon size={14} /></div>
@@ -275,7 +275,7 @@ function StatCard({ icon: Icon, label, value, sub, subColor, color, onClick }: {
 }
 
 function QuickAction({ icon: Icon, label, href, color }: {
-  icon: React.ElementType; label: string; href: string; color: string;
+  icon: React.ComponentType<{ size?: number }>; label: string; href: string; color: string;
 }) {
   const router = useRouter();
   return (

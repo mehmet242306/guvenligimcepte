@@ -93,6 +93,7 @@ Kullanıcıya şu konularda yardımcı olursun:
 **search_legislation** — Mevzuat sorusu geldiğinde MUTLAKA kullan. Hafızandan cevap verme.
 **get_personnel_count** — Personel sayısı/sorgu için kullan.
 **get_recent_assessments** — Risk analizi verisi için kullan.
+**get_learning_insights** — Geçmiş firma verilerinden öğrenme arşivi. Sektörel karşılaştırma, benzer firmalardaki yaygın tehlikeler, olay istatistikleri ve önerilen düzeltici aksiyonlar için kullan. Yeni firma değerlendirmesinde veya "bu sektörde en çok karşılaşılan riskler neler?" gibi sorularda çağır.
 
 ## HALÜSİNASYON KORUMASI (KURAL #0)
 
@@ -223,6 +224,20 @@ const NOVA_TOOLS = [
         reason: { type: 'string', description: 'Kullanıcıya neden oraya yönlendirdiğini açıklayan kısa metin (max 100 karakter)' }
       },
       required: ['destination', 'reason']
+    }
+  },
+  {
+    name: 'get_learning_insights',
+    description: 'Geçmiş firma verilerinden AI öğrenme arşivini sorgula. Sektör, tehlike sınıfı veya NACE koduna göre benzer firmaların risk örüntüleri, yaygın tehlikeler, olay istatistikleri ve önerilen aksiyonları döndürür. Yeni firma için öneri verirken veya sektörel karşılaştırma yaparken kullan.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        sector: { type: 'string', description: 'Sektör filtresi (örn: İmalat, İnşaat, Sağlık)' },
+        hazard_class: { type: 'string', description: 'Tehlike sınıfı filtresi (Çok Tehlikeli, Tehlikeli, Az Tehlikeli)' },
+        nace_code: { type: 'string', description: 'NACE kodu filtresi (örn: 25.11)' },
+        insight_type: { type: 'string', enum: ['overview', 'hazards', 'incidents', 'corrective_actions'], description: 'Döndürülecek veri tipi. Varsayılan: overview' }
+      },
+      required: []
     }
   }
 ]
@@ -544,6 +559,81 @@ async function executeNavigateToPage(input: any, context: ToolContext): Promise<
   }
 }
 
+async function executeGetLearningInsights(input: any, context: ToolContext): Promise<ToolResult> {
+  try {
+    let query = context.supabase
+      .from('ai_learning_archive')
+      .select('*')
+      .eq('organization_id', context.user.organization_id)
+
+    if (input.sector) query = query.ilike('sector', `%${input.sector}%`)
+    if (input.hazard_class) query = query.eq('hazard_class', input.hazard_class)
+    if (input.nace_code) query = query.ilike('nace_code', `%${input.nace_code}%`)
+
+    const { data, error } = await query.order('archived_at', { ascending: false }).limit(20)
+
+    if (error) {
+      return { success: false, error: `Arşiv sorgu hatası: ${error.message}` }
+    }
+
+    if (!data || data.length === 0) {
+      return { success: true, data: { count: 0, message: 'Bu kriterlere uygun öğrenme verisi bulunamadı. Henüz yeterli arşiv verisi oluşmamış olabilir.' } }
+    }
+
+    const insightType = input.insight_type || 'overview'
+
+    if (insightType === 'hazards') {
+      const allHazards: Record<string, { count: number, avg_severity: number }> = {}
+      for (const row of data) {
+        const cats = row.top_hazard_categories as any[] || []
+        for (const c of cats) {
+          if (!allHazards[c.category]) allHazards[c.category] = { count: 0, avg_severity: 0 }
+          allHazards[c.category].count += c.count
+          allHazards[c.category].avg_severity = (allHazards[c.category].avg_severity + (c.avg_severity || 0)) / 2
+        }
+      }
+      return { success: true, data: { count: data.length, type: 'hazards', hazard_categories: Object.entries(allHazards).sort((a, b) => b[1].count - a[1].count).slice(0, 15).map(([cat, v]) => ({ category: cat, count: v.count, avg_severity: v.avg_severity })) } }
+    }
+
+    if (insightType === 'incidents') {
+      let totalIncidents = 0, totalDaysLost = 0
+      const injTypes: Record<string, number> = {}, causes: Record<string, number> = {}
+      for (const row of data) {
+        totalIncidents += row.total_incidents || 0
+        totalDaysLost += (row.avg_days_lost || 0) * (row.total_incidents || 1)
+        for (const t of (row.common_injury_types as any[] || [])) { injTypes[t.injury_type] = (injTypes[t.injury_type] || 0) + t.count }
+        for (const c of (row.common_injury_causes as any[] || [])) { causes[c.cause] = (causes[c.cause] || 0) + c.count }
+      }
+      return { success: true, data: { count: data.length, type: 'incidents', total_incidents: totalIncidents, avg_days_lost: totalIncidents > 0 ? Math.round(totalDaysLost / totalIncidents * 10) / 10 : 0, top_injury_types: Object.entries(injTypes).sort((a, b) => b[1] - a[1]).slice(0, 10), top_causes: Object.entries(causes).sort((a, b) => b[1] - a[1]).slice(0, 10) } }
+    }
+
+    if (insightType === 'corrective_actions') {
+      const actions: Record<string, number> = {}
+      for (const row of data) {
+        for (const a of (row.common_corrective_actions as any[] || [])) { actions[a.action] = (actions[a.action] || 0) + a.count }
+      }
+      return { success: true, data: { count: data.length, type: 'corrective_actions', top_actions: Object.entries(actions).sort((a, b) => b[1] - a[1]).slice(0, 15).map(([action, count]) => ({ action, count })) } }
+    }
+
+    // overview
+    const totalAssessments = data.reduce((s, r) => s + (r.total_assessments || 0), 0)
+    const totalIncidents = data.reduce((s, r) => s + (r.total_incidents || 0), 0)
+    const sectors = [...new Set(data.map(r => r.sector).filter(Boolean))]
+    const hazardClasses = [...new Set(data.map(r => r.hazard_class).filter(Boolean))]
+    return {
+      success: true,
+      data: {
+        count: data.length, type: 'overview',
+        archived_companies: data.length, total_assessments: totalAssessments, total_incidents: totalIncidents,
+        sectors, hazard_classes: hazardClasses,
+        summary: `${data.length} arşivlenmiş firma verisi bulundu. Toplamda ${totalAssessments} risk analizi ve ${totalIncidents} olay kaydı mevcut.`
+      }
+    }
+  } catch (err: any) {
+    return { success: false, error: `Learning insights hatası: ${err.message}` }
+  }
+}
+
 async function executeTool(toolName: string, input: any, context: ToolContext): Promise<ToolResult> {
   const startTime = Date.now()
   let result: ToolResult
@@ -561,6 +651,9 @@ async function executeTool(toolName: string, input: any, context: ToolContext): 
         break
       case 'navigate_to_page':
         result = await executeNavigateToPage(input, context)
+        break
+      case 'get_learning_insights':
+        result = await executeGetLearningInsights(input, context)
         break
       default:
         result = { success: false, error: `Bilinmeyen tool: ${toolName}` }
@@ -975,7 +1068,7 @@ Benzer bir soruya daha önce şu cevap verilmiş:
 Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
     }
 
-    const FREE_TOOLS = ['search_legislation', 'search_past_answers', 'navigate_to_page']
+    const FREE_TOOLS = ['search_legislation', 'search_past_answers', 'navigate_to_page', 'get_learning_insights']
     const availableTools = NOVA_TOOLS.filter(tool =>
       FREE_TOOLS.includes(tool.name) ||
       allowedTools.includes(tool.name) ||

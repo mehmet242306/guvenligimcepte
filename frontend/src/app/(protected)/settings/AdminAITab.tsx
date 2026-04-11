@@ -48,7 +48,7 @@ function renderMarkdown(text: string) {
     return s
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.+?)\*/g, "<em>$1</em>")
-      .replace(/`(.+?)`/g, '<code class="rounded bg-slate-200 px-1 py-0.5 text-xs dark:bg-slate-700">$1</code>');
+      .replace(/`(.+?)`/g, '<code class="rounded bg-slate-200 px-1 py-0.5 text-xs dark:bg-neutral-800">$1</code>');
   }
 
   for (const line of lines) {
@@ -309,7 +309,7 @@ export function AdminAITab() {
         </div>
         <div className="flex items-center gap-3">
           {totalTokens.input > 0 && (
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] tabular-nums text-muted-foreground dark:bg-slate-800">
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] tabular-nums text-muted-foreground dark:bg-neutral-900">
               {((totalTokens.input + totalTokens.output) / 1000).toFixed(1)}k token
             </span>
           )}

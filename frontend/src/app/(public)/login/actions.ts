@@ -2,7 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { registerSession } from "@/lib/session-tracker";
 
 export async function login(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
@@ -48,6 +50,14 @@ export async function login(formData: FormData) {
     } catch (auditError) {
       console.error("Login audit log request failed:", auditError);
     }
+  }
+
+  // Register session (max 1 web + 1 mobile)
+  if (data.session && data.user) {
+    const h = await headers();
+    const ua = h.get("user-agent") ?? "";
+    const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? h.get("x-real-ip") ?? "unknown";
+    await registerSession(supabase, data.user.id, data.session.access_token, ua, ip);
   }
 
   revalidatePath("/", "layout");
