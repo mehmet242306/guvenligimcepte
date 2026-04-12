@@ -4,11 +4,15 @@ on:
   workflow_dispatch:
   pull_request:
     branches: ["main", "develop"]
-  push:
-    branches: ["main", "develop"]
+  # New migrations should be applied first; otherwise security history checks
+  # fail on fresh pushes even when the code is correct.
+  workflow_run:
+    workflows: ["Database Migrate"]
+    types: [completed]
 
 jobs:
   security-db:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
