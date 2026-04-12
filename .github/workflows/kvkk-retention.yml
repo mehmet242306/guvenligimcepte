@@ -60,4 +60,8 @@ jobs:
             echo "::notice title=KVKK retention skipped::run_retention_policies() remote veritabaninda henuz yok. Once Database Migrate workflow'unu calistirin."
             exit 0
           fi
-          psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -c "select * from public.run_retention_policies();"
+          if ! psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -c "select * from public.run_retention_policies();" 2> /tmp/kvkk_retention.err; then
+            echo "::error title=KVKK retention failed::$(head -n 1 /tmp/kvkk_retention.err | tr -d '\r')"
+            cat /tmp/kvkk_retention.err
+            exit 1
+          fi
