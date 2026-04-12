@@ -2,53 +2,43 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { usePersistedState } from "@/lib/use-persisted-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { cn } from "@/lib/utils";
-import { MevzuatSyncTab } from "./MevzuatSyncTab";
+import { useIsAdmin } from "@/lib/hooks/use-is-admin";
+import { usePermission } from "@/lib/hooks/use-permission";
+import { usePersistedState } from "@/lib/use-persisted-state";
 import { AdminAITab } from "./AdminAITab";
 import { AuditLogsTab } from "./AuditLogsTab";
 import { DeletedRecordsTab } from "./DeletedRecordsTab";
+import { MevzuatSyncTab } from "./MevzuatSyncTab";
+import { RoleManagementTab } from "./RoleManagementTab";
 import { SecurityEventsTab } from "./SecurityEventsTab";
-import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 
-/* ------------------------------------------------------------------ */
-/* Admin role check                                                    */
-/* ------------------------------------------------------------------ */
-//
-// GÜVENLİK (Parça C, 2026-04-11):
-// Eski lokal useIsAdmin hook'u 5 katlı fail-OPEN idi (default true, client yok
-// true, user yok true, profile_roles tablosu yok true, catch true). Bu yüzden
-// her authenticated kullanıcı admin sanılıyordu. Ayrıca `profile_roles` tablosu
-// DB'de hiç yoktu, her sorgu hata dönüyordu ve hata fallback'i "true" idi.
-//
-// Yeni yaklaşım:
-// - Global `useIsAdmin` hook'u (frontend/src/lib/hooks/use-is-admin.ts) kullanılır
-// - O hook is_super_admin() RPC'sini çağırır (Adım 0.5 Parça A'da oluşturuldu)
-// - Dönüş: boolean | null (null = loading, true = super admin, false = değil)
-// - Tüm fail path'ler false döner (fail-CLOSED)
-// Referans: docs/database-hardening-plan.md §13 (Adım 0.5)
+type TabKey =
+  | "general"
+  | "mevzuat"
+  | "security_events"
+  | "role_management"
+  | "audit_logs"
+  | "deleted_records"
+  | "admin_ai";
 
-/* ------------------------------------------------------------------ */
-/* Tabs                                                                */
-/* ------------------------------------------------------------------ */
-
-type TabKey = "general" | "mevzuat" | "security_events" | "audit_logs" | "deleted_records" | "admin_ai";
-
-type TabDef = { key: TabKey; label: string; adminOnly?: boolean };
+type TabDef = {
+  key: TabKey;
+  label: string;
+  adminOnly?: boolean;
+  permission?: string;
+};
 
 const allTabs: TabDef[] = [
   { key: "general", label: "Genel" },
   { key: "mevzuat", label: "Mevzuat Senkronizasyonu" },
-  { key: "security_events", label: "Guvenlik Olaylari", adminOnly: true },
+  { key: "security_events", label: "Guvenlik Olaylari", permission: "security.events.view" },
+  { key: "role_management", label: "Rol Yonetimi", permission: "security.roles.manage" },
   { key: "audit_logs", label: "Audit Loglari", adminOnly: true },
   { key: "deleted_records", label: "Silinmis Kayitlar", adminOnly: true },
   { key: "admin_ai", label: "Nova AI", adminOnly: true },
 ];
-
-/* ------------------------------------------------------------------ */
-/* General settings placeholder                                        */
-/* ------------------------------------------------------------------ */
 
 function GeneralTab() {
   return (
@@ -79,29 +69,39 @@ function GeneralTab() {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Page                                                                */
-/* ------------------------------------------------------------------ */
-
 export default function SettingsPage() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = usePersistedState<TabKey>("settings:tab", "mevzuat");
-  const isAdmin = useIsAdmin(); // boolean | null (null = loading)
+  const isAdmin = useIsAdmin();
+  const canViewSecurityEvents = usePermission("security.events.view");
+  const canManageRoles = usePermission("security.roles.manage");
 
-  // Tab görünürlüğü: admin tabları SADECE isAdmin === true ise görünür
-  // (null/loading veya false durumlarda admin tablar gizli — fail-CLOSED)
-  const visibleTabs = allTabs.filter((t) => !t.adminOnly || isAdmin === true);
+  const visibleTabs = allTabs.filter((tab) => {
+    if (tab.adminOnly) return isAdmin === true;
+    if (tab.permission === "security.events.view") return canViewSecurityEvents === true;
+    if (tab.permission === "security.roles.manage") return canManageRoles === true;
+    return true;
+  });
 
   useEffect(() => {
     if (visibleTabs.some((tab) => tab.key === activeTab)) {
       return;
     }
+
     setActiveTab("general");
   }, [activeTab, setActiveTab, visibleTabs]);
 
   useEffect(() => {
     const requestedTab = searchParams.get("tab");
-    if (requestedTab === "general" || requestedTab === "mevzuat" || requestedTab === "security_events" || requestedTab === "audit_logs" || requestedTab === "deleted_records" || requestedTab === "admin_ai") {
+    if (
+      requestedTab === "general" ||
+      requestedTab === "mevzuat" ||
+      requestedTab === "security_events" ||
+      requestedTab === "role_management" ||
+      requestedTab === "audit_logs" ||
+      requestedTab === "deleted_records" ||
+      requestedTab === "admin_ai"
+    ) {
       setActiveTab(requestedTab);
     }
   }, [searchParams, setActiveTab]);
@@ -114,7 +114,6 @@ export default function SettingsPage() {
         description="Sistem tercihleri, mevzuat senkronizasyonu ve organizasyon duzeyi yapilandirmalar."
       />
 
-      {/* Tab bar */}
       <nav className="flex gap-1 rounded-2xl border border-border bg-card p-1.5 shadow-[var(--shadow-soft)]">
         {visibleTabs.map((tab) => (
           <button
@@ -128,17 +127,21 @@ export default function SettingsPage() {
                 : "text-muted-foreground hover:bg-secondary hover:text-foreground",
             )}
           >
-            {tab.key === "admin_ai" && <span className="flex h-5 w-5 items-center justify-center rounded bg-[var(--accent)] text-[9px] font-bold text-white">N</span>}
+            {tab.key === "admin_ai" && (
+              <span className="flex h-5 w-5 items-center justify-center rounded bg-[var(--accent)] text-[9px] font-bold text-white">
+                N
+              </span>
+            )}
             {tab.label}
           </button>
         ))}
       </nav>
 
-      {/* Tab content */}
       <div className="mt-4">
         {activeTab === "general" && <GeneralTab />}
         {activeTab === "mevzuat" && <MevzuatSyncTab />}
-        {activeTab === "security_events" && isAdmin === true && <SecurityEventsTab />}
+        {activeTab === "security_events" && canViewSecurityEvents === true && <SecurityEventsTab />}
+        {activeTab === "role_management" && canManageRoles === true && <RoleManagementTab />}
         {activeTab === "audit_logs" && isAdmin === true && <AuditLogsTab />}
         {activeTab === "deleted_records" && isAdmin === true && <DeletedRecordsTab />}
         {activeTab === "admin_ai" && isAdmin === true && <AdminAITab />}

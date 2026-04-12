@@ -69,6 +69,28 @@ export async function login(formData: FormData) {
     }
   }
 
+  try {
+    const service = createServiceClient();
+    const { data: lockoutData, error: lockoutError } = await service.rpc(
+      "get_login_lockout",
+      {
+        p_email: email,
+        p_user_id: knownUserId,
+      },
+    );
+
+    if (!lockoutError) {
+      const lockoutRow = Array.isArray(lockoutData) ? lockoutData[0] : lockoutData;
+      if (lockoutRow?.is_locked) {
+        redirect(
+          `/login?error=${encodeURIComponent("Hesap gecici olarak kilitlendi. Lutfen daha sonra tekrar deneyin.")}`,
+        );
+      }
+    }
+  } catch (lockoutCheckError) {
+    console.warn("[login] lockout check failed:", lockoutCheckError);
+  }
+
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -97,6 +119,19 @@ export async function login(formData: FormData) {
       details: { email, reason: raw.slice(0, 180) },
     });
 
+    try {
+      const service = createServiceClient();
+      await service.rpc("register_login_failure", {
+        p_email: email,
+        p_user_id: knownUserId,
+        p_organization_id: knownOrganizationId,
+        p_ip_address: ipAddress,
+        p_user_agent: userAgent,
+      });
+    } catch (lockoutWriteError) {
+      console.warn("[login] register_login_failure failed:", lockoutWriteError);
+    }
+
     redirect(`/login?error=${encodeURIComponent(message)}`);
   }
 
@@ -106,6 +141,16 @@ export async function login(formData: FormData) {
     process.env.BACKEND_API_URL || "http://127.0.0.1:8000";
 
   if (signedInUser && accessToken) {
+    try {
+      const service = createServiceClient();
+      await service.rpc("clear_login_failures", {
+        p_email: email,
+        p_user_id: signedInUser.id,
+      });
+    } catch (lockoutClearError) {
+      console.warn("[login] clear_login_failures failed:", lockoutClearError);
+    }
+
     const existingSessions = await listSessions(supabase, signedInUser.id);
     const deviceInfo = parseDeviceInfo(userAgent);
     const knownSession = existingSessions.find(

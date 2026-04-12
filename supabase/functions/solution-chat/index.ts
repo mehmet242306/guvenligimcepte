@@ -24,6 +24,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
 import Anthropic from 'https://esm.sh/@anthropic-ai/sdk@0.27.0'
 import OpenAI from 'https://esm.sh/openai@4.53.0'
+import { z } from 'https://esm.sh/zod@3.23.8'
 
 // ============================================================================
 // CONFIG
@@ -86,6 +87,20 @@ interface ToolResult {
   error?: string
   error_type?: string
 }
+
+const chatRequestSchema = z.object({
+  message: z.string().trim().min(1).max(4000),
+  session_id: z.string().uuid().optional(),
+  organization_id: z.string().uuid(),
+  company_workspace_id: z.string().uuid().optional(),
+  language: z.enum(['tr', 'en']).optional(),
+  history: z.array(
+    z.object({
+      role: z.enum(['user', 'assistant']),
+      content: z.string().trim().min(1).max(4000),
+    }),
+  ).max(20).optional(),
+})
 
 // ============================================================================
 // SYSTEM PROMPTS
@@ -867,8 +882,19 @@ serve(async (req) => {
 
   try {
     const body: ChatRequest = await req.json()
-    const userMessage = body.message
-    const language = body.language || 'tr'
+    const parsedBody = chatRequestSchema.safeParse(body)
+    if (!parsedBody.success) {
+      return new Response(
+        JSON.stringify({
+          error: 'Gecersiz istek verisi',
+          details: parsedBody.error.flatten(),
+        }),
+        { status: 400, headers: { ...buildCorsHeaders(req), 'Content-Type': 'application/json' } }
+      )
+    }
+
+    const userMessage = parsedBody.data.message
+    const language = parsedBody.data.language || 'tr'
 
     if (!userMessage || userMessage.trim().length === 0) {
       return new Response(
