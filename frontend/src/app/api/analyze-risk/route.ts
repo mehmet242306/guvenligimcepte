@@ -8,6 +8,10 @@ import {
   parseJsonBody,
   resolveAiDailyLimit,
 } from "@/lib/security/server";
+import {
+  buildManualFallbackResponse,
+  executeWithResilience,
+} from "@/lib/self-healing/resilience";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -783,31 +787,59 @@ export async function POST(request: NextRequest) {
     }
 
     const startTime = Date.now();
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 4096,
-      temperature: 0,
-      system: buildSystemPrompt(method),
-      messages: [
-        {
-          role: "user",
-          content: [
+    const resilientResponse = await executeWithResilience({
+      serviceKey: "anthropic.api",
+      displayName: "Anthropic API",
+      serviceType: "external_api",
+      operationName: "risk_image_analysis",
+      endpoint: request.nextUrl.pathname,
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      fallbackMessage:
+        "AI gorsel analizi gecici olarak kullanilamiyor. Manuel risk girisiyle devam edebilirsiniz.",
+      operation: () =>
+        client.messages.create({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 4096,
+          temperature: 0,
+          system: buildSystemPrompt(method),
+          messages: [
             {
-              type: "image",
-              source: {
-                type: "base64",
-                media_type: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
-                data: imageBase64,
-              },
-            },
-            {
-              type: "text",
-              text: buildUserPrompt(method),
+              role: "user",
+              content: [
+                {
+                  type: "image",
+                  source: {
+                    type: "base64",
+                    media_type: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
+                    data: imageBase64,
+                  },
+                },
+                {
+                  type: "text",
+                  text: buildUserPrompt(method),
+                },
+              ],
             },
           ],
-        },
-      ],
+        }),
     });
+
+    if (!resilientResponse.ok) {
+      return buildManualFallbackResponse({
+        message: resilientResponse.fallbackMessage,
+        queueTaskId: resilientResponse.queuedTaskId,
+        manualActionLabel: "Manuel risk girisiyle devam et",
+        extra: {
+          imageRelevance: "relevant",
+          risks: [],
+          positiveObservations: [],
+          areaSummary: "",
+        },
+      });
+    }
+
+    const response = resilientResponse.data;
 
     const textBlock = response.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") {
@@ -846,7 +878,7 @@ export async function POST(request: NextRequest) {
     if (parsed.positiveObservations?.length > 0) {
       console.log("--- Olumlu Tespitler ---");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      parsed.positiveObservations.forEach((obs: any, idx: number) => {
+      parsed.positiveObservations.forEach((obs: any) => {
         console.log(`  + ${obs}`);
       });
     }

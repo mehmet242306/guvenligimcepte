@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { resilientFetch } from "../_shared/resilience.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -136,17 +137,36 @@ Deno.serve(async (req: Request) => {
       const htmlUrl = getMevzuatHtmlUrl(doc.doc_type, mevzuatNo);
       console.log('Fetching:', htmlUrl);
       
-      const response = await fetch(htmlUrl, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-          'Accept': 'text/html',
-          'Accept-Language': 'tr-TR,tr;q=0.9',
+      const response = await resilientFetch(
+        htmlUrl,
+        {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'text/html',
+            'Accept-Language': 'tr-TR,tr;q=0.9',
+          },
         },
-      });
+        {
+          serviceKey: 'external.mevzuat_gov_tr',
+          displayName: 'Mevzuat GOV',
+          operationName: 'sync_mevzuat_fetch_document',
+          fallbackMessage: 'Mevzuat servisi gecici olarak yanit vermiyor.',
+        },
+      );
       
-      if (!response.ok) return jsonResp({ error: `HTTP ${response.status}`, url: htmlUrl }, 502);
+      if (!response.ok) {
+        return jsonResp(
+          {
+            error: response.fallbackMessage,
+            details: response.error,
+            degraded: true,
+            url: htmlUrl,
+          },
+          503,
+        );
+      }
       
-      const htmlContent = await response.text();
+      const htmlContent = await response.data.text();
       if (htmlContent.length < 500) return jsonResp({ error: 'Icerik cok kisa', length: htmlContent.length }, 400);
       
       const articles = parseArticlesFromHtml(htmlContent, doc.title);

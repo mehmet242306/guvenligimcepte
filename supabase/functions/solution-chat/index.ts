@@ -25,6 +25,7 @@ import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-
 import Anthropic from 'https://esm.sh/@anthropic-ai/sdk@0.27.0'
 import OpenAI from 'https://esm.sh/openai@4.53.0'
 import { z } from 'https://esm.sh/zod@3.23.8'
+import { executeWithResilience } from '../_shared/resilience.ts'
 
 // ============================================================================
 // CONFIG
@@ -672,16 +673,51 @@ function extractNavigation(toolsUsed: string[], messages: any[]): any | null {
 
 async function generateEmbedding(text: string, openai: OpenAI): Promise<number[] | null> {
   try {
-    const response = await openai.embeddings.create({
-      model: EMBEDDING_MODEL,
-      input: text,
-      dimensions: EMBEDDING_DIMENSIONS
+    const resilientResponse = await executeWithResilience({
+      serviceKey: 'openai.embeddings',
+      displayName: 'OpenAI Embeddings',
+      serviceType: 'external_api',
+      operationName: 'solution_chat_generate_embedding',
+      fallbackMessage: 'Embedding servisi gecici olarak kullanilamiyor.',
+      onFallback: async () => null,
+      operation: () => openai.embeddings.create({
+        model: EMBEDDING_MODEL,
+        input: text,
+        dimensions: EMBEDDING_DIMENSIONS
+      })
     })
-    return response.data[0].embedding
+
+    const response = resilientResponse.ok
+      ? resilientResponse.data
+      : (resilientResponse.fallbackData ?? null)
+
+    return response?.data?.[0]?.embedding ?? null
   } catch (err) {
     console.error('Embedding generation error:', err)
     return null
   }
+}
+
+async function requestClaude(
+  anthropic: Anthropic,
+  payload: Parameters<Anthropic['messages']['create']>[0],
+  operationName: string,
+) {
+  const resilientResponse = await executeWithResilience({
+    serviceKey: 'anthropic.api.solution_chat',
+    displayName: 'Anthropic Solution Chat',
+    serviceType: 'external_api',
+    operationName,
+    fallbackMessage: 'Nova AI servisi gecici olarak yanit vermiyor.',
+    onFallback: async () => null,
+    operation: () => anthropic.messages.create(payload),
+  })
+
+  if (!resilientResponse.ok) {
+    return resilientResponse.fallbackData ?? null
+  }
+
+  return resilientResponse.data
 }
 
 async function checkSemanticCache(
@@ -1097,14 +1133,25 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
     while (iterations < MAX_TOOL_ITERATIONS) {
       iterations++
 
-      const response = await anthropic.messages.create({
-        model: ANTHROPIC_MODEL,
-        max_tokens: MAX_TOKENS,
-        temperature: TEMPERATURE,
-        system: systemPrompt,
-        tools: availableTools as any,
-        messages: messages
-      })
+      const response = await requestClaude(
+        anthropic,
+        {
+          model: ANTHROPIC_MODEL,
+          max_tokens: MAX_TOKENS,
+          temperature: TEMPERATURE,
+          system: systemPrompt,
+          tools: availableTools as any,
+          messages: messages
+        },
+        'solution_chat_main_loop',
+      )
+
+      if (!response) {
+        finalAnswer = language === 'tr'
+          ? 'Nova AI servisi gecici olarak kullanilamiyor. Elle devam edebilir veya biraz sonra tekrar deneyebilirsiniz.'
+          : 'Nova AI is temporarily unavailable. You can continue manually or try again shortly.'
+        break
+      }
 
       totalInputTokens += response.usage.input_tokens
       totalOutputTokens += response.usage.output_tokens
@@ -1162,13 +1209,24 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
     // Loop max iterasyona takıldıysa Claude'a tool'suz son çağrı
     if (!finalAnswer && iterations >= MAX_TOOL_ITERATIONS) {
       try {
-        const fallbackResponse = await anthropic.messages.create({
-          model: ANTHROPIC_MODEL,
-          max_tokens: MAX_TOKENS,
-          temperature: TEMPERATURE,
-          system: systemPrompt + '\n\nONEMLI: Artik tool kullanma. Simdiye kadar topladigin bilgilerle kullanicinin sorusunu cevapla. Eger yeterli bilgi bulamadiysan, bunu durust bir sekilde soyle. Bos cevap verme.',
-          messages: messages
-        })
+        const fallbackResponse = await requestClaude(
+          anthropic,
+          {
+            model: ANTHROPIC_MODEL,
+            max_tokens: MAX_TOKENS,
+            temperature: TEMPERATURE,
+            system: systemPrompt + '\n\nONEMLI: Artik tool kullanma. Simdiye kadar topladigin bilgilerle kullanicinin sorusunu cevapla. Eger yeterli bilgi bulamadiysan, bunu durust bir sekilde soyle. Bos cevap verme.',
+            messages: messages
+          },
+          'solution_chat_final_fallback',
+        )
+
+        if (!fallbackResponse) {
+          finalAnswer = language === 'tr'
+            ? 'Nova AI servisi gecici olarak kullanilamiyor. Elle devam edebilir veya daha sonra tekrar deneyebilirsiniz.'
+            : 'Nova AI is temporarily unavailable. Please continue manually or try again later.'
+          break
+        }
 
         totalInputTokens += fallbackResponse.usage.input_tokens
         totalOutputTokens += fallbackResponse.usage.output_tokens

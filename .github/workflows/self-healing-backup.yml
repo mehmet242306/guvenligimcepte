@@ -1,0 +1,29 @@
+name: Self-Healing Backup
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"
+
+jobs:
+  run-backup:
+    runs-on: ubuntu-latest
+    env:
+      APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+      SELF_HEALING_CRON_SECRET: ${{ secrets.SELF_HEALING_CRON_SECRET }}
+    steps:
+      - name: Validate required secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$APP_BASE_URL" || { echo "::error::Missing APP_BASE_URL"; exit 1; }
+          test -n "$SELF_HEALING_CRON_SECRET" || { echo "::error::Missing SELF_HEALING_CRON_SECRET"; exit 1; }
+
+      - name: Run scheduled backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS -X POST "${APP_BASE_URL%/}/api/self-healing/backup/run" \
+            -H "Content-Type: application/json" \
+            -H "x-self-healing-key: ${SELF_HEALING_CRON_SECRET}" \
+            --data '{"backupType":"scheduled_weekly_snapshot"}'

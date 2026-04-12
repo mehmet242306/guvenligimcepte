@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { resilientFetch } from "../_shared/resilience.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -34,10 +35,22 @@ Deno.serve(async (req: Request) => {
         const mevTer = url.searchParams.get("MevzuatTertip");
         const iframeUrl = `https://www.mevzuat.gov.tr/anasayfa/MevzuatFihristDetayIframe?MevzuatNo=${mevNo}&MevzuatTur=${mevTur}&MevzuatTertip=${mevTer}`;
 
-        const resp = await fetch(iframeUrl, { headers: { "User-Agent": "Mozilla/5.0", "Accept": "text/html", "Accept-Language": "tr-TR" } });
-        if (!resp.ok) { results.push({ id: doc.id, title: doc.title, status: "error", reason: `HTTP ${resp.status}` }); continue; }
+        const resp = await resilientFetch(
+          iframeUrl,
+          { headers: { "User-Agent": "Mozilla/5.0", "Accept": "text/html", "Accept-Language": "tr-TR" } },
+          {
+            serviceKey: "external.mevzuat_iframe",
+            displayName: "Mevzuat Iframe",
+            operationName: "chunk_mevzuat_fetch_iframe",
+            fallbackMessage: "Mevzuat iframe servisi gecici olarak yanit vermiyor.",
+          },
+        );
+        if (!resp.ok) {
+          results.push({ id: doc.id, title: doc.title, status: "error", reason: resp.error, degraded: true });
+          continue;
+        }
 
-        let html = await resp.text();
+        let html = await resp.data.text();
 
         // Strip style, script, head tags and their content
         html = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "");

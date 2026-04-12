@@ -14,6 +14,7 @@ import { KvkkCenterTab } from "./KvkkCenterTab";
 import { MevzuatSyncTab } from "./MevzuatSyncTab";
 import { RoleManagementTab } from "./RoleManagementTab";
 import { SecurityEventsTab } from "./SecurityEventsTab";
+import { SelfHealingTab } from "./SelfHealingTab";
 
 type TabKey =
   | "general"
@@ -21,6 +22,7 @@ type TabKey =
   | "security_events"
   | "role_management"
   | "kvkk_center"
+  | "self_healing"
   | "audit_logs"
   | "deleted_records"
   | "admin_ai";
@@ -36,6 +38,7 @@ const allTabs: TabDef[] = [
   { key: "general", label: "Genel" },
   { key: "mevzuat", label: "Mevzuat Senkronizasyonu" },
   { key: "kvkk_center", label: "KVKK Merkezi", permission: "compliance.kvkk.manage" },
+  { key: "self_healing", label: "Self-Healing", permission: "self_healing.view" },
   { key: "security_events", label: "Guvenlik Olaylari", permission: "security.events.view" },
   { key: "role_management", label: "Rol Yonetimi", permission: "security.roles.manage" },
   { key: "audit_logs", label: "Audit Loglari", adminOnly: true },
@@ -79,10 +82,12 @@ export default function SettingsPage() {
   const canViewSecurityEvents = usePermission("security.events.view");
   const canManageRoles = usePermission("security.roles.manage");
   const canManageKvkk = usePermission("compliance.kvkk.manage");
+  const canViewSelfHealing = usePermission("self_healing.view");
 
   const visibleTabs = allTabs.filter((tab) => {
     if (tab.adminOnly) return isAdmin === true;
     if (tab.permission === "compliance.kvkk.manage") return canManageKvkk === true;
+    if (tab.permission === "self_healing.view") return canViewSelfHealing === true;
     if (tab.permission === "security.events.view") return canViewSecurityEvents === true;
     if (tab.permission === "security.roles.manage") return canManageRoles === true;
     return true;
@@ -102,6 +107,7 @@ export default function SettingsPage() {
       requestedTab === "general" ||
       requestedTab === "mevzuat" ||
       requestedTab === "kvkk_center" ||
+      requestedTab === "self_healing" ||
       requestedTab === "security_events" ||
       requestedTab === "role_management" ||
       requestedTab === "audit_logs" ||
@@ -147,6 +153,7 @@ export default function SettingsPage() {
         {activeTab === "general" && <GeneralTab />}
         {activeTab === "mevzuat" && <MevzuatSyncTab />}
         {activeTab === "kvkk_center" && canManageKvkk === true && <KvkkCenterTab />}
+        {activeTab === "self_healing" && canViewSelfHealing === true && <SelfHealingTab />}
         {activeTab === "security_events" && canViewSecurityEvents === true && <SecurityEventsTab />}
         {activeTab === "role_management" && canManageRoles === true && <RoleManagementTab />}
         {activeTab === "audit_logs" && isAdmin === true && <AuditLogsTab />}

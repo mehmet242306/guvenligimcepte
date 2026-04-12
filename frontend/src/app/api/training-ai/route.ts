@@ -8,6 +8,10 @@ import {
   parseJsonBody,
   resolveAiDailyLimit,
 } from "@/lib/security/server";
+import {
+  buildManualFallbackResponse,
+  executeWithResilience,
+} from "@/lib/self-healing/resilience";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -80,11 +84,46 @@ ${!isExam ? `Anketlerde questionType su degerlerden biri olmali: "multiple_choic
 
 Sadece JSON dizisi dondur.`;
 
-    const message = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 4096,
-      messages: [{ role: "user", content: prompt }],
+    const resilientResponse = await executeWithResilience({
+      serviceKey: "anthropic.api",
+      displayName: "Anthropic API",
+      serviceType: "external_api",
+      operationName: "training_ai_generate",
+      endpoint: request.nextUrl.pathname,
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      fallbackMessage:
+        "AI egitim servisi gecici olarak kullanilamiyor. Sorulari manuel olarak ekleyebilir veya istegi kuyruga birakabilirsiniz.",
+      queueTask: {
+        taskType: "ai.training.generate",
+        payload: {
+          topic,
+          questionCount: qCount,
+          optionCount: oCount,
+          type,
+          description,
+        },
+        organizationId: auth.organizationId,
+        createdBy: auth.userId,
+        maxRetries: 5,
+      },
+      operation: () =>
+        client.messages.create({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 4096,
+          messages: [{ role: "user", content: prompt }],
+        }),
     });
+
+    if (!resilientResponse.ok) {
+      return buildManualFallbackResponse({
+        message: resilientResponse.fallbackMessage,
+        queueTaskId: resilientResponse.queuedTaskId,
+        manualActionLabel: "Sorulari manuel olustur",
+      });
+    }
+
+    const message = resilientResponse.data;
 
     const text = message.content[0].type === "text" ? message.content[0].text : "";
     const jsonMatch = text.match(/\[[\s\S]*\]/);

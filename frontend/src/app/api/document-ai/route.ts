@@ -8,6 +8,10 @@ import {
   parseJsonBody,
   resolveAiDailyLimit,
 } from "@/lib/security/server";
+import {
+  buildManualFallbackResponse,
+  executeWithResilience,
+} from "@/lib/self-healing/resilience";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -118,17 +122,52 @@ export async function POST(request: NextRequest) {
 
     const userMessage = `${contextInfo}\n\nKULLANICI İSTEĞİ:\n${prompt}`;
 
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 4096,
-      system: SYSTEM_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: userMessage,
+    const resilientResponse = await executeWithResilience({
+      serviceKey: "anthropic.api",
+      displayName: "Anthropic API",
+      serviceType: "external_api",
+      operationName: "document_ai_generate",
+      endpoint: request.nextUrl.pathname,
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      fallbackMessage:
+        "AI dokuman servisi gecici olarak yanit vermiyor. Manuel girisle devam edebilir veya islemi kuyruga birakabilirsiniz.",
+      queueTask: {
+        taskType: "ai.document.generate",
+        payload: {
+          prompt,
+          companyName,
+          companyData,
+          documentTitle,
+          groupKey,
         },
-      ],
+        organizationId: auth.organizationId,
+        createdBy: auth.userId,
+        maxRetries: 5,
+      },
+      operation: () =>
+        client.messages.create({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 4096,
+          system: SYSTEM_PROMPT,
+          messages: [
+            {
+              role: "user",
+              content: userMessage,
+            },
+          ],
+        }),
     });
+
+    if (!resilientResponse.ok) {
+      return buildManualFallbackResponse({
+        message: resilientResponse.fallbackMessage,
+        queueTaskId: resilientResponse.queuedTaskId,
+        manualActionLabel: "Manuel dokuman girisiyle devam et",
+      });
+    }
+
+    const response = resilientResponse.data;
 
     const textBlock = response.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") {
