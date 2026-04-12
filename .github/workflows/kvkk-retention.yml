@@ -56,4 +56,8 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
+          if [ "$(psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -At -c "select case when to_regprocedure('public.run_retention_policies()') is null then 'missing' else 'ready' end;")" = "missing" ]; then
+            echo "::notice title=KVKK retention skipped::run_retention_policies() remote veritabaninda henuz yok. Once Database Migrate workflow'unu calistirin."
+            exit 0
+          fi
           psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -c "select * from public.run_retention_policies();"
