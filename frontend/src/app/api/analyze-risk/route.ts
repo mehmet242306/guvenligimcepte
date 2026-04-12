@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
+import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -826,6 +827,18 @@ export async function POST(request: NextRequest) {
     });
 
     if (!resilientResponse.ok) {
+      await logAiUsage({
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        model: "claude-sonnet-4-20250514",
+        endpoint: "/api/analyze-risk",
+        success: false,
+        metadata: {
+          method,
+          fallback: true,
+          queueTaskId: resilientResponse.queuedTaskId ?? null,
+        },
+      });
       return buildManualFallbackResponse({
         message: resilientResponse.fallbackMessage,
         queueTaskId: resilientResponse.queuedTaskId,
@@ -843,6 +856,32 @@ export async function POST(request: NextRequest) {
 
     const textBlock = response.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") {
+      await logAiUsage({
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        model: "claude-sonnet-4-20250514",
+        endpoint: "/api/analyze-risk",
+        promptTokens: response.usage?.input_tokens ?? 0,
+        completionTokens: response.usage?.output_tokens ?? 0,
+        cachedTokens: Number(
+          (
+            response.usage as {
+              cache_read_input_tokens?: number;
+            } | undefined
+          )?.cache_read_input_tokens ?? 0,
+        ),
+        success: false,
+        metadata: { reason: "missing_text_block", method },
+      });
+      await logErrorEvent({
+        level: "error",
+        source: "analyze-risk",
+        endpoint: "/api/analyze-risk",
+        message: "Claude Vision yaniti text blogu icermiyor.",
+        context: { method, mimeType },
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+      });
       return NextResponse.json({ error: "AI yan\u0131t vermedi" }, { status: 500 });
     }
 
@@ -885,6 +924,28 @@ export async function POST(request: NextRequest) {
     console.log("========================================\n");
 
     const duration = Date.now() - startTime;
+    await logAiUsage({
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      model: "claude-sonnet-4-20250514",
+      endpoint: "/api/analyze-risk",
+      promptTokens: response.usage?.input_tokens ?? 0,
+      completionTokens: response.usage?.output_tokens ?? 0,
+      cachedTokens: Number(
+        (
+          response.usage as {
+            cache_read_input_tokens?: number;
+          } | undefined
+        )?.cache_read_input_tokens ?? 0,
+      ),
+      success: true,
+      metadata: {
+        method,
+        durationMs: duration,
+        personCount: parsed.personCount ?? 0,
+        riskCount: Array.isArray(parsed.risks) ? parsed.risks.length : 0,
+      },
+    });
     return NextResponse.json({
       risks: parsed.risks ?? [],
       faces: parsed.faces ?? [],
@@ -904,6 +965,24 @@ export async function POST(request: NextRequest) {
     const message = error instanceof Error ? error.message : "Bilinmeyen hata";
     const stack = error instanceof Error ? error.stack : "";
     console.error("Risk analizi API hatas\u0131:", message, stack);
+    await logAiUsage({
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      model: "claude-sonnet-4-20250514",
+      endpoint: "/api/analyze-risk",
+      success: false,
+      metadata: { error: message.slice(0, 300) },
+    });
+    await logErrorEvent({
+      level: "error",
+      source: "analyze-risk",
+      endpoint: "/api/analyze-risk",
+      message,
+      stackTrace: stack || null,
+      context: { feature: "image_risk_analysis" },
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+    });
     await logSecurityEvent(request, "ai.analyze_risk.failed", {
       severity: "warning",
       userId: auth.userId,

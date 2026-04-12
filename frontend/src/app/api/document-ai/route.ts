@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
+import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -160,6 +161,19 @@ export async function POST(request: NextRequest) {
     });
 
     if (!resilientResponse.ok) {
+      await logAiUsage({
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        model: "claude-sonnet-4-20250514",
+        endpoint: "/api/document-ai",
+        success: false,
+        metadata: {
+          fallback: true,
+          queueTaskId: resilientResponse.queuedTaskId ?? null,
+          documentTitle,
+          groupKey,
+        },
+      });
       return buildManualFallbackResponse({
         message: resilientResponse.fallbackMessage,
         queueTaskId: resilientResponse.queuedTaskId,
@@ -171,8 +185,52 @@ export async function POST(request: NextRequest) {
 
     const textBlock = response.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") {
+      await logAiUsage({
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        model: "claude-sonnet-4-20250514",
+        endpoint: "/api/document-ai",
+        promptTokens: response.usage.input_tokens,
+        completionTokens: response.usage.output_tokens,
+        cachedTokens: Number(
+          (
+            response.usage as {
+              cache_read_input_tokens?: number;
+            } | undefined
+          )?.cache_read_input_tokens ?? 0,
+        ),
+        success: false,
+        metadata: { reason: "missing_text_block", documentTitle, groupKey },
+      });
+      await logErrorEvent({
+        level: "error",
+        source: "document-ai",
+        endpoint: "/api/document-ai",
+        message: "Anthropic response did not include a text block.",
+        context: { documentTitle, groupKey, companyName },
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+      });
       return NextResponse.json({ error: "AI yanıt vermedi" }, { status: 500 });
     }
+
+    await logAiUsage({
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      model: "claude-sonnet-4-20250514",
+      endpoint: "/api/document-ai",
+      promptTokens: response.usage.input_tokens,
+      completionTokens: response.usage.output_tokens,
+      cachedTokens: Number(
+        (
+          response.usage as {
+            cache_read_input_tokens?: number;
+          } | undefined
+        )?.cache_read_input_tokens ?? 0,
+      ),
+      success: true,
+      metadata: { documentTitle, groupKey, companyName },
+    });
 
     return NextResponse.json({
       content: textBlock.text,
@@ -184,6 +242,24 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Bilinmeyen hata";
     console.error("Doküman AI hatası:", message);
+    await logAiUsage({
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      model: "claude-sonnet-4-20250514",
+      endpoint: "/api/document-ai",
+      success: false,
+      metadata: { error: message.slice(0, 300) },
+    });
+    await logErrorEvent({
+      level: "error",
+      source: "document-ai",
+      endpoint: "/api/document-ai",
+      message,
+      stackTrace: error instanceof Error ? error.stack : null,
+      context: { feature: "document_generation" },
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+    });
     await logSecurityEvent(request, "ai.document.failed", {
       severity: "warning",
       userId: auth.userId,

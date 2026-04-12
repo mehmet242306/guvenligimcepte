@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
+import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -116,6 +117,19 @@ Sadece JSON dizisi dondur.`;
     });
 
     if (!resilientResponse.ok) {
+      await logAiUsage({
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        model: "claude-sonnet-4-20250514",
+        endpoint: "/api/training-ai",
+        success: false,
+        metadata: {
+          fallback: true,
+          queueTaskId: resilientResponse.queuedTaskId ?? null,
+          type,
+          topic,
+        },
+      });
       return buildManualFallbackResponse({
         message: resilientResponse.fallbackMessage,
         queueTaskId: resilientResponse.queuedTaskId,
@@ -129,6 +143,32 @@ Sadece JSON dizisi dondur.`;
     const jsonMatch = text.match(/\[[\s\S]*\]/);
 
     if (!jsonMatch) {
+      await logAiUsage({
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        model: "claude-sonnet-4-20250514",
+        endpoint: "/api/training-ai",
+        promptTokens: message.usage.input_tokens,
+        completionTokens: message.usage.output_tokens,
+        cachedTokens: Number(
+          (
+            message.usage as {
+              cache_read_input_tokens?: number;
+            } | undefined
+          )?.cache_read_input_tokens ?? 0,
+        ),
+        success: false,
+        metadata: { reason: "json_payload_not_found", type, topic },
+      });
+      await logErrorEvent({
+        level: "error",
+        source: "training-ai",
+        endpoint: "/api/training-ai",
+        message: "AI yanitindan soru dizisi ayrıştırılamadı.",
+        context: { type, topic, questionCount: qCount },
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+      });
       return NextResponse.json(
         { error: "AI yanitindan sorular cikarilamadi" },
         { status: 500 },
@@ -136,9 +176,50 @@ Sadece JSON dizisi dondur.`;
     }
 
     const questions = JSON.parse(jsonMatch[0]);
+    await logAiUsage({
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      model: "claude-sonnet-4-20250514",
+      endpoint: "/api/training-ai",
+      promptTokens: message.usage.input_tokens,
+      completionTokens: message.usage.output_tokens,
+      cachedTokens: Number(
+        (
+          message.usage as {
+            cache_read_input_tokens?: number;
+          } | undefined
+        )?.cache_read_input_tokens ?? 0,
+      ),
+      success: true,
+      metadata: {
+        type,
+        topic,
+        questionCount: Array.isArray(questions) ? questions.length : 0,
+      },
+    });
     return NextResponse.json({ questions });
   } catch (error) {
     console.error(`[training-ai] [${new Date().toISOString()}] [user=${auth.userId}] error:`, error);
+    await logAiUsage({
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      model: "claude-sonnet-4-20250514",
+      endpoint: "/api/training-ai",
+      success: false,
+      metadata: {
+        error: error instanceof Error ? error.message.slice(0, 300) : "unknown",
+      },
+    });
+    await logErrorEvent({
+      level: "error",
+      source: "training-ai",
+      endpoint: "/api/training-ai",
+      message: error instanceof Error ? error.message : "AI soru olusturma hatasi",
+      stackTrace: error instanceof Error ? error.stack : null,
+      context: { feature: "training_question_generation" },
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+    });
     await logSecurityEvent(request, "ai.training.failed", {
       severity: "warning",
       userId: auth.userId,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
 import { z } from "zod";
+import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { requireSuperAdmin } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -215,8 +216,6 @@ const SYSTEM_PROMPT = `Sen "Nova AI" adında, RiskNova platformunun kendi yapay 
 - Emin olmadığın konularda bunu belirt
 - Markdown formatı kullan`;
 
-type ChatMessage = { role: "user" | "assistant"; content: string };
-
 const adminAiSchema = z.object({
   message: z.string().min(3).max(8000),
   history: z
@@ -316,17 +315,59 @@ export async function POST(request: NextRequest) {
     });
 
     const textBlock = response.content.find((b) => b.type === "text");
+    const missingTextBlockMessage = "Anthropic response did not include a text block.";
     if (!textBlock || textBlock.type !== "text") {
+      await logAiUsage({
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        model: "claude-sonnet-4-20250514",
+        endpoint: "/api/admin-ai",
+        promptTokens: response.usage.input_tokens,
+        completionTokens: response.usage.output_tokens,
+        success: false,
+        metadata: { reason: "missing_text_block" },
+      });
+      await logErrorEvent({
+        level: "error",
+        source: "admin-ai",
+        endpoint: "/api/admin-ai",
+        message: missingTextBlockMessage,
+        context: { responseStopReason: response.stop_reason ?? null },
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+      });
       return NextResponse.json({ error: "AI yanıt vermedi" }, { status: 500 });
     }
 
     const tokens = {
       inputTokens: response.usage.input_tokens,
       outputTokens: response.usage.output_tokens,
+      cachedTokens: Number(
+        (
+          response.usage as {
+            cache_read_input_tokens?: number;
+          } | undefined
+        )?.cache_read_input_tokens ?? 0,
+      ),
     };
 
     // Save to database for learning — güvenli userId (helper'dan geliyor)
     const qaId = await saveInteraction(userId, message, textBlock.text, { input: tokens.inputTokens, output: tokens.outputTokens });
+    await logAiUsage({
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      model: "claude-sonnet-4-20250514",
+      endpoint: "/api/admin-ai",
+      promptTokens: tokens.inputTokens,
+      completionTokens: tokens.outputTokens,
+      cachedTokens: tokens.cachedTokens,
+      success: true,
+      metadata: {
+        qaId,
+        historyLength: history.length,
+        hasImage: Boolean(imageBase64 && imageMimeType),
+      },
+    });
 
     return NextResponse.json({
       response: textBlock.text,
@@ -336,6 +377,24 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Bilinmeyen hata";
     console.error(`[admin-ai] [${new Date().toISOString()}] [user=${auth.userId}] Nova AI error:`, msg);
+    await logAiUsage({
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      model: "claude-sonnet-4-20250514",
+      endpoint: "/api/admin-ai",
+      success: false,
+      metadata: { error: msg.slice(0, 300) },
+    });
+    await logErrorEvent({
+      level: "error",
+      source: "admin-ai",
+      endpoint: "/api/admin-ai",
+      message: msg,
+      stackTrace: error instanceof Error ? error.stack : null,
+      context: { feature: "nova_admin_chat" },
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+    });
     await logSecurityEvent(request, "ai.admin.failed", {
       severity: "warning",
       userId: auth.userId,

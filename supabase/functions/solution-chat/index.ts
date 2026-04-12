@@ -26,6 +26,7 @@ import Anthropic from 'https://esm.sh/@anthropic-ai/sdk@0.27.0'
 import OpenAI from 'https://esm.sh/openai@4.53.0'
 import { z } from 'https://esm.sh/zod@3.23.8'
 import { executeWithResilience } from '../_shared/resilience.ts'
+import { logEdgeAiUsage, logEdgeErrorEvent } from '../_shared/observability.ts'
 
 // ============================================================================
 // CONFIG
@@ -1265,6 +1266,22 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
       supabase
     )
 
+    await logEdgeAiUsage({
+      userId: user.id,
+      organizationId: body.organization_id,
+      model: ANTHROPIC_MODEL,
+      endpoint: '/functions/v1/solution-chat',
+      promptTokens: totalInputTokens,
+      completionTokens: totalOutputTokens,
+      success: true,
+      metadata: {
+        toolsUsed,
+        iterations,
+        cached: false,
+        sessionId,
+      },
+    })
+
     // ========================================================================
     // STEP 4: Response
     // ========================================================================
@@ -1287,6 +1304,24 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
 
   } catch (error: any) {
     console.error('Nova error:', error)
+    await logEdgeAiUsage({
+      model: ANTHROPIC_MODEL,
+      endpoint: '/functions/v1/solution-chat',
+      success: false,
+      metadata: {
+        error: error?.message ?? 'unknown',
+      },
+    })
+    await logEdgeErrorEvent({
+      level: 'error',
+      source: 'solution-chat',
+      endpoint: '/functions/v1/solution-chat',
+      message: error?.message ?? 'Nova error',
+      stackTrace: error?.stack ?? null,
+      context: {
+        feature: 'solution_chat',
+      },
+    })
     return new Response(
       JSON.stringify({
         error: 'Nova hatası',
