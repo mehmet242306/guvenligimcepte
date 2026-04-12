@@ -80,7 +80,7 @@ interface ToolContext {
   user: { id: string; organization_id: string; role: string; preferred_language: string }
   subscription: { plan_key: string; allowed_tools: string[]; subscription_id: string }
   supabase: SupabaseClient
-  session: { id: string; language: string }
+  session: { id: string; language: string; company_workspace_id?: string | null }
 }
 
 interface ToolResult {
@@ -89,6 +89,8 @@ interface ToolResult {
   error?: string
   error_type?: string
 }
+
+const ISG_TASK_CATEGORY_EGITIM = '9b722ae5-0a72-48c8-9d1f-836e1a114b8a'
 
 const chatRequestSchema = z.object({
   message: z.string().trim().min(1).max(4000),
@@ -253,6 +255,29 @@ const NOVA_TOOLS = [
         reason: { type: 'string', description: 'Kullanıcıya neden oraya yönlendirdiğini açıklayan kısa metin (max 100 karakter)' }
       },
       required: ['destination', 'reason']
+    }
+  },
+  {
+    name: 'create_training_plan',
+    description: 'Firma icin egitim planlar ve gerekli takip gorevini olusturur. Kullanici planla, takvime ekle, egitim olustur gibi operasyon komutlari verdiginde kullan.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string', description: 'Egitim basligi' },
+        training_type: {
+          type: 'string',
+          enum: ['zorunlu', 'istege_bagli', 'yenileme'],
+          description: 'Egitim tipi',
+          default: 'zorunlu'
+        },
+        training_date: { type: 'string', description: 'Egitim tarihi (YYYY-MM-DD)' },
+        duration_hours: { type: 'number', description: 'Egitim suresi saat cinsinden', default: 2 },
+        trainer_name: { type: 'string', description: 'Egitmen adi (opsiyonel)' },
+        location: { type: 'string', description: 'Lokasyon (opsiyonel)' },
+        notes: { type: 'string', description: 'Ek notlar (opsiyonel)' },
+        company_workspace_id: { type: 'string', description: 'Firma workspace ID (opsiyonel)' }
+      },
+      required: ['title', 'training_date']
     }
   }
 ]
@@ -421,32 +446,162 @@ async function executeGetRecentAssessments(input: any, context: ToolContext): Pr
   }
 }
 
+async function getActiveWorkspaceId(
+  context: ToolContext,
+  preferredWorkspaceId?: string | null,
+): Promise<string | null> {
+  if (preferredWorkspaceId) return preferredWorkspaceId
+  if (context.session.company_workspace_id) return context.session.company_workspace_id
+
+  const { data: lastAssessment } = await context.supabase
+    .from('risk_assessments')
+    .select('company_workspace_id')
+    .eq('organization_id', context.user.organization_id)
+    .not('company_workspace_id', 'is', null)
+    .order('assessment_date', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (lastAssessment?.company_workspace_id) return lastAssessment.company_workspace_id
+
+  const { data: ws } = await context.supabase
+    .from('company_workspaces')
+    .select('id')
+    .eq('organization_id', context.user.organization_id)
+    .eq('is_archived', false)
+    .limit(1)
+    .maybeSingle()
+
+  return ws?.id || null
+}
+
+async function executeCreateTrainingPlan(input: any, context: ToolContext): Promise<ToolResult> {
+  try {
+    const title = String(input.title || '').trim()
+    const trainingDate = String(input.training_date || '').trim()
+
+    if (!title) {
+      return { success: false, error: 'Egitim basligi gerekli' }
+    }
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(trainingDate)) {
+      return { success: false, error: 'Egitim tarihi YYYY-MM-DD formatinda olmali' }
+    }
+
+    const workspaceId = await getActiveWorkspaceId(
+      context,
+      input.company_workspace_id || null,
+    )
+
+    if (!workspaceId) {
+      return {
+        success: false,
+        error: 'Aktif bir firma workspace bulunamadi. Once bir firma secin veya firma olusturun.',
+      }
+    }
+
+    const { data: workspace } = await context.supabase
+      .from('company_workspaces')
+      .select('id, display_name')
+      .eq('id', workspaceId)
+      .eq('organization_id', context.user.organization_id)
+      .maybeSingle()
+
+    if (!workspace?.id) {
+      return { success: false, error: 'Egitim planlanacak firma bulunamadi.' }
+    }
+
+    const durationHours = Math.max(1, Number(input.duration_hours ?? 2))
+    const trainingType = ['zorunlu', 'istege_bagli', 'yenileme'].includes(input.training_type)
+      ? input.training_type
+      : 'zorunlu'
+
+    const notes = String(input.notes || '').trim()
+    const trainerName = String(input.trainer_name || '').trim()
+    const location = String(input.location || '').trim()
+
+    const { data: trainingRow, error: trainingError } = await context.supabase
+      .from('company_trainings')
+      .insert({
+        organization_id: context.user.organization_id,
+        company_workspace_id: workspaceId,
+        title,
+        training_type: trainingType,
+        trainer_name: trainerName || null,
+        training_date: trainingDate,
+        duration_hours: durationHours,
+        location: location || null,
+        status: 'planned',
+        notes: notes || null,
+      })
+      .select('id, title, training_date, status')
+      .single()
+
+    if (trainingError || !trainingRow?.id) {
+      console.error('[create_training_plan] company_trainings insert failed:', trainingError)
+      return { success: false, error: 'Egitim plani olusturulamadi.' }
+    }
+
+    const taskDescriptionParts = [
+      trainerName ? `Egitmen: ${trainerName}` : null,
+      `Sure: ${durationHours} saat`,
+      location ? `Lokasyon: ${location}` : null,
+      notes || null,
+    ].filter(Boolean)
+
+    const { data: taskRow, error: taskError } = await context.supabase
+      .from('isg_tasks')
+      .insert({
+        organization_id: context.user.organization_id,
+        company_workspace_id: workspaceId,
+        title: `Egitim: ${title}`,
+        description: taskDescriptionParts.join(' | '),
+        category_id: ISG_TASK_CATEGORY_EGITIM,
+        start_date: trainingDate,
+        end_date: trainingDate,
+        status: 'planned',
+        location: location || null,
+        reminder_days: 3,
+      })
+      .select('id')
+      .single()
+
+    if (taskError) {
+      console.error('[create_training_plan] isg_tasks insert failed:', taskError)
+    }
+
+    return {
+      success: true,
+      data: {
+        training_id: trainingRow.id,
+        task_id: taskRow?.id ?? null,
+        title: trainingRow.title,
+        training_date: trainingRow.training_date,
+        status: trainingRow.status,
+        company_workspace_id: workspaceId,
+        company_name: workspace.display_name ?? null,
+        summary: `${title} egitimi ${trainingDate} tarihine planlandi.`,
+        navigation: {
+          action: 'navigate',
+          url: `/companies/${workspaceId}?tab=tracking`,
+          label: 'Egitim plani olusturuldu',
+          reason: 'Olusan egitim planini takip ekraninda gorebilirsiniz.',
+          destination: 'company_tracking',
+          auto_navigate: false,
+        },
+      },
+    }
+  } catch (err: any) {
+    console.error('[create_training_plan] error:', err)
+    return { success: false, error: `Hata: ${err.message}` }
+  }
+}
+
 async function executeNavigateToPage(input: any, context: ToolContext): Promise<ToolResult> {
   try {
     const destination = input.destination
     const recordId = input.record_id
     const reason = input.reason || 'Sayfaya yonlendiriyorum'
-
-    async function getActiveWorkspaceId(): Promise<string | null> {
-      const { data: lastAssessment } = await context.supabase
-        .from('risk_assessments')
-        .select('company_workspace_id')
-        .eq('organization_id', context.user.organization_id)
-        .not('company_workspace_id', 'is', null)
-        .order('assessment_date', { ascending: false })
-        .limit(1)
-        .maybeSingle()
-      if (lastAssessment?.company_workspace_id) return lastAssessment.company_workspace_id
-
-      const { data: ws } = await context.supabase
-        .from('company_workspaces')
-        .select('id')
-        .eq('organization_id', context.user.organization_id)
-        .eq('is_archived', false)
-        .limit(1)
-        .maybeSingle()
-      return ws?.id || null
-    }
 
     const STANDALONE_ROUTES: Record<string, string> = {
       'dashboard': '/dashboard',
@@ -505,7 +660,7 @@ async function executeNavigateToPage(input: any, context: ToolContext): Promise<
     else if (COMPANY_TAB_MAP[destination]) {
       let workspaceId = recordId
       if (!workspaceId) {
-        workspaceId = await getActiveWorkspaceId()
+        workspaceId = await getActiveWorkspaceId(context)
         if (!workspaceId) return { success: false, error: 'Aktif bir firma workspace bulunamadi. Once bir firma olusturun.' }
       }
       url = `/companies/${workspaceId}?tab=${COMPANY_TAB_MAP[destination]}`
@@ -513,17 +668,17 @@ async function executeNavigateToPage(input: any, context: ToolContext): Promise<
     else if (destination === 'company_detail' || destination === 'active_company') {
       let workspaceId = recordId
       if (!workspaceId) {
-        workspaceId = await getActiveWorkspaceId()
+        workspaceId = await getActiveWorkspaceId(context)
         if (!workspaceId) return { success: false, error: 'Aktif bir firma workspace bulunamadi.' }
       }
       url = `/companies/${workspaceId}`
     }
     else if (destination === 'risk_analysis_list') {
-      const workspaceId = await getActiveWorkspaceId()
+      const workspaceId = await getActiveWorkspaceId(context)
       url = workspaceId ? `/companies/${workspaceId}?tab=risk` : '/risk-analysis'
     }
     else if (destination === 'new_risk_analysis') {
-      const workspaceId = await getActiveWorkspaceId()
+      const workspaceId = await getActiveWorkspaceId(context)
       url = workspaceId ? `/risk-analysis?companyId=${workspaceId}` : '/risk-analysis'
     }
     else if (destination === 'latest_risk_assessment') {
@@ -542,7 +697,7 @@ async function executeNavigateToPage(input: any, context: ToolContext): Promise<
     }
     else if (destination === 'specific_risk_assessment') {
       if (!recordId) return { success: false, error: 'Risk analizi ID gerekli' }
-      const workspaceId = await getActiveWorkspaceId()
+      const workspaceId = await getActiveWorkspaceId(context)
       url = workspaceId
         ? `/risk-analysis?companyId=${workspaceId}&loadId=${recordId}`
         : `/risk-analysis?loadId=${recordId}`
@@ -591,6 +746,9 @@ async function executeTool(toolName: string, input: any, context: ToolContext): 
         break
       case 'navigate_to_page':
         result = await executeNavigateToPage(input, context)
+        break
+      case 'create_training_plan':
+        result = await executeCreateTrainingPlan(input, context)
         break
       default:
         result = { success: false, error: `Bilinmeyen tool: ${toolName}` }
@@ -659,6 +817,10 @@ function extractNavigation(toolsUsed: string[], messages: any[]): any | null {
 
         if (parsedContent?.success && parsedContent?.data?.action === 'navigate') {
           return parsedContent.data
+        }
+
+        if (parsedContent?.success && parsedContent?.data?.navigation?.action === 'navigate') {
+          return parsedContent.data.navigation
         }
       } catch (e) {
         continue
@@ -1084,6 +1246,10 @@ serve(async (req) => {
 
     let systemPrompt = getSystemPrompt(language)
 
+    systemPrompt += language === 'tr'
+      ? `\n\n## NOVA AKSIYON MODU\nNova yalnizca bilgi veren bir asistan degil, kontrollu bir operasyon ajanidir.\n- Kullanici planla, olustur, takvime ekle, baslat, yonlendir gibi bir is istediginde uygun tool'u kullan.\n- Egitim planlama taleplerinde create_training_plan tool'unu kullan.\n- Kullanici tarihi dogal dilde soylese bile tool'a YYYY-MM-DD formatinda aktar.\n- Bilgi yeterliyse islemi dogrudan yap; kritik eksik varsa sadece kisa ve net ek bilgi sor.\n- Islem tamamlandiginda sonucu ozetle ve gerekiyorsa kullaniciyi ilgili sayfaya yonlendir.\n- Mevzuat yorumunda mutlaka arama tool'lariyla dogrula; tercih ve operasyon bilgisini hafizada tut ama mevzuati ezberden uydurma.`
+      : `\n\n## NOVA ACTION MODE\nNova is not just an informational assistant; it is a controlled operations agent.\n- When the user asks to plan, create, schedule, start, or navigate, use the most appropriate tool.\n- Use create_training_plan for training scheduling requests.\n- Convert natural language dates into YYYY-MM-DD before calling tools.\n- If the information is sufficient, execute the action directly; only ask a short follow-up when a critical field is missing.\n- After completing an action, summarize the result and guide the user to the relevant page when useful.\n- Use tools to verify legislation; keep operational preferences in memory, but never invent regulatory content from memory.`
+
     // Zayıf cache eşleşmesi varsa, Claude'a ipucu olarak ver
     if (cacheResult.isWeakMatch && cacheResult.answer) {
       systemPrompt += `\n\n## GEÇMİŞ BENZER SORU (Referans olarak kullan)
@@ -1093,7 +1259,7 @@ Benzer bir soruya daha önce şu cevap verilmiş:
 Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
     }
 
-    const FREE_TOOLS = ['search_legislation', 'search_past_answers', 'navigate_to_page']
+    const FREE_TOOLS = ['search_legislation', 'search_past_answers', 'navigate_to_page', 'create_training_plan']
     const availableTools = NOVA_TOOLS.filter(tool =>
       FREE_TOOLS.includes(tool.name) ||
       allowedTools.includes(tool.name) ||
@@ -1120,7 +1286,8 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
       supabase: supabase,
       session: {
         id: sessionId,
-        language: language
+        language: language,
+        company_workspace_id: body.company_workspace_id ?? null
       }
     }
 

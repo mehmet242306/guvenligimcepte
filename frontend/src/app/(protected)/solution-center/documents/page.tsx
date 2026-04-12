@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,10 +9,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { createClient } from "@/lib/supabase/client";
 import { downloadDocument, type DocumentBlock } from "@/lib/document-generator";
 import { cn } from "@/lib/utils";
-
-/* ------------------------------------------------------------------ */
-/* Types                                                               */
-/* ------------------------------------------------------------------ */
 
 interface DocumentRecord {
   id: string;
@@ -23,16 +19,15 @@ interface DocumentRecord {
   created_at: string;
 }
 
-const docTypeConfig: Record<string, { label: string; badge: "default" | "accent" | "success" | "warning" }> = {
+const docTypeConfig: Record<
+  string,
+  { label: string; badge: "default" | "accent" | "success" | "warning" }
+> = {
   docx: { label: "Word", badge: "default" },
   xlsx: { label: "Excel", badge: "success" },
   pptx: { label: "PowerPoint", badge: "warning" },
   pdf: { label: "PDF", badge: "accent" },
 };
-
-/* ------------------------------------------------------------------ */
-/* Document type icon                                                  */
-/* ------------------------------------------------------------------ */
 
 function DocIcon({ type }: { type: string }) {
   const colors: Record<string, string> = {
@@ -42,7 +37,7 @@ function DocIcon({ type }: { type: string }) {
     pdf: "bg-red-500/10 text-red-600 dark:text-red-400",
   };
 
-  const icons: Record<string, React.ReactNode> = {
+  const icons: Record<string, ReactNode> = {
     pptx: (
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -71,10 +66,6 @@ function DocIcon({ type }: { type: string }) {
     </div>
   );
 }
-
-/* ------------------------------------------------------------------ */
-/* Download button                                                     */
-/* ------------------------------------------------------------------ */
 
 function DownloadButton({ doc }: { doc: DocumentRecord }) {
   const [downloading, setDownloading] = useState(false);
@@ -108,8 +99,8 @@ function DownloadButton({ doc }: { doc: DocumentRecord }) {
       disabled={downloading}
       className={cn(
         "inline-flex items-center gap-1.5 rounded-xl border border-border px-3 py-1.5 text-xs font-medium transition-colors",
-        done ? "text-emerald-500 border-emerald-500/30" : "text-primary hover:bg-secondary",
-        downloading && "opacity-70 cursor-wait",
+        done ? "border-emerald-500/30 text-emerald-500" : "text-primary hover:bg-secondary",
+        downloading && "cursor-wait opacity-70",
       )}
     >
       {downloading ? (
@@ -128,14 +119,10 @@ function DownloadButton({ doc }: { doc: DocumentRecord }) {
           <line x1="12" y1="15" x2="12" y2="3" />
         </svg>
       )}
-      {done ? "İndirildi" : "İndir"}
+      {done ? "Indirildi" : "Indir"}
     </button>
   );
 }
-
-/* ------------------------------------------------------------------ */
-/* Documents page                                                      */
-/* ------------------------------------------------------------------ */
 
 export default function DocumentsPage() {
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
@@ -157,7 +144,6 @@ export default function DocumentsPage() {
         return;
       }
 
-      // Fetch documents that belong to user's queries
       const { data } = await supabase
         .from("solution_documents")
         .select(
@@ -196,9 +182,9 @@ export default function DocumentsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Cozum Merkezi"
-        title="Dokumanlarim"
-        description="Cozum Merkezi araciligiyla olusturulan dokumanlariniz burada listelenir. Tekrar indirmek icin karta tiklayin."
+        eyebrow="Nova"
+        title="Nova Dokumanlari"
+        description="Nova tarafindan olusturulan rapor, sunum ve dokuman taslaklari burada listelenir. Tekrar indirmek icin karta tiklayin."
       />
 
       {loading ? (
@@ -210,14 +196,14 @@ export default function DocumentsPage() {
       ) : documents.length === 0 ? (
         <EmptyState
           title="Henuz dokuman yok"
-          description="Cozum Merkezi sohbetlerinde AI'dan dokuman olusturmasini istediginizde, dokumanlariniz burada gorunecektir. Ornegin: 'Bu konuda bir sunum hazirla' veya 'Rapor olustur' diyebilirsiniz."
+          description="Nova'dan rapor, sunum veya prosedur taslagi istediginizde olusan belgeler burada gorunur. Ornegin: 'Bu konu icin sunum hazirla' diyebilirsiniz."
         />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {documents.map((doc) => {
             const config = docTypeConfig[doc.doc_type] || {
               label: doc.doc_type,
-              badge: "neutral" as const,
+              badge: "accent" as const,
             };
 
             return (

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { downloadDocument, type DocumentBlock } from "@/lib/document-generator";
+import { useI18n } from "@/lib/i18n";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -293,7 +294,7 @@ function MessageBubble({
             : "border border-border bg-card text-primary",
         )}
       >
-        {isUser ? "S" : "RN"}
+        {isUser ? "S" : "N"}
       </div>
 
       {/* Content */}
@@ -425,7 +426,7 @@ function TypingIndicator() {
   return (
     <div className="flex gap-3">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-border bg-card text-xs font-bold text-primary">
-        RN
+        N
       </div>
       <div className="rounded-2xl border border-border bg-card px-4 py-3 shadow-[var(--shadow-soft)]">
         <div className="flex items-center gap-1.5">
@@ -442,13 +443,20 @@ function TypingIndicator() {
 /* Welcome screen                                                      */
 /* ------------------------------------------------------------------ */
 
+const novaModes = [
+  { label: "Mevzuat", hint: "yorumlasın ve kaynak göstersin", badge: "RAG" },
+  { label: "Planlama", hint: "takvime işlesin ve takip etsin", badge: "ACTION" },
+  { label: "Doküman", hint: "rapor, sunum ve taslak oluştursun", badge: "DOC" },
+  { label: "Yönlendirme", hint: "doğru modülü açsın ve götürsün", badge: "FLOW" },
+];
+
 const quickQuestions = [
-  "İş yerinde risk değerlendirmesi nasıl yapılır?",
-  "İSG kurulu toplantı sıklığı nedir?",
-  "Ağır ve tehlikeli işlerde çalışma koşulları nelerdir?",
+  "25 Haziran'a eğitim planla",
+  "Bu firmadaki açık riskleri özetle",
+  "Risk değerlendirme sunumu hazırla",
+  "Beni eğitim belgelerine götür",
+  "Bu ay yapılacak İSG görevlerini listele",
   "İş kazası bildirimi kaç gün içinde yapılmalı?",
-  "Yüksekte çalışma güvenlik önlemleri nelerdir?",
-  "İSG eğitimi süreleri ne kadardır?",
 ];
 
 function WelcomeScreen({ onQuickQuestion }: { onQuickQuestion: (q: string) => void }) {
@@ -456,18 +464,35 @@ function WelcomeScreen({ onQuickQuestion }: { onQuickQuestion: (q: string) => vo
     <div className="flex flex-1 flex-col items-center justify-center gap-8 px-4 py-12">
       <div className="text-center">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
-          <span className="text-2xl font-bold text-primary">RN</span>
+          <span className="text-2xl font-bold text-primary">N</span>
         </div>
         <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-          Çözüm Merkezi
+          Nova
         </h2>
-        <p className="mt-2 max-w-md text-sm leading-7 text-muted-foreground">
-          İSG ile ilgili sorularınızı sorun, mevzuat taraması yapın, çözüm önerileri alın.
-          Tüm yanıtlar Türk mevzuatı referansları ile desteklenir.
+        <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
+          Nova; mevzuatı yorumlayan, sizi doğru modüllere götüren, belge ve operasyon
+          akışlarını başlatan kurumsal İSG ajanıdır.
         </p>
       </div>
 
-      <div className="grid w-full max-w-2xl gap-2 sm:grid-cols-2">
+      <div className="grid w-full max-w-4xl gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {novaModes.map((mode) => (
+          <div
+            key={mode.label}
+            className="rounded-2xl border border-border bg-card px-4 py-4 text-left shadow-[var(--shadow-soft)]"
+          >
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <span className="text-sm font-semibold text-foreground">{mode.label}</span>
+              <span className="rounded-full border border-primary/20 bg-primary/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                {mode.badge}
+              </span>
+            </div>
+            <p className="text-xs leading-6 text-muted-foreground">{mode.hint}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid w-full max-w-3xl gap-2 sm:grid-cols-2">
         {quickQuestions.map((q) => (
           <button
             key={q}
@@ -489,6 +514,7 @@ function WelcomeScreen({ onQuickQuestion }: { onQuickQuestion: (q: string) => vo
 
 export default function SolutionCenterPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -651,6 +677,28 @@ export default function SolutionCenterPage() {
 
   return (
     <div className="flex flex-col" style={{ minHeight: "calc(100vh - 200px)" }}>
+      <div className="mb-4 rounded-2xl border border-border bg-card/80 px-4 py-4 shadow-[var(--shadow-soft)]">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+              {t("solutionCenter.title")} Agent
+            </p>
+            <h1 className="mt-1 text-lg font-semibold text-foreground">
+              Mevzuat, yonlendirme ve operasyon aksiyonlari tek akista
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("solutionCenter.description")}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="neutral">RAG</Badge>
+            <Badge variant="success">Navigation</Badge>
+            <Badge variant="warning">Action Ready</Badge>
+          </div>
+        </div>
+      </div>
+
       {/* Messages area */}
       <div className="flex-1">
         {hasMessages ? (
@@ -680,7 +728,7 @@ export default function SolutionCenterPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="İSG ile ilgili sorunuzu yazın..."
+              placeholder={t("solutionCenter.inputPlaceholder")}
               rows={1}
               className={cn(
                 "w-full resize-none rounded-2xl border px-4 py-3 pr-12 text-sm text-foreground transition-colors transition-shadow",
@@ -729,10 +777,10 @@ export default function SolutionCenterPage() {
         {hasMessages && (
           <div className="mt-2 flex flex-wrap gap-1.5">
             <Badge variant="neutral">
-              {messages.filter((m) => m.role === "user").length} sorgu
+              {messages.filter((m) => m.role === "user").length} {t("solutionCenter.queries")}
             </Badge>
             <Badge variant="success">
-              {messages.filter((m) => m.role === "assistant" && m.sources && m.sources.length > 0).length} mevzuat referanslı
+              {messages.filter((m) => m.role === "assistant" && m.sources && m.sources.length > 0).length} {t("solutionCenter.referenced")}
             </Badge>
           </div>
         )}

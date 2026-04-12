@@ -10,10 +10,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 
-/* ------------------------------------------------------------------ */
-/* Types                                                               */
-/* ------------------------------------------------------------------ */
-
 interface QueryRecord {
   id: string;
   query_text: string;
@@ -28,10 +24,6 @@ interface QueryRecord {
   response_tokens: number | null;
   created_at: string;
 }
-
-/* ------------------------------------------------------------------ */
-/* History page                                                        */
-/* ------------------------------------------------------------------ */
 
 export default function HistoryPage() {
   const [queries, setQueries] = useState<QueryRecord[]>([]);
@@ -72,7 +64,7 @@ export default function HistoryPage() {
   }, [filter]);
 
   useEffect(() => {
-    fetchQueries();
+    void Promise.resolve().then(fetchQueries);
   }, [fetchQueries]);
 
   async function toggleSave(id: string) {
@@ -82,10 +74,7 @@ export default function HistoryPage() {
     const item = queries.find((q) => q.id === id);
     if (!item) return;
 
-    await supabase
-      .from("solution_queries")
-      .update({ is_saved: !item.is_saved })
-      .eq("id", id);
+    await supabase.from("solution_queries").update({ is_saved: !item.is_saved }).eq("id", id);
 
     setQueries((prev) =>
       prev.map((q) => (q.id === id ? { ...q, is_saved: !q.is_saved } : q)),
@@ -114,9 +103,9 @@ export default function HistoryPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Çözüm Merkezi"
-        title="Sorgu Geçmişi"
-        description="Daha önce sorduğunuz İSG sorularını ve aldığınız yanıtları inceleyin."
+        eyebrow="Nova"
+        title="Nova Gecmisi"
+        description="Daha once Nova'ya sordugunuz sorulari, aldiginiz yanitlari ve kaydedilen referanslari buradan inceleyin."
         actions={
           <div className="flex gap-2">
             <Button
@@ -124,7 +113,7 @@ export default function HistoryPage() {
               size="sm"
               onClick={() => setFilter("all")}
             >
-              Tümü
+              Tumu
             </Button>
             <Button
               variant={filter === "saved" ? "primary" : "outline"}
@@ -137,7 +126,6 @@ export default function HistoryPage() {
         }
       />
 
-      {/* Search */}
       <div className="relative">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -158,7 +146,7 @@ export default function HistoryPage() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Sorgularda ara..."
+          placeholder="Nova gecmisinde ara..."
           className={cn(
             "h-12 w-full rounded-2xl border pl-11 pr-4 text-sm text-foreground transition-colors transition-shadow",
             "border-border bg-card shadow-[var(--shadow-soft)]",
@@ -168,7 +156,6 @@ export default function HistoryPage() {
         />
       </div>
 
-      {/* Content */}
       {loading ? (
         <div className="grid gap-3">
           {[1, 2, 3].map((i) => (
@@ -177,11 +164,11 @@ export default function HistoryPage() {
         </div>
       ) : filtered.length === 0 ? (
         <EmptyState
-          title={filter === "saved" ? "Kaydedilen sorgu yok" : "Henüz sorgu yok"}
+          title={filter === "saved" ? "Kaydedilen sorgu yok" : "Henuz sorgu yok"}
           description={
             filter === "saved"
-              ? "Yanıtları kaydetmek için sohbet sırasında kaydet butonunu kullanabilirsiniz."
-              : "Çözüm Merkezi sohbet ekranından ilk sorunuzu sorun."
+              ? "Yanitlari kaydetmek icin sohbet sirasinda kaydet butonunu kullanabilirsiniz."
+              : "Nova ile ilk konusmanizi baslattiginizda gecmis burada gorunur."
           }
         />
       ) : (
@@ -240,7 +227,7 @@ export default function HistoryPage() {
                   {q.sources_used && q.sources_used.length > 0 && (
                     <div className="mt-3">
                       <p className="mb-2 text-xs font-medium text-muted-foreground">
-                        Kullanılan kaynaklar:
+                        Kullanilan kaynaklar:
                       </p>
                       <div className="flex flex-wrap gap-1.5">
                         {q.sources_used.map((s, i) => (
@@ -255,7 +242,7 @@ export default function HistoryPage() {
 
                   {q.response_tokens && (
                     <p className="mt-2 text-[11px] text-muted-foreground">
-                      {q.response_tokens} token kullanıldı
+                      {q.response_tokens} token kullanildi
                     </p>
                   )}
                 </CardContent>

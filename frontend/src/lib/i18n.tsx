@@ -47,7 +47,7 @@ const messages: Record<Locale, NestedMessages> = {
       scoreHistory: "Skor Geçmişi",
       planner: "Planlayıcı",
       timesheet: "Puantaj",
-      solutionCenter: "Çözüm Merkezi",
+      solutionCenter: "Nova",
       training: "Eğitim & Sınav",
       digitalTwin: "Dijital İkiz",
       reports: "Raporlar",
@@ -140,9 +140,9 @@ const messages: Record<Locale, NestedMessages> = {
       forgotBack: "Girise don",
     },
     solutionCenter: {
-      title: "Cozum Merkezi",
-      description: "ISG ile ilgili sorularinizi sorun, mevzuat taramasi yapin, cozum onerileri alin. Tum yanitlar Turk mevzuati referanslari ile desteklenir.",
-      inputPlaceholder: "ISG ile ilgili sorunuzu yazin...",
+      title: "Nova",
+      description: "Nova; mevzuati yorumlayan, sizi dogru ekrana goturen, belge ve operasyon akislarini baslatan kurumsal ISG ajanidir.",
+      inputPlaceholder: "Nova'ya ne yapmak istediginizi yazin...",
       queries: "sorgu",
       referenced: "mevzuat referansli",
       sources: "mevzuat kaynagi",
@@ -187,7 +187,7 @@ const messages: Record<Locale, NestedMessages> = {
       scoreHistory: "Score History",
       planner: "Planner",
       timesheet: "Timesheet",
-      solutionCenter: "Solution Center",
+      solutionCenter: "Nova",
       training: "Training & Exams",
       digitalTwin: "Digital Twin",
       reports: "Reports",
@@ -280,9 +280,9 @@ const messages: Record<Locale, NestedMessages> = {
       forgotBack: "Back to sign in",
     },
     solutionCenter: {
-      title: "Solution Center",
-      description: "Ask your OHS questions, search legislation, get solution suggestions. All answers are supported with references.",
-      inputPlaceholder: "Type your OHS question...",
+      title: "Nova",
+      description: "Nova is the operational OHS agent that interprets legislation, routes you to the right module, and starts document or workflow actions.",
+      inputPlaceholder: "Tell Nova what you want to do...",
       queries: "queries",
       referenced: "with references",
       sources: "legislation sources",
@@ -468,14 +468,11 @@ const I18nContext = createContext<I18nContextValue>({
 const STORAGE_KEY = "risknova-locale";
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("tr");
-
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY) as Locale | null;
-    if (saved && messages[saved]) {
-      setLocaleState(saved);
-    }
-  }, []);
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    if (typeof window === "undefined") return "tr";
+    const saved = window.localStorage.getItem(STORAGE_KEY) as Locale | null;
+    return saved && messages[saved] ? saved : "tr";
+  });
 
   // Listen for storage changes (cross-tab sync)
   useEffect(() => {

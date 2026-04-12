@@ -3,13 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { findPublicResponse, quickActions, publicQuickActions, type QuickAction } from "@/lib/chat-knowledge";
 import {
   MessageCircle,
   X,
   Send,
   Sparkles,
-  ExternalLink,
   Bot,
   User,
 } from "lucide-react";
@@ -31,17 +29,33 @@ type NovaNavigation = {
   auto_navigate: boolean;
 };
 
+type WidgetAction = {
+  label: string;
+  path: string;
+  icon: string;
+};
+
 type Message = {
   id: string;
   role: "user" | "bot";
   text: string;
-  route?: string;
-  suggestions?: QuickAction[];
+  suggestions?: WidgetAction[];
   timestamp: Date;
   sources?: NovaSource[];
   navigation?: NovaNavigation | null;
   isError?: boolean;
 };
+
+const authenticatedWelcomeActions: WidgetAction[] = [
+  { label: "Nova Calisma Alani", path: "/solution-center", icon: "N" },
+  { label: "Sorgu Gecmisi", path: "/solution-center/history", icon: "H" },
+  { label: "Dokumanlar", path: "/solution-center/documents", icon: "D" },
+];
+
+const publicEntryActions: WidgetAction[] = [
+  { label: "Giris Yap", path: "/login", icon: "G" },
+  { label: "Hesap Olustur", path: "/register", icon: "K" },
+];
 
 export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: boolean }) {
   const router = useRouter();
@@ -85,15 +99,14 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   // Welcome message on first open
   useEffect(() => {
     if (open && messages.length === 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMessages([
         {
           id: "welcome",
           role: "bot",
           text: isAuthenticated
-            ? "Merhaba! Ben Nova, RiskNova AI asistaniyim. ISG mevzuati, risk analizi, firma verileri ve platform kullanimi hakkinda sorularinizi yanitlayabilirim. Nasil yardimci olabilirim?"
-            : "Merhaba! Ben RiskNova asistaniyiz. Platformumuz ve ISG surecleri hakkinda bilgi alabilir, sorularinizi sorabilirsiniz. Tum ozelliklere erismek icin giris yapin veya hesap olusturun!",
-          suggestions: isAuthenticated ? quickActions.slice(0, 4) : publicQuickActions,
+            ? "Merhaba! Ben Nova. Bu pencere dogrudan gercek cozum ajaniyla baglantili calisir. Hizli bir soru sorabilir veya tam oturum icin Nova calisma alanina gecebilirsiniz."
+            : "Merhaba! Nova artik ornek veya anahtar kelime cevabi vermiyor. Gercek ajana erismek icin giris yapmaniz gerekir. Isterseniz hemen oturum acin veya hesap olusturun.",
+          suggestions: isAuthenticated ? authenticatedWelcomeActions : publicEntryActions,
           timestamp: new Date(),
         },
       ]);
@@ -125,16 +138,14 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     setInput("");
     setTyping(true);
 
-    // Public users: local keyword match (no API)
+    // Public users: no fake/demo response layer
     if (!isAuthenticated) {
       setTimeout(() => {
-        const response = findPublicResponse(text);
         const botMsg: Message = {
           id: crypto.randomUUID(),
           role: "bot",
-          text: response.text,
-          route: response.route,
-          suggestions: response.suggestions,
+          text: "Bu alanda artik hazir cevap veren basit katman yok. Gercek Nova ajanina erismek icin giris yapin. Oturum actiktan sonra ayni soruyu bu widget'ta veya Nova calisma alaninda devam ettirebilirsiniz.",
+          suggestions: publicEntryActions,
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, botMsg]);
@@ -203,6 +214,10 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         text: answer,
         sources: normalizedSources.length > 0 ? normalizedSources : undefined,
         navigation,
+        suggestions:
+          navigation == null && answer.length < 220
+            ? authenticatedWelcomeActions.slice(0, 2)
+            : undefined,
         timestamp: new Date(),
       };
 
@@ -212,7 +227,8 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       const errorMsg: Message = {
         id: crypto.randomUUID(),
         role: "bot",
-        text: "Uzgunum, su an cevap veremiyorum. Lutfen biraz sonra tekrar deneyin veya Cozum Merkezi'ni kullanin.",
+        text: "Uzgunum, su an cevap veremiyorum. Lutfen biraz sonra tekrar deneyin veya Nova calisma alanini kullanin.",
+        suggestions: [{ label: "Nova Calisma Alani", path: "/solution-center", icon: "N" }],
         timestamp: new Date(),
         isError: true,
       };
@@ -222,7 +238,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     }
   }
 
-  function handleQuickAction(action: QuickAction) {
+  function handleQuickAction(action: WidgetAction) {
     const userMsg: Message = {
       id: crypto.randomUUID(),
       role: "user",
@@ -237,7 +253,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         id: crypto.randomUUID(),
         role: "bot",
         text: `${action.label} sayfasina yonlendiriliyorsunuz...`,
-        route: action.path,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, botMsg]);
@@ -245,15 +260,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
       setTimeout(() => router.push(action.path), 800);
     }, 400);
-  }
-
-  function navigateTo(path: string) {
-    if (!isAuthenticated && !["/", "/login", "/register", "/forgot-password"].some((p) => path.startsWith(p)) && !path.startsWith("/#")) {
-      router.push("/login");
-    } else {
-      router.push(path);
-    }
-    setOpen(false);
   }
 
   return (
@@ -331,15 +337,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                       </span>
                     ))}
                   </div>
-
-                  {/* Route link (legacy keyword bot) */}
-                  {msg.route && (
-                    <button type="button" onClick={() => navigateTo(msg.route!)}
-                      className="inline-flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors">
-                      <ExternalLink className="size-3" />
-                      Sayfaya Git
-                    </button>
-                  )}
 
                   {/* Nova Sources Accordion */}
                   {msg.sources && msg.sources.length > 0 && (
@@ -436,7 +433,11 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Nova'ya sorun..."
+                placeholder={
+                  isAuthenticated
+                    ? "Nova'ya sorun..."
+                    : "Gercek Nova ajani icin giris yapin..."
+                }
                 className="h-10 flex-1 rounded-xl border border-border bg-input px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
               />
               <button type="submit" disabled={!input.trim() || typing}
