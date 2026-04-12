@@ -14,6 +14,7 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
       SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_POOLER_HOST: ${{ secrets.SUPABASE_POOLER_HOST }}
     steps:
       - uses: actions/checkout@v6
 
@@ -32,7 +33,6 @@ jobs:
           set -euo pipefail
           test -n "$SUPABASE_PROJECT_REF" || { echo "::error::Missing SUPABASE_PROJECT_REF"; exit 1; }
           test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
-          test -f "supabase/.temp/pooler-url" || { echo "::error::Missing supabase/.temp/pooler-url"; exit 1; }
 
       - name: Show tool versions
         shell: bash
@@ -45,10 +45,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          POOLER_URL_TEMPLATE="$(tr -d '\r\n' < supabase/.temp/pooler-url)"
+          POOLER_HOST="${SUPABASE_POOLER_HOST:-aws-1-eu-west-1.pooler.supabase.com}"
           DB_PASSWORD_ENCODED="$(python3 -c 'import os, urllib.parse; print(urllib.parse.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""))')"
-          DB_URL="${POOLER_URL_TEMPLATE/@/:${DB_PASSWORD_ENCODED}@}"
-          echo "SUPABASE_DB_URL=${DB_URL}?sslmode=require" >> "$GITHUB_ENV"
+          DB_URL="postgresql://postgres.${SUPABASE_PROJECT_REF}:${DB_PASSWORD_ENCODED}@${POOLER_HOST}:5432/postgres?sslmode=require"
+          echo "SUPABASE_DB_URL=${DB_URL}" >> "$GITHUB_ENV"
 
       - name: Verify database connection
         shell: bash
