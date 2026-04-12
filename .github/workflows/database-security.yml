@@ -95,7 +95,8 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -c "select * from public.rls_tests();" || {
-              echo "::error title=RLS test suite failed::public.rls_tests() returned an error"
-              exit 1
-            }
+          if ! psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -c "select * from public.rls_tests();" 2> /tmp/rls_tests.err; then
+            echo "::error title=RLS test suite failed::$(head -n 1 /tmp/rls_tests.err | tr -d '\r')"
+            cat /tmp/rls_tests.err
+            exit 1
+          fi
