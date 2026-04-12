@@ -130,6 +130,45 @@ Not: Bu adimlar tamamlanmadan self-healing workflow'lari ya skip olur ya da gerc
 
 - Mobil offline SQLite sync bu repo disinda kalir.
 
+## Durum Ozeti - Talep Bazli
+
+- `4.1 Edge Function retry / circuit breaker`
+  - `durum: buyuk olcude tamam`
+  - ortak helper var, retry / timeout / circuit breaker calisiyor
+  - tum dis servis entegrasyonlarinin ayni olgunlukta buna baglanmasi ikinci faz konusu
+
+- `4.2 Health check sistemi`
+  - `durum: kismi`
+  - `/api/health`, `health_checks`, admin gorunumu ve workflow var
+  - gercek canli dogrulama `APP_BASE_URL` ve `SELF_HEALING_CRON_SECRET` canli ortamda tanimlaninca tamamlanacak
+  - ileri grafikler ve uptime olgunlugu daha sonra gelistirilecek
+
+- `4.3 Otomatik kurtarma senaryolari`
+  - `durum: kismi`
+  - recovery senaryo tabani ve ilk senaryolar var
+  - havuz temizleme, bellek baskisi ve daha genis auto-remediation katalogu ikinci faz isi
+
+- `4.4 Kuyruk sistemi`
+  - `durum: kismi ama kritik omurga hazir`
+  - queue tablosu, claim / complete / fail akisi ve worker var
+  - tum kritik islemler henuz queue uzerine alinmadi
+  - admin mudahalesi var ama tam operasyon konsolu daha da genisletilecek
+
+- `4.5 Graceful degradation`
+  - `durum: kismi`
+  - AI dusunce manuel devam / queue fallback var
+  - storage, realtime ve mobil offline senaryolarinin tumu tam seviyede kapanmadi
+
+- `4.6 Otomatik yedekleme ve geri yukleme`
+  - `durum: kismi`
+  - snapshot, checksum, storage ve restore temeli var
+  - tam `pg_dump` / tam restore / haftalik full dump otomasyonu henuz tam degil
+
+- `4.7 Deployment guvenligi`
+  - `durum: kismi`
+  - smoke test ve deployment log omurgasi var
+  - tam staging ayrimi, otomatik rollback ve tam feature rollout guvenligi ikinci fazda kapanacak
+
 ## Ana Dosyalar
 
 - `frontend/src/lib/self-healing/resilience.ts`
@@ -167,3 +206,8 @@ Ancak Bolum 4'u "tamamen kapandi" demek icin:
 - mobil offline senaryolari
 
 kalemleri ikinci fazda kapatmak gerekir.
+
+Bu nedenle bu bolum:
+
+- `faz 1 icin kapali`
+- `tam spesifikasyon icin henuz tam degil`

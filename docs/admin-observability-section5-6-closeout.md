@@ -113,9 +113,82 @@ Not fully implemented yet:
 
 These areas have usable visibility and data foundations, but not full operational automation yet.
 
+## Status by requested item
+
+- `5.1 Dashboard`
+  - `durum: buyuk olcude tamam`
+  - ana kartlar ve detay girisleri var
+  - daha ileri veri zenginligi ve gorsel olgunluk sonraki fazda artirilabilir
+
+- `5.2 Sistem sagligi`
+  - `durum: kismi`
+  - health verisi ve self-healing ekrani var
+  - canli health workflow'u prod/staging URL oldugunda tam anlamli hale gelecek
+  - Recharts tabanli tam grafik paketi ve uptime/response-time olgunlugu henuz tam degil
+
+- `5.3 Hata ve olay log`
+  - `durum: buyuk olcude tamam`
+  - `error_logs` tablosu, listeleme, filtreleme, resolve ve temel istatistik var
+  - tum hata kaynaklarinin yuzde 100 merkezi log'a baglanmasi sonraki fazda daha da genisletilebilir
+
+- `5.4 Audit log`
+  - `durum: kismi`
+  - audit gorunurlugu var
+  - tam before/after diff, export ve supheli aktivite paketinin olgunlugu artirilacak
+
+- `5.5 Guvenlik ekrani`
+  - `durum: buyuk olcude tamam`
+  - basarisiz giris, rate limit, supheli olaylar ve lockout gorunurlugu var
+  - aktif oturum mudahalesi ve tum operasyon dugmeleri daha da genisletilebilir
+
+- `5.6 Kuyruk yonetimi`
+  - `durum: kismi`
+  - queue izleme ve manuel mudahale temeli var
+  - tum yuk grafikleri, ortalama sureler ve tam operasyon paneli henuz tam degil
+
+- `5.7 AI kullanim ve maliyet`
+  - `durum: kismi`
+  - `ai_usage_logs`, model dagilimi, tahmini maliyet ve temel kullanim gorunurlugu var
+  - tam cascade verimliligi, anomaly detection ve daha ileri cache metrikleri sonraki faz isi
+
+- `5.8 Kullanici yonetimi`
+  - `durum: buyuk olcude tamam`
+  - listeleme, rol/aktiflik ve temel yonetim akislari var
+  - daha ileri operasyonlar sonraki fazda genisletilebilir
+
+- `5.9 Veritabani sagligi`
+  - `durum: kismi`
+  - tablo boyutu, runtime stats ve yavas sorgu gorunurlugu var
+  - manuel `VACUUM/ANALYZE`, daha genis pool/disk operasyonlari tam degil
+
+- `5.10 KVKK / Uyumluluk`
+  - `durum: buyuk olcude tamam`
+  - consent, silme, export, retention ve transfer gorunurlugu var
+  - uyumluluk skoru daha ileri checklist mantigiyla zenginlestirilebilir
+
+- `5.11 Yedekleme`
+  - `durum: kismi`
+  - backup listesi, manuel backup ve restore temeli var
+  - full dump / geri yukleme operasyonu ve butunluk akislarinin olgunlugu artirilacak
+
+- `5.12 Deployment ve versiyon`
+  - `durum: kismi`
+  - deployment log ve smoke omurgasi var
+  - rollback butonu, tam versiyon paneli ve feature flag yonetimi henuz tam degil
+
+- `5.13 Bildirim merkezi`
+  - `durum: kismi`
+  - `admin_notifications` ve realtime merkez var
+  - tum kritik olaylar icin e-posta fan-out ve ileri bildirim kurallari henuz tam degil
+
+- `6. Belgeler`
+  - `durum: buyuk olcude tamam`
+  - versioned belge merkezi ve ilk seed dokumanlar var
+  - daha ileri onay/yayina alma/publishing operasyonlari sonraki fazda genisletilebilir
+
 ## Operational status
 
-This phase is considered closed for the current repo scope.
+This phase is considered closed for the current repo scope as a `first production phase`, not as a `100 percent complete specification`.
 
 Final operational notes:
 
