@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Install CLI tools
+      - name: Prepare runner tools
         shell: bash
         run: |
           set -euo pipefail
@@ -30,10 +30,6 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y postgresql-client
           fi
-          npm install --global supabase || {
-            echo "::error title=CLI installation failed::Failed to install Supabase CLI"
-            exit 1
-          }
 
       - name: Validate required secrets
         shell: bash
@@ -49,18 +45,18 @@ jobs:
           set -euo pipefail
           node --version
           npm --version
-          supabase --version
+          npx --yes supabase@latest --version
           psql --version
 
       - name: Validate migration plan
         shell: bash
         run: |
           set -euxo pipefail
-          supabase link --project-ref "$SUPABASE_PROJECT_REF" -p "$SUPABASE_DB_PASSWORD" || {
+          npx --yes supabase@latest link --project-ref "$SUPABASE_PROJECT_REF" -p "$SUPABASE_DB_PASSWORD" || {
             echo "::error title=Supabase link failed::Could not link to remote project"
             exit 1
           }
-          supabase --debug db push --linked --dry-run --include-all || {
+          npx --yes supabase@latest --debug db push --linked --dry-run --include-all || {
             echo "::error title=Migration validation failed::supabase db push --dry-run failed"
             exit 1
           }
