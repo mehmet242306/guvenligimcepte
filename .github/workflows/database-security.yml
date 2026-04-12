@@ -32,36 +32,39 @@ jobs:
           set -euo pipefail
           test -n "$SUPABASE_PROJECT_REF" || { echo "::error::Missing SUPABASE_PROJECT_REF"; exit 1; }
           test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
+          test -f "supabase/.temp/pooler-url" || { echo "::error::Missing supabase/.temp/pooler-url"; exit 1; }
 
       - name: Show tool versions
         shell: bash
         run: |
           set -euo pipefail
+          python3 --version
           psql --version
+
+      - name: Build database URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          POOLER_URL_TEMPLATE="$(tr -d '\r\n' < supabase/.temp/pooler-url)"
+          DB_PASSWORD_ENCODED="$(python3 -c 'import os, urllib.parse; print(urllib.parse.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""))')"
+          DB_URL="${POOLER_URL_TEMPLATE/@/:${DB_PASSWORD_ENCODED}@}"
+          echo "SUPABASE_DB_URL=${DB_URL}?sslmode=require" >> "$GITHUB_ENV"
 
       - name: Verify database connection
         shell: bash
-        env:
-          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           set -euxo pipefail
-          psql "host=db.$SUPABASE_PROJECT_REF.supabase.co port=5432 dbname=postgres user=postgres sslmode=require" \
-            -v ON_ERROR_STOP=1 \
-            -c "select current_database(), current_user;" || {
+          psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -c "select current_database(), current_user;" || {
               echo "::error title=Database connection failed::psql could not connect to Supabase"
               exit 1
             }
 
       - name: Validate migration history
         shell: bash
-        env:
-          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           set -euo pipefail
           find supabase/migrations -maxdepth 1 -type f -name '*.sql' -printf '%f\n' | sort > /tmp/local_migrations.txt
-          psql "host=db.$SUPABASE_PROJECT_REF.supabase.co port=5432 dbname=postgres user=postgres sslmode=require" \
-            -v ON_ERROR_STOP=1 \
-            -At -c "select version || '_' || name || '.sql' from supabase_migrations.schema_migrations order by version;" > /tmp/remote_migrations.txt
+          psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -At -c "select version || '_' || name || '.sql' from supabase_migrations.schema_migrations order by version;" > /tmp/remote_migrations.txt
           missing_count="$(comm -23 /tmp/local_migrations.txt /tmp/remote_migrations.txt | tee /tmp/pending_migrations.txt | wc -l | tr -d ' ')"
           if [ "$missing_count" != "0" ]; then
             echo "::error title=Migration validation failed::Remote database is missing committed migrations"
@@ -72,13 +75,9 @@ jobs:
 
       - name: Run RLS pgTAP suite
         shell: bash
-        env:
-          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           set -euxo pipefail
-          psql "host=db.${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co port=5432 dbname=postgres user=postgres sslmode=require" \
-            -v ON_ERROR_STOP=1 \
-            -c "select * from public.rls_tests();" || {
+          psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -c "select * from public.rls_tests();" || {
               echo "::error title=RLS test suite failed::public.rls_tests() returned an error"
               exit 1
             }
