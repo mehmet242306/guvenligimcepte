@@ -14,6 +14,7 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
       SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
       SUPABASE_POOLER_HOST: ${{ secrets.SUPABASE_POOLER_HOST }}
     steps:
       - uses: actions/checkout@v6
@@ -31,6 +32,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if [ -n "${SUPABASE_DB_URL:-}" ]; then
+            exit 0
+          fi
           test -n "$SUPABASE_PROJECT_REF" || { echo "::error::Missing SUPABASE_PROJECT_REF"; exit 1; }
           test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
 
@@ -45,14 +49,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          POOLER_HOST="${SUPABASE_POOLER_HOST:-aws-1-eu-west-1.pooler.supabase.com}"
-          POOLER_USER="postgres.${SUPABASE_PROJECT_REF}"
-          echo "::add-mask::$SUPABASE_DB_PASSWORD"
-          echo "WORKFLOW_DB_HOST=${POOLER_HOST}" >> "$GITHUB_ENV"
-          echo "WORKFLOW_DB_USER=${POOLER_USER}" >> "$GITHUB_ENV"
-          echo "WORKFLOW_DB_NAME=postgres" >> "$GITHUB_ENV"
-          echo "WORKFLOW_DB_PORT=5432" >> "$GITHUB_ENV"
-          echo "WORKFLOW_DB_SSLMODE=require" >> "$GITHUB_ENV"
+          if [ -n "${SUPABASE_DB_URL:-}" ]; then
+            echo "::add-mask::$SUPABASE_DB_URL"
+            echo "WORKFLOW_PSQL_CONN=${SUPABASE_DB_URL}" >> "$GITHUB_ENV"
+          else
+            POOLER_HOST="${SUPABASE_POOLER_HOST:-aws-1-eu-west-1.pooler.supabase.com}"
+            POOLER_USER="postgres.${SUPABASE_PROJECT_REF}"
+            echo "::add-mask::$SUPABASE_DB_PASSWORD"
+            echo "WORKFLOW_PSQL_CONN=host=${POOLER_HOST} port=5432 dbname=postgres user=${POOLER_USER} sslmode=require" >> "$GITHUB_ENV"
+          fi
 
       - name: Verify database connection
         shell: bash
@@ -60,7 +65,7 @@ jobs:
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           set -euxo pipefail
-          if ! psql "host=$WORKFLOW_DB_HOST port=$WORKFLOW_DB_PORT dbname=$WORKFLOW_DB_NAME user=$WORKFLOW_DB_USER sslmode=$WORKFLOW_DB_SSLMODE" -v ON_ERROR_STOP=1 -c "select current_database(), current_user;" 2> /tmp/psql_connect.err; then
+          if ! psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -c "select current_database(), current_user;" 2> /tmp/psql_connect.err; then
             echo "::error title=Database connection failed::$(head -n 1 /tmp/psql_connect.err | tr -d '\r')"
             cat /tmp/psql_connect.err
             exit 1
@@ -73,7 +78,7 @@ jobs:
         run: |
           set -euo pipefail
           find supabase/migrations -maxdepth 1 -type f -name '*.sql' -printf '%f\n' | sort > /tmp/local_migrations.txt
-          psql "host=$WORKFLOW_DB_HOST port=$WORKFLOW_DB_PORT dbname=$WORKFLOW_DB_NAME user=$WORKFLOW_DB_USER sslmode=$WORKFLOW_DB_SSLMODE" -v ON_ERROR_STOP=1 -At -c "select version || '_' || name || '.sql' from supabase_migrations.schema_migrations order by version;" > /tmp/remote_migrations.txt
+          psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -At -c "select version || '_' || name || '.sql' from supabase_migrations.schema_migrations order by version;" > /tmp/remote_migrations.txt
           missing_count="$(comm -23 /tmp/local_migrations.txt /tmp/remote_migrations.txt | tee /tmp/pending_migrations.txt | wc -l | tr -d ' ')"
           if [ "$missing_count" != "0" ]; then
             echo "::error title=Migration validation failed::Remote database is missing committed migrations"
@@ -88,7 +93,7 @@ jobs:
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           set -euxo pipefail
-          psql "host=$WORKFLOW_DB_HOST port=$WORKFLOW_DB_PORT dbname=$WORKFLOW_DB_NAME user=$WORKFLOW_DB_USER sslmode=$WORKFLOW_DB_SSLMODE" -v ON_ERROR_STOP=1 -c "select * from public.rls_tests();" || {
+          psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -c "select * from public.rls_tests();" || {
               echo "::error title=RLS test suite failed::public.rls_tests() returned an error"
               exit 1
             }
