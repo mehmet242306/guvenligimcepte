@@ -55,14 +55,20 @@ jobs:
           else
             POOLER_HOST="${SUPABASE_POOLER_HOST:-aws-1-eu-west-1.pooler.supabase.com}"
             POOLER_USER="postgres.${SUPABASE_PROJECT_REF}"
-            echo "::add-mask::$SUPABASE_DB_PASSWORD"
-            echo "WORKFLOW_PSQL_CONN=host=${POOLER_HOST} port=5432 dbname=postgres user=${POOLER_USER} sslmode=require" >> "$GITHUB_ENV"
+            DB_PASSWORD_ENCODED="$(python3 -c 'import os, urllib.parse; print(urllib.parse.quote(os.environ["SUPABASE_DB_PASSWORD"], safe=""))')"
+            WORKFLOW_URI="postgresql://${POOLER_USER}:${DB_PASSWORD_ENCODED}@${POOLER_HOST}:5432/postgres?sslmode=require"
+            echo "::add-mask::$WORKFLOW_URI"
+            echo "WORKFLOW_PSQL_CONN=${WORKFLOW_URI}" >> "$GITHUB_ENV"
           fi
+
+      - name: Show sanitized connection target
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -c 'import os; from urllib.parse import urlsplit; p=urlsplit(os.environ["WORKFLOW_PSQL_CONN"]); print(f"DB host: {p.hostname}"); print(f"DB user: {p.username}")'
 
       - name: Verify database connection
         shell: bash
-        env:
-          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           set -euxo pipefail
           if ! psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -c "select current_database(), current_user;" 2> /tmp/psql_connect.err; then
@@ -73,8 +79,6 @@ jobs:
 
       - name: Validate migration history
         shell: bash
-        env:
-          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           set -euo pipefail
           find supabase/migrations -maxdepth 1 -type f -name '*.sql' -printf '%f\n' | sort > /tmp/local_migrations.txt
@@ -89,8 +93,6 @@ jobs:
 
       - name: Run RLS pgTAP suite
         shell: bash
-        env:
-          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           set -euxo pipefail
           psql "$WORKFLOW_PSQL_CONN" -v ON_ERROR_STOP=1 -c "select * from public.rls_tests();" || {
