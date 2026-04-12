@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Brand } from "./brand";
 import { LanguageSelector } from "./language-selector";
 import { ChatWidget } from "@/components/chat/ChatWidget";
+import { ConsentGate } from "@/components/compliance/ConsentGate";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/lib/hooks/use-is-admin";
@@ -504,6 +505,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
       </main>
 
       {/* ── Chat Widget ── */}
+      <ConsentGate />
       <ChatWidget isAuthenticated />
     </div>
   );

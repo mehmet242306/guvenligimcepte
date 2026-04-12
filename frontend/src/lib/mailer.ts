@@ -12,6 +12,11 @@ type SuspiciousLoginMailParams = {
   occurredAt: string;
 };
 
+type DataDeletionConfirmationMailParams = {
+  to: string;
+  scheduledPurgeAt: string;
+};
+
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
@@ -86,6 +91,39 @@ export async function sendSuspiciousLoginEmail({
           <li><strong>Zaman:</strong> ${occurredAt}</li>
         </ul>
         <p>Bu giris size ait degilse sifrenizi hemen degistirin ve tum cihazlardan cikis yapin.</p>
+      </div>
+    `,
+  });
+}
+
+export async function sendDataDeletionConfirmationEmail({
+  to,
+  scheduledPurgeAt,
+}: DataDeletionConfirmationMailParams) {
+  if (!resend) {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[DEV] Data deletion request for", to, { scheduledPurgeAt });
+      return;
+    }
+
+    throw new Error("RESEND_API_KEY tanimli degil.");
+  }
+
+  const from = process.env.RESEND_FROM_EMAIL || "noreply@example.com";
+
+  await resend.emails.send({
+    from,
+    to,
+    subject: "Veri silme talebiniz alindi",
+    text:
+      "Veri silme talebiniz kaydedildi. Hesabiniz ve iliskili kisisel verileriniz soft delete olarak isaretlendi. " +
+      `Kalici silme tarihi: ${scheduledPurgeAt}. Bu tarihe kadar talebinizi yonetici iletisimiyle durdurabilirsiniz.`,
+    html: `
+      <div style="font-family: Arial, Helvetica, sans-serif; color: #111827;">
+        <h2>Veri silme talebiniz alindi</h2>
+        <p>Talebiniz sisteme kaydedildi ve 30 gunluk saklama penceresi baslatildi.</p>
+        <p><strong>Kalici silme tarihi:</strong> ${scheduledPurgeAt}</p>
+        <p>Bu tarihe kadar talebiniz idari surecte iptal edilebilir; sonrasinda hesap verileri kalici olarak kaldirilir.</p>
       </div>
     `,
   });

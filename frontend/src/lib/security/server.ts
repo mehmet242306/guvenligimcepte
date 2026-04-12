@@ -272,6 +272,72 @@ export async function logSecurityEventWithContext({
   }
 }
 
+export async function logMaskingEvent(options: {
+  sourceContext: "live_scan" | "photo_upload" | "vision_capture" | "manual_redaction";
+  mediaType: "frame" | "image" | "video";
+  maskingStatus: "masked" | "skipped" | "failed";
+  detectedFaces?: number;
+  detectedPlates?: number;
+  detectedIdentityCards?: number;
+  organizationId?: string | null;
+  companyWorkspaceId?: string | null;
+  originalPersisted?: boolean;
+  details?: Record<string, unknown>;
+}) {
+  try {
+    const supabase = createServiceClient();
+    await supabase.rpc("log_masking_event", {
+      p_source_context: options.sourceContext,
+      p_media_type: options.mediaType,
+      p_masking_status: options.maskingStatus,
+      p_detected_faces: options.detectedFaces ?? 0,
+      p_detected_plates: options.detectedPlates ?? 0,
+      p_detected_identity_cards: options.detectedIdentityCards ?? 0,
+      p_organization_id: options.organizationId ?? null,
+      p_company_workspace_id: options.companyWorkspaceId ?? null,
+      p_original_persisted: options.originalPersisted ?? false,
+      p_details: options.details ?? {},
+    });
+  } catch (error) {
+    console.error("[security] logMaskingEvent failed:", error);
+  }
+}
+
+export async function logInternationalTransfer(options: {
+  provider: string;
+  destinationRegion: string;
+  destinationCountry?: string | null;
+  transferContext?: "claude_vision" | "claude_chat" | "ai_document" | "mevzuat_rag" | "manual_export";
+  reason: string;
+  dataCategory: string;
+  legalBasisVersion?: string | null;
+  payloadReference?: string | null;
+  frameCount?: number;
+  organizationId?: string | null;
+  companyWorkspaceId?: string | null;
+  details?: Record<string, unknown>;
+}) {
+  try {
+    const supabase = createServiceClient();
+    await supabase.rpc("log_international_transfer", {
+      p_provider: options.provider,
+      p_destination_region: options.destinationRegion,
+      p_destination_country: options.destinationCountry ?? null,
+      p_transfer_context: options.transferContext ?? "claude_vision",
+      p_reason: options.reason,
+      p_data_category: options.dataCategory,
+      p_legal_basis_version: options.legalBasisVersion ?? null,
+      p_payload_reference: options.payloadReference ?? null,
+      p_frame_count: options.frameCount ?? 0,
+      p_organization_id: options.organizationId ?? null,
+      p_company_workspace_id: options.companyWorkspaceId ?? null,
+      p_details: options.details ?? {},
+    });
+  } catch (error) {
+    console.error("[security] logInternationalTransfer failed:", error);
+  }
+}
+
 export async function enforceRateLimit(
   request: NextRequest,
   options: RateLimitOptions,

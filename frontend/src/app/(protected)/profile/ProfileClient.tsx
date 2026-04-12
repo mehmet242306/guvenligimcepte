@@ -6,6 +6,7 @@ import { listSessions } from "@/lib/session-tracker";
 import { validateStrongPassword } from "@/lib/security/password";
 import { createClient } from "@/lib/supabase/client";
 import { quickSignOut } from "@/lib/auth/quick-sign-out";
+import { ProfileConsentTab } from "./ProfileConsentTab";
 import type { User } from "@supabase/supabase-js";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -37,7 +38,7 @@ type Prefs = {
   push_notifications: boolean;
 };
 
-type Tab = "profile" | "security" | "preferences" | "activity";
+type Tab = "profile" | "security" | "privacy" | "preferences" | "activity";
 
 type MfaFactor = {
   id: string;
@@ -94,6 +95,12 @@ const primaryButtonClass =
 
 const secondaryButtonClass =
   "inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-border/80 bg-background/90 px-5 text-sm font-medium text-foreground shadow-[0_8px_20px_rgba(15,23,42,0.08)] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:bg-secondary/70 hover:text-primary dark:bg-card/90 dark:shadow-[0_12px_24px_rgba(0,0,0,0.28)] disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60";
+
+const PROFILE_TABS: { id: Tab; label: string }[] = [
+  ...TABS.slice(0, 2),
+  { id: "privacy", label: "Gizlilik ve Onaylar" },
+  ...TABS.slice(2),
+];
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
@@ -934,7 +941,7 @@ export default function ProfileClient() {
 
       {/* ── Tab bar ── */}
       <div className="flex gap-1 rounded-2xl border border-border bg-secondary/50 p-1">
-        {TABS.map(({ id, label }) => (
+        {PROFILE_TABS.map(({ id, label }) => (
           <button
             key={id}
             type="button"
@@ -1431,6 +1438,8 @@ export default function ProfileClient() {
       {/* ══════════════════════════════════════════════
           TAB: Tercihler
       ══════════════════════════════════════════════ */}
+      {tab === "privacy" && <ProfileConsentTab />}
+
       {tab === "preferences" && (
         <div className="space-y-4">
           {/* Theme picker */}

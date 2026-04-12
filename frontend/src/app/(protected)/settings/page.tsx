@@ -10,6 +10,7 @@ import { usePersistedState } from "@/lib/use-persisted-state";
 import { AdminAITab } from "./AdminAITab";
 import { AuditLogsTab } from "./AuditLogsTab";
 import { DeletedRecordsTab } from "./DeletedRecordsTab";
+import { KvkkCenterTab } from "./KvkkCenterTab";
 import { MevzuatSyncTab } from "./MevzuatSyncTab";
 import { RoleManagementTab } from "./RoleManagementTab";
 import { SecurityEventsTab } from "./SecurityEventsTab";
@@ -19,6 +20,7 @@ type TabKey =
   | "mevzuat"
   | "security_events"
   | "role_management"
+  | "kvkk_center"
   | "audit_logs"
   | "deleted_records"
   | "admin_ai";
@@ -33,6 +35,7 @@ type TabDef = {
 const allTabs: TabDef[] = [
   { key: "general", label: "Genel" },
   { key: "mevzuat", label: "Mevzuat Senkronizasyonu" },
+  { key: "kvkk_center", label: "KVKK Merkezi", permission: "compliance.kvkk.manage" },
   { key: "security_events", label: "Guvenlik Olaylari", permission: "security.events.view" },
   { key: "role_management", label: "Rol Yonetimi", permission: "security.roles.manage" },
   { key: "audit_logs", label: "Audit Loglari", adminOnly: true },
@@ -75,9 +78,11 @@ export default function SettingsPage() {
   const isAdmin = useIsAdmin();
   const canViewSecurityEvents = usePermission("security.events.view");
   const canManageRoles = usePermission("security.roles.manage");
+  const canManageKvkk = usePermission("compliance.kvkk.manage");
 
   const visibleTabs = allTabs.filter((tab) => {
     if (tab.adminOnly) return isAdmin === true;
+    if (tab.permission === "compliance.kvkk.manage") return canManageKvkk === true;
     if (tab.permission === "security.events.view") return canViewSecurityEvents === true;
     if (tab.permission === "security.roles.manage") return canManageRoles === true;
     return true;
@@ -96,6 +101,7 @@ export default function SettingsPage() {
     if (
       requestedTab === "general" ||
       requestedTab === "mevzuat" ||
+      requestedTab === "kvkk_center" ||
       requestedTab === "security_events" ||
       requestedTab === "role_management" ||
       requestedTab === "audit_logs" ||
@@ -140,6 +146,7 @@ export default function SettingsPage() {
       <div className="mt-4">
         {activeTab === "general" && <GeneralTab />}
         {activeTab === "mevzuat" && <MevzuatSyncTab />}
+        {activeTab === "kvkk_center" && canManageKvkk === true && <KvkkCenterTab />}
         {activeTab === "security_events" && canViewSecurityEvents === true && <SecurityEventsTab />}
         {activeTab === "role_management" && canManageRoles === true && <RoleManagementTab />}
         {activeTab === "audit_logs" && isAdmin === true && <AuditLogsTab />}

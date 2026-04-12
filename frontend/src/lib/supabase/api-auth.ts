@@ -86,6 +86,7 @@ export type AuthErrorCode =
   | "unauthorized_invalid_token"
   | "forbidden_profile_missing"
   | "forbidden_not_super_admin"
+  | "forbidden_missing_permission"
   | "forbidden_wrong_organization"
   | "server_error_supabase_unavailable";
 
@@ -120,6 +121,11 @@ const AUTH_ERRORS: Record<
   forbidden_not_super_admin: {
     message: "Bu işlem için süper admin yetkisi gerekli. (ERR_AUTH_004)",
     errCode: "ERR_AUTH_004",
+    status: 403,
+  },
+  forbidden_missing_permission: {
+    message: "Bu islem icin gerekli yetki bulunmuyor. (ERR_AUTH_006)",
+    errCode: "ERR_AUTH_006",
     status: 403,
   },
   forbidden_wrong_organization: {
@@ -510,6 +516,73 @@ export async function requireSuperAdmin(req: NextRequest): Promise<AuthResult> {
  * - requireAuth'un hepsi
  * - 403 forbidden_wrong_organization (ERR_AUTH_005): targetOrgId kullanıcının org'u değil
  */
+export async function requirePermission(
+  req: NextRequest,
+  permissionCode: string
+): Promise<AuthResult> {
+  const authResult = await requireAuth(req);
+  if (!authResult.ok) return authResult;
+
+  const authHeader = req.headers.get("authorization") ?? "";
+  const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+  const authClient = token ? createAnonClient(token) : createCookieClient(req);
+
+  if (!authClient) {
+    return {
+      ok: false,
+      code: "server_error_supabase_unavailable",
+      response: authErrorResponse("server_error_supabase_unavailable"),
+    };
+  }
+
+  try {
+    const { data, error } = await withTimeout(
+      authClient.rpc("user_has_permission", {
+        p_permission_code: permissionCode,
+      }),
+      AUTH_TIMEOUT_MS,
+      "rpc_user_has_permission"
+    );
+
+    if (error) {
+      logAuth("user_has_permission RPC error", {
+        userId: authResult.userId,
+        error,
+      });
+      return {
+        ok: false,
+        code: "server_error_supabase_unavailable",
+        response: authErrorResponse("server_error_supabase_unavailable"),
+      };
+    }
+
+    if (data === true) {
+      return authResult;
+    }
+
+    const superCheck = await checkIsSuperAdmin(authResult.userId);
+    if (superCheck.ok && superCheck.isSuperAdmin) {
+      return { ...authResult, isSuperAdmin: true };
+    }
+
+    return {
+      ok: false,
+      code: "forbidden_missing_permission",
+      response: authErrorResponse("forbidden_missing_permission"),
+    };
+  } catch (err) {
+    logAuth("user_has_permission unexpected error", {
+      userId: authResult.userId,
+      error: err,
+    });
+    return {
+      ok: false,
+      code: "server_error_supabase_unavailable",
+      response: authErrorResponse("server_error_supabase_unavailable"),
+    };
+  }
+}
+
 export async function requireOrgMember(
   req: NextRequest,
   targetOrgId?: string
