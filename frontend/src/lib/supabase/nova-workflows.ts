@@ -54,8 +54,10 @@ export async function getNovaProactiveBrief(locale: string = "tr"): Promise<Nova
   if (!supabase) return null;
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const user = session?.user ?? null;
 
   if (!user) return null;
 

@@ -759,7 +759,8 @@ export default function SolutionCenterPage() {
     (async () => {
       const supabase = createClient();
       if (!supabase) return;
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user ?? null;
       if (!user) return;
       const { data: profile } = await supabase.from("user_profiles").select("organization_id").eq("auth_user_id", user.id).single();
       if (profile?.organization_id) setOrganizationId(profile.organization_id);
@@ -822,8 +823,10 @@ export default function SolutionCenterPage() {
 
       // Get current user
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const user = session?.user ?? null;
 
       if (!user) throw new Error("Oturum bulunamadı");
 
