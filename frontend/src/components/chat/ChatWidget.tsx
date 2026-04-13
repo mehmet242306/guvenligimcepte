@@ -222,12 +222,25 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
     // Authenticated users: Nova edge function
     try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const accessToken = session?.access_token ?? null;
+
+      if (!accessToken) {
+        throw new Error("Nova oturumunuzu doğrulayamadı. Lütfen çıkış yapıp tekrar girin ve yeniden deneyin.");
+      }
+
       const history = messages.slice(-10).map((m) => ({
         role: m.role === "user" ? ("user" as const) : ("assistant" as const),
         content: m.text,
       }));
 
       const { data, error } = await supabase.functions.invoke("solution-chat", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: {
           message: text,
           organization_id: organizationId,

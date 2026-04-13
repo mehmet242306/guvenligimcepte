@@ -827,8 +827,11 @@ export default function SolutionCenterPage() {
       } = await supabase.auth.getSession();
 
       const user = session?.user ?? null;
+      const accessToken = session?.access_token ?? null;
 
-      if (!user) throw new Error("Oturum bulunamadı");
+      if (!user || !accessToken) {
+        throw new Error("Nova oturumunuzu doğrulayamadı. Lütfen çıkış yapıp tekrar girin ve yeniden deneyin.");
+      }
 
       // Build history from previous messages
       const history = messages.map((m) => ({
@@ -837,6 +840,9 @@ export default function SolutionCenterPage() {
       }));
 
       const { data, error } = await supabase.functions.invoke("solution-chat", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: {
           message: query,
           organization_id: organizationId,
