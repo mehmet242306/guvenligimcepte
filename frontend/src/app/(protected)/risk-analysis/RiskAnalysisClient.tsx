@@ -2220,9 +2220,9 @@ JSON formatında döndür:
             <Button
               type="button"
               variant="accent"
-              size="lg"
               disabled={!selectedCompanyId}
               onClick={startNewAnalysis}
+              className="h-12 rounded-xl px-8 text-base font-bold shadow-lg"
             >
               + Yeni Analiz Başlat
             </Button>
@@ -2323,9 +2323,9 @@ JSON formatında döndür:
           </>
         }
         actions={
-          <div className="flex gap-2">
-            <Button type="button" variant="outline" onClick={backToList}>Listeye Dön</Button>
-            <Button type="button" variant="outline" onClick={resetAll}>Yeni Analiz</Button>
+          <div className="flex gap-2.5">
+            <Button type="button" variant="outline" onClick={backToList} className="h-10 rounded-xl px-5 text-sm font-semibold">Listeye Dön</Button>
+            <Button type="button" variant="accent" onClick={resetAll} className="h-10 rounded-xl px-5 text-sm font-bold shadow-md">Yeni Analiz</Button>
           </div>
         }
       />
@@ -2492,7 +2492,7 @@ JSON formatında döndür:
               <h2 className="text-xl font-semibold text-foreground">Risk Analizinde Görev Alanlar</h2>
               <p className="mt-2 text-sm leading-7 text-muted-foreground">Kayıtlı personelden seçebilir veya manuel ekleyebilirsin.</p>
             </div>
-            <Button type="button" variant="outline" onClick={addParticipant}>Manuel Görevli Ekle</Button>
+            <Button type="button" variant="outline" onClick={addParticipant} className="h-10 rounded-xl px-5 text-sm font-semibold">Manuel Görevli Ekle</Button>
           </div>
 
           {/* Firma ekip uyelerinden hizli secim */}
@@ -2687,7 +2687,7 @@ JSON formatında döndür:
                     <p className="eyebrow">Satır {idx + 1}</p>
                     <p className="mt-1 text-sm text-muted-foreground">Genel ve yakın açıları bu satır altında toplayın.</p>
                   </div>
-                  {lines.length > 1 && <Button type="button" variant="ghost" onClick={() => removeLine(line.id)}>Satırı Sil</Button>}
+                  {lines.length > 1 && <Button type="button" variant="ghost" onClick={() => removeLine(line.id)} className="rounded-xl text-sm font-semibold text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20">Satırı Sil</Button>}
                 </div>
 
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -2702,9 +2702,9 @@ JSON formatında döndür:
 
                 {/* Gorsel ekleme butonu */}
                 <div className="mt-4">
-                  <Button type="button" onClick={() => fileInputRefs.current[line.id]?.click()}>
-                    <svg className="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                    Gorsel Ekle
+                  <Button type="button" onClick={() => fileInputRefs.current[line.id]?.click()} className="h-10 rounded-xl px-5 text-sm font-semibold shadow-sm">
+                    <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                    Görsel Ekle
                   </Button>
                 </div>
 
@@ -2758,9 +2758,9 @@ JSON formatında döndür:
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
               <p className="eyebrow">Rapor</p>
               <div className="mt-1 flex justify-center gap-1">
-                <Button type="button" variant="outline" className="h-8 px-2 text-xs" onClick={() => buildExportData().then(exportRiskAnalysisPDF)} disabled={results.length === 0}>PDF</Button>
-                <Button type="button" variant="outline" className="h-8 px-2 text-xs" onClick={() => buildExportData().then(exportRiskAnalysisWord)} disabled={results.length === 0}>Word</Button>
-                <Button type="button" variant="outline" className="h-8 px-2 text-xs" onClick={() => buildExportData().then(exportRiskAnalysisExcel)} disabled={results.length === 0}>Excel</Button>
+                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" onClick={() => buildExportData().then(exportRiskAnalysisPDF)} disabled={results.length === 0}>PDF</Button>
+                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20" onClick={() => buildExportData().then(exportRiskAnalysisWord)} disabled={results.length === 0}>Word</Button>
+                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" onClick={() => buildExportData().then(exportRiskAnalysisExcel)} disabled={results.length === 0}>Excel</Button>
               </div>
             </div>
           </div>
@@ -2842,6 +2842,7 @@ JSON formatında döndür:
                         type="button"
                         variant={pinMode === result.rowId ? "accent" : "outline"}
                         onClick={() => setPinMode(pinMode === result.rowId ? null : result.rowId)}
+                        className="h-10 rounded-xl px-5 text-sm font-semibold shadow-sm"
                       >
                         {pinMode === result.rowId ? "Pin Modu Aktif..." : "Risk İşareti Ekle"}
                       </Button>
@@ -3131,25 +3132,25 @@ JSON formatında döndür:
       )}
 
       {/* ═══════════════ NAVIGATION BUTTONS — sticky bottom bar ═══════════════ */}
-      <div className="sticky bottom-0 z-40 -mx-4 mt-6 border-t border-border bg-white/95 px-4 py-3 backdrop-blur-md dark:bg-[#0A0E18]/95 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      <div className="sticky bottom-0 z-40 -mx-4 mt-6 border-t border-border/60 bg-white/95 px-4 py-4 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] backdrop-blur-md dark:bg-[#0A0E18]/95 dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)] sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div className="flex items-center justify-between">
           <div>
             {step > 1 && (
-              <Button type="button" variant="outline" size="sm" onClick={goBack}>Geri</Button>
+              <Button type="button" variant="outline" onClick={goBack} className="h-10 rounded-xl px-5 text-sm font-semibold">Geri</Button>
             )}
           </div>
           <div className="flex gap-3">
             {step < 4 && (
-              <Button type="button" variant="accent" size="sm" onClick={goNext}>
+              <Button type="button" variant="accent" onClick={goNext} className="h-10 rounded-xl px-6 text-sm font-bold shadow-md">
                 {step === 3 ? "Sonuçlara Git" : "İleri"}
               </Button>
             )}
             {step === 4 && (
               <>
-                <Button type="button" variant="accent" size="sm" onClick={handleSaveAnalysis} disabled={isSaving || results.length === 0}>
+                <Button type="button" variant="accent" onClick={handleSaveAnalysis} disabled={isSaving || results.length === 0} className="h-10 rounded-xl px-6 text-sm font-bold shadow-md">
                   {isSaving ? "Kaydediliyor..." : currentAssessmentId ? "Güncelle" : "Kaydet"}
                 </Button>
-                <Button type="button" variant="outline" size="sm" onClick={backToList}>Listeye Dön</Button>
+                <Button type="button" variant="outline" onClick={backToList} className="h-10 rounded-xl px-5 text-sm font-semibold">Listeye Dön</Button>
               </>
             )}
           </div>
