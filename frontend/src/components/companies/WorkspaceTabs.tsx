@@ -135,37 +135,37 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
     <div className="space-y-6">
       {/* Üst özet kartları */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-border bg-card p-4 text-center">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Lokasyon</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{locCount}</p>
+        <div className="rounded-[1.25rem] border border-border/80 bg-card p-5 text-center shadow-[var(--shadow-card)]">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Lokasyon</p>
+          <p className="mt-1.5 text-3xl font-bold text-foreground">{locCount}</p>
         </div>
-        <div className="rounded-xl border border-border bg-card p-4 text-center">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Bölüm</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{depCount}</p>
+        <div className="rounded-[1.25rem] border border-border/80 bg-card p-5 text-center shadow-[var(--shadow-card)]">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Bölüm</p>
+          <p className="mt-1.5 text-3xl font-bold text-foreground">{depCount}</p>
         </div>
-        <div className="rounded-xl border border-border bg-card p-4 text-center">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Çalışan</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{company.employeeCount}</p>
+        <div className="rounded-[1.25rem] border border-border/80 bg-card p-5 text-center shadow-[var(--shadow-card)]">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Çalışan</p>
+          <p className="mt-1.5 text-3xl font-bold text-foreground">{company.employeeCount}</p>
         </div>
       </div>
 
       {/* Lokasyonlar ve Bölümler — yan yana */}
       <div className="grid gap-5 lg:grid-cols-2">
         {/* Lokasyonlar */}
-        <section className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
+        <section className="rounded-[1.5rem] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)]">
           <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 text-lg dark:bg-amber-900/30">📍</div>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/15 to-amber-500/5 text-lg shadow-sm dark:from-amber-500/20 dark:to-amber-500/5">📍</div>
               <div>
                 <h3 className="text-sm font-semibold text-foreground">Lokasyonlar</h3>
                 <p className="text-[11px] text-muted-foreground">Firmanın fiziksel yerleşkeleri</p>
               </div>
             </div>
-            <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{locCount}</span>
+            <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-300">{locCount}</span>
           </div>
           <div className="space-y-2">
             {company.locations.map((loc, i) => (
-              <div key={i} className="group flex items-center gap-2 rounded-lg border border-border bg-secondary/30 p-2 transition-colors hover:border-primary/20">
+              <div key={i} className="group flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-secondary/40">
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-amber-500/10 text-[10px] font-bold text-amber-600 dark:text-amber-400">{i + 1}</span>
                 <Input
                   value={loc}
@@ -194,20 +194,20 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
         </section>
 
         {/* Bölümler */}
-        <section className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
+        <section className="rounded-[1.5rem] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)]">
           <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-100 text-lg dark:bg-blue-900/30">🏢</div>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500/15 to-blue-500/5 text-lg shadow-sm dark:from-blue-500/20 dark:to-blue-500/5">🏢</div>
               <div>
                 <h3 className="text-sm font-semibold text-foreground">Bölümler</h3>
                 <p className="text-[11px] text-muted-foreground">Organizasyonel birimler</p>
               </div>
             </div>
-            <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{depCount}</span>
+            <span className="rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-0.5 text-[10px] font-bold text-blue-700 dark:text-blue-300">{depCount}</span>
           </div>
           <div className="space-y-2">
             {company.departments.map((dep, i) => (
-              <div key={i} className="group flex items-center gap-2 rounded-lg border border-border bg-secondary/30 p-2 transition-colors hover:border-primary/20">
+              <div key={i} className="group flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-secondary/40">
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-blue-500/10 text-[10px] font-bold text-blue-600 dark:text-blue-400">{i + 1}</span>
                 <Input
                   value={dep}
