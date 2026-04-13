@@ -645,6 +645,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                   <div ref={analysisDetailRef}>
                     <AnalysisDetailPanel
                       analysis={selectedAnalysis}
+                      company={company}
                       onClose={() => { setSelectedAnalysis(null); setExpandedAnalysisId(null); }}
                     />
                   </div>
@@ -818,14 +819,75 @@ function CategoryDetailPanel({
 }
 
 /* ── Analiz Detay Paneli ── */
-function AnalysisDetailPanel({ analysis, onClose }: { analysis: FullAssessment; onClose: () => void }) {
+function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAssessment; onClose: () => void; company?: CompanyRecord }) {
   function fmtDate(d: string) { try { return new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" }); } catch { return d; } }
   function methodLabel(m: string) { return m === "r_skor" ? "R-SKOR 2D" : m === "fine_kinney" ? "Fine-Kinney" : m === "l_matrix" ? "L-Matris" : m; }
+  function sevLabel(s: string) { return s === "critical" ? "Kritik" : s === "high" ? "Yüksek" : s === "medium" ? "Orta" : "Düşük"; }
+  const [exporting, setExporting] = useState<string | null>(null);
 
   const totalFindings = analysis.rows.reduce((s, r) => s + r.findings.length, 0);
 
+  async function handleExport(format: "pdf" | "word" | "excel") {
+    setExporting(format);
+    try {
+      const { exportRiskAnalysisPDF, exportRiskAnalysisWord, exportRiskAnalysisExcel } = await import("@/lib/risk-analysis-export");
+      const allFindings = analysis.rows.flatMap((r) => r.findings);
+      const exportData = {
+        analysisTitle: analysis.title,
+        analysisNote: analysis.analysisNote || "",
+        companyName: company?.name ?? "",
+        companyKind: company?.kind ?? "",
+        companySector: company?.sector ?? "",
+        companyHazardClass: company?.hazardClass ?? "",
+        companyAddress: company ? `${company.address || ""} ${company.city || ""}`.trim() : "",
+        companyLogoUrl: company?.logo_url ?? "",
+        location: analysis.locationText || "",
+        department: analysis.departmentName || "",
+        method: analysis.method,
+        methodLabel: methodLabel(analysis.method),
+        participants: ((analysis.participants || []) as Record<string, string>[]).map((p) => ({
+          fullName: p.fullName || p.full_name || "",
+          role: p.roleCode || p.role_code || "",
+          title: p.title || "",
+          certificateNo: p.certificateNo || p.certificate_no || "",
+        })),
+        findings: allFindings.map((f) => ({
+          rowTitle: analysis.rows.find((r) => r.findings.some((ff) => ff.id === f.id))?.title ?? "",
+          imageId: f.imageId,
+          title: f.title,
+          category: f.category,
+          severity: f.severity,
+          severityLabel: sevLabel(f.severity),
+          score: 0,
+          scoreLabel: "",
+          riskClass: f.severity,
+          action: (f as Record<string, unknown>).action as string || "",
+          recommendation: f.recommendation || "",
+          confidence: f.confidence,
+          isManual: f.isManual,
+          correctiveActionRequired: f.correctiveActionRequired,
+          method: analysis.method,
+          methodLabel: methodLabel(analysis.method),
+          legalReferences: f.legalReferences?.length > 0 ? f.legalReferences : undefined,
+        })),
+        images: [],
+        totalFindings: allFindings.length,
+        criticalCount: allFindings.filter((f) => f.severity === "critical" || f.severity === "high").length,
+        dofCandidateCount: 0,
+        date: fmtDate(analysis.assessmentDate),
+      };
+      if (format === "pdf") exportRiskAnalysisPDF(exportData);
+      else if (format === "word") await exportRiskAnalysisWord(exportData);
+      else await exportRiskAnalysisExcel(exportData);
+    } catch (err) {
+      console.warn("Export failed:", err);
+    } finally {
+      setExporting(null);
+    }
+  }
+
   return (
-    <div className="rounded-xl border-2 border-primary/30 bg-card shadow-[var(--shadow-soft)]">
+    <div className="rounded-[1.5rem] border-2 border-primary/30 bg-card shadow-[var(--shadow-elevated)]">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border p-5">
         <div>
@@ -833,14 +895,27 @@ function AnalysisDetailPanel({ analysis, onClose }: { analysis: FullAssessment; 
           <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
             <span>{fmtDate(analysis.assessmentDate)}</span>
             <span>{methodLabel(analysis.method)}</span>
-            <span>{totalFindings} tespit</span>
+            <span className="font-semibold text-foreground">{totalFindings} tespit</span>
             {analysis.locationText && <span>{analysis.locationText}</span>}
             {analysis.departmentName && <span>{analysis.departmentName}</span>}
           </div>
         </div>
-        <button type="button" onClick={onClose} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 rounded-xl border border-border/60 bg-secondary/30 p-1">
+            <button type="button" onClick={() => void handleExport("pdf")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/20" title="PDF İndir">
+              {exporting === "pdf" ? "..." : "PDF"}
+            </button>
+            <button type="button" onClick={() => void handleExport("word")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-blue-600 transition-colors hover:bg-blue-50 disabled:opacity-50 dark:text-blue-400 dark:hover:bg-blue-900/20" title="Word İndir">
+              {exporting === "word" ? "..." : "Word"}
+            </button>
+            <button type="button" onClick={() => void handleExport("excel")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-emerald-600 transition-colors hover:bg-emerald-50 disabled:opacity-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" title="Excel İndir">
+              {exporting === "excel" ? "..." : "Excel"}
+            </button>
+          </div>
+          <button type="button" onClick={onClose} className="rounded-xl p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
       </div>
 
       {/* Katılımcılar */}
