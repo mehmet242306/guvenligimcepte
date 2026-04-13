@@ -827,11 +827,46 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
 
   const totalFindings = analysis.rows.reduce((s, r) => s + r.findings.length, 0);
 
+  async function fetchImageAsDataUrl(url: string): Promise<string | null> {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const blob = await res.blob();
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(blob);
+      });
+    } catch { return null; }
+  }
+
   async function handleExport(format: "pdf" | "word" | "excel") {
     setExporting(format);
     try {
       const { exportRiskAnalysisPDF, exportRiskAnalysisWord, exportRiskAnalysisExcel } = await import("@/lib/risk-analysis-export");
       const allFindings = analysis.rows.flatMap((r) => r.findings);
+
+      // Görselleri signed URL'den base64'e çevir
+      const exportImages = [];
+      for (const row of analysis.rows) {
+        for (const img of row.images) {
+          if (img.signedUrl) {
+            const dataUrl = await fetchImageAsDataUrl(img.signedUrl);
+            if (dataUrl) {
+              const imgFindings = row.findings.filter((f) => f.imageId === img.id);
+              exportImages.push({
+                imageId: img.id,
+                rowTitle: row.title,
+                dataUrl,
+                fileName: img.fileName,
+                findingCount: imgFindings.length,
+              });
+            }
+          }
+        }
+      }
+
       const exportData = {
         analysisTitle: analysis.title,
         analysisNote: analysis.analysisNote || "",
@@ -870,7 +905,7 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
           methodLabel: methodLabel(analysis.method),
           legalReferences: f.legalReferences?.length > 0 ? f.legalReferences : undefined,
         })),
-        images: [],
+        images: exportImages,
         totalFindings: allFindings.length,
         criticalCount: allFindings.filter((f) => f.severity === "critical" || f.severity === "high").length,
         dofCandidateCount: 0,
