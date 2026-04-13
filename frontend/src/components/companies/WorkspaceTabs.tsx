@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { MapPin, Building2 } from "lucide-react";
+import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus } from "lucide-react";
+import type { PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PremiumIconBadge } from "@/components/ui/premium-icon-badge";
@@ -243,17 +244,17 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
 
 /* ── RISK ── */
 /* Risk kategori tanımları — süreç yönetimi kartları */
-const RISK_CATEGORIES = [
-  { key: "fiziksel", label: "Fiziksel", icon: "⚡", color: "#3B82F6", examples: "Gürültü, titreşim, aydınlatma, sıcaklık" },
-  { key: "kimyasal", label: "Kimyasal", icon: "🧪", color: "#8B5CF6", examples: "Gaz, toz, buhar, kimyasal madde" },
-  { key: "biyolojik", label: "Biyolojik", icon: "🦠", color: "#10B981", examples: "Bakteri, virüs, küf, biyolojik etkenler" },
-  { key: "ergonomik", label: "Ergonomik", icon: "🧍", color: "#F59E0B", examples: "Duruş bozukluğu, ağır yük, tekrarlı hareket" },
-  { key: "psikososyal", label: "Psikososyal", icon: "🧠", color: "#EC4899", examples: "Stres, mobbing, iş yükü, vardiya" },
-  { key: "mekanik", label: "Mekanik", icon: "⚙️", color: "#F97316", examples: "Makine, ekipman, düşme, sıkışma" },
-  { key: "elektrik", label: "Elektrik", icon: "🔌", color: "#EF4444", examples: "Çarpma, kısa devre, topraklama" },
-  { key: "yangin", label: "Yangın / Patlama", icon: "🔥", color: "#DC2626", examples: "Yanıcı madde, patlayıcı ortam, LPG" },
-  { key: "trafik", label: "Trafik", icon: "🚛", color: "#6366F1", examples: "Araç, forklift, yaya-araç çatışması" },
-  { key: "cevre", label: "Çevresel", icon: "🌿", color: "#059669", examples: "Atık, emisyon, gürültü kirliliği" },
+const RISK_CATEGORIES: Array<{ key: string; label: string; icon: string; lucideIcon: React.ElementType; tone: PremiumIconTone; color: string; examples: string }> = [
+  { key: "fiziksel", label: "Fiziksel", icon: "⚡", lucideIcon: Zap, tone: "cobalt", color: "#3B82F6", examples: "Gürültü, titreşim, aydınlatma, sıcaklık" },
+  { key: "kimyasal", label: "Kimyasal", icon: "🧪", lucideIcon: FlaskConical, tone: "violet", color: "#8B5CF6", examples: "Gaz, toz, buhar, kimyasal madde" },
+  { key: "biyolojik", label: "Biyolojik", icon: "🦠", lucideIcon: Bug, tone: "emerald", color: "#10B981", examples: "Bakteri, virüs, küf, biyolojik etkenler" },
+  { key: "ergonomik", label: "Ergonomik", icon: "🧍", lucideIcon: PersonStanding, tone: "amber", color: "#F59E0B", examples: "Duruş bozukluğu, ağır yük, tekrarlı hareket" },
+  { key: "psikososyal", label: "Psikososyal", icon: "🧠", lucideIcon: Brain, tone: "plum", color: "#EC4899", examples: "Stres, mobbing, iş yükü, vardiya" },
+  { key: "mekanik", label: "Mekanik", icon: "⚙️", lucideIcon: Cog, tone: "orange", color: "#F97316", examples: "Makine, ekipman, düşme, sıkışma" },
+  { key: "elektrik", label: "Elektrik", icon: "🔌", lucideIcon: Plug, tone: "risk", color: "#EF4444", examples: "Çarpma, kısa devre, topraklama" },
+  { key: "yangin", label: "Yangın / Patlama", icon: "🔥", lucideIcon: Flame, tone: "danger", color: "#DC2626", examples: "Yanıcı madde, patlayıcı ortam, LPG" },
+  { key: "trafik", label: "Trafik", icon: "🚛", lucideIcon: Truck, tone: "indigo", color: "#6366F1", examples: "Araç, forklift, yaya-araç çatışması" },
+  { key: "cevre", label: "Çevresel", icon: "🌿", lucideIcon: Leaf, tone: "success", color: "#059669", examples: "Atık, emisyon, gürültü kirliliği" },
 ];
 
 type CategoryStats = { key: string; total: number; critical: number; high: number; medium: number; low: number };
@@ -423,7 +424,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
   return (
     <div className="space-y-5">
       {/* Başlık + Sekme seçici + Buton */}
-      <div className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
+      <div className="rounded-[1.7rem] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="section-title text-base">Risk ve Saha Yönetimi</h2>
@@ -449,21 +450,21 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
 
         {/* Üst metriler */}
         <div className="mt-4 grid gap-3 grid-cols-2 sm:grid-cols-4">
-          <div className="rounded-lg border border-border p-3 text-center">
-            <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">Toplam Tespit</p>
-            <p className="mt-1 text-xl font-bold text-foreground">{totalFindings}</p>
+          <div className="rounded-[1.25rem] border border-border/60 bg-gradient-to-br from-blue-500/5 to-transparent p-4 text-center shadow-sm dark:from-blue-500/8">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Toplam Tespit</p>
+            <p className="mt-1.5 text-2xl font-bold text-foreground">{totalFindings}</p>
           </div>
-          <div className="rounded-lg border border-border p-3 text-center">
-            <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">Kritik</p>
-            <p className={`mt-1 text-xl font-bold ${totalCritical > 0 ? "text-red-600" : "text-muted-foreground"}`}>{totalCritical}</p>
+          <div className="rounded-[1.25rem] border border-border/60 bg-gradient-to-br from-red-500/5 to-transparent p-4 text-center shadow-sm dark:from-red-500/8">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Kritik</p>
+            <p className={`mt-1.5 text-2xl font-bold ${totalCritical > 0 ? "text-red-600" : "text-muted-foreground"}`}>{totalCritical}</p>
           </div>
-          <div className="rounded-lg border border-border p-3 text-center">
-            <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">Yüksek</p>
-            <p className={`mt-1 text-xl font-bold ${totalHigh > 0 ? "text-orange-500" : "text-muted-foreground"}`}>{totalHigh}</p>
+          <div className="rounded-[1.25rem] border border-border/60 bg-gradient-to-br from-orange-500/5 to-transparent p-4 text-center shadow-sm dark:from-orange-500/8">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Yüksek</p>
+            <p className={`mt-1.5 text-2xl font-bold ${totalHigh > 0 ? "text-orange-500" : "text-muted-foreground"}`}>{totalHigh}</p>
           </div>
-          <div className="rounded-lg border border-border p-3 text-center">
-            <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">Analiz Sayısı</p>
-            <p className="mt-1 text-xl font-bold text-foreground">{analyses.length}</p>
+          <div className="rounded-[1.25rem] border border-border/60 bg-gradient-to-br from-emerald-500/5 to-transparent p-4 text-center shadow-sm dark:from-emerald-500/8">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Analiz Sayısı</p>
+            <p className="mt-1.5 text-2xl font-bold text-foreground">{analyses.length}</p>
           </div>
         </div>
       </div>
@@ -472,8 +473,8 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
         <div className="flex justify-center py-12"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>
       ) : activeSection === "overview" ? (
         <>
-          {/* Risk Haritası — Tıklanabilir kategori kartları */}
-          <div className="grid gap-3 sm:grid-cols-2">
+          {/* Risk Haritası — Premium kategori kartları */}
+          <div className="grid gap-4 sm:grid-cols-2">
             {RISK_CATEGORIES.map((cat) => {
               const stat = catStats.find((s) => s.key === cat.key);
               const total = stat?.total ?? 0;
@@ -486,27 +487,25 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                   key={cat.key}
                   type="button"
                   onClick={() => openCategoryDetail(cat.key)}
-                  className={`rounded-xl border p-4 text-left transition-all ${
-                    isSelected ? "border-primary ring-2 ring-primary/20 bg-card"
-                    : hasCritical ? "border-red-400/40 bg-red-50/5 dark:bg-red-950/10 hover:border-red-400/60"
-                    : hasHigh ? "border-orange-400/30 bg-orange-50/5 dark:bg-orange-950/10 hover:border-orange-400/50"
-                    : total > 0 ? "border-border bg-card hover:border-primary/30"
-                    : "border-border/50 bg-card/50 hover:border-border"
+                  className={`rounded-[1.7rem] border p-5 text-left transition-all hover:-translate-y-0.5 ${
+                    isSelected ? "border-primary ring-2 ring-primary/20 bg-card shadow-[var(--shadow-elevated)]"
+                    : hasCritical ? "border-red-400/40 bg-gradient-to-br from-red-500/5 to-transparent shadow-[var(--shadow-card)] hover:border-red-400/60 dark:from-red-500/8"
+                    : hasHigh ? "border-orange-400/30 bg-gradient-to-br from-orange-500/5 to-transparent shadow-[var(--shadow-card)] hover:border-orange-400/50 dark:from-orange-500/8"
+                    : total > 0 ? "border-border/80 bg-card shadow-[var(--shadow-card)] hover:border-[var(--gold)]/30"
+                    : "border-border/50 bg-card shadow-sm hover:border-border hover:shadow-[var(--shadow-card)]"
                   }`}
                 >
                   <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl text-lg" style={{ backgroundColor: cat.color + "18" }}>
-                        {cat.icon}
-                      </div>
+                    <div className="flex items-center gap-3.5">
+                      <PremiumIconBadge icon={cat.lucideIcon} tone={cat.tone} size="md" />
                       <div>
-                        <h4 className="text-sm font-semibold text-foreground">{cat.label}</h4>
-                        <p className="text-[10px] text-muted-foreground">{cat.examples}</p>
+                        <h4 className="text-base font-semibold text-foreground">{cat.label}</h4>
+                        <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">{cat.examples}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       {total > 0 && (
-                        <span className="rounded-full px-2 py-0.5 text-xs font-bold" style={{ backgroundColor: cat.color + "20", color: cat.color }}>
+                        <span className="rounded-full px-2.5 py-1 text-xs font-bold" style={{ backgroundColor: cat.color + "18", color: cat.color }}>
                           {total}
                         </span>
                       )}
@@ -514,19 +513,32 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                     </div>
                   </div>
                   {total > 0 && (
-                    <div className="mt-3 flex gap-2">
-                      {(stat?.critical ?? 0) > 0 && <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">Kritik: {stat!.critical}</span>}
-                      {(stat?.high ?? 0) > 0 && <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">Yüksek: {stat!.high}</span>}
-                      {(stat?.medium ?? 0) > 0 && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Orta: {stat!.medium}</span>}
-                      {(stat?.low ?? 0) > 0 && <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">Düşük: {stat!.low}</span>}
+                    <div className="mt-3.5 flex flex-wrap gap-2">
+                      {(stat?.critical ?? 0) > 0 && <span className="rounded-full bg-red-100 px-2.5 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">Kritik: {stat!.critical}</span>}
+                      {(stat?.high ?? 0) > 0 && <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-[10px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">Yüksek: {stat!.high}</span>}
+                      {(stat?.medium ?? 0) > 0 && <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Orta: {stat!.medium}</span>}
+                      {(stat?.low ?? 0) > 0 && <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">Düşük: {stat!.low}</span>}
                     </div>
                   )}
                   {total === 0 && (
-                    <p className="mt-2 text-[11px] text-muted-foreground/60">Henüz tespit yok</p>
+                    <p className="mt-3 text-xs text-muted-foreground/50">Henüz tespit yok</p>
                   )}
                 </button>
               );
             })}
+            {/* + Yeni Kategori Ekle */}
+            <button
+              type="button"
+              className="flex flex-col items-center justify-center gap-3 rounded-[1.7rem] border-2 border-dashed border-border/50 bg-card/50 p-8 text-center transition-all hover:-translate-y-0.5 hover:border-[var(--gold)]/30 hover:shadow-[var(--shadow-card)]"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary">
+                <Plus size={20} className="text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-muted-foreground">Yeni Kategori Ekle</p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground/60">Özel risk kategorisi tanımlayın</p>
+              </div>
+            </button>
           </div>
 
           {/* Kategori Detay Paneli */}
@@ -657,7 +669,7 @@ function CategoryDetailPanel({
   onStartEdit, onCancelEdit, onChangeStatus, onChangeNotes, onSave, onClose,
 }: {
   categoryKey: string;
-  category: { key: string; label: string; icon: string; color: string; examples: string };
+  category: { key: string; label: string; icon: string; lucideIcon: React.ElementType; tone: PremiumIconTone; color: string; examples: string };
   findings: FindingWithContext[];
   loading: boolean;
   editingFinding: string | null;
@@ -672,13 +684,11 @@ function CategoryDetailPanel({
   onClose: () => void;
 }) {
   return (
-    <div className="rounded-xl border-2 border-primary/30 bg-card p-5 shadow-[var(--shadow-soft)]">
+    <div className="rounded-[1.7rem] border-2 border-primary/30 bg-card p-5 shadow-[var(--shadow-elevated)]">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl text-xl" style={{ backgroundColor: category.color + "18" }}>
-            {category.icon}
-          </div>
+        <div className="flex items-center gap-3.5">
+          <PremiumIconBadge icon={category.lucideIcon} tone={category.tone} size="md" />
           <div>
             <h3 className="text-base font-bold text-foreground">{category.label} Riskleri</h3>
             <p className="text-xs text-muted-foreground">{findings.length} tespit bulundu</p>
