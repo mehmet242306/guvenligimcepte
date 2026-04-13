@@ -433,19 +433,19 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
             <h2 className="section-title text-base">Risk ve Saha Yönetimi</h2>
             <p className="mt-0.5 text-xs text-muted-foreground">Risk sınıflandırması, analiz geçmişi ve süreç takibi.</p>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="flex rounded-lg border border-border bg-secondary/30">
+          <div className="flex items-center gap-3">
+            <div className="flex rounded-xl border border-border/60 bg-secondary/20 p-1 shadow-sm">
               <button type="button" onClick={() => { setActiveSection("overview"); setSelectedAnalysis(null); setExpandedAnalysisId(null); }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-l-lg transition-colors ${activeSection === "overview" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                className={`rounded-[0.6rem] px-4 py-2 text-sm font-semibold transition-all ${activeSection === "overview" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
                 Risk Haritası
               </button>
               <button type="button" onClick={() => { setActiveSection("analyses"); setSelectedCategory(null); }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-r-lg transition-colors ${activeSection === "analyses" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                className={`rounded-[0.6rem] px-4 py-2 text-sm font-semibold transition-all ${activeSection === "analyses" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
                 Analizler ({analyses.length})
               </button>
             </div>
-            <Link href={`/risk-analysis?companyId=${company.id}`} className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors">
-              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+            <Link href={`/risk-analysis?companyId=${company.id}`} className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:brightness-110 hover:shadow-lg">
+              <Plus size={16} strokeWidth={2.5} />
               Yeni Analiz
             </Link>
           </div>
