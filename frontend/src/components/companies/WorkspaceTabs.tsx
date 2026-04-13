@@ -994,24 +994,24 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
         <div className="border-b border-border bg-gradient-to-r from-emerald-50/50 to-transparent px-5 py-4 dark:from-emerald-950/20">
           <div className="flex flex-wrap items-start gap-5">
             <div className="flex-1 min-w-[200px]">
-              <h4 className="text-sm font-bold text-foreground">Rapor Paylaşımı</h4>
-              <p className="mt-1 text-xs text-muted-foreground">Paylaşım linkini açarak bu raporu herkesle paylaşabilirsiniz.</p>
-              <div className="mt-3 flex items-center gap-2">
+              <h4 className="text-base font-bold text-foreground">Rapor Paylaşımı</h4>
+              <p className="mt-1 text-sm text-muted-foreground">Paylaşım linkini açarak bu raporu herkesle paylaşabilirsiniz.</p>
+              <div className="mt-4 flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => void handleShareToggle()}
                   disabled={sharingToggle}
-                  className={`h-9 rounded-xl px-4 text-xs font-bold transition-all ${shareToken ? "bg-emerald-600 text-white shadow-sm hover:bg-emerald-700" : "bg-primary text-primary-foreground shadow-sm hover:brightness-110"}`}
+                  className={`h-11 rounded-xl px-6 text-sm font-bold shadow-md transition-all hover:shadow-lg ${shareToken ? "bg-emerald-600 text-white hover:bg-emerald-700" : "bg-[var(--gold)] text-white hover:brightness-110"}`}
                 >
-                  {sharingToggle ? "..." : shareToken ? "Paylaşım Aktif ✓" : "Paylaşım Linkini Aç"}
+                  {sharingToggle ? "..." : shareToken ? "✓ Paylaşım Aktif" : "Paylaşım Linkini Aç"}
                 </button>
                 {shareToken && (
                   <>
-                    <button type="button" onClick={copyShareLink} className="h-9 rounded-xl border border-border bg-card px-3 text-xs font-semibold text-foreground transition-colors hover:bg-secondary" title="Linki Kopyala">
-                      {copied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
+                    <button type="button" onClick={copyShareLink} className="inline-flex h-11 items-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-semibold text-foreground shadow-sm transition-all hover:bg-secondary hover:shadow-md" title="Linki Kopyala">
+                      {copied ? <><Check size={16} className="text-emerald-600" /> Kopyalandı</> : <><Copy size={16} /> Kopyala</>}
                     </button>
-                    <button type="button" onClick={shareWhatsApp} className="h-9 rounded-xl bg-[#25D366] px-3 text-xs font-bold text-white shadow-sm transition-all hover:brightness-110" title="WhatsApp ile Paylaş">
-                      <MessageCircle size={14} />
+                    <button type="button" onClick={shareWhatsApp} className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#25D366] px-5 text-sm font-bold text-white shadow-md transition-all hover:brightness-110 hover:shadow-lg" title="WhatsApp ile Paylaş">
+                      <MessageCircle size={18} /> WhatsApp
                     </button>
                   </>
                 )}
