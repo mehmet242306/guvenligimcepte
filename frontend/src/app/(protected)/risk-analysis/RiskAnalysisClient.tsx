@@ -2009,7 +2009,7 @@ JSON formatında döndür:
           // Map each image to its finding IDs
           const imageEntries = (sourceLine?.images ?? []).map((img) => ({
             file: img.file,
-            findingIds: result.findings.filter((f) => f.imageId === img.id).map((f) => f.imageId),
+            findingIds: result.findings.filter((f) => f.imageId === img.id).map((f) => f.id),
           }));
 
           return {
