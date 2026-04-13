@@ -821,37 +821,29 @@ export default function SolutionCenterPage() {
       const supabase = createClient();
       if (!supabase) throw new Error("Supabase bağlantısı kurulamadı");
 
-      // Get current user
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      const user = session?.user ?? null;
-      const accessToken = session?.access_token ?? null;
-
-      if (!user || !accessToken) {
-        throw new Error("Nova oturumunuzu doğrulayamadı. Lütfen çıkış yapıp tekrar girin ve yeniden deneyin.");
-      }
-
       // Build history from previous messages
       const history = messages.map((m) => ({
         role: m.role,
         content: m.content,
       }));
 
-      const { data, error } = await supabase.functions.invoke("solution-chat", {
+      const response = await fetch("/api/nova/chat", {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
-        body: {
+        body: JSON.stringify({
           message: query,
-          organization_id: organizationId,
           language: locale,
           history,
-        },
+        }),
       });
 
-      if (error) throw error;
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw { context: new Response(JSON.stringify(data), { status: response.status }) };
+      }
 
       // v13 response: { answer, sources, tools_used, session_id, ... }
       const docs: DocumentBlock[] = data.documents || [];

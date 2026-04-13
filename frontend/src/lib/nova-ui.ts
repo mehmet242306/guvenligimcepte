@@ -273,14 +273,14 @@ export async function resolveNovaRuntimeErrorMessage(locale?: string | null, err
   if (details.status === 401 || details.status === 403) {
     return language === "en"
       ? "Nova could not verify your session. Please sign out, sign in again, and retry."
-      : "Nova oturumunuzu dogrulayamadi. Lutfen cikis yapip tekrar girin ve yeniden deneyin.";
+      : "Nova oturumunuzu doğrulayamadı. Lütfen çıkış yapıp tekrar girin ve yeniden deneyin.";
   }
 
   if (details.status === 429) {
     return details.message || (
       language === "en"
         ? "Nova usage limit has been reached for now. Please try again later."
-        : "Nova kullanim limiti su an icin doldu. Lutfen daha sonra tekrar deneyin."
+        : "Nova kullanım limiti şu an için doldu. Lütfen daha sonra tekrar deneyin."
     );
   }
 

@@ -204,8 +204,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
-    // Org ID not ready yet
-    if (!organizationId || !supabase) {
+    if (!supabase) {
       setTimeout(() => {
         const errorMsg: Message = {
           id: crypto.randomUUID(),
@@ -222,36 +221,28 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
     // Authenticated users: Nova edge function
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      const accessToken = session?.access_token ?? null;
-
-      if (!accessToken) {
-        throw new Error("Nova oturumunuzu doğrulayamadı. Lütfen çıkış yapıp tekrar girin ve yeniden deneyin.");
-      }
-
       const history = messages.slice(-10).map((m) => ({
         role: m.role === "user" ? ("user" as const) : ("assistant" as const),
         content: m.text,
       }));
 
-      const { data, error } = await supabase.functions.invoke("solution-chat", {
+      const response = await fetch("/api/nova/chat", {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
-        body: {
+        body: JSON.stringify({
           message: text,
-          organization_id: organizationId,
           session_id: sessionId,
           language: locale,
           history,
-        },
+        }),
       });
 
-      if (error) {
-        throw error;
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw { context: new Response(JSON.stringify(data), { status: response.status }) };
       }
 
       // Preserve session
