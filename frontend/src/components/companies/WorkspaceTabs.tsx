@@ -580,7 +580,8 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
               const sb = statusBadge(a.status);
               const isSelected = selectedAnalysis?.id === a.id;
               return (
-                <div key={a.id} className={`rounded-[1.5rem] border bg-card transition-all ${isSelected ? "border-primary ring-2 ring-primary/20 shadow-[var(--shadow-elevated)]" : "border-border/80 shadow-[var(--shadow-card)] hover:-translate-y-0.5 hover:border-[var(--gold)]/30"}`}>
+                <div key={a.id}>
+                <div className={`rounded-[1.5rem] border bg-card transition-all ${isSelected ? "border-primary ring-2 ring-primary/20 shadow-[var(--shadow-elevated)]" : "border-border/80 shadow-[var(--shadow-card)] hover:-translate-y-0.5 hover:border-[var(--gold)]/30"}`}>
                   <div className="flex items-center justify-between p-5">
                     {/* Tıklanabilir alan — detay aç */}
                     <div
@@ -634,22 +635,22 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                     </div>
                   </div>
                 </div>
+                {/* Detay paneli — kartın hemen altında */}
+                {isSelected && analysisLoading && (
+                  <div className="flex justify-center py-8"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>
+                )}
+                {isSelected && selectedAnalysis && !analysisLoading && (
+                  <div ref={analysisDetailRef}>
+                    <AnalysisDetailPanel
+                      analysis={selectedAnalysis}
+                      onClose={() => setSelectedAnalysis(null)}
+                    />
+                  </div>
+                )}
+                </div>
               );
             })}
           </div>
-
-          {/* Analiz Detay Paneli */}
-          {analysisLoading && (
-            <div className="flex justify-center py-8"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>
-          )}
-          {selectedAnalysis && !analysisLoading && (
-            <div ref={analysisDetailRef}>
-              <AnalysisDetailPanel
-                analysis={selectedAnalysis}
-                onClose={() => setSelectedAnalysis(null)}
-              />
-            </div>
-          )}
         </>
       )}
     </div>
