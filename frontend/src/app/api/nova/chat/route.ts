@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/supabase/api-auth";
 
 const bodySchema = z.object({
   message: z.string().min(1).max(8000),
@@ -31,38 +32,27 @@ function getFunctionUrl() {
 export async function POST(request: NextRequest) {
   try {
     const payload = bodySchema.parse(await request.json());
+    const auth = await requireAuth(request);
+    if (!auth.ok) return auth.response;
+
     const supabase = await createClient();
 
-    const [
-      {
-        data: { user },
-      },
-      {
-        data: { session },
-      },
-    ] = await Promise.all([supabase.auth.getUser(), supabase.auth.getSession()]);
+    const { data: refreshData, error: refreshError } =
+      await supabase.auth.refreshSession();
 
-    const accessToken = session?.access_token ?? null;
+    const accessToken =
+      refreshData.session?.access_token ??
+      (await supabase.auth.getSession()).data.session?.access_token ??
+      null;
 
-    if (!user || !accessToken) {
+    if (refreshError || !accessToken) {
       return NextResponse.json(
-        { message: "Nova oturumunuzu doğrulayamadı. Lütfen çıkış yapıp tekrar girin ve yeniden deneyin." },
+        {
+          message:
+            "Nova oturumunuzu doğrulayamadı. Lütfen çıkış yapıp tekrar girin ve yeniden deneyin.",
+          detail: refreshError?.message ?? "access_token_missing",
+        },
         { status: 401 },
-      );
-    }
-
-    const { data: profile } = await supabase
-      .from("user_profiles")
-      .select("organization_id")
-      .eq("auth_user_id", user.id)
-      .maybeSingle();
-
-    const organizationId = profile?.organization_id ?? null;
-
-    if (!organizationId) {
-      return NextResponse.json(
-        { message: "Nova için şirket bağlamı bulunamadı. Lütfen profilinizi kontrol edin." },
-        { status: 400 },
       );
     }
 
@@ -74,7 +64,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         message: payload.message,
-        organization_id: organizationId,
+        organization_id: auth.organizationId,
         session_id: payload.session_id ?? null,
         language: payload.language,
         history: payload.history,
