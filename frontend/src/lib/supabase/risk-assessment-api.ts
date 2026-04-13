@@ -498,6 +498,46 @@ export async function deleteRiskAssessment(assessmentId: string): Promise<boolea
 }
 
 /* ================================================================== */
+/* SHARING                                                             */
+/* ================================================================== */
+
+export async function toggleRiskSharing(assessmentId: string, shared: boolean): Promise<{ shareToken: string | null; ok: boolean }> {
+  const supabase = createClient();
+  if (!supabase) return { shareToken: null, ok: false };
+
+  const update: Record<string, unknown> = { is_shared: shared };
+  if (shared) update.shared_at = new Date().toISOString();
+
+  const { data, error } = await supabase
+    .from("risk_assessments")
+    .update(update)
+    .eq("id", assessmentId)
+    .select("share_token")
+    .single();
+
+  if (error) { console.warn("[risk-assessment-api] toggleRiskSharing error:", error.message); return { shareToken: null, ok: false }; }
+  return { shareToken: data?.share_token ?? null, ok: true };
+}
+
+export async function fetchRiskAssessmentByShareToken(token: string): Promise<FullAssessment | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+
+  const { data: assessment, error } = await supabase
+    .from("risk_assessments")
+    .select("*")
+    .eq("share_token", token)
+    .eq("is_shared", true)
+    .is("deleted_at", null)
+    .single();
+
+  if (error || !assessment) return null;
+
+  // Reuse loadRiskAssessment with the found ID
+  return loadRiskAssessment(assessment.id);
+}
+
+/* ================================================================== */
 /* FINDINGS BY CATEGORY                                                */
 /* ================================================================== */
 

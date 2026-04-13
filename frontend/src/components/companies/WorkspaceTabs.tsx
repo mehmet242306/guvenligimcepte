@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus, FileSearch, Archive, Pencil, Trash2, ChevronDown, ClipboardList } from "lucide-react";
+import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus, FileSearch, Archive, Pencil, Trash2, ChevronDown, ClipboardList, Share2, Copy, Check, MessageCircle, QrCode } from "lucide-react";
 import type { PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { CompanyRecord } from "@/lib/company-directory";
 import { getGuidedTasks, getOverallRiskState } from "@/lib/workplace-status";
-import { listRiskAssessments, deleteRiskAssessment, loadRiskAssessment, listFindingsByCategory, updateFindingStatus, archiveRiskAssessment, type SavedAssessment, type FullAssessment, type FindingWithContext } from "@/lib/supabase/risk-assessment-api";
+import { listRiskAssessments, deleteRiskAssessment, loadRiskAssessment, listFindingsByCategory, updateFindingStatus, archiveRiskAssessment, toggleRiskSharing, type SavedAssessment, type FullAssessment, type FindingWithContext } from "@/lib/supabase/risk-assessment-api";
+import QRCode from "qrcode";
 import { createClient } from "@/lib/supabase/client";
 import {
   getTrackingSummary, listTrainings, createTraining, updateTraining, deleteTraining,
@@ -824,6 +825,38 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
   function methodLabel(m: string) { return m === "r_skor" ? "R-SKOR 2D" : m === "fine_kinney" ? "Fine-Kinney" : m === "l_matrix" ? "L-Matris" : m; }
   function sevLabel(s: string) { return s === "critical" ? "Kritik" : s === "high" ? "Yüksek" : s === "medium" ? "Orta" : "Düşük"; }
   const [exporting, setExporting] = useState<string | null>(null);
+  const [showShare, setShowShare] = useState(false);
+  const [shareToken, setShareToken] = useState<string | null>(null);
+  const [sharingToggle, setSharingToggle] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+
+  const shareUrl = shareToken ? `${typeof window !== "undefined" ? window.location.origin : ""}/share/risk/${shareToken}` : "";
+
+  async function handleShareToggle() {
+    setSharingToggle(true);
+    const result = await toggleRiskSharing(analysis.id, !shareToken);
+    if (result.ok && result.shareToken) {
+      setShareToken(result.shareToken);
+      void QRCode.toDataURL(
+        `${window.location.origin}/share/risk/${result.shareToken}`,
+        { width: 200, margin: 2, color: { dark: "#0F172A", light: "#FFFFFF" } }
+      ).then(setQrDataUrl);
+    } else if (result.ok && !result.shareToken) {
+      setShareToken(null);
+      setQrDataUrl(null);
+    }
+    setSharingToggle(false);
+  }
+
+  function copyShareLink() {
+    if (shareUrl) { void navigator.clipboard.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); }
+  }
+
+  function shareWhatsApp() {
+    const text = `RiskNova - ${analysis.title} Risk Analizi Raporu\n${shareUrl}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+  }
 
   const totalFindings = analysis.rows.reduce((s, r) => s + r.findings.length, 0);
 
@@ -947,11 +980,60 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
               {exporting === "excel" ? "..." : "Excel"}
             </button>
           </div>
+          <button type="button" onClick={() => setShowShare(!showShare)} className={`rounded-xl p-2 transition-colors ${showShare ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`} title="Paylaş">
+            <Share2 size={18} strokeWidth={2} />
+          </button>
           <button type="button" onClick={onClose} className="rounded-xl p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
       </div>
+
+      {/* Paylaşım Paneli */}
+      {showShare && (
+        <div className="border-b border-border bg-gradient-to-r from-emerald-50/50 to-transparent px-5 py-4 dark:from-emerald-950/20">
+          <div className="flex flex-wrap items-start gap-5">
+            <div className="flex-1 min-w-[200px]">
+              <h4 className="text-sm font-bold text-foreground">Rapor Paylaşımı</h4>
+              <p className="mt-1 text-xs text-muted-foreground">Paylaşım linkini açarak bu raporu herkesle paylaşabilirsiniz.</p>
+              <div className="mt-3 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => void handleShareToggle()}
+                  disabled={sharingToggle}
+                  className={`h-9 rounded-xl px-4 text-xs font-bold transition-all ${shareToken ? "bg-emerald-600 text-white shadow-sm hover:bg-emerald-700" : "bg-primary text-primary-foreground shadow-sm hover:brightness-110"}`}
+                >
+                  {sharingToggle ? "..." : shareToken ? "Paylaşım Aktif ✓" : "Paylaşım Linkini Aç"}
+                </button>
+                {shareToken && (
+                  <>
+                    <button type="button" onClick={copyShareLink} className="h-9 rounded-xl border border-border bg-card px-3 text-xs font-semibold text-foreground transition-colors hover:bg-secondary" title="Linki Kopyala">
+                      {copied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
+                    </button>
+                    <button type="button" onClick={shareWhatsApp} className="h-9 rounded-xl bg-[#25D366] px-3 text-xs font-bold text-white shadow-sm transition-all hover:brightness-110" title="WhatsApp ile Paylaş">
+                      <MessageCircle size={14} />
+                    </button>
+                  </>
+                )}
+              </div>
+              {shareToken && shareUrl && (
+                <div className="mt-2 rounded-lg bg-card/80 border border-border/40 px-3 py-2">
+                  <p className="truncate text-[11px] text-muted-foreground">{shareUrl}</p>
+                </div>
+              )}
+            </div>
+            {shareToken && qrDataUrl && (
+              <div className="flex flex-col items-center gap-2">
+                <div className="rounded-xl border border-border bg-white p-2 shadow-sm">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={qrDataUrl} alt="QR Kod" width={120} height={120} />
+                </div>
+                <p className="text-[10px] text-muted-foreground">QR ile paylaş</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Katılımcılar */}
       {Array.isArray(analysis.participants) && analysis.participants.length > 0 && (
