@@ -223,6 +223,33 @@ function normalizeNovaLanguage(language?: string | null): NovaLanguage {
     : 'tr'
 }
 
+function isRecoverableNovaInfraError(error: unknown): boolean {
+  const message = String((error as { message?: string } | null)?.message || error || '').toLowerCase()
+  return [
+    'schema cache',
+    'does not exist',
+    'relation ',
+    '42p01',
+    '42883',
+    'failed to fetch',
+    'network request failed',
+  ].some((pattern) => message.includes(pattern))
+}
+
+function getRecoverableNovaFallback(language: NovaLanguage) {
+  if (language === 'en') {
+    return {
+      answer: 'Nova is temporarily switching to safe mode while the latest server updates are being applied. Please try the same request again shortly.',
+      summary: 'Nova temporarily unavailable',
+    }
+  }
+
+  return {
+    answer: 'Nova son sunucu guncellemeleri uygulanirken gecici olarak guvenli moda gecti. Lutfen ayni istegi biraz sonra tekrar deneyin.',
+    summary: 'Nova gecici olarak kullanilamiyor',
+  }
+}
+
 function getOperationalLanguage(language: NovaLanguage): 'tr' | 'en' {
   return language === 'tr' ? 'tr' : 'en'
 }
@@ -4312,6 +4339,8 @@ serve(async (req) => {
     return new Response('ok', { headers: buildCorsHeaders(req) })
   }
 
+  let requestedLanguage: NovaLanguage = 'tr'
+
   try {
     const body: ChatRequest = await req.json()
     const parsedBody = chatRequestSchema.safeParse(body)
@@ -4326,6 +4355,7 @@ serve(async (req) => {
     }
 
     const userMessage = parsedBody.data.message
+    requestedLanguage = normalizeNovaLanguage(parsedBody.data.language)
     const answerLanguage = resolveNovaConversationLanguage(
       userMessage,
       parsedBody.data.language,
@@ -4833,6 +4863,22 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
 
   } catch (error: any) {
     console.error('Nova error:', error)
+    if (isRecoverableNovaInfraError(error)) {
+      const fallback = getRecoverableNovaFallback(requestedLanguage)
+      return new Response(
+        JSON.stringify({
+          type: 'degraded_response',
+          answer: fallback.answer,
+          sources: [],
+          navigation: null,
+          workflow: null,
+          follow_up_actions: [],
+          degraded: true,
+          summary: fallback.summary,
+        }),
+        { headers: { ...buildCorsHeaders(req), 'Content-Type': 'application/json' } }
+      )
+    }
     await logEdgeAiUsage({
       model: ANTHROPIC_MODEL,
       endpoint: '/functions/v1/solution-chat',

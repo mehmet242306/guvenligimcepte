@@ -200,3 +200,28 @@ const enCopy: NovaUiCopy = {
 export function getNovaUiCopy(locale?: string | null): NovaUiCopy {
   return getNovaUiLanguage(locale) === "tr" ? trCopy : enCopy;
 }
+
+export function getNovaRuntimeErrorMessage(locale?: string | null, error?: unknown): string {
+  const language = getNovaUiLanguage(locale);
+  const message = String(
+    error && typeof error === "object" && "message" in error ? (error as { message?: string }).message : error || "",
+  ).toLowerCase();
+
+  const isEdgeFailure =
+    message.includes("non-2xx") ||
+    message.includes("edge function") ||
+    message.includes("schema cache") ||
+    message.includes("does not exist") ||
+    message.includes("relation") ||
+    message.includes("failed to fetch");
+
+  if (language === "en") {
+    return isEdgeFailure
+      ? "Nova is temporarily unavailable while the latest server updates are being applied. Please try again shortly."
+      : "Nova could not complete this request right now. Please try again shortly.";
+  }
+
+  return isEdgeFailure
+    ? "Nova servisi son sunucu guncellemeleri uygulanirken gecici olarak hazir degil. Lutfen biraz sonra tekrar deneyin."
+    : "Nova bu istegi su anda tamamlayamadi. Lutfen biraz sonra tekrar deneyin.";
+}
