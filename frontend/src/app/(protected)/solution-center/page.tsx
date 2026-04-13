@@ -821,6 +821,10 @@ export default function SolutionCenterPage() {
       const supabase = createClient();
       if (!supabase) throw new Error("Supabase bağlantısı kurulamadı");
 
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       // Build history from previous messages
       const history = messages.map((m) => ({
         role: m.role,
@@ -835,6 +839,7 @@ export default function SolutionCenterPage() {
         body: JSON.stringify({
           message: query,
           language: locale,
+          access_token: session?.access_token ?? null,
           history,
         }),
       });

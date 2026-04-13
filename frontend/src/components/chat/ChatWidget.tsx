@@ -221,6 +221,10 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
     // Authenticated users: Nova edge function
     try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       const history = messages.slice(-10).map((m) => ({
         role: m.role === "user" ? ("user" as const) : ("assistant" as const),
         content: m.text,
@@ -235,6 +239,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           message: text,
           session_id: sessionId,
           language: locale,
+          access_token: session?.access_token ?? null,
           history,
         }),
       });
