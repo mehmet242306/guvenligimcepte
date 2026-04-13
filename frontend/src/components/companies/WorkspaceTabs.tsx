@@ -274,6 +274,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
   // Analiz detay state
   const [selectedAnalysis, setSelectedAnalysis] = useState<FullAssessment | null>(null);
   const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [expandedAnalysisId, setExpandedAnalysisId] = useState<string | null>(null);
 
   // Inline edit state
   const [editingFinding, setEditingFinding] = useState<string | null>(null);
@@ -345,7 +346,8 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
   }
 
   async function openAnalysisDetail(assessmentId: string) {
-    if (selectedAnalysis?.id === assessmentId) { setSelectedAnalysis(null); return; }
+    if (expandedAnalysisId === assessmentId) { setExpandedAnalysisId(null); setSelectedAnalysis(null); return; }
+    setExpandedAnalysisId(assessmentId);
     setAnalysisLoading(true);
     const full = await loadRiskAssessment(assessmentId);
     setSelectedAnalysis(full);
@@ -433,7 +435,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
           </div>
           <div className="flex items-center gap-2">
             <div className="flex rounded-lg border border-border bg-secondary/30">
-              <button type="button" onClick={() => { setActiveSection("overview"); setSelectedAnalysis(null); }}
+              <button type="button" onClick={() => { setActiveSection("overview"); setSelectedAnalysis(null); setExpandedAnalysisId(null); }}
                 className={`px-3 py-1.5 text-xs font-medium rounded-l-lg transition-colors ${activeSection === "overview" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
                 Risk Haritası
               </button>
@@ -578,7 +580,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
               </div>
             ) : analyses.map((a) => {
               const sb = statusBadge(a.status);
-              const isSelected = selectedAnalysis?.id === a.id;
+              const isSelected = expandedAnalysisId === a.id;
               return (
                 <div key={a.id}>
                 <div className={`rounded-[1.5rem] border bg-card transition-all ${isSelected ? "border-primary ring-2 ring-primary/20 shadow-[var(--shadow-elevated)]" : "border-border/80 shadow-[var(--shadow-card)] hover:-translate-y-0.5 hover:border-[var(--gold)]/30"}`}>
@@ -643,7 +645,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                   <div ref={analysisDetailRef}>
                     <AnalysisDetailPanel
                       analysis={selectedAnalysis}
-                      onClose={() => setSelectedAnalysis(null)}
+                      onClose={() => { setSelectedAnalysis(null); setExpandedAnalysisId(null); }}
                     />
                   </div>
                 )}
