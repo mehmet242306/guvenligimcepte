@@ -111,6 +111,14 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void load(); }, [load]);
 
+  // Document title — firma adı görünsün, UUID görünmesin
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const original = document.title;
+    document.title = company?.name ? `${company.name} — Workspace · RiskNova` : "Workspace · RiskNova";
+    return () => { document.title = original; };
+  }, [company?.name]);
+
   const upd = useCallback((patch: Partial<CompanyRecord>) => { setCompany((p) => (p ? { ...p, ...patch } : p)); }, []);
 
   const save = useCallback(async () => {

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus, FileSearch, Archive, Pencil, Trash2, ChevronDown, ClipboardList, Share2, Copy, Check, MessageCircle, QrCode } from "lucide-react";
+import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus, FileSearch, Archive, Pencil, Trash2, ChevronDown, ClipboardList, Share2, Copy, Check, MessageCircle, QrCode, ListTodo, ShieldCheck, IdCard, Briefcase, ArrowRight } from "lucide-react";
 import type { PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,12 +30,17 @@ function pbv(p: string): "danger" | "warning" | "neutral" {
   return "neutral";
 }
 
-function Sec({ title, desc, children }: { title: string; desc?: string; children: React.ReactNode }) {
+function Sec({ title, desc, children, icon, tone }: { title: string; desc?: string; children: React.ReactNode; icon?: React.ElementType; tone?: PremiumIconTone }) {
   return (
-    <section className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
-      <h2 className="section-title text-base">{title}</h2>
-      {desc && <p className="mt-1 text-sm text-muted-foreground">{desc}</p>}
-      <div className="mt-4">{children}</div>
+    <section className="rounded-[1.7rem] border border-border/80 bg-card p-6 shadow-[var(--shadow-card)]">
+      <div className="flex items-start gap-3">
+        {icon && <PremiumIconBadge icon={icon} tone={tone || "cobalt"} size="md" />}
+        <div className="min-w-0 flex-1">
+          <h2 className="text-base font-bold text-foreground">{title}</h2>
+          {desc && <p className="mt-1 text-sm text-muted-foreground">{desc}</p>}
+        </div>
+      </div>
+      <div className="mt-5">{children}</div>
     </section>
   );
 }
@@ -51,44 +56,54 @@ export function OverviewTab({ company, upd, risk, tasks, setTab }: {
   setTab: (t: WTab) => void;
 }) {
   return (
-    <>
-      <Sec title={"Bug\u00FCn Ne Yapmal\u0131y\u0131m?"} desc={"Firmaya \u00F6zel \u00F6ncelikli g\u00F6revler."}>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {tasks.map((t, i) => (
-            <div key={i} className="rounded-lg border border-border bg-secondary/30 p-3.5">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-sm font-semibold text-foreground">{t.title}</p>
-                <Badge variant={pbv(t.priority)} className="text-[9px]">
-                  {t.priority === "high" ? "Y\u00FCksek" : t.priority === "medium" ? "Orta" : "D\u00FC\u015F\u00FCk"}
-                </Badge>
+    <div className="space-y-5">
+      <Sec icon={ListTodo} tone="gold" title={"Bug\u00FCn Ne Yapmal\u0131y\u0131m?"} desc={"Firmaya \u00F6zel \u00F6ncelikli g\u00F6revler."}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {tasks.map((t, i) => {
+            const prioTone: PremiumIconTone = t.priority === "high" ? "danger" : t.priority === "medium" ? "amber" : "emerald";
+            return (
+              <div key={i} className="group rounded-[1.25rem] border border-border/80 bg-gradient-to-br from-secondary/20 to-transparent p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--gold)]/30 hover:shadow-[var(--shadow-card)]">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-sm font-bold text-foreground">{t.title}</p>
+                  <Badge variant={pbv(t.priority)} className="shrink-0 text-[10px]">
+                    {t.priority === "high" ? "Y\u00FCksek" : t.priority === "medium" ? "Orta" : "D\u00FC\u015F\u00FCk"}
+                  </Badge>
+                </div>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t.description}</p>
+                <button
+                  type="button"
+                  onClick={() => setTab((t.href?.replace("#", "") || "overview") as WTab)}
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-primary transition-transform hover:translate-x-0.5"
+                  style={{ color: `var(--${prioTone === "danger" ? "danger" : "primary"})` }}
+                >
+                  {t.actionLabel} <ArrowRight size={13} />
+                </button>
               </div>
-              <p className="mt-1.5 text-xs text-muted-foreground leading-5">{t.description}</p>
-              <button type="button" onClick={() => setTab((t.href?.replace("#", "") || "overview") as WTab)} className="mt-2 text-xs font-medium text-primary hover:underline">{t.actionLabel}</button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Sec>
 
       {risk && (
-        <Sec title={"Genel Risk Durumu"}>
+        <Sec icon={ShieldCheck} tone="emerald" title={"Genel Risk Durumu"}>
           <div className="grid gap-3 sm:grid-cols-4">
             {[
-              { l: "Yap\u0131sal", v: risk.structural },
-              { l: "Kapsam", v: risk.coverage },
-              { l: "Olgunluk", v: risk.maturity },
-              { l: "Risk Bask\u0131s\u0131", v: risk.openPressure },
+              { l: "Yap\u0131sal", v: risk.structural, color: "from-blue-500/8 dark:from-blue-500/12" },
+              { l: "Kapsam", v: risk.coverage, color: "from-emerald-500/8 dark:from-emerald-500/12" },
+              { l: "Olgunluk", v: risk.maturity, color: "from-violet-500/8 dark:from-violet-500/12" },
+              { l: "Risk Bask\u0131s\u0131", v: risk.openPressure, color: "from-amber-500/8 dark:from-amber-500/12" },
             ].map((m) => (
-              <div key={m.l} className="rounded-lg border border-border p-3 text-center">
-                <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">{m.l}</p>
-                <p className="mt-1 text-xl font-semibold tabular-nums text-foreground">{m.v}</p>
+              <div key={m.l} className={`rounded-[1.25rem] border border-border/60 bg-gradient-to-br ${m.color} to-transparent p-4 text-center shadow-sm`}>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{m.l}</p>
+                <p className="mt-1.5 text-3xl font-bold tabular-nums text-foreground">{m.v}</p>
               </div>
             ))}
           </div>
-          <p className="mt-3 text-sm text-muted-foreground leading-6">{risk.description}</p>
+          <p className="mt-4 rounded-xl border border-border/60 bg-secondary/20 p-3 text-sm leading-relaxed text-muted-foreground">{risk.description}</p>
         </Sec>
       )}
 
-      <Sec title="Firma Bilgileri" desc={"Temel kimlik ve ileti\u015Fim."}>
+      <Sec icon={IdCard} tone="cobalt" title="Firma Bilgileri" desc={"Temel kimlik ve ileti\u015Fim."}>
         <div className="grid gap-4 sm:grid-cols-2">
           <div><label className="text-xs font-medium text-muted-foreground">{"Firma Ad\u0131"}</label><Input value={company.name} onChange={(e) => upd({ name: e.target.value })} className="mt-1" /></div>
           <div><label className="text-xs font-medium text-muted-foreground">{"K\u0131sa Ad"}</label><Input value={company.shortName} onChange={(e) => upd({ shortName: e.target.value })} className="mt-1" /></div>
@@ -116,17 +131,17 @@ export function OverviewTab({ company, upd, risk, tasks, setTab }: {
         <div className="mt-4"><label className="text-xs font-medium text-muted-foreground">Notlar</label><Textarea value={company.notes} onChange={(e) => upd({ notes: e.target.value })} rows={3} className="mt-1" /></div>
       </Sec>
 
-      <Sec title={"Operasyonel Bilgiler"}>
+      <Sec icon={Briefcase} tone="violet" title={"Operasyonel Bilgiler"}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div><label className="text-xs font-medium text-muted-foreground">{"\u00C7al\u0131\u015Fan Say\u0131s\u0131"}</label><Input type="number" value={company.employeeCount} onChange={(e) => upd({ employeeCount: Number(e.target.value) || 0 })} className="mt-1" /></div>
-          <div><label className="text-xs font-medium text-muted-foreground">Vardiya Modeli</label><Input value={company.shiftModel} onChange={(e) => upd({ shiftModel: e.target.value })} className="mt-1" /></div>
-          <div><label className="text-xs font-medium text-muted-foreground">Son Analiz</label><Input type="date" value={company.lastAnalysisDate} onChange={(e) => upd({ lastAnalysisDate: e.target.value })} className="mt-1" /></div>
-          <div><label className="text-xs font-medium text-muted-foreground">Son Denetim</label><Input type="date" value={company.lastInspectionDate} onChange={(e) => upd({ lastInspectionDate: e.target.value })} className="mt-1" /></div>
-          <div><label className="text-xs font-medium text-muted-foreground">Son Tatbikat</label><Input type="date" value={company.lastDrillDate} onChange={(e) => upd({ lastDrillDate: e.target.value })} className="mt-1" /></div>
-          <div><label className="text-xs font-medium text-muted-foreground">Aktif Profesyonel</label><Input type="number" value={company.activeProfessionals} onChange={(e) => upd({ activeProfessionals: Number(e.target.value) || 0 })} className="mt-1" /></div>
+          <div><label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{"\u00C7al\u0131\u015Fan Say\u0131s\u0131"}</label><Input type="number" value={company.employeeCount} onChange={(e) => upd({ employeeCount: Number(e.target.value) || 0 })} className="mt-1" /></div>
+          <div><label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Vardiya Modeli</label><Input value={company.shiftModel} onChange={(e) => upd({ shiftModel: e.target.value })} className="mt-1" /></div>
+          <div><label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Son Analiz</label><Input type="date" value={company.lastAnalysisDate} onChange={(e) => upd({ lastAnalysisDate: e.target.value })} className="mt-1" /></div>
+          <div><label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Son Denetim</label><Input type="date" value={company.lastInspectionDate} onChange={(e) => upd({ lastInspectionDate: e.target.value })} className="mt-1" /></div>
+          <div><label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Son Tatbikat</label><Input type="date" value={company.lastDrillDate} onChange={(e) => upd({ lastDrillDate: e.target.value })} className="mt-1" /></div>
+          <div><label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Aktif Profesyonel</label><Input type="number" value={company.activeProfessionals} onChange={(e) => upd({ activeProfessionals: Number(e.target.value) || 0 })} className="mt-1" /></div>
         </div>
       </Sec>
-    </>
+    </div>
   );
 }
 
