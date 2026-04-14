@@ -2,8 +2,21 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { Users, Plus, Download, Upload, FileDown, AlertTriangle, Stethoscope, Baby, Accessibility, Globe, Clock, Moon, HeartPulse, Milk, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
+
+const SPECIAL_ICONS: Record<string, { icon: React.ElementType; tone: PremiumIconTone }> = {
+  pregnant: { icon: Baby, tone: "orange" },
+  disabled: { icon: Accessibility, tone: "cobalt" },
+  foreign_national: { icon: Globe, tone: "indigo" },
+  young_worker: { icon: ShieldAlert, tone: "danger" },
+  night_shift: { icon: Moon, tone: "violet" },
+  chronic_condition: { icon: HeartPulse, tone: "risk" },
+  nursing_mother: { icon: Milk, tone: "amber" },
+  temporary_restriction: { icon: Clock, tone: "neutral" },
+};
 import {
   type PersonnelRecord,
   type SpecialPolicyRecord,
@@ -305,31 +318,34 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
   return (
     <div className="space-y-5">
       {/* Header summary */}
-      <div className="overflow-hidden rounded-xl border border-primary/20 bg-primary/5 p-4">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <h3 className="section-title text-base">Personel Yönetimi</h3>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">{companyName} için personel kayıtlarını yönetin.</p>
+      <div className="rounded-[1.7rem] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)]">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <PremiumIconBadge icon={Users} tone="cobalt" size="md" />
+            <div>
+              <h3 className="text-base font-bold text-foreground">Personel Yönetimi</h3>
+              <p className="mt-0.5 text-sm text-muted-foreground">{companyName} için personel kayıtlarını yönetin.</p>
+            </div>
           </div>
           <Badge variant={dataSource === "supabase" ? "success" : "neutral"} className="shrink-0 text-[10px]">{dataSource === "supabase" ? "Supabase" : "Yerel"}</Badge>
         </div>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-4 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
           {[{ l: "Toplam Personel", v: ppl.length, c: false }, { l: "Aktif", v: activeCount, c: false }, { l: "Bölüm", v: depts.length, c: false }, { l: "Özel İzleme", v: totalPolicies, c: totalPolicies > 0 }].map((s) => (
-            <div key={s.l} className="rounded-lg border border-border bg-card p-3">
-              <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">{s.l}</p>
-              <p className={`mt-1 text-lg font-semibold tabular-nums ${s.c ? "text-warning" : "text-foreground"}`}>{s.v}</p>
+            <div key={s.l} className="rounded-[1.25rem] border border-border/60 bg-gradient-to-br from-secondary/30 to-transparent p-4 shadow-sm">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{s.l}</p>
+              <p className={`mt-1.5 text-2xl font-bold tabular-nums ${s.c ? "text-warning" : "text-foreground"}`}>{s.v}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Section tabs */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap rounded-[1.25rem] border border-border/60 bg-secondary/20 p-1 shadow-sm">
         {(["list", "import", "special", "health"] as const).map((t) => (
           <button key={t} type="button" onClick={() => setSec(t)}
-            className={`inline-flex h-9 items-center rounded-lg px-4 text-sm font-medium transition-colors ${sec === t ? "bg-primary text-primary-foreground shadow-[var(--shadow-soft)]" : "border border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
+            className={`inline-flex h-10 items-center rounded-[0.8rem] px-5 text-sm font-semibold transition-all ${sec === t ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
             {t === "list" ? "Personel Listesi" : t === "import" ? "İçe Aktarma" : t === "special" ? "Özel İzleme" : "Sağlık Gözetimi"}
-            {t === "health" && healthExams.length > 0 && <span className="ml-1.5 rounded-full bg-white/20 px-1.5 py-0.5 text-[10px] font-bold">{healthExams.length}</span>}
+            {t === "health" && healthExams.length > 0 && <span className="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">{healthExams.length}</span>}
           </button>
         ))}
       </div>
@@ -357,10 +373,10 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                     </Button>
                   )}
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button variant="outline" size="sm" onClick={dl}>Şablonu İndir</Button>
-                  <Button variant="outline" size="sm" onClick={doExport}>Dışa Aktar</Button>
-                  <Button size="sm" onClick={() => setSec("import")}>Yeni İçe Aktarma</Button>
+                <div className="flex flex-wrap gap-2.5">
+                  <Button variant="outline" onClick={dl} className="h-10 rounded-xl px-4 text-sm font-semibold"><Download size={15} className="mr-2" />Şablonu İndir</Button>
+                  <Button variant="outline" onClick={doExport} className="h-10 rounded-xl px-4 text-sm font-semibold"><FileDown size={15} className="mr-2" />Dışa Aktar</Button>
+                  <Button onClick={() => setSec("import")} className="h-10 rounded-xl bg-[var(--gold)] px-5 text-sm font-bold text-white shadow-md hover:brightness-110"><Upload size={15} className="mr-2" />Yeni İçe Aktarma</Button>
                 </div>
               </div>
               <div className="overflow-x-auto rounded-xl border border-border bg-card">
@@ -433,27 +449,36 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
       {/* SPECIAL MONITORING */}
       {sec === "special" && (
         <div className="space-y-4">
-          <div className="overflow-hidden rounded-xl border border-warning/20 bg-warning/5 p-4">
-            <h3 className="section-title text-base">Özel İzleme Kategorileri</h3>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">Hassas gruplar ve özel izleme gerektiren çalışanlar. Bu veriler yalnızca yetkili roller tarafından görüntülenir.</p>
-            <div className="mt-2 flex items-center gap-2">
+          <div className="rounded-[1.7rem] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)]">
+            <div className="flex items-center gap-3">
+              <PremiumIconBadge icon={AlertTriangle} tone="orange" size="md" />
+              <div>
+                <h3 className="text-base font-bold text-foreground">Özel İzleme Kategorileri</h3>
+                <p className="mt-0.5 text-sm text-muted-foreground">Hassas gruplar ve özel izleme gerektiren çalışanlar.</p>
+              </div>
+            </div>
+            <div className="mt-3 flex items-center gap-2">
               <Badge variant="warning" className="text-[10px]">Hassas Veri</Badge>
               <span className="text-xs text-muted-foreground">Erişim yetki kontrolüne tabidir</span>
             </div>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {CATS.map((cat) => {
               const cnt = sCnt[cat.key] || 0;
               const open = expCat === cat.key;
               const emps = pplWithPolicy(cat.key);
+              const iconDef = SPECIAL_ICONS[cat.key] || { icon: ShieldAlert, tone: "neutral" as PremiumIconTone };
               return (
-                <div key={cat.key} className="overflow-hidden rounded-xl border border-border bg-card p-4">
+                <div key={cat.key} className="overflow-hidden rounded-[1.5rem] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)] transition-all hover:-translate-y-0.5 hover:border-[var(--gold)]/30 hover:shadow-[var(--shadow-elevated)]">
                   <button type="button" onClick={() => setExpCat(open ? null : cat.key)} className="flex w-full items-start justify-between gap-3 text-left">
-                    <div className="min-w-0 flex-1">
-                      <Badge variant={cat.bv} className="text-[10px]">{cat.label}</Badge>
-                      <p className="mt-1.5 text-sm leading-6 text-muted-foreground">{cat.desc}</p>
+                    <div className="flex items-start gap-3 min-w-0 flex-1">
+                      <PremiumIconBadge icon={iconDef.icon} tone={iconDef.tone} size="sm" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold text-foreground">{cat.label}</p>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{cat.desc}</p>
+                      </div>
                     </div>
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-base font-semibold text-foreground">{cnt}</div>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-base font-bold text-foreground">{cnt}</div>
                   </button>
                   {cnt > 0 && (
                     <p className="mt-2 cursor-pointer text-xs font-medium text-primary" onClick={() => setExpCat(open ? null : cat.key)}>
@@ -489,15 +514,18 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
       {/* HEALTH — Sağlık Gözetimi */}
       {sec === "health" && (
         <div className="space-y-4">
-          <div className="overflow-hidden rounded-xl border border-border bg-card p-5">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <div>
-                <h3 className="section-title text-base">Sağlık Gözetimi</h3>
-                <p className="mt-0.5 text-xs text-muted-foreground">Personel sağlık muayene kayıtları — işe giriş, periyodik, işten ayrılma ve özel muayeneler.</p>
+          <div className="rounded-[1.7rem] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)]">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+              <div className="flex items-center gap-3">
+                <PremiumIconBadge icon={Stethoscope} tone="emerald" size="md" />
+                <div>
+                  <h3 className="text-base font-bold text-foreground">Sağlık Gözetimi</h3>
+                  <p className="mt-0.5 text-sm text-muted-foreground">İşe giriş, periyodik, işten ayrılma ve özel muayeneler.</p>
+                </div>
               </div>
               <button type="button" onClick={() => setShowHealthForm(!showHealthForm)}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors">
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--gold)] px-5 text-sm font-bold text-white shadow-md transition-all hover:brightness-110 hover:shadow-lg">
+                <Plus size={16} strokeWidth={2.5} />
                 Yeni Muayene
               </button>
             </div>
