@@ -760,8 +760,54 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
         </div>
       )}
 
-      {/* ── Month calendar ── */}
-      {!loading && view === "month" && (
+      {/* ── Sol sidebar (kategoriler) + Sağ içerik (takvim/liste) ── */}
+      {!loading && (
+      <div className="grid gap-5 lg:grid-cols-[220px_1fr]">
+        {/* Sol: Kategori navigasyonu */}
+        <aside className="rounded-[1.5rem] border border-border/80 bg-card p-4 shadow-[var(--shadow-card)] lg:sticky lg:top-24 lg:self-start">
+          <p className="mb-3 px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Kategoriler</p>
+          <nav className="space-y-1">
+            {categories.filter((c) => c.is_default).map((c) => {
+              const count = tasks.filter((t) => t.category_id === c.id).length;
+              const isActive = filterCategoryId === c.id;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setFilterCategoryId(isActive ? "all" : c.id)}
+                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${isActive ? "text-white shadow-sm" : "text-foreground hover:bg-secondary"}`}
+                  style={isActive ? { backgroundColor: c.color } : undefined}
+                >
+                  <span className="flex items-center gap-2 truncate">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-lg text-xs" style={{ backgroundColor: isActive ? "rgba(255,255,255,0.2)" : `${c.color}15` }}>{c.icon}</span>
+                    <span className="truncate">{c.name}</span>
+                  </span>
+                  {count > 0 && <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${isActive ? "bg-white/20" : "bg-muted"}`}>{count}</span>}
+                </button>
+              );
+            })}
+          </nav>
+          <div className="mt-4 border-t border-border/60 pt-3">
+            <p className="px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Hızlı Ekle</p>
+            <div className="mt-2 space-y-1">
+              {categories.filter((c) => c.is_default).slice(0, 5).map((c) => (
+                <button
+                  key={`add-${c.id}`}
+                  type="button"
+                  onClick={() => { setFilterCategoryId(c.id); setModalDate(new Date().toISOString().split("T")[0]); setModalTask(null); }}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: c.color }} />
+                  + {c.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        {/* Sağ: Takvim veya Liste */}
+        <div>
+      {view === "month" && (
         <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-[var(--shadow-card)]">
           <div className="flex items-center justify-between border-b border-border px-6 py-4">
             <button
@@ -838,7 +884,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
       )}
 
       {/* ── List view ── */}
-      {!loading && view === "list" && (
+      {view === "list" && (
         <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-[var(--shadow-card)]">
           {filteredTasks.length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-16 text-center">
@@ -917,16 +963,8 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
         </div>
       )}
 
-      {/* Category legend */}
-      {!loading && categories.length > 0 && (
-        <div className="flex flex-wrap gap-3">
-          {categories.filter((c) => c.is_default).map((c) => (
-            <div key={c.id} className="flex items-center gap-1.5">
-              <div className="h-2.5 w-2.5 rounded-full" style={{ background: c.color }} />
-              <span className="text-xs text-muted-foreground">{c.icon} {c.name}</span>
-            </div>
-          ))}
         </div>
+      </div>
       )}
 
       {/* Task Modal */}
