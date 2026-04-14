@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { loadCompanyDirectory, saveCompanyDirectory, type CompanyRecord } from "@/lib/company-directory";
 import { getGuidedTasks, getOverallRiskState, getReminderItems } from "@/lib/workplace-status";
+import { createClient as createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { CompanyManagementActions } from "@/components/companies/CompanyManagementActions";
 import { PersonnelManagementPanel } from "@/components/companies/PersonnelManagementPanel";
 import { fetchCompaniesFromSupabase, saveCompanyToSupabase, archiveCompanyInSupabase, deleteCompanyInSupabase, uploadCompanyLogo } from "@/lib/supabase/company-api";
@@ -184,6 +185,48 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
   const tasks = useMemo(() => (company ? getGuidedTasks(company) : []), [company]);
   const reminders = useMemo(() => (company ? getReminderItems(company) : []), [company]);
 
+  // ── Agenda bağlantılı hatırlatmalar ──
+  type AgendaReminder = { id: string; title: string; tone: "danger" | "warning" | "neutral"; date: string | null; category?: string | null };
+  const [agendaReminders, setAgendaReminders] = useState<AgendaReminder[]>([]);
+  useEffect(() => {
+    if (!company) return;
+    (async () => {
+      const supabase = createBrowserSupabaseClient();
+      if (!supabase) return;
+      const today = new Date();
+      const todayStr = today.toISOString().split("T")[0];
+      const in14 = new Date(today); in14.setDate(in14.getDate() + 14);
+      const in14Str = in14.toISOString().split("T")[0];
+
+      // Bu firmaya bağlı, tamamlanmamış ajanda görevleri (14 gün içinde + gecikmişler)
+      const { data: tasks } = await supabase
+        .from("isg_tasks")
+        .select("id, title, start_date, end_date, status, isg_task_categories(name)")
+        .eq("company_workspace_id", company.id)
+        .in("status", ["planned", "in_progress", "overdue"]) // tamamlanmamış
+        .or(`start_date.lte.${in14Str},end_date.lte.${in14Str}`)
+        .order("start_date", { ascending: true })
+        .limit(8);
+
+      if (!tasks) { setAgendaReminders([]); return; }
+
+      const items: AgendaReminder[] = tasks.map((t: Record<string, unknown>) => {
+        const end = (t.end_date as string) || (t.start_date as string);
+        const isOverdue = end && end < todayStr;
+        const isSoon = end && end <= in14Str && end >= todayStr;
+        const cat = t.isg_task_categories as Record<string, string> | null;
+        return {
+          id: t.id as string,
+          title: t.title as string,
+          date: end || null,
+          tone: isOverdue ? "danger" : isSoon ? "warning" : "neutral",
+          category: cat?.name ?? null,
+        };
+      });
+      setAgendaReminders(items);
+    })();
+  }, [company]);
+
   if (loading) return (
     <div className="flex items-center justify-center py-20">
       <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
@@ -350,11 +393,61 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
             </div>
           )}
 
-          <div className="rounded-xl border border-border bg-card p-4 shadow-[var(--shadow-soft)]">
-            <h3 className="section-title text-sm">{"Hat\u0131rlatmalar"}</h3>
-            <ul className="mt-3 space-y-2">
-              {reminders.map((r, i) => (<li key={i} className="text-xs text-muted-foreground leading-5">{"\u2022"} {r}</li>))}
-            </ul>
+          <div className="rounded-[1.5rem] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)]">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-foreground">Hatırlatmalar</h3>
+              <Link href="/planner" className="text-[11px] font-semibold text-primary hover:underline">Ajanda &rarr;</Link>
+            </div>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">Ajanda ile senkron, geciken ve yaklaşan görevler.</p>
+
+            {/* Ajandadan canlı görevler */}
+            {agendaReminders.length > 0 ? (
+              <ul className="mt-3 space-y-2">
+                {agendaReminders.map((r) => {
+                  const toneCls = r.tone === "danger"
+                    ? "border-red-400/40 bg-red-50/60 dark:bg-red-950/20"
+                    : r.tone === "warning"
+                    ? "border-amber-400/40 bg-amber-50/60 dark:bg-amber-950/20"
+                    : "border-border/60 bg-secondary/30";
+                  const dotCls = r.tone === "danger" ? "bg-red-500" : r.tone === "warning" ? "bg-amber-500" : "bg-blue-500";
+                  return (
+                    <li key={r.id} className={`rounded-xl border ${toneCls} p-2.5`}>
+                      <div className="flex items-start gap-2">
+                        <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${dotCls}`} />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-xs font-semibold text-foreground">{r.title}</p>
+                          <p className="mt-0.5 text-[10px] text-muted-foreground">
+                            {r.category ? <span className="font-medium">{r.category}</span> : ""}
+                            {r.category && r.date ? " · " : ""}
+                            {r.date ? new Date(r.date).toLocaleDateString("tr-TR", { day: "2-digit", month: "short" }) : ""}
+                            {r.tone === "danger" ? <span className="ml-1 font-bold text-red-600">· Gecikmiş</span> : r.tone === "warning" ? <span className="ml-1 font-bold text-amber-600">· Yaklaşıyor</span> : null}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="mt-3 rounded-xl border border-dashed border-border/60 p-3 text-center text-[11px] text-muted-foreground">
+                Ajandada yaklaşan görev yok.
+              </p>
+            )}
+
+            {/* Yapısal hatırlatmalar (firma verisinden türetilen) */}
+            {reminders.length > 0 && (
+              <>
+                <p className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Zorunlu Eksikler</p>
+                <ul className="mt-2 space-y-1.5">
+                  {reminders.map((r, i) => (
+                    <li key={i} className="flex items-start gap-1.5 text-[11px] leading-5 text-muted-foreground">
+                      <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/60" />
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
 
           <div className="rounded-xl border border-border bg-card p-4 shadow-[var(--shadow-soft)]">

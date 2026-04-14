@@ -75,7 +75,7 @@ export function CompaniesListClient() {
     return { total: cos.length, emp: te, crit: cr, mat: am, oa: cos.reduce((s, c) => s + c.openActions, 0), od: cos.reduce((s, c) => s + c.overdueActions, 0) };
   }, [cos]);
 
-  async function onCreate() { const n = mkEmpty(); const sid = await createCompanyInSupabase(n); if (sid) { await loadAll(); router.push(`/companies/${sid}`); return; } saveCompanyDirectory([...loadCompanyDirectory(), n]); rl(); router.push(`/companies/${n.id}`); }
+  async function onCreate() { const n = mkEmpty(); const sid = await createCompanyInSupabase(n); if (sid) { await loadAll(); router.push(`/workspace/${sid}`); return; } saveCompanyDirectory([...loadCompanyDirectory(), n]); rl(); router.push(`/workspace/${n.id}`); }
   function onReset() { saveCompanyDirectory(defaultCompanyDirectory); rl(); }
   function clr() { setQ(""); setHf(""); setSf(""); setKf(""); }
   async function doArchive(id: string) { if ((await archiveCompanyInSupabase(id)) === true) { await loadAll(); setCaId(null); return; } const t = cos.find(c => c.id === id); if (!t) return; saveCompanyDirectory(cos.filter(c => c.id !== id)); svA([...arCos, t]); rl(); setCaId(null); }
@@ -167,7 +167,7 @@ export function CompaniesListClient() {
                         <PremiumIconBadge icon={Building2} tone={(co.hazardClass === "Çok Tehlikeli" ? "orange" : co.hazardClass === "Tehlikeli" ? "amber" : co.hazardClass === "Az Tehlikeli" ? "emerald" : "cobalt") as PremiumIconTone} size="lg" />
                       )}
                       <div className="min-w-0 flex-1 pt-0.5">
-                        <Link href={`/companies/${co.id}`} className="block truncate text-lg font-semibold text-foreground transition-colors hover:text-primary">{co.name}</Link>
+                        <Link href={`/workspace/${co.slug || co.id}`} className="block truncate text-lg font-semibold text-foreground transition-colors hover:text-primary">{co.name}</Link>
                         <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">{co.kind}{co.sector ? ` · ${co.sector}` : ""}{co.address ? ` · ${co.address}` : ""}</p>
                       </div>
                     </div>
@@ -197,7 +197,7 @@ export function CompaniesListClient() {
                 </div>
                 {/* ── Actions ── */}
                 <div className="flex flex-wrap items-center gap-2.5 px-5 pb-4 pt-3.5">
-                  <Link href={`/companies/${co.id}`} className="inline-flex h-9 shrink-0 items-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary-hover">{"Çalışma Alanı"}</Link>
+                  <Link href={`/workspace/${co.slug || co.id}`} className="inline-flex h-9 shrink-0 items-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary-hover">{"Çalışma Alanı"}</Link>
                   <Link href="/risk-analysis" className="inline-flex h-9 shrink-0 items-center rounded-xl border border-border bg-card px-3.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary">Risk Analizi</Link>
                   <div className="ml-auto flex min-w-0 flex-wrap items-center gap-2">
                     <button type="button" onClick={() => { setCaId(co.id); setCdId(null); setDct(""); }} className="inline-flex h-8 items-center rounded-xl border border-warning/30 bg-warning/10 px-3 text-[11px] font-semibold text-warning transition-colors hover:bg-warning/20">{"Arşivle"}</button>

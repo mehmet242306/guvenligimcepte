@@ -39,6 +39,7 @@ type CompanyWorkspaceRow = {
   is_archived: boolean;
   metadata: Record<string, unknown> | null;
   logo_url: string | null;
+  slug: string | null;
 };
 
 type JoinedRow = CompanyWorkspaceRow & {
@@ -102,6 +103,7 @@ function dbToCompanyRecord(ws: JoinedRow): CompanyRecord {
     locations: arr("locations"),
     departments: arr("departments"),
     logo_url: ws.logo_url ?? undefined,
+    slug: ws.slug ?? undefined,
   };
 }
 
@@ -170,7 +172,7 @@ export async function fetchCompaniesFromSupabase(): Promise<CompanyRecord[] | nu
     const { data, error } = await supabase
       .from("company_workspaces")
       .select(`
-        id, company_identity_id, display_name, notes, is_archived, metadata, logo_url,
+        id, company_identity_id, display_name, notes, is_archived, metadata, logo_url, slug,
         company_identities!inner (
           id, company_code, official_name, sector, nace_code, hazard_class,
           address, city, district, is_active, is_archived, archived_at,
@@ -207,7 +209,7 @@ export async function fetchArchivedFromSupabase(): Promise<CompanyRecord[] | nul
     const { data, error } = await supabase
       .from("company_workspaces")
       .select(`
-        id, company_identity_id, display_name, notes, is_archived, metadata, logo_url,
+        id, company_identity_id, display_name, notes, is_archived, metadata, logo_url, slug,
         company_identities!inner (
           id, company_code, official_name, sector, nace_code, hazard_class,
           address, city, district, is_active, is_archived, archived_at,
@@ -242,7 +244,7 @@ export async function fetchDeletedFromSupabase(): Promise<CompanyRecord[] | null
     const { data, error } = await supabase
       .from("company_workspaces")
       .select(`
-        id, company_identity_id, display_name, notes, is_archived, metadata, logo_url,
+        id, company_identity_id, display_name, notes, is_archived, metadata, logo_url, slug,
         company_identities!inner (
           id, company_code, official_name, sector, nace_code, hazard_class,
           address, city, district, is_active, is_archived, archived_at,

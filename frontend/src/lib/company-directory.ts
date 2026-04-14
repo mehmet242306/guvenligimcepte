@@ -50,6 +50,7 @@
   locations: string[];
   departments: string[];
   logo_url?: string;
+  slug?: string;
 };
 
 export const COMPANY_DIRECTORY_STORAGE_KEY = "risknova_company_directory_v3";
