@@ -61,7 +61,6 @@ const TABS: { k: WTab; l: string }[] = [
   { k: "risk", l: "Risk ve Saha" },
   { k: "people", l: "Ekip" },
   { k: "personnel", l: "Personel" },
-  { k: "planner", l: "Planlama" },
   { k: "tracking", l: "Takip" },
   { k: "documents", l: "Arşiv" },
   { k: "organization", l: "Organizasyon" },
@@ -298,7 +297,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
                   key={t.k}
                   type="button"
                   onClick={() => setTab(t.k)}
-                  className="relative inline-flex items-center whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-200"
+                  className="relative inline-flex items-center whitespace-nowrap rounded-xl px-4 py-2.5 text-base font-semibold transition-all duration-200"
                   style={{
                     color: isActive ? "var(--tab-bar-active)" : "var(--tab-bar-text)",
                     background: isActive ? "var(--tab-bar-hover-bg)" : "transparent",
@@ -308,7 +307,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
                 >
                   {t.l}
                   {isActive && (
-                    <span className="absolute inset-x-1.5 bottom-0 h-0.5 rounded-full" style={{ background: "var(--tab-bar-active)" }} />
+                    <span className="absolute inset-x-2 bottom-0 h-[3px] rounded-full" style={{ background: "var(--tab-bar-active)" }} />
                   )}
                 </button>
               );
@@ -325,7 +324,6 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
           {tab === "risk" && <RiskTab company={company} />}
           {tab === "people" && <TeamManagementTab companyId={companyId} companyName={company.name} />}
           {tab === "personnel" && <PersonnelManagementPanel companyId={companyId} companyName={company.name} departments={company.departments.filter(Boolean)} locations={company.locations.filter(Boolean)} />}
-          {tab === "planner" && <CompanyPlannerTab companyId={companyId} companyName={company.name} />}
           {tab === "tracking" && <TrackingTab company={company} />}
           {tab === "documents" && <DocumentsTab company={company} companyId={companyId} />}
           {tab === "organization" && <OrganizationPanel companyId={companyId} />}

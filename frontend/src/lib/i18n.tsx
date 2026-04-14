@@ -45,7 +45,7 @@ const messages: Record<Locale, NestedMessages> = {
       library: "ISG Kutuphanesi",
       documents: "Dokümanlar",
       scoreHistory: "Skor Geçmişi",
-      planner: "Planlayıcı",
+      planner: "Ajanda",
       timesheet: "Puantaj",
       solutionCenter: "Nova",
       training: "Eğitim & Sınav",
