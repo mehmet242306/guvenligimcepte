@@ -1,7 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Wrench, GraduationCap, Building2, ClipboardCheck, Scale, MapPin, Stethoscope, CalendarDays, Plus, Tag } from "lucide-react";
+import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { createClient } from "@/lib/supabase/client";
+
+const CAT_ICON_MAP: Record<string, { icon: React.ElementType; tone: PremiumIconTone }> = {
+  "Periyodik Kontrol": { icon: Wrench, tone: "danger" },
+  "Eğitim": { icon: GraduationCap, tone: "cobalt" },
+  "Sağlık Takibi": { icon: Stethoscope, tone: "emerald" },
+  "Toplantı & Tatbikat": { icon: ClipboardCheck, tone: "violet" },
+  "Yasal Yükümlülük": { icon: Scale, tone: "amber" },
+  "Saha Ziyareti": { icon: MapPin, tone: "success" },
+  "İSG Kurul Toplantısı": { icon: Building2, tone: "indigo" },
+};
+function getCatIcon(name: string) { return CAT_ICON_MAP[name] ?? { icon: CalendarDays, tone: "gold" as PremiumIconTone }; }
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -767,9 +780,21 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
         <aside className="rounded-[1.5rem] border border-border/80 bg-card p-4 shadow-[var(--shadow-card)] lg:sticky lg:top-24 lg:self-start">
           <p className="mb-3 px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Kategoriler</p>
           <nav className="space-y-1">
-            {categories.filter((c) => c.is_default).map((c) => {
+            <button
+              type="button"
+              onClick={() => setFilterCategoryId("all")}
+              className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${filterCategoryId === "all" ? "bg-primary text-primary-foreground shadow-sm" : "text-foreground hover:bg-secondary"}`}
+            >
+              <span className="flex items-center gap-2.5">
+                <PremiumIconBadge icon={CalendarDays} tone={filterCategoryId === "all" ? "gold" : "neutral"} size="xs" />
+                Tümü
+              </span>
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${filterCategoryId === "all" ? "bg-white/20" : "bg-muted"}`}>{tasks.length}</span>
+            </button>
+            {categories.filter((c) => c.name !== "Diğer").map((c) => {
               const count = tasks.filter((t) => t.category_id === c.id).length;
               const isActive = filterCategoryId === c.id;
+              const ci = getCatIcon(c.name);
               return (
                 <button
                   key={c.id}
@@ -778,8 +803,8 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
                   className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${isActive ? "text-white shadow-sm" : "text-foreground hover:bg-secondary"}`}
                   style={isActive ? { backgroundColor: c.color } : undefined}
                 >
-                  <span className="flex items-center gap-2 truncate">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-lg text-xs" style={{ backgroundColor: isActive ? "rgba(255,255,255,0.2)" : `${c.color}15` }}>{c.icon}</span>
+                  <span className="flex items-center gap-2.5 truncate">
+                    <PremiumIconBadge icon={ci.icon} tone={isActive ? "gold" : ci.tone} size="xs" />
                     <span className="truncate">{c.name}</span>
                   </span>
                   {count > 0 && <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${isActive ? "bg-white/20" : "bg-muted"}`}>{count}</span>}
@@ -788,16 +813,25 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
             })}
           </nav>
           <div className="mt-4 border-t border-border/60 pt-3">
+            <button
+              type="button"
+              onClick={() => { setModalDate(new Date().toISOString().split("T")[0]); setModalTask(null); }}
+              className="flex w-full items-center gap-2.5 rounded-xl border border-dashed border-border/50 px-3 py-2.5 text-sm text-muted-foreground transition-all hover:bg-secondary hover:text-foreground"
+            >
+              <Plus size={15} /> Kategori Ekle
+            </button>
+          </div>
+          <div className="mt-3 border-t border-border/60 pt-3">
             <p className="px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Hızlı Ekle</p>
             <div className="mt-2 space-y-1">
-              {categories.map((c) => (
+              {categories.filter((c) => c.name !== "Diğer").map((c) => (
                 <button
                   key={`add-${c.id}`}
                   type="button"
                   onClick={() => { setModalDate(new Date().toISOString().split("T")[0]); setModalTask(null); }}
                   className="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 >
-                  <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: c.color }} />
+                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
                   + {c.name}
                 </button>
               ))}
