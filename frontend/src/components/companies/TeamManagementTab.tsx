@@ -1,7 +1,39 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { Phone, Mail, Pencil, Trash2, UserPlus, Users, Plus, Shield } from "lucide-react";
-import { PremiumIconBadge } from "@/components/ui/premium-icon-badge";
+import { Phone, Mail, Pencil, Trash2, UserPlus, Users, Plus, Shield, Target, ShieldCheck, Stethoscope, Siren, HardHat, HeartPulse, UserCog, Wrench, Search, User, Flame, DoorOpen } from "lucide-react";
+import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
+
+/** Kategori renk kodundan PremiumIconBadge tone'a çevir */
+function colorToTone(color: string): PremiumIconTone {
+  const c = (color || "").toLowerCase();
+  if (c.includes("dc26") || c.includes("ef44") || c.includes("f43")) return "danger";
+  if (c.includes("3b82") || c.includes("2563") || c.includes("6366")) return "cobalt";
+  if (c.includes("10b9") || c.includes("059669")) return "emerald";
+  if (c.includes("f971") || c.includes("f59e")) return "orange";
+  if (c.includes("8b5c") || c.includes("7c3a")) return "violet";
+  if (c.includes("ec48") || c.includes("d946")) return "plum";
+  if (c.includes("0ea5") || c.includes("06b6")) return "teal";
+  return "gold";
+}
+
+/** Kategori adından lucide ikon seç */
+function categoryIcon(name: string): React.ElementType {
+  const n = (name || "").toLowerCase();
+  if (n.includes("risk")) return Target;
+  if (n.includes("isg") || n.includes("uzman")) return ShieldCheck;
+  if (n.includes("hekim") || n.includes("doktor")) return Stethoscope;
+  if (n.includes("acil") || n.includes("lider")) return Siren;
+  if (n.includes("sağlık") || n.includes("saglik")) return HeartPulse;
+  if (n.includes("işveren") || n.includes("vekil")) return HardHat;
+  if (n.includes("temsilci") || n.includes("çalışan")) return UserCog;
+  if (n.includes("destek")) return Wrench;
+  if (n.includes("yangın") || n.includes("söndür")) return Flame;
+  if (n.includes("tahliye")) return DoorOpen;
+  if (n.includes("ilkyardım") || n.includes("ilk yardım")) return HeartPulse;
+  if (n.includes("bakım") || n.includes("teknik")) return Wrench;
+  if (n.includes("denetçi") || n.includes("müfettiş")) return Search;
+  return User;
+}
 import { createClient } from "@/lib/supabase/client";
 
 /* ── Types ── */
@@ -185,9 +217,7 @@ function MemberCard({
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-3 min-w-0 flex-1">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-lg" style={{ backgroundColor: category ? `${category.color}15` : undefined }}>
-              {category?.icon || "👤"}
-            </div>
+            <PremiumIconBadge icon={categoryIcon(category?.name || "")} tone={colorToTone(category?.color || "")} size="sm" />
             <div className="min-w-0 flex-1 pt-0.5">
               <p className="text-base font-semibold text-foreground truncate">{member.full_name}</p>
               {member.title && (
@@ -650,8 +680,8 @@ export function TeamManagementTab({
                   }`}
                   style={active ? { backgroundColor: cat.color } : undefined}
                 >
-                  <span className="flex items-center gap-2 truncate">
-                    <span className="text-base leading-none">{cat.icon}</span>
+                  <span className="flex items-center gap-2.5 truncate">
+                    <PremiumIconBadge icon={categoryIcon(cat.name)} tone={active ? "gold" : colorToTone(cat.color)} size="xs" />
                     <span className="truncate">{cat.name}</span>
                   </span>
                   {count > 0 && <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${active ? "bg-white/20" : "bg-muted"}`}>{count}</span>}
@@ -692,18 +722,16 @@ export function TeamManagementTab({
               <div key={category.id}>
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-xl text-base" style={{ backgroundColor: `${category.color}15` }}>
-                      {category.icon}
-                    </div>
+                    <PremiumIconBadge icon={categoryIcon(category.name)} tone={colorToTone(category.color)} size="sm" />
                     <h3 className="text-base font-bold text-foreground">{category.name}</h3>
                     <span className="rounded-full px-2 py-0.5 text-xs font-bold" style={{ backgroundColor: `${category.color}15`, color: category.color }}>{catMembers.length}</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => openAdd(category.id)}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-border/60 px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-sm transition-all hover:bg-secondary hover:text-foreground hover:shadow-md"
+                    className="inline-flex h-9 items-center gap-2 rounded-xl border border-border/60 bg-card px-4 text-sm font-semibold text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--gold)]/30 hover:shadow-md"
                   >
-                    <Plus size={14} /> Ekle
+                    <Plus size={15} strokeWidth={2} /> Üye Ekle
                   </button>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
