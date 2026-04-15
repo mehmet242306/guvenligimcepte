@@ -44,10 +44,7 @@ function getPublishableKey() {
   return value;
 }
 
-async function resolveAuthFromAccessToken(
-  accessToken: string,
-  supabaseServer: Awaited<ReturnType<typeof createClient>>,
-) {
+async function resolveAuthFromAccessToken(accessToken: string) {
   const tokenClient = createSupabaseClient(getSupabaseUrl(), getPublishableKey(), {
     auth: { persistSession: false, autoRefreshToken: false },
     global: { headers: { Authorization: `Bearer ${accessToken}` } },
@@ -62,7 +59,9 @@ async function resolveAuthFromAccessToken(
     return null;
   }
 
-  const { data: profile } = await supabaseServer
+  // tokenClient RLS passes (auth.uid() === user.id); supabaseServer cookie
+  // yoksa RLS profile'i gizliyor ve Nova 401 donuyordu.
+  const { data: profile } = await tokenClient
     .from("user_profiles")
     .select("organization_id")
     .eq("auth_user_id", user.id)
@@ -88,7 +87,7 @@ export async function POST(request: NextRequest) {
 
     let authContext =
       payload.access_token
-        ? await resolveAuthFromAccessToken(payload.access_token, supabase)
+        ? await resolveAuthFromAccessToken(payload.access_token)
         : null;
 
     let useInternalNovaAuth = false;

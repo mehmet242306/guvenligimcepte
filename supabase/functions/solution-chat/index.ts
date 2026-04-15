@@ -4422,11 +4422,23 @@ serve(async (req) => {
     const internalAuthHeader = req.headers.get('x-nova-internal-auth')
     const internalUserId = req.headers.get('x-nova-user-id')
     const internalOrganizationId = req.headers.get('x-nova-organization-id')
+    const internalBodyToken = typeof (body as Record<string, unknown>).internal_auth_token === 'string'
+      ? String((body as Record<string, unknown>).internal_auth_token)
+      : null
+    const internalBodyUserId = typeof (body as Record<string, unknown>).internal_user_id === 'string'
+      ? String((body as Record<string, unknown>).internal_user_id)
+      : null
+    const internalBodyOrganizationId = typeof (body as Record<string, unknown>).internal_organization_id === 'string'
+      ? String((body as Record<string, unknown>).internal_organization_id)
+      : null
+    const effectiveInternalToken = internalAuthHeader || internalBodyToken
+    const effectiveInternalUserId = internalUserId || internalBodyUserId
+    const effectiveInternalOrganizationId = internalOrganizationId || internalBodyOrganizationId
     const internalAuthAllowed =
-      !!internalAuthHeader &&
-      internalAuthHeader === Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') &&
-      !!internalUserId &&
-      !!internalOrganizationId
+      !!effectiveInternalToken &&
+      effectiveInternalToken === Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') &&
+      !!effectiveInternalUserId &&
+      !!effectiveInternalOrganizationId
 
     if (!authHeader && !internalAuthAllowed) {
       return await jsonErrorResponse(req, {
@@ -4457,8 +4469,8 @@ serve(async (req) => {
     let authError: { message?: string } | null = null
 
     if (internalAuthAllowed) {
-      user = { id: internalUserId! }
-      body.organization_id = internalOrganizationId!
+      user = { id: effectiveInternalUserId! }
+      body.organization_id = effectiveInternalOrganizationId!
     } else {
       const authResult = await supabase.auth.getUser(
         authHeader!.replace('Bearer ', '')
