@@ -2,12 +2,35 @@
 
 import { useEffect, useRef, useState } from "react";
 import { toDataURL } from "qrcode";
+import {
+  AlertTriangle,
+  ClipboardCheck,
+  FileText,
+  GraduationCap,
+  ListTodo,
+  ShieldAlert,
+  Target,
+  Users,
+} from "lucide-react";
 import { listSessions } from "@/lib/session-tracker";
 import { validateStrongPassword } from "@/lib/security/password";
 import { createClient } from "@/lib/supabase/client";
 import { quickSignOut } from "@/lib/auth/quick-sign-out";
+import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { ProfileConsentTab } from "./ProfileConsentTab";
 import type { User } from "@supabase/supabase-js";
+
+function resolveTaskBadge(categoryName: string | null, title: string): { icon: React.ElementType; tone: PremiumIconTone } {
+  const haystack = `${categoryName ?? ""} ${title}`.toLocaleLowerCase("tr-TR");
+  if (/(egitim|eğitim|training)/.test(haystack)) return { icon: GraduationCap, tone: "teal" };
+  if (/(periyodik|kontrol|inspection|muayene)/.test(haystack)) return { icon: ClipboardCheck, tone: "cobalt" };
+  if (/(kurul|toplanti|toplantı|meeting)/.test(haystack)) return { icon: Users, tone: "violet" };
+  if (/(olay|incident|kaza)/.test(haystack)) return { icon: AlertTriangle, tone: "amber" };
+  if (/(aksiyon|dof|duzeltme|düzeltme|action)/.test(haystack)) return { icon: Target, tone: "orange" };
+  if (/(risk)/.test(haystack)) return { icon: ShieldAlert, tone: "risk" };
+  if (/(dokuman|doküman|document|form)/.test(haystack)) return { icon: FileText, tone: "indigo" };
+  return { icon: ListTodo, tone: "gold" };
+}
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -722,10 +745,28 @@ export default function ProfileClient() {
     const supabase = createClient();
     if (!supabase) { setActivityLoading(false); return; }
     try {
+      // Kullanicinin kendi gorev feed'i: atananlar + olusturanlar.
+      // Filtre yoksa query tum org'u geri dondurur — profil "Aktivite" sekmesi
+      // kisisel olmali.
+      // Not: isg_tasks.created_by = auth.users.id, isg_tasks.assigned_to = user_profiles.id.
+      // Iki farkli UUID, ikisini de ayri cozmek gerekiyor.
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setActivityLoading(false); return; }
+      const { data: profileRow } = await supabase
+        .from("user_profiles")
+        .select("id")
+        .eq("auth_user_id", user.id)
+        .maybeSingle();
+      const profileId = profileRow?.id ?? null;
+      const mine = profileId
+        ? `assigned_to.eq.${profileId},created_by.eq.${user.id}`
+        : `created_by.eq.${user.id}`;
+
       // Build filtered task query
       let taskQuery = supabase
         .from("isg_tasks")
         .select("id, title, status, start_date, end_date, updated_at, isg_task_categories(name, color, icon)")
+        .or(mine)
         .order("updated_at", { ascending: false })
         .limit(10);
 
@@ -733,13 +774,16 @@ export default function ProfileClient() {
       else if (activityFilter === "pending") taskQuery = taskQuery.in("status", ["planned", "in_progress"]);
       else if (activityFilter === "overdue") taskQuery = taskQuery.eq("status", "overdue");
 
+      const countBase = () =>
+        supabase.from("isg_tasks").select("id", { count: "exact", head: true }).or(mine);
+
       const [{ data: tasks }, { count: total }, { count: completed }, { count: planned }, { count: overdue }] =
         await Promise.all([
           taskQuery,
-          supabase.from("isg_tasks").select("id", { count: "exact", head: true }),
-          supabase.from("isg_tasks").select("id", { count: "exact", head: true }).eq("status", "completed"),
-          supabase.from("isg_tasks").select("id", { count: "exact", head: true }).in("status", ["planned", "in_progress"]),
-          supabase.from("isg_tasks").select("id", { count: "exact", head: true }).eq("status", "overdue"),
+          countBase(),
+          countBase().eq("status", "completed"),
+          countBase().in("status", ["planned", "in_progress"]),
+          countBase().eq("status", "overdue"),
         ]);
 
       setActivityStats({
@@ -1625,14 +1669,10 @@ export default function ProfileClient() {
                     cancelled: { label: "İptal", cls: "bg-secondary text-muted-foreground" },
                   };
                   const st = statusMap[task.status] ?? statusMap.planned;
+                  const badge = resolveTaskBadge(task.category_name, task.title);
                   return (
                     <div key={task.id} className="flex items-center gap-4 py-3.5">
-                      <div
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base"
-                        style={{ backgroundColor: task.category_color ? `${task.category_color}20` : undefined }}
-                      >
-                        {task.category_icon ?? "📌"}
-                      </div>
+                      <PremiumIconBadge icon={badge.icon} tone={badge.tone} size="sm" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{task.title}</p>
                         <p className="text-[10px] text-muted-foreground">
