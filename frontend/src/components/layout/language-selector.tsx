@@ -210,7 +210,7 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
             ? "text-foreground/70 hover:text-foreground hover:bg-secondary"
             : "text-white/70 hover:text-white hover:bg-white/[0.08]",
         )}
-        aria-label="Dil secimi"
+        aria-label="Dil seçimi"
       >
         <FlagIcon />
         <span className="hidden sm:inline">{current.code.toUpperCase()}</span>

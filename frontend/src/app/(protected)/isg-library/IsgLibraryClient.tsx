@@ -79,10 +79,10 @@ const SECTION_META: Array<{
   icon: React.ElementType;
   tone: PremiumIconTone;
 }> = [
-  { key: "all", label: "Tum Icerikler", icon: LayoutGrid, tone: "gold" },
-  { key: "documentation", label: "Dokumantasyon", icon: FileStack, tone: "cobalt" },
-  { key: "education", label: "Egitim", icon: GraduationCap, tone: "emerald" },
-  { key: "assessment", label: "Sinav ve Anket", icon: ClipboardCheck, tone: "violet" },
+  { key: "all", label: "Tüm İçerikler", icon: LayoutGrid, tone: "gold" },
+  { key: "documentation", label: "Dokümantasyon", icon: FileStack, tone: "cobalt" },
+  { key: "education", label: "Eğitim", icon: GraduationCap, tone: "emerald" },
+  { key: "assessment", label: "Sınav ve Anket", icon: ClipboardCheck, tone: "violet" },
   { key: "forms", label: "Form ve Checklist", icon: FileCheck2, tone: "amber" },
   { key: "emergency", label: "Acil Durum", icon: Siren, tone: "orange" },
   { key: "instructions", label: "Talimatlar", icon: ScrollText, tone: "teal" },
@@ -354,7 +354,7 @@ export function IsgLibraryClient() {
       setUploadNumber("");
       setUploadFile(null);
     } catch (error) {
-      setUploadMessage(error instanceof Error ? error.message : "Yukleme sirasinda hata olustu.");
+      setUploadMessage(error instanceof Error ? error.message : "Yükleme sırasında hata oluştu.");
     } finally {
       setUploading(false);
     }
@@ -376,14 +376,14 @@ export function IsgLibraryClient() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="ISG Kutuphanesi"
-        title={SECTION_META.find((item) => item.key === section)?.label || "ISG Kutuphanesi"}
-        description="Firma bazli dokumantasyon, AI destekli egitim ve sinav akislari, rehberler ve mevzuat kayitlari tek merkezde."
+        eyebrow="İSG Kütüphanesi"
+        title={SECTION_META.find((item) => item.key === section)?.label || "İSG Kütüphanesi"}
+        description="Firma bazlı dokümantasyon, AI destekli eğitim ve sınav akışları, rehberler ve mevzuat kayıtları tek merkezde."
         className="overflow-hidden border-white/60 bg-[linear-gradient(120deg,rgba(255,249,240,0.96),rgba(237,245,255,0.96),rgba(250,246,226,0.94))] shadow-[var(--shadow-elevated)] dark:border-white/8 dark:bg-[linear-gradient(120deg,rgba(16,24,39,0.98),rgba(12,23,41,0.97),rgba(28,24,17,0.96))]"
         meta={
           <>
             <span className="inline-flex items-center rounded-full border border-[var(--gold)]/25 bg-[var(--gold)]/10 px-3 py-1 text-xs font-semibold text-[var(--primary)]">{userName}</span>
-            <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">{selectedCompany ? `${selectedCompany.name} secili` : "Firma secimi bekleniyor"}</span>
+            <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">{selectedCompany ? `${selectedCompany.name} seçili` : "Firma seçimi bekleniyor"}</span>
           </>
         }
       />
@@ -392,7 +392,7 @@ export function IsgLibraryClient() {
           <label className="relative">
             <Building2 size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <select value={selectedCompanyId} onChange={(event) => setSelectedCompanyId(event.target.value)} className="h-14 w-full rounded-[1.2rem] border border-border bg-background pl-11 pr-4 text-sm font-medium text-foreground outline-none transition focus:border-[var(--gold)]/40">
-              <option value="">Firma secin</option>
+              <option value="">Firma seçin</option>
               {companies.map((company) => (
                 <option key={company.id} value={company.id}>{company.name}</option>
               ))}
@@ -419,19 +419,19 @@ export function IsgLibraryClient() {
           <label className="relative">
             <Filter size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <select value={mediaKind} onChange={(event) => setMediaKind(event.target.value as MediaKind)} className="h-14 w-full rounded-[1.2rem] border border-border bg-background pl-11 pr-4 text-sm font-medium text-foreground outline-none transition focus:border-[var(--gold)]/40">
-              <option value="all">Tum tipler</option>
+              <option value="all">Tüm tipler</option>
               <option value="form">Form</option>
               <option value="checklist">Checklist</option>
-              <option value="procedure">Talimat / Prosedur</option>
+              <option value="procedure">Talimat / Prosedür</option>
               <option value="plan">Plan</option>
-              <option value="visual">Gorsel</option>
-              <option value="record">Kayit / Rapor</option>
+              <option value="visual">Görsel</option>
+              <option value="record">Kayıt / Rapor</option>
             </select>
           </label>
 
           <label className="relative">
             <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Belge sinifi, egitim, anket, rehber ara..." className="h-14 w-full rounded-[1.2rem] border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-[var(--gold)]/40" />
+            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Belge sınıfı, eğitim, anket, rehber ara..." className="h-14 w-full rounded-[1.2rem] border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-[var(--gold)]/40" />
           </label>
 
           <button
@@ -452,16 +452,16 @@ export function IsgLibraryClient() {
         <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           {selectedCompany ? (
             <>
-              <span className="rounded-full border border-border bg-background px-3 py-1.5 font-medium">{selectedCompany.sector || "Sektor belirtilmedi"}</span>
-              <span className="rounded-full border border-border bg-background px-3 py-1.5 font-medium">{selectedCompany.hazard_class || "Tehlike sinifi belirtilmedi"}</span>
+              <span className="rounded-full border border-border bg-background px-3 py-1.5 font-medium">{selectedCompany.sector || "Sektör belirtilmedi"}</span>
+              <span className="rounded-full border border-border bg-background px-3 py-1.5 font-medium">{selectedCompany.hazard_class || "Tehlike sınıfı belirtilmedi"}</span>
               {selectedCompany.city ? <span className="rounded-full border border-border bg-background px-3 py-1.5 font-medium">{selectedCompany.city}</span> : null}
               <span className="rounded-full border border-[var(--gold)]/25 bg-[var(--gold)]/10 px-3 py-1.5 font-semibold text-[var(--primary)]">
-                {selectedDocuments.length} dokuman · {selectedDocuments.filter((doc) => doc.status === "hazir").length} hazir
+                {selectedDocuments.length} doküman · {selectedDocuments.filter((doc) => doc.status === "hazir").length} hazır
               </span>
             </>
           ) : (
             <span className="rounded-full border border-[var(--gold)]/25 bg-[var(--gold)]/10 px-3 py-1.5 font-semibold text-[var(--primary)]">
-              Kutuphane icerigini acmak ve firma bazli kaydi izlemek icin once firma secin.
+              Kütüphane içeriğini açmak ve firma bazlı kaydı izlemek için önce firma seçin.
             </span>
           )}
         </div>
@@ -469,24 +469,24 @@ export function IsgLibraryClient() {
       {!selectedCompany ? (
         <section className="rounded-[2rem] border border-dashed border-[var(--gold)]/30 bg-card p-8 text-center shadow-[var(--shadow-card)]">
           <PremiumIconBadge icon={Building2} tone="gold" size="lg" className="mx-auto" />
-          <h2 className="mt-5 text-2xl font-semibold text-foreground">Firma secimi gerekli</h2>
+          <h2 className="mt-5 text-2xl font-semibold text-foreground">Firma seçimi gerekli</h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-            Hangi firmaya hangi dokumanlarin, sinavlarin ve iceriklerin hazirlandigini kayit altina almak icin kutuphane firma secimiyle baslar.
+            Hangi firmaya hangi dokümanların, sınavların ve içeriklerin hazırlandığını kayıt altına almak için kütüphane firma seçimiyle başlar.
           </p>
         </section>
       ) : view === "history" ? (
         <section className="rounded-[2rem] border border-border bg-card p-4 shadow-[var(--shadow-card)] sm:p-6">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-foreground">Gecmis</h2>
-              <p className="text-sm text-muted-foreground">{selectedCompany.name} icin son erisilen dokuman, sinav ve egitim icerikleri.</p>
+              <h2 className="text-lg font-semibold text-foreground">Geçmiş</h2>
+              <p className="text-sm text-muted-foreground">{selectedCompany.name} için son erişilen doküman, sınav ve eğitim içerikleri.</p>
             </div>
-            <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-muted-foreground">{historyItems.length} kayit</span>
+            <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-muted-foreground">{historyItems.length} kayıt</span>
           </div>
 
           <div className="overflow-hidden rounded-[1.5rem] border border-border">
             <div className="hidden grid-cols-[minmax(0,1.4fr)_160px_160px_160px_130px] gap-4 bg-background px-5 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground md:grid">
-              <span>Icerik</span>
+              <span>İçerik</span>
               <span>Tip</span>
               <span>Kaynak</span>
               <span>Tarih</span>
@@ -510,10 +510,10 @@ export function IsgLibraryClient() {
         <>
           {section === "all" ? (
             <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-              <FeatureCard icon={GraduationCap} tone="emerald" title="Egitim Merkezi" description="AI destekli egitim akislari, slayt kutuphanesi ve sertifikalar." href={`/training?companyId=${selectedCompanyId}&library=1&librarySection=education`} badge="AI" />
-              <FeatureCard icon={ClipboardCheck} tone="violet" title="Sinav ve Anket" description="Firma baglaminda sinavlar, anketler ve soru bankasi." href={`/training?companyId=${selectedCompanyId}&tab=all&library=1&librarySection=assessment`} badge="Olcum" />
-              <FeatureCard icon={Scale} tone="indigo" title="Mevzuat ve Rehberler" description="Resmi mevzuat kayitlari ve bakanlik rehberleri tek kart akisinda." href="/isg-library?section=legal" badge="RAG" />
-              <UploadTriggerCard icon={FileUp} tone="gold" title="Rehber veya mevzuat yukle" description="Kullanici yuklemeleriyle kutuphaneyi zenginlestirin." badge="Yukleme" onClick={() => { setUploadType("guide"); setUploadMessage(null); setShowUploadModal(true); }} />
+              <FeatureCard icon={GraduationCap} tone="emerald" title="Eğitim Merkezi" description="AI destekli eğitim akışları, slayt kütüphanesi ve sertifikalar." href={`/training?companyId=${selectedCompanyId}&library=1&librarySection=education`} badge="AI" />
+              <FeatureCard icon={ClipboardCheck} tone="violet" title="Sınav ve Anket" description="Firma bağlamında sınavlar, anketler ve soru bankası." href={`/training?companyId=${selectedCompanyId}&tab=all&library=1&librarySection=assessment`} badge="Ölçüm" />
+              <FeatureCard icon={Scale} tone="indigo" title="Mevzuat ve Rehberler" description="Resmi mevzuat kayıtları ve bakanlık rehberleri tek kart akışında." href="/isg-library?section=legal" badge="RAG" />
+              <UploadTriggerCard icon={FileUp} tone="gold" title="Rehber veya mevzuat yükle" description="Kullanıcı yüklemeleriyle kütüphaneyi zenginleştirin." badge="Yükleme" onClick={() => { setUploadType("guide"); setUploadMessage(null); setShowUploadModal(true); }} />
               {visibleGroups.map((group) => (
                 <DocClassCard key={group.key} group={group} companyId={selectedCompanyId} documents={selectedDocuments} />
               ))}
@@ -522,16 +522,16 @@ export function IsgLibraryClient() {
 
           {section === "assessment" ? (
             <section className="grid gap-4 xl:grid-cols-3">
-              <FeatureCard icon={ClipboardCheck} tone="violet" title="Anket Merkezi" description="Katilim odakli AI destekli anketler, sonuc takibi ve dagitim." href={`/training?companyId=${selectedCompanyId}&tab=survey&library=1&librarySection=assessment`} badge="Anket" />
-              <FeatureCard icon={ShieldAlert} tone="cobalt" title="Sinav Merkezi" description="AI ile soru seti, basari puani ve sinav dagitimi." href={`/training?companyId=${selectedCompanyId}&tab=exam&library=1&librarySection=assessment`} badge="Sinav" />
-              <FeatureCard icon={Sparkles} tone="gold" title="Soru Bankasi" description={`${questionCount} aktif soru ile tekrar kullanilabilir AI havuzu.`} href={`/training/question-bank?companyId=${selectedCompanyId}&library=1&librarySection=assessment`} badge="AI" />
+              <FeatureCard icon={ClipboardCheck} tone="violet" title="Anket Merkezi" description="Katılım odaklı AI destekli anketler, sonuç takibi ve dağıtım." href={`/training?companyId=${selectedCompanyId}&tab=survey&library=1&librarySection=assessment`} badge="Anket" />
+              <FeatureCard icon={ShieldAlert} tone="cobalt" title="Sınav Merkezi" description="AI ile soru seti, başarı puanı ve sınav dağıtımı." href={`/training?companyId=${selectedCompanyId}&tab=exam&library=1&librarySection=assessment`} badge="Sınav" />
+              <FeatureCard icon={Sparkles} tone="gold" title="Soru Bankası" description={`${questionCount} aktif soru ile tekrar kullanılabilir AI havuzu.`} href={`/training/question-bank?companyId=${selectedCompanyId}&library=1&librarySection=assessment`} badge="AI" />
             </section>
           ) : null}
 
           {section === "education" ? (
             <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-              <FeatureCard icon={LibraryBig} tone="teal" title="Slayt Kutuphanesi" description="AI destekli slayt desteleri, kurum ici veya ozel egitim akislari." href={`/training/slides?companyId=${selectedCompanyId}&library=1&librarySection=education`} badge="Slayt" />
-              <FeatureCard icon={FileCheck2} tone="gold" title="Sertifika ve Kayitlar" description={`${decks.length} egitim varligi ve sertifika akislarini yonetin.`} href={`/training/certificates?companyId=${selectedCompanyId}&library=1&librarySection=education`} badge="Kayit" />
+              <FeatureCard icon={LibraryBig} tone="teal" title="Slayt Kütüphanesi" description="AI destekli slayt desteleri, kurum içi veya özel eğitim akışları." href={`/training/slides?companyId=${selectedCompanyId}&library=1&librarySection=education`} badge="Slayt" />
+              <FeatureCard icon={FileCheck2} tone="gold" title="Sertifika ve Kayıtlar" description={`${decks.length} eğitim varlığı ve sertifika akışlarını yönetin.`} href={`/training/certificates?companyId=${selectedCompanyId}&library=1&librarySection=education`} badge="Kayıt" />
               {visibleGroups.map((group) => (
                 <DocClassCard key={group.key} group={group} companyId={selectedCompanyId} documents={selectedDocuments} />
               ))}
@@ -541,16 +541,16 @@ export function IsgLibraryClient() {
           {section === "legal" ? (
             <section className="space-y-5">
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                <FeatureCard icon={Scale} tone="indigo" title="Mevzuat Senkronizasyonu" description="Resmi mevzuat kayitlari, chunk sayisi ve RAG baglantilari." href="/settings?tab=mevzuat" badge="RAG" />
-                <UploadTriggerCard icon={FileUp} tone="indigo" title="Mevzuat Yukle" description="Kanun, yonetmelik, teblig veya genelge yukleyin." badge="Yukleme" onClick={() => { setUploadType("regulation"); setUploadMessage(null); setShowUploadModal(true); }} />
-                <UploadTriggerCard icon={BookOpen} tone="gold" title="Rehber Yukle" description="Bakanlik veya kurumsal rehberleri kutuphaneye ekleyin." badge="Rehber" onClick={() => { setUploadType("guide"); setUploadMessage(null); setShowUploadModal(true); }} />
-                <FeatureCard icon={FileText} tone="cobalt" title="Dokuman Yukleme Akisi" description="Firma bazli dokuman yukleme ve AI ile duzenleme icin dokumantasyona gecin." href={`/documents?companyId=${selectedCompanyId}&library=1&librarySection=documentation`} badge="Dokuman" />
+                <FeatureCard icon={Scale} tone="indigo" title="Mevzuat Senkronizasyonu" description="Resmi mevzuat kayıtları, chunk sayısı ve RAG bağlantıları." href="/settings?tab=mevzuat" badge="RAG" />
+                <UploadTriggerCard icon={FileUp} tone="indigo" title="Mevzuat Yükle" description="Kanun, yönetmelik, tebliğ veya genelge yükleyin." badge="Yükleme" onClick={() => { setUploadType("regulation"); setUploadMessage(null); setShowUploadModal(true); }} />
+                <UploadTriggerCard icon={BookOpen} tone="gold" title="Rehber Yükle" description="Bakanlık veya kurumsal rehberleri kütüphaneye ekleyin." badge="Rehber" onClick={() => { setUploadType("guide"); setUploadMessage(null); setShowUploadModal(true); }} />
+                <FeatureCard icon={FileText} tone="cobalt" title="Doküman Yükleme Akışı" description="Firma bazlı doküman yükleme ve AI ile düzenleme için dokümantasyona geçin." href={`/documents?companyId=${selectedCompanyId}&library=1&librarySection=documentation`} badge="Doküman" />
               </div>
 
               <div>
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <h2 className="text-lg font-semibold text-foreground">Resmi Mevzuat</h2>
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">{legalItems.legislation.length} kayit</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">{legalItems.legislation.length} kayıt</span>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {legalItems.legislation.map((doc) => (
@@ -562,7 +562,7 @@ export function IsgLibraryClient() {
               <div>
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <h2 className="text-lg font-semibold text-foreground">Rehberler</h2>
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">{legalItems.guides.length} kayit</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">{legalItems.guides.length} kayıt</span>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {legalItems.guides.map((doc) => (
@@ -587,8 +587,8 @@ export function IsgLibraryClient() {
           <div className="w-full max-w-2xl rounded-[2rem] border border-border bg-card p-6 shadow-[var(--shadow-elevated)]">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-xl font-semibold text-foreground">Rehber veya mevzuat yukle</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Yuklenen dosya kutuphaneye eklenir. Metin okunabiliyorsa ilk arama chunk&apos;i de otomatik olusturulur.</p>
+                <h2 className="text-xl font-semibold text-foreground">Rehber veya mevzuat yükle</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Yüklenen dosya kütüphaneye eklenir. Metin okunabiliyorsa ilk arama chunk&apos;ı da otomatik oluşturulur.</p>
               </div>
               <button type="button" onClick={() => setShowUploadModal(false)} className="rounded-full border border-border bg-background px-3 py-1 text-sm text-muted-foreground hover:text-foreground">Kapat</button>
             </div>
@@ -598,20 +598,20 @@ export function IsgLibraryClient() {
                 <span className="text-sm font-medium text-foreground">Belge tipi</span>
                 <select value={uploadType} onChange={(event) => setUploadType(event.target.value as UploadDocType)} className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none focus:border-[var(--gold)]/40">
                   <option value="law">Kanun</option>
-                  <option value="regulation">Yonetmelik</option>
-                  <option value="communique">Teblig</option>
+                  <option value="regulation">Yönetmelik</option>
+                  <option value="communique">Tebliğ</option>
                   <option value="guide">Rehber</option>
                   <option value="announcement">Duyuru</option>
                   <option value="circular">Genelge</option>
                 </select>
               </label>
               <label className="space-y-2">
-                <span className="text-sm font-medium text-foreground">Belge / resmi sayi</span>
+                <span className="text-sm font-medium text-foreground">Belge / resmi sayı</span>
                 <input value={uploadNumber} onChange={(event) => setUploadNumber(event.target.value)} className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none focus:border-[var(--gold)]/40" placeholder="Opsiyonel" />
               </label>
               <label className="space-y-2 sm:col-span-2">
-                <span className="text-sm font-medium text-foreground">Baslik</span>
-                <input value={uploadTitle} onChange={(event) => setUploadTitle(event.target.value)} className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none focus:border-[var(--gold)]/40" placeholder="Orn. Kimyasal maddelerle calismalarda rehber" />
+                <span className="text-sm font-medium text-foreground">Başlık</span>
+                <input value={uploadTitle} onChange={(event) => setUploadTitle(event.target.value)} className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none focus:border-[var(--gold)]/40" placeholder="Ör. Kimyasal maddelerle çalışmalarda rehber" />
               </label>
               <label className="space-y-2 sm:col-span-2">
                 <span className="text-sm font-medium text-foreground">Dosya</span>
@@ -622,9 +622,9 @@ export function IsgLibraryClient() {
             {uploadMessage ? <p className="mt-4 text-sm text-[var(--primary)]">{uploadMessage}</p> : null}
 
             <div className="mt-6 flex justify-end gap-3">
-              <button type="button" onClick={() => setShowUploadModal(false)} className="rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground">Iptal</button>
+              <button type="button" onClick={() => setShowUploadModal(false)} className="rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground">İptal</button>
               <button type="button" onClick={() => void handleUploadSubmit()} disabled={uploading} className="rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60">
-                {uploading ? "Yukleniyor..." : "Kutuphane kaydi olustur"}
+                {uploading ? "Yükleniyor..." : "Kütüphane kaydı oluştur"}
               </button>
             </div>
           </div>

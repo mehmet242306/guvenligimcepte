@@ -133,19 +133,19 @@ export function DashboardClient() {
 
   const s = stats!;
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Gunaydin' : hour < 18 ? 'Iyi gunler' : 'Iyi aksamlar';
+  const greeting = hour < 12 ? 'Günaydın' : hour < 18 ? 'İyi günler' : 'İyi akşamlar';
 
   return (
     <div className="space-y-6">
       <PageHeader
         eyebrow="Kontrol Merkezi"
-        title={`${greeting}, ${s.userName.split(' ')[0] || 'Kullanici'}`}
-        description="Tum ISG sureclerinizi tek ekrandan takip edin. Risk analizleri, dokumanlar, olaylar ve gorevler burada."
+        title={`${greeting}, ${s.userName.split(' ')[0] || 'Kullanıcı'}`}
+        description="Tüm İSG süreçlerinizi tek ekrandan takip edin. Risk analizleri, dokümanlar, olaylar ve görevler burada."
         className="overflow-hidden border-white/60 bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(255,249,240,0.94))] shadow-[var(--shadow-elevated)] dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(17,26,43,0.96),rgba(11,17,31,0.98))]"
         meta={
           <>
             <span className="inline-flex items-center rounded-full border border-[var(--gold)]/25 bg-[var(--gold)]/10 px-3 py-1 text-xs font-semibold text-[var(--primary)]">
-              Canli operasyon gorunumu
+              Canlı operasyon görünümü
             </span>
             <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">
               Remote Supabase senkron
@@ -159,16 +159,16 @@ export function DashboardClient() {
           icon={ShieldAlert}
           label="Risk Analizi"
           value={s.riskCount}
-          sub={s.highRiskCount > 0 ? `${s.highRiskCount} yuksek risk` : 'Yuksek risk yok'}
+          sub={s.highRiskCount > 0 ? `${s.highRiskCount} yüksek risk` : 'Yüksek risk yok'}
           subColor={s.highRiskCount > 0 ? 'text-red-500' : 'text-emerald-600'}
           tone="risk"
           onClick={() => router.push('/risk-analysis')}
         />
         <StatCard
           icon={FileText}
-          label="Dokuman"
+          label="Doküman"
           value={s.documentCount}
-          sub={`${s.readyDocCount} hazir, ${s.draftDocCount} taslak`}
+          sub={`${s.readyDocCount} hazır, ${s.draftDocCount} taslak`}
           tone="cobalt"
           onClick={() => router.push('/isg-library?section=documentation')}
         />
@@ -176,15 +176,15 @@ export function DashboardClient() {
           icon={AlertTriangle}
           label="Olay ve Kaza"
           value={s.incidentCount}
-          sub="Toplam kayit"
+          sub="Toplam kayıt"
           tone="amber"
           onClick={() => router.push('/incidents')}
         />
         <StatCard
           icon={ClipboardCheck}
-          label="Acik Gorev"
+          label="Açık Görev"
           value={s.taskCount}
-          sub="Takip bekleyen isler"
+          sub="Takip bekleyen işler"
           tone="violet"
           onClick={() => router.push('/tasks')}
         />
@@ -199,10 +199,10 @@ export function DashboardClient() {
               <div>
                 <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
                   <Sparkles size={16} className="text-[var(--gold)]" />
-                  Hizli Is Akislari
+                  Hızlı İş Akışları
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  En sik kullanilan modullere tek tikla gecis yapin.
+                  En sık kullanılan modüllere tek tıkla geçiş yapın.
                 </p>
               </div>
               <div className="hidden rounded-full border border-[var(--gold)]/20 bg-[var(--gold)]/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--primary)] lg:inline-flex">
@@ -211,13 +211,13 @@ export function DashboardClient() {
             </div>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               <QuickAction icon={ShieldAlert} label="Risk Analizi" href="/risk-analysis" tone="risk" />
-              <QuickAction icon={FileText} label="Dokumanlar" href="/isg-library?section=documentation" tone="cobalt" />
+              <QuickAction icon={FileText} label="Dokümanlar" href="/isg-library?section=documentation" tone="cobalt" />
               <QuickAction icon={AlertTriangle} label="Olay Bildir" href="/incidents" tone="amber" />
-              <QuickAction icon={Calendar} label="Planlayici" href="/planner" tone="emerald" />
-              <QuickAction icon={GraduationCap} label="Egitimler" href="/isg-library?section=education" tone="teal" />
+              <QuickAction icon={Calendar} label="Planlayıcı" href="/planner" tone="emerald" />
+              <QuickAction icon={GraduationCap} label="Eğitimler" href="/isg-library?section=education" tone="teal" />
               <QuickAction icon={BarChart3} label="Raporlar" href="/reports" tone="indigo" />
               <QuickAction icon={Building2} label="Firmalar" href="/companies" tone="orange" />
-              <QuickAction icon={TrendingUp} label="Skor Gecmisi" href="/score-history" tone="plum" />
+              <QuickAction icon={TrendingUp} label="Skor Geçmişi" href="/score-history" tone="plum" />
             </div>
           </div>
 
@@ -226,23 +226,23 @@ export function DashboardClient() {
               <div>
                 <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
                   <FileText size={16} className="text-[var(--gold)]" />
-                  Son Dokumanlar
+                  Son Dokümanlar
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Yakinda degistirilen icerikler burada listelenir.
+                  Yakın zamanda değiştirilen içerikler burada listelenir.
                 </p>
               </div>
               <button
                 onClick={() => router.push('/documents/personal')}
                 className="inline-flex items-center gap-1 rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--primary)] transition-colors hover:bg-[var(--gold)]/8"
               >
-                Tumunu Gor <ChevronRight size={12} />
+                Tümünü Gör <ChevronRight size={12} />
               </button>
             </div>
 
             {s.recentDocs.length === 0 ? (
               <div className="rounded-[1.5rem] border border-dashed border-border bg-background/55 px-4 py-12 text-center text-sm text-muted-foreground">
-                Henuz dokuman olusturulmadi.
+                Henüz doküman oluşturulmadı.
               </div>
             ) : (
               <div className="space-y-2">
@@ -253,7 +253,7 @@ export function DashboardClient() {
                       color: 'text-yellow-700 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-300',
                     },
                     hazir: {
-                      label: 'Hazir',
+                      label: 'Hazır',
                       color: 'text-emerald-700 bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-300',
                     },
                     onay_bekliyor: {
@@ -297,39 +297,39 @@ export function DashboardClient() {
           <div className="surface-card">
             <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
               <Building2 size={16} className="text-[var(--gold)]" />
-              Firma Ozeti
+              Firma Özeti
             </h2>
             <div className="rounded-[1.5rem] border border-[var(--gold)]/20 bg-[linear-gradient(135deg,rgba(200,155,91,0.12),rgba(255,255,255,0.55))] px-5 py-6 text-center dark:bg-[linear-gradient(135deg,rgba(213,177,122,0.12),rgba(17,26,43,0.45))]">
               <p className="text-4xl font-semibold tracking-tight text-[var(--primary)]">{s.companyCount}</p>
-              <p className="mt-2 text-sm text-muted-foreground">Kayitli firma</p>
+              <p className="mt-2 text-sm text-muted-foreground">Kayıtlı firma</p>
             </div>
             <button
               onClick={() => router.push('/companies')}
               className="mt-4 inline-flex w-full items-center justify-center gap-1 rounded-2xl border border-border/80 bg-background/85 px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:border-[var(--gold)]/30 hover:bg-[var(--gold)]/8"
             >
-              Firmalari Yonet <ChevronRight size={14} />
+              Firmaları Yönet <ChevronRight size={14} />
             </button>
           </div>
 
           <div className="surface-card">
             <div className="mb-4">
-              <h2 className="text-base font-semibold text-foreground">ISG Modulleri</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Platformun aktif operasyon alanlari.</p>
+              <h2 className="text-base font-semibold text-foreground">İSG Modülleri</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Platformun aktif operasyon alanları.</p>
             </div>
             <div className="space-y-2">
-              <ModuleLink icon={ShieldAlert} label="Risk Analizi" desc={`${s.riskCount} degerlendirme`} href="/risk-analysis" tone="risk" />
-              <ModuleLink icon={FileText} label="Dokumanlar" desc="Hazir kutuphane ve editor" href="/isg-library?section=documentation" tone="cobalt" />
+              <ModuleLink icon={ShieldAlert} label="Risk Analizi" desc={`${s.riskCount} değerlendirme`} href="/risk-analysis" tone="risk" />
+              <ModuleLink icon={FileText} label="Dokümanlar" desc="Hazır kütüphane ve editör" href="/isg-library?section=documentation" tone="cobalt" />
               <ModuleLink icon={Siren} label="Acil Durum" desc="Plan ve tatbikatlar" href="/isg-library?section=emergency" tone="amber" />
-              <ModuleLink icon={GraduationCap} label="Egitimler" desc="Takip ve kayit" href="/isg-library?section=education" tone="teal" />
-              <ModuleLink icon={PenTool} label="Sinav ve Anket" desc="AI destekli olcum akislari" href="/isg-library?section=assessment" tone="indigo" />
-              <ModuleLink icon={Download} label="Mevzuat" desc="Mevzuat ve rehber kutuphanesi" href="/isg-library?section=legal" tone="gold" />
+              <ModuleLink icon={GraduationCap} label="Eğitimler" desc="Takip ve kayıt" href="/isg-library?section=education" tone="teal" />
+              <ModuleLink icon={PenTool} label="Sınav ve Anket" desc="AI destekli ölçüm akışları" href="/isg-library?section=assessment" tone="indigo" />
+              <ModuleLink icon={Download} label="Mevzuat" desc="Mevzuat ve rehber kütüphanesi" href="/isg-library?section=legal" tone="gold" />
             </div>
           </div>
 
           <div className="surface-card bg-[linear-gradient(135deg,rgba(200,155,91,0.14),rgba(255,252,247,0.92))] dark:bg-[linear-gradient(135deg,rgba(213,177,122,0.12),rgba(17,26,43,0.95))]">
             <div className="mb-2 flex items-center gap-2">
               <Calendar size={16} className="text-[var(--gold)]" />
-              <h2 className="text-base font-semibold text-foreground">Bugun</h2>
+              <h2 className="text-base font-semibold text-foreground">Bugün</h2>
             </div>
             <p className="text-2xl font-semibold tracking-tight text-foreground">
               {new Date().toLocaleDateString('tr-TR', {
@@ -340,7 +340,7 @@ export function DashboardClient() {
               })}
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              {s.taskCount > 0 ? `${s.taskCount} acik gorev bekliyor` : 'Tum gorevler tamamlandi'}
+              {s.taskCount > 0 ? `${s.taskCount} açık görev bekliyor` : 'Tüm görevler tamamlandı'}
             </p>
           </div>
         </div>
@@ -374,7 +374,7 @@ function StatCard({
       <div className="mb-4 flex items-center justify-between gap-3">
         <PremiumIconBadge icon={Icon} tone={tone} />
         <span className="rounded-full border border-border/80 bg-background/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-          canli
+          canlı
         </span>
       </div>
       <div className="text-sm font-semibold text-foreground">{label}</div>

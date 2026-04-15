@@ -80,7 +80,7 @@ function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      aria-label={dark ? "Acik tema" : "Koyu tema"}
+      aria-label={dark ? "Açık tema" : "Koyu tema"}
       className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white"
     >
       {dark ? (
@@ -279,7 +279,7 @@ function HeaderSignOutButton() {
         <polyline points="16 17 21 12 16 7" />
         <line x1="21" y1="12" x2="9" y2="12" />
       </svg>
-      <span className="hidden lg:inline">{signingOut ? "Cikiliyor..." : "Cikis"}</span>
+      <span className="hidden lg:inline">{signingOut ? "Çıkılıyor..." : "Çıkış"}</span>
     </button>
   );
 }

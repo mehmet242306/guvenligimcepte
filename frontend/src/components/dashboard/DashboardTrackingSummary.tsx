@@ -34,16 +34,16 @@ type MetricDef = {
 const METRICS: MetricDef[] = [
   {
     key: 'openActionCount',
-    label: 'Acik Aksiyon',
-    sub: 'Risk tespitleri + DOF + gorevler',
+    label: 'Açık Aksiyon',
+    sub: 'Risk tespitleri + DÖF + görevler',
     icon: AlertCircle,
     tone: 'risk',
     warnWhenPositive: true,
   },
   {
     key: 'expiringTrainingCount',
-    label: 'Yaklasan Egitim',
-    sub: '30 gun icinde',
+    label: 'Yaklaşan Eğitim',
+    sub: '30 gün içinde',
     icon: GraduationCap,
     tone: 'teal',
     warnWhenPositive: false,
@@ -51,7 +51,7 @@ const METRICS: MetricDef[] = [
   {
     key: 'overduePeriodicControlCount',
     label: 'Geciken Kontrol',
-    sub: 'Periyodik kontrol suresi gecti',
+    sub: 'Periyodik kontrol süresi geçti',
     icon: Gauge,
     tone: 'amber',
     warnWhenPositive: true,
@@ -59,15 +59,15 @@ const METRICS: MetricDef[] = [
   {
     key: 'upcomingCommitteeCount',
     label: 'Bekleyen Kurul',
-    sub: 'Planli ISG kurul toplantilari',
+    sub: 'Planlı İSG kurul toplantıları',
     icon: ClipboardList,
     tone: 'cobalt',
     warnWhenPositive: false,
   },
   {
     key: 'healthExamsDueCount',
-    label: 'Yaklasan Muayene',
-    sub: '30 gun icinde saglik gozetimi',
+    label: 'Yaklaşan Muayene',
+    sub: '30 gün içinde sağlık gözetimi',
     icon: ShieldCheck,
     tone: 'violet',
     warnWhenPositive: false,
@@ -111,10 +111,10 @@ export function DashboardTrackingSummary() {
       <div className="surface-card">
         <div className="mb-3 flex items-center gap-2">
           <ActivitySquare size={16} className="text-[var(--gold)]" />
-          <h2 className="text-base font-semibold text-foreground">Takip Ozeti</h2>
+          <h2 className="text-base font-semibold text-foreground">Takip Özeti</h2>
         </div>
         <div className="rounded-[1.5rem] border border-dashed border-border bg-background/55 px-4 py-10 text-center text-sm text-muted-foreground">
-          Henuz firma tanimlanmamis. Takip metrikleri firma eklendiginde burada gorunur.
+          Henüz firma tanımlanmamış. Takip metrikleri firma eklendiğinde burada görünür.
         </div>
       </div>
     );
@@ -133,10 +133,10 @@ export function DashboardTrackingSummary() {
         <div>
           <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
             <ActivitySquare size={16} className="text-[var(--gold)]" />
-            Takip Ozeti
+            Takip Özeti
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Tum firmalardan roll-up. {data.companyCount} firma izleniyor, {totalActionable} aksiyon bekliyor.
+            Tüm firmalardan özet. {data.companyCount} firma izleniyor, {totalActionable} aksiyon bekliyor.
           </p>
         </div>
         <button
@@ -187,7 +187,7 @@ export function DashboardTrackingSummary() {
           <div className="mb-3 flex items-center gap-2">
             <Users size={14} className="text-muted-foreground" />
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Oncelik Bekleyen Firmalar
+              Öncelik Bekleyen Firmalar
             </p>
           </div>
           <div className="space-y-1.5">
@@ -210,7 +210,7 @@ export function DashboardTrackingSummary() {
                       )}
                       {c.expiringTrainings > 0 && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                          <GraduationCap size={10} /> {c.expiringTrainings} egitim
+                          <GraduationCap size={10} /> {c.expiringTrainings} eğitim
                         </span>
                       )}
                       {c.overdueControls > 0 && (
