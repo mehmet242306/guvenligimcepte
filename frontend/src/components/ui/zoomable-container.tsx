@@ -18,7 +18,10 @@ export function ZoomableContainer({
 }: ZoomableContainerProps) {
   const [scale, setScale] = useState(0.85);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
-  const dragging = useRef(false);
+  // `dragging` must be state (not ref) because it's read during render to
+  // toggle the transition animation on the transform. React 19's
+  // react-hooks/refs rule forbids reading ref.current in JSX.
+  const [isDragging, setIsDragging] = useState(false);
   const lastPos = useRef({ x: 0, y: 0 });
 
   const clampScale = useCallback(
@@ -34,12 +37,12 @@ export function ZoomableContainer({
 
   function handleMouseDown(e: MouseEvent) {
     if (e.button !== 0) return;
-    dragging.current = true;
+    setIsDragging(true);
     lastPos.current = { x: e.clientX, y: e.clientY };
   }
 
   function handleMouseMove(e: MouseEvent) {
-    if (!dragging.current) return;
+    if (!isDragging) return;
     const dx = e.clientX - lastPos.current.x;
     const dy = e.clientY - lastPos.current.y;
     lastPos.current = { x: e.clientX, y: e.clientY };
@@ -47,7 +50,7 @@ export function ZoomableContainer({
   }
 
   function handleMouseUp() {
-    dragging.current = false;
+    setIsDragging(false);
   }
 
   function handleFit() {
@@ -101,7 +104,7 @@ export function ZoomableContainer({
           style={{
             transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`,
             transformOrigin: "center top",
-            transition: dragging.current ? "none" : "transform 0.15s ease",
+            transition: isDragging ? "none" : "transform 0.15s ease",
           }}
         >
           {children}
