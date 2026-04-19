@@ -12,7 +12,7 @@ const bodySchema = z.object({
   branch: z.string().trim().max(120).optional().nullable(),
   buildUrl: z.string().trim().max(500).optional().nullable(),
   initiatedBy: z.string().trim().max(200).optional().nullable(),
-  details: z.record(z.any()).optional().default({}),
+  details: z.record(z.string(), z.any()).optional().default({}),
 });
 
 function isCronAuthorized(request: NextRequest) {

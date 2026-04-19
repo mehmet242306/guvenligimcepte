@@ -62,11 +62,19 @@ export async function buildUserDataExportBundle(
       .select("assigned_at, roles(code, name)")
       .eq("user_profile_id", profile.id);
 
-    roles = (roleRows ?? []).map((row) => ({
-      assigned_at: row.assigned_at,
-      role_code: Array.isArray(row.roles) ? row.roles[0]?.code : row.roles?.code,
-      role_name: Array.isArray(row.roles) ? row.roles[0]?.name : row.roles?.name,
-    }));
+    roles = (roleRows ?? []).map((row) => {
+      const roleRelation = row.roles as
+        | { code?: string | null; name?: string | null }
+        | Array<{ code?: string | null; name?: string | null }>
+        | null;
+      const firstRole = Array.isArray(roleRelation) ? roleRelation[0] : roleRelation;
+
+      return {
+        assigned_at: row.assigned_at,
+        role_code: firstRole?.code ?? null,
+        role_name: firstRole?.name ?? null,
+      };
+    });
   }
 
   return {

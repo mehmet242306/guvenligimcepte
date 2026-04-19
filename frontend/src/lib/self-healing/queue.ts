@@ -1,4 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
+import {
+  invokeNovaActionExecutor,
+  loadNovaActionRunForExecution,
+  resolveNovaExecutionContext,
+} from "@/lib/nova/action-endpoint";
 import { createServiceClient } from "@/lib/security/server";
 import { runSnapshotBackup } from "@/lib/self-healing/backup";
 import { runSelfHealingHealthChecks } from "@/lib/self-healing/health";
@@ -33,6 +38,25 @@ async function failTask(taskId: string, message: string, retryDelaySeconds = 60)
     p_error_message: message,
     p_retry_delay_seconds: retryDelaySeconds,
   });
+}
+
+async function updateNovaOutboxForTask(
+  task: TaskQueueRow,
+  patch: Record<string, unknown>,
+) {
+  if (task.task_type !== "nova.action.execute") return;
+
+  const supabase = createServiceClient();
+  const actionRunId = String(task.payload?.action_run_id ?? "").trim();
+  if (!actionRunId) return;
+
+  await supabase
+    .from("nova_outbox")
+    .update({
+      ...patch,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("action_run_id", actionRunId);
 }
 
 async function reclaimStuckTasks() {
@@ -146,6 +170,103 @@ async function processDocumentGeneration(task: TaskQueueRow) {
   });
 }
 
+async function processNovaActionExecution(task: TaskQueueRow) {
+  const actionRunId = String(task.payload?.action_run_id ?? "").trim();
+  const userId = String(task.payload?.user_id ?? task.created_by ?? "").trim();
+  const organizationId = String(task.payload?.organization_id ?? task.organization_id ?? "").trim();
+  const contextSurface =
+    task.payload?.context_surface === "widget" ? "widget" : "solution_center";
+  const idempotencyKey = String(task.payload?.idempotency_key ?? "").trim();
+
+  if (!actionRunId || !userId || !organizationId || !idempotencyKey) {
+    throw new Error("Eksik Nova action queue payload.");
+  }
+
+  await updateNovaOutboxForTask(task, {
+    status: "processing",
+    retry_count: task.retry_count,
+    max_retries: task.max_retries,
+    last_attempt_at: new Date().toISOString(),
+    last_error: null,
+    task_queue_id: task.id,
+  });
+
+  const actionRun = await loadNovaActionRunForExecution(actionRunId);
+  if (!actionRun) {
+    await updateNovaOutboxForTask(task, {
+      status: "dead_letter",
+      retry_count: task.retry_count,
+      last_error: "action_run_missing",
+      completed_at: new Date().toISOString(),
+    });
+    await completeTask(task.id, {
+      actionRunId,
+      status: "skipped",
+      reason: "action_run_missing",
+    });
+    return;
+  }
+
+  if (
+    actionRun.status === "completed" ||
+    actionRun.status === "cancelled" ||
+    actionRun.status === "failed"
+  ) {
+    await updateNovaOutboxForTask(task, {
+      status: actionRun.status === "completed" ? "succeeded" : actionRun.status,
+      retry_count: task.retry_count,
+      completed_at: new Date().toISOString(),
+    });
+    await completeTask(task.id, {
+      actionRunId,
+      status: actionRun.status,
+      reason: "already_terminal",
+    });
+    return;
+  }
+
+  const executionContext = await resolveNovaExecutionContext(userId);
+  const execution = await invokeNovaActionExecutor({
+    actionRun,
+    userId,
+    organizationId,
+    workspaceId: executionContext.workspaceId,
+    jurisdictionCode: executionContext.jurisdictionCode,
+    accessToken: executionContext.accessToken,
+    internalServiceSecret: executionContext.internalServiceSecret,
+    confirmationAction: "confirm",
+    contextSurface,
+    idempotencyKey,
+  });
+
+  if (execution.status >= 500) {
+    throw new Error(
+      typeof execution.payload.answer === "string" && execution.payload.answer
+        ? execution.payload.answer
+        : "Nova queue execution gecici hata verdi.",
+    );
+  }
+
+  await updateNovaOutboxForTask(task, {
+    status: "succeeded",
+    retry_count: task.retry_count,
+    completed_at: new Date().toISOString(),
+    last_error: null,
+  });
+
+  await completeTask(task.id, {
+    actionRunId,
+    status: execution.status,
+    responseType: execution.payload.type,
+    executionStatus:
+      typeof execution.payload.action_hint === "object" &&
+      execution.payload.action_hint &&
+      "execution_status" in execution.payload.action_hint
+        ? execution.payload.action_hint.execution_status
+        : null,
+  });
+}
+
 async function processTask(task: TaskQueueRow) {
   switch (task.task_type) {
     case "health.run": {
@@ -177,6 +298,10 @@ async function processTask(task: TaskQueueRow) {
     }
     case "ai.document.generate": {
       await processDocumentGeneration(task);
+      return;
+    }
+    case "nova.action.execute": {
+      await processNovaActionExecution(task);
       return;
     }
     default:
@@ -214,6 +339,14 @@ export async function processSelfHealingQueue(options?: {
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Bilinmeyen queue hatasi";
+      const isDeadLetter = task.retry_count + 1 >= task.max_retries;
+      await updateNovaOutboxForTask(task, {
+        status: isDeadLetter ? "dead_letter" : "failed",
+        retry_count: task.retry_count + 1,
+        last_error: message,
+        completed_at: isDeadLetter ? new Date().toISOString() : null,
+        last_attempt_at: new Date().toISOString(),
+      });
       await failTask(task.id, message, 60 * (task.retry_count + 1));
       results.push({
         taskId: task.id,

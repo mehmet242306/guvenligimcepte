@@ -6,9 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { getActiveWorkspace, type WorkspaceRow } from "@/lib/supabase/workspace-api";
 import { downloadDocument, type DocumentBlock } from "@/lib/document-generator";
 import { useI18n } from "@/lib/i18n";
 import { getNovaUiCopy, resolveNovaRuntimeErrorMessage } from "@/lib/nova-ui";
+import type {
+  NovaAgentResponse,
+  NovaActionHint,
+  NovaAgentSource,
+  NovaDraftPayload,
+  NovaSafetyBlock,
+  NovaAgentToolPreview,
+} from "@/lib/nova/agent";
 import {
   getNovaProactiveBrief,
   markNovaWorkflowStep,
@@ -27,6 +36,79 @@ interface Source {
   doc_number: string;
   article_number: string;
   article_title: string;
+  citation_id?: string | null;
+  corpus_scope?: "official" | "tenant_private" | null;
+  jurisdiction_code?: string | null;
+}
+
+interface RetrievalTracePayload {
+  id: string;
+  query_text: string;
+  as_of_date: string;
+  answer_mode: "extractive" | "polish";
+  retrieval_trace: {
+    exact?: Array<Record<string, unknown>>;
+    sparse?: Array<Record<string, unknown>>;
+    dense?: Array<Record<string, unknown>>;
+    reranked?: Array<Record<string, unknown>>;
+  } | null;
+  answer_preview?: string | null;
+  confidence?: number | null;
+  created_at?: string;
+}
+
+function normalizeDocumentBlocks(input: unknown): DocumentBlock[] {
+  if (!Array.isArray(input)) return [];
+
+  return input.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const record = item as Record<string, unknown>;
+    if (
+      typeof record.title !== "string" ||
+      (record.type !== "docx" && record.type !== "pptx") ||
+      typeof record.content !== "string"
+    ) {
+      return [];
+    }
+
+    return [
+      {
+        title: record.title,
+        type: record.type,
+        content: record.content,
+      },
+    ];
+  });
+}
+
+function normalizeFollowUpActions(input: unknown): NovaFollowUpAction[] {
+  if (!Array.isArray(input)) return [];
+
+  return input.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const record = item as Record<string, unknown>;
+    if (
+      typeof record.id !== "string" ||
+      typeof record.label !== "string" ||
+      (record.kind !== "navigate" && record.kind !== "prompt")
+    ) {
+      return [];
+    }
+
+    return [
+      {
+        id: record.id,
+        label: record.label,
+        kind: record.kind,
+        description: typeof record.description === "string" ? record.description : null,
+        url: typeof record.url === "string" ? record.url : null,
+        prompt: typeof record.prompt === "string" ? record.prompt : null,
+        workflow_run_id: typeof record.workflow_run_id === "string" ? record.workflow_run_id : null,
+        workflow_step_id: typeof record.workflow_step_id === "string" ? record.workflow_step_id : null,
+        status: typeof record.status === "string" ? record.status : null,
+      },
+    ];
+  });
 }
 
 interface NavigationAction {
@@ -47,7 +129,14 @@ interface ChatMessage {
   navigation?: NavigationAction | null;
   workflow?: NovaWorkflowSummary | null;
   followUpActions?: NovaFollowUpAction[];
+  actionHint?: NovaActionHint | null;
+  toolPreview?: NovaAgentToolPreview | null;
+  draft?: NovaDraftPayload | null;
+  safetyBlock?: NovaSafetyBlock | null;
   queryId?: string;
+  retrievalRunId?: string | null;
+  asOfDate?: string | null;
+  answerMode?: "extractive" | "polish";
   timestamp: Date;
   saved?: boolean;
   feedback?: "positive" | "negative" | null;
@@ -139,15 +228,100 @@ function SourceCard({ source }: { source: Source }) {
         M
       </div>
       <div className="min-w-0">
-        <p className="truncate text-xs font-medium text-foreground">
-          {source.doc_title}
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="truncate text-xs font-medium text-foreground">
+            {source.doc_title}
+          </p>
+          {source.corpus_scope === "tenant_private" ? (
+            <Badge variant="warning" className="shrink-0">
+              Private
+            </Badge>
+          ) : (
+            <Badge variant="success" className="shrink-0">
+              Official
+            </Badge>
+          )}
+        </div>
         {source.article_number && (
           <p className="truncate text-[11px] text-muted-foreground">
             Madde {source.article_number}
             {source.article_title ? ` — ${source.article_title}` : ""}
           </p>
         )}
+        {source.jurisdiction_code ? (
+          <p className="truncate text-[11px] text-muted-foreground">
+            Jurisdiction: {source.jurisdiction_code}
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function TracePanel({
+  trace,
+  loading,
+}: {
+  trace: RetrievalTracePayload | null;
+  loading: boolean;
+}) {
+  if (loading) {
+    return (
+      <div className="mt-3 rounded-xl border border-border bg-secondary/20 px-4 py-3 text-xs text-muted-foreground">
+        Retrieval trace yukleniyor...
+      </div>
+    );
+  }
+
+  if (!trace) return null;
+
+  const sections = [
+    { key: "exact", label: "Exact" },
+    { key: "sparse", label: "Sparse" },
+    { key: "dense", label: "Dense" },
+    { key: "reranked", label: "Reranked" },
+  ] as const;
+
+  return (
+    <div className="mt-3 rounded-xl border border-border bg-secondary/20 p-4">
+      <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+        <Badge variant="neutral">{trace.answer_mode}</Badge>
+        <Badge variant="neutral">{trace.as_of_date}</Badge>
+        {typeof trace.confidence === "number" ? (
+          <Badge variant="success">{`confidence ${trace.confidence.toFixed(2)}`}</Badge>
+        ) : null}
+      </div>
+
+      <div className="mt-3 grid gap-3 md:grid-cols-2">
+        {sections.map((section) => {
+          const rows = Array.isArray(trace.retrieval_trace?.[section.key])
+            ? trace.retrieval_trace?.[section.key] ?? []
+            : [];
+
+          return (
+            <div key={section.key} className="rounded-lg border border-border bg-card px-3 py-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-foreground">
+                {section.label}
+              </p>
+              <p className="mt-1 text-[11px] text-muted-foreground">{rows.length} aday</p>
+              <div className="mt-2 space-y-2">
+                {rows.slice(0, 3).map((row, index) => (
+                  <div key={`${section.key}-${index}`} className="rounded-md bg-secondary/40 px-2 py-2">
+                    <p className="text-xs font-medium text-foreground">
+                      {String(row.law ?? row.doc_title ?? row.official_citation ?? "Kaynak")}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {String(row.article ?? row.article_number ?? row.title ?? "")}
+                    </p>
+                  </div>
+                ))}
+                {rows.length === 0 ? (
+                  <p className="text-[11px] text-muted-foreground">Kayit yok.</p>
+                ) : null}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -373,6 +547,12 @@ function MessageBubble({
   onNavigate,
   onFollowUpNavigate,
   onFollowUpPrompt,
+  onActionDecision,
+  actionInFlightId,
+  onToggleTrace,
+  traceOpen,
+  trace,
+  traceLoading,
 }: {
   message: ChatMessage;
   onToggleSave?: (id: string) => void;
@@ -380,6 +560,12 @@ function MessageBubble({
   onNavigate: (url: string) => void;
   onFollowUpNavigate: (action: NovaFollowUpAction) => void;
   onFollowUpPrompt: (action: NovaFollowUpAction) => void;
+  onActionDecision: (action: NovaActionHint, decision: "confirm" | "cancel") => void;
+  actionInFlightId?: string | null;
+  onToggleTrace?: (message: ChatMessage) => void;
+  traceOpen?: boolean;
+  trace?: RetrievalTracePayload | null;
+  traceLoading?: boolean;
 }) {
   const { locale } = useI18n();
   const ui = getNovaUiCopy(locale);
@@ -466,6 +652,61 @@ function MessageBubble({
         {/* Navigation */}
         {!isUser && message.navigation && (
           <NavigationCard navigation={message.navigation} onNavigate={onNavigate} />
+        )}
+
+        {!isUser && message.toolPreview && (
+          <div className="mt-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-primary">
+              {ui.solutionCenter.toolPreviewLabel}
+            </div>
+            <p className="mt-1 text-sm font-semibold text-foreground">{message.toolPreview.title}</p>
+            <p className="mt-1 text-xs leading-6 text-muted-foreground">{message.toolPreview.summary}</p>
+            {message.actionHint?.action_run_id && message.toolPreview.requiresConfirmation ? (
+              <div className="mt-3 flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={actionInFlightId === message.actionHint.action_run_id}
+                  onClick={() => onActionDecision(message.actionHint as NovaActionHint, "confirm")}
+                >
+                  {actionInFlightId === message.actionHint.action_run_id
+                    ? ui.solutionCenter.actionRunning
+                    : ui.solutionCenter.approveAction}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={actionInFlightId === message.actionHint.action_run_id}
+                  onClick={() => onActionDecision(message.actionHint as NovaActionHint, "cancel")}
+                >
+                  {ui.solutionCenter.cancelAction}
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        )}
+
+        {!isUser && message.draft && (
+          <div className="mt-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
+              {ui.solutionCenter.draftReadyLabel}
+            </div>
+            <p className="mt-1 text-sm font-semibold text-foreground">{message.draft.title}</p>
+            {message.draft.summary ? (
+              <p className="mt-1 text-xs leading-6 text-muted-foreground">{message.draft.summary}</p>
+            ) : null}
+          </div>
+        )}
+
+        {!isUser && message.safetyBlock && (
+          <div className="mt-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-amber-700">
+              {ui.solutionCenter.safetyBlockLabel}
+            </div>
+            <p className="mt-1 text-sm font-semibold text-foreground">{message.safetyBlock.title}</p>
+            <p className="mt-1 text-xs leading-6 text-muted-foreground">{message.safetyBlock.message}</p>
+          </div>
         )}
 
         {!isUser && message.workflow && (
@@ -587,8 +828,33 @@ function MessageBubble({
               </svg>
               {ui.solutionCenter.copy}
             </button>
+            {message.retrievalRunId ? (
+              <button
+                type="button"
+                onClick={() => onToggleTrace?.(message)}
+                className="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 8v8" />
+                  <path d="M8 12h8" />
+                </svg>
+                {traceOpen ? "Trace gizle" : "Trace goster"}
+              </button>
+            ) : null}
           </div>
         )}
+        {traceOpen ? <TracePanel trace={trace ?? null} loading={Boolean(traceLoading)} /> : null}
       </div>
     </div>
   );
@@ -747,12 +1013,68 @@ export default function SolutionCenterPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [actionInFlightId, setActionInFlightId] = useState<string | null>(null);
   const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const [activeWorkspace, setActiveWorkspace] = useState<WorkspaceRow | null>(null);
   const [proactiveBrief, setProactiveBrief] = useState<NovaProactiveBrief | null>(null);
   const [loadingProactive, setLoadingProactive] = useState(false);
+  const [asOfDate, setAsOfDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [answerMode, setAnswerMode] = useState<"extractive" | "polish">("extractive");
+  const [openTraceMessageId, setOpenTraceMessageId] = useState<string | null>(null);
+  const [traceLoading, setTraceLoading] = useState(false);
+  const [traceCache, setTraceCache] = useState<Record<string, RetrievalTracePayload>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const proactiveLocaleRef = useRef<string | null>(null);
+  const actionPollCancelledRef = useRef(false);
+
+  const buildAssistantMessageFromAgentResponse = useCallback(
+    (data: NovaAgentResponse): ChatMessage => {
+      const docs = normalizeDocumentBlocks(data.documents);
+      const rawSources = Array.isArray(data.sources) ? data.sources : [];
+      const normalizedSources: Source[] = rawSources.map((s: NovaAgentSource) => ({
+        doc_title: s.doc_title || s.law || "",
+        doc_type: s.doc_type || "",
+        doc_number: s.doc_number || "",
+        article_number: s.article_number || s.article || "",
+        article_title: s.article_title || s.title || "",
+        corpus_scope: (s.corpus_scope as "official" | "tenant_private" | undefined) ?? null,
+        jurisdiction_code: s.jurisdiction_code || null,
+      }));
+
+      return {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: data.answer || ui.solutionCenter.routeTitle,
+        sources: normalizedSources,
+        documents: docs,
+        navigation: (data.navigation as NavigationAction | null) || null,
+        workflow: (data.workflow as NovaWorkflowSummary | null) || null,
+        followUpActions: normalizeFollowUpActions(data.follow_up_actions),
+        actionHint:
+          data.action_hint && typeof data.action_hint === "object"
+            ? (data.action_hint as NovaActionHint)
+            : null,
+        toolPreview: data.tool_preview || null,
+        draft: data.draft || null,
+        safetyBlock: data.safety_block || null,
+        queryId: data.query_id || data.session_id || undefined,
+        retrievalRunId: data.retrieval_run_id || null,
+        asOfDate: data.as_of_date || asOfDate,
+        answerMode: data.answer_mode || answerMode,
+        timestamp: new Date(),
+        saved: false,
+        feedback: null,
+      };
+    },
+    [answerMode, asOfDate, ui.solutionCenter.routeTitle],
+  );
+
+  useEffect(() => {
+    return () => {
+      actionPollCancelledRef.current = true;
+    };
+  }, []);
 
   // Fetch organization_id from user_profiles
   useEffect(() => {
@@ -764,6 +1086,8 @@ export default function SolutionCenterPage() {
       if (!user) return;
       const { data: profile } = await supabase.from("user_profiles").select("organization_id").eq("auth_user_id", user.id).single();
       if (profile?.organization_id) setOrganizationId(profile.organization_id);
+      const workspace = await getActiveWorkspace();
+      if (workspace) setActiveWorkspace(workspace);
     })();
   }, []);
 
@@ -831,6 +1155,14 @@ export default function SolutionCenterPage() {
         content: m.content,
       }));
 
+      const resolvedWorkspaceId =
+        activeWorkspace?.id &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          activeWorkspace.id,
+        )
+          ? activeWorkspace.id
+          : null;
+
       const response = await fetch("/api/nova/chat", {
         method: "POST",
         headers: {
@@ -839,19 +1171,28 @@ export default function SolutionCenterPage() {
         body: JSON.stringify({
           message: query,
           language: locale,
+          workspace_id: resolvedWorkspaceId,
+          jurisdiction_code: activeWorkspace?.country_code ?? "TR",
+          as_of_date: asOfDate,
+          answer_mode: answerMode,
+          mode: "agent",
+          context_surface: "solution_center",
           access_token: session?.access_token ?? null,
           history,
         }),
       });
 
-      const data = await response.json().catch(() => ({}));
+      const data: NovaAgentResponse = await response.json().catch(() => ({
+        type: "safety_block",
+        answer: ui.solutionCenter.unavailable,
+      }));
 
       if (!response.ok) {
         throw { context: new Response(JSON.stringify(data), { status: response.status }) };
       }
 
       // v13 response: { answer, sources, tools_used, session_id, ... }
-      const docs: DocumentBlock[] = data.documents || [];
+      const docs = normalizeDocumentBlocks(data.documents);
 
       // Save generated documents to DB (if available)
       const queryId = data.query_id || data.session_id || null;
@@ -867,37 +1208,8 @@ export default function SolutionCenterPage() {
       }
 
       // Normalize sources — v13 returns {law, article, title}, frontend expects {doc_title, article_number, article_title}
-      const rawSources = data.sources || [];
-      const normalizedSources: Source[] = rawSources.map((s: Record<string, string>) => ({
-        doc_title: s.doc_title || s.law || "",
-        doc_type: s.doc_type || "",
-        doc_number: s.doc_number || "",
-        article_number: s.article_number || s.article || "",
-        article_title: s.article_title || s.title || "",
-      }));
-
-      const navigation: NavigationAction | null = data.navigation || null;
-      const workflow: NovaWorkflowSummary | null = data.workflow || null;
-      const followUpActions: NovaFollowUpAction[] = Array.isArray(data.follow_up_actions)
-        ? data.follow_up_actions
-        : [];
-
-      const assistantMsg: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: data.answer || data.response || "Yanıt alınamadı.",
-        sources: normalizedSources,
-        documents: docs,
-        navigation,
-        workflow,
-        followUpActions,
-        queryId: queryId,
-        timestamp: new Date(),
-        saved: false,
-        feedback: null,
-      };
-
-      setMessages((prev) => [...prev, assistantMsg]);
+      const rawSources = Array.isArray(data.sources) ? data.sources : [];
+      setMessages((prev) => [...prev, buildAssistantMessageFromAgentResponse(data)]);
     } catch (err) {
       const errorMsg: ChatMessage = {
         id: crypto.randomUUID(),
@@ -970,6 +1282,130 @@ export default function SolutionCenterPage() {
     }
   }
 
+  async function handlePendingAction(actionHint: NovaActionHint, decision: "confirm" | "cancel") {
+    const actionRunId = actionHint.action_run_id;
+    if (!actionRunId) return;
+
+    setActionInFlightId(actionRunId);
+    try {
+      const response = await fetch(`/api/nova/actions/${actionRunId}/${decision}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+          decision === "confirm"
+            ? {
+                idempotency_key: crypto.randomUUID(),
+                context_surface: "solution_center",
+              }
+            : {
+                context_surface: "solution_center",
+              },
+        ),
+      });
+
+      const data: NovaAgentResponse = await response.json().catch(() => ({
+        type: "safety_block",
+        answer: ui.solutionCenter.routeTitle,
+      }));
+
+      if (!response.ok) {
+        throw { context: new Response(JSON.stringify(data), { status: response.status }) };
+      }
+
+      setMessages((prev) => [
+        ...prev.map((msg) =>
+          msg.actionHint?.action_run_id === actionRunId
+            ? { ...msg, actionHint: null }
+            : msg,
+        ),
+        buildAssistantMessageFromAgentResponse(data),
+      ]);
+
+      const executionStatus =
+        data.action_hint && typeof data.action_hint === "object"
+          ? data.action_hint.execution_status
+          : null;
+
+      if (decision === "confirm" && (executionStatus === "queued" || executionStatus === "processing")) {
+        void pollActionRunUntilSettled(actionRunId);
+      }
+    } catch (err) {
+      const errorMsg: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: await resolveNovaRuntimeErrorMessage(locale, err),
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMsg]);
+    } finally {
+      setActionInFlightId(null);
+    }
+  }
+
+  async function pollActionRunUntilSettled(actionRunId: string) {
+    for (let attempt = 0; attempt < 12; attempt += 1) {
+      if (actionPollCancelledRef.current) return;
+
+      await new Promise((resolve) => window.setTimeout(resolve, 2500));
+
+      const response = await fetch(`/api/nova/actions/${actionRunId}`, { cache: "no-store" });
+      const data: NovaAgentResponse = await response.json().catch(() => ({
+        type: "message",
+        answer: ui.solutionCenter.unavailable,
+      }));
+
+      if (!response.ok) {
+        return;
+      }
+
+      const executionStatus =
+        data.action_hint && typeof data.action_hint === "object"
+          ? data.action_hint.execution_status
+          : null;
+
+      if (executionStatus === "queued" || executionStatus === "processing") {
+        continue;
+      }
+
+      setMessages((prev) => [...prev, buildAssistantMessageFromAgentResponse(data)]);
+      return;
+    }
+  }
+
+  async function handleToggleTrace(message: ChatMessage) {
+    if (!message.retrievalRunId) return;
+
+    if (openTraceMessageId === message.id) {
+      setOpenTraceMessageId(null);
+      return;
+    }
+
+    setOpenTraceMessageId(message.id);
+
+    if (traceCache[message.retrievalRunId]) {
+      return;
+    }
+
+    setTraceLoading(true);
+    try {
+      const response = await fetch(`/api/legal/trace/${message.retrievalRunId}`);
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data) {
+        return;
+      }
+
+      setTraceCache((prev) => ({
+        ...prev,
+        [message.retrievalRunId as string]: data as RetrievalTracePayload,
+      }));
+    } finally {
+      setTraceLoading(false);
+    }
+  }
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -999,6 +1435,61 @@ export default function SolutionCenterPage() {
             <Badge variant="neutral">RAG</Badge>
             <Badge variant="success">Navigation</Badge>
             <Badge variant="warning">{ui.solutionCenter.actionReadyBadge}</Badge>
+            {activeWorkspace ? (
+              <Badge variant="neutral">{`${activeWorkspace.country_code} / ${activeWorkspace.name}`}</Badge>
+            ) : null}
+          </div>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <label className="flex flex-col gap-1">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              As Of Date
+            </span>
+            <input
+              type="date"
+              value={asOfDate}
+              onChange={(e) => setAsOfDate(e.target.value)}
+              className={cn(
+                "h-11 rounded-xl border px-3 text-sm text-foreground transition-colors transition-shadow",
+                "border-border bg-card shadow-[var(--shadow-soft)]",
+                "hover:border-primary/40",
+                "focus-visible:border-primary focus-visible:shadow-[0_0_0_4px_var(--ring)] focus-visible:outline-none",
+              )}
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              Answer Mode
+            </span>
+            <select
+              value={answerMode}
+              onChange={(e) => setAnswerMode(e.target.value as "extractive" | "polish")}
+              className={cn(
+                "h-11 rounded-xl border px-3 text-sm text-foreground transition-colors transition-shadow",
+                "border-border bg-card shadow-[var(--shadow-soft)]",
+                "hover:border-primary/40",
+                "focus-visible:border-primary focus-visible:shadow-[0_0_0_4px_var(--ring)] focus-visible:outline-none",
+              )}
+            >
+              <option value="extractive">Extractive</option>
+              <option value="polish">Polish</option>
+            </select>
+          </label>
+          <div className="rounded-xl border border-border bg-secondary/20 px-3 py-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              Jurisdiction
+            </p>
+            <p className="mt-1 text-sm font-medium text-foreground">
+              {activeWorkspace?.country_code ?? "Not set"}
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-secondary/20 px-3 py-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              Workspace
+            </p>
+            <p className="mt-1 text-sm font-medium text-foreground">
+              {activeWorkspace?.name ?? "Default"}
+            </p>
           </div>
         </div>
       </div>
@@ -1016,6 +1507,12 @@ export default function SolutionCenterPage() {
                 onNavigate={(url) => router.push(url)}
                 onFollowUpNavigate={handleFollowUpNavigate}
                 onFollowUpPrompt={handleFollowUpPrompt}
+                onActionDecision={handlePendingAction}
+                actionInFlightId={actionInFlightId}
+                onToggleTrace={handleToggleTrace}
+                traceOpen={openTraceMessageId === msg.id}
+                trace={msg.retrievalRunId ? traceCache[msg.retrievalRunId] ?? null : null}
+                traceLoading={traceLoading && openTraceMessageId === msg.id}
               />
             ))}
             {loading && <TypingIndicator />}

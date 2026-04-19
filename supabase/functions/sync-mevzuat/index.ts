@@ -7,6 +7,64 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+async function ensureLegalDocumentVersion(supabase: ReturnType<typeof createClient>, doc: {
+  id: string;
+  doc_number?: string | null;
+  title: string;
+  effective_date?: string | null;
+  official_gazette_date?: string | null;
+  source_hash?: string | null;
+  full_text?: string | null;
+  source_url?: string | null;
+}) {
+  const effectiveFrom =
+    doc.effective_date ??
+    doc.official_gazette_date ??
+    new Date().toISOString().slice(0, 10);
+
+  const { data: existing } = await supabase
+    .from('legal_document_versions')
+    .select('id')
+    .eq('document_id', doc.id)
+    .eq('effective_from', effectiveFrom)
+    .maybeSingle();
+
+  if (existing?.id) {
+    await supabase
+      .from('legal_document_versions')
+      .update({
+        version_label: doc.doc_number ?? doc.title,
+        source_hash: doc.source_hash ?? null,
+        raw_text: doc.full_text ?? null,
+        normalized_text: doc.full_text ?? null,
+        official_url: doc.source_url ?? null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', existing.id);
+
+    return existing.id as string;
+  }
+
+  const { data, error } = await supabase
+    .from('legal_document_versions')
+    .insert({
+      document_id: doc.id,
+      version_label: doc.doc_number ?? doc.title,
+      effective_from: effectiveFrom,
+      publication_date: doc.official_gazette_date ?? effectiveFrom,
+      source_hash: doc.source_hash ?? null,
+      raw_text: doc.full_text ?? null,
+      normalized_text: doc.full_text ?? null,
+      official_url: doc.source_url ?? null,
+      source_type: 'official_document',
+    })
+    .select('id')
+    .single();
+
+  if (error) throw error;
+  return data.id as string;
+}
+
 function getMevzuatHtmlUrl(docType: string, mevzuatNo: string): string {
   if (docType === 'regulation') {
     return `https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=${mevzuatNo}&MevzuatTur=7&MevzuatTertip=5`;
@@ -171,11 +229,22 @@ Deno.serve(async (req: Request) => {
       
       const articles = parseArticlesFromHtml(htmlContent, doc.title);
       if (articles.length === 0) return jsonResp({ error: 'Madde bulunamadi', htmlLength: htmlContent.length }, 400);
+
+      const versionId = await ensureLegalDocumentVersion(supabase, {
+        id: doc.id,
+        doc_number: doc.doc_number,
+        title: doc.title,
+        effective_date: doc.effective_date,
+        official_gazette_date: doc.official_gazette_date,
+        source_hash: doc.source_hash,
+        full_text: htmlContent,
+        source_url: doc.source_url,
+      });
       
       await supabase.from('legal_chunks').delete().eq('document_id', document_id);
       
       const chunks = articles.map((article, index) => ({
-        document_id, chunk_index: index,
+        document_id, version_id: versionId, chunk_index: index,
         article_number: article.article_number, article_title: article.article_title,
         content: article.content, article_type: article.article_type,
         is_repealed: article.is_repealed, content_tokens: Math.ceil(article.content.length / 4),

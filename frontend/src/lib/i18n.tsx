@@ -1,520 +1,87 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+/**
+ * Phase 1 shim: this module used to hold a custom React Context + a
+ * hand-written message dictionary. We have moved to `next-intl` and the real
+ * messages now live in `frontend/messages/*.json`.
+ *
+ * `useI18n()` / `useTranslation()` continue to work so existing call-sites
+ * (protected-shell, public-header, language-selector, chat-widget,
+ * solution-center, training, etc.) do not need to be touched in a single pass.
+ *
+ * New code should prefer `useTranslations()` / `useLocale()` from `next-intl`.
+ */
 
-/* ------------------------------------------------------------------ */
-/* Types                                                               */
-/* ------------------------------------------------------------------ */
+import { useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useLocale as useNextLocale, useTranslations as useNextTranslations } from "next-intl";
+import { LOCALE_COOKIE, locales as supportedLocales, type Locale } from "@/i18n/routing";
 
-export type Locale = "tr" | "en" | "ar" | "ru" | "de" | "fr" | "es" | "zh" | "ja" | "hi" | "ko" | "az" | "id";
+export type { Locale };
+export const SUPPORTED_LOCALES = supportedLocales;
 
-type NestedMessages = { [key: string]: string | NestedMessages };
+/** Legacy storage key kept for backwards compatibility with older clients. */
+const LEGACY_STORAGE_KEY = "risknova-locale";
 
-/* ------------------------------------------------------------------ */
-/* Message dictionaries                                                */
-/* ------------------------------------------------------------------ */
+function persistLocale(locale: Locale) {
+  if (typeof document === "undefined") return;
 
-const messages: Record<Locale, NestedMessages> = {
-  tr: {
-    common: {
-      login: "Giriş Yap",
-      register: "Hemen Başla",
-      freeStart: "Ücretsiz Başla",
-      platformLogin: "Platforma Giriş Yap",
-      profile: "Profil",
-      settings: "Ayarlar",
-      save: "Kaydet",
-      cancel: "İptal",
-      delete: "Sil",
-      edit: "Düzenle",
-      close: "Kapat",
-      search: "Ara",
-      loading: "Yükleniyor...",
-      noData: "Veri bulunamadı",
-      error: "Hata oluştu",
-      success: "Başarılı",
-      download: "İndir",
-      copy: "Kopyala",
-      saved: "Kaydedildi",
-    },
-    nav: {
-      dashboard: "Dashboard",
-      companies: "Firmalar",
-      riskAnalysis: "Risk Analizi",
-      correctiveActions: "DÖF'ler",
-      incidents: "Olaylar",
-      analizler: "Analizler",
-      library: "İSG Kütüphanesi",
-      documents: "Dokümanlar",
-      scoreHistory: "Skor Geçmişi",
-      planner: "Ajanda",
-      timesheet: "Puantaj",
-      solutionCenter: "Nova",
-      training: "Eğitim & Sınav",
-      digitalTwin: "Dijital İkiz",
-      reports: "Raporlar",
-      settings: "Ayarlar",
-      features: "Özellikler",
-      howItWorks: "Nasıl Çalışır",
-    },
-    landing: {
-      badge: "YAPAY ZEKA DESTEKLİ İSG PLATFORMU",
-      heroTitle1: "İSG Risk Yönetimini",
-      heroTitle2: "Sanata",
-      heroTitle3: "Dönüştürün",
-      heroDescription: "RiskNova; risk analizi, saha takibi, kayıt, raporlama ve karar desteği süreçlerini tek ürün hissi içinde birleştirmek için tasarlanmış AI destekli İSG platformudur.",
-      statsUsers: "AKTİF KULLANICI",
-      statsUptime: "UPTIME",
-      statsAnalysis: "ANALİZ SÜRESİ",
-      statsScoring: "RİSK PUANLAMA",
-      featuresEyebrow: "ÖZELLİKLER",
-      featuresTitle1: "Kapsamlı",
-      featuresTitle2: "Çözümler",
-      featuresDescription: "İSG süreçlerinizi uçtan uca yöneten profesyonel araçlar.",
-      feat1Title: "AI destekli risk analizi",
-      feat1Desc: "Manuel veya modül bazlı risk girdilerini tek akışta toplayan, sonuçları daha görünür hâle getiren ürün temeli.",
-      feat2Title: "Saha bulguları ve aksiyon yönetimi",
-      feat2Desc: "Denetim, bulgu, görev ve takip alanlarını operasyon ekibinin okuyabileceği düzen içinde bir araya getirir.",
-      feat3Title: "Raporlama ve kayıt altyapısı",
-      feat3Desc: "Oluşturulan sonuçların geçmiş, detay ve çıktı süreçlerine bağlanabileceği tutarlı ekran omurgası sağlar.",
-      feat4Title: "Risk modülü için ürün vitrini",
-      feat4Desc: "Risk analizi ekranı, sonuç ekranı ve skor geçmişi gibi alanlar için profesyonel ve güven veren zemin hazırlar.",
-      feat5Title: "Mobil, tablet ve desktop uyumu",
-      feat5Desc: "Tek kolon, iki kolon ve geniş ekran yerleşimleriyle farklı cihazlarda okunabilirliğini korur.",
-      feat6Title: "Kurumsal ve modern görsel dil",
-      feat6Desc: "Açık yüzeyler, kontrollü kontrast ve net CTA yapısıyla profesyonel SaaS hissi üretir.",
-      howEyebrow: "NASIL ÇALIŞIR",
-      howTitle1: "Dört Adımda",
-      howTitle2: "Kontrol",
-      howDescription: "Platformumuzu kullanmaya başlamak için basit adımlar.",
-      step1Title: "Güvenli Erişim",
-      step1Desc: "Kurumunuza özel hesabınızla platforma güvenli bir şekilde giriş yapın.",
-      step2Title: "Risk Verisinin Girilmesi",
-      step2Desc: "Alan denetimleri, tehlike bildirimleri ve risk parametrelerini sisteme aktarın.",
-      step3Title: "R-SKOR Üretimi",
-      step3Desc: "AI destekli analiz motorumuz verilerinizi işleyerek risk skorlarını hesaplar.",
-      step4Title: "Aksiyon ve Takip",
-      step4Desc: "Sonuçlara dayalı aksiyon planları oluşturun, takip edin ve raporlayın.",
-      whyEyebrow: "NEDEN RİSKNOVA",
-      whyTitle1: "Güven Veren",
-      whyTitle2: "Premium",
-      whyTitle3: "Deneyim",
-      whyDescription: "Mavi güven hissini ve altın kalite vurgusunu taşıyan, açık yüzeyler ve yumuşak kontrast ile profesyonel SaaS deneyimi oluşturur.",
-      whyBullet1: "Temiz, modern ve güven veren İSG görünümü",
-      whyBullet2: "Operasyon odaklı, dikkat dağıtmayan ekran kurgusu",
-      whyBullet3: "Risk Intelligence modülüne hazır tasarım sistemi",
-      whyBullet4: "Multi-tenant organizasyon bazlı güvenli yapı",
-      whyBullet5: "AI destekli karar destek mekanizması",
-      whyBullet6: "Kurumsal raporlama ve arşiv altyapısı",
-      ctaEyebrow: "HAZIR CTA ALANI",
-      ctaTitle: "Risk modülünü ürün vitrini hâline getirin",
-      ctaDescription: "Profesyonel görünüm, güçlü altyapı ve AI desteği ile İSG süreçlerinizi tek platformda yönetin.",
-      footerDescription: "AI destekli İSG karar destek platformu",
-      footerProduct: "Ürün",
-      footerLegal: "Yasal",
-      footerPrivacy: "Gizlilik Politikası",
-      footerTerms: "Kullanım Koşulları",
-      footerContact: "İletişim",
-      footerRights: "Tüm hakları saklıdır.",
-    },
-    auth: {
-      loginTitle: "Hesabına giriş yap",
-      loginDescription: "Risk analizi, saha takibi ve raporlama süreçlerini tek platformda yönetmeye devam et.",
-      loginEmail: "E-posta adresi",
-      loginPassword: "Şifre",
-      loginButton: "Giriş Yap",
-      loginLoading: "Giriş yapılıyor...",
-      loginForgot: "Şifremi unuttum",
-      loginNoAccount: "Hesabın yok mu?",
-      loginRegister: "Kayıt ol",
-      registerTitle: "Hesap oluştur",
-      registerDescription: "İSG süreçlerinizi dijitalleştirin ve AI destekli karar verme mekanizmasından faydalanın.",
-      registerName: "Ad Soyad",
-      registerEmail: "E-posta adresi",
-      registerPassword: "Şifre",
-      registerButton: "Kayıt Ol",
-      registerLoading: "Kayıt oluşturuluyor...",
-      registerHasAccount: "Zaten hesabın var mı?",
-      registerLogin: "Giriş yap",
-      forgotTitle: "Şifreni sıfırla",
-      forgotDescription: "E-posta adresini gir, sana şifre sıfırlama bağlantısı gönderelim.",
-      forgotButton: "Sıfırlama bağlantısı gönder",
-      forgotBack: "Girişe dön",
-    },
-    solutionCenter: {
-      title: "Nova",
-      description: "Nova; mevzuatı yorumlayan, sizi doğru ekrana götüren, belge ve operasyon akışlarını başlatan kurumsal İSG ajanıdır.",
-      inputPlaceholder: "Nova'ya ne yapmak istediğinizi yazın...",
-      queries: "sorgu",
-      referenced: "mevzuat referanslı",
-      sources: "mevzuat kaynağı",
-      save: "Kaydet",
-      saved: "Kaydedildi",
-      copy: "Kopyala",
-      chat: "Sohbet",
-      history: "Geçmiş",
-      documents: "Dokümanlarım",
-    },
-  },
+  const secure = typeof window !== "undefined" && window.location.protocol === "https:";
+  const attrs = [
+    `${LOCALE_COOKIE}=${locale}`,
+    "path=/",
+    `max-age=${60 * 60 * 24 * 365}`,
+    "samesite=lax",
+    secure ? "secure" : "",
+  ]
+    .filter(Boolean)
+    .join("; ");
+  document.cookie = attrs;
 
-  en: {
-    common: {
-      login: "Sign In",
-      register: "Get Started",
-      freeStart: "Start Free",
-      platformLogin: "Sign In to Platform",
-      profile: "Profile",
-      settings: "Settings",
-      save: "Save",
-      cancel: "Cancel",
-      delete: "Delete",
-      edit: "Edit",
-      close: "Close",
-      search: "Search",
-      loading: "Loading...",
-      noData: "No data found",
-      error: "An error occurred",
-      success: "Success",
-      download: "Download",
-      copy: "Copy",
-      saved: "Saved",
-    },
-    nav: {
-      dashboard: "Dashboard",
-      companies: "Companies",
-      riskAnalysis: "Risk Analysis",
-      correctiveActions: "Corrective Actions",
-      incidents: "Incidents",
-      library: "OHS Library",
-      documents: "Documents",
-      scoreHistory: "Score History",
-      planner: "Planner",
-      timesheet: "Timesheet",
-      solutionCenter: "Nova",
-      training: "Training & Exams",
-      digitalTwin: "Digital Twin",
-      reports: "Reports",
-      settings: "Settings",
-      features: "Features",
-      howItWorks: "How It Works",
-    },
-    landing: {
-      badge: "AI-POWERED OHS PLATFORM",
-      heroTitle1: "Transform OHS Risk",
-      heroTitle2: "Management",
-      heroTitle3: "Into Art",
-      heroDescription: "RiskNova is an AI-powered OHS platform designed to unify risk analysis, field tracking, recording, reporting and decision support processes into a single product experience.",
-      statsUsers: "ACTIVE USERS",
-      statsUptime: "UPTIME",
-      statsAnalysis: "ANALYSIS TIME",
-      statsScoring: "RISK SCORING",
-      featuresEyebrow: "FEATURES",
-      featuresTitle1: "Comprehensive",
-      featuresTitle2: "Solutions",
-      featuresDescription: "Professional tools that manage your OHS processes end-to-end.",
-      feat1Title: "AI-powered risk analysis",
-      feat1Desc: "A product foundation that collects manual or module-based risk inputs in a single flow and makes results more visible.",
-      feat2Title: "Field findings & action management",
-      feat2Desc: "Brings together audit, finding, task and tracking areas in an order that the operations team can read.",
-      feat3Title: "Reporting & recording infrastructure",
-      feat3Desc: "Provides a consistent screen backbone where generated results can be linked to history, detail and output processes.",
-      feat4Title: "Product showcase for risk module",
-      feat4Desc: "Prepares a professional and trust-inspiring foundation for areas such as risk analysis screen, results screen and score history.",
-      feat5Title: "Mobile, tablet & desktop responsive",
-      feat5Desc: "Maintains readability across different devices with single column, two column and wide screen layouts.",
-      feat6Title: "Corporate & modern visual language",
-      feat6Desc: "Creates a professional SaaS feel with clean surfaces, controlled contrast and clear CTA structure.",
-      howEyebrow: "HOW IT WORKS",
-      howTitle1: "Control in",
-      howTitle2: "Four Steps",
-      howDescription: "Simple steps to get started with our platform.",
-      step1Title: "Secure Access",
-      step1Desc: "Sign in securely to the platform with your organization-specific account.",
-      step2Title: "Risk Data Entry",
-      step2Desc: "Transfer field audits, hazard reports and risk parameters to the system.",
-      step3Title: "R-SCORE Generation",
-      step3Desc: "Our AI-powered analysis engine processes your data to calculate risk scores.",
-      step4Title: "Action & Follow-up",
-      step4Desc: "Create action plans based on results, track and report.",
-      whyEyebrow: "WHY RISKNOVA",
-      whyTitle1: "Trust-Inspiring",
-      whyTitle2: "Premium",
-      whyTitle3: "Experience",
-      whyDescription: "Creates a professional SaaS experience with blue trust and gold quality emphasis, clean surfaces and soft contrast.",
-      whyBullet1: "Clean, modern and trust-inspiring OHS appearance",
-      whyBullet2: "Operation-focused, distraction-free screen layout",
-      whyBullet3: "Design system ready for Risk Intelligence module",
-      whyBullet4: "Multi-tenant organization-based secure structure",
-      whyBullet5: "AI-powered decision support mechanism",
-      whyBullet6: "Corporate reporting and archive infrastructure",
-      ctaEyebrow: "READY CTA AREA",
-      ctaTitle: "Turn your risk module into a product showcase",
-      ctaDescription: "Manage your OHS processes on a single platform with professional appearance, powerful infrastructure and AI support.",
-      footerDescription: "AI-powered OHS decision support platform",
-      footerProduct: "Product",
-      footerLegal: "Legal",
-      footerPrivacy: "Privacy Policy",
-      footerTerms: "Terms of Use",
-      footerContact: "Contact",
-      footerRights: "All rights reserved.",
-    },
-    auth: {
-      loginTitle: "Sign in to your account",
-      loginDescription: "Continue managing risk analysis, field tracking and reporting processes on a single platform.",
-      loginEmail: "Email address",
-      loginPassword: "Password",
-      loginButton: "Sign In",
-      loginLoading: "Signing in...",
-      loginForgot: "Forgot password",
-      loginNoAccount: "Don't have an account?",
-      loginRegister: "Sign up",
-      registerTitle: "Create an account",
-      registerDescription: "Digitize your OHS processes and benefit from AI-powered decision-making mechanisms.",
-      registerName: "Full Name",
-      registerEmail: "Email address",
-      registerPassword: "Password",
-      registerButton: "Sign Up",
-      registerLoading: "Creating account...",
-      registerHasAccount: "Already have an account?",
-      registerLogin: "Sign in",
-      forgotTitle: "Reset your password",
-      forgotDescription: "Enter your email address and we'll send you a password reset link.",
-      forgotButton: "Send reset link",
-      forgotBack: "Back to sign in",
-    },
-    solutionCenter: {
-      title: "Nova",
-      description: "Nova is the operational OHS agent that interprets legislation, routes you to the right module, and starts document or workflow actions.",
-      inputPlaceholder: "Tell Nova what you want to do...",
-      queries: "queries",
-      referenced: "with references",
-      sources: "legislation sources",
-      save: "Save",
-      saved: "Saved",
-      copy: "Copy",
-      chat: "Chat",
-      history: "History",
-      documents: "My Documents",
-    },
-  },
-
-  ar: {
-    common: {
-      login: "\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644",
-      register: "\u0627\u0628\u062F\u0623 \u0627\u0644\u0622\u0646",
-      freeStart: "\u0627\u0628\u062F\u0623 \u0645\u062C\u0627\u0646\u0627\u064B",
-      platformLogin: "\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0625\u0644\u0649 \u0627\u0644\u0645\u0646\u0635\u0629",
-      profile: "\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062E\u0635\u064A",
-      settings: "\u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A",
-      save: "\u062D\u0641\u0638",
-      cancel: "\u0625\u0644\u063A\u0627\u0621",
-      delete: "\u062D\u0630\u0641",
-      edit: "\u062A\u0639\u062F\u064A\u0644",
-      close: "\u0625\u063A\u0644\u0627\u0642",
-      search: "\u0628\u062D\u062B",
-      loading: "\u062C\u0627\u0631\u064A \u0627\u0644\u062A\u062D\u0645\u064A\u0644...",
-      noData: "\u0644\u0627 \u062A\u0648\u062C\u062F \u0628\u064A\u0627\u0646\u0627\u062A",
-      error: "\u062D\u062F\u062B \u062E\u0637\u0623",
-      success: "\u0646\u062C\u0627\u062D",
-      download: "\u062A\u062D\u0645\u064A\u0644",
-      copy: "\u0646\u0633\u062E",
-      saved: "\u062A\u0645 \u0627\u0644\u062D\u0641\u0638",
-    },
-    nav: {
-      dashboard: "\u0644\u0648\u062D\u0629 \u0627\u0644\u0642\u064A\u0627\u062F\u0629",
-      companies: "\u0627\u0644\u0634\u0631\u0643\u0627\u062A",
-      riskAnalysis: "\u062A\u062D\u0644\u064A\u0644 \u0627\u0644\u0645\u062E\u0627\u0637\u0631",
-      incidents: "\u0627\u0644\u062D\u0648\u0627\u062F\u062B",
-      documents: "\u0627\u0644\u0645\u0633\u062A\u0646\u062F\u0627\u062A",
-      scoreHistory: "\u0633\u062C\u0644 \u0627\u0644\u0646\u0642\u0627\u0637",
-      planner: "\u0627\u0644\u0645\u062E\u0637\u0637",
-      timesheet: "\u0627\u0644\u062D\u0636\u0648\u0631",
-      solutionCenter: "\u0645\u0631\u0643\u0632 \u0627\u0644\u062D\u0644\u0648\u0644",
-      training: "\u0627\u0644\u062A\u062F\u0631\u064A\u0628 \u0648\u0627\u0644\u0627\u0645\u062A\u062D\u0627\u0646\u0627\u062A",
-      digitalTwin: "\u0627\u0644\u062A\u0648\u0623\u0645 \u0627\u0644\u0631\u0642\u0645\u064A",
-      reports: "\u0627\u0644\u062A\u0642\u0627\u0631\u064A\u0631",
-      settings: "\u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A",
-      features: "\u0627\u0644\u0645\u0645\u064A\u0632\u0627\u062A",
-      howItWorks: "\u0643\u064A\u0641 \u064A\u0639\u0645\u0644",
-    },
-    landing: {
-      badge: "\u0645\u0646\u0635\u0629 \u0627\u0644\u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u0645\u0647\u0646\u064A\u0629 \u0628\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A",
-      heroTitle1: "\u062D\u0648\u0651\u0644 \u0625\u062F\u0627\u0631\u0629 \u0645\u062E\u0627\u0637\u0631",
-      heroTitle2: "\u0627\u0644\u0633\u0644\u0627\u0645\u0629",
-      heroTitle3: "\u0625\u0644\u0649 \u0641\u0646",
-      heroDescription: "\u0631\u064A\u0633\u0643 \u0646\u0648\u0641\u0627 \u0645\u0646\u0635\u0629 \u0633\u0644\u0627\u0645\u0629 \u0645\u0647\u0646\u064A\u0629 \u0645\u062F\u0639\u0648\u0645\u0629 \u0628\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064A",
-      featuresEyebrow: "\u0627\u0644\u0645\u0645\u064A\u0632\u0627\u062A",
-      howEyebrow: "\u0643\u064A\u0641 \u064A\u0639\u0645\u0644",
-      whyEyebrow: "\u0644\u0645\u0627\u0630\u0627 \u0631\u064A\u0633\u0643 \u0646\u0648\u0641\u0627",
-    },
-    auth: {
-      loginTitle: "\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644",
-      loginEmail: "\u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A",
-      loginPassword: "\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631",
-      loginButton: "\u062F\u062E\u0648\u0644",
-    },
-    solutionCenter: {
-      title: "\u0645\u0631\u0643\u0632 \u0627\u0644\u062D\u0644\u0648\u0644",
-      description: "\u0627\u0637\u0631\u062D \u0623\u0633\u0626\u0644\u062A\u0643 \u062D\u0648\u0644 \u0627\u0644\u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u0645\u0647\u0646\u064A\u0629",
-    },
-  },
-
-  ru: {
-    common: { login: "\u0412\u043E\u0439\u0442\u0438", register: "\u041D\u0430\u0447\u0430\u0442\u044C", save: "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C", cancel: "\u041E\u0442\u043C\u0435\u043D\u0430", delete: "\u0423\u0434\u0430\u043B\u0438\u0442\u044C", search: "\u041F\u043E\u0438\u0441\u043A", loading: "\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430...", download: "\u0421\u043A\u0430\u0447\u0430\u0442\u044C", copy: "\u041A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C" },
-    nav: { dashboard: "\u041F\u0430\u043D\u0435\u043B\u044C", companies: "\u041A\u043E\u043C\u043F\u0430\u043D\u0438\u0438", riskAnalysis: "\u0410\u043D\u0430\u043B\u0438\u0437 \u0440\u0438\u0441\u043A\u043E\u0432", incidents: "\u0418\u043D\u0446\u0438\u0434\u0435\u043D\u0442\u044B", solutionCenter: "\u0426\u0435\u043D\u0442\u0440 \u0440\u0435\u0448\u0435\u043D\u0438\u0439", training: "\u041E\u0431\u0443\u0447\u0435\u043D\u0438\u0435 \u0438 \u044D\u043A\u0437\u0430\u043C\u0435\u043D\u044B", digitalTwin: "\u0426\u0438\u0444\u0440\u043E\u0432\u043E\u0439 \u0434\u0432\u043E\u0439\u043D\u0438\u043A", reports: "\u041E\u0442\u0447\u0435\u0442\u044B", settings: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438" },
-    landing: { badge: "\u041F\u041B\u0410\u0422\u0424\u041E\u0420\u041C\u0410 \u041E\u0422 \u0421 \u0418\u0418", heroTitle1: "\u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u0440\u0438\u0441\u043A\u0430\u043C\u0438", heroTitle2: "\u041E\u0422", heroTitle3: "\u043A\u0430\u043A \u0438\u0441\u043A\u0443\u0441\u0441\u0442\u0432\u043E" },
-    auth: { loginTitle: "\u0412\u043E\u0439\u0442\u0438 \u0432 \u0430\u043A\u043A\u0430\u0443\u043D\u0442", loginEmail: "\u042D\u043B\u0435\u043A\u0442\u0440\u043E\u043D\u043D\u0430\u044F \u043F\u043E\u0447\u0442\u0430", loginPassword: "\u041F\u0430\u0440\u043E\u043B\u044C", loginButton: "\u0412\u043E\u0439\u0442\u0438" },
-    solutionCenter: { title: "\u0426\u0435\u043D\u0442\u0440 \u0440\u0435\u0448\u0435\u043D\u0438\u0439" },
-  },
-
-  de: {
-    common: { login: "Anmelden", register: "Jetzt starten", save: "Speichern", cancel: "Abbrechen", delete: "Loschen", search: "Suchen", loading: "Laden...", download: "Herunterladen", copy: "Kopieren" },
-    nav: { dashboard: "Dashboard", companies: "Unternehmen", riskAnalysis: "Risikoanalyse", incidents: "Vorfalle", documents: "Dokumente", solutionCenter: "Losungszentrum", training: "Schulung & Prufungen", digitalTwin: "Digitaler Zwilling", reports: "Berichte", settings: "Einstellungen" },
-    landing: { badge: "KI-GESTUTZTE ARBEITSSCHUTZ-PLATTFORM", heroTitle1: "Risikomanagement", heroTitle2: "im Arbeitsschutz", heroTitle3: "zur Kunst machen" },
-    auth: { loginTitle: "Anmelden", loginEmail: "E-Mail-Adresse", loginPassword: "Passwort", loginButton: "Anmelden" },
-    solutionCenter: { title: "Losungszentrum" },
-  },
-
-  fr: {
-    common: { login: "Se connecter", register: "Commencer", save: "Enregistrer", cancel: "Annuler", delete: "Supprimer", search: "Rechercher", loading: "Chargement...", download: "Telecharger", copy: "Copier" },
-    nav: { dashboard: "Tableau de bord", companies: "Entreprises", riskAnalysis: "Analyse des risques", incidents: "Incidents", documents: "Documents", solutionCenter: "Centre de solutions", training: "Formation & Examens", digitalTwin: "Jumeau Numerique", reports: "Rapports", settings: "Parametres" },
-    landing: { badge: "PLATEFORME SST ALIMENTEE PAR L'IA", heroTitle1: "Transformez la gestion", heroTitle2: "des risques SST", heroTitle3: "en art" },
-    auth: { loginTitle: "Se connecter", loginEmail: "Adresse e-mail", loginPassword: "Mot de passe", loginButton: "Se connecter" },
-    solutionCenter: { title: "Centre de solutions" },
-  },
-
-  es: {
-    common: { login: "Iniciar sesion", register: "Comenzar", save: "Guardar", cancel: "Cancelar", delete: "Eliminar", search: "Buscar", loading: "Cargando...", download: "Descargar", copy: "Copiar" },
-    nav: { dashboard: "Panel", companies: "Empresas", riskAnalysis: "Analisis de riesgos", incidents: "Incidentes", documents: "Documentos", solutionCenter: "Centro de soluciones", training: "Formacion y Examenes", digitalTwin: "Gemelo Digital", reports: "Informes", settings: "Configuracion" },
-    landing: { badge: "PLATAFORMA SST IMPULSADA POR IA", heroTitle1: "Transforme la gestion", heroTitle2: "de riesgos SST", heroTitle3: "en arte" },
-    auth: { loginTitle: "Iniciar sesion", loginEmail: "Correo electronico", loginPassword: "Contrasena", loginButton: "Iniciar sesion" },
-    solutionCenter: { title: "Centro de soluciones" },
-  },
-
-  zh: {
-    common: { login: "\u767B\u5F55", register: "\u5F00\u59CB\u4F7F\u7528", save: "\u4FDD\u5B58", cancel: "\u53D6\u6D88", delete: "\u5220\u9664", search: "\u641C\u7D22", loading: "\u52A0\u8F7D\u4E2D...", download: "\u4E0B\u8F7D", copy: "\u590D\u5236" },
-    nav: { dashboard: "\u4EEA\u8868\u677F", companies: "\u516C\u53F8", riskAnalysis: "\u98CE\u9669\u5206\u6790", incidents: "\u4E8B\u6545", solutionCenter: "\u89E3\u51B3\u65B9\u6848\u4E2D\u5FC3", training: "\u57F9\u8BAD\u4E0E\u8003\u8BD5", digitalTwin: "\u6570\u5B57\u5B5E\u751F", reports: "\u62A5\u544A", settings: "\u8BBE\u7F6E" },
-    landing: { badge: "\u4EBA\u5DE5\u667A\u80FD\u9A71\u52A8\u7684\u804C\u4E1A\u5065\u5EB7\u5B89\u5168\u5E73\u53F0", heroTitle1: "\u5C06\u804C\u4E1A\u5065\u5EB7\u5B89\u5168", heroTitle2: "\u98CE\u9669\u7BA1\u7406", heroTitle3: "\u5316\u4E3A\u827A\u672F" },
-    auth: { loginTitle: "\u767B\u5F55\u60A8\u7684\u8D26\u6237", loginEmail: "\u7535\u5B50\u90AE\u4EF6", loginPassword: "\u5BC6\u7801", loginButton: "\u767B\u5F55" },
-    solutionCenter: { title: "\u89E3\u51B3\u65B9\u6848\u4E2D\u5FC3" },
-  },
-
-  ja: {
-    common: { login: "\u30ED\u30B0\u30A4\u30F3", register: "\u59CB\u3081\u308B", save: "\u4FDD\u5B58", cancel: "\u30AD\u30E3\u30F3\u30BB\u30EB", delete: "\u524A\u9664", search: "\u691C\u7D22", loading: "\u8AAD\u307F\u8FBC\u307F\u4E2D...", download: "\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9", copy: "\u30B3\u30D4\u30FC" },
-    nav: { dashboard: "\u30C0\u30C3\u30B7\u30E5\u30DC\u30FC\u30C9", companies: "\u4F1A\u793E", riskAnalysis: "\u30EA\u30B9\u30AF\u5206\u6790", incidents: "\u30A4\u30F3\u30B7\u30C7\u30F3\u30C8", solutionCenter: "\u30BD\u30EA\u30E5\u30FC\u30B7\u30E7\u30F3\u30BB\u30F3\u30BF\u30FC", training: "\u30C8\u30EC\u30FC\u30CB\u30F3\u30B0\u3068\u8A66\u9A13", digitalTwin: "\u30C7\u30B8\u30BF\u30EB\u30C4\u30A4\u30F3", reports: "\u30EC\u30DD\u30FC\u30C8", settings: "\u8A2D\u5B9A" },
-    landing: { badge: "AI\u642D\u8F09\u52B4\u50CD\u5B89\u5168\u885B\u751F\u30D7\u30E9\u30C3\u30C8\u30D5\u30A9\u30FC\u30E0", heroTitle1: "\u52B4\u50CD\u5B89\u5168\u885B\u751F", heroTitle2: "\u30EA\u30B9\u30AF\u7BA1\u7406\u3092", heroTitle3: "\u82B8\u8853\u306B" },
-    auth: { loginTitle: "\u30ED\u30B0\u30A4\u30F3", loginEmail: "\u30E1\u30FC\u30EB\u30A2\u30C9\u30EC\u30B9", loginPassword: "\u30D1\u30B9\u30EF\u30FC\u30C9", loginButton: "\u30ED\u30B0\u30A4\u30F3" },
-    solutionCenter: { title: "\u30BD\u30EA\u30E5\u30FC\u30B7\u30E7\u30F3\u30BB\u30F3\u30BF\u30FC" },
-  },
-
-  hi: {
-    common: { login: "\u0932\u0949\u0917 \u0907\u0928", register: "\u0936\u0941\u0930\u0942 \u0915\u0930\u0947\u0902", save: "\u0938\u0947\u0935 \u0915\u0930\u0947\u0902", cancel: "\u0930\u0926\u094D\u0926 \u0915\u0930\u0947\u0902", delete: "\u0939\u091F\u093E\u090F\u0902", search: "\u0916\u094B\u091C\u0947\u0902", loading: "\u0932\u094B\u0921 \u0939\u094B \u0930\u0939\u093E \u0939\u0948...", download: "\u0921\u093E\u0909\u0928\u0932\u094B\u0921", copy: "\u0915\u0949\u092A\u0940" },
-    nav: { dashboard: "\u0921\u0948\u0936\u092C\u094B\u0930\u094D\u0921", companies: "\u0915\u0902\u092A\u0928\u0940", riskAnalysis: "\u091C\u094B\u0916\u093F\u092E \u0935\u093F\u0936\u094D\u0932\u0947\u0937\u0923", incidents: "\u0918\u091F\u0928\u093E\u090F\u0902", solutionCenter: "\u0938\u092E\u093E\u0927\u093E\u0928 \u0915\u0947\u0902\u0926\u094D\u0930", training: "\u092A\u094D\u0930\u0936\u093F\u0915\u094D\u0937\u0923 \u0914\u0930 \u092A\u0930\u0940\u0915\u094D\u0937\u093E", reports: "\u0930\u093F\u092A\u094B\u0930\u094D\u091F", settings: "\u0938\u0947\u091F\u093F\u0902\u0917\u094D\u0938" },
-    landing: { badge: "AI \u0938\u0902\u091A\u093E\u0932\u093F\u0924 \u0935\u094D\u092F\u093E\u0935\u0938\u093E\u092F\u093F\u0915 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F \u0914\u0930 \u0938\u0941\u0930\u0915\u094D\u0937\u093E \u092A\u094D\u0932\u0947\u091F\u092B\u0949\u0930\u094D\u092E", heroTitle1: "\u0935\u094D\u092F\u093E\u0935\u0938\u093E\u092F\u093F\u0915 \u0938\u094D\u0935\u093E\u0938\u094D\u0925\u094D\u092F", heroTitle2: "\u091C\u094B\u0916\u093F\u092E \u092A\u094D\u0930\u092C\u0902\u0927\u0928", heroTitle3: "\u0915\u094B \u0915\u0932\u093E \u092E\u0947\u0902 \u092C\u0926\u0932\u0947\u0902" },
-    auth: { loginTitle: "\u0932\u0949\u0917 \u0907\u0928 \u0915\u0930\u0947\u0902", loginEmail: "\u0908\u092E\u0947\u0932", loginPassword: "\u092A\u093E\u0938\u0935\u0930\u094D\u0921", loginButton: "\u0932\u0949\u0917 \u0907\u0928" },
-    solutionCenter: { title: "\u0938\u092E\u093E\u0927\u093E\u0928 \u0915\u0947\u0902\u0926\u094D\u0930" },
-  },
-  ko: {
-    common: { login: "\uB85C\uADF8\uC778", register: "\uC2DC\uC791\uD558\uAE30", save: "\uC800\uC7A5", cancel: "\uCDE8\uC18C", delete: "\uC0AD\uC81C", search: "\uAC80\uC0C9", loading: "\uB85C\uB529 \uC911...", download: "\uB2E4\uC6B4\uB85C\uB4DC", copy: "\uBCF5\uC0AC" },
-    nav: { dashboard: "\uB300\uC2DC\uBCF4\uB4DC", companies: "\uD68C\uC0AC", riskAnalysis: "\uC704\uD5D8 \uBD84\uC11D", incidents: "\uC0AC\uACE0", solutionCenter: "\uC194\uB8E8\uC158 \uC13C\uD130", training: "\uAD50\uC721 \uBC0F \uC2DC\uD5D8", digitalTwin: "\uB514\uC9C0\uD138 \uD2B8\uC708", reports: "\uBCF4\uACE0\uC11C", settings: "\uC124\uC815" },
-    landing: { badge: "AI \uAE30\uBC18 \uC0B0\uC5C5 \uC548\uC804\uBCF4\uAC74 \uD50C\uB7AB\uD3FC", heroTitle1: "\uC0B0\uC5C5 \uC548\uC804", heroTitle2: "\uC704\uD5D8 \uAD00\uB9AC", heroTitle3: "\uB97C \uD601\uC2E0\uD558\uB2E4" },
-    auth: { loginTitle: "\uB85C\uADF8\uC778", loginEmail: "\uC774\uBA54\uC77C", loginPassword: "\uBE44\uBC00\uBC88\uD638", loginButton: "\uB85C\uADF8\uC778" },
-    solutionCenter: { title: "\uC194\uB8E8\uC158 \uC13C\uD130" },
-  },
-  az: {
-    common: { login: "Daxil ol", register: "Ba\u015Fla", save: "Saxla", cancel: "L\u0259\u011Fv et", delete: "Sil", search: "Axtar", loading: "Y\u00FCkl\u0259nir...", download: "Y\u00FCkl\u0259", copy: "Kopyala" },
-    nav: { dashboard: "\u0130dar\u0259 panel", companies: "\u015Firk\u0259tl\u0259r", riskAnalysis: "Risk t\u0259hlili", incidents: "Hadis\u0259l\u0259r", documents: "S\u0259n\u0259dl\u0259r", solutionCenter: "H\u0259ll m\u0259rk\u0259zi", training: "T\u0259lim v\u0259 imtahanlar", digitalTwin: "R\u0259q\u0259msal \u018fkiz", reports: "Hesabatlar", settings: "T\u0259nziml\u0259m\u0259l\u0259r" },
-    landing: { badge: "AI il\u0259 i\u015F sa\u011Flaml\u0131\u011F\u0131 v\u0259 t\u0259hl\u00FCk\u0259sizlik platformas\u0131", heroTitle1: "\u0130\u015F sa\u011Flaml\u0131\u011F\u0131", heroTitle2: "risk idar\u0259etm\u0259sini", heroTitle3: "d\u0259yi\u015Fdirin" },
-    auth: { loginTitle: "Daxil ol", loginEmail: "E-poçt", loginPassword: "\u015Fifr\u0259", loginButton: "Daxil ol" },
-    solutionCenter: { title: "H\u0259ll m\u0259rk\u0259zi" },
-  },
-  id: {
-    common: { login: "Masuk", register: "Mulai", save: "Simpan", cancel: "Batal", delete: "Hapus", search: "Cari", loading: "Memuat...", download: "Unduh", copy: "Salin" },
-    nav: { dashboard: "Dasbor", companies: "Perusahaan", riskAnalysis: "Analisis Risiko", incidents: "Insiden", documents: "Dokumen", solutionCenter: "Pusat Solusi", training: "Pelatihan & Ujian", digitalTwin: "Kembaran Digital", reports: "Laporan", settings: "Pengaturan" },
-    landing: { badge: "Platform K3 berbasis AI", heroTitle1: "Kesehatan kerja", heroTitle2: "manajemen risiko", heroTitle3: "yang inovatif" },
-    auth: { loginTitle: "Masuk", loginEmail: "Email", loginPassword: "Kata sandi", loginButton: "Masuk" },
-    solutionCenter: { title: "Pusat Solusi" },
-  },
-};
-
-/* ------------------------------------------------------------------ */
-/* Helper: resolve nested key "landing.heroTitle1"                     */
-/* ------------------------------------------------------------------ */
-
-function resolve(obj: NestedMessages, path: string): string {
-  const parts = path.split(".");
-  let current: string | NestedMessages = obj;
-  for (const part of parts) {
-    if (typeof current === "string") return path;
-    current = current[part];
-    if (current === undefined) return path;
+  try {
+    window.localStorage.setItem(LEGACY_STORAGE_KEY, locale);
+  } catch {
+    // localStorage can throw in private mode - safe to ignore.
   }
-  return typeof current === "string" ? current : path;
 }
 
-/* ------------------------------------------------------------------ */
-/* Context                                                             */
-/* ------------------------------------------------------------------ */
-
-interface I18nContextValue {
-  locale: Locale;
-  setLocale: (locale: Locale) => void;
-  t: (key: string) => string;
-}
-
-const I18nContext = createContext<I18nContextValue>({
-  locale: "tr",
-  setLocale: () => {},
-  t: (key) => key,
-});
-
-const STORAGE_KEY = "risknova-locale";
-
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof window === "undefined") return "tr";
-    const saved = window.localStorage.getItem(STORAGE_KEY) as Locale | null;
-    return saved && messages[saved] ? saved : "tr";
-  });
-
-  // Listen for storage changes (cross-tab sync)
-  useEffect(() => {
-    function onStorage() {
-      const saved = localStorage.getItem(STORAGE_KEY) as Locale | null;
-      if (saved && messages[saved]) {
-        setLocaleState(saved);
-      }
-    }
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
-
-  function setLocale(newLocale: Locale) {
-    setLocaleState(newLocale);
-    localStorage.setItem(STORAGE_KEY, newLocale);
-  }
-
-  function t(key: string): string {
-    // Try current locale first, fallback to Turkish, then key
-    const result = resolve(messages[locale] || {}, key);
-    if (result !== key) return result;
-    // Fallback to Turkish
-    const fallback = resolve(messages.tr, key);
-    return fallback !== key ? fallback : key;
-  }
-
-  return (
-    <I18nContext.Provider value={{ locale, setLocale, t }}>
-      {children}
-    </I18nContext.Provider>
-  );
+/**
+ * Kept as a pass-through component for callers that still render
+ * <I18nProvider>. The real i18n provider is now NextIntlClientProvider,
+ * mounted once in `components/providers.tsx`.
+ */
+export function I18nProvider({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }
 
 export function useI18n() {
-  return useContext(I18nContext);
+  const locale = useNextLocale() as Locale;
+  const tNext = useNextTranslations();
+  const router = useRouter();
+
+  const setLocale = useCallback(
+    (next: Locale) => {
+      persistLocale(next);
+      router.refresh();
+    },
+    [router],
+  );
+
+  const t = useCallback(
+    (key: string): string => {
+      try {
+        return tNext(key);
+      } catch {
+        return key;
+      }
+    },
+    [tNext],
+  );
+
+  return { locale, setLocale, t };
 }
 
 export function useTranslation() {
-  const { t, locale } = useContext(I18nContext);
+  const { t, locale } = useI18n();
   return { t, locale };
 }

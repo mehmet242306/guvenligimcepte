@@ -1,3 +1,5 @@
+import type { ElementType } from "react";
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ICON_TONES = {
@@ -102,13 +104,13 @@ export function PremiumIconBadge({
   size = "md",
   className,
 }: {
-  icon: React.ElementType;
+  icon: ElementType;
   tone: PremiumIconTone;
   size?: "xs" | "sm" | "md" | "lg";
   className?: string;
 }) {
   const cfg = ICON_TONES[tone];
-  const sizeMap = {
+  const sizeMap: Record<"xs" | "sm" | "md" | "lg", { shell: string; plate: string; icon: number }> = {
     xs: {
       shell: "h-8 w-8 rounded-[0.85rem]",
       plate: "inset-[1px] rounded-[0.78rem]",
@@ -132,6 +134,7 @@ export function PremiumIconBadge({
   } as const;
 
   const current = sizeMap[size];
+  const ResolvedIcon = Icon as LucideIcon;
 
   return (
     <div
@@ -144,7 +147,7 @@ export function PremiumIconBadge({
     >
       <div className={cn("absolute inset-0", cfg.glow)} />
       <div className={cn("absolute", current.plate, cfg.plate)} />
-      <Icon
+      <ResolvedIcon
         size={current.icon}
         strokeWidth={1.85}
         className={cn(

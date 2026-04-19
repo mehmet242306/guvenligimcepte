@@ -31,6 +31,14 @@ type NovaUiCopy = {
     nextStepLabel: string;
     openLabel: string;
     continueLabel: string;
+    toolPreviewLabel: string;
+    draftReadyLabel: string;
+    safetyBlockLabel: string;
+    continueInWorkspace: string;
+    approveAction: string;
+    cancelAction: string;
+    actionRunning: string;
+    actionDone: string;
     currentPageLabel: string;
     authenticatedPlaceholder: string;
     publicPlaceholder: string;
@@ -39,6 +47,7 @@ type NovaUiCopy = {
     modes: Array<{ label: string; hint: string; badge: string }>;
     quickQuestions: string[];
     welcomeDescription: string;
+    unavailable: string;
     briefEyebrow: string;
     focusQuestion: string;
     loadingBrief: string;
@@ -49,6 +58,13 @@ type NovaUiCopy = {
     nextStepLabel: string;
     navigationTitle: string;
     gotoPage: string;
+    toolPreviewLabel: string;
+    draftReadyLabel: string;
+    safetyBlockLabel: string;
+    approveAction: string;
+    cancelAction: string;
+    actionRunning: string;
+    actionDone: string;
     sourceCount: (count: number) => string;
     documentType: (isPptx: boolean, ext: string) => string;
     helpful: string;
@@ -61,69 +77,85 @@ type NovaUiCopy = {
 
 const trCopy: NovaUiCopy = {
   quickActions: {
-    workspace: "Nova Çalışma Alanı",
-    planner: "Planlayıcı",
+    workspace: "Nova Calisma Alani",
+    planner: "Planlayici",
     newIncident: "Yeni Olay",
-    documents: "Dokümanlar",
-    login: "Giriş Yap",
-    register: "Hesap Oluştur",
+    documents: "Dokumanlar",
+    login: "Giris Yap",
+    register: "Hesap Olustur",
   },
   widget: {
     welcomeAuthenticated:
-      "Merhaba! Ben Nova. Mevzuatı yorumlayabilir, sizi doğru modüllere götürebilir, eğitim veya görev planlayabilir, olay taslağı başlatabilir ve doküman akışını hazırlayabilirim. Dilerseniz burada yazın, dilerseniz Nova çalışma alanına geçin.",
+      "Merhaba! Ben Nova. Mevzuati yorumlayabilir, sizi dogru modullere goturebilir, egitim veya gorev planlayabilir, olay taslagi baslatabilir ve dokuman akislarini hazirlayabilirim.",
     welcomePublic:
-      "Merhaba! Nova artık örnek veya anahtar kelime cevabı vermiyor. Gerçek ajana erişmek için giriş yapmanız gerekir. İsterseniz hemen oturum açın veya hesap oluşturun.",
+      "Merhaba! Gercek Nova ajanina erismek icin giris yapmaniz gerekir. Isterseniz hemen oturum acin veya hesap olusturun.",
     publicLocked:
-      "Bu alanda artık hazır cevap veren basit katman yok. Gerçek Nova ajanına erişmek için giriş yapın. Oturum açtıktan sonra aynı soruyu bu widget'ta veya Nova çalışma alanında devam ettirebilirsiniz.",
-    initializing: "Lütfen bir saniye, henüz hazırlanıyorum...",
+      "Bu alandaki hafif cevap katmani kaldirildi. Gercek Nova ajanina erismek icin giris yapin ve isteginizi burada veya Solution Center'da surdurun.",
+    initializing: "Lutfen bir saniye, Nova hazirlaniyor...",
     unavailable:
-      "Üzgünüm, şu an cevap veremiyorum. Lütfen biraz sonra tekrar deneyin veya Nova çalışma alanını kullanın.",
-    redirecting: (label) => `${label} sayfasına yönlendiriliyorsunuz...`,
-    subtitle: "AI İSG Asistanı",
-    openAriaLabel: "Nova asistanını aç",
-    minimizeAriaLabel: "Küçült (konuşma korunur)",
-    closeAriaLabel: "Kapat ve konuşmayı sıfırla",
-    sourceCount: (count) => `${count} mevzuat kaynağı`,
-    navigationTitle: "Sayfa Yönlendirme",
+      "Nova su anda cevap veremiyor. Lutfen biraz sonra tekrar deneyin veya Solution Center uzerinden devam edin.",
+    redirecting: (label) => `${label} sayfasina yonlendiriliyorsunuz...`,
+    subtitle: "AI ISG Asistani",
+    openAriaLabel: "Nova asistanini ac",
+    minimizeAriaLabel: "Kucult",
+    closeAriaLabel: "Kapat ve konusmayi sifirla",
+    sourceCount: (count) => `${count} mevzuat kaynagi`,
+    navigationTitle: "Sayfa Yonlendirme",
     gotoPage: "Sayfaya Git",
     workflowLabel: "Nova Workflow",
-    nextStepLabel: "Sıradaki",
-    openLabel: "Aç",
+    nextStepLabel: "Siradaki",
+    openLabel: "Ac",
     continueLabel: "Devam",
-    currentPageLabel: "Şu an",
+    toolPreviewLabel: "Nova Aksiyon Onerisi",
+    draftReadyLabel: "Taslak Hazir",
+    safetyBlockLabel: "Guvenlik Kisitlamasi",
+    continueInWorkspace: "Solution Center'da devam et",
+    approveAction: "Onayla",
+    cancelAction: "Iptal Et",
+    actionRunning: "Isleniyor...",
+    actionDone: "Tamamlandi",
+    currentPageLabel: "Su an",
     authenticatedPlaceholder: "Nova'ya sorun...",
-    publicPlaceholder: "Gerçek Nova ajanı için giriş yapın...",
+    publicPlaceholder: "Gercek Nova ajani icin giris yapin...",
   },
   solutionCenter: {
     modes: [
       { label: "Mevzuat", hint: "mevzuati yorumlasin, kaynak gostersin ve riskleri aciklasin", badge: "RAG" },
-      { label: "Planlama", hint: "eğitim, kurul ve operasyon görevlerini oluştursun", badge: "ACTION" },
-      { label: "Olay", hint: "ramak kala ve kaza taslaklarını başlatıp sizi yönlendirsin", badge: "INCIDENT" },
-      { label: "Doküman", hint: "editör için prosedür, rapor ve taslaklar hazırlasın", badge: "DOC" },
+      { label: "Planlama", hint: "egitim, kurul ve operasyon gorevlerini olustursun", badge: "ACTION" },
+      { label: "Olay", hint: "ramak kala ve kaza taslaklarini baslatsin", badge: "INCIDENT" },
+      { label: "Dokuman", hint: "prosedur, rapor ve editor taslaklari hazirlasin", badge: "DOC" },
     ],
     quickQuestions: [
-      "25 Haziran'a yüksekte çalışma eğitimi planla",
-      "28 Haziran için aylık kurul toplantısı görevi oluştur",
-      "Yeni bir ramak kala olay taslağı başlat",
-      "Acil durum prosedürü için doküman taslağı hazırla",
-      "Bu firmadaki açık riskleri özetle",
-      "İş kazası bildirimi kaç gün içinde yapılmalı?",
+      "25 Haziran'a yuksekte calisma egitimi planla",
+      "28 Haziran icin aylik kurul toplantisi gorevi olustur",
+      "Yeni bir ramak kala olay taslagi baslat",
+      "Acil durum proseduru icin dokuman taslagi hazirla",
+      "Bu firmadaki acik riskleri ozetle",
+      "Is kazasi bildirimi kac gun icinde yapilmali?",
     ],
     welcomeDescription:
-      "Nova; mevzuatı yorumlayan, sizi doğru modüllere götüren, belge ve operasyon akışlarını başlatan kurumsal İSG ajanıdır.",
+      "Nova; mevzuati yorumlayan, sizi dogru modullere goturen, belge ve operasyon akislarini baslatan kurumsal ISG ajanidir.",
+    unavailable: "Nova bu istegi su anda tamamlayamadi. Lutfen biraz sonra tekrar deneyin.",
     briefEyebrow: "Nova Brief",
-    focusQuestion: "Bugün sizin için neye odaklanmalıyız?",
-    loadingBrief: "Nova aktif akışlarınızı ve takip bekleyen operasyonları tarıyor...",
-    routeTitle: "Mevzuat, yönlendirme ve operasyon aksiyonları tek akışta",
-    actionReadyBadge: "Aksiyon Hazır",
-    nextStepsLabel: "Sonraki Adımlar",
+    focusQuestion: "Bugun sizin icin neye odaklanmaliyiz?",
+    loadingBrief: "Nova aktif akislarinizi ve takip bekleyen operasyonlari taruyor...",
+    routeTitle: "Mevzuat, yonlendirme ve operasyon aksiyonlari tek akista",
+    actionReadyBadge: "Aksiyon Hazir",
+    nextStepsLabel: "Sonraki Adimlar",
     workflowLabel: "Nova Workflow",
-    nextStepLabel: "Sıradaki adım",
-    navigationTitle: "Sayfa Yönlendirme",
+    nextStepLabel: "Siradaki adim",
+    navigationTitle: "Sayfa Yonlendirme",
     gotoPage: "Sayfaya Git",
-    sourceCount: (count) => `${count} mevzuat kaynağı`,
+    toolPreviewLabel: "Nova Aksiyon Onerisi",
+    draftReadyLabel: "Taslak Hazir",
+    safetyBlockLabel: "Guvenlik Kisitlamasi",
+    approveAction: "Onayla",
+    cancelAction: "Iptal Et",
+    actionRunning: "Isleniyor...",
+    actionDone: "Tamamlandi",
+    sourceCount: (count) => `${count} mevzuat kaynagi`,
     documentType: (isPptx, ext) => `${isPptx ? "PowerPoint Sunumu" : "Word Belgesi"} (.${ext})`,
-    helpful: "Yararlı",
+    helpful: "Yararli",
     lacking: "Eksik",
     saved: "Kaydedildi",
     save: "Kaydet",
@@ -142,18 +174,18 @@ const enCopy: NovaUiCopy = {
   },
   widget: {
     welcomeAuthenticated:
-      "Hello! I'm Nova. I can interpret regulations, route you to the right modules, plan trainings or tasks, start incident drafts, and prepare document workflows. You can continue here or open the Nova workspace.",
+      "Hello! I'm Nova. I can interpret regulations, route you to the right modules, plan trainings or tasks, start incident drafts, and prepare document workflows.",
     welcomePublic:
-      "Hello! Nova no longer gives sample or keyword-based answers. You need to sign in to access the real agent. You can sign in now or create an account.",
+      "Hello! You need to sign in to access the real Nova agent. You can sign in now or create an account.",
     publicLocked:
-      "The lightweight answer layer has been removed from this area. Sign in to access the real Nova agent, then continue the same request here or in the Nova workspace.",
-    initializing: "Please wait a moment, Nova is still getting ready...",
+      "The lightweight answer layer has been removed from this area. Sign in to access the real Nova agent, then continue the same request here or in Solution Center.",
+    initializing: "Please wait a moment, Nova is getting ready...",
     unavailable:
-      "Sorry, I cannot respond right now. Please try again shortly or continue inside the Nova workspace.",
+      "Nova cannot respond right now. Please try again shortly or continue inside Solution Center.",
     redirecting: (label) => `Routing you to ${label}...`,
     subtitle: "AI OHS Assistant",
     openAriaLabel: "Open Nova assistant",
-    minimizeAriaLabel: "Minimize (keep conversation)",
+    minimizeAriaLabel: "Minimize",
     closeAriaLabel: "Close and reset conversation",
     sourceCount: (count) => `${count} legislation sources`,
     navigationTitle: "Page Routing",
@@ -162,6 +194,14 @@ const enCopy: NovaUiCopy = {
     nextStepLabel: "Next",
     openLabel: "Open",
     continueLabel: "Continue",
+    toolPreviewLabel: "Nova Action Preview",
+    draftReadyLabel: "Draft Ready",
+    safetyBlockLabel: "Safety Guardrail",
+    continueInWorkspace: "Continue in Solution Center",
+    approveAction: "Approve",
+    cancelAction: "Cancel",
+    actionRunning: "Processing...",
+    actionDone: "Completed",
     currentPageLabel: "Current page",
     authenticatedPlaceholder: "Ask Nova...",
     publicPlaceholder: "Sign in to access the real Nova agent...",
@@ -170,7 +210,7 @@ const enCopy: NovaUiCopy = {
     modes: [
       { label: "Regulation", hint: "interpret legislation, cite sources, and explain risk impact", badge: "RAG" },
       { label: "Planning", hint: "create training, committee, and operational tasks", badge: "ACTION" },
-      { label: "Incident", hint: "start near-miss or accident drafts and guide the next steps", badge: "INCIDENT" },
+      { label: "Incident", hint: "start near-miss or accident drafts and guide next steps", badge: "INCIDENT" },
       { label: "Document", hint: "prepare procedures, reports, and editor-ready drafts", badge: "DOC" },
     ],
     quickQuestions: [
@@ -183,6 +223,7 @@ const enCopy: NovaUiCopy = {
     ],
     welcomeDescription:
       "Nova is the operational OHS agent that interprets legislation, routes you to the right modules, and starts document or workflow actions.",
+    unavailable: "Nova could not complete this request right now. Please try again shortly.",
     briefEyebrow: "Nova Brief",
     focusQuestion: "What should we focus on today?",
     loadingBrief: "Nova is scanning active workflows and pending operational follow-ups...",
@@ -193,6 +234,13 @@ const enCopy: NovaUiCopy = {
     nextStepLabel: "Next step",
     navigationTitle: "Page Routing",
     gotoPage: "Open Page",
+    toolPreviewLabel: "Nova Action Preview",
+    draftReadyLabel: "Draft Ready",
+    safetyBlockLabel: "Safety Guardrail",
+    approveAction: "Approve",
+    cancelAction: "Cancel",
+    actionRunning: "Processing...",
+    actionDone: "Completed",
     sourceCount: (count) => `${count} legislation sources`,
     documentType: (isPptx, ext) => `${isPptx ? "PowerPoint Deck" : "Word Document"} (.${ext})`,
     helpful: "Helpful",
@@ -262,37 +310,19 @@ async function readNovaRuntimeErrorContext(error?: unknown): Promise<NovaRuntime
       result.error = typeof payload.error === "string" ? payload.error : null;
     }
   } catch {
-    // Ignore non-JSON bodies and fall back to generic handling.
+    return result;
   }
 
   return result;
 }
 
 export async function resolveNovaRuntimeErrorMessage(locale?: string | null, error?: unknown): Promise<string> {
-  const language = getNovaUiLanguage(locale);
-  const details = await readNovaRuntimeErrorContext(error);
+  const context = await readNovaRuntimeErrorContext(error);
+  const fallback = getNovaRuntimeErrorMessage(locale, error);
 
-  if (!details) {
-    return getNovaRuntimeErrorMessage(locale, error);
+  if (!context?.message) {
+    return fallback;
   }
 
-  if (details.status === 401 || details.status === 403) {
-    return language === "en"
-      ? "Nova could not verify your session. Please sign out, sign in again, and retry."
-      : "Nova oturumunuzu doğrulayamadı. Lütfen çıkış yapıp tekrar girin ve yeniden deneyin.";
-  }
-
-  if (details.status === 429) {
-    return details.message || (
-      language === "en"
-        ? "Nova usage limit has been reached for now. Please try again later."
-        : "Nova kullanım limiti şu an için doldu. Lütfen daha sonra tekrar deneyin."
-    );
-  }
-
-  if (details.message) {
-    return details.message;
-  }
-
-  return getNovaRuntimeErrorMessage(locale, error);
+  return context.status && context.status < 500 ? context.message : fallback;
 }

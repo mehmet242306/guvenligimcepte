@@ -2,6 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import {
+  filterNovaOutboxRows,
+  getNovaOutboxRiskTone,
+  getNovaOutboxSummary,
+  getTaskQueueSummary,
+  type NovaOutboxFilter,
+} from "@/lib/self-healing/queue-monitoring";
 
 type HealthCheckRow = {
   id: string;
@@ -32,6 +39,19 @@ type TaskQueueRow = {
   max_retries: number;
   error_message: string | null;
   scheduled_at: string;
+};
+
+type NovaOutboxRow = {
+  id: string;
+  action_run_id: string;
+  task_queue_id: string | null;
+  status: "queued" | "processing" | "succeeded" | "failed" | "dead_letter" | "cancelled";
+  retry_count: number;
+  max_retries: number;
+  last_error: string | null;
+  created_at: string;
+  completed_at: string | null;
+  payload: Record<string, unknown> | null;
 };
 
 type RecoveryScenarioRow = {
@@ -80,9 +100,11 @@ export function SelfHealingTab() {
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [novaOutboxFilter, setNovaOutboxFilter] = useState<NovaOutboxFilter>("attention");
   const [healthChecks, setHealthChecks] = useState<HealthCheckRow[]>([]);
   const [serviceStates, setServiceStates] = useState<ServiceStateRow[]>([]);
   const [queueRows, setQueueRows] = useState<TaskQueueRow[]>([]);
+  const [novaOutboxRows, setNovaOutboxRows] = useState<NovaOutboxRow[]>([]);
   const [recoveryScenarios, setRecoveryScenarios] = useState<RecoveryScenarioRow[]>([]);
   const [backupRuns, setBackupRuns] = useState<BackupRunRow[]>([]);
   const [deploymentLogs, setDeploymentLogs] = useState<DeploymentLogRow[]>([]);
@@ -102,6 +124,7 @@ export function SelfHealingTab() {
       healthResult,
       stateResult,
       queueResult,
+      novaOutboxResult,
       recoveryResult,
       backupResult,
       deploymentResult,
@@ -109,6 +132,7 @@ export function SelfHealingTab() {
       supabase.from("health_checks").select("*").order("checked_at", { ascending: false }).limit(24),
       supabase.from("service_resilience_states").select("*").order("display_name"),
       supabase.from("task_queue").select("*").order("created_at", { ascending: false }).limit(30),
+      supabase.from("nova_outbox").select("*").order("created_at", { ascending: false }).limit(30),
       supabase.from("recovery_scenarios").select("*").order("name"),
       supabase.from("backup_runs").select("*").order("started_at", { ascending: false }).limit(20),
       supabase.from("deployment_logs").select("*").order("started_at", { ascending: false }).limit(20),
@@ -118,6 +142,7 @@ export function SelfHealingTab() {
       healthResult.error ||
       stateResult.error ||
       queueResult.error ||
+      novaOutboxResult.error ||
       recoveryResult.error ||
       backupResult.error ||
       deploymentResult.error;
@@ -129,6 +154,7 @@ export function SelfHealingTab() {
     setHealthChecks((healthResult.data ?? []) as HealthCheckRow[]);
     setServiceStates((stateResult.data ?? []) as ServiceStateRow[]);
     setQueueRows((queueResult.data ?? []) as TaskQueueRow[]);
+    setNovaOutboxRows((novaOutboxResult.data ?? []) as NovaOutboxRow[]);
     setRecoveryScenarios((recoveryResult.data ?? []) as RecoveryScenarioRow[]);
     setBackupRuns((backupResult.data ?? []) as BackupRunRow[]);
     setDeploymentLogs((deploymentResult.data ?? []) as DeploymentLogRow[]);
@@ -152,17 +178,29 @@ export function SelfHealingTab() {
   const stats = useMemo(() => {
     const down = latestChecks.filter((row) => row.status === "down").length;
     const degraded = latestChecks.filter((row) => row.status === "degraded").length;
-    const processingQueue = queueRows.filter((row) => row.status === "processing").length;
-    const failedQueue = queueRows.filter((row) => row.status === "failed").length;
+    const queueSummary = getTaskQueueSummary(queueRows);
+    const novaSummary = getNovaOutboxSummary(novaOutboxRows);
 
     return {
       overall: down > 0 ? "down" : degraded > 0 ? "degraded" : "healthy",
       down,
       degraded,
-      processingQueue,
-      failedQueue,
+      processingQueue: queueSummary.processing,
+      failedQueue: queueSummary.failed,
+      queuedTasks: queueSummary.queued,
+      completedTasks: queueSummary.completed,
+      novaDeadLetters: novaSummary.deadLetters,
+      novaQueued: novaSummary.queued,
+      novaProcessing: novaSummary.processing,
+      novaNeedsAttention: novaSummary.needsAttention,
+      novaCompleted: novaSummary.completed,
     };
-  }, [latestChecks, queueRows]);
+  }, [latestChecks, novaOutboxRows, queueRows]);
+
+  const filteredNovaOutboxRows = useMemo(
+    () => filterNovaOutboxRows(novaOutboxRows, novaOutboxFilter),
+    [novaOutboxFilter, novaOutboxRows],
+  );
 
   async function triggerAction(key: string, url: string, body?: Record<string, unknown>) {
     try {
@@ -267,8 +305,20 @@ export function SelfHealingTab() {
               <div className="mt-1 text-lg font-semibold text-foreground">{stats.processingQueue}</div>
             </div>
             <div className="rounded-xl border border-border bg-background px-3 py-2">
+              <div className="text-muted-foreground">Queue queued</div>
+              <div className="mt-1 text-lg font-semibold text-foreground">{stats.queuedTasks}</div>
+            </div>
+            <div className="rounded-xl border border-border bg-background px-3 py-2">
               <div className="text-muted-foreground">Queue failed</div>
               <div className="mt-1 text-lg font-semibold text-foreground">{stats.failedQueue}</div>
+            </div>
+            <div className="rounded-xl border border-border bg-background px-3 py-2">
+              <div className="text-muted-foreground">Nova DLQ</div>
+              <div className="mt-1 text-lg font-semibold text-foreground">{stats.novaDeadLetters}</div>
+            </div>
+            <div className="rounded-xl border border-border bg-background px-3 py-2">
+              <div className="text-muted-foreground">Nova attention</div>
+              <div className="mt-1 text-lg font-semibold text-foreground">{stats.novaNeedsAttention}</div>
             </div>
           </div>
         </div>
@@ -473,6 +523,115 @@ export function SelfHealingTab() {
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
+        <section className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+          <h4 className="text-sm font-semibold text-foreground">Nova Outbox ve DLQ</h4>
+          <div className="mt-3 grid gap-2 sm:grid-cols-4">
+            <div className="rounded-xl border border-border bg-background px-3 py-2">
+              <div className="text-[11px] text-muted-foreground">Queued</div>
+              <div className="mt-1 text-base font-semibold text-foreground">{stats.novaQueued}</div>
+            </div>
+            <div className="rounded-xl border border-border bg-background px-3 py-2">
+              <div className="text-[11px] text-muted-foreground">Processing</div>
+              <div className="mt-1 text-base font-semibold text-foreground">{stats.novaProcessing}</div>
+            </div>
+            <div className="rounded-xl border border-border bg-background px-3 py-2">
+              <div className="text-[11px] text-muted-foreground">Attention</div>
+              <div className="mt-1 text-base font-semibold text-foreground">{stats.novaNeedsAttention}</div>
+            </div>
+            <div className="rounded-xl border border-border bg-background px-3 py-2">
+              <div className="text-[11px] text-muted-foreground">Completed</div>
+              <div className="mt-1 text-base font-semibold text-foreground">{stats.novaCompleted}</div>
+            </div>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {([
+              ["attention", "Dikkat"],
+              ["active", "Aktif"],
+              ["completed", "Tamamlanan"],
+              ["all", "Tumu"],
+            ] as const).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setNovaOutboxFilter(value)}
+                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                  novaOutboxFilter === value
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-background text-foreground"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-4 space-y-3">
+            {filteredNovaOutboxRows.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
+                Secili filtre icin Nova outbox kaydi bulunmuyor.
+              </div>
+            ) : (
+              filteredNovaOutboxRows.map((row) => (
+                <article
+                  key={row.id}
+                  className={`rounded-xl border bg-background/80 p-4 ${
+                    getNovaOutboxRiskTone(row) === "danger"
+                      ? "border-rose-300 dark:border-rose-800/50"
+                      : getNovaOutboxRiskTone(row) === "warning"
+                        ? "border-amber-300 dark:border-amber-800/50"
+                        : "border-border"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-sm font-semibold text-foreground">
+                        {String(row.payload?.action_title ?? row.payload?.action_name ?? row.action_run_id)}
+                      </div>
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        Action run: {row.action_run_id}
+                      </div>
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        Queue task: {row.task_queue_id || "-"}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div
+                        className={`rounded-full px-2.5 py-1 text-xs font-medium uppercase ${
+                          row.status === "dead_letter"
+                            ? "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-200"
+                            : row.status === "failed"
+                              ? "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-200"
+                              : row.status === "queued" || row.status === "processing"
+                                ? "bg-sky-100 text-sky-700 dark:bg-sky-950/40 dark:text-sky-200"
+                                : "bg-muted text-foreground"
+                        }`}
+                      >
+                        {row.status}
+                      </div>
+                      <div className="mt-2 text-xs text-muted-foreground">
+                        Retry {row.retry_count}/{row.max_retries}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-muted-foreground">
+                    <span className="rounded-full bg-muted px-2 py-1">
+                      {row.task_queue_id ? "Queue bagli" : "Queue kaydi yok"}
+                    </span>
+                    <span className="rounded-full bg-muted px-2 py-1">
+                      {row.retry_count >= row.max_retries ? "Retry limiti dolu" : "Retry acik"}
+                    </span>
+                  </div>
+                  {row.last_error ? (
+                    <div className="mt-3 text-xs text-rose-600 dark:text-rose-300">{row.last_error}</div>
+                  ) : null}
+                  <div className="mt-3 text-xs text-muted-foreground">
+                    Olusturuldu: {formatDateTime(row.created_at)} | Tamamlandi: {formatDateTime(row.completed_at)}
+                  </div>
+                </article>
+              ))
+            )}
+          </div>
+        </section>
+
         <section className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
           <h4 className="text-sm font-semibold text-foreground">Yedek Calismalari</h4>
           <div className="mt-4 space-y-3">

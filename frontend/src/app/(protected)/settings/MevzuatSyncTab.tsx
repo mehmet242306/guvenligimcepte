@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { TenantLegalLibraryPanel } from "./TenantLegalLibraryPanel";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -133,6 +134,8 @@ export function MevzuatSyncTab() {
 
   return (
     <div className="space-y-6">
+      <TenantLegalLibraryPanel />
+
       {/* Stats */}
       <div className="grid gap-3 sm:grid-cols-4">
         <Card>

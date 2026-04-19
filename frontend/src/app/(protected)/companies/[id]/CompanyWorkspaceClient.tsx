@@ -16,6 +16,7 @@ import { type WTab, OverviewTab, StructureTab, RiskTab, TrackingTab, DocumentsTa
 import { CompanyPlannerTab } from "@/components/companies/CompanyPlannerTab";
 import { TeamManagementTab } from "@/components/companies/TeamManagementTab";
 import { OrganizationPanel } from "@/components/companies/OrganizationPanel";
+import { OhsFileTab } from "@/components/companies/OhsFileTab";
 
 /** Büyük resmi max boyuta küçült, JPEG olarak döndür */
 function resizeImageFile(file: File, maxPx: number, quality: number): Promise<File> {
@@ -64,6 +65,7 @@ const TABS: { k: WTab; l: string }[] = [
   { k: "personnel", l: "Personel" },
   { k: "tracking", l: "Takip" },
   { k: "documents", l: "Arşiv" },
+  { k: "ohs_file", l: "İSG Dosyası" },
   { k: "organization", l: "Organizasyon" },
   { k: "history", l: "Geçmiş" },
 ];
@@ -471,6 +473,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
           {tab === "personnel" && <PersonnelManagementPanel companyId={companyId} companyName={company.name} departments={company.departments.filter(Boolean)} locations={company.locations.filter(Boolean)} />}
           {tab === "tracking" && <TrackingTab company={company} />}
           {tab === "documents" && <DocumentsTab company={company} companyId={companyId} />}
+          {tab === "ohs_file" && <OhsFileTab companyWorkspaceId={companyId} companyName={company.name} />}
           {tab === "organization" && <OrganizationPanel companyId={companyId} />}
           {tab === "history" && <HistoryTab />}
         </main>

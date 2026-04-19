@@ -29,13 +29,13 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-const typeLabels: Record<IncidentType, string> = {
+const typeLabels: Partial<Record<IncidentType, string>> = {
   work_accident: "İş Kazası",
   near_miss: "Ramak Kala",
   occupational_disease: "Meslek Hastalığı",
 };
 
-const typeBadgeVariant: Record<IncidentType, "danger" | "warning" | "accent"> = {
+const typeBadgeVariant: Partial<Record<IncidentType, "danger" | "warning" | "accent">> = {
   work_accident: "danger",
   near_miss: "warning",
   occupational_disease: "accent",

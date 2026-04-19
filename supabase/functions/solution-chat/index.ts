@@ -130,8 +130,17 @@ interface ChatRequest {
   message: string
   session_id?: string
   organization_id: string
+  workspace_id?: string
   company_workspace_id?: string
+  jurisdiction_code?: string
   language?: NovaLanguage
+  as_of_date?: string
+  answer_mode?: 'extractive' | 'polish'
+  mode?: 'read' | 'agent'
+  context_surface?: 'widget' | 'solution_center'
+  confirmation_token?: string | null
+  confirmation_action?: 'confirm' | 'cancel'
+  idempotency_key?: string | null
   history?: Array<{ role: 'user' | 'assistant', content: string }>
 }
 
@@ -143,6 +152,15 @@ interface ToolContext {
     id: string
     language: 'tr' | 'en'
     answer_language: NovaLanguage
+    as_of_date: string
+    answer_mode: 'extractive' | 'polish'
+    jurisdiction_code: string
+    mode: 'read' | 'agent'
+    context_surface: 'widget' | 'solution_center'
+    confirmation_token?: string | null
+    confirmation_action?: 'confirm' | 'cancel'
+    idempotency_key?: string | null
+    workspace_id?: string | null
     company_workspace_id?: string | null
   }
 }
@@ -152,6 +170,28 @@ interface ToolResult {
   data?: any
   error?: string
   error_type?: string
+}
+
+interface LegalEvidenceHit {
+  chunk_id?: string | null
+  document_id?: string | null
+  version_id?: string | null
+  law: string
+  article: string | null
+  title: string | null
+  content: string
+  relevance_score: number
+  source_type: string
+  binding_level: string
+  official_citation: string
+  doc_number?: string | null
+  jurisdiction_code?: string | null
+  corpus_scope?: 'official' | 'tenant_private'
+  workspace_id?: string | null
+  rank_fusion_score?: number
+  rerank_score?: number
+  citation_id?: string
+  match_type: 'exact' | 'lexical' | 'dense'
 }
 
 const ISG_TASK_CATEGORY_EGITIM = '9b722ae5-0a72-48c8-9d1f-836e1a114b8a'
@@ -165,12 +205,43 @@ const ACTION_LABELS: Record<string, { tr: string; en: string }> = {
   create_document_draft: { tr: 'dokuman taslagi', en: 'document draft' },
 }
 
+const PHASE1_READ_ONLY_TOOLS = [
+  'search_legislation',
+  'search_past_answers',
+  'get_proactive_operations',
+  'save_memory_note',
+  'get_active_workflows',
+  'navigate_to_page',
+]
+
+const PHASE1_DRAFT_TOOLS = [
+  'create_training_plan',
+  'create_planner_task',
+  'create_incident_draft',
+  'create_document_draft',
+]
+
+const PHASE1_BLOCKED_TOOLS = [
+  'confirm_pending_action',
+  'cancel_pending_action',
+  'complete_workflow_step',
+]
+
 const chatRequestSchema = z.object({
   message: z.string().trim().min(1).max(4000),
   session_id: z.string().uuid().optional(),
   organization_id: z.string().uuid(),
+  workspace_id: z.string().uuid().optional(),
   company_workspace_id: z.string().uuid().optional(),
+  jurisdiction_code: z.string().regex(/^[A-Z]{2}$/).optional(),
   language: z.enum(SUPPORTED_NOVA_LANGUAGES).optional(),
+  as_of_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  answer_mode: z.enum(['extractive', 'polish']).optional(),
+  mode: z.enum(['read', 'agent']).optional(),
+  context_surface: z.enum(['widget', 'solution_center']).optional(),
+  confirmation_token: z.string().uuid().nullable().optional(),
+  confirmation_action: z.enum(['confirm', 'cancel']).optional(),
+  idempotency_key: z.string().uuid().nullable().optional(),
   history: z.array(
     z.object({
       role: z.enum(['user', 'assistant']),
@@ -823,29 +894,604 @@ function inferLegislationMetadata(docTitle: string, articleNumber?: string | nul
   }
 }
 
+function applyEvidenceContext(
+  metadata: ReturnType<typeof inferLegislationMetadata>,
+  row: {
+    jurisdiction_code?: string | null
+    corpus_scope?: string | null
+    workspace_id?: string | null
+  },
+) {
+  const corpusScope = row.corpus_scope === 'tenant_private' ? 'tenant_private' : 'official'
+  const jurisdictionCode = row.jurisdiction_code || metadata.jurisdiction
+  const officialCitation = corpusScope === 'tenant_private'
+    ? `[Tenant Private ${jurisdictionCode}] ${metadata.official_citation}`
+    : metadata.official_citation
+
+  return {
+    ...metadata,
+    jurisdiction: jurisdictionCode,
+    official_citation: officialCitation,
+    corpus_scope: corpusScope,
+    jurisdiction_code: jurisdictionCode,
+    workspace_id: row.workspace_id || null,
+  }
+}
+
+async function resolveJurisdictionCode(
+  supabase: SupabaseClient,
+  workspaceId?: string | null,
+  requestedCode?: string | null,
+): Promise<string> {
+  if (requestedCode && /^[A-Z]{2}$/.test(requestedCode)) {
+    return requestedCode
+  }
+
+  if (!workspaceId) return 'TR'
+
+  const { data, error } = await supabase
+    .from('workspaces')
+    .select('country_code')
+    .eq('id', workspaceId)
+    .maybeSingle()
+
+  if (error) {
+    console.error('[resolveJurisdictionCode] failed:', error.message)
+    return 'TR'
+  }
+
+  return data?.country_code || 'TR'
+}
+
+function normalizeTurkishAscii(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/ç/g, 'c')
+    .replace(/ğ/g, 'g')
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ş/g, 's')
+    .replace(/ü/g, 'u')
+}
+
+function parseLawNumberFromQuery(query: string): string | null {
+  const match = query.match(/\b(\d{3,5})\s*(?:sayili|sayılı)?\s*(?:kanun|kanunu|kanunun|law)?\b/i)
+  if (match?.[1]) return match[1]
+
+  const fallback = query.match(/\bkanun\s*(?:no|numarasi|numarası)?[:\s]+(\d{3,5})\b/i)
+  return fallback?.[1] ?? null
+}
+
+function parseArticleReferenceFromQuery(query: string): string | null {
+  const normalized = normalizeTurkishAscii(query)
+
+  const gecici = normalized.match(/\bgecici\s+madde\s+(\d+(?:\/[a-z])?)\b/i)
+  if (gecici?.[1]) return `Gecici Madde ${gecici[1].toUpperCase()}`
+
+  const ek = normalized.match(/\bek\s+madde\s+(\d+(?:\/[a-z])?)\b/i)
+  if (ek?.[1]) return `Ek Madde ${ek[1].toUpperCase()}`
+
+  const normal = normalized.match(/\b(?:madde|md)\.?\s+(\d+(?:\/[a-z])?)\b/i)
+  if (normal?.[1]) return `Madde ${normal[1].toUpperCase()}`
+
+  return null
+}
+
+function buildArticleReferencePatterns(articleReference: string | null): string[] {
+  if (!articleReference) return []
+
+  const normalized = articleReference.trim()
+  const articleNumber = normalized.match(/(\d+(?:\/[A-Z])?)/i)?.[1] ?? normalized
+
+  if (/^gecici/i.test(normalized)) {
+    return [`Geçici Madde ${articleNumber}`, `Gecici Madde ${articleNumber}`, `Madde ${articleNumber}`]
+  }
+
+  if (/^ek/i.test(normalized)) {
+    return [`Ek Madde ${articleNumber}`, `Madde ${articleNumber}`]
+  }
+
+  return [`Madde ${articleNumber}`]
+}
+
+function resolveAsOfDate(value?: string | null): string {
+  if (value && /^\d{4}-\d{2}-\d{2}$/.test(value)) return value
+  return new Date().toISOString().slice(0, 10)
+}
+
+function normalizeSearchTerms(query: string): string[] {
+  const stopWords = new Set(['bir', 'bu', 'ile', 'var', 'olan', 'gibi', 'daha', 'icin', 'olarak', 'nasil', 'kac', 'hangi', 'nedir', 'neler'])
+  return (query || '')
+    .toLowerCase()
+    .replace(/[.,;:!?()]/g, ' ')
+    .split(/\s+/)
+    .filter((w: string) => w.length > 2 && !stopWords.has(w))
+    .slice(0, 15)
+}
+
+function buildEvidenceKey(hit: LegalEvidenceHit): string {
+  return [hit.document_id || hit.law, hit.version_id || '', hit.article || '', hit.title || ''].join('::')
+}
+
+function reciprocalRankFusion(resultSets: LegalEvidenceHit[][]): LegalEvidenceHit[] {
+  const scores = new Map<string, LegalEvidenceHit>()
+
+  resultSets.forEach((set, setIndex) => {
+    set.forEach((hit, index) => {
+      const key = buildEvidenceKey(hit)
+      const current = scores.get(key)
+      const contribution = 1 / (60 + index + 1 + setIndex)
+      if (!current) {
+        scores.set(key, {
+          ...hit,
+          rank_fusion_score: contribution,
+        })
+        return
+      }
+
+      current.rank_fusion_score = Number(current.rank_fusion_score || 0) + contribution
+      current.relevance_score = Math.max(current.relevance_score || 0, hit.relevance_score || 0)
+      current.match_type = current.match_type === 'exact' ? 'exact' : hit.match_type
+    })
+  })
+
+  return Array.from(scores.values()).sort((a, b) => Number(b.rank_fusion_score || 0) - Number(a.rank_fusion_score || 0))
+}
+
+function rerankLegalHits(query: string, hits: LegalEvidenceHit[]): LegalEvidenceHit[] {
+  const normalizedQuery = normalizeTurkishAscii(query)
+  const lawNumber = parseLawNumberFromQuery(query)
+  const articleRef = parseArticleReferenceFromQuery(query)
+
+  return hits
+    .map((hit, index) => {
+      let score = Number(hit.rank_fusion_score || 0)
+
+      if (hit.match_type === 'exact') score += 10
+      if (hit.match_type === 'dense') score += 1.2
+      if (lawNumber && hit.doc_number === lawNumber) score += 3
+      if (articleRef && normalizeTurkishAscii(hit.article || '').includes(normalizeTurkishAscii(articleRef))) score += 4
+
+      const haystack = normalizeTurkishAscii(`${hit.law} ${hit.title || ''} ${hit.content.slice(0, 600)}`)
+      const queryTerms = normalizedQuery.split(/\s+/).filter((token) => token.length > 2)
+      for (const term of queryTerms) {
+        if (haystack.includes(term)) score += 0.15
+      }
+
+      return { ...hit, rerank_score: score + Math.max(0, 0.001 * (50 - index)) }
+    })
+    .sort((a, b) => Number(b.rerank_score || 0) - Number(a.rerank_score || 0))
+}
+
+async function saveLegalRetrievalRun(params: {
+  supabase: SupabaseClient
+  userId: string
+  organizationId: string
+  workspaceId?: string | null
+  queryText: string
+  asOfDate: string
+  answerMode: 'extractive' | 'polish'
+  trace: Record<string, unknown>
+  answerPreview: string
+  confidence: number
+}): Promise<string | null> {
+  try {
+    const { data, error } = await params.supabase
+      .from('legal_retrieval_runs')
+      .insert({
+        user_id: params.userId,
+        organization_id: params.organizationId,
+        workspace_id: params.workspaceId ?? null,
+        query_text: params.queryText,
+        as_of_date: params.asOfDate,
+        answer_mode: params.answerMode,
+        retrieval_trace: params.trace,
+        answer_preview: params.answerPreview.slice(0, 1000),
+        confidence: params.confidence,
+      })
+      .select('id')
+      .single()
+
+    if (error) {
+      console.error('[saveLegalRetrievalRun] failed:', error)
+      return null
+    }
+
+    return data?.id || null
+  } catch (err) {
+    console.error('[saveLegalRetrievalRun] unexpected:', err)
+    return null
+  }
+}
+
+function isOperationalCommandQuery(query: string): boolean {
+  return /(olustur|oluştur|planla|ekle|kaydet|ac|aç|git|yonlendir|yönlendir|create|plan|open|navigate)/i.test(query)
+}
+
+function shouldUseDeterministicLegalMode(query: string): boolean {
+  return detectNovaIntentAdvanced(query) === 'regulation' && !isOperationalCommandQuery(query)
+}
+
+function summarizeLegalContentExtractively(content: string, maxLength = 260): string {
+  const normalized = content
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([,.;:])/g, '$1')
+    .trim()
+
+  if (!normalized) return ''
+
+  const sentence = normalized.split(/(?<=[.!?;:])\s+/)[0]?.trim() || normalized
+  if (sentence.length <= maxLength) return sentence
+  return `${sentence.slice(0, maxLength - 1).trim()}…`
+}
+
+async function exactLegalCitationLookup(
+  query: string,
+  context: ToolContext,
+  maxResults = 5,
+): Promise<LegalEvidenceHit[]> {
+  const lawNumber = parseLawNumberFromQuery(query)
+  const articlePatterns = buildArticleReferencePatterns(parseArticleReferenceFromQuery(query))
+
+  if (!lawNumber) return []
+
+  const { data, error } = await context.supabase.rpc('exact_legal_reference_lookup', {
+    law_number: lawNumber,
+    article_patterns: articlePatterns.length > 0 ? articlePatterns : null,
+    as_of_date: context.session.as_of_date,
+    result_limit: maxResults,
+    jurisdiction_code: context.session.jurisdiction_code,
+    workspace_id: context.session.workspace_id ?? null,
+  })
+
+  if (error || !data?.length) return []
+
+  return data.map((chunk: any) => {
+    const metadata = applyEvidenceContext(
+      inferLegislationMetadata(chunk.doc_title || 'Mevzuat', chunk.article_number),
+      chunk,
+    )
+    return {
+      chunk_id: chunk.chunk_id || null,
+      document_id: chunk.document_id || null,
+      version_id: chunk.version_id || null,
+      law: chunk.doc_title || 'Mevzuat',
+      article: chunk.article_number || null,
+      title: chunk.article_title || null,
+      content: chunk.content || '',
+      relevance_score: Number(chunk.match_rank || 0.95),
+      doc_number: chunk.doc_number || null,
+      match_type: 'exact',
+      ...metadata,
+    }
+  })
+}
+
+function formatLegalSourcesForResponse(hits: LegalEvidenceHit[]) {
+  return hits.map((hit) => ({
+    doc_title: hit.law,
+    doc_type: hit.source_type,
+    doc_number: hit.doc_number || '',
+    article_number: hit.article || '',
+    article_title: hit.title || '',
+    official_citation: hit.official_citation,
+    binding_level: hit.binding_level,
+    match_type: hit.match_type,
+    citation_id: hit.citation_id || null,
+    jurisdiction_code: hit.jurisdiction_code || null,
+    corpus_scope: hit.corpus_scope || 'official',
+  }))
+}
+
+function composeDeterministicLegalAnswer(params: {
+  query: string
+  hits: LegalEvidenceHit[]
+  answerLanguage: NovaLanguage
+}): { answer: string; confidence: number; sources: any[]; retrievalMode: string } {
+  const { query, hits, answerLanguage } = params
+  const topHits = hits.slice(0, 3).map((hit, index) => ({
+    ...hit,
+    citation_id: hit.citation_id || `CIT-${index + 1}`,
+  }))
+  const hasExact = topHits.some((hit) => hit.match_type === 'exact')
+  const hasDense = topHits.some((hit) => hit.match_type === 'dense')
+  const hasTenantPrivate = topHits.some((hit) => hit.corpus_scope === 'tenant_private')
+  const confidence = hasExact ? 0.92 : 0.78
+  const sources = formatLegalSourcesForResponse(topHits)
+
+  if (!topHits.length) {
+    if (answerLanguage === 'en') {
+      return {
+        answer: [
+          '## Verified result',
+          'I could not verify a source-backed regulation answer from the current legislation index.',
+          'Please restate the question with a law number, article number, or an effective date.',
+        ].join('\n'),
+        confidence: 0.18,
+        sources: [],
+        retrievalMode: 'deterministic_abstain',
+      }
+    }
+
+    return {
+      answer: [
+        '## Dogrulanmis sonuc',
+        'Mevcut mevzuat indeksinde bu soruya kaynakla dogrulanmis bir cevap kesinlestiremedim.',
+        'Lutfen kanun numarasi, madde numarasi veya yururluk tarihi ile soruyu daraltin.',
+      ].join('\n'),
+      confidence: 0.18,
+      sources: [],
+      retrievalMode: 'deterministic_abstain',
+    }
+  }
+
+  const evidenceLines = topHits.map((hit) => {
+    const snippet = summarizeLegalContentExtractively(hit.content)
+    const citation = hit.article
+      ? `${hit.law} - ${hit.article}`
+      : hit.law
+    return `- ${snippet} [${hit.citation_id}; ${citation}]`
+  })
+
+  if (answerLanguage === 'en') {
+    return {
+      answer: [
+        '## Source-backed finding',
+        ...evidenceLines,
+        '',
+        '## Nova interpretation',
+        hasExact
+          ? 'This answer was assembled directly from the matched law/article records in the legislation index.'
+          : hasDense
+            ? 'This answer was assembled from version-filtered legislation passages using hybrid retrieval and deterministic ranking.'
+            : 'This answer was assembled from the closest indexed legislation passages; confirm the scope if your question depends on a specific date or exception.',
+        hasTenantPrivate
+          ? 'Tenant-private documents were also used. Treat those citations as organization-specific guidance, not as a replacement for official law.'
+          : '',
+        '',
+        '## Recommended next step',
+        'Use the cited article text as the primary authority. If you need a date-specific determination, repeat the query with an "as of" date.',
+      ].join('\n'),
+      confidence,
+      sources,
+      retrievalMode: hasExact ? 'deterministic_exact' : hasDense ? 'deterministic_hybrid' : 'deterministic_lexical',
+    }
+  }
+
+  return {
+    answer: [
+      '## Kaynaga dayali bulgu',
+      ...evidenceLines,
+      '',
+      '## Nova yorumu',
+      hasExact
+        ? 'Bu cevap, mevzuat indeksindeki eslesen kanun/madde kayitlarindan dogrudan derlendi.'
+        : hasDense
+          ? 'Bu cevap, yururluk tarihi filtreli hibrit retrieval ve deterministik siralama ile secilen mevzuat parcalarindan derlendi.'
+          : 'Bu cevap, indeksteki en yakin mevzuat parcalarindan derlendi; tarih, istisna veya kapsam kritikse soruyu yururluk tarihiyle netlestirin.',
+      hasTenantPrivate
+        ? 'Bu cevapta tenant-private belgeler de kullanildi. Bu alintilari resmi mevzuatin yerine gecen dayanak olarak degil, kurumunuza ozel tamamlayici kaynak olarak degerlendirin.'
+        : '',
+      '',
+      '## Onerilen sonraki adim',
+      `Asil dayanak olarak alintilanan madde metnini kullanin. Gerekirse soruyu kanun numarasi veya yururluk tarihi ile yeniden sorun: "${query}".`,
+    ].join('\n'),
+    confidence,
+    sources,
+    retrievalMode: hasExact ? 'deterministic_exact' : hasDense ? 'deterministic_hybrid' : 'deterministic_lexical',
+  }
+}
+
+async function polishDeterministicLegalAnswer(params: {
+  anthropic: Anthropic
+  draftAnswer: string
+  citations: any[]
+  evidence: LegalEvidenceHit[]
+  language: NovaLanguage
+}): Promise<{ mode: 'polished' | 'extractive_fallback'; answer: string }> {
+  const citationIds = params.citations
+    .map((citation: any) => citation.citation_id)
+    .filter(Boolean)
+
+  if (citationIds.length === 0) {
+    return { mode: 'extractive_fallback', answer: params.draftAnswer }
+  }
+
+  const system = params.language === 'en'
+    ? 'Rewrite only for readability. Do not add facts. Preserve every citation token exactly. Remove unsupported sentences.'
+    : 'Sadece okunabilirlik icin yeniden yaz. Yeni olgu ekleme. Tum citation tokenlarini aynen koru. Desteksiz cumleyi sil.'
+
+  const response = await requestClaude(
+    params.anthropic,
+    {
+      model: ANTHROPIC_MODEL,
+      max_tokens: 1200,
+      temperature: 0.1,
+      system,
+      messages: [
+        {
+          role: 'user',
+          content: JSON.stringify({
+            draft_answer: params.draftAnswer,
+            citations: params.citations,
+            evidence: params.evidence.map((hit) => ({
+              citation_id: hit.citation_id,
+              law: hit.law,
+              article: hit.article,
+              content: hit.content,
+            })),
+          }),
+        },
+      ],
+    },
+    'solution_chat_legal_polish',
+  )
+
+  const textBlock = response?.content?.find((block: any) => block.type === 'text')
+  const answer = typeof textBlock?.text === 'string' ? textBlock.text.trim() : ''
+  if (!answer) {
+    return { mode: 'extractive_fallback', answer: params.draftAnswer }
+  }
+
+  const usedCitationIds = Array.from(answer.matchAll(/\[([^\]]+)\]/g)).map((match) => {
+    const groups = match as RegExpMatchArray
+    return groups[1]
+  })
+  const invalidCitation = usedCitationIds.some((token) => token.includes('CIT-') && !citationIds.some((id: string) => token.includes(id)))
+
+  return invalidCitation
+    ? { mode: 'extractive_fallback', answer: params.draftAnswer }
+    : { mode: 'polished', answer }
+}
+
+async function buildDeterministicLegalAnswer(
+  query: string,
+  context: ToolContext,
+  openai: OpenAI,
+  anthropic: Anthropic,
+): Promise<{ answer: string; confidence: number; sources: any[]; retrievalMode: string; trace: Record<string, unknown> }> {
+  const exactHits = await exactLegalCitationLookup(query, context, 5)
+  if (exactHits.length > 0) {
+    const composed = composeDeterministicLegalAnswer({
+      query,
+      hits: exactHits,
+      answerLanguage: context.session.answer_language,
+    })
+    return {
+      ...composed,
+      trace: {
+        as_of_date: context.session.as_of_date,
+        jurisdiction_code: context.session.jurisdiction_code,
+        exact: exactHits,
+        sparse: [],
+        dense: [],
+        reranked: exactHits,
+      },
+    }
+  }
+
+  const searchTerms = normalizeSearchTerms(query)
+  const { data: lexicalRows, error: lexicalError } = await context.supabase.rpc('search_legal_chunks_v3', {
+    search_terms: searchTerms,
+    as_of_date: context.session.as_of_date,
+    result_limit: 15,
+    jurisdiction_code: context.session.jurisdiction_code,
+    workspace_id: context.session.workspace_id ?? null,
+  })
+  if (lexicalError) {
+    console.error('[buildDeterministicLegalAnswer] lexical retrieval failed:', lexicalError.message)
+  }
+
+  const lexicalHits: LegalEvidenceHit[] = (lexicalRows || []).map((hit: any) => {
+    const metadata = applyEvidenceContext(
+      inferLegislationMetadata(hit.doc_title || 'Mevzuat', hit.article_number),
+      hit,
+    )
+    return {
+      chunk_id: hit.chunk_id || null,
+      document_id: hit.document_id || null,
+      version_id: hit.version_id || null,
+      law: hit.doc_title || 'Mevzuat',
+      article: hit.article_number || null,
+      title: hit.article_title || null,
+      content: hit.content || '',
+      relevance_score: Number(hit.rank || 0),
+      doc_number: hit.doc_number || null,
+      match_type: 'lexical',
+      ...metadata,
+    }
+  })
+
+  let denseHits: LegalEvidenceHit[] = []
+  const queryEmbedding = await generateEmbedding(query, openai)
+  if (queryEmbedding) {
+    const { data: denseRows, error: denseError } = await context.supabase.rpc('search_legal_chunks_dense_v1', {
+      query_embedding: queryEmbedding,
+      as_of_date: context.session.as_of_date,
+      match_threshold: 0.6,
+      result_limit: 15,
+      jurisdiction_code: context.session.jurisdiction_code,
+      workspace_id: context.session.workspace_id ?? null,
+    })
+
+    if (denseError) {
+      console.error('[buildDeterministicLegalAnswer] dense retrieval failed:', denseError.message)
+    } else {
+      denseHits = (denseRows || []).map((hit: any) => {
+        const metadata = applyEvidenceContext(
+          inferLegislationMetadata(hit.doc_title || 'Mevzuat', hit.article_number),
+          hit,
+        )
+        return {
+          chunk_id: hit.chunk_id || null,
+          document_id: hit.document_id || null,
+          version_id: hit.version_id || null,
+          law: hit.doc_title || 'Mevzuat',
+          article: hit.article_number || null,
+          title: hit.article_title || null,
+          content: hit.content || '',
+          relevance_score: Number(hit.similarity || 0),
+          doc_number: hit.doc_number || null,
+          match_type: 'dense',
+          ...metadata,
+        }
+      })
+    }
+  }
+
+  const reranked = rerankLegalHits(query, reciprocalRankFusion([lexicalHits, denseHits])).slice(0, 8)
+  let composed = composeDeterministicLegalAnswer({
+    query,
+    hits: reranked,
+    answerLanguage: context.session.answer_language,
+  })
+
+  if (context.session.answer_mode === 'polish' && reranked.length > 0) {
+    const polished = await polishDeterministicLegalAnswer({
+      anthropic,
+      draftAnswer: composed.answer,
+      citations: composed.sources,
+      evidence: reranked,
+      language: context.session.answer_language,
+    })
+    composed = {
+      ...composed,
+      answer: polished.answer,
+      retrievalMode: polished.mode === 'polished' ? `${composed.retrievalMode}_polish` : composed.retrievalMode,
+    }
+  }
+
+  return {
+    ...composed,
+    trace: {
+      as_of_date: context.session.as_of_date,
+      jurisdiction_code: context.session.jurisdiction_code,
+      exact: [],
+      sparse: lexicalHits.slice(0, 15),
+      dense: denseHits.slice(0, 15),
+      reranked,
+    },
+  }
+}
+
 async function executeSearchLegislation(input: any, context: ToolContext): Promise<ToolResult> {
   try {
-    // Build search_terms array from query string
-    const stopWords = new Set(['bir', 'bu', 'ile', 'var', 'olan', 'gibi', 'daha', 'icin', 'olarak', 'nasil', 'kac', 'hangi', 'nedir', 'neler'])
-    const searchTerms = (input.query || '')
-      .toLowerCase()
-      .replace(/[.,;:!?()\d]/g, ' ')
-      .split(/\s+/)
-      .filter((w: string) => w.length > 2 && !stopWords.has(w))
-      .slice(0, 15)
+    const searchTerms = normalizeSearchTerms(input.query || '')
 
     if (searchTerms.length === 0) {
       return { success: false, error: 'Arama terimi bulunamadi' }
     }
 
-    // RPC: search_legal_chunks_v2(search_terms text[], result_limit integer)
-    const { data, error } = await context.supabase.rpc('search_legal_chunks_v2', {
+    const { data, error } = await context.supabase.rpc('search_legal_chunks_v3', {
       search_terms: searchTerms,
-      result_limit: input.max_results || 5
+      as_of_date: context.session.as_of_date,
+      result_limit: input.max_results || 5,
+      jurisdiction_code: context.session.jurisdiction_code,
+      workspace_id: context.session.workspace_id ?? null,
     })
 
     if (error) {
-      console.error('search_legal_chunks_v2 error:', error.message)
+      console.error('search_legal_chunks_v3 error:', error.message)
       // Fallback: fulltext search
       const { data: ftData } = await context.supabase.rpc('search_legal_fulltext', {
         search_query: input.query,
@@ -856,14 +1502,25 @@ async function executeSearchLegislation(input: any, context: ToolContext): Promi
           success: true,
           data: {
             count: ftData.length,
-            results: ftData.map((chunk: any) => ({
-              law: chunk.doc_title || 'Mevzuat',
-              article: chunk.article_number,
-              title: chunk.article_title,
-              content: (chunk.content || '').substring(0, 500),
-              relevance_score: chunk.rank || 0,
-              ...inferLegislationMetadata(chunk.doc_title || 'Mevzuat', chunk.article_number),
-            }))
+            results: ftData.map((chunk: any) => {
+              const metadata = applyEvidenceContext(
+                inferLegislationMetadata(chunk.doc_title || 'Mevzuat', chunk.article_number),
+                chunk,
+              )
+              return {
+                law: chunk.doc_title || 'Mevzuat',
+                doc_number: chunk.doc_number || null,
+                article: chunk.article_number,
+                title: chunk.article_title,
+                content: (chunk.content || '').substring(0, 500),
+                relevance_score: chunk.rank || 0,
+                corpus_scope: metadata.corpus_scope,
+                jurisdiction_code: metadata.jurisdiction_code,
+                official_citation: metadata.official_citation,
+                binding_level: metadata.binding_level,
+                source_type: metadata.source_type,
+              }
+            })
           }
         }
       }
@@ -874,14 +1531,25 @@ async function executeSearchLegislation(input: any, context: ToolContext): Promi
       success: true,
       data: {
         count: data?.length || 0,
-        results: (data || []).map((chunk: any) => ({
-          law: chunk.doc_title || 'Mevzuat',
-          article: chunk.article_number,
-          title: chunk.article_title,
-          content: (chunk.content || '').substring(0, 500),
-          relevance_score: chunk.rank || 0,
-          ...inferLegislationMetadata(chunk.doc_title || 'Mevzuat', chunk.article_number),
-        })),
+        results: (data || []).map((chunk: any) => {
+          const metadata = applyEvidenceContext(
+            inferLegislationMetadata(chunk.doc_title || 'Mevzuat', chunk.article_number),
+            chunk,
+          )
+          return {
+            law: chunk.doc_title || 'Mevzuat',
+            doc_number: chunk.doc_number || null,
+            article: chunk.article_number,
+            title: chunk.article_title,
+            content: (chunk.content || '').substring(0, 500),
+            relevance_score: chunk.rank || 0,
+            corpus_scope: metadata.corpus_scope,
+            jurisdiction_code: metadata.jurisdiction_code,
+            official_citation: metadata.official_citation,
+            binding_level: metadata.binding_level,
+            source_type: metadata.source_type,
+          }
+        }),
         interpretation_guidance: context.session.language === 'en'
           ? 'Use these results by clearly separating source-backed statements, Nova interpretation, and operational next step.'
           : 'Bu sonuclari kullanirken kaynaga dayali bilgi, Nova yorumu ve operasyonel sonraki adimi acikca ayir.',
@@ -2583,6 +3251,103 @@ async function findPendingAction(actionId: string | null, context: ToolContext) 
   return data?.[0] ?? null
 }
 
+function detectPendingActionIntent(message: string): 'confirm' | 'cancel' | null {
+  const normalized = message
+    .toLocaleLowerCase('tr-TR')
+    .replace(/[.!?,;:]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  if (!normalized) return null
+
+  const confirmPatterns = [
+    /\bonay\b/,
+    /\bonayliyorum\b/,
+    /\bonayladim\b/,
+    /\bdevam et\b/,
+    /\bdevam\b/,
+    /\buygula\b/,
+    /\byap\b/,
+    /\btamam\b/,
+    /\bev(et)?\b/,
+    /\bgo ahead\b/,
+    /\bapprove\b/,
+    /\bconfirm\b/,
+    /\bproceed\b/,
+  ]
+
+  const cancelPatterns = [
+    /\biptal\b/,
+    /\bvazgectim\b/,
+    /\bvazgec\b/,
+    /\bdurma?n?\b/,
+    /\byapma\b/,
+    /\bhayir\b/,
+    /\bcancel\b/,
+    /\bstop\b/,
+    /\bignore\b/,
+  ]
+
+  if (cancelPatterns.some((pattern) => pattern.test(normalized))) {
+    return 'cancel'
+  }
+
+  if (confirmPatterns.some((pattern) => pattern.test(normalized))) {
+    return 'confirm'
+  }
+
+  return null
+}
+
+async function inferPendingActionResolution(message: string, context: ToolContext) {
+  const action = detectPendingActionIntent(message)
+  if (!action) return null
+
+  const pendingAction = await findPendingAction(null, context)
+  if (!pendingAction?.id) return null
+
+  return {
+    action,
+    actionId: pendingAction.id as string,
+  }
+}
+
+async function findActionRunById(actionId: string, context: ToolContext) {
+  const { data } = await context.supabase
+    .from('nova_action_runs')
+    .select('id, action_name, action_title, action_summary, action_payload, company_workspace_id, status, expires_at, confirmed_at, executed_at, cancelled_at, result_snapshot')
+    .eq('id', actionId)
+    .eq('user_id', context.user.id)
+    .limit(1)
+
+  return data?.[0] ?? null
+}
+
+function buildActionReplayPayload(actionRun: any, context: ToolContext) {
+  const snapshot = actionRun?.result_snapshot && typeof actionRun.result_snapshot === 'object'
+    ? actionRun.result_snapshot
+    : {}
+
+  return {
+    ...(snapshot || {}),
+    action_run_id: actionRun?.id ?? null,
+    action_name: actionRun?.action_name ?? snapshot?.action_name ?? null,
+    action_title: actionRun?.action_title ?? snapshot?.action_title ?? null,
+    summary:
+      snapshot?.summary ??
+      (actionRun?.status === 'completed'
+        ? (context.session.language === 'en'
+          ? `${actionRun?.action_title || 'Nova action'} was already completed.`
+          : `${actionRun?.action_title || 'Nova islemi'} daha once tamamlandi.`)
+        : actionRun?.status === 'cancelled'
+          ? (context.session.language === 'en'
+            ? `${actionRun?.action_title || 'Nova action'} was already cancelled.`
+            : `${actionRun?.action_title || 'Nova islemi'} daha once iptal edildi.`)
+          : actionRun?.action_summary || null),
+    idempotent_replay: true,
+  }
+}
+
 async function updateActionRunStatus(actionId: string, patch: Record<string, unknown>, context: ToolContext) {
   await context.supabase
     .from('nova_action_runs')
@@ -2619,17 +3384,35 @@ async function executeConfirmedPendingAction(actionRun: any, context: ToolContex
   }
 
   if (result.success) {
+    const previousSnapshot = actionRun.result_snapshot && typeof actionRun.result_snapshot === 'object'
+      ? actionRun.result_snapshot
+      : {}
     await updateActionRunStatus(actionRun.id, {
       status: 'completed',
-      confirmed_at: new Date().toISOString(),
       executed_at: new Date().toISOString(),
-      result_snapshot: result.data || null,
+      result_snapshot: {
+        ...(previousSnapshot || {}),
+        ...(result.data || {}),
+        execution_state: 'completed',
+        action_run_id: actionRun.id,
+        action_name: actionRun.action_name,
+        action_title: actionRun.action_title,
+      },
     }, context)
   } else {
+    const previousSnapshot = actionRun.result_snapshot && typeof actionRun.result_snapshot === 'object'
+      ? actionRun.result_snapshot
+      : {}
     await updateActionRunStatus(actionRun.id, {
       status: 'failed',
-      confirmed_at: new Date().toISOString(),
-      result_snapshot: { error: result.error ?? 'Execution failed' },
+      result_snapshot: {
+        ...(previousSnapshot || {}),
+        error: result.error ?? 'Execution failed',
+        execution_state: 'failed',
+        action_run_id: actionRun.id,
+        action_name: actionRun.action_name,
+        action_title: actionRun.action_title,
+      },
     }, context)
   }
 
@@ -2638,6 +3421,8 @@ async function executeConfirmedPendingAction(actionRun: any, context: ToolContex
     data: {
       ...(result.data || {}),
       action_run_id: actionRun.id,
+      action_name: actionRun.action_name,
+      action_title: actionRun.action_title,
     },
   }
 }
@@ -2645,6 +3430,80 @@ async function executeConfirmedPendingAction(actionRun: any, context: ToolContex
 async function executeConfirmPendingAction(input: any, context: ToolContext): Promise<ToolResult> {
   try {
     const actionId = typeof input.action_id === 'string' ? input.action_id : null
+    const executionKey = typeof input.idempotency_key === 'string' ? input.idempotency_key : crypto.randomUUID()
+
+    if (!actionId) {
+      return {
+        success: false,
+        error: context.session.language === 'en'
+          ? 'A pending Nova action id is required for confirmation.'
+          : 'Onay icin bekleyen Nova aksiyon kimligi gerekli.',
+      }
+    }
+
+    const anyActionRun = await findActionRunById(actionId, context)
+
+    if (!anyActionRun?.id) {
+      return {
+        success: false,
+        error: context.session.language === 'en'
+          ? 'There is no pending Nova action waiting for approval.'
+          : 'Onay bekleyen bir Nova islemi bulunamadi.',
+      }
+    }
+
+    if (anyActionRun.status === 'completed') {
+      return {
+        success: true,
+        data: buildActionReplayPayload(anyActionRun, context),
+      }
+    }
+
+    if (anyActionRun.status === 'cancelled') {
+      return {
+        success: false,
+        error: context.session.language === 'en'
+          ? 'This Nova action was already cancelled.'
+          : 'Bu Nova islemi zaten iptal edildi.',
+      }
+    }
+
+    if (anyActionRun.status === 'confirmed') {
+      const currentSnapshot =
+        anyActionRun.result_snapshot && typeof anyActionRun.result_snapshot === 'object'
+          ? anyActionRun.result_snapshot
+          : {}
+      const currentKey = currentSnapshot.execution_key ?? null
+      const currentState = currentSnapshot.execution_state ?? null
+
+      if (currentKey === executionKey && anyActionRun.executed_at) {
+        return {
+          success: true,
+          data: buildActionReplayPayload(anyActionRun, context),
+        }
+      }
+
+      if (currentKey === executionKey && (currentState === 'queued' || currentState === 'processing')) {
+        await updateActionRunStatus(anyActionRun.id, {
+          result_snapshot: {
+            ...(currentSnapshot || {}),
+            execution_key: executionKey,
+            execution_state: 'processing',
+            processing_started_at: new Date().toISOString(),
+          },
+        }, context)
+
+        return await executeConfirmedPendingAction(anyActionRun, context)
+      }
+
+      return {
+        success: false,
+        error: context.session.language === 'en'
+          ? 'This Nova action is already being processed.'
+          : 'Bu Nova islemi zaten isleniyor.',
+      }
+    }
+
     const actionRun = await findPendingAction(actionId, context)
 
     if (!actionRun?.id) {
@@ -2656,6 +3515,16 @@ async function executeConfirmPendingAction(input: any, context: ToolContext): Pr
       }
     }
 
+    await updateActionRunStatus(actionRun.id, {
+      status: 'confirmed',
+      confirmed_at: new Date().toISOString(),
+      result_snapshot: {
+        ...(actionRun.result_snapshot && typeof actionRun.result_snapshot === 'object' ? actionRun.result_snapshot : {}),
+        execution_key: executionKey,
+        execution_state: 'processing',
+      },
+    }, context)
+
     return await executeConfirmedPendingAction(actionRun, context)
   } catch (err: any) {
     return { success: false, error: `Hata: ${err.message}` }
@@ -2665,6 +3534,33 @@ async function executeConfirmPendingAction(input: any, context: ToolContext): Pr
 async function executeCancelPendingAction(input: any, context: ToolContext): Promise<ToolResult> {
   try {
     const actionId = typeof input.action_id === 'string' ? input.action_id : null
+    if (!actionId) {
+      return {
+        success: false,
+        error: context.session.language === 'en'
+          ? 'A pending Nova action id is required for cancellation.'
+          : 'Iptal icin bekleyen Nova aksiyon kimligi gerekli.',
+      }
+    }
+
+    const anyActionRun = await findActionRunById(actionId, context)
+
+    if (anyActionRun?.status === 'cancelled') {
+      return {
+        success: true,
+        data: buildActionReplayPayload(anyActionRun, context),
+      }
+    }
+
+    if (anyActionRun?.status === 'completed') {
+      return {
+        success: false,
+        error: context.session.language === 'en'
+          ? 'This Nova action was already completed and can no longer be cancelled.'
+          : 'Bu Nova islemi zaten tamamlandi ve artik iptal edilemez.',
+      }
+    }
+
     const actionRun = await findPendingAction(actionId, context)
 
     if (!actionRun?.id) {
@@ -2680,7 +3576,11 @@ async function executeCancelPendingAction(input: any, context: ToolContext): Pro
       status: 'cancelled',
       cancelled_at: new Date().toISOString(),
       result_snapshot: {
+        ...(actionRun.result_snapshot && typeof actionRun.result_snapshot === 'object' ? actionRun.result_snapshot : {}),
         cancelled_reason: typeof input.reason === 'string' ? input.reason : null,
+        action_run_id: actionRun.id,
+        action_name: actionRun.action_name,
+        action_title: actionRun.action_title,
       },
     }, context)
 
@@ -3886,54 +4786,72 @@ async function executeTool(toolName: string, input: any, context: ToolContext): 
   let result: ToolResult
 
   try {
-    switch (toolName) {
-      case 'search_legislation':
-        result = await executeSearchLegislation(input, context)
-        break
-      case 'get_personnel_count':
-        result = await executeGetPersonnelCount(input, context)
-        break
-      case 'get_recent_assessments':
-        result = await executeGetRecentAssessments(input, context)
-        break
-      case 'search_past_answers':
-        result = await executeSearchPastAnswers(input, context)
-        break
-      case 'get_proactive_operations':
-        result = await executeGetProactiveOperations(input, context)
-        break
-      case 'save_memory_note':
-        result = await executeSaveMemoryNote(input, context)
-        break
-      case 'get_active_workflows':
-        result = await executeGetActiveWorkflows(input, context)
-        break
-      case 'complete_workflow_step':
-        result = await executeCompleteWorkflowStep(input, context)
-        break
-      case 'confirm_pending_action':
-        result = await executeConfirmPendingAction(input, context)
-        break
-      case 'cancel_pending_action':
-        result = await executeCancelPendingAction(input, context)
-        break
-      case 'navigate_to_page':
-        result = await executeNavigateToPage(input, context)
-        break
-      case 'create_training_plan':
-        result = await executeCreateTrainingPlan(input, context)
-        break
-      case 'create_planner_task':
-        result = await executeCreatePlannerTask(input, context)
-        break
-      case 'create_incident_draft':
-        result = await executeCreateIncidentDraft(input, context)
-        break
-      case 'create_document_draft':
-        result = await executeCreateDocumentDraft(input, context)
-        break
-      default:
-        result = { success: false, error: `Bilinmeyen tool: ${toolName}` }
+    const isReadMode = context.session.mode === 'read'
+    const isBlockedInPhaseOne = PHASE1_BLOCKED_TOOLS.includes(toolName)
+    const isDraftTool = PHASE1_DRAFT_TOOLS.includes(toolName)
+
+    if (isBlockedInPhaseOne || (isReadMode && isDraftTool)) {
+      result = {
+        success: false,
+        error: context.session.language === 'en'
+          ? 'This Nova phase only supports read-only and draft-preparation actions.'
+          : 'Nova’nin bu fazi yalnizca salt-okunur ve taslak hazirlama aksiyonlarini destekler.',
+      }
+    } else {
+      const normalizedInput =
+        isDraftTool
+          ? { ...(input || {}), confirmed: false }
+          : input
+
+      switch (toolName) {
+        case 'search_legislation':
+          result = await executeSearchLegislation(normalizedInput, context)
+          break
+        case 'get_personnel_count':
+          result = await executeGetPersonnelCount(normalizedInput, context)
+          break
+        case 'get_recent_assessments':
+          result = await executeGetRecentAssessments(normalizedInput, context)
+          break
+        case 'search_past_answers':
+          result = await executeSearchPastAnswers(normalizedInput, context)
+          break
+        case 'get_proactive_operations':
+          result = await executeGetProactiveOperations(normalizedInput, context)
+          break
+        case 'save_memory_note':
+          result = await executeSaveMemoryNote(normalizedInput, context)
+          break
+        case 'get_active_workflows':
+          result = await executeGetActiveWorkflows(normalizedInput, context)
+          break
+        case 'complete_workflow_step':
+          result = await executeCompleteWorkflowStep(normalizedInput, context)
+          break
+        case 'confirm_pending_action':
+          result = await executeConfirmPendingAction(normalizedInput, context)
+          break
+        case 'cancel_pending_action':
+          result = await executeCancelPendingAction(normalizedInput, context)
+          break
+        case 'navigate_to_page':
+          result = await executeNavigateToPage(normalizedInput, context)
+          break
+        case 'create_training_plan':
+          result = await executeCreateTrainingPlan(normalizedInput, context)
+          break
+        case 'create_planner_task':
+          result = await executeCreatePlannerTask(normalizedInput, context)
+          break
+        case 'create_incident_draft':
+          result = await executeCreateIncidentDraft(normalizedInput, context)
+          break
+        case 'create_document_draft':
+          result = await executeCreateDocumentDraft(normalizedInput, context)
+          break
+        default:
+          result = { success: false, error: `Bilinmeyen tool: ${toolName}` }
+      }
     }
   } catch (err: any) {
     result = { success: false, error: `Tool hatası: ${err.message}` }
@@ -4107,6 +5025,127 @@ function extractWorkflow(messages: any[]): any | null {
   return null
 }
 
+function extractPendingActionHint(messages: any[]): Record<string, unknown> | null {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const msg = messages[i]
+    if (!Array.isArray(msg.content)) continue
+
+    for (const block of msg.content) {
+      if (block?.type !== 'tool_result') continue
+
+      try {
+        let parsedContent: any = block.content
+
+        if (typeof parsedContent === 'string') {
+          parsedContent = JSON.parse(parsedContent)
+        } else if (Array.isArray(parsedContent)) {
+          const textBlock = parsedContent.find((b: any) => b?.type === 'text')
+          if (textBlock?.text) {
+            parsedContent = JSON.parse(textBlock.text)
+          }
+        }
+
+        if (parsedContent?.success && parsedContent?.data?.requires_confirmation) {
+          return {
+            action_run_id: parsedContent.data.action_run_id ?? null,
+            action_name: parsedContent.data.action_name ?? null,
+            action_title: parsedContent.data.action_title ?? null,
+            action_summary: parsedContent.data.action_summary ?? null,
+            summary: parsedContent.data.summary ?? null,
+            confirmation_prompt: parsedContent.data.confirmation_prompt ?? null,
+          }
+        }
+      } catch (_err) {
+        continue
+      }
+    }
+  }
+
+  return null
+}
+
+function classifyNovaTaskType(params: {
+  deterministicLegalMode?: boolean
+  toolsUsed?: string[]
+  navigation?: any | null
+  workflow?: any | null
+  actionHint?: Record<string, unknown> | null
+  sources?: any[]
+}): string {
+  if (params.deterministicLegalMode || (params.sources?.length ?? 0) > 0 || (params.toolsUsed || []).includes('search_legislation')) {
+    return 'legal_research_answer'
+  }
+
+  if (params.actionHint?.action_name && typeof params.actionHint.action_name === 'string') {
+    return params.actionHint.action_name
+  }
+
+  if ((params.toolsUsed || []).includes('create_document_draft')) return 'draft_document'
+  if ((params.toolsUsed || []).includes('create_incident_draft')) return 'draft_incident'
+  if ((params.toolsUsed || []).includes('create_training_plan') || (params.toolsUsed || []).includes('create_planner_task')) {
+    return 'draft_training_or_task_plan'
+  }
+  if (params.workflow?.id) return 'build_followup_workflow'
+  if (params.navigation?.action === 'navigate') return 'navigate_to_page'
+  if ((params.toolsUsed || []).includes('get_proactive_operations')) return 'summarize_records'
+
+  return 'message'
+}
+
+function deriveAgentResponseType(params: {
+  actionHint?: Record<string, unknown> | null
+  workflow?: any | null
+  navigation?: any | null
+  toolsUsed?: string[]
+}): 'message' | 'tool_preview' | 'draft_ready' | 'workflow_started' {
+  if (params.actionHint) return 'tool_preview'
+  if ((params.toolsUsed || []).some((tool) => PHASE1_DRAFT_TOOLS.includes(tool))) return 'draft_ready'
+  if (params.workflow?.id) return 'workflow_started'
+  if (params.navigation?.action === 'navigate') return 'tool_preview'
+  return 'message'
+}
+
+function buildAgentTelemetry(params: {
+  taskType: string
+  cacheStatus: 'hit' | 'weak_hit' | 'miss'
+  iterations?: number
+  toolsUsed?: string[]
+  sources?: any[]
+  navigation?: any | null
+  workflow?: any | null
+  actionHint?: Record<string, unknown> | null
+  promptTokens?: number
+  completionTokens?: number
+  answerMode?: string
+  jurisdictionCode?: string
+  contextSurface?: string
+  retrievalTrace?: Record<string, unknown> | null
+}) {
+  const trace = params.retrievalTrace ?? null
+  const exactCount = Array.isArray(trace?.exact) ? trace.exact.length : 0
+  const sparseCount = Array.isArray(trace?.sparse) ? trace.sparse.length : 0
+  const denseCount = Array.isArray(trace?.dense) ? trace.dense.length : 0
+  const rerankedCount = Array.isArray(trace?.reranked) ? trace.reranked.length : 0
+
+  return {
+    task_type: params.taskType,
+    cache_status: params.cacheStatus,
+    iterations: params.iterations ?? 0,
+    tools_used: params.toolsUsed ?? [],
+    final_source_count: params.sources?.length ?? 0,
+    retrieval_candidate_count: exactCount + sparseCount + denseCount,
+    final_context_count: rerankedCount,
+    prompt_tokens: params.promptTokens ?? 0,
+    completion_tokens: params.completionTokens ?? 0,
+    answer_mode: params.answerMode ?? null,
+    jurisdiction_code: params.jurisdictionCode ?? null,
+    context_surface: params.contextSurface ?? null,
+    has_navigation: Boolean(params.navigation),
+    has_workflow: Boolean(params.workflow?.id),
+    has_action_hint: Boolean(params.actionHint),
+  }
+}
+
 async function requestClaude(
   anthropic: Anthropic,
   payload: Parameters<Anthropic['messages']['create']>[0],
@@ -4220,6 +5259,7 @@ async function saveSolutionQueryRecord(params: {
   supabase: SupabaseClient
   userId: string
   organizationId: string
+  workspaceId?: string | null
   companyWorkspaceId?: string | null
   queryText: string
   answer: string
@@ -4232,6 +5272,7 @@ async function saveSolutionQueryRecord(params: {
   workflow?: any | null
   followUpActions?: any[]
   cached: boolean
+  legalRetrieval?: Record<string, unknown> | null
 }): Promise<string | null> {
   try {
     const { data, error } = await params.supabase
@@ -4239,12 +5280,14 @@ async function saveSolutionQueryRecord(params: {
       .insert({
         user_id: params.userId,
         organization_id: params.organizationId,
+        workspace_id: params.workspaceId ?? null,
         query_text: params.queryText,
         ai_response: params.answer,
         sources_used: params.sources || [],
         response_tokens: params.responseTokens,
         response_metadata: {
           session_id: params.sessionId,
+          workspace_id: params.workspaceId ?? null,
           company_workspace_id: params.companyWorkspaceId ?? null,
           tools_used: params.toolsUsed,
           language: params.language,
@@ -4252,6 +5295,7 @@ async function saveSolutionQueryRecord(params: {
           workflow: params.workflow ?? null,
           follow_up_actions: params.followUpActions ?? [],
           cached: params.cached,
+          legal_retrieval: params.legalRetrieval ?? null,
         },
       })
       .select('id')
@@ -4402,6 +5446,10 @@ serve(async (req) => {
       parsedBody.data.history,
     )
     const operationalLanguage = getOperationalLanguage(answerLanguage)
+    const asOfDate = resolveAsOfDate(parsedBody.data.as_of_date)
+    const answerMode = parsedBody.data.answer_mode ?? 'extractive'
+    const requestMode = parsedBody.data.mode ?? 'agent'
+    const contextSurface = parsedBody.data.context_surface ?? 'solution_center'
 
     if (!userMessage || userMessage.trim().length === 0) {
       return await jsonErrorResponse(req, {
@@ -4422,14 +5470,15 @@ serve(async (req) => {
     const internalAuthHeader = req.headers.get('x-nova-internal-auth')
     const internalUserId = req.headers.get('x-nova-user-id')
     const internalOrganizationId = req.headers.get('x-nova-organization-id')
-    const internalBodyToken = typeof (body as Record<string, unknown>).internal_auth_token === 'string'
-      ? String((body as Record<string, unknown>).internal_auth_token)
+    const bodyRecord = body as unknown as Record<string, unknown>
+    const internalBodyToken = typeof bodyRecord.internal_auth_token === 'string'
+      ? String(bodyRecord.internal_auth_token)
       : null
-    const internalBodyUserId = typeof (body as Record<string, unknown>).internal_user_id === 'string'
-      ? String((body as Record<string, unknown>).internal_user_id)
+    const internalBodyUserId = typeof bodyRecord.internal_user_id === 'string'
+      ? String(bodyRecord.internal_user_id)
       : null
-    const internalBodyOrganizationId = typeof (body as Record<string, unknown>).internal_organization_id === 'string'
-      ? String((body as Record<string, unknown>).internal_organization_id)
+    const internalBodyOrganizationId = typeof bodyRecord.internal_organization_id === 'string'
+      ? String(bodyRecord.internal_organization_id)
       : null
     const effectiveInternalToken = internalAuthHeader || internalBodyToken
     const effectiveInternalUserId = internalUserId || internalBodyUserId
@@ -4582,6 +5631,12 @@ serve(async (req) => {
       .maybeSingle()
 
     const allowedTools = subData?.subscription_plans?.allowed_tools || ['search_legislation']
+    const deterministicLegalMode = shouldUseDeterministicLegalMode(userMessage)
+    const jurisdictionCode = await resolveJurisdictionCode(
+      supabase,
+      body.workspace_id ?? null,
+      parsedBody.data.jurisdiction_code ?? null,
+    )
 
     // Session
     const sessionId = await getOrCreateSession(
@@ -4596,7 +5651,9 @@ serve(async (req) => {
     // STEP 1: Semantic Cache Check (Embedding)
     // ========================================================================
 
-    const cacheResult = await checkSemanticCache(userMessage, openai, supabase)
+    const cacheResult = deterministicLegalMode
+      ? { hit: false as const }
+      : await checkSemanticCache(userMessage, openai, supabase)
 
     if (cacheResult.hit && cacheResult.answer) {
       // Güçlü eşleşme: direkt cache'den dön
@@ -4613,6 +5670,7 @@ serve(async (req) => {
         supabase,
         userId: user.id,
         organizationId: body.organization_id,
+        workspaceId: body.workspace_id ?? null,
         companyWorkspaceId: body.company_workspace_id ?? null,
         queryText: userMessage,
         answer: cacheResult.answer,
@@ -4625,17 +5683,47 @@ serve(async (req) => {
         workflow: null,
         followUpActions: [],
         cached: true,
+        legalRetrieval: null,
+      })
+
+      const cacheTelemetry = buildAgentTelemetry({
+        taskType: classifyNovaTaskType({
+          sources: cacheResult.sources || [],
+        }),
+        cacheStatus: 'hit',
+        toolsUsed: ['cache_hit'],
+        sources: cacheResult.sources || [],
+        answerMode,
+        jurisdictionCode,
+        contextSurface,
+      })
+
+      await logEdgeAiUsage({
+        userId: user.id,
+        organizationId: body.organization_id,
+        model: 'semantic-cache',
+        endpoint: '/functions/v1/solution-chat',
+        promptTokens: 0,
+        completionTokens: 0,
+        success: true,
+        metadata: {
+          sessionId,
+          similarity: cacheResult.similarity,
+          ...cacheTelemetry,
+        },
       })
 
       return new Response(
         JSON.stringify({
-          type: 'cache_hit',
+          type: 'message',
           answer: cacheResult.answer,
           sources: cacheResult.sources || [],
           similarity: cacheResult.similarity,
           session_id: sessionId,
           query_id: queryId,
-          cached: true
+          jurisdiction_code: jurisdictionCode,
+          cached: true,
+          telemetry: cacheTelemetry,
         }),
         { headers: { ...buildCorsHeaders(req), 'Content-Type': 'application/json' } }
       )
@@ -4660,23 +5748,11 @@ Benzer bir soruya daha önce şu cevap verilmiş:
 Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
     }
 
-    const FREE_TOOLS = [
-      'search_legislation',
-      'search_past_answers',
-      'get_proactive_operations',
-      'save_memory_note',
-      'get_active_workflows',
-      'complete_workflow_step',
-      'confirm_pending_action',
-      'cancel_pending_action',
-      'navigate_to_page',
-      'create_training_plan',
-      'create_planner_task',
-      'create_incident_draft',
-      'create_document_draft',
-    ]
+    const phaseTools = requestMode === 'read'
+      ? PHASE1_READ_ONLY_TOOLS
+      : [...PHASE1_READ_ONLY_TOOLS, ...PHASE1_DRAFT_TOOLS]
     const availableTools = NOVA_TOOLS.filter(tool =>
-      FREE_TOOLS.includes(tool.name) ||
+      phaseTools.includes(tool.name) ||
       allowedTools.includes(tool.name) ||
       allowedTools.includes('*')
     )
@@ -4703,8 +5779,264 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
         id: sessionId,
         language: operationalLanguage,
         answer_language: answerLanguage,
+        as_of_date: asOfDate,
+        answer_mode: answerMode,
+        mode: requestMode,
+        context_surface: contextSurface,
+        confirmation_token: parsedBody.data.confirmation_token ?? null,
+        jurisdiction_code: jurisdictionCode,
+        workspace_id: body.workspace_id ?? null,
         company_workspace_id: body.company_workspace_id ?? null
       }
+    }
+
+    const inferredPendingAction = !parsedBody.data.confirmation_token
+      ? await inferPendingActionResolution(userMessage, toolContext)
+      : null
+    const confirmationToken = parsedBody.data.confirmation_token ?? inferredPendingAction?.actionId ?? null
+    const confirmationAction = parsedBody.data.confirmation_action ?? inferredPendingAction?.action ?? null
+    const confirmationSource = parsedBody.data.confirmation_token ? 'explicit' : inferredPendingAction ? 'natural_language' : null
+
+    if (confirmationToken && confirmationAction) {
+      const confirmationResult = confirmationAction === 'cancel'
+        ? await executeCancelPendingAction({
+            action_id: confirmationToken,
+            reason: userMessage,
+          }, toolContext)
+        : await executeConfirmPendingAction({
+            action_id: confirmationToken,
+            idempotency_key: parsedBody.data.idempotency_key ?? null,
+          }, toolContext)
+
+      const confirmationData =
+        confirmationResult.data && typeof confirmationResult.data === 'object'
+          ? confirmationResult.data
+          : {}
+      const navigation = confirmationData.navigation ?? null
+      const workflow = confirmationData.workflow ?? null
+      const followUpActions = Array.isArray(confirmationData.follow_up_actions)
+        ? confirmationData.follow_up_actions
+        : []
+      const answer = confirmationResult.success
+        ? String(confirmationData.summary || confirmationData.action_summary || 'Nova aksiyonu tamamlandi.')
+        : String(confirmationResult.error || 'Nova aksiyonu tamamlanamadi.')
+      const taskType = classifyNovaTaskType({
+        toolsUsed: [
+          confirmationAction === 'cancel'
+            ? 'cancel_pending_action'
+            : String(confirmationData.action_name || 'confirm_pending_action'),
+        ],
+        navigation,
+        workflow,
+        sources: [],
+      })
+      const telemetry = buildAgentTelemetry({
+        taskType,
+        cacheStatus: 'miss',
+        toolsUsed: [confirmationAction === 'cancel' ? 'cancel_pending_action' : 'confirm_pending_action'],
+        actionHint:
+          confirmationData.action_name
+            ? {
+                action_name: confirmationData.action_name,
+                action_title: confirmationData.action_title ?? null,
+              }
+            : null,
+        sources: [],
+        navigation,
+        workflow,
+        promptTokens: 0,
+        completionTokens: 0,
+        answerMode,
+        jurisdictionCode,
+        contextSurface,
+      })
+      const responseType = confirmationResult.success
+        ? deriveAgentResponseType({
+            workflow,
+            navigation,
+            toolsUsed: [confirmationAction === 'cancel' ? 'cancel_pending_action' : 'confirm_pending_action'],
+          })
+        : 'safety_block'
+
+      const queryId = await saveSolutionQueryRecord({
+        supabase,
+        userId: user.id,
+        organizationId: body.organization_id,
+        workspaceId: body.workspace_id ?? null,
+        companyWorkspaceId: body.company_workspace_id ?? null,
+        queryText: userMessage,
+        answer,
+        sources: [],
+        responseTokens: 0,
+        sessionId,
+        toolsUsed: [confirmationAction === 'cancel' ? 'cancel_pending_action' : 'confirm_pending_action'],
+        language: answerLanguage,
+        navigation,
+        workflow,
+        followUpActions,
+        cached: false,
+        legalRetrieval: null,
+      })
+
+      await logEdgeAiUsage({
+        userId: user.id,
+        organizationId: body.organization_id,
+        model: 'nova-action-executor',
+        endpoint: '/functions/v1/solution-chat',
+        promptTokens: 0,
+        completionTokens: 0,
+        success: confirmationResult.success,
+        metadata: {
+          sessionId,
+          actionRunId: confirmationData.action_run_id ?? confirmationToken,
+          confirmationAction,
+          confirmationSource,
+          ...telemetry,
+        },
+      })
+
+      if (workflow?.id && queryId) {
+        await attachWorkflowsToQuery(sessionId, user.id, queryId, supabase)
+      }
+
+      return new Response(
+        JSON.stringify({
+          type: responseType,
+          answer,
+          navigation,
+          workflow,
+          follow_up_actions: followUpActions,
+          tools_used: [confirmationAction === 'cancel' ? 'cancel_pending_action' : 'confirm_pending_action'],
+          session_id: sessionId,
+          query_id: queryId,
+          cached: false,
+          jurisdiction_code: jurisdictionCode,
+          telemetry,
+          ...(confirmationResult.success
+            ? {}
+            : {
+                safety_block: {
+                  code: 'nova_action_execution_failed',
+                  title: operationalLanguage === 'en' ? 'Nova action could not run' : 'Nova aksiyonu calistirilamadi',
+                  message: answer,
+                },
+              }),
+        }),
+        { headers: { ...buildCorsHeaders(req), 'Content-Type': 'application/json' } }
+      )
+    }
+
+    if (deterministicLegalMode) {
+      const legalAnswer = await buildDeterministicLegalAnswer(userMessage, toolContext, openai, anthropic)
+      const retrievalRunId = await saveLegalRetrievalRun({
+        supabase,
+        userId: user.id,
+        organizationId: body.organization_id,
+        workspaceId: body.workspace_id ?? null,
+        queryText: userMessage,
+        asOfDate,
+        answerMode,
+        trace: legalAnswer.trace,
+        answerPreview: legalAnswer.answer,
+        confidence: legalAnswer.confidence,
+      })
+
+      await incrementUsage(
+        subCheck.subscription_id!,
+        user.id,
+        'message',
+        'search_legislation',
+        0,
+        0,
+        false,
+        supabase
+      )
+
+      const legalTaskType = classifyNovaTaskType({
+        deterministicLegalMode: true,
+        sources: legalAnswer.sources,
+        toolsUsed: ['deterministic_legal_answer'],
+      })
+      const legalTelemetry = buildAgentTelemetry({
+        taskType: legalTaskType,
+        cacheStatus: 'miss',
+        toolsUsed: ['deterministic_legal_answer'],
+        sources: legalAnswer.sources,
+        answerMode,
+        jurisdictionCode,
+        contextSurface,
+        retrievalTrace: legalAnswer.trace,
+      })
+
+      await logEdgeAiUsage({
+        userId: user.id,
+        organizationId: body.organization_id,
+        model: 'deterministic-legal-engine',
+        endpoint: '/functions/v1/solution-chat',
+        promptTokens: 0,
+        completionTokens: 0,
+        success: true,
+        metadata: {
+          retrievalMode: legalAnswer.retrievalMode,
+          confidence: legalAnswer.confidence,
+          retrievalRunId,
+          answerMode,
+          asOfDate,
+          jurisdictionCode,
+          sessionId,
+          ...legalTelemetry,
+        },
+      })
+
+      const queryId = await saveSolutionQueryRecord({
+        supabase,
+        userId: user.id,
+        organizationId: body.organization_id,
+        workspaceId: body.workspace_id ?? null,
+        companyWorkspaceId: body.company_workspace_id ?? null,
+        queryText: userMessage,
+        answer: legalAnswer.answer,
+        sources: legalAnswer.sources,
+        responseTokens: 0,
+        sessionId,
+        toolsUsed: ['deterministic_legal_answer'],
+        language: answerLanguage,
+        navigation: null,
+        workflow: null,
+        followUpActions: [],
+        cached: false,
+        legalRetrieval: {
+          retrieval_run_id: retrievalRunId,
+          mode: legalAnswer.retrievalMode,
+          confidence: legalAnswer.confidence,
+          as_of_date: asOfDate,
+          answer_mode: answerMode,
+          jurisdiction_code: jurisdictionCode,
+        },
+      })
+
+      return new Response(
+        JSON.stringify({
+          type: 'message',
+          answer: legalAnswer.answer,
+          sources: legalAnswer.sources,
+          confidence: legalAnswer.confidence,
+          retrieval_run_id: retrievalRunId,
+          as_of_date: asOfDate,
+          answer_mode: answerMode,
+          jurisdiction_code: jurisdictionCode,
+          session_id: sessionId,
+          query_id: queryId,
+          cached: false,
+          telemetry: {
+            ...legalTelemetry,
+            retrieval_mode: legalAnswer.retrievalMode,
+            confidence: legalAnswer.confidence,
+            retrieval_run_id: retrievalRunId,
+          },
+        }),
+        { headers: { ...buildCorsHeaders(req), 'Content-Type': 'application/json' } }
+      )
     }
 
     const intentRoutingContext = buildIntentRoutingContext(userMessage, operationalLanguage)
@@ -4912,6 +6244,39 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
       supabase
     )
 
+    const navigation = extractNavigation(toolsUsed, messages)
+    const workflow = extractWorkflow(messages)
+    const followUpActions = extractFollowUpActions(messages)
+    const actionHint = extractPendingActionHint(messages)
+    const taskType = classifyNovaTaskType({
+      toolsUsed,
+      navigation,
+      workflow,
+      actionHint,
+      sources,
+    })
+    const responseType = deriveAgentResponseType({
+      actionHint,
+      workflow,
+      navigation,
+      toolsUsed,
+    })
+    const telemetry = buildAgentTelemetry({
+      taskType,
+      cacheStatus: cacheResult.isWeakMatch ? 'weak_hit' : 'miss',
+      iterations,
+      toolsUsed,
+      sources,
+      navigation,
+      workflow,
+      actionHint,
+      promptTokens: totalInputTokens,
+      completionTokens: totalOutputTokens,
+      answerMode,
+      jurisdictionCode,
+      contextSurface,
+    })
+
     await logEdgeAiUsage({
       userId: user.id,
       organizationId: body.organization_id,
@@ -4921,10 +6286,8 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
       completionTokens: totalOutputTokens,
       success: true,
       metadata: {
-        toolsUsed,
-        iterations,
-        cached: false,
         sessionId,
+        ...telemetry,
       },
     })
 
@@ -4932,13 +6295,11 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
     // STEP 4: Response
     // ========================================================================
 
-    const navigation = extractNavigation(toolsUsed, messages)
-    const workflow = extractWorkflow(messages)
-    const followUpActions = extractFollowUpActions(messages)
     const queryId = await saveSolutionQueryRecord({
       supabase,
       userId: user.id,
       organizationId: body.organization_id,
+      workspaceId: toolContext.session.workspace_id ?? null,
       companyWorkspaceId: toolContext.session.company_workspace_id ?? null,
       queryText: userMessage,
       answer: finalAnswer,
@@ -4951,17 +6312,19 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
       workflow,
       followUpActions,
       cached: false,
+      legalRetrieval: null,
     })
 
     await attachWorkflowsToQuery(sessionId, user.id, queryId, supabase)
 
     return new Response(
       JSON.stringify({
-        type: 'response',
+        type: responseType,
         answer: finalAnswer,
         sources: sources,
         navigation,
         workflow,
+        action_hint: actionHint,
         follow_up_actions: followUpActions,
         tools_used: toolsUsed,
         session_id: sessionId,
@@ -4969,7 +6332,9 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
         iterations: iterations,
         tokens: { input: totalInputTokens, output: totalOutputTokens },
         cached: false,
-        remaining_messages: (subCheck.remaining || 0) - 1
+        jurisdiction_code: jurisdictionCode,
+        remaining_messages: (subCheck.remaining || 0) - 1,
+        telemetry,
       }),
       { headers: { ...buildCorsHeaders(req), 'Content-Type': 'application/json' } }
     )

@@ -7,6 +7,52 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+async function ensureLegalDocumentVersion(
+  supabase: ReturnType<typeof createClient>,
+  doc: { id: string; title: string; source_url?: string | null; full_text?: string | null },
+) {
+  const effectiveFrom = new Date().toISOString().slice(0, 10);
+  const { data: existing } = await supabase
+    .from("legal_document_versions")
+    .select("id")
+    .eq("document_id", doc.id)
+    .is("effective_to", null)
+    .order("effective_from", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (existing?.id) {
+    await supabase
+      .from("legal_document_versions")
+      .update({
+        raw_text: doc.full_text ?? null,
+        normalized_text: doc.full_text ?? null,
+        official_url: doc.source_url ?? null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", existing.id);
+    return existing.id as string;
+  }
+
+  const { data, error } = await supabase
+    .from("legal_document_versions")
+    .insert({
+      document_id: doc.id,
+      version_label: doc.title,
+      effective_from: effectiveFrom,
+      publication_date: effectiveFrom,
+      raw_text: doc.full_text ?? null,
+      normalized_text: doc.full_text ?? null,
+      official_url: doc.source_url ?? null,
+      source_type: "official_document",
+    })
+    .select("id")
+    .single();
+
+  if (error) throw error;
+  return data.id as string;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -84,9 +130,15 @@ Deno.serve(async (req: Request) => {
 
         // Update full_text
         await supabase.from("legal_documents").update({ full_text: fullText }).eq("id", doc.id);
+        const versionId = await ensureLegalDocumentVersion(supabase, {
+          id: doc.id,
+          title: doc.title,
+          source_url: doc.source_url,
+          full_text: fullText,
+        });
 
         // Chunk by MADDE
-        const chunks = chunkByArticle(fullText, doc.id);
+        const chunks = chunkByArticle(fullText, doc.id, versionId);
 
         if (chunks.length > 0) {
           await supabase.from("legal_chunks").delete().eq("document_id", doc.id);
@@ -111,7 +163,7 @@ function jsonResp(data: any, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
-function chunkByArticle(text: string, docId: string) {
+function chunkByArticle(text: string, docId: string, versionId: string) {
   const chunks: any[] = [];
   const pattern = /(?:^|\n)\s*((?:MADDE|Madde)\s+\d+[/A-Za-z]*)/gm;
   const matches: { idx: number; num: string }[] = [];
@@ -124,19 +176,19 @@ function chunkByArticle(text: string, docId: string) {
     let buf = "", ci = 0;
     for (const p of paras) {
       if (buf.length + p.length > 2000 && buf.length > 200) {
-        chunks.push({ document_id: docId, chunk_index: ci, article_number: `Bolum ${ci+1}`, article_title: "", content: buf.trim(), content_tokens: Math.ceil(buf.length/4), metadata: {}, keywords: [] });
+        chunks.push({ document_id: docId, version_id: versionId, chunk_index: ci, article_number: `Bolum ${ci+1}`, article_title: "", content: buf.trim(), content_tokens: Math.ceil(buf.length/4), metadata: {}, keywords: [] });
         ci++; buf = "";
       }
       buf += p + "\n\n";
     }
-    if (buf.trim().length > 50) chunks.push({ document_id: docId, chunk_index: ci, article_number: `Bolum ${ci+1}`, article_title: "", content: buf.trim(), content_tokens: Math.ceil(buf.length/4), metadata: {}, keywords: [] });
+    if (buf.trim().length > 50) chunks.push({ document_id: docId, version_id: versionId, chunk_index: ci, article_number: `Bolum ${ci+1}`, article_title: "", content: buf.trim(), content_tokens: Math.ceil(buf.length/4), metadata: {}, keywords: [] });
     return chunks;
   }
 
   // Preamble
   if (matches[0].idx > 100) {
     const pre = text.substring(0, matches[0].idx).trim();
-    if (pre.length > 50) chunks.push({ document_id: docId, chunk_index: 0, article_number: "Giris", article_title: "Genel Hukumler", content: pre.substring(0, 3000), content_tokens: Math.ceil(Math.min(pre.length, 3000)/4), metadata: {}, keywords: [] });
+    if (pre.length > 50) chunks.push({ document_id: docId, version_id: versionId, chunk_index: 0, article_number: "Giris", article_title: "Genel Hukumler", content: pre.substring(0, 3000), content_tokens: Math.ceil(Math.min(pre.length, 3000)/4), metadata: {}, keywords: [] });
   }
 
   for (let i = 0; i < matches.length; i++) {
@@ -149,10 +201,10 @@ function chunkByArticle(text: string, docId: string) {
     if (content.length > 3000) {
       const parts = splitContent(content, 2500);
       parts.forEach((p, j) => {
-        chunks.push({ document_id: docId, chunk_index: chunks.length, article_number: matches[i].num + (j > 0 ? ` (${j+1})` : ""), article_title: j === 0 ? title : title + " (devam)", content: p.trim(), content_tokens: Math.ceil(p.length/4), metadata: {}, keywords: [] });
+        chunks.push({ document_id: docId, version_id: versionId, chunk_index: chunks.length, article_number: matches[i].num + (j > 0 ? ` (${j+1})` : ""), article_title: j === 0 ? title : title + " (devam)", content: p.trim(), content_tokens: Math.ceil(p.length/4), metadata: {}, keywords: [] });
       });
     } else {
-      chunks.push({ document_id: docId, chunk_index: chunks.length, article_number: matches[i].num, article_title: title, content, content_tokens: Math.ceil(content.length/4), metadata: {}, keywords: [] });
+      chunks.push({ document_id: docId, version_id: versionId, chunk_index: chunks.length, article_number: matches[i].num, article_title: title, content, content_tokens: Math.ceil(content.length/4), metadata: {}, keywords: [] });
     }
   }
   return chunks;

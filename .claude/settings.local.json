@@ -236,7 +236,17 @@
       "Bash(echo \"after unset: length=$\\(printenv ANTHROPIC_API_KEY)",
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | %{time_total}s\\\\n\" --max-time 5 http://localhost:3000)",
       "Bash(curl -s -o /dev/null -w \"wizard: %{http_code} %{time_total}s\\\\n\" --max-time 15 http://localhost:3000/incidents/new)",
-      "Bash(powershell.exe -Command \"Stop-Process -Id 23792 -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; netstat -ano | Select-String ':3000.*LISTENING' | Select-Object -First 3\")"
+      "Bash(powershell.exe -Command \"Stop-Process -Id 23792 -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; netstat -ano | Select-String ':3000.*LISTENING' | Select-Object -First 3\")",
+      "mcp__5fdb9e6b-2e51-4720-a138-0e8cdbeff4dc__list_teams",
+      "mcp__5fdb9e6b-2e51-4720-a138-0e8cdbeff4dc__list_projects",
+      "mcp__5fdb9e6b-2e51-4720-a138-0e8cdbeff4dc__list_deployments",
+      "Bash(npm.cmd run *)",
+      "Bash(npx.cmd next *)",
+      "Bash(npx.cmd eslint *)",
+      "Bash(npx.cmd tsc *)",
+      "Bash(npm.cmd install *)",
+      "Bash(node -e \"const t=require\\('./messages/tr.json'\\); const e=require\\('./messages/en.json'\\); console.log\\('TR nav.dashboard:', t.nav.dashboard\\); console.log\\('EN nav.dashboard:', e.nav.dashboard\\); console.log\\('TR valid:', !!t.common && !!t.profile\\); console.log\\('EN valid:', !!e.common && !!e.profile\\);\")",
+      "Bash(node -e \"const t=require\\('./messages/tr.json'\\); const e=require\\('./messages/en.json'\\); console.log\\('TR:', Object.keys\\(t.ohsFile || {}\\).length, 'EN:', Object.keys\\(e.ohsFile || {}\\).length\\);\")"
     ]
   }
 }

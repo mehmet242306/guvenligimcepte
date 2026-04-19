@@ -573,7 +573,7 @@ export default function DigitalTwinPage() {
                       onPointClick={(p) => setSelectedPoint(p)}
                     />
                     <BimUploader
-                      companyId={selectedSession?.companyId}
+                      companyId={selectedSession?.companyId ?? undefined}
                       onUploaded={(model) => {
                         console.log("BIM model uploaded:", model);
                       }}

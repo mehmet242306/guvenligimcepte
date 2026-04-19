@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -28,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 import { usePermission } from "@/lib/hooks/use-permission";
 import { usePersistedState } from "@/lib/use-persisted-state";
+import { getActiveWorkspace, type WorkspaceRow } from "@/lib/supabase/workspace-api";
 import { AdminAITab } from "./AdminAITab";
 import { AdminDocumentsTab } from "./AdminDocumentsTab";
 import { AdminNotificationsTab } from "./AdminNotificationsTab";
@@ -319,6 +321,7 @@ export default function SettingsPage() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = usePersistedState<TabKey>("settings:tab", "admin_dashboard");
   const [tabQuery, setTabQuery] = useState("");
+  const [activeWorkspace, setActiveWorkspace] = useState<WorkspaceRow | null>(null);
   const deferredTabQuery = useDeferredValue(tabQuery);
   const isAdmin = useIsAdmin();
   const canViewAdminDashboard = usePermission("admin.dashboard.view");
@@ -411,6 +414,13 @@ export default function SettingsPage() {
     : [];
 
   useEffect(() => {
+    void (async () => {
+      const workspace = await getActiveWorkspace();
+      setActiveWorkspace(workspace);
+    })();
+  }, []);
+
+  useEffect(() => {
     if (visibleTabs.some((tab) => tab.key === activeTab)) {
       return;
     }
@@ -458,37 +468,91 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[28px] border border-border bg-[linear-gradient(135deg,rgba(255,255,255,0.97),rgba(248,244,235,0.98))] p-5 shadow-[var(--shadow-card)] sm:p-6">
+      <section className="overflow-hidden rounded-[28px] border border-border bg-[radial-gradient(circle_at_top_left,rgba(46,163,155,0.12),transparent_30%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(17,24,39,0.98))] p-5 shadow-[var(--shadow-card)] sm:p-6">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div className="flex items-start gap-4">
             <PremiumIconBadge icon={ClipboardCheck} tone="gold" size="md" />
             <div className="space-y-2">
               <span className="eyebrow">Yonetim Merkezi</span>
-              <h1 className="text-3xl font-semibold tracking-tight text-foreground">Ayarlar</h1>
-              <p className="max-w-3xl text-sm leading-7 text-muted-foreground">
+              <h1 className="text-3xl font-semibold tracking-tight text-white">Ayarlar</h1>
+              <p className="max-w-3xl text-sm leading-7 text-slate-300">
                 Guvenlik, uyum, operasyon ve sistem ekranlarini tek merkezde daha rahat takip edin.
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <span className="inline-flex items-center rounded-full border border-border bg-white/80 px-3 py-2 text-xs font-medium text-muted-foreground">
+            <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-300">
               {visibleTabs.length} aktif ekran
             </span>
             {activeSectionMeta ? (
-              <span className="inline-flex items-center rounded-full border border-border bg-white/80 px-3 py-2 text-xs font-medium text-muted-foreground">
+              <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-300">
                 {activeSectionMeta.label}
               </span>
             ) : null}
             {isAdmin === true ? (
-              <span className="inline-flex items-center rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+              <span className="inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-xs font-medium text-emerald-300">
                 Admin gorunumu
               </span>
             ) : null}
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="overflow-x-auto pb-1">
+            <div className="flex min-w-max flex-nowrap gap-2">
+            {quickAccessTabs.map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => handleTabChange(tab.key)}
+                className={cn(
+                  "inline-flex h-11 shrink-0 items-center gap-2 rounded-full border px-4 text-sm font-medium transition whitespace-nowrap",
+                  activeTab === tab.key
+                    ? "border-primary/35 bg-primary/12 text-white shadow-[var(--shadow-soft)]"
+                    : "border-white/10 bg-white/5 text-slate-300 hover:border-primary/25 hover:text-white",
+                )}
+              >
+                <tab.icon className="h-4 w-4" />
+                {tab.label}
+              </button>
+            ))}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                  Aktif Workspace
+                </div>
+                <div className="mt-1 text-sm font-semibold text-white">
+                  {activeWorkspace?.name || "Workspace secilmedi"}
+                </div>
+                <div className="mt-1 text-xs text-slate-400">
+                  Workspace degistirmek icin ust bardaki sirket/jurisdiction acilir menüsünü kullan.
+                </div>
+              </div>
+              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-semibold text-slate-300">
+                {activeWorkspace?.country_code || "TR"}
+              </span>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link
+                href="/workspace/onboarding"
+                className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary/15"
+              >
+                Workspace kur / degistir
+              </Link>
+              <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-300">
+                Erisim: ust sag switcher
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-5 hidden flex-wrap gap-2">
           {quickAccessTabs.map((tab) => (
             <button
               key={tab.key}

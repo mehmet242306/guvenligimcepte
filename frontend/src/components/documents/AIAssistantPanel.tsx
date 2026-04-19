@@ -1,12 +1,24 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import {
-  Sparkles, Send, RotateCcw, Copy, Check, Wand2, FileText,
-  AlertTriangle, BookOpen, CheckCircle2, X, Scissors, Maximize2,
-  Scale, MessageSquare,
-} from 'lucide-react';
+import { useCallback, useState } from 'react';
 import type { Editor } from '@tiptap/react';
+import {
+  AlertTriangle,
+  BookOpen,
+  Check,
+  CheckCircle2,
+  Copy,
+  FileText,
+  Maximize2,
+  MessageSquare,
+  RotateCcw,
+  Scale,
+  Scissors,
+  Send,
+  Sparkles,
+  Wand2,
+  X,
+} from 'lucide-react';
 import { markdownToTipTapJSON } from '@/lib/markdown-to-tiptap';
 
 interface CompanyDataForAI {
@@ -29,23 +41,83 @@ interface AIAssistantPanelProps {
   companyData?: CompanyDataForAI;
 }
 
+type DocumentAiResponse = {
+  content?: string;
+  analysis?: string;
+  response?: string;
+  error?: string;
+  degraded?: boolean;
+  queuedTaskId?: string | null;
+};
+
 const QUICK_PROMPTS = [
-  { icon: Wand2, label: 'Tam Doküman Oluştur', prompt: 'Bu dokümanı profesyonelce oluştur. Tüm bölümleri, tabloları, yasal referansları ekle. Firma bilgilerini içeriğe yerleştir, boş alan bırakma.', primary: true },
-  { icon: FileText, label: 'Giriş Bölümü Yaz', prompt: 'Bu doküman için profesyonel bir giriş/amaç bölümü yaz. Firma adını ve sektörünü kullan.' },
-  { icon: AlertTriangle, label: 'Yasal Dayanak Ekle', prompt: '6331 sayılı kanun ve ilgili yönetmeliklere göre yasal dayanak bölümü hazırla.' },
-  { icon: BookOpen, label: 'Mevzuat Referansları', prompt: 'Bu doküman türü için geçerli tüm mevzuat referanslarını listele.' },
-];
+  {
+    icon: Wand2,
+    label: 'Tam Dokuman Olustur',
+    prompt:
+      'Bu dokumani profesyonelce olustur. Tum bolumleri, tabloları ve yasal referanslari ekle. Firma bilgilerini icerige yerlestir, bos alan birakma.',
+    primary: true,
+  },
+  {
+    icon: FileText,
+    label: 'Giris Bolumu Yaz',
+    prompt: 'Bu dokuman icin profesyonel bir giris ve amac bolumu yaz. Firma adini ve sektorunu kullan.',
+  },
+  {
+    icon: AlertTriangle,
+    label: 'Yasal Dayanak Ekle',
+    prompt: '6331 sayili kanun ve ilgili yonetmeliklere gore yasal dayanak bolumu hazirla.',
+  },
+  {
+    icon: BookOpen,
+    label: 'Mevzuat Referanslari',
+    prompt: 'Bu dokuman turu icin gecerli tum mevzuat referanslarini listele.',
+  },
+] as const satisfies ReadonlyArray<{
+  icon: typeof Wand2;
+  label: string;
+  prompt: string;
+  primary?: boolean;
+}>;
 
 const IMPROVE_OPTIONS = [
-  { icon: Wand2, label: 'Profesyonelleştir', prompt: 'Bu metni profesyonel İSG dili ile yeniden yaz. Resmi ve kurumsal ton kullan.' },
-  { icon: Scissors, label: 'Kısalt', prompt: 'Bu metni özünü bozmadan kısalt ve sadeleştir.' },
-  { icon: Maximize2, label: 'Detaylandır', prompt: 'Bu metni daha detaylı ve kapsamlı hale getir. Eksik bilgileri tamamla.' },
-  { icon: Scale, label: 'Yasal Referans Ekle', prompt: 'Bu metne ilgili 6331 sayılı kanun maddeleri ve yönetmelik referanslarını ekle.' },
-];
+  {
+    icon: Wand2,
+    label: 'Professionellestir',
+    prompt: 'Bu metni profesyonel ISG dili ile yeniden yaz. Resmi ve kurumsal ton kullan.',
+  },
+  {
+    icon: Scissors,
+    label: 'Kisalt',
+    prompt: 'Bu metni ozunu bozmadan kisalt ve sadeleştir.',
+  },
+  {
+    icon: Maximize2,
+    label: 'Detaylandir',
+    prompt: 'Bu metni daha detayli ve kapsamli hale getir. Eksik bilgileri tamamla.',
+  },
+  {
+    icon: Scale,
+    label: 'Yasal Referans Ekle',
+    prompt: 'Bu metne ilgili 6331 sayili kanun maddeleri ve yonetmelik referanslarini ekle.',
+  },
+] as const;
 
-export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName, companyData }: AIAssistantPanelProps) {
+function extractContent(data: DocumentAiResponse) {
+  return data.content || data.analysis || data.response || '';
+}
+
+export function AIAssistantPanel({
+  editor,
+  documentTitle,
+  groupKey,
+  companyName,
+  companyData,
+}: AIAssistantPanelProps) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [degraded, setDegraded] = useState(false);
+  const [queueTaskId, setQueueTaskId] = useState<string | null>(null);
   const [inserted, setInserted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [customPrompt, setCustomPrompt] = useState('');
@@ -55,57 +127,83 @@ export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName,
 
   const captureSelection = useCallback(() => {
     if (!editor) return null;
+
     const { from, to } = editor.state.selection;
-    if (from !== to) {
-      const text = editor.state.doc.textBetween(from, to, ' ');
-      if (text && text.trim().length > 3) {
-        const sel = { text, from, to };
-        setSavedSelection(sel);
-        return sel;
-      }
-    }
-    return null;
+    if (from === to) return null;
+
+    const text = editor.state.doc.textBetween(from, to, ' ');
+    if (!text || text.trim().length <= 3) return null;
+
+    const selection = { text, from, to };
+    setSavedSelection(selection);
+    return selection;
   }, [editor]);
 
-  const insertToEditor = useCallback((markdown: string) => {
-    if (!editor || !markdown) return;
-    try {
-      const json = markdownToTipTapJSON(markdown);
-      if (json.content && json.content.length > 0) {
-        const isEmpty = editor.state.doc.textContent.trim().length === 0;
-        if (isEmpty) {
-          editor.commands.setContent(json);
-        } else {
-          editor.chain().focus().insertContent(json.content).run();
+  const insertToEditor = useCallback(
+    (markdown: string) => {
+      if (!editor || !markdown) return;
+
+      try {
+        const json = markdownToTipTapJSON(markdown);
+        if (json.content && json.content.length > 0) {
+          const isEmpty = editor.state.doc.textContent.trim().length === 0;
+          if (isEmpty) {
+            editor.commands.setContent(json);
+          } else {
+            editor.chain().focus().insertContent(json.content).run();
+          }
         }
+        setInserted(true);
+      } catch (error) {
+        console.error('Markdown conversion error:', error);
+        editor.chain().focus().insertContent(markdown).run();
+        setInserted(true);
       }
-      setInserted(true);
-    } catch (err) {
-      console.error('Markdown conversion error:', err);
-      editor.chain().focus().insertContent(markdown).run();
-      setInserted(true);
-    }
-  }, [editor]);
+    },
+    [editor],
+  );
 
-  const replaceSelection = useCallback((markdown: string, from: number, to: number) => {
-    if (!editor || !markdown) return;
-    try {
-      const json = markdownToTipTapJSON(markdown);
-      if (json.content && json.content.length > 0) {
-        // Select the original text range and replace
-        editor.chain().focus().setTextSelection({ from, to }).deleteSelection().insertContent(json.content).run();
+  const replaceSelection = useCallback(
+    (markdown: string, from: number, to: number) => {
+      if (!editor || !markdown) return;
+
+      try {
+        const json = markdownToTipTapJSON(markdown);
+        if (json.content && json.content.length > 0) {
+          editor
+            .chain()
+            .focus()
+            .setTextSelection({ from, to })
+            .deleteSelection()
+            .insertContent(json.content)
+            .run();
+        }
+      } catch (error) {
+        console.error('Replace error:', error);
+        editor.chain().focus().setTextSelection({ from, to }).deleteSelection().insertContent(markdown).run();
       }
-    } catch (err) {
-      console.error('Replace error:', err);
-      editor.chain().focus().setTextSelection({ from, to }).deleteSelection().insertContent(markdown).run();
-    }
-  }, [editor]);
+    },
+    [editor],
+  );
+
+  const resetRunState = useCallback(() => {
+    setResult(null);
+    setDegraded(false);
+    setQueueTaskId(null);
+    setInserted(false);
+  }, []);
+
+  const applyAiError = useCallback((data: DocumentAiResponse, fallbackMessage: string) => {
+    setDegraded(Boolean(data.degraded));
+    setQueueTaskId(typeof data.queuedTaskId === 'string' ? data.queuedTaskId : null);
+    setResult(typeof data.error === 'string' && data.error.trim().length > 0 ? data.error : fallbackMessage);
+  }, []);
 
   const generateContent = async (prompt: string, autoInsert = true) => {
     if (loading) return;
+
     setLoading(true);
-    setResult(null);
-    setInserted(false);
+    resetRunState();
 
     try {
       const res = await fetch('/api/document-ai', {
@@ -114,19 +212,20 @@ export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName,
         body: JSON.stringify({ prompt, companyName, companyData, documentTitle, groupKey }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const content = data.content || data.analysis || data.response || '';
-        setResult(content);
-        // Auto-insert when generating full documents
-        if (autoInsert && content) {
-          insertToEditor(content);
-        }
-      } else {
-        setResult('Hata: AI servisi şu anda yanıt veremiyor. Lütfen tekrar deneyin.');
+      const data = (await res.json().catch(() => ({}))) as DocumentAiResponse;
+
+      if (!res.ok) {
+        applyAiError(data, 'Hata: AI servisi su anda yanit veremiyor. Lutfen tekrar deneyin.');
+        return;
+      }
+
+      const content = extractContent(data);
+      setResult(content);
+      if (autoInsert && content) {
+        insertToEditor(content);
       }
     } catch {
-      setResult('Bağlantı hatası. Internet bağlantınızı kontrol edip tekrar deneyin.');
+      setResult('Baglanti hatasi. Internet baglantinizi kontrol edip tekrar deneyin.');
     } finally {
       setLoading(false);
     }
@@ -134,12 +233,12 @@ export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName,
 
   const generateImprovement = async (improvePrompt: string) => {
     if (!savedSelection) return;
+
     setShowImproveDialog(false);
     setLoading(true);
-    setResult(null);
-    setInserted(false);
+    resetRunState();
 
-    const fullPrompt = `${improvePrompt}\n\nİyileştirilecek metin:\n"${savedSelection.text}"`;
+    const fullPrompt = `${improvePrompt}\n\nIyilestirilecek metin:\n"${savedSelection.text}"`;
 
     try {
       const res = await fetch('/api/document-ai', {
@@ -148,19 +247,22 @@ export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName,
         body: JSON.stringify({ prompt: fullPrompt, companyName, companyData, documentTitle, groupKey }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const content = data.content || '';
-        setResult(content);
-        if (content) {
-          replaceSelection(content, savedSelection.from, savedSelection.to);
-          setInserted(true);
-        }
-      } else {
-        setResult('Hata: AI servisi yanıt veremiyor.');
+      const data = (await res.json().catch(() => ({}))) as DocumentAiResponse;
+
+      if (!res.ok) {
+        applyAiError(data, 'Hata: AI servisi su anda yanit veremiyor.');
+        return;
+      }
+
+      const content = extractContent(data);
+      setResult(content);
+
+      if (content) {
+        replaceSelection(content, savedSelection.from, savedSelection.to);
+        setInserted(true);
       }
     } catch {
-      setResult('Bağlantı hatası.');
+      setResult('Baglanti hatasi.');
     } finally {
       setLoading(false);
       setSavedSelection(null);
@@ -169,71 +271,71 @@ export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName,
 
   const handleCustomPrompt = () => {
     if (!customPrompt.trim()) return;
-    generateContent(customPrompt.trim(), true);
+    void generateContent(customPrompt.trim(), true);
     setCustomPrompt('');
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="px-4 py-3 border-b border-[var(--gold)]/20">
+    <div className="flex h-full flex-col">
+      <div className="border-b border-[var(--gold)]/20 px-4 py-3">
         <div className="flex items-center gap-2">
           <Sparkles size={16} className="text-[var(--gold)]" />
           <h3 className="text-sm font-bold text-[var(--text-primary)]">AI Asistan</h3>
         </div>
-        <p className="text-[11px] text-[var(--text-secondary)] mt-1">
-          {companyName ? `${companyName} için` : ''} içerik üretimi ve düzenleme
+        <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
+          {companyName ? `${companyName} icin ` : ''}icerik uretimi ve duzenleme
         </p>
       </div>
 
-      {/* Quick Actions */}
-      <div className="px-4 py-3 space-y-2 border-b border-[var(--gold)]/20">
-        {QUICK_PROMPTS.map((qp, i) => {
-          const Icon = qp.icon;
+      <div className="space-y-2 border-b border-[var(--gold)]/20 px-4 py-3">
+        {QUICK_PROMPTS.map((prompt) => {
+          const Icon = prompt.icon;
           return (
             <button
-              key={i}
-              onClick={() => generateContent(qp.prompt, true)}
+              key={prompt.label}
+              onClick={() => void generateContent(prompt.prompt, true)}
               disabled={loading}
-              className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg transition-colors disabled:opacity-50 ${
-                qp.primary
-                  ? 'bg-[var(--gold)] text-white hover:bg-[var(--gold-hover)]'
-                  : 'border border-[var(--gold)]/20 text-[var(--text-primary)] hover:bg-[var(--gold)]/10 hover:border-[var(--gold)]/40'
+              className={`w-full rounded-lg px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50 ${
+                ("primary" in prompt && prompt.primary)
+                  ? 'flex items-center gap-2 bg-[var(--gold)] text-white hover:bg-[var(--gold-hover)]'
+                  : 'flex items-center gap-2 border border-[var(--gold)]/20 text-[var(--text-primary)] hover:border-[var(--gold)]/40 hover:bg-[var(--gold)]/10'
               }`}
             >
               <Icon size={14} />
-              {qp.label}
+              {prompt.label}
             </button>
           );
         })}
       </div>
 
-      {/* Custom Prompt */}
-      <div className="px-4 py-3 border-b border-[var(--gold)]/20">
-        <label className="text-[11px] font-medium text-[var(--text-secondary)] mb-1.5 block">Özel İstek</label>
+      <div className="border-b border-[var(--gold)]/20 px-4 py-3">
+        <label className="mb-1.5 block text-[11px] font-medium text-[var(--text-secondary)]">Ozel Istek</label>
         <div className="flex gap-2">
           <input
             value={customPrompt}
-            onChange={(e) => setCustomPrompt(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleCustomPrompt(); }}
-            placeholder="Ne üretmemi istersiniz?"
-            className="flex-1 text-xs px-2.5 py-2 rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#0f172a] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)] placeholder:text-[var(--text-secondary)]"
+            onChange={(event) => setCustomPrompt(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                handleCustomPrompt();
+              }
+            }}
+            placeholder="Ne uretmemi istersiniz?"
+            className="flex-1 rounded-lg border border-[var(--gold)]/20 bg-white px-2.5 py-2 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)] dark:bg-[#0f172a]"
           />
           <button
             onClick={handleCustomPrompt}
             disabled={!customPrompt.trim() || loading}
-            className="p-2 bg-[var(--gold)] text-white rounded-lg hover:bg-[var(--gold-hover)] transition-colors disabled:opacity-40 shrink-0"
+            className="shrink-0 rounded-lg bg-[var(--gold)] p-2 text-white transition-colors hover:bg-[var(--gold-hover)] disabled:opacity-40"
           >
             <Send size={13} />
           </button>
         </div>
       </div>
 
-      {/* Seçili Metni İyileştir — buton sırası: önce bu, sonra sonuç */}
-      <div className="px-4 py-3 border-b border-[var(--gold)]/20">
+      <div className="border-b border-[var(--gold)]/20 px-4 py-3">
         <button
-          onMouseDown={(e) => {
-            e.preventDefault();
+          onMouseDown={(event) => {
+            event.preventDefault();
             captureSelection();
           }}
           onClick={() => {
@@ -242,147 +344,177 @@ export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName,
             }
           }}
           disabled={loading}
-          className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-medium border rounded-lg transition-colors disabled:opacity-50 ${
+          className={`w-full rounded-lg border px-3 py-2 text-xs font-medium transition-colors disabled:opacity-50 ${
             savedSelection
-              ? 'border-[var(--gold)]/40 text-[var(--gold)] bg-[var(--gold)]/5'
-              : 'border-[var(--gold)]/20 text-[var(--text-secondary)] hover:text-[var(--gold)] hover:border-[var(--gold)]/40'
+              ? 'flex items-center gap-2 border-[var(--gold)]/40 bg-[var(--gold)]/5 text-[var(--gold)]'
+              : 'flex items-center gap-2 border-[var(--gold)]/20 text-[var(--text-secondary)] hover:border-[var(--gold)]/40 hover:text-[var(--gold)]'
           }`}
         >
           <Wand2 size={13} />
-          Seçili Metni İyileştir
-          {savedSelection && (
-            <span className="ml-auto text-[10px] text-[var(--gold)]/70 truncate max-w-[120px]">
+          Secili Metni Iyilestir
+          {savedSelection ? (
+            <span className="ml-auto max-w-[120px] truncate text-[10px] text-[var(--gold)]/70">
               &ldquo;{savedSelection.text.slice(0, 25)}...&rdquo;
             </span>
-          )}
+          ) : null}
         </button>
-        <p className="text-[10px] text-[var(--text-secondary)] mt-1">Editörde metin seçip bu butonu tıklayın.</p>
+        <p className="mt-1 text-[10px] text-[var(--text-secondary)]">Editorde metin secip bu butonu tiklayin.</p>
       </div>
 
-      {/* Result Area */}
       <div className="flex-1 overflow-y-auto px-4 py-3">
-        {loading && (
-          <div className="flex items-center gap-2 py-8 justify-center">
+        {loading ? (
+          <div className="flex items-center justify-center gap-2 py-8">
             <RotateCcw size={16} className="animate-spin text-[var(--gold)]" />
-            <span className="text-sm text-[var(--text-secondary)]">İçerik oluşturuluyor...</span>
+            <span className="text-sm text-[var(--text-secondary)]">Icerik olusturuluyor...</span>
           </div>
-        )}
+        ) : null}
 
-        {!loading && !result && (
-          <div className="text-center py-8">
-            <Sparkles size={28} className="mx-auto text-[var(--gold)]/30 mb-3" />
+        {!loading && !result ? (
+          <div className="py-8 text-center">
+            <Sparkles size={28} className="mx-auto mb-3 text-[var(--gold)]/30" />
             <p className="text-xs text-[var(--text-secondary)]">
-              Yukarıdaki butonlardan birini tıklayarak<br />AI ile içerik oluşturmaya başlayın.
+              Yukaridaki butonlardan birini tiklayarak
+              <br />
+              AI ile icerik olusturmaya baslayin.
             </p>
           </div>
-        )}
+        ) : null}
 
-        {!loading && result && (
+        {!loading && result ? (
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className={`text-[11px] font-medium ${inserted ? 'text-green-600' : 'text-[var(--gold)]'}`}>
-                {inserted ? '✓ Editöre Eklendi' : 'AI Sonucu'}
+            <div className="mb-2 flex items-center justify-between">
+              <span
+                className={`text-[11px] font-medium ${
+                  inserted
+                    ? 'text-green-600'
+                    : degraded
+                      ? 'text-amber-700 dark:text-amber-300'
+                      : 'text-[var(--gold)]'
+                }`}
+              >
+                {inserted ? 'Editora Eklendi' : degraded ? 'AI Durumu' : 'AI Sonucu'}
               </span>
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() => { navigator.clipboard.writeText(result); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-                  className="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-                >
-                  {copied ? <Check size={10} /> : <Copy size={10} />}
-                  Kopyala
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(result);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1500);
+                }}
+                className="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
+              >
+                {copied ? <Check size={10} /> : <Copy size={10} />}
+                Kopyala
+              </button>
             </div>
-            <div className={`text-xs leading-relaxed text-[var(--text-primary)] whitespace-pre-wrap rounded-lg p-3 max-h-[250px] overflow-y-auto border ${
-              inserted
-                ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800/30'
-                : 'bg-[var(--gold)]/5 border-[var(--gold)]/15'
-            }`}>
+
+            <div
+              className={`max-h-[250px] overflow-y-auto whitespace-pre-wrap rounded-lg border p-3 text-xs leading-relaxed text-[var(--text-primary)] ${
+                inserted
+                  ? 'border-green-200 bg-green-50 dark:border-green-800/30 dark:bg-green-900/10'
+                  : degraded
+                    ? 'border-amber-200 bg-amber-50 dark:border-amber-800/40 dark:bg-amber-950/20'
+                    : 'border-[var(--gold)]/15 bg-[var(--gold)]/5'
+              }`}
+            >
               {result}
             </div>
-            {!inserted && (
+
+            {degraded ? (
+              <div className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-800 dark:border-amber-800/40 dark:bg-amber-950/20 dark:text-amber-200">
+                AI servisi gecici olarak korumali modda calisti.
+                {queueTaskId
+                  ? ` Kuyruk gorevi: ${queueTaskId}`
+                  : ' Istek arka planda isleniyor olabilir; kisa sure sonra tekrar deneyin.'}
+              </div>
+            ) : null}
+
+            {!inserted ? (
               <button
                 onClick={() => insertToEditor(result)}
-                className="w-full mt-2 flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium bg-[var(--gold)] text-white rounded-lg hover:bg-[var(--gold-hover)] transition-colors"
+                disabled={degraded}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--gold)] px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-[var(--gold-hover)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <FileText size={14} />
-                Editöre Ekle
+                Editore Ekle
               </button>
-            )}
-            {inserted && (
-              <div className="flex items-center justify-center gap-1.5 mt-2 py-1.5 text-xs text-green-600 dark:text-green-400">
+            ) : null}
+
+            {inserted ? (
+              <div className="mt-2 flex items-center justify-center gap-1.5 py-1.5 text-xs text-green-600 dark:text-green-400">
                 <CheckCircle2 size={13} />
-                İçerik editöre başarıyla eklendi
+                Icerik editore basariyla eklendi
               </div>
-            )}
+            ) : null}
           </div>
-        )}
+        ) : null}
       </div>
 
-      {/* İyileştirme Dialog'u */}
-      {showImproveDialog && savedSelection && (
+      {showImproveDialog && savedSelection ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white dark:bg-[#1e293b] rounded-xl shadow-2xl w-[380px] max-w-[95vw] border border-[var(--gold)]/20">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--gold)]/20">
+          <div className="w-[380px] max-w-[95vw] rounded-xl border border-[var(--gold)]/20 bg-white shadow-2xl dark:bg-[#1e293b]">
+            <div className="flex items-center justify-between border-b border-[var(--gold)]/20 px-4 py-3">
               <div className="flex items-center gap-2">
                 <Wand2 size={16} className="text-[var(--gold)]" />
-                <h3 className="text-sm font-bold text-[var(--text-primary)]">Metni İyileştir</h3>
+                <h3 className="text-sm font-bold text-[var(--text-primary)]">Metni Iyilestir</h3>
               </div>
               <button
-                onClick={() => { setShowImproveDialog(false); setSavedSelection(null); }}
-                className="p-1 rounded-md hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)]"
+                onClick={() => {
+                  setShowImproveDialog(false);
+                  setSavedSelection(null);
+                }}
+                className="rounded-md p-1 text-[var(--text-secondary)] hover:bg-black/5 dark:hover:bg-white/10"
               >
                 <X size={16} />
               </button>
             </div>
 
             <div className="px-4 py-3">
-              <p className="text-[11px] text-[var(--text-secondary)] mb-1">Seçili metin:</p>
-              <p className="text-xs text-[var(--text-primary)] bg-[var(--gold)]/5 rounded-lg p-2 mb-4 max-h-[80px] overflow-y-auto italic">
-                &ldquo;{savedSelection.text.slice(0, 200)}{savedSelection.text.length > 200 ? '...' : ''}&rdquo;
+              <p className="mb-1 text-[11px] text-[var(--text-secondary)]">Secili metin:</p>
+              <p className="mb-4 max-h-[80px] overflow-y-auto rounded-lg bg-[var(--gold)]/5 p-2 text-xs italic text-[var(--text-primary)]">
+                &ldquo;{savedSelection.text.slice(0, 200)}
+                {savedSelection.text.length > 200 ? '...' : ''}&rdquo;
               </p>
 
-              <p className="text-[11px] font-medium text-[var(--text-secondary)] mb-2">Ne tür iyileştirme yapılsın?</p>
+              <p className="mb-2 text-[11px] font-medium text-[var(--text-secondary)]">Ne tur iyilestirme yapilsin?</p>
               <div className="space-y-1.5">
-                {IMPROVE_OPTIONS.map((opt, i) => {
-                  const Icon = opt.icon;
+                {IMPROVE_OPTIONS.map((option) => {
+                  const Icon = option.icon;
                   return (
                     <button
-                      key={i}
-                      onClick={() => generateImprovement(opt.prompt)}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium border border-[var(--gold)]/20 rounded-lg text-[var(--text-primary)] hover:bg-[var(--gold)]/10 hover:border-[var(--gold)]/40 transition-colors"
+                      key={option.label}
+                      onClick={() => void generateImprovement(option.prompt)}
+                      className="flex w-full items-center gap-2 rounded-lg border border-[var(--gold)]/20 px-3 py-2 text-xs font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--gold)]/40 hover:bg-[var(--gold)]/10"
                     >
                       <Icon size={13} className="text-[var(--gold)]" />
-                      {opt.label}
+                      {option.label}
                     </button>
                   );
                 })}
               </div>
 
-              {/* Özel istek */}
               <div className="mt-3">
                 <div className="flex gap-2">
                   <input
                     value={customImprovePrompt}
-                    onChange={(e) => setCustomImprovePrompt(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && customImprovePrompt.trim()) {
-                        generateImprovement(customImprovePrompt.trim());
+                    onChange={(event) => setCustomImprovePrompt(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' && customImprovePrompt.trim()) {
+                        void generateImprovement(customImprovePrompt.trim());
                         setCustomImprovePrompt('');
                       }
                     }}
-                    placeholder="Özel iyileştirme isteği..."
-                    className="flex-1 text-xs px-2.5 py-2 rounded-lg border border-[var(--gold)]/20 bg-white dark:bg-[#0f172a] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)]"
+                    placeholder="Ozel iyilestirme istegi..."
+                    className="flex-1 rounded-lg border border-[var(--gold)]/20 bg-white px-2.5 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)] dark:bg-[#0f172a]"
                   />
                   <button
                     onClick={() => {
                       if (customImprovePrompt.trim()) {
-                        generateImprovement(customImprovePrompt.trim());
+                        void generateImprovement(customImprovePrompt.trim());
                         setCustomImprovePrompt('');
                       }
                     }}
                     disabled={!customImprovePrompt.trim()}
-                    className="p-2 bg-[var(--gold)] text-white rounded-lg hover:bg-[var(--gold-hover)] transition-colors disabled:opacity-40"
+                    className="rounded-lg bg-[var(--gold)] p-2 text-white transition-colors hover:bg-[var(--gold-hover)] disabled:opacity-40"
                   >
                     <MessageSquare size={13} />
                   </button>
@@ -391,7 +523,7 @@ export function AIAssistantPanel({ editor, documentTitle, groupKey, companyName,
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

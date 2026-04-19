@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import {
   downloadDataExport,
   listOwnDataExports,
@@ -10,14 +11,6 @@ import {
   type DataDeletionRequestRow,
   type DataExportRow,
 } from "@/lib/supabase/privacy-api";
-
-function formatDateTime(value: string | null) {
-  if (!value) return "-";
-  return new Intl.DateTimeFormat("tr-TR", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
-}
 
 function triggerDownload(blob: Blob, fileName: string) {
   const url = URL.createObjectURL(blob);
@@ -30,28 +23,12 @@ function triggerDownload(blob: Blob, fileName: string) {
   URL.revokeObjectURL(url);
 }
 
-function formatStatus(status: DataDeletionRequestRow["status"] | DataExportRow["status"]) {
-  switch (status) {
-    case "scheduled":
-      return "Planlandi";
-    case "processing":
-      return "Isleniyor";
-    case "completed":
-      return "Tamamlandi";
-    case "cancelled":
-      return "Iptal edildi";
-    case "rejected":
-      return "Reddedildi";
-    case "failed":
-      return "Basarisiz";
-    case "expired":
-      return "Suresi doldu";
-    default:
-      return status;
-  }
-}
+type StatusKey = DataDeletionRequestRow["status"] | DataExportRow["status"];
 
 export function ProfileDataRightsPanel() {
+  const t = useTranslations("dataRights");
+  const locale = useLocale();
+
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [deletionReason, setDeletionReason] = useState("");
@@ -59,6 +36,29 @@ export function ProfileDataRightsPanel() {
   const [requests, setRequests] = useState<DataDeletionRequestRow[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const dateFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }),
+    [locale],
+  );
+
+  function formatDateTime(value: string | null) {
+    if (!value) return "-";
+    return dateFormatter.format(new Date(value));
+  }
+
+  function formatStatus(status: StatusKey): string {
+    const key = `status.${status}`;
+    try {
+      return t(key);
+    } catch {
+      return status;
+    }
+  }
 
   const activeDeletionRequest = useMemo(
     () => requests.find((item) => item.status === "scheduled" || item.status === "processing") ?? null,
@@ -92,10 +92,10 @@ export function ProfileDataRightsPanel() {
       const created = await requestDataExport(format);
       const file = await downloadDataExport(created.exportId);
       triggerDownload(file.blob, file.fileName);
-      setFeedback(`${format.toUpperCase()} export hazirlandi ve indirildi.`);
+      setFeedback(t("exportReady", { format: format.toUpperCase() }));
       await load();
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Export olusturulamadi.");
+      setError(requestError instanceof Error ? requestError.message : t("exportFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -103,15 +103,11 @@ export function ProfileDataRightsPanel() {
 
   async function handleDeletionRequest() {
     if (activeDeletionRequest) {
-      setError("Aktif bir silme talebiniz zaten bulunuyor.");
+      setError(t("deletionExists"));
       return;
     }
 
-    if (
-      !window.confirm(
-        "Bu islem hesabiniz icin 30 gunluk silme surecini baslatir. Devam etmek istiyor musunuz?",
-      )
-    ) {
+    if (!window.confirm(t("deletionConfirm"))) {
       return;
     }
 
@@ -122,12 +118,12 @@ export function ProfileDataRightsPanel() {
     try {
       const result = await requestSelfDeletion(deletionReason);
       setFeedback(
-        `Silme talebiniz alindi. Planlanan kalici silme tarihi: ${formatDateTime(result.request.scheduled_purge_at)}.`,
+        t("deletionReceived", { date: formatDateTime(result.request.scheduled_purge_at) }),
       );
       setDeletionReason("");
       await load();
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Silme talebi olusturulamadi.");
+      setError(requestError instanceof Error ? requestError.message : t("deletionFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -138,37 +134,37 @@ export function ProfileDataRightsPanel() {
       <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Veri Haklari</h2>
+            <h2 className="text-lg font-semibold text-foreground">{t("title")}</h2>
             <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-              Kisisel verilerinizi indirebilir, silme talebi olusturabilir ve mevcut KVKK sureclerinizin durumunu takip edebilirsiniz.
+              {t("description")}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-3">
             <div className="rounded-2xl border border-border bg-background/70 px-4 py-3">
-              <div className="text-muted-foreground">Export</div>
+              <div className="text-muted-foreground">{t("statExport")}</div>
               <div className="mt-1 text-lg font-semibold text-foreground">{exports.length}</div>
             </div>
             <div className="rounded-2xl border border-border bg-background/70 px-4 py-3">
-              <div className="text-muted-foreground">Silme Talebi</div>
+              <div className="text-muted-foreground">{t("statDeletion")}</div>
               <div className="mt-1 text-lg font-semibold text-foreground">{requests.length}</div>
             </div>
             <div className="rounded-2xl border border-border bg-background/70 px-4 py-3">
-              <div className="text-muted-foreground">Aktif Surec</div>
+              <div className="text-muted-foreground">{t("statActive")}</div>
               <div className="mt-1 text-lg font-semibold text-foreground">
-                {activeDeletionRequest ? "Var" : "Yok"}
+                {activeDeletionRequest ? t("statActiveYes") : t("statActiveNo")}
               </div>
             </div>
           </div>
         </div>
 
         {feedback && (
-          <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-200">
+          <div className="mt-4 rounded-2xl border border-[var(--color-success)]/30 bg-[var(--color-success)]/10 px-4 py-3 text-sm text-[var(--color-success)]">
             {feedback}
           </div>
         )}
 
         {error && (
-          <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-200">
+          <div className="mt-4 rounded-2xl border border-[var(--color-danger)]/30 bg-[var(--color-danger)]/10 px-4 py-3 text-sm text-[var(--color-danger)]">
             {error}
           </div>
         )}
@@ -176,9 +172,9 @@ export function ProfileDataRightsPanel() {
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
         <section className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-          <h3 className="text-base font-semibold text-foreground">Verilerimi Indir</h3>
+          <h3 className="text-base font-semibold text-foreground">{t("exportTitle")}</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Profil, onay kayitlari, guvenlik olaylari ve veri hakki gecmisiniz JSON veya CSV olarak indirilebilir.
+            {t("exportDescription")}
           </p>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -188,8 +184,8 @@ export function ProfileDataRightsPanel() {
               disabled={submitting}
               className="rounded-2xl border border-border bg-background/70 px-4 py-4 text-left transition hover:border-primary hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <div className="text-sm font-semibold text-foreground">JSON export</div>
-              <div className="mt-1 text-xs text-muted-foreground">Tum verilerinizin yapilandirilmis paketi</div>
+              <div className="text-sm font-semibold text-foreground">{t("exportJsonTitle")}</div>
+              <div className="mt-1 text-xs text-muted-foreground">{t("exportJsonDesc")}</div>
             </button>
             <button
               type="button"
@@ -197,19 +193,19 @@ export function ProfileDataRightsPanel() {
               disabled={submitting}
               className="rounded-2xl border border-border bg-background/70 px-4 py-4 text-left transition hover:border-primary hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <div className="text-sm font-semibold text-foreground">CSV export</div>
-              <div className="mt-1 text-xs text-muted-foreground">Tablosal raporlama ve dis sistem aktarimi</div>
+              <div className="text-sm font-semibold text-foreground">{t("exportCsvTitle")}</div>
+              <div className="mt-1 text-xs text-muted-foreground">{t("exportCsvDesc")}</div>
             </button>
           </div>
 
           <div className="mt-5 space-y-3">
             {loading ? (
               <div className="rounded-2xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-                Export gecmisi yukleniyor...
+                {t("exportHistoryLoading")}
               </div>
             ) : exports.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-                Henuz olusturulmus bir veri export kaydi yok.
+                {t("exportHistoryEmpty")}
               </div>
             ) : (
               exports.slice(0, 4).map((item) => (
@@ -221,7 +217,7 @@ export function ProfileDataRightsPanel() {
                         {item.export_format.toUpperCase()} · {formatDateTime(item.requested_at)} · {formatStatus(item.status)}
                       </div>
                       <div className="mt-1 text-xs text-muted-foreground">
-                        Indirme sayisi: {item.download_count}
+                        {t("exportDownloadCount")}: {item.download_count}
                       </div>
                     </div>
                     <button
@@ -232,12 +228,12 @@ export function ProfileDataRightsPanel() {
                           triggerDownload(file.blob, file.fileName);
                           await load();
                         } catch (downloadError) {
-                          setError(downloadError instanceof Error ? downloadError.message : "Export indirilemedi.");
+                          setError(downloadError instanceof Error ? downloadError.message : t("exportFailed"));
                         }
                       }}
                       className="rounded-xl border border-border bg-card px-3 py-2 text-xs font-medium text-foreground transition hover:border-primary hover:text-primary"
                     >
-                      Indir
+                      {t("download")}
                     </button>
                   </div>
                 </div>
@@ -247,21 +243,21 @@ export function ProfileDataRightsPanel() {
         </section>
 
         <section className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-          <h3 className="text-base font-semibold text-foreground">Verilerimi Sil</h3>
+          <h3 className="text-base font-semibold text-foreground">{t("deletionTitle")}</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Talep olusturdugunuzda hesabiniz ve iliskili kisisel verileriniz silme surecine alinir. Kalici silme, saklama politikasina gore 30 gun sonra tamamlanir.
+            {t("deletionDescription")}
           </p>
 
           <textarea
             rows={4}
             value={deletionReason}
             onChange={(event) => setDeletionReason(event.target.value)}
-            placeholder="Istege bagli aciklama veya talep nedeni"
+            placeholder={t("deletionReasonPlaceholder")}
             className="mt-4 w-full rounded-2xl border border-border bg-background/70 px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary"
           />
 
-          <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
-            <span>Silme talebi olustuktan sonra surec geri donulemez hale gelmeden once idari olarak iptal edilebilir.</span>
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/10 px-4 py-3 text-xs text-[var(--color-warning)]">
+            <span>{t("deletionWarning")}</span>
           </div>
 
           <div className="mt-4 flex justify-end">
@@ -269,37 +265,37 @@ export function ProfileDataRightsPanel() {
               type="button"
               onClick={() => void handleDeletionRequest()}
               disabled={submitting || !!activeDeletionRequest}
-              className="rounded-2xl bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-2xl bg-[var(--color-danger)] px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {activeDeletionRequest ? "Aktif silme talebi var" : "Silme talebi olustur"}
+              {activeDeletionRequest ? t("deletionActive") : t("deletionSubmit")}
             </button>
           </div>
 
           <div className="mt-5 space-y-3">
             {loading ? (
               <div className="rounded-2xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-                Silme talepleri yukleniyor...
+                {t("deletionLoading")}
               </div>
             ) : requests.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-                Henuz bir silme talebi bulunmuyor.
+                {t("deletionEmpty")}
               </div>
             ) : (
               requests.map((item) => (
                 <div key={item.id} className="rounded-2xl border border-border bg-background/70 px-4 py-4">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-secondary-foreground">
-                      {item.request_scope === "self" ? "Kisisel talep" : "Admin"}
+                      {item.request_scope === "self" ? t("scope.self") : t("scope.admin")}
                     </span>
                     <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-secondary-foreground">
                       {formatStatus(item.status)}
                     </span>
                   </div>
                   <div className="mt-3 grid gap-2 text-sm text-muted-foreground">
-                    <div>Talep tarihi: {formatDateTime(item.requested_at)}</div>
-                    <div>Planlanan kalici silme: {formatDateTime(item.scheduled_purge_at)}</div>
-                    {item.admin_notes && <div>Yonetici notu: {item.admin_notes}</div>}
-                    {item.error_message && <div>Hata: {item.error_message}</div>}
+                    <div>{t("requestDate")}: {formatDateTime(item.requested_at)}</div>
+                    <div>{t("scheduledPurge")}: {formatDateTime(item.scheduled_purge_at)}</div>
+                    {item.admin_notes && <div>{t("adminNotes")}: {item.admin_notes}</div>}
+                    {item.error_message && <div>{t("errorMsg")}: {item.error_message}</div>}
                   </div>
                 </div>
               ))

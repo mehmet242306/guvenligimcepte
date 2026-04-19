@@ -23,6 +23,7 @@ import { createClient } from '@/lib/supabase/client';
 import { PageHeader } from '@/components/ui/page-header';
 import { PremiumIconBadge, type PremiumIconTone } from '@/components/ui/premium-icon-badge';
 import { DashboardTrackingSummary } from '@/components/dashboard/DashboardTrackingSummary';
+import { OhsFileWidget } from '@/components/dashboard/OhsFileWidget';
 
 interface DashboardStats {
   riskCount: number;
@@ -197,6 +198,8 @@ export function DashboardClient() {
       </div>
 
       <DashboardTrackingSummary />
+
+      <OhsFileWidget />
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.95fr)]">
         <div className="space-y-4">

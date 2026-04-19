@@ -18,6 +18,7 @@ import {
   FileText, Clock, FileEdit, AlertCircle,
   ZoomIn, Trash2, Share2, PenTool,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import {
   fetchDocument, createDocument, updateDocument,
@@ -36,7 +37,7 @@ import { SignatureModal } from '@/components/documents/SignatureModal';
 import QRCode from 'qrcode';
 import type { JSONContent } from '@tiptap/react';
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ElementType }> = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   taslak: { label: 'Taslak', color: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400', icon: FileEdit },
   hazir: { label: 'Hazır', color: 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle2 },
   onay_bekliyor: { label: 'Onay Bekliyor', color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400', icon: Clock },

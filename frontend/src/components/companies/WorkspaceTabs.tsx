@@ -22,7 +22,7 @@ import {
   type TrainingRecord, type PeriodicControlRecord, type OpenAction, type TrackingSummary, type CommitteeMeeting,
 } from "@/lib/supabase/tracking-api";
 
-export type WTab = "overview" | "structure" | "risk" | "people" | "personnel" | "planner" | "tracking" | "documents" | "organization" | "history";
+export type WTab = "overview" | "structure" | "risk" | "people" | "personnel" | "planner" | "tracking" | "documents" | "ohs_file" | "organization" | "history";
 
 function pbv(p: string): "danger" | "warning" | "neutral" {
   if (p === "high") return "danger";

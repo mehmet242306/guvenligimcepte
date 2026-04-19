@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { toDataURL } from "qrcode";
+import { useTranslations } from "next-intl";
+import { useI18n, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import {
   AlertTriangle,
   ClipboardCheck,
@@ -95,35 +97,24 @@ type SessionRecord = {
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const ROLE_LABELS: Record<string, string> = {
-  super_admin: "Süper Yönetici",
-  platform_admin: "Platform Yöneticisi",
-  organization_admin: "Kuruluş Yöneticisi",
-  osgb_manager: "OSGB Müdürü",
-  ohs_specialist: "İSG Uzmanı",
-  workplace_physician: "İşyeri Hekimi",
-  dsp: "DSP",
-  viewer: "Görüntüleyici",
+const ROLE_KEYS: Record<string, string> = {
+  super_admin: "super_admin",
+  platform_admin: "platform_admin",
+  organization_admin: "organization_admin",
+  osgb_manager: "osgb_manager",
+  ohs_specialist: "ohs_specialist",
+  workplace_physician: "workplace_physician",
+  dsp: "dsp",
+  viewer: "viewer",
 };
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: "profile", label: "Profil Bilgileri" },
-  { id: "security", label: "Güvenlik" },
-  { id: "preferences", label: "Tercihler" },
-  { id: "activity", label: "Aktivite" },
-];
+const TAB_IDS: Tab[] = ["profile", "security", "privacy", "preferences", "activity"];
 
 const primaryButtonClass =
   "inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-black/5 bg-primary px-5 text-sm font-semibold text-primary-foreground shadow-[0_12px_28px_rgba(15,23,42,0.14)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-[0_16px_32px_rgba(15,23,42,0.18)] dark:border-white/10 dark:shadow-[0_14px_30px_rgba(0,0,0,0.34)] dark:hover:shadow-[0_18px_34px_rgba(0,0,0,0.4)] disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60";
 
 const secondaryButtonClass =
   "inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-border/80 bg-background/90 px-5 text-sm font-medium text-foreground shadow-[0_8px_20px_rgba(15,23,42,0.08)] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:bg-secondary/70 hover:text-primary dark:bg-card/90 dark:shadow-[0_12px_24px_rgba(0,0,0,0.28)] disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60";
-
-const PROFILE_TABS: { id: Tab; label: string }[] = [
-  ...TABS.slice(0, 2),
-  { id: "privacy", label: "Gizlilik ve Onaylar" },
-  ...TABS.slice(2),
-];
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
@@ -145,9 +136,9 @@ function Toggle({
       onClick={() => onChange(!checked)}
       className={[
         "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent",
-        "transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0b5fc1]/60",
+        "transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60",
         "disabled:cursor-not-allowed disabled:opacity-50",
-        checked ? "bg-[#0b5fc1]" : "bg-slate-300 dark:bg-slate-600",
+        checked ? "bg-primary" : "bg-muted dark:bg-muted",
       ].join(" ")}
     >
       <span
@@ -161,9 +152,61 @@ function Toggle({
   );
 }
 
+const LOCALE_FLAGS: Record<Locale, string> = {
+  tr: "🇹🇷",
+  en: "🇬🇧",
+  ar: "🇸🇦",
+  ru: "🇷🇺",
+  de: "🇩🇪",
+  fr: "🇫🇷",
+  es: "🇪🇸",
+  zh: "🇨🇳",
+  ja: "🇯🇵",
+  ko: "🇰🇷",
+  hi: "🇮🇳",
+  az: "🇦🇿",
+  id: "🇮🇩",
+};
+
+function LanguagePicker() {
+  const { locale, setLocale } = useI18n();
+  const t = useTranslations("profile");
+  const tLang = useTranslations("lang");
+
+  return (
+    <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
+      <h2 className="mb-5 text-lg font-semibold text-foreground">{t("prefs.language")}</h2>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {SUPPORTED_LOCALES.map((code) => (
+          <button
+            key={code}
+            type="button"
+            onClick={() => setLocale(code)}
+            className={[
+              "cursor-pointer flex items-center gap-2.5 rounded-2xl border-2 px-4 py-2.5 text-sm font-medium transition-all",
+              locale === code
+                ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/30 shadow-md"
+                : "border-border bg-secondary/30 text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-secondary/50",
+            ].join(" ")}
+          >
+            <span className="text-lg" aria-hidden>
+              {LOCALE_FLAGS[code]}
+            </span>
+            <span className="truncate">{tLang(code)}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function ProfileClient() {
+  const t = useTranslations("profile");
+  const tMsg = useTranslations("profile.msg");
+  const tCommon = useTranslations("common");
+
   const [tab, setTab] = useState<Tab>("profile");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -365,9 +408,9 @@ export default function ProfileClient() {
       if (updateErr) throw updateErr;
 
       setProfile((prev) => prev ? { ...prev, avatar_url: publicUrl } : prev);
-      setFeedback({ type: "success", msg: "Fotoğraf güncellendi." });
+      setFeedback({ type: "success", msg: tMsg("photoUpdated") });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Yükleme başarısız.";
+      const msg = err instanceof Error ? err.message : tMsg("photoError");
       setFeedback({ type: "error", msg });
     } finally {
       setAvatarUploading(false);
@@ -390,7 +433,7 @@ export default function ProfileClient() {
         .eq("id", profile.id);
       if (error) throw error;
       setProfile((prev) => prev ? { ...prev, full_name: fullName, title, phone } : prev);
-      setFeedback({ type: "success", msg: "Profil bilgileri kaydedildi." });
+      setFeedback({ type: "success", msg: tMsg("profileSaved") });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Kayıt başarısız.";
       setFeedback({ type: "error", msg });
@@ -403,7 +446,7 @@ export default function ProfileClient() {
 
   async function handlePasswordChange() {
     if (newPassword !== confirmPassword) {
-      setFeedback({ type: "error", msg: "Yeni şifreler eşleşmiyor." });
+      setFeedback({ type: "error", msg: tMsg("passwordMismatch") });
       return;
     }
 
@@ -424,7 +467,7 @@ export default function ProfileClient() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      setFeedback({ type: "success", msg: "Şifre başarıyla güncellendi." });
+      setFeedback({ type: "success", msg: tMsg("passwordUpdated") });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Şifre güncellenemedi.";
       setFeedback({ type: "error", msg });
@@ -440,7 +483,7 @@ export default function ProfileClient() {
   async function handleEmailChange() {
     const supabase = createClient();
     if (!supabase) {
-      setFeedback({ type: "error", msg: "E-posta güncelleme servisine bağlanılamadı." });
+      setFeedback({ type: "error", msg: tMsg("emailServiceError") });
       return;
     }
 
@@ -448,17 +491,17 @@ export default function ProfileClient() {
     const currentEmail = (authUser?.email ?? profile?.email ?? "").trim().toLowerCase();
 
     if (!nextEmail) {
-      setFeedback({ type: "error", msg: "Yeni e-posta adresi boş bırakılamaz." });
+      setFeedback({ type: "error", msg: tMsg("emailEmpty") });
       return;
     }
 
     if (!isValidEmail(nextEmail)) {
-      setFeedback({ type: "error", msg: "Geçerli bir e-posta adresi girin." });
+      setFeedback({ type: "error", msg: tMsg("emailInvalid") });
       return;
     }
 
     if (nextEmail === currentEmail) {
-      setFeedback({ type: "error", msg: "Yeni e-posta mevcut adresle aynı olamaz." });
+      setFeedback({ type: "error", msg: tMsg("emailSame") });
       return;
     }
 
@@ -533,7 +576,7 @@ export default function ProfileClient() {
   async function handleMfaEnroll() {
     const supabase = createClient();
     if (!supabase) {
-      setFeedback({ type: "error", msg: "İki adımlı doğrulama servisine bağlanılamadı." });
+      setFeedback({ type: "error", msg: tMsg("mfaServiceError") });
       return;
     }
 
@@ -561,7 +604,7 @@ export default function ProfileClient() {
       });
       setMfaCode("");
       await loadMfaState(supabase);
-      setFeedback({ type: "success", msg: "Kurulum oluşturuldu. Şimdi kodu doğrulayarak 2FA'yi etkinleştirin." });
+      setFeedback({ type: "success", msg: tMsg("mfaEnrolled") });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "İki adımlı doğrulama başlatılamadı.";
       setFeedback({ type: "error", msg });
@@ -575,13 +618,13 @@ export default function ProfileClient() {
 
     const code = mfaCode.replace(/\s+/g, "");
     if (!/^\d{6}$/.test(code)) {
-      setFeedback({ type: "error", msg: "Doğrulama kodu 6 haneli olmalı." });
+      setFeedback({ type: "error", msg: tMsg("mfaCodeInvalid") });
       return;
     }
 
     const supabase = createClient();
     if (!supabase) {
-      setFeedback({ type: "error", msg: "İki adımlı doğrulama servisine bağlanılamadı." });
+      setFeedback({ type: "error", msg: tMsg("mfaServiceError") });
       return;
     }
 
@@ -600,7 +643,7 @@ export default function ProfileClient() {
       setMfaCode("");
       setMfaFriendlyName("");
       await loadMfaState(supabase);
-      setFeedback({ type: "success", msg: "İki adımlı doğrulama etkinleştirildi." });
+      setFeedback({ type: "success", msg: tMsg("mfaEnabled") });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Doğrulama başarısız.";
       setFeedback({ type: "error", msg });
@@ -636,7 +679,7 @@ export default function ProfileClient() {
   async function handleMfaUnenroll(factorId: string) {
     const supabase = createClient();
     if (!supabase) {
-      setFeedback({ type: "error", msg: "İki adımlı doğrulama servisine bağlanılamadı." });
+      setFeedback({ type: "error", msg: tMsg("mfaServiceError") });
       return;
     }
 
@@ -648,7 +691,7 @@ export default function ProfileClient() {
       if (error) throw error;
 
       await loadMfaState(supabase);
-      setFeedback({ type: "success", msg: "MFA cihazı kaldırıldı." });
+      setFeedback({ type: "success", msg: tMsg("mfaRemoved") });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "MFA cihazı kaldırılamadı.";
       setFeedback({ type: "error", msg });
@@ -680,7 +723,7 @@ export default function ProfileClient() {
       if (error) throw error;
 
       // Theme & language are already applied on click via handleThemeChange/handleLanguageChange
-      setFeedback({ type: "success", msg: "Tercihler kaydedildi." });
+      setFeedback({ type: "success", msg: tMsg("prefsSaved") });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Kayıt başarısız.";
       setFeedback({ type: "error", msg });
@@ -710,7 +753,7 @@ export default function ProfileClient() {
 
     const supabase = createClient();
     if (!supabase) {
-      setFeedback({ type: "error", msg: "Oturum servisine bağlanılamadı." });
+      setFeedback({ type: "error", msg: tMsg("sessionServiceError") });
       setSigningOutAll(false);
       return;
     }
@@ -866,7 +909,7 @@ export default function ProfileClient() {
       <div className="flex h-96 items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-border border-t-primary" />
-          <span className="text-sm text-muted-foreground">Profil yükleniyor...</span>
+          <span className="text-sm text-muted-foreground">{t("loading")}</span>
         </div>
       </div>
     );
@@ -907,7 +950,7 @@ export default function ProfileClient() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={avatarUploading}
                 className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white/80 bg-primary text-primary-foreground shadow-md transition hover:bg-primary-hover disabled:opacity-60"
-                title="Fotoğraf değiştir"
+                title={t("changePhoto")}
               >
                 {avatarUploading ? (
                   <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
@@ -945,7 +988,7 @@ export default function ProfileClient() {
                     key={r}
                     className="inline-flex items-center rounded-lg border border-border/80 bg-background/80 px-3 py-1 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm dark:border-white/10 dark:bg-white/10"
                   >
-                    {ROLE_LABELS[r] ?? r}
+                    {ROLE_KEYS[r] ? t(`roles.${ROLE_KEYS[r]}`) : r}
                   </span>
                 ))}
                 {org && (
@@ -961,8 +1004,8 @@ export default function ProfileClient() {
 
             {/* Dates */}
             <div className="hidden shrink-0 text-right text-sm text-muted-foreground sm:flex sm:flex-col sm:items-end sm:gap-3">
-              <div>Üyelik: {formatDate(profile?.created_at)}</div>
-              <div>Güncelleme: {formatDate(profile?.updated_at)}</div>
+              <div>{t("membership")}: {formatDate(profile?.created_at)}</div>
+              <div>{t("updated")}: {formatDate(profile?.updated_at)}</div>
             </div>
           </div>
         </div>
@@ -975,8 +1018,8 @@ export default function ProfileClient() {
           className={[
             "rounded-2xl border px-4 py-3 text-sm font-medium",
             feedback.type === "success"
-              ? "border-green-200 bg-green-50 text-green-700 dark:border-green-800/50 dark:bg-green-900/20 dark:text-green-400"
-              : "border-red-200 bg-red-50 text-red-700 dark:border-red-800/50 dark:bg-red-900/20 dark:text-red-400",
+              ? "border-[var(--color-success)]/30 bg-[var(--color-success)]/10 text-[var(--color-success)]"
+              : "border-[var(--color-danger)]/30 bg-[var(--color-danger)]/10 text-[var(--color-danger)]",
           ].join(" ")}
         >
           {feedback.msg}
@@ -985,7 +1028,7 @@ export default function ProfileClient() {
 
       {/* ── Tab bar ── */}
       <div className="flex gap-1 rounded-2xl border border-border bg-secondary/50 p-1">
-        {PROFILE_TABS.map(({ id, label }) => (
+        {TAB_IDS.map((id) => (
           <button
             key={id}
             type="button"
@@ -997,7 +1040,7 @@ export default function ProfileClient() {
                 : "text-muted-foreground hover:text-foreground",
             ].join(" ")}
           >
-            {label}
+            {t(`tabs.${id}`)}
           </button>
         ))}
       </div>
@@ -1009,28 +1052,28 @@ export default function ProfileClient() {
         <div className="space-y-4">
           {/* Personal info form */}
           <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-            <h2 className="mb-5 text-lg font-semibold text-foreground">Kişisel Bilgiler</h2>
+            <h2 className="mb-5 text-lg font-semibold text-foreground">{t("personal.title")}</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Ad Soyad</label>
+                <label className="text-sm font-medium text-foreground">{t("personal.fullName")}</label>
                 <input
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Ad Soyad"
+                  placeholder={t("personal.fullNamePlaceholder")}
                   className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Unvan / Pozisyon</label>
+                <label className="text-sm font-medium text-foreground">{t("personal.jobTitle")}</label>
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="İSG Uzmanı"
+                  placeholder={t("personal.jobTitlePlaceholder")}
                   className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">E-posta</label>
+                <label className="text-sm font-medium text-foreground">{t("personal.email")}</label>
                 <input
                   value={email}
                   disabled
@@ -1038,11 +1081,11 @@ export default function ProfileClient() {
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Telefon</label>
+                <label className="text-sm font-medium text-foreground">{t("personal.phone")}</label>
                 <input
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+90 5xx xxx xx xx"
+                  placeholder={t("personal.phonePlaceholder")}
                   className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
@@ -1058,9 +1101,9 @@ export default function ProfileClient() {
                 {saving ? (
                   <>
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                    Kaydediliyor...
+                    {t("mfa.loading")}
                   </>
-                ) : "Kaydet"}
+                ) : t("personal.save")}
               </button>
             </div>
           </div>
@@ -1068,14 +1111,14 @@ export default function ProfileClient() {
           {/* Org info */}
           {org && (
             <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-              <h2 className="mb-5 text-lg font-semibold text-foreground">Kuruluş Bilgileri</h2>
+              <h2 className="mb-5 text-lg font-semibold text-foreground">{t("org.title")}</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">Kuruluş Adı</label>
+                  <label className="text-sm font-medium text-foreground">{t("org.name")}</label>
                   <input value={org.name} disabled className="h-11 w-full rounded-xl border border-border bg-secondary px-3 text-sm text-muted-foreground opacity-70 cursor-not-allowed" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">Şehir</label>
+                  <label className="text-sm font-medium text-foreground">{t("org.city")}</label>
                   <input value={org.city ?? "—"} disabled className="h-11 w-full rounded-xl border border-border bg-secondary px-3 text-sm text-muted-foreground opacity-70 cursor-not-allowed" />
                 </div>
               </div>
@@ -1085,12 +1128,12 @@ export default function ProfileClient() {
           {/* Roles */}
           {roles.length > 0 && (
             <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-              <h2 className="mb-4 text-lg font-semibold text-foreground">Roller ve Yetkiler</h2>
+              <h2 className="mb-4 text-lg font-semibold text-foreground">{t("roles.title")}</h2>
               <div className="flex flex-wrap gap-2">
                 {roles.map((r) => (
                   <span key={r} className="inline-flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary">
                     <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                    {ROLE_LABELS[r] ?? r}
+                    {ROLE_KEYS[r] ? t(`roles.${ROLE_KEYS[r]}`) : r}
                   </span>
                 ))}
               </div>
@@ -1105,11 +1148,11 @@ export default function ProfileClient() {
       {tab === "security" && (
         <div className="space-y-4">
           <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-            <h2 className="mb-5 text-lg font-semibold text-foreground">E-posta Degistir</h2>
+            <h2 className="mb-5 text-lg font-semibold text-foreground">{t("email.title")}</h2>
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">Mevcut E-posta</label>
+                  <label className="text-sm font-medium text-foreground">{t("email.current")}</label>
                   <input
                     value={email}
                     disabled
@@ -1117,14 +1160,14 @@ export default function ProfileClient() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">Yeni E-posta</label>
+                  <label className="text-sm font-medium text-foreground">{t("email.new")}</label>
                   <input
                     type="email"
                     inputMode="email"
                     autoComplete="email"
                     value={pendingEmail}
                     onChange={(e) => setPendingEmail(e.target.value)}
-                    placeholder="ornek@firma.com"
+                    placeholder={t("email.newPlaceholder")}
                     className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                   />
                 </div>
@@ -1134,23 +1177,22 @@ export default function ProfileClient() {
                   disabled={emailUpdating || !pendingEmail.trim()}
                   className={primaryButtonClass}
                 >
-                  {emailUpdating ? "Bağlantı Gönderiliyor..." : "Değişikliği Başlat"}
+                  {emailUpdating ? t("mfa.loading") : t("email.submit")}
                 </button>
               </div>
 
               <div className="rounded-2xl border border-dashed border-border bg-background/60 px-4 py-4 text-sm text-muted-foreground">
-                E-posta değişikliği güvenlik nedeniyle onay gerektirir. Yeni adrese giden bağlantıyı açmadan hesap
-                e-postası değişmez.
+                {t("email.info")}
               </div>
             </div>
           </div>
 
           {/* Password change */}
           <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-            <h2 className="mb-5 text-lg font-semibold text-foreground">Şifre Değiştir</h2>
+            <h2 className="mb-5 text-lg font-semibold text-foreground">{t("password.title")}</h2>
             <div className="max-w-md space-y-4">
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Mevcut Şifre</label>
+                <label className="text-sm font-medium text-foreground">{t("password.current")}</label>
                 <input
                   type="password"
                   value={currentPassword}
@@ -1160,17 +1202,17 @@ export default function ProfileClient() {
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Yeni Şifre</label>
+                <label className="text-sm font-medium text-foreground">{t("password.new")}</label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="En az 12 karakter, büyük-küçük harf, rakam ve sembol"
+                  placeholder={t("password.newPlaceholder")}
                   className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Yeni Şifre (Tekrar)</label>
+                <label className="text-sm font-medium text-foreground">{t("password.repeat")}</label>
                 <input
                   type="password"
                   value={confirmPassword}
@@ -1185,7 +1227,7 @@ export default function ProfileClient() {
                 disabled={saving || !newPassword || !confirmPassword}
                 className={primaryButtonClass}
               >
-                {saving ? "Güncelleniyor..." : "Şifreyi Güncelle"}
+                {saving ? t("mfa.loading") : t("password.submit")}
               </button>
             </div>
           </div>
@@ -1195,10 +1237,9 @@ export default function ProfileClient() {
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">İki Adımlı Kimlik Doğrulama</h2>
+                  <h2 className="text-lg font-semibold text-foreground">{t("mfa.title")}</h2>
                   <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-                    Google Authenticator, Authy ve benzeri TOTP uygulamalarıyla çalışır. Kurulum tamamlanınca bu hesap
-                    için ikinci adım korunur.
+                    {t("mfa.description")}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1206,11 +1247,11 @@ export default function ProfileClient() {
                     className={[
                       "inline-flex items-center rounded-xl px-3 py-1 text-xs font-semibold",
                       mfaFactors.some((factor) => factor.status === "verified")
-                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                        ? "bg-[var(--color-success)]/15 text-[var(--color-success)]"
                         : "bg-secondary text-muted-foreground",
                     ].join(" ")}
                   >
-                    {mfaFactors.some((factor) => factor.status === "verified") ? "2FA Açık" : "2FA Kapalı"}
+                    {mfaFactors.some((factor) => factor.status === "verified") ? t("mfa.open") : t("mfa.closed")}
                   </span>
                 </div>
               </div>
@@ -1223,9 +1264,9 @@ export default function ProfileClient() {
                 <div className="rounded-2xl border border-border bg-background/60 p-4">
                   <div className="mb-4 space-y-3">
                     <div>
-                      <div className="text-sm font-semibold text-foreground">Yeni Cihaz Ekle</div>
+                      <div className="text-sm font-semibold text-foreground">{t("mfa.addDevice")}</div>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        QR kodunu Google Authenticator ile okutun. İsterseniz cihaza özel bir ad verebilirsiniz.
+                        {t("mfa.addDeviceHint")}
                       </p>
                     </div>
                     <button
@@ -1234,23 +1275,23 @@ export default function ProfileClient() {
                       disabled={mfaBusy || !!mfaEnrollment}
                       className={`${primaryButtonClass} w-full sm:w-auto sm:self-start`}
                     >
-                      {mfaBusy && !mfaEnrollment ? "Hazırlanıyor..." : "Google Authenticator'ı Bağla"}
+                      {mfaBusy && !mfaEnrollment ? t("mfa.loading") : t("mfa.connect")}
                     </button>
                   </div>
 
                   <div className="grid gap-4 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-foreground">Cihaz Adı</label>
+                      <label className="text-sm font-medium text-foreground">{t("mfa.deviceName")}</label>
                       <input
                         value={mfaFriendlyName}
                         onChange={(e) => setMfaFriendlyName(e.target.value)}
-                        placeholder="Örn. Mehmet iPhone"
+                        placeholder={t("mfa.deviceNamePlaceholder")}
                         disabled={mfaBusy || !!mfaEnrollment}
                         className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-60"
                       />
                     </div>
                     <div className="rounded-2xl border border-dashed border-border bg-card px-4 py-3 text-xs text-muted-foreground">
-                      Yedekleme kodu desteği yok. Kritik hesaplarda en az iki farklı TOTP cihazı ekleyin.
+                      {t("mfa.backupWarning")}
                     </div>
                   </div>
 
@@ -1273,7 +1314,7 @@ export default function ProfileClient() {
                             </p>
                           </div>
                           <div className="space-y-1.5">
-                            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Kurulum Anahtarı</label>
+                            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("mfa.setupKey")}</label>
                             <input
                               readOnly
                               value={mfaEnrollment.secret}
@@ -1295,7 +1336,7 @@ export default function ProfileClient() {
                             autoComplete="one-time-code"
                             value={mfaCode}
                             onChange={(e) => setMfaCode(e.target.value.replace(/[^\d]/g, "").slice(0, 6))}
-                            placeholder="123456"
+                            placeholder={t("mfa.verifyCodePlaceholder")}
                             className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm tracking-[0.25em] text-foreground placeholder:tracking-normal placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                           />
                         </div>
@@ -1305,7 +1346,7 @@ export default function ProfileClient() {
                           disabled={mfaBusy || mfaCode.length !== 6}
                           className={primaryButtonClass}
                         >
-                          {mfaBusy ? "Doğrulanıyor..." : "Doğrula"}
+                          {mfaBusy ? t("mfa.verifying") : t("mfa.verify")}
                         </button>
                         <button
                           type="button"
@@ -1313,7 +1354,7 @@ export default function ProfileClient() {
                           disabled={mfaBusy}
                           className={secondaryButtonClass}
                         >
-                          İptal
+                          {tCommon("cancel")}
                         </button>
                       </div>
                     </div>
@@ -1323,18 +1364,15 @@ export default function ProfileClient() {
                 <div className="rounded-2xl border border-border bg-background/60 p-4">
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <div>
-                      <div className="text-sm font-semibold text-foreground">Kayıtlı MFA Cihazları</div>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        Bu hesaba bağlı doğrulanmış veya doğrulanmamış tüm TOTP cihazları burada listelenir.
-                      </p>
+                      <div className="text-sm font-semibold text-foreground">{t("mfa.registeredDevices")}</div>
                     </div>
-                    {mfaLoading && <span className="text-xs text-muted-foreground">Yükleniyor...</span>}
+                    {mfaLoading && <span className="text-xs text-muted-foreground">{t("mfa.loading")}</span>}
                   </div>
 
                   <div className="space-y-3">
                     {mfaFactors.length === 0 && !mfaLoading && (
                       <div className="rounded-2xl border border-dashed border-border bg-card px-4 py-5 text-sm text-muted-foreground">
-                        Henüz bağlı bir MFA cihazı yok.
+                        {t("mfa.noDevices")}
                       </div>
                     )}
 
@@ -1355,16 +1393,16 @@ export default function ProfileClient() {
                               className={[
                                 "inline-flex items-center rounded-lg px-2.5 py-1 text-[11px] font-semibold",
                                 factor.status === "verified"
-                                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                                  : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+                                  ? "bg-[var(--color-success)]/15 text-[var(--color-success)]"
+                                  : "bg-[var(--color-warning)]/15 text-[var(--color-warning)]",
                               ].join(" ")}
                             >
-                              {factor.status === "verified" ? "Doğrulandı" : "Bekliyor"}
+                              {factor.status === "verified" ? t("mfa.verify") : tCommon("loading")}
                             </span>
                           </div>
                           <div className="mt-1 text-xs text-muted-foreground">
-                            Oluşturma: {formatDate(factor.created_at)}
-                            {factor.last_challenged_at ? ` | Son kullanım: ${formatDate(factor.last_challenged_at)}` : ""}
+                            {formatDate(factor.created_at)}
+                            {factor.last_challenged_at ? ` · ${formatDate(factor.last_challenged_at)}` : ""}
                           </div>
                         </div>
 
@@ -1374,7 +1412,7 @@ export default function ProfileClient() {
                           disabled={mfaBusy}
                           className={secondaryButtonClass}
                         >
-                          Kaldır
+                          {t("mfa.removeDevice")}
                         </button>
                       </div>
                     ))}
@@ -1388,10 +1426,7 @@ export default function ProfileClient() {
           <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
             <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-foreground">Aktif Oturumlar</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Hesabınızda açık olan oturumları burada görebilir ve çıkış işlemlerini yönetebilirsiniz.
-                </p>
+                <h2 className="text-lg font-semibold text-foreground">{t("sessions.title")}</h2>
               </div>
               <div className="flex flex-wrap gap-3">
                 <button
@@ -1400,7 +1435,7 @@ export default function ProfileClient() {
                   disabled={signingOut || signingOutAll}
                   className={secondaryButtonClass}
                 >
-                  {signingOut ? "Kapatılıyor..." : "Bu cihazdan çık"}
+                  {signingOut ? tCommon("loading") : t("sessions.thisDevice")}
                 </button>
                 <button
                   type="button"
@@ -1408,14 +1443,14 @@ export default function ProfileClient() {
                   disabled={signingOutAll || signingOut}
                   className={secondaryButtonClass}
                 >
-                  {signingOutAll ? "Kapatılıyor..." : "Tüm cihazlardan çık"}
+                  {signingOutAll ? tCommon("loading") : t("sessions.allDevices")}
                 </button>
               </div>
             </div>
             <div className="space-y-3">
               {sessions.length === 0 && (
                 <div className="rounded-2xl border border-border bg-secondary/30 px-4 py-4 text-sm text-muted-foreground">
-                  Kayıtlı oturum bulunamadı. Bu cihazdaki oturum aktif görünüyor olabilir.
+                  {tCommon("noData")}
                 </div>
               )}
               {sessions.map((session) => (
@@ -1423,39 +1458,39 @@ export default function ProfileClient() {
                   key={session.id}
                   className="flex flex-col gap-4 rounded-2xl border border-border bg-secondary/20 px-4 py-4 sm:flex-row sm:items-center"
                 >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30">
-                    <svg className="h-4 w-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-success)]/15">
+                    <svg className="h-4 w-4 text-[var(--color-success)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                     </svg>
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-semibold text-foreground">
-                        {session.device_info || "Bilinmeyen cihaz"}
+                        {session.device_info || "—"}
                       </span>
                       <span
                         className={[
                           "inline-flex items-center rounded-lg px-2.5 py-1 text-[11px] font-semibold",
                           session.isCurrent
-                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                            ? "bg-[var(--color-success)]/15 text-[var(--color-success)]"
                             : "bg-secondary text-muted-foreground",
                         ].join(" ")}
                       >
-                        {session.isCurrent ? "Bu cihaz" : "Diğer cihaz"}
+                        {session.isCurrent ? t("sessions.active") : "—"}
                       </span>
                       <span className="inline-flex items-center rounded-lg bg-secondary px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                         {session.device_type}
                       </span>
                     </div>
                     <div className="mt-1 text-xs text-muted-foreground">
-                      Son aktivite: {formatDate(session.last_active_at)}
-                      {session.ip_address ? ` | IP: ${session.ip_address}` : ""}
-                      {session.created_at ? ` | Açılış: ${formatDate(session.created_at)}` : ""}
+                      {t("sessions.lastActive")}: {formatDate(session.last_active_at)}
+                      {session.ip_address ? ` | ${t("sessions.ip")}: ${session.ip_address}` : ""}
+                      {session.created_at ? ` | ${t("sessions.opened")}: ${formatDate(session.created_at)}` : ""}
                     </div>
                   </div>
                   {session.isCurrent && (
-                    <span className="text-xs font-medium text-green-600 dark:text-green-400">
-                      Aktif
+                    <span className="text-xs font-medium text-[var(--color-success)]">
+                      {t("sessions.active")}
                     </span>
                   )}
                 </div>
@@ -1464,16 +1499,26 @@ export default function ProfileClient() {
           </div>
 
           {/* Danger zone */}
-          <div className="rounded-[1.75rem] border border-red-200 bg-card p-6 shadow-[var(--shadow-card)] dark:border-red-900/40 sm:p-7">
-            <h2 className="mb-2 text-lg font-semibold text-red-600 dark:text-red-400">Tehlikeli Bölge</h2>
+          <div className="rounded-[1.75rem] border border-[var(--color-danger)]/30 bg-card p-6 shadow-[var(--shadow-card)] dark:border-[var(--color-danger)]/40 sm:p-7">
+            <h2 className="mb-2 text-lg font-semibold text-[var(--color-danger)]">{t("danger.title")}</h2>
             <p className="mb-4 text-sm text-muted-foreground">
-              Hesabınızı silerseniz tüm verileriniz kalıcı olarak kaldırılır ve bu işlem geri alınamaz.
+              {t("danger.description")}
             </p>
             <button
               type="button"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-red-300 bg-red-50 px-4 text-sm font-medium text-red-600 transition hover:bg-red-100 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/40"
+              onClick={() => {
+                setTab("privacy");
+                setFeedback({
+                  type: "success",
+                  msg: t("danger.redirectMsg"),
+                });
+                if (typeof window !== "undefined") {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[var(--color-danger)]/40 bg-[var(--color-danger)]/10 px-4 text-sm font-medium text-[var(--color-danger)] transition hover:bg-[var(--color-danger)]/20"
             >
-              Hesabı Sil
+              {t("danger.button")}
             </button>
           </div>
         </div>
@@ -1488,41 +1533,39 @@ export default function ProfileClient() {
         <div className="space-y-4">
           {/* Theme picker */}
           <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-            <h2 className="mb-5 text-lg font-semibold text-foreground">Tema</h2>
+            <h2 className="mb-5 text-lg font-semibold text-foreground">{t("prefs.theme")}</h2>
             <div className="grid grid-cols-3 gap-3">
-              {(["light", "dark", "system"] as const).map((t) => (
+              {(["light", "dark", "system"] as const).map((themeOption) => (
                 <button
-                  key={t}
+                  key={themeOption}
                   type="button"
                   onClick={() => {
-                    console.log("Tema tıklandı:", t);
                     const root = document.documentElement;
                     root.classList.remove("light", "dark");
-                    const effective: "light" | "dark" = t === "system"
+                    const effective: "light" | "dark" = themeOption === "system"
                       ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-                      : t;
+                      : themeOption;
                     root.classList.add(effective);
                     root.setAttribute("data-theme", effective);
-                    localStorage.setItem("risknova-theme", t);
-                    setPrefs((prev) => ({ ...prev, theme: t }));
-                    console.log("Tema uygulandı:", effective, "classList:", root.className);
+                    localStorage.setItem("risknova-theme", themeOption);
+                    setPrefs((prev) => ({ ...prev, theme: themeOption }));
                   }}
                   className={[
                     "cursor-pointer rounded-2xl border-2 p-4 text-center transition-all",
-                    prefs.theme === t
+                    prefs.theme === themeOption
                       ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/30 shadow-md"
                       : "border-border bg-secondary/30 text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-secondary/50",
                   ].join(" ")}
                 >
                   <div className="mx-auto mb-2 text-2xl">
-                    {t === "light" && "☀️"}
-                    {t === "dark" && "🌙"}
-                    {t === "system" && "💻"}
+                    {themeOption === "light" && "☀️"}
+                    {themeOption === "dark" && "🌙"}
+                    {themeOption === "system" && "💻"}
                   </div>
                   <div className="text-sm font-medium">
-                    {t === "light" && "Açık"}
-                    {t === "dark" && "Koyu"}
-                    {t === "system" && "Sistem"}
+                    {themeOption === "light" && t("prefs.themeLight")}
+                    {themeOption === "dark" && t("prefs.themeDark")}
+                    {themeOption === "system" && t("prefs.themeSystem")}
                   </div>
                 </button>
               ))}
@@ -1530,40 +1573,16 @@ export default function ProfileClient() {
           </div>
 
           {/* Language */}
-          <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-            <h2 className="mb-5 text-lg font-semibold text-foreground">Dil</h2>
-            <div className="flex gap-3">
-              {(["tr", "en"] as const).map((lang) => (
-                <button
-                  key={lang}
-                  type="button"
-                  onClick={() => {
-                    console.log("Dil tıklandı:", lang);
-                    setPrefs((prev) => ({ ...prev, language: lang }));
-                    localStorage.setItem("risknova-language", lang);
-                  }}
-                  className={[
-                    "cursor-pointer flex items-center gap-2.5 rounded-2xl border-2 px-5 py-3 text-sm font-medium transition-all",
-                    prefs.language === lang
-                      ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/30 shadow-md"
-                      : "border-border bg-secondary/30 text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-secondary/50",
-                  ].join(" ")}
-                >
-                  <span className="text-lg">{lang === "tr" ? "🇹🇷" : "🇬🇧"}</span>
-                  {lang === "tr" ? "Türkçe" : "English"}
-                </button>
-              ))}
-            </div>
-          </div>
+          <LanguagePicker />
 
           {/* Notifications */}
           <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
-            <h2 className="mb-5 text-lg font-semibold text-foreground">Bildirimler</h2>
+            <h2 className="mb-5 text-lg font-semibold text-foreground">{t("prefs.notifications")}</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-secondary/30 px-4 py-3">
                 <div>
-                  <div className="text-sm font-medium text-foreground">E-posta Bildirimleri</div>
-                  <div className="text-xs text-muted-foreground">Görev hatırlatmaları ve güncellemeler</div>
+                  <div className="text-sm font-medium text-foreground">{t("prefs.emailNotif")}</div>
+                  <div className="text-xs text-muted-foreground">{t("prefs.emailNotifDesc")}</div>
                 </div>
                 <Toggle
                   checked={prefs.email_notifications}
@@ -1572,8 +1591,8 @@ export default function ProfileClient() {
               </div>
               <div className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-secondary/30 px-4 py-3">
                 <div>
-                  <div className="text-sm font-medium text-foreground">Push Bildirimleri</div>
-                  <div className="text-xs text-muted-foreground">Tarayıcı anlık bildirimleri</div>
+                  <div className="text-sm font-medium text-foreground">{t("prefs.pushNotif")}</div>
+                  <div className="text-xs text-muted-foreground">{t("prefs.pushNotifDesc")}</div>
                 </div>
                 <Toggle
                   checked={prefs.push_notifications}
@@ -1593,9 +1612,9 @@ export default function ProfileClient() {
               {saving ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                  Kaydediliyor...
+                  {tCommon("loading")}
                 </>
-              ) : "Tercihleri Kaydet"}
+              ) : t("prefs.save")}
             </button>
           </div>
         </div>
@@ -1609,10 +1628,10 @@ export default function ProfileClient() {
           {/* Stats grid */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {([
-              { key: "all" as const, label: "Toplam Görev", value: activityStats.total, icon: "📋", color: "text-blue-500", ring: "ring-blue-400/40" },
-              { key: "completed" as const, label: "Tamamlanan", value: activityStats.completed, icon: "✅", color: "text-green-500", ring: "ring-green-400/40" },
-              { key: "pending" as const, label: "Bekleyen", value: activityStats.pending, icon: "⏳", color: "text-amber-500", ring: "ring-amber-400/40" },
-              { key: "overdue" as const, label: "Geciken", value: activityStats.overdue, icon: "🚨", color: "text-red-500", ring: "ring-red-400/40" },
+              { key: "all" as const, label: t("activity.total"), value: activityStats.total, icon: "📋", color: "text-blue-500", ring: "ring-blue-400/40" },
+              { key: "completed" as const, label: t("activity.completed"), value: activityStats.completed, icon: "✅", color: "text-green-500", ring: "ring-green-400/40" },
+              { key: "pending" as const, label: t("activity.pending"), value: activityStats.pending, icon: "⏳", color: "text-amber-500", ring: "ring-amber-400/40" },
+              { key: "overdue" as const, label: t("activity.overdue"), value: activityStats.overdue, icon: "🚨", color: "text-red-500", ring: "ring-red-400/40" },
             ]).map(({ key, label, value, icon, color, ring }) => (
               <button
                 key={key}
@@ -1635,14 +1654,14 @@ export default function ProfileClient() {
           {/* Son İşlemler */}
           <div className="rounded-[1.75rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-7">
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-foreground">Son İşlemler</h2>
+              <h2 className="text-lg font-semibold text-foreground">{t("activity.recentOps")}</h2>
               {activityFilter !== "all" && (
                 <button
                   type="button"
                   onClick={() => setActivityFilter("all")}
                   className="text-xs text-primary hover:underline"
                 >
-                  Filtreyi Kaldır
+                  {tCommon("close")}
                 </button>
               )}
             </div>
@@ -1653,20 +1672,17 @@ export default function ProfileClient() {
             ) : recentTasks.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-8 text-center">
                 <div className="text-4xl">📊</div>
-                <p className="text-sm font-medium text-muted-foreground">Henüz aktivite kaydı yok</p>
-                <p className="max-w-xs text-xs text-muted-foreground">
-                  ISG görevleri oluşturmaya başladığınızda aktiviteleriniz burada görünecek.
-                </p>
+                <p className="text-sm font-medium text-muted-foreground">{t("activity.noActivity")}</p>
               </div>
             ) : (
               <div className="divide-y divide-border">
                 {recentTasks.map((task) => {
                   const statusMap: Record<string, { label: string; cls: string }> = {
-                    planned: { label: "Planlandı", cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
-                    in_progress: { label: "Devam Ediyor", cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
-                    completed: { label: "Tamamlandı", cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" },
-                    overdue: { label: "Gecikmiş", cls: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" },
-                    cancelled: { label: "İptal", cls: "bg-secondary text-muted-foreground" },
+                    planned: { label: t("activity.planned"), cls: "bg-[var(--color-info)]/15 text-[var(--color-info)]" },
+                    in_progress: { label: t("activity.in_progress"), cls: "bg-[var(--color-warning)]/15 text-[var(--color-warning)]" },
+                    completed: { label: t("activity.complete"), cls: "bg-[var(--color-success)]/15 text-[var(--color-success)]" },
+                    overdue: { label: t("activity.overdueStatus"), cls: "bg-[var(--color-danger)]/15 text-[var(--color-danger)]" },
+                    cancelled: { label: t("activity.cancelled"), cls: "bg-secondary text-muted-foreground" },
                   };
                   const st = statusMap[task.status] ?? statusMap.planned;
                   const badge = resolveTaskBadge(task.category_name, task.title);

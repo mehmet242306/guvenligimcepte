@@ -99,7 +99,7 @@ export default function TemplatesPage() {
   }, [categoryFilter, targetFilter, statusFilter, search]);
 
   const totalTemplates = documentTemplates.length;
-  const readyTemplates = documentTemplates.filter((item) => item.status === "Hazir").length;
+  const readyTemplates = documentTemplates.filter((item) => item.status === "Haz?r").length;
   const aiReadyTemplates = documentTemplates.filter((item) => item.aiReady).length;
   const sectorSpecific = documentTemplates.filter((item) => item.target !== "Genel").length;
 

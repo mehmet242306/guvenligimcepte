@@ -13,10 +13,10 @@ export type SiteRoute = {
 };
 
 export const siteRoutes: SiteRoute[] = [
-  // Dashboard
+  // Panel
   {
     path: "/dashboard",
-    label: "Dashboard",
+    label: "Panel",
     description: "Ana kontrol paneli. Firmaların genel durumu, risk skorları, açık aksiyonlar ve operasyonel metrikleri tek ekranda görüntüleyin.",
     keywords: ["dashboard", "panel", "ana sayfa", "genel durum", "özet", "metrik", "skor"],
     category: "Genel",
@@ -114,7 +114,7 @@ export const quickActions: QuickAction[] = [
   { label: "Firma Ekle", path: "/companies", icon: "🏢" },
   { label: "Planlayıcıya Git", path: "/planner", icon: "📅" },
   { label: "Raporları Gör", path: "/reports", icon: "📋" },
-  { label: "Dashboard", path: "/dashboard", icon: "🏠" },
+  { label: "Panel", path: "/dashboard", icon: "🏠" },
 ];
 
 export type FAQ = {

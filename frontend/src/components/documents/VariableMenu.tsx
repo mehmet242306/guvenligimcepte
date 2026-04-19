@@ -5,9 +5,10 @@ import {
   Building2, Users, Calendar, ShieldAlert, UserCog,
   Search, ChevronDown, ChevronRight, Copy, Check,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { DOCUMENT_VARIABLES, VARIABLE_GROUPS, type DocumentVariable } from '@/lib/document-variables';
 
-const ICONS: Record<string, React.ElementType> = {
+const ICONS: Record<string, LucideIcon> = {
   Building2,
   Users,
   Calendar,

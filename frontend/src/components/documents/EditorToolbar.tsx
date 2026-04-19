@@ -10,6 +10,7 @@ import {
   Table as TableIcon, Highlighter, Palette,
   Undo, Redo, Minus, Printer, Type,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 interface EditorToolbarProps {
   editor: Editor;
@@ -71,7 +72,7 @@ const COLORS = [
 function ColorPicker({
   icon: Icon, title, currentColor, onSelect,
 }: {
-  icon: React.ElementType; title: string; currentColor?: string; onSelect: (color: string) => void;
+  icon: LucideIcon; title: string; currentColor?: string; onSelect: (color: string) => void;
 }) {
   const { triggerRef, open, pos, toggle, close } = useFixedPopup();
 

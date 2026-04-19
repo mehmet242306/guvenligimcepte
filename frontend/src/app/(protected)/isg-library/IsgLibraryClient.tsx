@@ -858,10 +858,7 @@ export function IsgLibraryClient() {
       return;
     }
 
-    const nextOptions =
-      nextCategory === "all"
-        ? []
-        : [...getSubcategoryOptions(nextCategory), ...(customSubcategories[nextCategory] ?? [])];
+    const nextOptions = [...getSubcategoryOptions(nextCategory), ...(customSubcategories[nextCategory] ?? [])];
     setSubcategory((current) => (current && nextOptions.includes(current) ? current : ""));
   }
 

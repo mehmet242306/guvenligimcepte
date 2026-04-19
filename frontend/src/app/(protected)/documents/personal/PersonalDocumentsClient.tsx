@@ -13,11 +13,12 @@ import {
   AlertCircle,
   Share2,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { PremiumIconBadge } from '@/components/ui/premium-icon-badge';
 import { createClient } from '@/lib/supabase/client';
 import { fetchDocuments, type DocumentRecord } from '@/lib/supabase/document-api';
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ElementType }> = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   taslak: { label: 'Taslak', color: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30', icon: FileEdit },
   hazir: { label: 'Hazir', color: 'text-green-600 bg-green-100 dark:bg-green-900/30', icon: CheckCircle2 },
   onay_bekliyor: { label: 'Onay Bekliyor', color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30', icon: Clock },

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Brand } from "./brand";
 import { LanguageSelector } from "./language-selector";
+import { WorkspaceSwitcher } from "./workspace-switcher";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { ConsentGate } from "@/components/compliance/ConsentGate";
 import { useI18n } from "@/lib/i18n";
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 import { createClient } from "@/lib/supabase/client";
 import { quickSignOut } from "@/lib/auth/quick-sign-out";
+import { getActiveWorkspace, listMyWorkspaces, setActiveWorkspace } from "@/lib/supabase/workspace-api";
 import {
   listMyNotifications,
   markAllMyNotificationsAsRead,
@@ -294,6 +296,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
   const { t } = useI18n();
   const isAdmin = useIsAdmin();
   const [authReady, setAuthReady] = useState(false);
+  const [workspaceReady, setWorkspaceReady] = useState(false);
 
   const visibleSecondaryNav = secondaryNav.filter((i) => !i.adminOnly || isAdmin === true);
   const visibleAllNav = [...primaryNav, ...visibleSecondaryNav];
@@ -368,14 +371,63 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
     };
   }, [pathname, router]);
 
-  if (!authReady) {
+  useEffect(() => {
+    let cancelled = false;
+
+    async function ensureWorkspaceContext() {
+      if (!authReady) return;
+
+      if (pathname.startsWith("/workspace/onboarding")) {
+        setWorkspaceReady(true);
+        return;
+      }
+
+      setWorkspaceReady(false);
+
+      const [memberships, activeWorkspace] = await Promise.all([
+        listMyWorkspaces(),
+        getActiveWorkspace(),
+      ]);
+
+      if (cancelled) return;
+
+      if (activeWorkspace?.id) {
+        setWorkspaceReady(true);
+        return;
+      }
+
+      if (memberships.length > 0) {
+        const fallbackWorkspaceId = memberships[0]?.workspace.id;
+        if (fallbackWorkspaceId) {
+          const ok = await setActiveWorkspace(fallbackWorkspaceId);
+          if (cancelled) return;
+
+          if (ok) {
+            setWorkspaceReady(true);
+            router.refresh();
+            return;
+          }
+        }
+      }
+
+      router.replace(`/workspace/onboarding?next=${encodeURIComponent(pathname)}`);
+    }
+
+    void ensureWorkspaceContext();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authReady, pathname, router]);
+
+  if (!authReady || !workspaceReady) {
     return (
       <div className="app-shell">
         <main className="mx-auto flex min-h-[60vh] w-full max-w-[1480px] items-center justify-center px-4 py-6 sm:px-6 xl:px-8 2xl:px-10">
           <div className="flex flex-col items-center gap-3">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-border border-t-primary" />
             <p className="text-sm text-muted-foreground">
-              Guvenli oturum dogrulaniyor...
+              {authReady ? "Workspace baglami hazirlaniyor..." : "Guvenli oturum dogrulaniyor..."}
             </p>
           </div>
         </main>
@@ -424,6 +476,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
 
             {/* Right: Actions — absolute so it doesn't affect nav centering */}
             <div className="flex items-center justify-end gap-1 justify-self-end sm:gap-1.5">
+              <WorkspaceSwitcher />
               <LanguageSelector variant="dark" />
               <NotificationBell />
               <ThemeToggle />
