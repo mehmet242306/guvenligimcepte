@@ -60,3 +60,61 @@ export function isValidAccessRole(role: string | null | undefined): role is Acce
 export function normalizeAccessRole(role: string | null | undefined): AccessRole {
   return isValidAccessRole(role) ? role : "viewer";
 }
+
+/* ---------------------------------------------------------------------------
+ * Business entity permission matrix
+ *
+ * 20260422190000 migration'ındaki role_permissions seed'iyle 1:1 aynı.
+ * UI tarafında hızlı gösterim/gizleme için JS kopyası tutulur; gerçek
+ * yetkilendirme DB'de role_permissions üzerinden doğrulanır.
+ *
+ *   owner/admin  → tüm aksiyonlar
+ *   manager      → read, write, archive, report
+ *   editor       → read, write
+ *   viewer       → read
+ * ------------------------------------------------------------------------- */
+
+export type BusinessAction = "read" | "write" | "delete" | "archive" | "invite" | "report";
+export type BusinessEntity = "risk_assessments" | "incidents" | "personnel" | "companies";
+
+export const BUSINESS_PERMISSION_MATRIX: Record<AccessRole, Record<BusinessAction, boolean>> = {
+  owner:   { read: true,  write: true,  delete: true,  archive: true,  invite: true,  report: true },
+  admin:   { read: true,  write: true,  delete: true,  archive: true,  invite: true,  report: true },
+  manager: { read: true,  write: true,  delete: false, archive: true,  invite: false, report: true },
+  editor:  { read: true,  write: true,  delete: false, archive: false, invite: false, report: false },
+  viewer:  { read: true,  write: false, delete: false, archive: false, invite: false, report: false },
+};
+
+const VALID_ACTIONS: readonly BusinessAction[] = [
+  "read",
+  "write",
+  "delete",
+  "archive",
+  "invite",
+  "report",
+];
+
+/** Verilen rol verilen aksiyonu iş varlıklarında yapabilir mi? */
+export function canPerform(
+  role: AccessRole | null | undefined,
+  action: BusinessAction,
+): boolean {
+  if (!role) return false;
+  return BUSINESS_PERMISSION_MATRIX[role]?.[action] === true;
+}
+
+/**
+ * Permission code ("companies.invite" vb.) bazlı kontrol. İş varlıkları
+ * dışındaki permission'lar (admin.*, security.*, ai.*) için false döner;
+ * onlar `user_has_permission` RPC'si ile kontrol edilmelidir.
+ */
+export function hasBusinessPermission(
+  role: AccessRole | null | undefined,
+  permissionCode: string,
+): boolean {
+  if (!role) return false;
+  const [, action] = permissionCode.split(".");
+  if (!action) return false;
+  if (!VALID_ACTIONS.includes(action as BusinessAction)) return false;
+  return canPerform(role, action as BusinessAction);
+}

@@ -38,8 +38,10 @@ import { createClient } from "@/lib/supabase/client";
 import {
   ACCESS_ROLE_LABELS,
   INVITABLE_ROLES,
+  canPerform,
   type AccessRole,
 } from "@/lib/company-role-adapter";
+import { useCompanyAccessRole } from "@/lib/hooks/use-company-access";
 import { CompanyMembersList } from "@/components/companies/CompanyMembersList";
 
 /* ── Types ── */
@@ -308,6 +310,7 @@ function Modal({ title, onClose, children, footer }: { title: string; onClose: (
 type InviteRole = Extract<AccessRole, "admin" | "manager" | "editor" | "viewer">;
 
 function InviteMemberPanel({ companyId }: { companyId: string }) {
+  const { role: accessRole, loading: accessLoading } = useCompanyAccessRole(companyId);
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<InviteRole>("viewer");
@@ -315,6 +318,13 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ delivered: boolean; mode: string; email: string; inviteUrl: string } | null>(null);
+
+  // Permission gate — kullanıcı "invite" aksiyonu yapamazsa paneli hiç gösterme.
+  // (İş 3 — business entity permission matrix, companies.invite eşleşmesi.)
+  if (accessLoading) return null;
+  if (!accessRole || !canPerform(accessRole, "invite")) {
+    return null;
+  }
 
   async function submit() {
     setSubmitting(true);
