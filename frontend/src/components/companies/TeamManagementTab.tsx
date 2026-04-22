@@ -298,6 +298,188 @@ function Modal({ title, onClose, children, footer }: { title: string; onClose: (
   );
 }
 
+/* ── Invite Member Panel (company_invitations flow) ── */
+type InviteRole = "owner" | "admin" | "staff" | "viewer";
+
+function InviteMemberPanel({ companyId }: { companyId: string }) {
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<InviteRole>("viewer");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<{ delivered: boolean; mode: string; email: string; inviteUrl: string } | null>(null);
+
+  async function submit() {
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/companies/${companyId}/invitations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          invitedRole: role,
+          message: message.trim() || null,
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(json?.message || json?.error || "Davet gönderilemedi.");
+        setSubmitting(false);
+        return;
+      }
+      setResult({
+        delivered: json?.delivery?.delivered === true,
+        mode: json?.delivery?.mode || "unknown",
+        email: json?.invitation?.inviteeEmail || email,
+        inviteUrl: json?.invitation?.inviteUrl || "",
+      });
+      setEmail("");
+      setMessage("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Davet gönderilemedi.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (!open) {
+    return (
+      <div className="flex flex-col gap-3 rounded-[1.7rem] border border-border/80 bg-card px-6 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <PremiumIconBadge icon={Mail} tone="cobalt" size="sm" />
+          <div>
+            <h3 className="text-sm font-bold text-foreground">Kullanıcı Daveti</h3>
+            <p className="text-xs text-muted-foreground">
+              E-posta ile yeni üye davet edin — kabul ettiklerinde firma çalışma alanınıza eklenir.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-xl border border-border bg-secondary/40 px-4 text-xs font-semibold text-foreground transition hover:bg-secondary sm:self-auto"
+        >
+          <UserPlus size={14} /> Davet Et
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-[1.7rem] border border-border/80 bg-card p-6 shadow-sm">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <PremiumIconBadge icon={Mail} tone="cobalt" size="sm" />
+          <div>
+            <h3 className="text-sm font-bold text-foreground">Yeni Üye Davet Et</h3>
+            <p className="text-xs text-muted-foreground">Davet linki e-posta ile gönderilir.</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => { setOpen(false); setError(null); setResult(null); }}
+          className="text-xs text-muted-foreground hover:text-foreground"
+        >
+          Kapat
+        </button>
+      </div>
+
+      {result ? (
+        <div className="space-y-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100">
+          <p>
+            {result.delivered
+              ? `Davet ${result.email} adresine gönderildi.`
+              : `Davet oluşturuldu (e-posta teslim edilemedi — link kopyalanabilir).`}
+          </p>
+          {result.inviteUrl && (
+            <p className="text-xs">
+              Link: <code className="break-all">{result.inviteUrl}</code>
+            </p>
+          )}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => { setResult(null); }}
+              className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-secondary/50"
+            >
+              Yeni Davet
+            </button>
+            <button
+              type="button"
+              onClick={() => { setOpen(false); setResult(null); }}
+              className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+            >
+              Kapat
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">E-posta</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="ornek@firma.com"
+              className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">Rol</label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as InviteRole)}
+              className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800"
+            >
+              <option value="viewer">Görüntüleyici</option>
+              <option value="staff">Çalışan</option>
+              <option value="admin">Yönetici</option>
+              <option value="owner">Sahip</option>
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">Not (opsiyonel)</label>
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Davet alıcısına kısa not"
+              maxLength={2000}
+              className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800"
+            />
+          </div>
+          {error && (
+            <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-200 sm:col-span-2">
+              {error}
+            </div>
+          )}
+          <div className="flex justify-end gap-2 sm:col-span-2">
+            <button
+              type="button"
+              onClick={() => { setOpen(false); setError(null); }}
+              disabled={submitting}
+              className="rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-secondary/50 disabled:opacity-50"
+            >
+              İptal
+            </button>
+            <button
+              type="button"
+              onClick={submit}
+              disabled={submitting || !email.trim()}
+              className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:opacity-50"
+            >
+              {submitting ? "Gönderiliyor..." : "Davet Gönder"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Main component ── */
 export function TeamManagementTab({
   companyId,
@@ -603,6 +785,9 @@ export function TeamManagementTab({
 
   return (
     <div className="space-y-5">
+      {/* ── Company invitation (e-posta ile davet) ── */}
+      <InviteMemberPanel companyId={companyId} />
+
       {/* ── Header bar ── */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-[1.7rem] border border-border/80 bg-card px-6 py-5 shadow-[var(--shadow-card)]">
         <div className="flex items-center gap-3">

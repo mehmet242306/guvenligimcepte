@@ -948,3 +948,104 @@ export async function sendDemoAccountProvisionEmail({
     mode: "resend",
   };
 }
+
+type CompanyInvitationMailParams = {
+  to: string;
+  companyName: string;
+  inviterName: string;
+  inviteUrl: string;
+  roleLabel: string;
+  message?: string | null;
+  expiresAtLabel?: string | null;
+};
+
+type CompanyInvitationDeliveryResult =
+  | { delivered: true; mode: "resend" }
+  | { delivered: false; mode: "preview"; reason: string };
+
+export async function sendCompanyInvitationEmail({
+  to,
+  companyName,
+  inviterName,
+  inviteUrl,
+  roleLabel,
+  message,
+  expiresAtLabel,
+}: CompanyInvitationMailParams): Promise<CompanyInvitationDeliveryResult> {
+  if (!resend) {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[DEV] Company invitation", {
+        to,
+        companyName,
+        inviterName,
+        inviteUrl,
+        roleLabel,
+        message,
+        expiresAtLabel,
+      });
+      return {
+        delivered: false,
+        mode: "preview",
+        reason: "RESEND_API_KEY tanimli degil.",
+      };
+    }
+    throw new Error("RESEND_API_KEY tanimli degil.");
+  }
+
+  const trimmedMessage = message?.trim() || "";
+  const credentialRows: { label: string; value: string; emphasize?: boolean }[] = [
+    { label: "Firma", value: companyName, emphasize: true },
+    { label: "Davet eden", value: inviterName },
+    { label: "Rol", value: roleLabel },
+  ];
+  if (expiresAtLabel) {
+    credentialRows.push({ label: "Son gecerlilik", value: expiresAtLabel });
+  }
+
+  const messageBlock = trimmedMessage
+    ? renderInfoCard("Davet eden kisiden not", trimmedMessage, "navy")
+    : "";
+
+  const html = renderEmailShell({
+    eyebrow: "Firma daveti",
+    title: "RiskNova calisma alani daveti",
+    greeting: `Merhaba,`,
+    lead:
+      `${escapeHtml(inviterName)}, sizi ${escapeHtml(companyName)} firmasi icin RiskNova calisma alanina ` +
+      `${escapeHtml(roleLabel)} roluyle davet etti. Daveti kabul ettiginizde ilgili firmanin risk, dokuman ve ` +
+      `operasyon akislarina erisebileceksiniz.`,
+    primaryAction: {
+      label: "Daveti goruntule",
+      href: inviteUrl,
+    },
+    sections:
+      renderCredentialCard(credentialRows) +
+      messageBlock +
+      renderInfoCard(
+        "Nasil calisir?",
+        "Linke tiklayarak davet detaylarini goruntulersiniz. Hesabiniz yoksa davete ait e-posta adresiyle kayit olun; hesabiniz varsa giris yaparak daveti kabul edebilirsiniz.",
+        "gold",
+      ),
+    closing:
+      `Sorulariniz olursa ${BRAND_SUPPORT_EMAIL} adresine yazabilirsiniz.`,
+  });
+
+  await resend.emails.send({
+    from: resolveFromEmail(),
+    replyTo: BRAND_SUPPORT_EMAIL,
+    to,
+    subject: `${inviterName} sizi ${companyName} icin RiskNova'ya davet etti`,
+    text:
+      `${inviterName} sizi ${companyName} firmasi icin ${roleLabel} roluyle davet etti.\n\n` +
+      (trimmedMessage ? `Not: ${trimmedMessage}\n\n` : "") +
+      `Daveti goruntulemek icin: ${inviteUrl}\n` +
+      (expiresAtLabel ? `Son gecerlilik: ${expiresAtLabel}\n` : "") +
+      `\nDestek: ${BRAND_SUPPORT_EMAIL}`,
+    html,
+  });
+
+  return {
+    delivered: true,
+    mode: "resend",
+  };
+}
