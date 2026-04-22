@@ -17,7 +17,6 @@ import {
   ShieldAlert,
   Siren,
   Sparkles,
-  TrendingUp,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { PageHeader } from '@/components/ui/page-header';
@@ -226,7 +225,7 @@ export function DashboardClient() {
               <QuickAction icon={GraduationCap} label="Eğitimler" href="/isg-library?section=education" tone="teal" />
               <QuickAction icon={BarChart3} label="Raporlar" href="/reports" tone="indigo" />
               <QuickAction icon={Building2} label="Firmalar" href="/companies" tone="orange" />
-              <QuickAction icon={TrendingUp} label="Skor Geçmişi" href="/score-history" tone="plum" />
+              <QuickAction icon={ClipboardCheck} label="Saha Denetimi" href="/score-history" tone="plum" />
             </div>
           </div>
 
