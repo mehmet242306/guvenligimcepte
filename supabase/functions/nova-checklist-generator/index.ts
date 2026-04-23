@@ -1,6 +1,11 @@
 // =============================================================================
 // nova-checklist-generator — Saha Denetimi AI Checklist Üretici
 // =============================================================================
+// DEPLOY NOTU: verify_jwt=false ile deploy edilmeli (Supabase ES256 JWT'leri
+// edge gateway'in HS256 validator'ı ile uyumsuz). Kimlik doğrulama bu
+// fonksiyon içinde supabase.auth.getUser(token) ile yapılıyor — GoTrue
+// ES256 token'ları kabul eder, gateway kabul etmez.
+//
 // Claude (claude-sonnet-4-6) tabanlı, org bağlamını okuyan checklist üretici.
 // - Girdi: { workspace_id?, purpose, context?, mode, sources[] }
 // - Çıktı: { checklist_id, questions: [{ text, reason, source_ref }] }
