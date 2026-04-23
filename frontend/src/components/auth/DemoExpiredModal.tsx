@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { PartyPopper, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -10,25 +11,31 @@ type Props = {
 
 export function DemoExpiredModal({ status }: Props) {
   const [open, setOpen] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
-  // ESC ile kapama
+  // İstemci tarafında mount olduktan sonra portal render et — SSR'da hiç
+  // render edilmez. Bu, "önce hatalı yerde çıkıp sonra ortaya zıplama"
+  // layout shift'ini ortadan kaldırır çünkü modal DOM'a yalnızca stilleri
+  // hesaplandıktan sonra, doğrudan <body>'ye (hiçbir transform'lu ata
+  // altında değil) eklenir.
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // ESC ile kapama (body scroll'u KİLİTLEMİYORUZ — scrollbar kaybolursa
+  // viewport genişliği değişir ve centered modal yanlamasına kayar.)
+  useEffect(() => {
+    if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
-    if (open) {
-      document.addEventListener("keydown", onKey);
-      document.body.style.overflow = "hidden";
-    }
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
+  const modalContent = (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4"
       onClick={() => setOpen(false)}
@@ -105,4 +112,6 @@ export function DemoExpiredModal({ status }: Props) {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
