@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requirePermission } from "@/lib/supabase/api-auth";
+import {
+  normalizeManagedAccountType,
+  resolveAllowedAccountTypes,
+} from "@/lib/account/account-type-access";
 import { createServiceClient } from "@/lib/security/server";
 
 type RoleUserRow = {
@@ -12,6 +16,12 @@ type RoleUserRow = {
   role_codes: string[];
   effective_role: string;
   is_active: boolean;
+};
+
+type OrganizationAccountTypeRow = {
+  id: string;
+  account_type: "individual" | "osgb" | "enterprise" | null;
+  organization_type: string | null;
 };
 
 export async function GET(request: NextRequest) {
@@ -50,6 +60,36 @@ export async function GET(request: NextRequest) {
   }
 
   const authUsers = authUsersData?.users ?? [];
+  const organizationIds = Array.from(
+    new Set(
+      ((roleUsers ?? []) as RoleUserRow[])
+        .map((row) => row.organization_id)
+        .filter((value): value is string => typeof value === "string" && value.length > 0),
+    ),
+  );
+  const { data: organizations, error: organizationsError } = organizationIds.length
+    ? await supabase
+        .from("organizations")
+        .select("id, account_type, organization_type")
+        .in("id", organizationIds)
+    : { data: [], error: null };
+
+  if (organizationsError) {
+    return NextResponse.json({ error: organizationsError.message }, { status: 500 });
+  }
+
+  const organizationAccountTypeMap = new Map(
+    ((organizations ?? []) as OrganizationAccountTypeRow[]).map((row) => [
+      row.id,
+      row.account_type ?? normalizeManagedAccountType(row.organization_type),
+    ]),
+  );
+  const userAccountTypeMap = new Map(
+    ((roleUsers ?? []) as RoleUserRow[]).map((row) => [
+      row.auth_user_id,
+      row.organization_id ? organizationAccountTypeMap.get(row.organization_id) ?? null : null,
+    ]),
+  );
   const authUserMap = new Map(
     authUsers.map((user) => [
       user.id,
@@ -59,6 +99,11 @@ export async function GET(request: NextRequest) {
         lastSignInAt: user.last_sign_in_at ?? null,
         createdAt: user.created_at ?? null,
         mfaEnabled: Array.isArray((user as { factors?: unknown[] }).factors) && ((user as { factors?: unknown[] }).factors?.length ?? 0) > 0,
+        allowedAccountTypes: resolveAllowedAccountTypes({
+          appMetadata: user.app_metadata,
+          userMetadata: user.user_metadata,
+          currentAccountType: userAccountTypeMap.get(user.id) ?? null,
+        }),
       },
     ]),
   );
@@ -87,6 +132,7 @@ export async function GET(request: NextRequest) {
       last_sign_in_at: authUser?.lastSignInAt ?? null,
       created_at: authUser?.createdAt ?? null,
       mfa_enabled: authUser?.mfaEnabled ?? false,
+      allowed_account_types: authUser?.allowedAccountTypes ?? ["individual"],
       failed_attempts: lockout?.failed_attempts ?? 0,
       locked_until: lockout?.locked_until ?? null,
       last_failed_at: lockout?.last_failed_at ?? null,

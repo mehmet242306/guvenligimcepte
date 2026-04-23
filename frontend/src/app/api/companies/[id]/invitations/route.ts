@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { sendCompanyInvitationEmail } from "@/lib/mailer";
+import { resolveAppOriginFromRequest } from "@/lib/server/app-origin";
 import { createServiceClient, parseJsonBody } from "@/lib/security/server";
 
 const bodySchema = z.object({
@@ -142,8 +143,7 @@ export async function POST(
   const companyName =
     workspace.display_name?.trim() || identityName?.trim() || "Firma";
 
-  const origin =
-    process.env.NEXT_PUBLIC_APP_URL?.trim() || request.nextUrl.origin;
+  const origin = resolveAppOriginFromRequest(request);
   const inviteUrl = `${origin}/invite/${invitation.id}`;
 
   let delivery: { delivered: boolean; mode: "resend" | "preview"; reason?: string };

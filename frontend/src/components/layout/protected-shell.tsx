@@ -14,7 +14,12 @@ import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 import { createClient } from "@/lib/supabase/client";
 import { quickSignOut } from "@/lib/auth/quick-sign-out";
-import { getActiveWorkspace, listMyWorkspaces, setActiveWorkspace } from "@/lib/supabase/workspace-api";
+import {
+  getActiveWorkspace,
+  listMyWorkspaces,
+  setActiveWorkspace,
+  setLocalWorkspaceContext,
+} from "@/lib/supabase/workspace-api";
 import {
   hasManagedOsgbAccount,
   resolveClientAccountSurface,
@@ -48,10 +53,8 @@ const secondaryNav: NavItem[] = [
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
-  { href: "/live-scan", key: "nav.liveScan" },
   { href: "/solution-center", key: "nav.solutionCenter" },
   { href: "/digital-twin", key: "nav.digitalTwin", adminOnly: true },
-  { href: "/documents/personal", key: "nav.personalDocs" },
   { href: "/reports", key: "nav.reports" },
   { href: "/settings", key: "nav.settings" },
 ];
@@ -90,6 +93,7 @@ function isActive(pathname: string, href: string) {
 function isWorkspaceOptionalPath(pathname: string) {
   return (
     pathname.startsWith("/workspace/onboarding") ||
+    pathname.startsWith("/companies") ||
     pathname.startsWith("/profile") ||
     pathname.startsWith("/settings") ||
     pathname.startsWith("/notifications")
@@ -97,7 +101,7 @@ function isWorkspaceOptionalPath(pathname: string) {
 }
 
 function isWorkspaceLockedHref(href: string) {
-  return href !== "/workspace/onboarding" && href !== "/settings";
+  return href !== "/workspace/onboarding" && href !== "/companies" && href !== "/settings";
 }
 
 /* ------------------------------------------------------------------ */
@@ -348,6 +352,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
   const [authReady, setAuthReady] = useState(false);
   const [workspaceReady, setWorkspaceReady] = useState(false);
   const [hasActiveWorkspace, setHasActiveWorkspace] = useState(false);
+  const isFullscreenWorkspaceOnboarding = pathname.startsWith("/workspace/onboarding");
 
   const accountSurface = resolveClientAccountSurface(accountContext);
   const isPlatformAdminShell =
@@ -371,11 +376,15 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
             : item,
         )
       : primaryNav;
+  const visibleStandardPrimaryNav =
+    accountContext?.accountType === "individual"
+      ? primaryNav.filter((item) => item.href !== "/companies")
+      : standardPrimaryNav;
   const basePrimaryNav = isPlatformAdminShell
     ? platformAdminPrimaryNav
     : isOsgbShell
       ? osgbPrimaryNav
-      : standardPrimaryNav;
+      : visibleStandardPrimaryNav;
   const baseSecondaryNav = isPlatformAdminShell
     ? []
     : isOsgbShell
@@ -387,7 +396,9 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
     : isOsgbShell
       ? "/osgb"
       : isIndividualWorkspaceHome
-        ? "/workspace/onboarding"
+        ? hasActiveWorkspace
+          ? "/dashboard"
+          : "/workspace/onboarding"
         : accountContext?.accountType === "enterprise"
           ? "/enterprise"
           : "/companies";
@@ -511,18 +522,76 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
       }
 
       if (memberships.length > 0) {
-        const fallbackWorkspaceId = memberships[0]?.workspace.id;
-        if (fallbackWorkspaceId) {
-          const ok = await setActiveWorkspace(fallbackWorkspaceId);
-          if (cancelled) return;
+        const fallbackMembership = memberships[0];
+        setLocalWorkspaceContext({
+          id: fallbackMembership.workspace.id,
+          organizationId: fallbackMembership.workspace.organization_id,
+          countryCode: fallbackMembership.workspace.country_code,
+          name: fallbackMembership.workspace.name,
+          defaultLanguage: fallbackMembership.workspace.default_language,
+          timezone: fallbackMembership.workspace.timezone,
+          roleKey: fallbackMembership.role_key,
+          certificationId: fallbackMembership.certification_id ?? null,
+          isPrimary: fallbackMembership.is_primary,
+        });
+        setHasActiveWorkspace(true);
+        setWorkspaceReady(true);
+        void setActiveWorkspace(fallbackMembership.workspace.id);
+        return;
+      }
 
-          if (ok) {
+      try {
+        const response = await fetch("/api/workspaces/onboarding", {
+          method: "GET",
+          credentials: "include",
+        });
+        const raw = await response.text();
+        const json = raw.trim()
+          ? (JSON.parse(raw) as {
+              memberships?: Array<{
+                roleKey?: string;
+                certificationId?: string | null;
+                isPrimary?: boolean;
+                workspace?: {
+                  id: string;
+                  organization_id: string;
+                  country_code: string;
+                  name: string;
+                  default_language: string;
+                  timezone: string;
+                };
+              }>;
+              profile?: { activeWorkspaceId?: string | null };
+            })
+          : null;
+
+        if (!cancelled && Array.isArray(json?.memberships) && json.memberships.length > 0) {
+          const selectedMembership =
+            json.memberships.find(
+              (membership) => membership.workspace?.id === json.profile?.activeWorkspaceId,
+            ) ?? json.memberships[0];
+
+          if (selectedMembership?.workspace) {
+            setLocalWorkspaceContext({
+              id: selectedMembership.workspace.id,
+              organizationId: selectedMembership.workspace.organization_id,
+              countryCode: selectedMembership.workspace.country_code,
+              name: selectedMembership.workspace.name,
+              defaultLanguage: selectedMembership.workspace.default_language,
+              timezone: selectedMembership.workspace.timezone,
+              roleKey: selectedMembership.roleKey ?? "member",
+              certificationId: selectedMembership.certificationId ?? null,
+              isPrimary: selectedMembership.isPrimary ?? true,
+            });
             setHasActiveWorkspace(true);
             setWorkspaceReady(true);
-            router.refresh();
+            void setActiveWorkspace(selectedMembership.workspace.id);
             return;
           }
         }
+      } catch {
+        // Silent fallback: if workspace bootstrap endpoint is unreachable we
+        // keep the existing redirect behavior below.
       }
 
       setHasActiveWorkspace(false);
@@ -553,6 +622,17 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
             </p>
           </div>
         </main>
+      </div>
+    );
+  }
+
+  if (isFullscreenWorkspaceOnboarding) {
+    return (
+      <div className="app-shell min-h-screen">
+        <main className="mx-auto w-full max-w-[1680px] px-4 py-5 sm:px-6 lg:px-10 xl:px-12 2xl:px-16">
+          {children}
+        </main>
+        <ConsentGate />
       </div>
     );
   }

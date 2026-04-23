@@ -1,6 +1,7 @@
 "use client";
 
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import { hasAccountTypeAccess } from "@/lib/account/account-type-access";
 import { formatDateTime } from "./admin-monitoring-utils";
 
 type AdminUserRow = {
@@ -13,6 +14,7 @@ type AdminUserRow = {
   role_codes: string[];
   effective_role: string;
   is_active: boolean;
+  allowed_account_types: Array<"individual" | "osgb" | "enterprise">;
   last_sign_in_at: string | null;
   created_at: string | null;
   mfa_enabled: boolean;
@@ -22,6 +24,27 @@ type AdminUserRow = {
   last_activity_at: string | null;
   last_activity_event: string | null;
 };
+
+const ACCOUNT_TYPE_ACCESS_OPTIONS = [
+  {
+    key: "osgb" as const,
+    title: "OSGB",
+    description: "Firma, ekip, gorevlendirme ve operasyon panellerini acar.",
+    enableLabel: "OSGB erisimini ac",
+    disableLabel: "OSGB erisimini kapat",
+    enabledFeedback: "OSGB erisimi acildi.",
+    disabledFeedback: "OSGB erisimi kapatildi.",
+  },
+  {
+    key: "enterprise" as const,
+    title: "Kurumsal",
+    description: "Kurumsal onboarding ve iletisim odakli akislarini acar.",
+    enableLabel: "Kurumsal erisimi ac",
+    disableLabel: "Kurumsal erisimi kapat",
+    enabledFeedback: "Kurumsal erisim acildi.",
+    disabledFeedback: "Kurumsal erisim kapatildi.",
+  },
+] as const;
 
 export function UserManagementTab({
   onNavigateRoleManagement,
@@ -78,7 +101,7 @@ export function UserManagementTab({
 
   async function runAction(profileId: string, body: Record<string, unknown>, successMessage: string) {
     try {
-      setBusyAction(`${profileId}:${String(body.action)}`);
+      setBusyAction(`${profileId}:${String(body.action)}:${String(body.accountType ?? "")}`);
       setError(null);
       setFeedback(null);
 
@@ -199,58 +222,143 @@ export function UserManagementTab({
                         Kilit bitisi: <span className="font-medium text-foreground">{formatDateTime(row.locked_until)}</span>
                       </div>
                     </div>
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                      <span className="rounded-full bg-emerald-100 px-2.5 py-1 font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                        Bireysel acik
+                      </span>
+                      <span className="rounded-full bg-background px-2.5 py-1 font-medium text-muted-foreground">
+                        Ek hesap tipleri sag panelden yonetilir
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="grid gap-2 sm:grid-cols-2 xl:w-[340px]">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        void runAction(
-                          row.user_profile_id,
-                          { action: "toggle_active", isActive: !row.is_active },
-                          row.is_active ? "Kullanici pasife alindi." : "Kullanici yeniden aktif edildi.",
-                        )
-                      }
-                      disabled={busyAction === `${row.user_profile_id}:toggle_active`}
-                      className="rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      {row.is_active ? "Kullaniciyi devre disi birak" : "Kullaniciyi aktif et"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        void runAction(
-                          row.user_profile_id,
-                          { action: "send_password_reset" },
-                          "Parola sifirlama e-postasi gonderildi.",
-                        )
-                      }
-                      disabled={busyAction === `${row.user_profile_id}:send_password_reset`}
-                      className="rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      Sifre sifirla
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        void runAction(
-                          row.user_profile_id,
-                          { action: "unlock_account" },
-                          "Kilitli hesap bilgisi temizlendi.",
-                        )
-                      }
-                      disabled={busyAction === `${row.user_profile_id}:unlock_account`}
-                      className="rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      Hesap kilidini temizle
-                    </button>
-                    <button
-                      type="button"
-                      onClick={onNavigateRoleManagement}
-                      className="rounded-xl border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary"
-                    >
-                      Rol duzenle
-                    </button>
+                  <div className="space-y-3 xl:w-[420px]">
+                    <section className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.08] via-card to-card p-4 shadow-[var(--shadow-soft)]">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+                            Hesap Tipi Erisimi
+                          </p>
+                          <h5 className="mt-1 text-sm font-semibold text-foreground">
+                            OSGB ve Kurumsal seceneklerini buradan yonet
+                          </h5>
+                          <p className="mt-1 text-xs leading-6 text-muted-foreground">
+                            Bireysel akis her zaman acik kalir. OSGB ve kurumsal onboarding yalnizca burada verilen
+                            izinlerle aktiflesir.
+                          </p>
+                        </div>
+                        <span className="rounded-full border border-primary/20 bg-background/80 px-2.5 py-1 text-[11px] font-semibold text-primary">
+                          Temel kural
+                        </span>
+                      </div>
+
+                      <div className="mt-4 grid gap-3">
+                        {ACCOUNT_TYPE_ACCESS_OPTIONS.map((option) => {
+                          const enabled = hasAccountTypeAccess(row.allowed_account_types, option.key);
+                          const actionKey = `${row.user_profile_id}:set_account_type_access:${option.key}`;
+
+                          return (
+                            <div
+                              key={option.key}
+                              className={`rounded-2xl border px-4 py-3 transition ${
+                                enabled
+                                  ? "border-sky-200 bg-sky-50/80 dark:border-sky-900/40 dark:bg-sky-950/20"
+                                  : "border-border bg-background/80"
+                              }`}
+                            >
+                              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="min-w-0">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <h6 className="text-sm font-semibold text-foreground">{option.title}</h6>
+                                    <span
+                                      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                                        enabled
+                                          ? "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
+                                          : "bg-muted text-muted-foreground"
+                                      }`}
+                                    >
+                                      {enabled ? "Yetki acik" : "Yetki kapali"}
+                                    </span>
+                                  </div>
+                                  <p className="mt-1 text-xs leading-6 text-muted-foreground">{option.description}</p>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    void runAction(
+                                      row.user_profile_id,
+                                      {
+                                        action: "set_account_type_access",
+                                        accountType: option.key,
+                                        enabled: !enabled,
+                                      },
+                                      enabled ? option.disabledFeedback : option.enabledFeedback,
+                                    )
+                                  }
+                                  disabled={busyAction === actionKey}
+                                  className="rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                  {enabled ? option.disableLabel : option.enableLabel}
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </section>
+
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          void runAction(
+                            row.user_profile_id,
+                            { action: "toggle_active", isActive: !row.is_active },
+                            row.is_active ? "Kullanici pasife alindi." : "Kullanici yeniden aktif edildi.",
+                          )
+                        }
+                        disabled={busyAction === `${row.user_profile_id}:toggle_active:`}
+                        className="rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {row.is_active ? "Kullaniciyi devre disi birak" : "Kullaniciyi aktif et"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          void runAction(
+                            row.user_profile_id,
+                            { action: "send_password_reset" },
+                            "Parola sifirlama e-postasi gonderildi.",
+                          )
+                        }
+                        disabled={busyAction === `${row.user_profile_id}:send_password_reset:`}
+                        className="rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        Sifre sifirla
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          void runAction(
+                            row.user_profile_id,
+                            { action: "unlock_account" },
+                            "Kilitli hesap bilgisi temizlendi.",
+                          )
+                        }
+                        disabled={busyAction === `${row.user_profile_id}:unlock_account:`}
+                        className="rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        Hesap kilidini temizle
+                      </button>
+                      <button
+                        type="button"
+                        onClick={onNavigateRoleManagement}
+                        className="rounded-xl border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary"
+                      >
+                        Rol duzenle
+                      </button>
+                    </div>
                   </div>
                 </div>
               </article>

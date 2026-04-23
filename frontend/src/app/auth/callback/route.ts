@@ -24,6 +24,20 @@ function isFirstAuthSession(
   return Math.abs(lastSignInAtMs - createdAtMs) <= 5 * 60 * 1000;
 }
 
+async function safeResolvePostLoginPath(
+  userId: string | null | undefined,
+  fallbackPath: string,
+) {
+  if (!userId) return fallbackPath;
+
+  try {
+    return resolvePostLoginPath(await getAccountContextForUser(userId));
+  } catch (error) {
+    console.warn("[auth/callback] account context fallback:", error);
+    return fallbackPath;
+  }
+}
+
 /**
  * OAuth Callback Route
  * Supabase OAuth provider'larından dönen code parametresini session'a çevirir.
@@ -51,9 +65,7 @@ export async function GET(request: Request) {
         const {
           data: { user },
         } = await supabase.auth.getUser();
-        const resolvedNext = user
-          ? resolvePostLoginPath(await getAccountContextForUser(user.id))
-          : next;
+        const resolvedNext = await safeResolvePostLoginPath(user?.id, next);
 
         return NextResponse.redirect(
           `${origin}/auth/mfa-challenge?next=${encodeURIComponent(resolvedNext)}`
@@ -63,7 +75,6 @@ export async function GET(request: Request) {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      const service = createServiceClient();
       const providers = Array.isArray(user?.app_metadata?.providers)
         ? user.app_metadata.providers
         : [];
@@ -76,6 +87,8 @@ export async function GET(request: Request) {
         isFirstAuthSession(user.created_at, user.last_sign_in_at)
       ) {
         try {
+          const service = createServiceClient();
+
           await sendGoogleConnectedWelcomeEmail({
             to: user.email,
             fullName:
@@ -100,9 +113,7 @@ export async function GET(request: Request) {
         }
       }
 
-      const resolvedNext = user
-        ? resolvePostLoginPath(await getAccountContextForUser(user.id))
-        : next;
+      const resolvedNext = await safeResolvePostLoginPath(user?.id, next);
 
       return NextResponse.redirect(`${origin}${resolvedNext}`);
     }

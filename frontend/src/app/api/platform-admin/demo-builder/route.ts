@@ -12,6 +12,7 @@ import {
   logSecurityEventWithContext,
   parseJsonBody,
 } from "@/lib/security/server";
+import { resolveAppOriginFromRequest } from "@/lib/server/app-origin";
 import { sendDemoAccountProvisionEmail } from "@/lib/mailer";
 import { buildDemoAccessExpiresAt } from "@/lib/platform-admin/demo-access";
 import {
@@ -654,7 +655,7 @@ export async function POST(request: NextRequest) {
   const starterPrompts = buildLocalizedNovaStarterPrompts(locale, accountType, companyName);
   const temporaryPassword = generateTemporaryPassword();
   const demoAccessExpiresAt = buildDemoAccessExpiresAt();
-  const origin = process.env.NEXT_PUBLIC_APP_URL?.trim() || request.nextUrl.origin;
+  const origin = resolveAppOriginFromRequest(request);
 
   const { data: existingProfile, error: existingProfileError } = await service
     .from("user_profiles")
@@ -867,6 +868,9 @@ export async function POST(request: NextRequest) {
           organizationId,
           organizationName,
           accountType,
+          allowedAccountTypes: ["individual", accountType].filter(
+            (value, index, array) => array.indexOf(value) === index,
+          ) as AccountType[],
           membershipRole: accountType === "individual" ? "owner" : "owner",
           currentPlanCode: buildPlanCode(accountType),
         }),

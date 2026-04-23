@@ -107,25 +107,25 @@ export function CompaniesListClient() {
   const moduleEyebrow = isManagedOsgbAccount
     ? "OSGB Firmaları"
     : isSingleWorksiteAccount
-      ? "İşyeri Profili"
+      ? "Çalışma Alanı"
       : "Firmalarım / Kurumlarım";
   const moduleTitle = isManagedOsgbAccount
     ? "Firma ve çalışma alanları"
     : isSingleWorksiteAccount
-      ? "İşyeri ve operasyon içeriği"
+      ? "Çalışma alanı ve operasyon içeriği"
       : "Firmalarım / Kurumlarım";
   const moduleDescription =
     workspaceUsageText ??
     (isSingleWorksiteAccount
-      ? "Aktif çalışma alanındaki işyeri, personel ve diğer operasyon kayıtlarını yönetin."
+      ? "Aktif çalışma alanındaki personel ve diğer operasyon kayıtlarını yönetin."
       : "Sorumlu olduğunuz firmaları yönetin, çalışma alanlarına erişin.");
-  const entitySingular = isSingleWorksiteAccount ? "işyeri" : "firma";
-  const entityPlural = isSingleWorksiteAccount ? "işyeri" : "firma";
+  const entitySingular = isSingleWorksiteAccount ? "çalışma alanı" : "firma";
+  const entityPlural = isSingleWorksiteAccount ? "çalışma alanı" : "firma";
   const emptyStateTitle = isSingleWorksiteAccount
-    ? "İşyeri kaydı henüz görünmüyor"
+    ? "Çalışma alanı kaydı henüz görünmüyor"
     : "Henüz kayıtlı firma bulunmuyor";
   const emptyStateDescription = isSingleWorksiteAccount
-    ? "Bu alan aktif çalışma alanındaki işyeri verileriyle dolar. Çalışma alanı kurulumunu tamamladığınızda personel ve diğer kayıtlar burada görünür."
+    ? "Bu alan aktif çalışma alanı verileriyle dolar. Çalışma alanı kurulumunu tamamladığınızda personel ve diğer kayıtlar burada görünür."
     : "İlk firmanızı oluşturarak başlayın.";
 
   async function onCreate() {
@@ -218,7 +218,7 @@ export function CompaniesListClient() {
 
       {vm === "active" && (
         <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 xl:grid-cols-6">
-          {[{ l: isSingleWorksiteAccount ? "Toplam İşyeri" : "Toplam Firma", v: stats.total, a: false }, { l: "Toplam Çalışan", v: stats.emp, a: false }, { l: "Kritik İşyeri", v: stats.crit, a: stats.crit > 0 }, { l: "Açık Aksiyon", v: stats.oa, a: false }, { l: "Geciken İş", v: stats.od, a: stats.od > 0 }, { l: "Ort. Olgunluk", v: `%${stats.mat}`, a: false }].map(s => (
+          {[{ l: isSingleWorksiteAccount ? "Toplam Çalışma Alanı" : "Toplam Firma", v: stats.total, a: false }, { l: "Toplam Çalışan", v: stats.emp, a: false }, { l: isSingleWorksiteAccount ? "Kritik Çalışma Alanı" : "Kritik Firma", v: stats.crit, a: stats.crit > 0 }, { l: "Açık Aksiyon", v: stats.oa, a: false }, { l: "Geciken İş", v: stats.od, a: stats.od > 0 }, { l: "Ort. Olgunluk", v: `%${stats.mat}`, a: false }].map(s => (
             <div key={s.l} className="rounded-xl border border-border bg-card p-3.5 shadow-[var(--shadow-soft)]">
               <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{s.l}</p>
               <p className={`mt-1 text-xl font-semibold tabular-nums ${s.a ? "text-danger" : "text-foreground"}`}>{s.v}</p>
@@ -313,7 +313,7 @@ export function CompaniesListClient() {
       {vm === "archived" ? (
         filtered.length > 0 ? (
           <div className="space-y-4">
-            <div className="rounded-xl border border-warning/30 bg-warning/5 px-4 py-3"><p className="text-sm font-medium text-foreground">{isSingleWorksiteAccount ? "Arşivlenen işyeri kayıtları. Geri yükleme yapabilirsiniz." : "Arşivlenen firmalar. Geri yükleme yapabilirsiniz."}</p></div>
+            <div className="rounded-xl border border-warning/30 bg-warning/5 px-4 py-3"><p className="text-sm font-medium text-foreground">{isSingleWorksiteAccount ? "Arşivlenen çalışma alanı kayıtları. Geri yükleme yapabilirsiniz." : "Arşivlenen firmalar. Geri yükleme yapabilirsiniz."}</p></div>
             <div className="grid gap-4 xl:grid-cols-2">{filtered.map(c => (
               <div key={c.id} className="rounded-xl border border-warning/30 bg-card p-4 shadow-[var(--shadow-soft)]">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -329,7 +329,7 @@ export function CompaniesListClient() {
       {vm === "deleted" ? (
         filtered.length > 0 ? (
           <div className="space-y-4">
-            <div className="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3"><p className="text-sm font-medium text-foreground">{isSingleWorksiteAccount ? "Silinen işyeri kayıtları. Kalıcı silme geri alınamaz." : "Silinen firmalar. Kalıcı silme geri alınamaz."}</p></div>
+            <div className="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3"><p className="text-sm font-medium text-foreground">{isSingleWorksiteAccount ? "Silinen çalışma alanı kayıtları. Kalıcı silme geri alınamaz." : "Silinen firmalar. Kalıcı silme geri alınamaz."}</p></div>
             <div className="grid gap-4 xl:grid-cols-2">{filtered.map(c => (
               <div key={c.id} className="rounded-xl border border-danger/30 bg-card p-4 shadow-[var(--shadow-soft)]">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">

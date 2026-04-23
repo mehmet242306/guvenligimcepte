@@ -1,7 +1,9 @@
 ﻿"use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { sendPasswordChangedEmail } from "@/lib/mailer";
+import { resolveAppOriginFromHeaders } from "@/lib/server/app-origin";
 import { createClient } from "@/lib/supabase/server";
 import { validateStrongPassword } from "@/lib/security/server";
 
@@ -34,6 +36,9 @@ export async function updatePasswordAction(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (user?.email) {
+    const headerStore = await headers();
+    const origin = resolveAppOriginFromHeaders(headerStore);
+
     await sendPasswordChangedEmail({
       to: user.email,
       fullName:
@@ -43,7 +48,7 @@ export async function updatePasswordAction(formData: FormData) {
             user.email.split("@")[0] ??
             "Kullanici",
         ) || "Kullanici",
-      loginUrl: `${process.env.NEXT_PUBLIC_APP_URL?.trim() || "http://localhost:3000"}/login`,
+      loginUrl: `${origin}/login`,
       changedAt: new Date().toLocaleString("tr-TR"),
     });
   }

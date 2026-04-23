@@ -11,6 +11,7 @@ import {
   logSecurityEventWithContext,
   parseJsonBody,
 } from "@/lib/security/server";
+import { resolveAppOriginFromRequest } from "@/lib/server/app-origin";
 import { sendDemoAccountProvisionEmail } from "@/lib/mailer";
 import { buildDemoAccessExpiresAt } from "@/lib/platform-admin/demo-access";
 import { getLocalizedAccountTypeLabel } from "@/lib/platform-admin/demo-localization";
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
   const service = createServiceClient();
   const temporaryPassword = generateTemporaryPassword();
   const demoAccessExpiresAt = buildDemoAccessExpiresAt();
-  const origin = process.env.NEXT_PUBLIC_APP_URL?.trim() || request.nextUrl.origin;
+  const origin = resolveAppOriginFromRequest(request);
 
   try {
     const { data: fetchedUser, error: fetchUserError } = await service.auth.admin.getUserById(

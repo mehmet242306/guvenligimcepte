@@ -526,7 +526,7 @@ function detectNovaIntentAdvanced(message: string): 'regulation' | 'training' | 
     .normalize('NFKD')
     .replace(/\p{Diacritic}/gu, '')
 
-  if (/(mevzuat|yonetmelik|kanun|madde|regulation|law|article|legal|gesetz|verordnung|ley|leyes|loi|reglement|reglamento|normativa)/.test(normalized)) return 'regulation'
+  if (/(mevzuat|yonetmelik|kanun|madde|regulation|law|article|legal|gesetz|verordnung|ley|leyes|loi|reglement|reglamento|normativa|isg uzmani|is guvenligi uzmani|isyeri hekimi|diger saglik personeli|dsp|tehlike sinifi|cok tehlikeli|az tehlikeli|tehlikeli sinif|calisan sayisi|personel sayisi|kac kisi|kac personel|ayda kac saat|bildirim suresi|zorunlu mu|gerekli mi|yasal|yukumluluk|sorumluluk)/.test(normalized)) return 'regulation'
   if (/(egitim|training|sertifika|certificate|schulung|formation|curso|capacitacion|pelatihan)/.test(normalized)) return 'training'
   if (/(ramak kala|is kazasi|incident|near miss|occupational disease|olay|unfall|incidente|accident|accidente)/.test(normalized)) return 'incident'
   if (/(dokuman|procedure|prosedur|report|rapor|form|tutanak|document|dokument|documento|rapport)/.test(normalized)) return 'document'

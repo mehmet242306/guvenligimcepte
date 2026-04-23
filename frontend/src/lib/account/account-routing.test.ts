@@ -15,8 +15,11 @@ function makeContext(
     organizationId: "org-1",
     organizationName: "RiskNova Ornek",
     accountType: "individual",
+    allowedAccountTypes: ["individual"],
     membershipRole: "owner",
     currentPlanCode: "individual_free",
+    activeWorkspaceId: "ws-1",
+    workspaceCount: 1,
     ...overrides,
   };
 }
@@ -39,16 +42,30 @@ describe("resolvePostLoginPath", () => {
         makeContext({
           organizationId: null,
           accountType: null,
+          activeWorkspaceId: null,
+          workspaceCount: 0,
         }),
       ),
     ).toBe("/workspace/onboarding");
   });
 
-  it("routes individual accounts to workspace onboarding first", () => {
+  it("routes individual accounts with an active workspace to dashboard", () => {
     expect(
       resolvePostLoginPath(
         makeContext({
           accountType: "individual",
+        }),
+      ),
+    ).toBe("/dashboard");
+  });
+
+  it("routes fresh individual accounts without any workspace to onboarding", () => {
+    expect(
+      resolvePostLoginPath(
+        makeContext({
+          accountType: "individual",
+          activeWorkspaceId: null,
+          workspaceCount: 0,
         }),
       ),
     ).toBe("/workspace/onboarding");

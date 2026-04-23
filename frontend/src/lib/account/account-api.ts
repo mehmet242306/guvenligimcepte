@@ -6,6 +6,7 @@ export type AccountContextResponse = {
     organizationId: string | null;
     organizationName: string | null;
     accountType: "individual" | "osgb" | "enterprise" | null;
+    allowedAccountTypes: Array<"individual" | "osgb" | "enterprise">;
     membershipRole: "owner" | "admin" | "staff" | "viewer" | null;
     currentPlanCode: string | null;
   };

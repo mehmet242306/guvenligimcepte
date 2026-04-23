@@ -7,6 +7,7 @@ import {
   resolvePostLoginPath,
   type AccountType,
 } from "@/lib/account/account-routing";
+import { hasAccountTypeAccess } from "@/lib/account/account-type-access";
 
 const onboardingSchema = z.object({
   accountType: z.enum(["individual", "osgb", "enterprise"]),
@@ -80,6 +81,20 @@ export async function POST(request: NextRequest) {
         redirectPath: "/platform-admin",
         context,
       });
+    }
+
+    if (!hasAccountTypeAccess(context.allowedAccountTypes, body.accountType)) {
+      return NextResponse.json(
+        {
+          error:
+            body.accountType === "osgb"
+              ? "OSGB hesabi bu kullanici icin henuz acik degil. Lutfen admin onayi isteyin."
+              : body.accountType === "enterprise"
+                ? "Kurumsal hesap akisi bu kullanici icin henuz acik degil. Lutfen admin onayi isteyin."
+                : "Bu hesap tipi secimi icin yetkiniz yok.",
+        },
+        { status: 403 },
+      );
     }
 
     const effectiveEmail = body.email?.trim() || user.email || "";

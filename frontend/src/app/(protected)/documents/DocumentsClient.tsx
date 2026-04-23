@@ -356,11 +356,11 @@ export function DocumentsClient() {
               </button>
             ) : null}
             <button
-              onClick={() => router.push('/documents/personal')}
+              onClick={() => router.push(buildLibraryHref())}
               className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--gold)]/30 rounded-lg hover:bg-[var(--gold)]/10 transition-colors text-sm font-medium text-[var(--text-primary)]"
             >
-              <PremiumIconBadge icon={User} tone="gold" size="xs" />
-              Kişisel Doküman
+              <PremiumIconBadge icon={BookOpen} tone="gold" size="xs" />
+              Doküman Kütüphanesi
             </button>
           </div>
         }

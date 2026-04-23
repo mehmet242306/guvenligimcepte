@@ -9,6 +9,7 @@ import {
   getAccountContextForUser,
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
+import { resolveAppOriginFromHeaders } from "@/lib/server/app-origin";
 
 export async function signup(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
@@ -25,10 +26,7 @@ export async function signup(formData: FormData) {
 
   const supabase = await createClient();
   const headerStore = await headers();
-  const origin =
-    headerStore.get("origin") ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    "http://localhost:3000";
+  const origin = resolveAppOriginFromHeaders(headerStore);
 
   const { data, error } = await supabase.auth.signUp({
     email,

@@ -137,7 +137,7 @@ export function WorkspaceSwitcher() {
               {t("switcher")}
             </p>
             <p className="mt-1 text-sm text-foreground">
-              Calisma alanini degistirdiginde tum moduller yeni isyeri baglamina gore calisir.
+              Calisma alanini degistirdiginde tum moduller yeni calisma alani baglamina gore calisir.
             </p>
           </div>
 

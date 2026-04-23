@@ -24,6 +24,47 @@ function isCompatError(message: string | undefined | null) {
   );
 }
 
+function normalizeNovaIntentText(message: string) {
+  return message
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/\p{Diacritic}/gu, "");
+}
+
+function isOperationalCommandQuery(message: string) {
+  const normalized = normalizeNovaIntentText(message);
+  return /(olustur|planla|ekle|kaydet|ac|git|yonlendir|create|plan|open|navigate|schedule|start|baslat|uygula)/.test(
+    normalized,
+  );
+}
+
+function detectNovaIntentForPermission(
+  message: string,
+): "regulation" | "training" | "planning" | "incident" | "document" | "navigation" | "analysis" | "general" {
+  const normalized = normalizeNovaIntentText(message);
+
+  if (
+    /(mevzuat|yonetmelik|kanun|madde|regulation|law|article|legal|gesetz|verordnung|ley|leyes|loi|reglement|reglamento|normativa|isg uzmani|is guvenligi uzmani|isyeri hekimi|diger saglik personeli|dsp|tehlike sinifi|cok tehlikeli|az tehlikeli|tehlikeli sinif|calisan sayisi|personel sayisi|kac kisi|kac personel|ayda kac saat|bildirim suresi|zorunlu mu|gerekli mi|yasal|yukumluluk|sorumluluk)/.test(
+      normalized,
+    )
+  ) {
+    return "regulation";
+  }
+
+  if (/(egitim|training|sertifika|certificate|schulung|formation|curso|capacitacion|pelatihan)/.test(normalized)) return "training";
+  if (/(ramak kala|is kazasi|incident|near miss|occupational disease|olay|unfall|incidente|accident|accidente)/.test(normalized)) return "incident";
+  if (/(dokuman|procedure|prosedur|report|rapor|form|tutanak|document|dokument|documento|rapport)/.test(normalized)) return "document";
+  if (/(planla|takvim|gorev|schedule|planner|task|kurul|planifier|programar|planen|aufgabe|agenda)/.test(normalized)) return "planning";
+  if (/(ac|gotur|show|open|navigate|go to|ouvrir|abrir|offnen|zeigen)/.test(normalized)) return "navigation";
+  if (/(analiz|analysis|degerlendir|ozetle|risk|analyse|analisis|analizar|bewerten|summary)/.test(normalized)) return "analysis";
+
+  return "general";
+}
+
+function canUseReadOnlyLegalFallback(message: string) {
+  return detectNovaIntentForPermission(message) === "regulation" && !isOperationalCommandQuery(message);
+}
+
 function isUuid(value: string | null | undefined) {
   return !!value && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
@@ -508,6 +549,9 @@ export async function POST(request: NextRequest) {
     const requestedCompanyWorkspaceId =
       payload.company_workspace_id ??
       extractWorkspaceIdFromCurrentPage(payload.current_page);
+    let effectiveRequestMode: "read" | "agent" = payload.mode ?? "agent";
+    let effectiveCompanyWorkspaceId = requestedCompanyWorkspaceId;
+    let usedReadOnlyLegalFallback = false;
 
     let useInternalNovaAuth = false;
 
@@ -572,20 +616,41 @@ export async function POST(request: NextRequest) {
           { status: 500 },
         );
       }
-    } else if (
-      !(await hasAiUsePermission(payload.access_token!)) &&
-      !(await hasLegacyNovaManagerAccess(authContext.userId))
-    ) {
-      return NextResponse.json(
-        { message: "Bu islem icin gerekli yetki bulunmuyor. (ERR_AUTH_006)" },
-        { status: 403 },
-      );
+    } else {
+      const hasNovaPermission = await hasAiUsePermission(payload.access_token!);
+      const hasManagerAccess = await hasLegacyNovaManagerAccess(authContext.userId);
+      const readOnlyLegalFallback =
+        !hasNovaPermission &&
+        !hasManagerAccess &&
+        canUseReadOnlyLegalFallback(payload.message);
+
+      if (!hasNovaPermission && !hasManagerAccess && !readOnlyLegalFallback) {
+        return NextResponse.json(
+          { message: "Bu islem icin gerekli yetki bulunmuyor. (ERR_AUTH_006)" },
+          { status: 403 },
+        );
+      }
+
+      if (readOnlyLegalFallback) {
+        effectiveRequestMode = "read";
+        effectiveCompanyWorkspaceId = null;
+        usedReadOnlyLegalFallback = true;
+      }
     }
 
     const accountContext = await getAccountContextForUser(authContext.userId);
     const contextualHistory = [...payload.history];
 
+    if (effectiveRequestMode === "read" && effectiveCompanyWorkspaceId === null) {
+      contextualHistory.unshift({
+        role: "assistant",
+        content:
+          "Permission constraint: Answer only with general OHS legislation and source-backed guidance. Do not use tenant-private company/workspace records, do not summarize active operational data, and do not prepare record-creating actions.",
+      });
+    }
+
     if (
+      !usedReadOnlyLegalFallback &&
       accountContext.isPlatformAdmin &&
       isPlatformAdminSurface(payload.current_page)
     ) {
@@ -598,13 +663,14 @@ export async function POST(request: NextRequest) {
         content: platformAdminContextNote,
       });
     } else if (
+      !usedReadOnlyLegalFallback &&
       accountContext.accountType === "osgb" &&
       hasOsgbManagementAccess(accountContext) &&
       isOsgbManagerSurface(payload.current_page)
     ) {
       const managerContextNote = await buildOsgbManagerContextNote({
         organizationId: authContext.organizationId,
-        companyWorkspaceId: requestedCompanyWorkspaceId,
+        companyWorkspaceId: effectiveCompanyWorkspaceId,
         currentPage: payload.current_page,
       });
 
@@ -613,12 +679,13 @@ export async function POST(request: NextRequest) {
         content: managerContextNote,
       });
     } else if (
+      !usedReadOnlyLegalFallback &&
       accountContext.accountType === "enterprise" &&
       isEnterpriseSurface(payload.current_page)
     ) {
       const enterpriseContextNote = await buildEnterpriseContextNote({
         organizationId: authContext.organizationId,
-        companyWorkspaceId: requestedCompanyWorkspaceId,
+        companyWorkspaceId: effectiveCompanyWorkspaceId,
         currentPage: payload.current_page,
       });
 
@@ -652,9 +719,9 @@ export async function POST(request: NextRequest) {
       metadata: {
         feature: "nova_agent",
         context_surface: payload.context_surface,
-        mode: payload.mode,
+        mode: effectiveRequestMode,
         current_page: payload.current_page ?? null,
-        company_workspace_id: requestedCompanyWorkspaceId,
+        company_workspace_id: effectiveCompanyWorkspaceId,
       },
     });
 
@@ -686,15 +753,15 @@ export async function POST(request: NextRequest) {
         ...(payload.workspace_id || authContext.workspaceId
           ? { workspace_id: payload.workspace_id ?? authContext.workspaceId }
           : {}),
-        ...(requestedCompanyWorkspaceId
-          ? { company_workspace_id: requestedCompanyWorkspaceId }
+        ...(effectiveCompanyWorkspaceId
+          ? { company_workspace_id: effectiveCompanyWorkspaceId }
           : {}),
         jurisdiction_code: payload.jurisdiction_code ?? authContext.jurisdictionCode ?? "TR",
         ...(payload.session_id ? { session_id: payload.session_id } : {}),
         language: payload.language,
         as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
         answer_mode: payload.answer_mode,
-        mode: payload.mode,
+        mode: effectiveRequestMode,
         context_surface: payload.context_surface,
         confirmation_token: payload.confirmation_token ?? null,
         history: contextualHistory,
@@ -710,11 +777,11 @@ export async function POST(request: NextRequest) {
         ...json,
         telemetry: {
           ...(json?.telemetry && typeof json.telemetry === "object" ? json.telemetry : {}),
-          gateway_mode: payload.mode,
+          gateway_mode: effectiveRequestMode,
           context_surface: payload.context_surface,
           plan_key: plan.planKey,
           current_page: payload.current_page ?? null,
-          company_workspace_id: requestedCompanyWorkspaceId,
+          company_workspace_id: effectiveCompanyWorkspaceId,
         },
       });
       return NextResponse.json(normalized, { status: response.status });

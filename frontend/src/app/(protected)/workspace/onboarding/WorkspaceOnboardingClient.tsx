@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusAlert } from "@/components/ui/status-alert";
+import { Textarea } from "@/components/ui/textarea";
+import { hasAccountTypeAccess } from "@/lib/account/account-type-access";
 import { setActiveWorkspace, setLocalWorkspaceContext } from "@/lib/supabase/workspace-api";
 
 type CountryOption = {
@@ -37,11 +39,42 @@ type CertificationOption = {
   level: string | null;
 };
 
+type WorkspaceCompanyProfile = {
+  companyWorkspaceId: string | null;
+  name: string;
+  shortName: string;
+  kind: string;
+  companyType: string;
+  address: string;
+  city: string;
+  district: string;
+  sector: string;
+  naceCode: string;
+  hazardClass: string;
+  taxNumber: string;
+  taxOffice: string;
+  sgkWorkplaceNumber: string;
+  fax: string;
+  employerTitle: string;
+  employeeCount: number;
+  shiftModel: string;
+  phone: string;
+  email: string;
+  contactPerson: string;
+  employerName: string;
+  employerRepresentative: string;
+  notes: string;
+  locations: string[];
+  departments: string[];
+};
+
 type ExistingMembership = {
   id: string;
   roleKey: string;
   certificationId: string | null;
   isPrimary: boolean;
+  companyWorkspaceId?: string | null;
+  companyProfile?: WorkspaceCompanyProfile | null;
   workspace: {
     id: string;
     organization_id: string;
@@ -84,6 +117,7 @@ type AccountContextPayload = {
   organizationId: string | null;
   organizationName: string | null;
   accountType: "individual" | "osgb" | "enterprise" | null;
+  allowedAccountTypes: Array<"individual" | "osgb" | "enterprise">;
   membershipRole: "owner" | "admin" | "staff" | "viewer" | null;
   currentPlanCode: string | null;
 };
@@ -122,7 +156,10 @@ type WorkspaceOnboardingResponse = {
   error?: string;
   mode?: "local_fallback";
   warning?: string;
+  companyWarning?: string | null;
   membershipId?: string | null;
+  companyWorkspaceId?: string | null;
+  companyProfile?: WorkspaceCompanyProfile | null;
   workspace?: {
     id: string;
     name: string;
@@ -131,6 +168,53 @@ type WorkspaceOnboardingResponse = {
     timezone: string;
   };
 };
+
+const DEMO_TEMPLATE_ID = "__demo-template__";
+
+function createDemoWorkspaceProfile(): {
+  workspaceName: string;
+  countryCode: string;
+  defaultLanguage: string;
+  roleKey: string;
+  companyProfile: WorkspaceCompanyProfile;
+} {
+  const workspaceName = "Demo - RiskNova Operasyonu";
+  return {
+    workspaceName,
+    countryCode: "TR",
+    defaultLanguage: "tr",
+    roleKey: "safety_professional",
+    companyProfile: {
+      companyWorkspaceId: null,
+      name: "RiskNova Demo Operasyon Merkezi",
+      shortName: "RiskNova Demo",
+      kind: "Ozel Sektor",
+      companyType: "bagimsiz",
+      address: "Kozyatagi Mah. Teknoloji Cad. No:12",
+      city: "Istanbul",
+      district: "Kadikoy",
+      sector: "Yazilim ve Danismanlik",
+      naceCode: "62.01.01",
+      hazardClass: "Az Tehlikeli",
+      taxNumber: "1112223334",
+      taxOffice: "Kozyatagi",
+      sgkWorkplaceNumber: "3400012345678901",
+      fax: "",
+      employerTitle: "Genel Mudurluk",
+      employeeCount: 18,
+      shiftModel: "Gunduz vardiyasi",
+      phone: "+90 216 555 01 01",
+      email: "demo@getrisknova.com",
+      contactPerson: "Demo Kullanici",
+      employerName: "RiskNova Teknoloji A.S.",
+      employerRepresentative: "Operasyon Direktoru",
+      notes:
+        "Bu hazir taslak demo amaclidir. Kaydettiginde kendi calisma alani baglamina gore duzenleyebilirsin.",
+      locations: ["Merkez Ofis", "Toplanti Alani", "Arsiv Odasi"],
+      departments: ["Yonetim", "Operasyon", "Yazilim", "Destek"],
+    },
+  };
+}
 
 async function readJsonSafely<T>(response: Response): Promise<T | null> {
   const contentType = response.headers.get("content-type") || "";
@@ -165,6 +249,52 @@ function normalizeOnboardingError(error: unknown, fallback: string) {
 const selectClassName =
   "h-12 w-full appearance-none rounded-2xl border border-border bg-card px-4 pr-10 text-sm text-slate-950 shadow-[var(--shadow-soft)] transition-colors transition-shadow hover:border-primary/40 focus-visible:border-primary focus-visible:shadow-[0_0_0_4px_var(--ring)] dark:bg-slate-950 dark:text-slate-100 dark:[color-scheme:dark] [&_option]:bg-white [&_option]:text-slate-950 dark:[&_option]:bg-slate-950 dark:[&_option]:text-slate-100";
 
+function createEmptyCompanyProfile(workspaceName = ""): WorkspaceCompanyProfile {
+  return {
+    companyWorkspaceId: null,
+    name: workspaceName,
+    shortName: workspaceName,
+    kind: "Ozel Sektor",
+    companyType: "bagimsiz",
+    address: "",
+    city: "",
+    district: "",
+    sector: "",
+    naceCode: "",
+    hazardClass: "",
+    taxNumber: "",
+    taxOffice: "",
+    sgkWorkplaceNumber: "",
+    fax: "",
+    employerTitle: "",
+    employeeCount: 0,
+    shiftModel: "",
+    phone: "",
+    email: "",
+    contactPerson: "",
+    employerName: "",
+    employerRepresentative: "",
+    notes: "",
+    locations: [],
+    departments: [],
+  };
+}
+
+function normalizeStringListText(value: string) {
+  return Array.from(
+    new Set(
+      value
+        .split(/\r?\n/)
+        .map((item) => item.trim())
+        .filter(Boolean),
+    ),
+  );
+}
+
+function listToTextarea(value: string[]) {
+  return value.join("\n");
+}
+
 function formatPlanLabel(planCode: string | null | undefined) {
   switch (planCode) {
     case "individual_free":
@@ -189,8 +319,19 @@ function workspaceStateLabel(
   return "Hazir";
 }
 
+function goToWorkspaceLabel(
+  membership: ExistingMembership | null,
+  activeWorkspaceId: string | null,
+) {
+  if (!membership) return "Calisma alanina git";
+  return membership.workspace.id === activeWorkspaceId
+    ? "Calisma alanina git"
+    : "Bu alani aktif yap ve git";
+}
+
 export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
   const router = useRouter();
+  const demoTemplate = useMemo(() => createDemoWorkspaceProfile(), []);
   const [accountLoading, setAccountLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -205,6 +346,11 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
   const [certificationId, setCertificationId] = useState("");
   const [workspaceName, setWorkspaceName] = useState("");
   const [workspaceNameDirty, setWorkspaceNameDirty] = useState(false);
+  const [companyNameDirty, setCompanyNameDirty] = useState(false);
+  const [companyShortNameDirty, setCompanyShortNameDirty] = useState(false);
+  const [companyProfile, setCompanyProfile] = useState<WorkspaceCompanyProfile>(
+    createEmptyCompanyProfile(),
+  );
   const [accountType, setAccountType] = useState<"individual" | "osgb" | "enterprise">("individual");
   const [accountName, setAccountName] = useState("");
   const [enterpriseForm, setEnterpriseForm] = useState({
@@ -275,7 +421,7 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
         const firstWorkspaceId =
           nextPayload.profile.activeWorkspaceId ??
           nextPayload.memberships[0]?.workspace.id ??
-          null;
+          DEMO_TEMPLATE_ID;
         setSelectedWorkspaceId(firstWorkspaceId);
       } catch (error) {
         if (!cancelled) {
@@ -301,6 +447,7 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
   const memberships = payload?.memberships ?? [];
   const workspaceLimit = accountUsage?.maxActiveWorkspaces ?? null;
   const canCreateWorkspace = workspaceLimit === null || memberships.length < workspaceLimit;
+  const isDemoTemplateSelected = selectedWorkspaceId === DEMO_TEMPLATE_ID;
   const selectedMembership =
     memberships.find((membership) => membership.workspace.id === selectedWorkspaceId) ?? null;
   const selectedCountry =
@@ -324,6 +471,11 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
   const pendingWorkspaceSlots =
     workspaceLimit === null ? 0 : Math.max(workspaceLimit - memberships.length, 0);
   const needsAccountTypeSelection = !accountLoading && !accountContext?.accountType;
+  const allowedAccountTypes = accountContext?.allowedAccountTypes ?? ["individual"];
+
+  function updateCompanyProfile(patch: Partial<WorkspaceCompanyProfile>) {
+    setCompanyProfile((current) => ({ ...current, ...patch }));
+  }
 
   useEffect(() => {
     if (!payload) return;
@@ -335,6 +487,32 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
       setCertificationId(selectedMembership.certificationId ?? "");
       setWorkspaceName(selectedMembership.workspace.name);
       setWorkspaceNameDirty(false);
+      setCompanyProfile(
+        selectedMembership.companyProfile
+          ? {
+              ...selectedMembership.companyProfile,
+              companyWorkspaceId:
+                selectedMembership.companyWorkspaceId ??
+                selectedMembership.companyProfile.companyWorkspaceId ??
+                null,
+            }
+          : createEmptyCompanyProfile(selectedMembership.workspace.name),
+      );
+      setCompanyNameDirty(false);
+      setCompanyShortNameDirty(false);
+      return;
+    }
+
+    if (isDemoTemplateSelected) {
+      setCountryCode(demoTemplate.countryCode);
+      setDefaultLanguage(demoTemplate.defaultLanguage);
+      setRoleKey(demoTemplate.roleKey);
+      setCertificationId("");
+      setWorkspaceName(demoTemplate.workspaceName);
+      setWorkspaceNameDirty(false);
+      setCompanyProfile({ ...demoTemplate.companyProfile });
+      setCompanyNameDirty(false);
+      setCompanyShortNameDirty(false);
       return;
     }
 
@@ -360,16 +538,28 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
         "",
     );
     setWorkspaceNameDirty(false);
-  }, [payload, selectedMembership]);
+    setCompanyProfile(
+      createEmptyCompanyProfile(
+        payload.countries.find((item) => item.code === nextCountryCode)?.suggestedWorkspaceName ?? "",
+      ),
+    );
+    setCompanyNameDirty(false);
+    setCompanyShortNameDirty(false);
+  }, [demoTemplate, isDemoTemplateSelected, payload, selectedMembership]);
 
   useEffect(() => {
-    if (!payload || !selectedCountry || selectedMembership) return;
+    if (!payload || !selectedCountry || selectedMembership || isDemoTemplateSelected) return;
 
     if (!workspaceNameDirty) {
       setWorkspaceName(selectedCountry.suggestedWorkspaceName);
     }
     setDefaultLanguage(selectedCountry.defaultLanguage);
-  }, [payload, selectedCountry, selectedMembership, workspaceNameDirty]);
+  }, [isDemoTemplateSelected, payload, selectedCountry, selectedMembership, workspaceNameDirty]);
+
+  const resolvedNextPath =
+    nextPath && nextPath !== "/companies" && nextPath !== "/workspace/onboarding"
+      ? nextPath
+      : "/dashboard";
 
   useEffect(() => {
     setCertificationId((current) => {
@@ -379,7 +569,24 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
     });
   }, [availableCertifications]);
 
-  function updatePayloadAfterSave(savedWorkspace: NonNullable<WorkspaceOnboardingResponse["workspace"]>, membershipId?: string | null) {
+  useEffect(() => {
+    if (!workspaceName.trim()) return;
+
+    if (!companyNameDirty) {
+      setCompanyProfile((current) => ({ ...current, name: workspaceName }));
+    }
+
+    if (!companyShortNameDirty) {
+      setCompanyProfile((current) => ({ ...current, shortName: workspaceName }));
+    }
+  }, [companyNameDirty, companyShortNameDirty, workspaceName]);
+
+  function updatePayloadAfterSave(
+    savedWorkspace: NonNullable<WorkspaceOnboardingResponse["workspace"]>,
+    membershipId?: string | null,
+    savedCompanyProfile?: WorkspaceCompanyProfile | null,
+    savedCompanyWorkspaceId?: string | null,
+  ) {
     setPayload((current) => {
       if (!current) return current;
 
@@ -394,6 +601,8 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
         roleKey,
         certificationId: certificationId || null,
         isPrimary: true,
+        companyWorkspaceId: savedCompanyWorkspaceId ?? savedCompanyProfile?.companyWorkspaceId ?? null,
+        companyProfile: savedCompanyProfile ?? null,
         workspace: {
           id: savedWorkspace.id,
           organization_id: current.organization.id,
@@ -424,6 +633,11 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
     setSelectedWorkspaceId(savedWorkspace.id);
     setWorkspaceName(savedWorkspace.name);
     setWorkspaceNameDirty(false);
+    if (savedCompanyProfile) {
+      setCompanyProfile(savedCompanyProfile);
+      setCompanyNameDirty(false);
+      setCompanyShortNameDirty(false);
+    }
   }
 
   async function handleAccountSubmit(event: FormEvent<HTMLFormElement>) {
@@ -509,7 +723,12 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
           isPrimary: true,
         });
 
-        updatePayloadAfterSave(localWorkspace, `local-membership-${localWorkspace.id}`);
+        updatePayloadAfterSave(
+          localWorkspace,
+          `local-membership-${localWorkspace.id}`,
+          companyProfile,
+          companyProfile.companyWorkspaceId,
+        );
         setMessage({
           tone: "info",
           text: "Workspace tablolari bu ortamda henuz tam degil. Secim yerel baglam olarak kaydedildi ve bu alani kullanabilirsin.",
@@ -529,6 +748,13 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
           roleKey,
           certificationId: certificationId || null,
           workspaceName,
+          companyWorkspaceId:
+            companyProfile.companyWorkspaceId ?? selectedMembership?.companyWorkspaceId ?? null,
+          companyProfile: {
+            ...companyProfile,
+            locations: Array.from(new Set(companyProfile.locations.map((item) => item.trim()).filter(Boolean))),
+            departments: Array.from(new Set(companyProfile.departments.map((item) => item.trim()).filter(Boolean))),
+          },
           makePrimary: true,
         }),
       });
@@ -552,20 +778,28 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
         });
       }
 
-      updatePayloadAfterSave(json.workspace, json.membershipId);
+      updatePayloadAfterSave(
+        json.workspace,
+        json.membershipId,
+        json.companyProfile ?? companyProfile,
+        json.companyWorkspaceId ?? companyProfile.companyWorkspaceId,
+      );
       setMessage({
-        tone: json.mode === "local_fallback" ? "info" : "success",
+        tone:
+          json.mode === "local_fallback" || json.companyWarning
+            ? "info"
+            : "success",
         text:
           json.mode === "local_fallback"
             ? json.warning || `${json.workspace.name} yerel baglam olarak guncellendi.`
+            : json.companyWarning
+              ? json.companyWarning
             : `${json.workspace.name} kaydedildi ve aktif calisma alani olarak secildi.`,
       });
 
       router.refresh();
 
-      if (nextPath && nextPath !== "/companies" && nextPath !== "/workspace/onboarding") {
-        router.replace(nextPath);
-      }
+      router.replace(resolvedNextPath);
     } catch (error) {
       setMessage({
         tone: "danger",
@@ -600,10 +834,23 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
     );
     setSelectedWorkspaceId(workspaceId);
     router.refresh();
+    router.replace(resolvedNextPath);
+  }
 
-    if (nextPath && nextPath !== "/companies" && nextPath !== "/workspace/onboarding") {
-      router.replace(nextPath);
+  async function handleGoToWorkspace() {
+    if (!payload) return;
+
+    if (selectedMembership) {
+      if (selectedMembership.workspace.id === payload.profile.activeWorkspaceId) {
+        router.replace("/dashboard");
+        return;
+      }
+
+      await handleActivateExisting(selectedMembership.workspace.id);
+      return;
     }
+
+    router.replace("/dashboard");
   }
 
   if (accountLoading || loading) {
@@ -629,6 +876,23 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
   if (needsAccountTypeSelection) {
     const optionClass =
       "rounded-3xl border border-border bg-card p-5 text-left shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[var(--shadow-elevated)]";
+    const accountOptions = [
+      {
+        value: "individual" as const,
+        title: "Bireysel",
+        description: "Tekil profesyonel veya uzman kullanimi icin.",
+      },
+      {
+        value: "osgb" as const,
+        title: "OSGB",
+        description: "Coklu firma ve ekip yonetimi icin.",
+      },
+      {
+        value: "enterprise" as const,
+        title: "Kurumsal",
+        description: "Kurumsal ihtiyaclar icin iletisim talebi olusturur.",
+      },
+    ];
 
     return (
       <div className="space-y-6">
@@ -643,40 +907,49 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
         <Card>
           <CardHeader>
             <CardTitle>Hangi yapiyla baslayacaksin?</CardTitle>
-            <CardDescription>
-              Bireysel hesap tekil isyeri baglamlariyla, OSGB hesaplari ise coklu firma yonetimiyle ilerler.
+          <CardDescription>
+              Bireysel hesaplar tekil calisma alani baglamiyla, OSGB hesaplari ise coklu firma yonetimiyle ilerler.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-5" onSubmit={(event) => void handleAccountSubmit(event)}>
+              <div className="rounded-2xl border border-border/70 bg-secondary/35 px-4 py-3 text-sm text-muted-foreground">
+                Bu ekranda bireysel akis her zaman acik. OSGB ve kurumsal secenekleri yalnizca admin
+                tarafindan yetki verildiginde aktif olur.
+              </div>
+
               <div className="grid gap-4 lg:grid-cols-3">
-                {[
-                  {
-                    value: "individual" as const,
-                    title: "Bireysel",
-                    description: "Tekil profesyonel veya uzman kullanimi icin.",
-                  },
-                  {
-                    value: "osgb" as const,
-                    title: "OSGB",
-                    description: "Coklu firma ve ekip yonetimi icin.",
-                  },
-                  {
-                    value: "enterprise" as const,
-                    title: "Kurumsal",
-                    description: "Kurumsal ihtiyaclar icin iletisim talebi olusturur.",
-                  },
-                ].map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    className={`${optionClass} ${accountType === option.value ? "ring-2 ring-primary" : ""}`}
-                    onClick={() => setAccountType(option.value)}
-                  >
+                {accountOptions.map((option) => {
+                  const isAllowed = hasAccountTypeAccess(allowedAccountTypes, option.value);
+
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      disabled={!isAllowed}
+                      aria-disabled={!isAllowed}
+                      className={`${optionClass} ${
+                        accountType === option.value ? "ring-2 ring-primary" : ""
+                      } ${
+                        !isAllowed
+                          ? "cursor-not-allowed border-dashed border-border/80 bg-muted/35 text-muted-foreground opacity-70 hover:translate-y-0 hover:border-border/80 hover:shadow-none"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        if (!isAllowed) return;
+                        setAccountType(option.value);
+                      }}
+                    >
                     <div className="text-base font-semibold text-foreground">{option.title}</div>
                     <p className="mt-2 text-sm text-muted-foreground">{option.description}</p>
+                    {!isAllowed ? (
+                      <p className="mt-3 text-xs font-medium text-amber-700 dark:text-amber-300">
+                        Admin onayi gereklidir.
+                      </p>
+                    ) : null}
                   </button>
-                ))}
+                  );
+                })}
               </div>
 
               <Input
@@ -746,11 +1019,11 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 rounded-[2rem] border border-border bg-card/90 p-5 shadow-[var(--shadow-elevated)] backdrop-blur sm:p-6 xl:p-8">
       <PageHeader
         eyebrow="Calisma Alanlari"
         title="Hangi calisma alaninda ilerleyeceksin?"
-        description="Her calisma alani tek bir isyeri/firma baglamidir. Soldan alan sec, sag tarafta isyeri baglamini duzenle ve gerekiyorsa aktif alan tercihini degistir."
+        description="Ilk adimda sadece calisma alanini sec veya yeni alan olustur. Sol panelden secim yap, sag tarafta o alana ait kaydi tamamla; bu alani aktiflestirdiginde risk analizi, dokumanlar, kutuphane ve saha modulleri aktif alan baglaminda calisir."
         meta={
           <>
             <span className="rounded-full border border-border bg-secondary/45 px-3 py-1 text-xs font-semibold text-foreground">
@@ -767,9 +1040,15 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
           </>
         }
         actions={
-          <Button type="button" variant="outline" onClick={() => router.replace("/profile")}>
-            Profili ac
-          </Button>
+          selectedMembership ? (
+            <Button
+              type="button"
+              onClick={() => void handleGoToWorkspace()}
+              className="h-14 min-w-[240px] rounded-2xl px-6 text-base font-bold shadow-[0_16px_34px_rgba(217,162,27,0.28)]"
+            >
+              {goToWorkspaceLabel(selectedMembership, payload.profile.activeWorkspaceId)}
+            </Button>
+          ) : null
         }
       />
 
@@ -785,7 +1064,7 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
           <CardHeader>
             <CardTitle>Calisma alanlari</CardTitle>
             <CardDescription>
-              Her alan ayri bir isyeri baglami tasir. Buradan secip duzenleyebilir veya aktif alani degistirebilirsin.
+              Her alan ayri bir operasyon baglami tasir. Buradan secip duzenleyebilir veya aktif alani degistirebilirsin.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -793,6 +1072,42 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
               <div className="rounded-2xl border border-dashed border-primary/35 bg-primary/5 p-4 text-sm leading-6 text-muted-foreground">
                 Henuz hazir bir calisma alani yok. Ilk alani soldaki yeni slotu secip olusturdugunda cekirdek moduller acilacak.
               </div>
+            ) : null}
+
+            {memberships.length === 0 ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedWorkspaceId(DEMO_TEMPLATE_ID);
+                  setMessage(null);
+                }}
+                className={`w-full rounded-3xl border p-4 text-left transition-all ${
+                  isDemoTemplateSelected
+                    ? "border-primary/45 bg-primary/8 shadow-[0_14px_34px_rgba(15,23,42,0.10)]"
+                    : "border-border bg-card hover:border-primary/30 hover:bg-secondary/20"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-foreground">
+                      {demoTemplate.workspaceName}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                      Hazir demo taslak · TR · safety_professional
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold text-foreground">
+                    Demo
+                  </span>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <span className="text-xs text-muted-foreground">
+                    Verileri dolu bir ornekle hizli baslamak icin bunu secebilirsin.
+                  </span>
+                  <span className="text-xs font-semibold text-primary">Hazir</span>
+                </div>
+              </button>
             ) : null}
 
             {memberships.map((membership) => {
@@ -859,7 +1174,7 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
                 <div>
                   <p className="text-sm font-semibold text-foreground">Yeni calisma alani</p>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    Yeni bir isyeri baglami ac, ulke ve dili sec, sonra bu alan uzerinden calis.
+                    Tamamen bos bir kayitla baslamak istersen bunu sec. Firma ve calisma alani bilgilerini sag tarafta kendin doldurursun.
                   </p>
                 </div>
                 <span className="rounded-full bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground">
@@ -879,20 +1194,24 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
         </Card>
 
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                {selectedMembership ? "Secili calisma alani ayrintilari" : "Yeni calisma alani olustur"}
-              </CardTitle>
-              <CardDescription>
-                Isyeri adi, ulke, dil ve rol secimleri burada yonetilir. Nova ve RAG davranisi bu baglama gore calisir.
-              </CardDescription>
-            </CardHeader>
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                {selectedMembership
+                  ? "Secili calisma alani ayrintilari"
+                  : isDemoTemplateSelected
+                    ? "Demo calisma alani taslagi"
+                    : "Yeni calisma alani olustur"}
+                </CardTitle>
+                <CardDescription>
+                Soldan bir alan sec. Sag tarafta o alana bagli firma / calisma alani kaydini doldur; ulke ve dil Nova baglamini, firma bilgileri ise tum operasyon modullerini besler.
+                </CardDescription>
+              </CardHeader>
             <CardContent>
               <form className="space-y-5" onSubmit={(event) => void handleSubmit(event)}>
                 <Input
                   id="workspaceName"
-                  label="Calisma alani / isyeri adi"
+                  label="Calisma alani etiketi"
                   value={workspaceName}
                   onChange={(event) => {
                     setWorkspaceNameDirty(true);
@@ -1006,22 +1325,239 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
 
                 <div className="rounded-3xl border border-border bg-secondary/20 p-4 text-sm leading-6 text-muted-foreground">
                   Bu alandaki ulke secimi resmi mevzuat filtresini, dil secimi ise Nova ve RAG terminolojisini belirler.
-                  Her calisma alani tek bir isyeri gibi calisir; modullerde firma secmek yerine aktif alanin baglami kullanilir.
+                  Her calisma alani kendi operasyon baglamiyla calisir; bu alani aktiflestirdiginde modullerde tekrar ayri bir alan secmek yerine aktif alanin baglami kullanilir.
+                </div>
+
+                <div className="rounded-3xl border border-border bg-background/80 p-5">
+                  <div className="mb-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      Firma / calisma alani kaydi
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                      Eski firmalar ekraninda doldurulan ana bilgiler burada yasasin. Sol panelden alan sectiginde sag tarafta bu calisma alanina ait kaydi duzenlersin.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <Input
+                      label="Firma / calisma alani resmi adi"
+                      value={companyProfile.name}
+                      onChange={(event) => {
+                        setCompanyNameDirty(true);
+                        updateCompanyProfile({ name: event.target.value });
+                      }}
+                    />
+                    <Input
+                      label="Kisa ad / gorunen ad"
+                      value={companyProfile.shortName}
+                      onChange={(event) => {
+                        setCompanyShortNameDirty(true);
+                        updateCompanyProfile({ shortName: event.target.value });
+                      }}
+                    />
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground" htmlFor="companyKind">
+                        Calisma alani tipi
+                      </label>
+                      <div className="relative">
+                        <select
+                          id="companyKind"
+                          className={selectClassName}
+                          value={companyProfile.kind}
+                          onChange={(event) => updateCompanyProfile({ kind: event.target.value })}
+                        >
+                          <option value="Ozel Sektor">Ozel Sektor</option>
+                          <option value="Kamu Kurumu">Kamu Kurumu</option>
+                          <option value="Belediye">Belediye</option>
+                          <option value="STK / Vakif">STK / Vakif</option>
+                          <option value="Santiye">Santiye</option>
+                        </select>
+                        <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500 dark:text-slate-300">
+                          ▾
+                        </span>
+                      </div>
+                    </div>
+                    <Input
+                      label="Sektor"
+                      value={companyProfile.sector}
+                      onChange={(event) => updateCompanyProfile({ sector: event.target.value })}
+                    />
+                    <Input
+                      label="NACE kodu"
+                      value={companyProfile.naceCode}
+                      onChange={(event) => updateCompanyProfile({ naceCode: event.target.value })}
+                    />
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground" htmlFor="hazardClass">
+                        Tehlike sinifi
+                      </label>
+                      <div className="relative">
+                        <select
+                          id="hazardClass"
+                          className={selectClassName}
+                          value={companyProfile.hazardClass}
+                          onChange={(event) => updateCompanyProfile({ hazardClass: event.target.value })}
+                        >
+                          <option value="">Seciniz</option>
+                          <option value="Az Tehlikeli">Az Tehlikeli</option>
+                          <option value="Tehlikeli">Tehlikeli</option>
+                          <option value="Cok Tehlikeli">Cok Tehlikeli</option>
+                        </select>
+                        <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500 dark:text-slate-300">
+                          ▾
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 grid gap-4 md:grid-cols-3">
+                    <Input
+                      label="Adres"
+                      value={companyProfile.address}
+                      onChange={(event) => updateCompanyProfile({ address: event.target.value })}
+                    />
+                    <Input
+                      label="Il"
+                      value={companyProfile.city}
+                      onChange={(event) => updateCompanyProfile({ city: event.target.value })}
+                    />
+                    <Input
+                      label="Ilce"
+                      value={companyProfile.district}
+                      onChange={(event) => updateCompanyProfile({ district: event.target.value })}
+                    />
+                  </div>
+
+                  <div className="mt-4 grid gap-4 md:grid-cols-3">
+                    <Input
+                      label="Telefon"
+                      value={companyProfile.phone}
+                      onChange={(event) => updateCompanyProfile({ phone: event.target.value })}
+                    />
+                    <Input
+                      label="E-posta"
+                      value={companyProfile.email}
+                      onChange={(event) => updateCompanyProfile({ email: event.target.value })}
+                    />
+                    <Input
+                      label="Yetkili kisi"
+                      value={companyProfile.contactPerson}
+                      onChange={(event) => updateCompanyProfile({ contactPerson: event.target.value })}
+                    />
+                  </div>
+
+                  <div className="mt-4 grid gap-4 md:grid-cols-3">
+                    <Input
+                      label="SGK isyeri sicil no"
+                      value={companyProfile.sgkWorkplaceNumber}
+                      onChange={(event) =>
+                        updateCompanyProfile({ sgkWorkplaceNumber: event.target.value })
+                      }
+                    />
+                    <Input
+                      label="Vergi no"
+                      value={companyProfile.taxNumber}
+                      onChange={(event) => updateCompanyProfile({ taxNumber: event.target.value })}
+                    />
+                    <Input
+                      label="Vergi dairesi"
+                      value={companyProfile.taxOffice}
+                      onChange={(event) => updateCompanyProfile({ taxOffice: event.target.value })}
+                    />
+                  </div>
+
+                  <div className="mt-4 grid gap-4 md:grid-cols-3">
+                    <Input
+                      label="Calisan sayisi"
+                      type="number"
+                      value={String(companyProfile.employeeCount)}
+                      onChange={(event) =>
+                        updateCompanyProfile({
+                          employeeCount: Number(event.target.value || 0),
+                        })
+                      }
+                    />
+                    <Input
+                      label="Vardiya modeli"
+                      value={companyProfile.shiftModel}
+                      onChange={(event) => updateCompanyProfile({ shiftModel: event.target.value })}
+                    />
+                    <Input
+                      label="Isveren unvani"
+                      value={companyProfile.employerTitle}
+                      onChange={(event) => updateCompanyProfile({ employerTitle: event.target.value })}
+                    />
+                  </div>
+
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    <Input
+                      label="Isveren"
+                      value={companyProfile.employerName}
+                      onChange={(event) => updateCompanyProfile({ employerName: event.target.value })}
+                    />
+                    <Input
+                      label="Isveren vekili"
+                      value={companyProfile.employerRepresentative}
+                      onChange={(event) =>
+                        updateCompanyProfile({ employerRepresentative: event.target.value })
+                      }
+                    />
+                  </div>
+
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground" htmlFor="locations">
+                        Lokasyonlar
+                      </label>
+                      <Textarea
+                        id="locations"
+                        rows={6}
+                        value={listToTextarea(companyProfile.locations)}
+                        onChange={(event) =>
+                          updateCompanyProfile({
+                            locations: normalizeStringListText(event.target.value),
+                          })
+                        }
+                        placeholder="Her satira bir lokasyon yaz."
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground" htmlFor="departments">
+                        Bolumler
+                      </label>
+                      <Textarea
+                        id="departments"
+                        rows={6}
+                        value={listToTextarea(companyProfile.departments)}
+                        onChange={(event) =>
+                          updateCompanyProfile({
+                            departments: normalizeStringListText(event.target.value),
+                          })
+                        }
+                        placeholder="Her satira bir bolum yaz."
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-4 space-y-2">
+                    <label className="text-sm font-medium text-foreground" htmlFor="companyNotes">
+                      Notlar
+                    </label>
+                    <Textarea
+                      id="companyNotes"
+                      rows={4}
+                      value={companyProfile.notes}
+                      onChange={(event) => updateCompanyProfile({ notes: event.target.value })}
+                      placeholder="Bu calisma alaniyla ilgili operasyon ve saha notlarini yaz."
+                    />
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap gap-3">
-                    {selectedMembership && payload.profile.activeWorkspaceId !== selectedMembership.workspace.id ? (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => void handleActivateExisting(selectedMembership.workspace.id)}
-                      >
-                        Bu alani aktif yap
-                      </Button>
-                    ) : null}
                     <Button type="button" variant="outline" onClick={() => router.replace("/profile")}>
-                      Kisisel bilgileri ac
+                      Profili ac
                     </Button>
                   </div>
 
@@ -1030,6 +1566,7 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
                     disabled={
                       submitting ||
                       workspaceName.trim().length < 3 ||
+                      companyProfile.name.trim().length < 2 ||
                       (!selectedMembership && !canCreateWorkspace)
                     }
                   >
@@ -1037,6 +1574,8 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
                       ? "Kaydediliyor..."
                       : selectedMembership
                         ? "Alan ayarlarini kaydet"
+                        : isDemoTemplateSelected
+                          ? "Demo alanini kaydet ve panele gec"
                         : "Calisma alanini olustur"}
                   </Button>
                 </div>
@@ -1048,7 +1587,7 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
             <CardHeader>
               <CardTitle>Kisisel bilgiler</CardTitle>
               <CardDescription>
-                Bu bilgiler tum sitede ortak kullanilir. Calisma alanlari ise sadece isyeri, ulke ve dil baglamini ayirir.
+                Bu bilgiler tum sitede ortak kullanilir. Calisma alanlari ise sadece operasyon, ulke ve dil baglamini ayirir.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
@@ -1067,7 +1606,7 @@ export function WorkspaceOnboardingClient({ nextPath }: { nextPath?: string }) {
               ))}
 
               <div className="md:col-span-2 rounded-2xl border border-border bg-background/80 p-4 text-sm leading-6 text-muted-foreground">
-                Profil bilgileri tum deneyimde ortak kalir. Calisma alani degistiginde sadece isyeri baglami, mevzuat filtresi ve dil tercihi degisir.
+                Profil bilgileri tum deneyimde ortak kalir. Calisma alani degistiginde sadece operasyon baglami, mevzuat filtresi ve dil tercihi degisir.
               </div>
             </CardContent>
           </Card>

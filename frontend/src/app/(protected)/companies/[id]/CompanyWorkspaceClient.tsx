@@ -394,7 +394,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
             <div className="min-w-0 flex-1">
               <Link href="/companies" className="inline-flex items-center gap-1.5 rounded-xl border border-border/60 bg-secondary/40 px-3 py-1.5 text-xs font-semibold text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground hover:border-primary hover:shadow-md">
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-                İşyeri
+                Çalışma Alanları
               </Link>
               <h1 className="mt-0.5 text-lg font-semibold tracking-tight text-foreground sm:text-xl">{company.name}</h1>
               <p className="mt-0.5 text-sm text-muted-foreground">
@@ -432,7 +432,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
           <div className="rounded-[1.6rem] border border-border/80 bg-card p-3 shadow-[var(--shadow-card)]">
             <div className="px-2 pb-3 pt-1">
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">
-                İşyeri Bölümleri
+                Çalışma Alanı Bölümleri
               </p>
               <p className="mt-1 text-xs leading-5 text-muted-foreground">
                 Sol menüden bir alan seç, içeriği sağ tarafta yönet.
@@ -549,7 +549,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
 
                 <div className="rounded-[1.5rem] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)]">
                   <h3 className="text-sm font-bold text-foreground">Son Aktivite</h3>
-                  <p className="mt-0.5 text-[11px] text-muted-foreground">Bu işyerinde yapılan son değişiklikler.</p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">Bu çalışma alanında yapılan son değişiklikler.</p>
                   {activities.length > 0 ? (
                     <div className="mt-3 space-y-2">
                       {activities.map((act) => (

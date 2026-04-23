@@ -13,10 +13,14 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
 
   if (user) {
-    const context = await getAccountContextForUser(user.id);
-    const nextPath = resolvePostLoginPath(context);
-    if (nextPath !== "/dashboard") {
-      redirect(nextPath);
+    try {
+      const context = await getAccountContextForUser(user.id);
+      const nextPath = resolvePostLoginPath(context);
+      if (nextPath !== "/dashboard") {
+        redirect(nextPath);
+      }
+    } catch (error) {
+      console.warn("[dashboard] account context fallback:", error);
     }
   }
 

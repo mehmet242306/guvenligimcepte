@@ -13,10 +13,10 @@ const CompanyWorkspaceClientNoSSR = dynamic(
       <div className="rounded-xl border border-border bg-card p-8 shadow-[var(--shadow-card)]">
         <div className="space-y-4">
           <span className="eyebrow">
-            İşyeri çalışma alanı
+            Çalışma Alanı
           </span>
           <h1 className="text-2xl font-semibold text-foreground">
-            İşyeri çalışma alanı yükleniyor
+            Çalışma alanı yükleniyor
           </h1>
           <p className="text-sm leading-7 text-muted-foreground">
             Firma verileri tarayıcı tarafında hazırlanıyor. Lütfen bekleyin...

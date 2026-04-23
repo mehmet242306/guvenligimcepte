@@ -33,9 +33,6 @@ const KVKK_NETWORK_ERROR_MARKERS = [
   "the user aborted a request",
 ];
 
-// Error örnekleri (AuthError, TypeError, vb.) message/name alanlarını
-// non-enumerable olarak tutar; düz console.error '{}' gösterir.
-// Bu yardımcı, hangi tipte gelirse gelsin okunabilir bir kayıt çıkarır.
 function normalizeError(error: unknown): Record<string, unknown> {
   if (error == null) return { value: error };
 
@@ -62,7 +59,6 @@ function normalizeError(error: unknown): Record<string, unknown> {
     }
   }
 
-  // Geriye kalan enumerable alanlar (PostgrestError vb.)
   for (const key of Object.keys(source)) {
     if (!(key in out)) {
       out[key] = source[key];
@@ -105,8 +101,21 @@ export function logKvkkApiError(scope: string, error: KvkkApiErrorLike | null | 
   }
 
   const normalized = normalizeError(error);
+  if (Object.keys(normalized).length === 0) {
+    return;
+  }
 
-  // Geçici ağ/abort hataları gürültü; warn olarak göster, error olarak değil.
+  const message = String(normalized.message ?? "").toLowerCase();
+  const name = String(normalized.name ?? "").toLowerCase();
+
+  if (
+    name === "aborterror" ||
+    message.includes("lock broken by another request") ||
+    message.includes("the operation was aborted")
+  ) {
+    return;
+  }
+
   if (isKvkkNetworkError(error)) {
     console.warn(scope, "(transient network error)", normalized);
     return;

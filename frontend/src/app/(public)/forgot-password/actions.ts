@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { sendPasswordResetLinkEmail } from "@/lib/mailer";
 import { createServiceClient } from "@/lib/security/server";
+import { resolveAppOriginFromHeaders } from "@/lib/server/app-origin";
 
 export async function sendResetLink(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
@@ -13,10 +14,7 @@ export async function sendResetLink(formData: FormData) {
   }
 
   const headerStore = await headers();
-  const origin =
-    headerStore.get("origin") ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    "http://localhost:3000";
+  const origin = resolveAppOriginFromHeaders(headerStore);
 
   const service = createServiceClient();
 

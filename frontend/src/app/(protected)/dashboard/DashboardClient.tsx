@@ -258,7 +258,7 @@ export function DashboardClient() {
                 </p>
               </div>
               <button
-                onClick={() => router.push('/documents/personal')}
+                onClick={() => router.push('/documents')}
                 className="inline-flex items-center gap-1 rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--primary)] transition-colors hover:bg-[var(--gold)]/8"
               >
                 Tümünü Gör <ChevronRight size={12} />

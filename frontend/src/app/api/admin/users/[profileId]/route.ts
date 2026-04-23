@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { setPrivilegedAccountTypeAccess } from "@/lib/account/account-type-access";
 import { createAdminNotification, logErrorEvent } from "@/lib/admin-observability/server";
 import { requirePermission } from "@/lib/supabase/api-auth";
+import { resolveAppOriginFromRequest } from "@/lib/server/app-origin";
 import { createServiceClient, logSecurityEventWithContext, parseJsonBody } from "@/lib/security/server";
 
 const bodySchema = z.object({
-  action: z.enum(["toggle_active", "send_password_reset", "unlock_account"]),
+  action: z.enum(["toggle_active", "send_password_reset", "unlock_account", "set_account_type_access"]),
   isActive: z.boolean().optional(),
+  accountType: z.enum(["osgb", "enterprise"]).optional(),
+  enabled: z.boolean().optional(),
 });
 
 export async function PATCH(
@@ -77,7 +81,7 @@ export async function PATCH(
         return NextResponse.json({ error: "Kullanici icin e-posta bulunamadi." }, { status: 400 });
       }
 
-      const origin = process.env.NEXT_PUBLIC_APP_URL?.trim() || request.nextUrl.origin;
+      const origin = resolveAppOriginFromRequest(request);
       const { error } = await supabase.auth.resetPasswordForEmail(profile.email, {
         redirectTo: `${origin}/reset-password`,
       });
@@ -92,6 +96,76 @@ export async function PATCH(
         organizationId: auth.organizationId,
         severity: "info",
         details: { targetProfileId: profile.id, targetEmail: profile.email },
+      });
+
+      return NextResponse.json({ ok: true });
+    }
+
+    if (parsed.data.action === "set_account_type_access") {
+      if (!profile.auth_user_id) {
+        return NextResponse.json({ error: "Auth kullanici kaydi bulunamadi." }, { status: 400 });
+      }
+
+      if (!parsed.data.accountType || typeof parsed.data.enabled !== "boolean") {
+        return NextResponse.json({ error: "Hesap tipi erisim bilgisi eksik." }, { status: 400 });
+      }
+
+      const { data: fetchedUser, error: fetchUserError } = await supabase.auth.admin.getUserById(
+        profile.auth_user_id,
+      );
+
+      if (fetchUserError || !fetchedUser.user) {
+        return NextResponse.json(
+          { error: fetchUserError?.message || "Auth kullanicisi okunamadi." },
+          { status: 404 },
+        );
+      }
+
+      const targetUser = fetchedUser.user;
+      const accountTypeLabel = parsed.data.accountType === "osgb" ? "OSGB" : "Kurumsal";
+
+      const { error: updateAccessError } = await supabase.auth.admin.updateUserById(targetUser.id, {
+        app_metadata: setPrivilegedAccountTypeAccess(
+          (targetUser.app_metadata ?? {}) as Record<string, unknown>,
+          parsed.data.accountType,
+          parsed.data.enabled,
+        ),
+      });
+
+      if (updateAccessError) {
+        return NextResponse.json({ error: updateAccessError.message }, { status: 500 });
+      }
+
+      await logSecurityEventWithContext({
+        eventType: parsed.data.enabled
+          ? "admin.user.account_type_access_enabled"
+          : "admin.user.account_type_access_disabled",
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        severity: "warning",
+        details: {
+          targetProfileId: profile.id,
+          targetAuthUserId: targetUser.id,
+          targetEmail: profile.email,
+          accountType: parsed.data.accountType,
+          enabled: parsed.data.enabled,
+        },
+      });
+
+      await createAdminNotification({
+        category: "user_management",
+        level: "info",
+        title: `${accountTypeLabel} erisimi guncellendi`,
+        message: `${profile.full_name || profile.email || "Kullanici"} icin ${accountTypeLabel.toLowerCase()} secenegi ${
+          parsed.data.enabled ? "acildi" : "kapatildi"
+        }.`,
+        link: "/settings?tab=users",
+        metadata: {
+          profileId: profile.id,
+          authUserId: targetUser.id,
+          accountType: parsed.data.accountType,
+          enabled: parsed.data.enabled,
+        },
       });
 
       return NextResponse.json({ ok: true });

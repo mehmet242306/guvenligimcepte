@@ -328,8 +328,8 @@ export async function resolveNovaRuntimeErrorMessage(locale?: string | null, err
     rawMessage.includes("required permission")
   ) {
     return language === "tr"
-      ? "Nova bu ekranda yalnizca yetkili oldugunuz firma ve calisma alanlari icin yardim sunabilir. Ilgili firmayi acin veya OSGB yoneticinizden erisim isteyin."
-      : "Nova can only help with companies and workspaces you are authorized to access on this screen. Open the relevant company or ask your OSGB admin for access.";
+      ? "Nova genel ISG ve mevzuat sorularinda yardim edebilir; ancak firma verisine dayali ozetler, kayit acma ve operasyon aksiyonlari icin gerekli yetki bulunmuyor. Ilgili firmayi acin veya yoneticinizden erisim isteyin."
+      : "Nova can help with general OHS and legislation questions, but you do not have permission for company-specific summaries, record creation, or operational actions on this screen. Open the relevant company or ask your admin for access.";
   }
 
   if (!context?.message) {

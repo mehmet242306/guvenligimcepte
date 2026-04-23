@@ -16,6 +16,7 @@ import {
   logSecurityEventWithContext,
   parseJsonBody,
 } from "@/lib/security/server";
+import { resolveAppOriginFromRequest } from "@/lib/server/app-origin";
 
 const bodySchema = z.object({
   fullName: z.string().trim().min(2, "Ad soyad zorunludur."),
@@ -202,7 +203,7 @@ export async function POST(request: NextRequest) {
 
   const service = createServiceClient();
   const email = parsed.data.email.toLowerCase();
-  const origin = process.env.NEXT_PUBLIC_APP_URL?.trim() || request.nextUrl.origin;
+  const origin = resolveAppOriginFromRequest(request);
 
   const { data: workspaceRow, error: workspaceError } = await service
     .from("company_workspaces")

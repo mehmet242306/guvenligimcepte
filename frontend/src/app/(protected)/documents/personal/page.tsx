@@ -1,5 +1,5 @@
-import { PersonalDocumentsClient } from './PersonalDocumentsClient';
+import { redirect } from "next/navigation";
 
 export default function PersonalDocumentsPage() {
-  return <PersonalDocumentsClient />;
+  redirect("/documents");
 }

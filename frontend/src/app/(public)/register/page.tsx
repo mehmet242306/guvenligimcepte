@@ -5,53 +5,9 @@ import { Input } from "@/components/ui/input";
 import { SocialLoginButtons } from "@/components/auth/social-login-buttons";
 import { DemoSessionCleaner } from "@/components/auth/DemoSessionCleaner";
 import { DemoExpiredModal } from "@/components/auth/DemoExpiredModal";
+import { RegisterCommercialPlans } from "@/components/auth/RegisterCommercialPlans";
+import { RegisterAccountTypePreview } from "@/components/auth/RegisterAccountTypePreview";
 import { signup } from "./actions";
-
-function AccountTypePreview() {
-  const items = [
-    {
-      title: "Bireysel",
-      description:
-        "Bagimsiz calisan uzman, hekim, DSP veya bireysel profesyoneller icin.",
-      note: "Varsayilan baslangic plani: 1 aktif firma / workspace.",
-    },
-    {
-      title: "OSGB",
-      description:
-        "OSGB firmalari, ekip yonetimi, personel gorevlendirme ve is takibi icin.",
-      note: "Firma ve personel limitleri pakete gore yonetilir.",
-    },
-    {
-      title: "Kurumsal",
-      description:
-        "Cok lokasyonlu ve ozel ihtiyacli kurumlar icin enterprise akis.",
-      note: "Self-service degil; iletisim talebi ile ilerler.",
-    },
-  ];
-
-  return (
-    <div className="rounded-3xl border border-border/70 bg-muted/20 p-4">
-      <div className="mb-3 text-sm font-semibold text-foreground">
-        Kayit sonrasi hesap secimi
-      </div>
-      <div className="grid gap-3">
-        {items.map((item) => (
-          <div key={item.title} className="rounded-2xl border border-border bg-card p-4">
-            <div className="text-sm font-semibold text-foreground">{item.title}</div>
-            <div className="mt-1 text-sm leading-6 text-muted-foreground">
-              {item.description}
-            </div>
-            <div className="mt-2 text-xs font-medium text-primary">{item.note}</div>
-          </div>
-        ))}
-      </div>
-      <p className="mt-3 text-xs leading-6 text-muted-foreground">
-        Platform Admin public kayit secenegi degildir. Admin kullanicilar giris
-        yaptiginda otomatik olarak platform yonetim paneline yonlendirilir.
-      </p>
-    </div>
-  );
-}
 
 export default async function RegisterPage({
   searchParams,
@@ -72,33 +28,22 @@ export default async function RegisterPage({
       description="Kaydini tamamla, sonra sadece Bireysel, OSGB veya Kurumsal akislardan birini secerek devam et."
       highlights={[
         {
-          title: "Sade urun modeli",
+          title: "Bireysel self-service",
           description:
-            "Musteri tarafinda yalnizca Bireysel, OSGB ve Kurumsal hesap akislarini gosteririz.",
+            "Tek basina ilerleyen profesyoneller kaydi tamamlayip onboarding ile devam eder.",
         },
         {
-          title: "Uzmanlik ayri katman",
+          title: "OSGB paketleri net",
           description:
-            "Is Guvenligi Uzmani, Isyeri Hekimi ve Diger Saglik Personeli gibi roller hesap tipinden ayridir.",
+            "OSGB Starter ve Team paketlerini solda ozetliyor, gerekirse size ozel teklif topluyoruz.",
         },
         {
-          title: "Admin rolu ayri",
+          title: "Firma icin ozel teklif",
           description:
-            "Platform Admin bir kayit secenegi degil, global ic yetkidir ve giriste onceliklidir.",
+            "Cok lokasyonlu veya ozel ihtiyacli firma yapilari icin gelistirici ile iletisime gecilir.",
         },
       ]}
-      spotlight={
-        <div className="space-y-3 text-sm leading-7 text-white/92">
-          <p>
-            Kamu kurumu kullanicisi, bagimsiz uzman, hekim veya danisman olmak ayri
-            bir musteri hesap tipi dogurmaz.
-          </p>
-          <p>
-            Bu ayrimlar uzmanlik ve sertifika katmaninda tutulur. Ornegin ISG
-            uzmaninin A, B, C sinifi sertifika bilgisidir; hesap tipi degildir.
-          </p>
-        </div>
-      }
+      spotlight={<RegisterCommercialPlans />}
       footer={
         <p className="text-sm leading-7 text-muted-foreground">
           Hesabin var mi?{" "}
@@ -134,7 +79,7 @@ export default async function RegisterPage({
         </div>
       ) : null}
 
-      <AccountTypePreview />
+      <RegisterAccountTypePreview />
 
       <SocialLoginButtons mode="register" />
 

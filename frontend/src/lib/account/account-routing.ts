@@ -1,4 +1,8 @@
 import { createServiceClient } from "@/lib/security/server";
+import {
+  normalizeManagedAccountType,
+  resolveAllowedAccountTypes,
+} from "./account-type-access";
 
 export type AccountType = "individual" | "osgb" | "enterprise";
 
@@ -8,8 +12,11 @@ export type AccountContext = {
   organizationId: string | null;
   organizationName: string | null;
   accountType: AccountType | null;
+  allowedAccountTypes: AccountType[];
   membershipRole: "owner" | "admin" | "staff" | "viewer" | null;
   currentPlanCode: string | null;
+  activeWorkspaceId?: string | null;
+  workspaceCount?: number;
 };
 
 type MembershipRole = AccountContext["membershipRole"];
@@ -27,17 +34,12 @@ function isMissingRelationError(message: string | undefined | null): boolean {
 function mapOrganizationTypeToAccountType(
   value: string | null | undefined,
 ): AccountType | null {
-  const normalized = String(value ?? "").trim().toLowerCase();
-  if (!normalized) return null;
-  if (normalized === "osgb" || normalized === "osgb_manager") return "osgb";
-  if (
-    normalized === "enterprise" ||
-    normalized === "corporate" ||
-    normalized === "kurumsal"
-  ) {
-    return "enterprise";
+  const normalized = normalizeManagedAccountType(value);
+  if (normalized) {
+    return normalized;
   }
-  return "individual";
+
+  return String(value ?? "").trim() ? "individual" : null;
 }
 
 async function resolveProfileWithOrganization(service: ReturnType<typeof createServiceClient>, userId: string) {
@@ -174,6 +176,85 @@ async function resolveCurrentPlanCode(
   return data?.code ?? null;
 }
 
+async function resolveWorkspaceAccessState(
+  service: ReturnType<typeof createServiceClient>,
+  userId: string,
+): Promise<{ activeWorkspaceId: string | null; workspaceCount: number }> {
+  let activeWorkspaceId: string | null = null;
+
+  const activeWorkspaceResult = await service
+    .from("user_profiles")
+    .select("active_workspace_id")
+    .eq("auth_user_id", userId)
+    .maybeSingle();
+
+  if (!activeWorkspaceResult.error) {
+    activeWorkspaceId = activeWorkspaceResult.data?.active_workspace_id ?? null;
+  } else if (
+    !isMissingRelationError(activeWorkspaceResult.error.message) &&
+    !String(activeWorkspaceResult.error.message ?? "").includes("active_workspace_id")
+  ) {
+    throw new Error(activeWorkspaceResult.error.message);
+  }
+
+  const membershipCountResult = await service
+    .from("nova_workspace_members")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId);
+
+  if (membershipCountResult.error) {
+    if (isMissingRelationError(membershipCountResult.error.message)) {
+      return {
+        activeWorkspaceId,
+        workspaceCount: activeWorkspaceId ? 1 : 0,
+      };
+    }
+
+    throw new Error(membershipCountResult.error.message);
+  }
+
+  const workspaceCount = membershipCountResult.count ?? 0;
+
+  if (activeWorkspaceId || workspaceCount === 0) {
+    return { activeWorkspaceId, workspaceCount };
+  }
+
+  const firstMembershipResult = await service
+    .from("nova_workspace_members")
+    .select(
+      `
+      workspace:nova_workspaces!inner (
+        id
+      )
+    `,
+    )
+    .eq("user_id", userId)
+    .order("is_primary", { ascending: false })
+    .order("joined_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (firstMembershipResult.error) {
+    if (isMissingRelationError(firstMembershipResult.error.message)) {
+      return { activeWorkspaceId, workspaceCount };
+    }
+
+    throw new Error(firstMembershipResult.error.message);
+  }
+
+  const rawWorkspace = firstMembershipResult.data?.workspace as
+    | { id?: string | null }
+    | Array<{ id?: string | null }>
+    | null
+    | undefined;
+  const firstWorkspace = Array.isArray(rawWorkspace) ? rawWorkspace[0] : rawWorkspace;
+
+  return {
+    activeWorkspaceId: typeof firstWorkspace?.id === "string" ? firstWorkspace.id : null,
+    workspaceCount,
+  };
+}
+
 async function resolvePlatformAdminStatus(
   userId: string,
 ): Promise<boolean> {
@@ -221,6 +302,29 @@ async function resolvePlatformAdminStatus(
   return legacySuperAdmin === true;
 }
 
+async function resolveAllowedAccountTypesForUser(
+  service: ReturnType<typeof createServiceClient>,
+  userId: string,
+  currentAccountType: AccountType | null,
+  isPlatformAdmin: boolean,
+): Promise<AccountType[]> {
+  const { data, error } = await service.auth.admin.getUserById(userId);
+
+  if (error || !data.user) {
+    return resolveAllowedAccountTypes({
+      currentAccountType,
+      isPlatformAdmin,
+    });
+  }
+
+  return resolveAllowedAccountTypes({
+    appMetadata: data.user?.app_metadata,
+    userMetadata: data.user?.user_metadata,
+    currentAccountType,
+    isPlatformAdmin,
+  });
+}
+
 export async function getAccountContextForUser(
   userId: string,
 ): Promise<AccountContext> {
@@ -256,7 +360,14 @@ export async function getAccountContextForUser(
     organization?.account_type ??
     mapOrganizationTypeToAccountType(organization?.organization_type) ??
     null;
+  const allowedAccountTypes = await resolveAllowedAccountTypesForUser(
+    service,
+    userId,
+    accountType,
+    isPlatformAdminData === true,
+  );
   const currentPlanCode = await resolveCurrentPlanCode(service, organization?.current_plan_id);
+  const workspaceAccess = await resolveWorkspaceAccessState(service, userId);
 
   let membershipRole: MembershipRole = null;
   if (organization?.id) {
@@ -285,8 +396,11 @@ export async function getAccountContextForUser(
     organizationId: organization?.id ?? profile?.organization_id ?? null,
     organizationName: organization?.name ?? null,
     accountType,
+    allowedAccountTypes,
     membershipRole,
     currentPlanCode,
+    activeWorkspaceId: workspaceAccess.activeWorkspaceId,
+    workspaceCount: workspaceAccess.workspaceCount,
   };
 }
 
@@ -337,7 +451,11 @@ export function resolvePostLoginPath(context: AccountContext): string {
   }
 
   if (context.accountType === "individual") {
-    return "/workspace/onboarding";
+    if (!context.activeWorkspaceId && (context.workspaceCount ?? 0) === 0) {
+      return "/workspace/onboarding";
+    }
+
+    return "/dashboard";
   }
 
   return "/companies";
