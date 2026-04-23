@@ -86,7 +86,7 @@ export function DashboardClient() {
         { count: taskCount },
       ] = await Promise.all([
         supabase.from('risk_assessments').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
-        supabase.from('risk_assessments').select('id').eq('organization_id', orgId).gte('risk_level', 15),
+        supabase.from('risk_assessments').select('id').eq('organization_id', orgId).gte('highest_item_score', 15),
         supabase
           .from('editor_documents')
           .select('id, title, status, updated_at')
@@ -96,7 +96,7 @@ export function DashboardClient() {
           .limit(5),
         supabase.from('incidents').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
         supabase.from('company_workspaces').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
-        supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('organization_id', orgId).eq('status', 'open'),
+        supabase.from('isg_tasks').select('*', { count: 'exact', head: true }).eq('organization_id', orgId).in('status', ['planned', 'overdue']),
       ]);
 
       const docs = documents || [];
