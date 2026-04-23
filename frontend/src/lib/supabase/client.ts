@@ -1,4 +1,5 @@
 ﻿import { createBrowserClient } from "@supabase/ssr";
+import { processLock } from "@supabase/auth-js";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 // Singleton: birden fazla GoTrue örneği "Failed to fetch" hatasına yol açar
@@ -18,6 +19,24 @@ export function createClient() {
     return null;
   }
 
-  browserClient = createBrowserClient(supabaseUrl, supabasePublishableKey);
+  // GoTrue lock stratejisi — default navigatorLock (navigator.locks API) yerine
+  // processLock (in-memory Promise chain). Bu 3 pozitif sonuç doğuruyor:
+  //  1. React Strict Mode'da effect çift fire edince orphan-lock "5000ms
+  //     içinde bırakılmadı" uyarıları artık oluşmuyor.
+  //  2. protected-shell + workspace-api + DemoSessionGuard + useIsAdmin
+  //     + DemoSessionCleaner — hepsi getUser/getSession çağırıyordu, lock
+  //     contention'ı sebebiyle "Lock broken by steal" AbortError'larla
+  //     birbirini patlatıyorlardı. Process lock bu component'leri aynı
+  //     promise zincirinde sıraya koyup tek tek serve ediyor.
+  //  3. Dev'de ve production'da çok daha sessiz console.
+  //
+  // Tradeoff: tab'lar arası token refresh senkronu kaybolur (iki sekmede
+  // aynı anda refresh olursa biri tamamlar, diğeri retry'da yakalar —
+  // veri kaybı yok, sadece hafif fazladan call).
+  browserClient = createBrowserClient(supabaseUrl, supabasePublishableKey, {
+    auth: {
+      lock: processLock,
+    },
+  });
   return browserClient;
 }
