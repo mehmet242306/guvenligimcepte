@@ -121,9 +121,30 @@ type WidgetHistoryItem = {
   source: "local" | "server";
 };
 
+type WidgetHistoryMessage = {
+  id: string;
+  role: "user" | "bot";
+  text: string;
+  createdAt: string;
+};
+
+type WidgetHistorySession = {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  source: "local" | "server";
+  messages: WidgetHistoryMessage[];
+};
+
 const PANEL_EDGE_GAP = 12;
 const WIDGET_HISTORY_STORAGE_KEY = "risknova:nova-widget-history";
-const MAX_WIDGET_HISTORY_ITEMS = 30;
+const MAX_WIDGET_HISTORY_SESSIONS = 20;
+const MAX_WIDGET_HISTORY_MESSAGES = 80;
+
+function isUuid(value: string | null | undefined): value is string {
+  return !!value && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i.test(value);
+}
 
 function clampPanelPosition(position: PanelPosition, width: number, height: number): PanelPosition {
   if (typeof window === "undefined") return position;
@@ -152,60 +173,201 @@ function defaultPanelPosition(width: number, height: number): PanelPosition {
   );
 }
 
-function readLocalWidgetHistory(): WidgetHistoryItem[] {
+function buildLegacyHistorySession(item: WidgetHistoryItem): WidgetHistorySession {
+  return {
+    id: item.id,
+    title: item.queryText,
+    createdAt: item.createdAt,
+    updatedAt: item.createdAt,
+    source: item.source,
+    messages: [
+      {
+        id: `${item.id}-user`,
+        role: "user",
+        text: item.queryText,
+        createdAt: item.createdAt,
+      },
+      {
+        id: `${item.id}-bot`,
+        role: "bot",
+        text: item.aiResponse,
+        createdAt: item.createdAt,
+      },
+    ],
+  };
+}
+
+function normalizeHistorySession(raw: Partial<WidgetHistorySession>): WidgetHistorySession | null {
+  const messages = Array.isArray(raw.messages)
+    ? raw.messages
+        .map((message) => ({
+          id: String(message?.id || crypto.randomUUID()),
+          role: message?.role === "user" ? ("user" as const) : ("bot" as const),
+          text: String(message?.text || "").trim(),
+          createdAt: String(message?.createdAt || raw.updatedAt || new Date().toISOString()),
+        }))
+        .filter((message) => message.text)
+        .slice(-MAX_WIDGET_HISTORY_MESSAGES)
+    : [];
+
+  if (messages.length === 0) {
+    return null;
+  }
+
+  const firstUserMessage = messages.find((message) => message.role === "user");
+  const title = String(raw.title || firstUserMessage?.text || messages[0]?.text || "Nova oturumu").trim();
+  const createdAt = String(raw.createdAt || messages[0]?.createdAt || new Date().toISOString());
+  const updatedAt = String(raw.updatedAt || messages[messages.length - 1]?.createdAt || createdAt);
+
+  return {
+    id: String(raw.id || crypto.randomUUID()),
+    title,
+    createdAt,
+    updatedAt,
+    source: raw.source === "server" ? "server" : "local",
+    messages,
+  };
+}
+
+function readLocalWidgetHistory(): WidgetHistorySession[] {
   if (typeof window === "undefined") return [];
 
   try {
     const raw = window.localStorage.getItem(WIDGET_HISTORY_STORAGE_KEY);
     if (!raw) return [];
-    const parsed = JSON.parse(raw) as Partial<WidgetHistoryItem>[];
+    const parsed = JSON.parse(raw) as Array<Partial<WidgetHistoryItem & WidgetHistorySession>>;
     if (!Array.isArray(parsed)) return [];
 
     return parsed
-      .map((item) => ({
-        id: String(item.id || crypto.randomUUID()),
-        queryText: String(item.queryText || "").trim(),
-        aiResponse: String(item.aiResponse || "").trim(),
-        createdAt: String(item.createdAt || new Date().toISOString()),
-        source: "local" as const,
-      }))
-      .filter((item) => item.queryText && item.aiResponse)
-      .slice(0, MAX_WIDGET_HISTORY_ITEMS);
+      .map((item) => {
+        if (Array.isArray(item.messages)) {
+          return normalizeHistorySession({ ...item, source: "local" });
+        }
+
+        const legacyItem: WidgetHistoryItem = {
+          id: String(item.id || crypto.randomUUID()),
+          queryText: String(item.queryText || "").trim(),
+          aiResponse: String(item.aiResponse || "").trim(),
+          createdAt: String(item.createdAt || new Date().toISOString()),
+          source: "local",
+        };
+
+        return legacyItem.queryText && legacyItem.aiResponse
+          ? buildLegacyHistorySession(legacyItem)
+          : null;
+      })
+      .filter((item): item is WidgetHistorySession => item !== null)
+      .slice(0, MAX_WIDGET_HISTORY_SESSIONS);
   } catch {
     return [];
   }
 }
 
-function writeLocalWidgetHistory(items: WidgetHistoryItem[]) {
+function writeLocalWidgetHistory(sessions: WidgetHistorySession[]) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(
       WIDGET_HISTORY_STORAGE_KEY,
-      JSON.stringify(items.slice(0, MAX_WIDGET_HISTORY_ITEMS)),
+      JSON.stringify(sessions.slice(0, MAX_WIDGET_HISTORY_SESSIONS)),
     );
   } catch {
     // History must never block Nova from showing a response.
   }
 }
 
-function rememberLocalWidgetHistory(queryText: string, aiResponse: string) {
+function mergeHistorySessionMessages(
+  first: WidgetHistoryMessage[],
+  second: WidgetHistoryMessage[],
+) {
+  const seen = new Set<string>();
+  return [...first, ...second]
+    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+    .filter((message) => {
+      const key = `${message.role}\n${message.text}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(-MAX_WIDGET_HISTORY_MESSAGES);
+}
+
+function mergeHistorySessions(
+  localSessions: WidgetHistorySession[],
+  serverSessions: WidgetHistorySession[],
+) {
+  const byId = new Map<string, WidgetHistorySession>();
+
+  for (const session of [...localSessions, ...serverSessions]) {
+    const existing = byId.get(session.id);
+    if (!existing) {
+      byId.set(session.id, session);
+      continue;
+    }
+
+    const messages = mergeHistorySessionMessages(existing.messages, session.messages);
+    byId.set(session.id, {
+      ...existing,
+      source: existing.source === "server" || session.source === "server" ? "server" : "local",
+      title: existing.title || session.title,
+      createdAt:
+        new Date(existing.createdAt).getTime() <= new Date(session.createdAt).getTime()
+          ? existing.createdAt
+          : session.createdAt,
+      updatedAt:
+        new Date(existing.updatedAt).getTime() >= new Date(session.updatedAt).getTime()
+          ? existing.updatedAt
+          : session.updatedAt,
+      messages,
+    });
+  }
+
+  return Array.from(byId.values())
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .slice(0, MAX_WIDGET_HISTORY_SESSIONS);
+}
+
+function rememberLocalWidgetHistory(sessionId: string, queryText: string, aiResponse: string) {
   const cleanQuery = queryText.trim();
   const cleanAnswer = aiResponse.trim();
   if (!cleanQuery || !cleanAnswer) return;
 
-  const nextItem: WidgetHistoryItem = {
-    id: crypto.randomUUID(),
-    queryText: cleanQuery,
-    aiResponse: cleanAnswer,
-    createdAt: new Date().toISOString(),
-    source: "local",
-  };
+  const now = new Date().toISOString();
+  const sessions = readLocalWidgetHistory();
+  const existing = sessions.find((session) => session.id === sessionId);
+  const otherSessions = sessions.filter((session) => session.id !== sessionId);
+  const messages = existing?.messages ?? [];
+  const lastUser = [...messages].reverse().find((message) => message.role === "user");
+  const lastBot = [...messages].reverse().find((message) => message.role === "bot");
+
+  const nextMessages =
+    lastUser?.text === cleanQuery && lastBot?.text === cleanAnswer
+      ? messages
+      : [
+          ...messages,
+          {
+            id: crypto.randomUUID(),
+            role: "user" as const,
+            text: cleanQuery,
+            createdAt: now,
+          },
+          {
+            id: crypto.randomUUID(),
+            role: "bot" as const,
+            text: cleanAnswer,
+            createdAt: now,
+          },
+        ].slice(-MAX_WIDGET_HISTORY_MESSAGES);
 
   const next = [
-    nextItem,
-    ...readLocalWidgetHistory().filter(
-      (item) => item.queryText !== cleanQuery || item.aiResponse !== cleanAnswer,
-    ),
+    {
+      id: sessionId,
+      title: existing?.title || cleanQuery,
+      createdAt: existing?.createdAt || now,
+      updatedAt: now,
+      source: "local" as const,
+      messages: nextMessages,
+    },
+    ...otherSessions,
   ];
   writeLocalWidgetHistory(next);
 }
@@ -233,7 +395,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   const [recordingElapsed, setRecordingElapsed] = useState(0);
   const [voiceTranscribing, setVoiceTranscribing] = useState(false);
   const [activeTab, setActiveTab] = useState<"chat" | "history">("chat");
-  const [historyItems, setHistoryItems] = useState<WidgetHistoryItem[]>([]);
+  const [historySessions, setHistorySessions] = useState<WidgetHistorySession[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [panelPosition, setPanelPosition] = useState<PanelPosition | null>(null);
@@ -255,6 +417,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   const speechRecognitionRef = useRef<BrowserSpeechRecognition | null>(null);
   const speechTranscriptRef = useRef("");
   const speechInterimTranscriptRef = useRef("");
+  const widgetHistorySessionIdRef = useRef("");
   const supabase = createClient();
   const currentQueryString = searchParams.toString();
   const currentPage = `${pathname}${currentQueryString ? `?${currentQueryString}` : ""}`;
@@ -423,6 +586,26 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     }
   }
 
+  function getWidgetHistorySessionId(preferredSessionId?: string | null) {
+    if (isUuid(preferredSessionId)) {
+      widgetHistorySessionIdRef.current = preferredSessionId;
+      return preferredSessionId;
+    }
+
+    if (!isUuid(widgetHistorySessionIdRef.current)) {
+      widgetHistorySessionIdRef.current = crypto.randomUUID();
+    }
+
+    return widgetHistorySessionIdRef.current;
+  }
+
+  function resetWidgetConversation() {
+    setMessages([]);
+    setSessionId(null);
+    widgetHistorySessionIdRef.current = "";
+    proactiveLoadedRef.current = false;
+  }
+
   // Fetch organization_id for authenticated users
   useEffect(() => {
     if (!isAuthenticated || !supabase) return;
@@ -524,11 +707,11 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
   async function refreshHistory() {
     setHistoryLoading(true);
-    const localItems = readLocalWidgetHistory();
+    const localSessions = readLocalWidgetHistory();
 
     try {
       if (!isAuthenticated || !supabase) {
-        setHistoryItems(localItems);
+        setHistorySessions(localSessions);
         return;
       }
 
@@ -537,41 +720,77 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       } = await supabase.auth.getUser();
 
       if (!user) {
-        setHistoryItems(localItems);
+        setHistorySessions(localSessions);
         return;
       }
 
       const { data } = await supabase
         .from("solution_queries")
-        .select("id, query_text, ai_response, created_at")
+        .select("id, query_text, ai_response, created_at, response_metadata")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
-        .limit(25);
+        .limit(60);
 
-      const serverItems: WidgetHistoryItem[] = Array.isArray(data)
-        ? data
-            .map((item) => ({
-              id: String(item.id),
-              queryText: String(item.query_text || "").trim(),
-              aiResponse: String(item.ai_response || "").trim(),
-              createdAt: String(item.created_at || new Date().toISOString()),
-              source: "server" as const,
-            }))
-            .filter((item) => item.queryText && item.aiResponse)
-        : [];
+      const serverSessionMap = new Map<string, WidgetHistorySession>();
 
-      const seen = new Set<string>();
-      const merged = [...localItems, ...serverItems]
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .filter((item) => {
-          const key = `${item.queryText}\n${item.aiResponse}`;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        })
-        .slice(0, MAX_WIDGET_HISTORY_ITEMS);
+      if (Array.isArray(data)) {
+        for (const item of data) {
+          const queryText = String(item.query_text || "").trim();
+          const aiResponse = String(item.ai_response || "").trim();
+          if (!queryText || !aiResponse) continue;
 
-      setHistoryItems(merged);
+          const metadata =
+            item.response_metadata && typeof item.response_metadata === "object"
+              ? (item.response_metadata as Record<string, unknown>)
+              : {};
+          const metadataSessionId =
+            typeof metadata.session_id === "string" && metadata.session_id.trim()
+              ? metadata.session_id.trim()
+              : null;
+          const sessionKey = metadataSessionId || `server-${item.id}`;
+          const createdAt = String(item.created_at || new Date().toISOString());
+          const existing = serverSessionMap.get(sessionKey);
+          const nextMessages: WidgetHistoryMessage[] = [
+            ...(existing?.messages ?? []),
+            {
+              id: `server-${item.id}-user`,
+              role: "user",
+              text: queryText,
+              createdAt,
+            },
+            {
+              id: `server-${item.id}-bot`,
+              role: "bot",
+              text: aiResponse,
+              createdAt,
+            },
+          ];
+
+          serverSessionMap.set(sessionKey, {
+            id: sessionKey,
+            title: existing?.title || queryText,
+            createdAt:
+              existing && new Date(existing.createdAt).getTime() <= new Date(createdAt).getTime()
+                ? existing.createdAt
+                : createdAt,
+            updatedAt:
+              existing && new Date(existing.updatedAt).getTime() >= new Date(createdAt).getTime()
+                ? existing.updatedAt
+                : createdAt,
+            source: "server",
+            messages: nextMessages,
+          });
+        }
+      }
+
+      const serverSessions = Array.from(serverSessionMap.values()).map((session) => ({
+        ...session,
+        messages: session.messages.sort(
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        ),
+      }));
+
+      setHistorySessions(mergeHistorySessions(localSessions, serverSessions));
     } finally {
       setHistoryLoading(false);
     }
@@ -752,21 +971,17 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     }
   };
 
-  function restoreHistoryItem(item: WidgetHistoryItem) {
+  function restoreHistorySession(session: WidgetHistorySession) {
+    widgetHistorySessionIdRef.current = session.id;
+    setSessionId(isUuid(session.id) ? session.id : null);
     setMessages((prev) => [
       ...prev.filter((message) => message.id !== "welcome"),
-      {
+      ...session.messages.map((message) => ({
         id: crypto.randomUUID(),
-        role: "user",
-        text: item.queryText,
-        timestamp: new Date(item.createdAt),
-      },
-      {
-        id: crypto.randomUUID(),
-        role: "bot",
-        text: item.aiResponse,
-        timestamp: new Date(item.createdAt),
-      },
+        role: message.role,
+        text: message.text,
+        timestamp: new Date(message.createdAt),
+      })),
     ]);
     setActiveTab("chat");
   }
@@ -778,6 +993,16 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       hour: "2-digit",
       minute: "2-digit",
     });
+  }
+
+  function getHistorySessionPreview(session: WidgetHistorySession) {
+    const lastBotMessage = [...session.messages].reverse().find((message) => message.role === "bot");
+    const lastMessage = lastBotMessage ?? session.messages[session.messages.length - 1];
+    return lastMessage?.text ?? "";
+  }
+
+  function getHistorySessionMessageCount(session: WidgetHistorySession) {
+    return `${session.messages.length} mesaj`;
   }
 
   const clearAttachedImage = () => {
@@ -970,6 +1195,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     const text = input.trim();
     const composedPrompt = buildNovaPromptWithImage(text, imageAnalysis);
     if (!composedPrompt || typing || imageUploading || voiceTranscribing) return;
+    const activeHistorySessionId = getWidgetHistorySessionId(sessionId);
     const visiblePrompt =
       text ||
       (imageAnalysis
@@ -1028,7 +1254,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         suggestions: authenticatedWelcomeActions.slice(0, 4),
         timestamp: new Date(),
       };
-      rememberLocalWidgetHistory(visiblePrompt, botMsg.text);
+      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text);
       setMessages((prev) => [...prev, botMsg]);
       setTyping(false);
       return;
@@ -1043,7 +1269,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         navigation: navigationFallback.navigation,
         telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
       });
-      rememberLocalWidgetHistory(visiblePrompt, botMessage.text);
+      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text);
       setMessages((prev) => [...prev, botMessage]);
       setTyping(false);
       return;
@@ -1065,7 +1291,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         resolveNovaApiEndpoint(composedPrompt),
         {
           message: composedPrompt,
-          session_id: sessionId,
+          session_id: sessionId ?? activeHistorySessionId,
           language: locale,
           as_of_date: new Date().toISOString().slice(0, 10),
           answer_mode: "extractive",
@@ -1084,7 +1310,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       }
 
       const botMessage = buildBotMessageFromAgentResponse(data);
-      rememberLocalWidgetHistory(visiblePrompt, botMessage.text);
+      rememberLocalWidgetHistory(data?.session_id ?? activeHistorySessionId, visiblePrompt, botMessage.text);
       setMessages((prev) => [...prev, botMessage]);
       if (imageAnalysis) {
         clearAttachedImage();
@@ -1099,7 +1325,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           navigation: navigationFallback.navigation,
           telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
         });
-        rememberLocalWidgetHistory(visiblePrompt, botMessage.text);
+        rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text);
         setMessages((prev) => [...prev, botMessage]);
         return;
       }
@@ -1365,9 +1591,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                 type="button"
                 onClick={() => {
                   setOpen(false);
-                  setMessages([]);
-                  setSessionId(null);
-                  proactiveLoadedRef.current = false;
+                  resetWidgetConversation();
                 }}
                 aria-label={ui.widget.closeAriaLabel}
                 title={ui.widget.closeAriaLabel}
@@ -1754,8 +1978,8 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
             <div className="flex-1 overflow-y-auto px-3 py-3">
               <div className="mb-3 flex items-center justify-between gap-2">
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Gecmis sohbetler</p>
-                  <p className="text-[11px] text-muted-foreground">Son Nova sorularinizi buradan acabilirsiniz.</p>
+                  <p className="text-sm font-semibold text-foreground">Gecmis oturumlar</p>
+                  <p className="text-[11px] text-muted-foreground">Her oturum kendi mesajlariyla birlikte acilir.</p>
                 </div>
                 <button
                   type="button"
@@ -1773,36 +1997,41 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                     <div key={item} className="h-20 animate-pulse rounded-xl bg-muted" />
                   ))}
                 </div>
-              ) : historyItems.length === 0 ? (
+              ) : historySessions.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-border bg-muted/30 p-4 text-center">
                   <p className="text-sm font-semibold text-foreground">Henuz gecmis yok</p>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    Nova ile konustukca sohbetler burada gorunecek.
+                    Nova ile konustukca oturumlar burada gorunecek.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {historyItems.map((item) => (
+                  {historySessions.map((session) => (
                     <button
-                      key={`${item.source}-${item.id}`}
+                      key={`${session.source}-${session.id}`}
                       type="button"
-                      onClick={() => restoreHistoryItem(item)}
+                      onClick={() => restoreHistorySession(session)}
                       className="w-full rounded-xl border border-border bg-card p-3 text-left transition-colors hover:border-primary/40 hover:bg-primary/5"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <p className="line-clamp-2 text-xs font-semibold leading-5 text-foreground">
-                          {item.queryText}
+                          {session.title}
                         </p>
                         <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                          {item.source === "server" ? "Kayit" : "Widget"}
+                          {getHistorySessionMessageCount(session)}
                         </span>
                       </div>
                       <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-muted-foreground">
-                        {item.aiResponse}
+                        {getHistorySessionPreview(session)}
                       </p>
-                      <p className="mt-2 text-[10px] font-medium text-primary">
-                        {formatHistoryDate(item.createdAt)}
-                      </p>
+                      <div className="mt-2 flex items-center justify-between gap-2">
+                        <p className="text-[10px] font-medium text-primary">
+                          {formatHistoryDate(session.updatedAt)}
+                        </p>
+                        <span className="rounded-full bg-muted/70 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                          {session.source === "server" ? "Kayit" : "Widget"}
+                        </span>
+                      </div>
                     </button>
                   ))}
                 </div>
