@@ -15,6 +15,7 @@ import {
   type CompanyFileCategoryId,
 } from "./_lib/company-file-collector";
 import { downloadCompanyFileZip } from "./_lib/company-file-generator";
+import { CompanyOverview } from "./_components/CompanyOverview";
 
 type Feedback =
   | { tone: "success" | "warning" | "danger" | "info"; message: string }
@@ -178,6 +179,8 @@ export function ReportsClient() {
       {feedback ? (
         <StatusAlert tone={feedback.tone}>{feedback.message}</StatusAlert>
       ) : null}
+
+      <CompanyOverview categories={categories} loading={loading} />
 
       <section className="rounded-[1.75rem] border border-border bg-card p-5 shadow-[var(--shadow-card)]">
         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-4">
