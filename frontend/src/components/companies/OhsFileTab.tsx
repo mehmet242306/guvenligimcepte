@@ -13,6 +13,7 @@ import {
   type OhsArchiveJob,
   type OhsArchiveScopePreset,
 } from "@/lib/supabase/ohs-archive-api";
+import { CompanyFileSection } from "@/app/(protected)/reports/_components/CompanyFileSection";
 
 type Props = {
   companyWorkspaceId: string;
@@ -175,6 +176,12 @@ export function OhsFileTab({ companyWorkspaceId, companyName, jurisdictionCode =
 
   return (
     <div className="space-y-5">
+      {/* Raporlar & Firma Dosyası (taşındı: eski /reports sayfası) */}
+      <CompanyFileSection
+        companyWorkspaceId={companyWorkspaceId}
+        companyName={companyName}
+      />
+
       {/* Header */}
       <section className="rounded-[1.7rem] border border-border/80 bg-card p-6 shadow-[var(--shadow-card)]">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">

@@ -57,7 +57,8 @@ const secondaryNav: NavItem[] = [
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
   { href: "/solution-center", key: "nav.solutionCenter" },
   { href: "/digital-twin", key: "nav.digitalTwin", adminOnly: true },
-  { href: "/reports", key: "nav.reports" },
+  // Raporlar: Artık firma workspace'i içindeki "İSG Dosyası" sekmesine taşındı.
+  // { href: "/reports", key: "nav.reports" },
   { href: "/settings", key: "nav.settings" },
 ];
 
@@ -74,7 +75,7 @@ const osgbSecondaryNav = [
   { href: "/risk-analysis", label: "Riskler" },
   { href: "/osgb/contracts", label: "Sözleşmeler" },
   { href: "/solution-center", label: "Nova OSGB" },
-  { href: "/reports", label: "Raporlar" },
+  // Raporlar: Firma workspace → İSG Dosyası sekmesine taşındı.
   { href: "/settings", label: "Ayarlar" },
 ];
 
@@ -139,7 +140,7 @@ function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={dark ? "Açık tema" : "Koyu tema"}
-      className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white sm:h-11 sm:w-11"
     >
       {dark ? (
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -218,7 +219,7 @@ function NotificationBell() {
       <button
         type="button"
         onClick={() => { setOpen(!open); if (!open) void loadNotifications(); }}
-        className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white"
+        className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white sm:h-11 sm:w-11"
         aria-label="Bildirimler"
       >
         <svg className="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
@@ -318,7 +319,7 @@ function HeaderSignOutButton() {
       type="button"
       onClick={() => void handleClick()}
       disabled={signingOut}
-      className="inline-flex h-11 items-center gap-2 rounded-xl border border-[rgba(231,205,163,0.18)] px-3 text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+      className="inline-flex h-9 w-9 items-center justify-center gap-2 rounded-xl border border-[rgba(231,205,163,0.18)] text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:h-11 sm:w-auto sm:px-3"
       aria-label="Oturumu kapat"
       title="Oturumu kapat"
     >
@@ -365,7 +366,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
     !isPlatformAdminShell && accountSurface === "osgb-manager";
   const showWorkspaceSwitcher = !isPlatformAdminShell;
   const showNotificationBell = !isPlatformAdminShell && !!accountContext?.organizationId;
-  const showChatWidget = true;
+  const showChatWidget = !pathname.startsWith("/solution-center");
   const disableWorkspaceModules =
     accountSurface === "standard" &&
     accountContext?.accountType === "individual" &&
@@ -392,7 +393,6 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
     : isOsgbShell
       ? osgbSecondaryNav
       : secondaryNav.filter((i) => !i.adminOnly || isAdmin === true);
-  const visibleAllNav = [...basePrimaryNav, ...baseSecondaryNav];
   const homeHref = isPlatformAdminShell
     ? "/platform-admin"
     : isOsgbShell
@@ -648,7 +648,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
           className="relative z-10"
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
-          <div className="mx-auto grid h-[92px] w-full max-w-[1480px] grid-cols-[minmax(260px,1fr)_auto_minmax(260px,1fr)] items-center gap-3 px-4 sm:px-6 xl:grid-cols-[minmax(280px,1fr)_auto_minmax(280px,1fr)] xl:gap-4 xl:px-8 2xl:px-10">
+          <div className="mx-auto grid h-[76px] w-full max-w-[1480px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 sm:px-5 lg:h-[92px] lg:grid-cols-[minmax(260px,1fr)_auto_minmax(260px,1fr)] lg:gap-3 xl:grid-cols-[minmax(280px,1fr)_auto_minmax(280px,1fr)] xl:gap-4 xl:px-8 2xl:px-10">
             {/* Left: Brand — absolute so it doesn't affect nav centering */}
             <div className="min-w-0 justify-self-start">
               <div className="xl:hidden">
@@ -700,13 +700,13 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
             </nav>
 
             {/* Right: Actions — absolute so it doesn't affect nav centering */}
-            <div className="flex items-center justify-end gap-1 justify-self-end sm:gap-1.5">
+            <div className="flex min-w-0 items-center justify-end gap-0.5 justify-self-end sm:gap-1.5">
               <LanguageSelector variant="dark" />
               {showNotificationBell ? <NotificationBell /> : null}
               <ThemeToggle />
               <Link
                 href="/profile"
-                className="inline-flex h-11 items-center gap-2 rounded-xl px-3 text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white"
+                className="inline-flex h-9 w-9 items-center justify-center gap-2 rounded-xl text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white sm:h-11 sm:w-auto sm:px-3"
                 aria-label="Profil"
                 title="Profil"
               >
@@ -719,7 +719,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
               {isAdmin === true ? (
                 <Link
                   href="/platform-admin"
-                  className="inline-flex h-11 items-center gap-2 rounded-xl px-3 text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white"
+                  className="inline-flex h-9 w-9 items-center justify-center gap-2 rounded-xl text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white sm:h-11 sm:w-auto sm:px-3"
                   aria-label="Platform Admin"
                   title="Platform Admin"
                 >
@@ -793,15 +793,16 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
         </div>
       </div>
 
-      {/* ── Mobile navigation (all items, single scrollable row) ── */}
+      {/* Mobile navigation: primary and secondary modules stay on separate rows. */}
       <div className="border-b md:hidden" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
-        <div className="mx-auto w-full max-w-[1480px] px-4 sm:px-6">
-          <div className="flex gap-0.5 overflow-x-auto py-0">
-            {visibleAllNav.map((item) => {
+        <div className="mx-auto w-full max-w-[1480px]">
+          <div className="border-b border-border/70 px-2">
+            <div className="flex max-w-full gap-0.5 overflow-x-auto py-0">
+              {basePrimaryNav.map((item) => {
               const act = isActive(pathname, item.href);
               const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
               const classes = cn(
-                "relative inline-flex shrink-0 items-center px-3 py-3 text-sm font-medium transition-colors",
+                "relative inline-flex shrink-0 items-center px-3 py-2.5 text-[13px] font-semibold transition-colors",
                 locked
                   ? "cursor-not-allowed opacity-50 text-muted-foreground"
                   : act
@@ -826,11 +827,57 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
                 <Link key={item.href} href={item.href} className={classes}>
                   {"key" in item ? t(item.key) : item.label}
                   {act && (
-                    <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-primary" />
+                    <span className="absolute inset-x-1 bottom-0 h-0.5 rounded-full bg-primary" />
                   )}
                 </Link>
               );
             })}
+            </div>
+          </div>
+
+          <div className="px-2">
+            <div className="flex max-w-full gap-0.5 overflow-x-auto py-0">
+              {showWorkspaceSwitcher ? (
+                <ActiveCompanyNavLink
+                  label="Firma"
+                  locked={disableWorkspaceModules}
+                />
+              ) : null}
+              {baseSecondaryNav.map((item) => {
+                const act = isActive(pathname, item.href);
+                const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
+                const classes = cn(
+                  "relative inline-flex shrink-0 items-center rounded-lg px-3 py-2.5 text-[13px] font-semibold transition-colors",
+                  locked
+                    ? "cursor-not-allowed opacity-50 text-muted-foreground"
+                    : act
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                );
+
+                if (locked) {
+                  return (
+                    <span
+                      key={item.href}
+                      className={classes}
+                      aria-disabled="true"
+                      title="Bu modulu acmak icin once calisma alani olustur"
+                    >
+                      {"key" in item ? t(item.key) : item.label}
+                    </span>
+                  );
+                }
+
+                return (
+                  <Link key={item.href} href={item.href} className={classes}>
+                    {"key" in item ? t(item.key) : item.label}
+                    {act && (
+                      <span className="absolute inset-x-1 bottom-0 h-0.5 rounded-full bg-primary" />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -839,8 +886,8 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
       {showWorkspaceSwitcher ? <ActiveCompanyBar /> : null}
 
       {/* ── Main content ── */}
-      <main className="mx-auto w-full max-w-[1480px] px-4 py-6 sm:px-6 xl:px-8 2xl:px-10">
-        <div className="page-stack">{children}</div>
+      <main className="mx-auto min-w-0 w-full max-w-[1480px] overflow-x-hidden px-4 py-6 sm:px-6 xl:px-8 2xl:px-10">
+        <div className="page-stack min-w-0">{children}</div>
       </main>
 
       {/* ── Chat Widget ── */}
