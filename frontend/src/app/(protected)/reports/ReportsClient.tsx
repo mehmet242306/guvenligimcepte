@@ -15,7 +15,9 @@ import {
   type CompanyFileCategoryId,
 } from "./_lib/company-file-collector";
 import { downloadCompanyFileZip } from "./_lib/company-file-generator";
+import { fetchCompanyProfile, type CompanyProfile } from "./_lib/company-profile";
 import { CompanyOverview } from "./_components/CompanyOverview";
+import { CompanyInfoBanner } from "./_components/CompanyInfoBanner";
 
 type Feedback =
   | { tone: "success" | "warning" | "danger" | "info"; message: string }
@@ -25,6 +27,7 @@ export function ReportsClient() {
   const [workspace, setWorkspace] = useState<WorkspaceRow | null>(null);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
+  const [profile, setProfile] = useState<CompanyProfile | null>(null);
   const [categories, setCategories] = useState<CompanyFileCategory[]>([]);
   const [selected, setSelected] = useState<Set<CompanyFileCategoryId>>(new Set());
   const [includeItemPdfs, setIncludeItemPdfs] = useState(true);
@@ -60,12 +63,17 @@ export function ReportsClient() {
 
     if (!resolvedOrg) {
       setCategories([]);
+      setProfile(null);
       setLoading(false);
       return;
     }
 
-    const data = await collectCompanyFile(resolvedOrg, ws?.id ?? null);
+    const [data, companyProfile] = await Promise.all([
+      collectCompanyFile(resolvedOrg, ws?.id ?? null),
+      ws?.id ? fetchCompanyProfile(ws.id) : Promise.resolve(null),
+    ]);
     setCategories(data);
+    setProfile(companyProfile);
     // Varsayılan: dolu kategorilerin hepsi seçili
     setSelected(new Set(data.filter((c) => c.count > 0).map((c) => c.id)));
     setLoading(false);
@@ -179,6 +187,8 @@ export function ReportsClient() {
       {feedback ? (
         <StatusAlert tone={feedback.tone}>{feedback.message}</StatusAlert>
       ) : null}
+
+      <CompanyInfoBanner profile={profile} loading={loading} />
 
       <CompanyOverview categories={categories} loading={loading} />
 
