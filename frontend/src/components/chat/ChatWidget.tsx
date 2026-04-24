@@ -24,7 +24,10 @@ import {
 import { getNovaUiCopy, resolveNovaRuntimeErrorMessage } from "@/lib/nova-ui";
 import { postNovaAgentRequest } from "@/lib/nova/client";
 import { resolveNovaApiEndpoint, resolveNovaRequestMode } from "@/lib/nova/request-mode";
-import { resolveNovaNavigationIntent } from "@/lib/nova/navigation-intents";
+import {
+  resolveNovaGreetingIntent,
+  resolveNovaNavigationIntent,
+} from "@/lib/nova/navigation-intents";
 import { fetchAccountContext } from "@/lib/account/account-api";
 import type {
   NovaAgentResponse,
@@ -51,6 +54,8 @@ import {
   Sparkles,
   Bot,
   User,
+  Copy,
+  Check,
 } from "lucide-react";
 
 type NovaSource = {
@@ -230,6 +235,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   const [activeTab, setActiveTab] = useState<"chat" | "history">("chat");
   const [historyItems, setHistoryItems] = useState<WidgetHistoryItem[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [panelPosition, setPanelPosition] = useState<PanelPosition | null>(null);
   const [launcherPosition, setLauncherPosition] = useState<PanelPosition | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -405,6 +411,16 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           : undefined,
       timestamp: new Date(),
     };
+  }
+
+  async function copyMessageText(message: Message) {
+    try {
+      await navigator.clipboard.writeText(message.text);
+      setCopiedMessageId(message.id);
+      window.setTimeout(() => setCopiedMessageId((current) => (current === message.id ? null : current)), 1500);
+    } catch {
+      setComposerError("Mesaj kopyalanamadi.");
+    }
   }
 
   // Fetch organization_id for authenticated users
@@ -1003,6 +1019,36 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
+    const greetingFallback = resolveNovaGreetingIntent(composedPrompt);
+    if (greetingFallback) {
+      const botMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "bot",
+        text: greetingFallback,
+        suggestions: authenticatedWelcomeActions.slice(0, 4),
+        timestamp: new Date(),
+      };
+      rememberLocalWidgetHistory(visiblePrompt, botMsg.text);
+      setMessages((prev) => [...prev, botMsg]);
+      setTyping(false);
+      return;
+    }
+
+    const navigationFallback = resolveNovaNavigationIntent(composedPrompt);
+    if (navigationFallback) {
+      const botMessage = buildBotMessageFromAgentResponse({
+        type: "message",
+        answer: navigationFallback.answer,
+        sources: [],
+        navigation: navigationFallback.navigation,
+        telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
+      });
+      rememberLocalWidgetHistory(visiblePrompt, botMessage.text);
+      setMessages((prev) => [...prev, botMessage]);
+      setTyping(false);
+      return;
+    }
+
     // Authenticated users: Nova edge function
     try {
       const {
@@ -1447,7 +1493,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                     </div>
                   )}
 
-                  {msg.toolPreview && (
+                  {msg.toolPreview && !(msg.navigation && msg.toolPreview.toolName === "navigate_to_page") && (
                     <div className="mt-2 rounded-lg border border-primary/20 bg-primary/5 p-2.5">
                       <div className="text-[10px] font-semibold uppercase tracking-wide text-primary">
                         {ui.widget.toolPreviewLabel}
@@ -1543,13 +1589,28 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                     </div>
                   )}
 
-                  {(msg.toolPreview || msg.draft || msg.workflow) && (
+                  {((msg.toolPreview && !(msg.navigation && msg.toolPreview.toolName === "navigate_to_page")) || msg.draft || msg.workflow) && (
                     <button
                       type="button"
                       onClick={() => router.push("/solution-center")}
                       className="text-xs font-medium text-primary transition-colors hover:text-primary-hover"
                     >
                       {ui.widget.continueInWorkspace}
+                    </button>
+                  )}
+
+                  {msg.role === "bot" && (
+                    <button
+                      type="button"
+                      onClick={() => void copyMessageText(msg)}
+                      className="inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      {copiedMessageId === msg.id ? (
+                        <Check className="size-3" />
+                      ) : (
+                        <Copy className="size-3" />
+                      )}
+                      {copiedMessageId === msg.id ? ui.widget.copied : ui.widget.copy}
                     </button>
                   )}
 

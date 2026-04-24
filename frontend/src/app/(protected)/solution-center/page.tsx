@@ -669,7 +669,9 @@ function MessageBubble({
           <NavigationCard navigation={message.navigation} onNavigate={onNavigate} />
         )}
 
-        {!isUser && message.toolPreview && (
+        {!isUser &&
+          message.toolPreview &&
+          !(message.navigation && message.toolPreview.toolName === "navigate_to_page") && (
           <div className="mt-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
             <div className="text-[10px] font-semibold uppercase tracking-wide text-primary">
               {ui.solutionCenter.toolPreviewLabel}

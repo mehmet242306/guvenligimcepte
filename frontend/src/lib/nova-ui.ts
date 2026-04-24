@@ -42,6 +42,8 @@ type NovaUiCopy = {
     currentPageLabel: string;
     authenticatedPlaceholder: string;
     publicPlaceholder: string;
+    copy: string;
+    copied: string;
   };
   solutionCenter: {
     modes: Array<{ label: string; hint: string; badge: string }>;
@@ -117,6 +119,8 @@ const trCopy: NovaUiCopy = {
     currentPageLabel: "Su an",
     authenticatedPlaceholder: "Nova'ya sorun...",
     publicPlaceholder: "Gercek Nova ajani icin giris yapin...",
+    copy: "Kopyala",
+    copied: "Kopyalandi",
   },
   solutionCenter: {
     modes: [
@@ -205,6 +209,8 @@ const enCopy: NovaUiCopy = {
     currentPageLabel: "Current page",
     authenticatedPlaceholder: "Ask Nova...",
     publicPlaceholder: "Sign in to access the real Nova agent...",
+    copy: "Copy",
+    copied: "Copied",
   },
   solutionCenter: {
     modes: [

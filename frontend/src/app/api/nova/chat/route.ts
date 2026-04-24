@@ -14,7 +14,10 @@ import {
   type NovaAgentResponse,
 } from "@/lib/nova/agent";
 import { assertNovaFeatureEnabled } from "@/lib/nova/governance";
-import { resolveNovaNavigationIntent } from "@/lib/nova/navigation-intents";
+import {
+  resolveNovaGreetingIntent,
+  resolveNovaNavigationIntent,
+} from "@/lib/nova/navigation-intents";
 
 function isCompatError(message: string | undefined | null) {
   const normalized = String(message ?? "").toLowerCase();
@@ -543,6 +546,7 @@ export async function POST(request: NextRequest) {
     const internalServiceSecret =
       process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null;
     const navigationIntent = resolveNovaNavigationIntent(payload.message);
+    const greetingIntent = resolveNovaGreetingIntent(payload.message);
 
     let authContext =
       payload.access_token
@@ -560,7 +564,8 @@ export async function POST(request: NextRequest) {
     if (!authContext) {
       const allowReadOnlyLegalFallback = canUseReadOnlyLegalFallback(payload.message);
       const allowNavigationFallback = navigationIntent !== null;
-      const auth = allowReadOnlyLegalFallback || allowNavigationFallback
+      const allowGreetingFallback = greetingIntent !== null;
+      const auth = allowReadOnlyLegalFallback || allowNavigationFallback || allowGreetingFallback
         ? await requireAuth(request)
         : await requirePermission(request, "ai.use");
       if (!auth.ok) return auth.response;
@@ -629,14 +634,15 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      const hasNovaPermission = navigationIntent
+      const hasNovaPermission = navigationIntent || greetingIntent
         ? true
         : await hasAiUsePermission(payload.access_token!);
-      const hasManagerAccess = navigationIntent
+      const hasManagerAccess = navigationIntent || greetingIntent
         ? true
         : await hasLegacyNovaManagerAccess(authContext.userId);
       const readOnlyLegalFallback =
         !navigationIntent &&
+        !greetingIntent &&
         !hasNovaPermission &&
         !hasManagerAccess &&
         canUseReadOnlyLegalFallback(payload.message);
@@ -653,6 +659,25 @@ export async function POST(request: NextRequest) {
         effectiveCompanyWorkspaceId = null;
         usedReadOnlyLegalFallback = true;
       }
+    }
+
+    if (greetingIntent) {
+      return NextResponse.json(
+        normalizeNovaAgentResponse({
+          type: "message",
+          answer: greetingIntent,
+          session_id: payload.session_id ?? null,
+          as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
+          answer_mode: payload.answer_mode,
+          jurisdiction_code: payload.jurisdiction_code ?? authContext.jurisdictionCode ?? "TR",
+          sources: [],
+          telemetry: {
+            gateway_mode: "greeting_fallback",
+            context_surface: payload.context_surface,
+            current_page: payload.current_page ?? null,
+          },
+        }),
+      );
     }
 
     if (navigationIntent) {
