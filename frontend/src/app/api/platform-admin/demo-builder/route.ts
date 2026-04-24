@@ -595,8 +595,8 @@ async function createStarterNotification(
     input.firstPrompt,
   );
   const link = input.firstPrompt
-    ? `/solution-center?prompt=${encodeURIComponent(input.firstPrompt.prompt)}`
-    : "/solution-center";
+    ? `/settings?tab=admin_ai&prompt=${encodeURIComponent(input.firstPrompt.prompt)}`
+    : "/dashboard";
 
   const { data, error } = await service
     .from("notifications")

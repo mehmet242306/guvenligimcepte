@@ -203,7 +203,7 @@ async function buildOsgbManagerContextNote(params: {
   currentPage?: string;
 }) {
   const service = createServiceClient();
-  const page = String(params.currentPage ?? "/solution-center").split("?")[0] || "/solution-center";
+  const page = String(params.currentPage ?? "/osgb").split("?")[0] || "/osgb";
 
   const companyPromise = params.companyWorkspaceId
     ? service
@@ -314,7 +314,7 @@ async function buildEnterpriseContextNote(params: {
   currentPage?: string;
 }) {
   const service = createServiceClient();
-  const page = String(params.currentPage ?? "/solution-center").split("?")[0] || "/solution-center";
+  const page = String(params.currentPage ?? "/enterprise").split("?")[0] || "/enterprise";
 
   const workspaceQuery = service
     .from("company_workspaces")
@@ -703,6 +703,12 @@ export async function POST(request: NextRequest) {
 
     const accountContext = await getAccountContextForUser(authContext.userId);
     const contextualHistory = [...payload.history];
+
+    contextualHistory.unshift({
+      role: "assistant",
+      content:
+        "Nova role constraint: Nova is the RiskNova site agent inside the floating chat widget. Do not present a separate Nova workspace or Nova center. For document needs, do not generate full documents inside chat; route the user to ISG Kutuphanesi Dokumantasyon or Dokuman Editoru and explain the next click briefly.",
+    });
 
     if (effectiveRequestMode === "read" && effectiveCompanyWorkspaceId === null) {
       contextualHistory.unshift({

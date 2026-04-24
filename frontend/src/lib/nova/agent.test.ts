@@ -9,7 +9,7 @@ describe("novaChatRequestSchema", () => {
     });
 
     expect(parsed.mode).toBe("agent");
-    expect(parsed.context_surface).toBe("solution_center");
+    expect(parsed.context_surface).toBe("widget");
     expect(parsed.answer_mode).toBe("extractive");
     expect(parsed.history).toEqual([]);
   });
@@ -64,7 +64,7 @@ describe("normalizeNovaAgentResponse", () => {
     expect(normalized.tool_preview?.requiresConfirmation).toBe(false);
   });
 
-  it("marks document payloads as draft-ready", () => {
+  it("routes document payloads to the document library instead of rendering drafts", () => {
     const normalized = normalizeNovaAgentResponse({
       answer: "Dokuman taslagi hazir.",
       documents: [
@@ -74,8 +74,8 @@ describe("normalizeNovaAgentResponse", () => {
       ],
     });
 
-    expect(normalized.type).toBe("draft_ready");
-    expect(normalized.draft?.kind).toBe("document");
-    expect(normalized.draft?.title).toBe("Acil Durum Plani Taslagi");
+    expect(normalized.type).toBe("tool_preview");
+    expect(normalized.navigation?.url).toBe("/isg-library?section=documentation");
+    expect(normalized.draft).toBeNull();
   });
 });

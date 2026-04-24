@@ -146,10 +146,10 @@ export default async function OsgbDashboardPage() {
           </div>
           <div className="mt-5">
             <Link
-              href="/solution-center?surface=osgb-manager"
+              href="/osgb/tasks"
               className="inline-flex h-10 items-center rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Nova OSGB Manager'i ac
+              OSGB is takip ekranini ac
             </Link>
           </div>
         </section>

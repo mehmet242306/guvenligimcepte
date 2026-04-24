@@ -175,8 +175,7 @@ async function processNovaActionExecution(task: TaskQueueRow) {
   const actionRunId = String(task.payload?.action_run_id ?? "").trim();
   const userId = String(task.payload?.user_id ?? task.created_by ?? "").trim();
   const organizationId = String(task.payload?.organization_id ?? task.organization_id ?? "").trim();
-  const contextSurface =
-    task.payload?.context_surface === "widget" ? "widget" : "solution_center";
+  const contextSurface = "widget";
   const idempotencyKey = String(task.payload?.idempotency_key ?? "").trim();
 
   if (!actionRunId || !userId || !organizationId || !idempotencyKey) {

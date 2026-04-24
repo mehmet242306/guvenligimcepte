@@ -7,7 +7,7 @@
  *
  * `useI18n()` / `useTranslation()` continue to work so existing call-sites
  * (protected-shell, public-header, language-selector, chat-widget,
- * solution-center, training, etc.) do not need to be touched in a single pass.
+ * training, reporting, etc.) do not need to be touched in a single pass.
  *
  * New code should prefer `useTranslations()` / `useLocale()` from `next-intl`.
  */

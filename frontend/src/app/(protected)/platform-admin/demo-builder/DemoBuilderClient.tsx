@@ -416,7 +416,7 @@ export function DemoBuilderClient() {
                         Promptu kopyala
                       </Button>
                       <a
-                        href={`/solution-center?prompt=${encodeURIComponent(item.prompt)}`}
+                        href={`/settings?tab=admin_ai&prompt=${encodeURIComponent(item.prompt)}`}
                         className="inline-flex h-9 items-center rounded-xl border border-border bg-card px-3.5 text-sm font-medium text-primary shadow-[var(--shadow-soft)] hover:bg-secondary"
                       >
                         Nova'da ac

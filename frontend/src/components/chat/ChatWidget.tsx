@@ -465,8 +465,8 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
     if (isOsgbSurface) {
       const managerHref = companyWorkspaceId
-        ? `/solution-center?surface=osgb-manager&workspaceId=${companyWorkspaceId}`
-        : "/solution-center?surface=osgb-manager";
+        ? `/osgb/tasks?workspaceId=${companyWorkspaceId}`
+        : "/osgb";
       const tasksHref = companyWorkspaceId
         ? `/osgb/tasks?workspaceId=${companyWorkspaceId}`
         : "/osgb/tasks";
@@ -478,7 +478,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         : "/osgb/documents";
 
       return [
-        { label: "Nova OSGB", path: managerHref, icon: "N" },
+        { label: "OSGB Panel", path: managerHref, icon: "N" },
         { label: "Gorevler", path: tasksHref, icon: "G" },
         { label: "Atamalar", path: assignmentsHref, icon: "A" },
         { label: "Dokumanlar", path: documentsHref, icon: "D" },
@@ -487,22 +487,22 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
     if (isEnterpriseSurface) {
       const enterpriseHref = companyWorkspaceId
-        ? `/solution-center?surface=enterprise&workspaceId=${companyWorkspaceId}`
-        : "/solution-center?surface=enterprise";
+        ? `/companies?workspaceId=${companyWorkspaceId}`
+        : "/enterprise";
 
       return [
-        { label: "Nova Kurumsal", path: enterpriseHref, icon: "N" },
-        { label: "Dokumanlar", path: "/solution-center/documents", icon: "D" },
+        { label: "Kurumsal Panel", path: enterpriseHref, icon: "N" },
+        { label: "Dokumanlar", path: "/isg-library?section=documentation", icon: "D" },
         { label: "Raporlar", path: "/reports", icon: "R" },
         { label: "Firmalar", path: "/companies", icon: "F" },
       ];
     }
 
     return [
-      { label: ui.quickActions.workspace, path: "/solution-center", icon: "N" },
+      { label: ui.quickActions.workspace, path: "/dashboard", icon: "P" },
       { label: ui.quickActions.planner, path: "/planner", icon: "P" },
       { label: ui.quickActions.newIncident, path: "/incidents/new", icon: "O" },
-      { label: ui.quickActions.documents, path: "/solution-center/documents", icon: "D" },
+      { label: ui.quickActions.documents, path: "/isg-library?section=documentation", icon: "D" },
     ];
   }, [
     companyWorkspaceId,
@@ -1752,11 +1752,26 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                   {msg.draft && (
                     <div className="mt-2 rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-2.5">
                       <div className="text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
-                        {ui.widget.draftReadyLabel}
+                        {msg.draft.kind === "document" ? "Dokuman yonlendirmesi" : ui.widget.draftReadyLabel}
                       </div>
-                      <div className="mt-1 text-xs font-medium text-foreground">{msg.draft.title}</div>
+                      <div className="mt-1 text-xs font-medium text-foreground">
+                        {msg.draft.kind === "document" ? "Dokuman icin ilgili ekrana gecin" : msg.draft.title}
+                      </div>
                       {msg.draft.summary ? (
-                        <div className="mt-1 text-[11px] leading-5 text-muted-foreground">{msg.draft.summary}</div>
+                        <div className="mt-1 text-[11px] leading-5 text-muted-foreground">
+                          {msg.draft.kind === "document"
+                            ? "Nova dokumani sohbet icinde uretmek yerine sizi hazir sablonlar ve dokuman akislari bulunan ISG Kutuphanesi alanina yonlendirir."
+                            : msg.draft.summary}
+                        </div>
+                      ) : null}
+                      {msg.draft.kind === "document" ? (
+                        <button
+                          type="button"
+                          onClick={() => router.push("/isg-library?section=documentation")}
+                          className="mt-2 rounded-md bg-primary px-3 py-1.5 text-[11px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                        >
+                          {ui.widget.gotoPage}
+                        </button>
                       ) : null}
                     </div>
                   )}
@@ -1811,16 +1826,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                         </button>
                       ))}
                     </div>
-                  )}
-
-                  {((msg.toolPreview && !(msg.navigation && msg.toolPreview.toolName === "navigate_to_page")) || msg.draft || msg.workflow) && (
-                    <button
-                      type="button"
-                      onClick={() => router.push("/solution-center")}
-                      className="text-xs font-medium text-primary transition-colors hover:text-primary-hover"
-                    >
-                      {ui.widget.continueInWorkspace}
-                    </button>
                   )}
 
                   {msg.role === "bot" && (

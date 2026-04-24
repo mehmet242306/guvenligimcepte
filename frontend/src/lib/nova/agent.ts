@@ -9,7 +9,7 @@ export type AgentActionDef<T extends z.ZodTypeAny> = {
   requiresConfirmation: boolean;
   riskClass: RiskClass;
   inputSchema: T;
-  uiSurfaceHints: Array<"widget" | "solution_center">;
+  uiSurfaceHints: Array<"widget">;
   telemetryKey: string;
 };
 
@@ -116,7 +116,7 @@ export const novaChatRequestSchema = z.object({
   answer_mode: z.enum(["extractive", "polish"]).optional().default("extractive"),
   access_token: z.string().min(20).nullable().optional(),
   mode: z.enum(["read", "agent"]).optional().default("agent"),
-  context_surface: z.enum(["widget", "solution_center"]).optional().default("solution_center"),
+  context_surface: z.enum(["widget"]).optional().default("widget"),
   confirmation_token: z.string().uuid().nullable().optional(),
   current_page: z.string().max(512).optional(),
   history: z
@@ -144,7 +144,7 @@ export const actionCatalog = {
       url: z.string().min(1).max(512),
       label: z.string().min(1).max(180),
     }),
-    uiSurfaceHints: ["widget", "solution_center"],
+    uiSurfaceHints: ["widget"],
     telemetryKey: "navigate_to_page",
   },
   open_filtered_view: {
@@ -157,7 +157,7 @@ export const actionCatalog = {
         route: z.string().min(1).max(256),
         query: z.record(z.string(), z.string()).optional(),
       }),
-      uiSurfaceHints: ["widget", "solution_center"],
+      uiSurfaceHints: ["widget"],
       telemetryKey: "open_filtered_view",
   },
   summarize_records: {
@@ -169,7 +169,7 @@ export const actionCatalog = {
     inputSchema: z.object({
       scope: z.enum(["workspace", "incidents", "planner", "documents", "mixed"]),
     }),
-    uiSurfaceHints: ["widget", "solution_center"],
+    uiSurfaceHints: ["widget"],
     telemetryKey: "summarize_records",
   },
   legal_research_answer: {
@@ -182,7 +182,7 @@ export const actionCatalog = {
       jurisdictionCode: z.string().regex(/^[A-Z]{2}$/),
       answerMode: z.enum(["extractive", "polish"]),
     }),
-    uiSurfaceHints: ["widget", "solution_center"],
+    uiSurfaceHints: ["widget"],
     telemetryKey: "legal_research_answer",
   },
   draft_incident: {
@@ -195,20 +195,20 @@ export const actionCatalog = {
       title: z.string().min(1).max(180).optional(),
       severity: z.enum(["low", "medium", "high", "critical"]).optional(),
     }),
-    uiSurfaceHints: ["widget", "solution_center"],
+    uiSurfaceHints: ["widget"],
     telemetryKey: "draft_incident",
   },
   draft_document: {
     name: "draft_document",
-    description: "Editor veya mevzuat temelli bir dokuman taslagi hazirlar.",
+    description: "Dokuman ihtiyacinda kullaniciyi ISG Kutuphanesi veya Dokuman Editoru ekranina yonlendirir.",
     permissionCode: "ai.use",
     requiresConfirmation: false,
-    riskClass: "draft",
+    riskClass: "read",
     inputSchema: z.object({
       title: z.string().min(1).max(180).optional(),
       docType: z.string().max(64).optional(),
     }),
-    uiSurfaceHints: ["solution_center"],
+    uiSurfaceHints: ["widget"],
     telemetryKey: "draft_document",
   },
   draft_training_or_task_plan: {
@@ -221,7 +221,7 @@ export const actionCatalog = {
       title: z.string().min(1).max(180).optional(),
       date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
     }),
-    uiSurfaceHints: ["widget", "solution_center"],
+    uiSurfaceHints: ["widget"],
     telemetryKey: "draft_training_or_task_plan",
   },
   build_followup_workflow: {
@@ -234,7 +234,7 @@ export const actionCatalog = {
       title: z.string().min(1).max(180).optional(),
       totalSteps: z.number().int().min(1).max(12).optional(),
     }),
-    uiSurfaceHints: ["solution_center"],
+    uiSurfaceHints: ["widget"],
     telemetryKey: "build_followup_workflow",
   },
 } satisfies Record<string, AgentActionDef<z.ZodTypeAny>>;
@@ -262,7 +262,7 @@ export function normalizeNovaAgentResponse(raw: Record<string, unknown>): NovaAg
   const documents = Array.isArray(raw.documents)
     ? (raw.documents as Array<Record<string, unknown>>)
     : [];
-  const navigation =
+  let navigation =
     raw.navigation && typeof raw.navigation === "object"
       ? (raw.navigation as NovaAgentNavigation)
       : null;
@@ -284,9 +284,21 @@ export function normalizeNovaAgentResponse(raw: Record<string, unknown>): NovaAg
   const actionHint =
     raw.action_hint && typeof raw.action_hint === "object"
       ? (raw.action_hint as NovaActionHint)
-      : typeof raw.action_hint === "string"
-        ? raw.action_hint
-        : null;
+        : typeof raw.action_hint === "string"
+          ? raw.action_hint
+          : null;
+
+  if (!navigation && documents.length > 0) {
+    navigation = {
+      action: "navigate",
+      url: "/isg-library?section=documentation",
+      label: "ISG Kutuphanesi Dokumanlari",
+      reason:
+        "Dokuman ihtiyaci icin hazir sablonlar ve editor akislarina ISG Kutuphanesi Dokumantasyon bolumunden ulasilir.",
+      destination: "isg_library_documents",
+      auto_navigate: false,
+    };
+  }
 
   if (!toolPreview && navigation) {
     toolPreview = {
@@ -317,17 +329,6 @@ export function normalizeNovaAgentResponse(raw: Record<string, unknown>): NovaAg
       actionSurface: "read",
     };
     type = type === "message" ? "tool_preview" : type;
-  }
-
-  if (!draft && documents.length > 0) {
-    const firstDoc = documents[0];
-    draft = {
-      kind: "document",
-      title:
-        typeof firstDoc.title === "string" ? firstDoc.title : "Nova dokuman taslagi",
-      summary: answer,
-    };
-    type = "draft_ready";
   }
 
   if (!toolPreview && actionHint && typeof actionHint === "object") {

@@ -23,7 +23,18 @@ export function normalizeNovaNavigationText(message: string) {
 }
 
 const navigationVerbPattern =
-  /(ac|git|gotur|yonlendir|nerede|hangi alan|hangi sayfa|alana|sayfaya|open|navigate|go to|show)/;
+  /(ac|git|gotur|yonlendir|nerede|hangi alan|hangi sayfa|alana|sayfaya|nereye|bul|open|navigate|go to|show)/;
+
+const documentIntentPattern = /(dokuman|belge|form|prosedur|talimat|sablon|template|rapor|sunum)/;
+const documentWorkPattern =
+  /(hazirla|olustur|uret|yaz|taslak|gerek|gerekiyor|lazim|ihtiyac|hazirlayabilecegim|hazirlayacagim)/;
+
+function shouldResolveNavigation(normalized: string) {
+  return (
+    navigationVerbPattern.test(normalized) ||
+    (documentIntentPattern.test(normalized) && documentWorkPattern.test(normalized))
+  );
+}
 
 const navigationTargets: NovaNavigationTarget[] = [
   {
@@ -31,11 +42,11 @@ const navigationTargets: NovaNavigationTarget[] = [
     url: "/isg-library?section=documentation",
     label: "ISG Kutuphanesi Dokumanlari",
     reason: "Hazir ISG dokumanlari, sablonlar, prosedurler ve formlar ISG Kutuphanesi icindeki Dokumantasyon bolumunde bulunur.",
-    priority: 100,
+    priority: 110,
     matches: (text) =>
       /(isg kutuphan|kutuphan)/.test(text) ||
       (/(dokuman|belge|form|prosedur|talimat|sablon|template)/.test(text) &&
-        /(hazir|ornek|kutuphane|katalog|dokumantasyon)/.test(text)),
+        /(hazir|ornek|kutuphane|katalog|dokumantasyon|hazirla|olustur|uret|gerek|lazim|ihtiyac)/.test(text)),
   },
   {
     destination: "document_editor",
@@ -45,7 +56,7 @@ const navigationTargets: NovaNavigationTarget[] = [
     priority: 80,
     matches: (text) =>
       /(dokuman|belge|form|prosedur|talimat)/.test(text) &&
-      /(editor|sifirdan|bos|yeni dokuman|olustur|taslak)/.test(text),
+      /(editor|sifirdan|bos|yeni dokuman|ozel dokuman|kendi dokumanim)/.test(text),
   },
   {
     destination: "documents",
@@ -55,14 +66,6 @@ const navigationTargets: NovaNavigationTarget[] = [
     priority: 70,
     matches: (text) =>
       /(dokumanlarim|belgelerim|kayitli dokuman|dokuman arsiv|belge arsiv|dokumanlar)/.test(text),
-  },
-  {
-    destination: "solution_documents",
-    url: "/solution-center/documents",
-    label: "Nova Dokumanlari",
-    reason: "Nova tarafindan hazirlanan belge taslaklari ve sohbetten uretilen dokuman akislarini burada takip edebilirsiniz.",
-    priority: 60,
-    matches: (text) => /(nova dokuman|solution center.*dokuman|sohbet.*dokuman)/.test(text),
   },
   {
     destination: "planner",
@@ -129,12 +132,12 @@ const navigationTargets: NovaNavigationTarget[] = [
     matches: (text) => /(profil|profile|hesabim|hesap bilgilerim)/.test(text),
   },
   {
-    destination: "workspace",
-    url: "/solution-center",
-    label: "Nova Calisma Alani",
-    reason: "Nova sohbeti, yonlendirme ve operasyon yardimi Nova Calisma Alani uzerinden ilerler.",
+    destination: "dashboard",
+    url: "/dashboard",
+    label: "Panel",
+    reason: "Nova artik sag alttaki sohbet ajanidir; ana modullere Panel uzerinden de ulasabilirsiniz.",
     priority: 50,
-    matches: (text) => /(calisma alani|workspace|nova calisma|nova alani)/.test(text),
+    matches: (text) => /(nova merkezi|nova calisma|nova alani|solution center|panel|ana panel)/.test(text),
   },
 ];
 
@@ -151,9 +154,8 @@ export function resolveNovaGreetingIntent(message: string): string | null {
 
 export function resolveNovaNavigationIntent(message: string): NovaNavigationIntent | null {
   const normalized = normalizeNovaNavigationText(message);
-  const asksForNavigation = navigationVerbPattern.test(normalized);
 
-  if (!asksForNavigation) {
+  if (!shouldResolveNavigation(normalized)) {
     return null;
   }
 

@@ -370,9 +370,9 @@ export function OsgbFirmsClient() {
             <li>Sozlesme ve rapor yenileme risklerini onceliklendir.</li>
           </ul>
           <div className="mt-5 flex flex-wrap gap-3">
-            <Link href="/solution-center?surface=osgb-manager" className={quickActionPrimaryClassName}>
+            <Link href="/osgb/tasks" className={quickActionPrimaryClassName}>
               <ShieldAlert className="h-4 w-4" />
-              Nova OSGB'yi ac
+              OSGB islerini ac
             </Link>
             <Link href="/osgb/tasks" className={quickActionAccentClassName}>
               <ArrowRight className="h-4 w-4" />

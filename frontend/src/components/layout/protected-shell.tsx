@@ -55,7 +55,6 @@ const secondaryNav: NavItem[] = [
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
-  { href: "/solution-center", key: "nav.solutionCenter" },
   { href: "/digital-twin", key: "nav.digitalTwin", adminOnly: true },
   // Raporlar: Artık firma workspace'i içindeki "İSG Dosyası" sekmesine taşındı.
   // { href: "/reports", key: "nav.reports" },
@@ -74,7 +73,6 @@ const osgbPrimaryNav = [
 const osgbSecondaryNav = [
   { href: "/risk-analysis", label: "Riskler" },
   { href: "/osgb/contracts", label: "Sözleşmeler" },
-  { href: "/solution-center", label: "Nova OSGB" },
   // Raporlar: Firma workspace → İSG Dosyası sekmesine taşındı.
   { href: "/settings", label: "Ayarlar" },
 ];
@@ -366,7 +364,7 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
     !isPlatformAdminShell && accountSurface === "osgb-manager";
   const showWorkspaceSwitcher = !isPlatformAdminShell;
   const showNotificationBell = !isPlatformAdminShell && !!accountContext?.organizationId;
-  const showChatWidget = !pathname.startsWith("/solution-center");
+  const showChatWidget = true;
   const disableWorkspaceModules =
     accountSurface === "standard" &&
     accountContext?.accountType === "individual" &&

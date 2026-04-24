@@ -148,7 +148,7 @@ export async function POST(
     },
     userId: actionRun.user_id,
     organizationId: actionRun.organization_id ?? auth.organizationId,
-    contextSurface: "solution_center",
+    contextSurface: "widget",
     idempotencyKey: randomUUID(),
   });
 

@@ -203,12 +203,12 @@ export default async function OsgbTasksPage({
             <Link
               href={
                 selectedCompany
-                  ? `/solution-center?surface=osgb-manager&workspaceId=${selectedCompany.workspaceId}`
-                  : "/solution-center?surface=osgb-manager"
+                  ? `/osgb/tasks?workspaceId=${selectedCompany.workspaceId}`
+                  : "/osgb/tasks"
               }
               className="inline-flex h-10 items-center rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Nova OSGB Manager
+              OSGB islerini yenile
             </Link>
           </>
         }

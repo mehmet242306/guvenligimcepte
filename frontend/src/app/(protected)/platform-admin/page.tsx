@@ -128,7 +128,7 @@ function statusClass(status: HealthRow["status"]) {
 }
 
 function buildPromptHref(prompt: string) {
-  return `/solution-center?surface=platform-admin&prompt=${encodeURIComponent(prompt)}`;
+  return `/settings?tab=admin_ai&prompt=${encodeURIComponent(prompt)}`;
 }
 
 export default async function PlatformAdminPage() {
@@ -900,4 +900,3 @@ function EmptyState({ text }: { text: string }) {
     </div>
   );
 }
-

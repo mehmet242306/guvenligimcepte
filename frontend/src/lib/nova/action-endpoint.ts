@@ -5,12 +5,12 @@ import { normalizeNovaAgentResponse, type NovaAgentResponse } from "@/lib/nova/a
 
 export const novaActionConfirmSchema = z.object({
   idempotency_key: z.string().uuid(),
-  context_surface: z.enum(["widget", "solution_center"]).optional().default("solution_center"),
+  context_surface: z.enum(["widget"]).optional().default("widget"),
 });
 
 export const novaActionCancelSchema = z.object({
   reason: z.string().max(500).optional(),
-  context_surface: z.enum(["widget", "solution_center"]).optional().default("solution_center"),
+  context_surface: z.enum(["widget"]).optional().default("widget"),
 });
 
 export type NovaStoredActionRun = {
@@ -347,7 +347,7 @@ export async function queueNovaActionExecution(params: {
   actionRun: NovaStoredActionRun;
   userId: string;
   organizationId: string;
-  contextSurface: "widget" | "solution_center";
+  contextSurface: "widget";
   idempotencyKey: string;
 }) {
   const admin = createServiceClient();
@@ -470,7 +470,7 @@ export async function invokeNovaActionExecutor(params: {
   accessToken: string | null;
   internalServiceSecret: string | null;
   confirmationAction: "confirm" | "cancel";
-  contextSurface: "widget" | "solution_center";
+  contextSurface: "widget";
   idempotencyKey?: string | null;
   reason?: string | null;
 }) {
