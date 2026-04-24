@@ -12,12 +12,18 @@ import {
   buildManualFallbackResponse,
   executeWithResilience,
 } from "@/lib/self-healing/resilience";
+import {
+  detectSafetyObjects,
+  visionToPromptContext,
+  type VisionDetection,
+} from "@/lib/ai/openai-vision";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-export const maxDuration = 60;
+export const maxDuration = 90; // Hybrid OpenAI+Anthropic iki aşamalı, biraz daha geniş pencere
 
-const PROMPT_VERSION = "v1.8";
+// v1.9 — Hybrid pipeline: OpenAI gpt-4o vision (object detection) ► Claude Sonnet 4 (risk reasoning)
+const PROMPT_VERSION = "v1.9-hybrid";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
@@ -796,6 +802,36 @@ export async function POST(request: NextRequest) {
     }
 
     const startTime = Date.now();
+
+    // ═══════════════════════════════════════════════════════════════════
+    // STAGE 1 — OpenAI gpt-4o Vision: TARAFSIZ OBJE TESPİTİ
+    // ═══════════════════════════════════════════════════════════════════
+    // Görsel KKD/tehlike detection'ını OpenAI'a yaptırıyoruz çünkü spatial
+    // reasoning + bounding box stability Claude'dan daha iyi. OpenAI
+    // ground truth olarak Claude'a enjekte edilecek → "kaynakçının maskesi
+    // takılı olduğu halde 'maske eksik' halüsinasyonu" riski düşer.
+    //
+    // OPENAI_API_KEY yoksa veya çağrı fail ederse null döner ve hibrit
+    // mode'dan tek-model mode'a graceful fallback olur.
+    let visionDetection: VisionDetection | null = null;
+    try {
+      visionDetection = await detectSafetyObjects(imageBase64, mimeType);
+    } catch (visionErr) {
+      // Sessizce düş — Claude tek başına yine de çalışır
+      console.warn("[analyze-risk] vision stage failed:", visionErr);
+    }
+
+    // Claude'a verilecek ek kontekst (varsa); yoksa boş string → eski davranış
+    const visionContextBlock = visionDetection ? visionToPromptContext(visionDetection) : "";
+    const augmentedUserPrompt = visionContextBlock
+      ? `${visionContextBlock}\n\n${buildUserPrompt(method)}`
+      : buildUserPrompt(method);
+
+    // ═══════════════════════════════════════════════════════════════════
+    // STAGE 2 — Anthropic Claude Sonnet 4: RİSK AKIL YÜRÜTMESİ
+    // ═══════════════════════════════════════════════════════════════════
+    // Vision stage'in ground truth'uyla, seçilen metoda (r_skor, fmea,
+    // bow_tie, vb.) göre parametrik risk analizi.
     const resilientResponse = await executeWithResilience({
       serviceKey: "anthropic.api",
       displayName: "Anthropic API",
@@ -809,7 +845,10 @@ export async function POST(request: NextRequest) {
       operation: () =>
         client.messages.create({
           model: "claude-sonnet-4-20250514",
-          max_tokens: 4096,
+          // 4096 bazı metodlarda (FMEA/HAZOP/BowTie çoklu risk + legalReferences)
+          // kesiliyordu → malformed JSON → 500. 6000 daha güvenli, Claude Sonnet 4
+          // için hala hızlı (~20-30 saniye).
+          max_tokens: 6000,
           temperature: 0,
           system: buildSystemPrompt(method),
           messages: [
@@ -826,7 +865,7 @@ export async function POST(request: NextRequest) {
                 },
                 {
                   type: "text",
-                  text: buildUserPrompt(method),
+                  text: augmentedUserPrompt,
                 },
               ],
             },
@@ -898,8 +937,46 @@ export async function POST(request: NextRequest) {
       jsonStr = jsonStr.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
     }
 
+    // Claude bazen token limitinde kesildiğinde yarım JSON dönüyor → JSON.parse
+    // throw eder ve 500'e düşerdi. Şimdi graceful: parse fail olursa
+    // empty-but-valid response üret, client boş findings'le devam eder.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const parsed = JSON.parse(jsonStr) as Record<string, any>;
+    let parsed: Record<string, any>;
+    try {
+      parsed = JSON.parse(jsonStr);
+    } catch (parseErr) {
+      const preview = jsonStr.slice(0, 500);
+      const tailPreview = jsonStr.slice(-200);
+      console.warn(
+        "[analyze-risk] Claude JSON parse failed:",
+        parseErr instanceof Error ? parseErr.message : String(parseErr),
+        "| preview:", preview,
+        "| tail:", tailPreview,
+      );
+      await logErrorEvent({
+        level: "error",
+        source: "analyze-risk",
+        endpoint: "/api/analyze-risk",
+        message: "Claude response JSON parse failed",
+        context: {
+          method,
+          preview: preview.slice(0, 300),
+          parseError: parseErr instanceof Error ? parseErr.message : String(parseErr),
+          outputTokens: response.usage?.output_tokens ?? 0,
+        },
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+      });
+      parsed = {
+        risks: [],
+        positiveObservations: [],
+        photoQuality: { level: "moderate", note: "AI yanıtı işlenemedi, lütfen tekrar deneyin." },
+        areaSummary: "",
+        personCount: visionDetection?.personCount ?? 0,
+        imageRelevance: "relevant",
+        imageDescription: visionDetection?.overallDescription ?? "",
+      };
+    }
 
     // Debug log
     console.log("\\n========================================");
@@ -952,8 +1029,32 @@ export async function POST(request: NextRequest) {
         durationMs: duration,
         personCount: parsed.personCount ?? 0,
         riskCount: Array.isArray(parsed.risks) ? parsed.risks.length : 0,
+        hybridVision: visionDetection ? "openai_gpt4o" : "none",
+        visionDurationMs: visionDetection?.visionDurationMs ?? 0,
+        visionTokensInput: visionDetection?.visionTokens.input ?? 0,
+        visionTokensOutput: visionDetection?.visionTokens.output ?? 0,
       },
     });
+
+    // Vision stage'i ayrı bir usage event olarak da logla (maliyet takibi)
+    if (visionDetection) {
+      await logAiUsage({
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        model: visionDetection.visionModel,
+        endpoint: "/api/analyze-risk:vision",
+        promptTokens: visionDetection.visionTokens.input,
+        completionTokens: visionDetection.visionTokens.output,
+        success: true,
+        metadata: {
+          method,
+          personCount: visionDetection.personCount,
+          hazardCount: visionDetection.hazardObjects.length,
+          imageType: visionDetection.imageType,
+        },
+      });
+    }
+
     return NextResponse.json({
       risks: parsed.risks ?? [],
       faces: parsed.faces ?? [],
@@ -968,6 +1069,18 @@ export async function POST(request: NextRequest) {
       durationMs: duration,
       tokensInput: response.usage?.input_tokens ?? 0,
       tokensOutput: response.usage?.output_tokens ?? 0,
+      // Hybrid pipeline meta — client gösterebilir ya da debug için kullanabilir
+      visionStage: visionDetection
+        ? {
+            model: visionDetection.visionModel,
+            durationMs: visionDetection.visionDurationMs,
+            personCount: visionDetection.personCount,
+            hazardCount: visionDetection.hazardObjects.length,
+            imageType: visionDetection.imageType,
+            sceneCategory: visionDetection.sceneCategory,
+            workActivity: visionDetection.workActivity,
+          }
+        : null,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Bilinmeyen hata";

@@ -47,6 +47,7 @@
     "lucide-react": "^1.7.0",
     "next": "16.1.6",
     "next-intl": "^4.9.1",
+    "openai": "^6.34.0",
     "papaparse": "^5.5.3",
     "pptxgenjs": "^4.0.1",
     "qrcode": "^1.5.4",
