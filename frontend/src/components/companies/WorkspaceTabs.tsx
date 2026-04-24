@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus, FileSearch, Archive, Pencil, Trash2, ChevronDown, ClipboardList, Share2, Copy, Check, MessageCircle, QrCode, ListTodo, ShieldCheck, IdCard, Briefcase, ArrowRight } from "lucide-react";
+import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus, FileSearch, Archive, Pencil, Trash2, ChevronDown, ClipboardList, Share2, Copy, Check, MessageCircle, QrCode, IdCard, Briefcase } from "lucide-react";
 import type { PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,6 @@ import { PremiumIconBadge } from "@/components/ui/premium-icon-badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { CompanyRecord } from "@/lib/company-directory";
-import { getGuidedTasks, getOverallRiskState } from "@/lib/workplace-status";
 import { listRiskAssessments, deleteRiskAssessment, loadRiskAssessment, listFindingsByCategory, updateFindingStatus, archiveRiskAssessment, toggleRiskSharing, type SavedAssessment, type FullAssessment, type FindingWithContext } from "@/lib/supabase/risk-assessment-api";
 import QRCode from "qrcode";
 import { createClient } from "@/lib/supabase/client";
@@ -21,13 +20,7 @@ import {
   type TrainingRecord, type PeriodicControlRecord, type OpenAction, type TrackingSummary, type CommitteeMeeting,
 } from "@/lib/supabase/tracking-api";
 
-export type WTab = "overview" | "structure" | "risk" | "people" | "personnel" | "planner" | "tracking" | "ohs_file" | "organization" | "history";
-
-function pbv(p: string): "danger" | "warning" | "neutral" {
-  if (p === "high") return "danger";
-  if (p === "medium") return "warning";
-  return "neutral";
-}
+export type WTab = "structure" | "risk" | "people" | "personnel" | "planner" | "tracking" | "ohs_file" | "organization" | "history";
 
 function Sec({ title, desc, children, icon, tone }: { title: string; desc?: string; children: React.ReactNode; icon?: React.ElementType; tone?: PremiumIconTone }) {
   return (
@@ -47,61 +40,19 @@ function Sec({ title, desc, children, icon, tone }: { title: string; desc?: stri
 const FC = "h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground";
 
 /* ── OVERVIEW ── */
-export function OverviewTab({ company, upd, risk, tasks, setTab }: {
+/**
+ * Firma kimlik + operasyonel bilgi düzenleme paneli.
+ * Eski "Genel Durum" sekmesinin editable kısmı; artık StructureTab'ın
+ * başında render ediliyor. Görev listesi / risk widget'ı / son aktivite
+ * gibi durum takipleri Panel ve üst aktif-firma şeridinde görünüyor,
+ * dolayısıyla buradan kaldırıldı.
+ */
+export function CompanyIdentitySection({ company, upd }: {
   company: CompanyRecord;
   upd: (p: Partial<CompanyRecord>) => void;
-  risk: ReturnType<typeof getOverallRiskState> | null;
-  tasks: ReturnType<typeof getGuidedTasks>;
-  setTab: (t: WTab) => void;
 }) {
   return (
     <div className="space-y-5">
-      <Sec icon={ListTodo} tone="gold" title={"Bug\u00FCn Ne Yapmal\u0131y\u0131m?"} desc={"Firmaya \u00F6zel \u00F6ncelikli g\u00F6revler."}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {tasks.map((t, i) => {
-            const prioTone: PremiumIconTone = t.priority === "high" ? "danger" : t.priority === "medium" ? "amber" : "emerald";
-            return (
-              <div key={i} className="group rounded-[1.25rem] border border-border/80 bg-gradient-to-br from-secondary/20 to-transparent p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--gold)]/30 hover:shadow-[var(--shadow-card)]">
-                <div className="flex items-start justify-between gap-3">
-                  <p className="text-sm font-bold text-foreground">{t.title}</p>
-                  <Badge variant={pbv(t.priority)} className="shrink-0 text-[10px]">
-                    {t.priority === "high" ? "Y\u00FCksek" : t.priority === "medium" ? "Orta" : "D\u00FC\u015F\u00FCk"}
-                  </Badge>
-                </div>
-                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t.description}</p>
-                <button
-                  type="button"
-                  onClick={() => setTab((t.href?.replace("#", "") || "overview") as WTab)}
-                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-primary transition-transform hover:translate-x-0.5"
-                  style={{ color: `var(--${prioTone === "danger" ? "danger" : "primary"})` }}
-                >
-                  {t.actionLabel} <ArrowRight size={13} />
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      </Sec>
-
-      {risk && (
-        <Sec icon={ShieldCheck} tone="emerald" title={"Genel Risk Durumu"}>
-          <div className="grid gap-3 sm:grid-cols-4">
-            {[
-              { l: "Yap\u0131sal", v: risk.structural, color: "from-blue-500/8 dark:from-blue-500/12" },
-              { l: "Kapsam", v: risk.coverage, color: "from-emerald-500/8 dark:from-emerald-500/12" },
-              { l: "Olgunluk", v: risk.maturity, color: "from-violet-500/8 dark:from-violet-500/12" },
-              { l: "Risk Bask\u0131s\u0131", v: risk.openPressure, color: "from-amber-500/8 dark:from-amber-500/12" },
-            ].map((m) => (
-              <div key={m.l} className={`rounded-[1.25rem] border border-border/60 bg-gradient-to-br ${m.color} to-transparent p-4 text-center shadow-sm`}>
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{m.l}</p>
-                <p className="mt-1.5 text-3xl font-bold tabular-nums text-foreground">{m.v}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-4 rounded-xl border border-border/60 bg-secondary/20 p-3 text-sm leading-relaxed text-muted-foreground">{risk.description}</p>
-        </Sec>
-      )}
-
       <Sec icon={IdCard} tone="cobalt" title="Firma Bilgileri" desc={"Temel kimlik ve ileti\u015Fim."}>
         <div className="grid gap-4 sm:grid-cols-2">
           <div><label className="text-xs font-medium text-muted-foreground">{"Firma Ad\u0131"}</label><Input value={company.name} onChange={(e) => upd({ name: e.target.value })} className="mt-1" /></div>
@@ -151,6 +102,9 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
 
   return (
     <div className="space-y-6">
+      {/* Firma kimlik + SGK + operasyonel bilgiler (eski Genel Durum sekmesinden taşındı) */}
+      <CompanyIdentitySection company={company} upd={upd} />
+
       {/* Üst özet kartları */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-[1.25rem] border border-border/80 bg-card p-5 text-center shadow-[var(--shadow-card)]">

@@ -24,6 +24,7 @@ import {
 import { getNovaUiCopy, resolveNovaRuntimeErrorMessage } from "@/lib/nova-ui";
 import { postNovaAgentRequest } from "@/lib/nova/client";
 import { resolveNovaApiEndpoint, resolveNovaRequestMode } from "@/lib/nova/request-mode";
+import { resolveNovaNavigationIntent } from "@/lib/nova/navigation-intents";
 import { fetchAccountContext } from "@/lib/account/account-api";
 import type {
   NovaAgentResponse,
@@ -1043,6 +1044,20 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         clearAttachedImage();
       }
     } catch (err: unknown) {
+      const navigationFallback = resolveNovaNavigationIntent(composedPrompt);
+      if (navigationFallback) {
+        const botMessage = buildBotMessageFromAgentResponse({
+          type: "message",
+          answer: navigationFallback.answer,
+          sources: [],
+          navigation: navigationFallback.navigation,
+          telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
+        });
+        rememberLocalWidgetHistory(visiblePrompt, botMessage.text);
+        setMessages((prev) => [...prev, botMessage]);
+        return;
+      }
+
       const errorText = await resolveNovaRuntimeErrorMessage(locale, err);
       const errorMsg: Message = {
         id: crypto.randomUUID(),

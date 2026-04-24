@@ -14,6 +14,7 @@ import {
   type NovaAgentResponse,
 } from "@/lib/nova/agent";
 import { assertNovaFeatureEnabled } from "@/lib/nova/governance";
+import { resolveNovaNavigationIntent } from "@/lib/nova/navigation-intents";
 
 function isCompatError(message: string | undefined | null) {
   const normalized = String(message ?? "").toLowerCase();
@@ -541,6 +542,7 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient();
     const internalServiceSecret =
       process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null;
+    const navigationIntent = resolveNovaNavigationIntent(payload.message);
 
     let authContext =
       payload.access_token
@@ -557,7 +559,8 @@ export async function POST(request: NextRequest) {
 
     if (!authContext) {
       const allowReadOnlyLegalFallback = canUseReadOnlyLegalFallback(payload.message);
-      const auth = allowReadOnlyLegalFallback
+      const allowNavigationFallback = navigationIntent !== null;
+      const auth = allowReadOnlyLegalFallback || allowNavigationFallback
         ? await requireAuth(request)
         : await requirePermission(request, "ai.use");
       if (!auth.ok) return auth.response;
@@ -626,9 +629,14 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      const hasNovaPermission = await hasAiUsePermission(payload.access_token!);
-      const hasManagerAccess = await hasLegacyNovaManagerAccess(authContext.userId);
+      const hasNovaPermission = navigationIntent
+        ? true
+        : await hasAiUsePermission(payload.access_token!);
+      const hasManagerAccess = navigationIntent
+        ? true
+        : await hasLegacyNovaManagerAccess(authContext.userId);
       const readOnlyLegalFallback =
+        !navigationIntent &&
         !hasNovaPermission &&
         !hasManagerAccess &&
         canUseReadOnlyLegalFallback(payload.message);
@@ -645,6 +653,27 @@ export async function POST(request: NextRequest) {
         effectiveCompanyWorkspaceId = null;
         usedReadOnlyLegalFallback = true;
       }
+    }
+
+    if (navigationIntent) {
+      return NextResponse.json(
+        normalizeNovaAgentResponse({
+          type: "message",
+          answer: navigationIntent.answer,
+          session_id: payload.session_id ?? null,
+          as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
+          answer_mode: payload.answer_mode,
+          jurisdiction_code: payload.jurisdiction_code ?? authContext.jurisdictionCode ?? "TR",
+          sources: [],
+          navigation: navigationIntent.navigation,
+          telemetry: {
+            gateway_mode: "navigation_fallback",
+            context_surface: payload.context_surface,
+            current_page: payload.current_page ?? null,
+            company_workspace_id: effectiveCompanyWorkspaceId,
+          },
+        }),
+      );
     }
 
     const accountContext = await getAccountContextForUser(authContext.userId);

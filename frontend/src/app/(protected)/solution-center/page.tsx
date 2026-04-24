@@ -23,6 +23,7 @@ import {
   type BrowserSpeechRecognition,
 } from "@/lib/nova/browser-speech";
 import { resolveNovaApiEndpoint, resolveNovaRequestMode } from "@/lib/nova/request-mode";
+import { resolveNovaNavigationIntent } from "@/lib/nova/navigation-intents";
 import type {
   NovaAgentResponse,
   NovaActionHint,
@@ -1508,6 +1509,21 @@ export default function SolutionCenterPage() {
         clearAttachedImage();
       }
     } catch (err) {
+      const navigationFallback = resolveNovaNavigationIntent(composedPrompt);
+      if (navigationFallback) {
+        setMessages((prev) => [
+          ...prev,
+          buildAssistantMessageFromAgentResponse({
+            type: "message",
+            answer: navigationFallback.answer,
+            sources: [],
+            navigation: navigationFallback.navigation,
+            telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
+          }),
+        ]);
+        return;
+      }
+
       const errorMsg: ChatMessage = {
         id: crypto.randomUUID(),
         role: "assistant",
