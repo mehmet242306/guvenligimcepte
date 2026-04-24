@@ -8,6 +8,7 @@ import { Brand } from "./brand";
 import { LanguageSelector } from "./language-selector";
 import { WorkspaceSwitcher } from "./workspace-switcher";
 import { ActiveCompanyBar } from "./active-company-bar";
+import { ActiveCompanyNavLink } from "./active-company-nav-link";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { ConsentGate } from "@/components/compliance/ConsentGate";
 import { useI18n } from "@/lib/i18n";
@@ -741,6 +742,14 @@ export function ProtectedShell({ children }: ProtectedShellProps) {
             <div />
             <div className="min-w-0 justify-self-center overflow-x-auto">
               <div className="flex items-center justify-center gap-1">
+                {/* Firma linki — secondary nav'ın ilk item'ı. Aktif workspace'in
+                    /companies/[slug|id] detay sayfasına götürür (10 sekmeli). */}
+                {showWorkspaceSwitcher ? (
+                  <ActiveCompanyNavLink
+                    label="Firma"
+                    locked={disableWorkspaceModules}
+                  />
+                ) : null}
                 {baseSecondaryNav.map((item) => {
                   const act = isActive(pathname, item.href);
                   const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
