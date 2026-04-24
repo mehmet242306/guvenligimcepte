@@ -8,6 +8,7 @@ import {
   Bot,
   ClipboardList,
   FileText,
+  Inbox,
   ShieldCheck,
   Users,
 } from "lucide-react";
@@ -309,6 +310,17 @@ export default async function PlatformAdminPage() {
       value: `${openErrorCount}`,
       helper: `${pendingQueueCount} bekleyen kuyruk`,
       icon: Activity,
+    },
+    {
+      title: "Demo ve teklif talepleri",
+      description:
+        "Landing sayfasi ve kayit akisindan gelen demo, OSGB ve kurumsal talepleri. Duruma gore filtrele, ilet, kapat.",
+      href: "/platform-admin/leads",
+      cta: "Talepleri ac",
+      eyebrow: "Lead pipeline",
+      value: `${enterpriseLeadCount}`,
+      helper: "toplam talep",
+      icon: Inbox,
     },
   ];
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PublicHeader } from "@/components/layout/public-header";
 import { Brand } from "@/components/layout/brand";
 import { PublicChatWidget } from "@/components/chat/PublicChatWidget";
+import { DemoRequestTrigger } from "@/components/public/DemoRequestDialog";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import {
   BrainCircuit,
@@ -205,7 +206,7 @@ export default function LandingPage() {
             tasarlanmış AI destekli İSG platformudur.
           </p>
 
-          <div className="reveal reveal-delay-2 mt-10 flex flex-col gap-4 sm:flex-row">
+          <div className="reveal reveal-delay-2 mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
             <Link href="/register" className={primaryLinkClass + " hover-glow"}>
               Ücretsiz Başla
               <svg
@@ -224,6 +225,12 @@ export default function LandingPage() {
                 />
               </svg>
             </Link>
+            <DemoRequestTrigger className={secondaryLinkClass + " border-[var(--gold)]/40 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20"}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-1">
+                <path d="M8 1l2 4 4.5.7L11 9l1 4.5L8 11.5 4 13.5l1-4.5L1.5 5.7 6 5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+              </svg>
+              Demo Talep Et
+            </DemoRequestTrigger>
             <Link href="/login" className={secondaryLinkClass}>
               Platforma Giriş Yap
             </Link>
@@ -467,7 +474,7 @@ export default function LandingPage() {
             RiskNova ile risk analizinden raporlamaya kadar tüm İSG
             operasyonlarınızı tek platformda yönetin.
           </p>
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
             <Link href="/register" className={primaryLinkClass}>
               Ücretsiz Başla
               <svg
@@ -486,6 +493,12 @@ export default function LandingPage() {
                 />
               </svg>
             </Link>
+            <DemoRequestTrigger className={secondaryLinkClass + " border-[var(--gold)]/40 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20"}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-1">
+                <path d="M8 1l2 4 4.5.7L11 9l1 4.5L8 11.5 4 13.5l1-4.5L1.5 5.7 6 5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+              </svg>
+              Demo Talep Et
+            </DemoRequestTrigger>
             <Link href="/login" className={secondaryLinkClass}>
               Giriş Yap
             </Link>
