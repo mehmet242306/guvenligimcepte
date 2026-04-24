@@ -12,7 +12,7 @@ import { CompanyManagementActions } from "@/components/companies/CompanyManageme
 import { PersonnelManagementPanel } from "@/components/companies/PersonnelManagementPanel";
 import { fetchCompaniesFromSupabase, saveCompanyToSupabase, archiveCompanyInSupabase, deleteCompanyInSupabase, uploadCompanyLogo } from "@/lib/supabase/company-api";
 import { computeCompanyRiskScores } from "@/lib/supabase/risk-assessment-api";
-import { type WTab, OverviewTab, StructureTab, RiskTab, TrackingTab, DocumentsTab, HistoryTab } from "@/components/companies/WorkspaceTabs";
+import { type WTab, OverviewTab, StructureTab, RiskTab, TrackingTab, HistoryTab } from "@/components/companies/WorkspaceTabs";
 import { CompanyPlannerTab } from "@/components/companies/CompanyPlannerTab";
 import { TeamManagementTab } from "@/components/companies/TeamManagementTab";
 import { OrganizationPanel } from "@/components/companies/OrganizationPanel";
@@ -64,7 +64,6 @@ const TABS: { k: WTab; l: string }[] = [
   { k: "people", l: "Ekip" },
   { k: "personnel", l: "Personel" },
   { k: "tracking", l: "Takip" },
-  { k: "documents", l: "Arşiv" },
   { k: "ohs_file", l: "İSG Dosyası" },
   { k: "organization", l: "Organizasyon" },
   { k: "history", l: "Geçmiş" },
@@ -579,7 +578,6 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
           {tab === "people" && <TeamManagementTab companyId={companyId} companyName={company.name} />}
           {tab === "personnel" && <PersonnelManagementPanel companyId={companyId} companyName={company.name} departments={company.departments.filter(Boolean)} locations={company.locations.filter(Boolean)} />}
           {tab === "tracking" && <TrackingTab company={company} />}
-          {tab === "documents" && <DocumentsTab company={company} companyId={companyId} />}
           {tab === "ohs_file" && <OhsFileTab companyWorkspaceId={companyId} companyName={company.name} />}
           {tab === "organization" && <OrganizationPanel companyId={companyId} />}
           {tab === "history" && <HistoryTab companyWorkspaceId={companyId} />}
