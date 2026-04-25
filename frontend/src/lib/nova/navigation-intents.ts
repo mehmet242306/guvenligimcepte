@@ -17,26 +17,48 @@ type NovaNavigationTarget = {
 export function normalizeNovaNavigationText(message: string) {
   return message
     .toLowerCase()
-    .replace(/ı/g, "i")
+    .replace(/\u0131/g, "i")
     .normalize("NFKD")
-    .replace(/\p{Diacritic}/gu, "");
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[^a-z0-9?&=\/-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 const navigationVerbPattern =
-  /(ac|git|gotur|yonlendir|nerede|hangi alan|hangi sayfa|alana|sayfaya|nereye|bul|open|navigate|go to|show)/;
+  /(ac|git|gotur|goster|listele|yonlendir|nerede|nerde|neresi|nerededir|hangi alan|hangi sayfa|alana|sayfaya|nereye|bul|ulas|erisim|open|navigate|go to|show)/;
 
-const documentIntentPattern = /(dokuman|belge|form|prosedur|talimat|sablon|template|rapor|sunum)/;
+const documentIntentPattern =
+  /(dokuman\s*lar|dokuman|belge\s*ler|belge|form|prosedur|talimat|sablon|template|rapor|sunum|dokumantasyon)/;
 const documentWorkPattern =
   /(hazirla|olustur|uret|yaz|taslak|gerek|gerekiyor|lazim|ihtiyac|hazirlayabilecegim|hazirlayacagim)/;
+const personalDocumentPattern =
+  /(dokumanlarim|belgelerim|kayitli dokuman|kayitli belge|dokuman arsiv|belge arsiv|kendi dokuman)/;
+const shortDocumentLookupPattern =
+  /^(dokuman\s*lar|dokuman|belge\s*ler|belge|prosedur|prosedurler|form|formlar|talimat|talimatlar|sablon|sablonlar|dokumantasyon)$/;
 
-function shouldResolveNavigation(normalized: string) {
+function isDocumentLookup(normalized: string) {
   return (
-    navigationVerbPattern.test(normalized) ||
-    (documentIntentPattern.test(normalized) && documentWorkPattern.test(normalized))
+    documentIntentPattern.test(normalized) &&
+    (documentWorkPattern.test(normalized) ||
+      navigationVerbPattern.test(normalized) ||
+      shortDocumentLookupPattern.test(normalized))
   );
 }
 
+function shouldResolveNavigation(normalized: string) {
+  return navigationVerbPattern.test(normalized) || isDocumentLookup(normalized);
+}
+
 const navigationTargets: NovaNavigationTarget[] = [
+  {
+    destination: "documents",
+    url: "/documents",
+    label: "Dokumanlar",
+    reason: "Kayitli veya size ait editor belgelerini goruntulemek icin Dokumanlar alani kullanilir.",
+    priority: 120,
+    matches: (text) => personalDocumentPattern.test(text),
+  },
   {
     destination: "isg_library_documents",
     url: "/isg-library?section=documentation",
@@ -44,28 +66,18 @@ const navigationTargets: NovaNavigationTarget[] = [
     reason: "Hazir ISG dokumanlari, sablonlar, prosedurler ve formlar ISG Kutuphanesi icindeki Dokumantasyon bolumunde bulunur.",
     priority: 110,
     matches: (text) =>
-      /(isg kutuphan|kutuphan)/.test(text) ||
-      (/(dokuman|belge|form|prosedur|talimat|sablon|template)/.test(text) &&
-        /(hazir|ornek|kutuphane|katalog|dokumantasyon|hazirla|olustur|uret|gerek|lazim|ihtiyac)/.test(text)),
+      /(isg kutuphan|kutuphan|dokumantasyon)/.test(text) ||
+      (documentIntentPattern.test(text) && !personalDocumentPattern.test(text)),
   },
   {
     destination: "document_editor",
     url: "/documents/new",
     label: "Dokuman Editoru",
     reason: "Sifirdan yeni dokuman veya taslak hazirlamak icin Dokuman Editoru kullanilir.",
-    priority: 80,
+    priority: 130,
     matches: (text) =>
       /(dokuman|belge|form|prosedur|talimat)/.test(text) &&
       /(editor|sifirdan|bos|yeni dokuman|ozel dokuman|kendi dokumanim)/.test(text),
-  },
-  {
-    destination: "documents",
-    url: "/documents",
-    label: "Dokumanlar",
-    reason: "Kayitli dokumanlarinizi goruntulemek ve editor belgelerine ulasmak icin Dokumanlar alani kullanilir.",
-    priority: 70,
-    matches: (text) =>
-      /(dokumanlarim|belgelerim|kayitli dokuman|dokuman arsiv|belge arsiv|dokumanlar)/.test(text),
   },
   {
     destination: "planner",
@@ -112,7 +124,7 @@ const navigationTargets: NovaNavigationTarget[] = [
     url: "/reports",
     label: "Raporlar",
     reason: "Raporlama ve cikti alma islemleri Raporlar alaninda toplanir.",
-    priority: 50,
+    priority: 115,
     matches: (text) => /(rapor|raporlar|report|reports|cikti|ozet)/.test(text),
   },
   {
@@ -137,13 +149,12 @@ const navigationTargets: NovaNavigationTarget[] = [
     label: "Panel",
     reason: "Nova artik sag alttaki sohbet ajanidir; ana modullere Panel uzerinden de ulasabilirsiniz.",
     priority: 50,
-    matches: (text) => /(nova merkezi|nova calisma|nova alani|solution center|panel|ana panel)/.test(text),
+    matches: (text) => /(nova merkezi|nova calisma|nova alani|panel|ana panel)/.test(text),
   },
 ];
 
 export function resolveNovaGreetingIntent(message: string): string | null {
-  const normalized = normalizeNovaNavigationText(message).trim();
-  const compact = normalized.replace(/[.!?,;:\s]+/g, " ");
+  const compact = normalizeNovaNavigationText(message).replace(/[.!?,;:\s]+/g, " ");
 
   if (!/^(merhaba|selam|selamlar|hello|hi|hey|gunaydin|iyi aksamlar|iyi gunler)$/.test(compact)) {
     return null;
@@ -168,7 +179,7 @@ export function resolveNovaNavigationIntent(message: string): NovaNavigationInte
   }
 
   return {
-    answer: `${target.label} alanina yonlendirebilirim. ${target.reason}`,
+    answer: `${target.label} alanina yonlendiriyorum. ${target.reason} Asagidaki "Sayfaya Git" butonuyla dogrudan acabilirsiniz.`,
     navigation: {
       action: "navigate",
       url: target.url,
