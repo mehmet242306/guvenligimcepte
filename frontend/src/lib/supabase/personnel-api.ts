@@ -396,6 +396,59 @@ export async function bulkRemovePersonnelFromSupabase(
 }
 
 /**
+ * Fetch live personnel statistics for a workspace.
+ * Returns the active personnel count and the count of distinct departments
+ * and locations that are actually in use on personnel records.
+ *
+ * Bu helper, hero stat kartlarının (ÇALIŞAN / BÖLÜM / LOKASYON) DB'den
+ * doğrudan canlı gelmesini sağlıyor — cached metadata.employeeCount senkron
+ * olmayabiliyor.
+ */
+export async function fetchWorkspacePersonnelStats(
+  companyWorkspaceId: string,
+): Promise<{
+  active: number;
+  distinctDepartments: number;
+  distinctLocations: number;
+} | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+  try {
+    const ids = await resolveIds(companyWorkspaceId);
+    if (!ids) return null;
+
+    const { data, error } = await supabase
+      .from("personnel")
+      .select("department, location")
+      .eq("company_identity_id", ids.identityId)
+      .eq("is_active", true);
+
+    if (error) {
+      console.warn("[personnel-api] fetchWorkspacePersonnelStats error:", error.message);
+      return null;
+    }
+
+    const rows = (data ?? []) as Array<{ department: string | null; location: string | null }>;
+    const deps = new Set<string>();
+    const locs = new Set<string>();
+    for (const row of rows) {
+      const d = (row.department ?? "").trim();
+      const l = (row.location ?? "").trim();
+      if (d) deps.add(d);
+      if (l) locs.add(l);
+    }
+    return {
+      active: rows.length,
+      distinctDepartments: deps.size,
+      distinctLocations: locs.size,
+    };
+  } catch (err) {
+    console.warn("[personnel-api] fetchWorkspacePersonnelStats exception:", err);
+    return null;
+  }
+}
+
+/**
  * Update the company_workspaces metadata with the current employee count.
  * This keeps the company hero section in sync with actual personnel data.
  */
