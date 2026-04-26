@@ -18,7 +18,14 @@ import {
   type VisionDetection,
 } from "@/lib/ai/openai-vision";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+let anthropicClient: Anthropic | null = null;
+
+function getAnthropicClient(): Anthropic | null {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return null;
+  anthropicClient ??= new Anthropic({ apiKey });
+  return anthropicClient;
+}
 
 export const maxDuration = 90; // Hybrid OpenAI+Anthropic iki aşamalı, biraz daha geniş pencere
 
@@ -797,8 +804,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "imageBase64 ve mimeType gerekli" }, { status: 400 });
     }
 
-    if (!process.env.ANTHROPIC_API_KEY) {
+    const client = getAnthropicClient();
+    if (!client) {
       return NextResponse.json({ error: "ANTHROPIC_API_KEY tan\u0131ml\u0131 de\u011Fil" }, { status: 500 });
+    }
+
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json(
+        {
+          error: "OPENAI_API_KEY tanimli degil. Gorsel tespit asamasi calismadan risk analizi baslatilamaz.",
+          stage: "openai_vision",
+          retryable: false,
+        },
+        { status: 500 },
+      );
     }
 
     const startTime = Date.now();
@@ -821,11 +840,28 @@ export async function POST(request: NextRequest) {
       console.warn("[analyze-risk] vision stage failed:", visionErr);
     }
 
+    if (!visionDetection) {
+      await logAiUsage({
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        model: "gpt-4o",
+        endpoint: "/api/analyze-risk:vision",
+        success: false,
+        metadata: { method, reason: "openai_vision_failed" },
+      });
+      return NextResponse.json(
+        {
+          error: "OpenAI gorsel tespit asamasi tamamlanamadi. Lutfen gorseli tekrar deneyin veya biraz sonra yeniden baslatin.",
+          stage: "openai_vision",
+          retryable: true,
+        },
+        { status: 502 },
+      );
+    }
+
     // Claude'a verilecek ek kontekst (varsa); yoksa boş string → eski davranış
-    const visionContextBlock = visionDetection ? visionToPromptContext(visionDetection) : "";
-    const augmentedUserPrompt = visionContextBlock
-      ? `${visionContextBlock}\n\n${buildUserPrompt(method)}`
-      : buildUserPrompt(method);
+    const visionContextBlock = visionToPromptContext(visionDetection);
+    const augmentedUserPrompt = `${visionContextBlock}\n\n${buildUserPrompt(method)}`;
 
     // ═══════════════════════════════════════════════════════════════════
     // STAGE 2 — Anthropic Claude Sonnet 4: RİSK AKIL YÜRÜTMESİ
@@ -967,15 +1003,14 @@ export async function POST(request: NextRequest) {
         userId: auth.userId,
         organizationId: auth.organizationId,
       });
-      parsed = {
-        risks: [],
-        positiveObservations: [],
-        photoQuality: { level: "moderate", note: "AI yanıtı işlenemedi, lütfen tekrar deneyin." },
-        areaSummary: "",
-        personCount: visionDetection?.personCount ?? 0,
-        imageRelevance: "relevant",
-        imageDescription: visionDetection?.overallDescription ?? "",
-      };
+      return NextResponse.json(
+        {
+          error: "Anthropic risk yorumu islenemedi. Lutfen analizi yeniden baslatin.",
+          stage: "anthropic_reasoning",
+          retryable: true,
+        },
+        { status: 502 },
+      );
     }
 
     // Debug log

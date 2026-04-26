@@ -96,6 +96,22 @@ async function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
   return file.arrayBuffer();
 }
 
+const MAX_RISK_IMAGE_BYTES = 10 * 1024 * 1024;
+
+function validateRiskAnalysisInput(input: SaveRiskAnalysisInput): string | null {
+  for (const row of input.rows) {
+    for (const image of row.images) {
+      if (!image.file.type.startsWith("image/")) {
+        return `${image.file.name} gecerli bir gorsel dosyasi degil.`;
+      }
+      if (image.file.size > MAX_RISK_IMAGE_BYTES) {
+        return `${image.file.name} 10 MB sinirini asiyor. Lutfen daha kucuk bir gorsel yukleyin.`;
+      }
+    }
+  }
+  return null;
+}
+
 /* ================================================================== */
 /* LIST                                                                */
 /* ================================================================== */
@@ -325,8 +341,17 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
     return null;
   }
 
+  const validationError = validateRiskAnalysisInput(input);
+  if (validationError) {
+    console.warn("[risk-assessment-api] saveRiskAnalysis validation failed:", validationError);
+    return null;
+  }
+
   const auth = await resolveOrganizationId();
   if (!auth) { console.warn("[risk-assessment-api] saveRiskAnalysis: auth failed"); return null; }
+
+  let createdAssessmentId: string | null = null;
+  const uploadedPaths: string[] = [];
 
   try {
     // 1. Create assessment
@@ -354,6 +379,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
 
     if (aErr || !assessment) { console.warn("[risk-assessment-api] create assessment failed:", aErr?.message); return null; }
     const assessmentId = assessment.id;
+    createdAssessmentId = assessmentId;
 
     // 2. Process each row
     for (let ri = 0; ri < input.rows.length; ri++) {
@@ -372,7 +398,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
         .select("id")
         .single();
 
-      if (rErr || !dbRow) { console.warn("[risk-assessment-api] create row failed:", rErr?.message); continue; }
+      if (rErr || !dbRow) throw new Error(`Risk satiri kaydedilemedi: ${rErr?.message ?? "bilinmeyen hata"}`);
 
       // Upload images and create image records
       const localToDbImageId = new Map<string, string>();
@@ -387,7 +413,8 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
           .from("risk-images")
           .upload(storagePath, buffer, { contentType: img.file.type, upsert: false });
 
-        if (uploadErr) { console.warn("[risk-assessment-api] upload image failed:", uploadErr.message); continue; }
+        if (uploadErr) throw new Error(`Gorsel yuklenemedi (${img.file.name}): ${uploadErr.message}`);
+        uploadedPaths.push(storagePath);
 
         // Create image record
         const { data: dbImage, error: imgErr } = await supabase
@@ -403,7 +430,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
           .select("id")
           .single();
 
-        if (imgErr || !dbImage) { console.warn("[risk-assessment-api] create image failed:", imgErr?.message); continue; }
+        if (imgErr || !dbImage) throw new Error(`Gorsel kaydi olusturulamadi: ${imgErr?.message ?? "bilinmeyen hata"}`);
 
         // Map local finding imageIds to DB image ID
         for (const fId of img.findingIds) {
@@ -415,6 +442,9 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
       const findingsToInsert = row.findings
         .map((f, fi) => {
           const dbImageId = localToDbImageId.get(f.imageId) ?? null;
+          if (!dbImageId) {
+            throw new Error(`Tespit icin gorsel baglantisi bulunamadi: ${f.title}`);
+          }
           return {
             assessment_id: assessmentId,
             row_id: dbRow.id,
@@ -461,15 +491,38 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
         const { error: fErr } = await supabase
           .from("risk_assessment_findings")
           .insert(findingsToInsert);
-        if (fErr) console.warn("[risk-assessment-api] create findings failed:", fErr.message);
+        if (fErr) throw new Error(`Tespitler kaydedilemedi: ${fErr.message}`);
       }
     }
 
     return assessmentId;
   } catch (err) {
     console.warn("[risk-assessment-api] saveRiskAnalysis error:", err);
+    if (uploadedPaths.length > 0) {
+      await supabase.storage.from("risk-images").remove(uploadedPaths).catch(() => undefined);
+    }
+    if (createdAssessmentId) {
+      await supabase.from("risk_assessments").delete().eq("id", createdAssessmentId);
+    }
     return null;
   }
+}
+
+export async function replaceRiskAnalysis(
+  existingAssessmentId: string,
+  input: SaveRiskAnalysisInput,
+): Promise<string | null> {
+  if (!existingAssessmentId) return saveRiskAnalysis(input);
+
+  const newAssessmentId = await saveRiskAnalysis(input);
+  if (!newAssessmentId) return null;
+
+  const deleted = await deleteRiskAssessment(existingAssessmentId);
+  if (!deleted) {
+    console.warn("[risk-assessment-api] replaceRiskAnalysis: old assessment could not be deleted", existingAssessmentId);
+  }
+
+  return newAssessmentId;
 }
 
 /* ================================================================== */

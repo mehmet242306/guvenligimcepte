@@ -15,7 +15,14 @@
  */
 import OpenAI from "openai";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY ?? "" });
+let openaiClient: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI | null {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return null;
+  openaiClient ??= new OpenAI({ apiKey });
+  return openaiClient;
+}
 
 export type PpeState = "present" | "absent" | "unclear";
 
@@ -142,14 +149,15 @@ export async function detectSafetyObjects(
   imageBase64: string,
   mimeType: string,
 ): Promise<VisionDetection | null> {
-  if (!process.env.OPENAI_API_KEY) {
+  const client = getOpenAIClient();
+  if (!client) {
     console.warn("[openai-vision] OPENAI_API_KEY tanımlı değil, stage atlanıyor");
     return null;
   }
 
   const t0 = Date.now();
   try {
-    const response = await openai.chat.completions.create({
+    const response = await client.chat.completions.create({
       model: "gpt-4o",
       temperature: 0,
       max_tokens: 2500,

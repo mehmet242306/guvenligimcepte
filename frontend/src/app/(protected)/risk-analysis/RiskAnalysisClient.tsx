@@ -88,6 +88,7 @@ import {
 } from "@/lib/risk-analysis-export";
 import {
   saveRiskAnalysis,
+  replaceRiskAnalysis,
   listRiskAssessments,
   loadRiskAssessment,
   deleteRiskAssessment,
@@ -223,6 +224,13 @@ type LineResult = {
   rowTitle: string;
   imageCount: number;
   findings: VisualFinding[];
+};
+
+type AiImageAnalysisResult = {
+  findings: VisualFinding[];
+  meta: ImageMeta;
+  error?: string;
+  stage?: string;
 };
 
 /* ================================================================== */
@@ -1246,10 +1254,7 @@ export function RiskAnalysisClient() {
       };
     });
 
-    setLines(() => {
-      // Toplu yuklemede tum mevcut satirlari temizle, sadece yeni satirlarla baslat
-      return [...newLines];
-    });
+    setLines((prev) => [...newLines, ...prev]);
     setResults([]);
   }
   function removeLine(lid: string) {
@@ -1353,7 +1358,7 @@ export function RiskAnalysisClient() {
   }
 
   /** Nova AI Vision ile tek gorsel analiz et */
-  async function analyzeImageWithAI(imageFile: File, imageId: string): Promise<{ findings: VisualFinding[]; meta: ImageMeta }> {
+  async function analyzeImageWithAI(imageFile: File, imageId: string): Promise<AiImageAnalysisResult> {
     try {
       const { base64, mimeType } = await fileToBase64(imageFile);
       const res = await fetch("/api/analyze-risk", {
@@ -1367,7 +1372,9 @@ export function RiskAnalysisClient() {
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({}));
         console.error("AI analiz hatası:", res.status, errBody);
-        return { findings: [], meta: emptyMeta };
+        const message = typeof errBody?.error === "string" ? errBody.error : "AI analizi tamamlanamadi.";
+        const stage = typeof errBody?.stage === "string" ? errBody.stage : "unknown";
+        return { findings: [], meta: emptyMeta, error: message, stage };
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1503,14 +1510,15 @@ export function RiskAnalysisClient() {
       return { findings, meta };
     } catch (err) {
       console.error("AI analiz exception:", err);
-      return { findings: [], meta: { imageId, faces: [], positiveObservations: [], photoQuality: { level: "good" as const, note: "" }, areaSummary: "", personCount: 0, imageRelevance: "relevant" as const, imageDescription: "" } };
+      const message = err instanceof Error ? err.message : "AI analizi sirasinda beklenmeyen hata olustu.";
+      return { findings: [], meta: { imageId, faces: [], positiveObservations: [], photoQuality: { level: "good" as const, note: "" }, areaSummary: "", personCount: 0, imageRelevance: "relevant" as const, imageDescription: "" }, error: message, stage: "client" };
     }
   }
 
-  async function handleAnalyze() {
+  async function handleAnalyze(): Promise<boolean> {
     const err = validateSetup();
-    if (err) { setSetupMessage(err); setSetupMessageType("error"); return; }
-    if (totalImageCount === 0) { setSetupMessage("Analiz başlatmak için en az bir görsel eklemelisin."); setSetupMessageType("error"); return; }
+    if (err) { setSetupMessage(err); setSetupMessageType("error"); return false; }
+    if (totalImageCount === 0) { setSetupMessage("Analiz başlatmak için en az bir görsel eklemelisin."); setSetupMessageType("error"); return false; }
 
     setIsAnalyzing(true);
     setAnalysisProgress(0);
@@ -1532,6 +1540,8 @@ export function RiskAnalysisClient() {
     const newSelectedFindings: Record<string, string> = {};
     const newImageMeta: Record<string, ImageMeta> = {};
     const newNoRiskImages = new Set<string>();
+    const analysisErrors: string[] = [];
+    let successfulImages = 0;
 
     for (let li = 0; li < validLines.length; li++) {
       const line = validLines[li];
@@ -1545,8 +1555,16 @@ export function RiskAnalysisClient() {
         setSetupMessage(`Görsel analiz ediliyor: Satır ${li + 1}, ${img.file.name}...`);
         setSetupMessageType("success");
 
-        const { findings: aiFindings, meta } = await analyzeImageWithAI(img.file, img.id);
+        const analysis = await analyzeImageWithAI(img.file, img.id);
+        const { findings: aiFindings, meta } = analysis;
         newImageMeta[img.id] = meta;
+
+        if (analysis.error) {
+          analysisErrors.push(`${img.file.name}: ${analysis.error}`);
+          continue;
+        }
+
+        successfulImages++;
 
         if (aiFindings.length > 0) {
           // Confidence filtresi: 0.85 altini ele (v1.7 — siki esik)
@@ -1623,9 +1641,27 @@ export function RiskAnalysisClient() {
     setSelectedFindingByRow(newSelectedFindings);
     const totalFound = newResults.reduce((s, r) => s + r.findings.length, 0);
     const totalPositive = Object.values(newImageMeta).reduce((s, m) => s + m.positiveObservations.length, 0);
-    setSetupMessage(`AI analizi tamamlandı. ${totalFound} risk, ${totalPositive} olumlu tespit.`);
-    setSetupMessageType("success");
+    if (successfulImages === 0) {
+      setAnalysisMessage("Analiz tamamlanamadi.");
+      setSetupMessage(`AI analizi tamamlanamadi. ${analysisErrors[0] ?? "OpenAI veya Anthropic asamasinda hata olustu."}`);
+      setSetupMessageType("error");
+      setIsAnalyzing(false);
+      return false;
+    }
+    if (analysisErrors.length > 0) {
+      setSetupMessage(`AI analizi kismen tamamlandi. ${successfulImages}/${totalImages} gorsel islendi; ${analysisErrors.length} gorselde hata var.`);
+      setSetupMessageType("error");
+    } else {
+      setSetupMessage(`AI analizi tamamlandi. ${totalFound} risk, ${totalPositive} olumlu tespit.`);
+      setSetupMessageType("success");
+    }
     setIsAnalyzing(false);
+    return true;
+  }
+
+  async function runAnalyzeAndShowResults() {
+    const ok = await handleAnalyze();
+    if (ok) setStep(4);
   }
 
   /* ── Manual pin ── */
@@ -1987,6 +2023,11 @@ JSON formatında döndür:
   async function handleSaveAnalysis() {
     if (results.length === 0) return;
     if (!selectedCompanyId) { setSaveMessage("Firma seçilmeden analiz kaydedilemez."); return; }
+    const oversizedImage = lines.flatMap((line) => line.images).find((img) => img.file.size > 10 * 1024 * 1024);
+    if (oversizedImage) {
+      setSaveMessage(`${oversizedImage.file.name} 10 MB sinirini asiyor. Kaydetmeden once daha kucuk bir gorsel yukleyin.`);
+      return;
+    }
     setIsSaving(true);
     setSaveMessage("");
 
@@ -2061,13 +2102,16 @@ JSON formatında döndür:
         }), method) : "low",
       };
 
-      const assessmentId = await saveRiskAnalysis(input);
+      const isUpdate = Boolean(currentAssessmentId);
+      const assessmentId = currentAssessmentId
+        ? await replaceRiskAnalysis(currentAssessmentId, input)
+        : await saveRiskAnalysis(input);
       if (assessmentId) {
         setCurrentAssessmentId(assessmentId);
-        setSaveMessage("Analiz başarıyla kaydedildi!");
+        setSaveMessage(isUpdate ? "Analiz başarıyla güncellendi!" : "Analiz başarıyla kaydedildi!");
         // Bildirim oluştur
         void createNotification({
-          title: "Risk analizi kaydedildi",
+          title: isUpdate ? "Risk analizi güncellendi" : "Risk analizi kaydedildi",
           message: `${input.title} — ${input.totalFindings} tespit, ${input.criticalCount} kritik/yüksek`,
           type: "risk_analysis",
           level: input.criticalCount > 0 ? "warning" : "info",
@@ -2623,7 +2667,7 @@ JSON formatında döndür:
             <button
               type="button"
               disabled={totalImageCount === 0 || isAnalyzing}
-              onClick={() => { handleAnalyze(); setStep(4); }}
+              onClick={() => { void runAnalyzeAndShowResults(); }}
               className="group relative w-full overflow-hidden rounded-2xl border border-primary/30 bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-400 px-6 py-4 text-left shadow-[0_8px_30px_rgba(245,158,11,0.25)] transition-all hover:shadow-[0_12px_40px_rgba(245,158,11,0.35)] hover:brightness-105 disabled:opacity-50 disabled:shadow-none disabled:hover:brightness-100"
             >
               <div className="flex items-center justify-between">
@@ -3155,7 +3199,7 @@ JSON formatında döndür:
               <button
                 type="button"
                 disabled={isAnalyzing}
-                onClick={() => { handleAnalyze(); setStep(4); }}
+                onClick={() => { void runAnalyzeAndShowResults(); }}
                 className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 px-5 text-sm font-bold text-white shadow-md transition-all hover:shadow-lg hover:brightness-105 disabled:opacity-50"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" /></svg>
