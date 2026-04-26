@@ -45,6 +45,60 @@ const COUNTRY_CONFIG = {
     timezone: "Europe/Madrid",
     workspaceSuffix: "Espana Operacion",
   },
+  AZ: {
+    name: "Azerbaycan",
+    defaultLanguage: "az",
+    timezone: "Asia/Baku",
+    workspaceSuffix: "Azerbaycan Operasyonu",
+  },
+  RU: {
+    name: "Rossiya",
+    defaultLanguage: "ru",
+    timezone: "Europe/Moscow",
+    workspaceSuffix: "Russia Operations",
+  },
+  SA: {
+    name: "Saudi Arabia",
+    defaultLanguage: "ar",
+    timezone: "Asia/Riyadh",
+    workspaceSuffix: "Saudi Operations",
+  },
+  AE: {
+    name: "United Arab Emirates",
+    defaultLanguage: "ar",
+    timezone: "Asia/Dubai",
+    workspaceSuffix: "UAE Operations",
+  },
+  CN: {
+    name: "China",
+    defaultLanguage: "zh",
+    timezone: "Asia/Shanghai",
+    workspaceSuffix: "China Operations",
+  },
+  JP: {
+    name: "Japan",
+    defaultLanguage: "ja",
+    timezone: "Asia/Tokyo",
+    workspaceSuffix: "Japan Operations",
+  },
+  KR: {
+    name: "Korea",
+    defaultLanguage: "ko",
+    timezone: "Asia/Seoul",
+    workspaceSuffix: "Korea Operations",
+  },
+  IN: {
+    name: "India",
+    defaultLanguage: "hi",
+    timezone: "Asia/Kolkata",
+    workspaceSuffix: "India Operations",
+  },
+  ID: {
+    name: "Indonesia",
+    defaultLanguage: "id",
+    timezone: "Asia/Jakarta",
+    workspaceSuffix: "Indonesia Operations",
+  },
 } as const;
 
 const ROLE_OPTIONS = [
@@ -914,6 +968,18 @@ export async function GET(request: NextRequest) {
 
   const supabase = createServiceClient();
   const warnings: string[] = [];
+  let userMetadata: Record<string, unknown> = {};
+
+  try {
+    const { data: userData, error: userError } = await supabase.auth.admin.getUserById(auth.userId);
+    if (userError) {
+      warnings.push("Kullanici tercihleri okunamadi.");
+    } else {
+      userMetadata = (userData.user?.user_metadata ?? {}) as Record<string, unknown>;
+    }
+  } catch {
+    warnings.push("Kullanici tercihleri okunamadi.");
+  }
 
   let certifications:
     | Array<{
@@ -1031,7 +1097,23 @@ export async function GET(request: NextRequest) {
   }
 
   const resolvedOrganization = organizationSummary.organization;
-  const recommendedCountryCode = resolvedOrganization.country_code || "TR";
+  const preferredCountryCode =
+    typeof userMetadata.preferred_country_code === "string" &&
+    COUNTRY_CONFIG[userMetadata.preferred_country_code as keyof typeof COUNTRY_CONFIG]
+      ? userMetadata.preferred_country_code
+      : null;
+  const preferredLanguage =
+    typeof userMetadata.preferred_language === "string" &&
+    (locales as readonly string[]).includes(userMetadata.preferred_language)
+      ? userMetadata.preferred_language
+      : null;
+  const preferredRole =
+    typeof userMetadata.preferred_role_key === "string" &&
+    (ROLE_OPTIONS as readonly string[]).includes(userMetadata.preferred_role_key)
+      ? userMetadata.preferred_role_key
+      : null;
+  const recommendedCountryCode =
+    preferredCountryCode || resolvedOrganization.country_code || "TR";
   const companyWorkspaceProfiles =
     memberships.length > 0
       ? await loadCompanyWorkspaceRows(
@@ -1069,6 +1151,8 @@ export async function GET(request: NextRequest) {
       suggestedWorkspaceName: buildSuggestedWorkspaceName(resolvedOrganization.name, code),
     })),
     recommendedCountryCode,
+    recommendedLanguage: preferredLanguage,
+    recommendedRole: preferredRole,
     roleOptions: ROLE_OPTIONS.map((value) => ({
       value,
       label: ROLE_LABELS[value],

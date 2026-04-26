@@ -48,6 +48,20 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const requestedNext = searchParams.get("next") ?? "/dashboard";
   const next = requestedNext.startsWith("/") ? requestedNext : "/dashboard";
+  const intent = searchParams.get("intent");
+  const registerContext = {
+    preferred_account_type:
+      searchParams.get("accountType") === "individual" ? "individual" : null,
+    preferred_country_code: /^[A-Z]{2}$/.test(searchParams.get("countryCode") ?? "")
+      ? searchParams.get("countryCode")
+      : null,
+    preferred_language: /^[a-z]{2}$/.test(searchParams.get("languageCode") ?? "")
+      ? searchParams.get("languageCode")
+      : null,
+    preferred_role_key: /^[a-z_]{3,40}$/.test(searchParams.get("roleKey") ?? "")
+      ? searchParams.get("roleKey")
+      : null,
+  };
 
   if (code) {
     const supabase = await createClient();
@@ -79,6 +93,49 @@ export async function GET(request: Request) {
         ? user.app_metadata.providers
         : [];
 
+      if (user?.id && intent === "register") {
+        try {
+          const service = createServiceClient();
+          await service.auth.admin.updateUserById(user.id, {
+            user_metadata: {
+              ...user.user_metadata,
+              ...(registerContext.preferred_account_type
+                ? { preferred_account_type: registerContext.preferred_account_type }
+                : {}),
+              ...(registerContext.preferred_country_code
+                ? { preferred_country_code: registerContext.preferred_country_code }
+                : {}),
+              ...(registerContext.preferred_language
+                ? { preferred_language: registerContext.preferred_language }
+                : {}),
+              ...(registerContext.preferred_role_key
+                ? { preferred_role_key: registerContext.preferred_role_key }
+                : {}),
+            },
+          });
+        } catch (metadataError) {
+          console.warn("[auth/callback] register context metadata update failed:", metadataError);
+        }
+      }
+
+      if (
+        user?.id &&
+        providers.includes("google") &&
+        user.user_metadata?.must_change_password === true
+      ) {
+        try {
+          const service = createServiceClient();
+          await service.auth.admin.updateUserById(user.id, {
+            user_metadata: {
+              ...user.user_metadata,
+              must_change_password: false,
+            },
+          });
+        } catch (metadataError) {
+          console.warn("[auth/callback] google password reset flag cleanup failed:", metadataError);
+        }
+      }
+
       if (
         user?.id &&
         user.email &&
@@ -105,6 +162,7 @@ export async function GET(request: Request) {
           await service.auth.admin.updateUserById(user.id, {
             user_metadata: {
               ...user.user_metadata,
+              must_change_password: false,
               google_welcome_sent_at: new Date().toISOString(),
             },
           });

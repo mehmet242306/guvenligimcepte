@@ -17,6 +17,7 @@ export async function signup(formData: FormData) {
   const accountType = String(formData.get("accountType") ?? "individual").trim();
   const countryCode = String(formData.get("countryCode") ?? "TR").trim().toUpperCase();
   const languageCode = String(formData.get("languageCode") ?? "tr").trim().toLowerCase();
+  const roleKey = String(formData.get("roleKey") ?? "safety_professional").trim();
 
   if (!email || !password) {
     redirect("/register?error=E-posta ve şifre zorunludur.");
@@ -40,6 +41,9 @@ export async function signup(formData: FormData) {
         preferred_account_type: accountType === "individual" ? "individual" : null,
         preferred_country_code: /^[A-Z]{2}$/.test(countryCode) ? countryCode : "TR",
         preferred_language: /^[a-z]{2}$/.test(languageCode) ? languageCode : "tr",
+        preferred_role_key: /^[a-z_]{3,40}$/.test(roleKey)
+          ? roleKey
+          : "safety_professional",
       },
     },
   });

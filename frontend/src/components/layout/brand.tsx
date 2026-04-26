@@ -1,9 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 type BrandProps = {
   href?: string;
   compact?: boolean;
+  iconOnly?: boolean;
   inverted?: boolean;
   className?: string;
 };
@@ -11,6 +13,7 @@ type BrandProps = {
 export function Brand({
   href = "/",
   compact = false,
+  iconOnly = false,
   inverted = false,
   className,
 }: BrandProps) {
@@ -19,16 +22,19 @@ export function Brand({
       href={href}
       className={cn("inline-flex items-center gap-4", className)}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src="/logo/risknova-favicon-64.svg"
         alt="RiskNova"
+        width={62}
+        height={62}
+        priority
         className={cn(
           "rounded-xl shadow-[var(--shadow-soft)]",
-          compact ? "h-8 w-8" : "h-[58px] w-[58px] xl:h-[62px] xl:w-[62px]",
+          iconOnly ? "h-10 w-10" : compact ? "h-8 w-8" : "h-[58px] w-[58px] xl:h-[62px] xl:w-[62px]",
         )}
       />
 
+      {iconOnly ? null : (
       <span className="flex min-w-0 flex-col">
         <span
           className={cn(
@@ -51,6 +57,7 @@ export function Brand({
           </span>
         ) : null}
       </span>
+      )}
     </Link>
   );
 }

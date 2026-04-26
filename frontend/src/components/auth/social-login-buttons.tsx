@@ -65,7 +65,23 @@ export function SocialLoginButtons({ mode = "login" }: SocialLoginProps) {
     setLoading(provider);
     setError("");
 
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    let redirectTo = `${window.location.origin}/auth/callback`;
+    if (mode === "register") {
+      try {
+        const rawContext = window.localStorage.getItem("risknova-register-context");
+        const context = rawContext ? JSON.parse(rawContext) as Record<string, unknown> : {};
+        const params = new URLSearchParams({ intent: "register" });
+        ["accountType", "countryCode", "languageCode", "roleKey"].forEach((key) => {
+          const value = context[key];
+          if (typeof value === "string" && value.trim()) {
+            params.set(key, value.trim());
+          }
+        });
+        redirectTo = `${redirectTo}?${params.toString()}`;
+      } catch (contextError) {
+        console.warn("[social-login] register context unavailable:", contextError);
+      }
+    }
 
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,

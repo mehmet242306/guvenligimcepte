@@ -104,6 +104,8 @@ type OnboardingPayload = {
   };
   countries: CountryOption[];
   recommendedCountryCode: string;
+  recommendedLanguage?: string | null;
+  recommendedRole?: string | null;
   roleOptions: RoleOption[];
   languageOptions: LanguageOption[];
   certifications: CertificationOption[];
@@ -429,7 +431,7 @@ export function WorkspaceOnboardingClient({
         const firstWorkspaceId =
           nextPayload.profile.activeWorkspaceId ??
           nextPayload.memberships[0]?.workspace.id ??
-          DEMO_TEMPLATE_ID;
+          null;
         setSelectedWorkspaceId(firstWorkspaceId);
       } catch (error) {
         if (!cancelled) {
@@ -529,10 +531,12 @@ export function WorkspaceOnboardingClient({
       payload.countries[0]?.code ??
       "TR";
     const nextRoleKey =
+      payload.roleOptions.find((item) => item.value === payload.recommendedRole)?.value ??
       payload.roleOptions.find((item) => item.value === "safety_professional")?.value ??
       payload.roleOptions[0]?.value ??
       "viewer";
     const nextLanguage =
+      payload.languageOptions.find((item) => item.value === payload.recommendedLanguage)?.value ??
       payload.countries.find((item) => item.code === nextCountryCode)?.defaultLanguage ??
       payload.languageOptions[0]?.value ??
       "tr";
