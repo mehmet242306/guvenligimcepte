@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import {
   ArrowLeft,
   Building2,
@@ -166,6 +167,7 @@ function choiceButtonClass(active: boolean) {
 
 export function RegisterAccountTypePreview({ children }: RegisterAccountTypePreviewProps) {
   const [step, setStep] = useState<WizardStep>("account");
+  const [mounted, setMounted] = useState(false);
   const [wizardOpen, setWizardOpen] = useState(true);
   const [completed, setCompleted] = useState(false);
   const [accountType, setAccountType] = useState<AccountType | null>(null);
@@ -193,6 +195,10 @@ export function RegisterAccountTypePreview({ children }: RegisterAccountTypePrev
   );
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (!accountType || !countryCode || !languageCode || !roleKey) return;
 
     window.localStorage.setItem(
@@ -205,6 +211,17 @@ export function RegisterAccountTypePreview({ children }: RegisterAccountTypePrev
       }),
     );
   }, [accountType, countryCode, languageCode, roleKey]);
+
+  useEffect(() => {
+    if (!wizardOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [wizardOpen]);
 
   function advance(nextStep: WizardStep) {
     window.setTimeout(() => setStep(nextStep), 120);
@@ -349,10 +366,10 @@ export function RegisterAccountTypePreview({ children }: RegisterAccountTypePrev
     });
   }
 
-  return (
-    <>
-      {wizardOpen ? (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/70 px-3 py-5 backdrop-blur-sm sm:items-center sm:px-6">
+  const wizardModal =
+    mounted && wizardOpen
+      ? createPortal(
+        <div className="fixed inset-0 z-[1000] flex items-start justify-center overflow-y-auto bg-slate-950/70 px-3 py-5 backdrop-blur-sm sm:items-center sm:px-6">
           <div className="w-full max-w-xl rounded-3xl border border-[var(--gold)]/25 bg-background shadow-[0_30px_90px_rgba(0,0,0,0.35)]">
             <div className="border-b border-border px-5 py-4 sm:px-6">
               <div className="flex items-center justify-between gap-3">
@@ -397,8 +414,14 @@ export function RegisterAccountTypePreview({ children }: RegisterAccountTypePrev
               {renderStep()}
             </div>
           </div>
-        </div>
-      ) : null}
+        </div>,
+        document.body,
+      )
+      : null;
+
+  return (
+    <>
+      {wizardModal}
 
       {completed && accountType && countryCode && languageCode && roleKey ? (
         <div className="space-y-5">
