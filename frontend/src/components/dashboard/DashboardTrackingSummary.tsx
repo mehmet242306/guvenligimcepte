@@ -95,7 +95,7 @@ export function DashboardTrackingSummary() {
 
   if (loading) {
     return (
-      <div className="surface-card">
+      <div className="surface-card overflow-hidden">
         <div className="mb-4 h-5 w-40 animate-pulse rounded-full bg-black/5 dark:bg-white/5" />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -108,7 +108,7 @@ export function DashboardTrackingSummary() {
 
   if (!data || data.companyCount === 0) {
     return (
-      <div className="surface-card">
+      <div className="surface-card overflow-hidden">
         <div className="mb-3 flex items-center gap-2">
           <ActivitySquare size={16} className="text-[var(--gold)]" />
           <h2 className="text-base font-semibold text-foreground">Takip Özeti</h2>
@@ -128,7 +128,8 @@ export function DashboardTrackingSummary() {
     data.healthExamsDueCount;
 
   return (
-    <div className="surface-card">
+    <div className="surface-card relative overflow-hidden">
+      <div className="pointer-events-none absolute right-[-7rem] top-[-8rem] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(200,155,91,0.16),transparent_68%)] blur-xl" />
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
@@ -148,7 +149,7 @@ export function DashboardTrackingSummary() {
         </button>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="relative grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {METRICS.map((m) => {
           const value = data[m.key];
           const warn = m.warnWhenPositive && value > 0;
@@ -157,10 +158,10 @@ export function DashboardTrackingSummary() {
               key={m.key}
               type="button"
               onClick={() => router.push('/companies')}
-              className={`group flex flex-col items-start gap-3 rounded-[1.25rem] border px-4 py-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)] ${
+              className={`group flex flex-col items-start gap-3 rounded-[1.35rem] border px-4 py-4 text-left shadow-[var(--shadow-soft)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)] ${
                 warn
-                  ? 'border-red-500/30 bg-red-500/5 hover:border-red-500/50'
-                  : 'border-border/80 bg-background/62 hover:border-[var(--gold)]/28 hover:bg-[var(--gold)]/6'
+                  ? 'border-red-500/30 bg-[linear-gradient(145deg,rgba(239,68,68,0.08),rgba(255,255,255,0.62))] hover:border-red-500/50 dark:bg-[linear-gradient(145deg,rgba(239,68,68,0.12),rgba(255,255,255,0.035))]'
+                  : 'border-border/80 bg-[linear-gradient(145deg,rgba(255,255,255,0.74),rgba(255,252,247,0.5))] hover:border-[var(--gold)]/28 hover:bg-[var(--gold)]/6 dark:bg-[linear-gradient(145deg,rgba(255,255,255,0.055),rgba(255,255,255,0.025))]'
               }`}
             >
               <PremiumIconBadge icon={m.icon} tone={m.tone} size="sm" />
@@ -183,7 +184,7 @@ export function DashboardTrackingSummary() {
       </div>
 
       {data.topCompanies.length > 0 && (
-        <div className="mt-5 rounded-[1.5rem] border border-border/75 bg-background/55 px-4 py-4">
+        <div className="relative mt-5 rounded-[1.6rem] border border-border/75 bg-[linear-gradient(135deg,rgba(255,255,255,0.72),rgba(255,248,236,0.52))] px-4 py-4 shadow-[var(--shadow-soft)] dark:bg-[linear-gradient(135deg,rgba(255,255,255,0.055),rgba(255,255,255,0.025))]">
           <div className="mb-3 flex items-center gap-2">
             <Users size={14} className="text-muted-foreground" />
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
@@ -198,7 +199,7 @@ export function DashboardTrackingSummary() {
                   key={c.id}
                   type="button"
                   onClick={() => router.push(`/companies/${c.id}?tab=tracking`)}
-                  className="flex w-full items-center gap-3 rounded-[1rem] border border-transparent bg-background/70 px-3 py-2.5 text-left transition-colors hover:border-[var(--gold)]/30 hover:bg-[var(--gold)]/6"
+                  className="flex w-full items-center gap-3 rounded-[1.1rem] border border-transparent bg-background/72 px-3 py-2.5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--gold)]/30 hover:bg-[var(--gold)]/6"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-semibold text-foreground">{c.name}</div>

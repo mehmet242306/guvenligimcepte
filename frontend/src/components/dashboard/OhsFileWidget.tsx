@@ -50,7 +50,8 @@ export function OhsFileWidget() {
   }, []);
 
   return (
-    <div className="surface-card">
+    <div className="surface-card relative overflow-hidden">
+      <div className="pointer-events-none absolute right-[-6rem] top-[-7rem] h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(14,165,233,0.13),transparent_68%)] blur-xl" />
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
           <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
@@ -68,11 +69,11 @@ export function OhsFileWidget() {
       </div>
 
       {loading ? (
-        <div className="rounded-xl border border-dashed border-border px-4 py-6 text-center text-xs text-muted-foreground">
+        <div className="rounded-[1.35rem] border border-dashed border-border bg-background/55 px-4 py-8 text-center text-xs text-muted-foreground">
           {t("loading")}
         </div>
       ) : jobs.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border px-4 py-6 text-center text-xs text-muted-foreground">
+        <div className="rounded-[1.35rem] border border-dashed border-border bg-background/55 px-4 py-8 text-center text-xs text-muted-foreground">
           {t("widgetEmpty")}
         </div>
       ) : (
@@ -84,9 +85,9 @@ export function OhsFileWidget() {
             return (
               <div
                 key={job.id}
-                className="flex items-center gap-3 rounded-xl border border-border bg-background/60 px-3 py-2.5"
+                className="group flex items-center gap-3 rounded-[1.15rem] border border-border/80 bg-[linear-gradient(145deg,rgba(255,255,255,0.72),rgba(255,252,247,0.46))] px-3 py-2.5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--gold)]/30 hover:shadow-[var(--shadow-soft)] dark:bg-[linear-gradient(145deg,rgba(255,255,255,0.055),rgba(255,255,255,0.025))]"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-primary/10 bg-primary/10 text-primary shadow-sm">
                   {isDone ? (
                     <CheckCircle2 className="h-4 w-4" />
                   ) : isActive ? (
@@ -112,7 +113,7 @@ export function OhsFileWidget() {
                 {isDone && (
                   <a
                     href={archiveDownloadUrl(job.id)}
-                    className="inline-flex h-8 items-center gap-1 rounded-lg bg-primary px-2.5 text-[11px] font-semibold text-primary-foreground transition hover:bg-primary-hover"
+                    className="inline-flex h-8 items-center gap-1 rounded-lg bg-primary px-2.5 text-[11px] font-semibold text-primary-foreground shadow-sm transition hover:bg-primary-hover"
                     aria-label={t("download")}
                   >
                     <Download className="h-3 w-3" />
@@ -121,7 +122,7 @@ export function OhsFileWidget() {
                 )}
                 <Link
                   href={`/companies/${job.company_workspace_id}?tab=ohs_file&job=${job.id}`}
-                  className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary/40 hover:text-primary"
+                  className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-card/70 text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
                   aria-label={t("openCompany")}
                   title={t("openCompany")}
                 >

@@ -4,22 +4,29 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   AlertTriangle,
+  ArrowUpRight,
   BarChart3,
   Building2,
   Calendar,
   ChevronRight,
+  CheckCircle2,
   ClipboardCheck,
   Download,
   FileEdit,
   FileText,
+  GaugeCircle,
   GraduationCap,
+  LayoutDashboard,
   PenTool,
+  Radar,
   ShieldAlert,
   Siren,
   Sparkles,
+  Target,
+  TrendingUp,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { PageHeader } from '@/components/ui/page-header';
 import { PremiumIconBadge, type PremiumIconTone } from '@/components/ui/premium-icon-badge';
 import { DashboardTrackingSummary } from '@/components/dashboard/DashboardTrackingSummary';
 import { OhsFileWidget } from '@/components/dashboard/OhsFileWidget';
@@ -157,25 +164,71 @@ export function DashboardClient() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Günaydın' : hour < 18 ? 'İyi günler' : 'İyi akşamlar';
   const firstName = (s.userName || '').split(' ')[0] || 'Kullanıcı';
+  const totalWorkload = s.highRiskCount + s.incidentCount + s.taskCount;
+  const operationState =
+    totalWorkload > 8 ? 'Yoğun takip' : totalWorkload > 0 ? 'Kontrol altında' : 'Sakin operasyon';
+  const operationTone =
+    totalWorkload > 8
+      ? 'text-amber-700 dark:text-amber-300'
+      : totalWorkload > 0
+        ? 'text-emerald-700 dark:text-emerald-300'
+        : 'text-blue-700 dark:text-blue-300';
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow="Kontrol Merkezi"
-        title={`${greeting}, ${firstName}`}
-        description="Tüm İSG süreçlerinizi tek ekrandan takip edin. Risk analizleri, dokümanlar, olaylar ve görevler burada."
-        className="overflow-hidden border-white/60 bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(255,249,240,0.94))] shadow-[var(--shadow-elevated)] dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(17,26,43,0.96),rgba(11,17,31,0.98))]"
-        meta={
-          <>
-            <span className="inline-flex items-center rounded-full border border-[var(--gold)]/25 bg-[var(--gold)]/10 px-3 py-1 text-xs font-semibold text-[var(--primary)]">
-              Canlı operasyon görünümü
-            </span>
-            <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">
-              Remote Supabase senkron
-            </span>
-          </>
-        }
-      />
+    <div className="relative isolate space-y-6 pb-4">
+      <div className="pointer-events-none absolute -left-20 top-8 -z-10 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(200,155,91,0.22),transparent_66%)] blur-2xl" />
+      <div className="pointer-events-none absolute right-0 top-32 -z-10 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(14,165,233,0.12),transparent_68%)] blur-2xl dark:bg-[radial-gradient(circle,rgba(56,189,248,0.12),transparent_68%)]" />
+
+      <section className="relative overflow-hidden rounded-[2.2rem] border border-white/70 bg-[linear-gradient(135deg,rgba(255,255,255,0.98),rgba(255,248,236,0.94)_44%,rgba(239,231,219,0.92))] p-5 shadow-[var(--shadow-elevated)] dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(17,26,43,0.98),rgba(9,17,31,0.98)_54%,rgba(35,27,16,0.9))] sm:p-7 xl:p-8">
+        <div className="pointer-events-none absolute right-[-8rem] top-[-12rem] h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(200,155,91,0.28),transparent_64%)] blur-xl" />
+        <div className="pointer-events-none absolute bottom-[-10rem] left-[28%] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_66%)] blur-xl" />
+
+        <div className="relative grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.65fr)] xl:items-end">
+          <div>
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[var(--gold)]/30 bg-[var(--gold)]/12 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-[var(--primary)]">
+                <LayoutDashboard size={14} />
+                Kontrol Merkezi
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]" />
+                Canlı operasyon
+              </span>
+              <span className="inline-flex items-center rounded-full border border-border/70 bg-background/65 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur">
+                Remote Supabase senkron
+              </span>
+            </div>
+
+            <h1 className="max-w-3xl text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl xl:text-5xl">
+              {greeting}, {firstName}
+            </h1>
+            <p className="mt-4 max-w-3xl text-base leading-8 text-muted-foreground sm:text-lg">
+              Tüm İSG operasyonunu tek ekranda izleyin: riskler, dokümanlar, olaylar, görevler ve firma takipleri daha okunabilir bir komuta panelinde toplandı.
+            </p>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              <HeroSignal icon={Radar} label="Operasyon Durumu" value={operationState} valueClassName={operationTone} />
+              <HeroSignal icon={Target} label="Öncelik Yükü" value={`${totalWorkload} takip`} />
+              <HeroSignal icon={TrendingUp} label="Firma Kapsamı" value={`${s.companyCount} firma`} />
+            </div>
+          </div>
+
+          <div className="rounded-[1.8rem] border border-white/70 bg-white/62 p-4 shadow-[0_24px_70px_rgba(16,24,40,0.10)] backdrop-blur dark:border-white/10 dark:bg-white/[0.045]">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Bugünün odağı</p>
+                <p className="mt-1 text-sm font-semibold text-foreground">Önce kritik işler</p>
+              </div>
+              <PremiumIconBadge icon={GaugeCircle} tone={totalWorkload > 0 ? "amber" : "success"} size="sm" />
+            </div>
+            <div className="grid gap-2">
+              <PriorityPill label="Yüksek risk" value={s.highRiskCount} tone={s.highRiskCount > 0 ? "risk" : "success"} />
+              <PriorityPill label="Açık görev" value={s.taskCount} tone={s.taskCount > 0 ? "amber" : "success"} />
+              <PriorityPill label="Olay kaydı" value={s.incidentCount} tone={s.incidentCount > 0 ? "cobalt" : "success"} />
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
@@ -209,7 +262,7 @@ export function DashboardClient() {
           value={s.taskCount}
           sub="Takip bekleyen işler"
           tone="violet"
-          onClick={() => router.push('/tasks')}
+          onClick={() => router.push('/planner')}
         />
       </div>
 
@@ -374,6 +427,51 @@ export function DashboardClient() {
   );
 }
 
+function HeroSignal({
+  icon: Icon,
+  label,
+  value,
+  valueClassName,
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+  valueClassName?: string;
+}) {
+  return (
+    <div className="rounded-[1.35rem] border border-white/65 bg-white/58 px-4 py-3 shadow-[0_14px_34px_rgba(16,24,40,0.07)] backdrop-blur dark:border-white/10 dark:bg-white/[0.045]">
+      <div className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+        <Icon size={14} className="text-[var(--gold)]" />
+        {label}
+      </div>
+      <p className={`text-base font-semibold text-foreground ${valueClassName ?? ''}`}>{value}</p>
+    </div>
+  );
+}
+
+function PriorityPill({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone: PremiumIconTone;
+}) {
+  const isClear = value === 0;
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-background/70 px-3 py-2.5">
+      <div className="flex items-center gap-2">
+        <PremiumIconBadge icon={isClear ? CheckCircle2 : AlertTriangle} tone={tone} size="xs" />
+        <span className="text-sm font-semibold text-foreground">{label}</span>
+      </div>
+      <span className="rounded-full border border-border/70 bg-card px-2.5 py-1 text-xs font-bold tabular-nums text-foreground">
+        {value}
+      </span>
+    </div>
+  );
+}
+
 function StatCard({
   icon: Icon,
   label,
@@ -392,20 +490,22 @@ function StatCard({
   onClick: () => void;
 }) {
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className="group cursor-pointer rounded-[1.75rem] border border-border/85 bg-card px-5 py-4 shadow-[var(--shadow-card)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--gold)]/28 hover:shadow-[var(--shadow-elevated)]"
+      className="group relative w-full cursor-pointer overflow-hidden rounded-[1.85rem] border border-white/70 bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(255,252,247,0.82))] px-5 py-4 text-left shadow-[var(--shadow-card)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--gold)]/35 hover:shadow-[var(--shadow-elevated)] dark:border-white/10 dark:bg-[linear-gradient(145deg,rgba(17,26,43,0.98),rgba(17,26,43,0.74))]"
     >
+      <div className="pointer-events-none absolute right-[-4rem] top-[-5rem] h-36 w-36 rounded-full bg-[radial-gradient(circle,rgba(200,155,91,0.16),transparent_68%)] opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
       <div className="mb-4 flex items-center justify-between gap-3">
         <PremiumIconBadge icon={Icon} tone={tone} />
-        <span className="rounded-full border border-border/80 bg-background/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-          canlı
+        <span className="inline-flex items-center gap-1 rounded-full border border-border/80 bg-background/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          canlı <ArrowUpRight size={11} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </span>
       </div>
       <div className="text-sm font-semibold text-foreground">{label}</div>
       <p className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{value}</p>
       <p className={`mt-1 text-xs ${subColor || 'text-muted-foreground'}`}>{sub}</p>
-    </div>
+    </button>
   );
 }
 
@@ -425,10 +525,14 @@ function QuickAction({
   return (
     <button
       onClick={() => router.push(href)}
-      className="group flex min-h-28 flex-col items-start justify-between rounded-[1.4rem] border border-border/85 bg-background/68 p-4 text-left shadow-[var(--shadow-soft)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--gold)]/28 hover:bg-[var(--gold)]/6 hover:shadow-[var(--shadow-card)]"
+      className="group relative flex min-h-28 flex-col items-start justify-between overflow-hidden rounded-[1.4rem] border border-border/85 bg-[linear-gradient(145deg,rgba(255,255,255,0.76),rgba(255,252,247,0.52))] p-4 text-left shadow-[var(--shadow-soft)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--gold)]/32 hover:bg-[var(--gold)]/6 hover:shadow-[var(--shadow-card)] dark:bg-[linear-gradient(145deg,rgba(255,255,255,0.055),rgba(255,255,255,0.025))]"
     >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/45 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
       <PremiumIconBadge icon={Icon} tone={tone} size="sm" />
-      <span className="text-sm font-semibold text-foreground group-hover:text-[var(--primary)]">{label}</span>
+      <span className="flex w-full items-center justify-between gap-2 text-sm font-semibold text-foreground group-hover:text-[var(--primary)]">
+        {label}
+        <ArrowUpRight size={13} className="opacity-0 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" />
+      </span>
     </button>
   );
 }
@@ -449,9 +553,10 @@ function ModuleLink({
   const router = useRouter();
 
   return (
-    <div
+    <button
+      type="button"
       onClick={() => router.push(href)}
-      className="flex cursor-pointer items-center gap-3 rounded-[1.2rem] border border-border/75 bg-background/55 px-4 py-3 transition-all duration-200 hover:border-[var(--gold)]/28 hover:bg-[var(--gold)]/6"
+      className="flex w-full cursor-pointer items-center gap-3 rounded-[1.2rem] border border-border/75 bg-background/55 px-4 py-3 text-left transition-all duration-200 hover:border-[var(--gold)]/28 hover:bg-[var(--gold)]/6"
     >
       <PremiumIconBadge icon={Icon} tone={tone} size="sm" />
       <div className="min-w-0 flex-1">
@@ -459,6 +564,6 @@ function ModuleLink({
         <div className="text-xs text-muted-foreground">{desc}</div>
       </div>
       <ChevronRight size={14} className="text-muted-foreground" />
-    </div>
+    </button>
   );
 }
