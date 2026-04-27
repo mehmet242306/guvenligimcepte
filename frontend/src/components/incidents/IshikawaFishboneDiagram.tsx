@@ -1,5 +1,3 @@
-"use client";
-
 import { IshikawaDiagram, type IshikawaData } from "./IshikawaDiagram";
 
 type FishboneCategoryKey = "insan" | "makine" | "metot" | "malzeme" | "olcum" | "cevre";

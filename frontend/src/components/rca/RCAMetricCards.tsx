@@ -1,5 +1,3 @@
-"use client";
-
 import { Gauge, TrendingUp, Shield, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { DIMENSION_META, type RCAResult } from "@/lib/r2d-rca-engine";

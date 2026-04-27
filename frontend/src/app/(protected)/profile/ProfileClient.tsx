@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { toDataURL } from "qrcode";
+// qrcode runtime'da yüklenir — sadece MFA enrollment akışında lazım,
+// /profile sayfası açıldığında initial bundle'a girmesin.
 import { useTranslations } from "next-intl";
 import { useI18n, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import {
@@ -560,6 +561,7 @@ export default function ProfileClient() {
 
   async function buildMfaQrImageSrc(uri: string, qrCodeSvg: string) {
     try {
+      const { toDataURL } = await import("qrcode");
       return await toDataURL(uri, {
         width: 220,
         margin: 1,

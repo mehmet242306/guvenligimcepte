@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SOURCE_COLORS, type CategorizedDimension, type CategoryLevel } from "@/lib/r2d-rca-engine";
 

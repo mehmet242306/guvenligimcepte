@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { R2D_DIMENSIONS, DIMENSION_META, SOURCE_COLORS } from "@/lib/r2d-rca-engine";
 
