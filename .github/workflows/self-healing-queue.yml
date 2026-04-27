@@ -20,7 +20,11 @@ jobs:
             echo "::notice title=Self-healing queue skipped::APP_BASE_URL veya SELF_HEALING_CRON_SECRET tanimli degil."
             exit 0
           fi
-          curl -fsS -X POST "${APP_BASE_URL%/}/api/self-healing/queue/process" \
+          # --retry/--retry-all-errors: Vercel function cold-start
+          # 504 timeout'larında ikinci deneme (warm) genelde başarılı.
+          # --max-time: tek denemenin üst sınırı.
+          curl -fsS --retry 2 --retry-delay 15 --retry-all-errors --max-time 60 \
+            -X POST "${APP_BASE_URL%/}/api/self-healing/queue/process" \
             -H "Content-Type: application/json" \
             -H "x-self-healing-key: ${SELF_HEALING_CRON_SECRET}" \
             --data '{"batchSize":10}'

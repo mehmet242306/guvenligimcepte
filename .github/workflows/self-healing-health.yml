@@ -20,7 +20,10 @@ jobs:
             echo "::notice title=Self-healing health skipped::APP_BASE_URL veya SELF_HEALING_CRON_SECRET tanimli degil."
             exit 0
           fi
-          response="$(curl -fsS -X POST "${APP_BASE_URL%/}/api/health" \
+          # Cold-start tolerance: ilk istek 10s+ Vercel timeout'una takılırsa
+          # 15s sonra warm fonksiyon ile tekrar dene.
+          response="$(curl -fsS --retry 2 --retry-delay 15 --retry-all-errors --max-time 60 \
+            -X POST "${APP_BASE_URL%/}/api/health" \
             -H "Content-Type: application/json" \
             -H "x-self-healing-key: ${SELF_HEALING_CRON_SECRET}" \
             --data '{}')"

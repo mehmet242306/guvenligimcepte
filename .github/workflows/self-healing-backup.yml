@@ -20,7 +20,9 @@ jobs:
             echo "::notice title=Self-healing backup skipped::APP_BASE_URL veya SELF_HEALING_CRON_SECRET tanimli degil."
             exit 0
           fi
-          curl -fsS -X POST "${APP_BASE_URL%/}/api/self-healing/backup/run" \
+          # Backup işi DB tablo sayısına göre uzun sürebilir; --max-time 180.
+          curl -fsS --retry 2 --retry-delay 30 --retry-all-errors --max-time 180 \
+            -X POST "${APP_BASE_URL%/}/api/self-healing/backup/run" \
             -H "Content-Type: application/json" \
             -H "x-self-healing-key: ${SELF_HEALING_CRON_SECRET}" \
             --data '{"backupType":"scheduled_weekly_snapshot"}'
