@@ -78,13 +78,12 @@ import {
 } from "@/lib/risk-scoring";
 import { MethodIcon } from "@/components/risk-analysis/MethodIcon";
 import { FMEAPanel, HAZOPPanel, BowTiePanel, FTAPanel, ChecklistPanel, JSAPanel, LOPAPanel } from "@/components/risk-analysis/panels";
-import {
-  exportRiskAnalysisPDF,
-  exportRiskAnalysisWord,
-  exportRiskAnalysisExcel,
-  type ExportFinding,
-  type ExportImage,
-  type RiskAnalysisExportData,
+// Export fonksiyonları runtime'da yüklenir (ExcelJS + docx ~1MB)
+// böylece /risk-analysis sayfası açıldığında initial bundle'a girmiyor.
+import type {
+  ExportFinding,
+  ExportImage,
+  RiskAnalysisExportData,
 } from "@/lib/risk-analysis-export";
 import {
   saveRiskAnalysis,
@@ -436,204 +435,6 @@ function computeAllScores(finding: VisualFinding): VisualFinding {
 }
 
 /* Mock fallback kaldırıldı — yalnızca gerçek AI analizi kullanılıyor */
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _mockPatterns_removed: Record<string, unknown>[] = [
-  {
-    title: "KKD eksikliği — baret takılı değil",
-    category: "PPE",
-    confidence: 0.93,
-    severity: "high",
-    recommendation: "Çalışanın baş koruyucu (baret) kullanımı sağlanmalı; KKD denetim sıklığı artırılmalıdır.",
-    correctiveActionRequired: true,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: categoryR2DProfiles.ppe,
-    fkValues: categoryFKProfiles.ppe,
-    matrixValues: categoryMatrixProfiles.ppe,
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R1", x: 58, y: 22 },
-      { id: crypto.randomUUID(), kind: "box", label: "Kişi (baş)", x: 48, y: 10, width: 18, height: 28 },
-    ],
-  },
-  {
-    title: "Düşme / takılma riski — zemin engelleri",
-    category: "Housekeeping",
-    confidence: 0.87,
-    severity: "medium",
-    recommendation: "Geçiş yolları temizlenmeli, yerdeki malzeme/kablo düzeni iyileştirilmelidir.",
-    correctiveActionRequired: false,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: categoryR2DProfiles.housekeeping,
-    fkValues: categoryFKProfiles.housekeeping,
-    matrixValues: categoryMatrixProfiles.housekeeping,
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R2", x: 42, y: 82 },
-      { id: crypto.randomUUID(), kind: "polygon", label: "Zemin engeli", points: [{ x: 18, y: 72 }, { x: 62, y: 70 }, { x: 68, y: 88 }, { x: 22, y: 90 }] },
-    ],
-  },
-  {
-    title: "İstif / devrilme riski — dengesiz yükleme",
-    category: "Storage",
-    confidence: 0.90,
-    severity: "critical",
-    recommendation: "İstif yüksekliği ve sabitleme durumu kontrol edilmeli, devrilme önlemi alınmalıdır.",
-    correctiveActionRequired: true,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: categoryR2DProfiles.storage,
-    fkValues: categoryFKProfiles.storage,
-    matrixValues: categoryMatrixProfiles.storage,
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R3", x: 74, y: 35 },
-      { id: crypto.randomUUID(), kind: "box", label: "İstif", x: 62, y: 14, width: 24, height: 50 },
-    ],
-  },
-  {
-    title: "Elektrik tehlikesi — açık pano / kablo",
-    category: "Electrical",
-    confidence: 0.86,
-    severity: "high",
-    recommendation: "Açık elektrik panoları kapatılmalı, hasarlı kablolar değiştirilmelidir.",
-    correctiveActionRequired: false,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: categoryR2DProfiles.electrical,
-    fkValues: categoryFKProfiles.electrical,
-    matrixValues: categoryMatrixProfiles.electrical,
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R4", x: 18, y: 40 },
-      { id: crypto.randomUUID(), kind: "box", label: "Pano/Kablo", x: 8, y: 28, width: 20, height: 28 },
-    ],
-  },
-  {
-    title: "Ergonomi riski — uygunsuz kaldırma",
-    category: "Ergonomi",
-    confidence: 0.84,
-    severity: "high",
-    recommendation: "Ağır yük taşıma prosedürü gözden geçirilmeli, mekanik yardım sağlanmalıdır.",
-    correctiveActionRequired: false,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: categoryR2DProfiles.ergonomi,
-    fkValues: categoryFKProfiles.ergonomi,
-    matrixValues: categoryMatrixProfiles.ergonomi,
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R5", x: 50, y: 52 },
-      { id: crypto.randomUUID(), kind: "box", label: "Yük/Kişi", x: 36, y: 34, width: 28, height: 36 },
-    ],
-  },
-  {
-    title: "Yangın riski — söndürücü erişimi engelli",
-    category: "Yangın",
-    confidence: 0.82,
-    severity: "high",
-    recommendation: "Yangın söndürücü önündeki engeller kaldırılmalı, erişim yolu açık tutulmalıdır.",
-    correctiveActionRequired: true,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: { c1: 0.5, c2: 0.1, c3: 0.3, c4: 0.15, c5: 0.4, c6: 0.8, c7: 0.2, c8: 0.1, c9: 0.15 },
-    fkValues: { likelihood: 3, severity: 40, exposure: 6 },
-    matrixValues: { likelihood: 3, severity: 4 },
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R6", x: 88, y: 70 },
-      { id: crypto.randomUUID(), kind: "box", label: "Söndürücü", x: 80, y: 60, width: 16, height: 24 },
-    ],
-  },
-  {
-    title: "Acil çıkış yolu engelli / işaretsiz",
-    category: "Acil Durum",
-    confidence: 0.79,
-    severity: "critical",
-    recommendation: "Acil çıkış yolları temizlenmeli, yönlendirme işaretleri kontrol edilmelidir.",
-    correctiveActionRequired: true,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: { c1: 0.3, c2: 0.05, c3: 0.7, c4: 0.1, c5: 0.1, c6: 0.9, c7: 0.1, c8: 0.2, c9: 0.4 },
-    fkValues: { likelihood: 6, severity: 40, exposure: 10 },
-    matrixValues: { likelihood: 4, severity: 5 },
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R7", x: 12, y: 88 },
-    ],
-  },
-  {
-    title: "Makine koruma kapağı açık / devre dışı",
-    category: "Makine",
-    confidence: 0.88,
-    severity: "critical",
-    recommendation: "Makine koruma tertibatı etkinleştirilmeli; enerji kilitleme prosedürü uygulanmalıdır.",
-    correctiveActionRequired: true,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: { c1: 0.6, c2: 0.2, c3: 0.5, c4: 0.1, c5: 0.05, c6: 0.2, c7: 0.9, c8: 0.15, c9: 0.2 },
-    fkValues: { likelihood: 6, severity: 15, exposure: 6 },
-    matrixValues: { likelihood: 4, severity: 4 },
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R8", x: 35, y: 58 },
-      { id: crypto.randomUUID(), kind: "box", label: "Makine", x: 22, y: 44, width: 30, height: 30 },
-    ],
-  },
-  {
-    title: "Yüksekte çalışma — korkuluk/yaşam hattı eksik",
-    category: "Yüksekte Çalışma",
-    confidence: 0.85,
-    severity: "critical",
-    recommendation: "Yüksekte çalışma alanına korkuluk veya yaşam hattı sistemi kurulmalıdır.",
-    correctiveActionRequired: true,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: { c1: 0.4, c2: 0.6, c3: 0.85, c4: 0.15, c5: 0.05, c6: 0.6, c7: 0.3, c8: 0.1, c9: 0.35 },
-    fkValues: { likelihood: 6, severity: 40, exposure: 3 },
-    matrixValues: { likelihood: 3, severity: 5 },
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R9", x: 65, y: 15 },
-    ],
-  },
-  {
-    title: "Kimyasal madde uygunsuz depolanması",
-    category: "Kimyasal",
-    confidence: 0.80,
-    severity: "high",
-    recommendation: "Kimyasal maddeler SDS'ye uygun şekilde etiketlenmeli ve uyumlu dolaplarda depolanmalıdır.",
-    correctiveActionRequired: false,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: { c1: 0.35, c2: 0.15, c3: 0.3, c4: 0.25, c5: 0.85, c6: 0.3, c7: 0.2, c8: 0.1, c9: 0.3 },
-    fkValues: { likelihood: 3, severity: 7, exposure: 6 },
-    matrixValues: { likelihood: 3, severity: 3 },
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R10", x: 82, y: 48 },
-    ],
-  },
-  {
-    title: "Aydınlatma yetersizliği",
-    category: "Çevre",
-    confidence: 0.76,
-    severity: "medium",
-    recommendation: "Çalışma alanının aydınlatma ölçümü yapılmalı, gerekiyorsa ek aydınlatma sağlanmalıdır.",
-    correctiveActionRequired: false,
-    isManual: false,
-    legalReferences: [],
-    r2dValues: { c1: 0.2, c2: 0.1, c3: 0.3, c4: 0.7, c5: 0.05, c6: 0.4, c7: 0.1, c8: 0.15, c9: 0.3 },
-    fkValues: { likelihood: 3, severity: 3, exposure: 10 },
-    matrixValues: { likelihood: 3, severity: 2 },
-    fmeaValues: getDefaultFMEAValues(), hazopValues: getDefaultHAZOPValues(), bowTieValues: getDefaultBowTieValues(), ftaValues: getDefaultFTAValues(), checklistValues: getDefaultChecklistValues(), jsaValues: getDefaultJSAValues(), lopaValues: getDefaultLOPAValues(),
-    annotations: [
-      { id: crypto.randomUUID(), kind: "pin", label: "R11", x: 50, y: 10 },
-    ],
-  },
-];
 
 /* Mock fallback functions removed — only real AI analysis is used */
 
@@ -2805,9 +2606,9 @@ JSON formatında döndür:
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
               <p className="eyebrow">Rapor</p>
               <div className="mt-1 flex justify-center gap-1">
-                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" onClick={() => buildExportData().then(exportRiskAnalysisPDF)} disabled={results.length === 0}>PDF</Button>
-                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20" onClick={() => buildExportData().then(exportRiskAnalysisWord)} disabled={results.length === 0}>Word</Button>
-                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" onClick={() => buildExportData().then(exportRiskAnalysisExcel)} disabled={results.length === 0}>Excel</Button>
+                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" onClick={async () => { const d = await buildExportData(); const { exportRiskAnalysisPDF } = await import("@/lib/risk-analysis-export"); await exportRiskAnalysisPDF(d); }} disabled={results.length === 0}>PDF</Button>
+                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20" onClick={async () => { const d = await buildExportData(); const { exportRiskAnalysisWord } = await import("@/lib/risk-analysis-export"); await exportRiskAnalysisWord(d); }} disabled={results.length === 0}>Word</Button>
+                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" onClick={async () => { const d = await buildExportData(); const { exportRiskAnalysisExcel } = await import("@/lib/risk-analysis-export"); await exportRiskAnalysisExcel(d); }} disabled={results.length === 0}>Excel</Button>
               </div>
             </div>
           </div>
