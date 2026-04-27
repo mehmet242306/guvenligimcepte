@@ -3,7 +3,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Grid, Html, Line, Text } from "@react-three/drei";
 import { useMemo, useRef, useState, useEffect } from "react";
-import * as THREE from "three";
+import { Mesh, Vector3 } from "three";
 import type { TwinPoint } from "@/lib/supabase/digital-twin-api";
 
 /**
@@ -63,8 +63,8 @@ function PulsingSphere({
   selected?: boolean;
   dimmed?: boolean;
 }) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const glowRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<Mesh>(null);
+  const glowRef = useRef<Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
   useFrame(({ clock }) => {
@@ -222,7 +222,7 @@ function Scene({
     const gpsNormalized = normalized.filter(
       (n) => n.point.gpsLat != null && n.point.gpsLng != null
     );
-    return gpsNormalized.map((n) => new THREE.Vector3(...n.position));
+    return gpsNormalized.map((n) => new Vector3(...n.position));
   }, [normalized]);
 
   // Replay visible points

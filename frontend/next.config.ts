@@ -36,6 +36,17 @@ const nextConfig: NextConfig = {
     root: path.resolve(__dirname, ".."),
   },
 
+  // Production build'inde console.log / info / debug çağrılarını strip et;
+  // warn ve error muhafaza edilir (gerçek hata izleme için). Dev'de hepsi
+  // çalışmaya devam eder. 350+ console statement bu sayede prod bundle'a
+  // sızmaz.
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === "production"
+        ? { exclude: ["error", "warn"] }
+        : false,
+  },
+
   experimental: {
     optimizePackageImports: [
       "lucide-react",
