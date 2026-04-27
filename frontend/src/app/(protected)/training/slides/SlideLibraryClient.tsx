@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -334,7 +335,14 @@ export function SlideLibraryClient() {
                   >
                     {d.cover_image_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={d.cover_image_url} alt={d.title} className="h-full w-full object-cover" />
+                      <Image
+                        src={d.cover_image_url}
+                        alt={d.title}
+                        width={400}
+                        height={225}
+                        unoptimized
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
                       <span className="text-5xl">{cat?.emoji || "📊"}</span>
                     )}

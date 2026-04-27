@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus, FileSearch, Archive, Pencil, Trash2, ChevronDown, ClipboardList, Share2, Copy, Check, MessageCircle, QrCode } from "lucide-react";
 import type { PremiumIconTone } from "@/components/ui/premium-icon-badge";
@@ -989,7 +990,14 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
                   <div key={img.id} className="shrink-0">
                     {img.signedUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={img.signedUrl} alt={img.fileName} className="h-40 w-auto rounded-lg border border-border object-cover shadow-sm" loading="lazy" />
+                      <Image
+                        src={img.signedUrl}
+                        alt={img.fileName}
+                        width={300}
+                        height={160}
+                        unoptimized
+                        className="h-40 w-auto rounded-lg border border-border object-cover shadow-sm"
+                      />
                     ) : (
                       <div className="flex h-40 w-48 items-center justify-center rounded-lg border border-border bg-secondary text-xs text-muted-foreground">{img.fileName}</div>
                     )}

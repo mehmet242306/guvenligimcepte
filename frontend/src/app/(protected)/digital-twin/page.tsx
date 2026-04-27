@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 // 3D viewer is client-only (Three.js requires DOM)
@@ -451,7 +452,14 @@ export default function DigitalTwinPage() {
                           </p>
                           {selectedPoint.imageUrl && (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={selectedPoint.imageUrl} alt="" className="mt-3 w-full rounded-xl border border-border object-cover aspect-[4/3]" />
+                            <Image
+                              src={selectedPoint.imageUrl}
+                              alt=""
+                              width={800}
+                              height={600}
+                              unoptimized
+                              className="mt-3 w-full rounded-xl border border-border object-cover aspect-[4/3]"
+                            />
                           )}
                           {selectedPoint.risksAtPoint.length > 0 ? (
                             <div className="mt-3 space-y-2">
@@ -620,7 +628,14 @@ export default function DigitalTwinPage() {
                                   </div>
                                   {d.screenshotUrl && (
                                     // eslint-disable-next-line @next/next/no-img-element
-                                    <img src={d.screenshotUrl} alt="" className="h-12 w-16 shrink-0 rounded-lg border border-border object-cover" />
+                                    <Image
+                                      src={d.screenshotUrl}
+                                      alt=""
+                                      width={64}
+                                      height={48}
+                                      unoptimized
+                                      className="h-12 w-16 shrink-0 rounded-lg border border-border object-cover"
+                                    />
                                   )}
                                 </div>
                               </button>
@@ -641,7 +656,14 @@ export default function DigitalTwinPage() {
                                   )}
                                   {d.screenshotUrl && (
                                     // eslint-disable-next-line @next/next/no-img-element
-                                    <img src={d.screenshotUrl} alt="" className="w-full max-w-md rounded-xl border border-border object-cover" />
+                                    <Image
+                                      src={d.screenshotUrl}
+                                      alt=""
+                                      width={448}
+                                      height={336}
+                                      unoptimized
+                                      className="w-full max-w-md rounded-xl border border-border object-cover"
+                                    />
                                   )}
                                   {d.gpsLat && (
                                     <p className="text-[11px] text-muted-foreground">GPS: {d.gpsLat.toFixed(6)}, {d.gpsLng?.toFixed(6)}</p>
