@@ -367,7 +367,9 @@ export async function sendPasswordResetCodeEmail({
       return;
     }
 
-    throw new Error("RESEND_API_KEY tanimli degil.");
+    // RESEND_API_KEY tanımsızken email atılmaz; uygulama akışını
+    // bozmamak için sessizce skip ediyoruz (warn yukarıda log'landı).
+    return;
   }
 
   const html = renderEmailShell({
@@ -420,7 +422,9 @@ export async function sendPasswordResetLinkEmail({
       return;
     }
 
-    throw new Error("RESEND_API_KEY tanimli degil.");
+    // RESEND_API_KEY tanımsızken email atılmaz; uygulama akışını
+    // bozmamak için sessizce skip ediyoruz (warn yukarıda log'landı).
+    return;
   }
 
   const html = renderEmailShell({
@@ -473,7 +477,9 @@ export async function sendWelcomeAccountEmail({
       return;
     }
 
-    throw new Error("RESEND_API_KEY tanimli degil.");
+    // RESEND_API_KEY tanımsızken email atılmaz; uygulama akışını
+    // bozmamak için sessizce skip ediyoruz (warn yukarıda log'landı).
+    return;
   }
 
   const html = renderEmailShell({
@@ -532,7 +538,9 @@ export async function sendGoogleConnectedWelcomeEmail({
       return;
     }
 
-    throw new Error("RESEND_API_KEY tanimli degil.");
+    // RESEND_API_KEY tanımsızken email atılmaz; uygulama akışını
+    // bozmamak için sessizce skip ediyoruz (warn yukarıda log'landı).
+    return;
   }
 
   const html = renderEmailShell({
@@ -591,7 +599,9 @@ export async function sendPasswordChangedEmail({
       return;
     }
 
-    throw new Error("RESEND_API_KEY tanimli degil.");
+    // RESEND_API_KEY tanımsızken email atılmaz; uygulama akışını
+    // bozmamak için sessizce skip ediyoruz (warn yukarıda log'landı).
+    return;
   }
 
   const html = renderEmailShell({
@@ -644,7 +654,9 @@ export async function sendSuspiciousLoginEmail({
       return;
     }
 
-    throw new Error("RESEND_API_KEY tanimli degil.");
+    // RESEND_API_KEY tanımsızken email atılmaz; uygulama akışını
+    // bozmamak için sessizce skip ediyoruz (warn yukarıda log'landı).
+    return;
   }
 
   const html = renderEmailShell({
@@ -694,7 +706,9 @@ export async function sendDataDeletionConfirmationEmail({
       return;
     }
 
-    throw new Error("RESEND_API_KEY tanimli degil.");
+    // RESEND_API_KEY tanımsızken email atılmaz; uygulama akışını
+    // bozmamak için sessizce skip ediyoruz (warn yukarıda log'landı).
+    return;
   }
 
   const formattedPurgeDate = formatEmailDateTime(scheduledPurgeAt);
@@ -772,7 +786,14 @@ export async function sendOsgbPersonnelInviteEmail({
       };
     }
 
-    throw new Error("RESEND_API_KEY tanimli degil.");
+    // RESEND_API_KEY tanımsızken email atılmaz; aynı preview sonucunu
+    // prod'da da dönerek uygulama akışını koruyoruz.
+    return {
+      delivered: false,
+      mode: "preview",
+      reason: "RESEND_API_KEY tanimli degil.",
+      preview,
+    };
   }
 
   const credentialLabel = temporaryPassword ? "Gecici sifre" : "Giris notu";
@@ -881,7 +902,12 @@ export async function sendDemoAccountProvisionEmail({
       };
     }
 
-    throw new Error("RESEND_API_KEY tanimli degil.");
+    return {
+      delivered: false,
+      mode: "preview",
+      reason: "RESEND_API_KEY tanimli degil.",
+      preview,
+    };
   }
 
   const html = renderEmailShell({
@@ -989,7 +1015,11 @@ export async function sendCompanyInvitationEmail({
         reason: "RESEND_API_KEY tanimli degil.",
       };
     }
-    throw new Error("RESEND_API_KEY tanimli degil.");
+    return {
+      delivered: false,
+      mode: "preview",
+      reason: "RESEND_API_KEY tanimli degil.",
+    };
   }
 
   const trimmedMessage = message?.trim() || "";
