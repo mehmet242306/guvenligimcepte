@@ -358,27 +358,36 @@ export async function runSelfHealingHealthChecks(options?: {
     checkCriticalWrite,
   ];
 
-  for (const runCheck of checks) {
-    try {
-      const result = await runCheck();
-      results.push(result);
-      await insertHealthCheck(runId, mode, result, options?.createdBy ?? null);
-    } catch (error) {
+  // Paralel çalıştır — sıralı versiyon Vercel function 10s timeout'unu
+  // cron cold-start'larda aşıyordu (5 check × ~1-2s + Anthropic ping 1.3s).
+  // Promise.allSettled ile her check ayrı hata yakalanıp tek tek raporlanır.
+  const settled = await Promise.allSettled(checks.map((runCheck) => runCheck()));
+
+  for (let i = 0; i < settled.length; i++) {
+    const outcome = settled[i];
+    const runCheck = checks[i];
+    if (outcome.status === "fulfilled") {
+      results.push(outcome.value);
+    } else {
+      const error = outcome.reason;
       const message = error instanceof Error ? error.message : "Bilinmeyen hata";
-      const failedResult: HealthCheckResult = {
+      results.push({
         componentKey: runCheck.name.replace(/^check/, "").toLowerCase() || "unknown",
         componentName: runCheck.name || "Unknown",
         status: "down",
         latencyMs: 0,
         summary: message,
-        details: {
-          error: message,
-        },
-      };
-      results.push(failedResult);
-      await insertHealthCheck(runId, mode, failedResult, options?.createdBy ?? null);
+        details: { error: message },
+      });
     }
   }
+
+  // DB insert'leri de paralel — 5 sıralı write'ı tek paralel batch'e çevirir.
+  await Promise.all(
+    results.map((result) =>
+      insertHealthCheck(runId, mode, result, options?.createdBy ?? null),
+    ),
+  );
 
   const recoveryResults = await evaluateRecoveryScenarios(runId);
   const overallStatus = results.some((item) => item.status === "down")
