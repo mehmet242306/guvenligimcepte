@@ -1,4 +1,5 @@
 import { PublicHeader } from "@/components/layout/public-header";
+import { PublicLegalFooter } from "@/components/layout/public-legal-footer";
 import { PricingPlansClient } from "./PricingPlansClient";
 
 export default function PricingPage() {
@@ -27,6 +28,8 @@ export default function PricingPage() {
       <section className="mx-auto w-full max-w-[1240px] px-4 py-10 sm:px-6 lg:px-8">
         <PricingPlansClient />
       </section>
+
+      <PublicLegalFooter />
     </main>
   );
 }
