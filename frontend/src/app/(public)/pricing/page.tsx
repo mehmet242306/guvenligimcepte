@@ -1,10 +1,12 @@
 import { PublicHeader } from "@/components/layout/public-header";
 import { PublicLegalFooter } from "@/components/layout/public-legal-footer";
+import { PaddlePaymentLinkHandler } from "@/components/billing/PaddlePaymentLinkHandler";
 import { PricingPlansClient } from "./PricingPlansClient";
 
 export default function PricingPage() {
   return (
     <main className="min-h-screen bg-background">
+      <PaddlePaymentLinkHandler />
       <PublicHeader />
 
       <section className="border-b border-white/10 bg-[var(--navy-dark)] text-white">
