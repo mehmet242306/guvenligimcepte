@@ -73,7 +73,7 @@ export default async function LoginPage({
         </div>
       ) : null}
 
-      <SocialLoginButtons mode="login" />
+      <SocialLoginButtons mode="login" nextPath={next} />
 
       <form className="space-y-5">
         <input type="hidden" name="next" value={next} />

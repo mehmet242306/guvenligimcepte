@@ -573,22 +573,24 @@ export function TeamManagementTab({
 
     let loadedCats = (cats as TeamCategory[]) ?? [];
 
-    // Varsayılan kategorileri otomatik oluştur (yoksa)
-    const defaultCats = [
-      { name: "Risk Değerlendirme Ekibi", color: "#DC2626", icon: "🎯", sort_order: 1 },
-      { name: "İSG Uzmanı", color: "#3B82F6", icon: "🛡️", sort_order: 2 },
-      { name: "İşyeri Hekimi", color: "#10B981", icon: "⚕️", sort_order: 3 },
-      { name: "Acil Durum Ekip Lideri", color: "#F97316", icon: "🚨", sort_order: 4 },
-    ];
-    const missingDefaults = defaultCats.filter((d) => !loadedCats.some((c) => c.name === d.name));
-    if (missingDefaults.length > 0) {
-      const inserts = missingDefaults.map((d) => ({
+    // Varsayılan kategorileri sadece organizasyonda HİÇ kategori yoksa seed et.
+    // Kullanıcı default'lardan birini daha önce silmişse, yeniden geri gelmesin —
+    // aksi halde "Risk Değerlendirme" gibi silinen kategoriler her sayfa
+    // yüklendiğinde geri geliyordu (tekrarlanan ekle).
+    if (loadedCats.length === 0 && resolvedOrgId) {
+      const defaultCats = [
+        { name: "Risk Değerlendirme Ekibi", color: "#DC2626", icon: "🎯", sort_order: 1 },
+        { name: "İSG Uzmanı", color: "#3B82F6", icon: "🛡️", sort_order: 2 },
+        { name: "İşyeri Hekimi", color: "#10B981", icon: "⚕️", sort_order: 3 },
+        { name: "Acil Durum Ekip Lideri", color: "#F97316", icon: "🚨", sort_order: 4 },
+      ];
+      const inserts = defaultCats.map((d) => ({
         ...d,
         is_default: true,
-        organization_id: resolvedOrgId || orgId,
+        organization_id: resolvedOrgId,
       }));
       const { data: newCats } = await supabase.from("team_categories").insert(inserts).select("id, name, color, icon, is_default, sort_order");
-      if (newCats) loadedCats = [...loadedCats, ...(newCats as TeamCategory[])].sort((a, b) => a.sort_order - b.sort_order);
+      if (newCats) loadedCats = (newCats as TeamCategory[]).sort((a, b) => a.sort_order - b.sort_order);
     }
 
     setCategories(loadedCats);
@@ -765,6 +767,32 @@ export function TeamManagementTab({
     void loadData();
   }, [loadData]);
 
+  /* ── Delete category ── */
+  const handleDeleteCategory = useCallback(async (cat: TeamCategory) => {
+    const memberCount = members.filter((m) => m.category_id === cat.id).length;
+    const confirmMsg = memberCount > 0
+      ? `"${cat.name}" kategorisini silmek istediğine emin misin?\n\nBu kategoriye bağlı ${memberCount} üye "Kategorisiz" olarak görünecek.`
+      : `"${cat.name}" kategorisini silmek istediğine emin misin?`;
+    if (!window.confirm(confirmMsg)) return;
+
+    const supabase = createClient();
+    if (!supabase) return;
+
+    // Üyeleri silmiyoruz; sadece category_id'yi null yapıyoruz ki üyeler
+    // "Kategorisiz" grubunda kalsın.
+    if (memberCount > 0) {
+      await supabase.from("team_members").update({ category_id: null }).eq("category_id", cat.id);
+    }
+    const { error } = await supabase.from("team_categories").delete().eq("id", cat.id);
+    if (error) {
+      window.alert(`Silinemedi: ${error.message}`);
+      return;
+    }
+
+    if (selectedCategoryId === cat.id) setSelectedCategoryId("all");
+    void loadData();
+  }, [members, selectedCategoryId, loadData]);
+
   /* ── Add category ── */
   const handleAddCategory = useCallback(async () => {
     if (!catName.trim() || !orgId) return;
@@ -876,21 +904,33 @@ export function TeamManagementTab({
               const count = members.filter((m) => m.category_id === cat.id).length;
               const active = selectedCategoryId === cat.id;
               return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setSelectedCategoryId(active ? "all" : cat.id)}
-                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
-                    active ? "text-white shadow-sm" : "text-foreground hover:bg-secondary"
-                  }`}
-                  style={active ? { backgroundColor: cat.color } : undefined}
-                >
-                  <span className="flex items-center gap-2.5 truncate">
-                    <PremiumIconBadge icon={categoryIcon(cat.name)} tone={active ? "gold" : colorToTone(cat.color)} size="xs" />
-                    <span className="truncate">{cat.name}</span>
-                  </span>
-                  {count > 0 && <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${active ? "bg-white/20" : "bg-muted"}`}>{count}</span>}
-                </button>
+                <div key={cat.id} className="group/cat relative">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCategoryId(active ? "all" : cat.id)}
+                    className={`flex w-full items-center justify-between rounded-xl py-2.5 pl-3 pr-10 text-sm font-medium transition-all ${
+                      active ? "text-white shadow-sm" : "text-foreground hover:bg-secondary"
+                    }`}
+                    style={active ? { backgroundColor: cat.color } : undefined}
+                  >
+                    <span className="flex items-center gap-2.5 truncate">
+                      <PremiumIconBadge icon={categoryIcon(cat.name)} tone={active ? "gold" : colorToTone(cat.color)} size="xs" />
+                      <span className="truncate">{cat.name}</span>
+                    </span>
+                    {count > 0 && <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${active ? "bg-white/20" : "bg-muted"}`}>{count}</span>}
+                  </button>
+                  {/* Hover'da beliren sil butonu — varsayılan kategoriler dahil
+                      tüm kategoriler silinebilir (üyeler "Kategorisiz"e düşer). */}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); void handleDeleteCategory(cat); }}
+                    title="Kategoriyi sil"
+                    aria-label={`${cat.name} kategorisini sil`}
+                    className={`absolute right-1.5 top-1/2 -translate-y-1/2 rounded-md p-1 opacity-0 transition-all group-hover/cat:opacity-100 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 ${active ? "text-white/80" : "text-muted-foreground/60"}`}
+                  >
+                    <Trash2 size={13} strokeWidth={2} />
+                  </button>
+                </div>
               );
             })}
 

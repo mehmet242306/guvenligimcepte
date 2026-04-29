@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -14,14 +15,16 @@ import {
 } from "@/lib/self-healing/resilience";
 import {
   detectSafetyObjects,
+  isOpenAIVisionConfigured,
   visionToPromptContext,
   type VisionDetection,
 } from "@/lib/ai/openai-vision";
+import { getAnthropicKey } from "@/lib/ai/provider-keys";
 
 let anthropicClient: Anthropic | null = null;
 
 function getAnthropicClient(): Anthropic | null {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = getAnthropicKey();
   if (!apiKey) return null;
   anthropicClient ??= new Anthropic({ apiKey });
   return anthropicClient;
@@ -804,20 +807,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "imageBase64 ve mimeType gerekli" }, { status: 400 });
     }
 
+    const entitlementResponse = await consumeEntitlement(auth, "risk_analysis");
+    if (entitlementResponse) return entitlementResponse;
+
     const client = getAnthropicClient();
     if (!client) {
       return NextResponse.json({ error: "ANTHROPIC_API_KEY tan\u0131ml\u0131 de\u011Fil" }, { status: 500 });
-    }
-
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        {
-          error: "OPENAI_API_KEY tanimli degil. Gorsel tespit asamasi calismadan risk analizi baslatilamaz.",
-          stage: "openai_vision",
-          retryable: false,
-        },
-        { status: 500 },
-      );
     }
 
     const startTime = Date.now();
@@ -833,6 +828,7 @@ export async function POST(request: NextRequest) {
     // OPENAI_API_KEY yoksa veya çağrı fail ederse null döner ve hibrit
     // mode'dan tek-model mode'a graceful fallback olur.
     let visionDetection: VisionDetection | null = null;
+    let visionStageStatus: "openai_gpt4o" | "skipped_missing_key" | "failed_fallback" = "openai_gpt4o";
     try {
       visionDetection = await detectSafetyObjects(imageBase64, mimeType);
     } catch (visionErr) {
@@ -841,26 +837,19 @@ export async function POST(request: NextRequest) {
     }
 
     if (!visionDetection) {
+      visionStageStatus = isOpenAIVisionConfigured() ? "failed_fallback" : "skipped_missing_key";
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
         model: "gpt-4o",
         endpoint: "/api/analyze-risk:vision",
         success: false,
-        metadata: { method, reason: "openai_vision_failed" },
-      });
-      return NextResponse.json(
-        {
-          error: "OpenAI gorsel tespit asamasi tamamlanamadi. Lutfen gorseli tekrar deneyin veya biraz sonra yeniden baslatin.",
-          stage: "openai_vision",
-          retryable: true,
-        },
-        { status: 502 },
-      );
+        metadata: { method, reason: visionStageStatus },
+      }).catch(() => undefined);
     }
 
     // Claude'a verilecek ek kontekst (varsa); yoksa boş string → eski davranış
-    const visionContextBlock = visionToPromptContext(visionDetection);
+    const visionContextBlock = visionDetection ? visionToPromptContext(visionDetection) : "";
     const augmentedUserPrompt = `${visionContextBlock}\n\n${buildUserPrompt(method)}`;
 
     // ═══════════════════════════════════════════════════════════════════
@@ -869,7 +858,7 @@ export async function POST(request: NextRequest) {
     // Vision stage'in ground truth'uyla, seçilen metoda (r_skor, fmea,
     // bow_tie, vb.) göre parametrik risk analizi.
     const resilientResponse = await executeWithResilience({
-      serviceKey: "anthropic.api",
+      serviceKey: "anthropic.risk_analysis",
       displayName: "Anthropic API",
       serviceType: "external_api",
       operationName: "risk_image_analysis",
@@ -1101,6 +1090,7 @@ export async function POST(request: NextRequest) {
       imageDescription: parsed.imageDescription ?? "",
       method,
       promptVersion: PROMPT_VERSION,
+      degraded: resilientResponse.degraded || !visionDetection,
       durationMs: duration,
       tokensInput: response.usage?.input_tokens ?? 0,
       tokensOutput: response.usage?.output_tokens ?? 0,
@@ -1116,6 +1106,7 @@ export async function POST(request: NextRequest) {
             workActivity: visionDetection.workActivity,
           }
         : null,
+      visionStageStatus,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Bilinmeyen hata";

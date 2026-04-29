@@ -532,12 +532,24 @@ export function ProtectedShell({
         return;
       }
 
-      setWorkspaceReady(false);
+      if (requiresWorkspaceContext) {
+        setWorkspaceReady(false);
+      } else {
+        setWorkspaceReady(true);
+      }
 
-      const [memberships, activeWorkspace] = await Promise.all([
-        listMyWorkspaces(),
-        getActiveWorkspace(),
-      ]);
+      let memberships: Awaited<ReturnType<typeof listMyWorkspaces>> = [];
+      let activeWorkspace: Awaited<ReturnType<typeof getActiveWorkspace>> = null;
+
+      try {
+        [memberships, activeWorkspace] = await Promise.all([
+          listMyWorkspaces(),
+          getActiveWorkspace(),
+        ]);
+      } catch {
+        memberships = [];
+        activeWorkspace = null;
+      }
 
       if (cancelled) return;
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -9,12 +10,17 @@ import {
   parseJsonBody,
   resolveAiDailyLimit,
 } from "@/lib/security/server";
-import {
-  buildManualFallbackResponse,
-  executeWithResilience,
-} from "@/lib/self-healing/resilience";
+import { executeWithResilience } from "@/lib/self-healing/resilience";
+import { getAnthropicKey } from "@/lib/ai/provider-keys";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+let anthropicClient: Anthropic | null = null;
+
+function getAnthropicClient() {
+  const apiKey = getAnthropicKey();
+  if (!apiKey) return null;
+  anthropicClient ??= new Anthropic({ apiKey });
+  return anthropicClient;
+}
 
 export const maxDuration = 60;
 
@@ -323,6 +329,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "prompt gerekli" }, { status: 400 });
     }
 
+    const entitlementResponse = await consumeEntitlement(auth, "document_generation");
+    if (entitlementResponse) return entitlementResponse;
+
     let contextInfo = "";
     if (companyName || companyData) {
       contextInfo = "\n\nFIRMA BILGILERI:\n";
@@ -349,25 +358,25 @@ export async function POST(request: NextRequest) {
       companyName,
       companyData,
     });
+    const client = getAnthropicClient();
 
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return buildManualFallbackResponse({
+    if (!client) {
+      return NextResponse.json({
         message:
           "AI dokuman servisi ana modele ulasamadi. Yerel taslak olusturuldu; editorde duzenleyip kaydedebilirsiniz.",
-        manualActionLabel: "Yerel taslagi editora ekle",
-        extra: {
-          content: localFallbackContent,
-          fallback: {
-            type: "local_scaffold",
-            label: "Yerel taslagi editora ekle",
-          },
-          fallbackSource: "local_scaffold",
+        content: localFallbackContent,
+        degraded: true,
+        queuedTaskId: null,
+        fallback: {
+          type: "local_scaffold",
+          label: "Yerel taslagi editora ekle",
         },
+        fallbackSource: "local_scaffold",
       });
     }
 
     const resilientResponse = await executeWithResilience({
-      serviceKey: "anthropic.api",
+      serviceKey: "anthropic.document_ai",
       displayName: "Anthropic API",
       serviceType: "external_api",
       operationName: "document_ai_generate",
@@ -418,18 +427,16 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      return buildManualFallbackResponse({
+      return NextResponse.json({
         message: resilientResponse.fallbackMessage,
-        queueTaskId: resilientResponse.queuedTaskId,
-        manualActionLabel: "Yerel taslagi editora ekle",
-        extra: {
-          content: localFallbackContent,
-          fallback: {
-            type: "local_scaffold",
-            label: "Yerel taslagi editora ekle",
-          },
-          fallbackSource: "local_scaffold",
+        content: localFallbackContent,
+        degraded: true,
+        queuedTaskId: resilientResponse.queuedTaskId ?? null,
+        fallback: {
+          type: "local_scaffold",
+          label: "Yerel taslagi editora ekle",
         },
+        fallbackSource: "local_scaffold",
       });
     }
 
@@ -465,18 +472,17 @@ export async function POST(request: NextRequest) {
         organizationId: auth.organizationId,
       });
 
-      return buildManualFallbackResponse({
+      return NextResponse.json({
         message:
           "AI servisi yanit metni uretmedi. Yerel taslak hazirlandi; duzenleyerek devam edebilirsiniz.",
-        manualActionLabel: "Yerel taslagi editora ekle",
-        extra: {
-          content: localFallbackContent,
-          fallback: {
-            type: "local_scaffold",
-            label: "Yerel taslagi editora ekle",
-          },
-          fallbackSource: "local_scaffold",
+        content: localFallbackContent,
+        degraded: true,
+        queuedTaskId: null,
+        fallback: {
+          type: "local_scaffold",
+          label: "Yerel taslagi editora ekle",
         },
+        fallbackSource: "local_scaffold",
       });
     }
 

@@ -160,34 +160,22 @@ export async function loadRiskAssessment(assessmentId: string): Promise<FullAsse
   const supabase = createClient();
   if (!supabase) return null;
 
-  // 1. Assessment
-  const { data: assessment, error: aErr } = await supabase
-    .from("risk_assessments")
-    .select("*")
-    .eq("id", assessmentId)
-    .single();
+  // Run all four reads in parallel — rows/images/findings only need
+  // assessmentId, not the assessment row itself, so we don't gate them
+  // on the assessment fetch.
+  const [
+    { data: assessment, error: aErr },
+    { data: dbRows },
+    { data: dbImages },
+    { data: dbFindings },
+  ] = await Promise.all([
+    supabase.from("risk_assessments").select("*").eq("id", assessmentId).single(),
+    supabase.from("risk_assessment_rows").select("*").eq("assessment_id", assessmentId).order("sort_order"),
+    supabase.from("risk_assessment_images").select("*").eq("assessment_id", assessmentId).order("sort_order"),
+    supabase.from("risk_assessment_findings").select("*").eq("assessment_id", assessmentId).order("sort_order"),
+  ]);
+
   if (aErr || !assessment) { console.warn("[risk-assessment-api] loadRiskAssessment error:", aErr?.message); return null; }
-
-  // 2. Rows
-  const { data: dbRows } = await supabase
-    .from("risk_assessment_rows")
-    .select("*")
-    .eq("assessment_id", assessmentId)
-    .order("sort_order");
-
-  // 3. Images
-  const { data: dbImages } = await supabase
-    .from("risk_assessment_images")
-    .select("*")
-    .eq("assessment_id", assessmentId)
-    .order("sort_order");
-
-  // 4. Findings
-  const { data: dbFindings } = await supabase
-    .from("risk_assessment_findings")
-    .select("*")
-    .eq("assessment_id", assessmentId)
-    .order("sort_order");
 
   // 5. Signed URLs for images
   const images: SavedImage[] = (dbImages ?? []).map((img) => ({
@@ -354,7 +342,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
   const uploadedPaths: string[] = [];
 
   try {
-    // 1. Create assessment
+    // 1. Create assessment (1 round-trip)
     const { data: assessment, error: aErr } = await supabase
       .from("risk_assessments")
       .insert({
@@ -381,118 +369,164 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
     const assessmentId = assessment.id;
     createdAssessmentId = assessmentId;
 
-    // 2. Process each row
+    // 2. Pre-generate UUIDs for rows + images (server's gen_random_uuid()
+    //    default still works — we just override with client UUIDs so we can
+    //    batch-insert and stitch up FK relationships without round-tripping
+    //    for each generated id).
+    const rowDbIds: string[] = input.rows.map(() => crypto.randomUUID());
+    const imageDbIds: string[][] = input.rows.map((row) => row.images.map(() => crypto.randomUUID()));
+
+    // Local (client-side) image id → DB image id, used by findings to wire
+    // up image_id without an intermediate round-trip.
+    const localToDbImageId = new Map<string, string>();
     for (let ri = 0; ri < input.rows.length; ri++) {
       const row = input.rows[ri];
-
-      // Create row
-      const { data: dbRow, error: rErr } = await supabase
-        .from("risk_assessment_rows")
-        .insert({
-          assessment_id: assessmentId,
-          organization_id: auth.orgId,
-          sort_order: ri + 1,
-          title: row.title,
-          description: row.description || null,
-        })
-        .select("id")
-        .single();
-
-      if (rErr || !dbRow) throw new Error(`Risk satiri kaydedilemedi: ${rErr?.message ?? "bilinmeyen hata"}`);
-
-      // Upload images and create image records
-      const localToDbImageId = new Map<string, string>();
-
       for (let ii = 0; ii < row.images.length; ii++) {
-        const img = row.images[ii];
-        const storagePath = `${auth.orgId}/${assessmentId}/${dbRow.id}/${crypto.randomUUID()}_${img.file.name}`;
-
-        // Upload to storage
-        const buffer = await fileToArrayBuffer(img.file);
-        const { error: uploadErr } = await supabase.storage
-          .from("risk-images")
-          .upload(storagePath, buffer, { contentType: img.file.type, upsert: false });
-
-        if (uploadErr) throw new Error(`Gorsel yuklenemedi (${img.file.name}): ${uploadErr.message}`);
-        uploadedPaths.push(storagePath);
-
-        // Create image record
-        const { data: dbImage, error: imgErr } = await supabase
-          .from("risk_assessment_images")
-          .insert({
-            assessment_id: assessmentId,
-            row_id: dbRow.id,
-            organization_id: auth.orgId,
-            storage_path: storagePath,
-            file_name: img.file.name,
-            sort_order: ii + 1,
-          })
-          .select("id")
-          .single();
-
-        if (imgErr || !dbImage) throw new Error(`Gorsel kaydi olusturulamadi: ${imgErr?.message ?? "bilinmeyen hata"}`);
-
-        // Map local finding imageIds to DB image ID
-        for (const fId of img.findingIds) {
-          localToDbImageId.set(fId, dbImage.id);
+        const dbImageId = imageDbIds[ri][ii];
+        for (const fId of row.images[ii].findingIds) {
+          localToDbImageId.set(fId, dbImageId);
         }
       }
+    }
 
-      // Create findings
-      const findingsToInsert = row.findings
-        .map((f, fi) => {
-          const dbImageId = localToDbImageId.get(f.imageId) ?? null;
-          if (!dbImageId) {
-            throw new Error(`Tespit icin gorsel baglantisi bulunamadi: ${f.title}`);
-          }
-          return {
-            assessment_id: assessmentId,
-            row_id: dbRow.id,
-            image_id: dbImageId,
-            organization_id: auth.orgId,
-            company_workspace_id: input.companyWorkspaceId,
-            title: f.title,
-            category: f.category,
-            category_key: mapCategoryToKey(f.category),
-            severity: f.severity,
-            confidence: f.confidence,
-            is_manual: f.isManual,
-            corrective_action_required: f.correctiveActionRequired,
-            recommendation: f.recommendation || null,
-            action_text: f.action || null,
-            r2d_values: f.r2dValues,
-            r2d_result: f.r2dResult,
-            fk_values: f.fkValues,
-            fk_result: f.fkResult,
-            matrix_values: f.matrixValues,
-            matrix_result: f.matrixResult,
-            fmea_values: f.fmeaValues ?? null,
-            fmea_result: f.fmeaResult ?? null,
-            hazop_values: f.hazopValues ?? null,
-            hazop_result: f.hazopResult ?? null,
-            bow_tie_values: f.bowTieValues ?? null,
-            bow_tie_result: f.bowTieResult ?? null,
-            fta_values: f.ftaValues ?? null,
-            fta_result: f.ftaResult ?? null,
-            checklist_values: f.checklistValues ?? null,
-            checklist_result: f.checklistResult ?? null,
-            jsa_values: f.jsaValues ?? null,
-            jsa_result: f.jsaResult ?? null,
-            lopa_values: f.lopaValues ?? null,
-            lopa_result: f.lopaResult ?? null,
-            annotations: f.annotations,
-            legal_references: f.legalReferences,
-            sort_order: fi + 1,
-          };
-        })
-        .filter(Boolean);
+    // 3. Batch insert rows (1 round-trip)
+    const rowsToInsert = input.rows.map((row, ri) => ({
+      id: rowDbIds[ri],
+      assessment_id: assessmentId,
+      organization_id: auth.orgId,
+      sort_order: ri + 1,
+      title: row.title,
+      description: row.description || null,
+    }));
+    if (rowsToInsert.length > 0) {
+      const { error: rErr } = await supabase.from("risk_assessment_rows").insert(rowsToInsert);
+      if (rErr) throw new Error(`Risk satirlari kaydedilemedi: ${rErr.message}`);
+    }
 
-      if (findingsToInsert.length > 0) {
-        const { error: fErr } = await supabase
-          .from("risk_assessment_findings")
-          .insert(findingsToInsert);
-        if (fErr) throw new Error(`Tespitler kaydedilemedi: ${fErr.message}`);
+    // 4. Upload all images in parallel + collect storage paths
+    type UploadDescriptor = {
+      ri: number;
+      ii: number;
+      dbImageId: string;
+      rowDbId: string;
+      file: File;
+      storagePath: string;
+    };
+    const uploadDescriptors: UploadDescriptor[] = [];
+    for (let ri = 0; ri < input.rows.length; ri++) {
+      const row = input.rows[ri];
+      for (let ii = 0; ii < row.images.length; ii++) {
+        const img = row.images[ii];
+        uploadDescriptors.push({
+          ri,
+          ii,
+          dbImageId: imageDbIds[ri][ii],
+          rowDbId: rowDbIds[ri],
+          file: img.file,
+          storagePath: `${auth.orgId}/${assessmentId}/${rowDbIds[ri]}/${crypto.randomUUID()}_${img.file.name}`,
+        });
       }
+    }
+
+    if (uploadDescriptors.length > 0) {
+      // Pre-read all files as ArrayBuffers in parallel, then upload all in
+      // parallel. The storage SDK uploads are independent and don't share
+      // mutable state.
+      const buffers = await Promise.all(uploadDescriptors.map((d) => fileToArrayBuffer(d.file)));
+      const uploadResults = await Promise.all(
+        uploadDescriptors.map((d, idx) =>
+          supabase.storage
+            .from("risk-images")
+            .upload(d.storagePath, buffers[idx], { contentType: d.file.type, upsert: false }),
+        ),
+      );
+
+      // Collect successful paths first so the catch block can roll them
+      // back even if a later upload fails.
+      for (let idx = 0; idx < uploadResults.length; idx++) {
+        if (!uploadResults[idx].error) {
+          uploadedPaths.push(uploadDescriptors[idx].storagePath);
+        }
+      }
+      const failed = uploadResults.find((r) => r.error);
+      if (failed?.error) throw new Error(`Gorsel yuklenemedi: ${failed.error.message}`);
+    }
+
+    // 5. Batch insert image rows (1 round-trip).
+    //    sort_order is the image's position within its row (preserves the
+    //    same semantics as the per-image insert that the old code had).
+    const imagesToInsert = uploadDescriptors.map((d) => ({
+      id: d.dbImageId,
+      assessment_id: assessmentId,
+      row_id: d.rowDbId,
+      organization_id: auth.orgId,
+      storage_path: d.storagePath,
+      file_name: d.file.name,
+      sort_order: d.ii + 1,
+    }));
+
+    if (imagesToInsert.length > 0) {
+      const { error: imgErr } = await supabase.from("risk_assessment_images").insert(imagesToInsert);
+      if (imgErr) throw new Error(`Gorsel kayitlari olusturulamadi: ${imgErr.message}`);
+    }
+
+    // 6. Batch insert findings across all rows (1 round-trip)
+    const findingsToInsert: Record<string, unknown>[] = [];
+    for (let ri = 0; ri < input.rows.length; ri++) {
+      const row = input.rows[ri];
+      const rowDbId = rowDbIds[ri];
+      row.findings.forEach((f, fi) => {
+        const dbImageId = localToDbImageId.get(f.imageId);
+        if (!dbImageId) {
+          throw new Error(`Tespit icin gorsel baglantisi bulunamadi: ${f.title}`);
+        }
+        findingsToInsert.push({
+          assessment_id: assessmentId,
+          row_id: rowDbId,
+          image_id: dbImageId,
+          organization_id: auth.orgId,
+          company_workspace_id: input.companyWorkspaceId,
+          title: f.title,
+          category: f.category,
+          category_key: mapCategoryToKey(f.category),
+          severity: f.severity,
+          confidence: f.confidence,
+          is_manual: f.isManual,
+          corrective_action_required: f.correctiveActionRequired,
+          recommendation: f.recommendation || null,
+          action_text: f.action || null,
+          r2d_values: f.r2dValues,
+          r2d_result: f.r2dResult,
+          fk_values: f.fkValues,
+          fk_result: f.fkResult,
+          matrix_values: f.matrixValues,
+          matrix_result: f.matrixResult,
+          fmea_values: f.fmeaValues ?? null,
+          fmea_result: f.fmeaResult ?? null,
+          hazop_values: f.hazopValues ?? null,
+          hazop_result: f.hazopResult ?? null,
+          bow_tie_values: f.bowTieValues ?? null,
+          bow_tie_result: f.bowTieResult ?? null,
+          fta_values: f.ftaValues ?? null,
+          fta_result: f.ftaResult ?? null,
+          checklist_values: f.checklistValues ?? null,
+          checklist_result: f.checklistResult ?? null,
+          jsa_values: f.jsaValues ?? null,
+          jsa_result: f.jsaResult ?? null,
+          lopa_values: f.lopaValues ?? null,
+          lopa_result: f.lopaResult ?? null,
+          annotations: f.annotations,
+          legal_references: f.legalReferences,
+          sort_order: fi + 1,
+        });
+      });
+    }
+
+    if (findingsToInsert.length > 0) {
+      const { error: fErr } = await supabase
+        .from("risk_assessment_findings")
+        .insert(findingsToInsert);
+      if (fErr) throw new Error(`Tespitler kaydedilemedi: ${fErr.message}`);
     }
 
     return assessmentId;
@@ -502,6 +536,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
       await supabase.storage.from("risk-images").remove(uploadedPaths).catch(() => undefined);
     }
     if (createdAssessmentId) {
+      // CASCADE on FK takes care of rows/images/findings DB rows.
       await supabase.from("risk_assessments").delete().eq("id", createdAssessmentId);
     }
     return null;

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -57,6 +58,9 @@ export async function POST(req: NextRequest) {
     const { topic, slideCount, category, language } = parsedBody.data;
     const count = Math.min(Math.max(Number(slideCount) || 10, 5), 30);
     const categoryLabel = CATEGORY_LABELS[category] || "Genel ISG";
+
+    const entitlementResponse = await consumeEntitlement(auth, "training_slide");
+    if (entitlementResponse) return entitlementResponse;
 
     const prompt = `Sen uzman bir ISG egitmeni ve profesyonel sunum tasarimcisisin. ${topic} konusu icin ${count} slaytlik egitim sunumu hazirla.
 

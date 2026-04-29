@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { StatusAlert } from "@/components/ui/status-alert";
 import { Textarea } from "@/components/ui/textarea";
 import { hasAccountTypeAccess } from "@/lib/account/account-type-access";
+import { createClient as createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { setActiveWorkspace, setLocalWorkspaceContext } from "@/lib/supabase/workspace-api";
 
 type CountryOption = {
@@ -233,9 +234,25 @@ async function readJsonSafely<T>(response: Response): Promise<T | null> {
   }
 }
 
+async function buildAuthHeaders(base: HeadersInit = {}) {
+  const headers = new Headers(base);
+  const supabase = createBrowserSupabaseClient();
+  const session = supabase ? (await supabase.auth.getSession()).data.session : null;
+
+  if (session?.access_token) {
+    headers.set("Authorization", `Bearer ${session.access_token}`);
+  }
+
+  return headers;
+}
+
 function normalizeOnboardingError(error: unknown, fallback: string) {
   const message = error instanceof Error ? error.message : "";
   const normalized = message.toLowerCase();
+
+  if (normalized.includes("failed to fetch")) {
+    return "Baglanti kurulamadi. Sayfayi yenileyip getrisknova.com uzerinden tekrar deneyin; oturum otomatik toparlanmazsa cikis yapip yeniden giris yapin.";
+  }
 
   if (
     normalized.includes("schema cache") ||
@@ -386,6 +403,7 @@ export function WorkspaceOnboardingClient({
         const accountResponse = await fetch("/api/account/context", {
           method: "GET",
           credentials: "include",
+          headers: await buildAuthHeaders(),
         });
 
         const accountJson = await readJsonSafely<AccountContextResponse>(accountResponse);
@@ -415,6 +433,7 @@ export function WorkspaceOnboardingClient({
         const response = await fetch("/api/workspaces/onboarding", {
           method: "GET",
           credentials: "include",
+          headers: await buildAuthHeaders(),
         });
 
         const json = await readJsonSafely<OnboardingPayload | { error?: string }>(response);
@@ -661,7 +680,7 @@ export function WorkspaceOnboardingClient({
       const response = await fetch("/api/account/onboarding", {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: await buildAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
           accountType,
           displayName: accountName || undefined,
@@ -752,7 +771,7 @@ export function WorkspaceOnboardingClient({
       const response = await fetch("/api/workspaces/onboarding", {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: await buildAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
           workspaceId: selectedMembership?.workspace.id ?? null,
           countryCode,

@@ -31,6 +31,9 @@ export function PublicHeader() {
               <Link href="/#how-it-works" className={navLinkClass}>
                 {t("nav.howItWorks")}
               </Link>
+              <Link href="/pricing" className={navLinkClass}>
+                Paketler
+              </Link>
             </nav>
 
             <LanguageSelector variant="dark" />

@@ -81,3 +81,4 @@ frontend/.codex-tsc-check.txt
 *.v12-backup
 
 .vercel
+.env*.local

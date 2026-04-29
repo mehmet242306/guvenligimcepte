@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const FALLBACK_PRODUCTION_ORIGIN = "https://getrisknova.vercel.app";
+const FALLBACK_PRODUCTION_ORIGIN = "https://getrisknova.com";
 
 function isLocalHost(hostname: string) {
   return hostname === "localhost" || hostname === "127.0.0.1";
@@ -26,7 +26,11 @@ export function AuthCodeRescue() {
     const params = new URLSearchParams(search);
     const code = params.get("code");
 
-    if (!code || pathname.startsWith("/auth/callback")) {
+    if (
+      !code ||
+      pathname.startsWith("/auth/callback") ||
+      pathname.startsWith("/auth/session-recover")
+    ) {
       return;
     }
 

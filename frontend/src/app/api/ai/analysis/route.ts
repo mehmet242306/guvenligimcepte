@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import { enforceRateLimit } from "@/lib/security/server";
 import type { AnalysisMethod } from "@/lib/analysis/types";
@@ -240,6 +241,9 @@ export async function POST(request: NextRequest) {
     if (!method || !incidentTitle) {
       return NextResponse.json({ error: "method ve incidentTitle zorunlu" }, { status: 400 });
     }
+
+    const entitlementResponse = await consumeEntitlement(auth, "incident_analysis");
+    if (entitlementResponse) return entitlementResponse;
 
     const response = await client.messages.create({
       model: MODEL,

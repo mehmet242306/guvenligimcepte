@@ -5539,11 +5539,19 @@ async function saveSolutionQueryRecord(params: {
 async function checkSubscriptionLimit(
   userId: string,
   action: 'message' | 'analysis' | 'document',
+  organizationId: string,
   supabase: SupabaseClient
 ): Promise<{ allowed: boolean; message?: string; plan_key?: string; remaining?: number; subscription_id?: string }> {
-  const { data, error } = await supabase.rpc('check_subscription_limit', {
+  const mappedAction =
+    action === 'message' ? 'nova_message' :
+    action === 'document' ? 'document_generation' :
+    'ai_analysis'
+
+  const { data, error } = await supabase.rpc('consume_subscription_quota', {
     p_user_id: userId,
-    p_action: action
+    p_organization_id: organizationId,
+    p_action: mappedAction,
+    p_amount: 1
   })
 
   if (error) {
@@ -5571,6 +5579,9 @@ async function incrementUsage(
   supabase: SupabaseClient
 ): Promise<void> {
   if (!subscriptionId) return
+  // Message quota is consumed atomically in checkSubscriptionLimit via
+  // consume_subscription_quota. Avoid double-counting after the AI call.
+  if (action === 'message') return
   try {
     await supabase.rpc('increment_usage', {
       p_subscription_id: subscriptionId,
@@ -5759,7 +5770,7 @@ serve(async (req) => {
     }
 
     // Subscription kontrolü
-    const subCheck = await checkSubscriptionLimit(user.id, 'message', supabase)
+    const subCheck = await checkSubscriptionLimit(user.id, 'message', body.organization_id, supabase)
 
     if (!subCheck.allowed) {
       return await jsonErrorResponse(req, {

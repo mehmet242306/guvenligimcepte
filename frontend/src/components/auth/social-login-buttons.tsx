@@ -1,15 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { createBrowserClient } from "@supabase/ssr";
 import type { Provider } from "@supabase/supabase-js";
+import { createOAuthBrowserClient } from "@/lib/supabase/oauth-browser-client";
 
-const supabase = (() => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
-  return createBrowserClient(url, key);
-})();
+function resolveOAuthOrigin() {
+  const { hostname, origin } = window.location;
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/+$/, "") ?? "";
+
+  if (
+    (hostname === "localhost" || hostname === "127.0.0.1") &&
+    configured &&
+    !configured.endsWith(".vercel.app")
+  ) {
+    return configured;
+  }
+
+  return origin;
+}
 
 /* ── SVG Icons ── */
 function GoogleIcon() {
@@ -50,13 +58,15 @@ function FacebookIcon() {
 /* ── Main Component ── */
 type SocialLoginProps = {
   mode?: "login" | "register";
+  nextPath?: string;
 };
 
-export function SocialLoginButtons({ mode = "login" }: SocialLoginProps) {
+export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProps) {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   async function handleOAuth(provider: Provider) {
+    const supabase = createOAuthBrowserClient();
     if (!supabase) {
       setError("Supabase bağlantısı kurulamadı.");
       return;
@@ -65,19 +75,26 @@ export function SocialLoginButtons({ mode = "login" }: SocialLoginProps) {
     setLoading(provider);
     setError("");
 
-    let redirectTo = `${window.location.origin}/auth/callback`;
+    const callbackUrl = new URL("/auth/session-recover", resolveOAuthOrigin());
+
+    if (mode === "login" && nextPath?.startsWith("/")) {
+      const secure = window.location.protocol === "https:" ? "; Secure" : "";
+      document.cookie = `risknova-oauth-next=${encodeURIComponent(
+        nextPath,
+      )}; Path=/; Max-Age=600; SameSite=Lax${secure}`;
+    }
+
     if (mode === "register") {
       try {
         const rawContext = window.localStorage.getItem("risknova-register-context");
         const context = rawContext ? JSON.parse(rawContext) as Record<string, unknown> : {};
-        const params = new URLSearchParams({ intent: "register" });
+        callbackUrl.searchParams.set("intent", "register");
         ["accountType", "countryCode", "languageCode", "roleKey"].forEach((key) => {
           const value = context[key];
           if (typeof value === "string" && value.trim()) {
-            params.set(key, value.trim());
+            callbackUrl.searchParams.set(key, value.trim());
           }
         });
-        redirectTo = `${redirectTo}?${params.toString()}`;
       } catch (contextError) {
         console.warn("[social-login] register context unavailable:", contextError);
       }
@@ -86,8 +103,11 @@ export function SocialLoginButtons({ mode = "login" }: SocialLoginProps) {
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo,
-        queryParams: provider === "google" ? { access_type: "offline", prompt: "consent" } : undefined,
+        redirectTo: callbackUrl.toString(),
+        queryParams:
+          provider === "google"
+            ? { access_type: "offline", prompt: "consent" }
+            : undefined,
       },
     });
 

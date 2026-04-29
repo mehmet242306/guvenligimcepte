@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/security/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
 import {
   getAccountContextForUser,
   resolveAccountSurface,
@@ -16,14 +16,10 @@ function isCompatError(message: string | undefined | null) {
   );
 }
 
-export async function GET() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+export async function GET(request: NextRequest) {
+  const user = await getRequestUser(request);
 
-  if (error || !user) {
+  if (!user) {
     return NextResponse.json({ error: "Oturum bulunamadi." }, { status: 401 });
   }
 

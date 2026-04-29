@@ -2,17 +2,42 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
 
-const PUBLIC_PATHS = ["/", "/login", "/register", "/forgot-password", "/reset-password"];
+const PUBLIC_PATHS = [
+  "/",
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/pricing",
+];
 
 // Cron / webhook endpoint'leri — kendi header-based auth'larını yapıyorlar
 // (örn. x-self-healing-key). Middleware bunları auth gating'den muaf tutmalı,
 // yoksa cron user'ı olmadığı için /login'e redirect yiyor ve 307 dönüyor.
 const PUBLIC_API_PREFIXES = [
   "/api/health",
+  "/api/billing/",
   "/api/self-healing/",
 ];
 
+const ROUTE_AUTH_API_PATHS = [
+  "/api/account/context",
+  "/api/account/onboarding",
+  "/api/workspaces/onboarding",
+];
+
+const CANONICAL_HOST = "getrisknova.com";
+const LEGACY_HOSTS = new Set(["getrisknova.vercel.app"]);
+
 export async function updateSession(request: NextRequest) {
+  if (LEGACY_HOSTS.has(request.nextUrl.hostname)) {
+    const url = request.nextUrl.clone();
+    url.protocol = "https:";
+    url.hostname = CANONICAL_HOST;
+    url.port = "";
+    return NextResponse.redirect(url, 308);
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -48,10 +73,12 @@ export async function updateSession(request: NextRequest) {
   const isPublicApiEndpoint = PUBLIC_API_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(prefix),
   );
+  const isRouteAuthApiEndpoint = ROUTE_AUTH_API_PATHS.includes(pathname);
   const isPublic =
     PUBLIC_PATHS.includes(pathname) ||
     pathname.startsWith("/auth") ||
-    isPublicApiEndpoint;
+    isPublicApiEndpoint ||
+    isRouteAuthApiEndpoint;
   const providers = Array.isArray(user?.app_metadata?.providers)
     ? (user.app_metadata.providers as unknown[]).map((provider) => String(provider))
     : [];

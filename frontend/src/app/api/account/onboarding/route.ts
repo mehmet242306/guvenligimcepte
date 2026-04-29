@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
 import { createServiceClient, parseJsonBody } from "@/lib/security/server";
+import { getRequestUser } from "@/lib/supabase/request-user";
 import {
   getAccountContextForUser,
   resolvePostLoginPath,
@@ -58,13 +58,9 @@ function isSchemaCompatError(message: string | undefined | null) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    const user = await getRequestUser(request);
 
-    if (authError || !user) {
+    if (!user) {
       return NextResponse.json({ error: "Oturum bulunamadi." }, { status: 401 });
     }
 

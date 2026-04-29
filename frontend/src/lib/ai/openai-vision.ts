@@ -14,14 +14,19 @@
  * maske takılı).
  */
 import OpenAI from "openai";
+import { getOpenAIKey } from "@/lib/ai/provider-keys";
 
 let openaiClient: OpenAI | null = null;
 
 function getOpenAIClient(): OpenAI | null {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = getOpenAIKey();
   if (!apiKey) return null;
   openaiClient ??= new OpenAI({ apiKey });
   return openaiClient;
+}
+
+export function isOpenAIVisionConfigured() {
+  return Boolean(getOpenAIKey());
 }
 
 export type PpeState = "present" | "absent" | "unclear";
@@ -151,7 +156,7 @@ export async function detectSafetyObjects(
 ): Promise<VisionDetection | null> {
   const client = getOpenAIClient();
   if (!client) {
-    console.warn("[openai-vision] OPENAI_API_KEY tanımlı değil, stage atlanıyor");
+    console.warn("[openai-vision] OpenAI API key tanimli degil, stage atlaniyor");
     return null;
   }
 
