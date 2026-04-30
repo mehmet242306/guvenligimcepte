@@ -40,6 +40,8 @@ interface DashboardStats {
   incidentCount: number;
   companyCount: number;
   taskCount: number;
+  librarySourcedSurveyCount: number;
+  librarySourcedExamCount: number;
   userName: string;
   recentDocs: Array<{ id: string; title: string; status: string; updated_at: string }>;
 }
@@ -91,6 +93,8 @@ export function DashboardClient() {
         { count: incidentCount },
         { count: companyCount },
         { count: taskCount },
+        { count: librarySourcedSurveyCount },
+        { count: librarySourcedExamCount },
       ] = await Promise.all([
         supabase.from('risk_assessments').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
         supabase.from('risk_assessments').select('id').eq('organization_id', orgId).gte('highest_item_score', 15),
@@ -104,6 +108,18 @@ export function DashboardClient() {
         supabase.from('incidents').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
         supabase.from('company_workspaces').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
         supabase.from('isg_tasks').select('*', { count: 'exact', head: true }).eq('organization_id', orgId).in('status', ['planned', 'overdue']),
+        supabase
+          .from('surveys')
+          .select('id', { count: 'exact', head: true })
+          .eq('organization_id', orgId)
+          .eq('type', 'survey')
+          .contains('settings', { source_library: { provider: 'isg-library' } }),
+        supabase
+          .from('surveys')
+          .select('id', { count: 'exact', head: true })
+          .eq('organization_id', orgId)
+          .eq('type', 'exam')
+          .contains('settings', { source_library: { provider: 'isg-library' } }),
       ]);
 
       const docs = documents || [];
@@ -116,6 +132,8 @@ export function DashboardClient() {
         incidentCount: incidentCount || 0,
         companyCount: companyCount || 0,
         taskCount: taskCount || 0,
+        librarySourcedSurveyCount: librarySourcedSurveyCount || 0,
+        librarySourcedExamCount: librarySourcedExamCount || 0,
         userName: profile.full_name || user.email || '',
         recentDocs: docs.slice(0, 5),
       });
@@ -230,7 +248,7 @@ export function DashboardClient() {
         </div>
       </section>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
         <StatCard
           icon={ShieldAlert}
           label="Risk Analizi"
@@ -263,6 +281,22 @@ export function DashboardClient() {
           sub="Takip bekleyen işler"
           tone="violet"
           onClick={() => router.push('/planner')}
+        />
+        <StatCard
+          icon={GraduationCap}
+          label="Kutuphane Egitim"
+          value={s.librarySourcedSurveyCount}
+          sub="Aktarilan anket/egitim"
+          tone="teal"
+          onClick={() => router.push('/training')}
+        />
+        <StatCard
+          icon={PenTool}
+          label="Kutuphane Sinav"
+          value={s.librarySourcedExamCount}
+          sub="Aktarilan sinavlar"
+          tone="indigo"
+          onClick={() => router.push('/training')}
         />
       </div>
 

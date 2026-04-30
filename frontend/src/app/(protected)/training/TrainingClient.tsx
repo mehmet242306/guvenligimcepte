@@ -3,41 +3,72 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useI18n } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/client";
 import { fetchSurveys, type SurveyRecord } from "@/lib/supabase/survey-api";
+import { fetchLibraryContents, type LibraryContentRecord } from "@/lib/supabase/isg-library-api";
 
 type TabType = "all" | "survey" | "exam";
 type StatusFilter = "all" | "draft" | "active" | "closed";
+type LibraryTab = "education" | "assessment";
+
+function normalizeLibraryCategory(category: string | null | undefined): LibraryTab | null {
+  const normalized = (category ?? "")
+    .toLocaleLowerCase("tr-TR")
+    .replace(/ğ/g, "g")
+    .replace(/ü/g, "u")
+    .replace(/ş/g, "s")
+    .replace(/ı/g, "i")
+    .replace(/ö/g, "o")
+    .replace(/ç/g, "c");
+
+  if (normalized === "education" || normalized === "egitim") return "education";
+  if (
+    normalized === "assessment" ||
+    normalized === "sinav ve anket" ||
+    normalized === "sinav-ve-anket" ||
+    normalized === "sinav-anket"
+  ) {
+    return "assessment";
+  }
+  return null;
+}
 
 export function TrainingClient() {
-  const { t } = useI18n();
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialCompanyId = searchParams.get("companyId") ?? undefined;
   const fromLibrary = searchParams.get("library") === "1";
   const librarySection = searchParams.get("librarySection") ?? "education";
   const [surveys, setSurveys] = useState<SurveyRecord[]>([]);
+  const [libraryItems, setLibraryItems] = useState<LibraryContentRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [libraryLoading, setLibraryLoading] = useState(true);
   const [tab, setTab] = useState<TabType>(() => {
     const requested = searchParams.get("tab");
     return requested === "survey" || requested === "exam" ? requested : "all";
   });
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
+  const [libraryTab, setLibraryTab] = useState<LibraryTab>("education");
 
   useEffect(() => {
     async function loadSurveys() {
       setLoading(true);
+      setLibraryLoading(true);
       const supabase = createClient();
-      if (!supabase) { setLoading(false); return; }
+      if (!supabase) { setLoading(false); setLibraryLoading(false); return; }
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setLoading(false); return; }
+      if (!user) { setLoading(false); setLibraryLoading(false); return; }
       const { data: profile } = await supabase.from("user_profiles").select("organization_id").eq("auth_user_id", user.id).single();
-      if (!profile?.organization_id) { setLoading(false); return; }
-      const data = await fetchSurveys(profile.organization_id, initialCompanyId);
-      setSurveys(data);
+      if (!profile?.organization_id) { setLoading(false); setLibraryLoading(false); return; }
+      const [surveysData, libraryData] = await Promise.all([
+        fetchSurveys(profile.organization_id, initialCompanyId),
+        fetchLibraryContents(),
+      ]);
+      setSurveys(surveysData);
+      setLibraryItems(libraryData);
       setLoading(false);
+      setLibraryLoading(false);
     }
 
     void loadSurveys();
@@ -82,8 +113,28 @@ export function TrainingClient() {
     const query = params.toString();
     return query ? `${pathname}?${query}` : pathname;
   };
+  const buildLibraryPrefillHref = (item: LibraryContentRecord, nextTab: LibraryTab) => {
+    const params: Record<string, string> = {
+      source: "isg-library",
+      sourceLibraryContentId: item.id,
+      sourceLibraryCategory: item.category,
+      sourceLibrarySubcategory: item.subcategory,
+      prefillTitle: item.title,
+      prefillDescription: item.description ?? "",
+      prefillType: nextTab === "assessment" ? "exam" : "survey",
+      prefillTopic: [item.title, item.subcategory, item.description ?? ""].filter(Boolean).join(" - "),
+      autoStep: "2",
+      mode: "ai",
+    };
+    return buildTrainingHref("/training/new", params);
+  };
 
   const libraryBackHref = buildTrainingHref("/isg-library", { view: "browse", section: librarySection });
+  const libraryEducationHref = buildTrainingHref("/isg-library", { category: "education" });
+  const libraryAssessmentHref = buildTrainingHref("/isg-library", { category: "assessment" });
+  const embeddedLibraryItems = libraryItems
+    .filter((item) => normalizeLibraryCategory(item.category) === libraryTab)
+    .slice(0, 6);
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
@@ -145,6 +196,88 @@ export function TrainingClient() {
             </Link>
           </div>
         </div>
+
+        <section className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--gold)]">
+                ISG Kutuphanesi Entegrasyonu
+              </p>
+              <h2 className="mt-1 text-base font-semibold text-[var(--foreground)]">
+                Egitim ve sinav iceriklerini bu modulde yonetin
+              </h2>
+            </div>
+          </div>
+          <div className="mb-3 flex items-center gap-1 rounded-xl border border-[var(--border)] bg-[var(--background)] p-1">
+            <button
+              type="button"
+              onClick={() => setLibraryTab("education")}
+              className={`flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
+                libraryTab === "education"
+                  ? "bg-sky-600 text-white"
+                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              }`}
+            >
+              Egitim Icerikleri
+            </button>
+            <button
+              type="button"
+              onClick={() => setLibraryTab("assessment")}
+              className={`flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
+                libraryTab === "assessment"
+                  ? "bg-violet-600 text-white"
+                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              }`}
+            >
+              Sinav ve Anket Icerikleri
+            </button>
+          </div>
+          {libraryLoading ? (
+            <div className="grid gap-3 md:grid-cols-2">
+              {[1, 2].map((i) => (
+                <div key={i} className="h-24 animate-pulse rounded-xl border border-[var(--border)] bg-[var(--background)]" />
+              ))}
+            </div>
+          ) : embeddedLibraryItems.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--background)] p-4 text-sm text-[var(--muted-foreground)]">
+              Bu kategoride kutuphane icerigi henuz bulunmuyor. Icerik eklemek veya tum kayitlari gormek icin
+              {" "}
+              <Link href={libraryTab === "education" ? libraryEducationHref : libraryAssessmentHref} className="font-semibold text-[var(--gold)] hover:underline">
+                ISG Kutuphanesine git
+              </Link>
+              .
+            </div>
+          ) : (
+            <div className="grid gap-3 md:grid-cols-2">
+              {embeddedLibraryItems.map((item) => (
+                <article key={item.id} className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-4">
+                  <p className="text-sm font-semibold text-[var(--foreground)]">{item.title}</p>
+                  <p className="mt-1 line-clamp-2 text-xs text-[var(--muted-foreground)]">
+                    {item.description || "Kutuphane icerigi"}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {item.file_url ? (
+                      <a
+                        href={item.file_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--accent)]"
+                      >
+                        Icerigi Ac
+                      </a>
+                    ) : null}
+                    <Link
+                      href={buildLibraryPrefillHref(item, libraryTab)}
+                      className="inline-flex items-center rounded-lg bg-[var(--gold)] px-3 py-1.5 text-xs font-semibold text-white hover:brightness-110"
+                    >
+                      Modulde Kullan
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
 
         {/* Tabs */}
         <div className="mb-6 flex items-center gap-1 rounded-xl bg-[var(--card)] p-1 shadow-sm border border-[var(--border)]">
@@ -210,7 +343,7 @@ export function TrainingClient() {
               İlk anket veya sınavınızı oluşturmak için &quot;Yeni Oluştur&quot; butonuna tıklayın
             </p>
             <Link
-              href="/training/new"
+              href={buildTrainingHref("/training/new")}
               className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-5 py-2.5 text-sm font-semibold text-white shadow transition-colors hover:brightness-110"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>

@@ -59,14 +59,54 @@ export function TrainingNewClient() {
   // User/org info
   const [orgId, setOrgId] = useState("");
   const [userId, setUserId] = useState("");
+  const [prefillApplied, setPrefillApplied] = useState(false);
+  const [sourceLibraryContentId, setSourceLibraryContentId] = useState<string | null>(null);
+  const [sourceLibraryCategory, setSourceLibraryCategory] = useState<string | null>(null);
+  const [sourceLibrarySubcategory, setSourceLibrarySubcategory] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
   }, []);
 
   useEffect(() => {
+    if (prefillApplied) return;
+    const prefillTitle = searchParams.get("prefillTitle")?.trim() ?? "";
+    const prefillDescription = searchParams.get("prefillDescription")?.trim() ?? "";
+    const prefillType = searchParams.get("prefillType");
+    const prefillTopic = searchParams.get("prefillTopic")?.trim() ?? "";
+    const sourceId = searchParams.get("sourceLibraryContentId");
+    const sourceCategory = searchParams.get("sourceLibraryCategory");
+    const sourceSubcategory = searchParams.get("sourceLibrarySubcategory");
+    const autoStep = searchParams.get("autoStep");
+
+    if (prefillType === "survey" || prefillType === "exam") {
+      setType(prefillType);
+    }
+    if (prefillTitle) {
+      setTitle(prefillTitle);
+    }
+    if (prefillDescription) {
+      setDescription(prefillDescription);
+    }
+    if (prefillTopic) {
+      setAiTopic(prefillTopic);
+    } else if (prefillTitle) {
+      setAiTopic(prefillTitle);
+    }
+    if (sourceId) setSourceLibraryContentId(sourceId);
+    if (sourceCategory) setSourceLibraryCategory(sourceCategory);
+    if (sourceSubcategory) setSourceLibrarySubcategory(sourceSubcategory);
+    if (autoStep === "2" && (prefillTitle || prefillTopic)) {
+      setStep(2);
+    }
+    setPrefillApplied(true);
+  }, [prefillApplied, searchParams]);
+
+  useEffect(() => {
     if (searchParams.get("mode") === "ai") {
-      setType("exam");
+      if (!searchParams.get("prefillType")) {
+        setType("exam");
+      }
       setStep(2);
       if (!title.trim()) {
         setTitle("AI Destekli Egitim Sinavi");
@@ -219,7 +259,19 @@ export function TrainingNewClient() {
       passScore: type === "exam" ? passScore : null,
       timeLimitMinutes: type === "exam" ? timeLimit : null,
       shuffleQuestions: type === "exam" ? shuffleQuestions : false,
-      settings: type === "exam" ? { auto_issue_certificate: autoIssueCertificate } : {},
+      settings: {
+        ...(type === "exam" ? { auto_issue_certificate: autoIssueCertificate } : {}),
+        ...(sourceLibraryContentId
+          ? {
+              source_library: {
+                provider: "isg-library",
+                content_id: sourceLibraryContentId,
+                category: sourceLibraryCategory,
+                subcategory: sourceLibrarySubcategory,
+              },
+            }
+          : {}),
+      },
     });
 
     if (!survey) { setSaving(false); return; }

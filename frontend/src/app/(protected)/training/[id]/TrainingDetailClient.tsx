@@ -203,6 +203,14 @@ export function TrainingDetailClient() {
       </div>
     );
   }
+  const sourceLibrary = (survey.settings?.source_library ?? null) as
+    | {
+        provider?: string;
+        content_id?: string;
+        category?: string | null;
+        subcategory?: string | null;
+      }
+    | null;
 
   return (
     <div className="min-h-screen bg-[var(--page-bg,#f8f9fa)]">
@@ -228,8 +236,18 @@ export function TrainingDetailClient() {
               }`}>
                 {survey.type === "exam" ? "Sınav" : "Anket"}
               </span>
+              {sourceLibrary?.content_id ? (
+                <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                  ISG Kutuphanesinden aktarildi
+                </span>
+              ) : null}
             </div>
             {survey.description && <p className="mt-1 text-sm text-[var(--muted-foreground)]">{survey.description}</p>}
+            {sourceLibrary?.content_id ? (
+              <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                Kaynak: {sourceLibrary.category ?? "-"} / {sourceLibrary.subcategory ?? "-"} ({sourceLibrary.content_id})
+              </p>
+            ) : null}
           </div>
           <div className="flex gap-2">
             {survey.status === "draft" && (
