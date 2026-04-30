@@ -273,14 +273,20 @@ export function PricingPlansClient() {
         </div>
         <div className="mt-5 flex flex-wrap gap-3">
           <Link
-            href="/register"
+            href="/register?commercial=osgb"
             className="inline-flex h-11 items-center justify-center rounded-lg border border-amber-500/20 bg-[linear-gradient(135deg,#B8860B_0%,#D4A017_50%,#FBBF24_100%)] px-5 text-sm font-semibold text-white"
           >
-            Bizimle iletisime gec
+            OSGB teklif talebi
+          </Link>
+          <Link
+            href="/register?commercial=enterprise"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-5 text-sm font-semibold text-foreground shadow-[var(--shadow-soft)]"
+          >
+            Kurumsal teklif talebi
           </Link>
           <Link
             href="/"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-5 text-sm font-semibold text-foreground"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-transparent px-5 text-sm font-semibold text-foreground"
           >
             Urunu incele
           </Link>

@@ -13,7 +13,12 @@ import { signup } from "./actions";
 export default async function RegisterPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; checkEmail?: string; fromDemo?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    checkEmail?: string;
+    fromDemo?: string;
+    commercial?: string;
+  }>;
 }) {
   const params = await searchParams;
   const error = params?.error;
@@ -21,6 +26,11 @@ export default async function RegisterPage({
   const fromDemo = params?.fromDemo;
   const demoExpired = fromDemo === "demo-expired" || fromDemo === "1";
   const demoDisabled = fromDemo === "demo-disabled";
+  const commercialParam = params?.commercial?.toLowerCase();
+  const initialCommercial =
+    commercialParam === "osgb" || commercialParam === "enterprise"
+      ? commercialParam
+      : undefined;
 
   return (
     <AuthShell
@@ -90,7 +100,7 @@ export default async function RegisterPage({
         </div>
       ) : null}
 
-      <RegisterAccountTypePreview>
+      <RegisterAccountTypePreview initialCommercial={initialCommercial}>
         <SocialLoginButtons mode="register" />
 
         <form id="register-individual-form" className="space-y-5">

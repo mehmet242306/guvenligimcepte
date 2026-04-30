@@ -108,11 +108,18 @@ Amac: Odeme alindiginda abonelik dogru islenmeli; ucretli ozellikler backend sev
 
 Amac: Bireysel, OSGB ve kurumsal kullanicilarin veri baglami ayrilmali.
 
-- [ ] Bireysel workspace akisi tamam.
-- [ ] OSGB self-service odeme disinda, teklif/iletisim akisi icinde.
-- [ ] Kurumsal self-service odeme disinda, teklif/iletisim akisi icinde.
-- [ ] Kullanici baska workspace verisini goremez.
-- [ ] Firma/isyeri/calisma alani secimi tum ana modullere dogru yansiyor.
+- [x] Bireysel workspace akisi tamam.
+- [x] OSGB self-service odeme disinda, teklif/iletisim akisi icinde.
+- [x] Kurumsal self-service odeme disinda, teklif/iletisim akisi icinde.
+- [x] Kullanici baska workspace verisini goremez.
+- [x] Firma/isyeri/calisma alani secimi tum ana modullere dogru yansiyor.
+
+Faz 3 dogrulama notlari (kod):
+
+- Bireysel workspace: `user_profiles.active_workspace_id`, `nova_workspace_members`, `frontend/src/lib/supabase/workspace-api.ts`, onboarding `/(protected)/workspace/onboarding`.
+- OSGB / kurumsal teklif: kayit sihirbazi + `CommercialLeadDialog`, `POST /api/contact/commercial-lead` → `enterprise_leads` (`requested_account_type` osgb|enterprise); pricing alt serit `/register?commercial=osgb|enterprise`.
+- Veri baglami: org ve firma workspace icin RLS ve yardimci fonksiyonlar (`supabase/migrations/20260411180000_user_scope_isolation.sql`, `20260425010000_critical_rls_hardening.sql`); OSGB-bireysel cati baglantisi `20260430120000_organization_osgb_affiliations.sql` + `/api/account/osgb-affiliations`.
+- Aktif calisma alani: `WorkspaceSwitcher` (`setActiveWorkspace` + `router.refresh()`), firma ozeti `ActiveCompanyBar` (`active-company-bar.tsx`).
 
 ### Faz 4 - Cekirdek ISG Urun Modulleri
 

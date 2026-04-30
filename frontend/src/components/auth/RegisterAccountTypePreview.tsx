@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import {
   ArrowLeft,
@@ -23,6 +23,8 @@ type WizardStep = "account" | "country" | "language" | "role";
 
 type RegisterAccountTypePreviewProps = {
   children: ReactNode;
+  /** `/register?commercial=osgb` veya `enterprise` ile OSGB/kurumsal teklif akisina hizli giris */
+  initialCommercial?: CommercialInterestType;
 };
 
 type Choice<T extends string> = {
@@ -166,7 +168,10 @@ function choiceButtonClass(active: boolean) {
   }`;
 }
 
-export function RegisterAccountTypePreview({ children }: RegisterAccountTypePreviewProps) {
+export function RegisterAccountTypePreview({
+  children,
+  initialCommercial,
+}: RegisterAccountTypePreviewProps) {
   const [step, setStep] = useState<WizardStep>("account");
   const [mounted, setMounted] = useState(false);
   const [wizardOpen, setWizardOpen] = useState(true);
@@ -177,6 +182,7 @@ export function RegisterAccountTypePreview({ children }: RegisterAccountTypePrev
   const [roleKey, setRoleKey] = useState<(typeof roleChoices)[number]["value"] | null>(null);
   const [activeLeadType, setActiveLeadType] =
     useState<CommercialInterestType | null>(null);
+  const appliedCommercialRef = useRef(false);
 
   const stepIndex = stepOrder.indexOf(step);
   const selectedAccount = accountChoices.find((item) => item.value === accountType) ?? null;
@@ -198,6 +204,15 @@ export function RegisterAccountTypePreview({ children }: RegisterAccountTypePrev
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!initialCommercial || appliedCommercialRef.current) return;
+    appliedCommercialRef.current = true;
+    setAccountType(initialCommercial);
+    setStep("country");
+    setWizardOpen(true);
+    setCompleted(false);
+  }, [initialCommercial]);
 
   useEffect(() => {
     if (!accountType || !countryCode || !languageCode || !roleKey) return;
