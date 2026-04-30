@@ -11,6 +11,7 @@ type PricingCheckoutButtonProps = {
   planKey: BillingPlanKey;
   cycle?: BillingCycle;
   className?: string;
+  disabled?: boolean;
   children: ReactNode;
 };
 
@@ -18,6 +19,7 @@ export function PricingCheckoutButton({
   planKey,
   cycle = "monthly",
   className,
+  disabled = false,
   children,
 }: PricingCheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
@@ -80,7 +82,7 @@ export function PricingCheckoutButton({
     <div className="space-y-2">
       <Button
         className={className}
-        disabled={loading}
+        disabled={disabled || loading}
         onClick={() => void startCheckout()}
       >
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}

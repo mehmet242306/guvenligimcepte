@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -48,6 +49,48 @@ function getDisplayPrice(monthlyPrice: number, cycle: BillingCycle) {
 
 export function PricingPlansClient() {
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
+  const [activePlanKey, setActivePlanKey] = useState<string | null>(null);
+  const [activeBillingCycle, setActiveBillingCycle] = useState<BillingCycle | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadBillingStatus() {
+      try {
+        const response = await fetch("/api/billing/status", {
+          credentials: "include",
+          cache: "no-store",
+        });
+
+        if (!response.ok) return;
+
+        const data = (await response.json().catch(() => null)) as
+          | {
+              subscription?: {
+                planKey?: string | null;
+                billingCycle?: BillingCycle | null;
+              } | null;
+            }
+          | null;
+
+        if (cancelled) return;
+
+        setActivePlanKey(data?.subscription?.planKey ?? null);
+        setActiveBillingCycle(data?.subscription?.billingCycle ?? null);
+      } catch {
+        if (!cancelled) {
+          setActivePlanKey(null);
+          setActiveBillingCycle(null);
+        }
+      }
+    }
+
+    void loadBillingStatus();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <>
@@ -94,6 +137,9 @@ export function PricingPlansClient() {
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {INDIVIDUAL_BILLING_PLANS.map((plan) => {
           const price = getDisplayPrice(plan.priceUsd, cycle);
+          const isCurrentPlan =
+            activePlanKey === plan.key &&
+            (!activeBillingCycle || activeBillingCycle === cycle);
 
           return (
             <article
@@ -170,10 +216,17 @@ export function PricingPlansClient() {
                   <PricingCheckoutButton
                     planKey={plan.key}
                     cycle={cycle}
+                    disabled={isCurrentPlan}
                     className="w-full rounded-lg"
                   >
-                    Paketi sec
-                    <ArrowRight className="h-4 w-4" />
+                    {isCurrentPlan ? (
+                      "Mevcut plan"
+                    ) : (
+                      <>
+                        Paketi sec
+                        <ArrowRight className="h-4 w-4" />
+                      </>
+                    )}
                   </PricingCheckoutButton>
                 )}
               </div>
