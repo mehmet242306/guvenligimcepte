@@ -23,10 +23,19 @@ export function OhsLoadingIndicator(props: { message?: string; compact?: boolean
           <Activity className="absolute -right-5 bottom-2 h-5 w-5 text-emerald-500/90 animate-pulse [animation-duration:2.4s] [animation-delay:0.3s]" />
         </div>
         {!message ? (
-          <div className="inline-flex items-center gap-1.5 text-[var(--gold)]/60" aria-hidden="true">
-            <span className="h-1.5 w-1.5 rounded-full bg-current opacity-35 animate-pulse [animation-duration:2s]" />
-            <span className="h-1.5 w-1.5 rounded-full bg-current opacity-50 animate-pulse [animation-duration:2s] [animation-delay:0.25s]" />
-            <span className="h-1.5 w-1.5 rounded-full bg-current opacity-65 animate-pulse [animation-duration:2s] [animation-delay:0.5s]" />
+          <div className="inline-flex items-center gap-2 text-[var(--gold)]/80" aria-hidden="true">
+            <span className="relative inline-flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-current opacity-45 animate-ping [animation-duration:1.6s]" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
+            </span>
+            <span className="relative inline-flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-current opacity-45 animate-ping [animation-duration:1.6s] [animation-delay:0.25s]" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-current opacity-90" />
+            </span>
+            <span className="relative inline-flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-current opacity-45 animate-ping [animation-duration:1.6s] [animation-delay:0.5s]" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-current opacity-80" />
+            </span>
           </div>
         ) : null}
         {message ? <p className="text-sm font-medium text-muted-foreground">{message}</p> : null}
