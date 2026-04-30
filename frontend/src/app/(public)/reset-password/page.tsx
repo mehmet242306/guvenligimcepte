@@ -7,11 +7,12 @@ import { updatePasswordAction } from "./actions";
 export default async function ResetPasswordPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; required?: string }>;
+  searchParams: Promise<{ error?: string; required?: string; mfa?: string }>;
 }) {
   const params = await searchParams;
   const error = params?.error;
   const required = params?.required === "1";
+  const mfaRequired = params?.mfa === "1";
 
   return (
     <AuthShell
@@ -36,6 +37,12 @@ export default async function ResetPasswordPage({
       {required ? (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
           Guvenlik geregi ilk giriste sifreni degistirmen zorunludur.
+        </div>
+      ) : null}
+
+      {mfaRequired ? (
+        <div className="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700">
+          Sifreyi guncellemeden once MFA dogrulamasi tamamlandi. Simdi yeni sifreni belirleyebilirsin.
         </div>
       ) : null}
 

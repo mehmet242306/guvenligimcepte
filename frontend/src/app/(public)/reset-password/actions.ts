@@ -44,6 +44,14 @@ export async function updatePasswordAction(formData: FormData) {
   });
 
   if (error) {
+    const normalized = error.message.toLowerCase();
+    if (normalized.includes("aal2")) {
+      redirect(
+        `/auth/mfa-challenge?next=${encodeURIComponent(
+          "/reset-password?required=1&mfa=1",
+        )}`,
+      );
+    }
     redirect(`/reset-password?error=${encodeURIComponent(error.message)}`);
   }
 
