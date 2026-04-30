@@ -160,7 +160,7 @@ export function TrainingClient() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
-              href={buildTrainingHref("/training/new", { mode: "ai" })}
+              href={buildTrainingHref("/training/slides", { ai: "1" })}
               className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-110"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 3.8L18 9l-4.1 2.2L12 15l-1.9-3.8L6 9l4.1-2.2L12 3z"/><path d="M5 18l.8 1.6L7.5 21l-1.7.9L5 23.5l-.8-1.6L2.5 21l1.7-.9L5 18z"/></svg>

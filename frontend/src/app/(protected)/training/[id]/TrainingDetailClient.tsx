@@ -20,6 +20,7 @@ import {
   fetchCertificateTemplates,
   type CertificateTemplateRecord,
 } from "@/lib/supabase/certificate-api";
+import { ButtonLoader } from "@/components/ui/button-loader";
 
 type Tab = "overview" | "tokens" | "results" | "certificates";
 
@@ -46,6 +47,7 @@ export function TrainingDetailClient() {
   // Certificate
   const [certTemplates, setCertTemplates] = useState<CertificateTemplateRecord[]>([]);
   const [issuingCerts, setIssuingCerts] = useState(false);
+  const [statusUpdating, setStatusUpdating] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -97,8 +99,10 @@ export function TrainingDetailClient() {
 
   async function handleStatusChange(status: string) {
     if (!survey) return;
+    setStatusUpdating(true);
     await updateSurvey(survey.id, { status: status as SurveyRecord["status"] });
     setSurvey({ ...survey, status: status as SurveyRecord["status"] });
+    setStatusUpdating(false);
   }
 
   async function handleCreateTokens() {
@@ -253,17 +257,19 @@ export function TrainingDetailClient() {
             {survey.status === "draft" && (
               <button
                 onClick={() => handleStatusChange("active")}
-                className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+                disabled={statusUpdating}
+                className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
               >
-                Yayınla
+                {statusUpdating ? <ButtonLoader label="Yayinlaniyor..." /> : "Yayınla"}
               </button>
             )}
             {survey.status === "active" && (
               <button
                 onClick={() => handleStatusChange("closed")}
-                className="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+                disabled={statusUpdating}
+                className="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
               >
-                Kapat
+                {statusUpdating ? <ButtonLoader label="Kapatiliyor..." /> : "Kapat"}
               </button>
             )}
           </div>
@@ -615,7 +621,7 @@ export function TrainingDetailClient() {
                       disabled={issuingCerts || tokens.filter(t => t.status === "completed").length === 0 || certTemplates.length === 0}
                       className="rounded-xl bg-[var(--gold)] px-5 py-2.5 text-sm font-semibold text-white shadow disabled:opacity-50"
                     >
-                      {issuingCerts ? "Oluşturuluyor..." : "Sertifika Oluştur"}
+                      {issuingCerts ? <ButtonLoader label="Sertifikalar olusturuluyor..." /> : "Sertifika Oluştur"}
                     </button>
                   </div>
                 </div>

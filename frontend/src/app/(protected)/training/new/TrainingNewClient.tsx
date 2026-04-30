@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { createSurvey, saveQuestions, type QuestionOption } from "@/lib/supabase/survey-api";
+import { ButtonLoader } from "@/components/ui/button-loader";
 
 type QuestionType = "multiple_choice" | "open_ended" | "scale" | "yes_no" | "multi_select";
 
@@ -661,14 +662,7 @@ export function TrainingNewClient() {
                 disabled={aiGenerating || !aiTopic.trim()}
                 className="flex-[2] rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 py-3 text-sm font-semibold text-white shadow transition-all hover:brightness-110 disabled:opacity-50"
               >
-                {aiGenerating ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <svg className="animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                    AI Soruları Oluşturuyor...
-                  </span>
-                ) : (
-                  "AI ile Soruları Oluştur"
-                )}
+                {aiGenerating ? <ButtonLoader label="AI sorulari olusturuluyor..." /> : "AI ile Soruları Oluştur"}
               </button>
             </div>
 
@@ -834,7 +828,7 @@ export function TrainingNewClient() {
                 disabled={saving || !title.trim() || questions.length === 0}
                 className="flex-[2] rounded-xl bg-[var(--gold)] py-3 text-sm font-semibold text-white shadow hover:brightness-110 disabled:opacity-50"
               >
-                {saving ? "Kaydediliyor..." : `Kaydet (${questions.length} soru)`}
+                {saving ? <ButtonLoader label="Kaydediliyor..." /> : `Kaydet (${questions.length} soru)`}
               </button>
             </div>
           </div>

@@ -13,6 +13,7 @@ import {
   cloneDeckFromTemplate,
   type SlideDeck,
 } from "@/lib/supabase/slide-deck-api";
+import { ButtonLoader } from "@/components/ui/button-loader";
 
 type TabKey = "my" | "organization" | "templates" | "ai_create";
 
@@ -74,6 +75,12 @@ export function SlideLibraryClient() {
   }, []);
 
   useEffect(() => { loadAll(); }, [loadAll]);
+
+  useEffect(() => {
+    if (searchParams.get("ai") === "1") {
+      setShowAI(true);
+    }
+  }, [searchParams]);
 
   async function handleCreate() {
     if (!form.title.trim()) return;
@@ -546,7 +553,7 @@ export function SlideLibraryClient() {
                 disabled={aiGenerating || !aiTopic.trim()}
                 className="flex-1 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
               >
-                {aiGenerating ? "Üretiliyor..." : "✨ Oluştur"}
+                {aiGenerating ? <ButtonLoader label="AI egitim olusturuluyor..." /> : "✨ Oluştur"}
               </button>
             </div>
           </div>
