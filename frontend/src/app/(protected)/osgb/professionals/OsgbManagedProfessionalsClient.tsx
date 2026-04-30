@@ -213,7 +213,7 @@ export default function OsgbManagedProfessionalsClient() {
                           </Button>
                           <Button
                             type="button"
-                            variant="destructive"
+                            variant="danger"
                             size="sm"
                             disabled={busy}
                             onClick={() => void patchAction(row.id, "end")}
@@ -234,7 +234,7 @@ export default function OsgbManagedProfessionalsClient() {
                           </Button>
                           <Button
                             type="button"
-                            variant="destructive"
+                            variant="danger"
                             size="sm"
                             disabled={busy}
                             onClick={() => void patchAction(row.id, "end")}

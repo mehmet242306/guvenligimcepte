@@ -157,7 +157,7 @@ export default function IndividualOsgbAffiliationsClient() {
                       {row.status === "active" || row.status === "suspended" ? (
                         <Button
                           type="button"
-                          variant="destructive"
+                          variant="danger"
                           size="sm"
                           disabled={busy}
                           onClick={() => void patchAction(row.id, "end")}
