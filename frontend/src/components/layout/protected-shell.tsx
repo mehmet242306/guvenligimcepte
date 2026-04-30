@@ -110,6 +110,25 @@ function isWorkspaceLockedHref(href: string) {
   return href !== "/workspace/onboarding" && href !== "/companies" && href !== "/settings";
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timeoutId = window.setTimeout(() => {
+      reject(new Error(`timeout_${label}`));
+    }, ms);
+
+    promise.then(
+      (value) => {
+        window.clearTimeout(timeoutId);
+        resolve(value);
+      },
+      (error) => {
+        window.clearTimeout(timeoutId);
+        reject(error);
+      },
+    );
+  });
+}
+
 /* ------------------------------------------------------------------ */
 /* Theme toggle                                                        */
 /* ------------------------------------------------------------------ */
@@ -431,9 +450,14 @@ export function ProtectedShell({
     const authClient = supabase;
 
     async function ensureAuthenticated() {
-      const {
-        data: { user },
-      } = await authClient.auth.getUser();
+      let user = null;
+
+      try {
+        const result = await withTimeout(authClient.auth.getUser(), 8000, "auth_get_user");
+        user = result.data.user;
+      } catch (error) {
+        console.warn("[protected-shell] auth.getUser failed:", error);
+      }
 
       if (cancelled) return;
 
@@ -442,8 +466,21 @@ export function ProtectedShell({
         return;
       }
 
-      const { data: assuranceData, error: assuranceError } =
-        await authClient.auth.mfa.getAuthenticatorAssuranceLevel();
+      let assuranceData = null;
+      let assuranceError: unknown = null;
+
+      try {
+        const assuranceResult = await withTimeout(
+          authClient.auth.mfa.getAuthenticatorAssuranceLevel(),
+          8000,
+          "mfa_assurance",
+        );
+        assuranceData = assuranceResult.data;
+        assuranceError = assuranceResult.error;
+      } catch (error) {
+        assuranceError = error;
+        console.warn("[protected-shell] mfa assurance failed:", error);
+      }
 
       if (cancelled) return;
 
@@ -459,10 +496,15 @@ export function ProtectedShell({
       }
 
       try {
-        const response = await fetch("/api/account/context", {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await withTimeout(
+          fetch("/api/account/context", {
+            method: "GET",
+            credentials: "include",
+            cache: "no-store",
+          }),
+          8000,
+          "account_context",
+        );
         const raw = await response.text();
         const json = raw.trim() ? JSON.parse(raw) as { context?: ShellAccountContext } : null;
         if (!cancelled) {
@@ -542,11 +584,16 @@ export function ProtectedShell({
       let activeWorkspace: Awaited<ReturnType<typeof getActiveWorkspace>> = null;
 
       try {
-        [memberships, activeWorkspace] = await Promise.all([
-          listMyWorkspaces(),
-          getActiveWorkspace(),
-        ]);
-      } catch {
+        [memberships, activeWorkspace] = await withTimeout(
+          Promise.all([
+            listMyWorkspaces(),
+            getActiveWorkspace(),
+          ]),
+          10000,
+          "workspace_context",
+        );
+      } catch (error) {
+        console.warn("[protected-shell] workspace context lookup failed:", error);
         memberships = [];
         activeWorkspace = null;
       }
@@ -579,10 +626,15 @@ export function ProtectedShell({
       }
 
       try {
-        const response = await fetch("/api/workspaces/onboarding", {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await withTimeout(
+          fetch("/api/workspaces/onboarding", {
+            method: "GET",
+            credentials: "include",
+            cache: "no-store",
+          }),
+          10000,
+          "workspace_onboarding",
+        );
         const raw = await response.text();
         const json = raw.trim()
           ? (JSON.parse(raw) as {

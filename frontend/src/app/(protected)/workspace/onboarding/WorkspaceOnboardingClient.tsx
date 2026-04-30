@@ -234,10 +234,31 @@ async function readJsonSafely<T>(response: Response): Promise<T | null> {
   }
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timeoutId = window.setTimeout(() => {
+      reject(new Error(`timeout_${label}`));
+    }, ms);
+
+    promise.then(
+      (value) => {
+        window.clearTimeout(timeoutId);
+        resolve(value);
+      },
+      (error) => {
+        window.clearTimeout(timeoutId);
+        reject(error);
+      },
+    );
+  });
+}
+
 async function buildAuthHeaders(base: HeadersInit = {}) {
   const headers = new Headers(base);
   const supabase = createBrowserSupabaseClient();
-  const session = supabase ? (await supabase.auth.getSession()).data.session : null;
+  const session = supabase
+    ? (await withTimeout(supabase.auth.getSession(), 8000, "auth_session")).data.session
+    : null;
 
   if (session?.access_token) {
     headers.set("Authorization", `Bearer ${session.access_token}`);
@@ -249,6 +270,10 @@ async function buildAuthHeaders(base: HeadersInit = {}) {
 function normalizeOnboardingError(error: unknown, fallback: string) {
   const message = error instanceof Error ? error.message : "";
   const normalized = message.toLowerCase();
+
+  if (normalized.startsWith("timeout_")) {
+    return "Oturum veya calisma alani bilgisi zamaninda alinamadi. Sayfayi yenileyip tekrar deneyin; sorun surerse cikis yapip yeniden giris yapin.";
+  }
 
   if (normalized.includes("failed to fetch")) {
     return "Baglanti kurulamadi. Sayfayi yenileyip getrisknova.com uzerinden tekrar deneyin; oturum otomatik toparlanmazsa cikis yapip yeniden giris yapin.";
@@ -400,11 +425,16 @@ export function WorkspaceOnboardingClient({
       setMessage(initialMessage ? { tone: "success", text: initialMessage } : null);
 
       try {
-        const accountResponse = await fetch("/api/account/context", {
-          method: "GET",
-          credentials: "include",
-          headers: await buildAuthHeaders(),
-        });
+        const accountResponse = await withTimeout(
+          fetch("/api/account/context", {
+            method: "GET",
+            credentials: "include",
+            headers: await buildAuthHeaders(),
+            cache: "no-store",
+          }),
+          10000,
+          "account_context",
+        );
 
         const accountJson = await readJsonSafely<AccountContextResponse>(accountResponse);
         if (!accountResponse.ok || !accountJson || !("context" in accountJson) || !accountJson.context) {
@@ -430,11 +460,16 @@ export function WorkspaceOnboardingClient({
           return;
         }
 
-        const response = await fetch("/api/workspaces/onboarding", {
-          method: "GET",
-          credentials: "include",
-          headers: await buildAuthHeaders(),
-        });
+        const response = await withTimeout(
+          fetch("/api/workspaces/onboarding", {
+            method: "GET",
+            credentials: "include",
+            headers: await buildAuthHeaders(),
+            cache: "no-store",
+          }),
+          10000,
+          "workspace_onboarding",
+        );
 
         const json = await readJsonSafely<OnboardingPayload | { error?: string }>(response);
         if (!response.ok || !json || ("error" in json && json.error)) {
