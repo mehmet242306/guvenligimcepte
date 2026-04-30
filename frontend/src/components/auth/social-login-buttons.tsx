@@ -8,6 +8,10 @@ function resolveOAuthOrigin() {
   const { hostname, origin } = window.location;
   const configured = process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/+$/, "") ?? "";
 
+  if (configured && !configured.endsWith(".vercel.app")) {
+    return configured;
+  }
+
   if (
     (hostname === "localhost" || hostname === "127.0.0.1") &&
     configured &&
@@ -113,8 +117,14 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
 
     if (oauthError) {
       console.warn("[social-login] OAuth error:", oauthError.message);
-      setError("Giriş sırasında bir hata oluştu. Lütfen tekrar deneyin.");
+      const rawMessage = oauthError.message.toLowerCase();
+      const redirectMessage =
+        rawMessage.includes("redirect") || rawMessage.includes("not allowed")
+          ? "Google girisi icin Supabase redirect adresi eksik. Supabase Authentication URL ayarlarina https://getrisknova.com/auth/callback eklenmeli."
+          : "Giris sirasinda bir hata olustu. Lutfen tekrar deneyin.";
+      setError(redirectMessage);
       setLoading(null);
+      return;
     }
   }
 

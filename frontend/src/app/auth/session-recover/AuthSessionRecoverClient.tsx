@@ -49,11 +49,14 @@ async function readJsonSafely<T>(response: Response): Promise<T | null> {
   }
 }
 
-async function resolvePostAuthRedirect(next: string) {
+async function resolvePostAuthRedirect(next: string, accessToken: string) {
   try {
     const response = await fetch("/api/account/context", {
       method: "GET",
       credentials: "include",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
       cache: "no-store",
     });
     const json = await readJsonSafely<AccountContextResponse>(response);
@@ -151,7 +154,10 @@ export function AuthSessionRecoverClient({
           const response = await fetch("/api/account/onboarding", {
             method: "POST",
             credentials: "include",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${data.session.access_token}`,
+            },
             body: JSON.stringify({
               accountType: accountType === "individual" ? "individual" : "individual",
               displayName,
@@ -179,7 +185,7 @@ export function AuthSessionRecoverClient({
       }
 
       setMessage("Hesap baglami kontrol ediliyor...");
-      const redirectPath = await resolvePostAuthRedirect(next);
+      const redirectPath = await resolvePostAuthRedirect(next, data.session.access_token);
       window.location.replace(redirectPath);
     }
 
