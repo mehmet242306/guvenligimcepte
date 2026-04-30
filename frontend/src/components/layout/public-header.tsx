@@ -32,7 +32,7 @@ export function PublicHeader() {
                 {t("nav.howItWorks")}
               </Link>
               <Link href="/pricing" className={navLinkClass}>
-                Paketler
+                Fiyatlandirma
               </Link>
             </nav>
 

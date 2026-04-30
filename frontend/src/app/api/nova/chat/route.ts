@@ -18,6 +18,7 @@ import {
   resolveNovaGreetingIntent,
   resolveNovaNavigationIntent,
 } from "@/lib/nova/navigation-intents";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 
 function isCompatError(message: string | undefined | null) {
   const normalized = String(message ?? "").toLowerCase();
@@ -67,6 +68,44 @@ function detectNovaIntentForPermission(
 
 function canUseReadOnlyLegalFallback(message: string) {
   return detectNovaIntentForPermission(message) === "regulation" && !isOperationalCommandQuery(message);
+}
+
+function resolveNovaProductHelpIntent(message: string) {
+  const normalized = normalizeNovaIntentText(message);
+
+  if (/(nasil kayit|register|uye ol|uye olmak|kayit olmak|hesap ac)/.test(normalized)) {
+    return {
+      answer:
+        "Hizli baslangic icin Kayit ol ekranindan bireysel hesap acabilirsin. Paket karsilastirmasi icin de Paketler sayfasini kullan.",
+      navigation: { targetPage: "/register", label: "Kayit ol", source: "nova-product-help" },
+    };
+  }
+
+  if (/(fiyat|fiyatlandirma|paket|ucret|odeme|abonelik)/.test(normalized)) {
+    return {
+      answer:
+        "Paket detaylari ve limit karsilastirmasi Paketler sayfasinda. Oradan planini secip odeme akisina gecebilirsin.",
+      navigation: { targetPage: "/pricing", label: "Paketler", source: "nova-product-help" },
+    };
+  }
+
+  if (/(sinav|anket|egitim|training|question bank|soru bankasi)/.test(normalized)) {
+    return {
+      answer:
+        "Sinav, anket ve egitim iceriklerini Egitim modulunden yonetebilirsin. Soru bankasi ve sertifikalar da ayni alanda bulunur.",
+      navigation: { targetPage: "/training", label: "Egitim Modulu", source: "nova-product-help" },
+    };
+  }
+
+  if (/(ne yapiyorsun|ne ise yarar|hangi ozellik|neler var|moduller neler)/.test(normalized)) {
+    return {
+      answer:
+        "RiskNova; risk analizi, saha denetimi, dokuman, egitim/sinav/anket ve abonelik yonetimini tek panelde sunar. Istersen seni ilgili module yonlendirebilirim.",
+      navigation: null,
+    };
+  }
+
+  return null;
 }
 
 function isUuid(value: string | null | undefined) {
@@ -547,6 +586,7 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null;
     const navigationIntent = resolveNovaNavigationIntent(payload.message);
     const greetingIntent = resolveNovaGreetingIntent(payload.message);
+    const productHelpIntent = resolveNovaProductHelpIntent(payload.message);
 
     let authContext =
       payload.access_token
@@ -565,7 +605,8 @@ export async function POST(request: NextRequest) {
       const allowReadOnlyLegalFallback = canUseReadOnlyLegalFallback(payload.message);
       const allowNavigationFallback = navigationIntent !== null;
       const allowGreetingFallback = greetingIntent !== null;
-      const auth = allowReadOnlyLegalFallback || allowNavigationFallback || allowGreetingFallback
+      const allowProductHelpFallback = productHelpIntent !== null;
+      const auth = allowReadOnlyLegalFallback || allowNavigationFallback || allowGreetingFallback || allowProductHelpFallback
         ? await requireAuth(request)
         : await requirePermission(request, "ai.use");
       if (!auth.ok) return auth.response;
@@ -634,10 +675,10 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      const hasNovaPermission = navigationIntent || greetingIntent
+      const hasNovaPermission = navigationIntent || greetingIntent || productHelpIntent
         ? true
         : await hasAiUsePermission(payload.access_token!);
-      const hasManagerAccess = navigationIntent || greetingIntent
+      const hasManagerAccess = navigationIntent || greetingIntent || productHelpIntent
         ? true
         : await hasLegacyNovaManagerAccess(authContext.userId);
       const readOnlyLegalFallback =
@@ -696,6 +737,26 @@ export async function POST(request: NextRequest) {
             context_surface: payload.context_surface,
             current_page: payload.current_page ?? null,
             company_workspace_id: effectiveCompanyWorkspaceId,
+          },
+        }),
+      );
+    }
+
+    if (productHelpIntent) {
+      return NextResponse.json(
+        normalizeNovaAgentResponse({
+          type: "message",
+          answer: productHelpIntent.answer,
+          session_id: payload.session_id ?? null,
+          as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
+          answer_mode: payload.answer_mode,
+          jurisdiction_code: payload.jurisdiction_code ?? authContext.jurisdictionCode ?? "TR",
+          sources: [],
+          ...(productHelpIntent.navigation ? { navigation: productHelpIntent.navigation } : {}),
+          telemetry: {
+            gateway_mode: "product_help_fallback",
+            context_surface: payload.context_surface,
+            current_page: payload.current_page ?? null,
           },
         }),
       );
@@ -796,6 +857,19 @@ export async function POST(request: NextRequest) {
 
     if (rateLimitResponse) {
       return rateLimitResponse;
+    }
+
+    if (!usedReadOnlyLegalFallback) {
+      const entitlementResponse = await consumeEntitlement(
+        {
+          userId: authContext.userId,
+          organizationId: authContext.organizationId,
+        },
+        "nova_message",
+      );
+      if (entitlementResponse) {
+        return entitlementResponse;
+      }
     }
 
     const headers: Record<string, string> = {

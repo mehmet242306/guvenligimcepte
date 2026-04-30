@@ -13,6 +13,7 @@ import {
   buildManualFallbackResponse,
   executeWithResilience,
 } from "@/lib/self-healing/resilience";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -48,6 +49,9 @@ export async function POST(request: NextRequest) {
     if (!parsedBody.ok) return parsedBody.response;
 
     const { topic, questionCount, optionCount, type, description } = parsedBody.data;
+
+    const entitlementResponse = await consumeEntitlement(auth, "training_slide");
+    if (entitlementResponse) return entitlementResponse;
 
     const isExam = type === "exam";
     const qCount = Math.min(Math.max(questionCount || 10, 1), 50);

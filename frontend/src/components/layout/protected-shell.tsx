@@ -49,6 +49,7 @@ const primaryNav = [
   { href: "/workspace/onboarding", key: "nav.workspace" },
   { href: "/companies", key: "nav.companies" },
   { href: "/risk-analysis", key: "nav.riskAnalysis" },
+  { href: "/training", label: "Egitim / Sinav / Anket" },
   { href: "/corrective-actions", key: "nav.correctiveActions" },
   { href: "/incidents", key: "nav.incidents" },
   { href: "/isg-library", key: "nav.library" },
@@ -377,6 +378,8 @@ export function ProtectedShell({
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useI18n();
+  const resolveNavLabel = (item: { key?: string; label?: string }) =>
+    item.key ? t(item.key) : item.label ?? "";
   const isAdmin = useIsAdmin(initialIsAdmin);
   const [accountContext, setAccountContext] = useState<ShellAccountContext | null>(
     initialAccountContext,
@@ -772,14 +775,14 @@ export function ProtectedShell({
                         aria-disabled="true"
                         title="Bu modulu acmak icin once calisma alani olustur"
                       >
-                        {"key" in item ? t(item.key) : item.label}
+                        {resolveNavLabel(item)}
                       </span>
                     );
                   }
 
                   return (
                     <Link key={item.href} href={item.href} className={classes}>
-                      {"key" in item ? t(item.key) : item.label}
+                      {resolveNavLabel(item)}
                       {act && (
                         <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[var(--gold-light)]" />
                       )}
@@ -860,14 +863,14 @@ export function ProtectedShell({
                         aria-disabled="true"
                         title="Bu modulu acmak icin once calisma alani olustur"
                       >
-                        {"key" in item ? t(item.key) : item.label}
+                        {resolveNavLabel(item)}
                       </span>
                     );
                   }
 
                   return (
                     <Link key={item.href} href={item.href} className={classes}>
-                      {"key" in item ? t(item.key) : item.label}
+                      {resolveNavLabel(item)}
                       {act && (
                         <span className="absolute inset-x-1.5 bottom-0 h-0.5 rounded-full bg-[var(--secondary-nav-active)]" />
                       )}
@@ -908,14 +911,14 @@ export function ProtectedShell({
                     aria-disabled="true"
                     title="Bu modulu acmak icin once calisma alani olustur"
                   >
-                    {"key" in item ? t(item.key) : item.label}
+                    {resolveNavLabel(item)}
                   </span>
                 );
               }
 
               return (
                 <Link key={item.href} href={item.href} className={classes}>
-                  {"key" in item ? t(item.key) : item.label}
+                  {resolveNavLabel(item)}
                   {act && (
                     <span className="absolute inset-x-1 bottom-0 h-0.5 rounded-full bg-primary" />
                   )}
@@ -953,14 +956,14 @@ export function ProtectedShell({
                       aria-disabled="true"
                       title="Bu modulu acmak icin once calisma alani olustur"
                     >
-                      {"key" in item ? t(item.key) : item.label}
+                      {resolveNavLabel(item)}
                     </span>
                   );
                 }
 
                 return (
                   <Link key={item.href} href={item.href} className={classes}>
-                    {"key" in item ? t(item.key) : item.label}
+                    {resolveNavLabel(item)}
                     {act && (
                       <span className="absolute inset-x-1 bottom-0 h-0.5 rounded-full bg-primary" />
                     )}
