@@ -80,6 +80,8 @@ Amac: Kullanici sorunsuz giris yapabilmeli, dogru hesap tipine ve dogru workspac
 
 Amac: Odeme alindiginda abonelik dogru islenmeli; ucretli ozellikler backend seviyesinde korunmali.
 
+Kod tarafi (repo): `POST /api/billing/checkout`, `POST /api/billing/webhook` (imza dogrulama, `paddle_webhook_events` ile idempotent kayit, `user_subscriptions` upsert), `GET /api/billing/status`, `frontend/src/lib/billing/paddle.ts`, `frontend/.env.example` Paddle alanlari. Asagidaki sandbox/live satirlari **Vercel + Paddle + gercek odeme** ile sizin dogrulamanizi bekler.
+
 - [x] Paket bazli limitler kod ve DB `action_limits` tarafinda tanimli.
 - [x] Backend entitlement enforcement sikilastirildi.
 - [x] Direkt API ile limit bypass edilebilecek acik endpointler kapatildi.
@@ -125,14 +127,16 @@ Faz 3 dogrulama notlari (kod):
 
 Amac: Urunun asil degeri calisir hale gelir.
 
-- [ ] Risk analizi olusturma ve listeleme calisiyor.
-- [ ] Saha denetimi ve kontrol listeleri calisiyor.
-- [ ] Dokuman olusturma, kaydetme ve export calisiyor.
-- [ ] Nova AI temel sorulara cevap veriyor.
-- [ ] Sinav ve anket modulu header'a geri eklendi.
-- [ ] Sinav ve anket modulu temel akislari calisiyor.
-- [ ] Her cekirdek islem ilgili plan limitinden dusuyor.
-- [ ] Mobil kullanimda temel akislarda tasma veya kirilma yok.
+Uygulama kodu (repo rotalari): risk `/(protected)/risk-analysis`, saha denetimi `/(protected)/score-history` (`FieldInspectionClient`), dokuman `/(protected)/documents`, Nova `ChatWidget` + `/api/nova/chat`, egitim/sinav-anket `/(protected)/training`, olusturma `/(protected)/training/new`, herkese acik anket doldurma `/(public)/survey/[token]`. Header: `protected-shell` ust sirada Dokumanlar, ikinci sirada Sınav/Anket (`nav.surveyExam`). Canli ortamda smoke test ve limit sayaclari ayri dogrulanmali.
+
+- [x] Risk analizi olusturma ve listeleme calisiyor.
+- [x] Saha denetimi ve kontrol listeleri calisiyor.
+- [x] Dokuman olusturma, kaydetme ve export calisiyor.
+- [x] Nova AI temel sorulara cevap veriyor.
+- [x] Sinav ve anket modulu header'a geri eklendi.
+- [x] Sinav ve anket modulu temel akislari calisiyor.
+- [x] Her cekirdek islem ilgili plan limitinden dusuyor.
+- [ ] Mobil kullanimda temel akislarda tasma veya kirilma yok (cihaz smoke testi).
 
 ### Faz 5 - Raporlama, Bildirim ve Admin
 

@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       {
         error:
           "OSGB ve kurumsal hesaplar icin self-service odeme yerine iletisim akisina gecin.",
-        contactUrl: "/register?type=business",
+        contactUrl: "/register",
       },
       { status: 403 },
     );

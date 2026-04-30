@@ -51,6 +51,7 @@ const primaryNav = [
   { href: "/risk-analysis", key: "nav.riskAnalysis" },
   { href: "/corrective-actions", key: "nav.correctiveActions" },
   { href: "/incidents", key: "nav.incidents" },
+  { href: "/documents", key: "nav.documents" },
   { href: "/isg-library", key: "nav.library" },
 ];
 
@@ -58,6 +59,7 @@ const primaryNav = [
 type NavItem = { href: string; key: string; adminOnly?: boolean };
 const secondaryNav: NavItem[] = [
   { href: "/training", key: "nav.training" },
+  { href: "/training/new", key: "nav.surveyExam" },
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
