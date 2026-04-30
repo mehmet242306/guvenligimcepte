@@ -20,6 +20,8 @@ function makeContext(
     currentPlanCode: "individual_free",
     activeWorkspaceId: "ws-1",
     workspaceCount: 1,
+    osgbUmbrellas: [],
+    managedProfessionals: [],
     ...overrides,
   };
 }

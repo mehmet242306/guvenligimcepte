@@ -1,3 +1,8 @@
+import type {
+  ManagedProfessionalAffiliation,
+  OsgbUmbrellaAffiliation,
+} from "@/lib/account/account-routing";
+
 export type AccountContextResponse = {
   ok: boolean;
   context: {
@@ -9,6 +14,8 @@ export type AccountContextResponse = {
     allowedAccountTypes: Array<"individual" | "osgb" | "enterprise">;
     membershipRole: "owner" | "admin" | "staff" | "viewer" | null;
     currentPlanCode: string | null;
+    osgbUmbrellas: OsgbUmbrellaAffiliation[];
+    managedProfessionals: ManagedProfessionalAffiliation[];
   };
   surface?: "platform-admin" | "osgb-manager" | "standard";
   redirectPath: string;

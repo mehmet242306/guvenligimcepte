@@ -873,6 +873,8 @@ export async function POST(request: NextRequest) {
           ) as AccountType[],
           membershipRole: accountType === "individual" ? "owner" : "owner",
           currentPlanCode: buildPlanCode(accountType),
+          osgbUmbrellas: [],
+          managedProfessionals: [],
         }),
         loginEmail: email,
         temporaryPassword,

@@ -9,6 +9,9 @@ const PUBLIC_PATHS = [
   "/forgot-password",
   "/reset-password",
   "/pricing",
+  "/privacy",
+  "/terms",
+  "/refund-policy",
 ];
 
 // Cron / webhook endpoint'leri — kendi header-based auth'larını yapıyorlar
@@ -26,6 +29,10 @@ const ROUTE_AUTH_API_PATHS = [
   "/api/workspaces/onboarding",
 ];
 
+function isAccountOsgbAffiliationsApi(pathname: string) {
+  return pathname === "/api/account/osgb-affiliations" || pathname.startsWith("/api/account/osgb-affiliations/");
+}
+
 const CANONICAL_HOST = "getrisknova.com";
 const LEGACY_HOSTS = new Set(["getrisknova.vercel.app"]);
 
@@ -42,7 +49,8 @@ export async function updateSession(request: NextRequest) {
   const isPublicApiEndpoint = PUBLIC_API_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(prefix),
   );
-  const isRouteAuthApiEndpoint = ROUTE_AUTH_API_PATHS.includes(pathname);
+  const isRouteAuthApiEndpoint =
+    ROUTE_AUTH_API_PATHS.includes(pathname) || isAccountOsgbAffiliationsApi(pathname);
   const isPublic =
     PUBLIC_PATHS.includes(pathname) ||
     pathname.startsWith("/auth") ||

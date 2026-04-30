@@ -70,6 +70,7 @@ const secondaryNav: NavItem[] = [
 const osgbPrimaryNav = [
   { href: "/osgb", label: "Panel" },
   { href: "/osgb/firms", label: "Firmalar" },
+  { href: "/osgb/professionals", label: "Profesyoneller" },
   { href: "/osgb/personnel", label: "Personeller" },
   { href: "/osgb/assignments", label: "Görevlendirmeler" },
   { href: "/osgb/tasks", label: "İş Takibi" },
@@ -102,13 +103,19 @@ function isWorkspaceOptionalPath(pathname: string) {
     pathname.startsWith("/workspace/onboarding") ||
     pathname.startsWith("/companies") ||
     pathname.startsWith("/profile") ||
+    pathname.startsWith("/account/") ||
     pathname.startsWith("/settings") ||
     pathname.startsWith("/notifications")
   );
 }
 
 function isWorkspaceLockedHref(href: string) {
-  return href !== "/workspace/onboarding" && href !== "/companies" && href !== "/settings";
+  return (
+    href !== "/workspace/onboarding" &&
+    href !== "/companies" &&
+    href !== "/settings" &&
+    href !== "/account/osgb-affiliations"
+  );
 }
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
@@ -428,7 +435,13 @@ export function ProtectedShell({
     ? []
     : isOsgbShell
       ? osgbSecondaryNav
-      : secondaryNav.filter((i) => !i.adminOnly || isAdmin === true);
+      : [
+          ...secondaryNav.filter((i) => !i.adminOnly || isAdmin === true),
+          ...(accountContext?.accountType === "individual" &&
+          (accountContext.membershipRole === "owner" || accountContext.membershipRole === "admin")
+            ? [{ href: "/account/osgb-affiliations" as const, key: "nav.osgbAffiliations" as const }]
+            : []),
+        ];
   const homeHref = isPlatformAdminShell
     ? "/platform-admin"
     : isOsgbShell

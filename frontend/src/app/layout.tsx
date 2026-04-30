@@ -21,7 +21,11 @@ const playfair = Playfair_Display({
   weight: ["400", "500", "600", "700"],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/+$/, "") || "https://www.getrisknova.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "RiskNova",
     template: "%s | RiskNova",

@@ -6,6 +6,22 @@ import {
 
 export type AccountType = "individual" | "osgb" | "enterprise";
 
+/** Bireysel tenant org'un bagli oldugu OSGB catilari (Faz 3). */
+export type OsgbUmbrellaAffiliation = {
+  linkId: string;
+  status: string;
+  osgbOrganizationId: string;
+  osgbName: string | null;
+};
+
+/** OSGB tenant org'un yonetmek uzere bagladigi bireysel tenant org'lar (Faz 3). */
+export type ManagedProfessionalAffiliation = {
+  linkId: string;
+  status: string;
+  professionalOrganizationId: string;
+  professionalName: string | null;
+};
+
 export type AccountContext = {
   userId: string;
   isPlatformAdmin: boolean;
@@ -17,6 +33,10 @@ export type AccountContext = {
   currentPlanCode: string | null;
   activeWorkspaceId?: string | null;
   workspaceCount?: number;
+  /** Hesap individual ise: bu org'u catisi altinda toplayan OSGB'ler */
+  osgbUmbrellas: OsgbUmbrellaAffiliation[];
+  /** Hesap osgb ise: bu catiya baglanan bireysel org'lar */
+  managedProfessionals: ManagedProfessionalAffiliation[];
 };
 
 type MembershipRole = AccountContext["membershipRole"];
@@ -390,6 +410,12 @@ export async function getAccountContextForUser(
     membershipRole = await resolveLegacyMembershipRole(service, profileId, accountType);
   }
 
+  const { osgbUmbrellas, managedProfessionals } = await resolveOsgbAffiliationSummaries(
+    service,
+    organization?.id ?? profile?.organization_id ?? null,
+    accountType,
+  );
+
   return {
     userId,
     isPlatformAdmin: isPlatformAdminData === true,
@@ -401,7 +427,103 @@ export async function getAccountContextForUser(
     currentPlanCode,
     activeWorkspaceId: workspaceAccess.activeWorkspaceId,
     workspaceCount: workspaceAccess.workspaceCount,
+    osgbUmbrellas,
+    managedProfessionals,
   };
+}
+
+async function resolveOsgbAffiliationSummaries(
+  service: ReturnType<typeof createServiceClient>,
+  organizationId: string | null,
+  accountType: AccountType | null,
+): Promise<{
+  osgbUmbrellas: OsgbUmbrellaAffiliation[];
+  managedProfessionals: ManagedProfessionalAffiliation[];
+}> {
+  const empty = { osgbUmbrellas: [] as OsgbUmbrellaAffiliation[], managedProfessionals: [] as ManagedProfessionalAffiliation[] };
+  if (!organizationId || !accountType) {
+    return empty;
+  }
+
+  const activeStatuses = ["invited", "active", "suspended"];
+
+  if (accountType === "individual") {
+    const { data, error } = await service
+      .from("organization_osgb_affiliations")
+      .select(
+        `
+        id,
+        status,
+        osgb_organization_id,
+        osgb:organizations!organization_osgb_affiliations_osgb_organization_id_fkey (
+          id,
+          name
+        )
+      `,
+      )
+      .eq("professional_organization_id", organizationId)
+      .in("status", activeStatuses);
+
+    if (error) {
+      if (isMissingRelationError(error.message)) {
+        return empty;
+      }
+      throw new Error(error.message);
+    }
+
+    return {
+      osgbUmbrellas: (data ?? []).map((row) => {
+        const osgb = row.osgb as { id?: string; name?: string } | null;
+        return {
+          linkId: String(row.id),
+          status: String(row.status),
+          osgbOrganizationId: String(row.osgb_organization_id),
+          osgbName: osgb?.name ?? null,
+        };
+      }),
+      managedProfessionals: [],
+    };
+  }
+
+  if (accountType === "osgb") {
+    const { data, error } = await service
+      .from("organization_osgb_affiliations")
+      .select(
+        `
+        id,
+        status,
+        professional_organization_id,
+        professional:organizations!organization_osgb_affiliations_professional_organization_id_fkey (
+          id,
+          name
+        )
+      `,
+      )
+      .eq("osgb_organization_id", organizationId)
+      .in("status", activeStatuses);
+
+    if (error) {
+      if (isMissingRelationError(error.message)) {
+        return empty;
+      }
+      throw new Error(error.message);
+    }
+
+    return {
+      osgbUmbrellas: [],
+      managedProfessionals: (data ?? []).map((row) => {
+        const professional = row.professional as { id?: string; name?: string } | null;
+        return {
+          linkId: String(row.id),
+          status: String(row.status),
+          professionalOrganizationId: String(row.professional_organization_id),
+          professionalName: professional?.name ?? null,
+        };
+      }),
+    };
+  }
+
+  return empty;
 }
 
 export function hasOsgbManagementAccess(

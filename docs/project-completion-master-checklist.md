@@ -68,26 +68,41 @@ Bu bolum RiskNova'yi parca parca kontrol edilebilir hale getirmek icin ana sirad
 
 Amac: Kullanici sorunsuz giris yapabilmeli, dogru hesap tipine ve dogru workspace akisine yonlenmeli.
 
-- [ ] Email/password giris production'da test edildi.
-- [ ] Google ile giris production'da test edildi.
-- [ ] Auth callback ve session recover akisi stabil.
-- [ ] Login sonrasi kullanici gereksiz donguye girmiyor.
-- [ ] Yeni kullanici onboarding'i tamamlayabiliyor.
-- [ ] Workspace olusturma/secme akisi hata vermiyor.
-- [ ] Logout ve tekrar login senaryosu test edildi.
+- [x] Email/password giris production'da test edildi.
+- [x] Google ile giris production'da test edildi.
+- [x] Auth callback ve session recover akisi stabil.
+- [x] Login sonrasi kullanici gereksiz donguye girmiyor.
+- [x] Yeni kullanici onboarding'i tamamlayabiliyor.
+- [x] Workspace olusturma/secme akisi hata vermiyor.
+- [x] Logout ve tekrar login senaryosu test edildi.
 
 ### Faz 2 - Abonelik, Odeme ve Limit Guvenligi
 
 Amac: Odeme alindiginda abonelik dogru islenmeli; ucretli ozellikler backend seviyesinde korunmali.
 
-- [ ] Paddle sandbox env degerleri production Vercel env'lerinde dogru.
-- [ ] Paddle sandbox product/price ID'leri Supabase ve Vercel ile uyumlu.
-- [ ] Checkout baslatma tum paketlerde calisiyor.
-- [ ] Test odemesi sonrasi webhook Supabase'e abonelik yaziyor.
+- [x] Paket bazli limitler kod ve DB `action_limits` tarafinda tanimli.
+- [x] Backend entitlement enforcement sikilastirildi.
+- [x] Direkt API ile limit bypass edilebilecek acik endpointler kapatildi.
+- [x] Limit dolunca API tarafinda bloklama, 402 mekanizmasi aktif.
+- [x] Free/Starter/Plus/Professional limitleri backend'de uygulaniyor.
+- [x] Direkt API istegi ile limit bypass edilemiyor.
+- [ ] Paddle sandbox/live env degerleri production Vercel env'lerinde dogru.
+- [ ] Paddle sandbox/live product/price ID'leri Supabase ve Vercel ile uyumlu.
+- [ ] Checkout baslatma tum paketlerde gercek verilerle calisiyor.
+- [ ] Starter checkout baslatma dogrulandi.
+- [ ] Plus checkout baslatma dogrulandi.
+- [ ] Professional 99 checkout baslatma dogrulandi.
+- [ ] Professional 149 checkout baslatma dogrulandi.
+- [ ] Professional 199 checkout baslatma dogrulandi.
+- [ ] Test/gercek odeme sonrasi webhook Supabase'e abonelik yaziyor.
+- [ ] `paddle_webhook_events` kaydi dusuyor.
+- [ ] `user_subscriptions` dogru plan/cycle/status ile guncelleniyor.
 - [ ] Aktif abonelik pricing ekraninda "Mevcut plan" olarak gorunuyor.
-- [ ] Free/Starter/Plus/Professional limitleri backend'de uygulaniyor.
-- [ ] Direkt API istegi ile limit bypass edilemiyor.
-- [ ] Paddle live gecisinden once sandbox akisi uc kez sorunsuz test edildi.
+- [ ] Uctan uca test 1: checkout -> payment success -> webhook write -> UI plan sync.
+- [ ] Uctan uca test 2: checkout -> payment success -> webhook write -> UI plan sync.
+- [ ] Uctan uca test 3: checkout -> payment success -> webhook write -> UI plan sync.
+- [ ] Sandbox/live env son release gate kontrolu tamamlandi.
+- [ ] Paddle live gecisinden once uc tur akisi sorunsuz test edildi.
 
 ### Faz 3 - Workspace ve Organizasyon Temeli
 
@@ -177,22 +192,22 @@ Amac: Urun kullaniciya guven veren, satilabilir ve yayinlanabilir hale gelir.
 
 ### 2.2 Kayit ve Onboarding
 
-- [ ] Bireysel kullanici kayit akisi test edildi.
+- [x] Bireysel kullanici kayit akisi test edildi.
 - [ ] OSGB kayit/lead akisi test edildi.
 - [ ] Kurumsal kayit/lead akisi test edildi.
-- [ ] Kullanici hesap tipi dogru atanıyor.
-- [ ] Ilk giris sonrasi kullanici dogru panele yonleniyor.
-- [ ] Workspace onboarding tamamlanabiliyor.
-- [ ] Demo/veri bootstrap akisi kontrol edildi.
+- [x] Kullanici hesap tipi dogru atanıyor.
+- [x] Ilk giris sonrasi kullanici dogru panele yonleniyor.
+- [x] Workspace onboarding tamamlanabiliyor.
+- [x] Demo/veri bootstrap akisi kontrol edildi.
 
 ### 2.3 Auth
 
-- [ ] Email/password login calisiyor.
-- [ ] Social login varsa test edildi.
-- [ ] Logout calisiyor.
-- [ ] Auth callback hatalari kontrol edildi.
+- [x] Email/password login calisiyor.
+- [x] Social login varsa test edildi.
+- [x] Logout calisiyor.
+- [x] Auth callback hatalari kontrol edildi.
 - [ ] Sifre sifirlama akisi kontrol edildi.
-- [ ] Yetkisiz kullanici protected sayfalara giremiyor.
+- [x] Yetkisiz kullanici protected sayfalara giremiyor.
 
 ## 3. Nova ve AI Ozellikleri
 
@@ -305,25 +320,29 @@ Ozet:
 - [x] Price ID'leri Supabase'e islendi.
 - [x] Paddle API key olusturuldu.
 - [x] Paddle client-side token olusturuldu.
-- [ ] Vercel production env'lerine Paddle degiskenleri eklenecek.
-- [ ] Paddle webhook destination olusturulacak.
-- [ ] Webhook secret Vercel'e eklenecek.
+- [ ] Vercel production env'lerine Paddle degiskenleri son kez dogrulanacak.
+- [ ] Paddle webhook destination firma onayi sonrasi dogrulanacak.
+- [ ] Webhook secret Vercel'de son kez dogrulanacak.
 - [ ] Production redeploy alinacak.
-- [ ] Sandbox odeme testi yapilacak.
+- [ ] Checkout canli akis testi firma onayi sonrasi yapilacak.
+- [ ] Tum paketlerde odeme baslatma gercek verilerle dogrulanacak.
 - [ ] Webhook sonrasi abonelik aktivasyonu test edilecek.
+- [ ] `paddle_webhook_events` kaydi dogrulanacak.
+- [ ] `user_subscriptions` plan/cycle/status senkronu dogrulanacak.
+- [ ] Pricing ekraninda aktif plan "Mevcut plan" olarak dogrulanacak.
 - [ ] Live mode gecis plani tamamlanacak.
 
 ## 11. Limit, Kota ve Yetki Sızıntısı
 
-- [ ] Tum ucretli ozellikler listelendi.
-- [ ] Her ucretli ozellik bir `BillingAction` ile eslesti.
-- [ ] Backend limit kontrolu olmayan endpoint kalmadi.
-- [ ] Frontend gizleme sadece UX icin, guvenlik backend'de.
-- [ ] Free kullanici paid ozellige direkt API ile erisemiyor.
-- [ ] Starter kullanici Pro ozelliklerini kullanamiyor.
-- [ ] OSGB/Kurumsal manuel planlar kontrollu.
+- [x] Tum ucretli ozellikler listelendi.
+- [x] Her ucretli ozellik bir `BillingAction` ile eslesti.
+- [x] Backend limit kontrolu olmayan endpoint kalmadi.
+- [x] Frontend gizleme sadece UX icin, guvenlik backend'de.
+- [x] Free kullanici paid ozellige direkt API ile erisemiyor.
+- [x] Starter kullanici Pro ozelliklerini kullanamiyor.
+- [x] OSGB/Kurumsal manuel planlar kontrollu.
 - [ ] `subscription_usage` aylik kullanimlari dogru tutuyor.
-- [ ] Ayni ay icinde sayaçlar artiyor.
+- [x] Ayni ay icinde sayaçlar artiyor.
 - [ ] Yeni ayda kullanim sifirlaniyor.
 
 ## 12. Supabase ve Veritabani
@@ -418,7 +437,7 @@ Ozet:
 ### 17.3 Negatif Testler
 
 - [ ] Yetkisiz API istegi reddedilir.
-- [ ] Limit dolunca islem yapilmaz.
+- [x] Limit dolunca islem yapilmaz.
 - [ ] Yanlis Paddle webhook signature reddedilir.
 - [ ] Ayni webhook ikinci kez islenmez.
 - [ ] Eksik env varsa anlasilir hata doner.
@@ -471,12 +490,12 @@ Ozet:
 
 Bu bolum her calisma seansinda guncellenecek:
 
-- [ ] Faz 1 icin Google login, email login ve logout production smoke testini tamamla.
-- [ ] Onboarding'de workspace hazirlaniyor ekraninda takilma veya `Failed to fetch` hatasini yeniden test et.
-- [ ] Faz 2 icin Paddle sandbox webhook'un Supabase'e abonelik yazdigini dogrula.
-- [ ] Test odemesi sonrasi pricing ekraninda aktif planin pasif/mevcut gorundugunu dogrula.
-- [ ] Vercel env'lerinde sandbox/live Paddle degerlerinin karismadigini son kez kontrol et.
-- [ ] Supabase `user_subscriptions`, `subscription_plans`, `paddle_webhook_events` tablolarini test odemesiyle dogrula.
+- [x] Faz 1 icin Google login, email login ve logout production smoke testini tamamla.
+- [x] Onboarding'de workspace hazirlaniyor ekraninda takilma veya `Failed to fetch` hatasini yeniden test et.
+- [ ] Faz 2 icin firma onayi sonrasi Paddle webhook'un Supabase'e abonelik yazdigini dogrula.
+- [ ] Odeme sonrasi pricing ekraninda aktif planin pasif/mevcut gorundugunu dogrula.
+- [ ] Vercel env'lerinde sandbox/live Paddle degerlerinin karismadigini son release gate olarak kontrol et.
+- [ ] Supabase `user_subscriptions`, `subscription_plans`, `paddle_webhook_events` tablolarini odeme testiyle dogrula.
 - [ ] Auth ve billing stabil olduktan sonra workspace/organizasyon modulu testlerine gec.
 - [ ] Daha sonra cekirdek ISG modulleri: risk analizi, dokuman, saha denetimi, Nova, sinav ve anket.
 - [ ] E-posta akislari icin kayit, uzun sure giris yapmama, odeme basarili ve odeme basarisiz senaryolarini planla.

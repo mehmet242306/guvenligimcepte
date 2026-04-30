@@ -1,6 +1,7 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicHeader } from "@/components/layout/public-header";
-import { Brand } from "@/components/layout/brand";
+import { PublicSiteFooter } from "@/components/layout/public-site-footer";
 import { PublicChatWidget } from "@/components/chat/PublicChatWidget";
 import { DemoRequestTrigger } from "@/components/public/DemoRequestDialog";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
@@ -138,32 +139,19 @@ const testimonials = [
   },
 ];
 
-const footerLinks = [
-  {
-    title: "Ürün",
-    links: [
-      { label: "Özellikler", href: "/#features" },
-      { label: "Nasıl Çalışır", href: "/#how-it-works" },
-      { label: "R-SKOR", href: "/#features" },
-    ],
+export const metadata: Metadata = {
+  title: "İSG Risk Yönetimi ve AI Destekli Operasyon",
+  description:
+    "RiskNova; risk analizi, saha takibi, kayıt ve raporlama süreçlerini tek platformda birleştiren AI destekli İSG yazılımıdır.",
+  openGraph: {
+    title: "RiskNova — AI destekli İSG platformu",
+    description:
+      "İSG risk yönetimi, saha operasyonları ve karar desteği için modern SaaS platformu.",
+    type: "website",
+    url: "/",
   },
-  {
-    title: "Şirket",
-    links: [
-      { label: "Hakkımızda", href: "/" },
-      { label: "İletişim", href: "/" },
-      { label: "Blog", href: "/" },
-    ],
-  },
-  {
-    title: "Destek",
-    links: [
-      { label: "Yardım Merkezi", href: "/" },
-      { label: "Dokümantasyon", href: "/" },
-      { label: "API", href: "/" },
-    ],
-  },
-];
+  robots: { index: true, follow: true },
+};
 
 /* ------------------------------------------------------------------ */
 /*  Shared classes                                                     */
@@ -181,8 +169,9 @@ const secondaryLinkClass =
 
 export default function LandingPage() {
   return (
-    <main className="app-shell">
+    <main className="app-shell flex min-h-screen flex-col">
       <PublicHeader />
+      <div className="flex flex-1 flex-col">
 
       {/* ============================================================ */}
       {/* HERO                                                          */}
@@ -506,46 +495,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* FOOTER                                                        */}
-      {/* ============================================================ */}
-      <footer className="border-t border-white/[0.06] bg-[var(--navy-deep)]">
-        <div className="page-shell py-14">
-          <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
-            <div>
-              <Brand href="/" inverted />
-              <p className="mt-4 max-w-xs text-sm leading-7 text-slate-500">
-                AI destekli İSG risk analizi ve operasyon platformu.
-                Profesyonel, güvenilir, modern.
-              </p>
-            </div>
-
-            {footerLinks.map((group) => (
-              <div key={group.title}>
-                <h4 className="text-sm font-semibold text-white">
-                  {group.title}
-                </h4>
-                <ul className="mt-4 space-y-3">
-                  {group.links.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="text-sm text-slate-500 transition-colors hover:text-slate-300"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 border-t border-white/[0.06] pt-6 text-center text-xs text-slate-600">
-            &copy; {new Date().getFullYear()} RiskNova. Tüm hakları saklıdır.
-          </div>
-        </div>
-      </footer>
+      </div>
+      <PublicSiteFooter />
       <PublicChatWidget />
     </main>
   );

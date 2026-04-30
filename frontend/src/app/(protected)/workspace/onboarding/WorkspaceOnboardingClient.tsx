@@ -10,6 +10,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { StatusAlert } from "@/components/ui/status-alert";
 import { Textarea } from "@/components/ui/textarea";
 import { hasAccountTypeAccess } from "@/lib/account/account-type-access";
+import type { AccountContextPayload } from "@/lib/account/account-api";
 import { createClient as createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { setActiveWorkspace, setLocalWorkspaceContext } from "@/lib/supabase/workspace-api";
 
@@ -113,17 +114,6 @@ type OnboardingPayload = {
   certifications: CertificationOption[];
   warnings?: string[];
   memberships: ExistingMembership[];
-};
-
-type AccountContextPayload = {
-  userId: string;
-  isPlatformAdmin: boolean;
-  organizationId: string | null;
-  organizationName: string | null;
-  accountType: "individual" | "osgb" | "enterprise" | null;
-  allowedAccountTypes: Array<"individual" | "osgb" | "enterprise">;
-  membershipRole: "owner" | "admin" | "staff" | "viewer" | null;
-  currentPlanCode: string | null;
 };
 
 type AccountUsage = {

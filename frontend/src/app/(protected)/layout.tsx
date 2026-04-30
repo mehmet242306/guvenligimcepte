@@ -35,6 +35,8 @@ export default async function ProtectedLayout({
       allowedAccountTypes: ctx.allowedAccountTypes,
       membershipRole: ctx.membershipRole,
       currentPlanCode: ctx.currentPlanCode,
+      osgbUmbrellas: ctx.osgbUmbrellas,
+      managedProfessionals: ctx.managedProfessionals,
     };
     initialIsAdmin = ctx.isPlatformAdmin;
     initialHasActiveWorkspace = !!ctx.activeWorkspaceId;
