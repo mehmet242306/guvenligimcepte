@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import {
   INCIDENT_AI_MAX_TOKENS,
   INCIDENT_AI_MODEL,
@@ -86,6 +87,8 @@ export async function POST(request: NextRequest) {
 
     const parsedBody = await parseJsonBody(request, ishikawaRequestSchema);
     if (!parsedBody.ok) return parsedBody.response;
+    const entitlementResponse = await consumeEntitlement(auth, "incident_analysis");
+    if (entitlementResponse) return entitlementResponse;
 
     const payload = parsedBody.data;
     const userPrompt = `

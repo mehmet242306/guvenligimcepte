@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -35,6 +36,8 @@ export async function POST(request: NextRequest) {
     metadata: { feature: "nova_voice_transcription" },
   });
   if (rateLimitResponse) return rateLimitResponse;
+  const entitlementResponse = await consumeEntitlement(auth, "ai_analysis");
+  if (entitlementResponse) return entitlementResponse;
 
   try {
     const formData = await request.formData();

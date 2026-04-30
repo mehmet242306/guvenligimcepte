@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -57,6 +58,8 @@ export async function POST(request: NextRequest) {
       metadata: { feature: "document_import_ai" },
     });
     if (rateLimitResponse) return rateLimitResponse;
+    const entitlementResponse = await consumeEntitlement(auth, "document_generation");
+    if (entitlementResponse) return entitlementResponse;
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json({ error: "ANTHROPIC_API_KEY tanimli degil" }, { status: 500 });

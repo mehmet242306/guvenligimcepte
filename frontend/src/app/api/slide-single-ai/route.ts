@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -67,6 +68,8 @@ export async function POST(req: NextRequest) {
     if (!parsedBody.ok) return parsedBody.response;
 
     const { deckId, prompt: userPrompt, layout, insertAfter } = parsedBody.data;
+    const entitlementResponse = await consumeEntitlement(auth, "training_slide");
+    if (entitlementResponse) return entitlementResponse;
 
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();

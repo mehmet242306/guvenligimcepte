@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import {
   enforceRateLimit,
@@ -65,6 +66,8 @@ export async function POST(request: NextRequest) {
     metadata: { feature: "nova_image_context" },
   });
   if (rateLimitResponse) return rateLimitResponse;
+  const entitlementResponse = await consumeEntitlement(auth, "ai_analysis");
+  if (entitlementResponse) return entitlementResponse;
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
