@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { SocialLoginButtons } from "@/components/auth/social-login-buttons";
 import { DemoSessionCleaner } from "@/components/auth/DemoSessionCleaner";
 import { DemoExpiredModal } from "@/components/auth/DemoExpiredModal";
-import { RegisterCommercialPlans } from "@/components/auth/RegisterCommercialPlans";
 import { RegisterAccountTypePreview } from "@/components/auth/RegisterAccountTypePreview";
 import { signup } from "./actions";
 
@@ -33,9 +32,9 @@ export default async function RegisterPage({
             "Bolge ve dil seciminden sonra kaydi tamamlayip onboarding ile devam eder.",
         },
         {
-          title: "OSGB paketleri net",
+          title: "Paketler ayri sayfada",
           description:
-            "OSGB Starter ve Team paketlerini solda ozetliyor, gerekirse size ozel teklif topluyoruz.",
+            "Tum fiyatlandirma ve paket karsilastirmasi Paketler sayfasinda merkezi olarak sunulur.",
         },
         {
           title: "Firma icin ozel teklif",
@@ -43,7 +42,6 @@ export default async function RegisterPage({
             "Cok lokasyonlu veya ozel ihtiyacli firma yapilari icin gelistirici ile iletisime gecilir.",
         },
       ]}
-      spotlight={<RegisterCommercialPlans />}
       footer={
         <p className="text-sm leading-7 text-muted-foreground">
           Hesabin var mi?{" "}

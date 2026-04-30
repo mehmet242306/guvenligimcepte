@@ -104,6 +104,7 @@ export async function updateSession(request: NextRequest) {
     ? (user.app_metadata.providers as unknown[]).map((provider) => String(provider))
     : [];
   const hasOAuthProvider = providers.some((provider) => provider !== "email");
+  const mustSetPassword = user?.user_metadata?.must_set_password === true;
   const mustChangePassword =
     user?.user_metadata?.must_change_password === true && !hasOAuthProvider;
   const demoAccess = getDemoAccessState({
@@ -155,6 +156,13 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && mustChangePassword && !canBypassForcedReset) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/reset-password";
+    url.searchParams.set("required", "1");
+    return NextResponse.redirect(url);
+  }
+
+  if (user && mustSetPassword && !canBypassForcedReset) {
     const url = request.nextUrl.clone();
     url.pathname = "/reset-password";
     url.searchParams.set("required", "1");

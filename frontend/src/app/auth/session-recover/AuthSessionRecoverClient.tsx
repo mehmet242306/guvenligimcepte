@@ -75,6 +75,20 @@ async function resolvePostAuthRedirect(next: string, accessToken: string) {
   return "/workspace/onboarding";
 }
 
+function shouldForcePasswordSetup(user: {
+  app_metadata?: { providers?: unknown };
+  user_metadata?: { must_set_password?: unknown };
+}) {
+  const providers = Array.isArray(user.app_metadata?.providers)
+    ? user.app_metadata.providers.map((provider) => String(provider))
+    : [];
+  const hasOAuthProvider = providers.some((provider) => provider !== "email");
+  const hasEmailProvider = providers.includes("email");
+  const explicitlySkipped = user.user_metadata?.must_set_password === false;
+
+  return hasOAuthProvider && !hasEmailProvider && !explicitlySkipped;
+}
+
 export function AuthSessionRecoverClient({
   code,
   nextPath,
@@ -137,6 +151,25 @@ export function AuthSessionRecoverClient({
             `/login?error=${encodeURIComponent("Oturum tamamlanamadi. Lutfen tekrar deneyin.")}`,
           );
         }, 900);
+        return;
+      }
+
+      if (shouldForcePasswordSetup(data.session.user)) {
+        if (data.session.user.user_metadata?.must_set_password !== true) {
+          try {
+            await appSupabase.auth.updateUser({
+              data: {
+                ...data.session.user.user_metadata,
+                must_set_password: true,
+              },
+            });
+          } catch (metadataError) {
+            console.warn("[session-recover] must_set_password metadata update failed:", metadataError);
+          }
+        }
+
+        setMessage("Google hesabi icin sifre olusturma ekranina yonlendiriliyorsun...");
+        window.location.replace("/reset-password?required=1");
         return;
       }
 

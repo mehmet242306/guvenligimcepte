@@ -39,6 +39,7 @@ export async function updatePasswordAction(formData: FormData) {
     password,
     data: {
       must_change_password: false,
+      must_set_password: false,
     },
   });
 
