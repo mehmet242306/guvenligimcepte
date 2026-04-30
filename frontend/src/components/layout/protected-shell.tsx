@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Brand } from "./brand";
@@ -396,11 +396,21 @@ export function ProtectedShell({
   const [authReady, setAuthReady] = useState(initialAccountContext !== null);
   const [workspaceReady, setWorkspaceReady] = useState(initialAccountContext !== null);
   const [hasActiveWorkspace, setHasActiveWorkspace] = useState(initialHasActiveWorkspace);
+  /** Tailwind `md` (768px) alti: tek sutun mobil nav; workspace switcher asagida gosterilir */
+  const [isNarrowViewport, setIsNarrowViewport] = useState(false);
   const isFullscreenWorkspaceOnboarding = pathname.startsWith("/workspace/onboarding");
   const pathnameRef = useRef(pathname);
   useEffect(() => {
     pathnameRef.current = pathname;
   }, [pathname]);
+
+  useLayoutEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsNarrowViewport(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   const accountSurface = resolveClientAccountSurface(accountContext);
   const isPlatformAdminShell =
@@ -848,8 +858,8 @@ export function ProtectedShell({
         <div className="hidden md:block relative z-0" style={{ background: "var(--secondary-nav-bg-solid)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
           <div className="mx-auto grid h-12 w-full max-w-[1480px] grid-cols-[minmax(260px,1fr)_auto_minmax(260px,1fr)] items-center gap-3 px-4 sm:px-6 xl:grid-cols-[minmax(280px,1fr)_auto_minmax(280px,1fr)] xl:gap-4 xl:px-8 2xl:px-10">
             <div />
-            <div className="min-w-0 justify-self-center overflow-x-auto">
-              <div className="flex items-center justify-center gap-1">
+            <div className="min-w-0 justify-self-center overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex min-w-max items-center justify-center gap-1">
                 {/* Firma linki — secondary nav'ın ilk item'ı. Aktif workspace'in
                     /companies/[slug|id] detay sayfasına götürür (10 sekmeli). */}
                 {showWorkspaceSwitcher ? (
@@ -895,7 +905,9 @@ export function ProtectedShell({
               </div>
             </div>
             <div className="flex items-center justify-end">
-              {showWorkspaceSwitcher ? <WorkspaceSwitcher /> : null}
+              {showWorkspaceSwitcher && !isNarrowViewport ? (
+                <WorkspaceSwitcher variant="desktop" />
+              ) : null}
             </div>
           </div>
         </div>
@@ -905,7 +917,7 @@ export function ProtectedShell({
       <div className="border-b md:hidden" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
         <div className="mx-auto w-full max-w-[1480px]">
           <div className="border-b border-border/70 px-2">
-            <div className="flex max-w-full gap-0.5 overflow-x-auto py-0">
+            <div className="flex max-w-full gap-0.5 overflow-x-auto py-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {basePrimaryNav.map((item) => {
               const act = isActive(pathname, item.href);
               const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
@@ -944,7 +956,7 @@ export function ProtectedShell({
           </div>
 
           <div className="px-2">
-            <div className="flex max-w-full gap-0.5 overflow-x-auto py-0">
+            <div className="flex max-w-full gap-0.5 overflow-x-auto py-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {showWorkspaceSwitcher ? (
                 <ActiveCompanyNavLink
                   label="Firma"
@@ -987,6 +999,15 @@ export function ProtectedShell({
               })}
             </div>
           </div>
+
+          {showWorkspaceSwitcher && isNarrowViewport ? (
+            <div className="border-t border-border/70 bg-muted/20 px-2 py-2">
+              <p className="mb-1.5 px-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                {t("nav.workspace")}
+              </p>
+              <WorkspaceSwitcher variant="mobile" />
+            </div>
+          ) : null}
         </div>
       </div>
 

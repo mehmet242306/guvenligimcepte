@@ -15,7 +15,7 @@ type Props = {
 
 export function CategoryTabs({ active, onChange, counts = {} }: Props) {
   return (
-    <div className="grid grid-cols-2 gap-3 pb-2 md:grid-cols-3 xl:grid-cols-5">
+    <div className="grid grid-cols-2 gap-2 pb-2 min-[480px]:gap-3 md:grid-cols-3 xl:grid-cols-5">
       {CATEGORY_DEFINITIONS.map((item) => {
         const Icon = item.icon;
         const isActive = item.key === active;
@@ -27,7 +27,7 @@ export function CategoryTabs({ active, onChange, counts = {} }: Props) {
             type="button"
             onClick={() => onChange(item.key)}
             className={cn(
-              "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-[1rem] border px-4 py-3 text-[14px] font-semibold transition-all duration-200 sm:px-5",
+              "inline-flex min-h-11 w-full min-w-0 items-center justify-center gap-1.5 rounded-[1rem] border px-2 py-2.5 text-[12px] font-semibold transition-all duration-200 min-[480px]:gap-2 min-[480px]:px-4 min-[480px]:py-3 min-[480px]:text-[14px] sm:px-5",
               isActive ? tone.tabActive : tone.tabIdle,
             )}
           >

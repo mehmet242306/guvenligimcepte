@@ -10,8 +10,15 @@ import {
   type WorkspaceMembership,
   type WorkspaceRow,
 } from "@/lib/supabase/workspace-api";
+import { cn } from "@/lib/utils";
 
-export function WorkspaceSwitcher() {
+export type WorkspaceSwitcherVariant = "desktop" | "mobile";
+
+export function WorkspaceSwitcher({
+  variant = "desktop",
+}: {
+  variant?: WorkspaceSwitcherVariant;
+}) {
   const router = useRouter();
   const t = useTranslations("workspace");
   const tCountry = useTranslations("country");
@@ -85,7 +92,7 @@ export function WorkspaceSwitcher() {
   }
 
   return (
-    <div ref={ref} className="relative hidden lg:block">
+    <div ref={ref} className={cn("relative min-w-0", variant === "mobile" ? "w-full" : "")}>
       <button
         type="button"
         onClick={() => {
@@ -94,7 +101,10 @@ export function WorkspaceSwitcher() {
         }}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="group inline-flex h-12 w-[248px] items-center justify-between rounded-2xl border border-[rgba(231,205,163,0.28)] bg-[linear-gradient(180deg,rgba(231,205,163,0.18)_0%,rgba(231,205,163,0.08)_100%)] px-3.5 text-left text-[var(--gold-light)] shadow-[0_16px_32px_rgba(0,0,0,0.18)] transition-all duration-200 hover:border-[rgba(231,205,163,0.5)] hover:bg-[linear-gradient(180deg,rgba(231,205,163,0.24)_0%,rgba(231,205,163,0.12)_100%)] hover:text-white"
+        className={cn(
+          "group inline-flex h-12 items-center justify-between rounded-2xl border border-[rgba(231,205,163,0.28)] bg-[linear-gradient(180deg,rgba(231,205,163,0.18)_0%,rgba(231,205,163,0.08)_100%)] px-3.5 text-left text-[var(--gold-light)] shadow-[0_16px_32px_rgba(0,0,0,0.18)] transition-all duration-200 hover:border-[rgba(231,205,163,0.5)] hover:bg-[linear-gradient(180deg,rgba(231,205,163,0.24)_0%,rgba(231,205,163,0.12)_100%)] hover:text-white",
+          variant === "mobile" ? "w-full min-w-0" : "w-[248px]",
+        )}
         title={`${t("switcher")}${active ? ` - ${activeLabel}` : ""}`}
       >
         <div className="min-w-0">
@@ -130,7 +140,12 @@ export function WorkspaceSwitcher() {
         <div
           role="listbox"
           aria-label={t("switcher")}
-          className="absolute right-0 top-full z-50 mt-3 w-[320px] overflow-hidden rounded-[1.6rem] border border-border bg-card shadow-[0_24px_60px_rgba(15,23,42,0.25)]"
+          className={cn(
+            "absolute top-full z-50 mt-3 overflow-hidden rounded-[1.6rem] border border-border bg-card shadow-[0_24px_60px_rgba(15,23,42,0.25)]",
+            variant === "mobile"
+              ? "left-0 right-0 w-auto max-w-[min(100vw-1rem,360px)]"
+              : "right-0 w-[320px]",
+          )}
         >
           <div className="border-b border-border px-5 py-4">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">

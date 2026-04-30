@@ -152,6 +152,7 @@ export function FieldInspectionClient() {
           <>
             <Button
               size="lg"
+              className="w-full min-[480px]:w-auto"
               disabled={!state.activeTemplate}
               onClick={() => handleStartInspection("official")}
             >
@@ -161,6 +162,7 @@ export function FieldInspectionClient() {
             <Button
               size="lg"
               variant="outline"
+              className="w-full min-[480px]:w-auto"
               onClick={() => setActiveCategory("nova")}
             >
               <Sparkles className="mr-1.5 h-4 w-4" />

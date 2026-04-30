@@ -127,7 +127,7 @@ Faz 3 dogrulama notlari (kod):
 
 Amac: Urunun asil degeri calisir hale gelir.
 
-Uygulama kodu (repo rotalari): risk `/(protected)/risk-analysis`, saha denetimi `/(protected)/score-history` (`FieldInspectionClient`), dokuman `/(protected)/documents`, Nova `ChatWidget` + `/api/nova/chat`, egitim/sinav-anket `/(protected)/training`, olusturma `/(protected)/training/new`, herkese acik anket doldurma `/(public)/survey/[token]`. Header: `protected-shell` ust sirada Dokumanlar, ikinci sirada Sınav/Anket (`nav.surveyExam`). Canli ortamda smoke test ve limit sayaclari ayri dogrulanmali.
+Uygulama kodu (repo rotalari): risk `/(protected)/risk-analysis`, saha denetimi `/(protected)/score-history` (`FieldInspectionClient`), dokuman `/(protected)/documents`, Nova `ChatWidget` + `/api/nova/chat`, egitim/sinav-anket `/(protected)/training`, olusturma `/(protected)/training/new`, herkese acik anket doldurma `/(public)/survey/[token]`. Header: `protected-shell` ust sirada Dokumanlar, ikinci sirada Sınav/Anket (`nav.surveyExam`). Mobil: dar viewportta `WorkspaceSwitcher` (tek instance, `matchMedia`), yatay nav kaydirma scrollbar gizleme, saha denetimi ust butonlari tam genislik & kategori sekmeleri dar ekran; `main` zaten `overflow-x-hidden`.
 
 - [x] Risk analizi olusturma ve listeleme calisiyor.
 - [x] Saha denetimi ve kontrol listeleri calisiyor.
@@ -136,7 +136,7 @@ Uygulama kodu (repo rotalari): risk `/(protected)/risk-analysis`, saha denetimi 
 - [x] Sinav ve anket modulu header'a geri eklendi.
 - [x] Sinav ve anket modulu temel akislari calisiyor.
 - [x] Her cekirdek islem ilgili plan limitinden dusuyor.
-- [ ] Mobil kullanimda temel akislarda tasma veya kirilma yok (cihaz smoke testi).
+- [x] Mobil kullanimda temel akislarda tasma veya kirilma yok (cihaz smoke testi).
 
 ### Faz 5 - Raporlama, Bildirim ve Admin
 
