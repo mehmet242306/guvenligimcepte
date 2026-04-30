@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { OhsLoadingIndicator } from "@/components/ui/ohs-loading-indicator";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusAlert } from "@/components/ui/status-alert";
 import { Textarea } from "@/components/ui/textarea";
@@ -921,21 +922,11 @@ export function WorkspaceOnboardingClient({
 
   if (accountLoading || loading) {
     return (
-      <div className="space-y-6">
-        <PageHeader
-          eyebrow="Calisma Alani"
-          title="Calisma alanlari hazirlaniyor"
-          description="RiskNova hesap ve calisma alani baglamini senin icin yükluyor."
-        />
-        <Card>
-          <CardContent className="flex items-center justify-center py-16">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-border border-t-primary" />
-              <p className="text-sm text-muted-foreground">Veri yukleniyor...</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Card>
+        <CardContent className="py-12">
+          <OhsLoadingIndicator compact />
+        </CardContent>
+      </Card>
     );
   }
 
