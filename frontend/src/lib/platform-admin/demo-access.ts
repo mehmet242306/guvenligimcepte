@@ -1,4 +1,5 @@
-const DEMO_ACCESS_WINDOW_HOURS = 24;
+/** Demo hesaplar icin acilan pencere (yönetim ve metadata ile ayni kaynak) */
+export const DEMO_ACCESS_WINDOW_HOURS = 24;
 
 type MetadataRecord = Record<string, unknown> | null | undefined;
 

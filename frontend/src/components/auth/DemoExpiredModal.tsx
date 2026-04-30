@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { PartyPopper, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DEMO_ACCESS_WINDOW_HOURS } from "@/lib/platform-admin/demo-access";
 
 type Props = {
   status: "expired" | "disabled";
@@ -74,9 +75,24 @@ export function DemoExpiredModal({ status }: Props) {
         <div className="space-y-4 px-6 py-5">
           <p className="text-base leading-7 text-foreground">
             {status === "disabled"
-              ? "Demo erişimin kapatıldı."
-              : "Demo erişim süren sona erdi."}
+              ? "Demo erişimin yönetici tarafından kapatıldı."
+              : `Demo süren doldu. RiskNova demo oturumları en fazla ${DEMO_ACCESS_WINDOW_HOURS} saat için geçerlidir; bu süre sonunda oturum kapanır.`}
           </p>
+          <div className="rounded-2xl border border-amber-200/80 bg-amber-50/90 px-4 py-3 text-sm leading-6 text-amber-950 dark:border-amber-800/60 dark:bg-amber-950/30 dark:text-amber-100">
+            {status === "expired" ? (
+              <>
+                <strong className="font-semibold">Hatırlatma:</strong> Demo kullanımını{" "}
+                {DEMO_ACCESS_WINDOW_HOURS} saat içinde tamamlaman gerekir; süre dolunca yalnızca kendi
+                ücretsiz veya kurumsal hesabını oluşturarak devam edebilirsin.
+              </>
+            ) : (
+              <>
+                <strong className="font-semibold">Bilgi:</strong> Demo hesaplar genelde{" "}
+                {DEMO_ACCESS_WINDOW_HOURS} saat ile sınırlıdır; erişimin ayrıca yönetici tarafından da
+                sonlandırılmış olabilir.
+              </>
+            )}
+          </div>
           <div className="rounded-2xl border border-border bg-muted/30 p-4 text-sm leading-6 text-muted-foreground">
             Kaldığın yerden devam etmek ve <strong className="text-foreground">tüm özelliklere tam erişim</strong> için hemen kendi hesabını oluştur. İhtiyacına göre üç akıştan birini seçebilirsin:
             <ul className="mt-3 space-y-1.5 text-sm">

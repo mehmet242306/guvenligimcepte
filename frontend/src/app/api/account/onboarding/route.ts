@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import type { User } from "@supabase/supabase-js";
 import { z } from "zod";
 import { createServiceClient, parseJsonBody } from "@/lib/security/server";
 import { getRequestUser } from "@/lib/supabase/request-user";
@@ -8,6 +9,7 @@ import {
   type AccountType,
 } from "@/lib/account/account-routing";
 import { hasAccountTypeAccess } from "@/lib/account/account-type-access";
+import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
 
 const onboardingSchema = z.object({
   accountType: z.enum(["individual", "osgb", "enterprise"]),
@@ -54,6 +56,38 @@ function isSchemaCompatError(message: string | undefined | null) {
     normalized.includes("schema cache") ||
     normalized.includes("does not exist")
   );
+}
+
+/**
+ * Süresi dolmuş / kapatılmış demo kullanıcısı ücretsiz veya kurumsal talep akışına
+ * geçtiğinde JWT/metadata hâlâ demo olduğu için middleware tekrar /register'a atıyordu.
+ * Tam hesap kurulumu başarılı olunca demo bayraklarını kaldırır.
+ */
+async function releaseDemoUserLock(service: ReturnType<typeof createServiceClient>, user: User) {
+  const demoState = getDemoAccessState({
+    userMetadata: user.user_metadata,
+    appMetadata: user.app_metadata,
+  });
+  if (!demoState.demoMode) return;
+
+  const { error } = await service.auth.admin.updateUserById(user.id, {
+    user_metadata: {
+      ...(user.user_metadata ?? {}),
+      demo_mode: false,
+      demo_access_expires_at: null,
+      demo_access_disabled_at: null,
+    },
+    app_metadata: {
+      ...(user.app_metadata ?? {}),
+      demo_mode: false,
+      demo_access_expires_at: null,
+      demo_access_disabled_at: null,
+    },
+  });
+
+  if (error) {
+    throw new Error(error.message || "Demo hesap kilidi kaldirilamadi.");
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -113,6 +147,8 @@ export async function POST(request: NextRequest) {
           { status: 500 },
         );
       }
+
+      await releaseDemoUserLock(service, user);
 
       return NextResponse.json({
         ok: true,
@@ -324,6 +360,8 @@ export async function POST(request: NextRequest) {
         );
       }
     }
+
+    await releaseDemoUserLock(service, user);
 
     const refreshedContext = await getAccountContextForUser(user.id);
 

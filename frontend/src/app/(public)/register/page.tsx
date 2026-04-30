@@ -6,6 +6,8 @@ import { SocialLoginButtons } from "@/components/auth/social-login-buttons";
 import { DemoSessionCleaner } from "@/components/auth/DemoSessionCleaner";
 import { DemoExpiredModal } from "@/components/auth/DemoExpiredModal";
 import { RegisterAccountTypePreview } from "@/components/auth/RegisterAccountTypePreview";
+import { StatusAlert } from "@/components/ui/status-alert";
+import { DEMO_ACCESS_WINDOW_HOURS } from "@/lib/platform-admin/demo-access";
 import { signup } from "./actions";
 
 export default async function RegisterPage({
@@ -58,10 +60,21 @@ export default async function RegisterPage({
         <>
           <DemoSessionCleaner />
           <DemoExpiredModal status={demoDisabled ? "disabled" : "expired"} />
-          {/* Modal kapatıldıktan sonra küçük hatırlatıcı banner */}
-          <div className="rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/5 px-3 py-2 text-xs leading-5 text-[#6f4e12] dark:text-[#f6d79b]">
-            ✨ Demo süren bitti — aşağıdaki formla hemen ücretsiz hesap oluştur.
-          </div>
+          {demoExpired ? (
+            <StatusAlert tone="warning">
+              <span className="font-semibold text-foreground">Demo süren bitti.</span> RiskNova demo
+              erişimi en fazla <strong>{DEMO_ACCESS_WINDOW_HOURS} saat</strong> için tanımlanır; süre
+              dolunca oturum kapanır. Aşağıdan ücretsiz hesabını oluşturarak veya Google ile devam
+              ederek kalıcı hesaba geçebilirsin.
+            </StatusAlert>
+          ) : (
+            <StatusAlert tone="warning">
+              <span className="font-semibold text-foreground">Demo erişimin kapatıldı.</span>{" "}
+              Yönetici tarafından sonlandırılmış olabilir (demo hesaplar genelde{" "}
+              <strong>{DEMO_ACCESS_WINDOW_HOURS} saat</strong> ile sınırlıdır). Kalıcı kullanım için
+              aşağıdan hesap oluşturabilirsin.
+            </StatusAlert>
+          )}
         </>
       ) : null}
 

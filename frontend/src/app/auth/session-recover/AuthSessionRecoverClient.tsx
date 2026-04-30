@@ -204,6 +204,10 @@ export function AuthSessionRecoverClient({
           );
 
           if (response.ok && json?.ok) {
+            const { error: refreshError } = await appSupabase.auth.refreshSession();
+            if (refreshError) {
+              console.warn("[session-recover] refreshSession after onboarding:", refreshError.message);
+            }
             window.location.replace(json.redirectPath || "/workspace/onboarding");
             return;
           }
@@ -213,6 +217,10 @@ export function AuthSessionRecoverClient({
           console.warn("[session-recover] account onboarding request failed:", onboardingError);
         }
 
+        const { error: refreshFallbackError } = await appSupabase.auth.refreshSession();
+        if (refreshFallbackError) {
+          console.warn("[session-recover] refreshSession (fallback):", refreshFallbackError.message);
+        }
         window.location.replace("/workspace/onboarding");
         return;
       }

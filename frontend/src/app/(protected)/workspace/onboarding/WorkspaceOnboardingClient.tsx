@@ -173,53 +173,6 @@ type WorkspaceOnboardingResponse = {
   };
 };
 
-const DEMO_TEMPLATE_ID = "__demo-template__";
-
-function createDemoWorkspaceProfile(): {
-  workspaceName: string;
-  countryCode: string;
-  defaultLanguage: string;
-  roleKey: string;
-  companyProfile: WorkspaceCompanyProfile;
-} {
-  const workspaceName = "Demo - RiskNova Operasyonu";
-  return {
-    workspaceName,
-    countryCode: "TR",
-    defaultLanguage: "tr",
-    roleKey: "safety_professional",
-    companyProfile: {
-      companyWorkspaceId: null,
-      name: "RiskNova Demo Operasyon Merkezi",
-      shortName: "RiskNova Demo",
-      kind: "Ozel Sektor",
-      companyType: "bagimsiz",
-      address: "Kozyatagi Mah. Teknoloji Cad. No:12",
-      city: "Istanbul",
-      district: "Kadikoy",
-      sector: "Yazilim ve Danismanlik",
-      naceCode: "62.01.01",
-      hazardClass: "Az Tehlikeli",
-      taxNumber: "1112223334",
-      taxOffice: "Kozyatagi",
-      sgkWorkplaceNumber: "3400012345678901",
-      fax: "",
-      employerTitle: "Genel Mudurluk",
-      employeeCount: 18,
-      shiftModel: "Gunduz vardiyasi",
-      phone: "+90 216 555 01 01",
-      email: "demo@getrisknova.com",
-      contactPerson: "Demo Kullanici",
-      employerName: "RiskNova Teknoloji A.S.",
-      employerRepresentative: "Operasyon Direktoru",
-      notes:
-        "Bu hazir taslak demo amaclidir. Kaydettiginde kendi calisma alani baglamina gore duzenleyebilirsin.",
-      locations: ["Merkez Ofis", "Toplanti Alani", "Arsiv Odasi"],
-      departments: ["Yonetim", "Operasyon", "Yazilim", "Destek"],
-    },
-  };
-}
-
 async function readJsonSafely<T>(response: Response): Promise<T | null> {
   const contentType = response.headers.get("content-type") || "";
   const raw = await response.text();
@@ -382,7 +335,6 @@ export function WorkspaceOnboardingClient({
   initialMessage?: string;
 }) {
   const router = useRouter();
-  const demoTemplate = useMemo(() => createDemoWorkspaceProfile(), []);
   const [accountLoading, setAccountLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -483,10 +435,16 @@ export function WorkspaceOnboardingClient({
         const nextPayload = json as OnboardingPayload;
         setPayload(nextPayload);
 
-        const firstWorkspaceId =
-          nextPayload.profile.activeWorkspaceId ??
-          nextPayload.memberships[0]?.workspace.id ??
-          null;
+        let firstWorkspaceId: string | null = null;
+        if (nextPayload.memberships.length > 0) {
+          const activeId = nextPayload.profile.activeWorkspaceId;
+          const activeMatches = Boolean(
+            activeId && nextPayload.memberships.some((m) => m.workspace.id === activeId),
+          );
+          firstWorkspaceId = activeMatches
+            ? activeId
+            : nextPayload.memberships[0]?.workspace.id ?? null;
+        }
         setSelectedWorkspaceId(firstWorkspaceId);
       } catch (error) {
         if (!cancelled) {
@@ -512,7 +470,6 @@ export function WorkspaceOnboardingClient({
   const memberships = payload?.memberships ?? [];
   const workspaceLimit = accountUsage?.maxActiveWorkspaces ?? null;
   const canCreateWorkspace = workspaceLimit === null || memberships.length < workspaceLimit;
-  const isDemoTemplateSelected = selectedWorkspaceId === DEMO_TEMPLATE_ID;
   const selectedMembership =
     memberships.find((membership) => membership.workspace.id === selectedWorkspaceId) ?? null;
   const selectedCountry =
@@ -568,19 +525,6 @@ export function WorkspaceOnboardingClient({
       return;
     }
 
-    if (isDemoTemplateSelected) {
-      setCountryCode(demoTemplate.countryCode);
-      setDefaultLanguage(demoTemplate.defaultLanguage);
-      setRoleKey(demoTemplate.roleKey);
-      setCertificationId("");
-      setWorkspaceName(demoTemplate.workspaceName);
-      setWorkspaceNameDirty(false);
-      setCompanyProfile({ ...demoTemplate.companyProfile });
-      setCompanyNameDirty(false);
-      setCompanyShortNameDirty(false);
-      return;
-    }
-
     const nextCountryCode =
       payload.countries.find((item) => item.code === payload.recommendedCountryCode)?.code ??
       payload.countries[0]?.code ??
@@ -612,16 +556,16 @@ export function WorkspaceOnboardingClient({
     );
     setCompanyNameDirty(false);
     setCompanyShortNameDirty(false);
-  }, [demoTemplate, isDemoTemplateSelected, payload, selectedMembership]);
+  }, [payload, selectedMembership]);
 
   useEffect(() => {
-    if (!payload || !selectedCountry || selectedMembership || isDemoTemplateSelected) return;
+    if (!payload || !selectedCountry || selectedMembership) return;
 
     if (!workspaceNameDirty) {
       setWorkspaceName(selectedCountry.suggestedWorkspaceName);
     }
     setDefaultLanguage(selectedCountry.defaultLanguage);
-  }, [isDemoTemplateSelected, payload, selectedCountry, selectedMembership, workspaceNameDirty]);
+  }, [payload, selectedCountry, selectedMembership, workspaceNameDirty]);
 
   const resolvedNextPath =
     nextPath && nextPath !== "/companies" && nextPath !== "/workspace/onboarding"
@@ -1101,7 +1045,7 @@ export function WorkspaceOnboardingClient({
             <Button
               type="button"
               onClick={() => void handleGoToWorkspace()}
-              className="h-14 min-w-[240px] rounded-2xl px-6 text-base font-bold shadow-[0_16px_34px_rgba(217,162,27,0.28)]"
+              className="h-14 w-full min-w-0 rounded-2xl px-6 text-base font-bold shadow-[0_16px_34px_rgba(217,162,27,0.28)] sm:w-auto sm:min-w-[240px]"
             >
               {goToWorkspaceLabel(selectedMembership, payload.profile.activeWorkspaceId)}
             </Button>
@@ -1127,44 +1071,8 @@ export function WorkspaceOnboardingClient({
           <CardContent className="space-y-3">
             {memberships.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-primary/35 bg-primary/5 p-4 text-sm leading-6 text-muted-foreground">
-                Henuz hazir bir calisma alani yok. Ilk alani soldaki yeni slotu secip olusturdugunda cekirdek moduller acilacak.
+                Henuz hazir bir calisma alani yok. Asagidaki &quot;Yeni calisma alani&quot; secenegini kullanip sag taraftaki formu doldurarak ilk alanini olustur.
               </div>
-            ) : null}
-
-            {memberships.length === 0 ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedWorkspaceId(DEMO_TEMPLATE_ID);
-                  setMessage(null);
-                }}
-                className={`w-full rounded-3xl border p-4 text-left transition-all ${
-                  isDemoTemplateSelected
-                    ? "border-primary/45 bg-primary/8 shadow-[0_14px_34px_rgba(15,23,42,0.10)]"
-                    : "border-border bg-card hover:border-primary/30 hover:bg-secondary/20"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-foreground">
-                      {demoTemplate.workspaceName}
-                    </p>
-                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                      Hazir demo taslak · TR · safety_professional
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold text-foreground">
-                    Demo
-                  </span>
-                </div>
-
-                <div className="mt-3 flex items-center justify-between gap-2">
-                  <span className="text-xs text-muted-foreground">
-                    Verileri dolu bir ornekle hizli baslamak icin bunu secebilirsin.
-                  </span>
-                  <span className="text-xs font-semibold text-primary">Hazir</span>
-                </div>
-              </button>
             ) : null}
 
             {memberships.map((membership) => {
@@ -1223,18 +1131,20 @@ export function WorkspaceOnboardingClient({
               disabled={!canCreateWorkspace}
               className={`w-full rounded-3xl border border-dashed p-4 text-left transition-all ${
                 canCreateWorkspace
-                  ? "border-primary/35 bg-primary/5 hover:border-primary/55 hover:bg-primary/8"
+                  ? selectedWorkspaceId === null
+                    ? "border-primary/45 bg-primary/8 shadow-[0_14px_34px_rgba(15,23,42,0.10)] hover:border-primary/55 hover:bg-primary/10"
+                    : "border-primary/35 bg-primary/5 hover:border-primary/55 hover:bg-primary/8"
                   : "cursor-not-allowed border-border bg-secondary/20 opacity-60"
               }`}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
                   <p className="text-sm font-semibold text-foreground">Yeni calisma alani</p>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    Tamamen bos bir kayitla baslamak istersen bunu sec. Firma ve calisma alani bilgilerini sag tarafta kendin doldurursun.
+                    Bos bir kayitla basla; firma ve calisma alani bilgilerini sag tarafta kendin doldurursun.
                   </p>
                 </div>
-                <span className="rounded-full bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground">
+                <span className="shrink-0 self-start rounded-full bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground sm:self-auto">
                   {canCreateWorkspace ? "Yeni" : "Limit"}
                 </span>
               </div>
@@ -1254,11 +1164,7 @@ export function WorkspaceOnboardingClient({
             <Card>
               <CardHeader>
                 <CardTitle>
-                {selectedMembership
-                  ? "Secili calisma alani ayrintilari"
-                  : isDemoTemplateSelected
-                    ? "Demo calisma alani taslagi"
-                    : "Yeni calisma alani olustur"}
+                {selectedMembership ? "Secili calisma alani ayrintilari" : "Yeni calisma alani olustur"}
                 </CardTitle>
                 <CardDescription>
                 Soldan bir alan sec. Sag tarafta o alana bagli firma / calisma alani kaydini doldur; ulke ve dil Nova baglamini, firma bilgileri ise tum operasyon modullerini besler.
@@ -1611,15 +1517,21 @@ export function WorkspaceOnboardingClient({
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                   <div className="flex flex-wrap gap-3">
-                    <Button type="button" variant="outline" onClick={() => router.replace("/profile")}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full sm:w-auto"
+                      onClick={() => router.replace("/profile")}
+                    >
                       Profili ac
                     </Button>
                   </div>
 
                   <Button
                     type="submit"
+                    className="w-full sm:w-auto"
                     disabled={
                       submitting ||
                       workspaceName.trim().length < 3 ||
@@ -1631,8 +1543,6 @@ export function WorkspaceOnboardingClient({
                       ? "Kaydediliyor..."
                       : selectedMembership
                         ? "Alan ayarlarini kaydet"
-                        : isDemoTemplateSelected
-                          ? "Demo alanini kaydet ve panele gec"
                         : "Calisma alanini olustur"}
                   </Button>
                 </div>

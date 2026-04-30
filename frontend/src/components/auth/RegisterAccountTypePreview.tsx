@@ -378,8 +378,8 @@ export function RegisterAccountTypePreview({ children }: RegisterAccountTypePrev
   const wizardModal =
     mounted && wizardOpen
       ? createPortal(
-        <div className="fixed inset-0 z-[1000] flex items-start justify-center overflow-y-auto bg-slate-950/70 px-3 py-5 backdrop-blur-sm sm:items-center sm:px-6">
-          <div className="w-full max-w-xl rounded-3xl border border-[var(--gold)]/25 bg-background shadow-[0_30px_90px_rgba(0,0,0,0.35)]">
+        <div className="fixed inset-0 z-[1000] flex items-start justify-center overflow-y-auto bg-slate-950/70 px-3 py-4 backdrop-blur-sm sm:items-center sm:px-6 sm:py-5">
+          <div className="my-auto w-full max-w-xl rounded-3xl border border-[var(--gold)]/25 bg-background shadow-[0_30px_90px_rgba(0,0,0,0.35)]">
             <div className="border-b border-border px-5 py-4 sm:px-6">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]">
@@ -429,7 +429,7 @@ export function RegisterAccountTypePreview({ children }: RegisterAccountTypePrev
               </div>
             </div>
 
-            <div className="max-h-[58vh] space-y-2 overflow-y-auto px-5 py-4 sm:px-6">
+            <div className="max-h-[min(70vh,calc(100dvh-7.5rem))] space-y-2 overflow-y-auto px-5 py-4 sm:max-h-[min(72vh,calc(100dvh-9rem))] sm:px-6">
               {renderStep()}
             </div>
           </div>
@@ -445,15 +445,15 @@ export function RegisterAccountTypePreview({ children }: RegisterAccountTypePrev
       {completed && accountType && countryCode && languageCode && roleKey ? (
         <div className="space-y-5">
           <div className="rounded-2xl border border-[var(--gold)]/25 bg-[var(--gold)]/8 px-4 py-3 text-sm leading-6 text-muted-foreground">
-            <div className="flex items-start justify-between gap-3">
-              <div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+              <div className="min-w-0">
                 <div className="font-semibold text-foreground">Kayit yolu hazir</div>
-                <div className="mt-1">{summary.join(" / ")}</div>
+                <div className="mt-1 break-words">{summary.join(" / ")}</div>
               </div>
               <button
                 type="button"
                 onClick={restartWizard}
-                className="shrink-0 text-xs font-semibold text-[var(--gold)] underline underline-offset-4"
+                className="shrink-0 self-start text-left text-xs font-semibold text-[var(--gold)] underline underline-offset-4 sm:self-auto sm:text-right"
               >
                 Degistir
               </button>

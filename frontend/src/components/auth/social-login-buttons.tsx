@@ -128,11 +128,20 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
     }
   }
 
-  const providers = [
-    { id: "google" as Provider, label: "Google ile devam et", Icon: GoogleIcon, cls: "border-border bg-card hover:bg-secondary text-foreground" },
-  ];
+  const brandName = (process.env.NEXT_PUBLIC_BRAND_NAME || "RiskNova").trim() || "RiskNova";
+  const googleLabel =
+    mode === "register"
+      ? `Google ile ${brandName}'ya kayıt ol`
+      : `Google ile ${brandName}'ya devam et`;
 
-  const actionText = mode === "register" ? "ile kayıt ol" : "ile giriş yap";
+  const providers = [
+    {
+      id: "google" as Provider,
+      label: googleLabel,
+      Icon: GoogleIcon,
+      cls: "border-border bg-card hover:bg-secondary text-foreground",
+    },
+  ];
 
   return (
     <div className="space-y-3">
@@ -149,7 +158,7 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
             type="button"
             onClick={() => handleOAuth(id)}
             disabled={loading !== null}
-            className={`inline-flex h-11 items-center justify-center gap-2.5 rounded-xl border px-4 text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${cls}`}
+            className={`inline-flex h-11 min-h-[44px] w-full items-center justify-center gap-2.5 rounded-xl border px-4 text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed sm:w-auto ${cls}`}
           >
             {loading === id ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
