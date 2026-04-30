@@ -395,9 +395,9 @@ function getContentTypeMeta(type: string | null) {
 function buildAddContentHref(category: CategoryKey) {
   switch (category) {
     case "education":
-      return "/training/new";
+      return "/training/slides?ai=1";
     case "assessment":
-      return "/training/question-bank";
+      return "/training/new";
     case "legal":
       return "/settings?tab=mevzuat";
     default:
@@ -1705,36 +1705,88 @@ export function IsgLibraryClient() {
                   <p className="mt-4 text-xs text-muted-foreground">
                     Doküman oluşturma ve yükleme işlemleri, üst alandaki firma seçimine göre ilgili çalışma alanına bağlanır.
                   </p>
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                    <Link
-                      href={creationCompanyId ? buildDocumentEditorHref(category, subcategory, { companyId: creationCompanyId }) : "#"}
-                      onClick={(event) => {
-                        if (!creationCompanyId) {
-                          event.preventDefault();
-                          setErrorMessage("Lütfen önce içerik oluşturulacak firmayı seçin.");
-                        }
-                      }}
-                      className={cn(
-                        "inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold transition",
-                        creationCompanyId
-                          ? "bg-[var(--primary)] text-white hover:brightness-110"
-                          : "cursor-not-allowed bg-slate-300 text-white dark:bg-slate-700 dark:text-slate-300",
-                      )}
-                    >
-                      Doküman Editöründe Oluştur
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={importingDocument || !creationCompanyId}
-                      className={cn(
-                        "inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--gold)]/30 bg-white/80 px-5 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--gold)]/45 hover:bg-[var(--gold)]/10 dark:bg-white/10 dark:text-[#f0c36b] dark:hover:bg-white/15",
-                        importingDocument || !creationCompanyId ? "cursor-not-allowed opacity-60" : "",
-                      )}
-                    >
-                      {importingDocument ? "Dosya Yükleniyor..." : "Cihazdan Doküman Yükle"}
-                    </button>
-                  </div>
+                  {category === "education" ? (
+                    <div className="mt-6 grid w-full max-w-3xl gap-3 sm:grid-cols-2">
+                      <Link
+                        href="/training/slides?ai=1"
+                        className="inline-flex h-11 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 px-5 text-sm font-semibold text-white transition hover:brightness-110"
+                      >
+                        AI Destekli Egitim Hazirla
+                      </Link>
+                      <Link
+                        href="/training/slides"
+                        className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--gold)]/35 bg-white/80 px-5 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--gold)]/45 hover:bg-[var(--gold)]/10 dark:bg-white/10 dark:text-[#f0c36b]"
+                      >
+                        Slayt Kutuphanesini Ac
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNewCategoryName("");
+                          setCategoryModalOpen(true);
+                        }}
+                        className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--card)] px-5 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--accent)]"
+                      >
+                        Kategori Ekle
+                      </button>
+                    </div>
+                  ) : category === "assessment" ? (
+                    <div className="mt-6 grid w-full max-w-3xl gap-3 sm:grid-cols-2">
+                      <Link
+                        href="/training/new?prefillType=exam"
+                        className="inline-flex h-11 items-center justify-center rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-white transition hover:brightness-110"
+                      >
+                        Yeni Sinav Olustur
+                      </Link>
+                      <Link
+                        href="/training/new?prefillType=survey"
+                        className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--gold)]/35 bg-white/80 px-5 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--gold)]/45 hover:bg-[var(--gold)]/10 dark:bg-white/10 dark:text-[#f0c36b]"
+                      >
+                        Yeni Anket Olustur
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNewCategoryName("");
+                          setCategoryModalOpen(true);
+                        }}
+                        className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--card)] px-5 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--accent)]"
+                      >
+                        Kategori Ekle
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                      <Link
+                        href={creationCompanyId ? buildDocumentEditorHref(category, subcategory, { companyId: creationCompanyId }) : "#"}
+                        onClick={(event) => {
+                          if (!creationCompanyId) {
+                            event.preventDefault();
+                            setErrorMessage("Lütfen önce içerik oluşturulacak firmayı seçin.");
+                          }
+                        }}
+                        className={cn(
+                          "inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold transition",
+                          creationCompanyId
+                            ? "bg-[var(--primary)] text-white hover:brightness-110"
+                            : "cursor-not-allowed bg-slate-300 text-white dark:bg-slate-700 dark:text-slate-300",
+                        )}
+                      >
+                        Doküman Editöründe Oluştur
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={importingDocument || !creationCompanyId}
+                        className={cn(
+                          "inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--gold)]/30 bg-white/80 px-5 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--gold)]/45 hover:bg-[var(--gold)]/10 dark:bg-white/10 dark:text-[#f0c36b] dark:hover:bg-white/15",
+                          importingDocument || !creationCompanyId ? "cursor-not-allowed opacity-60" : "",
+                        )}
+                      >
+                        {importingDocument ? "Dosya Yükleniyor..." : "Cihazdan Doküman Yükle"}
+                      </button>
+                    </div>
+                  )}
                   <p className="mt-3 text-xs text-muted-foreground">
                     Yüklediğiniz dosya editörde açılır; isterseniz düzenleyip kaydedebilir, daha sonra tekrar düzenleyebilirsiniz.
                   </p>
