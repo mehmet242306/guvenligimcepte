@@ -101,13 +101,20 @@ export function TrainingClient() {
               </button>
             ) : null}
             <h1 className="text-2xl font-bold text-[var(--foreground)]">
-              {t("nav.training")}
+              Egitim ve Sinav
             </h1>
             <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-              Anket ve sınav oluşturun, kişiye özel link gönderin, sonuçları analiz edin
+              AI destekli egitim hazirlayin, anket ve sinav olusturun, kisiye ozel link gonderin ve sonuclari analiz edin.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <Link
+              href={buildTrainingHref("/training/new", { mode: "ai" })}
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-110"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 3.8L18 9l-4.1 2.2L12 15l-1.9-3.8L6 9l4.1-2.2L12 3z"/><path d="M5 18l.8 1.6L7.5 21l-1.7.9L5 23.5l-.8-1.6L2.5 21l1.7-.9L5 18z"/></svg>
+              AI Destekli Egitim Hazirla
+            </Link>
             <Link
               href={buildTrainingHref("/training/slides")}
               className="inline-flex items-center gap-2 rounded-xl border border-[var(--gold)]/40 bg-[var(--gold)]/5 px-4 py-2.5 text-sm font-semibold text-[var(--gold)] shadow-sm transition-colors hover:bg-[var(--gold)]/10"
@@ -134,7 +141,7 @@ export function TrainingClient() {
               className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:brightness-110"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Yeni Oluştur
+              Yeni Olustur
             </Link>
           </div>
         </div>

@@ -49,7 +49,6 @@ const primaryNav = [
   { href: "/workspace/onboarding", key: "nav.workspace" },
   { href: "/companies", key: "nav.companies" },
   { href: "/risk-analysis", key: "nav.riskAnalysis" },
-  { href: "/training", label: "Egitim / Sinav / Anket" },
   { href: "/corrective-actions", key: "nav.correctiveActions" },
   { href: "/incidents", key: "nav.incidents" },
   { href: "/isg-library", key: "nav.library" },
@@ -58,6 +57,7 @@ const primaryNav = [
 /* Second bar: other modules */
 type NavItem = { href: string; key: string; adminOnly?: boolean };
 const secondaryNav: NavItem[] = [
+  { href: "/training", key: "nav.training" },
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde

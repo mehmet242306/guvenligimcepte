@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { createSurvey, saveQuestions, type QuestionOption } from "@/lib/supabase/survey-api";
 
@@ -30,6 +30,7 @@ function genId() {
 
 export function TrainingNewClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [saving, setSaving] = useState(false);
 
@@ -62,6 +63,17 @@ export function TrainingNewClient() {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("mode") === "ai") {
+      setType("exam");
+      setStep(2);
+      if (!title.trim()) {
+        setTitle("AI Destekli Egitim Sinavi");
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   async function loadData() {
     const supabase = createClient();
