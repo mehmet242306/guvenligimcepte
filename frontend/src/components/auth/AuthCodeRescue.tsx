@@ -38,7 +38,7 @@ export function AuthCodeRescue() {
       ? (resolveConfiguredOrigin() ?? FALLBACK_PRODUCTION_ORIGIN)
       : origin;
 
-    const targetUrl = new URL("/auth/callback", targetOrigin);
+    const targetUrl = new URL("/auth/session-recover", targetOrigin);
     params.forEach((value, key) => {
       targetUrl.searchParams.set(key, value);
     });

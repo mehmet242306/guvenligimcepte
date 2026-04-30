@@ -18,12 +18,24 @@ function isCompatError(message: string | undefined | null) {
 
 export async function GET(request: NextRequest) {
   const user = await getRequestUser(request);
+  const lite = request.nextUrl.searchParams.get("lite") === "1";
 
   if (!user) {
     return NextResponse.json({ error: "Oturum bulunamadi." }, { status: 401 });
   }
 
   const context = await getAccountContextForUser(user.id);
+
+  if (lite) {
+    return NextResponse.json({
+      ok: true,
+      context,
+      surface: resolveAccountSurface(context),
+      redirectPath: resolvePostLoginPath(context),
+      usage: null,
+    });
+  }
+
   const service = createServiceClient();
 
   let usage = null;

@@ -38,6 +38,37 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
+  const pathname = request.nextUrl.pathname;
+  const isPublicApiEndpoint = PUBLIC_API_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix),
+  );
+  const isRouteAuthApiEndpoint = ROUTE_AUTH_API_PATHS.includes(pathname);
+  const isPublic =
+    PUBLIC_PATHS.includes(pathname) ||
+    pathname.startsWith("/auth") ||
+    isPublicApiEndpoint ||
+    isRouteAuthApiEndpoint;
+  const hasOAuthCode = request.nextUrl.searchParams.has("code");
+  const hasAuthCookie = request.cookies
+    .getAll()
+    .some((cookie) => cookie.name.startsWith("sb-"));
+
+  if (
+    hasOAuthCode &&
+    !pathname.startsWith("/auth/callback") &&
+    !pathname.startsWith("/auth/session-recover")
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/session-recover";
+    return NextResponse.redirect(url, 307);
+  }
+
+  if (isPublic && !hasAuthCookie && !hasOAuthCode) {
+    return NextResponse.next({
+      request,
+    });
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -69,16 +100,6 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const pathname = request.nextUrl.pathname;
-  const isPublicApiEndpoint = PUBLIC_API_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(prefix),
-  );
-  const isRouteAuthApiEndpoint = ROUTE_AUTH_API_PATHS.includes(pathname);
-  const isPublic =
-    PUBLIC_PATHS.includes(pathname) ||
-    pathname.startsWith("/auth") ||
-    isPublicApiEndpoint ||
-    isRouteAuthApiEndpoint;
   const providers = Array.isArray(user?.app_metadata?.providers)
     ? (user.app_metadata.providers as unknown[]).map((provider) => String(provider))
     : [];

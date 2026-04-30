@@ -51,7 +51,7 @@ async function readJsonSafely<T>(response: Response): Promise<T | null> {
 
 async function resolvePostAuthRedirect(next: string, accessToken: string) {
   try {
-    const response = await fetch("/api/account/context", {
+    const response = await fetch("/api/account/context?lite=1", {
       method: "GET",
       credentials: "include",
       headers: {
