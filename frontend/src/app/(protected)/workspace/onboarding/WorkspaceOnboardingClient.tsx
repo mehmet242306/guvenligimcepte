@@ -456,7 +456,7 @@ export function WorkspaceOnboardingClient({
         if (!cancelled) {
           setMessage({
             tone: "danger",
-            text: error instanceof Error ? error.message : "Calisma alani verisi alinamadi.",
+            text: normalizeOnboardingError(error, "Calisma alani verisi alinamadi."),
           });
         }
       } finally {

@@ -60,6 +60,83 @@ Hemen oncelik:
 - [ ] Onboarding cevirileri.
 - [ ] Nova/risk/dokuman ana akislari.
 
+## 0.2 Moduler Yayin Onceligi
+
+Bu bolum RiskNova'yi parca parca kontrol edilebilir hale getirmek icin ana siradir. Her modul tamamlanmadan sonraki module gecilmez; boylece login, odeme veya yetki gibi temel sorunlar ust modullere sizmaz.
+
+### Faz 1 - Giris, Oturum ve Onboarding
+
+Amac: Kullanici sorunsuz giris yapabilmeli, dogru hesap tipine ve dogru workspace akisine yonlenmeli.
+
+- [ ] Email/password giris production'da test edildi.
+- [ ] Google ile giris production'da test edildi.
+- [ ] Auth callback ve session recover akisi stabil.
+- [ ] Login sonrasi kullanici gereksiz donguye girmiyor.
+- [ ] Yeni kullanici onboarding'i tamamlayabiliyor.
+- [ ] Workspace olusturma/secme akisi hata vermiyor.
+- [ ] Logout ve tekrar login senaryosu test edildi.
+
+### Faz 2 - Abonelik, Odeme ve Limit Guvenligi
+
+Amac: Odeme alindiginda abonelik dogru islenmeli; ucretli ozellikler backend seviyesinde korunmali.
+
+- [ ] Paddle sandbox env degerleri production Vercel env'lerinde dogru.
+- [ ] Paddle sandbox product/price ID'leri Supabase ve Vercel ile uyumlu.
+- [ ] Checkout baslatma tum paketlerde calisiyor.
+- [ ] Test odemesi sonrasi webhook Supabase'e abonelik yaziyor.
+- [ ] Aktif abonelik pricing ekraninda "Mevcut plan" olarak gorunuyor.
+- [ ] Free/Starter/Plus/Professional limitleri backend'de uygulaniyor.
+- [ ] Direkt API istegi ile limit bypass edilemiyor.
+- [ ] Paddle live gecisinden once sandbox akisi uc kez sorunsuz test edildi.
+
+### Faz 3 - Workspace ve Organizasyon Temeli
+
+Amac: Bireysel, OSGB ve kurumsal kullanicilarin veri baglami ayrilmali.
+
+- [ ] Bireysel workspace akisi tamam.
+- [ ] OSGB self-service odeme disinda, teklif/iletisim akisi icinde.
+- [ ] Kurumsal self-service odeme disinda, teklif/iletisim akisi icinde.
+- [ ] Kullanici baska workspace verisini goremez.
+- [ ] Firma/isyeri/calisma alani secimi tum ana modullere dogru yansiyor.
+
+### Faz 4 - Cekirdek ISG Urun Modulleri
+
+Amac: Urunun asil degeri calisir hale gelir.
+
+- [ ] Risk analizi olusturma ve listeleme calisiyor.
+- [ ] Saha denetimi ve kontrol listeleri calisiyor.
+- [ ] Dokuman olusturma, kaydetme ve export calisiyor.
+- [ ] Nova AI temel sorulara cevap veriyor.
+- [ ] Sinav ve anket modulu header'a geri eklendi.
+- [ ] Sinav ve anket modulu temel akislari calisiyor.
+- [ ] Her cekirdek islem ilgili plan limitinden dusuyor.
+- [ ] Mobil kullanimda temel akislarda tasma veya kirilma yok.
+
+### Faz 5 - Raporlama, Bildirim ve Admin
+
+Amac: Operasyon takip edilebilir ve desteklenebilir hale gelir.
+
+- [ ] PDF/Excel export senaryolari test edildi.
+- [ ] E-posta bildirimleri production'da calisiyor.
+- [ ] Kayit sonrasi hos geldin / dogrulama e-postalari calisiyor.
+- [ ] Uzun sure giris yapmayan kullaniciya hatirlatma e-postasi plani var.
+- [ ] Odeme basarili / abonelik aktif e-postasi calisiyor.
+- [ ] Odeme basarisiz / abonelik sorunlu e-postasi calisiyor.
+- [ ] Platform admin lead/abonelik/kullanici kontrolu yapabiliyor.
+- [ ] Hata loglari Vercel/Supabase tarafinda takip edilebilir.
+- [ ] Manuel abonelik duzeltme sureci belirlendi.
+
+### Faz 6 - Dil, Icerik, Hukuki ve Canliya Gecis
+
+Amac: Urun kullaniciya guven veren, satilabilir ve yayinlanabilir hale gelir.
+
+- [ ] Public site ve pricing metinleri profesyonel Turkce ile temiz.
+- [ ] Desteklenen diller icin ceviri plani tamamlandi.
+- [ ] Kullanim sartlari, gizlilik ve iade politikasi yayinda.
+- [ ] Paddle live onayi tamamlandiginda live env gecisi yapildi.
+- [ ] Gercek odeme testi tamamlandi.
+- [ ] Ilk 24 saat log ve webhook izleme plani hazir.
+
 ## 1. Paketler ve Ticari Model
 
 ### 1.1 Bireysel Paketler
@@ -183,7 +260,20 @@ Hemen oncelik:
 - [ ] Sirket bazli yetkilendirme dogru.
 - [ ] OSGB self-service odeme yerine lead/teklif akisi kullaniyor.
 
-## 7. Kurumsal / Enterprise Akisi
+## 7. Sinav ve Anket Modulu
+
+- [ ] Header/navigation icinde Sinav ve Anket linkleri geri getirildi.
+- [ ] Sinav modulu route'lari production'da aciliyor.
+- [ ] Anket modulu route'lari production'da aciliyor.
+- [ ] Sinav olusturma, listeleme ve detay akisi calisiyor.
+- [ ] Anket olusturma, listeleme ve detay akisi calisiyor.
+- [ ] Katilimci/cevap kayitlari Supabase'e dogru yaziliyor.
+- [ ] Sinav ve anket verileri kullanici/workspace yetkisine gore korunuyor.
+- [ ] Sinav ve anket modulu paket limitlerine baglandi.
+- [ ] Mobil gorunum kontrol edildi.
+- [ ] Bos durum, hata durumu ve loading state'leri kullanici dostu.
+
+## 8. Kurumsal / Enterprise Akisi
 
 - [ ] Kurumsal talep formu var.
 - [ ] Talep Supabase'e kayit oluyor.
@@ -192,7 +282,7 @@ Hemen oncelik:
 - [ ] Metinler "bizimle iletisime gecin" seklinde.
 - [ ] Ozel limit/ozel fiyat mantigi manuel yonetilebilir.
 
-## 8. Platform Admin
+## 9. Platform Admin
 
 - [ ] Platform admin login/yetki kontrolu calisiyor.
 - [ ] Lead listesi gorunuyor.
@@ -202,7 +292,7 @@ Hemen oncelik:
 - [ ] Admin ekranlarinda hassas bilgi sizmiyor.
 - [ ] Production'da admin env/rol ayarlari dogru.
 
-## 9. Abonelik ve Odeme
+## 10. Abonelik ve Odeme
 
 Detayli Paddle takip dosyasi:
 
@@ -223,7 +313,7 @@ Ozet:
 - [ ] Webhook sonrasi abonelik aktivasyonu test edilecek.
 - [ ] Live mode gecis plani tamamlanacak.
 
-## 10. Limit, Kota ve Yetki Sızıntısı
+## 11. Limit, Kota ve Yetki Sızıntısı
 
 - [ ] Tum ucretli ozellikler listelendi.
 - [ ] Her ucretli ozellik bir `BillingAction` ile eslesti.
@@ -236,7 +326,7 @@ Ozet:
 - [ ] Ayni ay icinde sayaçlar artiyor.
 - [ ] Yeni ayda kullanim sifirlaniyor.
 
-## 11. Supabase ve Veritabani
+## 12. Supabase ve Veritabani
 
 - [x] Son iki billing migration'i manuel uygulandi.
 - [!] Supabase remote migration history local ile uyumsuz.
@@ -249,7 +339,7 @@ Ozet:
 - [ ] Storage bucket policy'leri kontrol edildi.
 - [ ] Database indexes performans icin kontrol edildi.
 
-## 12. Guvenlik
+## 13. Guvenlik
 
 - [ ] API key'ler repo icinde yok.
 - [ ] `.env.local` git'e dahil degil.
@@ -262,7 +352,7 @@ Ozet:
 - [ ] Shared links tahmin edilemez token kullanıyor.
 - [ ] Rate limit / abuse kontrolu degerlendirildi.
 
-## 13. KVKK, Gizlilik ve Yasal Metinler
+## 14. KVKK, Gizlilik ve Yasal Metinler
 
 - [ ] Gizlilik politikasi hazir.
 - [ ] Kullanim sartlari hazir.
@@ -273,16 +363,22 @@ Ozet:
 - [ ] E-posta izinleri ve transactional email ayrimi net.
 - [ ] Paddle Merchant of Record modeli yasal/muhasebe tarafinda anlasildi.
 
-## 14. E-posta ve Bildirimler
+## 15. E-posta ve Bildirimler
 
 - [ ] Resend/API key production'da dogru.
 - [ ] Davet e-postalari calisiyor.
 - [ ] Atama/gorevlendirme e-postalari calisiyor.
+- [ ] Kayit sonrasi hos geldin veya hesap dogrulama e-postasi calisiyor.
+- [ ] Uzun sure giris yapmayan kullanici icin geri kazanma e-postasi kurgulandi.
+- [ ] Geri kazanma e-postalari icin cron/queue ihtiyaci belirlendi.
 - [ ] Odeme basarili/abonelik aktif e-postasi gerekip gerekmedigi belirlendi.
+- [ ] Odeme basarili/abonelik aktif e-postasi calisiyor.
+- [ ] Odeme basarisiz/abonelik riskli e-postasi calisiyor.
+- [ ] Plan degisikligi/iptal e-postalari calisiyor.
 - [ ] Hata durumunda kullaniciya anlasilir mesaj donuyor.
 - [ ] Support e-posta adresleri dogru: `support@getrisknova.com`, `hello@getrisknova.com`.
 
-## 15. Vercel ve Deploy
+## 16. Vercel ve Deploy
 
 - [x] Vercel project var: `getrisknova`.
 - [x] Production deployment var.
@@ -295,9 +391,9 @@ Ozet:
 - [ ] Domain `getrisknova.com` dogru deployment'a bagli.
 - [ ] Preview/production ortam ayrimi net.
 
-## 16. Test Plani
+## 17. Test Plani
 
-### 16.1 Teknik Testler
+### 17.1 Teknik Testler
 
 - [ ] `npm run typecheck`
 - [ ] `npm run build`
@@ -305,7 +401,7 @@ Ozet:
 - [ ] Kritik API route'lar smoke test edildi.
 - [ ] Production smoke test yapildi.
 
-### 16.2 Kullanici Senaryolari
+### 17.2 Kullanici Senaryolari
 
 - [ ] Yeni bireysel kullanici kayit olur.
 - [ ] Free kullanici ilk Nova mesajini atar.
@@ -316,8 +412,10 @@ Ozet:
 - [ ] Kullanici paid limite gore ozellik kullanir.
 - [ ] OSGB kullanicisi teklif akisini kullanir.
 - [ ] Kurumsal kullanici teklif akisini kullanir.
+- [ ] Kullanici sinav olusturur.
+- [ ] Kullanici anket olusturur.
 
-### 16.3 Negatif Testler
+### 17.3 Negatif Testler
 
 - [ ] Yetkisiz API istegi reddedilir.
 - [ ] Limit dolunca islem yapilmaz.
@@ -326,7 +424,7 @@ Ozet:
 - [ ] Eksik env varsa anlasilir hata doner.
 - [ ] Iptal/pause subscription durumunda paid limit kapanir.
 
-## 17. Performans ve Kullanilabilirlik
+## 18. Performans ve Kullanilabilirlik
 
 - [ ] Ana sayfa hiz kontrolu yapildi.
 - [ ] Pricing sayfasi hiz kontrolu yapildi.
@@ -336,7 +434,7 @@ Ozet:
 - [ ] AI yanitlari loading state ile geliyor.
 - [ ] Hata state'leri kullanici dostu.
 
-## 18. Icerik ve Dil Temizligi
+## 19. Icerik ve Dil Temizligi
 
 - [ ] Turkce karakter bozulmalari kontrol edildi.
 - [ ] Paket metinleri profesyonel Turkce ile duzeltildi.
@@ -345,7 +443,7 @@ Ozet:
 - [ ] OSGB ve Kurumsal metinleri ayri.
 - [ ] Ingilizce kalmis metinler temizlendi veya bilerek birakildi.
 
-## 19. Canliya Gecis Oncesi Karar Noktalari
+## 20. Canliya Gecis Oncesi Karar Noktalari
 
 - [ ] Sandbox ile mi soft launch yapilacak, live mode'a mi gecilecek?
 - [ ] Ilk musteriler kim olacak?
@@ -356,7 +454,7 @@ Ozet:
 - [ ] Support sureci nasil isleyecek?
 - [ ] Manuel abonelik duzeltme sureci kimde olacak?
 
-## 20. Canliya Gecis
+## 21. Canliya Gecis
 
 - [ ] Paddle live mode kuruldu.
 - [ ] Live product/price ID'leri hazir.
@@ -369,15 +467,18 @@ Ozet:
 - [ ] Ilk kullanici onboarding testi tamam.
 - [ ] Canli sonrasi ilk 24 saat loglar izlendi.
 
-## 21. Hemen Siradaki Adimlar
+## 22. Hemen Siradaki Adimlar
 
 Bu bolum her calisma seansinda guncellenecek:
 
-- [ ] Mevcut hardcoded metin envanterini cikar.
-- [ ] Public site ve pricing cevirilerini ilk dalga olarak tamamla.
-- [ ] `pricing` ve `billing` namespace'lerini mesaj dosyalarina ekle.
-- [ ] Yeni billing/pricing component'lerini `useTranslations()` ile bagla.
-- [ ] Public header'daki yeni `Paketler` linkini tum dillere cevir.
-- [ ] Login/register public metinlerini kontrol et.
-- [ ] Locale dosyalari arasinda eksik key kontrol scripti ekle.
-- [ ] `npm run typecheck` calistir.
+- [ ] Faz 1 icin Google login, email login ve logout production smoke testini tamamla.
+- [ ] Onboarding'de workspace hazirlaniyor ekraninda takilma veya `Failed to fetch` hatasini yeniden test et.
+- [ ] Faz 2 icin Paddle sandbox webhook'un Supabase'e abonelik yazdigini dogrula.
+- [ ] Test odemesi sonrasi pricing ekraninda aktif planin pasif/mevcut gorundugunu dogrula.
+- [ ] Vercel env'lerinde sandbox/live Paddle degerlerinin karismadigini son kez kontrol et.
+- [ ] Supabase `user_subscriptions`, `subscription_plans`, `paddle_webhook_events` tablolarini test odemesiyle dogrula.
+- [ ] Auth ve billing stabil olduktan sonra workspace/organizasyon modulu testlerine gec.
+- [ ] Daha sonra cekirdek ISG modulleri: risk analizi, dokuman, saha denetimi, Nova, sinav ve anket.
+- [ ] E-posta akislari icin kayit, uzun sure giris yapmama, odeme basarili ve odeme basarisiz senaryolarini planla.
+- [ ] En son public site cevirileri ve tum desteklenen diller icin localization dalgasina gir.
+- [ ] Her faz sonunda `npm run typecheck`, production deploy ve kisa smoke test yap.

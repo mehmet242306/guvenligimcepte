@@ -16,9 +16,34 @@ import {
 } from "@/lib/session-tracker";
 import { sendSuspiciousLoginEmail } from "@/lib/mailer";
 import {
+  type AccountContext,
   getAccountContextForUser,
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
+
+function isSafePostLoginNext(value: string) {
+  return (
+    value.startsWith("/") &&
+    !value.startsWith("//") &&
+    !value.startsWith("/login") &&
+    !value.startsWith("/register") &&
+    !value.startsWith("/auth")
+  );
+}
+
+function resolveLoginRedirect(context: AccountContext, requestedNext: string) {
+  const defaultPath = resolvePostLoginPath(context);
+
+  if (
+    isSafePostLoginNext(requestedNext) &&
+    defaultPath !== "/workspace/onboarding" &&
+    defaultPath !== "/platform-admin"
+  ) {
+    return requestedNext;
+  }
+
+  return defaultPath;
+}
 
 export async function login(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
@@ -230,7 +255,7 @@ export async function login(formData: FormData) {
     assuranceData.currentLevel !== "aal2"
   ) {
     const resolvedNext = signedInUser
-      ? resolvePostLoginPath(await getAccountContextForUser(signedInUser.id))
+      ? resolveLoginRedirect(await getAccountContextForUser(signedInUser.id), next)
       : next;
     redirect(`/auth/mfa-challenge?next=${encodeURIComponent(resolvedNext)}`);
   }
@@ -239,5 +264,5 @@ export async function login(formData: FormData) {
     redirect(next);
   }
 
-  redirect(resolvePostLoginPath(await getAccountContextForUser(signedInUser.id)));
+  redirect(resolveLoginRedirect(await getAccountContextForUser(signedInUser.id), next));
 }
