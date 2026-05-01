@@ -10,6 +10,8 @@ import {
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
 import { resolveAppOriginFromHeaders } from "@/lib/server/app-origin";
+import { createServiceClient } from "@/lib/security/server";
+import { releaseDemoUserLock } from "@/lib/auth/demo-release";
 
 export async function signup(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
@@ -54,7 +56,14 @@ export async function signup(formData: FormData) {
 
   revalidatePath("/", "layout");
 
-  if (data.session) {
+  if (data.session && data.user) {
+    try {
+      const service = createServiceClient();
+      await releaseDemoUserLock(service, data.user);
+      await supabase.auth.refreshSession();
+    } catch (cleanupError) {
+      console.warn("[signup] demo kilidi kaldirma veya oturum yenileme:", cleanupError);
+    }
     redirect(resolvePostLoginPath(await getAccountContextForUser(data.session.user.id)));
   }
 

@@ -4,12 +4,28 @@ import { useState } from "react";
 import type { Provider } from "@supabase/supabase-js";
 import { createOAuthBrowserClient } from "@/lib/supabase/oauth-browser-client";
 
+function normalizeHost(host: string) {
+  return host.replace(/^www\./i, "").toLowerCase();
+}
+
+/**
+ * OAuth PKCE code_verifier tarayicida origin bazli saklanir.
+ * Sayfa www ile acilip redirect NEXT_PUBLIC_APP_URL (apex) ise kod okunamaz → mobilde "Google girisi tamamlanamadi".
+ * Ayni kayitli alan adi (www/apex) ise her zaman mevcut origin kullanilir.
+ */
 function resolveOAuthOrigin() {
   const { hostname, origin } = window.location;
   const configured = process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/+$/, "") ?? "";
 
-  if (configured && !configured.endsWith(".vercel.app")) {
-    return configured;
+  try {
+    if (configured && !configured.endsWith(".vercel.app")) {
+      const configuredHost = new URL(configured).hostname;
+      if (normalizeHost(hostname) === normalizeHost(configuredHost)) {
+        return origin;
+      }
+    }
+  } catch {
+    /* NEXT_PUBLIC_APP_URL gecersiz */
   }
 
   if (
@@ -20,7 +36,7 @@ function resolveOAuthOrigin() {
     return configured;
   }
 
-  return origin;
+  return configured && !configured.endsWith(".vercel.app") ? configured : origin;
 }
 
 /* ── SVG Icons ── */

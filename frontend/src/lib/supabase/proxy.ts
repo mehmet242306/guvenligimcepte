@@ -46,6 +46,16 @@ export async function updateSession(request: NextRequest) {
   }
 
   const pathname = request.nextUrl.pathname;
+
+  // www → apex (OAuth /auth/* haric: PKCE verifier kayitli origin ile ayni kalmali)
+  if (
+    request.nextUrl.hostname.toLowerCase() === `www.${CANONICAL_HOST}` &&
+    !pathname.startsWith("/auth")
+  ) {
+    const url = request.nextUrl.clone();
+    url.hostname = CANONICAL_HOST;
+    return NextResponse.redirect(url, 308);
+  }
   const isPublicApiEndpoint = PUBLIC_API_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(prefix),
   );

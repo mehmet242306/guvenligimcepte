@@ -154,6 +154,11 @@ export function AuthSessionRecoverClient({
         return;
       }
 
+      const { error: refreshAfterSetError } = await appSupabase.auth.refreshSession();
+      if (refreshAfterSetError) {
+        console.warn("[session-recover] refreshSession after setSession:", refreshAfterSetError.message);
+      }
+
       if (shouldForcePasswordSetup(data.session.user)) {
         if (data.session.user.user_metadata?.must_set_password !== true) {
           try {
