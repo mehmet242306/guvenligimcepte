@@ -9,6 +9,8 @@ import {
 } from "@/lib/account/account-routing";
 import { hasAccountTypeAccess } from "@/lib/account/account-type-access";
 import { releaseDemoUserLock } from "@/lib/auth/demo-release";
+import { sendGoogleConnectedWelcomeEmail } from "@/lib/mailer";
+import { resolveAppOriginFromRequest } from "@/lib/server/app-origin";
 
 const onboardingSchema = z.object({
   accountType: z.enum(["individual", "osgb", "enterprise"]),
@@ -55,6 +57,64 @@ function isSchemaCompatError(message: string | undefined | null) {
     normalized.includes("schema cache") ||
     normalized.includes("does not exist")
   );
+}
+
+function hasGoogleProvider(user: { app_metadata?: { providers?: unknown } }) {
+  const providers = Array.isArray(user.app_metadata?.providers)
+    ? user.app_metadata.providers.map((provider) => String(provider))
+    : [];
+
+  return providers.includes("google");
+}
+
+async function sendGoogleWelcomeOnce({
+  request,
+  service,
+  user,
+}: {
+  request: NextRequest;
+  service: ReturnType<typeof createServiceClient>;
+  user: Awaited<ReturnType<typeof getRequestUser>> & {
+    id: string;
+    email?: string | null;
+    app_metadata?: Record<string, unknown>;
+    user_metadata?: Record<string, unknown>;
+  };
+}) {
+  if (
+    !user.email ||
+    !hasGoogleProvider(user) ||
+    user.user_metadata?.google_connected_welcome_sent_at
+  ) {
+    return;
+  }
+
+  const origin = resolveAppOriginFromRequest(request);
+  const fullName =
+    String(
+      user.user_metadata?.full_name ??
+        user.user_metadata?.name ??
+        user.email.split("@")[0] ??
+        "Kullanici",
+    ) || "Kullanici";
+
+  try {
+    await sendGoogleConnectedWelcomeEmail({
+      to: user.email,
+      fullName,
+      loginUrl: `${origin}/login`,
+      onboardingUrl: `${origin}/workspace/onboarding`,
+    });
+
+    await service.auth.admin.updateUserById(user.id, {
+      user_metadata: {
+        ...(user.user_metadata ?? {}),
+        google_connected_welcome_sent_at: new Date().toISOString(),
+      },
+    });
+  } catch (mailError) {
+    console.warn("[account/onboarding] google welcome email failed:", mailError);
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -329,6 +389,7 @@ export async function POST(request: NextRequest) {
     }
 
     await releaseDemoUserLock(service, user);
+    await sendGoogleWelcomeOnce({ request, service, user });
 
     const refreshedContext = await getAccountContextForUser(user.id);
 

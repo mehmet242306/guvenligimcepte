@@ -20,12 +20,39 @@ export function ResetPasswordSessionClient({ code }: { code?: string | null }) {
         return;
       }
 
-      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+      const exchangeResult = await supabase.auth.exchangeCodeForSession(code);
+      let session = exchangeResult.data.session;
+      let exchangeError = exchangeResult.error;
+
+      /** Kod tek kullanimlik; takas basarisizsa oturum zaten yazildiysa getSession yeter */
+      if (exchangeError || !session?.access_token || !session.refresh_token) {
+        const { data: existing } = await supabase.auth.getSession();
+        if (existing.session?.access_token && existing.session.refresh_token) {
+          session = existing.session;
+          exchangeError = null;
+        }
+      }
 
       if (cancelled) return;
 
-      if (exchangeError) {
+      if (exchangeError || !session?.access_token || !session.refresh_token) {
         setError("Sifre yenileme baglantisi gecersiz veya suresi dolmus olabilir.");
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete("code");
+        window.history.replaceState({}, "", cleanUrl.toString());
+        setReady(true);
+        return;
+      }
+
+      const { error: cookieError } = await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
+
+      if (cancelled) return;
+
+      if (cookieError) {
+        setError("Oturum hazirlanamadi. Sayfayi yenileyip tekrar deneyin.");
       }
 
       const cleanUrl = new URL(window.location.href);

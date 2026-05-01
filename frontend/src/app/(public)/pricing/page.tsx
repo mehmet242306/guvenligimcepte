@@ -21,7 +21,8 @@ export default function PricingPage() {
             <p className="mt-5 max-w-2xl text-base leading-8 text-white/72">
               Free ile deneyin; Starter, Plus ve Professional kademeleriyle
               Nova, risk analizi, saha denetimi ve dokuman uretimini calisma
-              temponuza gore buyutun.
+              temponuza gore buyutun. Her planda aylik veya yillik secimini
+              kart uzerinden yapabilirsiniz.
             </p>
           </div>
         </div>

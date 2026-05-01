@@ -165,6 +165,7 @@ export const INDIVIDUAL_BILLING_PLANS: PublicBillingPlan[] = [
     priceUsd: 199,
     audience: "Çok aktif bireysel profesyonel",
     description: "RiskNova'yı ana çalışma sistemi yapan uzmanlar için üst kademe.",
+    highlight: "Premium",
     limits: {
       nova_message: 2000,
       ai_analysis: 1000,
