@@ -507,9 +507,16 @@ Not: Ust bolumdeki **Faz 2** maddeleri operasyonel kabul / smoke test tamamlandi
 - [x] Free kullanici paid ozellige direkt API ile erisemiyor.
 - [x] Starter kullanici Pro ozelliklerini kullanamiyor.
 - [x] OSGB/Kurumsal manuel planlar kontrollu.
-- [ ] `subscription_usage` aylik kullanimlari dogru tutuyor.
+- [x] `subscription_usage` aylik kullanimlari dogru tutuyor.
 - [x] Ayni ay icinde sayaçlar artiyor.
-- [ ] Yeni ayda kullanim sifirlaniyor.
+- [x] Yeni ayda kullanim sifirlaniyor.
+
+11 dogrulama notlari (`subscription_usage`):
+
+- Kota yazimi `public.consume_subscription_quota` ve (Nova legacy) `public.increment_usage` icinde `usage_month := date_trunc('month', now())::date` ile **takvim ayi kovasi**; limit kontrolu ve upsert ayni `subscription_id + usage_month` satirina bagli (`20260428043000_billing_entitlements_and_paddle.sql`, `20260408223156_nova_07_rpc_increment_usage.sql`).
+- Ay degistiginde onceki ay satiri korunur; yeni ay icin ilk tüketimde **yeni satir INSERT** (veya conflict upsert) ile sayaçlar fiilen sifirdan baslar — ayrik bir "reset" job'u tasarlanmadi.
+- Sunucu saat dilimi (Supabase genelde UTC) ay sinirini belirler; operasyonel smoke test: ay sonu/ayi başı tek kullanıcı ile bir aksiyon sayaci kontrol edilir.
+- DB yorumlari: `20260501180000_subscription_usage_monthly_bucket_docs.sql`.
 
 ## 12. Supabase ve Veritabani
 
