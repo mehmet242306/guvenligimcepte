@@ -58,7 +58,7 @@ const primaryNav = [
 /* Second bar: other modules */
 type NavItem = { href: string; key: string; adminOnly?: boolean };
 const secondaryNav: NavItem[] = [
-  { href: "/training", key: "nav.training" },
+  { href: "/training", key: "nav.surveyExam" },
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
@@ -928,7 +928,7 @@ export function ProtectedShell({
       <div className="border-b md:hidden" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
         <div className="mx-auto w-full max-w-[1480px]">
           <div className="border-b border-border/70 px-2">
-            <div className="flex max-w-full flex-wrap justify-center gap-x-0.5 gap-y-1 py-1.5">
+            <div className="no-scrollbar flex max-w-full flex-nowrap justify-start gap-x-0.5 gap-y-1 overflow-x-auto py-1.5 sm:flex-wrap sm:justify-center">
               {basePrimaryNav.map((item) => {
               const act = isActive(pathname, item.href);
               const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
@@ -967,7 +967,7 @@ export function ProtectedShell({
           </div>
 
           <div className="px-2">
-            <div className="flex max-w-full flex-wrap justify-center gap-x-0.5 gap-y-1 py-1.5">
+            <div className="no-scrollbar flex max-w-full flex-nowrap justify-start gap-x-0.5 gap-y-1 overflow-x-auto py-1.5 sm:flex-wrap sm:justify-center">
               {showWorkspaceSwitcher ? (
                 <ActiveCompanyNavLink
                   label="Firma"

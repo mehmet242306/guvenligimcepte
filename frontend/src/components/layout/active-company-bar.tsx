@@ -46,22 +46,35 @@ export function ActiveCompanyBar() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
+    let canceled = false;
+    let loadSeq = 0;
+
+    async function load() {
+      const seq = ++loadSeq;
+      setLoaded(false);
       const ws = await getActiveWorkspace();
-      if (cancelled) return;
+      if (canceled || seq !== loadSeq) return;
       if (!ws?.id) {
         setProfile(null);
         setLoaded(true);
         return;
       }
       const p = await fetchCompanyProfile(ws.id);
-      if (cancelled) return;
+      if (canceled || seq !== loadSeq) return;
       setProfile(p);
       setLoaded(true);
-    })();
+    }
+
+    function onWorkspaceChanged() {
+      void load();
+    }
+
+    void load();
+    window.addEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
     return () => {
-      cancelled = true;
+      canceled = true;
+      loadSeq += 1;
+      window.removeEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
     };
   }, []);
 

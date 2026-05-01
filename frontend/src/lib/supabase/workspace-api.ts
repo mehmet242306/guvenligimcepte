@@ -220,5 +220,9 @@ export async function setActiveWorkspace(workspaceId: string): Promise<boolean> 
     return local ? local.workspace.id === workspaceId : true;
   }
 
+  if (!error && isBrowser()) {
+    window.dispatchEvent(new CustomEvent("risknova:active-workspace-changed"));
+  }
+
   return !error;
 }
