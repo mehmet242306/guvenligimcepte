@@ -1,0 +1,5 @@
+-- Remote history placeholder.
+-- This version exists in the production Supabase migration history, but the
+-- original SQL file was not present in this repository when history was reconciled.
+-- Keep this file SQL-empty so Supabase CLI can match the remote version without
+-- replaying schema changes.

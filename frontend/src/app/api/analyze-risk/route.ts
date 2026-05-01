@@ -20,6 +20,10 @@ import {
   type VisionDetection,
 } from "@/lib/ai/openai-vision";
 import { getAnthropicKey } from "@/lib/ai/provider-keys";
+import {
+  analyzeRiskSystemLanguageSuffix,
+  analyzeRiskUserLanguageSuffix,
+} from "@/lib/ai/output-language";
 
 let anthropicClient: Anthropic | null = null;
 
@@ -44,6 +48,8 @@ const analyzeRiskSchema = z.object({
     .enum(["r_skor", "fine_kinney", "l_matrix", "fmea", "hazop", "bow_tie", "fta", "checklist", "jsa", "lopa"])
     .optional()
     .default("r_skor"),
+  /** UI locale (e.g. next-intl) — steers output language for narrative fields */
+  language: z.string().min(2).max(12).optional().default("tr"),
 });
 
 /* ================================================================== */
@@ -708,11 +714,18 @@ Koruma Katmanlar\u0131: Her katman i\u00E7in isim + PFD de\u011Feri
 /* Build full prompts per method                                       */
 /* ================================================================== */
 
-function buildSystemPrompt(method: AnalysisMethod): string {
-  return BASE_PROMPT + "\n" + METHOD_PROMPTS[method].systemSection + "\n" + LEGAL_PROMPT;
+function buildSystemPrompt(method: AnalysisMethod, locale: string): string {
+  return (
+    BASE_PROMPT +
+    "\n" +
+    METHOD_PROMPTS[method].systemSection +
+    "\n" +
+    LEGAL_PROMPT +
+    analyzeRiskSystemLanguageSuffix(locale)
+  );
 }
 
-function buildUserPrompt(method: AnalysisMethod): string {
+function buildUserPrompt(method: AnalysisMethod, locale: string): string {
   const mp = METHOD_PROMPTS[method];
   const r2dFallback = method !== "r_skor" ? `,\n      "r2dParams": {"c1":0.5,"c2":0.3,"c3":0.3,"c4":0.1,"c5":0.2,"c6":0.3,"c7":0.2,"c8":0.1,"c9":0.2}` : "";
 
@@ -760,7 +773,7 @@ JSON format\u0131:
       ]
     }
   ]
-}`;
+}` + analyzeRiskUserLanguageSuffix(locale);
 }
 
 /* ================================================================== */
@@ -801,7 +814,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { imageBase64, mimeType, method } = parsedBody.data;
+    const { imageBase64, mimeType, method, language: outputLocale } = parsedBody.data;
 
     if (!imageBase64 || !mimeType) {
       return NextResponse.json({ error: "imageBase64 ve mimeType gerekli" }, { status: 400 });
@@ -850,7 +863,7 @@ export async function POST(request: NextRequest) {
 
     // Claude'a verilecek ek kontekst (varsa); yoksa boş string → eski davranış
     const visionContextBlock = visionDetection ? visionToPromptContext(visionDetection) : "";
-    const augmentedUserPrompt = `${visionContextBlock}\n\n${buildUserPrompt(method)}`;
+    const augmentedUserPrompt = `${visionContextBlock}\n\n${buildUserPrompt(method, outputLocale)}`;
 
     // ═══════════════════════════════════════════════════════════════════
     // STAGE 2 — Anthropic Claude Sonnet 4: RİSK AKIL YÜRÜTMESİ
@@ -875,7 +888,7 @@ export async function POST(request: NextRequest) {
           // için hala hızlı (~20-30 saniye).
           max_tokens: 6000,
           temperature: 0,
-          system: buildSystemPrompt(method),
+          system: buildSystemPrompt(method, outputLocale),
           messages: [
             {
               role: "user",

@@ -78,6 +78,7 @@ import {
 } from "@/lib/risk-scoring";
 import { MethodIcon } from "@/components/risk-analysis/MethodIcon";
 import { FMEAPanel, HAZOPPanel, BowTiePanel, FTAPanel, ChecklistPanel, JSAPanel, LOPAPanel } from "@/components/risk-analysis/panels";
+import { useI18n } from "@/lib/i18n";
 // Export fonksiyonları runtime'da yüklenir (ExcelJS + docx ~1MB)
 // böylece /risk-analysis sayfası açıldığında initial bundle'a girmiyor.
 import type {
@@ -725,6 +726,7 @@ function MatrixPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: 
 
 export function RiskAnalysisClient() {
   const searchParams = useSearchParams();
+  const { locale } = useI18n();
 
   /* ── Setup state (persisted across page navigation) ── */
   const [analysisTitle, setAnalysisTitle] = usePersistedState("risk:title", "Saha Risk Analizi");
@@ -1167,7 +1169,7 @@ export function RiskAnalysisClient() {
       const res = await fetch("/api/analyze-risk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageBase64: base64, mimeType, method }),
+        body: JSON.stringify({ imageBase64: base64, mimeType, method, language: locale ?? "tr" }),
       });
 
       const emptyMeta: ImageMeta = { imageId, faces: [], positiveObservations: [], photoQuality: { level: "good", note: "" }, areaSummary: "", personCount: 0, imageRelevance: "relevant", imageDescription: "" };

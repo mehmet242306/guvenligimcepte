@@ -74,6 +74,9 @@ export function WorkspaceSwitcher({
     setSwitching(false);
     router.refresh();
     await load();
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("risknova:active-workspace-changed"));
+    }
   }
 
   function countryName(code: string) {

@@ -22,6 +22,7 @@ import {
   setActiveWorkspace,
   setLocalWorkspaceContext,
 } from "@/lib/supabase/workspace-api";
+import { filterNavItemsForJurisdiction } from "@/lib/workspace/jurisdiction";
 import {
   hasManagedOsgbAccount,
   resolveClientAccountSurface,
@@ -72,16 +73,19 @@ const secondaryNav: NavItem[] = [
 
 const osgbPrimaryNav = [
   { href: "/osgb", label: "Panel" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/companies", label: "Firma" },
+  { href: "/risk-analysis", label: "Risk analizi" },
+  { href: "/corrective-actions", label: "Aksiyon" },
+  { href: "/isg-library", label: "İSG Kütüphanesi" },
   { href: "/osgb/firms", label: "Firmalar" },
   { href: "/osgb/professionals", label: "Profesyoneller" },
   { href: "/osgb/personnel", label: "Personeller" },
   { href: "/osgb/assignments", label: "Görevlendirmeler" },
   { href: "/osgb/tasks", label: "İş Takibi" },
-  { href: "/isg-library", label: "İSG Kütüphanesi" },
 ];
 
 const osgbSecondaryNav = [
-  { href: "/risk-analysis", label: "Riskler" },
   { href: "/training", label: "Eğitim" },
   { href: "/training?tab=survey", label: "Anket" },
   { href: "/training?tab=exam", label: "Sınav" },
@@ -93,12 +97,15 @@ const osgbSecondaryNav = [
 
 const platformAdminPrimaryNav = [
   { href: "/platform-admin", label: "Platform Yonetimi" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/companies", label: "Firmalar" },
+  { href: "/risk-analysis", label: "Risk Analizi" },
+  { href: "/corrective-actions", label: "Aksiyon" },
+  { href: "/isg-library", label: "ISG Kutuphanesi" },
   { href: "/platform-admin/demo-requests", label: "Demo Talepleri" },
   { href: "/platform-admin/demo-builder", label: "Demo Olusturucu" },
-  { href: "/risk-analysis", label: "Risk Analizi" },
   { href: "/corrective-actions", label: "DOF'ler" },
   { href: "/incidents", label: "Olaylar" },
-  { href: "/isg-library", label: "ISG Kutuphanesi" },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -568,6 +575,8 @@ export function ProtectedShell({
   const [authReady, setAuthReady] = useState(initialAccountContext !== null);
   const [workspaceReady, setWorkspaceReady] = useState(initialAccountContext !== null);
   const [hasActiveWorkspace, setHasActiveWorkspace] = useState(initialHasActiveWorkspace);
+  /** Aktif workspace country_code — TR dışındaki bölgelerde Türkiye’ye özel menüler filtrelenir. */
+  const [workspaceCountryCode, setWorkspaceCountryCode] = useState<string | null>(null);
   /** Tailwind `md` (768px) alti: tek sutun mobil nav; workspace switcher asagida gosterilir */
   const [isNarrowViewport, setIsNarrowViewport] = useState(false);
   const isFullscreenWorkspaceOnboarding = pathname.startsWith("/workspace/onboarding");
@@ -575,6 +584,33 @@ export function ProtectedShell({
   useEffect(() => {
     pathnameRef.current = pathname;
   }, [pathname]);
+
+  useEffect(() => {
+    if (!authReady || !accountContext?.organizationId) return;
+    let cancelled = false;
+
+    async function syncWorkspaceCountry() {
+      try {
+        const ws = await getActiveWorkspace();
+        if (cancelled) return;
+        setWorkspaceCountryCode(ws?.country_code ?? null);
+      } catch {
+        if (!cancelled) setWorkspaceCountryCode(null);
+      }
+    }
+
+    void syncWorkspaceCountry();
+
+    function onWorkspaceChanged() {
+      void syncWorkspaceCountry();
+    }
+
+    window.addEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
+    };
+  }, [authReady, accountContext?.organizationId, hasActiveWorkspace]);
 
   useLayoutEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -626,6 +662,23 @@ export function ProtectedShell({
             ? [{ href: "/account/osgb-affiliations" as const, key: "nav.osgbAffiliations" as const }]
             : []),
         ];
+
+  const navJurisdictionMode = isOsgbShell ? "osgb" : "standard";
+  const primaryNavForUi = isPlatformAdminShell
+    ? basePrimaryNav
+    : (filterNavItemsForJurisdiction(
+        basePrimaryNav as readonly { href: string }[],
+        workspaceCountryCode,
+        navJurisdictionMode,
+      ) as typeof basePrimaryNav);
+  const secondaryNavForUi = isPlatformAdminShell
+    ? baseSecondaryNav
+    : (filterNavItemsForJurisdiction(
+        baseSecondaryNav as readonly { href: string }[],
+        workspaceCountryCode,
+        navJurisdictionMode,
+      ) as typeof baseSecondaryNav);
+
   const homeHref = isPlatformAdminShell
     ? "/platform-admin"
     : isOsgbShell
@@ -988,7 +1041,7 @@ export function ProtectedShell({
             {/* Satir 2: birincil menu — tam genislik, satir kirar; kaydirma yok */}
             <nav className="hidden w-full min-w-0 border-t border-white/10 pt-2 lg:block lg:border-t-0 lg:pt-0">
               <div className="flex w-full flex-wrap items-center justify-center gap-x-0.5 gap-y-1.5 sm:gap-x-1">
-                {basePrimaryNav.map((item) => {
+                {primaryNavForUi.map((item) => {
                   const act = isActive(pathname, item.href);
                   const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
                   const classes = cn(
@@ -1039,7 +1092,7 @@ export function ProtectedShell({
                 <Suspense
                   fallback={
                     <SecondaryNavLinksDesktop
-                      items={baseSecondaryNav}
+                      items={secondaryNavForUi}
                       pathname={pathname}
                       disableWorkspaceModules={disableWorkspaceModules}
                       resolveNavLabel={resolveNavLabel}
@@ -1049,7 +1102,7 @@ export function ProtectedShell({
                   }
                 >
                   <SecondaryNavLinksDesktopWithSearch
-                    items={baseSecondaryNav}
+                    items={secondaryNavForUi}
                     pathname={pathname}
                     disableWorkspaceModules={disableWorkspaceModules}
                     resolveNavLabel={resolveNavLabel}
@@ -1072,7 +1125,7 @@ export function ProtectedShell({
         <div className="mx-auto w-full max-w-[1480px]">
           <div className="border-b border-border/70 px-2">
             <div className="no-scrollbar flex max-w-full flex-nowrap justify-start gap-x-0.5 gap-y-1 overflow-x-auto py-1.5 sm:flex-wrap sm:justify-center">
-              {basePrimaryNav.map((item) => {
+              {primaryNavForUi.map((item) => {
               const act = isActive(pathname, item.href);
               const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
               const classes = cn(
@@ -1114,7 +1167,7 @@ export function ProtectedShell({
               <Suspense
                 fallback={
                   <SecondaryNavLinksMobile
-                    items={baseSecondaryNav}
+                    items={secondaryNavForUi}
                     pathname={pathname}
                     disableWorkspaceModules={disableWorkspaceModules}
                     resolveNavLabel={resolveNavLabel}
@@ -1124,7 +1177,7 @@ export function ProtectedShell({
                 }
               >
                 <SecondaryNavLinksMobileWithSearch
-                  items={baseSecondaryNav}
+                  items={secondaryNavForUi}
                   pathname={pathname}
                   disableWorkspaceModules={disableWorkspaceModules}
                   resolveNavLabel={resolveNavLabel}

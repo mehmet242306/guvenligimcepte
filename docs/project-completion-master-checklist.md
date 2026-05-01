@@ -521,15 +521,26 @@ Not: Ust bolumdeki **Faz 2** maddeleri operasyonel kabul / smoke test tamamlandi
 ## 12. Supabase ve Veritabani
 
 - [x] Son iki billing migration'i manuel uygulandi.
-- [!] Supabase remote migration history local ile uyumsuz.
-- [ ] Migration history uyumsuzlugu icin ayri plan yapilacak.
-- [ ] Remote-only migration'lar incelenecek.
-- [ ] Local-only migration'lar gercekten gerekli mi kontrol edilecek.
-- [ ] Production DB yedek stratejisi belirlendi.
-- [ ] RLS politikalarinin kritik tablolarda aktif oldugu kontrol edildi.
-- [ ] Service role disinda hassas tablolar yazilamiyor.
-- [ ] Storage bucket policy'leri kontrol edildi.
-- [ ] Database indexes performans icin kontrol edildi.
+- [x] Supabase remote migration history local ile uyumsuzlugu kapatildi.
+- [x] Migration history uyumsuzlugu icin ayri plan yapildi.
+- [x] Remote-only migration'lar incelendi.
+- [x] Local-only migration'lar gercekten gerekli mi kontrol edildi.
+- [x] Production DB yedek stratejisi belirlendi.
+- [x] RLS politikalarinin kritik tablolarda aktif oldugu kontrol edildi.
+- [x] Service role disinda hassas tablolar yazilamiyor.
+- [x] Storage bucket policy'leri kontrol edildi.
+- [x] Database indexes performans icin kontrol edildi.
+
+12 dogrulama notlari (kod / operasyon):
+
+- Migration history: `supabase db push` ciktisinda remote'da olup local `supabase/migrations` altinda bulunmayan 48 migration version'i gorundu (`20260413185813` ... `20260428004603`). Bu version'lar icin SQL-empty `*_remote_history_placeholder.sql` dosyalari eklendi; prod semaya yeni SQL uygulamaz, sadece CLI local/remote version eslesmesini korur.
+- Plan: remote-only version'lar local placeholder ile kapatildi; yeni `20260501193000_legal_rag_jurisdiction_scoping.sql` SQL Editor'da uygulandi ve `migration repair --status applied 20260501193000` ile history'ye islendi. Bundan sonra `db push` oncesi yine staging/backup kapisi korunmali.
+- Remote erisim durumu: Bu oturumda Supabase CLI access token ana proseste gorunmedi; buna ragmen SQL Editor + repair ile yeni migration tamamlandi. Eski remote-only uyumsuzluklar sema degistirmeyen placeholder dosyalarla repo tarafinda senkronlandi.
+- RLS statik tarama: migration dosyalarinda 197 `enable row level security`, 3 `force row level security`, 633 `create policy` satiri var. Kritik hardening dosyalari: `20260425010000_critical_rls_hardening.sql`, `20260425010500_ai_tables_explicit_policies.sql`, `20260425011000_survey_policy_hardening.sql`, `20260430120000_organization_osgb_affiliations.sql`.
+- Service role siniri: Canli REST smoke testinde anon/publishable key ile `paddle_webhook_events`, `user_subscriptions`, `enterprise_leads` ve gecerli org id'leriyle `organization_osgb_affiliations` insert denemeleri RLS tarafindan bloklandi (`42501`). Dokuman paylasimi ve webhook gibi route'larda servis rolu kullanimi kod tarafinda mevcut.
+- Storage: `20260425012000_storage_listing_hardening.sql`, `20260425014500_private_bucket_org_scoped_policies.sql`, `20260428153000_mobile_storage_org_policies.sql` storage listing ve org-scoped bucket policy sertlestirmelerini iceriyor.
+- Index: migrationlarda 449 index olusturma satiri ve `20260425013000_drop_duplicate_indexes.sql` var. Son performans icin production'da `pg_stat_user_indexes` / yavas sorgu gozlemiyle ikinci tur canli analiz yapilmali.
+- Backup stratejisi: Supabase Pro icin PITR/otomatik backup aktifligi dashboard'da teyit edilmeli; her manuel SQL/migration oncesi timestamp'li manual backup veya SQL dump alinmali; backup restore proseduru staging uzerinde prova edilmeden riskli repair uygulanmamali.
 
 ## 13. Guvenlik
 
