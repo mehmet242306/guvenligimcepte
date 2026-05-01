@@ -24,8 +24,11 @@ export default function OsgbSolutionsPage() {
             Firma portföyünüzü ve ekibinizi tek panelde toplayın.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-8 text-white/72">
-            Personel, görev takibi ve müşteri işyerleri ile çalışma düzeninizi netleştirin. Aşağıdaki örnek paketler
-            yönlendiricidir; kesin koşullar için teklif formunu doldurun veya kayıt akışından devam edin.
+            Personel, görev takibi ve müşteri işyerleri ile çalışma düzeninizi netleştirin. Bireysel paketlerimiz{" "}
+            <span className="font-semibold text-white/88">29 $/ay</span> Starter ile başlar; OSGB modeli çoklu işyeri
+            portföyü ve ek koltukları kapsadığı için aşağıdaki tutarlar{" "}
+            <span className="font-semibold text-white/88">USD</span> üzerinden gösterge segmentlerdir — kesin koşullar
+            teklif formu veya kayıt akışı sonrası netleşir.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link

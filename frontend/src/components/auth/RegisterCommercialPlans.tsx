@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Building2, BriefcaseBusiness } from "lucide-react";
+import { ArrowRight, Building2, BriefcaseBusiness, Check } from "lucide-react";
 import {
   companyOfferHighlights,
   osgbPackageOffers,
@@ -67,9 +67,9 @@ export function RegisterCommercialPlans({
 
   const titleCls = isLight ? "text-base font-semibold text-foreground" : "text-base font-semibold text-white";
   const bodyCls = isLight ? "text-sm text-muted-foreground" : "text-sm text-white/72";
-  const priceCls = isLight
-    ? "rounded-2xl border border-amber-500/25 bg-amber-500/10 px-3 py-1.5 text-sm font-semibold text-amber-900 dark:text-amber-100"
-    : "rounded-2xl border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-sm font-semibold text-amber-100";
+  const priceBlockShell = isLight
+    ? "rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/12 to-amber-600/5 px-4 py-3 text-right shadow-sm"
+    : "rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-400/12 to-amber-600/5 px-4 py-3 text-right shadow-[0_0_0_1px_rgba(251,191,36,0.06)_inset]";
 
   const pillCls = isLight
     ? "rounded-2xl border border-border bg-background/80 px-3 py-2 text-xs text-muted-foreground"
@@ -91,32 +91,97 @@ export function RegisterCommercialPlans({
               <BriefcaseBusiness className="h-4 w-4" />
               OSGB paketleri
             </div>
-            <div className="mt-4 grid gap-3 xl:grid-cols-2">
+            <p className={cn("mt-3 max-w-3xl text-sm leading-7", bodyCls)}>
+              Tutarlar{" "}
+              <span className={cn("font-semibold", isLight ? "text-foreground" : "text-white/90")}>USD</span> cinsinden
+              gösterge başlangıç segmentleridir; vergi, kur ve sözleşme kapsamı teklif netleşince yazılır. Kartla ödeme
+              yok — önce yapınızı paylaşıp size özel limit ve fiyatı birlikte belirliyoruz.
+            </p>
+            <div className="mt-5 grid gap-4 xl:grid-cols-2">
               {osgbPackageOffers.map((offer) => (
-                <div key={offer.code} className={cardShell}>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className={titleCls}>{offer.name}</p>
-                      <p className={cn("mt-1", bodyCls)}>{offer.summary}</p>
+                <div
+                  key={offer.code}
+                  className={cn(
+                    cardShell,
+                    "transition-shadow",
+                    offer.recommended &&
+                      (isLight
+                        ? "ring-2 ring-amber-500/35 shadow-md"
+                        : "ring-2 ring-amber-400/35 shadow-[0_20px_50px_-24px_rgba(251,191,36,0.35)]"),
+                  )}
+                >
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0 flex-1 pr-2">
+                      <div className="flex flex-wrap items-center gap-2 gap-y-1">
+                        <p className={titleCls}>{offer.name}</p>
+                        {offer.recommended ? (
+                          <span
+                            className={cn(
+                              "rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider",
+                              isLight
+                                ? "bg-amber-500/20 text-amber-900 dark:text-amber-100"
+                                : "bg-amber-400/15 text-amber-100",
+                            )}
+                          >
+                            Önerilen
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className={cn("mt-1.5", bodyCls)}>{offer.summary}</p>
                     </div>
-                    <div className={priceCls}>{offer.priceLabel}</div>
+                    <div className={cn("shrink-0 sm:min-w-[9.5rem]", priceBlockShell)}>
+                      <p
+                        className={cn(
+                          "text-[11px] font-semibold uppercase tracking-wider",
+                          isLight ? "text-amber-900/70 dark:text-amber-200/80" : "text-white/55",
+                        )}
+                      >
+                        {offer.priceCurrency}
+                      </p>
+                      <p
+                        className={cn(
+                          "mt-1 text-3xl font-semibold tracking-tight tabular-nums",
+                          isLight ? "text-foreground" : "text-white",
+                        )}
+                      >
+                        {offer.priceAmount}
+                      </p>
+                      <p
+                        className={cn(
+                          "mt-0.5 text-xs font-medium",
+                          isLight ? "text-muted-foreground" : "text-white/75",
+                        )}
+                      >
+                        {offer.pricePeriod}
+                      </p>
+                    </div>
                   </div>
+
+                  <p className={cn("mt-4 text-xs leading-5", isLight ? "text-muted-foreground" : "text-white/60")}>
+                    {offer.priceFinePrint}
+                  </p>
 
                   <div className="mt-4 grid gap-2 text-xs sm:grid-cols-2">
                     <div className={pillCls}>{offer.workspacesLabel}</div>
                     <div className={pillCls}>{offer.seatsLabel}</div>
                   </div>
 
-                  <ul className={cn("mt-4 space-y-2", featureText)}>
+                  <ul className={cn("mt-4 space-y-2.5", featureText)}>
                     {offer.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2">
-                        <span className={cn("mt-2 h-1.5 w-1.5 shrink-0 rounded-full", featureBullet)} />
+                      <li key={feature} className="flex items-start gap-2.5">
+                        <Check
+                          className={cn(
+                            "mt-0.5 h-4 w-4 shrink-0",
+                            isLight ? "text-amber-600 dark:text-amber-400" : "text-amber-300",
+                          )}
+                          strokeWidth={2.5}
+                        />
                         <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
 
-                  <div className="mt-4">
+                  <div className="mt-5">
                     <Button variant="outline" className={outlineBtn} onClick={() => openLead("osgb")}>
                       {offer.ctaLabel}
                       <ArrowRight className="h-4 w-4" />

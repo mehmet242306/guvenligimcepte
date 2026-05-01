@@ -3,25 +3,40 @@ export type CommercialInterestType = "osgb" | "enterprise";
 export type OsgbPackageOffer = {
   code: string;
   name: string;
-  priceLabel: string;
+  /** Büyük punto — örn. "$299" */
+  priceAmount: string;
+  /** Örn. "/ ay'dan itibaren" */
+  pricePeriod: string;
+  /** Örn. "USD" */
+  priceCurrency: string;
+  /** Kart altı — gösterge / teklif notu */
+  priceFinePrint: string;
   summary: string;
   workspacesLabel: string;
   seatsLabel: string;
   features: string[];
   ctaLabel: string;
+  /** Vurgulu / önerilen kart */
+  recommended?: boolean;
 };
 
 export const osgbPackageOffers: OsgbPackageOffer[] = [
   {
     code: "osgb_starter",
     name: "OSGB Starter",
-    priceLabel: "699 TL / ay",
-    summary: "Yeni başlayan veya çekirdek ekiple ilerleyen OSGB yapıları için başlangıç paketi.",
+    priceAmount: "$299",
+    pricePeriod: "/ ay'dan itibaren",
+    priceCurrency: "USD",
+    priceFinePrint:
+      "Gösterge başlangıç segmenti. Kesin tutar, firma ve koltuk sayınıza göre teklif formu sonrası netleşir.",
+    summary:
+      "Çekirdek OSGB ekibi ve sınırlı portföy ile başlayanlar için; bireysel 29 $/ay Starter’dan farklı olarak çoklu işyeri ve ekip modeli kapsar.",
     workspacesLabel: "5 aktif firma / workspace",
     seatsLabel: "2 aktif ekip koltuğu",
     features: [
-      "Personel modülü",
-      "Görev ve iş takibi",
+      "Personel modülü ve davet akışları",
+      "Görev, iş takibi ve atama panosu",
+      "Müşteri işyeri portföy görünümü",
       "Duyuru ve temel operasyon akışı",
     ],
     ctaLabel: "Starter için teklif iste",
@@ -29,16 +44,22 @@ export const osgbPackageOffers: OsgbPackageOffer[] = [
   {
     code: "osgb_team",
     name: "OSGB Team",
-    priceLabel: "1.799 TL / ay",
-    summary: "Daha fazla firma, saha ve ekip koordinasyonu gereken büyüyen OSGB’ler için.",
+    priceAmount: "$799",
+    pricePeriod: "/ ay'dan itibaren",
+    priceCurrency: "USD",
+    priceFinePrint:
+      "Gösterge orta segment. Yoğun saha, raporlama ve koltuk ihtiyacına göre özelleştirilmiş teklif sunulur.",
+    summary: "Büyüyen OSGB’ler: daha fazla firma, saha koordinasyonu ve ekip ölçeği için.",
     workspacesLabel: "15 aktif firma / workspace",
     seatsLabel: "5 aktif ekip koltuğu",
     features: [
       "Tüm Starter yetenekleri",
-      "Gelişmiş raporlama",
-      "Daha geniş ekip kapasitesi",
+      "Gelişmiş raporlama ve dışa aktarma",
+      "Saha denetimi ve kontrol listeleri (paket kapsamına göre)",
+      "Öncelikli çözüm / onboarding kanalı",
     ],
     ctaLabel: "Team için teklif iste",
+    recommended: true,
   },
 ];
 
