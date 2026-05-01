@@ -86,6 +86,22 @@ export function getPlanKeyByPaddlePriceId(priceId: string | null | undefined) {
   return null;
 }
 
+/** Webhook'larda custom_data eksik olabiliyor; fiyat ID'si env ile eslestiyse periyot kesinlesir */
+export function getBillingCycleByPaddlePriceId(priceId: string | null | undefined): BillingCycle | null {
+  const normalized = String(priceId ?? "").trim();
+  if (!normalized) return null;
+
+  for (const cycles of Object.values(PADDLE_PRICE_ENV)) {
+    const m = cycles.monthly?.trim();
+    const y = cycles.yearly?.trim();
+    if (!m || !y) continue;
+    if (process.env[m]?.trim() === normalized) return "monthly";
+    if (process.env[y]?.trim() === normalized) return "yearly";
+  }
+
+  return null;
+}
+
 export async function createPaddleCheckoutTransaction({
   priceId,
   userId,

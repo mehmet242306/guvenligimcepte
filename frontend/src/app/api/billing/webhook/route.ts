@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/security/server";
 import {
+  getBillingCycleByPaddlePriceId,
   getPlanKeyByPaddlePriceId,
   verifyPaddleWebhookSignature,
 } from "@/lib/billing/paddle";
@@ -52,6 +53,29 @@ function mapPaddleStatus(status: string | undefined, eventType: string) {
   if (normalized === "expired") return "expired";
   if (normalized === "active") return "active";
   return "active";
+}
+
+async function resolveBillingCycleFromDb(
+  service: ReturnType<typeof createServiceClient>,
+  priceId: string | null,
+): Promise<"monthly" | "yearly" | null> {
+  if (!priceId?.trim()) return null;
+
+  const { data: monthlyMatch } = await service
+    .from("subscription_plans")
+    .select("id")
+    .eq("paddle_price_id_monthly", priceId.trim())
+    .maybeSingle();
+  if (monthlyMatch?.id) return "monthly";
+
+  const { data: yearlyMatch } = await service
+    .from("subscription_plans")
+    .select("id")
+    .eq("paddle_price_id_yearly", priceId.trim())
+    .maybeSingle();
+  if (yearlyMatch?.id) return "yearly";
+
+  return null;
 }
 
 async function resolvePlanId({
@@ -118,6 +142,13 @@ async function upsertSubscription(eventType: string, data: Record<string, unknow
 
   if (!planId) return;
 
+  const billingCycleResolved =
+    customData.billing_cycle === "monthly" || customData.billing_cycle === "yearly"
+      ? customData.billing_cycle
+      : getBillingCycleByPaddlePriceId(priceId) ??
+        (await resolveBillingCycleFromDb(service, priceId)) ??
+        "monthly";
+
   const status = mapPaddleStatus(String(data.status ?? ""), eventType);
   const nextBillingDate =
     String(data.next_billed_at ?? "").trim() ||
@@ -148,7 +179,7 @@ async function upsertSubscription(eventType: string, data: Record<string, unknow
     organization_id: organizationId,
     plan_id: planId,
     status,
-    billing_cycle: customData.billing_cycle ?? "monthly",
+    billing_cycle: billingCycleResolved,
     next_billing_date: nextBillingDate,
     cancelled_at: cancelledAt,
     paddle_customer_id: customerId,
@@ -161,14 +192,20 @@ async function upsertSubscription(eventType: string, data: Record<string, unknow
   };
 
   if (existing.data?.id) {
-    await service
+    const { error: updateError } = await service
       .from("user_subscriptions")
       .update(payload)
       .eq("id", existing.data.id);
+    if (updateError) {
+      console.error("[billing.webhook] user_subscriptions update failed:", updateError.message);
+    }
     return;
   }
 
-  await service.from("user_subscriptions").insert(payload);
+  const { error: insertError } = await service.from("user_subscriptions").insert(payload);
+  if (insertError) {
+    console.error("[billing.webhook] user_subscriptions insert failed:", insertError.message);
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -179,7 +216,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
-  const event = JSON.parse(rawBody) as PaddleEvent;
+  let event: PaddleEvent;
+  try {
+    event = JSON.parse(rawBody) as PaddleEvent;
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
   const eventId = event.event_id;
   const eventType = event.event_type;
 
