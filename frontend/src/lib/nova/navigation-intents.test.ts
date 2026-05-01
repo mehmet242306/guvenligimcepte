@@ -31,6 +31,13 @@ describe("resolveNovaNavigationIntent", () => {
     expect(intent?.navigation.url).toBe("/risk-analysis");
   });
 
+  it("routes DÖF oluşturma ihtiyacını DOF modülüne", () => {
+    const intent = resolveNovaNavigationIntent("döf oluşturmam gerekiyor");
+
+    expect(intent?.navigation.destination).toBe("corrective_actions");
+    expect(intent?.navigation.url).toBe("/corrective-actions");
+  });
+
   it("normalizes Turkish spelling and spacing for routing", () => {
     expect(normalizeNovaNavigationText("Dokumanlar nerede?")).toBe("dokumanlar nerede?");
   });

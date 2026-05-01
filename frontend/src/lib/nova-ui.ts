@@ -218,8 +218,8 @@ export async function resolveNovaRuntimeErrorMessage(locale?: string | null, err
     rawMessage.includes("required permission")
   ) {
     return language === "tr"
-      ? "Nova genel ISG ve mevzuat sorularinda yardim edebilir; ancak firma verisine dayali ozetler, kayit acma ve operasyon aksiyonlari icin gerekli yetki bulunmuyor. Ilgili firmayi acin veya yoneticinizden erisim isteyin."
-      : "Nova can help with general OHS and legislation questions, but you do not have permission for company-specific summaries, record creation, or operational actions on this screen. Open the relevant company or ask your admin for access.";
+      ? "Hesabinizda Nova asistani icin AI erisim izni tanımlı görünmüyor (rol yetki matrisi). Yöneticinizden bu hesaba AI kullanım yetkisi verilmesini isteyebilir veya destek ile iletişime geçebilirsiniz."
+      : "Your account role does not include Nova (AI) access yet. Ask your admin to enable AI for your role, or contact support.";
   }
 
   if (!context?.message) {

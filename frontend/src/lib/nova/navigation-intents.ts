@@ -46,8 +46,23 @@ function isDocumentLookup(normalized: string) {
   );
 }
 
+/** DÖF/olay/risk gibi modül adı + oluştur/nasıl/nerede birlikte — "döf oluşturmam gerekiyor" gibi */
+function isOperationalModuleLookup(normalized: string) {
+  const mentionsModule =
+    /(dof|duzeltici|onleyici|corrective|preventive|ramak kala|olay|incident|risk analizi|risk assessment)/.test(
+      normalized,
+    );
+  const mentionsAction =
+    /(olustur|yeni|ekle|basla|ac|git|nerede|nerde|nasil|gerek|lazim|istiyorum)/.test(normalized);
+  return mentionsModule && mentionsAction;
+}
+
 function shouldResolveNavigation(normalized: string) {
-  return navigationVerbPattern.test(normalized) || isDocumentLookup(normalized);
+  return (
+    navigationVerbPattern.test(normalized) ||
+    isDocumentLookup(normalized) ||
+    isOperationalModuleLookup(normalized)
+  );
 }
 
 const navigationTargets: NovaNavigationTarget[] = [
