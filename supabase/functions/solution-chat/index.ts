@@ -96,6 +96,8 @@ const EMBEDDING_DIMENSIONS = 1536
 
 const MAX_TOOL_ITERATIONS = 10
 const MAX_TOKENS = 4096
+/** Widget yüzeyi: uzun tamamlama maliyetini sınırla */
+const WIDGET_COMPLETION_MAX_TOKENS = 2048
 const TEMPERATURE = 0.3
 
 const SUPPORTED_NOVA_LANGUAGES = [
@@ -295,7 +297,11 @@ EĞER tool'dan veri gelmezse:
 - Sonraki adım öner
 - Türkçe yaz
 
-Her cevabın sonunda sonraki adım sorusu sor.`
+Her cevabın sonunda sonraki adım sorusu sor.
+
+## KAYNAK BELİRSİZLİĞİ (MEVZUAT)
+Arama/kanıt zayıfsa, kaynak bulunamadıysa veya resmi metne erişilemediyse bunu açıkça söyle.
+Kesin yükümlülük veya madde numarası uydurma; kullanıcıyı güncel resmi metin veya İSG uzmanına yönlendir.`
 
 const NOVA_SYSTEM_PROMPT_EN = `You are Nova, the AI OHS assistant of RiskNova platform.
 You behave like a 20+ year experienced OHS specialist.
@@ -323,7 +329,11 @@ NEVER:
 - Short and clear (max 300 words)
 - Structured (bullets, headers)
 - Referenced (cite from tools)
-- Respond in user's language`
+- Respond in user's language
+
+## SOURCE UNCERTAINTY (REGULATIONS)
+If search tools return no solid hit, say clearly that the source could not be verified.
+Do not invent article numbers or binding duties; point to official texts or an OHS professional.`
 
 function normalizeNovaLanguage(language?: string | null): NovaLanguage {
   if (!language) return 'tr'
@@ -5680,6 +5690,8 @@ serve(async (req) => {
     const answerMode = parsedBody.data.answer_mode ?? 'extractive'
     const requestMode = parsedBody.data.mode ?? 'agent'
     const contextSurface = parsedBody.data.context_surface ?? 'solution_center'
+    const completionTokenBudget =
+      contextSurface === 'widget' ? WIDGET_COMPLETION_MAX_TOKENS : MAX_TOKENS
 
     if (!userMessage || userMessage.trim().length === 0) {
       return await jsonErrorResponse(req, {
@@ -5964,6 +5976,12 @@ serve(async (req) => {
     // ========================================================================
 
     let systemPrompt = getSystemPrompt(answerLanguage)
+
+    if (contextSurface === 'widget') {
+      systemPrompt += operationalLanguage === 'tr'
+        ? `\n\n## WIDGET / SITE AJANI\n- Sohbet gecmisindeki site haritasi ozetine uy; URL uydurma.\n- Uzun sorularda cevabi ozetle; gereksiz tekrar ve dolgu yapma.\n- Tool sonucu yoksa kisa ve durust ol.`
+        : `\n\n## WIDGET / SITE AGENT\n- Follow any site-map hints in chat history; do not invent URLs.\n- Keep answers concise for long questions.\n- If tools return nothing, say so briefly.`
+    }
 
     systemPrompt += operationalLanguage === 'tr'
       ? `\n\n## NOVA AKSIYON MODU\nNova yalnizca bilgi veren bir asistan degil, kontrollu bir operasyon ajanidir.\n- Kullanici planla, gorev olustur, olay baslat, dokuman taslagi hazirla, takvime ekle, baslat veya yonlendir gibi bir is istediginde uygun tool'u kullan.\n- Egitim planlama taleplerinde create_training_plan; genel gorevlerde create_planner_task; yeni olaylarda create_incident_draft; editor taslaklarinda create_document_draft kullan.\n- Benzer sorularda search_past_answers ile onceki basarili cevaplari ve kullanicinin gecmisini kontrol et.\n- Kullanici kalici bir tercih, tekrar eden operasyon kalibi veya firma icin uzun omurlu bir not verirse save_memory_note ile hafizaya al.\n- Kullanici \"sirada ne var\", \"ne kaldi\", \"devam edelim\", \"bugun bende ne var\" gibi ifadeler kullanirsa once get_proactive_operations; aktif akis odakliysa get_active_workflows kullan.\n- Kullanici bir adimi tamamladigini soyluyorsa complete_workflow_step ile ilgili adimi kapat ve siradaki adimi sun.\n- Kritik kayit acan islemlerde ilk adimda islemi hemen tamamlama; once bekleyen aksiyon hazirla ve acik kullanici onayi bekle.\n- Kullanici acikca \"onayliyorum\", \"devam et\", \"uygula\" derse confirm_pending_action kullan. \"Iptal et\", \"vazgectim\" derse cancel_pending_action kullan.\n- Kullanici tarihi dogal dilde soylese bile tool'a YYYY-MM-DD formatinda aktar.\n- Bilgi yeterliyse islemi hazirla; kritik eksik varsa sadece kisa ve net ek bilgi sor.\n- Islem tamamlandiginda sonucu ozetle, workflow ve sonraki adimlari belirt, gerekiyorsa kullaniciyi ilgili sayfaya yonlendir.\n- Mevzuat yorumunda mutlaka arama tool'lariyla dogrula; tercih ve operasyon bilgisini hafizada tut ama mevzuati ezberden uydurma.\n- Ogrenme sinyallerini ve firma hafizasini kullanarak ayni tur operasyonlarda daha iyi takip zinciri oner.`
@@ -6347,7 +6365,7 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
         anthropic,
         {
           model: ANTHROPIC_MODEL,
-          max_tokens: MAX_TOKENS,
+          max_tokens: completionTokenBudget,
           temperature: TEMPERATURE,
           system: systemPrompt,
           tools: availableTools as any,
@@ -6423,7 +6441,7 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
           anthropic,
           {
             model: ANTHROPIC_MODEL,
-            max_tokens: MAX_TOKENS,
+            max_tokens: completionTokenBudget,
             temperature: TEMPERATURE,
             system: systemPrompt + '\n\nONEMLI: Artik tool kullanma. Simdiye kadar topladigin bilgilerle kullanicinin sorusunu cevapla. Eger yeterli bilgi bulamadiysan, bunu durust bir sekilde soyle. Bos cevap verme.',
             messages: messages

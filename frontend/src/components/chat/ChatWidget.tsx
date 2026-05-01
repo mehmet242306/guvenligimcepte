@@ -28,6 +28,10 @@ import {
   resolveNovaGreetingIntent,
   resolveNovaNavigationIntent,
 } from "@/lib/nova/navigation-intents";
+import {
+  resolveNovaPublicSiteNavigationIntent,
+  resolveNovaSiteMapOverviewIntent,
+} from "@/lib/nova/site-map";
 import { fetchAccountContext } from "@/lib/account/account-api";
 import type {
   NovaAgentResponse,
@@ -1214,9 +1218,52 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     setTyping(true);
     setComposerError(null);
 
-    // Public users: no lightweight response layer
+    // Public kullanıcılar: site ajanı (statik yönlendirme + harita), tam Nova için giriş gerekir
     if (!isAuthenticated) {
+      const delay = 320 + Math.random() * 220;
       setTimeout(() => {
+        const greeting = resolveNovaGreetingIntent(composedPrompt);
+        if (greeting) {
+          const botMsg: Message = {
+            id: crypto.randomUUID(),
+            role: "bot",
+            text: `${greeting}\n\nTam Nova (mevzuat, firma verisi, araçlar) için giriş yapın.`,
+            suggestions: publicEntryActions,
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, botMsg]);
+          setTyping(false);
+          return;
+        }
+
+        const overview = resolveNovaSiteMapOverviewIntent(composedPrompt);
+        if (overview) {
+          const botMsg: Message = {
+            id: crypto.randomUUID(),
+            role: "bot",
+            text: overview,
+            suggestions: publicEntryActions,
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, botMsg]);
+          setTyping(false);
+          return;
+        }
+
+        const publicNav = resolveNovaPublicSiteNavigationIntent(composedPrompt);
+        if (publicNav) {
+          const botMessage = buildBotMessageFromAgentResponse({
+            type: "message",
+            answer: publicNav.answer,
+            sources: [],
+            navigation: publicNav.navigation,
+            telemetry: { client_fallback: true, reason: "nova_public_site_intent" },
+          });
+          setMessages((prev) => [...prev, botMessage]);
+          setTyping(false);
+          return;
+        }
+
         const botMsg: Message = {
           id: crypto.randomUUID(),
           role: "bot",
@@ -1226,7 +1273,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         };
         setMessages((prev) => [...prev, botMsg]);
         setTyping(false);
-      }, 600 + Math.random() * 400);
+      }, delay);
       return;
     }
 

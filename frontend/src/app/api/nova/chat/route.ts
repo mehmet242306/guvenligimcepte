@@ -19,6 +19,10 @@ import {
   resolveNovaNavigationIntent,
 } from "@/lib/nova/navigation-intents";
 import { consumeEntitlement } from "@/lib/billing/entitlements";
+import {
+  buildNovaSiteMapSummaryForPrompt,
+  resolveNovaProductHelpIntent,
+} from "@/lib/nova/site-map";
 
 function isCompatError(message: string | undefined | null) {
   const normalized = String(message ?? "").toLowerCase();
@@ -68,44 +72,6 @@ function detectNovaIntentForPermission(
 
 function canUseReadOnlyLegalFallback(message: string) {
   return detectNovaIntentForPermission(message) === "regulation" && !isOperationalCommandQuery(message);
-}
-
-function resolveNovaProductHelpIntent(message: string) {
-  const normalized = normalizeNovaIntentText(message);
-
-  if (/(nasil kayit|register|uye ol|uye olmak|kayit olmak|hesap ac)/.test(normalized)) {
-    return {
-      answer:
-        "Hizli baslangic icin Kayit ol ekranindan bireysel hesap acabilirsin. Paket karsilastirmasi icin de Paketler sayfasini kullan.",
-      navigation: { targetPage: "/register", label: "Kayit ol", source: "nova-product-help" },
-    };
-  }
-
-  if (/(fiyat|fiyatlandirma|paket|ucret|odeme|abonelik)/.test(normalized)) {
-    return {
-      answer:
-        "Paket detaylari ve limit karsilastirmasi Paketler sayfasinda. Oradan planini secip odeme akisina gecebilirsin.",
-      navigation: { targetPage: "/pricing", label: "Paketler", source: "nova-product-help" },
-    };
-  }
-
-  if (/(sinav|anket|egitim|training|question bank|soru bankasi)/.test(normalized)) {
-    return {
-      answer:
-        "Sinav, anket ve egitim iceriklerini Egitim modulunden yonetebilirsin. Soru bankasi ve sertifikalar da ayni alanda bulunur.",
-      navigation: { targetPage: "/training", label: "Egitim Modulu", source: "nova-product-help" },
-    };
-  }
-
-  if (/(ne yapiyorsun|ne ise yarar|hangi ozellik|neler var|moduller neler)/.test(normalized)) {
-    return {
-      answer:
-        "RiskNova; risk analizi, saha denetimi, dokuman, egitim/sinav/anket ve abonelik yonetimini tek panelde sunar. Istersen seni ilgili module yonlendirebilirim.",
-      navigation: null,
-    };
-  }
-
-  return null;
 }
 
 function isUuid(value: string | null | undefined) {
@@ -771,11 +737,16 @@ export async function POST(request: NextRequest) {
         "Nova role constraint: Nova is the RiskNova site agent inside the floating chat widget. Do not present a separate Nova workspace or Nova center. For document needs, do not generate full documents inside chat; route the user to ISG Kutuphanesi Dokumantasyon or Dokuman Editoru and explain the next click briefly.",
     });
 
+    contextualHistory.unshift({
+      role: "assistant",
+      content: buildNovaSiteMapSummaryForPrompt(),
+    });
+
     if (effectiveRequestMode === "read" && effectiveCompanyWorkspaceId === null) {
       contextualHistory.unshift({
         role: "assistant",
         content:
-          "Permission constraint: Answer only with general OHS legislation and source-backed guidance. Do not use tenant-private company/workspace records, do not summarize active operational data, and do not prepare record-creating actions.",
+          "Permission constraint: Answer only with general OHS legislation and source-backed guidance. Do not use tenant-private company/workspace records, do not summarize active operational data, and do not prepare record-creating actions. If legislation tools return no relevant hit or authority is unclear, say explicitly that the source could not be verified and recommend an ISG expert or official text — do not invent articles or obligations.",
       });
     }
 
