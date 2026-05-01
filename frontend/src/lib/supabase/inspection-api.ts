@@ -294,18 +294,24 @@ export type CreateRunInput = {
   clientGeneratedAt?: string | null;
 };
 
+export type CreateInspectionRunResult =
+  | { ok: true; run: InspectionRunRecord }
+  | { ok: false; message: string; quotaExceeded?: boolean };
+
 export async function createInspectionRun(
   input: CreateRunInput,
-): Promise<InspectionRunRecord | null> {
+): Promise<CreateInspectionRunResult> {
   const supabase = createClient();
-  if (!supabase) return null;
+  if (!supabase) {
+    return { ok: false, message: "Oturum bulunamadı." };
+  }
 
   const {
     data: { session },
   } = await supabase.auth.getSession();
   if (!session?.access_token) {
     console.warn("createInspectionRun: no session");
-    return null;
+    return { ok: false, message: "Oturum bulunamadı." };
   }
 
   const res = await fetch("/api/inspection/runs", {
@@ -327,19 +333,35 @@ export async function createInspectionRun(
     }),
   });
 
+  const payload = (await res.json().catch(() => ({}))) as {
+    run?: LooseRow;
+    error?: string;
+    message?: string;
+  };
+
   if (res.status === 402) {
-    console.warn("createInspectionRun: paket limiti (saha denetimi)");
-    return null;
+    return {
+      ok: false,
+      quotaExceeded: true,
+      message:
+        typeof payload.message === "string"
+          ? payload.message
+          : "Saha denetimi paket limitiniz doldu. Paketinizi yükselterek devam edebilirsiniz.",
+    };
   }
 
   if (!res.ok) {
-    const errBody = (await res.json().catch(() => null)) as { error?: string } | null;
-    console.warn("createInspectionRun:", errBody?.error ?? res.status);
-    return null;
+    console.warn("createInspectionRun:", payload?.error ?? res.status);
+    return {
+      ok: false,
+      message: payload.error || payload.message || "Denetim oturumu oluşturulamadı.",
+    };
   }
 
-  const json = (await res.json()) as { run?: LooseRow };
-  return json.run ? mapRunRow(json.run) : null;
+  if (!payload.run) {
+    return { ok: false, message: "Sunucu yanıtı geçersiz." };
+  }
+  return { ok: true, run: mapRunRow(payload.run) };
 }
 
 export async function updateRun(

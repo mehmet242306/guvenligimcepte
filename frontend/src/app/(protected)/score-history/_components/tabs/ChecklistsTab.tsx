@@ -67,7 +67,7 @@ export function ChecklistsTab({
   );
 
   return (
-    <div className="mt-4 grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
+    <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
       <SubcategorySidebar
         title="Checklistler"
         items={sidebarItems}

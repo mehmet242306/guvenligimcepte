@@ -544,7 +544,7 @@ export async function hasStarterPack(): Promise<boolean> {
     .from("inspection_checklist_templates")
     .select("id")
     .eq("organization_id", auth.orgId)
-    .contains("metadata", { starter_pack_version: 1 })
+    .not("metadata->starter_pack_version", "is", null)
     .limit(1);
   if (error) {
     console.warn("hasStarterPack:", error.message);
@@ -553,7 +553,9 @@ export async function hasStarterPack(): Promise<boolean> {
   return (data ?? []).length > 0;
 }
 
-export async function seedStarterTemplates(opts?: {
+let seedStarterInFlight: Promise<SeedStarterResult> | null = null;
+
+async function seedStarterTemplatesOnce(opts?: {
   companyWorkspaceId?: string | null;
 }): Promise<SeedStarterResult> {
   const supabase = createClient();
@@ -628,4 +630,15 @@ export async function seedStarterTemplates(opts?: {
   }
 
   return { created, skipped: false };
+}
+
+/** Çift tıklama / StrictMode yarışını tek uçuşta birleştirir. */
+export async function seedStarterTemplates(opts?: {
+  companyWorkspaceId?: string | null;
+}): Promise<SeedStarterResult> {
+  if (seedStarterInFlight) return seedStarterInFlight;
+  seedStarterInFlight = seedStarterTemplatesOnce(opts).finally(() => {
+    seedStarterInFlight = null;
+  });
+  return seedStarterInFlight;
 }

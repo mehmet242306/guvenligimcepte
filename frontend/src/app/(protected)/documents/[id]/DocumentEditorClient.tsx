@@ -36,6 +36,7 @@ import { ShareModal } from '@/components/documents/ShareModal';
 import { SignatureModal } from '@/components/documents/SignatureModal';
 import QRCode from 'qrcode';
 import type { JSONContent } from '@tiptap/react';
+import { consumeExportQuotaClient } from '@/lib/billing/export-quota-client';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   taslak: { label: 'Taslak', color: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400', icon: FileEdit },
@@ -406,33 +407,13 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
   }, [orgId, editor, doc, title, status, groupKey, userId, companyData, qCompanyId, fromLibrary, librarySection, workspaceId, qMode, getSaveLocationLabel]);
 
   const consumeExportQuota = useCallback(async (): Promise<boolean> => {
-    try {
-      const res = await fetch("/api/documents/export-quota", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: "{}",
-      });
-      const body = (await res.json().catch(() => ({}))) as { message?: string; error?: string };
-      if (res.status === 402) {
-        setExportNotice(
-          body.message ||
-            "Disa aktarma paket limitiniz doldu. Paketinizi yukselterek devam edebilirsiniz.",
-        );
-        window.setTimeout(() => setExportNotice(null), 10000);
-        return false;
-      }
-      if (!res.ok) {
-        setExportNotice(body.error || body.message || "Disa aktarma kotasi dogrulanamadi.");
-        window.setTimeout(() => setExportNotice(null), 8000);
-        return false;
-      }
-      return true;
-    } catch {
-      setExportNotice("Baglanti hatasi. Disa aktarma kotasi dogrulanamadi.");
-      window.setTimeout(() => setExportNotice(null), 8000);
+    const result = await consumeExportQuotaClient();
+    if (!result.ok) {
+      setExportNotice(result.message);
+      window.setTimeout(() => setExportNotice(null), 10000);
       return false;
     }
+    return true;
   }, []);
 
   // Export

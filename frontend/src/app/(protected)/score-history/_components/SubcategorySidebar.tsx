@@ -40,7 +40,7 @@ export function SubcategorySidebar({
         <span className="text-sm font-semibold text-foreground">{title}</span>
       </div>
 
-      <div className="space-y-2">
+      <div className="max-h-[min(52vh,380px)] space-y-2 overflow-y-auto overscroll-contain pr-1 lg:max-h-none lg:overflow-visible">
         {items.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-amber-200/70 bg-white/70 px-4 py-6 text-center text-xs text-muted-foreground dark:border-amber-400/15 dark:bg-white/5">
             {emptyLabel}

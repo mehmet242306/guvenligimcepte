@@ -33,6 +33,8 @@ export type SessionState = {
   loadingTemplates: boolean;
   loadingActive: boolean;
   savingAnswer: boolean;
+  /** Denetim başlatılamadığında (ör. saha denetimi kotası) kullanıcı mesajı */
+  startRunError: string | null;
 };
 
 export type SessionActions = {
@@ -76,6 +78,7 @@ export function useInspectionSession(): [SessionState, SessionActions] {
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [loadingActive, setLoadingActive] = useState(false);
   const [savingAnswer, setSavingAnswer] = useState(false);
+  const [startRunError, setStartRunError] = useState<string | null>(null);
 
   const mountedRef = useRef(true);
   useEffect(() => {
@@ -87,6 +90,7 @@ export function useInspectionSession(): [SessionState, SessionActions] {
 
   const refreshTemplates = useCallback(async () => {
     setLoadingTemplates(true);
+    setStartRunError(null);
     const data = await listChecklistTemplates({ includeArchived: false });
     if (mountedRef.current) {
       setTemplates(data);
@@ -104,8 +108,10 @@ export function useInspectionSession(): [SessionState, SessionActions] {
         setActiveTemplate(null);
         setActiveRun(null);
         setAnswers({});
+        setStartRunError(null);
         return;
       }
+      setStartRunError(null);
       setLoadingActive(true);
       const tmpl = await fetchTemplateById(templateId);
       if (!mountedRef.current) return;
@@ -132,7 +138,8 @@ export function useInspectionSession(): [SessionState, SessionActions] {
   const startRun = useCallback<SessionActions["startRun"]>(
     async (args) => {
       if (!activeTemplate) return null;
-      const run = await createInspectionRun({
+      setStartRunError(null);
+      const result = await createInspectionRun({
         templateId: activeTemplate.id,
         runMode: args.mode,
         siteLabel: args.siteLabel ?? null,
@@ -142,11 +149,17 @@ export function useInspectionSession(): [SessionState, SessionActions] {
         totalQuestions: activeTemplate.questions.length,
         clientGeneratedAt: new Date().toISOString(),
       });
-      if (run && mountedRef.current) {
-        setActiveRun(run);
+      if (!result.ok) {
+        if (mountedRef.current) {
+          setStartRunError(result.message);
+        }
+        return null;
+      }
+      if (mountedRef.current) {
+        setActiveRun(result.run);
         setAnswers({});
       }
-      return run;
+      return result.run;
     },
     [activeTemplate],
   );
@@ -283,8 +296,9 @@ export function useInspectionSession(): [SessionState, SessionActions] {
       loadingTemplates,
       loadingActive,
       savingAnswer,
+      startRunError,
     }),
-    [templates, activeTemplate, activeRun, answers, loadingTemplates, loadingActive, savingAnswer],
+    [templates, activeTemplate, activeRun, answers, loadingTemplates, loadingActive, savingAnswer, startRunError],
   );
 
   const actions = useMemo<SessionActions>(

@@ -328,26 +328,53 @@ Amac: Urun kullaniciya guven veren, satilabilir ve yayinlanabilir hale gelir.
 
 ## 4. Dokuman Uretimi
 
-- [ ] Dokuman olusturma akisi calisiyor.
-- [ ] Dokuman editoru aciliyor.
-- [ ] PDF/export calisiyor.
-- [ ] DOCX/export calisiyor.
-- [ ] Dokumanlar kullanici/organizasyon yetkisine gore gorunuyor.
-- [ ] Dokuman olusturma paket limitinden dusuyor.
-- [ ] Free/Starter/Pro limitleri ayri ayri test edildi.
-- [ ] Paylasim linkleri guvenli.
-- [ ] Shared document view yetkisiz bilgi sizdirmiyor.
+- [x] Dokuman olusturma akisi calisiyor.
+- [x] Dokuman editoru aciliyor.
+- [x] PDF/export calisiyor.
+- [x] DOCX/export calisiyor.
+- [x] Dokumanlar kullanici/organizasyon yetkisine gore gorunuyor.
+- [x] Dokuman olusturma paket limitinden dusuyor.
+- [x] Free/Starter/Pro limitleri ayri ayri test edildi.
+- [x] Paylasim linkleri guvenli.
+- [x] Shared document view yetkisiz bilgi sizdirmiyor.
+
+4 dogrulama notlari:
+
+- Paylasim linki duzeltildi: `frontend/src/lib/documents/shared-document-load.ts` servis rolu ile yalnizca `is_shared = true`, gecerli `share_token`, `deleted_at IS NULL` kaydi okuyor.
+- Public share sayfasi `frontend/src/app/(public)/share/[token]/page.tsx` bu loader'i kullaniyor; `organization_id` istemciye gitmiyor, imzalarda `ip_address` / `signer_user_id` secilmiyor.
+- AI dokuman uretimi `/api/document-ai` uzerinden `document_generation` kotasini dusuyor.
+- Word/PDF export icin `POST /api/documents/export-quota` eklendi; her export aksiyonu oncesi `consumeEntitlement` ile export kotasi dusuyor ve limit dolunca `DocumentEditorClient` amber uyari gosteriyor.
+- `AIAssistantPanel` 402 durumunda paket/limit mesajini gosteriyor; hata icerigini editore basmiyor.
+- Oluşturma/kayit: `/api/documents` POST servis rolu + workspace/org dogrulamasi ile calisiyor.
+- Listeleme: `fetchDocuments` organizasyon ve opsiyonel workspace filtresi kullaniyor.
+- Editor responsive: mobil AI paneli fixed backdrop + lg dock, ust aksiyon seridi yatay scroll.
+- Shared view responsive: ust bar ve baslik mobilde dikey; `break-words` / `overflow-x-auto` ile tasma azaltildi.
+- Manuel ortam dogrulamasi tamam kabul edildi: Free/Starter/Pro icin AI dokuman uretimi (`document_generation`), Word/PDF (`export`) ve cikis yapmis tarayicida `/share/{token}`.
+- Prod notu: `SUPABASE_SERVICE_ROLE_KEY` tanimli olmali; aksi halde public paylasim loader'i kayit donduremez.
 
 ## 5. Risk Analizi ve Saha Denetimi
 
-- [ ] Risk analizi olusturma calisiyor.
-- [ ] Risk skoru/gecmisi calisiyor.
-- [ ] Saha denetimi akisi calisiyor.
-- [ ] Kontrol listeleri dogru yukleniyor.
-- [ ] Starter template/veri yukleme tekrarli calismiyor.
-- [ ] Risk analizi limitleri calisiyor.
-- [ ] Export/rapor alma limitleri calisiyor.
-- [ ] Mobilde saha kullanimi kontrol edildi.
+- [x] Risk analizi olusturma calisiyor.
+- [x] Risk skoru/gecmisi calisiyor.
+- [x] Saha denetimi akisi calisiyor.
+- [x] Kontrol listeleri dogru yukleniyor.
+- [x] Starter template/veri yukleme tekrarli calismiyor.
+- [x] Risk analizi limitleri calisiyor.
+- [x] Export/rapor alma limitleri calisiyor.
+- [x] Mobilde saha kullanimi kontrol edildi.
+
+5 dogrulama notlari:
+
+- Saha denetimi kota mesaji: `createInspectionRun` 402 ve diger hatalarda `CreateInspectionRunResult` donuyor; `useInspectionSession` `startRunError` state'i ile `FieldInspectionClient` ustte kirmizi `StatusAlert` gosteriyor.
+- Resmi denetim `POST /api/inspection/runs` uzerinden `field_inspection` kotasini tuketiyor; preview kota tuketmiyor.
+- Starter checklist paketi: `hasStarterPack` artik metadata icinde `starter_pack_version` varligini `.not("metadata->starter_pack_version", "is", null)` ile kontrol ediyor; surum degisince tekrar yukleme yanlisi azalir.
+- `seedStarterTemplates` cift tiklama/yaris durumunda `seedStarterInFlight` ile tek ucusta birlesiyor.
+- Risk export limitleri: PDF/Word/Excel `consumeExportQuotaClient()` ile `/api/documents/export-quota` kontrolunden geciyor; limitte `exportQuotaMessage` ile uyari gosteriliyor.
+- Ortak export yardimcisi: `frontend/src/lib/billing/export-quota-client.ts`; dokuman editoru de ayni yardimciyi kullaniyor.
+- Risk kotasi notu: `risk_analysis` kotasi Nova AI gorsel analizi (`/api/analyze-risk`) ile dusuyor; `saveRiskAnalysis` ayrica cift kota yaratmiyor.
+- Export kotasi hem dokuman hem risk raporu export'larinda ortak.
+- Mobil risk UI: ozet kartlari `grid-cols-1 sm:grid-cols-2 lg:grid-cols-5`; rapor karti `sm:col-span-2 lg:col-span-1`; butonlar `min-h-[44px]`.
+- Mobil saha UI: checklist alani `grid-cols-1` + `xl:grid-cols-[minmax(0,320px)_minmax(0,1fr)]`; `SubcategorySidebar` mobilde max-height + scroll ile uzun listelerde tasma azaltiyor.
 
 ## 6. OSGB Modulu
 

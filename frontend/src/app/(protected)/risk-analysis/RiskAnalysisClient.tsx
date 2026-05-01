@@ -85,6 +85,7 @@ import type {
   ExportImage,
   RiskAnalysisExportData,
 } from "@/lib/risk-analysis-export";
+import { consumeExportQuotaClient } from "@/lib/billing/export-quota-client";
 import {
   saveRiskAnalysis,
   replaceRiskAnalysis,
@@ -953,6 +954,7 @@ export function RiskAnalysisClient() {
   const [savedAnalyses, setSavedAnalyses] = useState<SavedAssessment[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
+  const [exportQuotaMessage, setExportQuotaMessage] = useState<string | null>(null);
   const [currentAssessmentId, setCurrentAssessmentId] = useState<string | null>(null);
   const [loadingAnalyses, setLoadingAnalyses] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -1820,6 +1822,29 @@ JSON formatında döndür:
     };
   }
 
+  async function exportRiskReport(format: "pdf" | "word" | "excel") {
+    setExportQuotaMessage(null);
+    const quota = await consumeExportQuotaClient();
+    if (!quota.ok) {
+      setExportQuotaMessage(quota.message);
+      window.setTimeout(() => setExportQuotaMessage(null), 9000);
+      return;
+    }
+    const d = await buildExportData();
+    if (format === "pdf") {
+      const { exportRiskAnalysisPDF } = await import("@/lib/risk-analysis-export");
+      await exportRiskAnalysisPDF(d);
+      return;
+    }
+    if (format === "word") {
+      const { exportRiskAnalysisWord } = await import("@/lib/risk-analysis-export");
+      await exportRiskAnalysisWord(d);
+      return;
+    }
+    const { exportRiskAnalysisExcel } = await import("@/lib/risk-analysis-export");
+    await exportRiskAnalysisExcel(d);
+  }
+
   /* ── Kaydet ── */
   async function handleSaveAnalysis() {
     if (results.length === 0) return;
@@ -2584,7 +2609,7 @@ JSON formatında döndür:
       {step === 4 && (
         <div className="space-y-6">
           {/* Ozet bandi */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
               <p className="eyebrow">Toplam Tespit</p>
               <p className="mt-1 text-2xl font-bold text-foreground">{totalDetectionCount}</p>
@@ -2603,12 +2628,12 @@ JSON formatında döndür:
                 {totalDetectionCount === 0 ? "-" : method === "r_skor" ? (avgScore * 100).toFixed(0) : Math.round(avgScore)}
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
+            <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center sm:col-span-2 lg:col-span-1">
               <p className="eyebrow">Rapor</p>
-              <div className="mt-1 flex justify-center gap-1">
-                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" onClick={async () => { const d = await buildExportData(); const { exportRiskAnalysisPDF } = await import("@/lib/risk-analysis-export"); await exportRiskAnalysisPDF(d); }} disabled={results.length === 0}>PDF</Button>
-                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20" onClick={async () => { const d = await buildExportData(); const { exportRiskAnalysisWord } = await import("@/lib/risk-analysis-export"); await exportRiskAnalysisWord(d); }} disabled={results.length === 0}>Word</Button>
-                <Button type="button" variant="outline" className="h-9 rounded-xl px-3 text-xs font-bold text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" onClick={async () => { const d = await buildExportData(); const { exportRiskAnalysisExcel } = await import("@/lib/risk-analysis-export"); await exportRiskAnalysisExcel(d); }} disabled={results.length === 0}>Excel</Button>
+              <div className="mt-1 flex flex-wrap justify-center gap-1.5">
+                <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[4.5rem] rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" onClick={() => void exportRiskReport("pdf")} disabled={results.length === 0}>PDF</Button>
+                <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[4.5rem] rounded-xl px-3 text-xs font-bold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20" onClick={() => void exportRiskReport("word")} disabled={results.length === 0}>Word</Button>
+                <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[4.5rem] rounded-xl px-3 text-xs font-bold text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" onClick={() => void exportRiskReport("excel")} disabled={results.length === 0}>Excel</Button>
               </div>
             </div>
           </div>
@@ -2617,6 +2642,9 @@ JSON formatında döndür:
           {saveMessage && (
             <StatusAlert tone={saveMessage.includes("başarı") ? "success" : "danger"} className="mt-2">{saveMessage}</StatusAlert>
           )}
+          {exportQuotaMessage ? (
+            <StatusAlert tone="danger" className="mt-2">{exportQuotaMessage}</StatusAlert>
+          ) : null}
 
           {/* Sonuc alani */}
           <div className="surface-card rounded-[1.75rem] border border-border p-6 shadow-[var(--shadow-card)]">
