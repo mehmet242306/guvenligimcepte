@@ -159,6 +159,35 @@ export function AuthSessionRecoverClient({
         console.warn("[session-recover] refreshSession after setSession:", refreshAfterSetError.message);
       }
 
+      // Giris (Google): demo suresi dolmus hesap tekrar kayit ekranina dusmesin
+      if (intent !== "register") {
+        try {
+          const releaseRes = await fetch("/api/account/release-demo-after-oauth", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${data.session.access_token}`,
+            },
+          });
+          const releaseJson = await readJsonSafely<{ ok?: boolean; released?: boolean }>(
+            releaseRes,
+          );
+          if (releaseRes.ok && releaseJson?.released) {
+            const { error: afterDemoRelease } = await appSupabase.auth.refreshSession();
+            if (afterDemoRelease) {
+              console.warn(
+                "[session-recover] refreshSession after demo release:",
+                afterDemoRelease.message,
+              );
+            }
+          } else if (!releaseRes.ok && releaseRes.status !== 403) {
+            console.warn("[session-recover] release-demo-after-oauth:", releaseRes.status);
+          }
+        } catch (releaseErr) {
+          console.warn("[session-recover] release-demo-after-oauth failed:", releaseErr);
+        }
+      }
+
       if (shouldForcePasswordSetup(data.session.user)) {
         if (data.session.user.user_metadata?.must_set_password !== true) {
           try {

@@ -20,6 +20,7 @@ import {
   getAccountContextForUser,
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
+import { releaseDemoUserLock } from "@/lib/auth/demo-release";
 
 function isSafePostLoginNext(value: string) {
   return (
@@ -246,6 +247,16 @@ export async function login(formData: FormData) {
 
   const { data: assuranceData, error: assuranceError } =
     await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+  if (signedInUser) {
+    try {
+      const service = createServiceClient();
+      await releaseDemoUserLock(service, signedInUser, { onlyIfExpired: true });
+      await supabase.auth.refreshSession();
+    } catch (demoReleaseError) {
+      console.warn("[login] demo kilidi kaldirma:", demoReleaseError);
+    }
+  }
 
   revalidatePath("/", "layout");
 

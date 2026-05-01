@@ -33,6 +33,17 @@ function isAccountOsgbAffiliationsApi(pathname: string) {
   return pathname === "/api/account/osgb-affiliations" || pathname.startsWith("/api/account/osgb-affiliations/");
 }
 
+/** Demo blokliyken bile tamamlanmasi gereken hesap / OAuth kurtarma API'leri */
+function isDemoEscapeApi(pathname: string) {
+  return (
+    pathname === "/api/account/context" ||
+    pathname === "/api/account/onboarding" ||
+    pathname === "/api/account/release-demo-after-oauth" ||
+    pathname === "/api/workspaces/onboarding" ||
+    pathname.startsWith("/api/workspaces/onboarding/")
+  );
+}
+
 const CANONICAL_HOST = "getrisknova.com";
 const LEGACY_HOSTS = new Set(["getrisknova.vercel.app"]);
 
@@ -137,7 +148,8 @@ export async function updateSession(request: NextRequest) {
     pathname === "/login" ||
     pathname === "/register" ||
     pathname === "/reset-password" ||
-    pathname.startsWith("/auth");
+    pathname.startsWith("/auth") ||
+    isDemoEscapeApi(pathname);
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();
