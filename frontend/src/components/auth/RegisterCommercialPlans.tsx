@@ -55,7 +55,7 @@ export function RegisterCommercialPlans({
 
   const sectionShell = isLight
     ? "rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] sm:p-5"
-    : "rounded-[1.75rem] border border-white/10 bg-white/6 p-5 backdrop-blur-sm";
+    : "rounded-[1.75rem] border border-amber-400/18 bg-gradient-to-b from-white/[0.09] to-white/[0.03] p-6 shadow-[0_28px_90px_-48px_rgba(0,0,0,0.65)] backdrop-blur-md sm:p-7";
 
   const eyebrow = isLight
     ? "text-xs font-semibold uppercase tracking-[0.2em] text-amber-700 dark:text-amber-200/90"
@@ -63,7 +63,7 @@ export function RegisterCommercialPlans({
 
   const cardShell = isLight
     ? "rounded-2xl border border-border bg-secondary/25 p-4"
-    : "rounded-[1.4rem] border border-white/10 bg-slate-950/28 p-4";
+    : "group rounded-[1.4rem] border border-white/12 bg-slate-950/40 p-5 backdrop-blur-sm";
 
   const titleCls = isLight ? "text-base font-semibold text-foreground" : "text-base font-semibold text-white";
   const bodyCls = isLight ? "text-sm text-muted-foreground" : "text-sm text-white/72";
@@ -87,23 +87,29 @@ export function RegisterCommercialPlans({
       <div className={cn("space-y-5 text-sm leading-7", isLight ? "text-foreground" : "text-white/92", className)}>
         {showOsgb ? (
           <div className={sectionShell}>
-            <div className={cn("flex items-center gap-2", eyebrow)}>
-              <BriefcaseBusiness className="h-4 w-4" />
-              OSGB paketleri
+            <div data-landing-reveal>
+              <div className={cn("flex items-center gap-2", eyebrow)}>
+                <BriefcaseBusiness className="h-4 w-4" />
+                OSGB paketleri
+              </div>
+              <p className={cn("mt-3 max-w-3xl text-sm leading-7", bodyCls)}>
+                Tutarlar{" "}
+                <span className={cn("font-semibold", isLight ? "text-foreground" : "text-white/90")}>USD</span>{" "}
+                cinsinden gösterge başlangıç segmentleridir; vergi, kur ve sözleşme kapsamı teklif netleşince yazılır.
+                Kartla ödeme yok — önce yapınızı paylaşıp size özel limit ve fiyatı birlikte belirliyoruz.
+              </p>
             </div>
-            <p className={cn("mt-3 max-w-3xl text-sm leading-7", bodyCls)}>
-              Tutarlar{" "}
-              <span className={cn("font-semibold", isLight ? "text-foreground" : "text-white/90")}>USD</span> cinsinden
-              gösterge başlangıç segmentleridir; vergi, kur ve sözleşme kapsamı teklif netleşince yazılır. Kartla ödeme
-              yok — önce yapınızı paylaşıp size özel limit ve fiyatı birlikte belirliyoruz.
-            </p>
-            <div className="mt-5 grid gap-4 xl:grid-cols-2">
-              {osgbPackageOffers.map((offer) => (
+            <div className="mt-6 grid gap-5 xl:grid-cols-2">
+              {osgbPackageOffers.map((offer, index) => (
                 <div
                   key={offer.code}
+                  data-landing-reveal
+                  data-stagger={String(Math.min(index + 1, 5))}
                   className={cn(
                     cardShell,
-                    "transition-shadow",
+                    "hover-lift transition-shadow duration-300",
+                    !isLight &&
+                      "hover:border-amber-400/25 hover:shadow-[0_24px_60px_-28px_rgba(251,191,36,0.22)]",
                     offer.recommended &&
                       (isLight
                         ? "ring-2 ring-amber-500/35 shadow-md"
@@ -211,11 +217,13 @@ export function RegisterCommercialPlans({
 
         {showEnterprise ? (
           <div
+            data-landing-reveal
+            data-stagger="3"
             className={cn(
-              "rounded-[1.75rem] p-5",
+              "rounded-[1.75rem] p-5 transition-shadow",
               isLight
                 ? "border border-amber-400/20 bg-amber-400/8"
-                : "border border-amber-400/14 bg-black/22",
+                : "border border-amber-400/18 bg-gradient-to-br from-black/35 to-black/20 backdrop-blur-sm hover-lift",
             )}
           >
             <div className={cn("flex items-center gap-2", eyebrow)}>
@@ -223,9 +231,9 @@ export function RegisterCommercialPlans({
               Firma / kurumsal özel teklif
             </div>
             <p className={cn("mt-3 text-sm leading-7", isLight ? "text-muted-foreground" : "text-white/82")}>
-              Cok lokasyonlu firmalar, saha agirlikli yapilar ve ozel kurgular icin bu sayfada kartla odeme yoktur.
-              Once sizi tanimak, ihtiyacinizi netlestirmek ve size ozel teklif sunmak icin bizimle iletisime gecmenizi
-              rica ederiz; formu doldurdugunuzda satis ekibimiz size doner.
+              Çok lokasyonlu firmalar, saha ağırlıklı yapılar ve özel kurgular için bu sayfada kartla ödeme yoktur.
+              Önce sizi tanımak, ihtiyacınızı netleştirmek ve size özel teklif sunmak için bizimle iletişime geçmenizi
+              rica ederiz; formu doldurduğunuzda satış ekibimiz size döner.
             </p>
             <ul className={cn("mt-4 space-y-2 text-sm", isLight ? "text-muted-foreground" : "text-white/78")}>
               {companyOfferHighlights.map((item) => (

@@ -1,6 +1,7 @@
 "use client";
 
 import { RegisterCommercialPlans } from "@/components/auth/RegisterCommercialPlans";
+import { LandingRevealProvider } from "@/components/public/landing-reveal-provider";
 
 export function CommercialLeadPageContent({
   mode,
@@ -18,8 +19,10 @@ export function CommercialLeadPageContent({
       id={sectionId}
       className="scroll-mt-[72px] border-b border-white/10 bg-[var(--navy-dark)] text-white"
     >
-      <div className="mx-auto w-full max-w-[1240px] px-4 py-10 sm:px-6 lg:px-8">
-        <RegisterCommercialPlans tone="dark" mode={mode} leadSourcePage={leadSourcePage} />
+      <div className="mx-auto w-full max-w-[1240px] px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
+        <LandingRevealProvider>
+          <RegisterCommercialPlans tone="dark" mode={mode} leadSourcePage={leadSourcePage} />
+        </LandingRevealProvider>
       </div>
     </section>
   );

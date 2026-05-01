@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CommercialLeadDialog } from "@/components/auth/CommercialLeadDialog";
 import { RegisterCommercialPlans } from "@/components/auth/RegisterCommercialPlans";
+import { LandingRevealProvider } from "@/components/public/landing-reveal-provider";
 import { type CommercialInterestType } from "@/lib/account/register-offers";
 import { locales, type Locale } from "@/i18n/routing";
 
@@ -494,13 +495,15 @@ export function RegisterAccountTypePreview({
                   Seçtiğiniz ülke, dil ve rol bilgisi form ile birlikte ekibimize iletilir; paket ve kurulum için size dönüş yapılır.
                 </span>
               </div>
-              <RegisterCommercialPlans
-                tone="light"
-                mode={accountType === "osgb" ? "osgb" : "enterprise"}
-                countryCode={countryCode ?? "TR"}
-                languageCode={languageCode ?? "tr"}
-                onRequestLead={(type) => setActiveLeadType(type)}
-              />
+              <LandingRevealProvider>
+                <RegisterCommercialPlans
+                  tone="light"
+                  mode={accountType === "osgb" ? "osgb" : "enterprise"}
+                  countryCode={countryCode ?? "TR"}
+                  languageCode={languageCode ?? "tr"}
+                  onRequestLead={(type) => setActiveLeadType(type)}
+                />
+              </LandingRevealProvider>
             </div>
           )}
         </div>
