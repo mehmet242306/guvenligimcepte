@@ -1,7 +1,12 @@
 import type { ReactNode } from "react";
+import { redirect } from "next/navigation";
 import { ProtectedShell } from "@/components/layout/protected-shell";
 import { createClient } from "@/lib/supabase/server";
-import { getAccountContextForUser } from "@/lib/account/account-routing";
+import {
+  getAccountContextForUser,
+  isPrivilegedAccountSelfServiceLoginBlocked,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
+} from "@/lib/account/account-routing";
 import type { AccountContextPayload } from "@/lib/account/account-api";
 
 export default async function ProtectedLayout({
@@ -26,6 +31,12 @@ export default async function ProtectedLayout({
 
   try {
     const ctx = await getAccountContextForUser(user.id);
+    if (isPrivilegedAccountSelfServiceLoginBlocked(ctx)) {
+      await supabase.auth.signOut();
+      redirect(
+        `/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE)}`,
+      );
+    }
     initialAccountContext = {
       userId: ctx.userId,
       isPlatformAdmin: ctx.isPlatformAdmin,

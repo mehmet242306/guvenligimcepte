@@ -152,7 +152,7 @@ export default async function PlatformAdminLeadsPage({
           <Inbox className="h-8 w-8 text-muted-foreground" />
           <p className="text-sm font-medium text-foreground">Bu filtre için talep yok.</p>
           <p className="text-xs text-muted-foreground">
-            Landing sayfasındaki "Demo Talep Et" butonuna bir başvuru geldiğinde burada belirir.
+            Kayıt akışındaki OSGB/Kurumsal teklif formu ve landing &quot;Demo Talep Et&quot; başvuruları burada listelenir.
           </p>
           <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
             <a href="mailto:mehmet242306@gmail.com" className="inline-flex items-center gap-1 hover:text-foreground">
