@@ -144,11 +144,11 @@ const testimonials = [
 ];
 
 export const metadata: Metadata = {
-  title: "İSG risk analizi ve operasyon — tek platform | RiskNova",
+  title: "İSG'yi tek platformdan yönetin | RiskNova",
   description:
     "Risk analizi, saha denetimi, bulgu ve aksiyon takibi ile raporlamayı tek platformda birleştiren yapay zekâ destekli İSG yazılımı. Bireysel, OSGB ve kurumsal.",
   openGraph: {
-    title: "RiskNova — İSG risk analizi ve operasyon platformu",
+    title: "RiskNova — İSG'yi tek platformdan yönetin",
     description:
       "Risk ölçümünden sahadaki işe ve rapora kadar İSG süreçlerini tek yerden yönetin.",
     type: "website",
@@ -190,8 +190,8 @@ export default function LandingPage() {
           </span>
 
           <h1 className="landing-hero-enter landing-hero-enter--d1 max-w-4xl text-4xl font-bold leading-[1.15] tracking-tight text-white sm:text-5xl xl:text-6xl">
-            İSG risk analizi ve saha operasyonunu{" "}
-            <span className="text-amber-100">tek platformda</span> yönetin
+            İSG&apos;yi{" "}
+            <span className="text-amber-100">tek platformdan</span> yönetin
           </h1>
 
           <p className="landing-hero-enter landing-hero-enter--d2 mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
