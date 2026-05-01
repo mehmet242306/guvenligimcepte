@@ -6,6 +6,8 @@ import { PublicChatWidget } from "@/components/chat/PublicChatWidget";
 import { DemoRequestTrigger } from "@/components/public/DemoRequestDialog";
 import { LandingHeroAtmosphere } from "@/components/public/landing-hero-atmosphere";
 import { LandingCtaAtmosphere } from "@/components/public/landing-cta-atmosphere";
+import { LandingIsgHeroDecorations } from "@/components/public/landing-isg-hero-decorations";
+import { LandingRevealProvider } from "@/components/public/landing-reveal-provider";
 import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import {
@@ -175,6 +177,7 @@ export default function LandingPage() {
   return (
     <main className="app-shell flex min-h-screen flex-col">
       <PublicHeader />
+      <LandingRevealProvider>
       <div className="flex flex-1 flex-col">
 
       {/* ============================================================ */}
@@ -182,24 +185,25 @@ export default function LandingPage() {
       {/* ============================================================ */}
       <section className="relative overflow-hidden bg-[var(--navy-dark)]">
         <LandingHeroAtmosphere />
+        <LandingIsgHeroDecorations />
         <div className="page-shell relative z-[1] flex min-h-[85vh] flex-col items-center justify-center py-20 text-center">
-          <span className="tag-label landing-hero-eyebrow reveal mb-8 rounded-full px-4 py-1.5">
+          <span className="tag-label landing-hero-eyebrow landing-hero-enter mb-8 rounded-full px-4 py-1.5">
             YAPAY ZEKA DESTEKLİ İSG PLATFORMU
           </span>
 
-          <h1 className="reveal max-w-4xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl xl:text-6xl">
+          <h1 className="landing-hero-enter landing-hero-enter--d1 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl xl:text-6xl">
             İSG Risk Yönetimini{" "}
             <span className="text-accent-serif landing-hero-gradient-text">Sanata</span>{" "}
             Dönüştürün
           </h1>
 
-          <p className="reveal reveal-delay-1 mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+          <p className="landing-hero-enter landing-hero-enter--d2 mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
             RiskNova; risk analizi, saha takibi, kayıt, raporlama ve karar
             desteği süreçlerini tek ürün hissi içinde birleştirmek için
             tasarlanmış AI destekli İSG platformudur.
           </p>
 
-          <div className="reveal reveal-delay-2 mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+          <div className="landing-hero-enter landing-hero-enter--d3 mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
             <Link href="/register" className={primaryLinkClass + " hover-glow"}>
               Ücretsiz Başla
               <svg
@@ -232,7 +236,7 @@ export default function LandingPage() {
           </div>
 
           {/* Stats */}
-          <div className="landing-hero-stats reveal reveal-delay-3 mt-16 grid w-full max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md md:grid-cols-4">
+          <div className="landing-hero-stats landing-hero-enter landing-hero-enter--d4 mt-16 grid w-full max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md md:grid-cols-4">
             {stats.map((s) => (
               <div
                 key={s.label}
@@ -255,7 +259,7 @@ export default function LandingPage() {
       {/* ============================================================ */}
       <section id="features" className="bg-background">
         <div className="page-shell py-20">
-          <div className="reveal mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-2xl text-center" data-landing-reveal>
             <span className="tag-label mb-6 inline-flex">ÖZELLİKLER</span>
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Kapsamlı{" "}
@@ -275,9 +279,13 @@ export default function LandingPage() {
               return (
               <div
                 key={item.title}
-                className="reveal group rounded-2xl border border-border bg-card p-7 shadow-[var(--shadow-card)] hover-lift"
+                data-landing-reveal
+                data-stagger={String(index)}
+                className="group rounded-2xl border border-border bg-card p-7 shadow-[var(--shadow-card)] hover-lift"
               >
-                <PremiumIconBadge icon={Icon} tone={featureTones[index % featureTones.length]} size="md" className="mb-4" />
+                <div className="mb-4 transition-transform duration-300 ease-out will-change-transform group-hover:scale-110 group-hover:-rotate-2">
+                  <PremiumIconBadge icon={Icon} tone={featureTones[index % featureTones.length]} size="md" />
+                </div>
                 <h3 className="text-lg font-semibold tracking-tight text-foreground">
                   {item.title}
                 </h3>
@@ -296,7 +304,7 @@ export default function LandingPage() {
       {/* ============================================================ */}
       <section id="how-it-works" className="bg-[var(--navy-dark)]">
         <div className="page-shell py-20">
-          <div className="reveal mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-2xl text-center" data-landing-reveal>
             <span className="tag-label mb-6 inline-flex">NASIL ÇALIŞIR</span>
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Dört Adımda{" "}
@@ -316,11 +324,13 @@ export default function LandingPage() {
               return (
               <div
                 key={item.step}
-                className="reveal hover-lift relative overflow-hidden rounded-2xl glass-card p-7"
+                data-landing-reveal
+                data-stagger={String(index)}
+                className="group hover-lift relative overflow-hidden rounded-2xl glass-card p-7"
               >
                 <div className="flex items-center gap-3">
                   <PremiumIconBadge icon={Icon} tone={workflowTones[index % workflowTones.length]} size="sm" />
-                  <div className="h-1 w-8 rounded-full bg-[linear-gradient(90deg,var(--gold),var(--gold-light))]" />
+                  <div className="landing-workflow-bar h-1 w-10 origin-left rounded-full bg-[linear-gradient(90deg,var(--gold),var(--gold-light))]" />
                 </div>
                 <span className="pointer-events-none absolute right-4 top-2 select-none text-6xl font-bold text-white/[0.04]">
                   {item.step}
@@ -344,7 +354,7 @@ export default function LandingPage() {
       <section className="bg-background">
         <div className="page-shell py-20">
           <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div className="reveal">
+            <div data-landing-reveal>
               <span className="tag-label mb-6 inline-flex">
                 NEDEN RİSKNOVA
               </span>
@@ -386,7 +396,11 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            <div className="reveal hover-lift rounded-3xl border border-border bg-[radial-gradient(circle_at_top_right,var(--gold-glow),transparent_50%)] p-10 shadow-[var(--shadow-card)]">
+            <div
+              data-landing-reveal
+              data-stagger="1"
+              className="hover-lift rounded-3xl border border-border bg-[radial-gradient(circle_at_top_right,var(--gold-glow),transparent_50%)] p-10 shadow-[var(--shadow-card)]"
+            >
               <span className="eyebrow mb-4 inline-flex">Hazır CTA Alanı</span>
               <h3 className="text-2xl font-bold tracking-tight text-foreground">
                 Risk modülünü ürün vitrini hâline getirin
@@ -419,7 +433,7 @@ export default function LandingPage() {
       {/* ============================================================ */}
       <section className="bg-[var(--navy-dark)]">
         <div className="page-shell py-20">
-          <div className="reveal mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-2xl text-center" data-landing-reveal>
             <span className="tag-label mb-6 inline-flex">MÜŞTERİ YORUMLARI</span>
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Kullanıcılarımız{" "}
@@ -431,10 +445,12 @@ export default function LandingPage() {
             id="landing-testimonials-grid"
             className="mt-14 grid gap-5 md:grid-cols-3"
           >
-            {testimonials.map((t) => (
+            {testimonials.map((t, index) => (
               <div
                 key={t.author}
-                className="reveal hover-lift rounded-2xl glass-card p-7"
+                data-landing-reveal
+                data-stagger={String(index)}
+                className="hover-lift rounded-2xl glass-card p-7"
               >
                 <div className="mb-4 flex gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -470,15 +486,26 @@ export default function LandingPage() {
       <section className="relative overflow-hidden bg-[var(--navy-dark)]">
         <LandingCtaAtmosphere />
         <div className="page-shell relative z-[1] py-24 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl xl:text-5xl">
+          <h2
+            className="text-3xl font-bold tracking-tight text-white sm:text-4xl xl:text-5xl"
+            data-landing-reveal
+          >
             İSG Süreçlerinizi{" "}
-            <span className="text-accent-serif">Dönüştürün</span>
+            <span className="text-accent-serif landing-hero-gradient-text">Dönüştürün</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-400">
+          <p
+            className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-400"
+            data-landing-reveal
+            data-stagger="1"
+          >
             RiskNova ile risk analizinden raporlamaya kadar tüm İSG
             operasyonlarınızı tek platformda yönetin.
           </p>
-          <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+          <div
+            className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center"
+            data-landing-reveal
+            data-stagger="2"
+          >
             <Link href="/register" className={primaryLinkClass}>
               Ücretsiz Başla
               <svg
@@ -513,6 +540,7 @@ export default function LandingPage() {
       </section>
 
       </div>
+      </LandingRevealProvider>
       <PublicSiteFooter />
       <PublicChatWidget />
     </main>
