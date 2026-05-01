@@ -101,13 +101,35 @@ export default async function OsgbDashboardPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
           OSGB Yonetim Merkezi
         </p>
-        <h1 className="mt-2 text-3xl font-semibold text-foreground">
+        <h1 className="mt-2 text-2xl font-semibold text-foreground sm:text-3xl">
           {context.organizationName || "OSGB hesabi"}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Firma portfoyu, gorevlendirilmis personeller, sozlesmeler, dokuman
           akislari ve operasyonel performans ayni merkezde yonetilir.
         </p>
+      </div>
+
+      <div className="rounded-[1.5rem] border border-amber-200/60 bg-amber-50/40 p-4 text-sm text-foreground shadow-[var(--shadow-soft)] dark:border-amber-500/25 dark:bg-amber-950/30 dark:text-amber-50/95">
+        <p className="font-medium">Kapasite ve kurumsal kosullar</p>
+        <p className="mt-1 text-muted-foreground dark:text-amber-100/80">
+          OSGB hesaplarinda koltuk veya firma limiti artisi bireysel paket odemesi yerine teklif ve kurumsal sozlesme
+          uzerinden yurutulur.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Link
+            href="/cozumler/osgb"
+            className="inline-flex h-9 items-center rounded-xl bg-primary px-3 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:text-sm"
+          >
+            Teklif talebi ve OSGB paketleri
+          </Link>
+          <Link
+            href="/register?commercial=osgb"
+            className="inline-flex h-9 items-center rounded-xl border border-border bg-card px-3 text-xs font-medium text-foreground transition-colors hover:bg-muted/60 sm:text-sm"
+          >
+            Kayit uzerinden iletisim
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

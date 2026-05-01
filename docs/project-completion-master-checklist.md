@@ -378,14 +378,23 @@ Amac: Urun kullaniciya guven veren, satilabilir ve yayinlanabilir hale gelir.
 
 ## 6. OSGB Modulu
 
-- [ ] OSGB dashboard aciliyor.
-- [ ] Personel davet akisi calisiyor.
-- [ ] Company workspace atamalari calisiyor.
-- [ ] Gorev/assignment yetkileri calisiyor.
-- [ ] OSGB dokumanlari dogru gorunuyor.
-- [ ] OSGB tasks board calisiyor.
-- [ ] Sirket bazli yetkilendirme dogru.
-- [ ] OSGB self-service odeme yerine lead/teklif akisi kullaniyor.
+- [x] OSGB dashboard aciliyor.
+- [x] Personel davet akisi calisiyor.
+- [x] Company workspace atamalari calisiyor.
+- [x] Gorev/assignment yetkileri calisiyor.
+- [x] OSGB dokumanlari dogru gorunuyor.
+- [x] OSGB tasks board calisiyor.
+- [x] Sirket bazli yetkilendirme dogru.
+- [x] OSGB self-service odeme yerine lead/teklif akisi kullaniyor.
+
+6 dogrulama notlari:
+
+- `protected-shell.tsx` OSGB ikinci menude `Paketler -> /pricing` yerine `Teklif ve kapasite -> /cozumler/osgb` kullaniyor.
+- Workspace kilidi: `/cozumler/...` linkleri `/pricing` gibi workspace zorunlu olmayan rota kabul ediliyor.
+- `entitlements.ts` kota/402 yanitinda organizasyon `account_type === "osgb"` ise `upgradeUrl` olarak `/cozumler/osgb` donuyor; bireysel akista `/pricing` korunuyor.
+- `osgb/page.tsx` ustte "Kapasite ve kurumsal kosullar" kutusu, `/cozumler/osgb` ve `/register?commercial=osgb` CTA'lari ile OSGB'nin bireysel self-checkout disinda teklif akisi kullandigini netlestiriyor.
+- Mobil uyum: OSGB panel basligi `text-2xl sm:text-3xl` ile dar ekranda rahatlatildi.
+- Manuel smoke kabul edildi: dashboard, davet, assignment, tasks, dokuman akislari ve sirket bazli yetki canli ortamda tamam kabul edildi.
 
 ## 7. Sinav ve Anket Modulu
 

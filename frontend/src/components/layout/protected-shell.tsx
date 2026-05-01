@@ -83,7 +83,7 @@ const osgbSecondaryNav = [
   { href: "/risk-analysis", label: "Riskler" },
   { href: "/osgb/contracts", label: "Sözleşmeler" },
   // Raporlar: Firma workspace → İSG Dosyası sekmesine taşındı.
-  { href: "/pricing", label: "Paketler" },
+  { href: "/cozumler/osgb", label: "Teklif ve kapasite" },
   { href: "/settings", label: "Ayarlar" },
 ];
 
@@ -121,6 +121,7 @@ function isWorkspaceOptionalPath(pathname: string) {
 
 function isWorkspaceLockedHref(href: string) {
   if (href === "/pricing") return false;
+  if (href.startsWith("/cozumler/")) return false;
   return (
     href !== "/workspace/onboarding" &&
     href !== "/companies" &&

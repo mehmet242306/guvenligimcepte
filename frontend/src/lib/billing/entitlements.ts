@@ -18,6 +18,22 @@ type QuotaResult = {
   message?: string;
 };
 
+const DEFAULT_UPGRADE_URL = "/pricing";
+const OSGB_COMMERCIAL_UPGRADE_URL = "/cozumler/osgb";
+
+async function resolveUpgradeUrl(organizationId: string): Promise<string> {
+  const service = createServiceClient();
+  const { data, error } = await service
+    .from("organizations")
+    .select("account_type")
+    .eq("id", organizationId)
+    .maybeSingle();
+
+  if (error || !data) return DEFAULT_UPGRADE_URL;
+  if (data.account_type === "osgb") return OSGB_COMMERCIAL_UPGRADE_URL;
+  return DEFAULT_UPGRADE_URL;
+}
+
 export async function consumeEntitlement(
   auth: Pick<AuthOk, "userId" | "organizationId">,
   action: BillingAction,
@@ -41,6 +57,8 @@ export async function consumeEntitlement(
   const result = data as QuotaResult;
   if (result?.allowed === true) return null;
 
+  const upgradeUrl = await resolveUpgradeUrl(auth.organizationId);
+
   return NextResponse.json(
     {
       error: "Paket limitiniz doldu.",
@@ -51,7 +69,7 @@ export async function consumeEntitlement(
       limit: Number(result?.limit ?? 0),
       used: Number(result?.used ?? 0),
       remaining: Number(result?.remaining ?? 0),
-      upgradeUrl: "/pricing",
+      upgradeUrl,
       message:
         result?.message ||
         `${BILLING_ACTION_LABELS[action]} limitiniz doldu. Devam etmek için paketinizi yükseltin.`,
