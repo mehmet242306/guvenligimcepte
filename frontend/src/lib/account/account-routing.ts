@@ -582,3 +582,16 @@ export function resolvePostLoginPath(context: AccountContext): string {
 
   return "/companies";
 }
+
+/** Self-servis giris (sifre / OAuth cookie oturumu) OSGB ve kurumsal icin kapali; platform admin haric. */
+export function isPrivilegedAccountSelfServiceLoginBlocked(
+  context: Pick<AccountContext, "accountType" | "isPlatformAdmin">,
+): boolean {
+  if (context.isPlatformAdmin) {
+    return false;
+  }
+  return context.accountType === "osgb" || context.accountType === "enterprise";
+}
+
+export const PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE =
+  "OSGB ve kurumsal hesaplar icin bu giris yolu kapalidir. Teklif ve erisim icin ekibimizle iletisime gecin.";

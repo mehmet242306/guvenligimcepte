@@ -8,17 +8,31 @@ import { createClient } from "@/lib/supabase/server";
 import { validateStrongPassword } from "@/lib/security/server";
 import {
   getAccountContextForUser,
+  isPrivilegedAccountSelfServiceLoginBlocked,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
 
-async function resolveAfterPasswordUpdatePath(userId: string | null | undefined) {
-  if (!userId) return "/login";
+type AfterPasswordUpdate =
+  | { blocked: true }
+  | { blocked: false; path: string };
+
+async function resolveAfterPasswordUpdatePath(
+  userId: string | null | undefined,
+): Promise<AfterPasswordUpdate> {
+  if (!userId) {
+    return { blocked: false, path: "/login" };
+  }
 
   try {
-    return resolvePostLoginPath(await getAccountContextForUser(userId));
+    const ctx = await getAccountContextForUser(userId);
+    if (isPrivilegedAccountSelfServiceLoginBlocked(ctx)) {
+      return { blocked: true };
+    }
+    return { blocked: false, path: resolvePostLoginPath(ctx) };
   } catch (error) {
     console.warn("[reset-password] post-update routing fallback:", error);
-    return "/workspace/onboarding";
+    return { blocked: false, path: "/workspace/onboarding" };
   }
 }
 
@@ -81,7 +95,15 @@ export async function updatePasswordAction(formData: FormData) {
     }
   }
 
-  const nextPath = await resolveAfterPasswordUpdatePath(user?.id);
+  const resolved = await resolveAfterPasswordUpdatePath(user?.id);
+  if (resolved.blocked) {
+    await supabase.auth.signOut();
+    redirect(
+      `/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE)}`,
+    );
+  }
+
+  const nextPath = resolved.path;
   const separator = nextPath.includes("?") ? "&" : "?";
 
   redirect(`${nextPath}${separator}passwordUpdated=1`);

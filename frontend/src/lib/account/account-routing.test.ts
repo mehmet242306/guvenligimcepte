@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   hasOsgbManagementAccess,
+  isPrivilegedAccountSelfServiceLoginBlocked,
   resolveAccountSurface,
   resolvePostLoginPath,
   type AccountContext,
@@ -132,6 +133,47 @@ describe("hasOsgbManagementAccess", () => {
   it("blocks non-manager roles and non-osgb accounts", () => {
     expect(hasOsgbManagementAccess(makeContext({ accountType: "osgb", membershipRole: "staff" }))).toBe(false);
     expect(hasOsgbManagementAccess(makeContext({ accountType: "individual", membershipRole: "owner" }))).toBe(false);
+  });
+});
+
+describe("isPrivilegedAccountSelfServiceLoginBlocked", () => {
+  it("allows platform admins regardless of customer account type", () => {
+    expect(
+      isPrivilegedAccountSelfServiceLoginBlocked({
+        isPlatformAdmin: true,
+        accountType: "osgb",
+      }),
+    ).toBe(false);
+  });
+
+  it("blocks osgb and enterprise when not platform admin", () => {
+    expect(
+      isPrivilegedAccountSelfServiceLoginBlocked({
+        isPlatformAdmin: false,
+        accountType: "osgb",
+      }),
+    ).toBe(true);
+    expect(
+      isPrivilegedAccountSelfServiceLoginBlocked({
+        isPlatformAdmin: false,
+        accountType: "enterprise",
+      }),
+    ).toBe(true);
+  });
+
+  it("allows individual and incomplete onboarding contexts", () => {
+    expect(
+      isPrivilegedAccountSelfServiceLoginBlocked({
+        isPlatformAdmin: false,
+        accountType: "individual",
+      }),
+    ).toBe(false);
+    expect(
+      isPrivilegedAccountSelfServiceLoginBlocked({
+        isPlatformAdmin: false,
+        accountType: null,
+      }),
+    ).toBe(false);
   });
 });
 

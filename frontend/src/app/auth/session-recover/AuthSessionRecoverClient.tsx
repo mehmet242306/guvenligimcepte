@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
+import {
+  isPrivilegedAccountSelfServiceLoginBlocked,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
+} from "@/lib/account/account-routing";
 
 function toLoginError(message: string | undefined): string {
   if (!message?.trim()) {
@@ -206,6 +210,38 @@ export function AuthSessionRecoverClient({
           redirectToLoginWithError(cookieSessionError.message);
         }, 400);
         return;
+      }
+
+      if (intent !== "register") {
+        const { data: gateSession } = await supabase.auth.getSession();
+        const gateToken =
+          gateSession.session?.access_token ?? data.session.access_token;
+        if (gateToken) {
+          const gateResponse = await fetch("/api/account/context?lite=1", {
+            method: "GET",
+            credentials: "include",
+            headers: { Authorization: `Bearer ${gateToken}` },
+            cache: "no-store",
+          });
+          const gateJson = await readJsonSafely<{
+            context?: {
+              accountType?: "individual" | "osgb" | "enterprise" | null;
+              isPlatformAdmin?: boolean;
+            };
+          }>(gateResponse);
+          const gateCtx = gateJson?.context;
+          if (
+            gateCtx &&
+            isPrivilegedAccountSelfServiceLoginBlocked({
+              accountType: gateCtx.accountType ?? null,
+              isPlatformAdmin: gateCtx.isPlatformAdmin ?? false,
+            })
+          ) {
+            await supabase.auth.signOut();
+            redirectToLoginWithError(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE);
+            return;
+          }
+        }
       }
 
       if (intent !== "register") {

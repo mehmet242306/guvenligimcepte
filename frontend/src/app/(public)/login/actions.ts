@@ -18,6 +18,8 @@ import { sendSuspiciousLoginEmail } from "@/lib/mailer";
 import {
   type AccountContext,
   getAccountContextForUser,
+  isPrivilegedAccountSelfServiceLoginBlocked,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
 import { releaseDemoUserLock } from "@/lib/auth/demo-release";
@@ -167,6 +169,17 @@ export async function login(formData: FormData) {
 
   const accessToken = data.session?.access_token;
   const signedInUser = data.user;
+
+  if (signedInUser) {
+    const loginContext = await getAccountContextForUser(signedInUser.id);
+    if (isPrivilegedAccountSelfServiceLoginBlocked(loginContext)) {
+      await supabase.auth.signOut();
+      redirect(
+        `/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE)}`,
+      );
+    }
+  }
+
   // BACKEND_API_URL env'i açıkça tanımlı değilse, geliştirme ortamında
   // FastAPI backend çalışmıyor kabul et ve audit log çağrısını komple atla.
   // Eski davranış: default http://127.0.0.1:8000 → her login ECONNREFUSED

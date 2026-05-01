@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase/server";
 import { validateStrongPassword } from "@/lib/security/server";
 import {
   getAccountContextForUser,
+  isPrivilegedAccountSelfServiceLoginBlocked,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
 import { resolveAppOriginFromHeaders } from "@/lib/server/app-origin";
@@ -64,7 +66,14 @@ export async function signup(formData: FormData) {
     } catch (cleanupError) {
       console.warn("[signup] demo kilidi kaldirma veya oturum yenileme:", cleanupError);
     }
-    redirect(resolvePostLoginPath(await getAccountContextForUser(data.session.user.id)));
+    const signupContext = await getAccountContextForUser(data.session.user.id);
+    if (isPrivilegedAccountSelfServiceLoginBlocked(signupContext)) {
+      await supabase.auth.signOut();
+      redirect(
+        `/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE)}`,
+      );
+    }
+    redirect(resolvePostLoginPath(signupContext));
   }
 
   redirect("/register?checkEmail=1");

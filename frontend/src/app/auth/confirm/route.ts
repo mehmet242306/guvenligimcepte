@@ -5,6 +5,8 @@ import { createServiceClient } from "@/lib/security/server";
 import { createClient } from "@/lib/supabase/server";
 import {
   getAccountContextForUser,
+  isPrivilegedAccountSelfServiceLoginBlocked,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
 
@@ -54,9 +56,17 @@ export async function GET(request: Request) {
         }
       }
 
-      const resolvedNext = user
-        ? resolvePostLoginPath(await getAccountContextForUser(user.id))
-        : next;
+      let resolvedNext = next;
+      if (user?.id) {
+        const confirmContext = await getAccountContextForUser(user.id);
+        if (isPrivilegedAccountSelfServiceLoginBlocked(confirmContext)) {
+          await supabase.auth.signOut();
+          return NextResponse.redirect(
+            `${origin}/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE)}`,
+          );
+        }
+        resolvedNext = resolvePostLoginPath(confirmContext);
+      }
 
       return NextResponse.redirect(`${origin}${resolvedNext}`);
     }

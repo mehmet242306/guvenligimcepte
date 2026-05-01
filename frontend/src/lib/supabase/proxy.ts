@@ -76,6 +76,7 @@ export async function updateSession(request: NextRequest) {
   const isPublic =
     PUBLIC_PATHS.includes(pathname) ||
     pathname.startsWith("/auth") ||
+    pathname.startsWith("/cozumler/") ||
     isPublicApiEndpoint ||
     isRouteAuthApiEndpoint;
   const hasOAuthCode = request.nextUrl.searchParams.has("code");
