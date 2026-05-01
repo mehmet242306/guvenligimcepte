@@ -72,6 +72,38 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/** İstemci/kota hatalarında yeniden denemek ek ücret riski yaratır; doğrudan düş. */
+function getExternalApiHttpStatus(error: unknown): number | undefined {
+  if (error && typeof error === "object" && "status" in error) {
+    const s = (error as { status?: unknown }).status;
+    if (typeof s === "number" && Number.isFinite(s)) return s;
+  }
+  return undefined;
+}
+
+function isNonRetryableExternalApiError(error: unknown): boolean {
+  const status = getExternalApiHttpStatus(error);
+  if (
+    status != null &&
+    [400, 401, 403, 404, 405, 413, 422, 429].includes(status)
+  ) {
+    return true;
+  }
+  const msg =
+    error instanceof Error ? error.message.toLocaleLowerCase("en-US") : "";
+  if (
+    msg.includes("invalid_request") ||
+    msg.includes("incorrect api key") ||
+    msg.includes("authentication") ||
+    msg.includes("permission_denied") ||
+    msg.includes("rate_limit_error") ||
+    /\b429\b/.test(msg)
+  ) {
+    return true;
+  }
+  return false;
+}
+
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number) {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
@@ -280,6 +312,9 @@ export async function executeWithResilience<T>(
       };
     } catch (error) {
       lastError = error instanceof Error ? error.message : "Bilinmeyen hata";
+      if (isNonRetryableExternalApiError(error)) {
+        break;
+      }
       if (attempt < retryDelaysMs.length - 1) {
         await sleep(retryDelaysMs[attempt]);
       }

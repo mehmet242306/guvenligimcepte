@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { AiCostPolicyRow, AiMonthlyLimitRow } from "@/lib/ai/cost-policy";
 import { getNovaUsageAnalytics } from "@/lib/nova/usage-analytics";
 import { createClient } from "@/lib/supabase/client";
 import { formatCompactNumber, formatCurrencyUsd } from "./admin-monitoring-utils";
@@ -44,6 +45,32 @@ const periodOptions = [
   { value: "30", label: "Son 30 gun" },
 ];
 
+type AiCostOverviewPayload = {
+  policyVersion: string;
+  providers: {
+    openai: { configured: boolean };
+    anthropic: { configured: boolean };
+  };
+  policyRows: AiCostPolicyRow[];
+  monthlyLimits: AiMonthlyLimitRow[];
+  resilienceNoteTr: string;
+  costEstimateDisclaimerTr: string;
+};
+
+function ProviderBadge({ configured, label }: { configured: boolean; label: string }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+        configured
+          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200"
+          : "bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-200"
+      }`}
+    >
+      {label}: {configured ? "Tanimli" : "Eksik"}
+    </span>
+  );
+}
+
 export function AIUsageTab() {
   const [rows, setRows] = useState<AiUsageRow[]>([]);
   const [evalRows, setEvalRows] = useState<NovaEvalRunRow[]>([]);
@@ -51,6 +78,8 @@ export function AIUsageTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [periodDays, setPeriodDays] = useState("7");
+  const [costOverview, setCostOverview] = useState<AiCostOverviewPayload | null>(null);
+  const [costOverviewError, setCostOverviewError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const supabase = createClient();
@@ -62,6 +91,7 @@ export function AIUsageTab() {
 
     setLoading(true);
     setError(null);
+    setCostOverviewError(null);
 
     const since = new Date(Date.now() - Number(periodDays) * 24 * 60 * 60 * 1000).toISOString();
 
@@ -74,6 +104,24 @@ export function AIUsageTab() {
       supabase.from("user_profiles").select("auth_user_id, full_name, email"),
       supabase.from("nova_eval_runs").select("*").gte("created_at", since).order("created_at", { ascending: false }).limit(120),
     ]);
+
+    try {
+      const overviewRes = await fetch("/api/admin/ai-cost-overview", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      if (!overviewRes.ok) {
+        const body = (await overviewRes.json().catch(() => ({}))) as { message?: string };
+        throw new Error(body?.message ?? `HTTP ${overviewRes.status}`);
+      }
+      const overviewPayload = (await overviewRes.json()) as AiCostOverviewPayload;
+      setCostOverview(overviewPayload);
+    } catch (err: unknown) {
+      setCostOverview(null);
+      setCostOverviewError(
+        err instanceof Error ? err.message : "Maliyet politikasi ozeti alinamadi (yetki veya sunucu).",
+      );
+    }
 
     if (usageError || profileError || evalError) {
       setRows([]);
@@ -201,6 +249,96 @@ export function AIUsageTab() {
         {error && (
           <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-200">
             {error}
+          </div>
+        )}
+
+        <div className="mt-6 rounded-2xl border border-border bg-background p-5">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h4 className="text-sm font-semibold text-foreground">AI maliyet kontrolu ve uretim anahtarlari</h4>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Politika surumu:{" "}
+                <span className="font-medium text-foreground">{costOverview?.policyVersion ?? "—"}</span>
+                . Anahtar degerleri gosterilmez; yalnizca yapilandirma var/yok.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <ProviderBadge configured={costOverview?.providers.openai.configured ?? false} label="OpenAI" />
+              <ProviderBadge configured={costOverview?.providers.anthropic.configured ?? false} label="Anthropic" />
+            </div>
+          </div>
+          {costOverviewError && (
+            <p className="mt-3 text-sm text-rose-600 dark:text-rose-300">{costOverviewError}</p>
+          )}
+          {costOverview && (
+            <>
+              <p className="mt-3 text-xs text-muted-foreground">{costOverview.costEstimateDisclaimerTr}</p>
+              <p className="mt-2 text-xs text-muted-foreground">{costOverview.resilienceNoteTr}</p>
+            </>
+          )}
+        </div>
+
+        {costOverview && costOverview.policyRows.length > 0 && (
+          <div className="mt-5 overflow-x-auto rounded-2xl border border-border bg-background">
+            <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/40">
+                  <th className="px-3 py-3 font-semibold text-foreground">Endpoint</th>
+                  <th className="px-3 py-3 font-semibold text-foreground">Amac</th>
+                  <th className="px-3 py-3 font-semibold text-foreground">Modeller</th>
+                  <th className="px-3 py-3 font-semibold text-foreground">Max cikti (token)</th>
+                  <th className="px-3 py-3 font-semibold text-foreground">Girdi ozeti</th>
+                  <th className="px-3 py-3 font-semibold text-foreground">Kota anahtari</th>
+                  <th className="px-3 py-3 font-semibold text-foreground">Gorsel maliyeti</th>
+                </tr>
+              </thead>
+              <tbody>
+                {costOverview.policyRows.map((row) => (
+                  <tr key={row.endpoint} className="border-b border-border/80">
+                    <td className="px-3 py-2.5 font-mono text-xs text-foreground">{row.endpoint}</td>
+                    <td className="px-3 py-2.5 text-muted-foreground">{row.purposeTr}</td>
+                    <td className="px-3 py-2.5 text-xs text-muted-foreground">{row.models}</td>
+                    <td className="px-3 py-2.5 text-foreground">{row.maxOutputTokens}</td>
+                    <td className="max-w-[280px] px-3 py-2.5 text-xs text-muted-foreground">{row.inputLimitsTr}</td>
+                    <td className="px-3 py-2.5 text-xs text-foreground">{row.billingAction ?? "—"}</td>
+                    <td className="px-3 py-2.5 text-xs">{row.expensiveVision ? "Yuksek (vision)" : "Standart"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {costOverview && costOverview.monthlyLimits.length > 0 && (
+          <div className="mt-5 overflow-x-auto rounded-2xl border border-border bg-background p-4">
+            <h4 className="text-sm font-semibold text-foreground">Paket bazli aylik kota (AI ile ilgili aksiyonlar)</h4>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Rakamlar `plans.ts` ile uyumludur; gercek sayac Supabase `consume_subscription_quota` RPC ile yonetilir.
+            </p>
+            <table className="mt-3 w-full min-w-[960px] border-collapse text-left text-xs">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="py-2 pr-3 font-semibold text-foreground">Paket</th>
+                  {costOverview.monthlyLimits[0]?.entries.map((e) => (
+                    <th key={e.action} className="py-2 px-2 font-semibold text-foreground">
+                      {e.label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {costOverview.monthlyLimits.map((planRow) => (
+                  <tr key={planRow.planKey} className="border-b border-border/70">
+                    <td className="py-2 pr-3 font-medium text-foreground">{planRow.planName}</td>
+                    {planRow.entries.map((e) => (
+                      <td key={e.action} className="py-2 px-2 text-muted-foreground">
+                        {formatCompactNumber(e.monthlyLimit)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
 

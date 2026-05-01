@@ -9,7 +9,7 @@ import {
   parseCorrectiveActionsResponse,
 } from "@/lib/incidents/ai";
 import { requireAuth } from "@/lib/supabase/api-auth";
-import { enforceRateLimit, parseJsonBody } from "@/lib/security/server";
+import { enforceRateLimit, parseJsonBody, resolveAiDailyLimit } from "@/lib/security/server";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -61,14 +61,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "ANTHROPIC_API_KEY tanımlı değil." }, { status: 500 });
     }
 
+    const plan = await resolveAiDailyLimit(auth.userId);
     const rateLimited = await enforceRateLimit(request, {
       userId: auth.userId,
       organizationId: auth.organizationId,
       endpoint: "/api/ai/generate-corrective-actions",
       scope: "ai",
-      limit: 10,
-      windowSeconds: 60,
-      planKey: "incident_ai",
+      limit: plan.dailyLimit,
+      windowSeconds: 24 * 60 * 60,
+      planKey: plan.planKey,
       metadata: { feature: "corrective_action_generation" },
     });
 

@@ -768,10 +768,10 @@ JSON format\u0131:
 /* ================================================================== */
 
 export async function POST(request: NextRequest) {
-  // GÜVENLİK KATMANI (Parça B Adım 4):
-  // Bu route AI görüntü risk analizi yapar (Claude Vision). Anthropic API maliyeti
-  // olduğu için anonim erişim engellenmeli. requireAuth: authenticated kullanıcılara
-  // izin verir, aksi 401/403 döner.
+  // GÜVENLİK: requireAuth + günlük rate limit + risk_analysis kotası.
+  // Hibrit pipeline: (1) OpenAI gpt-4o — KKD/sahne/hazard tespiti (lib/ai/openai-vision),
+  // (2) Claude Sonnet 4 — R-SKOR / FMEA vb. yönteme göre risk akıl yürütmesi.
+  // OPENAI_API_KEY yoksa 1. aşama atlanır; sadece Claude devam eder.
   const auth = await requireAuth(request);
   if (!auth.ok) return auth.response;
 

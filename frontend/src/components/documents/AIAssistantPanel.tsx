@@ -316,6 +316,18 @@ export function AIAssistantPanel({
       const { response: res, data } = await requestDocumentAi(prompt, controller.signal);
 
       if (!res.ok) {
+        if (res.status === 402) {
+          setDegraded(false);
+          setQueueTaskId(null);
+          const quotaMsg =
+            typeof data.message === "string"
+              ? data.message
+              : typeof data.error === "string"
+                ? data.error
+                : "Dokuman AI paket limitiniz doldu. Paketinizi yukselterek devam edebilirsiniz.";
+          setResult(quotaMsg);
+          return;
+        }
         const fallbackContent = applyAiError(
           data,
           'Hata: AI servisi su anda yanit veremiyor. Lutfen tekrar deneyin.',
@@ -365,6 +377,18 @@ export function AIAssistantPanel({
       const { response: res, data } = await requestDocumentAi(fullPrompt, controller.signal);
 
       if (!res.ok) {
+        if (res.status === 402) {
+          setDegraded(false);
+          setQueueTaskId(null);
+          setResult(
+            typeof data.message === "string"
+              ? data.message
+              : typeof data.error === "string"
+                ? data.error
+                : "Dokuman AI paket limitiniz doldu.",
+          );
+          return;
+        }
         applyAiError(data, 'Hata: AI servisi su anda yanit veremiyor.');
         return;
       }

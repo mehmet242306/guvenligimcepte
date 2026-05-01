@@ -53,44 +53,44 @@ export function SharedDocumentView({ title, contentJson, companyName, status, cr
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <header className="bg-[#0F172A] text-white py-4 px-6">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-[#D4A017] rounded-lg flex items-center justify-center">
+      <header className="bg-[#0F172A] text-white py-4 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="w-8 h-8 shrink-0 bg-[#D4A017] rounded-lg flex items-center justify-center">
               <FileText size={18} className="text-white" />
             </div>
-            <div>
+            <div className="min-w-0">
               <span className="text-[#D4A017] font-bold text-sm">RiskNova</span>
               <span className="text-gray-400 text-xs ml-2">Paylaşılan Doküman</span>
             </div>
           </div>
-          {companyName && (
-            <span className="text-sm text-gray-300">{companyName}</span>
-          )}
+          {companyName ? (
+            <span className="text-sm text-gray-300 break-words sm:text-right sm:max-w-[55%]">{companyName}</span>
+          ) : null}
         </div>
       </header>
 
       {/* Document */}
-      <main className="max-w-4xl mx-auto py-8 px-4">
+      <main className="max-w-4xl mx-auto py-6 px-3 sm:py-8 sm:px-4">
         {/* Title bar */}
-        <div className="bg-white rounded-t-xl border border-gray-200 px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-bold text-gray-900">{title}</h1>
+        <div className="bg-white rounded-t-xl border border-gray-200 px-4 py-4 sm:px-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <h1 className="text-base sm:text-lg font-bold text-gray-900 break-words">{title}</h1>
             <p className="text-xs text-gray-500 mt-0.5">
               Oluşturulma: {new Date(createdAt).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
-          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${st.color}`}>{st.label}</span>
+          <span className={`self-start shrink-0 px-2.5 py-1 rounded-full text-xs font-medium ${st.color}`}>{st.label}</span>
         </div>
 
         {/* Content */}
-        <div className="bg-white border-x border-gray-200 px-8 py-6 min-h-[500px]">
+        <div className="bg-white border-x border-gray-200 px-4 py-5 sm:px-8 sm:py-6 min-h-[min(500px,70vh)] overflow-x-auto">
           {editor && <EditorContent editor={editor} />}
         </div>
 
         {/* Signatures */}
         {signatures.length > 0 && (
-          <div className="bg-white border-x border-gray-200 px-8 py-6 border-t border-gray-100">
+          <div className="bg-white border-x border-gray-200 px-4 py-5 sm:px-8 sm:py-6 border-t border-gray-100">
             <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
               <PenTool size={14} className="text-[#D4A017]" />
               İmzalar
@@ -114,13 +114,13 @@ export function SharedDocumentView({ title, contentJson, companyName, status, cr
         )}
 
         {/* Footer */}
-        <div className="bg-gray-50 rounded-b-xl border border-gray-200 px-6 py-3 flex items-center justify-between">
+        <div className="bg-gray-50 rounded-b-xl border border-gray-200 px-4 py-3 sm:px-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2 text-xs text-gray-500">
-            <Shield size={12} className="text-[#D4A017]" />
+            <Shield size={12} className="text-[#D4A017] shrink-0" />
             RiskNova ile oluşturuldu
           </div>
           {signatures.length > 0 && signatures[0].certificate_hash && (
-            <span className="text-[10px] text-gray-400 font-mono">
+            <span className="text-[10px] text-gray-400 font-mono break-all sm:text-right">
               Hash: {signatures[0].certificate_hash.slice(0, 16)}...
             </span>
           )}

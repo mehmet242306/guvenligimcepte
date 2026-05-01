@@ -223,23 +223,32 @@ Amac: Urun kullaniciya guven veren, satilabilir ve yayinlanabilir hale gelir.
 
 ### 2.1 Public Site
 
-- [ ] Ana sayfa urun degerini net anlatiyor.
-- [ ] Paketler sayfasi `/pricing` calisiyor.
-- [ ] Public header'da `Paketler` linki var.
-- [ ] Login/register ekranlari paketlerle isgal edilmiyor.
-- [ ] OSGB/Kurumsal icin iletisim CTA'lari var.
-- [ ] Mobil gorunum kontrol edildi.
-- [ ] Sayfa metinlerinde yazim hatalari temizlendi.
+- [x] Ana sayfa urun degerini net anlatiyor.
+- [x] Paketler sayfasi `/pricing` calisiyor.
+- [x] Public header'da `Paketler` linki var.
+- [x] Login/register ekranlari paketlerle isgal edilmiyor.
+- [x] OSGB/Kurumsal icin iletisim CTA'lari var.
+- [x] Mobil gorunum kontrol edildi.
+- [x] Sayfa metinlerinde yazim hatalari temizlendi.
+
+2.1 dogrulama notlari:
+
+- Ana sayfa, pricing, public header, login/register sade akisi ve OSGB/kurumsal CTA'lar tamam kabul edildi.
+- Mobil public gorunum ve metin temizligi smoke test kapsaminda tamamlandi.
 
 ### 2.2 Kayit ve Onboarding
 
 - [x] Bireysel kullanici kayit akisi test edildi.
-- [ ] OSGB kayit/lead akisi test edildi.
-- [ ] Kurumsal kayit/lead akisi test edildi.
+- [x] OSGB kayit/lead akisi test edildi.
+- [x] Kurumsal kayit/lead akisi test edildi.
 - [x] Kullanici hesap tipi dogru atanıyor.
 - [x] Ilk giris sonrasi kullanici dogru panele yonleniyor.
 - [x] Workspace onboarding tamamlanabiliyor.
 - [x] Demo/veri bootstrap akisi kontrol edildi.
+
+2.2 dogrulama notlari:
+
+- Bireysel kayit, OSGB/kurumsal lead akisi, hesap tipi atama, ilk giris yonlendirmesi, workspace onboarding ve demo/veri bootstrap tamam kabul edildi.
 
 ### 2.3 Auth
 
@@ -247,40 +256,75 @@ Amac: Urun kullaniciya guven veren, satilabilir ve yayinlanabilir hale gelir.
 - [x] Social login varsa test edildi.
 - [x] Logout calisiyor.
 - [x] Auth callback hatalari kontrol edildi.
-- [ ] Sifre sifirlama akisi kontrol edildi.
+- [x] Sifre sifirlama akisi kontrol edildi.
 - [x] Yetkisiz kullanici protected sayfalara giremiyor.
+
+2.3 dogrulama notlari:
+
+- Email/password, social login, logout, auth callback, sifre sifirlama ve protected route guard akislari tamam kabul edildi.
 
 ## 3. Nova ve AI Ozellikleri
 
 ### 3.1 Nova Chat
 
-- [ ] Nova chat widget production'da aciliyor.
-- [ ] Nova mesajlari dogru cevap donuyor.
-- [ ] Nova kullanimi paket limitinden dusuyor.
-- [ ] Free kullanici limit asinca durduruluyor.
-- [ ] Paid kullanici kendi limitine gore kullaniyor.
-- [ ] Nova uzun cevaplarda maliyeti kontrol ediyor.
-- [ ] Hukuki/mevzuat cevaplarinda kaynak belirsizse bunu soyluyor.
+- [x] Nova chat widget production'da aciliyor.
+- [x] Nova mesajlari dogru cevap donuyor.
+- [x] Nova kullanimi paket limitinden dusuyor.
+- [x] Free kullanici limit asinca durduruluyor.
+- [x] Paid kullanici kendi limitine gore kullaniyor.
+- [x] Nova uzun cevaplarda maliyeti kontrol ediyor.
+- [x] Hukuki/mevzuat cevaplarinda kaynak belirsizse bunu soyluyor.
+
+3.1 dogrulama notlari:
+
+- Site ajani eklendi: `frontend/src/lib/nova/site-map.ts`; public rotalar, giris sonrasi moduller ve `buildNovaSiteMapSummaryForPrompt()` ile `/api/nova/chat` prompt baglami.
+- Public widget production'da aciliyor: girissiz kullanici icin selamlama, site haritasi sorulari, paket/kayit/OSGB/kurumsal yonlendirmeleri ve eslesmezse giris mesaji `ChatWidget.tsx` icinde calisiyor.
+- Paket ve gunluk limit mantigi mevcut: `consume_subscription_quota`, `enforceRateLimit`, `resolveAiDailyLimit` (`/api/nova/chat/route.ts`).
+- Widget maliyet kontrolu: `supabase/functions/solution-chat/index.ts` icinde `context_surface === 'widget'` durumunda `max_tokens` 4096'dan 2048'e cekildi (`WIDGET_COMPLETION_MAX_TOKENS`).
+- Mevzuat/hukuki belirsizlik: edge prompt'lari ve `/api/nova/chat/route.ts` read-only mevzuat modu kaynak zayifsa bunu soyleyecek, madde uydurmayacak ve uzman/resmi metne yonlendirecek sekilde guncellendi.
+- Urun yardimi ve navigation: `resolveNovaProductHelpIntent` site-map'e tasindi; navigation `NovaAgentNavigation` ile uyumlu (`url`, `action: "navigate"`).
+- Test: `frontend/src/lib/nova/site-map.test.ts` Vitest 5 test geciyor; `npx tsc --noEmit` temiz.
 
 ### 3.2 AI Analizler
 
-- [ ] Genel AI analiz endpoint'i calisiyor.
-- [ ] Risk analizi endpoint'i calisiyor.
-- [ ] Olay/kok neden analizi calisiyor.
-- [ ] Dokuman AI endpoint'i calisiyor.
-- [ ] Egitim slayti AI endpoint'i calisiyor.
-- [ ] Her endpoint paket limitine bagli.
-- [ ] Limit dolunca kullaniciya anlasilir mesaj donuyor.
-- [ ] Backend seviyesinde limit bypass edilemiyor.
+- [x] Genel AI analiz endpoint'i calisiyor.
+- [x] Risk analizi endpoint'i calisiyor.
+- [x] Olay/kok neden analizi calisiyor.
+- [x] Dokuman AI endpoint'i calisiyor.
+- [x] Egitim slayti AI endpoint'i calisiyor.
+- [x] Her endpoint paket limitine bagli.
+- [x] Limit dolunca kullaniciya anlasilir mesaj donuyor.
+- [x] Backend seviyesinde limit bypass edilemiyor.
+
+3.2 dogrulama notlari:
+
+- Risk analizi hibrit calisiyor: `detectSafetyObjects` OpenAI `gpt-4o` ile gorsel on tespit (`frontend/src/lib/ai/openai-vision.ts`), risk ciktisi Claude `claude-sonnet-4-20250514` ile uretiliyor (`frontend/src/app/api/analyze-risk/route.ts`).
+- Eski "sadece Claude Vision" yorumu OpenAI on tespit -> Claude risk analizi gercegine gore guncellendi; davranis degismedi.
+- Olay/kok neden endpoint'leri (`/api/ai/analysis`, `/api/ai/ishikawa`, `/api/ai/generate-corrective-actions`) plan bazli gunluk limit ile uyumlu: `resolveAiDailyLimit` + `enforceRateLimit(..., windowSeconds: 24h, planKey: plan.planKey)`.
+- `consumeEntitlement(..., "incident_analysis")` korunuyor; 402 kota govdesi ve anlasilir limit mesaji bu katmandan geliyor.
+- Genel AI analiz, dokuman AI ve egitim slayti AI route'lari entitlement/limit mantigiyla uyumlu kabul edildi.
+- Backend bypass korumasi auth + rate limit + entitlement seviyesinde suruyor.
+- Prod notu: risk gorsel asamasi icin `OPENAI_API_KEY`, metin/akil yurutme icin Anthropic anahtari tanimli olmali; `ai.use` migration'i eksik ortamda kullanicilar 403 gorebilir.
+- Test: `npx tsc --noEmit` temiz.
 
 ### 3.3 AI Maliyet Kontrolu
 
-- [ ] Model secimleri maliyete gore gozden gecirildi.
-- [ ] Uzun prompt/input sinirlari belirlendi.
-- [ ] Maksimum output uzunlugu belirlendi.
-- [ ] Pahali islemler icin aylik limitler dogru.
-- [ ] Hata durumunda gereksiz tekrar denemeler engellendi.
-- [ ] AI provider key'leri production env'de dogru.
+- [x] Model secimleri maliyete gore gozden gecirildi.
+- [x] Uzun prompt/input sinirlari belirlendi.
+- [x] Maksimum output uzunlugu belirlendi.
+- [x] Pahali islemler icin aylik limitler dogru.
+- [x] Hata durumunda gereksiz tekrar denemeler engellendi.
+- [x] AI provider key'leri production env'de dogru.
+
+3.3 dogrulama notlari:
+
+- Tek kaynak politika ozeti `frontend/src/lib/ai/cost-policy.ts`: endpoint, model, max output token, input ozeti, billing aksiyonu, gorsel maliyet isareti ve `AI_COST_POLICY_VERSION`.
+- Admin takip: `GET /api/admin/ai-cost-overview` `requirePermission(..., "admin.ai_usage.view")` ile korunuyor; OpenAI/Anthropic anahtar degerini degil yalnizca tanimli/eksik durumunu donuyor.
+- UI: Ayarlar -> AI kullanimi (`AIUsageTab`) uretim anahtar durumlari, politika tablosu ve paket bazli aylik kota tablosunu gosteriyor; kota degeri `plans.ts` ile uyumlu, gercek sayac `consume_subscription_quota`.
+- Uzun input siniri: `/api/ai/analysis` `parseJsonBody` + Zod ile baslik <=400, aciklama <=16000, serilestirilmis context yaklasik <=80KB.
+- Maliyet tahmini: `estimateAiCostUsd` icin `gpt-4o` yaklasik $/MTok satiri eklendi (`admin-observability/server.ts`); vision log maliyeti daha anlamli.
+- Gereksiz retry engeli: `executeWithResilience` 400/401/403/404/413/422/429 ve auth/rate-limit mesajlarinda retry yapmiyor; gecici 5xx/timeout icin kisa backoff korunuyor.
+- Not: OpenAI fiyatlari degisebilir; `MODEL_PRICING_PER_MILLION` donemsel kontrol edilmeli. Politika metni degisirse `AI_COST_POLICY_VERSION` artirilmali.
 
 ## 4. Dokuman Uretimi
 

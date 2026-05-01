@@ -44,6 +44,8 @@ const MODEL_PRICING_PER_MILLION: Record<
   "claude-3-5-haiku-latest": { input: 0.8, output: 4, cachedInput: 0.08 },
   "claude-3-5-sonnet-latest": { input: 3, output: 15, cachedInput: 0.3 },
   "claude-sonnet-4-0": { input: 3, output: 15, cachedInput: 0.3 },
+  /** Yaklaşık USD/MTok — OpenAI liste fiyatına göre periyodik güncellenmeli */
+  "gpt-4o": { input: 2.5, output: 10 },
 };
 
 function normalizeModelKey(model: string) {

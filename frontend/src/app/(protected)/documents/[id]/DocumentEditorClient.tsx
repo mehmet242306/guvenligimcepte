@@ -119,6 +119,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
   const [userId, setUserId] = useState<string | null>(null);
   const [companyData, setCompanyData] = useState<CompanyVariableData>({});
   const [exporting, setExporting] = useState(false);
+  const [exportNotice, setExportNotice] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [initialContent, setInitialContent] = useState<JSONContent | undefined>(undefined);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -404,9 +405,41 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
     }
   }, [orgId, editor, doc, title, status, groupKey, userId, companyData, qCompanyId, fromLibrary, librarySection, workspaceId, qMode, getSaveLocationLabel]);
 
+  const consumeExportQuota = useCallback(async (): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/documents/export-quota", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      });
+      const body = (await res.json().catch(() => ({}))) as { message?: string; error?: string };
+      if (res.status === 402) {
+        setExportNotice(
+          body.message ||
+            "Disa aktarma paket limitiniz doldu. Paketinizi yukselterek devam edebilirsiniz.",
+        );
+        window.setTimeout(() => setExportNotice(null), 10000);
+        return false;
+      }
+      if (!res.ok) {
+        setExportNotice(body.error || body.message || "Disa aktarma kotasi dogrulanamadi.");
+        window.setTimeout(() => setExportNotice(null), 8000);
+        return false;
+      }
+      return true;
+    } catch {
+      setExportNotice("Baglanti hatasi. Disa aktarma kotasi dogrulanamadi.");
+      window.setTimeout(() => setExportNotice(null), 8000);
+      return false;
+    }
+  }, []);
+
   // Export
   const handleExport = useCallback(async () => {
     if (!editor) return;
+    const ok = await consumeExportQuota();
+    if (!ok) return;
     setExporting(true);
     try {
       const { generateDocxFromTipTap } = await import('@/lib/document-generator');
@@ -421,11 +454,13 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
     } finally {
       setExporting(false);
     }
-  }, [editor, title, companyData]);
+  }, [editor, title, companyData, consumeExportQuota]);
 
   // PDF Export (browser print)
-  const handlePdfExport = useCallback(() => {
+  const handlePdfExport = useCallback(async () => {
     if (!editor) return;
+    const ok = await consumeExportQuota();
+    if (!ok) return;
     const content = editor.getHTML();
     const companyName = companyData.official_name || '';
     const printWindow = window.open('', '_blank');
@@ -471,7 +506,7 @@ ${content}
 </body></html>`);
     printWindow.document.close();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor, title, companyData]);
+  }, [editor, title, companyData, consumeExportQuota]);
 
   useEffect(() => {
     if (!qDownload || !editor || loading || autoDownloadTriggeredRef.current) return;
@@ -672,6 +707,12 @@ ${content}
           <span className="text-xs text-[var(--text-secondary)]">
             Belge acik kaldi; duzenlemeye devam edebilirsiniz.
           </span>
+        </div>
+      ) : null}
+
+      {exportNotice ? (
+        <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/25 dark:text-amber-100">
+          {exportNotice}
         </div>
       ) : null}
 

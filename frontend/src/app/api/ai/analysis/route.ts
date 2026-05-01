@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { z } from "zod";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { requireAuth } from "@/lib/supabase/api-auth";
-import { enforceRateLimit } from "@/lib/security/server";
+import {
+  enforceRateLimit,
+  parseJsonBody,
+  resolveAiDailyLimit,
+} from "@/lib/security/server";
 import type { AnalysisMethod } from "@/lib/analysis/types";
 import { R2D_RCA_COMPACT_PROMPT } from "@/lib/prompts/r2d_rca_prompt";
 
@@ -12,6 +17,36 @@ const MODEL = "claude-sonnet-4-20250514";
 const MAX_TOKENS = 2000;
 
 export const maxDuration = 60;
+
+const ANALYSIS_METHODS = [
+  "ishikawa",
+  "five_why",
+  "fault_tree",
+  "scat",
+  "bow_tie",
+  "mort",
+  "r2d_rca",
+] as const satisfies readonly AnalysisMethod[];
+
+const incidentAiAnalysisSchema = z.object({
+  method: z.enum(ANALYSIS_METHODS),
+  incidentTitle: z.string().trim().min(1).max(400),
+  incidentDescription: z.string().trim().max(16000).optional(),
+  context: z
+    .unknown()
+    .optional()
+    .refine(
+      (c) => {
+        if (c == null) return true;
+        try {
+          return JSON.stringify(c).length <= 80000;
+        } catch {
+          return false;
+        }
+      },
+      { message: "Baglam cok buyuk (yaklasik 80KB ust sinir)." },
+    ),
+});
 
 /* ------------------------------------------------------------------ */
 /*  Yonteme gore system prompt                                         */
@@ -205,7 +240,9 @@ SADECE JSON:
 }
 
 /* ------------------------------------------------------------------ */
-/*  POST — AI analiz                                                   */
+/*  POST — Olay / kök neden AI analizi (Ishikawa, 5N, FTA, …)         */
+/*  Model: Claude Sonnet. Kota: incident_analysis (consumeEntitlement) */
+/*  + plan günlük AI limiti (diğer /api/* AI uçları ile aynı pencere).  */
 /* ------------------------------------------------------------------ */
 
 export async function POST(request: NextRequest) {
@@ -217,30 +254,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "ANTHROPIC_API_KEY tanimli degil." }, { status: 500 });
     }
 
+    const plan = await resolveAiDailyLimit(auth.userId);
     const rateLimited = await enforceRateLimit(request, {
       userId: auth.userId,
       organizationId: auth.organizationId,
       endpoint: "/api/ai/analysis",
       scope: "ai",
-      limit: 15,
-      windowSeconds: 60,
-      planKey: "incident_ai",
+      limit: plan.dailyLimit,
+      windowSeconds: 24 * 60 * 60,
+      planKey: plan.planKey,
       metadata: { feature: "root_cause_analysis" },
     });
     if (rateLimited) return rateLimited;
 
-    const body = await request.json();
-    const { method, incidentTitle, incidentDescription, context } = body as {
-      method: AnalysisMethod;
-      incidentTitle: string;
-      incidentDescription?: string;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      context?: any;
-    };
+    const parsedBody = await parseJsonBody(request, incidentAiAnalysisSchema);
+    if (!parsedBody.ok) return parsedBody.response;
 
-    if (!method || !incidentTitle) {
-      return NextResponse.json({ error: "method ve incidentTitle zorunlu" }, { status: 400 });
-    }
+    const { method, incidentTitle, incidentDescription, context } = parsedBody.data;
 
     const entitlementResponse = await consumeEntitlement(auth, "incident_analysis");
     if (entitlementResponse) return entitlementResponse;
