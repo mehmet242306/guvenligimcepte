@@ -24,8 +24,8 @@ export default function KurumsalSolutionsPage() {
             Lokasyonlarınız için tutarlı İSG operasyonu ve özel kurulum.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-8 text-white/72">
-            Self-servis kart ödemesi yerine yapınıza uygun lisanslama, onboarding ve gerekiyorsa entegrasyonları birlikte
-            planlıyoruz. Teklif formu ile ihtiyacınızı iletin; ekibimiz size dönsün.
+            Kurumsal kullanımda kartla self-servis ödeme sunmuyoruz. İhtiyacınızı paylaşın; satış ekibimiz size özel
+            teklif, limitler ve kurulum için iletişime geçsin.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -34,12 +34,12 @@ export default function KurumsalSolutionsPage() {
             >
               Kayıt üzerinden teklif talebi
             </Link>
-            <Link
-              href="/pricing"
+            <a
+              href="#kurumsal-teklif"
               className="inline-flex h-11 items-center justify-center rounded-lg border border-white/15 bg-white/10 px-5 text-sm font-semibold text-white hover:bg-white/15"
             >
-              Bireysel paketlere bak
-            </Link>
+              Bizimle iletişime geçin (form)
+            </a>
           </div>
           <p className="mt-6 text-sm text-white/65">
             OSGB olarak hizmet veriyorsanız{" "}
@@ -51,7 +51,7 @@ export default function KurumsalSolutionsPage() {
         </div>
       </section>
 
-      <CommercialLeadPageContent mode="enterprise" />
+      <CommercialLeadPageContent mode="enterprise" sectionId="kurumsal-teklif" />
       <PublicLegalFooter />
     </main>
   );

@@ -516,6 +516,7 @@ export function RegisterAccountTypePreview({
         onClose={() => setActiveLeadType(null)}
         countryCode={countryCode ?? "TR"}
         languageCode={languageCode ?? "tr"}
+        sourcePage="register"
       />
     </>
   );

@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createServiceClient, parseJsonBody } from "@/lib/security/server";
 
+const leadSourcePageSchema = z.enum([
+  "register",
+  "cozumler_kurumsal",
+  "cozumler_osgb",
+  "landing_demo",
+]);
+
 const commercialLeadSchema = z.object({
   accountType: z.enum(["osgb", "enterprise"]),
   companyName: z.string().trim().min(2).max(180),
@@ -12,6 +19,8 @@ const commercialLeadSchema = z.object({
   estimatedCompanyCount: z.number().int().positive().optional().nullable(),
   estimatedEmployeeCount: z.number().int().positive().optional().nullable(),
   estimatedProfessionalCount: z.number().int().positive().optional().nullable(),
+  /** Kurumsal / OSGB cozum sayfasi veya kayit akisi */
+  sourcePage: leadSourcePageSchema.optional(),
 });
 
 function isSchemaCompatError(message: string | undefined | null) {
@@ -45,6 +54,8 @@ export async function POST(request: NextRequest) {
       status: "new",
     };
 
+    const sourcePage = body.sourcePage ?? "register";
+
     let insertResult = await service.from("enterprise_leads").insert({
       ...basePayload,
       requested_account_type: body.accountType,
@@ -52,11 +63,14 @@ export async function POST(request: NextRequest) {
         body.accountType === "osgb" ? body.estimatedCompanyCount ?? null : null,
       estimated_professional_count:
         body.estimatedProfessionalCount ?? null,
-      source_page: "register",
+      source_page: sourcePage,
     });
 
     if (insertResult.error && isSchemaCompatError(insertResult.error.message)) {
-      insertResult = await service.from("enterprise_leads").insert(basePayload);
+      insertResult = await service.from("enterprise_leads").insert({
+        ...basePayload,
+        source_page: sourcePage,
+      });
     }
 
     if (insertResult.error) {

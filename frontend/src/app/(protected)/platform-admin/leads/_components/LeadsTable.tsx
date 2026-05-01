@@ -40,6 +40,8 @@ function sourceLabel(s: string | null): string {
   const map: Record<string, string> = {
     landing_demo: "Landing Demo",
     register: "Kayıt Formu",
+    cozumler_kurumsal: "Kurumsal çözüm sayfası",
+    cozumler_osgb: "OSGB çözüm sayfası",
     unknown: "Bilinmiyor",
   };
   return map[s] ?? s;
@@ -49,7 +51,44 @@ export function LeadsTable({ leads }: Props) {
   const router = useRouter();
   const [expanded, setExpanded] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [savingNotesId, setSavingNotesId] = useState<string | null>(null);
+  const [notesDraftById, setNotesDraftById] = useState<Record<string, string>>({});
   const [errorById, setErrorById] = useState<Record<string, string>>({});
+
+  function notesValue(lead: LeadRow) {
+    if (notesDraftById[lead.id] !== undefined) return notesDraftById[lead.id];
+    return lead.admin_notes ?? "";
+  }
+
+  async function saveAdminNotes(id: string, lead: LeadRow) {
+    setSavingNotesId(id);
+    setErrorById((prev) => ({ ...prev, [id]: "" }));
+    try {
+      const text = notesValue(lead);
+      const res = await fetch(`/api/admin/leads/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ admin_notes: text.trim() ? text : null }),
+      });
+      if (!res.ok) {
+        const t = await res.text().catch(() => "");
+        throw new Error(t.slice(0, 200) || `HTTP ${res.status}`);
+      }
+      setNotesDraftById((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+      router.refresh();
+    } catch (err) {
+      setErrorById((prev) => ({
+        ...prev,
+        [id]: err instanceof Error ? err.message : "Not kaydedilemedi",
+      }));
+    } finally {
+      setSavingNotesId(null);
+    }
+  }
 
   async function updateStatus(id: string, status: LeadStatus) {
     setSavingId(id);
@@ -230,6 +269,41 @@ export function LeadsTable({ leads }: Props) {
                             </p>
                           </div>
                         ) : null}
+
+                        <div className="mt-4 rounded-xl border border-dashed border-amber-500/30 bg-amber-500/5 p-4">
+                          <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                            İç not (manuel teklif, özel limit, fiyat)
+                          </p>
+                          <p className="mb-2 text-xs text-muted-foreground">
+                            Müşteriye gösterilmez. Anlaşılan koşulları veya plan kodunu burada tutun.
+                          </p>
+                          <textarea
+                            value={notesValue(lead)}
+                            onChange={(e) =>
+                              setNotesDraftById((prev) => ({
+                                ...prev,
+                                [lead.id]: e.target.value,
+                              }))
+                            }
+                            onClick={(e) => e.stopPropagation()}
+                            rows={4}
+                            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground"
+                            placeholder="Örn. Professional özel: 50 kullanıcı, yıllık X TL, sözleşme #..."
+                          />
+                          <div className="mt-2 flex justify-end gap-2">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                void saveAdminNotes(lead.id, lead);
+                              }}
+                              disabled={savingNotesId === lead.id}
+                              className="rounded-lg bg-[var(--gold)] px-3 py-1.5 text-xs font-semibold text-white hover:brightness-110 disabled:opacity-50"
+                            >
+                              {savingNotesId === lead.id ? "Kaydediliyor..." : "Notu kaydet"}
+                            </button>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ) : null}

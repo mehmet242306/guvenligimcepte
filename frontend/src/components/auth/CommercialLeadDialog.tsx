@@ -17,6 +17,8 @@ type CommercialLeadDialogProps = {
   onClose: () => void;
   countryCode?: string;
   languageCode?: string;
+  /** Kaynak: cozum sayfasi veya register (varsayilan API tarafinda register) */
+  sourcePage?: "register" | "cozumler_kurumsal" | "cozumler_osgb" | "landing_demo";
 };
 
 type FormState = {
@@ -54,6 +56,7 @@ export function CommercialLeadDialog({
   onClose,
   countryCode,
   languageCode,
+  sourcePage,
 }: CommercialLeadDialogProps) {
   const copy = useMemo(() => getCommercialLeadCopy(accountType), [accountType]);
   const fieldPrefix = `commercial-${accountType}`;
@@ -111,6 +114,7 @@ export function CommercialLeadDialog({
           estimatedProfessionalCount: toOptionalNumber(
             form.estimatedProfessionalCount,
           ),
+          ...(sourcePage ? { sourcePage } : {}),
           message:
             [
               countryCode ? `Bolge/ulke: ${countryCode}` : null,
@@ -212,9 +216,10 @@ export function CommercialLeadDialog({
                   Talebinizi aldik
                 </p>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  Sizi daha iyi tanimak ve size ozel paketler ile secenekler
-                  sunmak icin bu bilgileri ekibimize ilettik. Kisa sure icinde
-                  sizinle iletisime gececegiz.
+                  Talebinizi aldik. Sizi daha iyi tanımak ve teklif ile kurulum
+                  seceneklerini paylasmak icin satis ekibimiz kisa sure icinde
+                  sizinle iletisime gececek. Bu akista kartla odeme yapilmaz;
+                  teklif ve kosullar telefon veya e-posta ile netlesir.
                 </p>
               </div>
               <div className="flex justify-end">

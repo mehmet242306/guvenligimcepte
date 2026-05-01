@@ -67,7 +67,7 @@ export function getCommercialLeadCopy(type: CommercialInterestType) {
     badge: "Firma / kurumsal iletişim",
     title: "Kurum yapınızı tanıyalım",
     description:
-      "Sizi tanımak, lokasyon yapınızı ve operasyon ihtiyacınızı anlamak istiyoruz; böylece size özel paketler ve seçenekler önerebiliriz.",
+      "Bu akışta ödeme adımı yoktur. Formu gönderdiğinizde talebiniz ekibimize düşer; satış veya çözüm ekibimiz sizinle iletişime geçerek özel teklif ve limitleri netleştirir.",
     primaryCta: "Talebi gönder",
     companyLabel: "Firma / kurum adı",
     scaleLabel: "Lokasyon / saha sayısı",

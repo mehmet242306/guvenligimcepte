@@ -21,6 +21,8 @@ export type RegisterCommercialPlansProps = {
   mode?: CommercialPlansMode;
   countryCode?: string;
   languageCode?: string;
+  /** Cozum sayfasi formlarinda lead kaynagi (platform admin filtreleri). */
+  leadSourcePage?: "register" | "cozumler_kurumsal" | "cozumler_osgb" | "landing_demo";
   /** Parent diyalog aciyorsa ic ice diyalog olmasin. */
   onRequestLead?: (type: CommercialInterestType) => void;
   className?: string;
@@ -31,6 +33,7 @@ export function RegisterCommercialPlans({
   mode = "both",
   countryCode = "TR",
   languageCode = "tr",
+  leadSourcePage,
   onRequestLead,
   className,
 }: RegisterCommercialPlansProps) {
@@ -155,8 +158,9 @@ export function RegisterCommercialPlans({
               Firma / kurumsal özel teklif
             </div>
             <p className={cn("mt-3 text-sm leading-7", isLight ? "text-muted-foreground" : "text-white/82")}>
-              Çok lokasyonlu firmalar, saha ağırlıklı yapılar ve özel kurgular için self-servis yerine önce sizi
-              tanımak istiyoruz. Yapınıza uygun paketler, seçenekler ve kurulum için satış ekibiyle görüşün.
+              Cok lokasyonlu firmalar, saha agirlikli yapilar ve ozel kurgular icin bu sayfada kartla odeme yoktur.
+              Once sizi tanimak, ihtiyacinizi netlestirmek ve size ozel teklif sunmak icin bizimle iletisime gecmenizi
+              rica ederiz; formu doldurdugunuzda satis ekibimiz size doner.
             </p>
             <ul className={cn("mt-4 space-y-2 text-sm", isLight ? "text-muted-foreground" : "text-white/78")}>
               {companyOfferHighlights.map((item) => (
@@ -201,6 +205,7 @@ export function RegisterCommercialPlans({
           onClose={() => setInternalLeadType(null)}
           countryCode={countryCode}
           languageCode={languageCode}
+          sourcePage={leadSourcePage}
         />
       )}
     </>

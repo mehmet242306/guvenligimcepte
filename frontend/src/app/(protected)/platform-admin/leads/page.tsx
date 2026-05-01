@@ -36,7 +36,7 @@ export default async function PlatformAdminLeadsPage({
   let query = service
     .from("enterprise_leads")
     .select(
-      "id, contact_name, email, phone, company_name, message, status, requested_account_type, source_page, estimated_employee_count, estimated_location_count, estimated_company_count, estimated_professional_count, created_at",
+      "id, contact_name, email, phone, company_name, message, status, requested_account_type, source_page, estimated_employee_count, estimated_location_count, estimated_company_count, estimated_professional_count, admin_notes, created_at",
     )
     .order("created_at", { ascending: false })
     .limit(200);
@@ -133,6 +133,8 @@ export default async function PlatformAdminLeadsPage({
           { v: "all", l: "Hepsi" },
           { v: "landing_demo", l: "Landing demo" },
           { v: "register", l: "Kayıt formu" },
+          { v: "cozumler_kurumsal", l: "Kurumsal sayfa" },
+          { v: "cozumler_osgb", l: "OSGB sayfa" },
           { v: "unknown", l: "Diğer" },
         ].map((f) => (
           <FilterLink

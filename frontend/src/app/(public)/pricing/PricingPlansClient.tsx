@@ -331,8 +331,8 @@ export function PricingPlansClient() {
           <h2 className="text-xl font-semibold">OSGB veya kurumsal kullanım</h2>
           <p className="mt-2 text-sm leading-7 text-muted-foreground">
             Çoklu kullanıcı, firma portföyü, white-label, özel onboarding ve
-            kurumsal faturalandırma için self servis ödeme yerine satış
-            görüşmesiyle ilerliyoruz.
+            kurumsal faturalandırma için bu akışta checkout veya kart ödemesi
+            yoktur; bizimle iletişime geçerek teklif ve sözleşmeyi netleştirirsiniz.
           </p>
         </div>
         <div className="mt-5 flex flex-wrap gap-3">

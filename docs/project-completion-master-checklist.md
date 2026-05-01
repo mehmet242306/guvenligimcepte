@@ -421,12 +421,21 @@ Amac: Urun kullaniciya guven veren, satilabilir ve yayinlanabilir hale gelir.
 
 ## 8. Kurumsal / Enterprise Akisi
 
-- [ ] Kurumsal talep formu var.
-- [ ] Talep Supabase'e kayit oluyor.
-- [ ] Platform admin lead ekraninda gorunuyor.
-- [ ] Kurumsal icin checkout butonu yok.
-- [ ] Metinler "bizimle iletisime gecin" seklinde.
-- [ ] Ozel limit/ozel fiyat mantigi manuel yonetilebilir.
+- [x] Kurumsal talep formu var.
+- [x] Talep Supabase'e kayit oluyor.
+- [x] Platform admin lead ekraninda gorunuyor.
+- [x] Kurumsal icin checkout butonu yok.
+- [x] Metinler "bizimle iletisime gecin" seklinde.
+- [x] Ozel limit/ozel fiyat mantigi manuel yonetilebilir.
+
+8 dogrulama notlari:
+
+- `/cozumler/kurumsal`: hero ikinci CTA `/pricing` yerine `#kurumsal-teklif` (form); metinler kart odemesi yok / iletisim vurgusu.
+- `CommercialLeadPageContent` + `RegisterCommercialPlans`: `leadSourcePage` = `cozumler_kurumsal` | `cozumler_osgb`; `POST /api/contact/commercial-lead` `sourcePage` alani ile `enterprise_leads.source_page` dolar.
+- Platform admin `/platform-admin/leads`: kaynak filtreleri + `admin_notes` sutunu; genisletilmis satirda ic not alani, `PATCH /api/admin/leads/[id]` ile `admin_notes` veya `status`.
+- Migration: `20260501140000_enterprise_leads_admin_notes.sql` (`admin_notes text`).
+- Fiyat sayfasi kurumsal kutusu: checkout yok, iletisim ile netlesir ifadesi.
+- OSGB cozum sayfasi: hero ikinci link `#osgb-teklif` ile tutarlilik.
 
 ## 9. Platform Admin
 

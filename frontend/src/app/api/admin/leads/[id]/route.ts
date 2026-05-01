@@ -7,14 +7,17 @@ import { getAccountContextForUser } from "@/lib/account/account-routing";
 // =============================================================================
 // PATCH /api/admin/leads/[id]
 // =============================================================================
-// Platform admin, enterprise_leads.status alanını günceller. Sadece izin
-// verilen durum değerleri kabul edilir. Diğer tüm alanlar read-only (admin
-// UI'dan değişmesi beklenmez).
+// Platform admin: enterprise_leads.status ve admin_notes (manuel teklif/limit).
 // =============================================================================
 
-const bodySchema = z.object({
-  status: z.enum(["new", "contacted", "qualified", "converted", "rejected"]),
-});
+const bodySchema = z
+  .object({
+    status: z.enum(["new", "contacted", "qualified", "converted", "rejected"]).optional(),
+    admin_notes: z.string().max(8000).optional().nullable(),
+  })
+  .refine((d) => d.status !== undefined || d.admin_notes !== undefined, {
+    message: "status_or_admin_notes_required",
+  });
 
 export async function PATCH(
   request: NextRequest,
@@ -47,10 +50,11 @@ export async function PATCH(
     if (!parsed.ok) return parsed.response;
 
     const service = createServiceClient();
-    const { error } = await service
-      .from("enterprise_leads")
-      .update({ status: parsed.data.status })
-      .eq("id", id);
+    const updates: Record<string, unknown> = {};
+    if (parsed.data.status !== undefined) updates.status = parsed.data.status;
+    if (parsed.data.admin_notes !== undefined) updates.admin_notes = parsed.data.admin_notes;
+
+    const { error } = await service.from("enterprise_leads").update(updates).eq("id", id);
 
     if (error) {
       return NextResponse.json(

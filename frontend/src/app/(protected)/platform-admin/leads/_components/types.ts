@@ -19,6 +19,7 @@ export type LeadRow = {
   estimated_location_count: number | null;
   estimated_company_count: number | null;
   estimated_professional_count: number | null;
+  admin_notes: string | null;
   created_at: string;
 };
 

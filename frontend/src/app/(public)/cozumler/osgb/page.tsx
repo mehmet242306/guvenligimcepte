@@ -34,12 +34,12 @@ export default function OsgbSolutionsPage() {
             >
               Kayıt üzerinden teklif talebi
             </Link>
-            <Link
-              href="/pricing"
+            <a
+              href="#osgb-teklif"
               className="inline-flex h-11 items-center justify-center rounded-lg border border-white/15 bg-white/10 px-5 text-sm font-semibold text-white hover:bg-white/15"
             >
-              Bireysel paketlere dön
-            </Link>
+              Teklif formuna in
+            </a>
           </div>
           <p className="mt-6 text-sm text-white/65">
             Çok lokasyonlu tek işyeri modeli için{" "}
@@ -51,7 +51,7 @@ export default function OsgbSolutionsPage() {
         </div>
       </section>
 
-      <CommercialLeadPageContent mode="osgb" />
+      <CommercialLeadPageContent mode="osgb" sectionId="osgb-teklif" />
       <PublicLegalFooter />
     </main>
   );
