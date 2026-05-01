@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   AlertTriangle,
@@ -17,6 +18,7 @@ import {
   GaugeCircle,
   GraduationCap,
   LayoutDashboard,
+  CreditCard,
   PenTool,
   Radar,
   ShieldAlert,
@@ -44,6 +46,7 @@ interface DashboardStats {
   librarySourcedExamCount: number;
   userName: string;
   recentDocs: Array<{ id: string; title: string; status: string; updated_at: string }>;
+  isDemoAccount: boolean;
 }
 
 export function DashboardClient() {
@@ -123,6 +126,8 @@ export function DashboardClient() {
       ]);
 
       const docs = documents || [];
+      const isDemoAccount =
+        user.user_metadata?.demo_mode === true || user.app_metadata?.demo_mode === true;
       setStats({
         riskCount: riskCount || 0,
         highRiskCount: highRisks?.length || 0,
@@ -136,6 +141,7 @@ export function DashboardClient() {
         librarySourcedExamCount: librarySourcedExamCount || 0,
         userName: profile.full_name || user.email || '',
         recentDocs: docs.slice(0, 5),
+        isDemoAccount,
       });
       setLoading(false);
     }
@@ -245,6 +251,39 @@ export function DashboardClient() {
               <PriorityPill label="Olay kaydı" value={s.incidentCount} tone={s.incidentCount > 0 ? "cobalt" : "success"} />
             </div>
           </div>
+        </div>
+      </section>
+
+      <section
+        className={`rounded-[1.75rem] border px-5 py-4 shadow-sm sm:px-6 sm:py-5 ${
+          s.isDemoAccount
+            ? "border-amber-400/40 bg-amber-50/90 dark:border-amber-500/30 dark:bg-amber-950/25"
+            : "border-[var(--gold)]/30 bg-[linear-gradient(135deg,rgba(255,255,255,0.95),rgba(255,248,236,0.5))] dark:border-white/10 dark:bg-white/[0.04]"
+        }`}
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[var(--gold)]/35 bg-[var(--gold)]/15 text-[var(--gold)]">
+              <CreditCard className="h-5 w-5" aria-hidden />
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-foreground">
+                {s.isDemoAccount ? "Demo hesabındasınız" : "Paket ve kapasite"}
+              </p>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                {s.isDemoAccount
+                  ? "Üretim kullanımına geçmek için uygun paketi seçin; ödeme ve faturalama Paketler sayfasından yönetilir."
+                  : "Daha fazla çalışma alanı veya modül ihtiyacınız varsa paketleri inceleyin; yükseltme self-servis olarak yapılabilir."}
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/pricing"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[var(--gold)] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_32px_rgba(217,162,27,0.35)] transition hover:brightness-110"
+          >
+            Paketlere git
+            <ArrowUpRight className="h-4 w-4" aria-hidden />
+          </Link>
         </div>
       </section>
 

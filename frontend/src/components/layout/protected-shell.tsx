@@ -65,6 +65,7 @@ const secondaryNav: NavItem[] = [
   { href: "/digital-twin", key: "nav.digitalTwin", adminOnly: true },
   // Raporlar: Artık firma workspace'i içindeki "İSG Dosyası" sekmesine taşındı.
   // { href: "/reports", key: "nav.reports" },
+  { href: "/pricing", key: "nav.pricing" },
   { href: "/settings", key: "nav.settings" },
 ];
 
@@ -82,6 +83,7 @@ const osgbSecondaryNav = [
   { href: "/risk-analysis", label: "Riskler" },
   { href: "/osgb/contracts", label: "Sözleşmeler" },
   // Raporlar: Firma workspace → İSG Dosyası sekmesine taşındı.
+  { href: "/pricing", label: "Paketler" },
   { href: "/settings", label: "Ayarlar" },
 ];
 
@@ -118,6 +120,7 @@ function isWorkspaceOptionalPath(pathname: string) {
 }
 
 function isWorkspaceLockedHref(href: string) {
+  if (href === "/pricing") return false;
   return (
     href !== "/workspace/onboarding" &&
     href !== "/companies" &&
@@ -428,6 +431,8 @@ export function ProtectedShell({
   const showWorkspaceSwitcher = !isPlatformAdminShell;
   const showNotificationBell = !isPlatformAdminShell && !!accountContext?.organizationId;
   const showChatWidget = true;
+  /** Self-service paketler (/pricing); platform admin panelinde gereksiz */
+  const showPricingCta = !isPlatformAdminShell;
   const disableWorkspaceModules =
     accountSurface === "standard" &&
     accountContext?.accountType === "individual" &&
@@ -825,6 +830,16 @@ export function ProtectedShell({
 
             {/* Right: Actions — absolute so it doesn't affect nav centering */}
             <div className="flex min-w-0 items-center justify-end gap-0.5 justify-self-end sm:gap-1.5">
+              {showPricingCta ? (
+                <Link
+                  href="/pricing"
+                  className="inline-flex h-9 shrink-0 items-center rounded-xl border border-[rgba(231,205,163,0.45)] bg-[rgba(231,205,163,0.14)] px-2.5 text-[11px] font-bold uppercase tracking-wide text-[var(--gold-light)] transition-all hover:border-[rgba(231,205,163,0.65)] hover:bg-[rgba(231,205,163,0.22)] sm:h-11 sm:px-3 sm:text-[12px] sm:normal-case sm:tracking-normal"
+                  title="Paketler ve fiyatlandirma"
+                >
+                  <span className="hidden sm:inline">Paketler</span>
+                  <span className="sm:hidden">Paket</span>
+                </Link>
+              ) : null}
               <LanguageSelector variant="dark" />
               {showNotificationBell ? <NotificationBell /> : null}
               <ThemeToggle />
