@@ -268,10 +268,12 @@ export async function POST(request: NextRequest) {
     "transaction.completed",
     "subscription.created",
     "subscription.updated",
+    "subscription.activated",
     "subscription.canceled",
     "subscription.paused",
     "subscription.resumed",
     "subscription.past_due",
+    "subscription.trialing",
   ];
 
   if (subscriptionEventTypes.includes(eventType)) {

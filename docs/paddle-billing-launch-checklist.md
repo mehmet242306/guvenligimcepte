@@ -10,6 +10,20 @@ Durum etiketleri:
 
 ## 0. Mevcut Durum
 
+### 0.A Repo (kod) — statik dogrulama
+
+Asagidakiler kod incelemesi ile teyit edildi; canli webhook / Vercel erisimi gerektirmez:
+
+- [x] `POST /api/billing/checkout` Paddle transaction olusturma ve env eksiginde anlasilir hata.
+- [x] `POST /api/billing/webhook`: `paddle-signature` HMAC dogrulama (`verifyPaddleWebhookSignature`), zaman damgasi penceresi, imzasiz istek 401.
+- [x] `paddle_webhook_events`: her `event_id` icin insert; duplicate `event_id` 500 yerine idempotent devam.
+- [x] Abonelik yazimi: `transaction.completed`, `subscription.created`, `subscription.updated`, `subscription.activated`, `subscription.canceled`, `subscription.paused`, `subscription.resumed`, `subscription.past_due`, `subscription.trialing`.
+- [x] Plan cozumu: `custom_data` + Paddle `price_id` + `subscription_plans.paddle_price_id_*` + env price ID eslemesi.
+- [x] `GET /api/billing/status`: girisli kullanicinin aktif/trialing aboneligi icin `planKey` ve `billing_cycle`.
+- [x] `/pricing`: `PricingPlansClient` aktif plan + periyot eslesince **Mevcut plan** ve checkout devre disi.
+
+### 0.B Migration ve Paddle katalog (sizin ortaminiz)
+
 - [x] Supabase migration `20260428040000_professional_pricing_tiers.sql` calistirildi.
 - [x] Supabase migration `20260428043000_billing_entitlements_and_paddle.sql` calistirildi.
 - [x] Paddle product olusturuldu: `RiskNova Pro`.

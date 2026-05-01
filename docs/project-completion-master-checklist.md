@@ -461,13 +461,29 @@ Detayli Paddle takip dosyasi:
 
 `docs/paddle-billing-launch-checklist.md`
 
-Ozet:
+**Katalog / Supabase hazirlik (Paddle + DB tarafinda tamamlananlar):**
 
 - [x] Supabase billing migration'lari uygulandi.
 - [x] Paddle product ve price'lar olusturuldu.
 - [x] Price ID'leri Supabase'e islendi.
 - [x] Paddle API key olusturuldu.
 - [x] Paddle client-side token olusturuldu.
+
+**Repo / kod (statik dogrulama — Vercel erisimi gerekmez):**
+
+- [x] Checkout: `POST /api/billing/checkout` + `frontend/src/lib/billing/paddle.ts` (price ID env, Paddle API).
+- [x] Webhook: `POST /api/billing/webhook` imza dogrulama, `paddle_webhook_events` idempotent kayit, `subscription.activated` / `subscription.trialing` dahil abonelik event listesi.
+- [x] `user_subscriptions` upsert: plan `price_id` / `plan_key` / `subscription_plans` ile cozulur; `billing_cycle` ve `status` Paddle durumuna gore yazilir.
+- [x] Pricing UI: `PricingPlansClient` + `GET /api/billing/status` ile aktif plan anahtari ve fatura periyodu eslesince buton **Mevcut plan** ve checkout kapali.
+
+10 dogrulama notlari (kod):
+
+- `frontend/src/app/(public)/pricing/PricingPlansClient.tsx`: `activePlanKey` / `activeBillingCycle` ile `isCurrentPlan`; ucretli kartlarda **Mevcut plan** metni.
+- `frontend/src/app/api/billing/status/route.ts`: `user_subscriptions` + `subscription_plans.plan_key`, `billing_cycle`.
+- `frontend/src/app/api/billing/webhook/route.ts`: `verifyPaddleWebhookSignature`, `paddle_webhook_events` duplicate `event_id`, sonra `upsertSubscription`.
+
+**Production / Paddle operasyon (dashboard + canli ortam — sizin son kontrol listeniz):**
+
 - [ ] Vercel production env'lerine Paddle degiskenleri son kez dogrulanacak.
 - [ ] Paddle webhook destination firma onayi sonrasi dogrulanacak.
 - [ ] Webhook secret Vercel'de son kez dogrulanacak.
@@ -475,10 +491,12 @@ Ozet:
 - [ ] Checkout canli akis testi firma onayi sonrasi yapilacak.
 - [ ] Tum paketlerde odeme baslatma gercek verilerle dogrulanacak.
 - [ ] Webhook sonrasi abonelik aktivasyonu test edilecek.
-- [ ] `paddle_webhook_events` kaydi dogrulanacak.
-- [ ] `user_subscriptions` plan/cycle/status senkronu dogrulanacak.
-- [ ] Pricing ekraninda aktif plan "Mevcut plan" olarak dogrulanacak.
-- [ ] Live mode gecis plani tamamlanacak.
+- [ ] `paddle_webhook_events` kaydi production'da bir odeme/webhook ile teyit edilecek.
+- [ ] `user_subscriptions` plan/cycle/status senkronu production'da teyit edilecek.
+- [ ] Pricing ekraninda aktif plan **Mevcut plan** production'da girisli kullanici ile teyit edilecek.
+- [ ] Live mode gecis plani tamamlanacak (`docs/paddle-billing-launch-checklist.md` §12).
+
+Not: Ust bolumdeki **Faz 2** maddeleri operasyonel kabul / smoke test tamamlandiginda isaretlenmisse, bu §10 altindaki son satirlar yine de her release oncesi hizli teyit listesi olarak kalmalidir.
 
 ## 11. Limit, Kota ve Yetki Sızıntısı
 
