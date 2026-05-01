@@ -137,11 +137,11 @@ export function TrainingClient() {
     .slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      <div className="w-full px-4 py-8">
+    <div className="min-h-screen min-w-0 bg-[var(--background)]">
+      <div className="w-full min-w-0 max-w-full px-4 py-8">
         {/* Header */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
+        <div className="mb-8 flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
             {fromLibrary ? (
               <button
                 onClick={() => router.push(libraryBackHref)}
@@ -151,14 +151,12 @@ export function TrainingClient() {
                 ISG Kutuphanesi
               </button>
             ) : null}
-            <h1 className="text-2xl font-bold text-[var(--foreground)]">
-              Egitim ve Sinav
-            </h1>
+            <h1 className="text-2xl font-bold text-[var(--foreground)]">Eğitim</h1>
             <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-              AI destekli egitim hazirlayin, anket ve sinav olusturun, kisiye ozel link gonderin ve sonuclari analiz edin.
+              Slayt kütüphanesi, anket ve sınav akışları; kişiye özel link ve sonuç analizi bu modülde.
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex min-w-0 flex-wrap gap-2">
             <Link
               href={buildTrainingHref("/training/slides", { ai: "1" })}
               className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-110"
@@ -172,13 +170,6 @@ export function TrainingClient() {
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Slayt Kütüphanem
-            </Link>
-            <Link
-              href={buildTrainingHref("/training/question-bank")}
-              className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm font-medium text-[var(--foreground)] shadow-sm transition-colors hover:bg-[var(--accent)]"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              Soru Bankası
             </Link>
             <Link
               href={buildTrainingHref("/training/certificates")}

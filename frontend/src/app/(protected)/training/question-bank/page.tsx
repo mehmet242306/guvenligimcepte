@@ -1,5 +1,6 @@
-import { QuestionBankClient } from "./QuestionBankClient";
+import { redirect } from "next/navigation";
 
+/** Soru bankası üründen kaldırıldı; eski bağlantılar eğitim modülüne yönlendirilir. */
 export default function QuestionBankPage() {
-  return <QuestionBankClient />;
+  redirect("/training");
 }

@@ -1050,8 +1050,8 @@ export function WorkspaceOnboardingClient({
         </StatusAlert>
       ))}
 
-      <div className="grid gap-6 xl:grid-cols-[340px_minmax(0,1fr)]">
-        <Card className="h-fit">
+      <div className="grid min-w-0 gap-6 xl:grid-cols-[340px_minmax(0,1fr)]">
+        <Card className="h-fit min-w-0 overflow-hidden">
           <CardHeader>
             <CardTitle>Calisma alanlari</CardTitle>
             <CardDescription>
@@ -1079,28 +1079,28 @@ export function WorkspaceOnboardingClient({
                   key={membership.id}
                   type="button"
                   onClick={() => setSelectedWorkspaceId(membership.workspace.id)}
-                  className={`w-full rounded-3xl border p-4 text-left transition-all ${
+                  className={`w-full max-w-full rounded-3xl border p-4 text-left transition-all ${
                     isSelected
                       ? "border-primary/45 bg-primary/8 shadow-[0_14px_34px_rgba(15,23,42,0.10)]"
                       : "border-border bg-card hover:border-primary/30 hover:bg-secondary/20"
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-foreground">
+                  <div className="flex min-w-0 items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="break-words text-sm font-semibold text-foreground">
                         {membership.workspace.name}
                       </p>
-                      <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                      <p className="mt-1 break-all text-xs leading-5 text-muted-foreground">
                         {membership.workspace.country_code} · {membership.workspace.default_language.toUpperCase()} · {membership.roleKey}
                       </p>
                     </div>
-                    <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold text-foreground">
+                    <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold text-foreground">
                       {stateLabel}
                     </span>
                   </div>
 
-                  <div className="mt-3 flex items-center justify-between gap-2">
-                    <span className="text-xs text-muted-foreground">
+                  <div className="mt-3 flex min-w-0 flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+                    <span className="min-w-0 text-xs text-muted-foreground">
                       {isActive ? "Bu alan su anda sistem genelinde aktif." : "Isterse bu alana gecis yapabilirsin."}
                     </span>
                     {!isActive ? (

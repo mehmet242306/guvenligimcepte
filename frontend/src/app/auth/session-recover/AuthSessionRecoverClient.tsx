@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { createOAuthBrowserClient } from "@/lib/supabase/oauth-browser-client";
+import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
 
 type AccountContextResponse = {
   ok?: boolean;
@@ -161,38 +162,32 @@ export function AuthSessionRecoverClient({
         return;
       }
 
-      const { error: refreshAfterSetError } = await appSupabase.auth.refreshSession();
-      if (refreshAfterSetError) {
-        console.warn("[session-recover] refreshSession after setSession:", refreshAfterSetError.message);
+      if (intent !== "register") {
+        const demo = getDemoAccessState({
+          userMetadata: data.session.user.user_metadata,
+          appMetadata: data.session.user.app_metadata,
+        });
+        if (demo.status === "expired") {
+          try {
+            const releaseRes = await fetch("/api/account/release-demo-after-oauth", {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                Authorization: `Bearer ${data.session.access_token}`,
+              },
+            });
+            if (!releaseRes.ok && releaseRes.status !== 403) {
+              console.warn("[session-recover] release-demo-after-oauth:", releaseRes.status);
+            }
+          } catch (releaseErr) {
+            console.warn("[session-recover] release-demo-after-oauth failed:", releaseErr);
+          }
+        }
       }
 
-      // Giris (Google): demo suresi dolmus hesap tekrar kayit ekranina dusmesin
-      if (intent !== "register") {
-        try {
-          const releaseRes = await fetch("/api/account/release-demo-after-oauth", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              Authorization: `Bearer ${data.session.access_token}`,
-            },
-          });
-          const releaseJson = await readJsonSafely<{ ok?: boolean; released?: boolean }>(
-            releaseRes,
-          );
-          if (releaseRes.ok && releaseJson?.released) {
-            const { error: afterDemoRelease } = await appSupabase.auth.refreshSession();
-            if (afterDemoRelease) {
-              console.warn(
-                "[session-recover] refreshSession after demo release:",
-                afterDemoRelease.message,
-              );
-            }
-          } else if (!releaseRes.ok && releaseRes.status !== 403) {
-            console.warn("[session-recover] release-demo-after-oauth:", releaseRes.status);
-          }
-        } catch (releaseErr) {
-          console.warn("[session-recover] release-demo-after-oauth failed:", releaseErr);
-        }
+      const { error: syncRefreshError } = await appSupabase.auth.refreshSession();
+      if (syncRefreshError) {
+        console.warn("[session-recover] refreshSession:", syncRefreshError.message);
       }
 
       if (shouldForcePasswordSetup(data.session.user)) {
@@ -224,13 +219,16 @@ export function AuthSessionRecoverClient({
               "",
           ).trim() || undefined;
 
+        const { data: refreshed } = await appSupabase.auth.getSession();
+        const bearerToken = refreshed.session?.access_token ?? data.session.access_token;
+
         try {
           const response = await fetch("/api/account/onboarding", {
             method: "POST",
             credentials: "include",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${data.session.access_token}`,
+              Authorization: `Bearer ${bearerToken}`,
             },
             body: JSON.stringify({
               accountType: accountType === "individual" ? "individual" : "individual",
@@ -267,7 +265,9 @@ export function AuthSessionRecoverClient({
       }
 
       setMessage("Hesap baglami kontrol ediliyor...");
-      const redirectPath = await resolvePostAuthRedirect(next, data.session.access_token);
+      const { data: postRefresh } = await appSupabase.auth.getSession();
+      const accessToken = postRefresh.session?.access_token ?? data.session.access_token;
+      const redirectPath = await resolvePostAuthRedirect(next, accessToken);
       window.location.replace(redirectPath);
     }
 

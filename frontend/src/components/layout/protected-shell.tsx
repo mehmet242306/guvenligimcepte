@@ -59,7 +59,6 @@ const primaryNav = [
 type NavItem = { href: string; key: string; adminOnly?: boolean };
 const secondaryNav: NavItem[] = [
   { href: "/training", key: "nav.training" },
-  { href: "/training/new", key: "nav.surveyExam" },
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
@@ -88,6 +87,7 @@ const osgbSecondaryNav = [
 
 const platformAdminPrimaryNav = [
   { href: "/platform-admin", label: "Platform Yonetimi" },
+  { href: "/platform-admin/demo-requests", label: "Demo Talepleri" },
   { href: "/platform-admin/demo-builder", label: "Demo Olusturucu" },
   { href: "/risk-analysis", label: "Risk Analizi" },
   { href: "/corrective-actions", label: "DOF'ler" },
@@ -98,6 +98,12 @@ const platformAdminPrimaryNav = [
 function isActive(pathname: string, href: string) {
   if (href === "/dashboard" || href === "/osgb" || href === "/platform-admin") return pathname === href;
   return pathname.startsWith(href);
+}
+
+/** Tek sekme: /training alt rotalari (slayt, sinav, yeni) hep "Egitim" aktif */
+function isSecondaryNavActive(pathname: string, href: string) {
+  if (href === "/training") return pathname.startsWith("/training");
+  return isActive(pathname, href);
 }
 
 function isWorkspaceOptionalPath(pathname: string) {
@@ -869,7 +875,7 @@ export function ProtectedShell({
                   />
                 ) : null}
                 {baseSecondaryNav.map((item) => {
-                  const act = isActive(pathname, item.href);
+                  const act = isSecondaryNavActive(pathname, item.href);
                   const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
                   const classes = cn(
                     "relative inline-flex shrink-0 items-center rounded-xl px-3 py-2 text-[13px] font-semibold transition-all duration-200 xl:px-4 xl:text-[14px]",
@@ -964,7 +970,7 @@ export function ProtectedShell({
                 />
               ) : null}
               {baseSecondaryNav.map((item) => {
-                const act = isActive(pathname, item.href);
+                const act = isSecondaryNavActive(pathname, item.href);
                 const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
                 const classes = cn(
                   "relative inline-flex shrink-0 items-center rounded-lg px-3 py-2.5 text-[13px] font-semibold transition-colors",

@@ -34,7 +34,6 @@ import { DOCUMENT_GROUPS } from "@/lib/document-groups";
 import { getTemplate } from "@/lib/document-templates-p1";
 import { createClient } from "@/lib/supabase/client";
 import { fetchDocuments } from "@/lib/supabase/document-api";
-import { fetchBankQuestions } from "@/lib/supabase/question-bank-api";
 import { fetchOrgDecks, fetchMyDecks } from "@/lib/supabase/slide-deck-api";
 import { fetchSurveys } from "@/lib/supabase/survey-api";
 import {
@@ -86,7 +85,7 @@ type UnifiedLibraryItem = {
   viewHref: string | null;
   downloadHref: string | null;
   libraryContentId: string | null;
-  sourceKind: "catalog" | "template" | "survey" | "deck" | "question-bank";
+  sourceKind: "catalog" | "template" | "survey" | "deck";
   templateId?: string | null;
   usageCount?: number;
 };
@@ -696,7 +695,7 @@ export function IsgLibraryClient() {
         return;
       }
 
-      const [rolesResponse, workspaceResponse, libraryResponse, documentsResponse, surveysResponse, questionBankResponse, myDecksResponse, orgDecksResponse] = await Promise.all([
+      const [rolesResponse, workspaceResponse, libraryResponse, documentsResponse, surveysResponse, myDecksResponse, orgDecksResponse] = await Promise.all([
         supabase.from("user_roles").select("roles(code)").eq("user_profile_id", profile.id),
         supabase
           .from("company_workspaces")
@@ -716,7 +715,6 @@ export function IsgLibraryClient() {
         fetchLibraryContents(),
         fetchDocuments(profile.organization_id),
         fetchSurveys(profile.organization_id),
-        fetchBankQuestions(),
         fetchMyDecks(),
         fetchOrgDecks(),
       ]);
@@ -822,22 +820,6 @@ export function IsgLibraryClient() {
           sourceKind: "deck" as const,
           templateId: null,
         })),
-        {
-          id: "question-bank-overview",
-          title: "Soru Bankası",
-          description: `${questionBankResponse.length} aktif soru ile değerlendirme ve ölçme akışlarını yönetin.`,
-          category: "assessment",
-          subcategory: "Ölçme ve İzleme",
-          contentType: "Soru Bankası",
-          tags: ["AI", "ölçme", "takip"],
-          sector: [],
-          createdAt: new Date().toISOString(),
-          viewHref: "/training/question-bank",
-          downloadHref: null,
-          libraryContentId: null,
-          sourceKind: "question-bank",
-          templateId: null,
-        },
       ];
 
       if (!cancelled) {
@@ -1289,9 +1271,7 @@ export function IsgLibraryClient() {
           ? "Akış"
           : item.sourceKind === "deck"
             ? "Sunum"
-            : item.sourceKind === "question-bank"
-              ? "Banka"
-              : "Katalog";
+            : "Katalog";
 
     return (
       <Card

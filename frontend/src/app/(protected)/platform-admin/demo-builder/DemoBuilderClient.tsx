@@ -193,6 +193,11 @@ export function DemoBuilderClient() {
           Kullanici istedigi anda demo hesap ac, giris bilgisini paylas ve istenirse ilk ornek
           firma/workspace ile sistemi hazirla.
         </p>
+        <p className="rounded-xl border border-border bg-muted/30 px-3 py-2 text-xs leading-5 text-muted-foreground">
+          E-posta ile otomatik gonderim icin ortamda <strong>RESEND_API_KEY</strong> (ve gonderen adresi) tanimli
+          olmalidir. Aksi halde sonuc ekraninda <strong>Onizleme modu</strong> gorursun; bilgileri manuel
+          paylas veya talepleri <strong>Demo Talepleri</strong> sayfasindan takip et.
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">

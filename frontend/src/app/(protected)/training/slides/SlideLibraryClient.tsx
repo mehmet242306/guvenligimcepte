@@ -194,10 +194,10 @@ export function SlideLibraryClient() {
           <button onClick={() => setImportError(null)} className="ml-3 text-xs opacity-70 hover:opacity-100">×</button>
         </div>
       )}
-      <div className="w-full px-4 py-8">
+      <div className="w-full min-w-0 max-w-full px-4 py-8">
         {/* Header */}
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
+        <div className="mb-6 flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
             <div className="flex items-center gap-3">
               <Link
                 href={backHref}
@@ -211,7 +211,7 @@ export function SlideLibraryClient() {
               Profesyonel eğitim slaytları oluştur, düzenle ve paylaş
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex min-w-0 flex-wrap gap-2">
             <input
               ref={fileInputRef}
               type="file"
@@ -244,8 +244,8 @@ export function SlideLibraryClient() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="mb-4 flex items-center gap-1 rounded-xl bg-[var(--card)] p-1 shadow-sm border border-[var(--border)]">
+        {/* Tabs — mobilde tek sütun; geniş ekranda yan yana */}
+        <div className="mb-4 grid grid-cols-1 gap-1 rounded-xl border border-[var(--border)] bg-[var(--card)] p-1 shadow-sm sm:grid-cols-3">
           {[
             { k: "my" as TabKey, l: "Benim Deck'lerim", c: myDecks.length, icon: "👤" },
             { k: "organization" as TabKey, l: "Organizasyon", c: orgDecks.length, icon: "🏢" },
@@ -253,15 +253,16 @@ export function SlideLibraryClient() {
           ].map((t) => (
             <button
               key={t.k}
+              type="button"
               onClick={() => setTab(t.k)}
-              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+              className={`min-w-0 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors sm:text-center ${
                 tab === t.k
                   ? "bg-[var(--gold)] text-white shadow"
                   : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               }`}
             >
               <span className="mr-1">{t.icon}</span>
-              {t.l}
+              <span className="break-words">{t.l}</span>
               <span className="ml-1.5 text-xs opacity-75">({t.c})</span>
             </button>
           ))}
