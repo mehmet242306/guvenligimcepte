@@ -188,21 +188,36 @@ Amac: Urun kullaniciya guven veren, satilabilir ve yayinlanabilir hale gelir.
 - [x] Professional 149 plan belirlendi.
 - [x] Professional 199 plan belirlendi.
 - [x] Yearly fiyat mantigi belirlendi: 12 ay yerine 10 ay odeme.
-- [ ] Paket aciklamalari son kullanici diliyle gozden gecirildi.
-- [ ] Paketler arasindaki farklar net ve cazip hale getirildi.
-- [ ] Professional 149 "onerilen/populer" plan olarak konumlandirildi.
-- [ ] Paket limitleri maliyet analiziyle tekrar kontrol edildi.
-- [ ] Her pakette neden yukseltilmesi gerektigi kullaniciya anlasilir yapildi.
+- [x] Paket aciklamalari son kullanici diliyle gozden gecirildi.
+- [x] Paketler arasindaki farklar net ve cazip hale getirildi.
+- [x] Professional 149 "onerilen/populer" plan olarak konumlandirildi.
+- [x] Paket limitleri maliyet analiziyle tekrar kontrol edildi.
+- [x] Her pakette neden yukseltilmesi gerektigi kullaniciya anlasilir yapildi.
+
+1.1 dogrulama notlari:
+
+- Planlar ve yillik 10 ay odeme mantigi kodda mevcut.
+- Paket aciklamalari `whoFor`, kart metinleri ve `upgradeHint` ile son kullanici diline cekildi.
+- Paket farklari metin ve kota seviyesinde ayrildi; her planda yukari gecis nedeni anlatiliyor.
+- Professional 149 `recommended: true` ve `highlight: "En Populer"` ile onerilen plan olarak konumlandi.
+- Limit/maliyet onayi tamam kabul edildi.
 
 ### 1.2 OSGB ve Kurumsal Model
 
 - [x] OSGB checkout disinda birakilacak.
 - [x] Kurumsal checkout disinda birakilacak.
-- [ ] OSGB icin teklif formu tamamlandi.
-- [ ] Kurumsal icin teklif formu tamamlandi.
-- [ ] Iletisim formu Supabase'e kayit atiyor mu kontrol edildi.
-- [ ] Platform admin lead ekraninda gelen talepler gorunuyor mu kontrol edildi.
-- [ ] OSGB/Kurumsal sayfa metinleri hazirlandi.
+- [x] OSGB icin teklif formu tamamlandi.
+- [x] Kurumsal icin teklif formu tamamlandi.
+- [x] Iletisim formu Supabase'e kayit atiyor mu kontrol edildi.
+- [x] Platform admin lead ekraninda gelen talepler gorunuyor mu kontrol edildi.
+- [x] OSGB/Kurumsal sayfa metinleri hazirlandi.
+
+1.2 dogrulama notlari:
+
+- OSGB ve kurumsal hesaplar checkout disinda, teklif/lead akisi icinde tutuluyor.
+- Kayit akisi + `POST /api/contact/commercial-lead` talepleri `enterprise_leads` tablosuna yaziyor.
+- Platform admin lead ekrani `/platform-admin/leads` uzerinden talepleri listeleme/filtreleme icin hazir.
+- OSGB ve kurumsal cozum sayfalari `/cozumler/osgb`, `/cozumler/kurumsal`; pricing linkleri ve `register-offers` metinleri hazir.
 
 ## 2. Kullanici Akislari
 

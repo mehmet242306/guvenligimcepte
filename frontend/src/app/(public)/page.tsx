@@ -4,6 +4,8 @@ import { PublicHeader } from "@/components/layout/public-header";
 import { PublicSiteFooter } from "@/components/layout/public-site-footer";
 import { PublicChatWidget } from "@/components/chat/PublicChatWidget";
 import { DemoRequestTrigger } from "@/components/public/DemoRequestDialog";
+import { LandingHeroAtmosphere } from "@/components/public/landing-hero-atmosphere";
+import { LandingCtaAtmosphere } from "@/components/public/landing-cta-atmosphere";
 import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import {
@@ -179,15 +181,15 @@ export default function LandingPage() {
       {/* HERO                                                          */}
       {/* ============================================================ */}
       <section className="relative overflow-hidden bg-[var(--navy-dark)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.06),transparent_50%)]" />
-        <div className="page-shell relative flex min-h-[85vh] flex-col items-center justify-center py-20 text-center">
-          <span className="tag-label reveal mb-8">
+        <LandingHeroAtmosphere />
+        <div className="page-shell relative z-[1] flex min-h-[85vh] flex-col items-center justify-center py-20 text-center">
+          <span className="tag-label landing-hero-eyebrow reveal mb-8 rounded-full px-4 py-1.5">
             YAPAY ZEKA DESTEKLİ İSG PLATFORMU
           </span>
 
           <h1 className="reveal max-w-4xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl xl:text-6xl">
             İSG Risk Yönetimini{" "}
-            <span className="text-accent-serif">Sanata</span>{" "}
+            <span className="text-accent-serif landing-hero-gradient-text">Sanata</span>{" "}
             Dönüştürün
           </h1>
 
@@ -230,7 +232,7 @@ export default function LandingPage() {
           </div>
 
           {/* Stats */}
-          <div className="reveal reveal-delay-3 mt-16 grid w-full max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md md:grid-cols-4">
+          <div className="landing-hero-stats reveal reveal-delay-3 mt-16 grid w-full max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md md:grid-cols-4">
             {stats.map((s) => (
               <div
                 key={s.label}
@@ -264,7 +266,10 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div
+            id="landing-features-grid"
+            className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3"
+          >
             {features.map((item, index) => {
               const Icon = featureIcons[item.iconKey];
               return (
@@ -302,7 +307,10 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div
+            id="landing-workflow-grid"
+            className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-4"
+          >
             {workflow.map((item, index) => {
               const Icon = workflowIcons[item.iconKey];
               return (
@@ -419,7 +427,10 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div className="mt-14 grid gap-5 md:grid-cols-3">
+          <div
+            id="landing-testimonials-grid"
+            className="mt-14 grid gap-5 md:grid-cols-3"
+          >
             {testimonials.map((t) => (
               <div
                 key={t.author}
@@ -457,8 +468,8 @@ export default function LandingPage() {
       {/* BOTTOM CTA                                                    */}
       {/* ============================================================ */}
       <section className="relative overflow-hidden bg-[var(--navy-dark)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,160,23,0.08),transparent_60%)]" />
-        <div className="page-shell relative py-24 text-center">
+        <LandingCtaAtmosphere />
+        <div className="page-shell relative z-[1] py-24 text-center">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl xl:text-5xl">
             İSG Süreçlerinizi{" "}
             <span className="text-accent-serif">Dönüştürün</span>

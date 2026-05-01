@@ -427,6 +427,262 @@ body,
   transform: scale(1.02);
 }
 
+/* ================================================================== */
+/* Landing — premium hero atmosphere & motion                         */
+/* ================================================================== */
+
+@keyframes landing-orb-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.38;
+  }
+  33% {
+    transform: translate(8%, -6%) scale(1.06);
+    opacity: 0.48;
+  }
+  66% {
+    transform: translate(-6%, 5%) scale(0.96);
+    opacity: 0.42;
+  }
+}
+
+@keyframes landing-beam-sweep {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: translateX(-15%) skewX(-12deg);
+  }
+  50% {
+    opacity: 0.28;
+    transform: translateX(15%) skewX(-12deg);
+  }
+}
+
+@keyframes landing-shimmer-text {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes landing-stat-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 160, 23, 0);
+  }
+  50% {
+    box-shadow: 0 0 28px 0 rgba(212, 160, 23, 0.12);
+  }
+}
+
+@keyframes landing-cta-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.03);
+  }
+}
+
+.landing-hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  will-change: transform, opacity;
+}
+
+.landing-hero-orb--1 {
+  width: min(52vw, 520px);
+  height: min(48vw, 480px);
+  left: -12%;
+  top: -8%;
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.42) 0%, transparent 68%);
+  animation: landing-orb-drift 22s ease-in-out infinite;
+}
+
+.landing-hero-orb--2 {
+  width: min(42vw, 420px);
+  height: min(40vw, 400px);
+  right: -8%;
+  top: 18%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, transparent 70%);
+  animation: landing-orb-drift 26s ease-in-out infinite reverse;
+  animation-delay: -4s;
+}
+
+.landing-hero-orb--3 {
+  width: min(36vw, 360px);
+  height: min(36vw, 360px);
+  left: 28%;
+  bottom: -12%;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.16) 0%, transparent 72%);
+  animation: landing-orb-drift 20s ease-in-out infinite;
+  animation-delay: -8s;
+}
+
+.landing-hero-mesh {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 65% at 50% 35%, black 20%, transparent 75%);
+  opacity: 0.45;
+}
+
+.landing-hero-beam {
+  position: absolute;
+  top: -10%;
+  left: 25%;
+  width: 38%;
+  height: 65%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(251, 191, 36, 0.06) 45%,
+    rgba(253, 230, 138, 0.12) 50%,
+    rgba(251, 191, 36, 0.05) 55%,
+    transparent 100%
+  );
+  animation: landing-beam-sweep 14s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+.landing-hero-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.landing-hero-gradient-text {
+  background: linear-gradient(
+    105deg,
+    #f8e6c8 0%,
+    #fbbf24 28%,
+    #fde68a 42%,
+    #d4a017 58%,
+    #fff7db 72%,
+    #e7cda3 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: landing-shimmer-text 9s ease-in-out infinite;
+}
+
+.landing-hero-eyebrow {
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(251, 191, 36, 0.18),
+    0 0 24px rgba(212, 160, 23, 0.08);
+}
+
+.landing-hero-stats {
+  animation: landing-stat-glow 5s ease-in-out infinite;
+}
+
+.landing-cta-aurora {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse 50% 45% at 50% 80%, rgba(212, 160, 23, 0.14), transparent 55%),
+    radial-gradient(ellipse 40% 35% at 20% 40%, rgba(56, 189, 248, 0.08), transparent 50%);
+  animation: landing-cta-breathe 12s ease-in-out infinite;
+}
+
+.landing-cta-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120%;
+  height: 140%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(251, 191, 36, 0.06);
+  opacity: 0.5;
+}
+
+/* Kart grid — hafif scroll reveal gecikme basamakları */
+#landing-features-grid > .reveal:nth-child(1) {
+  animation-delay: 0.02s;
+}
+#landing-features-grid > .reveal:nth-child(2) {
+  animation-delay: 0.08s;
+}
+#landing-features-grid > .reveal:nth-child(3) {
+  animation-delay: 0.14s;
+}
+#landing-features-grid > .reveal:nth-child(4) {
+  animation-delay: 0.2s;
+}
+#landing-features-grid > .reveal:nth-child(5) {
+  animation-delay: 0.26s;
+}
+#landing-features-grid > .reveal:nth-child(6) {
+  animation-delay: 0.32s;
+}
+
+#landing-workflow-grid > .reveal:nth-child(1) {
+  animation-delay: 0.03s;
+}
+#landing-workflow-grid > .reveal:nth-child(2) {
+  animation-delay: 0.09s;
+}
+#landing-workflow-grid > .reveal:nth-child(3) {
+  animation-delay: 0.15s;
+}
+#landing-workflow-grid > .reveal:nth-child(4) {
+  animation-delay: 0.21s;
+}
+
+#landing-testimonials-grid > .reveal:nth-child(1) {
+  animation-delay: 0.05s;
+}
+#landing-testimonials-grid > .reveal:nth-child(2) {
+  animation-delay: 0.12s;
+}
+#landing-testimonials-grid > .reveal:nth-child(3) {
+  animation-delay: 0.19s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-hero-orb,
+  .landing-hero-beam,
+  .landing-hero-noise,
+  .landing-cta-aurora {
+    animation: none !important;
+  }
+
+  .landing-hero-gradient-text {
+    animation: none !important;
+    background: none;
+    color: var(--gold-light);
+    -webkit-text-fill-color: var(--gold-light);
+  }
+
+  .landing-hero-stats {
+    animation: none !important;
+  }
+
+  #landing-features-grid > .reveal,
+  #landing-workflow-grid > .reveal,
+  #landing-testimonials-grid > .reveal {
+    animation-delay: 0s !important;
+  }
+}
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
