@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import PptxGenJS from "pptxgenjs";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { createClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/supabase/api-auth";
 
 export const maxDuration = 60;
 
@@ -13,6 +15,12 @@ const THEMES: Record<string, { bg: string; title: string; text: string; accent: 
 
 export async function POST(req: NextRequest) {
   try {
+    const auth = await requireAuth(req);
+    if (!auth.ok) return auth.response;
+
+    const quota = await consumeEntitlement(auth, "export");
+    if (quota) return quota;
+
     const { deckId } = await req.json();
     if (!deckId) return NextResponse.json({ error: "deckId gerekli" }, { status: 400 });
 

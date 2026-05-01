@@ -119,7 +119,7 @@ export type RunWithAnswers = InspectionRunRecord & {
 
 type LooseRow = Record<string, unknown>;
 
-function mapRunRow(row: LooseRow): InspectionRunRecord {
+export function mapRunRow(row: LooseRow): InspectionRunRecord {
   const tmpl = row.inspection_checklist_templates as { title?: string } | null | undefined;
   return {
     id: row.id as string,
@@ -299,35 +299,47 @@ export async function createInspectionRun(
 ): Promise<InspectionRunRecord | null> {
   const supabase = createClient();
   if (!supabase) return null;
-  const auth = await resolveOrganizationId();
-  if (!auth) {
-    console.warn("createInspectionRun: no auth / organization");
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.access_token) {
+    console.warn("createInspectionRun: no session");
     return null;
   }
 
-  const { data, error } = await supabase
-    .from("inspection_runs")
-    .insert({
-      organization_id: auth.orgId,
-      company_workspace_id: input.companyWorkspaceId ?? null,
-      template_id: input.templateId,
-      run_mode: input.runMode ?? "official",
-      site_label: input.siteLabel ?? null,
+  const res = await fetch("/api/inspection/runs", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({
+      templateId: input.templateId,
+      runMode: input.runMode ?? "official",
+      siteLabel: input.siteLabel ?? null,
       location: input.location ?? null,
-      line_or_shift: input.lineOrShift ?? null,
-      total_questions: input.totalQuestions ?? 0,
-      client_generated_at: input.clientGeneratedAt ?? null,
-      synced_at: new Date().toISOString(),
-      created_by: auth.userId,
-    })
-    .select("*, inspection_checklist_templates(title)")
-    .single();
+      lineOrShift: input.lineOrShift ?? null,
+      companyWorkspaceId: input.companyWorkspaceId ?? null,
+      totalQuestions: input.totalQuestions ?? 0,
+      clientGeneratedAt: input.clientGeneratedAt ?? null,
+    }),
+  });
 
-  if (error) {
-    console.warn("createInspectionRun:", error.message);
+  if (res.status === 402) {
+    console.warn("createInspectionRun: paket limiti (saha denetimi)");
     return null;
   }
-  return mapRunRow(data as LooseRow);
+
+  if (!res.ok) {
+    const errBody = (await res.json().catch(() => null)) as { error?: string } | null;
+    console.warn("createInspectionRun:", errBody?.error ?? res.status);
+    return null;
+  }
+
+  const json = (await res.json()) as { run?: LooseRow };
+  return json.run ? mapRunRow(json.run) : null;
 }
 
 export async function updateRun(

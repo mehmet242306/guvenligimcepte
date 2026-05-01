@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/security/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
@@ -51,9 +52,21 @@ export async function GET(req: NextRequest, context: RouteContext) {
     );
   }
 
-  // Use service client to issue a fresh signed URL and bump download counters
-  // (end users can't UPDATE the row because RLS only allows status->cancelled).
   const service = createServiceClient();
+
+  const { data: jobQuota } = await service
+    .from("ohs_archive_jobs")
+    .select("download_count")
+    .eq("id", id)
+    .maybeSingle();
+
+  const isFirstDownload = (jobQuota?.download_count ?? 0) === 0;
+  if (isFirstDownload) {
+    const quota = await consumeEntitlement(auth, "export");
+    if (quota) return quota;
+  }
+
+  // Issue fresh signed URL (RLS blocks end-users from raw storage paths).
   const { data: signed, error: signErr } = await service.storage
     .from(job.storage_bucket)
     .createSignedUrl(job.storage_path, 60 * 10); // 10 minutes

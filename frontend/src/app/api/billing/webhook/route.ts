@@ -118,13 +118,21 @@ async function resolvePlanId({
   return null;
 }
 
-async function upsertSubscription(eventType: string, data: Record<string, unknown>) {
+async function upsertSubscription(
+  eventType: string,
+  data: Record<string, unknown>,
+): Promise<boolean> {
   const service = createServiceClient();
   const customData = getCustomData(data);
   const userId = customData.user_id;
   const organizationId = customData.organization_id;
 
-  if (!userId || !organizationId) return;
+  if (!userId || !organizationId) {
+    console.warn("[billing.webhook] skip: missing custom_data user_id or organization_id", {
+      eventType,
+    });
+    return true;
+  }
 
   const subscriptionId =
     String(data.subscription_id ?? "").trim() ||
@@ -140,7 +148,14 @@ async function upsertSubscription(eventType: string, data: Record<string, unknow
     priceId,
   });
 
-  if (!planId) return;
+  if (!planId) {
+    console.warn("[billing.webhook] plan_id unresolved", {
+      eventType,
+      priceId,
+      planKey: customData.plan_key,
+    });
+    return false;
+  }
 
   const billingCycleResolved =
     customData.billing_cycle === "monthly" || customData.billing_cycle === "yearly"
@@ -198,14 +213,17 @@ async function upsertSubscription(eventType: string, data: Record<string, unknow
       .eq("id", existing.data.id);
     if (updateError) {
       console.error("[billing.webhook] user_subscriptions update failed:", updateError.message);
+      return false;
     }
-    return;
+    return true;
   }
 
   const { error: insertError } = await service.from("user_subscriptions").insert(payload);
   if (insertError) {
     console.error("[billing.webhook] user_subscriptions insert failed:", insertError.message);
+    return false;
   }
+  return true;
 }
 
 export async function POST(request: NextRequest) {
@@ -239,28 +257,29 @@ export async function POST(request: NextRequest) {
       payload: event,
     });
 
-  if (inserted.error) {
-    const message = inserted.error.message.toLowerCase();
-    if (message.includes("duplicate")) {
-      return NextResponse.json({ ok: true, duplicate: true });
-    }
+  const duplicateEvent =
+    Boolean(inserted.error) && inserted.error!.message.toLowerCase().includes("duplicate");
 
+  if (inserted.error && !duplicateEvent) {
     return NextResponse.json({ error: inserted.error.message }, { status: 500 });
   }
 
-  if (
-    [
-      "transaction.completed",
-      "subscription.created",
-      "subscription.updated",
-      "subscription.canceled",
-      "subscription.paused",
-      "subscription.resumed",
-      "subscription.past_due",
-    ].includes(eventType)
-  ) {
-    await upsertSubscription(eventType, asObject(event.data));
+  const subscriptionEventTypes = [
+    "transaction.completed",
+    "subscription.created",
+    "subscription.updated",
+    "subscription.canceled",
+    "subscription.paused",
+    "subscription.resumed",
+    "subscription.past_due",
+  ];
+
+  if (subscriptionEventTypes.includes(eventType)) {
+    const persisted = await upsertSubscription(eventType, asObject(event.data));
+    if (!persisted) {
+      return NextResponse.json({ error: "subscription_persist_failed" }, { status: 500 });
+    }
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, ...(duplicateEvent ? { duplicate: true } : {}) });
 }
