@@ -88,23 +88,31 @@ Kod tarafi (repo): `POST /api/billing/checkout`, `POST /api/billing/webhook` (im
 - [x] Limit dolunca API tarafinda bloklama, 402 mekanizmasi aktif.
 - [x] Free/Starter/Plus/Professional limitleri backend'de uygulaniyor.
 - [x] Direkt API istegi ile limit bypass edilemiyor.
-- [ ] Paddle sandbox/live env degerleri production Vercel env'lerinde dogru.
-- [ ] Paddle sandbox/live product/price ID'leri Supabase ve Vercel ile uyumlu.
-- [ ] Checkout baslatma tum paketlerde gercek verilerle calisiyor.
-- [ ] Starter checkout baslatma dogrulandi.
-- [ ] Plus checkout baslatma dogrulandi.
-- [ ] Professional 99 checkout baslatma dogrulandi.
-- [ ] Professional 149 checkout baslatma dogrulandi.
-- [ ] Professional 199 checkout baslatma dogrulandi.
-- [ ] Test/gercek odeme sonrasi webhook Supabase'e abonelik yaziyor.
-- [ ] `paddle_webhook_events` kaydi dusuyor.
-- [ ] `user_subscriptions` dogru plan/cycle/status ile guncelleniyor.
-- [ ] Aktif abonelik pricing ekraninda "Mevcut plan" olarak gorunuyor.
-- [ ] Uctan uca test 1: checkout -> payment success -> webhook write -> UI plan sync.
-- [ ] Uctan uca test 2: checkout -> payment success -> webhook write -> UI plan sync.
-- [ ] Uctan uca test 3: checkout -> payment success -> webhook write -> UI plan sync.
-- [ ] Sandbox/live env son release gate kontrolu tamamlandi.
-- [ ] Paddle live gecisinden once uc tur akisi sorunsuz test edildi.
+- [x] Paddle sandbox/live env degerleri production Vercel env'lerinde dogru.
+- [x] Paddle sandbox/live product/price ID'leri Supabase ve Vercel ile uyumlu.
+- [x] Checkout baslatma tum paketlerde gercek verilerle calisiyor.
+- [x] Starter checkout baslatma dogrulandi.
+- [x] Plus checkout baslatma dogrulandi.
+- [x] Professional 99 checkout baslatma dogrulandi.
+- [x] Professional 149 checkout baslatma dogrulandi.
+- [x] Professional 199 checkout baslatma dogrulandi.
+- [x] Test/gercek odeme sonrasi webhook Supabase'e abonelik yaziyor.
+- [x] `paddle_webhook_events` kaydi dusuyor.
+- [x] `user_subscriptions` dogru plan/cycle/status ile guncelleniyor.
+- [x] Aktif abonelik pricing ekraninda "Mevcut plan" olarak gorunuyor.
+- [x] Uctan uca test 1: checkout -> payment success -> webhook write -> UI plan sync.
+- [x] Uctan uca test 2: checkout -> payment success -> webhook write -> UI plan sync.
+- [x] Uctan uca test 3: checkout -> payment success -> webhook write -> UI plan sync.
+- [x] Sandbox/live env son release gate kontrolu tamamlandi.
+- [x] Paddle live gecisinden once uc tur akisi sorunsuz test edildi.
+
+Faz 2 dogrulama notlari:
+
+- Kod ve mimari tamam: checkout, webhook imza dogrulama, idempotent `paddle_webhook_events`, duplicate durumda tekrar upsert, hata durumunda 500 ve `GET /api/billing/status` mevcut.
+- Limit guvenligi tamam: `consume_subscription_quota` + `consumeEntitlement` Nova, dokuman, analiz, risk, egitim slayti, olay analizi, transkript, gorsel baglam ve ilgili cekirdek islemlerde backend seviyesinde kullaniliyor.
+- Eksik limit yuzeyleri kapatildi: saha denetimi (`POST /api/inspection/runs` + `field_inspection`), disari aktarma (PPTX, OHS arsiv ilk indirme, export).
+- Operasyonel onay tamam: Vercel + Paddle + Supabase `subscription_plans` fiyat ID uyumu ve uc tur checkout -> payment success -> webhook write -> UI plan sync smoke testi kabul edildi.
+- Ileri opsiyonel iyilestirme: Denetim run'unda kota tuketimi ve insert ayni transaction icinde istenirse ileride RPC ile atomik hale getirilebilir.
 
 ### Faz 3 - Workspace ve Organizasyon Temeli
 
@@ -122,6 +130,13 @@ Faz 3 dogrulama notlari (kod):
 - OSGB / kurumsal teklif: kayit sihirbazi + `CommercialLeadDialog`, `POST /api/contact/commercial-lead` → `enterprise_leads` (`requested_account_type` osgb|enterprise); pricing alt serit `/register?commercial=osgb|enterprise`.
 - Veri baglami: org ve firma workspace icin RLS ve yardimci fonksiyonlar (`supabase/migrations/20260411180000_user_scope_isolation.sql`, `20260425010000_critical_rls_hardening.sql`); OSGB-bireysel cati baglantisi `20260430120000_organization_osgb_affiliations.sql` + `/api/account/osgb-affiliations`.
 - Aktif calisma alani: `WorkspaceSwitcher` (`setActiveWorkspace` + `router.refresh()`), firma ozeti `ActiveCompanyBar` (`active-company-bar.tsx`).
+
+Faz 3 dikkat / istege bagli son rotuslar:
+
+- `ActiveCompanyBar` veriyi mount aninda bir kez cekiyor (`useEffect` bagimliligi bos). `WorkspaceSwitcher` ile firma degisince serit tam sayfa yenilenene kadar eski firma bilgisini gosterebilir; ileride workspace/company degisim event'i veya aktif workspace bagimliligi ile yeniden yukleme eklenebilir.
+- `nova_workspace_members` / `nova_workspaces` tablolari bu workspace'teki `supabase/migrations` altinda grep ile gorunmuyor. Tablolar baska migration paketinde, manuel semada veya prod semasinda olabilir; repo tek basina bu iki tablonun tam sema kaniti degil.
+- "Kullanici baska workspace verisini goremez" iddiasi RLS + `can_access_*` yardimcilariyla guclu. Yine de service role kullanan API route'lar icin `organizationId` / `company_workspace_id` filtrelerinin route bazinda periyodik gozden gecirilmesi iyi pratik.
+- Sonuc: Faz 3 kod tarafi tamam kabul edildi; yukaridaki maddeler operasyonel mukemmellik icin takip edilebilir.
 
 ### Faz 4 - Cekirdek ISG Urun Modulleri
 
@@ -503,10 +518,10 @@ Bu bolum her calisma seansinda guncellenecek:
 
 - [x] Faz 1 icin Google login, email login ve logout production smoke testini tamamla.
 - [x] Onboarding'de workspace hazirlaniyor ekraninda takilma veya `Failed to fetch` hatasini yeniden test et.
-- [ ] Faz 2 icin firma onayi sonrasi Paddle webhook'un Supabase'e abonelik yazdigini dogrula.
-- [ ] Odeme sonrasi pricing ekraninda aktif planin pasif/mevcut gorundugunu dogrula.
-- [ ] Vercel env'lerinde sandbox/live Paddle degerlerinin karismadigini son release gate olarak kontrol et.
-- [ ] Supabase `user_subscriptions`, `subscription_plans`, `paddle_webhook_events` tablolarini odeme testiyle dogrula.
+- [x] Faz 2 icin firma onayi sonrasi Paddle webhook'un Supabase'e abonelik yazdigini dogrula.
+- [x] Odeme sonrasi pricing ekraninda aktif planin pasif/mevcut gorundugunu dogrula.
+- [x] Vercel env'lerinde sandbox/live Paddle degerlerinin karismadigini son release gate olarak kontrol et.
+- [x] Supabase `user_subscriptions`, `subscription_plans`, `paddle_webhook_events` tablolarini odeme testiyle dogrula.
 - [ ] Auth ve billing stabil olduktan sonra workspace/organizasyon modulu testlerine gec.
 - [ ] Daha sonra cekirdek ISG modulleri: risk analizi, dokuman, saha denetimi, Nova, sinav ve anket.
 - [ ] E-posta akislari icin kayit, uzun sure giris yapmama, odeme basarili ve odeme basarisiz senaryolarini planla.
