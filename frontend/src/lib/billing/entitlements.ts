@@ -54,7 +54,7 @@ export async function consumeEntitlement(
       upgradeUrl: "/pricing",
       message:
         result?.message ||
-        `${BILLING_ACTION_LABELS[action]} limitiniz doldu. Devam etmek icin paketinizi yukseltin.`,
+        `${BILLING_ACTION_LABELS[action]} limitiniz doldu. Devam etmek için paketinizi yükseltin.`,
     },
     { status: 402 },
   );

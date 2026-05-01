@@ -16,13 +16,13 @@ export default function PricingPage() {
               Bireysel planlar
             </span>
             <h1 className="mt-5 text-4xl font-semibold tracking-tight sm:text-5xl">
-              ISG profesyonelleri icin net ve olceklenebilir paketler.
+              İSG profesyonelleri için net ve ölçeklenebilir paketler.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-white/72">
-              Free ile deneyin; Starter, Plus ve Professional kademeleriyle
-              Nova, risk analizi, saha denetimi ve dokuman uretimini calisma
-              temponuza gore buyutun. Her planda aylik veya yillik secimini
-              kart uzerinden yapabilirsiniz.
+              Free ile deneyin; Starter, Plus ve Professional kademeleriyle Nova,
+              risk analizi, saha denetimi ve doküman üretimini çalışma
+              temponuza göre büyütün. Ücretli planlarda aylık veya yıllık
+              seçimi kart üzerinden yapabilirsiniz.
             </p>
           </div>
         </div>

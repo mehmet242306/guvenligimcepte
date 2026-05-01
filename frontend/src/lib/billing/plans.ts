@@ -33,12 +33,12 @@ export type PublicBillingPlan = {
 export const BILLING_ACTION_LABELS: Record<BillingAction, string> = {
   nova_message: "Nova mesajı",
   ai_analysis: "AI analiz",
-  document_generation: "doküman oluşturma",
-  risk_analysis: "risk analizi",
-  field_inspection: "saha denetimi",
-  incident_analysis: "olay/kök neden analizi",
-  training_slide: "eğitim slaytı",
-  export: "export/çıktı",
+  document_generation: "Doküman oluşturma",
+  risk_analysis: "Risk analizi",
+  field_inspection: "Saha denetimi",
+  incident_analysis: "Olay / kök neden analizi",
+  training_slide: "Eğitim slaytı",
+  export: "Dışa aktarma",
 };
 
 export const INDIVIDUAL_BILLING_PLANS: PublicBillingPlan[] = [

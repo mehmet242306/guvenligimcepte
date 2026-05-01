@@ -28,7 +28,7 @@ const keyLimitRows = [
 
 function getDisplayPrice(monthlyPrice: number, cycle: BillingCycle) {
   if (monthlyPrice === 0) {
-    return { main: "$0", suffix: "/ ay", note: "Ucretsiz baslangic" };
+    return { main: "$0", suffix: "/ ay", note: "Ücretsiz başlangıç" };
   }
 
   if (cycle === "yearly") {
@@ -36,15 +36,15 @@ function getDisplayPrice(monthlyPrice: number, cycle: BillingCycle) {
     const monthlyEquivalent = yearlyPrice / 12;
     return {
       main: `$${yearlyPrice.toLocaleString("en-US")}`,
-      suffix: "/ yil",
-      note: `$${monthlyEquivalent.toFixed(0)} / ay esdegeri - 2 ay avantaj`,
+      suffix: "/ yıl",
+      note: `Ayda ~${monthlyEquivalent.toFixed(0)} $ eşdeğer — 2 ay avantaj`,
     };
   }
 
   return {
     main: `$${monthlyPrice}`,
     suffix: "/ ay",
-    note: "Aylik odeme, istedigin zaman yukselt",
+    note: "Aylık ödeme, istediğin zaman yükselt",
   };
 }
 
@@ -59,7 +59,7 @@ function CardBillingToggle({
     <div
       className="w-full rounded-lg border-2 border-amber-400/55 bg-amber-50 p-1 shadow-sm dark:bg-amber-950/20"
       role="group"
-      aria-label="Odeme periyodu"
+      aria-label="Ödeme periyodu"
     >
       <div className="grid grid-cols-2 gap-1">
         <button
@@ -72,7 +72,7 @@ function CardBillingToggle({
               : "bg-transparent text-amber-900 hover:bg-white/70 dark:text-amber-100",
           ].join(" ")}
         >
-          Aylik
+          Aylık
         </button>
         <button
           type="button"
@@ -84,7 +84,7 @@ function CardBillingToggle({
               : "bg-transparent text-amber-900 hover:bg-white/70 dark:text-amber-100",
           ].join(" ")}
         >
-          Yillik{" "}
+          Yıllık{" "}
           <span className="hidden font-semibold opacity-90 sm:inline">· 2 ay avantaj</span>
         </button>
       </div>
@@ -104,10 +104,11 @@ function IndividualPlanCard({
   activeBillingCycle,
 }: IndividualPlanCardProps) {
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
+  const isFree = plan.key === "free";
   const price = getDisplayPrice(plan.priceUsd, cycle);
   const isCurrentPlan =
     activePlanKey === plan.key &&
-    (!activeBillingCycle || activeBillingCycle === cycle);
+    (isFree || !activeBillingCycle || activeBillingCycle === cycle);
 
   return (
     <article
@@ -133,9 +134,11 @@ function IndividualPlanCard({
           {plan.audience}
         </p>
 
-        <div className="mt-4">
-          <CardBillingToggle cycle={cycle} onChange={setCycle} />
-        </div>
+        {isFree ? null : (
+          <div className="mt-4">
+            <CardBillingToggle cycle={cycle} onChange={setCycle} />
+          </div>
+        )}
 
         <div className="mt-4 flex items-end gap-1">
           <span className="text-4xl font-semibold tracking-tight text-foreground">
@@ -179,7 +182,7 @@ function IndividualPlanCard({
             href="/register"
             className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 text-sm font-semibold text-primary shadow-[var(--shadow-soft)] transition hover:bg-secondary"
           >
-            Ucretsiz basla
+            Ücretsiz başla
             <ArrowRight className="h-4 w-4" />
           </Link>
         ) : (
@@ -193,7 +196,7 @@ function IndividualPlanCard({
               "Mevcut plan"
             ) : (
               <>
-                Paketi sec
+                Paketi seç
                 <ArrowRight className="h-4 w-4" />
               </>
             )}
@@ -252,12 +255,13 @@ export function PricingPlansClient() {
     <>
       <div className="mb-7 rounded-lg border border-amber-300/35 bg-card p-5 shadow-[var(--shadow-soft)]">
         <h2 className="text-xl font-semibold tracking-tight text-foreground">
-          Bireysel planini sec
+          Bireysel planını seç
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-          Her kartta aylik veya yillik odemeyi ayri ayri secebilirsin. Yillik
-          odemede 12 ay kullanim icin 10 ay ode (kart icindeki fiyat buna gore
-          guncellenir). OSGB ve kurumsal kullanim teklif akisiyle ilerler.
+          Ücretli planlarda her kartta aylık veya yıllık ödemeyi ayrı ayrı
+          seçebilirsin. Yıllık ödemede 12 ay kullanım için 10 ay öde (kart
+          içindeki fiyat buna göre güncellenir). OSGB ve kurumsal kullanım
+          teklif akışıyla ilerler.
         </p>
       </div>
 
@@ -275,25 +279,25 @@ export function PricingPlansClient() {
       <div className="mt-8 grid gap-4 lg:grid-cols-3">
         <div className="rounded-lg border border-border bg-card p-5">
           <MessageSquareText className="h-5 w-5 text-primary" />
-          <h3 className="mt-3 font-semibold">Limitler server tarafinda</h3>
+          <h3 className="mt-3 font-semibold">Limitler sunucu tarafında</h3>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Nova, analiz ve uretim haklari sadece ekranda degil, API katmaninda
-            tuketilir.
+            Nova, analiz ve üretim hakları yalnızca ekranda değil; API
+            katmanında da tüketilir.
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card p-5">
           <ShieldCheck className="h-5 w-5 text-primary" />
-          <h3 className="mt-3 font-semibold">OSGB ve kurumsal ayri</h3>
+          <h3 className="mt-3 font-semibold">OSGB ve kurumsal ayrı</h3>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Ekipli kullanim, coklu koltuk ve kurumsal ihtiyaclar ozel teklif
-            akisina yonlendirilir.
+            Ekipli kullanım, çoklu koltuk ve kurumsal ihtiyaçlar özel teklif
+            akışına yönlendirilir.
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card p-5">
           <Sparkles className="h-5 w-5 text-primary" />
-          <h3 className="mt-3 font-semibold">Professional 149 onerilen</h3>
+          <h3 className="mt-3 font-semibold">Professional 149 önerilen</h3>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Aktif bireysel profesyonel icin en dengeli analiz, dokuman ve saha
+            Aktif bireysel profesyonel için en dengeli analiz, doküman ve saha
             kapasitesi burada.
           </p>
         </div>
@@ -301,11 +305,11 @@ export function PricingPlansClient() {
 
       <div className="mt-8 rounded-lg border border-amber-400/25 bg-amber-400/10 p-6">
         <div className="max-w-3xl">
-          <h2 className="text-xl font-semibold">OSGB veya kurumsal kullanim</h2>
+          <h2 className="text-xl font-semibold">OSGB veya kurumsal kullanım</h2>
           <p className="mt-2 text-sm leading-7 text-muted-foreground">
-            Coklu kullanici, firma portfoyu, white-label, ozel onboarding ve
-            kurumsal faturalandirma icin self-service odeme yerine satis
-            gorusmesiyle ilerliyoruz.
+            Çoklu kullanıcı, firma portföyü, white-label, özel onboarding ve
+            kurumsal faturalandırma için self servis ödeme yerine satış
+            görüşmesiyle ilerliyoruz.
           </p>
         </div>
         <div className="mt-5 flex flex-wrap gap-3">
@@ -325,7 +329,7 @@ export function PricingPlansClient() {
             href="/"
             className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-transparent px-5 text-sm font-semibold text-foreground"
           >
-            Urunu incele
+            Ürünü incele
           </Link>
         </div>
       </div>
