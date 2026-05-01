@@ -1,14 +1,8 @@
-import { redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { defaultLocale, type Locale } from "@/i18n/routing";
-import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/security/server";
-import {
-  getAccountContextForUser,
-  resolvePostLoginPath,
-  type AccountType,
-} from "@/lib/account/account-routing";
+import { type AccountType } from "@/lib/account/account-routing";
 import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
 import { DemoBuilderClient } from "./DemoBuilderClient";
 import { DemoGroupsClient, type DemoAccountCard, type DemoGroups } from "./DemoGroupsClient";
@@ -317,19 +311,6 @@ async function fetchDemoGroups(): Promise<DemoGroups> {
 }
 
 export default async function PlatformAdminDemoBuilderPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  const context = await getAccountContextForUser(user.id);
-  if (!context.isPlatformAdmin) {
-    redirect(resolvePostLoginPath(context));
-  }
   const demoGroups = await fetchDemoGroups();
 
   return (

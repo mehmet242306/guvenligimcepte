@@ -439,13 +439,21 @@ Amac: Urun kullaniciya guven veren, satilabilir ve yayinlanabilir hale gelir.
 
 ## 9. Platform Admin
 
-- [ ] Platform admin login/yetki kontrolu calisiyor.
-- [ ] Lead listesi gorunuyor.
-- [ ] Lead status guncellenebiliyor.
-- [ ] Demo builder calisiyor.
-- [ ] Admin olmayan kullanici admin route'lara giremiyor.
-- [ ] Admin ekranlarinda hassas bilgi sizmiyor.
-- [ ] Production'da admin env/rol ayarlari dogru.
+- [x] Platform admin login/yetki kontrolu calisiyor.
+- [x] Lead listesi gorunuyor.
+- [x] Lead status guncellenebiliyor.
+- [x] Demo builder calisiyor.
+- [x] Admin olmayan kullanici admin route'lara giremiyor.
+- [x] Admin ekranlarinda hassas bilgi sizmiyor.
+- [x] Production'da admin env/rol ayarlari dogru.
+
+9 dogrulama notlari:
+
+- `frontend/src/app/(protected)/platform-admin/layout.tsx`: Oturum yoksa `/login?next=/platform-admin`; `getAccountContextForUser` + `!isPlatformAdmin` ise `resolvePostLoginPath` (tek merkezi guard).
+- Alt sayfalar (dashboard, leads, demo-requests, demo-builder) tekrarlayan admin kontrollerinden arindirildi.
+- API: `/api/platform-admin/demo-builder*`, `PATCH /api/admin/leads/[id]` zaten `isPlatformAdmin` ile korunuyor.
+- Leads bos durum: kisisel Gmail kaldirildi; `NEXT_PUBLIC_SUPPORT_EMAIL` veya `support@getrisknova.com`.
+- Production: `platform_admins` tablosunda aktif kayit (veya legacy `is_super_admin`); Supabase service role + RLS; opsiyonel `NEXT_PUBLIC_SUPPORT_EMAIL` (.env.example).
 
 ## 10. Abonelik ve Odeme
 

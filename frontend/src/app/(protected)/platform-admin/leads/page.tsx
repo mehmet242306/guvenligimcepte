@@ -1,32 +1,20 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Inbox, Mail, Phone } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/security/server";
-import {
-  getAccountContextForUser,
-  resolvePostLoginPath,
-} from "@/lib/account/account-routing";
 import { LeadsTable } from "./_components/LeadsTable";
 import type { LeadRow } from "./_components/types";
 
 export const dynamic = "force-dynamic";
+
+const DEFAULT_SUPPORT_EMAIL = "support@getrisknova.com";
 
 export default async function PlatformAdminLeadsPage({
   searchParams,
 }: {
   searchParams: Promise<{ status?: string; source?: string }>;
 }) {
-  const supabase = await createClient();
-  if (!supabase) redirect("/login");
-
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const context = await getAccountContextForUser(user.id);
-  if (!context || !context.isPlatformAdmin) {
-    redirect(resolvePostLoginPath(context));
-  }
+  const supportEmail =
+    process.env.NEXT_PUBLIC_SUPPORT_EMAIL?.trim() || DEFAULT_SUPPORT_EMAIL;
 
   const params = await searchParams;
   const statusFilter = params?.status ?? "all";
@@ -157,8 +145,11 @@ export default async function PlatformAdminLeadsPage({
             Kayıt akışındaki OSGB/Kurumsal teklif formu ve landing &quot;Demo Talep Et&quot; başvuruları burada listelenir.
           </p>
           <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
-            <a href="mailto:mehmet242306@gmail.com" className="inline-flex items-center gap-1 hover:text-foreground">
-              <Mail className="h-3 w-3" /> mehmet242306@gmail.com
+            <a
+              href={`mailto:${supportEmail}`}
+              className="inline-flex items-center gap-1 hover:text-foreground"
+            >
+              <Mail className="h-3 w-3" /> {supportEmail}
             </a>
           </div>
         </div>

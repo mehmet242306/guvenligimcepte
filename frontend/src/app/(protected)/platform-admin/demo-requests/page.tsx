@@ -1,12 +1,6 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Inbox, Sparkles } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/security/server";
-import {
-  getAccountContextForUser,
-  resolvePostLoginPath,
-} from "@/lib/account/account-routing";
 import { LeadsTable } from "../leads/_components/LeadsTable";
 import type { LeadRow } from "../leads/_components/types";
 
@@ -19,19 +13,6 @@ export default async function PlatformAdminDemoRequestsPage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
-  const supabase = await createClient();
-  if (!supabase) redirect("/login");
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const context = await getAccountContextForUser(user.id);
-  if (!context || !context.isPlatformAdmin) {
-    redirect(resolvePostLoginPath(context));
-  }
-
   const params = await searchParams;
   const statusFilter = params?.status ?? "all";
 
@@ -39,7 +20,7 @@ export default async function PlatformAdminDemoRequestsPage({
   let query = service
     .from("enterprise_leads")
     .select(
-      "id, contact_name, email, phone, company_name, message, status, requested_account_type, source_page, estimated_employee_count, estimated_location_count, estimated_company_count, estimated_professional_count, created_at",
+      "id, contact_name, email, phone, company_name, message, status, requested_account_type, source_page, estimated_employee_count, estimated_location_count, estimated_company_count, estimated_professional_count, admin_notes, created_at",
     )
     .eq("source_page", DEMO_SOURCE)
     .order("created_at", { ascending: false })

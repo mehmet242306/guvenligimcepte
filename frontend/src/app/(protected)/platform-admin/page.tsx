@@ -1,6 +1,5 @@
 ﻿import type { ComponentType } from "react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import {
   Activity,
   AlertTriangle,
@@ -12,12 +11,7 @@ import {
   ShieldCheck,
   Users,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/security/server";
-import {
-  getAccountContextForUser,
-  resolvePostLoginPath,
-} from "@/lib/account/account-routing";
 
 type SignupRow = {
   id: string;
@@ -132,20 +126,6 @@ function buildPromptHref(prompt: string) {
 }
 
 export default async function PlatformAdminPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  const context = await getAccountContextForUser(user.id);
-  if (!context.isPlatformAdmin) {
-    redirect(resolvePostLoginPath(context));
-  }
-
   const service = createServiceClient();
 
   const [
