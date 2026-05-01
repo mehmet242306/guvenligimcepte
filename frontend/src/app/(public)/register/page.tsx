@@ -8,6 +8,7 @@ import { DemoExpiredModal } from "@/components/auth/DemoExpiredModal";
 import { RegisterAccountTypePreview } from "@/components/auth/RegisterAccountTypePreview";
 import { StatusAlert } from "@/components/ui/status-alert";
 import { DEMO_ACCESS_WINDOW_HOURS } from "@/lib/platform-admin/demo-access";
+import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 import { signup } from "./actions";
 
 export default async function RegisterPage({
@@ -31,6 +32,9 @@ export default async function RegisterPage({
     commercialParam === "osgb" || commercialParam === "enterprise"
       ? commercialParam
       : undefined;
+
+  const demoPublicEnabled = isPublicDemoFeatureEnabled();
+  const legacyDemoLanding = demoExpired || demoDisabled;
 
   return (
     <AuthShell
@@ -66,23 +70,59 @@ export default async function RegisterPage({
         </p>
       }
     >
-      {demoExpired || demoDisabled ? (
+      {legacyDemoLanding ? (
         <>
           <DemoSessionCleaner />
-          <DemoExpiredModal status={demoDisabled ? "disabled" : "expired"} />
-          {demoExpired ? (
+          {demoPublicEnabled ? (
+            <>
+              <DemoExpiredModal status={demoDisabled ? "disabled" : "expired"} />
+              {demoExpired ? (
+                <StatusAlert tone="warning">
+                  <span className="font-semibold text-foreground">Demo süren bitti.</span> RiskNova
+                  demo erişimi en fazla <strong>{DEMO_ACCESS_WINDOW_HOURS} saat</strong> için
+                  tanımlanır; süre dolunca oturum kapanır. Aşağıdan ücretsiz hesabını oluşturarak veya
+                  Google ile devam ederek kalıcı hesaba geçebilirsin.
+                </StatusAlert>
+              ) : (
+                <StatusAlert tone="warning">
+                  <span className="font-semibold text-foreground">Demo erişimin kapatıldı.</span>{" "}
+                  Yönetici tarafından sonlandırılmış olabilir (demo hesaplar genelde{" "}
+                  <strong>{DEMO_ACCESS_WINDOW_HOURS} saat</strong> ile sınırlıdır). Kalıcı kullanım
+                  için aşağıdan hesap oluşturabilirsin.
+                </StatusAlert>
+              )}
+            </>
+          ) : demoExpired ? (
             <StatusAlert tone="warning">
-              <span className="font-semibold text-foreground">Demo süren bitti.</span> RiskNova demo
-              erişimi en fazla <strong>{DEMO_ACCESS_WINDOW_HOURS} saat</strong> için tanımlanır; süre
-              dolunca oturum kapanır. Aşağıdan ücretsiz hesabını oluşturarak veya Google ile devam
-              ederek kalıcı hesaba geçebilirsin.
+              <span className="font-semibold text-foreground">Demo oturumun sona erdi.</span>{" "}
+              Geçici demo artık sunulmuyor. Kalıcı hesap için aşağıdan kayıt olabilir veya{" "}
+              <Link href="/login" className="font-medium text-primary underline underline-offset-4">
+                giriş yapabilirsin
+              </Link>
+              . Sorunda{" "}
+              <a
+                href="mailto:support@getrisknova.com"
+                className="font-medium text-primary underline underline-offset-4"
+              >
+                support@getrisknova.com
+              </a>{" "}
+              adresine yazabilirsin.
             </StatusAlert>
           ) : (
             <StatusAlert tone="warning">
               <span className="font-semibold text-foreground">Demo erişimin kapatıldı.</span>{" "}
-              Yönetici tarafından sonlandırılmış olabilir (demo hesaplar genelde{" "}
-              <strong>{DEMO_ACCESS_WINDOW_HOURS} saat</strong> ile sınırlıdır). Kalıcı kullanım için
-              aşağıdan hesap oluşturabilirsin.
+              Geçici demo artık sunulmuyor. Kalıcı kullanım için kayıt ol veya{" "}
+              <Link href="/login" className="font-medium text-primary underline underline-offset-4">
+                giriş yap
+              </Link>
+              . Yardım:{" "}
+              <a
+                href="mailto:support@getrisknova.com"
+                className="font-medium text-primary underline underline-offset-4"
+              >
+                support@getrisknova.com
+              </a>
+              .
             </StatusAlert>
           )}
         </>

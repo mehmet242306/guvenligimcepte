@@ -120,6 +120,13 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
       }
     }
 
+    const authDebug =
+      process.env.NEXT_PUBLIC_AUTH_DEBUG === "1" ||
+      process.env.NEXT_PUBLIC_AUTH_DEBUG === "true";
+    if (authDebug) {
+      console.info("[social-login] redirectTo:", callbackUrl.toString(), "mode:", mode);
+    }
+
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
       options: {

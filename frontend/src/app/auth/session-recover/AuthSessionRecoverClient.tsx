@@ -116,6 +116,13 @@ export function AuthSessionRecoverClient({
       const appSupabase = createClient();
       const next = safeNextPath(nextPath);
 
+      const authDebug =
+        process.env.NEXT_PUBLIC_AUTH_DEBUG === "1" ||
+        process.env.NEXT_PUBLIC_AUTH_DEBUG === "true";
+      if (authDebug) {
+        console.info("[session-recover] page:", window.location.href, "intent:", intent ?? "login");
+      }
+
       if (!code || !oauthSupabase || !appSupabase) {
         window.location.replace(
           `/login?error=${encodeURIComponent("Giris oturumu tamamlanamadi. Lutfen tekrar deneyin.")}`,

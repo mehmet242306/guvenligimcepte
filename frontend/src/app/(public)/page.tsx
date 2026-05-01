@@ -4,6 +4,7 @@ import { PublicHeader } from "@/components/layout/public-header";
 import { PublicSiteFooter } from "@/components/layout/public-site-footer";
 import { PublicChatWidget } from "@/components/chat/PublicChatWidget";
 import { DemoRequestTrigger } from "@/components/public/DemoRequestDialog";
+import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import {
   BrainCircuit,
@@ -168,6 +169,7 @@ const secondaryLinkClass =
 /* ------------------------------------------------------------------ */
 
 export default function LandingPage() {
+  const showPublicDemoCta = isPublicDemoFeatureEnabled();
   return (
     <main className="app-shell flex min-h-screen flex-col">
       <PublicHeader />
@@ -214,12 +216,14 @@ export default function LandingPage() {
                 />
               </svg>
             </Link>
-            <DemoRequestTrigger className={secondaryLinkClass + " border-[var(--gold)]/40 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20"}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-1">
-                <path d="M8 1l2 4 4.5.7L11 9l1 4.5L8 11.5 4 13.5l1-4.5L1.5 5.7 6 5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-              </svg>
-              Demo Talep Et
-            </DemoRequestTrigger>
+            {showPublicDemoCta ? (
+              <DemoRequestTrigger className={secondaryLinkClass + " border-[var(--gold)]/40 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20"}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-1">
+                  <path d="M8 1l2 4 4.5.7L11 9l1 4.5L8 11.5 4 13.5l1-4.5L1.5 5.7 6 5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                </svg>
+                Demo Talep Et
+              </DemoRequestTrigger>
+            ) : null}
             <Link href="/login" className={secondaryLinkClass}>
               Platforma Giriş Yap
             </Link>
@@ -482,12 +486,14 @@ export default function LandingPage() {
                 />
               </svg>
             </Link>
-            <DemoRequestTrigger className={secondaryLinkClass + " border-[var(--gold)]/40 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20"}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-1">
-                <path d="M8 1l2 4 4.5.7L11 9l1 4.5L8 11.5 4 13.5l1-4.5L1.5 5.7 6 5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-              </svg>
-              Demo Talep Et
-            </DemoRequestTrigger>
+            {showPublicDemoCta ? (
+              <DemoRequestTrigger className={secondaryLinkClass + " border-[var(--gold)]/40 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20"}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-1">
+                  <path d="M8 1l2 4 4.5.7L11 9l1 4.5L8 11.5 4 13.5l1-4.5L1.5 5.7 6 5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+                </svg>
+                Demo Talep Et
+              </DemoRequestTrigger>
+            ) : null}
             <Link href="/login" className={secondaryLinkClass}>
               Giriş Yap
             </Link>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createServiceClient, parseJsonBody } from "@/lib/security/server";
+import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 
 // =============================================================================
 // POST /api/contact/demo-request
@@ -37,6 +38,17 @@ function isSchemaCompatError(message: string | undefined | null) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!isPublicDemoFeatureEnabled()) {
+      return NextResponse.json(
+        {
+          error:
+            "Geçici demo talebi şu an kabul edilmiyor. Kalıcı hesap için kayıt olabilir veya destek ile iletişime geçebilirsiniz.",
+          code: "DEMO_PUBLIC_DISABLED",
+        },
+        { status: 403 },
+      );
+    }
+
     const parsed = await parseJsonBody(request, demoRequestSchema);
     if (!parsed.ok) return parsed.response;
 

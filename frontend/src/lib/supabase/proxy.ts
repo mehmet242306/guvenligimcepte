@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
+import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 
 const PUBLIC_PATHS = [
   "/",
@@ -158,10 +159,15 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && demoAccess.isBlocked && !canBypassDemoGuard) {
+    const demoPublic = isPublicDemoFeatureEnabled();
     const errorMessage =
       demoAccess.status === "disabled"
-        ? "Demo erisimi admin tarafindan engellendi."
-        : "Demo erisim suresi doldu. Lutfen yeni demo erisimi isteyin.";
+        ? demoPublic
+          ? "Demo erisimi admin tarafindan engellendi."
+          : "Demo erisimin kapatildi. Gecici demo artik sunulmuyor; kalici hesap icin kayit olun veya destek ile iletisime gecin."
+        : demoPublic
+          ? "Demo erisim suresi doldu. Lutfen yeni demo erisimi isteyin."
+          : "Demo suresi sona erdi. Gecici demo artik sunulmuyor; kalici hesap icin kayit olun veya giris yapin.";
 
     if (pathname.startsWith("/api")) {
       return NextResponse.json(
