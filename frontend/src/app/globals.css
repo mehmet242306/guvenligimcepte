@@ -564,6 +564,16 @@ body,
   pointer-events: none;
 }
 
+/* Ana hero — sade zemin (orb / beam kaldırıldı) */
+.landing-hero-mesh--calm {
+  opacity: 0.32;
+  mask-image: radial-gradient(ellipse 78% 62% at 50% 38%, black 22%, transparent 72%);
+}
+
+.landing-hero-noise--calm {
+  opacity: 0.022;
+}
+
 .landing-hero-gradient-text {
   background: linear-gradient(
     105deg,

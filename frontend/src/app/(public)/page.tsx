@@ -6,7 +6,6 @@ import { PublicChatWidget } from "@/components/chat/PublicChatWidget";
 import { DemoRequestTrigger } from "@/components/public/DemoRequestDialog";
 import { LandingHeroAtmosphere } from "@/components/public/landing-hero-atmosphere";
 import { LandingCtaAtmosphere } from "@/components/public/landing-cta-atmosphere";
-import { LandingIsgHeroDecorations } from "@/components/public/landing-isg-hero-decorations";
 import { LandingRevealProvider } from "@/components/public/landing-reveal-provider";
 import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
@@ -145,13 +144,13 @@ const testimonials = [
 ];
 
 export const metadata: Metadata = {
-  title: "İSG Risk Yönetimi ve AI Destekli Operasyon",
+  title: "İSG risk analizi ve operasyon — tek platform | RiskNova",
   description:
-    "AI destekli risk analizi, saha denetimi, bulgu/aksiyon ve raporlamayı tek platformda toplayan İSG yazılımı. Bireysel, OSGB ve kurumsal modeller.",
+    "Risk analizi, saha denetimi, bulgu ve aksiyon takibi ile raporlamayı tek platformda birleştiren yapay zekâ destekli İSG yazılımı. Bireysel, OSGB ve kurumsal.",
   openGraph: {
-    title: "RiskNova — AI destekli İSG platformu",
+    title: "RiskNova — İSG risk analizi ve operasyon platformu",
     description:
-      "İSG risk yönetimi, saha operasyonları ve karar desteği için modern SaaS platformu.",
+      "Risk ölçümünden sahadaki işe ve rapora kadar İSG süreçlerini tek yerden yönetin.",
     type: "website",
     url: "/",
   },
@@ -185,23 +184,20 @@ export default function LandingPage() {
       {/* ============================================================ */}
       <section className="relative overflow-hidden bg-[var(--navy-dark)]">
         <LandingHeroAtmosphere />
-        <LandingIsgHeroDecorations />
         <div className="page-shell relative z-[1] flex min-h-[85vh] flex-col items-center justify-center py-20 text-center">
           <span className="tag-label landing-hero-eyebrow landing-hero-enter mb-8 rounded-full px-4 py-1.5">
             YAPAY ZEKA DESTEKLİ İSG PLATFORMU
           </span>
 
-          <h1 className="landing-hero-enter landing-hero-enter--d1 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl xl:text-6xl">
-            İSG Risk Yönetimini{" "}
-            <span className="text-accent-serif landing-hero-gradient-text">Sanata</span>{" "}
-            Dönüştürün
+          <h1 className="landing-hero-enter landing-hero-enter--d1 max-w-4xl text-4xl font-bold leading-[1.15] tracking-tight text-white sm:text-5xl xl:text-6xl">
+            İSG risk analizi ve saha operasyonunu{" "}
+            <span className="text-amber-100">tek platformda</span> yönetin
           </h1>
 
           <p className="landing-hero-enter landing-hero-enter--d2 mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-            AI destekli analiz, saha denetimleri, bulgu ve aksiyon takibi ile
-            raporlama ve arşivi tek platformda toplar. Bireyselden OSGB ve
-            çok lokasyonlu kurumsal modele kadar aynı ürün disipliniyle
-            ölçeklenir.
+            Risk ölçümünden denetim bulgularına, aksiyon takibinden rapor ve arşive
+            kadar süreçleri tek çatı altında birleştirir. Bireysel kullanımdan OSGB ve
+            çok lokasyonlu kurumsal yapıya kadar aynı ürünle ölçeklenir.
           </p>
 
           <div className="landing-hero-enter landing-hero-enter--d3 mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
@@ -237,7 +233,7 @@ export default function LandingPage() {
           </div>
 
           {/* Stats */}
-          <div className="landing-hero-stats landing-hero-enter landing-hero-enter--d4 mt-16 grid w-full max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md md:grid-cols-4">
+          <div className="landing-hero-enter landing-hero-enter--d4 mt-16 grid w-full max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md md:grid-cols-4">
             {stats.map((s) => (
               <div
                 key={s.label}
