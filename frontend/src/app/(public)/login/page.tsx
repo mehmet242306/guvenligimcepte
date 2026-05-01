@@ -17,41 +17,41 @@ export default async function LoginPage({
 
   return (
     <AuthShell
-      eyebrow="Giris"
-      title="Hesabina giris yap"
-      description="RiskNova hesabina giris yap. Platform admin kullanicilari her zaman once yonetim paneline, diger kullanicilar ise hesap tipine uygun ekrana yonlendirilir."
+      eyebrow="Giriş"
+      title="Hesabına giriş yap"
+      description="RiskNova hesabına giriş yapın. Platform yöneticileri yönetim paneline, diğer kullanıcılar hesap türüne uygun ekrana yönlendirilir."
       highlights={[
         {
-          title: "Bireysel giris",
+          title: "Bireysel giriş",
           description:
-            "Kendi firmalarini, kurumlarini ve workspace alanlarini yoneten bireysel profesyoneller icin.",
+            "Kendi firmalarını, kurumlarını ve çalışma alanlarını yöneten bireysel profesyoneller için.",
         },
         {
-          title: "OSGB girisi",
+          title: "OSGB girişi",
           description:
-            "Firma, personel, gorevlendirme ve risk sureclerini yoneten OSGB ekipleri icin.",
+            "Firma, personel, görevlendirme ve risk süreçlerini yöneten OSGB ekipleri için.",
         },
         {
-          title: "Platform yonetimi",
+          title: "Platform yönetimi",
           description:
-            "Platform admin rolu public bir hesap tipi degildir; giris sonrasi otomatik olarak admin paneline tasinir.",
+            "Platform yöneticisi rolü herkese açık bir hesap türü değildir; giriş sonrası yönetim paneline yönlendirilir.",
         },
       ]}
       spotlight={
         <div className="space-y-3 text-sm leading-7 text-white/92">
           <p>
-            Giris ekrani tum kullanicilar icin ortaktir. Ayrim, giris sonrasinda
-            hesap baglamina gore yapilir.
+            Giriş ekranı tüm kullanıcılar için ortaktır; ayrım, oturum sonrası hesap
+            bağlamına göre yapılır.
           </p>
           <p>
-            Platform Admin public onboarding secenegi degildir. Bireysel, OSGB ve
-            Kurumsal disinda ayri bir musteri hesap tipi gosterilmez.
+            Platform yöneticisi rolü herkese açık kayıt akışında sunulmaz. Bireysel,
+            OSGB ve kurumsal dışında ayrı bir müşteri hesap türü gösterilmez.
           </p>
         </div>
       }
       footer={
         <p className="text-sm leading-7 text-muted-foreground">
-          Hesabin yok mu?{" "}
+          Hesabın yok mu?{" "}
           <Link
             href="/register"
             className="font-medium text-primary underline underline-offset-4"
@@ -69,7 +69,7 @@ export default async function LoginPage({
 
       {reset ? (
         <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-          Sifren guncellendi. Yeni sifrenle giris yapabilirsin.
+          Şifren güncellendi. Yeni şifrenle giriş yapabilirsin.
         </div>
       ) : null}
 
@@ -94,8 +94,8 @@ export default async function LoginPage({
           type="password"
           required
           autoComplete="current-password"
-          label="Sifre"
-          placeholder="Sifreni gir"
+          label="Şifre"
+          placeholder="Şifreni gir"
         />
 
         <div className="text-right">
@@ -103,12 +103,12 @@ export default async function LoginPage({
             href="/forgot-password"
             className="text-sm font-medium text-primary underline underline-offset-4"
           >
-            Sifremi unuttum
+            Şifremi unuttum
           </Link>
         </div>
 
         <Button type="submit" formAction={login} className="w-full" size="lg">
-          Giris Yap
+          Giriş yap
         </Button>
       </form>
     </AuthShell>

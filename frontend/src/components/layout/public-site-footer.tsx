@@ -8,6 +8,8 @@ const footerLinkGroups = [
       { label: "Özellikler", href: "/#features" },
       { label: "Nasıl Çalışır", href: "/#how-it-works" },
       { label: "Paketler", href: "/pricing" },
+      { label: "OSGB çözümü", href: "/cozumler/osgb" },
+      { label: "Kurumsal çözüm", href: "/cozumler/kurumsal" },
     ],
   },
   {

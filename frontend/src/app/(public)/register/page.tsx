@@ -40,32 +40,32 @@ export default async function RegisterPage({
     <AuthShell
       eyebrow="Yeni hesap"
       title="RiskNova hesabini olustur"
-      description="Once hesap turunu, bolgeyi ve dili sec. Bireysel hesaplarda kayit formu hemen acilir; OSGB ve firma yapilarinda gelistirici ile iletisim akisi baslar."
+      description="Önce hesap türünü, bölgeyi ve dili seçin. Bireysel hesaplarda kayıt formu hemen açılır; OSGB ve firma yapılarında iletişim ve teklif akışı başlar."
       highlights={[
         {
-          title: "Bireysel self-service",
+          title: "Bireysel self-servis",
           description:
-            "Bolge ve dil seciminden sonra kaydi tamamlayip onboarding ile devam eder.",
+            "Bölge ve dil seçiminden sonra kaydı tamamlayıp onboarding ile devam edersiniz.",
         },
         {
-          title: "Paketler ayri sayfada",
+          title: "Paketler ayrı sayfada",
           description:
-            "Tum fiyatlandirma ve paket karsilastirmasi Paketler sayfasinda merkezi olarak sunulur.",
+            "Fiyatlandırma ve paket karşılaştırması yalnızca Paketler sayfasında; kayıt ekranı sade kalır.",
         },
         {
-          title: "Firma icin ozel teklif",
+          title: "Firma için özel teklif",
           description:
-            "Cok lokasyonlu veya ozel ihtiyacli firma yapilari icin gelistirici ile iletisime gecilir.",
+            "Çok lokasyonlu veya özel gereksinimli yapılar için iletişim ve teklif süreci işler.",
         },
       ]}
       footer={
         <p className="text-sm leading-7 text-muted-foreground">
-          Hesabin var mi?{" "}
+          Hesabın var mı?{" "}
           <Link
             href="/login"
             className="font-medium text-primary underline underline-offset-4"
           >
-            Giris yap
+            Giriş yap
           </Link>
         </p>
       }
@@ -136,7 +136,7 @@ export default async function RegisterPage({
 
       {checkEmail ? (
         <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-          Kayit islemi baslatildi. Gerekliyse e-posta kutunu kontrol et.
+          Kayıt işlemi başlatıldı. Gerekirse e-posta kutunu kontrol et.
         </div>
       ) : null}
 
@@ -152,7 +152,7 @@ export default async function RegisterPage({
             autoComplete="email"
             label="E-posta"
             placeholder="ornek@kurum.com"
-            hint="Kayit sonrasi onboarding akisi ve erisim islemleri bu adres uzerinden yurur."
+            hint="Kayıt sonrası onboarding ve erişim işlemleri bu adres üzerinden yürür."
           />
 
           <Input
@@ -162,13 +162,13 @@ export default async function RegisterPage({
             required
             minLength={8}
             autoComplete="new-password"
-            label="Sifre"
+            label="Şifre"
             placeholder="En az 8 karakter"
-            hint="Guclu bir sifre belirle. Hesap tipi secimini kayit sonrasi yapacaksin."
+            hint="Güçlü bir şifre belirleyin. Hesap türü seçimini kayıt sonrası tamamlayacaksınız."
           />
 
           <Button type="submit" formAction={signup} className="w-full" size="lg">
-            Hesap Olustur
+            Hesap oluştur
           </Button>
         </form>
       </RegisterAccountTypePreview>

@@ -147,7 +147,7 @@ const testimonials = [
 export const metadata: Metadata = {
   title: "İSG Risk Yönetimi ve AI Destekli Operasyon",
   description:
-    "RiskNova; risk analizi, saha takibi, kayıt ve raporlama süreçlerini tek platformda birleştiren AI destekli İSG yazılımıdır.",
+    "AI destekli risk analizi, saha denetimi, bulgu/aksiyon ve raporlamayı tek platformda toplayan İSG yazılımı. Bireysel, OSGB ve kurumsal modeller.",
   openGraph: {
     title: "RiskNova — AI destekli İSG platformu",
     description:
@@ -198,9 +198,10 @@ export default function LandingPage() {
           </h1>
 
           <p className="landing-hero-enter landing-hero-enter--d2 mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-            RiskNova; risk analizi, saha takibi, kayıt, raporlama ve karar
-            desteği süreçlerini tek ürün hissi içinde birleştirmek için
-            tasarlanmış AI destekli İSG platformudur.
+            AI destekli analiz, saha denetimleri, bulgu ve aksiyon takibi ile
+            raporlama ve arşivi tek platformda toplar. Bireyselden OSGB ve
+            çok lokasyonlu kurumsal modele kadar aynı ürün disipliniyle
+            ölçeklenir.
           </p>
 
           <div className="landing-hero-enter landing-hero-enter--d3 mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
@@ -250,6 +251,33 @@ export default function LandingPage() {
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* OSGB / Kurumsal — ürün dışı satış & teklif CTA (net yönlendirme) */}
+      <section
+        className="border-y border-white/10 bg-[#0a0d14] py-5"
+        aria-label="Kurumsal ve OSGB"
+      >
+        <div className="page-shell flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-center text-sm leading-7 text-slate-400 sm:text-left">
+            <span className="font-medium text-slate-200">OSGB veya çok lokasyonlu kurum musunuz?</span>{" "}
+            Paket özetlerini inceleyin, teklif veya kayıt üzerinden lead bırakın; ekibimiz dönüş yapsın.
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-end sm:gap-3">
+            <Link
+              href="/cozumler/osgb"
+              className="inline-flex h-10 items-center justify-center rounded-xl border border-amber-500/35 bg-amber-500/10 px-4 text-sm font-semibold text-amber-200 transition-colors hover:bg-amber-500/20"
+            >
+              OSGB: teklif ve iletişim
+            </Link>
+            <Link
+              href="/cozumler/kurumsal"
+              className="inline-flex h-10 items-center justify-center rounded-xl border border-white/15 bg-white/5 px-4 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+            >
+              Kurumsal: teklif ve iletişim
+            </Link>
           </div>
         </div>
       </section>
@@ -401,13 +429,13 @@ export default function LandingPage() {
               data-stagger="1"
               className="hover-lift rounded-3xl border border-border bg-[radial-gradient(circle_at_top_right,var(--gold-glow),transparent_50%)] p-10 shadow-[var(--shadow-card)]"
             >
-              <span className="eyebrow mb-4 inline-flex">Hazır CTA Alanı</span>
+              <span className="eyebrow mb-4 inline-flex">Hemen deneyin</span>
               <h3 className="text-2xl font-bold tracking-tight text-foreground">
-                Risk modülünü ürün vitrini hâline getirin
+                Risk modülü, denetim ve raporlama aynı ürün deneyiminde
               </h3>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                Risk formu, sonuç ekranı ve geçmiş ekranları bu tasarım dili
-                üzerinden ürün seviyesine çıkarılacak.
+                Form, sonuç, skor geçmişi ve çıktılar tutarlı ekranlarla sunulur;
+                ekibiniz operasyonda kaldığı yerden devam eder.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
