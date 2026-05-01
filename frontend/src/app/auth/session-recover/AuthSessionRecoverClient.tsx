@@ -2,8 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { createOAuthBrowserClient } from "@/lib/supabase/oauth-browser-client";
 import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
+
+function toLoginError(message: string | undefined): string {
+  if (!message?.trim()) {
+    return "Google girisi tamamlanamadi. Lutfen tekrar deneyin.";
+  }
+  const m = message.trim().slice(0, 240).replace(/\s+/g, " ");
+  const lower = m.toLowerCase();
+  if (lower.includes("code verifier") || lower.includes("pkce")) {
+    return "Baglanti anahtari bulunamadi (sayfa yenilendi veya www / adres uyumsuz). Google ile tekrar deneyin; mumkunse tek bir adres kullanin.";
+  }
+  if (lower.includes("invalid_grant") || lower.includes("already been used")) {
+    return "Giris baglantisi kullanildi veya suresi doldu. Giris sayfasindan tekrar deneyin.";
+  }
+  return m;
+}
+
+function redirectToLoginWithError(errorMessage: string) {
+  window.location.replace(`/login?error=${encodeURIComponent(toLoginError(errorMessage))}`);
+}
 
 type AccountContextResponse = {
   ok?: boolean;
@@ -113,8 +131,7 @@ export function AuthSessionRecoverClient({
     let cancelled = false;
 
     async function recoverSession() {
-      const oauthSupabase = createOAuthBrowserClient();
-      const appSupabase = createClient();
+      const supabase = createClient();
       const next = safeNextPath(nextPath);
 
       const authDebug =
@@ -124,28 +141,58 @@ export function AuthSessionRecoverClient({
         console.info("[session-recover] page:", window.location.href, "intent:", intent ?? "login");
       }
 
-      if (!code || !oauthSupabase || !appSupabase) {
-        window.location.replace(
-          `/login?error=${encodeURIComponent("Giris oturumu tamamlanamadi. Lutfen tekrar deneyin.")}`,
-        );
+      const urlParams = new URLSearchParams(window.location.search);
+      const oauthErr = urlParams.get("error_description") || urlParams.get("error");
+      if (oauthErr) {
+        let human =
+          oauthErr === "access_denied"
+            ? "Google girisi iptal edildi."
+            : oauthErr.replace(/\+/g, " ");
+        try {
+          human = decodeURIComponent(human);
+        } catch {
+          /* zaten duz metin */
+        }
+        redirectToLoginWithError(human);
         return;
       }
 
-      const { data, error } = await oauthSupabase.auth.exchangeCodeForSession(code);
+      if (!supabase) {
+        redirectToLoginWithError("Supabase yapilandirmasi eksik.");
+        return;
+      }
+
+      if (!code?.trim()) {
+        redirectToLoginWithError("");
+        return;
+      }
+
+      const trimmedCode = code.trim();
+      const exchangeResult = await supabase.auth.exchangeCodeForSession(trimmedCode);
+      let data = exchangeResult.data;
+      let error = exchangeResult.error;
 
       if (cancelled) return;
 
+      /** OAuth kodu tek kullanimlik; ikinci exchange yapma. Oturum zaten yazildiysa getSession yeter */
       if (error || !data.session?.access_token || !data.session.refresh_token) {
+        const { data: existing } = await supabase.auth.getSession();
+        if (existing.session?.access_token && existing.session.refresh_token) {
+          data = { session: existing.session, user: existing.session.user };
+          error = null;
+        }
+      }
+
+      if (error || !data.session?.access_token || !data.session.refresh_token) {
+        console.warn("[session-recover] exchangeCodeForSession:", error?.message);
         setMessage("Google oturumu tamamlanamadi. Login sayfasina donuluyor...");
         window.setTimeout(() => {
-          window.location.replace(
-            `/login?error=${encodeURIComponent("Google girisi tamamlanamadi. Lutfen tekrar deneyin.")}`,
-          );
-        }, 900);
+          redirectToLoginWithError(error?.message ?? "");
+        }, 400);
         return;
       }
 
-      const { error: cookieSessionError } = await appSupabase.auth.setSession({
+      const { error: cookieSessionError } = await supabase.auth.setSession({
         access_token: data.session.access_token,
         refresh_token: data.session.refresh_token,
       });
@@ -153,12 +200,11 @@ export function AuthSessionRecoverClient({
       if (cancelled) return;
 
       if (cookieSessionError) {
+        console.warn("[session-recover] setSession:", cookieSessionError.message);
         setMessage("Oturum cookie'leri yazilamadi. Login sayfasina donuluyor...");
         window.setTimeout(() => {
-          window.location.replace(
-            `/login?error=${encodeURIComponent("Oturum tamamlanamadi. Lutfen tekrar deneyin.")}`,
-          );
-        }, 900);
+          redirectToLoginWithError(cookieSessionError.message);
+        }, 400);
         return;
       }
 
@@ -185,7 +231,7 @@ export function AuthSessionRecoverClient({
         }
       }
 
-      const { error: syncRefreshError } = await appSupabase.auth.refreshSession();
+      const { error: syncRefreshError } = await supabase.auth.refreshSession();
       if (syncRefreshError) {
         console.warn("[session-recover] refreshSession:", syncRefreshError.message);
       }
@@ -193,7 +239,7 @@ export function AuthSessionRecoverClient({
       if (shouldForcePasswordSetup(data.session.user)) {
         if (data.session.user.user_metadata?.must_set_password !== true) {
           try {
-            await appSupabase.auth.updateUser({
+            await supabase.auth.updateUser({
               data: {
                 ...data.session.user.user_metadata,
                 must_set_password: true,
@@ -219,7 +265,7 @@ export function AuthSessionRecoverClient({
               "",
           ).trim() || undefined;
 
-        const { data: refreshed } = await appSupabase.auth.getSession();
+        const { data: refreshed } = await supabase.auth.getSession();
         const bearerToken = refreshed.session?.access_token ?? data.session.access_token;
 
         try {
@@ -243,7 +289,7 @@ export function AuthSessionRecoverClient({
           );
 
           if (response.ok && json?.ok) {
-            const { error: refreshError } = await appSupabase.auth.refreshSession();
+            const { error: refreshError } = await supabase.auth.refreshSession();
             if (refreshError) {
               console.warn("[session-recover] refreshSession after onboarding:", refreshError.message);
             }
@@ -256,7 +302,7 @@ export function AuthSessionRecoverClient({
           console.warn("[session-recover] account onboarding request failed:", onboardingError);
         }
 
-        const { error: refreshFallbackError } = await appSupabase.auth.refreshSession();
+        const { error: refreshFallbackError } = await supabase.auth.refreshSession();
         if (refreshFallbackError) {
           console.warn("[session-recover] refreshSession (fallback):", refreshFallbackError.message);
         }
@@ -265,7 +311,7 @@ export function AuthSessionRecoverClient({
       }
 
       setMessage("Hesap baglami kontrol ediliyor...");
-      const { data: postRefresh } = await appSupabase.auth.getSession();
+      const { data: postRefresh } = await supabase.auth.getSession();
       const accessToken = postRefresh.session?.access_token ?? data.session.access_token;
       const redirectPath = await resolvePostAuthRedirect(next, accessToken);
       window.location.replace(redirectPath);

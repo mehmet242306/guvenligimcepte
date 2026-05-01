@@ -85,6 +85,7 @@ export async function updateSession(request: NextRequest) {
 
   if (
     hasOAuthCode &&
+    pathname !== "/reset-password" &&
     !pathname.startsWith("/auth/callback") &&
     !pathname.startsWith("/auth/session-recover")
   ) {

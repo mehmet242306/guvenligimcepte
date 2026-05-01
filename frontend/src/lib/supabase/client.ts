@@ -36,6 +36,10 @@ export function createClient() {
   browserClient = createBrowserClient(supabaseUrl, supabasePublishableKey, {
     auth: {
       lock: processLock,
+      flowType: "pkce",
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
     },
   });
   return browserClient;

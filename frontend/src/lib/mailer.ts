@@ -357,6 +357,46 @@ function renderEmailShell(input: {
   `;
 }
 
+function renderSimplePasswordResetEmail(input: {
+  fullName: string;
+  resetUrl: string;
+  expiresInLabel: string;
+}) {
+  const safeName = escapeHtml(input.fullName || "Kullanici");
+  const safeResetUrl = escapeHtml(input.resetUrl);
+  const safeExpiresIn = escapeHtml(input.expiresInLabel);
+
+  return `<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RiskNova sifre yenileme</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f7f3ea;font-family:Arial,Helvetica,sans-serif;color:#111827;">
+    <div style="max-width:640px;margin:0 auto;padding:28px 16px;">
+      <div style="background:#ffffff;border:1px solid #eadcc3;border-radius:16px;padding:28px;">
+        <p style="margin:0 0 8px 0;font-size:14px;font-weight:700;color:#b7791f;letter-spacing:0.08em;text-transform:uppercase;">RiskNova</p>
+        <h1 style="margin:0 0 18px 0;font-size:28px;line-height:1.25;color:#111827;">Sifre yenileme baglantiniz hazir</h1>
+        <p style="margin:0 0 14px 0;font-size:16px;line-height:1.7;color:#334155;">Merhaba ${safeName},</p>
+        <p style="margin:0 0 24px 0;font-size:16px;line-height:1.7;color:#334155;">Hesabiniz icin sifre yenileme talebi aldik. Yeni sifrenizi guvenli sekilde belirlemek icin asagidaki butonu kullanabilirsiniz.</p>
+        <p style="margin:0 0 26px 0;">
+          <a href="${safeResetUrl}" style="display:inline-block;background:#d9a51f;color:#111827;text-decoration:none;font-weight:700;font-size:16px;padding:14px 22px;border-radius:12px;">Sifremi yenile</a>
+        </p>
+        <div style="background:#fffaf0;border:1px solid #f3d7a7;border-radius:14px;padding:16px;margin:0 0 20px 0;">
+          <p style="margin:0 0 8px 0;font-size:14px;color:#64748b;">Baglanti gecerlilik suresi</p>
+          <p style="margin:0;font-size:16px;font-weight:700;color:#111827;">${safeExpiresIn}</p>
+        </div>
+        <p style="margin:0 0 12px 0;font-size:14px;line-height:1.7;color:#64748b;">Buton calismazsa bu baglantiyi tarayiciniza yapistirin:</p>
+        <p style="margin:0 0 22px 0;font-size:13px;line-height:1.7;word-break:break-all;color:#1d4ed8;">${safeResetUrl}</p>
+        <p style="margin:0;font-size:14px;line-height:1.7;color:#64748b;">Bu talebi siz baslatmadiysaniz bu e-postayi yok sayabilirsiniz.</p>
+      </div>
+      <p style="margin:18px 0 0 0;text-align:center;font-size:13px;line-height:1.7;color:#64748b;">Destek: ${BRAND_SUPPORT_EMAIL}</p>
+    </div>
+  </body>
+</html>`;
+}
+
 export async function sendPasswordResetCodeEmail({
   to,
   code,
@@ -427,28 +467,10 @@ export async function sendPasswordResetLinkEmail({
     return;
   }
 
-  const html = renderEmailShell({
-    eyebrow: "Sifre yenileme",
-    title: "Sifre yenileme baglantiniz hazir",
-    greeting: `Merhaba ${escapeHtml(fullName || "Kullanici")},`,
-    lead:
-      "Hesabiniz icin sifre yenileme talebi aldik. Aasagidaki baglanti ile yeni sifrenizi guvenli sekilde belirleyebilirsiniz.",
-    primaryAction: {
-      label: "Sifremi yenile",
-      href: resetUrl,
-    },
-    sections:
-      renderCredentialCard([
-        { label: "Baglanti gecerlilik suresi", value: expiresInLabel, emphasize: true },
-        { label: "Guvenlik", value: "Tek kullanimlik yenileme baglantisi" },
-      ]) +
-      renderInfoCard(
-        "Bilginiz disinda ise",
-        "Bu talebi siz baslatmadiysaniz islemi tamamlamayin. Hesabinizda supheli bir hareket oldugunu dusunuyorsaniz destek ekibimize yazin.",
-        "rose",
-      ),
-    closing:
-      "Sifrenizi yeniledikten sonra RiskNova icindeki tum is akislariiniza guvenle devam edebilirsiniz.",
+  const html = renderSimplePasswordResetEmail({
+    fullName,
+    resetUrl,
+    expiresInLabel,
   });
 
   await resend.emails.send({
