@@ -25,6 +25,7 @@ export function SurveyFillClient() {
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [currentQ, setCurrentQ] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [score, setScore] = useState<number | null>(null);
   const [passed, setPassed] = useState<boolean | null>(null);
 
@@ -84,6 +85,7 @@ export function SurveyFillClient() {
   async function handleSubmit() {
     if (!survey || !tokenRecord) return;
     setSubmitting(true);
+    setSubmitError(null);
 
     const responseData = questions.map(q => {
       const answer = answers[q.id];
@@ -110,7 +112,12 @@ export function SurveyFillClient() {
       };
     });
 
-    await submitResponses(survey.id, tokenRecord.id, responseData);
+    const saved = await submitResponses(survey.id, tokenRecord.id, responseData);
+    if (!saved) {
+      setSubmitError("Yanitlar kaydedilemedi. Internet baglantinizi kontrol edip tekrar deneyin.");
+      setSubmitting(false);
+      return;
+    }
 
     // Calculate score for exam
     if (survey.type === "exam") {
@@ -396,8 +403,17 @@ export function SurveyFillClient() {
           )}
         </div>
 
+        {submitError ? (
+          <p
+            role="alert"
+            className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-center text-sm text-red-900"
+          >
+            {submitError}
+          </p>
+        ) : null}
+
         {/* Navigation */}
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:gap-3">
           {currentQ > 0 && (
             <button
               onClick={() => setCurrentQ(prev => prev - 1)}

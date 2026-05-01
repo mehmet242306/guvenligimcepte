@@ -1,9 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Brand } from "./brand";
 import { LanguageSelector } from "./language-selector";
 import { WorkspaceSwitcher } from "./workspace-switcher";
@@ -58,7 +58,9 @@ const primaryNav = [
 /* Second bar: other modules */
 type NavItem = { href: string; key: string; adminOnly?: boolean };
 const secondaryNav: NavItem[] = [
-  { href: "/training", key: "nav.surveyExam" },
+  { href: "/training", key: "nav.training" },
+  { href: "/training?tab=survey", key: "nav.survey" },
+  { href: "/training?tab=exam", key: "nav.exam" },
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
@@ -81,6 +83,9 @@ const osgbPrimaryNav = [
 
 const osgbSecondaryNav = [
   { href: "/risk-analysis", label: "Riskler" },
+  { href: "/training", label: "Eğitim" },
+  { href: "/training?tab=survey", label: "Anket" },
+  { href: "/training?tab=exam", label: "Sınav" },
   { href: "/osgb/contracts", label: "Sözleşmeler" },
   // Raporlar: Firma workspace → İSG Dosyası sekmesine taşındı.
   { href: "/cozumler/osgb", label: "Teklif ve kapasite" },
@@ -108,6 +113,160 @@ function isSecondaryNavActive(pathname: string, href: string) {
   return isActive(pathname, href);
 }
 
+/** İkinci menü: /training hub vs ?tab=survey | ?tab=exam ayrımı */
+function secondaryNavItemActive(
+  pathname: string,
+  href: string,
+  trainingTab: string | null,
+): boolean {
+  const baseHref = href.split("?")[0] || href;
+  if (baseHref === "/training") {
+    const qStr = href.includes("?") ? (href.split("?")[1] ?? "") : "";
+    const wantTab = qStr ? new URLSearchParams(qStr).get("tab") : null;
+    if (wantTab === "survey") {
+      return (pathname === "/training" || pathname === "/training/") && trainingTab === "survey";
+    }
+    if (wantTab === "exam") {
+      return (pathname === "/training" || pathname === "/training/") && trainingTab === "exam";
+    }
+    if (!pathname.startsWith("/training")) return false;
+    if (pathname === "/training" || pathname === "/training/") {
+      return trainingTab !== "survey" && trainingTab !== "exam";
+    }
+    return true;
+  }
+  return isSecondaryNavActive(pathname, href);
+}
+
+type SecondaryNavLinkItem = {
+  href: string;
+  key?: string;
+  label?: string;
+  adminOnly?: boolean;
+};
+
+type SecondaryNavLinksBaseProps = {
+  items: SecondaryNavLinkItem[];
+  pathname: string;
+  disableWorkspaceModules: boolean;
+  resolveNavLabel: (item: SecondaryNavLinkItem) => string;
+  showWorkspaceSwitcher: boolean;
+};
+
+function SecondaryNavLinksDesktop({
+  items,
+  pathname,
+  disableWorkspaceModules,
+  resolveNavLabel,
+  showWorkspaceSwitcher,
+  trainingTab,
+}: SecondaryNavLinksBaseProps & { trainingTab: string | null }) {
+  return (
+    <>
+      {showWorkspaceSwitcher ? (
+        <ActiveCompanyNavLink label="Firma" locked={disableWorkspaceModules} />
+      ) : null}
+      {items.map((item) => {
+        const act = secondaryNavItemActive(pathname, item.href, trainingTab);
+        const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
+        const classes = cn(
+          "relative inline-flex shrink-0 items-center rounded-xl px-3 py-2 text-[13px] font-semibold transition-all duration-200 xl:px-4 xl:text-[14px]",
+          locked
+            ? "cursor-not-allowed border border-white/8 bg-white/5 text-[var(--secondary-nav-text)] opacity-55"
+            : act
+              ? "text-[var(--secondary-nav-active)] bg-[var(--secondary-nav-hover-bg)]"
+              : "text-[var(--secondary-nav-text)] hover:text-[var(--secondary-nav-hover-text)] hover:bg-[var(--secondary-nav-hover-bg)]",
+        );
+        const linkKey = item.key ?? `${item.href}:${item.label ?? ""}`;
+
+        if (locked) {
+          return (
+            <span
+              key={linkKey}
+              className={classes}
+              aria-disabled="true"
+              title="Bu modulu acmak icin once calisma alani olustur"
+            >
+              {resolveNavLabel(item)}
+            </span>
+          );
+        }
+
+        return (
+          <Link key={linkKey} href={item.href} className={classes}>
+            {resolveNavLabel(item)}
+            {act ? (
+              <span className="absolute inset-x-1.5 bottom-0 h-0.5 rounded-full bg-[var(--secondary-nav-active)]" />
+            ) : null}
+          </Link>
+        );
+      })}
+    </>
+  );
+}
+
+function SecondaryNavLinksDesktopWithSearch(props: SecondaryNavLinksBaseProps) {
+  const trainingTab = useSearchParams().get("tab");
+  return <SecondaryNavLinksDesktop {...props} trainingTab={trainingTab} />;
+}
+
+function SecondaryNavLinksMobile({
+  items,
+  pathname,
+  disableWorkspaceModules,
+  resolveNavLabel,
+  showWorkspaceSwitcher,
+  trainingTab,
+}: SecondaryNavLinksBaseProps & { trainingTab: string | null }) {
+  return (
+    <>
+      {showWorkspaceSwitcher ? (
+        <ActiveCompanyNavLink label="Firma" locked={disableWorkspaceModules} />
+      ) : null}
+      {items.map((item) => {
+        const act = secondaryNavItemActive(pathname, item.href, trainingTab);
+        const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
+        const classes = cn(
+          "relative inline-flex shrink-0 items-center rounded-lg px-3 py-2.5 text-[13px] font-semibold transition-colors",
+          locked
+            ? "cursor-not-allowed opacity-50 text-muted-foreground"
+            : act
+              ? "bg-primary/10 text-primary"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground",
+        );
+        const linkKey = item.key ?? `${item.href}:${item.label ?? ""}`;
+
+        if (locked) {
+          return (
+            <span
+              key={linkKey}
+              className={classes}
+              aria-disabled="true"
+              title="Bu modulu acmak icin once calisma alani olustur"
+            >
+              {resolveNavLabel(item)}
+            </span>
+          );
+        }
+
+        return (
+          <Link key={linkKey} href={item.href} className={classes}>
+            {resolveNavLabel(item)}
+            {act ? (
+              <span className="absolute inset-x-1 bottom-0 h-0.5 rounded-full bg-primary" />
+            ) : null}
+          </Link>
+        );
+      })}
+    </>
+  );
+}
+
+function SecondaryNavLinksMobileWithSearch(props: SecondaryNavLinksBaseProps) {
+  const trainingTab = useSearchParams().get("tab");
+  return <SecondaryNavLinksMobile {...props} trainingTab={trainingTab} />;
+}
+
 function isWorkspaceOptionalPath(pathname: string) {
   return (
     pathname.startsWith("/workspace/onboarding") ||
@@ -120,13 +279,14 @@ function isWorkspaceOptionalPath(pathname: string) {
 }
 
 function isWorkspaceLockedHref(href: string) {
-  if (href === "/pricing") return false;
-  if (href.startsWith("/cozumler/")) return false;
+  const pathOnly = href.split("?")[0] ?? href;
+  if (pathOnly === "/pricing") return false;
+  if (pathOnly.startsWith("/cozumler/")) return false;
   return (
-    href !== "/workspace/onboarding" &&
-    href !== "/companies" &&
-    href !== "/settings" &&
-    href !== "/account/osgb-affiliations"
+    pathOnly !== "/workspace/onboarding" &&
+    pathOnly !== "/companies" &&
+    pathOnly !== "/settings" &&
+    pathOnly !== "/account/osgb-affiliations"
   );
 }
 
@@ -874,46 +1034,26 @@ export function ProtectedShell({
               <div className="flex max-w-full flex-wrap items-center justify-center gap-x-1 gap-y-1.5">
                 {/* Firma linki — secondary nav'ın ilk item'ı. Aktif workspace'in
                     /companies/[slug|id] detay sayfasına götürür (10 sekmeli). */}
-                {showWorkspaceSwitcher ? (
-                  <ActiveCompanyNavLink
-                    label="Firma"
-                    locked={disableWorkspaceModules}
-                  />
-                ) : null}
-                {baseSecondaryNav.map((item) => {
-                  const act = isSecondaryNavActive(pathname, item.href);
-                  const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
-                  const classes = cn(
-                    "relative inline-flex shrink-0 items-center rounded-xl px-3 py-2 text-[13px] font-semibold transition-all duration-200 xl:px-4 xl:text-[14px]",
-                    locked
-                      ? "cursor-not-allowed border border-white/8 bg-white/5 text-[var(--secondary-nav-text)] opacity-55"
-                      : act
-                        ? "text-[var(--secondary-nav-active)] bg-[var(--secondary-nav-hover-bg)]"
-                        : "text-[var(--secondary-nav-text)] hover:text-[var(--secondary-nav-hover-text)] hover:bg-[var(--secondary-nav-hover-bg)]",
-                  );
-
-                  if (locked) {
-                    return (
-                      <span
-                        key={item.href}
-                        className={classes}
-                        aria-disabled="true"
-                        title="Bu modulu acmak icin once calisma alani olustur"
-                      >
-                        {resolveNavLabel(item)}
-                      </span>
-                    );
+                <Suspense
+                  fallback={
+                    <SecondaryNavLinksDesktop
+                      items={baseSecondaryNav}
+                      pathname={pathname}
+                      disableWorkspaceModules={disableWorkspaceModules}
+                      resolveNavLabel={resolveNavLabel}
+                      showWorkspaceSwitcher={showWorkspaceSwitcher}
+                      trainingTab={null}
+                    />
                   }
-
-                  return (
-                    <Link key={item.href} href={item.href} className={classes}>
-                      {resolveNavLabel(item)}
-                      {act && (
-                        <span className="absolute inset-x-1.5 bottom-0 h-0.5 rounded-full bg-[var(--secondary-nav-active)]" />
-                      )}
-                    </Link>
-                  );
-                })}
+                >
+                  <SecondaryNavLinksDesktopWithSearch
+                    items={baseSecondaryNav}
+                    pathname={pathname}
+                    disableWorkspaceModules={disableWorkspaceModules}
+                    resolveNavLabel={resolveNavLabel}
+                    showWorkspaceSwitcher={showWorkspaceSwitcher}
+                  />
+                </Suspense>
               </div>
             </div>
             <div className="flex items-center justify-end">
@@ -969,46 +1109,26 @@ export function ProtectedShell({
 
           <div className="px-2">
             <div className="no-scrollbar flex max-w-full flex-nowrap justify-start gap-x-0.5 gap-y-1 overflow-x-auto py-1.5 sm:flex-wrap sm:justify-center">
-              {showWorkspaceSwitcher ? (
-                <ActiveCompanyNavLink
-                  label="Firma"
-                  locked={disableWorkspaceModules}
-                />
-              ) : null}
-              {baseSecondaryNav.map((item) => {
-                const act = isSecondaryNavActive(pathname, item.href);
-                const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
-                const classes = cn(
-                  "relative inline-flex shrink-0 items-center rounded-lg px-3 py-2.5 text-[13px] font-semibold transition-colors",
-                  locked
-                    ? "cursor-not-allowed opacity-50 text-muted-foreground"
-                    : act
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                );
-
-                if (locked) {
-                  return (
-                    <span
-                      key={item.href}
-                      className={classes}
-                      aria-disabled="true"
-                      title="Bu modulu acmak icin once calisma alani olustur"
-                    >
-                      {resolveNavLabel(item)}
-                    </span>
-                  );
+              <Suspense
+                fallback={
+                  <SecondaryNavLinksMobile
+                    items={baseSecondaryNav}
+                    pathname={pathname}
+                    disableWorkspaceModules={disableWorkspaceModules}
+                    resolveNavLabel={resolveNavLabel}
+                    showWorkspaceSwitcher={showWorkspaceSwitcher}
+                    trainingTab={null}
+                  />
                 }
-
-                return (
-                  <Link key={item.href} href={item.href} className={classes}>
-                    {resolveNavLabel(item)}
-                    {act && (
-                      <span className="absolute inset-x-1 bottom-0 h-0.5 rounded-full bg-primary" />
-                    )}
-                  </Link>
-                );
-              })}
+              >
+                <SecondaryNavLinksMobileWithSearch
+                  items={baseSecondaryNav}
+                  pathname={pathname}
+                  disableWorkspaceModules={disableWorkspaceModules}
+                  resolveNavLabel={resolveNavLabel}
+                  showWorkspaceSwitcher={showWorkspaceSwitcher}
+                />
+              </Suspense>
             </div>
           </div>
 

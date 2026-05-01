@@ -398,16 +398,26 @@ Amac: Urun kullaniciya guven veren, satilabilir ve yayinlanabilir hale gelir.
 
 ## 7. Sinav ve Anket Modulu
 
-- [ ] Header/navigation icinde Sinav ve Anket linkleri geri getirildi.
-- [ ] Sinav modulu route'lari production'da aciliyor.
-- [ ] Anket modulu route'lari production'da aciliyor.
-- [ ] Sinav olusturma, listeleme ve detay akisi calisiyor.
-- [ ] Anket olusturma, listeleme ve detay akisi calisiyor.
-- [ ] Katilimci/cevap kayitlari Supabase'e dogru yaziliyor.
-- [ ] Sinav ve anket verileri kullanici/workspace yetkisine gore korunuyor.
-- [ ] Sinav ve anket modulu paket limitlerine baglandi.
-- [ ] Mobil gorunum kontrol edildi.
-- [ ] Bos durum, hata durumu ve loading state'leri kullanici dostu.
+- [x] Header/navigation icinde Sinav ve Anket linkleri geri getirildi.
+- [x] Sinav modulu route'lari production'da aciliyor.
+- [x] Anket modulu route'lari production'da aciliyor.
+- [x] Sinav olusturma, listeleme ve detay akisi calisiyor.
+- [x] Anket olusturma, listeleme ve detay akisi calisiyor.
+- [x] Katilimci/cevap kayitlari Supabase'e dogru yaziliyor.
+- [x] Sinav ve anket verileri kullanici/workspace yetkisine gore korunuyor.
+- [x] Sinav ve anket modulu paket limitlerine baglandi.
+- [x] Mobil gorunum kontrol edildi.
+- [x] Bos durum, hata durumu ve loading state'leri kullanici dostu.
+
+7 dogrulama notlari:
+
+- `protected-shell.tsx`: Ikinci menude `Egitim` (`/training`), `Anket` (`?tab=survey`), `Sinav` (`?tab=exam`); OSGB ikinci menude ayni uc link; `useSearchParams` + `Suspense` ile aktif sekme dogru; workspace kilidi href sorgu parametresinden bagimsiz (`pathOnly`).
+- `proxy.ts`: Katilimci public formu `/survey/*` auth gerektirmeden aciliyor (production katilim engeli kaldirildi).
+- `TrainingClient.tsx`: URL `tab` ile liste sekmesi senkron; mobil sekmeler `min-h-[44px]` / flex kolon; liste/org hata bandi.
+- `TrainingNewClient.tsx`: Manuel kayit oncesi `POST /api/training/assessment-quota` ile `training_slide` kotasi; AI akisi `/api/training-ai` kotayi zaten dusurdugunde cift tuketim yok (`useRef`).
+- `SurveyFillClient.tsx`: `submitResponses` basarisizsa kullaniciya mesaj, tekrar deneme.
+- `TrainingDetailClient.tsx`: Kayit yok karti + `/training` donus linki.
+- Supabase RLS: `20260425011000_survey_policy_hardening.sql` org ve token akisina uygun (mevcut).
 
 ## 8. Kurumsal / Enterprise Akisi
 

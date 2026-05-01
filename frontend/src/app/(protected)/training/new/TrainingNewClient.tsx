@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { createSurvey, saveQuestions, type QuestionOption } from "@/lib/supabase/survey-api";
@@ -32,8 +32,10 @@ function genId() {
 export function TrainingNewClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const aiConsumedTrainingQuotaRef = useRef(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Step 1: General info
   const [title, setTitle] = useState("");
@@ -162,7 +164,8 @@ export function TrainingNewClient() {
       if (!res.ok) throw new Error("AI error");
       const data = await res.json();
 
-      if (data.questions && Array.isArray(data.questions)) {
+      if (data.questions && Array.isArray(data.questions) && data.questions.length > 0) {
+        aiConsumedTrainingQuotaRef.current = true;
         const drafts: QuestionDraft[] = data.questions.map((q: Record<string, unknown>) => ({
           id: genId(),
           questionText: (q.questionText || "") as string,
@@ -247,6 +250,23 @@ export function TrainingNewClient() {
   async function handleSave() {
     if (!title.trim()) return;
     setSaving(true);
+    setSaveError(null);
+
+    if (!aiConsumedTrainingQuotaRef.current) {
+      const quotaRes = await fetch("/api/training/assessment-quota", { method: "POST" });
+      if (!quotaRes.ok) {
+        let msg = "Paket kotaniz bu islem icin yetersiz. Paket yukseltmeyi dusunun.";
+        try {
+          const j = (await quotaRes.json()) as { message?: string; error?: string };
+          msg = j.message || j.error || msg;
+        } catch {
+          /* ignore */
+        }
+        setSaveError(msg);
+        setSaving(false);
+        return;
+      }
+    }
 
     const companyIds = Array.from(selectedCompanyIds);
     const survey = await createSurvey({
@@ -275,7 +295,11 @@ export function TrainingNewClient() {
       },
     });
 
-    if (!survey) { setSaving(false); return; }
+    if (!survey) {
+      setSaveError("Kayit olusturulamadi. Baglantinizi kontrol edip tekrar deneyin.");
+      setSaving(false);
+      return;
+    }
 
     if (questions.length > 0) {
       await saveQuestions(
@@ -816,17 +840,27 @@ export function TrainingNewClient() {
             </button>
 
             {/* Save */}
-            <div className="flex gap-3">
+            {saveError ? (
+              <p
+                role="alert"
+                className="mb-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900 dark:border-red-900/40 dark:bg-red-950/35 dark:text-red-100"
+              >
+                {saveError}
+              </p>
+            ) : null}
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
               <button
+                type="button"
                 onClick={() => setStep(2)}
-                className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--card)] py-3 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--accent)]"
+                className="flex-1 min-h-[44px] rounded-xl border border-[var(--border)] bg-[var(--card)] py-3 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--accent)]"
               >
                 Geri
               </button>
               <button
+                type="button"
                 onClick={handleSave}
                 disabled={saving || !title.trim() || questions.length === 0}
-                className="flex-[2] rounded-xl bg-[var(--gold)] py-3 text-sm font-semibold text-white shadow hover:brightness-110 disabled:opacity-50"
+                className="flex-[2] min-h-[44px] rounded-xl bg-[var(--gold)] py-3 text-sm font-semibold text-white shadow hover:brightness-110 disabled:opacity-50"
               >
                 {saving ? <ButtonLoader label="Kaydediliyor..." /> : `Kaydet (${questions.length} soru)`}
               </button>

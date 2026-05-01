@@ -77,6 +77,7 @@ export async function updateSession(request: NextRequest) {
     PUBLIC_PATHS.includes(pathname) ||
     pathname.startsWith("/auth") ||
     pathname.startsWith("/cozumler/") ||
+    pathname.startsWith("/survey/") ||
     isPublicApiEndpoint ||
     isRouteAuthApiEndpoint;
   const hasOAuthCode = request.nextUrl.searchParams.has("code");

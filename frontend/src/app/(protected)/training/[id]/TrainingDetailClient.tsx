@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -202,8 +203,19 @@ export function TrainingDetailClient() {
 
   if (!survey) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-[var(--muted-foreground)]">Anket/sınav bulunamadı</p>
+      <div className="flex min-h-screen items-center justify-center bg-[var(--background)] p-4">
+        <div className="max-w-md rounded-2xl border border-[var(--border)] bg-[var(--card)] p-8 text-center shadow-sm">
+          <p className="text-lg font-semibold text-[var(--foreground)]">Anket veya sınav bulunamadı</p>
+          <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+            Bu kayda erişim yetkiniz olmayabilir veya bağlantı eski olabilir.
+          </p>
+          <Link
+            href="/training"
+            className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-[var(--gold)] px-5 text-sm font-semibold text-white hover:brightness-110"
+          >
+            Eğitime dön
+          </Link>
+        </div>
       </div>
     );
   }

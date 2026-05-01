@@ -43,10 +43,32 @@ export function TrainingClient() {
   const [libraryItems, setLibraryItems] = useState<LibraryContentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [libraryLoading, setLibraryLoading] = useState(true);
+  const [listError, setListError] = useState<string | null>(null);
   const [tab, setTab] = useState<TabType>(() => {
     const requested = searchParams.get("tab");
     return requested === "survey" || requested === "exam" ? requested : "all";
   });
+
+  useEffect(() => {
+    const requested = searchParams.get("tab");
+    if (requested === "survey" || requested === "exam") {
+      setTab(requested);
+    } else {
+      setTab("all");
+    }
+  }, [searchParams]);
+
+  function setTabInUrl(next: TabType) {
+    setTab(next);
+    const params = new URLSearchParams(searchParams.toString());
+    if (next === "all") {
+      params.delete("tab");
+    } else {
+      params.set("tab", next);
+    }
+    const q = params.toString();
+    router.replace(q ? `/training?${q}` : "/training", { scroll: false });
+  }
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
   const [libraryTab, setLibraryTab] = useState<LibraryTab>("education");
@@ -55,12 +77,28 @@ export function TrainingClient() {
     async function loadSurveys() {
       setLoading(true);
       setLibraryLoading(true);
+      setListError(null);
       const supabase = createClient();
-      if (!supabase) { setLoading(false); setLibraryLoading(false); return; }
+      if (!supabase) {
+        setListError("Oturum bulunamadi. Sayfayi yenileyin.");
+        setLoading(false);
+        setLibraryLoading(false);
+        return;
+      }
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setLoading(false); setLibraryLoading(false); return; }
+      if (!user) {
+        setListError("Giris gerekli.");
+        setLoading(false);
+        setLibraryLoading(false);
+        return;
+      }
       const { data: profile } = await supabase.from("user_profiles").select("organization_id").eq("auth_user_id", user.id).single();
-      if (!profile?.organization_id) { setLoading(false); setLibraryLoading(false); return; }
+      if (!profile?.organization_id) {
+        setListError("Organizasyon baglantisi bulunamadi. Profil veya uyelik ayarlarinizi kontrol edin.");
+        setLoading(false);
+        setLibraryLoading(false);
+        return;
+      }
       const [surveysData, libraryData] = await Promise.all([
         fetchSurveys(profile.organization_id, initialCompanyId),
         fetchLibraryContents(),
@@ -188,6 +226,15 @@ export function TrainingClient() {
           </div>
         </div>
 
+        {listError ? (
+          <div
+            role="alert"
+            className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-100"
+          >
+            {listError}
+          </div>
+        ) : null}
+
         <section className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
@@ -271,12 +318,13 @@ export function TrainingClient() {
         </section>
 
         {/* Tabs */}
-        <div className="mb-6 flex items-center gap-1 rounded-xl bg-[var(--card)] p-1 shadow-sm border border-[var(--border)]">
+        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-1 rounded-xl bg-[var(--card)] p-1 shadow-sm border border-[var(--border)]">
           {(["all", "survey", "exam"] as TabType[]).map(t => (
             <button
+              type="button"
               key={t}
-              onClick={() => setTab(t)}
-              className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+              onClick={() => setTabInUrl(t)}
+              className={`min-h-[44px] flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
                 tab === t
                   ? "bg-[var(--gold)] text-white shadow"
                   : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
