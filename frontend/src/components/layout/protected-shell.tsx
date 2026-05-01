@@ -51,7 +51,6 @@ const primaryNav = [
   { href: "/risk-analysis", key: "nav.riskAnalysis" },
   { href: "/corrective-actions", key: "nav.correctiveActions" },
   { href: "/incidents", key: "nav.incidents" },
-  { href: "/documents", key: "nav.documents" },
   { href: "/isg-library", key: "nav.library" },
 ];
 
@@ -78,7 +77,7 @@ const osgbPrimaryNav = [
   { href: "/osgb/personnel", label: "Personeller" },
   { href: "/osgb/assignments", label: "Görevlendirmeler" },
   { href: "/osgb/tasks", label: "İş Takibi" },
-  { href: "/osgb/documents", label: "Dokümanlar" },
+  { href: "/isg-library", label: "İSG Kütüphanesi" },
 ];
 
 const osgbSecondaryNav = [
@@ -104,6 +103,9 @@ const platformAdminPrimaryNav = [
 
 function isActive(pathname: string, href: string) {
   if (href === "/dashboard" || href === "/osgb" || href === "/platform-admin") return pathname === href;
+  if (href === "/isg-library") {
+    return pathname.startsWith("/isg-library") || pathname.startsWith("/documents");
+  }
   return pathname.startsWith(href);
 }
 
@@ -1147,8 +1149,8 @@ export function ProtectedShell({
       {showWorkspaceSwitcher ? <ActiveCompanyBar /> : null}
 
       {/* ── Main content ── */}
-      <main className="mx-auto min-w-0 w-full max-w-[1480px] overflow-x-hidden px-4 py-6 sm:px-6 xl:px-8 2xl:px-10">
-        <div className="page-stack min-w-0">{children}</div>
+      <main className="mx-auto min-w-0 w-full max-w-[1480px] overflow-x-hidden px-3 py-5 sm:px-6 xl:px-8 2xl:px-10">
+        <div className="page-stack min-w-0 max-w-full">{children}</div>
       </main>
 
       {/* ── Chat Widget ── */}

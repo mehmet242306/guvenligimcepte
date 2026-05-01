@@ -227,7 +227,7 @@ export function DashboardClient() {
               {greeting}, {firstName}
             </h1>
             <p className="mt-4 max-w-3xl text-base leading-8 text-muted-foreground sm:text-lg">
-              Tüm İSG operasyonunu tek ekranda izleyin: riskler, dokümanlar, olaylar, görevler ve firma takipleri daha okunabilir bir komuta panelinde toplandı.
+              Tüm İSG operasyonunu tek ekranda izleyin: riskler, İSG kütüphanesi çıktıları, olaylar, görevler ve firma takipleri daha okunabilir bir komuta panelinde toplandı.
             </p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -299,7 +299,7 @@ export function DashboardClient() {
         />
         <StatCard
           icon={FileText}
-          label="Doküman"
+          label="Kütüphane dokümanı"
           value={s.documentCount}
           sub={`${s.readyDocCount} hazır, ${s.draftDocCount} taslak`}
           tone="cobalt"
@@ -343,8 +343,8 @@ export function DashboardClient() {
 
       <OhsFileWidget />
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.95fr)]">
-        <div className="space-y-4">
+      <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(min(100%,340px),0.95fr)]">
+        <div className="min-w-0 space-y-4">
           <div className="surface-card">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
@@ -362,7 +362,7 @@ export function DashboardClient() {
             </div>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               <QuickAction icon={ShieldAlert} label="Risk Analizi" href="/risk-analysis" tone="risk" />
-              <QuickAction icon={FileText} label="Dokümanlar" href="/isg-library?section=documentation" tone="cobalt" />
+              <QuickAction icon={FileText} label="İSG kütüphanesi" href="/isg-library?section=documentation" tone="cobalt" />
               <QuickAction icon={AlertTriangle} label="Olay Bildir" href="/incidents" tone="amber" />
               <QuickAction icon={Calendar} label="Planlayıcı" href="/planner" tone="emerald" />
               <QuickAction icon={GraduationCap} label="Eğitimler" href="/isg-library?section=education" tone="teal" />
@@ -377,23 +377,23 @@ export function DashboardClient() {
               <div>
                 <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
                   <FileText size={16} className="text-[var(--gold)]" />
-                  Son Dokümanlar
+                  Kütüphanedeki son çıktılar
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Yakın zamanda değiştirilen içerikler burada listelenir.
+                  İSG kütüphanesi akışında son düzenlenen dokümanlar burada özetlenir.
                 </p>
               </div>
               <button
-                onClick={() => router.push('/documents')}
-                className="inline-flex items-center gap-1 rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--primary)] transition-colors hover:bg-[var(--gold)]/8"
+                onClick={() => router.push('/isg-library?section=documentation')}
+                className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--primary)] transition-colors hover:bg-[var(--gold)]/8"
               >
-                Tümünü Gör <ChevronRight size={12} />
+                Kütüphaneye git <ChevronRight size={12} />
               </button>
             </div>
 
             {s.recentDocs.length === 0 ? (
               <div className="rounded-[1.5rem] border border-dashed border-border bg-background/55 px-4 py-12 text-center text-sm text-muted-foreground">
-                Henüz doküman oluşturulmadı.
+                Henüz kütüphane çıktısı yok. İSG kütüphanesinden şablon seçerek başlayabilirsiniz.
               </div>
             ) : (
               <div className="space-y-2">
@@ -444,7 +444,7 @@ export function DashboardClient() {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <div className="surface-card">
             <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
               <Building2 size={16} className="text-[var(--gold)]" />
@@ -469,7 +469,7 @@ export function DashboardClient() {
             </div>
             <div className="space-y-2">
               <ModuleLink icon={ShieldAlert} label="Risk Analizi" desc={`${s.riskCount} değerlendirme`} href="/risk-analysis" tone="risk" />
-              <ModuleLink icon={FileText} label="Dokümanlar" desc="Hazır kütüphane ve editör" href="/isg-library?section=documentation" tone="cobalt" />
+              <ModuleLink icon={FileText} label="İSG kütüphanesi" desc="Doküman ve şablonlar" href="/isg-library?section=documentation" tone="cobalt" />
               <ModuleLink icon={Siren} label="Acil Durum" desc="Plan ve tatbikatlar" href="/isg-library?section=emergency" tone="amber" />
               <ModuleLink icon={GraduationCap} label="Eğitimler" desc="Takip ve kayıt" href="/isg-library?section=education" tone="teal" />
               <ModuleLink icon={PenTool} label="Sınav ve Anket" desc="AI destekli ölçüm akışları" href="/isg-library?section=assessment" tone="indigo" />

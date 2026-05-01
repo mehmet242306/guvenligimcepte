@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { LayoutDashboard, Menu, X } from "lucide-react";
 import { Brand } from "./brand";
 import { LanguageSelector } from "./language-selector";
 import { useI18n } from "@/lib/i18n";
+import { createClient } from "@/lib/supabase/client";
 
 const navLinkClass =
   "text-sm font-medium text-white/70 transition-colors hover:text-white";
@@ -22,6 +23,29 @@ const accentButtonClass = `${accentFillClass} hidden lg:inline-flex`;
 export function PublicHeader() {
   const { t } = useI18n();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    if (!supabase) {
+      setAuthenticated(false);
+      return;
+    }
+
+    supabase.auth.getSession().then(({ data }) => {
+      setAuthenticated(!!data.session?.user);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthenticated(!!session?.user);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -56,6 +80,16 @@ export function PublicHeader() {
 
             <LanguageSelector variant="dark" />
 
+            {authenticated ? (
+              <Link
+                href="/dashboard"
+                className="inline-flex h-10 max-w-[42vw] shrink items-center gap-1.5 truncate rounded-xl border border-amber-500/35 bg-amber-500/15 px-3 text-xs font-semibold text-amber-100 lg:hidden"
+              >
+                <LayoutDashboard className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                {t("nav.dashboard")}
+              </Link>
+            ) : null}
+
             <button
               type="button"
               className="inline-flex h-10 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] px-3 text-white lg:hidden"
@@ -67,13 +101,25 @@ export function PublicHeader() {
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
-            <Link href="/login" className={`${ghostButtonClass} hidden lg:inline-flex`}>
-              {t("common.login")}
-            </Link>
+            {authenticated ? (
+              <Link
+                href="/dashboard"
+                className={`${accentFillClass} hidden h-11 items-center gap-2 px-5 lg:inline-flex`}
+              >
+                <LayoutDashboard className="h-4 w-4 opacity-90" aria-hidden />
+                {t("nav.dashboard")}
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className={`${ghostButtonClass} hidden lg:inline-flex`}>
+                  {t("common.login")}
+                </Link>
 
-            <Link href="/register" className={accentButtonClass}>
-              {t("common.register")}
-            </Link>
+                <Link href="/register" className={accentButtonClass}>
+                  {t("common.register")}
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -119,20 +165,33 @@ export function PublicHeader() {
               </Link>
             </div>
             <div className="mt-auto flex flex-col gap-2 border-t border-white/10 p-4">
-              <Link
-                href="/login"
-                className={ghostButtonClass}
-                onClick={() => setMobileOpen(false)}
-              >
-                {t("common.login")}
-              </Link>
-              <Link
-                href="/register"
-                className={`${accentFillClass} w-full justify-center`}
-                onClick={() => setMobileOpen(false)}
-              >
-                {t("common.register")}
-              </Link>
+              {authenticated ? (
+                <Link
+                  href="/dashboard"
+                  className={`${accentFillClass} w-full justify-center gap-2`}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <LayoutDashboard className="h-4 w-4 opacity-90" aria-hidden />
+                  {t("nav.dashboard")}
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className={ghostButtonClass}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {t("common.login")}
+                  </Link>
+                  <Link
+                    href="/register"
+                    className={`${accentFillClass} w-full justify-center`}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {t("common.register")}
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>

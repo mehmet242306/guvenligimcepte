@@ -90,8 +90,8 @@ export function ActiveCompanyBar() {
       className="border-b"
       style={{ borderColor: "var(--border)", background: "var(--card)" }}
     >
-      <div className="mx-auto w-full max-w-[1480px] px-4 sm:px-6 xl:px-8 2xl:px-10">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 py-2.5 text-[13px]">
+      <div className="mx-auto w-full min-w-0 max-w-[1480px] px-3 sm:px-6 xl:px-8 2xl:px-10">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 py-2.5 text-[13px] sm:gap-x-4">
           {/* Logo / avatar */}
           {profile.logoUrl ? (
             <Image

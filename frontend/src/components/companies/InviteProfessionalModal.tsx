@@ -129,6 +129,15 @@ export function InviteProfessionalModal({ open, companyId, onClose }: Props) {
     if (open) void loadData();
   }, [open, loadData]);
 
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   /* ── Team member selection → auto-fill ── */
   const handleMemberSelect = useCallback((memberId: string) => {
     setSelectedMemberId(memberId);
@@ -256,24 +265,34 @@ export function InviteProfessionalModal({ open, companyId, onClose }: Props) {
   const inp = "h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600";
 
   return (
-    <div className="fixed inset-0 z-[70]">
-      {/* Overlay — fixed, never scrolls */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      {/* Scroll container sits on top */}
-      <div className="relative flex min-h-full items-start justify-center overflow-y-auto py-8 px-4">
-      <div className="w-full max-w-3xl rounded-2xl border border-border bg-card shadow-2xl dark:bg-slate-900">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <div>
-            <h2 className="text-base font-semibold text-foreground">Profesyonel Davet Et</h2>
-            <p className="mt-0.5 text-xs text-muted-foreground">Erişim yetkilerini belirleyerek davet gönderin</p>
+    <div className="fixed inset-0 z-[70] flex flex-col sm:block">
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+        aria-hidden
+      />
+      <div className="relative z-[1] flex min-h-0 flex-1 flex-col items-stretch justify-end overflow-hidden sm:block sm:overflow-y-auto sm:p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="invite-professional-title"
+          className="flex max-h-[100dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-border bg-card shadow-2xl dark:bg-slate-900 sm:mx-auto sm:my-8 sm:max-h-[min(92dvh,920px)] sm:max-w-3xl sm:rounded-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3 sm:px-6 sm:py-4">
+            <div>
+              <h2 id="invite-professional-title" className="text-base font-semibold text-foreground">
+                Profesyonel Davet Et
+              </h2>
+              <p className="mt-0.5 text-xs text-muted-foreground">Erişim yetkilerini belirleyerek davet gönderin</p>
+            </div>
+            <button type="button" onClick={onClose} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
           </div>
-          <button type="button" onClick={onClose} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-        </div>
 
-        <div className="p-6 space-y-6">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:p-6">
+            <div className="space-y-6">
           {loadingData && (
             <div className="flex items-center justify-center py-6">
               <div className="h-6 w-6 animate-spin rounded-full border-4 border-primary border-t-transparent" />
@@ -470,22 +489,6 @@ export function InviteProfessionalModal({ open, companyId, onClose }: Props) {
                 </div>
               )}
 
-              {/* ── Submit ── */}
-              <div className="flex items-center justify-end gap-3">
-                <button type="button" onClick={onClose} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary">
-                  İptal
-                </button>
-                <button
-                  type="button"
-                  onClick={() => void handleSubmit()}
-                  disabled={saving || !manualEmail.trim()}
-                  className="flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-60 transition-colors"
-                >
-                  {saving && <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />}
-                  {saving ? "Gönderiliyor..." : "Davet Gönder"}
-                </button>
-              </div>
-
               {/* ── Pending invitations ── */}
               {invitations.length > 0 && (
                 <div className="rounded-xl border border-border bg-secondary/30 p-4">
@@ -541,9 +544,31 @@ export function InviteProfessionalModal({ open, companyId, onClose }: Props) {
               )}
             </>
           )}
+            </div>
+          </div>
+
+          {!loadingData ? (
+            <div className="shrink-0 border-t border-border bg-card px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] dark:bg-slate-900 sm:px-6">
+              <div className="flex flex-wrap items-center justify-end gap-3">
+                <button type="button" onClick={onClose} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary">
+                  İptal
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleSubmit()}
+                  disabled={saving || !manualEmail.trim()}
+                  className="flex min-h-[44px] items-center gap-2 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-60 transition-colors"
+                >
+                  {saving && (
+                    <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  )}
+                  {saving ? "Gönderiliyor..." : "Davet Gönder"}
+                </button>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
-      </div>  {/* /scroll-container */}
     </div>
   );
 }
