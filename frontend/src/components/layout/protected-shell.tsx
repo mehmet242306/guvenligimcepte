@@ -431,8 +431,6 @@ export function ProtectedShell({
   const showWorkspaceSwitcher = !isPlatformAdminShell;
   const showNotificationBell = !isPlatformAdminShell && !!accountContext?.organizationId;
   const showChatWidget = true;
-  /** Self-service paketler (/pricing); platform admin panelinde gereksiz */
-  const showPricingCta = !isPlatformAdminShell;
   const disableWorkspaceModules =
     accountSurface === "standard" &&
     accountContext?.accountType === "individual" &&
@@ -777,9 +775,10 @@ export function ProtectedShell({
           className="relative z-10"
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
-          <div className="mx-auto grid h-[76px] w-full max-w-[1480px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 sm:px-5 lg:h-[92px] lg:grid-cols-[minmax(260px,1fr)_auto_minmax(260px,1fr)] lg:gap-3 xl:grid-cols-[minmax(280px,1fr)_auto_minmax(280px,1fr)] xl:gap-4 xl:px-8 2xl:px-10">
-            {/* Left: Brand — absolute so it doesn't affect nav centering */}
-            <div className="min-w-0 justify-self-start">
+          <div className="mx-auto flex w-full max-w-[1480px] flex-col gap-2 px-3 py-2 sm:px-5 xl:px-8 2xl:px-10">
+            {/* Satir 1: marka + aksiyonlar (dar ekranda tek satir; lg+ ust bant) */}
+            <div className="flex min-h-[64px] items-center justify-between gap-3 sm:min-h-[68px] lg:min-h-[56px]">
+            <div className="min-w-0">
               <div className="xl:hidden">
                 <Brand href={homeHref} inverted compact />
               </div>
@@ -788,58 +787,8 @@ export function ProtectedShell({
               </div>
             </div>
 
-            {/* Center: Primary navigation — truly centered in max-w-7xl */}
-            <nav className="hidden min-w-0 items-center justify-center justify-self-center lg:flex">
-              <div className="flex min-w-0 items-center justify-center gap-0.5 xl:gap-1">
-                {basePrimaryNav.map((item) => {
-                  const act = isActive(pathname, item.href);
-                  const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
-                  const classes = cn(
-                    "relative inline-flex h-11 shrink-0 items-center rounded-2xl px-2.5 xl:px-3 2xl:px-4 text-[13px] xl:text-[14px] 2xl:text-[15px] font-bold tracking-[-0.012em] transition-all duration-200",
-                    locked
-                      ? "cursor-not-allowed border border-white/8 bg-white/5 text-[var(--header-muted)] opacity-55"
-                      : act
-                        ? "bg-[var(--gold-glow)] text-[var(--gold-light)] shadow-[0_10px_30px_rgba(0,0,0,0.18)] ring-1 ring-[rgba(231,205,163,0.22)]"
-                        : "text-[var(--gold-light)] hover:bg-[var(--header-hover-bg)] hover:text-white",
-                  );
-
-                  if (locked) {
-                    return (
-                      <span
-                        key={item.href}
-                        className={classes}
-                        aria-disabled="true"
-                        title="Bu modulu acmak icin once calisma alani olustur"
-                      >
-                        {resolveNavLabel(item)}
-                      </span>
-                    );
-                  }
-
-                  return (
-                    <Link key={item.href} href={item.href} className={classes}>
-                      {resolveNavLabel(item)}
-                      {act && (
-                        <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[var(--gold-light)]" />
-                      )}
-                    </Link>
-                  );
-                })}
-              </div>
-            </nav>
-
-            {/* Right: Actions — absolute so it doesn't affect nav centering */}
-            <div className="flex min-w-0 items-center justify-end gap-0.5 justify-self-end sm:gap-1.5">
-              {showPricingCta ? (
-                <Link
-                  href="/pricing"
-                  className="inline-flex h-9 shrink-0 items-center rounded-xl border border-[rgba(231,205,163,0.45)] bg-[rgba(231,205,163,0.14)] px-2.5 text-[11px] font-bold uppercase tracking-wide text-[var(--gold-light)] transition-all hover:border-[rgba(231,205,163,0.65)] hover:bg-[rgba(231,205,163,0.22)] sm:h-11 sm:px-3 sm:text-[12px] sm:normal-case sm:tracking-normal"
-                  title="Paketler ve fiyatlandirma"
-                >
-                  <span className="hidden sm:inline">Paketler</span>
-                  <span className="sm:hidden">Paket</span>
-                </Link>
-              ) : null}
+            {/* Mobil / tablet: birincil menu asagidaki blokta; burada sadece aksiyonlar */}
+            <div className="flex min-w-0 shrink-0 items-center justify-end gap-0.5 sm:gap-1.5">
               <LanguageSelector variant="dark" />
               {showNotificationBell ? <NotificationBell /> : null}
               <ThemeToggle />
@@ -871,16 +820,57 @@ export function ProtectedShell({
               ) : null}
               <HeaderSignOutButton />
             </div>
+            </div>
+
+            {/* Satir 2: birincil menu — tam genislik, satir kirar; kaydirma yok */}
+            <nav className="hidden w-full min-w-0 border-t border-white/10 pt-2 lg:block lg:border-t-0 lg:pt-0">
+              <div className="flex w-full flex-wrap items-center justify-center gap-x-0.5 gap-y-1.5 sm:gap-x-1">
+                {basePrimaryNav.map((item) => {
+                  const act = isActive(pathname, item.href);
+                  const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
+                  const classes = cn(
+                    "relative inline-flex h-10 max-w-full items-center rounded-2xl px-2 text-[12px] font-bold tracking-[-0.012em] transition-all duration-200 sm:h-11 sm:px-2.5 sm:text-[13px] xl:px-3 xl:text-[14px] 2xl:px-3.5 2xl:text-[15px]",
+                    locked
+                      ? "cursor-not-allowed border border-white/8 bg-white/5 text-[var(--header-muted)] opacity-55"
+                      : act
+                        ? "bg-[var(--gold-glow)] text-[var(--gold-light)] shadow-[0_10px_30px_rgba(0,0,0,0.18)] ring-1 ring-[rgba(231,205,163,0.22)]"
+                        : "text-[var(--gold-light)] hover:bg-[var(--header-hover-bg)] hover:text-white",
+                  );
+
+                  if (locked) {
+                    return (
+                      <span
+                        key={item.href}
+                        className={classes}
+                        aria-disabled="true"
+                        title="Bu modulu acmak icin once calisma alani olustur"
+                      >
+                        {resolveNavLabel(item)}
+                      </span>
+                    );
+                  }
+
+                  return (
+                    <Link key={item.href} href={item.href} className={classes}>
+                      {resolveNavLabel(item)}
+                      {act && (
+                        <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[var(--gold-light)]" />
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            </nav>
           </div>
         </header>
 
         {/* ── Secondary navigation bar (centered, sticky with header) ── */}
         {/* Gold ayraç — 1 ile 2 arası (üst üste, boşluksuz) */}
         <div className="hidden md:block relative z-0" style={{ background: "var(--secondary-nav-bg-solid)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
-          <div className="mx-auto grid h-12 w-full max-w-[1480px] grid-cols-[minmax(260px,1fr)_auto_minmax(260px,1fr)] items-center gap-3 px-4 sm:px-6 xl:grid-cols-[minmax(280px,1fr)_auto_minmax(280px,1fr)] xl:gap-4 xl:px-8 2xl:px-10">
+          <div className="mx-auto grid min-h-12 w-full max-w-[1480px] grid-cols-[minmax(260px,1fr)_auto_minmax(260px,1fr)] items-center gap-x-3 gap-y-2 px-4 py-2 sm:px-6 xl:grid-cols-[minmax(280px,1fr)_auto_minmax(280px,1fr)] xl:gap-4 xl:px-8 2xl:px-10">
             <div />
-            <div className="min-w-0 justify-self-center overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="flex min-w-max items-center justify-center gap-1">
+            <div className="min-w-0 max-w-full justify-self-center">
+              <div className="flex max-w-full flex-wrap items-center justify-center gap-x-1 gap-y-1.5">
                 {/* Firma linki — secondary nav'ın ilk item'ı. Aktif workspace'in
                     /companies/[slug|id] detay sayfasına götürür (10 sekmeli). */}
                 {showWorkspaceSwitcher ? (
@@ -938,7 +928,7 @@ export function ProtectedShell({
       <div className="border-b md:hidden" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
         <div className="mx-auto w-full max-w-[1480px]">
           <div className="border-b border-border/70 px-2">
-            <div className="flex max-w-full gap-0.5 overflow-x-auto py-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex max-w-full flex-wrap justify-center gap-x-0.5 gap-y-1 py-1.5">
               {basePrimaryNav.map((item) => {
               const act = isActive(pathname, item.href);
               const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
@@ -977,7 +967,7 @@ export function ProtectedShell({
           </div>
 
           <div className="px-2">
-            <div className="flex max-w-full gap-0.5 overflow-x-auto py-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex max-w-full flex-wrap justify-center gap-x-0.5 gap-y-1 py-1.5">
               {showWorkspaceSwitcher ? (
                 <ActiveCompanyNavLink
                   label="Firma"
