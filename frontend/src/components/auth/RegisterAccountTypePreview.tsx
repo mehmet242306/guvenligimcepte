@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CommercialLeadDialog } from "@/components/auth/CommercialLeadDialog";
+import { RegisterCommercialPlans } from "@/components/auth/RegisterCommercialPlans";
 import { type CommercialInterestType } from "@/lib/account/register-offers";
 import { locales, type Locale } from "@/i18n/routing";
 
@@ -484,20 +485,22 @@ export function RegisterAccountTypePreview({
               {children}
             </>
           ) : (
-            <div className="rounded-3xl border border-[var(--gold)]/25 bg-card p-4 shadow-[var(--shadow-soft)]">
-              <div className="text-sm font-semibold text-foreground">
-                {accountType === "osgb" ? "OSGB icin kurulum gorusmesi" : "Firma / kurumsal kurulum gorusmesi"}
+            <div className="space-y-3">
+              <div className="rounded-2xl border border-[var(--gold)]/20 bg-[var(--gold)]/6 px-4 py-3 text-sm leading-6 text-muted-foreground">
+                <span className="font-semibold text-foreground">
+                  {accountType === "osgb" ? "OSGB teklif akışı" : "Kurumsal teklif akışı"}
+                </span>
+                <span className="mt-1 block">
+                  Seçtiğiniz ülke, dil ve rol bilgisi form ile birlikte ekibimize iletilir; paket ve kurulum için size dönüş yapılır.
+                </span>
               </div>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Secilen ulke, dil ve rol bilgisiyle gelistirici ekibe kisa bir talep birakabilirsiniz.
-              </p>
-              <Button
-                type="button"
-                className="mt-4 w-full"
-                onClick={() => setActiveLeadType(accountType === "osgb" ? "osgb" : "enterprise")}
-              >
-                Gelistirici ile iletisime gec
-              </Button>
+              <RegisterCommercialPlans
+                tone="light"
+                mode={accountType === "osgb" ? "osgb" : "enterprise"}
+                countryCode={countryCode ?? "TR"}
+                languageCode={languageCode ?? "tr"}
+                onRequestLead={(type) => setActiveLeadType(type)}
+              />
             </div>
           )}
         </div>

@@ -23,7 +23,10 @@ export type PublicBillingPlan = {
   name: string;
   priceUsd: number;
   description: string;
-  audience: string;
+  /** Fiyat kartında “Kim için?” satırı */
+  whoFor: string;
+  /** Bir üst pakete çıkış veya son kademede OSGB/kurumsal yönlendirmesi */
+  upgradeHint: string;
   highlight?: string;
   recommended?: boolean;
   limits: Record<BillingAction, number>;
@@ -46,7 +49,10 @@ export const INDIVIDUAL_BILLING_PLANS: PublicBillingPlan[] = [
     key: "free",
     name: "Free",
     priceUsd: 0,
-    audience: "Ürünü tanımak isteyen bireysel kullanıcı",
+    whoFor:
+      "Ürünü tanımak, tek işyerinde ilk risk analizi ve deneme çıktısı almak isteyen bireysel kullanıcı.",
+    upgradeHint:
+      "Haftalık düzenli kullanım ve daha fazla işyeri kotası gerekiyorsa Starter’a geçin.",
     description: "RiskNova'yı gerçek akışlarla dene, ilk işini çıkar.",
     limits: {
       nova_message: 10,
@@ -69,7 +75,10 @@ export const INDIVIDUAL_BILLING_PLANS: PublicBillingPlan[] = [
     key: "starter",
     name: "Starter",
     priceUsd: 29,
-    audience: "Yeni başlayan bireysel İSG profesyoneli",
+    whoFor:
+      "Ayda birkaç işyeriyle çalışan, kayıt ve temel analiz çıktısı üreten yeni başlayan İSG profesyoneli.",
+    upgradeHint:
+      "Nova ve analiz kotanız yetmiyorsa Plus ile daha geniş işyeri ve üretim alanı açın.",
     description: "Düzenli kayıt, analiz ve çıktı ihtiyacını karşılar.",
     limits: {
       nova_message: 100,
@@ -92,8 +101,12 @@ export const INDIVIDUAL_BILLING_PLANS: PublicBillingPlan[] = [
     key: "plus",
     name: "Plus",
     priceUsd: 59,
-    audience: "Düzenli kullanan bireysel İSG profesyoneli",
-    description: "Starter'dan daha fazla üretim alanı isteyen, Pro'ya geçişte olan kullanıcılar için.",
+    whoFor:
+      "Starter kotasını dolduran, haftalık yoğun kullanıcı; Professional kademesine hazırlanan bireysel profesyonel.",
+    upgradeHint:
+      "Olay/kök neden analizi ve daha güçlü personel–eğitim kullanımı için Professional 99’a yükseltin.",
+    description:
+      "Starter'dan daha fazla üretim alanı isteyen, Pro kademesine geçişte olan kullanıcılar için.",
     limits: {
       nova_message: 250,
       ai_analysis: 100,
@@ -115,7 +128,10 @@ export const INDIVIDUAL_BILLING_PLANS: PublicBillingPlan[] = [
     key: "professional",
     name: "Professional 99",
     priceUsd: 99,
-    audience: "Aktif bireysel İSG uzmanı",
+    whoFor:
+      "Birden fazla müşteri ve saha işi olan aktif uzman; Nova’yı günlük iş akışına ekleyen bireysel İSG profesyoneli.",
+    upgradeHint:
+      "Daha fazla işyeri ve üretim temposu için önerilen dengeli kademe Professional 149’a çıkın.",
     description: "AI destekli profesyonel çalışma alanını ana iş akışına ekler.",
     limits: {
       nova_message: 500,
@@ -138,8 +154,12 @@ export const INDIVIDUAL_BILLING_PLANS: PublicBillingPlan[] = [
     key: "professional_149",
     name: "Professional 149",
     priceUsd: 149,
-    audience: "Yoğun çalışan bireysel uzman",
-    description: "Birden fazla müşteri ve yüksek üretim temposu için rahat alan.",
+    whoFor:
+      "Aynı anda çok sayıda işyeri ve yoğun doküman/analiz üreten uzmanlar için önerilen paket.",
+    upgradeHint:
+      "Üst dilim kota ve tam kapasite kullanımı için Professional 199’a geçin.",
+    description:
+      "Birden fazla müşteri ve yüksek üretim temposu için rahat çalışma alanı.",
     highlight: "En Popüler",
     recommended: true,
     limits: {
@@ -163,8 +183,12 @@ export const INDIVIDUAL_BILLING_PLANS: PublicBillingPlan[] = [
     key: "professional_199",
     name: "Professional 199",
     priceUsd: 199,
-    audience: "Çok aktif bireysel profesyonel",
-    description: "RiskNova'yı ana çalışma sistemi yapan uzmanlar için üst kademe.",
+    whoFor:
+      "RiskNova’yı ana çalışma sistemi gibi kullanan, çok yüksek hacimli bireysel profesyonel.",
+    upgradeHint:
+      "Çoklu koltuk, OSGB veya kurumsal süreçler için self-servis yerine OSGB/kurumsal teklif akışına geçin (Paketler sayfası altı).",
+    description:
+      "RiskNova'yı ana çalışma sistemi yapan uzmanlar için bireysel üst kademe.",
     highlight: "Premium",
     limits: {
       nova_message: 2000,

@@ -130,9 +130,12 @@ function IndividualPlanCard({
             </span>
           ) : null}
         </div>
-        <p className="mt-2 min-h-12 text-sm leading-6 text-muted-foreground">
-          {plan.audience}
-        </p>
+        <div className="mt-3 space-y-1">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Kim için?
+          </p>
+          <p className="min-h-12 text-sm leading-6 text-muted-foreground">{plan.whoFor}</p>
+        </div>
 
         {isFree ? null : (
           <div className="mt-4">
@@ -175,6 +178,23 @@ function IndividualPlanCard({
           </li>
         ))}
       </ul>
+
+      <div className="mt-5 rounded-lg border border-dashed border-amber-400/40 bg-amber-400/[0.06] p-3 dark:border-amber-500/30 dark:bg-amber-950/25">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-200/95">
+          Bir üst pakete geç
+        </p>
+        <p className="mt-1.5 text-xs leading-5 text-muted-foreground">{plan.upgradeHint}</p>
+        {plan.key === "professional_199" ? (
+          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs font-medium">
+            <Link href="/cozumler/osgb" className="text-primary underline underline-offset-4">
+              OSGB teklif
+            </Link>
+            <Link href="/cozumler/kurumsal" className="text-primary underline underline-offset-4">
+              Kurumsal teklif
+            </Link>
+          </div>
+        ) : null}
+      </div>
 
       <div className="mt-6">
         {plan.key === "free" ? (
@@ -261,7 +281,10 @@ export function PricingPlansClient() {
           Ücretli planlarda her kartta aylık veya yıllık ödemeyi ayrı ayrı
           seçebilirsin. Yıllık ödemede 12 ay kullanım için 10 ay öde (kart
           içindeki fiyat buna göre güncellenir). OSGB ve kurumsal kullanım
-          teklif akışıyla ilerler.
+          teklif akışıyla ilerler. Her kartta{" "}
+          <span className="font-medium text-foreground">Kim için?</span> ve{" "}
+          <span className="font-medium text-foreground">Bir üst pakete geç</span>{" "}
+          alanlarıyla hangi profilden bir üst kademeye çıkacağını görebilirsin.
         </p>
       </div>
 
@@ -332,6 +355,16 @@ export function PricingPlansClient() {
             Ürünü incele
           </Link>
         </div>
+        <p className="mt-4 text-xs leading-6 text-muted-foreground">
+          Örnek paket metinleri ve sayfa içeriği:{" "}
+          <Link href="/cozumler/osgb" className="font-semibold text-primary underline underline-offset-4">
+            OSGB çözümü
+          </Link>
+          {" · "}
+          <Link href="/cozumler/kurumsal" className="font-semibold text-primary underline underline-offset-4">
+            Kurumsal çözüm
+          </Link>
+        </p>
       </div>
     </>
   );
