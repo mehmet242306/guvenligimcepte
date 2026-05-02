@@ -23,18 +23,11 @@ export type LeadRow = {
   created_at: string;
 };
 
-export const STATUS_LABELS: Record<LeadStatus, string> = {
-  new: "Yeni",
-  contacted: "İletişim kuruldu",
-  qualified: "Nitelikli",
-  converted: "Dönüşen",
-  rejected: "Reddedildi",
-};
-
-export const STATUS_OPTIONS: Array<{ value: LeadStatus; label: string }> = [
-  { value: "new", label: "Yeni" },
-  { value: "contacted", label: "İletişim kuruldu" },
-  { value: "qualified", label: "Nitelikli" },
-  { value: "converted", label: "Dönüşen" },
-  { value: "rejected", label: "Reddedildi" },
+/** UI select options use translations (`platformAdmin.leads.status*`). */
+export const LEAD_STATUS_VALUES: LeadStatus[] = [
+  "new",
+  "contacted",
+  "qualified",
+  "converted",
+  "rejected",
 ];

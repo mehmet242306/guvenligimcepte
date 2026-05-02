@@ -52,7 +52,7 @@ const sections = [
   },
 ];
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
   return (
     <main className="flex min-h-screen flex-col bg-background">
       <PublicHeader />

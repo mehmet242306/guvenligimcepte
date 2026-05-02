@@ -8,6 +8,7 @@ import {
   ClipboardList,
   FileText,
   Inbox,
+  Scale,
   ShieldCheck,
   Users,
 } from "lucide-react";
@@ -132,6 +133,7 @@ export default async function PlatformAdminPage() {
     individualCount,
     osgbCount,
     enterpriseLeadCount,
+    legalOfficialDocCount,
     workspaceCount,
     riskAssessmentCount,
     riskDraftCount,
@@ -161,6 +163,12 @@ export default async function PlatformAdminPage() {
     ),
     safeCount(
       service.from("enterprise_leads").select("id", { count: "exact", head: true }),
+    ),
+    safeCount(
+      service
+        .from("legal_documents")
+        .select("id", { count: "exact", head: true })
+        .eq("corpus_scope", "official"),
     ),
     safeCount(
       service
@@ -301,6 +309,17 @@ export default async function PlatformAdminPage() {
       value: `${enterpriseLeadCount}`,
       helper: "toplam talep",
       icon: Inbox,
+    },
+    {
+      title: "Mevzuat korpus (ulkeler)",
+      description:
+        "Resmi mevzuatin ulke koduna gore ic aktarimi, sayimlari ve isim sirali liste. UK SI Atom ile adim adim genisletme.",
+      href: "/platform-admin/legal-corpus",
+      cta: "Korpus yonetimi",
+      eyebrow: "Legal RAG",
+      value: `${legalOfficialDocCount}`,
+      helper: "resmi belge",
+      icon: Scale,
     },
   ];
 

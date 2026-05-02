@@ -52,7 +52,7 @@ const sections = [
   },
 ];
 
-export default function TermsPage() {
+export default async function TermsPage() {
   return (
     <main className="flex min-h-screen flex-col bg-background">
       <PublicHeader />

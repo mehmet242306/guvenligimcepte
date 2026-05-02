@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, Inbox, Mail, Phone } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { createServiceClient } from "@/lib/security/server";
 import { LeadsTable } from "./_components/LeadsTable";
 import type { LeadRow } from "./_components/types";
@@ -13,6 +14,7 @@ export default async function PlatformAdminLeadsPage({
 }: {
   searchParams: Promise<{ status?: string; source?: string }>;
 }) {
+  const t = await getTranslations("platformAdmin.leads");
   const supportEmail =
     process.env.NEXT_PUBLIC_SUPPORT_EMAIL?.trim() || DEFAULT_SUPPORT_EMAIL;
 
@@ -54,6 +56,24 @@ export default async function PlatformAdminLeadsPage({
         .eq("status", "converted"),
     ]);
 
+  const statusFilters = [
+    { v: "all", label: t("statusAll") },
+    { v: "new", label: t("statusNew") },
+    { v: "contacted", label: t("filterStatusContacted") },
+    { v: "qualified", label: t("statusQualified") },
+    { v: "converted", label: t("statusConverted") },
+    { v: "rejected", label: t("statusRejected") },
+  ];
+
+  const sourceFilters = [
+    { v: "all", label: t("sourceAll") },
+    { v: "landing_demo", label: t("source_landing_demo") },
+    { v: "register", label: t("source_register") },
+    { v: "cozumler_kurumsal", label: t("source_cozumler_kurumsal") },
+    { v: "cozumler_osgb", label: t("source_cozumler_osgb") },
+    { v: "unknown", label: t("source_unknown") },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -64,72 +84,55 @@ export default async function PlatformAdminLeadsPage({
             className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-3 w-3" />
-            Platform yönetimine dön
+            {t("backLink")}
           </Link>
           <h1 className="flex items-center gap-2 text-2xl font-bold text-foreground">
             <Inbox className="h-6 w-6 text-[var(--gold)]" />
-            Demo ve Teklif Talepleri
+            {t("title")}
           </h1>
-          <p className="max-w-2xl text-sm text-muted-foreground">
-            Landing sayfası "Demo Talep Et", kayıt akışı "OSGB" ve "Kurumsal" formlarından gelen tüm talepler burada listelenir.
-            Durumu güncelle, iletişime geçilen kayıtları işaretle, müşteriye dönüşenleri kapat.
-          </p>
+          <p className="max-w-2xl text-sm text-muted-foreground">{t("description")}</p>
         </div>
       </div>
 
       {error ? (
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-200">
-          Talepler yüklenemedi: {error.message}
+          {t("loadError", { message: error.message })}
         </div>
       ) : null}
 
       {/* KPI row */}
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiBox label="Toplam" value={totalCount ?? 0} />
-        <KpiBox label="Yeni" value={newCount ?? 0} tone="amber" />
-        <KpiBox label="İletişime geçildi" value={contactedCount ?? 0} tone="sky" />
-        <KpiBox label="Dönüşen" value={convertedCount ?? 0} tone="emerald" />
+        <KpiBox label={t("kpiTotal")} value={totalCount ?? 0} />
+        <KpiBox label={t("kpiNew")} value={newCount ?? 0} tone="amber" />
+        <KpiBox label={t("kpiContacted")} value={contactedCount ?? 0} tone="sky" />
+        <KpiBox label={t("kpiConverted")} value={convertedCount ?? 0} tone="emerald" />
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-card p-3">
         <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Durum:
+          {t("filterStatus")}
         </span>
-        {[
-          { v: "all", l: "Hepsi" },
-          { v: "new", l: "Yeni" },
-          { v: "contacted", l: "İletişim" },
-          { v: "qualified", l: "Nitelikli" },
-          { v: "converted", l: "Dönüşen" },
-          { v: "rejected", l: "Reddedildi" },
-        ].map((f) => (
+        {statusFilters.map((f) => (
           <FilterLink
             key={f.v}
             current={statusFilter}
             value={f.v}
-            label={f.l}
+            label={f.label}
             queryKey="status"
             keepOther={{ source: sourceFilter }}
           />
         ))}
         <span className="mx-2 text-border">|</span>
         <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Kaynak:
+          {t("filterSource")}
         </span>
-        {[
-          { v: "all", l: "Hepsi" },
-          { v: "landing_demo", l: "Landing demo" },
-          { v: "register", l: "Kayıt formu" },
-          { v: "cozumler_kurumsal", l: "Kurumsal sayfa" },
-          { v: "cozumler_osgb", l: "OSGB sayfa" },
-          { v: "unknown", l: "Diğer" },
-        ].map((f) => (
+        {sourceFilters.map((f) => (
           <FilterLink
             key={f.v}
             current={sourceFilter}
             value={f.v}
-            label={f.l}
+            label={f.label}
             queryKey="source"
             keepOther={{ status: statusFilter }}
           />
@@ -140,10 +143,8 @@ export default async function PlatformAdminLeadsPage({
       {leads.length === 0 ? (
         <div className="flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-muted/10 p-8 text-center">
           <Inbox className="h-8 w-8 text-muted-foreground" />
-          <p className="text-sm font-medium text-foreground">Bu filtre için talep yok.</p>
-          <p className="text-xs text-muted-foreground">
-            Kayıt akışındaki OSGB/Kurumsal teklif formu ve landing &quot;Demo Talep Et&quot; başvuruları burada listelenir.
-          </p>
+          <p className="text-sm font-medium text-foreground">{t("emptyTitle")}</p>
+          <p className="text-xs text-muted-foreground">{t("emptyDescription")}</p>
           <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
             <a
               href={`mailto:${supportEmail}`}

@@ -1,7 +1,7 @@
 import { PublicHeader } from "@/components/layout/public-header";
 import { PublicLegalFooter } from "@/components/layout/public-legal-footer";
 
-export default function TermsAndConditionsPage() {
+export default async function TermsAndConditionsPage() {
   return (
     <main className="min-h-screen bg-background">
       <PublicHeader />

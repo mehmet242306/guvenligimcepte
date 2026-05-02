@@ -3,7 +3,7 @@ import { PublicLegalFooter } from "@/components/layout/public-legal-footer";
 import { PaddlePaymentLinkHandler } from "@/components/billing/PaddlePaymentLinkHandler";
 import { PricingPlansClient } from "./PricingPlansClient";
 
-export default function PricingPage() {
+export default async function PricingPage() {
   return (
     <main className="min-h-screen bg-background">
       <PaddlePaymentLinkHandler />

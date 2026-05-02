@@ -72,40 +72,41 @@ const secondaryNav: NavItem[] = [
 ];
 
 const osgbPrimaryNav = [
-  { href: "/osgb", label: "Panel" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/companies", label: "Firma" },
-  { href: "/risk-analysis", label: "Risk analizi" },
-  { href: "/corrective-actions", label: "Aksiyon" },
-  { href: "/isg-library", label: "İSG Kütüphanesi" },
-  { href: "/osgb/firms", label: "Firmalar" },
-  { href: "/osgb/professionals", label: "Profesyoneller" },
-  { href: "/osgb/personnel", label: "Personeller" },
-  { href: "/osgb/assignments", label: "Görevlendirmeler" },
-  { href: "/osgb/tasks", label: "İş Takibi" },
+  { href: "/osgb", key: "nav.osgbPanel" },
+  { href: "/dashboard", key: "nav.appDashboard" },
+  { href: "/companies", key: "nav.firmaWorkspace" },
+  { href: "/risk-analysis", key: "nav.riskAnalysis" },
+  { href: "/corrective-actions", key: "nav.incidents" },
+  { href: "/isg-library", key: "nav.library" },
+  { href: "/osgb/firms", key: "nav.osgbClientFirms" },
+  { href: "/osgb/professionals", key: "nav.osgbProfessionals" },
+  { href: "/osgb/personnel", key: "nav.osgbPersonnel" },
+  { href: "/osgb/assignments", key: "nav.osgbAssignments" },
+  { href: "/osgb/tasks", key: "nav.osgbWorkTracking" },
 ];
 
 const osgbSecondaryNav = [
-  { href: "/training", label: "Eğitim" },
-  { href: "/training?tab=survey", label: "Anket" },
-  { href: "/training?tab=exam", label: "Sınav" },
-  { href: "/osgb/contracts", label: "Sözleşmeler" },
+  { href: "/training", key: "nav.training" },
+  { href: "/training?tab=survey", key: "nav.survey" },
+  { href: "/training?tab=exam", key: "nav.exam" },
+  { href: "/osgb/contracts", key: "nav.osgbContracts" },
   // Raporlar: Firma workspace → İSG Dosyası sekmesine taşındı.
-  { href: "/cozumler/osgb", label: "Teklif ve kapasite" },
-  { href: "/settings", label: "Ayarlar" },
+  { href: "/cozumler/osgb", key: "nav.osgbOffersCapacity" },
+  { href: "/settings", key: "nav.settings" },
 ];
 
 const platformAdminPrimaryNav = [
-  { href: "/platform-admin", label: "Platform Yonetimi" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/companies", label: "Firmalar" },
-  { href: "/risk-analysis", label: "Risk Analizi" },
-  { href: "/corrective-actions", label: "Aksiyon" },
-  { href: "/isg-library", label: "ISG Kutuphanesi" },
-  { href: "/platform-admin/demo-requests", label: "Demo Talepleri" },
-  { href: "/platform-admin/demo-builder", label: "Demo Olusturucu" },
-  { href: "/corrective-actions", label: "DOF'ler" },
-  { href: "/incidents", label: "Olaylar" },
+  { href: "/platform-admin", key: "nav.platformAdminHome" },
+  { href: "/dashboard", key: "nav.appDashboard" },
+  { href: "/companies", key: "nav.companies" },
+  { href: "/risk-analysis", key: "nav.riskAnalysis" },
+  { href: "/corrective-actions", key: "nav.incidents" },
+  { href: "/isg-library", key: "nav.library" },
+  { href: "/platform-admin/demo-requests", key: "nav.demoRequestsNav" },
+  { href: "/platform-admin/demo-builder", key: "nav.demoBuilderNav" },
+  { href: "/platform-admin/legal-corpus", key: "nav.legalCorpus" },
+  { href: "/corrective-actions", key: "nav.correctiveActions" },
+  { href: "/incidents", key: "nav.incidentsPage" },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -638,7 +639,7 @@ export function ProtectedShell({
     accountContext?.accountType === "individual"
       ? primaryNav.map((item) =>
           item.href === "/companies"
-            ? { href: item.href, label: "İşyeri" }
+            ? { href: item.href, key: "nav.workplace" }
             : item,
         )
       : primaryNav;
@@ -654,7 +655,7 @@ export function ProtectedShell({
   const baseSecondaryNav = isPlatformAdminShell
     ? []
     : isOsgbShell
-      ? osgbSecondaryNav
+      ? [...osgbSecondaryNav]
       : [
           ...secondaryNav.filter((i) => !i.adminOnly || isAdmin === true),
           ...(accountContext?.accountType === "individual" &&
@@ -1056,7 +1057,7 @@ export function ProtectedShell({
                   if (locked) {
                     return (
                       <span
-                        key={item.href}
+                        key={"key" in item && item.key ? item.key : item.href}
                         className={classes}
                         aria-disabled="true"
                         title="Bu modulu acmak icin once calisma alani olustur"
@@ -1067,7 +1068,11 @@ export function ProtectedShell({
                   }
 
                   return (
-                    <Link key={item.href} href={item.href} className={classes}>
+                    <Link
+                      key={"key" in item && item.key ? item.key : item.href}
+                      href={item.href}
+                      className={classes}
+                    >
                       {resolveNavLabel(item)}
                       {act && (
                         <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-[var(--gold-light)]" />
@@ -1140,7 +1145,7 @@ export function ProtectedShell({
               if (locked) {
                 return (
                   <span
-                    key={item.href}
+                    key={"key" in item && item.key ? item.key : item.href}
                     className={classes}
                     aria-disabled="true"
                     title="Bu modulu acmak icin once calisma alani olustur"
@@ -1151,7 +1156,11 @@ export function ProtectedShell({
               }
 
               return (
-                <Link key={item.href} href={item.href} className={classes}>
+                <Link
+                  key={"key" in item && item.key ? item.key : item.href}
+                  href={item.href}
+                  className={classes}
+                >
                   {resolveNavLabel(item)}
                   {act && (
                     <span className="absolute inset-x-1 bottom-0 h-0.5 rounded-full bg-primary" />

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     "Çok lokasyonlu ve özel gereksinimli işyerleri için RiskNova kurumsal teklif talebi ve iletişim.",
 };
 
-export default function KurumsalSolutionsPage() {
+export default async function KurumsalSolutionsPage() {
   return (
     <main className="min-h-screen bg-background">
       <PublicHeader />

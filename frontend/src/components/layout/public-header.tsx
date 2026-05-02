@@ -66,7 +66,7 @@ export function PublicHeader() {
           <Brand href="/" iconOnly inverted className="shrink-0" />
 
           <div className="flex min-w-0 max-w-[calc(100vw-72px)] shrink-0 items-center justify-end gap-1.5 overflow-hidden sm:gap-2 lg:max-w-none lg:gap-3">
-            <nav className="hidden items-center gap-6 lg:flex" aria-label="Ana gezinme">
+            <nav className="hidden items-center gap-6 lg:flex" aria-label={t("nav.mainNavigation")}>
               <Link href="/#features" className={navLinkClass}>
                 {t("nav.features")}
               </Link>
@@ -95,7 +95,7 @@ export function PublicHeader() {
               className="inline-flex h-10 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] px-3 text-white lg:hidden"
               aria-expanded={mobileOpen}
               aria-controls="public-mobile-nav"
-              aria-label={mobileOpen ? "Menüyü kapat" : "Menüyü aç"}
+              aria-label={mobileOpen ? t("common.closeMenu") : t("common.openMenu")}
               onClick={() => setMobileOpen((v) => !v)}
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -134,14 +134,14 @@ export function PublicHeader() {
           />
           <nav
             className="absolute right-0 top-0 flex h-full w-[min(100%,320px)] flex-col border-l border-white/10 bg-[var(--navy-deep)] shadow-2xl"
-            aria-label="Mobil ana gezinme"
+            aria-label={t("nav.mobileNavigation")}
           >
             <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-              <span className="text-sm font-semibold text-white">Menü</span>
+              <span className="text-sm font-semibold text-white">{t("common.menu")}</span>
               <button
                 type="button"
                 className="rounded-lg p-2 text-white/80 hover:bg-white/10"
-                aria-label="Kapat"
+                aria-label={t("common.close")}
                 onClick={() => setMobileOpen(false)}
               >
                 <X className="h-5 w-5" />
@@ -158,10 +158,10 @@ export function PublicHeader() {
                 {t("nav.pricing")}
               </Link>
               <Link href="/cozumler/osgb" className={mobileNavClass} onClick={() => setMobileOpen(false)}>
-                OSGB çözümü
+                {t("nav.osgbSolution")}
               </Link>
               <Link href="/cozumler/kurumsal" className={mobileNavClass} onClick={() => setMobileOpen(false)}>
-                Kurumsal çözüm
+                {t("nav.enterpriseSolution")}
               </Link>
             </div>
             <div className="mt-auto flex flex-col gap-2 border-t border-white/10 p-4">

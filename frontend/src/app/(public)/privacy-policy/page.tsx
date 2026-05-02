@@ -1,7 +1,7 @@
 import { PublicHeader } from "@/components/layout/public-header";
 import { PublicLegalFooter } from "@/components/layout/public-legal-footer";
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen bg-background">
       <PublicHeader />

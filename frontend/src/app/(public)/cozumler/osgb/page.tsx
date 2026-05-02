@@ -17,7 +17,7 @@ const primaryCtaClass =
 const secondaryCtaClass =
   "inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/[0.06] px-7 text-sm font-semibold text-white transition-colors hover:bg-white/[0.12]";
 
-export default function OsgbSolutionsPage() {
+export default async function OsgbSolutionsPage() {
   return (
     <main className="min-h-screen bg-background">
       <PublicHeader />
