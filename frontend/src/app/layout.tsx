@@ -5,6 +5,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import { getLocale, getMessages } from "next-intl/server";
 import { AuthCodeRescue } from "@/components/auth/AuthCodeRescue";
 import { Providers } from "@/components/providers";
+import { PwaRuntime } from "@/components/pwa/pwa-runtime";
 import "./globals.css";
 
 const inter = Inter({
@@ -31,15 +32,36 @@ export const metadata: Metadata = {
     template: "%s | RiskNova",
   },
   description: "AI destekli İSG risk analizi ve operasyon platformu.",
+  manifest: "/manifest.webmanifest",
+  applicationName: "RiskNova",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "RiskNova",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
-    icon: "/logo/risknova-favicon-64.svg",
-    apple: "/logo/risknova-app-icon-512.svg",
+    icon: [
+      { url: "/logo/risknova-favicon-64.svg", type: "image/svg+xml" },
+      { url: "/logo/risknova-mail-symbol.png", sizes: "1000x1000", type: "image/png" },
+    ],
+    apple: [{ url: "/logo/risknova-mail-symbol.png", sizes: "1000x1000", type: "image/png" }],
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-title": "RiskNova",
+    "msapplication-TileColor": "#0f172a",
   },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#0f172a",
+  colorScheme: "light dark",
 };
 
 /**
@@ -89,6 +111,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <Providers locale={locale} messages={messages}>
+          <PwaRuntime />
           <AuthCodeRescue />
           {children}
         </Providers>

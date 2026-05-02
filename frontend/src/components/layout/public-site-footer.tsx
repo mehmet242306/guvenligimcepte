@@ -44,6 +44,7 @@ export async function PublicSiteFooter() {
         { label: tn("features"), href: "/#features" },
         { label: tn("howItWorks"), href: "/#how-it-works" },
         { label: tn("pricing"), href: "/pricing" },
+        { label: "Uygulama", href: "/uygulama" },
         { label: tn("osgbSolution"), href: "/cozumler/osgb" },
         { label: tn("enterpriseSolution"), href: "/cozumler/kurumsal" },
       ],

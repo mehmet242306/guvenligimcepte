@@ -76,6 +76,9 @@ export function PublicHeader() {
               <Link href="/pricing" className={navLinkClass}>
                 {t("nav.pricing")}
               </Link>
+              <Link href="/uygulama" className={navLinkClass}>
+                {t("nav.application")}
+              </Link>
             </nav>
 
             <LanguageSelector variant="dark" />
@@ -129,7 +132,7 @@ export function PublicHeader() {
           <button
             type="button"
             className="absolute inset-0 bg-black/55 backdrop-blur-sm"
-            aria-label="Menüyü kapat"
+            aria-label={t("common.closeMenu")}
             onClick={() => setMobileOpen(false)}
           />
           <nav
@@ -156,6 +159,9 @@ export function PublicHeader() {
               </Link>
               <Link href="/pricing" className={mobileNavClass} onClick={() => setMobileOpen(false)}>
                 {t("nav.pricing")}
+              </Link>
+              <Link href="/uygulama" className={mobileNavClass} onClick={() => setMobileOpen(false)}>
+                {t("nav.application")}
               </Link>
               <Link href="/cozumler/osgb" className={mobileNavClass} onClick={() => setMobileOpen(false)}>
                 {t("nav.osgbSolution")}

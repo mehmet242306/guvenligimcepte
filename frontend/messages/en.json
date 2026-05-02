@@ -27,6 +27,21 @@
     "emptyTitle": "Nothing here yet",
     "emptyDescription": "There is no data to display for this view."
   },
+  "header": {
+    "notificationsAria": "Notifications",
+    "notificationsTitle": "Notifications",
+    "markAllRead": "Mark all as read",
+    "noNotificationsYet": "No notifications yet",
+    "seeAllNotifications": "See all",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "platformAdminShort": "Admin",
+    "themeLightAria": "Light theme",
+    "themeDarkAria": "Dark theme",
+    "lockedModuleTooltip": "Create a workspace first to use this module.",
+    "authLoading": "Verifying secure session…",
+    "workspaceLoading": "Preparing workspace…"
+  },
   "brand": {
     "tagline": "AI-powered occupational health & safety platform"
   },
@@ -134,7 +149,7 @@
     "trackChipControls": "{count} inspections"
   },
   "nav": {
-    "dashboard": "Panel",
+    "dashboard": "Dashboard",
     "workspace": "Workspace",
     "companies": "Companies",
     "riskAnalysis": "Risk Analysis",
@@ -168,6 +183,7 @@
     "firmaWorkspace": "Company",
     "osgbPanel": "Panel",
     "appDashboard": "Dashboard",
+    "application": "Application",
     "osgbClientFirms": "Client firms",
     "osgbProfessionals": "Professionals",
     "osgbPersonnel": "Staff",

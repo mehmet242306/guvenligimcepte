@@ -27,6 +27,21 @@
     "emptyTitle": "Henüz içerik yok",
     "emptyDescription": "Bu görünüm için gösterilecek veri bulunmuyor."
   },
+  "header": {
+    "notificationsAria": "Bildirimler",
+    "notificationsTitle": "Bildirimler",
+    "markAllRead": "Tümünü okundu işaretle",
+    "noNotificationsYet": "Henüz bildirim yok",
+    "seeAllNotifications": "Tümünü gör",
+    "signOut": "Çıkış",
+    "signingOut": "Çıkılıyor…",
+    "platformAdminShort": "Admin",
+    "themeLightAria": "Açık tema",
+    "themeDarkAria": "Koyu tema",
+    "lockedModuleTooltip": "Bu modülü açmak için önce çalışma alanı oluşturun.",
+    "authLoading": "Güvenli oturum doğrulanıyor…",
+    "workspaceLoading": "Çalışma alanı bağlamı hazırlanıyor…"
+  },
   "brand": {
     "tagline": "AI destekli İSG platformu"
   },
@@ -168,6 +183,7 @@
     "firmaWorkspace": "Firma",
     "osgbPanel": "Panel",
     "appDashboard": "Dashboard",
+    "application": "Uygulama",
     "osgbClientFirms": "Firmalar",
     "osgbProfessionals": "Profesyoneller",
     "osgbPersonnel": "Personeller",

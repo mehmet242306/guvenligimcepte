@@ -8,6 +8,7 @@ import { DemoRequestTrigger } from "@/components/public/DemoRequestDialog";
 import { LandingHeroAtmosphere } from "@/components/public/landing-hero-atmosphere";
 import { LandingCtaAtmosphere } from "@/components/public/landing-cta-atmosphere";
 import { LandingRevealProvider } from "@/components/public/landing-reveal-provider";
+import { PwaInstallPrompt } from "@/components/pwa/pwa-install-prompt";
 import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import {
@@ -165,6 +166,9 @@ export default async function LandingPage() {
                 <Link href="/login" className={secondaryLinkClass}>
                   {tc("platformLogin")}
                 </Link>
+              </div>
+              <div className="landing-hero-enter landing-hero-enter--d4 mt-5 w-full max-w-md">
+                <PwaInstallPrompt surface="public" />
               </div>
 
               <div className="landing-hero-enter landing-hero-enter--d4 mt-16 grid w-full max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md md:grid-cols-4">

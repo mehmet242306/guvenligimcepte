@@ -19,6 +19,7 @@ export const config = {
   // Static asset'leri (favicon, _next/static, _next/image, image dosyaları)
   // middleware dışında bırak — performans için.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // sw.js / manifest: must not be rewritten or redirected (PWA registration).
+    "/((?!_next/static|_next/image|favicon.ico|sw\\.js|manifest\\.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

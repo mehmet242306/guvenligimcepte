@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "i18n:merge-shell": "node scripts/merge-shell-i18n.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",

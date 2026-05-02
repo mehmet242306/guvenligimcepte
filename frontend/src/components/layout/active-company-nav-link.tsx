@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 import { getActiveWorkspace, type WorkspaceRow } from "@/lib/supabase/workspace-api";
 
 // =============================================================================
@@ -18,7 +19,9 @@ type Props = {
   locked?: boolean;
 };
 
-export function ActiveCompanyNavLink({ label = "Firma", locked }: Props) {
+export function ActiveCompanyNavLink({ label, locked }: Props) {
+  const { t } = useI18n();
+  const resolvedLabel = label ?? t("nav.firmaWorkspace");
   const pathname = usePathname();
   const [ws, setWs] = useState<WorkspaceRow | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -56,22 +59,18 @@ export function ActiveCompanyNavLink({ label = "Firma", locked }: Props) {
       <span
         className={classes}
         aria-disabled="true"
-        title={
-          locked
-            ? "Bu modulu acmak icin once calisma alani olustur"
-            : "Aktif firma yukleniyor..."
-        }
+        title={locked ? t("header.lockedModuleTooltip") : t("common.loading")}
       >
         <Building2 className="h-3.5 w-3.5" />
-        {label}
+        {resolvedLabel}
       </span>
     );
   }
 
   return (
-    <Link href={href} className={classes} title={ws?.name ?? "Firma sayfası"}>
+    <Link href={href} className={classes} title={ws?.name ?? t("nav.firmaWorkspace")}>
       <Building2 className="h-3.5 w-3.5" />
-      {label}
+      {resolvedLabel}
       {active && (
         <span className="absolute inset-x-1.5 bottom-0 h-0.5 rounded-full bg-[var(--secondary-nav-active)]" />
       )}

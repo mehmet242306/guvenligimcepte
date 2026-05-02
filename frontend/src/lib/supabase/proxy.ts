@@ -13,6 +13,9 @@ const PUBLIC_PATHS = [
   "/privacy",
   "/terms",
   "/refund-policy",
+  // PWA: SW/manifest must be same-origin 200 — redirects break registration (SecurityError).
+  "/sw.js",
+  "/manifest.webmanifest",
 ];
 
 // Cron / webhook endpoint'leri — kendi header-based auth'larını yapıyorlar
