@@ -72,6 +72,34 @@ type PasswordChangedMailParams = {
   changedAt: string;
 };
 
+type WorkspaceTaskAssignedMailParams = {
+  to: string;
+  fullName: string;
+  taskTitle: string;
+  companyName: string;
+  priority: string;
+  dueDateLabel?: string | null;
+  taskUrl: string;
+  assignedByName?: string | null;
+};
+
+type BillingNotificationMailParams = {
+  to: string;
+  fullName?: string | null;
+  planName: string;
+  billingCycle?: string | null;
+  status: "active" | "past_due" | "cancelled" | "paused" | "updated";
+  dashboardUrl: string;
+  nextBillingDateLabel?: string | null;
+};
+
+type RecoveryNudgeMailParams = {
+  to: string;
+  fullName?: string | null;
+  loginUrl: string;
+  daysInactive: number;
+};
+
 export type OsgbPersonnelInvitePreview = {
   loginEmail: string;
   temporaryPassword?: string | null;
@@ -1100,4 +1128,212 @@ export async function sendCompanyInvitationEmail({
     delivered: true,
     mode: "resend",
   };
+}
+
+export async function sendWorkspaceTaskAssignedEmail({
+  to,
+  fullName,
+  taskTitle,
+  companyName,
+  priority,
+  dueDateLabel,
+  taskUrl,
+  assignedByName,
+}: WorkspaceTaskAssignedMailParams) {
+  if (!resend) {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[DEV] Workspace task assignment email", {
+        to,
+        fullName,
+        taskTitle,
+        companyName,
+        priority,
+        dueDateLabel,
+        taskUrl,
+        assignedByName,
+      });
+    }
+    return;
+  }
+
+  const html = renderEmailShell({
+    eyebrow: "Gorev atamasi",
+    title: "Yeni bir RiskNova goreviniz var",
+    greeting: `Merhaba ${escapeHtml(fullName || "Kullanici")},`,
+    lead:
+      `${escapeHtml(companyName)} calisma alaninda size yeni bir gorev atandi. ` +
+      "Gorevi acarak durumu, sorumlulari ve son tarihi takip edebilirsiniz.",
+    primaryAction: {
+      label: "Gorevi ac",
+      href: taskUrl,
+    },
+    sections:
+      renderCredentialCard([
+        { label: "Gorev", value: taskTitle, emphasize: true },
+        { label: "Firma", value: companyName },
+        { label: "Oncelik", value: priority },
+        { label: "Son tarih", value: dueDateLabel || "Belirtilmedi" },
+        { label: "Atayan", value: assignedByName || "RiskNova" },
+      ]) +
+      renderInfoCard(
+        "Takip",
+        "Gorev durumunu guncel tutmaniz OSGB ve firma operasyon akisini senkron tutar.",
+        "navy",
+      ),
+  });
+
+  await resend.emails.send({
+    from: resolveFromEmail(),
+    replyTo: BRAND_SUPPORT_EMAIL,
+    to,
+    subject: `RiskNova | Yeni gorev: ${taskTitle}`,
+    text:
+      `Merhaba ${fullName || "Kullanici"},\n\n` +
+      `${companyName} calisma alaninda size yeni bir gorev atandi.\n` +
+      `Gorev: ${taskTitle}\n` +
+      `Oncelik: ${priority}\n` +
+      `Son tarih: ${dueDateLabel || "Belirtilmedi"}\n` +
+      `Gorev: ${taskUrl}\n\n` +
+      `Destek: ${BRAND_SUPPORT_EMAIL}`,
+    html,
+  });
+}
+
+export async function sendBillingNotificationEmail({
+  to,
+  fullName,
+  planName,
+  billingCycle,
+  status,
+  dashboardUrl,
+  nextBillingDateLabel,
+}: BillingNotificationMailParams) {
+  if (!resend) {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[DEV] Billing notification email", {
+        to,
+        fullName,
+        planName,
+        billingCycle,
+        status,
+        dashboardUrl,
+        nextBillingDateLabel,
+      });
+    }
+    return;
+  }
+
+  const copy =
+    status === "active"
+      ? {
+          eyebrow: "Abonelik aktif",
+          title: "RiskNova aboneliginiz aktif",
+          lead: "Odeme ve abonelik bilgileriniz basariyla islendi. Ucretli plan limitleriniz aktif hale getirildi.",
+          tone: "gold" as const,
+        }
+      : status === "past_due"
+        ? {
+            eyebrow: "Odeme uyarisi",
+            title: "Aboneliginizde odeme riski var",
+            lead: "Paddle tarafindan odeme veya abonelik durumunuz riskli olarak bildirildi. Kesinti yasamamak icin odeme bilgilerinizi kontrol edin.",
+            tone: "rose" as const,
+          }
+        : status === "cancelled"
+          ? {
+              eyebrow: "Abonelik iptali",
+              title: "RiskNova aboneliginiz iptal edildi",
+              lead: "Abonelik iptal bilgisi alindi. Mevcut erisim ve limitleriniz plan durumuna gore guncellenir.",
+              tone: "rose" as const,
+            }
+          : {
+              eyebrow: "Plan guncellemesi",
+              title: "RiskNova abonelik durumunuz guncellendi",
+              lead: "Paddle tarafindan gelen abonelik bilgileri hesabinizla senkronize edildi.",
+              tone: "navy" as const,
+            };
+
+  const html = renderEmailShell({
+    eyebrow: copy.eyebrow,
+    title: copy.title,
+    greeting: `Merhaba ${escapeHtml(fullName || "Kullanici")},`,
+    lead: copy.lead,
+    primaryAction: {
+      label: "Abonelik durumunu gor",
+      href: dashboardUrl,
+    },
+    sections:
+      renderCredentialCard([
+        { label: "Plan", value: planName, emphasize: true },
+        { label: "Donem", value: billingCycle || "Belirtilmedi" },
+        { label: "Durum", value: status },
+        { label: "Sonraki fatura", value: nextBillingDateLabel || "Belirtilmedi" },
+      ]) +
+      renderInfoCard(
+        status === "past_due" ? "Aksiyon gerekli" : "Bilgilendirme",
+        status === "past_due"
+          ? "Odeme bilgilerinizi Paddle ekraninda kontrol etmeniz gerekebilir. Sorun devam ederse destek ekibimize yazin."
+          : "Bu e-posta transactional abonelik bildirimi olarak gonderilmistir; pazarlama izninden bagimsizdir.",
+        copy.tone,
+      ),
+  });
+
+  await resend.emails.send({
+    from: resolveFromEmail(),
+    replyTo: BRAND_SUPPORT_EMAIL,
+    to,
+    subject: `RiskNova | ${copy.title}`,
+    text:
+      `${copy.title}\n\n` +
+      `Plan: ${planName}\n` +
+      `Donem: ${billingCycle || "Belirtilmedi"}\n` +
+      `Durum: ${status}\n` +
+      `Panel: ${dashboardUrl}\n\n` +
+      `Destek: ${BRAND_SUPPORT_EMAIL}`,
+    html,
+  });
+}
+
+export async function sendRecoveryNudgeEmail({
+  to,
+  fullName,
+  loginUrl,
+  daysInactive,
+}: RecoveryNudgeMailParams) {
+  if (!resend) {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[DEV] Recovery nudge email", { to, fullName, loginUrl, daysInactive });
+    }
+    return;
+  }
+
+  const html = renderEmailShell({
+    eyebrow: "Geri donus",
+    title: "RiskNova akislariniz sizi bekliyor",
+    greeting: `Merhaba ${escapeHtml(fullName || "Kullanici")},`,
+    lead:
+      `${daysInactive} gundur RiskNova'ya giris yapmadiginizi fark ettik. ` +
+      "Risk, dokuman, saha denetimi ve Nova akislariniza kaldiginiz yerden devam edebilirsiniz.",
+    primaryAction: {
+      label: "RiskNova'ya don",
+      href: loginUrl,
+    },
+    sections: renderInfoCard(
+      "Hatirlatma",
+      "Bu geri kazanma e-postasi, profilinizde e-posta bildirimleri aciksa gonderilir. Pazarlama izninden ayri bir urun hatirlatmasi olarak degerlendirilir.",
+      "gold",
+    ),
+  });
+
+  await resend.emails.send({
+    from: resolveFromEmail(),
+    replyTo: BRAND_SUPPORT_EMAIL,
+    to,
+    subject: "RiskNova | Akislariniz sizi bekliyor",
+    text:
+      `Merhaba ${fullName || "Kullanici"},\n\n` +
+      `${daysInactive} gundur RiskNova'ya giris yapmadiginizi fark ettik.\n` +
+      `Giris: ${loginUrl}\n\n` +
+      `Destek: ${BRAND_SUPPORT_EMAIL}`,
+    html,
+  });
 }

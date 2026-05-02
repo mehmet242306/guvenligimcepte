@@ -13,6 +13,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { CommercialLeadDialog } from "@/components/auth/CommercialLeadDialog";
 import { RegisterCommercialPlans } from "@/components/auth/RegisterCommercialPlans";
@@ -23,9 +24,38 @@ import { locales, type Locale } from "@/i18n/routing";
 type AccountType = "individual" | "osgb" | "enterprise";
 type WizardStep = "account" | "country" | "language" | "role";
 
+const WIZARD_COUNTRY_CODES = [
+  "TR",
+  "AZ",
+  "US",
+  "GB",
+  "DE",
+  "FR",
+  "ES",
+  "RU",
+  "SA",
+  "AE",
+  "CN",
+  "JP",
+  "KR",
+  "IN",
+  "ID",
+] as const;
+
+type WizardCountryCode = (typeof WIZARD_COUNTRY_CODES)[number];
+
+const ROLE_KEYS = [
+  "safety_professional",
+  "occupational_physician",
+  "safety_officer",
+  "auditor",
+  "workspace_admin",
+] as const;
+
+type RoleKey = (typeof ROLE_KEYS)[number];
+
 type RegisterAccountTypePreviewProps = {
   children: ReactNode;
-  /** `/register?commercial=osgb` veya `enterprise` ile OSGB/kurumsal teklif akisina hizli giris */
   initialCommercial?: CommercialInterestType;
 };
 
@@ -34,61 +64,6 @@ type Choice<T extends string> = {
   title: string;
   description: string;
   icon?: typeof UserRound;
-};
-
-const accountChoices: Array<Choice<AccountType>> = [
-  {
-    value: "individual",
-    title: "Bireysel profesyonel",
-    description: "Uzman, hekim, DSP veya denetci olarak kendi calisma alaninla basla.",
-    icon: UserRound,
-  },
-  {
-    value: "osgb",
-    title: "OSGB",
-    description: "Firma portfoyu, ekip ve gorevlendirme surecleri icin kurulum talebi olustur.",
-    icon: Building2,
-  },
-  {
-    value: "enterprise",
-    title: "Firma / Kurumsal",
-    description: "Cok lokasyonlu veya ozel mevzuat ihtiyacli kurumsal yapi icin ilerle.",
-    icon: Globe2,
-  },
-];
-
-const countryChoices = [
-  { value: "TR", title: "Turkiye", description: "Turkiye mevzuati ve Turkce varsayilan." },
-  { value: "AZ", title: "Azerbaycan", description: "Azerbaycan bolgesi ve Azerbaycanca varsayilan." },
-  { value: "US", title: "United States", description: "US operasyonlari ve English varsayilan." },
-  { value: "GB", title: "United Kingdom", description: "UK operasyonlari ve English varsayilan." },
-  { value: "DE", title: "Deutschland", description: "Almanya bolgesi ve Deutsch varsayilan." },
-  { value: "FR", title: "France", description: "Fransa bolgesi ve Francais varsayilan." },
-  { value: "ES", title: "Espana", description: "Ispanya bolgesi ve Espanol varsayilan." },
-  { value: "RU", title: "Rossiya", description: "Rusca dil ve bolge hazirligi." },
-  { value: "SA", title: "Saudi Arabia", description: "Arabic dil ve Korfez operasyon hazirligi." },
-  { value: "AE", title: "United Arab Emirates", description: "English / Arabic ekipleri icin." },
-  { value: "CN", title: "China", description: "Chinese dil ve Asya operasyon hazirligi." },
-  { value: "JP", title: "Japan", description: "Japanese dil ve Asya operasyon hazirligi." },
-  { value: "KR", title: "Korea", description: "Korean dil ve Asya operasyon hazirligi." },
-  { value: "IN", title: "India", description: "Hindi / English ekipleri icin." },
-  { value: "ID", title: "Indonesia", description: "Bahasa Indonesia dil tercihi." },
-] as const;
-
-const languageLabels: Record<Locale, string> = {
-  tr: "Turkce",
-  en: "English",
-  ar: "Arabic",
-  ru: "Russian",
-  de: "Deutsch",
-  fr: "Francais",
-  es: "Espanol",
-  zh: "Chinese",
-  ja: "Japanese",
-  ko: "Korean",
-  hi: "Hindi",
-  az: "Azerbaycanca",
-  id: "Bahasa Indonesia",
 };
 
 const countryDefaultLanguage: Record<string, Locale> = {
@@ -109,58 +84,7 @@ const countryDefaultLanguage: Record<string, Locale> = {
   ID: "id",
 };
 
-const roleChoices = [
-  {
-    value: "safety_professional",
-    title: "ISG uzmani",
-    description: "Risk analizi, saha denetimi, aksiyon ve mevzuat takibi.",
-  },
-  {
-    value: "occupational_physician",
-    title: "Isyeri hekimi",
-    description: "Saglik gozetimi, hekim surecleri ve calisan kayitlari.",
-  },
-  {
-    value: "safety_officer",
-    title: "DSP / saglik personeli",
-    description: "Saglik ekibi, saha destek ve takip gorevleri.",
-  },
-  {
-    value: "auditor",
-    title: "Denetci",
-    description: "Saha denetimi, uygunsuzluk ve raporlama odakli rol.",
-  },
-  {
-    value: "workspace_admin",
-    title: "Calisma alani yoneticisi",
-    description: "Kullanici, firma, rol ve workspace ayarlarini yonetir.",
-  },
-] as const;
-
 const stepOrder: WizardStep[] = ["account", "country", "language", "role"];
-
-const stepCopy: Record<WizardStep, { eyebrow: string; title: string; description: string }> = {
-  account: {
-    eyebrow: "1 / 4",
-    title: "Hangi hesap turuyle basliyorsun?",
-    description: "Bu cevap kayit sonrasi acilacak akisi belirler.",
-  },
-  country: {
-    eyebrow: "2 / 4",
-    title: "Calisma alaninin ulkesi hangisi?",
-    description: "Mevzuat, RAG kapsami ve varsayilan workspace bu secime gore kurulur.",
-  },
-  language: {
-    eyebrow: "3 / 4",
-    title: "Arayuz ve belge dili ne olsun?",
-    description: "Simdilik tum sayfalar cevrilmemis olsa da tercih hesap kaydina yazilir.",
-  },
-  role: {
-    eyebrow: "4 / 4",
-    title: "Ilk rolun ne olacak?",
-    description: "Bu rol onboarding tarafinda ilk calisma alaninin temelini olusturur.",
-  },
-};
 
 function choiceButtonClass(active: boolean) {
   return `w-full rounded-2xl border p-4 text-left transition-colors ${
@@ -174,6 +98,10 @@ export function RegisterAccountTypePreview({
   children,
   initialCommercial,
 }: RegisterAccountTypePreviewProps) {
+  const t = useTranslations("auth.registerWizard");
+  const tCountry = useTranslations("country");
+  const tLang = useTranslations("lang");
+
   const [step, setStep] = useState<WizardStep>("account");
   const [mounted, setMounted] = useState(false);
   const [wizardOpen, setWizardOpen] = useState(true);
@@ -181,15 +109,56 @@ export function RegisterAccountTypePreview({
   const [accountType, setAccountType] = useState<AccountType | null>(null);
   const [countryCode, setCountryCode] = useState<string | null>(null);
   const [languageCode, setLanguageCode] = useState<Locale | null>(null);
-  const [roleKey, setRoleKey] = useState<(typeof roleChoices)[number]["value"] | null>(null);
+  const [roleKey, setRoleKey] = useState<RoleKey | null>(null);
   const [activeLeadType, setActiveLeadType] =
     useState<CommercialInterestType | null>(null);
   const appliedCommercialRef = useRef(false);
 
+  const accountChoices: Array<Choice<AccountType>> = useMemo(
+    () => [
+      {
+        value: "individual",
+        title: t("accounts.individual.title"),
+        description: t("accounts.individual.description"),
+        icon: UserRound,
+      },
+      {
+        value: "osgb",
+        title: t("accounts.osgb.title"),
+        description: t("accounts.osgb.description"),
+        icon: Building2,
+      },
+      {
+        value: "enterprise",
+        title: t("accounts.enterprise.title"),
+        description: t("accounts.enterprise.description"),
+        icon: Globe2,
+      },
+    ],
+    [t],
+  );
+
+  const roleChoices = useMemo(
+    () =>
+      ROLE_KEYS.map((key) => ({
+        value: key,
+        title: t(`roles.${key}.title`),
+        description: t(`roles.${key}.description`),
+      })),
+    [t],
+  );
+
   const stepIndex = stepOrder.indexOf(step);
   const selectedAccount = accountChoices.find((item) => item.value === accountType) ?? null;
-  const selectedCountry = countryChoices.find((item) => item.value === countryCode) ?? null;
-  const selectedLanguage = languageCode ? languageLabels[languageCode] : null;
+  const selectedCountry =
+    countryCode && WIZARD_COUNTRY_CODES.includes(countryCode as WizardCountryCode)
+      ? {
+          value: countryCode as WizardCountryCode,
+          title: tCountry(countryCode as WizardCountryCode),
+          description: t(`countryHints.${countryCode}` as Parameters<typeof t>[0]),
+        }
+      : null;
+  const selectedLanguage = languageCode ? tLang(languageCode) : null;
   const selectedRole = roleChoices.find((item) => item.value === roleKey) ?? null;
 
   const summary = useMemo(
@@ -253,7 +222,7 @@ export function RegisterAccountTypePreview({
     window.setTimeout(() => setStep(nextStep), 120);
   }
 
-  function finish(nextRole: (typeof roleChoices)[number]["value"]) {
+  function finish(nextRole: RoleKey) {
     setRoleKey(nextRole);
     setCompleted(true);
     setWizardOpen(false);
@@ -305,15 +274,17 @@ export function RegisterAccountTypePreview({
     }
 
     if (step === "country") {
-      return countryChoices.map((item) => {
-        const active = item.value === countryCode;
+      return WIZARD_COUNTRY_CODES.map((code) => {
+        const active = code === countryCode;
+        const title = tCountry(code);
+        const description = t(`countryHints.${code}` as Parameters<typeof t>[0]);
         return (
           <button
-            key={item.value}
+            key={code}
             type="button"
             onClick={() => {
-              setCountryCode(item.value);
-              setLanguageCode(countryDefaultLanguage[item.value] ?? "en");
+              setCountryCode(code);
+              setLanguageCode(countryDefaultLanguage[code] ?? "en");
               advance("language");
             }}
             className={choiceButtonClass(active)}
@@ -324,11 +295,11 @@ export function RegisterAccountTypePreview({
               </span>
               <span className="min-w-0">
                 <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                  {item.title}
+                  {title}
                   {active ? <CheckCircle2 className="h-4 w-4 text-[var(--gold)]" /> : null}
                 </span>
                 <span className="mt-1 block text-xs leading-5 text-muted-foreground">
-                  {item.description}
+                  {description}
                 </span>
               </span>
             </span>
@@ -354,9 +325,7 @@ export function RegisterAccountTypePreview({
               <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--gold)]/12 text-[var(--gold)]">
                 <Languages className="h-5 w-5" />
               </span>
-              <span className="text-sm font-semibold text-foreground">
-                {languageLabels[locale]}
-              </span>
+              <span className="text-sm font-semibold text-foreground">{tLang(locale)}</span>
               {active ? <CheckCircle2 className="ml-auto h-4 w-4 text-[var(--gold)]" /> : null}
             </span>
           </button>
@@ -392,67 +361,67 @@ export function RegisterAccountTypePreview({
     });
   }
 
+  const stepEyebrow = t(`steps.${step}.eyebrow` as Parameters<typeof t>[0]);
+  const stepTitle = t(`steps.${step}.title` as Parameters<typeof t>[0]);
+  const stepDescription = t(`steps.${step}.description` as Parameters<typeof t>[0]);
+
   const wizardModal =
     mounted && wizardOpen
       ? createPortal(
-        <div className="fixed inset-0 z-[1000] flex items-start justify-center overflow-y-auto bg-slate-950/70 px-3 py-4 backdrop-blur-sm sm:items-center sm:px-6 sm:py-5">
-          <div className="my-auto w-full max-w-xl rounded-3xl border border-[var(--gold)]/25 bg-background shadow-[0_30px_90px_rgba(0,0,0,0.35)]">
-            <div className="border-b border-border px-5 py-4 sm:px-6">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]">
-                  <ShieldCheck className="h-4 w-4" />
-                  {stepCopy[step].eyebrow}
-                </div>
-                <div className="flex items-center gap-2">
-                  {stepIndex > 0 ? (
+          <div className="fixed inset-0 z-[1000] flex items-start justify-center overflow-y-auto bg-slate-950/70 px-3 py-4 backdrop-blur-sm sm:items-center sm:px-6 sm:py-5">
+            <div className="my-auto w-full max-w-xl rounded-3xl border border-[var(--gold)]/25 bg-background shadow-[0_30px_90px_rgba(0,0,0,0.35)]">
+              <div className="border-b border-border px-5 py-4 sm:px-6">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]">
+                    <ShieldCheck className="h-4 w-4" />
+                    {stepEyebrow}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {stepIndex > 0 ? (
+                      <button
+                        type="button"
+                        onClick={goBack}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground hover:text-foreground"
+                        aria-label={t("prevAria")}
+                      >
+                        <ArrowLeft className="h-4 w-4" />
+                      </button>
+                    ) : null}
                     <button
                       type="button"
-                      onClick={goBack}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground hover:text-foreground"
-                      aria-label="Onceki soru"
+                      onClick={() => setWizardOpen(false)}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-[var(--gold)]/50 hover:text-foreground"
+                      aria-label={t("closeAria")}
                     >
-                      <ArrowLeft className="h-4 w-4" />
+                      <X className="h-4 w-4" />
                     </button>
-                  ) : null}
-                  <button
-                    type="button"
-                    onClick={() => setWizardOpen(false)}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-[var(--gold)]/50 hover:text-foreground"
-                    aria-label="Kayit penceresini kapat"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  <h2 className="text-2xl font-semibold leading-tight text-foreground">{stepTitle}</h2>
+                  <p className="text-sm leading-6 text-muted-foreground">{stepDescription}</p>
+                </div>
+
+                <div className="mt-4 grid grid-cols-4 gap-2">
+                  {stepOrder.map((item, index) => (
+                    <span
+                      key={item}
+                      className={`h-1.5 rounded-full ${
+                        index <= stepIndex ? "bg-[var(--gold)]" : "bg-border"
+                      }`}
+                    />
+                  ))}
                 </div>
               </div>
 
-              <div className="mt-4 space-y-2">
-                <h2 className="text-2xl font-semibold leading-tight text-foreground">
-                  {stepCopy[step].title}
-                </h2>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  {stepCopy[step].description}
-                </p>
-              </div>
-
-              <div className="mt-4 grid grid-cols-4 gap-2">
-                {stepOrder.map((item, index) => (
-                  <span
-                    key={item}
-                    className={`h-1.5 rounded-full ${
-                      index <= stepIndex ? "bg-[var(--gold)]" : "bg-border"
-                    }`}
-                  />
-                ))}
+              <div className="max-h-[min(70vh,calc(100dvh-7.5rem))] space-y-2 overflow-y-auto px-5 py-4 sm:max-h-[min(72vh,calc(100dvh-9rem))] sm:px-6">
+                {renderStep()}
               </div>
             </div>
-
-            <div className="max-h-[min(70vh,calc(100dvh-7.5rem))] space-y-2 overflow-y-auto px-5 py-4 sm:max-h-[min(72vh,calc(100dvh-9rem))] sm:px-6">
-              {renderStep()}
-            </div>
-          </div>
-        </div>,
-        document.body,
-      )
+          </div>,
+          document.body,
+        )
       : null;
 
   return (
@@ -464,7 +433,7 @@ export function RegisterAccountTypePreview({
           <div className="rounded-2xl border border-[var(--gold)]/25 bg-[var(--gold)]/8 px-4 py-3 text-sm leading-6 text-muted-foreground">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
               <div className="min-w-0">
-                <div className="font-semibold text-foreground">Kayit yolu hazir</div>
+                <div className="font-semibold text-foreground">{t("summaryTitle")}</div>
                 <div className="mt-1 break-words">{summary.join(" / ")}</div>
               </div>
               <button
@@ -472,7 +441,7 @@ export function RegisterAccountTypePreview({
                 onClick={restartWizard}
                 className="shrink-0 self-start text-left text-xs font-semibold text-[var(--gold)] underline underline-offset-4 sm:self-auto sm:text-right"
               >
-                Degistir
+                {t("summaryChange")}
               </button>
             </div>
           </div>
@@ -489,11 +458,11 @@ export function RegisterAccountTypePreview({
             <div className="space-y-3">
               <div className="rounded-2xl border border-[var(--gold)]/20 bg-[var(--gold)]/6 px-4 py-3 text-sm leading-6 text-muted-foreground">
                 <span className="font-semibold text-foreground">
-                  {accountType === "osgb" ? "OSGB teklif akışı" : "Kurumsal teklif akışı"}
+                  {accountType === "osgb"
+                    ? t("commercialIntroOsgbTitle")
+                    : t("commercialIntroEnterpriseTitle")}
                 </span>
-                <span className="mt-1 block">
-                  Seçtiğiniz ülke, dil ve rol bilgisi form ile birlikte ekibimize iletilir; paket ve kurulum için size dönüş yapılır.
-                </span>
+                <span className="mt-1 block">{t("commercialIntroBody")}</span>
               </div>
               <LandingRevealProvider>
                 <RegisterCommercialPlans
@@ -509,7 +478,7 @@ export function RegisterAccountTypePreview({
         </div>
       ) : (
         <Button type="button" className="w-full" onClick={() => setWizardOpen(true)}>
-          Kayit sorularini baslat
+          {t("startWizard")}
         </Button>
       )}
 

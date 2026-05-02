@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
 import { Check, Sparkles, X } from "lucide-react";
 
 // =============================================================================
@@ -20,6 +21,7 @@ export function DemoRequestDialog({
   open: boolean;
   onClose: () => void;
 }) {
+  const td = useTranslations("demoRequest");
   const [mounted, setMounted] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -51,7 +53,7 @@ export function DemoRequestDialog({
     };
 
     if (!payload.kvkkConsent) {
-      setErrorMsg("Lütfen KVKK aydınlatmasını onaylayın.");
+      setErrorMsg(td("privacyError"));
       return;
     }
 
@@ -70,7 +72,7 @@ export function DemoRequestDialog({
       setStatus("ok");
     } catch (err) {
       setStatus("error");
-      setErrorMsg(err instanceof Error ? err.message : "Talep gönderilemedi.");
+      setErrorMsg(err instanceof Error ? err.message : td("submitError"));
     }
   }
 
@@ -90,7 +92,7 @@ export function DemoRequestDialog({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Kapat"
+            aria-label={td("closeAria")}
             className="absolute right-4 top-4 rounded-full p-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground"
           >
             <X className="h-5 w-5" />
@@ -100,12 +102,8 @@ export function DemoRequestDialog({
               <Sparkles className="h-5 w-5 text-[var(--gold)]" />
             </span>
             <div>
-              <h2 className="text-xl font-bold leading-tight text-foreground">
-                Demo Talep Et
-              </h2>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                İhtiyacına özel kısa bir sunum planlayalım
-              </p>
+              <h2 className="text-xl font-bold leading-tight text-foreground">{td("dialogTitle")}</h2>
+              <p className="mt-0.5 text-xs text-muted-foreground">{td("dialogSubtitle")}</p>
             </div>
           </div>
         </div>
@@ -116,69 +114,65 @@ export function DemoRequestDialog({
             <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-200">
               <Check className="h-7 w-7" />
             </span>
-            <h3 className="text-lg font-bold text-foreground">
-              Talebiniz alındı
-            </h3>
-            <p className="text-sm leading-6 text-muted-foreground">
-              Kısa süre içinde ekibimiz sizinle iletişime geçecek. Geri bildirimin için teşekkürler.
-            </p>
+            <h3 className="text-lg font-bold text-foreground">{td("successTitle")}</h3>
+            <p className="text-sm leading-6 text-muted-foreground">{td("successBody")}</p>
             <button
               type="button"
               onClick={onClose}
               className="mx-auto inline-flex h-10 items-center justify-center rounded-xl bg-[var(--gold)] px-6 text-sm font-semibold text-white hover:brightness-105"
             >
-              Kapat
+              {td("successClose")}
             </button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 px-6 py-5">
             <Field
               name="contactName"
-              label="Ad Soyad *"
+              label={td("fieldName")}
               required
-              placeholder="Mehmet Yılmaz"
+              placeholder={td("placeholderName")}
             />
             <Field
               name="email"
-              label="E-posta *"
+              label={td("fieldEmail")}
               type="email"
               required
-              placeholder="ornek@firma.com"
+              placeholder={td("placeholderEmail")}
             />
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field name="phone" label="Telefon" placeholder="+90 5xx xxx xx xx" />
+              <Field name="phone" label={td("fieldPhone")} placeholder={td("placeholderPhone")} />
               <Field
                 name="companyName"
-                label="Firma / Kurum"
-                placeholder="XYZ Ltd. Şti."
+                label={td("fieldCompany")}
+                placeholder={td("placeholderCompany")}
               />
             </div>
 
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Hesap Tipi
+                {td("accountTypeLabel")}
               </label>
               <select
                 name="accountTypeHint"
                 className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm"
                 defaultValue=""
               >
-                <option value="">Bilmiyorum / Karar vermedim</option>
-                <option value="bireysel">Bireysel (tek uzman)</option>
-                <option value="osgb">OSGB</option>
-                <option value="enterprise">Kurumsal / Firma</option>
+                <option value="">{td("accountTypeUnset")}</option>
+                <option value="bireysel">{td("accountTypeIndividual")}</option>
+                <option value="osgb">{td("accountTypeOsgb")}</option>
+                <option value="enterprise">{td("accountTypeEnterprise")}</option>
               </select>
             </div>
 
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Mesajın (opsiyonel)
+                {td("messageLabel")}
               </label>
               <textarea
                 name="message"
                 rows={3}
                 className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
-                placeholder="Hangi modüllerle ilgileniyorsun? Kaç çalışanınız var? Uygun zamanların..."
+                placeholder={td("messagePlaceholder")}
               />
             </div>
 
@@ -190,8 +184,7 @@ export function DemoRequestDialog({
                 required
               />
               <span>
-                <strong className="text-foreground">KVKK Aydınlatma:</strong>{" "}
-                İletişim bilgilerimin yalnızca bu talebe yanıt için işlenmesini kabul ediyorum.
+                <strong className="text-foreground">{td("privacyLabel")}</strong> {td("privacyText")}
               </span>
             </label>
 
@@ -207,14 +200,14 @@ export function DemoRequestDialog({
                 onClick={onClose}
                 className="rounded-xl px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted"
               >
-                Vazgeç
+                {td("cancel")}
               </button>
               <button
                 type="submit"
                 disabled={status === "submitting"}
                 className="inline-flex h-10 items-center justify-center rounded-xl bg-[var(--gold)] px-6 text-sm font-semibold text-white hover:brightness-105 disabled:opacity-60"
               >
-                {status === "submitting" ? "Gönderiliyor..." : "Talebi Gönder"}
+                {status === "submitting" ? td("submitting") : td("submit")}
               </button>
             </div>
           </form>

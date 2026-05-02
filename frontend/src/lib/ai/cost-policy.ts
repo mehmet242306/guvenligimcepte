@@ -1,6 +1,7 @@
 import {
-  BILLING_ACTION_LABELS,
-  INDIVIDUAL_BILLING_PLANS,
+  BILLING_ACTION_LABEL_EN,
+  INDIVIDUAL_BILLING_PLAN_DEFS,
+  PLAN_KEY_DISPLAY_EN,
   type BillingAction,
 } from "@/lib/billing/plans";
 
@@ -128,12 +129,12 @@ export function getAiMonthlyLimitsSnapshot(): AiMonthlyLimitRow[] {
     "export",
   ];
 
-  return INDIVIDUAL_BILLING_PLANS.map((plan) => ({
+  return INDIVIDUAL_BILLING_PLAN_DEFS.map((plan) => ({
     planKey: plan.key,
-    planName: plan.name,
+    planName: PLAN_KEY_DISPLAY_EN[plan.key],
     entries: keys.map((action) => ({
       action,
-      label: BILLING_ACTION_LABELS[action],
+      label: BILLING_ACTION_LABEL_EN[action],
       monthlyLimit: plan.limits[action],
     })),
   }));

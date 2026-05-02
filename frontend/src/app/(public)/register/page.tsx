@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { AuthShell } from "@/components/layout/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,37 +36,35 @@ export default async function RegisterPage({
 
   const demoPublicEnabled = isPublicDemoFeatureEnabled();
   const legacyDemoLanding = demoExpired || demoDisabled;
+  const t = await getTranslations("auth.registerPage");
 
   return (
     <AuthShell
-      eyebrow="Yeni hesap"
-      title="RiskNova hesabini olustur"
-      description="Önce hesap türünü, bölgeyi ve dili seçin. Bireysel hesaplarda kayıt formu hemen açılır; OSGB ve firma yapılarında iletişim ve teklif akışı başlar."
+      eyebrow={t("eyebrow")}
+      title={t("title")}
+      description={t("description")}
       highlights={[
         {
-          title: "Bireysel self-servis",
-          description:
-            "Bölge ve dil seçiminden sonra kaydı tamamlayıp onboarding ile devam edersiniz.",
+          title: t("highlight1Title"),
+          description: t("highlight1Desc"),
         },
         {
-          title: "Paketler ayrı sayfada",
-          description:
-            "Fiyatlandırma ve paket karşılaştırması yalnızca Paketler sayfasında; kayıt ekranı sade kalır.",
+          title: t("highlight2Title"),
+          description: t("highlight2Desc"),
         },
         {
-          title: "Firma için özel teklif",
-          description:
-            "Çok lokasyonlu veya özel gereksinimli yapılar için iletişim ve teklif süreci işler.",
+          title: t("highlight3Title"),
+          description: t("highlight3Desc"),
         },
       ]}
       footer={
         <p className="text-sm leading-7 text-muted-foreground">
-          Hesabın var mı?{" "}
+          {t("footerPrefix")}{" "}
           <Link
             href="/login"
             className="font-medium text-primary underline underline-offset-4"
           >
-            Giriş yap
+            {t("footerLoginLink")}
           </Link>
         </p>
       }
@@ -78,44 +77,40 @@ export default async function RegisterPage({
               <DemoExpiredModal status={demoDisabled ? "disabled" : "expired"} />
               {demoExpired ? (
                 <StatusAlert tone="warning">
-                  <span className="font-semibold text-foreground">Demo süren bitti.</span> RiskNova
-                  demo erişimi en fazla <strong>{DEMO_ACCESS_WINDOW_HOURS} saat</strong> için
-                  tanımlanır; süre dolunca oturum kapanır. Aşağıdan ücretsiz hesabını oluşturarak veya
-                  Google ile devam ederek kalıcı hesaba geçebilirsin.
+                  <span className="font-semibold text-foreground">{t("demoExpiredTitle")}</span>{" "}
+                  {t("demoExpiredBody", { hours: DEMO_ACCESS_WINDOW_HOURS })}
                 </StatusAlert>
               ) : (
                 <StatusAlert tone="warning">
-                  <span className="font-semibold text-foreground">Demo erişimin kapatıldı.</span>{" "}
-                  Yönetici tarafından sonlandırılmış olabilir (demo hesaplar genelde{" "}
-                  <strong>{DEMO_ACCESS_WINDOW_HOURS} saat</strong> ile sınırlıdır). Kalıcı kullanım
-                  için aşağıdan hesap oluşturabilirsin.
+                  <span className="font-semibold text-foreground">{t("demoDisabledTitle")}</span>{" "}
+                  {t("demoDisabledBody", { hours: DEMO_ACCESS_WINDOW_HOURS })}
                 </StatusAlert>
               )}
             </>
           ) : demoExpired ? (
             <StatusAlert tone="warning">
-              <span className="font-semibold text-foreground">Demo oturumun sona erdi.</span>{" "}
-              Geçici demo artık sunulmuyor. Kalıcı hesap için aşağıdan kayıt olabilir veya{" "}
+              <span className="font-semibold text-foreground">{t("demoLegacyExpiredLead")}</span>{" "}
+              {t("demoLegacyExpiredRest")}{" "}
               <Link href="/login" className="font-medium text-primary underline underline-offset-4">
-                giriş yapabilirsin
+                {t("demoLegacyExpiredLogin")}
               </Link>
-              . Sorunda{" "}
+              . {t("demoLegacyExpiredSupport")}{" "}
               <a
                 href="mailto:support@getrisknova.com"
                 className="font-medium text-primary underline underline-offset-4"
               >
                 support@getrisknova.com
-              </a>{" "}
-              adresine yazabilirsin.
+              </a>
+              .
             </StatusAlert>
           ) : (
             <StatusAlert tone="warning">
-              <span className="font-semibold text-foreground">Demo erişimin kapatıldı.</span>{" "}
-              Geçici demo artık sunulmuyor. Kalıcı kullanım için kayıt ol veya{" "}
+              <span className="font-semibold text-foreground">{t("demoLegacyDisabledLead")}</span>{" "}
+              {t("demoLegacyDisabledRest")}{" "}
               <Link href="/login" className="font-medium text-primary underline underline-offset-4">
-                giriş yap
+                {t("demoLegacyDisabledLogin")}
               </Link>
-              . Yardım:{" "}
+              . {t("demoLegacyDisabledHelp")}{" "}
               <a
                 href="mailto:support@getrisknova.com"
                 className="font-medium text-primary underline underline-offset-4"
@@ -136,7 +131,7 @@ export default async function RegisterPage({
 
       {checkEmail ? (
         <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-          Kayıt işlemi başlatıldı. Gerekirse e-posta kutunu kontrol et.
+          {t("checkEmailBanner")}
         </div>
       ) : null}
 
@@ -150,9 +145,9 @@ export default async function RegisterPage({
             type="email"
             required
             autoComplete="email"
-            label="E-posta"
-            placeholder="ornek@kurum.com"
-            hint="Kayıt sonrası onboarding ve erişim işlemleri bu adres üzerinden yürür."
+            label={t("emailLabel")}
+            placeholder={t("emailPlaceholder")}
+            hint={t("emailHint")}
           />
 
           <Input
@@ -162,13 +157,37 @@ export default async function RegisterPage({
             required
             minLength={8}
             autoComplete="new-password"
-            label="Şifre"
-            placeholder="En az 8 karakter"
-            hint="Güçlü bir şifre belirleyin. Hesap türü seçimini kayıt sonrası tamamlayacaksınız."
+            label={t("passwordLabel")}
+            placeholder={t("passwordPlaceholder")}
+            hint={t("passwordHint")}
           />
 
+          <label className="flex gap-3 rounded-2xl border border-slate-200 bg-white/80 p-4 text-sm leading-6 text-slate-600">
+            <input
+              type="checkbox"
+              name="legalAccepted"
+              required
+              className="mt-1 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
+            />
+            <span>
+              <a className="font-semibold text-slate-900 underline underline-offset-4" href="/terms">
+                Kullanım Şartları
+              </a>
+              ,{" "}
+              <a className="font-semibold text-slate-900 underline underline-offset-4" href="/privacy">
+                Gizlilik Politikası ve KVKK Aydınlatma Metni
+              </a>{" "}
+              ile{" "}
+              <a className="font-semibold text-slate-900 underline underline-offset-4" href="/cookie-policy">
+                Çerez Politikası
+              </a>
+              'nı okudum ve kabul ediyorum. Hesap oluşturduktan sonra zorunlu platform
+              onayları uygulama içinde ayrıca sunulabilir.
+            </span>
+          </label>
+
           <Button type="submit" formAction={signup} className="w-full" size="lg">
-            Hesap oluştur
+            {t("submitButton")}
           </Button>
         </form>
       </RegisterAccountTypePreview>

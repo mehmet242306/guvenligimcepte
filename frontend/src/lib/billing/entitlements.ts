@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/security/server";
 import type { AuthOk } from "@/lib/supabase/api-auth";
-import {
-  BILLING_ACTION_LABELS,
-  type BillingAction,
-} from "./plans";
+import { BILLING_ACTION_LABEL_EN, type BillingAction } from "./plans";
 
 type QuotaResult = {
   allowed?: boolean;
@@ -63,7 +60,7 @@ export async function consumeEntitlement(
     {
       error: "Paket limitiniz doldu.",
       action,
-      actionLabel: BILLING_ACTION_LABELS[action],
+      actionLabel: BILLING_ACTION_LABEL_EN[action],
       planKey: result?.plan_key ?? "free",
       planName: result?.plan_name ?? "Free",
       limit: Number(result?.limit ?? 0),
@@ -72,7 +69,7 @@ export async function consumeEntitlement(
       upgradeUrl,
       message:
         result?.message ||
-        `${BILLING_ACTION_LABELS[action]} limitiniz doldu. Devam etmek için paketinizi yükseltin.`,
+        "Bu özellik için aylık kullanım kotanız doldu. Devam etmek için paketinizi yükseltin.",
     },
     { status: 402 },
   );

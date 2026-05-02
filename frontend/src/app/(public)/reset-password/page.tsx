@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { AuthShell } from "@/components/layout/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,23 +16,20 @@ export default async function ResetPasswordPage({
   const error = params?.error;
   const required = params?.required === "1";
   const mfaRequired = params?.mfa === "1";
+  const t = await getTranslations("auth.resetPage");
 
   return (
     <AuthShell
-      eyebrow="Yeni sifre"
-      title="Yeni sifre belirle"
-      description={
-        required
-          ? "Gecici giris bilgileriyle oturum actin. Devam etmek icin once yeni sifreni belirlemelisin."
-          : "Yeni sifreni gir ve hesabina geri don."
-      }
+      eyebrow={required ? t("eyebrowTemp") : t("eyebrow")}
+      title={required ? t("titleRequired") : t("title")}
+      description={required ? t("descriptionRequired") : t("description")}
       footer={
         <p className="text-sm leading-7 text-muted-foreground">
           <Link
             href="/login"
             className="font-medium text-primary underline underline-offset-4"
           >
-            Giris ekranina don
+            {t("backToLogin")}
           </Link>
         </p>
       }
@@ -40,13 +38,13 @@ export default async function ResetPasswordPage({
 
       {required ? (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
-          Guvenlik geregi ilk giriste sifreni degistirmen zorunludur.
+          {t("requiredBanner")}
         </div>
       ) : null}
 
       {mfaRequired ? (
         <div className="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700">
-          Sifreyi guncellemeden once MFA dogrulamasi tamamlandi. Simdi yeni sifreni belirleyebilirsin.
+          {t("mfaBanner")}
         </div>
       ) : null}
 
@@ -64,18 +62,13 @@ export default async function ResetPasswordPage({
           required
           minLength={8}
           autoComplete="new-password"
-          label="Yeni sifre"
-          placeholder="En az 8 karakter"
-          hint="Guvenli bir sifre belirle."
+          label={t("passwordLabel")}
+          placeholder={t("passwordPlaceholder")}
+          hint={t("passwordHint")}
         />
 
-        <Button
-          type="submit"
-          formAction={updatePasswordAction}
-          className="w-full"
-          size="lg"
-        >
-          Sifreyi guncelle
+        <Button type="submit" formAction={updatePasswordAction} className="w-full" size="lg">
+          {t("submitButton")}
         </Button>
       </form>
     </AuthShell>

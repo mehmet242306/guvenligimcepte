@@ -116,18 +116,18 @@ export default async function LandingPage() {
         <div className="flex flex-1 flex-col">
           <section className="relative overflow-hidden bg-[var(--navy-dark)]">
             <LandingHeroAtmosphere />
-            <div className="page-shell relative z-[1] flex min-h-[85vh] flex-col items-center justify-center py-20 text-center">
-              <span className="tag-label landing-hero-eyebrow landing-hero-enter mb-8 rounded-full px-4 py-1.5">
+            <div className="page-shell relative z-[1] flex w-full min-w-0 min-h-[85vh] flex-col items-center justify-center py-20 text-center">
+              <span className="tag-label landing-hero-eyebrow landing-hero-enter mb-8 max-w-full rounded-full px-4 py-1.5">
                 {t("badge")}
               </span>
 
-              <h1 className="landing-hero-enter landing-hero-enter--d1 max-w-4xl text-4xl font-bold leading-[1.15] tracking-tight text-white sm:text-5xl xl:text-6xl">
+              <h1 className="landing-hero-enter landing-hero-enter--d1 w-full max-w-4xl break-words text-4xl font-bold leading-[1.15] tracking-tight text-white sm:text-5xl xl:text-6xl">
                 {t("heroTitlePrefix")}{" "}
                 <span className="text-amber-100">{t("heroTitleHighlight")}</span>
                 {heroSuffix ? <> {heroSuffix}</> : null}
               </h1>
 
-              <p className="landing-hero-enter landing-hero-enter--d2 mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+              <p className="landing-hero-enter landing-hero-enter--d2 mt-6 w-full max-w-2xl break-words text-base leading-8 text-slate-300 sm:text-lg">
                 {t("heroSubtitle")}
               </p>
 
@@ -185,7 +185,7 @@ export default async function LandingPage() {
             </div>
           </section>
 
-          <section className="border-y border-white/10 bg-[#0a0d14] py-5" aria-label="Solutions">
+          <section className="border-y border-white/10 bg-[#0a0d14] py-5" aria-label={t("solutionsSectionAria")}>
             <div className="page-shell flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-center text-sm leading-7 text-slate-400 sm:text-left">
                 <span className="font-medium text-slate-200">{t("solutionsLeadBold")}</span>{" "}
@@ -389,16 +389,16 @@ export default async function LandingPage() {
 
           <section className="relative overflow-hidden bg-[var(--navy-dark)]">
             <LandingCtaAtmosphere />
-            <div className="page-shell relative z-[1] py-24 text-center">
+            <div className="page-shell relative z-[1] w-full min-w-0 py-24 text-center">
               <h2
-                className="text-3xl font-bold tracking-tight text-white sm:text-4xl xl:text-5xl"
+                className="mx-auto w-full max-w-4xl break-words text-3xl font-bold tracking-tight text-white sm:text-4xl xl:text-5xl"
                 data-landing-reveal
               >
                 {t("bottomCtaLine1")}{" "}
                 <span className="text-accent-serif landing-hero-gradient-text">{t("bottomCtaLine2")}</span>
               </h2>
               <p
-                className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-400"
+                className="mx-auto mt-4 w-full max-w-xl break-words text-base leading-7 text-slate-400"
                 data-landing-reveal
                 data-stagger="1"
               >

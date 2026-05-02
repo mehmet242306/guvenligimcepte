@@ -22,6 +22,10 @@ export async function PublicLegalFooter() {
           <Link href="/terms" className="font-medium text-foreground underline-offset-4 hover:underline">
             {t("footerTerms")}
           </Link>
+          {" · "}
+          <Link href="/cookie-policy" className="font-medium text-foreground underline-offset-4 hover:underline">
+            Çerez Politikası
+          </Link>
           .
         </p>
       </div>

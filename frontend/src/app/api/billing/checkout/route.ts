@@ -6,7 +6,7 @@ import {
   getPaddlePriceId,
 } from "@/lib/billing/paddle";
 import {
-  getBillingPlan,
+  getBillingPlanDef,
   type BillingCycle,
   type BillingPlanKey,
 } from "@/lib/billing/plans";
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
 
   const planKey = parsed.data.planKey as BillingPlanKey;
   const cycle = parsed.data.cycle as BillingCycle;
-  const plan = getBillingPlan(planKey);
+  const plan = getBillingPlanDef(planKey);
 
   if (!plan || plan.priceUsd <= 0) {
     return NextResponse.json(

@@ -93,8 +93,9 @@ export function ConsentGate() {
                 Platforma devam etmeden once zorunlu metinleri onaylayin
               </h2>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                Aydinlatma, KVKK ve gerekli acik riza metinlerinin yayinda olan son surumleri burada listelenir.
-                Metin degistikce sistem yeniden onay ister.
+                Zorunlu kullanım şartları/KVKK metinleri, aydınlatma metni ve gerekli açık rıza metinlerinin
+                yayında olan son sürümleri burada listelenir. Pazarlama izni zorunlu değildir; isteğe bağlıdır.
+                Zorunlu metinler değiştikçe sistem yeniden onay ister.
               </p>
             </div>
             <button

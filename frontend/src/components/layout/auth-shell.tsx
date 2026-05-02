@@ -1,6 +1,9 @@
+"use client";
+
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { PublicHeader } from "./public-header";
 import {
   Card,
@@ -11,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-type AuthHighlight = {
+export type AuthHighlight = {
   title: string;
   description: string;
 };
@@ -26,33 +29,34 @@ type AuthShellProps = {
   spotlight?: ReactNode;
 };
 
-const defaultHighlights: AuthHighlight[] = [
-  {
-    title: "Bireysel",
-    description:
-      "Bagimsiz uzman, hekim, DSP ve bireysel profesyoneller icin hizli baslangic akisi.",
-  },
-  {
-    title: "OSGB",
-    description:
-      "Firma, personel, gorevlendirme ve is takibini tek panelde toplayan ekip modeli.",
-  },
-  {
-    title: "Kurumsal",
-    description:
-      "Cok lokasyonlu ve ozel ihtiyacli yapilar icin iletisim odakli enterprise akis.",
-  },
-];
-
 export function AuthShell({
   eyebrow,
   title,
   description,
   children,
   footer,
-  highlights = defaultHighlights,
+  highlights,
   spotlight,
 }: AuthShellProps) {
+  const t = useTranslations("auth.shell");
+
+  const effectiveHighlights: AuthHighlight[] =
+    highlights ??
+    [
+      {
+        title: t("highlightIndividualTitle"),
+        description: t("highlightIndividualDesc"),
+      },
+      {
+        title: t("highlightOsgbTitle"),
+        description: t("highlightOsgbDesc"),
+      },
+      {
+        title: t("highlightCorpTitle"),
+        description: t("highlightCorpDesc"),
+      },
+    ];
+
   return (
     <main className="app-shell">
       <PublicHeader />
@@ -86,7 +90,7 @@ export function AuthShell({
 
             <CardContent className="space-y-5 px-5 pb-5 sm:space-y-8 sm:px-10 sm:pb-10">
               <div className="grid gap-3 sm:grid-cols-3">
-                {highlights.map((item) => (
+                {effectiveHighlights.map((item) => (
                   <div
                     key={item.title}
                     className="rounded-2xl border border-amber-500/15 bg-white/8 p-4 text-sm leading-6 text-white backdrop-blur-sm"
@@ -99,11 +103,7 @@ export function AuthShell({
 
               <div className="rounded-2xl border border-amber-500/10 bg-black/20 p-4 sm:rounded-3xl sm:p-5">
                 {spotlight ?? (
-                  <p className="text-sm leading-7 text-white/92">
-                    RiskNova, yalnizca bir panel degil; risk analizi, saha
-                    operasyonu, dokuman akislari ve ekip koordinasyonunu tek urun
-                    dili icinde birlestiren profesyonel bir ISG altyapisidir.
-                  </p>
+                  <p className="text-sm leading-7 text-white/92">{t("fallbackSpotlight")}</p>
                 )}
 
                 <div className="mt-4">
@@ -111,7 +111,7 @@ export function AuthShell({
                     href="/"
                     className="text-sm font-medium text-amber-200 underline underline-offset-4"
                   >
-                    Ana sayfaya don
+                    {t("backHome")}
                   </Link>
                 </div>
               </div>
@@ -121,7 +121,7 @@ export function AuthShell({
           <Card className="order-1 self-stretch lg:order-2">
             <CardHeader className="p-5 pb-4 sm:p-10 sm:pb-6">
               <Badge variant="accent" className="w-fit">
-                Guvenli erisim
+                {t("secureAccess")}
               </Badge>
 
               <div className="space-y-2">

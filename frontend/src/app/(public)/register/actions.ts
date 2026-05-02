@@ -22,9 +22,18 @@ export async function signup(formData: FormData) {
   const countryCode = String(formData.get("countryCode") ?? "TR").trim().toUpperCase();
   const languageCode = String(formData.get("languageCode") ?? "tr").trim().toLowerCase();
   const roleKey = String(formData.get("roleKey") ?? "safety_professional").trim();
+  const legalAccepted = formData.get("legalAccepted") === "on";
 
   if (!email || !password) {
     redirect("/register?error=E-posta ve şifre zorunludur.");
+  }
+
+  if (!legalAccepted) {
+    redirect(
+      `/register?error=${encodeURIComponent(
+        "Devam etmek için Kullanım Şartları, Gizlilik Politikası ve KVKK bilgilendirmesini kabul etmelisiniz.",
+      )}`,
+    );
   }
 
   const passwordError = validateStrongPassword(password);

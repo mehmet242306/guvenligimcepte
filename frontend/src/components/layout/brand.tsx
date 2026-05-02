@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 type BrandProps = {
@@ -17,10 +20,12 @@ export function Brand({
   inverted = false,
   className,
 }: BrandProps) {
+  const tBrand = useTranslations("brand");
+
   return (
     <Link
       href={href}
-      className={cn("inline-flex items-center gap-4", className)}
+      className={cn("inline-flex min-w-0 max-w-full items-center gap-4", className)}
     >
       <Image
         src="/logo/risknova-favicon-64.svg"
@@ -35,7 +40,7 @@ export function Brand({
       />
 
       {iconOnly ? null : (
-      <span className="flex min-w-0 flex-col">
+      <span className="flex min-w-0 flex-1 flex-col">
         <span
           className={cn(
             "truncate tracking-tight",
@@ -49,11 +54,11 @@ export function Brand({
         {!compact ? (
           <span
             className={cn(
-              "truncate text-[13px] leading-tight xl:text-[14px]",
+              "w-full min-w-0 break-words text-left text-[13px] leading-snug xl:text-[14px]",
               inverted ? "text-amber-100/85" : "text-muted-foreground",
             )}
           >
-            AI destekli İSG platformu
+            {tBrand("tagline")}
           </span>
         ) : null}
       </span>

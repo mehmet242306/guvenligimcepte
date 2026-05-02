@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Provider } from "@supabase/supabase-js";
+import { useTranslations } from "next-intl";
 import { createOAuthBrowserClient } from "@/lib/supabase/oauth-browser-client";
 
 function normalizeHost(host: string) {
@@ -82,13 +83,14 @@ type SocialLoginProps = {
 };
 
 export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProps) {
+  const ts = useTranslations("auth.social");
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   async function handleOAuth(provider: Provider) {
     const supabase = createOAuthBrowserClient();
     if (!supabase) {
-      setError("Supabase bağlantısı kurulamadı.");
+      setError(ts("supabaseError"));
       return;
     }
 
@@ -143,8 +145,8 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
       const rawMessage = oauthError.message.toLowerCase();
       const redirectMessage =
         rawMessage.includes("redirect") || rawMessage.includes("not allowed")
-          ? "Google girisi icin Supabase redirect adresi eksik. Supabase Authentication URL ayarlarina https://getrisknova.com/auth/callback eklenmeli."
-          : "Giris sirasinda bir hata olustu. Lutfen tekrar deneyin.";
+          ? ts("oauthRedirectHint")
+          : ts("oauthGenericError");
       setError(redirectMessage);
       setLoading(null);
       return;
@@ -154,8 +156,8 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
   const brandName = (process.env.NEXT_PUBLIC_BRAND_NAME || "RiskNova").trim() || "RiskNova";
   const googleLabel =
     mode === "register"
-      ? `Google ile ${brandName}'ya kayıt ol`
-      : `Google ile ${brandName}'ya devam et`;
+      ? ts("googleSignUp", { brand: brandName })
+      : ts("googleContinue", { brand: brandName });
 
   const providers = [
     {
@@ -196,7 +198,7 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
       {/* Ayraç */}
       <div className="relative flex items-center py-1">
         <div className="flex-1 border-t border-border" />
-        <span className="mx-4 text-xs font-medium text-muted-foreground">veya e-posta ile</span>
+        <span className="mx-4 text-xs font-medium text-muted-foreground">{ts("divider")}</span>
         <div className="flex-1 border-t border-border" />
       </div>
     </div>

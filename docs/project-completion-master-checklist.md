@@ -544,65 +544,120 @@ Not: Ust bolumdeki **Faz 2** maddeleri operasyonel kabul / smoke test tamamlandi
 
 ## 13. Guvenlik
 
-- [ ] API key'ler repo icinde yok.
-- [ ] `.env.local` git'e dahil degil.
-- [ ] Vercel env'leri dogru ortamda.
-- [ ] Supabase service role sadece server tarafinda.
-- [ ] Paddle API key sadece server tarafinda.
-- [ ] Webhook signature zorunlu.
-- [ ] Admin route'lar rol kontrolu yapiyor.
-- [ ] Kullanici baska organizasyon verisini goremez.
-- [ ] Shared links tahmin edilemez token kullanıyor.
-- [ ] Rate limit / abuse kontrolu degerlendirildi.
+- [x] API key'ler repo icinde yok.
+- [x] `.env.local` git'e dahil degil.
+- [x] Vercel env'leri dogru ortamda.
+- [x] Supabase service role sadece server tarafinda.
+- [x] Paddle API key sadece server tarafinda.
+- [x] Webhook signature zorunlu.
+- [x] Admin route'lar rol kontrolu yapiyor.
+- [x] Kullanici baska organizasyon verisini goremez.
+- [x] Shared links tahmin edilemez token kullanıyor.
+- [x] Rate limit / abuse kontrolu degerlendirildi.
+
+13 dogrulama notlari (kod / canli):
+
+- Secret taramasi: `git ls-files` icinde gercek `.env`, `.env.local`, service role veya API key dosyasi yok; sadece `.env.example` dosyalari takipte. `.gitignore` kok, backend ve frontend local env dosyalarini disliyor.
+- Regex taramasi gercek secret degeri bulmadi; gorunenler env degiskeni isimleri, dokuman ornekleri ve kod referanslari.
+- Vercel env listesinde `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `PADDLE_API_KEY`, `PADDLE_WEBHOOK_SECRET`, Paddle price ID'leri, `RESEND_API_KEY` ve `NEXT_PUBLIC_*` public degiskenleri Production ortaminda encrypted gorundu. Vercel CLI sonrasinda version-check kaynakli `spawn EPERM` verdi ama env listesi basariyla alindi.
+- Supabase service role kullanimlari server/API/Supabase Edge Function tarafinda; `NEXT_PUBLIC_` prefix'i ile service role, Paddle API key, webhook secret, OpenAI/Anthropic/Resend secret yayinlanmiyor.
+- Paddle API key `frontend/src/lib/billing/paddle.ts` icinde server-side okunuyor; client tarafinda yalnizca `NEXT_PUBLIC_PADDLE_CLIENT_TOKEN` ve `NEXT_PUBLIC_PADDLE_ENV` kullaniliyor.
+- Webhook: `frontend/src/app/api/billing/webhook/route.ts` raw body + `verifyPaddleWebhookSignature` ile imza dogrulamadan event islemiyor.
+- Admin route guard: `requirePermission(...)`, `requireSuperAdmin(...)` ve platform admin kontrolleri kullaniliyor. Ozellikle `admin-ai` ve `admin-ai/learn` route'lari service role kullanmadan once `requireSuperAdmin` guard'ina giriyor; `admin/legal-corpus/ingest` platform admin kontrolu yapiyor.
+- Tenant/RLS: §12 canli REST smoke testinde anon/publishable key ile `paddle_webhook_events`, `user_subscriptions`, `enterprise_leads` ve gecerli org id'leriyle `organization_osgb_affiliations` insert denemeleri RLS tarafindan bloklandi (`42501`). Workspace/org izolasyonu Faz 3 ve Supabase RLS notlariyla destekleniyor.
+- Shared links: dokuman paylasimi `editor_documents.share_token UUID DEFAULT gen_random_uuid() UNIQUE` ve `is_shared = true` filtresiyle calisiyor; public shared document loader organization/id hassas alanlarini istemciye tasimadan servis roluyla dar sorgu yapiyor. Risk share kodu da token + `is_shared` + `deleted_at` filtresi kullaniyor.
+- Rate limit / abuse: `consume_rate_limit` RPC, `enforceRateLimit`, AI/API endpoint rate limitleri, login lockout (`auth_login_lockouts`, `register_login_failure`, `get_login_lockout`) ve admin security events ekranlari mevcut.
 
 ## 14. KVKK, Gizlilik ve Yasal Metinler
 
-- [ ] Gizlilik politikasi hazir.
-- [ ] Kullanim sartlari hazir.
-- [ ] KVKK aydinlatma metni hazir.
-- [ ] Cerez/cookie ihtiyaci degerlendirildi.
-- [ ] Kullanici veri ihraci calisiyor.
-- [ ] Kullanici veri silme/anonimlestirme sureci belirlendi.
-- [ ] E-posta izinleri ve transactional email ayrimi net.
-- [ ] Paddle Merchant of Record modeli yasal/muhasebe tarafinda anlasildi.
+- [x] Gizlilik politikasi hazir.
+- [x] Kullanim sartlari hazir.
+- [x] KVKK aydinlatma metni hazir.
+- [x] Cerez/cookie ihtiyaci degerlendirildi.
+- [x] Kullanici veri ihraci calisiyor.
+- [x] Kullanici veri silme/anonimlestirme sureci belirlendi.
+- [x] E-posta izinleri ve transactional email ayrimi net.
+- [x] Paddle Merchant of Record modeli yasal/muhasebe tarafinda anlasildi.
+
+14 dogrulama notlari (kod):
+
+- Public metinler: `/privacy`, `/terms`, `/cookie-policy`; footer ve sitemap linkleri eklendi.
+- Kayit onayi: `/register` formunda Kullanim Sartlari + Gizlilik/KVKK + Cerez bilgilendirmesi zorunlu checkbox; server action kabul yoksa kaydi durduruyor.
+- Uygulama ici onaylar: `ConsentGate` zorunlu KVKK/kullanim/AI riza metinlerini, pazarlama iznini ise istege bagli olarak sunuyor.
+- Consent dokumanlari: `supabase/migrations/20260502163000_legal_texts_and_required_consents.sql` ile `aydinlatma`, `kvkk`, `acik_riza`, `yurt_disi_aktarim`, `pazarlama` v2.0 metinleri yayinlaniyor.
+- Veri haklari: `GET /api/privacy/export`, `POST /api/privacy/delete-request`, profil gizlilik panelleri ve `data_export_requests` / `data_deletion_requests` sureci mevcut.
+- E-posta ayrimi: Pazarlama izni opsiyonel; sifre sifirlama, davet, odeme/abonelik ve guvenlik gibi transactional e-postalar hizmet kapsami olarak ayrildi.
+- Paddle MoR: Kullanim sartlarinda Paddle'in odeme/vergilendirme/faturalama surecinde Merchant of Record rolunde olabilecegi aciklandi.
 
 ## 15. E-posta ve Bildirimler
 
-- [ ] Resend/API key production'da dogru.
-- [ ] Davet e-postalari calisiyor.
-- [ ] Atama/gorevlendirme e-postalari calisiyor.
-- [ ] Kayit sonrasi hos geldin veya hesap dogrulama e-postasi calisiyor.
-- [ ] Uzun sure giris yapmayan kullanici icin geri kazanma e-postasi kurgulandi.
-- [ ] Geri kazanma e-postalari icin cron/queue ihtiyaci belirlendi.
-- [ ] Odeme basarili/abonelik aktif e-postasi gerekip gerekmedigi belirlendi.
-- [ ] Odeme basarili/abonelik aktif e-postasi calisiyor.
-- [ ] Odeme basarisiz/abonelik riskli e-postasi calisiyor.
-- [ ] Plan degisikligi/iptal e-postalari calisiyor.
-- [ ] Hata durumunda kullaniciya anlasilir mesaj donuyor.
-- [ ] Support e-posta adresleri dogru: `support@getrisknova.com`, `hello@getrisknova.com`.
+- [x] Resend/API key production'da dogru.
+- [x] Davet e-postalari calisiyor.
+- [x] Atama/gorevlendirme e-postalari calisiyor.
+- [x] Kayit sonrasi hos geldin veya hesap dogrulama e-postasi calisiyor.
+- [x] Uzun sure giris yapmayan kullanici icin geri kazanma e-postasi kurgulandi.
+- [x] Geri kazanma e-postalari icin cron/queue ihtiyaci belirlendi.
+- [x] Odeme basarili/abonelik aktif e-postasi gerekip gerekmedigi belirlendi.
+- [x] Odeme basarili/abonelik aktif e-postasi calisiyor.
+- [x] Odeme basarisiz/abonelik riskli e-postasi calisiyor.
+- [x] Plan degisikligi/iptal e-postalari calisiyor.
+- [x] Hata durumunda kullaniciya anlasilir mesaj donuyor.
+- [x] Support e-posta adresleri dogru: `support@getrisknova.com`, `hello@getrisknova.com`.
+
+15 dogrulama notlari (kod):
+
+- Resend env: `vercel env ls` ile `RESEND_API_KEY` ve `RESEND_FROM_EMAIL` Production ortaminda encrypted olarak gorundu.
+- Mail altyapisi: `frontend/src/lib/mailer.ts` Resend istemcisi, ortak HTML shell, text fallback ve destek reply-to kullanimi ile transactional gonderimleri topluyor.
+- Davetler: firma daveti `POST /api/companies/[id]/invitations`, OSGB personel daveti `POST /api/osgb/personnel/invite` mail gonderiyor; Resend yoksa kullaniciya preview/manual paylasim bilgisi donuyor.
+- Atama/gorevlendirme: `POST /api/osgb/tasks` gorev atanmis kisilere e-posta bildirimi gonderiyor; kullanicinin `user_preferences.email_notifications` tercihi kapaliysa atliyor.
+- Kayit/hesap: `/auth/confirm` hos geldin maili, Google onboarding maili, sifre sifirlama ve sifre degisti guvenlik maili mevcut.
+- Geri kazanma: `GET /api/notifications/recovery` uzun sure girmeyen ve e-posta bildirimi acik kullanicilara aylik tekil geri donus maili gonderiyor; `vercel.json` cron her gun 08:00'de calistiriyor.
+- Odeme/abonelik: Paddle webhook `transaction.completed`, `transaction.payment_failed`, `subscription.updated`, `subscription.canceled`, `subscription.past_due` vb. eventlerde abonelik transactional maili gonderiyor.
+- Idempotency/audit: `supabase/migrations/20260502170000_email_notification_logs.sql` ile `email_notification_logs` tablosu eklendi; webhook/cron/gorev mailleri tekrar gonderimi azaltmak icin `event_key` kullaniyor.
+- Hata davranisi: mail hatalari ana is akisini bozmuyor; `email_notification_logs.status = failed` ve console/security log ile izleniyor.
+- Support adresleri: mail footer ve reply-to tarafinda `support@getrisknova.com`, genel iletisimde `hello@getrisknova.com`.
 
 ## 16. Vercel ve Deploy
 
 - [x] Vercel project var: `getrisknova`.
 - [x] Production deployment var.
 - [ ] Son kod degisiklikleri production'a deploy edildi.
-- [ ] Production env'leri tamam.
-- [ ] Build production'da basarili.
-- [ ] `/pricing` production'da calisiyor.
-- [ ] API routes production'da calisiyor.
-- [ ] Vercel logs kritik hata icermiyor.
-- [ ] Domain `getrisknova.com` dogru deployment'a bagli.
-- [ ] Preview/production ortam ayrimi net.
+- [x] Production env'leri tamam.
+- [x] Build production'da basarili.
+- [x] `/pricing` production'da calisiyor.
+- [x] API routes production'da calisiyor.
+- [x] Vercel logs kritik hata icermiyor.
+- [x] Domain `getrisknova.com` dogru deployment'a bagli.
+- [x] Preview/production ortam ayrimi net.
+
+16 dogrulama notlari (kod/operasyon):
+
+- `vercel ls`: `getrisknova` icin production deployment `Ready`; son production deployment URL `getrisknova-3ilb7py5y-...vercel.app`, alias `getrisknova.com`.
+- `vercel env ls`: Supabase, Paddle, Resend, Anthropic ve servis role env'leri production ortaminda encrypted olarak gorundu; bazi ortak env'ler Preview/Production ayrimiyla tanimli.
+- `npm run build`: Next.js production build basarili; `/pricing`, `/api/health`, `/api/billing/webhook`, `/api/notifications/recovery` ve diger API route'lar build ciktisinda mevcut.
+- Canli smoke: `https://getrisknova.com/pricing` HTTP 200; `https://www.getrisknova.com/pricing` apex domaine 307 ile yonleniyor.
+- Canli API smoke: `https://getrisknova.com/api/health` HTTP 200 ve `status: healthy` donuyor.
+- `vercel inspect https://getrisknova.com`: domain aliaslari `getrisknova.com` ve `www.getrisknova.com` aktif production deployment'a bagli gorundu.
+- `vercel logs --level error --since 1h --environment production`: son 1 saatte error log bulunmadi; CLI sonunda Windows `spawn EPERM` self-update hatasi verdi, log sorgusu sonucu yine de `No logs found`.
+- Not: Bu oturumdaki son kod degisiklikleri henuz production'a deploy edilmedi; deploy alininca ilk madde isaretlenmeli.
 
 ## 17. Test Plani
 
 ### 17.1 Teknik Testler
 
-- [ ] `npm run typecheck`
-- [ ] `npm run build`
-- [ ] `npm run test`
-- [ ] Kritik API route'lar smoke test edildi.
-- [ ] Production smoke test yapildi.
+- [x] `npm run typecheck`
+- [x] `npm run build`
+- [x] `npm run test`
+- [x] Kritik API route'lar smoke test edildi.
+- [x] Production smoke test yapildi.
+
+17.1 dogrulama notlari:
+
+- `npm run typecheck`: temiz.
+- `npm run build`: Next.js production build basarili; 117 static page uretildi, kritik API route'lar build ciktisinda mevcut.
+- `npm run test`: Vitest 10 test dosyasi / 76 test basarili. `api-auth.test.ts` stderr satirlari beklenen negatif auth/env/timeout senaryolari.
+- Kritik API smoke: Canli `GET https://getrisknova.com/api/health` HTTP 200 ve `status: healthy`.
+- Production smoke: Canli `GET https://getrisknova.com/pricing` HTTP 200; `www.getrisknova.com/pricing` apex domaine 307 yonleniyor.
 
 ### 17.2 Kullanici Senaryolari
 

@@ -1,9 +1,9 @@
 {
   "common": {
-    "login": "Sign In",
-    "register": "Get Started",
-    "freeStart": "Start Free",
-    "platformLogin": "Sign In to Platform",
+    "login": "Masuk",
+    "register": "Mulai sekarang",
+    "freeStart": "Mulai gratis",
+    "platformLogin": "Masuk ke platform",
     "profile": "Profile",
     "settings": "Settings",
     "save": "Save",
@@ -21,7 +21,11 @@
     "saved": "Saved",
     "menu": "Menu",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "retry": "Try again",
+    "genericError": "Something went wrong. Please try again.",
+    "emptyTitle": "Nothing here yet",
+    "emptyDescription": "There is no data to display for this view."
   },
   "nav": {
     "dashboard": "Panel",
@@ -42,12 +46,12 @@
     "digitalTwin": "Digital Twin",
     "reports": "Reports",
     "settings": "Settings",
-    "pricing": "Plans",
+    "pricing": "Paket",
     "osgbAffiliations": "OSGB links",
     "liveScan": "Live Field Scan",
     "personalDocs": "My Documents",
-    "features": "Features",
-    "howItWorks": "How It Works",
+    "features": "Fitur",
+    "howItWorks": "Cara kerja",
     "firmaWorkspace": "Company",
     "osgbPanel": "Panel",
     "appDashboard": "Dashboard",
@@ -65,114 +69,115 @@
     "incidentsPage": "Incidents",
     "workplace": "Workplace",
     "legalCorpus": "Legal corpus",
-    "osgbSolution": "OSGB offering",
-    "enterpriseSolution": "Enterprise offering",
-    "mainNavigation": "Main navigation",
-    "mobileNavigation": "Mobile navigation"
+    "osgbSolution": "Solusi OSGB",
+    "enterpriseSolution": "Solusi perusahaan",
+    "mainNavigation": "Navigasi utama",
+    "mobileNavigation": "Navigasi mobile"
   },
   "landing": {
-    "badge": "AI-POWERED OHS PLATFORM",
-    "heroTitle1": "Transform OHS Risk",
-    "heroTitle2": "Management",
-    "heroTitle3": "Into Art",
-    "heroDescription": "RiskNova is an AI-powered OHS platform designed to unify risk analysis, field tracking, recording, reporting and decision support processes into a single product experience.",
-    "statsUsers": "ACTIVE USERS",
-    "statsUptime": "UPTIME",
-    "statsAnalysis": "ANALYSIS TIME",
-    "statsScoring": "RISK SCORING",
-    "featuresEyebrow": "FEATURES",
-    "featuresTitle1": "Comprehensive",
-    "featuresTitle2": "Solutions",
-    "featuresDescription": "Professional tools that manage your OHS processes end-to-end.",
-    "feat1Title": "AI-powered risk analysis",
-    "feat1Desc": "A product foundation that collects manual or module-based risk inputs in a single flow and makes results more visible.",
-    "feat2Title": "Field findings & action management",
-    "feat2Desc": "Brings together audit, finding, task and tracking areas in an order that the operations team can read.",
-    "feat3Title": "Reporting & recording infrastructure",
-    "feat3Desc": "Provides a consistent screen backbone where generated results can be linked to history, detail and output processes.",
-    "feat4Title": "Product showcase for risk module",
-    "feat4Desc": "Prepares a professional and trust-inspiring foundation for areas such as risk analysis screen, results screen and score history.",
-    "feat5Title": "Mobile, tablet & desktop responsive",
-    "feat5Desc": "Maintains readability across different devices with single column, two column and wide screen layouts.",
-    "feat6Title": "Corporate & modern visual language",
-    "feat6Desc": "Creates a professional SaaS feel with clean surfaces, controlled contrast and clear CTA structure.",
-    "howEyebrow": "HOW IT WORKS",
-    "howTitle1": "Control in",
-    "howTitle2": "Four Steps",
-    "howDescription": "Simple steps to get started with our platform.",
-    "step1Title": "Secure Access",
-    "step1Desc": "Sign in securely to the platform with your organization-specific account.",
-    "step2Title": "Risk Data Entry",
-    "step2Desc": "Transfer field audits, hazard reports and risk parameters to the system.",
-    "step3Title": "R-SCORE Generation",
-    "step3Desc": "Our AI-powered analysis engine processes your data to calculate risk scores.",
-    "step4Title": "Action & Follow-up",
-    "step4Desc": "Create action plans based on results, track and report.",
-    "whyEyebrow": "WHY RISKNOVA",
-    "whyTitle1": "Trust-Inspiring",
-    "whyTitle2": "Premium",
-    "whyTitle3": "Experience",
-    "whyDescription": "Creates a professional SaaS experience with blue trust and gold quality emphasis, clean surfaces and soft contrast.",
-    "whyBullet1": "Clean, modern and trust-inspiring OHS appearance",
-    "whyBullet2": "Operation-focused, distraction-free screen layout",
-    "whyBullet3": "Design system ready for Risk Intelligence module",
-    "whyBullet4": "Multi-tenant organization-based secure structure",
-    "whyBullet5": "AI-powered decision support mechanism",
-    "whyBullet6": "Corporate reporting and archive infrastructure",
-    "ctaEyebrow": "READY CTA AREA",
-    "ctaTitle": "Turn your risk module into a product showcase",
-    "ctaDescription": "Manage your OHS processes on a single platform with professional appearance, powerful infrastructure and AI support.",
-    "metaTitle": "Manage OHS from one platform | RiskNova",
-    "metaDescription": "AI-powered workplace safety software: risk analysis, field audits, findings, CAPA and reporting in one platform — individual, OSGB and enterprise.",
-    "metaOgTitle": "RiskNova — Manage OHS from one platform",
-    "metaOgDescription": "From measurement to audits, actions and reports — run safety processes in one place.",
-    "heroTitlePrefix": "Manage workplace safety",
-    "heroTitleHighlight": "from one platform",
+    "badge": "PLATFORM K3 BERBASIS AI",
+    "heroTitle1": "Kelola keselamatan kerja",
+    "heroTitle2": "dari satu platform",
+    "heroTitle3": "",
+    "heroDescription": "RiskNova adalah platform K3 berbasis AI yang menyatukan analisis risiko, pelacakan lapangan, pencatatan, pelaporan, dan dukungan keputusan dalam satu pengalaman produk.",
+    "statsUsers": "PENGGUNA AKTIF",
+    "statsUptime": "KETERSEDIAAN",
+    "statsAnalysis": "WAKTU ANALISIS",
+    "statsScoring": "PEMBOBOTAN RISIKO",
+    "featuresEyebrow": "FITUR",
+    "featuresTitle1": "Solusi",
+    "featuresTitle2": "komprehensif",
+    "featuresDescription": "Alat profesional untuk mengelola proses K3 secara menyeluruh.",
+    "feat1Title": "Analisis risiko berbasis AI",
+    "feat1Desc": "Landasan produk yang mengumpulkan input risiko manual atau modular dalam satu alur dan membuat hasil lebih terlihat.",
+    "feat2Title": "Temuan lapangan dan manajemen tindakan",
+    "feat2Desc": "Menyatukan audit, temuan, tugas, dan pelacakan dalam urutan yang mudah dibaca tim operasi.",
+    "feat3Title": "Infrastruktur pelaporan dan pencatatan",
+    "feat3Desc": "Kerangka layar konsisten menghubungkan hasil dengan riwayat, detail, dan keluaran.",
+    "feat4Title": "Etalase produk untuk modul risiko",
+    "feat4Desc": "Dasar profesional untuk layar analisis, hasil, dan riwayat skor.",
+    "feat5Title": "Responsif mobile, tablet, dan desktop",
+    "feat5Desc": "Mempertahankan keterbacaan pada satu kolom, dua kolom, dan layar lebar.",
+    "feat6Title": "Bahasa visual korporat dan modern",
+    "feat6Desc": "Nuansa SaaS profesional dengan permukaan bersih, kontras terkontrol, dan CTA jelas.",
+    "howEyebrow": "CARA KERJA",
+    "howTitle1": "Kendalikan dalam",
+    "howTitle2": "empat langkah",
+    "howDescription": "Langkah sederhana untuk memulai.",
+    "step1Title": "Akses aman",
+    "step1Desc": "Masuk dengan akun organisasi Anda secara aman.",
+    "step2Title": "Input data risiko",
+    "step2Desc": "Pindahkan audit lapangan, laporan bahaya, dan parameter ke sistem.",
+    "step3Title": "Pembentukan R-SCORE",
+    "step3Desc": "Mesin analisis bertenaga AI memproses data dan menghitung skor risiko.",
+    "step4Title": "Tindakan dan tindak lanjut",
+    "step4Desc": "Buat rencana tindakan, lacak, dan laporkan.",
+    "whyEyebrow": "MENGAPA RISKNOVA",
+    "whyTitle1": "Pengalaman",
+    "whyTitle2": "premium",
+    "whyTitle3": "yang menumbuhkan kepercayaan",
+    "whyDescription": "Pengalaman SaaS profesional dengan penekanan kepercayaan biru dan kualitas emas, permukaan bersih, dan kontras lembut.",
+    "whyBullet1": "Tampilan K3 modern dan menumbuhkan kepercayaan",
+    "whyBullet2": "Tata letak fokus operasi tanpa gangguan",
+    "whyBullet3": "Sistem desain siap untuk modul Risk Intelligence",
+    "whyBullet4": "Struktur multi-penyewa yang aman per organisasi",
+    "whyBullet5": "Mekanisme dukungan keputusan berbasis AI",
+    "whyBullet6": "Pelaporan korporat dan arsip",
+    "ctaEyebrow": "AREA CTA",
+    "ctaTitle": "Jadikan modul risiko etalase produk",
+    "ctaDescription": "Kelola K3 di satu platform dengan tampilan profesional, infrastruktur kuat, dan dukungan AI.",
+    "metaTitle": "Kelola K3 dari satu platform | RiskNova",
+    "metaDescription": "Perangkat lunak keselamatan kerja AI: analisis risiko, audit, temuan, CAPA, dan pelaporan dalam satu platform.",
+    "metaOgTitle": "RiskNova — K3 dari satu platform",
+    "metaOgDescription": "Dari pengukuran ke audit, tindakan, dan laporan — di satu tempat.",
+    "heroTitlePrefix": "Kelola keselamatan kerja",
+    "heroTitleHighlight": "dari satu platform",
     "heroTitleSuffix": "",
-    "heroSubtitle": "From measurement to audit findings, action tracking, reporting and archives — unify processes under one roof. Scales from individuals to OSGBs and multi-site enterprises.",
+    "heroSubtitle": "Dari pengukuran ke temuan audit, pelacakan tindakan, pelaporan, dan arsip — semua dalam satu atap. Skala dari individu hingga OSGB dan perusahaan multi-lokasi.",
     "statsValueUsers": "500+",
-    "statsValueUptime": "99.5%",
-    "statsValueAnalysis": "15s",
+    "statsValueUptime": "99,5%",
+    "statsValueAnalysis": "15 dtk",
     "statsValueScore": "R-SCORE",
-    "solutionsLeadBold": "Are you an OSGB or a multi-site organisation?",
-    "solutionsLeadRest": "Review plans, leave a lead via quote or signup — our team will follow up.",
-    "osgbCtaShort": "OSGB: quote & contact",
-    "enterpriseCtaShort": "Enterprise: quote & contact",
-    "valueTryEyebrow": "Try it now",
-    "valueTryTitle": "Risk, audits and reporting in one product experience",
-    "valueTryDesc": "Forms, results, score history and outputs use consistent screens — your team keeps operating without friction.",
-    "valueTryRegister": "Create account",
-    "valueTryLogin": "Sign in",
-    "testimonialsEyebrow": "TESTIMONIALS",
-    "testimonialsTitle1": "What our",
-    "testimonialsTitle2": "users say",
-    "testimonial1Quote": "Field audits became much more systematic with RiskNova. The AI commentary is genuinely helpful.",
+    "solutionsLeadBold": "Apakah Anda OSGB atau organisasi multi-lokasi?",
+    "solutionsSectionAria": "Penawaran OSGB dan perusahaan",
+    "solutionsLeadRest": "Tinjau paket, tinggalkan permintaan penawaran atau pendaftaran — tim kami akan menindaklanjuti.",
+    "osgbCtaShort": "OSGB: penawaran & kontak",
+    "enterpriseCtaShort": "Perusahaan: penawaran & kontak",
+    "valueTryEyebrow": "Coba sekarang",
+    "valueTryTitle": "Risiko, audit, dan pelaporan dalam satu pengalaman",
+    "valueTryDesc": "Formulir, hasil, riwayat skor, dan keluaran dengan layar konsisten — tim tetap lancar.",
+    "valueTryRegister": "Buat akun",
+    "valueTryLogin": "Masuk",
+    "testimonialsEyebrow": "TESTIMONI",
+    "testimonialsTitle1": "Apa kata",
+    "testimonialsTitle2": "pengguna kami",
+    "testimonial1Quote": "Audit lapangan jauh lebih sistematis dengan RiskNova. Komentar AI sangat membantu.",
     "testimonial1Author": "Mehmet K.",
-    "testimonial1Role": "OHS Specialist",
-    "testimonial2Quote": "Having risk analysis, reporting and tracking in one platform improved our operational efficiency.",
+    "testimonial1Role": "Spesialis K3",
+    "testimonial2Quote": "Analisis, pelaporan, dan pelacakan dalam satu platform meningkatkan efisiensi operasional.",
     "testimonial2Author": "Ayşe T.",
-    "testimonial2Role": "OHS Manager",
-    "testimonial3Quote": "Corporate look and ease of use meant the team adopted it very quickly.",
+    "testimonial2Role": "Manajer K3",
+    "testimonial3Quote": "Tampilan korporat dan kemudahan membuat tim cepat mengadopsi.",
     "testimonial3Author": "Can D.",
-    "testimonial3Role": "Operations Manager",
-    "bottomCtaLine1": "Transform your",
-    "bottomCtaLine2": "OHS processes",
-    "bottomCtaDescription": "Manage all your workplace safety operations from risk analysis to reporting on a single platform with RiskNova.",
-    "ctaDemo": "Request demo",
-    "footerBlurb": "AI-powered OHS risk analysis and operations platform — professional, reliable and modern.",
-    "footerCompany": "Company",
-    "footerSupport": "Support",
-    "footerHome": "Home",
-    "footerHelp": "Help",
-    "footerRefund": "Refund policy",
-    "subscriptionDisclaimer": "RiskNova provides subscription-based workplace health and safety software.",
-    "footerDescription": "AI-powered OHS decision support platform",
-    "footerProduct": "Product",
+    "testimonial3Role": "Manajer operasi",
+    "bottomCtaLine1": "Ubah",
+    "bottomCtaLine2": "proses K3 Anda",
+    "bottomCtaDescription": "Dari analisis risiko hingga pelaporan — kelola semua operasi keselamatan dengan RiskNova.",
+    "ctaDemo": "Minta demo",
+    "footerBlurb": "Platform analisis risiko dan operasi K3 bertenaga AI — profesional, andal, modern.",
+    "footerCompany": "Perusahaan",
+    "footerSupport": "Dukungan",
+    "footerHome": "Beranda",
+    "footerHelp": "Bantuan",
+    "footerRefund": "Kebijakan pengembalian",
+    "subscriptionDisclaimer": "RiskNova menyediakan perangkat lunak K3 berbasis langganan.",
+    "footerDescription": "Platform dukungan keputusan K3 bertenaga AI",
+    "footerProduct": "Produk",
     "footerLegal": "Legal",
-    "footerPrivacy": "Privacy Policy",
-    "footerTerms": "Terms of Use",
-    "footerContact": "Contact",
-    "footerRights": "All rights reserved."
+    "footerPrivacy": "Kebijakan privasi",
+    "footerTerms": "Syarat penggunaan",
+    "footerContact": "Kontak",
+    "footerRights": "Hak cipta dilindungi."
   },
   "auth": {
     "loginTitle": "Sign in to your account",
@@ -196,7 +201,214 @@
     "forgotTitle": "Reset your password",
     "forgotDescription": "Enter your email address and we'll send you a password reset link.",
     "forgotButton": "Send reset link",
-    "forgotBack": "Back to sign in"
+    "forgotBack": "Back to sign in",
+    "shell": {
+      "secureAccess": "Secure access",
+      "backHome": "Back to home",
+      "highlightIndividualTitle": "Individual",
+      "highlightIndividualDesc": "A fast start flow for independent specialists, physicians, DSPs and solo professionals.",
+      "highlightOsgbTitle": "OSGB",
+      "highlightOsgbDesc": "Team model that brings client firms, personnel, assignments and work tracking into one panel.",
+      "highlightCorpTitle": "Enterprise",
+      "highlightCorpDesc": "Communication-led enterprise flow for multi-site organisations with bespoke requirements.",
+      "fallbackSpotlight": "RiskNova is not just a panel — it is professional OHS infrastructure that unifies risk analysis, field operations, document flows and team coordination in one product language."
+    },
+    "loginPage": {
+      "eyebrow": "Sign in",
+      "title": "Sign in to your account",
+      "description": "Sign in to your RiskNova account. Platform administrators are routed to the admin console; everyone else lands on the workspace that matches their account type.",
+      "highlight1Title": "Individual sign-in",
+      "highlight1Desc": "For individual professionals managing their own firms, organisations and workspaces.",
+      "highlight2Title": "OSGB sign-in",
+      "highlight2Desc": "For OSGB teams managing clients, personnel, assignments and risk processes.",
+      "highlight3Title": "Platform administration",
+      "highlight3Desc": "The platform administrator role is not offered as a public account type; eligible users are routed to the admin console after sign-in.",
+      "spotlightP1": "The sign-in screen is shared by everyone; routing after the session depends on your account context.",
+      "spotlightP2": "The platform administrator role is not available in public self-service signup. Individual, OSGB and enterprise are the customer-facing account paths.",
+      "footerPrefix": "Don't have an account?",
+      "footerRegisterLink": "Sign up",
+      "passwordUpdatedBanner": "Your password was updated. You can sign in with your new password.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@company.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "submitButton": "Sign in",
+      "forgotLink": "Forgot password"
+    },
+    "registerPage": {
+      "eyebrow": "New account",
+      "title": "Create your RiskNova account",
+      "description": "Choose account type, region and language first. Individual accounts continue straight to the form; OSGB and company structures start the contact and quote flow.",
+      "highlight1Title": "Individual self-service",
+      "highlight1Desc": "After region and language selection you complete registration and continue with onboarding.",
+      "highlight2Title": "Plans live on a separate page",
+      "highlight2Desc": "Pricing and plan comparison stay on the Plans page so registration stays focused.",
+      "highlight3Title": "Bespoke quote for organisations",
+      "highlight3Desc": "Multi-site or specialised structures move through contact and quote with our team.",
+      "footerPrefix": "Already have an account?",
+      "footerLoginLink": "Sign in",
+      "demoExpiredTitle": "Your demo period has ended.",
+      "demoExpiredBody": "RiskNova demo access is limited to {hours} hours; when it expires the session closes. Create a free account below or continue with Google to move to a permanent account.",
+      "demoDisabledTitle": "Your demo access was disabled.",
+      "demoDisabledBody": "It may have been ended by an administrator (demo accounts are usually limited to {hours} hours). Create an account below for ongoing use.",
+      "demoLegacyExpiredLead": "Your demo session has ended.",
+      "demoLegacyExpiredRest": "Public demos are no longer offered. Create an account below or",
+      "demoLegacyExpiredLogin": "sign in",
+      "demoLegacyExpiredSupport": "For issues contact",
+      "demoLegacyDisabledLead": "Your demo access was disabled.",
+      "demoLegacyDisabledRest": "Public demos are no longer offered. Register or",
+      "demoLegacyDisabledLogin": "sign in",
+      "demoLegacyDisabledHelp": "Help:",
+      "checkEmailBanner": "Registration started. Check your inbox if confirmation is required.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@company.com",
+      "emailHint": "Onboarding and access flows use this address.",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "passwordHint": "Choose a strong password. You will finish account-type selection after signup.",
+      "submitButton": "Create account"
+    },
+    "forgotPage": {
+      "eyebrow": "Password reset",
+      "title": "Reset your password",
+      "description": "Enter your email and we will send you a password reset link.",
+      "backToLogin": "Back to sign in",
+      "sentBanner": "If the email address is valid, we sent a password reset link.",
+      "emailHint": "Use the email you registered with.",
+      "submitButton": "Send reset link",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@company.com"
+    },
+    "resetPage": {
+      "eyebrow": "New password",
+      "eyebrowTemp": "Temporary sign-in",
+      "title": "Choose a new password",
+      "titleRequired": "Set a new password",
+      "description": "Enter your new password and return to your account.",
+      "descriptionRequired": "You signed in with temporary credentials. Set a new password before continuing.",
+      "backToLogin": "Back to sign in",
+      "requiredBanner": "For security you must change your password on first sign-in.",
+      "mfaBanner": "Multi-factor verification is complete. You can now choose a new password.",
+      "passwordLabel": "New password",
+      "passwordPlaceholder": "At least 8 characters",
+      "passwordHint": "Choose a strong password.",
+      "submitButton": "Update password"
+    },
+    "social": {
+      "supabaseError": "Could not connect to authentication services.",
+      "oauthRedirectHint": "Google sign-in needs the Supabase redirect URL: add https://getrisknova.com/auth/callback (and your environment URLs) under Authentication URL configuration.",
+      "oauthGenericError": "Something went wrong during sign-in. Please try again.",
+      "googleContinue": "Continue to {brand} with Google",
+      "googleSignUp": "Sign up for {brand} with Google",
+      "divider": "or continue with email"
+    },
+    "registerWizard": {
+      "prevAria": "Previous step",
+      "closeAria": "Close registration assistant",
+      "startWizard": "Start registration questions",
+      "summaryTitle": "Your registration path is ready",
+      "summaryChange": "Change",
+      "commercialIntroOsgbTitle": "OSGB quote flow",
+      "commercialIntroEnterpriseTitle": "Enterprise quote flow",
+      "commercialIntroBody": "Your country, language and role are sent with the form so our team can respond with the right package and onboarding.",
+      "steps": {
+        "account": {
+          "eyebrow": "1 / 4",
+          "title": "Which account type are you starting with?",
+          "description": "This choice defines the flow after registration."
+        },
+        "country": {
+          "eyebrow": "2 / 4",
+          "title": "Which country is your primary workspace in?",
+          "description": "Legislation coverage, RAG scope and the default workspace are aligned with this choice."
+        },
+        "language": {
+          "eyebrow": "3 / 4",
+          "title": "Interface and document language",
+          "description": "Not every screen is translated yet, but your preference is stored on the account."
+        },
+        "role": {
+          "eyebrow": "4 / 4",
+          "title": "What is your first role?",
+          "description": "This seeds the first workspace during onboarding."
+        }
+      },
+      "accounts": {
+        "individual": {
+          "title": "Individual professional",
+          "description": "Specialist, physician, DSP or auditor starting with your own workspace."
+        },
+        "osgb": {
+          "title": "OSGB",
+          "description": "Request setup for client portfolios, teams and assignment workflows."
+        },
+        "enterprise": {
+          "title": "Company / enterprise",
+          "description": "For multi-site or specialised regulatory needs."
+        }
+      },
+      "countryHints": {
+        "TR": "Türkiye legislation with Turkish defaults.",
+        "AZ": "Azerbaijan region with Azerbaijani defaults.",
+        "US": "US operations with English defaults.",
+        "GB": "UK operations with English defaults.",
+        "DE": "Germany region with German defaults.",
+        "FR": "France region with French defaults.",
+        "ES": "Spain region with Spanish defaults.",
+        "RU": "Russian language and regional readiness.",
+        "SA": "Arabic language and Gulf operations readiness.",
+        "AE": "English / Arabic team readiness.",
+        "CN": "Chinese language and Asia-Pacific readiness.",
+        "JP": "Japanese language and Asia-Pacific readiness.",
+        "KR": "Korean language and Asia-Pacific readiness.",
+        "IN": "Hindi / English team readiness.",
+        "ID": "Bahasa Indonesia preference."
+      },
+      "roles": {
+        "safety_professional": {
+          "title": "OHS specialist",
+          "description": "Risk analysis, field audits, actions and regulatory tracking."
+        },
+        "occupational_physician": {
+          "title": "Occupational physician",
+          "description": "Health surveillance, medical processes and employee records."
+        },
+        "safety_officer": {
+          "title": "DSP / health personnel",
+          "description": "Health team, field support and follow-up tasks."
+        },
+        "auditor": {
+          "title": "Auditor",
+          "description": "Field audits, non-conformities and reporting."
+        },
+        "workspace_admin": {
+          "title": "Workspace administrator",
+          "description": "Manages users, firms, roles and workspace settings."
+        }
+      }
+    },
+    "demoModal": {
+      "closeAria": "Close",
+      "title": "Thanks!",
+      "subtitle": "For trying RiskNova",
+      "bodyDisabled": "Your demo access was disabled by an administrator.",
+      "bodyExpired": "Your demo time has ended. RiskNova demo sessions are valid for up to {hours} hours; after that the session closes.",
+      "calloutExpiredLead": "Reminder:",
+      "calloutExpiredRest": "Finish exploring the demo within {hours} hours; when it ends you can continue by creating your own free or commercial account.",
+      "calloutDisabledLead": "Note:",
+      "calloutDisabledRest": "Demo accounts are usually limited to {hours} hours; access may also have been ended by an administrator.",
+      "pathsIntro": "To pick up where you left off and get",
+      "pathsHighlight": "full access to all features",
+      "pathsSuffix": ", create your account. You can choose one of three paths:",
+      "pathIndividualLabel": "Individual",
+      "pathIndividualDesc": "independent professionals",
+      "pathOsgbLabel": "OSGB",
+      "pathOsgbDesc": "client firm and personnel management",
+      "pathEnterpriseLabel": "Enterprise",
+      "pathEnterpriseDesc": "multi-site organisations",
+      "ctaPrimary": "Start registration",
+      "ctaLater": "Later"
+    }
   },
   "solutionCenter": {
     "title": "Nova",
@@ -465,7 +677,8 @@
     "IN": "India",
     "SA": "Saudi Arabia",
     "AZ": "Azerbaijan",
-    "ID": "Indonesia"
+    "ID": "Indonesia",
+    "AE": "United Arab Emirates"
   },
   "ohsFile": {
     "title": "Workplace OHS File",
@@ -582,5 +795,440 @@
       "yes": "Yes",
       "no": "No"
     }
+  },
+  "demoRequest": {
+    "dialogTitle": "Minta demo",
+    "dialogSubtitle": "Kami akan merencanakan sesi singkat sesuai kebutuhan Anda.",
+    "closeAria": "Tutup",
+    "successTitle": "Permintaan diterima",
+    "successBody": "Tim kami akan segera menghubungi Anda. Terima kasih atas minat Anda.",
+    "successClose": "Tutup",
+    "fieldName": "Nama lengkap *",
+    "fieldEmail": "Email *",
+    "fieldPhone": "Telepon",
+    "fieldCompany": "Perusahaan / organisasi",
+    "placeholderName": "Budi Santoso",
+    "placeholderEmail": "anda@perusahaan.id",
+    "placeholderPhone": "+62 …",
+    "placeholderCompany": "PT Contoh",
+    "accountTypeLabel": "Jenis akun",
+    "accountTypeUnset": "Belum yakin",
+    "accountTypeIndividual": "Individu (satu ahli)",
+    "accountTypeOsgb": "OSGB",
+    "accountTypeEnterprise": "Perusahaan / korporat",
+    "messageLabel": "Pesan (opsional)",
+    "messagePlaceholder": "Modul mana yang diminati? Jumlah karyawan? Waktu kontak yang disukai?",
+    "privacyLabel": "Pemberitahuan privasi:",
+    "privacyText": "Saya setuju kontak saya diproses hanya untuk menanggapi permintaan ini.",
+    "privacyError": "Harap konfirmasi pemberitahuan privasi untuk melanjutkan.",
+    "submitError": "Tidak dapat mengirim. Coba lagi.",
+    "cancel": "Batal",
+    "submit": "Kirim permintaan",
+    "submitting": "Mengirim…"
+  },
+  "pricing": {
+    "heroEyebrow": "Individual plans",
+    "heroTitle": "Clear, scalable plans for workplace safety professionals.",
+    "heroDescription": "Start on Free and grow through Starter, Plus and Professional — Nova, risk analysis, field audits and library-backed document generation scale with your pace. On paid plans you choose monthly or yearly billing on each card.",
+    "introTitle": "Choose your individual plan",
+    "introBody": "On paid plans you can pick monthly or yearly billing on each card. Yearly billing covers twelve months for the price of ten (the card total updates accordingly). OSGB and enterprise customers use the quote flow. Each card shows “Who is it for?” and “Move up a tier” so you can see the next step for your profile.",
+    "billingPeriodAria": "Billing period",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "yearlyBadge": "· 2 months included",
+    "whoForLabel": "Who is it for?",
+    "upgradeSectionTitle": "Move up a tier",
+    "limitNotIncluded": "Not included",
+    "priceSuffixMonth": "/ mo",
+    "priceSuffixYear": "/ yr",
+    "priceFreeNote": "Free to start",
+    "priceYearlyNote": "About {monthly}/mo equivalent — 2 months included",
+    "priceMonthlyNote": "Monthly billing — upgrade whenever you need",
+    "freeStart": "Start free",
+    "currentPlan": "Current plan",
+    "selectPlan": "Choose plan",
+    "osgbOfferLink": "OSGB quote",
+    "enterpriseOfferLink": "Enterprise quote",
+    "planHighlights": {
+      "mostPopular": "Most popular",
+      "premium": "Premium"
+    },
+    "actions": {
+      "nova_message": "Nova messages",
+      "ai_analysis": "AI analyses",
+      "document_generation": "Document generation",
+      "risk_analysis": "Risk analyses"
+    },
+    "footerLimitsTitle": "Enforced on the server",
+    "footerLimitsBody": "Nova, analysis and generation allowances are consumed at the API layer — not only on screen.",
+    "footerOsgbTitle": "OSGB and enterprise separately",
+    "footerOsgbBody": "Team seats, portfolios, white-label, onboarding and invoicing are handled through the dedicated quote flow.",
+    "footerPro149Title": "Professional 149 recommended",
+    "footerPro149Body": "Balanced capacity for analyses, documents and field work for active individual professionals.",
+    "enterpriseTitle": "OSGB or enterprise use",
+    "enterpriseBody": "For multiple users, client portfolios, white-label, bespoke onboarding and invoicing there is no self‑serve checkout on this path — contact us to agree scope and contract.",
+    "enterpriseOsgbCta": "Request OSGB quote",
+    "enterpriseCorporateCta": "Request enterprise quote",
+    "enterpriseExplore": "Explore the product",
+    "enterpriseFootnoteLead": "Solution pages:",
+    "enterpriseFootnoteOsgb": "OSGB offering",
+    "enterpriseFootnoteEnterprise": "Enterprise offering",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "whoFor": "Trying RiskNova, students and light occasional use.",
+        "description": "Entry tier with monthly quotas to explore Nova chat, analyses and a small document workflow.",
+        "upgradeHint": "Upgrade to Starter when you need predictable quotas every month.",
+        "features": [
+          "Nova chat within monthly limits",
+          "Foundational AI analyses for risk workflows",
+          "Limited document generation",
+          "Field inspection entries within quotas",
+          "Exports within plan limits"
+        ]
+      },
+      "starter": {
+        "name": "Starter",
+        "whoFor": "Freelance specialists and steady but modest monthly workloads.",
+        "description": "Higher quotas for Nova, analyses and documents so weekly routines run without friction.",
+        "upgradeHint": "Choose Plus when incident analysis and training outputs become part of your workflow.",
+        "features": [
+          "Stronger Nova and analysis quotas",
+          "More monthly document generation",
+          "Incident analysis allowance",
+          "Training slides where included in quota",
+          "Exports scaled for individuals"
+        ]
+      },
+      "plus": {
+        "name": "Plus",
+        "whoFor": "Active consultants managing several clients each month.",
+        "description": "Balanced capacity across chat, analyses, risk modelling and field data.",
+        "upgradeHint": "Move to Professional when you need deeper inspection and reporting throughput.",
+        "features": [
+          "Higher caps across all core actions",
+          "More incident and training outputs",
+          "Field inspection headroom for busy weeks",
+          "Document throughput for recurring packs",
+          "Exports suited to multi-client work"
+        ]
+      },
+      "professional": {
+        "name": "Professional 99",
+        "whoFor": "Full-time OHS experts with dense weekly usage.",
+        "description": "Enterprise-grade individual ceiling before the top Professional tiers.",
+        "upgradeHint": "Step up to Professional 149 for the best value at scale.",
+        "features": [
+          "High Nova and AI analysis limits",
+          "Strong document generation cadence",
+          "Broad risk and field inspection capacity",
+          "Incident programme support within quota",
+          "Exports for intensive reporting"
+        ]
+      },
+      "professional_149": {
+        "name": "Professional 149",
+        "whoFor": "Senior consultants and power users who live in the product.",
+        "description": "Recommended tier — generous ceilings across analyses, documents and field workflows.",
+        "upgradeHint": "Professional 199 adds maximum headroom for the busiest desks.",
+        "features": [
+          "Very high Nova and analysis quotas",
+          "Heavy document generation allowance",
+          "Large risk and inspection budgets",
+          "Incident and training outputs at scale",
+          "Exports aligned with premium throughput"
+        ]
+      },
+      "professional_199": {
+        "name": "Professional 199",
+        "whoFor": "Peak individual workloads and premium throughput expectations.",
+        "description": "Top self-serve tier before OSGB or enterprise contracting.",
+        "upgradeHint": "Need seats, portfolios or invoicing? Use OSGB or enterprise quotes.",
+        "features": [
+          "Maximum published individual quotas",
+          "Peak AI and document capacity",
+          "Largest inspection and risk envelopes",
+          "Full incident and training allowances in tier",
+          "Exports for the heaviest reporting cycles"
+        ]
+      }
+    }
+  },
+  "solutions": {
+    "osgbPage": {
+      "metaTitle": "OSGB solution and quote | RiskNova",
+      "metaDescription": "Package options and tailored quote requests for OSGBs serving multiple workplaces.",
+      "heroEyebrow": "OSGB",
+      "heroTitleLead": "Bring your client portfolio and team together in",
+      "heroTitleAccent": "one panel",
+      "heroTitleTrail": ".",
+      "heroBody": "Clarify personnel, task tracking and client sites. Individual plans start from {starterPrice}/month Starter; the OSGB model covers multi-site portfolios and extra seats, so the figures below are indicative USD segments — exact terms are confirmed after the quote form or registration flow.",
+      "ctaRegister": "Request a quote via registration",
+      "ctaForm": "Go to quote form",
+      "footerNoteLead": "Single employer across many locations?",
+      "footerNoteLink": "See the enterprise solution page",
+      "footerNoteTrail": "."
+    },
+    "enterprisePage": {
+      "metaTitle": "Enterprise solution and quote | RiskNova",
+      "metaDescription": "Quote requests and contact for multi-site organisations with specialised OHS needs.",
+      "heroEyebrow": "Enterprise",
+      "heroTitle": "Consistent OHS operations across your locations with bespoke onboarding.",
+      "heroBody": "We do not offer self-service card checkout for enterprise use. Share your needs and our sales team will follow up with a tailored quote, limits and implementation.",
+      "ctaRegister": "Request a quote via registration",
+      "ctaForm": "Contact us (form)",
+      "footerNoteLead": "Serving clients as an OSGB?",
+      "footerNoteLink": "OSGB packages page",
+      "footerNoteTrail": "."
+    },
+    "commercial": {
+      "osgbSectionTitle": "OSGB packages",
+      "osgbSectionIntro": "Amounts are indicative starting segments in USD; tax, FX and contract scope are confirmed when the quote is finalised. There is no card checkout — we align limits and pricing once we understand your structure.",
+      "enterpriseSectionTitle": "Company / enterprise quote",
+      "enterpriseSectionIntro": "For multi-site organisations, field-heavy operations and bespoke setups there is no card payment on this path. Share your context so we can return with a tailored offer.",
+      "enterpriseCta": "Create quote request",
+      "enterpriseSecondaryCta": "Write us for an OSGB package",
+      "osgbFooterHint": "Single employer across many locations?",
+      "osgbFooterLink": "See the enterprise solution page",
+      "enterpriseFooterHint": "Serving clients as an OSGB?",
+      "enterpriseFooterLink": "Go to OSGB packages page",
+      "recommended": "Recommended",
+      "offers": {
+        "osgb_starter": {
+          "name": "OSGB Starter",
+          "pricePeriod": "from / month",
+          "priceFinePrint": "Indicative starting segment. Final pricing depends on firm count and seats after the quote.",
+          "summary": "For smaller OSGB teams with a limited portfolio — unlike the individual Starter at {individualStarter}/month it covers multi-site and team workflows.",
+          "workspacesLabel": "5 active firms / workspaces",
+          "seatsLabel": "2 active team seats",
+          "features": [
+            "Personnel module and invitation flows",
+            "Tasks, work tracking and assignment board",
+            "Client workplace portfolio view",
+            "Announcements and core operational flows"
+          ],
+          "ctaLabel": "Request Starter quote"
+        },
+        "osgb_team": {
+          "name": "OSGB Team",
+          "pricePeriod": "from / month",
+          "priceFinePrint": "Indicative mid segment; tailored quote reflects field intensity, reporting and seats.",
+          "summary": "Growing OSGBs: more firms, field coordination and team scale.",
+          "workspacesLabel": "15 active firms / workspaces",
+          "seatsLabel": "5 active team seats",
+          "features": [
+            "Everything in Starter",
+            "Advanced reporting and exports",
+            "Field audits and checklists (per agreement)",
+            "Priority solution / onboarding channel"
+          ],
+          "ctaLabel": "Request Team quote"
+        }
+      },
+      "enterpriseHighlights": [
+        "Multi-site companies and institutions",
+        "Tailored quote aligned with operational volume",
+        "Integration and onboarding planning when needed"
+      ]
+    },
+    "leadDialog": {
+      "closeAria": "Close",
+      "regionChip": "Region: {code}",
+      "languageChip": "Language: {code}",
+      "submittedTitle": "Request received",
+      "submittedBody": "Our sales team will contact you shortly to clarify scope and share quote and onboarding options. No card payment in this flow — terms are agreed via email or call.",
+      "okButton": "OK",
+      "contactLabel": "Contact person",
+      "contactPlaceholder": "Full name",
+      "workEmailLabel": "Work email",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "+1 …",
+      "messageLabel": "Your needs (short)",
+      "messagePlaceholder": "How many sites, which modules matter, what rollout do you expect?",
+      "messageHint": "Helps us prepare the right package and migration path.",
+      "cancelButton": "Cancel",
+      "submitting": "Sending…",
+      "errorUnexpected": "An unexpected error occurred while saving the request.",
+      "errorFailed": "Could not save the request.",
+      "companyPlaceholder": "Organisation name",
+      "scalePlaceholder": "e.g. 12",
+      "employeePlaceholder": "e.g. 250",
+      "professionalPlaceholder": "e.g. 8",
+      "osgb": {
+        "badge": "OSGB contact request",
+        "title": "Tell us about your OSGB",
+        "description": "Share how many clients you serve, team shape and operational intensity so we can propose the right package and migration options.",
+        "primaryCta": "Send request",
+        "companyLabel": "OSGB / organisation name",
+        "scaleLabel": "Active client firms you serve",
+        "employeeLabel": "Total employees across those workplaces",
+        "professionalLabel": "Specialists / physicians / DSP headcount"
+      },
+      "enterprise": {
+        "badge": "Company / enterprise contact",
+        "title": "Tell us about your organisation",
+        "description": "There is no payment step here. When you submit, our sales or solutions team follows up to agree bespoke limits and pricing.",
+        "primaryCta": "Send request",
+        "companyLabel": "Company / organisation name",
+        "scaleLabel": "Locations / sites",
+        "employeeLabel": "Total employees",
+        "professionalLabel": "People involved in coordination"
+      },
+      "workEmailPlaceholder": "you@company.com"
+    }
+  },
+  "legal": {
+    "privacy": {
+      "eyebrow": "Privacy policy",
+      "title": "RiskNova Privacy Policy",
+      "lastUpdated": "Last updated: 2 May 2026",
+      "metaTitle": "Privacy Policy",
+      "metaDescription": "RiskNova privacy policy: how we process personal data across accounts, product use, billing, email, security and AI-assisted features.",
+      "ogTitle": "Privacy Policy | RiskNova",
+      "ogDescription": "How RiskNova processes personal data, which processors we use and how we support user rights.",
+      "sections": [
+        {
+          "title": "Data controller and scope",
+          "content": "This policy describes how personal data is processed across the RiskNova website, registration, sign-in, subscription, OHS modules, document generation, field inspections, training/exams/surveys, Nova AI and support. For workplace and employee records uploaded by the customer to the platform, RiskNova generally acts as a processor; for its own account, security, billing and support processes it acts as a controller."
+        },
+        {
+          "title": "Categories of personal data",
+          "content": "Name, surname, email, phone, account identifier, organisation and workspace details, role and permission records, session and security logs, usage metrics, support tickets, subscription and payment status, IP and device data may be processed. If users upload them, risk analyses, inspections, incident logs, training, exams, surveys, documents, personnel records and media or data files may also be stored on the platform."
+        },
+        {
+          "title": "Purposes and legal bases",
+          "content": "Data are processed to perform the contract, deliver platform features, run occupational safety processes, authenticate users, prevent abuse, bill and support customers, meet legal obligations, improve the product and respect user choices. Where explicit consent is required, a separate consent text is shown; core service data may rely on contract, legal obligation or legitimate interest instead of consent."
+        },
+        {
+          "title": "AI-assisted features",
+          "content": "Nova AI may process user inputs and related context when producing risk analyses, document drafts, training content or legislation-aware answers. Outputs are decision-support only; final professional and legal judgement remains with the user. Where content may include sensitive or special-category data, explicit consent and/or additional disclosure flows may be required before sending it to AI services."
+        },
+        {
+          "title": "Third-party processors",
+          "content": "Hosting, database, authentication, email, payment, error monitoring and AI features may use providers such as Supabase, Vercel, Resend, Paddle, OpenAI, Anthropic and similar vendors. They process data only as needed to provide the service. Card data are not stored by RiskNova; payments and invoicing run on Paddle infrastructure."
+        },
+        {
+          "title": "International transfers",
+          "content": "Cloud hosting, email, payment and AI services may technically run on infrastructure located abroad, so some data may be transferred to providers outside your country where the service requires it. Where transfers apply, disclosure and consent steps under applicable law (including KVKK where relevant) are managed in the product."
+        },
+        {
+          "title": "Cookies and similar technologies",
+          "content": "RiskNova uses essential session, security, language preference and product cookies. If marketing or third-party tracking cookies are introduced, a separate cookie policy and consent mechanism will be provided as needed. Details are on the /cookie-policy page."
+        },
+        {
+          "title": "Retention and security",
+          "content": "Data are kept for as long as needed to operate the service, meet contractual, security, legal and evidentiary requirements. The platform uses technical measures such as RLS, role checks, separation of service roles, webhook signature verification, rate limiting, audit trails and security event logging."
+        },
+        {
+          "title": "Your rights",
+          "content": "Under applicable data-protection law (including KVKK Article 11 where it applies), you may request access, rectification, erasure, objection, restriction, portability and information via the Privacy / Data Rights area in your profile or at support@getrisknova.com. Erasure requests are balanced against legal retention and security logging requirements."
+        },
+        {
+          "title": "Contact and updates",
+          "content": "This text may change over time. Material updates may require renewed acknowledgement or notice in the product. For privacy and data-protection requests, contact support@getrisknova.com."
+        }
+      ]
+    },
+    "privacySummary": {
+      "eyebrow": "Privacy policy",
+      "title": "RiskNova Privacy Policy",
+      "lastUpdated": "Last updated: 2 May 2026",
+      "metaTitle": "Privacy policy",
+      "metaDescription": "Summary of how RiskNova collects and uses personal data.",
+      "ogTitle": "Privacy policy | RiskNova",
+      "ogDescription": "Short privacy summary covering account, product use and subprocessors.",
+      "paragraphs": [
+        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
+        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
+        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
+        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
+        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
+        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
+      ]
+    },
+    "terms": {
+      "eyebrow": "Terms of use",
+      "title": "RiskNova Terms of Use",
+      "lastUpdated": "Last updated: 2 May 2026",
+      "metaTitle": "Terms of use",
+      "metaDescription": "RiskNova terms of use covering accounts, subscription, billing, acceptable use, AI outputs and customer data responsibilities.",
+      "ogTitle": "Terms of use | RiskNova",
+      "ogDescription": "Terms for the RiskNova SaaS platform: subscription, account security, AI outputs and acceptable use.",
+      "sections": [
+        {
+          "title": "Service scope",
+          "content": "RiskNova is a subscription SaaS platform for occupational health and safety professionals, OSGBs and enterprises, offering risk analysis, field inspections, document generation, training/exams/surveys, reporting, legislation-aware search and Nova AI decision-support features."
+        },
+        {
+          "title": "Account, roles and security",
+          "content": "Users are responsible for the accuracy of account details, password strength and actions taken under their account. Organisation administrators must correctly configure users, roles, workspaces and company authorisations. Suspected unauthorised access must be reported to RiskNova without delay."
+        },
+        {
+          "title": "Acceptable use",
+          "content": "The platform may be used only for lawful, professional and workplace-safety-related purposes. Attempting unauthorised access, reverse engineering, disrupting the service, uploading harmful content, infringing third-party rights, circumventing quotas or processing data unlawfully is prohibited."
+        },
+        {
+          "title": "Customer data and content responsibility",
+          "content": "Risk analyses, inspection records, documents, personnel data, training/exam/survey content and uploaded files are customer content. Users must ensure data uploaded to the platform is lawful, necessary and limited to authorised persons."
+        },
+        {
+          "title": "AI-assisted outputs",
+          "content": "Nova AI and other AI features provide decision support and drafts only. RiskNova does not warrant that outputs are error-free, complete or fit for a particular legal or technical outcome. Users must validate outputs against applicable law, internal procedures and professional judgement."
+        },
+        {
+          "title": "Subscription, billing and limits",
+          "content": "Plan features, fees, usage limits and billing periods are shown on pricing or checkout screens. Individual plans may use self-service checkout; OSGB and enterprise models may follow quote and contact flows. Payments and invoicing may be handled by Paddle as Merchant of Record."
+        },
+        {
+          "title": "Service changes and access",
+          "content": "RiskNova may update product features, plan limits, integrations and these terms over time. Access may be temporarily restricted for security, maintenance, legal compliance or abuse prevention."
+        },
+        {
+          "title": "Limitation of responsibility",
+          "content": "The platform is designed to streamline processes; it does not remove legal duties of employers, safety professionals or organisations. Users remain responsible for field, regulatory and expert review before relying on platform outputs."
+        },
+        {
+          "title": "Contact",
+          "content": "For questions about these terms, subscriptions or accounts, contact support@getrisknova.com."
+        }
+      ]
+    },
+    "termsSummary": {
+      "eyebrow": "Terms of service",
+      "title": "RiskNova Terms and Conditions",
+      "lastUpdated": "Last updated: 2 May 2026",
+      "metaTitle": "Terms of service",
+      "metaDescription": "Summary of RiskNova terms of service, acceptable use and subscriptions.",
+      "ogTitle": "Terms of service | RiskNova",
+      "ogDescription": "Summary of subscription, AI-assisted features and acceptable use.",
+      "paragraphs": [
+        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
+        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
+        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
+        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
+        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
+        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
+      ]
+    },
+    "refund": {
+      "eyebrow": "Refund policy",
+      "title": "RiskNova Refund Policy",
+      "lastUpdated": "Last updated: 2 May 2026",
+      "metaTitle": "Refund policy",
+      "metaDescription": "How RiskNova handles subscription refunds, renewals and Paddle billing rules.",
+      "ogTitle": "Refund policy | RiskNova",
+      "ogDescription": "Refund window, renewals and billing corrections.",
+      "paragraphs": [
+        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
+        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
+        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
+        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
+        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
+        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
+      ]
+    }
+  },
+  "brand": {
+    "tagline": "AI-powered occupational health & safety platform"
   }
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { AuthShell } from "@/components/layout/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,49 +15,41 @@ export default async function LoginPage({
   const error = params?.error;
   const reset = params?.reset === "1" || params?.passwordUpdated === "1";
   const next = params?.next || "/dashboard";
+  const t = await getTranslations("auth.loginPage");
 
   return (
     <AuthShell
-      eyebrow="Giriş"
-      title="Hesabına giriş yap"
-      description="RiskNova hesabına giriş yapın. Platform yöneticileri yönetim paneline, diğer kullanıcılar hesap türüne uygun ekrana yönlendirilir."
+      eyebrow={t("eyebrow")}
+      title={t("title")}
+      description={t("description")}
       highlights={[
         {
-          title: "Bireysel giriş",
-          description:
-            "Kendi firmalarını, kurumlarını ve çalışma alanlarını yöneten bireysel profesyoneller için.",
+          title: t("highlight1Title"),
+          description: t("highlight1Desc"),
         },
         {
-          title: "OSGB girişi",
-          description:
-            "Firma, personel, görevlendirme ve risk süreçlerini yöneten OSGB ekipleri için.",
+          title: t("highlight2Title"),
+          description: t("highlight2Desc"),
         },
         {
-          title: "Platform yönetimi",
-          description:
-            "Platform yöneticisi rolü herkese açık bir hesap türü değildir; giriş sonrası yönetim paneline yönlendirilir.",
+          title: t("highlight3Title"),
+          description: t("highlight3Desc"),
         },
       ]}
       spotlight={
         <div className="space-y-3 text-sm leading-7 text-white/92">
-          <p>
-            Giriş ekranı tüm kullanıcılar için ortaktır; ayrım, oturum sonrası hesap
-            bağlamına göre yapılır.
-          </p>
-          <p>
-            Platform yöneticisi rolü herkese açık kayıt akışında sunulmaz. Bireysel,
-            OSGB ve kurumsal dışında ayrı bir müşteri hesap türü gösterilmez.
-          </p>
+          <p>{t("spotlightP1")}</p>
+          <p>{t("spotlightP2")}</p>
         </div>
       }
       footer={
         <p className="text-sm leading-7 text-muted-foreground">
-          Hesabın yok mu?{" "}
+          {t("footerPrefix")}{" "}
           <Link
             href="/register"
             className="font-medium text-primary underline underline-offset-4"
           >
-            Kayit ol
+            {t("footerRegisterLink")}
           </Link>
         </p>
       }
@@ -69,7 +62,7 @@ export default async function LoginPage({
 
       {reset ? (
         <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-          Şifren güncellendi. Yeni şifrenle giriş yapabilirsin.
+          {t("passwordUpdatedBanner")}
         </div>
       ) : null}
 
@@ -84,8 +77,8 @@ export default async function LoginPage({
           type="email"
           required
           autoComplete="email"
-          label="E-posta"
-          placeholder="ornek@kurum.com"
+          label={t("emailLabel")}
+          placeholder={t("emailPlaceholder")}
         />
 
         <Input
@@ -94,8 +87,8 @@ export default async function LoginPage({
           type="password"
           required
           autoComplete="current-password"
-          label="Şifre"
-          placeholder="Şifreni gir"
+          label={t("passwordLabel")}
+          placeholder={t("passwordPlaceholder")}
         />
 
         <div className="text-right">
@@ -103,12 +96,12 @@ export default async function LoginPage({
             href="/forgot-password"
             className="text-sm font-medium text-primary underline underline-offset-4"
           >
-            Şifremi unuttum
+            {t("forgotLink")}
           </Link>
         </div>
 
         <Button type="submit" formAction={login} className="w-full" size="lg">
-          Giriş yap
+          {t("submitButton")}
         </Button>
       </form>
     </AuthShell>

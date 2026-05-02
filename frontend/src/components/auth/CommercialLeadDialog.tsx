@@ -3,13 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { Loader2, Sparkles, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  getCommercialLeadCopy,
-  type CommercialInterestType,
-} from "@/lib/account/register-offers";
+import type { CommercialInterestType } from "@/lib/account/register-offers";
 
 type CommercialLeadDialogProps = {
   accountType: CommercialInterestType;
@@ -17,7 +15,6 @@ type CommercialLeadDialogProps = {
   onClose: () => void;
   countryCode?: string;
   languageCode?: string;
-  /** Kaynak: cozum sayfasi veya register (varsayilan API tarafinda register) */
   sourcePage?: "register" | "cozumler_kurumsal" | "cozumler_osgb" | "landing_demo";
 };
 
@@ -58,7 +55,23 @@ export function CommercialLeadDialog({
   languageCode,
   sourcePage,
 }: CommercialLeadDialogProps) {
-  const copy = useMemo(() => getCommercialLeadCopy(accountType), [accountType]);
+  const t = useTranslations("solutions.leadDialog");
+  const prefix = accountType === "osgb" ? "osgb" : "enterprise";
+
+  const copy = useMemo(
+    () => ({
+      badge: t(`${prefix}.badge`),
+      title: t(`${prefix}.title`),
+      description: t(`${prefix}.description`),
+      primaryCta: t(`${prefix}.primaryCta`),
+      companyLabel: t(`${prefix}.companyLabel`),
+      scaleLabel: t(`${prefix}.scaleLabel`),
+      employeeLabel: t(`${prefix}.employeeLabel`),
+      professionalLabel: t(`${prefix}.professionalLabel`),
+    }),
+    [t, prefix],
+  );
+
   const fieldPrefix = `commercial-${accountType}`;
   const [mounted, setMounted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -77,9 +90,9 @@ export function CommercialLeadDialog({
         onClose();
       }
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose, open, submitting]);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose, submitting]);
 
   useEffect(() => {
     if (!open) {
@@ -117,8 +130,8 @@ export function CommercialLeadDialog({
           ...(sourcePage ? { sourcePage } : {}),
           message:
             [
-              countryCode ? `Bolge/ulke: ${countryCode}` : null,
-              languageCode ? `Dil: ${languageCode}` : null,
+              countryCode ? t("regionChip", { code: countryCode }) : null,
+              languageCode ? t("languageChip", { code: languageCode.toUpperCase() }) : null,
               form.message || null,
             ]
               .filter(Boolean)
@@ -131,17 +144,13 @@ export function CommercialLeadDialog({
         | null;
 
       if (!response.ok) {
-        throw new Error(
-          data?.error || "Talep kaydedilirken beklenmeyen bir hata olustu.",
-        );
+        throw new Error(data?.error || t("errorUnexpected"));
       }
 
       setSubmitted(true);
     } catch (submitError) {
       setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Talep kaydedilemedi.",
+        submitError instanceof Error ? submitError.message : t("errorFailed"),
       );
     } finally {
       setSubmitting(false);
@@ -168,7 +177,7 @@ export function CommercialLeadDialog({
             onClick={onClose}
             disabled={submitting}
             className="absolute right-4 top-4 rounded-full p-2 text-white/70 transition hover:bg-white/10 hover:text-white"
-            aria-label="Kapat"
+            aria-label={t("closeAria")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -187,19 +196,17 @@ export function CommercialLeadDialog({
               >
                 {copy.title}
               </h2>
-              <p className="max-w-2xl text-sm leading-7 text-white/82">
-                {copy.description}
-              </p>
+              <p className="max-w-2xl text-sm leading-7 text-white/82">{copy.description}</p>
               {countryCode || languageCode ? (
                 <div className="flex flex-wrap gap-2 pt-1">
                   {countryCode ? (
                     <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[11px] font-semibold text-amber-100">
-                      Bolge: {countryCode}
+                      {t("regionChip", { code: countryCode })}
                     </span>
                   ) : null}
                   {languageCode ? (
                     <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[11px] font-semibold text-amber-100">
-                      Dil: {languageCode.toUpperCase()}
+                      {t("languageChip", { code: languageCode.toUpperCase() })}
                     </span>
                   ) : null}
                 </div>
@@ -212,18 +219,11 @@ export function CommercialLeadDialog({
           {submitted ? (
             <div className="space-y-4">
               <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/8 p-5">
-                <p className="text-lg font-semibold text-foreground">
-                  Talebinizi aldik
-                </p>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  Talebinizi aldik. Sizi daha iyi tanımak ve teklif ile kurulum
-                  seceneklerini paylasmak icin satis ekibimiz kisa sure icinde
-                  sizinle iletisime gececek. Bu akista kartla odeme yapilmaz;
-                  teklif ve kosullar telefon veya e-posta ile netlesir.
-                </p>
+                <p className="text-lg font-semibold text-foreground">{t("submittedTitle")}</p>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{t("submittedBody")}</p>
               </div>
               <div className="flex justify-end">
-                <Button onClick={onClose}>Tamam</Button>
+                <Button onClick={onClose}>{t("okButton")}</Button>
               </div>
             </div>
           ) : (
@@ -240,13 +240,13 @@ export function CommercialLeadDialog({
                       companyName: event.target.value,
                     }))
                   }
-                  placeholder="Kurum adini yazin"
+                  placeholder={t("companyPlaceholder")}
                   required
                 />
                 <Input
                   id={`${fieldPrefix}-contact`}
                   name="contactName"
-                  label="Yetkili kisi"
+                  label={t("contactLabel")}
                   value={form.contactName}
                   onChange={(event) =>
                     setForm((current) => ({
@@ -254,13 +254,13 @@ export function CommercialLeadDialog({
                       contactName: event.target.value,
                     }))
                   }
-                  placeholder="Ad Soyad"
+                  placeholder={t("contactPlaceholder")}
                   required
                 />
                 <Input
                   id={`${fieldPrefix}-email`}
                   name="email"
-                  label="Is e-postasi"
+                  label={t("workEmailLabel")}
                   type="email"
                   value={form.email}
                   onChange={(event) =>
@@ -269,13 +269,13 @@ export function CommercialLeadDialog({
                       email: event.target.value,
                     }))
                   }
-                  placeholder="ornek@kurum.com"
+                  placeholder={t("workEmailPlaceholder")}
                   required
                 />
                 <Input
                   id={`${fieldPrefix}-phone`}
                   name="phone"
-                  label="Telefon"
+                  label={t("phoneLabel")}
                   value={form.phone}
                   onChange={(event) =>
                     setForm((current) => ({
@@ -283,7 +283,7 @@ export function CommercialLeadDialog({
                       phone: event.target.value,
                     }))
                   }
-                  placeholder="05xx xxx xx xx"
+                  placeholder={t("phonePlaceholder")}
                 />
                 <Input
                   id={`${fieldPrefix}-scale`}
@@ -299,7 +299,7 @@ export function CommercialLeadDialog({
                       estimatedCompanyCount: event.target.value,
                     }))
                   }
-                  placeholder="Orn. 12"
+                  placeholder={t("scalePlaceholder")}
                 />
                 <Input
                   id={`${fieldPrefix}-employees`}
@@ -315,7 +315,7 @@ export function CommercialLeadDialog({
                       estimatedEmployeeCount: event.target.value,
                     }))
                   }
-                  placeholder="Orn. 250"
+                  placeholder={t("employeePlaceholder")}
                 />
                 {accountType === "osgb" ? (
                   <Input
@@ -332,7 +332,7 @@ export function CommercialLeadDialog({
                         estimatedProfessionalCount: event.target.value,
                       }))
                     }
-                    placeholder="Orn. 8"
+                    placeholder={t("professionalPlaceholder")}
                     containerClassName="md:col-span-2"
                   />
                 ) : null}
@@ -341,7 +341,7 @@ export function CommercialLeadDialog({
               <Textarea
                 id={`${fieldPrefix}-message`}
                 name="message"
-                label="Kisaca ihtiyaciniz"
+                label={t("messageLabel")}
                 value={form.message}
                 onChange={(event) =>
                   setForm((current) => ({
@@ -349,8 +349,8 @@ export function CommercialLeadDialog({
                     message: event.target.value,
                   }))
                 }
-                placeholder="Kac saha yonetiyorsunuz, hangi modulleri oncelikli dusunuyorsunuz, nasil bir kurulum bekliyorsunuz?"
-                hint="Bu alan sayesinde size daha isabetli paket ve gecis secenegi hazirlayabiliriz."
+                placeholder={t("messagePlaceholder")}
+                hint={t("messageHint")}
                 rows={5}
               />
 
@@ -361,19 +361,14 @@ export function CommercialLeadDialog({
               ) : null}
 
               <div className="flex flex-col gap-3 border-t border-border pt-5 sm:flex-row sm:justify-end">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onClose}
-                  disabled={submitting}
-                >
-                  Vazgec
+                <Button type="button" variant="outline" onClick={onClose} disabled={submitting}>
+                  {t("cancelButton")}
                 </Button>
                 <Button type="submit" disabled={submitting}>
                   {submitting ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Gonderiliyor
+                      {t("submitting")}
                     </>
                   ) : (
                     copy.primaryCta

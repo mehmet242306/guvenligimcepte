@@ -18,6 +18,9 @@ export async function PublicLegalBar() {
           <Link href="/terms" className="font-medium text-foreground/90 underline-offset-4 hover:underline">
             {t("footerTerms")}
           </Link>
+          <Link href="/cookie-policy" className="text-muted-foreground underline-offset-4 hover:underline">
+            Çerez Politikası
+          </Link>
           <Link href="/refund-policy" className="text-muted-foreground underline-offset-4 hover:underline">
             {t("footerRefund")}
           </Link>
@@ -50,6 +53,7 @@ export async function PublicSiteFooter() {
       links: [
         { label: t("footerPrivacy"), href: "/privacy" },
         { label: t("footerTerms"), href: "/terms" },
+        { label: "Çerez Politikası", href: "/cookie-policy" },
         { label: t("footerRefund"), href: "/refund-policy" },
       ],
     },
@@ -113,6 +117,9 @@ export async function PublicSiteFooter() {
               </Link>
               <Link href="/terms" className={`${linkClass} font-medium text-slate-400 hover:text-white`}>
                 {t("footerTerms")}
+              </Link>
+              <Link href="/cookie-policy" className={linkClass}>
+                Çerez Politikası
               </Link>
               <Link href="/refund-policy" className={linkClass}>
                 {t("footerRefund")}

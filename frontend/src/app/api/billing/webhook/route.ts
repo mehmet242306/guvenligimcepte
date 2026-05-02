@@ -5,6 +5,8 @@ import {
   getPlanKeyByPaddlePriceId,
   verifyPaddleWebhookSignature,
 } from "@/lib/billing/paddle";
+import { sendBillingNotificationEmail } from "@/lib/mailer";
+import { resolveAppOriginFromRequest } from "@/lib/server/app-origin";
 
 type PaddleEvent = {
   event_id?: string;
@@ -19,6 +21,21 @@ type PaddleCustomData = {
   plan_key?: string;
   billing_cycle?: "monthly" | "yearly";
 };
+
+type SubscriptionPersistResult =
+  | {
+      ok: true;
+      skipped?: false;
+      userId: string;
+      organizationId: string;
+      planId: string;
+      planName: string;
+      billingCycle: "monthly" | "yearly";
+      status: string;
+      nextBillingDate: string | null;
+    }
+  | { ok: true; skipped: true }
+  | { ok: false };
 
 function asObject(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" && !Array.isArray(value)
@@ -44,6 +61,7 @@ function getPriceId(data: Record<string, unknown>) {
 function mapPaddleStatus(status: string | undefined, eventType: string) {
   const normalized = String(status ?? "").toLowerCase();
 
+  if (eventType === "transaction.payment_failed") return "past_due";
   if (eventType === "subscription.canceled" || normalized === "canceled") {
     return "cancelled";
   }
@@ -121,7 +139,7 @@ async function resolvePlanId({
 async function upsertSubscription(
   eventType: string,
   data: Record<string, unknown>,
-): Promise<boolean> {
+): Promise<SubscriptionPersistResult> {
   const service = createServiceClient();
   const customData = getCustomData(data);
   const userId = customData.user_id;
@@ -131,7 +149,7 @@ async function upsertSubscription(
     console.warn("[billing.webhook] skip: missing custom_data user_id or organization_id", {
       eventType,
     });
-    return true;
+    return { ok: true, skipped: true };
   }
 
   const subscriptionId =
@@ -154,8 +172,14 @@ async function upsertSubscription(
       priceId,
       planKey: customData.plan_key,
     });
-    return false;
+    return { ok: false };
   }
+
+  const { data: planRow } = await service
+    .from("subscription_plans")
+    .select("display_name, plan_key")
+    .eq("id", planId)
+    .maybeSingle();
 
   const billingCycleResolved =
     customData.billing_cycle === "monthly" || customData.billing_cycle === "yearly"
@@ -213,17 +237,39 @@ async function upsertSubscription(
       .eq("id", existing.data.id);
     if (updateError) {
       console.error("[billing.webhook] user_subscriptions update failed:", updateError.message);
-      return false;
+      return { ok: false };
     }
-    return true;
+    return {
+      ok: true,
+      userId,
+      organizationId,
+      planId,
+      planName:
+        String(planRow?.display_name ?? "").trim() ||
+        String(planRow?.plan_key ?? customData.plan_key ?? "RiskNova plan").trim(),
+      billingCycle: billingCycleResolved,
+      status,
+      nextBillingDate,
+    };
   }
 
   const { error: insertError } = await service.from("user_subscriptions").insert(payload);
   if (insertError) {
     console.error("[billing.webhook] user_subscriptions insert failed:", insertError.message);
-    return false;
+    return { ok: false };
   }
-  return true;
+  return {
+    ok: true,
+    userId,
+    organizationId,
+    planId,
+    planName:
+      String(planRow?.display_name ?? "").trim() ||
+      String(planRow?.plan_key ?? customData.plan_key ?? "RiskNova plan").trim(),
+    billingCycle: billingCycleResolved,
+    status,
+    nextBillingDate,
+  };
 }
 
 export async function POST(request: NextRequest) {
@@ -266,6 +312,7 @@ export async function POST(request: NextRequest) {
 
   const subscriptionEventTypes = [
     "transaction.completed",
+    "transaction.payment_failed",
     "subscription.created",
     "subscription.updated",
     "subscription.activated",
@@ -278,8 +325,82 @@ export async function POST(request: NextRequest) {
 
   if (subscriptionEventTypes.includes(eventType)) {
     const persisted = await upsertSubscription(eventType, asObject(event.data));
-    if (!persisted) {
+    if (!persisted.ok) {
       return NextResponse.json({ error: "subscription_persist_failed" }, { status: 500 });
+    }
+
+    if (!persisted.skipped && !duplicateEvent) {
+      try {
+        const { data: profile } = await service
+          .from("user_profiles")
+          .select("full_name, email")
+          .eq("auth_user_id", persisted.userId)
+          .maybeSingle();
+        const recipientEmail = profile?.email?.trim();
+
+        if (recipientEmail) {
+          const eventKey = `billing:${eventId}:${recipientEmail}`;
+          const { error: emailLogError } = await service.from("email_notification_logs").insert({
+            event_key: eventKey,
+            notification_type: "billing_subscription_status",
+            user_id: persisted.userId,
+            organization_id: persisted.organizationId,
+            recipient_email: recipientEmail,
+            status: "sent",
+            metadata: {
+              paddle_event_id: eventId,
+              paddle_event_type: eventType,
+              plan_id: persisted.planId,
+              plan_name: persisted.planName,
+              subscription_status: persisted.status,
+            },
+          });
+
+          if (!emailLogError) {
+            const billingEmailStatus =
+              persisted.status === "active" || persisted.status === "trialing"
+                ? "active"
+                : persisted.status === "past_due"
+                  ? "past_due"
+                  : persisted.status === "cancelled"
+                    ? "cancelled"
+                    : eventType === "subscription.paused"
+                      ? "paused"
+                      : "updated";
+
+            try {
+              await sendBillingNotificationEmail({
+                to: recipientEmail,
+                fullName: profile?.full_name ?? recipientEmail,
+                planName: persisted.planName,
+                billingCycle: persisted.billingCycle === "yearly" ? "Yillik" : "Aylik",
+                status: billingEmailStatus,
+                dashboardUrl: `${resolveAppOriginFromRequest(request)}/pricing`,
+                nextBillingDateLabel: persisted.nextBillingDate
+                  ? new Intl.DateTimeFormat("tr-TR", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    }).format(new Date(persisted.nextBillingDate))
+                  : null,
+              });
+            } catch (mailError) {
+              await service
+                .from("email_notification_logs")
+                .update({
+                  status: "failed",
+                  error_message:
+                    mailError instanceof Error ? mailError.message.slice(0, 500) : "mail_failed",
+                })
+                .eq("event_key", eventKey);
+              console.error("[billing.webhook] billing email failed:", mailError);
+            }
+          } else if (!emailLogError.message.toLowerCase().includes("duplicate")) {
+            console.error("[billing.webhook] email log failed:", emailLogError.message);
+          }
+        }
+      } catch (mailSetupError) {
+        console.error("[billing.webhook] billing email setup failed:", mailSetupError);
+      }
     }
   }
 

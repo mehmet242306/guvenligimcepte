@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { AuthShell } from "@/components/layout/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,19 +13,20 @@ export default async function ForgotPasswordPage({
   const params = await searchParams;
   const error = params?.error;
   const sent = params?.sent === "1";
+  const t = await getTranslations("auth.forgotPage");
 
   return (
     <AuthShell
-      eyebrow="Şifre sıfırlama"
-      title="Şifreni sıfırla"
-      description="E-posta adresini gir, sana şifre yenileme bağlantısı gönderelim."
+      eyebrow={t("eyebrow")}
+      title={t("title")}
+      description={t("description")}
       footer={
         <p className="text-sm leading-7 text-muted-foreground">
           <Link
             href="/login"
             className="font-medium text-primary underline underline-offset-4"
           >
-            Giriş ekranına dön
+            {t("backToLogin")}
           </Link>
         </p>
       }
@@ -37,7 +39,7 @@ export default async function ForgotPasswordPage({
 
       {sent ? (
         <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-          Eğer e-posta adresi uygunsa, şifre yenileme bağlantısı gönderildi.
+          {t("sentBanner")}
         </div>
       ) : null}
 
@@ -48,18 +50,13 @@ export default async function ForgotPasswordPage({
           type="email"
           required
           autoComplete="email"
-          label="E-posta"
-          placeholder="ornek@kurum.com"
-          hint="Kayıt olduğun e-posta adresini gir."
+          label={t("emailLabel")}
+          placeholder={t("emailPlaceholder")}
+          hint={t("emailHint")}
         />
 
-        <Button
-          type="submit"
-          formAction={sendResetLink}
-          className="w-full"
-          size="lg"
-        >
-          Yenileme Bağlantısı Gönder
+        <Button type="submit" formAction={sendResetLink} className="w-full" size="lg">
+          {t("submitButton")}
         </Button>
       </form>
     </AuthShell>

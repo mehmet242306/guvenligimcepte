@@ -21,7 +21,14 @@
     "saved": "Kaydedildi",
     "menu": "Menü",
     "openMenu": "Menüyü aç",
-    "closeMenu": "Menüyü kapat"
+    "closeMenu": "Menüyü kapat",
+    "retry": "Yeniden dene",
+    "genericError": "Bir sorun oluştu. Lütfen tekrar deneyin.",
+    "emptyTitle": "Henüz içerik yok",
+    "emptyDescription": "Bu görünüm için gösterilecek veri bulunmuyor."
+  },
+  "brand": {
+    "tagline": "AI destekli İSG platformu"
   },
   "nav": {
     "dashboard": "Panel",
@@ -125,60 +132,50 @@
     "ctaTitle": "Risk modülünü ürün vitrini hâline getirin",
     "ctaDescription": "Profesyonel görünüm, güçlü altyapı ve AI desteği ile İSG süreçlerinizi tek platformda yönetin.",
     "metaTitle": "İSG'yi tek platformdan yönetin | RiskNova",
-    "metaDescription":
-      "Yapay zekâ destekli İSG yazılımı: risk analizi, saha denetimi, bulgu ve aksiyon takibi ile raporlamayı tek platformda birleştirin. Bireysel, OSGB ve kurumsal.",
+    "metaDescription": "Yapay zekâ destekli İSG yazılımı: risk analizi, saha denetimi, bulgu ve aksiyon takibi ile raporlamayı tek platformda birleştirin. Bireysel, OSGB ve kurumsal.",
     "metaOgTitle": "RiskNova — İSG'yi tek platformdan yönetin",
-    "metaOgDescription":
-      "Risk ölçümünden sahadaki işe ve rapora kadar İSG süreçlerini tek yerden yönetin.",
+    "metaOgDescription": "Risk ölçümünden sahadaki işe ve rapora kadar İSG süreçlerini tek yerden yönetin.",
     "heroTitlePrefix": "İSG'yi",
     "heroTitleHighlight": "tek platformdan",
     "heroTitleSuffix": "yönetin",
-    "heroSubtitle":
-      "Risk ölçümünden denetim bulgularına, aksiyon takibinden rapor ve arşive kadar süreçleri tek çatı altında birleştirir. Bireysel kullanımdan OSGB ve çok lokasyonlu kurumsal yapıya kadar aynı ürünle ölçeklenir.",
+    "heroSubtitle": "Risk ölçümünden denetim bulgularına, aksiyon takibinden rapor ve arşive kadar süreçleri tek çatı altında birleştirir. Bireysel kullanımdan OSGB ve çok lokasyonlu kurumsal yapıya kadar aynı ürünle ölçeklenir.",
     "statsValueUsers": "500+",
     "statsValueUptime": "%99.5",
     "statsValueAnalysis": "15sn",
     "statsValueScore": "R-SKOR",
     "solutionsLeadBold": "OSGB veya çok lokasyonlu kurum musunuz?",
-    "solutionsLeadRest":
-      "Paket özetlerini inceleyin, teklif veya kayıt üzerinden lead bırakın; ekibimiz dönüş yapsın.",
+    "solutionsSectionAria": "OSGB ve kurumsal çözüm bağlantıları",
+    "solutionsLeadRest": "Paket özetlerini inceleyin, teklif veya kayıt üzerinden lead bırakın; ekibimiz dönüş yapsın.",
     "osgbCtaShort": "OSGB: teklif ve iletişim",
     "enterpriseCtaShort": "Kurumsal: teklif ve iletişim",
     "valueTryEyebrow": "Hemen deneyin",
     "valueTryTitle": "Risk modülü, denetim ve raporlama aynı ürün deneyiminde",
-    "valueTryDesc":
-      "Form, sonuç, skor geçmişi ve çıktılar tutarlı ekranlarla sunulur; ekibiniz operasyonda kaldığı yerden devam eder.",
+    "valueTryDesc": "Form, sonuç, skor geçmişi ve çıktılar tutarlı ekranlarla sunulur; ekibiniz operasyonda kaldığı yerden devam eder.",
     "valueTryRegister": "Hesap Oluştur",
     "valueTryLogin": "Giriş Yap",
     "testimonialsEyebrow": "MÜŞTERİ YORUMLARI",
     "testimonialsTitle1": "Kullanıcılarımız",
     "testimonialsTitle2": "Ne Diyor",
-    "testimonial1Quote":
-      "RiskNova ile saha denetimlerimiz çok daha sistematik hale geldi. AI yorumları gerçekten faydalı.",
+    "testimonial1Quote": "RiskNova ile saha denetimlerimiz çok daha sistematik hale geldi. AI yorumları gerçekten faydalı.",
     "testimonial1Author": "Mehmet K.",
     "testimonial1Role": "İSG Uzmanı",
-    "testimonial2Quote":
-      "Tek platformda risk analizi, raporlama ve takip yapabilmek operasyonel verimliliğimizi artırdı.",
+    "testimonial2Quote": "Tek platformda risk analizi, raporlama ve takip yapabilmek operasyonel verimliliğimizi artırdı.",
     "testimonial2Author": "Ayşe T.",
     "testimonial2Role": "İSG Müdürü",
-    "testimonial3Quote":
-      "Kurumsal görünümü ve kullanım kolaylığı sayesinde ekip adaptasyonu çok hızlı oldu.",
+    "testimonial3Quote": "Kurumsal görünümü ve kullanım kolaylığı sayesinde ekip adaptasyonu çok hızlı oldu.",
     "testimonial3Author": "Can D.",
     "testimonial3Role": "Operasyon Yöneticisi",
     "bottomCtaLine1": "İSG Süreçlerinizi",
     "bottomCtaLine2": "Dönüştürün",
-    "bottomCtaDescription":
-      "RiskNova ile risk analizinden raporlamaya kadar tüm İSG operasyonlarınızı tek platformda yönetin.",
+    "bottomCtaDescription": "RiskNova ile risk analizinden raporlamaya kadar tüm İSG operasyonlarınızı tek platformda yönetin.",
     "ctaDemo": "Demo Talep Et",
-    "footerBlurb":
-      "AI destekli İSG risk analizi ve operasyon platformu. Profesyonel, güvenilir, modern.",
+    "footerBlurb": "AI destekli İSG risk analizi ve operasyon platformu. Profesyonel, güvenilir, modern.",
     "footerCompany": "Şirket",
     "footerSupport": "Destek",
     "footerHome": "Ana Sayfa",
     "footerHelp": "Yardım",
     "footerRefund": "İade Politikası",
-    "subscriptionDisclaimer":
-      "RiskNova; abonelik tabanlı iş sağlığı ve güvenliği yazılımı sunar.",
+    "subscriptionDisclaimer": "RiskNova; abonelik tabanlı iş sağlığı ve güvenliği yazılımı sunar.",
     "footerDescription": "AI destekli İSG karar destek platformu",
     "footerProduct": "Ürün",
     "footerLegal": "Yasal",
@@ -186,6 +183,36 @@
     "footerTerms": "Kullanım Koşulları",
     "footerContact": "İletişim",
     "footerRights": "Tüm hakları saklıdır."
+  },
+  "demoRequest": {
+    "dialogTitle": "Demo Talep Et",
+    "dialogSubtitle": "İhtiyacına özel kısa bir sunum planlayalım",
+    "closeAria": "Kapat",
+    "successTitle": "Talebiniz alındı",
+    "successBody": "Kısa süre içinde ekibimiz sizinle iletişime geçecek. Geri bildirimin için teşekkürler.",
+    "successClose": "Kapat",
+    "fieldName": "Ad Soyad *",
+    "fieldEmail": "E-posta *",
+    "fieldPhone": "Telefon",
+    "fieldCompany": "Firma / Kurum",
+    "placeholderName": "Mehmet Yılmaz",
+    "placeholderEmail": "ornek@firma.com",
+    "placeholderPhone": "+90 5xx xxx xx xx",
+    "placeholderCompany": "XYZ Ltd. Şti.",
+    "accountTypeLabel": "Hesap Tipi",
+    "accountTypeUnset": "Bilmiyorum / Karar vermedim",
+    "accountTypeIndividual": "Bireysel (tek uzman)",
+    "accountTypeOsgb": "OSGB",
+    "accountTypeEnterprise": "Kurumsal / Firma",
+    "messageLabel": "Mesajın (opsiyonel)",
+    "messagePlaceholder": "Hangi modüllerle ilgileniyorsun? Kaç çalışanınız var? Uygun zamanların...",
+    "privacyLabel": "KVKK Aydınlatma:",
+    "privacyText": "İletişim bilgilerimin yalnızca bu talebe yanıt için işlenmesini kabul ediyorum.",
+    "privacyError": "Lütfen KVKK aydınlatmasını onaylayın.",
+    "submitError": "Talep gönderilemedi.",
+    "cancel": "Vazgeç",
+    "submit": "Talebi Gönder",
+    "submitting": "Gönderiliyor..."
   },
   "auth": {
     "loginTitle": "Hesabına giriş yap",
@@ -209,7 +236,342 @@
     "forgotTitle": "Şifreni sıfırla",
     "forgotDescription": "E-posta adresini gir, sana şifre sıfırlama bağlantısı gönderelim.",
     "forgotButton": "Sıfırlama bağlantısı gönder",
-    "forgotBack": "Girişe dön"
+    "forgotBack": "Girişe dön",
+    "shell": {
+      "secureAccess": "Güvenli erişim",
+      "backHome": "Ana sayfaya dön",
+      "highlightIndividualTitle": "Bireysel",
+      "highlightIndividualDesc": "Bağımsız uzman, hekim, DSP ve tek başına çalışan profesyoneller için hızlı başlangıç akışı.",
+      "highlightOsgbTitle": "OSGB",
+      "highlightOsgbDesc": "Müşteri firmaları, personel, görevlendirme ve iş takibini tek panelde toplayan ekip modeli.",
+      "highlightCorpTitle": "Kurumsal",
+      "highlightCorpDesc": "Çok lokasyonlu ve özel gereksinimli yapılar için iletişim odaklı kurumsal akış.",
+      "fallbackSpotlight": "RiskNova yalnızca bir panel değildir; risk analizi, saha operasyonu, belge akışları ve ekip koordinasyonunu tek ürün dili içinde birleştiren profesyonel bir İSG altyapısıdır."
+    },
+    "loginPage": {
+      "eyebrow": "Giriş",
+      "title": "Hesabınıza giriş yapın",
+      "description": "RiskNova hesabınıza giriş yapın. Platform yöneticileri yönetim konsoluna, diğer kullanıcılar hesap türüne uygun çalışma alanına yönlendirilir.",
+      "highlight1Title": "Bireysel giriş",
+      "highlight1Desc": "Kendi firmalarını, kurumlarını ve çalışma alanlarını yöneten bireysel profesyoneller için.",
+      "highlight2Title": "OSGB girişi",
+      "highlight2Desc": "Müşteri firmaları, personel, görevlendirme ve risk süreçlerini yöneten OSGB ekipleri için.",
+      "highlight3Title": "Platform yönetimi",
+      "highlight3Desc": "Platform yöneticisi rolü herkese açık bir hesap türü değildir; yetkili kullanıcılar oturum sonrası yönetim konsoluna yönlendirilir.",
+      "spotlightP1": "Giriş ekranı tüm kullanıcılar için ortaktır; oturum sonrası yönlendirme hesap bağlamınıza göre yapılır.",
+      "spotlightP2": "Platform yöneticisi rolü herkese açık kayıt akışında sunulmaz. Müşteri tarafında bireysel, OSGB ve kurumsal hesap yolları gösterilir.",
+      "footerPrefix": "Hesabınız yok mu?",
+      "footerRegisterLink": "Kayıt olun",
+      "passwordUpdatedBanner": "Şifreniz güncellendi. Yeni şifrenizle giriş yapabilirsiniz.",
+      "emailLabel": "E-posta",
+      "emailPlaceholder": "ornek@kurum.com",
+      "passwordLabel": "Şifre",
+      "passwordPlaceholder": "Şifrenizi girin",
+      "submitButton": "Giriş yap",
+      "forgotLink": "Şifremi unuttum"
+    },
+    "registerPage": {
+      "eyebrow": "Yeni hesap",
+      "title": "RiskNova hesabınızı oluşturun",
+      "description": "Önce hesap türünü, bölgeyi ve dili seçin. Bireysel hesaplarda kayıt formu hemen açılır; OSGB ve firma yapılarında iletişim ve teklif akışı başlar.",
+      "highlight1Title": "Bireysel self servis",
+      "highlight1Desc": "Bölge ve dil seçiminden sonra kaydı tamamlayıp onboarding ile devam edersiniz.",
+      "highlight2Title": "Paketler ayrı sayfada",
+      "highlight2Desc": "Fiyatlandırma ve paket karşılaştırması yalnızca Paketler sayfasında; kayıt ekranı sade kalır.",
+      "highlight3Title": "Kurum için özel teklif",
+      "highlight3Desc": "Çok lokasyonlu veya özel gereksinimli yapılar için iletişim ve teklif süreci işler.",
+      "footerPrefix": "Zaten hesabınız var mı?",
+      "footerLoginLink": "Giriş yapın",
+      "demoExpiredTitle": "Demo süreniz sona erdi.",
+      "demoExpiredBody": "RiskNova demo erişimi en fazla {hours} saat için tanımlanır; süre dolunca oturum kapanır. Aşağıdan ücretsiz hesabınızı oluşturarak veya Google ile devam ederek kalıcı hesaba geçebilirsiniz.",
+      "demoDisabledTitle": "Demo erişiminiz kapatıldı.",
+      "demoDisabledBody": "Yönetici tarafından sonlandırılmış olabilir (demo hesaplar genelde {hours} saat ile sınırlıdır). Kalıcı kullanım için aşağıdan hesap oluşturabilirsiniz.",
+      "demoLegacyExpiredLead": "Demo oturumunuz sona erdi.",
+      "demoLegacyExpiredRest": "Geçici demo artık sunulmuyor. Kalıcı hesap için aşağıdan kayıt olabilir veya",
+      "demoLegacyExpiredLogin": "giriş yapabilirsiniz",
+      "demoLegacyExpiredSupport": "Sorun olursa şu adrese yazabilirsiniz:",
+      "demoLegacyDisabledLead": "Demo erişiminiz kapatıldı.",
+      "demoLegacyDisabledRest": "Geçici demo artık sunulmuyor. Kalıcı kullanım için kayıt olun veya",
+      "demoLegacyDisabledLogin": "giriş yapın",
+      "demoLegacyDisabledHelp": "Yardım:",
+      "checkEmailBanner": "Kayıt işlemi başlatıldı. Onay gerekiyorsa e-posta kutunuzu kontrol edin.",
+      "emailLabel": "E-posta",
+      "emailPlaceholder": "ornek@kurum.com",
+      "emailHint": "Kayıt sonrası onboarding ve erişim işlemleri bu adres üzerinden yürür.",
+      "passwordLabel": "Şifre",
+      "passwordPlaceholder": "En az 8 karakter",
+      "passwordHint": "Güçlü bir şifre belirleyin. Hesap türü seçimini kayıt sonrası tamamlayacaksınız.",
+      "submitButton": "Hesap oluştur"
+    },
+    "forgotPage": {
+      "eyebrow": "Şifre sıfırlama",
+      "title": "Şifrenizi sıfırlayın",
+      "description": "E-posta adresinizi girin; size şifre yenileme bağlantısı gönderelim.",
+      "backToLogin": "Giriş ekranına dönün",
+      "sentBanner": "E-posta adresi uygunsa şifre yenileme bağlantısı gönderildi.",
+      "emailLabel": "E-posta",
+      "emailPlaceholder": "ornek@kurum.com",
+      "emailHint": "Kayıt olduğunuz e-posta adresini girin.",
+      "submitButton": "Yenileme bağlantısı gönder"
+    },
+    "resetPage": {
+      "eyebrow": "Yeni şifre",
+      "eyebrowTemp": "Geçici giriş",
+      "title": "Yeni şifre belirleyin",
+      "titleRequired": "Yeni şifre belirleyin",
+      "description": "Yeni şifrenizi girin ve hesabınıza dönün.",
+      "descriptionRequired": "Geçici bilgilerle oturum açtınız. Devam etmek için önce yeni şifrenizi belirlemelisiniz.",
+      "backToLogin": "Giriş ekranına dönün",
+      "requiredBanner": "Güvenlik gereği ilk girişte şifrenizi değiştirmeniz zorunludur.",
+      "mfaBanner": "Çok faktörlü doğrulama tamamlandı. Şimdi yeni şifrenizi belirleyebilirsiniz.",
+      "passwordLabel": "Yeni şifre",
+      "passwordPlaceholder": "En az 8 karakter",
+      "passwordHint": "Güvenli bir şifre belirleyin.",
+      "submitButton": "Şifreyi güncelle"
+    },
+    "social": {
+      "supabaseError": "Kimlik doğrulama hizmetine bağlanılamadı.",
+      "oauthRedirectHint": "Google girişi için Supabase yönlendirme adresi tanımlı olmalı; Authentication URL ayarlarına https://getrisknova.com/auth/callback (ve ortamınızdaki adresler) eklenmelidir.",
+      "oauthGenericError": "Giriş sırasında bir hata oluştu. Lütfen tekrar deneyin.",
+      "googleContinue": "Google ile {brand} üzerinde devam et",
+      "googleSignUp": "Google ile {brand} için kayıt ol",
+      "divider": "veya e-posta ile devam edin"
+    },
+    "registerWizard": {
+      "prevAria": "Önceki adım",
+      "closeAria": "Kayıt penceresini kapat",
+      "startWizard": "Kayıt sorularını başlatın",
+      "summaryTitle": "Kayıt yolu hazır",
+      "summaryChange": "Değiştir",
+      "commercialIntroOsgbTitle": "OSGB teklif akışı",
+      "commercialIntroEnterpriseTitle": "Kurumsal teklif akışı",
+      "commercialIntroBody": "Seçtiğiniz ülke, dil ve rol bilgisi form ile birlikte ekibimize iletilir; paket ve kurulum için size dönüş yapılır.",
+      "steps": {
+        "account": {
+          "eyebrow": "1 / 4",
+          "title": "Hangi hesap türüyle başlıyorsunuz?",
+          "description": "Bu seçim kayıt sonrası açılacak akışı belirler."
+        },
+        "country": {
+          "eyebrow": "2 / 4",
+          "title": "Çalışma alanınızın ülkesi hangisi?",
+          "description": "Mevzuat, RAG kapsamı ve varsayılan çalışma alanı bu seçime göre kurulur."
+        },
+        "language": {
+          "eyebrow": "3 / 4",
+          "title": "Arayüz ve belge dili ne olsun?",
+          "description": "Henüz tüm sayfalar çevrilmemiş olsa da tercih hesap kaydınıza yazılır."
+        },
+        "role": {
+          "eyebrow": "4 / 4",
+          "title": "İlk rolünüz ne olacak?",
+          "description": "Bu rol onboarding sırasında ilk çalışma alanının temelini oluşturur."
+        }
+      },
+      "accounts": {
+        "individual": {
+          "title": "Bireysel profesyonel",
+          "description": "Uzman, hekim, DSP veya denetçi olarak kendi çalışma alanınızla başlamak için."
+        },
+        "osgb": {
+          "title": "OSGB",
+          "description": "Firma portföyü, ekip ve görevlendirme süreçleri için kurulum talebi oluşturun."
+        },
+        "enterprise": {
+          "title": "Firma / kurumsal",
+          "description": "Çok lokasyonlu veya özel mevzuat ihtiyacı olan kurumsal yapı için."
+        }
+      },
+      "countryHints": {
+        "TR": "Türkiye mevzuatı ve Türkçe varsayılanlar.",
+        "AZ": "Azerbaycan bölgesi ve Azerbaycanca varsayılanlar.",
+        "US": "ABD operasyonları ve İngilizce varsayılanlar.",
+        "GB": "Birleşik Krallık operasyonları ve İngilizce varsayılanlar.",
+        "DE": "Almanya bölgesi ve Almanca varsayılanlar.",
+        "FR": "Fransa bölgesi ve Fransızca varsayılanlar.",
+        "ES": "İspanya bölgesi ve İspanyolca varsayılanlar.",
+        "RU": "Rusça dil ve bölge hazırlığı.",
+        "SA": "Arapça dil ve Körfez operasyon hazırlığı.",
+        "AE": "İngilizce / Arapça ekipleri için.",
+        "CN": "Çince dil ve Asya-Pasifik hazırlığı.",
+        "JP": "Japonca dil ve Asya-Pasifik hazırlığı.",
+        "KR": "Korece dil ve Asya-Pasifik hazırlığı.",
+        "IN": "Hintçe / İngilizce ekipleri için.",
+        "ID": "Bahasa Indonesia dil tercihi."
+      },
+      "roles": {
+        "safety_professional": {
+          "title": "İSG uzmanı",
+          "description": "Risk analizi, saha denetimi, aksiyon ve mevzuat takibi."
+        },
+        "occupational_physician": {
+          "title": "İşyeri hekimi",
+          "description": "Sağlık gözetimi, hekim süreçleri ve çalışan kayıtları."
+        },
+        "safety_officer": {
+          "title": "DSP / sağlık personeli",
+          "description": "Sağlık ekibi, saha destek ve takip görevleri."
+        },
+        "auditor": {
+          "title": "Denetçi",
+          "description": "Saha denetimi, uygunsuzluk ve raporlama odaklı rol."
+        },
+        "workspace_admin": {
+          "title": "Çalışma alanı yöneticisi",
+          "description": "Kullanıcı, firma, rol ve çalışma alanı ayarlarını yönetir."
+        }
+      }
+    },
+    "demoModal": {
+      "closeAria": "Kapat",
+      "title": "Teşekkürler!",
+      "subtitle": "RiskNova'yı denediğiniz için",
+      "bodyDisabled": "Demo erişiminiz yönetici tarafından kapatıldı.",
+      "bodyExpired": "Demo süreniz doldu. RiskNova demo oturumları en fazla {hours} saat için geçerlidir; bu süre sonunda oturum kapanır.",
+      "calloutExpiredLead": "Hatırlatma:",
+      "calloutExpiredRest": "Demo kullanımını {hours} saat içinde tamamlamanız gerekir; süre dolunca yalnızca kendi ücretsiz veya kurumsal hesabınızı oluşturarak devam edebilirsiniz.",
+      "calloutDisabledLead": "Bilgi:",
+      "calloutDisabledRest": "Demo hesaplar genelde {hours} saat ile sınırlıdır; erişimin ayrıca yönetici tarafından da sonlandırılmış olabilir.",
+      "pathsIntro": "Kaldığınız yerden devam etmek ve",
+      "pathsHighlight": "tüm özelliklere tam erişim",
+      "pathsSuffix": "için hemen kendi hesabınızı oluşturun. İhtiyacınıza göre üç akıştan birini seçebilirsiniz:",
+      "pathIndividualLabel": "Bireysel",
+      "pathIndividualDesc": "bağımsız profesyoneller",
+      "pathOsgbLabel": "OSGB",
+      "pathOsgbDesc": "firma ve personel yönetimi",
+      "pathEnterpriseLabel": "Kurumsal",
+      "pathEnterpriseDesc": "çok lokasyonlu kurumsal kullanım",
+      "ctaPrimary": "Kayıt olmaya başla →",
+      "ctaLater": "Daha sonra"
+    }
+  },
+  "pricing": {
+    "heroEyebrow": "Bireysel planlar",
+    "heroTitle": "İSG profesyonelleri için net ve ölçeklenebilir paketler.",
+    "heroDescription": "Ücretsiz paketle başlayın; Starter, Plus ve Professional kademeleriyle Nova, risk analizi, saha denetimi ve kütüphane destekli belge üretimini çalışma temponuza göre büyütün. Ücretli planlarda her kart üzerinden aylık veya yıllık faturalandırmayı seçebilirsiniz.",
+    "introTitle": "Bireysel planınızı seçin",
+    "introBody": "Ücretli planlarda her kart için aylık veya yıllık ödemeyi ayrı ayrı seçebilirsiniz. Yıllık ödemede on iki ay kullanım için on ay ücret alınır (karttaki toplam buna göre güncellenir). OSGB ve kurumsal müşteriler teklif akışını kullanır. Her kartta «Kim için?» ve «Bir üst pakete geç» alanlarıyla profilinize uygun sonraki adımı görebilirsiniz.",
+    "billingPeriodAria": "Ödeme periyodu",
+    "monthly": "Aylık",
+    "yearly": "Yıllık",
+    "yearlyBadge": "· 2 ay avantaj",
+    "whoForLabel": "Kim için?",
+    "upgradeSectionTitle": "Bir üst pakete geç",
+    "limitNotIncluded": "Dahil değil",
+    "priceSuffixMonth": "/ ay",
+    "priceSuffixYear": "/ yıl",
+    "priceFreeNote": "Ücretsiz başlangıç",
+    "priceYearlyNote": "Ayda yaklaşık {monthly} ABD doları karşılığı — 2 ay avantaj",
+    "priceMonthlyNote": "Aylık ödeme; istediğiniz zaman yükseltin",
+    "freeStart": "Ücretsiz başlayın",
+    "currentPlan": "Mevcut plan",
+    "selectPlan": "Paketi seçin",
+    "osgbOfferLink": "OSGB teklifi",
+    "enterpriseOfferLink": "Kurumsal teklif",
+    "planHighlights": {
+      "mostPopular": "En çok tercih edilen",
+      "premium": "Premium"
+    },
+    "actions": {
+      "nova_message": "Nova mesajları",
+      "ai_analysis": "Yapay zekâ analizleri",
+      "document_generation": "Belge üretimi",
+      "risk_analysis": "Risk analizleri"
+    },
+    "footerLimitsTitle": "Limitler sunucuda uygulanır",
+    "footerLimitsBody": "Nova, analiz ve üretim hakları yalnızca arayüzde değil; API katmanında da tüketilir.",
+    "footerOsgbTitle": "OSGB ve kurumsal ayrı",
+    "footerOsgbBody": "Çoklu koltuk, firma portföyü, white label, özel onboarding ve kurumsal faturalandırma ayrı teklif akışıyla yönetilir.",
+    "footerPro149Title": "Önerilen: Professional 149",
+    "footerPro149Body": "Yoğun bireysel profesyoneller için analiz, belge ve saha kapasitesinde dengeli üst seviye.",
+    "enterpriseTitle": "OSGB veya kurumsal kullanım",
+    "enterpriseBody": "Birden fazla kullanıcı, müşteri portföyü, white label, özel onboarding ve kurumsal faturalandırma için bu akışta self servis ödeme yoktur; kapsam ve sözleşmeyi netleştirmek üzere bizimle iletişime geçin.",
+    "enterpriseOsgbCta": "OSGB teklif talebi",
+    "enterpriseCorporateCta": "Kurumsal teklif talebi",
+    "enterpriseExplore": "Ürünü inceleyin",
+    "enterpriseFootnoteLead": "Çözüm sayfaları:",
+    "enterpriseFootnoteOsgb": "OSGB çözümü",
+    "enterpriseFootnoteEnterprise": "Kurumsal çözüm",
+    "plans": {
+      "free": {
+        "name": "Ücretsiz",
+        "whoFor": "RiskNova’yı denemek, öğrenciler ve seyrek kullanım.",
+        "description": "Nova sohbeti, analizler ve sınırlı belge akışını aylık kotalarla keşfetmek için giriş seviyesi.",
+        "upgradeHint": "Her ay öngörülebilir kota gerektiğinde Starter’a geçin.",
+        "features": [
+          "Aylık limitler dahilinde Nova sohbeti",
+          "Risk süreçleri için temel yapay zekâ analizleri",
+          "Sınırlı belge üretimi",
+          "Kotalarla uyumlu saha denetimi kayıtları",
+          "Plan limitleri dahilinde dışa aktarım"
+        ]
+      },
+      "starter": {
+        "name": "Starter",
+        "whoFor": "Serbest çalışan uzmanlar ve orta düzey aylık iş yükü.",
+        "description": "Nova, analiz ve belgeler için daha yüksek kota; haftalık rutinlerin aksamadan işlemesi için.",
+        "upgradeHint": "Olay kök neden analizi ve eğitim çıktıları işinize girdiğinde Plus’a yükseltin.",
+        "features": [
+          "Daha yüksek Nova ve analiz kotası",
+          "Aylık daha fazla belge üretimi",
+          "Olay analizi kotası",
+          "Kota dahilinde eğitim slaytları",
+          "Bireysel kullanıma uygun dışa aktarım"
+        ]
+      },
+      "plus": {
+        "name": "Plus",
+        "whoFor": "Ay içinde birden fazla müşteriyle çalışan aktif danışmanlar.",
+        "description": "Sohbet, analiz, risk modellemesi ve saha verisi için dengeli kapasite.",
+        "upgradeHint": "Denetim ve raporlama hacmi arttığında Professional’a geçin.",
+        "features": [
+          "Temel işlemlerde yükseltilmiş üst sınırlar",
+          "Daha fazla olay ve eğitim çıktısı",
+          "Yoğun haftalar için saha denetimi payı",
+          "Tekrarlayan paketler için belge çıktısı",
+          "Çok müşterili çalışmaya uygun dışa aktarım"
+        ]
+      },
+      "professional": {
+        "name": "Professional 99",
+        "whoFor": "Haftalık kullanımı yoğun tam zamanlı İSG uzmanları.",
+        "description": "Üst Professional kademelerinden önce bireysel kullanım için güçlü tavan.",
+        "upgradeHint": "Ölçekte en dengeli değer için Professional 149’a çıkın.",
+        "features": [
+          "Yüksek Nova ve yapay zekâ analiz limitleri",
+          "Güçlü belge üretim temposu",
+          "Geniş risk ve saha denetimi kapasitesi",
+          "Kota dahilinde olay programı desteği",
+          "Yoğun raporlama için dışa aktarım"
+        ]
+      },
+      "professional_149": {
+        "name": "Professional 149",
+        "whoFor": "Ürünü günlük işinin merkezine koyan kıdemli danışmanlar ve güç kullanıcıları.",
+        "description": "Önerilen kademe — analiz, belge ve saha süreçlerinde cömert üst sınırlar.",
+        "upgradeHint": "En yoğun masa için üst tavan gerekiyorsa Professional 199’a geçin.",
+        "features": [
+          "Çok yüksek Nova ve analiz kotası",
+          "Ağır belge üretim kotası",
+          "Geniş risk ve denetim payı",
+          "Ölçekli olay ve eğitim çıktıları",
+          "Üst düzey iş hacmine uygun dışa aktarım"
+        ]
+      },
+      "professional_199": {
+        "name": "Professional 199",
+        "whoFor": "Zirve bireysel iş yükü ve yüksek işlem beklentisi.",
+        "description": "OSGB veya kurumsal sözleşmeden önce en üst self servis kademe.",
+        "upgradeHint": "Koltuk, portföy veya kurumsal faturalandırma gerekiyorsa OSGB veya kurumsal teklifleri kullanın.",
+        "features": [
+          "Yayındaki en yüksek bireysel kotlar",
+          "Zirve yapay zekâ ve belge kapasitesi",
+          "En geniş denetim ve risk paketleri",
+          "Bu kademede tam olay ve eğitim kotası",
+          "En yoğun raporlama döngüleri için dışa aktarım"
+        ]
+      }
+    }
   },
   "solutionCenter": {
     "title": "Nova",
@@ -478,7 +840,8 @@
     "IN": "Hindistan",
     "SA": "Suudi Arabistan",
     "AZ": "Azerbaycan",
-    "ID": "Endonezya"
+    "ID": "Endonezya",
+    "AE": "Birleşik Arap Emirlikleri"
   },
   "platformAdmin": {
     "leads": {
@@ -594,6 +957,280 @@
       "failed": "Başarısız",
       "expired": "Süresi doldu",
       "cancelled": "İptal edildi"
+    }
+  },
+  "solutions": {
+    "osgbPage": {
+      "metaTitle": "OSGB çözümü ve teklif | RiskNova",
+      "metaDescription": "Birden fazla işyerine hizmet veren OSGB’ler için paket seçenekleri ve özelleştirilmiş teklif talebi.",
+      "heroEyebrow": "OSGB",
+      "heroTitleLead": "Firma portföyünüzü ve ekibinizi",
+      "heroTitleAccent": "tek panelde",
+      "heroTitleTrail": " toplayın.",
+      "heroBody": "Personel, görev takibi ve müşteri işyerleri ile çalışma düzeninizi netleştirin. Bireysel paketlerimiz {starterPrice} Starter ile başlar; OSGB modeli çoklu işyeri portföyü ve ek koltukları kapsadığı için aşağıdaki tutarlar USD üzerinden gösterge segmentlerdir — kesin koşullar teklif formu veya kayıt akışı sonrası netleşir.",
+      "ctaRegister": "Kayıt üzerinden teklif talebi",
+      "ctaForm": "Teklif formuna git",
+      "footerNoteLead": "Çok lokasyonlu tek işyeri modeli için",
+      "footerNoteLink": "kurumsal çözüm sayfasına bakın",
+      "footerNoteTrail": "."
+    },
+    "enterprisePage": {
+      "metaTitle": "Kurumsal çözüm ve teklif | RiskNova",
+      "metaDescription": "Çok lokasyonlu ve özel gereksinimli işyerleri için RiskNova kurumsal teklif talebi ve iletişim.",
+      "heroEyebrow": "Kurumsal",
+      "heroTitle": "Lokasyonlarınız için tutarlı İSG operasyonu ve özel kurulum.",
+      "heroBody": "Kurumsal kullanımda kartla self servis ödeme sunmuyoruz. İhtiyacınızı paylaşın; satış ekibimiz size özel teklif, limitler ve kurulum için iletişime geçsin.",
+      "ctaRegister": "Kayıt üzerinden teklif talebi",
+      "ctaForm": "Bizimle iletişime geçin (form)",
+      "footerNoteLead": "OSGB olarak hizmet veriyorsanız",
+      "footerNoteLink": "OSGB paket sayfasına gidin",
+      "footerNoteTrail": "."
+    },
+    "commercial": {
+      "osgbSectionTitle": "OSGB paketleri",
+      "osgbSectionIntro": "Tutarlar USD cinsinden gösterge başlangıç segmentleridir; vergi, kur ve sözleşme kapsamı teklif netleşince yazılır. Kartla ödeme yok — yapınızı paylaştıktan sonra limit ve fiyatı birlikte belirliyoruz.",
+      "enterpriseSectionTitle": "Firma / kurumsal özel teklif",
+      "enterpriseSectionIntro": "Çok lokasyonlu firmalar, saha ağırlıklı yapılar ve özel kurgular için bu sayfada kartla ödeme yoktur. Önce sizi tanımak, ihtiyacınızı netleştirmek ve size özel teklif sunmak için bizimle iletişime geçmenizi rica ederiz; formu doldurduğunuzda satış ekibimiz size döner.",
+      "enterpriseCta": "Teklif talebi oluştur",
+      "enterpriseSecondaryCta": "OSGB paketi için yazın",
+      "osgbFooterHint": "Çok lokasyonlu tek işyeri mi?",
+      "osgbFooterLink": "Kurumsal çözüm sayfasına bakın",
+      "enterpriseFooterHint": "OSGB olarak hizmet veriyorsanız",
+      "enterpriseFooterLink": "OSGB paket sayfasına gidin",
+      "recommended": "Önerilen",
+      "offers": {
+        "osgb_starter": {
+          "name": "OSGB Starter",
+          "pricePeriod": "/ ay'dan itibaren",
+          "priceFinePrint": "Gösterge başlangıç segmenti. Kesin tutar, firma ve koltuk sayınıza göre teklif formu sonrası netleşir.",
+          "summary": "Çekirdek OSGB ekibi ve sınırlı portföy ile başlayanlar için; bireysel {individualStarter} Starter’dan farklı olarak çoklu işyeri ve ekip modeli kapsar.",
+          "workspacesLabel": "5 aktif firma / workspace",
+          "seatsLabel": "2 aktif ekip koltuğu",
+          "features": [
+            "Personel modülü ve davet akışları",
+            "Görev, iş takibi ve atama panosu",
+            "Müşteri işyeri portföy görünümü",
+            "Duyuru ve temel operasyon akışı"
+          ],
+          "ctaLabel": "Starter için teklif iste"
+        },
+        "osgb_team": {
+          "name": "OSGB Team",
+          "pricePeriod": "/ ay'dan itibaren",
+          "priceFinePrint": "Gösterge orta segment. Yoğun saha, raporlama ve koltuk ihtiyacına göre özelleştirilmiş teklif sunulur.",
+          "summary": "Büyüyen OSGB’ler: daha fazla firma, saha koordinasyonu ve ekip ölçeği için.",
+          "workspacesLabel": "15 aktif firma / workspace",
+          "seatsLabel": "5 aktif ekip koltuğu",
+          "features": [
+            "Tüm Starter yetenekleri",
+            "Gelişmiş raporlama ve dışa aktarma",
+            "Saha denetimi ve kontrol listeleri (paket kapsamına göre)",
+            "Öncelikli çözüm / onboarding kanalı"
+          ],
+          "ctaLabel": "Team için teklif iste"
+        }
+      },
+      "enterpriseHighlights": [
+        "Çok lokasyonlu firma ve kurum yapıları",
+        "Operasyon hacmine göre özel teklif",
+        "Gerekiyorsa entegrasyon ve onboarding planlaması"
+      ]
+    },
+    "leadDialog": {
+      "closeAria": "Kapat",
+      "regionChip": "Bölge: {code}",
+      "languageChip": "Dil: {code}",
+      "submittedTitle": "Talebinizi aldık",
+      "submittedBody": "Sizi daha iyi tanımak ve teklif ile kurulum seçeneklerini paylaşmak için satış ekibimiz kısa süre içinde iletişime geçecek. Bu akışta kartla ödeme yapılmaz; teklif ve koşullar telefon veya e-posta ile netleşir.",
+      "okButton": "Tamam",
+      "contactLabel": "Yetkili kişi",
+      "contactPlaceholder": "Ad Soyad",
+      "workEmailLabel": "İş e-postası",
+      "workEmailPlaceholder": "ornek@kurum.com",
+      "phoneLabel": "Telefon",
+      "phonePlaceholder": "05xx xxx xx xx",
+      "messageLabel": "Kısaca ihtiyacınız",
+      "messagePlaceholder": "Kaç saha yönetiyorsunuz, hangi modülleri öncelikli düşünüyorsunuz, nasıl bir kurulum bekliyorsunuz?",
+      "messageHint": "Bu alan sayesinde size daha isabetli paket ve geçiş seçeneği hazırlayabiliriz.",
+      "cancelButton": "Vazgeç",
+      "submitting": "Gönderiliyor",
+      "errorUnexpected": "Talep kaydedilirken beklenmeyen bir hata oluştu.",
+      "errorFailed": "Talep kaydedilemedi.",
+      "companyPlaceholder": "Kurum adını yazın",
+      "scalePlaceholder": "Örn. 12",
+      "employeePlaceholder": "Örn. 250",
+      "professionalPlaceholder": "Örn. 8",
+      "osgb": {
+        "badge": "OSGB iletişim talebi",
+        "title": "OSGB yapınızı tanıyalım",
+        "description": "Hizmet verdiğiniz firma sayısını, ekip yapınızı ve operasyon yoğunluğunuzu anlayıp size özel paket ve geçiş seçenekleri sunalım.",
+        "primaryCta": "Talebi gönder",
+        "companyLabel": "OSGB / kurum adı",
+        "scaleLabel": "Hizmet verdiğiniz aktif firma sayısı",
+        "employeeLabel": "Yönettiğiniz toplam çalışan sayısı",
+        "professionalLabel": "Uzman / işyeri hekimi / DSP sayısı"
+      },
+      "enterprise": {
+        "badge": "Firma / kurumsal iletişim",
+        "title": "Kurum yapınızı tanıyalım",
+        "description": "Bu akışta ödeme adımı yoktur. Formu gönderdiğinizde talebiniz ekibimize düşer; satış veya çözüm ekibimiz sizinle iletişime geçerek özel teklif ve limitleri netleştirir.",
+        "primaryCta": "Talebi gönder",
+        "companyLabel": "Firma / kurum adı",
+        "scaleLabel": "Lokasyon / saha sayısı",
+        "employeeLabel": "Toplam çalışan sayısı",
+        "professionalLabel": "Koordinasyona dahil ekip sayısı"
+      }
+    }
+  },
+  "legal": {
+    "privacy": {
+      "eyebrow": "Gizlilik Politikası",
+      "title": "RiskNova Gizlilik Politikası",
+      "lastUpdated": "Son güncelleme: 2 Mayıs 2026",
+      "metaTitle": "Gizlilik Politikası",
+      "metaDescription": "RiskNova gizlilik politikası; hesap, KVKK, ürün kullanımı, ödeme, e-posta, güvenlik ve AI destekli özelliklerde kişisel verilerin nasıl işlendiğini açıklar.",
+      "ogTitle": "Gizlilik Politikası | RiskNova",
+      "ogDescription": "RiskNova kişisel verileri hangi amaçlarla işler, hangi hizmet sağlayıcılarla paylaşır ve kullanıcı haklarını nasıl destekler.",
+      "sections": [
+        {
+          "title": "Veri sorumlusu ve kapsam",
+          "content": "Bu politika RiskNova platformunun web sitesi, kayıt, giriş, abonelik, ISG modülleri, doküman üretimi, saha denetimi, eğitim/sınav/anket, Nova AI ve destek süreçlerinde işlenen kişisel veriler için hazırlanmıştır. RiskNova, müşterinin platforma yüklediği işyeri ve çalışan kayıtlarında çoğu durumda veri işleyen; kendi hesap, güvenlik, faturalama ve destek süreçlerinde veri sorumlusu rolündedir."
+        },
+        {
+          "title": "İşlenen veri kategorileri",
+          "content": "Ad, soyad, e-posta, telefon, hesap kimliği, organizasyon ve çalışma alanı bilgileri, rol/yetki kayıtları, oturum ve güvenlik kayıtları, kullanım sayaçları, destek talepleri, ödeme/abonelik durumu, IP ve cihaz bilgileri işlenebilir. Kullanıcı tarafından yüklenirse risk analizi, saha denetimi, olay kaydı, eğitim, sınav, anket, doküman, personel ve görsel/veri dosyaları da platform içinde saklanabilir."
+        },
+        {
+          "title": "İşleme amaçları ve hukuki sebepler",
+          "content": "Veriler; üyelik ve sözleşmenin kurulması/ifası, platform özelliklerinin sunulması, iş güvenliği süreçlerinin yürütülmesi, kimlik doğrulama, güvenlik, kötüye kullanım önleme, faturalama, destek, yasal yükümlülükler, ürün geliştirme ve kullanıcı tercihleri için işlenir. Açık rıza gereken hallerde ayrı rıza metni sunulur; zorunlu hizmet verileri açık rıza yerine sözleşme, kanuni yükümlülük veya meşru menfaat temeline dayanabilir."
+        },
+        {
+          "title": "AI destekli özellikler",
+          "content": "Nova AI, risk analizi, doküman taslağı, eğitim içeriği veya mevzuat destekli yanıtlar üretirken kullanıcı girdilerini ve ilgili bağlamı işleyebilir. AI çıktıları karar destek niteliğindedir; nihai mesleki ve hukuki değerlendirme kullanıcıya aittir. Hassas veya özel nitelikli veri içeren içeriklerin AI hizmetlerine gönderilmesi için gerektiğinde açık rıza ve/veya ek bilgilendirme akışı sunulur."
+        },
+        {
+          "title": "Üçüncü taraf hizmet sağlayıcılar",
+          "content": "Barındırma, veritabanı, kimlik doğrulama, e-posta, ödeme, hata izleme ve AI özellikleri için Supabase, Vercel, Resend, Paddle, OpenAI, Anthropic ve benzeri hizmet sağlayıcılar kullanılabilir. Bu sağlayıcılar yalnızca hizmetin sunulması için gerekli ölçüde veri işler. Ödeme işlemlerinde kart bilgileri RiskNova tarafından saklanmaz; ödeme ve faturalama Paddle altyapısı üzerinden yürütülür."
+        },
+        {
+          "title": "Yurt dışına aktarım",
+          "content": "Bulut barındırma, e-posta, ödeme ve AI hizmetleri teknik olarak yurt dışında bulunan altyapılarda çalışabilir. Bu nedenle bazı veriler hizmetin gerektirdiği ölçüde yurt dışındaki hizmet sağlayıcılara aktarılabilir. Aktarım gerektiren akışlar için KVKK kapsamında gerekli bilgilendirme ve rıza süreçleri platformda ayrıca yönetilir."
+        },
+        {
+          "title": "Çerezler ve benzer teknolojiler",
+          "content": "RiskNova zorunlu oturum, güvenlik, dil tercihi ve ürün işleyişi çerezleri kullanır. Pazarlama veya üçüncü taraf takip çerezleri devreye alınırsa ayrıca çerez politikası ve gerekiyorsa izin mekanizması sunulur. Detaylar /cookie-policy sayfasındadır."
+        },
+        {
+          "title": "Saklama ve güvenlik",
+          "content": "Veriler hizmetin devamı, sözleşme, güvenlik, yasal yükümlülük ve ispat gereklilikleri için gerekli süre boyunca saklanır. Platform; RLS, rol/yetki kontrolü, servis rolü ayrımı, webhook imza doğrulama, rate limit, audit ve güvenlik olay kayıtları gibi teknik önlemler kullanır."
+        },
+        {
+          "title": "Haklarınız",
+          "content": "KVKK madde 11 kapsamındaki erişim, düzeltme, silme, itiraz, işleme kısıtlama, veri taşınabilirliği ve bilgi talebi haklarınızı profilinizdeki Gizlilik / Veri Hakları ekranından veya support@getrisknova.com üzerinden iletebilirsiniz. Silme talepleri yasal saklama ve güvenlik kayıtları dikkate alınarak değerlendirilir."
+        },
+        {
+          "title": "İletişim ve güncellemeler",
+          "content": "Bu metin zaman içinde güncellenebilir. Önemli değişikliklerde platform içinde yeniden onay veya bilgilendirme istenebilir. Gizlilik ve KVKK talepleri için support@getrisknova.com adresine yazabilirsiniz."
+        }
+      ]
+    },
+    "privacySummary": {
+      "eyebrow": "Gizlilik politikası",
+      "title": "RiskNova Gizlilik Politikası",
+      "lastUpdated": "Son güncelleme: 2 Mayıs 2026",
+      "metaTitle": "Gizlilik politikası (özet)",
+      "metaDescription": "RiskNova kişisel verileri nasıl toplar ve kullanır; özet gizlilik açıklaması.",
+      "ogTitle": "Gizlilik politikası | RiskNova",
+      "ogDescription": "Hesap, ürün kullanımı ve alt işlemciler hakkında kısa gizlilik özeti.",
+      "paragraphs": [
+        "Bu politika, RiskNova'nın hesap, çalışma alanı, faturalama ve ürün kullanımı için işlediği kişisel verileri açıklar.",
+        "Bu bilgiler; kimlik doğrulama, abonelik özellikleri, ödeme, müşteri desteği, ürün iyileştirme ve güvenlik için kullanılır. Ödeme işlemleri Paddle üzerinden yürütülür; RiskNova tam kart bilgilerini saklamaz.",
+        "Kullanıcılar risk analizi bilgisi, dokümanlar, eğitim materyalleri ve denetim notları gibi iş güvenliği içeriği yükleyebilir. Bu içerik talep edilen ürün özellikleri için kullanılır ve üçüncü taraflara satılmaz.",
+        "Barındırma, kimlik doğrulama, analitik, KI işleme, e-posta ve faturalama için güvenilir hizmet sağlayıcıları kullanılırız. Bu sağlayıcılar hizmeti sunmak için gerekli ölçüde veri işler.",
+        "Kullanıcılar; yasal, güvenlik ve operasyonel saklama gerekliliklerine tabi olarak kişisel verilerine erişim, düzeltme, dışa aktarma veya silme talep edebilir.",
+        "Gizlilik soruları veya veri talepleri için RiskNova web sitesindeki iletişim kanalları üzerinden bize ulaşabilirsiniz."
+      ]
+    },
+    "terms": {
+      "eyebrow": "Kullanım Şartları",
+      "title": "RiskNova Kullanım Şartları",
+      "lastUpdated": "Son güncelleme: 2 Mayıs 2026",
+      "metaTitle": "Kullanım Şartları",
+      "metaDescription": "RiskNova kullanım şartları; hesap, abonelik, ödeme, kabul edilebilir kullanım, AI çıktıları ve müşteri verisi sorumluluklarını açıklar.",
+      "ogTitle": "Kullanım Şartları | RiskNova",
+      "ogDescription": "RiskNova SaaS platformunun kullanım koşulları, abonelik, hesap güvenliği, AI çıktıları ve kabul edilebilir kullanım kuralları.",
+      "sections": [
+        {
+          "title": "Hizmet kapsamı",
+          "content": "RiskNova; iş sağlığı ve güvenliği profesyonelleri, OSGB'ler ve kurumlar için risk analizi, saha denetimi, doküman üretimi, eğitim/sınav/anket, raporlama, mevzuat destekli arama ve Nova AI karar destek özellikleri sunan abonelik tabanlı bir SaaS platformudur."
+        },
+        {
+          "title": "Hesap, yetki ve güvenlik",
+          "content": "Kullanıcı hesap bilgilerinin doğruluğundan, parolanın güvenliğinden ve hesabı üzerinden yapılan işlemlerden sorumludur. Organizasyon yöneticileri kullanıcı, rol, çalışma alanı ve şirket yetkilendirmelerini doğru tanımlamakla yükümlüdür. Yetkisiz erişim şüphesi halinde RiskNova'ya derhal bildirim yapılmalıdır."
+        },
+        {
+          "title": "Kabul edilebilir kullanım",
+          "content": "Platform yalnızca yasal, profesyonel ve iş güvenliğiyle ilişkili amaçlarla kullanılabilir. Yetkisiz erişim denemesi, tersine mühendislik, hizmeti bozma, zararlı içerik yükleme, üçüncü taraf haklarını ihlal etme, kota aşımını dolanma veya mevzuata aykırı veri işleme yasaktır."
+        },
+        {
+          "title": "Müşteri verisi ve içerik sorumluluğu",
+          "content": "Risk analizleri, denetim kayıtları, dokümanlar, personel bilgileri, eğitim/sınav/anket içerikleri ve yüklenen dosyalar müşteriye ait içeriktir. Kullanıcı, platforma yüklediği verilerin hukuka uygun, gerekli ve yetkili kişilerle sınırlı olmasından sorumludur."
+        },
+        {
+          "title": "AI destekli çıktılar",
+          "content": "Nova AI ve diğer AI destekli özellikler yalnızca karar destek ve taslak üretim amacı taşır. RiskNova, AI çıktılarının hatasız, eksiksiz veya belirli bir hukuki/teknik sonuca uygun olduğunu garanti etmez. Kullanıcı, çıktıları yürürlükteki mevzuat, iç prosedürler ve mesleki uzmanlıkla kontrol etmekle sorumludur."
+        },
+        {
+          "title": "Abonelik, ödeme ve limitler",
+          "content": "Paket özellikleri, ücretler, kullanım limitleri ve faturalama dönemleri fiyatlandırma veya checkout ekranlarında gösterilir. Bireysel planlar self-servis ödeme akışına bağlanabilir; OSGB ve kurumsal modeller teklif/iletişim akışı üzerinden ilerler. Ödeme ve faturalama Paddle tarafından Merchant of Record modeliyle yürütülebilir."
+        },
+        {
+          "title": "Hizmet değişiklikleri ve erişim",
+          "content": "RiskNova ürün özelliklerini, plan limitlerini, entegrasyonları ve bu şartları zaman içinde güncelleyebilir. Güvenlik, bakım, yasal yükümlülük veya kötüye kullanım durumlarında erişim geçici olarak kısıtlanabilir."
+        },
+        {
+          "title": "Sorumluluğun sınırı",
+          "content": "RiskNova platformu iş süreçlerini kolaylaştırmak için tasarlanmıştır; işveren, iş güvenliği profesyoneli veya kurumların yasal sorumluluklarını ortadan kaldırmaz. Kullanıcı, platform çıktılarının uygulanmasından önce gerekli saha, mevzuat ve uzman kontrolünü yapmakla sorumludur."
+        },
+        {
+          "title": "İletişim",
+          "content": "Kullanım şartları, abonelik veya hesap süreçleriyle ilgili sorular için support@getrisknova.com adresinden iletişime geçebilirsiniz."
+        }
+      ]
+    },
+    "termsSummary": {
+      "eyebrow": "Hizmet şartları",
+      "title": "RiskNova Hizmet Şartları",
+      "lastUpdated": "Son güncelleme: 2 Mayıs 2026",
+      "metaTitle": "Hizmet şartları (özet)",
+      "metaDescription": "RiskNova hizmet şartlarının özeti; kabul edilebilir kullanım ve abonelik.",
+      "ogTitle": "Hizmet şartları | RiskNova",
+      "ogDescription": "Abonelik, KI destekli özellikler ve kabul edilebilir kullanım özeti.",
+      "paragraphs": [
+        "RiskNova, iş sağlığı ve güvenliği profesyonelleri için abonelik tabanlı bir SaaS platformudur. Hesap oluşturarak veya RiskNova'yı kullanarak hizmeti yalnızca yasal mesleki güvenlik, dokümantasyon, analiz ve iş akışı yönetimi amaçlarıyla kullanmayı kabul edersiniz.",
+        "Bireysel planlar self-servis mesleki kullanım içindir. OSGB ve kurumsal senaryolar ayrı ticari sözleşme ve onboarding süreci gerektirebilir.",
+        "RiskNova, KI destekli analiz ve belge üretimi içerebilir. Kullanıcılar çıktıları gözden geçirmek, kendi mesleki muhakemelerini uygulamak ve yürürlükteki mevzuat, standartlar ve işyeri prosedürlerine uymakla yükümlüdür.",
+        "Abonelik erişimi, limitler, faturalama dönemleri ve özellikler ödeme öncesi fiyatlandırma sayfasında gösterilir. Planları veya özellikleri zaman içinde güncelleyebiliriz; mevcut abonelikler aksi bildirilmedikçe satın alma anındaki koşullarla devam eder.",
+        "Hizmeti kötüye kullanmamalı, yetkisiz erişim denememeli, yasadışı içerik yüklememeli veya RiskNova'yı zorunlu hukuki, tıbbi, mühendislik veya düzenleyici mesleki incelemenin yerine geçecek şekilde kullanmamalısınız.",
+        "Bu şartlarla ilgili sorular için RiskNova web sitesindeki iletişim kanalları üzerinden bize ulaşabilirsiniz."
+      ]
+    },
+    "refund": {
+      "eyebrow": "İade politikası",
+      "title": "RiskNova İade Politikası",
+      "lastUpdated": "Son güncelleme: 2 Mayıs 2026",
+      "metaTitle": "İade politikası",
+      "metaDescription": "RiskNova abonelik iadeleri, yenilemeler ve Paddle faturalama kurallarına ilişkin özet.",
+      "ogTitle": "İade politikası | RiskNova",
+      "ogDescription": "İade penceresi, yenilemeler ve faturalama düzeltmeleri.",
+      "paragraphs": [
+        "RiskNova abonelikleri, ödeme sırasında seçilen plana göre aylık veya yıllık faturalandırılır.",
+        "Hizmet önemli ölçüde kullanılmamışsa ve talep kötüye kullanım veya dolandırıcılık içermiyorsa, müşteriler ilk satın alma tarihinden itibaren 14 gün içinde iade talep edebilir.",
+        "Yenileme ödemeleri genellikle yeni bir faturalama dönemi başladıktan sonra iade edilmez. Müşteriler gelecekteki yenilemeleri hesaplarından veya destekle iletişime geçerek iptal edebilir.",
+        "Faturalama hatası, mükerrer tahsilat veya yetkisiz işlem doğrulanırsa Paddle ile birlikte sorunu düzeltiriz.",
+        "İade kararları kullanım, abonelik türü, yasal gereklilikler ve Paddle faturalama kurallarına bağlı olabilir. Onaylanan iadeler Paddle aracılığıyla ödeme yöntemine iade edilir.",
+        "İade talepleri için RiskNova web sitesindeki iletişim kanalları üzerinden bize ulaşın ve hesap e-postası ile sipariş ayrıntılarını ekleyin."
+      ]
     }
   }
 }

@@ -1,6 +1,41 @@
 import { cookies, headers } from "next/headers";
+import type { AbstractIntlMessages } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
+import ar from "../../messages/ar.json";
+import az from "../../messages/az.json";
+import de from "../../messages/de.json";
+import en from "../../messages/en.json";
+import es from "../../messages/es.json";
+import fr from "../../messages/fr.json";
+import hi from "../../messages/hi.json";
+import id from "../../messages/id.json";
+import ja from "../../messages/ja.json";
+import ko from "../../messages/ko.json";
+import ru from "../../messages/ru.json";
+import tr from "../../messages/tr.json";
+import zh from "../../messages/zh.json";
 import { defaultLocale, isLocale, LOCALE_COOKIE, type Locale } from "./routing";
+
+/**
+ * Explicit JSON imports so Turbopack/Webpack always bundles every locale.
+ * Variable dynamic imports (`import(\`…/${locale}.json\`)`) can omit locales when
+ * `turbopack.root` points at the monorepo root — locally only tr/en would load.
+ */
+const messagesByLocale: Record<Locale, AbstractIntlMessages> = {
+  tr: tr as unknown as AbstractIntlMessages,
+  en: en as unknown as AbstractIntlMessages,
+  ar: ar as unknown as AbstractIntlMessages,
+  ru: ru as unknown as AbstractIntlMessages,
+  de: de as unknown as AbstractIntlMessages,
+  fr: fr as unknown as AbstractIntlMessages,
+  es: es as unknown as AbstractIntlMessages,
+  zh: zh as unknown as AbstractIntlMessages,
+  ja: ja as unknown as AbstractIntlMessages,
+  ko: ko as unknown as AbstractIntlMessages,
+  hi: hi as unknown as AbstractIntlMessages,
+  az: az as unknown as AbstractIntlMessages,
+  id: id as unknown as AbstractIntlMessages,
+};
 
 /**
  * Phase 2 status (2026-04-25):
@@ -113,15 +148,11 @@ async function readLocaleFromRequest(): Promise<Locale> {
   return defaultLocale;
 }
 
-async function loadMessages(locale: Locale) {
-  return (await import(`../../messages/${locale}.json`)).default;
-}
-
 export default getRequestConfig(async () => {
   const locale = await readLocaleFromRequest();
   return {
     locale,
     timeZone: "Europe/Istanbul",
-    messages: await loadMessages(locale),
+    messages: messagesByLocale[locale],
   };
 });
