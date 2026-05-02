@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Download, MonitorDown, Smartphone, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +46,7 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [showIosHint, setShowIosHint] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [showManualHint, setShowManualHint] = useState(false);
 
   useEffect(() => {
     if (isStandaloneDisplay() || isRecentlyDismissed()) return;
@@ -53,11 +54,18 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
     if (isIosDevice()) {
       setShowIosHint(true);
       setVisible(true);
+      return;
+    }
+
+    if (surface === "public") {
+      setShowManualHint(true);
+      setVisible(true);
     }
 
     function handleBeforeInstallPrompt(event: Event) {
       event.preventDefault();
       setInstallEvent(event as BeforeInstallPromptEvent);
+      setShowManualHint(false);
       setVisible(true);
     }
 
@@ -75,23 +83,17 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
     };
   }, []);
 
-  const copy = useMemo(() => {
-    if (surface === "public") {
-      return {
-        title: "RiskNova'yı uygulama gibi kur",
-        description: "iOS, Android ve Windows'ta ayrı pencereyle hızlı aç.",
-        button: "Cihaza kur",
-      };
-    }
-
-    return {
-      title: "RiskNova uygulamasını kur",
-      description: "Saha, doküman ve Nova akışlarına ana ekrandan dön.",
-      button: "Kur",
-    };
-  }, [surface]);
-
   if (!visible) return null;
+
+  const title = surface === "public" ? "RiskNova'yı uygulama gibi kur" : "RiskNova uygulamasını kur";
+  const description =
+    surface === "public"
+      ? "iOS, Android ve Windows'ta ayrı pencereyle hızlı aç."
+      : "Saha, doküman ve Nova akışlarına ana ekrandan dön.";
+  const button = surface === "public" ? "Cihaza kur" : "Kur";
+  const iosHint = "iPhone/iPad için Paylaş menüsünden Ana Ekrana Ekle seçeneğini kullan.";
+  const manualHint =
+    "Kurulum butonu görünmüyorsa normal tarayıcı penceresinde üç nokta menüsünden Uygulamayı yükle veya Ana ekrana ekle seçeneğini kullanın.";
 
   async function install() {
     if (!installEvent) return;
@@ -135,16 +137,14 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
           <Icon className="h-5 w-5" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold leading-5">{copy.title}</p>
+          <p className="text-sm font-bold leading-5">{title}</p>
           <p
             className={cn(
               "mt-1 text-xs leading-5",
               surface === "public" ? "text-slate-300" : "text-muted-foreground",
             )}
           >
-            {showIosHint && !installEvent
-              ? "iPhone/iPad için Paylaş menüsünden Ana Ekrana Ekle seçeneğini kullan."
-              : copy.description}
+            {showIosHint && !installEvent ? iosHint : showManualHint ? manualHint : description}
           </p>
           {installEvent ? (
             <button
@@ -158,8 +158,21 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
               )}
             >
               <Download className="h-4 w-4" />
-              {copy.button}
+              {button}
             </button>
+          ) : showManualHint ? (
+            <a
+              href="/uygulama"
+              className={cn(
+                "mt-3 inline-flex h-9 items-center gap-2 rounded-xl px-4 text-xs font-bold transition-colors",
+                surface === "public"
+                  ? "bg-amber-400 text-slate-950 hover:bg-amber-300"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90",
+              )}
+            >
+              <Download className="h-4 w-4" />
+              Ana ekrana ekle
+            </a>
           ) : null}
         </div>
         <button
