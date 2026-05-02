@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import {
   ActivitySquare,
   AlertCircle,
@@ -31,51 +32,54 @@ type MetricDef = {
   warnWhenPositive: boolean;
 };
 
-const METRICS: MetricDef[] = [
-  {
-    key: 'openActionCount',
-    label: 'Açık Aksiyon',
-    sub: 'Risk tespitleri + DÖF + görevler',
-    icon: AlertCircle,
-    tone: 'risk',
-    warnWhenPositive: true,
-  },
-  {
-    key: 'expiringTrainingCount',
-    label: 'Yaklaşan Eğitim',
-    sub: '30 gün içinde',
-    icon: GraduationCap,
-    tone: 'teal',
-    warnWhenPositive: false,
-  },
-  {
-    key: 'overduePeriodicControlCount',
-    label: 'Geciken Kontrol',
-    sub: 'Periyodik kontrol süresi geçti',
-    icon: Gauge,
-    tone: 'amber',
-    warnWhenPositive: true,
-  },
-  {
-    key: 'upcomingCommitteeCount',
-    label: 'Bekleyen Kurul',
-    sub: 'Planlı İSG kurul toplantıları',
-    icon: ClipboardList,
-    tone: 'cobalt',
-    warnWhenPositive: false,
-  },
-  {
-    key: 'healthExamsDueCount',
-    label: 'Yaklaşan Muayene',
-    sub: '30 gün içinde sağlık gözetimi',
-    icon: ShieldCheck,
-    tone: 'violet',
-    warnWhenPositive: false,
-  },
-];
-
 export function DashboardTrackingSummary() {
   const router = useRouter();
+  const t = useTranslations('dashboard');
+  const metrics = useMemo<MetricDef[]>(
+    () => [
+      {
+        key: 'openActionCount',
+        label: t('trackOpenActionLabel'),
+        sub: t('trackOpenActionSub'),
+        icon: AlertCircle,
+        tone: 'risk',
+        warnWhenPositive: true,
+      },
+      {
+        key: 'expiringTrainingCount',
+        label: t('trackExpiringTrainingLabel'),
+        sub: t('trackExpiringTrainingSub'),
+        icon: GraduationCap,
+        tone: 'teal',
+        warnWhenPositive: false,
+      },
+      {
+        key: 'overduePeriodicControlCount',
+        label: t('trackOverdueControlLabel'),
+        sub: t('trackOverdueControlSub'),
+        icon: Gauge,
+        tone: 'amber',
+        warnWhenPositive: true,
+      },
+      {
+        key: 'upcomingCommitteeCount',
+        label: t('trackCommitteeLabel'),
+        sub: t('trackCommitteeSub'),
+        icon: ClipboardList,
+        tone: 'cobalt',
+        warnWhenPositive: false,
+      },
+      {
+        key: 'healthExamsDueCount',
+        label: t('trackHealthExamLabel'),
+        sub: t('trackHealthExamSub'),
+        icon: ShieldCheck,
+        tone: 'violet',
+        warnWhenPositive: false,
+      },
+    ],
+    [t],
+  );
   const [data, setData] = useState<OrganizationTrackingSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -134,10 +138,10 @@ export function DashboardTrackingSummary() {
         <div>
           <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
             <ActivitySquare size={16} className="text-[var(--gold)]" />
-            Takip Özeti
+            {t('trackTitle')}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Tüm firmalardan özet. {data.companyCount} firma izleniyor, {totalActionable} aksiyon bekliyor.
+            {t('trackSubtitle', { companyCount: data.companyCount, totalActionable })}
           </p>
         </div>
         <button
@@ -145,12 +149,12 @@ export function DashboardTrackingSummary() {
           onClick={() => router.push('/companies')}
           className="hidden items-center gap-1 rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--primary)] transition-colors hover:bg-[var(--gold)]/8 sm:inline-flex"
         >
-          Firmalar <ChevronRight size={12} />
+          {t('trackCompaniesCta')} <ChevronRight size={12} />
         </button>
       </div>
 
       <div className="relative grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        {METRICS.map((m) => {
+        {metrics.map((m) => {
           const value = data[m.key];
           const warn = m.warnWhenPositive && value > 0;
           return (
@@ -188,7 +192,7 @@ export function DashboardTrackingSummary() {
           <div className="mb-3 flex items-center gap-2">
             <Users size={14} className="text-muted-foreground" />
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Öncelik Bekleyen Firmalar
+              {t('trackPriorityCompanies')}
             </p>
           </div>
           <div className="space-y-1.5">
@@ -206,17 +210,17 @@ export function DashboardTrackingSummary() {
                     <div className="mt-0.5 flex flex-wrap gap-1.5">
                       {c.openActions > 0 && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold text-red-600 dark:text-red-400">
-                          <AlertCircle size={10} /> {c.openActions} aksiyon
+                          <AlertCircle size={10} /> {t('trackChipActions', { count: c.openActions })}
                         </span>
                       )}
                       {c.expiringTrainings > 0 && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                          <GraduationCap size={10} /> {c.expiringTrainings} eğitim
+                          <GraduationCap size={10} /> {t('trackChipTraining', { count: c.expiringTrainings })}
                         </span>
                       )}
                       {c.overdueControls > 0 && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
-                          <CalendarClock size={10} /> {c.overdueControls} kontrol
+                          <CalendarClock size={10} /> {t('trackChipControls', { count: c.overdueControls })}
                         </span>
                       )}
                     </div>

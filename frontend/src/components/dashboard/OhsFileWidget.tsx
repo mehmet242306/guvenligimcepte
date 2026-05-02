@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Archive, Download, ArrowRight, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import {
   archiveDownloadUrl,
@@ -16,20 +16,24 @@ function formatBytes(bytes: number | null): string {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-function timeAgoTR(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "az önce";
-  if (mins < 60) return `${mins} dk önce`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours} sa önce`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days} gün önce`;
-  const months = Math.floor(days / 30);
-  return `${months} ay önce`;
+/** Past-only relative time; respects active locale via Intl. */
+function formatRelativePast(iso: string, locale: string): string {
+  const diffMs = Math.max(0, Date.now() - new Date(iso).getTime());
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+  const sec = Math.floor(diffMs / 1000);
+  const min = Math.floor(diffMs / 60000);
+  const hr = Math.floor(diffMs / 3600000);
+  const day = Math.floor(diffMs / 86400000);
+  const month = Math.floor(diffMs / (86400000 * 30));
+  if (min < 1) return rtf.format(-Math.max(sec, 1), "second");
+  if (min < 60) return rtf.format(-min, "minute");
+  if (hr < 24) return rtf.format(-hr, "hour");
+  if (day < 30) return rtf.format(-day, "day");
+  return rtf.format(-Math.max(month, 1), "month");
 }
 
 export function OhsFileWidget() {
+  const locale = useLocale();
   const t = useTranslations("ohsFile");
   const tStatus = useTranslations("ohsFile.status");
   const [jobs, setJobs] = useState<OhsArchiveJob[]>([]);
@@ -107,7 +111,7 @@ export function OhsFileWidget() {
                     </span>
                   </div>
                   <div className="mt-0.5 text-[11px] text-muted-foreground">
-                    {timeAgoTR(job.created_at)}
+                    {formatRelativePast(job.created_at, locale)}
                   </div>
                 </div>
                 {isDone && (
