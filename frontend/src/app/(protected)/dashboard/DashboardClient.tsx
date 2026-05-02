@@ -32,6 +32,7 @@ import { createClient } from '@/lib/supabase/client';
 import { PremiumIconBadge, type PremiumIconTone } from '@/components/ui/premium-icon-badge';
 import { DashboardTrackingSummary } from '@/components/dashboard/DashboardTrackingSummary';
 import { OhsFileWidget } from '@/components/dashboard/OhsFileWidget';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 interface DashboardStats {
@@ -52,6 +53,8 @@ interface DashboardStats {
 
 export function DashboardClient() {
   const router = useRouter();
+  const t = useTranslations('dashboard');
+  const locale = useLocale();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -176,10 +179,8 @@ export function DashboardClient() {
     return (
       <div className="flex min-h-[320px] items-center justify-center rounded-[2rem] border border-dashed border-border bg-muted/10 px-8 py-16 text-center">
         <div className="space-y-2">
-          <p className="text-base font-semibold text-foreground">Oturum yükleniyor...</p>
-          <p className="text-sm text-muted-foreground">
-            Oturumunuz doğrulanıyor. Birkaç saniye sürebilir; devam etmezse lütfen yeniden giriş yapın.
-          </p>
+          <p className="text-base font-semibold text-foreground">{t('sessionLoadingTitle')}</p>
+          <p className="text-sm text-muted-foreground">{t('sessionLoadingHint')}</p>
         </div>
       </div>
     );
@@ -187,11 +188,12 @@ export function DashboardClient() {
 
   const s = stats;
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Günaydın' : hour < 18 ? 'İyi günler' : 'İyi akşamlar';
-  const firstName = (s.userName || '').split(' ')[0] || 'Kullanıcı';
+  const greeting =
+    hour < 12 ? t('greetingMorning') : hour < 18 ? t('greetingAfternoon') : t('greetingEvening');
+  const firstName = (s.userName || '').split(' ')[0] || t('fallbackUserName');
   const totalWorkload = s.highRiskCount + s.incidentCount + s.taskCount;
   const operationState =
-    totalWorkload > 8 ? 'Yoğun takip' : totalWorkload > 0 ? 'Kontrol altında' : 'Sakin operasyon';
+    totalWorkload > 8 ? t('operationHeavy') : totalWorkload > 0 ? t('operationControlled') : t('operationCalm');
   const operationTone =
     totalWorkload > 8
       ? 'text-amber-700 dark:text-amber-300'
@@ -213,43 +215,63 @@ export function DashboardClient() {
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-2 rounded-full border border-[var(--gold)]/30 bg-[var(--gold)]/12 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-[var(--primary)]">
                 <LayoutDashboard size={14} />
-                Kontrol Merkezi
+                {t('badgeCommandCenter')}
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
                 <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]" />
-                Canlı operasyon
+                {t('badgeLiveOps')}
               </span>
               <span className="inline-flex items-center rounded-full border border-border/70 bg-background/65 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur">
-                Remote Supabase senkron
+                {t('badgeRemoteSync')}
               </span>
             </div>
 
             <h1 className="max-w-3xl text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl xl:text-5xl">
               {greeting}, {firstName}
             </h1>
-            <p className="mt-4 max-w-3xl text-base leading-8 text-muted-foreground sm:text-lg">
-              Tüm İSG operasyonunu tek ekranda izleyin: riskler, İSG kütüphanesi çıktıları, olaylar, görevler ve firma takipleri daha okunabilir bir komuta panelinde toplandı.
-            </p>
+            <p className="mt-4 max-w-3xl text-base leading-8 text-muted-foreground sm:text-lg">{t('heroIntro')}</p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              <HeroSignal icon={Radar} label="Operasyon Durumu" value={operationState} valueClassName={operationTone} />
-              <HeroSignal icon={Target} label="Öncelik Yükü" value={`${totalWorkload} takip`} />
-              <HeroSignal icon={TrendingUp} label="Firma Kapsamı" value={`${s.companyCount} firma`} />
+              <HeroSignal icon={Radar} label={t('signalOperation')} value={operationState} valueClassName={operationTone} />
+              <HeroSignal
+                icon={Target}
+                label={t('signalWorkload')}
+                value={t('workloadFollowups', { count: totalWorkload })}
+              />
+              <HeroSignal
+                icon={TrendingUp}
+                label={t('signalCompanies')}
+                value={t('companiesTotal', { count: s.companyCount })}
+              />
             </div>
           </div>
 
           <div className="rounded-[1.8rem] border border-white/70 bg-white/62 p-4 shadow-[0_24px_70px_rgba(16,24,40,0.10)] backdrop-blur dark:border-white/10 dark:bg-white/[0.045]">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Bugünün odağı</p>
-                <p className="mt-1 text-sm font-semibold text-foreground">Önce kritik işler</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                  {t('todayFocusEyebrow')}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-foreground">{t('todayFocusTitle')}</p>
               </div>
               <PremiumIconBadge icon={GaugeCircle} tone={totalWorkload > 0 ? "amber" : "success"} size="sm" />
             </div>
             <div className="grid gap-2">
-              <PriorityPill label="Yüksek risk" value={s.highRiskCount} tone={s.highRiskCount > 0 ? "risk" : "success"} />
-              <PriorityPill label="Açık görev" value={s.taskCount} tone={s.taskCount > 0 ? "amber" : "success"} />
-              <PriorityPill label="Olay kaydı" value={s.incidentCount} tone={s.incidentCount > 0 ? "cobalt" : "success"} />
+              <PriorityPill
+                label={t('priorityHighRisk')}
+                value={s.highRiskCount}
+                tone={s.highRiskCount > 0 ? 'risk' : 'success'}
+              />
+              <PriorityPill
+                label={t('priorityOpenTasks')}
+                value={s.taskCount}
+                tone={s.taskCount > 0 ? 'amber' : 'success'}
+              />
+              <PriorityPill
+                label={t('priorityIncidents')}
+                value={s.incidentCount}
+                tone={s.incidentCount > 0 ? 'cobalt' : 'success'}
+              />
             </div>
           </div>
         </div>
@@ -281,15 +303,13 @@ export function DashboardClient() {
             </span>
             <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--gold)] dark:text-amber-300/95">
-                {s.isDemoAccount ? "Demo · yükseltme" : "Self-servis yükseltme"}
+                {s.isDemoAccount ? t('planDemoEyebrow') : t('planSelfServeEyebrow')}
               </p>
               <p className="mt-1.5 text-lg font-bold tracking-tight text-foreground sm:text-xl">
-                {s.isDemoAccount ? "Demo hesabındasınız" : "Paket ve kapasite"}
+                {s.isDemoAccount ? t('planDemoTitle') : t('planDefaultTitle')}
               </p>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-                {s.isDemoAccount
-                  ? "Üretim kullanımına geçmek için uygun paketi seçin; ödeme ve faturalama Paketler sayfasından yönetilir."
-                  : "Daha fazla çalışma alanı veya modül ihtiyacınız varsa paketleri inceleyin; yükseltme self-servis olarak yapılabilir."}
+                {s.isDemoAccount ? t('planDemoBody') : t('planDefaultBody')}
               </p>
             </div>
           </div>
@@ -297,7 +317,7 @@ export function DashboardClient() {
             href="/pricing"
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#D4A017_0%,#B8860B_45%,#CA8A04_100%)] px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_36px_rgba(184,134,11,0.45),0_0_0_1px_rgba(255,255,255,0.2)_inset] ring-2 ring-amber-200/60 transition hover:brightness-110 dark:ring-amber-400/25"
           >
-            Paketlere git
+            {t('goToPlans')}
             <ArrowUpRight className="h-4 w-4" aria-hidden />
           </Link>
         </div>
@@ -306,51 +326,59 @@ export function DashboardClient() {
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
         <StatCard
           icon={ShieldAlert}
-          label="Risk Analizi"
+          label={t('statRisk')}
           value={s.riskCount}
-          sub={s.highRiskCount > 0 ? `${s.highRiskCount} yüksek risk` : 'Yüksek risk yok'}
+          sub={
+            s.highRiskCount > 0 ? t('statRiskSubHigh', { count: s.highRiskCount }) : t('statRiskSubNone')
+          }
           subColor={s.highRiskCount > 0 ? 'text-red-500' : 'text-emerald-600'}
           tone="risk"
+          liveLabel={t('statLive')}
           onClick={() => router.push('/risk-analysis')}
         />
         <StatCard
           icon={FileText}
-          label="Kütüphane dokümanı"
+          label={t('statLibraryDocs')}
           value={s.documentCount}
-          sub={`${s.readyDocCount} hazır, ${s.draftDocCount} taslak`}
+          sub={t('statLibraryDocsSub', { ready: s.readyDocCount, draft: s.draftDocCount })}
           tone="cobalt"
+          liveLabel={t('statLive')}
           onClick={() => router.push('/isg-library?section=documentation')}
         />
         <StatCard
           icon={AlertTriangle}
-          label="Olay ve Kaza"
+          label={t('statIncidents')}
           value={s.incidentCount}
-          sub="Toplam kayıt"
+          sub={t('statIncidentsSub')}
           tone="amber"
+          liveLabel={t('statLive')}
           onClick={() => router.push('/incidents')}
         />
         <StatCard
           icon={ClipboardCheck}
-          label="Açık Görev"
+          label={t('statTasks')}
           value={s.taskCount}
-          sub="Takip bekleyen işler"
+          sub={t('statTasksSub')}
           tone="violet"
+          liveLabel={t('statLive')}
           onClick={() => router.push('/planner')}
         />
         <StatCard
           icon={GraduationCap}
-          label="Kutuphane Egitim"
+          label={t('statLibSurvey')}
           value={s.librarySourcedSurveyCount}
-          sub="Aktarilan anket/egitim"
+          sub={t('statLibSurveySub')}
           tone="teal"
+          liveLabel={t('statLive')}
           onClick={() => router.push('/training')}
         />
         <StatCard
           icon={PenTool}
-          label="Kutuphane Sinav"
+          label={t('statLibExam')}
           value={s.librarySourcedExamCount}
-          sub="Aktarilan sinavlar"
+          sub={t('statLibExamSub')}
           tone="indigo"
+          liveLabel={t('statLive')}
           onClick={() => router.push('/training')}
         />
       </div>
@@ -366,25 +394,23 @@ export function DashboardClient() {
               <div>
                 <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
                   <Sparkles size={16} className="text-[var(--gold)]" />
-                  Hızlı İş Akışları
+                  {t('quickFlowsTitle')}
                 </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  En sık kullanılan modüllere tek tıkla geçiş yapın.
-                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{t('quickFlowsSubtitle')}</p>
               </div>
               <div className="hidden rounded-full border border-[var(--gold)]/20 bg-[var(--gold)]/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--primary)] lg:inline-flex">
-                platform
+                {t('quickFlowsBadge')}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-              <QuickAction icon={ShieldAlert} label="Risk Analizi" href="/risk-analysis" tone="risk" />
-              <QuickAction icon={FileText} label="İSG kütüphanesi" href="/isg-library?section=documentation" tone="cobalt" />
-              <QuickAction icon={AlertTriangle} label="Olay Bildir" href="/incidents" tone="amber" />
-              <QuickAction icon={Calendar} label="Planlayıcı" href="/planner" tone="emerald" />
-              <QuickAction icon={GraduationCap} label="Eğitimler" href="/isg-library?section=education" tone="teal" />
-              <QuickAction icon={BarChart3} label="Raporlar" href="/reports" tone="indigo" />
-              <QuickAction icon={Building2} label="Firmalar" href="/companies" tone="orange" />
-              <QuickAction icon={ClipboardCheck} label="Saha Denetimi" href="/score-history" tone="plum" />
+              <QuickAction icon={ShieldAlert} label={t('quickRisk')} href="/risk-analysis" tone="risk" />
+              <QuickAction icon={FileText} label={t('quickLibrary')} href="/isg-library?section=documentation" tone="cobalt" />
+              <QuickAction icon={AlertTriangle} label={t('quickIncident')} href="/incidents" tone="amber" />
+              <QuickAction icon={Calendar} label={t('quickPlanner')} href="/planner" tone="emerald" />
+              <QuickAction icon={GraduationCap} label={t('quickEducation')} href="/isg-library?section=education" tone="teal" />
+              <QuickAction icon={BarChart3} label={t('quickReports')} href="/reports" tone="indigo" />
+              <QuickAction icon={Building2} label={t('quickCompanies')} href="/companies" tone="orange" />
+              <QuickAction icon={ClipboardCheck} label={t('quickFieldAudit')} href="/score-history" tone="plum" />
             </div>
           </div>
 
@@ -393,46 +419,48 @@ export function DashboardClient() {
               <div>
                 <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
                   <FileText size={16} className="text-[var(--gold)]" />
-                  Kütüphanedeki son çıktılar
+                  {t('recentDocsTitle')}
                 </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  İSG kütüphanesi akışında son düzenlenen dokümanlar burada özetlenir.
-                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{t('recentDocsSubtitle')}</p>
               </div>
               <button
                 onClick={() => router.push('/isg-library?section=documentation')}
                 className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--primary)] transition-colors hover:bg-[var(--gold)]/8"
               >
-                Kütüphaneye git <ChevronRight size={12} />
+                {t('recentDocsCta')} <ChevronRight size={12} />
               </button>
             </div>
 
             {s.recentDocs.length === 0 ? (
               <div className="rounded-[1.5rem] border border-dashed border-border bg-background/55 px-4 py-12 text-center text-sm text-muted-foreground">
-                Henüz kütüphane çıktısı yok. İSG kütüphanesinden şablon seçerek başlayabilirsiniz.
+                {t('recentDocsEmpty')}
               </div>
             ) : (
               <div className="space-y-2">
                 {s.recentDocs.map((doc) => {
-                  const stCfg: Record<string, { label: string; color: string }> = {
-                    taslak: {
-                      label: 'Taslak',
-                      color: 'text-yellow-700 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-300',
-                    },
-                    hazir: {
-                      label: 'Hazır',
-                      color: 'text-emerald-700 bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-300',
-                    },
-                    onay_bekliyor: {
-                      label: 'Onay',
-                      color: 'text-blue-700 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300',
-                    },
-                    revizyon: {
-                      label: 'Revizyon',
-                      color: 'text-orange-700 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300',
-                    },
+                  const colorByStatus: Record<string, string> = {
+                    taslak:
+                      'text-yellow-700 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-300',
+                    hazir:
+                      'text-emerald-700 bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-300',
+                    onay_bekliyor:
+                      'text-blue-700 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300',
+                    revizyon:
+                      'text-orange-700 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300',
                   };
-                  const st = stCfg[doc.status] || stCfg.taslak;
+                  const labelByStatus = (status: string) => {
+                    switch (status) {
+                      case 'hazir':
+                        return t('docStatusReady');
+                      case 'onay_bekliyor':
+                        return t('docStatusPending');
+                      case 'revizyon':
+                        return t('docStatusRevision');
+                      default:
+                        return t('docStatusDraft');
+                    }
+                  };
+                  const color = colorByStatus[doc.status] ?? colorByStatus.taslak;
 
                   return (
                     <div
@@ -446,11 +474,11 @@ export function DashboardClient() {
                           {doc.title}
                         </div>
                         <div className="mt-1 text-xs text-muted-foreground">
-                          {new Date(doc.updated_at).toLocaleDateString('tr-TR')}
+                          {new Date(doc.updated_at).toLocaleDateString(locale, { dateStyle: 'medium' })}
                         </div>
                       </div>
-                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${st.color}`}>
-                        {st.label}
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${color}`}>
+                        {labelByStatus(doc.status)}
                       </span>
                     </div>
                   );
@@ -464,42 +492,78 @@ export function DashboardClient() {
           <div className="surface-card">
             <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
               <Building2 size={16} className="text-[var(--gold)]" />
-              Firma Özeti
+              {t('companySummaryTitle')}
             </h2>
             <div className="rounded-[1.5rem] border border-[var(--gold)]/20 bg-[linear-gradient(135deg,rgba(200,155,91,0.12),rgba(255,255,255,0.55))] px-5 py-6 text-center dark:bg-[linear-gradient(135deg,rgba(213,177,122,0.12),rgba(17,26,43,0.45))]">
               <p className="text-4xl font-semibold tracking-tight text-[var(--primary)]">{s.companyCount}</p>
-              <p className="mt-2 text-sm text-muted-foreground">Kayıtlı firma</p>
+              <p className="mt-2 text-sm text-muted-foreground">{t('companySummaryCountLabel')}</p>
             </div>
             <button
               onClick={() => router.push('/companies')}
               className="mt-4 inline-flex w-full items-center justify-center gap-1 rounded-2xl border border-border/80 bg-background/85 px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:border-[var(--gold)]/30 hover:bg-[var(--gold)]/8"
             >
-              Firmaları Yönet <ChevronRight size={14} />
+              {t('companyManageCta')} <ChevronRight size={14} />
             </button>
           </div>
 
           <div className="surface-card">
             <div className="mb-4">
-              <h2 className="text-base font-semibold text-foreground">İSG Modülleri</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Platformun aktif operasyon alanları.</p>
+              <h2 className="text-base font-semibold text-foreground">{t('modulesTitle')}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{t('modulesSubtitle')}</p>
             </div>
             <div className="space-y-2">
-              <ModuleLink icon={ShieldAlert} label="Risk Analizi" desc={`${s.riskCount} değerlendirme`} href="/risk-analysis" tone="risk" />
-              <ModuleLink icon={FileText} label="İSG kütüphanesi" desc="Doküman ve şablonlar" href="/isg-library?section=documentation" tone="cobalt" />
-              <ModuleLink icon={Siren} label="Acil Durum" desc="Plan ve tatbikatlar" href="/isg-library?section=emergency" tone="amber" />
-              <ModuleLink icon={GraduationCap} label="Eğitimler" desc="Takip ve kayıt" href="/isg-library?section=education" tone="teal" />
-              <ModuleLink icon={PenTool} label="Sınav ve Anket" desc="AI destekli ölçüm akışları" href="/isg-library?section=assessment" tone="indigo" />
-              <ModuleLink icon={Download} label="Mevzuat" desc="Mevzuat ve rehber kütüphanesi" href="/isg-library?section=legal" tone="gold" />
+              <ModuleLink
+                icon={ShieldAlert}
+                label={t('moduleRisk')}
+                desc={t('moduleRiskDesc', { count: s.riskCount })}
+                href="/risk-analysis"
+                tone="risk"
+              />
+              <ModuleLink
+                icon={FileText}
+                label={t('moduleLibrary')}
+                desc={t('moduleLibraryDesc')}
+                href="/isg-library?section=documentation"
+                tone="cobalt"
+              />
+              <ModuleLink
+                icon={Siren}
+                label={t('moduleEmergency')}
+                desc={t('moduleEmergencyDesc')}
+                href="/isg-library?section=emergency"
+                tone="amber"
+              />
+              <ModuleLink
+                icon={GraduationCap}
+                label={t('moduleTraining')}
+                desc={t('moduleTrainingDesc')}
+                href="/isg-library?section=education"
+                tone="teal"
+              />
+              <ModuleLink
+                icon={PenTool}
+                label={t('moduleAssessment')}
+                desc={t('moduleAssessmentDesc')}
+                href="/isg-library?section=assessment"
+                tone="indigo"
+              />
+              <ModuleLink
+                icon={Download}
+                label={t('moduleLegal')}
+                desc={t('moduleLegalDesc')}
+                href="/isg-library?section=legal"
+                tone="gold"
+              />
             </div>
           </div>
 
           <div className="surface-card bg-[linear-gradient(135deg,rgba(200,155,91,0.14),rgba(255,252,247,0.92))] dark:bg-[linear-gradient(135deg,rgba(213,177,122,0.12),rgba(17,26,43,0.95))]">
             <div className="mb-2 flex items-center gap-2">
               <Calendar size={16} className="text-[var(--gold)]" />
-              <h2 className="text-base font-semibold text-foreground">Bugün</h2>
+              <h2 className="text-base font-semibold text-foreground">{t('todayCardTitle')}</h2>
             </div>
             <p className="text-2xl font-semibold tracking-tight text-foreground">
-              {new Date().toLocaleDateString('tr-TR', {
+              {new Date().toLocaleDateString(locale, {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
@@ -507,7 +571,7 @@ export function DashboardClient() {
               })}
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              {s.taskCount > 0 ? `${s.taskCount} açık görev bekliyor` : 'Tüm görevler tamamlandı'}
+              {s.taskCount > 0 ? t('todayTasksPending', { count: s.taskCount }) : t('todayTasksDone')}
             </p>
           </div>
         </div>
@@ -568,6 +632,7 @@ function StatCard({
   sub,
   subColor,
   tone,
+  liveLabel,
   onClick,
 }: {
   icon: React.ElementType;
@@ -576,6 +641,7 @@ function StatCard({
   sub: string;
   subColor?: string;
   tone: PremiumIconTone;
+  liveLabel: string;
   onClick: () => void;
 }) {
   return (
@@ -588,7 +654,8 @@ function StatCard({
       <div className="mb-4 flex items-center justify-between gap-3">
         <PremiumIconBadge icon={Icon} tone={tone} />
         <span className="inline-flex items-center gap-1 rounded-full border border-border/80 bg-background/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-          canlı <ArrowUpRight size={11} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          {liveLabel}{' '}
+          <ArrowUpRight size={11} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </span>
       </div>
       <div className="text-sm font-semibold text-foreground">{label}</div>
