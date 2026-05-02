@@ -39,9 +39,18 @@ export function FindingsTab({ state, actions }: Props) {
   const selected = findings.find(({ q }) => q.id === selectedQuestionId) ?? findings[0];
 
   return (
-    <div className="mt-4 grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
+    <div className="mt-4 space-y-4">
+      {findings.length > 0 ? (
+        <div className="rounded-xl border border-rose-200/70 bg-gradient-to-r from-rose-50/90 to-amber-50/40 px-4 py-3 text-sm leading-relaxed text-foreground shadow-sm dark:border-rose-400/20 dark:from-rose-950/40 dark:to-amber-950/20 dark:text-rose-50/95">
+          <strong className="font-semibold">Değerlendirme ekranı:</strong> Aşağıdaki bulgular için riske,
+          aksiyona veya DÖF&apos;e bağlantı seçebilir veya kaydı incelediğinizi işaretleyebilirsiniz. Bu adım saha
+          ile ofis takibini birleştirir.
+        </div>
+      ) : null}
+
+      <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,280px)_minmax(0,1fr)]">
       <SubcategorySidebar
-        title={`Tespitler (${findings.length})`}
+        title={`Bulgular (${findings.length})`}
         items={sidebarItems}
         activeItemId={selected?.q.id ?? null}
         onSelect={setSelectedQuestionId}
@@ -52,8 +61,8 @@ export function FindingsTab({ state, actions }: Props) {
         <div className="space-y-4">
           <div className="rounded-[1.5rem] border border-rose-200/70 bg-gradient-to-br from-white via-rose-50/55 to-orange-50/35 p-5 shadow-sm dark:border-rose-400/15 dark:from-slate-950 dark:via-rose-950/20 dark:to-slate-950">
             <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1 space-y-1">
+                <div className="flex items-start gap-2">
                   <TriangleAlert
                     size={18}
                     className={cn(
@@ -62,7 +71,7 @@ export function FindingsTab({ state, actions }: Props) {
                         : "text-amber-600",
                     )}
                   />
-                  <h3 className="text-lg font-semibold text-foreground">
+                  <h3 className="break-words text-lg font-semibold leading-snug text-foreground">
                     {selected.q.text}
                   </h3>
                 </div>
@@ -167,6 +176,7 @@ export function FindingsTab({ state, actions }: Props) {
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 }

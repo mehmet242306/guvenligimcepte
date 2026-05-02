@@ -43,8 +43,8 @@ export const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
   },
   {
     key: "findings",
-    label: "Tespitler",
-    description: "Bugünkü eksik ve risk havuzu",
+    label: "Bulgular",
+    description: "Tespitleri değerlendir, riske ve aksiyona bağla",
     icon: TriangleAlert,
   },
   {

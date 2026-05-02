@@ -203,7 +203,11 @@ export function FieldInspectionClient() {
         ) : null}
 
         {activeCategory === "inspection" ? (
-          <ActiveInspectionTab state={state} actions={actions} />
+          <ActiveInspectionTab
+            state={state}
+            actions={actions}
+            onOpenFindings={() => setActiveCategory("findings")}
+          />
         ) : null}
 
         {activeCategory === "findings" ? (

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { CheckCircle2, Save, Target } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -15,9 +16,11 @@ import type { ResponseStatus } from "@/lib/supabase/inspection-api";
 type Props = {
   state: SessionState;
   actions: SessionActions;
+  /** Denetim kartlarından “Bulgular” sekmesine geçiş (tespit değerlendirme) */
+  onOpenFindings?: () => void;
 };
 
-export function ActiveInspectionTab({ state, actions }: Props) {
+export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
   const { activeTemplate, activeRun, answers, savingAnswer } = state;
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
@@ -59,6 +62,14 @@ export function ActiveInspectionTab({ state, actions }: Props) {
     return questions.filter((q) => q.section === selectedSection);
   }, [questions, selectedSection]);
 
+  const findingsCount = useMemo(() => {
+    if (!activeTemplate) return 0;
+    return activeTemplate.questions.filter((q) => {
+      const a = answers[q.id];
+      return a?.responseStatus === "uygunsuz" || a?.responseStatus === "kritik";
+    }).length;
+  }, [activeTemplate, answers]);
+
   if (!activeTemplate) {
     return (
       <div className="mt-4 rounded-[1.5rem] border border-dashed border-border bg-muted/20 px-8 py-16 text-center">
@@ -93,7 +104,8 @@ export function ActiveInspectionTab({ state, actions }: Props) {
           <div className="min-w-0 flex-1">
             <p className="font-semibold">Her cevap otomatik kaydedilir.</p>
             <p className="text-xs leading-5 text-muted-foreground">
-              AyrÄ± bir gÃ¶nder butonu yok; seÃ§im, not, fotoÄŸraf ve ses kaydÄ± anÄ±nda denetim oturumuna iÅŸlenir.
+              Ayrı bir gönder tuşu yok; seçim, not, fotoğraf ve ses kaydı anında denetim oturumuna işlenir. Tüm
+              uygunsuz ve kritik maddeleri &quot;Bulgular&quot; sekmesinde değerlendirebilirsiniz.
             </p>
           </div>
           <span className="rounded-full border border-amber-200 bg-white/80 px-3 py-1 text-xs font-semibold text-amber-800 dark:border-amber-400/20 dark:bg-white/10 dark:text-amber-100">
@@ -102,40 +114,69 @@ export function ActiveInspectionTab({ state, actions }: Props) {
         </div>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
-      <SubcategorySidebar
-        title="Bölümler"
-        items={sidebarItems}
-        activeItemId={selectedSection ?? "__all__"}
-        onSelect={(id) => {
-          setSelectedSection(id.startsWith("section:") ? id.replace("section:", "") : "__all__");
-        }}
-      />
+      <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,280px)_minmax(0,1fr)]">
+        <SubcategorySidebar
+          title="Bölümler"
+          items={sidebarItems}
+          activeItemId={selectedSection ?? "__all__"}
+          onSelect={(id) => {
+            setSelectedSection(id.startsWith("section:") ? id.replace("section:", "") : "__all__");
+          }}
+        />
 
-      <div className="space-y-3">
-        {visibleQuestions.length === 0 ? (
-          <div className="rounded-[1.5rem] border border-dashed border-border bg-muted/20 px-8 py-12 text-center text-sm text-muted-foreground">
-            Bu bölümde soru yok.
-          </div>
-        ) : (
-          visibleQuestions.map((question, index) => (
-            <QuestionCard
-              key={question.id}
-              index={index}
-              total={visibleQuestions.length}
-              question={question}
-              answer={answers[question.id]}
-              runId={activeRun.id}
-              saving={savingAnswer}
-              onSetStatus={(status) =>
-                actions.saveAnswer({ questionId: question.id, responseStatus: status })
-              }
-              onUpdateField={(patch) => actions.saveAnswer({ questionId: question.id, ...patch })}
-            />
-          ))
-        )}
+        <div className="min-w-0 space-y-3 pb-28 max-xl:max-w-full md:pb-20 lg:pb-10">
+          {visibleQuestions.length === 0 ? (
+            <div className="rounded-[1.5rem] border border-dashed border-border bg-muted/20 px-4 py-12 text-center text-sm text-muted-foreground sm:px-8">
+              Bu bölümde soru yok.
+            </div>
+          ) : (
+            visibleQuestions.map((question, index) => (
+              <QuestionCard
+                key={question.id}
+                index={index}
+                total={visibleQuestions.length}
+                question={question}
+                answer={answers[question.id]}
+                runId={activeRun.id}
+                saving={savingAnswer}
+                onSetStatus={(status) =>
+                  actions.saveAnswer({ questionId: question.id, responseStatus: status })
+                }
+                onUpdateField={(patch) => actions.saveAnswer({ questionId: question.id, ...patch })}
+              />
+            ))
+          )}
+
+          {onOpenFindings ? (
+            <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/90 via-white to-sky-50/50 p-4 shadow-sm dark:border-amber-500/25 dark:from-amber-950/30 dark:via-slate-950 dark:to-sky-950/20 sm:p-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0 space-y-2">
+                  <p className="text-sm font-semibold text-foreground">Saha denetimi sonrası</p>
+                  <ul className="list-disc space-y-1 pl-4 text-xs leading-relaxed text-muted-foreground">
+                    <li>
+                      Cevaplar kayıt altındadır. Uygunsuz veya kritik işaretlediğiniz maddeler{" "}
+                      <strong className="text-foreground">Bulgular</strong> sekmesinde toplanır.
+                    </li>
+                    <li>
+                      Orada tespiti riske, açık aksiyona veya DÖF&apos;e bağlayarak kurum içi takibi
+                      başlatabilirsiniz.
+                    </li>
+                  </ul>
+                </div>
+                <Button
+                  type="button"
+                  className="h-12 w-full shrink-0 px-5 sm:h-11 sm:w-auto"
+                  onClick={onOpenFindings}
+                >
+                  {findingsCount > 0
+                    ? `Bulguları değerlendir (${findingsCount})`
+                    : "Bulgular sekmesine git"}
+                </Button>
+              </div>
+            </div>
+          ) : null}
+        </div>
       </div>
-    </div>
     </div>
   );
 }
@@ -178,33 +219,50 @@ function QuestionCard({
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-[1.5rem] border p-5 shadow-[var(--shadow-card)] transition-all duration-200 hover:-translate-y-0.5",
+        "group relative mx-auto w-full max-w-full overflow-hidden rounded-[1.25rem] border p-4 shadow-[var(--shadow-card)] transition-all duration-200 sm:rounded-[1.5rem] sm:p-5 md:hover:-translate-y-0.5",
         tone.card,
       )}
     >
       <span className={cn("absolute inset-y-0 left-0 w-1.5", tone.accent)} />
       <span className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-white/60 blur-2xl dark:bg-white/5" />
-      <div className="relative flex items-center gap-2 border-b border-border pb-3 text-xs text-muted-foreground">
-        <span className={cn("inline-flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-semibold", tone.marker)}>
-          {index + 1}
-        </span>
-        <span>Soru {index + 1} / {total}</span>
-        <span>·</span>
-        <span>{question.section}</span>
-        <span>·</span>
-        <span>{question.category}</span>
-        <span className={cn("ml-auto rounded-full border px-2.5 py-1 text-[11px] font-semibold", tone.info)}>
+      <div className="relative flex flex-col gap-2 border-b border-border pb-3 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+            <span
+              className={cn(
+                "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[11px] font-semibold",
+                tone.marker,
+              )}
+            >
+              {index + 1}
+            </span>
+            <span className="font-medium text-foreground">Soru {index + 1} / {total}</span>
+          </div>
+          <p className="break-words text-[11px] leading-snug text-muted-foreground sm:text-xs">
+            <span className="font-medium text-foreground/90">{question.section}</span>
+            <span className="mx-1 text-muted-foreground">·</span>
+            <span>{question.category}</span>
+          </p>
+        </div>
+        <span
+          className={cn(
+            "inline-flex w-fit shrink-0 items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold sm:self-center",
+            tone.info,
+          )}
+        >
           {statusLabel}
         </span>
       </div>
 
       <div className="relative space-y-3 pt-4">
-        <p className="text-base font-medium leading-7 text-foreground">{question.text}</p>
+        <p className="break-words text-base font-medium leading-relaxed text-foreground sm:leading-7">
+          {question.text}
+        </p>
         {question.ruleHint ? (
           <p className="text-xs leading-5 text-muted-foreground">{question.ruleHint}</p>
         ) : null}
 
-        <div className="grid grid-cols-2 gap-2 pt-2 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 pt-2 sm:grid-cols-4 sm:gap-2">
           {(Object.keys(RESPONSE_COPY) as ResponseStatus[]).map((rs) => {
             const meta = RESPONSE_COPY[rs];
             const selected = status === rs;
@@ -215,15 +273,15 @@ function QuestionCard({
                 disabled={saving}
                 onClick={() => onSetStatus(rs)}
                 className={cn(
-                  "inline-flex h-11 items-center justify-center gap-2 rounded-2xl px-3 text-sm font-semibold transition",
+                  "inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 rounded-2xl px-2 text-[13px] font-semibold leading-tight transition sm:min-h-[44px] sm:gap-2 sm:px-3 sm:text-sm",
                   meta.buttonClassName,
                   selected
-                    ? "scale-[1.02] shadow-[0_14px_30px_rgba(15,23,42,0.12)] ring-2 ring-[var(--gold)] ring-offset-2 ring-offset-background dark:shadow-[0_14px_30px_rgba(0,0,0,0.35)]"
+                    ? "shadow-[0_14px_30px_rgba(15,23,42,0.12)] ring-2 ring-[var(--gold)] ring-offset-2 ring-offset-background sm:scale-[1.02] dark:shadow-[0_14px_30px_rgba(0,0,0,0.35)]"
                     : "",
                 )}
               >
-                {selected ? <CheckCircle2 className="h-4 w-4" /> : null}
-                {meta.label}
+                {selected ? <CheckCircle2 className="h-4 w-4 shrink-0" /> : null}
+                <span className="text-center">{meta.label}</span>
               </button>
             );
           })}
