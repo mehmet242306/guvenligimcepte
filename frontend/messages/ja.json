@@ -72,7 +72,8 @@
     "osgbSolution": "OSGB向け",
     "enterpriseSolution": "企業向け",
     "mainNavigation": "メインナビゲーション",
-    "mobileNavigation": "モバイルナビゲーション"
+    "mobileNavigation": "モバイルナビゲーション",
+    "trainingHub": "Training, surveys & exams"
   },
   "landing": {
     "badge": "AI対応の労働安全衛生プラットフォーム",

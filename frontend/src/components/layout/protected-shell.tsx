@@ -1,9 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Brand } from "./brand";
 import { LanguageSelector } from "./language-selector";
 import { WorkspaceSwitcher } from "./workspace-switcher";
@@ -58,9 +58,7 @@ const primaryNav = [
 /* Second bar: other modules */
 type NavItem = { href: string; key: string; adminOnly?: boolean };
 const secondaryNav: NavItem[] = [
-  { href: "/training", key: "nav.training" },
-  { href: "/training?tab=survey", key: "nav.survey" },
-  { href: "/training?tab=exam", key: "nav.exam" },
+  { href: "/training", key: "nav.trainingHub" },
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
@@ -86,9 +84,7 @@ const osgbPrimaryNav = [
 ];
 
 const osgbSecondaryNav = [
-  { href: "/training", key: "nav.training" },
-  { href: "/training?tab=survey", key: "nav.survey" },
-  { href: "/training?tab=exam", key: "nav.exam" },
+  { href: "/training", key: "nav.trainingHub" },
   { href: "/osgb/contracts", key: "nav.osgbContracts" },
   // Raporlar: Firma workspace → İSG Dosyası sekmesine taşındı.
   { href: "/cozumler/osgb", key: "nav.osgbOffersCapacity" },
@@ -123,28 +119,10 @@ function isSecondaryNavActive(pathname: string, href: string) {
   return isActive(pathname, href);
 }
 
-/** İkinci menü: /training hub vs ?tab=survey | ?tab=exam ayrımı */
-function secondaryNavItemActive(
-  pathname: string,
-  href: string,
-  trainingTab: string | null,
-): boolean {
+/** İkinci menü: /training (eğitim, anket, sınav) tek hub — alt sekmeler sayfa içinde */
+function secondaryNavItemActive(pathname: string, href: string): boolean {
   const baseHref = href.split("?")[0] || href;
-  if (baseHref === "/training") {
-    const qStr = href.includes("?") ? (href.split("?")[1] ?? "") : "";
-    const wantTab = qStr ? new URLSearchParams(qStr).get("tab") : null;
-    if (wantTab === "survey") {
-      return (pathname === "/training" || pathname === "/training/") && trainingTab === "survey";
-    }
-    if (wantTab === "exam") {
-      return (pathname === "/training" || pathname === "/training/") && trainingTab === "exam";
-    }
-    if (!pathname.startsWith("/training")) return false;
-    if (pathname === "/training" || pathname === "/training/") {
-      return trainingTab !== "survey" && trainingTab !== "exam";
-    }
-    return true;
-  }
+  if (baseHref === "/training") return pathname.startsWith("/training");
   return isSecondaryNavActive(pathname, href);
 }
 
@@ -169,15 +147,14 @@ function SecondaryNavLinksDesktop({
   disableWorkspaceModules,
   resolveNavLabel,
   showWorkspaceSwitcher,
-  trainingTab,
-}: SecondaryNavLinksBaseProps & { trainingTab: string | null }) {
+}: SecondaryNavLinksBaseProps) {
   return (
     <>
       {showWorkspaceSwitcher ? (
         <ActiveCompanyNavLink label="Firma" locked={disableWorkspaceModules} />
       ) : null}
       {items.map((item) => {
-        const act = secondaryNavItemActive(pathname, item.href, trainingTab);
+        const act = secondaryNavItemActive(pathname, item.href);
         const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
         const classes = cn(
           "relative inline-flex shrink-0 items-center rounded-xl px-3 py-2 text-[13px] font-semibold transition-all duration-200 xl:px-4 xl:text-[14px]",
@@ -215,26 +192,20 @@ function SecondaryNavLinksDesktop({
   );
 }
 
-function SecondaryNavLinksDesktopWithSearch(props: SecondaryNavLinksBaseProps) {
-  const trainingTab = useSearchParams().get("tab");
-  return <SecondaryNavLinksDesktop {...props} trainingTab={trainingTab} />;
-}
-
 function SecondaryNavLinksMobile({
   items,
   pathname,
   disableWorkspaceModules,
   resolveNavLabel,
   showWorkspaceSwitcher,
-  trainingTab,
-}: SecondaryNavLinksBaseProps & { trainingTab: string | null }) {
+}: SecondaryNavLinksBaseProps) {
   return (
     <>
       {showWorkspaceSwitcher ? (
         <ActiveCompanyNavLink label="Firma" locked={disableWorkspaceModules} />
       ) : null}
       {items.map((item) => {
-        const act = secondaryNavItemActive(pathname, item.href, trainingTab);
+        const act = secondaryNavItemActive(pathname, item.href);
         const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
         const classes = cn(
           "relative inline-flex shrink-0 items-center rounded-lg px-3 py-2.5 text-[13px] font-semibold transition-colors",
@@ -270,11 +241,6 @@ function SecondaryNavLinksMobile({
       })}
     </>
   );
-}
-
-function SecondaryNavLinksMobileWithSearch(props: SecondaryNavLinksBaseProps) {
-  const trainingTab = useSearchParams().get("tab");
-  return <SecondaryNavLinksMobile {...props} trainingTab={trainingTab} />;
 }
 
 function isWorkspaceOptionalPath(pathname: string) {
@@ -1094,26 +1060,13 @@ export function ProtectedShell({
               <div className="flex max-w-full flex-wrap items-center justify-center gap-x-1 gap-y-1.5">
                 {/* Firma linki — secondary nav'ın ilk item'ı. Aktif workspace'in
                     /companies/[slug|id] detay sayfasına götürür (10 sekmeli). */}
-                <Suspense
-                  fallback={
-                    <SecondaryNavLinksDesktop
-                      items={secondaryNavForUi}
-                      pathname={pathname}
-                      disableWorkspaceModules={disableWorkspaceModules}
-                      resolveNavLabel={resolveNavLabel}
-                      showWorkspaceSwitcher={showWorkspaceSwitcher}
-                      trainingTab={null}
-                    />
-                  }
-                >
-                  <SecondaryNavLinksDesktopWithSearch
-                    items={secondaryNavForUi}
-                    pathname={pathname}
-                    disableWorkspaceModules={disableWorkspaceModules}
-                    resolveNavLabel={resolveNavLabel}
-                    showWorkspaceSwitcher={showWorkspaceSwitcher}
-                  />
-                </Suspense>
+                <SecondaryNavLinksDesktop
+                  items={secondaryNavForUi}
+                  pathname={pathname}
+                  disableWorkspaceModules={disableWorkspaceModules}
+                  resolveNavLabel={resolveNavLabel}
+                  showWorkspaceSwitcher={showWorkspaceSwitcher}
+                />
               </div>
             </div>
             <div className="flex items-center justify-end">
@@ -1173,26 +1126,13 @@ export function ProtectedShell({
 
           <div className="px-2">
             <div className="no-scrollbar flex max-w-full flex-nowrap justify-start gap-x-0.5 gap-y-1 overflow-x-auto py-1.5 sm:flex-wrap sm:justify-center">
-              <Suspense
-                fallback={
-                  <SecondaryNavLinksMobile
-                    items={secondaryNavForUi}
-                    pathname={pathname}
-                    disableWorkspaceModules={disableWorkspaceModules}
-                    resolveNavLabel={resolveNavLabel}
-                    showWorkspaceSwitcher={showWorkspaceSwitcher}
-                    trainingTab={null}
-                  />
-                }
-              >
-                <SecondaryNavLinksMobileWithSearch
-                  items={secondaryNavForUi}
-                  pathname={pathname}
-                  disableWorkspaceModules={disableWorkspaceModules}
-                  resolveNavLabel={resolveNavLabel}
-                  showWorkspaceSwitcher={showWorkspaceSwitcher}
-                />
-              </Suspense>
+              <SecondaryNavLinksMobile
+                items={secondaryNavForUi}
+                pathname={pathname}
+                disableWorkspaceModules={disableWorkspaceModules}
+                resolveNavLabel={resolveNavLabel}
+                showWorkspaceSwitcher={showWorkspaceSwitcher}
+              />
             </div>
           </div>
 
