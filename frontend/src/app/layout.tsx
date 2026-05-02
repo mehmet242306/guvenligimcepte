@@ -5,6 +5,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import { getLocale, getMessages } from "next-intl/server";
 import { AuthCodeRescue } from "@/components/auth/AuthCodeRescue";
 import { Providers } from "@/components/providers";
+import { PwaAppInstallPrompt } from "@/components/pwa/pwa-app-install-prompt";
 import { PwaRuntime } from "@/components/pwa/pwa-runtime";
 import "./globals.css";
 
@@ -113,6 +114,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <Providers locale={locale} messages={messages}>
           <PwaRuntime />
           <AuthCodeRescue />
+          <PwaAppInstallPrompt />
           {children}
         </Providers>
       </body>
