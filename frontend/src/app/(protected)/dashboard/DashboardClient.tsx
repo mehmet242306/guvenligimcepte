@@ -32,6 +32,7 @@ import { createClient } from '@/lib/supabase/client';
 import { PremiumIconBadge, type PremiumIconTone } from '@/components/ui/premium-icon-badge';
 import { DashboardTrackingSummary } from '@/components/dashboard/DashboardTrackingSummary';
 import { OhsFileWidget } from '@/components/dashboard/OhsFileWidget';
+import { cn } from '@/lib/utils';
 
 interface DashboardStats {
   riskCount: number;
@@ -255,22 +256,37 @@ export function DashboardClient() {
       </section>
 
       <section
-        className={`rounded-[1.75rem] border px-5 py-4 shadow-sm sm:px-6 sm:py-5 ${
+        className={cn(
+          "relative overflow-hidden rounded-[2rem] border-2 px-5 py-5 shadow-xl sm:px-8 sm:py-7",
           s.isDemoAccount
-            ? "border-amber-400/40 bg-amber-50/90 dark:border-amber-500/30 dark:bg-amber-950/25"
-            : "border-[var(--gold)]/30 bg-[linear-gradient(135deg,rgba(255,255,255,0.95),rgba(255,248,236,0.5))] dark:border-white/10 dark:bg-white/[0.04]"
-        }`}
+            ? "border-amber-400/55 bg-gradient-to-br from-amber-50 via-white to-amber-100/95 shadow-[0_24px_60px_-18px_rgba(245,158,11,0.35)] dark:border-amber-500/45 dark:from-amber-950/55 dark:via-amber-950/35 dark:to-amber-950/50 dark:shadow-[0_28px_70px_-20px_rgba(251,191,36,0.18)]"
+            : "border-[var(--gold)]/55 bg-[linear-gradient(145deg,rgba(255,252,240,1)_0%,rgba(255,255,255,0.99)_42%,rgba(254,229,170,0.55)_100%)] shadow-[0_26px_64px_-16px_rgba(180,130,20,0.32),inset_0_1px_0_rgba(255,255,255,0.95)] dark:border-amber-500/45 dark:bg-[linear-gradient(145deg,rgba(42,32,12,0.98)_0%,rgba(15,23,42,0.92)_45%,rgba(88,48,10,0.45)_100%)] dark:shadow-[0_32px_80px_-22px_rgba(251,191,36,0.14)]",
+        )}
       >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex min-w-0 gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[var(--gold)]/35 bg-[var(--gold)]/15 text-[var(--gold)]">
-              <CreditCard className="h-5 w-5" aria-hidden />
+        <div
+          className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-gradient-to-br from-amber-400/35 via-[var(--gold)]/25 to-transparent blur-3xl dark:from-amber-500/25 dark:via-amber-600/15"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute -bottom-20 -left-16 h-52 w-52 rounded-full bg-amber-300/30 blur-3xl dark:bg-amber-900/30"
+          aria-hidden
+        />
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 gap-4">
+            <span
+              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-[var(--gold)]/45 bg-[linear-gradient(160deg,rgba(251,191,36,0.35),rgba(255,255,255,0.9))] text-[var(--gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] dark:border-amber-400/40 dark:bg-[linear-gradient(160deg,rgba(251,191,36,0.2),rgba(15,23,42,0.6))] dark:text-amber-200"
+              aria-hidden
+            >
+              <CreditCard className="h-6 w-6" />
             </span>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-foreground">
+              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--gold)] dark:text-amber-300/95">
+                {s.isDemoAccount ? "Demo · yükseltme" : "Self-servis yükseltme"}
+              </p>
+              <p className="mt-1.5 text-lg font-bold tracking-tight text-foreground sm:text-xl">
                 {s.isDemoAccount ? "Demo hesabındasınız" : "Paket ve kapasite"}
               </p>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
                 {s.isDemoAccount
                   ? "Üretim kullanımına geçmek için uygun paketi seçin; ödeme ve faturalama Paketler sayfasından yönetilir."
                   : "Daha fazla çalışma alanı veya modül ihtiyacınız varsa paketleri inceleyin; yükseltme self-servis olarak yapılabilir."}
@@ -279,7 +295,7 @@ export function DashboardClient() {
           </div>
           <Link
             href="/pricing"
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[var(--gold)] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_32px_rgba(217,162,27,0.35)] transition hover:brightness-110"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#D4A017_0%,#B8860B_45%,#CA8A04_100%)] px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_36px_rgba(184,134,11,0.45),0_0_0_1px_rgba(255,255,255,0.2)_inset] ring-2 ring-amber-200/60 transition hover:brightness-110 dark:ring-amber-400/25"
           >
             Paketlere git
             <ArrowUpRight className="h-4 w-4" aria-hidden />

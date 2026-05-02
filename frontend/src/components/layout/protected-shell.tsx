@@ -65,7 +65,7 @@ const secondaryNav: NavItem[] = [
   { href: "/digital-twin", key: "nav.digitalTwin", adminOnly: true },
   // Raporlar: Artık firma workspace'i içindeki "İSG Dosyası" sekmesine taşındı.
   // { href: "/reports", key: "nav.reports" },
-  { href: "/pricing", key: "nav.pricing" },
+  // Paketler: üst menüden kaldırıldı — dashboard’daki “Paket ve kapasite” kartından erişim.
   { href: "/settings", key: "nav.settings" },
 ];
 
