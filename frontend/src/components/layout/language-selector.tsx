@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -178,18 +179,47 @@ const languages: Language[] = [
 
 export function LanguageSelector({ variant = "light" }: { variant?: "light" | "dark" }) {
   const [open, setOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState<{ top: number; right: number }>({ top: 0, right: 0 });
   const { locale, setLocale } = useI18n();
-  const ref = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const current = languages.find((l) => l.code === locale) || languages[0];
   const FlagIcon = flagComponents[current.code] || FlagTR;
 
+  const updateMenuPosition = useCallback(() => {
+    const btn = buttonRef.current;
+    if (!btn || typeof window === "undefined") return;
+    const rect = btn.getBoundingClientRect();
+    setMenuPos({ top: rect.bottom + 8, right: window.innerWidth - rect.right });
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    updateMenuPosition();
+  }, [open, updateMenuPosition]);
+
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    if (!open) return;
+    const onScrollOrResize = () => updateMenuPosition();
+    window.addEventListener("resize", onScrollOrResize);
+    window.addEventListener("scroll", onScrollOrResize, true);
+    return () => {
+      window.removeEventListener("resize", onScrollOrResize);
+      window.removeEventListener("scroll", onScrollOrResize, true);
+    };
+  }, [open, updateMenuPosition]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      const node = e.target as Node;
+      if (triggerRef.current?.contains(node)) return;
+      if (menuRef.current?.contains(node)) return;
+      setOpen(false);
     }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   function selectLanguage(lang: Language) {
@@ -199,9 +229,46 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
 
   const isLight = variant === "light";
 
+  const menu = open && (
+    <div
+      ref={menuRef}
+      style={{ position: "fixed", top: menuPos.top, right: menuPos.right, zIndex: 200 }}
+      className={cn(
+        "w-48 overflow-hidden rounded-2xl border shadow-lg",
+        isLight ? "border-border bg-card" : "border-white/10 bg-[var(--navy-deep)]",
+      )}
+    >
+      {languages.map((lang) => {
+        const Flag = flagComponents[lang.code] || FlagTR;
+        const isActive = current.code === lang.code;
+        return (
+          <button
+            key={lang.code}
+            type="button"
+            onClick={() => selectLanguage(lang)}
+            className={cn(
+              "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors",
+              isLight ? "hover:bg-secondary text-foreground" : "hover:bg-white/[0.08] text-white/80 hover:text-white",
+              isActive && (isLight ? "bg-primary/5 text-primary font-medium" : "bg-white/[0.06] text-primary font-medium"),
+            )}
+          >
+            <Flag />
+            <span>{lang.label}</span>
+            {isActive && (
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto text-primary">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+
   return (
-    <div ref={ref} className="relative">
+    <div ref={triggerRef} className="relative">
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
@@ -219,37 +286,7 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
         </svg>
       </button>
 
-      {open && (
-        <div className={cn(
-          "absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-2xl border shadow-lg",
-          isLight ? "border-border bg-card" : "border-white/10 bg-[var(--navy-deep)]",
-        )}>
-          {languages.map((lang) => {
-            const Flag = flagComponents[lang.code] || FlagTR;
-            const isActive = current.code === lang.code;
-            return (
-              <button
-                key={lang.code}
-                type="button"
-                onClick={() => selectLanguage(lang)}
-                className={cn(
-                  "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors",
-                  isLight ? "hover:bg-secondary text-foreground" : "hover:bg-white/[0.08] text-white/80 hover:text-white",
-                  isActive && (isLight ? "bg-primary/5 text-primary font-medium" : "bg-white/[0.06] text-primary font-medium"),
-                )}
-              >
-                <Flag />
-                <span>{lang.label}</span>
-                {isActive && (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto text-primary">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {typeof document !== "undefined" && menu ? createPortal(menu, document.body) : null}
     </div>
   );
 }

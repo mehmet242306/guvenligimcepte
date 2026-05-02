@@ -65,7 +65,7 @@ export function PublicHeader() {
         <div className="flex min-w-0 items-center justify-between gap-2 lg:gap-4">
           <Brand href="/" iconOnly inverted className="shrink-0" />
 
-          <div className="flex min-w-0 max-w-[calc(100vw-72px)] shrink-0 items-center justify-end gap-1.5 overflow-hidden sm:gap-2 lg:max-w-none lg:gap-3">
+          <div className="flex min-w-0 max-w-[calc(100vw-72px)] shrink-0 items-center justify-end gap-1.5 sm:gap-2 lg:max-w-none lg:gap-3">
             <nav className="hidden items-center gap-6 lg:flex" aria-label={t("nav.mainNavigation")}>
               <Link href="/#features" className={navLinkClass}>
                 {t("nav.features")}
