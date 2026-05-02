@@ -24,6 +24,7 @@ import {
   ShieldAlert,
   Siren,
   Sparkles,
+  Smartphone,
   Target,
   TrendingUp,
 } from 'lucide-react';
@@ -318,6 +319,35 @@ export function DashboardClient() {
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#D4A017_0%,#B8860B_45%,#CA8A04_100%)] px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_36px_rgba(184,134,11,0.45),0_0_0_1px_rgba(255,255,255,0.2)_inset] ring-2 ring-amber-200/60 transition hover:brightness-110 dark:ring-amber-400/25"
           >
             {t('goToPlans')}
+            <ArrowUpRight className="h-4 w-4" aria-hidden />
+          </Link>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden rounded-[2rem] border border-teal-500/25 bg-[linear-gradient(135deg,rgba(240,253,250,0.96),rgba(255,255,255,0.98)_48%,rgba(204,251,241,0.72))] px-5 py-5 shadow-[0_24px_60px_-18px_rgba(13,148,136,0.28)] dark:border-teal-400/20 dark:bg-[linear-gradient(135deg,rgba(17,94,89,0.28),rgba(15,23,42,0.96)_52%,rgba(20,83,78,0.34))] sm:px-8 sm:py-7">
+        <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-teal-400/24 blur-3xl" aria-hidden />
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 gap-4">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-teal-500/25 bg-teal-500/10 text-teal-700 dark:text-teal-200">
+              <Smartphone className="h-6 w-6" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-teal-700 dark:text-teal-200">
+                Mobil ve masaüstü erişim
+              </p>
+              <p className="mt-1.5 text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                RiskNova'yı ana ekrana ekle
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+                Android, iPhone/iPad ve Windows'ta RiskNova'yı uygulama gibi açın. Gizli modda kurulum görünmez; normal tarayıcı penceresinde deneyin.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/uygulama"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-teal-600 px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_36px_rgba(13,148,136,0.35)] transition hover:bg-teal-500"
+          >
+            Kurulum adımlarını aç
             <ArrowUpRight className="h-4 w-4" aria-hidden />
           </Link>
         </div>
