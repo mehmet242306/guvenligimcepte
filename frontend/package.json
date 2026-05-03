@@ -30,6 +30,7 @@
     "i18n:translate-messages:force": "node scripts/translate-risk-scoring-packs.mjs --pack=messages --force",
     "i18n:merge-risk-scoring": "node scripts/merge-risk-scoring-i18n.mjs",
     "i18n:verify-locale-parity": "node scripts/i18n-verify-locale-parity.mjs",
+    "i18n:gen-isg-document-catalog": "npx tsx scripts/gen-isg-document-catalog-en.mts && npx tsx scripts/gen-isg-document-catalog-tr.mts && node scripts/merge-isg-library-catalog-into-messages.mjs && node scripts/i18n-merge-missing-from-en.mjs",
     "i18n:merge-missing-from-en": "node scripts/i18n-merge-missing-from-en.mjs",
     "i18n:translate-isg-library": "node scripts/translate-risk-scoring-packs.mjs --pack=messages --prefix=isgLibrary",
     "i18n:phase0-inventory": "node scripts/i18n-phase0-inventory.mjs",

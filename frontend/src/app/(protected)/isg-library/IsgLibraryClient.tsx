@@ -32,7 +32,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DOCUMENT_GROUPS } from "@/lib/document-groups";
+import { DOCUMENT_GROUPS, getGroupByKey } from "@/lib/document-groups";
 import { getTemplate } from "@/lib/document-templates-p1";
 import { createClient } from "@/lib/supabase/client";
 import { fetchDocuments } from "@/lib/supabase/document-api";
@@ -304,18 +304,60 @@ const ALL_CATEGORY_KEYS: CategoryKey[] = [
   "legal",
 ];
 
-const STATIC_SUBCATEGORIES: Partial<Record<Exclude<CategoryKey, "all">, string[]>> = {
-  education: ["Temel İSG Eğitimi", "Mesleki Eğitim", "Acil Durum Eğitimi", "Yenileme Eğitimleri"],
-  assessment: ["Sınavlar", "Anketler", "Değerlendirme Formları", "Ölçme ve İzleme"],
-  forms: ["Günlük Kontroller", "Periyodik Kontroller", "Denetim Formları"],
-  emergency: ["Acil Durum Planları", "Tahliye", "Yangın", "Tatbikat", "Toplanma Alanları"],
-  instructions: ["Makine Talimatları", "İş Akışı Talimatları", "KKD Talimatları", "Saha Uygulamaları"],
+/** Legacy URL slugs (Turkish UI era) → index into current locale `subcategories.*` arrays. */
+const LEGACY_SUBCATEGORY_SLUGS: Partial<Record<Exclude<CategoryKey, "all">, readonly string[]>> = {
+  education: ["temel-isg-egitimi", "mesleki-egitim", "acil-durum-egitimi", "yenileme-egitimleri"],
+  assessment: ["sinavlar", "anketler", "degerlendirme-formlari", "olcme-ve-izleme"],
+  forms: ["gunluk-kontroller", "periyodik-kontroller", "denetim-formlari"],
+  emergency: ["acil-durum-planlari", "tahliye", "yangin", "tatbikat", "toplanma-alanlari"],
+  instructions: ["makine-talimatlari", "is-akisi-talimatlari", "kkd-talimatlari", "saha-uygulamalari"],
 };
 
-function getStaticSubcategories(category: CategoryKey): string[] {
-  if (category === "all") return [];
-  if (category === "documentation") return DOCUMENT_GROUPS.map((group) => group.title);
-  return STATIC_SUBCATEGORIES[category] ?? [];
+type SubcategoryLists = {
+  education: string[];
+  assessment: string[];
+  forms: string[];
+  emergency: string[];
+  instructions: string[];
+};
+
+function resolveDocumentationGroupKeyFromSlug(normalizedSlug: string): string {
+  for (const group of DOCUMENT_GROUPS) {
+    if (slugify(group.key) === normalizedSlug || slugify(group.title) === normalizedSlug) {
+      return group.key;
+    }
+  }
+  return "";
+}
+
+function parseSubcategoryFromUrl(
+  value: string | null,
+  category: CategoryKey,
+  lists: SubcategoryLists,
+): string {
+  if (!value || category === "all") return "";
+  const normalized = slugify(value);
+  if (category === "documentation") {
+    return resolveDocumentationGroupKeyFromSlug(normalized);
+  }
+  const list =
+    category === "education"
+      ? lists.education
+      : category === "assessment"
+        ? lists.assessment
+        : category === "forms"
+          ? lists.forms
+          : category === "emergency"
+            ? lists.emergency
+            : category === "instructions"
+              ? lists.instructions
+              : [];
+  const direct = list.find((item) => slugify(item) === normalized);
+  if (direct) return direct;
+  const legacy = LEGACY_SUBCATEGORY_SLUGS[category];
+  if (!legacy?.length) return "";
+  const index = legacy.indexOf(normalized);
+  return index >= 0 ? (list[index] ?? "") : "";
 }
 
 type IsgLibraryTranslator = ReturnType<typeof useTranslations<"isgLibrary">>;
@@ -385,13 +427,6 @@ function getCategoryTone(category: CategoryKey | Exclude<CategoryKey, "all">) {
   return CATEGORY_TONES[category] ?? CATEGORY_TONES.all;
 }
 
-function parseSubcategoryFromUrl(value: string | null, category: CategoryKey) {
-  if (!value || category === "all") return "";
-  const options = getStaticSubcategories(category);
-  const normalized = slugify(value);
-  return options.find((item) => slugify(item) === normalized) ?? "";
-}
-
 function getContentTypeMeta(type: string | null, t: IsgLibraryTranslator) {
   const normalized = (type ?? "").toLowerCase();
 
@@ -427,7 +462,9 @@ function buildDocumentEditorHref(
   },
 ) {
   const params = new URLSearchParams();
-  const matchingGroup = DOCUMENT_GROUPS.find((group) => group.title === subcategory);
+  const matchingGroup = DOCUMENT_GROUPS.find(
+    (group) => group.key === subcategory || group.title === subcategory,
+  );
   const mode = options?.mode ?? "new";
 
   if (matchingGroup) {
@@ -583,6 +620,14 @@ export function IsgLibraryClient() {
 
   const initialCategory = parseCategory(searchParams.get("category") ?? searchParams.get("section"));
 
+  const subcategoryLists: SubcategoryLists = {
+    education: (t.raw("subcategories.education") as string[]) ?? [],
+    assessment: (t.raw("subcategories.assessment") as string[]) ?? [],
+    forms: (t.raw("subcategories.forms") as string[]) ?? [],
+    emergency: (t.raw("subcategories.emergency") as string[]) ?? [],
+    instructions: (t.raw("subcategories.instructions") as string[]) ?? [],
+  };
+
   const categoryDefinitions = useMemo<CategoryDefinition[]>(
     () => [
       { key: "all", label: t("categories.all"), icon: LayoutGrid, subcategories: [] },
@@ -590,37 +635,37 @@ export function IsgLibraryClient() {
         key: "documentation",
         label: t("categories.documentation"),
         icon: FileText,
-        subcategories: DOCUMENT_GROUPS.map((group) => group.title),
+        subcategories: DOCUMENT_GROUPS.map((group) => group.key),
       },
       {
         key: "education",
         label: t("categories.education"),
         icon: GraduationCap,
-        subcategories: STATIC_SUBCATEGORIES.education!,
+        subcategories: subcategoryLists.education,
       },
       {
         key: "assessment",
         label: t("categories.assessment"),
         icon: ClipboardCheck,
-        subcategories: STATIC_SUBCATEGORIES.assessment!,
+        subcategories: subcategoryLists.assessment,
       },
       {
         key: "forms",
         label: t("categories.forms"),
         icon: FileCheck2,
-        subcategories: STATIC_SUBCATEGORIES.forms!,
+        subcategories: subcategoryLists.forms,
       },
       {
         key: "emergency",
         label: t("categories.emergency"),
         icon: Siren,
-        subcategories: STATIC_SUBCATEGORIES.emergency!,
+        subcategories: subcategoryLists.emergency,
       },
       {
         key: "instructions",
         label: t("categories.instructions"),
         icon: ScrollText,
-        subcategories: STATIC_SUBCATEGORIES.instructions!,
+        subcategories: subcategoryLists.instructions,
       },
       {
         key: "legal",
@@ -629,12 +674,12 @@ export function IsgLibraryClient() {
         subcategories: [],
       },
     ],
-    [t],
+    [t, subcategoryLists],
   );
 
   const [category, setCategory] = useState<CategoryKey>(initialCategory);
   const [subcategory, setSubcategory] = useState(() =>
-    parseSubcategoryFromUrl(searchParams.get("subcategory"), initialCategory),
+    parseSubcategoryFromUrl(searchParams.get("subcategory"), initialCategory, subcategoryLists),
   );
   const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const [typeFilter, setTypeFilter] = useState(() => searchParams.get("type") ?? "all");
@@ -730,6 +775,9 @@ export function IsgLibraryClient() {
     async function loadPage() {
       setLoading(true);
       setErrorMessage(null);
+
+      const assessmentSubs = (t.raw("subcategories.assessment") as string[]) ?? [];
+      const educationSubs = (t.raw("subcategories.education") as string[]) ?? [];
 
       const supabase = createClient();
       if (!supabase) {
@@ -841,9 +889,12 @@ export function IsgLibraryClient() {
           return group.items.map((groupItem, index) => ({
             id: `template-${group.key}-${groupItem.id}`,
             title: groupItem.title,
-            description: t("templateDescription", { group: group.title, item: groupItem.title }),
+            description: t("templateDescription", {
+              group: t(`documentCatalog.groups.${group.key}.title`),
+              item: t(`documentCatalog.groups.${group.key}.items.${groupItem.id}`),
+            }),
             category: "documentation" as const,
-            subcategory: group.title,
+            subcategory: group.key,
             contentType: t("types.template"),
             tags: [
               t("legacy.fileNumber", { n: DOCUMENT_GROUPS.findIndex((entry) => entry.key === group.key) + 1 }),
@@ -862,11 +913,21 @@ export function IsgLibraryClient() {
         ...surveysResponse.map((survey) => ({
           id: `survey-${survey.id}`,
           title: survey.title,
-          description: survey.description || `${survey.type === "exam" ? "Sınav" : "Anket"} akışını görüntüleyin ve yönetin.`,
+          description:
+            survey.description ||
+            t("legacy.surveyFlowSubtitle", {
+              type: survey.type === "exam" ? t("types.exam") : t("types.survey"),
+            }),
           category: "assessment" as const,
-          subcategory: survey.type === "exam" ? "Sınavlar" : "Anketler",
-          contentType: survey.type === "exam" ? "Sınav" : "Anket",
-          tags: [survey.status, survey.type === "exam" ? "ölçme" : "geri bildirim"],
+          subcategory:
+            survey.type === "exam"
+              ? (assessmentSubs[0] ?? t("types.exam"))
+              : (assessmentSubs[1] ?? t("types.survey")),
+          contentType: survey.type === "exam" ? t("types.exam") : t("types.survey"),
+          tags: [
+            survey.status,
+            survey.type === "exam" ? t("surveyTags.measurement") : t("surveyTags.feedback"),
+          ],
           sector: [],
           createdAt: survey.updatedAt,
           viewHref: `/training/${survey.id}`,
@@ -880,7 +941,7 @@ export function IsgLibraryClient() {
           title: deck.title,
           description: deck.description || t("legacy.deckDefaultDescription"),
           category: "education" as const,
-          subcategory: "Mesleki Eğitim",
+          subcategory: educationSubs[1] ?? educationSubs[0] ?? "",
           contentType: t("types.presentation"),
           tags: [...(deck.tags ?? [])].slice(0, 3),
           sector: [],
@@ -913,7 +974,7 @@ export function IsgLibraryClient() {
     return () => {
       cancelled = true;
     };
-  }, [t]);
+  }, [t, locale]);
 
   useEffect(() => {
     if (!statusMessage) return undefined;
@@ -999,12 +1060,20 @@ export function IsgLibraryClient() {
           ? true
           : item.contentType.toLocaleLowerCase(dateLocaleTag) === typeFilter.toLocaleLowerCase(dateLocaleTag);
       const matchesSector = sectorFilter === "all" ? true : item.sector.includes(sectorFilter);
+      const docSearchExtras: string[] = [];
+      if (item.sourceKind === "template" && getGroupByKey(item.subcategory)) {
+        docSearchExtras.push(
+          t(`documentCatalog.groups.${item.subcategory}.title`),
+          item.templateId ? t(`documentCatalog.groups.${item.subcategory}.items.${item.templateId}`) : "",
+        );
+      }
       const haystack = [
         item.title,
         item.category,
         item.subcategory,
         item.description,
         ...item.tags,
+        ...docSearchExtras,
       ]
         .join(" ")
         .toLocaleLowerCase(dateLocaleTag);
@@ -1037,6 +1106,7 @@ export function IsgLibraryClient() {
     sectorFilter,
     sortBy,
     subcategory,
+    t,
     typeFilter,
   ]);
 
@@ -1047,7 +1117,9 @@ export function IsgLibraryClient() {
 
         const usageCount =
           templateUsageCounts.get(item.templateId ?? "") ??
-          templateUsageCounts.get(`${DOCUMENT_GROUPS.find((group) => group.title === item.subcategory)?.key ?? ""}::${item.title}`) ??
+          templateUsageCounts.get(
+            `${DOCUMENT_GROUPS.find((group) => group.key === item.subcategory || group.title === item.subcategory)?.key ?? ""}::${item.title}`,
+          ) ??
           0;
 
         return {
@@ -1130,8 +1202,13 @@ export function IsgLibraryClient() {
     }
 
     setPreviewLoading(true);
+    const templateDisplayTitle =
+      item.templateId && getGroupByKey(item.subcategory)
+        ? t(`documentCatalog.groups.${item.subcategory}.items.${item.templateId}`)
+        : item.title;
+
     setPreviewState({
-      title: item.title,
+      title: templateDisplayTitle,
       description: item.description,
       content: null,
     });
@@ -1139,14 +1216,14 @@ export function IsgLibraryClient() {
     try {
       const template = await getTemplate(item.templateId);
       setPreviewState({
-        title: template?.title ?? item.title,
+        title: template?.title ?? templateDisplayTitle,
         description: template?.description ?? item.description,
         content:
           template?.content ??
           ({
             type: "doc",
             content: [
-              { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: item.title }] },
+              { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: templateDisplayTitle }] },
               { type: "paragraph", content: [{ type: "text", text: item.description }] },
             ],
           } as JSONContent),
@@ -1169,12 +1246,16 @@ export function IsgLibraryClient() {
 
     try {
       const template = await getTemplate(item.templateId);
+      const downloadTitle =
+        item.templateId && getGroupByKey(item.subcategory)
+          ? t(`documentCatalog.groups.${item.subcategory}.items.${item.templateId}`)
+          : item.title;
       const content =
         template?.content ??
         ({
           type: "doc",
           content: [
-            { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: item.title }] },
+            { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: downloadTitle }] },
             { type: "paragraph", content: [{ type: "text", text: item.description }] },
           ],
         } as JSONContent);
@@ -1183,7 +1264,7 @@ export function IsgLibraryClient() {
 <html lang="${locale}">
   <head>
     <meta charset="utf-8" />
-    <title>${escapeHtml(template?.title ?? item.title)}</title>
+    <title>${escapeHtml(template?.title ?? downloadTitle)}</title>
     <style>
       body { font-family: Inter, Arial, sans-serif; margin: 40px; color: #0f172a; line-height: 1.6; }
       h1,h2,h3 { color: #102033; }
@@ -1202,7 +1283,7 @@ export function IsgLibraryClient() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${slugify(template?.title ?? item.title) || t("download.filenameFallback")}.html`;
+      link.download = `${slugify(template?.title ?? downloadTitle) || t("download.filenameFallback")}.html`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -1246,7 +1327,9 @@ export function IsgLibraryClient() {
       formData.append("file", file);
       formData.append("documentTitle", subcategory || activeCategoryMeta.label || t("legacy.newDocument"));
 
-      const matchingGroup = DOCUMENT_GROUPS.find((group) => group.title === subcategory);
+      const matchingGroup = DOCUMENT_GROUPS.find(
+        (group) => group.key === subcategory || group.title === subcategory,
+      );
       if (matchingGroup) {
         formData.append("groupKey", matchingGroup.key);
       }
@@ -1272,7 +1355,7 @@ export function IsgLibraryClient() {
         params.set("group", matchingGroup.key);
       }
       params.set("companyId", selectedCreationCompany.id);
-      params.set("title", subcategory || activeCategoryMeta.label || "Yeni Doküman");
+      params.set("title", subcategory || activeCategoryMeta.label || t("legacy.newDocument"));
       params.set("mode", "import");
       params.set("library", "1");
       params.set("librarySection", category === "all" ? "documentation" : category);
@@ -1323,6 +1406,24 @@ export function IsgLibraryClient() {
     setStatusMessage(t("status.contentSavedToCompany", { title: assignContent.title }));
     setAssigning(false);
     setAssignModalOpen(false);
+  }
+
+  function localizedDocumentGroupTitle(groupKey: string) {
+    return getGroupByKey(groupKey) ? t(`documentCatalog.groups.${groupKey}.title`) : groupKey;
+  }
+
+  function localizedTemplateCardTitle(item: UnifiedLibraryItem) {
+    if (item.sourceKind !== "template" || !item.templateId || !getGroupByKey(item.subcategory)) {
+      return item.title;
+    }
+    return t(`documentCatalog.groups.${item.subcategory}.items.${item.templateId}`);
+  }
+
+  function localizedListSubcategoryLabel(item: UnifiedLibraryItem) {
+    if (item.category === "documentation" && getGroupByKey(item.subcategory)) {
+      return localizedDocumentGroupTitle(item.subcategory);
+    }
+    return item.subcategory;
   }
 
   if (loading) {
@@ -1385,7 +1486,9 @@ export function IsgLibraryClient() {
           </div>
 
           <div className="space-y-2">
-            <CardTitle className="text-xl leading-snug">{item.title}</CardTitle>
+            <CardTitle className="text-xl leading-snug">
+              {item.sourceKind === "template" ? localizedTemplateCardTitle(item) : item.title}
+            </CardTitle>
             <p className="line-clamp-2 min-h-11 text-sm leading-6 text-muted-foreground">
               {item.description || t("catalog.noDescriptionShort")}
             </p>
@@ -1396,7 +1499,7 @@ export function IsgLibraryClient() {
               {categoryDefinitions.find((entry) => entry.key === item.category)?.label ?? item.category}
             </span>
             <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold", itemTone.metaBadge)}>
-              {item.subcategory}
+              {localizedListSubcategoryLabel(item)}
             </span>
             {item.tags.slice(0, 2).map((tag) => (
               <Badge key={tag} variant="accent">
@@ -1716,7 +1819,11 @@ export function IsgLibraryClient() {
                         subcategory === item ? activeTone.sidebarActive : activeTone.sidebarIdle,
                       )}
                     >
-                      <span className="pr-3 font-medium leading-6">{item}</span>
+                      <span className="pr-3 font-medium leading-6">
+                        {category === "documentation" && getGroupByKey(item)
+                          ? t(`documentCatalog.groups.${item}.title`)
+                          : item}
+                      </span>
                       <span
                         className={cn(
                           "rounded-full border px-2 py-0.5 text-[11px] font-semibold",
@@ -1751,7 +1858,11 @@ export function IsgLibraryClient() {
                     {activeCategoryMeta.label}
                   </p>
                   <h2 className="mt-2 text-lg font-semibold text-foreground">
-                    {subcategory || t("sidebar.allSubcategories")}
+                    {subcategory
+                      ? category === "documentation" && getGroupByKey(subcategory)
+                        ? t(`documentCatalog.groups.${subcategory}.title`)
+                        : subcategory
+                      : t("sidebar.allSubcategories")}
                   </h2>
                 </div>
                 <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold", activeTone.countBadge)}>

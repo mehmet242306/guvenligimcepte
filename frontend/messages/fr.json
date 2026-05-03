@@ -61,7 +61,32 @@
       "toggleExpand": "Développer le guide",
       "whatIsBody": "C'est une technique systématique pour trouver les moteurs structurels ou systémiques d'un événement—pas seulement le symptôme de surface. Bien appliquée, elle empêche la récurrence de la même classe d'incident : elle traite la maladie, pas seulement le symptôme. En SST, la loi turque 6331 et ISO 45001 exigent un travail sur les causes racines pour les incidents.",
       "whatIsHeading": "Qu'est-ce que l'analyse des causes racines ?",
-      "whenHeading": "Quand est-elle utilisée ?"
+      "whenHeading": "Quand est-elle utilisée ?",
+      "whenUse": [
+        "After a work accident or near miss — often a legal requirement",
+        "Recurring non-conformities — the same issue keeps coming back",
+        "Proactive review of high-risk processes (fire, chemicals, work at height)",
+        "Systemic correction after audits or customer feedback",
+        "Suspected occupational disease — long exposure chains"
+      ],
+      "tips": [
+        "Need a quick read → 5 Whys or R₂D-RCA",
+        "Team brainstorming → Ishikawa",
+        "Complex causal logic (AND/OR, conditions) → FTA",
+        "Classic OHS incident (slip, strike) → SCAT",
+        "High-risk work + barrier analysis → Bow-tie",
+        "Major event + organisational analysis → MORT",
+        "Continuous monitoring + numeric comparison → R₂D-RCA (RiskNova-specific)"
+      ],
+      "processSteps": [
+        "Define the event clearly (company, location, date, who/what/where/how)",
+        "Choose the right method (use the tips above)",
+        "Generate a first draft with AI or fill manually",
+        "Review with the team and close gaps",
+        "Confirm root causes → build corrective/preventive (CAPA) actions",
+        "Produce a PDF report and share (QR for mobile access)",
+        "Follow up: action closure timelines + prevention of recurrence"
+      ]
     }
   },
   "auth": {
@@ -1158,6 +1183,312 @@
     },
     "user": {
       "defaultDisplayName": "Utilisateur RiskNova"
+    },
+    "documentCatalog": {
+      "groups": {
+        "is-giris-oryantasyon": {
+          "title": "Job entry, OHS and orientation",
+          "items": {
+            "oryantasyon-formu": "OHS orientation training form",
+            "ise-giris-eslestirme": "Job placement matching form",
+            "ise-giris-saglik": "Pre-employment health report tracking",
+            "ise-giris-taahhut": "OHS undertaking/commitment",
+            "kkd-zimmet": "PPE issue (custody) form",
+            "isg-bilgilendirme": "OHS information record",
+            "gorev-tanimlari": "Job descriptions",
+            "oryantasyon-kontrol": "Orientation checklist"
+          }
+        },
+        "kurul-kayitlari": {
+          "title": "OHS committee records",
+          "items": {
+            "kurul-tutanagi": "OHS committee meeting minutes",
+            "kurul-uye-listesi": "Committee member list",
+            "kurul-karar-takip": "Committee decision tracking form",
+            "kurul-gundem": "Committee agenda document",
+            "kurul-yillik-plan": "Annual committee meeting plan",
+            "kurul-katilim": "Committee attendance chart",
+            "kurul-ozel-toplanti": "Special meeting minutes",
+            "kurul-secim-tutanagi": "Committee election minutes"
+          }
+        },
+        "egitim-dosyasi": {
+          "title": "Training file",
+          "items": {
+            "egitim-katilim-formu": "Training attendance form",
+            "egitim-sertifika": "Training certificate",
+            "egitim-yillik-plan": "Annual training plan",
+            "egitim-ihtiyac-analizi": "Training needs analysis",
+            "egitim-degerlendirme": "Training evaluation form",
+            "egitim-icerik": "Training content document",
+            "egitim-etkinlik": "Training effectiveness measurement form",
+            "egitim-talep": "Training request form",
+            "egitim-ozet-raporu": "Training summary report"
+          }
+        },
+        "risk-degerlendirme": {
+          "title": "Risk assessment and findings/recommendations",
+          "items": {
+            "risk-raporu": "Risk assessment report",
+            "tespit-oneri-defteri": "Findings and recommendations log",
+            "risk-envanter": "Hazard and risk inventory",
+            "risk-aksiyon-plani": "Risk action plan",
+            "is-kazasi-risk": "Post-incident risk update",
+            "risk-haritasi": "Risk map document",
+            "risk-izleme-raporu": "Risk monitoring report",
+            "risk-iletisim-formu": "Risk communication form",
+            "risk-metodoloji": "Risk methodology document"
+          }
+        },
+        "acil-durum": {
+          "title": "Emergency preparedness",
+          "items": {
+            "acil-durum-plani": "Emergency plan",
+            "acil-durum-ekip": "Emergency team list",
+            "tahliye-plani": "Evacuation plan",
+            "tatbikat-raporu": "Drill report",
+            "acil-durum-tel": "Emergency phone list",
+            "acil-durum-talimat": "Emergency instruction",
+            "toplanma-alani": "Assembly point sketch",
+            "acil-durum-egitim": "Emergency training plan",
+            "acil-durum-envanter": "Emergency equipment inventory",
+            "acil-durum-senaryo": "Emergency scenarios"
+          }
+        },
+        "kaza-olay": {
+          "title": "Incidents, events and near misses",
+          "items": {
+            "kaza-bildirim-formu": "Work accident notification form",
+            "kaza-arastirma-raporu": "Accident investigation report",
+            "ramak-kala-formu": "Near-miss notification form",
+            "dof-formu": "Corrective and preventive action (CAPA) report",
+            "kaza-istatistik": "Accident statistics report",
+            "kok-neden-analizi": "Root cause analysis report",
+            "olay-degerlendirme": "Incident evaluation record"
+          }
+        },
+        "iletisim-yazisma": {
+          "title": "Correspondence",
+          "items": {
+            "resmi-yazi": "Official letter template",
+            "uyari-yazisi": "Warning letter",
+            "bilgilendirme-yazisi": "Information letter"
+          }
+        },
+        "talimatlar": {
+          "title": "Instructions",
+          "items": {
+            "genel-isg-talimati": "General OHS instruction",
+            "makine-talimati": "Machine/equipment use instruction",
+            "kimyasal-talimati": "Chemical substance use instruction",
+            "kkd-kullanim-talimati": "PPE use instruction"
+          }
+        },
+        "prosedurler": {
+          "title": "OHS procedures",
+          "items": {
+            "isg-politikasi": "OHS policy",
+            "risk-degerlendirme-prosedur": "Risk assessment procedure",
+            "egitim-proseduru": "Training procedure",
+            "acil-durum-prosedur": "Emergency procedure",
+            "kaza-bildirimi-prosedur": "Accident notification procedure",
+            "kkd-proseduru": "PPE management procedure",
+            "saglik-gozetimi-prosedur": "Health surveillance procedure",
+            "is-izni-proseduru": "Permit to work procedure",
+            "yuksekte-calisma": "Work at height procedure",
+            "kapali-alan": "Confined space work procedure",
+            "elektrik-guvenlik": "Electrical safety procedure",
+            "ergonomi-prosedur": "Ergonomics procedure",
+            "taseron-yonetimi": "Subcontractor management procedure",
+            "depolama-prosedur": "Storage procedure",
+            "isaret-etiketleme": "Signs and labelling procedure",
+            "gece-calisma": "Night work procedure",
+            "sicak-calisma": "Hot work procedure",
+            "gurultu-prosedur": "Noise control procedure",
+            "toz-prosedur": "Dust control procedure"
+          }
+        },
+        "denetim-kontrol": {
+          "title": "Workplace inspections and audits",
+          "items": {
+            "is-yeri-denetim": "Workplace inspection report",
+            "ic-denetim-raporu": "Internal audit report",
+            "kontrol-listesi": "General inspection checklist",
+            "uygunsuzluk-raporu": "Nonconformity report"
+          }
+        },
+        "personel-ozluk": {
+          "title": "Personnel files and contracts",
+          "items": {
+            "is-sozlesmesi": "Employment contract",
+            "ek-sozlesme": "Additional contract (OHS)",
+            "gizlilik-sozlesme": "Confidentiality agreement",
+            "gorev-tanım-belgesi": "Job description document",
+            "ise-giris-evrak": "Pre-employment document checklist",
+            "isten-ayrilma": "Termination form",
+            "izin-formu": "Leave request form",
+            "mesai-formu": "Overtime request form",
+            "disiplin-tutanagi": "Disciplinary record",
+            "performans-degerlendirme": "Performance appraisal form",
+            "terfi-formu": "Promotion recommendation form",
+            "personel-bilgi-formu": "Personnel information form",
+            "cv-formu": "CV form",
+            "referans-formu": "Reference check form",
+            "bordro-mutabakat": "Payroll reconciliation form",
+            "zimmet-teslim": "Custody handover record",
+            "yetkinlik-matrisi": "Competence matrix"
+          }
+        },
+        "yillik-degerlendirme": {
+          "title": "Annual OHS review",
+          "items": {
+            "yillik-faaliyet-raporu": "Annual activity report",
+            "yillik-calisma-plani": "Annual work plan"
+          }
+        },
+        "calisan-temsilcisi": {
+          "title": "Worker representative",
+          "items": {
+            "temsilci-secim-tutanagi": "Worker representative election minutes",
+            "temsilci-gorev-tanimi": "Representative job description",
+            "temsilci-raporu": "Representative activity report",
+            "temsilci-oneri-formu": "Representative suggestion form",
+            "temsilci-egitim-kaydi": "Representative training record",
+            "temsilci-atama-yazisi": "Representative appointment letter"
+          }
+        },
+        "iyi-uygulama": {
+          "title": "Good practice",
+          "items": {
+            "iyi-uygulama-raporu": "Good practice report",
+            "oneri-odul-sistemi": "Suggestion and reward scheme form",
+            "benchmark-raporu": "Benchmarking report"
+          }
+        },
+        "dis-gorevlendirme": {
+          "title": "Off-site assignment",
+          "items": {
+            "dis-gorev-yazisi": "Off-site assignment letter"
+          }
+        },
+        "arac-makine": {
+          "title": "Vehicle and machinery tracking",
+          "items": {
+            "arac-kontrol-listesi": "Vehicle checklist",
+            "makine-bakim-formu": "Machine maintenance form",
+            "forklift-kontrol": "Forklift daily inspection form",
+            "arac-zimmet": "Vehicle custody record",
+            "makine-envanter": "Machine inventory"
+          }
+        },
+        "periyodik-kontrol": {
+          "title": "Periodic inspection records",
+          "items": {
+            "asansor-kontrol": "Elevator periodic inspection",
+            "basincli-kap": "Pressure vessel inspection",
+            "elektrik-tesisati": "Electrical installation inspection",
+            "topraklama-kontrol": "Earthing/grounding measurement",
+            "paratoner-kontrol": "Lightning rod inspection",
+            "yangin-tup-kontrol": "Fire extinguisher inspection",
+            "yangin-dolap-kontrol": "Fire cabinet inspection",
+            "kompressor-kontrol": "Compressor inspection",
+            "vinc-kontrol": "Crane/lifting equipment inspection",
+            "kazan-kontrol": "Boiler periodic inspection",
+            "havalandirma-kontrol": "Ventilation system inspection",
+            "jenerator-kontrol": "Generator inspection",
+            "lpg-kontrol": "LPG installation inspection",
+            "merdiven-iskele": "Ladder/scaffold inspection"
+          }
+        },
+        "diger-kayitlar": {
+          "title": "Other records",
+          "items": {
+            "msds-kayit": "SDS/MSDS record form",
+            "is-izni-formu": "Permit to work form",
+            "sicak-is-izni": "Hot work permit form",
+            "yuksekte-is-izni": "Work at height permit",
+            "kapali-alan-izni": "Confined space entry permit",
+            "kazi-is-izni": "Excavation permit",
+            "ortam-olcum": "Environmental measurement report",
+            "gurultu-haritasi": "Noise map",
+            "aydinlatma-olcum": "Lighting measurement report",
+            "termal-konfor": "Thermal comfort measurement",
+            "toz-olcum": "Dust measurement report",
+            "titresim-olcum": "Vibration measurement report"
+          }
+        },
+        "yangin-kimyasal": {
+          "title": "Fire and chemicals",
+          "items": {
+            "yangin-risk-analizi": "Fire risk analysis",
+            "yangin-sondurme-plani": "Fire suppression plan",
+            "kimyasal-envanter": "Chemical inventory",
+            "kimyasal-risk": "Chemical risk assessment",
+            "kimyasal-depolama": "Chemical storage plan",
+            "yangin-tatbikat": "Fire drill report",
+            "yangin-ekipman-kontrol": "Fire equipment inspection chart"
+          }
+        },
+        "ilkyardim": {
+          "title": "First aid training",
+          "items": {
+            "ilkyardim-egitim-plani": "First aid training plan",
+            "ilkyardimci-listesi": "First aider list",
+            "ilkyardim-malzeme": "First aid supplies inspection form"
+          }
+        },
+        "isyeri-hekimi": {
+          "title": "Occupational health physician documents",
+          "items": {
+            "hekim-gozetim-raporu": "Health surveillance report",
+            "hekim-periyodik-muayene": "Periodic medical examination plan",
+            "hekim-ise-giris-muayene": "Pre-employment medical form",
+            "hekim-meslek-hastaligi": "Occupational disease follow-up form",
+            "hekim-ilac-takip": "Medication and consumables tracking",
+            "hekim-recete-kayit": "Prescription log form",
+            "hekim-revir-defteri": "Clinic/examination log",
+            "hekim-saglik-tarama": "Mass health screening report",
+            "hekim-biolojik-maruziyet": "Biological exposure assessment",
+            "hekim-yillik-degerlendirme": "Occupational physician annual review"
+          }
+        }
+      }
+    },
+    "subcategories": {
+      "education": [
+        "Basic OHS training",
+        "Professional training",
+        "Emergency training",
+        "Refresher training"
+      ],
+      "assessment": [
+        "Exams",
+        "Surveys",
+        "Assessment forms",
+        "Measurement and monitoring"
+      ],
+      "forms": [
+        "Daily checks",
+        "Periodic checks",
+        "Audit forms"
+      ],
+      "emergency": [
+        "Emergency plans",
+        "Evacuation",
+        "Fire",
+        "Drills",
+        "Assembly areas"
+      ],
+      "instructions": [
+        "Machine instructions",
+        "Workflow instructions",
+        "PPE instructions",
+        "Field practices"
+      ]
+    },
+    "surveyTags": {
+      "measurement": "Measurement",
+      "feedback": "Feedback"
     }
   },
   "landing": {
@@ -1375,7 +1706,15 @@
       "metaTitle": "Politique de confidentialité",
       "ogDescription": "Résumé court de la confidentialité couvrant le compte, l'utilisation du produit et les sous-traitants.",
       "ogTitle": "Politique de confidentialité | RiskNova",
-      "title": "Politique de confidentialité RiskNova"
+      "title": "Politique de confidentialité RiskNova",
+      "paragraphs": [
+        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
+        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
+        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
+        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
+        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
+        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
+      ]
     },
     "refund": {
       "eyebrow": "Politique de remboursement",
@@ -1384,7 +1723,15 @@
       "metaTitle": "Politique de remboursement",
       "ogDescription": "Fenêtre de remboursement, renouvellements et corrections de facturation.",
       "ogTitle": "Politique de remboursement | RiskNova",
-      "title": "Politique de remboursement RiskNova"
+      "title": "Politique de remboursement RiskNova",
+      "paragraphs": [
+        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
+        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
+        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
+        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
+        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
+        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
+      ]
     },
     "terms": {
       "eyebrow": "Conditions d'utilisation",
@@ -1440,7 +1787,15 @@
       "metaTitle": "Conditions de service",
       "ogDescription": "Résumé de l'abonnement, des fonctionnalités assistées par IA et de l'utilisation acceptable.",
       "ogTitle": "Conditions de service | RiskNova",
-      "title": "Conditions générales RiskNova"
+      "title": "Conditions générales RiskNova",
+      "paragraphs": [
+        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
+        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
+        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
+        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
+        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
+        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
+      ]
     }
   },
   "nav": {
@@ -1879,22 +2234,45 @@
             {
               "regulation": "Règlement sur les comités SST",
               "responsible": "Employeur",
-              "title": "Établissement du comité SST"
+              "title": "Établissement du comité SST",
+              "months": [
+                0
+              ]
             },
             {
               "regulation": "Règlement sur les comités SST",
               "responsible": "Employeur",
-              "title": "Notification des nominations du comité aux membres"
+              "title": "Notification des nominations du comité aux membres",
+              "months": [
+                0
+              ]
             },
             {
               "regulation": "Règlement sur les comités SST",
               "responsible": "Comité SST",
-              "title": "Tenue des réunions mensuelles du comité SST"
+              "title": "Tenue des réunions mensuelles du comité SST",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
             },
             {
               "regulation": "Règlement sur les comités SST",
               "responsible": "Comité SST",
-              "title": "Préparation du rapport d'activité annuel du comité SST"
+              "title": "Préparation du rapport d'activité annuel du comité SST",
+              "months": [
+                11
+              ]
             }
           ],
           "title": "Travail du comité SST"
@@ -1905,27 +2283,46 @@
             {
               "regulation": "Règlement d'évaluation des risques SST",
               "responsible": "Spécialiste SST",
-              "title": "Création ou obtention de l'inventaire des machines"
+              "title": "Création ou obtention de l'inventaire des machines",
+              "months": [
+                0
+              ]
             },
             {
               "regulation": "Règlement d'évaluation des risques SST",
               "responsible": "Spécialiste SST",
-              "title": "Obtention de l'organigramme"
+              "title": "Obtention de l'organigramme",
+              "months": [
+                0
+              ]
             },
             {
               "regulation": "Règlement d'évaluation des risques SST",
               "responsible": "Spécialiste SST",
-              "title": "Évaluation de la situation initiale et rapport"
+              "title": "Évaluation de la situation initiale et rapport",
+              "months": [
+                1
+              ]
             },
             {
               "regulation": "Règlement d'évaluation des risques SST",
               "responsible": "Spécialiste SST",
-              "title": "Travail d'analyse/évaluation des risques"
+              "title": "Travail d'analyse/évaluation des risques",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
             },
             {
               "regulation": "Règlement d'évaluation des risques SST",
               "responsible": "Spécialiste SST",
-              "title": "Mise à jour périodique de l'analyse des risques"
+              "title": "Mise à jour périodique de l'analyse des risques",
+              "months": [
+                5,
+                11
+              ]
             }
           ],
           "title": "Analyse et évaluation des risques"
@@ -1936,32 +2333,52 @@
             {
               "regulation": "Réglementation SST et équipements de travail",
               "responsible": "Unité technique",
-              "title": "Inspection des machines électriques / mise à la terre"
+              "title": "Inspection des machines électriques / mise à la terre",
+              "months": [
+                3
+              ]
             },
             {
               "regulation": "Réglementation SST et équipements de travail",
               "responsible": "Unité technique",
-              "title": "Mesures électriques (mise à la terre, paratonnerre…)"
+              "title": "Mesures électriques (mise à la terre, paratonnerre…)",
+              "months": [
+                3
+              ]
             },
             {
               "regulation": "Réglementation des équipements de travail",
               "responsible": "Unité technique",
-              "title": "Inspections périodiques des équipements de levage"
+              "title": "Inspections périodiques des équipements de levage",
+              "months": [
+                5,
+                11
+              ]
             },
             {
               "regulation": "Réglementation sur le bruit",
               "responsible": "Unité technique",
-              "title": "Mesure du bruit environnemental"
+              "title": "Mesure du bruit environnemental",
+              "months": [
+                5
+              ]
             },
             {
               "regulation": "Réglementation SST",
               "responsible": "Unité technique",
-              "title": "Mesure de l'éclairage environnemental"
+              "title": "Mesure de l'éclairage environnemental",
+              "months": [
+                5
+              ]
             },
             {
               "regulation": "Réglementation sur l'eau destinée à la consommation humaine",
               "responsible": "Unité technique",
-              "title": "Analyses de l'eau potable"
+              "title": "Analyses de l'eau potable",
+              "months": [
+                2,
+                8
+              ]
             }
           ],
           "title": "Inspections et mesures périodiques"
@@ -1972,22 +2389,39 @@
             {
               "regulation": "Réglementation sur les urgences",
               "responsible": "Spécialiste SST",
-              "title": "Exercices d'évacuation et de lutte contre l'incendie"
+              "title": "Exercices d'évacuation et de lutte contre l'incendie",
+              "months": [
+                5,
+                11
+              ]
             },
             {
               "regulation": "Réglementation sur les urgences",
               "responsible": "Unité technique",
-              "title": "Préparation des procès-verbaux d'exercice"
+              "title": "Préparation des procès-verbaux d'exercice",
+              "months": [
+                5,
+                11
+              ]
             },
             {
               "regulation": "Réglementation des urgences",
               "responsible": "Unité technique",
-              "title": "Inspection de l'équipement d'urgence"
+              "title": "Inspection de l'équipement d'urgence",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
             },
             {
               "regulation": "Réglementation des urgences",
               "responsible": "Spécialiste SST",
-              "title": "Préparation du plan d'action d'urgence"
+              "title": "Préparation du plan d'action d'urgence",
+              "months": [
+                0
+              ]
             }
           ],
           "title": "Urgences"
@@ -1998,22 +2432,59 @@
             {
               "regulation": "Réglementation de la santé au travail",
               "responsible": "Médecin du travail",
-              "title": "Inspections de santé"
+              "title": "Inspections de santé",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
             },
             {
               "regulation": "Réglementation de la santé au travail",
               "responsible": "Médecin du travail",
-              "title": "Plan de travail annuel de l'unité de santé"
+              "title": "Plan de travail annuel de l'unité de santé",
+              "months": [
+                0
+              ]
             },
             {
               "regulation": "Réglementation de la santé au travail",
               "responsible": "Médecin du travail",
-              "title": "Rapports médicaux de pré-embauche"
+              "title": "Rapports médicaux de pré-embauche",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
             },
             {
               "regulation": "Réglementation de la santé au travail",
               "responsible": "Médecin du travail",
-              "title": "Rapports d'examens médicaux périodiques"
+              "title": "Rapports d'examens médicaux périodiques",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
             }
           ],
           "title": "Surveillance de la santé"
@@ -2024,12 +2495,18 @@
             {
               "regulation": "Réglementation des produits chimiques",
               "responsible": "Spécialiste SST",
-              "title": "S'assurer que les FDS sont obtenues"
+              "title": "S'assurer que les FDS sont obtenues",
+              "months": [
+                2
+              ]
             },
             {
               "regulation": "Réglementation des produits chimiques",
               "responsible": "Spécialiste SST",
-              "title": "Évaluation des risques chimiques"
+              "title": "Évaluation des risques chimiques",
+              "months": [
+                5
+              ]
             }
           ],
           "title": "Produits chimiques"
@@ -2083,7 +2560,21 @@
         "regulation": "Législation",
         "responsible": "Responsable",
         "topic": "Sujet de travail"
-      }
+      },
+      "months": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ]
     }
   },
   "platformAdmin": {
@@ -2211,37 +2702,79 @@
         "description": "Niveau d'entrée avec des quotas mensuels pour explorer le chat Nova, les analyses et un petit flux de documents.",
         "name": "Gratuit",
         "upgradeHint": "Passez à Starter quand vous avez besoin de quotas prévisibles chaque mois.",
-        "whoFor": "Essai de RiskNova, étudiants et utilisation occasionnelle légère."
+        "whoFor": "Essai de RiskNova, étudiants et utilisation occasionnelle légère.",
+        "features": [
+          "Nova chat within monthly limits",
+          "Foundational AI analyses for risk workflows",
+          "Limited document generation",
+          "Field inspection entries within quotas",
+          "Exports within plan limits"
+        ]
       },
       "plus": {
         "description": "Capacité équilibrée entre chat, analyses, modélisation des risques et données terrain.",
         "name": "Plus",
         "upgradeHint": "Passez à Professional quand vous avez besoin d'inspection approfondie et de débit de reporting.",
-        "whoFor": "Consultants actifs gérant plusieurs clients chaque mois."
+        "whoFor": "Consultants actifs gérant plusieurs clients chaque mois.",
+        "features": [
+          "Higher caps across all core actions",
+          "More incident and training outputs",
+          "Field inspection headroom for busy weeks",
+          "Document throughput for recurring packs",
+          "Exports suited to multi-client work"
+        ]
       },
       "professional_149": {
         "description": "Niveau recommandé — plafonds généreux pour les analyses, documents et flux terrain.",
         "name": "Professional 149",
         "upgradeHint": "Professional 199 ajoute une marge maximale pour les postes les plus occupés.",
-        "whoFor": "Consultants seniors et utilisateurs avancés qui vivent dans le produit."
+        "whoFor": "Consultants seniors et utilisateurs avancés qui vivent dans le produit.",
+        "features": [
+          "Very high Nova and analysis quotas",
+          "Heavy document generation allowance",
+          "Large risk and inspection budgets",
+          "Incident and training outputs at scale",
+          "Exports aligned with premium throughput"
+        ]
       },
       "professional_199": {
         "description": "Niveau libre-service supérieur avant les contrats OSGB ou entreprise.",
         "name": "Professional 199",
         "upgradeHint": "Besoin de sièges, portfolios ou facturation ? Utilisez les devis OSGB ou entreprise.",
-        "whoFor": "Charges de travail individuelles maximales et attentes de débit premium."
+        "whoFor": "Charges de travail individuelles maximales et attentes de débit premium.",
+        "features": [
+          "Maximum published individual quotas",
+          "Peak AI and document capacity",
+          "Largest inspection and risk envelopes",
+          "Full incident and training allowances in tier",
+          "Exports for the heaviest reporting cycles"
+        ]
       },
       "professional": {
         "description": "Plafond individuel de niveau entreprise avant les niveaux Professional supérieurs.",
         "name": "Professional 99",
         "upgradeHint": "Passez à Professional 149 pour le meilleur rapport qualité-prix à grande échelle.",
-        "whoFor": "Experts HSE à temps plein avec utilisation hebdomadaire intensive."
+        "whoFor": "Experts HSE à temps plein avec utilisation hebdomadaire intensive.",
+        "features": [
+          "High Nova and AI analysis limits",
+          "Strong document generation cadence",
+          "Broad risk and field inspection capacity",
+          "Incident programme support within quota",
+          "Exports for intensive reporting"
+        ]
       },
       "starter": {
         "description": "Quotas plus élevés pour Nova, analyses et documents afin que les routines hebdomadaires fonctionnent sans friction.",
         "name": "Starter",
         "upgradeHint": "Choisissez Plus lorsque l'analyse d'incidents et les résultats de formation font partie de votre flux de travail.",
-        "whoFor": "Spécialistes indépendants et charges de travail mensuelles régulières mais modestes."
+        "whoFor": "Spécialistes indépendants et charges de travail mensuelles régulières mais modestes.",
+        "features": [
+          "Stronger Nova and analysis quotas",
+          "More monthly document generation",
+          "Incident analysis allowance",
+          "Training slides where included in quota",
+          "Exports scaled for individuals"
+        ]
       }
     },
     "priceFreeNote": "Gratuit pour commencer",
@@ -3453,7 +3986,13 @@
           "pricePeriod": "à partir de / mois",
           "seatsLabel": "2 sièges d'équipe actifs",
           "summary": "Pour les équipes OSGB plus petites avec un portefeuille limité — contrairement au Starter individuel à {individualStarter}/mois, il couvre les flux de travail multi-sites et d'équipe.",
-          "workspacesLabel": "5 entreprises / espaces de travail actifs"
+          "workspacesLabel": "5 entreprises / espaces de travail actifs",
+          "features": [
+            "Personnel module and invitation flows",
+            "Tasks, work tracking and assignment board",
+            "Client workplace portfolio view",
+            "Announcements and core operational flows"
+          ]
         },
         "osgb_team": {
           "ctaLabel": "Demander un devis Équipe",
@@ -3462,14 +4001,25 @@
           "pricePeriod": "à partir de / mois",
           "seatsLabel": "5 sièges d'équipe actifs",
           "summary": "OSGB en croissance : plus d'entreprises, coordination de terrain et échelle d'équipe.",
-          "workspacesLabel": "15 entreprises / espaces de travail actifs"
+          "workspacesLabel": "15 entreprises / espaces de travail actifs",
+          "features": [
+            "Everything in Starter",
+            "Advanced reporting and exports",
+            "Field audits and checklists (per agreement)",
+            "Priority solution / onboarding channel"
+          ]
         }
       },
       "osgbFooterHint": "Un seul employeur sur plusieurs sites ?",
       "osgbFooterLink": "Voir la page solution entreprise",
       "osgbSectionIntro": "Les montants sont des segments de départ indicatifs en USD ; les taxes, le change et la portée du contrat sont confirmés lors de la finalisation du devis. Il n'y a pas de paiement par carte — nous alignons les limites et la tarification une fois que nous comprenons votre structure.",
       "osgbSectionTitle": "Packages OSGB",
-      "recommended": "Recommandé"
+      "recommended": "Recommandé",
+      "enterpriseHighlights": [
+        "Multi-site companies and institutions",
+        "Tailored quote aligned with operational volume",
+        "Integration and onboarding planning when needed"
+      ]
     },
     "enterprisePage": {
       "ctaForm": "Nous contacter (formulaire)",

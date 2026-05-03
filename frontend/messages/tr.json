@@ -1557,6 +1557,312 @@
       "exam": "Sınav",
       "training": "Eğitim",
       "unknown": "Bilinmiyor"
+    },
+    "surveyTags": {
+      "measurement": "Ölçüm",
+      "feedback": "Geri bildirim"
+    },
+    "documentCatalog": {
+      "groups": {
+        "is-giris-oryantasyon": {
+          "title": "İş Giriş İSG ve Oryantasyon",
+          "items": {
+            "oryantasyon-formu": "İSG Oryantasyon Eğitim Formu",
+            "ise-giris-eslestirme": "İşe Giriş Eşleştirme Formu",
+            "ise-giris-saglik": "İşe Giriş Sağlık Raporu Takip",
+            "ise-giris-taahhut": "İSG Taahhütnamesi",
+            "kkd-zimmet": "KKD Zimmet Formu",
+            "isg-bilgilendirme": "İSG Bilgilendirme Tutanağı",
+            "gorev-tanimlari": "Görev Tanımları",
+            "oryantasyon-kontrol": "Oryantasyon Kontrol Listesi"
+          }
+        },
+        "kurul-kayitlari": {
+          "title": "İSG Kurul Kayıtları",
+          "items": {
+            "kurul-tutanagi": "İSG Kurul Toplantı Tutanağı",
+            "kurul-uye-listesi": "Kurul Üye Listesi",
+            "kurul-karar-takip": "Kurul Karar Takip Formu",
+            "kurul-gundem": "Kurul Gündem Belgesi",
+            "kurul-yillik-plan": "Kurul Yıllık Toplantı Planı",
+            "kurul-katilim": "Kurul Katılım Çizelgesi",
+            "kurul-ozel-toplanti": "Özel Toplantı Tutanağı",
+            "kurul-secim-tutanagi": "Kurul Seçim Tutanağı"
+          }
+        },
+        "egitim-dosyasi": {
+          "title": "Eğitim Dosyası",
+          "items": {
+            "egitim-katilim-formu": "Eğitim Katılım Formu",
+            "egitim-sertifika": "Eğitim Sertifikası",
+            "egitim-yillik-plan": "Yıllık Eğitim Planı",
+            "egitim-ihtiyac-analizi": "Eğitim İhtiyaç Analizi",
+            "egitim-degerlendirme": "Eğitim Değerlendirme Formu",
+            "egitim-icerik": "Eğitim İçerik Dokümanı",
+            "egitim-etkinlik": "Eğitim Etkinlik Ölçüm Formu",
+            "egitim-talep": "Eğitim Talep Formu",
+            "egitim-ozet-raporu": "Eğitim Özet Raporu"
+          }
+        },
+        "risk-degerlendirme": {
+          "title": "Risk Değerlendirme ve Tespit Öneri",
+          "items": {
+            "risk-raporu": "Risk Değerlendirme Raporu",
+            "tespit-oneri-defteri": "Tespit ve Öneri Defteri",
+            "risk-envanter": "Tehlike ve Risk Envanteri",
+            "risk-aksiyon-plani": "Risk Aksiyon Planı",
+            "is-kazasi-risk": "Kaza Sonrası Risk Güncelleme",
+            "risk-haritasi": "Risk Haritası Dokümanı",
+            "risk-izleme-raporu": "Risk İzleme Raporu",
+            "risk-iletisim-formu": "Risk İletişim Formu",
+            "risk-metodoloji": "Risk Metodoloji Belgesi"
+          }
+        },
+        "acil-durum": {
+          "title": "Acil Durum Faaliyetleri",
+          "items": {
+            "acil-durum-plani": "Acil Durum Planı",
+            "acil-durum-ekip": "Acil Durum Ekip Listesi",
+            "tahliye-plani": "Tahliye Planı",
+            "tatbikat-raporu": "Tatbikat Raporu",
+            "acil-durum-tel": "Acil Durum Telefon Listesi",
+            "acil-durum-talimat": "Acil Durum Talimatı",
+            "toplanma-alani": "Toplanma Alanı Krokisi",
+            "acil-durum-egitim": "Acil Durum Eğitim Planı",
+            "acil-durum-envanter": "Acil Durum Ekipman Envanteri",
+            "acil-durum-senaryo": "Acil Durum Senaryoları"
+          }
+        },
+        "kaza-olay": {
+          "title": "Kaza, Olay ve Ramak Kala",
+          "items": {
+            "kaza-bildirim-formu": "İş Kazası Bildirim Formu",
+            "kaza-arastirma-raporu": "Kaza Araştırma Raporu",
+            "ramak-kala-formu": "Ramak Kala Bildirim Formu",
+            "dof-formu": "Düzeltici Önleyici Faaliyet (DÖF) Raporu",
+            "kaza-istatistik": "Kaza İstatistik Raporu",
+            "kok-neden-analizi": "Kök Neden Analizi Raporu",
+            "olay-degerlendirme": "Olay Değerlendirme Tutanağı"
+          }
+        },
+        "iletisim-yazisma": {
+          "title": "İletişim ve Yazışma",
+          "items": {
+            "resmi-yazi": "Resmi Yazı Şablonu",
+            "uyari-yazisi": "Uyarı Yazısı",
+            "bilgilendirme-yazisi": "Bilgilendirme Yazısı"
+          }
+        },
+        "talimatlar": {
+          "title": "Talimatlar",
+          "items": {
+            "genel-isg-talimati": "Genel İSG Talimatı",
+            "makine-talimati": "Makine/Ekipman Kullanım Talimatı",
+            "kimyasal-talimati": "Kimyasal Madde Kullanım Talimatı",
+            "kkd-kullanim-talimati": "KKD Kullanım Talimatı"
+          }
+        },
+        "prosedurler": {
+          "title": "İSG Prosedürleri",
+          "items": {
+            "isg-politikasi": "İSG Politikası",
+            "risk-degerlendirme-prosedur": "Risk Değerlendirme Prosedürü",
+            "egitim-proseduru": "Eğitim Prosedürü",
+            "acil-durum-prosedur": "Acil Durum Prosedürü",
+            "kaza-bildirimi-prosedur": "Kaza Bildirimi Prosedürü",
+            "kkd-proseduru": "KKD Yönetimi Prosedürü",
+            "saglik-gozetimi-prosedur": "Sağlık Gözetimi Prosedürü",
+            "is-izni-proseduru": "İş İzni Prosedürü",
+            "yuksekte-calisma": "Yüksekte Çalışma Prosedürü",
+            "kapali-alan": "Kapalı Alan Çalışma Prosedürü",
+            "elektrik-guvenlik": "Elektrik Güvenliği Prosedürü",
+            "ergonomi-prosedur": "Ergonomi Prosedürü",
+            "taseron-yonetimi": "Taşeron Yönetimi Prosedürü",
+            "depolama-prosedur": "Depolama Prosedürü",
+            "isaret-etiketleme": "İşaret ve Etiketleme Prosedürü",
+            "gece-calisma": "Gece Çalışma Prosedürü",
+            "sicak-calisma": "Sıcak Çalışma Prosedürü",
+            "gurultu-prosedur": "Gürültü Kontrolü Prosedürü",
+            "toz-prosedur": "Toz Kontrolü Prosedürü"
+          }
+        },
+        "denetim-kontrol": {
+          "title": "İşletme Kontrolü ve Denetim",
+          "items": {
+            "is-yeri-denetim": "İş Yeri Denetim Raporu",
+            "ic-denetim-raporu": "İç Denetim Raporu",
+            "kontrol-listesi": "Genel Kontrol Listesi",
+            "uygunsuzluk-raporu": "Uygunsuzluk Raporu"
+          }
+        },
+        "personel-ozluk": {
+          "title": "Personel Özlük ve Sözleşmeler",
+          "items": {
+            "is-sozlesmesi": "İş Sözleşmesi",
+            "ek-sozlesme": "Ek Sözleşme (İSG)",
+            "gizlilik-sozlesme": "Gizlilik Sözleşmesi",
+            "gorev-tanım-belgesi": "Görev Tanım Belgesi",
+            "ise-giris-evrak": "İşe Giriş Evrak Listesi",
+            "isten-ayrilma": "İşten Ayrılma Formu",
+            "izin-formu": "İzin Talep Formu",
+            "mesai-formu": "Fazla Mesai Talep Formu",
+            "disiplin-tutanagi": "Disiplin Tutanağı",
+            "performans-degerlendirme": "Performans Değerlendirme Formu",
+            "terfi-formu": "Terfi Teklif Formu",
+            "personel-bilgi-formu": "Personel Bilgi Formu",
+            "cv-formu": "Özgeçmiş Formu",
+            "referans-formu": "Referans Kontrol Formu",
+            "bordro-mutabakat": "Bordro Mutabakat Formu",
+            "zimmet-teslim": "Zimmet Teslim Tutanağı",
+            "yetkinlik-matrisi": "Yetkinlik Matrisi"
+          }
+        },
+        "yillik-degerlendirme": {
+          "title": "İSG Yıllık Değerlendirme",
+          "items": {
+            "yillik-faaliyet-raporu": "Yıllık Faaliyet Raporu",
+            "yillik-calisma-plani": "Yıllık Çalışma Planı"
+          }
+        },
+        "calisan-temsilcisi": {
+          "title": "Çalışan Temsilcisi",
+          "items": {
+            "temsilci-secim-tutanagi": "Çalışan Temsilcisi Seçim Tutanağı",
+            "temsilci-gorev-tanimi": "Temsilci Görev Tanımı",
+            "temsilci-raporu": "Temsilci Faaliyet Raporu",
+            "temsilci-oneri-formu": "Temsilci Öneri Formu",
+            "temsilci-egitim-kaydi": "Temsilci Eğitim Kaydı",
+            "temsilci-atama-yazisi": "Temsilci Atama Yazısı"
+          }
+        },
+        "iyi-uygulama": {
+          "title": "İyi Uygulama",
+          "items": {
+            "iyi-uygulama-raporu": "İyi Uygulama Raporu",
+            "oneri-odul-sistemi": "Öneri ve Ödül Sistemi Formu",
+            "benchmark-raporu": "Kıyaslama (Benchmark) Raporu"
+          }
+        },
+        "dis-gorevlendirme": {
+          "title": "İş Yeri Dışı Görevlendirme",
+          "items": {
+            "dis-gorev-yazisi": "Dış Görevlendirme Yazısı"
+          }
+        },
+        "arac-makine": {
+          "title": "Araç ve Makine Takip",
+          "items": {
+            "arac-kontrol-listesi": "Araç Kontrol Listesi",
+            "makine-bakim-formu": "Makine Bakım Formu",
+            "forklift-kontrol": "Forklift Günlük Kontrol Formu",
+            "arac-zimmet": "Araç Zimmet Tutanağı",
+            "makine-envanter": "Makine Envanteri"
+          }
+        },
+        "periyodik-kontrol": {
+          "title": "Periyodik Kontrol Belgeleri",
+          "items": {
+            "asansor-kontrol": "Asansör Periyodik Kontrol",
+            "basincli-kap": "Basınçlı Kap Kontrolü",
+            "elektrik-tesisati": "Elektrik Tesisatı Kontrolü",
+            "topraklama-kontrol": "Topraklama Ölçümü",
+            "paratoner-kontrol": "Paratoner Kontrolü",
+            "yangin-tup-kontrol": "Yangın Tüpü Kontrolü",
+            "yangin-dolap-kontrol": "Yangın Dolabı Kontrolü",
+            "kompressor-kontrol": "Kompresör Kontrolü",
+            "vinc-kontrol": "Vinç/Kaldırma Ekipmanı Kontrolü",
+            "kazan-kontrol": "Kazan Periyodik Kontrolü",
+            "havalandirma-kontrol": "Havalandırma Sistemi Kontrolü",
+            "jenerator-kontrol": "Jeneratör Kontrolü",
+            "lpg-kontrol": "LPG Tesisat Kontrolü",
+            "merdiven-iskele": "Merdiven/İskele Kontrolü"
+          }
+        },
+        "diger-kayitlar": {
+          "title": "Diğer Kayıtlar",
+          "items": {
+            "msds-kayit": "MSDS/GBF Kayıt Formu",
+            "is-izni-formu": "İş İzni Formu",
+            "sicak-is-izni": "Sıcak İş İzni Formu",
+            "yuksekte-is-izni": "Yüksekte Çalışma İzni",
+            "kapali-alan-izni": "Kapalı Alan Giriş İzni",
+            "kazi-is-izni": "Kazı İş İzni",
+            "ortam-olcum": "Ortam Ölçüm Raporu",
+            "gurultu-haritasi": "Gürültü Haritası",
+            "aydinlatma-olcum": "Aydınlatma Ölçüm Raporu",
+            "termal-konfor": "Termal Konfor Ölçümü",
+            "toz-olcum": "Toz Ölçüm Raporu",
+            "titresim-olcum": "Titreşim Ölçüm Raporu"
+          }
+        },
+        "yangin-kimyasal": {
+          "title": "Yangın ve Kimyasallar",
+          "items": {
+            "yangin-risk-analizi": "Yangın Risk Analizi",
+            "yangin-sondurme-plani": "Yangın Söndürme Planı",
+            "kimyasal-envanter": "Kimyasal Madde Envanteri",
+            "kimyasal-risk": "Kimyasal Risk Değerlendirmesi",
+            "kimyasal-depolama": "Kimyasal Depolama Planı",
+            "yangin-tatbikat": "Yangın Tatbikat Raporu",
+            "yangin-ekipman-kontrol": "Yangın Ekipman Kontrol Çizelgesi"
+          }
+        },
+        "ilkyardim": {
+          "title": "İlkyardım Eğitimleri",
+          "items": {
+            "ilkyardim-egitim-plani": "İlkyardım Eğitim Planı",
+            "ilkyardimci-listesi": "İlkyardımcı Listesi",
+            "ilkyardim-malzeme": "İlkyardım Malzeme Kontrol Formu"
+          }
+        },
+        "isyeri-hekimi": {
+          "title": "İşyeri Hekimi Dokümanları",
+          "items": {
+            "hekim-gozetim-raporu": "Sağlık Gözetimi Raporu",
+            "hekim-periyodik-muayene": "Periyodik Muayene Planı",
+            "hekim-ise-giris-muayene": "İşe Giriş Muayene Formu",
+            "hekim-meslek-hastaligi": "Meslek Hastalığı Takip Formu",
+            "hekim-ilac-takip": "İlaç ve Sarf Malzeme Takip",
+            "hekim-recete-kayit": "Reçete Kayıt Formu",
+            "hekim-revir-defteri": "Revir/Muayene Defteri",
+            "hekim-saglik-tarama": "Toplu Sağlık Tarama Raporu",
+            "hekim-biolojik-maruziyet": "Biyolojik Maruziyet Değerlendirmesi",
+            "hekim-yillik-degerlendirme": "İşyeri Hekimi Yıllık Değerlendirme"
+          }
+        }
+      }
+    },
+    "subcategories": {
+      "education": [
+        "Temel İSG Eğitimi",
+        "Mesleki Eğitim",
+        "Acil Durum Eğitimi",
+        "Yenileme Eğitimleri"
+      ],
+      "assessment": [
+        "Sınavlar",
+        "Anketler",
+        "Değerlendirme Formları",
+        "Ölçme ve İzleme"
+      ],
+      "forms": [
+        "Günlük Kontroller",
+        "Periyodik Kontroller",
+        "Denetim Formları"
+      ],
+      "emergency": [
+        "Acil Durum Planları",
+        "Tahliye",
+        "Yangın",
+        "Tatbikat",
+        "Toplanma Alanları"
+      ],
+      "instructions": [
+        "Makine Talimatları",
+        "İş Akışı Talimatları",
+        "KKD Talimatları",
+        "Saha Uygulamaları"
+      ]
     }
   },
   "lang": {

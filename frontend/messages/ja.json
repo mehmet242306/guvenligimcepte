@@ -61,7 +61,32 @@
       "toggleExpand": "ガイドを展開する",
       "whatIsBody": "これは事象の構造的またはシステム的な要因を見つけるための体系的な技法です—表面的な症状だけではありません。適切に適用すれば、同じ種類の事故の再発を防ぎます：症状だけでなく、病気を治療します。OHSでは、トルコ法6331およびISO 45001が事故の根本原因分析を要求しています。",
       "whatIsHeading": "根本原因分析とは何ですか？",
-      "whenHeading": "いつ使用されますか？"
+      "whenHeading": "いつ使用されますか？",
+      "whenUse": [
+        "After a work accident or near miss — often a legal requirement",
+        "Recurring non-conformities — the same issue keeps coming back",
+        "Proactive review of high-risk processes (fire, chemicals, work at height)",
+        "Systemic correction after audits or customer feedback",
+        "Suspected occupational disease — long exposure chains"
+      ],
+      "tips": [
+        "Need a quick read → 5 Whys or R₂D-RCA",
+        "Team brainstorming → Ishikawa",
+        "Complex causal logic (AND/OR, conditions) → FTA",
+        "Classic OHS incident (slip, strike) → SCAT",
+        "High-risk work + barrier analysis → Bow-tie",
+        "Major event + organisational analysis → MORT",
+        "Continuous monitoring + numeric comparison → R₂D-RCA (RiskNova-specific)"
+      ],
+      "processSteps": [
+        "Define the event clearly (company, location, date, who/what/where/how)",
+        "Choose the right method (use the tips above)",
+        "Generate a first draft with AI or fill manually",
+        "Review with the team and close gaps",
+        "Confirm root causes → build corrective/preventive (CAPA) actions",
+        "Produce a PDF report and share (QR for mobile access)",
+        "Follow up: action closure timelines + prevention of recurrence"
+      ]
     }
   },
   "auth": {
@@ -1158,6 +1183,312 @@
     },
     "user": {
       "defaultDisplayName": "RiskNovaユーザー"
+    },
+    "documentCatalog": {
+      "groups": {
+        "is-giris-oryantasyon": {
+          "title": "Job entry, OHS and orientation",
+          "items": {
+            "oryantasyon-formu": "OHS orientation training form",
+            "ise-giris-eslestirme": "Job placement matching form",
+            "ise-giris-saglik": "Pre-employment health report tracking",
+            "ise-giris-taahhut": "OHS undertaking/commitment",
+            "kkd-zimmet": "PPE issue (custody) form",
+            "isg-bilgilendirme": "OHS information record",
+            "gorev-tanimlari": "Job descriptions",
+            "oryantasyon-kontrol": "Orientation checklist"
+          }
+        },
+        "kurul-kayitlari": {
+          "title": "OHS committee records",
+          "items": {
+            "kurul-tutanagi": "OHS committee meeting minutes",
+            "kurul-uye-listesi": "Committee member list",
+            "kurul-karar-takip": "Committee decision tracking form",
+            "kurul-gundem": "Committee agenda document",
+            "kurul-yillik-plan": "Annual committee meeting plan",
+            "kurul-katilim": "Committee attendance chart",
+            "kurul-ozel-toplanti": "Special meeting minutes",
+            "kurul-secim-tutanagi": "Committee election minutes"
+          }
+        },
+        "egitim-dosyasi": {
+          "title": "Training file",
+          "items": {
+            "egitim-katilim-formu": "Training attendance form",
+            "egitim-sertifika": "Training certificate",
+            "egitim-yillik-plan": "Annual training plan",
+            "egitim-ihtiyac-analizi": "Training needs analysis",
+            "egitim-degerlendirme": "Training evaluation form",
+            "egitim-icerik": "Training content document",
+            "egitim-etkinlik": "Training effectiveness measurement form",
+            "egitim-talep": "Training request form",
+            "egitim-ozet-raporu": "Training summary report"
+          }
+        },
+        "risk-degerlendirme": {
+          "title": "Risk assessment and findings/recommendations",
+          "items": {
+            "risk-raporu": "Risk assessment report",
+            "tespit-oneri-defteri": "Findings and recommendations log",
+            "risk-envanter": "Hazard and risk inventory",
+            "risk-aksiyon-plani": "Risk action plan",
+            "is-kazasi-risk": "Post-incident risk update",
+            "risk-haritasi": "Risk map document",
+            "risk-izleme-raporu": "Risk monitoring report",
+            "risk-iletisim-formu": "Risk communication form",
+            "risk-metodoloji": "Risk methodology document"
+          }
+        },
+        "acil-durum": {
+          "title": "Emergency preparedness",
+          "items": {
+            "acil-durum-plani": "Emergency plan",
+            "acil-durum-ekip": "Emergency team list",
+            "tahliye-plani": "Evacuation plan",
+            "tatbikat-raporu": "Drill report",
+            "acil-durum-tel": "Emergency phone list",
+            "acil-durum-talimat": "Emergency instruction",
+            "toplanma-alani": "Assembly point sketch",
+            "acil-durum-egitim": "Emergency training plan",
+            "acil-durum-envanter": "Emergency equipment inventory",
+            "acil-durum-senaryo": "Emergency scenarios"
+          }
+        },
+        "kaza-olay": {
+          "title": "Incidents, events and near misses",
+          "items": {
+            "kaza-bildirim-formu": "Work accident notification form",
+            "kaza-arastirma-raporu": "Accident investigation report",
+            "ramak-kala-formu": "Near-miss notification form",
+            "dof-formu": "Corrective and preventive action (CAPA) report",
+            "kaza-istatistik": "Accident statistics report",
+            "kok-neden-analizi": "Root cause analysis report",
+            "olay-degerlendirme": "Incident evaluation record"
+          }
+        },
+        "iletisim-yazisma": {
+          "title": "Correspondence",
+          "items": {
+            "resmi-yazi": "Official letter template",
+            "uyari-yazisi": "Warning letter",
+            "bilgilendirme-yazisi": "Information letter"
+          }
+        },
+        "talimatlar": {
+          "title": "Instructions",
+          "items": {
+            "genel-isg-talimati": "General OHS instruction",
+            "makine-talimati": "Machine/equipment use instruction",
+            "kimyasal-talimati": "Chemical substance use instruction",
+            "kkd-kullanim-talimati": "PPE use instruction"
+          }
+        },
+        "prosedurler": {
+          "title": "OHS procedures",
+          "items": {
+            "isg-politikasi": "OHS policy",
+            "risk-degerlendirme-prosedur": "Risk assessment procedure",
+            "egitim-proseduru": "Training procedure",
+            "acil-durum-prosedur": "Emergency procedure",
+            "kaza-bildirimi-prosedur": "Accident notification procedure",
+            "kkd-proseduru": "PPE management procedure",
+            "saglik-gozetimi-prosedur": "Health surveillance procedure",
+            "is-izni-proseduru": "Permit to work procedure",
+            "yuksekte-calisma": "Work at height procedure",
+            "kapali-alan": "Confined space work procedure",
+            "elektrik-guvenlik": "Electrical safety procedure",
+            "ergonomi-prosedur": "Ergonomics procedure",
+            "taseron-yonetimi": "Subcontractor management procedure",
+            "depolama-prosedur": "Storage procedure",
+            "isaret-etiketleme": "Signs and labelling procedure",
+            "gece-calisma": "Night work procedure",
+            "sicak-calisma": "Hot work procedure",
+            "gurultu-prosedur": "Noise control procedure",
+            "toz-prosedur": "Dust control procedure"
+          }
+        },
+        "denetim-kontrol": {
+          "title": "Workplace inspections and audits",
+          "items": {
+            "is-yeri-denetim": "Workplace inspection report",
+            "ic-denetim-raporu": "Internal audit report",
+            "kontrol-listesi": "General inspection checklist",
+            "uygunsuzluk-raporu": "Nonconformity report"
+          }
+        },
+        "personel-ozluk": {
+          "title": "Personnel files and contracts",
+          "items": {
+            "is-sozlesmesi": "Employment contract",
+            "ek-sozlesme": "Additional contract (OHS)",
+            "gizlilik-sozlesme": "Confidentiality agreement",
+            "gorev-tanım-belgesi": "Job description document",
+            "ise-giris-evrak": "Pre-employment document checklist",
+            "isten-ayrilma": "Termination form",
+            "izin-formu": "Leave request form",
+            "mesai-formu": "Overtime request form",
+            "disiplin-tutanagi": "Disciplinary record",
+            "performans-degerlendirme": "Performance appraisal form",
+            "terfi-formu": "Promotion recommendation form",
+            "personel-bilgi-formu": "Personnel information form",
+            "cv-formu": "CV form",
+            "referans-formu": "Reference check form",
+            "bordro-mutabakat": "Payroll reconciliation form",
+            "zimmet-teslim": "Custody handover record",
+            "yetkinlik-matrisi": "Competence matrix"
+          }
+        },
+        "yillik-degerlendirme": {
+          "title": "Annual OHS review",
+          "items": {
+            "yillik-faaliyet-raporu": "Annual activity report",
+            "yillik-calisma-plani": "Annual work plan"
+          }
+        },
+        "calisan-temsilcisi": {
+          "title": "Worker representative",
+          "items": {
+            "temsilci-secim-tutanagi": "Worker representative election minutes",
+            "temsilci-gorev-tanimi": "Representative job description",
+            "temsilci-raporu": "Representative activity report",
+            "temsilci-oneri-formu": "Representative suggestion form",
+            "temsilci-egitim-kaydi": "Representative training record",
+            "temsilci-atama-yazisi": "Representative appointment letter"
+          }
+        },
+        "iyi-uygulama": {
+          "title": "Good practice",
+          "items": {
+            "iyi-uygulama-raporu": "Good practice report",
+            "oneri-odul-sistemi": "Suggestion and reward scheme form",
+            "benchmark-raporu": "Benchmarking report"
+          }
+        },
+        "dis-gorevlendirme": {
+          "title": "Off-site assignment",
+          "items": {
+            "dis-gorev-yazisi": "Off-site assignment letter"
+          }
+        },
+        "arac-makine": {
+          "title": "Vehicle and machinery tracking",
+          "items": {
+            "arac-kontrol-listesi": "Vehicle checklist",
+            "makine-bakim-formu": "Machine maintenance form",
+            "forklift-kontrol": "Forklift daily inspection form",
+            "arac-zimmet": "Vehicle custody record",
+            "makine-envanter": "Machine inventory"
+          }
+        },
+        "periyodik-kontrol": {
+          "title": "Periodic inspection records",
+          "items": {
+            "asansor-kontrol": "Elevator periodic inspection",
+            "basincli-kap": "Pressure vessel inspection",
+            "elektrik-tesisati": "Electrical installation inspection",
+            "topraklama-kontrol": "Earthing/grounding measurement",
+            "paratoner-kontrol": "Lightning rod inspection",
+            "yangin-tup-kontrol": "Fire extinguisher inspection",
+            "yangin-dolap-kontrol": "Fire cabinet inspection",
+            "kompressor-kontrol": "Compressor inspection",
+            "vinc-kontrol": "Crane/lifting equipment inspection",
+            "kazan-kontrol": "Boiler periodic inspection",
+            "havalandirma-kontrol": "Ventilation system inspection",
+            "jenerator-kontrol": "Generator inspection",
+            "lpg-kontrol": "LPG installation inspection",
+            "merdiven-iskele": "Ladder/scaffold inspection"
+          }
+        },
+        "diger-kayitlar": {
+          "title": "Other records",
+          "items": {
+            "msds-kayit": "SDS/MSDS record form",
+            "is-izni-formu": "Permit to work form",
+            "sicak-is-izni": "Hot work permit form",
+            "yuksekte-is-izni": "Work at height permit",
+            "kapali-alan-izni": "Confined space entry permit",
+            "kazi-is-izni": "Excavation permit",
+            "ortam-olcum": "Environmental measurement report",
+            "gurultu-haritasi": "Noise map",
+            "aydinlatma-olcum": "Lighting measurement report",
+            "termal-konfor": "Thermal comfort measurement",
+            "toz-olcum": "Dust measurement report",
+            "titresim-olcum": "Vibration measurement report"
+          }
+        },
+        "yangin-kimyasal": {
+          "title": "Fire and chemicals",
+          "items": {
+            "yangin-risk-analizi": "Fire risk analysis",
+            "yangin-sondurme-plani": "Fire suppression plan",
+            "kimyasal-envanter": "Chemical inventory",
+            "kimyasal-risk": "Chemical risk assessment",
+            "kimyasal-depolama": "Chemical storage plan",
+            "yangin-tatbikat": "Fire drill report",
+            "yangin-ekipman-kontrol": "Fire equipment inspection chart"
+          }
+        },
+        "ilkyardim": {
+          "title": "First aid training",
+          "items": {
+            "ilkyardim-egitim-plani": "First aid training plan",
+            "ilkyardimci-listesi": "First aider list",
+            "ilkyardim-malzeme": "First aid supplies inspection form"
+          }
+        },
+        "isyeri-hekimi": {
+          "title": "Occupational health physician documents",
+          "items": {
+            "hekim-gozetim-raporu": "Health surveillance report",
+            "hekim-periyodik-muayene": "Periodic medical examination plan",
+            "hekim-ise-giris-muayene": "Pre-employment medical form",
+            "hekim-meslek-hastaligi": "Occupational disease follow-up form",
+            "hekim-ilac-takip": "Medication and consumables tracking",
+            "hekim-recete-kayit": "Prescription log form",
+            "hekim-revir-defteri": "Clinic/examination log",
+            "hekim-saglik-tarama": "Mass health screening report",
+            "hekim-biolojik-maruziyet": "Biological exposure assessment",
+            "hekim-yillik-degerlendirme": "Occupational physician annual review"
+          }
+        }
+      }
+    },
+    "subcategories": {
+      "education": [
+        "Basic OHS training",
+        "Professional training",
+        "Emergency training",
+        "Refresher training"
+      ],
+      "assessment": [
+        "Exams",
+        "Surveys",
+        "Assessment forms",
+        "Measurement and monitoring"
+      ],
+      "forms": [
+        "Daily checks",
+        "Periodic checks",
+        "Audit forms"
+      ],
+      "emergency": [
+        "Emergency plans",
+        "Evacuation",
+        "Fire",
+        "Drills",
+        "Assembly areas"
+      ],
+      "instructions": [
+        "Machine instructions",
+        "Workflow instructions",
+        "PPE instructions",
+        "Field practices"
+      ]
+    },
+    "surveyTags": {
+      "measurement": "Measurement",
+      "feedback": "Feedback"
     }
   },
   "landing": {
@@ -1375,7 +1706,15 @@
       "metaTitle": "プライバシーポリシー",
       "ogDescription": "アカウント、製品使用、サブプロセッサーに関する簡潔なプライバシー概要です。",
       "ogTitle": "プライバシーポリシー | RiskNova",
-      "title": "RiskNovaプライバシーポリシー"
+      "title": "RiskNovaプライバシーポリシー",
+      "paragraphs": [
+        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
+        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
+        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
+        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
+        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
+        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
+      ]
     },
     "refund": {
       "eyebrow": "返金ポリシー",
@@ -1384,7 +1723,15 @@
       "metaTitle": "返金ポリシー",
       "ogDescription": "返金期間、更新、請求修正について。",
       "ogTitle": "返金ポリシー | RiskNova",
-      "title": "RiskNova返金ポリシー"
+      "title": "RiskNova返金ポリシー",
+      "paragraphs": [
+        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
+        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
+        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
+        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
+        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
+        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
+      ]
     },
     "terms": {
       "eyebrow": "利用規約",
@@ -1440,7 +1787,15 @@
       "metaTitle": "利用規約",
       "ogDescription": "サブスクリプション、AI支援機能、利用規定の概要です。",
       "ogTitle": "利用規約 | RiskNova",
-      "title": "RiskNova利用規約"
+      "title": "RiskNova利用規約",
+      "paragraphs": [
+        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
+        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
+        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
+        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
+        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
+        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
+      ]
     }
   },
   "nav": {
@@ -1879,22 +2234,45 @@
             {
               "regulation": "労働安全衛生委員会に関する規則",
               "responsible": "雇用者",
-              "title": "労働安全衛生委員会の設置"
+              "title": "労働安全衛生委員会の設置",
+              "months": [
+                0
+              ]
             },
             {
               "regulation": "労働安全衛生委員会に関する規則",
               "responsible": "雇用者",
-              "title": "委員会任命のメンバーへの通知"
+              "title": "委員会任命のメンバーへの通知",
+              "months": [
+                0
+              ]
             },
             {
               "regulation": "労働安全衛生委員会に関する規則",
               "responsible": "労働安全衛生委員会",
-              "title": "月次労働安全衛生委員会会議の開催"
+              "title": "月次労働安全衛生委員会会議の開催",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
             },
             {
               "regulation": "労働安全衛生委員会に関する規則",
               "responsible": "労働安全衛生委員会",
-              "title": "労働安全衛生委員会年次活動報告書の作成"
+              "title": "労働安全衛生委員会年次活動報告書の作成",
+              "months": [
+                11
+              ]
             }
           ],
           "title": "労働安全衛生委員会業務"
@@ -1905,27 +2283,46 @@
             {
               "regulation": "労働安全衛生リスクアセスメント規則",
               "responsible": "労働安全衛生専門家",
-              "title": "機械インベントリの作成または取得"
+              "title": "機械インベントリの作成または取得",
+              "months": [
+                0
+              ]
             },
             {
               "regulation": "労働安全衛生リスクアセスメント規則",
               "responsible": "労働安全衛生専門家",
-              "title": "組織図の取得"
+              "title": "組織図の取得",
+              "months": [
+                0
+              ]
             },
             {
               "regulation": "労働安全衛生リスクアセスメント規則",
               "responsible": "労働安全衛生専門家",
-              "title": "初期状況評価と報告"
+              "title": "初期状況評価と報告",
+              "months": [
+                1
+              ]
             },
             {
               "regulation": "労働安全衛生リスクアセスメント規則",
               "responsible": "労働安全衛生専門家",
-              "title": "リスク分析・評価業務"
+              "title": "リスク分析・評価業務",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
             },
             {
               "regulation": "労働安全衛生リスクアセスメント規則",
               "responsible": "労働安全衛生専門家",
-              "title": "定期的リスク分析更新"
+              "title": "定期的リスク分析更新",
+              "months": [
+                5,
+                11
+              ]
             }
           ],
           "title": "リスク分析と評価"
@@ -1936,32 +2333,52 @@
             {
               "regulation": "労働安全衛生・作業機器規則",
               "responsible": "技術部門",
-              "title": "電気機械・接地検査"
+              "title": "電気機械・接地検査",
+              "months": [
+                3
+              ]
             },
             {
               "regulation": "労働安全衛生・作業機器規則",
               "responsible": "技術部門",
-              "title": "電気測定（接地、避雷針等）"
+              "title": "電気測定（接地、避雷針等）",
+              "months": [
+                3
+              ]
             },
             {
               "regulation": "作業機器規則",
               "responsible": "技術部門",
-              "title": "昇降設備の定期検査"
+              "title": "昇降設備の定期検査",
+              "months": [
+                5,
+                11
+              ]
             },
             {
               "regulation": "騒音規則",
               "responsible": "技術部門",
-              "title": "環境騒音測定"
+              "title": "環境騒音測定",
+              "months": [
+                5
+              ]
             },
             {
               "regulation": "労働安全衛生規則",
               "responsible": "技術部門",
-              "title": "環境照明測定"
+              "title": "環境照明測定",
+              "months": [
+                5
+              ]
             },
             {
               "regulation": "人間消費用水規則",
               "responsible": "技術部門",
-              "title": "飲料水分析"
+              "title": "飲料水分析",
+              "months": [
+                2,
+                8
+              ]
             }
           ],
           "title": "定期検査と測定"
@@ -1972,22 +2389,39 @@
             {
               "regulation": "緊急事態規則",
               "responsible": "労働安全衛生専門家",
-              "title": "避難・消火訓練"
+              "title": "避難・消火訓練",
+              "months": [
+                5,
+                11
+              ]
             },
             {
               "regulation": "緊急事態規則",
               "responsible": "技術部門",
-              "title": "訓練議事録の作成"
+              "title": "訓練議事録の作成",
+              "months": [
+                5,
+                11
+              ]
             },
             {
               "regulation": "緊急事態規則",
               "responsible": "技術部門",
-              "title": "緊急設備の点検"
+              "title": "緊急設備の点検",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
             },
             {
               "regulation": "緊急事態規則",
               "responsible": "労働安全衛生専門家",
-              "title": "緊急時対応計画の作成"
+              "title": "緊急時対応計画の作成",
+              "months": [
+                0
+              ]
             }
           ],
           "title": "緊急事態"
@@ -1998,22 +2432,59 @@
             {
               "regulation": "労働衛生規則",
               "responsible": "産業医",
-              "title": "健康診断"
+              "title": "健康診断",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
             },
             {
               "regulation": "労働衛生規則",
               "responsible": "産業医",
-              "title": "健康管理部門年間作業計画"
+              "title": "健康管理部門年間作業計画",
+              "months": [
+                0
+              ]
             },
             {
               "regulation": "労働衛生規則",
               "responsible": "産業医",
-              "title": "雇用前健康診断書"
+              "title": "雇用前健康診断書",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
             },
             {
               "regulation": "労働衛生規則",
               "responsible": "産業医",
-              "title": "定期健康診断報告書"
+              "title": "定期健康診断報告書",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
             }
           ],
           "title": "健康監視"
@@ -2024,12 +2495,18 @@
             {
               "regulation": "化学物質規則",
               "responsible": "労働安全衛生専門家",
-              "title": "SDS取得の確保"
+              "title": "SDS取得の確保",
+              "months": [
+                2
+              ]
             },
             {
               "regulation": "化学物質規則",
               "responsible": "労働安全衛生専門家",
-              "title": "化学物質リスクアセスメント"
+              "title": "化学物質リスクアセスメント",
+              "months": [
+                5
+              ]
             }
           ],
           "title": "化学物質"
@@ -2083,7 +2560,21 @@
         "regulation": "法令",
         "responsible": "責任者",
         "topic": "作業項目"
-      }
+      },
+      "months": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ]
     }
   },
   "platformAdmin": {
@@ -2211,37 +2702,79 @@
         "description": "Novaチャット、分析、小規模なドキュメントワークフローを探索するための月次クォータ付きエントリーティアです。",
         "name": "Free",
         "upgradeHint": "毎月予測可能なクォータが必要になったらStarterにアップグレードしてください。",
-        "whoFor": "RiskNovaをお試しの方、学生、軽度の時々利用。"
+        "whoFor": "RiskNovaをお試しの方、学生、軽度の時々利用。",
+        "features": [
+          "Nova chat within monthly limits",
+          "Foundational AI analyses for risk workflows",
+          "Limited document generation",
+          "Field inspection entries within quotas",
+          "Exports within plan limits"
+        ]
       },
       "plus": {
         "description": "チャット、分析、リスクモデリング、フィールドデータ全体でバランスの取れた容量です。",
         "name": "Plus",
         "upgradeHint": "より深い検査とレポート処理能力が必要になったらProfessionalに移行してください。",
-        "whoFor": "毎月複数のクライアントを管理するアクティブなコンサルタント。"
+        "whoFor": "毎月複数のクライアントを管理するアクティブなコンサルタント。",
+        "features": [
+          "Higher caps across all core actions",
+          "More incident and training outputs",
+          "Field inspection headroom for busy weeks",
+          "Document throughput for recurring packs",
+          "Exports suited to multi-client work"
+        ]
       },
       "professional_149": {
         "description": "推奨ティア — 分析、ドキュメント、フィールドワークフロー全体で十分な上限があります。",
         "name": "Professional 149",
         "upgradeHint": "Professional 199は最も忙しいデスクに最大限の余裕を追加します。",
-        "whoFor": "製品を日常的に使用するシニアコンサルタントおよびパワーユーザー。"
+        "whoFor": "製品を日常的に使用するシニアコンサルタントおよびパワーユーザー。",
+        "features": [
+          "Very high Nova and analysis quotas",
+          "Heavy document generation allowance",
+          "Large risk and inspection budgets",
+          "Incident and training outputs at scale",
+          "Exports aligned with premium throughput"
+        ]
       },
       "professional_199": {
         "description": "OSGBまたはエンタープライズ契約前の最上位セルフサービスティアです。",
         "name": "Professional 199",
         "upgradeHint": "席数、ポートフォリオ、請求書発行が必要ですか？OSGBまたはエンタープライズ見積もりをご利用ください。",
-        "whoFor": "ピーク時の個人ワークロードとプレミアム処理能力への期待。"
+        "whoFor": "ピーク時の個人ワークロードとプレミアム処理能力への期待。",
+        "features": [
+          "Maximum published individual quotas",
+          "Peak AI and document capacity",
+          "Largest inspection and risk envelopes",
+          "Full incident and training allowances in tier",
+          "Exports for the heaviest reporting cycles"
+        ]
       },
       "professional": {
         "description": "最上位Professionalティア前のエンタープライズグレード個人上限です。",
         "name": "Professional 99",
         "upgradeHint": "スケールでの最高の価値を得るためにProfessional 149にステップアップしてください。",
-        "whoFor": "週次利用が密集したフルタイムOHS専門家。"
+        "whoFor": "週次利用が密集したフルタイムOHS専門家。",
+        "features": [
+          "High Nova and AI analysis limits",
+          "Strong document generation cadence",
+          "Broad risk and field inspection capacity",
+          "Incident programme support within quota",
+          "Exports for intensive reporting"
+        ]
       },
       "starter": {
         "description": "Novaの分析と文書の上限を引き上げ、週次ルーチンを円滑に実行できます。",
         "name": "スターター",
         "upgradeHint": "インシデント分析とトレーニング出力がワークフローの一部になったらPlusをお選びください。",
-        "whoFor": "フリーランス専門家や安定した月次ワークロード向け。"
+        "whoFor": "フリーランス専門家や安定した月次ワークロード向け。",
+        "features": [
+          "Stronger Nova and analysis quotas",
+          "More monthly document generation",
+          "Incident analysis allowance",
+          "Training slides where included in quota",
+          "Exports scaled for individuals"
+        ]
       }
     },
     "priceFreeNote": "無料で開始",
@@ -3453,7 +3986,13 @@
           "pricePeriod": "から / 月",
           "seatsLabel": "アクティブチームシート2席",
           "summary": "限定的なポートフォリオを持つ小規模OSGBチーム向け — 個人向けスターター{individualStarter}/月とは異なり、マルチサイトとチームワークフローをカバーします。",
-          "workspacesLabel": "アクティブ企業/ワークスペース5社"
+          "workspacesLabel": "アクティブ企業/ワークスペース5社",
+          "features": [
+            "Personnel module and invitation flows",
+            "Tasks, work tracking and assignment board",
+            "Client workplace portfolio view",
+            "Announcements and core operational flows"
+          ]
         },
         "osgb_team": {
           "ctaLabel": "チーム見積もりを依頼",
@@ -3462,14 +4001,25 @@
           "pricePeriod": "から / 月",
           "seatsLabel": "アクティブチームシート5席",
           "summary": "成長するOSGB：より多くの企業、現場調整、チーム規模。",
-          "workspacesLabel": "アクティブ企業/ワークスペース15社"
+          "workspacesLabel": "アクティブ企業/ワークスペース15社",
+          "features": [
+            "Everything in Starter",
+            "Advanced reporting and exports",
+            "Field audits and checklists (per agreement)",
+            "Priority solution / onboarding channel"
+          ]
         }
       },
       "osgbFooterHint": "多拠点の単一雇用主ですか？",
       "osgbFooterLink": "エンタープライズソリューションページをご覧ください",
       "osgbSectionIntro": "金額は米ドルでの参考開始セグメントです；税金、為替、契約範囲は見積もり確定時に確認されます。カード決済はありません — お客様の構造を理解した上で制限と価格を調整いたします。",
       "osgbSectionTitle": "OSGBパッケージ",
-      "recommended": "推奨"
+      "recommended": "推奨",
+      "enterpriseHighlights": [
+        "Multi-site companies and institutions",
+        "Tailored quote aligned with operational volume",
+        "Integration and onboarding planning when needed"
+      ]
     },
     "enterprisePage": {
       "ctaForm": "お問い合わせ（フォーム）",
