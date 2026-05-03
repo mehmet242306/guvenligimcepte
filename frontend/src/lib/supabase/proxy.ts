@@ -23,6 +23,7 @@ const PUBLIC_PATHS = [
 // yoksa cron user'ı olmadığı için /login'e redirect yiyor ve 307 dönüyor.
 const PUBLIC_API_PREFIXES = [
   "/api/health",
+  "/api/site-visits",
   "/api/billing/",
   "/api/self-healing/",
 ];
