@@ -11,6 +11,8 @@
     "typecheck": "npm --prefix frontend run typecheck",
     "test": "npm --prefix frontend run test",
     "i18n:translate-isg-library": "npm --prefix frontend run i18n:translate-isg-library",
+    "i18n:translate-isg-document-catalog": "npm --prefix frontend run i18n:translate-isg-document-catalog",
+    "i18n:translate-isg-document-catalog:resume": "npm --prefix frontend run i18n:translate-isg-document-catalog:resume",
     "i18n:verify-locale-parity": "npm --prefix frontend run i18n:verify-locale-parity",
     "i18n:merge-missing-from-en": "npm --prefix frontend run i18n:merge-missing-from-en",
     "i18n:translate-messages": "npm --prefix frontend run i18n:translate-messages",

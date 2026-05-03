@@ -19,10 +19,11 @@
  *   messages     → writes messages/{locale}.json directly; then npm run i18n:verify-locale-parity
  *                  Use --force to retranslate a locale that already differs from en (full refresh).
  *
- * Optional: --prefix=namespace (messages pack only)
- *   Translates only string leaves under that top-level key (e.g. --prefix=isgLibrary), merges into each
- *   existing locale file, and leaves all other keys untouched. --resume skips a locale when that
- *   subtree is no longer identical to English (already localized).
+ * Optional: --prefix=path[,path...] (messages pack only)
+ *   Translates only string leaves whose message keys start with that path (dot segments allowed).
+ *   Example: --prefix=isgLibrary.documentCatalog,isgLibrary.subcategories,isgLibrary.surveyTags,isgLibrary.templateDescription
+ *   Merges into each existing locale file; other keys untouched. --resume skips a locale when every
+ *   listed subtree already differs from English (already localized). Use --force to redo.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -458,15 +459,24 @@ function parseBoolFlag(name) {
   return process.argv.slice(2).includes(name);
 }
 
-/** Top-level JSON key only, e.g. isgLibrary */
-function parsePrefix() {
+/** One path or comma-separated paths, e.g. isgLibrary or isgLibrary.documentCatalog,isgLibrary.subcategories */
+function parsePrefixes() {
   const arg = process.argv.find((a) => a.startsWith("--prefix="));
   if (!arg) return null;
   const raw = arg.slice("--prefix=".length).trim();
-  if (!/^[a-zA-Z0-9_-]+$/.test(raw)) {
-    throw new Error(`Invalid --prefix (use a single top-level key): ${raw}`);
+  const parts = raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!parts.length) return null;
+  for (const p of parts) {
+    if (!/^[a-zA-Z0-9_.-]+$/.test(p)) {
+      throw new Error(
+        `Invalid --prefix segment "${p}" (allowed: letters, numbers, dots, underscores, hyphens)`,
+      );
+    }
   }
-  return raw;
+  return parts;
 }
 
 function getSubtree(obj, prefix) {
@@ -559,14 +569,14 @@ async function main() {
     targets = filterLocales;
   }
 
-  let prefix;
+  let prefixes;
   try {
-    prefix = parsePrefix();
+    prefixes = parsePrefixes();
   } catch (e) {
     console.error(e.message);
     process.exit(1);
   }
-  if (prefix && PACK !== "messages") {
+  if (prefixes && PACK !== "messages") {
     console.error("--prefix is only supported with --pack=messages");
     process.exit(1);
   }
@@ -578,30 +588,32 @@ async function main() {
   }
 
   console.log("i18n pack:", PACK, "→", packDir);
-  if (prefix) console.log("prefix (partial translate):", prefix);
+  if (prefixes?.length) console.log("prefix (partial translate):", prefixes.join(" + "));
 
   const sourceTree = JSON.parse(fs.readFileSync(enPath, "utf8"));
-  let sourceFlat = flattenStrings(sourceTree);
-  if (prefix) {
-    sourceFlat = filterFlatByPrefix(sourceFlat, prefix);
+  const fullFlat = flattenStrings(sourceTree);
+  let sourceFlat = fullFlat;
+  if (prefixes?.length) {
+    sourceFlat = {};
+    for (const pr of prefixes) {
+      Object.assign(sourceFlat, filterFlatByPrefix(fullFlat, pr));
+    }
     if (!Object.keys(sourceFlat).length) {
-      console.error(`No string leaves under "${prefix}" in ${SOURCE_LOCALE}.json`);
+      console.error(`No string leaves under prefix path(s): ${prefixes.join(", ")}`);
       process.exit(1);
     }
   }
   const keyCount = Object.keys(sourceFlat).length;
-  console.log(`Source ${SOURCE_LOCALE}.json: ${keyCount} string leaves${prefix ? ` (filtered)` : ""}`);
+  console.log(`Source ${SOURCE_LOCALE}.json: ${keyCount} string leaves${prefixes?.length ? ` (filtered)` : ""}`);
 
   const resume = parseBoolFlag("--resume");
   const force = parseBoolFlag("--force");
   const enCanonical = JSON.stringify(sourceTree);
 
   if (resume) {
-    if (prefix) {
+    if (prefixes?.length) {
       console.log(
-        "--resume: skipping locales whose subtree is no longer identical to English under",
-        prefix,
-        "(use --force to redo)",
+        "--resume: skipping locales where every prefix subtree already differs from English (use --force to redo)",
       );
     } else {
       console.log("--resume: skipping locales that already differ from en.json (use --force to redo)");
@@ -611,9 +623,10 @@ async function main() {
   for (const locale of targets) {
     const outPath = path.join(packDir, `${locale}.json`);
     if (resume && !force) {
-      if (prefix) {
-        if (!isSubtreeIdenticalToEn(outPath, sourceTree, prefix)) {
-          console.log(`Skipping ${locale} (${prefix} already localized or edited)`);
+      if (prefixes?.length) {
+        const allDone = prefixes.every((pr) => !isSubtreeIdenticalToEn(outPath, sourceTree, pr));
+        if (allDone) {
+          console.log(`Skipping ${locale} (all prefix subtrees differ from en — likely localized)`);
           continue;
         }
       } else if (!isEnglishDuplicatePack(outPath, enCanonical)) {
@@ -624,7 +637,7 @@ async function main() {
     console.log(`Translating → ${locale} (${LOCALE_NAMES[locale]})…`);
     const flat = await translateLocale(provider, client, locale, sourceFlat);
     const tree = unflattenPaths(flat);
-    if (prefix) {
+    if (prefixes?.length) {
       if (!fs.existsSync(outPath)) {
         console.error("Missing", outPath, "— create locale file or run i18n:merge-missing-from-en first");
         process.exit(1);

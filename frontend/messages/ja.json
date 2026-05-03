@@ -1167,7 +1167,7 @@
       "assignedToCompany": "{title}ワークスペースに割り当てられました。",
       "contentSavedToCompany": "{title}が選択された企業に保存されました。"
     },
-    "templateDescription": "{group} — ドキュメントフローで\"{item}\"テンプレートを開きます。",
+    "templateDescription": "{group} — 文書フローで「{item}」テンプレートを開きます。",
     "types": {
       "doc": "文書",
       "exam": "試験",
@@ -1187,269 +1187,269 @@
     "documentCatalog": {
       "groups": {
         "is-giris-oryantasyon": {
-          "title": "Job entry, OHS and orientation",
+          "title": "入職・労働安全衛生・オリエンテーション",
           "items": {
-            "oryantasyon-formu": "OHS orientation training form",
-            "ise-giris-eslestirme": "Job placement matching form",
-            "ise-giris-saglik": "Pre-employment health report tracking",
-            "ise-giris-taahhut": "OHS undertaking/commitment",
-            "kkd-zimmet": "PPE issue (custody) form",
-            "isg-bilgilendirme": "OHS information record",
-            "gorev-tanimlari": "Job descriptions",
-            "oryantasyon-kontrol": "Orientation checklist"
+            "oryantasyon-formu": "労働安全衛生オリエンテーション訓練表",
+            "ise-giris-eslestirme": "配置適性マッチング表",
+            "ise-giris-saglik": "雇用前健康診断追跡",
+            "ise-giris-taahhut": "労働安全衛生誓約書",
+            "kkd-zimmet": "個人防護具貸与表",
+            "isg-bilgilendirme": "労働安全衛生情報記録",
+            "gorev-tanimlari": "職務記述書",
+            "oryantasyon-kontrol": "オリエンテーションチェックリスト"
           }
         },
         "kurul-kayitlari": {
-          "title": "OHS committee records",
+          "title": "労働安全衛生委員会記録",
           "items": {
-            "kurul-tutanagi": "OHS committee meeting minutes",
-            "kurul-uye-listesi": "Committee member list",
-            "kurul-karar-takip": "Committee decision tracking form",
-            "kurul-gundem": "Committee agenda document",
-            "kurul-yillik-plan": "Annual committee meeting plan",
-            "kurul-katilim": "Committee attendance chart",
-            "kurul-ozel-toplanti": "Special meeting minutes",
-            "kurul-secim-tutanagi": "Committee election minutes"
+            "kurul-tutanagi": "労働安全衛生委員会議事録",
+            "kurul-uye-listesi": "委員会メンバーリスト",
+            "kurul-karar-takip": "委員会決定追跡フォーム",
+            "kurul-gundem": "委員会議事次第",
+            "kurul-yillik-plan": "年次委員会会議計画",
+            "kurul-katilim": "委員会出席表",
+            "kurul-ozel-toplanti": "特別会議議事録",
+            "kurul-secim-tutanagi": "委員会選出議事録"
           }
         },
         "egitim-dosyasi": {
-          "title": "Training file",
+          "title": "研修ファイル",
           "items": {
-            "egitim-katilim-formu": "Training attendance form",
-            "egitim-sertifika": "Training certificate",
-            "egitim-yillik-plan": "Annual training plan",
-            "egitim-ihtiyac-analizi": "Training needs analysis",
-            "egitim-degerlendirme": "Training evaluation form",
-            "egitim-icerik": "Training content document",
-            "egitim-etkinlik": "Training effectiveness measurement form",
-            "egitim-talep": "Training request form",
-            "egitim-ozet-raporu": "Training summary report"
+            "egitim-katilim-formu": "研修参加申込書",
+            "egitim-sertifika": "研修修了証",
+            "egitim-yillik-plan": "年間研修計画",
+            "egitim-ihtiyac-analizi": "研修ニーズ分析",
+            "egitim-degerlendirme": "研修評価書",
+            "egitim-icerik": "研修内容資料",
+            "egitim-etkinlik": "研修効果測定書",
+            "egitim-talep": "研修申請書",
+            "egitim-ozet-raporu": "研修概要報告書"
           }
         },
         "risk-degerlendirme": {
-          "title": "Risk assessment and findings/recommendations",
+          "title": "リスクアセスメント・発見事項/推奨事項",
           "items": {
-            "risk-raporu": "Risk assessment report",
-            "tespit-oneri-defteri": "Findings and recommendations log",
-            "risk-envanter": "Hazard and risk inventory",
-            "risk-aksiyon-plani": "Risk action plan",
-            "is-kazasi-risk": "Post-incident risk update",
-            "risk-haritasi": "Risk map document",
-            "risk-izleme-raporu": "Risk monitoring report",
-            "risk-iletisim-formu": "Risk communication form",
-            "risk-metodoloji": "Risk methodology document"
+            "risk-raporu": "リスクアセスメント報告書",
+            "tespit-oneri-defteri": "発見事項・推奨事項記録",
+            "risk-envanter": "危険源・リスク台帳",
+            "risk-aksiyon-plani": "リスク対策計画",
+            "is-kazasi-risk": "事故後リスク更新",
+            "risk-haritasi": "リスクマップ文書",
+            "risk-izleme-raporu": "リスク監視報告書",
+            "risk-iletisim-formu": "リスクコミュニケーション様式",
+            "risk-metodoloji": "リスク手法文書"
           }
         },
         "acil-durum": {
-          "title": "Emergency preparedness",
+          "title": "緊急事態への備え",
           "items": {
-            "acil-durum-plani": "Emergency plan",
-            "acil-durum-ekip": "Emergency team list",
-            "tahliye-plani": "Evacuation plan",
-            "tatbikat-raporu": "Drill report",
-            "acil-durum-tel": "Emergency phone list",
-            "acil-durum-talimat": "Emergency instruction",
-            "toplanma-alani": "Assembly point sketch",
-            "acil-durum-egitim": "Emergency training plan",
-            "acil-durum-envanter": "Emergency equipment inventory",
-            "acil-durum-senaryo": "Emergency scenarios"
+            "acil-durum-plani": "緊急事態対応計画",
+            "acil-durum-ekip": "緊急事態対応チーム一覧",
+            "tahliye-plani": "避難計画",
+            "tatbikat-raporu": "訓練報告書",
+            "acil-durum-tel": "緊急連絡先一覧",
+            "acil-durum-talimat": "緊急事態対応指示書",
+            "toplanma-alani": "集合場所図面",
+            "acil-durum-egitim": "緊急事態訓練計画",
+            "acil-durum-envanter": "緊急事態対応機器在庫",
+            "acil-durum-senaryo": "緊急事態シナリオ"
           }
         },
         "kaza-olay": {
-          "title": "Incidents, events and near misses",
+          "title": "事故・事象・ヒヤリハット",
           "items": {
-            "kaza-bildirim-formu": "Work accident notification form",
-            "kaza-arastirma-raporu": "Accident investigation report",
-            "ramak-kala-formu": "Near-miss notification form",
-            "dof-formu": "Corrective and preventive action (CAPA) report",
-            "kaza-istatistik": "Accident statistics report",
-            "kok-neden-analizi": "Root cause analysis report",
-            "olay-degerlendirme": "Incident evaluation record"
+            "kaza-bildirim-formu": "労働災害通知書",
+            "kaza-arastirma-raporu": "事故調査報告書",
+            "ramak-kala-formu": "ヒヤリハット通知書",
+            "dof-formu": "是正・予防措置（CAPA）報告書",
+            "kaza-istatistik": "事故統計報告書",
+            "kok-neden-analizi": "根本原因分析報告書",
+            "olay-degerlendirme": "インシデント評価記録"
           }
         },
         "iletisim-yazisma": {
-          "title": "Correspondence",
+          "title": "連絡・通信",
           "items": {
-            "resmi-yazi": "Official letter template",
-            "uyari-yazisi": "Warning letter",
-            "bilgilendirme-yazisi": "Information letter"
+            "resmi-yazi": "公式文書テンプレート",
+            "uyari-yazisi": "警告書",
+            "bilgilendirme-yazisi": "お知らせ文書"
           }
         },
         "talimatlar": {
-          "title": "Instructions",
+          "title": "指示書",
           "items": {
-            "genel-isg-talimati": "General OHS instruction",
-            "makine-talimati": "Machine/equipment use instruction",
-            "kimyasal-talimati": "Chemical substance use instruction",
-            "kkd-kullanim-talimati": "PPE use instruction"
+            "genel-isg-talimati": "一般労働安全衛生指示書",
+            "makine-talimati": "機械・設備使用指示書",
+            "kimyasal-talimati": "化学物質使用指示書",
+            "kkd-kullanim-talimati": "個人用保護具使用指示書"
           }
         },
         "prosedurler": {
-          "title": "OHS procedures",
+          "title": "労働安全衛生手順書",
           "items": {
-            "isg-politikasi": "OHS policy",
-            "risk-degerlendirme-prosedur": "Risk assessment procedure",
-            "egitim-proseduru": "Training procedure",
-            "acil-durum-prosedur": "Emergency procedure",
-            "kaza-bildirimi-prosedur": "Accident notification procedure",
-            "kkd-proseduru": "PPE management procedure",
-            "saglik-gozetimi-prosedur": "Health surveillance procedure",
-            "is-izni-proseduru": "Permit to work procedure",
-            "yuksekte-calisma": "Work at height procedure",
-            "kapali-alan": "Confined space work procedure",
-            "elektrik-guvenlik": "Electrical safety procedure",
-            "ergonomi-prosedur": "Ergonomics procedure",
-            "taseron-yonetimi": "Subcontractor management procedure",
-            "depolama-prosedur": "Storage procedure",
-            "isaret-etiketleme": "Signs and labelling procedure",
-            "gece-calisma": "Night work procedure",
-            "sicak-calisma": "Hot work procedure",
-            "gurultu-prosedur": "Noise control procedure",
-            "toz-prosedur": "Dust control procedure"
+            "isg-politikasi": "労働安全衛生方針",
+            "risk-degerlendirme-prosedur": "リスクアセスメント手順書",
+            "egitim-proseduru": "研修手順",
+            "acil-durum-prosedur": "緊急時手順",
+            "kaza-bildirimi-prosedur": "事故報告手順書",
+            "kkd-proseduru": "個人用保護具管理手順書",
+            "saglik-gozetimi-prosedur": "健康監視手順書",
+            "is-izni-proseduru": "作業許可手順書",
+            "yuksekte-calisma": "高所作業手順書",
+            "kapali-alan": "密閉空間作業手順書",
+            "elektrik-guvenlik": "電気安全手順",
+            "ergonomi-prosedur": "人間工学手順書",
+            "taseron-yonetimi": "下請業者管理手順書",
+            "depolama-prosedur": "保管手順",
+            "isaret-etiketleme": "標識・表示手順書",
+            "gece-calisma": "夜間作業手順書",
+            "sicak-calisma": "高温作業手順書",
+            "gurultu-prosedur": "騒音管理手順書",
+            "toz-prosedur": "粉塵管理手順書"
           }
         },
         "denetim-kontrol": {
-          "title": "Workplace inspections and audits",
+          "title": "職場検査・監査",
           "items": {
-            "is-yeri-denetim": "Workplace inspection report",
-            "ic-denetim-raporu": "Internal audit report",
-            "kontrol-listesi": "General inspection checklist",
-            "uygunsuzluk-raporu": "Nonconformity report"
+            "is-yeri-denetim": "職場巡視報告書",
+            "ic-denetim-raporu": "内部監査報告書",
+            "kontrol-listesi": "一般点検チェックリスト",
+            "uygunsuzluk-raporu": "不適合報告書"
           }
         },
         "personel-ozluk": {
-          "title": "Personnel files and contracts",
+          "title": "人事ファイルと契約書",
           "items": {
-            "is-sozlesmesi": "Employment contract",
-            "ek-sozlesme": "Additional contract (OHS)",
-            "gizlilik-sozlesme": "Confidentiality agreement",
-            "gorev-tanım-belgesi": "Job description document",
-            "ise-giris-evrak": "Pre-employment document checklist",
-            "isten-ayrilma": "Termination form",
-            "izin-formu": "Leave request form",
-            "mesai-formu": "Overtime request form",
-            "disiplin-tutanagi": "Disciplinary record",
-            "performans-degerlendirme": "Performance appraisal form",
-            "terfi-formu": "Promotion recommendation form",
-            "personel-bilgi-formu": "Personnel information form",
-            "cv-formu": "CV form",
-            "referans-formu": "Reference check form",
-            "bordro-mutabakat": "Payroll reconciliation form",
-            "zimmet-teslim": "Custody handover record",
-            "yetkinlik-matrisi": "Competence matrix"
+            "is-sozlesmesi": "雇用契約書",
+            "ek-sozlesme": "追加契約書（労働安全衛生）",
+            "gizlilik-sozlesme": "機密保持契約書",
+            "gorev-tanım-belgesi": "職務記述書",
+            "ise-giris-evrak": "入社前書類チェックリスト",
+            "isten-ayrilma": "退職フォーム",
+            "izin-formu": "休暇申請フォーム",
+            "mesai-formu": "残業申請フォーム",
+            "disiplin-tutanagi": "懲戒記録",
+            "performans-degerlendirme": "人事評価フォーム",
+            "terfi-formu": "昇進推薦フォーム",
+            "personel-bilgi-formu": "人事情報フォーム",
+            "cv-formu": "履歴書フォーム",
+            "referans-formu": "身元照会フォーム",
+            "bordro-mutabakat": "給与照合フォーム",
+            "zimmet-teslim": "備品引継記録",
+            "yetkinlik-matrisi": "能力マトリックス"
           }
         },
         "yillik-degerlendirme": {
-          "title": "Annual OHS review",
+          "title": "年次労働安全衛生レビュー",
           "items": {
-            "yillik-faaliyet-raporu": "Annual activity report",
-            "yillik-calisma-plani": "Annual work plan"
+            "yillik-faaliyet-raporu": "年間活動報告書",
+            "yillik-calisma-plani": "年間作業計画"
           }
         },
         "calisan-temsilcisi": {
-          "title": "Worker representative",
+          "title": "労働者代表",
           "items": {
-            "temsilci-secim-tutanagi": "Worker representative election minutes",
-            "temsilci-gorev-tanimi": "Representative job description",
-            "temsilci-raporu": "Representative activity report",
-            "temsilci-oneri-formu": "Representative suggestion form",
-            "temsilci-egitim-kaydi": "Representative training record",
-            "temsilci-atama-yazisi": "Representative appointment letter"
+            "temsilci-secim-tutanagi": "労働者代表選出議事録",
+            "temsilci-gorev-tanimi": "代表者職務記述書",
+            "temsilci-raporu": "代表者活動報告書",
+            "temsilci-oneri-formu": "代表者提案書",
+            "temsilci-egitim-kaydi": "代表者研修記録",
+            "temsilci-atama-yazisi": "代表者任命書"
           }
         },
         "iyi-uygulama": {
-          "title": "Good practice",
+          "title": "優良事例",
           "items": {
-            "iyi-uygulama-raporu": "Good practice report",
-            "oneri-odul-sistemi": "Suggestion and reward scheme form",
-            "benchmark-raporu": "Benchmarking report"
+            "iyi-uygulama-raporu": "優良事例報告書",
+            "oneri-odul-sistemi": "提案・報奨制度フォーム",
+            "benchmark-raporu": "ベンチマーク報告書"
           }
         },
         "dis-gorevlendirme": {
-          "title": "Off-site assignment",
+          "title": "出張業務",
           "items": {
-            "dis-gorev-yazisi": "Off-site assignment letter"
+            "dis-gorev-yazisi": "出張業務指示書"
           }
         },
         "arac-makine": {
-          "title": "Vehicle and machinery tracking",
+          "title": "車両・機械管理",
           "items": {
-            "arac-kontrol-listesi": "Vehicle checklist",
-            "makine-bakim-formu": "Machine maintenance form",
-            "forklift-kontrol": "Forklift daily inspection form",
-            "arac-zimmet": "Vehicle custody record",
-            "makine-envanter": "Machine inventory"
+            "arac-kontrol-listesi": "車両点検表",
+            "makine-bakim-formu": "機械保守点検表",
+            "forklift-kontrol": "フォークリフト日常点検表",
+            "arac-zimmet": "車両管理記録",
+            "makine-envanter": "機械設備台帳"
           }
         },
         "periyodik-kontrol": {
-          "title": "Periodic inspection records",
+          "title": "定期検査記録",
           "items": {
-            "asansor-kontrol": "Elevator periodic inspection",
-            "basincli-kap": "Pressure vessel inspection",
-            "elektrik-tesisati": "Electrical installation inspection",
-            "topraklama-kontrol": "Earthing/grounding measurement",
-            "paratoner-kontrol": "Lightning rod inspection",
-            "yangin-tup-kontrol": "Fire extinguisher inspection",
-            "yangin-dolap-kontrol": "Fire cabinet inspection",
-            "kompressor-kontrol": "Compressor inspection",
-            "vinc-kontrol": "Crane/lifting equipment inspection",
-            "kazan-kontrol": "Boiler periodic inspection",
-            "havalandirma-kontrol": "Ventilation system inspection",
-            "jenerator-kontrol": "Generator inspection",
-            "lpg-kontrol": "LPG installation inspection",
-            "merdiven-iskele": "Ladder/scaffold inspection"
+            "asansor-kontrol": "エレベーター定期検査",
+            "basincli-kap": "圧力容器検査",
+            "elektrik-tesisati": "電気設備検査",
+            "topraklama-kontrol": "接地測定",
+            "paratoner-kontrol": "避雷針検査",
+            "yangin-tup-kontrol": "消火器検査",
+            "yangin-dolap-kontrol": "消火栓箱検査",
+            "kompressor-kontrol": "コンプレッサー検査",
+            "vinc-kontrol": "クレーン・リフト機器検査",
+            "kazan-kontrol": "ボイラー定期検査",
+            "havalandirma-kontrol": "換気システム検査",
+            "jenerator-kontrol": "発電機検査",
+            "lpg-kontrol": "LPG設備検査",
+            "merdiven-iskele": "はしご・足場検査"
           }
         },
         "diger-kayitlar": {
-          "title": "Other records",
+          "title": "その他の記録",
           "items": {
-            "msds-kayit": "SDS/MSDS record form",
-            "is-izni-formu": "Permit to work form",
-            "sicak-is-izni": "Hot work permit form",
-            "yuksekte-is-izni": "Work at height permit",
-            "kapali-alan-izni": "Confined space entry permit",
-            "kazi-is-izni": "Excavation permit",
-            "ortam-olcum": "Environmental measurement report",
-            "gurultu-haritasi": "Noise map",
-            "aydinlatma-olcum": "Lighting measurement report",
-            "termal-konfor": "Thermal comfort measurement",
-            "toz-olcum": "Dust measurement report",
-            "titresim-olcum": "Vibration measurement report"
+            "msds-kayit": "SDS/MSDS記録書",
+            "is-izni-formu": "作業許可書",
+            "sicak-is-izni": "高温作業許可書",
+            "yuksekte-is-izni": "高所作業許可書",
+            "kapali-alan-izni": "密閉空間立入許可書",
+            "kazi-is-izni": "掘削許可書",
+            "ortam-olcum": "環境測定報告書",
+            "gurultu-haritasi": "騒音マップ",
+            "aydinlatma-olcum": "照明測定報告書",
+            "termal-konfor": "温熱環境測定",
+            "toz-olcum": "粉塵測定報告書",
+            "titresim-olcum": "振動測定報告書"
           }
         },
         "yangin-kimyasal": {
-          "title": "Fire and chemicals",
+          "title": "火災・化学物質",
           "items": {
-            "yangin-risk-analizi": "Fire risk analysis",
-            "yangin-sondurme-plani": "Fire suppression plan",
-            "kimyasal-envanter": "Chemical inventory",
-            "kimyasal-risk": "Chemical risk assessment",
-            "kimyasal-depolama": "Chemical storage plan",
-            "yangin-tatbikat": "Fire drill report",
-            "yangin-ekipman-kontrol": "Fire equipment inspection chart"
+            "yangin-risk-analizi": "火災リスク分析",
+            "yangin-sondurme-plani": "消火計画",
+            "kimyasal-envanter": "化学物質インベントリ",
+            "kimyasal-risk": "化学物質リスクアセスメント",
+            "kimyasal-depolama": "化学物質保管計画",
+            "yangin-tatbikat": "消防訓練報告書",
+            "yangin-ekipman-kontrol": "消防設備点検表"
           }
         },
         "ilkyardim": {
-          "title": "First aid training",
+          "title": "応急手当訓練",
           "items": {
-            "ilkyardim-egitim-plani": "First aid training plan",
-            "ilkyardimci-listesi": "First aider list",
-            "ilkyardim-malzeme": "First aid supplies inspection form"
+            "ilkyardim-egitim-plani": "応急手当訓練計画",
+            "ilkyardimci-listesi": "応急手当担当者リスト",
+            "ilkyardim-malzeme": "応急手当用品点検表"
           }
         },
         "isyeri-hekimi": {
-          "title": "Occupational health physician documents",
+          "title": "産業医関連文書",
           "items": {
-            "hekim-gozetim-raporu": "Health surveillance report",
-            "hekim-periyodik-muayene": "Periodic medical examination plan",
-            "hekim-ise-giris-muayene": "Pre-employment medical form",
-            "hekim-meslek-hastaligi": "Occupational disease follow-up form",
-            "hekim-ilac-takip": "Medication and consumables tracking",
-            "hekim-recete-kayit": "Prescription log form",
-            "hekim-revir-defteri": "Clinic/examination log",
-            "hekim-saglik-tarama": "Mass health screening report",
-            "hekim-biolojik-maruziyet": "Biological exposure assessment",
-            "hekim-yillik-degerlendirme": "Occupational physician annual review"
+            "hekim-gozetim-raporu": "健康監視報告書",
+            "hekim-periyodik-muayene": "定期健康診断計画",
+            "hekim-ise-giris-muayene": "雇用前健康診断書",
+            "hekim-meslek-hastaligi": "職業病フォローアップ表",
+            "hekim-ilac-takip": "薬品・消耗品追跡",
+            "hekim-recete-kayit": "処方箋記録表",
+            "hekim-revir-defteri": "診療・検査記録",
+            "hekim-saglik-tarama": "集団健康診断報告書",
+            "hekim-biolojik-maruziyet": "生物学的曝露評価",
+            "hekim-yillik-degerlendirme": "産業医年次レビュー"
           }
         }
       }
@@ -1487,8 +1487,8 @@
       ]
     },
     "surveyTags": {
-      "measurement": "Measurement",
-      "feedback": "Feedback"
+      "measurement": "測定",
+      "feedback": "フィードバック"
     }
   },
   "landing": {

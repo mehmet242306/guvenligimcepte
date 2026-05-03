@@ -1187,269 +1187,269 @@
     "documentCatalog": {
       "groups": {
         "is-giris-oryantasyon": {
-          "title": "Job entry, OHS and orientation",
+          "title": "Masuk kerja, K3 dan orientasi",
           "items": {
-            "oryantasyon-formu": "OHS orientation training form",
-            "ise-giris-eslestirme": "Job placement matching form",
-            "ise-giris-saglik": "Pre-employment health report tracking",
-            "ise-giris-taahhut": "OHS undertaking/commitment",
-            "kkd-zimmet": "PPE issue (custody) form",
-            "isg-bilgilendirme": "OHS information record",
-            "gorev-tanimlari": "Job descriptions",
-            "oryantasyon-kontrol": "Orientation checklist"
+            "oryantasyon-formu": "Formulir pelatihan orientasi K3",
+            "ise-giris-eslestirme": "Formulir pencocokan penempatan kerja",
+            "ise-giris-saglik": "Pelacakan laporan kesehatan pra-kerja",
+            "ise-giris-taahhut": "Surat pernyataan/komitmen K3",
+            "kkd-zimmet": "Formulir pengeluaran APD (kustodi)",
+            "isg-bilgilendirme": "Catatan informasi K3",
+            "gorev-tanimlari": "Deskripsi pekerjaan",
+            "oryantasyon-kontrol": "Daftar periksa orientasi"
           }
         },
         "kurul-kayitlari": {
-          "title": "OHS committee records",
+          "title": "Catatan komite K3",
           "items": {
-            "kurul-tutanagi": "OHS committee meeting minutes",
-            "kurul-uye-listesi": "Committee member list",
-            "kurul-karar-takip": "Committee decision tracking form",
-            "kurul-gundem": "Committee agenda document",
-            "kurul-yillik-plan": "Annual committee meeting plan",
-            "kurul-katilim": "Committee attendance chart",
-            "kurul-ozel-toplanti": "Special meeting minutes",
-            "kurul-secim-tutanagi": "Committee election minutes"
+            "kurul-tutanagi": "Notulen rapat komite K3",
+            "kurul-uye-listesi": "Daftar anggota komite",
+            "kurul-karar-takip": "Formulir pelacakan keputusan komite",
+            "kurul-gundem": "Dokumen agenda komite",
+            "kurul-yillik-plan": "Rencana rapat komite tahunan",
+            "kurul-katilim": "Grafik kehadiran komite",
+            "kurul-ozel-toplanti": "Notulen rapat khusus",
+            "kurul-secim-tutanagi": "Notulen pemilihan komite"
           }
         },
         "egitim-dosyasi": {
-          "title": "Training file",
+          "title": "File pelatihan",
           "items": {
-            "egitim-katilim-formu": "Training attendance form",
-            "egitim-sertifika": "Training certificate",
-            "egitim-yillik-plan": "Annual training plan",
-            "egitim-ihtiyac-analizi": "Training needs analysis",
-            "egitim-degerlendirme": "Training evaluation form",
-            "egitim-icerik": "Training content document",
-            "egitim-etkinlik": "Training effectiveness measurement form",
-            "egitim-talep": "Training request form",
-            "egitim-ozet-raporu": "Training summary report"
+            "egitim-katilim-formu": "Formulir kehadiran pelatihan",
+            "egitim-sertifika": "Sertifikat pelatihan",
+            "egitim-yillik-plan": "Rencana pelatihan tahunan",
+            "egitim-ihtiyac-analizi": "Analisis kebutuhan pelatihan",
+            "egitim-degerlendirme": "Formulir evaluasi pelatihan",
+            "egitim-icerik": "Dokumen konten pelatihan",
+            "egitim-etkinlik": "Formulir pengukuran efektivitas pelatihan",
+            "egitim-talep": "Formulir permintaan pelatihan",
+            "egitim-ozet-raporu": "Laporan ringkasan pelatihan"
           }
         },
         "risk-degerlendirme": {
-          "title": "Risk assessment and findings/recommendations",
+          "title": "Penilaian risiko dan temuan/rekomendasi",
           "items": {
-            "risk-raporu": "Risk assessment report",
-            "tespit-oneri-defteri": "Findings and recommendations log",
-            "risk-envanter": "Hazard and risk inventory",
-            "risk-aksiyon-plani": "Risk action plan",
-            "is-kazasi-risk": "Post-incident risk update",
-            "risk-haritasi": "Risk map document",
-            "risk-izleme-raporu": "Risk monitoring report",
-            "risk-iletisim-formu": "Risk communication form",
-            "risk-metodoloji": "Risk methodology document"
+            "risk-raporu": "Laporan penilaian risiko",
+            "tespit-oneri-defteri": "Log temuan dan rekomendasi",
+            "risk-envanter": "Inventaris bahaya dan risiko",
+            "risk-aksiyon-plani": "Rencana tindakan risiko",
+            "is-kazasi-risk": "Pembaruan risiko pasca insiden",
+            "risk-haritasi": "Dokumen peta risiko",
+            "risk-izleme-raporu": "Laporan pemantauan risiko",
+            "risk-iletisim-formu": "Formulir komunikasi risiko",
+            "risk-metodoloji": "Dokumen metodologi risiko"
           }
         },
         "acil-durum": {
-          "title": "Emergency preparedness",
+          "title": "Kesiapsiagaan darurat",
           "items": {
-            "acil-durum-plani": "Emergency plan",
-            "acil-durum-ekip": "Emergency team list",
-            "tahliye-plani": "Evacuation plan",
-            "tatbikat-raporu": "Drill report",
-            "acil-durum-tel": "Emergency phone list",
-            "acil-durum-talimat": "Emergency instruction",
-            "toplanma-alani": "Assembly point sketch",
-            "acil-durum-egitim": "Emergency training plan",
-            "acil-durum-envanter": "Emergency equipment inventory",
-            "acil-durum-senaryo": "Emergency scenarios"
+            "acil-durum-plani": "Rencana darurat",
+            "acil-durum-ekip": "Daftar tim darurat",
+            "tahliye-plani": "Rencana evakuasi",
+            "tatbikat-raporu": "Laporan latihan",
+            "acil-durum-tel": "Daftar telepon darurat",
+            "acil-durum-talimat": "Instruksi darurat",
+            "toplanma-alani": "Sketsa titik kumpul",
+            "acil-durum-egitim": "Rencana pelatihan darurat",
+            "acil-durum-envanter": "Inventaris peralatan darurat",
+            "acil-durum-senaryo": "Skenario darurat"
           }
         },
         "kaza-olay": {
-          "title": "Incidents, events and near misses",
+          "title": "Insiden, kejadian dan nyaris celaka",
           "items": {
-            "kaza-bildirim-formu": "Work accident notification form",
-            "kaza-arastirma-raporu": "Accident investigation report",
-            "ramak-kala-formu": "Near-miss notification form",
-            "dof-formu": "Corrective and preventive action (CAPA) report",
-            "kaza-istatistik": "Accident statistics report",
-            "kok-neden-analizi": "Root cause analysis report",
-            "olay-degerlendirme": "Incident evaluation record"
+            "kaza-bildirim-formu": "Formulir notifikasi kecelakaan kerja",
+            "kaza-arastirma-raporu": "Laporan investigasi kecelakaan",
+            "ramak-kala-formu": "Formulir notifikasi nyaris celaka",
+            "dof-formu": "Laporan tindakan korektif dan preventif (CAPA)",
+            "kaza-istatistik": "Laporan statistik kecelakaan",
+            "kok-neden-analizi": "Laporan analisis akar penyebab",
+            "olay-degerlendirme": "Catatan evaluasi insiden"
           }
         },
         "iletisim-yazisma": {
-          "title": "Correspondence",
+          "title": "Korespondensi",
           "items": {
-            "resmi-yazi": "Official letter template",
-            "uyari-yazisi": "Warning letter",
-            "bilgilendirme-yazisi": "Information letter"
+            "resmi-yazi": "Template surat resmi",
+            "uyari-yazisi": "Surat peringatan",
+            "bilgilendirme-yazisi": "Surat pemberitahuan"
           }
         },
         "talimatlar": {
-          "title": "Instructions",
+          "title": "Instruksi",
           "items": {
-            "genel-isg-talimati": "General OHS instruction",
-            "makine-talimati": "Machine/equipment use instruction",
-            "kimyasal-talimati": "Chemical substance use instruction",
-            "kkd-kullanim-talimati": "PPE use instruction"
+            "genel-isg-talimati": "Instruksi K3 umum",
+            "makine-talimati": "Instruksi penggunaan mesin/peralatan",
+            "kimyasal-talimati": "Instruksi penggunaan bahan kimia",
+            "kkd-kullanim-talimati": "Instruksi penggunaan APD"
           }
         },
         "prosedurler": {
-          "title": "OHS procedures",
+          "title": "Prosedur K3",
           "items": {
-            "isg-politikasi": "OHS policy",
-            "risk-degerlendirme-prosedur": "Risk assessment procedure",
-            "egitim-proseduru": "Training procedure",
-            "acil-durum-prosedur": "Emergency procedure",
-            "kaza-bildirimi-prosedur": "Accident notification procedure",
-            "kkd-proseduru": "PPE management procedure",
-            "saglik-gozetimi-prosedur": "Health surveillance procedure",
-            "is-izni-proseduru": "Permit to work procedure",
-            "yuksekte-calisma": "Work at height procedure",
-            "kapali-alan": "Confined space work procedure",
-            "elektrik-guvenlik": "Electrical safety procedure",
-            "ergonomi-prosedur": "Ergonomics procedure",
-            "taseron-yonetimi": "Subcontractor management procedure",
-            "depolama-prosedur": "Storage procedure",
-            "isaret-etiketleme": "Signs and labelling procedure",
-            "gece-calisma": "Night work procedure",
-            "sicak-calisma": "Hot work procedure",
-            "gurultu-prosedur": "Noise control procedure",
-            "toz-prosedur": "Dust control procedure"
+            "isg-politikasi": "Kebijakan K3",
+            "risk-degerlendirme-prosedur": "Prosedur penilaian risiko",
+            "egitim-proseduru": "Prosedur pelatihan",
+            "acil-durum-prosedur": "Prosedur darurat",
+            "kaza-bildirimi-prosedur": "Prosedur pelaporan kecelakaan",
+            "kkd-proseduru": "Prosedur pengelolaan APD",
+            "saglik-gozetimi-prosedur": "Prosedur pengawasan kesehatan",
+            "is-izni-proseduru": "Prosedur izin kerja",
+            "yuksekte-calisma": "Prosedur kerja di ketinggian",
+            "kapali-alan": "Prosedur kerja ruang terbatas",
+            "elektrik-guvenlik": "Prosedur keselamatan listrik",
+            "ergonomi-prosedur": "Prosedur ergonomi",
+            "taseron-yonetimi": "Prosedur pengelolaan subkontraktor",
+            "depolama-prosedur": "Prosedur penyimpanan",
+            "isaret-etiketleme": "Prosedur rambu dan pelabelan",
+            "gece-calisma": "Prosedur kerja malam",
+            "sicak-calisma": "Prosedur kerja panas",
+            "gurultu-prosedur": "Prosedur pengendalian kebisingan",
+            "toz-prosedur": "Prosedur pengendalian debu"
           }
         },
         "denetim-kontrol": {
-          "title": "Workplace inspections and audits",
+          "title": "Inspeksi dan audit tempat kerja",
           "items": {
-            "is-yeri-denetim": "Workplace inspection report",
-            "ic-denetim-raporu": "Internal audit report",
-            "kontrol-listesi": "General inspection checklist",
-            "uygunsuzluk-raporu": "Nonconformity report"
+            "is-yeri-denetim": "Laporan inspeksi tempat kerja",
+            "ic-denetim-raporu": "Laporan audit internal",
+            "kontrol-listesi": "Daftar periksa inspeksi umum",
+            "uygunsuzluk-raporu": "Laporan ketidaksesuaian"
           }
         },
         "personel-ozluk": {
-          "title": "Personnel files and contracts",
+          "title": "Berkas personel dan kontrak",
           "items": {
-            "is-sozlesmesi": "Employment contract",
-            "ek-sozlesme": "Additional contract (OHS)",
-            "gizlilik-sozlesme": "Confidentiality agreement",
-            "gorev-tanım-belgesi": "Job description document",
-            "ise-giris-evrak": "Pre-employment document checklist",
-            "isten-ayrilma": "Termination form",
-            "izin-formu": "Leave request form",
-            "mesai-formu": "Overtime request form",
-            "disiplin-tutanagi": "Disciplinary record",
-            "performans-degerlendirme": "Performance appraisal form",
-            "terfi-formu": "Promotion recommendation form",
-            "personel-bilgi-formu": "Personnel information form",
-            "cv-formu": "CV form",
-            "referans-formu": "Reference check form",
-            "bordro-mutabakat": "Payroll reconciliation form",
-            "zimmet-teslim": "Custody handover record",
-            "yetkinlik-matrisi": "Competence matrix"
+            "is-sozlesmesi": "Kontrak kerja",
+            "ek-sozlesme": "Kontrak tambahan (K3)",
+            "gizlilik-sozlesme": "Perjanjian kerahasiaan",
+            "gorev-tanım-belgesi": "Dokumen uraian jabatan",
+            "ise-giris-evrak": "Daftar periksa dokumen pra-kerja",
+            "isten-ayrilma": "Formulir pengunduran diri",
+            "izin-formu": "Formulir permohonan cuti",
+            "mesai-formu": "Formulir permohonan lembur",
+            "disiplin-tutanagi": "Catatan disiplin",
+            "performans-degerlendirme": "Formulir penilaian kinerja",
+            "terfi-formu": "Formulir rekomendasi promosi",
+            "personel-bilgi-formu": "Formulir informasi personel",
+            "cv-formu": "Formulir CV",
+            "referans-formu": "Formulir pemeriksaan referensi",
+            "bordro-mutabakat": "Formulir rekonsiliasi gaji",
+            "zimmet-teslim": "Catatan serah terima barang",
+            "yetkinlik-matrisi": "Matriks kompetensi"
           }
         },
         "yillik-degerlendirme": {
-          "title": "Annual OHS review",
+          "title": "Tinjauan K3 tahunan",
           "items": {
-            "yillik-faaliyet-raporu": "Annual activity report",
-            "yillik-calisma-plani": "Annual work plan"
+            "yillik-faaliyet-raporu": "Laporan kegiatan tahunan",
+            "yillik-calisma-plani": "Rencana kerja tahunan"
           }
         },
         "calisan-temsilcisi": {
-          "title": "Worker representative",
+          "title": "Perwakilan pekerja",
           "items": {
-            "temsilci-secim-tutanagi": "Worker representative election minutes",
-            "temsilci-gorev-tanimi": "Representative job description",
-            "temsilci-raporu": "Representative activity report",
-            "temsilci-oneri-formu": "Representative suggestion form",
-            "temsilci-egitim-kaydi": "Representative training record",
-            "temsilci-atama-yazisi": "Representative appointment letter"
+            "temsilci-secim-tutanagi": "Berita acara pemilihan perwakilan pekerja",
+            "temsilci-gorev-tanimi": "Deskripsi tugas perwakilan",
+            "temsilci-raporu": "Laporan kegiatan perwakilan",
+            "temsilci-oneri-formu": "Formulir saran perwakilan",
+            "temsilci-egitim-kaydi": "Catatan pelatihan perwakilan",
+            "temsilci-atama-yazisi": "Surat penunjukan perwakilan"
           }
         },
         "iyi-uygulama": {
-          "title": "Good practice",
+          "title": "Praktik baik",
           "items": {
-            "iyi-uygulama-raporu": "Good practice report",
-            "oneri-odul-sistemi": "Suggestion and reward scheme form",
-            "benchmark-raporu": "Benchmarking report"
+            "iyi-uygulama-raporu": "Laporan praktik baik",
+            "oneri-odul-sistemi": "Formulir sistem saran dan penghargaan",
+            "benchmark-raporu": "Laporan benchmarking"
           }
         },
         "dis-gorevlendirme": {
-          "title": "Off-site assignment",
+          "title": "Penugasan luar lokasi",
           "items": {
-            "dis-gorev-yazisi": "Off-site assignment letter"
+            "dis-gorev-yazisi": "Surat penugasan luar lokasi"
           }
         },
         "arac-makine": {
-          "title": "Vehicle and machinery tracking",
+          "title": "Pelacakan kendaraan dan mesin",
           "items": {
-            "arac-kontrol-listesi": "Vehicle checklist",
-            "makine-bakim-formu": "Machine maintenance form",
-            "forklift-kontrol": "Forklift daily inspection form",
-            "arac-zimmet": "Vehicle custody record",
-            "makine-envanter": "Machine inventory"
+            "arac-kontrol-listesi": "Daftar periksa kendaraan",
+            "makine-bakim-formu": "Formulir pemeliharaan mesin",
+            "forklift-kontrol": "Formulir inspeksi harian forklift",
+            "arac-zimmet": "Catatan penyerahan kendaraan",
+            "makine-envanter": "Inventaris mesin"
           }
         },
         "periyodik-kontrol": {
-          "title": "Periodic inspection records",
+          "title": "Catatan inspeksi berkala",
           "items": {
-            "asansor-kontrol": "Elevator periodic inspection",
-            "basincli-kap": "Pressure vessel inspection",
-            "elektrik-tesisati": "Electrical installation inspection",
-            "topraklama-kontrol": "Earthing/grounding measurement",
-            "paratoner-kontrol": "Lightning rod inspection",
-            "yangin-tup-kontrol": "Fire extinguisher inspection",
-            "yangin-dolap-kontrol": "Fire cabinet inspection",
-            "kompressor-kontrol": "Compressor inspection",
-            "vinc-kontrol": "Crane/lifting equipment inspection",
-            "kazan-kontrol": "Boiler periodic inspection",
-            "havalandirma-kontrol": "Ventilation system inspection",
-            "jenerator-kontrol": "Generator inspection",
-            "lpg-kontrol": "LPG installation inspection",
-            "merdiven-iskele": "Ladder/scaffold inspection"
+            "asansor-kontrol": "Inspeksi berkala elevator",
+            "basincli-kap": "Inspeksi bejana tekan",
+            "elektrik-tesisati": "Inspeksi instalasi listrik",
+            "topraklama-kontrol": "Pengukuran pembumian/grounding",
+            "paratoner-kontrol": "Inspeksi penangkal petir",
+            "yangin-tup-kontrol": "Inspeksi tabung pemadam kebakaran",
+            "yangin-dolap-kontrol": "Inspeksi lemari pemadam kebakaran",
+            "kompressor-kontrol": "Inspeksi kompresor",
+            "vinc-kontrol": "Inspeksi crane/peralatan angkat",
+            "kazan-kontrol": "Inspeksi berkala boiler",
+            "havalandirma-kontrol": "Inspeksi sistem ventilasi",
+            "jenerator-kontrol": "Inspeksi generator",
+            "lpg-kontrol": "Inspeksi instalasi LPG",
+            "merdiven-iskele": "Inspeksi tangga/perancah"
           }
         },
         "diger-kayitlar": {
-          "title": "Other records",
+          "title": "Catatan lainnya",
           "items": {
-            "msds-kayit": "SDS/MSDS record form",
-            "is-izni-formu": "Permit to work form",
-            "sicak-is-izni": "Hot work permit form",
-            "yuksekte-is-izni": "Work at height permit",
-            "kapali-alan-izni": "Confined space entry permit",
-            "kazi-is-izni": "Excavation permit",
-            "ortam-olcum": "Environmental measurement report",
-            "gurultu-haritasi": "Noise map",
-            "aydinlatma-olcum": "Lighting measurement report",
-            "termal-konfor": "Thermal comfort measurement",
-            "toz-olcum": "Dust measurement report",
-            "titresim-olcum": "Vibration measurement report"
+            "msds-kayit": "Formulir catatan SDS/MSDS",
+            "is-izni-formu": "Formulir izin kerja",
+            "sicak-is-izni": "Formulir izin kerja panas",
+            "yuksekte-is-izni": "Izin kerja di ketinggian",
+            "kapali-alan-izni": "Izin masuk ruang terbatas",
+            "kazi-is-izni": "Izin penggalian",
+            "ortam-olcum": "Laporan pengukuran lingkungan",
+            "gurultu-haritasi": "Peta kebisingan",
+            "aydinlatma-olcum": "Laporan pengukuran pencahayaan",
+            "termal-konfor": "Pengukuran kenyamanan termal",
+            "toz-olcum": "Laporan pengukuran debu",
+            "titresim-olcum": "Laporan pengukuran getaran"
           }
         },
         "yangin-kimyasal": {
-          "title": "Fire and chemicals",
+          "title": "Kebakaran dan bahan kimia",
           "items": {
-            "yangin-risk-analizi": "Fire risk analysis",
-            "yangin-sondurme-plani": "Fire suppression plan",
-            "kimyasal-envanter": "Chemical inventory",
-            "kimyasal-risk": "Chemical risk assessment",
-            "kimyasal-depolama": "Chemical storage plan",
-            "yangin-tatbikat": "Fire drill report",
-            "yangin-ekipman-kontrol": "Fire equipment inspection chart"
+            "yangin-risk-analizi": "Analisis risiko kebakaran",
+            "yangin-sondurme-plani": "Rencana pemadaman kebakaran",
+            "kimyasal-envanter": "Inventaris bahan kimia",
+            "kimyasal-risk": "Penilaian risiko bahan kimia",
+            "kimyasal-depolama": "Rencana penyimpanan bahan kimia",
+            "yangin-tatbikat": "Laporan latihan kebakaran",
+            "yangin-ekipman-kontrol": "Grafik inspeksi peralatan kebakaran"
           }
         },
         "ilkyardim": {
-          "title": "First aid training",
+          "title": "Pelatihan pertolongan pertama",
           "items": {
-            "ilkyardim-egitim-plani": "First aid training plan",
-            "ilkyardimci-listesi": "First aider list",
-            "ilkyardim-malzeme": "First aid supplies inspection form"
+            "ilkyardim-egitim-plani": "Rencana pelatihan pertolongan pertama",
+            "ilkyardimci-listesi": "Daftar petugas pertolongan pertama",
+            "ilkyardim-malzeme": "Formulir inspeksi perlengkapan pertolongan pertama"
           }
         },
         "isyeri-hekimi": {
-          "title": "Occupational health physician documents",
+          "title": "Dokumen dokter kesehatan kerja",
           "items": {
-            "hekim-gozetim-raporu": "Health surveillance report",
-            "hekim-periyodik-muayene": "Periodic medical examination plan",
-            "hekim-ise-giris-muayene": "Pre-employment medical form",
-            "hekim-meslek-hastaligi": "Occupational disease follow-up form",
-            "hekim-ilac-takip": "Medication and consumables tracking",
-            "hekim-recete-kayit": "Prescription log form",
-            "hekim-revir-defteri": "Clinic/examination log",
-            "hekim-saglik-tarama": "Mass health screening report",
-            "hekim-biolojik-maruziyet": "Biological exposure assessment",
-            "hekim-yillik-degerlendirme": "Occupational physician annual review"
+            "hekim-gozetim-raporu": "Laporan pengawasan kesehatan",
+            "hekim-periyodik-muayene": "Rencana pemeriksaan medis berkala",
+            "hekim-ise-giris-muayene": "Formulir pemeriksaan medis pra-kerja",
+            "hekim-meslek-hastaligi": "Formulir tindak lanjut penyakit akibat kerja",
+            "hekim-ilac-takip": "Pelacakan obat dan bahan habis pakai",
+            "hekim-recete-kayit": "Formulir log resep",
+            "hekim-revir-defteri": "Log klinik/pemeriksaan",
+            "hekim-saglik-tarama": "Laporan skrining kesehatan massal",
+            "hekim-biolojik-maruziyet": "Penilaian paparan biologis",
+            "hekim-yillik-degerlendirme": "Tinjauan tahunan dokter okupasi"
           }
         }
       }
@@ -1487,8 +1487,8 @@
       ]
     },
     "surveyTags": {
-      "measurement": "Measurement",
-      "feedback": "Feedback"
+      "measurement": "Pengukuran",
+      "feedback": "Umpan balik"
     }
   },
   "landing": {

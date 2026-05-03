@@ -1167,7 +1167,7 @@
       "assignedToCompany": "Dem {title}-Arbeitsbereich zugewiesen.",
       "contentSavedToCompany": "{title} wurde im ausgewählten Unternehmen gespeichert."
     },
-    "templateDescription": "{group} — öffnet Vorlage \"{item}\" im Dokument-Ablauf.",
+    "templateDescription": "{group} — öffnet Vorlage \"{item}\" im Dokumentenablauf.",
     "types": {
       "doc": "Dokument",
       "exam": "Prüfung",
@@ -1187,269 +1187,269 @@
     "documentCatalog": {
       "groups": {
         "is-giris-oryantasyon": {
-          "title": "Job entry, OHS and orientation",
+          "title": "Arbeitsantritt, Arbeitsschutz und Einweisung",
           "items": {
-            "oryantasyon-formu": "OHS orientation training form",
-            "ise-giris-eslestirme": "Job placement matching form",
-            "ise-giris-saglik": "Pre-employment health report tracking",
-            "ise-giris-taahhut": "OHS undertaking/commitment",
-            "kkd-zimmet": "PPE issue (custody) form",
-            "isg-bilgilendirme": "OHS information record",
-            "gorev-tanimlari": "Job descriptions",
-            "oryantasyon-kontrol": "Orientation checklist"
+            "oryantasyon-formu": "Arbeitsschutz-Einweisungsformular",
+            "ise-giris-eslestirme": "Arbeitsplatz-Zuordnungsformular",
+            "ise-giris-saglik": "Einstellungsuntersuchung Gesundheitsbericht",
+            "ise-giris-taahhut": "Arbeitsschutz-Verpflichtungserklärung",
+            "kkd-zimmet": "PSA-Ausgabeformular",
+            "isg-bilgilendirme": "Arbeitsschutz-Informationsnachweis",
+            "gorev-tanimlari": "Stellenbeschreibungen",
+            "oryantasyon-kontrol": "Einweisungs-Checkliste"
           }
         },
         "kurul-kayitlari": {
-          "title": "OHS committee records",
+          "title": "Arbeitsschutzausschuss-Aufzeichnungen",
           "items": {
-            "kurul-tutanagi": "OHS committee meeting minutes",
-            "kurul-uye-listesi": "Committee member list",
-            "kurul-karar-takip": "Committee decision tracking form",
-            "kurul-gundem": "Committee agenda document",
-            "kurul-yillik-plan": "Annual committee meeting plan",
-            "kurul-katilim": "Committee attendance chart",
-            "kurul-ozel-toplanti": "Special meeting minutes",
-            "kurul-secim-tutanagi": "Committee election minutes"
+            "kurul-tutanagi": "Arbeitsschutzausschuss-Sitzungsprotokoll",
+            "kurul-uye-listesi": "Ausschussmitgliederliste",
+            "kurul-karar-takip": "Ausschussbeschluss-Verfolgungsformular",
+            "kurul-gundem": "Ausschuss-Tagesordnung",
+            "kurul-yillik-plan": "Jährlicher Ausschuss-Sitzungsplan",
+            "kurul-katilim": "Ausschuss-Anwesenheitsliste",
+            "kurul-ozel-toplanti": "Sondersitzungsprotokoll",
+            "kurul-secim-tutanagi": "Ausschusswahl-Protokoll"
           }
         },
         "egitim-dosyasi": {
-          "title": "Training file",
+          "title": "Schulungsakte",
           "items": {
-            "egitim-katilim-formu": "Training attendance form",
-            "egitim-sertifika": "Training certificate",
-            "egitim-yillik-plan": "Annual training plan",
-            "egitim-ihtiyac-analizi": "Training needs analysis",
-            "egitim-degerlendirme": "Training evaluation form",
-            "egitim-icerik": "Training content document",
-            "egitim-etkinlik": "Training effectiveness measurement form",
-            "egitim-talep": "Training request form",
-            "egitim-ozet-raporu": "Training summary report"
+            "egitim-katilim-formu": "Schulungsteilnahmeformular",
+            "egitim-sertifika": "Schulungszertifikat",
+            "egitim-yillik-plan": "Jährlicher Schulungsplan",
+            "egitim-ihtiyac-analizi": "Schulungsbedarfsanalyse",
+            "egitim-degerlendirme": "Schulungsbewertungsformular",
+            "egitim-icerik": "Schulungsinhaltsdokument",
+            "egitim-etkinlik": "Formular zur Messung der Schulungseffektivität",
+            "egitim-talep": "Schulungsantragsformular",
+            "egitim-ozet-raporu": "Schulungszusammenfassung"
           }
         },
         "risk-degerlendirme": {
-          "title": "Risk assessment and findings/recommendations",
+          "title": "Risikobewertung und Befunde/Empfehlungen",
           "items": {
-            "risk-raporu": "Risk assessment report",
-            "tespit-oneri-defteri": "Findings and recommendations log",
-            "risk-envanter": "Hazard and risk inventory",
-            "risk-aksiyon-plani": "Risk action plan",
-            "is-kazasi-risk": "Post-incident risk update",
-            "risk-haritasi": "Risk map document",
-            "risk-izleme-raporu": "Risk monitoring report",
-            "risk-iletisim-formu": "Risk communication form",
-            "risk-metodoloji": "Risk methodology document"
+            "risk-raporu": "Risikobewertungsbericht",
+            "tespit-oneri-defteri": "Befund- und Empfehlungsprotokoll",
+            "risk-envanter": "Gefährdungs- und Risikoinventar",
+            "risk-aksiyon-plani": "Risikoaktionsplan",
+            "is-kazasi-risk": "Risikoaktualisierung nach Vorfall",
+            "risk-haritasi": "Risikokartendokument",
+            "risk-izleme-raporu": "Risikoüberwachungsbericht",
+            "risk-iletisim-formu": "Risikokommunikationsformular",
+            "risk-metodoloji": "Risikomethodikdokument"
           }
         },
         "acil-durum": {
-          "title": "Emergency preparedness",
+          "title": "Notfallvorsorge",
           "items": {
-            "acil-durum-plani": "Emergency plan",
-            "acil-durum-ekip": "Emergency team list",
-            "tahliye-plani": "Evacuation plan",
-            "tatbikat-raporu": "Drill report",
-            "acil-durum-tel": "Emergency phone list",
-            "acil-durum-talimat": "Emergency instruction",
-            "toplanma-alani": "Assembly point sketch",
-            "acil-durum-egitim": "Emergency training plan",
-            "acil-durum-envanter": "Emergency equipment inventory",
-            "acil-durum-senaryo": "Emergency scenarios"
+            "acil-durum-plani": "Notfallplan",
+            "acil-durum-ekip": "Notfallteam-Liste",
+            "tahliye-plani": "Evakuierungsplan",
+            "tatbikat-raporu": "Übungsbericht",
+            "acil-durum-tel": "Notfall-Telefonliste",
+            "acil-durum-talimat": "Notfallanweisung",
+            "toplanma-alani": "Sammelplatz-Skizze",
+            "acil-durum-egitim": "Notfallschulungsplan",
+            "acil-durum-envanter": "Notfallausrüstung-Inventar",
+            "acil-durum-senaryo": "Notfallszenarien"
           }
         },
         "kaza-olay": {
-          "title": "Incidents, events and near misses",
+          "title": "Vorfälle, Ereignisse und Beinahe-Unfälle",
           "items": {
-            "kaza-bildirim-formu": "Work accident notification form",
-            "kaza-arastirma-raporu": "Accident investigation report",
-            "ramak-kala-formu": "Near-miss notification form",
-            "dof-formu": "Corrective and preventive action (CAPA) report",
-            "kaza-istatistik": "Accident statistics report",
-            "kok-neden-analizi": "Root cause analysis report",
-            "olay-degerlendirme": "Incident evaluation record"
+            "kaza-bildirim-formu": "Arbeitsunfall-Meldungsformular",
+            "kaza-arastirma-raporu": "Unfalluntersuchungsbericht",
+            "ramak-kala-formu": "Beinahe-Unfall-Meldungsformular",
+            "dof-formu": "Korrektur- und Vorbeugungsmaßnahmen (CAPA) Bericht",
+            "kaza-istatistik": "Unfallstatistikbericht",
+            "kok-neden-analizi": "Ursachenanalysebericht",
+            "olay-degerlendirme": "Vorfallbewertungsprotokoll"
           }
         },
         "iletisim-yazisma": {
-          "title": "Correspondence",
+          "title": "Korrespondenz",
           "items": {
-            "resmi-yazi": "Official letter template",
-            "uyari-yazisi": "Warning letter",
-            "bilgilendirme-yazisi": "Information letter"
+            "resmi-yazi": "Offizielle Briefvorlage",
+            "uyari-yazisi": "Warnschreiben",
+            "bilgilendirme-yazisi": "Informationsschreiben"
           }
         },
         "talimatlar": {
-          "title": "Instructions",
+          "title": "Anweisungen",
           "items": {
-            "genel-isg-talimati": "General OHS instruction",
-            "makine-talimati": "Machine/equipment use instruction",
-            "kimyasal-talimati": "Chemical substance use instruction",
-            "kkd-kullanim-talimati": "PPE use instruction"
+            "genel-isg-talimati": "Allgemeine Arbeitsschutzanweisung",
+            "makine-talimati": "Maschinen-/Anlagenbedienungsanweisung",
+            "kimyasal-talimati": "Anweisung für den Umgang mit Chemikalien",
+            "kkd-kullanim-talimati": "PSA-Verwendungsanweisung"
           }
         },
         "prosedurler": {
-          "title": "OHS procedures",
+          "title": "Arbeitsschutzverfahren",
           "items": {
-            "isg-politikasi": "OHS policy",
-            "risk-degerlendirme-prosedur": "Risk assessment procedure",
-            "egitim-proseduru": "Training procedure",
-            "acil-durum-prosedur": "Emergency procedure",
-            "kaza-bildirimi-prosedur": "Accident notification procedure",
-            "kkd-proseduru": "PPE management procedure",
-            "saglik-gozetimi-prosedur": "Health surveillance procedure",
-            "is-izni-proseduru": "Permit to work procedure",
-            "yuksekte-calisma": "Work at height procedure",
-            "kapali-alan": "Confined space work procedure",
-            "elektrik-guvenlik": "Electrical safety procedure",
-            "ergonomi-prosedur": "Ergonomics procedure",
-            "taseron-yonetimi": "Subcontractor management procedure",
-            "depolama-prosedur": "Storage procedure",
-            "isaret-etiketleme": "Signs and labelling procedure",
-            "gece-calisma": "Night work procedure",
-            "sicak-calisma": "Hot work procedure",
-            "gurultu-prosedur": "Noise control procedure",
-            "toz-prosedur": "Dust control procedure"
+            "isg-politikasi": "Arbeitsschutzrichtlinie",
+            "risk-degerlendirme-prosedur": "Risikobewertungsverfahren",
+            "egitim-proseduru": "Schulungsverfahren",
+            "acil-durum-prosedur": "Notfallverfahren",
+            "kaza-bildirimi-prosedur": "Unfallmeldeverfahren",
+            "kkd-proseduru": "PSA-Verwaltungsverfahren",
+            "saglik-gozetimi-prosedur": "Gesundheitsüberwachungsverfahren",
+            "is-izni-proseduru": "Arbeitserlaubnisverfahren",
+            "yuksekte-calisma": "Höhenarbeitsverfahren",
+            "kapali-alan": "Verfahren für Arbeiten in engen Räumen",
+            "elektrik-guvenlik": "Elektrische Sicherheitsverfahren",
+            "ergonomi-prosedur": "Ergonomie-Verfahren",
+            "taseron-yonetimi": "Subunternehmer-Verwaltungsverfahren",
+            "depolama-prosedur": "Lagerverfahren",
+            "isaret-etiketleme": "Beschilderungs- und Kennzeichnungsverfahren",
+            "gece-calisma": "Nachtarbeitsverfahren",
+            "sicak-calisma": "Heißarbeitsverfahren",
+            "gurultu-prosedur": "Lärmschutzverfahren",
+            "toz-prosedur": "Staubkontrollverfahren"
           }
         },
         "denetim-kontrol": {
-          "title": "Workplace inspections and audits",
+          "title": "Arbeitsplatzinspektionen und Audits",
           "items": {
-            "is-yeri-denetim": "Workplace inspection report",
-            "ic-denetim-raporu": "Internal audit report",
-            "kontrol-listesi": "General inspection checklist",
-            "uygunsuzluk-raporu": "Nonconformity report"
+            "is-yeri-denetim": "Arbeitsplatz-Inspektionsbericht",
+            "ic-denetim-raporu": "Interne Auditbericht",
+            "kontrol-listesi": "Allgemeine Inspektions-Checkliste",
+            "uygunsuzluk-raporu": "Abweichungsbericht"
           }
         },
         "personel-ozluk": {
-          "title": "Personnel files and contracts",
+          "title": "Personalakten und Verträge",
           "items": {
-            "is-sozlesmesi": "Employment contract",
-            "ek-sozlesme": "Additional contract (OHS)",
-            "gizlilik-sozlesme": "Confidentiality agreement",
-            "gorev-tanım-belgesi": "Job description document",
-            "ise-giris-evrak": "Pre-employment document checklist",
-            "isten-ayrilma": "Termination form",
-            "izin-formu": "Leave request form",
-            "mesai-formu": "Overtime request form",
-            "disiplin-tutanagi": "Disciplinary record",
-            "performans-degerlendirme": "Performance appraisal form",
-            "terfi-formu": "Promotion recommendation form",
-            "personel-bilgi-formu": "Personnel information form",
-            "cv-formu": "CV form",
-            "referans-formu": "Reference check form",
-            "bordro-mutabakat": "Payroll reconciliation form",
-            "zimmet-teslim": "Custody handover record",
-            "yetkinlik-matrisi": "Competence matrix"
+            "is-sozlesmesi": "Arbeitsvertrag",
+            "ek-sozlesme": "Zusatzvertrag (Arbeitsschutz)",
+            "gizlilik-sozlesme": "Vertraulichkeitsvereinbarung",
+            "gorev-tanım-belgesi": "Stellenbeschreibung",
+            "ise-giris-evrak": "Checkliste für Einstellungsunterlagen",
+            "isten-ayrilma": "Kündigungsformular",
+            "izin-formu": "Urlaubsantrag",
+            "mesai-formu": "Überstunden-Antrag",
+            "disiplin-tutanagi": "Disziplinarprotokoll",
+            "performans-degerlendirme": "Leistungsbeurteilungsformular",
+            "terfi-formu": "Beförderungsempfehlungsformular",
+            "personel-bilgi-formu": "Personalinformationsformular",
+            "cv-formu": "Lebenslauf-Formular",
+            "referans-formu": "Referenzprüfungsformular",
+            "bordro-mutabakat": "Lohnabrechnung-Abstimmungsformular",
+            "zimmet-teslim": "Übergabeprotokoll für Inventar",
+            "yetkinlik-matrisi": "Kompetenzmatrix"
           }
         },
         "yillik-degerlendirme": {
-          "title": "Annual OHS review",
+          "title": "Jährliche Arbeitsschutz-Bewertung",
           "items": {
-            "yillik-faaliyet-raporu": "Annual activity report",
-            "yillik-calisma-plani": "Annual work plan"
+            "yillik-faaliyet-raporu": "Jährlicher Tätigkeitsbericht",
+            "yillik-calisma-plani": "Jährlicher Arbeitsplan"
           }
         },
         "calisan-temsilcisi": {
-          "title": "Worker representative",
+          "title": "Arbeitnehmervertreter",
           "items": {
-            "temsilci-secim-tutanagi": "Worker representative election minutes",
-            "temsilci-gorev-tanimi": "Representative job description",
-            "temsilci-raporu": "Representative activity report",
-            "temsilci-oneri-formu": "Representative suggestion form",
-            "temsilci-egitim-kaydi": "Representative training record",
-            "temsilci-atama-yazisi": "Representative appointment letter"
+            "temsilci-secim-tutanagi": "Arbeitnehmervertreter-Wahlprotokoll",
+            "temsilci-gorev-tanimi": "Vertreter-Stellenbeschreibung",
+            "temsilci-raporu": "Vertreter-Tätigkeitsbericht",
+            "temsilci-oneri-formu": "Vertreter-Vorschlagsformular",
+            "temsilci-egitim-kaydi": "Vertreter-Schulungsnachweis",
+            "temsilci-atama-yazisi": "Vertreter-Ernennungsschreiben"
           }
         },
         "iyi-uygulama": {
-          "title": "Good practice",
+          "title": "Bewährte Praxis",
           "items": {
-            "iyi-uygulama-raporu": "Good practice report",
-            "oneri-odul-sistemi": "Suggestion and reward scheme form",
-            "benchmark-raporu": "Benchmarking report"
+            "iyi-uygulama-raporu": "Best-Practice-Bericht",
+            "oneri-odul-sistemi": "Vorschlags- und Belohnungssystem-Formular",
+            "benchmark-raporu": "Benchmarking-Bericht"
           }
         },
         "dis-gorevlendirme": {
-          "title": "Off-site assignment",
+          "title": "Außendienst",
           "items": {
-            "dis-gorev-yazisi": "Off-site assignment letter"
+            "dis-gorev-yazisi": "Außendienstauftrag"
           }
         },
         "arac-makine": {
-          "title": "Vehicle and machinery tracking",
+          "title": "Fahrzeug- und Maschinenverfolgung",
           "items": {
-            "arac-kontrol-listesi": "Vehicle checklist",
-            "makine-bakim-formu": "Machine maintenance form",
-            "forklift-kontrol": "Forklift daily inspection form",
-            "arac-zimmet": "Vehicle custody record",
-            "makine-envanter": "Machine inventory"
+            "arac-kontrol-listesi": "Fahrzeug-Checkliste",
+            "makine-bakim-formu": "Maschinenwartungsformular",
+            "forklift-kontrol": "Gabelstapler-Tagesinspektion",
+            "arac-zimmet": "Fahrzeugübergabe-Protokoll",
+            "makine-envanter": "Maschineninventar"
           }
         },
         "periyodik-kontrol": {
-          "title": "Periodic inspection records",
+          "title": "Regelmäßige Inspektionsprotokolle",
           "items": {
-            "asansor-kontrol": "Elevator periodic inspection",
-            "basincli-kap": "Pressure vessel inspection",
-            "elektrik-tesisati": "Electrical installation inspection",
-            "topraklama-kontrol": "Earthing/grounding measurement",
-            "paratoner-kontrol": "Lightning rod inspection",
-            "yangin-tup-kontrol": "Fire extinguisher inspection",
-            "yangin-dolap-kontrol": "Fire cabinet inspection",
-            "kompressor-kontrol": "Compressor inspection",
-            "vinc-kontrol": "Crane/lifting equipment inspection",
-            "kazan-kontrol": "Boiler periodic inspection",
-            "havalandirma-kontrol": "Ventilation system inspection",
-            "jenerator-kontrol": "Generator inspection",
-            "lpg-kontrol": "LPG installation inspection",
-            "merdiven-iskele": "Ladder/scaffold inspection"
+            "asansor-kontrol": "Aufzug-Wiederkehrende Prüfung",
+            "basincli-kap": "Druckbehälterprüfung",
+            "elektrik-tesisati": "Elektroanlagen-Prüfung",
+            "topraklama-kontrol": "Erdungs-/Massemessung",
+            "paratoner-kontrol": "Blitzableiter-Inspektion",
+            "yangin-tup-kontrol": "Feuerlöscher-Inspektion",
+            "yangin-dolap-kontrol": "Feuerschrank-Inspektion",
+            "kompressor-kontrol": "Kompressorprüfung",
+            "vinc-kontrol": "Kran-/Hebezeug-Inspektion",
+            "kazan-kontrol": "Kessel-Wiederkehrende Prüfung",
+            "havalandirma-kontrol": "Lüftungsanlagen-Prüfung",
+            "jenerator-kontrol": "Generatorprüfung",
+            "lpg-kontrol": "LPG-Anlagen-Prüfung",
+            "merdiven-iskele": "Leiter/Gerüst-Prüfung"
           }
         },
         "diger-kayitlar": {
-          "title": "Other records",
+          "title": "Sonstige Aufzeichnungen",
           "items": {
-            "msds-kayit": "SDS/MSDS record form",
-            "is-izni-formu": "Permit to work form",
-            "sicak-is-izni": "Hot work permit form",
-            "yuksekte-is-izni": "Work at height permit",
-            "kapali-alan-izni": "Confined space entry permit",
-            "kazi-is-izni": "Excavation permit",
-            "ortam-olcum": "Environmental measurement report",
-            "gurultu-haritasi": "Noise map",
-            "aydinlatma-olcum": "Lighting measurement report",
-            "termal-konfor": "Thermal comfort measurement",
-            "toz-olcum": "Dust measurement report",
-            "titresim-olcum": "Vibration measurement report"
+            "msds-kayit": "SDB/MSDS-Aufzeichnungsformular",
+            "is-izni-formu": "Arbeitserlaubnisformular",
+            "sicak-is-izni": "Heißarbeitserlaubnisformular",
+            "yuksekte-is-izni": "Arbeitserlaubnis in der Höhe",
+            "kapali-alan-izni": "Erlaubnis für beengte Räume",
+            "kazi-is-izni": "Aushubgenehmigung",
+            "ortam-olcum": "Umweltmessbericht",
+            "gurultu-haritasi": "Lärmkarte",
+            "aydinlatma-olcum": "Beleuchtungsmessbericht",
+            "termal-konfor": "Thermische Komfortmessung",
+            "toz-olcum": "Staubmessbericht",
+            "titresim-olcum": "Vibrationsmessbericht"
           }
         },
         "yangin-kimyasal": {
-          "title": "Fire and chemicals",
+          "title": "Brand und Chemikalien",
           "items": {
-            "yangin-risk-analizi": "Fire risk analysis",
-            "yangin-sondurme-plani": "Fire suppression plan",
-            "kimyasal-envanter": "Chemical inventory",
-            "kimyasal-risk": "Chemical risk assessment",
-            "kimyasal-depolama": "Chemical storage plan",
-            "yangin-tatbikat": "Fire drill report",
-            "yangin-ekipman-kontrol": "Fire equipment inspection chart"
+            "yangin-risk-analizi": "Brandrisiko-Analyse",
+            "yangin-sondurme-plani": "Brandbekämpfungsplan",
+            "kimyasal-envanter": "Chemikalieninventar",
+            "kimyasal-risk": "Chemikalienrisikobewertung",
+            "kimyasal-depolama": "Chemikalienlagerungsplan",
+            "yangin-tatbikat": "Brandschutzübungsbericht",
+            "yangin-ekipman-kontrol": "Brandschutzausrüstung-Prüfprotokoll"
           }
         },
         "ilkyardim": {
-          "title": "First aid training",
+          "title": "Erste-Hilfe-Ausbildung",
           "items": {
-            "ilkyardim-egitim-plani": "First aid training plan",
-            "ilkyardimci-listesi": "First aider list",
-            "ilkyardim-malzeme": "First aid supplies inspection form"
+            "ilkyardim-egitim-plani": "Erste-Hilfe-Ausbildungsplan",
+            "ilkyardimci-listesi": "Ersthelfer-Liste",
+            "ilkyardim-malzeme": "Erste-Hilfe-Material Prüfformular"
           }
         },
         "isyeri-hekimi": {
-          "title": "Occupational health physician documents",
+          "title": "Betriebsarzt-Dokumente",
           "items": {
-            "hekim-gozetim-raporu": "Health surveillance report",
-            "hekim-periyodik-muayene": "Periodic medical examination plan",
-            "hekim-ise-giris-muayene": "Pre-employment medical form",
-            "hekim-meslek-hastaligi": "Occupational disease follow-up form",
-            "hekim-ilac-takip": "Medication and consumables tracking",
-            "hekim-recete-kayit": "Prescription log form",
-            "hekim-revir-defteri": "Clinic/examination log",
-            "hekim-saglik-tarama": "Mass health screening report",
-            "hekim-biolojik-maruziyet": "Biological exposure assessment",
-            "hekim-yillik-degerlendirme": "Occupational physician annual review"
+            "hekim-gozetim-raporu": "Gesundheitsüberwachungsbericht",
+            "hekim-periyodik-muayene": "Periodische Untersuchungsplan",
+            "hekim-ise-giris-muayene": "Einstellungsuntersuchungsformular",
+            "hekim-meslek-hastaligi": "Berufskrankheiten-Nachverfolgungsformular",
+            "hekim-ilac-takip": "Medikamenten- und Verbrauchsmaterial-Verfolgung",
+            "hekim-recete-kayit": "Rezept-Protokollformular",
+            "hekim-revir-defteri": "Praxis-/Untersuchungsprotokoll",
+            "hekim-saglik-tarama": "Reihenuntersuchungsbericht",
+            "hekim-biolojik-maruziyet": "Biologische Expositionsbewertung",
+            "hekim-yillik-degerlendirme": "Betriebsarzt Jahresbewertung"
           }
         }
       }
@@ -1487,7 +1487,7 @@
       ]
     },
     "surveyTags": {
-      "measurement": "Measurement",
+      "measurement": "Messung",
       "feedback": "Feedback"
     }
   },
