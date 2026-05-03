@@ -1124,9 +1124,9 @@
     "header": {
       "contentCount": "{count}개 항목",
       "description": "회사를 먼저 선택하지 않고 글로벌 카탈로그에서 문서, 교육, 시험, 양식, 응급상황 및 규제 콘텐츠를 탐색하고, 필요한 것을 나중에 회사에 저장하세요.",
-      "eyebrow": "ISG Library",
+      "eyebrow": "OHS 라이브러리",
       "savedToCompanies": "{count}개 항목이 회사에 저장됨",
-      "title": "ISG Library"
+      "title": "OHS 라이브러리"
     },
     "legacy": {
       "deckDefaultDescription": "준비된 교육 콘텐츠를 열고 프레젠테이션 흐름을 관리합니다.",
