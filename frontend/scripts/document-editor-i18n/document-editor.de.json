@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "Neues Dokument",
+  "loading": "Dokument wird geladen…",
+  "titlePlaceholder": "Dokumenttitel…",
+  "editorPlaceholder": "Schreiben Sie hier den Dokumentinhalt…",
+  "breadcrumb": {
+    "backToLibrary": "Zurück zur Bibliothek",
+    "documents": "Dokumente"
+  },
+  "status": {
+    "taslak": "Entwurf",
+    "hazir": "Fertig",
+    "onay_bekliyor": "Genehmigung ausstehend",
+    "revizyon": "Überarbeitung",
+    "arsiv": "Archiviert"
+  },
+  "saveLocation": {
+    "customDocs": "Persönliche Dokumente",
+    "companyDocs": "Unternehmensdokumente"
+  },
+  "saveNotice": "Gespeichert: {path}",
+  "continueEditingHint": "Das Dokument bleibt geöffnet; Sie können weiterbearbeiten.",
+  "autosaveError": "Automatisches Speichern konnte nicht abgeschlossen werden.",
+  "saveErrorUnexpected": "Beim Speichern des Dokuments ist ein unerwarteter Fehler aufgetreten.",
+  "confirmClear": "Der Editor-Inhalt wird gelöscht. Fortfahren?",
+  "tooltips": {
+    "clearPage": "Seite leeren",
+    "aiPanelClose": "KI-Panel schließen",
+    "aiAssistant": "KI-Assistent",
+    "shareDisabled": "Bitte speichern Sie zuerst das Dokument",
+    "shareEnabled": "Teilen per QR-Code, Link oder WhatsApp",
+    "signDisabled": "Bitte speichern Sie zuerst das Dokument",
+    "signEnabled": "Mit E-Signatur / mobiler Signatur unterzeichnen"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "Teilen",
+    "sign": "Unterschreiben",
+    "signWithCount": "Unterschreiben ({count})",
+    "save": "Speichern",
+    "saving": "Wird gespeichert…",
+    "saved": "Gespeichert!"
+  },
+  "pdf": {
+    "qrAlt": "QR-Überprüfung",
+    "verificationCaption": "RiskNova-Überprüfung"
+  },
+  "floatingAi": {
+    "ariaOpen": "KI-Assistent öffnen",
+    "tooltip": "KI-Assistent",
+    "label": "KI-Assistent"
+  },
+  "sidebarCloseMobile": "KI-Panel schließen",
+  "validationQr": "Überprüfung: /share/{token}",
+  "statusBar": {
+    "words": "{count} Wörter",
+    "chars": "{count} Zeichen",
+    "saving": "Wird gespeichert…",
+    "lastSave": "Zuletzt gespeichert:",
+    "neverSaved": "Noch nicht gespeichert"
+  },
+  "signatureDefaults": {
+    "signerName": "Unterzeichner",
+    "signerRole": "Fachkraft für Arbeitssicherheit"
+  },
+  "toolbar": {
+    "undo": "Rückgängig (Strg+Z)",
+    "redo": "Wiederholen (Strg+Y)",
+    "fontSizeTitle": "Schriftgröße",
+    "fontSizeButton": "Größe",
+    "insertTable": "Tabelle einfügen",
+    "tableSizeHint": "Tabellengröße wählen",
+    "removeColor": "Farbe entfernen",
+    "heading1": "Überschrift 1",
+    "heading2": "Überschrift 2",
+    "heading3": "Überschrift 3",
+    "bold": "Fett (Strg+B)",
+    "italic": "Kursiv (Strg+I)",
+    "underline": "Unterstrichen (Strg+U)",
+    "strike": "Durchgestrichen",
+    "textColor": "Schriftfarbe",
+    "highlightColor": "Hervorhebungsfarbe",
+    "alignLeft": "Linksbündig",
+    "alignCenter": "Zentriert",
+    "alignRight": "Rechtsbündig",
+    "alignJustify": "Blocksatz",
+    "bulletList": "Aufzählungsliste",
+    "orderedList": "Nummerierte Liste",
+    "blockquote": "Zitat",
+    "hr": "Horizontale Linie",
+    "print": "Drucken (Strg+P)"
+  },
+  "shareModal": {
+    "title": "Dokument teilen",
+    "linkTitle": "Freigabe-Link",
+    "linkOn": "Jeder mit dem Link kann ansehen",
+    "linkOff": "Freigabe ist aus",
+    "copyLinkTitle": "Link kopieren",
+    "qrCaption": "QR-Code scannen, um das Dokument zu öffnen",
+    "otherNative": "Weitere"
+  },
+  "signatureModal": {
+    "title": "Dokument unterzeichnen",
+    "canvasHint": "Zeichnen Sie Ihre Unterschrift unten in den Bereich",
+    "clear": "Leeren",
+    "legal": "Mit Ihrer Unterschrift bestätigen Sie, dass Sie den Inhalt gelesen und genehmigt haben. Ihre Unterschrift wird digital gespeichert; die Dokumentenintegrität kann per Hash nachgewiesen werden.",
+    "cancel": "Abbrechen",
+    "sign": "Unterschreiben und bestätigen",
+    "signing": "Wird unterzeichnet…",
+    "errorAlert": "Beim Speichern der Unterschrift ist ein Fehler aufgetreten."
+  },
+  "ai": {
+    "title": "KI-Assistent",
+    "subtitleWithCompany": "Inhaltserstellung und Bearbeitung für {company}",
+    "subtitleNoCompany": "Inhaltserstellung und Bearbeitung",
+    "quick": {
+      "fullDoc": {
+        "label": "Vollständiges Dokument erstellen",
+        "prompt": "Erstellen Sie dieses Dokument professionell. Fügen Sie alle Abschnitte, Tabellen und gesetzlichen Verweise ein. Betten Sie Unternehmensinformationen in den Text ein; lassen Sie keine Platzhalter leer."
+      },
+      "intro": {
+        "label": "Einleitung schreiben",
+        "prompt": "Schreiben Sie eine professionelle Einleitung mit Zweckbestimmung für dieses Dokument. Verwenden Sie Firmenname und Branche."
+      },
+      "legal": {
+        "label": "Rechtsgrundlage ergänzen",
+        "prompt": "Erstellen Sie einen Abschnitt zur Rechtsgrundlage gemäß türkischem Gesetz 6331 über Arbeitssicherheit und Gesundheitsschutz und den zugehörigen Verordnungen (passen Sie Verweise bei Bedarf an das jeweils geltende Recht an)."
+      },
+      "regs": {
+        "label": "Gesetzliche Verweise",
+        "prompt": "Listen Sie alle für diese Dokumentart geltenden gesetzlichen Verweise auf."
+      }
+    },
+    "customRequestLabel": "Eigene Anfrage",
+    "customRequestPlaceholder": "Was soll ich generieren?",
+    "improveSelected": "Ausgewählten Text verbessern",
+    "improveHint": "Markieren Sie Text im Editor und klicken Sie dann auf diese Schaltfläche.",
+    "generating": "Inhalt wird erstellt…",
+    "generatingMobileNote": "Bei langsamer Verbindung auf dem Mobilgerät bereitet das System einen lokalen Entwurf vor, damit Sie nicht hängen bleiben.",
+    "emptyState": "Klicken Sie auf eine der Schaltflächen oben, um mit der KI Inhalte zu erzeugen.",
+    "resultInserted": "In den Editor eingefügt",
+    "resultDegraded": "Lokaler Entwurf",
+    "resultDefault": "KI-Ergebnis",
+    "copy": "Kopieren",
+    "degradedNotice": "Der KI-Dienst lief im geschützten Modus. Ein lokaler Entwurf wurde erstellt; Sie können ihn bearbeiten und speichern.",
+    "degradedQueue": "Warteschlangenauftrag: {taskId}",
+    "degradedQueueHint": "Die Anfrage wird möglicherweise noch im Hintergrund verarbeitet; versuchen Sie es in Kürze erneut.",
+    "addToEditor": "In Editor einfügen",
+    "addDegradedToEditor": "Lokalen Entwurf in Editor einfügen",
+    "insertedSuccess": "Inhalt wurde erfolgreich in den Editor eingefügt",
+    "improveDialogTitle": "Text verbessern",
+    "improveSelectedLabel": "Ausgewählter Text:",
+    "improveChooseType": "Welche Art der Verbesserung soll angewendet werden?",
+    "improveCustomPlaceholder": "Eigene Verbesserungsanfrage…",
+    "improveTextBlockLabel": "Zu verbessernder Text:",
+    "errors": {
+      "quotaDefault": "Ihr Limit für das KI-Dokumentenpaket ist erreicht. Erweitern Sie Ihr Paket, um fortzufahren.",
+      "serviceUnavailable": "Fehler: Der KI-Dienst antwortet nicht. Bitte versuchen Sie es erneut.",
+      "emptyResponseWithFallback": "Die KI hat eine leere Antwort geliefert. Ein lokaler Entwurf wurde vorbereitet, damit die Aktion auf dem Mobilgerät nicht stecken bleibt.",
+      "abortWithFallback": "Die KI-Anfrage ist abgelaufen. Ein lokaler Entwurf wurde vorbereitet, damit Sie auf dem Mobilgerät nicht warten müssen.",
+      "connectionWithFallback": "Verbindungsfehler. Ein lokaler Entwurf wurde vorbereitet, damit das Ergebnis auf dem Mobilgerät nicht leer bleibt.",
+      "emptyResponseImprove": "Die KI hat eine leere Antwort geliefert. Wählen Sie einen kürzeren Textabschnitt und versuchen Sie es erneut.",
+      "abortImprove": "Die KI-Anfrage ist abgelaufen. Wählen Sie einen kürzeren Textabschnitt und versuchen Sie es erneut.",
+      "connectionImprove": "Verbindungsfehler. Bitte versuchen Sie es erneut.",
+      "serviceUnavailableImprove": "Fehler: Der KI-Dienst antwortet nicht.",
+      "quotaShort": "Ihr Limit für das KI-Dokumentenpaket ist erreicht."
+    },
+    "improve": {
+      "professionalize": {
+        "label": "Professioneller gestalten",
+        "prompt": "Schreiben Sie diesen Text in professioneller Arbeitssicherheitssprache um. Verwenden Sie einen formellen, unternehmerischen Ton."
+      },
+      "shorten": {
+        "label": "Kürzen",
+        "prompt": "Kürzen und vereinfachen Sie diesen Text, ohne den Kern zu verlieren."
+      },
+      "detail": {
+        "label": "Ausführlicher machen",
+        "prompt": "Erweitern Sie diesen Text mit mehr Details und Umfang. Ergänzen Sie fehlende Informationen sinnvoll."
+      },
+      "legal": {
+        "label": "Rechtsverweise ergänzen",
+        "prompt": "Fügen Sie diesem Text relevante Artikel des Gesetzes 6331 und Verweis auf Verordnungen hinzu (passen Sie bei Bedarf an das jeweils geltende Recht an)."
+      }
+    },
+    "fallback": {
+      "untitled": "Dokumententwurf",
+      "sectionCompany": "Unternehmensangaben",
+      "tableHeaderField": "Feld",
+      "tableHeaderValue": "Wert",
+      "rowCompany": "Unternehmen / Organisation",
+      "rowSector": "Branche",
+      "rowHazard": "Gefahrenklasse",
+      "rowNace": "NACE-Code",
+      "rowEmployees": "Mitarbeiterzahl",
+      "rowDate": "Dokumentdatum",
+      "placeholderCompany": "Unternehmensangaben werden ergänzt",
+      "placeholderSector": "Branche wird ergänzt",
+      "placeholderHazard": "Gefahrenklasse wird ergänzt",
+      "placeholderNace": "NACE-Angaben werden ergänzt",
+      "placeholderEmployees": "Mitarbeiterzahl wird ergänzt",
+      "sectionPurpose": "Zweck und Geltungsbereich",
+      "paragraphScope": "Dieses Dokument wurde für {company} für Arbeitssicherheit, Betrieb und Dokumentationsprozesse erstellt.",
+      "sectionImplementation": "Umsetzungsgrundsätze",
+      "bullet1": "Festlegung von Verantwortlichen und Freigabeablauf",
+      "bullet2": "Erforderliche Aufzeichnungen in RiskNova führen",
+      "bullet3": "Einhaltung der Rechtsgrundlage und interner Unternehmensverfahren",
+      "bullet4": "Mängel und kritische Risiken ohne Verzug melden",
+      "sectionLegal": "Rechtsgrundlage",
+      "legal1": "Gesetz 6331 über Arbeitssicherheit und Gesundheitsschutz (bzw. nationales Äquivalent)",
+      "legal2": "Zugehörige Verordnungen und interne Unternehmensverfahren",
+      "sectionSignature": "Unterschrift und Freigabe",
+      "tableHeaderParty": "Partei",
+      "tableHeaderName": "Name / Funktion",
+      "tableHeaderSign": "Unterschrift",
+      "tableHeaderDate": "Datum",
+      "rowPreparer": "Erstellt von",
+      "rowEmployer": "Arbeitgeber / Vertreter des Arbeitgebers",
+      "specialistFallback": "Fachkraft Arbeitssicherheit"
+    }
+  }
+}

@@ -1,7 +1,11 @@
 /**
- * Merges `scripts/document-editor-i18n/document-editor.{en,tr}.json`
+ * Merges `scripts/document-editor-i18n/document-editor.<locale>.json` packs
  * into `messages/{locale}.json` as root key `documentEditor`.
- * Non-`tr` locales receive the English pack (parity with en keys).
+ *
+ * - `document-editor.en.json` is the canonical key tree (reference strings).
+ * - Optional `document-editor.tr.json`, `document-editor.de.json`, … must match
+ *   the same string leaf keys as English; any `messages/{locale}.json` without
+ *   a pack falls back to English.
  *
  * Usage (from frontend/): node scripts/merge-document-editor-i18n.mjs
  */
@@ -12,17 +16,6 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const packDir = path.join(__dirname, "document-editor-i18n");
 const messagesDir = path.join(__dirname, "..", "messages");
-
-function flattenKeys(obj, prefix = "") {
-  const keys = [];
-  if (obj === null || typeof obj !== "object" || Array.isArray(obj)) return keys;
-  for (const k of Object.keys(obj).sort()) {
-    const p = prefix ? `${prefix}.${k}` : k;
-    keys.push(p);
-    keys.push(...flattenKeys(obj[k], p));
-  }
-  return keys;
-}
 
 function leafKeys(obj, prefix = "") {
   const out = new Set();
@@ -48,31 +41,45 @@ function leafKeys(obj, prefix = "") {
 }
 
 const enPath = path.join(packDir, "document-editor.en.json");
-const trPath = path.join(packDir, "document-editor.tr.json");
-const docEn = JSON.parse(fs.readFileSync(enPath, "utf8"));
-const docTr = JSON.parse(fs.readFileSync(trPath, "utf8"));
-
-const enLeaves = leafKeys(docEn);
-const trLeaves = leafKeys(docTr);
-const missingInTr = [...enLeaves].filter((k) => !trLeaves.has(k));
-const extraInTr = [...trLeaves].filter((k) => !enLeaves.has(k));
-if (missingInTr.length || extraInTr.length) {
-  console.error("document-editor EN vs TR leaf key mismatch");
-  if (missingInTr.length) console.error("missing in TR:", missingInTr.slice(0, 30));
-  if (extraInTr.length) console.error("extra in TR:", extraInTr.slice(0, 30));
+if (!fs.existsSync(enPath)) {
+  console.error("Missing", enPath);
   process.exit(1);
+}
+const docEn = JSON.parse(fs.readFileSync(enPath, "utf8"));
+const enLeaves = leafKeys(docEn);
+
+/** @type {Record<string, object>} */
+const localePacks = {};
+const packFiles = fs.readdirSync(packDir).filter((f) => /^document-editor\.[a-z]{2}\.json$/.test(f));
+for (const f of packFiles) {
+  const loc = /^document-editor\.([a-z]{2})\.json$/.exec(f)[1];
+  if (loc === "en") continue;
+  const data = JSON.parse(fs.readFileSync(path.join(packDir, f), "utf8"));
+  const locLeaves = leafKeys(data);
+  const missing = [...enLeaves].filter((k) => !locLeaves.has(k));
+  const extra = [...locLeaves].filter((k) => !enLeaves.has(k));
+  if (missing.length || extra.length) {
+    console.error(`document-editor EN vs ${loc} leaf key mismatch`);
+    if (missing.length) console.error("  missing:", missing.slice(0, 25).join(", "), missing.length > 25 ? "…" : "");
+    if (extra.length) console.error("  extra:", extra.slice(0, 25).join(", "), extra.length > 25 ? "…" : "");
+    process.exit(1);
+  }
+  localePacks[loc] = data;
 }
 
 const localeFiles = fs
   .readdirSync(messagesDir)
   .filter((f) => f.endsWith(".json") && !f.includes("bundle") && f !== "translations" && !f.startsWith("_"));
 
-for (const f of localeFiles.sort()) {
-  const loc = f.replace(/\.json$/, "");
-  const msgPath = path.join(messagesDir, f);
+for (const file of localeFiles.sort()) {
+  const loc = file.replace(/\.json$/, "");
+  const msgPath = path.join(messagesDir, file);
   const messages = JSON.parse(fs.readFileSync(msgPath, "utf8"));
-  messages.documentEditor = loc === "tr" ? docTr : docEn;
+  messages.documentEditor = localePacks[loc] || docEn;
   fs.writeFileSync(msgPath, `${JSON.stringify(messages, null, 2)}\n`);
 }
 
-console.log("documentEditor merged into:", localeFiles.sort().join(", "));
+console.log(
+  "documentEditor merged. Locale packs:",
+  Object.keys(localePacks).sort().join(", ") || "(none, all EN)",
+);
