@@ -9,6 +9,7 @@ import { LandingHeroAtmosphere } from "@/components/public/landing-hero-atmosphe
 import { LandingCtaAtmosphere } from "@/components/public/landing-cta-atmosphere";
 import { LandingRevealProvider } from "@/components/public/landing-reveal-provider";
 import { PwaInstallPrompt } from "@/components/pwa/pwa-install-prompt";
+import { SiteVisitCounter } from "@/components/public/site-visit-counter";
 import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import {
@@ -171,7 +172,8 @@ export default async function LandingPage() {
                 <PwaInstallPrompt surface="public" />
               </div>
 
-              <div className="landing-hero-enter landing-hero-enter--d4 mt-16 grid w-full max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md md:grid-cols-4">
+              <div className="landing-hero-enter landing-hero-enter--d4 mt-16 grid w-full max-w-4xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md md:grid-cols-5">
+                <SiteVisitCounter />
                 {stats.map((s) => (
                   <div
                     key={s.label}
