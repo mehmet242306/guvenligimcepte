@@ -274,6 +274,12 @@ function buildMarkdown(scan, inv) {
   lines.push("- [x] Kovası özet tablosu");
   lines.push("- [x] Locale vs `en.json` yaprağı karşılaştırması");
   lines.push("");
+  lines.push("### Tekrar üret");
+  lines.push("");
+  lines.push("- Anahtar eşliği + rapor: `npm run i18n:phase0` (`frontend/` içinden).");
+  lines.push("- Yalnızca rapor: `npm run i18n:phase0-inventory`.");
+  lines.push("- Yalnızca `en` ile tüm locale yaprağı eşliği: `npm run i18n:verify-locale-parity`.");
+  lines.push("");
   lines.push(`Rapor dosyası: \`docs/i18n-phase0-inventory.md\` (frontend kökünden bir üst \`docs/\`).`);
 
   return lines.join("\n");

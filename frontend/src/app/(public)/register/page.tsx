@@ -171,18 +171,17 @@ export default async function RegisterPage({
             />
             <span>
               <a className="font-semibold text-slate-900 underline underline-offset-4" href="/terms">
-                Kullanım Şartları
+                {t("legalCheckboxTerms")}
               </a>
-              ,{" "}
+              {t("legalCheckboxAfterTerms")}
               <a className="font-semibold text-slate-900 underline underline-offset-4" href="/privacy">
-                Gizlilik Politikası ve KVKK Aydınlatma Metni
-              </a>{" "}
-              ile{" "}
-              <a className="font-semibold text-slate-900 underline underline-offset-4" href="/cookie-policy">
-                Çerez Politikası
+                {t("legalCheckboxPrivacy")}
               </a>
-              'nı okudum ve kabul ediyorum. Hesap oluşturduktan sonra zorunlu platform
-              onayları uygulama içinde ayrıca sunulabilir.
+              {t("legalCheckboxAfterPrivacy")}
+              <a className="font-semibold text-slate-900 underline underline-offset-4" href="/cookie-policy">
+                {t("legalCheckboxCookie")}
+              </a>
+              {t("legalCheckboxAfterCookie")}
             </span>
           </label>
 

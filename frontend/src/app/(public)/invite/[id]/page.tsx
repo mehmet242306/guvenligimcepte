@@ -1,4 +1,6 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { InviteActions } from "./InviteActions";
 
@@ -15,22 +17,37 @@ type InvitePreview = {
   message: string | null;
 };
 
-function formatDateTime(iso: string | null) {
-  if (!iso) return null;
-  return new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
+function intlLocale(locale: string): string {
+  if (locale === "zh") return "zh-CN";
+  return locale;
 }
 
-function InviteShell({ children }: { children: React.ReactNode }) {
+function formatDateTime(iso: string | null, locale: string) {
+  if (!iso) return null;
+  return new Intl.DateTimeFormat(intlLocale(locale), { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
+}
+
+function InviteShell({
+  brandEyebrow,
+  shellTitle,
+  backHome,
+  children,
+}: {
+  brandEyebrow: string;
+  shellTitle: string;
+  backHome: string;
+  children: ReactNode;
+}) {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30 px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto max-w-2xl">
         <div className="mb-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">RiskNova</p>
-          <h2 className="mt-1 text-lg font-semibold text-foreground">Firma Daveti</h2>
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary">{brandEyebrow}</p>
+          <h2 className="mt-1 text-lg font-semibold text-foreground">{shellTitle}</h2>
         </div>
         {children}
         <div className="mt-6 text-center text-xs text-muted-foreground">
-          <Link href="/" className="hover:text-foreground">Ana sayfaya dön</Link>
+          <Link href="/" className="hover:text-foreground">{backHome}</Link>
         </div>
       </div>
     </main>
@@ -75,16 +92,14 @@ function StatusCard({
 
 export default async function InvitePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const t = await getTranslations("publicInvite");
+  const locale = await getLocale();
 
   const supabase = await createClient();
   if (!supabase) {
     return (
-      <InviteShell>
-        <StatusCard
-          tone="error"
-          title="Bağlantı Sorunu"
-          description="Veritabanı bağlantısı kurulamadı. Lütfen daha sonra tekrar deneyin."
-        />
+      <InviteShell brandEyebrow={t("brandEyebrow")} shellTitle={t("shellTitle")} backHome={t("backHome")}>
+        <StatusCard tone="error" title={t("dbErrorTitle")} description={t("dbErrorDesc")} />
       </InviteShell>
     );
   }
@@ -99,24 +114,20 @@ export default async function InvitePage({ params }: { params: Promise<{ id: str
 
   if (previewResult.error || !preview) {
     return (
-      <InviteShell>
-        <StatusCard
-          tone="error"
-          title="Davet Bulunamadı"
-          description="Bu davet artık mevcut değil ya da bağlantı geçersiz. Davet edenle iletişime geçerek yeni bir bağlantı isteyebilirsiniz."
-        />
+      <InviteShell brandEyebrow={t("brandEyebrow")} shellTitle={t("shellTitle")} backHome={t("backHome")}>
+        <StatusCard tone="error" title={t("notFoundTitle")} description={t("notFoundDesc")} />
       </InviteShell>
     );
   }
 
   if (preview.status === "accepted") {
     return (
-      <InviteShell>
+      <InviteShell brandEyebrow={t("brandEyebrow")} shellTitle={t("shellTitle")} backHome={t("backHome")}>
         <StatusCard
           tone="info"
-          title="Davet Zaten Kabul Edilmiş"
-          description="Bu davet daha önce kabul edilmiş. Kontrol panelinizden firma erişiminize ulaşabilirsiniz."
-          action={{ href: "/dashboard", label: "Kontrol Paneline Git" }}
+          title={t("acceptedTitle")}
+          description={t("acceptedDesc")}
+          action={{ href: "/dashboard", label: t("acceptedCta") }}
         />
       </InviteShell>
     );
@@ -124,24 +135,16 @@ export default async function InvitePage({ params }: { params: Promise<{ id: str
 
   if (preview.status === "declined") {
     return (
-      <InviteShell>
-        <StatusCard
-          tone="error"
-          title="Davet Reddedildi"
-          description="Bu davet daha önce reddedildi. Yeni bir davet için davet edenle iletişime geçin."
-        />
+      <InviteShell brandEyebrow={t("brandEyebrow")} shellTitle={t("shellTitle")} backHome={t("backHome")}>
+        <StatusCard tone="error" title={t("declinedTitle")} description={t("declinedDesc")} />
       </InviteShell>
     );
   }
 
   if (preview.status === "revoked") {
     return (
-      <InviteShell>
-        <StatusCard
-          tone="error"
-          title="Davet İptal Edildi"
-          description="Bu davet, davet eden tarafından iptal edildi."
-        />
+      <InviteShell brandEyebrow={t("brandEyebrow")} shellTitle={t("shellTitle")} backHome={t("backHome")}>
+        <StatusCard tone="error" title={t("revokedTitle")} description={t("revokedDesc")} />
       </InviteShell>
     );
   }
@@ -150,48 +153,45 @@ export default async function InvitePage({ params }: { params: Promise<{ id: str
     preview.status === "expired" || (preview.expires_at != null && new Date(preview.expires_at) < new Date());
   if (isExpired) {
     return (
-      <InviteShell>
-        <StatusCard
-          tone="warning"
-          title="Davetin Süresi Geçti"
-          description="Bu davetin geçerlilik süresi dolmuş. Yeni bir davet talep edin."
-        />
+      <InviteShell brandEyebrow={t("brandEyebrow")} shellTitle={t("shellTitle")} backHome={t("backHome")}>
+        <StatusCard tone="warning" title={t("expiredTitle")} description={t("expiredDesc")} />
       </InviteShell>
     );
   }
 
-  const expiresLabel = formatDateTime(preview.expires_at);
+  const expiresLabel = formatDateTime(preview.expires_at, locale);
   const nextPath = `/invite/${preview.id}`;
   const nextParam = encodeURIComponent(nextPath);
+  const companyName = preview.company_name || t("unknownCompany");
 
   return (
-    <InviteShell>
+    <InviteShell brandEyebrow={t("brandEyebrow")} shellTitle={t("shellTitle")} backHome={t("backHome")}>
       <div className="rounded-2xl border border-border bg-card p-8 shadow-lg">
         <div className="mb-6">
-          <p className="text-xs font-semibold uppercase tracking-wide text-primary">Firma Daveti</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-primary">{t("cardEyebrow")}</p>
           <h1 className="mt-1 text-2xl font-bold text-foreground">
-            {preview.company_name || "Bir firma"} sizi RiskNova çalışma alanına davet etti
+            {t("inviteTitle", { company: companyName })}
           </h1>
         </div>
 
         <dl className="space-y-3 rounded-lg border border-border bg-secondary/30 p-4 text-sm">
           <div className="grid grid-cols-[120px_1fr] gap-2">
-            <dt className="text-xs text-muted-foreground">Davet eden</dt>
-            <dd className="font-medium text-foreground">{preview.inviter_full_name || "Belirtilmemiş"}</dd>
+            <dt className="text-xs text-muted-foreground">{t("dtInviter")}</dt>
+            <dd className="font-medium text-foreground">{preview.inviter_full_name || t("unspecified")}</dd>
           </div>
           <div className="grid grid-cols-[120px_1fr] gap-2">
-            <dt className="text-xs text-muted-foreground">Davet edilen</dt>
+            <dt className="text-xs text-muted-foreground">{t("dtInvitee")}</dt>
             <dd className="font-medium text-foreground">{preview.invitee_email}</dd>
           </div>
           {preview.message && (
             <div className="grid grid-cols-[120px_1fr] gap-2">
-              <dt className="text-xs text-muted-foreground">Not</dt>
+              <dt className="text-xs text-muted-foreground">{t("dtNote")}</dt>
               <dd className="text-foreground">{preview.message}</dd>
             </div>
           )}
           {expiresLabel && (
             <div className="grid grid-cols-[120px_1fr] gap-2">
-              <dt className="text-xs text-muted-foreground">Son geçerlilik</dt>
+              <dt className="text-xs text-muted-foreground">{t("dtExpires")}</dt>
               <dd className="text-foreground">{expiresLabel}</dd>
             </div>
           )}
@@ -206,21 +206,20 @@ export default async function InvitePage({ params }: { params: Promise<{ id: str
         ) : (
           <div className="mt-6 rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm">
             <p className="text-foreground">
-              Daveti kabul etmek için <strong>{preview.invitee_email}</strong> e-posta adresiyle bir hesabın olması
-              gerekir.
+              {t("loginPrompt", { email: preview.invitee_email })}
             </p>
             <div className="mt-4 flex flex-col gap-3 sm:flex-row">
               <Link
                 href={`/login?next=${nextParam}`}
                 className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-center text-sm font-semibold text-primary-foreground hover:bg-primary/90"
               >
-                Giriş Yap
+                {t("btnLogin")}
               </Link>
               <Link
                 href={`/register?email=${encodeURIComponent(preview.invitee_email)}&next=${nextParam}`}
                 className="flex-1 rounded-lg border border-border bg-card px-4 py-2.5 text-center text-sm font-semibold text-foreground hover:bg-secondary/50"
               >
-                Hesap Oluştur
+                {t("btnRegister")}
               </Link>
             </div>
           </div>

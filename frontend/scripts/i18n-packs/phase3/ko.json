@@ -1,0 +1,305 @@
+{
+  "companiesList": {
+    "actions": {
+      "newCompany": "새 회사",
+      "sampleData": "샘플 데이터"
+    },
+    "archive": "보관",
+    "badge": {
+      "archived": "보관됨",
+      "deleted": "삭제됨"
+    },
+    "clearFilters": "필터 지우기",
+    "confirmArchive": {
+      "confirm": "확인",
+      "hint": "활성 목록에서 제거됩니다.",
+      "title": "\"{name}\"을(를) 보관하시겠습니까?"
+    },
+    "confirmDelete": {
+      "confirm": "삭제",
+      "instruction": "확인을 위해 이 단어를 입력하세요:",
+      "title": "\"{name}\"을(를) 삭제하시겠습니까?"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "DELETE 입력",
+      "word": "DELETE"
+    },
+    "defaults": {
+      "companyName": "새 회사 / 조직",
+      "kind": "민간 부문",
+      "shortName": "새 기록"
+    },
+    "delete": "삭제",
+    "description": {
+      "multi": "담당하는 회사를 관리하고 해당 작업장에 접근하세요.",
+      "single": "활성 작업장의 인력 및 기타 운영 기록을 관리하세요."
+    },
+    "discard": "취소",
+    "employeesSuffix": "명",
+    "empty": {
+      "archiveBannerCompany": "보관된 회사. 복원할 수 있습니다.",
+      "archiveBannerWorksite": "보관된 작업장 기록. 복원할 수 있습니다.",
+      "archiveEmptyCompany": "보관함이 비어있음",
+      "archiveEmptyDescCompany": "아직 보관된 회사가 없습니다.",
+      "archiveEmptyDescWorksite": "아직 보관된 작업장이 없습니다.",
+      "archiveEmptyWorksite": "보관함이 비어있음",
+      "clearFilters": "필터 지우기",
+      "completeWorksite": "작업장 설정 완료",
+      "deletedBannerCompany": "삭제된 회사. 영구 삭제는 되돌릴 수 없습니다.",
+      "deletedBannerWorksite": "삭제된 작업장 기록. 영구 삭제는 되돌릴 수 없습니다.",
+      "deletedEmptyCompany": "삭제된 회사 없음",
+      "deletedEmptyDescCompany": "아직 삭제된 회사가 없습니다.",
+      "deletedEmptyDescWorksite": "아직 삭제된 작업장이 없습니다.",
+      "deletedEmptyWorksite": "삭제된 작업장 없음",
+      "initialDescCompany": "시작하려면 첫 번째 회사를 생성하세요.",
+      "initialDescWorksite": "이 영역은 활성 작업장 데이터로 채워집니다. 인력 및 기타 기록을 보려면 작업장 설정을 완료하세요.",
+      "initialTitleCompany": "아직 회사가 없습니다",
+      "initialTitleWorksite": "아직 작업장 기록이 없습니다",
+      "newCompany": "새 회사",
+      "noMatchCompany": "일치하는 회사 없음",
+      "noMatchDescription": "필터와 일치하는 기록이 없습니다.",
+      "noMatchWorksite": "일치하는 작업장 없음",
+      "sampleData": "샘플 데이터"
+    },
+    "entity": {
+      "companyPlural": "회사",
+      "worksitePlural": "작업장"
+    },
+    "eyebrow": {
+      "multi": "내 회사 / 조직",
+      "osgb": "OSGB 회사",
+      "singleWorksite": "작업장"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "전체",
+      "hazardClass": "위험 등급",
+      "kind": "유형",
+      "search": "검색",
+      "searchPlaceholder": "이름, 업종, 유형, NACE…",
+      "sector": "업종",
+      "sort": "정렬"
+    },
+    "limitReachedBanner": "활성 회사/작업공간 한도에 도달했습니다. 추가하거나 복원하기 전에 회사를 보관하거나 플랜을 업그레이드하세요.",
+    "links": {
+      "riskAnalysis": "위험 분석",
+      "workspace": "작업공간"
+    },
+    "metrics": {
+      "actions": "조치사항",
+      "departments": "부서",
+      "employees": "직원",
+      "hazard": "위험요소",
+      "locations": "위치",
+      "overdue": "지연"
+    },
+    "permanentDelete": "영구 삭제",
+    "progress": {
+      "coverage": "적용 범위",
+      "maturity": "성숙도"
+    },
+    "restore": "복원",
+    "sort": {
+      "employees": "직원",
+      "name": "이름순",
+      "overdue": "지연",
+      "risk": "위험도"
+    },
+    "stats": {
+      "avgMaturity": "평균 성숙도",
+      "criticalCompanies": "위험 회사",
+      "criticalWorksites": "위험 작업장",
+      "employees": "직원",
+      "openActions": "미완료 조치사항",
+      "overdueTasks": "지연된 작업",
+      "totalCompanies": "전체 회사",
+      "totalWorksites": "전체 작업장"
+    },
+    "storage": {
+      "local": "로컬",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "활성",
+      "archived": "보관",
+      "deleted": "삭제됨"
+    },
+    "title": {
+      "multi": "내 회사 / 조직",
+      "osgb": "회사 및 작업장",
+      "single": "작업장 및 운영 콘텐츠"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} 활성 회사 슬롯 사용됨",
+      "activeOnly": "{count}개 활성 회사 / 작업공간"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "작업장",
+    "docTitle": "{name} — 작업공간 · RiskNova",
+    "docTitleFallback": "작업공간 · RiskNova",
+    "invite": "초대",
+    "logo": {
+      "fileTooLarge": "파일이 너무 큽니다 ({sizeMb} MB). 최대 크기는 5 MB입니다.",
+      "imagesOnly": "이미지 파일만 업로드할 수 있습니다 (PNG, JPEG, WebP, SVG).",
+      "updated": "로고/이미지가 업데이트되었습니다.",
+      "uploadFailed": "업로드 실패. 다른 파일을 시도해보세요.",
+      "uploadTitle": "로고 업로드"
+    },
+    "notFound": {
+      "back": "회사로 돌아가기",
+      "description": "이 ID와 일치하는 회사가 없습니다.",
+      "title": "회사를 찾을 수 없음"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "저장",
+    "saving": "저장 중…",
+    "sidebar": {
+      "hint": "왼쪽에서 영역을 선택하고 오른쪽에서 콘텐츠를 관리하세요.",
+      "title": "작업장 섹션"
+    },
+    "stats": {
+      "departments": "부서",
+      "employees": "직원",
+      "locations": "위치",
+      "maturity": "성숙도",
+      "openActions": "미해결 조치",
+      "overdue": "연체"
+    },
+    "tabs": {
+      "history": "이력",
+      "ohs_file": "OHS 파일",
+      "organization": "조직",
+      "people": "팀",
+      "personnel": "인사",
+      "risk": "위험 및 현장",
+      "structure": "시설",
+      "tracking": "추적"
+    }
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "회사 작업공간별로 회사, 할당, 문서 및 위험 흐름을 관리합니다.",
+      "searchLabel": "회사 검색",
+      "searchPlaceholder": "회사, 업종, 주소 또는 NACE 검색",
+      "title": "활성 회사"
+    },
+    "archivedRow": {
+      "restore": "복원",
+      "restoring": "복원 중…"
+    },
+    "archivedSection": {
+      "badge": "{count}개 보관된 기록",
+      "description": "보관된 회사는 활성 제한에 포함되지 않으며, 위험 및 문서 이력은 유지됩니다.",
+      "title": "보관된 회사"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} 활성 회사",
+      "activeCompaniesUnlimited": "활성 회사 {count}개",
+      "activeStaffMax": "{count} / {max} 활성 직원",
+      "activeStaffUnlimited": "{count} 활성 직원"
+    },
+    "companyCard": {
+      "archive": "보관",
+      "archiving": "보관 중…",
+      "assignedProfessionals": "{count}명 배정된 전문가",
+      "assignments": "배정",
+      "contracts": "계약",
+      "documentsCount": "{count}개 문서",
+      "documentsLink": "문서",
+      "employees": "{count}명 직원",
+      "overdueTasks": "{count}개 지연 항목",
+      "personnelInvite": "직원 및 초대",
+      "sectorUnknown": "업종 미설정",
+      "taskTracking": "작업 추적",
+      "workspace": "회사 워크스페이스"
+    },
+    "emptyActive": {
+      "cta": "첫 회사 추가",
+      "description": "OSGB 패널에 연결된 고객사가 여기에 표시됩니다.",
+      "title": "활성 회사 없음"
+    },
+    "emptyArchived": {
+      "description": "회사를 보관하면 여기에 표시됩니다.",
+      "title": "보관된 회사 없음"
+    },
+    "emptyCompany": {
+      "kind": "민간 부문",
+      "name": "새 OSGB 고객사",
+      "shortName": "새 회사"
+    },
+    "focus": {
+      "p1": "이 영역은 OSGB 소유자 및 관리자 전용입니다. 회사, 배정, 계약, 문서 추적을 한 곳에서 관리합니다.",
+      "p2": "배정된 직원은 일상 업무에 이 패널을 사용하지 않으며, 자신의 계정을 통해 배정된 회사 워크스페이스 데이터에 접근합니다.",
+      "sidebarBody": "활성 회사 {firms}개, 배정된 전문가 {professionals}명, 주의가 필요한 항목 {overdue}개가 여기서 조율됩니다.",
+      "sidebarEyebrow": "관리 집중",
+      "title": "OSGB 중심 화면"
+    },
+    "header": {
+      "description": "고객사, 회사별 워크스페이스, 배정된 인력 흐름을 관리하세요.",
+      "eyebrow": "OSGB 회사 관리",
+      "title": "회사 및 작업장"
+    },
+    "limitBanner": "활성 회사 한도에 도달했습니다. 회사를 보관하거나 플랜을 업그레이드하여 더 추가하세요.",
+    "loading": {
+      "description": "고객사, 배정, 문서 흐름을 로딩 중입니다.",
+      "eyebrow": "OSGB 회사",
+      "title": "포트폴리오 준비 중"
+    },
+    "nova": {
+      "bullet1": "회사별 업무량 분배를 확인하세요.",
+      "bullet2": "지연된 작업 및 문서를 필터링하세요.",
+      "bullet3": "인력 배정 공백을 파악하세요.",
+      "bullet4": "계약 및 보고서 갱신 위험을 우선순위화하세요.",
+      "openTasks": "OSGB 작업 열기",
+      "reviewOverdue": "지연 업무 검토",
+      "seeAssignmentGaps": "배정 공백 확인",
+      "subtitle": "관리 어시스턴트; 직원 및 회사 성과를 모니터링합니다.",
+      "title": "Nova OSGB 매니저"
+    },
+    "quickLinks": {
+      "docCenter": "문서 허브로 이동",
+      "inviteStaff": "직원 초대",
+      "manageAssignments": "업무 할당 관리",
+      "openContracts": "계약 열기"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "OSGB 패널에서 추적되는 활성 고객사입니다.",
+        "label": "활성 회사"
+      },
+      "assignedProfessionals": {
+        "hint": "회사에 배정된 전문가, 의사, DSP의 총 할당 수입니다.",
+        "label": "배정된 전문가"
+      },
+      "overdueWork": {
+        "hint": "할당 및 CAPA 플로우에서 확인할 미해결 항목입니다.",
+        "label": "지연 업무"
+      },
+      "totalEmployees": {
+        "hint": "계획 수립을 위한 회사 기록의 총 직원 수입니다.",
+        "label": "총 직원 수"
+      }
+    },
+    "topActions": {
+      "addCompany": "회사 추가",
+      "openAssignments": "할당 열기",
+      "personnelInvite": "직원 및 초대"
+    }
+  },
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "저위험",
+      "high": "고위험",
+      "moderate": "위험"
+    },
+    "level": {
+      "controlled": "통제됨",
+      "critical": "심각",
+      "high": "높음",
+      "incomplete": "미평가",
+      "medium": "보통"
+    }
+  }
+}

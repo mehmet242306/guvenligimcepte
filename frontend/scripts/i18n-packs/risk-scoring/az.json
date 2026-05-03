@@ -1,0 +1,780 @@
+{
+  "riskScoring": {
+    "classification": {
+      "bow_tie": {
+        "critical": {
+          "action": "İşi dayandır; maneələri yenidən dizayn et",
+          "label": "Kritik"
+        },
+        "follow_up": {
+          "action": "Maneələr adekvat; monitorinqə davam et",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Təcili maneə gücləndirilməsi; prosesi nəzərdən keçir",
+          "label": "Yüksək"
+        },
+        "low": {
+          "action": "Maneə effektivliyini nəzərdən keçir",
+          "label": "Aşağı"
+        },
+        "medium": {
+          "action": "Əlavə maneələr əlavə et",
+          "label": "Orta"
+        }
+      },
+      "checklist": {
+        "critical": {
+          "action": "Fəaliyyəti dayandır; tam yenidən baxış",
+          "label": "Kritik olaraq qeyri-adekvat"
+        },
+        "follow_up": {
+          "action": "Mövcud təcrübəni saxla",
+          "label": "Uyğun"
+        },
+        "high": {
+          "action": "Təcili düzəldici tədbirlərə başla",
+          "label": "Qeyri-adekvat"
+        },
+        "low": {
+          "action": "Qısa müddətdə boşluqları bağla",
+          "label": "Məqbul"
+        },
+        "medium": {
+          "action": "Daha geniş təkmilləşdirmə planı hazırla",
+          "label": "Təkmilləşdirmə lazımdır"
+        }
+      },
+      "fk": {
+        "critical": {
+          "action": "İşi dərhal dayandır",
+          "label": "Çox yüksək risk"
+        },
+        "follow_up": {
+          "action": "Təkmilləşdirmə təklifləri lazım ola bilər; təcili tədbirlər yoxdur",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Dərhal tədbirlər; işi dayandırmağı nəzərdən keçir",
+          "label": "Yüksək risk"
+        },
+        "low": {
+          "action": "Nəzarətdə saxla; təkmilləşdirmələri planlaşdır",
+          "label": "Orta narahatlıq"
+        },
+        "medium": {
+          "action": "Qısa müddətdə tədbirlər gör",
+          "label": "Əhəmiyyətli"
+        }
+      },
+      "fmea": {
+        "critical": {
+          "action": "İşi dayandır; kök səbəb analizini həyata keçir",
+          "label": "Kritik risk"
+        },
+        "follow_up": {
+          "action": "Mövcud nəzarət kifayətdir; monitorinqə davam et",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Təcili tədbirlər; dizayn dəyişikliyini nəzərdən keçir",
+          "label": "Yüksək risk"
+        },
+        "low": {
+          "action": "Təkmilləşdirmələri planlaşdır",
+          "label": "Aşağı risk"
+        },
+        "medium": {
+          "action": "Tədbirlər gör; nəzarəti gücləndir",
+          "label": "Orta risk"
+        }
+      },
+      "fta": {
+        "critical": {
+          "action": "İşlətmə; kök səbəbləri aradan qaldır",
+          "label": "Kritik"
+        },
+        "follow_up": {
+          "action": "Sistem etibarlılığı adekvat",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Sistemi yenidən dizayn et",
+          "label": "Yüksək"
+        },
+        "low": {
+          "action": "Ehtiyat/yedək sistemləri qiymətləndir",
+          "label": "Aşağı"
+        },
+        "medium": {
+          "action": "Kritik komponentlərə ehtiyat əlavə et",
+          "label": "Orta"
+        }
+      },
+      "hazop": {
+        "critical": {
+          "action": "Prosesi dayandır; dizaynı yenidən işlə",
+          "label": "Dözülməz"
+        },
+        "follow_up": {
+          "action": "Mövcud nəzarət kifayətdir",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Proses dəyişikliyi və ya əlavə maneə tələb olunur",
+          "label": "Yüksək"
+        },
+        "low": {
+          "action": "Monitorinq və təkmilləşdirmə planlaşdır",
+          "label": "Aşağı"
+        },
+        "medium": {
+          "action": "Əlavə qoruyucu təbəqələri qiymətləndir",
+          "label": "Orta"
+        }
+      },
+      "lopa": {
+        "critical": {
+          "action": "Prosesi dayandır; dizaynı yenidən işlə",
+          "label": "Dözülməz"
+        },
+        "follow_up": {
+          "action": "Mövcud qoruyucu təbəqələr kifayətdir",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Çoxlu təbəqələr və ya proses dəyişikliyi tələb olunur",
+          "label": "Yüksək risk"
+        },
+        "low": {
+          "action": "Ağlabatan dərəcədə aşağı",
+          "label": "ALARP"
+        },
+        "medium": {
+          "action": "Əlavə qoruyucu təbəqə əlavə et",
+          "label": "Təkmilləşdirmə lazımdır"
+        }
+      },
+      "matrix": {
+        "critical": {
+          "action": "İşi dərhal dayandır; təcili tədbirlər",
+          "label": "Dözülməz"
+        },
+        "follow_up": {
+          "action": "Əlavə tədbirlər lazım olmaya bilər; monitorinq kifayətdir",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Tezliklə tədbir gör",
+          "label": "Yüksək risk"
+        },
+        "low": {
+          "action": "Mövcud nəzarət adekvat; müşahidəni davam etdir",
+          "label": "Aşağı risk"
+        },
+        "medium": {
+          "action": "Təkmilləşdirmə fəaliyyətlərini planlaşdır",
+          "label": "Orta risk"
+        }
+      },
+      "r2d": {
+        "critical": {
+          "action": "İşin dayandırılmasını qiymətləndir",
+          "label": "Kritik"
+        },
+        "follow_up": {
+          "action": "Rutin monitorinq kifayətdir",
+          "label": "Monitorinq"
+        },
+        "high": {
+          "action": "Prioritet müdaxilə tələb olunur",
+          "label": "Yüksək"
+        },
+        "low": {
+          "action": "Strukturlaşdırılmış yenidən qiymətləndirmə planlaşdır",
+          "label": "Aşağı"
+        },
+        "medium": {
+          "action": "Artırılmış nəzarət tələb olunur",
+          "label": "Orta"
+        }
+      }
+    },
+    "fk": {
+      "exposure": {
+        "v0_5": "Çox nadir (ildə bir dəfə)",
+        "v1": "Nadir (ayda bir dəfə)",
+        "v10": "Davamlı (günün çox hissəsi)",
+        "v2": "Arabir (həftədə bir dəfə)",
+        "v3": "Bəzən (həftədə bir neçə dəfə)",
+        "v6": "Tez-tez (gündəlik)"
+      },
+      "likelihood": {
+        "v0_1": "Demək olar ki, mümkünsüz",
+        "v0_2": "Çox az ehtimal",
+        "v0_5": "Gözlənilməz, lakin mümkün",
+        "v1": "Aşağı ehtimal, nəzərə alınmalı",
+        "v10": "Çox yüksək ehtimal / gözlənilən",
+        "v3": "Nadir, lakin mümkün",
+        "v6": "Kifayət qədər yüksək ehtimal"
+      },
+      "severity": {
+        "v1": "Nəzərəçarpan, ilk yardım",
+        "v100": "Kütləvi fəlakət, çoxsaylı ölüm",
+        "v15": "Çox ciddi, əza itkisi",
+        "v3": "Əhəmiyyətli, xarici müalicə",
+        "v40": "Fəlakət, tək ölüm",
+        "v7": "Ciddi, daimi zərər"
+      }
+    },
+    "fmea": {
+      "detection": {
+        "v1": "Demək olar ki, mütləq aşkarlama",
+        "v10": "Aşkar edilə bilməz",
+        "v2": "Çox yüksək aşkarlama şansı",
+        "v3": "Yüksək şans",
+        "v4": "Orta-yüksək",
+        "v5": "Orta",
+        "v6": "Aşağı-orta",
+        "v7": "Aşağı",
+        "v8": "Çox aşağı",
+        "v9": "Uzaq şans"
+      },
+      "occurrence": {
+        "v1": "Demək olar ki, mümkünsüz (< 1/1,000,000)",
+        "v10": "Demək olar ki, mütləq (≥ 1/2)",
+        "v2": "Uzaq (1/20,000)",
+        "v3": "Çox aşağı (1/4,000)",
+        "v4": "Aşağı (1/1,000)",
+        "v5": "Orta-aşağı (1/400)",
+        "v6": "Orta (1/80)",
+        "v7": "Orta-yüksək (1/40)",
+        "v8": "Yüksək (1/20)",
+        "v9": "Çox yüksək (1/8)"
+      },
+      "severity": {
+        "v1": "Heç bir təsir — fərq edilməz",
+        "v10": "Fəlakətli — ölüm / kütləvi qəza",
+        "v2": "Çox kiçik — əhəmiyyətsiz təsir",
+        "v3": "Kiçik — cüzi narahatlıq",
+        "v4": "Aşağı — performans düşməsi",
+        "v5": "Orta — əhəmiyyətli performans itkisi",
+        "v6": "Yüksək — sistem funksiyası pozulub",
+        "v7": "Çox yüksək — işləmir",
+        "v8": "Təhlükəli (xəbərdarlıqla) — yaralanma riski",
+        "v9": "Təhlükəli (xəbərdarlıq olmadan) — ciddi yaralanma"
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "after": "Sonra",
+        "before": "Əvvəl",
+        "early": "Erkən",
+        "late": "Gec",
+        "less": "Az",
+        "more": "Çox",
+        "noNot": "Yox / Deyil",
+        "otherThan": "Başqa",
+        "partOf": "Hissəsi",
+        "reverse": "Əks"
+      },
+      "parameters": {
+        "composition": "Tərkib",
+        "flow": "Axın",
+        "level": "Səviyyə",
+        "mixing": "Qarışdırma",
+        "ph": "pH",
+        "pressure": "Təzyiq",
+        "reaction": "Reaksiya",
+        "speed": "Sürət",
+        "temperature": "Temperatur",
+        "time": "Vaxt"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v0_00001": "100,000 ildə bir dəfə — son dərəcə nadir",
+        "v0_0001": "10,000 ildə bir dəfə — çox nadir",
+        "v0_001": "1,000 ildə bir dəfə — nadir",
+        "v0_01": "100 ildə bir dəfə — ara-sıra",
+        "v0_1": "10 ildə bir dəfə — tez-tez",
+        "v1": "İldə bir dəfə — çox tez-tez"
+      },
+      "pfd": {
+        "v0_001": "Avtomatik təhlükəsizlik sistemi (SIL-1 sinfi)",
+        "v0_01": "Təlim keçmiş operator cavabı / siqnal",
+        "v0_1": "Sadə inzibati nəzarət"
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "Çox aşağı (demək olar ki, mümkünsüz)"
+        },
+        "i2": {
+          "description": "Aşağı (nadir, gözlənilməz)"
+        },
+        "i3": {
+          "description": "Orta (ehtimalı az, lakin mümkün)"
+        },
+        "i4": {
+          "description": "Yüksək (ehtimallı, təəccüblü deyil)"
+        },
+        "i5": {
+          "description": "Çox yüksək (gözlənilən, qaçınılmaz)"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "Çox kiçik (iş vaxtı itkisi yoxdur)"
+        },
+        "i2": {
+          "description": "Kiçik (iş vaxtı itkisi olmayan yaralanma)"
+        },
+        "i3": {
+          "description": "Orta (iş vaxtı itkisi olan yaralanma)"
+        },
+        "i4": {
+          "description": "Böyük (daimi zərər, amputasiya)"
+        },
+        "i5": {
+          "description": "Fəlakətli (ölüm, çoxsaylı ölümlər)"
+        }
+      }
+    },
+    "methods": {
+      "bow_tie": {
+        "description": "Bow-tie — təhlükə–maneə–nəticə",
+        "name": "Bow-Tie",
+        "tooltip": "Təhdid ehtimalı və nəticə şiddəti ilə profilaktik və azaldıcı maneələr; maneə gücündən qalan risk."
+      },
+      "checklist": {
+        "description": "Yoxlama siyahısı — uyğunluq faizi",
+        "name": "Yoxlama siyahısı",
+        "tooltip": "OK / Deyil / Qismən elementlərdən çəkili uyğunluq—auditlər və yoxlamalar üçün yaxşıdır."
+      },
+      "fine_kinney": {
+        "description": "Ehtimal × Şiddət × Məruz qalma hasili",
+        "name": "Fine-Kinney",
+        "tooltip": "Ümumi kəmiyyət risk metodu: L (0.1–10), S (1–100), E (0.5–10); ISO 31000 ilə uyğunlaşır."
+      },
+      "fmea": {
+        "description": "Nasazlıq Rejimi və Təsir Analizi — RPN",
+        "name": "FMEA",
+        "tooltip": "Şiddət (1–10) × Baş verməsi (1–10) × Aşkarlanması (1–10) = RPN. Əməliyyatlar və texniki xidmət üçün ideal; IEC 60812."
+      },
+      "fta": {
+        "description": "Nasazlıq ağacı analizi — sistem etibarlılığı",
+        "name": "FTA",
+        "tooltip": "VƏ/VƏ YA qapıları ilə sistem nasazlığını parçalayır; aviasiya, nüvə və kritik sistemlərdə istifadə olunur; IEC 61025."
+      },
+      "hazop": {
+        "description": "Təhlükə və əməliyyat qabiliyyəti tədqiqi",
+        "name": "HAZOP",
+        "tooltip": "Bələdçi sözlər (Yox, Az, Çox, Əks, …) proses sapınlarını araşdırır; kimyəvi/neft zavodlarında yaygındır; IEC 61882."
+      },
+      "jsa": {
+        "description": "İş təhlükəsizliyi analizi — addım əsaslı təhlükələr",
+        "name": "JSA",
+        "tooltip": "Hər addım üçün Şiddət × Ehtimal / Nəzarət effektivliği; tikinti və sahə işləri üçün vacibdir."
+      },
+      "l_matrix": {
+        "description": "5×5 ehtimal–şiddət risk matrisi",
+        "name": "L-tip matris",
+        "tooltip": "Ehtimal (1–5) və şiddət (1–5) seçin; 25 xanalı rəng matrisindən riski oxuyun (Türkiyə İMTƏ təcrübəsi ilə uyğunlaşdırılmış)."
+      },
+      "lopa": {
+        "description": "Qoruma təbəqəsi analizi — tezlik azalması",
+        "name": "LOPA",
+        "tooltip": "Başlanğıc tezliyini təbəqə PFD dəyərləri ilə vurun; proses təhlükəsizliyində tez-tez SIL hədəfləri ilə cütləşdirilir."
+      },
+      "r_skor": {
+        "description": "9 parametrli çəkili sahə skrininq xalı",
+        "name": "R-SKOR 2D",
+        "tooltip": "RiskNova metodu: doqquz parametr (C1–C9) vizual və sahə girişlərini çəkiləndirir; şəkillərdən avtomatlaşdırılmış qiymətləndirməni dəstəkləyir."
+      }
+    },
+    "panel": {
+      "bowtie": {
+        "consequence": "Nəticə şiddəti",
+        "mitigation": "Azaldıcı maneələr",
+        "prevention": "Profilaktik maneələr",
+        "rawRisk": "Xam risk",
+        "residualRisk": "Qalan risk",
+        "threat": "Təhdid ehtimalı"
+      },
+      "checklist": {
+        "add": "+ Əlavə et",
+        "compliantLine": "{n} uyğun",
+        "itemPlaceholder": "Nəzarət elementi…",
+        "itemsHeading": "Elementləri yoxlayın ({count})",
+        "nonCompliantLine": "{n} uyğun deyil",
+        "partialLine": "{n} qismən",
+        "removeTitle": "Sil",
+        "statusKismi": "Qismən",
+        "statusNa": "Uyğun deyil",
+        "statusUygun": "Uyğun",
+        "statusUygunDegil": "Uyğun deyil"
+      },
+      "fmea": {
+        "detection": "Aşkarlama (D)",
+        "formula": "S × O × D = RPN",
+        "occurrence": "Baş verma (O)",
+        "severity": "Şiddət (S)"
+      },
+      "fta": {
+        "add": "+ Əlavə et",
+        "componentDefault": "Komponent {n}",
+        "componentPlaceholder": "Komponent adı",
+        "componentsHeading": "Komponentlər ({count})",
+        "failureRateTitle": "Nasazlıq ehtimalı (0–1)",
+        "gate": "Qapı",
+        "gateType": "Qapı növü:",
+        "removeTitle": "Sil",
+        "systemCriticality": "Sistem kritikliyi",
+        "systemProb": "Sistem P"
+      },
+      "hazop": {
+        "detectability": "Aşkarlanabilirlik",
+        "detectEasy": "Asan",
+        "detectHard": "Çətin",
+        "deviation": "Sapma təsviri",
+        "deviationPlaceholder": "Sapmanı təsvir edin…",
+        "guideWord": "Bələdçi söz",
+        "likelihood": "Ehtimal",
+        "parameter": "Proses parametri",
+        "severity": "Şiddət"
+      },
+      "jsa": {
+        "add": "+ Əlavə et",
+        "avg": "Ort",
+        "control": "Nəzarət",
+        "controlsPlaceholder": "Nəzarət tədbirləri…",
+        "hazardPlaceholder": "Təhlükə…",
+        "highRisk": "Yüksək riskli addımlar",
+        "jobPlaceholder": "İş adı…",
+        "jobTitle": "İş başlığı",
+        "likelihood": "Ehtimal",
+        "max": "Maks",
+        "removeTitle": "Sil",
+        "severity": "Şiddət",
+        "stepDefault": "Addım {n}",
+        "stepDescPlaceholder": "Addım təsviri…",
+        "stepScoreIntro": "Addım balı:",
+        "stepsHeading": "İş addımları ({count})"
+      },
+      "lopa": {
+        "addLayer": "+ Əlavə et",
+        "consequence": "Nəticə şiddəti",
+        "consequenceV1": "Aşağı",
+        "consequenceV2": "Kiçik",
+        "consequenceV3": "Orta",
+        "consequenceV4": "Şiddətli",
+        "consequenceV5": "Fəlakətli",
+        "initFreq": "Başlanğıc hadisə tezliyi",
+        "layerDefault": "Qat {n}",
+        "layerNamePlaceholder": "Qat adı",
+        "layerPfd": "Qat PFD",
+        "layersHeading": "Mühafizə qatları ({count})",
+        "meetsTarget": "Məqbul hədəfə uyğundur",
+        "removeTitle": "Sil",
+        "riskReduction": "Risk azaldılması",
+        "target": "Hədəf",
+        "targetMet": "Yerinə yetirildi",
+        "targetNotMet": "Yerinə yetirilmədi"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employee_representative": "İşçi nümayəndəsi",
+        "employer": "İşəgötürən",
+        "employer_representative": "İşəgötürən nümayəndəsi",
+        "knowledgeable_employee": "Risklər haqqında məlumatlı işçi",
+        "ohs_specialist": "ƏMTƏ mütəxəssisi",
+        "other_health_personnel": "Digər səhiyyə personalı",
+        "support_staff": "Dəstək personalı",
+        "workplace_physician": "İş yeri həkimi"
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "description": "Sahədə müşahidə edilən təhlükəli obyektlərin sayı/sıxlığı",
+        "label": "Təhlükə sıxlığı"
+      },
+      "c2": {
+        "description": "Çatışmayan dəbilqə, əlcək, eynək və s.",
+        "label": "ŞMV boşluqları"
+      },
+      "c3": {
+        "description": "Məhdud zonaya giriş, qorunmayan iş, yıxılma təhlükəsi",
+        "label": "Davranış riski"
+      },
+      "c4": {
+        "description": "İstilik, səs-küy, vibrasiya və oxşar stress faktorları",
+        "label": "Ətraf mühit stressi"
+      },
+      "c5": {
+        "description": "Qaz sızıntıları, kimyəvi maddələr, elektrik təhlükələri",
+        "label": "Kimyəvi/elektrik"
+      },
+      "c6": {
+        "description": "Bağlı çıxışlar, yaş döşəmələr, keçid maneələri",
+        "label": "Giriş/maneə"
+      },
+      "c7": {
+        "description": "Yan keçirilmiş qoruyucular, gecikmiş texniki xidmət",
+        "label": "Maşın/proses"
+      },
+      "c8": {
+        "description": "Forklift intensivliği, xətt kəsişmələri, piyada-nəqliyyat konflikti",
+        "label": "Nəqliyyat hərəkəti"
+      },
+      "c9": {
+        "description": "Təlim boşluqları, çatışmayan xəbərdarlıq lövhələri",
+        "label": "Təşkilati yük"
+      },
+      "source": {
+        "visualAnalysis": "Vizual analiz"
+      }
+    },
+    "ui": {
+      "fk": {
+        "exposure": "Məruz qalma (E)",
+        "likelihood": "Ehtimal (L)",
+        "severity": "Şiddət (S)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "Ehtimal ({n})",
+        "severityHeading": "Şiddət ({n})"
+      },
+      "page": {
+        "analysisNotePlaceholder": "Hər sətir risk mövzusu və ya uyğunsuzluq qrupudur. Hər sətir üçün bir və ya daha çox foto əlavə edilə bilər.",
+        "analysisTitlePlaceholder": "Sahə risk analizi",
+        "describeRiskGroup": "Risk qrupunu qısaca təsvir edin"
+      },
+      "r2d": {
+        "base": "Əsas",
+        "dominant": "Dominant",
+        "parameters": "Parametrlər",
+        "peak": "Pik"
+      },
+      "severity": {
+        "critical": "Kritik",
+        "high": "Yüksək",
+        "low": "Aşağı",
+        "medium": "Orta"
+      }
+    },
+    "wizard": {
+      "common": {
+        "add": "Əlavə et",
+        "address": "Ünvan",
+        "back": "Geri",
+        "cancel": "Ləğv et",
+        "companyFallback": "Şirkət",
+        "delete": "Sil",
+        "description": "Təsvir",
+        "findings": "Nəticələr",
+        "goToResults": "Nəticələrə keç",
+        "images": "Şəkillər",
+        "lines": "Sətirlər",
+        "location": "Yer",
+        "method": "Metod",
+        "next": "Növbəti",
+        "no": "Xeyr",
+        "report": "Hesabat",
+        "risk": "Risk",
+        "row": "Sətir",
+        "save": "Saxla",
+        "saving": "Saxlanılır…",
+        "scoreDetailPrefix": "Xal təfərrüatı —",
+        "type": "Növ",
+        "update": "Yenilə",
+        "visual": "Şəkil",
+        "yes": "Bəli"
+      },
+      "header": {
+        "backToList": "Siyahıya qayıt",
+        "badgeAiManual": "AI + əl ilə tapıntılar",
+        "badgeExport": "PDF / Word / Excel",
+        "newAnalysis": "Yeni analiz",
+        "wizardDescription": "Şirkət seçin, komanda təyin edin, şəkillər yükləyin, sonra AI + əl ilə tapıntılar və qiymətləndirmə aparın.",
+        "wizardTitle": "Vizual risk analizi"
+      },
+      "list": {
+        "companyLabel": "Şirkət / təşkilat",
+        "companyPlaceholder": "— Şirkət seçin —",
+        "confirmDelete": "Əminsiniz?",
+        "deleteAnalysis": "Sil",
+        "description": "Şirkət seçin, keçmiş analizlərə baxın və ya yenisini başladın.",
+        "emptyDescription": "Bu şirkət üçün ilk risk analizini başlatmaq üçün yuxarıdakı düyməni istifadə edin.",
+        "emptyTitle": "Hələ analiz yoxdur",
+        "eyebrow": "Risk analizi",
+        "findingsCount": "{count} tapıntı",
+        "historyCount": "{count} saxlanılmış analiz",
+        "historyTitle": "{name} — analiz tarixçəsi",
+        "newAnalysis": "+ Yeni analiz başlat",
+        "statusArchived": "Arxivləşdirilmiş",
+        "statusCompleted": "Tamamlanmış",
+        "statusDraft": "Layihə",
+        "title": "Risk analizi idarəetməsi"
+      },
+      "messages": {
+        "analysisComplete": "Analiz tamamlandı!",
+        "analysisFailed": "Analiz tamamlana bilmədi.",
+        "analysisFailedDetail": "AI analizi uğursuz oldu. {detail}",
+        "analysisPartial": "AI analizi qismən tamamlandı. {successful}/{total} şəkil işləndi; {errors} şəkildə xətalar.",
+        "analysisStarting": "Analiz başlayır…",
+        "analysisSummary": "AI analizi bitdi. {risks} risk, {positive} müsbət müşahidə.",
+        "analyzingImageProgress": "Şəkil analiz edilir {current}/{total}: {fileName}",
+        "analyzingRowImage": "Şəkil analiz edilir: Sıra {row}, {fileName}…",
+        "genericAiError": "OpenAI və ya Anthropic mərhələsində xəta baş verdi.",
+        "needImageToAnalyze": "Analizi başlatmaq üçün ən azı bir şəkil əlavə edin."
+      },
+      "methodCard": {
+        "params": "{count} parametr",
+        "score": "Xal:"
+      },
+      "nav": {
+        "aiAnalyzingShort": "Analiz edilir…",
+        "aiStartShort": "AI analizini başlat"
+      },
+      "notifications": {
+        "savedBody": "{title} — {findings} tapıntı, {critical} kritik/yüksək",
+        "savedTitle": "Risk analizi saxlanıldı",
+        "updatedTitle": "Risk analizi yeniləndi"
+      },
+      "save": {
+        "error": "Saxlama zamanı xəta baş verdi.",
+        "noCompany": "Şirkət seçmədən saxlamaq mümkün deyil.",
+        "oversized": "{fileName} 10 MB həddini aşır. Saxlamadan əvvəl daha kiçik şəkil yükləyin.",
+        "successNew": "Analiz uğurla saxlanıldı!",
+        "successUpdated": "Analiz uğurla yeniləndi!"
+      },
+      "step1": {
+        "analysisNote": "Analiz qeydi",
+        "analysisTitle": "Analiz başlığı",
+        "company": "Şirkət / təşkilat",
+        "companyCardAddress": "Ünvan:",
+        "companyCardType": "Növ:",
+        "companyPlaceholder": "Şirkət / təşkilat seçin",
+        "companyRequired": "Analiz üçün şirkət seçmək tələb olunur.",
+        "department": "Şöbə / bölmə",
+        "departmentPlaceholder": "Şöbə seçin",
+        "departmentRequired": "Şöbə seçimi tələb olunur.",
+        "editCompanyStructure": "Şirkət strukturunu redaktə et",
+        "location": "Yer / iş sahəsi",
+        "locationPlaceholder": "Yeri seçin",
+        "locationRequired": "Yer seçimi tələb olunur.",
+        "method": "Təhlil metodu",
+        "subtitle": "Bu risk təhlilinin hansı şirkət, yer və departamentə aid olduğunu seçin.",
+        "title": "Təhlil konteksti"
+      },
+      "step2": {
+        "addParticipant": "İştirakçını əl ilə əlavə et",
+        "certificate": "Sertifikat nömrəsi (varsa)",
+        "certificatePlaceholder": "Tətbiq olunarsa daxil edin",
+        "fullName": "Tam ad",
+        "noTeamBody": "Bu şirkət üçün hələ komanda üzvləri təyin edilməyib. Şirkət səhifəsində Komanda tabını açın, \"Risk qiymətləndirmə komandası\" yaradın və üzvlər əlavə edin — onlar burada avtomatik görünəcək.",
+        "noTeamLink": "Şirkət komanda idarəçiliyinə keç",
+        "noTeamTitle": "Risk qiymətləndirmə komandası təyin edilməyib",
+        "participantN": "İştirakçı {n}",
+        "pickFromTeam": "Şirkət komandasından seç",
+        "rolePlaceholder": "Rolu seçin",
+        "roleType": "Rol / vəzifə növü",
+        "subtitle": "Saxlanmış personaldan seçin və ya iştirakçıları əl ilə əlavə edin.",
+        "title": "Risk təhlilində iştirak edən insanlar",
+        "titleField": "Rol / vəzifə təsviri",
+        "titlePlaceholder": "məsələn, A sinif mütəxəssisi"
+      },
+      "step3": {
+        "addImage": "Şəkil əlavə et",
+        "aiAnalyzing": "AI təhlili aparılır…",
+        "aiStart": "AI risk təhlilini başlat",
+        "aiSub": "Nova AI hər şəkli ayrıca təhlil edir.",
+        "bulkUpload": "Toplu yükləmə (hər biri ayrı sıra kimi)",
+        "deleteRow": "Sıranı sil",
+        "newRow": "Sıra əlavə et",
+        "rowHint": "Bu sıra altında geniş və yaxın çəkilişləri qruplaşdırın.",
+        "rowN": "Sıra {n}",
+        "rowTitle": "Sıra başlığı",
+        "rowTitlePlaceholder": "məsələn, Yığma sahəsi",
+        "subtitle": "Hər sıra bir risk mövzusudur. Şəkillər yükləyin, sonra AI təhlilini başladın.",
+        "summaryCompany": "Şirkət",
+        "summaryImages": "Şəkillər",
+        "summaryLocation": "Yer",
+        "summaryMethod": "Metod",
+        "title": "Risk sıraları və şəkillər"
+      },
+      "step4": {
+        "addedLater": "Sonra əlavə edildi",
+        "addRiskPin": "Risk pin əlavə et",
+        "aiAnalyzingDetail": "Nova AI hər şəkli təhlil edir…",
+        "analyzingInline": "Təhlil edilir…",
+        "areaAssessment": "Sahə qiymətləndirməsi",
+        "avgScore": "Orta bal",
+        "cannotAnalyzeBody": "Bu şəkil risk analizi üçün uyğun deyil.",
+        "cannotAnalyzeTitle": "Risk analizi həyata keçirilə bilmir",
+        "capaBadge": "CAPA namizədi",
+        "capaCandidate": "CAPA namizədi",
+        "cleanNoRisk": "Təmiz — risk aşkar edilməyib",
+        "confidenceHigh": "Təsdiqlənmiş tapıntı",
+        "confidenceLow": "Yoxlama tövsiyə olunur",
+        "confidenceMedium": "AI tapıntısı",
+        "criticalHigh": "Kritik / yüksək",
+        "deleteFindingAria": "Tapıntını sil",
+        "deleteFindingConfirm": "{title}\" tapıntısını silmək istəyirsiniz?",
+        "deleteFindingTitle": "Tapıntını sil",
+        "detectedPrefix": "Aşkar edildi:",
+        "emptyResultsDesc": "3-cü addımda şəkilləri yükləyin və analiz aparın.",
+        "emptyResultsTitle": "Hələ nəticə yoxdur",
+        "findingTitle": "Tapıntı başlığı",
+        "findingTitlePlaceholder": "məs. Çatışmayan maneə",
+        "manualPinConfirm": "Əlavə et",
+        "manualPinHint": " Siz manual pin ilə öz tapıntınızı əlavə edə bilərsiniz.",
+        "manualPinTitle": "Manual risk pin əlavə et",
+        "metaEyebrowArea": "Sahə qiymətləndirməsi",
+        "metaEyebrowPositive": "Müsbət müşahidələr",
+        "noRiskDetectedBody": "AI bu şəkildə mənalı təhlükə və ya uyğunsuzluq tapmadı.",
+        "noRiskDetectedTitle": "Risk aşkarlanmadı",
+        "noRiskThisImageBody": "AI bu şəkildə konkret təhlükə tapmadı. Siz hələ də əl ilə tapıntı əlavə edə bilərsiniz.",
+        "noRiskThisImageTitle": "Bu şəkildə əhəmiyyətli risk yoxdur",
+        "notRealPhotoBody": "Bu şəkil çizim, illüstrasiya və ya sintetik renderdir. Risk analizi yalnız real sahə fotoları üzərində işləyir.",
+        "notRealPhotoTitle": "Real foto deyil",
+        "peopleDetected": "{count} nəfər aşkarlandı",
+        "photoQuality": "Şəkil keyfiyyəti:",
+        "photoQualityLow": "Aşağı",
+        "photoQualityMedium": "Orta",
+        "pinBanner": "Risk pini əlavə etmək üçün şəkilə klikləyin",
+        "pinModeActive": "Pin rejimi aktiv...",
+        "positiveFindings": "Müsbət müşahidələr",
+        "positiveObservationsHint": " Müsbət müşahidələr aşağıda siyahıya alınıb.",
+        "resultsSubtitle": "Risk kartları şəkildəki annotasiyalarla əlaqəli qalır. Xalı dəyişmək üçün parametrləri tənzimləyin.",
+        "resultsTitle": "Annotasiya edilmiş tapıntılar",
+        "riskCount": "Risk: {count}",
+        "rowImagesFindings": "Şəkillər: {images} · Tapıntılar: {findings}",
+        "saveWarning": "Nəticələr hələ saxlanılmayıb! Saxlamadan çıxsanız, bütün tapıntılar itəcək.",
+        "scorePanelIntro": "Xal təfərrüatı — {method}",
+        "severity": "Şiddət",
+        "totalFindings": "Ümumi tapıntılar",
+        "visualN": "Şəkil {n}"
+      },
+      "steps": {
+        "context": "Analiz konteksti",
+        "images": "Şəkillər",
+        "results": "Nəticələr",
+        "team": "Analiz komandası"
+      },
+      "validate": {
+        "company": "Əvvəlcə şirkət / təşkilat seçin.",
+        "department": "Şöbə / bölmə seçin.",
+        "firmLocationDept": "Şirkət, məkan və şöbə seçin.",
+        "location": "İş yerini seçin.",
+        "participants": "Ən azı bir məsul şəxsin adını və rolunu daxil edin.",
+        "step2Participants": "Ən azı bir məsul şəxsin adını və rolunu daxil edin.",
+        "step3Images": "Ən azı bir şəkil əlavə edin."
+      }
+    }
+  }
+}

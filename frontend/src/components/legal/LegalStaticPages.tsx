@@ -6,7 +6,7 @@ import { PublicLegalFooter } from "@/components/layout/public-legal-footer";
 type Section = { title: string; content: string };
 
 export async function legalSectionsMetadata(
-  docKey: "privacy" | "terms",
+  docKey: "privacy" | "terms" | "cookiePolicy",
   canonicalPath: string,
 ): Promise<Metadata> {
   const t = await getTranslations(`legal.${docKey}`);
@@ -51,7 +51,7 @@ export async function legalRefundMetadata(canonicalPath: string): Promise<Metada
 export async function LegalSectionsDocument({
   docKey,
 }: {
-  docKey: "privacy" | "terms";
+  docKey: "privacy" | "terms" | "cookiePolicy";
 }) {
   const t = await getTranslations(`legal.${docKey}`);
   const sections = t.raw("sections") as Section[];

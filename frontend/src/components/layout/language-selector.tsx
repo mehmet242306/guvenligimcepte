@@ -180,7 +180,7 @@ const languages: Language[] = [
 export function LanguageSelector({ variant = "light" }: { variant?: "light" | "dark" }) {
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; right: number }>({ top: 0, right: 0 });
-  const { locale, setLocale } = useI18n();
+  const { locale, setLocale, t } = useI18n();
   const triggerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -277,7 +277,7 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
             ? "text-foreground/70 hover:text-foreground hover:bg-secondary"
             : "text-white/70 hover:text-white hover:bg-white/[0.08]",
         )}
-        aria-label="Dil seçimi"
+        aria-label={t("common.languagePickerAria")}
       >
         <FlagIcon />
         <span className="hidden sm:inline">{current.code.toUpperCase()}</span>

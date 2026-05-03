@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 import { createClient } from "@/lib/supabase/client";
 import { quickSignOut } from "@/lib/auth/quick-sign-out";
+import { formatRelativePast } from "@/lib/format-relative-past";
 import {
   getActiveWorkspace,
   listMyWorkspaces,
@@ -148,10 +149,11 @@ function SecondaryNavLinksDesktop({
   resolveNavLabel,
   showWorkspaceSwitcher,
 }: SecondaryNavLinksBaseProps) {
+  const { t } = useI18n();
   return (
     <>
       {showWorkspaceSwitcher ? (
-        <ActiveCompanyNavLink label="Firma" locked={disableWorkspaceModules} />
+        <ActiveCompanyNavLink locked={disableWorkspaceModules} />
       ) : null}
       {items.map((item) => {
         const act = secondaryNavItemActive(pathname, item.href);
@@ -172,7 +174,7 @@ function SecondaryNavLinksDesktop({
               key={linkKey}
               className={classes}
               aria-disabled="true"
-              title="Bu modulu acmak icin once calisma alani olustur"
+              title={t("header.lockedModuleTooltip")}
             >
               {resolveNavLabel(item)}
             </span>
@@ -199,10 +201,11 @@ function SecondaryNavLinksMobile({
   resolveNavLabel,
   showWorkspaceSwitcher,
 }: SecondaryNavLinksBaseProps) {
+  const { t } = useI18n();
   return (
     <>
       {showWorkspaceSwitcher ? (
-        <ActiveCompanyNavLink label="Firma" locked={disableWorkspaceModules} />
+        <ActiveCompanyNavLink locked={disableWorkspaceModules} />
       ) : null}
       {items.map((item) => {
         const act = secondaryNavItemActive(pathname, item.href);
@@ -223,7 +226,7 @@ function SecondaryNavLinksMobile({
               key={linkKey}
               className={classes}
               aria-disabled="true"
-              title="Bu modulu acmak icin once calisma alani olustur"
+              title={t("header.lockedModuleTooltip")}
             >
               {resolveNavLabel(item)}
             </span>
@@ -289,6 +292,7 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 /* Theme toggle                                                        */
 /* ------------------------------------------------------------------ */
 function ThemeToggle() {
+  const { t } = useI18n();
   const [dark, setDark] = useState(false);
   const mountedRef = useRef(false);
 
@@ -317,7 +321,7 @@ function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      aria-label={dark ? "Açık tema" : "Koyu tema"}
+      aria-label={dark ? t("header.themeLightAria") : t("header.themeDarkAria")}
       className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white sm:h-11 sm:w-11"
     >
       {dark ? (
@@ -334,6 +338,7 @@ function ThemeToggle() {
 /* ------------------------------------------------------------------ */
 
 function NotificationBell() {
+  const { t, locale } = useI18n();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -375,17 +380,6 @@ function NotificationBell() {
     setUnreadCount(0);
   }
 
-  function timeAgo(dateStr: string) {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "Az önce";
-    if (mins < 60) return `${mins} dk önce`;
-    const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours} saat önce`;
-    const days = Math.floor(hours / 24);
-    return `${days} gün önce`;
-  }
-
   function levelColor(level: string) {
     if (level === "critical") return "bg-red-500";
     if (level === "warning") return "bg-amber-500";
@@ -398,7 +392,7 @@ function NotificationBell() {
         type="button"
         onClick={() => { setOpen(!open); if (!open) void loadNotifications(); }}
         className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white sm:h-11 sm:w-11"
-        aria-label="Bildirimler"
+        aria-label={t("header.notificationsAria")}
       >
         <svg className="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
@@ -413,10 +407,10 @@ function NotificationBell() {
       {open && (
         <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-elevated)]">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <h3 className="text-sm font-semibold text-foreground">Bildirimler</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t("header.notificationsTitle")}</h3>
             {unreadCount > 0 && (
               <button type="button" onClick={() => void markAllRead()} className="text-[11px] font-medium text-primary hover:underline">
-                Tümünü okundu işaretle
+                {t("header.markAllRead")}
               </button>
             )}
           </div>
@@ -424,7 +418,7 @@ function NotificationBell() {
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-                Henüz bildirim yok
+                {t("header.noNotificationsYet")}
               </div>
             ) : (
               notifications.map((n) => (
@@ -445,7 +439,7 @@ function NotificationBell() {
                           <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2">{n.message}</p>
                           <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
                             {n.actor_name && <span>{n.actor_name}</span>}
-                            <span>{timeAgo(n.created_at)}</span>
+                            <span>{formatRelativePast(n.created_at, locale)}</span>
                           </div>
                         </div>
                       </div>
@@ -458,7 +452,7 @@ function NotificationBell() {
                         <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2">{n.message}</p>
                         <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
                           {n.actor_name && <span>{n.actor_name}</span>}
-                          <span>{timeAgo(n.created_at)}</span>
+                          <span>{formatRelativePast(n.created_at, locale)}</span>
                         </div>
                       </div>
                     </div>
@@ -474,7 +468,7 @@ function NotificationBell() {
               onClick={() => setOpen(false)}
               className="block text-center text-xs font-medium text-primary hover:underline"
             >
-              Tümünü Gör
+              {t("header.seeAllNotifications")}
             </Link>
           </div>
         </div>
@@ -484,6 +478,7 @@ function NotificationBell() {
 }
 
 function HeaderSignOutButton() {
+  const { t } = useI18n();
   const [signingOut, setSigningOut] = useState(false);
 
   async function handleClick() {
@@ -498,8 +493,8 @@ function HeaderSignOutButton() {
       onClick={() => void handleClick()}
       disabled={signingOut}
       className="inline-flex h-9 w-9 items-center justify-center gap-2 rounded-xl border border-[rgba(231,205,163,0.18)] text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:h-11 sm:w-auto sm:px-3"
-      aria-label="Oturumu kapat"
-      title="Oturumu kapat"
+      aria-label={t("header.signOut")}
+      title={t("header.signOut")}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -516,7 +511,7 @@ function HeaderSignOutButton() {
         <polyline points="16 17 21 12 16 7" />
         <line x1="21" y1="12" x2="9" y2="12" />
       </svg>
-      <span className="hidden 2xl:inline">{signingOut ? "Çıkılıyor..." : "Çıkış"}</span>
+      <span className="hidden 2xl:inline">{signingOut ? t("header.signingOut") : t("header.signOut")}</span>
     </button>
   );
 }
@@ -930,7 +925,7 @@ export function ProtectedShell({
           <div className="flex flex-col items-center gap-3">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-border border-t-primary" />
             <p className="text-sm text-muted-foreground">
-              {authReady ? "Workspace baglami hazirlaniyor..." : "Guvenli oturum dogrulaniyor..."}
+              {authReady ? t("header.workspaceLoading") : t("header.authLoading")}
             </p>
           </div>
         </main>
@@ -978,8 +973,8 @@ export function ProtectedShell({
               <Link
                 href="/profile"
                 className="inline-flex h-9 w-9 items-center justify-center gap-2 rounded-xl text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white sm:h-11 sm:w-auto sm:px-3"
-                aria-label="Profil"
-                title="Profil"
+                aria-label={t("common.profile")}
+                title={t("common.profile")}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20 21a8 8 0 0 0-16 0" />
@@ -991,14 +986,14 @@ export function ProtectedShell({
                 <Link
                   href="/platform-admin"
                   className="inline-flex h-9 w-9 items-center justify-center gap-2 rounded-xl text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white sm:h-11 sm:w-auto sm:px-3"
-                  aria-label="Platform Admin"
-                  title="Platform Admin"
+                  aria-label={t("nav.platformAdminHome")}
+                  title={t("nav.platformAdminHome")}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
                     <path d="M9.5 12.5l1.8 1.8 3.2-4.3" />
                   </svg>
-                  <span className="hidden 2xl:inline">Admin</span>
+                  <span className="hidden 2xl:inline">{t("header.platformAdminShort")}</span>
                 </Link>
               ) : null}
               <HeaderSignOutButton />
@@ -1026,7 +1021,7 @@ export function ProtectedShell({
                         key={"key" in item && item.key ? item.key : item.href}
                         className={classes}
                         aria-disabled="true"
-                        title="Bu modulu acmak icin once calisma alani olustur"
+                        title={t("header.lockedModuleTooltip")}
                       >
                         {resolveNavLabel(item)}
                       </span>
@@ -1101,7 +1096,7 @@ export function ProtectedShell({
                     key={"key" in item && item.key ? item.key : item.href}
                     className={classes}
                     aria-disabled="true"
-                    title="Bu modulu acmak icin once calisma alani olustur"
+                    title={t("header.lockedModuleTooltip")}
                   >
                     {resolveNavLabel(item)}
                   </span>

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import {
   getAccountContextForUser,
   isPrivilegedAccountSelfServiceLoginBlocked,
-  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE,
 } from "@/lib/account/account-routing";
 import type { AccountContextPayload } from "@/lib/account/account-api";
 
@@ -34,7 +34,7 @@ export default async function ProtectedLayout({
     if (isPrivilegedAccountSelfServiceLoginBlocked(ctx)) {
       await supabase.auth.signOut();
       redirect(
-        `/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE)}`,
+        `/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE)}`,
       );
     }
     initialAccountContext = {

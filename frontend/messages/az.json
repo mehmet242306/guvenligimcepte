@@ -1,31 +1,1027 @@
 {
+  "activeCompanyBar": {
+    "companyTypeEnterprise": "Müəssisə",
+    "companyTypeIndividual": "Fərdi",
+    "companyTypeOsgb": "OSGB",
+    "detailLink": "Şirkət təfərrüatları",
+    "detailLinkTitle": "Şirkət təfərrüat səhifəsinə keç",
+    "inactiveBadge": "Qeyri-aktiv şirkət",
+    "nacePrefix": "NACE",
+    "personnelCountTitle": "Aktiv / ümumi personal"
+  },
+  "auth": {
+    "demoModal": {
+      "bodyDisabled": "Demo girişiniz administrator tərəfindən deaktiv edilib.",
+      "bodyExpired": "Demo vaxtınız bitib. RiskNova demo sessiyaları {hours} saata qədər etibarlıdır; bundan sonra sessiya bağlanır.",
+      "calloutDisabledLead": "Qeyd:",
+      "calloutDisabledRest": "Demo hesabları adətən {hours} saatla məhdudlaşır; giriş həmçinin administrator tərəfindən dayandırılmış ola bilər.",
+      "calloutExpiredLead": "Xatırlatma:",
+      "calloutExpiredRest": "Demo araşdırmasını {hours} saat ərzində tamamlayın; bitdikdə öz pulsuz və ya kommersiya hesabınızı yaradaraq davam edə bilərsiniz.",
+      "closeAria": "Bağla",
+      "ctaLater": "Sonra",
+      "ctaPrimary": "Qeydiyyata başla",
+      "pathEnterpriseDesc": "çox-saytlı təşkilatlar",
+      "pathEnterpriseLabel": "Müəssisə",
+      "pathIndividualDesc": "müstəqil peşəkarlar",
+      "pathIndividualLabel": "Fərdi",
+      "pathOsgbDesc": "müştəri firması və personal idarəetməsi",
+      "pathOsgbLabel": "OSGB",
+      "pathsHighlight": "bütün funksiyalara tam giriş",
+      "pathsIntro": "Qaldığınız yerdən davam etmək və əldə etmək üçün",
+      "pathsSuffix": ", hesabınızı yaradın. Üç yoldan birini seçə bilərsiniz:",
+      "subtitle": "RiskNova sınamaq üçün",
+      "title": "Təşəkkürlər!"
+    },
+    "forgotBack": "Girişə qayıt",
+    "forgotButton": "Sıfırlama linkini göndər",
+    "forgotDescription": "E-poçt ünvanınızı daxil edin və sizə parol sıfırlama linki göndərəcəyik.",
+    "forgotPage": {
+      "backToLogin": "Girişə qayıt",
+      "description": "E-poçtunuzu daxil edin və sizə parol sıfırlama linki göndərəcəyik.",
+      "emailHint": "Qeydiyyatdan keçdiyiniz e-poçtu istifadə edin.",
+      "emailLabel": "E-poçt",
+      "emailPlaceholder": "siz@şirkət.com",
+      "eyebrow": "Parol sıfırlanması",
+      "sentBanner": "E-poçt ünvanı düzgündürsə, parol sıfırlama linki göndərdik.",
+      "submitButton": "Sıfırlama linkini göndər",
+      "title": "Parolunuzu sıfırlayın"
+    },
+    "forgotTitle": "Parolunuzu sıfırlayın",
+    "loginButton": "Daxil ol",
+    "loginDescription": "Risk analizi, sahə izləmə və hesabat proseslərini tək platformada idarə etməyə davam edin.",
+    "loginEmail": "E-poçt ünvanı",
+    "loginForgot": "Parolu unutmusan",
+    "loginLoading": "Daxil olunur...",
+    "loginNoAccount": "Hesabınız yoxdur?",
+    "loginPage": {
+      "description": "RiskNova hesabınıza daxil olun. Platforma administratorları admin konsoluna yönləndirilir; digərləri hesab növlərinə uyğun iş sahəsinə yönləndirilir.",
+      "emailLabel": "E-poçt",
+      "emailPlaceholder": "siz@şirkət.com",
+      "eyebrow": "Daxil ol",
+      "footerPrefix": "Hesabınız yoxdur?",
+      "footerRegisterLink": "Qeydiyyatdan keç",
+      "forgotLink": "Parolu unutmusan",
+      "highlight1Desc": "Öz firmalarını, təşkilatlarını və iş sahələrini idarə edən fərdi peşəkarlar üçün.",
+      "highlight1Title": "Fərdi giriş",
+      "highlight2Desc": "OSGB komandaları üçün müştəriləri, personalı, tapşırıqları və risk proseslərini idarə etmək.",
+      "highlight2Title": "OSGB daxil olma",
+      "highlight3Desc": "Platforma administratoru rolu ictimai hesab növü kimi təklif edilmir; uyğun istifadəçilər daxil olduqdan sonra admin konsoluna yönləndirilir.",
+      "highlight3Title": "Platforma administrasiyası",
+      "passwordLabel": "Parol",
+      "passwordPlaceholder": "Parolunuzu daxil edin",
+      "passwordUpdatedBanner": "Parolunuz yeniləndi. Yeni parolunuzla daxil ola bilərsiniz.",
+      "privilegedLoginBlocked": "OSGB və müəssisə hesabları bu daxil olma yolunu istifadə edə bilməz. Qiymət və giriş üçün komandamızla əlaqə saxlayın.",
+      "spotlightP1": "Daxil olma ekranı hamı tərəfindən paylaşılır; sessiyanın ardından yönləndirmə hesab kontekstinizdən asılıdır.",
+      "spotlightP2": "Platforma administratoru rolu ictimai özünəxidmət qeydiyyatında mövcud deyil. Fərdi, OSGB və müəssisə müştəri üzlü hesab yollarıdır.",
+      "submitButton": "Daxil ol",
+      "title": "Hesabınıza daxil olun"
+    },
+    "loginPassword": "Parol",
+    "loginRegister": "Qeydiyyatdan keç",
+    "loginTitle": "Hesabınıza daxil olun",
+    "registerButton": "Qeydiyyatdan Keç",
+    "registerDescription": "OHS proseslərinizi rəqəmsallaşdırın və AI əsaslı qərar qəbuletmə mexanizmlərindən faydalanın.",
+    "registerEmail": "E-poçt ünvanı",
+    "registerHasAccount": "Artıq hesabınız var?",
+    "registerLoading": "Hesab yaradılır...",
+    "registerLogin": "Daxil ol",
+    "registerName": "Tam Ad",
+    "registerPage": {
+      "checkEmailBanner": "Qeydiyyat başladı. Təsdiq tələb olunarsa gələn qutunuzu yoxlayın.",
+      "demoDisabledBody": "Administrator tərəfindən dayandırılmış ola bilər (demo hesablar adətən {hours} saatla məhdudlaşır). Davamlı istifadə üçün aşağıda hesab yaradın.",
+      "demoDisabledTitle": "Demo girişiniz deaktiv edildi.",
+      "demoExpiredBody": "RiskNova demo girişi {hours} saatla məhdudlaşır; müddəti bitdikdə sessiya bağlanır. Daimi hesaba keçmək üçün aşağıda pulsuz hesab yaradın və ya Google ilə davam edin.",
+      "demoExpiredTitle": "Demo dövrunuz bitdi.",
+      "demoLegacyDisabledHelp": "Kömək:",
+      "demoLegacyDisabledLead": "Demo girişiniz deaktiv edildi.",
+      "demoLegacyDisabledLogin": "daxil ol",
+      "demoLegacyDisabledRest": "İctimai demolar artıq təklif edilmir. Qeydiyyatdan keçin və ya",
+      "demoLegacyExpiredLead": "Demo seansınız başa çatdı.",
+      "demoLegacyExpiredLogin": "daxil ol",
+      "demoLegacyExpiredRest": "İctimai demolar artıq təklif edilmir. Aşağıda hesab yaradın və ya",
+      "demoLegacyExpiredSupport": "Problemlər üçün əlaqə saxlayın",
+      "description": "Əvvəlcə hesab növü, region və dil seçin. Fərdi hesablar birbaşa forma keçir; OSGB və şirkət strukturları əlaqə və təklif axınını başladır.",
+      "emailHint": "Onboarding və giriş axınları bu ünvanı istifadə edir.",
+      "emailLabel": "E-poçt",
+      "emailPlaceholder": "siz@sirket.com",
+      "eyebrow": "Yeni hesab",
+      "footerLoginLink": "Daxil ol",
+      "footerPrefix": "Artıq hesabınız var?",
+      "highlight1Desc": "Region və dil seçimindən sonra qeydiyyatı tamamlayır və onboarding ilə davam edirsiniz.",
+      "highlight1Title": "Fərdi özünəxidmət",
+      "highlight2Desc": "Qiymət və plan müqayisəsi Planlar səhifəsində qalır ki, qeydiyyat fokusda qalsın.",
+      "highlight2Title": "Planlar ayrı səhifədə yerləşir",
+      "highlight3Desc": "Çox-saytlı və ya ixtisaslaşmış strukturlar komandamızla əlaqə və təklif vasitəsilə keçir.",
+      "highlight3Title": "Təşkilatlar üçün xüsusi təklif",
+      "legalCheckboxAfterCookie": ". Mən onları oxudum və qəbul edirəm. Hesab yaratdıqdan sonra tətbiqdə əlavə məcburi platforma təsdiqləri təqdim edilə bilər.",
+      "legalCheckboxAfterPrivacy": ", və ",
+      "legalCheckboxAfterTerms": ", ",
+      "legalCheckboxCookie": "Cookie Siyasəti",
+      "legalCheckboxPrivacy": "Məxfilik Siyasəti və KVKK açıqlaması",
+      "legalCheckboxTerms": "İstifadə Şərtləri",
+      "passwordHint": "Güclü parol seçin. Qeydiyyatdan sonra hesab növü seçimini tamamlayacaqsınız.",
+      "passwordLabel": "Parol",
+      "passwordPlaceholder": "Ən azı 8 simvol",
+      "submitButton": "Hesab yaradın",
+      "title": "RiskNova hesabınızı yaradın"
+    },
+    "registerPassword": "Parol",
+    "registerTitle": "Hesab yaradın",
+    "registerWizard": {
+      "accounts": {
+        "enterprise": {
+          "description": "Çox-sayt və ya ixtisaslaşdırılmış tənzimləmə ehtiyacları üçün.",
+          "title": "Şirkət / müəssisə"
+        },
+        "individual": {
+          "description": "Öz iş məkanınızla başlayan mütəxəssis, həkim, DSP və ya auditor.",
+          "title": "Fərdi peşəkar"
+        },
+        "osgb": {
+          "description": "Müştəri portfelləri, komandalar və tapşırıq iş axınları üçün quraşdırma tələb edin.",
+          "title": "OSGB"
+        }
+      },
+      "closeAria": "Qeydiyyat köməkçisini bağla",
+      "commercialIntroBody": "Ölkəniz, diliniz və rolunuz forma ilə göndərilir ki, komandamız düzgün paket və işə başlama ilə cavab verə bilsin.",
+      "commercialIntroEnterpriseTitle": "Müəssisə təklif axını",
+      "commercialIntroOsgbTitle": "OSGB təklif axını",
+      "countryHints": {
+        "AE": "İngilis / Ərəb komanda hazırlığı.",
+        "AZ": "Azərbaycan regionu Azərbaycan standartları ilə.",
+        "CN": "Çin dili və Asiya-Sakit okean hazırlığı.",
+        "DE": "Almaniya regionu Alman standartları ilə.",
+        "ES": "İspaniya regionu İspan standartları ilə.",
+        "FR": "Fransa regionu Fransız standartları ilə.",
+        "GB": "Böyük Britaniya əməliyyatları İngilis standartları ilə.",
+        "ID": "Bahasa İndoneziya üstünlüyü.",
+        "IN": "Hindi / İngilis komanda hazırlığı.",
+        "JP": "Yapon dili və Asiya-Sakit okean hazırlığı.",
+        "KR": "Koreya dili və Asiya-Sakit okean hazırlığı.",
+        "RU": "Rus dili və regional hazırlıq.",
+        "SA": "Ərəb dili və Körfəz əməliyyatları hazırlığı.",
+        "TR": "Türkiyə qanunvericiliyi və türk dilində standart parametrlər.",
+        "US": "ABŞ əməliyyatları və ingilis dilində standart parametrlər."
+      },
+      "prevAria": "Əvvəlki addım",
+      "roles": {
+        "auditor": {
+          "description": "Sahə auditləri, uyğunsuzluqlar və hesabat.",
+          "title": "Auditor"
+        },
+        "occupational_physician": {
+          "description": "Sağlamlıq nəzarəti, tibbi proseslər və işçi qeydləri.",
+          "title": "Peşə həkimi"
+        },
+        "safety_officer": {
+          "description": "Sağlamlıq komandası, sahə dəstəyi və təqib tapşırıqları.",
+          "title": "DSP / sağlamlıq personalı"
+        },
+        "safety_professional": {
+          "description": "Risk analizi, sahə auditləri, tədbirlər və tənzimləyici izləmə.",
+          "title": "İEMT mütəxəssisi"
+        },
+        "workspace_admin": {
+          "description": "İstifadəçiləri, firmaları, rolları və iş sahəsi parametrlərini idarə edir.",
+          "title": "İş sahəsi administratoru"
+        }
+      },
+      "startWizard": "Qeydiyyat suallarını başlat",
+      "steps": {
+        "account": {
+          "description": "Bu seçim qeydiyyatdan sonrakı axını müəyyən edir.",
+          "eyebrow": "1 / 4",
+          "title": "Hansı hesab növü ilə başlayırsınız?"
+        },
+        "country": {
+          "description": "Qanunvericilik əhatəsi, RAG əhatə dairəsi və standart iş sahəsi bu seçimlə uyğunlaşdırılır.",
+          "eyebrow": "2 / 4",
+          "title": "Əsas iş sahəniz hansı ölkədədir?"
+        },
+        "language": {
+          "description": "Hələ hər ekran tərcümə edilməyib, lakin seçiminiz hesabda saxlanılır.",
+          "eyebrow": "3 / 4",
+          "title": "İnterfeys və sənəd dili"
+        },
+        "role": {
+          "description": "Bu, işə başlama zamanı ilk iş sahəsini yaradır.",
+          "eyebrow": "4 / 4",
+          "title": "İlk rolunuz nədir?"
+        }
+      },
+      "summaryChange": "Dəyişdir",
+      "summaryTitle": "Qeydiyyat yolunuz hazırdır"
+    },
+    "resetPage": {
+      "backToLogin": "Girişə qayıt",
+      "description": "Yeni parolunuzu daxil edin və hesabınıza qayıdın.",
+      "descriptionRequired": "Müvəqqəti etimadnamələrlə daxil oldunuz. Davam etməzdən əvvəl yeni parol təyin edin.",
+      "errInvalidResetLink": "Bu parol bərpa linki etibarsız və ya vaxtı keçmiş ola bilər.",
+      "errPrepareSession": "Sessiyanızı hazırlaya bilmədik. Zəhmət olmasa linki yenidən açın.",
+      "errSessionRefresh": "Sessiyanızı hazırlaya bilmədik. Səhifəni yeniləyin və yenidən cəhd edin.",
+      "eyebrow": "Yeni parol",
+      "eyebrowTemp": "Müvəqqəti giriş",
+      "mfaBanner": "Çoxfaktorlu doğrulama tamamlandı. İndi yeni parol seçə bilərsiniz.",
+      "passwordHint": "Güclü parol seçin.",
+      "passwordLabel": "Yeni parol",
+      "passwordPlaceholder": "Ən azı 8 simvol",
+      "preparingSession": "Parol bərpa sessiyası hazırlanır…",
+      "requiredBanner": "Təhlükəsizlik üçün ilk girişdə parolunuzu dəyişməlisiniz.",
+      "submitButton": "Parolu yenilə",
+      "title": "Yeni parol seçin",
+      "titleRequired": "Yeni parol təyin edin"
+    },
+    "shell": {
+      "backHome": "Ana səhifəyə qayıt",
+      "fallbackSpotlight": "RiskNova sadəcə panel deyil — bu, risk təhlili, sahə əməliyyatları, sənəd axınları və komanda koordinasiyasını bir məhsul dilində birləşdirən peşəkar OHS infrastrukturudur.",
+      "highlightCorpDesc": "Xüsusi tələbləri olan çoxsaytlı təşkilatlar üçün kommunikasiya əsaslı müəssisə axını.",
+      "highlightCorpTitle": "Müəssisə",
+      "highlightIndividualDesc": "Müstəqil mütəxəssislər, həkimlər, DSP-lər və solo peşəkarlar üçün sürətli başlanğıc axını.",
+      "highlightIndividualTitle": "Fərdi",
+      "highlightOsgbDesc": "Müştəri firmalarını, personalı, tapşırıqları və iş izləməsini bir paneldə birləşdirən komanda modeli.",
+      "highlightOsgbTitle": "OSGB",
+      "secureAccess": "Təhlükəsiz giriş"
+    },
+    "social": {
+      "divider": "və ya e-poçt ilə davam edin",
+      "googleContinue": "Google ilə {brand}-a davam edin",
+      "googleSignUp": "Google ilə {brand} üçün qeydiyyatdan keçin",
+      "oauthGenericError": "Daxil olma zamanı xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.",
+      "oauthRedirectHint": "Google daxil olması üçün Supabase yönləndirmə URL-i lazımdır: Authentication URL konfiqurasiyası altında https://getrisknova.com/auth/callback (və sizin mühit URL-lərinizi) əlavə edin.",
+      "supabaseError": "Autentifikasiya xidmətlərinə qoşulmaq mümkün olmadı."
+    }
+  },
+  "brand": {
+    "tagline": "AI əsaslı peşə sağlamlığı və təhlükəsizliyi platforması"
+  },
+  "certificateVerify": {
+    "certNo": "Sertifikat nömrəsi",
+    "date": "Tarix",
+    "duration": "Müddət",
+    "expiredCertSubtitle": "Bu sertifikatın etibarlılıq müddəti bitib.",
+    "expiredCertTitle": "Vaxtı keçmiş sertifikat",
+    "expiredSuffix": " (vaxtı keçmiş)",
+    "footer": "RiskNova OHS platforması tərəfindən verilmişdir.",
+    "fullName": "Tam ad",
+    "institution": "Təşkilat",
+    "issuedAt": "Verilmə tarixi",
+    "loading": "Yoxlanılır…",
+    "notFoundDesc": "Bu doğrulama koduna uyğun sertifikat tapılmadı.",
+    "notFoundTitle": "Sertifikat tapılmadı",
+    "score": "Bal",
+    "trainer": "Təlimçi",
+    "training": "Təlim",
+    "validUntil": "Etibarlıdır",
+    "verifiedSubtitle": "Bu sertifikat RiskNova tərəfindən doğrulanmışdır.",
+    "verifiedTitle": "Doğrulanmış sertifikat"
+  },
   "common": {
+    "cancel": "Ləğv et",
+    "close": "Bağla",
+    "closeMenu": "Menyunu bağla",
+    "copy": "Kopyala",
+    "delete": "Sil",
+    "download": "Yüklə",
+    "edit": "Redaktə et",
+    "emptyDescription": "Bu görünüş üçün göstəriləcək məlumat yoxdur.",
+    "emptyTitle": "Hələ heç nə yoxdur",
+    "error": "Xəta baş verdi",
+    "freeStart": "Pulsuz Başla",
+    "genericError": "Nəsə səhv getdi. Zəhmət olmasa yenidən cəhd edin.",
+    "languagePickerAria": "Dil seçimi",
+    "loading": "Yüklənir...",
     "login": "Daxil ol",
-    "register": "İndi başla",
-    "freeStart": "Pulsuz başla",
-    "platformLogin": "Platforma daxil ol",
-    "profile": "Profile",
-    "settings": "Settings",
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close",
-    "search": "Search",
-    "loading": "Loading...",
-    "noData": "No data found",
-    "error": "An error occurred",
-    "success": "Success",
-    "download": "Download",
-    "copy": "Copy",
-    "saved": "Saved",
-    "menu": "Menu",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "retry": "Try again",
-    "genericError": "Something went wrong. Please try again.",
-    "emptyTitle": "Nothing here yet",
-    "emptyDescription": "There is no data to display for this view."
+    "menu": "Menyu",
+    "noData": "Məlumat tapılmadı",
+    "openMenu": "Menyunu aç",
+    "platformLogin": "Platformaya Daxil ol",
+    "profile": "Profil",
+    "register": "Başla",
+    "retry": "Yenidən cəhd et",
+    "save": "Yadda saxla",
+    "saved": "Yadda saxlanıldı",
+    "search": "Axtar",
+    "settings": "Parametrlər",
+    "success": "Uğur"
+  },
+  "companiesList": {
+    "actions": {
+      "newCompany": "Yeni şirkət",
+      "sampleData": "Nümunə məlumatları"
+    },
+    "archive": "Arxiv",
+    "badge": {
+      "archived": "Arxivləşdirilmiş",
+      "deleted": "Silinmiş"
+    },
+    "clearFilters": "Filterləri təmizlə",
+    "confirmArchive": {
+      "confirm": "Təsdiq et",
+      "hint": "Bu, aktiv siyahıdan çıxacaq.",
+      "title": "{name}\" arxivləşdirilsin?"
+    },
+    "confirmDelete": {
+      "confirm": "Sil",
+      "instruction": "Təsdiq etmək üçün bu sözü yazın:",
+      "title": "{name}\" silinsin?"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "DELETE yazın",
+      "word": "DELETE"
+    },
+    "defaults": {
+      "companyName": "Yeni şirkət / təşkilat",
+      "kind": "Özəl sektor",
+      "shortName": "Yeni qeyd"
+    },
+    "delete": "Sil",
+    "description": {
+      "multi": "Məsul olduğunuz şirkətləri idarə edin və onların iş yerlərini əldə edin.",
+      "single": "Aktiv iş yerinizdə personal və digər əməliyyat qeydlərini idarə edin."
+    },
+    "discard": "Ləğv et",
+    "employeesSuffix": "işçi",
+    "empty": {
+      "archiveBannerCompany": "Arxivləşdirilmiş şirkətlər. Onları bərpa edə bilərsiniz.",
+      "archiveBannerWorksite": "Arxivləşdirilmiş iş yeri qeydləri. Onları bərpa edə bilərsiniz.",
+      "archiveEmptyCompany": "Arxivdə heç nə yoxdur",
+      "archiveEmptyDescCompany": "Hələ arxivləşdirilmiş şirkət yoxdur.",
+      "archiveEmptyDescWorksite": "Hələ arxivləşdirilmiş iş yeri yoxdur.",
+      "archiveEmptyWorksite": "Arxivdə heç nə yoxdur",
+      "clearFilters": "Filtrləri təmizlə",
+      "completeWorksite": "İş yeri quraşdırmasını tamamla",
+      "deletedBannerCompany": "Silinmiş şirkətlər. Daimi silinmə geri qaytarıla bilməz.",
+      "deletedBannerWorksite": "Silinmiş iş yeri qeydləri. Daimi silinmə geri qaytarıla bilməz.",
+      "deletedEmptyCompany": "Silinmiş şirkət yoxdur",
+      "deletedEmptyDescCompany": "Hələ silinmiş şirkət yoxdur.",
+      "deletedEmptyDescWorksite": "Hələ silinmiş iş sahəsi yoxdur.",
+      "deletedEmptyWorksite": "Silinmiş iş sahələri yoxdur",
+      "initialDescCompany": "Başlamaq üçün ilk şirkətinizi yaradın.",
+      "initialDescWorksite": "Bu sahə aktiv iş sahəsi məlumatlarınızla doldurulur. Personal və digər qeydləri görmək üçün iş sahəsi quraşdırmasını tamamlayın.",
+      "initialTitleCompany": "Hələ şirkət yoxdur",
+      "initialTitleWorksite": "Hələ iş sahəsi qeydi yoxdur",
+      "newCompany": "Yeni şirkət",
+      "noMatchCompany": "Uyğun şirkət yoxdur",
+      "noMatchDescription": "Heç bir qeyd filtrlərinizdə uyğun gəlmir.",
+      "noMatchWorksite": "Uyğun iş sahəsi yoxdur",
+      "sampleData": "Nümunə məlumatları"
+    },
+    "entity": {
+      "companyPlural": "şirkətlər",
+      "worksitePlural": "iş sahələri"
+    },
+    "eyebrow": {
+      "multi": "Mənim şirkətlərim / təşkilatlarım",
+      "osgb": "OSGB şirkətləri",
+      "singleWorksite": "İş sahəsi"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "Hamısı",
+      "hazardClass": "Təhlükə sinfi",
+      "kind": "Növ",
+      "search": "Axtarış",
+      "searchPlaceholder": "Ad, sektor, növ, NACE…",
+      "sector": "Sektor",
+      "sort": "Sıralama"
+    },
+    "limitReachedBanner": "Aktiv şirkət / iş sahəsi limitinə çatdınız. Yeni əlavə etmək və ya bərpa etmək üçün şirkəti arxivləyin və ya planınızı yüksəldin.",
+    "links": {
+      "riskAnalysis": "Risk analizi",
+      "workspace": "İş sahəsi"
+    },
+    "metrics": {
+      "actions": "Tədbirlər",
+      "departments": "Şöbələr",
+      "employees": "İşçilər",
+      "hazard": "Təhlükə",
+      "locations": "Yerlər",
+      "overdue": "Gecikmiş"
+    },
+    "permanentDelete": "Həmişəlik sil",
+    "progress": {
+      "coverage": "Əhatə",
+      "maturity": "Yetkinlik"
+    },
+    "restore": "Bərpa et",
+    "sort": {
+      "employees": "İşçilər",
+      "name": "Ada görə",
+      "overdue": "Gecikmiş",
+      "risk": "Risk"
+    },
+    "stats": {
+      "avgMaturity": "Orta yetkinlik",
+      "criticalCompanies": "Kritik şirkətlər",
+      "criticalWorksites": "Kritik iş yerləri",
+      "employees": "İşçilər",
+      "openActions": "Açıq tədbirlər",
+      "overdueTasks": "Gecikmiş tapşırıqlar",
+      "totalCompanies": "Ümumi şirkətlər",
+      "totalWorksites": "Ümumi iş yerləri"
+    },
+    "storage": {
+      "local": "Yerli",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "Aktiv",
+      "archived": "Arxiv",
+      "deleted": "Silinmiş"
+    },
+    "title": {
+      "multi": "Mənim şirkətlərim / təşkilatlarım",
+      "osgb": "Şirkətlər və iş sahələri",
+      "single": "İş sahəsi və əməliyyat məzmunu"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} aktiv şirkət slotu istifadə edilib",
+      "activeOnly": "{count} aktiv şirkət / iş sahəsi"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "İş sahələri",
+    "docTitle": "{name} — İş sahəsi · RiskNova",
+    "docTitleFallback": "İş sahəsi · RiskNova",
+    "invite": "Dəvət et",
+    "logo": {
+      "fileTooLarge": "Fayl çox böyükdür ({sizeMb} MB). Maksimum ölçü 5 MB-dır.",
+      "imagesOnly": "Yalnız şəkil faylları yüklənə bilər (PNG, JPEG, WebP, SVG).",
+      "updated": "Loqo/şəkil yeniləndi.",
+      "uploadFailed": "Yükləmə uğursuz oldu. Başqa fayl sınayın.",
+      "uploadTitle": "Loqo yüklə"
+    },
+    "notFound": {
+      "back": "Şirkətlərə qayıt",
+      "description": "Bu ID-yə uyğun şirkət yoxdur.",
+      "title": "Şirkət tapılmadı"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "Yadda saxla",
+    "saving": "Yadda saxlanır…",
+    "sidebar": {
+      "hint": "Solda sahə seçin; sağda məzmunu idarə edin.",
+      "title": "İş sahəsi bölmələri"
+    },
+    "stats": {
+      "departments": "Şöbələr",
+      "employees": "İşçilər",
+      "locations": "Yerlər",
+      "maturity": "Yetkinlik",
+      "openActions": "Açıq tədbirlər",
+      "overdue": "Gecikmiş"
+    },
+    "tabs": {
+      "history": "Tarixçə",
+      "ohs_file": "İEG faylı",
+      "organization": "Təşkilat",
+      "people": "Komanda",
+      "personnel": "Personal",
+      "risk": "Risk və sahə",
+      "structure": "Binalar",
+      "tracking": "İzləmə"
+    }
+  },
+  "consent": {
+    "description": "Aktiv açıqlama və KVKK mətnləri burada siyahılanır. Yeni versiya dərc edildikdə, sistem sizdən yenidən razılıq verməyi tələb edir.",
+    "empty": "Dərc edilmiş razılıq mətni yoxdur.",
+    "lastStatus": "Son status",
+    "loading": "Razılıq qeydləri yüklənir...",
+    "mandatory": "Tələb olunan",
+    "mandatoryNo": "Xeyr",
+    "mandatoryYes": "Bəli",
+    "notGranted": "Hələ verilməyib",
+    "stats": "{active} aktiv razılıq - {pending} gözləyən tələb olunan mətn",
+    "statusApproved": "Təsdiqlənib",
+    "statusOptional": "İxtiyari",
+    "statusPending": "Gözləyən tələb olunan mətn",
+    "title": "Məxfilik və Razılıqlar",
+    "types": {
+      "acik_riza": "Açıq Razılıq",
+      "aydinlatma": "Açıqlama",
+      "kvkk": "KVKK",
+      "pazarlama": "Marketinq",
+      "yurt_disi_aktarim": "Sərhədlərarası Köçürmə"
+    }
+  },
+  "consentGate": {
+    "consentType": {
+      "acik_riza": "Açıq razılıq",
+      "aydinlatma": "Məxfilik bildirişi",
+      "kvkk": "KVKK",
+      "pazarlama": "Marketinq",
+      "yurt_disi_aktarim": "Transsərhəd köçürmə"
+    },
+    "description": "Məcburi şərtlər/KVKK bildirişləri, məxfilik açıqlamaları və tələb olunan açıq razılık mətnləri burada ən son dərc edilmiş versiyalarında siyahıya alınıb. Marketinq razılığı ixtiyaridir. Məcburi mətnlər dəyişdikdə, sistem sizdən yenidən təsdiq etməyi xahiş edə bilər.",
+    "errMustAcknowledge": "Davam etmək üçün bütün tələb olunan mətnləri təsdiq etməlisiniz.",
+    "errSaveFailed": "Razılıq saxlanıla bilmədi. Zəhmət olmasa yenidən cəhd edin.",
+    "eyebrow": "KVKK və razılıqlar",
+    "mandatoryBadge": "Tələb olunur",
+    "progress": "{approved} / {total} mətn təsdiqlənib",
+    "readAcknowledge": "Bu mətni oxudum və qəbul edirəm",
+    "saving": "Razılıqlar saxlanılır…",
+    "signOutTemp": "Hələlik çıxış et",
+    "submit": "Razılıqları tamamla",
+    "title": "Davam etməzdən əvvəl tələb olunan mətnləri təsdiq edin"
+  },
+  "country": {
+    "AE": "Birləşmiş Ərəb Əmirlikləri",
+    "AZ": "Azərbaycan",
+    "CN": "Çin",
+    "DE": "Almaniya",
+    "ES": "İspaniya",
+    "FR": "Fransa",
+    "GB": "Birləşmiş Krallıq",
+    "ID": "İndoneziya",
+    "IN": "Hindistan",
+    "JP": "Yaponiya",
+    "KR": "Cənubi Koreya",
+    "RU": "Rusiya",
+    "SA": "Səudiyyə Ərəbistanı",
+    "TR": "Türkiyə",
+    "US": "Amerika Birləşmiş Ştatları"
+  },
+  "dashboard": {
+    "badgeCommandCenter": "İdarəetmə mərkəzi",
+    "badgeLiveOps": "Canlı əməliyyatlar",
+    "badgeRemoteSync": "Uzaq Supabase sinxronizasiyası",
+    "companiesTotal": "{count} şirkət",
+    "companyManageCta": "Şirkətləri idarə et",
+    "companySummaryCountLabel": "Qeydiyyatlı şirkətlər",
+    "companySummaryTitle": "Şirkət xülasəsi",
+    "docStatusDraft": "Layihə",
+    "docStatusPending": "Təsdiq",
+    "docStatusReady": "Hazır",
+    "docStatusRevision": "Yenidən baxış",
+    "fallbackUserName": "İstifadəçi",
+    "goToPlans": "Planları gör",
+    "greetingAfternoon": "Günortanız xeyir",
+    "greetingEvening": "Axşamınız xeyir",
+    "greetingMorning": "Sabahınız xeyir",
+    "heroIntro": "Bütün İEMT əməliyyatınızı bir ekranda izləyin: risklər, kitabxana nəticələri, hadisələr, tapşırıqlar və şirkət təqibləri — daha aydın komanda görünüşündə birləşdirilmişdir.",
+    "moduleAssessment": "İmtahanlar və sorğular",
+    "moduleAssessmentDesc": "Süni intellekt dəstəkli ölçmə axınları",
+    "moduleEmergency": "Fövqəladə hal",
+    "moduleEmergencyDesc": "Planlar və təlimlər",
+    "moduleLegal": "Qanunvericilik",
+    "moduleLegalDesc": "Qanunvericilik və təlimat kitabxanası",
+    "moduleLibrary": "İEMT kitabxanası",
+    "moduleLibraryDesc": "Sənədlər və şablonlar",
+    "moduleRisk": "Risk analizi",
+    "moduleRiskDesc": "{count} qiymətləndirmə",
+    "modulesSubtitle": "Platformada aktiv əməliyyat sahələri.",
+    "modulesTitle": "OHS modulları",
+    "moduleTraining": "Təlim",
+    "moduleTrainingDesc": "İzləmə və qeydlər",
+    "operationCalm": "Sabit əməliyyatlar",
+    "operationControlled": "Nəzarət altında",
+    "operationHeavy": "Güclü izləmə",
+    "planDefaultBody": "Əgər daha çox iş sahəsi və ya modullara ehtiyacınız varsa, planları nəzərdən keçirin; yeniləmələr özünüzə xidmət olaraq edilə bilər.",
+    "planDefaultTitle": "Planlar və tutum",
+    "planDemoBody": "İstehsal istifadəsinə keçmək üçün uyğun planı seçin; ödənişlər və hesablaşma Planlar səhifəsində idarə olunur.",
+    "planDemoEyebrow": "Demo · yeniləmə",
+    "planDemoTitle": "Siz demo hesabındasınız",
+    "planSelfServeEyebrow": "Özünə xidmət yeniləməsi",
+    "priorityHighRisk": "Yüksək risk",
+    "priorityIncidents": "Hadisələr",
+    "priorityOpenTasks": "Açıq tapşırıqlar",
+    "quickCompanies": "Şirkətlər",
+    "quickEducation": "Təlim",
+    "quickFieldAudit": "Sahə auditi",
+    "quickFlowsBadge": "platforma",
+    "quickFlowsSubtitle": "Ən çox istifadə etdiyiniz modullara bir kliklə keçin.",
+    "quickFlowsTitle": "Sürətli iş axınları",
+    "quickIncident": "Hadisəni bildir",
+    "quickLibrary": "OHS kitabxanası",
+    "quickPlanner": "Planlaşdırıcı",
+    "quickReports": "Hesabatlar",
+    "quickRisk": "Risk analizi",
+    "recentDocsCta": "Kitabxananı aç",
+    "recentDocsEmpty": "Hələ kitabxana nəticələri yoxdur. OHS kitabxanasından şablonla başlayın.",
+    "recentDocsSubtitle": "OHS kitabxana axınından son redaktə edilmiş sənədlər burada xülasə edilir.",
+    "recentDocsTitle": "Son kitabxana nəticələri",
+    "sessionLoadingHint": "Sessiyaınızı yoxlayırıq. Bu bir neçə saniyə çəkə bilər; heç nə baş vermirsə, yenidən daxil olun.",
+    "sessionLoadingTitle": "Sessiya yüklənir…",
+    "signalCompanies": "Şirkət əhatəsi",
+    "signalOperation": "Əməliyyat statusu",
+    "signalWorkload": "Prioritet yükü",
+    "statIncidents": "Hadisələr",
+    "statIncidentsSub": "Ümumi qeydlər",
+    "statLibExam": "Kitabxana imtahanları",
+    "statLibExamSub": "İdxal edilmiş imtahanlar",
+    "statLibraryDocs": "Kitabxana sənədləri",
+    "statLibraryDocsSub": "{ready} hazır · {draft} layihə",
+    "statLibSurvey": "Kitabxana təlimi",
+    "statLibSurveySub": "İdxal edilmiş sorğular / təlim",
+    "statLive": "canlı",
+    "statRisk": "Risk analizi",
+    "statRiskSubHigh": "{count} yüksək risk",
+    "statRiskSubNone": "Yüksək risk yoxdur",
+    "statTasks": "Açıq tapşırıqlar",
+    "statTasksSub": "Təqib gözləyir",
+    "todayCardTitle": "Bu gün",
+    "todayFocusEyebrow": "Bu günün diqqət mərkəzi",
+    "todayFocusTitle": "Kritik elementlər əvvəl",
+    "todayTasksDone": "Bütün tapşırıqlar tamamlandı",
+    "todayTasksPending": "{count} açıq tapşırıq gözləyir",
+    "trackChipActions": "{count} əməliyyat",
+    "trackChipControls": "{count} yoxlama",
+    "trackChipTraining": "{count} təlim",
+    "trackCommitteeLabel": "Gözləyən komitə",
+    "trackCommitteeSub": "Planlaşdırılmış ƏMTƏ komitə iclasları",
+    "trackCompaniesCta": "Şirkətlər",
+    "trackEmpty": "Hələ heç bir şirkət təyin edilməyib. İzləmə göstəriciləri şirkətlər əlavə etdikdən sonra burada görünəcək.",
+    "trackExpiringTrainingLabel": "Yaxınlaşan təlim",
+    "trackExpiringTrainingSub": "30 gün ərzində",
+    "trackHealthExamLabel": "Yaxınlaşan tibbi müayinə",
+    "trackHealthExamSub": "30 gün ərzində sağlamlıq nəzarəti",
+    "trackOpenActionLabel": "Açıq fəaliyyətlər",
+    "trackOpenActionSub": "Risk tapıntıları + CAPA + tapşırıqlar",
+    "trackOverdueControlLabel": "Gecikmiş yoxlama",
+    "trackOverdueControlSub": "Dövri yoxlama müddəti keçib",
+    "trackPriorityCompanies": "Prioritet gözləyən şirkətlər",
+    "trackSubtitle": "Bütün şirkətlər üzrə xülasə. {companyCount} şirkət izlənilir, {totalActionable} fəaliyyət təqib gözləyir.",
+    "trackTitle": "İzləmə xülasəsi",
+    "workloadFollowups": "{count} element"
+  },
+  "dataRights": {
+    "adminNotes": "Admin qeydi",
+    "deletionActive": "Aktiv silinmə sorğusu mövcuddur",
+    "deletionConfirm": "Bu, hesabınız üçün 30 günlük silinmə prosesini başladacaq. Davam etmək istəyirsiniz?",
+    "deletionDescription": "Sorğu yaratdığınızda, hesabınız və əlaqəli şəxsi məlumatlar silinmə prosesinə daxil olur. Daimi silinmə saxlama siyasətinə görə 30 gündən sonra tamamlanır.",
+    "deletionEmpty": "Hələ silinmə sorğusu yoxdur.",
+    "deletionExists": "Artıq aktiv silinmə sorğunuz var.",
+    "deletionFailed": "Silinmə sorğusu yaradıla bilmədi.",
+    "deletionLoading": "Silinmə sorğuları yüklənir...",
+    "deletionReasonPlaceholder": "İstəyə bağlı təsvir və ya səbəb",
+    "deletionReceived": "Silinmə sorğunuz qəbul edildi. Planlaşdırılmış daimi silinmə: {date}.",
+    "deletionSubmit": "Silinmə sorğusu yarat",
+    "deletionTitle": "Məlumatlarımı Sil",
+    "deletionWarning": "Silinmə sorğusu proses geri dönməz hala gəlməzdən əvvəl inzibati olaraq ləğv edilə bilər.",
+    "description": "Şəxsi məlumatlarınızı endirin, silinmə sorğusu yaradın və cari KVKK proseslərinin statusunu izləyin.",
+    "download": "Endir",
+    "errorMsg": "Xəta",
+    "exportCsvDesc": "Cədvəl hesabat və xarici köçürmə",
+    "exportCsvTitle": "CSV ixrac",
+    "exportDescription": "Profil, razılık qeydləri, təhlükəsizlik hadisələri və məlumat hüquqları tarixçəsi JSON və ya CSV formatında endirilə bilər.",
+    "exportDownloadCount": "Endirmə sayı",
+    "exportFailed": "İxrac yaradıla bilmədi.",
+    "exportHistoryEmpty": "Hələ heç bir məlumat ixrac qeydi yaradılmayıb.",
+    "exportHistoryLoading": "İxrac tarixçəsi yüklənir...",
+    "exportJsonDesc": "Bütün məlumatlarınızın strukturlaşdırılmış paketi",
+    "exportJsonTitle": "JSON ixrac",
+    "exportReady": "{format} ixracı hazırdır və endirildi.",
+    "exportTitle": "Məlumatlarımı Endir",
+    "requestDate": "Sorğu tarixi",
+    "scheduledPurge": "Planlaşdırılmış daimi silinmə",
+    "scope": {
+      "admin": "Admin",
+      "self": "Şəxsi sorğu"
+    },
+    "statActive": "Aktiv Proses",
+    "statActiveNo": "Xeyr",
+    "statActiveYes": "Bəli",
+    "statDeletion": "Silinmə Sorğusu",
+    "statExport": "İxrac",
+    "status": {
+      "cancelled": "Ləğv edildi",
+      "completed": "Tamamlandı",
+      "expired": "Müddəti bitib",
+      "failed": "Uğursuz",
+      "processing": "Emal edilir",
+      "rejected": "Rədd edilib",
+      "scheduled": "Planlaşdırılıb"
+    },
+    "title": "Məlumat Hüquqları"
+  },
+  "demoRequest": {
+    "accountTypeEnterprise": "Müəssisə / şirkət",
+    "accountTypeIndividual": "Fərdi (tək ekspert)",
+    "accountTypeLabel": "Hesab növü",
+    "accountTypeOsgb": "OSGB",
+    "accountTypeUnset": "Əmin deyiləm / qərar verirəm",
+    "cancel": "Ləğv et",
+    "closeAria": "Bağla",
+    "dialogSubtitle": "Sizin ehtiyaclarınıza uyğun qısa bir təqdimat planlaşdıracağıq.",
+    "dialogTitle": "Demo tələb et",
+    "fieldCompany": "Şirkət / təşkilat",
+    "fieldEmail": "E-poçt *",
+    "fieldName": "Tam ad *",
+    "fieldPhone": "Telefon",
+    "messageLabel": "Mesaj (ixtiyari)",
+    "messagePlaceholder": "Hansı modullar sizi maraqlandırır? İşçi sayı? Üstünlük verilən əlaqə vaxtları?",
+    "placeholderCompany": "Acme Ltd.",
+    "placeholderEmail": "siz@sirket.com",
+    "placeholderName": "Jane Doe",
+    "placeholderPhone": "+44 …",
+    "privacyError": "Davam etmək üçün məxfilik bildirişini təsdiqləyin.",
+    "privacyLabel": "Məxfilik bildirişi:",
+    "privacyText": "Razıyam ki, mənim əlaqə məlumatlarım yalnız bu sorğuya cavab vermək üçün işlənsin.",
+    "submit": "Sorğu göndər",
+    "submitError": "Sorğunuzu göndərə bilmədik. Zəhmət olmasa yenidən cəhd edin.",
+    "submitting": "Göndərilir...",
+    "successBody": "Komandamız tezliklə sizinlə əlaqə saxlayacaq. Marağınız üçün təşəkkür edirik.",
+    "successClose": "Bağla",
+    "successTitle": "Sorğu qəbul edildi"
+  },
+  "header": {
+    "authLoading": "Təhlükəsiz sessiyanın yoxlanılması…",
+    "lockedModuleTooltip": "Bu moduldan istifadə etmək üçün əvvəlcə iş sahəsi yaradın.",
+    "markAllRead": "Hamısını oxunmuş kimi qeyd et",
+    "noNotificationsYet": "Hələ bildiriş yoxdur",
+    "notificationsAria": "Bildirişlər",
+    "notificationsTitle": "Bildirişlər",
+    "platformAdminShort": "Admin",
+    "seeAllNotifications": "Hamısına bax",
+    "signingOut": "Çıxış edilir…",
+    "signOut": "Çıxış et",
+    "themeDarkAria": "Qaranlıq tema",
+    "themeLightAria": "İşıqlı tema",
+    "workspaceLoading": "İş sahəsi hazırlanır…"
+  },
+  "landing": {
+    "badge": "Sİ-İLƏ GÜCLƏNDİRİLMİŞ İMTB PLATFORMASI",
+    "bottomCtaDescription": "Risk analizindən hesabatlara qədər bütün iş yeri təhlükəsizliyi əməliyyatlarınızı RiskNova ilə vahid platformada idarə edin.",
+    "bottomCtaLine1": "Çevirin sizin",
+    "bottomCtaLine2": "İMTB proseslərinizi",
+    "ctaDemo": "Demo tələb et",
+    "ctaDescription": "İMTB proseslərinizi peşəkar görünüş, güclü infrastruktur və Sİ dəstəyi ilə vahid platformada idarə edin.",
+    "ctaEyebrow": "HAZIR CTA SAHƏSİ",
+    "ctaTitle": "Risk modulunuzu məhsul vitrinə çevirin",
+    "enterpriseCtaShort": "Müəssisə: qiymət və əlaqə",
+    "feat1Desc": "Manual və ya modul əsaslı risk girişlərini vahid axında toplayan və nəticələri daha görünən edən məhsul əsası.",
+    "feat1Title": "AI ilə gücləndirilmiş risk analizi",
+    "feat2Desc": "Audit, tapıntı, tapşırıq və izləmə sahələrini əməliyyat komandasının oxuya biləcəyi qaydada birləşdirir.",
+    "feat2Title": "Sahə tapıntıları və fəaliyyət idarəetməsi",
+    "feat3Desc": "Yaradılmış nəticələrin tarixçə, təfərrüat və çıxış prosesləri ilə əlaqələndirilə biləcəyi ardıcıl ekran əsası təmin edir.",
+    "feat3Title": "Hesabat və qeydiyyat infrastrukturu",
+    "feat4Desc": "Risk analizi ekranı, nəticələr ekranı və bal tarixçəsi kimi sahələr üçün peşəkar və etibar yaradan əsas hazırlayır.",
+    "feat4Title": "Risk modulu üçün məhsul nümayişi",
+    "feat5Desc": "Tək sütun, iki sütun və geniş ekran düzümləri ilə müxtəlif cihazlarda oxunaqlılığı saxlayır.",
+    "feat5Title": "Mobil, planşet və masaüstü responsiv",
+    "feat6Desc": "Təmiz səthlər, nəzarət edilən kontrast və aydın CTA strukturu ilə peşəkar SaaS hissi yaradır.",
+    "feat6Title": "Korporativ və müasir vizual dil",
+    "featuresDescription": "İEMT proseslərini başdan sona idarə edən peşəkar alətlər.",
+    "featuresEyebrow": "XÜSUSİYYƏTLƏR",
+    "featuresTitle1": "Hərtərəfli",
+    "featuresTitle2": "Həllər",
+    "footerBlurb": "AI ilə gücləndirilmiş İEMT risk analizi və əməliyyat platforması — peşəkar, etibarlı və müasir.",
+    "footerCompany": "Şirkət",
+    "footerContact": "Əlaqə",
+    "footerCookie": "Kukilər Siyasəti",
+    "footerDescription": "AI ilə gücləndirilmiş İEMT qərar dəstək platforması",
+    "footerHelp": "Kömək",
+    "footerHome": "Ana səhifə",
+    "footerLegal": "Hüquqi",
+    "footerPrivacy": "Məxfilik Siyasəti",
+    "footerProduct": "Məhsul",
+    "footerRefund": "Geri qaytarma siyasəti",
+    "footerRights": "Bütün hüquqlar qorunur.",
+    "footerSupport": "Dəstək",
+    "footerTerms": "İstifadə Şərtləri",
+    "heroDescription": "RiskNova risk analizi, sahə izləmə, qeydiyyat, hesabat və qərar dəstəyi proseslərini vahid məhsul təcrübəsində birləşdirmək üçün nəzərdə tutulmuş AI-dəstəkli İEG platformasıdır.",
+    "heroSubtitle": "Ölçmədən audit nəticələrinə, fəaliyyət izləməsinə, hesabatlara və arxivlərə qədər — prosesləri bir dam altında birləşdirin. Fərdlərdən İEGB-lərə və çox-saytlı müəssisələrə qədər genişlənir.",
+    "heroTitle1": "İEG Riskini",
+    "heroTitle2": "İdarəetməni",
+    "heroTitle3": "Sənətə Çevirin",
+    "heroTitleHighlight": "bir platformadan",
+    "heroTitlePrefix": "İş yerində təhlükəsizliyi idarə edin",
+    "heroTitleSuffix": "",
+    "howDescription": "Platformamızla başlamaq üçün sadə addımlar.",
+    "howEyebrow": "NECƏ İŞLƏYİR",
+    "howTitle1": "Nəzarət",
+    "howTitle2": "Dörd Addımda",
+    "metaDescription": "AI-dəstəkli iş yeri təhlükəsizliyi proqramı: risk analizi, sahə auditləri, nəticələr, CAPA və hesabat bir platformada — fərdi, İEGB və müəssisə.",
+    "metaOgDescription": "Ölçmədən auditlərə, fəaliyyətlərə və hesabatlara qədər — təhlükəsizlik proseslərini bir yerdə həyata keçirin.",
+    "metaOgTitle": "RiskNova — İEG-ni bir platformadan idarə edin",
+    "metaTitle": "İEG-ni bir platformadan idarə edin | RiskNova",
+    "osgbCtaShort": "İEGB: təklif və əlaqə",
+    "solutionsLeadBold": "İEGB və ya çox-saytlı təşkilatsınız?",
+    "solutionsLeadRest": "Planları nəzərdən keçirin, təklif vasitəsilə müraciət edin və ya qeydiyyatdan keçin — komandamız sizinlə əlaqə saxlayacaq.",
+    "solutionsSectionAria": "İEGB və müəssisə təklifləri",
+    "statsAnalysis": "ANALİZ ZAMANI",
+    "statsScoring": "RİSK QİYMƏTLƏNDİRMƏSİ",
+    "statsUptime": "FƏALIYYƏT ZAMANI",
+    "statsUsers": "AKTİV İSTİFADƏÇİLƏR",
+    "statsValueAnalysis": "15s",
+    "statsValueScore": "R-SCORE",
+    "statsValueUptime": "99.5%",
+    "statsValueUsers": "500+",
+    "step1Desc": "Təşkilatınıza məxsus hesabınızla platformaya təhlükəsiz daxil olun.",
+    "step1Title": "Təhlükəsiz Giriş",
+    "step2Desc": "Sahə auditlərini, təhlükə hesabatlarını və risk parametrlərini sistemə köçürün.",
+    "step2Title": "Risk Məlumatlarının Daxil Edilməsi",
+    "step3Desc": "Süni intellektə əsaslanan təhlil mühərrikimiz risk ballarını hesablamaq üçün məlumatlarınızı emal edir.",
+    "step3Title": "R-SCORE Yaradılması",
+    "step4Desc": "Nəticələrə əsasən fəaliyyət planları yaradın, izləyin və hesabat verin.",
+    "step4Title": "Fəaliyyət və Təqib",
+    "subscriptionDisclaimer": "RiskNova abunə əsaslı iş yeri sağlamlığı və təhlükəsizliyi proqram təminatı təqdim edir.",
+    "testimonial1Author": "Mehmet K.",
+    "testimonial1Quote": "RiskNova ilə sahə auditləri daha sistematik oldu. Süni intellekt şərhləri həqiqətən faydalıdır.",
+    "testimonial1Role": "İST Mütəxəssisi",
+    "testimonial2Author": "Ayşe T.",
+    "testimonial2Quote": "Risk təhlili, hesabat və izləmənin bir platformada olması əməliyyat səmərəliliyimizi artırdı.",
+    "testimonial2Role": "İST Meneceri",
+    "testimonial3Author": "Can D.",
+    "testimonial3Quote": "Korporativ görünüş və istifadə rahatlığı komandanın onu çox tez mənimsəməsinə səbəb oldu.",
+    "testimonial3Role": "Əməliyyat Meneceri",
+    "testimonialsEyebrow": "RƏYLƏR",
+    "testimonialsTitle1": "İstifadəçilərimiz",
+    "testimonialsTitle2": "nə deyir",
+    "valueTryDesc": "Formalar, nəticələr, bal tarixi və çıxışlar ardıcıl ekranlardan istifadə edir — komandanız sürtünmə olmadan fəaliyyət göstərməyə davam edir.",
+    "valueTryEyebrow": "İndi sınayın",
+    "valueTryLogin": "Daxil ol",
+    "valueTryRegister": "Hesab yarat",
+    "valueTryTitle": "Bir məhsul təcrübəsində risk, auditlər və hesabat",
+    "whyBullet1": "Təmiz, müasir və etibar yaradan OHS görünüşü",
+    "whyBullet2": "Əməliyyat yönümlü, diqqəti yayındırmayan ekran tərtibatı",
+    "whyBullet3": "Risk Intelligence modulu üçün hazır dizayn sistemi",
+    "whyBullet4": "Çox kirayəçi təşkilat əsaslı təhlükəsiz struktur",
+    "whyBullet5": "AI ilə gücləndirilmiş qərar dəstək mexanizmi",
+    "whyBullet6": "Korporativ hesabat və arxiv infrastrukturu",
+    "whyDescription": "Mavi etimat və qızıl keyfiyyət vurğusu, təmiz səthləri və yumşaq kontrastı ilə peşəkar SaaS təcrübəsi yaradır.",
+    "whyEyebrow": "NIYƏ RISKNOVA",
+    "whyTitle1": "Etibar Yaradan",
+    "whyTitle2": "Premium",
+    "whyTitle3": "Təcrübə"
+  },
+  "lang": {
+    "ar": "العربية",
+    "az": "Azərbaycanca",
+    "de": "Deutsch",
+    "en": "English",
+    "es": "Español",
+    "fr": "Français",
+    "hi": "हिन्दी",
+    "id": "Bahasa Indonesia",
+    "ja": "日本語",
+    "ko": "한국어",
+    "ru": "Русский",
+    "tr": "Türkçe",
+    "zh": "中文"
+  },
+  "legal": {
+    "cookiePolicy": {
+      "eyebrow": "Cookie siyasəti",
+      "lastUpdated": "Son yenilənmə: 2 May 2026",
+      "metaDescription": "RiskNova-nın vacib sessiya, təhlükəsizlik və üstünlük cookie-ləri və oxşar texnologiyaları necə istifadə etməsi.",
+      "metaTitle": "Cookie Siyasəti",
+      "ogDescription": "Giriş, təhlükəsizlik və seçimlər üçün vacib kukilər; analitik və marketinq kukiləri bu gün əsas axışın hissəsi deyil.",
+      "ogTitle": "Kuki Siyasəti | RiskNova",
+      "sections": [
+        {
+          "content": "Kukilər və oxşar yerli saxlama texnologiyaları veb tətbiqinin sessiya, təhlükəsizlik, dil seçimi və məhsul funksiyalarını xatırlamasına kömək edən kiçik texniki qeydlərdir.",
+          "title": "Kukilər nədir?"
+        },
+        {
+          "content": "RiskNova sessiyanızı saxlamaq, Supabase autentifikasiya axını, OAuth yönləndirmələri, parol sıfırlama, təhlükəsizlik yoxlamaları, CSRF/axın ardıcıllığı və dil seçimi üçün vacib kukilərdən istifadə edir. Bu kukilər söndürülsə, əsas platforma funksiyaları işləməyə bilər.",
+          "title": "Vacib kukilər"
+        },
+        {
+          "content": "Dil, region, UI seçimi, son seçilmiş iş sahəsi və ya oxşar məhsul parametrləri təcrübəni ardıcıl saxlamaq üçün kukilərdə və ya localStorage-də saxlanıla bilər.",
+          "title": "Seçim və məhsul kukiləri"
+        },
+        {
+          "content": "Bu buraxılış məcburi axışların hissəsi kimi üçüncü tərəf analitik və ya marketinq kukilərindən asılı deyil. Analitik və ya marketinq kukiləri sonradan təqdim edilərsə, istifadəçilər lazım olan yerlərdə ayrıca bildiriş və razılıq nəzarəti alacaqlar.",
+          "title": "Analitik və marketinq kukiləri"
+        },
+        {
+          "content": "Brauzer parametrlərinizdən kukiləri silə və ya bloklaya bilərsiniz. Vacib sessiya, təhlükəsizlik və ya dil kukilərinin bloklanması giriş, qeydiyyat, ödəniş və ya tətbiq daxili iş axınlarını poza bilər.",
+          "title": "Kukilərin idarə edilməsi"
+        },
+        {
+          "content": "Kukilər və ya məxfilik parametrləri haqqında suallar üçün support@getrisknova.com ünvanına yazın.",
+          "title": "Əlaqə"
+        }
+      ],
+      "title": "RiskNova Kuki Siyasəti"
+    },
+    "privacy": {
+      "eyebrow": "Məxfilik siyasəti",
+      "lastUpdated": "Son yenilənmə: 2 May 2026",
+      "metaDescription": "RiskNova məxfilik siyasəti: hesablar, məhsul istifadəsi, ödəniş, e-poçt, təhlükəsizlik və AI köməkli funksiyalar üzrə şəxsi məlumatları necə emal edirik.",
+      "metaTitle": "Məxfilik Siyasəti",
+      "ogDescription": "RiskNova şəxsi məlumatları necə emal edir, hansı prosessorlardan istifadə edir və istifadəçi hüquqlarını necə dəstəkləyir.",
+      "ogTitle": "Məxfilik Siyasəti | RiskNova",
+      "sections": [
+        {
+          "content": "Bu siyasət RiskNova veb saytı, qeydiyyat, giriş, abunəlik, OHS modulları, sənəd yaradılması, sahə yoxlamaları, təlim/imtahanlar/sorğular, Nova AI və dəstək üzrə şəxsi məlumatların necə emal edildiyini təsvir edir. Müştəri tərəfindən platformaya yüklənən iş yeri və işçi qeydləri üçün RiskNova ümumiyyətlə prosessor kimi çıxış edir; öz hesab, təhlükəsizlik, ödəniş və dəstək prosesləri üçün nəzarətçi kimi çıxış edir.",
+          "title": "Məlumat nəzarətçisi və əhatə dairəsi"
+        },
+        {
+          "content": "Ad, soyad, e-poçt, telefon, hesab identifikatoru, təşkilat və iş sahəsi təfərrüatları, rol və icazə qeydləri, sessiya və təhlükəsizlik qeydləri, istifadə göstəriciləri, dəstək biletləri, abunəlik və ödəniş statusu, IP və cihaz məlumatları emal edilə bilər. İstifadəçilər yükləsələr, risk təhlilləri, yoxlamalar, hadisə qeydləri, təlim, imtahanlar, sorğular, sənədlər, kadr qeydləri və media və ya məlumat faylları da platformada saxlanıla bilər.",
+          "title": "Şəxsi məlumat kateqoriyaları"
+        },
+        {
+          "content": "Məlumatlar müqaviləni yerinə yetirmək, platforma funksiyalarını təqdim etmək, peşə təhlükəsizliyi proseslərini həyata keçirmək, istifadəçiləri autentifikasiya etmək, sui-istifadənin qarşısını almaq, müştərilərə hesab və dəstək vermək, hüquqi öhdəlikləri yerinə yetirmək, məhsulu təkmilləşdirmək və istifadəçi seçimlərinə hörmət etmək üçün emal edilir. Açıq razılıq tələb olunduqda, ayrıca razılıq mətni göstərilir; əsas xidmət məlumatları razılıq əvəzinə müqavilə, hüquqi öhdəlik və ya qanuni marağa əsaslana bilər.",
+          "title": "Məqsədlər və hüquqi əsaslar"
+        },
+        {
+          "content": "Nova AI risk təhlilləri, sənəd layihələri, təlim məzmunu və ya qanunvericilik məlumatlı cavablar hazırlayarkən istifadəçi girişləri və əlaqəli konteksti emal edə bilər. Nəticələr yalnız qərar dəstəyidir; son peşəkar və hüquqi qərar istifadəçidə qalır. Məzmun həssas və ya xüsusi kateqoriya məlumatları daxil edə biləcəyi yerlərdə, AI xidmətlərinə göndərilməzdən əvvəl açıq razılıq və/və ya əlavə açıqlama axınları tələb oluna bilər.",
+          "title": "AI köməkçi xüsusiyyətləri"
+        },
+        {
+          "content": "Hosting, verilənlər bazası, autentifikasiya, e-poçt, ödəniş, xəta monitorinqi və AI xüsusiyyətləri Supabase, Vercel, Resend, Paddle, OpenAI, Anthropic və oxşar təchizatçılar kimi provayderlərdən istifadə edə bilər. Onlar yalnız xidməti təmin etmək üçün lazım olduğu qədər məlumatları emal edirlər. Kart məlumatları RiskNova tərəfindən saxlanılmır; ödənişlər və faktura Paddle infrastrukturu üzərində işləyir.",
+          "title": "Üçüncü tərəf emalçıları"
+        },
+        {
+          "content": "Bulud hostinqi, e-poçt, ödəniş və AI xidmətləri texniki olaraq xaricdə yerləşən infrastrukturda işləyə bilər, buna görə də xidmətin tələb etdiyi hallarda bəzi məlumatlar ölkənizdən kənar provayderlərinə ötürülə bilər. Transferlər tətbiq olunduğu hallarda, tətbiq olunan qanun (o cümlədən müvafiq hallarda KVKK) altında açıqlama və razılıq addımları məhsulda idarə olunur.",
+          "title": "Beynəlxalq transferlər"
+        },
+        {
+          "content": "RiskNova vacib sessiya, təhlükəsizlik, dil üstünlüyü və məhsul kukilərindən istifadə edir. Marketinq və ya üçüncü tərəf izləmə kukiləri təqdim olunarsa, lazım olduğu hallarda ayrıca kuki siyasəti və razılıq mexanizmi təmin ediləcək. Təfərrüatlar /cookie-policy səhifəsindədir.",
+          "title": "Kukilər və oxşar texnologiyalar"
+        },
+        {
+          "content": "Məlumatlar xidməti işlətmək, müqavilə, təhlükəsizlik, hüquqi və sübutedici tələbləri qarşılamaq üçün lazım olduğu müddətdə saxlanılır. Platforma RLS, rol yoxlamaları, xidmət rollarının ayrılması, webhook imza doğrulaması, məhdudlaşdırma, audit izləri və təhlükəsizlik hadisələrinin qeydiyyatı kimi texniki tədbirlər istifadə edir.",
+          "title": "Saxlama və təhlükəsizlik"
+        },
+        {
+          "content": "Tətbiq olunan məlumat mühafizəsi qanunu (o cümlədən tətbiq olunduğu hallarda KVKK Maddə 11) altında siz profilinizdəki Məxfilik / Məlumat Hüquqları sahəsi və ya support@getrisknova.com vasitəsilə giriş, düzəliş, silinmə, etiraz, məhdudlaşdırma, daşınma və məlumat tələb edə bilərsiniz. Silinmə tələbləri hüquqi saxlama və təhlükəsizlik qeydiyyatı tələbləri ilə balanslaşdırılır.",
+          "title": "Sizin hüquqlarınız"
+        },
+        {
+          "content": "Bu mətn zamanla dəyişə bilər. Əhəmiyyətli yeniliklər məhsulda yenidən təsdiq və ya bildiriş tələb edə bilər. Məxfilik və məlumat mühafizəsi tələbləri üçün support@getrisknova.com ilə əlaqə saxlayın.",
+          "title": "Əlaqə və yeniliklər"
+        }
+      ],
+      "title": "RiskNova Məxfilik Siyasəti"
+    },
+    "privacySummary": {
+      "eyebrow": "Məxfilik siyasəti",
+      "lastUpdated": "Son yenilənmə: 2 May 2026",
+      "metaDescription": "RiskNova-nın şəxsi məlumatları necə topladığı və istifadə etdiyinin xülasəsi.",
+      "metaTitle": "Məxfilik siyasəti",
+      "ogDescription": "Hesab, məhsul istifadəsi və alt emalçıları əhatə edən qısa məxfilik xülasəsi.",
+      "ogTitle": "Məxfilik siyasəti | RiskNova",
+      "title": "RiskNova Məxfilik Siyasəti"
+    },
+    "refund": {
+      "eyebrow": "Geri qaytarma siyasəti",
+      "lastUpdated": "Son yenilənmə: 2 May 2026",
+      "metaDescription": "RiskNova-nın abunə geri qaytarmalarını, yenilənmələrini və Paddle faktura qaydalarını necə idarə etdiyi.",
+      "metaTitle": "Geri qaytarma siyasəti",
+      "ogDescription": "Geri qaytarma müddəti, yenilənmələr və faktura düzəlişləri.",
+      "ogTitle": "Geri qaytarma siyasəti | RiskNova",
+      "title": "RiskNova Geri Qaytarma Siyasəti"
+    },
+    "terms": {
+      "eyebrow": "İstifadə şərtləri",
+      "lastUpdated": "Son yenilənmə: 2 May 2026",
+      "metaDescription": "Hesablar, abunəlik, ödəniş, məqbul istifadə, AI nəticələri və müştəri məlumatları məsuliyyətlərini əhatə edən RiskNova istifadə şərtləri.",
+      "metaTitle": "İstifadə şərtləri",
+      "ogDescription": "RiskNova SaaS platforması üçün şərtlər: abunəlik, hesab təhlükəsizliyi, AI nəticələri və məqbul istifadə.",
+      "ogTitle": "İstifadə şərtləri | RiskNova",
+      "sections": [
+        {
+          "content": "RiskNova peşəkar sağlamlıq və təhlükəsizlik mütəxəssisləri, OSGB-lər və müəssisələr üçün risk analizi, sahə yoxlamaları, sənəd yaradılması, təlim/imtahan/sorğular, hesabat, qanunvericilik-məlumatlı axtarış və Nova AI qərar dəstəyi xüsusiyyətləri təklif edən abunəlik SaaS platformasıdır.",
+          "title": "Xidmət əhatəsi"
+        },
+        {
+          "content": "İstifadəçilər hesab təfərrüatlarının dəqiqliyi, parol gücü və hesabları altında görülən hərəkətlər üçün məsuliyyət daşıyırlar. Təşkilat administratorları istifadəçiləri, rolları, iş sahələrini və şirkət icazələrini düzgün konfiqurasiya etməlidirlər. Şübhəli icazəsiz giriş dərhal RiskNova-ya bildirilməlidir.",
+          "title": "Hesab, rollar və təhlükəsizlik"
+        },
+        {
+          "content": "Platform yalnız qanuni, peşəkar və iş yerində təhlükəsizliklə əlaqəli məqsədlər üçün istifadə edilə bilər. İcazəsiz girişə cəhd, əks mühəndislik, xidmətin pozulması, zərərli məzmun yükləmə, üçüncü tərəf hüquqlarının pozulması, kvotaların ötülməsi və ya məlumatların qeyri-qanuni emalı qadağandır.",
+          "title": "Məqbul istifadə"
+        },
+        {
+          "content": "Risk analizləri, yoxlama qeydləri, sənədlər, personal məlumatları, təlim/imtahan/sorğu məzmunu və yüklənmiş fayllar müştəri məzmunudur. İstifadəçilər platformaya yüklənən məlumatların qanuni, zəruri və səlahiyyətli şəxslərlə məhdudlaşdırılmış olmasını təmin etməlidirlər.",
+          "title": "Müştəri məlumatları və məzmun məsuliyyəti"
+        },
+        {
+          "content": "Nova AI və digər AI xüsusiyyətləri yalnız qərar dəstəyi və layihələr təqdim edir. RiskNova nəticələrin səhvsiz, tam və ya müəyyən hüquqi və ya texniki nəticə üçün uyğun olduğuna zəmanət vermir. İstifadəçilər nəticələri tətbiq olunan qanun, daxili prosedurlar və peşəkar mühakimə əsasında təsdiqləməlidirlər.",
+          "title": "AI-dəstəkli nəticələr"
+        },
+        {
+          "content": "Plan xüsusiyyətləri, ödənişlər, istifadə məhdudiyyətləri və ödəniş dövrləri qiymət və ya ödəniş ekranlarında göstərilir. Fərdi planlar özünəxidmət ödənişindən istifadə edə bilər; OSGB və müəssisə modelləri təklif və əlaqə axınlarını izləyə bilər. Ödənişlər və fakturalama Paddle tərəfindən Qeyd Taciri kimi idarə edilə bilər.",
+          "title": "Abunəlik, ödəniş və məhdudiyyətlər"
+        },
+        {
+          "content": "RiskNova zaman keçdikcə məhsul xüsusiyyətlərini, plan məhdudiyyətlərini, inteqrasiyaları və bu şərtləri yeniləyə bilər. Təhlükəsizlik, texniki xidmət, hüquqi uyğunluq və ya sui-istifadənin qarşısının alınması üçün giriş müvəqqəti olaraq məhdudlaşdırıla bilər.",
+          "title": "Xidmət dəyişiklikləri və giriş"
+        },
+        {
+          "content": "Platform prosesləri sadələşdirmək üçün nəzərdə tutulub; o, işəgötürənlərin, təhlükəsizlik mütəxəssislərinin və ya təşkilatların hüquqi vəzifələrini aradan qaldırmır. İstifadəçilər platform nəticələrinə etibar etməzdən əvvəl sahə, tənzimləyici və ekspert yoxlaması üçün məsuliyyət daşımaqda qalırlar.",
+          "title": "Məsuliyyətin məhdudlaşdırılması"
+        },
+        {
+          "content": "Bu şərtlər, abunəliklər və ya hesablar haqqında suallar üçün support@getrisknova.com ilə əlaqə saxlayın.",
+          "title": "Əlaqə"
+        }
+      ],
+      "title": "RiskNova İstifadə Şərtləri"
+    },
+    "termsSummary": {
+      "eyebrow": "Xidmət şərtləri",
+      "lastUpdated": "Son yenilənmə: 2 May 2026",
+      "metaDescription": "RiskNova xidmət şərtləri, məqbul istifadə və abunəliklərin xülasəsi.",
+      "metaTitle": "Xidmət şərtləri",
+      "ogDescription": "Abunəlik, AI köməkçi funksiyalar və məqbul istifadə xülasəsi.",
+      "ogTitle": "Xidmət şərtləri | RiskNova",
+      "title": "RiskNova Şərt və Qaydaları"
+    }
   },
   "nav": {
     "analizler": "Analitika",
@@ -34,1323 +1030,1591 @@
     "companies": "Şirkətlər",
     "correctiveActions": "CAPA",
     "dashboard": "İdarə paneli",
-    "demoBuilderNav": "Demo qurucusu",
+    "demoBuilderNav": "Demo yaradıcı",
     "demoRequestsNav": "Demo sorğuları",
-    "digitalTwin": "Rəqəmsal ikiz",
+    "digitalTwin": "Rəqəmsal əkiz",
     "documents": "Sənədlər",
-    "dofRegister": "CAPA",
-    "enterpriseSolution": "Korporativ təklif",
+    "dofRegister": "CAPA-lar",
+    "enterpriseSolution": "Müəssisə təklifi",
     "exam": "İmtahan",
-    "features": "Funksiyalar",
+    "features": "Xüsusiyyətlər",
     "firmaWorkspace": "Şirkət",
     "howItWorks": "Necə işləyir",
     "incidents": "Tədbirlər",
     "incidentsPage": "Hadisələr",
     "legalCorpus": "Hüquqi korpus",
-    "library": "İSG kitabxanası",
-    "liveScan": "Canlı sahə skanı",
+    "library": "İEMT Kitabxanası",
+    "liveScan": "Canlı Sahə Skanı",
     "mainNavigation": "Əsas naviqasiya",
     "mobileNavigation": "Mobil naviqasiya",
-    "osgbAffiliations": "OSGB əlaqələri",
-    "osgbAssignments": "Təyinatlar",
-    "osgbClientFirms": "Müştəri şirkətlər",
+    "osgbAffiliations": "OSGB keçidləri",
+    "osgbAssignments": "Tapşırıqlar",
+    "osgbClientFirms": "Müştəri firmaları",
     "osgbContracts": "Müqavilələr",
     "osgbOffersCapacity": "Təkliflər və tutum",
     "osgbPanel": "Panel",
-    "osgbPersonnel": "Personal",
-    "osgbProfessionals": "Peşəkarlar",
+    "osgbPersonnel": "Heyət",
+    "osgbProfessionals": "Mütəxəssislər",
     "osgbSolution": "OSGB təklifi",
     "osgbWorkTracking": "İş izləmə",
-    "personalDocs": "Sənədlərim",
-    "planner": "Planlayıcı",
+    "personalDocs": "Mənim Sənədlərim",
+    "planner": "Planlaşdırıcı",
     "platformAdminHome": "Platforma admini",
-    "pricing": "Paketlər",
+    "pricing": "Planlar",
     "reports": "Hesabatlar",
-    "riskAnalysis": "Risk təhlili",
-    "scoreHistory": "Sahə auditı",
+    "riskAnalysis": "Risk Analizi",
+    "scoreHistory": "Sahə Auditi",
     "settings": "Parametrlər",
     "solutionCenter": "Nova",
     "survey": "Sorğu",
     "surveyExam": "Sorğu / imtahan",
-    "timesheet": "Tabə",
+    "timesheet": "Vaxt cədvəli",
     "training": "Təlim",
-    "trainingHub": "Təlim, sorğu və imtahan",
+    "trainingHub": "Təlim, sorğular və imtahanlar",
     "workplace": "İş yeri",
     "workspace": "İş sahəsi"
   },
-  "landing": {
-    "badge": "SÜNİ İNTELLEKT DƏSTƏKLİ İŞ SAĞLAMLIĞI PLATFORMU",
-    "heroTitle1": "İş yerində təhlükəsizliyi",
-    "heroTitle2": "tək platformadan",
-    "heroTitle3": "",
-    "heroDescription": "RiskNova risk təhlili, sahə izləməsi, qeydiyyat, hesabat və qərar dəstəyini tək məhsul təcrübəsində birləşdirən süni intellekt dəstəkli İŞ platformasıdır.",
-    "statsUsers": "AKTİV İSTİFADƏÇİ",
-    "statsUptime": "ƏLÇATANLIQ",
-    "statsAnalysis": "TƏHLİL VAXTI",
-    "statsScoring": "RİSK QİYMƏTLƏNDİRMƏSİ",
-    "featuresEyebrow": "FUNKSİYALAR",
-    "featuresTitle1": "Geniş",
-    "featuresTitle2": "həllər",
-    "featuresDescription": "İŞ proseslərinizi başdan sona idarə edən peşəkar alətlər.",
-    "feat1Title": "Sİ dəstəkli risk təhlili",
-    "feat1Desc": "Manual və ya modul əsaslı risk girişlərini tək axında toplayır və nəticələri daha görünən edir.",
-    "feat2Title": "Sahə tapıntıları və tədbir idarəetməsi",
-    "feat2Desc": "Audit, tapıntı, tapşırıq və izləməni əməliyyat komandası üçün oxunaqlı sıraya gətirir.",
-    "feat3Title": "Hesabat və qeydiyyat infrastrukturu",
-    "feat3Desc": "Nəticələri tarixçə, ətraflı və çıxış proseslərinə bağlamaq üçün tutarlı ekran əsasını təmin edir.",
-    "feat4Title": "Risk modulu üçün məhsul vitrinası",
-    "feat4Desc": "Risk təhlili, nəticə və bal tarixçəsi ekranları üçün peşəkar və etibarlı əsas yaradır.",
-    "feat5Title": "Mobil, planşet və masaüstü uyğunluğu",
-    "feat5Desc": "Tək sütun, iki sütun və geniş ekran düzülüşlərində oxunaqlılığı saxlayır.",
-    "feat6Title": "Korporativ və müasir vizual dil",
-    "feat6Desc": "Təmiz səthlər, nəzarət olunan kontrast və aydın CTA ilə peşəkar SaaS hissiyatı yaradır.",
-    "howEyebrow": "NECƏ İŞLƏYİR",
-    "howTitle1": "Dörd addımda",
-    "howTitle2": "nəzarət",
-    "howDescription": "Platformadan istifadəyə başlamaq üçün sadə addımlar.",
-    "step1Title": "Təhlükəsiz giriş",
-    "step1Desc": "Təşkilatınıza məxsus hesabla təhlükəsiz şəkildə daxil olun.",
-    "step2Title": "Risk məlumatının daxil edilməsi",
-    "step2Desc": "Sahə auditləri, təhlükə bildirişləri və parametrləri sistemə köçürün.",
-    "step3Title": "R-SCORE yaradılması",
-    "step3Desc": "Sİ dəstəkli analiz mühərriki məlumatlarızı işləyərək risk ballarını hesablayır.",
-    "step4Title": "Tədbir və izləmə",
-    "step4Desc": "Nəticələrə əsaslanaraq planlar yaradın, izləyin və hesabat verin.",
-    "whyEyebrow": "NİYƏ RISKNOVA",
-    "whyTitle1": "Etibar yaradan",
-    "whyTitle2": "Premium",
-    "whyTitle3": "təcrübə",
-    "whyDescription": "Mavi etibar və qızıl keyfiyyət vurğusu, təmiz səthlər və yumşaq kontrast ilə peşəkar SaaS təcrübəsi.",
-    "whyBullet1": "Təmiz, müasir və etibarlı İŞ görünüşü",
-    "whyBullet2": "Əməliyyat yönümlü, diqqəti dağıtmayan ekran quruluşu",
-    "whyBullet3": "Risk Intelligence moduluna hazır dizayn sistemi",
-    "whyBullet4": "Çoxkirayəçi təşkilat əsaslı təhlükəsiz struktur",
-    "whyBullet5": "Sİ dəstəkli qərar dəstəyi mexanizmi",
-    "whyBullet6": "Korporativ hesabat və arxiv infrastrukturu",
-    "ctaEyebrow": "CTA BÖLMƏSİ",
-    "ctaTitle": "Risk modulunu məhsul vitrinasına çevirin",
-    "ctaDescription": "Peşəkar görünüş, güclü infrastruktur və Sİ dəstəyi ilə İŞ proseslərini tək platformada idarə edin.",
-    "metaTitle": "İŞ-i tək platformadan idarə edin | RiskNova",
-    "metaDescription": "Sİ iş yeri təhlükəsizliyi proqramı: risk təhlili, sahə auditləri, tapıntılar, CAPA və hesabatlar tək platformada.",
-    "metaOgTitle": "RiskNova — İŞ tək platformadan",
-    "metaOgDescription": "Ölçmədən auditlərə, tədbirlərə və hesabatlara qədər tək yerdə.",
-    "heroTitlePrefix": "İş yerində təhlükəsizliyi",
-    "heroTitleHighlight": "tək platformadan",
-    "heroTitleSuffix": "idarə edin",
-    "heroSubtitle": "Ölçmədən audit tapıntılarına, tədbir izləməsinə, hesabata və arxivə qədər prosesləri tək çətir altında birləşdirir. Fərdidən OSGB və çoxsaylı məntəqəli müəssisələrə qədər eyni məhsulla miqyaslanır.",
-    "statsValueUsers": "500+",
-    "statsValueUptime": "%99,5",
-    "statsValueAnalysis": "15 san",
-    "statsValueScore": "R-SCORE",
-    "solutionsLeadBold": "OSGB və ya çox məntəqəli təşkilatsınız?",
-    "solutionsSectionAria": "OSGB və korporativ təkliflər",
-    "solutionsLeadRest": "Planları nəzərdən keçirin, təklif və ya qeydiyyatla əlaqə buraxın — komandamız əlaqə saxlayacaq.",
-    "osgbCtaShort": "OSGB: təklif və əlaqə",
-    "enterpriseCtaShort": "Korporativ: təklif və əlaqə",
-    "valueTryEyebrow": "İndi sınayın",
-    "valueTryTitle": "Risk, audit və hesabat tək məhsul təcrübəsində",
-    "valueTryDesc": "Formalar, nəticələr, bal tarixçəsi və çıxışlar tutarlı ekranlarda — komandanız əngəlsiz işləməyə davam edir.",
-    "valueTryRegister": "Hesab yaradın",
-    "valueTryLogin": "Daxil ol",
-    "testimonialsEyebrow": "RƏYLƏR",
-    "testimonialsTitle1": "İstifadəçilərimiz",
-    "testimonialsTitle2": "nə deyir",
-    "testimonial1Quote": "RiskNova ilə sahə auditləri daha sistemli oldu. Sİ şərhləri həqiqətən faydalıdır.",
-    "testimonial1Author": "Mehmet K.",
-    "testimonial1Role": "İŞ mütəxəssisi",
-    "testimonial2Quote": "Tək platformada risk təhlili, hesabat və izləmə əməliyyat səmərəliliyimizi artırdı.",
-    "testimonial2Author": "Ayşe T.",
-    "testimonial2Role": "İŞ meneceri",
-    "testimonial3Quote": "Korporativ görünüş və rahatlıq komandanın tez uyğunlaşmasına kömək etdi.",
-    "testimonial3Author": "Can D.",
-    "testimonial3Role": "Əməliyyat meneceri",
-    "bottomCtaLine1": "İŞ proseslərinizi",
-    "bottomCtaLine2": "çevirin",
-    "bottomCtaDescription": "Risk təhlilindən hesabata qədər bütün təhlükəsizlik əməliyyatlarınızı RiskNova ilə tək platformada idarə edin.",
-    "ctaDemo": "Demo sifariş et",
-    "footerBlurb": "Sİ dəstəkli İŞ risk təhlili və əməliyyat platforması — peşəkar, etibarlı, müasir.",
-    "footerCompany": "Şirkət",
-    "footerSupport": "Dəstək",
-    "footerHome": "Ana səhifə",
-    "footerHelp": "Kömək",
-    "footerRefund": "Geri ödəmə siyasəti",
-    "subscriptionDisclaimer": "RiskNova abunə əsaslı iş sağlamlığı və təhlükəsizlik proqramı təqdim edir.",
-    "footerDescription": "Sİ dəstəkli İŞ qərar dəstəyi platforması",
-    "footerProduct": "Məhsul",
-    "footerLegal": "Hüquqi",
-    "footerPrivacy": "Məxfilik siyasəti",
-    "footerTerms": "İstifadə şərtləri",
-    "footerContact": "Əlaqə",
-    "footerRights": "Bütün hüquqlar qorunur."
+  "ohsFile": {
+    "alreadyRunning": "Arxiv hazırda hazırlanır; lütfən, bitməsini gözləyin.",
+    "asyncHint": "Arxiv arxa planda hazırlanır. Hazır olduqda sizə bildiriləcək.",
+    "cancel": "Ləğv et",
+    "completedAt": "Tamamlandı",
+    "createdAt": "Yaradıldı",
+    "createNew": "Yeni Arxiv Yarat",
+    "description": "Bütün risk qiymətləndirmələri, hadisələr, təlim qeydləri, sənədlər və {company} üçün əlaqəli məlumatları tək illik ZIP arxivi kimi yüklə.",
+    "download": "Yüklə",
+    "empty": "Hələ arxiv yaradılmayıb.",
+    "historyTitle": "Keçmiş Arxivlər",
+    "loading": "Yüklənir...",
+    "openCompany": "Şirkət səhifəsini aç",
+    "prepareButton": "Arxivi Hazırla",
+    "refresh": "Yenilə",
+    "required": "Tələb olunur",
+    "scopeEmpty": "Əhatə şablonu yüklənə bilmədi.",
+    "scopeLabel": "Əhatə",
+    "status": {
+      "cancelled": "Ləğv edildi",
+      "completed": "Hazır",
+      "expired": "Vaxtı keçdi",
+      "failed": "Uğursuz",
+      "pending": "Növbədə",
+      "processing": "Hazırlanır"
+    },
+    "title": "İş Yeri OHS Faylı",
+    "widgetAll": "Hamısı",
+    "widgetEmpty": "Hələ OHS faylı yoxdur. Şirkəti açın və 'OHS Faylı' tabına keçin.",
+    "widgetSubtitle": "Ən son hazırlanmış iş yeri arxivlərinə sürətli giriş.",
+    "widgetTitle": "Son OHS Faylları",
+    "yearLabel": "Təqvim İli"
   },
-  "auth": {
-    "loginTitle": "Sign in to your account",
-    "loginDescription": "Continue managing risk analysis, field tracking and reporting processes on a single platform.",
-    "loginEmail": "Email address",
-    "loginPassword": "Password",
-    "loginButton": "Sign In",
-    "loginLoading": "Signing in...",
-    "loginForgot": "Forgot password",
-    "loginNoAccount": "Don't have an account?",
-    "loginRegister": "Sign up",
-    "registerTitle": "Create an account",
-    "registerDescription": "Digitize your OHS processes and benefit from AI-powered decision-making mechanisms.",
-    "registerName": "Full Name",
-    "registerEmail": "Email address",
-    "registerPassword": "Password",
-    "registerButton": "Sign Up",
-    "registerLoading": "Creating account...",
-    "registerHasAccount": "Already have an account?",
-    "registerLogin": "Sign in",
-    "forgotTitle": "Reset your password",
-    "forgotDescription": "Enter your email address and we'll send you a password reset link.",
-    "forgotButton": "Send reset link",
-    "forgotBack": "Back to sign in",
-    "shell": {
-      "secureAccess": "Secure access",
-      "backHome": "Back to home",
-      "highlightIndividualTitle": "Individual",
-      "highlightIndividualDesc": "A fast start flow for independent specialists, physicians, DSPs and solo professionals.",
-      "highlightOsgbTitle": "OSGB",
-      "highlightOsgbDesc": "Team model that brings client firms, personnel, assignments and work tracking into one panel.",
-      "highlightCorpTitle": "Enterprise",
-      "highlightCorpDesc": "Communication-led enterprise flow for multi-site organisations with bespoke requirements.",
-      "fallbackSpotlight": "RiskNova is not just a panel — it is professional OHS infrastructure that unifies risk analysis, field operations, document flows and team coordination in one product language."
+  "osgbFirms": {
+    "activeSection": {
+      "description": "Şirkət iş sahəsi üzrə şirkət, tapşırıq, sənəd və risk axınlarını idarə et.",
+      "searchLabel": "Şirkətləri axtar",
+      "searchPlaceholder": "Şirkət, sektor, ünvan və ya NACE axtarın",
+      "title": "Aktiv şirkətlər"
     },
-    "loginPage": {
-      "eyebrow": "Sign in",
-      "title": "Sign in to your account",
-      "description": "Sign in to your RiskNova account. Platform administrators are routed to the admin console; everyone else lands on the workspace that matches their account type.",
-      "highlight1Title": "Individual sign-in",
-      "highlight1Desc": "For individual professionals managing their own firms, organisations and workspaces.",
-      "highlight2Title": "OSGB sign-in",
-      "highlight2Desc": "For OSGB teams managing clients, personnel, assignments and risk processes.",
-      "highlight3Title": "Platform administration",
-      "highlight3Desc": "The platform administrator role is not offered as a public account type; eligible users are routed to the admin console after sign-in.",
-      "spotlightP1": "The sign-in screen is shared by everyone; routing after the session depends on your account context.",
-      "spotlightP2": "The platform administrator role is not available in public self-service signup. Individual, OSGB and enterprise are the customer-facing account paths.",
-      "footerPrefix": "Don't have an account?",
-      "footerRegisterLink": "Sign up",
-      "passwordUpdatedBanner": "Your password was updated. You can sign in with your new password.",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com",
-      "passwordLabel": "Password",
-      "passwordPlaceholder": "Enter your password",
-      "submitButton": "Sign in",
-      "forgotLink": "Forgot password"
+    "archivedRow": {
+      "restore": "Bərpa et",
+      "restoring": "Bərpa edilir…"
     },
-    "registerPage": {
-      "eyebrow": "New account",
-      "title": "Create your RiskNova account",
-      "description": "Choose account type, region and language first. Individual accounts continue straight to the form; OSGB and company structures start the contact and quote flow.",
-      "highlight1Title": "Individual self-service",
-      "highlight1Desc": "After region and language selection you complete registration and continue with onboarding.",
-      "highlight2Title": "Plans live on a separate page",
-      "highlight2Desc": "Pricing and plan comparison stay on the Plans page so registration stays focused.",
-      "highlight3Title": "Bespoke quote for organisations",
-      "highlight3Desc": "Multi-site or specialised structures move through contact and quote with our team.",
-      "footerPrefix": "Already have an account?",
-      "footerLoginLink": "Sign in",
-      "demoExpiredTitle": "Your demo period has ended.",
-      "demoExpiredBody": "RiskNova demo access is limited to {hours} hours; when it expires the session closes. Create a free account below or continue with Google to move to a permanent account.",
-      "demoDisabledTitle": "Your demo access was disabled.",
-      "demoDisabledBody": "It may have been ended by an administrator (demo accounts are usually limited to {hours} hours). Create an account below for ongoing use.",
-      "demoLegacyExpiredLead": "Your demo session has ended.",
-      "demoLegacyExpiredRest": "Public demos are no longer offered. Create an account below or",
-      "demoLegacyExpiredLogin": "sign in",
-      "demoLegacyExpiredSupport": "For issues contact",
-      "demoLegacyDisabledLead": "Your demo access was disabled.",
-      "demoLegacyDisabledRest": "Public demos are no longer offered. Register or",
-      "demoLegacyDisabledLogin": "sign in",
-      "demoLegacyDisabledHelp": "Help:",
-      "checkEmailBanner": "Registration started. Check your inbox if confirmation is required.",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com",
-      "emailHint": "Onboarding and access flows use this address.",
-      "passwordLabel": "Password",
-      "passwordPlaceholder": "At least 8 characters",
-      "passwordHint": "Choose a strong password. You will finish account-type selection after signup.",
-      "submitButton": "Create account"
+    "archivedSection": {
+      "badge": "{count} arxivləşdirilmiş qeyd",
+      "description": "Arxivləşdirilmiş şirkətlər aktiv limitə daxil edilmir; risk və sənəd tarixçəsi saxlanılır.",
+      "title": "Arxivləşdirilmiş şirkətlər"
     },
-    "forgotPage": {
-      "eyebrow": "Password reset",
-      "title": "Reset your password",
-      "description": "Enter your email and we will send you a password reset link.",
-      "backToLogin": "Back to sign in",
-      "sentBanner": "If the email address is valid, we sent a password reset link.",
-      "emailHint": "Use the email you registered with.",
-      "submitButton": "Send reset link",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com"
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} aktiv şirkət",
+      "activeCompaniesUnlimited": "{count} aktiv şirkət",
+      "activeStaffMax": "{count} / {max} aktiv işçi",
+      "activeStaffUnlimited": "{count} aktiv işçi"
     },
-    "resetPage": {
-      "eyebrow": "New password",
-      "eyebrowTemp": "Temporary sign-in",
-      "title": "Choose a new password",
-      "titleRequired": "Set a new password",
-      "description": "Enter your new password and return to your account.",
-      "descriptionRequired": "You signed in with temporary credentials. Set a new password before continuing.",
-      "backToLogin": "Back to sign in",
-      "requiredBanner": "For security you must change your password on first sign-in.",
-      "mfaBanner": "Multi-factor verification is complete. You can now choose a new password.",
-      "passwordLabel": "New password",
-      "passwordPlaceholder": "At least 8 characters",
-      "passwordHint": "Choose a strong password.",
-      "submitButton": "Update password"
+    "companyCard": {
+      "archive": "Arxivləşdir",
+      "archiving": "Arxivləşdirilir…",
+      "assignedProfessionals": "{count} təyin edilmiş mütəxəssis",
+      "assignments": "Tapşırıqlar",
+      "contracts": "Müqavilələr",
+      "documentsCount": "{count} sənəd",
+      "documentsLink": "Sənədlər",
+      "employees": "{count} işçi",
+      "overdueTasks": "{count} gecikmiş element",
+      "personnelInvite": "İşçilər və dəvətlər",
+      "sectorUnknown": "Sektor təyin edilməyib",
+      "taskTracking": "Tapşırıq izləmə",
+      "workspace": "Şirkət iş sahəsi"
     },
-    "social": {
-      "supabaseError": "Could not connect to authentication services.",
-      "oauthRedirectHint": "Google sign-in needs the Supabase redirect URL: add https://getrisknova.com/auth/callback (and your environment URLs) under Authentication URL configuration.",
-      "oauthGenericError": "Something went wrong during sign-in. Please try again.",
-      "googleContinue": "Continue to {brand} with Google",
-      "googleSignUp": "Sign up for {brand} with Google",
-      "divider": "or continue with email"
+    "emptyActive": {
+      "cta": "İlk şirkəti əlavə et",
+      "description": "OSGB panelinə bağlı müştəri şirkətləri burada siyahıya alınacaq.",
+      "title": "Aktiv şirkət yoxdur"
     },
-    "registerWizard": {
-      "prevAria": "Previous step",
-      "closeAria": "Close registration assistant",
-      "startWizard": "Start registration questions",
-      "summaryTitle": "Your registration path is ready",
-      "summaryChange": "Change",
-      "commercialIntroOsgbTitle": "OSGB quote flow",
-      "commercialIntroEnterpriseTitle": "Enterprise quote flow",
-      "commercialIntroBody": "Your country, language and role are sent with the form so our team can respond with the right package and onboarding.",
-      "steps": {
-        "account": {
-          "eyebrow": "1 / 4",
-          "title": "Which account type are you starting with?",
-          "description": "This choice defines the flow after registration."
-        },
-        "country": {
-          "eyebrow": "2 / 4",
-          "title": "Which country is your primary workspace in?",
-          "description": "Legislation coverage, RAG scope and the default workspace are aligned with this choice."
-        },
-        "language": {
-          "eyebrow": "3 / 4",
-          "title": "Interface and document language",
-          "description": "Not every screen is translated yet, but your preference is stored on the account."
-        },
-        "role": {
-          "eyebrow": "4 / 4",
-          "title": "What is your first role?",
-          "description": "This seeds the first workspace during onboarding."
-        }
+    "emptyArchived": {
+      "description": "Şirkəti arxivləşdirdiyiniz zaman burada görünəcək.",
+      "title": "Arxivləşdirilmiş şirkət yoxdur"
+    },
+    "emptyCompany": {
+      "kind": "Özəl sektor",
+      "name": "Yeni OSGB müştəri şirkəti",
+      "shortName": "Yeni şirkət"
+    },
+    "focus": {
+      "p1": "Bu sahə yalnız OSGB sahibi və admin istifadəçiləri üçündür. Şirkətlər, tapşırıqlar, müqavilələr və sənəd izləmə bir yerdə idarə olunur.",
+      "p2": "Təyin edilmiş işçilər gündəlik iş axını üçün bu paneldən istifadə etmirlər; onlar öz hesabları vasitəsilə təyin edilmiş şirkət iş sahəsi məlumatlarına daxil olurlar.",
+      "sidebarBody": "{firms} aktiv şirkət, {professionals} təyin edilmiş mütəxəssis və {overdue} diqqət tələb edən element burada koordinasiya edilir.",
+      "sidebarEyebrow": "İdarəetmə fokusı",
+      "title": "OSGB-yönümlü səth"
+    },
+    "header": {
+      "description": "Müştəri şirkətlərinizi, şirkət üzrə iş sahələrini və onlara təyin edilmiş personal axınlarını idarə edin.",
+      "eyebrow": "OSGB şirkət idarəetməsi",
+      "title": "Şirkətlər və iş sahələri"
+    },
+    "limitBanner": "Aktiv şirkət limiti çatdı. Şirkəti arxivləşdirin və ya daha çox əlavə etmək üçün planınızı yüksəldin.",
+    "loading": {
+      "description": "Müştəri şirkətlərini, tapşırıqları və sənəd axınlarını yükləyirik.",
+      "eyebrow": "OSGB şirkətləri",
+      "title": "Portfelinizi hazırlayırıq"
+    },
+    "nova": {
+      "bullet1": "Şirkət üzrə iş yükü bölgüsünü görün.",
+      "bullet2": "Gecikmiş tapşırıq və sənədləri filtrləyin.",
+      "bullet3": "Kadr təyinatı boşluqlarını aşkar edin.",
+      "bullet4": "Müqavilə və hesabat yenilənmə risklərini prioritetləşdirin.",
+      "openTasks": "Açıq OSGB tapşırıqları",
+      "reviewOverdue": "Gecikmiş işləri nəzərdən keçirin",
+      "seeAssignmentGaps": "Təyinat boşluqlarını görün",
+      "subtitle": "İdarəetmə köməkçisi; işçi və şirkət performansını izləyir.",
+      "title": "Nova OSGB Meneceri"
+    },
+    "quickLinks": {
+      "docCenter": "Sənəd mərkəzinə keçin",
+      "inviteStaff": "İşçi dəvət edin",
+      "manageAssignments": "Tapşırıqları idarə edin",
+      "openContracts": "Açıq müqavilələr"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "OSGB panelində izlənilən aktiv müştəri şirkətləri.",
+        "label": "Aktiv şirkətlər"
       },
-      "accounts": {
-        "individual": {
-          "title": "Individual professional",
-          "description": "Specialist, physician, DSP or auditor starting with your own workspace."
-        },
-        "osgb": {
-          "title": "OSGB",
-          "description": "Request setup for client portfolios, teams and assignment workflows."
-        },
-        "enterprise": {
-          "title": "Company / enterprise",
-          "description": "For multi-site or specialised regulatory needs."
-        }
+      "assignedProfessionals": {
+        "hint": "Şirkətlərə ekspert, həkim və DSP-nin ümumi təyinatları.",
+        "label": "Təyin edilmiş mütəxəssislər"
       },
-      "countryHints": {
-        "TR": "Türkiye legislation with Turkish defaults.",
-        "AZ": "Azerbaijan region with Azerbaijani defaults.",
-        "US": "US operations with English defaults.",
-        "GB": "UK operations with English defaults.",
-        "DE": "Germany region with German defaults.",
-        "FR": "France region with French defaults.",
-        "ES": "Spain region with Spanish defaults.",
-        "RU": "Russian language and regional readiness.",
-        "SA": "Arabic language and Gulf operations readiness.",
-        "AE": "English / Arabic team readiness.",
-        "CN": "Chinese language and Asia-Pacific readiness.",
-        "JP": "Japanese language and Asia-Pacific readiness.",
-        "KR": "Korean language and Asia-Pacific readiness.",
-        "IN": "Hindi / English team readiness.",
-        "ID": "Bahasa Indonesia preference."
+      "overdueWork": {
+        "hint": "Təyinat və CAPA axınlarında izlənilməli açıq elementlər.",
+        "label": "Gecikmiş işlər"
       },
-      "roles": {
-        "safety_professional": {
-          "title": "OHS specialist",
-          "description": "Risk analysis, field audits, actions and regulatory tracking."
-        },
-        "occupational_physician": {
-          "title": "Occupational physician",
-          "description": "Health surveillance, medical processes and employee records."
-        },
-        "safety_officer": {
-          "title": "DSP / health personnel",
-          "description": "Health team, field support and follow-up tasks."
-        },
-        "auditor": {
-          "title": "Auditor",
-          "description": "Field audits, non-conformities and reporting."
-        },
-        "workspace_admin": {
-          "title": "Workspace administrator",
-          "description": "Manages users, firms, roles and workspace settings."
-        }
+      "totalEmployees": {
+        "hint": "Planlaşdırma üçün şirkət qeydlərindən ümumi işçi sayı.",
+        "label": "Ümumi işçilər"
       }
     },
-    "demoModal": {
-      "closeAria": "Close",
-      "title": "Thanks!",
-      "subtitle": "For trying RiskNova",
-      "bodyDisabled": "Your demo access was disabled by an administrator.",
-      "bodyExpired": "Your demo time has ended. RiskNova demo sessions are valid for up to {hours} hours; after that the session closes.",
-      "calloutExpiredLead": "Reminder:",
-      "calloutExpiredRest": "Finish exploring the demo within {hours} hours; when it ends you can continue by creating your own free or commercial account.",
-      "calloutDisabledLead": "Note:",
-      "calloutDisabledRest": "Demo accounts are usually limited to {hours} hours; access may also have been ended by an administrator.",
-      "pathsIntro": "To pick up where you left off and get",
-      "pathsHighlight": "full access to all features",
-      "pathsSuffix": ", create your account. You can choose one of three paths:",
-      "pathIndividualLabel": "Individual",
-      "pathIndividualDesc": "independent professionals",
-      "pathOsgbLabel": "OSGB",
-      "pathOsgbDesc": "client firm and personnel management",
-      "pathEnterpriseLabel": "Enterprise",
-      "pathEnterpriseDesc": "multi-site organisations",
-      "ctaPrimary": "Start registration",
-      "ctaLater": "Later"
-    }
-  },
-  "solutionCenter": {
-    "title": "Nova",
-    "description": "Nova is the operational OHS agent that interprets legislation, routes you to the right module, and starts document or workflow actions.",
-    "inputPlaceholder": "Tell Nova what you want to do...",
-    "queries": "queries",
-    "referenced": "with references",
-    "sources": "legislation sources",
-    "save": "Save",
-    "saved": "Saved",
-    "copy": "Copy",
-    "chat": "Chat",
-    "history": "History",
-    "documents": "My Documents"
-  },
-  "profile": {
-    "loading": "Loading profile...",
-    "membership": "Member since",
-    "updated": "Updated",
-    "changePhoto": "Change photo",
-    "tabs": {
-      "profile": "Profile",
-      "security": "Security",
-      "privacy": "Privacy & Consents",
-      "preferences": "Preferences",
-      "activity": "Activity"
-    },
-    "personal": {
-      "title": "Personal Information",
-      "fullName": "Full Name",
-      "fullNamePlaceholder": "Full Name",
-      "jobTitle": "Title / Position",
-      "jobTitlePlaceholder": "OHS Specialist",
-      "email": "Email",
-      "phone": "Phone",
-      "phonePlaceholder": "+1 xxx xxx xxxx",
-      "save": "Save"
-    },
-    "org": {
-      "title": "Organization Info",
-      "name": "Organization Name",
-      "city": "City"
-    },
-    "roles": {
-      "title": "Roles & Permissions",
-      "super_admin": "Super Admin",
-      "platform_admin": "Platform Admin",
-      "organization_admin": "Organization Admin",
-      "osgb_manager": "OSGB Manager",
-      "ohs_specialist": "OHS Specialist",
-      "workplace_physician": "Workplace Physician",
-      "dsp": "DSP",
-      "viewer": "Viewer"
-    },
-    "email": {
-      "title": "Change Email",
-      "current": "Current Email",
-      "new": "New Email",
-      "newPlaceholder": "name@company.com",
-      "submit": "Start Change",
-      "info": "Email changes require verification. The account email will not update until you open the link sent to the new address."
-    },
-    "password": {
-      "title": "Change Password",
-      "current": "Current Password",
-      "new": "New Password",
-      "newPlaceholder": "At least 12 chars, upper/lower case, number and symbol",
-      "repeat": "New Password (Repeat)",
-      "submit": "Update Password"
-    },
-    "mfa": {
-      "title": "Two-Factor Authentication",
-      "description": "Works with Google Authenticator, Authy and similar TOTP apps. Once enabled, this account is protected by a second factor.",
-      "open": "2FA On",
-      "closed": "2FA Off",
-      "onlyPassword": "Your account is currently protected only by password.",
-      "addDevice": "Add New Device",
-      "addDeviceHint": "Scan the QR code with Google Authenticator. You can give the device a custom name.",
-      "connect": "Connect Google Authenticator",
-      "deviceName": "Device Name",
-      "deviceNamePlaceholder": "e.g. Mehmet's iPhone",
-      "backupWarning": "Backup codes are not supported. For critical accounts, enroll at least two different TOTP devices.",
-      "setupKey": "Setup Key",
-      "verifyCodePlaceholder": "123456",
-      "verify": "Verify",
-      "verifying": "Verifying...",
-      "registeredDevices": "Registered MFA Devices",
-      "loading": "Loading...",
-      "noDevices": "No MFA device is connected yet.",
-      "removeDevice": "Remove"
-    },
-    "sessions": {
-      "title": "Active Sessions",
-      "thisDevice": "Sign out this device",
-      "allDevices": "Sign out all devices",
-      "active": "Active",
-      "lastActive": "Last active",
-      "ip": "IP",
-      "opened": "Opened"
-    },
-    "danger": {
-      "title": "Danger Zone",
-      "description": "Deleting your account permanently removes all your data and this action cannot be undone. Under KVKK, the deletion completes within 30 days.",
-      "button": "Delete Account",
-      "redirectMsg": "Account deletion flow is opened in the Privacy & Consents tab."
-    },
-    "prefs": {
-      "theme": "Theme",
-      "themeLight": "Light",
-      "themeDark": "Dark",
-      "themeSystem": "System",
-      "language": "Language",
-      "notifications": "Notifications",
-      "emailNotif": "Email Notifications",
-      "emailNotifDesc": "Task reminders and updates",
-      "pushNotif": "Push Notifications",
-      "pushNotifDesc": "Browser instant notifications",
-      "save": "Save Preferences"
-    },
-    "activity": {
-      "total": "Total Tasks",
-      "completed": "Completed",
-      "pending": "Pending",
-      "overdue": "Overdue",
-      "recentOps": "Recent Activity",
-      "noActivity": "No activity records yet",
-      "planned": "Planned",
-      "in_progress": "In Progress",
-      "complete": "Completed",
-      "overdueStatus": "Overdue",
-      "cancelled": "Cancelled"
-    },
-    "msg": {
-      "photoUpdated": "Photo updated.",
-      "photoError": "Photo upload failed.",
-      "profileSaved": "Profile saved.",
-      "profileError": "Could not save profile.",
-      "passwordMismatch": "New passwords do not match.",
-      "passwordUpdated": "Password updated successfully.",
-      "passwordError": "Could not update password.",
-      "emailServiceError": "Could not reach email update service.",
-      "emailEmpty": "New email address cannot be empty.",
-      "emailInvalid": "Enter a valid email address.",
-      "emailSame": "New email cannot be the same as current.",
-      "emailConfirmSent": "Verification link sent to the new address.",
-      "mfaServiceError": "Could not reach two-factor auth service.",
-      "mfaEnrolled": "Enrollment created. Verify the code now to enable 2FA.",
-      "mfaCodeInvalid": "Verification code must be 6 digits.",
-      "mfaEnabled": "Two-factor authentication enabled.",
-      "mfaRemoved": "MFA device removed.",
-      "mfaRemoveConfirm": "Are you sure you want to remove this MFA device?",
-      "prefsSaved": "Preferences saved.",
-      "sessionServiceError": "Could not reach session service.",
-      "signedOut": "Signed out from this device.",
-      "signedOutAll": "Signed out from all devices."
-    }
-  },
-  "consent": {
-    "title": "Privacy & Consents",
-    "description": "Active disclosure and KVKK texts are listed here. When a new version is published, the system prompts you to consent again.",
-    "stats": "{active} active consents - {pending} pending required texts",
-    "loading": "Loading consent records...",
-    "empty": "No published consent text.",
-    "mandatory": "Required",
-    "mandatoryYes": "Yes",
-    "mandatoryNo": "No",
-    "lastStatus": "Last status",
-    "notGranted": "Not granted yet",
-    "statusApproved": "Approved",
-    "statusPending": "Pending required text",
-    "statusOptional": "Optional",
-    "types": {
-      "aydinlatma": "Disclosure",
-      "acik_riza": "Explicit Consent",
-      "kvkk": "KVKK",
-      "yurt_disi_aktarim": "Cross-Border Transfer",
-      "pazarlama": "Marketing"
-    }
-  },
-  "dataRights": {
-    "title": "Data Rights",
-    "description": "Download your personal data, create a deletion request and track the status of your current KVKK processes.",
-    "statExport": "Export",
-    "statDeletion": "Deletion Request",
-    "statActive": "Active Process",
-    "statActiveYes": "Yes",
-    "statActiveNo": "No",
-    "exportTitle": "Download My Data",
-    "exportDescription": "Profile, consent records, security events and data-rights history can be downloaded as JSON or CSV.",
-    "exportJsonTitle": "JSON export",
-    "exportJsonDesc": "Structured bundle of all your data",
-    "exportCsvTitle": "CSV export",
-    "exportCsvDesc": "Tabular reporting and external transfer",
-    "exportHistoryLoading": "Loading export history...",
-    "exportHistoryEmpty": "No data export record created yet.",
-    "exportDownloadCount": "Download count",
-    "download": "Download",
-    "deletionTitle": "Delete My Data",
-    "deletionDescription": "When you create a request, your account and related personal data enter the deletion process. Permanent deletion completes after 30 days per retention policy.",
-    "deletionReasonPlaceholder": "Optional description or reason",
-    "deletionWarning": "A deletion request can be cancelled administratively before the process becomes irreversible.",
-    "deletionSubmit": "Create deletion request",
-    "deletionActive": "Active deletion request exists",
-    "deletionLoading": "Loading deletion requests...",
-    "deletionEmpty": "No deletion request yet.",
-    "deletionConfirm": "This will start a 30-day deletion process for your account. Do you want to continue?",
-    "deletionExists": "You already have an active deletion request.",
-    "deletionReceived": "Your deletion request was received. Scheduled permanent deletion: {date}.",
-    "deletionFailed": "Could not create deletion request.",
-    "exportReady": "{format} export is ready and downloaded.",
-    "exportFailed": "Could not create export.",
-    "scope": {
-      "self": "Personal request",
-      "admin": "Admin"
-    },
-    "requestDate": "Request date",
-    "scheduledPurge": "Scheduled permanent deletion",
-    "adminNotes": "Admin note",
-    "errorMsg": "Error",
-    "status": {
-      "scheduled": "Scheduled",
-      "processing": "Processing",
-      "completed": "Completed",
-      "cancelled": "Cancelled",
-      "rejected": "Rejected",
-      "failed": "Failed",
-      "expired": "Expired"
-    }
-  },
-  "lang": {
-    "tr": "Türkçe",
-    "en": "English",
-    "ar": "العربية",
-    "ru": "Русский",
-    "de": "Deutsch",
-    "fr": "Français",
-    "es": "Español",
-    "zh": "中文",
-    "ja": "日本語",
-    "ko": "한국어",
-    "hi": "हिन्दी",
-    "az": "Azərbaycanca",
-    "id": "Bahasa Indonesia"
-  },
-  "workspace": {
-    "switcher": "Workspace",
-    "active": "Active",
-    "noWorkspace": "No workspace",
-    "newWorkspace": "New workspace",
-    "countryLabel": "Country",
-    "languageLabel": "Default language",
-    "switchError": "Could not switch workspace",
-    "loading": "Loading workspaces..."
-  },
-  "country": {
-    "TR": "Türkiye",
-    "US": "United States",
-    "GB": "United Kingdom",
-    "DE": "Germany",
-    "FR": "France",
-    "ES": "Spain",
-    "RU": "Russia",
-    "CN": "China",
-    "JP": "Japan",
-    "KR": "South Korea",
-    "IN": "India",
-    "SA": "Saudi Arabia",
-    "AZ": "Azerbaijan",
-    "ID": "Indonesia",
-    "AE": "United Arab Emirates"
-  },
-  "ohsFile": {
-    "title": "Workplace OHS File",
-    "description": "Download all risk assessments, incidents, training records, documents and related data for {company} as a single year-based ZIP archive.",
-    "createNew": "Create New Archive",
-    "yearLabel": "Calendar Year",
-    "scopeLabel": "Scope",
-    "scopeEmpty": "Scope template could not be loaded.",
-    "required": "Required",
-    "prepareButton": "Prepare Archive",
-    "asyncHint": "The archive is prepared in the background. You will be notified when it is ready.",
-    "alreadyRunning": "An archive is currently being prepared; please wait for it to finish.",
-    "historyTitle": "Past Archives",
-    "refresh": "Refresh",
-    "loading": "Loading...",
-    "empty": "No archives created yet.",
-    "download": "Download",
-    "cancel": "Cancel",
-    "createdAt": "Created",
-    "completedAt": "Completed",
-    "widgetTitle": "Recent OHS Files",
-    "widgetSubtitle": "Quick access to the most recently prepared workplace archives.",
-    "widgetEmpty": "No OHS file yet. Open a company and go to the 'OHS File' tab.",
-    "widgetAll": "All",
-    "openCompany": "Open company page",
-    "status": {
-      "pending": "Queued",
-      "processing": "Preparing",
-      "completed": "Ready",
-      "failed": "Failed",
-      "expired": "Expired",
-      "cancelled": "Cancelled"
+    "topActions": {
+      "addCompany": "Şirkət əlavə et",
+      "openAssignments": "Açıq təyinatlar",
+      "personnelInvite": "Heyət və dəvətlər"
     }
   },
   "platformAdmin": {
     "leads": {
-      "backLink": "Back to platform admin",
-      "title": "Demo & quote requests",
-      "description": "All requests from the landing “Request demo”, registration “OSGB” and “Enterprise” forms are listed here. Update status, mark contacted leads, and close converted ones.",
-      "loadError": "Could not load requests: {message}",
-      "kpiTotal": "Total",
-      "kpiNew": "New",
-      "kpiContacted": "Contacted",
-      "kpiConverted": "Converted",
+      "backLink": "Platform adminə qayıt",
+      "description": "Landing \"Demo tələb et\", qeydiyyat \"OSGB\" və \"Enterprise\" formalarından bütün sorğular burada siyahılanır. Statusu yenilə, əlaqə saxlanılmış lidləri qeyd et və çevrilmiş olanları bağla.",
+      "detailCompany": "Şirkət",
+      "detailEmail": "E-poçt",
+      "detailEstCompanies": "Təxmini şirkətlər",
+      "detailEstEmployees": "Təxmini işçilər",
+      "detailEstLocations": "Təxmini yerlər",
+      "detailEstProfessionals": "Təxmini mütəxəssislər",
+      "detailFullName": "Tam ad",
+      "detailPhone": "Telefon",
+      "detailRequestType": "Sorğu növü",
+      "detailSource": "Mənbə",
+      "emptyDescription": "OSGB/enterprise qiymət axınları və landing \"Demo tələb et\" təqdimləri burada görünür.",
+      "emptyTitle": "Bu filtr üçün sorğu yoxdur.",
+      "errorNotesSave": "Qeyd saxlanıla bilmədi",
+      "errorStatusUpdate": "Yenilənə bilmədi",
+      "filterSource": "Mənbə:",
       "filterStatus": "Status:",
-      "filterSource": "Source:",
-      "statusAll": "All",
-      "statusNew": "New",
-      "filterStatusContacted": "Contacted",
-      "statusContacted": "Contacted",
-      "statusQualified": "Qualified",
-      "statusConverted": "Won",
-      "statusRejected": "Rejected",
-      "sourceAll": "All",
+      "filterStatusContacted": "Əlaqə saxlanılıb",
+      "internalNoteHint": "Müştəriyə göstərilmir. Razılaşdırılmış şərtləri və ya plan kodlarını burada qeyd edin.",
+      "internalNoteTitle": "Daxili qeyd (əl ilə təklif, məhdudiyyətlər, qiymətləndirmə)",
+      "kpiContacted": "Əlaqə saxlanılıb",
+      "kpiConverted": "Çevrildi",
+      "kpiNew": "Yeni",
+      "kpiTotal": "Cəmi",
+      "loadError": "Sorğular yüklənə bilmədi: {message}",
+      "messageHeading": "Mesaj",
+      "notesPlaceholder": "məs. Professional fərdi: 50 istifadəçi, illik ödəniş…",
+      "saveNote": "Qeydi saxla",
+      "savingNote": "Saxlanılır…",
+      "source_cozumler_kurumsal": "Korporativ səhifə",
+      "source_cozumler_osgb": "OSGB səhifəsi",
       "source_landing_demo": "Landing demo",
-      "source_register": "Registration form",
-      "source_cozumler_kurumsal": "Enterprise page",
-      "source_cozumler_osgb": "OSGB page",
-      "source_unknown": "Other",
-      "emptyTitle": "No requests for this filter.",
-      "emptyDescription": "OSGB/enterprise quote flows and landing “Request demo” submissions appear here.",
-      "tableColContact": "Contact",
-      "tableColCompany": "Company",
-      "tableColSourceType": "Source / type",
-      "tableColDate": "Date",
+      "source_register": "Qeydiyyat forması",
+      "source_unknown": "Digər",
+      "sourceAll": "Hamısı",
+      "sourceUnknown": "Naməlum",
+      "statusAll": "Hamısı",
+      "statusContacted": "Əlaqə saxlanılıb",
+      "statusConverted": "Qazanıldı",
+      "statusNew": "Yeni",
+      "statusQualified": "Kvalifikasiya edildi",
+      "statusRejected": "Rədd edildi",
+      "tableColCompany": "Şirkət",
+      "tableColContact": "Əlaqə",
+      "tableColDate": "Tarix",
+      "tableColSourceType": "Mənbə / növ",
       "tableColStatus": "Status",
-      "detailFullName": "Full name",
-      "detailEmail": "Email",
-      "detailPhone": "Phone",
-      "detailCompany": "Company",
-      "detailRequestType": "Request type",
-      "detailSource": "Source",
-      "detailEstCompanies": "Est. companies",
-      "detailEstEmployees": "Est. employees",
-      "detailEstLocations": "Est. locations",
-      "detailEstProfessionals": "Est. professionals",
-      "messageHeading": "Message",
-      "internalNoteTitle": "Internal note (manual quote, limits, pricing)",
-      "internalNoteHint": "Not shown to the customer. Capture agreed terms or plan codes here.",
-      "notesPlaceholder": "e.g. Professional custom: 50 users, annual fee…",
-      "saveNote": "Save note",
-      "savingNote": "Saving…",
-      "titleEmail": "Send email",
-      "titleCall": "Call",
-      "titleCopy": "Copy",
-      "errorNotesSave": "Could not save note",
-      "errorStatusUpdate": "Could not update",
-      "sourceUnknown": "Unknown"
+      "title": "Demo və təklif sorğuları",
+      "titleCall": "Zəng",
+      "titleCopy": "Kopyala",
+      "titleEmail": "E-poçt göndər"
     },
     "legalCorpus": {
-      "title": "Legal corpus by country",
-      "description": "Official regulatory documents ingested for RAG, grouped by jurisdiction. Tenant-private uploads stay on the tenant workspace path.",
-      "backLink": "Back to platform admin",
-      "refresh": "Refresh",
-      "statsHeading": "Documents by jurisdiction",
-      "officialOnly": "Official corpus only",
-      "tableHeading": "Documents (name order)",
-      "colTitle": "Title",
-      "colNumber": "Reference",
-      "colType": "Type",
-      "colJurisdiction": "Jurisdiction",
-      "colScope": "Scope",
-      "colActive": "Active",
-      "colSource": "Source URL",
-      "ingestHeading": "Ingest from official feeds",
-      "ingestUkHint": "Imports the latest UK Statutory Instruments entries from legislation.gov.uk Atom (titles + summaries).",
-      "ingestUkButton": "Import UK SI (Atom)",
-      "ingesting": "Importing…",
-      "ingestResult": "Inserted: {inserted}, skipped (already in DB): {skipped}",
-      "ingestError": "Import failed",
-      "emptyDocuments": "No documents match the filter.",
-      "scopeOfficial": "Official",
-      "scopePrivate": "Tenant",
-      "yes": "Yes",
-      "no": "No"
+      "backLink": "Platforma adminə qayıt",
+      "colActive": "Aktiv",
+      "colJurisdiction": "Yurisdiksiya",
+      "colNumber": "İstinad",
+      "colScope": "Əhatə dairəsi",
+      "colSource": "Mənbə URL",
+      "colTitle": "Başlıq",
+      "colType": "Növ",
+      "description": "RAG üçün yurisdiksiyaya görə qruplaşdırılmış rəsmi tənzimləyici sənədlər. Tenant-xüsusi yükləmələr tenant iş sahəsi yolunda qalır.",
+      "emptyDocuments": "Heç bir sənəd filtrə uyğun gəlmir.",
+      "ingestError": "İdxal uğursuz oldu",
+      "ingestHeading": "Rəsmi lentlərdən idxal",
+      "ingesting": "İdxal edilir…",
+      "ingestResult": "Əlavə edildi: {inserted}, keçildi (artıq DB-də var): {skipped}",
+      "ingestUkButton": "UK SI (Atom) idxal et",
+      "ingestUkHint": "legislation.gov.uk Atom-dan ən son UK Qanuni Alətlər yazılarını idxal edir (başlıqlar + xülasələr).",
+      "no": "Xeyr",
+      "officialOnly": "Yalnız rəsmi korpus",
+      "refresh": "Yenilə",
+      "scopeOfficial": "Rəsmi",
+      "scopePrivate": "Kirayəçi",
+      "statsHeading": "Yurisdiksiyaya görə sənədlər",
+      "tableHeading": "Sənədlər (ad sırası)",
+      "title": "Ölkəyə görə hüquqi korpus",
+      "yes": "Bəli"
     }
   },
-  "demoRequest": {
-    "dialogTitle": "Demo sifariş et",
-    "dialogSubtitle": "Ehtiyacınıza uyğun qısa təqdimat planlayaq.",
-    "closeAria": "Bağla",
-    "successTitle": "Sorğunuz qəbul edildi",
-    "successBody": "Komandamız tezliklə sizinlə əlaqə saxlayacaq. Maraqınıza görə təşəkkür edirik.",
-    "successClose": "Bağla",
-    "fieldName": "Ad Soyad *",
-    "fieldEmail": "E-poçt *",
-    "fieldPhone": "Telefon",
-    "fieldCompany": "Şirkət / təşkilat",
-    "placeholderName": "Nərgiz Əliyeva",
-    "placeholderEmail": "siz@firma.az",
-    "placeholderPhone": "+994 …",
-    "placeholderCompany": "Nümunə MMC",
-    "accountTypeLabel": "Hesab növü",
-    "accountTypeUnset": "Bilmirəm / qərar verilməyib",
-    "accountTypeIndividual": "Fərdi (tək mütəxəssis)",
-    "accountTypeOsgb": "OSGB",
-    "accountTypeEnterprise": "Korporativ / şirkət",
-    "messageLabel": "Mesaj (istəyə bağlı)",
-    "messagePlaceholder": "Hansı modullar maraqlıdır? Əməkdaş sayı? Uyğun vaxtlar?",
-    "privacyLabel": "Məxfilik bildirişi:",
-    "privacyText": "Əlaqə məlumatlarımın yalnız bu sorğuya cavab üçün emal edilməsini qəbul edirəm.",
-    "privacyError": "Davam etmək üçün məxfilik bildirişini təsdiqləyin.",
-    "submitError": "Göndərilmədi. Yenidən cəhd edin.",
-    "cancel": "Ləğv et",
-    "submit": "Sorğu göndər",
-    "submitting": "Göndərilir…"
-  },
   "pricing": {
-    "heroEyebrow": "Individual plans",
-    "heroTitle": "Clear, scalable plans for workplace safety professionals.",
-    "heroDescription": "Start on Free and grow through Starter, Plus and Professional — Nova, risk analysis, field audits and library-backed document generation scale with your pace. On paid plans you choose monthly or yearly billing on each card.",
-    "introTitle": "Choose your individual plan",
-    "introBody": "On paid plans you can pick monthly or yearly billing on each card. Yearly billing covers twelve months for the price of ten (the card total updates accordingly). OSGB and enterprise customers use the quote flow. Each card shows “Who is it for?” and “Move up a tier” so you can see the next step for your profile.",
-    "billingPeriodAria": "Billing period",
-    "monthly": "Monthly",
-    "yearly": "Yearly",
-    "yearlyBadge": "· 2 months included",
-    "whoForLabel": "Who is it for?",
-    "upgradeSectionTitle": "Move up a tier",
-    "limitNotIncluded": "Not included",
-    "priceSuffixMonth": "/ mo",
-    "priceSuffixYear": "/ yr",
-    "priceFreeNote": "Free to start",
-    "priceYearlyNote": "About {monthly}/mo equivalent — 2 months included",
-    "priceMonthlyNote": "Monthly billing — upgrade whenever you need",
-    "freeStart": "Start free",
-    "currentPlan": "Current plan",
-    "selectPlan": "Choose plan",
-    "osgbOfferLink": "OSGB quote",
-    "enterpriseOfferLink": "Enterprise quote",
+    "actions": {
+      "ai_analysis": "AI təhlilləri",
+      "document_generation": "Sənəd yaradılması",
+      "nova_message": "Nova mesajları",
+      "risk_analysis": "Risk təhlilləri"
+    },
+    "billingPeriodAria": "Ödəniş dövrü",
+    "currentPlan": "Cari plan",
+    "enterpriseBody": "Çoxlu istifadəçilər, müştəri portfelləri, ağ etiket, xüsusi qoşulma və faktura üçün bu yolda özünə xidmət kassası yoxdur — əhatə dairəsi və müqaviləni razılaşdırmaq üçün bizimlə əlaqə saxlayın.",
+    "enterpriseCorporateCta": "Korporativ təklif tələb edin",
+    "enterpriseExplore": "Məhsulu araşdırın",
+    "enterpriseFootnoteEnterprise": "Korporativ təklif",
+    "enterpriseFootnoteLead": "Həll səhifələri:",
+    "enterpriseFootnoteOsgb": "OSGB təklifi",
+    "enterpriseOfferLink": "Korporativ təklif",
+    "enterpriseOsgbCta": "OSGB təklifi tələb edin",
+    "enterpriseTitle": "OSGB və ya korporativ istifadə",
+    "footerLimitsBody": "Nova, təhlil və yaradılma limitləri API səviyyəsində istehlak olunur — yalnız ekranda deyil.",
+    "footerLimitsTitle": "Serverdə tətbiq edilir",
+    "footerOsgbBody": "Komanda yerləri, portfellər, ağ etiket, qoşulma və faktura xüsusi təklif axını vasitəsilə idarə olunur.",
+    "footerOsgbTitle": "OSGB və korporativ ayrıca",
+    "footerPro149Body": "Aktiv fərdi mütəxəssislər üçün təhlillər, sənədlər və sahə işi üçün balanslaşdırılmış tutum.",
+    "footerPro149Title": "Professional 149 tövsiyə olunur",
+    "freeStart": "Pulsuz başlayın",
+    "heroDescription": "Pulsuz başlayın və Starter, Plus və Professional vasitəsilə böyüyün — Nova, risk təhlili, sahə auditləri və kitabxana dəstəkli sənəd yaradılması sizin tempinizlə miqyaslanır. Ödənişli planlarda hər kart üçün aylıq və ya illik ödəniş seçirsiniz.",
+    "heroEyebrow": "Fərdi planlar",
+    "heroTitle": "İş yerində təhlükəsizlik mütəxəssisləri üçün aydın, miqyaslana bilən planlar.",
+    "introBody": "Ödənişli planlarda hər kart üzrə aylıq və ya illik ödəniş seçə bilərsiniz. İllik ödəniş on ayın qiyməti ilə on iki ayı əhatə edir (kart cəmi müvafiq olaraq yenilənir). OSGB və müəssisə müştəriləri təklif axınından istifadə edir. Hər kart \"Kimə görədir?\" və \"Bir səviyyə yuxarı keç\" göstərir ki, profiliniz üçün növbəti addımı görə biləsiniz.",
+    "introTitle": "Fərdi planınızı seçin",
+    "limitNotIncluded": "Daxil deyil",
+    "monthly": "Aylıq",
+    "osgbOfferLink": "OSGB təklifi",
     "planHighlights": {
-      "mostPopular": "Most popular",
+      "mostPopular": "Ən populyar",
       "premium": "Premium"
     },
-    "actions": {
-      "nova_message": "Nova messages",
-      "ai_analysis": "AI analyses",
-      "document_generation": "Document generation",
-      "risk_analysis": "Risk analyses"
-    },
-    "footerLimitsTitle": "Enforced on the server",
-    "footerLimitsBody": "Nova, analysis and generation allowances are consumed at the API layer — not only on screen.",
-    "footerOsgbTitle": "OSGB and enterprise separately",
-    "footerOsgbBody": "Team seats, portfolios, white-label, onboarding and invoicing are handled through the dedicated quote flow.",
-    "footerPro149Title": "Professional 149 recommended",
-    "footerPro149Body": "Balanced capacity for analyses, documents and field work for active individual professionals.",
-    "enterpriseTitle": "OSGB or enterprise use",
-    "enterpriseBody": "For multiple users, client portfolios, white-label, bespoke onboarding and invoicing there is no self‑serve checkout on this path — contact us to agree scope and contract.",
-    "enterpriseOsgbCta": "Request OSGB quote",
-    "enterpriseCorporateCta": "Request enterprise quote",
-    "enterpriseExplore": "Explore the product",
-    "enterpriseFootnoteLead": "Solution pages:",
-    "enterpriseFootnoteOsgb": "OSGB offering",
-    "enterpriseFootnoteEnterprise": "Enterprise offering",
     "plans": {
       "free": {
-        "name": "Free",
-        "whoFor": "Trying RiskNova, students and light occasional use.",
-        "description": "Entry tier with monthly quotas to explore Nova chat, analyses and a small document workflow.",
-        "upgradeHint": "Upgrade to Starter when you need predictable quotas every month.",
-        "features": [
-          "Nova chat within monthly limits",
-          "Foundational AI analyses for risk workflows",
-          "Limited document generation",
-          "Field inspection entries within quotas",
-          "Exports within plan limits"
-        ]
-      },
-      "starter": {
-        "name": "Starter",
-        "whoFor": "Freelance specialists and steady but modest monthly workloads.",
-        "description": "Higher quotas for Nova, analyses and documents so weekly routines run without friction.",
-        "upgradeHint": "Choose Plus when incident analysis and training outputs become part of your workflow.",
-        "features": [
-          "Stronger Nova and analysis quotas",
-          "More monthly document generation",
-          "Incident analysis allowance",
-          "Training slides where included in quota",
-          "Exports scaled for individuals"
-        ]
+        "description": "Nova söhbəti, təhlilləri və kiçik sənəd iş axınını kəşf etmək üçün aylıq kvotalarla giriş səviyyəsi.",
+        "name": "Pulsuz",
+        "upgradeHint": "Hər ay proqnozlaşdırıla bilən kvotalara ehtiyacınız olduqda Starter-ə keçin.",
+        "whoFor": "RiskNova-nı sınayan, tələbələr və yüngül təsadüfi istifadə."
       },
       "plus": {
+        "description": "Söhbət, təhlillər, risk modelləşdirmə və sahə məlumatları arasında balanslaşdırılmış tutum.",
         "name": "Plus",
-        "whoFor": "Active consultants managing several clients each month.",
-        "description": "Balanced capacity across chat, analyses, risk modelling and field data.",
-        "upgradeHint": "Move to Professional when you need deeper inspection and reporting throughput.",
-        "features": [
-          "Higher caps across all core actions",
-          "More incident and training outputs",
-          "Field inspection headroom for busy weeks",
-          "Document throughput for recurring packs",
-          "Exports suited to multi-client work"
-        ]
-      },
-      "professional": {
-        "name": "Professional 99",
-        "whoFor": "Full-time OHS experts with dense weekly usage.",
-        "description": "Enterprise-grade individual ceiling before the top Professional tiers.",
-        "upgradeHint": "Step up to Professional 149 for the best value at scale.",
-        "features": [
-          "High Nova and AI analysis limits",
-          "Strong document generation cadence",
-          "Broad risk and field inspection capacity",
-          "Incident programme support within quota",
-          "Exports for intensive reporting"
-        ]
+        "upgradeHint": "Daha dərin yoxlama və hesabat məhsuldarlığına ehtiyacınız olduqda Professional-a keçin.",
+        "whoFor": "Hər ay bir neçə müştərini idarə edən aktiv məsləhətçilər."
       },
       "professional_149": {
+        "description": "Tövsiyə olunan səviyyə — təhlillər, sənədlər və sahə iş axınları üzrə səxavətli tavanlar.",
         "name": "Professional 149",
-        "whoFor": "Senior consultants and power users who live in the product.",
-        "description": "Recommended tier — generous ceilings across analyses, documents and field workflows.",
-        "upgradeHint": "Professional 199 adds maximum headroom for the busiest desks.",
-        "features": [
-          "Very high Nova and analysis quotas",
-          "Heavy document generation allowance",
-          "Large risk and inspection budgets",
-          "Incident and training outputs at scale",
-          "Exports aligned with premium throughput"
-        ]
+        "upgradeHint": "Professional 199 ən məşğul masalar üçün maksimum ehtiyat əlavə edir.",
+        "whoFor": "Məhsulda yaşayan baş məsləhətçilər və güc istifadəçiləri."
       },
       "professional_199": {
+        "description": "OSGB və ya müəssisə müqaviləsindən əvvəl ən yüksək özünəxidmət səviyyəsi.",
         "name": "Professional 199",
-        "whoFor": "Peak individual workloads and premium throughput expectations.",
-        "description": "Top self-serve tier before OSGB or enterprise contracting.",
-        "upgradeHint": "Need seats, portfolios or invoicing? Use OSGB or enterprise quotes.",
-        "features": [
-          "Maximum published individual quotas",
-          "Peak AI and document capacity",
-          "Largest inspection and risk envelopes",
-          "Full incident and training allowances in tier",
-          "Exports for the heaviest reporting cycles"
-        ]
+        "upgradeHint": "Yerlərə, portfellərə və ya fakturalara ehtiyacınız var? OSGB və ya müəssisə təkliflərindən istifadə edin.",
+        "whoFor": "Pik fərdi iş yükləri və premium məhsuldarlıq gözləntiləri."
+      },
+      "professional": {
+        "description": "Ən yüksək Professional səviyyələrindən əvvəl müəssisə səviyyəsində fərdi tavan.",
+        "name": "Professional 99",
+        "upgradeHint": "Miqyasda ən yaxşı dəyər üçün Professional 149-a keçin.",
+        "whoFor": "Sıx həftəlik istifadəsi olan tam zamanlı OHS ekspertləri."
+      },
+      "starter": {
+        "description": "Nova, təhlillər və sənədlər üçün daha yüksək kvotalar ki, həftəlik rutinlər sürtünmə olmadan işləsin.",
+        "name": "Başlanğıc",
+        "upgradeHint": "İnsidentlərin təhlili və təlim nəticələri iş axınınızın bir hissəsi olduqda Plus seçin.",
+        "whoFor": "Freelance mütəxəssislər və sabit lakin mütəvazi aylıq iş yükləri."
+      }
+    },
+    "priceFreeNote": "Başlamaq üçün pulsuz",
+    "priceMonthlyNote": "Aylıq ödəniş — lazım olduqda yüksəldin",
+    "priceSuffixMonth": "/ ay",
+    "priceSuffixYear": "/ il",
+    "priceYearlyNote": "Təxminən {monthly}/ay ekvivalenti — 2 ay daxildir",
+    "selectPlan": "Planı seç",
+    "upgradeSectionTitle": "Bir səviyyə yuxarı keç",
+    "whoForLabel": "Bu kimə görədir?",
+    "yearly": "İllik",
+    "yearlyBadge": "· 2 ay daxildir"
+  },
+  "profile": {
+    "activity": {
+      "cancelled": "Ləğv edilib",
+      "complete": "Tamamlanıb",
+      "completed": "Tamamlanıb",
+      "in_progress": "Davam edir",
+      "noActivity": "Hələ fəaliyyət qeydləri yoxdur",
+      "overdue": "Gecikmiş",
+      "overdueStatus": "Gecikmiş",
+      "pending": "Gözləyir",
+      "planned": "Planlaşdırılıb",
+      "recentOps": "Son Fəaliyyət",
+      "total": "Ümumi Tapşırıqlar"
+    },
+    "changePhoto": "Şəkli dəyiş",
+    "danger": {
+      "button": "Hesabı Sil",
+      "description": "Hesabınızı silmək bütün məlumatlarınızı həmişəlik silir və bu əməliyyat geri qaytarıla bilməz. KVKK-ya əsasən, silinmə 30 gün ərzində tamamlanır.",
+      "redirectMsg": "Hesab silinməsi axını Məxfilik və Razılıqlar tabında açılır.",
+      "title": "Təhlükə Zonası"
+    },
+    "email": {
+      "current": "Cari E-poçt",
+      "info": "E-poçt dəyişiklikləri təsdiq tələb edir. Hesab e-poçtu yeni ünvana göndərilən linki açana qədər yenilənməyəcək.",
+      "new": "Yeni E-poçt",
+      "newPlaceholder": "ad@şirkət.com",
+      "submit": "Dəyişikliyi Başlat",
+      "title": "E-poçtu Dəyişdir"
+    },
+    "loading": "Profil yüklənir...",
+    "membership": "Üzv olduğu tarix",
+    "mfa": {
+      "addDevice": "Yeni Cihaz Əlavə Et",
+      "addDeviceHint": "QR kodu Google Authenticator ilə skan edin. Cihaza xüsusi ad verə bilərsiniz.",
+      "backupWarning": "Ehtiyat kodları dəstəklənmir. Kritik hesablar üçün ən azı iki fərqli TOTP cihazı qeydiyyatdan keçirin.",
+      "closed": "2FA Bağlı",
+      "connect": "Google Authenticator-u Bağla",
+      "description": "Google Authenticator, Authy və oxşar TOTP tətbiqləri ilə işləyir. Aktivləşdirildikdən sonra bu hesab ikinci faktorla qorunur.",
+      "deviceName": "Cihaz Adı",
+      "deviceNamePlaceholder": "məs. Mehmetin iPhone-u",
+      "loading": "Yüklənir...",
+      "noDevices": "Hələ heç bir MFA cihazı bağlanmayıb.",
+      "onlyPassword": "Hesabınız hazırda yalnız parol ilə qorunur.",
+      "open": "2FA Açıq",
+      "registeredDevices": "Qeydiyyatlı MFA Cihazları",
+      "removeDevice": "Sil",
+      "setupKey": "Quraşdırma Açarı",
+      "title": "İki-Faktorlu Autentifikasiya",
+      "verify": "Təsdiq Et",
+      "verifyCodePlaceholder": "123456",
+      "verifying": "Yoxlanılır..."
+    },
+    "msg": {
+      "emailConfirmSent": "Yeni ünvana təsdiq linki göndərildi.",
+      "emailEmpty": "Yeni e-poçt ünvanı boş ola bilməz.",
+      "emailInvalid": "Etibarlı e-poçt ünvanı daxil edin.",
+      "emailSame": "Yeni e-poçt cari ilə eyni ola bilməz.",
+      "emailServiceError": "E-poçt yeniləmə xidmətinə çatmaq mümkün olmadı.",
+      "mfaCodeInvalid": "Təsdiq kodu 6 rəqəm olmalıdır.",
+      "mfaEnabled": "İki faktorlu autentifikasiya aktivləşdirildi.",
+      "mfaEnrolled": "Qeydiyyat yaradıldı. 2FA aktivləşdirmək üçün indi kodu təsdiqləyin.",
+      "mfaRemoveConfirm": "Bu MFA cihazını silmək istədiyinizə əminsiniz?",
+      "mfaRemoved": "MFA cihazı silindi.",
+      "mfaServiceError": "İki faktorlu autentifikasiya xidmətinə çatmaq mümkün olmadı.",
+      "passwordError": "Şifrəni yeniləmək mümkün olmadı.",
+      "passwordMismatch": "Yeni şifrələr uyğun gəlmir.",
+      "passwordUpdated": "Şifrə uğurla yeniləndi.",
+      "photoError": "Şəkil yükləmə uğursuz oldu.",
+      "photoUpdated": "Şəkil yeniləndi.",
+      "prefsSaved": "Tərcihlər saxlanıldı.",
+      "profileError": "Profili saxlamaq mümkün olmadı.",
+      "profileSaved": "Profil saxlanıldı.",
+      "sessionServiceError": "Sessiya xidmətinə çatmaq mümkün olmadı.",
+      "signedOut": "Bu cihazdan çıxış edildi.",
+      "signedOutAll": "Bütün cihazlardan çıxış edildi."
+    },
+    "org": {
+      "city": "Şəhər",
+      "name": "Təşkilat Adı",
+      "title": "Təşkilat Məlumatı"
+    },
+    "password": {
+      "current": "Cari Şifrə",
+      "new": "Yeni Parol",
+      "newPlaceholder": "Ən azı 12 simvol, böyük/kiçik hərf, rəqəm və simvol",
+      "repeat": "Yeni Parol (Təkrar)",
+      "submit": "Parolu Yenilə",
+      "title": "Parolu Dəyiş"
+    },
+    "personal": {
+      "email": "E-poçt",
+      "fullName": "Tam Ad",
+      "fullNamePlaceholder": "Tam Ad",
+      "jobTitle": "Vəzifə / Mövqe",
+      "jobTitlePlaceholder": "OHS Mütəxəssisi",
+      "phone": "Telefon",
+      "phonePlaceholder": "+1 xxx xxx xxxx",
+      "save": "Saxla",
+      "title": "Şəxsi Məlumat"
+    },
+    "prefs": {
+      "emailNotif": "E-poçt Bildirişləri",
+      "emailNotifDesc": "Tapşırıq xatırlatmaları və yeniləmələr",
+      "language": "Dil",
+      "notifications": "Bildirişlər",
+      "pushNotif": "Push Bildirişləri",
+      "pushNotifDesc": "Brauzer ani bildirişləri",
+      "save": "Seçimləri Saxla",
+      "theme": "Tema",
+      "themeDark": "Qaranlıq",
+      "themeLight": "İşıqlı",
+      "themeSystem": "Sistem"
+    },
+    "roles": {
+      "dsp": "DSP",
+      "ohs_specialist": "OHS Mütəxəssisi",
+      "organization_admin": "Təşkilat Admini",
+      "osgb_manager": "OSGB Meneceri",
+      "platform_admin": "Platforma Admini",
+      "super_admin": "Super Admin",
+      "title": "Rollar və İcazələr",
+      "viewer": "Baxıcı",
+      "workplace_physician": "İş yeri həkimi"
+    },
+    "sessions": {
+      "active": "Aktiv",
+      "allDevices": "Bütün cihazlardan çıxış et",
+      "ip": "IP",
+      "lastActive": "Son aktivlik",
+      "opened": "Açılıb",
+      "thisDevice": "Bu cihazdan çıxış et",
+      "title": "Aktiv Sessiyalar"
+    },
+    "tabs": {
+      "activity": "Fəaliyyət",
+      "preferences": "Tərcihlər",
+      "privacy": "Məxfilik və Razılıqlar",
+      "profile": "Profil",
+      "security": "Təhlükəsizlik"
+    },
+    "updated": "Yenilənib"
+  },
+  "publicInvite": {
+    "acceptedCta": "İdarə panelinə keç",
+    "acceptedDesc": "Bu dəvət artıq qəbul edilib. Şirkətə idarə panelinizden daxil ola bilərsiniz.",
+    "acceptedTitle": "Dəvət artıq qəbul edilib",
+    "backHome": "Ana səhifəyə qayıt",
+    "brandEyebrow": "RiskNova",
+    "btnLogin": "Daxil ol",
+    "btnRegister": "Hesab yarat",
+    "cardEyebrow": "Şirkət dəvəti",
+    "dbErrorDesc": "Verilənlər bazasına çatmaq mümkün olmadı. Zəhmət olmasa sonra yenidən cəhd edin.",
+    "dbErrorTitle": "Bağlantı problemi",
+    "declinedDesc": "Bu dəvət əvvəllər rədd edilib. Yenisini almaq üçün dəvət edənlə əlaqə saxlayın.",
+    "declinedTitle": "Dəvət rədd edildi",
+    "dtExpires": "Bitir",
+    "dtInvitee": "Dəvət olunan",
+    "dtInviter": "Dəvət edən",
+    "dtNote": "Qeyd",
+    "expiredDesc": "Bu dəvətin müddəti bitib. Yeni dəvət tələb edin.",
+    "expiredTitle": "Dəvətin müddəti bitib",
+    "inviteTitle": "{company} sizi RiskNova iş sahəsinə qoşulmağa dəvət etdi.",
+    "loginPrompt": "Dəvəti qəbul etmək üçün {email} ünvanına qeydiyyatdan keçmiş hesabınız olmalıdır.",
+    "notFoundDesc": "Bu dəvət artıq mövcud deyil və ya keçid səhvdir. Sizi dəvət edən şəxsdən yeni keçid istəyin.",
+    "notFoundTitle": "Dəvət tapılmadı",
+    "revokedDesc": "Bu dəvət onu göndərən şəxs tərəfindən ləğv edilib.",
+    "revokedTitle": "Dəvət ləğv edildi",
+    "shellTitle": "Şirkət dəvəti",
+    "unknownCompany": "Bir şirkət",
+    "unspecified": "Göstərilməyib"
+  },
+  "publicInviteActions": {
+    "acceptBtn": "Dəvəti qəbul et",
+    "acceptedRedirecting": "Dəvət qəbul edildi. İdarə panelinə yönləndirilir…",
+    "accepting": "Qəbul edilir…",
+    "dbError": "Verilənlər bazasına çatmaq mümkün olmadı.",
+    "declineBtn": "Rədd et",
+    "declinedMessage": "Siz dəvəti rədd etdiniz. İstənilən vaxt yenisini tələb edə bilərsiniz.",
+    "declineProcessing": "Emal edilir…",
+    "emailMismatch": "Bu dəvət {inviteeEmail} ünvanına göndərilib, lakin siz {currentUserEmail} kimi daxil olmusunuz.",
+    "emailMismatchHint": "Qəbul etmək üçün düzgün hesabla daxil olun.",
+    "errAuthRequired": "Dəvəti qəbul etmək üçün daxil olmalısınız.",
+    "errExpired": "Bu dəvət müddəti bitib.",
+    "errNotFound": "Dəvət tapılmadı.",
+    "errNotPending": "Bu dəvət artıq gözləmədə deyil (qəbul edilmiş, rədd edilmiş və ya ləğv edilmiş ola bilər).",
+    "errUnexpected": "Gözlənilməz xəta baş verdi.",
+    "errWrongUser": "Bu dəvət daxil olmuş istifadəçiyə aid deyil. Düzgün hesabla daxil olun."
+  },
+  "publicSurvey": {
+    "congrats": "Təbriklər!",
+    "examFailDesc": "Sizin nəticəniz: {score}%. Keçid balı: {pass}%.",
+    "examPassDesc": "Siz imtahanı {score}% ilə keçdiniz.",
+    "expiredDesc": "Bu linkin müddəti bitib.",
+    "expiredTitle": "Linkin müddəti bitib",
+    "invalidDesc": "Bu link artıq etibarlı deyil və ya tapıla bilmədi.",
+    "invalidTitle": "Etibarsız link",
+    "loading": "Yüklənir…",
+    "minutesPipe": "| {minutes} dəq",
+    "next": "Növbəti",
+    "no": "Xeyr",
+    "openEndedPlaceholder": "Cavabınızı yazın…",
+    "participantLabel": "İştirakçı:",
+    "passPipe": "| Keçid: {score}%",
+    "prev": "Əvvəlki",
+    "questionBadge": "Sual {n}",
+    "questionCount": "{count} sual",
+    "required": "* Tələb olunur",
+    "sending": "Göndərilir…",
+    "sorry": "Təəssüf",
+    "startButton": "Mən {name}yam, başla",
+    "submit": "Göndər",
+    "submitError": "Cavablar saxlanıla bilmədi. Bağlantınızı yoxlayın və yenidən cəhd edin.",
+    "surveyCompleteDesc": "Cavablarınız uğurla saxlanıldı.",
+    "thanks": "Təşəkkür edirik!",
+    "verifySubtitleExam": "İmtahana başlamazdan əvvəl şəxsiyyətinizi təsdiqləyin.",
+    "verifySubtitleSurvey": "Sorğuya başlamazdan əvvəl şəxsiyyətinizi təsdiqləyin.",
+    "verifyTitle": "Şəxsiyyət təsdiqi",
+    "yes": "Bəli"
+  },
+  "pwaInstallPage": {
+    "cards": {
+      "android": {
+        "step1": "getrisknova.com saytını açın",
+        "step2": "Tətbiqi quraşdır düyməsinə toxunun",
+        "step3": "RiskNova ikonasından daxil olun",
+        "text": "RiskNova-nı Chrome və ya Edge-də açın; quraşdırma təklifi görsəniz, Tətbiqi quraşdır seçin.",
+        "title": "Android"
+      },
+      "ios": {
+        "step1": "Saytı Safari-də açın",
+        "step2": "Paylaş ikonasına toxunun",
+        "step3": "Ana Ekrana Əlavə Et seçin",
+        "text": "Safari-də açın; RiskNova ikonası yaratmaq üçün Paylaş → Ana Ekrana Əlavə Et istifadə edin.",
+        "title": "iPhone və iPad"
+      },
+      "windows": {
+        "step1": "Edge və ya Chrome-da açın",
+        "step2": "Tətbiqi quraşdır ikonasına klikləyin",
+        "step3": "RiskNova-nı Başlanğıc menyusundan açın",
+        "text": "RiskNova-nı öz masaüstü pəncərəsində açmaq üçün Chrome və ya Edge ünvan çubuğundakı quraşdırma ikonasından istifadə edin.",
+        "title": "Windows"
+      }
+    },
+    "ctaLogin": "Platformaya daxil olun",
+    "ctaRegister": "Pulsuz başlayın",
+    "eyebrow": "Tətbiq mağazası tələb olunmur",
+    "heroBody": "iOS, Android və Windows-da RiskNova-nı ana ekranınıza və ya masaüstünüzə əlavə edin. Sayt yeniləmələri quraşdırılmış təcrübənizə avtomatik olaraq çatdırılır.",
+    "heroTitle": "RiskNova-nı mobil və masaüstündə tətbiq kimi istifadə edin",
+    "metaDescription": "RiskNova-nı tətbiq mağazası olmadan iOS, Android və Windows-da PWA olaraq quraşdırın.",
+    "metaTitle": "RiskNova tətbiqi",
+    "updatesBody": "RiskNova veb tətbiqi yenilənəndə, sizin PWA yeni versiyanı alır—mağaza yeniləmələrini gözləmirsiniz.",
+    "updatesTitle": "Yeniləmələr avtomatik gəlir"
+  },
+  "pwaPrompt": {
+    "appButton": "Quraşdır",
+    "appDescription": "Əsas ekranınızdan sahə işlərinə, sənədlərə və Nova-ya qayıdın.",
+    "appTitle": "RiskNova tətbiqini quraşdırın",
+    "asideAria": "RiskNova tətbiqi quraşdırılması",
+    "dismissAria": "Quraşdırma xatırlatmasını rədd et",
+    "iosHint": "iPhone/iPad-də Paylaş → Əsas Ekrana Əlavə Et istifadə edin.",
+    "publicButton": "Tətbiqi quraşdır",
+    "publicDescription": "iOS, Android və Windows-da ayrı pəncərədə tez açın.",
+    "publicTitle": "RiskNova-nı tətbiq kimi quraşdırın"
+  },
+  "riskScoring": {
+    "classification": {
+      "bow_tie": {
+        "critical": {
+          "action": "İşi dayandır; maneələri yenidən dizayn et",
+          "label": "Kritik"
+        },
+        "follow_up": {
+          "action": "Maneələr adekvat; monitorinqi davam etdir",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Təcili maneə gücləndirilməsi; prosesi nəzərdən keçir",
+          "label": "Yüksək"
+        },
+        "low": {
+          "action": "Maneə effektivliyini nəzərdən keçir",
+          "label": "Aşağı"
+        },
+        "medium": {
+          "action": "Əlavə maneələr əlavə et",
+          "label": "Orta"
+        }
+      },
+      "checklist": {
+        "critical": {
+          "action": "Fəaliyyəti dayandır; tam reviziya",
+          "label": "Kritik şəkildə qeyri-adekvat"
+        },
+        "follow_up": {
+          "action": "Mövcud təcrübəni saxla",
+          "label": "Uyğun"
+        },
+        "high": {
+          "action": "Təcili düzəldici tədbirlərə başla",
+          "label": "Qeyri-adekvat"
+        },
+        "low": {
+          "action": "Qısa müddətdə boşluqları bağla",
+          "label": "Məqbul"
+        },
+        "medium": {
+          "action": "Daha geniş təkmilləşdirmə planı hazırlayın",
+          "label": "Təkmilləşdirmə lazımdır"
+        }
+      },
+      "fk": {
+        "critical": {
+          "action": "İşi dərhal dayandırın",
+          "label": "Çox yüksək risk"
+        },
+        "follow_up": {
+          "action": "Təkmilləşdirmə təklifləri lazım ola bilər; təcili tədbirlər yoxdur",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Dərhal tədbirlər; işi dayandırmağı nəzərdən keçirin",
+          "label": "Yüksək risk"
+        },
+        "low": {
+          "action": "Nəzarət altında saxlayın; təkmilləşdirmələr planlayın",
+          "label": "Orta narahatlıq"
+        },
+        "medium": {
+          "action": "Qısa müddətdə tədbirlər görün",
+          "label": "Əhəmiyyətli"
+        }
+      },
+      "fmea": {
+        "critical": {
+          "action": "İşi dayandırın; əsas səbəb təhlili aparın",
+          "label": "Kritik risk"
+        },
+        "follow_up": {
+          "action": "Mövcud nəzarət kifayətdir; monitorinqi davam etdirin",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Təcili tədbirlər; dizayn dəyişikliyini nəzərdən keçirin",
+          "label": "Yüksək risk"
+        },
+        "low": {
+          "action": "Təkmilləşdirmələr planlayın",
+          "label": "Aşağı risk"
+        },
+        "medium": {
+          "action": "Tədbirlər görün; nəzarəti gücləndin",
+          "label": "Orta risk"
+        }
+      },
+      "fta": {
+        "critical": {
+          "action": "İşlətməyin; əsas səbəbləri aradan qaldırın",
+          "label": "Kritik"
+        },
+        "follow_up": {
+          "action": "Sistem etibarlılığı kifayətdir",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Sistemi yenidən dizayn edin",
+          "label": "Yüksək"
+        },
+        "low": {
+          "action": "Ehtiyat/yedək sistemləri qiymətləndir",
+          "label": "Aşağı"
+        },
+        "medium": {
+          "action": "Kritik komponentlərə ehtiyat əlavə et",
+          "label": "Orta"
+        }
+      },
+      "hazop": {
+        "critical": {
+          "action": "Prosesi dayandır; dizaynı yenidən nəzərdən keçir",
+          "label": "Qəbuledilməz"
+        },
+        "follow_up": {
+          "action": "Mövcud nəzarət tədbirləri kifayətdir",
+          "label": "Qəbuledilən"
+        },
+        "high": {
+          "action": "Proses dəyişikliyi və ya əlavə maneə tələb olunur",
+          "label": "Yüksək"
+        },
+        "low": {
+          "action": "Monitorinq və təkmilləşdirmə planlaşdır",
+          "label": "Aşağı"
+        },
+        "medium": {
+          "action": "Əlavə qoruyucu təbəqələri qiymətləndir",
+          "label": "Orta"
+        }
+      },
+      "lopa": {
+        "critical": {
+          "action": "Prosesi dayandır; dizaynı yenidən nəzərdən keçir",
+          "label": "Qəbuledilməz"
+        },
+        "follow_up": {
+          "action": "Mövcud qoruyucu təbəqələr kifayətdir",
+          "label": "Qəbuledilən"
+        },
+        "high": {
+          "action": "Çoxlu təbəqələr və ya proses dəyişikliyi tələb olunur",
+          "label": "Yüksək risk"
+        },
+        "low": {
+          "action": "Ağlabatan dərəcədə aşağı",
+          "label": "ALARP"
+        },
+        "medium": {
+          "action": "Əlavə qoruyucu təbəqə əlavə et",
+          "label": "Təkmilləşdirmə lazımdır"
+        }
+      },
+      "matrix": {
+        "critical": {
+          "action": "İşi dərhal dayandır; təcili tədbirlər",
+          "label": "Qəbuledilməz"
+        },
+        "follow_up": {
+          "action": "Əlavə tədbirlər lazım olmaya bilər; monitorinq kifayətdir",
+          "label": "Məqbul"
+        },
+        "high": {
+          "action": "Tezliklə tədbir görün",
+          "label": "Yüksək risk"
+        },
+        "low": {
+          "action": "Mövcud nəzarət tədbirləri kifayətdir; müşahidəni davam etdirin",
+          "label": "Aşağı risk"
+        },
+        "medium": {
+          "action": "Təkmilləşdirmə fəaliyyətlərini planlaşdırın",
+          "label": "Orta risk"
+        }
+      },
+      "r2d": {
+        "critical": {
+          "action": "İşin dayandırılmasını qiymətləndirin",
+          "label": "Kritik"
+        },
+        "follow_up": {
+          "action": "Rutin monitorinq kifayətdir",
+          "label": "Monitorinq"
+        },
+        "high": {
+          "action": "Prioritet müdaxilə tələb olunur",
+          "label": "Yüksək"
+        },
+        "low": {
+          "action": "Strukturlaşdırılmış yenidən qiymətləndirmə planlaşdırın",
+          "label": "Aşağı"
+        },
+        "medium": {
+          "action": "Artan nəzarət tələb olunur",
+          "label": "Orta"
+        }
+      }
+    },
+    "fk": {
+      "exposure": {
+        "v0_5": "Çox nadir (ildə bir dəfə)",
+        "v1": "Nadir (ayda bir dəfə)",
+        "v10": "Davamlı (günün çox hissəsi)",
+        "v2": "Ara-sıra (həftədə bir dəfə)",
+        "v3": "Bəzən (həftədə bir neçə dəfə)",
+        "v6": "Tez-tez (gündəlik)"
+      },
+      "likelihood": {
+        "v0_1": "Demək olar ki, mümkünsüz",
+        "v0_2": "Çox az ehtimal",
+        "v0_5": "Gözlənilməz, lakin mümkün",
+        "v1": "Aşağı ehtimal, nəzərə alınmalı",
+        "v10": "Çox ehtimal / gözlənilən",
+        "v3": "Nadir, lakin mümkün",
+        "v6": "Kifayət qədər ehtimallı"
+      },
+      "severity": {
+        "v1": "Diqqətəlayiq, ilk yardım",
+        "v100": "Kütləvi fəlakət, çoxsaylı ölüm",
+        "v15": "Çox ciddi, əzanın itirilməsi",
+        "v3": "Əhəmiyyətli, xarici müalicə",
+        "v40": "Fəlakət, tək ölüm",
+        "v7": "Ciddi, daimi zərər"
+      }
+    },
+    "fmea": {
+      "detection": {
+        "v1": "Demək olar ki, əmin aşkarlama",
+        "v10": "Aşkar edilə bilməz",
+        "v2": "Çox yüksək aşkarlama şansı",
+        "v3": "Yüksək şans",
+        "v4": "Orta-yüksək",
+        "v5": "Orta",
+        "v6": "Aşağı-orta",
+        "v7": "Aşağı",
+        "v8": "Çox aşağı",
+        "v9": "Uzaq şans"
+      },
+      "occurrence": {
+        "v1": "Demək olar ki, qeyri-mümkün (< 1/1,000,000)",
+        "v10": "Demək olar ki, əmin (≥ 1/2)",
+        "v2": "Uzaq (1/20,000)",
+        "v3": "Çox aşağı (1/4,000)",
+        "v4": "Aşağı (1/1,000)",
+        "v5": "Orta-aşağı (1/400)",
+        "v6": "Orta (1/80)",
+        "v7": "Orta-yüksək (1/40)",
+        "v8": "Yüksək (1/20)",
+        "v9": "Çox yüksək (1/8)"
+      },
+      "severity": {
+        "v1": "Heç bir təsir — fərq edilməz",
+        "v10": "Fəlakətli — ölüm / kütləvi qəza",
+        "v2": "Çox kiçik — əhəmiyyətsiz təsir",
+        "v3": "Kiçik — cüzi narahatlıq",
+        "v4": "Aşağı — performans düşməsi",
+        "v5": "Orta — əhəmiyyətli performans itkisi",
+        "v6": "Yüksək — sistem funksiyası pozulmuş",
+        "v7": "Çox yüksək — işləməz",
+        "v8": "Təhlükəli (xəbərdarlıqla) — zədələnmə riski",
+        "v9": "Təhlükəli (xəbərdarlıq olmadan) — ciddi zədələnmə"
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "after": "Sonra",
+        "before": "Əvvəl",
+        "early": "Erkən",
+        "late": "Gec",
+        "less": "Az",
+        "more": "Çox",
+        "noNot": "Yox / Deyil",
+        "otherThan": "Başqa",
+        "partOf": "Hissəsi",
+        "reverse": "Əks"
+      },
+      "parameters": {
+        "composition": "Tərkib",
+        "flow": "Axın",
+        "level": "Səviyyə",
+        "mixing": "Qarışdırma",
+        "ph": "pH",
+        "pressure": "Təzyiq",
+        "reaction": "Reaksiya",
+        "speed": "Sürət",
+        "temperature": "Temperatur",
+        "time": "Vaxt"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v0_00001": "100,000 ildə bir dəfə — son dərəcə nadir",
+        "v0_0001": "10,000 ildə bir dəfə — çox nadir",
+        "v0_001": "1,000 ildə bir dəfə — nadir",
+        "v0_01": "100 ildə bir dəfə — ara-sıra",
+        "v0_1": "10 ildə bir dəfə — tez-tez",
+        "v1": "İldə bir dəfə — çox tez-tez"
+      },
+      "pfd": {
+        "v0_001": "Avtomatlaşdırılmış təhlükəsizlik sistemi (SIL-1 sinfi)",
+        "v0_01": "Təlim keçmiş operator cavabı / həyəcan siqnalı",
+        "v0_1": "Sadə inzibati nəzarət"
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "Çox aşağı (demək olar ki, mümkünsüz)"
+        },
+        "i2": {
+          "description": "Aşağı (nadir, gözlənilməz)"
+        },
+        "i3": {
+          "description": "Orta (ehtimal az, lakin mümkün)"
+        },
+        "i4": {
+          "description": "Yüksək (ehtimal, təəccüblü deyil)"
+        },
+        "i5": {
+          "description": "Çox yüksək (gözlənilən, qaçılmaz)"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "Çox kiçik (iş vaxtı itkisi yoxdur)"
+        },
+        "i2": {
+          "description": "Kiçik (iş vaxtı itkisi olmayan zədə)"
+        },
+        "i3": {
+          "description": "Orta (iş vaxtı itkisi olan zədə)"
+        },
+        "i4": {
+          "description": "Böyük (daimi zərər, amputasiya)"
+        },
+        "i5": {
+          "description": "Fəlakətli (ölüm, çoxsaylı ölümlər)"
+        }
+      }
+    },
+    "methods": {
+      "bow_tie": {
+        "description": "Bow-tie — təhdid–maneə–nəticə",
+        "name": "Bow-Tie",
+        "tooltip": "Təhdid ehtimalı və nəticə şiddəti preventiv və yumşaldıcı maneələrlə; maneə gücündən qalıq risk."
+      },
+      "checklist": {
+        "description": "Yoxlama siyahısı — uyğunluq faizi",
+        "name": "Yoxlama Siyahısı",
+        "tooltip": "OK / Deyil / Qismən elementlərdən çəkili uyğunluq—auditlər və yoxlamalar üçün yaxşıdır."
+      },
+      "fine_kinney": {
+        "description": "Ehtimal × Şiddət × Məruz qalma hasili",
+        "name": "Fine-Kinney",
+        "tooltip": "Ümumi kəmiyyət risk metodu: L (0.1–10), S (1–100), E (0.5–10); ISO 31000 ilə uyğunlaşır."
+      },
+      "fmea": {
+        "description": "Nasazlıq Rejimi və Təsir Analizi — RPN",
+        "name": "FMEA",
+        "tooltip": "Şiddət (1–10) × Baş verməsi (1–10) × Aşkarlanması (1–10) = RPN. Əməliyyatlar və texniki xidmət üçün ideal; IEC 60812."
+      },
+      "fta": {
+        "description": "Nasazlıq ağacı analizi — sistem etibarlılığı",
+        "name": "FTA",
+        "tooltip": "VƏ/YAXUD qapıları ilə sistem nasazlığını parçalayır; aviasiya, nüvə və kritik sistemlərdə istifadə olunur; IEC 61025."
+      },
+      "hazop": {
+        "description": "Təhlükə və əməliyyat qabiliyyəti tədqiqi",
+        "name": "HAZOP",
+        "tooltip": "Bələdçi sözlər (Yox, Az, Çox, Əks, ...) proses kənarlaşmalarını araşdırır; kimyəvi/neft zavodlarında geniş yayılmışdır; IEC 61882."
+      },
+      "jsa": {
+        "description": "İş təhlükəsizliyi analizi — addım əsaslı təhlükələr",
+        "name": "JSA",
+        "tooltip": "Hər addım üçün Şiddət × Ehtimal / Nəzarət effektivliyi; tikinti və sahə işləri üçün vacibdir."
+      },
+      "l_matrix": {
+        "description": "5×5 ehtimal–şiddət risk matrisi",
+        "name": "L-tip matris",
+        "tooltip": "Ehtimal (1–5) və şiddət (1–5) seçin; 25 xanalı rəng matrisindən riski oxuyun (Türkiyə İMT təcrübəsi ilə uyğunlaşdırılmışdır)."
+      },
+      "lopa": {
+        "description": "Qoruyucu təbəqə analizi — tezlik azalması",
+        "name": "LOPA",
+        "tooltip": "Başlanğıc tezliyini təbəqə PFD dəyərləri ilə vurun; proses təhlükəsizliyində tez-tez SIL hədəfləri ilə cütləşdirilir."
+      },
+      "r_skor": {
+        "description": "9 parametrli çəkili sahə skrininq balı",
+        "name": "R-SKOR 2D",
+        "tooltip": "RiskNova metodu: doqquz parametr (C1–C9) vizual və sahə girişlərini çəkiləndirir; təsvirlərdən avtomatlaşdırılmış qiymətləndirməni dəstəkləyir."
+      }
+    },
+    "panel": {
+      "bowtie": {
+        "consequence": "Nəticə şiddəti",
+        "mitigation": "Azaldıcı maneələr",
+        "prevention": "Qarşısıalıcı maneələr",
+        "rawRisk": "Xam risk",
+        "residualRisk": "Qalıq risk",
+        "threat": "Təhlükə ehtimalı"
+      },
+      "checklist": {
+        "add": "+ Əlavə et",
+        "compliantLine": "{n} uyğun",
+        "itemPlaceholder": "Nəzarət elementi…",
+        "itemsHeading": "Yoxlama elementləri ({count})",
+        "nonCompliantLine": "{n} uyğun deyil",
+        "partialLine": "{n} qismən",
+        "removeTitle": "Sil",
+        "statusKismi": "Qismən",
+        "statusNa": "Uyğun deyil",
+        "statusUygun": "Uyğun",
+        "statusUygunDegil": "Uyğun deyil"
+      },
+      "fmea": {
+        "detection": "Aşkarlama (D)",
+        "formula": "S × O × D = RPN",
+        "occurrence": "Baş verməsi (O)",
+        "severity": "Şiddət (S)"
+      },
+      "fta": {
+        "add": "+ Əlavə et",
+        "componentDefault": "Komponent {n}",
+        "componentPlaceholder": "Komponent adı",
+        "componentsHeading": "Komponentlər ({count})",
+        "failureRateTitle": "Nasazlıq ehtimalı (0–1)",
+        "gate": "Qapı",
+        "gateType": "Qapı növü:",
+        "removeTitle": "Sil",
+        "systemCriticality": "Sistem kritikliyi",
+        "systemProb": "Sistem P"
+      },
+      "hazop": {
+        "detectEasy": "Asan",
+        "detectHard": "Çətin",
+        "detectability": "Aşkarlanma",
+        "deviation": "Sapma təsviri",
+        "deviationPlaceholder": "Sapmanı təsvir edin...",
+        "guideWord": "Bələdçi söz",
+        "likelihood": "Ehtimal",
+        "parameter": "Proses parametri",
+        "severity": "Şiddət"
+      },
+      "jsa": {
+        "add": "+ Əlavə et",
+        "avg": "Ort",
+        "control": "Nəzarət",
+        "controlsPlaceholder": "Nəzarət tədbirləri...",
+        "hazardPlaceholder": "Təhlükə...",
+        "highRisk": "Yüksək riskli addımlar",
+        "jobPlaceholder": "İş adı...",
+        "jobTitle": "İş vəzifəsi",
+        "likelihood": "Ehtimal",
+        "max": "Maks",
+        "removeTitle": "Sil",
+        "severity": "Şiddət",
+        "stepDefault": "Addım {n}",
+        "stepDescPlaceholder": "Addım təsviri...",
+        "stepScoreIntro": "Addım balı:",
+        "stepsHeading": "İş addımları ({count})"
+      },
+      "lopa": {
+        "addLayer": "+ Əlavə et",
+        "consequence": "Nəticə şiddəti",
+        "consequenceV1": "Aşağı",
+        "consequenceV2": "Kiçik",
+        "consequenceV3": "Orta",
+        "consequenceV4": "Ağır",
+        "consequenceV5": "Fəlakətli",
+        "initFreq": "Başlanğıc hadisə tezliyi",
+        "layerDefault": "Qat {n}",
+        "layerNamePlaceholder": "Qat adı",
+        "layerPfd": "Qat PFD",
+        "layersHeading": "Qoruyucu qatlar ({count})",
+        "meetsTarget": "Məqbul hədəfə uyğundur",
+        "removeTitle": "Sil",
+        "riskReduction": "Risk azaldılması",
+        "target": "Hədəf",
+        "targetMet": "Yerinə yetirildi",
+        "targetNotMet": "Yerinə yetirilmədi"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employee_representative": "İşçi nümayəndəsi",
+        "employer": "İşəgötürən",
+        "employer_representative": "İşəgötürən nümayəndəsi",
+        "knowledgeable_employee": "Risklər haqqında məlumatlı işçi",
+        "ohs_specialist": "ƏMTƏH mütəxəssisi",
+        "other_health_personnel": "Digər səhiyyə personalı",
+        "support_staff": "Dəstək personalı",
+        "workplace_physician": "İş yeri həkimi"
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "description": "Sahədə müşahidə edilən təhlükəli obyektlərin sayı/sıxlığı",
+        "label": "Təhlükə sıxlığı"
+      },
+      "c2": {
+        "description": "Çatışmayan dəbilqə, əlcək, eynək və s.",
+        "label": "ŞQV boşluqları"
+      },
+      "c3": {
+        "description": "Məhdud zonaya giriş, qorunmayan iş, yıxılma təhlükəsi",
+        "label": "Davranış riski"
+      },
+      "c4": {
+        "description": "İstilik, səs-küy, vibrasiya və oxşar stress faktorları",
+        "label": "Ətraf mühit stresi"
+      },
+      "c5": {
+        "description": "Qaz sızıntıları, kimyəvi maddələr, elektrik təhlükələri",
+        "label": "Kimyəvi / elektrik"
+      },
+      "c6": {
+        "description": "Bağlı çıxışlar, yaş döşəmələr, keçid maneələri",
+        "label": "Giriş / maneə"
+      },
+      "c7": {
+        "description": "Keçilmiş mühafizə, gecikmiş texniki xidmət",
+        "label": "Maşın / proses"
+      },
+      "c8": {
+        "description": "Forklift intensivliyi, xətt kəsişmələri, piyada-nəqliyyat münaqişəsi",
+        "label": "Nəqliyyat hərəkəti"
+      },
+      "c9": {
+        "description": "Təlim boşluqları, çatışmayan xəbərdarlıq lövhələri",
+        "label": "Təşkilati yük"
+      },
+      "source": {
+        "visualAnalysis": "Vizual analiz"
+      }
+    },
+    "ui": {
+      "fk": {
+        "exposure": "Məruz qalma (E)",
+        "likelihood": "Ehtimal (L)",
+        "severity": "Şiddət (S)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "Ehtimal ({n})",
+        "severityHeading": "Şiddət ({n})"
+      },
+      "page": {
+        "analysisNotePlaceholder": "Hər sətir risk mövzusu və ya uyğunsuzluq qrupudur. Hər sətir üçün bir və ya daha çox foto əlavə edilə bilər.",
+        "analysisTitlePlaceholder": "Sahə risk analizi",
+        "describeRiskGroup": "Risk qrupunu qısaca təsvir edin"
+      },
+      "r2d": {
+        "base": "Baza",
+        "dominant": "Dominant",
+        "parameters": "Parametrlər",
+        "peak": "Pik"
+      },
+      "severity": {
+        "critical": "Kritik",
+        "high": "Yüksək",
+        "low": "Aşağı",
+        "medium": "Orta"
+      }
+    },
+    "wizard": {
+      "common": {
+        "add": "Əlavə et",
+        "address": "Ünvan",
+        "back": "Geri",
+        "cancel": "Ləğv et",
+        "companyFallback": "Şirkət",
+        "delete": "Sil",
+        "description": "Təsvir",
+        "findings": "Tapıntılar",
+        "goToResults": "Nəticələrə keç",
+        "images": "Şəkillər",
+        "lines": "Sətrlər",
+        "location": "Məkan",
+        "method": "Metod",
+        "next": "Növbəti",
+        "no": "Xeyr",
+        "report": "Hesabat",
+        "risk": "Risk",
+        "row": "Sətir",
+        "save": "Saxla",
+        "saving": "Saxlanılır…",
+        "scoreDetailPrefix": "Bal təfsilatı —",
+        "type": "Növ",
+        "update": "Yenilə",
+        "visual": "Şəkil",
+        "yes": "Bəli"
+      },
+      "header": {
+        "backToList": "Siyahıya qayıt",
+        "badgeAiManual": "AI + əl ilə tapıntılar",
+        "badgeExport": "PDF / Word / Excel",
+        "newAnalysis": "Yeni analiz",
+        "wizardDescription": "Şirkəti seçin, komandanı təyin edin, şəkilləri yükləyin, sonra AI + əl ilə tapıntılar və qiymətləndirmə aparın.",
+        "wizardTitle": "Vizual risk analizi"
+      },
+      "list": {
+        "companyLabel": "Şirkət / təşkilat",
+        "companyPlaceholder": "— Şirkəti seçin —",
+        "confirmDelete": "Əminsiniz?",
+        "deleteAnalysis": "Sil",
+        "description": "Şirkəti seçin, keçmiş analizlərə baxın və ya yenisini başladın.",
+        "emptyDescription": "Bu şirkət üçün ilk risk analizini başlatmaq üçün yuxarıdakı düyməni istifadə edin.",
+        "emptyTitle": "Hələ analiz yoxdur",
+        "eyebrow": "Risk analizi",
+        "findingsCount": "{count} tapıntı",
+        "historyCount": "{count} saxlanılmış analiz",
+        "historyTitle": "{name} — analiz tarixi",
+        "newAnalysis": "+ Yeni analiz başlat",
+        "statusArchived": "Arxivləşdirilmiş",
+        "statusCompleted": "Tamamlanmış",
+        "statusDraft": "Layihə",
+        "title": "Risk analizi idarəetməsi"
+      },
+      "messages": {
+        "analysisComplete": "Analiz tamamlandı!",
+        "analysisFailed": "Analiz tamamlana bilmədi.",
+        "analysisFailedDetail": "AI analizi uğursuz oldu. {detail}",
+        "analysisPartial": "AI analizi qismən tamamlandı. {successful}/{total} şəkil işləndi; {errors} şəkildə xətalar.",
+        "analysisStarting": "Analiz başlayır…",
+        "analysisSummary": "AI analizi bitdi. {risks} risk, {positive} müsbət müşahidə.",
+        "analyzingImageProgress": "Şəkil analiz edilir {current}/{total}: {fileName}",
+        "analyzingRowImage": "Şəkil analiz edilir: Sıra {row}, {fileName}…",
+        "genericAiError": "OpenAI və ya Anthropic mərhələsində xəta baş verdi.",
+        "needImageToAnalyze": "Analizə başlamaq üçün ən azı bir şəkil əlavə edin."
+      },
+      "methodCard": {
+        "params": "{count} parametr",
+        "score": "Bal:"
+      },
+      "nav": {
+        "aiAnalyzingShort": "Analiz edilir…",
+        "aiStartShort": "AI analizinə başla"
+      },
+      "notifications": {
+        "savedBody": "{title} — {findings} tapıntı, {critical} kritik/yüksək",
+        "savedTitle": "Risk analizi saxlanıldı",
+        "updatedTitle": "Risk analizi yeniləndi"
+      },
+      "save": {
+        "error": "Saxlama zamanı xəta baş verdi.",
+        "noCompany": "Şirkət seçmədən saxlamaq mümkün deyil.",
+        "oversized": "{fileName} 10 MB limitini aşır. Saxlamadan əvvəl daha kiçik şəkil yükləyin.",
+        "successNew": "Analiz uğurla saxlanıldı!",
+        "successUpdated": "Analiz uğurla yeniləndi!"
+      },
+      "step1": {
+        "analysisNote": "Analiz qeydi",
+        "analysisTitle": "Analiz başlığı",
+        "company": "Şirkət / təşkilat",
+        "companyCardAddress": "Ünvan:",
+        "companyCardType": "Növ:",
+        "companyPlaceholder": "Şirkət / təşkilat seçin",
+        "companyRequired": "Analiz üçün şirkət seçmək tələb olunur.",
+        "department": "Şöbə / bölmə",
+        "departmentPlaceholder": "Şöbə seçin",
+        "departmentRequired": "Şöbə seçimi tələb olunur.",
+        "editCompanyStructure": "Şirkət strukturunu redaktə et",
+        "location": "Yer / iş sahəsi",
+        "locationPlaceholder": "Yer seçin",
+        "locationRequired": "Yer seçimi tələb olunur.",
+        "method": "Təhlil metodu",
+        "subtitle": "Bu risk təhlilinin hansı şirkət, məkan və departamentə aid olduğunu seçin.",
+        "title": "Təhlil konteksti"
+      },
+      "step2": {
+        "addParticipant": "İştirakçını əl ilə əlavə et",
+        "certificate": "Sertifikat nömrəsi (varsa)",
+        "certificatePlaceholder": "Tətbiq olunarsa daxil edin",
+        "fullName": "Tam ad",
+        "noTeamBody": "Bu şirkət üçün hələ komanda üzvləri təyin edilməyib. Şirkət səhifəsində Komanda tabını açın, \"Risk qiymətləndirmə komandası\" yaradın və üzvlər əlavə edin — onlar burada avtomatik görünəcək.",
+        "noTeamLink": "Şirkət komanda idarəçiliyinə keç",
+        "noTeamTitle": "Risk qiymətləndirmə komandası təyin edilməyib",
+        "participantN": "İştirakçı {n}",
+        "pickFromTeam": "Şirkət komandasından seç",
+        "rolePlaceholder": "Rol seç",
+        "roleType": "Rol / vəzifə növü",
+        "subtitle": "Saxlanmış personaldan seçin və ya iştirakçıları əl ilə əlavə edin.",
+        "title": "Risk təhlilində iştirak edən insanlar",
+        "titleField": "Rol / vəzifə təsviri",
+        "titlePlaceholder": "məs. A sinif mütəxəssisi"
+      },
+      "step3": {
+        "addImage": "Şəkil əlavə et",
+        "aiAnalyzing": "AI təhlili aparılır…",
+        "aiStart": "Nova AI risk təhlilini başlat",
+        "aiSub": "Nova AI hər şəkli ayrıca təhlil edir.",
+        "bulkUpload": "Toplu yükləmə (hər biri ayrı sıra kimi)",
+        "deleteRow": "Sıranı sil",
+        "newRow": "Sıra əlavə et",
+        "rowHint": "Bu sıra altında geniş və yaxın çəkilişləri qruplaşdırın.",
+        "rowN": "Sıra {n}",
+        "rowTitle": "Sıra başlığı",
+        "rowTitlePlaceholder": "məs. Yığma sahəsi",
+        "subtitle": "Hər sətir bir risk mövzusudur. Şəkilləri yükləyin, sonra AI analizini başladın.",
+        "summaryCompany": "Şirkət",
+        "summaryImages": "Şəkillər",
+        "summaryLocation": "Yer",
+        "summaryMethod": "Metod",
+        "title": "Risk sətirləri və şəkillər"
+      },
+      "step4": {
+        "addedLater": "Sonra əlavə edildi",
+        "addRiskPin": "Risk işarəsi əlavə et",
+        "aiAnalyzingDetail": "Nova AI hər şəkli analiz edir…",
+        "analyzingInline": "Analiz edilir…",
+        "areaAssessment": "Sahə qiymətləndirməsi",
+        "avgScore": "Ort. bal",
+        "cannotAnalyzeBody": "Bu şəkil risk analizi üçün uyğun deyil.",
+        "cannotAnalyzeTitle": "Risk analizi aparıla bilmir",
+        "capaBadge": "CAPA namizədi",
+        "capaCandidate": "CAPA namizədi",
+        "cleanNoRisk": "Təmiz — risk aşkar edilməyib",
+        "confidenceHigh": "Təsdiqlənmiş tapıntı",
+        "confidenceLow": "Yoxlama tövsiyə olunur",
+        "confidenceMedium": "AI tapıntısı",
+        "criticalHigh": "Kritik / yüksək",
+        "deleteFindingAria": "Tapıntını sil",
+        "deleteFindingConfirm": "{title}\" tapıntısını silmək istəyirsiniz?",
+        "deleteFindingTitle": "Tapıntını sil",
+        "detectedPrefix": "Aşkar edildi:",
+        "emptyResultsDesc": "3-cü addımda şəkilləri yükləyin və analizi işə salın.",
+        "emptyResultsTitle": "Hələ nəticə yoxdur",
+        "findingTitle": "Tapıntı başlığı",
+        "findingTitlePlaceholder": "məs. Qoruyucu maneə yoxdur",
+        "manualPinConfirm": "Əlavə et",
+        "manualPinHint": " Siz manual pin ilə öz tapıntınızı əlavə edə bilərsiniz.",
+        "manualPinTitle": "Manual risk pin əlavə et",
+        "metaEyebrowArea": "Sahə qiymətləndirməsi",
+        "metaEyebrowPositive": "Müsbət müşahidələr",
+        "noRiskDetectedBody": "AI bu şəkildə mənalı təhlükə və ya uyğunsuzluq tapmadı.",
+        "noRiskDetectedTitle": "Risk aşkar edilmədi",
+        "noRiskThisImageBody": "AI bu şəkildə konkret təhlükə tapmadı. Siz hələ də manual tapıntı əlavə edə bilərsiniz.",
+        "noRiskThisImageTitle": "Bu şəkildə əhəmiyyətli risk yoxdur",
+        "notRealPhotoBody": "Bu şəkil çizim, illüstrasiya və ya sintetik renderdir. Risk analizi yalnız real sahə fotoları üzərində işləyir.",
+        "notRealPhotoTitle": "Real foto deyil",
+        "peopleDetected": "{count} nəfər aşkar edildi",
+        "photoQuality": "Şəkil keyfiyyəti:",
+        "photoQualityLow": "Aşağı",
+        "photoQualityMedium": "Orta",
+        "pinBanner": "Risk pin əlavə etmək üçün şəkilə klikləyin",
+        "pinModeActive": "Pin rejimi aktiv...",
+        "positiveFindings": "Müsbət müşahidələr",
+        "positiveObservationsHint": " Müsbət müşahidələr aşağıda siyahılanıb.",
+        "resultsSubtitle": "Risk kartları şəkildəki annotasiyalarla əlaqəli qalır. Xalı dəyişmək üçün parametrləri tənzimləyin.",
+        "resultsTitle": "Annotasiya edilmiş tapıntılar",
+        "riskCount": "Risk: {count}",
+        "rowImagesFindings": "Şəkillər: {images} · Tapıntılar: {findings}",
+        "saveWarning": "Nəticələr hələ saxlanılmayıb! Saxlamadan çıxsanız, bütün tapıntılar itəcək.",
+        "scorePanelIntro": "Xal təfərrüatı — {method}",
+        "severity": "Şiddət dərəcəsi",
+        "totalFindings": "Ümumi tapıntılar",
+        "visualN": "Şəkil {n}"
+      },
+      "steps": {
+        "context": "Təhlil konteksti",
+        "images": "Şəkillər",
+        "results": "Nəticələr",
+        "team": "Təhlil komandası"
+      },
+      "validate": {
+        "company": "Əvvəlcə şirkət / təşkilat seçin.",
+        "department": "Şöbə / bölmə seçin.",
+        "firmLocationDept": "Şirkət, məkan və şöbə seçin.",
+        "location": "İş yerini seçin.",
+        "participants": "Ən azı bir məsul şəxsin adını və rolunu daxil edin.",
+        "step2Participants": "Ən azı bir məsul şəxsin adını və rolunu daxil edin.",
+        "step3Images": "Ən azı bir şəkil əlavə edin."
       }
     }
   },
+  "sharedDocument": {
+    "createdOn": "Yaradılıb: {date}",
+    "footerCreatedWith": "RiskNova ilə yaradılıb",
+    "hashLabel": "Heş:",
+    "loading": "Sənəd yüklənir…",
+    "sharedBadge": "Paylaşılan sənəd",
+    "signaturesHeading": "İmzalar",
+    "statusDraft": "Layihə",
+    "statusPendingApproval": "Təsdiq gözləyir",
+    "statusReady": "Hazır",
+    "statusRevision": "Yenidən baxış"
+  },
+  "sharedRisk": {
+    "analysisNoteHeading": "Qiymətləndirmə qeydi",
+    "defaultTitle": "Risk qiymətləndirmə hesabatı",
+    "departmentLabel": "Şöbə:",
+    "findingsByRowHeading": "Sıra əsaslı risk tapıntıları",
+    "findingsImagesCount": "{findings} tapıntı · {images} şəkil",
+    "footerGeneratedBy": "Bu hesabat RiskNova OHS platforması tərəfindən yaradılmışdır.",
+    "footerMethodNote": "Hesabat məzmunu {method} metodu ilə qiymətləndirilmişdir.",
+    "legalBasisHeading": "Tənzimləyici istinad",
+    "locationLabel": "Yer:",
+    "methods": {
+      "fine_kinney": "Fine-Kinney",
+      "fmea": "FMEA",
+      "hazop": "HAZOP",
+      "l_matrix": "L-Matrix",
+      "r_skor": "R-SCORE 2D"
+    },
+    "noFindingsInRow": "Bu sıra üçün tapıntı yoxdur.",
+    "platformLabel": "RiskNova OHS platforması",
+    "recommendation": "Tövsiyə",
+    "reportEyebrow": "Risk qiymətləndirmə hesabatı",
+    "rowTitleFallback": "Sıra {n}",
+    "severity": {
+      "critical": "Kritik",
+      "high": "Yüksək",
+      "low": "Aşağı",
+      "medium": "Orta"
+    },
+    "statCritical": "Kritik",
+    "statHigh": "Yüksək",
+    "statTotal": "Ümumi tapıntılar",
+    "teamHeading": "Qiymətləndirmə komandası"
+  },
+  "solutionCenter": {
+    "chat": "Söhbət",
+    "copy": "Kopyala",
+    "description": "Nova qanunvericiliyi şərh edən, sizi düzgün modulə yönəldən və sənəd və ya iş axını əməliyyatlarını başladan əməliyyat OHS agentidir.",
+    "documents": "Mənim Sənədlərim",
+    "history": "Tarixçə",
+    "inputPlaceholder": "Nova-ya nə etmək istədiyinizi deyin...",
+    "queries": "sorğular",
+    "referenced": "istinadlarla",
+    "save": "Saxla",
+    "saved": "Saxlanıldı",
+    "sources": "qanunvericilik mənbələri",
+    "title": "Nova"
+  },
   "solutions": {
-    "osgbPage": {
-      "metaTitle": "OSGB solution and quote | RiskNova",
-      "metaDescription": "Package options and tailored quote requests for OSGBs serving multiple workplaces.",
-      "heroEyebrow": "OSGB",
-      "heroTitleLead": "Bring your client portfolio and team together in",
-      "heroTitleAccent": "one panel",
-      "heroTitleTrail": ".",
-      "heroBody": "Clarify personnel, task tracking and client sites. Individual plans start from {starterPrice}/month Starter; the OSGB model covers multi-site portfolios and extra seats, so the figures below are indicative USD segments — exact terms are confirmed after the quote form or registration flow.",
-      "ctaRegister": "Request a quote via registration",
-      "ctaForm": "Go to quote form",
-      "footerNoteLead": "Single employer across many locations?",
-      "footerNoteLink": "See the enterprise solution page",
-      "footerNoteTrail": "."
-    },
-    "enterprisePage": {
-      "metaTitle": "Enterprise solution and quote | RiskNova",
-      "metaDescription": "Quote requests and contact for multi-site organisations with specialised OHS needs.",
-      "heroEyebrow": "Enterprise",
-      "heroTitle": "Consistent OHS operations across your locations with bespoke onboarding.",
-      "heroBody": "We do not offer self-service card checkout for enterprise use. Share your needs and our sales team will follow up with a tailored quote, limits and implementation.",
-      "ctaRegister": "Request a quote via registration",
-      "ctaForm": "Contact us (form)",
-      "footerNoteLead": "Serving clients as an OSGB?",
-      "footerNoteLink": "OSGB packages page",
-      "footerNoteTrail": "."
-    },
     "commercial": {
-      "osgbSectionTitle": "OSGB packages",
-      "osgbSectionIntro": "Amounts are indicative starting segments in USD; tax, FX and contract scope are confirmed when the quote is finalised. There is no card checkout — we align limits and pricing once we understand your structure.",
-      "enterpriseSectionTitle": "Company / enterprise quote",
-      "enterpriseSectionIntro": "For multi-site organisations, field-heavy operations and bespoke setups there is no card payment on this path. Share your context so we can return with a tailored offer.",
-      "enterpriseCta": "Create quote request",
-      "enterpriseSecondaryCta": "Write us for an OSGB package",
-      "osgbFooterHint": "Single employer across many locations?",
-      "osgbFooterLink": "See the enterprise solution page",
-      "enterpriseFooterHint": "Serving clients as an OSGB?",
-      "enterpriseFooterLink": "Go to OSGB packages page",
-      "recommended": "Recommended",
+      "enterpriseCta": "Təklif sorğusu yarat",
+      "enterpriseFooterHint": "Müştərilərə OSGB kimi xidmət göstərirsiniz?",
+      "enterpriseFooterLink": "OSGB paketləri səhifəsinə keç",
+      "enterpriseSecondaryCta": "OSGB paketi üçün bizə yazın",
+      "enterpriseSectionIntro": "Çox-saytlı təşkilatlar, sahə-ağır əməliyyatlar və xüsusi qurğular üçün bu yolda kart ödənişi yoxdur. Kontekstinizi paylaşın ki, fərdiləşdirilmiş təklif ilə geri dönək.",
+      "enterpriseSectionTitle": "Şirkət / müəssisə təklifi",
       "offers": {
         "osgb_starter": {
+          "ctaLabel": "Starter təklifi sorğusu",
           "name": "OSGB Starter",
-          "pricePeriod": "from / month",
-          "priceFinePrint": "Indicative starting segment. Final pricing depends on firm count and seats after the quote.",
-          "summary": "For smaller OSGB teams with a limited portfolio — unlike the individual Starter at {individualStarter}/month it covers multi-site and team workflows.",
-          "workspacesLabel": "5 active firms / workspaces",
-          "seatsLabel": "2 active team seats",
-          "features": [
-            "Personnel module and invitation flows",
-            "Tasks, work tracking and assignment board",
-            "Client workplace portfolio view",
-            "Announcements and core operational flows"
-          ],
-          "ctaLabel": "Request Starter quote"
+          "priceFinePrint": "Göstərici başlanğıc seqmenti. Son qiymət təklifdən sonra firma sayı və yerlərdən asılıdır.",
+          "pricePeriod": "/ ay-dan",
+          "seatsLabel": "2 aktiv komanda yeri",
+          "summary": "Məhdud portfelli kiçik OSGB komandaları üçün — {individualStarter}/ay-da fərdi Starter-dən fərqli olaraq çox-sayt və komanda iş axınlarını əhatə edir.",
+          "workspacesLabel": "5 aktiv firma / iş sahəsi"
         },
         "osgb_team": {
+          "ctaLabel": "Team təklifi sorğusu",
           "name": "OSGB Team",
-          "pricePeriod": "from / month",
-          "priceFinePrint": "Indicative mid segment; tailored quote reflects field intensity, reporting and seats.",
-          "summary": "Growing OSGBs: more firms, field coordination and team scale.",
-          "workspacesLabel": "15 active firms / workspaces",
-          "seatsLabel": "5 active team seats",
-          "features": [
-            "Everything in Starter",
-            "Advanced reporting and exports",
-            "Field audits and checklists (per agreement)",
-            "Priority solution / onboarding channel"
-          ],
-          "ctaLabel": "Request Team quote"
+          "priceFinePrint": "Göstərici orta seqment; fərdiləşdirilmiş təklif sahə intensivliyini, hesabatı və yerləri əks etdirir.",
+          "pricePeriod": "/ ay-dan",
+          "seatsLabel": "5 aktiv komanda yeri",
+          "summary": "Böyüyən OSGB-lər: daha çox firma, sahə koordinasiyası və komanda miqyası.",
+          "workspacesLabel": "15 aktiv firma / iş sahəsi"
         }
       },
-      "enterpriseHighlights": [
-        "Multi-site companies and institutions",
-        "Tailored quote aligned with operational volume",
-        "Integration and onboarding planning when needed"
-      ]
+      "osgbFooterHint": "Çoxlu yerlərdə tək işəgötürən?",
+      "osgbFooterLink": "Müəssisə həlli səhifəsinə bax",
+      "osgbSectionIntro": "Məbləğlər USD-də göstərici başlanğıc seqmentlərdir; vergi, valyuta məzənnəsi və müqavilə əhatəsi təklif yekunlaşdırıldıqda təsdiqlənir. Kart ödənişi yoxdur — biz sizin strukturunuzu başa düşdükdən sonra limitləri və qiymətləndirməni uyğunlaşdırırıq.",
+      "osgbSectionTitle": "OSGB paketləri",
+      "recommended": "Tövsiyə edilir"
+    },
+    "enterprisePage": {
+      "ctaForm": "Bizimlə əlaqə (forma)",
+      "ctaRegister": "Qeydiyyat vasitəsilə təklif tələb edin",
+      "footerNoteLead": "Müştərilərə OSGB kimi xidmət göstərirsiniz?",
+      "footerNoteLink": "OSGB paketləri səhifəsi",
+      "footerNoteTrail": ".",
+      "heroBody": "Biz müəssisə istifadəsi üçün özünəxidmət kart ödənişi təklif etmirik. Ehtiyaclarınızı paylaşın və satış komandamız fərdiləşdirilmiş təklif, limitlər və tətbiq ilə əlaqə saxlayacaq.",
+      "heroEyebrow": "Müəssisə",
+      "heroTitle": "Xüsusi onboarding ilə məkanlarınızda ardıcıl OHS əməliyyatları.",
+      "metaDescription": "İxtisaslaşmış OHS ehtiyacları olan çox-saytlı təşkilatlar üçün təklif sorğuları və əlaqə.",
+      "metaTitle": "Müəssisə həlli və təklif | RiskNova"
     },
     "leadDialog": {
-      "closeAria": "Close",
-      "regionChip": "Region: {code}",
-      "languageChip": "Language: {code}",
-      "submittedTitle": "Request received",
-      "submittedBody": "Our sales team will contact you shortly to clarify scope and share quote and onboarding options. No card payment in this flow — terms are agreed via email or call.",
-      "okButton": "OK",
-      "contactLabel": "Contact person",
-      "contactPlaceholder": "Full name",
-      "workEmailLabel": "Work email",
-      "phoneLabel": "Phone",
-      "phonePlaceholder": "+1 …",
-      "messageLabel": "Your needs (short)",
-      "messagePlaceholder": "How many sites, which modules matter, what rollout do you expect?",
-      "messageHint": "Helps us prepare the right package and migration path.",
-      "cancelButton": "Cancel",
-      "submitting": "Sending…",
-      "errorUnexpected": "An unexpected error occurred while saving the request.",
-      "errorFailed": "Could not save the request.",
-      "companyPlaceholder": "Organisation name",
-      "scalePlaceholder": "e.g. 12",
-      "employeePlaceholder": "e.g. 250",
-      "professionalPlaceholder": "e.g. 8",
-      "osgb": {
-        "badge": "OSGB contact request",
-        "title": "Tell us about your OSGB",
-        "description": "Share how many clients you serve, team shape and operational intensity so we can propose the right package and migration options.",
-        "primaryCta": "Send request",
-        "companyLabel": "OSGB / organisation name",
-        "scaleLabel": "Active client firms you serve",
-        "employeeLabel": "Total employees across those workplaces",
-        "professionalLabel": "Specialists / physicians / DSP headcount"
-      },
+      "cancelButton": "Ləğv et",
+      "closeAria": "Bağla",
+      "companyPlaceholder": "Təşkilat adı",
+      "contactLabel": "Əlaqə şəxsi",
+      "contactPlaceholder": "Tam ad",
+      "employeePlaceholder": "məs. 250",
       "enterprise": {
-        "badge": "Company / enterprise contact",
-        "title": "Tell us about your organisation",
-        "description": "There is no payment step here. When you submit, our sales or solutions team follows up to agree bespoke limits and pricing.",
-        "primaryCta": "Send request",
-        "companyLabel": "Company / organisation name",
-        "scaleLabel": "Locations / sites",
-        "employeeLabel": "Total employees",
-        "professionalLabel": "People involved in coordination"
+        "badge": "Şirkət / müəssisə əlaqəsi",
+        "companyLabel": "Şirkət / təşkilat adı",
+        "description": "Burada ödəniş addımı yoxdur. Təqdim etdiyiniz zaman satış və ya həllər komandamız fərdi limitlər və qiymətləndirmə razılaşdırmaq üçün əlaqə saxlayacaq.",
+        "employeeLabel": "Ümumi işçilər",
+        "primaryCta": "Sorğu göndər",
+        "professionalLabel": "Koordinasiyada iştirak edən insanlar",
+        "scaleLabel": "Məkanlar / saytlar",
+        "title": "Təşkilatınız haqqında bizə danışın"
       },
-      "workEmailPlaceholder": "you@company.com"
+      "errorFailed": "Sorğu saxlanıla bilmədi.",
+      "errorUnexpected": "Sorğunu saxlayarkən gözlənilməz xəta baş verdi.",
+      "languageChip": "Dil: {code}",
+      "messageHint": "Bizə düzgün paket və köçürmə yolunu hazırlamaqda kömək edir.",
+      "messageLabel": "Ehtiyaclarınız (qısa)",
+      "messagePlaceholder": "Neçə sayt, hansı modullar vacibdir, necə tətbiq gözləyirsiniz?",
+      "okButton": "OK",
+      "osgb": {
+        "badge": "OSGB əlaqə sorğusu",
+        "companyLabel": "OSGB / təşkilat adı",
+        "description": "Xidmət etdiyiniz müştəri sayını, komanda strukturunu və əməliyyat intensivliyini paylaşın ki, uyğun paket və köçürmə variantları təklif edə bilək.",
+        "employeeLabel": "Bu iş yerlərindəki ümumi işçi sayı",
+        "primaryCta": "Sorğu göndər",
+        "professionalLabel": "Mütəxəssis / həkim / DSP sayı",
+        "scaleLabel": "Xidmət etdiyiniz aktiv müştəri firmaları",
+        "title": "OSGB-niz haqqında bizə danışın"
+      },
+      "phoneLabel": "Telefon",
+      "phonePlaceholder": "+1 …",
+      "professionalPlaceholder": "məsələn 8",
+      "regionChip": "Region: {code}",
+      "scalePlaceholder": "məsələn 12",
+      "submittedBody": "Satış komandamız tezliklə əhatə dairəsini aydınlaşdırmaq və qiymət təklifi və qoşulma variantlarını paylaşmaq üçün sizinlə əlaqə saxlayacaq. Bu axında kart ödənişi yoxdur — şərtlər e-poçt və ya zəng vasitəsilə razılaşdırılır.",
+      "submittedTitle": "Sorğu qəbul edildi",
+      "submitting": "Göndərilir…",
+      "workEmailLabel": "İş e-poçtu",
+      "workEmailPlaceholder": "siz@şirkət.com"
+    },
+    "osgbPage": {
+      "ctaForm": "Qiymət formasına keç",
+      "ctaRegister": "Qeydiyyat vasitəsilə qiymət tələb et",
+      "footerNoteLead": "Çoxlu məkanda tək işəgötürən?",
+      "footerNoteLink": "Müəssisə həlli səhifəsinə bax",
+      "footerNoteTrail": ".",
+      "heroBody": "Personal, tapşırıq izləmə və müştəri saytlarını aydınlaşdırın. Fərdi planlar {starterPrice}/ay Starter-dən başlayır; OSGB modeli çox saytlı portfelləri və əlavə yerləri əhatə edir, ona görə də aşağıdakı rəqəmlər təxmini USD seqmentləridir — dəqiq şərtlər təklif forması və ya qeydiyyat axınından sonra təsdiqlənir.",
+      "heroEyebrow": "OSGB",
+      "heroTitleAccent": "bir panel",
+      "heroTitleLead": "Müştəri portfelinizi və komandanızı bir araya gətirin",
+      "heroTitleTrail": ".",
+      "metaDescription": "Çoxlu iş yerlərində xidmət göstərən OSGB-lər üçün paket seçimləri və fərdiləşdirilmiş təklif sorğuları.",
+      "metaTitle": "OSGB həlli və təklif | RiskNova"
     }
   },
-  "legal": {
-    "privacy": {
-      "eyebrow": "Privacy policy",
-      "title": "RiskNova Privacy Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Privacy Policy",
-      "metaDescription": "RiskNova privacy policy: how we process personal data across accounts, product use, billing, email, security and AI-assisted features.",
-      "ogTitle": "Privacy Policy | RiskNova",
-      "ogDescription": "How RiskNova processes personal data, which processors we use and how we support user rights.",
-      "sections": [
-        {
-          "title": "Data controller and scope",
-          "content": "This policy describes how personal data is processed across the RiskNova website, registration, sign-in, subscription, OHS modules, document generation, field inspections, training/exams/surveys, Nova AI and support. For workplace and employee records uploaded by the customer to the platform, RiskNova generally acts as a processor; for its own account, security, billing and support processes it acts as a controller."
-        },
-        {
-          "title": "Categories of personal data",
-          "content": "Name, surname, email, phone, account identifier, organisation and workspace details, role and permission records, session and security logs, usage metrics, support tickets, subscription and payment status, IP and device data may be processed. If users upload them, risk analyses, inspections, incident logs, training, exams, surveys, documents, personnel records and media or data files may also be stored on the platform."
-        },
-        {
-          "title": "Purposes and legal bases",
-          "content": "Data are processed to perform the contract, deliver platform features, run occupational safety processes, authenticate users, prevent abuse, bill and support customers, meet legal obligations, improve the product and respect user choices. Where explicit consent is required, a separate consent text is shown; core service data may rely on contract, legal obligation or legitimate interest instead of consent."
-        },
-        {
-          "title": "AI-assisted features",
-          "content": "Nova AI may process user inputs and related context when producing risk analyses, document drafts, training content or legislation-aware answers. Outputs are decision-support only; final professional and legal judgement remains with the user. Where content may include sensitive or special-category data, explicit consent and/or additional disclosure flows may be required before sending it to AI services."
-        },
-        {
-          "title": "Third-party processors",
-          "content": "Hosting, database, authentication, email, payment, error monitoring and AI features may use providers such as Supabase, Vercel, Resend, Paddle, OpenAI, Anthropic and similar vendors. They process data only as needed to provide the service. Card data are not stored by RiskNova; payments and invoicing run on Paddle infrastructure."
-        },
-        {
-          "title": "International transfers",
-          "content": "Cloud hosting, email, payment and AI services may technically run on infrastructure located abroad, so some data may be transferred to providers outside your country where the service requires it. Where transfers apply, disclosure and consent steps under applicable law (including KVKK where relevant) are managed in the product."
-        },
-        {
-          "title": "Cookies and similar technologies",
-          "content": "RiskNova uses essential session, security, language preference and product cookies. If marketing or third-party tracking cookies are introduced, a separate cookie policy and consent mechanism will be provided as needed. Details are on the /cookie-policy page."
-        },
-        {
-          "title": "Retention and security",
-          "content": "Data are kept for as long as needed to operate the service, meet contractual, security, legal and evidentiary requirements. The platform uses technical measures such as RLS, role checks, separation of service roles, webhook signature verification, rate limiting, audit trails and security event logging."
-        },
-        {
-          "title": "Your rights",
-          "content": "Under applicable data-protection law (including KVKK Article 11 where it applies), you may request access, rectification, erasure, objection, restriction, portability and information via the Privacy / Data Rights area in your profile or at support@getrisknova.com. Erasure requests are balanced against legal retention and security logging requirements."
-        },
-        {
-          "title": "Contact and updates",
-          "content": "This text may change over time. Material updates may require renewed acknowledgement or notice in the product. For privacy and data-protection requests, contact support@getrisknova.com."
-        }
-      ]
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "Az təhlükəli",
+      "high": "Çox təhlükəli",
+      "moderate": "Təhlükəli"
     },
-    "privacySummary": {
-      "eyebrow": "Privacy policy",
-      "title": "RiskNova Privacy Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Privacy policy",
-      "metaDescription": "Summary of how RiskNova collects and uses personal data.",
-      "ogTitle": "Privacy policy | RiskNova",
-      "ogDescription": "Short privacy summary covering account, product use and subprocessors.",
-      "paragraphs": [
-        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
-        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
-        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
-        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
-        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
-        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
-      ]
-    },
-    "terms": {
-      "eyebrow": "Terms of use",
-      "title": "RiskNova Terms of Use",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Terms of use",
-      "metaDescription": "RiskNova terms of use covering accounts, subscription, billing, acceptable use, AI outputs and customer data responsibilities.",
-      "ogTitle": "Terms of use | RiskNova",
-      "ogDescription": "Terms for the RiskNova SaaS platform: subscription, account security, AI outputs and acceptable use.",
-      "sections": [
-        {
-          "title": "Service scope",
-          "content": "RiskNova is a subscription SaaS platform for occupational health and safety professionals, OSGBs and enterprises, offering risk analysis, field inspections, document generation, training/exams/surveys, reporting, legislation-aware search and Nova AI decision-support features."
-        },
-        {
-          "title": "Account, roles and security",
-          "content": "Users are responsible for the accuracy of account details, password strength and actions taken under their account. Organisation administrators must correctly configure users, roles, workspaces and company authorisations. Suspected unauthorised access must be reported to RiskNova without delay."
-        },
-        {
-          "title": "Acceptable use",
-          "content": "The platform may be used only for lawful, professional and workplace-safety-related purposes. Attempting unauthorised access, reverse engineering, disrupting the service, uploading harmful content, infringing third-party rights, circumventing quotas or processing data unlawfully is prohibited."
-        },
-        {
-          "title": "Customer data and content responsibility",
-          "content": "Risk analyses, inspection records, documents, personnel data, training/exam/survey content and uploaded files are customer content. Users must ensure data uploaded to the platform is lawful, necessary and limited to authorised persons."
-        },
-        {
-          "title": "AI-assisted outputs",
-          "content": "Nova AI and other AI features provide decision support and drafts only. RiskNova does not warrant that outputs are error-free, complete or fit for a particular legal or technical outcome. Users must validate outputs against applicable law, internal procedures and professional judgement."
-        },
-        {
-          "title": "Subscription, billing and limits",
-          "content": "Plan features, fees, usage limits and billing periods are shown on pricing or checkout screens. Individual plans may use self-service checkout; OSGB and enterprise models may follow quote and contact flows. Payments and invoicing may be handled by Paddle as Merchant of Record."
-        },
-        {
-          "title": "Service changes and access",
-          "content": "RiskNova may update product features, plan limits, integrations and these terms over time. Access may be temporarily restricted for security, maintenance, legal compliance or abuse prevention."
-        },
-        {
-          "title": "Limitation of responsibility",
-          "content": "The platform is designed to streamline processes; it does not remove legal duties of employers, safety professionals or organisations. Users remain responsible for field, regulatory and expert review before relying on platform outputs."
-        },
-        {
-          "title": "Contact",
-          "content": "For questions about these terms, subscriptions or accounts, contact support@getrisknova.com."
-        }
-      ]
-    },
-    "termsSummary": {
-      "eyebrow": "Terms of service",
-      "title": "RiskNova Terms and Conditions",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Terms of service",
-      "metaDescription": "Summary of RiskNova terms of service, acceptable use and subscriptions.",
-      "ogTitle": "Terms of service | RiskNova",
-      "ogDescription": "Summary of subscription, AI-assisted features and acceptable use.",
-      "paragraphs": [
-        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
-        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
-        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
-        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
-        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
-        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
-      ]
-    },
-    "refund": {
-      "eyebrow": "Refund policy",
-      "title": "RiskNova Refund Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Refund policy",
-      "metaDescription": "How RiskNova handles subscription refunds, renewals and Paddle billing rules.",
-      "ogTitle": "Refund policy | RiskNova",
-      "ogDescription": "Refund window, renewals and billing corrections.",
-      "paragraphs": [
-        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
-        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
-        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
-        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
-        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
-        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
-      ]
+    "level": {
+      "controlled": "Nəzarət edilən",
+      "critical": "Kritik",
+      "high": "Yüksək",
+      "incomplete": "Qiymətləndirilməmiş",
+      "medium": "Orta"
     }
   },
-  "brand": {
-    "tagline": "AI-powered occupational health & safety platform"
-  },
-  "dashboard": {
-    "sessionLoadingTitle": "Sessiya yüklənir…",
-    "sessionLoadingHint": "Sessiyanız yoxlanılır. Bir neçə saniyə çəkə bilər; davam etməsə, yenidən daxil olun.",
-    "greetingMorning": "Sabahınız xeyir",
-    "greetingAfternoon": "Gününüz xeyir",
-    "greetingEvening": "Axşamınız xeyir",
-    "fallbackUserName": "İstifadəçi",
-    "badgeCommandCenter": "İdarəetmə mərkəzi",
-    "badgeLiveOps": "Canlı əməliyyat",
-    "badgeRemoteSync": "Uzaq Supabase sinxronu",
-    "heroIntro": "Bütün İSG əməliyyatını bir ekranda izləyin: risklər, kitabxana çıxışları, hadisələr, tapşırıqlar və şirkət izləmələri — daha aydın komanda görünüşündə.",
-    "signalOperation": "Əməliyyat vəziyyəti",
-    "signalWorkload": "Prioritet yükü",
-    "signalCompanies": "Şirkət əhatəsi",
-    "operationHeavy": "Sıx izləmə",
-    "operationControlled": "Nəzarət altında",
-    "operationCalm": "Sakit əməliyyat",
-    "workloadFollowups": "{count} məqam",
-    "companiesTotal": "{count} şirkət",
-    "todayFocusEyebrow": "Bu günün fokusu",
-    "todayFocusTitle": "Əvvəlcə kritik işlər",
-    "priorityHighRisk": "Yüksək risk",
-    "priorityOpenTasks": "Açıq tapşırıqlar",
-    "priorityIncidents": "Hadisələr",
-    "planDemoEyebrow": "Demo · yüksəltmə",
-    "planSelfServeEyebrow": "Özünəxidmət yüksəltmə",
-    "planDemoTitle": "Demo hesabdasınız",
-    "planDefaultTitle": "Paketlər və tutum",
-    "planDemoBody": "İstehsal istifadəsinə keçmək üçün uyğun paketi seçin; ödəniş və fakturalama Paketlər səhifəsindədir.",
-    "planDefaultBody": "Daha çox iş sahəsi və ya modul lazımdırsa paketlərə baxın; yüksəltmə özünəxidmətlə mümkündür.",
-    "goToPlans": "Paketlərə keç",
-    "statRisk": "Risk təhlili",
-    "statRiskSubHigh": "{count} yüksək risk",
-    "statRiskSubNone": "Yüksək risk yoxdur",
-    "statLibraryDocs": "Kitabxana sənədləri",
-    "statLibraryDocsSub": "{ready} hazır · {draft} qaralama",
-    "statIncidents": "Hadisələr",
-    "statIncidentsSub": "Ümumi qeydlər",
-    "statTasks": "Açıq tapşırıqlar",
-    "statTasksSub": "İzləmə gözləyir",
-    "statLibSurvey": "Kitabxana təlimi",
-    "statLibSurveySub": "İdxal sorğuları / təlim",
-    "statLibExam": "Kitabxana imtahanları",
-    "statLibExamSub": "İdxal imtahanlar",
-    "quickFlowsTitle": "Sürətli axınlar",
-    "quickFlowsSubtitle": "Ən çox istifadə etdiyiniz modullara bir kliklə keçin.",
-    "quickFlowsBadge": "platforma",
-    "quickRisk": "Risk təhlili",
-    "quickLibrary": "İSG kitabxanası",
-    "quickIncident": "Hadisə bildir",
-    "quickPlanner": "Planlayıcı",
-    "quickEducation": "Təlim",
-    "quickReports": "Hesabatlar",
-    "quickCompanies": "Şirkətlər",
-    "quickFieldAudit": "Sahə auditı",
-    "recentDocsTitle": "Son kitabxana çıxışları",
-    "recentDocsSubtitle": "İSG kitabxanası axınında son redaktə olunan sənədlər burada xülasələnir.",
-    "recentDocsCta": "Kitabxananı aç",
-    "recentDocsEmpty": "Hələ kitabxana çıxışı yoxdur. İSG kitabxanasından şablonla başlayın.",
-    "docStatusDraft": "Qaralama",
-    "docStatusReady": "Hazır",
-    "docStatusPending": "Təsdiq",
-    "docStatusRevision": "Redaktə",
-    "companySummaryTitle": "Şirkət xülasəsi",
-    "companySummaryCountLabel": "Qeydiyyatlı şirkətlər",
-    "companyManageCta": "Şirkətləri idarə et",
-    "modulesTitle": "İSG modulları",
-    "modulesSubtitle": "Platformada aktiv əməliyyat sahələri.",
-    "moduleRisk": "Risk təhlili",
-    "moduleRiskDesc": "{count} qiymətləndirmə",
-    "moduleLibrary": "İSG kitabxanası",
-    "moduleLibraryDesc": "Sənədlər və şablonlar",
-    "moduleEmergency": "Fövqəladə",
-    "moduleEmergencyDesc": "Planlar və təlimlər",
-    "moduleTraining": "Təlim",
-    "moduleTrainingDesc": "İzləmə və qeydlər",
-    "moduleAssessment": "İmtahan və sorğu",
-    "moduleAssessmentDesc": "AI dəstəkli ölçmə axınları",
-    "moduleLegal": "Qanunvericilik",
-    "moduleLegalDesc": "Qanun və bələdçi kitabxanası",
-    "todayCardTitle": "Bu gün",
-    "todayTasksPending": "{count} açıq tapşırıq gözləyir",
-    "todayTasksDone": "Bütün tapşırıqlar tamamlandı",
-    "statLive": "canlı",
-    "trackTitle": "İzləmə xülasəsi",
-    "trackEmpty": "Hələ şirkət yoxdur. Şirkət əlavə olunanda metriklər burada görünəcək.",
-    "trackSubtitle": "Bütün şirkətlərdən xülasə. {companyCount} şirkət izlənir, {totalActionable} aksiya gözləyir.",
-    "trackCompaniesCta": "Şirkətlər",
-    "trackOpenActionLabel": "Açıq aksiyalar",
-    "trackOpenActionSub": "Risk təyinatları + CAPA + tapşırıqlar",
-    "trackExpiringTrainingLabel": "Yaxınlaşan təlim",
-    "trackExpiringTrainingSub": "30 gün ərzində",
-    "trackOverdueControlLabel": "Gecikmiş yoxlama",
-    "trackOverdueControlSub": "Dövri yoxlama müddəti keçib",
-    "trackCommitteeLabel": "Gözləyən şura",
-    "trackCommitteeSub": "Planlaşdırılmış İSG şura iclasları",
-    "trackHealthExamLabel": "Yaxınlaşan müayinə",
-    "trackHealthExamSub": "30 gün ərzində sağlamlıq nəzarəti",
-    "trackPriorityCompanies": "Prioritet gözləyən şirkətlər",
-    "trackChipActions": "{count} aksiya",
-    "trackChipTraining": "{count} təlim",
-    "trackChipControls": "{count} yoxlama"
-  },
-  "header": {
-    "authLoading": "Təhlükəsiz sessiya yoxlanılır…",
-    "lockedModuleTooltip": "Bu modulu açmaq üçün əvvəlcə iş sahəsi yaradın.",
-    "markAllRead": "Hamısını oxunmuş işarələ",
-    "noNotificationsYet": "Hələ bildiriş yoxdur",
-    "notificationsAria": "Bildirişlər",
-    "notificationsTitle": "Bildirişlər",
-    "platformAdminShort": "Admin",
-    "seeAllNotifications": "Hamısına bax",
-    "signOut": "Çıxış",
-    "signingOut": "Çıxılır…",
-    "themeDarkAria": "Tünd tema",
-    "themeLightAria": "Açıq tema",
-    "workspaceLoading": "İş sahəsi hazırlanır…"
+  "workspace": {
+    "active": "Aktiv",
+    "countryLabel": "Ölkə",
+    "languageLabel": "Standart dil",
+    "loading": "İş sahələri yüklənir...",
+    "newWorkspace": "Yeni iş sahəsi",
+    "noWorkspace": "İş sahəsi yoxdur",
+    "switcher": "İş sahəsi",
+    "switchError": "İş sahəsi dəyişdirilə bilmədi"
   }
 }

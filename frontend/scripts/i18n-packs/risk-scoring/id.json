@@ -1,0 +1,780 @@
+{
+  "riskScoring": {
+    "classification": {
+      "bow_tie": {
+        "critical": {
+          "action": "Hentikan kerja; desain ulang penghalang",
+          "label": "Kritis"
+        },
+        "follow_up": {
+          "action": "Penghalang memadai; lanjutkan pemantauan",
+          "label": "Dapat diterima"
+        },
+        "high": {
+          "action": "Penguatan penghalang mendesak; tinjau proses",
+          "label": "Tinggi"
+        },
+        "low": {
+          "action": "Tinjau efektivitas penghalang",
+          "label": "Rendah"
+        },
+        "medium": {
+          "action": "Tambahkan penghalang lebih lanjut",
+          "label": "Sedang"
+        }
+      },
+      "checklist": {
+        "critical": {
+          "action": "Hentikan aktivitas; revisi penuh",
+          "label": "Sangat tidak memadai"
+        },
+        "follow_up": {
+          "action": "Pertahankan praktik saat ini",
+          "label": "Sesuai"
+        },
+        "high": {
+          "action": "Mulai tindakan korektif mendesak",
+          "label": "Tidak memadai"
+        },
+        "low": {
+          "action": "Tutup kesenjangan dalam jangka pendek",
+          "label": "Dapat diterima"
+        },
+        "medium": {
+          "action": "Siapkan rencana perbaikan yang lebih luas",
+          "label": "Perlu perbaikan"
+        }
+      },
+      "fk": {
+        "critical": {
+          "action": "Hentikan kerja segera",
+          "label": "Risiko sangat tinggi"
+        },
+        "follow_up": {
+          "action": "Mungkin perlu saran perbaikan; tidak ada tindakan mendesak",
+          "label": "Dapat diterima"
+        },
+        "high": {
+          "action": "Tindakan segera; pertimbangkan menghentikan kerja",
+          "label": "Risiko tinggi"
+        },
+        "low": {
+          "action": "Tetap dalam tinjauan; rencanakan perbaikan",
+          "label": "Perhatian sedang"
+        },
+        "medium": {
+          "action": "Ambil tindakan dalam jangka pendek",
+          "label": "Signifikan"
+        }
+      },
+      "fmea": {
+        "critical": {
+          "action": "Hentikan kerja; lakukan analisis akar masalah",
+          "label": "Risiko kritis"
+        },
+        "follow_up": {
+          "action": "Kontrol saat ini memadai; tetap pantau",
+          "label": "Dapat diterima"
+        },
+        "high": {
+          "action": "Tindakan mendesak; pertimbangkan perubahan desain",
+          "label": "Risiko tinggi"
+        },
+        "low": {
+          "action": "Rencanakan perbaikan",
+          "label": "Risiko rendah"
+        },
+        "medium": {
+          "action": "Ambil tindakan; perkuat kontrol",
+          "label": "Risiko sedang"
+        }
+      },
+      "fta": {
+        "critical": {
+          "action": "Jangan beroperasi; hilangkan akar penyebab",
+          "label": "Kritis"
+        },
+        "follow_up": {
+          "action": "Keandalan sistem memadai",
+          "label": "Dapat diterima"
+        },
+        "high": {
+          "action": "Desain ulang sistem",
+          "label": "Tinggi"
+        },
+        "low": {
+          "action": "Evaluasi redundansi / cadangan",
+          "label": "Rendah"
+        },
+        "medium": {
+          "action": "Tambahkan redundansi pada komponen kritis",
+          "label": "Sedang"
+        }
+      },
+      "hazop": {
+        "critical": {
+          "action": "Hentikan proses; revisi desain",
+          "label": "Tidak dapat ditoleransi"
+        },
+        "follow_up": {
+          "action": "Kontrol saat ini memadai",
+          "label": "Dapat diterima"
+        },
+        "high": {
+          "action": "Perubahan proses atau barrier tambahan diperlukan",
+          "label": "Tinggi"
+        },
+        "low": {
+          "action": "Rencanakan pemantauan dan perbaikan",
+          "label": "Rendah"
+        },
+        "medium": {
+          "action": "Evaluasi lapisan perlindungan tambahan",
+          "label": "Sedang"
+        }
+      },
+      "lopa": {
+        "critical": {
+          "action": "Hentikan proses; revisi desain",
+          "label": "Tidak dapat ditoleransi"
+        },
+        "follow_up": {
+          "action": "Lapisan perlindungan saat ini memadai",
+          "label": "Dapat diterima"
+        },
+        "high": {
+          "action": "Lapisan ganda atau perubahan proses diperlukan",
+          "label": "Risiko tinggi"
+        },
+        "low": {
+          "action": "Serendah mungkin yang wajar dapat dicapai",
+          "label": "ALARP"
+        },
+        "medium": {
+          "action": "Tambahkan lapisan perlindungan ekstra",
+          "label": "Perlu perbaikan"
+        }
+      },
+      "matrix": {
+        "critical": {
+          "action": "Hentikan pekerjaan segera; tindakan darurat",
+          "label": "Tidak dapat ditoleransi"
+        },
+        "follow_up": {
+          "action": "Tindakan lebih lanjut mungkin tidak diperlukan; pemantauan memadai",
+          "label": "Dapat diterima"
+        },
+        "high": {
+          "action": "Ambil tindakan segera",
+          "label": "Risiko tinggi"
+        },
+        "low": {
+          "action": "Kontrol yang ada memadai; terus amati",
+          "label": "Risiko rendah"
+        },
+        "medium": {
+          "action": "Rencanakan aktivitas perbaikan",
+          "label": "Risiko sedang"
+        }
+      },
+      "r2d": {
+        "critical": {
+          "action": "Evaluasi penghentian pekerjaan",
+          "label": "Kritis"
+        },
+        "follow_up": {
+          "action": "Pemantauan rutin sudah memadai",
+          "label": "Pemantauan"
+        },
+        "high": {
+          "action": "Intervensi prioritas diperlukan",
+          "label": "Tinggi"
+        },
+        "low": {
+          "action": "Jadwalkan penilaian ulang terstruktur",
+          "label": "Rendah"
+        },
+        "medium": {
+          "action": "Supervisi yang ditingkatkan diperlukan",
+          "label": "Sedang"
+        }
+      }
+    },
+    "fk": {
+      "exposure": {
+        "v0_5": "Sangat jarang (sekali setahun)",
+        "v1": "Jarang (sekali sebulan)",
+        "v10": "Berkelanjutan (sebagian besar hari)",
+        "v2": "Kadang-kadang (sekali seminggu)",
+        "v3": "Terkadang (beberapa kali per minggu)",
+        "v6": "Sering (harian)"
+      },
+      "likelihood": {
+        "v0_1": "Hampir tidak mungkin",
+        "v0_2": "Sangat tidak mungkin",
+        "v0_5": "Tidak terduga tapi mungkin",
+        "v1": "Kemungkinan rendah, tidak dapat diabaikan",
+        "v10": "Sangat mungkin / diharapkan",
+        "v3": "Jarang tapi mungkin",
+        "v6": "Cukup mungkin"
+      },
+      "severity": {
+        "v1": "Terlihat, pertolongan pertama",
+        "v100": "Bencana massal, korban jiwa banyak",
+        "v15": "Sangat serius, kehilangan anggota tubuh",
+        "v3": "Signifikan, perawatan eksternal",
+        "v40": "Bencana, korban jiwa tunggal",
+        "v7": "Serius, kerusakan permanen"
+      }
+    },
+    "fmea": {
+      "detection": {
+        "v1": "Deteksi hampir pasti",
+        "v10": "Tidak dapat mendeteksi",
+        "v2": "Peluang deteksi sangat tinggi",
+        "v3": "Peluang tinggi",
+        "v4": "Menengah-tinggi",
+        "v5": "Menengah",
+        "v6": "Rendah-menengah",
+        "v7": "Rendah",
+        "v8": "Sangat rendah",
+        "v9": "Peluang kecil"
+      },
+      "occurrence": {
+        "v1": "Hampir tidak mungkin (< 1/1.000.000)",
+        "v10": "Hampir pasti (≥ 1/2)",
+        "v2": "Kecil (1/20.000)",
+        "v3": "Sangat rendah (1/4.000)",
+        "v4": "Rendah (1/1.000)",
+        "v5": "Menengah-rendah (1/400)",
+        "v6": "Menengah (1/80)",
+        "v7": "Menengah-tinggi (1/40)",
+        "v8": "Tinggi (1/20)",
+        "v9": "Sangat tinggi (1/8)"
+      },
+      "severity": {
+        "v1": "Tidak ada efek — tidak terlihat",
+        "v10": "Katastrofik — kematian / kecelakaan massal",
+        "v2": "Sangat kecil — dampak dapat diabaikan",
+        "v3": "Kecil — gangguan ringan",
+        "v4": "Rendah — penurunan kinerja",
+        "v5": "Sedang — kehilangan kinerja signifikan",
+        "v6": "Tinggi — fungsi sistem terganggu",
+        "v7": "Sangat tinggi — tidak dapat beroperasi",
+        "v8": "Berbahaya (dengan peringatan) — risiko cedera",
+        "v9": "Berbahaya (tanpa peringatan) — cedera serius"
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "after": "Setelah",
+        "before": "Sebelum",
+        "early": "Awal",
+        "late": "Terlambat",
+        "less": "Kurang",
+        "more": "Lebih",
+        "noNot": "Tidak / Bukan",
+        "otherThan": "Selain dari",
+        "partOf": "Bagian dari",
+        "reverse": "Terbalik"
+      },
+      "parameters": {
+        "composition": "Komposisi",
+        "flow": "Aliran",
+        "level": "Level",
+        "mixing": "Pencampuran",
+        "ph": "pH",
+        "pressure": "Tekanan",
+        "reaction": "Reaksi",
+        "speed": "Kecepatan",
+        "temperature": "Suhu",
+        "time": "Waktu"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v0_00001": "Sekali dalam 100.000 tahun — sangat langka",
+        "v0_0001": "Sekali dalam 10.000 tahun — sangat jarang",
+        "v0_001": "Sekali dalam 1.000 tahun — jarang",
+        "v0_01": "Sekali dalam 100 tahun — sesekali",
+        "v0_1": "Sekali dalam 10 tahun — sering",
+        "v1": "Sekali per tahun — sangat sering"
+      },
+      "pfd": {
+        "v0_001": "Sistem keselamatan otomatis (kelas SIL-1)",
+        "v0_01": "Respons operator terlatih / alarm",
+        "v0_1": "Kontrol administratif sederhana"
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "Sangat rendah (hampir tidak mungkin)"
+        },
+        "i2": {
+          "description": "Rendah (jarang, tidak terduga)"
+        },
+        "i3": {
+          "description": "Sedang (tidak mungkin tapi bisa terjadi)"
+        },
+        "i4": {
+          "description": "Tinggi (kemungkinan besar, tidak mengejutkan)"
+        },
+        "i5": {
+          "description": "Sangat tinggi (diharapkan, tidak dapat dihindari)"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "Sangat kecil (tidak ada waktu hilang)"
+        },
+        "i2": {
+          "description": "Kecil (tidak ada cedera waktu hilang)"
+        },
+        "i3": {
+          "description": "Sedang (cedera waktu hilang)"
+        },
+        "i4": {
+          "description": "Besar (kerusakan permanen, amputasi)"
+        },
+        "i5": {
+          "description": "Bencana (kematian, kematian ganda)"
+        }
+      }
+    },
+    "methods": {
+      "bow_tie": {
+        "description": "Bow-tie — ancaman–penghalang–konsekuensi",
+        "name": "Bow-Tie",
+        "tooltip": "Kemungkinan ancaman dan tingkat keparahan konsekuensi dengan penghalang preventif dan mitigatif; risiko sisa dari kekuatan penghalang."
+      },
+      "checklist": {
+        "description": "Checklist — persentase kepatuhan",
+        "name": "Checklist",
+        "tooltip": "Kepatuhan berbobot dari item OK / Tidak OK / Sebagian—baik untuk audit dan inspeksi."
+      },
+      "fine_kinney": {
+        "description": "Produk Kemungkinan × Keparahan × Paparan",
+        "name": "Fine-Kinney",
+        "tooltip": "Metode risiko kuantitatif umum: L (0,1–10), S (1–100), E (0,5–10); selaras dengan ISO 31000."
+      },
+      "fmea": {
+        "description": "Failure Mode & Effects Analysis — RPN",
+        "name": "FMEA",
+        "tooltip": "Keparahan (1–10) × Kejadian (1–10) × Deteksi (1–10) = RPN. Ideal untuk operasi dan pemeliharaan; IEC 60812."
+      },
+      "fta": {
+        "description": "Analisis pohon kesalahan — keandalan sistem",
+        "name": "FTA",
+        "tooltip": "Uraikan kegagalan sistem dengan gerbang AND/OR; digunakan dalam penerbangan, nuklir dan sistem kritis; IEC 61025."
+      },
+      "hazop": {
+        "description": "Studi bahaya dan operabilitas",
+        "name": "HAZOP",
+        "tooltip": "Kata panduan (No, Less, More, Reverse, …) mengeksplorasi deviasi proses; umum di pabrik kimia/petro; IEC 61882."
+      },
+      "jsa": {
+        "description": "Analisis keselamatan kerja — bahaya berbasis langkah",
+        "name": "JSA",
+        "tooltip": "Keparahan × Kemungkinan per langkah / Efektivitas kontrol; penting untuk konstruksi dan kerja lapangan."
+      },
+      "l_matrix": {
+        "description": "Matriks risiko kemungkinan–keparahan 5×5",
+        "name": "Matriks tipe-L",
+        "tooltip": "Pilih kemungkinan (1–5) dan keparahan (1–5); baca risiko dari matriks warna 25-sel (selaras dengan praktik K3 Turki)."
+      },
+      "lopa": {
+        "description": "Analisis lapisan perlindungan — pengurangan frekuensi",
+        "name": "LOPA",
+        "tooltip": "Kalikan frekuensi inisiasi dengan nilai PFD lapisan; sering dipasangkan dengan target SIL dalam keselamatan proses."
+      },
+      "r_skor": {
+        "description": "Skor penyaringan lapangan berbobot dengan 9 parameter",
+        "name": "R-SKOR 2D",
+        "tooltip": "Metode RiskNova: sembilan parameter (C1–C9) menimbang input visual dan lapangan; mendukung penilaian otomatis dari citra."
+      }
+    },
+    "panel": {
+      "bowtie": {
+        "consequence": "Keparahan konsekuensi",
+        "mitigation": "Penghalang mitigatif",
+        "prevention": "Penghalang preventif",
+        "rawRisk": "Risiko mentah",
+        "residualRisk": "Risiko sisa",
+        "threat": "Kemungkinan ancaman"
+      },
+      "checklist": {
+        "add": "+ Tambah",
+        "compliantLine": "{n} patuh",
+        "itemPlaceholder": "Item kontrol…",
+        "itemsHeading": "Periksa item ({count})",
+        "nonCompliantLine": "{n} tidak patuh",
+        "partialLine": "{n} sebagian",
+        "removeTitle": "Hapus",
+        "statusKismi": "Sebagian",
+        "statusNa": "T/A",
+        "statusUygun": "Patuh",
+        "statusUygunDegil": "Tidak patuh"
+      },
+      "fmea": {
+        "detection": "Deteksi (D)",
+        "formula": "S × O × D = RPN",
+        "occurrence": "Kejadian (O)",
+        "severity": "Keparahan (S)"
+      },
+      "fta": {
+        "add": "+ Tambah",
+        "componentDefault": "Komponen {n}",
+        "componentPlaceholder": "Nama komponen",
+        "componentsHeading": "Komponen ({count})",
+        "failureRateTitle": "Probabilitas kegagalan (0–1)",
+        "gate": "Gerbang",
+        "gateType": "Jenis gerbang:",
+        "removeTitle": "Hapus",
+        "systemCriticality": "Kritikalitas sistem",
+        "systemProb": "Sistem P"
+      },
+      "hazop": {
+        "detectability": "Detektabilitas",
+        "detectEasy": "Mudah",
+        "detectHard": "Sulit",
+        "deviation": "Deskripsi deviasi",
+        "deviationPlaceholder": "Jelaskan deviasi…",
+        "guideWord": "Kata panduan",
+        "likelihood": "Kemungkinan",
+        "parameter": "Parameter proses",
+        "severity": "Keparahan"
+      },
+      "jsa": {
+        "add": "+ Tambah",
+        "avg": "Rata-rata",
+        "control": "Kontrol",
+        "controlsPlaceholder": "Tindakan pengendalian…",
+        "hazardPlaceholder": "Bahaya…",
+        "highRisk": "Langkah berisiko tinggi",
+        "jobPlaceholder": "Nama pekerjaan…",
+        "jobTitle": "Judul pekerjaan",
+        "likelihood": "Kemungkinan",
+        "max": "Maks",
+        "removeTitle": "Hapus",
+        "severity": "Keparahan",
+        "stepDefault": "Langkah {n}",
+        "stepDescPlaceholder": "Deskripsi langkah…",
+        "stepScoreIntro": "Skor langkah:",
+        "stepsHeading": "Langkah pekerjaan ({count})"
+      },
+      "lopa": {
+        "addLayer": "+ Tambah",
+        "consequence": "Keparahan konsekuensi",
+        "consequenceV1": "Rendah",
+        "consequenceV2": "Ringan",
+        "consequenceV3": "Sedang",
+        "consequenceV4": "Parah",
+        "consequenceV5": "Katastrofik",
+        "initFreq": "Frekuensi kejadian pemicu",
+        "layerDefault": "Lapisan {n}",
+        "layerNamePlaceholder": "Nama lapisan",
+        "layerPfd": "PFD lapisan",
+        "layersHeading": "Lapisan perlindungan ({count})",
+        "meetsTarget": "Memenuhi target yang dapat ditoleransi",
+        "removeTitle": "Hapus",
+        "riskReduction": "Pengurangan risiko",
+        "target": "Target",
+        "targetMet": "Terpenuhi",
+        "targetNotMet": "Tidak terpenuhi"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employee_representative": "Perwakilan karyawan",
+        "employer": "Pemberi kerja",
+        "employer_representative": "Perwakilan pemberi kerja",
+        "knowledgeable_employee": "Karyawan yang memahami risiko",
+        "ohs_specialist": "Spesialis K3",
+        "other_health_personnel": "Personel kesehatan lainnya",
+        "support_staff": "Staf pendukung",
+        "workplace_physician": "Dokter tempat kerja"
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "description": "Jumlah / kepadatan objek berbahaya yang diamati di lapangan",
+        "label": "Kepadatan bahaya"
+      },
+      "c2": {
+        "description": "Helm, sarung tangan, kacamata pelindung yang hilang, dll.",
+        "label": "Kesenjangan APD"
+      },
+      "c3": {
+        "description": "Masuk zona terbatas, kerja tanpa pengaman, paparan jatuh",
+        "label": "Risiko perilaku"
+      },
+      "c4": {
+        "description": "Panas, kebisingan, getaran dan stresor serupa",
+        "label": "Stres lingkungan"
+      },
+      "c5": {
+        "description": "Kebocoran gas, bahan kimia, bahaya listrik",
+        "label": "Kimia / listrik"
+      },
+      "c6": {
+        "description": "Pintu keluar terblokir, lantai basah, rintangan jalur",
+        "label": "Akses / hambatan"
+      },
+      "c7": {
+        "description": "Pengaman dilewati, pemeliharaan terlambat",
+        "label": "Mesin / proses"
+      },
+      "c8": {
+        "description": "Intensitas forklift, penyeberangan jalur, konflik pejalan kaki-kendaraan",
+        "label": "Lalu lintas kendaraan"
+      },
+      "c9": {
+        "description": "Kesenjangan pelatihan, rambu peringatan hilang",
+        "label": "Beban organisasi"
+      },
+      "source": {
+        "visualAnalysis": "Analisis visual"
+      }
+    },
+    "ui": {
+      "fk": {
+        "exposure": "Paparan (E)",
+        "likelihood": "Kemungkinan (L)",
+        "severity": "Keparahan (S)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "Kemungkinan ({n})",
+        "severityHeading": "Keparahan ({n})"
+      },
+      "page": {
+        "analysisNotePlaceholder": "Setiap baris adalah topik risiko atau kelompok ketidaksesuaian. Satu atau lebih foto dapat dilampirkan per baris.",
+        "analysisTitlePlaceholder": "Analisis risiko lapangan",
+        "describeRiskGroup": "Jelaskan secara singkat kelompok risiko"
+      },
+      "r2d": {
+        "base": "Dasar",
+        "dominant": "Dominan",
+        "parameters": "Parameter",
+        "peak": "Puncak"
+      },
+      "severity": {
+        "critical": "Kritis",
+        "high": "Tinggi",
+        "low": "Rendah",
+        "medium": "Sedang"
+      }
+    },
+    "wizard": {
+      "common": {
+        "add": "Tambah",
+        "address": "Alamat",
+        "back": "Kembali",
+        "cancel": "Batal",
+        "companyFallback": "Perusahaan",
+        "delete": "Hapus",
+        "description": "Deskripsi",
+        "findings": "Temuan",
+        "goToResults": "Ke hasil",
+        "images": "Gambar",
+        "lines": "Baris",
+        "location": "Lokasi",
+        "method": "Metode",
+        "next": "Selanjutnya",
+        "no": "Tidak",
+        "report": "Laporan",
+        "risk": "Risiko",
+        "row": "Baris",
+        "save": "Simpan",
+        "saving": "Menyimpan…",
+        "scoreDetailPrefix": "Detail skor —",
+        "type": "Tipe",
+        "update": "Perbarui",
+        "visual": "Gambar",
+        "yes": "Ya"
+      },
+      "header": {
+        "backToList": "Kembali ke daftar",
+        "badgeAiManual": "AI + temuan manual",
+        "badgeExport": "PDF / Word / Excel",
+        "newAnalysis": "Analisis baru",
+        "wizardDescription": "Pilih perusahaan, tentukan tim, unggah gambar, lalu jalankan AI + temuan manual dan penilaian.",
+        "wizardTitle": "Analisis risiko visual"
+      },
+      "list": {
+        "companyLabel": "Perusahaan / organisasi",
+        "companyPlaceholder": "— Pilih perusahaan —",
+        "confirmDelete": "Apakah Anda yakin?",
+        "deleteAnalysis": "Hapus",
+        "description": "Pilih perusahaan, lihat analisis sebelumnya, atau mulai yang baru.",
+        "emptyDescription": "Gunakan tombol di atas untuk memulai analisis risiko pertama untuk perusahaan ini.",
+        "emptyTitle": "Belum ada analisis",
+        "eyebrow": "Analisis risiko",
+        "findingsCount": "{count} temuan",
+        "historyCount": "{count} analisis tersimpan",
+        "historyTitle": "{name} — riwayat analisis",
+        "newAnalysis": "+ Mulai analisis baru",
+        "statusArchived": "Diarsipkan",
+        "statusCompleted": "Selesai",
+        "statusDraft": "Draf",
+        "title": "Manajemen analisis risiko"
+      },
+      "messages": {
+        "analysisComplete": "Analisis selesai!",
+        "analysisFailed": "Analisis tidak dapat diselesaikan.",
+        "analysisFailedDetail": "Analisis AI gagal. {detail}",
+        "analysisPartial": "Analisis AI sebagian selesai. {successful}/{total} gambar diproses; kesalahan pada {errors} gambar.",
+        "analysisStarting": "Memulai analisis…",
+        "analysisSummary": "Analisis AI selesai. {risks} risiko, {positive} observasi positif.",
+        "analyzingImageProgress": "Menganalisis gambar {current}/{total}: {fileName}",
+        "analyzingRowImage": "Menganalisis gambar: Baris {row}, {fileName}…",
+        "genericAiError": "Terjadi kesalahan pada tahap OpenAI atau Anthropic.",
+        "needImageToAnalyze": "Tambahkan setidaknya satu gambar untuk memulai analisis."
+      },
+      "methodCard": {
+        "params": "{count} parameter",
+        "score": "Skor:"
+      },
+      "nav": {
+        "aiAnalyzingShort": "Menganalisis…",
+        "aiStartShort": "Mulai analisis AI"
+      },
+      "notifications": {
+        "savedBody": "{title} — {findings} temuan, {critical} kritis/tinggi",
+        "savedTitle": "Analisis risiko disimpan",
+        "updatedTitle": "Analisis risiko diperbarui"
+      },
+      "save": {
+        "error": "Terjadi kesalahan saat menyimpan.",
+        "noCompany": "Tidak dapat menyimpan tanpa memilih perusahaan.",
+        "oversized": "{fileName} melebihi batas 10 MB. Unggah gambar yang lebih kecil sebelum menyimpan.",
+        "successNew": "Analisis berhasil disimpan!",
+        "successUpdated": "Analisis berhasil diperbarui!"
+      },
+      "step1": {
+        "analysisNote": "Catatan analisis",
+        "analysisTitle": "Judul analisis",
+        "company": "Perusahaan / organisasi",
+        "companyCardAddress": "Alamat:",
+        "companyCardType": "Jenis:",
+        "companyPlaceholder": "Pilih perusahaan / organisasi",
+        "companyRequired": "Memilih perusahaan diperlukan untuk analisis.",
+        "department": "Departemen / unit",
+        "departmentPlaceholder": "Pilih departemen",
+        "departmentRequired": "Pemilihan departemen diperlukan.",
+        "editCompanyStructure": "Edit struktur perusahaan",
+        "location": "Lokasi / area kerja",
+        "locationPlaceholder": "Pilih lokasi",
+        "locationRequired": "Pemilihan lokasi diperlukan.",
+        "method": "Metode analisis",
+        "subtitle": "Pilih perusahaan, lokasi, dan departemen mana yang berlaku untuk analisis risiko ini.",
+        "title": "Konteks analisis"
+      },
+      "step2": {
+        "addParticipant": "Tambah peserta secara manual",
+        "certificate": "No. sertifikat (jika ada)",
+        "certificatePlaceholder": "Masukkan jika berlaku",
+        "fullName": "Nama lengkap",
+        "noTeamBody": "Belum ada anggota tim yang ditetapkan untuk perusahaan ini. Di halaman perusahaan, buka tab Tim, buat \"Tim penilaian risiko\", dan tambahkan anggota — mereka akan muncul di sini secara otomatis.",
+        "noTeamLink": "Pergi ke manajemen tim perusahaan",
+        "noTeamTitle": "Tim penilaian risiko belum didefinisikan",
+        "participantN": "Peserta {n}",
+        "pickFromTeam": "Pilih dari tim perusahaan",
+        "rolePlaceholder": "Pilih peran",
+        "roleType": "Jenis peran / jabatan",
+        "subtitle": "Pilih dari staf tersimpan atau tambah peserta secara manual.",
+        "title": "Orang yang terlibat dalam analisis risiko",
+        "titleField": "Deskripsi peran / jabatan",
+        "titlePlaceholder": "mis. Spesialis Kelas A"
+      },
+      "step3": {
+        "addImage": "Tambah gambar",
+        "aiAnalyzing": "Menjalankan analisis AI…",
+        "aiStart": "Mulai analisis risiko AI",
+        "aiSub": "Nova AI menganalisis setiap gambar secara terpisah.",
+        "bulkUpload": "Upload massal (masing-masing sebagai baris terpisah)",
+        "deleteRow": "Hapus baris",
+        "newRow": "Tambah baris",
+        "rowHint": "Kelompokkan foto lebar dan close-up di bawah baris ini.",
+        "rowN": "Baris {n}",
+        "rowTitle": "Judul baris",
+        "rowTitlePlaceholder": "mis. Area penumpukan",
+        "subtitle": "Setiap baris adalah satu topik risiko. Upload gambar, lalu mulai analisis AI.",
+        "summaryCompany": "Perusahaan",
+        "summaryImages": "Gambar",
+        "summaryLocation": "Lokasi",
+        "summaryMethod": "Metode",
+        "title": "Baris risiko dan gambar"
+      },
+      "step4": {
+        "addedLater": "Ditambahkan nanti",
+        "addRiskPin": "Tambah pin risiko",
+        "aiAnalyzingDetail": "Nova AI sedang menganalisis setiap gambar…",
+        "analyzingInline": "Menganalisis…",
+        "areaAssessment": "Penilaian area",
+        "avgScore": "Skor rata-rata",
+        "cannotAnalyzeBody": "Gambar ini tidak cocok untuk analisis risiko.",
+        "cannotAnalyzeTitle": "Tidak dapat menjalankan analisis risiko",
+        "capaBadge": "Kandidat CAPA",
+        "capaCandidate": "Kandidat CAPA",
+        "cleanNoRisk": "Bersih — tidak ada risiko terdeteksi",
+        "confidenceHigh": "Temuan terkonfirmasi",
+        "confidenceLow": "Verifikasi direkomendasikan",
+        "confidenceMedium": "Temuan AI",
+        "criticalHigh": "Kritis / tinggi",
+        "deleteFindingAria": "Hapus temuan",
+        "deleteFindingConfirm": "Hapus temuan \"{title}\"?",
+        "deleteFindingTitle": "Hapus temuan",
+        "detectedPrefix": "Terdeteksi:",
+        "emptyResultsDesc": "Pada langkah 3, unggah gambar dan jalankan analisis.",
+        "emptyResultsTitle": "Belum ada hasil",
+        "findingTitle": "Judul temuan",
+        "findingTitlePlaceholder": "mis. Pagar pengaman hilang",
+        "manualPinConfirm": "Tambah",
+        "manualPinHint": " Anda dapat menambahkan temuan sendiri dengan pin manual.",
+        "manualPinTitle": "Tambah pin risiko manual",
+        "metaEyebrowArea": "Penilaian area",
+        "metaEyebrowPositive": "Observasi positif",
+        "noRiskDetectedBody": "AI tidak menemukan bahaya atau ketidaksesuaian yang berarti pada gambar ini.",
+        "noRiskDetectedTitle": "Tidak ada risiko terdeteksi",
+        "noRiskThisImageBody": "AI tidak menemukan bahaya konkret pada gambar ini. Anda masih dapat menambahkan temuan manual.",
+        "noRiskThisImageTitle": "Tidak ada risiko signifikan pada gambar ini",
+        "notRealPhotoBody": "Gambar ini adalah gambar, ilustrasi, atau render sintetis. Analisis risiko hanya berjalan pada foto lokasi nyata.",
+        "notRealPhotoTitle": "Bukan foto nyata",
+        "peopleDetected": "{count} orang terdeteksi",
+        "photoQuality": "Kualitas gambar:",
+        "photoQualityLow": "Rendah",
+        "photoQualityMedium": "Sedang",
+        "pinBanner": "Klik gambar untuk menambahkan pin risiko",
+        "pinModeActive": "Mode pin aktif…",
+        "positiveFindings": "Observasi positif",
+        "positiveObservationsHint": " Observasi positif tercantum di bawah.",
+        "resultsSubtitle": "Kartu risiko tetap terhubung ke anotasi pada gambar. Sesuaikan parameter untuk mengubah skor.",
+        "resultsTitle": "Temuan beranotasi",
+        "riskCount": "Risiko: {count}",
+        "rowImagesFindings": "Gambar: {images} · Temuan: {findings}",
+        "saveWarning": "Hasil belum disimpan! Jika Anda keluar tanpa menyimpan, semua temuan akan hilang.",
+        "scorePanelIntro": "Detail skor — {method}",
+        "severity": "Tingkat keparahan",
+        "totalFindings": "Total temuan",
+        "visualN": "Gambar {n}"
+      },
+      "steps": {
+        "context": "Konteks analisis",
+        "images": "Gambar",
+        "results": "Hasil",
+        "team": "Tim analisis"
+      },
+      "validate": {
+        "company": "Pilih perusahaan / organisasi terlebih dahulu.",
+        "department": "Pilih departemen / unit.",
+        "firmLocationDept": "Pilih perusahaan, lokasi, dan departemen.",
+        "location": "Pilih lokasi kerja.",
+        "participants": "Masukkan minimal satu nama dan peran penanggung jawab.",
+        "step2Participants": "Masukkan minimal satu nama dan peran penanggung jawab.",
+        "step3Images": "Tambahkan minimal satu gambar."
+      }
+    }
+  }
+}

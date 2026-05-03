@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   ArrowRight,
   Building2,
@@ -28,14 +29,18 @@ import {
   fetchCompaniesFromSupabase,
   restoreCompanyInSupabase,
 } from "@/lib/supabase/company-api";
-import { getOverallRiskState } from "@/lib/workplace-status";
+import {
+  getOverallRiskState,
+  hazardClassToMessageKey,
+  workplaceRiskLevelBadgeVariant,
+} from "@/lib/workplace-status";
 
-function createEmptyCompany(): CompanyRecord {
+function createEmptyCompany(labels: { name: string; shortName: string; kind: string }): CompanyRecord {
   return {
     id: crypto.randomUUID(),
-    name: "Yeni OSGB firmasi",
-    shortName: "Yeni firma",
-    kind: "Ozel Sektor",
+    name: labels.name,
+    shortName: labels.shortName,
+    kind: labels.kind,
     companyType: "osgb_musteri",
     address: "",
     city: "",
@@ -79,17 +84,10 @@ function createEmptyCompany(): CompanyRecord {
   };
 }
 
-function mapRiskTone(label: string): "success" | "warning" | "danger" | "neutral" {
-  if (label === "Kritik") return "danger";
-  if (label === "Yuksek" || label === "Orta") return "warning";
-  if (label === "Kontrollu") return "success";
-  return "neutral";
-}
-
 function mapHazardTone(
   hazardClass: string,
 ): PremiumIconTone {
-  if (hazardClass === "Cok Tehlikeli") return "orange";
+  if (hazardClass === "Çok Tehlikeli") return "orange";
   if (hazardClass === "Tehlikeli") return "amber";
   if (hazardClass === "Az Tehlikeli") return "emerald";
   return "cobalt";
@@ -110,6 +108,8 @@ const quickActionAccentClassName = `${quickActionClassName} border border-primar
 
 export function OsgbFirmsClient() {
   const router = useRouter();
+  const t = useTranslations("osgbFirms");
+  const tw = useTranslations("workplaceRisk");
   const [mounted, setMounted] = useState(false);
   const [account, setAccount] = useState<AccountContextResponse | null>(null);
   const [activeCompanies, setActiveCompanies] = useState<CompanyRecord[]>([]);
@@ -177,7 +177,11 @@ export function OsgbFirmsClient() {
   async function handleCreateCompany() {
     if (activeLimitReached) return;
 
-    const company = createEmptyCompany();
+    const company = createEmptyCompany({
+      name: t("emptyCompany.name"),
+      shortName: t("emptyCompany.shortName"),
+      kind: t("emptyCompany.kind"),
+    });
     const workspaceId = await createCompanyInSupabase(company);
 
     await loadData();
@@ -212,9 +216,9 @@ export function OsgbFirmsClient() {
     return (
       <div className="space-y-6">
         <PageHeader
-          eyebrow="OSGB Firmalari"
-          title="Firma portfoyu hazirlaniyor"
-          description="Musteri firmalar, gorevlendirmeler ve dokuman akislarini yapi yuklenirken hazirliyoruz."
+          eyebrow={t("loading.eyebrow")}
+          title={t("loading.title")}
+          description={t("loading.description")}
         />
         <div className="flex items-center justify-center py-16">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-border border-t-primary" />
@@ -226,20 +230,28 @@ export function OsgbFirmsClient() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="OSGB Firma Yonetimi"
-        title="Firmalar ve calisma alanlari"
-        description="Musteri firmalarinizi, firma bazli workspace yapilarini ve bu firmalara atanan personel akislarini buradan yonetin."
+        eyebrow={t("header.eyebrow")}
+        title={t("header.title")}
+        description={t("header.description")}
         meta={
           <>
             <Badge variant="neutral">
               {!usage || usage.maxActiveWorkspaces === null
-                ? `${usage?.activeWorkspaceCount ?? activeCompanies.length} aktif firma`
-                : `${usage?.activeWorkspaceCount ?? activeCompanies.length} / ${usage.maxActiveWorkspaces} aktif firma`}
+                ? t("badges.activeCompaniesUnlimited", {
+                    count: usage?.activeWorkspaceCount ?? activeCompanies.length,
+                  })
+                : t("badges.activeCompaniesMax", {
+                    count: usage?.activeWorkspaceCount ?? activeCompanies.length,
+                    max: usage!.maxActiveWorkspaces,
+                  })}
             </Badge>
             <Badge variant="neutral">
               {!usage || usage.maxActiveStaffSeats === null
-                ? `${usage?.activeStaffCount ?? 0} aktif personel`
-                : `${usage?.activeStaffCount ?? 0} / ${usage.maxActiveStaffSeats} aktif personel`}
+                ? t("badges.activeStaffUnlimited", { count: usage?.activeStaffCount ?? 0 })
+                : t("badges.activeStaffMax", {
+                    count: usage?.activeStaffCount ?? 0,
+                    max: usage!.maxActiveStaffSeats,
+                  })}
             </Badge>
           </>
         }
@@ -250,18 +262,18 @@ export function OsgbFirmsClient() {
               className={topAccentActionClassName}
             >
               <UserPlus2 className="h-4 w-4" />
-              Personel ve davet
+              {t("topActions.personnelInvite")}
             </Link>
             <Link
               href="/osgb/assignments"
               className={topSecondaryActionClassName}
             >
               <ShieldCheck className="h-4 w-4" />
-              Gorevlendirmeleri ac
+              {t("topActions.openAssignments")}
             </Link>
             <Button onClick={() => void handleCreateCompany()} disabled={activeLimitReached}>
               <ArrowRight className="h-4 w-4" />
-              Yeni firma ekle
+              {t("topActions.addCompany")}
             </Button>
           </>
         }
@@ -270,40 +282,40 @@ export function OsgbFirmsClient() {
       <section className="grid gap-4 lg:grid-cols-4">
         <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Aktif firma
+            {t("stats.activeFirms.label")}
           </p>
           <p className="mt-2 text-3xl font-semibold text-foreground">{stats.firmCount}</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            OSGB panelinde takip edilen aktif musteri firma sayisi.
+            {t("stats.activeFirms.hint")}
           </p>
         </div>
         <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Atanan profesyonel
+            {t("stats.assignedProfessionals.label")}
           </p>
           <p className="mt-2 text-3xl font-semibold text-foreground">
             {stats.assignedProfessionalCount}
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Firmalara dagitilan uzman, hekim ve DSP toplam atama sayisi.
+            {t("stats.assignedProfessionals.hint")}
           </p>
         </div>
         <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Toplam calisan
+            {t("stats.totalEmployees.label")}
           </p>
           <p className="mt-2 text-3xl font-semibold text-foreground">{stats.employeeCount}</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Firma kayitlarindaki toplam calisan hacmi ve planlama girdisi.
+            {t("stats.totalEmployees.hint")}
           </p>
         </div>
         <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Geciken is
+            {t("stats.overdueWork.label")}
           </p>
           <p className="mt-2 text-3xl font-semibold text-danger">{stats.overdueCount}</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Gorevlendirme ve DÖF akislarinda dikkate alinmasi gereken acik isler.
+            {t("stats.overdueWork.hint")}
           </p>
         </div>
       </section>
@@ -312,43 +324,44 @@ export function OsgbFirmsClient() {
         <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-foreground">OSGB odakli kurgu</h2>
+              <h2 className="text-lg font-semibold text-foreground">{t("focus.title")}</h2>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                Bu yuzey yalnizca OSGB owner ve admin kullanicilari icindir. Firmalar, gorevlendirmeler,
-                sozlesmeler ve dokuman takibi tek yerden yonetilir.
+                {t("focus.p1")}
               </p>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                Gorevlendirilen personel bu paneli degil, kendi profesyonel akislarini kullanir.
-                Personel sadece atandigi firma workspace verilerine kendi hesabi uzerinden erisir.
+                {t("focus.p2")}
               </p>
             </div>
             <div className="rounded-2xl border border-primary/15 bg-primary/5 px-4 py-3 text-sm text-foreground lg:min-w-[15rem]">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                Yonetim odağı
+                {t("focus.sidebarEyebrow")}
               </p>
               <p className="mt-2 text-2xl font-semibold">{stats.firmCount}</p>
               <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                aktif firma, {stats.assignedProfessionalCount} atanmis profesyonel ve {stats.overdueCount} dikkat isteyen is
-                bu merkezden yonetiliyor.
+                {t("focus.sidebarBody", {
+                  firms: stats.firmCount,
+                  professionals: stats.assignedProfessionalCount,
+                  overdue: stats.overdueCount,
+                })}
               </p>
             </div>
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link href="/osgb/personnel" className={quickActionPrimaryClassName}>
               <UserPlus2 className="h-4 w-4" />
-              Personel davet et
+              {t("quickLinks.inviteStaff")}
             </Link>
             <Link href="/osgb/assignments" className={quickActionAccentClassName}>
               <ShieldCheck className="h-4 w-4" />
-              Gorevlendirmeleri yonet
+              {t("quickLinks.manageAssignments")}
             </Link>
             <Link href="/osgb/contracts" className={quickActionSecondaryClassName}>
               <Building2 className="h-4 w-4" />
-              Sozlesmeleri ac
+              {t("quickLinks.openContracts")}
             </Link>
             <Link href="/osgb/documents" className={quickActionSecondaryClassName}>
               <FileText className="h-4 w-4" />
-              Dokuman merkezine git
+              {t("quickLinks.docCenter")}
             </Link>
           </div>
         </div>
@@ -357,30 +370,30 @@ export function OsgbFirmsClient() {
           <div className="flex items-center gap-3">
             <PremiumIconBadge icon={ShieldAlert} tone="gold" size="md" />
             <div>
-              <h2 className="text-lg font-semibold text-foreground">Nova OSGB Manager</h2>
+              <h2 className="text-lg font-semibold text-foreground">{t("nova.title")}</h2>
               <p className="text-sm text-muted-foreground">
-                Yonetim yardimcisi; personel ve firma performansini izler.
+                {t("nova.subtitle")}
               </p>
             </div>
           </div>
           <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-            <li>Firma bazli yuk dagilimini gor.</li>
-            <li>Geciken gorev ve dokumanlari ayikla.</li>
-            <li>Personel gorevlendirme bosluklarini tespit et.</li>
-            <li>Sozlesme ve rapor yenileme risklerini onceliklendir.</li>
+            <li>{t("nova.bullet1")}</li>
+            <li>{t("nova.bullet2")}</li>
+            <li>{t("nova.bullet3")}</li>
+            <li>{t("nova.bullet4")}</li>
           </ul>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link href="/osgb/tasks" className={quickActionPrimaryClassName}>
               <ShieldAlert className="h-4 w-4" />
-              OSGB islerini ac
+              {t("nova.openTasks")}
             </Link>
             <Link href="/osgb/tasks" className={quickActionAccentClassName}>
               <ArrowRight className="h-4 w-4" />
-              Geciken isleri incele
+              {t("nova.reviewOverdue")}
             </Link>
             <Link href="/osgb/assignments" className={quickActionSecondaryClassName}>
               <ShieldCheck className="h-4 w-4" />
-              Atama bosluklarini gor
+              {t("nova.seeAssignmentGaps")}
             </Link>
           </div>
         </div>
@@ -388,26 +401,26 @@ export function OsgbFirmsClient() {
 
       {activeLimitReached ? (
         <div className="rounded-2xl border border-warning/30 bg-warning/5 px-4 py-3 text-sm text-foreground">
-          Aktif firma limitine ulasildi. Yeni firma eklemek icin bir firmayi arsive al ya da paketi yukselt.
+          {t("limitBanner")}
         </div>
       ) : null}
 
       <section className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div className="space-y-1">
-            <h2 className="text-lg font-semibold text-foreground">Aktif firmalar</h2>
+            <h2 className="text-lg font-semibold text-foreground">{t("activeSection.title")}</h2>
             <p className="text-sm text-muted-foreground">
-              Firma, gorevlendirme, dokuman ve risk akislarinizi firma workspace bazinda yonetin.
+              {t("activeSection.description")}
             </p>
           </div>
           <div className="w-full md:max-w-sm">
             <label className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Firma ara
+              {t("activeSection.searchLabel")}
             </label>
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Firma, sektor, adres veya NACE ara"
+              placeholder={t("activeSection.searchPlaceholder")}
               className="mt-2 h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground/60"
             />
           </div>
@@ -416,17 +429,18 @@ export function OsgbFirmsClient() {
         <div className="mt-5 space-y-4">
           {filteredCompanies.length === 0 ? (
             <EmptyState
-              title="Aktif firma bulunamadi"
-              description="OSGB paneline bagli musteri firmalari burada listelenecek."
+              title={t("emptyActive.title")}
+              description={t("emptyActive.description")}
               action={
                 <Button onClick={() => void handleCreateCompany()} disabled={activeLimitReached}>
-                  Ilk firmayi ekle
+                  {t("emptyActive.cta")}
                 </Button>
               }
             />
           ) : (
             filteredCompanies.map((company) => {
               const riskState = getOverallRiskState(company);
+              const hazardKey = company.hazardClass ? hazardClassToMessageKey(company.hazardClass) : null;
               return (
                 <article
                   key={company.id}
@@ -447,32 +461,35 @@ export function OsgbFirmsClient() {
                           >
                             {company.name}
                           </Link>
-                          <Badge variant={mapRiskTone(riskState.label)}>
-                            {riskState.label}
-                            {riskState.score !== null ? ` ${riskState.score}` : ""}
+                          <Badge variant={workplaceRiskLevelBadgeVariant(riskState.level)}>
+                            {riskState.score !== null
+                              ? `${tw(`level.${riskState.level}`)} ${riskState.score}`
+                              : tw(`level.${riskState.level}`)}
                           </Badge>
                           {company.hazardClass ? (
-                            <Badge variant="neutral">{company.hazardClass}</Badge>
+                            <Badge variant="neutral">
+                              {hazardKey ? tw(`hazardClass.${hazardKey}`) : company.hazardClass}
+                            </Badge>
                           ) : null}
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {company.sector || "Sektor tanimsiz"}
+                          {company.sector || t("companyCard.sectorUnknown")}
                           {company.address ? ` · ${company.address}` : ""}
                         </p>
                         <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                           <span className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1">
                             <Users className="h-3.5 w-3.5" />
-                            {company.activeProfessionals} atanmis profesyonel
+                            {t("companyCard.assignedProfessionals", { count: company.activeProfessionals })}
                           </span>
                           <span className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1">
                             <FileText className="h-3.5 w-3.5" />
-                            {company.documentCount} dokuman
+                            {t("companyCard.documentsCount", { count: company.documentCount })}
                           </span>
                           <span className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1">
-                            {company.employeeCount} calisan
+                            {t("companyCard.employees", { count: company.employeeCount })}
                           </span>
                           <span className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1">
-                            {company.overdueActions} geciken is
+                            {t("companyCard.overdueTasks", { count: company.overdueActions })}
                           </span>
                         </div>
                       </div>
@@ -484,42 +501,42 @@ export function OsgbFirmsClient() {
                         className={quickActionSecondaryClassName}
                       >
                         <FolderOpen className="h-4 w-4" />
-                        Firma workspace
+                        {t("companyCard.workspace")}
                       </Link>
                       <Link
                         href={`/osgb/personnel?workspaceId=${company.id}`}
                         className={quickActionPrimaryClassName}
                       >
                         <UserPlus2 className="h-4 w-4" />
-                        Personel ve davet
+                        {t("companyCard.personnelInvite")}
                       </Link>
                       <Link
                         href={`/osgb/assignments?workspaceId=${company.id}`}
                         className={quickActionAccentClassName}
                       >
                         <ShieldCheck className="h-4 w-4" />
-                        Gorevlendirme
+                        {t("companyCard.assignments")}
                       </Link>
                       <Link
                         href={`/osgb/tasks?workspaceId=${company.id}`}
                         className={quickActionSecondaryClassName}
                       >
                         <ArrowRight className="h-4 w-4" />
-                        Is takibi
+                        {t("companyCard.taskTracking")}
                       </Link>
                       <Link
                         href={`/osgb/documents?workspaceId=${company.id}`}
                         className={quickActionSecondaryClassName}
                       >
                         <FileText className="h-4 w-4" />
-                        Dokumanlar
+                        {t("companyCard.documentsLink")}
                       </Link>
                       <Link
                         href={`/osgb/contracts?workspaceId=${company.id}`}
                         className={quickActionSecondaryClassName}
                       >
                         <Building2 className="h-4 w-4" />
-                        Sozlesmeler
+                        {t("companyCard.contracts")}
                       </Link>
                       <Button
                         variant="outline"
@@ -527,7 +544,7 @@ export function OsgbFirmsClient() {
                         disabled={archivingId === company.id}
                         className="h-11 rounded-2xl border-border px-4 text-sm font-semibold shadow-[var(--shadow-soft)] transition-all duration-200 hover:-translate-y-0.5 hover:border-warning/35 hover:bg-warning/5 hover:shadow-[var(--shadow-card)]"
                       >
-                        {archivingId === company.id ? "Arsivleniyor..." : "Arsive al"}
+                        {archivingId === company.id ? t("companyCard.archiving") : t("companyCard.archive")}
                       </Button>
                     </div>
                   </div>
@@ -541,19 +558,19 @@ export function OsgbFirmsClient() {
       <section className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Arsivlenen firmalar</h2>
+            <h2 className="text-lg font-semibold text-foreground">{t("archivedSection.title")}</h2>
             <p className="text-sm text-muted-foreground">
-              Arsivlenen firmalar aktif limit hesabina dahil edilmez; risk ve dokuman gecmisi korunur.
+              {t("archivedSection.description")}
             </p>
           </div>
-          <Badge variant="neutral">{archivedCompanies.length} arsiv kaydi</Badge>
+          <Badge variant="neutral">{t("archivedSection.badge", { count: archivedCompanies.length })}</Badge>
         </div>
 
         <div className="mt-5 space-y-3">
           {archivedCompanies.length === 0 ? (
             <EmptyState
-              title="Arsivde firma yok"
-              description="Bir firmayi arsive aldiginda burada goreceksin."
+              title={t("emptyArchived.title")}
+              description={t("emptyArchived.description")}
             />
           ) : (
             archivedCompanies.map((company) => (
@@ -564,7 +581,7 @@ export function OsgbFirmsClient() {
                 <div>
                   <p className="text-base font-semibold text-foreground">{company.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    {company.sector || "Sektor tanimsiz"} · {company.employeeCount} calisan
+                    {company.sector || t("companyCard.sectorUnknown")} · {t("companyCard.employees", { count: company.employeeCount })}
                   </p>
                 </div>
                 <Button
@@ -572,7 +589,7 @@ export function OsgbFirmsClient() {
                   onClick={() => void handleRestoreCompany(company.id)}
                   disabled={activeLimitReached || restoringId === company.id}
                 >
-                  {restoringId === company.id ? "Geri yukleniyor..." : "Geri yukle"}
+                  {restoringId === company.id ? t("archivedRow.restoring") : t("archivedRow.restore")}
                 </Button>
               </div>
             ))

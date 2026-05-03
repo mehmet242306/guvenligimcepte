@@ -1,0 +1,305 @@
+{
+  "companiesList": {
+    "actions": {
+      "newCompany": "新しい会社",
+      "sampleData": "サンプルデータ"
+    },
+    "archive": "アーカイブ",
+    "badge": {
+      "archived": "アーカイブ済み",
+      "deleted": "削除済み"
+    },
+    "clearFilters": "フィルターをクリア",
+    "confirmArchive": {
+      "confirm": "確認",
+      "hint": "アクティブリストから削除されます。",
+      "title": "「{name}」をアーカイブしますか？"
+    },
+    "confirmDelete": {
+      "confirm": "削除",
+      "instruction": "確認のためこの単語を入力してください：",
+      "title": "「{name}」を削除しますか？"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "DELETEと入力",
+      "word": "DELETE"
+    },
+    "defaults": {
+      "companyName": "新しい会社・組織",
+      "kind": "民間企業",
+      "shortName": "新しい記録"
+    },
+    "delete": "削除",
+    "description": {
+      "multi": "担当する会社を管理し、その作業現場にアクセスします。",
+      "single": "アクティブな作業現場の人員およびその他の運用記録を管理します。"
+    },
+    "discard": "キャンセル",
+    "employeesSuffix": "従業員",
+    "empty": {
+      "archiveBannerCompany": "アーカイブされた会社です。復元できます。",
+      "archiveBannerWorksite": "アーカイブされた作業現場記録です。復元できます。",
+      "archiveEmptyCompany": "アーカイブに何もありません",
+      "archiveEmptyDescCompany": "アーカイブされた会社はまだありません。",
+      "archiveEmptyDescWorksite": "アーカイブされた作業現場はまだありません。",
+      "archiveEmptyWorksite": "アーカイブに何もありません",
+      "clearFilters": "フィルターをクリア",
+      "completeWorksite": "作業現場の設定を完了",
+      "deletedBannerCompany": "削除された会社です。完全削除は元に戻せません。",
+      "deletedBannerWorksite": "削除された作業現場記録です。完全削除は元に戻せません。",
+      "deletedEmptyCompany": "削除された会社はありません",
+      "deletedEmptyDescCompany": "削除された会社はまだありません。",
+      "deletedEmptyDescWorksite": "削除された作業現場はまだありません。",
+      "deletedEmptyWorksite": "削除された作業現場はありません",
+      "initialDescCompany": "最初の会社を作成して開始してください。",
+      "initialDescWorksite": "この領域にはアクティブな作業現場データが表示されます。人員やその他の記録を表示するには作業現場の設定を完了してください。",
+      "initialTitleCompany": "会社はまだありません",
+      "initialTitleWorksite": "作業現場記録はまだありません",
+      "newCompany": "新しい会社",
+      "noMatchCompany": "一致する会社がありません",
+      "noMatchDescription": "フィルターに一致する記録がありません。",
+      "noMatchWorksite": "一致する作業現場がありません",
+      "sampleData": "サンプルデータ"
+    },
+    "entity": {
+      "companyPlural": "企業",
+      "worksitePlural": "作業現場"
+    },
+    "eyebrow": {
+      "multi": "私の企業・組織",
+      "osgb": "OSGB企業",
+      "singleWorksite": "作業現場"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "すべて",
+      "hazardClass": "危険物クラス",
+      "kind": "種類",
+      "search": "検索",
+      "searchPlaceholder": "名前、業界、種類、NACE…",
+      "sector": "業界",
+      "sort": "並び替え"
+    },
+    "limitReachedBanner": "アクティブな企業・ワークスペースの上限に達しました。企業をアーカイブするか、プランをアップグレードしてから追加または復元してください。",
+    "links": {
+      "riskAnalysis": "リスク分析",
+      "workspace": "ワークスペース"
+    },
+    "metrics": {
+      "actions": "アクション",
+      "departments": "部門",
+      "employees": "従業員",
+      "hazard": "危険",
+      "locations": "場所",
+      "overdue": "期限切れ"
+    },
+    "permanentDelete": "完全に削除",
+    "progress": {
+      "coverage": "カバレッジ",
+      "maturity": "成熟度"
+    },
+    "restore": "復元",
+    "sort": {
+      "employees": "従業員",
+      "name": "名前順",
+      "overdue": "期限切れ",
+      "risk": "リスク"
+    },
+    "stats": {
+      "avgMaturity": "平均成熟度",
+      "criticalCompanies": "重要企業",
+      "criticalWorksites": "重要作業現場",
+      "employees": "従業員",
+      "openActions": "未完了アクション",
+      "overdueTasks": "期限切れタスク",
+      "totalCompanies": "総企業数",
+      "totalWorksites": "総作業現場数"
+    },
+    "storage": {
+      "local": "ローカル",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "アクティブ",
+      "archived": "アーカイブ",
+      "deleted": "削除済み"
+    },
+    "title": {
+      "multi": "私の企業・組織",
+      "osgb": "企業と作業現場",
+      "single": "作業現場と運用コンテンツ"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} アクティブな会社スロットを使用中",
+      "activeOnly": "{count} アクティブな会社 / ワークスペース"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "作業現場",
+    "docTitle": "{name} — ワークスペース · RiskNova",
+    "docTitleFallback": "ワークスペース · RiskNova",
+    "invite": "招待",
+    "logo": {
+      "fileTooLarge": "ファイルが大きすぎます（{sizeMb} MB）。最大サイズは5MBです。",
+      "imagesOnly": "画像ファイルのみアップロード可能です（PNG、JPEG、WebP、SVG）。",
+      "updated": "ロゴ/画像を更新しました。",
+      "uploadFailed": "アップロードに失敗しました。別のファイルをお試しください。",
+      "uploadTitle": "ロゴをアップロード"
+    },
+    "notFound": {
+      "back": "会社一覧に戻る",
+      "description": "このIDに一致する会社がありません。",
+      "title": "会社が見つかりません"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "保存",
+    "saving": "保存中…",
+    "sidebar": {
+      "hint": "左側でエリアを選択し、右側でコンテンツを管理してください。",
+      "title": "作業現場セクション"
+    },
+    "stats": {
+      "departments": "部門",
+      "employees": "従業員",
+      "locations": "拠点",
+      "maturity": "成熟度",
+      "openActions": "未完了アクション",
+      "overdue": "期限超過"
+    },
+    "tabs": {
+      "history": "履歴",
+      "ohs_file": "OHSファイル",
+      "organization": "組織",
+      "people": "チーム",
+      "personnel": "人事",
+      "risk": "リスク・現場",
+      "structure": "施設",
+      "tracking": "追跡"
+    }
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "会社ワークスペースごとに会社、割り当て、文書、リスクフローを管理します。",
+      "searchLabel": "会社を検索",
+      "searchPlaceholder": "会社、業界、住所、またはNACEで検索",
+      "title": "アクティブな会社"
+    },
+    "archivedRow": {
+      "restore": "復元",
+      "restoring": "復元中…"
+    },
+    "archivedSection": {
+      "badge": "{count} 件のアーカイブ記録",
+      "description": "アーカイブされた会社はアクティブ制限にカウントされません。リスクと文書履歴は保持されます。",
+      "title": "アーカイブされた会社"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} アクティブな会社",
+      "activeCompaniesUnlimited": "アクティブな企業 {count} 社",
+      "activeStaffMax": "アクティブスタッフ {count} / {max} 名",
+      "activeStaffUnlimited": "アクティブスタッフ {count} 名"
+    },
+    "companyCard": {
+      "archive": "アーカイブ",
+      "archiving": "アーカイブ中…",
+      "assignedProfessionals": "割り当て済み専門職 {count} 名",
+      "assignments": "割り当て",
+      "contracts": "契約",
+      "documentsCount": "文書 {count} 件",
+      "documentsLink": "文書",
+      "employees": "従業員 {count} 名",
+      "overdueTasks": "期限超過項目 {count} 件",
+      "personnelInvite": "スタッフと招待",
+      "sectorUnknown": "セクター未設定",
+      "taskTracking": "タスク追跡",
+      "workspace": "企業ワークスペース"
+    },
+    "emptyActive": {
+      "cta": "最初の企業を追加",
+      "description": "OSGBパネルにリンクされたクライアント企業がここに表示されます。",
+      "title": "アクティブな企業がありません"
+    },
+    "emptyArchived": {
+      "description": "企業をアーカイブするとここに表示されます。",
+      "title": "アーカイブされた企業がありません"
+    },
+    "emptyCompany": {
+      "kind": "民間セクター",
+      "name": "新しいOSGBクライアント企業",
+      "shortName": "新しい企業"
+    },
+    "focus": {
+      "p1": "この領域はOSGBオーナーと管理者ユーザー専用です。企業、割り当て、契約、文書追跡を一箇所で管理します。",
+      "p2": "割り当てられたスタッフは日常業務でこのパネルを使用せず、自分のアカウントを通じて割り当てられた企業ワークスペースデータにアクセスします。",
+      "sidebarBody": "アクティブな企業 {firms} 社、割り当て済み専門職 {professionals} 名、注意が必要な項目 {overdue} 件がここで調整されます。",
+      "sidebarEyebrow": "管理フォーカス",
+      "title": "OSGB専用画面"
+    },
+    "header": {
+      "description": "クライアント企業、企業別ワークスペース、割り当てられた人員フローを管理します。",
+      "eyebrow": "OSGB企業管理",
+      "title": "企業と作業現場"
+    },
+    "limitBanner": "アクティブ企業の上限に達しました。企業をアーカイブするか、プランをアップグレードして追加してください。",
+    "loading": {
+      "description": "クライアント企業、割り当て、文書フローを読み込んでいます。",
+      "eyebrow": "OSGB企業",
+      "title": "ポートフォリオを準備中"
+    },
+    "nova": {
+      "bullet1": "企業別の作業負荷分散を確認します。",
+      "bullet2": "期限超過のタスクと文書をフィルタリングします。",
+      "bullet3": "スタッフ割り当てのギャップを発見します。",
+      "bullet4": "契約と報告書の更新リスクを優先順位付けします。",
+      "openTasks": "OSGBタスクを開く",
+      "reviewOverdue": "期限超過の作業を確認",
+      "seeAssignmentGaps": "割り当てギャップを確認",
+      "subtitle": "管理アシスタント；スタッフと企業のパフォーマンスを監視します。",
+      "title": "Nova OSGB マネージャー"
+    },
+    "quickLinks": {
+      "docCenter": "文書ハブに移動",
+      "inviteStaff": "スタッフを招待",
+      "manageAssignments": "割り当てを管理",
+      "openContracts": "契約を開く"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "OSGBパネルで追跡されているアクティブなクライアント企業です。",
+        "label": "アクティブな企業"
+      },
+      "assignedProfessionals": {
+        "hint": "企業への専門家、医師、DSPの総割り当て数です。",
+        "label": "割り当て済み専門家"
+      },
+      "overdueWork": {
+        "hint": "割り当てとCAPAフローで監視すべき未処理項目です。",
+        "label": "期限超過作業"
+      },
+      "totalEmployees": {
+        "hint": "計画のための企業記録からの総従業員数です。",
+        "label": "総従業員数"
+      }
+    },
+    "topActions": {
+      "addCompany": "企業を追加",
+      "openAssignments": "割り当てを開く",
+      "personnelInvite": "スタッフと招待"
+    }
+  },
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "低危険性",
+      "high": "非常に危険",
+      "moderate": "危険"
+    },
+    "level": {
+      "controlled": "管理済み",
+      "critical": "重大",
+      "high": "高",
+      "incomplete": "未評価",
+      "medium": "中"
+    }
+  }
+}

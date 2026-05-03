@@ -19,7 +19,7 @@ import {
   type AccountContext,
   getAccountContextForUser,
   isPrivilegedAccountSelfServiceLoginBlocked,
-  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE,
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
 import { releaseDemoUserLock } from "@/lib/auth/demo-release";
@@ -175,7 +175,7 @@ export async function login(formData: FormData) {
     if (isPrivilegedAccountSelfServiceLoginBlocked(loginContext)) {
       await supabase.auth.signOut();
       redirect(
-        `/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE)}`,
+        `/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE)}`,
       );
     }
   }

@@ -38,11 +38,22 @@ const messagesByLocale: Record<Locale, AbstractIntlMessages> = {
 };
 
 /**
- * Phase 2 status (2026-04-25):
- *   - tr/en: native translations
- *   - ar/ru/de/fr/es/zh/ja/ko/hi/az/id: bootstrapped from en.json, awaiting
- *     professional translation. Replace each file with a real translation
- *     as it ships.
+ * Phase 2 (protected-shell bootstrap) — complete:
+ * `npm run i18n:phase2-bootstrap-locales` copies from `messages/en.json` into the 11 non-tr
+ * bootstrap locales: `common.languagePickerAria`, `activeCompanyBar`, `consentGate`,
+ * `auth.loginPage.privilegedLoginBlocked`. Re-run after changing those keys in `en.json`.
+ * Full-message parity is checked with `npm run i18n:verify-locale-parity`.
+ * Further locale polish is iterative (module-by-module translations beyond this bootstrap).
+ *
+ * Phase 3 (workspace / companies / OSGB strings): JSON packs in `scripts/i18n-packs/phase3/`.
+ * `npm run i18n:translate-phase3:resume` fills non-en locales via AI (Anthropic/OpenAI); then
+ * `npm run i18n:merge-phase3` → `messages/*.json`. `npm run i18n:phase3` = sync EN clones + merge + parity.
+ * `tr.json` there is the Turkish source (sync skips overwriting tr).
+ *
+ * Full `messages/*.json` (all namespaces): `npm run i18n:translate-messages` rewrites
+ * ar/ru/de/fr/es/zh/ja/ko/hi/az/id from `en.json` via the same AI translator (long run).
+ * `i18n:translate-messages:resume` skips locales that already differ from en; add `--force` to redo.
+ * `tr` stays the Turkish JSON; `en` is the source. Then `npm run i18n:verify-locale-parity`.
  */
 
 function parseAcceptLanguage(accept: string | null): Locale | null {

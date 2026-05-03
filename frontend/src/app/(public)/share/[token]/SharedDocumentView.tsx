@@ -9,6 +9,7 @@ import { Underline } from '@tiptap/extension-underline';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
 import { Shield, CheckCircle2, Clock, FileText, PenTool } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface Signature {
   id: string;
@@ -27,7 +28,16 @@ interface Props {
   signatures: Signature[];
 }
 
+function intlLocale(locale: string): string {
+  if (locale === 'zh') return 'zh-CN';
+  return locale;
+}
+
 export function SharedDocumentView({ title, contentJson, companyName, status, createdAt, signatures }: Props) {
+  const t = useTranslations('sharedDocument');
+  const locale = useLocale();
+  const loc = intlLocale(locale);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
@@ -43,16 +53,19 @@ export function SharedDocumentView({ title, contentJson, companyName, status, cr
   });
 
   const statusLabels: Record<string, { label: string; color: string }> = {
-    taslak: { label: 'Taslak', color: 'text-yellow-600 bg-yellow-100' },
-    hazir: { label: 'Hazır', color: 'text-green-600 bg-green-100' },
-    onay_bekliyor: { label: 'Onay Bekliyor', color: 'text-blue-600 bg-blue-100' },
-    revizyon: { label: 'Revizyon', color: 'text-orange-600 bg-orange-100' },
+    taslak: { label: t('statusDraft'), color: 'text-yellow-600 bg-yellow-100' },
+    hazir: { label: t('statusReady'), color: 'text-green-600 bg-green-100' },
+    onay_bekliyor: { label: t('statusPendingApproval'), color: 'text-blue-600 bg-blue-100' },
+    revizyon: { label: t('statusRevision'), color: 'text-orange-600 bg-orange-100' },
   };
   const st = statusLabels[status] || statusLabels.taslak;
 
+  const createdLabel = t('createdOn', {
+    date: new Date(createdAt).toLocaleDateString(loc, { year: 'numeric', month: 'long', day: 'numeric' }),
+  });
+
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
       <header className="bg-[#0F172A] text-white py-4 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
@@ -61,7 +74,7 @@ export function SharedDocumentView({ title, contentJson, companyName, status, cr
             </div>
             <div className="min-w-0">
               <span className="text-[#D4A017] font-bold text-sm">RiskNova</span>
-              <span className="text-gray-400 text-xs ml-2">Paylaşılan Doküman</span>
+              <span className="text-gray-400 text-xs ml-2">{t('sharedBadge')}</span>
             </div>
           </div>
           {companyName ? (
@@ -70,30 +83,24 @@ export function SharedDocumentView({ title, contentJson, companyName, status, cr
         </div>
       </header>
 
-      {/* Document */}
       <main className="max-w-4xl mx-auto py-6 px-3 sm:py-8 sm:px-4">
-        {/* Title bar */}
         <div className="bg-white rounded-t-xl border border-gray-200 px-4 py-4 sm:px-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             <h1 className="text-base sm:text-lg font-bold text-gray-900 break-words">{title}</h1>
-            <p className="text-xs text-gray-500 mt-0.5">
-              Oluşturulma: {new Date(createdAt).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </p>
+            <p className="text-xs text-gray-500 mt-0.5">{createdLabel}</p>
           </div>
           <span className={`self-start shrink-0 px-2.5 py-1 rounded-full text-xs font-medium ${st.color}`}>{st.label}</span>
         </div>
 
-        {/* Content */}
         <div className="bg-white border-x border-gray-200 px-4 py-5 sm:px-8 sm:py-6 min-h-[min(500px,70vh)] overflow-x-auto">
           {editor && <EditorContent editor={editor} />}
         </div>
 
-        {/* Signatures */}
         {signatures.length > 0 && (
           <div className="bg-white border-x border-gray-200 px-4 py-5 sm:px-8 sm:py-6 border-t border-gray-100">
             <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
               <PenTool size={14} className="text-[#D4A017]" />
-              İmzalar
+              {t('signaturesHeading')}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {signatures.map((sig) => (
@@ -104,7 +111,7 @@ export function SharedDocumentView({ title, contentJson, companyName, status, cr
                     <p className="text-[11px] text-gray-500">{sig.signer_role}</p>
                     <p className="text-[10px] text-gray-400 flex items-center gap-1">
                       <Clock size={9} />
-                      {new Date(sig.signed_at).toLocaleString('tr-TR')}
+                      {new Date(sig.signed_at).toLocaleString(loc)}
                     </p>
                   </div>
                 </div>
@@ -113,15 +120,14 @@ export function SharedDocumentView({ title, contentJson, companyName, status, cr
           </div>
         )}
 
-        {/* Footer */}
         <div className="bg-gray-50 rounded-b-xl border border-gray-200 px-4 py-3 sm:px-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <Shield size={12} className="text-[#D4A017] shrink-0" />
-            RiskNova ile oluşturuldu
+            {t('footerCreatedWith')}
           </div>
           {signatures.length > 0 && signatures[0].certificate_hash && (
             <span className="text-[10px] text-gray-400 font-mono break-all sm:text-right">
-              Hash: {signatures[0].certificate_hash.slice(0, 16)}...
+              {t('hashLabel')} {signatures[0].certificate_hash.slice(0, 16)}...
             </span>
           )}
         </div>

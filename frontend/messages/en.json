@@ -25,7 +25,38 @@
     "retry": "Try again",
     "genericError": "Something went wrong. Please try again.",
     "emptyTitle": "Nothing here yet",
-    "emptyDescription": "There is no data to display for this view."
+    "emptyDescription": "There is no data to display for this view.",
+    "languagePickerAria": "Language selection"
+  },
+  "activeCompanyBar": {
+    "companyTypeIndividual": "Individual",
+    "companyTypeOsgb": "OSGB",
+    "companyTypeEnterprise": "Enterprise",
+    "personnelCountTitle": "Active / total personnel",
+    "inactiveBadge": "Inactive company",
+    "detailLink": "Company details",
+    "detailLinkTitle": "Go to company detail page",
+    "nacePrefix": "NACE"
+  },
+  "consentGate": {
+    "eyebrow": "KVKK & consents",
+    "title": "Acknowledge required texts before continuing",
+    "description": "Mandatory terms/KVKK notices, privacy disclosures and required explicit consent texts are listed here at their latest published versions. Marketing consent is optional. When mandatory texts change, the system may ask you to acknowledge again.",
+    "signOutTemp": "Sign out for now",
+    "mandatoryBadge": "Required",
+    "readAcknowledge": "I have read and accept this text",
+    "progress": "{approved} of {total} texts acknowledged",
+    "saving": "Saving consents…",
+    "submit": "Complete consents",
+    "errMustAcknowledge": "You must acknowledge all required texts to continue.",
+    "errSaveFailed": "Consent could not be saved. Please try again.",
+    "consentType": {
+      "aydinlatma": "Privacy notice",
+      "acik_riza": "Explicit consent",
+      "kvkk": "KVKK",
+      "yurt_disi_aktarim": "Cross-border transfer",
+      "pazarlama": "Marketing"
+    }
   },
   "header": {
     "notificationsAria": "Notifications",
@@ -301,6 +332,7 @@
     "footerLegal": "Legal",
     "footerPrivacy": "Privacy Policy",
     "footerTerms": "Terms of Use",
+    "footerCookie": "Cookie Policy",
     "footerContact": "Contact",
     "footerRights": "All rights reserved."
   },
@@ -388,7 +420,8 @@
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
       "submitButton": "Sign in",
-      "forgotLink": "Forgot password"
+      "forgotLink": "Forgot password",
+      "privilegedLoginBlocked": "OSGB and enterprise accounts cannot use this sign-in path. Please contact our team for quoting and access."
     },
     "registerPage": {
       "eyebrow": "New account",
@@ -421,7 +454,13 @@
       "passwordLabel": "Password",
       "passwordPlaceholder": "At least 8 characters",
       "passwordHint": "Choose a strong password. You will finish account-type selection after signup.",
-      "submitButton": "Create account"
+      "submitButton": "Create account",
+      "legalCheckboxTerms": "Terms of Use",
+      "legalCheckboxAfterTerms": ", ",
+      "legalCheckboxPrivacy": "Privacy Policy and KVKK disclosure",
+      "legalCheckboxAfterPrivacy": ", and the ",
+      "legalCheckboxCookie": "Cookie Policy",
+      "legalCheckboxAfterCookie": ". I have read and accept them. Additional mandatory platform approvals may be presented in the app after you create an account."
     },
     "forgotPage": {
       "eyebrow": "Password reset",
@@ -447,7 +486,11 @@
       "passwordLabel": "New password",
       "passwordPlaceholder": "At least 8 characters",
       "passwordHint": "Choose a strong password.",
-      "submitButton": "Update password"
+      "submitButton": "Update password",
+      "preparingSession": "Preparing your password reset session…",
+      "errPrepareSession": "Could not prepare your session. Please open the link again.",
+      "errInvalidResetLink": "This password reset link may be invalid or expired.",
+      "errSessionRefresh": "Could not prepare your session. Refresh the page and try again."
     },
     "social": {
       "supabaseError": "Could not connect to authentication services.",
@@ -1351,6 +1394,1310 @@
         "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
         "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
       ]
+    },
+    "cookiePolicy": {
+      "eyebrow": "Cookie policy",
+      "title": "RiskNova Cookie Policy",
+      "lastUpdated": "Last updated: 2 May 2026",
+      "metaTitle": "Cookie Policy",
+      "metaDescription": "How RiskNova uses essential session, security and preference cookies and similar technologies.",
+      "ogTitle": "Cookie Policy | RiskNova",
+      "ogDescription": "Essential cookies for sign-in, security and preferences; analytics and marketing cookies are not part of the core flow today.",
+      "sections": [
+        {
+          "title": "What are cookies?",
+          "content": "Cookies and similar local storage technologies are small technical records that help the web application remember session, security, language preference and product functions."
+        },
+        {
+          "title": "Essential cookies",
+          "content": "RiskNova uses essential cookies for maintaining your session, the Supabase authentication flow, OAuth redirects, password reset, security checks, CSRF/flow consistency and language preference. If these cookies are disabled, core platform features may not work."
+        },
+        {
+          "title": "Preference and product cookies",
+          "content": "Language, region, UI preference, last selected workspace or similar product settings may be stored in cookies or localStorage to keep the experience consistent."
+        },
+        {
+          "title": "Analytics and marketing cookies",
+          "content": "This release does not rely on third-party analytics or marketing cookies as part of mandatory flows. If analytics or marketing cookies are introduced later, users will receive separate notice and consent controls where required."
+        },
+        {
+          "title": "Managing cookies",
+          "content": "You can delete or block cookies from your browser settings. Blocking essential session, security or language cookies may break sign-in, registration, billing or in-app workflows."
+        },
+        {
+          "title": "Contact",
+          "content": "For questions about cookies or privacy settings, email support@getrisknova.com."
+        }
+      ]
+    }
+  },
+  "pwaInstallPage": {
+    "metaTitle": "RiskNova app",
+    "metaDescription": "Install RiskNova as a PWA on iOS, Android, and Windows without an app store.",
+    "eyebrow": "No app store required",
+    "heroTitle": "Use RiskNova like an app on mobile and desktop",
+    "heroBody": "Add RiskNova to your home screen or desktop on iOS, Android, and Windows. Updates to the site roll out to your installed experience automatically.",
+    "ctaRegister": "Start free",
+    "ctaLogin": "Sign in to platform",
+    "updatesTitle": "Updates arrive automatically",
+    "updatesBody": "When the RiskNova web app is updated, your PWA picks up the new version—you don't wait on store updates.",
+    "cards": {
+      "android": {
+        "title": "Android",
+        "text": "Open RiskNova in Chrome or Edge; if you see an install prompt, choose Install app.",
+        "step1": "Open getrisknova.com",
+        "step2": "Tap Install app",
+        "step3": "Sign in from the RiskNova icon"
+      },
+      "ios": {
+        "title": "iPhone & iPad",
+        "text": "Open in Safari; use Share → Add to Home Screen to create the RiskNova icon.",
+        "step1": "Open the site in Safari",
+        "step2": "Tap the Share icon",
+        "step3": "Choose Add to Home Screen"
+      },
+      "windows": {
+        "title": "Windows",
+        "text": "Use the install icon in the Chrome or Edge address bar to open RiskNova in its own desktop window.",
+        "step1": "Open in Edge or Chrome",
+        "step2": "Click the install-app icon",
+        "step3": "Open RiskNova from the Start menu"
+      }
+    }
+  },
+  "pwaPrompt": {
+    "publicTitle": "Install RiskNova like an app",
+    "publicDescription": "Open quickly in a separate window on iOS, Android, and Windows.",
+    "publicButton": "Install app",
+    "appTitle": "Install the RiskNova app",
+    "appDescription": "Jump back to field work, documents, and Nova from your home screen.",
+    "appButton": "Install",
+    "iosHint": "On iPhone/iPad, use Share → Add to Home Screen.",
+    "asideAria": "RiskNova app installation",
+    "dismissAria": "Dismiss install reminder"
+  },
+  "publicInvite": {
+    "brandEyebrow": "RiskNova",
+    "shellTitle": "Company invitation",
+    "backHome": "Back to home",
+    "dbErrorTitle": "Connection issue",
+    "dbErrorDesc": "Could not reach the database. Please try again later.",
+    "notFoundTitle": "Invitation not found",
+    "notFoundDesc": "This invitation is no longer available or the link is invalid. Ask the person who invited you for a new link.",
+    "acceptedTitle": "Invitation already accepted",
+    "acceptedDesc": "This invitation was already accepted. You can access the company from your dashboard.",
+    "acceptedCta": "Go to dashboard",
+    "declinedTitle": "Invitation declined",
+    "declinedDesc": "This invitation was declined earlier. Contact the inviter if you need a new one.",
+    "revokedTitle": "Invitation cancelled",
+    "revokedDesc": "This invitation was cancelled by the person who sent it.",
+    "expiredTitle": "Invitation expired",
+    "expiredDesc": "This invitation has expired. Request a new invitation.",
+    "cardEyebrow": "Company invitation",
+    "inviteTitle": "{company} invited you to join their RiskNova workspace.",
+    "unknownCompany": "A company",
+    "dtInviter": "Invited by",
+    "dtInvitee": "Invitee",
+    "dtNote": "Note",
+    "dtExpires": "Expires",
+    "unspecified": "Not specified",
+    "loginPrompt": "To accept the invitation, you need an account registered to {email}.",
+    "btnLogin": "Sign in",
+    "btnRegister": "Create account"
+  },
+  "publicInviteActions": {
+    "emailMismatch": "This invitation was sent to {inviteeEmail}, but you are signed in as {currentUserEmail}.",
+    "emailMismatchHint": "Please sign in with the correct account to accept.",
+    "acceptedRedirecting": "Invitation accepted. Redirecting to dashboard…",
+    "declinedMessage": "You declined the invitation. You can request a new one anytime.",
+    "dbError": "Could not reach the database.",
+    "accepting": "Accepting…",
+    "declineProcessing": "Processing…",
+    "acceptBtn": "Accept invitation",
+    "declineBtn": "Decline",
+    "errUnexpected": "An unexpected error occurred.",
+    "errExpired": "This invitation has expired.",
+    "errNotPending": "This invitation is no longer pending (it may have been accepted, declined, or cancelled).",
+    "errWrongUser": "This invitation does not belong to the signed-in user. Sign in with the correct account.",
+    "errNotFound": "Invitation not found.",
+    "errAuthRequired": "You must be signed in to accept the invitation."
+  },
+  "certificateVerify": {
+    "loading": "Verifying…",
+    "notFoundTitle": "Certificate not found",
+    "notFoundDesc": "No certificate matches this verification code.",
+    "expiredCertTitle": "Expired certificate",
+    "verifiedTitle": "Verified certificate",
+    "expiredCertSubtitle": "The validity period of this certificate has ended.",
+    "verifiedSubtitle": "This certificate has been verified by RiskNova.",
+    "certNo": "Certificate no.",
+    "fullName": "Full name",
+    "training": "Training",
+    "date": "Date",
+    "duration": "Duration",
+    "score": "Score",
+    "trainer": "Trainer",
+    "institution": "Organization",
+    "issuedAt": "Issued on",
+    "validUntil": "Valid until",
+    "expiredSuffix": " (expired)",
+    "footer": "Issued by the RiskNova OHS platform."
+  },
+  "publicSurvey": {
+    "loading": "Loading…",
+    "invalidTitle": "Invalid link",
+    "invalidDesc": "This link is no longer valid or could not be found.",
+    "expiredTitle": "Link expired",
+    "expiredDesc": "This link has expired.",
+    "verifyTitle": "Identity verification",
+    "verifySubtitleExam": "Verify your identity before starting the exam.",
+    "verifySubtitleSurvey": "Verify your identity before starting the survey.",
+    "participantLabel": "Participant:",
+    "questionCount": "{count} questions",
+    "minutesPipe": "| {minutes} min",
+    "passPipe": "| Pass: {score}%",
+    "startButton": "I am {name}, start",
+    "congrats": "Congratulations!",
+    "sorry": "Sorry",
+    "thanks": "Thank you!",
+    "examPassDesc": "You passed the exam with {score}%.",
+    "examFailDesc": "Your score: {score}%. Pass mark: {pass}%.",
+    "surveyCompleteDesc": "Your responses were saved successfully.",
+    "questionBadge": "Question {n}",
+    "required": "* Required",
+    "yes": "Yes",
+    "no": "No",
+    "openEndedPlaceholder": "Type your answer…",
+    "submitError": "Responses could not be saved. Check your connection and try again.",
+    "prev": "Previous",
+    "next": "Next",
+    "sending": "Submitting…",
+    "submit": "Submit"
+  },
+  "sharedDocument": {
+    "loading": "Loading document…",
+    "sharedBadge": "Shared document",
+    "createdOn": "Created: {date}",
+    "statusDraft": "Draft",
+    "statusReady": "Ready",
+    "statusPendingApproval": "Pending approval",
+    "statusRevision": "Revision",
+    "signaturesHeading": "Signatures",
+    "footerCreatedWith": "Created with RiskNova",
+    "hashLabel": "Hash:"
+  },
+  "sharedRisk": {
+    "defaultTitle": "Risk assessment report",
+    "reportEyebrow": "Risk assessment report",
+    "platformLabel": "RiskNova OHS platform",
+    "locationLabel": "Location:",
+    "departmentLabel": "Department:",
+    "statTotal": "Total findings",
+    "statCritical": "Critical",
+    "statHigh": "High",
+    "teamHeading": "Assessment team",
+    "analysisNoteHeading": "Assessment note",
+    "findingsByRowHeading": "Row-based risk findings",
+    "rowTitleFallback": "Row {n}",
+    "findingsImagesCount": "{findings} findings · {images} images",
+    "recommendation": "Recommendation",
+    "legalBasisHeading": "Regulatory reference",
+    "noFindingsInRow": "No findings for this row.",
+    "footerGeneratedBy": "This report was generated by RiskNova OHS platform.",
+    "footerMethodNote": "Report content was assessed using the {method} method.",
+    "methods": {
+      "r_skor": "R-SCORE 2D",
+      "fine_kinney": "Fine-Kinney",
+      "l_matrix": "L-Matrix",
+      "fmea": "FMEA",
+      "hazop": "HAZOP"
+    },
+    "severity": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    }
+  },
+  "workplaceRisk": {
+    "level": {
+      "incomplete": "Underevaluated",
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "controlled": "Controlled"
+    },
+    "hazardClass": {
+      "az": "Less hazardous",
+      "moderate": "Hazardous",
+      "high": "Very hazardous"
+    }
+  },
+  "companiesList": {
+    "defaults": {
+      "companyName": "New company / organization",
+      "shortName": "New record",
+      "kind": "Private sector"
+    },
+    "confirmPermanentDelete": {
+      "word": "DELETE",
+      "placeholder": "Type DELETE"
+    },
+    "eyebrow": {
+      "osgb": "OSGB companies",
+      "singleWorksite": "Worksite",
+      "multi": "My companies / organizations"
+    },
+    "title": {
+      "osgb": "Companies and worksites",
+      "single": "Worksite and operational content",
+      "multi": "My companies / organizations"
+    },
+    "description": {
+      "single": "Manage personnel and other operational records for your active worksite.",
+      "multi": "Manage the companies you are responsible for and access their worksites."
+    },
+    "usage": {
+      "activeOnly": "{count} active companies / workspaces",
+      "activeOfMax": "{current} / {max} active company slots used"
+    },
+    "limitReachedBanner": "You have reached the active company / workspace limit. Archive a company or upgrade your plan before adding or restoring one.",
+    "tabs": {
+      "active": "Active",
+      "archived": "Archive",
+      "deleted": "Deleted"
+    },
+    "stats": {
+      "totalCompanies": "Total companies",
+      "totalWorksites": "Total worksites",
+      "employees": "Employees",
+      "criticalCompanies": "Critical companies",
+      "criticalWorksites": "Critical worksites",
+      "openActions": "Open actions",
+      "overdueTasks": "Overdue tasks",
+      "avgMaturity": "Avg. maturity"
+    },
+    "filters": {
+      "search": "Search",
+      "searchPlaceholder": "Name, sector, type, NACE…",
+      "hazardClass": "Hazard class",
+      "sector": "Sector",
+      "kind": "Type",
+      "sort": "Sort",
+      "all": "All"
+    },
+    "sort": {
+      "name": "By name",
+      "employees": "Employees",
+      "risk": "Risk",
+      "overdue": "Overdue"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "clearFilters": "Clear filters",
+    "metrics": {
+      "hazard": "Hazard",
+      "employees": "Employees",
+      "actions": "Actions",
+      "overdue": "Overdue",
+      "locations": "Locations",
+      "departments": "Departments"
+    },
+    "progress": {
+      "coverage": "Coverage",
+      "maturity": "Maturity"
+    },
+    "links": {
+      "workspace": "Workspace",
+      "riskAnalysis": "Risk analysis"
+    },
+    "archive": "Archive",
+    "restore": "Restore",
+    "delete": "Delete",
+    "confirmArchive": {
+      "title": "Archive “{name}”?",
+      "hint": "It will leave the active list.",
+      "confirm": "Confirm"
+    },
+    "confirmDelete": {
+      "title": "Delete “{name}”?",
+      "instruction": "Type this word to confirm:",
+      "confirm": "Delete"
+    },
+    "empty": {
+      "noMatchCompany": "No matching companies",
+      "noMatchWorksite": "No matching worksites",
+      "noMatchDescription": "No records match your filters.",
+      "clearFilters": "Clear filters",
+      "archiveBannerCompany": "Archived companies. You can restore them.",
+      "archiveBannerWorksite": "Archived worksite records. You can restore them.",
+      "archiveEmptyCompany": "Nothing in archive",
+      "archiveEmptyWorksite": "Nothing in archive",
+      "archiveEmptyDescCompany": "No archived companies yet.",
+      "archiveEmptyDescWorksite": "No archived worksites yet.",
+      "deletedBannerCompany": "Deleted companies. Permanent deletion cannot be undone.",
+      "deletedBannerWorksite": "Deleted worksite records. Permanent deletion cannot be undone.",
+      "deletedEmptyCompany": "No deleted companies",
+      "deletedEmptyWorksite": "No deleted worksites",
+      "deletedEmptyDescCompany": "No deleted companies yet.",
+      "deletedEmptyDescWorksite": "No deleted worksites yet.",
+      "initialTitleCompany": "No companies yet",
+      "initialTitleWorksite": "No worksite record yet",
+      "initialDescCompany": "Create your first company to get started.",
+      "initialDescWorksite": "This area fills with your active worksite data. Complete worksite setup to see personnel and other records.",
+      "completeWorksite": "Complete worksite setup",
+      "newCompany": "New company",
+      "sampleData": "Sample data"
+    },
+    "storage": {
+      "supabase": "Supabase",
+      "local": "Local"
+    },
+    "entity": {
+      "companyPlural": "companies",
+      "worksitePlural": "worksites"
+    },
+    "actions": {
+      "newCompany": "New company",
+      "sampleData": "Sample data"
+    },
+    "badge": {
+      "archived": "Archived",
+      "deleted": "Deleted"
+    },
+    "permanentDelete": "Delete permanently",
+    "employeesSuffix": "employees",
+    "discard": "Cancel"
+  },
+  "companyWorkspace": {
+    "docTitle": "{name} — Workspace · RiskNova",
+    "docTitleFallback": "Workspace · RiskNova",
+    "notFound": {
+      "title": "Company not found",
+      "description": "No company matches this ID.",
+      "back": "Back to companies"
+    },
+    "backLink": "Worksites",
+    "logo": {
+      "uploadTitle": "Upload logo",
+      "fileTooLarge": "File is too large ({sizeMb} MB). Maximum size is 5 MB.",
+      "imagesOnly": "Only image files can be uploaded (PNG, JPEG, WebP, SVG).",
+      "updated": "Logo/image updated.",
+      "uploadFailed": "Upload failed. Try another file."
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "invite": "Invite",
+    "riskBadgeScore": "{label} {score}",
+    "riskBadgeLabelOnly": "{label}",
+    "stats": {
+      "employees": "Employees",
+      "locations": "Locations",
+      "departments": "Departments",
+      "openActions": "Open actions",
+      "overdue": "Overdue",
+      "maturity": "Maturity"
+    },
+    "sidebar": {
+      "title": "Worksite sections",
+      "hint": "Choose an area on the left; manage content on the right."
+    },
+    "tabs": {
+      "structure": "Premises",
+      "risk": "Risk & field",
+      "people": "Team",
+      "personnel": "Personnel",
+      "tracking": "Tracking",
+      "ohs_file": "OHS file",
+      "organization": "Organization",
+      "history": "History"
+    }
+  },
+  "osgbFirms": {
+    "emptyCompany": {
+      "name": "New OSGB client company",
+      "shortName": "New company",
+      "kind": "Private sector"
+    },
+    "loading": {
+      "eyebrow": "OSGB companies",
+      "title": "Preparing your portfolio",
+      "description": "We are loading client companies, assignments, and document flows."
+    },
+    "header": {
+      "eyebrow": "OSGB company management",
+      "title": "Companies and worksites",
+      "description": "Manage your client companies, per-company workspaces, and personnel flows assigned to them."
+    },
+    "badges": {
+      "activeCompaniesUnlimited": "{count} active companies",
+      "activeCompaniesMax": "{count} / {max} active companies",
+      "activeStaffUnlimited": "{count} active staff",
+      "activeStaffMax": "{count} / {max} active staff"
+    },
+    "topActions": {
+      "personnelInvite": "Staff & invites",
+      "openAssignments": "Open assignments",
+      "addCompany": "Add company"
+    },
+    "stats": {
+      "activeFirms": {
+        "label": "Active companies",
+        "hint": "Active client companies tracked in the OSGB panel."
+      },
+      "assignedProfessionals": {
+        "label": "Assigned professionals",
+        "hint": "Total assignments of experts, physicians, and DSP to companies."
+      },
+      "totalEmployees": {
+        "label": "Total employees",
+        "hint": "Total employee headcount from company records for planning."
+      },
+      "overdueWork": {
+        "label": "Overdue work",
+        "hint": "Open items to watch in assignment and CAPA flows."
+      }
+    },
+    "focus": {
+      "title": "OSGB-focused surface",
+      "p1": "This area is only for OSGB owner and admin users. Companies, assignments, contracts, and document tracking are managed in one place.",
+      "p2": "Assigned staff do not use this panel for their day-to-day flow; they access assigned company workspace data through their own account.",
+      "sidebarEyebrow": "Management focus",
+      "sidebarBody": "{firms} active companies, {professionals} assigned professionals, and {overdue} items needing attention are coordinated here."
+    },
+    "quickLinks": {
+      "inviteStaff": "Invite staff",
+      "manageAssignments": "Manage assignments",
+      "openContracts": "Open contracts",
+      "docCenter": "Go to document hub"
+    },
+    "nova": {
+      "title": "Nova OSGB Manager",
+      "subtitle": "Management assistant; monitors staff and company performance.",
+      "bullet1": "See workload distribution by company.",
+      "bullet2": "Filter overdue tasks and documents.",
+      "bullet3": "Spot staffing assignment gaps.",
+      "bullet4": "Prioritize contract and report renewal risks.",
+      "openTasks": "Open OSGB tasks",
+      "reviewOverdue": "Review overdue work",
+      "seeAssignmentGaps": "See assignment gaps"
+    },
+    "limitBanner": "Active company limit reached. Archive a company or upgrade your plan to add more.",
+    "activeSection": {
+      "title": "Active companies",
+      "description": "Manage company, assignment, document, and risk flows per company workspace.",
+      "searchLabel": "Search companies",
+      "searchPlaceholder": "Search company, sector, address, or NACE"
+    },
+    "emptyActive": {
+      "title": "No active companies",
+      "description": "Client companies linked to the OSGB panel will be listed here.",
+      "cta": "Add first company"
+    },
+    "companyCard": {
+      "sectorUnknown": "Sector not set",
+      "assignedProfessionals": "{count} assigned professionals",
+      "documentsCount": "{count} documents",
+      "employees": "{count} employees",
+      "overdueTasks": "{count} overdue items",
+      "workspace": "Company workspace",
+      "personnelInvite": "Staff & invites",
+      "assignments": "Assignments",
+      "taskTracking": "Task tracking",
+      "documentsLink": "Documents",
+      "contracts": "Contracts",
+      "archiving": "Archiving…",
+      "archive": "Archive"
+    },
+    "archivedSection": {
+      "title": "Archived companies",
+      "description": "Archived companies do not count toward the active limit; risk and document history is kept.",
+      "badge": "{count} archived records"
+    },
+    "emptyArchived": {
+      "title": "No archived companies",
+      "description": "When you archive a company it will appear here."
+    },
+    "archivedRow": {
+      "restoring": "Restoring…",
+      "restore": "Restore"
+    }
+  },
+  "riskScoring": {
+    "classification": {
+      "r2d": {
+        "follow_up": {
+          "label": "Monitoring",
+          "action": "Routine monitoring is sufficient"
+        },
+        "low": {
+          "label": "Low",
+          "action": "Schedule structured reassessment"
+        },
+        "medium": {
+          "label": "Medium",
+          "action": "Increased supervision required"
+        },
+        "high": {
+          "label": "High",
+          "action": "Priority intervention required"
+        },
+        "critical": {
+          "label": "Critical",
+          "action": "Evaluate work stoppage"
+        }
+      },
+      "fk": {
+        "follow_up": {
+          "label": "Acceptable",
+          "action": "May need improvement suggestions; no urgent action"
+        },
+        "low": {
+          "label": "Moderate concern",
+          "action": "Keep under review; plan improvements"
+        },
+        "medium": {
+          "label": "Significant",
+          "action": "Take action in the short term"
+        },
+        "high": {
+          "label": "High risk",
+          "action": "Immediate action; consider stopping work"
+        },
+        "critical": {
+          "label": "Very high risk",
+          "action": "Stop work immediately"
+        }
+      },
+      "matrix": {
+        "follow_up": {
+          "label": "Acceptable",
+          "action": "Further measures may not be needed; monitoring sufficient"
+        },
+        "low": {
+          "label": "Low risk",
+          "action": "Existing controls adequate; keep observing"
+        },
+        "medium": {
+          "label": "Medium risk",
+          "action": "Plan improvement activities"
+        },
+        "high": {
+          "label": "High risk",
+          "action": "Take action soon"
+        },
+        "critical": {
+          "label": "Intolerable",
+          "action": "Stop work immediately; emergency measures"
+        }
+      },
+      "fmea": {
+        "follow_up": {
+          "label": "Acceptable",
+          "action": "Current controls sufficient; keep monitoring"
+        },
+        "low": {
+          "label": "Low risk",
+          "action": "Plan improvements"
+        },
+        "medium": {
+          "label": "Medium risk",
+          "action": "Take action; strengthen controls"
+        },
+        "high": {
+          "label": "High risk",
+          "action": "Urgent action; consider design change"
+        },
+        "critical": {
+          "label": "Critical risk",
+          "action": "Stop work; perform root cause analysis"
+        }
+      },
+      "hazop": {
+        "follow_up": {
+          "label": "Acceptable",
+          "action": "Current controls sufficient"
+        },
+        "low": {
+          "label": "Low",
+          "action": "Plan monitoring and improvements"
+        },
+        "medium": {
+          "label": "Medium",
+          "action": "Evaluate additional protection layers"
+        },
+        "high": {
+          "label": "High",
+          "action": "Process change or extra barrier required"
+        },
+        "critical": {
+          "label": "Intolerable",
+          "action": "Stop process; revise design"
+        }
+      },
+      "bow_tie": {
+        "follow_up": {
+          "label": "Acceptable",
+          "action": "Barriers adequate; continue monitoring"
+        },
+        "low": {
+          "label": "Low",
+          "action": "Review barrier effectiveness"
+        },
+        "medium": {
+          "label": "Medium",
+          "action": "Add further barriers"
+        },
+        "high": {
+          "label": "High",
+          "action": "Urgent barrier reinforcement; review process"
+        },
+        "critical": {
+          "label": "Critical",
+          "action": "Stop work; redesign barriers"
+        }
+      },
+      "fta": {
+        "follow_up": {
+          "label": "Acceptable",
+          "action": "System reliability adequate"
+        },
+        "low": {
+          "label": "Low",
+          "action": "Evaluate redundancy / backups"
+        },
+        "medium": {
+          "label": "Medium",
+          "action": "Add redundancy to critical components"
+        },
+        "high": {
+          "label": "High",
+          "action": "Redesign the system"
+        },
+        "critical": {
+          "label": "Critical",
+          "action": "Do not operate; eliminate root causes"
+        }
+      },
+      "checklist": {
+        "follow_up": {
+          "label": "Compliant",
+          "action": "Maintain current practice"
+        },
+        "low": {
+          "label": "Acceptable",
+          "action": "Close gaps in the short term"
+        },
+        "medium": {
+          "label": "Improvement needed",
+          "action": "Prepare a broader improvement plan"
+        },
+        "high": {
+          "label": "Inadequate",
+          "action": "Start urgent corrective actions"
+        },
+        "critical": {
+          "label": "Critically inadequate",
+          "action": "Stop activity; full revision"
+        }
+      },
+      "lopa": {
+        "follow_up": {
+          "label": "Acceptable",
+          "action": "Current protection layers sufficient"
+        },
+        "low": {
+          "label": "ALARP",
+          "action": "As low as reasonably practicable"
+        },
+        "medium": {
+          "label": "Improvement needed",
+          "action": "Add an extra protection layer"
+        },
+        "high": {
+          "label": "High risk",
+          "action": "Multiple layers or process change required"
+        },
+        "critical": {
+          "label": "Intolerable",
+          "action": "Stop process; revise design"
+        }
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "Very low (almost impossible)"
+        },
+        "i2": {
+          "description": "Low (rare, unexpected)"
+        },
+        "i3": {
+          "description": "Medium (unlikely but possible)"
+        },
+        "i4": {
+          "description": "High (likely, not surprising)"
+        },
+        "i5": {
+          "description": "Very high (expected, unavoidable)"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "Very minor (no lost time)"
+        },
+        "i2": {
+          "description": "Minor (no lost-time injury)"
+        },
+        "i3": {
+          "description": "Moderate (lost-time injury)"
+        },
+        "i4": {
+          "description": "Major (permanent harm, amputation)"
+        },
+        "i5": {
+          "description": "Catastrophic (fatality, multiple fatalities)"
+        }
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "label": "Hazard density",
+        "description": "Count / density of hazardous objects observed in the field"
+      },
+      "c2": {
+        "label": "PPE gaps",
+        "description": "Missing helmets, gloves, goggles, etc."
+      },
+      "c3": {
+        "label": "Behaviour risk",
+        "description": "Restricted zone entry, unguarded work, fall exposure"
+      },
+      "c4": {
+        "label": "Environmental stress",
+        "description": "Heat, noise, vibration and similar stressors"
+      },
+      "c5": {
+        "label": "Chemical / electrical",
+        "description": "Gas leaks, chemicals, electrical hazards"
+      },
+      "c6": {
+        "label": "Access / obstruction",
+        "description": "Blocked exits, wet floors, passage obstacles"
+      },
+      "c7": {
+        "label": "Machinery / process",
+        "description": "Guards bypassed, overdue maintenance"
+      },
+      "c8": {
+        "label": "Vehicle traffic",
+        "description": "Forklift intensity, line crossings, pedestrian–vehicle conflict"
+      },
+      "c9": {
+        "label": "Organizational load",
+        "description": "Training gaps, missing warning signage"
+      },
+      "source": {
+        "visualAnalysis": "Visual analysis"
+      }
+    },
+    "fk": {
+      "likelihood": {
+        "v0_1": "Almost impossible",
+        "v0_2": "Very unlikely",
+        "v0_5": "Unexpected but possible",
+        "v1": "Low likelihood, not negligible",
+        "v3": "Rare but possible",
+        "v6": "Quite likely",
+        "v10": "Very likely / expected"
+      },
+      "severity": {
+        "v1": "Notable, first aid",
+        "v3": "Significant, external treatment",
+        "v7": "Serious, permanent harm",
+        "v15": "Very serious, loss of limb",
+        "v40": "Disaster, single fatality",
+        "v100": "Mass disaster, multiple fatalities"
+      },
+      "exposure": {
+        "v0_5": "Very rare (once a year)",
+        "v1": "Rare (once a month)",
+        "v2": "Occasional (once a week)",
+        "v3": "Sometimes (several per week)",
+        "v6": "Frequent (daily)",
+        "v10": "Continuous (most of the day)"
+      }
+    },
+    "fmea": {
+      "severity": {
+        "v1": "No effect — unnoticed",
+        "v2": "Very minor — negligible impact",
+        "v3": "Minor — slight nuisance",
+        "v4": "Low — performance drop",
+        "v5": "Moderate — significant performance loss",
+        "v6": "High — system function impaired",
+        "v7": "Very high — inoperable",
+        "v8": "Hazardous (with warning) — injury risk",
+        "v9": "Hazardous (no warning) — serious injury",
+        "v10": "Catastrophic — fatality / mass accident"
+      },
+      "occurrence": {
+        "v1": "Nearly impossible (< 1/1,000,000)",
+        "v2": "Remote (1/20,000)",
+        "v3": "Very low (1/4,000)",
+        "v4": "Low (1/1,000)",
+        "v5": "Medium-low (1/400)",
+        "v6": "Medium (1/80)",
+        "v7": "Medium-high (1/40)",
+        "v8": "High (1/20)",
+        "v9": "Very high (1/8)",
+        "v10": "Almost certain (≥ 1/2)"
+      },
+      "detection": {
+        "v1": "Almost certain detection",
+        "v2": "Very high chance of detection",
+        "v3": "High chance",
+        "v4": "Medium-high",
+        "v5": "Medium",
+        "v6": "Low-medium",
+        "v7": "Low",
+        "v8": "Very low",
+        "v9": "Remote chance",
+        "v10": "Cannot detect"
+      }
+    },
+    "methods": {
+      "r_skor": {
+        "name": "R-SKOR 2D",
+        "description": "Weighted field screening score with 9 parameters",
+        "tooltip": "RiskNova method: nine parameters (C1–C9) weight visual and field inputs; supports automated scoring from imagery."
+      },
+      "fine_kinney": {
+        "name": "Fine-Kinney",
+        "description": "Likelihood × Severity × Exposure product",
+        "tooltip": "Common quantitative risk method: L (0.1–10), S (1–100), E (0.5–10); aligns with ISO 31000."
+      },
+      "l_matrix": {
+        "name": "L-type matrix",
+        "description": "5×5 likelihood–severity risk matrix",
+        "tooltip": "Pick likelihood (1–5) and severity (1–5); read risk from a 25-cell colour matrix (aligned with Turkish OHS practice)."
+      },
+      "fmea": {
+        "name": "FMEA",
+        "description": "Failure Mode & Effects Analysis — RPN",
+        "tooltip": "Severity (1–10) × Occurrence (1–10) × Detection (1–10) = RPN. Ideal for operations and maintenance; IEC 60812."
+      },
+      "hazop": {
+        "name": "HAZOP",
+        "description": "Hazard and operability study",
+        "tooltip": "Guide words (No, Less, More, Reverse, …) explore process deviations; common in chemical/petro plants; IEC 61882."
+      },
+      "bow_tie": {
+        "name": "Bow-Tie",
+        "description": "Bow-tie — threat–barrier–consequence",
+        "tooltip": "Threat likelihood and consequence severity with preventive and mitigative barriers; residual risk from barrier strength."
+      },
+      "fta": {
+        "name": "FTA",
+        "description": "Fault tree analysis — system reliability",
+        "tooltip": "Decompose system failure with AND/OR gates; used in aviation, nuclear and critical systems; IEC 61025."
+      },
+      "checklist": {
+        "name": "Checklist",
+        "description": "Checklist — compliance percentage",
+        "tooltip": "Weighted compliance from OK / Not OK / Partial items—good for audits and inspections."
+      },
+      "jsa": {
+        "name": "JSA",
+        "description": "Job safety analysis — step-based hazards",
+        "tooltip": "Per-step Severity × Likelihood / Control effectiveness; essential for construction and field work."
+      },
+      "lopa": {
+        "name": "LOPA",
+        "description": "Layer of protection analysis — frequency reduction",
+        "tooltip": "Multiply initiating frequency by layer PFD values; often paired with SIL targets in process safety."
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "noNot": "No / Not",
+        "less": "Less",
+        "more": "More",
+        "partOf": "Part of",
+        "reverse": "Reverse",
+        "otherThan": "Other than",
+        "early": "Early",
+        "late": "Late",
+        "before": "Before",
+        "after": "After"
+      },
+      "parameters": {
+        "flow": "Flow",
+        "pressure": "Pressure",
+        "temperature": "Temperature",
+        "level": "Level",
+        "time": "Time",
+        "composition": "Composition",
+        "ph": "pH",
+        "speed": "Speed",
+        "mixing": "Mixing",
+        "reaction": "Reaction"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v1": "Once per year — very frequent",
+        "v0_1": "Once in 10 years — frequent",
+        "v0_01": "Once in 100 years — occasional",
+        "v0_001": "Once in 1,000 years — rare",
+        "v0_0001": "Once in 10,000 years — very rare",
+        "v0_00001": "Once in 100,000 years — extremely rare"
+      },
+      "pfd": {
+        "v0_1": "Simple administrative control",
+        "v0_01": "Trained operator response / alarm",
+        "v0_001": "Automated safety system (SIL-1 class)"
+      }
+    },
+    "panel": {
+      "hazop": {
+        "guideWord": "Guide word",
+        "parameter": "Process parameter",
+        "deviation": "Deviation description",
+        "deviationPlaceholder": "Describe the deviation…",
+        "severity": "Severity",
+        "likelihood": "Likelihood",
+        "detectability": "Detectability",
+        "detectEasy": "Easy",
+        "detectHard": "Hard"
+      },
+      "fmea": {
+        "severity": "Severity (S)",
+        "occurrence": "Occurrence (O)",
+        "detection": "Detection (D)",
+        "formula": "S × O × D = RPN"
+      },
+      "lopa": {
+        "initFreq": "Initiating event frequency",
+        "consequence": "Consequence severity",
+        "layerPfd": "Layer PFD",
+        "meetsTarget": "Meets tolerable target",
+        "riskReduction": "Risk reduction",
+        "target": "Target",
+        "targetMet": "Met",
+        "targetNotMet": "Not met",
+        "layersHeading": "Protection layers ({count})",
+        "addLayer": "+ Add",
+        "layerDefault": "Layer {n}",
+        "layerNamePlaceholder": "Layer name",
+        "removeTitle": "Remove",
+        "consequenceV1": "Low",
+        "consequenceV2": "Minor",
+        "consequenceV3": "Moderate",
+        "consequenceV4": "Severe",
+        "consequenceV5": "Catastrophic"
+      },
+      "bowtie": {
+        "threat": "Threat likelihood",
+        "consequence": "Consequence severity",
+        "prevention": "Preventive barriers",
+        "mitigation": "Mitigative barriers",
+        "rawRisk": "Raw risk",
+        "residualRisk": "Residual risk"
+      },
+      "fta": {
+        "systemProb": "System P",
+        "gate": "Gate",
+        "gateType": "Gate type:",
+        "systemCriticality": "System criticality",
+        "componentsHeading": "Components ({count})",
+        "add": "+ Add",
+        "componentDefault": "Component {n}",
+        "componentPlaceholder": "Component name",
+        "failureRateTitle": "Failure probability (0–1)",
+        "removeTitle": "Remove"
+      },
+      "checklist": {
+        "statusUygun": "Compliant",
+        "statusKismi": "Partial",
+        "statusUygunDegil": "Non-compliant",
+        "statusNa": "N/A",
+        "itemsHeading": "Check items ({count})",
+        "compliantLine": "{n} compliant",
+        "partialLine": "{n} partial",
+        "nonCompliantLine": "{n} non-compliant",
+        "itemPlaceholder": "Control item…",
+        "add": "+ Add",
+        "removeTitle": "Remove"
+      },
+      "jsa": {
+        "max": "Max",
+        "avg": "Avg",
+        "highRisk": "High-risk steps",
+        "jobTitle": "Job title",
+        "jobPlaceholder": "Job name…",
+        "stepsHeading": "Job steps ({count})",
+        "stepDefault": "Step {n}",
+        "stepDescPlaceholder": "Step description…",
+        "hazardPlaceholder": "Hazard…",
+        "severity": "Severity",
+        "likelihood": "Likelihood",
+        "control": "Control",
+        "controlsPlaceholder": "Control measures…",
+        "stepScoreIntro": "Step score:",
+        "add": "+ Add",
+        "removeTitle": "Remove"
+      }
+    },
+    "ui": {
+      "severity": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "r2d": {
+        "base": "Base",
+        "peak": "Peak",
+        "dominant": "Dominant",
+        "parameters": "Parameters"
+      },
+      "fk": {
+        "likelihood": "Likelihood (L)",
+        "severity": "Severity (S)",
+        "exposure": "Exposure (E)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "Likelihood ({n})",
+        "severityHeading": "Severity ({n})"
+      },
+      "page": {
+        "analysisTitlePlaceholder": "Field risk analysis",
+        "analysisNotePlaceholder": "Each row is a risk topic or non-conformity group. One or more photos can be attached per row.",
+        "describeRiskGroup": "Briefly describe the risk group"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employer": "Employer",
+        "employer_representative": "Employer representative",
+        "ohs_specialist": "OHS specialist",
+        "workplace_physician": "Workplace physician",
+        "other_health_personnel": "Other health personnel",
+        "employee_representative": "Employee representative",
+        "support_staff": "Support staff",
+        "knowledgeable_employee": "Employee knowledgeable about risks"
+      }
+    },
+    "wizard": {
+      "common": {
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "yes": "Yes",
+        "no": "No",
+        "back": "Back",
+        "next": "Next",
+        "goToResults": "Go to results",
+        "save": "Save",
+        "update": "Update",
+        "saving": "Saving…",
+        "companyFallback": "Company",
+        "add": "Add",
+        "row": "Row",
+        "risk": "Risk",
+        "report": "Report",
+        "findings": "Findings",
+        "images": "Images",
+        "visual": "Image",
+        "lines": "Rows",
+        "location": "Location",
+        "method": "Method",
+        "type": "Type",
+        "address": "Address",
+        "description": "Description",
+        "scoreDetailPrefix": "Score detail —"
+      },
+      "list": {
+        "eyebrow": "Risk analysis",
+        "title": "Risk analysis management",
+        "description": "Select a company, view past analyses, or start a new one.",
+        "companyLabel": "Company / organization",
+        "companyPlaceholder": "— Select company —",
+        "newAnalysis": "+ Start new analysis",
+        "historyTitle": "{name} — analysis history",
+        "historyCount": "{count} saved analyses",
+        "emptyTitle": "No analyses yet",
+        "emptyDescription": "Use the button above to start the first risk analysis for this company.",
+        "statusCompleted": "Completed",
+        "statusArchived": "Archived",
+        "statusDraft": "Draft",
+        "findingsCount": "{count} findings",
+        "confirmDelete": "Are you sure?",
+        "deleteAnalysis": "Delete"
+      },
+      "header": {
+        "wizardTitle": "Visual risk analysis",
+        "wizardDescription": "Select company, define team, upload images, then run AI + manual findings and scoring.",
+        "badgeAiManual": "AI + manual findings",
+        "badgeExport": "PDF / Word / Excel",
+        "backToList": "Back to list",
+        "newAnalysis": "New analysis"
+      },
+      "steps": {
+        "context": "Analysis context",
+        "team": "Analysis team",
+        "images": "Images",
+        "results": "Results"
+      },
+      "validate": {
+        "company": "Select a company / organization first.",
+        "location": "Select a work location.",
+        "department": "Select a department / unit.",
+        "participants": "Enter at least one responsible person’s name and role.",
+        "firmLocationDept": "Select company, location, and department.",
+        "step2Participants": "Enter at least one responsible person’s name and role.",
+        "step3Images": "Add at least one image."
+      },
+      "messages": {
+        "needImageToAnalyze": "Add at least one image to start analysis.",
+        "analysisStarting": "Starting analysis…",
+        "analyzingImageProgress": "Analyzing image {current}/{total}: {fileName}",
+        "analyzingRowImage": "Analyzing image: Row {row}, {fileName}…",
+        "analysisComplete": "Analysis complete!",
+        "analysisFailed": "Analysis could not be completed.",
+        "analysisFailedDetail": "AI analysis failed. {detail}",
+        "analysisPartial": "AI analysis partially completed. {successful}/{total} images processed; errors on {errors} image(s).",
+        "analysisSummary": "AI analysis finished. {risks} risk(s), {positive} positive observation(s).",
+        "genericAiError": "An error occurred at the OpenAI or Anthropic stage."
+      },
+      "save": {
+        "noCompany": "Cannot save without selecting a company.",
+        "oversized": "{fileName} exceeds the 10 MB limit. Upload a smaller image before saving.",
+        "successNew": "Analysis saved successfully!",
+        "successUpdated": "Analysis updated successfully!",
+        "error": "An error occurred while saving."
+      },
+      "notifications": {
+        "savedTitle": "Risk analysis saved",
+        "updatedTitle": "Risk analysis updated",
+        "savedBody": "{title} — {findings} finding(s), {critical} critical/high"
+      },
+      "step1": {
+        "title": "Analysis context",
+        "subtitle": "Choose which company, location, and department this risk analysis applies to.",
+        "company": "Company / organization",
+        "companyPlaceholder": "Select company / organization",
+        "companyRequired": "Selecting a company is required for the analysis.",
+        "method": "Analysis method",
+        "location": "Location / work area",
+        "locationPlaceholder": "Select location",
+        "locationRequired": "Location selection is required.",
+        "department": "Department / unit",
+        "departmentPlaceholder": "Select department",
+        "departmentRequired": "Department selection is required.",
+        "analysisTitle": "Analysis title",
+        "analysisNote": "Analysis note",
+        "editCompanyStructure": "Edit company structure",
+        "companyCardType": "Type:",
+        "companyCardAddress": "Address:"
+      },
+      "step2": {
+        "title": "People involved in the risk analysis",
+        "subtitle": "Pick from saved staff or add participants manually.",
+        "addParticipant": "Add participant manually",
+        "pickFromTeam": "Pick from company team",
+        "noTeamTitle": "Risk assessment team not defined",
+        "noTeamBody": "No team members are set up for this company yet. On the company page, open the Team tab, create a “Risk assessment team”, and add members — they will appear here automatically.",
+        "noTeamLink": "Go to company team management",
+        "participantN": "Participant {n}",
+        "fullName": "Full name",
+        "roleType": "Role / title type",
+        "rolePlaceholder": "Select role",
+        "titleField": "Role / title description",
+        "titlePlaceholder": "e.g. Class A specialist",
+        "certificate": "Certificate no. (if any)",
+        "certificatePlaceholder": "Enter if applicable"
+      },
+      "step3": {
+        "title": "Risk rows and images",
+        "subtitle": "Each row is one risk topic. Upload images, then start AI analysis.",
+        "aiAnalyzing": "Running AI analysis…",
+        "aiStart": "Start AI risk analysis",
+        "aiSub": "Nova AI analyzes each image separately.",
+        "newRow": "Add row",
+        "bulkUpload": "Bulk upload (each as separate row)",
+        "rowTitle": "Row title",
+        "rowTitlePlaceholder": "e.g. Stacking area",
+        "rowHint": "Group wide and close-up shots under this row.",
+        "deleteRow": "Delete row",
+        "rowN": "Row {n}",
+        "addImage": "Add image",
+        "summaryCompany": "Company",
+        "summaryLocation": "Location",
+        "summaryMethod": "Method",
+        "summaryImages": "Images"
+      },
+      "step4": {
+        "totalFindings": "Total findings",
+        "criticalHigh": "Critical / high",
+        "capaCandidate": "CAPA candidate",
+        "avgScore": "Avg. score",
+        "saveWarning": "Results are not saved yet! If you leave without saving, all findings will be lost.",
+        "resultsTitle": "Annotated findings",
+        "resultsSubtitle": "Risk cards stay linked to annotations on the image. Adjust parameters to change the score.",
+        "analyzingInline": "Analyzing…",
+        "emptyResultsTitle": "No results yet",
+        "emptyResultsDesc": "On step 3, upload images and run analysis.",
+        "deleteFindingTitle": "Delete finding",
+        "deleteFindingConfirm": "Delete the finding “{title}”?",
+        "pinModeActive": "Pin mode active…",
+        "addRiskPin": "Add risk pin",
+        "visualN": "Image {n}",
+        "cleanNoRisk": "Clear — no risk detected",
+        "riskCount": "Risk: {count}",
+        "pinBanner": "Click the image to add a risk pin",
+        "manualPinTitle": "Add manual risk pin",
+        "manualPinConfirm": "Add",
+        "findingTitle": "Finding title",
+        "findingTitlePlaceholder": "e.g. Missing guardrail",
+        "severity": "Severity",
+        "noRiskThisImageTitle": "No significant risk on this image",
+        "noRiskThisImageBody": "The AI found no concrete hazard on this image. You can still add a manual finding.",
+        "scorePanelIntro": "Score detail — {method}",
+        "deleteFindingAria": "Delete finding",
+        "capaBadge": "CAPA candidate",
+        "addedLater": "Added later",
+        "confidenceHigh": "Confirmed finding",
+        "confidenceMedium": "AI finding",
+        "confidenceLow": "Verification recommended",
+        "aiAnalyzingDetail": "Nova AI is analyzing each image…",
+        "rowImagesFindings": "Images: {images} · Findings: {findings}",
+        "notRealPhotoTitle": "Not a real photo",
+        "cannotAnalyzeTitle": "Cannot run risk analysis",
+        "notRealPhotoBody": "This image is a drawing, illustration, or synthetic render. Risk analysis only runs on real site photos.",
+        "cannotAnalyzeBody": "This image is not suitable for risk analysis.",
+        "detectedPrefix": "Detected:",
+        "noRiskDetectedTitle": "No risk detected",
+        "noRiskDetectedBody": "The AI did not find a meaningful hazard or non-conformity on this image.",
+        "positiveObservationsHint": " Positive observations are listed below.",
+        "manualPinHint": " You can add your own finding with a manual pin.",
+        "photoQuality": "Image quality:",
+        "photoQualityLow": "Low",
+        "photoQualityMedium": "Medium",
+        "areaAssessment": "Area assessment",
+        "peopleDetected": "{count} person(s) detected",
+        "positiveFindings": "Positive observations",
+        "metaEyebrowArea": "Area assessment",
+        "metaEyebrowPositive": "Positive observations"
+      },
+      "nav": {
+        "aiAnalyzingShort": "Analyzing…",
+        "aiStartShort": "Start AI analysis"
+      },
+      "methodCard": {
+        "score": "Score:",
+        "params": "{count} parameters"
+      }
     }
   }
 }

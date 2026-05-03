@@ -1,0 +1,305 @@
+{
+  "companiesList": {
+    "actions": {
+      "newCompany": "Nueva empresa",
+      "sampleData": "Datos de muestra"
+    },
+    "archive": "Archivar",
+    "badge": {
+      "archived": "Archivado",
+      "deleted": "Eliminado"
+    },
+    "clearFilters": "Limpiar filtros",
+    "confirmArchive": {
+      "confirm": "Confirmar",
+      "hint": "Saldrá de la lista activa.",
+      "title": "¿Archivar \"{name}\"?"
+    },
+    "confirmDelete": {
+      "confirm": "Eliminar",
+      "instruction": "Escriba esta palabra para confirmar:",
+      "title": "¿Eliminar \"{name}\"?"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "Escriba DELETE",
+      "word": "DELETE"
+    },
+    "defaults": {
+      "companyName": "Nueva empresa / organización",
+      "kind": "Sector privado",
+      "shortName": "Nuevo registro"
+    },
+    "delete": "Eliminar",
+    "description": {
+      "multi": "Gestione las empresas de las que es responsable y acceda a sus sitios de trabajo.",
+      "single": "Gestione el personal y otros registros operativos para su sitio de trabajo activo."
+    },
+    "discard": "Cancelar",
+    "employeesSuffix": "empleados",
+    "empty": {
+      "archiveBannerCompany": "Empresas archivadas. Puede restaurarlas.",
+      "archiveBannerWorksite": "Registros de sitios de trabajo archivados. Puede restaurarlos.",
+      "archiveEmptyCompany": "Nada en archivo",
+      "archiveEmptyDescCompany": "Aún no hay empresas archivadas.",
+      "archiveEmptyDescWorksite": "Aún no hay sitios de trabajo archivados.",
+      "archiveEmptyWorksite": "Nada en archivo",
+      "clearFilters": "Limpiar filtros",
+      "completeWorksite": "Completar configuración del sitio de trabajo",
+      "deletedBannerCompany": "Empresas eliminadas. La eliminación permanente no se puede deshacer.",
+      "deletedBannerWorksite": "Registros de sitios de trabajo eliminados. La eliminación permanente no se puede deshacer.",
+      "deletedEmptyCompany": "No hay empresas eliminadas",
+      "deletedEmptyDescCompany": "Aún no hay empresas eliminadas.",
+      "deletedEmptyDescWorksite": "Aún no hay sitios de trabajo eliminados.",
+      "deletedEmptyWorksite": "No hay sitios de trabajo eliminados",
+      "initialDescCompany": "Cree su primera empresa para comenzar.",
+      "initialDescWorksite": "Esta área se llena con los datos de su sitio de trabajo activo. Complete la configuración del sitio de trabajo para ver el personal y otros registros.",
+      "initialTitleCompany": "Aún no hay empresas",
+      "initialTitleWorksite": "Aún no hay registro de sitio de trabajo",
+      "newCompany": "Nueva empresa",
+      "noMatchCompany": "No hay empresas coincidentes",
+      "noMatchDescription": "Ningún registro coincide con sus filtros.",
+      "noMatchWorksite": "No hay sitios de trabajo coincidentes",
+      "sampleData": "Datos de muestra"
+    },
+    "entity": {
+      "companyPlural": "empresas",
+      "worksitePlural": "centros de trabajo"
+    },
+    "eyebrow": {
+      "multi": "Mis empresas / organizaciones",
+      "osgb": "Empresas OSGB",
+      "singleWorksite": "Centro de trabajo"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "Todos",
+      "hazardClass": "Clase de peligro",
+      "kind": "Tipo",
+      "search": "Buscar",
+      "searchPlaceholder": "Nombre, sector, tipo, CNAE…",
+      "sector": "Sector",
+      "sort": "Ordenar"
+    },
+    "limitReachedBanner": "Has alcanzado el límite de empresas / espacios de trabajo activos. Archiva una empresa o actualiza tu plan antes de agregar o restaurar una.",
+    "links": {
+      "riskAnalysis": "Análisis de riesgo",
+      "workspace": "Espacio de trabajo"
+    },
+    "metrics": {
+      "actions": "Acciones",
+      "departments": "Departamentos",
+      "employees": "Empleados",
+      "hazard": "Peligro",
+      "locations": "Ubicaciones",
+      "overdue": "Vencidas"
+    },
+    "permanentDelete": "Eliminar permanentemente",
+    "progress": {
+      "coverage": "Cobertura",
+      "maturity": "Madurez"
+    },
+    "restore": "Restaurar",
+    "sort": {
+      "employees": "Empleados",
+      "name": "Por nombre",
+      "overdue": "Vencidas",
+      "risk": "Riesgo"
+    },
+    "stats": {
+      "avgMaturity": "Madurez promedio",
+      "criticalCompanies": "Empresas críticas",
+      "criticalWorksites": "Centros de trabajo críticos",
+      "employees": "Empleados",
+      "openActions": "Acciones abiertas",
+      "overdueTasks": "Tareas vencidas",
+      "totalCompanies": "Total de empresas",
+      "totalWorksites": "Total de centros de trabajo"
+    },
+    "storage": {
+      "local": "Local",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "Activo",
+      "archived": "Archivo",
+      "deleted": "Eliminado"
+    },
+    "title": {
+      "multi": "Mis empresas / organizaciones",
+      "osgb": "Empresas y centros de trabajo",
+      "single": "Contenido del sitio de trabajo y operacional"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} espacios de empresa activos utilizados",
+      "activeOnly": "{count} empresas / espacios de trabajo activos"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "Sitios de trabajo",
+    "docTitle": "{name} — Espacio de trabajo · RiskNova",
+    "docTitleFallback": "Espacio de trabajo · RiskNova",
+    "invite": "Invitar",
+    "logo": {
+      "fileTooLarge": "El archivo es demasiado grande ({sizeMb} MB). El tamaño máximo es 5 MB.",
+      "imagesOnly": "Solo se pueden subir archivos de imagen (PNG, JPEG, WebP, SVG).",
+      "updated": "Logo/imagen actualizado.",
+      "uploadFailed": "Error al subir. Intenta con otro archivo.",
+      "uploadTitle": "Subir logo"
+    },
+    "notFound": {
+      "back": "Volver a empresas",
+      "description": "Ninguna empresa coincide con este ID.",
+      "title": "Empresa no encontrada"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "sidebar": {
+      "hint": "Elige un área a la izquierda; gestiona el contenido a la derecha.",
+      "title": "Secciones del sitio de trabajo"
+    },
+    "stats": {
+      "departments": "Departamentos",
+      "employees": "Empleados",
+      "locations": "Ubicaciones",
+      "maturity": "Madurez",
+      "openActions": "Acciones abiertas",
+      "overdue": "Vencidas"
+    },
+    "tabs": {
+      "history": "Historial",
+      "ohs_file": "Archivo OHS",
+      "organization": "Organización",
+      "people": "Equipo",
+      "personnel": "Personal",
+      "risk": "Riesgo y campo",
+      "structure": "Instalaciones",
+      "tracking": "Seguimiento"
+    }
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "Gestionar flujos de empresa, asignación, documentos y riesgos por espacio de trabajo de empresa.",
+      "searchLabel": "Buscar empresas",
+      "searchPlaceholder": "Buscar empresa, sector, dirección o NACE",
+      "title": "Empresas activas"
+    },
+    "archivedRow": {
+      "restore": "Restaurar",
+      "restoring": "Restaurando…"
+    },
+    "archivedSection": {
+      "badge": "{count} registros archivados",
+      "description": "Las empresas archivadas no cuentan para el límite activo; se conserva el historial de riesgos y documentos.",
+      "title": "Empresas archivadas"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} empresas activas",
+      "activeCompaniesUnlimited": "Empresas activas: {count}",
+      "activeStaffMax": "{count} / {max} personal activo",
+      "activeStaffUnlimited": "{count} personal activo"
+    },
+    "companyCard": {
+      "archive": "Archivar",
+      "archiving": "Archivando…",
+      "assignedProfessionals": "{count} profesionales asignados",
+      "assignments": "Asignaciones",
+      "contracts": "Contratos",
+      "documentsCount": "{count} documentos",
+      "documentsLink": "Documentos",
+      "employees": "{count} empleados",
+      "overdueTasks": "{count} elementos vencidos",
+      "personnelInvite": "Personal e invitaciones",
+      "sectorUnknown": "Sector no establecido",
+      "taskTracking": "Seguimiento de tareas",
+      "workspace": "Espacio de trabajo de la empresa"
+    },
+    "emptyActive": {
+      "cta": "Agregar primera empresa",
+      "description": "Las empresas cliente vinculadas al panel OSGB se listarán aquí.",
+      "title": "Sin empresas activas"
+    },
+    "emptyArchived": {
+      "description": "Cuando archive una empresa aparecerá aquí.",
+      "title": "Sin empresas archivadas"
+    },
+    "emptyCompany": {
+      "kind": "Sector privado",
+      "name": "Nueva empresa cliente OSGB",
+      "shortName": "Nueva empresa"
+    },
+    "focus": {
+      "p1": "Esta área es solo para propietarios y administradores OSGB. Las empresas, asignaciones, contratos y seguimiento de documentos se gestionan en un solo lugar.",
+      "p2": "El personal asignado no usa este panel para su flujo diario; acceden a los datos del espacio de trabajo de la empresa asignada a través de su propia cuenta.",
+      "sidebarBody": "{firms} empresas activas, {professionals} profesionales asignados y {overdue} elementos que requieren atención se coordinan aquí.",
+      "sidebarEyebrow": "Enfoque de gestión",
+      "title": "Superficie enfocada en OSGB"
+    },
+    "header": {
+      "description": "Gestione sus empresas cliente, espacios de trabajo por empresa y flujos de personal asignados a ellas.",
+      "eyebrow": "Gestión de empresas OSGB",
+      "title": "Empresas y sitios de trabajo"
+    },
+    "limitBanner": "Límite de empresas activas alcanzado. Archive una empresa o actualice su plan para agregar más.",
+    "loading": {
+      "description": "Estamos cargando empresas cliente, asignaciones y flujos de documentos.",
+      "eyebrow": "Empresas OSGB",
+      "title": "Preparando su portafolio"
+    },
+    "nova": {
+      "bullet1": "Ver distribución de carga de trabajo por empresa.",
+      "bullet2": "Filtrar tareas y documentos vencidos.",
+      "bullet3": "Detectar brechas en asignaciones de personal.",
+      "bullet4": "Priorizar riesgos de renovación de contratos e informes.",
+      "openTasks": "Abrir tareas OSGB",
+      "reviewOverdue": "Revisar trabajo vencido",
+      "seeAssignmentGaps": "Ver brechas de asignación",
+      "subtitle": "Asistente de gestión; monitorea el rendimiento del personal y las empresas.",
+      "title": "Gestor Nova OSGB"
+    },
+    "quickLinks": {
+      "docCenter": "Ir al centro de documentos",
+      "inviteStaff": "Invitar personal",
+      "manageAssignments": "Gestionar asignaciones",
+      "openContracts": "Abrir contratos"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "Empresas cliente activas monitoreadas en el panel OSGB.",
+        "label": "Empresas activas"
+      },
+      "assignedProfessionals": {
+        "hint": "Total de asignaciones de expertos, médicos y DSP a empresas.",
+        "label": "Profesionales asignados"
+      },
+      "overdueWork": {
+        "hint": "Elementos abiertos para supervisar en flujos de asignación y CAPA.",
+        "label": "Trabajo vencido"
+      },
+      "totalEmployees": {
+        "hint": "Total de empleados de registros de empresas para planificación.",
+        "label": "Total de empleados"
+      }
+    },
+    "topActions": {
+      "addCompany": "Agregar empresa",
+      "openAssignments": "Abrir asignaciones",
+      "personnelInvite": "Personal e invitaciones"
+    }
+  },
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "Menos peligroso",
+      "high": "Muy peligroso",
+      "moderate": "Peligroso"
+    },
+    "level": {
+      "controlled": "Controlado",
+      "critical": "Crítico",
+      "high": "Alto",
+      "incomplete": "Sin evaluar",
+      "medium": "Medio"
+    }
+  }
+}

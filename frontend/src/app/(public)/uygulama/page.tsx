@@ -1,40 +1,33 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { MonitorDown, Share2, Smartphone, Wifi } from "lucide-react";
 import { PublicHeader } from "@/components/layout/public-header";
 import { PublicSiteFooter } from "@/components/layout/public-site-footer";
 import { PwaInstallPrompt } from "@/components/pwa/pwa-install-prompt";
 
-export const metadata: Metadata = {
-  title: "RiskNova Uygulaması",
-  description:
-    "RiskNova'yı iOS, Android ve Windows cihazlarınıza mağaza gerektirmeden PWA olarak kurun.",
-  alternates: { canonical: "/uygulama" },
-  robots: { index: true, follow: true },
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("pwaInstallPage");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    alternates: { canonical: "/uygulama" },
+    robots: { index: true, follow: true },
+  };
+}
+
+const CARD_PLATFORMS = ["android", "ios", "windows"] as const;
+type CardPlatform = (typeof CARD_PLATFORMS)[number];
+
+const CARD_ICONS: Record<CardPlatform, typeof Smartphone> = {
+  android: Smartphone,
+  ios: Share2,
+  windows: MonitorDown,
 };
 
-const installCards = [
-  {
-    icon: Smartphone,
-    title: "Android",
-    text: "Chrome veya Edge ile RiskNova'yı açın; kurulum bildirimi görünürse Cihaza kur seçeneğini kullanın.",
-    steps: ["getrisknova.com adresini aç", "Cihaza kur butonuna bas", "RiskNova ikonundan giriş yap"],
-  },
-  {
-    icon: Share2,
-    title: "iPhone ve iPad",
-    text: "Safari ile açın; Paylaş menüsünden Ana Ekrana Ekle seçeneğini kullanarak RiskNova ikonunu oluşturun.",
-    steps: ["Safari'de siteyi aç", "Paylaş ikonuna dokun", "Ana Ekrana Ekle seçeneğini seç"],
-  },
-  {
-    icon: MonitorDown,
-    title: "Windows",
-    text: "Chrome veya Edge adres çubuğundaki uygulama kur ikonuyla RiskNova'yı ayrı masaüstü penceresi olarak açın.",
-    steps: ["Edge veya Chrome ile aç", "Uygulamayı yükle ikonuna bas", "Başlat menüsünden RiskNova'yı aç"],
-  },
-];
+export default async function PwaInstallPage() {
+  const t = await getTranslations("pwaInstallPage");
 
-export default function PwaInstallPage() {
   return (
     <main className="app-shell min-h-screen bg-background">
       <PublicHeader />
@@ -42,26 +35,23 @@ export default function PwaInstallPage() {
       <section className="relative overflow-hidden bg-[var(--navy-dark)]">
         <div className="page-shell relative z-[1] grid min-h-[68vh] items-center gap-10 py-20 lg:grid-cols-[minmax(0,1fr)_420px]">
           <div className="max-w-3xl">
-            <span className="tag-label mb-6 inline-flex">Store gerektirmeyen uygulama</span>
+            <span className="tag-label mb-6 inline-flex">{t("eyebrow")}</span>
             <h1 className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl xl:text-6xl">
-              RiskNova'yı mobil ve masaüstünde uygulama gibi kullanın
+              {t("heroTitle")}
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-              iOS, Android ve Windows cihazlarda RiskNova'yı ana ekrana veya masaüstüne ekleyin.
-              Siteye gelen güncellemeler uygulama deneyimine de otomatik yansır.
-            </p>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">{t("heroBody")}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/register"
                 className="inline-flex h-12 items-center justify-center rounded-2xl bg-amber-400 px-7 text-sm font-bold text-slate-950 transition-colors hover:bg-amber-300"
               >
-                Ücretsiz başla
+                {t("ctaRegister")}
               </Link>
               <Link
                 href="/login"
                 className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/15 bg-white/[0.06] px-7 text-sm font-bold text-white transition-colors hover:bg-white/[0.12]"
               >
-                Platforma giriş yap
+                {t("ctaLogin")}
               </Link>
             </div>
           </div>
@@ -74,11 +64,8 @@ export default function PwaInstallPage() {
                   <Wifi className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white">Güncellemeler otomatik gelir</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-300">
-                    RiskNova web uygulaması güncellendiğinde PWA da yeni sürümü alır. Bu yüzden
-                    mağaza güncellemesi beklemezsiniz.
-                  </p>
+                  <p className="text-sm font-bold text-white">{t("updatesTitle")}</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-300">{t("updatesBody")}</p>
                 </div>
               </div>
             </div>
@@ -89,22 +76,30 @@ export default function PwaInstallPage() {
       <section className="bg-background">
         <div className="page-shell py-16">
           <div className="grid gap-5 lg:grid-cols-3">
-            {installCards.map((card) => {
-              const Icon = card.icon;
+            {CARD_PLATFORMS.map((platform) => {
+              const Icon = CARD_ICONS[platform];
               return (
-                <article key={card.title} className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+                <article
+                  key={platform}
+                  className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]"
+                >
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                     <Icon className="h-6 w-6" />
                   </div>
-                  <h2 className="mt-5 text-xl font-bold tracking-tight text-foreground">{card.title}</h2>
-                  <p className="mt-3 text-sm leading-7 text-muted-foreground">{card.text}</p>
+                  <h2 className="mt-5 text-xl font-bold tracking-tight text-foreground">
+                    {t(`cards.${platform}.title`)}
+                  </h2>
+                  <p className="mt-3 text-sm leading-7 text-muted-foreground">{t(`cards.${platform}.text`)}</p>
                   <ol className="mt-5 space-y-3">
-                    {card.steps.map((step, index) => (
-                      <li key={step} className="flex items-start gap-3 text-sm text-foreground">
+                    {(["step1", "step2", "step3"] as const).map((stepKey, index) => (
+                      <li
+                        key={stepKey}
+                        className="flex items-start gap-3 text-sm text-foreground"
+                      >
                         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-slate-950">
                           {index + 1}
                         </span>
-                        <span className="leading-6">{step}</span>
+                        <span className="leading-6">{t(`cards.${platform}.${stepKey}`)}</span>
                       </li>
                     ))}
                   </ol>

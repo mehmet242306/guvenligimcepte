@@ -1,0 +1,305 @@
+{
+  "companiesList": {
+    "actions": {
+      "newCompany": "شركة جديدة",
+      "sampleData": "بيانات تجريبية"
+    },
+    "archive": "أرشيف",
+    "badge": {
+      "archived": "مؤرشف",
+      "deleted": "محذوف"
+    },
+    "clearFilters": "مسح المرشحات",
+    "confirmArchive": {
+      "confirm": "تأكيد",
+      "hint": "ستغادر القائمة النشطة.",
+      "title": "أرشفة \"{name}\"؟"
+    },
+    "confirmDelete": {
+      "confirm": "حذف",
+      "instruction": "اكتب هذه الكلمة للتأكيد:",
+      "title": "حذف \"{name}\"؟"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "اكتب DELETE",
+      "word": "DELETE"
+    },
+    "defaults": {
+      "companyName": "شركة / منظمة جديدة",
+      "kind": "القطاع الخاص",
+      "shortName": "سجل جديد"
+    },
+    "delete": "حذف",
+    "description": {
+      "multi": "إدارة الشركات التي تتولى مسؤوليتها والوصول إلى مواقع عملها.",
+      "single": "إدارة الموظفين وسجلات التشغيل الأخرى لموقع العمل النشط."
+    },
+    "discard": "إلغاء",
+    "employeesSuffix": "موظفين",
+    "empty": {
+      "archiveBannerCompany": "الشركات المؤرشفة. يمكنك استعادتها.",
+      "archiveBannerWorksite": "سجلات مواقع العمل المؤرشفة. يمكنك استعادتها.",
+      "archiveEmptyCompany": "لا يوجد شيء في الأرشيف",
+      "archiveEmptyDescCompany": "لا توجد شركات مؤرشفة بعد.",
+      "archiveEmptyDescWorksite": "لا توجد مواقع عمل مؤرشفة بعد.",
+      "archiveEmptyWorksite": "لا يوجد شيء في الأرشيف",
+      "clearFilters": "مسح المرشحات",
+      "completeWorksite": "إكمال إعداد موقع العمل",
+      "deletedBannerCompany": "الشركات المحذوفة. لا يمكن التراجع عن الحذف النهائي.",
+      "deletedBannerWorksite": "سجلات مواقع العمل المحذوفة. لا يمكن التراجع عن الحذف النهائي.",
+      "deletedEmptyCompany": "لا توجد شركات محذوفة",
+      "deletedEmptyDescCompany": "لا توجد شركات محذوفة بعد.",
+      "deletedEmptyDescWorksite": "لا توجد مواقع عمل محذوفة بعد.",
+      "deletedEmptyWorksite": "لا توجد مواقع عمل محذوفة",
+      "initialDescCompany": "أنشئ شركتك الأولى للبدء.",
+      "initialDescWorksite": "تمتلئ هذه المنطقة ببيانات موقع العمل النشط. أكمل إعداد موقع العمل لرؤية الموظفين والسجلات الأخرى.",
+      "initialTitleCompany": "لا توجد شركات بعد",
+      "initialTitleWorksite": "لا يوجد سجل موقع عمل بعد",
+      "newCompany": "شركة جديدة",
+      "noMatchCompany": "لا توجد شركات مطابقة",
+      "noMatchDescription": "لا توجد سجلات تطابق مرشحاتك.",
+      "noMatchWorksite": "لا توجد مواقع عمل مطابقة",
+      "sampleData": "بيانات تجريبية"
+    },
+    "entity": {
+      "companyPlural": "الشركات",
+      "worksitePlural": "مواقع العمل"
+    },
+    "eyebrow": {
+      "multi": "شركاتي / منظماتي",
+      "osgb": "شركات OSGB",
+      "singleWorksite": "موقع العمل"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "الكل",
+      "hazardClass": "فئة المخاطر",
+      "kind": "النوع",
+      "search": "بحث",
+      "searchPlaceholder": "الاسم، القطاع، النوع، NACE...",
+      "sector": "القطاع",
+      "sort": "ترتيب"
+    },
+    "limitReachedBanner": "لقد وصلت إلى حد الشركة / مساحة العمل النشطة. قم بأرشفة شركة أو ترقية خطتك قبل إضافة أو استعادة واحدة.",
+    "links": {
+      "riskAnalysis": "تحليل المخاطر",
+      "workspace": "مساحة العمل"
+    },
+    "metrics": {
+      "actions": "الإجراءات",
+      "departments": "الأقسام",
+      "employees": "الموظفون",
+      "hazard": "المخاطر",
+      "locations": "المواقع",
+      "overdue": "متأخر"
+    },
+    "permanentDelete": "حذف نهائياً",
+    "progress": {
+      "coverage": "التغطية",
+      "maturity": "النضج"
+    },
+    "restore": "استعادة",
+    "sort": {
+      "employees": "الموظفون",
+      "name": "حسب الاسم",
+      "overdue": "متأخر",
+      "risk": "المخاطر"
+    },
+    "stats": {
+      "avgMaturity": "متوسط النضج",
+      "criticalCompanies": "الشركات الحرجة",
+      "criticalWorksites": "مواقع العمل الحرجة",
+      "employees": "الموظفون",
+      "openActions": "الإجراءات المفتوحة",
+      "overdueTasks": "المهام المتأخرة",
+      "totalCompanies": "إجمالي الشركات",
+      "totalWorksites": "إجمالي مواقع العمل"
+    },
+    "storage": {
+      "local": "محلي",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "نشط",
+      "archived": "أرشيف",
+      "deleted": "محذوف"
+    },
+    "title": {
+      "multi": "شركاتي / منظماتي",
+      "osgb": "الشركات ومواقع العمل",
+      "single": "محتوى الموقع والعمليات التشغيلية"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} فتحة شركة نشطة مستخدمة",
+      "activeOnly": "{count} شركات نشطة / مساحات عمل"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "مواقع العمل",
+    "docTitle": "{name} — مساحة العمل · RiskNova",
+    "docTitleFallback": "مساحة العمل · RiskNova",
+    "invite": "دعوة",
+    "logo": {
+      "fileTooLarge": "الملف كبير جداً ({sizeMb} ميجابايت). الحد الأقصى للحجم هو 5 ميجابايت.",
+      "imagesOnly": "يمكن رفع ملفات الصور فقط (PNG، JPEG، WebP، SVG).",
+      "updated": "تم تحديث الشعار/الصورة.",
+      "uploadFailed": "فشل الرفع. جرب ملف آخر.",
+      "uploadTitle": "رفع الشعار"
+    },
+    "notFound": {
+      "back": "العودة إلى الشركات",
+      "description": "لا توجد شركة تطابق هذا المعرف.",
+      "title": "الشركة غير موجودة"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "حفظ",
+    "saving": "جاري الحفظ...",
+    "sidebar": {
+      "hint": "اختر منطقة على اليسار؛ إدارة المحتوى على اليمين.",
+      "title": "أقسام موقع العمل"
+    },
+    "stats": {
+      "departments": "الأقسام",
+      "employees": "الموظفون",
+      "locations": "المواقع",
+      "maturity": "النضج",
+      "openActions": "الإجراءات المفتوحة",
+      "overdue": "متأخرة"
+    },
+    "tabs": {
+      "history": "التاريخ",
+      "ohs_file": "ملف السلامة والصحة المهنية",
+      "organization": "المؤسسة",
+      "people": "الفريق",
+      "personnel": "الأفراد",
+      "risk": "المخاطر والميدان",
+      "structure": "المباني",
+      "tracking": "التتبع"
+    }
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "إدارة تدفقات الشركة والتعيين والوثائق والمخاطر لكل مساحة عمل للشركة.",
+      "searchLabel": "البحث في الشركات",
+      "searchPlaceholder": "البحث في الشركة أو القطاع أو العنوان أو NACE",
+      "title": "الشركات النشطة"
+    },
+    "archivedRow": {
+      "restore": "استعادة",
+      "restoring": "جاري الاستعادة..."
+    },
+    "archivedSection": {
+      "badge": "{count} سجلات مؤرشفة",
+      "description": "الشركات المؤرشفة لا تحتسب ضمن الحد النشط؛ يتم الاحتفاظ بتاريخ المخاطر والوثائق.",
+      "title": "الشركات المؤرشفة"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} شركات نشطة",
+      "activeCompaniesUnlimited": "شركة نشطة {count}",
+      "activeStaffMax": "{count} / {max} موظف نشط",
+      "activeStaffUnlimited": "{count} موظف نشط"
+    },
+    "companyCard": {
+      "archive": "أرشفة",
+      "archiving": "جاري الأرشفة...",
+      "assignedProfessionals": "مهني مُكلف {count}",
+      "assignments": "التكليفات",
+      "contracts": "العقود",
+      "documentsCount": "مستند {count}",
+      "documentsLink": "المستندات",
+      "employees": "موظف {count}",
+      "overdueTasks": "عنصر متأخر {count}",
+      "personnelInvite": "الموظفون والدعوات",
+      "sectorUnknown": "القطاع غير محدد",
+      "taskTracking": "تتبع المهام",
+      "workspace": "مساحة عمل الشركة"
+    },
+    "emptyActive": {
+      "cta": "إضافة أول شركة",
+      "description": "ستُدرج هنا الشركات العميلة المرتبطة بلوحة OSGB.",
+      "title": "لا توجد شركات نشطة"
+    },
+    "emptyArchived": {
+      "description": "عند أرشفة شركة ستظهر هنا.",
+      "title": "لا توجد شركات مؤرشفة"
+    },
+    "emptyCompany": {
+      "kind": "القطاع الخاص",
+      "name": "شركة عميل OSGB جديدة",
+      "shortName": "شركة جديدة"
+    },
+    "focus": {
+      "p1": "هذه المنطقة مخصصة فقط لمالك ومدير OSGB. تُدار الشركات والتكليفات والعقود وتتبع المستندات في مكان واحد.",
+      "p2": "الموظفون المُكلفون لا يستخدمون هذه اللوحة لسير عملهم اليومي؛ يصلون إلى بيانات مساحة عمل الشركة المُكلفة من خلال حسابهم الخاص.",
+      "sidebarBody": "يتم تنسيق {firms} شركة نشطة و{professionals} مهني مُكلف و{overdue} عنصر يحتاج انتباه هنا.",
+      "sidebarEyebrow": "تركيز الإدارة",
+      "title": "واجهة مركزة على OSGB"
+    },
+    "header": {
+      "description": "إدارة شركاتك العميلة ومساحات العمل لكل شركة وتدفقات الموظفين المُكلفين لها.",
+      "eyebrow": "إدارة شركات OSGB",
+      "title": "الشركات ومواقع العمل"
+    },
+    "limitBanner": "تم الوصول لحد الشركات النشطة. أرشف شركة أو ترقى خطتك لإضافة المزيد.",
+    "loading": {
+      "description": "نحن نحمل الشركات العميلة والتكليفات وتدفقات المستندات.",
+      "eyebrow": "شركات OSGB",
+      "title": "تحضير محفظتك"
+    },
+    "nova": {
+      "bullet1": "عرض توزيع عبء العمل حسب الشركة.",
+      "bullet2": "تصفية المهام والمستندات المتأخرة.",
+      "bullet3": "اكتشاف فجوات تكليف الموظفين.",
+      "bullet4": "إعطاء أولوية لمخاطر تجديد العقود والتقارير.",
+      "openTasks": "مهام OSGB المفتوحة",
+      "reviewOverdue": "مراجعة العمل المتأخر",
+      "seeAssignmentGaps": "عرض فجوات التكليف",
+      "subtitle": "مساعد إداري؛ يراقب أداء الموظفين والشركة.",
+      "title": "مدير OSGB نوفا"
+    },
+    "quickLinks": {
+      "docCenter": "انتقل إلى مركز المستندات",
+      "inviteStaff": "دعوة الموظفين",
+      "manageAssignments": "إدارة المهام",
+      "openContracts": "فتح العقود"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "الشركات العميلة النشطة المتتبعة في لوحة OSGB.",
+        "label": "الشركات النشطة"
+      },
+      "assignedProfessionals": {
+        "hint": "إجمالي مهام الخبراء والأطباء وDSP للشركات.",
+        "label": "المهنيون المكلفون"
+      },
+      "overdueWork": {
+        "hint": "العناصر المفتوحة للمراقبة في تدفقات المهام وCAPA.",
+        "label": "العمل المتأخر"
+      },
+      "totalEmployees": {
+        "hint": "إجمالي عدد الموظفين من سجلات الشركة للتخطيط.",
+        "label": "إجمالي الموظفين"
+      }
+    },
+    "topActions": {
+      "addCompany": "إضافة شركة",
+      "openAssignments": "فتح المهام",
+      "personnelInvite": "الموظفون والدعوات"
+    }
+  },
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "أقل خطورة",
+      "high": "شديد الخطورة",
+      "moderate": "خطر"
+    },
+    "level": {
+      "controlled": "مُتحكم فيه",
+      "critical": "حرج",
+      "high": "عالي",
+      "incomplete": "غير مُقيم",
+      "medium": "متوسط"
+    }
+  }
+}

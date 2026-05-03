@@ -1,0 +1,780 @@
+{
+  "riskScoring": {
+    "classification": {
+      "bow_tie": {
+        "critical": {
+          "action": "작업 중단; 방어벽 재설계",
+          "label": "치명적"
+        },
+        "follow_up": {
+          "action": "방어벽 적절; 모니터링 지속",
+          "label": "허용 가능"
+        },
+        "high": {
+          "action": "긴급 방어벽 강화; 프로세스 검토",
+          "label": "높음"
+        },
+        "low": {
+          "action": "방어벽 효과성 검토",
+          "label": "낮음"
+        },
+        "medium": {
+          "action": "추가 방어벽 설치",
+          "label": "보통"
+        }
+      },
+      "checklist": {
+        "critical": {
+          "action": "활동 중단; 전면 수정",
+          "label": "심각하게 부적절"
+        },
+        "follow_up": {
+          "action": "현재 관행 유지",
+          "label": "준수"
+        },
+        "high": {
+          "action": "긴급 시정조치 시작",
+          "label": "부적절"
+        },
+        "low": {
+          "action": "단기간 내 격차 해소",
+          "label": "허용 가능"
+        },
+        "medium": {
+          "action": "광범위한 개선 계획 수립",
+          "label": "개선 필요"
+        }
+      },
+      "fk": {
+        "critical": {
+          "action": "즉시 작업 중단",
+          "label": "매우 높은 위험"
+        },
+        "follow_up": {
+          "action": "개선 제안 필요할 수 있음; 긴급 조치 불필요",
+          "label": "허용 가능"
+        },
+        "high": {
+          "action": "즉시 조치; 작업 중단 고려",
+          "label": "높은 위험"
+        },
+        "low": {
+          "action": "검토 유지; 개선 계획",
+          "label": "보통 우려"
+        },
+        "medium": {
+          "action": "단기간 내 조치",
+          "label": "중요"
+        }
+      },
+      "fmea": {
+        "critical": {
+          "action": "작업 중단; 근본원인 분석 수행",
+          "label": "치명적 위험"
+        },
+        "follow_up": {
+          "action": "현재 통제 충분; 모니터링 유지",
+          "label": "허용 가능"
+        },
+        "high": {
+          "action": "긴급 조치; 설계 변경 고려",
+          "label": "높은 위험"
+        },
+        "low": {
+          "action": "개선 계획",
+          "label": "낮은 위험"
+        },
+        "medium": {
+          "action": "조치 취함; 통제 강화",
+          "label": "보통 위험"
+        }
+      },
+      "fta": {
+        "critical": {
+          "action": "운영 금지; 근본원인 제거",
+          "label": "치명적"
+        },
+        "follow_up": {
+          "action": "시스템 신뢰성 적절",
+          "label": "허용 가능"
+        },
+        "high": {
+          "action": "시스템 재설계",
+          "label": "높음"
+        },
+        "low": {
+          "action": "중복성/백업 평가",
+          "label": "낮음"
+        },
+        "medium": {
+          "action": "중요 구성요소에 중복성 추가",
+          "label": "보통"
+        }
+      },
+      "hazop": {
+        "critical": {
+          "action": "프로세스 중단; 설계 수정",
+          "label": "허용불가"
+        },
+        "follow_up": {
+          "action": "현재 제어 수단 충분",
+          "label": "허용가능"
+        },
+        "high": {
+          "action": "프로세스 변경 또는 추가 방벽 필요",
+          "label": "높음"
+        },
+        "low": {
+          "action": "모니터링 및 개선 계획",
+          "label": "낮음"
+        },
+        "medium": {
+          "action": "추가 보호층 평가",
+          "label": "보통"
+        }
+      },
+      "lopa": {
+        "critical": {
+          "action": "프로세스 중단; 설계 수정",
+          "label": "허용불가"
+        },
+        "follow_up": {
+          "action": "현재 보호층 충분",
+          "label": "허용가능"
+        },
+        "high": {
+          "action": "다중층 또는 프로세스 변경 필요",
+          "label": "고위험"
+        },
+        "low": {
+          "action": "합리적으로 실행 가능한 한 낮게",
+          "label": "ALARP"
+        },
+        "medium": {
+          "action": "추가 보호층 추가",
+          "label": "개선 필요"
+        }
+      },
+      "matrix": {
+        "critical": {
+          "action": "즉시 작업 중단; 응급 조치",
+          "label": "허용불가"
+        },
+        "follow_up": {
+          "action": "추가 조치 불필요할 수 있음; 모니터링 충분",
+          "label": "허용가능"
+        },
+        "high": {
+          "action": "조속한 조치 필요",
+          "label": "고위험"
+        },
+        "low": {
+          "action": "기존 제어 수단 적절; 지속 관찰",
+          "label": "저위험"
+        },
+        "medium": {
+          "action": "개선 활동 계획",
+          "label": "중위험"
+        }
+      },
+      "r2d": {
+        "critical": {
+          "action": "작업 중단 평가",
+          "label": "치명적"
+        },
+        "follow_up": {
+          "action": "일상 모니터링으로 충분",
+          "label": "모니터링"
+        },
+        "high": {
+          "action": "우선 개입 필요",
+          "label": "높음"
+        },
+        "low": {
+          "action": "구조적 재평가 일정",
+          "label": "낮음"
+        },
+        "medium": {
+          "action": "강화된 감독 필요",
+          "label": "보통"
+        }
+      }
+    },
+    "fk": {
+      "exposure": {
+        "v0_5": "매우 드물게 (연 1회)",
+        "v1": "드물게 (월 1회)",
+        "v10": "지속적 (하루 대부분)",
+        "v2": "가끔 (주 1회)",
+        "v3": "때때로 (주 여러 번)",
+        "v6": "빈번하게 (매일)"
+      },
+      "likelihood": {
+        "v0_1": "거의 불가능",
+        "v0_2": "매우 낮음",
+        "v0_5": "예상치 못하지만 가능",
+        "v1": "낮은 가능성, 무시할 수 없음",
+        "v10": "매우 높음 / 예상됨",
+        "v3": "드물지만 가능",
+        "v6": "상당히 높음"
+      },
+      "severity": {
+        "v1": "주목할 만함, 응급처치",
+        "v100": "대규모 재해, 다수 사망",
+        "v15": "매우 심각, 사지 절단",
+        "v3": "중대, 외부 치료",
+        "v40": "재해, 단일 사망",
+        "v7": "심각, 영구 장해"
+      }
+    },
+    "fmea": {
+      "detection": {
+        "v1": "거의 확실한 탐지",
+        "v10": "탐지 불가",
+        "v2": "매우 높은 탐지 가능성",
+        "v3": "높은 가능성",
+        "v4": "중상",
+        "v5": "중간",
+        "v6": "중하",
+        "v7": "낮음",
+        "v8": "매우 낮음",
+        "v9": "원격 가능성"
+      },
+      "occurrence": {
+        "v1": "거의 불가능 (< 1/1,000,000)",
+        "v10": "거의 확실 (≥ 1/2)",
+        "v2": "원격 (1/20,000)",
+        "v3": "매우 낮음 (1/4,000)",
+        "v4": "낮음 (1/1,000)",
+        "v5": "중하 (1/400)",
+        "v6": "중간 (1/80)",
+        "v7": "중상 (1/40)",
+        "v8": "높음 (1/20)",
+        "v9": "매우 높음 (1/8)"
+      },
+      "severity": {
+        "v1": "영향 없음 — 인지되지 않음",
+        "v10": "치명적 — 사망 / 대형사고",
+        "v2": "매우 경미 — 무시할 수 있는 영향",
+        "v3": "경미 — 약간의 불편",
+        "v4": "낮음 — 성능 저하",
+        "v5": "보통 — 상당한 성능 손실",
+        "v6": "높음 — 시스템 기능 손상",
+        "v7": "매우 높음 — 작동 불가",
+        "v8": "위험 (경고 있음) — 부상 위험",
+        "v9": "위험 (경고 없음) — 심각한 부상"
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "after": "이후",
+        "before": "이전",
+        "early": "조기",
+        "late": "지연",
+        "less": "적음",
+        "more": "많음",
+        "noNot": "없음 / 아님",
+        "otherThan": "다른",
+        "partOf": "일부",
+        "reverse": "역방향"
+      },
+      "parameters": {
+        "composition": "조성",
+        "flow": "유량",
+        "level": "레벨",
+        "mixing": "혼합",
+        "ph": "pH",
+        "pressure": "압력",
+        "reaction": "반응",
+        "speed": "속도",
+        "temperature": "온도",
+        "time": "시간"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v0_00001": "10만년에 한 번 — 극히 드묾",
+        "v0_0001": "1만년에 한 번 — 매우 드묾",
+        "v0_001": "1천년에 한 번 — 드묾",
+        "v0_01": "100년에 한 번 — 가끔",
+        "v0_1": "10년에 한 번 — 빈번",
+        "v1": "연 1회 — 매우 빈번"
+      },
+      "pfd": {
+        "v0_001": "자동 안전 시스템 (SIL-1 등급)",
+        "v0_01": "훈련된 운전자 대응 / 경보",
+        "v0_1": "단순 관리적 통제"
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "매우 낮음 (거의 불가능)"
+        },
+        "i2": {
+          "description": "낮음 (드물고 예상치 못함)"
+        },
+        "i3": {
+          "description": "보통 (가능성 낮지만 가능)"
+        },
+        "i4": {
+          "description": "높음 (가능성 높고 놀랍지 않음)"
+        },
+        "i5": {
+          "description": "매우 높음 (예상되고 불가피)"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "매우 경미 (무손실시간)"
+        },
+        "i2": {
+          "description": "경미 (무손실시간 부상)"
+        },
+        "i3": {
+          "description": "보통 (손실시간 부상)"
+        },
+        "i4": {
+          "description": "심각 (영구 손상, 절단)"
+        },
+        "i5": {
+          "description": "치명적 (사망, 다중 사망)"
+        }
+      }
+    },
+    "methods": {
+      "bow_tie": {
+        "description": "보우타이 — 위협-장벽-결과",
+        "name": "보우타이",
+        "tooltip": "위협 가능성과 결과 심각도를 예방 및 완화 장벽과 함께 평가; 장벽 강도에 따른 잔여 위험도"
+      },
+      "checklist": {
+        "description": "체크리스트 — 준수율",
+        "name": "체크리스트",
+        "tooltip": "OK/Not OK/부분 항목의 가중 준수도—감사 및 점검에 적합"
+      },
+      "fine_kinney": {
+        "description": "가능성 × 심각도 × 노출 곱",
+        "name": "Fine-Kinney",
+        "tooltip": "일반적인 정량적 위험 방법: L(0.1–10), S(1–100), E(0.5–10); ISO 31000 준수"
+      },
+      "fmea": {
+        "description": "고장 모드 및 영향 분석 — RPN",
+        "name": "FMEA",
+        "tooltip": "심각도(1–10) × 발생도(1–10) × 검출도(1–10) = RPN. 운영 및 유지보수에 이상적; IEC 60812"
+      },
+      "fta": {
+        "description": "결함 트리 분석 — 시스템 신뢰성",
+        "name": "FTA",
+        "tooltip": "AND/OR 게이트로 시스템 고장 분해; 항공, 원자력 및 중요 시스템에 사용; IEC 61025"
+      },
+      "hazop": {
+        "description": "위험 및 운전성 연구",
+        "name": "HAZOP",
+        "tooltip": "가이드 워드(No, Less, More, Reverse 등)로 공정 편차 탐색; 화학/석유 플랜트에서 일반적; IEC 61882"
+      },
+      "jsa": {
+        "description": "작업 안전 분석 — 단계별 위험",
+        "name": "JSA",
+        "tooltip": "단계별 심각도 × 가능성 / 제어 효과성; 건설 및 현장 작업에 필수"
+      },
+      "l_matrix": {
+        "description": "5×5 가능성-심각도 위험 매트릭스",
+        "name": "L형 매트릭스",
+        "tooltip": "가능성(1–5)과 심각도(1–5) 선택; 25셀 컬러 매트릭스에서 위험도 확인(터키 산업안전보건 관행 준수)"
+      },
+      "lopa": {
+        "description": "보호층 분석 — 빈도 감소",
+        "name": "LOPA",
+        "tooltip": "시작 빈도에 보호층 PFD 값 곱셈; 공정 안전의 SIL 목표와 자주 연계"
+      },
+      "r_skor": {
+        "description": "9개 매개변수를 사용한 가중 현장 스크리닝 점수",
+        "name": "R-SKOR 2D",
+        "tooltip": "RiskNova 방법: 9개 매개변수(C1–C9)가 시각적 및 현장 입력에 가중치 적용; 이미지 자동 점수화 지원"
+      }
+    },
+    "panel": {
+      "bowtie": {
+        "consequence": "결과 심각도",
+        "mitigation": "완화 장벽",
+        "prevention": "예방 장벽",
+        "rawRisk": "원시 위험도",
+        "residualRisk": "잔여 위험도",
+        "threat": "위협 가능성"
+      },
+      "checklist": {
+        "add": "+ 추가",
+        "compliantLine": "{n}개 준수",
+        "itemPlaceholder": "제어 항목…",
+        "itemsHeading": "점검 항목 ({count}개)",
+        "nonCompliantLine": "{n}개 미준수",
+        "partialLine": "{n}개 부분",
+        "removeTitle": "제거",
+        "statusKismi": "부분",
+        "statusNa": "해당없음",
+        "statusUygun": "준수",
+        "statusUygunDegil": "미준수"
+      },
+      "fmea": {
+        "detection": "탐지성 (D)",
+        "formula": "S × O × D = RPN",
+        "occurrence": "발생도 (O)",
+        "severity": "심각도 (S)"
+      },
+      "fta": {
+        "add": "+ 추가",
+        "componentDefault": "구성요소 {n}",
+        "componentPlaceholder": "구성요소 명",
+        "componentsHeading": "구성요소 ({count})",
+        "failureRateTitle": "고장 확률 (0–1)",
+        "gate": "게이트",
+        "gateType": "게이트 유형:",
+        "removeTitle": "제거",
+        "systemCriticality": "시스템 중요도",
+        "systemProb": "시스템 P"
+      },
+      "hazop": {
+        "detectability": "탐지 가능성",
+        "detectEasy": "쉬움",
+        "detectHard": "어려움",
+        "deviation": "편차 설명",
+        "deviationPlaceholder": "편차를 설명하세요…",
+        "guideWord": "가이드 워드",
+        "likelihood": "가능성",
+        "parameter": "공정 매개변수",
+        "severity": "심각도"
+      },
+      "jsa": {
+        "add": "+ 추가",
+        "avg": "평균",
+        "control": "제어",
+        "controlsPlaceholder": "제어 조치…",
+        "hazardPlaceholder": "위험요소…",
+        "highRisk": "고위험 단계",
+        "jobPlaceholder": "작업명…",
+        "jobTitle": "작업 제목",
+        "likelihood": "가능성",
+        "max": "최대",
+        "removeTitle": "제거",
+        "severity": "심각도",
+        "stepDefault": "단계 {n}",
+        "stepDescPlaceholder": "단계 설명…",
+        "stepScoreIntro": "단계 점수:",
+        "stepsHeading": "작업 단계 ({count})"
+      },
+      "lopa": {
+        "addLayer": "+ 추가",
+        "consequence": "결과 심각도",
+        "consequenceV1": "낮음",
+        "consequenceV2": "경미",
+        "consequenceV3": "보통",
+        "consequenceV4": "심각",
+        "consequenceV5": "치명적",
+        "initFreq": "개시 사건 빈도",
+        "layerDefault": "보호층 {n}",
+        "layerNamePlaceholder": "보호층 명칭",
+        "layerPfd": "보호층 PFD",
+        "layersHeading": "보호층 ({count})",
+        "meetsTarget": "허용 목표 달성",
+        "removeTitle": "제거",
+        "riskReduction": "위험 감소",
+        "target": "목표",
+        "targetMet": "달성",
+        "targetNotMet": "미달성"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employee_representative": "직원 대표",
+        "employer": "고용주",
+        "employer_representative": "고용주 대표",
+        "knowledgeable_employee": "위험에 대해 숙지한 직원",
+        "ohs_specialist": "산업보건 전문가",
+        "other_health_personnel": "기타 보건 담당자",
+        "support_staff": "지원 직원",
+        "workplace_physician": "산업의학 전문의"
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "description": "현장에서 관찰된 위험 물체의 수/밀도",
+        "label": "위험 밀도"
+      },
+      "c2": {
+        "description": "헬멧, 장갑, 보안경 등 누락",
+        "label": "개인보호구 부족"
+      },
+      "c3": {
+        "description": "제한구역 출입, 무방비 작업, 추락 위험",
+        "label": "행동 위험"
+      },
+      "c4": {
+        "description": "열, 소음, 진동 및 유사 스트레스 요인",
+        "label": "환경적 스트레스"
+      },
+      "c5": {
+        "description": "가스 누출, 화학물질, 전기 위험",
+        "label": "화학/전기"
+      },
+      "c6": {
+        "description": "출구 차단, 젖은 바닥, 통로 장애물",
+        "label": "접근/장애"
+      },
+      "c7": {
+        "description": "안전장치 우회, 정비 지연",
+        "label": "기계/공정"
+      },
+      "c8": {
+        "description": "지게차 운행, 라인 교차, 보행자-차량 충돌",
+        "label": "차량 통행"
+      },
+      "c9": {
+        "description": "교육 부족, 경고 표지판 누락",
+        "label": "조직적 부담"
+      },
+      "source": {
+        "visualAnalysis": "시각적 분석"
+      }
+    },
+    "ui": {
+      "fk": {
+        "exposure": "노출도 (E)",
+        "likelihood": "가능성 (L)",
+        "severity": "심각도 (S)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "가능성 ({n})",
+        "severityHeading": "심각도 ({n})"
+      },
+      "page": {
+        "analysisNotePlaceholder": "각 행은 위험 주제 또는 부적합 그룹입니다. 행당 하나 이상의 사진을 첨부할 수 있습니다.",
+        "analysisTitlePlaceholder": "현장 위험 분석",
+        "describeRiskGroup": "위험 그룹을 간략히 설명하세요"
+      },
+      "r2d": {
+        "base": "기본",
+        "dominant": "지배적",
+        "parameters": "매개변수",
+        "peak": "최고점"
+      },
+      "severity": {
+        "critical": "심각",
+        "high": "높음",
+        "low": "낮음",
+        "medium": "보통"
+      }
+    },
+    "wizard": {
+      "common": {
+        "add": "추가",
+        "address": "주소",
+        "back": "뒤로",
+        "cancel": "취소",
+        "companyFallback": "회사",
+        "delete": "삭제",
+        "description": "설명",
+        "findings": "발견사항",
+        "goToResults": "결과로 이동",
+        "images": "이미지",
+        "lines": "행",
+        "location": "위치",
+        "method": "방법",
+        "next": "다음",
+        "no": "아니오",
+        "report": "보고서",
+        "risk": "위험",
+        "row": "행",
+        "save": "저장",
+        "saving": "저장 중…",
+        "scoreDetailPrefix": "점수 세부사항 —",
+        "type": "유형",
+        "update": "업데이트",
+        "visual": "이미지",
+        "yes": "예"
+      },
+      "header": {
+        "backToList": "목록으로 돌아가기",
+        "badgeAiManual": "AI + 수동 발견사항",
+        "badgeExport": "PDF / Word / Excel",
+        "newAnalysis": "새 분석",
+        "wizardDescription": "회사 선택, 팀 정의, 이미지 업로드 후 AI + 수동 발견사항 및 점수 매기기를 실행하세요.",
+        "wizardTitle": "시각적 위험 분석"
+      },
+      "list": {
+        "companyLabel": "회사 / 조직",
+        "companyPlaceholder": "— 회사 선택 —",
+        "confirmDelete": "확실합니까?",
+        "deleteAnalysis": "삭제",
+        "description": "회사를 선택하고 과거 분석을 확인하거나 새 분석을 시작하세요.",
+        "emptyDescription": "위 버튼을 사용하여 이 회사의 첫 번째 위험 분석을 시작하세요.",
+        "emptyTitle": "아직 분석이 없습니다",
+        "eyebrow": "위험 분석",
+        "findingsCount": "{count}개 발견사항",
+        "historyCount": "{count}개 저장된 분석",
+        "historyTitle": "{name} — 분석 이력",
+        "newAnalysis": "+ 새 분석 시작",
+        "statusArchived": "보관됨",
+        "statusCompleted": "완료됨",
+        "statusDraft": "초안",
+        "title": "위험 분석 관리"
+      },
+      "messages": {
+        "analysisComplete": "분석 완료!",
+        "analysisFailed": "분석을 완료할 수 없습니다.",
+        "analysisFailedDetail": "AI 분석 실패. {detail}",
+        "analysisPartial": "AI 분석이 부분적으로 완료되었습니다. {successful}/{total}개 이미지 처리됨; {errors}개 이미지에서 오류 발생.",
+        "analysisStarting": "분석 시작 중…",
+        "analysisSummary": "AI 분석 완료. {risks}개 위험, {positive}개 긍정적 관찰사항.",
+        "analyzingImageProgress": "이미지 분석 중 {current}/{total}: {fileName}",
+        "analyzingRowImage": "이미지 분석 중: 행 {row}, {fileName}…",
+        "genericAiError": "OpenAI 또는 Anthropic 단계에서 오류가 발생했습니다.",
+        "needImageToAnalyze": "분석을 시작하려면 최소 하나의 이미지를 추가하세요."
+      },
+      "methodCard": {
+        "params": "{count}개 매개변수",
+        "score": "점수:"
+      },
+      "nav": {
+        "aiAnalyzingShort": "분석 중…",
+        "aiStartShort": "AI 분석 시작"
+      },
+      "notifications": {
+        "savedBody": "{title} — {findings}개 발견사항, {critical}개 중요/높음",
+        "savedTitle": "위험 분석 저장됨",
+        "updatedTitle": "위험 분석 업데이트됨"
+      },
+      "save": {
+        "error": "저장 중 오류가 발생했습니다.",
+        "noCompany": "회사를 선택하지 않으면 저장할 수 없습니다.",
+        "oversized": "{fileName}이 10MB 제한을 초과합니다. 저장하기 전에 더 작은 이미지를 업로드하세요.",
+        "successNew": "분석이 성공적으로 저장되었습니다!",
+        "successUpdated": "분석이 성공적으로 업데이트되었습니다!"
+      },
+      "step1": {
+        "analysisNote": "분석 메모",
+        "analysisTitle": "분석 제목",
+        "company": "회사 / 조직",
+        "companyCardAddress": "주소:",
+        "companyCardType": "유형:",
+        "companyPlaceholder": "회사 / 조직 선택",
+        "companyRequired": "분석을 위해 회사 선택이 필요합니다.",
+        "department": "부서 / 단위",
+        "departmentPlaceholder": "부서 선택",
+        "departmentRequired": "부서 선택이 필요합니다.",
+        "editCompanyStructure": "회사 구조 편집",
+        "location": "위치 / 작업 영역",
+        "locationPlaceholder": "위치 선택",
+        "locationRequired": "위치 선택이 필요합니다.",
+        "method": "분석 방법",
+        "subtitle": "이 위험 분석이 적용될 회사, 위치, 부서를 선택하세요.",
+        "title": "분석 컨텍스트"
+      },
+      "step2": {
+        "addParticipant": "참가자 수동 추가",
+        "certificate": "자격증 번호 (해당시)",
+        "certificatePlaceholder": "해당되는 경우 입력",
+        "fullName": "성명",
+        "noTeamBody": "이 회사에 아직 팀 구성원이 설정되지 않았습니다. 회사 페이지에서 팀 탭을 열고 \"위험 평가 팀\"을 생성한 후 구성원을 추가하면 여기에 자동으로 표시됩니다.",
+        "noTeamLink": "회사 팀 관리로 이동",
+        "noTeamTitle": "위험 평가 팀이 정의되지 않음",
+        "participantN": "참가자 {n}",
+        "pickFromTeam": "회사 팀에서 선택",
+        "rolePlaceholder": "역할 선택",
+        "roleType": "역할 / 직책 유형",
+        "subtitle": "저장된 직원에서 선택하거나 참가자를 수동으로 추가하세요.",
+        "title": "위험 분석 참여자",
+        "titleField": "역할 / 직책 설명",
+        "titlePlaceholder": "예: A급 전문가"
+      },
+      "step3": {
+        "addImage": "이미지 추가",
+        "aiAnalyzing": "AI 분석 실행 중…",
+        "aiStart": "AI 위험 분석 시작",
+        "aiSub": "Nova AI가 각 이미지를 개별적으로 분석합니다.",
+        "bulkUpload": "일괄 업로드 (각각 별도 행으로)",
+        "deleteRow": "행 삭제",
+        "newRow": "행 추가",
+        "rowHint": "이 행 아래에 광각 및 근접 촬영을 그룹화하세요.",
+        "rowN": "행 {n}",
+        "rowTitle": "행 제목",
+        "rowTitlePlaceholder": "예: 적재 구역",
+        "subtitle": "각 행은 하나의 위험 주제입니다. 이미지를 업로드한 후 AI 분석을 시작하세요.",
+        "summaryCompany": "회사",
+        "summaryImages": "이미지",
+        "summaryLocation": "위치",
+        "summaryMethod": "방법",
+        "title": "위험 행 및 이미지"
+      },
+      "step4": {
+        "addedLater": "나중에 추가됨",
+        "addRiskPin": "위험 핀 추가",
+        "aiAnalyzingDetail": "Nova AI가 각 이미지를 분석 중…",
+        "analyzingInline": "분석 중…",
+        "areaAssessment": "영역 평가",
+        "avgScore": "평균 점수",
+        "cannotAnalyzeBody": "이 이미지는 위험 분석에 적합하지 않습니다.",
+        "cannotAnalyzeTitle": "위험 분석을 실행할 수 없음",
+        "capaBadge": "CAPA 후보",
+        "capaCandidate": "CAPA 후보",
+        "cleanNoRisk": "정상 — 위험 미감지",
+        "confidenceHigh": "확인된 발견사항",
+        "confidenceLow": "검증 권장",
+        "confidenceMedium": "AI 발견사항",
+        "criticalHigh": "심각 / 높음",
+        "deleteFindingAria": "발견사항 삭제",
+        "deleteFindingConfirm": "\"{title}\" 발견사항을 삭제하시겠습니까?",
+        "deleteFindingTitle": "발견사항 삭제",
+        "detectedPrefix": "감지됨:",
+        "emptyResultsDesc": "3단계에서 이미지를 업로드하고 분석을 실행하세요.",
+        "emptyResultsTitle": "아직 결과 없음",
+        "findingTitle": "발견사항 제목",
+        "findingTitlePlaceholder": "예: 가드레일 누락",
+        "manualPinConfirm": "추가",
+        "manualPinHint": " 수동 핀으로 직접 발견사항을 추가할 수 있습니다.",
+        "manualPinTitle": "수동 위험 핀 추가",
+        "metaEyebrowArea": "구역 평가",
+        "metaEyebrowPositive": "긍정적 관찰사항",
+        "noRiskDetectedBody": "AI가 이 이미지에서 의미 있는 위험이나 부적합을 발견하지 못했습니다.",
+        "noRiskDetectedTitle": "위험 미감지",
+        "noRiskThisImageBody": "AI가 이 이미지에서 구체적인 위험을 발견하지 못했습니다. 수동으로 발견사항을 추가할 수 있습니다.",
+        "noRiskThisImageTitle": "이 이미지에 중대한 위험 없음",
+        "notRealPhotoBody": "이 이미지는 도면, 일러스트 또는 합성 렌더링입니다. 위험 분석은 실제 현장 사진에서만 실행됩니다.",
+        "notRealPhotoTitle": "실제 사진 아님",
+        "peopleDetected": "{count}명 감지됨",
+        "photoQuality": "이미지 품질:",
+        "photoQualityLow": "낮음",
+        "photoQualityMedium": "보통",
+        "pinBanner": "위험 핀을 추가하려면 이미지를 클릭하세요",
+        "pinModeActive": "핀 모드 활성화 중…",
+        "positiveFindings": "긍정적 관찰사항",
+        "positiveObservationsHint": " 긍정적 관찰사항이 아래에 나열됩니다.",
+        "resultsSubtitle": "위험 카드는 이미지의 주석과 연결되어 있습니다. 점수를 변경하려면 매개변수를 조정하세요.",
+        "resultsTitle": "주석이 달린 발견사항",
+        "riskCount": "위험: {count}",
+        "rowImagesFindings": "이미지: {images} · 발견사항: {findings}",
+        "saveWarning": "결과가 아직 저장되지 않았습니다! 저장하지 않고 나가면 모든 발견사항이 손실됩니다.",
+        "scorePanelIntro": "점수 세부사항 — {method}",
+        "severity": "심각도",
+        "totalFindings": "총 발견사항",
+        "visualN": "이미지 {n}"
+      },
+      "steps": {
+        "context": "분석 맥락",
+        "images": "이미지",
+        "results": "결과",
+        "team": "분석팀"
+      },
+      "validate": {
+        "company": "회사/조직을 먼저 선택하세요.",
+        "department": "부서/단위를 선택하세요.",
+        "firmLocationDept": "회사, 위치, 부서를 선택하세요.",
+        "location": "작업 위치를 선택하세요.",
+        "participants": "최소 한 명의 담당자 이름과 역할을 입력하세요.",
+        "step2Participants": "최소 한 명의 담당자 이름과 역할을 입력하세요.",
+        "step3Images": "최소 하나의 이미지를 추가하세요."
+      }
+    }
+  }
+}

@@ -1,1356 +1,2620 @@
 {
+  "activeCompanyBar": {
+    "companyTypeEnterprise": "एंटरप्राइज़",
+    "companyTypeIndividual": "व्यक्तिगत",
+    "companyTypeOsgb": "OSGB",
+    "detailLink": "कंपनी विवरण",
+    "detailLinkTitle": "कंपनी विवरण पृष्ठ पर जाएं",
+    "inactiveBadge": "निष्क्रिय कंपनी",
+    "nacePrefix": "NACE",
+    "personnelCountTitle": "सक्रिय / कुल कर्मचारी"
+  },
+  "auth": {
+    "demoModal": {
+      "bodyDisabled": "आपकी डेमो पहुंच एक प्रशासक द्वारा अक्षम कर दी गई है।",
+      "bodyExpired": "आपका डेमो समय समाप्त हो गया है। RiskNova डेमो सत्र {hours} घंटों तक वैध होते हैं; उसके बाद सत्र बंद हो जाता है।",
+      "calloutDisabledLead": "नोट:",
+      "calloutDisabledRest": "डेमो खाते आमतौर पर {hours} घंटों तक सीमित होते हैं; पहुंच एक प्रशासक द्वारा भी समाप्त की जा सकती है।",
+      "calloutExpiredLead": "अनुस्मारक:",
+      "calloutExpiredRest": "डेमो की खोज {hours} घंटों के भीतर पूरी करें; जब यह समाप्त हो जाए तो आप अपना निःशुल्क या व्यावसायिक खाता बनाकर जारी रख सकते हैं।",
+      "closeAria": "बंद करें",
+      "ctaLater": "बाद में",
+      "ctaPrimary": "पंजीकरण शुरू करें",
+      "pathEnterpriseDesc": "बहु-साइट संगठन",
+      "pathEnterpriseLabel": "एंटरप्राइज़",
+      "pathIndividualDesc": "स्वतंत्र पेशेवर",
+      "pathIndividualLabel": "व्यक्तिगत",
+      "pathOsgbDesc": "क्लाइंट फर्म और कर्मचारी प्रबंधन",
+      "pathOsgbLabel": "OSGB",
+      "pathsHighlight": "सभी सुविधाओं तक पूर्ण पहुंच",
+      "pathsIntro": "जहां आपने छोड़ा था वहां से शुरू करने और प्राप्त करने के लिए",
+      "pathsSuffix": "अपना खाता बनाएं। आप तीन पथों में से एक चुन सकते हैं:",
+      "subtitle": "RiskNova आज़माने के लिए",
+      "title": "धन्यवाद!"
+    },
+    "forgotBack": "साइन इन पर वापस जाएं",
+    "forgotButton": "रीसेट लिंक भेजें",
+    "forgotDescription": "अपना ईमेल पता दर्ज करें और हम आपको पासवर्ड रीसेट लिंक भेजेंगे।",
+    "forgotPage": {
+      "backToLogin": "साइन इन पर वापस जाएं",
+      "description": "अपना ईमेल दर्ज करें और हम आपको पासवर्ड रीसेट लिंक भेजेंगे।",
+      "emailHint": "वह ईमेल उपयोग करें जिससे आपने पंजीकरण किया था।",
+      "emailLabel": "ईमेल",
+      "emailPlaceholder": "you@company.com",
+      "eyebrow": "पासवर्ड रीसेट",
+      "sentBanner": "यदि ईमेल पता वैध है, तो हमने पासवर्ड रीसेट लिंक भेजा है।",
+      "submitButton": "रीसेट लिंक भेजें",
+      "title": "अपना पासवर्ड रीसेट करें"
+    },
+    "forgotTitle": "अपना पासवर्ड रीसेट करें",
+    "loginButton": "साइन इन",
+    "loginDescription": "एक ही प्लेटफॉर्म पर जोखिम विश्लेषण, फील्ड ट्रैकिंग और रिपोर्टिंग प्रक्रियाओं का प्रबंधन जारी रखें।",
+    "loginEmail": "ईमेल पता",
+    "loginForgot": "पासवर्ड भूल गए",
+    "loginLoading": "साइन इन हो रहे हैं...",
+    "loginNoAccount": "खाता नहीं है?",
+    "loginPage": {
+      "description": "अपने RiskNova खाते में साइन इन करें। प्लेटफॉर्म एडमिनिस्ट्रेटर को एडमिन कंसोल पर भेजा जाता है; बाकी सभी को उनके खाता प्रकार से मेल खाने वाले वर्कस्पेस पर भेजा जाता है।",
+      "emailLabel": "ईमेल",
+      "emailPlaceholder": "you@company.com",
+      "eyebrow": "साइन इन",
+      "footerPrefix": "खाता नहीं है?",
+      "footerRegisterLink": "साइन अप",
+      "forgotLink": "पासवर्ड भूल गए",
+      "highlight1Desc": "अपनी फर्म, संगठन और वर्कस्पेस का प्रबंधन करने वाले व्यक्तिगत पेशेवरों के लिए।",
+      "highlight1Title": "व्यक्तिगत साइन इन",
+      "highlight2Desc": "OSGB टीमों के लिए जो क्लाइंट्स, कर्मचारियों, असाइनमेंट्स और जोखिम प्रक्रियाओं का प्रबंधन करती हैं।",
+      "highlight2Title": "OSGB साइन-इन",
+      "highlight3Desc": "प्लेटफॉर्म एडमिनिस्ट्रेटर भूमिका सार्वजनिक खाता प्रकार के रूप में उपलब्ध नहीं है; योग्य उपयोगकर्ताओं को साइन-इन के बाद एडमिन कंसोल पर भेजा जाता है।",
+      "highlight3Title": "प्लेटफॉर्म प्रशासन",
+      "passwordLabel": "पासवर्ड",
+      "passwordPlaceholder": "अपना पासवर्ड दर्ज करें",
+      "passwordUpdatedBanner": "आपका पासवर्ड अपडेट हो गया है। आप अपने नए पासवर्ड से साइन इन कर सकते हैं।",
+      "privilegedLoginBlocked": "OSGB और एंटरप्राइज खाते इस साइन-इन पथ का उपयोग नहीं कर सकते। कृपया कोटिंग और एक्सेस के लिए हमारी टीम से संपर्क करें।",
+      "spotlightP1": "साइन-इन स्क्रीन सभी द्वारा साझा की जाती है; सत्र के बाद रूटिंग आपके खाता संदर्भ पर निर्भर करती है।",
+      "spotlightP2": "प्लेटफॉर्म एडमिनिस्ट्रेटर भूमिका सार्वजनिक स्व-सेवा साइनअप में उपलब्ध नहीं है। व्यक्तिगत, OSGB और एंटरप्राइज ग्राहक-मुखी खाता पथ हैं।",
+      "submitButton": "साइन इन",
+      "title": "अपने खाते में साइन इन करें"
+    },
+    "loginPassword": "पासवर्ड",
+    "loginRegister": "साइन अप",
+    "loginTitle": "अपने खाते में साइन इन करें",
+    "registerButton": "साइन अप",
+    "registerDescription": "अपनी OHS प्रक्रियाओं को डिजिटाइज़ करें और AI-संचालित निर्णय लेने की तंत्र से लाभ उठाएं।",
+    "registerEmail": "ईमेल पता",
+    "registerHasAccount": "पहले से खाता है?",
+    "registerLoading": "खाता बनाया जा रहा है...",
+    "registerLogin": "साइन इन",
+    "registerName": "पूरा नाम",
+    "registerPage": {
+      "checkEmailBanner": "पंजीकरण शुरू हुआ। यदि पुष्टि आवश्यक है तो अपना इनबॉक्स जांचें।",
+      "demoDisabledBody": "यह किसी एडमिनिस्ट्रेटर द्वारा समाप्त किया गया हो सकता है (डेमो खाते आमतौर पर {hours} घंटों तक सीमित होते हैं)। निरंतर उपयोग के लिए नीचे खाता बनाएं।",
+      "demoDisabledTitle": "आपका डेमो एक्सेस अक्षम कर दिया गया।",
+      "demoExpiredBody": "RiskNova डेमो एक्सेस {hours} घंटों तक सीमित है; जब यह समाप्त हो जाता है तो सत्र बंद हो जाता है। स्थायी खाते पर जाने के लिए नीचे निःशुल्क खाता बनाएं या Google के साथ जारी रखें।",
+      "demoExpiredTitle": "आपकी डेमो अवधि समाप्त हो गई है।",
+      "demoLegacyDisabledHelp": "सहायता:",
+      "demoLegacyDisabledLead": "आपकी डेमो पहुंच निष्क्रिय कर दी गई है।",
+      "demoLegacyDisabledLogin": "साइन इन करें",
+      "demoLegacyDisabledRest": "पब्लिक डेमो अब उपलब्ध नहीं हैं। रजिस्टर करें या",
+      "demoLegacyExpiredLead": "आपका डेमो सेशन समाप्त हो गया है।",
+      "demoLegacyExpiredLogin": "साइन इन करें",
+      "demoLegacyExpiredRest": "पब्लिक डेमो अब उपलब्ध नहीं हैं। नीचे खाता बनाएं या",
+      "demoLegacyExpiredSupport": "समस्याओं के लिए संपर्क करें",
+      "description": "पहले खाता प्रकार, क्षेत्र और भाषा चुनें। व्यक्तिगत खाते सीधे फॉर्म पर जाते हैं; OSGB और कंपनी संरचनाएं संपर्क और कोटेशन प्रवाह शुरू करती हैं।",
+      "emailHint": "ऑनबोर्डिंग और पहुंच प्रवाह इस पते का उपयोग करते हैं।",
+      "emailLabel": "ईमेल",
+      "emailPlaceholder": "you@company.com",
+      "eyebrow": "नया खाता",
+      "footerLoginLink": "साइन इन करें",
+      "footerPrefix": "पहले से खाता है?",
+      "highlight1Desc": "क्षेत्र और भाषा चयन के बाद आप रजिस्ट्रेशन पूरा करते हैं और ऑनबोर्डिंग के साथ आगे बढ़ते हैं।",
+      "highlight1Title": "व्यक्तिगत स्व-सेवा",
+      "highlight2Desc": "मूल्य निर्धारण और प्लान तुलना प्लान पेज पर रहती है ताकि रजिस्ट्रेशन केंद्रित रहे।",
+      "highlight2Title": "प्लान अलग पेज पर हैं",
+      "highlight3Desc": "मल्टी-साइट या विशेषीकृत संरचनाएं हमारी टीम के साथ संपर्क और कोटेशन के माध्यम से आगे बढ़ती हैं।",
+      "highlight3Title": "संगठनों के लिए बेस्पोक कोटेशन",
+      "legalCheckboxAfterCookie": "। मैंने इन्हें पढ़ा है और स्वीकार करता हूं। खाता बनाने के बाद ऐप में अतिरिक्त अनिवार्य प्लेटफॉर्म अनुमोदन प्रस्तुत किए जा सकते हैं।",
+      "legalCheckboxAfterPrivacy": ", और ",
+      "legalCheckboxAfterTerms": "। ",
+      "legalCheckboxCookie": "कुकी नीति",
+      "legalCheckboxPrivacy": "गोपनीयता नीति और KVKK प्रकटीकरण",
+      "legalCheckboxTerms": "उपयोग की शर्तें",
+      "passwordHint": "एक मजबूत पासवर्ड चुनें। आप साइनअप के बाद खाता-प्रकार चयन पूरा करेंगे।",
+      "passwordLabel": "पासवर्ड",
+      "passwordPlaceholder": "कम से कम 8 अक्षर",
+      "submitButton": "खाता बनाएं",
+      "title": "अपना RiskNova खाता बनाएं"
+    },
+    "registerPassword": "पासवर्ड",
+    "registerTitle": "खाता बनाएं",
+    "registerWizard": {
+      "accounts": {
+        "enterprise": {
+          "description": "मल्टी-साइट या विशेषीकृत नियामक आवश्यकताओं के लिए।",
+          "title": "कंपनी / एंटरप्राइज़"
+        },
+        "individual": {
+          "description": "विशेषज्ञ, चिकित्सक, DSP या ऑडिटर अपने स्वयं के वर्कस्पेस के साथ शुरुआत करते हुए।",
+          "title": "व्यक्तिगत पेशेवर"
+        },
+        "osgb": {
+          "description": "क्लाइंट पोर्टफोलियो, टीमों और असाइनमेंट वर्कफ़्लो के लिए सेटअप का अनुरोध करें।",
+          "title": "OSGB"
+        }
+      },
+      "closeAria": "पंजीकरण सहायक बंद करें",
+      "commercialIntroBody": "आपका देश, भाषा और भूमिका फॉर्म के साथ भेजे जाते हैं ताकि हमारी टीम सही पैकेज और ऑनबोर्डिंग के साथ जवाब दे सके।",
+      "commercialIntroEnterpriseTitle": "एंटरप्राइज़ कोट फ़्लो",
+      "commercialIntroOsgbTitle": "OSGB कोट फ़्लो",
+      "countryHints": {
+        "AE": "अंग्रेजी / अरबी टीम तैयारी।",
+        "AZ": "अज़रबैजानी डिफ़ॉल्ट के साथ अज़रबैजान क्षेत्र।",
+        "CN": "चीनी भाषा और एशिया-प्रशांत तैयारी।",
+        "DE": "जर्मन डिफ़ॉल्ट के साथ जर्मनी क्षेत्र।",
+        "ES": "स्पेनिश डिफ़ॉल्ट के साथ स्पेन क्षेत्र।",
+        "FR": "फ्रेंच डिफ़ॉल्ट के साथ फ्रांस क्षेत्र।",
+        "GB": "अंग्रेजी डिफ़ॉल्ट के साथ यूके संचालन।",
+        "ID": "बहासा इंडोनेशिया प्राथमिकता।",
+        "IN": "हिंदी / अंग्रेजी टीम तैयारी।",
+        "JP": "जापानी भाषा और एशिया-प्रशांत तैयारी।",
+        "KR": "कोरियाई भाषा और एशिया-प्रशांत तैयारी।",
+        "RU": "रूसी भाषा और क्षेत्रीय तैयारी।",
+        "SA": "अरबी भाषा और खाड़ी संचालन तैयारी।",
+        "TR": "तुर्की कानून के साथ तुर्की डिफ़ॉल्ट।",
+        "US": "अंग्रेजी डिफ़ॉल्ट के साथ अमेरिकी संचालन।"
+      },
+      "prevAria": "पिछला चरण",
+      "roles": {
+        "auditor": {
+          "description": "फील्ड ऑडिट, गैर-अनुपालन और रिपोर्टिंग।",
+          "title": "ऑडिटर"
+        },
+        "occupational_physician": {
+          "description": "स्वास्थ्य निगरानी, चिकित्सा प्रक्रियाएं और कर्मचारी रिकॉर्ड।",
+          "title": "व्यावसायिक चिकित्सक"
+        },
+        "safety_officer": {
+          "description": "स्वास्थ्य टीम, फील्ड सहायता और फॉलो-अप कार्य।",
+          "title": "DSP / स्वास्थ्य कर्मी"
+        },
+        "safety_professional": {
+          "description": "जोखिम विश्लेषण, फील्ड ऑडिट, कार्य और नियामक ट्रैकिंग।",
+          "title": "OHS विशेषज्ञ"
+        },
+        "workspace_admin": {
+          "description": "उपयोगकर्ता, फर्म, भूमिकाएं और वर्कस्पेस सेटिंग्स का प्रबंधन करता है।",
+          "title": "वर्कस्पेस प्रशासक"
+        }
+      },
+      "startWizard": "पंजीकरण प्रश्न शुरू करें",
+      "steps": {
+        "account": {
+          "description": "यह विकल्प पंजीकरण के बाद के प्रवाह को परिभाषित करता है।",
+          "eyebrow": "1 / 4",
+          "title": "आप किस खाता प्रकार से शुरुआत कर रहे हैं?"
+        },
+        "country": {
+          "description": "कानूनी कवरेज, RAG स्कोप और डिफ़ॉल्ट वर्कस्पेस इस विकल्प के साथ संरेखित हैं।",
+          "eyebrow": "2 / 4",
+          "title": "आपका प्राथमिक वर्कस्पेस किस देश में है?"
+        },
+        "language": {
+          "description": "अभी तक हर स्क्रीन का अनुवाद नहीं हुआ है, लेकिन आपकी प्राथमिकता खाते में संग्रहीत है।",
+          "eyebrow": "3 / 4",
+          "title": "इंटरफेस और दस्तावेज़ भाषा"
+        },
+        "role": {
+          "description": "यह ऑनबोर्डिंग के दौरान पहला वर्कस्पेस तैयार करता है।",
+          "eyebrow": "4 / 4",
+          "title": "आपकी पहली भूमिका क्या है?"
+        }
+      },
+      "summaryChange": "बदलें",
+      "summaryTitle": "आपका पंजीकरण पथ तैयार है"
+    },
+    "resetPage": {
+      "backToLogin": "साइन इन पर वापस जाएं",
+      "description": "अपना नया पासवर्ड दर्ज करें और अपने खाते में वापस जाएं।",
+      "descriptionRequired": "आपने अस्थायी क्रेडेंशियल्स के साथ साइन इन किया है। जारी रखने से पहले एक नया पासवर्ड सेट करें।",
+      "errInvalidResetLink": "यह पासवर्ड रीसेट लिंक अमान्य या समाप्त हो सकता है।",
+      "errPrepareSession": "आपका सेशन तैयार नहीं किया जा सका। कृपया लिंक को फिर से खोलें।",
+      "errSessionRefresh": "आपका सेशन तैयार नहीं किया जा सका। पेज को रिफ्रेश करें और फिर से कोशिश करें।",
+      "eyebrow": "नया पासवर्ड",
+      "eyebrowTemp": "अस्थायी साइन-इन",
+      "mfaBanner": "मल्टी-फैक्टर वेरिफिकेशन पूरा हो गया है। अब आप एक नया पासवर्ड चुन सकते हैं।",
+      "passwordHint": "एक मजबूत पासवर्ड चुनें।",
+      "passwordLabel": "नया पासवर्ड",
+      "passwordPlaceholder": "कम से कम 8 अक्षर",
+      "preparingSession": "आपका पासवर्ड रीसेट सेशन तैयार किया जा रहा है…",
+      "requiredBanner": "सुरक्षा के लिए आपको पहली साइन-इन पर अपना पासवर्ड बदलना होगा।",
+      "submitButton": "पासवर्ड अपडेट करें",
+      "title": "एक नया पासवर्ड चुनें",
+      "titleRequired": "एक नया पासवर्ड सेट करें"
+    },
+    "shell": {
+      "backHome": "होम पर वापस जाएं",
+      "fallbackSpotlight": "RiskNova केवल एक पैनल नहीं है — यह पेशेवर OHS इन्फ्रास्ट्रक्चर है जो जोखिम विश्लेषण, फील्ड ऑपरेशन्स, दस्तावेज़ प्रवाह और टीम समन्वय को एक उत्पाद भाषा में एकीकृत करता है।",
+      "highlightCorpDesc": "बेस्पोक आवश्यकताओं वाले मल्टी-साइट संगठनों के लिए संचार-आधारित एंटरप्राइज़ फ्लो।",
+      "highlightCorpTitle": "एंटरप्राइज़",
+      "highlightIndividualDesc": "स्वतंत्र विशेषज्ञों, चिकित्सकों, DSPs और एकल पेशेवरों के लिए तेज़ शुरुआती फ्लो।",
+      "highlightIndividualTitle": "व्यक्तिगत",
+      "highlightOsgbDesc": "टीम मॉडल जो क्लाइंट फर्मों, कर्मचारियों, असाइनमेंट्स और कार्य ट्रैकिंग को एक पैनल में लाता है।",
+      "highlightOsgbTitle": "OSGB",
+      "secureAccess": "सुरक्षित पहुंच"
+    },
+    "social": {
+      "divider": "या ईमेल के साथ जारी रखें",
+      "googleContinue": "Google के साथ {brand} में जारी रखें",
+      "googleSignUp": "Google के साथ {brand} के लिए साइन अप करें",
+      "oauthGenericError": "साइन-इन के दौरान कुछ गलत हुआ। कृपया पुनः प्रयास करें।",
+      "oauthRedirectHint": "Google साइन-इन के लिए Supabase रीडायरेक्ट URL की आवश्यकता है: Authentication URL कॉन्फ़िगरेशन में https://getrisknova.com/auth/callback (और आपके environment URLs) जोड़ें।",
+      "supabaseError": "प्रमाणीकरण सेवाओं से कनेक्ट नहीं हो सका।"
+    }
+  },
+  "brand": {
+    "tagline": "AI-संचालित व्यावसायिक स्वास्थ्य और सुरक्षा प्लेटफॉर्म"
+  },
+  "certificateVerify": {
+    "certNo": "प्रमाणपत्र संख्या",
+    "date": "दिनांक",
+    "duration": "अवधि",
+    "expiredCertSubtitle": "इस प्रमाणपत्र की वैधता अवधि समाप्त हो गई है।",
+    "expiredCertTitle": "समाप्त प्रमाणपत्र",
+    "expiredSuffix": " (समाप्त)",
+    "footer": "RiskNova OHS प्लेटफॉर्म द्वारा जारी।",
+    "fullName": "पूरा नाम",
+    "institution": "संगठन",
+    "issuedAt": "जारी किया गया",
+    "loading": "सत्यापन कर रहे हैं…",
+    "notFoundDesc": "इस सत्यापन कोड से कोई प्रमाणपत्र मेल नहीं खाता।",
+    "notFoundTitle": "प्रमाणपत्र नहीं मिला",
+    "score": "स्कोर",
+    "trainer": "प्रशिक्षक",
+    "training": "प्रशिक्षण",
+    "validUntil": "तक वैध",
+    "verifiedSubtitle": "यह प्रमाणपत्र RiskNova द्वारा सत्यापित किया गया है।",
+    "verifiedTitle": "सत्यापित प्रमाणपत्र"
+  },
   "common": {
+    "cancel": "रद्द करें",
+    "close": "बंद करें",
+    "closeMenu": "मेनू बंद करें",
+    "copy": "कॉपी करें",
+    "delete": "हटाएं",
+    "download": "डाउनलोड",
+    "edit": "संपादित करें",
+    "emptyDescription": "इस दृश्य के लिए प्रदर्शित करने हेतु कोई डेटा नहीं है।",
+    "emptyTitle": "अभी तक यहाँ कुछ नहीं है",
+    "error": "एक त्रुटि हुई",
+    "freeStart": "निःशुल्क शुरू करें",
+    "genericError": "कुछ गलत हुआ। कृपया पुनः प्रयास करें।",
+    "languagePickerAria": "भाषा चयन",
+    "loading": "लोड हो रहा है...",
     "login": "साइन इन",
-    "register": "अभी शुरू करें",
-    "freeStart": "मुफ़्त शुरू करें",
-    "platformLogin": "प्लेटफ़ॉर्म में साइन इन",
-    "profile": "Profile",
-    "settings": "Settings",
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close",
-    "search": "Search",
-    "loading": "Loading...",
-    "noData": "No data found",
-    "error": "An error occurred",
-    "success": "Success",
-    "download": "Download",
-    "copy": "Copy",
-    "saved": "Saved",
-    "menu": "Menu",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "retry": "Try again",
-    "genericError": "Something went wrong. Please try again.",
-    "emptyTitle": "Nothing here yet",
-    "emptyDescription": "There is no data to display for this view."
+    "menu": "मेन्यू",
+    "noData": "कोई डेटा नहीं मिला",
+    "openMenu": "मेन्यू खोलें",
+    "platformLogin": "प्लेटफॉर्म में साइन इन",
+    "profile": "प्रोफाइल",
+    "register": "शुरू करें",
+    "retry": "पुनः प्रयास करें",
+    "save": "सेव",
+    "saved": "सेव किया गया",
+    "search": "खोजें",
+    "settings": "सेटिंग्स",
+    "success": "सफलता"
+  },
+  "companiesList": {
+    "actions": {
+      "newCompany": "नई कंपनी",
+      "sampleData": "नमूना डेटा"
+    },
+    "archive": "संग्रहीत करें",
+    "badge": {
+      "archived": "संग्रहीत",
+      "deleted": "हटाया गया"
+    },
+    "clearFilters": "फ़िल्टर साफ़ करें",
+    "confirmArchive": {
+      "confirm": "पुष्टि करें",
+      "hint": "यह सक्रिय सूची से हट जाएगा।",
+      "title": "आर्काइव करें \"{name}\"?"
+    },
+    "confirmDelete": {
+      "confirm": "हटाएं",
+      "instruction": "पुष्टि के लिए यह शब्द टाइप करें:",
+      "title": "{name}\" को हटाएं?"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "DELETE टाइप करें",
+      "word": "DELETE"
+    },
+    "defaults": {
+      "companyName": "नई कंपनी / संगठन",
+      "kind": "निजी क्षेत्र",
+      "shortName": "नया रिकॉर्ड"
+    },
+    "delete": "हटाएं",
+    "description": {
+      "multi": "उन कंपनियों का प्रबंधन करें जिनके लिए आप जिम्मेदार हैं और उनकी कार्यस्थलों तक पहुंचें।",
+      "single": "अपनी सक्रिय कार्यस्थल के लिए कर्मचारियों और अन्य परिचालन रिकॉर्ड का प्रबंधन करें।"
+    },
+    "discard": "रद्द करें",
+    "employeesSuffix": "कर्मचारी",
+    "empty": {
+      "archiveBannerCompany": "संग्रहीत कंपनियां। आप इन्हें पुनर्स्थापित कर सकते हैं।",
+      "archiveBannerWorksite": "संग्रहीत कार्यस्थल रिकॉर्ड। आप इन्हें पुनर्स्थापित कर सकते हैं।",
+      "archiveEmptyCompany": "संग्रह में कुछ नहीं",
+      "archiveEmptyDescCompany": "अभी तक कोई संग्रहीत कंपनी नहीं।",
+      "archiveEmptyDescWorksite": "अभी तक कोई संग्रहीत कार्यस्थल नहीं।",
+      "archiveEmptyWorksite": "संग्रह में कुछ नहीं",
+      "clearFilters": "फ़िल्टर साफ़ करें",
+      "completeWorksite": "कार्यस्थल सेटअप पूरा करें",
+      "deletedBannerCompany": "हटाई गई कंपनियां। स्थायी हटाना पूर्ववत नहीं किया जा सकता।",
+      "deletedBannerWorksite": "हटाए गए कार्यस्थल रिकॉर्ड। स्थायी हटाना पूर्ववत नहीं किया जा सकता।",
+      "deletedEmptyCompany": "कोई हटाई गई कंपनी नहीं",
+      "deletedEmptyDescCompany": "अभी तक कोई हटाई गई कंपनियां नहीं हैं।",
+      "deletedEmptyDescWorksite": "अभी तक कोई हटाई गई कार्यस्थल नहीं हैं।",
+      "deletedEmptyWorksite": "कोई हटाई गई कार्यस्थल नहीं",
+      "initialDescCompany": "आरंभ करने के लिए अपनी पहली कंपनी बनाएं।",
+      "initialDescWorksite": "यह क्षेत्र आपके सक्रिय कार्यस्थल डेटा से भरता है। कर्मचारी और अन्य रिकॉर्ड देखने के लिए कार्यस्थल सेटअप पूरा करें।",
+      "initialTitleCompany": "अभी तक कोई कंपनियां नहीं",
+      "initialTitleWorksite": "अभी तक कोई कार्यस्थल रिकॉर्ड नहीं",
+      "newCompany": "नई कंपनी",
+      "noMatchCompany": "कोई मेल खाती कंपनियां नहीं",
+      "noMatchDescription": "आपके फ़िल्टर से कोई रिकॉर्ड मेल नहीं खाते।",
+      "noMatchWorksite": "कोई मेल खाते कार्यस्थल नहीं",
+      "sampleData": "नमूना डेटा"
+    },
+    "entity": {
+      "companyPlural": "कंपनियां",
+      "worksitePlural": "कार्यस्थल"
+    },
+    "eyebrow": {
+      "multi": "मेरी कंपनियां / संगठन",
+      "osgb": "OSGB कंपनियां",
+      "singleWorksite": "कार्यस्थल"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "सभी",
+      "hazardClass": "खतरा वर्ग",
+      "kind": "प्रकार",
+      "search": "खोजें",
+      "searchPlaceholder": "नाम, क्षेत्र, प्रकार, NACE…",
+      "sector": "क्षेत्र",
+      "sort": "क्रमबद्ध करें"
+    },
+    "limitReachedBanner": "आपने सक्रिय कंपनी / कार्यक्षेत्र की सीमा पहुंचा दी है। कोई कंपनी जोड़ने या पुनर्स्थापित करने से पहले किसी कंपनी को संग्रहीत करें या अपनी योजना अपग्रेड करें।",
+    "links": {
+      "riskAnalysis": "जोखिम विश्लेषण",
+      "workspace": "कार्यक्षेत्र"
+    },
+    "metrics": {
+      "actions": "कार्य",
+      "departments": "विभाग",
+      "employees": "कर्मचारी",
+      "hazard": "खतरा",
+      "locations": "स्थान",
+      "overdue": "अतिदेय"
+    },
+    "permanentDelete": "स्थायी रूप से हटाएं",
+    "progress": {
+      "coverage": "कवरेज",
+      "maturity": "परिपक्वता"
+    },
+    "restore": "पुनर्स्थापित करें",
+    "sort": {
+      "employees": "कर्मचारी",
+      "name": "नाम के अनुसार",
+      "overdue": "अतिदेय",
+      "risk": "जोखिम"
+    },
+    "stats": {
+      "avgMaturity": "औसत परिपक्वता",
+      "criticalCompanies": "महत्वपूर्ण कंपनियां",
+      "criticalWorksites": "महत्वपूर्ण कार्यस्थल",
+      "employees": "कर्मचारी",
+      "openActions": "खुले कार्य",
+      "overdueTasks": "अतिदेय कार्य",
+      "totalCompanies": "कुल कंपनियां",
+      "totalWorksites": "कुल कार्यस्थल"
+    },
+    "storage": {
+      "local": "स्थानीय",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "सक्रिय",
+      "archived": "संग्रहीत",
+      "deleted": "हटाए गए"
+    },
+    "title": {
+      "multi": "मेरी कंपनियां / संगठन",
+      "osgb": "कंपनियां और कार्यस्थल",
+      "single": "कार्यस्थल और परिचालन सामग्री"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} सक्रिय कंपनी स्लॉट उपयोग में",
+      "activeOnly": "{count} सक्रिय कंपनियां / कार्यक्षेत्र"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "कार्यस्थल",
+    "docTitle": "{name} — कार्यक्षेत्र · RiskNova",
+    "docTitleFallback": "कार्यक्षेत्र · RiskNova",
+    "invite": "आमंत्रित करें",
+    "logo": {
+      "fileTooLarge": "फ़ाइल बहुत बड़ी है ({sizeMb} MB)। अधिकतम आकार 5 MB है।",
+      "imagesOnly": "केवल छवि फ़ाइलें अपलोड की जा सकती हैं (PNG, JPEG, WebP, SVG)।",
+      "updated": "लोगो/छवि अपडेट की गई।",
+      "uploadFailed": "अपलोड असफल। दूसरी फ़ाइल आज़माएं।",
+      "uploadTitle": "लोगो अपलोड करें"
+    },
+    "notFound": {
+      "back": "कंपनियों पर वापस जाएं",
+      "description": "इस ID से कोई कंपनी मेल नहीं खाती।",
+      "title": "कंपनी नहीं मिली"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "सहेजें",
+    "saving": "सहेजा जा रहा है…",
+    "sidebar": {
+      "hint": "बाईं ओर एक क्षेत्र चुनें; दाईं ओर सामग्री प्रबंधित करें।",
+      "title": "कार्यस्थल अनुभाग"
+    },
+    "stats": {
+      "departments": "विभाग",
+      "employees": "कर्मचारी",
+      "locations": "स्थान",
+      "maturity": "परिपक्वता",
+      "openActions": "खुली कार्रवाइयां",
+      "overdue": "देर से"
+    },
+    "tabs": {
+      "history": "इतिहास",
+      "ohs_file": "OHS फ़ाइल",
+      "organization": "संगठन",
+      "people": "टीम",
+      "personnel": "कर्मचारी",
+      "risk": "जोखिम और क्षेत्र",
+      "structure": "परिसर",
+      "tracking": "ट्रैकिंग"
+    }
+  },
+  "consent": {
+    "description": "सक्रिय प्रकटीकरण और KVKK पाठ यहाँ सूचीबद्ध हैं। जब कोई नया संस्करण प्रकाशित होता है, तो सिस्टम आपको फिर से सहमति देने के लिए कहता है।",
+    "empty": "कोई प्रकाशित सहमति पाठ नहीं।",
+    "lastStatus": "अंतिम स्थिति",
+    "loading": "सहमति रिकॉर्ड लोड हो रहे हैं...",
+    "mandatory": "आवश्यक",
+    "mandatoryNo": "नहीं",
+    "mandatoryYes": "हाँ",
+    "notGranted": "अभी तक प्रदान नहीं किया गया",
+    "stats": "{active} सक्रिय सहमतियाँ - {pending} लंबित आवश्यक पाठ",
+    "statusApproved": "स्वीकृत",
+    "statusOptional": "वैकल्पिक",
+    "statusPending": "लंबित आवश्यक पाठ",
+    "title": "गोपनीयता और सहमतियाँ",
+    "types": {
+      "acik_riza": "स्पष्ट सहमति",
+      "aydinlatma": "प्रकटीकरण",
+      "kvkk": "KVKK",
+      "pazarlama": "मार्केटिंग",
+      "yurt_disi_aktarim": "सीमा पार स्थानांतरण"
+    }
+  },
+  "consentGate": {
+    "consentType": {
+      "acik_riza": "स्पष्ट सहमति",
+      "aydinlatma": "गोपनीयता सूचना",
+      "kvkk": "KVKK",
+      "pazarlama": "मार्केटिंग",
+      "yurt_disi_aktarim": "सीमा पार स्थानांतरण"
+    },
+    "description": "अनिवार्य नियम/KVKK सूचनाएं, गोपनीयता प्रकटीकरण और आवश्यक स्पष्ट सहमति पाठ यहां उनके नवीनतम प्रकाशित संस्करणों में सूचीबद्ध हैं। मार्केटिंग सहमति वैकल्पिक है। जब अनिवार्य पाठ बदलते हैं, तो सिस्टम आपसे फिर से स्वीकार करने को कह सकता है।",
+    "errMustAcknowledge": "जारी रखने के लिए आपको सभी आवश्यक पाठों को स्वीकार करना होगा।",
+    "errSaveFailed": "सहमति सहेजी नहीं जा सकी। कृपया पुनः प्रयास करें।",
+    "eyebrow": "KVKK और सहमतियां",
+    "mandatoryBadge": "आवश्यक",
+    "progress": "{total} में से {approved} पाठ स्वीकार किए गए",
+    "readAcknowledge": "मैंने इस पाठ को पढ़ा है और स्वीकार करता हूं",
+    "saving": "सहमतियां सहेजी जा रही हैं…",
+    "signOutTemp": "अभी के लिए साइन आउट करें",
+    "submit": "सहमतियां पूर्ण करें",
+    "title": "जारी रखने से पहले आवश्यक पाठों को स्वीकार करें"
+  },
+  "country": {
+    "AE": "संयुक्त अरब अमीरात",
+    "AZ": "अज़रबैजान",
+    "CN": "चीन",
+    "DE": "जर्मनी",
+    "ES": "स्पेन",
+    "FR": "फ्रांस",
+    "GB": "यूनाइटेड किंगडम",
+    "ID": "इंडोनेशिया",
+    "IN": "भारत",
+    "JP": "जापान",
+    "KR": "दक्षिण कोरिया",
+    "RU": "रूस",
+    "SA": "सऊदी अरब",
+    "TR": "तुर्किये",
+    "US": "संयुक्त राज्य अमेरिका"
+  },
+  "dashboard": {
+    "badgeCommandCenter": "नियंत्रण केंद्र",
+    "badgeLiveOps": "लाइव संचालन",
+    "badgeRemoteSync": "रिमोट Supabase सिंक",
+    "companiesTotal": "{count} कंपनियां",
+    "companyManageCta": "कंपनियों का प्रबंधन",
+    "companySummaryCountLabel": "पंजीकृत कंपनियां",
+    "companySummaryTitle": "कंपनी स्नैपशॉट",
+    "docStatusDraft": "मसौदा",
+    "docStatusPending": "अनुमोदन",
+    "docStatusReady": "तैयार",
+    "docStatusRevision": "संशोधन",
+    "fallbackUserName": "उपयोगकर्ता",
+    "goToPlans": "योजनाएं देखें",
+    "greetingAfternoon": "शुभ दोपहर",
+    "greetingEvening": "शुभ संध्या",
+    "greetingMorning": "शुभ प्रभात",
+    "heroIntro": "अपने संपूर्ण OHS संचालन को एक स्क्रीन पर मॉनिटर करें: जोखिम, लाइब्रेरी आउटपुट, घटनाएं, कार्य और कंपनी फॉलो-अप — एक स्पष्ट कमांड व्यू में एक साथ लाया गया।",
+    "moduleAssessment": "परीक्षा और सर्वेक्षण",
+    "moduleAssessmentDesc": "AI-सहायक मापन प्रवाह",
+    "moduleEmergency": "आपातकाल",
+    "moduleEmergencyDesc": "योजनाएं और अभ्यास",
+    "moduleLegal": "कानून",
+    "moduleLegalDesc": "कानून और मार्गदर्शन लाइब्रेरी",
+    "moduleLibrary": "OHS लाइब्रेरी",
+    "moduleLibraryDesc": "दस्तावेज़ और टेम्प्लेट",
+    "moduleRisk": "जोखिम विश्लेषण",
+    "moduleRiskDesc": "{count} मूल्यांकन",
+    "modulesSubtitle": "प्लेटफॉर्म पर सक्रिय परिचालन क्षेत्र।",
+    "modulesTitle": "OHS मॉड्यूल",
+    "moduleTraining": "प्रशिक्षण",
+    "moduleTrainingDesc": "ट्रैकिंग और रिकॉर्ड",
+    "operationCalm": "स्थिर संचालन",
+    "operationControlled": "नियंत्रण में",
+    "operationHeavy": "भारी फॉलो-अप",
+    "planDefaultBody": "यदि आपको अधिक वर्कस्पेस या मॉड्यूल चाहिए, तो योजनाओं की समीक्षा करें; अपग्रेड स्वयं-सेवा से किया जा सकता है।",
+    "planDefaultTitle": "योजनाएं और क्षमता",
+    "planDemoBody": "उत्पादन उपयोग के लिए सही योजना चुनें; भुगतान और बिलिंग योजना पृष्ठ पर प्रबंधित किए जाते हैं।",
+    "planDemoEyebrow": "डेमो · अपग्रेड",
+    "planDemoTitle": "आप डेमो खाते पर हैं",
+    "planSelfServeEyebrow": "स्वयं-सेवा अपग्रेड",
+    "priorityHighRisk": "उच्च जोखिम",
+    "priorityIncidents": "घटनाएं",
+    "priorityOpenTasks": "खुले कार्य",
+    "quickCompanies": "कंपनियां",
+    "quickEducation": "प्रशिक्षण",
+    "quickFieldAudit": "फील्ड ऑडिट",
+    "quickFlowsBadge": "प्लेटफॉर्म",
+    "quickFlowsSubtitle": "एक क्लिक में अपने सबसे अधिक उपयोग किए जाने वाले मॉड्यूल पर जाएं।",
+    "quickFlowsTitle": "त्वरित वर्कफ़्लो",
+    "quickIncident": "घटना रिपोर्ट करें",
+    "quickLibrary": "OHS लाइब्रेरी",
+    "quickPlanner": "प्लानर",
+    "quickReports": "रिपोर्ट",
+    "quickRisk": "जोखिम विश्लेषण",
+    "recentDocsCta": "लाइब्रेरी खोलें",
+    "recentDocsEmpty": "अभी तक कोई लाइब्रेरी आउटपुट नहीं। OHS लाइब्रेरी में टेम्प्लेट से शुरू करें।",
+    "recentDocsSubtitle": "OHS लाइब्रेरी फ़्लो से हाल ही में संपादित दस्तावेज़ों का सारांश यहाँ है।",
+    "recentDocsTitle": "नवीनतम लाइब्रेरी आउटपुट",
+    "sessionLoadingHint": "हम आपके सत्र की पुष्टि कर रहे हैं। इसमें कुछ सेकंड लग सकते हैं; यदि कुछ नहीं होता, तो कृपया फिर से साइन इन करें।",
+    "sessionLoadingTitle": "सत्र लोड हो रहा है…",
+    "signalCompanies": "कंपनी कवरेज",
+    "signalOperation": "संचालन स्थिति",
+    "signalWorkload": "प्राथमिकता लोड",
+    "statIncidents": "घटनाएं",
+    "statIncidentsSub": "कुल रिकॉर्ड",
+    "statLibExam": "लाइब्रेरी परीक्षाएं",
+    "statLibExamSub": "आयातित परीक्षाएं",
+    "statLibraryDocs": "लाइब्रेरी दस्तावेज़",
+    "statLibraryDocsSub": "{ready} तैयार · {draft} ड्राफ़्ट",
+    "statLibSurvey": "लाइब्रेरी प्रशिक्षण",
+    "statLibSurveySub": "आयातित सर्वेक्षण / प्रशिक्षण",
+    "statLive": "लाइव",
+    "statRisk": "जोखिम विश्लेषण",
+    "statRiskSubHigh": "{count} उच्च जोखिम",
+    "statRiskSubNone": "कोई उच्च जोखिम नहीं",
+    "statTasks": "खुले कार्य",
+    "statTasksSub": "फॉलो-अप की प्रतीक्षा में",
+    "todayCardTitle": "आज",
+    "todayFocusEyebrow": "आज का फोकस",
+    "todayFocusTitle": "पहले महत्वपूर्ण आइटम",
+    "todayTasksDone": "सभी कार्य पूर्ण",
+    "todayTasksPending": "{count} खुले कार्य प्रतीक्षा में",
+    "trackChipActions": "{count} कार्रवाइयां",
+    "trackChipControls": "निरीक्षण {count}",
+    "trackChipTraining": "प्रशिक्षण {count}",
+    "trackCommitteeLabel": "लंबित समिति",
+    "trackCommitteeSub": "नियोजित OHS समिति बैठकें",
+    "trackCompaniesCta": "कंपनियां",
+    "trackEmpty": "अभी तक कोई कंपनी परिभाषित नहीं है। कंपनियां जोड़ने के बाद ट्रैकिंग मेट्रिक्स यहां दिखाई देंगे।",
+    "trackExpiringTrainingLabel": "आगामी प्रशिक्षण",
+    "trackExpiringTrainingSub": "30 दिनों के भीतर",
+    "trackHealthExamLabel": "आगामी चिकित्सा परीक्षा",
+    "trackHealthExamSub": "30 दिनों के भीतर स्वास्थ्य निगरानी",
+    "trackOpenActionLabel": "खुली कार्रवाइयां",
+    "trackOpenActionSub": "जोखिम निष्कर्ष + CAPA + कार्य",
+    "trackOverdueControlLabel": "विलंबित निरीक्षण",
+    "trackOverdueControlSub": "आवधिक निरीक्षण अवधि समाप्त",
+    "trackPriorityCompanies": "प्राथमिकता की प्रतीक्षा में कंपनियां",
+    "trackSubtitle": "सभी कंपनियों का सारांश। {companyCount} कंपनियों की निगरानी, {totalActionable} कार्रवाइयां फॉलो-अप की प्रतीक्षा में।",
+    "trackTitle": "ट्रैकिंग सारांश",
+    "workloadFollowups": "{count} आइटम"
+  },
+  "dataRights": {
+    "adminNotes": "प्रशासक नोट",
+    "deletionActive": "सक्रिय डिलीशन अनुरोध मौजूद है",
+    "deletionConfirm": "यह आपके खाते के लिए 30-दिन की डिलीशन प्रक्रिया शुरू करेगा। क्या आप जारी रखना चाहते हैं?",
+    "deletionDescription": "जब आप अनुरोध बनाते हैं, तो आपका खाता और संबंधित व्यक्तिगत डेटा डिलीशन प्रक्रिया में प्रवेश करता है। स्थायी डिलीशन रिटेंशन नीति के अनुसार 30 दिन बाद पूरा होता है।",
+    "deletionEmpty": "अभी तक कोई डिलीशन अनुरोध नहीं।",
+    "deletionExists": "आपके पास पहले से ही एक सक्रिय डिलीशन अनुरोध है।",
+    "deletionFailed": "डिलीशन अनुरोध नहीं बनाया जा सका।",
+    "deletionLoading": "डिलीशन अनुरोध लोड हो रहे हैं...",
+    "deletionReasonPlaceholder": "वैकल्पिक विवरण या कारण",
+    "deletionReceived": "आपका डिलीशन अनुरोध प्राप्त हुआ। निर्धारित स्थायी डिलीशन: {date}।",
+    "deletionSubmit": "डिलीशन अनुरोध बनाएं",
+    "deletionTitle": "मेरा डेटा डिलीट करें",
+    "deletionWarning": "डिलीशन अनुरोध को प्रक्रिया अपरिवर्तनीय होने से पहले प्रशासनिक रूप से रद्द किया जा सकता है।",
+    "description": "अपना व्यक्तिगत डेटा डाउनलोड करें, डिलीशन अनुरोध बनाएं और अपनी वर्तमान KVKK प्रक्रियाओं की स्थिति ट्रैक करें।",
+    "download": "डाउनलोड",
+    "errorMsg": "त्रुटि",
+    "exportCsvDesc": "टेबुलर रिपोर्टिंग और बाहरी स्थानांतरण",
+    "exportCsvTitle": "CSV एक्सपोर्ट",
+    "exportDescription": "प्रोफाइल, सहमति रिकॉर्ड, सुरक्षा इवेंट्स और डेटा-राइट्स हिस्ट्री को JSON या CSV के रूप में डाउनलोड किया जा सकता है।",
+    "exportDownloadCount": "डाउनलोड काउंट",
+    "exportFailed": "एक्सपोर्ट नहीं बना सका।",
+    "exportHistoryEmpty": "अभी तक कोई डेटा एक्सपोर्ट रिकॉर्ड नहीं बनाया गया।",
+    "exportHistoryLoading": "एक्सपोर्ट हिस्ट्री लोड हो रही है...",
+    "exportJsonDesc": "आपके सभी डेटा का संरचित बंडल",
+    "exportJsonTitle": "JSON एक्सपोर्ट",
+    "exportReady": "{format} एक्सपोर्ट तैयार है और डाउनलोड हो गया।",
+    "exportTitle": "मेरा डेटा डाउनलोड करें",
+    "requestDate": "अनुरोध दिनांक",
+    "scheduledPurge": "निर्धारित स्थायी डिलीशन",
+    "scope": {
+      "admin": "एडमिन",
+      "self": "व्यक्तिगत अनुरोध"
+    },
+    "statActive": "सक्रिय प्रक्रिया",
+    "statActiveNo": "नहीं",
+    "statActiveYes": "हां",
+    "statDeletion": "डिलीशन अनुरोध",
+    "statExport": "एक्सपोर्ट",
+    "status": {
+      "cancelled": "रद्द",
+      "completed": "पूर्ण",
+      "expired": "समाप्त",
+      "failed": "असफल",
+      "processing": "प्रसंस्करण",
+      "rejected": "अस्वीकृत",
+      "scheduled": "निर्धारित"
+    },
+    "title": "डेटा अधिकार"
+  },
+  "demoRequest": {
+    "accountTypeEnterprise": "एंटरप्राइज़ / कंपनी",
+    "accountTypeIndividual": "व्यक्तिगत (एकल विशेषज्ञ)",
+    "accountTypeLabel": "खाता प्रकार",
+    "accountTypeOsgb": "OSGB",
+    "accountTypeUnset": "निश्चित नहीं / निर्णय लेना",
+    "cancel": "रद्द करें",
+    "closeAria": "बंद करें",
+    "dialogSubtitle": "हम आपकी आवश्यकताओं के अनुसार एक संक्षिप्त वॉकथ्रू की योजना बनाएंगे।",
+    "dialogTitle": "डेमो का अनुरोध करें",
+    "fieldCompany": "कंपनी / संगठन",
+    "fieldEmail": "ईमेल *",
+    "fieldName": "पूरा नाम *",
+    "fieldPhone": "फोन",
+    "messageLabel": "संदेश (वैकल्पिक)",
+    "messagePlaceholder": "कौन से मॉड्यूल आपकी रुचि के हैं? हेडकाउंट? पसंदीदा संपर्क समय?",
+    "placeholderCompany": "Acme Ltd.",
+    "placeholderEmail": "you@company.com",
+    "placeholderName": "Jane Doe",
+    "placeholderPhone": "+44 …",
+    "privacyError": "कृपया जारी रखने के लिए गोपनीयता सूचना की पुष्टि करें।",
+    "privacyLabel": "गोपनीयता सूचना:",
+    "privacyText": "मैं सहमत हूं कि मेरे संपर्क विवरण केवल इस अनुरोध का उत्तर देने के लिए प्रसंस्कृत किए जाते हैं।",
+    "submit": "अनुरोध भेजें",
+    "submitError": "हम आपका अनुरोध नहीं भेज सके। कृपया पुनः प्रयास करें।",
+    "submitting": "भेजा जा रहा है...",
+    "successBody": "हमारी टीम जल्द ही आपसे संपर्क करेगी। आपकी रुचि के लिए धन्यवाद।",
+    "successClose": "बंद करें",
+    "successTitle": "अनुरोध प्राप्त हुआ"
+  },
+  "header": {
+    "authLoading": "सुरक्षित सत्र सत्यापित किया जा रहा है…",
+    "lockedModuleTooltip": "इस मॉड्यूल का उपयोग करने के लिए पहले एक वर्कस्पेस बनाएं।",
+    "markAllRead": "सभी को पढ़ा गया चिह्नित करें",
+    "noNotificationsYet": "अभी तक कोई सूचना नहीं",
+    "notificationsAria": "सूचनाएं",
+    "notificationsTitle": "सूचनाएं",
+    "platformAdminShort": "एडमिन",
+    "seeAllNotifications": "सभी देखें",
+    "signingOut": "साइन आउट हो रहे हैं…",
+    "signOut": "साइन आउट",
+    "themeDarkAria": "डार्क थीम",
+    "themeLightAria": "लाइट थीम",
+    "workspaceLoading": "वर्कस्पेस तैयार किया जा रहा है…"
+  },
+  "landing": {
+    "badge": "AI-संचालित OHS प्लेटफॉर्म",
+    "bottomCtaDescription": "RiskNova के साथ एक ही प्लेटफॉर्म पर जोखिम विश्लेषण से रिपोर्टिंग तक अपने सभी कार्यक्षेत्र सुरक्षा संचालन का प्रबंधन करें।",
+    "bottomCtaLine1": "अपनी OHS",
+    "bottomCtaLine2": "प्रक्रियाओं को रूपांतरित करें",
+    "ctaDemo": "डेमो का अनुरोध करें",
+    "ctaDescription": "पेशेवर रूप, शक्तिशाली अवसंरचना और AI सहायता के साथ एक ही प्लेटफॉर्म पर अपनी OHS प्रक्रियाओं का प्रबंधन करें।",
+    "ctaEyebrow": "तैयार CTA क्षेत्र",
+    "ctaTitle": "अपने जोखिम मॉड्यूल को उत्पाद प्रदर्शन में बदलें",
+    "enterpriseCtaShort": "एंटरप्राइज़: कोटेशन और संपर्क",
+    "feat1Desc": "एक उत्पाद आधार जो मैन्युअल या मॉड्यूल-आधारित जोखिम इनपुट को एक ही प्रवाह में एकत्रित करता है और परिणामों को अधिक दृश्यमान बनाता है।",
+    "feat1Title": "AI-संचालित जोखिम विश्लेषण",
+    "feat2Desc": "ऑडिट, खोज, कार्य और ट्रैकिंग क्षेत्रों को एक ऐसे क्रम में एक साथ लाता है जिसे संचालन टीम पढ़ सकती है।",
+    "feat2Title": "फील्ड खोजें और कार्य प्रबंधन",
+    "feat3Desc": "एक सुसंगत स्क्रीन आधार प्रदान करता है जहां उत्पन्न परिणामों को इतिहास, विवरण और आउटपुट प्रक्रियाओं से जोड़ा जा सकता है।",
+    "feat3Title": "रिपोर्टिंग और रिकॉर्डिंग अवसंरचना",
+    "feat4Desc": "जोखिम विश्लेषण स्क्रीन, परिणाम स्क्रीन और स्कोर इतिहास जैसे क्षेत्रों के लिए एक पेशेवर और विश्वास-प्रेरणादायक आधार तैयार करता है।",
+    "feat4Title": "जोखिम मॉड्यूल के लिए उत्पाद प्रदर्शन",
+    "feat5Desc": "एकल कॉलम, दो कॉलम और वाइड स्क्रीन लेआउट के साथ विभिन्न उपकरणों में पठनीयता बनाए रखता है।",
+    "feat5Title": "मोबाइल, टैबलेट और डेस्कटॉप रिस्पॉन्सिव",
+    "feat6Desc": "स्वच्छ सतहों, नियंत्रित कंट्रास्ट और स्पष्ट CTA संरचना के साथ एक पेशेवर SaaS अनुभव बनाता है।",
+    "feat6Title": "कॉर्पोरेट और आधुनिक दृश्य भाषा",
+    "featuresDescription": "पेशेवर उपकरण जो आपकी OHS प्रक्रियाओं को एंड-टू-एंड प्रबंधित करते हैं।",
+    "featuresEyebrow": "सुविधाएं",
+    "featuresTitle1": "व्यापक",
+    "featuresTitle2": "समाधान",
+    "footerBlurb": "AI-संचालित OHS जोखिम विश्लेषण और संचालन प्लेटफॉर्म — पेशेवर, विश्वसनीय और आधुनिक।",
+    "footerCompany": "कंपनी",
+    "footerContact": "संपर्क",
+    "footerCookie": "कुकी नीति",
+    "footerDescription": "AI-संचालित OHS निर्णय सहायता प्लेटफॉर्म",
+    "footerHelp": "सहायता",
+    "footerHome": "होम",
+    "footerLegal": "कानूनी",
+    "footerPrivacy": "गोपनीयता नीति",
+    "footerProduct": "उत्पाद",
+    "footerRefund": "रिफंड नीति",
+    "footerRights": "सभी अधिकार सुरक्षित।",
+    "footerSupport": "सहायता",
+    "footerTerms": "उपयोग की शर्तें",
+    "heroDescription": "RiskNova एक AI-संचालित OHS प्लेटफॉर्म है जो जोखिम विश्लेषण, फील्ड ट्रैकिंग, रिकॉर्डिंग, रिपोर्टिंग और निर्णय सहायता प्रक्रियाओं को एक एकल उत्पाद अनुभव में एकीकृत करने के लिए डिज़ाइन किया गया है।",
+    "heroSubtitle": "मापन से लेकर ऑडिट निष्कर्ष, कार्य ट्रैकिंग, रिपोर्टिंग और अभिलेखागार तक — सभी प्रक्रियाओं को एक छत के नीचे एकीकृत करें। व्यक्तियों से लेकर OSGBs और बहु-साइट उद्यमों तक स्केल करता है।",
+    "heroTitle1": "OHS जोखिम प्रबंधन को",
+    "heroTitle2": "कला में",
+    "heroTitle3": "रूपांतरित करें",
+    "heroTitleHighlight": "एक प्लेटफॉर्म से",
+    "heroTitlePrefix": "कार्यक्षेत्र सुरक्षा प्रबंधित करें",
+    "heroTitleSuffix": "",
+    "howDescription": "हमारे प्लेटफॉर्म के साथ शुरुआत करने के सरल चरण।",
+    "howEyebrow": "यह कैसे काम करता है",
+    "howTitle1": "नियंत्रण",
+    "howTitle2": "चार चरणों में",
+    "metaDescription": "AI-संचालित कार्यक्षेत्र सुरक्षा सॉफ्टवेयर: जोखिम विश्लेषण, फील्ड ऑडिट, निष्कर्ष, CAPA और रिपोर्टिंग एक प्लेटफॉर्म में — व्यक्तिगत, OSGB और उद्यम।",
+    "metaOgDescription": "मापन से ऑडिट, कार्य और रिपोर्ट तक — सुरक्षा प्रक्रियाओं को एक स्थान पर चलाएं।",
+    "metaOgTitle": "RiskNova — एक प्लेटफॉर्म से OHS प्रबंधित करें",
+    "metaTitle": "एक प्लेटफॉर्म से OHS प्रबंधित करें | RiskNova",
+    "osgbCtaShort": "OSGB: कोटेशन और संपर्क",
+    "solutionsLeadBold": "क्या आप एक OSGB या बहु-साइट संगठन हैं?",
+    "solutionsLeadRest": "योजनाओं की समीक्षा करें, कोटेशन के माध्यम से लीड छोड़ें या साइनअप करें — हमारी टीम फॉलो अप करेगी।",
+    "solutionsSectionAria": "OSGB और उद्यम प्रस्ताव",
+    "statsAnalysis": "विश्लेषण समय",
+    "statsScoring": "जोखिम स्कोरिंग",
+    "statsUptime": "अपटाइम",
+    "statsUsers": "सक्रिय उपयोगकर्ता",
+    "statsValueAnalysis": "15s",
+    "statsValueScore": "R-SCORE",
+    "statsValueUptime": "99.5%",
+    "statsValueUsers": "500+",
+    "step1Desc": "अपने संगठन-विशिष्ट खाते के साथ प्लेटफॉर्म में सुरक्षित रूप से साइन इन करें।",
+    "step1Title": "सुरक्षित पहुंच",
+    "step2Desc": "फील्ड ऑडिट, खतरा रिपोर्ट और जोखिम पैरामीटर को सिस्टम में स्थानांतरित करें।",
+    "step2Title": "जोखिम डेटा प्रविष्टि",
+    "step3Desc": "हमारा AI-संचालित विश्लेषण इंजन जोखिम स्कोर की गणना के लिए आपके डेटा को प्रोसेस करता है।",
+    "step3Title": "R-SCORE जेनरेशन",
+    "step4Desc": "परिणामों के आधार पर कार्य योजना बनाएं, ट्रैक और रिपोर्ट करें।",
+    "step4Title": "कार्य और फॉलो-अप",
+    "subscriptionDisclaimer": "RiskNova सब्स्क्रिप्शन-आधारित कार्यक्षेत्र स्वास्थ्य और सुरक्षा सॉफ्टवेयर प्रदान करता है।",
+    "testimonial1Author": "मेहमत के.",
+    "testimonial1Quote": "RiskNova के साथ फील्ड ऑडिट बहुत अधिक व्यवस्थित हो गए। AI टिप्पणी वास्तव में सहायक है।",
+    "testimonial1Role": "OHS विशेषज्ञ",
+    "testimonial2Author": "आयशे टी.",
+    "testimonial2Quote": "एक प्लेटफॉर्म में जोखिम विश्लेषण, रिपोर्टिंग और ट्रैकिंग होने से हमारी परिचालन दक्षता में सुधार हुआ।",
+    "testimonial2Role": "OHS प्रबंधक",
+    "testimonial3Author": "कैन डी.",
+    "testimonial3Quote": "कॉर्पोरेट लुक और उपयोग में आसानी का मतलब था कि टीम ने इसे बहुत जल्दी अपना लिया।",
+    "testimonial3Role": "संचालन प्रबंधक",
+    "testimonialsEyebrow": "प्रशंसापत्र",
+    "testimonialsTitle1": "हमारे",
+    "testimonialsTitle2": "उपयोगकर्ता क्या कहते हैं",
+    "valueTryDesc": "फॉर्म, परिणाम, स्कोर इतिहास और आउटपुट सुसंगत स्क्रीन का उपयोग करते हैं — आपकी टीम बिना किसी बाधा के काम करती रहती है।",
+    "valueTryEyebrow": "अभी आज़माएं",
+    "valueTryLogin": "साइन इन",
+    "valueTryRegister": "खाता बनाएं",
+    "valueTryTitle": "एक उत्पाद अनुभव में जोखिम, ऑडिट और रिपोर्टिंग",
+    "whyBullet1": "स्वच्छ, आधुनिक और विश्वास-प्रेरक OHS उपस्थिति",
+    "whyBullet2": "संचालन-केंद्रित, ध्यान-भटकाव मुक्त स्क्रीन लेआउट",
+    "whyBullet3": "Risk Intelligence मॉड्यूल के लिए तैयार डिज़ाइन सिस्टम",
+    "whyBullet4": "मल्टी-टेनेंट संगठन-आधारित सुरक्षित संरचना",
+    "whyBullet5": "AI-संचालित निर्णय सहायता तंत्र",
+    "whyBullet6": "कॉर्पोरेट रिपोर्टिंग और संग्रह अवसंरचना",
+    "whyDescription": "नीले विश्वास और सुनहरी गुणवत्ता के जोर, स्वच्छ सतहों और मृदु कंट्रास्ट के साथ एक पेशेवर SaaS अनुभव बनाता है।",
+    "whyEyebrow": "RiskNova क्यों",
+    "whyTitle1": "विश्वास-प्रेरक",
+    "whyTitle2": "प्रीमियम",
+    "whyTitle3": "अनुभव"
+  },
+  "lang": {
+    "ar": "العربية",
+    "az": "Azərbaycanca",
+    "de": "Deutsch",
+    "en": "English",
+    "es": "Español",
+    "fr": "Français",
+    "hi": "हिन्दी",
+    "id": "Bahasa Indonesia",
+    "ja": "日本語",
+    "ko": "한국어",
+    "ru": "Русский",
+    "tr": "Türkçe",
+    "zh": "中文"
+  },
+  "legal": {
+    "cookiePolicy": {
+      "eyebrow": "कुकी नीति",
+      "lastUpdated": "अंतिम अपडेट: 2 मई 2026",
+      "metaDescription": "RiskNova आवश्यक सत्र, सुरक्षा और प्राथमिकता कुकीज़ और समान तकनीकों का उपयोग कैसे करता है।",
+      "metaTitle": "कुकी नीति",
+      "ogDescription": "साइन-इन, सुरक्षा और प्राथमिकताओं के लिए आवश्यक कुकीज़; एनालिटिक्स और मार्केटिंग कुकीज़ आज मुख्य प्रवाह का हिस्सा नहीं हैं।",
+      "ogTitle": "कुकी नीति | RiskNova",
+      "sections": [
+        {
+          "content": "कुकीज़ और समान स्थानीय स्टोरेज तकनीकें छोटे तकनीकी रिकॉर्ड हैं जो वेब एप्लिकेशन को सत्र, सुरक्षा, भाषा प्राथमिकता और उत्पाद कार्यों को याद रखने में मदद करती हैं।",
+          "title": "कुकीज़ क्या हैं?"
+        },
+        {
+          "content": "RiskNova आपके सत्र को बनाए रखने, Supabase प्रमाणीकरण प्रवाह, OAuth रीडायरेक्ट, पासवर्ड रीसेट, सुरक्षा जांच, CSRF/प्रवाह स्थिरता और भाषा प्राथमिकता के लिए आवश्यक कुकीज़ का उपयोग करता है। यदि ये कुकीज़ अक्षम हैं, तो मुख्य प्लेटफॉर्म सुविधाएं काम नहीं कर सकती हैं।",
+          "title": "आवश्यक कुकीज़"
+        },
+        {
+          "content": "भाषा, क्षेत्र, UI प्राथमिकता, अंतिम चयनित कार्यक्षेत्र या समान उत्पाद सेटिंग्स को अनुभव को सुसंगत रखने के लिए कुकीज़ या localStorage में संग्रहीत किया जा सकता है।",
+          "title": "प्राथमिकता और उत्पाद कुकीज़"
+        },
+        {
+          "content": "यह रिलीज़ अनिवार्य प्रवाह के हिस्से के रूप में तृतीय-पक्ष एनालिटिक्स या मार्केटिंग कुकीज़ पर निर्भर नहीं करती है। यदि बाद में एनालिटिक्स या मार्केटिंग कुकीज़ शुरू की जाती हैं, तो उपयोगकर्ताओं को अलग सूचना और सहमति नियंत्रण प्राप्त होंगे जहां आवश्यक हो।",
+          "title": "एनालिटिक्स और मार्केटिंग कुकीज़"
+        },
+        {
+          "content": "आप अपनी ब्राउज़र सेटिंग्स से कुकीज़ को हटा या ब्लॉक कर सकते हैं। आवश्यक सत्र, सुरक्षा या भाषा कुकीज़ को ब्लॉक करना साइन-इन, पंजीकरण, बिलिंग या इन-ऐप वर्कफ़्लो को तोड़ सकता है।",
+          "title": "कुकीज़ का प्रबंधन"
+        },
+        {
+          "content": "कुकीज़ या गोपनीयता सेटिंग्स के बारे में प्रश्नों के लिए, support@getrisknova.com पर ईमेल करें।",
+          "title": "संपर्क"
+        }
+      ],
+      "title": "RiskNova कुकी नीति"
+    },
+    "privacy": {
+      "eyebrow": "गोपनीयता नीति",
+      "lastUpdated": "अंतिम अपडेट: 2 मई 2026",
+      "metaDescription": "RiskNova गोपनीयता नीति: हम खाते, उत्पाद उपयोग, बिलिंग, ईमेल, सुरक्षा और AI-सहायक सुविधाओं में व्यक्तिगत डेटा को कैसे प्रोसेस करते हैं।",
+      "metaTitle": "गोपनीयता नीति",
+      "ogDescription": "RiskNova व्यक्तिगत डेटा को कैसे प्रोसेस करता है, हम कौन से प्रोसेसर का उपयोग करते हैं और हम उपयोगकर्ता अधिकारों का समर्थन कैसे करते हैं।",
+      "ogTitle": "गोपनीयता नीति | RiskNova",
+      "sections": [
+        {
+          "content": "यह नीति बताती है कि RiskNova वेबसाइट, पंजीकरण, साइन-इन, सब्स्क्रिप्शन, OHS मॉड्यूल, दस्तावेज़ निर्माण, फील्ड निरीक्षण, प्रशिक्षण/परीक्षा/सर्वेक्षण, Nova AI और समर्थन में व्यक्तिगत डेटा को कैसे प्रोसेस किया जाता है। ग्राहक द्वारा प्लेटफॉर्म पर अपलोड किए गए कार्यक्षेत्र और कर्मचारी रिकॉर्ड के लिए, RiskNova आमतौर पर प्रोसेसर के रूप में कार्य करता है; अपने स्वयं के खाते, सुरक्षा, बिलिंग और समर्थन प्रक्रियाओं के लिए यह नियंत्रक के रूप में कार्य करता है।",
+          "title": "डेटा नियंत्रक और दायरा"
+        },
+        {
+          "content": "नाम, उपनाम, ईमेल, फोन, खाता पहचानकर्ता, संगठन और कार्यक्षेत्र विवरण, भूमिका और अनुमति रिकॉर्ड, सत्र और सुरक्षा लॉग, उपयोग मेट्रिक्स, समर्थन टिकट, सब्स्क्रिप्शन और भुगतान स्थिति, IP और डिवाइस डेटा को प्रोसेस किया जा सकता है। यदि उपयोगकर्ता उन्हें अपलोड करते हैं, तो जोखिम विश्लेषण, निरीक्षण, घटना लॉग, प्रशिक्षण, परीक्षा, सर्वेक्षण, दस्तावेज़, कर्मचारी रिकॉर्ड और मीडिया या डेटा फाइलें भी प्लेटफॉर्म पर संग्रहीत की जा सकती हैं।",
+          "title": "व्यक्तिगत डेटा की श्रेणियां"
+        },
+        {
+          "content": "डेटा को अनुबंध निष्पादित करने, प्लेटफॉर्म सुविधाएं प्रदान करने, व्यावसायिक सुरक्षा प्रक्रियाएं चलाने, उपयोगकर्ताओं को प्रमाणित करने, दुरुपयोग रोकने, ग्राहकों को बिल और समर्थन करने, कानूनी दायित्वों को पूरा करने, उत्पाद में सुधार करने और उपयोगकर्ता विकल्पों का सम्मान करने के लिए प्रोसेस किया जाता है। जहां स्पष्ट सहमति आवश्यक है, एक अलग सहमति पाठ दिखाया जाता है; मुख्य सेवा डेटा सहमति के बजाय अनुबंध, कानूनी दायित्व या वैध हित पर निर्भर हो सकता है।",
+          "title": "उद्देश्य और कानूनी आधार"
+        },
+        {
+          "content": "Nova AI जोखिम विश्लेषण, दस्तावेज़ ड्राफ्ट, प्रशिक्षण सामग्री या कानून-जागरूक उत्तर तैयार करते समय उपयोगकर्ता इनपुट और संबंधित संदर्भ को प्रोसेस कर सकता है। आउटपुट केवल निर्णय-समर्थन हैं; अंतिम पेशेवर और कानूनी निर्णय उपयोगकर्ता के साथ रहता है। जहां सामग्री में संवेदनशील या विशेष-श्रेणी डेटा शामिल हो सकता है, AI सेवाओं को भेजने से पहले स्पष्ट सहमति और/या अतिरिक्त प्रकटीकरण प्रवाह आवश्यक हो सकते हैं।",
+          "title": "AI-सहायक सुविधाएं"
+        },
+        {
+          "content": "होस्टिंग, डेटाबेस, प्रमाणीकरण, ईमेल, भुगतान, त्रुटि निगरानी और AI सुविधाएं Supabase, Vercel, Resend, Paddle, OpenAI, Anthropic और समान विक्रेताओं जैसे प्रदाताओं का उपयोग कर सकती हैं। वे केवल सेवा प्रदान करने के लिए आवश्यक डेटा को प्रोसेस करते हैं। कार्ड डेटा RiskNova द्वारा संग्रहीत नहीं किया जाता; भुगतान और चालान Paddle इन्फ्रास्ट्रक्चर पर चलते हैं।",
+          "title": "तृतीय-पक्ष प्रोसेसर"
+        },
+        {
+          "content": "क्लाउड होस्टिंग, ईमेल, भुगतान और AI सेवाएं तकनीकी रूप से विदेश स्थित इन्फ्रास्ट्रक्चर पर चल सकती हैं, इसलिए कुछ डेटा आपके देश के बाहर के प्रदाताओं को स्थानांतरित हो सकता है जहां सेवा की आवश्यकता होती है। जहां स्थानांतरण लागू होते हैं, लागू कानून (KVKK सहित जहां प्रासंगिक) के तहत प्रकटीकरण और सहमति चरण उत्पाद में प्रबंधित किए जाते हैं।",
+          "title": "अंतर्राष्ट्रीय स्थानांतरण"
+        },
+        {
+          "content": "RiskNova आवश्यक सत्र, सुरक्षा, भाषा प्राथमिकता और उत्पाद कुकीज़ का उपयोग करता है। यदि मार्केटिंग या तृतीय-पक्ष ट्रैकिंग कुकीज़ शुरू की जाती हैं, तो आवश्यकतानुसार एक अलग कुकी नीति और सहमति तंत्र प्रदान किया जाएगा। विवरण /cookie-policy पृष्ठ पर हैं।",
+          "title": "कुकीज़ और समान तकनीकें"
+        },
+        {
+          "content": "डेटा को सेवा संचालित करने, संविदात्मक, सुरक्षा, कानूनी और साक्ष्य आवश्यकताओं को पूरा करने के लिए आवश्यक समय तक रखा जाता है। प्लेटफॉर्म RLS, भूमिका जांच, सेवा भूमिकाओं का पृथक्करण, webhook हस्ताक्षर सत्यापन, दर सीमा, ऑडिट ट्रेल्स और सुरक्षा घटना लॉगिंग जैसे तकनीकी उपायों का उपयोग करता है।",
+          "title": "प्रतिधारण और सुरक्षा"
+        },
+        {
+          "content": "लागू डेटा-सुरक्षा कानून (KVKK अनुच्छेद 11 सहित जहां यह लागू होता है) के तहत, आप अपनी प्रोफ़ाइल में Privacy / Data Rights क्षेत्र के माध्यम से या support@getrisknova.com पर पहुंच, सुधार, मिटाना, आपत्ति, प्रतिबंध, पोर्टेबिलिटी और जानकारी का अनुरोध कर सकते हैं। मिटाने के अनुरोधों को कानूनी प्रतिधारण और सुरक्षा लॉगिंग आवश्यकताओं के साथ संतुलित किया जाता है।",
+          "title": "आपके अधिकार"
+        },
+        {
+          "content": "यह पाठ समय के साथ बदल सकता है। महत्वपूर्ण अपडेट के लिए उत्पाद में नवीनीकृत स्वीकृति या सूचना की आवश्यकता हो सकती है। गोपनीयता और डेटा-सुरक्षा अनुरोधों के लिए, support@getrisknova.com से संपर्क करें।",
+          "title": "संपर्क और अपडेट"
+        }
+      ],
+      "title": "RiskNova गोपनीयता नीति"
+    },
+    "privacySummary": {
+      "eyebrow": "गोपनीयता नीति",
+      "lastUpdated": "अंतिम अपडेट: 2 मई 2026",
+      "metaDescription": "RiskNova कैसे व्यक्तिगत डेटा एकत्र और उपयोग करता है का सारांश।",
+      "metaTitle": "गोपनीयता नीति",
+      "ogDescription": "खाता, उत्पाद उपयोग और सबप्रोसेसर को कवर करने वाला संक्षिप्त गोपनीयता सारांश।",
+      "ogTitle": "गोपनीयता नीति | RiskNova",
+      "title": "RiskNova गोपनीयता नीति"
+    },
+    "refund": {
+      "eyebrow": "रिफंड नीति",
+      "lastUpdated": "अंतिम अपडेट: 2 मई 2026",
+      "metaDescription": "RiskNova सब्सक्रिप्शन रिफंड, नवीनीकरण और Paddle बिलिंग नियमों को कैसे संभालता है।",
+      "metaTitle": "रिफंड नीति",
+      "ogDescription": "रिफंड विंडो, नवीनीकरण और बिलिंग सुधार।",
+      "ogTitle": "रिफंड नीति | RiskNova",
+      "title": "RiskNova रिफंड नीति"
+    },
+    "terms": {
+      "eyebrow": "उपयोग की शर्तें",
+      "lastUpdated": "अंतिम अपडेट: 2 मई 2026",
+      "metaDescription": "RiskNova की उपयोग शर्तें जिसमें खाते, सब्सक्रिप्शन, बिलिंग, स्वीकार्य उपयोग, AI आउटपुट और ग्राहक डेटा जिम्मेदारियां शामिल हैं।",
+      "metaTitle": "उपयोग की शर्तें",
+      "ogDescription": "RiskNova SaaS प्लेटफॉर्म की शर्तें: सब्सक्रिप्शन, खाता सुरक्षा, AI आउटपुट और स्वीकार्य उपयोग।",
+      "ogTitle": "उपयोग की शर्तें | RiskNova",
+      "sections": [
+        {
+          "content": "RiskNova व्यावसायिक स्वास्थ्य और सुरक्षा पेशेवरों, OSGBs और उद्यमों के लिए एक सब्सक्रिप्शन SaaS प्लेटफॉर्म है, जो जोखिम विश्लेषण, फील्ड निरीक्षण, दस्तावेज़ निर्माण, प्रशिक्षण/परीक्षा/सर्वेक्षण, रिपोर्टिंग, कानून-जागरूक खोज और Nova AI निर्णय-सहायता सुविधाएं प्रदान करता है।",
+          "title": "सेवा का दायरा"
+        },
+        {
+          "content": "उपयोगकर्ता खाता विवरण की सटीकता, पासवर्ड की मजबूती और अपने खाते के तहत की गई कार्रवाइयों के लिए जिम्मेदार हैं। संगठन प्रशासकों को उपयोगकर्ताओं, भूमिकाओं, कार्यक्षेत्रों और कंपनी प्राधिकरणों को सही तरीके से कॉन्फ़िगर करना चाहिए। संदिग्ध अनधिकृत पहुंच की तुरंत RiskNova को रिपोर्ट करनी चाहिए।",
+          "title": "खाता, भूमिकाएं और सुरक्षा"
+        },
+        {
+          "content": "प्लेटफॉर्म का उपयोग केवल वैध, पेशेवर और कार्यक्षेत्र-सुरक्षा-संबंधी उद्देश्यों के लिए किया जा सकता है। अनधिकृत पहुंच का प्रयास, रिवर्स इंजीनियरिंग, सेवा में बाधा डालना, हानिकारक सामग्री अपलोड करना, तृतीय-पक्ष अधिकारों का उल्लंघन, कोटा को दरकिनार करना या डेटा को गैरकानूनी रूप से प्रोसेस करना प्रतिबंधित है।",
+          "title": "स्वीकार्य उपयोग"
+        },
+        {
+          "content": "जोखिम विश्लेषण, निरीक्षण रिकॉर्ड, दस्तावेज़, कर्मचारी डेटा, प्रशिक्षण/परीक्षा/सर्वेक्षण सामग्री और अपलोड की गई फाइलें ग्राहक सामग्री हैं। उपयोगकर्ताओं को यह सुनिश्चित करना चाहिए कि प्लेटफॉर्म पर अपलोड किया गया डेटा वैध, आवश्यक और अधिकृत व्यक्तियों तक सीमित है।",
+          "title": "ग्राहक डेटा और सामग्री जिम्मेदारी"
+        },
+        {
+          "content": "Nova AI और अन्य AI सुविधाएं केवल निर्णय सहायता और ड्राफ्ट प्रदान करती हैं। RiskNova इस बात की गारंटी नहीं देता कि आउटपुट त्रुटि-मुक्त, पूर्ण या किसी विशेष कानूनी या तकनीकी परिणाम के लिए उपयुक्त हैं। उपयोगकर्ताओं को लागू कानून, आंतरिक प्रक्रियाओं और पेशेवर निर्णय के विरुद्ध आउटपुट को मान्य करना चाहिए।",
+          "title": "AI-सहायक आउटपुट"
+        },
+        {
+          "content": "योजना सुविधाएं, शुल्क, उपयोग सीमाएं और बिलिंग अवधि मूल्य निर्धारण या चेकआउट स्क्रीन पर दिखाई जाती हैं। व्यक्तिगत योजनाएं स्व-सेवा चेकआउट का उपयोग कर सकती हैं; OSGB और एंटरप्राइज़ मॉडल कोट और संपर्क फ्लो का पालन कर सकते हैं। भुगतान और इनवॉइसिंग Paddle द्वारा Merchant of Record के रूप में संभाली जा सकती है।",
+          "title": "सब्सक्रिप्शन, बिलिंग और सीमाएं"
+        },
+        {
+          "content": "RiskNova समय के साथ उत्पाद सुविधाओं, योजना सीमाओं, एकीकरण और इन शर्तों को अपडेट कर सकता है। सुरक्षा, रखरखाव, कानूनी अनुपालन या दुरुपयोग रोकथाम के लिए पहुंच अस्थायी रूप से प्रतिबंधित हो सकती है।",
+          "title": "सेवा परिवर्तन और पहुंच"
+        },
+        {
+          "content": "प्लेटफॉर्म प्रक्रियाओं को सुव्यवस्थित करने के लिए डिज़ाइन किया गया है; यह नियोक्ताओं, सुरक्षा पेशेवरों या संगठनों के कानूनी कर्तव्यों को हटाता नहीं है। प्लेटफॉर्म आउटपुट पर भरोसा करने से पहले उपयोगकर्ता फील्ड, नियामक और विशेषज्ञ समीक्षा के लिए जिम्मेदार रहते हैं।",
+          "title": "जिम्मेदारी की सीमा"
+        },
+        {
+          "content": "इन शर्तों, सब्सक्रिप्शन या खातों के बारे में प्रश्नों के लिए, support@getrisknova.com पर संपर्क करें।",
+          "title": "संपर्क"
+        }
+      ],
+      "title": "RiskNova उपयोग की शर्तें"
+    },
+    "termsSummary": {
+      "eyebrow": "सेवा की शर्तें",
+      "lastUpdated": "अंतिम अपडेट: 2 मई 2026",
+      "metaDescription": "RiskNova सेवा की शर्तों, स्वीकार्य उपयोग और सब्सक्रिप्शन का सारांश।",
+      "metaTitle": "सेवा की शर्तें",
+      "ogDescription": "सब्स्क्रिप्शन, AI-सहायक सुविधाओं और स्वीकार्य उपयोग का सारांश।",
+      "ogTitle": "सेवा की शर्तें | RiskNova",
+      "title": "RiskNova नियम और शर्तें"
+    }
   },
   "nav": {
-    "analizler": "विश्लेषण",
+    "analizler": "एनालिटिक्स",
     "appDashboard": "डैशबोर्ड",
-    "application": "ऐप",
-    "companies": "कंपनियाँ",
+    "application": "एप्लिकेशन",
+    "companies": "कंपनियां",
     "correctiveActions": "CAPA",
     "dashboard": "डैशबोर्ड",
     "demoBuilderNav": "डेमो बिल्डर",
     "demoRequestsNav": "डेमो अनुरोध",
-    "digitalTwin": "डिजिटल जुड़वाँ",
+    "digitalTwin": "डिजिटल ट्विन",
     "documents": "दस्तावेज़",
-    "dofRegister": "CAPA",
-    "enterpriseSolution": "एंटरप्राइज़ पेशकश",
+    "dofRegister": "CAPAs",
+    "enterpriseSolution": "एंटरप्राइज़ ऑफरिंग",
     "exam": "परीक्षा",
-    "features": "सुविधाएँ",
+    "features": "सुविधाएं",
     "firmaWorkspace": "कंपनी",
     "howItWorks": "यह कैसे काम करता है",
-    "incidents": "कार्रवाई",
-    "incidentsPage": "घटनाएँ",
+    "incidents": "कार्रवाइयां",
+    "incidentsPage": "घटनाएं",
     "legalCorpus": "कानूनी कॉर्पस",
-    "library": "ओएचएस लाइब्रेरी",
-    "liveScan": "लाइव फ़ील्ड स्कैन",
-    "mainNavigation": "मुख्य नेविगेशन",
-    "mobileNavigation": "मोबाइल नेविगेशन",
+    "library": "OHS लाइब्रेरी",
+    "liveScan": "लाइव फील्ड स्कैन",
+    "mainNavigation": "मुख्य नेवीगेशन",
+    "mobileNavigation": "मोबाइल नेवीगेशन",
     "osgbAffiliations": "OSGB लिंक",
     "osgbAssignments": "असाइनमेंट",
-    "osgbClientFirms": "ग्राहक फर्म",
+    "osgbClientFirms": "क्लाइंट फर्म",
     "osgbContracts": "अनुबंध",
-    "osgbOffersCapacity": "ऑफ़र और क्षमता",
+    "osgbOffersCapacity": "ऑफर और क्षमता",
     "osgbPanel": "पैनल",
-    "osgbPersonnel": "कर्मचारी",
-    "osgbProfessionals": "पेशेवर",
-    "osgbSolution": "OSGB पेशकश",
+    "osgbPersonnel": "स्टाफ",
+    "osgbProfessionals": "प्रोफेशनल्स",
+    "osgbSolution": "OSGB ऑफरिंग",
     "osgbWorkTracking": "कार्य ट्रैकिंग",
     "personalDocs": "मेरे दस्तावेज़",
-    "planner": "योजनाकार",
-    "platformAdminHome": "प्लेटफ़ॉर्म व्यवस्थापक",
-    "pricing": "योजनाएँ",
+    "planner": "प्लानर",
+    "platformAdminHome": "प्लेटफॉर्म एडमिन",
+    "pricing": "प्लान",
     "reports": "रिपोर्ट",
     "riskAnalysis": "जोखिम विश्लेषण",
-    "scoreHistory": "फ़ील्ड ऑडिट",
+    "scoreHistory": "फील्ड ऑडिट",
     "settings": "सेटिंग्स",
     "solutionCenter": "Nova",
-    "survey": "सर्वेक्षण",
-    "surveyExam": "सर्वेक्षण / परीक्षा",
-    "timesheet": "समय पत्रक",
-    "training": "प्रशिक्षण",
-    "trainingHub": "प्रशिक्षण, सर्वेक्षण और परीक्षा",
-    "workplace": "कार्यस्थल",
-    "workspace": "कार्यस्थल"
-  },
-  "landing": {
-    "badge": "AI से चालित ओएचएस प्लेटफ़ॉर्म",
-    "heroTitle1": "कार्यस्थल सुरक्षा",
-    "heroTitle2": "एक प्लेटफ़ॉर्म से",
-    "heroTitle3": "",
-    "heroDescription": "RiskNova एक AI आधारित ओएचएस प्लेटफ़ॉर्म है जो जोखिम विश्लेषण, फ़ील्ड ट्रैकिंग, रिकॉर्डिंग, रिपोर्टिंग और निर्णय समर्थन को एक उत्पाद अनुभव में जोड़ता है।",
-    "statsUsers": "सक्रिय उपयोगकर्ता",
-    "statsUptime": "अपटाइम",
-    "statsAnalysis": "विश्लेषण समय",
-    "statsScoring": "जोखिम स्कोरिंग",
-    "featuresEyebrow": "विशेषताएँ",
-    "featuresTitle1": "व्यापक",
-    "featuresTitle2": "समाधान",
-    "featuresDescription": "आपकी ओएचएस प्रक्रियाओं को अंत से अंत तक चलाने वाले पेशेवर उपकरण।",
-    "feat1Title": "AI से चालित जोखिम विश्लेषण",
-    "feat1Desc": "मैनुअल या मॉड्यूल आधारित इनपुट एक प्रवाह में लाता है और परिणाम अधिक दृश्यमान बनाता है।",
-    "feat2Title": "फ़ील्ड निष्कर्ष और कार्रवाई प्रबंधन",
-    "feat2Desc": "ऑडिट, निष्कर्ष, कार्य और ट्रैकिंग को संचालन टीम के लिए स्पष्ट क्रम में जोड़ता है।",
-    "feat3Title": "रिपोर्टिंग और रिकॉर्डिंग अवसंरचना",
-    "feat3Desc": "परिणामों को इतिहास, विवरण और आउटपुट से जोड़ने के लिए सुसंगत स्क्रीन पृष्ठभूमि।",
-    "feat4Title": "जोखिम मॉड्यूल के लिए उत्पाद शोकेस",
-    "feat4Desc": "विश्लेषण, परिणाम और स्कोर इतिहास स्क्रीन के लिए पेशेवर आधार।",
-    "feat5Title": "मोबाइल, टैबलेट और डेस्कटॉप रेस्पॉन्सिव",
-    "feat5Desc": "एक या दो कॉलम और चौड़ी स्क्रीन पर पठनीयता बनाए रखता है।",
-    "feat6Title": "कॉर्पोरेट और आधुनिक दृश्य भाषा",
-    "feat6Desc": "स्वच्छ सतहें, नियंत्रित कॉन्ट्रास्ट और स्पष्ट CTA के साथ SaaS अनुभव।",
-    "howEyebrow": "यह कैसे काम करता है",
-    "howTitle1": "चार चरणों में",
-    "howTitle2": "नियंत्रण",
-    "howDescription": "शुरू करने के लिए सरल चरण।",
-    "step1Title": "सुरक्षित पहुँच",
-    "step1Desc": "अपने संगठन खाते से सुरक्षित रूप से साइन इन करें।",
-    "step2Title": "जोखिम डेटा प्रविष्टि",
-    "step2Desc": "फ़ील्ड ऑडिट, खतरे की रिपोर्ट और पैरामीटर सिस्टम में स्थानांतरित करें।",
-    "step3Title": "R-SCORE जनरेशन",
-    "step3Desc": "हमारा AI विश्लेषण इंजन डेटा संसाधित कर जोखिम स्कोर गणना करता है।",
-    "step4Title": "कार्रवाई और फॉलो-अप",
-    "step4Desc": "परिणामों पर आधारित योजनाएँ बनाएँ, ट्रैक करें और रिपोर्ट करें।",
-    "whyEyebrow": "क्यों RiskNova",
-    "whyTitle1": "विश्वास जगाने वाला",
-    "whyTitle2": "प्रीमियम",
-    "whyTitle3": "अनुभव",
-    "whyDescription": "नीला विश्वास और सुनहरी गुणवत्ता जोर, स्वच्छ सतहें और नरम कॉन्ट्रास्ट के साथ पेशेवर SaaS अनुभव।",
-    "whyBullet1": "स्वच्छ, आधुनिक ओएचएस उपस्थिति",
-    "whyBullet2": "संचालन-केंद्रित, बिना ध्यान भटकाए लेआउट",
-    "whyBullet3": "Risk Intelligence मॉड्यूल के लिए तैयार डिज़ाइन सिस्टम",
-    "whyBullet4": "मल्टी-टेनेंट संगठन आधारित सुरक्षित संरचना",
-    "whyBullet5": "AI से चालित निर्णय समर्थन",
-    "whyBullet6": "कॉर्पोरेट रिपोर्टिंग और संग्रह अवसंरचना",
-    "ctaEyebrow": "CTA क्षेत्र",
-    "ctaTitle": "अपने जोखिम मॉड्यूल को उत्पाद शोकेस बनाएँ",
-    "ctaDescription": "पेशेवर रूप, मजबूत अवसंरचना और AI समर्थन के साथ एक प्लेटफ़ॉर्म पर ओएचएस प्रबंधित करें।",
-    "metaTitle": "एक प्लेटफ़ॉर्म से ओएचएस प्रबंधित करें | RiskNova",
-    "metaDescription": "AI कार्यस्थल सुरक्षा सॉफ़्टवेयर: जोखिम विश्लेषण, फ़ील्ड ऑडिट, निष्कर्ष, CAPA और रिपोर्टिंग एक साथ।",
-    "metaOgTitle": "RiskNova — एक प्लेटफ़ॉर्म से ओएचएस",
-    "metaOgDescription": "माप से ऑडिट, कार्रवाई और रिपोर्ट तक — एक जगह।",
-    "heroTitlePrefix": "कार्यस्थल सुरक्षा",
-    "heroTitleHighlight": "एक प्लेटफ़ॉर्म से",
-    "heroTitleSuffix": "प्रबंधित करें",
-    "heroSubtitle": "माप से ऑडिट निष्कर्ष, कार्रवाई ट्रैकिंग, रिपोर्टिंग और संग्रह तक — एक छत के नीचे। व्यक्ति से OSGB और बहु-साइट उद्यमों तक।",
-    "statsValueUsers": "500+",
-    "statsValueUptime": "99.5%",
-    "statsValueAnalysis": "15 सेकंड",
-    "statsValueScore": "R-SCORE",
-    "solutionsLeadBold": "क्या आप OSGB या बहु-साइट संगठन हैं?",
-    "solutionsSectionAria": "OSGB और एंटरप्राइज़ पेशकश",
-    "solutionsLeadRest": "योजनाएँ देखें, कोट या साइनअप के माध्यम से लीड छोड़ें — हमारी टीम फॉलो अप करेगी।",
-    "osgbCtaShort": "OSGB: कोट और संपर्क",
-    "enterpriseCtaShort": "एंटरप्राइज़: कोट और संपर्क",
-    "valueTryEyebrow": "अभी आज़माएँ",
-    "valueTryTitle": "जोखिम, ऑडिट और रिपोर्टिंग एक अनुभव में",
-    "valueTryDesc": "फ़ॉर्म, परिणाम, स्कोर इतिहास और आउटपुट सुसंगत स्क्रीन पर — टीम बिना रुकावट चलती रहती है।",
-    "valueTryRegister": "खाता बनाएँ",
-    "valueTryLogin": "साइन इन",
-    "testimonialsEyebrow": "प्रशंसापत्र",
-    "testimonialsTitle1": "हमारे उपयोगकर्ता",
-    "testimonialsTitle2": "क्या कहते हैं",
-    "testimonial1Quote": "RiskNova के साथ फ़ील्ड ऑडिट अधिक व्यवस्थित हो गए। AI टिप्पणियाँ वास्तव में मददगार हैं।",
-    "testimonial1Author": "Mehmet K.",
-    "testimonial1Role": "ओएचएस विशेषज्ञ",
-    "testimonial2Quote": "एक प्लेटफ़ॉर्म पर विश्लेषण, रिपोर्टिंग और ट्रैकिंग से दक्षता बढ़ी।",
-    "testimonial2Author": "Ayşe T.",
-    "testimonial2Role": "ओएचएस प्रबंधक",
-    "testimonial3Quote": "कॉर्पोरेट लुक और सरलता से टीम ने जल्दी अपनाया।",
-    "testimonial3Author": "Can D.",
-    "testimonial3Role": "ऑपरेशंस प्रबंधक",
-    "bottomCtaLine1": "अपनी ओएचएस प्रक्रियाओं को",
-    "bottomCtaLine2": "बदलें",
-    "bottomCtaDescription": "जोखिम विश्लेषण से रिपोर्टिंग तक RiskNova के साथ सभी सुरक्षा संचालन एक प्लेटफ़ॉर्म पर।",
-    "ctaDemo": "डेमो अनुरोध",
-    "footerBlurb": "AI से चालित ओएचएस जोखिम विश्लेषण और संचालन प्लेटफ़ॉर्म — पेशेवर, विश्वसनीय, आधुनिक।",
-    "footerCompany": "कंपनी",
-    "footerSupport": "सहायता",
-    "footerHome": "होम",
-    "footerHelp": "मदद",
-    "footerRefund": "रिफंड नीति",
-    "subscriptionDisclaimer": "RiskNova सदस्यता आधारित कार्यस्थल स्वास्थ्य और सुरक्षा सॉफ़्टवेयर प्रदान करता है।",
-    "footerDescription": "AI से चालित ओएचएस निर्णय समर्थन प्लेटफ़ॉर्म",
-    "footerProduct": "उत्पाद",
-    "footerLegal": "कानूनी",
-    "footerPrivacy": "गोपनीयता नीति",
-    "footerTerms": "उपयोग की शर्तें",
-    "footerContact": "संपर्क",
-    "footerRights": "सर्वाधिकार सुरक्षित।"
-  },
-  "auth": {
-    "loginTitle": "Sign in to your account",
-    "loginDescription": "Continue managing risk analysis, field tracking and reporting processes on a single platform.",
-    "loginEmail": "Email address",
-    "loginPassword": "Password",
-    "loginButton": "Sign In",
-    "loginLoading": "Signing in...",
-    "loginForgot": "Forgot password",
-    "loginNoAccount": "Don't have an account?",
-    "loginRegister": "Sign up",
-    "registerTitle": "Create an account",
-    "registerDescription": "Digitize your OHS processes and benefit from AI-powered decision-making mechanisms.",
-    "registerName": "Full Name",
-    "registerEmail": "Email address",
-    "registerPassword": "Password",
-    "registerButton": "Sign Up",
-    "registerLoading": "Creating account...",
-    "registerHasAccount": "Already have an account?",
-    "registerLogin": "Sign in",
-    "forgotTitle": "Reset your password",
-    "forgotDescription": "Enter your email address and we'll send you a password reset link.",
-    "forgotButton": "Send reset link",
-    "forgotBack": "Back to sign in",
-    "shell": {
-      "secureAccess": "Secure access",
-      "backHome": "Back to home",
-      "highlightIndividualTitle": "Individual",
-      "highlightIndividualDesc": "A fast start flow for independent specialists, physicians, DSPs and solo professionals.",
-      "highlightOsgbTitle": "OSGB",
-      "highlightOsgbDesc": "Team model that brings client firms, personnel, assignments and work tracking into one panel.",
-      "highlightCorpTitle": "Enterprise",
-      "highlightCorpDesc": "Communication-led enterprise flow for multi-site organisations with bespoke requirements.",
-      "fallbackSpotlight": "RiskNova is not just a panel — it is professional OHS infrastructure that unifies risk analysis, field operations, document flows and team coordination in one product language."
-    },
-    "loginPage": {
-      "eyebrow": "Sign in",
-      "title": "Sign in to your account",
-      "description": "Sign in to your RiskNova account. Platform administrators are routed to the admin console; everyone else lands on the workspace that matches their account type.",
-      "highlight1Title": "Individual sign-in",
-      "highlight1Desc": "For individual professionals managing their own firms, organisations and workspaces.",
-      "highlight2Title": "OSGB sign-in",
-      "highlight2Desc": "For OSGB teams managing clients, personnel, assignments and risk processes.",
-      "highlight3Title": "Platform administration",
-      "highlight3Desc": "The platform administrator role is not offered as a public account type; eligible users are routed to the admin console after sign-in.",
-      "spotlightP1": "The sign-in screen is shared by everyone; routing after the session depends on your account context.",
-      "spotlightP2": "The platform administrator role is not available in public self-service signup. Individual, OSGB and enterprise are the customer-facing account paths.",
-      "footerPrefix": "Don't have an account?",
-      "footerRegisterLink": "Sign up",
-      "passwordUpdatedBanner": "Your password was updated. You can sign in with your new password.",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com",
-      "passwordLabel": "Password",
-      "passwordPlaceholder": "Enter your password",
-      "submitButton": "Sign in",
-      "forgotLink": "Forgot password"
-    },
-    "registerPage": {
-      "eyebrow": "New account",
-      "title": "Create your RiskNova account",
-      "description": "Choose account type, region and language first. Individual accounts continue straight to the form; OSGB and company structures start the contact and quote flow.",
-      "highlight1Title": "Individual self-service",
-      "highlight1Desc": "After region and language selection you complete registration and continue with onboarding.",
-      "highlight2Title": "Plans live on a separate page",
-      "highlight2Desc": "Pricing and plan comparison stay on the Plans page so registration stays focused.",
-      "highlight3Title": "Bespoke quote for organisations",
-      "highlight3Desc": "Multi-site or specialised structures move through contact and quote with our team.",
-      "footerPrefix": "Already have an account?",
-      "footerLoginLink": "Sign in",
-      "demoExpiredTitle": "Your demo period has ended.",
-      "demoExpiredBody": "RiskNova demo access is limited to {hours} hours; when it expires the session closes. Create a free account below or continue with Google to move to a permanent account.",
-      "demoDisabledTitle": "Your demo access was disabled.",
-      "demoDisabledBody": "It may have been ended by an administrator (demo accounts are usually limited to {hours} hours). Create an account below for ongoing use.",
-      "demoLegacyExpiredLead": "Your demo session has ended.",
-      "demoLegacyExpiredRest": "Public demos are no longer offered. Create an account below or",
-      "demoLegacyExpiredLogin": "sign in",
-      "demoLegacyExpiredSupport": "For issues contact",
-      "demoLegacyDisabledLead": "Your demo access was disabled.",
-      "demoLegacyDisabledRest": "Public demos are no longer offered. Register or",
-      "demoLegacyDisabledLogin": "sign in",
-      "demoLegacyDisabledHelp": "Help:",
-      "checkEmailBanner": "Registration started. Check your inbox if confirmation is required.",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com",
-      "emailHint": "Onboarding and access flows use this address.",
-      "passwordLabel": "Password",
-      "passwordPlaceholder": "At least 8 characters",
-      "passwordHint": "Choose a strong password. You will finish account-type selection after signup.",
-      "submitButton": "Create account"
-    },
-    "forgotPage": {
-      "eyebrow": "Password reset",
-      "title": "Reset your password",
-      "description": "Enter your email and we will send you a password reset link.",
-      "backToLogin": "Back to sign in",
-      "sentBanner": "If the email address is valid, we sent a password reset link.",
-      "emailHint": "Use the email you registered with.",
-      "submitButton": "Send reset link",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com"
-    },
-    "resetPage": {
-      "eyebrow": "New password",
-      "eyebrowTemp": "Temporary sign-in",
-      "title": "Choose a new password",
-      "titleRequired": "Set a new password",
-      "description": "Enter your new password and return to your account.",
-      "descriptionRequired": "You signed in with temporary credentials. Set a new password before continuing.",
-      "backToLogin": "Back to sign in",
-      "requiredBanner": "For security you must change your password on first sign-in.",
-      "mfaBanner": "Multi-factor verification is complete. You can now choose a new password.",
-      "passwordLabel": "New password",
-      "passwordPlaceholder": "At least 8 characters",
-      "passwordHint": "Choose a strong password.",
-      "submitButton": "Update password"
-    },
-    "social": {
-      "supabaseError": "Could not connect to authentication services.",
-      "oauthRedirectHint": "Google sign-in needs the Supabase redirect URL: add https://getrisknova.com/auth/callback (and your environment URLs) under Authentication URL configuration.",
-      "oauthGenericError": "Something went wrong during sign-in. Please try again.",
-      "googleContinue": "Continue to {brand} with Google",
-      "googleSignUp": "Sign up for {brand} with Google",
-      "divider": "or continue with email"
-    },
-    "registerWizard": {
-      "prevAria": "Previous step",
-      "closeAria": "Close registration assistant",
-      "startWizard": "Start registration questions",
-      "summaryTitle": "Your registration path is ready",
-      "summaryChange": "Change",
-      "commercialIntroOsgbTitle": "OSGB quote flow",
-      "commercialIntroEnterpriseTitle": "Enterprise quote flow",
-      "commercialIntroBody": "Your country, language and role are sent with the form so our team can respond with the right package and onboarding.",
-      "steps": {
-        "account": {
-          "eyebrow": "1 / 4",
-          "title": "Which account type are you starting with?",
-          "description": "This choice defines the flow after registration."
-        },
-        "country": {
-          "eyebrow": "2 / 4",
-          "title": "Which country is your primary workspace in?",
-          "description": "Legislation coverage, RAG scope and the default workspace are aligned with this choice."
-        },
-        "language": {
-          "eyebrow": "3 / 4",
-          "title": "Interface and document language",
-          "description": "Not every screen is translated yet, but your preference is stored on the account."
-        },
-        "role": {
-          "eyebrow": "4 / 4",
-          "title": "What is your first role?",
-          "description": "This seeds the first workspace during onboarding."
-        }
-      },
-      "accounts": {
-        "individual": {
-          "title": "Individual professional",
-          "description": "Specialist, physician, DSP or auditor starting with your own workspace."
-        },
-        "osgb": {
-          "title": "OSGB",
-          "description": "Request setup for client portfolios, teams and assignment workflows."
-        },
-        "enterprise": {
-          "title": "Company / enterprise",
-          "description": "For multi-site or specialised regulatory needs."
-        }
-      },
-      "countryHints": {
-        "TR": "Türkiye legislation with Turkish defaults.",
-        "AZ": "Azerbaijan region with Azerbaijani defaults.",
-        "US": "US operations with English defaults.",
-        "GB": "UK operations with English defaults.",
-        "DE": "Germany region with German defaults.",
-        "FR": "France region with French defaults.",
-        "ES": "Spain region with Spanish defaults.",
-        "RU": "Russian language and regional readiness.",
-        "SA": "Arabic language and Gulf operations readiness.",
-        "AE": "English / Arabic team readiness.",
-        "CN": "Chinese language and Asia-Pacific readiness.",
-        "JP": "Japanese language and Asia-Pacific readiness.",
-        "KR": "Korean language and Asia-Pacific readiness.",
-        "IN": "Hindi / English team readiness.",
-        "ID": "Bahasa Indonesia preference."
-      },
-      "roles": {
-        "safety_professional": {
-          "title": "OHS specialist",
-          "description": "Risk analysis, field audits, actions and regulatory tracking."
-        },
-        "occupational_physician": {
-          "title": "Occupational physician",
-          "description": "Health surveillance, medical processes and employee records."
-        },
-        "safety_officer": {
-          "title": "DSP / health personnel",
-          "description": "Health team, field support and follow-up tasks."
-        },
-        "auditor": {
-          "title": "Auditor",
-          "description": "Field audits, non-conformities and reporting."
-        },
-        "workspace_admin": {
-          "title": "Workspace administrator",
-          "description": "Manages users, firms, roles and workspace settings."
-        }
-      }
-    },
-    "demoModal": {
-      "closeAria": "Close",
-      "title": "Thanks!",
-      "subtitle": "For trying RiskNova",
-      "bodyDisabled": "Your demo access was disabled by an administrator.",
-      "bodyExpired": "Your demo time has ended. RiskNova demo sessions are valid for up to {hours} hours; after that the session closes.",
-      "calloutExpiredLead": "Reminder:",
-      "calloutExpiredRest": "Finish exploring the demo within {hours} hours; when it ends you can continue by creating your own free or commercial account.",
-      "calloutDisabledLead": "Note:",
-      "calloutDisabledRest": "Demo accounts are usually limited to {hours} hours; access may also have been ended by an administrator.",
-      "pathsIntro": "To pick up where you left off and get",
-      "pathsHighlight": "full access to all features",
-      "pathsSuffix": ", create your account. You can choose one of three paths:",
-      "pathIndividualLabel": "Individual",
-      "pathIndividualDesc": "independent professionals",
-      "pathOsgbLabel": "OSGB",
-      "pathOsgbDesc": "client firm and personnel management",
-      "pathEnterpriseLabel": "Enterprise",
-      "pathEnterpriseDesc": "multi-site organisations",
-      "ctaPrimary": "Start registration",
-      "ctaLater": "Later"
-    }
-  },
-  "solutionCenter": {
-    "title": "Nova",
-    "description": "Nova is the operational OHS agent that interprets legislation, routes you to the right module, and starts document or workflow actions.",
-    "inputPlaceholder": "Tell Nova what you want to do...",
-    "queries": "queries",
-    "referenced": "with references",
-    "sources": "legislation sources",
-    "save": "Save",
-    "saved": "Saved",
-    "copy": "Copy",
-    "chat": "Chat",
-    "history": "History",
-    "documents": "My Documents"
-  },
-  "profile": {
-    "loading": "Loading profile...",
-    "membership": "Member since",
-    "updated": "Updated",
-    "changePhoto": "Change photo",
-    "tabs": {
-      "profile": "Profile",
-      "security": "Security",
-      "privacy": "Privacy & Consents",
-      "preferences": "Preferences",
-      "activity": "Activity"
-    },
-    "personal": {
-      "title": "Personal Information",
-      "fullName": "Full Name",
-      "fullNamePlaceholder": "Full Name",
-      "jobTitle": "Title / Position",
-      "jobTitlePlaceholder": "OHS Specialist",
-      "email": "Email",
-      "phone": "Phone",
-      "phonePlaceholder": "+1 xxx xxx xxxx",
-      "save": "Save"
-    },
-    "org": {
-      "title": "Organization Info",
-      "name": "Organization Name",
-      "city": "City"
-    },
-    "roles": {
-      "title": "Roles & Permissions",
-      "super_admin": "Super Admin",
-      "platform_admin": "Platform Admin",
-      "organization_admin": "Organization Admin",
-      "osgb_manager": "OSGB Manager",
-      "ohs_specialist": "OHS Specialist",
-      "workplace_physician": "Workplace Physician",
-      "dsp": "DSP",
-      "viewer": "Viewer"
-    },
-    "email": {
-      "title": "Change Email",
-      "current": "Current Email",
-      "new": "New Email",
-      "newPlaceholder": "name@company.com",
-      "submit": "Start Change",
-      "info": "Email changes require verification. The account email will not update until you open the link sent to the new address."
-    },
-    "password": {
-      "title": "Change Password",
-      "current": "Current Password",
-      "new": "New Password",
-      "newPlaceholder": "At least 12 chars, upper/lower case, number and symbol",
-      "repeat": "New Password (Repeat)",
-      "submit": "Update Password"
-    },
-    "mfa": {
-      "title": "Two-Factor Authentication",
-      "description": "Works with Google Authenticator, Authy and similar TOTP apps. Once enabled, this account is protected by a second factor.",
-      "open": "2FA On",
-      "closed": "2FA Off",
-      "onlyPassword": "Your account is currently protected only by password.",
-      "addDevice": "Add New Device",
-      "addDeviceHint": "Scan the QR code with Google Authenticator. You can give the device a custom name.",
-      "connect": "Connect Google Authenticator",
-      "deviceName": "Device Name",
-      "deviceNamePlaceholder": "e.g. Mehmet's iPhone",
-      "backupWarning": "Backup codes are not supported. For critical accounts, enroll at least two different TOTP devices.",
-      "setupKey": "Setup Key",
-      "verifyCodePlaceholder": "123456",
-      "verify": "Verify",
-      "verifying": "Verifying...",
-      "registeredDevices": "Registered MFA Devices",
-      "loading": "Loading...",
-      "noDevices": "No MFA device is connected yet.",
-      "removeDevice": "Remove"
-    },
-    "sessions": {
-      "title": "Active Sessions",
-      "thisDevice": "Sign out this device",
-      "allDevices": "Sign out all devices",
-      "active": "Active",
-      "lastActive": "Last active",
-      "ip": "IP",
-      "opened": "Opened"
-    },
-    "danger": {
-      "title": "Danger Zone",
-      "description": "Deleting your account permanently removes all your data and this action cannot be undone. Under KVKK, the deletion completes within 30 days.",
-      "button": "Delete Account",
-      "redirectMsg": "Account deletion flow is opened in the Privacy & Consents tab."
-    },
-    "prefs": {
-      "theme": "Theme",
-      "themeLight": "Light",
-      "themeDark": "Dark",
-      "themeSystem": "System",
-      "language": "Language",
-      "notifications": "Notifications",
-      "emailNotif": "Email Notifications",
-      "emailNotifDesc": "Task reminders and updates",
-      "pushNotif": "Push Notifications",
-      "pushNotifDesc": "Browser instant notifications",
-      "save": "Save Preferences"
-    },
-    "activity": {
-      "total": "Total Tasks",
-      "completed": "Completed",
-      "pending": "Pending",
-      "overdue": "Overdue",
-      "recentOps": "Recent Activity",
-      "noActivity": "No activity records yet",
-      "planned": "Planned",
-      "in_progress": "In Progress",
-      "complete": "Completed",
-      "overdueStatus": "Overdue",
-      "cancelled": "Cancelled"
-    },
-    "msg": {
-      "photoUpdated": "Photo updated.",
-      "photoError": "Photo upload failed.",
-      "profileSaved": "Profile saved.",
-      "profileError": "Could not save profile.",
-      "passwordMismatch": "New passwords do not match.",
-      "passwordUpdated": "Password updated successfully.",
-      "passwordError": "Could not update password.",
-      "emailServiceError": "Could not reach email update service.",
-      "emailEmpty": "New email address cannot be empty.",
-      "emailInvalid": "Enter a valid email address.",
-      "emailSame": "New email cannot be the same as current.",
-      "emailConfirmSent": "Verification link sent to the new address.",
-      "mfaServiceError": "Could not reach two-factor auth service.",
-      "mfaEnrolled": "Enrollment created. Verify the code now to enable 2FA.",
-      "mfaCodeInvalid": "Verification code must be 6 digits.",
-      "mfaEnabled": "Two-factor authentication enabled.",
-      "mfaRemoved": "MFA device removed.",
-      "mfaRemoveConfirm": "Are you sure you want to remove this MFA device?",
-      "prefsSaved": "Preferences saved.",
-      "sessionServiceError": "Could not reach session service.",
-      "signedOut": "Signed out from this device.",
-      "signedOutAll": "Signed out from all devices."
-    }
-  },
-  "consent": {
-    "title": "Privacy & Consents",
-    "description": "Active disclosure and KVKK texts are listed here. When a new version is published, the system prompts you to consent again.",
-    "stats": "{active} active consents - {pending} pending required texts",
-    "loading": "Loading consent records...",
-    "empty": "No published consent text.",
-    "mandatory": "Required",
-    "mandatoryYes": "Yes",
-    "mandatoryNo": "No",
-    "lastStatus": "Last status",
-    "notGranted": "Not granted yet",
-    "statusApproved": "Approved",
-    "statusPending": "Pending required text",
-    "statusOptional": "Optional",
-    "types": {
-      "aydinlatma": "Disclosure",
-      "acik_riza": "Explicit Consent",
-      "kvkk": "KVKK",
-      "yurt_disi_aktarim": "Cross-Border Transfer",
-      "pazarlama": "Marketing"
-    }
-  },
-  "dataRights": {
-    "title": "Data Rights",
-    "description": "Download your personal data, create a deletion request and track the status of your current KVKK processes.",
-    "statExport": "Export",
-    "statDeletion": "Deletion Request",
-    "statActive": "Active Process",
-    "statActiveYes": "Yes",
-    "statActiveNo": "No",
-    "exportTitle": "Download My Data",
-    "exportDescription": "Profile, consent records, security events and data-rights history can be downloaded as JSON or CSV.",
-    "exportJsonTitle": "JSON export",
-    "exportJsonDesc": "Structured bundle of all your data",
-    "exportCsvTitle": "CSV export",
-    "exportCsvDesc": "Tabular reporting and external transfer",
-    "exportHistoryLoading": "Loading export history...",
-    "exportHistoryEmpty": "No data export record created yet.",
-    "exportDownloadCount": "Download count",
-    "download": "Download",
-    "deletionTitle": "Delete My Data",
-    "deletionDescription": "When you create a request, your account and related personal data enter the deletion process. Permanent deletion completes after 30 days per retention policy.",
-    "deletionReasonPlaceholder": "Optional description or reason",
-    "deletionWarning": "A deletion request can be cancelled administratively before the process becomes irreversible.",
-    "deletionSubmit": "Create deletion request",
-    "deletionActive": "Active deletion request exists",
-    "deletionLoading": "Loading deletion requests...",
-    "deletionEmpty": "No deletion request yet.",
-    "deletionConfirm": "This will start a 30-day deletion process for your account. Do you want to continue?",
-    "deletionExists": "You already have an active deletion request.",
-    "deletionReceived": "Your deletion request was received. Scheduled permanent deletion: {date}.",
-    "deletionFailed": "Could not create deletion request.",
-    "exportReady": "{format} export is ready and downloaded.",
-    "exportFailed": "Could not create export.",
-    "scope": {
-      "self": "Personal request",
-      "admin": "Admin"
-    },
-    "requestDate": "Request date",
-    "scheduledPurge": "Scheduled permanent deletion",
-    "adminNotes": "Admin note",
-    "errorMsg": "Error",
-    "status": {
-      "scheduled": "Scheduled",
-      "processing": "Processing",
-      "completed": "Completed",
-      "cancelled": "Cancelled",
-      "rejected": "Rejected",
-      "failed": "Failed",
-      "expired": "Expired"
-    }
-  },
-  "lang": {
-    "tr": "Türkçe",
-    "en": "English",
-    "ar": "العربية",
-    "ru": "Русский",
-    "de": "Deutsch",
-    "fr": "Français",
-    "es": "Español",
-    "zh": "中文",
-    "ja": "日本語",
-    "ko": "한국어",
-    "hi": "हिन्दी",
-    "az": "Azərbaycanca",
-    "id": "Bahasa Indonesia"
-  },
-  "workspace": {
-    "switcher": "Workspace",
-    "active": "Active",
-    "noWorkspace": "No workspace",
-    "newWorkspace": "New workspace",
-    "countryLabel": "Country",
-    "languageLabel": "Default language",
-    "switchError": "Could not switch workspace",
-    "loading": "Loading workspaces..."
-  },
-  "country": {
-    "TR": "Türkiye",
-    "US": "United States",
-    "GB": "United Kingdom",
-    "DE": "Germany",
-    "FR": "France",
-    "ES": "Spain",
-    "RU": "Russia",
-    "CN": "China",
-    "JP": "Japan",
-    "KR": "South Korea",
-    "IN": "India",
-    "SA": "Saudi Arabia",
-    "AZ": "Azerbaijan",
-    "ID": "Indonesia",
-    "AE": "United Arab Emirates"
+    "survey": "सर्वे",
+    "surveyExam": "सर्वे / परीक्षा",
+    "timesheet": "टाइमशीट",
+    "training": "ट्रेनिंग",
+    "trainingHub": "ट्रेनिंग, सर्वे और परीक्षा",
+    "workplace": "कार्यक्षेत्र",
+    "workspace": "वर्कस्पेस"
   },
   "ohsFile": {
-    "title": "Workplace OHS File",
-    "description": "Download all risk assessments, incidents, training records, documents and related data for {company} as a single year-based ZIP archive.",
-    "createNew": "Create New Archive",
-    "yearLabel": "Calendar Year",
-    "scopeLabel": "Scope",
-    "scopeEmpty": "Scope template could not be loaded.",
-    "required": "Required",
-    "prepareButton": "Prepare Archive",
-    "asyncHint": "The archive is prepared in the background. You will be notified when it is ready.",
-    "alreadyRunning": "An archive is currently being prepared; please wait for it to finish.",
-    "historyTitle": "Past Archives",
-    "refresh": "Refresh",
-    "loading": "Loading...",
-    "empty": "No archives created yet.",
-    "download": "Download",
-    "cancel": "Cancel",
-    "createdAt": "Created",
-    "completedAt": "Completed",
-    "widgetTitle": "Recent OHS Files",
-    "widgetSubtitle": "Quick access to the most recently prepared workplace archives.",
-    "widgetEmpty": "No OHS file yet. Open a company and go to the 'OHS File' tab.",
-    "widgetAll": "All",
-    "openCompany": "Open company page",
+    "alreadyRunning": "एक आर्काइव तैयार किया जा रहा है; कृपया इसके पूरा होने की प्रतीक्षा करें।",
+    "asyncHint": "आर्काइव बैकग्राउंड में तैयार किया जा रहा है। तैयार होने पर आपको सूचित किया जाएगा।",
+    "cancel": "रद्द करें",
+    "completedAt": "पूर्ण",
+    "createdAt": "निर्मित",
+    "createNew": "नया संग्रह बनाएं",
+    "description": "{company} के लिए सभी जोखिम मूल्यांकन, घटनाएं, प्रशिक्षण रिकॉर्ड, दस्तावेज़ और संबंधित डेटा को एक वर्ष-आधारित ZIP संग्रह के रूप में डाउनलोड करें।",
+    "download": "डाउनलोड",
+    "empty": "अभी तक कोई संग्रह नहीं बनाया गया।",
+    "historyTitle": "पिछले संग्रह",
+    "loading": "लोड हो रहा है...",
+    "openCompany": "कंपनी पेज खोलें",
+    "prepareButton": "संग्रह तैयार करें",
+    "refresh": "रीफ्रेश",
+    "required": "आवश्यक",
+    "scopeEmpty": "स्कोप टेम्प्लेट लोड नहीं हो सका।",
+    "scopeLabel": "स्कोप",
     "status": {
-      "pending": "Queued",
-      "processing": "Preparing",
-      "completed": "Ready",
-      "failed": "Failed",
-      "expired": "Expired",
-      "cancelled": "Cancelled"
+      "cancelled": "रद्द",
+      "completed": "तैयार",
+      "expired": "समाप्त",
+      "failed": "असफल",
+      "pending": "कतार में",
+      "processing": "तैयार हो रहा"
+    },
+    "title": "कार्यस्थल OHS फाइल",
+    "widgetAll": "सभी",
+    "widgetEmpty": "अभी तक कोई OHS फाइल नहीं। कंपनी खोलें और 'OHS फाइल' टैब पर जाएं।",
+    "widgetSubtitle": "हाल ही में तैयार किए गए कार्यस्थल संग्रहों तक त्वरित पहुंच।",
+    "widgetTitle": "हाल की OHS फाइलें",
+    "yearLabel": "कैलेंडर वर्ष"
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "कंपनी वर्कस्पेस के अनुसार कंपनी, असाइनमेंट, दस्तावेज़ और जोखिम प्रवाह प्रबंधित करें।",
+      "searchLabel": "कंपनियां खोजें",
+      "searchPlaceholder": "कंपनी, क्षेत्र, पता, या NACE खोजें",
+      "title": "सक्रिय कंपनियां"
+    },
+    "archivedRow": {
+      "restore": "पुनर्स्थापित करें",
+      "restoring": "पुनर्स्थापित कर रहे हैं…"
+    },
+    "archivedSection": {
+      "badge": "{count} संग्रहीत रिकॉर्ड",
+      "description": "संग्रहीत कंपनियां सक्रिय सीमा में नहीं गिनी जातीं; जोखिम और दस्तावेज़ इतिहास सुरक्षित रहता है।",
+      "title": "संग्रहीत कंपनियां"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} सक्रिय कंपनियां",
+      "activeCompaniesUnlimited": "{count} सक्रिय कंपनियां",
+      "activeStaffMax": "{count} / {max} सक्रिय स्टाफ",
+      "activeStaffUnlimited": "{count} सक्रिय स्टाफ"
+    },
+    "companyCard": {
+      "archive": "संग्रहीत करें",
+      "archiving": "संग्रहीत कर रहे हैं…",
+      "assignedProfessionals": "{count} नियुक्त पेशेवर",
+      "assignments": "असाइनमेंट",
+      "contracts": "अनुबंध",
+      "documentsCount": "{count} दस्तावेज़",
+      "documentsLink": "दस्तावेज़",
+      "employees": "{count} कर्मचारी",
+      "overdueTasks": "{count} अतिदेय आइटम",
+      "personnelInvite": "स्टाफ और आमंत्रण",
+      "sectorUnknown": "क्षेत्र निर्धारित नहीं",
+      "taskTracking": "कार्य ट्रैकिंग",
+      "workspace": "कंपनी वर्कस्पेस"
+    },
+    "emptyActive": {
+      "cta": "पहली कंपनी जोड़ें",
+      "description": "OSGB पैनल से जुड़ी क्लाइंट कंपनियां यहां सूचीबद्ध होंगी।",
+      "title": "कोई सक्रिय कंपनी नहीं"
+    },
+    "emptyArchived": {
+      "description": "जब आप किसी कंपनी को संग्रहीत करते हैं तो वह यहां दिखाई देगी।",
+      "title": "कोई संग्रहीत कंपनियां नहीं"
+    },
+    "emptyCompany": {
+      "kind": "निजी क्षेत्र",
+      "name": "नई OSGB क्लाइंट कंपनी",
+      "shortName": "नई कंपनी"
+    },
+    "focus": {
+      "p1": "यह क्षेत्र केवल OSGB स्वामी और व्यवस्थापक उपयोगकर्ताओं के लिए है। कंपनियां, असाइनमेंट, अनुबंध, और दस्तावेज़ ट्रैकिंग एक स्थान पर प्रबंधित की जाती हैं।",
+      "p2": "असाइन किए गए कर्मचारी अपने दैनिक कार्यप्रवाह के लिए इस पैनल का उपयोग नहीं करते; वे अपने खाते के माध्यम से असाइन की गई कंपनी वर्कस्पेस डेटा तक पहुंचते हैं।",
+      "sidebarBody": "{firms} सक्रिय कंपनियां, {professionals} असाइन किए गए पेशेवर, और {overdue} ध्यान देने वाले आइटम यहां समन्वित किए जाते हैं।",
+      "sidebarEyebrow": "प्रबंधन फोकस",
+      "title": "OSGB-केंद्रित सतह"
+    },
+    "header": {
+      "description": "अपनी क्लाइंट कंपनियों, प्रति-कंपनी वर्कस्पेस, और उनसे असाइन किए गए कर्मचारी प्रवाह का प्रबंधन करें।",
+      "eyebrow": "OSGB कंपनी प्रबंधन",
+      "title": "कंपनियां और कार्यस्थल"
+    },
+    "limitBanner": "सक्रिय कंपनी सीमा पहुंच गई। अधिक जोड़ने के लिए किसी कंपनी को संग्रहीत करें या अपनी योजना अपग्रेड करें।",
+    "loading": {
+      "description": "हम क्लाइंट कंपनियां, असाइनमेंट, और दस्तावेज़ प्रवाह लोड कर रहे हैं।",
+      "eyebrow": "OSGB कंपनियां",
+      "title": "आपका पोर्टफोलियो तैयार कर रहे हैं"
+    },
+    "nova": {
+      "bullet1": "कंपनी के अनुसार कार्यभार वितरण देखें।",
+      "bullet2": "अतिदेय कार्य और दस्तावेज़ फ़िल्टर करें।",
+      "bullet3": "स्टाफिंग असाइनमेंट अंतराल की पहचान करें।",
+      "bullet4": "अनुबंध और रिपोर्ट नवीकरण जोखिमों को प्राथमिकता दें।",
+      "openTasks": "खुले OSGB कार्य",
+      "reviewOverdue": "अतिदेय कार्य की समीक्षा करें",
+      "seeAssignmentGaps": "असाइनमेंट अंतराल देखें",
+      "subtitle": "प्रबंधन सहायक; कर्मचारी और कंपनी प्रदर्शन की निगरानी करता है।",
+      "title": "Nova OSGB प्रबंधक"
+    },
+    "quickLinks": {
+      "docCenter": "दस्तावेज़ हब पर जाएं",
+      "inviteStaff": "कर्मचारी आमंत्रित करें",
+      "manageAssignments": "असाइनमेंट प्रबंधित करें",
+      "openContracts": "खुले अनुबंध"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "OSGB पैनल में ट्रैक की जाने वाली सक्रिय क्लाइंट कंपनियां।",
+        "label": "सक्रिय कंपनियां"
+      },
+      "assignedProfessionals": {
+        "hint": "कंपनियों को विशेषज्ञों, चिकित्सकों और DSP के कुल असाइनमेंट।",
+        "label": "असाइन किए गए पेशेवर"
+      },
+      "overdueWork": {
+        "hint": "असाइनमेंट और CAPA फ़्लो में देखने के लिए खुले आइटम।",
+        "label": "देर से काम"
+      },
+      "totalEmployees": {
+        "hint": "योजना के लिए कंपनी रिकॉर्ड से कुल कर्मचारी संख्या।",
+        "label": "कुल कर्मचारी"
+      }
+    },
+    "topActions": {
+      "addCompany": "कंपनी जोड़ें",
+      "openAssignments": "खुले असाइनमेंट",
+      "personnelInvite": "स्टाफ और आमंत्रण"
     }
   },
   "platformAdmin": {
     "leads": {
-      "backLink": "Back to platform admin",
-      "title": "Demo & quote requests",
-      "description": "All requests from the landing “Request demo”, registration “OSGB” and “Enterprise” forms are listed here. Update status, mark contacted leads, and close converted ones.",
-      "loadError": "Could not load requests: {message}",
-      "kpiTotal": "Total",
-      "kpiNew": "New",
-      "kpiContacted": "Contacted",
-      "kpiConverted": "Converted",
-      "filterStatus": "Status:",
-      "filterSource": "Source:",
-      "statusAll": "All",
-      "statusNew": "New",
-      "filterStatusContacted": "Contacted",
-      "statusContacted": "Contacted",
-      "statusQualified": "Qualified",
-      "statusConverted": "Won",
-      "statusRejected": "Rejected",
-      "sourceAll": "All",
-      "source_landing_demo": "Landing demo",
-      "source_register": "Registration form",
-      "source_cozumler_kurumsal": "Enterprise page",
-      "source_cozumler_osgb": "OSGB page",
-      "source_unknown": "Other",
-      "emptyTitle": "No requests for this filter.",
-      "emptyDescription": "OSGB/enterprise quote flows and landing “Request demo” submissions appear here.",
-      "tableColContact": "Contact",
-      "tableColCompany": "Company",
-      "tableColSourceType": "Source / type",
-      "tableColDate": "Date",
-      "tableColStatus": "Status",
-      "detailFullName": "Full name",
-      "detailEmail": "Email",
-      "detailPhone": "Phone",
-      "detailCompany": "Company",
-      "detailRequestType": "Request type",
-      "detailSource": "Source",
-      "detailEstCompanies": "Est. companies",
-      "detailEstEmployees": "Est. employees",
-      "detailEstLocations": "Est. locations",
-      "detailEstProfessionals": "Est. professionals",
-      "messageHeading": "Message",
-      "internalNoteTitle": "Internal note (manual quote, limits, pricing)",
-      "internalNoteHint": "Not shown to the customer. Capture agreed terms or plan codes here.",
-      "notesPlaceholder": "e.g. Professional custom: 50 users, annual fee…",
-      "saveNote": "Save note",
-      "savingNote": "Saving…",
-      "titleEmail": "Send email",
-      "titleCall": "Call",
-      "titleCopy": "Copy",
-      "errorNotesSave": "Could not save note",
-      "errorStatusUpdate": "Could not update",
-      "sourceUnknown": "Unknown"
+      "backLink": "प्लेटफॉर्म एडमिन पर वापस",
+      "description": "लैंडिंग \"डेमो अनुरोध\", पंजीकरण \"OSGB\" और \"Enterprise\" फॉर्म से सभी अनुरोध यहां सूचीबद्ध हैं। स्थिति अपडेट करें, संपर्कित लीड्स को चिह्नित करें, और परिवर्तित वाले को बंद करें।",
+      "detailCompany": "कंपनी",
+      "detailEmail": "ईमेल",
+      "detailEstCompanies": "अनुमानित कंपनियां",
+      "detailEstEmployees": "अनुमानित कर्मचारी",
+      "detailEstLocations": "अनुमानित स्थान",
+      "detailEstProfessionals": "अनुमानित पेशेवर",
+      "detailFullName": "पूरा नाम",
+      "detailPhone": "फोन",
+      "detailRequestType": "अनुरोध प्रकार",
+      "detailSource": "स्रोत",
+      "emptyDescription": "OSGB/enterprise कोट फ़्लो और लैंडिंग \"डेमो अनुरोध\" सबमिशन यहां दिखाई देते हैं।",
+      "emptyTitle": "इस फ़िल्टर के लिए कोई अनुरोध नहीं।",
+      "errorNotesSave": "नोट सेव नहीं हो सका",
+      "errorStatusUpdate": "अपडेट नहीं हो सका",
+      "filterSource": "स्रोत:",
+      "filterStatus": "स्थिति:",
+      "filterStatusContacted": "संपर्क किया गया",
+      "internalNoteHint": "ग्राहक को नहीं दिखाया गया। सहमत शर्तें या योजना कोड यहाँ दर्ज करें।",
+      "internalNoteTitle": "आंतरिक नोट (मैनुअल कोट, सीमाएं, मूल्य निर्धारण)",
+      "kpiContacted": "संपर्क किया गया",
+      "kpiConverted": "रूपांतरित",
+      "kpiNew": "नया",
+      "kpiTotal": "कुल",
+      "loadError": "{message} अनुरोध लोड नहीं हो सके",
+      "messageHeading": "संदेश",
+      "notesPlaceholder": "जैसे प्रोफेशनल कस्टम: 50 उपयोगकर्ता, वार्षिक शुल्क…",
+      "saveNote": "नोट सेव करें",
+      "savingNote": "सेव हो रहा है…",
+      "source_cozumler_kurumsal": "एंटरप्राइज़ पेज",
+      "source_cozumler_osgb": "OSGB पेज",
+      "source_landing_demo": "लैंडिंग डेमो",
+      "source_register": "पंजीकरण फॉर्म",
+      "source_unknown": "अन्य",
+      "sourceAll": "सभी",
+      "sourceUnknown": "अज्ञात",
+      "statusAll": "सभी",
+      "statusContacted": "संपर्क किया गया",
+      "statusConverted": "जीता",
+      "statusNew": "नया",
+      "statusQualified": "योग्य",
+      "statusRejected": "अस्वीकृत",
+      "tableColCompany": "कंपनी",
+      "tableColContact": "संपर्क",
+      "tableColDate": "दिनांक",
+      "tableColSourceType": "स्रोत / प्रकार",
+      "tableColStatus": "स्थिति",
+      "title": "डेमो और कोटेशन अनुरोध",
+      "titleCall": "कॉल करें",
+      "titleCopy": "कॉपी करें",
+      "titleEmail": "ईमेल भेजें"
     },
     "legalCorpus": {
-      "title": "Legal corpus by country",
-      "description": "Official regulatory documents ingested for RAG, grouped by jurisdiction. Tenant-private uploads stay on the tenant workspace path.",
-      "backLink": "Back to platform admin",
-      "refresh": "Refresh",
-      "statsHeading": "Documents by jurisdiction",
-      "officialOnly": "Official corpus only",
-      "tableHeading": "Documents (name order)",
-      "colTitle": "Title",
-      "colNumber": "Reference",
-      "colType": "Type",
-      "colJurisdiction": "Jurisdiction",
-      "colScope": "Scope",
-      "colActive": "Active",
-      "colSource": "Source URL",
-      "ingestHeading": "Ingest from official feeds",
-      "ingestUkHint": "Imports the latest UK Statutory Instruments entries from legislation.gov.uk Atom (titles + summaries).",
-      "ingestUkButton": "Import UK SI (Atom)",
-      "ingesting": "Importing…",
-      "ingestResult": "Inserted: {inserted}, skipped (already in DB): {skipped}",
-      "ingestError": "Import failed",
-      "emptyDocuments": "No documents match the filter.",
-      "scopeOfficial": "Official",
-      "scopePrivate": "Tenant",
-      "yes": "Yes",
-      "no": "No"
+      "backLink": "प्लेटफॉर्म एडमिन पर वापस जाएं",
+      "colActive": "सक्रिय",
+      "colJurisdiction": "न्यायाधिकार क्षेत्र",
+      "colNumber": "संदर्भ",
+      "colScope": "स्कोप",
+      "colSource": "स्रोत URL",
+      "colTitle": "शीर्षक",
+      "colType": "प्रकार",
+      "description": "RAG के लिए आधिकारिक नियामक दस्तावेज़ न्यायाधिकार क्षेत्र के अनुसार समूहीकृत। टेनेंट-निजी अपलोड टेनेंट वर्कस्पेस पथ पर रहते हैं।",
+      "emptyDocuments": "कोई दस्तावेज़ फ़िल्टर से मेल नहीं खाता।",
+      "ingestError": "आयात असफल",
+      "ingestHeading": "आधिकारिक फ़ीड से इंजेस्ट करें",
+      "ingesting": "आयात हो रहा है…",
+      "ingestResult": "डाला गया: {inserted}, छोड़ा गया (पहले से DB में): {skipped}",
+      "ingestUkButton": "UK SI (Atom) आयात करें",
+      "ingestUkHint": "legislation.gov.uk Atom से नवीनतम UK वैधानिक उपकरण प्रविष्टियां आयात करता है (शीर्षक + सारांश)।",
+      "no": "नहीं",
+      "officialOnly": "केवल आधिकारिक कॉर्पस",
+      "refresh": "रिफ्रेश करें",
+      "scopeOfficial": "आधिकारिक",
+      "scopePrivate": "टेनेंट",
+      "statsHeading": "न्यायाधिकार क्षेत्र के अनुसार दस्तावेज़",
+      "tableHeading": "दस्तावेज़ (नाम क्रम)",
+      "title": "देश के अनुसार कानूनी कॉर्पस",
+      "yes": "हाँ"
     }
   },
-  "demoRequest": {
-    "dialogTitle": "डेमो का अनुरोध",
-    "dialogSubtitle": "आपकी ज़रूरत के अनुसार एक संक्षिप्त वॉकथ्रू योजना बनाते हैं।",
-    "closeAria": "बंद करें",
-    "successTitle": "अनुरोध प्राप्त हुआ",
-    "successBody": "हमारी टीम जल्द संपर्क करेगी। आपकी रुचि के लिए धन्यवाद।",
-    "successClose": "बंद करें",
-    "fieldName": "पूरा नाम *",
-    "fieldEmail": "ईमेल *",
-    "fieldPhone": "फ़ोन",
-    "fieldCompany": "कंपनी / संगठन",
-    "placeholderName": "राज शर्मा",
-    "placeholderEmail": "you@company.in",
-    "placeholderPhone": "+91 …",
-    "placeholderCompany": "एक्मे प्राइवेट लिमिटेड",
-    "accountTypeLabel": "खाता प्रकार",
-    "accountTypeUnset": "पक्का नहीं / निर्णय लेना है",
-    "accountTypeIndividual": "व्यक्तिगत (एक विशेषज्ञ)",
-    "accountTypeOsgb": "OSGB",
-    "accountTypeEnterprise": "एंटरप्राइज़ / कंपनी",
-    "messageLabel": "संदेश (वैकल्पिक)",
-    "messagePlaceholder": "कौन से मॉड्यूल रुचिकर? कर्मचारी संख्या? उपयुक्त समय?",
-    "privacyLabel": "गोपनीयता सूचना:",
-    "privacyText": "मैं सहमत हूँ कि मेरे संपर्क विवरण केवल इस अनुरोध का उत्तर देने के लिए संसाधित हों।",
-    "privacyError": "कृपया गोपनीयता सूचना की पुष्टि करें।",
-    "submitError": "भेज नहीं सके। पुनः प्रयास करें।",
-    "cancel": "रद्द करें",
-    "submit": "अनुरोध भेजें",
-    "submitting": "भेजा जा रहा है…"
-  },
   "pricing": {
-    "heroEyebrow": "Individual plans",
-    "heroTitle": "Clear, scalable plans for workplace safety professionals.",
-    "heroDescription": "Start on Free and grow through Starter, Plus and Professional — Nova, risk analysis, field audits and library-backed document generation scale with your pace. On paid plans you choose monthly or yearly billing on each card.",
-    "introTitle": "Choose your individual plan",
-    "introBody": "On paid plans you can pick monthly or yearly billing on each card. Yearly billing covers twelve months for the price of ten (the card total updates accordingly). OSGB and enterprise customers use the quote flow. Each card shows “Who is it for?” and “Move up a tier” so you can see the next step for your profile.",
-    "billingPeriodAria": "Billing period",
-    "monthly": "Monthly",
-    "yearly": "Yearly",
-    "yearlyBadge": "· 2 months included",
-    "whoForLabel": "Who is it for?",
-    "upgradeSectionTitle": "Move up a tier",
-    "limitNotIncluded": "Not included",
-    "priceSuffixMonth": "/ mo",
-    "priceSuffixYear": "/ yr",
-    "priceFreeNote": "Free to start",
-    "priceYearlyNote": "About {monthly}/mo equivalent — 2 months included",
-    "priceMonthlyNote": "Monthly billing — upgrade whenever you need",
-    "freeStart": "Start free",
-    "currentPlan": "Current plan",
-    "selectPlan": "Choose plan",
-    "osgbOfferLink": "OSGB quote",
-    "enterpriseOfferLink": "Enterprise quote",
-    "planHighlights": {
-      "mostPopular": "Most popular",
-      "premium": "Premium"
-    },
     "actions": {
-      "nova_message": "Nova messages",
-      "ai_analysis": "AI analyses",
-      "document_generation": "Document generation",
-      "risk_analysis": "Risk analyses"
+      "ai_analysis": "AI विश्लेषण",
+      "document_generation": "दस्तावेज़ निर्माण",
+      "nova_message": "Nova संदेश",
+      "risk_analysis": "जोखिम विश्लेषण"
     },
-    "footerLimitsTitle": "Enforced on the server",
-    "footerLimitsBody": "Nova, analysis and generation allowances are consumed at the API layer — not only on screen.",
-    "footerOsgbTitle": "OSGB and enterprise separately",
-    "footerOsgbBody": "Team seats, portfolios, white-label, onboarding and invoicing are handled through the dedicated quote flow.",
-    "footerPro149Title": "Professional 149 recommended",
-    "footerPro149Body": "Balanced capacity for analyses, documents and field work for active individual professionals.",
-    "enterpriseTitle": "OSGB or enterprise use",
-    "enterpriseBody": "For multiple users, client portfolios, white-label, bespoke onboarding and invoicing there is no self‑serve checkout on this path — contact us to agree scope and contract.",
-    "enterpriseOsgbCta": "Request OSGB quote",
-    "enterpriseCorporateCta": "Request enterprise quote",
-    "enterpriseExplore": "Explore the product",
-    "enterpriseFootnoteLead": "Solution pages:",
-    "enterpriseFootnoteOsgb": "OSGB offering",
-    "enterpriseFootnoteEnterprise": "Enterprise offering",
+    "billingPeriodAria": "बिलिंग अवधि",
+    "currentPlan": "वर्तमान योजना",
+    "enterpriseBody": "कई उपयोगकर्ताओं, क्लाइंट पोर्टफोलियो, व्हाइट-लेबल, बेस्पोक ऑनबोर्डिंग और इनवॉइसिंग के लिए इस पथ पर कोई सेल्फ-सर्व चेकआउट नहीं है — स्कोप और अनुबंध पर सहमति के लिए हमसे संपर्क करें।",
+    "enterpriseCorporateCta": "एंटरप्राइज़ कोटेशन का अनुरोध करें",
+    "enterpriseExplore": "उत्पाद का अन्वेषण करें",
+    "enterpriseFootnoteEnterprise": "एंटरप्राइज़ पेशकश",
+    "enterpriseFootnoteLead": "समाधान पृष्ठ:",
+    "enterpriseFootnoteOsgb": "OSGB पेशकश",
+    "enterpriseOfferLink": "एंटरप्राइज़ कोटेशन",
+    "enterpriseOsgbCta": "OSGB कोटेशन का अनुरोध करें",
+    "enterpriseTitle": "OSGB या एंटरप्राइज़ उपयोग",
+    "footerLimitsBody": "Nova, विश्लेषण और निर्माण भत्ते API स्तर पर उपभोग किए जाते हैं — केवल स्क्रीन पर नहीं।",
+    "footerLimitsTitle": "सर्वर पर लागू",
+    "footerOsgbBody": "टीम सीटें, पोर्टफोलियो, व्हाइट-लेबल, ऑनबोर्डिंग और इनवॉइसिंग समर्पित कोटेशन फ़्लो के माध्यम से संभाले जाते हैं।",
+    "footerOsgbTitle": "OSGB और एंटरप्राइज़ अलग से",
+    "footerPro149Body": "सक्रिय व्यक्तिगत पेशेवरों के लिए विश्लेषण, दस्तावेज़ और फील्ड कार्य के लिए संतुलित क्षमता।",
+    "footerPro149Title": "Professional 149 अनुशंसित",
+    "freeStart": "निःशुल्क शुरू करें",
+    "heroDescription": "Free पर शुरू करें और Starter, Plus और Professional के माध्यम से बढ़ें — Nova, जोखिम विश्लेषण, फील्ड ऑडिट और लाइब्रेरी-समर्थित दस्तावेज़ निर्माण आपकी गति के साथ स्केल करते हैं। पेड प्लान पर आप प्रत्येक कार्ड पर मासिक या वार्षिक बिलिंग चुनते हैं।",
+    "heroEyebrow": "व्यक्तिगत योजनाएं",
+    "heroTitle": "कार्यक्षेत्र सुरक्षा पेशेवरों के लिए स्पष्ट, स्केलेबल योजनाएं।",
+    "introBody": "पेड प्लान पर आप प्रत्येक कार्ड पर मासिक या वार्षिक बिलिंग चुन सकते हैं। वार्षिक बिलिंग दस की कीमत में बारह महीने कवर करता है (कार्ड कुल तदनुसार अपडेट होता है)। OSGB और एंटरप्राइज़ ग्राहक कोट फ़्लो का उपयोग करते हैं। प्रत्येक कार्ड \"यह किसके लिए है?\" और \"एक टियर ऊपर जाएं\" दिखाता है ताकि आप अपनी प्रोफ़ाइल के लिए अगला कदम देख सकें।",
+    "introTitle": "अपनी व्यक्तिगत योजना चुनें",
+    "limitNotIncluded": "शामिल नहीं",
+    "monthly": "मासिक",
+    "osgbOfferLink": "OSGB कोट",
+    "planHighlights": {
+      "mostPopular": "सबसे लोकप्रिय",
+      "premium": "प्रीमियम"
+    },
     "plans": {
       "free": {
-        "name": "Free",
-        "whoFor": "Trying RiskNova, students and light occasional use.",
-        "description": "Entry tier with monthly quotas to explore Nova chat, analyses and a small document workflow.",
-        "upgradeHint": "Upgrade to Starter when you need predictable quotas every month.",
-        "features": [
-          "Nova chat within monthly limits",
-          "Foundational AI analyses for risk workflows",
-          "Limited document generation",
-          "Field inspection entries within quotas",
-          "Exports within plan limits"
-        ]
-      },
-      "starter": {
-        "name": "Starter",
-        "whoFor": "Freelance specialists and steady but modest monthly workloads.",
-        "description": "Higher quotas for Nova, analyses and documents so weekly routines run without friction.",
-        "upgradeHint": "Choose Plus when incident analysis and training outputs become part of your workflow.",
-        "features": [
-          "Stronger Nova and analysis quotas",
-          "More monthly document generation",
-          "Incident analysis allowance",
-          "Training slides where included in quota",
-          "Exports scaled for individuals"
-        ]
+        "description": "Nova चैट, विश्लेषण और छोटे दस्तावेज़ वर्कफ़्लो का अन्वेषण करने के लिए मासिक कोटा के साथ प्रवेश स्तर।",
+        "name": "निःशुल्क",
+        "upgradeHint": "जब आपको हर महीने अनुमानित कोटा की आवश्यकता हो तो स्टार्टर में अपग्रेड करें।",
+        "whoFor": "RiskNova आज़माने वाले, छात्र और हल्का कभी-कभार उपयोग।"
       },
       "plus": {
+        "description": "चैट, विश्लेषण, जोखिम मॉडलिंग और फ़ील्ड डेटा में संतुलित क्षमता।",
         "name": "Plus",
-        "whoFor": "Active consultants managing several clients each month.",
-        "description": "Balanced capacity across chat, analyses, risk modelling and field data.",
-        "upgradeHint": "Move to Professional when you need deeper inspection and reporting throughput.",
-        "features": [
-          "Higher caps across all core actions",
-          "More incident and training outputs",
-          "Field inspection headroom for busy weeks",
-          "Document throughput for recurring packs",
-          "Exports suited to multi-client work"
-        ]
-      },
-      "professional": {
-        "name": "Professional 99",
-        "whoFor": "Full-time OHS experts with dense weekly usage.",
-        "description": "Enterprise-grade individual ceiling before the top Professional tiers.",
-        "upgradeHint": "Step up to Professional 149 for the best value at scale.",
-        "features": [
-          "High Nova and AI analysis limits",
-          "Strong document generation cadence",
-          "Broad risk and field inspection capacity",
-          "Incident programme support within quota",
-          "Exports for intensive reporting"
-        ]
+        "upgradeHint": "जब आपको गहरी निरीक्षण और रिपोर्टिंग थ्रूपुट की आवश्यकता हो तो Professional में जाएं।",
+        "whoFor": "हर महीने कई क्लाइंट्स का प्रबंधन करने वाले सक्रिय सलाहकार।"
       },
       "professional_149": {
+        "description": "अनुशंसित स्तर — विश्लेषण, दस्तावेज़ और फ़ील्ड वर्कफ़्लो में उदार सीमाएं।",
         "name": "Professional 149",
-        "whoFor": "Senior consultants and power users who live in the product.",
-        "description": "Recommended tier — generous ceilings across analyses, documents and field workflows.",
-        "upgradeHint": "Professional 199 adds maximum headroom for the busiest desks.",
-        "features": [
-          "Very high Nova and analysis quotas",
-          "Heavy document generation allowance",
-          "Large risk and inspection budgets",
-          "Incident and training outputs at scale",
-          "Exports aligned with premium throughput"
-        ]
+        "upgradeHint": "Professional 199 सबसे व्यस्त डेस्क के लिए अधिकतम हेडरूम जोड़ता है।",
+        "whoFor": "वरिष्ठ सलाहकार और पावर यूज़र जो उत्पाद में रहते हैं।"
       },
       "professional_199": {
+        "description": "OSGB या एंटरप्राइज़ कॉन्ट्रैक्टिंग से पहले टॉप सेल्फ़-सर्व स्तर।",
         "name": "Professional 199",
-        "whoFor": "Peak individual workloads and premium throughput expectations.",
-        "description": "Top self-serve tier before OSGB or enterprise contracting.",
-        "upgradeHint": "Need seats, portfolios or invoicing? Use OSGB or enterprise quotes.",
-        "features": [
-          "Maximum published individual quotas",
-          "Peak AI and document capacity",
-          "Largest inspection and risk envelopes",
-          "Full incident and training allowances in tier",
-          "Exports for the heaviest reporting cycles"
-        ]
+        "upgradeHint": "सीट्स, पोर्टफ़ोलियो या इनवॉइसिंग चाहिए? OSGB या एंटरप्राइज़ कोट्स का उपयोग करें।",
+        "whoFor": "शीर्ष व्यक्तिगत कार्यभार और प्रीमियम थ्रूपुट अपेक्षाएं।"
+      },
+      "professional": {
+        "description": "टॉप Professional स्तरों से पहले एंटरप्राइज़-ग्रेड व्यक्तिगत सीमा।",
+        "name": "Professional 99",
+        "upgradeHint": "स्केल पर सर्वोत्तम मूल्य के लिए Professional 149 में कदम बढ़ाएं।",
+        "whoFor": "घने साप्ताहिक उपयोग वाले पूर्णकालिक OHS विशेषज्ञ।"
+      },
+      "starter": {
+        "description": "Nova, विश्लेषण और दस्तावेजों के लिए उच्च कोटा ताकि साप्ताहिक दिनचर्या बिना किसी बाधा के चले।",
+        "name": "Starter",
+        "upgradeHint": "जब घटना विश्लेषण और प्रशिक्षण आउटपुट आपके वर्कफ़्लो का हिस्सा बन जाए तो Plus चुनें।",
+        "whoFor": "फ्रीलांस विशेषज्ञ और स्थिर लेकिन मध्यम मासिक कार्यभार।"
+      }
+    },
+    "priceFreeNote": "शुरू करने के लिए निःशुल्क",
+    "priceMonthlyNote": "मासिक बिलिंग — जब भी आवश्यकता हो अपग्रेड करें",
+    "priceSuffixMonth": "/ माह",
+    "priceSuffixYear": "/ वर्ष",
+    "priceYearlyNote": "लगभग {monthly}/माह के बराबर — 2 महीने शामिल",
+    "selectPlan": "योजना चुनें",
+    "upgradeSectionTitle": "एक स्तर ऊपर जाएं",
+    "whoForLabel": "यह किसके लिए है?",
+    "yearly": "वार्षिक",
+    "yearlyBadge": "· 2 महीने शामिल"
+  },
+  "profile": {
+    "activity": {
+      "cancelled": "रद्द किया गया",
+      "complete": "पूर्ण",
+      "completed": "पूर्ण",
+      "in_progress": "प्रगति में",
+      "noActivity": "अभी तक कोई गतिविधि रिकॉर्ड नहीं",
+      "overdue": "अतिदेय",
+      "overdueStatus": "अतिदेय",
+      "pending": "लंबित",
+      "planned": "नियोजित",
+      "recentOps": "हाल की गतिविधि",
+      "total": "कुल कार्य"
+    },
+    "changePhoto": "फोटो बदलें",
+    "danger": {
+      "button": "खाता हटाएं",
+      "description": "आपका खाता स्थायी रूप से हटाने से आपका सभी डेटा हट जाएगा और यह क्रिया पूर्ववत नहीं की जा सकती। KVKK के तहत, हटाना 30 दिनों के भीतर पूरा हो जाता है।",
+      "redirectMsg": "खाता हटाने की प्रक्रिया गोपनीयता और सहमति टैब में खुली है।",
+      "title": "खतरा क्षेत्र"
+    },
+    "email": {
+      "current": "वर्तमान ईमेल",
+      "info": "ईमेल परिवर्तन के लिए सत्यापन आवश्यक है। खाता ईमेल तब तक अपडेट नहीं होगा जब तक आप नए पते पर भेजे गए लिंक को नहीं खोलते।",
+      "new": "नया ईमेल",
+      "newPlaceholder": "name@company.com",
+      "submit": "परिवर्तन शुरू करें",
+      "title": "ईमेल बदलें"
+    },
+    "loading": "प्रोफ़ाइल लोड हो रहा है...",
+    "membership": "सदस्य बने",
+    "mfa": {
+      "addDevice": "नया डिवाइस जोड़ें",
+      "addDeviceHint": "Google Authenticator के साथ QR कोड स्कैन करें। आप डिवाइस को कस्टम नाम दे सकते हैं।",
+      "backupWarning": "बैकअप कोड समर्थित नहीं हैं। महत्वपूर्ण खातों के लिए, कम से कम दो अलग TOTP डिवाइस पंजीकृत करें।",
+      "closed": "2FA बंद",
+      "connect": "Google Authenticator कनेक्ट करें",
+      "description": "Google Authenticator, Authy और समान TOTP ऐप्स के साथ काम करता है। एक बार सक्षम होने पर, यह खाता दूसरे कारक द्वारा सुरक्षित है।",
+      "deviceName": "डिवाइस नाम",
+      "deviceNamePlaceholder": "जैसे मेहमत का iPhone",
+      "loading": "लोड हो रहा है...",
+      "noDevices": "अभी तक कोई MFA डिवाइस कनेक्ट नहीं है।",
+      "onlyPassword": "आपका खाता वर्तमान में केवल पासवर्ड द्वारा सुरक्षित है।",
+      "open": "2FA चालू",
+      "registeredDevices": "पंजीकृत MFA डिवाइस",
+      "removeDevice": "हटाएं",
+      "setupKey": "सेटअप की",
+      "title": "द्विकारक प्रमाणीकरण",
+      "verify": "सत्यापित करें",
+      "verifyCodePlaceholder": "123456",
+      "verifying": "सत्यापित कर रहे हैं..."
+    },
+    "msg": {
+      "emailConfirmSent": "नए पते पर सत्यापन लिंक भेजा गया।",
+      "emailEmpty": "नया ईमेल पता खाली नहीं हो सकता।",
+      "emailInvalid": "वैध ईमेल पता दर्ज करें।",
+      "emailSame": "नया ईमेल वर्तमान के समान नहीं हो सकता।",
+      "emailServiceError": "ईमेल अपडेट सेवा तक नहीं पहुंच सके।",
+      "mfaCodeInvalid": "सत्यापन कोड 6 अंकों का होना चाहिए।",
+      "mfaEnabled": "द्विकारक प्रमाणीकरण सक्षम किया गया।",
+      "mfaEnrolled": "नामांकन बनाया गया। 2FA सक्षम करने के लिए अब कोड सत्यापित करें।",
+      "mfaRemoveConfirm": "क्या आप वाकई इस MFA डिवाइस को हटाना चाहते हैं?",
+      "mfaRemoved": "MFA डिवाइस हटाया गया।",
+      "mfaServiceError": "द्विकारक प्रमाणीकरण सेवा तक नहीं पहुंच सके।",
+      "passwordError": "पासवर्ड अपडेट नहीं कर सके।",
+      "passwordMismatch": "नए पासवर्ड मेल नहीं खाते।",
+      "passwordUpdated": "पासवर्ड सफलतापूर्वक अपडेट किया गया।",
+      "photoError": "फोटो अपलोड असफल।",
+      "photoUpdated": "फोटो अपडेट किया गया।",
+      "prefsSaved": "प्राथमिकताएं सहेजी गईं।",
+      "profileError": "प्रोफाइल सहेज नहीं सके।",
+      "profileSaved": "प्रोफाइल सहेजा गया।",
+      "sessionServiceError": "सत्र सेवा तक नहीं पहुंच सके।",
+      "signedOut": "इस डिवाइस से साइन आउट किया गया।",
+      "signedOutAll": "सभी डिवाइसों से साइन आउट किया गया।"
+    },
+    "org": {
+      "city": "शहर",
+      "name": "संगठन का नाम",
+      "title": "संगठन की जानकारी"
+    },
+    "password": {
+      "current": "वर्तमान पासवर्ड",
+      "new": "नया पासवर्ड",
+      "newPlaceholder": "कम से कम 12 अक्षर, बड़े/छोटे अक्षर, संख्या और प्रतीक",
+      "repeat": "नया पासवर्ड (दोहराएं)",
+      "submit": "पासवर्ड अपडेट करें",
+      "title": "पासवर्ड बदलें"
+    },
+    "personal": {
+      "email": "ईमेल",
+      "fullName": "पूरा नाम",
+      "fullNamePlaceholder": "पूरा नाम",
+      "jobTitle": "पदनाम / स्थिति",
+      "jobTitlePlaceholder": "OHS विशेषज्ञ",
+      "phone": "फोन",
+      "phonePlaceholder": "+1 xxx xxx xxxx",
+      "save": "सेव करें",
+      "title": "व्यक्तिगत जानकारी"
+    },
+    "prefs": {
+      "emailNotif": "ईमेल सूचनाएं",
+      "emailNotifDesc": "कार्य अनुस्मारक और अपडेट",
+      "language": "भाषा",
+      "notifications": "सूचनाएं",
+      "pushNotif": "पुश सूचनाएं",
+      "pushNotifDesc": "ब्राउज़र तत्काल सूचनाएं",
+      "save": "प्राथमिकताएं सेव करें",
+      "theme": "थीम",
+      "themeDark": "डार्क",
+      "themeLight": "लाइट",
+      "themeSystem": "सिस्टम"
+    },
+    "roles": {
+      "dsp": "DSP",
+      "ohs_specialist": "OHS विशेषज्ञ",
+      "organization_admin": "संगठन एडमिन",
+      "osgb_manager": "OSGB प्रबंधक",
+      "platform_admin": "प्लेटफॉर्म एडमिन",
+      "super_admin": "सुपर एडमिन",
+      "title": "भूमिकाएं और अनुमतियां",
+      "viewer": "दर्शक",
+      "workplace_physician": "कार्यक्षेत्र चिकित्सक"
+    },
+    "sessions": {
+      "active": "सक्रिय",
+      "allDevices": "सभी डिवाइसों से साइन आउट करें",
+      "ip": "IP",
+      "lastActive": "अंतिम सक्रिय",
+      "opened": "खोला गया",
+      "thisDevice": "इस डिवाइस से साइन आउट करें",
+      "title": "सक्रिय सत्र"
+    },
+    "tabs": {
+      "activity": "गतिविधि",
+      "preferences": "प्राथमिकताएं",
+      "privacy": "गोपनीयता और सहमति",
+      "profile": "प्रोफाइल",
+      "security": "सुरक्षा"
+    },
+    "updated": "अपडेट किया गया"
+  },
+  "publicInvite": {
+    "acceptedCta": "डैशबोर्ड पर जाएं",
+    "acceptedDesc": "यह निमंत्रण पहले से स्वीकार किया जा चुका है। आप अपने डैशबोर्ड से कंपनी तक पहुंच सकते हैं।",
+    "acceptedTitle": "निमंत्रण पहले से स्वीकृत",
+    "backHome": "होम पर वापस",
+    "brandEyebrow": "RiskNova",
+    "btnLogin": "साइन इन करें",
+    "btnRegister": "खाता बनाएं",
+    "cardEyebrow": "कंपनी निमंत्रण",
+    "dbErrorDesc": "डेटाबेस तक नहीं पहुंच सके। कृपया बाद में पुनः प्रयास करें।",
+    "dbErrorTitle": "कनेक्शन समस्या",
+    "declinedDesc": "यह निमंत्रण पहले अस्वीकार किया गया था। यदि आपको नया निमंत्रण चाहिए तो निमंत्रणकर्ता से संपर्क करें।",
+    "declinedTitle": "निमंत्रण अस्वीकृत",
+    "dtExpires": "समाप्ति",
+    "dtInvitee": "निमंत्रित व्यक्ति",
+    "dtInviter": "द्वारा निमंत्रित",
+    "dtNote": "टिप्पणी",
+    "expiredDesc": "यह निमंत्रण समाप्त हो गया है। नया निमंत्रण मांगें।",
+    "expiredTitle": "निमंत्रण समाप्त",
+    "inviteTitle": "{company} ने आपको अपने RiskNova वर्कस्पेस में शामिल होने के लिए निमंत्रित किया है।",
+    "loginPrompt": "निमंत्रण स्वीकार करने के लिए, आपको {email} पर पंजीकृत खाता चाहिए।",
+    "notFoundDesc": "यह निमंत्रण अब उपलब्ध नहीं है या लिंक अमान्य है। जिसने आपको निमंत्रित किया है उससे नया लिंक मांगें।",
+    "notFoundTitle": "निमंत्रण नहीं मिला",
+    "revokedDesc": "यह निमंत्रण भेजने वाले व्यक्ति द्वारा रद्द कर दिया गया था।",
+    "revokedTitle": "निमंत्रण रद्द",
+    "shellTitle": "कंपनी निमंत्रण",
+    "unknownCompany": "एक कंपनी",
+    "unspecified": "निर्दिष्ट नहीं"
+  },
+  "publicInviteActions": {
+    "acceptBtn": "निमंत्रण स्वीकार करें",
+    "acceptedRedirecting": "निमंत्रण स्वीकार किया गया। डैशबोर्ड पर रीडायरेक्ट हो रहे हैं…",
+    "accepting": "स्वीकार कर रहे हैं…",
+    "dbError": "डेटाबेस तक नहीं पहुंच सके।",
+    "declineBtn": "अस्वीकार करें",
+    "declinedMessage": "आपने निमंत्रण अस्वीकार कर दिया। आप कभी भी नया निमंत्रण मांग सकते हैं।",
+    "declineProcessing": "प्रोसेसिंग…",
+    "emailMismatch": "यह निमंत्रण {inviteeEmail} को भेजा गया था, लेकिन आप {currentUserEmail} के रूप में साइन इन हैं।",
+    "emailMismatchHint": "कृपया स्वीकार करने के लिए सही खाते से साइन इन करें।",
+    "errAuthRequired": "निमंत्रण स्वीकार करने के लिए आपको साइन इन होना आवश्यक है।",
+    "errExpired": "यह निमंत्रण समाप्त हो गया है।",
+    "errNotFound": "निमंत्रण नहीं मिला।",
+    "errNotPending": "यह निमंत्रण अब लंबित नहीं है (इसे स्वीकार, अस्वीकार या रद्द किया जा सकता है)।",
+    "errUnexpected": "एक अप्रत्याशित त्रुटि हुई।",
+    "errWrongUser": "यह निमंत्रण साइन-इन उपयोगकर्ता का नहीं है। सही खाते से साइन इन करें।"
+  },
+  "publicSurvey": {
+    "congrats": "बधाई हो!",
+    "examFailDesc": "आपका स्कोर: {score}%। उत्तीर्ण अंक: {pass}%।",
+    "examPassDesc": "आपने {score}% के साथ परीक्षा उत्तीर्ण की।",
+    "expiredDesc": "यह लिंक समाप्त हो गया है।",
+    "expiredTitle": "लिंक समाप्त",
+    "invalidDesc": "यह लिंक अब मान्य नहीं है या नहीं मिला।",
+    "invalidTitle": "अमान्य लिंक",
+    "loading": "लोड हो रहा है…",
+    "minutesPipe": "| {minutes} मिनट",
+    "next": "अगला",
+    "no": "नहीं",
+    "openEndedPlaceholder": "अपना उत्तर टाइप करें…",
+    "participantLabel": "प्रतिभागी:",
+    "passPipe": "| उत्तीर्ण: {score}%",
+    "prev": "पिछला",
+    "questionBadge": "प्रश्न {n}",
+    "questionCount": "{count} प्रश्न",
+    "required": "* आवश्यक",
+    "sending": "सबमिट हो रहा है…",
+    "sorry": "खुशी",
+    "startButton": "मैं {name} हूं, शुरू करें",
+    "submit": "सबमिट करें",
+    "submitError": "प्रतिक्रियाएं सहेजी नहीं जा सकीं। अपना कनेक्शन जांचें और पुनः प्रयास करें।",
+    "surveyCompleteDesc": "आपकी प्रतिक्रियाएं सफलतापूर्वक सहेजी गईं।",
+    "thanks": "धन्यवाद!",
+    "verifySubtitleExam": "परीक्षा शुरू करने से पहले अपनी पहचान सत्यापित करें।",
+    "verifySubtitleSurvey": "सर्वेक्षण शुरू करने से पहले अपनी पहचान सत्यापित करें।",
+    "verifyTitle": "पहचान सत्यापन",
+    "yes": "हां"
+  },
+  "pwaInstallPage": {
+    "cards": {
+      "android": {
+        "step1": "getrisknova.com खोलें",
+        "step2": "ऐप इंस्टॉल करें पर टैप करें",
+        "step3": "RiskNova आइकन से साइन इन करें",
+        "text": "Chrome या Edge में RiskNova खोलें; यदि आपको इंस्टॉल प्रॉम्प्ट दिखे, तो ऐप इंस्टॉल करें चुनें।",
+        "title": "Android"
+      },
+      "ios": {
+        "step1": "Safari में साइट खोलें",
+        "step2": "शेयर आइकन पर टैप करें",
+        "step3": "होम स्क्रीन में जोड़ें चुनें",
+        "text": "Safari में खोलें; RiskNova आइकन बनाने के लिए शेयर → होम स्क्रीन में जोड़ें का उपयोग करें।",
+        "title": "iPhone और iPad"
+      },
+      "windows": {
+        "step1": "Edge या Chrome में खोलें",
+        "step2": "इंस्टॉल-ऐप आइकन पर क्लिक करें",
+        "step3": "स्टार्ट मेनू से RiskNova खोलें",
+        "text": "RiskNova को अपनी डेस्कटॉप विंडो में खोलने के लिए Chrome या Edge एड्रेस बार में इंस्टॉल आइकन का उपयोग करें।",
+        "title": "Windows"
+      }
+    },
+    "ctaLogin": "प्लेटफॉर्म में साइन इन करें",
+    "ctaRegister": "मुफ्त शुरू करें",
+    "eyebrow": "ऐप स्टोर की आवश्यकता नहीं",
+    "heroBody": "iOS, Android, और Windows पर अपनी होम स्क्रीन या डेस्कटॉप पर RiskNova जोड़ें। साइट के अपडेट आपके इंस्टॉल किए गए अनुभव में स्वचालित रूप से रोल आउट होते हैं।",
+    "heroTitle": "मोबाइल और डेस्कटॉप पर RiskNova को ऐप की तरह उपयोग करें",
+    "metaDescription": "बिना ऐप स्टोर के iOS, Android, और Windows पर RiskNova को PWA के रूप में इंस्टॉल करें।",
+    "metaTitle": "RiskNova ऐप",
+    "updatesBody": "जब RiskNova वेब ऐप अपडेट होता है, तो आपका PWA नया संस्करण प्राप्त करता है—आपको स्टोर अपडेट का इंतजार नहीं करना पड़ता।",
+    "updatesTitle": "अपडेट स्वचालित रूप से आते हैं"
+  },
+  "pwaPrompt": {
+    "appButton": "इंस्टॉल करें",
+    "appDescription": "अपनी होम स्क्रीन से फील्ड वर्क, दस्तावेज़ों और Nova पर वापस जाएं।",
+    "appTitle": "RiskNova ऐप इंस्टॉल करें",
+    "asideAria": "RiskNova ऐप इंस्टॉलेशन",
+    "dismissAria": "इंस्टॉल रिमाइंडर को खारिज करें",
+    "iosHint": "iPhone/iPad पर, Share → Add to Home Screen का उपयोग करें।",
+    "publicButton": "ऐप इंस्टॉल करें",
+    "publicDescription": "iOS, Android और Windows पर अलग विंडो में तुरंत खोलें।",
+    "publicTitle": "RiskNova को ऐप की तरह इंस्टॉल करें"
+  },
+  "riskScoring": {
+    "classification": {
+      "bow_tie": {
+        "critical": {
+          "action": "कार्य रोकें; बाधाओं को पुनः डिज़ाइन करें",
+          "label": "गंभीर"
+        },
+        "follow_up": {
+          "action": "बाधाएं पर्याप्त; निगरानी जारी रखें",
+          "label": "स्वीकार्य"
+        },
+        "high": {
+          "action": "तत्काल बाधा सुदृढ़ीकरण; प्रक्रिया की समीक्षा करें",
+          "label": "उच्च"
+        },
+        "low": {
+          "action": "बाधा प्रभावशीलता की समीक्षा करें",
+          "label": "निम्न"
+        },
+        "medium": {
+          "action": "अतिरिक्त बाधाएं जोड़ें",
+          "label": "मध्यम"
+        }
+      },
+      "checklist": {
+        "critical": {
+          "action": "गतिविधि रोकें; पूर्ण संशोधन",
+          "label": "गंभीर रूप से अपर्याप्त"
+        },
+        "follow_up": {
+          "action": "वर्तमान अभ्यास बनाए रखें",
+          "label": "अनुपालित"
+        },
+        "high": {
+          "action": "तत्काल सुधारात्मक कार्रवाई शुरू करें",
+          "label": "अपर्याप्त"
+        },
+        "low": {
+          "action": "अल्पकालिक में अंतराल को बंद करें",
+          "label": "स्वीकार्य"
+        },
+        "medium": {
+          "action": "व्यापक सुधार योजना तैयार करें",
+          "label": "सुधार की आवश्यकता"
+        }
+      },
+      "fk": {
+        "critical": {
+          "action": "कार्य तुरंत बंद करें",
+          "label": "अत्यधिक उच्च जोखिम"
+        },
+        "follow_up": {
+          "action": "सुधार सुझावों की आवश्यकता हो सकती है; कोई तत्काल कार्रवाई नहीं",
+          "label": "स्वीकार्य"
+        },
+        "high": {
+          "action": "तत्काल कार्रवाई; कार्य बंद करने पर विचार करें",
+          "label": "उच्च जोखिम"
+        },
+        "low": {
+          "action": "निगरानी में रखें; सुधार की योजना बनाएं",
+          "label": "मध्यम चिंता"
+        },
+        "medium": {
+          "action": "अल्पकालिक में कार्रवाई करें",
+          "label": "महत्वपूर्ण"
+        }
+      },
+      "fmea": {
+        "critical": {
+          "action": "कार्य बंद करें; मूल कारण विश्लेषण करें",
+          "label": "गंभीर जोखिम"
+        },
+        "follow_up": {
+          "action": "वर्तमान नियंत्रण पर्याप्त; निगरानी जारी रखें",
+          "label": "स्वीकार्य"
+        },
+        "high": {
+          "action": "तत्काल कार्रवाई; डिज़ाइन परिवर्तन पर विचार करें",
+          "label": "उच्च जोखिम"
+        },
+        "low": {
+          "action": "सुधार की योजना बनाएं",
+          "label": "निम्न जोखिम"
+        },
+        "medium": {
+          "action": "कार्रवाई करें; नियंत्रण मजबूत करें",
+          "label": "मध्यम जोखिम"
+        }
+      },
+      "fta": {
+        "critical": {
+          "action": "संचालन न करें; मूल कारणों को समाप्त करें",
+          "label": "गंभीर"
+        },
+        "follow_up": {
+          "action": "सिस्टम विश्वसनीयता पर्याप्त",
+          "label": "स्वीकार्य"
+        },
+        "high": {
+          "action": "सिस्टम को पुनः डिज़ाइन करें",
+          "label": "उच्च"
+        },
+        "low": {
+          "action": "रिडंडेंसी / बैकअप का मूल्यांकन करें",
+          "label": "निम्न"
+        },
+        "medium": {
+          "action": "महत्वपूर्ण घटकों में रिडंडेंसी जोड़ें",
+          "label": "मध्यम"
+        }
+      },
+      "hazop": {
+        "critical": {
+          "action": "प्रक्रिया रोकें; डिज़ाइन संशोधित करें",
+          "label": "असहनीय"
+        },
+        "follow_up": {
+          "action": "वर्तमान नियंत्रण पर्याप्त",
+          "label": "स्वीकार्य"
+        },
+        "high": {
+          "action": "प्रक्रिया परिवर्तन या अतिरिक्त बाधा आवश्यक",
+          "label": "उच्च"
+        },
+        "low": {
+          "action": "निगरानी और सुधार की योजना बनाएं",
+          "label": "निम्न"
+        },
+        "medium": {
+          "action": "अतिरिक्त सुरक्षा परतों का मूल्यांकन करें",
+          "label": "मध्यम"
+        }
+      },
+      "lopa": {
+        "critical": {
+          "action": "प्रक्रिया रोकें; डिज़ाइन संशोधित करें",
+          "label": "असहनीय"
+        },
+        "follow_up": {
+          "action": "वर्तमान सुरक्षा परतें पर्याप्त",
+          "label": "स्वीकार्य"
+        },
+        "high": {
+          "action": "कई परतें या प्रक्रिया परिवर्तन आवश्यक",
+          "label": "उच्च जोखिम"
+        },
+        "low": {
+          "action": "यथासंभव कम",
+          "label": "ALARP"
+        },
+        "medium": {
+          "action": "अतिरिक्त सुरक्षा परत जोड़ें",
+          "label": "सुधार आवश्यक"
+        }
+      },
+      "matrix": {
+        "critical": {
+          "action": "तुरंत कार्य रोकें; आपातकालीन उपाय",
+          "label": "असहनीय"
+        },
+        "follow_up": {
+          "action": "आगे के उपाय आवश्यक नहीं हो सकते; निगरानी पर्याप्त",
+          "label": "स्वीकार्य"
+        },
+        "high": {
+          "action": "जल्द कार्रवाई करें",
+          "label": "उच्च जोखिम"
+        },
+        "low": {
+          "action": "मौजूदा नियंत्रण पर्याप्त; निरीक्षण जारी रखें",
+          "label": "कम जोखिम"
+        },
+        "medium": {
+          "action": "सुधार गतिविधियों की योजना बनाएं",
+          "label": "मध्यम जोखिम"
+        }
+      },
+      "r2d": {
+        "critical": {
+          "action": "कार्य रोकने का मूल्यांकन करें",
+          "label": "गंभीर"
+        },
+        "follow_up": {
+          "action": "नियमित निगरानी पर्याप्त है",
+          "label": "निगरानी"
+        },
+        "high": {
+          "action": "प्राथमिकता हस्तक्षेप आवश्यक",
+          "label": "उच्च"
+        },
+        "low": {
+          "action": "संरचित पुनर्मूल्यांकन निर्धारित करें",
+          "label": "कम"
+        },
+        "medium": {
+          "action": "बढ़ी हुई निगरानी आवश्यक",
+          "label": "मध्यम"
+        }
+      }
+    },
+    "fk": {
+      "exposure": {
+        "v0_5": "अत्यंत दुर्लभ (वर्ष में एक बार)",
+        "v1": "दुर्लभ (महीने में एक बार)",
+        "v10": "निरंतर (दिन का अधिकांश समय)",
+        "v2": "कभी-कभार (सप्ताह में एक बार)",
+        "v3": "कई बार (सप्ताह में कई बार)",
+        "v6": "बार-बार (दैनिक)"
+      },
+      "likelihood": {
+        "v0_1": "लगभग असंभव",
+        "v0_2": "अत्यंत असंभावित",
+        "v0_5": "अप्रत्याशित लेकिन संभव",
+        "v1": "कम संभावना, नगण्य नहीं",
+        "v10": "अत्यधिक संभावित / अपेक्षित",
+        "v3": "दुर्लभ लेकिन संभव",
+        "v6": "काफी संभावित"
+      },
+      "severity": {
+        "v1": "उल्लेखनीय, प्राथमिक चिकित्सा",
+        "v100": "बड़ी आपदा, कई मौतें",
+        "v15": "अत्यंत गंभीर, अंग की हानि",
+        "v3": "महत्वपूर्ण, बाहरी उपचार",
+        "v40": "आपदा, एकल मृत्यु",
+        "v7": "गंभीर, स्थायी नुकसान"
+      }
+    },
+    "fmea": {
+      "detection": {
+        "v1": "लगभग निश्चित पहचान",
+        "v10": "पहचान नहीं हो सकती",
+        "v2": "पहचान की बहुत अधिक संभावना",
+        "v3": "उच्च संभावना",
+        "v4": "मध्यम-उच्च",
+        "v5": "मध्यम",
+        "v6": "निम्न-मध्यम",
+        "v7": "निम्न",
+        "v8": "बहुत निम्न",
+        "v9": "दूरस्थ संभावना"
+      },
+      "occurrence": {
+        "v1": "लगभग असंभव (< 1/1,000,000)",
+        "v10": "लगभग निश्चित (≥ 1/2)",
+        "v2": "दूरस्थ (1/20,000)",
+        "v3": "बहुत निम्न (1/4,000)",
+        "v4": "निम्न (1/1,000)",
+        "v5": "मध्यम-निम्न (1/400)",
+        "v6": "मध्यम (1/80)",
+        "v7": "मध्यम-उच्च (1/40)",
+        "v8": "उच्च (1/20)",
+        "v9": "बहुत उच्च (1/8)"
+      },
+      "severity": {
+        "v1": "कोई प्रभाव नहीं — अनदेखा",
+        "v10": "विनाशकारी — मृत्यु / बड़ा दुर्घटना",
+        "v2": "बहुत मामूली — नगण्य प्रभाव",
+        "v3": "मामूली — हल्की परेशानी",
+        "v4": "कम — प्रदर्शन में गिरावट",
+        "v5": "मध्यम — महत्वपूर्ण प्रदर्शन हानि",
+        "v6": "उच्च — सिस्टम कार्य बाधित",
+        "v7": "बहुत उच्च — अकार्यशील",
+        "v8": "खतरनाक (चेतावनी के साथ) — चोट का जोखिम",
+        "v9": "खतरनाक (बिना चेतावनी) — गंभीर चोट"
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "after": "बाद में",
+        "before": "पहले",
+        "early": "जल्दी",
+        "late": "देर से",
+        "less": "कम",
+        "more": "अधिक",
+        "noNot": "नहीं / न",
+        "otherThan": "इसके अलावा",
+        "partOf": "का हिस्सा",
+        "reverse": "उल्टा"
+      },
+      "parameters": {
+        "composition": "संरचना",
+        "flow": "प्रवाह",
+        "level": "स्तर",
+        "mixing": "मिश्रण",
+        "ph": "pH",
+        "pressure": "दबाव",
+        "reaction": "अभिक्रिया",
+        "speed": "गति",
+        "temperature": "तापमान",
+        "time": "समय"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v0_00001": "100,000 वर्षों में एक बार — अत्यंत दुर्लभ",
+        "v0_0001": "10,000 वर्षों में एक बार — बहुत दुर्लभ",
+        "v0_001": "1,000 वर्षों में एक बार — दुर्लभ",
+        "v0_01": "100 वर्षों में एक बार — कभी-कभार",
+        "v0_1": "10 वर्षों में एक बार — बारंबार",
+        "v1": "वर्ष में एक बार — बहुत बारंबार"
+      },
+      "pfd": {
+        "v0_001": "स्वचालित सुरक्षा प्रणाली (SIL-1 श्रेणी)",
+        "v0_01": "प्रशिक्षित ऑपरेटर प्रतिक्रिया / अलार्म",
+        "v0_1": "सरल प्रशासनिक नियंत्रण"
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "बहुत कम (लगभग असंभव)"
+        },
+        "i2": {
+          "description": "कम (दुर्लभ, अप्रत्याशित)"
+        },
+        "i3": {
+          "description": "मध्यम (असंभावित लेकिन संभव)"
+        },
+        "i4": {
+          "description": "उच्च (संभावित, आश्चर्यजनक नहीं)"
+        },
+        "i5": {
+          "description": "बहुत उच्च (अपेक्षित, अपरिहार्य)"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "बहुत मामूली (कोई समय हानि नहीं)"
+        },
+        "i2": {
+          "description": "मामूली (कोई समय-हानि चोट नहीं)"
+        },
+        "i3": {
+          "description": "मध्यम (समय-हानि चोट)"
+        },
+        "i4": {
+          "description": "प्रमुख (स्थायी नुकसान, अंग-भंग)"
+        },
+        "i5": {
+          "description": "विनाशकारी (मृत्यु, एकाधिक मृत्यु)"
+        }
+      }
+    },
+    "methods": {
+      "bow_tie": {
+        "description": "बो-टाई — खतरा–बाधक–परिणाम",
+        "name": "बो-टाई",
+        "tooltip": "निवारक और शमनकारी बाधकों के साथ खतरे की संभावना और परिणाम की गंभीरता; बाधक शक्ति से अवशिष्ट जोखिम।"
+      },
+      "checklist": {
+        "description": "चेकलिस्ट — अनुपालन प्रतिशत",
+        "name": "चेकलिस्ट",
+        "tooltip": "ठीक / ठीक नहीं / आंशिक मदों से भारित अनुपालन—ऑडिट और निरीक्षण के लिए अच्छा।"
+      },
+      "fine_kinney": {
+        "description": "संभावना × गंभीरता × एक्सपोज़र गुणनफल",
+        "name": "फाइन-किन्नी",
+        "tooltip": "सामान्य मात्रात्मक जोखिम विधि: L (0.1–10), S (1–100), E (0.5–10); ISO 31000 के अनुकूल।"
+      },
+      "fmea": {
+        "description": "विफलता मोड और प्रभाव विश्लेषण — RPN",
+        "name": "FMEA",
+        "tooltip": "गंभीरता (1–10) × घटना (1–10) × पहचान (1–10) = RPN। संचालन और रखरखाव के लिए आदर्श; IEC 60812।"
+      },
+      "fta": {
+        "description": "दोष वृक्ष विश्लेषण — सिस्टम विश्वसनीयता",
+        "name": "FTA",
+        "tooltip": "AND/OR गेट्स के साथ सिस्टम विफलता का विघटन; विमानन, परमाणु और महत्वपूर्ण सिस्टम में उपयोग; IEC 61025।"
+      },
+      "hazop": {
+        "description": "खतरा और संचालन अध्ययन",
+        "name": "HAZOP",
+        "tooltip": "गाइड शब्द (No, Less, More, Reverse, …) प्रक्रिया विचलन की खोज करते हैं; रासायनिक/पेट्रो प्लांट्स में सामान्य; IEC 61882।"
+      },
+      "jsa": {
+        "description": "कार्य सुरक्षा विश्लेषण — चरण-आधारित खतरे",
+        "name": "JSA",
+        "tooltip": "प्रति-चरण गंभीरता × संभावना / नियंत्रण प्रभावशीलता; निर्माण और फील्ड कार्य के लिए आवश्यक।"
+      },
+      "l_matrix": {
+        "description": "5×5 संभावना–गंभीरता जोखिम मैट्रिक्स",
+        "name": "L-प्रकार मैट्रिक्स",
+        "tooltip": "संभावना (1–5) और गंभीरता (1–5) चुनें; 25-सेल रंग मैट्रिक्स से जोखिम पढ़ें (तुर्की OHS प्रथा के अनुकूल)।"
+      },
+      "lopa": {
+        "description": "सुरक्षा परत विश्लेषण — आवृत्ति कमी",
+        "name": "LOPA",
+        "tooltip": "प्रारंभिक आवृत्ति को परत PFD मानों से गुणा करें; प्रक्रिया सुरक्षा में अक्सर SIL लक्ष्यों के साथ जोड़ा जाता है।"
+      },
+      "r_skor": {
+        "description": "9 पैरामीटर के साथ भारित फील्ड स्क्रीनिंग स्कोर",
+        "name": "R-SKOR 2D",
+        "tooltip": "RiskNova विधि: नौ पैरामीटर (C1–C9) दृश्य और फील्ड इनपुट को भार देते हैं; इमेजरी से स्वचालित स्कोरिंग का समर्थन करता है।"
+      }
+    },
+    "panel": {
+      "bowtie": {
+        "consequence": "परिणाम गंभीरता",
+        "mitigation": "शमन बाधाएं",
+        "prevention": "निवारक बाधाएं",
+        "rawRisk": "कच्चा जोखिम",
+        "residualRisk": "अवशिष्ट जोखिम",
+        "threat": "खतरे की संभावना"
+      },
+      "checklist": {
+        "add": "+ जोड़ें",
+        "compliantLine": "{n} अनुपालित",
+        "itemPlaceholder": "नियंत्रण आइटम…",
+        "itemsHeading": "जांच आइटम ({count})",
+        "nonCompliantLine": "{n} गैर-अनुपालित",
+        "partialLine": "{n} आंशिक",
+        "removeTitle": "हटाएं",
+        "statusKismi": "आंशिक",
+        "statusNa": "लागू नहीं",
+        "statusUygun": "अनुपालित",
+        "statusUygunDegil": "गैर-अनुपालित"
+      },
+      "fmea": {
+        "detection": "पहचान (D)",
+        "formula": "S × O × D = RPN",
+        "occurrence": "घटना (O)",
+        "severity": "गंभीरता (S)"
+      },
+      "fta": {
+        "add": "+ जोड़ें",
+        "componentDefault": "घटक {n}",
+        "componentPlaceholder": "घटक नाम",
+        "componentsHeading": "घटक ({count})",
+        "failureRateTitle": "विफलता संभावना (0–1)",
+        "gate": "गेट",
+        "gateType": "गेट प्रकार:",
+        "removeTitle": "हटाएं",
+        "systemCriticality": "सिस्टम महत्वता",
+        "systemProb": "सिस्टम P"
+      },
+      "hazop": {
+        "detectEasy": "आसान",
+        "detectHard": "कठिन",
+        "detectability": "पहचान क्षमता",
+        "deviation": "विचलन विवरण",
+        "deviationPlaceholder": "विचलन का वर्णन करें…",
+        "guideWord": "गाइड शब्द",
+        "likelihood": "संभावना",
+        "parameter": "प्रक्रिया पैरामीटर",
+        "severity": "गंभीरता"
+      },
+      "jsa": {
+        "add": "+ जोड़ें",
+        "avg": "औसत",
+        "control": "नियंत्रण",
+        "controlsPlaceholder": "नियंत्रण उपाय…",
+        "hazardPlaceholder": "खतरा…",
+        "highRisk": "उच्च जोखिम चरण",
+        "jobPlaceholder": "कार्य नाम…",
+        "jobTitle": "कार्य शीर्षक",
+        "likelihood": "संभावना",
+        "max": "अधिकतम",
+        "removeTitle": "हटाएं",
+        "severity": "गंभीरता",
+        "stepDefault": "चरण {n}",
+        "stepDescPlaceholder": "चरण विवरण…",
+        "stepScoreIntro": "चरण स्कोर:",
+        "stepsHeading": "कार्य चरण ({count})"
+      },
+      "lopa": {
+        "addLayer": "+ जोड़ें",
+        "consequence": "परिणाम गंभीरता",
+        "consequenceV1": "कम",
+        "consequenceV2": "मामूली",
+        "consequenceV3": "मध्यम",
+        "consequenceV4": "गंभीर",
+        "consequenceV5": "विनाशकारी",
+        "initFreq": "प्रारंभिक घटना आवृत्ति",
+        "layerDefault": "परत {n}",
+        "layerNamePlaceholder": "परत का नाम",
+        "layerPfd": "परत PFD",
+        "layersHeading": "सुरक्षा परतें ({count})",
+        "meetsTarget": "सहनीय लक्ष्य पूरा करता है",
+        "removeTitle": "हटाएं",
+        "riskReduction": "जोखिम कमी",
+        "target": "लक्ष्य",
+        "targetMet": "पूरा",
+        "targetNotMet": "पूरा नहीं"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employee_representative": "कर्मचारी प्रतिनिधि",
+        "employer": "नियोक्ता",
+        "employer_representative": "नियोक्ता प्रतिनिधि",
+        "knowledgeable_employee": "जोखिमों के बारे में जानकार कर्मचारी",
+        "ohs_specialist": "OHS विशेषज्ञ",
+        "other_health_personnel": "अन्य स्वास्थ्य कर्मी",
+        "support_staff": "सहायक कर्मचारी",
+        "workplace_physician": "कार्यक्षेत्र चिकित्सक"
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "description": "क्षेत्र में देखे गए खतरनाक वस्तुओं की संख्या / घनत्व",
+        "label": "खतरा घनत्व"
+      },
+      "c2": {
+        "description": "अनुपस्थित हेलमेट, दस्ताने, चश्मे आदि",
+        "label": "PPE कमियां"
+      },
+      "c3": {
+        "description": "प्रतिबंधित क्षेत्र प्रवेश, असुरक्षित कार्य, गिरने का जोखिम",
+        "label": "व्यवहारिक जोखिम"
+      },
+      "c4": {
+        "description": "गर्मी, शोर, कंपन और समान तनावकारक",
+        "label": "पर्यावरणीय तनाव"
+      },
+      "c5": {
+        "description": "गैस रिसाव, रसायन, विद्युत खतरे",
+        "label": "रासायनिक / विद्युत"
+      },
+      "c6": {
+        "description": "अवरुद्ध निकास, गीले फर्श, मार्ग बाधाएं",
+        "label": "पहुंच / अवरोध"
+      },
+      "c7": {
+        "description": "बाईपास गार्ड, देरी से रखरखाव",
+        "label": "मशीनरी / प्रक्रिया"
+      },
+      "c8": {
+        "description": "फोर्कलिफ्ट तीव्रता, लाइन क्रॉसिंग, पैदल यात्री-वाहन संघर्ष",
+        "label": "वाहन यातायात"
+      },
+      "c9": {
+        "description": "प्रशिक्षण अंतराल, अनुपस्थित चेतावनी संकेत",
+        "label": "संगठनात्मक भार"
+      },
+      "source": {
+        "visualAnalysis": "दृश्य विश्लेषण"
+      }
+    },
+    "ui": {
+      "fk": {
+        "exposure": "एक्सपोज़र (E)",
+        "likelihood": "संभावना (L)",
+        "severity": "गंभीरता (S)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "संभावना ({n})",
+        "severityHeading": "गंभीरता ({n})"
+      },
+      "page": {
+        "analysisNotePlaceholder": "प्रत्येक पंक्ति एक जोखिम विषय या गैर-अनुपालन समूह है। प्रति पंक्ति एक या अधिक फोटो संलग्न किए जा सकते हैं।",
+        "analysisTitlePlaceholder": "फील्ड जोखिम विश्लेषण",
+        "describeRiskGroup": "जोखिम समूह का संक्षिप्त विवरण दें"
+      },
+      "r2d": {
+        "base": "आधार",
+        "dominant": "प्रभावी",
+        "parameters": "पैरामीटर",
+        "peak": "शिखर"
+      },
+      "severity": {
+        "critical": "गंभीर",
+        "high": "उच्च",
+        "low": "निम्न",
+        "medium": "मध्यम"
+      }
+    },
+    "wizard": {
+      "common": {
+        "add": "जोड़ें",
+        "address": "पता",
+        "back": "वापस",
+        "cancel": "रद्द करें",
+        "companyFallback": "कंपनी",
+        "delete": "हटाएं",
+        "description": "विवरण",
+        "findings": "निष्कर्ष",
+        "goToResults": "परिणामों पर जाएं",
+        "images": "छवियां",
+        "lines": "पंक्तियां",
+        "location": "स्थान",
+        "method": "विधि",
+        "next": "आगे",
+        "no": "नहीं",
+        "report": "रिपोर्ट",
+        "risk": "जोखिम",
+        "row": "पंक्ति",
+        "save": "सहेजें",
+        "saving": "सहेज रहे हैं…",
+        "scoreDetailPrefix": "स्कोर विवरण —",
+        "type": "प्रकार",
+        "update": "अपडेट करें",
+        "visual": "छवि",
+        "yes": "हां"
+      },
+      "header": {
+        "backToList": "सूची पर वापस",
+        "badgeAiManual": "AI + मैन्युअल निष्कर्ष",
+        "badgeExport": "PDF / Word / Excel",
+        "newAnalysis": "नया विश्लेषण",
+        "wizardDescription": "कंपनी चुनें, टीम परिभाषित करें, छवियां अपलोड करें, फिर AI + मैन्युअल निष्कर्ष और स्कोरिंग चलाएं।",
+        "wizardTitle": "दृश्य जोखिम विश्लेषण"
+      },
+      "list": {
+        "companyLabel": "कंपनी / संगठन",
+        "companyPlaceholder": "— कंपनी चुनें —",
+        "confirmDelete": "क्या आप सुनिश्चित हैं?",
+        "deleteAnalysis": "हटाएं",
+        "description": "कंपनी चुनें, पिछले विश्लेषण देखें, या नया शुरू करें।",
+        "emptyDescription": "इस कंपनी के लिए पहला जोखिम विश्लेषण शुरू करने के लिए ऊपर का बटन उपयोग करें।",
+        "emptyTitle": "अभी तक कोई विश्लेषण नहीं",
+        "eyebrow": "जोखिम विश्लेषण",
+        "findingsCount": "{count} निष्कर्ष",
+        "historyCount": "{count} सहेजे गए विश्लेषण",
+        "historyTitle": "{name} — विश्लेषण इतिहास",
+        "newAnalysis": "+ नया विश्लेषण शुरू करें",
+        "statusArchived": "संग्रहीत",
+        "statusCompleted": "पूर्ण",
+        "statusDraft": "मसौदा",
+        "title": "जोखिम विश्लेषण प्रबंधन"
+      },
+      "messages": {
+        "analysisComplete": "विश्लेषण पूर्ण!",
+        "analysisFailed": "विश्लेषण पूरा नहीं हो सका।",
+        "analysisFailedDetail": "AI विश्लेषण असफल। {detail}",
+        "analysisPartial": "AI विश्लेषण आंशिक रूप से पूर्ण। {successful}/{total} छवियां प्रसंस्कृत; {errors} छवि(यों) पर त्रुटियां।",
+        "analysisStarting": "विश्लेषण शुरू हो रहा है…",
+        "analysisSummary": "AI विश्लेषण समाप्त। {risks} जोखिम, {positive} सकारात्मक अवलोकन।",
+        "analyzingImageProgress": "छवि विश्लेषण {current}/{total}: {fileName}",
+        "analyzingRowImage": "छवि विश्लेषण: पंक्ति {row}, {fileName}…",
+        "genericAiError": "OpenAI या Anthropic चरण में एक त्रुटि हुई।",
+        "needImageToAnalyze": "विश्लेषण शुरू करने के लिए कम से कम एक छवि जोड़ें।"
+      },
+      "methodCard": {
+        "params": "{count} पैरामीटर",
+        "score": "स्कोर:"
+      },
+      "nav": {
+        "aiAnalyzingShort": "विश्लेषण कर रहे हैं…",
+        "aiStartShort": "AI विश्लेषण शुरू करें"
+      },
+      "notifications": {
+        "savedBody": "{title} — {findings} निष्कर्ष, {critical} गंभीर/उच्च",
+        "savedTitle": "जोखिम विश्लेषण सहेजा गया",
+        "updatedTitle": "जोखिम विश्लेषण अपडेट किया गया"
+      },
+      "save": {
+        "error": "सहेजते समय एक त्रुटि हुई।",
+        "noCompany": "कंपनी चुने बिना सहेज नहीं सकते।",
+        "oversized": "{fileName} 10 MB की सीमा से अधिक है। सहेजने से पहले छोटी छवि अपलोड करें।",
+        "successNew": "विश्लेषण सफलतापूर्वक सहेजा गया!",
+        "successUpdated": "विश्लेषण सफलतापूर्वक अपडेट किया गया!"
+      },
+      "step1": {
+        "analysisNote": "विश्लेषण नोट",
+        "analysisTitle": "विश्लेषण शीर्षक",
+        "company": "कंपनी / संगठन",
+        "companyCardAddress": "पता:",
+        "companyCardType": "प्रकार:",
+        "companyPlaceholder": "कंपनी / संगठन चुनें",
+        "companyRequired": "विश्लेषण के लिए कंपनी चुनना आवश्यक है।",
+        "department": "विभाग / इकाई",
+        "departmentPlaceholder": "विभाग चुनें",
+        "departmentRequired": "विभाग चुनना आवश्यक है।",
+        "editCompanyStructure": "कंपनी संरचना संपादित करें",
+        "location": "स्थान / कार्य क्षेत्र",
+        "locationPlaceholder": "स्थान चुनें",
+        "locationRequired": "स्थान चुनना आवश्यक है।",
+        "method": "विश्लेषण विधि",
+        "subtitle": "चुनें कि यह जोखिम विश्लेषण किस कंपनी, स्थान और विभाग पर लागू होता है।",
+        "title": "विश्लेषण संदर्भ"
+      },
+      "step2": {
+        "addParticipant": "प्रतिभागी मैन्युअल रूप से जोड़ें",
+        "certificate": "प्रमाणपत्र संख्या (यदि कोई हो)",
+        "certificatePlaceholder": "यदि लागू हो तो दर्ज करें",
+        "fullName": "पूरा नाम",
+        "noTeamBody": "इस कंपनी के लिए अभी तक कोई टीम सदस्य सेट नहीं किए गए हैं। कंपनी पेज पर, टीम टैब खोलें, एक \"जोखिम मूल्यांकन टीम\" बनाएं, और सदस्य जोड़ें — वे यहां स्वचालित रूप से दिखाई देंगे।",
+        "noTeamLink": "कंपनी टीम प्रबंधन पर जाएं",
+        "noTeamTitle": "जोखिम मूल्यांकन टीम परिभाषित नहीं",
+        "participantN": "प्रतिभागी {n}",
+        "pickFromTeam": "कंपनी टीम से चुनें",
+        "rolePlaceholder": "भूमिका चुनें",
+        "roleType": "भूमिका / पद प्रकार",
+        "subtitle": "सहेजे गए स्टाफ से चुनें या मैन्युअल रूप से प्रतिभागी जोड़ें।",
+        "title": "जोखिम विश्लेषण में शामिल लोग",
+        "titleField": "भूमिका / पद विवरण",
+        "titlePlaceholder": "जैसे क्लास ए विशेषज्ञ"
+      },
+      "step3": {
+        "addImage": "छवि जोड़ें",
+        "aiAnalyzing": "AI विश्लेषण चल रहा है…",
+        "aiStart": "AI जोखिम विश्लेषण शुरू करें",
+        "aiSub": "Nova AI प्रत्येक छवि का अलग से विश्लेषण करता है।",
+        "bulkUpload": "बल्क अपलोड (प्रत्येक अलग पंक्ति के रूप में)",
+        "deleteRow": "पंक्ति हटाएं",
+        "newRow": "पंक्ति जोड़ें",
+        "rowHint": "इस पंक्ति के अंतर्गत व्यापक और क्लोज़-अप शॉट्स को समूहित करें।",
+        "rowN": "पंक्ति {n}",
+        "rowTitle": "पंक्ति शीर्षक",
+        "rowTitlePlaceholder": "जैसे स्टैकिंग क्षेत्र",
+        "subtitle": "प्रत्येक पंक्ति एक जोखिम विषय है। छवियां अपलोड करें, फिर AI विश्लेषण शुरू करें।",
+        "summaryCompany": "कंपनी",
+        "summaryImages": "छवियां",
+        "summaryLocation": "स्थान",
+        "summaryMethod": "विधि",
+        "title": "जोखिम पंक्तियां और छवियां"
+      },
+      "step4": {
+        "addedLater": "बाद में जोड़ा गया",
+        "addRiskPin": "जोखिम पिन जोड़ें",
+        "aiAnalyzingDetail": "Nova AI प्रत्येक छवि का विश्लेषण कर रहा है…",
+        "analyzingInline": "विश्लेषण कर रहा है…",
+        "areaAssessment": "क्षेत्र मूल्यांकन",
+        "avgScore": "औसत स्कोर",
+        "cannotAnalyzeBody": "यह छवि जोखिम विश्लेषण के लिए उपयुक्त नहीं है।",
+        "cannotAnalyzeTitle": "जोखिम विश्लेषण नहीं चला सकते",
+        "capaBadge": "CAPA उम्मीदवार",
+        "capaCandidate": "CAPA उम्मीदवार",
+        "cleanNoRisk": "स्पष्ट — कोई जोखिम नहीं मिला",
+        "confidenceHigh": "पुष्ट निष्कर्ष",
+        "confidenceLow": "सत्यापन अनुशंसित",
+        "confidenceMedium": "AI निष्कर्ष",
+        "criticalHigh": "गंभीर / उच्च",
+        "deleteFindingAria": "निष्कर्ष हटाएं",
+        "deleteFindingConfirm": "निष्कर्ष \"{title}\" को हटाएं?",
+        "deleteFindingTitle": "निष्कर्ष हटाएं",
+        "detectedPrefix": "पाया गया:",
+        "emptyResultsDesc": "चरण 3 में, छवियां अपलोड करें और विश्लेषण चलाएं।",
+        "emptyResultsTitle": "अभी तक कोई परिणाम नहीं",
+        "findingTitle": "खोज का शीर्षक",
+        "findingTitlePlaceholder": "जैसे गार्डरेल गुम",
+        "manualPinConfirm": "जोड़ें",
+        "manualPinHint": "आप मैन्युअल पिन के साथ अपनी खुद की खोज जोड़ सकते हैं।",
+        "manualPinTitle": "मैन्युअल जोखिम पिन जोड़ें",
+        "metaEyebrowArea": "क्षेत्र मूल्यांकन",
+        "metaEyebrowPositive": "सकारात्मक अवलोकन",
+        "noRiskDetectedBody": "AI को इस छवि पर कोई अर्थपूर्ण खतरा या गैर-अनुपालन नहीं मिला।",
+        "noRiskDetectedTitle": "कोई जोखिम नहीं मिला",
+        "noRiskThisImageBody": "AI को इस छवि पर कोई ठोस खतरा नहीं मिला। आप अभी भी मैन्युअल खोज जोड़ सकते हैं।",
+        "noRiskThisImageTitle": "इस छवि पर कोई महत्वपूर्ण जोखिम नहीं",
+        "notRealPhotoBody": "यह छवि एक ड्राइंग, चित्रण, या सिंथेटिक रेंडर है। जोखिम विश्लेषण केवल वास्तविक साइट फोटो पर चलता है।",
+        "notRealPhotoTitle": "वास्तविक फोटो नहीं",
+        "peopleDetected": "{count} व्यक्ति का पता लगाया गया",
+        "photoQuality": "छवि गुणवत्ता:",
+        "photoQualityLow": "कम",
+        "photoQualityMedium": "मध्यम",
+        "pinBanner": "जोखिम पिन जोड़ने के लिए छवि पर क्लिक करें",
+        "pinModeActive": "पिन मोड सक्रिय...",
+        "positiveFindings": "सकारात्मक अवलोकन",
+        "positiveObservationsHint": "सकारात्मक अवलोकन नीचे सूचीबद्ध हैं।",
+        "resultsSubtitle": "जोखिम कार्ड छवि पर एनोटेशन से जुड़े रहते हैं। स्कोर बदलने के लिए पैरामीटर समायोजित करें।",
+        "resultsTitle": "एनोटेटेड खोजें",
+        "riskCount": "जोखिम: {count}",
+        "rowImagesFindings": "छवियां: {images} · खोजें: {findings}",
+        "saveWarning": "परिणाम अभी तक सहेजे नहीं गए हैं! यदि आप बिना सहेजे छोड़ देते हैं, तो सभी खोजें खो जाएंगी।",
+        "scorePanelIntro": "स्कोर विवरण — {method}",
+        "severity": "गंभीरता",
+        "totalFindings": "कुल निष्कर्ष",
+        "visualN": "छवि {n}"
+      },
+      "steps": {
+        "context": "विश्लेषण संदर्भ",
+        "images": "छवियां",
+        "results": "परिणाम",
+        "team": "विश्लेषण टीम"
+      },
+      "validate": {
+        "company": "पहले कंपनी / संगठन चुनें।",
+        "department": "विभाग / इकाई चुनें।",
+        "firmLocationDept": "कंपनी, स्थान और विभाग चुनें।",
+        "location": "कार्य स्थान चुनें।",
+        "participants": "कम से कम एक जिम्मेदार व्यक्ति का नाम और भूमिका दर्ज करें।",
+        "step2Participants": "कम से कम एक जिम्मेदार व्यक्ति का नाम और भूमिका दर्ज करें।",
+        "step3Images": "कम से कम एक छवि जोड़ें।"
       }
     }
   },
+  "sharedDocument": {
+    "createdOn": "निर्मित: {date}",
+    "footerCreatedWith": "RiskNova के साथ निर्मित",
+    "hashLabel": "हैश:",
+    "loading": "दस्तावेज़ लोड हो रहा है…",
+    "sharedBadge": "साझा दस्तावेज़",
+    "signaturesHeading": "हस्ताक्षर",
+    "statusDraft": "मसौदा",
+    "statusPendingApproval": "अनुमोदन लंबित",
+    "statusReady": "तैयार",
+    "statusRevision": "संशोधन"
+  },
+  "sharedRisk": {
+    "analysisNoteHeading": "मूल्यांकन टिप्पणी",
+    "defaultTitle": "जोखिम मूल्यांकन रिपोर्ट",
+    "departmentLabel": "विभाग:",
+    "findingsByRowHeading": "पंक्ति-आधारित जोखिम निष्कर्ष",
+    "findingsImagesCount": "{findings} निष्कर्ष · {images} छवियां",
+    "footerGeneratedBy": "यह रिपोर्ट RiskNova OHS प्लेटफॉर्म द्वारा तैयार की गई है।",
+    "footerMethodNote": "रिपोर्ट सामग्री का मूल्यांकन {method} पद्धति का उपयोग करके किया गया था।",
+    "legalBasisHeading": "नियामक संदर्भ",
+    "locationLabel": "स्थान:",
+    "methods": {
+      "fine_kinney": "Fine-Kinney",
+      "fmea": "FMEA",
+      "hazop": "HAZOP",
+      "l_matrix": "L-Matrix",
+      "r_skor": "R-SCORE 2D"
+    },
+    "noFindingsInRow": "इस पंक्ति के लिए कोई निष्कर्ष नहीं।",
+    "platformLabel": "RiskNova OHS प्लेटफॉर्म",
+    "recommendation": "सिफारिश",
+    "reportEyebrow": "जोखिम मूल्यांकन रिपोर्ट",
+    "rowTitleFallback": "पंक्ति {n}",
+    "severity": {
+      "critical": "गंभीर",
+      "high": "उच्च",
+      "low": "निम्न",
+      "medium": "मध्यम"
+    },
+    "statCritical": "गंभीर",
+    "statHigh": "उच्च",
+    "statTotal": "कुल निष्कर्ष",
+    "teamHeading": "मूल्यांकन टीम"
+  },
+  "solutionCenter": {
+    "chat": "चैट",
+    "copy": "कॉपी",
+    "description": "Nova एक परिचालन OHS एजेंट है जो कानून की व्याख्या करता है, आपको सही मॉड्यूल तक पहुंचाता है, और दस्तावेज़ या वर्कफ़्लो क्रियाएं शुरू करता है।",
+    "documents": "मेरे दस्तावेज़",
+    "history": "इतिहास",
+    "inputPlaceholder": "Nova को बताएं कि आप क्या करना चाहते हैं...",
+    "queries": "क्वेरीज़",
+    "referenced": "संदर्भों के साथ",
+    "save": "सेव करें",
+    "saved": "सेव किया गया",
+    "sources": "कानूनी स्रोत",
+    "title": "Nova"
+  },
   "solutions": {
-    "osgbPage": {
-      "metaTitle": "OSGB solution and quote | RiskNova",
-      "metaDescription": "Package options and tailored quote requests for OSGBs serving multiple workplaces.",
-      "heroEyebrow": "OSGB",
-      "heroTitleLead": "Bring your client portfolio and team together in",
-      "heroTitleAccent": "one panel",
-      "heroTitleTrail": ".",
-      "heroBody": "Clarify personnel, task tracking and client sites. Individual plans start from {starterPrice}/month Starter; the OSGB model covers multi-site portfolios and extra seats, so the figures below are indicative USD segments — exact terms are confirmed after the quote form or registration flow.",
-      "ctaRegister": "Request a quote via registration",
-      "ctaForm": "Go to quote form",
-      "footerNoteLead": "Single employer across many locations?",
-      "footerNoteLink": "See the enterprise solution page",
-      "footerNoteTrail": "."
-    },
-    "enterprisePage": {
-      "metaTitle": "Enterprise solution and quote | RiskNova",
-      "metaDescription": "Quote requests and contact for multi-site organisations with specialised OHS needs.",
-      "heroEyebrow": "Enterprise",
-      "heroTitle": "Consistent OHS operations across your locations with bespoke onboarding.",
-      "heroBody": "We do not offer self-service card checkout for enterprise use. Share your needs and our sales team will follow up with a tailored quote, limits and implementation.",
-      "ctaRegister": "Request a quote via registration",
-      "ctaForm": "Contact us (form)",
-      "footerNoteLead": "Serving clients as an OSGB?",
-      "footerNoteLink": "OSGB packages page",
-      "footerNoteTrail": "."
-    },
     "commercial": {
-      "osgbSectionTitle": "OSGB packages",
-      "osgbSectionIntro": "Amounts are indicative starting segments in USD; tax, FX and contract scope are confirmed when the quote is finalised. There is no card checkout — we align limits and pricing once we understand your structure.",
-      "enterpriseSectionTitle": "Company / enterprise quote",
-      "enterpriseSectionIntro": "For multi-site organisations, field-heavy operations and bespoke setups there is no card payment on this path. Share your context so we can return with a tailored offer.",
-      "enterpriseCta": "Create quote request",
-      "enterpriseSecondaryCta": "Write us for an OSGB package",
-      "osgbFooterHint": "Single employer across many locations?",
-      "osgbFooterLink": "See the enterprise solution page",
-      "enterpriseFooterHint": "Serving clients as an OSGB?",
-      "enterpriseFooterLink": "Go to OSGB packages page",
-      "recommended": "Recommended",
+      "enterpriseCta": "कोटेशन अनुरोध बनाएं",
+      "enterpriseFooterHint": "OSGB के रूप में क्लाइंट्स की सेवा कर रहे हैं?",
+      "enterpriseFooterLink": "OSGB पैकेज पेज पर जाएं",
+      "enterpriseSecondaryCta": "OSGB पैकेज के लिए हमें लिखें",
+      "enterpriseSectionIntro": "मल्टी-साइट संगठनों, फील्ड-हेवी ऑपरेशन्स और बेस्पोक सेटअप के लिए इस पाथ पर कार्ड पेमेंट नहीं है। अपना संदर्भ साझा करें ताकि हम एक टेलर्ड ऑफर के साथ वापस आ सकें।",
+      "enterpriseSectionTitle": "कंपनी / एंटरप्राइज़ कोटेशन",
       "offers": {
         "osgb_starter": {
+          "ctaLabel": "Starter कोटेशन का अनुरोध करें",
           "name": "OSGB Starter",
-          "pricePeriod": "from / month",
-          "priceFinePrint": "Indicative starting segment. Final pricing depends on firm count and seats after the quote.",
-          "summary": "For smaller OSGB teams with a limited portfolio — unlike the individual Starter at {individualStarter}/month it covers multi-site and team workflows.",
-          "workspacesLabel": "5 active firms / workspaces",
-          "seatsLabel": "2 active team seats",
-          "features": [
-            "Personnel module and invitation flows",
-            "Tasks, work tracking and assignment board",
-            "Client workplace portfolio view",
-            "Announcements and core operational flows"
-          ],
-          "ctaLabel": "Request Starter quote"
+          "priceFinePrint": "संकेतक प्रारंभिक सेगमेंट। अंतिम मूल्य निर्धारण कोटेशन के बाद फर्म काउंट और सीट्स पर निर्भर करता है।",
+          "pricePeriod": "से / माह",
+          "seatsLabel": "2 सक्रिय टीम सीट्स",
+          "summary": "सीमित पोर्टफोलियो वाली छोटी OSGB टीमों के लिए — {individualStarter}/माह के व्यक्तिगत Starter के विपरीत यह मल्टी-साइट और टीम वर्कफ़्लो को कवर करता है।",
+          "workspacesLabel": "5 सक्रिय फर्म / वर्कस्पेसेस"
         },
         "osgb_team": {
+          "ctaLabel": "Team कोटेशन का अनुरोध करें",
           "name": "OSGB Team",
-          "pricePeriod": "from / month",
-          "priceFinePrint": "Indicative mid segment; tailored quote reflects field intensity, reporting and seats.",
-          "summary": "Growing OSGBs: more firms, field coordination and team scale.",
-          "workspacesLabel": "15 active firms / workspaces",
-          "seatsLabel": "5 active team seats",
-          "features": [
-            "Everything in Starter",
-            "Advanced reporting and exports",
-            "Field audits and checklists (per agreement)",
-            "Priority solution / onboarding channel"
-          ],
-          "ctaLabel": "Request Team quote"
+          "priceFinePrint": "संकेतक मध्य सेगमेंट; टेलर्ड कोटेशन फील्ड इंटेंसिटी, रिपोर्टिंग और सीट्स को दर्शाता है।",
+          "pricePeriod": "से / माह",
+          "seatsLabel": "5 सक्रिय टीम सीट्स",
+          "summary": "बढ़ते OSGBs: अधिक फर्म, फील्ड कोऑर्डिनेशन और टीम स्केल।",
+          "workspacesLabel": "15 सक्रिय फर्म / वर्कस्पेसेस"
         }
       },
-      "enterpriseHighlights": [
-        "Multi-site companies and institutions",
-        "Tailored quote aligned with operational volume",
-        "Integration and onboarding planning when needed"
-      ]
+      "osgbFooterHint": "कई स्थानों पर एकल नियोक्ता?",
+      "osgbFooterLink": "एंटरप्राइज़ सोल्यूशन पेज देखें",
+      "osgbSectionIntro": "राशियां USD में सांकेतिक प्रारंभिक खंड हैं; कर, विदेशी मुद्रा और अनुबंध का दायरा उद्धरण के अंतिम रूप में तय होता है। कोई कार्ड चेकआउट नहीं है — हम आपकी संरचना समझने के बाद सीमा और मूल्य निर्धारण तय करते हैं।",
+      "osgbSectionTitle": "OSGB पैकेज",
+      "recommended": "अनुशंसित"
+    },
+    "enterprisePage": {
+      "ctaForm": "हमसे संपर्क करें (फॉर्म)",
+      "ctaRegister": "पंजीकरण के माध्यम से उद्धरण का अनुरोध करें",
+      "footerNoteLead": "OSGB के रूप में ग्राहकों की सेवा कर रहे हैं?",
+      "footerNoteLink": "OSGB पैकेज पेज",
+      "footerNoteTrail": ".",
+      "heroBody": "हम एंटरप्राइज़ उपयोग के लिए स्व-सेवा कार्ड चेकआउट प्रदान नहीं करते। अपनी आवश्यकताएं साझा करें और हमारी बिक्री टीम अनुकूलित उद्धरण, सीमा और कार्यान्वयन के साथ फॉलो अप करेगी।",
+      "heroEyebrow": "एंटरप्राइज़",
+      "heroTitle": "अनुकूलित ऑनबोर्डिंग के साथ आपके स्थानों में निरंतर OHS संचालन।",
+      "metaDescription": "विशेषज्ञ OHS आवश्यकताओं वाले बहु-साइट संगठनों के लिए उद्धरण अनुरोध और संपर्क।",
+      "metaTitle": "एंटरप्राइज़ समाधान और उद्धरण | RiskNova"
     },
     "leadDialog": {
-      "closeAria": "Close",
-      "regionChip": "Region: {code}",
-      "languageChip": "Language: {code}",
-      "submittedTitle": "Request received",
-      "submittedBody": "Our sales team will contact you shortly to clarify scope and share quote and onboarding options. No card payment in this flow — terms are agreed via email or call.",
-      "okButton": "OK",
-      "contactLabel": "Contact person",
-      "contactPlaceholder": "Full name",
-      "workEmailLabel": "Work email",
-      "phoneLabel": "Phone",
-      "phonePlaceholder": "+1 …",
-      "messageLabel": "Your needs (short)",
-      "messagePlaceholder": "How many sites, which modules matter, what rollout do you expect?",
-      "messageHint": "Helps us prepare the right package and migration path.",
-      "cancelButton": "Cancel",
-      "submitting": "Sending…",
-      "errorUnexpected": "An unexpected error occurred while saving the request.",
-      "errorFailed": "Could not save the request.",
-      "companyPlaceholder": "Organisation name",
-      "scalePlaceholder": "e.g. 12",
-      "employeePlaceholder": "e.g. 250",
-      "professionalPlaceholder": "e.g. 8",
-      "osgb": {
-        "badge": "OSGB contact request",
-        "title": "Tell us about your OSGB",
-        "description": "Share how many clients you serve, team shape and operational intensity so we can propose the right package and migration options.",
-        "primaryCta": "Send request",
-        "companyLabel": "OSGB / organisation name",
-        "scaleLabel": "Active client firms you serve",
-        "employeeLabel": "Total employees across those workplaces",
-        "professionalLabel": "Specialists / physicians / DSP headcount"
-      },
+      "cancelButton": "रद्द करें",
+      "closeAria": "बंद करें",
+      "companyPlaceholder": "संगठन का नाम",
+      "contactLabel": "संपर्क व्यक्ति",
+      "contactPlaceholder": "पूरा नाम",
+      "employeePlaceholder": "जैसे 250",
       "enterprise": {
-        "badge": "Company / enterprise contact",
-        "title": "Tell us about your organisation",
-        "description": "There is no payment step here. When you submit, our sales or solutions team follows up to agree bespoke limits and pricing.",
-        "primaryCta": "Send request",
-        "companyLabel": "Company / organisation name",
-        "scaleLabel": "Locations / sites",
-        "employeeLabel": "Total employees",
-        "professionalLabel": "People involved in coordination"
+        "badge": "कंपनी / एंटरप्राइज़ संपर्क",
+        "companyLabel": "कंपनी / संगठन का नाम",
+        "description": "यहां कोई भुगतान चरण नहीं है। जब आप सबमिट करते हैं, तो हमारी बिक्री या समाधान टीम अनुकूलित सीमा और मूल्य निर्धारण पर सहमति के लिए फॉलो अप करती है।",
+        "employeeLabel": "कुल कर्मचारी",
+        "primaryCta": "अनुरोध भेजें",
+        "professionalLabel": "समन्वय में शामिल लोग",
+        "scaleLabel": "स्थान / साइटें",
+        "title": "अपने संगठन के बारे में बताएं"
       },
+      "errorFailed": "अनुरोध सहेजा नहीं जा सका।",
+      "errorUnexpected": "अनुरोध सहेजते समय एक अप्रत्याशित त्रुटि हुई।",
+      "languageChip": "भाषा: {code}",
+      "messageHint": "सही पैकेज और माइग्रेशन पथ तैयार करने में हमारी सहायता करता है।",
+      "messageLabel": "आपकी आवश्यकताएं (संक्षिप्त)",
+      "messagePlaceholder": "कितनी साइटें, कौन से मॉड्यूल महत्वपूर्ण हैं, आप कैसे रोलआउट की अपेक्षा करते हैं?",
+      "okButton": "ठीक है",
+      "osgb": {
+        "badge": "OSGB संपर्क अनुरोध",
+        "companyLabel": "OSGB / संगठन का नाम",
+        "description": "साझा करें कि आप कितने क्लाइंट्स की सेवा करते हैं, टीम का आकार और परिचालन तीव्रता ताकि हम सही पैकेज और माइग्रेशन विकल्प प्रस्तावित कर सकें।",
+        "employeeLabel": "उन कार्यस्थलों में कुल कर्मचारी",
+        "primaryCta": "अनुरोध भेजें",
+        "professionalLabel": "विशेषज्ञ / चिकित्सक / DSP हेडकाउंट",
+        "scaleLabel": "आपकी सेवा करने वाली सक्रिय क्लाइंट फर्में",
+        "title": "हमें अपने OSGB के बारे में बताएं"
+      },
+      "phoneLabel": "फोन",
+      "phonePlaceholder": "+1 …",
+      "professionalPlaceholder": "जैसे 8",
+      "regionChip": "क्षेत्र: {code}",
+      "scalePlaceholder": "जैसे 12",
+      "submittedBody": "हमारी बिक्री टीम जल्द ही आपसे संपर्क करेगी ताकि स्कोप स्पष्ट कर सके और कोटेशन और ऑनबोर्डिंग विकल्प साझा कर सके। इस फ्लो में कोई कार्ड भुगतान नहीं — शर्तें ईमेल या कॉल के माध्यम से सहमत होती हैं।",
+      "submittedTitle": "अनुरोध प्राप्त हुआ",
+      "submitting": "भेजा जा रहा है…",
+      "workEmailLabel": "कार्य ईमेल",
       "workEmailPlaceholder": "you@company.com"
+    },
+    "osgbPage": {
+      "ctaForm": "कोटेशन फॉर्म पर जाएं",
+      "ctaRegister": "पंजीकरण के माध्यम से कोटेशन का अनुरोध करें",
+      "footerNoteLead": "कई स्थानों में एकल नियोक्ता?",
+      "footerNoteLink": "एंटरप्राइज़ समाधान पृष्ठ देखें",
+      "footerNoteTrail": "।",
+      "heroBody": "कर्मचारियों, कार्य ट्रैकिंग और क्लाइंट साइटों को स्पष्ट करें। व्यक्तिगत योजनाएं {starterPrice}/माह स्टार्टर से शुरू होती हैं; OSGB मॉडल मल्टी-साइट पोर्टफोलियो और अतिरिक्त सीटों को कवर करता है, इसलिए नीचे दी गई संख्याएं सांकेतिक USD खंड हैं — सटीक शर्तें कोट फॉर्म या पंजीकरण प्रवाह के बाद पुष्ट की जाती हैं।",
+      "heroEyebrow": "OSGB",
+      "heroTitleAccent": "एक पैनल",
+      "heroTitleLead": "अपने क्लाइंट पोर्टफोलियो और टीम को एक साथ लाएं",
+      "heroTitleTrail": "।",
+      "metaDescription": "कई कार्यस्थलों की सेवा करने वाले OSGBs के लिए पैकेज विकल्प और अनुकूलित कोट अनुरोध।",
+      "metaTitle": "OSGB समाधान और कोट | RiskNova"
     }
   },
-  "legal": {
-    "privacy": {
-      "eyebrow": "Privacy policy",
-      "title": "RiskNova Privacy Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Privacy Policy",
-      "metaDescription": "RiskNova privacy policy: how we process personal data across accounts, product use, billing, email, security and AI-assisted features.",
-      "ogTitle": "Privacy Policy | RiskNova",
-      "ogDescription": "How RiskNova processes personal data, which processors we use and how we support user rights.",
-      "sections": [
-        {
-          "title": "Data controller and scope",
-          "content": "This policy describes how personal data is processed across the RiskNova website, registration, sign-in, subscription, OHS modules, document generation, field inspections, training/exams/surveys, Nova AI and support. For workplace and employee records uploaded by the customer to the platform, RiskNova generally acts as a processor; for its own account, security, billing and support processes it acts as a controller."
-        },
-        {
-          "title": "Categories of personal data",
-          "content": "Name, surname, email, phone, account identifier, organisation and workspace details, role and permission records, session and security logs, usage metrics, support tickets, subscription and payment status, IP and device data may be processed. If users upload them, risk analyses, inspections, incident logs, training, exams, surveys, documents, personnel records and media or data files may also be stored on the platform."
-        },
-        {
-          "title": "Purposes and legal bases",
-          "content": "Data are processed to perform the contract, deliver platform features, run occupational safety processes, authenticate users, prevent abuse, bill and support customers, meet legal obligations, improve the product and respect user choices. Where explicit consent is required, a separate consent text is shown; core service data may rely on contract, legal obligation or legitimate interest instead of consent."
-        },
-        {
-          "title": "AI-assisted features",
-          "content": "Nova AI may process user inputs and related context when producing risk analyses, document drafts, training content or legislation-aware answers. Outputs are decision-support only; final professional and legal judgement remains with the user. Where content may include sensitive or special-category data, explicit consent and/or additional disclosure flows may be required before sending it to AI services."
-        },
-        {
-          "title": "Third-party processors",
-          "content": "Hosting, database, authentication, email, payment, error monitoring and AI features may use providers such as Supabase, Vercel, Resend, Paddle, OpenAI, Anthropic and similar vendors. They process data only as needed to provide the service. Card data are not stored by RiskNova; payments and invoicing run on Paddle infrastructure."
-        },
-        {
-          "title": "International transfers",
-          "content": "Cloud hosting, email, payment and AI services may technically run on infrastructure located abroad, so some data may be transferred to providers outside your country where the service requires it. Where transfers apply, disclosure and consent steps under applicable law (including KVKK where relevant) are managed in the product."
-        },
-        {
-          "title": "Cookies and similar technologies",
-          "content": "RiskNova uses essential session, security, language preference and product cookies. If marketing or third-party tracking cookies are introduced, a separate cookie policy and consent mechanism will be provided as needed. Details are on the /cookie-policy page."
-        },
-        {
-          "title": "Retention and security",
-          "content": "Data are kept for as long as needed to operate the service, meet contractual, security, legal and evidentiary requirements. The platform uses technical measures such as RLS, role checks, separation of service roles, webhook signature verification, rate limiting, audit trails and security event logging."
-        },
-        {
-          "title": "Your rights",
-          "content": "Under applicable data-protection law (including KVKK Article 11 where it applies), you may request access, rectification, erasure, objection, restriction, portability and information via the Privacy / Data Rights area in your profile or at support@getrisknova.com. Erasure requests are balanced against legal retention and security logging requirements."
-        },
-        {
-          "title": "Contact and updates",
-          "content": "This text may change over time. Material updates may require renewed acknowledgement or notice in the product. For privacy and data-protection requests, contact support@getrisknova.com."
-        }
-      ]
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "कम खतरनाक",
+      "high": "अत्यधिक खतरनाक",
+      "moderate": "खतरनाक"
     },
-    "privacySummary": {
-      "eyebrow": "Privacy policy",
-      "title": "RiskNova Privacy Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Privacy policy",
-      "metaDescription": "Summary of how RiskNova collects and uses personal data.",
-      "ogTitle": "Privacy policy | RiskNova",
-      "ogDescription": "Short privacy summary covering account, product use and subprocessors.",
-      "paragraphs": [
-        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
-        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
-        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
-        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
-        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
-        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
-      ]
-    },
-    "terms": {
-      "eyebrow": "Terms of use",
-      "title": "RiskNova Terms of Use",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Terms of use",
-      "metaDescription": "RiskNova terms of use covering accounts, subscription, billing, acceptable use, AI outputs and customer data responsibilities.",
-      "ogTitle": "Terms of use | RiskNova",
-      "ogDescription": "Terms for the RiskNova SaaS platform: subscription, account security, AI outputs and acceptable use.",
-      "sections": [
-        {
-          "title": "Service scope",
-          "content": "RiskNova is a subscription SaaS platform for occupational health and safety professionals, OSGBs and enterprises, offering risk analysis, field inspections, document generation, training/exams/surveys, reporting, legislation-aware search and Nova AI decision-support features."
-        },
-        {
-          "title": "Account, roles and security",
-          "content": "Users are responsible for the accuracy of account details, password strength and actions taken under their account. Organisation administrators must correctly configure users, roles, workspaces and company authorisations. Suspected unauthorised access must be reported to RiskNova without delay."
-        },
-        {
-          "title": "Acceptable use",
-          "content": "The platform may be used only for lawful, professional and workplace-safety-related purposes. Attempting unauthorised access, reverse engineering, disrupting the service, uploading harmful content, infringing third-party rights, circumventing quotas or processing data unlawfully is prohibited."
-        },
-        {
-          "title": "Customer data and content responsibility",
-          "content": "Risk analyses, inspection records, documents, personnel data, training/exam/survey content and uploaded files are customer content. Users must ensure data uploaded to the platform is lawful, necessary and limited to authorised persons."
-        },
-        {
-          "title": "AI-assisted outputs",
-          "content": "Nova AI and other AI features provide decision support and drafts only. RiskNova does not warrant that outputs are error-free, complete or fit for a particular legal or technical outcome. Users must validate outputs against applicable law, internal procedures and professional judgement."
-        },
-        {
-          "title": "Subscription, billing and limits",
-          "content": "Plan features, fees, usage limits and billing periods are shown on pricing or checkout screens. Individual plans may use self-service checkout; OSGB and enterprise models may follow quote and contact flows. Payments and invoicing may be handled by Paddle as Merchant of Record."
-        },
-        {
-          "title": "Service changes and access",
-          "content": "RiskNova may update product features, plan limits, integrations and these terms over time. Access may be temporarily restricted for security, maintenance, legal compliance or abuse prevention."
-        },
-        {
-          "title": "Limitation of responsibility",
-          "content": "The platform is designed to streamline processes; it does not remove legal duties of employers, safety professionals or organisations. Users remain responsible for field, regulatory and expert review before relying on platform outputs."
-        },
-        {
-          "title": "Contact",
-          "content": "For questions about these terms, subscriptions or accounts, contact support@getrisknova.com."
-        }
-      ]
-    },
-    "termsSummary": {
-      "eyebrow": "Terms of service",
-      "title": "RiskNova Terms and Conditions",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Terms of service",
-      "metaDescription": "Summary of RiskNova terms of service, acceptable use and subscriptions.",
-      "ogTitle": "Terms of service | RiskNova",
-      "ogDescription": "Summary of subscription, AI-assisted features and acceptable use.",
-      "paragraphs": [
-        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
-        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
-        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
-        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
-        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
-        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
-      ]
-    },
-    "refund": {
-      "eyebrow": "Refund policy",
-      "title": "RiskNova Refund Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Refund policy",
-      "metaDescription": "How RiskNova handles subscription refunds, renewals and Paddle billing rules.",
-      "ogTitle": "Refund policy | RiskNova",
-      "ogDescription": "Refund window, renewals and billing corrections.",
-      "paragraphs": [
-        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
-        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
-        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
-        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
-        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
-        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
-      ]
+    "level": {
+      "controlled": "नियंत्रित",
+      "critical": "गंभीर",
+      "high": "उच्च",
+      "incomplete": "अपर्याप्त मूल्यांकन",
+      "medium": "मध्यम"
     }
   },
-  "brand": {
-    "tagline": "AI-powered occupational health & safety platform"
-  },
-  "dashboard": {
-    "sessionLoadingTitle": "सत्र लोड हो रहा है…",
-    "sessionLoadingHint": "आपका सत्र सत्यापित किया जा रहा है। इसमें कुछ सेकंड लग सकते हैं; यदि आगे न बढ़े तो कृपया फिर साइन इन करें।",
-    "greetingMorning": "सुप्रभात",
-    "greetingAfternoon": "नमस्ते",
-    "greetingEvening": "शुभ संध्या",
-    "fallbackUserName": "उपयोगकर्ता",
-    "badgeCommandCenter": "नियंत्रण केंद्र",
-    "badgeLiveOps": "लाइव संचालन",
-    "badgeRemoteSync": "रिमोट Supabase सिंक",
-    "heroIntro": "एक स्क्रीन पर पूरा OHS संचालन देखें: जोखिम, लाइब्रेरी आउटपुट, घटनाएँ, कार्य और कंपनी फॉलो-अप — स्पष्ट कमांड दृश्य में।",
-    "signalOperation": "संचालन स्थिति",
-    "signalWorkload": "प्राथमिकता भार",
-    "signalCompanies": "कंपनी कवरेज",
-    "operationHeavy": "अधिक फॉलो-अप",
-    "operationControlled": "नियंत्रण में",
-    "operationCalm": "स्थिर संचालन",
-    "workloadFollowups": "{count} आइटम",
-    "companiesTotal": "{count} कंपनियाँ",
-    "todayFocusEyebrow": "आज का फोकस",
-    "todayFocusTitle": "पहले महत्वपूर्ण",
-    "priorityHighRisk": "उच्च जोखिम",
-    "priorityOpenTasks": "खुले कार्य",
-    "priorityIncidents": "घटनाएँ",
-    "planDemoEyebrow": "डेमो · अपग्रेड",
-    "planSelfServeEyebrow": "सेल्फ-सर्व अपग्रेड",
-    "planDemoTitle": "आप डेमो खाते पर हैं",
-    "planDefaultTitle": "प्लान और क्षमता",
-    "planDemoBody": "उत्पादन उपयोग के लिए उपयुक्त प्लान चुनें; भुगतान और बिलिंग प्लान पृष्ठ पर प्रबंधित होती है।",
-    "planDefaultBody": "अधिक वर्कस्पेस या मॉड्यूल चाहिए तो प्लान देखें; सेल्फ-सर्व से अपग्रेड संभव है।",
-    "goToPlans": "प्लान देखें",
-    "statRisk": "जोखिम विश्लेषण",
-    "statRiskSubHigh": "{count} उच्च जोखिम",
-    "statRiskSubNone": "कोई उच्च जोखिम नहीं",
-    "statLibraryDocs": "लाइब्रेरी दस्तावेज़",
-    "statLibraryDocsSub": "{ready} तैयार · {draft} मसौदे",
-    "statIncidents": "घटनाएँ",
-    "statIncidentsSub": "कुल रिकॉर्ड",
-    "statTasks": "खुले कार्य",
-    "statTasksSub": "फॉलो-अप लंबित",
-    "statLibSurvey": "लाइब्रेरी प्रशिक्षण",
-    "statLibSurveySub": "आयातित सर्वे / प्रशिक्षण",
-    "statLibExam": "लाइब्रेरी परीक्षाएँ",
-    "statLibExamSub": "आयातित परीक्षाएँ",
-    "quickFlowsTitle": "त्वरित वर्कफ़्लो",
-    "quickFlowsSubtitle": "सबसे ज़्यादा उपयोग किए जाने वाले मॉड्यूल पर एक क्लिक में जाएँ।",
-    "quickFlowsBadge": "प्लेटफ़ॉर्म",
-    "quickRisk": "जोखिम विश्लेषण",
-    "quickLibrary": "OHS लाइब्रेरी",
-    "quickIncident": "घटना रिपोर्ट करें",
-    "quickPlanner": "प्लानर",
-    "quickEducation": "प्रशिक्षण",
-    "quickReports": "रिपोर्ट",
-    "quickCompanies": "कंपनियाँ",
-    "quickFieldAudit": "फ़ील्ड ऑडिट",
-    "recentDocsTitle": "नवीनतम लाइब्रेरी आउटपुट",
-    "recentDocsSubtitle": "OHS लाइब्रेरी प्रवाह में हाल ही में संपादित दस्तावेज़ यहाँ सारांशित हैं।",
-    "recentDocsCta": "लाइब्रेरी खोलें",
-    "recentDocsEmpty": "अभी कोई लाइब्रेरी आउटपुट नहीं। OHS लाइब्रेरी में टेम्पलेट से शुरू करें।",
-    "docStatusDraft": "मसौदा",
-    "docStatusReady": "तैयार",
-    "docStatusPending": "अनुमोदन",
-    "docStatusRevision": "संशोधन",
-    "companySummaryTitle": "कंपनी सारांश",
-    "companySummaryCountLabel": "पंजीकृत कंपनियाँ",
-    "companyManageCta": "कंपनियाँ प्रबंधित करें",
-    "modulesTitle": "OHS मॉड्यूल",
-    "modulesSubtitle": "प्लेटफ़ॉर्म पर सक्रिय परिचालन क्षेत्र।",
-    "moduleRisk": "जोखिम विश्लेषण",
-    "moduleRiskDesc": "{count} मूल्यांकन",
-    "moduleLibrary": "OHS लाइब्रेरी",
-    "moduleLibraryDesc": "दस्तावेज़ और टेम्पलेट",
-    "moduleEmergency": "आपातकाल",
-    "moduleEmergencyDesc": "योजनाएँ और अभ्यास",
-    "moduleTraining": "प्रशिक्षण",
-    "moduleTrainingDesc": "ट्रैकिंग और रिकॉर्ड",
-    "moduleAssessment": "परीक्षा और सर्वे",
-    "moduleAssessmentDesc": "AI-सहायता वाले मापन प्रवाह",
-    "moduleLegal": "कानून",
-    "moduleLegalDesc": "कानून और मार्गदर्शिका लाइब्रेरी",
-    "todayCardTitle": "आज",
-    "todayTasksPending": "{count} खुले कार्य लंबित",
-    "todayTasksDone": "सभी कार्य पूर्ण",
-    "statLive": "लाइव",
-    "trackTitle": "ट्रैकिंग सारांश",
-    "trackEmpty": "अभी कोई कंपनी नहीं। कंपनियाँ जोड़ने पर मेट्रिक यहाँ दिखेंगे।",
-    "trackSubtitle": "सभी कंपनियों का सारांश। {companyCount} कंपनियों पर नज़र, {totalActionable} कार्रवाई लंबित।",
-    "trackCompaniesCta": "कंपनियाँ",
-    "trackOpenActionLabel": "खुली कार्रवाइयाँ",
-    "trackOpenActionSub": "जोखिम निष्कर्ष + CAPA + कार्य",
-    "trackExpiringTrainingLabel": "आगामी प्रशिक्षण",
-    "trackExpiringTrainingSub": "30 दिनों में",
-    "trackOverdueControlLabel": "अतिदेय निरीक्षण",
-    "trackOverdueControlSub": "आवधिक निरीक्षण अवधि समाप्त",
-    "trackCommitteeLabel": "लंबित समिति",
-    "trackCommitteeSub": "नियोजित OHS समिति बैठकें",
-    "trackHealthExamLabel": "आगामी चिकित्सा जाँच",
-    "trackHealthExamSub": "30 दिनों में स्वास्थ्य निगरानी",
-    "trackPriorityCompanies": "प्राथमिकता वाली कंपनियाँ",
-    "trackChipActions": "{count} कार्रवाइयाँ",
-    "trackChipTraining": "{count} प्रशिक्षण",
-    "trackChipControls": "{count} निरीक्षण"
-  },
-  "header": {
-    "authLoading": "सुरक्षित सत्र सत्यापित किया जा रहा है…",
-    "lockedModuleTooltip": "इस मॉड्यूल का उपयोग करने के लिए पहले एक कार्यस्थल बनाएँ।",
-    "markAllRead": "सभी को पढ़ा हुआ चिह्नित करें",
-    "noNotificationsYet": "अभी कोई सूचना नहीं",
-    "notificationsAria": "सूचनाएँ",
-    "notificationsTitle": "सूचनाएँ",
-    "platformAdminShort": "एडमिन",
-    "seeAllNotifications": "सभी देखें",
-    "signOut": "साइन आउट",
-    "signingOut": "साइन आउट हो रहा है…",
-    "themeDarkAria": "डार्क थीम",
-    "themeLightAria": "लाइट थीम",
-    "workspaceLoading": "कार्यस्थल तैयार किया जा रहा है…"
+  "workspace": {
+    "active": "सक्रिय",
+    "countryLabel": "देश",
+    "languageLabel": "डिफ़ॉल्ट भाषा",
+    "loading": "वर्कस्पेस लोड हो रहे हैं...",
+    "newWorkspace": "नया वर्कस्पेस",
+    "noWorkspace": "कोई वर्कस्पेस नहीं",
+    "switcher": "वर्कस्पेस",
+    "switchError": "वर्कस्पेस स्विच नहीं कर सके"
   }
 }

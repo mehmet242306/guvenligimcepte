@@ -1,0 +1,780 @@
+{
+  "riskScoring": {
+    "classification": {
+      "bow_tie": {
+        "critical": {
+          "action": "Arrêter le travail ; reconcevoir les barrières",
+          "label": "Critique"
+        },
+        "follow_up": {
+          "action": "Barrières adéquates ; continuer la surveillance",
+          "label": "Acceptable"
+        },
+        "high": {
+          "action": "Renforcement urgent des barrières ; réviser le processus",
+          "label": "Élevé"
+        },
+        "low": {
+          "action": "Réviser l'efficacité des barrières",
+          "label": "Faible"
+        },
+        "medium": {
+          "action": "Ajouter des barrières supplémentaires",
+          "label": "Moyen"
+        }
+      },
+      "checklist": {
+        "critical": {
+          "action": "Arrêter l'activité ; révision complète",
+          "label": "Gravement inadéquat"
+        },
+        "follow_up": {
+          "action": "Maintenir la pratique actuelle",
+          "label": "Conforme"
+        },
+        "high": {
+          "action": "Démarrer des actions correctives urgentes",
+          "label": "Inadéquat"
+        },
+        "low": {
+          "action": "Combler les lacunes à court terme",
+          "label": "Acceptable"
+        },
+        "medium": {
+          "action": "Préparer un plan d'amélioration élargi",
+          "label": "Amélioration nécessaire"
+        }
+      },
+      "fk": {
+        "critical": {
+          "action": "Arrêter le travail immédiatement",
+          "label": "Risque très élevé"
+        },
+        "follow_up": {
+          "action": "Peut nécessiter des suggestions d'amélioration ; aucune action urgente",
+          "label": "Acceptable"
+        },
+        "high": {
+          "action": "Action immédiate ; envisager l'arrêt du travail",
+          "label": "Risque élevé"
+        },
+        "low": {
+          "action": "Maintenir sous surveillance ; planifier des améliorations",
+          "label": "Préoccupation modérée"
+        },
+        "medium": {
+          "action": "Agir à court terme",
+          "label": "Significatif"
+        }
+      },
+      "fmea": {
+        "critical": {
+          "action": "Arrêter le travail ; effectuer une analyse des causes racines",
+          "label": "Risque critique"
+        },
+        "follow_up": {
+          "action": "Contrôles actuels suffisants ; continuer la surveillance",
+          "label": "Acceptable"
+        },
+        "high": {
+          "action": "Action urgente ; envisager un changement de conception",
+          "label": "Risque élevé"
+        },
+        "low": {
+          "action": "Planifier des améliorations",
+          "label": "Risque faible"
+        },
+        "medium": {
+          "action": "Agir ; renforcer les contrôles",
+          "label": "Risque moyen"
+        }
+      },
+      "fta": {
+        "critical": {
+          "action": "Ne pas exploiter ; éliminer les causes racines",
+          "label": "Critique"
+        },
+        "follow_up": {
+          "action": "Fiabilité du système adéquate",
+          "label": "Acceptable"
+        },
+        "high": {
+          "action": "Reconcevoir le système",
+          "label": "Élevé"
+        },
+        "low": {
+          "action": "Évaluer la redondance / sauvegardes",
+          "label": "Faible"
+        },
+        "medium": {
+          "action": "Ajouter de la redondance aux composants critiques",
+          "label": "Moyen"
+        }
+      },
+      "hazop": {
+        "critical": {
+          "action": "Arrêter le processus ; réviser la conception",
+          "label": "Intolérable"
+        },
+        "follow_up": {
+          "action": "Contrôles actuels suffisants",
+          "label": "Acceptable"
+        },
+        "high": {
+          "action": "Changement de processus ou barrière supplémentaire requis",
+          "label": "Élevé"
+        },
+        "low": {
+          "action": "Planifier surveillance et améliorations",
+          "label": "Faible"
+        },
+        "medium": {
+          "action": "Évaluer couches de protection supplémentaires",
+          "label": "Moyen"
+        }
+      },
+      "lopa": {
+        "critical": {
+          "action": "Arrêter le processus ; réviser la conception",
+          "label": "Intolérable"
+        },
+        "follow_up": {
+          "action": "Couches de protection actuelles suffisantes",
+          "label": "Acceptable"
+        },
+        "high": {
+          "action": "Couches multiples ou changement de processus requis",
+          "label": "Risque élevé"
+        },
+        "low": {
+          "action": "Aussi bas que raisonnablement praticable",
+          "label": "ALARP"
+        },
+        "medium": {
+          "action": "Ajouter une couche de protection supplémentaire",
+          "label": "Amélioration nécessaire"
+        }
+      },
+      "matrix": {
+        "critical": {
+          "action": "Arrêter le travail immédiatement ; mesures d'urgence",
+          "label": "Intolérable"
+        },
+        "follow_up": {
+          "action": "Mesures supplémentaires peuvent ne pas être nécessaires ; surveillance suffisante",
+          "label": "Acceptable"
+        },
+        "high": {
+          "action": "Agir rapidement",
+          "label": "Risque élevé"
+        },
+        "low": {
+          "action": "Contrôles existants adéquats ; continuer l'observation",
+          "label": "Risque faible"
+        },
+        "medium": {
+          "action": "Planifier activités d'amélioration",
+          "label": "Risque moyen"
+        }
+      },
+      "r2d": {
+        "critical": {
+          "action": "Évaluer l'arrêt du travail",
+          "label": "Critique"
+        },
+        "follow_up": {
+          "action": "Surveillance de routine suffisante",
+          "label": "Surveillance"
+        },
+        "high": {
+          "action": "Intervention prioritaire requise",
+          "label": "Élevé"
+        },
+        "low": {
+          "action": "Programmer réévaluation structurée",
+          "label": "Faible"
+        },
+        "medium": {
+          "action": "Supervision renforcée requise",
+          "label": "Moyen"
+        }
+      }
+    },
+    "fk": {
+      "exposure": {
+        "v0_5": "Très rare (une fois par an)",
+        "v1": "Rare (une fois par mois)",
+        "v10": "Continu (la plupart de la journée)",
+        "v2": "Occasionnel (une fois par semaine)",
+        "v3": "Parfois (plusieurs par semaine)",
+        "v6": "Fréquent (quotidien)"
+      },
+      "likelihood": {
+        "v0_1": "Presque impossible",
+        "v0_2": "Très improbable",
+        "v0_5": "Inattendu mais possible",
+        "v1": "Probabilité faible, non négligeable",
+        "v10": "Très probable / attendu",
+        "v3": "Rare mais possible",
+        "v6": "Assez probable"
+      },
+      "severity": {
+        "v1": "Notable, premiers secours",
+        "v100": "Catastrophe de masse, décès multiples",
+        "v15": "Très grave, perte de membre",
+        "v3": "Significatif, traitement externe",
+        "v40": "Catastrophe, décès unique",
+        "v7": "Grave, dommage permanent"
+      }
+    },
+    "fmea": {
+      "detection": {
+        "v1": "Détection quasi certaine",
+        "v10": "Impossible à détecter",
+        "v2": "Très forte chance de détection",
+        "v3": "Forte chance",
+        "v4": "Moyen-élevé",
+        "v5": "Moyen",
+        "v6": "Faible-moyen",
+        "v7": "Faible",
+        "v8": "Très faible",
+        "v9": "Chance minime"
+      },
+      "occurrence": {
+        "v1": "Presque impossible (< 1/1 000 000)",
+        "v10": "Quasi certain (≥ 1/2)",
+        "v2": "Minime (1/20 000)",
+        "v3": "Très faible (1/4 000)",
+        "v4": "Faible (1/1 000)",
+        "v5": "Moyen-faible (1/400)",
+        "v6": "Moyen (1/80)",
+        "v7": "Moyen-élevé (1/40)",
+        "v8": "Élevé (1/20)",
+        "v9": "Très élevé (1/8)"
+      },
+      "severity": {
+        "v1": "Aucun effet — inaperçu",
+        "v10": "Catastrophique — décès / accident de masse",
+        "v2": "Très mineur — impact négligeable",
+        "v3": "Mineur — léger désagrément",
+        "v4": "Faible — baisse de performance",
+        "v5": "Modéré — perte de performance significative",
+        "v6": "Élevé — fonction système altérée",
+        "v7": "Très élevé — inopérant",
+        "v8": "Dangereux (avec avertissement) — risque de blessure",
+        "v9": "Dangereux (sans avertissement) — blessure grave"
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "after": "Après",
+        "before": "Avant",
+        "early": "Tôt",
+        "late": "Tard",
+        "less": "Moins",
+        "more": "Plus",
+        "noNot": "Non / Pas",
+        "otherThan": "Autre que",
+        "partOf": "Partie de",
+        "reverse": "Inverse"
+      },
+      "parameters": {
+        "composition": "Composition",
+        "flow": "Débit",
+        "level": "Niveau",
+        "mixing": "Mélange",
+        "ph": "pH",
+        "pressure": "Pression",
+        "reaction": "Réaction",
+        "speed": "Vitesse",
+        "temperature": "Température",
+        "time": "Temps"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v0_00001": "Une fois en 100 000 ans — extrêmement rare",
+        "v0_0001": "Une fois en 10 000 ans — très rare",
+        "v0_001": "Une fois en 1 000 ans — rare",
+        "v0_01": "Une fois en 100 ans — occasionnel",
+        "v0_1": "Une fois en 10 ans — fréquent",
+        "v1": "Une fois par an — très fréquent"
+      },
+      "pfd": {
+        "v0_001": "Système de sécurité automatisé (classe SIL-1)",
+        "v0_01": "Réponse opérateur formé / alarme",
+        "v0_1": "Contrôle administratif simple"
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "Très faible (quasi impossible)"
+        },
+        "i2": {
+          "description": "Faible (rare, inattendu)"
+        },
+        "i3": {
+          "description": "Moyen (improbable mais possible)"
+        },
+        "i4": {
+          "description": "Élevé (probable, pas surprenant)"
+        },
+        "i5": {
+          "description": "Très élevé (attendu, inévitable)"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "Très mineur (aucun temps perdu)"
+        },
+        "i2": {
+          "description": "Mineur (aucune blessure avec temps perdu)"
+        },
+        "i3": {
+          "description": "Modéré (blessure avec temps perdu)"
+        },
+        "i4": {
+          "description": "Majeur (dommage permanent, amputation)"
+        },
+        "i5": {
+          "description": "Catastrophique (décès, décès multiples)"
+        }
+      }
+    },
+    "methods": {
+      "bow_tie": {
+        "description": "Nœud papillon — menace–barrière–conséquence",
+        "name": "Nœud Papillon",
+        "tooltip": "Probabilité de menace et gravité des conséquences avec barrières préventives et d'atténuation ; risque résiduel basé sur la robustesse des barrières."
+      },
+      "checklist": {
+        "description": "Liste de contrôle — pourcentage de conformité",
+        "name": "Liste de contrôle",
+        "tooltip": "Conformité pondérée des éléments OK / Non OK / Partiel—idéal pour audits et inspections."
+      },
+      "fine_kinney": {
+        "description": "Produit Probabilité × Gravité × Exposition",
+        "name": "Fine-Kinney",
+        "tooltip": "Méthode quantitative courante : P (0,1–10), G (1–100), E (0,5–10) ; conforme ISO 31000."
+      },
+      "fmea": {
+        "description": "Analyse des modes de défaillance et de leurs effets — RPN",
+        "name": "AMDEC",
+        "tooltip": "Gravité (1–10) × Occurrence (1–10) × Détection (1–10) = RPN. Idéal pour exploitation et maintenance ; CEI 60812."
+      },
+      "fta": {
+        "description": "Analyse par arbre de défaillance — fiabilité système",
+        "name": "ADD",
+        "tooltip": "Décompose la défaillance système avec portes ET/OU ; utilisé en aéronautique, nucléaire et systèmes critiques ; CEI 61025."
+      },
+      "hazop": {
+        "description": "Étude de dangers et d'exploitabilité",
+        "name": "HAZOP",
+        "tooltip": "Mots-guides (Non, Moins, Plus, Inverse, …) explorent les déviations de procédé ; courant en chimie/pétrochimie ; CEI 61882."
+      },
+      "jsa": {
+        "description": "Analyse sécurité du travail — dangers par étape",
+        "name": "AST",
+        "tooltip": "Gravité × Probabilité par étape / Efficacité des contrôles ; essentiel pour construction et travaux de terrain."
+      },
+      "l_matrix": {
+        "description": "Matrice de risque 5×5 probabilité–gravité",
+        "name": "Matrice type L",
+        "tooltip": "Choisir probabilité (1–5) et gravité (1–5) ; lire le risque dans une matrice couleur 25 cases (conforme pratique SST turque)."
+      },
+      "lopa": {
+        "description": "Analyse des couches de protection — réduction de fréquence",
+        "name": "LOPA",
+        "tooltip": "Multiplier fréquence d'amorçage par valeurs PFD des couches ; souvent couplé aux objectifs SIL en sécurité des procédés."
+      },
+      "r_skor": {
+        "description": "Score de criblage terrain pondéré avec 9 paramètres",
+        "name": "R-SKOR 2D",
+        "tooltip": "Méthode RiskNova : neuf paramètres (C1–C9) pondèrent entrées visuelles et terrain ; supporte notation automatisée par imagerie."
+      }
+    },
+    "panel": {
+      "bowtie": {
+        "consequence": "Gravité des conséquences",
+        "mitigation": "Barrières d'atténuation",
+        "prevention": "Barrières préventives",
+        "rawRisk": "Risque brut",
+        "residualRisk": "Risque résiduel",
+        "threat": "Probabilité de menace"
+      },
+      "checklist": {
+        "add": "+ Ajouter",
+        "compliantLine": "{n} conforme",
+        "itemPlaceholder": "Élément de contrôle…",
+        "itemsHeading": "Éléments de contrôle ({count})",
+        "nonCompliantLine": "{n} non conforme",
+        "partialLine": "{n} partiel",
+        "removeTitle": "Supprimer",
+        "statusKismi": "Partiel",
+        "statusNa": "S/O",
+        "statusUygun": "Conforme",
+        "statusUygunDegil": "Non conforme"
+      },
+      "fmea": {
+        "detection": "Détection (D)",
+        "formula": "S × O × D = RPN",
+        "occurrence": "Occurrence (O)",
+        "severity": "Sévérité (S)"
+      },
+      "fta": {
+        "add": "+ Ajouter",
+        "componentDefault": "Composant {n}",
+        "componentPlaceholder": "Nom du composant",
+        "componentsHeading": "Composants ({count})",
+        "failureRateTitle": "Probabilité de défaillance (0–1)",
+        "gate": "Porte",
+        "gateType": "Type de porte :",
+        "removeTitle": "Supprimer",
+        "systemCriticality": "Criticité du système",
+        "systemProb": "P système"
+      },
+      "hazop": {
+        "detectEasy": "Facile",
+        "detectHard": "Difficile",
+        "detectability": "Détectabilité",
+        "deviation": "Description de la déviation",
+        "deviationPlaceholder": "Décrire la déviation…",
+        "guideWord": "Mot-guide",
+        "likelihood": "Probabilité",
+        "parameter": "Paramètre de procédé",
+        "severity": "Sévérité"
+      },
+      "jsa": {
+        "add": "+ Ajouter",
+        "avg": "Moy",
+        "control": "Contrôle",
+        "controlsPlaceholder": "Mesures de contrôle…",
+        "hazardPlaceholder": "Danger…",
+        "highRisk": "Étapes à haut risque",
+        "jobPlaceholder": "Nom du poste…",
+        "jobTitle": "Titre du poste",
+        "likelihood": "Probabilité",
+        "max": "Max",
+        "removeTitle": "Supprimer",
+        "severity": "Sévérité",
+        "stepDefault": "Étape {n}",
+        "stepDescPlaceholder": "Description de l'étape…",
+        "stepScoreIntro": "Score de l'étape :",
+        "stepsHeading": "Étapes du travail ({count})"
+      },
+      "lopa": {
+        "addLayer": "+ Ajouter",
+        "consequence": "Sévérité des conséquences",
+        "consequenceV1": "Faible",
+        "consequenceV2": "Mineure",
+        "consequenceV3": "Modérée",
+        "consequenceV4": "Sévère",
+        "consequenceV5": "Catastrophique",
+        "initFreq": "Fréquence d'événement initiateur",
+        "layerDefault": "Couche {n}",
+        "layerNamePlaceholder": "Nom de la couche",
+        "layerPfd": "PFD de la couche",
+        "layersHeading": "Couches de protection ({count})",
+        "meetsTarget": "Atteint l'objectif tolérable",
+        "removeTitle": "Supprimer",
+        "riskReduction": "Réduction du risque",
+        "target": "Objectif",
+        "targetMet": "Atteint",
+        "targetNotMet": "Non atteint"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employee_representative": "Représentant des employés",
+        "employer": "Employeur",
+        "employer_representative": "Représentant de l'employeur",
+        "knowledgeable_employee": "Employé connaissant les risques",
+        "ohs_specialist": "Spécialiste SST",
+        "other_health_personnel": "Autre personnel de santé",
+        "support_staff": "Personnel de soutien",
+        "workplace_physician": "Médecin du travail"
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "description": "Nombre / densité d'objets dangereux observés sur le terrain",
+        "label": "Densité de dangers"
+      },
+      "c2": {
+        "description": "Casques, gants, lunettes manquants, etc.",
+        "label": "Lacunes EPI"
+      },
+      "c3": {
+        "description": "Entrée en zone restreinte, travail non protégé, exposition aux chutes",
+        "label": "Risque comportemental"
+      },
+      "c4": {
+        "description": "Chaleur, bruit, vibrations et facteurs de stress similaires",
+        "label": "Stress environnemental"
+      },
+      "c5": {
+        "description": "Fuites de gaz, produits chimiques, dangers électriques",
+        "label": "Chimique / électrique"
+      },
+      "c6": {
+        "description": "Sorties bloquées, sols mouillés, obstacles de passage",
+        "label": "Accès / obstruction"
+      },
+      "c7": {
+        "description": "Protections contournées, maintenance en retard",
+        "label": "Machines / procédé"
+      },
+      "c8": {
+        "description": "Intensité des chariots élévateurs, croisements de lignes, conflit piéton-véhicule",
+        "label": "Trafic de véhicules"
+      },
+      "c9": {
+        "description": "Lacunes de formation, signalisation d'avertissement manquante",
+        "label": "Charge organisationnelle"
+      },
+      "source": {
+        "visualAnalysis": "Analyse visuelle"
+      }
+    },
+    "ui": {
+      "fk": {
+        "exposure": "Exposition (E)",
+        "likelihood": "Probabilité (L)",
+        "severity": "Gravité (S)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "Probabilité ({n})",
+        "severityHeading": "Gravité ({n})"
+      },
+      "page": {
+        "analysisNotePlaceholder": "Chaque ligne est un sujet de risque ou un groupe de non-conformité. Une ou plusieurs photos peuvent être jointes par ligne.",
+        "analysisTitlePlaceholder": "Analyse de risque terrain",
+        "describeRiskGroup": "Décrivez brièvement le groupe de risque"
+      },
+      "r2d": {
+        "base": "Base",
+        "dominant": "Dominant",
+        "parameters": "Paramètres",
+        "peak": "Pic"
+      },
+      "severity": {
+        "critical": "Critique",
+        "high": "Élevé",
+        "low": "Faible",
+        "medium": "Moyen"
+      }
+    },
+    "wizard": {
+      "common": {
+        "add": "Ajouter",
+        "address": "Adresse",
+        "back": "Retour",
+        "cancel": "Annuler",
+        "companyFallback": "Entreprise",
+        "delete": "Supprimer",
+        "description": "Description",
+        "findings": "Constats",
+        "goToResults": "Voir les résultats",
+        "images": "Images",
+        "lines": "Lignes",
+        "location": "Emplacement",
+        "method": "Méthode",
+        "next": "Suivant",
+        "no": "Non",
+        "report": "Rapport",
+        "risk": "Risque",
+        "row": "Ligne",
+        "save": "Enregistrer",
+        "saving": "Enregistrement…",
+        "scoreDetailPrefix": "Détail du score —",
+        "type": "Type",
+        "update": "Mettre à jour",
+        "visual": "Image",
+        "yes": "Oui"
+      },
+      "header": {
+        "backToList": "Retour à la liste",
+        "badgeAiManual": "IA + constats manuels",
+        "badgeExport": "PDF / Word / Excel",
+        "newAnalysis": "Nouvelle analyse",
+        "wizardDescription": "Sélectionnez l'entreprise, définissez l'équipe, téléchargez les images, puis lancez l'IA + constats manuels et notation.",
+        "wizardTitle": "Analyse de risque visuelle"
+      },
+      "list": {
+        "companyLabel": "Entreprise / organisation",
+        "companyPlaceholder": "— Sélectionner une entreprise —",
+        "confirmDelete": "Êtes-vous sûr ?",
+        "deleteAnalysis": "Supprimer",
+        "description": "Sélectionnez une entreprise, consultez les analyses précédentes ou démarrez-en une nouvelle.",
+        "emptyDescription": "Utilisez le bouton ci-dessus pour démarrer la première analyse de risque pour cette entreprise.",
+        "emptyTitle": "Aucune analyse pour le moment",
+        "eyebrow": "Analyse de risque",
+        "findingsCount": "{count} observations",
+        "historyCount": "{count} analyses sauvegardées",
+        "historyTitle": "{name} — historique des analyses",
+        "newAnalysis": "+ Démarrer nouvelle analyse",
+        "statusArchived": "Archivé",
+        "statusCompleted": "Terminé",
+        "statusDraft": "Brouillon",
+        "title": "Gestion des analyses de risque"
+      },
+      "messages": {
+        "analysisComplete": "Analyse terminée !",
+        "analysisFailed": "L'analyse n'a pas pu être terminée.",
+        "analysisFailedDetail": "L'analyse IA a échoué. {detail}",
+        "analysisPartial": "Analyse IA partiellement terminée. {successful}/{total} images traitées ; erreurs sur {errors} image(s).",
+        "analysisStarting": "Démarrage de l'analyse…",
+        "analysisSummary": "Analyse IA terminée. {risks} risque(s), {positive} observation(s) positive(s).",
+        "analyzingImageProgress": "Analyse de l'image {current}/{total} : {fileName}",
+        "analyzingRowImage": "Analyse de l'image : Ligne {row}, {fileName}…",
+        "genericAiError": "Une erreur s'est produite au niveau d'OpenAI ou Anthropic.",
+        "needImageToAnalyze": "Ajoutez au moins une image pour démarrer l'analyse."
+      },
+      "methodCard": {
+        "params": "{count} paramètres",
+        "score": "Score :"
+      },
+      "nav": {
+        "aiAnalyzingShort": "Analyse…",
+        "aiStartShort": "Démarrer analyse IA"
+      },
+      "notifications": {
+        "savedBody": "{title} — {findings} observation(s), {critical} critique(s)/élevé(s)",
+        "savedTitle": "Analyse de risque sauvegardée",
+        "updatedTitle": "Analyse de risque mise à jour"
+      },
+      "save": {
+        "error": "Une erreur s'est produite lors de la sauvegarde.",
+        "noCompany": "Impossible de sauvegarder sans sélectionner une entreprise.",
+        "oversized": "{fileName} dépasse la limite de 10 Mo. Téléchargez une image plus petite avant de sauvegarder.",
+        "successNew": "Analyse sauvegardée avec succès !",
+        "successUpdated": "Analyse mise à jour avec succès !"
+      },
+      "step1": {
+        "analysisNote": "Note d'analyse",
+        "analysisTitle": "Titre de l'analyse",
+        "company": "Entreprise / organisation",
+        "companyCardAddress": "Adresse :",
+        "companyCardType": "Type :",
+        "companyPlaceholder": "Sélectionner entreprise / organisation",
+        "companyRequired": "La sélection d'une entreprise est requise pour l'analyse.",
+        "department": "Département / unité",
+        "departmentPlaceholder": "Sélectionner département",
+        "departmentRequired": "La sélection du département est requise.",
+        "editCompanyStructure": "Modifier la structure de l'entreprise",
+        "location": "Emplacement / zone de travail",
+        "locationPlaceholder": "Sélectionner l'emplacement",
+        "locationRequired": "La sélection de l'emplacement est obligatoire.",
+        "method": "Méthode d'analyse",
+        "subtitle": "Choisissez l'entreprise, l'emplacement et le département auxquels s'applique cette analyse de risque.",
+        "title": "Contexte d'analyse"
+      },
+      "step2": {
+        "addParticipant": "Ajouter un participant manuellement",
+        "certificate": "N° de certificat (le cas échéant)",
+        "certificatePlaceholder": "Saisir si applicable",
+        "fullName": "Nom complet",
+        "noTeamBody": "Aucun membre d'équipe n'est configuré pour cette entreprise. Sur la page de l'entreprise, ouvrez l'onglet Équipe, créez une \"Équipe d'évaluation des risques\" et ajoutez des membres — ils apparaîtront ici automatiquement.",
+        "noTeamLink": "Aller à la gestion d'équipe de l'entreprise",
+        "noTeamTitle": "Équipe d'évaluation des risques non définie",
+        "participantN": "Participant {n}",
+        "pickFromTeam": "Choisir dans l'équipe de l'entreprise",
+        "rolePlaceholder": "Sélectionner le rôle",
+        "roleType": "Type de rôle / titre",
+        "subtitle": "Choisissez parmi le personnel enregistré ou ajoutez des participants manuellement.",
+        "title": "Personnes impliquées dans l'analyse de risque",
+        "titleField": "Description du rôle / titre",
+        "titlePlaceholder": "ex. Spécialiste classe A"
+      },
+      "step3": {
+        "addImage": "Ajouter une image",
+        "aiAnalyzing": "Analyse IA en cours…",
+        "aiStart": "Démarrer l'analyse de risque IA",
+        "aiSub": "Nova AI analyse chaque image séparément.",
+        "bulkUpload": "Téléchargement en lot (chacune comme ligne séparée)",
+        "deleteRow": "Supprimer la ligne",
+        "newRow": "Ajouter une ligne",
+        "rowHint": "Groupez les vues larges et rapprochées sous cette ligne.",
+        "rowN": "Ligne {n}",
+        "rowTitle": "Titre de ligne",
+        "rowTitlePlaceholder": "ex. Zone d'empilage",
+        "subtitle": "Chaque ligne est un sujet de risque. Téléchargez les images, puis démarrez l'analyse IA.",
+        "summaryCompany": "Entreprise",
+        "summaryImages": "Images",
+        "summaryLocation": "Emplacement",
+        "summaryMethod": "Méthode",
+        "title": "Lignes de risque et images"
+      },
+      "step4": {
+        "addRiskPin": "Ajouter une épingle de risque",
+        "addedLater": "Ajouté ultérieurement",
+        "aiAnalyzingDetail": "Nova AI analyse chaque image…",
+        "analyzingInline": "Analyse en cours…",
+        "areaAssessment": "Évaluation de zone",
+        "avgScore": "Score moyen",
+        "cannotAnalyzeBody": "Cette image n'est pas adaptée à l'analyse de risque.",
+        "cannotAnalyzeTitle": "Impossible d'exécuter l'analyse de risque",
+        "capaBadge": "Candidat CAPA",
+        "capaCandidate": "Candidat CAPA",
+        "cleanNoRisk": "Clair — aucun risque détecté",
+        "confidenceHigh": "Constat confirmé",
+        "confidenceLow": "Vérification recommandée",
+        "confidenceMedium": "Constat IA",
+        "criticalHigh": "Critique / élevé",
+        "deleteFindingAria": "Supprimer le constat",
+        "deleteFindingConfirm": "Supprimer le constat \"{title}\" ?",
+        "deleteFindingTitle": "Supprimer le constat",
+        "detectedPrefix": "Détecté :",
+        "emptyResultsDesc": "À l'étape 3, téléchargez des images et lancez l'analyse.",
+        "emptyResultsTitle": "Aucun résultat pour le moment",
+        "findingTitle": "Titre du constat",
+        "findingTitlePlaceholder": "ex. Garde-corps manquant",
+        "manualPinConfirm": "Ajouter",
+        "manualPinHint": " Vous pouvez ajouter votre propre constat avec une épingle manuelle.",
+        "manualPinTitle": "Ajouter une épingle de risque manuelle",
+        "metaEyebrowArea": "Évaluation de zone",
+        "metaEyebrowPositive": "Observations positives",
+        "noRiskDetectedBody": "L'IA n'a trouvé aucun danger significatif ou non-conformité sur cette image.",
+        "noRiskDetectedTitle": "Aucun risque détecté",
+        "noRiskThisImageBody": "L'IA n'a trouvé aucun danger concret sur cette image. Vous pouvez toujours ajouter un constat manuel.",
+        "noRiskThisImageTitle": "Aucun risque significatif sur cette image",
+        "notRealPhotoBody": "Cette image est un dessin, une illustration ou un rendu synthétique. L'analyse de risque ne fonctionne que sur de vraies photos de site.",
+        "notRealPhotoTitle": "Pas une vraie photo",
+        "peopleDetected": "{count} personne(s) détectée(s)",
+        "photoQuality": "Qualité d'image :",
+        "photoQualityLow": "Faible",
+        "photoQualityMedium": "Moyenne",
+        "pinBanner": "Cliquez sur l'image pour ajouter une épingle de risque",
+        "pinModeActive": "Mode épingle actif…",
+        "positiveFindings": "Observations positives",
+        "positiveObservationsHint": " Les observations positives sont listées ci-dessous.",
+        "resultsSubtitle": "Les cartes de risque restent liées aux annotations sur l'image. Ajustez les paramètres pour modifier le score.",
+        "resultsTitle": "Constats annotés",
+        "riskCount": "Risque : {count}",
+        "rowImagesFindings": "Images : {images} · Constats : {findings}",
+        "saveWarning": "Les résultats ne sont pas encore sauvegardés ! Si vous quittez sans sauvegarder, tous les constats seront perdus.",
+        "scorePanelIntro": "Détail du score — {method}",
+        "severity": "Gravité",
+        "totalFindings": "Total des constats",
+        "visualN": "Image {n}"
+      },
+      "steps": {
+        "context": "Contexte d'analyse",
+        "images": "Images",
+        "results": "Résultats",
+        "team": "Équipe d'analyse"
+      },
+      "validate": {
+        "company": "Sélectionnez d'abord une entreprise / organisation.",
+        "department": "Sélectionnez un département / unité.",
+        "firmLocationDept": "Sélectionnez l'entreprise, le site et le département.",
+        "location": "Sélectionnez un lieu de travail.",
+        "participants": "Saisissez au moins le nom et le rôle d'une personne responsable.",
+        "step2Participants": "Saisissez au moins le nom et le rôle d'une personne responsable.",
+        "step3Images": "Ajoutez au moins une image."
+      }
+    }
+  }
+}

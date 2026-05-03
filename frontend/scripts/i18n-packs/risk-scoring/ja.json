@@ -1,0 +1,780 @@
+{
+  "riskScoring": {
+    "classification": {
+      "bow_tie": {
+        "critical": {
+          "action": "作業停止；バリアの再設計",
+          "label": "クリティカル"
+        },
+        "follow_up": {
+          "action": "バリアは適切；監視を継続",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "緊急バリア強化；プロセス見直し",
+          "label": "高"
+        },
+        "low": {
+          "action": "バリア有効性の確認",
+          "label": "低"
+        },
+        "medium": {
+          "action": "追加バリアの設置",
+          "label": "中"
+        }
+      },
+      "checklist": {
+        "critical": {
+          "action": "活動停止；全面見直し",
+          "label": "クリティカルに不適切"
+        },
+        "follow_up": {
+          "action": "現在の実践を維持",
+          "label": "適合"
+        },
+        "high": {
+          "action": "緊急是正措置の開始",
+          "label": "不適切"
+        },
+        "low": {
+          "action": "短期間でギャップを解消",
+          "label": "許容可能"
+        },
+        "medium": {
+          "action": "より広範な改善計画の準備",
+          "label": "改善が必要"
+        }
+      },
+      "fk": {
+        "critical": {
+          "action": "直ちに作業停止",
+          "label": "非常に高いリスク"
+        },
+        "follow_up": {
+          "action": "改善提案が必要な場合あり；緊急対応不要",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "即座の対応；作業停止を検討",
+          "label": "高リスク"
+        },
+        "low": {
+          "action": "監視下に置き改善を計画",
+          "label": "中程度の懸念"
+        },
+        "medium": {
+          "action": "短期間で対応",
+          "label": "重要"
+        }
+      },
+      "fmea": {
+        "critical": {
+          "action": "作業停止；根本原因分析の実施",
+          "label": "クリティカルリスク"
+        },
+        "follow_up": {
+          "action": "現在の管理で十分；監視継続",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "緊急対応；設計変更を検討",
+          "label": "高リスク"
+        },
+        "low": {
+          "action": "改善を計画",
+          "label": "低リスク"
+        },
+        "medium": {
+          "action": "対応実施；管理強化",
+          "label": "中リスク"
+        }
+      },
+      "fta": {
+        "critical": {
+          "action": "運転禁止；根本原因の除去",
+          "label": "クリティカル"
+        },
+        "follow_up": {
+          "action": "システム信頼性は適切",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "システムの再設計",
+          "label": "高"
+        },
+        "low": {
+          "action": "冗長性/バックアップを評価",
+          "label": "低"
+        },
+        "medium": {
+          "action": "重要コンポーネントに冗長性を追加",
+          "label": "中"
+        }
+      },
+      "hazop": {
+        "critical": {
+          "action": "プロセス停止；設計見直し",
+          "label": "許容不可"
+        },
+        "follow_up": {
+          "action": "現在の管理で十分",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "プロセス変更または追加バリアが必要",
+          "label": "高"
+        },
+        "low": {
+          "action": "監視と改善を計画",
+          "label": "低"
+        },
+        "medium": {
+          "action": "追加保護層を評価",
+          "label": "中"
+        }
+      },
+      "lopa": {
+        "critical": {
+          "action": "プロセス停止；設計見直し",
+          "label": "許容不可"
+        },
+        "follow_up": {
+          "action": "現在の保護層で十分",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "複数層またはプロセス変更が必要",
+          "label": "高リスク"
+        },
+        "low": {
+          "action": "合理的に実行可能な限り低く",
+          "label": "ALARP"
+        },
+        "medium": {
+          "action": "追加保護層を追加",
+          "label": "改善が必要"
+        }
+      },
+      "matrix": {
+        "critical": {
+          "action": "直ちに作業停止；緊急措置",
+          "label": "許容不可"
+        },
+        "follow_up": {
+          "action": "追加措置は不要の可能性；監視で十分",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "速やかに対策を実施",
+          "label": "高リスク"
+        },
+        "low": {
+          "action": "既存管理で適切；観察継続",
+          "label": "低リスク"
+        },
+        "medium": {
+          "action": "改善活動を計画",
+          "label": "中リスク"
+        }
+      },
+      "r2d": {
+        "critical": {
+          "action": "作業停止を評価",
+          "label": "クリティカル"
+        },
+        "follow_up": {
+          "action": "定期監視で十分",
+          "label": "監視"
+        },
+        "high": {
+          "action": "優先的介入が必要",
+          "label": "高"
+        },
+        "low": {
+          "action": "構造化された再評価をスケジュール",
+          "label": "低"
+        },
+        "medium": {
+          "action": "監督強化が必要",
+          "label": "中"
+        }
+      }
+    },
+    "fk": {
+      "exposure": {
+        "v0_5": "非常に稀（年1回）",
+        "v1": "稀（月1回）",
+        "v10": "継続的（1日の大部分）",
+        "v2": "時々（週1回）",
+        "v3": "時々（週数回）",
+        "v6": "頻繁（毎日）"
+      },
+      "likelihood": {
+        "v0_1": "ほぼ不可能",
+        "v0_2": "非常に起こりにくい",
+        "v0_5": "予期しないが可能性あり",
+        "v1": "低い可能性、無視できない",
+        "v10": "非常に起こりやすい/予想される",
+        "v3": "稀だが可能性あり",
+        "v6": "かなり起こりやすい"
+      },
+      "severity": {
+        "v1": "注目すべき、応急処置",
+        "v100": "大災害、複数の死者",
+        "v15": "非常に深刻、四肢の損失",
+        "v3": "重大、外部治療",
+        "v40": "災害、単一の死者",
+        "v7": "深刻、永続的な害"
+      }
+    },
+    "fmea": {
+      "detection": {
+        "v1": "ほぼ確実な検出",
+        "v10": "検出不可能",
+        "v2": "非常に高い検出確率",
+        "v3": "高い確率",
+        "v4": "中高",
+        "v5": "中程度",
+        "v6": "低中",
+        "v7": "低い",
+        "v8": "非常に低い",
+        "v9": "わずかな可能性"
+      },
+      "occurrence": {
+        "v1": "ほぼ不可能（< 1/1,000,000）",
+        "v10": "ほぼ確実（≥ 1/2）",
+        "v2": "わずか（1/20,000）",
+        "v3": "非常に低い（1/4,000）",
+        "v4": "低い（1/1,000）",
+        "v5": "中低（1/400）",
+        "v6": "中程度（1/80）",
+        "v7": "中高（1/40）",
+        "v8": "高い（1/20）",
+        "v9": "非常に高い（1/8）"
+      },
+      "severity": {
+        "v1": "影響なし — 気づかれない",
+        "v10": "破滅的 — 死亡/大事故",
+        "v2": "非常に軽微 — 無視できる影響",
+        "v3": "軽微 — わずかな迷惑",
+        "v4": "低い — 性能低下",
+        "v5": "中程度 — 重大な性能損失",
+        "v6": "高 — システム機能が損なわれます",
+        "v7": "非常に高 — 動作不能",
+        "v8": "危険（警告あり）— 負傷リスク",
+        "v9": "危険（警告なし）— 重傷"
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "after": "後",
+        "before": "前",
+        "early": "早期",
+        "late": "遅延",
+        "less": "少ない",
+        "more": "多い",
+        "noNot": "なし / ない",
+        "otherThan": "以外",
+        "partOf": "一部",
+        "reverse": "逆"
+      },
+      "parameters": {
+        "composition": "組成",
+        "flow": "流量",
+        "level": "レベル",
+        "mixing": "混合",
+        "ph": "pH",
+        "pressure": "圧力",
+        "reaction": "反応",
+        "speed": "速度",
+        "temperature": "温度",
+        "time": "時間"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v0_00001": "10万年に1回 — 極めて稀",
+        "v0_0001": "1万年に1回 — 非常に稀",
+        "v0_001": "1,000年に1回 — 稀",
+        "v0_01": "100年に1回 — 時々",
+        "v0_1": "10年に1回 — 頻繁",
+        "v1": "年1回 — 非常に頻繁"
+      },
+      "pfd": {
+        "v0_001": "自動安全システム（SIL-1クラス）",
+        "v0_01": "訓練されたオペレーター対応 / アラーム",
+        "v0_1": "簡単な管理統制"
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "非常に低い（ほぼ不可能）"
+        },
+        "i2": {
+          "description": "低い（稀、予期しない）"
+        },
+        "i3": {
+          "description": "中程度（可能性は低いが起こりうる）"
+        },
+        "i4": {
+          "description": "高い（起こりやすい、驚くことではない）"
+        },
+        "i5": {
+          "description": "非常に高い（予想される、避けられない）"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "非常に軽微（休業なし）"
+        },
+        "i2": {
+          "description": "軽微（休業を伴わない負傷）"
+        },
+        "i3": {
+          "description": "中程度（休業を伴う負傷）"
+        },
+        "i4": {
+          "description": "重大（永続的な害、切断）"
+        },
+        "i5": {
+          "description": "破滅的（死亡、複数の死亡者）"
+        }
+      }
+    },
+    "methods": {
+      "bow_tie": {
+        "description": "ボウタイ — 脅威–バリア–結果",
+        "name": "ボウタイ",
+        "tooltip": "脅威の可能性と結果の重大度を予防・軽減バリアで評価し、バリア強度から残存リスクを算出します。"
+      },
+      "checklist": {
+        "description": "チェックリスト — 適合率",
+        "name": "チェックリスト",
+        "tooltip": "OK / NG / 部分適合項目から重み付け適合率を算出—監査・検査に最適です。"
+      },
+      "fine_kinney": {
+        "description": "可能性 × 重大度 × 暴露の積",
+        "name": "Fine-Kinney",
+        "tooltip": "一般的な定量的リスク手法：L (0.1–10)、S (1–100)、E (0.5–10)；ISO 31000に準拠。"
+      },
+      "fmea": {
+        "description": "故障モード影響解析 — RPN",
+        "name": "FMEA",
+        "tooltip": "重大度 (1–10) × 発生度 (1–10) × 検出度 (1–10) = RPN。運用・保守に最適；IEC 60812準拠。"
+      },
+      "fta": {
+        "description": "故障の木解析 — システム信頼性",
+        "name": "FTA",
+        "tooltip": "AND/ORゲートでシステム故障を分解；航空・原子力・重要システムで使用；IEC 61025準拠。"
+      },
+      "hazop": {
+        "description": "危険性と運転性の研究",
+        "name": "HAZOP",
+        "tooltip": "ガイドワード（No、Less、More、Reverse等）でプロセス逸脱を探索；化学・石油プラントで一般的；IEC 61882準拠。"
+      },
+      "jsa": {
+        "description": "作業安全分析 — 工程別危険性",
+        "name": "JSA",
+        "tooltip": "工程別の重大度 × 可能性 / 管理有効性；建設・現場作業に必須。"
+      },
+      "l_matrix": {
+        "description": "5×5可能性-重大度リスクマトリックス",
+        "name": "L型マトリックス",
+        "tooltip": "可能性 (1–5) と重大度 (1–5) を選択し、25セルのカラーマトリックスからリスクを読み取り（トルコ労働安全衛生実務に準拠）。"
+      },
+      "lopa": {
+        "description": "防護層解析 — 頻度低減",
+        "name": "LOPA",
+        "tooltip": "開始頻度に各層のPFD値を乗算；プロセス安全でSIL目標と組み合わせて使用。"
+      },
+      "r_skor": {
+        "description": "9パラメータによる重み付け現場スクリーニングスコア",
+        "name": "R-SKOR 2D",
+        "tooltip": "RiskNova手法：9パラメータ（C1–C9）で視覚・現場入力を重み付け；画像からの自動スコアリングをサポート。"
+      }
+    },
+    "panel": {
+      "bowtie": {
+        "consequence": "結果の重大度",
+        "mitigation": "軽減バリア",
+        "prevention": "予防バリア",
+        "rawRisk": "生リスク",
+        "residualRisk": "残存リスク",
+        "threat": "脅威の可能性"
+      },
+      "checklist": {
+        "add": "+ 追加",
+        "compliantLine": "{n} 適合",
+        "itemPlaceholder": "管理項目…",
+        "itemsHeading": "チェック項目 ({count})",
+        "nonCompliantLine": "{n} 不適合",
+        "partialLine": "{n} 部分",
+        "removeTitle": "削除",
+        "statusKismi": "部分",
+        "statusNa": "N/A",
+        "statusUygun": "適合",
+        "statusUygunDegil": "不適合"
+      },
+      "fmea": {
+        "detection": "検出性 (D)",
+        "formula": "S × O × D = RPN",
+        "occurrence": "発生頻度 (O)",
+        "severity": "重大度 (S)"
+      },
+      "fta": {
+        "add": "+ 追加",
+        "componentDefault": "コンポーネント {n}",
+        "componentPlaceholder": "コンポーネント名",
+        "componentsHeading": "コンポーネント ({count})",
+        "failureRateTitle": "故障確率 (0–1)",
+        "gate": "ゲート",
+        "gateType": "ゲートタイプ:",
+        "removeTitle": "削除",
+        "systemCriticality": "システム重要度",
+        "systemProb": "システム P"
+      },
+      "hazop": {
+        "detectability": "検出可能性",
+        "detectEasy": "容易",
+        "detectHard": "困難",
+        "deviation": "逸脱説明",
+        "deviationPlaceholder": "逸脱を記述してください…",
+        "guideWord": "ガイドワード",
+        "likelihood": "可能性",
+        "parameter": "プロセスパラメータ",
+        "severity": "重大度"
+      },
+      "jsa": {
+        "add": "+ 追加",
+        "avg": "平均",
+        "control": "管理策",
+        "controlsPlaceholder": "管理措置…",
+        "hazardPlaceholder": "危険…",
+        "highRisk": "高リスクステップ",
+        "jobPlaceholder": "作業名…",
+        "jobTitle": "作業タイトル",
+        "likelihood": "可能性",
+        "max": "最大",
+        "removeTitle": "削除",
+        "severity": "重大度",
+        "stepDefault": "ステップ {n}",
+        "stepDescPlaceholder": "ステップ説明…",
+        "stepScoreIntro": "ステップスコア:",
+        "stepsHeading": "作業ステップ ({count})"
+      },
+      "lopa": {
+        "addLayer": "+ 追加",
+        "consequence": "結果重大度",
+        "consequenceV1": "軽微",
+        "consequenceV2": "小",
+        "consequenceV3": "中程度",
+        "consequenceV4": "重大",
+        "consequenceV5": "破滅的",
+        "initFreq": "開始事象頻度",
+        "layerDefault": "レイヤー {n}",
+        "layerNamePlaceholder": "レイヤー名",
+        "layerPfd": "レイヤー PFD",
+        "layersHeading": "防護層 ({count})",
+        "meetsTarget": "許容目標を満たします",
+        "removeTitle": "削除",
+        "riskReduction": "リスク低減",
+        "target": "目標",
+        "targetMet": "達成",
+        "targetNotMet": "未達成"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employee_representative": "従業員代表",
+        "employer": "雇用者",
+        "employer_representative": "雇用者代表",
+        "knowledgeable_employee": "リスクに精通した従業員",
+        "ohs_specialist": "労働安全衛生専門家",
+        "other_health_personnel": "その他の保健担当者",
+        "support_staff": "支援スタッフ",
+        "workplace_physician": "産業医"
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "description": "現場で観察された危険物の数/密度",
+        "label": "危険密度"
+      },
+      "c2": {
+        "description": "ヘルメット、手袋、ゴーグルなどの不備",
+        "label": "PPE不備"
+      },
+      "c3": {
+        "description": "立入禁止区域への侵入、無防備作業、墜落危険",
+        "label": "行動リスク"
+      },
+      "c4": {
+        "description": "熱、騒音、振動および類似のストレス要因",
+        "label": "環境ストレス"
+      },
+      "c5": {
+        "description": "ガス漏れ、化学物質、電気的危険",
+        "label": "化学物質/電気"
+      },
+      "c6": {
+        "description": "出口の閉塞、濡れた床、通路の障害物",
+        "label": "アクセス/障害"
+      },
+      "c7": {
+        "description": "安全装置の無効化、保守の遅れ",
+        "label": "機械/プロセス"
+      },
+      "c8": {
+        "description": "フォークリフト強度、ライン横断、歩行者と車両の衝突",
+        "label": "車両交通"
+      },
+      "c9": {
+        "description": "訓練不備、警告標識の不備",
+        "label": "組織負荷"
+      },
+      "source": {
+        "visualAnalysis": "目視分析"
+      }
+    },
+    "ui": {
+      "fk": {
+        "exposure": "暴露 (E)",
+        "likelihood": "可能性 (L)",
+        "severity": "重大度 (S)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "可能性 ({n})",
+        "severityHeading": "重大度 ({n})"
+      },
+      "page": {
+        "analysisNotePlaceholder": "各行はリスクトピックまたは不適合グループです。行ごとに1つ以上の写真を添付できます。",
+        "analysisTitlePlaceholder": "現場リスク分析",
+        "describeRiskGroup": "リスクグループを簡潔に説明してください"
+      },
+      "r2d": {
+        "base": "ベース",
+        "dominant": "支配的",
+        "parameters": "パラメータ",
+        "peak": "ピーク"
+      },
+      "severity": {
+        "critical": "重大",
+        "high": "高",
+        "low": "低",
+        "medium": "中"
+      }
+    },
+    "wizard": {
+      "common": {
+        "add": "追加",
+        "address": "住所",
+        "back": "戻る",
+        "cancel": "キャンセル",
+        "companyFallback": "会社",
+        "delete": "削除",
+        "description": "説明",
+        "findings": "所見",
+        "goToResults": "結果へ移動",
+        "images": "画像",
+        "lines": "行",
+        "location": "場所",
+        "method": "方法",
+        "next": "次へ",
+        "no": "いいえ",
+        "report": "レポート",
+        "risk": "リスク",
+        "row": "行",
+        "save": "保存",
+        "saving": "保存中…",
+        "scoreDetailPrefix": "スコア詳細 —",
+        "type": "種類",
+        "update": "更新",
+        "visual": "画像",
+        "yes": "はい"
+      },
+      "header": {
+        "backToList": "リストに戻る",
+        "badgeAiManual": "AI + 手動所見",
+        "badgeExport": "PDF / Word / Excel",
+        "newAnalysis": "新規分析",
+        "wizardDescription": "会社を選択し、チームを定義し、画像をアップロードしてから、AI + 手動所見とスコアリングを実行します。",
+        "wizardTitle": "視覚的リスク分析"
+      },
+      "list": {
+        "companyLabel": "会社・組織",
+        "companyPlaceholder": "— 会社を選択 —",
+        "confirmDelete": "よろしいですか？",
+        "deleteAnalysis": "削除",
+        "description": "会社を選択し、過去の分析を確認するか、新しい分析を開始してください。",
+        "emptyDescription": "上のボタンを使用して、この会社の最初のリスク分析を開始してください。",
+        "emptyTitle": "まだ分析がありません",
+        "eyebrow": "リスク分析",
+        "findingsCount": "{count}件の所見",
+        "historyCount": "{count}件の保存済み分析",
+        "historyTitle": "{name} — 分析履歴",
+        "newAnalysis": "+ 新しい分析を開始",
+        "statusArchived": "アーカイブ済み",
+        "statusCompleted": "完了",
+        "statusDraft": "下書き",
+        "title": "リスク分析管理"
+      },
+      "messages": {
+        "analysisComplete": "分析完了！",
+        "analysisFailed": "分析を完了できませんでした。",
+        "analysisFailedDetail": "AI分析が失敗しました。{detail}",
+        "analysisPartial": "AI分析が部分的に完了しました。{successful}/{total}枚の画像を処理しました。{errors}枚の画像でエラーが発生しました。",
+        "analysisStarting": "分析を開始しています…",
+        "analysisSummary": "AI分析が完了しました。{risks}件のリスク、{positive}件の良好な観察結果。",
+        "analyzingImageProgress": "画像を分析中 {current}/{total}: {fileName}",
+        "analyzingRowImage": "画像を分析中: 行{row}、{fileName}…",
+        "genericAiError": "OpenAIまたはAnthropic段階でエラーが発生しました。",
+        "needImageToAnalyze": "分析を開始するには、少なくとも1つの画像を追加してください。"
+      },
+      "methodCard": {
+        "params": "{count}個のパラメータ",
+        "score": "スコア:"
+      },
+      "nav": {
+        "aiAnalyzingShort": "分析中…",
+        "aiStartShort": "AI分析を開始"
+      },
+      "notifications": {
+        "savedBody": "{title} — {findings}件の所見、{critical}件の重要/高リスク",
+        "savedTitle": "リスク分析を保存しました",
+        "updatedTitle": "リスク分析を更新しました"
+      },
+      "save": {
+        "error": "保存中にエラーが発生しました。",
+        "noCompany": "会社を選択せずに保存することはできません。",
+        "oversized": "{fileName}は10MBの制限を超えています。保存前により小さな画像をアップロードしてください。",
+        "successNew": "分析が正常に保存されました！",
+        "successUpdated": "分析が正常に更新されました！"
+      },
+      "step1": {
+        "analysisNote": "分析メモ",
+        "analysisTitle": "分析タイトル",
+        "company": "会社・組織",
+        "companyCardAddress": "住所:",
+        "companyCardType": "種別:",
+        "companyPlaceholder": "会社・組織を選択",
+        "companyRequired": "分析には会社の選択が必要です。",
+        "department": "部門・部署",
+        "departmentPlaceholder": "部門を選択",
+        "departmentRequired": "部門の選択が必要です。",
+        "editCompanyStructure": "会社構造を編集",
+        "location": "場所・作業エリア",
+        "locationPlaceholder": "場所を選択",
+        "locationRequired": "場所の選択は必須です。",
+        "method": "分析手法",
+        "subtitle": "このリスク分析が適用される会社、場所、部門を選択してください。",
+        "title": "分析コンテキスト"
+      },
+      "step2": {
+        "addParticipant": "参加者を手動で追加",
+        "certificate": "証明書番号（該当する場合）",
+        "certificatePlaceholder": "該当する場合は入力",
+        "fullName": "氏名",
+        "noTeamBody": "この会社にはまだチームメンバーが設定されていません。会社ページでチームタブを開き、「リスク評価チーム」を作成してメンバーを追加してください。自動的にここに表示されます。",
+        "noTeamLink": "会社チーム管理に移動",
+        "noTeamTitle": "リスク評価チームが未定義",
+        "participantN": "参加者 {n}",
+        "pickFromTeam": "会社チームから選択",
+        "rolePlaceholder": "役割を選択",
+        "roleType": "役職・肩書きタイプ",
+        "subtitle": "保存されたスタッフから選択するか、参加者を手動で追加してください。",
+        "title": "リスク分析に関わる人員",
+        "titleField": "役職・肩書きの説明",
+        "titlePlaceholder": "例：クラスA専門家"
+      },
+      "step3": {
+        "addImage": "画像を追加",
+        "aiAnalyzing": "AI分析を実行中…",
+        "aiStart": "AIリスク分析を開始",
+        "aiSub": "Nova AIは各画像を個別に分析します。",
+        "bulkUpload": "一括アップロード（それぞれ別の行として）",
+        "deleteRow": "行を削除",
+        "newRow": "行を追加",
+        "rowHint": "この行の下に広角ショットとクローズアップショットをグループ化してください。",
+        "rowN": "行 {n}",
+        "rowTitle": "行タイトル",
+        "rowTitlePlaceholder": "例：積み重ねエリア",
+        "subtitle": "各行は1つのリスクトピックです。画像をアップロードしてからAI分析を開始してください。",
+        "summaryCompany": "会社",
+        "summaryImages": "画像",
+        "summaryLocation": "場所",
+        "summaryMethod": "手法",
+        "title": "リスク行と画像"
+      },
+      "step4": {
+        "addedLater": "後で追加",
+        "addRiskPin": "リスクピンを追加",
+        "aiAnalyzingDetail": "Nova AIが各画像を分析中…",
+        "analyzingInline": "分析中…",
+        "areaAssessment": "エリア評価",
+        "avgScore": "平均スコア",
+        "cannotAnalyzeBody": "この画像はリスク分析に適していません。",
+        "cannotAnalyzeTitle": "リスク分析を実行できません",
+        "capaBadge": "CAPA候補",
+        "capaCandidate": "CAPA候補",
+        "cleanNoRisk": "クリア — リスクは検出されませんでした",
+        "confidenceHigh": "確認済みの所見",
+        "confidenceLow": "検証を推奨します",
+        "confidenceMedium": "AI所見",
+        "criticalHigh": "重大/高",
+        "deleteFindingAria": "所見を削除",
+        "deleteFindingConfirm": "所見「{title}」を削除しますか？",
+        "deleteFindingTitle": "所見を削除",
+        "detectedPrefix": "検出済み:",
+        "emptyResultsDesc": "ステップ3で画像をアップロードし、分析を実行してください。",
+        "emptyResultsTitle": "まだ結果がありません",
+        "findingTitle": "所見タイトル",
+        "findingTitlePlaceholder": "例：手すりの欠如",
+        "manualPinConfirm": "追加",
+        "manualPinHint": " 手動ピンで独自の所見を追加できます。",
+        "manualPinTitle": "手動リスクピンを追加",
+        "metaEyebrowArea": "エリア評価",
+        "metaEyebrowPositive": "ポジティブな観察",
+        "noRiskDetectedBody": "AIはこの画像で意味のある危険や不適合を発見しませんでした。",
+        "noRiskDetectedTitle": "リスクは検出されませんでした",
+        "noRiskThisImageBody": "AIはこの画像で具体的な危険を発見しませんでした。手動で所見を追加することもできます。",
+        "noRiskThisImageTitle": "この画像に重大なリスクはありません",
+        "notRealPhotoBody": "この画像は図面、イラスト、または合成レンダリングです。リスク分析は実際の現場写真でのみ実行されます。",
+        "notRealPhotoTitle": "実際の写真ではありません",
+        "peopleDetected": "{count}人が検出されました",
+        "photoQuality": "画像品質:",
+        "photoQualityLow": "低",
+        "photoQualityMedium": "中",
+        "pinBanner": "画像をクリックしてリスクピンを追加",
+        "pinModeActive": "ピンモードがアクティブです…",
+        "positiveFindings": "ポジティブな観察",
+        "positiveObservationsHint": " ポジティブな観察は以下に一覧表示されます。",
+        "resultsSubtitle": "リスクカードは画像の注釈にリンクされたままです。スコアを変更するにはパラメータを調整してください。",
+        "resultsTitle": "注釈付き所見",
+        "riskCount": "リスク: {count}",
+        "rowImagesFindings": "画像: {images} · 所見: {findings}",
+        "saveWarning": "結果はまだ保存されていません！保存せずに離れると、すべての所見が失われます。",
+        "scorePanelIntro": "スコア詳細 — {method}",
+        "severity": "重要度",
+        "totalFindings": "総所見数",
+        "visualN": "画像 {n}"
+      },
+      "steps": {
+        "context": "分析コンテキスト",
+        "images": "画像",
+        "results": "結果",
+        "team": "分析チーム"
+      },
+      "validate": {
+        "company": "まず会社・組織を選択してください。",
+        "department": "部門・ユニットを選択してください。",
+        "firmLocationDept": "会社、場所、部門を選択してください。",
+        "location": "作業場所を選択してください。",
+        "participants": "責任者の氏名と役割を少なくとも1つ入力してください。",
+        "step2Participants": "責任者の氏名と役割を少なくとも1つ入力してください。",
+        "step3Images": "画像を少なくとも1つ追加してください。"
+      }
+    }
+  }
+}

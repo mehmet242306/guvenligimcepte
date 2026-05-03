@@ -1,1356 +1,2620 @@
 {
+  "activeCompanyBar": {
+    "companyTypeEnterprise": "مؤسسة",
+    "companyTypeIndividual": "فردي",
+    "companyTypeOsgb": "OSGB",
+    "detailLink": "تفاصيل الشركة",
+    "detailLinkTitle": "انتقل إلى صفحة تفاصيل الشركة",
+    "inactiveBadge": "شركة غير نشطة",
+    "nacePrefix": "NACE",
+    "personnelCountTitle": "الموظفون النشطون / الإجمالي"
+  },
+  "auth": {
+    "demoModal": {
+      "bodyDisabled": "تم إلغاء وصولك التجريبي من قبل المدير.",
+      "bodyExpired": "انتهت فترتك التجريبية. جلسات RiskNova التجريبية صالحة لمدة تصل إلى {hours} ساعة؛ بعد ذلك تنتهي الجلسة.",
+      "calloutDisabledLead": "ملاحظة:",
+      "calloutDisabledRest": "الحسابات التجريبية عادة محدودة بـ {hours} ساعة؛ قد يكون الوصول قد انتهى أيضاً من قبل المدير.",
+      "calloutExpiredLead": "تذكير:",
+      "calloutExpiredRest": "أنهِ استكشاف النسخة التجريبية خلال {hours} ساعة؛ عند انتهائها يمكنك المتابعة بإنشاء حسابك المجاني أو التجاري.",
+      "closeAria": "إغلاق",
+      "ctaLater": "لاحقاً",
+      "ctaPrimary": "بدء التسجيل",
+      "pathEnterpriseDesc": "المؤسسات متعددة المواقع",
+      "pathEnterpriseLabel": "مؤسسة",
+      "pathIndividualDesc": "المهنيون المستقلون",
+      "pathIndividualLabel": "فردي",
+      "pathOsgbDesc": "إدارة الشركات العميلة والموظفين",
+      "pathOsgbLabel": "OSGB",
+      "pathsHighlight": "وصول كامل لجميع الميزات",
+      "pathsIntro": "لمتابعة من حيث توقفت والحصول على",
+      "pathsSuffix": "، أنشئ حسابك. يمكنك اختيار أحد المسارات الثلاثة:",
+      "subtitle": "لتجربة RiskNova",
+      "title": "شكراً!"
+    },
+    "forgotBack": "العودة لتسجيل الدخول",
+    "forgotButton": "إرسال رابط إعادة التعيين",
+    "forgotDescription": "أدخل عنوان بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور.",
+    "forgotPage": {
+      "backToLogin": "العودة لتسجيل الدخول",
+      "description": "أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور.",
+      "emailHint": "استخدم البريد الإلكتروني الذي سجلت به.",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "you@company.com",
+      "eyebrow": "إعادة تعيين كلمة المرور",
+      "sentBanner": "إذا كان عنوان البريد الإلكتروني صحيحاً، فقد أرسلنا رابط إعادة تعيين كلمة المرور.",
+      "submitButton": "إرسال رابط إعادة التعيين",
+      "title": "إعادة تعيين كلمة المرور"
+    },
+    "forgotTitle": "إعادة تعيين كلمة المرور",
+    "loginButton": "تسجيل الدخول",
+    "loginDescription": "تابع إدارة تحليل المخاطر وتتبع الميدان وعمليات التقارير على منصة واحدة.",
+    "loginEmail": "عنوان البريد الإلكتروني",
+    "loginForgot": "نسيت كلمة المرور",
+    "loginLoading": "جاري تسجيل الدخول...",
+    "loginNoAccount": "ليس لديك حساب؟",
+    "loginPage": {
+      "description": "سجل الدخول إلى حساب RiskNova الخاص بك. يتم توجيه مديري المنصة إلى وحدة التحكم الإدارية؛ والجميع الآخر ينتقل إلى مساحة العمل التي تطابق نوع حسابهم.",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "you@company.com",
+      "eyebrow": "تسجيل الدخول",
+      "footerPrefix": "ليس لديك حساب؟",
+      "footerRegisterLink": "إنشاء حساب",
+      "forgotLink": "نسيت كلمة المرور",
+      "highlight1Desc": "للمهنيين الأفراد الذين يديرون شركاتهم ومؤسساتهم ومساحات عملهم الخاصة.",
+      "highlight1Title": "تسجيل دخول فردي",
+      "highlight2Desc": "لفرق OSGB التي تدير العملاء والموظفين والمهام وعمليات المخاطر.",
+      "highlight2Title": "تسجيل دخول OSGB",
+      "highlight3Desc": "دور مدير المنصة غير متاح كنوع حساب عام؛ يتم توجيه المستخدمين المؤهلين إلى وحدة تحكم المدير بعد تسجيل الدخول.",
+      "highlight3Title": "إدارة المنصة",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "passwordUpdatedBanner": "تم تحديث كلمة المرور. يمكنك تسجيل الدخول بكلمة المرور الجديدة.",
+      "privilegedLoginBlocked": "حسابات OSGB والمؤسسات لا يمكنها استخدام مسار تسجيل الدخول هذا. يرجى الاتصال بفريقنا للحصول على عرض أسعار والوصول.",
+      "spotlightP1": "شاشة تسجيل الدخول مشتركة للجميع؛ التوجيه بعد الجلسة يعتمد على سياق حسابك.",
+      "spotlightP2": "دور مدير المنصة غير متاح في التسجيل الذاتي العام. الفردي وOSGB والمؤسسة هي مسارات الحسابات المواجهة للعملاء.",
+      "submitButton": "تسجيل الدخول",
+      "title": "تسجيل الدخول إلى حسابك"
+    },
+    "loginPassword": "كلمة المرور",
+    "loginRegister": "إنشاء حساب",
+    "loginTitle": "تسجيل الدخول إلى حسابك",
+    "registerButton": "إنشاء حساب",
+    "registerDescription": "رقمن عمليات السلامة والصحة المهنية واستفد من آليات اتخاذ القرار المدعومة بالذكاء الاصطناعي.",
+    "registerEmail": "عنوان البريد الإلكتروني",
+    "registerHasAccount": "لديك حساب بالفعل؟",
+    "registerLoading": "جاري إنشاء الحساب...",
+    "registerLogin": "تسجيل الدخول",
+    "registerName": "الاسم الكامل",
+    "registerPage": {
+      "checkEmailBanner": "بدأ التسجيل. تحقق من صندوق الوارد إذا كان التأكيد مطلوباً.",
+      "demoDisabledBody": "ربما تم إنهاؤه من قبل مدير (حسابات التجربة عادة محدودة بـ {hours} ساعة). أنشئ حساباً أدناه للاستخدام المستمر.",
+      "demoDisabledTitle": "تم تعطيل وصول التجربة الخاص بك.",
+      "demoExpiredBody": "وصول تجربة RiskNova محدود بـ {hours} ساعة؛ عند انتهائه تنتهي الجلسة. أنشئ حساباً مجانياً أدناه أو تابع مع Google للانتقال إلى حساب دائم.",
+      "demoExpiredTitle": "انتهت فترة التجربة الخاصة بك.",
+      "demoLegacyDisabledHelp": "مساعدة:",
+      "demoLegacyDisabledLead": "تم إلغاء وصولك التجريبي.",
+      "demoLegacyDisabledLogin": "تسجيل الدخول",
+      "demoLegacyDisabledRest": "لم تعد العروض التوضيحية العامة متاحة. سجل أو",
+      "demoLegacyExpiredLead": "انتهت جلستك التجريبية.",
+      "demoLegacyExpiredLogin": "تسجيل الدخول",
+      "demoLegacyExpiredRest": "لم تعد العروض التوضيحية العامة متاحة. أنشئ حساباً أدناه أو",
+      "demoLegacyExpiredSupport": "للمشاكل اتصل بـ",
+      "description": "اختر نوع الحساب والمنطقة واللغة أولاً. الحسابات الفردية تنتقل مباشرة للنموذج؛ هياكل OSGB والشركات تبدأ بتدفق التواصل والعرض.",
+      "emailHint": "تستخدم تدفقات الإعداد والوصول هذا العنوان.",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "you@company.com",
+      "eyebrow": "حساب جديد",
+      "footerLoginLink": "تسجيل الدخول",
+      "footerPrefix": "هل لديك حساب بالفعل؟",
+      "highlight1Desc": "بعد اختيار المنطقة واللغة تكمل التسجيل وتتابع مع الإعداد.",
+      "highlight1Title": "خدمة ذاتية فردية",
+      "highlight2Desc": "مقارنة الأسعار والخطط تبقى في صفحة الخطط حتى يبقى التسجيل مركزاً.",
+      "highlight2Title": "الخطط موجودة في صفحة منفصلة",
+      "highlight3Desc": "الهياكل متعددة المواقع أو المتخصصة تمر عبر التواصل والعرض مع فريقنا.",
+      "highlight3Title": "عرض مخصص للمؤسسات",
+      "legalCheckboxAfterCookie": ". لقد قرأت وأوافق عليها. قد يتم عرض موافقات منصة إلزامية إضافية في التطبيق بعد إنشاء حسابك.",
+      "legalCheckboxAfterPrivacy": ", و ",
+      "legalCheckboxAfterTerms": ", ",
+      "legalCheckboxCookie": "سياسة ملفات تعريف الارتباط",
+      "legalCheckboxPrivacy": "سياسة الخصوصية وإفصاح KVKK",
+      "legalCheckboxTerms": "شروط الاستخدام",
+      "passwordHint": "اختر كلمة مرور قوية. ستنهي اختيار نوع الحساب بعد التسجيل.",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "8 أحرف على الأقل",
+      "submitButton": "إنشاء حساب",
+      "title": "إنشاء حساب RiskNova الخاص بك"
+    },
+    "registerPassword": "كلمة المرور",
+    "registerTitle": "إنشاء حساب",
+    "registerWizard": {
+      "accounts": {
+        "enterprise": {
+          "description": "للاحتياجات التنظيمية متعددة المواقع أو المتخصصة.",
+          "title": "شركة / مؤسسة"
+        },
+        "individual": {
+          "description": "متخصص أو طبيب أو DSP أو مدقق يبدأ بمساحة العمل الخاصة به.",
+          "title": "محترف فردي"
+        },
+        "osgb": {
+          "description": "طلب إعداد لمحافظ العملاء والفرق وسير عمل المهام.",
+          "title": "OSGB"
+        }
+      },
+      "closeAria": "إغلاق مساعد التسجيل",
+      "commercialIntroBody": "يتم إرسال بلدك ولغتك ودورك مع النموذج حتى يتمكن فريقنا من الاستجابة بالحزمة والإعداد المناسبين.",
+      "commercialIntroEnterpriseTitle": "تدفق عرض أسعار المؤسسة",
+      "commercialIntroOsgbTitle": "تدفق عرض أسعار OSGB",
+      "countryHints": {
+        "AE": "جاهزية الفريق الإنجليزية / العربية.",
+        "AZ": "منطقة أذربيجان مع الإعدادات الافتراضية الأذربيجانية.",
+        "CN": "اللغة الصينية وجاهزية آسيا والمحيط الهادئ.",
+        "DE": "منطقة ألمانيا مع الإعدادات الافتراضية الألمانية.",
+        "ES": "منطقة إسبانيا مع الإعدادات الافتراضية الإسبانية.",
+        "FR": "منطقة فرنسا مع الإعدادات الافتراضية الفرنسية.",
+        "GB": "عمليات المملكة المتحدة مع الإعدادات الافتراضية الإنجليزية.",
+        "ID": "تفضيل البهاسا الإندونيسية.",
+        "IN": "جاهزية الفريق الهندية / الإنجليزية.",
+        "JP": "اللغة اليابانية وجاهزية آسيا والمحيط الهادئ.",
+        "KR": "اللغة الكورية وجاهزية آسيا والمحيط الهادئ.",
+        "RU": "اللغة الروسية والجاهزية الإقليمية.",
+        "SA": "اللغة العربية وجاهزية عمليات الخليج.",
+        "TR": "تشريعات تركيا مع الإعدادات الافتراضية التركية.",
+        "US": "عمليات الولايات المتحدة مع الإعدادات الافتراضية الإنجليزية."
+      },
+      "prevAria": "الخطوة السابقة",
+      "roles": {
+        "auditor": {
+          "description": "عمليات التدقيق الميداني وعدم المطابقة والتقارير.",
+          "title": "مدقق"
+        },
+        "occupational_physician": {
+          "description": "المراقبة الصحية والعمليات الطبية وسجلات الموظفين.",
+          "title": "طبيب مهني"
+        },
+        "safety_officer": {
+          "description": "فريق الصحة والدعم الميداني ومهام المتابعة.",
+          "title": "أخصائي السلامة والصحة المهنية / الطاقم الصحي"
+        },
+        "safety_professional": {
+          "description": "تحليل المخاطر والتدقيق الميداني والإجراءات وتتبع اللوائح.",
+          "title": "أخصائي السلامة والصحة المهنية"
+        },
+        "workspace_admin": {
+          "description": "يدير المستخدمين والشركات والأدوار وإعدادات مساحة العمل.",
+          "title": "مدير مساحة العمل"
+        }
+      },
+      "startWizard": "بدء أسئلة التسجيل",
+      "steps": {
+        "account": {
+          "description": "هذا الاختيار يحدد التدفق بعد التسجيل.",
+          "eyebrow": "1 / 4",
+          "title": "ما نوع الحساب الذي تبدأ به؟"
+        },
+        "country": {
+          "description": "تغطية التشريعات ونطاق RAG ومساحة العمل الافتراضية متوافقة مع هذا الاختيار.",
+          "eyebrow": "2 / 4",
+          "title": "في أي دولة تقع مساحة العمل الأساسية؟"
+        },
+        "language": {
+          "description": "لم تتم ترجمة كل شاشة بعد، لكن تفضيلك محفوظ في الحساب.",
+          "eyebrow": "3 / 4",
+          "title": "لغة الواجهة والمستندات"
+        },
+        "role": {
+          "description": "هذا ينشئ مساحة العمل الأولى أثناء الإعداد.",
+          "eyebrow": "4 / 4",
+          "title": "ما هو دورك الأول؟"
+        }
+      },
+      "summaryChange": "تغيير",
+      "summaryTitle": "مسار التسجيل جاهز"
+    },
+    "resetPage": {
+      "backToLogin": "العودة إلى تسجيل الدخول",
+      "description": "أدخل كلمة المرور الجديدة والعودة إلى حسابك.",
+      "descriptionRequired": "لقد سجلت الدخول ببيانات اعتماد مؤقتة. قم بتعيين كلمة مرور جديدة قبل المتابعة.",
+      "errInvalidResetLink": "قد يكون رابط إعادة تعيين كلمة المرور غير صالح أو منتهي الصلاحية.",
+      "errPrepareSession": "تعذر تحضير جلستك. يرجى فتح الرابط مرة أخرى.",
+      "errSessionRefresh": "تعذر تحضير جلستك. قم بتحديث الصفحة وحاول مرة أخرى.",
+      "eyebrow": "كلمة مرور جديدة",
+      "eyebrowTemp": "تسجيل دخول مؤقت",
+      "mfaBanner": "تم إكمال التحقق متعدد العوامل. يمكنك الآن اختيار كلمة مرور جديدة.",
+      "passwordHint": "اختر كلمة مرور قوية.",
+      "passwordLabel": "كلمة مرور جديدة",
+      "passwordPlaceholder": "8 أحرف على الأقل",
+      "preparingSession": "جاري تحضير جلسة إعادة تعيين كلمة المرور...",
+      "requiredBanner": "للأمان يجب تغيير كلمة المرور عند تسجيل الدخول الأول.",
+      "submitButton": "تحديث كلمة المرور",
+      "title": "اختر كلمة مرور جديدة",
+      "titleRequired": "تعيين كلمة مرور جديدة"
+    },
+    "shell": {
+      "backHome": "العودة إلى الرئيسية",
+      "fallbackSpotlight": "RiskNova ليس مجرد لوحة تحكم — إنه بنية تحتية مهنية للسلامة والصحة المهنية توحد تحليل المخاطر والعمليات الميدانية وتدفقات المستندات وتنسيق الفريق في لغة منتج واحدة.",
+      "highlightCorpDesc": "تدفق مؤسسي يقوده التواصل للمنظمات متعددة المواقع ذات المتطلبات المخصصة.",
+      "highlightCorpTitle": "مؤسسة",
+      "highlightIndividualDesc": "تدفق بداية سريعة للمتخصصين المستقلين والأطباء ومقدمي الخدمات المباشرة والمهنيين المنفردين.",
+      "highlightIndividualTitle": "فردي",
+      "highlightOsgbDesc": "نموذج فريق يجمع الشركات العميلة والموظفين والمهام وتتبع العمل في لوحة واحدة.",
+      "highlightOsgbTitle": "OSGB",
+      "secureAccess": "وصول آمن"
+    },
+    "social": {
+      "divider": "أو المتابعة بالبريد الإلكتروني",
+      "googleContinue": "المتابعة إلى {brand} باستخدام Google",
+      "googleSignUp": "التسجيل في {brand} باستخدام Google",
+      "oauthGenericError": "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.",
+      "oauthRedirectHint": "تسجيل الدخول بـ Google يتطلب رابط إعادة التوجيه لـ Supabase: أضف https://getrisknova.com/auth/callback (وروابط بيئتك) تحت إعدادات رابط المصادقة.",
+      "supabaseError": "تعذر الاتصال بخدمات المصادقة."
+    }
+  },
+  "brand": {
+    "tagline": "منصة الصحة والسلامة المهنية المدعومة بالذكاء الاصطناعي"
+  },
+  "certificateVerify": {
+    "certNo": "رقم الشهادة",
+    "date": "التاريخ",
+    "duration": "المدة",
+    "expiredCertSubtitle": "انتهت فترة صلاحية هذه الشهادة.",
+    "expiredCertTitle": "شهادة منتهية الصلاحية",
+    "expiredSuffix": " (منتهية الصلاحية)",
+    "footer": "صادرة عن منصة RiskNova للصحة والسلامة المهنية.",
+    "fullName": "الاسم الكامل",
+    "institution": "المؤسسة",
+    "issuedAt": "صدرت في",
+    "loading": "جاري التحقق...",
+    "notFoundDesc": "لا توجد شهادة تطابق رمز التحقق هذا.",
+    "notFoundTitle": "الشهادة غير موجودة",
+    "score": "النتيجة",
+    "trainer": "المدرب",
+    "training": "التدريب",
+    "validUntil": "صالحة حتى",
+    "verifiedSubtitle": "تم التحقق من هذه الشهادة بواسطة RiskNova.",
+    "verifiedTitle": "شهادة محققة"
+  },
   "common": {
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "closeMenu": "إغلاق القائمة",
+    "copy": "نسخ",
+    "delete": "حذف",
+    "download": "تحميل",
+    "edit": "تحرير",
+    "emptyDescription": "لا توجد بيانات لعرضها في هذه الصفحة.",
+    "emptyTitle": "لا يوجد شيء هنا بعد",
+    "error": "حدث خطأ",
+    "freeStart": "ابدأ مجاناً",
+    "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "languagePickerAria": "اختيار اللغة",
+    "loading": "جاري التحميل...",
     "login": "تسجيل الدخول",
-    "register": "ابدأ الآن",
-    "freeStart": "ابدأ مجانًا",
+    "menu": "القائمة",
+    "noData": "لم يتم العثور على بيانات",
+    "openMenu": "فتح القائمة",
     "platformLogin": "تسجيل الدخول إلى المنصة",
-    "profile": "Profile",
-    "settings": "Settings",
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close",
-    "search": "Search",
-    "loading": "Loading...",
-    "noData": "No data found",
-    "error": "An error occurred",
-    "success": "Success",
-    "download": "Download",
-    "copy": "Copy",
-    "saved": "Saved",
-    "menu": "Menu",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "retry": "Try again",
-    "genericError": "Something went wrong. Please try again.",
-    "emptyTitle": "Nothing here yet",
-    "emptyDescription": "There is no data to display for this view."
+    "profile": "الملف الشخصي",
+    "register": "ابدأ الآن",
+    "retry": "حاول مرة أخرى",
+    "save": "حفظ",
+    "saved": "تم الحفظ",
+    "search": "بحث",
+    "settings": "الإعدادات",
+    "success": "نجح"
+  },
+  "companiesList": {
+    "actions": {
+      "newCompany": "شركة جديدة",
+      "sampleData": "بيانات تجريبية"
+    },
+    "archive": "أرشفة",
+    "badge": {
+      "archived": "مؤرشف",
+      "deleted": "محذوف"
+    },
+    "clearFilters": "مسح المرشحات",
+    "confirmArchive": {
+      "confirm": "تأكيد",
+      "hint": "ستخرج من القائمة النشطة.",
+      "title": "أرشفة \"{name}\"؟"
+    },
+    "confirmDelete": {
+      "confirm": "حذف",
+      "instruction": "اكتب هذه الكلمة للتأكيد:",
+      "title": "حذف \"{name}\"؟"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "اكتب DELETE",
+      "word": "DELETE"
+    },
+    "defaults": {
+      "companyName": "شركة / منظمة جديدة",
+      "kind": "القطاع الخاص",
+      "shortName": "سجل جديد"
+    },
+    "delete": "حذف",
+    "description": {
+      "multi": "إدارة الشركات التي تتولى مسؤوليتها والوصول إلى مواقع عملها.",
+      "single": "إدارة الموظفين والسجلات التشغيلية الأخرى لموقع العمل النشط."
+    },
+    "discard": "إلغاء",
+    "employeesSuffix": "موظفين",
+    "empty": {
+      "archiveBannerCompany": "الشركات المؤرشفة. يمكنك استعادتها.",
+      "archiveBannerWorksite": "سجلات مواقع العمل المؤرشفة. يمكنك استعادتها.",
+      "archiveEmptyCompany": "لا يوجد شيء في الأرشيف",
+      "archiveEmptyDescCompany": "لا توجد شركات مؤرشفة بعد.",
+      "archiveEmptyDescWorksite": "لا توجد مواقع عمل مؤرشفة بعد.",
+      "archiveEmptyWorksite": "لا يوجد شيء في الأرشيف",
+      "clearFilters": "مسح المرشحات",
+      "completeWorksite": "إكمال إعداد موقع العمل",
+      "deletedBannerCompany": "الشركات المحذوفة. لا يمكن التراجع عن الحذف النهائي.",
+      "deletedBannerWorksite": "سجلات مواقع العمل المحذوفة. لا يمكن التراجع عن الحذف النهائي.",
+      "deletedEmptyCompany": "لا توجد شركات محذوفة",
+      "deletedEmptyDescCompany": "لا توجد شركات محذوفة بعد.",
+      "deletedEmptyDescWorksite": "لا توجد مواقع عمل محذوفة بعد.",
+      "deletedEmptyWorksite": "لا توجد مواقع عمل محذوفة",
+      "initialDescCompany": "أنشئ شركتك الأولى للبدء.",
+      "initialDescWorksite": "تمتلئ هذه المنطقة ببيانات موقع العمل النشط. أكمل إعداد موقع العمل لرؤية الموظفين والسجلات الأخرى.",
+      "initialTitleCompany": "لا توجد شركات بعد",
+      "initialTitleWorksite": "لا يوجد سجل موقع عمل بعد",
+      "newCompany": "شركة جديدة",
+      "noMatchCompany": "لا توجد شركات مطابقة",
+      "noMatchDescription": "لا توجد سجلات تطابق المرشحات الخاصة بك.",
+      "noMatchWorksite": "لا توجد مواقع عمل مطابقة",
+      "sampleData": "بيانات تجريبية"
+    },
+    "entity": {
+      "companyPlural": "شركات",
+      "worksitePlural": "مواقع عمل"
+    },
+    "eyebrow": {
+      "multi": "شركاتي / منظماتي",
+      "osgb": "شركات OSGB",
+      "singleWorksite": "موقع العمل"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "الكل",
+      "hazardClass": "فئة المخاطر",
+      "kind": "النوع",
+      "search": "بحث",
+      "searchPlaceholder": "الاسم، القطاع، النوع، NACE...",
+      "sector": "القطاع",
+      "sort": "ترتيب"
+    },
+    "limitReachedBanner": "لقد وصلت إلى حد الشركة / مساحة العمل النشطة. قم بأرشفة شركة أو ترقية خطتك قبل إضافة أو استعادة واحدة.",
+    "links": {
+      "riskAnalysis": "تحليل المخاطر",
+      "workspace": "مساحة العمل"
+    },
+    "metrics": {
+      "actions": "الإجراءات",
+      "departments": "الأقسام",
+      "employees": "الموظفون",
+      "hazard": "المخاطر",
+      "locations": "المواقع",
+      "overdue": "متأخر"
+    },
+    "permanentDelete": "حذف نهائي",
+    "progress": {
+      "coverage": "التغطية",
+      "maturity": "النضج"
+    },
+    "restore": "استعادة",
+    "sort": {
+      "employees": "الموظفون",
+      "name": "حسب الاسم",
+      "overdue": "متأخر",
+      "risk": "المخاطر"
+    },
+    "stats": {
+      "avgMaturity": "متوسط النضج",
+      "criticalCompanies": "الشركات الحرجة",
+      "criticalWorksites": "مواقع العمل الحرجة",
+      "employees": "الموظفون",
+      "openActions": "الإجراءات المفتوحة",
+      "overdueTasks": "المهام المتأخرة",
+      "totalCompanies": "إجمالي الشركات",
+      "totalWorksites": "إجمالي مواقع العمل"
+    },
+    "storage": {
+      "local": "محلي",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "نشط",
+      "archived": "الأرشيف",
+      "deleted": "محذوف"
+    },
+    "title": {
+      "multi": "شركاتي / منظماتي",
+      "osgb": "الشركات ومواقع العمل",
+      "single": "موقع العمل والمحتوى التشغيلي"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} فتحات الشركات النشطة مستخدمة",
+      "activeOnly": "{count} شركات / مساحات عمل نشطة"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "مواقع العمل",
+    "docTitle": "{name} — مساحة العمل · RiskNova",
+    "docTitleFallback": "مساحة العمل · RiskNova",
+    "invite": "دعوة",
+    "logo": {
+      "fileTooLarge": "الملف كبير جداً ({sizeMb} ميجابايت). الحد الأقصى للحجم هو 5 ميجابايت.",
+      "imagesOnly": "يمكن رفع ملفات الصور فقط (PNG، JPEG، WebP، SVG).",
+      "updated": "تم تحديث الشعار/الصورة.",
+      "uploadFailed": "فشل الرفع. جرب ملفاً آخر.",
+      "uploadTitle": "رفع الشعار"
+    },
+    "notFound": {
+      "back": "العودة إلى الشركات",
+      "description": "لا توجد شركة تطابق هذا المعرف.",
+      "title": "الشركة غير موجودة"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "حفظ",
+    "saving": "جاري الحفظ...",
+    "sidebar": {
+      "hint": "اختر منطقة على اليسار؛ أدر المحتوى على اليمين.",
+      "title": "أقسام موقع العمل"
+    },
+    "stats": {
+      "departments": "الأقسام",
+      "employees": "الموظفون",
+      "locations": "المواقع",
+      "maturity": "النضج",
+      "openActions": "الإجراءات المفتوحة",
+      "overdue": "متأخر"
+    },
+    "tabs": {
+      "history": "السجل",
+      "ohs_file": "ملف السلامة والصحة المهنية",
+      "organization": "المؤسسة",
+      "people": "الفريق",
+      "personnel": "الموظفون",
+      "risk": "المخاطر والميدان",
+      "structure": "المباني",
+      "tracking": "التتبع"
+    }
+  },
+  "consent": {
+    "description": "يتم عرض نصوص الإفصاح النشطة و KVKK هنا. عند نشر إصدار جديد، يطالبك النظام بالموافقة مرة أخرى.",
+    "empty": "لا يوجد نص موافقة منشور.",
+    "lastStatus": "آخر حالة",
+    "loading": "جاري تحميل سجلات الموافقة...",
+    "mandatory": "مطلوب",
+    "mandatoryNo": "لا",
+    "mandatoryYes": "نعم",
+    "notGranted": "لم يتم المنح بعد",
+    "stats": "{active} موافقات نشطة - {pending} نصوص مطلوبة معلقة",
+    "statusApproved": "معتمد",
+    "statusOptional": "اختياري",
+    "statusPending": "نص مطلوب معلق",
+    "title": "الخصوصية والموافقات",
+    "types": {
+      "acik_riza": "الموافقة الصريحة",
+      "aydinlatma": "الإفصاح",
+      "kvkk": "KVKK",
+      "pazarlama": "التسويق",
+      "yurt_disi_aktarim": "النقل عبر الحدود"
+    }
+  },
+  "consentGate": {
+    "consentType": {
+      "acik_riza": "الموافقة الصريحة",
+      "aydinlatma": "إشعار الخصوصية",
+      "kvkk": "قانون حماية البيانات الشخصية",
+      "pazarlama": "التسويق",
+      "yurt_disi_aktarim": "النقل عبر الحدود"
+    },
+    "description": "الشروط الإلزامية/إشعارات قانون حماية البيانات الشخصية، إفصاحات الخصوصية ونصوص الموافقة الصريحة المطلوبة مدرجة هنا بأحدث إصداراتها المنشورة. موافقة التسويق اختيارية. عند تغيير النصوص الإلزامية، قد يطلب النظام منك الإقرار مرة أخرى.",
+    "errMustAcknowledge": "يجب عليك الإقرار بجميع النصوص المطلوبة للمتابعة.",
+    "errSaveFailed": "لا يمكن حفظ الموافقة. يرجى المحاولة مرة أخرى.",
+    "eyebrow": "قانون حماية البيانات والموافقات",
+    "mandatoryBadge": "مطلوب",
+    "progress": "{approved} من {total} نص تم الإقرار بها",
+    "readAcknowledge": "لقد قرأت وأوافق على هذا النص",
+    "saving": "جاري حفظ الموافقات...",
+    "signOutTemp": "تسجيل الخروج الآن",
+    "submit": "إكمال الموافقات",
+    "title": "أقر بالنصوص المطلوبة قبل المتابعة"
+  },
+  "country": {
+    "AE": "الإمارات العربية المتحدة",
+    "AZ": "أذربيجان",
+    "CN": "الصين",
+    "DE": "ألمانيا",
+    "ES": "إسبانيا",
+    "FR": "فرنسا",
+    "GB": "المملكة المتحدة",
+    "ID": "إندونيسيا",
+    "IN": "الهند",
+    "JP": "اليابان",
+    "KR": "كوريا الجنوبية",
+    "RU": "روسيا",
+    "SA": "المملكة العربية السعودية",
+    "TR": "تركيا",
+    "US": "الولايات المتحدة"
+  },
+  "dashboard": {
+    "badgeCommandCenter": "مركز التحكم",
+    "badgeLiveOps": "العمليات المباشرة",
+    "badgeRemoteSync": "مزامنة Supabase عن بُعد",
+    "companiesTotal": "{count} شركات",
+    "companyManageCta": "إدارة الشركات",
+    "companySummaryCountLabel": "الشركات المسجلة",
+    "companySummaryTitle": "لمحة عن الشركة",
+    "docStatusDraft": "مسودة",
+    "docStatusPending": "الموافقة",
+    "docStatusReady": "جاهز",
+    "docStatusRevision": "مراجعة",
+    "fallbackUserName": "المستخدم",
+    "goToPlans": "عرض الخطط",
+    "greetingAfternoon": "مساء الخير",
+    "greetingEvening": "مساء الخير",
+    "greetingMorning": "صباح الخير",
+    "heroIntro": "راقب عملية السلامة والصحة المهنية بالكامل على شاشة واحدة: المخاطر، مخرجات المكتبة، الحوادث، المهام ومتابعة الشركات — مجمعة في عرض قيادة أوضح.",
+    "moduleAssessment": "الامتحانات والاستطلاعات",
+    "moduleAssessmentDesc": "تدفقات القياس بمساعدة الذكاء الاصطناعي",
+    "moduleEmergency": "الطوارئ",
+    "moduleEmergencyDesc": "الخطط والتدريبات",
+    "moduleLegal": "التشريعات",
+    "moduleLegalDesc": "مكتبة التشريعات والإرشادات",
+    "moduleLibrary": "مكتبة السلامة والصحة المهنية",
+    "moduleLibraryDesc": "الوثائق والقوالب",
+    "moduleRisk": "تحليل المخاطر",
+    "moduleRiskDesc": "{count} تقييمات",
+    "modulesSubtitle": "المناطق التشغيلية النشطة على المنصة.",
+    "modulesTitle": "وحدات السلامة والصحة المهنية",
+    "moduleTraining": "التدريب",
+    "moduleTrainingDesc": "التتبع والسجلات",
+    "operationCalm": "عمليات مستقرة",
+    "operationControlled": "تحت السيطرة",
+    "operationHeavy": "متابعة مكثفة",
+    "planDefaultBody": "إذا كنت بحاجة إلى مساحات عمل أو وحدات إضافية، راجع الخطط؛ يمكن إجراء الترقيات بالخدمة الذاتية.",
+    "planDefaultTitle": "الخطط والسعة",
+    "planDemoBody": "اختر الخطة المناسبة للانتقال إلى الاستخدام الإنتاجي؛ يتم إدارة المدفوعات والفوترة في صفحة الخطط.",
+    "planDemoEyebrow": "تجريبي · ترقية",
+    "planDemoTitle": "أنت على حساب تجريبي",
+    "planSelfServeEyebrow": "ترقية بالخدمة الذاتية",
+    "priorityHighRisk": "مخاطر عالية",
+    "priorityIncidents": "الحوادث",
+    "priorityOpenTasks": "المهام المفتوحة",
+    "quickCompanies": "الشركات",
+    "quickEducation": "التدريب",
+    "quickFieldAudit": "تدقيق ميداني",
+    "quickFlowsBadge": "المنصة",
+    "quickFlowsSubtitle": "انتقل إلى الوحدات الأكثر استخداماً بنقرة واحدة.",
+    "quickFlowsTitle": "سير العمل السريع",
+    "quickIncident": "الإبلاغ عن حادث",
+    "quickLibrary": "مكتبة السلامة والصحة المهنية",
+    "quickPlanner": "المخطط",
+    "quickReports": "التقارير",
+    "quickRisk": "تحليل المخاطر",
+    "recentDocsCta": "فتح المكتبة",
+    "recentDocsEmpty": "لا توجد مخرجات مكتبة بعد. ابدأ من قالب في مكتبة OHS.",
+    "recentDocsSubtitle": "الوثائق المحررة مؤخراً من تدفق مكتبة OHS ملخصة هنا.",
+    "recentDocsTitle": "أحدث مخرجات المكتبة",
+    "sessionLoadingHint": "نحن نتحقق من جلستك. قد يستغرق هذا بضع ثوانٍ؛ إذا لم يحدث شيء، يرجى تسجيل الدخول مرة أخرى.",
+    "sessionLoadingTitle": "تحميل الجلسة...",
+    "signalCompanies": "تغطية الشركة",
+    "signalOperation": "حالة التشغيل",
+    "signalWorkload": "الحمولة ذات الأولوية",
+    "statIncidents": "الحوادث",
+    "statIncidentsSub": "إجمالي السجلات",
+    "statLibExam": "فحوصات المكتبة",
+    "statLibExamSub": "الفحوصات المستوردة",
+    "statLibraryDocs": "وثائق المكتبة",
+    "statLibraryDocsSub": "{ready} جاهز · {draft} مسودات",
+    "statLibSurvey": "تدريب المكتبة",
+    "statLibSurveySub": "الاستطلاعات / التدريب المستورد",
+    "statLive": "مباشر",
+    "statRisk": "تحليل المخاطر",
+    "statRiskSubHigh": "{count} مخاطر عالية",
+    "statRiskSubNone": "لا توجد مخاطر عالية",
+    "statTasks": "المهام المفتوحة",
+    "statTasksSub": "في انتظار المتابعة",
+    "todayCardTitle": "اليوم",
+    "todayFocusEyebrow": "تركيز اليوم",
+    "todayFocusTitle": "العناصر الحرجة أولاً",
+    "todayTasksDone": "تم إنجاز جميع المهام",
+    "todayTasksPending": "{count} مهام مفتوحة في الانتظار",
+    "trackChipActions": "{count} إجراءات",
+    "trackChipControls": "فحص {count}",
+    "trackChipTraining": "تدريب {count}",
+    "trackCommitteeLabel": "لجنة معلقة",
+    "trackCommitteeSub": "اجتماعات لجنة السلامة والصحة المهنية المخططة",
+    "trackCompaniesCta": "الشركات",
+    "trackEmpty": "لم يتم تعريف شركات بعد. ستظهر مقاييس التتبع هنا بمجرد إضافة الشركات.",
+    "trackExpiringTrainingLabel": "التدريب القادم",
+    "trackExpiringTrainingSub": "خلال 30 يوماً",
+    "trackHealthExamLabel": "الفحص الطبي القادم",
+    "trackHealthExamSub": "المراقبة الصحية خلال 30 يوماً",
+    "trackOpenActionLabel": "الإجراءات المفتوحة",
+    "trackOpenActionSub": "نتائج المخاطر + CAPA + المهام",
+    "trackOverdueControlLabel": "فحص متأخر",
+    "trackOverdueControlSub": "انتهت فترة الفحص الدوري",
+    "trackPriorityCompanies": "شركات تنتظر الأولوية",
+    "trackSubtitle": "ملخص عبر جميع الشركات. {companyCount} شركة مراقبة، {totalActionable} إجراء ينتظر المتابعة.",
+    "trackTitle": "ملخص التتبع",
+    "workloadFollowups": "{count} عنصر"
+  },
+  "dataRights": {
+    "adminNotes": "ملاحظة المدير",
+    "deletionActive": "يوجد طلب حذف نشط",
+    "deletionConfirm": "سيبدأ هذا عملية حذف لمدة 30 يوماً لحسابك. هل تريد المتابعة؟",
+    "deletionDescription": "عند إنشاء طلب، يدخل حسابك والبيانات الشخصية ذات الصلة في عملية الحذف. يكتمل الحذف النهائي بعد 30 يوماً وفقاً لسياسة الاحتفاظ.",
+    "deletionEmpty": "لا يوجد طلب حذف بعد.",
+    "deletionExists": "لديك بالفعل طلب حذف نشط.",
+    "deletionFailed": "تعذر إنشاء طلب الحذف.",
+    "deletionLoading": "جاري تحميل طلبات الحذف...",
+    "deletionReasonPlaceholder": "وصف أو سبب اختياري",
+    "deletionReceived": "تم استلام طلب الحذف الخاص بك. الحذف النهائي المجدول: {date}.",
+    "deletionSubmit": "إنشاء طلب حذف",
+    "deletionTitle": "حذف بياناتي",
+    "deletionWarning": "يمكن إلغاء طلب الحذف إدارياً قبل أن تصبح العملية غير قابلة للإلغاء.",
+    "description": "قم بتنزيل بياناتك الشخصية، وإنشاء طلب حذف، وتتبع حالة عمليات KVKK الحالية.",
+    "download": "تنزيل",
+    "errorMsg": "خطأ",
+    "exportCsvDesc": "التقارير الجدولية والنقل الخارجي",
+    "exportCsvTitle": "تصدير CSV",
+    "exportDescription": "يمكن تنزيل الملف الشخصي وسجلات الموافقة وأحداث الأمان وتاريخ حقوق البيانات بصيغة JSON أو CSV.",
+    "exportDownloadCount": "عدد التنزيلات",
+    "exportFailed": "تعذر إنشاء التصدير.",
+    "exportHistoryEmpty": "لم يتم إنشاء سجل تصدير بيانات بعد.",
+    "exportHistoryLoading": "جاري تحميل تاريخ التصدير...",
+    "exportJsonDesc": "حزمة منظمة لجميع بياناتك",
+    "exportJsonTitle": "تصدير JSON",
+    "exportReady": "تصدير {format} جاهز وتم تنزيله.",
+    "exportTitle": "تنزيل بياناتي",
+    "requestDate": "تاريخ الطلب",
+    "scheduledPurge": "حذف دائم مجدول",
+    "scope": {
+      "admin": "مدير",
+      "self": "طلب شخصي"
+    },
+    "statActive": "عملية نشطة",
+    "statActiveNo": "لا",
+    "statActiveYes": "نعم",
+    "statDeletion": "طلب حذف",
+    "statExport": "تصدير",
+    "status": {
+      "cancelled": "ملغي",
+      "completed": "مكتمل",
+      "expired": "منتهية الصلاحية",
+      "failed": "فشل",
+      "processing": "قيد المعالجة",
+      "rejected": "مرفوض",
+      "scheduled": "مجدول"
+    },
+    "title": "حقوق البيانات"
+  },
+  "demoRequest": {
+    "accountTypeEnterprise": "مؤسسة / شركة",
+    "accountTypeIndividual": "فردي (خبير واحد)",
+    "accountTypeLabel": "نوع الحساب",
+    "accountTypeOsgb": "OSGB",
+    "accountTypeUnset": "غير متأكد / قيد الاتخاذ",
+    "cancel": "إلغاء",
+    "closeAria": "إغلاق",
+    "dialogSubtitle": "سنخطط لعرض توضيحي قصير مصمم خصيصاً لاحتياجاتك.",
+    "dialogTitle": "طلب عرض توضيحي",
+    "fieldCompany": "الشركة / المؤسسة",
+    "fieldEmail": "البريد الإلكتروني *",
+    "fieldName": "الاسم الكامل *",
+    "fieldPhone": "الهاتف",
+    "messageLabel": "رسالة (اختيارية)",
+    "messagePlaceholder": "ما هي الوحدات التي تهمك؟ عدد الموظفين؟ أوقات الاتصال المفضلة؟",
+    "placeholderCompany": "شركة أكمي المحدودة",
+    "placeholderEmail": "you@company.com",
+    "placeholderName": "جين دو",
+    "placeholderPhone": "+44 …",
+    "privacyError": "يرجى تأكيد إشعار الخصوصية للمتابعة.",
+    "privacyLabel": "إشعار الخصوصية:",
+    "privacyText": "أوافق على معالجة بيانات الاتصال الخاصة بي فقط للرد على هذا الطلب.",
+    "submit": "إرسال الطلب",
+    "submitError": "لم نتمكن من إرسال طلبك. يرجى المحاولة مرة أخرى.",
+    "submitting": "جاري الإرسال...",
+    "successBody": "سيتواصل معك فريقنا قريباً. شكراً لاهتمامك.",
+    "successClose": "إغلاق",
+    "successTitle": "تم استلام الطلب"
+  },
+  "header": {
+    "authLoading": "جاري التحقق من الجلسة الآمنة...",
+    "lockedModuleTooltip": "أنشئ مساحة عمل أولاً لاستخدام هذه الوحدة.",
+    "markAllRead": "تحديد الكل كمقروء",
+    "noNotificationsYet": "لا توجد إشعارات بعد",
+    "notificationsAria": "الإشعارات",
+    "notificationsTitle": "الإشعارات",
+    "platformAdminShort": "المدير",
+    "seeAllNotifications": "عرض الكل",
+    "signingOut": "جاري تسجيل الخروج...",
+    "signOut": "تسجيل الخروج",
+    "themeDarkAria": "المظهر الداكن",
+    "themeLightAria": "المظهر الفاتح",
+    "workspaceLoading": "جاري تحضير مساحة العمل..."
+  },
+  "landing": {
+    "badge": "منصة السلامة المهنية المدعومة بالذكاء الاصطناعي",
+    "bottomCtaDescription": "إدارة جميع عمليات السلامة في مكان العمل من تحليل المخاطر إلى التقارير على منصة واحدة مع RiskNova.",
+    "bottomCtaLine1": "حوّل",
+    "bottomCtaLine2": "عمليات السلامة المهنية",
+    "ctaDemo": "طلب عرض توضيحي",
+    "ctaDescription": "إدارة عمليات السلامة المهنية على منصة واحدة بمظهر احترافي وبنية تحتية قوية ودعم الذكاء الاصطناعي.",
+    "ctaEyebrow": "منطقة الدعوة للعمل الجاهزة",
+    "ctaTitle": "حوّل وحدة المخاطر إلى عرض للمنتج",
+    "enterpriseCtaShort": "المؤسسات: عرض أسعار وتواصل",
+    "feat1Desc": "أساس منتج يجمع مدخلات المخاطر اليدوية أو القائمة على الوحدات في تدفق واحد ويجعل النتائج أكثر وضوحاً.",
+    "feat1Title": "تحليل المخاطر المدعوم بالذكاء الاصطناعي",
+    "feat2Desc": "يجمع بين مناطق التدقيق والنتائج والمهام والتتبع بترتيب يمكن لفريق العمليات قراءته.",
+    "feat2Title": "نتائج الميدان وإدارة الإجراءات",
+    "feat3Desc": "يوفر هيكل شاشة متسق حيث يمكن ربط النتائج المُولدة بالتاريخ والتفاصيل وعمليات الإخراج.",
+    "feat3Title": "بنية التقارير والتسجيل",
+    "feat4Desc": "يُعد أساساً مهنياً وموثوقاً لمناطق مثل شاشة تحليل المخاطر وشاشة النتائج وتاريخ النقاط.",
+    "feat4Title": "عرض المنتج لوحدة المخاطر",
+    "feat5Desc": "يحافظ على سهولة القراءة عبر الأجهزة المختلفة مع تخطيطات العمود الواحد والعمودين والشاشة العريضة.",
+    "feat5Title": "متجاوب للجوال والجهاز اللوحي وسطح المكتب",
+    "feat6Desc": "ينشئ إحساساً مهنياً بـ SaaS مع أسطح نظيفة وتباين محكوم وهيكل CTA واضح.",
+    "feat6Title": "لغة بصرية مؤسسية وعصرية",
+    "featuresDescription": "أدوات مهنية تدير عمليات السلامة والصحة المهنية من البداية إلى النهاية.",
+    "featuresEyebrow": "الميزات",
+    "featuresTitle1": "شامل",
+    "featuresTitle2": "الحلول",
+    "footerBlurb": "منصة تحليل مخاطر السلامة والصحة المهنية والعمليات المدعومة بالذكاء الاصطناعي — مهنية وموثوقة وعصرية.",
+    "footerCompany": "الشركة",
+    "footerContact": "اتصل بنا",
+    "footerCookie": "سياسة ملفات تعريف الارتباط",
+    "footerDescription": "منصة دعم قرارات السلامة والصحة المهنية المدعومة بالذكاء الاصطناعي",
+    "footerHelp": "المساعدة",
+    "footerHome": "الرئيسية",
+    "footerLegal": "قانوني",
+    "footerPrivacy": "سياسة الخصوصية",
+    "footerProduct": "المنتج",
+    "footerRefund": "سياسة الاسترداد",
+    "footerRights": "جميع الحقوق محفوظة.",
+    "footerSupport": "الدعم",
+    "footerTerms": "شروط الاستخدام",
+    "heroDescription": "RiskNova هي منصة السلامة والصحة المهنية مدعومة بالذكاء الاصطناعي مصممة لتوحيد عمليات تحليل المخاطر والتتبع الميداني والتسجيل والتقارير ودعم القرار في تجربة منتج واحدة.",
+    "heroSubtitle": "من القياس إلى نتائج التدقيق وتتبع الإجراءات والتقارير والأرشيف — وحد العمليات تحت سقف واحد. يتوسع من الأفراد إلى OSGBs والمؤسسات متعددة المواقع.",
+    "heroTitle1": "حول إدارة مخاطر",
+    "heroTitle2": "السلامة والصحة المهنية",
+    "heroTitle3": "إلى فن",
+    "heroTitleHighlight": "من منصة واحدة",
+    "heroTitlePrefix": "إدارة سلامة مكان العمل",
+    "heroTitleSuffix": "",
+    "howDescription": "خطوات بسيطة للبدء مع منصتنا.",
+    "howEyebrow": "كيف يعمل",
+    "howTitle1": "التحكم في",
+    "howTitle2": "أربع خطوات",
+    "metaDescription": "برنامج سلامة مكان العمل مدعوم بالذكاص الاصطناعي: تحليل المخاطر والتدقيق الميداني والنتائج وCAPAوالتقارير في منصة واحدة — للأفراد وOSGBوالمؤسسات.",
+    "metaOgDescription": "من القياس إلى التدقيق والإجراءات والتقارير — تشغيل عمليات السلامة في مكان واحد.",
+    "metaOgTitle": "RiskNova — إدارة السلامة والصحة المهنية من منصة واحدة",
+    "metaTitle": "إدارة السلامة والصحة المهنية من منصة واحدة | RiskNova",
+    "osgbCtaShort": "OSGB: عرض أسعار وتواصل",
+    "solutionsLeadBold": "هل أنت OSGB أو مؤسسة متعددة المواقع؟",
+    "solutionsLeadRest": "راجع الخطط، اترك عميل محتمل عبر عرض الأسعار أو التسجيل — فريقنا سيتابع معك.",
+    "solutionsSectionAria": "عروض OSGB والمؤسسات",
+    "statsAnalysis": "وقت التحليل",
+    "statsScoring": "تسجيل المخاطر",
+    "statsUptime": "وقت التشغيل",
+    "statsUsers": "المستخدمون النشطون",
+    "statsValueAnalysis": "15ث",
+    "statsValueScore": "R-SCORE",
+    "statsValueUptime": "99.5%",
+    "statsValueUsers": "500+",
+    "step1Desc": "سجل الدخول بأمان إلى المنصة باستخدام حساب مؤسستك المخصص.",
+    "step1Title": "الوصول الآمن",
+    "step2Desc": "انقل عمليات التدقيق الميداني وتقارير المخاطر ومعايير المخاطر إلى النظام.",
+    "step2Title": "إدخال بيانات المخاطر",
+    "step3Desc": "محرك التحليل المدعوم بالذكاء الاصطناعي يعالج بياناتك لحساب درجات المخاطر.",
+    "step3Title": "توليد R-SCORE",
+    "step4Desc": "أنشئ خطط العمل بناءً على النتائج، وتتبع وأعد التقارير.",
+    "step4Title": "الإجراء والمتابعة",
+    "subscriptionDisclaimer": "تقدم RiskNova برامج الصحة والسلامة المهنية القائمة على الاشتراك.",
+    "testimonial1Author": "محمد ك.",
+    "testimonial1Quote": "أصبحت عمليات التدقيق الميداني أكثر منهجية مع RiskNova. التعليقات المدعومة بالذكاء الاصطناعي مفيدة حقاً.",
+    "testimonial1Role": "أخصائي الصحة والسلامة المهنية",
+    "testimonial2Author": "عائشة ت.",
+    "testimonial2Quote": "وجود تحليل المخاطر والتقارير والتتبع في منصة واحدة حسّن من كفاءتنا التشغيلية.",
+    "testimonial2Role": "مدير الصحة والسلامة المهنية",
+    "testimonial3Author": "جان د.",
+    "testimonial3Quote": "المظهر المؤسسي وسهولة الاستخدام جعل الفريق يتبناه بسرعة كبيرة.",
+    "testimonial3Role": "مدير العمليات",
+    "testimonialsEyebrow": "الشهادات",
+    "testimonialsTitle1": "ما يقوله",
+    "testimonialsTitle2": "مستخدمونا",
+    "valueTryDesc": "النماذج والنتائج وتاريخ النقاط والمخرجات تستخدم شاشات متسقة — فريقك يستمر في العمل دون عوائق.",
+    "valueTryEyebrow": "جربه الآن",
+    "valueTryLogin": "تسجيل الدخول",
+    "valueTryRegister": "إنشاء حساب",
+    "valueTryTitle": "المخاطر والتدقيق والتقارير في تجربة منتج واحدة",
+    "whyBullet1": "مظهر السلامة والصحة المهنية النظيف والحديث والموثوق",
+    "whyBullet2": "تخطيط شاشة مركز على العمليات وخالٍ من المشتتات",
+    "whyBullet3": "نظام تصميم جاهز لوحدة ذكاء المخاطر",
+    "whyBullet4": "هيكل آمن متعدد المستأجرين قائم على المؤسسة",
+    "whyBullet5": "آلية دعم القرار المدعومة بالذكاء الاصطناعي",
+    "whyBullet6": "بنية تحتية للتقارير المؤسسية والأرشفة",
+    "whyDescription": "ينشئ تجربة SaaS احترافية مع التركيز على الثقة الزرقاء والجودة الذهبية، والأسطح النظيفة والتباين الناعم.",
+    "whyEyebrow": "لماذا RiskNova",
+    "whyTitle1": "موثوق",
+    "whyTitle2": "مميز",
+    "whyTitle3": "التجربة"
+  },
+  "lang": {
+    "ar": "العربية",
+    "az": "Azərbaycanca",
+    "de": "Deutsch",
+    "en": "English",
+    "es": "Español",
+    "fr": "Français",
+    "hi": "हिन्दी",
+    "id": "Bahasa Indonesia",
+    "ja": "日本語",
+    "ko": "한국어",
+    "ru": "Русский",
+    "tr": "Türkçe",
+    "zh": "中文"
+  },
+  "legal": {
+    "cookiePolicy": {
+      "eyebrow": "سياسة ملفات تعريف الارتباط",
+      "lastUpdated": "آخر تحديث: 2 مايو 2026",
+      "metaDescription": "كيف تستخدم RiskNova ملفات تعريف الارتباط الأساسية للجلسة والأمان والتفضيلات والتقنيات المماثلة.",
+      "metaTitle": "سياسة ملفات تعريف الارتباط",
+      "ogDescription": "ملفات تعريف الارتباط الأساسية لتسجيل الدخول والأمان والتفضيلات؛ ملفات تعريف الارتباط التحليلية والتسويقية ليست جزءًا من التدفق الأساسي اليوم.",
+      "ogTitle": "سياسة ملفات تعريف الارتباط | RiskNova",
+      "sections": [
+        {
+          "content": "ملفات تعريف الارتباط وتقنيات التخزين المحلي المماثلة هي سجلات تقنية صغيرة تساعد تطبيق الويب على تذكر الجلسة والأمان وتفضيل اللغة ووظائف المنتج.",
+          "title": "ما هي ملفات تعريف الارتباط؟"
+        },
+        {
+          "content": "تستخدم RiskNova ملفات تعريف الارتباط الأساسية للحفاظ على جلستك، وتدفق مصادقة Supabase، وإعادة توجيه OAuth، وإعادة تعيين كلمة المرور، والفحوصات الأمنية، واتساق CSRF/التدفق وتفضيل اللغة. إذا تم تعطيل هذه الملفات، فقد لا تعمل ميزات المنصة الأساسية.",
+          "title": "ملفات تعريف الارتباط الأساسية"
+        },
+        {
+          "content": "قد يتم تخزين اللغة والمنطقة وتفضيل واجهة المستخدم وآخر مساحة عمل محددة أو إعدادات المنتج المماثلة في ملفات تعريف الارتباط أو localStorage للحفاظ على تجربة متسقة.",
+          "title": "ملفات تعريف الارتباط للتفضيلات والمنتج"
+        },
+        {
+          "content": "لا تعتمد هذه النسخة على ملفات تعريف الارتباط التحليلية أو التسويقية من طرف ثالث كجزء من التدفقات الإلزامية. إذا تم إدخال ملفات تعريف الارتباط التحليلية أو التسويقية لاحقًا، فسيتلقى المستخدمون إشعارًا منفصلاً وضوابط الموافقة حيثما كان ذلك مطلوبًا.",
+          "title": "ملفات تعريف الارتباط التحليلية والتسويقية"
+        },
+        {
+          "content": "يمكنك حذف أو حظر ملفات تعريف الارتباط من إعدادات المتصفح. قد يؤدي حظر ملفات تعريف الارتباط الأساسية للجلسة أو الأمان أو اللغة إلى كسر تسجيل الدخول أو التسجيل أو الفوترة أو سير العمل داخل التطبيق.",
+          "title": "إدارة ملفات تعريف الارتباط"
+        },
+        {
+          "content": "للأسئلة حول ملفات تعريف الارتباط أو إعدادات الخصوصية، راسل support@getrisknova.com.",
+          "title": "اتصل بنا"
+        }
+      ],
+      "title": "سياسة ملفات تعريف الارتباط RiskNova"
+    },
+    "privacy": {
+      "eyebrow": "سياسة الخصوصية",
+      "lastUpdated": "آخر تحديث: 2 مايو 2026",
+      "metaDescription": "سياسة خصوصية RiskNova: كيف نعالج البيانات الشخصية عبر الحسابات واستخدام المنتج والفوترة والبريد الإلكتروني والأمان والميزات المدعومة بالذكاء الاصطناعي.",
+      "metaTitle": "سياسة الخصوصية",
+      "ogDescription": "كيف تعالج RiskNova البيانات الشخصية، وأي معالجات نستخدمها وكيف ندعم حقوق المستخدم.",
+      "ogTitle": "سياسة الخصوصية | RiskNova",
+      "sections": [
+        {
+          "content": "تصف هذه السياسة كيفية معالجة البيانات الشخصية عبر موقع RiskNova والتسجيل وتسجيل الدخول والاشتراك ووحدات OHS وإنشاء المستندات وعمليات التفتيش الميداني والتدريب/الامتحانات/الاستطلاعات و Nova AI والدعم. بالنسبة لسجلات مكان العمل والموظفين التي يرفعها العميل إلى المنصة، تعمل RiskNova عمومًا كمعالج؛ وبالنسبة لحسابها الخاص وعمليات الأمان والفوترة والدعم تعمل كمتحكم.",
+          "title": "متحكم البيانات والنطاق"
+        },
+        {
+          "content": "قد تتم معالجة الاسم واللقب والبريد الإلكتروني والهاتف ومعرف الحساب وتفاصيل المنظمة ومساحة العمل وسجلات الأدوار والأذونات وسجلات الجلسة والأمان ومقاييس الاستخدام وتذاكر الدعم وحالة الاشتراك والدفع وبيانات IP والجهاز. إذا قام المستخدمون برفعها، فقد يتم أيضًا تخزين تحليلات المخاطر والتفتيشات وسجلات الحوادث والتدريب والامتحانات والاستطلاعات والمستندات وسجلات الموظفين وملفات الوسائط أو البيانات على المنصة.",
+          "title": "فئات البيانات الشخصية"
+        },
+        {
+          "content": "تتم معالجة البيانات لتنفيذ العقد وتقديم ميزات المنصة وتشغيل عمليات السلامة المهنية ومصادقة المستخدمين ومنع إساءة الاستخدام وفوترة ودعم العملاء والوفاء بالالتزامات القانونية وتحسين المنتج واحترام خيارات المستخدم. حيث تكون الموافقة الصريحة مطلوبة، يتم عرض نص موافقة منفصل؛ قد تعتمد بيانات الخدمة الأساسية على العقد أو الالتزام القانوني أو المصلحة المشروعة بدلاً من الموافقة.",
+          "title": "الأغراض والأسس القانونية"
+        },
+        {
+          "content": "قد يعالج Nova AI مدخلات المستخدم والسياق ذي الصلة عند إنتاج تحليلات المخاطر أو مسودات المستندات أو محتوى التدريب أو الإجابات الواعية بالتشريع. المخرجات هي لدعم القرار فقط؛ يبقى الحكم المهني والقانوني النهائي مع المستخدم. حيث قد يتضمن المحتوى بيانات حساسة أو فئة خاصة، قد تكون الموافقة الصريحة و/أو تدفقات الإفصاح الإضافية مطلوبة قبل إرسالها إلى خدمات الذكاء الاصطناعي.",
+          "title": "الميزات المدعومة بالذكاء الاصطناعي"
+        },
+        {
+          "content": "قد تستخدم خدمات الاستضافة وقواعد البيانات والمصادقة والبريد الإلكتروني والدفع ومراقبة الأخطاء وميزات الذكاء الاصطناعي موفرين مثل Supabase وVercel وResend وPaddle وOpenAI وAnthropic وموردين مماثلين. يقومون بمعالجة البيانات فقط حسب الحاجة لتقديم الخدمة. لا يتم تخزين بيانات البطاقات بواسطة RiskNova؛ تعمل المدفوعات والفوترة على بنية Paddle التحتية.",
+          "title": "معالجات الطرف الثالث"
+        },
+        {
+          "content": "قد تعمل خدمات الاستضافة السحابية والبريد الإلكتروني والدفع والذكاء الاصطناعي تقنياً على بنية تحتية موجودة في الخارج، لذا قد يتم نقل بعض البيانات إلى موفرين خارج بلدك حيث تتطلب الخدمة ذلك. حيث تنطبق عمليات النقل، يتم إدارة خطوات الإفصاح والموافقة بموجب القانون المعمول به (بما في ذلك KVKK حيث ذات صلة) في المنتج.",
+          "title": "النقل الدولي"
+        },
+        {
+          "content": "يستخدم RiskNova ملفات تعريف الارتباط الأساسية للجلسة والأمان وتفضيل اللغة والمنتج. إذا تم تقديم ملفات تعريف ارتباط تسويقية أو تتبع طرف ثالث، سيتم توفير سياسة ملفات تعريف ارتباط منفصلة وآلية موافقة حسب الحاجة. التفاصيل موجودة في صفحة /cookie-policy.",
+          "title": "ملفات تعريف الارتباط والتقنيات المماثلة"
+        },
+        {
+          "content": "يتم الاحتفاظ بالبيانات طالما كان ذلك مطلوباً لتشغيل الخدمة، وتلبية المتطلبات التعاقدية والأمنية والقانونية والإثباتية. تستخدم المنصة تدابير تقنية مثل RLS وفحوصات الأدوار وفصل أدوار الخدمة والتحقق من توقيع webhook وتحديد المعدل ومسارات التدقيق وتسجيل الأحداث الأمنية.",
+          "title": "الاحتفاظ والأمان"
+        },
+        {
+          "content": "بموجب قانون حماية البيانات المعمول به (بما في ذلك المادة 11 من KVKK حيث تنطبق)، يمكنك طلب الوصول والتصحيح والمحو والاعتراض والتقييد وقابلية النقل والمعلومات عبر منطقة الخصوصية / حقوق البيانات في ملفك الشخصي أو على support@getrisknova.com. يتم موازنة طلبات المحو مقابل متطلبات الاحتفاظ القانونية وتسجيل الأمان.",
+          "title": "حقوقك"
+        },
+        {
+          "content": "قد يتغير هذا النص مع مرور الوقت. قد تتطلب التحديثات المادية إقراراً أو إشعاراً متجدداً في المنتج. لطلبات الخصوصية وحماية البيانات، اتصل بـ support@getrisknova.com.",
+          "title": "الاتصال والتحديثات"
+        }
+      ],
+      "title": "سياسة خصوصية RiskNova"
+    },
+    "privacySummary": {
+      "eyebrow": "سياسة الخصوصية",
+      "lastUpdated": "آخر تحديث: 2 مايو 2026",
+      "metaDescription": "ملخص لكيفية جمع RiskNova واستخدام البيانات الشخصية.",
+      "metaTitle": "سياسة الخصوصية",
+      "ogDescription": "ملخص خصوصية مختصر يغطي الحساب واستخدام المنتج والمعالجات الفرعية.",
+      "ogTitle": "سياسة الخصوصية | RiskNova",
+      "title": "سياسة خصوصية RiskNova"
+    },
+    "refund": {
+      "eyebrow": "سياسة الاسترداد",
+      "lastUpdated": "آخر تحديث: 2 مايو 2026",
+      "metaDescription": "كيف يتعامل RiskNova مع استردادات الاشتراك والتجديدات وقواعد فوترة Paddle.",
+      "metaTitle": "سياسة الاسترداد",
+      "ogDescription": "نافذة الاسترداد والتجديدات وتصحيحات الفوترة.",
+      "ogTitle": "سياسة الاسترداد | RiskNova",
+      "title": "سياسة استرداد RiskNova"
+    },
+    "terms": {
+      "eyebrow": "شروط الاستخدام",
+      "lastUpdated": "آخر تحديث: 2 مايو 2026",
+      "metaDescription": "شروط استخدام RiskNova التي تغطي الحسابات والاشتراك والفوترة والاستخدام المقبول ومخرجات الذكاء الاصطناعي ومسؤوليات بيانات العملاء.",
+      "metaTitle": "شروط الاستخدام",
+      "ogDescription": "شروط منصة RiskNova SaaS: الاشتراك وأمان الحساب ومخرجات الذكاء الاصطناعي والاستخدام المقبول.",
+      "ogTitle": "شروط الاستخدام | RiskNova",
+      "sections": [
+        {
+          "content": "RiskNova هي منصة اشتراك SaaS لمتخصصي الصحة والسلامة المهنية وOSGBs والمؤسسات، تقدم تحليل المخاطر والتفتيش الميداني وإنشاء الوثائق والتدريب/الامتحانات/الاستطلاعات والتقارير والبحث المدرك للتشريعات وميزات دعم القرار Nova AI.",
+          "title": "نطاق الخدمة"
+        },
+        {
+          "content": "المستخدمون مسؤولون عن دقة تفاصيل الحساب وقوة كلمة المرور والإجراءات المتخذة تحت حسابهم. يجب على مديري المؤسسة تكوين المستخدمين والأدوار ومساحات العمل وتفويضات الشركة بشكل صحيح. يجب الإبلاغ عن الوصول غير المصرح به المشتبه فيه إلى RiskNova دون تأخير.",
+          "title": "الحساب والأدوار والأمان"
+        },
+        {
+          "content": "يجوز استخدام المنصة فقط لأغراض قانونية ومهنية ومتعلقة بسلامة مكان العمل. يُحظر محاولة الوصول غير المصرح به أو الهندسة العكسية أو تعطيل الخدمة أو تحميل محتوى ضار أو انتهاك حقوق الطرف الثالث أو تجاوز الحصص أو معالجة البيانات بشكل غير قانوني.",
+          "title": "الاستخدام المقبول"
+        },
+        {
+          "content": "تحليلات المخاطر وسجلات التفتيش والوثائق وبيانات الموظفين ومحتوى التدريب/الامتحان/الاستطلاع والملفات المحملة هي محتوى العميل. يجب على المستخدمين التأكد من أن البيانات المحملة على المنصة قانونية وضرورية ومقتصرة على الأشخاص المخولين.",
+          "title": "مسؤولية بيانات ومحتوى العميل"
+        },
+        {
+          "content": "Nova AI وميزات الذكاء الاصطناعي الأخرى تقدم دعم القرار والمسودات فقط. لا تضمن RiskNova أن المخرجات خالية من الأخطاء أو مكتملة أو مناسبة لنتيجة قانونية أو تقنية معينة. يجب على المستخدمين التحقق من المخرجات مقابل القانون المعمول به والإجراءات الداخلية والحكم المهني.",
+          "title": "المخرجات المدعومة بالذكاء الاصطناعي"
+        },
+        {
+          "content": "ميزات الخطة والرسوم وحدود الاستخدام وفترات الفوترة معروضة على شاشات التسعير أو الدفع. قد تستخدم الخطط الفردية الدفع الذاتي؛ قد تتبع نماذج OSGB والمؤسسات تدفقات العروض والاتصال. قد تتم معالجة المدفوعات والفوترة بواسطة Paddle كتاجر مسجل.",
+          "title": "الاشتراك والفوترة والحدود"
+        },
+        {
+          "content": "قد تقوم RiskNova بتحديث ميزات المنتج وحدود الخطة والتكاملات وهذه الشروط مع مرور الوقت. قد يتم تقييد الوصول مؤقتاً للأمان أو الصيانة أو الامتثال القانوني أو منع إساءة الاستخدام.",
+          "title": "تغييرات الخدمة والوصول"
+        },
+        {
+          "content": "المنصة مصممة لتبسيط العمليات؛ لا تزيل الواجبات القانونية لأصحاب العمل أو متخصصي السلامة أو المؤسسات. يبقى المستخدمون مسؤولين عن المراجعة الميدانية والتنظيمية والخبيرة قبل الاعتماد على مخرجات المنصة.",
+          "title": "تحديد المسؤولية"
+        },
+        {
+          "content": "للأسئلة حول هذه الشروط أو الاشتراكات أو الحسابات، اتصل بـ support@getrisknova.com.",
+          "title": "اتصال"
+        }
+      ],
+      "title": "شروط استخدام RiskNova"
+    },
+    "termsSummary": {
+      "eyebrow": "شروط الخدمة",
+      "lastUpdated": "آخر تحديث: 2 مايو 2026",
+      "metaDescription": "ملخص شروط خدمة RiskNova والاستخدام المقبول والاشتراكات.",
+      "metaTitle": "شروط الخدمة",
+      "ogDescription": "ملخص الاشتراك والميزات المدعومة بالذكاء الاصطناعي والاستخدام المقبول.",
+      "ogTitle": "شروط الخدمة | RiskNova",
+      "title": "شروط وأحكام RiskNova"
+    }
   },
   "nav": {
     "analizler": "التحليلات",
     "appDashboard": "لوحة التحكم",
     "application": "التطبيق",
     "companies": "الشركات",
-    "correctiveActions": "CAPA",
+    "correctiveActions": "الإجراءات التصحيحية",
     "dashboard": "لوحة التحكم",
-    "demoBuilderNav": "منشئ العرض التوضيحي",
-    "demoRequestsNav": "طلبات العرض التوضيحي",
+    "demoBuilderNav": "منشئ العروض التوضيحية",
+    "demoRequestsNav": "طلبات العروض التوضيحية",
     "digitalTwin": "التوأم الرقمي",
     "documents": "المستندات",
-    "dofRegister": "CAPA",
-    "enterpriseSolution": "عرض المؤسسات",
-    "exam": "امتحان",
+    "dofRegister": "الإجراءات التصحيحية",
+    "enterpriseSolution": "العرض المؤسسي",
+    "exam": "الامتحان",
     "features": "الميزات",
     "firmaWorkspace": "الشركة",
     "howItWorks": "كيف يعمل",
     "incidents": "الإجراءات",
     "incidentsPage": "الحوادث",
-    "legalCorpus": "مجموعة التشريعات",
+    "legalCorpus": "المجموعة القانونية",
     "library": "مكتبة السلامة والصحة المهنية",
-    "liveScan": "مسح ميداني مباشر",
+    "liveScan": "المسح الميداني المباشر",
     "mainNavigation": "التنقل الرئيسي",
-    "mobileNavigation": "تنقل الجوال",
+    "mobileNavigation": "التنقل المحمول",
     "osgbAffiliations": "روابط OSGB",
-    "osgbAssignments": "التكليفات",
-    "osgbClientFirms": "شركات العملاء",
+    "osgbAssignments": "المهام المُكلفة",
+    "osgbClientFirms": "الشركات العميلة",
     "osgbContracts": "العقود",
     "osgbOffersCapacity": "العروض والسعة",
-    "osgbPanel": "اللوحة",
+    "osgbPanel": "اللجنة",
     "osgbPersonnel": "الموظفون",
-    "osgbProfessionals": "المهنيون",
+    "osgbProfessionals": "المختصون",
     "osgbSolution": "عرض OSGB",
     "osgbWorkTracking": "تتبع العمل",
     "personalDocs": "مستنداتي",
     "planner": "المخطط",
-    "platformAdminHome": "إدارة المنصة",
+    "platformAdminHome": "مدير المنصة",
     "pricing": "الخطط",
     "reports": "التقارير",
     "riskAnalysis": "تحليل المخاطر",
-    "scoreHistory": "تدقيق ميداني",
+    "scoreHistory": "التدقيق الميداني",
     "settings": "الإعدادات",
     "solutionCenter": "Nova",
-    "survey": "استبيان",
-    "surveyExam": "استبيان / امتحان",
-    "timesheet": "سجل الوقت",
+    "survey": "الاستطلاع",
+    "surveyExam": "الاستطلاع / الامتحان",
+    "timesheet": "جدول المواعيد",
     "training": "التدريب",
-    "trainingHub": "التدريب والاستبيانات والامتحانات",
+    "trainingHub": "التدريب والاستطلاعات والامتحانات",
     "workplace": "مكان العمل",
     "workspace": "مساحة العمل"
   },
-  "landing": {
-    "badge": "منصة السلامة المهنية المدعومة بالذكاء الاصطناعي",
-    "heroTitle1": "حوّل إدارة",
-    "heroTitle2": "مخاطر السلامة المهنية",
-    "heroTitle3": "",
-    "heroDescription": "RiskNova منصة للسلامة المهنية تعتمد على الذكاء الاصطناعي وتدمج تحليل المخاطر والمتابعة الميدانية والتوثيق والتقارير ودعم القرار في تجربة واحدة.",
-    "statsUsers": "المستخدمون النشطون",
-    "statsUptime": "التوفر",
-    "statsAnalysis": "زمن التحليل",
-    "statsScoring": "تقييم المخاطر",
-    "featuresEyebrow": "الميزات",
-    "featuresTitle1": "حلول",
-    "featuresTitle2": "شاملة",
-    "featuresDescription": "أدوات احترافية لإدارة عمليات السلامة المهنية من البداية للنهاية.",
-    "feat1Title": "تحليل مخاطر مدعوم بالذكاء الاصطناعي",
-    "feat1Desc": "أساس منتج يجمع المدخلات اليدوية أو المعتمدة على الوحدات في تدفق واحد ويجعل النتائج أوضح.",
-    "feat2Title": "الملاحظات الميدانية وإدارة الإجراءات",
-    "feat2Desc": "يجمع التدقيق والملاحظة والمهمة والمتابعة بترتيب يسهل على فريق العمليات قراءته.",
-    "feat3Title": "بنية التقارير والتوثيق",
-    "feat3Desc": "واجهات متسقة تربط النتائج بالسجل والتفاصيل والمخرجات.",
-    "feat4Title": "عرض منتج لوحدة المخاطر",
-    "feat4Desc": "أساس احترافي لشاشات التحليل والنتائج وسجل الدرجات.",
-    "feat5Title": "متجاوب للجوال والجهاز اللوحي وسطح المكتب",
-    "feat5Desc": "سهولة القراءة في عمود واحد أو عمودين أو شاشة عريضة.",
-    "feat6Title": "لغة بصرية مؤسسية وحديثة",
-    "feat6Desc": "إحساس SaaS احترافي بأسطح نظيفة وتباين ضبط وعناصر دعوة واضحة.",
-    "howEyebrow": "كيف تعمل",
-    "howTitle1": "التحكم في",
-    "howTitle2": "أربع خطوات",
-    "howDescription": "خطوات بسيطة للبدء.",
-    "step1Title": "وصول آمن",
-    "step1Desc": "سجّل الدخول بأمان بحساب مؤسستك.",
-    "step2Title": "إدخال بيانات المخاطر",
-    "step2Desc": "انقل التدقيق الميداني وتقارير المخاطر والمعاملات إلى النظام.",
-    "step3Title": "إنشاء R-SCORE",
-    "step3Desc": "يحلل محركنا المدعوم بالذكاء الاصطناعي بياناتك ويحسب درجات المخاطر.",
-    "step4Title": "الإجراء والمتابعة",
-    "step4Desc": "أنشئ خطط إجراءات تابعها وأصدر التقارير.",
-    "whyEyebrow": "لماذا RiskNova",
-    "whyTitle1": "تجربة",
-    "whyTitle2": "متميزة",
-    "whyTitle3": "تبعث الثقة",
-    "whyDescription": "تجربة SaaS احترافية مع ثقة زرقاء وجودة ذهبية وأسطح نظيفة وتباين لطيف.",
-    "whyBullet1": "مظهر سليم مهني حديث يبعث الثقة",
-    "whyBullet2": "تخطيط يركز على العمليات دون إلهاء",
-    "whyBullet3": "نظام تصميم جاهز لوحدة Risk Intelligence",
-    "whyBullet4": "هيكل متعدد المستأجرين آمن حسب المؤسسة",
-    "whyBullet5": "آلية دعم قرار مدعومة بالذكاء الاصطناعي",
-    "whyBullet6": "تقارير مؤسسية وبنية أرشفة",
-    "ctaEyebrow": "منطقة الدعوة",
-    "ctaTitle": "اجعل وحدة المخاطر واجهة منتج",
-    "ctaDescription": "أدر عمليات السلامة المهنية على منصة واحدة بمظهر احترافي وبنية قوية ودعم ذكاء اصطناعي.",
-    "metaTitle": "أدر السلامة المهنية من منصة واحدة | RiskNova",
-    "metaDescription": "برنامج سلامة مهنية بالذكاء الاصطناعي: تحليل مخاطر، تدقيق ميداني، ملاحظات، CAPA وتقارير — فردي وOSGB ومؤسسات.",
-    "metaOgTitle": "RiskNova — السلامة المهنية من منصة واحدة",
-    "metaOgDescription": "من القياس إلى التدقيق والإجراءات والتقارير — في مكان واحد.",
-    "heroTitlePrefix": "أدر سلامة مكان العمل",
-    "heroTitleHighlight": "من منصة واحدة",
-    "heroTitleSuffix": "",
-    "heroSubtitle": "من القياس إلى ملاحظات التدقيق وتتبع الإجراءات والتقارير والأرشفة — كل شيء تحت سقف واحد. يتوسع من الأفراد إلى OSGB والمؤسسات متعددة المواقع.",
-    "statsValueUsers": "500+",
-    "statsValueUptime": "99.5٪",
-    "statsValueAnalysis": "15 ث",
-    "statsValueScore": "R-SCORE",
-    "solutionsLeadBold": "هل أنتم OSGB أو مؤسسة متعددة المواقع؟",
-    "solutionsSectionAria": "عروض OSGB والمؤسسات",
-    "solutionsLeadRest": "اطّلعوا على الخطط، اتركوا طلب عرض أو تسجيل — سيتواصل فريقنا.",
-    "osgbCtaShort": "OSGB: عرض واتصال",
-    "enterpriseCtaShort": "مؤسسة: عرض واتصال",
-    "valueTryEyebrow": "جرّب الآن",
-    "valueTryTitle": "المخاطر والتدقيق والتقارير في تجربة واحدة",
-    "valueTryDesc": "نماذج ونتائج وسجل درجات ومخرجات على شاشات متسقة.",
-    "valueTryRegister": "إنشاء حساب",
-    "valueTryLogin": "تسجيل الدخول",
-    "testimonialsEyebrow": "آراء العملاء",
-    "testimonialsTitle1": "ماذا يقول",
-    "testimonialsTitle2": "مستخدمونا",
-    "testimonial1Quote": "أصبح التدقيق الميداني أكثر نظامًا مع RiskNova. تعليقات الذكاء الاصطناعي مفيدة فعلًا.",
-    "testimonial1Author": "محمد ك.",
-    "testimonial1Role": "أخصائي سلامة مهنية",
-    "testimonial2Quote": "جمع التحليل والتقارير والمتابعة على منصة واحدة حسّن كفاءتنا.",
-    "testimonial2Author": "عائشة ت.",
-    "testimonial2Role": "مديرة سلامة مهنية",
-    "testimonial3Quote": "المظهر المؤسسي وسهولة الاستخدام سهّلا اعتماد الفريق بسرعة.",
-    "testimonial3Author": "جان د.",
-    "testimonial3Role": "مدير عمليات",
-    "bottomCtaLine1": "حوّل",
-    "bottomCtaLine2": "عمليات السلامة المهنية",
-    "bottomCtaDescription": "من تحليل المخاطر إلى التقارير — أدر كل شيء مع RiskNova على منصة واحدة.",
-    "ctaDemo": "اطلب عرضًا",
-    "footerBlurb": "منصة تحليل مخاطر وعمليات سلامة مهنية مدعومة بالذكاء الاصطناعي — احترافية وموثوقة وحديثة.",
-    "footerCompany": "الشركة",
-    "footerSupport": "الدعم",
-    "footerHome": "الرئيسية",
-    "footerHelp": "مساعدة",
-    "footerRefund": "سياسة الاسترداد",
-    "subscriptionDisclaimer": "توفر RiskNova برمجيات اشتراك لصحة وسلامة العمل.",
-    "footerDescription": "منصة دعم قرار للسلامة المهنية مدعومة بالذكاء الاصطناعي",
-    "footerProduct": "المنتج",
-    "footerLegal": "قانوني",
-    "footerPrivacy": "سياسة الخصوصية",
-    "footerTerms": "شروط الاستخدام",
-    "footerContact": "اتصل بنا",
-    "footerRights": "جميع الحقوق محفوظة."
+  "ohsFile": {
+    "alreadyRunning": "يتم حالياً تحضير أرشيف؛ يرجى انتظار انتهائه.",
+    "asyncHint": "يتم تحضير الأرشيف في الخلفية. ستتلقى إشعاراً عند جاهزيته.",
+    "cancel": "إلغاء",
+    "completedAt": "مكتمل",
+    "createdAt": "تم الإنشاء",
+    "createNew": "إنشاء أرشيف جديد",
+    "description": "تحميل جميع تقييمات المخاطر والحوادث وسجلات التدريب والوثائق والبيانات ذات الصلة لـ {company} كأرشيف ZIP واحد مبني على السنة.",
+    "download": "تحميل",
+    "empty": "لم يتم إنشاء أرشيف بعد.",
+    "historyTitle": "الأرشيف السابق",
+    "loading": "جاري التحميل...",
+    "openCompany": "فتح صفحة الشركة",
+    "prepareButton": "تحضير الأرشيف",
+    "refresh": "تحديث",
+    "required": "مطلوب",
+    "scopeEmpty": "تعذر تحميل قالب النطاق.",
+    "scopeLabel": "النطاق",
+    "status": {
+      "cancelled": "ملغى",
+      "completed": "جاهز",
+      "expired": "منتهي الصلاحية",
+      "failed": "فشل",
+      "pending": "في الانتظار",
+      "processing": "جاري التحضير"
+    },
+    "title": "ملف السلامة والصحة المهنية",
+    "widgetAll": "الكل",
+    "widgetEmpty": "لا يوجد ملف السلامة والصحة المهنية بعد. افتح شركة واذهب إلى تبويب 'ملف السلامة والصحة المهنية'.",
+    "widgetSubtitle": "وصول سريع إلى أحدث أرشيف مكان العمل المُحضر.",
+    "widgetTitle": "ملفات السلامة والصحة المهنية الحديثة",
+    "yearLabel": "السنة التقويمية"
   },
-  "auth": {
-    "loginTitle": "Sign in to your account",
-    "loginDescription": "Continue managing risk analysis, field tracking and reporting processes on a single platform.",
-    "loginEmail": "Email address",
-    "loginPassword": "Password",
-    "loginButton": "Sign In",
-    "loginLoading": "Signing in...",
-    "loginForgot": "Forgot password",
-    "loginNoAccount": "Don't have an account?",
-    "loginRegister": "Sign up",
-    "registerTitle": "Create an account",
-    "registerDescription": "Digitize your OHS processes and benefit from AI-powered decision-making mechanisms.",
-    "registerName": "Full Name",
-    "registerEmail": "Email address",
-    "registerPassword": "Password",
-    "registerButton": "Sign Up",
-    "registerLoading": "Creating account...",
-    "registerHasAccount": "Already have an account?",
-    "registerLogin": "Sign in",
-    "forgotTitle": "Reset your password",
-    "forgotDescription": "Enter your email address and we'll send you a password reset link.",
-    "forgotButton": "Send reset link",
-    "forgotBack": "Back to sign in",
-    "shell": {
-      "secureAccess": "Secure access",
-      "backHome": "Back to home",
-      "highlightIndividualTitle": "Individual",
-      "highlightIndividualDesc": "A fast start flow for independent specialists, physicians, DSPs and solo professionals.",
-      "highlightOsgbTitle": "OSGB",
-      "highlightOsgbDesc": "Team model that brings client firms, personnel, assignments and work tracking into one panel.",
-      "highlightCorpTitle": "Enterprise",
-      "highlightCorpDesc": "Communication-led enterprise flow for multi-site organisations with bespoke requirements.",
-      "fallbackSpotlight": "RiskNova is not just a panel — it is professional OHS infrastructure that unifies risk analysis, field operations, document flows and team coordination in one product language."
+  "osgbFirms": {
+    "activeSection": {
+      "description": "إدارة تدفقات الشركة والمهام والوثائق والمخاطر لكل مساحة عمل الشركة.",
+      "searchLabel": "البحث في الشركات",
+      "searchPlaceholder": "البحث عن شركة، قطاع، عنوان، أو NACE",
+      "title": "الشركات النشطة"
     },
-    "loginPage": {
-      "eyebrow": "Sign in",
-      "title": "Sign in to your account",
-      "description": "Sign in to your RiskNova account. Platform administrators are routed to the admin console; everyone else lands on the workspace that matches their account type.",
-      "highlight1Title": "Individual sign-in",
-      "highlight1Desc": "For individual professionals managing their own firms, organisations and workspaces.",
-      "highlight2Title": "OSGB sign-in",
-      "highlight2Desc": "For OSGB teams managing clients, personnel, assignments and risk processes.",
-      "highlight3Title": "Platform administration",
-      "highlight3Desc": "The platform administrator role is not offered as a public account type; eligible users are routed to the admin console after sign-in.",
-      "spotlightP1": "The sign-in screen is shared by everyone; routing after the session depends on your account context.",
-      "spotlightP2": "The platform administrator role is not available in public self-service signup. Individual, OSGB and enterprise are the customer-facing account paths.",
-      "footerPrefix": "Don't have an account?",
-      "footerRegisterLink": "Sign up",
-      "passwordUpdatedBanner": "Your password was updated. You can sign in with your new password.",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com",
-      "passwordLabel": "Password",
-      "passwordPlaceholder": "Enter your password",
-      "submitButton": "Sign in",
-      "forgotLink": "Forgot password"
+    "archivedRow": {
+      "restore": "استعادة",
+      "restoring": "جاري الاستعادة..."
     },
-    "registerPage": {
-      "eyebrow": "New account",
-      "title": "Create your RiskNova account",
-      "description": "Choose account type, region and language first. Individual accounts continue straight to the form; OSGB and company structures start the contact and quote flow.",
-      "highlight1Title": "Individual self-service",
-      "highlight1Desc": "After region and language selection you complete registration and continue with onboarding.",
-      "highlight2Title": "Plans live on a separate page",
-      "highlight2Desc": "Pricing and plan comparison stay on the Plans page so registration stays focused.",
-      "highlight3Title": "Bespoke quote for organisations",
-      "highlight3Desc": "Multi-site or specialised structures move through contact and quote with our team.",
-      "footerPrefix": "Already have an account?",
-      "footerLoginLink": "Sign in",
-      "demoExpiredTitle": "Your demo period has ended.",
-      "demoExpiredBody": "RiskNova demo access is limited to {hours} hours; when it expires the session closes. Create a free account below or continue with Google to move to a permanent account.",
-      "demoDisabledTitle": "Your demo access was disabled.",
-      "demoDisabledBody": "It may have been ended by an administrator (demo accounts are usually limited to {hours} hours). Create an account below for ongoing use.",
-      "demoLegacyExpiredLead": "Your demo session has ended.",
-      "demoLegacyExpiredRest": "Public demos are no longer offered. Create an account below or",
-      "demoLegacyExpiredLogin": "sign in",
-      "demoLegacyExpiredSupport": "For issues contact",
-      "demoLegacyDisabledLead": "Your demo access was disabled.",
-      "demoLegacyDisabledRest": "Public demos are no longer offered. Register or",
-      "demoLegacyDisabledLogin": "sign in",
-      "demoLegacyDisabledHelp": "Help:",
-      "checkEmailBanner": "Registration started. Check your inbox if confirmation is required.",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com",
-      "emailHint": "Onboarding and access flows use this address.",
-      "passwordLabel": "Password",
-      "passwordPlaceholder": "At least 8 characters",
-      "passwordHint": "Choose a strong password. You will finish account-type selection after signup.",
-      "submitButton": "Create account"
+    "archivedSection": {
+      "badge": "سجلات مؤرشفة {count}",
+      "description": "الشركات المؤرشفة لا تحتسب ضمن الحد النشط؛ يتم الاحتفاظ بتاريخ المخاطر والوثائق.",
+      "title": "الشركات المؤرشفة"
     },
-    "forgotPage": {
-      "eyebrow": "Password reset",
-      "title": "Reset your password",
-      "description": "Enter your email and we will send you a password reset link.",
-      "backToLogin": "Back to sign in",
-      "sentBanner": "If the email address is valid, we sent a password reset link.",
-      "emailHint": "Use the email you registered with.",
-      "submitButton": "Send reset link",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com"
+    "badges": {
+      "activeCompaniesMax": "شركات نشطة {count} / {max}",
+      "activeCompaniesUnlimited": "شركات نشطة {count}",
+      "activeStaffMax": "موظفين نشطين {count} / {max}",
+      "activeStaffUnlimited": "موظفين نشطين {count}"
     },
-    "resetPage": {
-      "eyebrow": "New password",
-      "eyebrowTemp": "Temporary sign-in",
-      "title": "Choose a new password",
-      "titleRequired": "Set a new password",
-      "description": "Enter your new password and return to your account.",
-      "descriptionRequired": "You signed in with temporary credentials. Set a new password before continuing.",
-      "backToLogin": "Back to sign in",
-      "requiredBanner": "For security you must change your password on first sign-in.",
-      "mfaBanner": "Multi-factor verification is complete. You can now choose a new password.",
-      "passwordLabel": "New password",
-      "passwordPlaceholder": "At least 8 characters",
-      "passwordHint": "Choose a strong password.",
-      "submitButton": "Update password"
+    "companyCard": {
+      "archive": "أرشفة",
+      "archiving": "جاري الأرشفة...",
+      "assignedProfessionals": "متخصصين مكلفين {count}",
+      "assignments": "المهام",
+      "contracts": "العقود",
+      "documentsCount": "وثائق {count}",
+      "documentsLink": "الوثائق",
+      "employees": "موظفين {count}",
+      "overdueTasks": "عناصر متأخرة {count}",
+      "personnelInvite": "الموظفين والدعوات",
+      "sectorUnknown": "القطاع غير محدد",
+      "taskTracking": "تتبع المهام",
+      "workspace": "مساحة عمل الشركة"
     },
-    "social": {
-      "supabaseError": "Could not connect to authentication services.",
-      "oauthRedirectHint": "Google sign-in needs the Supabase redirect URL: add https://getrisknova.com/auth/callback (and your environment URLs) under Authentication URL configuration.",
-      "oauthGenericError": "Something went wrong during sign-in. Please try again.",
-      "googleContinue": "Continue to {brand} with Google",
-      "googleSignUp": "Sign up for {brand} with Google",
-      "divider": "or continue with email"
+    "emptyActive": {
+      "cta": "إضافة أول شركة",
+      "description": "ستظهر هنا شركات العملاء المرتبطة بلوحة OSGB.",
+      "title": "لا توجد شركات نشطة"
     },
-    "registerWizard": {
-      "prevAria": "Previous step",
-      "closeAria": "Close registration assistant",
-      "startWizard": "Start registration questions",
-      "summaryTitle": "Your registration path is ready",
-      "summaryChange": "Change",
-      "commercialIntroOsgbTitle": "OSGB quote flow",
-      "commercialIntroEnterpriseTitle": "Enterprise quote flow",
-      "commercialIntroBody": "Your country, language and role are sent with the form so our team can respond with the right package and onboarding.",
-      "steps": {
-        "account": {
-          "eyebrow": "1 / 4",
-          "title": "Which account type are you starting with?",
-          "description": "This choice defines the flow after registration."
-        },
-        "country": {
-          "eyebrow": "2 / 4",
-          "title": "Which country is your primary workspace in?",
-          "description": "Legislation coverage, RAG scope and the default workspace are aligned with this choice."
-        },
-        "language": {
-          "eyebrow": "3 / 4",
-          "title": "Interface and document language",
-          "description": "Not every screen is translated yet, but your preference is stored on the account."
-        },
-        "role": {
-          "eyebrow": "4 / 4",
-          "title": "What is your first role?",
-          "description": "This seeds the first workspace during onboarding."
-        }
+    "emptyArchived": {
+      "description": "عند أرشفة شركة ستظهر هنا.",
+      "title": "لا توجد شركات مؤرشفة"
+    },
+    "emptyCompany": {
+      "kind": "القطاع الخاص",
+      "name": "شركة عميل OSGB جديدة",
+      "shortName": "شركة جديدة"
+    },
+    "focus": {
+      "p1": "هذه المنطقة مخصصة فقط لمالك ومدير OSGB. يتم إدارة الشركات والمهام والعقود وتتبع المستندات في مكان واحد.",
+      "p2": "الموظفون المكلفون لا يستخدمون هذه اللوحة في سير عملهم اليومي؛ يصلون إلى بيانات مساحة عمل الشركة المكلفة من خلال حساباتهم الخاصة.",
+      "sidebarBody": "{firms} شركة نشطة، {professionals} مهني مكلف، و {overdue} عنصر يحتاج انتباه يتم تنسيقها هنا.",
+      "sidebarEyebrow": "التركيز الإداري",
+      "title": "واجهة مركزة على OSGB"
+    },
+    "header": {
+      "description": "إدارة شركات عملائك ومساحات العمل لكل شركة وتدفقات الموظفين المكلفين بها.",
+      "eyebrow": "إدارة شركات OSGB",
+      "title": "الشركات ومواقع العمل"
+    },
+    "limitBanner": "تم الوصول إلى حد الشركات النشطة. قم بأرشفة شركة أو ترقية خطتك لإضافة المزيد.",
+    "loading": {
+      "description": "نحن نقوم بتحميل شركات العملاء والمهام وتدفقات المستندات.",
+      "eyebrow": "شركات OSGB",
+      "title": "إعداد محفظتك"
+    },
+    "nova": {
+      "bullet1": "عرض توزيع عبء العمل حسب الشركة.",
+      "bullet2": "تصفية المهام والمستندات المتأخرة.",
+      "bullet3": "اكتشاف فجوات تكليف الموظفين.",
+      "bullet4": "إعطاء الأولوية لمخاطر تجديد العقود والتقارير.",
+      "openTasks": "مهام OSGB المفتوحة",
+      "reviewOverdue": "مراجعة العمل المتأخر",
+      "seeAssignmentGaps": "عرض فجوات التكليف",
+      "subtitle": "مساعد إداري؛ يراقب أداء الموظفين والشركة.",
+      "title": "مدير Nova OSGB"
+    },
+    "quickLinks": {
+      "docCenter": "الذهاب إلى مركز المستندات",
+      "inviteStaff": "دعوة الموظفين",
+      "manageAssignments": "إدارة التكليفات",
+      "openContracts": "فتح العقود"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "الشركات العميلة النشطة المتتبعة في لوحة OSGB.",
+        "label": "الشركات النشطة"
       },
-      "accounts": {
-        "individual": {
-          "title": "Individual professional",
-          "description": "Specialist, physician, DSP or auditor starting with your own workspace."
-        },
-        "osgb": {
-          "title": "OSGB",
-          "description": "Request setup for client portfolios, teams and assignment workflows."
-        },
-        "enterprise": {
-          "title": "Company / enterprise",
-          "description": "For multi-site or specialised regulatory needs."
-        }
+      "assignedProfessionals": {
+        "hint": "إجمالي تكليفات الخبراء والأطباء وDSP للشركات.",
+        "label": "المهنيون المكلفون"
       },
-      "countryHints": {
-        "TR": "Türkiye legislation with Turkish defaults.",
-        "AZ": "Azerbaijan region with Azerbaijani defaults.",
-        "US": "US operations with English defaults.",
-        "GB": "UK operations with English defaults.",
-        "DE": "Germany region with German defaults.",
-        "FR": "France region with French defaults.",
-        "ES": "Spain region with Spanish defaults.",
-        "RU": "Russian language and regional readiness.",
-        "SA": "Arabic language and Gulf operations readiness.",
-        "AE": "English / Arabic team readiness.",
-        "CN": "Chinese language and Asia-Pacific readiness.",
-        "JP": "Japanese language and Asia-Pacific readiness.",
-        "KR": "Korean language and Asia-Pacific readiness.",
-        "IN": "Hindi / English team readiness.",
-        "ID": "Bahasa Indonesia preference."
+      "overdueWork": {
+        "hint": "العناصر المفتوحة للمراقبة في تدفقات التكليف وCAPA.",
+        "label": "العمل المتأخر"
       },
-      "roles": {
-        "safety_professional": {
-          "title": "OHS specialist",
-          "description": "Risk analysis, field audits, actions and regulatory tracking."
-        },
-        "occupational_physician": {
-          "title": "Occupational physician",
-          "description": "Health surveillance, medical processes and employee records."
-        },
-        "safety_officer": {
-          "title": "DSP / health personnel",
-          "description": "Health team, field support and follow-up tasks."
-        },
-        "auditor": {
-          "title": "Auditor",
-          "description": "Field audits, non-conformities and reporting."
-        },
-        "workspace_admin": {
-          "title": "Workspace administrator",
-          "description": "Manages users, firms, roles and workspace settings."
-        }
+      "totalEmployees": {
+        "hint": "إجمالي عدد الموظفين من سجلات الشركة للتخطيط.",
+        "label": "إجمالي الموظفين"
       }
     },
-    "demoModal": {
-      "closeAria": "Close",
-      "title": "Thanks!",
-      "subtitle": "For trying RiskNova",
-      "bodyDisabled": "Your demo access was disabled by an administrator.",
-      "bodyExpired": "Your demo time has ended. RiskNova demo sessions are valid for up to {hours} hours; after that the session closes.",
-      "calloutExpiredLead": "Reminder:",
-      "calloutExpiredRest": "Finish exploring the demo within {hours} hours; when it ends you can continue by creating your own free or commercial account.",
-      "calloutDisabledLead": "Note:",
-      "calloutDisabledRest": "Demo accounts are usually limited to {hours} hours; access may also have been ended by an administrator.",
-      "pathsIntro": "To pick up where you left off and get",
-      "pathsHighlight": "full access to all features",
-      "pathsSuffix": ", create your account. You can choose one of three paths:",
-      "pathIndividualLabel": "Individual",
-      "pathIndividualDesc": "independent professionals",
-      "pathOsgbLabel": "OSGB",
-      "pathOsgbDesc": "client firm and personnel management",
-      "pathEnterpriseLabel": "Enterprise",
-      "pathEnterpriseDesc": "multi-site organisations",
-      "ctaPrimary": "Start registration",
-      "ctaLater": "Later"
-    }
-  },
-  "solutionCenter": {
-    "title": "Nova",
-    "description": "Nova is the operational OHS agent that interprets legislation, routes you to the right module, and starts document or workflow actions.",
-    "inputPlaceholder": "Tell Nova what you want to do...",
-    "queries": "queries",
-    "referenced": "with references",
-    "sources": "legislation sources",
-    "save": "Save",
-    "saved": "Saved",
-    "copy": "Copy",
-    "chat": "Chat",
-    "history": "History",
-    "documents": "My Documents"
-  },
-  "profile": {
-    "loading": "Loading profile...",
-    "membership": "Member since",
-    "updated": "Updated",
-    "changePhoto": "Change photo",
-    "tabs": {
-      "profile": "Profile",
-      "security": "Security",
-      "privacy": "Privacy & Consents",
-      "preferences": "Preferences",
-      "activity": "Activity"
-    },
-    "personal": {
-      "title": "Personal Information",
-      "fullName": "Full Name",
-      "fullNamePlaceholder": "Full Name",
-      "jobTitle": "Title / Position",
-      "jobTitlePlaceholder": "OHS Specialist",
-      "email": "Email",
-      "phone": "Phone",
-      "phonePlaceholder": "+1 xxx xxx xxxx",
-      "save": "Save"
-    },
-    "org": {
-      "title": "Organization Info",
-      "name": "Organization Name",
-      "city": "City"
-    },
-    "roles": {
-      "title": "Roles & Permissions",
-      "super_admin": "Super Admin",
-      "platform_admin": "Platform Admin",
-      "organization_admin": "Organization Admin",
-      "osgb_manager": "OSGB Manager",
-      "ohs_specialist": "OHS Specialist",
-      "workplace_physician": "Workplace Physician",
-      "dsp": "DSP",
-      "viewer": "Viewer"
-    },
-    "email": {
-      "title": "Change Email",
-      "current": "Current Email",
-      "new": "New Email",
-      "newPlaceholder": "name@company.com",
-      "submit": "Start Change",
-      "info": "Email changes require verification. The account email will not update until you open the link sent to the new address."
-    },
-    "password": {
-      "title": "Change Password",
-      "current": "Current Password",
-      "new": "New Password",
-      "newPlaceholder": "At least 12 chars, upper/lower case, number and symbol",
-      "repeat": "New Password (Repeat)",
-      "submit": "Update Password"
-    },
-    "mfa": {
-      "title": "Two-Factor Authentication",
-      "description": "Works with Google Authenticator, Authy and similar TOTP apps. Once enabled, this account is protected by a second factor.",
-      "open": "2FA On",
-      "closed": "2FA Off",
-      "onlyPassword": "Your account is currently protected only by password.",
-      "addDevice": "Add New Device",
-      "addDeviceHint": "Scan the QR code with Google Authenticator. You can give the device a custom name.",
-      "connect": "Connect Google Authenticator",
-      "deviceName": "Device Name",
-      "deviceNamePlaceholder": "e.g. Mehmet's iPhone",
-      "backupWarning": "Backup codes are not supported. For critical accounts, enroll at least two different TOTP devices.",
-      "setupKey": "Setup Key",
-      "verifyCodePlaceholder": "123456",
-      "verify": "Verify",
-      "verifying": "Verifying...",
-      "registeredDevices": "Registered MFA Devices",
-      "loading": "Loading...",
-      "noDevices": "No MFA device is connected yet.",
-      "removeDevice": "Remove"
-    },
-    "sessions": {
-      "title": "Active Sessions",
-      "thisDevice": "Sign out this device",
-      "allDevices": "Sign out all devices",
-      "active": "Active",
-      "lastActive": "Last active",
-      "ip": "IP",
-      "opened": "Opened"
-    },
-    "danger": {
-      "title": "Danger Zone",
-      "description": "Deleting your account permanently removes all your data and this action cannot be undone. Under KVKK, the deletion completes within 30 days.",
-      "button": "Delete Account",
-      "redirectMsg": "Account deletion flow is opened in the Privacy & Consents tab."
-    },
-    "prefs": {
-      "theme": "Theme",
-      "themeLight": "Light",
-      "themeDark": "Dark",
-      "themeSystem": "System",
-      "language": "Language",
-      "notifications": "Notifications",
-      "emailNotif": "Email Notifications",
-      "emailNotifDesc": "Task reminders and updates",
-      "pushNotif": "Push Notifications",
-      "pushNotifDesc": "Browser instant notifications",
-      "save": "Save Preferences"
-    },
-    "activity": {
-      "total": "Total Tasks",
-      "completed": "Completed",
-      "pending": "Pending",
-      "overdue": "Overdue",
-      "recentOps": "Recent Activity",
-      "noActivity": "No activity records yet",
-      "planned": "Planned",
-      "in_progress": "In Progress",
-      "complete": "Completed",
-      "overdueStatus": "Overdue",
-      "cancelled": "Cancelled"
-    },
-    "msg": {
-      "photoUpdated": "Photo updated.",
-      "photoError": "Photo upload failed.",
-      "profileSaved": "Profile saved.",
-      "profileError": "Could not save profile.",
-      "passwordMismatch": "New passwords do not match.",
-      "passwordUpdated": "Password updated successfully.",
-      "passwordError": "Could not update password.",
-      "emailServiceError": "Could not reach email update service.",
-      "emailEmpty": "New email address cannot be empty.",
-      "emailInvalid": "Enter a valid email address.",
-      "emailSame": "New email cannot be the same as current.",
-      "emailConfirmSent": "Verification link sent to the new address.",
-      "mfaServiceError": "Could not reach two-factor auth service.",
-      "mfaEnrolled": "Enrollment created. Verify the code now to enable 2FA.",
-      "mfaCodeInvalid": "Verification code must be 6 digits.",
-      "mfaEnabled": "Two-factor authentication enabled.",
-      "mfaRemoved": "MFA device removed.",
-      "mfaRemoveConfirm": "Are you sure you want to remove this MFA device?",
-      "prefsSaved": "Preferences saved.",
-      "sessionServiceError": "Could not reach session service.",
-      "signedOut": "Signed out from this device.",
-      "signedOutAll": "Signed out from all devices."
-    }
-  },
-  "consent": {
-    "title": "Privacy & Consents",
-    "description": "Active disclosure and KVKK texts are listed here. When a new version is published, the system prompts you to consent again.",
-    "stats": "{active} active consents - {pending} pending required texts",
-    "loading": "Loading consent records...",
-    "empty": "No published consent text.",
-    "mandatory": "Required",
-    "mandatoryYes": "Yes",
-    "mandatoryNo": "No",
-    "lastStatus": "Last status",
-    "notGranted": "Not granted yet",
-    "statusApproved": "Approved",
-    "statusPending": "Pending required text",
-    "statusOptional": "Optional",
-    "types": {
-      "aydinlatma": "Disclosure",
-      "acik_riza": "Explicit Consent",
-      "kvkk": "KVKK",
-      "yurt_disi_aktarim": "Cross-Border Transfer",
-      "pazarlama": "Marketing"
-    }
-  },
-  "dataRights": {
-    "title": "Data Rights",
-    "description": "Download your personal data, create a deletion request and track the status of your current KVKK processes.",
-    "statExport": "Export",
-    "statDeletion": "Deletion Request",
-    "statActive": "Active Process",
-    "statActiveYes": "Yes",
-    "statActiveNo": "No",
-    "exportTitle": "Download My Data",
-    "exportDescription": "Profile, consent records, security events and data-rights history can be downloaded as JSON or CSV.",
-    "exportJsonTitle": "JSON export",
-    "exportJsonDesc": "Structured bundle of all your data",
-    "exportCsvTitle": "CSV export",
-    "exportCsvDesc": "Tabular reporting and external transfer",
-    "exportHistoryLoading": "Loading export history...",
-    "exportHistoryEmpty": "No data export record created yet.",
-    "exportDownloadCount": "Download count",
-    "download": "Download",
-    "deletionTitle": "Delete My Data",
-    "deletionDescription": "When you create a request, your account and related personal data enter the deletion process. Permanent deletion completes after 30 days per retention policy.",
-    "deletionReasonPlaceholder": "Optional description or reason",
-    "deletionWarning": "A deletion request can be cancelled administratively before the process becomes irreversible.",
-    "deletionSubmit": "Create deletion request",
-    "deletionActive": "Active deletion request exists",
-    "deletionLoading": "Loading deletion requests...",
-    "deletionEmpty": "No deletion request yet.",
-    "deletionConfirm": "This will start a 30-day deletion process for your account. Do you want to continue?",
-    "deletionExists": "You already have an active deletion request.",
-    "deletionReceived": "Your deletion request was received. Scheduled permanent deletion: {date}.",
-    "deletionFailed": "Could not create deletion request.",
-    "exportReady": "{format} export is ready and downloaded.",
-    "exportFailed": "Could not create export.",
-    "scope": {
-      "self": "Personal request",
-      "admin": "Admin"
-    },
-    "requestDate": "Request date",
-    "scheduledPurge": "Scheduled permanent deletion",
-    "adminNotes": "Admin note",
-    "errorMsg": "Error",
-    "status": {
-      "scheduled": "Scheduled",
-      "processing": "Processing",
-      "completed": "Completed",
-      "cancelled": "Cancelled",
-      "rejected": "Rejected",
-      "failed": "Failed",
-      "expired": "Expired"
-    }
-  },
-  "lang": {
-    "tr": "Türkçe",
-    "en": "English",
-    "ar": "العربية",
-    "ru": "Русский",
-    "de": "Deutsch",
-    "fr": "Français",
-    "es": "Español",
-    "zh": "中文",
-    "ja": "日本語",
-    "ko": "한국어",
-    "hi": "हिन्दी",
-    "az": "Azərbaycanca",
-    "id": "Bahasa Indonesia"
-  },
-  "workspace": {
-    "switcher": "Workspace",
-    "active": "Active",
-    "noWorkspace": "No workspace",
-    "newWorkspace": "New workspace",
-    "countryLabel": "Country",
-    "languageLabel": "Default language",
-    "switchError": "Could not switch workspace",
-    "loading": "Loading workspaces..."
-  },
-  "country": {
-    "TR": "Türkiye",
-    "US": "United States",
-    "GB": "United Kingdom",
-    "DE": "Germany",
-    "FR": "France",
-    "ES": "Spain",
-    "RU": "Russia",
-    "CN": "China",
-    "JP": "Japan",
-    "KR": "South Korea",
-    "IN": "India",
-    "SA": "Saudi Arabia",
-    "AZ": "Azerbaijan",
-    "ID": "Indonesia",
-    "AE": "United Arab Emirates"
-  },
-  "ohsFile": {
-    "title": "Workplace OHS File",
-    "description": "Download all risk assessments, incidents, training records, documents and related data for {company} as a single year-based ZIP archive.",
-    "createNew": "Create New Archive",
-    "yearLabel": "Calendar Year",
-    "scopeLabel": "Scope",
-    "scopeEmpty": "Scope template could not be loaded.",
-    "required": "Required",
-    "prepareButton": "Prepare Archive",
-    "asyncHint": "The archive is prepared in the background. You will be notified when it is ready.",
-    "alreadyRunning": "An archive is currently being prepared; please wait for it to finish.",
-    "historyTitle": "Past Archives",
-    "refresh": "Refresh",
-    "loading": "Loading...",
-    "empty": "No archives created yet.",
-    "download": "Download",
-    "cancel": "Cancel",
-    "createdAt": "Created",
-    "completedAt": "Completed",
-    "widgetTitle": "Recent OHS Files",
-    "widgetSubtitle": "Quick access to the most recently prepared workplace archives.",
-    "widgetEmpty": "No OHS file yet. Open a company and go to the 'OHS File' tab.",
-    "widgetAll": "All",
-    "openCompany": "Open company page",
-    "status": {
-      "pending": "Queued",
-      "processing": "Preparing",
-      "completed": "Ready",
-      "failed": "Failed",
-      "expired": "Expired",
-      "cancelled": "Cancelled"
+    "topActions": {
+      "addCompany": "إضافة شركة",
+      "openAssignments": "فتح التكليفات",
+      "personnelInvite": "الموظفون والدعوات"
     }
   },
   "platformAdmin": {
     "leads": {
-      "backLink": "Back to platform admin",
-      "title": "Demo & quote requests",
-      "description": "All requests from the landing “Request demo”, registration “OSGB” and “Enterprise” forms are listed here. Update status, mark contacted leads, and close converted ones.",
-      "loadError": "Could not load requests: {message}",
-      "kpiTotal": "Total",
-      "kpiNew": "New",
-      "kpiContacted": "Contacted",
-      "kpiConverted": "Converted",
-      "filterStatus": "Status:",
-      "filterSource": "Source:",
-      "statusAll": "All",
-      "statusNew": "New",
-      "filterStatusContacted": "Contacted",
-      "statusContacted": "Contacted",
-      "statusQualified": "Qualified",
-      "statusConverted": "Won",
-      "statusRejected": "Rejected",
-      "sourceAll": "All",
-      "source_landing_demo": "Landing demo",
-      "source_register": "Registration form",
-      "source_cozumler_kurumsal": "Enterprise page",
-      "source_cozumler_osgb": "OSGB page",
-      "source_unknown": "Other",
-      "emptyTitle": "No requests for this filter.",
-      "emptyDescription": "OSGB/enterprise quote flows and landing “Request demo” submissions appear here.",
-      "tableColContact": "Contact",
-      "tableColCompany": "Company",
-      "tableColSourceType": "Source / type",
-      "tableColDate": "Date",
-      "tableColStatus": "Status",
-      "detailFullName": "Full name",
-      "detailEmail": "Email",
-      "detailPhone": "Phone",
-      "detailCompany": "Company",
-      "detailRequestType": "Request type",
-      "detailSource": "Source",
-      "detailEstCompanies": "Est. companies",
-      "detailEstEmployees": "Est. employees",
-      "detailEstLocations": "Est. locations",
-      "detailEstProfessionals": "Est. professionals",
-      "messageHeading": "Message",
-      "internalNoteTitle": "Internal note (manual quote, limits, pricing)",
-      "internalNoteHint": "Not shown to the customer. Capture agreed terms or plan codes here.",
-      "notesPlaceholder": "e.g. Professional custom: 50 users, annual fee…",
-      "saveNote": "Save note",
-      "savingNote": "Saving…",
-      "titleEmail": "Send email",
-      "titleCall": "Call",
-      "titleCopy": "Copy",
-      "errorNotesSave": "Could not save note",
-      "errorStatusUpdate": "Could not update",
-      "sourceUnknown": "Unknown"
+      "backLink": "العودة إلى إدارة المنصة",
+      "description": "جميع الطلبات من نموذج \"طلب عرض توضيحي\" في الصفحة الرئيسية ونماذج التسجيل \"OSGB\" و\"المؤسسة\" مدرجة هنا. قم بتحديث الحالة وتمييز العملاء المحتملين المتصل بهم وإغلاق المحولين.",
+      "detailCompany": "الشركة",
+      "detailEmail": "البريد الإلكتروني",
+      "detailEstCompanies": "الشركات المقدرة",
+      "detailEstEmployees": "الموظفون المقدرون",
+      "detailEstLocations": "المواقع المقدرة",
+      "detailEstProfessionals": "المهنيون المقدرون",
+      "detailFullName": "الاسم الكامل",
+      "detailPhone": "الهاتف",
+      "detailRequestType": "نوع الطلب",
+      "detailSource": "المصدر",
+      "emptyDescription": "تدفقات عروض أسعار OSGB/المؤسسة وطلبات \"طلب عرض توضيحي\" من الصفحة الرئيسية تظهر هنا.",
+      "emptyTitle": "لا توجد طلبات لهذا المرشح.",
+      "errorNotesSave": "تعذر حفظ الملاحظة",
+      "errorStatusUpdate": "تعذر التحديث",
+      "filterSource": "المصدر:",
+      "filterStatus": "الحالة:",
+      "filterStatusContacted": "تم التواصل",
+      "internalNoteHint": "غير مرئي للعميل. سجل الشروط المتفق عليها أو رموز الخطة هنا.",
+      "internalNoteTitle": "ملاحظة داخلية (عرض سعر يدوي، حدود، تسعير)",
+      "kpiContacted": "تم التواصل",
+      "kpiConverted": "تم التحويل",
+      "kpiNew": "جديد",
+      "kpiTotal": "الإجمالي",
+      "loadError": "تعذر تحميل الطلبات: {message}",
+      "messageHeading": "الرسالة",
+      "notesPlaceholder": "مثال: احترافي مخصص: 50 مستخدم، رسوم سنوية...",
+      "saveNote": "حفظ الملاحظة",
+      "savingNote": "جاري الحفظ...",
+      "source_cozumler_kurumsal": "صفحة المؤسسات",
+      "source_cozumler_osgb": "صفحة OSGB",
+      "source_landing_demo": "عرض توضيحي للصفحة المقصودة",
+      "source_register": "نموذج التسجيل",
+      "source_unknown": "أخرى",
+      "sourceAll": "الكل",
+      "sourceUnknown": "غير معروف",
+      "statusAll": "الكل",
+      "statusContacted": "تم التواصل",
+      "statusConverted": "تم الفوز",
+      "statusNew": "جديد",
+      "statusQualified": "مؤهل",
+      "statusRejected": "مرفوض",
+      "tableColCompany": "الشركة",
+      "tableColContact": "جهة الاتصال",
+      "tableColDate": "التاريخ",
+      "tableColSourceType": "المصدر / النوع",
+      "tableColStatus": "الحالة",
+      "title": "طلبات العرض التوضيحي والعروض",
+      "titleCall": "اتصال",
+      "titleCopy": "نسخ",
+      "titleEmail": "إرسال بريد إلكتروني"
     },
     "legalCorpus": {
-      "title": "Legal corpus by country",
-      "description": "Official regulatory documents ingested for RAG, grouped by jurisdiction. Tenant-private uploads stay on the tenant workspace path.",
-      "backLink": "Back to platform admin",
-      "refresh": "Refresh",
-      "statsHeading": "Documents by jurisdiction",
-      "officialOnly": "Official corpus only",
-      "tableHeading": "Documents (name order)",
-      "colTitle": "Title",
-      "colNumber": "Reference",
-      "colType": "Type",
-      "colJurisdiction": "Jurisdiction",
-      "colScope": "Scope",
-      "colActive": "Active",
-      "colSource": "Source URL",
-      "ingestHeading": "Ingest from official feeds",
-      "ingestUkHint": "Imports the latest UK Statutory Instruments entries from legislation.gov.uk Atom (titles + summaries).",
-      "ingestUkButton": "Import UK SI (Atom)",
-      "ingesting": "Importing…",
-      "ingestResult": "Inserted: {inserted}, skipped (already in DB): {skipped}",
-      "ingestError": "Import failed",
-      "emptyDocuments": "No documents match the filter.",
-      "scopeOfficial": "Official",
-      "scopePrivate": "Tenant",
-      "yes": "Yes",
-      "no": "No"
+      "backLink": "العودة إلى إدارة المنصة",
+      "colActive": "نشط",
+      "colJurisdiction": "الولاية القضائية",
+      "colNumber": "المرجع",
+      "colScope": "النطاق",
+      "colSource": "رابط المصدر",
+      "colTitle": "العنوان",
+      "colType": "النوع",
+      "description": "الوثائق التنظيمية الرسمية المستوردة لـ RAG، مجمعة حسب الولاية القضائية. تبقى الملفات المرفوعة الخاصة بالمستأجر في مسار مساحة عمل المستأجر.",
+      "emptyDocuments": "لا توجد وثائق تطابق المرشح.",
+      "ingestError": "فشل الاستيراد",
+      "ingestHeading": "استيراد من التغذيات الرسمية",
+      "ingesting": "جاري الاستيراد...",
+      "ingestResult": "تم الإدراج: {inserted}، تم التخطي (موجود بالفعل في قاعدة البيانات): {skipped}",
+      "ingestUkButton": "استيراد أدوات المملكة المتحدة القانونية (Atom)",
+      "ingestUkHint": "يستورد أحدث إدخالات الأدوات القانونية للمملكة المتحدة من legislation.gov.uk Atom (العناوين + الملخصات).",
+      "no": "لا",
+      "officialOnly": "المجموعة الرسمية فقط",
+      "refresh": "تحديث",
+      "scopeOfficial": "رسمي",
+      "scopePrivate": "المستأجر",
+      "statsHeading": "الوثائق حسب الولاية القضائية",
+      "tableHeading": "الوثائق (ترتيب الأسماء)",
+      "title": "المجموعة القانونية حسب البلد",
+      "yes": "نعم"
     }
   },
-  "demoRequest": {
-    "dialogTitle": "طلب عرض",
-    "dialogSubtitle": "نخطط لعرض قصير يناسب احتياجكم.",
-    "closeAria": "إغلاق",
-    "successTitle": "تم استلام الطلب",
-    "successBody": "سيتواصل فريقنا قريبًا. شكرًا لاهتمامكم.",
-    "successClose": "إغلاق",
-    "fieldName": "الاسم الكامل *",
-    "fieldEmail": "البريد الإلكتروني *",
-    "fieldPhone": "الهاتف",
-    "fieldCompany": "الشركة / الجهة",
-    "placeholderName": "أحمد محمد",
-    "placeholderEmail": "you@company.com",
-    "placeholderPhone": "+966 …",
-    "placeholderCompany": "شركة المثال",
-    "accountTypeLabel": "نوع الحساب",
-    "accountTypeUnset": "غير متأكد / لم أقرر",
-    "accountTypeIndividual": "فردي (خبير واحد)",
-    "accountTypeOsgb": "OSGB",
-    "accountTypeEnterprise": "مؤسسة / شركة",
-    "messageLabel": "رسالة (اختياري)",
-    "messagePlaceholder": "ما الوحدات التي تهتمون بها؟ عدد الموظفين؟ أوقات مناسبة؟",
-    "privacyLabel": "إشعار الخصوصية:",
-    "privacyText": "أوافق على معالجة بيانات الاتصال الخاصة بي فقط للرد على هذا الطلب.",
-    "privacyError": "يرجى تأكيد إشعار الخصوصية للمتابعة.",
-    "submitError": "تعذّر الإرسال. حاولوا مرة أخرى.",
-    "cancel": "إلغاء",
-    "submit": "إرسال الطلب",
-    "submitting": "جارٍ الإرسال…"
-  },
   "pricing": {
-    "heroEyebrow": "Individual plans",
-    "heroTitle": "Clear, scalable plans for workplace safety professionals.",
-    "heroDescription": "Start on Free and grow through Starter, Plus and Professional — Nova, risk analysis, field audits and library-backed document generation scale with your pace. On paid plans you choose monthly or yearly billing on each card.",
-    "introTitle": "Choose your individual plan",
-    "introBody": "On paid plans you can pick monthly or yearly billing on each card. Yearly billing covers twelve months for the price of ten (the card total updates accordingly). OSGB and enterprise customers use the quote flow. Each card shows “Who is it for?” and “Move up a tier” so you can see the next step for your profile.",
-    "billingPeriodAria": "Billing period",
-    "monthly": "Monthly",
-    "yearly": "Yearly",
-    "yearlyBadge": "· 2 months included",
-    "whoForLabel": "Who is it for?",
-    "upgradeSectionTitle": "Move up a tier",
-    "limitNotIncluded": "Not included",
-    "priceSuffixMonth": "/ mo",
-    "priceSuffixYear": "/ yr",
-    "priceFreeNote": "Free to start",
-    "priceYearlyNote": "About {monthly}/mo equivalent — 2 months included",
-    "priceMonthlyNote": "Monthly billing — upgrade whenever you need",
-    "freeStart": "Start free",
-    "currentPlan": "Current plan",
-    "selectPlan": "Choose plan",
-    "osgbOfferLink": "OSGB quote",
-    "enterpriseOfferLink": "Enterprise quote",
-    "planHighlights": {
-      "mostPopular": "Most popular",
-      "premium": "Premium"
-    },
     "actions": {
-      "nova_message": "Nova messages",
-      "ai_analysis": "AI analyses",
-      "document_generation": "Document generation",
-      "risk_analysis": "Risk analyses"
+      "ai_analysis": "تحليلات الذكاء الاصطناعي",
+      "document_generation": "إنشاء الوثائق",
+      "nova_message": "رسائل Nova",
+      "risk_analysis": "تحليلات المخاطر"
     },
-    "footerLimitsTitle": "Enforced on the server",
-    "footerLimitsBody": "Nova, analysis and generation allowances are consumed at the API layer — not only on screen.",
-    "footerOsgbTitle": "OSGB and enterprise separately",
-    "footerOsgbBody": "Team seats, portfolios, white-label, onboarding and invoicing are handled through the dedicated quote flow.",
-    "footerPro149Title": "Professional 149 recommended",
-    "footerPro149Body": "Balanced capacity for analyses, documents and field work for active individual professionals.",
-    "enterpriseTitle": "OSGB or enterprise use",
-    "enterpriseBody": "For multiple users, client portfolios, white-label, bespoke onboarding and invoicing there is no self‑serve checkout on this path — contact us to agree scope and contract.",
-    "enterpriseOsgbCta": "Request OSGB quote",
-    "enterpriseCorporateCta": "Request enterprise quote",
-    "enterpriseExplore": "Explore the product",
-    "enterpriseFootnoteLead": "Solution pages:",
-    "enterpriseFootnoteOsgb": "OSGB offering",
-    "enterpriseFootnoteEnterprise": "Enterprise offering",
+    "billingPeriodAria": "فترة الفوترة",
+    "currentPlan": "الخطة الحالية",
+    "enterpriseBody": "للمستخدمين المتعددين ومحافظ العملاء والعلامة البيضاء والإعداد المخصص والفوترة، لا يوجد دفع ذاتي في هذا المسار — اتصل بنا للاتفاق على النطاق والعقد.",
+    "enterpriseCorporateCta": "طلب عرض أسعار المؤسسة",
+    "enterpriseExplore": "استكشف المنتج",
+    "enterpriseFootnoteEnterprise": "عرض المؤسسة",
+    "enterpriseFootnoteLead": "صفحات الحلول:",
+    "enterpriseFootnoteOsgb": "عرض OSGB",
+    "enterpriseOfferLink": "عرض أسعار المؤسسة",
+    "enterpriseOsgbCta": "طلب عرض أسعار OSGB",
+    "enterpriseTitle": "استخدام OSGB أو المؤسسة",
+    "footerLimitsBody": "بدلات Nova والتحليل والإنشاء يتم استهلاكها على مستوى API — وليس فقط على الشاشة.",
+    "footerLimitsTitle": "مطبق على الخادم",
+    "footerOsgbBody": "مقاعد الفريق والمحافظ والعلامة البيضاء والإعداد والفوترة تتم من خلال تدفق العرض المخصص.",
+    "footerOsgbTitle": "OSGB والمؤسسة بشكل منفصل",
+    "footerPro149Body": "قدرة متوازنة للتحليلات والوثائق والعمل الميداني للمهنيين الأفراد النشطين.",
+    "footerPro149Title": "Professional 149 موصى به",
+    "freeStart": "ابدأ مجاناً",
+    "heroDescription": "ابدأ بالمجاني وانمُ عبر Starter وPlus وProfessional — Nova وتحليل المخاطر وتدقيق الميدان وإنشاء الوثائق المدعومة بالمكتبة تتوسع مع وتيرتك. في الخطط المدفوعة تختار الفوترة الشهرية أو السنوية على كل بطاقة.",
+    "heroEyebrow": "الخطط الفردية",
+    "heroTitle": "خطط واضحة وقابلة للتوسع لمختصي السلامة المهنية.",
+    "introBody": "في الخطط المدفوعة يمكنك اختيار الفوترة الشهرية أو السنوية لكل بطاقة. الفوترة السنوية تغطي اثني عشر شهراً بسعر عشرة أشهر (إجمالي البطاقة يتحدث وفقاً لذلك). عملاء OSGB والمؤسسات يستخدمون تدفق عروض الأسعار. كل بطاقة تظهر \"لمن هي؟\" و \"الانتقال لمستوى أعلى\" حتى تتمكن من رؤية الخطوة التالية لملفك الشخصي.",
+    "introTitle": "اختر خطتك الفردية",
+    "limitNotIncluded": "غير مشمول",
+    "monthly": "شهرياً",
+    "osgbOfferLink": "عرض سعر OSGB",
+    "planHighlights": {
+      "mostPopular": "الأكثر شعبية",
+      "premium": "مميز"
+    },
     "plans": {
       "free": {
-        "name": "Free",
-        "whoFor": "Trying RiskNova, students and light occasional use.",
-        "description": "Entry tier with monthly quotas to explore Nova chat, analyses and a small document workflow.",
-        "upgradeHint": "Upgrade to Starter when you need predictable quotas every month.",
-        "features": [
-          "Nova chat within monthly limits",
-          "Foundational AI analyses for risk workflows",
-          "Limited document generation",
-          "Field inspection entries within quotas",
-          "Exports within plan limits"
-        ]
-      },
-      "starter": {
-        "name": "Starter",
-        "whoFor": "Freelance specialists and steady but modest monthly workloads.",
-        "description": "Higher quotas for Nova, analyses and documents so weekly routines run without friction.",
-        "upgradeHint": "Choose Plus when incident analysis and training outputs become part of your workflow.",
-        "features": [
-          "Stronger Nova and analysis quotas",
-          "More monthly document generation",
-          "Incident analysis allowance",
-          "Training slides where included in quota",
-          "Exports scaled for individuals"
-        ]
+        "description": "المستوى الأساسي مع حصص شهرية لاستكشاف محادثة Nova والتحليلات وسير عمل المستندات الصغير.",
+        "name": "مجاني",
+        "upgradeHint": "ترقية إلى المبتدئ عندما تحتاج حصص يمكن التنبؤ بها كل شهر.",
+        "whoFor": "تجربة RiskNova والطلاب والاستخدام الخفيف العرضي."
       },
       "plus": {
-        "name": "Plus",
-        "whoFor": "Active consultants managing several clients each month.",
-        "description": "Balanced capacity across chat, analyses, risk modelling and field data.",
-        "upgradeHint": "Move to Professional when you need deeper inspection and reporting throughput.",
-        "features": [
-          "Higher caps across all core actions",
-          "More incident and training outputs",
-          "Field inspection headroom for busy weeks",
-          "Document throughput for recurring packs",
-          "Exports suited to multi-client work"
-        ]
-      },
-      "professional": {
-        "name": "Professional 99",
-        "whoFor": "Full-time OHS experts with dense weekly usage.",
-        "description": "Enterprise-grade individual ceiling before the top Professional tiers.",
-        "upgradeHint": "Step up to Professional 149 for the best value at scale.",
-        "features": [
-          "High Nova and AI analysis limits",
-          "Strong document generation cadence",
-          "Broad risk and field inspection capacity",
-          "Incident programme support within quota",
-          "Exports for intensive reporting"
-        ]
+        "description": "سعة متوازنة عبر المحادثة والتحليلات ونمذجة المخاطر وبيانات الميدان.",
+        "name": "بلس",
+        "upgradeHint": "الانتقال إلى المحترف عندما تحتاج فحص أعمق وإنتاجية التقارير.",
+        "whoFor": "الاستشاريون النشطون الذين يديرون عدة عملاء كل شهر."
       },
       "professional_149": {
-        "name": "Professional 149",
-        "whoFor": "Senior consultants and power users who live in the product.",
-        "description": "Recommended tier — generous ceilings across analyses, documents and field workflows.",
-        "upgradeHint": "Professional 199 adds maximum headroom for the busiest desks.",
-        "features": [
-          "Very high Nova and analysis quotas",
-          "Heavy document generation allowance",
-          "Large risk and inspection budgets",
-          "Incident and training outputs at scale",
-          "Exports aligned with premium throughput"
-        ]
+        "description": "المستوى الموصى به — حدود سخية عبر التحليلات والمستندات وسير عمل الميدان.",
+        "name": "المحترف 149",
+        "upgradeHint": "المحترف 199 يضيف أقصى مساحة للمكاتب الأكثر انشغالاً.",
+        "whoFor": "الاستشاريون الكبار والمستخدمون المتقدمون الذين يعيشون في المنتج."
       },
       "professional_199": {
-        "name": "Professional 199",
-        "whoFor": "Peak individual workloads and premium throughput expectations.",
-        "description": "Top self-serve tier before OSGB or enterprise contracting.",
-        "upgradeHint": "Need seats, portfolios or invoicing? Use OSGB or enterprise quotes.",
-        "features": [
-          "Maximum published individual quotas",
-          "Peak AI and document capacity",
-          "Largest inspection and risk envelopes",
-          "Full incident and training allowances in tier",
-          "Exports for the heaviest reporting cycles"
-        ]
+        "description": "أعلى مستوى خدمة ذاتية قبل عقود OSGB أو المؤسسات.",
+        "name": "المحترف 199",
+        "upgradeHint": "تحتاج مقاعد أو محافظ أو فوترة؟ استخدم عروض أسعار OSGB أو المؤسسات.",
+        "whoFor": "أحمال العمل الفردية القصوى وتوقعات الإنتاجية المتميزة."
+      },
+      "professional": {
+        "description": "حد فردي على مستوى المؤسسة قبل مستويات المحترف العليا.",
+        "name": "المحترف 99",
+        "upgradeHint": "ترقية إلى المحترف 149 للحصول على أفضل قيمة على نطاق واسع.",
+        "whoFor": "خبراء OHS بدوام كامل مع استخدام أسبوعي كثيف."
+      },
+      "starter": {
+        "description": "حصص أعلى لـ Nova والتحليلات والمستندات حتى تعمل الروتينات الأسبوعية بسلاسة.",
+        "name": "المبتدئ",
+        "upgradeHint": "اختر Plus عندما يصبح تحليل الحوادث ومخرجات التدريب جزءاً من سير عملك.",
+        "whoFor": "المتخصصون المستقلون وأحمال العمل الشهرية المستقرة والمتواضعة."
+      }
+    },
+    "priceFreeNote": "مجاني للبدء",
+    "priceMonthlyNote": "الفوترة الشهرية — ترقية متى احتجت",
+    "priceSuffixMonth": "/ شهر",
+    "priceSuffixYear": "/ سنة",
+    "priceYearlyNote": "حوالي {monthly}/شهر مكافئ — شهران مشمولان",
+    "selectPlan": "اختيار الخطة",
+    "upgradeSectionTitle": "الانتقال إلى مستوى أعلى",
+    "whoForLabel": "لمن هذا؟",
+    "yearly": "سنوي",
+    "yearlyBadge": "· شهران مشمولان"
+  },
+  "profile": {
+    "activity": {
+      "cancelled": "ملغى",
+      "complete": "مكتمل",
+      "completed": "مكتمل",
+      "in_progress": "قيد التنفيذ",
+      "noActivity": "لا توجد سجلات نشاط بعد",
+      "overdue": "متأخر",
+      "overdueStatus": "متأخر",
+      "pending": "معلق",
+      "planned": "مخطط",
+      "recentOps": "النشاط الحديث",
+      "total": "إجمالي المهام"
+    },
+    "changePhoto": "تغيير الصورة",
+    "danger": {
+      "button": "حذف الحساب",
+      "description": "حذف حسابك يزيل جميع بياناتك نهائياً ولا يمكن التراجع عن هذا الإجراء. وفقاً لقانون KVKK، يكتمل الحذف خلال 30 يوماً.",
+      "redirectMsg": "تم فتح تدفق حذف الحساب في تبويب الخصوصية والموافقات.",
+      "title": "منطقة الخطر"
+    },
+    "email": {
+      "current": "البريد الإلكتروني الحالي",
+      "info": "تغيير البريد الإلكتروني يتطلب التحقق. لن يتم تحديث بريد الحساب حتى تفتح الرابط المرسل إلى العنوان الجديد.",
+      "new": "البريد الإلكتروني الجديد",
+      "newPlaceholder": "name@company.com",
+      "submit": "بدء التغيير",
+      "title": "تغيير البريد الإلكتروني"
+    },
+    "loading": "جاري تحميل الملف الشخصي...",
+    "membership": "عضو منذ",
+    "mfa": {
+      "addDevice": "إضافة جهاز جديد",
+      "addDeviceHint": "امسح رمز QR باستخدام Google Authenticator. يمكنك إعطاء الجهاز اسماً مخصصاً.",
+      "backupWarning": "رموز النسخ الاحتياطي غير مدعومة. للحسابات الحرجة، سجل جهازين TOTP مختلفين على الأقل.",
+      "closed": "المصادقة الثنائية معطلة",
+      "connect": "ربط Google Authenticator",
+      "description": "يعمل مع Google Authenticator وAuthy وتطبيقات TOTP المشابهة. عند التفعيل، يصبح هذا الحساب محمياً بعامل ثانٍ.",
+      "deviceName": "اسم الجهاز",
+      "deviceNamePlaceholder": "مثال: آيفون محمد",
+      "loading": "جاري التحميل...",
+      "noDevices": "لم يتم ربط أي جهاز MFA بعد.",
+      "onlyPassword": "حسابك محمي حالياً بكلمة المرور فقط.",
+      "open": "المصادقة الثنائية مفعلة",
+      "registeredDevices": "أجهزة MFA المسجلة",
+      "removeDevice": "إزالة",
+      "setupKey": "مفتاح الإعداد",
+      "title": "المصادقة الثنائية",
+      "verify": "تحقق",
+      "verifyCodePlaceholder": "123456",
+      "verifying": "جاري التحقق..."
+    },
+    "msg": {
+      "emailConfirmSent": "تم إرسال رابط التحقق إلى العنوان الجديد.",
+      "emailEmpty": "لا يمكن أن يكون عنوان البريد الإلكتروني الجديد فارغاً.",
+      "emailInvalid": "أدخل عنوان بريد إلكتروني صحيح.",
+      "emailSame": "لا يمكن أن يكون البريد الإلكتروني الجديد مطابقاً للحالي.",
+      "emailServiceError": "تعذر الوصول إلى خدمة تحديث البريد الإلكتروني.",
+      "mfaCodeInvalid": "يجب أن يكون رمز التحقق مكوناً من 6 أرقام.",
+      "mfaEnabled": "تم تفعيل المصادقة الثنائية.",
+      "mfaEnrolled": "تم إنشاء التسجيل. تحقق من الرمز الآن لتفعيل المصادقة الثنائية.",
+      "mfaRemoveConfirm": "هل أنت متأكد من أنك تريد إزالة جهاز المصادقة الثنائية هذا؟",
+      "mfaRemoved": "تم إزالة جهاز المصادقة الثنائية.",
+      "mfaServiceError": "تعذر الوصول إلى خدمة المصادقة الثنائية.",
+      "passwordError": "تعذر تحديث كلمة المرور.",
+      "passwordMismatch": "كلمات المرور الجديدة غير متطابقة.",
+      "passwordUpdated": "تم تحديث كلمة المرور بنجاح.",
+      "photoError": "فشل في رفع الصورة.",
+      "photoUpdated": "تم تحديث الصورة.",
+      "prefsSaved": "تم حفظ التفضيلات.",
+      "profileError": "تعذر حفظ الملف الشخصي.",
+      "profileSaved": "تم حفظ الملف الشخصي.",
+      "sessionServiceError": "تعذر الوصول إلى خدمة الجلسة.",
+      "signedOut": "تم تسجيل الخروج من هذا الجهاز.",
+      "signedOutAll": "تم تسجيل الخروج من جميع الأجهزة."
+    },
+    "org": {
+      "city": "المدينة",
+      "name": "اسم المؤسسة",
+      "title": "معلومات المؤسسة"
+    },
+    "password": {
+      "current": "كلمة المرور الحالية",
+      "new": "كلمة المرور الجديدة",
+      "newPlaceholder": "12 حرف على الأقل، أحرف كبيرة/صغيرة، رقم ورمز",
+      "repeat": "كلمة المرور الجديدة (إعادة)",
+      "submit": "تحديث كلمة المرور",
+      "title": "تغيير كلمة المرور"
+    },
+    "personal": {
+      "email": "البريد الإلكتروني",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "الاسم الكامل",
+      "jobTitle": "المسمى الوظيفي / المنصب",
+      "jobTitlePlaceholder": "أخصائي الصحة والسلامة المهنية",
+      "phone": "الهاتف",
+      "phonePlaceholder": "+1 xxx xxx xxxx",
+      "save": "حفظ",
+      "title": "المعلومات الشخصية"
+    },
+    "prefs": {
+      "emailNotif": "إشعارات البريد الإلكتروني",
+      "emailNotifDesc": "تذكيرات المهام والتحديثات",
+      "language": "اللغة",
+      "notifications": "الإشعارات",
+      "pushNotif": "الإشعارات الفورية",
+      "pushNotifDesc": "إشعارات المتصفح الفورية",
+      "save": "حفظ التفضيلات",
+      "theme": "المظهر",
+      "themeDark": "داكن",
+      "themeLight": "فاتح",
+      "themeSystem": "النظام"
+    },
+    "roles": {
+      "dsp": "DSP",
+      "ohs_specialist": "أخصائي الصحة والسلامة المهنية",
+      "organization_admin": "مدير المؤسسة",
+      "osgb_manager": "مدير OSGB",
+      "platform_admin": "مدير المنصة",
+      "super_admin": "المدير العام",
+      "title": "الأدوار والصلاحيات",
+      "viewer": "مشاهد",
+      "workplace_physician": "طبيب مكان العمل"
+    },
+    "sessions": {
+      "active": "نشط",
+      "allDevices": "تسجيل الخروج من جميع الأجهزة",
+      "ip": "عنوان IP",
+      "lastActive": "آخر نشاط",
+      "opened": "مفتوح",
+      "thisDevice": "تسجيل الخروج من هذا الجهاز",
+      "title": "الجلسات النشطة"
+    },
+    "tabs": {
+      "activity": "النشاط",
+      "preferences": "التفضيلات",
+      "privacy": "الخصوصية والموافقات",
+      "profile": "الملف الشخصي",
+      "security": "الأمان"
+    },
+    "updated": "محدث"
+  },
+  "publicInvite": {
+    "acceptedCta": "الذهاب إلى لوحة التحكم",
+    "acceptedDesc": "تم قبول هذه الدعوة مسبقاً. يمكنك الوصول إلى الشركة من لوحة التحكم الخاصة بك.",
+    "acceptedTitle": "تم قبول الدعوة مسبقاً",
+    "backHome": "العودة إلى الصفحة الرئيسية",
+    "brandEyebrow": "RiskNova",
+    "btnLogin": "تسجيل الدخول",
+    "btnRegister": "إنشاء حساب",
+    "cardEyebrow": "دعوة الشركة",
+    "dbErrorDesc": "تعذر الوصول إلى قاعدة البيانات. يرجى المحاولة مرة أخرى لاحقاً.",
+    "dbErrorTitle": "مشكلة في الاتصال",
+    "declinedDesc": "تم رفض هذه الدعوة سابقاً. تواصل مع المرسل إذا كنت تحتاج دعوة جديدة.",
+    "declinedTitle": "تم رفض الدعوة",
+    "dtExpires": "تنتهي في",
+    "dtInvitee": "المدعو",
+    "dtInviter": "دعا من قبل",
+    "dtNote": "ملاحظة",
+    "expiredDesc": "انتهت صلاحية هذه الدعوة. اطلب دعوة جديدة.",
+    "expiredTitle": "انتهت صلاحية الدعوة",
+    "inviteTitle": "دعتك {company} للانضمام إلى مساحة عمل RiskNova الخاصة بهم.",
+    "loginPrompt": "لقبول الدعوة، تحتاج إلى حساب مسجل باسم {email}.",
+    "notFoundDesc": "هذه الدعوة لم تعد متاحة أو الرابط غير صالح. اطلب من الشخص الذي دعاك رابطاً جديداً.",
+    "notFoundTitle": "الدعوة غير موجودة",
+    "revokedDesc": "تم إلغاء هذه الدعوة من قبل الشخص الذي أرسلها.",
+    "revokedTitle": "تم إلغاء الدعوة",
+    "shellTitle": "دعوة الشركة",
+    "unknownCompany": "شركة",
+    "unspecified": "غير محدد"
+  },
+  "publicInviteActions": {
+    "acceptBtn": "قبول الدعوة",
+    "acceptedRedirecting": "تم قبول الدعوة. جاري التوجيه إلى لوحة التحكم...",
+    "accepting": "جاري القبول...",
+    "dbError": "تعذر الوصول إلى قاعدة البيانات.",
+    "declineBtn": "رفض",
+    "declinedMessage": "لقد رفضت الدعوة. يمكنك طلب دعوة جديدة في أي وقت.",
+    "declineProcessing": "جاري المعالجة...",
+    "emailMismatch": "تم إرسال هذه الدعوة إلى {inviteeEmail}، لكنك مسجل دخول باسم {currentUserEmail}.",
+    "emailMismatchHint": "يرجى تسجيل الدخول بالحساب الصحيح للقبول.",
+    "errAuthRequired": "يجب أن تكون مسجل دخول لقبول الدعوة.",
+    "errExpired": "انتهت صلاحية هذه الدعوة.",
+    "errNotFound": "الدعوة غير موجودة.",
+    "errNotPending": "هذه الدعوة لم تعد معلقة (ربما تم قبولها أو رفضها أو إلغاؤها).",
+    "errUnexpected": "حدث خطأ غير متوقع.",
+    "errWrongUser": "هذه الدعوة لا تخص المستخدم المسجل الدخول. سجل الدخول بالحساب الصحيح."
+  },
+  "publicSurvey": {
+    "congrats": "تهانينا!",
+    "examFailDesc": "درجتك: {score}%. علامة النجاح: {pass}%.",
+    "examPassDesc": "لقد نجحت في الامتحان بدرجة {score}%.",
+    "expiredDesc": "انتهت صلاحية هذا الرابط.",
+    "expiredTitle": "انتهت صلاحية الرابط",
+    "invalidDesc": "هذا الرابط لم يعد صالحاً أو لا يمكن العثور عليه.",
+    "invalidTitle": "رابط غير صالح",
+    "loading": "جاري التحميل…",
+    "minutesPipe": "| {minutes} دقيقة",
+    "next": "التالي",
+    "no": "لا",
+    "openEndedPlaceholder": "اكتب إجابتك…",
+    "participantLabel": "المشارك:",
+    "passPipe": "| النجاح: {score}%",
+    "prev": "السابق",
+    "questionBadge": "السؤال {n}",
+    "questionCount": "{count} أسئلة",
+    "required": "* مطلوب",
+    "sending": "جاري الإرسال…",
+    "sorry": "عذراً",
+    "startButton": "أنا {name}، ابدأ",
+    "submit": "إرسال",
+    "submitError": "لا يمكن حفظ الإجابات. تحقق من اتصالك وحاول مرة أخرى.",
+    "surveyCompleteDesc": "تم حفظ إجاباتك بنجاح.",
+    "thanks": "شكراً لك!",
+    "verifySubtitleExam": "تحقق من هويتك قبل بدء الامتحان.",
+    "verifySubtitleSurvey": "تحقق من هويتك قبل بدء الاستطلاع.",
+    "verifyTitle": "التحقق من الهوية",
+    "yes": "نعم"
+  },
+  "pwaInstallPage": {
+    "cards": {
+      "android": {
+        "step1": "افتح getrisknova.com",
+        "step2": "اضغط على تثبيت التطبيق",
+        "step3": "سجل الدخول من أيقونة RiskNova",
+        "text": "افتح RiskNova في Chrome أو Edge؛ إذا ظهرت لك رسالة تثبيت، اختر تثبيت التطبيق.",
+        "title": "أندرويد"
+      },
+      "ios": {
+        "step1": "افتح الموقع في Safari",
+        "step2": "اضغط على أيقونة المشاركة",
+        "step3": "اختر إضافة إلى الشاشة الرئيسية",
+        "text": "افتح في Safari؛ استخدم مشاركة ← إضافة إلى الشاشة الرئيسية لإنشاء أيقونة RiskNova.",
+        "title": "iPhone و iPad"
+      },
+      "windows": {
+        "step1": "افتح في Edge أو Chrome",
+        "step2": "انقر على أيقونة تثبيت التطبيق",
+        "step3": "افتح RiskNova من قائمة ابدأ",
+        "text": "استخدم أيقونة التثبيت في شريط عنوان Chrome أو Edge لفتح RiskNova في نافذة سطح مكتب منفصلة.",
+        "title": "ويندوز"
+      }
+    },
+    "ctaLogin": "تسجيل الدخول إلى المنصة",
+    "ctaRegister": "ابدأ مجاناً",
+    "eyebrow": "لا حاجة لمتجر التطبيقات",
+    "heroBody": "أضف RiskNova إلى شاشتك الرئيسية أو سطح المكتب على iOS وأندرويد وويندوز. التحديثات على الموقع تصل تلقائياً إلى تجربتك المثبتة.",
+    "heroTitle": "استخدم RiskNova كتطبيق على الهاتف المحمول وسطح المكتب",
+    "metaDescription": "ثبت RiskNova كتطبيق ويب تقدمي على iOS وأندرويد وويندوز بدون متجر تطبيقات.",
+    "metaTitle": "تطبيق RiskNova",
+    "updatesBody": "عندما يتم تحديث تطبيق RiskNova الويب، يحصل تطبيق PWA الخاص بك على الإصدار الجديد—لا تنتظر تحديثات المتجر.",
+    "updatesTitle": "تصل التحديثات تلقائياً"
+  },
+  "pwaPrompt": {
+    "appButton": "تثبيت",
+    "appDescription": "ارجع إلى العمل الميداني والمستندات و Nova من شاشتك الرئيسية.",
+    "appTitle": "تثبيت تطبيق RiskNova",
+    "asideAria": "تثبيت تطبيق RiskNova",
+    "dismissAria": "إغلاق تذكير التثبيت",
+    "iosHint": "على iPhone/iPad، استخدم مشاركة ← إضافة إلى الشاشة الرئيسية.",
+    "publicButton": "تثبيت التطبيق",
+    "publicDescription": "افتح بسرعة في نافذة منفصلة على iOS وAndroid وWindows.",
+    "publicTitle": "تثبيت RiskNova كتطبيق"
+  },
+  "riskScoring": {
+    "classification": {
+      "bow_tie": {
+        "critical": {
+          "action": "إيقاف العمل؛ إعادة تصميم الحواجز",
+          "label": "حرج"
+        },
+        "follow_up": {
+          "action": "الحواجز كافية؛ متابعة المراقبة",
+          "label": "مقبول"
+        },
+        "high": {
+          "action": "تعزيز عاجل للحواجز؛ مراجعة العملية",
+          "label": "عالي"
+        },
+        "low": {
+          "action": "مراجعة فعالية الحواجز",
+          "label": "منخفض"
+        },
+        "medium": {
+          "action": "إضافة حواجز أخرى",
+          "label": "متوسط"
+        }
+      },
+      "checklist": {
+        "critical": {
+          "action": "إيقاف النشاط؛ مراجعة كاملة",
+          "label": "غير كافٍ بشكل حرج"
+        },
+        "follow_up": {
+          "action": "الحفاظ على الممارسة الحالية",
+          "label": "متوافق"
+        },
+        "high": {
+          "action": "بدء إجراءات تصحيحية عاجلة",
+          "label": "غير كافٍ"
+        },
+        "low": {
+          "action": "سد الثغرات على المدى القصير",
+          "label": "مقبول"
+        },
+        "medium": {
+          "action": "إعداد خطة تحسين أوسع",
+          "label": "يحتاج إلى تحسين"
+        }
+      },
+      "fk": {
+        "critical": {
+          "action": "إيقاف العمل فوراً",
+          "label": "مخاطر عالية جداً"
+        },
+        "follow_up": {
+          "action": "قد يحتاج اقتراحات تحسين؛ لا حاجة لإجراء عاجل",
+          "label": "مقبول"
+        },
+        "high": {
+          "action": "إجراء فوري؛ النظر في إيقاف العمل",
+          "label": "مخاطر عالية"
+        },
+        "low": {
+          "action": "الاحتفاظ تحت المراجعة؛ تخطيط التحسينات",
+          "label": "قلق متوسط"
+        },
+        "medium": {
+          "action": "اتخاذ إجراء على المدى القصير",
+          "label": "كبير"
+        }
+      },
+      "fmea": {
+        "critical": {
+          "action": "إيقاف العمل؛ إجراء تحليل السبب الجذري",
+          "label": "مخاطر حرجة"
+        },
+        "follow_up": {
+          "action": "الضوابط الحالية كافية؛ الاستمرار في المراقبة",
+          "label": "مقبول"
+        },
+        "high": {
+          "action": "إجراء عاجل؛ النظر في تغيير التصميم",
+          "label": "مخاطر عالية"
+        },
+        "low": {
+          "action": "تخطيط التحسينات",
+          "label": "مخاطر منخفضة"
+        },
+        "medium": {
+          "action": "اتخاذ إجراء؛ تعزيز الضوابط",
+          "label": "مخاطر متوسطة"
+        }
+      },
+      "fta": {
+        "critical": {
+          "action": "عدم التشغيل؛ القضاء على الأسباب الجذرية",
+          "label": "حرج"
+        },
+        "follow_up": {
+          "action": "موثوقية النظام مناسبة",
+          "label": "مقبول"
+        },
+        "high": {
+          "action": "إعادة تصميم النظام",
+          "label": "عالي"
+        },
+        "low": {
+          "action": "تقييم التكرار / النسخ الاحتياطية",
+          "label": "منخفض"
+        },
+        "medium": {
+          "action": "إضافة تكرار للمكونات الحرجة",
+          "label": "متوسط"
+        }
+      },
+      "hazop": {
+        "critical": {
+          "action": "إيقاف العملية؛ مراجعة التصميم",
+          "label": "غير مقبول"
+        },
+        "follow_up": {
+          "action": "الضوابط الحالية كافية",
+          "label": "مقبول"
+        },
+        "high": {
+          "action": "تغيير العملية أو حاجز إضافي مطلوب",
+          "label": "عالي"
+        },
+        "low": {
+          "action": "تخطيط المراقبة والتحسينات",
+          "label": "منخفض"
+        },
+        "medium": {
+          "action": "تقييم طبقات الحماية الإضافية",
+          "label": "متوسط"
+        }
+      },
+      "lopa": {
+        "critical": {
+          "action": "إيقاف العملية؛ مراجعة التصميم",
+          "label": "غير مقبول"
+        },
+        "follow_up": {
+          "action": "طبقات الحماية الحالية كافية",
+          "label": "مقبول"
+        },
+        "high": {
+          "action": "طبقات متعددة أو تغيير العملية مطلوب",
+          "label": "مخاطر عالية"
+        },
+        "low": {
+          "action": "منخفض قدر الإمكان العملي",
+          "label": "ALARP"
+        },
+        "medium": {
+          "action": "إضافة طبقة حماية إضافية",
+          "label": "تحسين مطلوب"
+        }
+      },
+      "matrix": {
+        "critical": {
+          "action": "إيقاف العمل فوراً؛ تدابير طوارئ",
+          "label": "غير مقبول"
+        },
+        "follow_up": {
+          "action": "قد لا تكون هناك حاجة لتدابير إضافية؛ المراقبة كافية",
+          "label": "مقبول"
+        },
+        "high": {
+          "action": "اتخذ إجراء قريباً",
+          "label": "مخاطر عالية"
+        },
+        "low": {
+          "action": "الضوابط الحالية كافية؛ استمر في المراقبة",
+          "label": "مخاطر منخفضة"
+        },
+        "medium": {
+          "action": "خطط لأنشطة التحسين",
+          "label": "مخاطر متوسطة"
+        }
+      },
+      "r2d": {
+        "critical": {
+          "action": "قيّم إيقاف العمل",
+          "label": "حرج"
+        },
+        "follow_up": {
+          "action": "المراقبة الروتينية كافية",
+          "label": "مراقبة"
+        },
+        "high": {
+          "action": "تدخل ذو أولوية مطلوب",
+          "label": "عالي"
+        },
+        "low": {
+          "action": "جدولة إعادة تقييم منظمة",
+          "label": "منخفض"
+        },
+        "medium": {
+          "action": "إشراف متزايد مطلوب",
+          "label": "متوسط"
+        }
+      }
+    },
+    "fk": {
+      "exposure": {
+        "v0_5": "نادر جداً (مرة في السنة)",
+        "v1": "نادر (مرة في الشهر)",
+        "v10": "مستمر (معظم اليوم)",
+        "v2": "أحياناً (مرة في الأسبوع)",
+        "v3": "أحياناً (عدة مرات في الأسبوع)",
+        "v6": "متكرر (يومياً)"
+      },
+      "likelihood": {
+        "v0_1": "مستحيل تقريباً",
+        "v0_2": "غير محتمل جداً",
+        "v0_5": "غير متوقع لكن ممكن",
+        "v1": "احتمالية منخفضة، غير مهملة",
+        "v10": "محتمل جداً / متوقع",
+        "v3": "نادر لكن ممكن",
+        "v6": "محتمل جداً"
+      },
+      "severity": {
+        "v1": "ملحوظ، إسعافات أولية",
+        "v100": "كارثة جماعية، وفيات متعددة",
+        "v15": "خطير جداً، فقدان طرف",
+        "v3": "كبير، علاج خارجي",
+        "v40": "كارثة، وفاة واحدة",
+        "v7": "خطير، ضرر دائم"
+      }
+    },
+    "fmea": {
+      "detection": {
+        "v1": "اكتشاف شبه مؤكد",
+        "v10": "لا يمكن الاكتشاف",
+        "v2": "فرصة عالية جداً للاكتشاف",
+        "v3": "فرصة عالية",
+        "v4": "متوسط-عالي",
+        "v5": "متوسط",
+        "v6": "منخفض-متوسط",
+        "v7": "منخفض",
+        "v8": "منخفض جداً",
+        "v9": "فرصة ضئيلة"
+      },
+      "occurrence": {
+        "v1": "مستحيل تقريباً (< 1/1,000,000)",
+        "v10": "مؤكد تقريباً (≥ 1/2)",
+        "v2": "ضئيل (1/20,000)",
+        "v3": "منخفض جداً (1/4,000)",
+        "v4": "منخفض (1/1,000)",
+        "v5": "منخفض-متوسط (1/400)",
+        "v6": "متوسط (1/80)",
+        "v7": "متوسط-عالي (1/40)",
+        "v8": "عالي (1/20)",
+        "v9": "عالي جداً (1/8)"
+      },
+      "severity": {
+        "v1": "لا تأثير — غير ملحوظ",
+        "v10": "كارثي — وفاة / حادث جماعي",
+        "v2": "طفيف جداً — تأثير ضئيل",
+        "v3": "طفيف — إزعاج بسيط",
+        "v4": "منخفض — انخفاض في الأداء",
+        "v5": "متوسط — فقدان كبير في الأداء",
+        "v6": "عالي — ضعف في وظيفة النظام",
+        "v7": "عالي جداً — غير قابل للتشغيل",
+        "v8": "خطر (مع تحذير) — خطر إصابة",
+        "v9": "خطر (بدون تحذير) — إصابة خطيرة"
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "after": "بعد",
+        "before": "قبل",
+        "early": "مبكر",
+        "late": "متأخر",
+        "less": "أقل",
+        "more": "أكثر",
+        "noNot": "لا / ليس",
+        "otherThan": "غير ذلك",
+        "partOf": "جزء من",
+        "reverse": "عكس"
+      },
+      "parameters": {
+        "composition": "التركيب",
+        "flow": "التدفق",
+        "level": "المستوى",
+        "mixing": "الخلط",
+        "ph": "الأس الهيدروجيني",
+        "pressure": "الضغط",
+        "reaction": "التفاعل",
+        "speed": "السرعة",
+        "temperature": "درجة الحرارة",
+        "time": "الوقت"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v0_00001": "مرة واحدة في 100,000 سنة — نادر جداً",
+        "v0_0001": "مرة واحدة في 10,000 سنة — نادر جداً",
+        "v0_001": "مرة واحدة في 1,000 سنة — نادر",
+        "v0_01": "مرة واحدة في 100 سنة — عرضي",
+        "v0_1": "مرة واحدة في 10 سنوات — متكرر",
+        "v1": "مرة واحدة في السنة — متكرر جداً"
+      },
+      "pfd": {
+        "v0_001": "نظام أمان آلي (فئة SIL-1)",
+        "v0_01": "استجابة مشغل مدرب / إنذار",
+        "v0_1": "تحكم إداري بسيط"
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "منخفض جداً (مستحيل تقريباً)"
+        },
+        "i2": {
+          "description": "منخفض (نادر، غير متوقع)"
+        },
+        "i3": {
+          "description": "متوسط (غير محتمل لكن ممكن)"
+        },
+        "i4": {
+          "description": "عالي (محتمل، غير مفاجئ)"
+        },
+        "i5": {
+          "description": "عالي جداً (متوقع، لا مفر منه)"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "طفيف جداً (لا وقت ضائع)"
+        },
+        "i2": {
+          "description": "طفيف (لا إصابة بوقت ضائع)"
+        },
+        "i3": {
+          "description": "متوسط (إصابة بوقت ضائع)"
+        },
+        "i4": {
+          "description": "كبير (ضرر دائم، بتر)"
+        },
+        "i5": {
+          "description": "كارثي (وفاة، وفيات متعددة)"
+        }
+      }
+    },
+    "methods": {
+      "bow_tie": {
+        "description": "ربطة العنق — تهديد–حاجز–نتيجة",
+        "name": "ربطة العنق",
+        "tooltip": "احتمالية التهديد وشدة النتائج مع الحواجز الوقائية والتخفيفية؛ المخاطر المتبقية من قوة الحاجز."
+      },
+      "checklist": {
+        "description": "قائمة مراجعة — نسبة الامتثال",
+        "name": "قائمة المراجعة",
+        "tooltip": "امتثال مرجح من عناصر موافق / غير موافق / جزئي—جيد للمراجعات والتفتيشات."
+      },
+      "fine_kinney": {
+        "description": "حاصل ضرب الاحتمالية × الشدة × التعرض",
+        "name": "فاين-كيني",
+        "tooltip": "طريقة كمية شائعة لتقييم المخاطر: L (0.1–10)، S (1–100)، E (0.5–10)؛ متوافقة مع ISO 31000."
+      },
+      "fmea": {
+        "description": "تحليل أنماط الفشل والتأثيرات — RPN",
+        "name": "FMEA",
+        "tooltip": "الشدة (1–10) × التكرار (1–10) × الكشف (1–10) = RPN. مثالي للعمليات والصيانة؛ IEC 60812."
+      },
+      "fta": {
+        "description": "تحليل شجرة الأخطاء — موثوقية النظام",
+        "name": "FTA",
+        "tooltip": "تفكيك فشل النظام باستخدام بوابات AND/OR؛ يُستخدم في الطيران والنووي والأنظمة الحرجة؛ IEC 61025."
+      },
+      "hazop": {
+        "description": "دراسة المخاطر وقابلية التشغيل",
+        "name": "HAZOP",
+        "tooltip": "الكلمات الإرشادية (لا، أقل، أكثر، عكس، ...) لاستكشاف انحرافات العملية؛ شائع في المصانع الكيميائية/البترولية؛ IEC 61882."
+      },
+      "jsa": {
+        "description": "تحليل سلامة العمل — مخاطر قائمة على الخطوات",
+        "name": "JSA",
+        "tooltip": "الشدة × الاحتمالية لكل خطوة / فعالية التحكم؛ أساسي للبناء والعمل الميداني."
+      },
+      "l_matrix": {
+        "description": "مصفوفة مخاطر الاحتمالية-الشدة 5×5",
+        "name": "مصفوفة من النوع L",
+        "tooltip": "اختر الاحتمالية (1–5) والشدة (1–5)؛ اقرأ المخاطر من مصفوفة ملونة من 25 خلية (متوافقة مع ممارسة السلامة المهنية التركية)."
+      },
+      "lopa": {
+        "description": "تحليل طبقات الحماية — تقليل التكرار",
+        "name": "LOPA",
+        "tooltip": "اضرب تكرار البدء في قيم PFD للطبقات؛ غالباً ما يُقترن بأهداف SIL في سلامة العمليات."
+      },
+      "r_skor": {
+        "description": "نقاط فحص ميداني مرجحة مع 9 معاملات",
+        "name": "R-SKOR 2D",
+        "tooltip": "طريقة RiskNova: تسعة معاملات (C1–C9) ترجح المدخلات البصرية والميدانية؛ تدعم التسجيل الآلي من الصور."
+      }
+    },
+    "panel": {
+      "bowtie": {
+        "consequence": "شدة العواقب",
+        "mitigation": "الحواجز التخفيفية",
+        "prevention": "الحواجز الوقائية",
+        "rawRisk": "المخاطر الخام",
+        "residualRisk": "المخاطر المتبقية",
+        "threat": "احتمالية التهديد"
+      },
+      "checklist": {
+        "add": "+ إضافة",
+        "compliantLine": "{n} متوافق",
+        "itemPlaceholder": "عنصر التحكم...",
+        "itemsHeading": "فحص العناصر ({count})",
+        "nonCompliantLine": "{n} غير متوافق",
+        "partialLine": "{n} جزئي",
+        "removeTitle": "إزالة",
+        "statusKismi": "جزئي",
+        "statusNa": "غير متاح",
+        "statusUygun": "متوافق",
+        "statusUygunDegil": "غير متوافق"
+      },
+      "fmea": {
+        "detection": "الكشف (D)",
+        "formula": "S × O × D = RPN",
+        "occurrence": "الحدوث (O)",
+        "severity": "الشدة (S)"
+      },
+      "fta": {
+        "add": "+ إضافة",
+        "componentDefault": "المكون {n}",
+        "componentPlaceholder": "اسم المكون",
+        "componentsHeading": "المكونات ({count})",
+        "failureRateTitle": "احتمالية الفشل (0-1)",
+        "gate": "البوابة",
+        "gateType": "نوع البوابة:",
+        "removeTitle": "إزالة",
+        "systemCriticality": "أهمية النظام",
+        "systemProb": "احتمالية النظام"
+      },
+      "hazop": {
+        "detectEasy": "سهل",
+        "detectHard": "صعب",
+        "detectability": "القابلية للاكتشاف",
+        "deviation": "وصف الانحراف",
+        "deviationPlaceholder": "وصف الانحراف...",
+        "guideWord": "الكلمة الدليلية",
+        "likelihood": "الاحتمالية",
+        "parameter": "معامل العملية",
+        "severity": "الشدة"
+      },
+      "jsa": {
+        "add": "+ إضافة",
+        "avg": "متوسط",
+        "control": "التحكم",
+        "controlsPlaceholder": "إجراءات التحكم...",
+        "hazardPlaceholder": "الخطر...",
+        "highRisk": "الخطوات عالية المخاطر",
+        "jobPlaceholder": "اسم الوظيفة...",
+        "jobTitle": "المسمى الوظيفي",
+        "likelihood": "الاحتمالية",
+        "max": "الحد الأقصى",
+        "removeTitle": "إزالة",
+        "severity": "الشدة",
+        "stepDefault": "الخطوة {n}",
+        "stepDescPlaceholder": "وصف الخطوة...",
+        "stepScoreIntro": "نقاط الخطوة:",
+        "stepsHeading": "خطوات الوظيفة ({count})"
+      },
+      "lopa": {
+        "addLayer": "+ إضافة",
+        "consequence": "شدة العواقب",
+        "consequenceV1": "منخفض",
+        "consequenceV2": "طفيف",
+        "consequenceV3": "متوسط",
+        "consequenceV4": "شديد",
+        "consequenceV5": "كارثي",
+        "initFreq": "تكرار الحدث المبدئي",
+        "layerDefault": "الطبقة {n}",
+        "layerNamePlaceholder": "اسم الطبقة",
+        "layerPfd": "احتمالية فشل الطبقة",
+        "layersHeading": "طبقات الحماية ({count})",
+        "meetsTarget": "يلبي الهدف المقبول",
+        "removeTitle": "إزالة",
+        "riskReduction": "تقليل المخاطر",
+        "target": "الهدف",
+        "targetMet": "مُحقق",
+        "targetNotMet": "غير مُحقق"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employee_representative": "ممثل الموظفين",
+        "employer": "صاحب العمل",
+        "employer_representative": "ممثل صاحب العمل",
+        "knowledgeable_employee": "موظف على دراية بالمخاطر",
+        "ohs_specialist": "أخصائي الصحة والسلامة المهنية",
+        "other_health_personnel": "أفراد صحيون آخرون",
+        "support_staff": "فريق الدعم",
+        "workplace_physician": "طبيب مكان العمل"
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "description": "عدد/كثافة الأجسام الخطرة المرصودة في الميدان",
+        "label": "كثافة المخاطر"
+      },
+      "c2": {
+        "description": "الخوذات والقفازات والنظارات الواقية المفقودة، إلخ",
+        "label": "فجوات معدات الحماية الشخصية"
+      },
+      "c3": {
+        "description": "دخول المنطقة المحظورة، العمل غير المحمي، التعرض للسقوط",
+        "label": "مخاطر السلوك"
+      },
+      "c4": {
+        "description": "الحرارة والضوضاء والاهتزاز والضغوط المماثلة",
+        "label": "الضغط البيئي"
+      },
+      "c5": {
+        "description": "تسرب الغازات، المواد الكيميائية، المخاطر الكهربائية",
+        "label": "كيميائي / كهربائي"
+      },
+      "c6": {
+        "description": "المخارج المحجوبة، الأرضيات المبللة، عوائق الممرات",
+        "label": "الوصول / العوائق"
+      },
+      "c7": {
+        "description": "تجاوز الحراس، الصيانة المتأخرة",
+        "label": "الآلات / العملية"
+      },
+      "c8": {
+        "description": "كثافة الرافعة الشوكية، تقاطع الخطوط، تضارب المشاة والمركبات",
+        "label": "حركة المركبات"
+      },
+      "c9": {
+        "description": "فجوات التدريب، عدم وجود لافتات تحذيرية",
+        "label": "الحمولة التنظيمية"
+      },
+      "source": {
+        "visualAnalysis": "التحليل البصري"
+      }
+    },
+    "ui": {
+      "fk": {
+        "exposure": "التعرض (E)",
+        "likelihood": "الاحتمالية (L)",
+        "severity": "الشدة (S)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "الاحتمالية ({n})",
+        "severityHeading": "الشدة ({n})"
+      },
+      "page": {
+        "analysisNotePlaceholder": "كل صف هو موضوع مخاطر أو مجموعة عدم مطابقة. يمكن إرفاق صورة واحدة أو أكثر لكل صف.",
+        "analysisTitlePlaceholder": "تحليل المخاطر الميداني",
+        "describeRiskGroup": "وصف موجز لمجموعة المخاطر"
+      },
+      "r2d": {
+        "base": "الأساس",
+        "dominant": "المهيمن",
+        "parameters": "المعاملات",
+        "peak": "الذروة"
+      },
+      "severity": {
+        "critical": "حرج",
+        "high": "عالي",
+        "low": "منخفض",
+        "medium": "متوسط"
+      }
+    },
+    "wizard": {
+      "common": {
+        "add": "إضافة",
+        "address": "العنوان",
+        "back": "رجوع",
+        "cancel": "إلغاء",
+        "companyFallback": "الشركة",
+        "delete": "حذف",
+        "description": "الوصف",
+        "findings": "النتائج",
+        "goToResults": "الانتقال إلى النتائج",
+        "images": "الصور",
+        "lines": "الصفوف",
+        "location": "الموقع",
+        "method": "الطريقة",
+        "next": "التالي",
+        "no": "لا",
+        "report": "التقرير",
+        "risk": "المخاطر",
+        "row": "الصف",
+        "save": "حفظ",
+        "saving": "جاري الحفظ...",
+        "scoreDetailPrefix": "تفاصيل النقاط —",
+        "type": "النوع",
+        "update": "تحديث",
+        "visual": "الصورة",
+        "yes": "نعم"
+      },
+      "header": {
+        "backToList": "العودة إلى القائمة",
+        "badgeAiManual": "نتائج الذكاء الاصطناعي + اليدوية",
+        "badgeExport": "PDF / Word / Excel",
+        "newAnalysis": "تحليل جديد",
+        "wizardDescription": "اختر الشركة، حدد الفريق، ارفع الصور، ثم شغّل النتائج والتقييم بالذكاء الاصطناعي والطريقة اليدوية.",
+        "wizardTitle": "تحليل المخاطر المرئي"
+      },
+      "list": {
+        "companyLabel": "الشركة / المؤسسة",
+        "companyPlaceholder": "— اختر شركة —",
+        "confirmDelete": "هل أنت متأكد؟",
+        "deleteAnalysis": "حذف",
+        "description": "اختر شركة، اعرض التحليلات السابقة، أو ابدأ تحليلاً جديداً.",
+        "emptyDescription": "استخدم الزر أعلاه لبدء أول تحليل مخاطر لهذه الشركة.",
+        "emptyTitle": "لا توجد تحليلات بعد",
+        "eyebrow": "تحليل المخاطر",
+        "findingsCount": "{count} نتيجة",
+        "historyCount": "{count} تحليل محفوظ",
+        "historyTitle": "{name} — تاريخ التحليل",
+        "newAnalysis": "+ بدء تحليل جديد",
+        "statusArchived": "مؤرشف",
+        "statusCompleted": "مكتمل",
+        "statusDraft": "مسودة",
+        "title": "إدارة تحليل المخاطر"
+      },
+      "messages": {
+        "analysisComplete": "التحليل مكتمل!",
+        "analysisFailed": "لا يمكن إكمال التحليل.",
+        "analysisFailedDetail": "فشل تحليل الذكاء الاصطناعي. {detail}",
+        "analysisPartial": "تم إكمال تحليل الذكاء الاصطناعي جزئياً. {successful}/{total} صورة تمت معالجتها؛ أخطاء في {errors} صورة.",
+        "analysisStarting": "بدء التحليل...",
+        "analysisSummary": "انتهى تحليل الذكاء الاصطناعي. {risks} مخاطر، {positive} ملاحظة إيجابية.",
+        "analyzingImageProgress": "تحليل الصورة {current}/{total}: {fileName}",
+        "analyzingRowImage": "تحليل الصورة: الصف {row}، {fileName}...",
+        "genericAiError": "حدث خطأ في مرحلة OpenAI أو Anthropic.",
+        "needImageToAnalyze": "أضف صورة واحدة على الأقل لبدء التحليل."
+      },
+      "methodCard": {
+        "params": "{count} معاملات",
+        "score": "النتيجة:"
+      },
+      "nav": {
+        "aiAnalyzingShort": "جاري التحليل...",
+        "aiStartShort": "بدء تحليل الذكي الاصطناعي"
+      },
+      "notifications": {
+        "savedBody": "{title} — {findings} نتيجة، {critical} حرجة/عالية",
+        "savedTitle": "تم حفظ تحليل المخاطر",
+        "updatedTitle": "تم تحديث تحليل المخاطر"
+      },
+      "save": {
+        "error": "حدث خطأ أثناء الحفظ.",
+        "noCompany": "لا يمكن الحفظ بدون اختيار شركة.",
+        "oversized": "{fileName} يتجاوز حد 10 ميجابايت. ارفع صورة أصغر قبل الحفظ.",
+        "successNew": "تم حفظ التحليل بنجاح!",
+        "successUpdated": "تم تحديث التحليل بنجاح!"
+      },
+      "step1": {
+        "analysisNote": "ملاحظة التحليل",
+        "analysisTitle": "عنوان التحليل",
+        "company": "الشركة / المؤسسة",
+        "companyCardAddress": "العنوان:",
+        "companyCardType": "النوع:",
+        "companyPlaceholder": "اختر الشركة / المؤسسة",
+        "companyRequired": "اختيار الشركة مطلوب للتحليل.",
+        "department": "القسم / الوحدة",
+        "departmentPlaceholder": "اختر القسم",
+        "departmentRequired": "اختيار القسم مطلوب.",
+        "editCompanyStructure": "تحرير هيكل الشركة",
+        "location": "الموقع / منطقة العمل",
+        "locationPlaceholder": "اختر الموقع",
+        "locationRequired": "اختيار الموقع مطلوب.",
+        "method": "طريقة التحليل",
+        "subtitle": "اختر الشركة والموقع والقسم الذي ينطبق عليه تحليل المخاطر هذا.",
+        "title": "سياق التحليل"
+      },
+      "step2": {
+        "addParticipant": "إضافة مشارك يدوياً",
+        "certificate": "رقم الشهادة (إن وجد)",
+        "certificatePlaceholder": "أدخل إذا كان قابلاً للتطبيق",
+        "fullName": "الاسم الكامل",
+        "noTeamBody": "لم يتم إعداد أعضاء فريق لهذه الشركة بعد. في صفحة الشركة، افتح تبويب الفريق، وأنشئ \"فريق تقييم المخاطر\"، وأضف الأعضاء — سيظهرون هنا تلقائياً.",
+        "noTeamLink": "الذهاب إلى إدارة فريق الشركة",
+        "noTeamTitle": "فريق تقييم المخاطر غير محدد",
+        "participantN": "المشارك {n}",
+        "pickFromTeam": "اختيار من فريق الشركة",
+        "rolePlaceholder": "اختيار الدور",
+        "roleType": "نوع الدور / المسمى",
+        "subtitle": "اختر من الموظفين المحفوظين أو أضف المشاركين يدوياً.",
+        "title": "الأشخاص المشاركون في تحليل المخاطر",
+        "titleField": "وصف الدور / المسمى",
+        "titlePlaceholder": "مثل: أخصائي فئة أ"
+      },
+      "step3": {
+        "addImage": "إضافة صورة",
+        "aiAnalyzing": "تشغيل تحليل الذكاء الاصطناعي...",
+        "aiStart": "بدء تحليل المخاطر بالذكاء الاصطناعي",
+        "aiSub": "Nova AI يحلل كل صورة بشكل منفصل.",
+        "bulkUpload": "رفع مجمع (كل واحدة كصف منفصل)",
+        "deleteRow": "حذف الصف",
+        "newRow": "إضافة صف",
+        "rowHint": "جمع اللقطات الواسعة والمقربة تحت هذا الصف.",
+        "rowN": "الصف {n}",
+        "rowTitle": "عنوان الصف",
+        "rowTitlePlaceholder": "مثال: منطقة التكديس",
+        "subtitle": "كل صف يمثل موضوع مخاطر واحد. ارفع الصور، ثم ابدأ التحليل بالذكاء الاصطناعي.",
+        "summaryCompany": "الشركة",
+        "summaryImages": "الصور",
+        "summaryLocation": "الموقع",
+        "summaryMethod": "الطريقة",
+        "title": "صفوف المخاطر والصور"
+      },
+      "step4": {
+        "addedLater": "تمت الإضافة لاحقاً",
+        "addRiskPin": "إضافة دبوس مخاطر",
+        "aiAnalyzingDetail": "Nova AI يحلل كل صورة...",
+        "analyzingInline": "جاري التحليل...",
+        "areaAssessment": "تقييم المنطقة",
+        "avgScore": "متوسط النتيجة",
+        "cannotAnalyzeBody": "هذه الصورة غير مناسبة لتحليل المخاطر.",
+        "cannotAnalyzeTitle": "لا يمكن تشغيل تحليل المخاطر",
+        "capaBadge": "مرشح CAPA",
+        "capaCandidate": "مرشح CAPA",
+        "cleanNoRisk": "واضح — لم يتم اكتشاف مخاطر",
+        "confidenceHigh": "نتيجة مؤكدة",
+        "confidenceLow": "يُنصح بالتحقق",
+        "confidenceMedium": "نتيجة الذكاء الاصطناعي",
+        "criticalHigh": "حرج / عالي",
+        "deleteFindingAria": "حذف النتيجة",
+        "deleteFindingConfirm": "حذف النتيجة \"{title}\"؟",
+        "deleteFindingTitle": "حذف النتيجة",
+        "detectedPrefix": "تم اكتشاف:",
+        "emptyResultsDesc": "في الخطوة 3، ارفع الصور وشغل التحليل.",
+        "emptyResultsTitle": "لا توجد نتائج بعد",
+        "findingTitle": "عنوان النتيجة",
+        "findingTitlePlaceholder": "مثال: عدم وجود حاجز واقي",
+        "manualPinConfirm": "إضافة",
+        "manualPinHint": " يمكنك إضافة نتيجة خاصة بك باستخدام دبوس يدوي.",
+        "manualPinTitle": "إضافة دبوس مخاطر يدوي",
+        "metaEyebrowArea": "تقييم المنطقة",
+        "metaEyebrowPositive": "ملاحظات إيجابية",
+        "noRiskDetectedBody": "لم يجد الذكاء الاصطناعي خطراً ذا معنى أو عدم مطابقة في هذه الصورة.",
+        "noRiskDetectedTitle": "لم يتم اكتشاف مخاطر",
+        "noRiskThisImageBody": "لم يجد الذكاء الاصطناعي خطراً محدداً في هذه الصورة. يمكنك إضافة نتيجة يدوية.",
+        "noRiskThisImageTitle": "لا توجد مخاطر كبيرة في هذه الصورة",
+        "notRealPhotoBody": "هذه الصورة رسم أو توضيح أو عرض اصطناعي. تحليل المخاطر يعمل فقط على صور الموقع الحقيقية.",
+        "notRealPhotoTitle": "ليست صورة حقيقية",
+        "peopleDetected": "تم اكتشاف {count} شخص",
+        "photoQuality": "جودة الصورة:",
+        "photoQualityLow": "منخفضة",
+        "photoQualityMedium": "متوسطة",
+        "pinBanner": "انقر على الصورة لإضافة دبوس مخاطر",
+        "pinModeActive": "وضع الدبوس نشط...",
+        "positiveFindings": "ملاحظات إيجابية",
+        "positiveObservationsHint": " الملاحظات الإيجابية مدرجة أدناه.",
+        "resultsSubtitle": "بطاقات المخاطر تبقى مرتبطة بالتعليقات التوضيحية على الصورة. اضبط المعاملات لتغيير النتيجة.",
+        "resultsTitle": "النتائج المشروحة",
+        "riskCount": "المخاطر: {count}",
+        "rowImagesFindings": "الصور: {images} · النتائج: {findings}",
+        "saveWarning": "النتائج لم يتم حفظها بعد! إذا غادرت دون حفظ، ستفقد جميع النتائج.",
+        "scorePanelIntro": "تفاصيل النتيجة — {method}",
+        "severity": "الخطورة",
+        "totalFindings": "إجمالي النتائج",
+        "visualN": "الصورة {n}"
+      },
+      "steps": {
+        "context": "سياق التحليل",
+        "images": "الصور",
+        "results": "النتائج",
+        "team": "فريق التحليل"
+      },
+      "validate": {
+        "company": "اختر شركة / مؤسسة أولاً.",
+        "department": "اختر قسم / وحدة.",
+        "firmLocationDept": "اختر الشركة والموقع والقسم.",
+        "location": "اختر موقع العمل.",
+        "participants": "أدخل اسم ودور شخص مسؤول واحد على الأقل.",
+        "step2Participants": "أدخل اسم ودور شخص مسؤول واحد على الأقل.",
+        "step3Images": "أضف صورة واحدة على الأقل."
       }
     }
   },
+  "sharedDocument": {
+    "createdOn": "تم الإنشاء: {date}",
+    "footerCreatedWith": "تم الإنشاء باستخدام RiskNova",
+    "hashLabel": "الهاش:",
+    "loading": "جاري تحميل المستند...",
+    "sharedBadge": "مستند مشترك",
+    "signaturesHeading": "التوقيعات",
+    "statusDraft": "مسودة",
+    "statusPendingApproval": "في انتظار الموافقة",
+    "statusReady": "جاهز",
+    "statusRevision": "مراجعة"
+  },
+  "sharedRisk": {
+    "analysisNoteHeading": "ملاحظة التقييم",
+    "defaultTitle": "تقرير تقييم المخاطر",
+    "departmentLabel": "القسم:",
+    "findingsByRowHeading": "نتائج المخاطر حسب الصف",
+    "findingsImagesCount": "{findings} نتيجة · {images} صورة",
+    "footerGeneratedBy": "تم إنشاء هذا التقرير بواسطة منصة RiskNova للصحة والسلامة المهنية.",
+    "footerMethodNote": "تم تقييم محتوى التقرير باستخدام طريقة {method}.",
+    "legalBasisHeading": "المرجع التنظيمي",
+    "locationLabel": "الموقع:",
+    "methods": {
+      "fine_kinney": "Fine-Kinney",
+      "fmea": "FMEA",
+      "hazop": "HAZOP",
+      "l_matrix": "L-Matrix",
+      "r_skor": "R-SCORE 2D"
+    },
+    "noFindingsInRow": "لا توجد نتائج لهذا الصف.",
+    "platformLabel": "منصة RiskNova للصحة والسلامة المهنية",
+    "recommendation": "التوصية",
+    "reportEyebrow": "تقرير تقييم المخاطر",
+    "rowTitleFallback": "الصف {n}",
+    "severity": {
+      "critical": "حرج",
+      "high": "عالي",
+      "low": "منخفض",
+      "medium": "متوسط"
+    },
+    "statCritical": "حرج",
+    "statHigh": "عالي",
+    "statTotal": "إجمالي النتائج",
+    "teamHeading": "فريق التقييم"
+  },
+  "solutionCenter": {
+    "chat": "محادثة",
+    "copy": "نسخ",
+    "description": "Nova هو وكيل الصحة والسلامة المهنية التشغيلي الذي يفسر التشريعات ويوجهك إلى الوحدة المناسبة ويبدأ إجراءات المستندات أو سير العمل.",
+    "documents": "مستنداتي",
+    "history": "السجل",
+    "inputPlaceholder": "أخبر Nova بما تريد القيام به...",
+    "queries": "الاستعلامات",
+    "referenced": "مع المراجع",
+    "save": "حفظ",
+    "saved": "تم الحفظ",
+    "sources": "مصادر التشريعات",
+    "title": "Nova"
+  },
   "solutions": {
-    "osgbPage": {
-      "metaTitle": "OSGB solution and quote | RiskNova",
-      "metaDescription": "Package options and tailored quote requests for OSGBs serving multiple workplaces.",
-      "heroEyebrow": "OSGB",
-      "heroTitleLead": "Bring your client portfolio and team together in",
-      "heroTitleAccent": "one panel",
-      "heroTitleTrail": ".",
-      "heroBody": "Clarify personnel, task tracking and client sites. Individual plans start from {starterPrice}/month Starter; the OSGB model covers multi-site portfolios and extra seats, so the figures below are indicative USD segments — exact terms are confirmed after the quote form or registration flow.",
-      "ctaRegister": "Request a quote via registration",
-      "ctaForm": "Go to quote form",
-      "footerNoteLead": "Single employer across many locations?",
-      "footerNoteLink": "See the enterprise solution page",
-      "footerNoteTrail": "."
-    },
-    "enterprisePage": {
-      "metaTitle": "Enterprise solution and quote | RiskNova",
-      "metaDescription": "Quote requests and contact for multi-site organisations with specialised OHS needs.",
-      "heroEyebrow": "Enterprise",
-      "heroTitle": "Consistent OHS operations across your locations with bespoke onboarding.",
-      "heroBody": "We do not offer self-service card checkout for enterprise use. Share your needs and our sales team will follow up with a tailored quote, limits and implementation.",
-      "ctaRegister": "Request a quote via registration",
-      "ctaForm": "Contact us (form)",
-      "footerNoteLead": "Serving clients as an OSGB?",
-      "footerNoteLink": "OSGB packages page",
-      "footerNoteTrail": "."
-    },
     "commercial": {
-      "osgbSectionTitle": "OSGB packages",
-      "osgbSectionIntro": "Amounts are indicative starting segments in USD; tax, FX and contract scope are confirmed when the quote is finalised. There is no card checkout — we align limits and pricing once we understand your structure.",
-      "enterpriseSectionTitle": "Company / enterprise quote",
-      "enterpriseSectionIntro": "For multi-site organisations, field-heavy operations and bespoke setups there is no card payment on this path. Share your context so we can return with a tailored offer.",
-      "enterpriseCta": "Create quote request",
-      "enterpriseSecondaryCta": "Write us for an OSGB package",
-      "osgbFooterHint": "Single employer across many locations?",
-      "osgbFooterLink": "See the enterprise solution page",
-      "enterpriseFooterHint": "Serving clients as an OSGB?",
-      "enterpriseFooterLink": "Go to OSGB packages page",
-      "recommended": "Recommended",
+      "enterpriseCta": "إنشاء طلب عرض أسعار",
+      "enterpriseFooterHint": "تخدم العملاء كـ OSGB؟",
+      "enterpriseFooterLink": "انتقل إلى صفحة حزم OSGB",
+      "enterpriseSecondaryCta": "راسلنا للحصول على حزمة OSGB",
+      "enterpriseSectionIntro": "للمؤسسات متعددة المواقع والعمليات الميدانية الكثيفة والإعدادات المخصصة، لا يتوفر الدفع بالبطاقة في هذا المسار. شارك سياقك حتى نتمكن من العودة بعرض مخصص.",
+      "enterpriseSectionTitle": "عرض أسعار الشركة / المؤسسة",
       "offers": {
         "osgb_starter": {
-          "name": "OSGB Starter",
-          "pricePeriod": "from / month",
-          "priceFinePrint": "Indicative starting segment. Final pricing depends on firm count and seats after the quote.",
-          "summary": "For smaller OSGB teams with a limited portfolio — unlike the individual Starter at {individualStarter}/month it covers multi-site and team workflows.",
-          "workspacesLabel": "5 active firms / workspaces",
-          "seatsLabel": "2 active team seats",
-          "features": [
-            "Personnel module and invitation flows",
-            "Tasks, work tracking and assignment board",
-            "Client workplace portfolio view",
-            "Announcements and core operational flows"
-          ],
-          "ctaLabel": "Request Starter quote"
+          "ctaLabel": "طلب عرض أسعار المبتدئ",
+          "name": "OSGB المبتدئ",
+          "priceFinePrint": "شريحة البداية الإرشادية. التسعير النهائي يعتمد على عدد الشركات والمقاعد بعد العرض.",
+          "pricePeriod": "من / شهر",
+          "seatsLabel": "مقعدان نشطان للفريق",
+          "summary": "لفرق OSGB الأصغر مع محفظة محدودة — على عكس المبتدئ الفردي بـ {individualStarter}/شهر فهو يغطي سير العمل متعدد المواقع والفرق.",
+          "workspacesLabel": "5 شركات / مساحات عمل نشطة"
         },
         "osgb_team": {
-          "name": "OSGB Team",
-          "pricePeriod": "from / month",
-          "priceFinePrint": "Indicative mid segment; tailored quote reflects field intensity, reporting and seats.",
-          "summary": "Growing OSGBs: more firms, field coordination and team scale.",
-          "workspacesLabel": "15 active firms / workspaces",
-          "seatsLabel": "5 active team seats",
-          "features": [
-            "Everything in Starter",
-            "Advanced reporting and exports",
-            "Field audits and checklists (per agreement)",
-            "Priority solution / onboarding channel"
-          ],
-          "ctaLabel": "Request Team quote"
+          "ctaLabel": "طلب عرض أسعار الفريق",
+          "name": "فريق OSGB",
+          "priceFinePrint": "الشريحة المتوسطة الإرشادية؛ العرض المخصص يعكس كثافة الميدان والتقارير والمقاعد.",
+          "pricePeriod": "من / شهر",
+          "seatsLabel": "5 مقاعد نشطة للفريق",
+          "summary": "OSGBs النامية: المزيد من الشركات وتنسيق الميدان وحجم الفريق.",
+          "workspacesLabel": "15 شركة / مساحة عمل نشطة"
         }
       },
-      "enterpriseHighlights": [
-        "Multi-site companies and institutions",
-        "Tailored quote aligned with operational volume",
-        "Integration and onboarding planning when needed"
-      ]
+      "osgbFooterHint": "صاحب عمل واحد عبر مواقع متعددة؟",
+      "osgbFooterLink": "راجع صفحة حلول المؤسسات",
+      "osgbSectionIntro": "المبالغ هي شرائح بداية إرشادية بالدولار الأمريكي؛ يتم تأكيد الضرائب وأسعار الصرف ونطاق العقد عند الانتهاء من عرض الأسعار. لا يوجد دفع بالبطاقة - نحن نوائم الحدود والأسعار بمجرد فهم هيكلكم.",
+      "osgbSectionTitle": "حزم OSGB",
+      "recommended": "موصى به"
+    },
+    "enterprisePage": {
+      "ctaForm": "اتصل بنا (نموذج)",
+      "ctaRegister": "طلب عرض أسعار عبر التسجيل",
+      "footerNoteLead": "تخدم العملاء كـ OSGB؟",
+      "footerNoteLink": "صفحة حزم OSGB",
+      "footerNoteTrail": ".",
+      "heroBody": "نحن لا نقدم دفع ذاتي بالبطاقة للاستخدام المؤسسي. شاركنا احتياجاتك وسيتابع فريق المبيعات لدينا بعرض أسعار مخصص وحدود وتنفيذ.",
+      "heroEyebrow": "المؤسسات",
+      "heroTitle": "عمليات السلامة والصحة المهنية متسقة عبر مواقعكم مع إعداد مخصص.",
+      "metaDescription": "طلبات عروض الأسعار والاتصال للمنظمات متعددة المواقع ذات احتياجات السلامة والصحة المهنية المتخصصة.",
+      "metaTitle": "حلول المؤسسات وعرض الأسعار | RiskNova"
     },
     "leadDialog": {
-      "closeAria": "Close",
-      "regionChip": "Region: {code}",
-      "languageChip": "Language: {code}",
-      "submittedTitle": "Request received",
-      "submittedBody": "Our sales team will contact you shortly to clarify scope and share quote and onboarding options. No card payment in this flow — terms are agreed via email or call.",
-      "okButton": "OK",
-      "contactLabel": "Contact person",
-      "contactPlaceholder": "Full name",
-      "workEmailLabel": "Work email",
-      "phoneLabel": "Phone",
-      "phonePlaceholder": "+1 …",
-      "messageLabel": "Your needs (short)",
-      "messagePlaceholder": "How many sites, which modules matter, what rollout do you expect?",
-      "messageHint": "Helps us prepare the right package and migration path.",
-      "cancelButton": "Cancel",
-      "submitting": "Sending…",
-      "errorUnexpected": "An unexpected error occurred while saving the request.",
-      "errorFailed": "Could not save the request.",
-      "companyPlaceholder": "Organisation name",
-      "scalePlaceholder": "e.g. 12",
-      "employeePlaceholder": "e.g. 250",
-      "professionalPlaceholder": "e.g. 8",
-      "osgb": {
-        "badge": "OSGB contact request",
-        "title": "Tell us about your OSGB",
-        "description": "Share how many clients you serve, team shape and operational intensity so we can propose the right package and migration options.",
-        "primaryCta": "Send request",
-        "companyLabel": "OSGB / organisation name",
-        "scaleLabel": "Active client firms you serve",
-        "employeeLabel": "Total employees across those workplaces",
-        "professionalLabel": "Specialists / physicians / DSP headcount"
-      },
+      "cancelButton": "إلغاء",
+      "closeAria": "إغلاق",
+      "companyPlaceholder": "اسم المنظمة",
+      "contactLabel": "شخص الاتصال",
+      "contactPlaceholder": "الاسم الكامل",
+      "employeePlaceholder": "مثال: 250",
       "enterprise": {
-        "badge": "Company / enterprise contact",
-        "title": "Tell us about your organisation",
-        "description": "There is no payment step here. When you submit, our sales or solutions team follows up to agree bespoke limits and pricing.",
-        "primaryCta": "Send request",
-        "companyLabel": "Company / organisation name",
-        "scaleLabel": "Locations / sites",
-        "employeeLabel": "Total employees",
-        "professionalLabel": "People involved in coordination"
+        "badge": "جهة اتصال الشركة / المؤسسة",
+        "companyLabel": "اسم الشركة / المنظمة",
+        "description": "لا توجد خطوة دفع هنا. عند الإرسال، يتابع فريق المبيعات أو الحلول لدينا للاتفاق على حدود وأسعار مخصصة.",
+        "employeeLabel": "إجمالي الموظفين",
+        "primaryCta": "إرسال الطلب",
+        "professionalLabel": "الأشخاص المشاركون في التنسيق",
+        "scaleLabel": "المواقع / المواقع",
+        "title": "أخبرنا عن منظمتك"
       },
+      "errorFailed": "تعذر حفظ الطلب.",
+      "errorUnexpected": "حدث خطأ غير متوقع أثناء حفظ الطلب.",
+      "languageChip": "اللغة: {code}",
+      "messageHint": "يساعدنا في إعداد الحزمة المناسبة ومسار الترحيل.",
+      "messageLabel": "احتياجاتك (مختصر)",
+      "messagePlaceholder": "كم عدد المواقع، أي وحدات مهمة، ما التطبيق المتوقع؟",
+      "okButton": "موافق",
+      "osgb": {
+        "badge": "طلب التواصل مع OSGB",
+        "companyLabel": "اسم OSGB / المؤسسة",
+        "description": "شارك عدد العملاء الذين تخدمهم، شكل الفريق وكثافة العمليات حتى نتمكن من اقتراح الحزمة المناسبة وخيارات الترحيل.",
+        "employeeLabel": "إجمالي الموظفين عبر تلك أماكن العمل",
+        "primaryCta": "إرسال الطلب",
+        "professionalLabel": "عدد المتخصصين / الأطباء / DSP",
+        "scaleLabel": "الشركات العميلة النشطة التي تخدمها",
+        "title": "أخبرنا عن OSGB الخاص بك"
+      },
+      "phoneLabel": "الهاتف",
+      "phonePlaceholder": "+1 …",
+      "professionalPlaceholder": "مثال: 8",
+      "regionChip": "المنطقة: {code}",
+      "scalePlaceholder": "مثال: 12",
+      "submittedBody": "سيتواصل معك فريق المبيعات قريباً لتوضيح النطاق ومشاركة عرض الأسعار وخيارات الإعداد. لا يوجد دفع بالبطاقة في هذا التدفق — يتم الاتفاق على الشروط عبر البريد الإلكتروني أو المكالمة.",
+      "submittedTitle": "تم استلام الطلب",
+      "submitting": "جاري الإرسال…",
+      "workEmailLabel": "البريد الإلكتروني للعمل",
       "workEmailPlaceholder": "you@company.com"
+    },
+    "osgbPage": {
+      "ctaForm": "انتقل إلى نموذج عرض الأسعار",
+      "ctaRegister": "طلب عرض أسعار عبر التسجيل",
+      "footerNoteLead": "صاحب عمل واحد عبر مواقع متعددة؟",
+      "footerNoteLink": "راجع صفحة الحلول المؤسسية",
+      "footerNoteTrail": ".",
+      "heroBody": "توضيح الموظفين وتتبع المهام ومواقع العملاء. تبدأ الخطط الفردية من {starterPrice}/شهر للمبتدئين؛ نموذج OSGB يغطي محافظ متعددة المواقع ومقاعد إضافية، لذا الأرقام أدناه هي شرائح إرشادية بالدولار الأمريكي — يتم تأكيد الشروط الدقيقة بعد نموذج الاقتباس أو تدفق التسجيل.",
+      "heroEyebrow": "OSGB",
+      "heroTitleAccent": "لوحة واحدة",
+      "heroTitleLead": "اجمع محفظة عملائك وفريقك معاً في",
+      "heroTitleTrail": ".",
+      "metaDescription": "خيارات الحزم وطلبات الاقتباس المخصصة لـ OSGBs التي تخدم أماكن عمل متعددة.",
+      "metaTitle": "حل OSGB والاقتباس | RiskNova"
     }
   },
-  "legal": {
-    "privacy": {
-      "eyebrow": "Privacy policy",
-      "title": "RiskNova Privacy Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Privacy Policy",
-      "metaDescription": "RiskNova privacy policy: how we process personal data across accounts, product use, billing, email, security and AI-assisted features.",
-      "ogTitle": "Privacy Policy | RiskNova",
-      "ogDescription": "How RiskNova processes personal data, which processors we use and how we support user rights.",
-      "sections": [
-        {
-          "title": "Data controller and scope",
-          "content": "This policy describes how personal data is processed across the RiskNova website, registration, sign-in, subscription, OHS modules, document generation, field inspections, training/exams/surveys, Nova AI and support. For workplace and employee records uploaded by the customer to the platform, RiskNova generally acts as a processor; for its own account, security, billing and support processes it acts as a controller."
-        },
-        {
-          "title": "Categories of personal data",
-          "content": "Name, surname, email, phone, account identifier, organisation and workspace details, role and permission records, session and security logs, usage metrics, support tickets, subscription and payment status, IP and device data may be processed. If users upload them, risk analyses, inspections, incident logs, training, exams, surveys, documents, personnel records and media or data files may also be stored on the platform."
-        },
-        {
-          "title": "Purposes and legal bases",
-          "content": "Data are processed to perform the contract, deliver platform features, run occupational safety processes, authenticate users, prevent abuse, bill and support customers, meet legal obligations, improve the product and respect user choices. Where explicit consent is required, a separate consent text is shown; core service data may rely on contract, legal obligation or legitimate interest instead of consent."
-        },
-        {
-          "title": "AI-assisted features",
-          "content": "Nova AI may process user inputs and related context when producing risk analyses, document drafts, training content or legislation-aware answers. Outputs are decision-support only; final professional and legal judgement remains with the user. Where content may include sensitive or special-category data, explicit consent and/or additional disclosure flows may be required before sending it to AI services."
-        },
-        {
-          "title": "Third-party processors",
-          "content": "Hosting, database, authentication, email, payment, error monitoring and AI features may use providers such as Supabase, Vercel, Resend, Paddle, OpenAI, Anthropic and similar vendors. They process data only as needed to provide the service. Card data are not stored by RiskNova; payments and invoicing run on Paddle infrastructure."
-        },
-        {
-          "title": "International transfers",
-          "content": "Cloud hosting, email, payment and AI services may technically run on infrastructure located abroad, so some data may be transferred to providers outside your country where the service requires it. Where transfers apply, disclosure and consent steps under applicable law (including KVKK where relevant) are managed in the product."
-        },
-        {
-          "title": "Cookies and similar technologies",
-          "content": "RiskNova uses essential session, security, language preference and product cookies. If marketing or third-party tracking cookies are introduced, a separate cookie policy and consent mechanism will be provided as needed. Details are on the /cookie-policy page."
-        },
-        {
-          "title": "Retention and security",
-          "content": "Data are kept for as long as needed to operate the service, meet contractual, security, legal and evidentiary requirements. The platform uses technical measures such as RLS, role checks, separation of service roles, webhook signature verification, rate limiting, audit trails and security event logging."
-        },
-        {
-          "title": "Your rights",
-          "content": "Under applicable data-protection law (including KVKK Article 11 where it applies), you may request access, rectification, erasure, objection, restriction, portability and information via the Privacy / Data Rights area in your profile or at support@getrisknova.com. Erasure requests are balanced against legal retention and security logging requirements."
-        },
-        {
-          "title": "Contact and updates",
-          "content": "This text may change over time. Material updates may require renewed acknowledgement or notice in the product. For privacy and data-protection requests, contact support@getrisknova.com."
-        }
-      ]
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "أقل خطورة",
+      "high": "شديد الخطورة",
+      "moderate": "خطر"
     },
-    "privacySummary": {
-      "eyebrow": "Privacy policy",
-      "title": "RiskNova Privacy Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Privacy policy",
-      "metaDescription": "Summary of how RiskNova collects and uses personal data.",
-      "ogTitle": "Privacy policy | RiskNova",
-      "ogDescription": "Short privacy summary covering account, product use and subprocessors.",
-      "paragraphs": [
-        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
-        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
-        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
-        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
-        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
-        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
-      ]
-    },
-    "terms": {
-      "eyebrow": "Terms of use",
-      "title": "RiskNova Terms of Use",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Terms of use",
-      "metaDescription": "RiskNova terms of use covering accounts, subscription, billing, acceptable use, AI outputs and customer data responsibilities.",
-      "ogTitle": "Terms of use | RiskNova",
-      "ogDescription": "Terms for the RiskNova SaaS platform: subscription, account security, AI outputs and acceptable use.",
-      "sections": [
-        {
-          "title": "Service scope",
-          "content": "RiskNova is a subscription SaaS platform for occupational health and safety professionals, OSGBs and enterprises, offering risk analysis, field inspections, document generation, training/exams/surveys, reporting, legislation-aware search and Nova AI decision-support features."
-        },
-        {
-          "title": "Account, roles and security",
-          "content": "Users are responsible for the accuracy of account details, password strength and actions taken under their account. Organisation administrators must correctly configure users, roles, workspaces and company authorisations. Suspected unauthorised access must be reported to RiskNova without delay."
-        },
-        {
-          "title": "Acceptable use",
-          "content": "The platform may be used only for lawful, professional and workplace-safety-related purposes. Attempting unauthorised access, reverse engineering, disrupting the service, uploading harmful content, infringing third-party rights, circumventing quotas or processing data unlawfully is prohibited."
-        },
-        {
-          "title": "Customer data and content responsibility",
-          "content": "Risk analyses, inspection records, documents, personnel data, training/exam/survey content and uploaded files are customer content. Users must ensure data uploaded to the platform is lawful, necessary and limited to authorised persons."
-        },
-        {
-          "title": "AI-assisted outputs",
-          "content": "Nova AI and other AI features provide decision support and drafts only. RiskNova does not warrant that outputs are error-free, complete or fit for a particular legal or technical outcome. Users must validate outputs against applicable law, internal procedures and professional judgement."
-        },
-        {
-          "title": "Subscription, billing and limits",
-          "content": "Plan features, fees, usage limits and billing periods are shown on pricing or checkout screens. Individual plans may use self-service checkout; OSGB and enterprise models may follow quote and contact flows. Payments and invoicing may be handled by Paddle as Merchant of Record."
-        },
-        {
-          "title": "Service changes and access",
-          "content": "RiskNova may update product features, plan limits, integrations and these terms over time. Access may be temporarily restricted for security, maintenance, legal compliance or abuse prevention."
-        },
-        {
-          "title": "Limitation of responsibility",
-          "content": "The platform is designed to streamline processes; it does not remove legal duties of employers, safety professionals or organisations. Users remain responsible for field, regulatory and expert review before relying on platform outputs."
-        },
-        {
-          "title": "Contact",
-          "content": "For questions about these terms, subscriptions or accounts, contact support@getrisknova.com."
-        }
-      ]
-    },
-    "termsSummary": {
-      "eyebrow": "Terms of service",
-      "title": "RiskNova Terms and Conditions",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Terms of service",
-      "metaDescription": "Summary of RiskNova terms of service, acceptable use and subscriptions.",
-      "ogTitle": "Terms of service | RiskNova",
-      "ogDescription": "Summary of subscription, AI-assisted features and acceptable use.",
-      "paragraphs": [
-        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
-        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
-        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
-        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
-        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
-        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
-      ]
-    },
-    "refund": {
-      "eyebrow": "Refund policy",
-      "title": "RiskNova Refund Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Refund policy",
-      "metaDescription": "How RiskNova handles subscription refunds, renewals and Paddle billing rules.",
-      "ogTitle": "Refund policy | RiskNova",
-      "ogDescription": "Refund window, renewals and billing corrections.",
-      "paragraphs": [
-        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
-        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
-        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
-        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
-        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
-        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
-      ]
+    "level": {
+      "controlled": "مُتحكم فيه",
+      "critical": "حرج",
+      "high": "عالي",
+      "incomplete": "غير مُقيّم",
+      "medium": "متوسط"
     }
   },
-  "brand": {
-    "tagline": "AI-powered occupational health & safety platform"
-  },
-  "dashboard": {
-    "sessionLoadingTitle": "جارٍ تحميل الجلسة…",
-    "sessionLoadingHint": "جارٍ التحقق من جلستك. قد يستغرق ذلك بضع ثوانٍ؛ إذا لم يكتمل، يُرجى تسجيل الدخول مرة أخرى.",
-    "greetingMorning": "صباح الخير",
-    "greetingAfternoon": "طاب يومك",
-    "greetingEvening": "مساء الخير",
-    "fallbackUserName": "مستخدم",
-    "badgeCommandCenter": "مركز التحكم",
-    "badgeLiveOps": "عمليات مباشرة",
-    "badgeRemoteSync": "مزامنة Supabase عن بُعد",
-    "heroIntro": "راقب عمليات السلامة والصحة المهنية بالكامل من شاشة واحدة: المخاطر، مخرجات المكتبة، الحوادث، المهام ومتابعات الشركات — في لوحة أوضح.",
-    "signalOperation": "حالة التشغيل",
-    "signalWorkload": "عبء الأولويات",
-    "signalCompanies": "تغطية الشركات",
-    "operationHeavy": "متابعة كثيفة",
-    "operationControlled": "تحت السيطرة",
-    "operationCalm": "تشغيل مستقر",
-    "workloadFollowups": "{count} عناصر",
-    "companiesTotal": "{count} شركة",
-    "todayFocusEyebrow": "تركيز اليوم",
-    "todayFocusTitle": "الأولوية للعناصر الحرجة",
-    "priorityHighRisk": "خطر مرتفع",
-    "priorityOpenTasks": "مهام مفتوحة",
-    "priorityIncidents": "حوادث",
-    "planDemoEyebrow": "تجريبي · ترقية",
-    "planSelfServeEyebrow": "ترقية ذاتية",
-    "planDemoTitle": "أنت تستخدم حسابًا تجريبيًا",
-    "planDefaultTitle": "الخطط والسعة",
-    "planDemoBody": "اختر الخطة المناسبة للانتقال إلى الاستخدام الفعلي؛ تُدار المدفوعات والفوترة من صفحة الخطط.",
-    "planDefaultBody": "إذا احتجت مساحات عمل أو وحدات إضافية، راجع الخطط؛ يمكن الترقية ذاتيًا.",
-    "goToPlans": "عرض الخطط",
-    "statRisk": "تحليل المخاطر",
-    "statRiskSubHigh": "{count} مخاطر عالية",
-    "statRiskSubNone": "لا مخاطر عالية",
-    "statLibraryDocs": "مستندات المكتبة",
-    "statLibraryDocsSub": "{ready} جاهز · {draft} مسودات",
-    "statIncidents": "حوادث",
-    "statIncidentsSub": "إجمالي السجلات",
-    "statTasks": "مهام مفتوحة",
-    "statTasksSub": "في انتظار المتابعة",
-    "statLibSurvey": "تدريب من المكتبة",
-    "statLibSurveySub": "استبيانات / تدريب مستوردة",
-    "statLibExam": "امتحانات من المكتبة",
-    "statLibExamSub": "امتحانات مستوردة",
-    "quickFlowsTitle": "مسارات سريعة",
-    "quickFlowsSubtitle": "انتقل إلى أكثر الوحدات استخدامًا بنقرة واحدة.",
-    "quickFlowsBadge": "منصة",
-    "quickRisk": "تحليل المخاطر",
-    "quickLibrary": "مكتبة السلامة والصحة المهنية",
-    "quickIncident": "الإبلاغ عن حادث",
-    "quickPlanner": "المخطط",
-    "quickEducation": "التدريب",
-    "quickReports": "التقارير",
-    "quickCompanies": "الشركات",
-    "quickFieldAudit": "تدقيق ميداني",
-    "recentDocsTitle": "أحدث مخرجات المكتبة",
-    "recentDocsSubtitle": "تُلخص هنا المستندات المحررة مؤخرًا من مسار مكتبة السلامة والصحة المهنية.",
-    "recentDocsCta": "فتح المكتبة",
-    "recentDocsEmpty": "لا توجد مخرجات بعد. ابدأ من قالب في مكتبة السلامة والصحة المهنية.",
-    "docStatusDraft": "مسودة",
-    "docStatusReady": "جاهز",
-    "docStatusPending": "موافقة",
-    "docStatusRevision": "مراجعة",
-    "companySummaryTitle": "لمحة عن الشركات",
-    "companySummaryCountLabel": "شركات مسجلة",
-    "companyManageCta": "إدارة الشركات",
-    "modulesTitle": "وحدات السلامة والصحة المهنية",
-    "modulesSubtitle": "مجالات التشغيل النشطة على المنصة.",
-    "moduleRisk": "تحليل المخاطر",
-    "moduleRiskDesc": "{count} تقييمات",
-    "moduleLibrary": "مكتبة السلامة والصحة المهنية",
-    "moduleLibraryDesc": "مستندات وقوالب",
-    "moduleEmergency": "طوارئ",
-    "moduleEmergencyDesc": "خطط وتدريبات",
-    "moduleTraining": "التدريب",
-    "moduleTrainingDesc": "تتبع وسجلات",
-    "moduleAssessment": "امتحانات واستبيانات",
-    "moduleAssessmentDesc": "مسارات قياس مدعومة بالذكاء الاصطناعي",
-    "moduleLegal": "التشريعات",
-    "moduleLegalDesc": "مكتبة التشريعات والإرشادات",
-    "todayCardTitle": "اليوم",
-    "todayTasksPending": "{count} مهام مفتوحة في الانتظار",
-    "todayTasksDone": "اكتملت جميع المهام",
-    "statLive": "مباشر",
-    "trackTitle": "ملخص المتابعة",
-    "trackEmpty": "لم يتم تعريف شركات بعد. ستظهر المؤشرات هنا بعد إضافة الشركات.",
-    "trackSubtitle": "ملخص عبر جميع الشركات. {companyCount} شركة تحت المراقبة، {totalActionable} إجراء في انتظار المتابعة.",
-    "trackCompaniesCta": "الشركات",
-    "trackOpenActionLabel": "إجراءات مفتوحة",
-    "trackOpenActionSub": "نتائج المخاطر + CAPA + المهام",
-    "trackExpiringTrainingLabel": "تدريب قادم",
-    "trackExpiringTrainingSub": "خلال 30 يومًا",
-    "trackOverdueControlLabel": "فحص متأخر",
-    "trackOverdueControlSub": "انتهت فترة الفحص الدوري",
-    "trackCommitteeLabel": "لجنة معلقة",
-    "trackCommitteeSub": "اجتماعات لجنة السلامة والصحة المهنية المخططة",
-    "trackHealthExamLabel": "فحص طبي قادم",
-    "trackHealthExamSub": "مراقبة صحية خلال 30 يومًا",
-    "trackPriorityCompanies": "شركات تنتظر الأولوية",
-    "trackChipActions": "{count} إجراءات",
-    "trackChipTraining": "{count} تدريب",
-    "trackChipControls": "{count} فحوصات"
-  },
-  "header": {
-    "authLoading": "جارٍ التحقق من الجلسة الآمنة…",
-    "lockedModuleTooltip": "أنشئ مساحة عمل أولاً لاستخدام هذه الوحدة.",
-    "markAllRead": "تعليم الكل كمقروء",
-    "noNotificationsYet": "لا توجد إشعارات بعد",
-    "notificationsAria": "الإشعارات",
-    "notificationsTitle": "الإشعارات",
-    "platformAdminShort": "مسؤول",
-    "seeAllNotifications": "عرض الكل",
-    "signOut": "تسجيل الخروج",
-    "signingOut": "جارٍ تسجيل الخروج…",
-    "themeDarkAria": "المظهر الداكن",
-    "themeLightAria": "المظهر الفاتح",
-    "workspaceLoading": "جارٍ تجهيز مساحة العمل…"
+  "workspace": {
+    "active": "نشط",
+    "countryLabel": "البلد",
+    "languageLabel": "اللغة الافتراضية",
+    "loading": "جاري تحميل مساحات العمل...",
+    "newWorkspace": "مساحة عمل جديدة",
+    "noWorkspace": "لا توجد مساحة عمل",
+    "switcher": "مساحة العمل",
+    "switchError": "تعذر تبديل مساحة العمل"
   }
 }

@@ -1,0 +1,305 @@
+{
+  "workplaceRisk": {
+    "level": {
+      "incomplete": "Underevaluated",
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "controlled": "Controlled"
+    },
+    "hazardClass": {
+      "az": "Less hazardous",
+      "moderate": "Hazardous",
+      "high": "Very hazardous"
+    }
+  },
+  "companiesList": {
+    "defaults": {
+      "companyName": "New company / organization",
+      "shortName": "New record",
+      "kind": "Private sector"
+    },
+    "confirmPermanentDelete": {
+      "word": "DELETE",
+      "placeholder": "Type DELETE"
+    },
+    "eyebrow": {
+      "osgb": "OSGB companies",
+      "singleWorksite": "Worksite",
+      "multi": "My companies / organizations"
+    },
+    "title": {
+      "osgb": "Companies and worksites",
+      "single": "Worksite and operational content",
+      "multi": "My companies / organizations"
+    },
+    "description": {
+      "single": "Manage personnel and other operational records for your active worksite.",
+      "multi": "Manage the companies you are responsible for and access their worksites."
+    },
+    "usage": {
+      "activeOnly": "{count} active companies / workspaces",
+      "activeOfMax": "{current} / {max} active company slots used"
+    },
+    "limitReachedBanner": "You have reached the active company / workspace limit. Archive a company or upgrade your plan before adding or restoring one.",
+    "tabs": {
+      "active": "Active",
+      "archived": "Archive",
+      "deleted": "Deleted"
+    },
+    "stats": {
+      "totalCompanies": "Total companies",
+      "totalWorksites": "Total worksites",
+      "employees": "Employees",
+      "criticalCompanies": "Critical companies",
+      "criticalWorksites": "Critical worksites",
+      "openActions": "Open actions",
+      "overdueTasks": "Overdue tasks",
+      "avgMaturity": "Avg. maturity"
+    },
+    "filters": {
+      "search": "Search",
+      "searchPlaceholder": "Name, sector, type, NACE…",
+      "hazardClass": "Hazard class",
+      "sector": "Sector",
+      "kind": "Type",
+      "sort": "Sort",
+      "all": "All"
+    },
+    "sort": {
+      "name": "By name",
+      "employees": "Employees",
+      "risk": "Risk",
+      "overdue": "Overdue"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "clearFilters": "Clear filters",
+    "metrics": {
+      "hazard": "Hazard",
+      "employees": "Employees",
+      "actions": "Actions",
+      "overdue": "Overdue",
+      "locations": "Locations",
+      "departments": "Departments"
+    },
+    "progress": {
+      "coverage": "Coverage",
+      "maturity": "Maturity"
+    },
+    "links": {
+      "workspace": "Workspace",
+      "riskAnalysis": "Risk analysis"
+    },
+    "archive": "Archive",
+    "restore": "Restore",
+    "delete": "Delete",
+    "confirmArchive": {
+      "title": "Archive “{name}”?",
+      "hint": "It will leave the active list.",
+      "confirm": "Confirm"
+    },
+    "confirmDelete": {
+      "title": "Delete “{name}”?",
+      "instruction": "Type this word to confirm:",
+      "confirm": "Delete"
+    },
+    "empty": {
+      "noMatchCompany": "No matching companies",
+      "noMatchWorksite": "No matching worksites",
+      "noMatchDescription": "No records match your filters.",
+      "clearFilters": "Clear filters",
+      "archiveBannerCompany": "Archived companies. You can restore them.",
+      "archiveBannerWorksite": "Archived worksite records. You can restore them.",
+      "archiveEmptyCompany": "Nothing in archive",
+      "archiveEmptyWorksite": "Nothing in archive",
+      "archiveEmptyDescCompany": "No archived companies yet.",
+      "archiveEmptyDescWorksite": "No archived worksites yet.",
+      "deletedBannerCompany": "Deleted companies. Permanent deletion cannot be undone.",
+      "deletedBannerWorksite": "Deleted worksite records. Permanent deletion cannot be undone.",
+      "deletedEmptyCompany": "No deleted companies",
+      "deletedEmptyWorksite": "No deleted worksites",
+      "deletedEmptyDescCompany": "No deleted companies yet.",
+      "deletedEmptyDescWorksite": "No deleted worksites yet.",
+      "initialTitleCompany": "No companies yet",
+      "initialTitleWorksite": "No worksite record yet",
+      "initialDescCompany": "Create your first company to get started.",
+      "initialDescWorksite": "This area fills with your active worksite data. Complete worksite setup to see personnel and other records.",
+      "completeWorksite": "Complete worksite setup",
+      "newCompany": "New company",
+      "sampleData": "Sample data"
+    },
+    "storage": {
+      "supabase": "Supabase",
+      "local": "Local"
+    },
+    "entity": {
+      "companyPlural": "companies",
+      "worksitePlural": "worksites"
+    },
+    "actions": {
+      "newCompany": "New company",
+      "sampleData": "Sample data"
+    },
+    "badge": {
+      "archived": "Archived",
+      "deleted": "Deleted"
+    },
+    "permanentDelete": "Delete permanently",
+    "employeesSuffix": "employees",
+    "discard": "Cancel"
+  },
+  "companyWorkspace": {
+    "docTitle": "{name} — Workspace · RiskNova",
+    "docTitleFallback": "Workspace · RiskNova",
+    "notFound": {
+      "title": "Company not found",
+      "description": "No company matches this ID.",
+      "back": "Back to companies"
+    },
+    "backLink": "Worksites",
+    "logo": {
+      "uploadTitle": "Upload logo",
+      "fileTooLarge": "File is too large ({sizeMb} MB). Maximum size is 5 MB.",
+      "imagesOnly": "Only image files can be uploaded (PNG, JPEG, WebP, SVG).",
+      "updated": "Logo/image updated.",
+      "uploadFailed": "Upload failed. Try another file."
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "invite": "Invite",
+    "riskBadgeScore": "{label} {score}",
+    "riskBadgeLabelOnly": "{label}",
+    "stats": {
+      "employees": "Employees",
+      "locations": "Locations",
+      "departments": "Departments",
+      "openActions": "Open actions",
+      "overdue": "Overdue",
+      "maturity": "Maturity"
+    },
+    "sidebar": {
+      "title": "Worksite sections",
+      "hint": "Choose an area on the left; manage content on the right."
+    },
+    "tabs": {
+      "structure": "Premises",
+      "risk": "Risk & field",
+      "people": "Team",
+      "personnel": "Personnel",
+      "tracking": "Tracking",
+      "ohs_file": "OHS file",
+      "organization": "Organization",
+      "history": "History"
+    }
+  },
+  "osgbFirms": {
+    "emptyCompany": {
+      "name": "New OSGB client company",
+      "shortName": "New company",
+      "kind": "Private sector"
+    },
+    "loading": {
+      "eyebrow": "OSGB companies",
+      "title": "Preparing your portfolio",
+      "description": "We are loading client companies, assignments, and document flows."
+    },
+    "header": {
+      "eyebrow": "OSGB company management",
+      "title": "Companies and worksites",
+      "description": "Manage your client companies, per-company workspaces, and personnel flows assigned to them."
+    },
+    "badges": {
+      "activeCompaniesUnlimited": "{count} active companies",
+      "activeCompaniesMax": "{count} / {max} active companies",
+      "activeStaffUnlimited": "{count} active staff",
+      "activeStaffMax": "{count} / {max} active staff"
+    },
+    "topActions": {
+      "personnelInvite": "Staff & invites",
+      "openAssignments": "Open assignments",
+      "addCompany": "Add company"
+    },
+    "stats": {
+      "activeFirms": {
+        "label": "Active companies",
+        "hint": "Active client companies tracked in the OSGB panel."
+      },
+      "assignedProfessionals": {
+        "label": "Assigned professionals",
+        "hint": "Total assignments of experts, physicians, and DSP to companies."
+      },
+      "totalEmployees": {
+        "label": "Total employees",
+        "hint": "Total employee headcount from company records for planning."
+      },
+      "overdueWork": {
+        "label": "Overdue work",
+        "hint": "Open items to watch in assignment and CAPA flows."
+      }
+    },
+    "focus": {
+      "title": "OSGB-focused surface",
+      "p1": "This area is only for OSGB owner and admin users. Companies, assignments, contracts, and document tracking are managed in one place.",
+      "p2": "Assigned staff do not use this panel for their day-to-day flow; they access assigned company workspace data through their own account.",
+      "sidebarEyebrow": "Management focus",
+      "sidebarBody": "{firms} active companies, {professionals} assigned professionals, and {overdue} items needing attention are coordinated here."
+    },
+    "quickLinks": {
+      "inviteStaff": "Invite staff",
+      "manageAssignments": "Manage assignments",
+      "openContracts": "Open contracts",
+      "docCenter": "Go to document hub"
+    },
+    "nova": {
+      "title": "Nova OSGB Manager",
+      "subtitle": "Management assistant; monitors staff and company performance.",
+      "bullet1": "See workload distribution by company.",
+      "bullet2": "Filter overdue tasks and documents.",
+      "bullet3": "Spot staffing assignment gaps.",
+      "bullet4": "Prioritize contract and report renewal risks.",
+      "openTasks": "Open OSGB tasks",
+      "reviewOverdue": "Review overdue work",
+      "seeAssignmentGaps": "See assignment gaps"
+    },
+    "limitBanner": "Active company limit reached. Archive a company or upgrade your plan to add more.",
+    "activeSection": {
+      "title": "Active companies",
+      "description": "Manage company, assignment, document, and risk flows per company workspace.",
+      "searchLabel": "Search companies",
+      "searchPlaceholder": "Search company, sector, address, or NACE"
+    },
+    "emptyActive": {
+      "title": "No active companies",
+      "description": "Client companies linked to the OSGB panel will be listed here.",
+      "cta": "Add first company"
+    },
+    "companyCard": {
+      "sectorUnknown": "Sector not set",
+      "assignedProfessionals": "{count} assigned professionals",
+      "documentsCount": "{count} documents",
+      "employees": "{count} employees",
+      "overdueTasks": "{count} overdue items",
+      "workspace": "Company workspace",
+      "personnelInvite": "Staff & invites",
+      "assignments": "Assignments",
+      "taskTracking": "Task tracking",
+      "documentsLink": "Documents",
+      "contracts": "Contracts",
+      "archiving": "Archiving…",
+      "archive": "Archive"
+    },
+    "archivedSection": {
+      "title": "Archived companies",
+      "description": "Archived companies do not count toward the active limit; risk and document history is kept.",
+      "badge": "{count} archived records"
+    },
+    "emptyArchived": {
+      "title": "No archived companies",
+      "description": "When you archive a company it will appear here."
+    },
+    "archivedRow": {
+      "restoring": "Restoring…",
+      "restore": "Restore"
+    }
+  }
+}

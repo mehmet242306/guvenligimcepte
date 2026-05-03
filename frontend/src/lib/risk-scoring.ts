@@ -9,12 +9,32 @@
 
 export type RiskClass = "follow_up" | "low" | "medium" | "high" | "critical";
 
+/** Namespace `riskScoring` — use with useTranslations("riskScoring"). */
 export interface RiskResult {
   score: number;
   riskClass: RiskClass;
+  labelKey: string;
+  actionKey: string;
+  /** English fallback for exports / PDF when locale is unavailable */
   label: string;
   action: string;
   color: string;
+}
+
+function band(
+  method: string,
+  rc: RiskClass,
+  en: { label: string; action: string },
+  color: string,
+): Pick<RiskResult, "riskClass" | "labelKey" | "actionKey" | "label" | "action" | "color"> {
+  return {
+    riskClass: rc,
+    labelKey: `classification.${method}.${rc}.label`,
+    actionKey: `classification.${method}.${rc}.action`,
+    label: en.label,
+    action: en.action,
+    color,
+  };
 }
 
 /* ================================================================== */
@@ -24,25 +44,36 @@ export interface RiskResult {
 export interface R2DParam {
   key: string;
   code: string;
-  label: string;
-  description: string;
-  source: string;
+  /** Short English label for Word/PDF export tables */
+  exportLabel: string;
   weight: number;
   /** Override katsayisi (sadece C3, C5, C7, C8 icin) */
   overrideCoeff: number | null;
 }
 
 export const R2D_PARAMS: R2DParam[] = [
-  { key: "c1", code: "C1", label: "Tehlike Yoğunluğu", description: "Sahada tespit edilen tehlikeli nesne sayısı / yoğunluğu", source: "Görsel Analiz", weight: 0.16, overrideCoeff: null },
-  { key: "c2", code: "C2", label: "KKD Eksikliği", description: "Baret, eldiven, gözlük gibi KKD takılmamış durumlar", source: "Görsel Analiz", weight: 0.12, overrideCoeff: null },
-  { key: "c3", code: "C3", label: "Davranış Riski", description: "Yasak bölgeye giriş, korumasız çalışma, yüksekten düşme tehlikesi", source: "Görsel Analiz", weight: 0.12, overrideCoeff: 1.40 },
-  { key: "c4", code: "C4", label: "Çevresel Stres", description: "Aşırı sıcaklık, gürültü, titreşim gibi çevresel faktörler", source: "Görsel Analiz", weight: 0.10, overrideCoeff: null },
-  { key: "c5", code: "C5", label: "Kimyasal/Elektrik Tehlike", description: "Gaz kaçağı, kimyasal madde, elektrik tehlikesi", source: "Görsel Analiz", weight: 0.12, overrideCoeff: 1.60 },
-  { key: "c6", code: "C6", label: "Erişim / Engel", description: "Kaçış yolu tıkalı, ıslak zemin, geçiş engeli", source: "Görsel Analiz", weight: 0.10, overrideCoeff: null },
-  { key: "c7", code: "C7", label: "Makine / Proses", description: "Makine koruması devre dışı, bakım gecikmesi", source: "Görsel Analiz", weight: 0.14, overrideCoeff: 1.50 },
-  { key: "c8", code: "C8", label: "Araç Trafiği", description: "Forklift yoğunluğu, hat kesişimi, yaya-araç çatışması", source: "Görsel Analiz", weight: 0.10, overrideCoeff: 1.30 },
-  { key: "c9", code: "C9", label: "Örgütsel Yük", description: "Eğitim eksikliği, uyarı levhası eksikliği", source: "Görsel Analiz", weight: 0.08, overrideCoeff: null },
+  { key: "c1", code: "C1", exportLabel: "Hazard density", weight: 0.16, overrideCoeff: null },
+  { key: "c2", code: "C2", exportLabel: "PPE gaps", weight: 0.12, overrideCoeff: null },
+  { key: "c3", code: "C3", exportLabel: "Behaviour risk", weight: 0.12, overrideCoeff: 1.40 },
+  { key: "c4", code: "C4", exportLabel: "Environmental stress", weight: 0.10, overrideCoeff: null },
+  { key: "c5", code: "C5", exportLabel: "Chemical / electrical", weight: 0.12, overrideCoeff: 1.60 },
+  { key: "c6", code: "C6", exportLabel: "Access / obstruction", weight: 0.10, overrideCoeff: null },
+  { key: "c7", code: "C7", exportLabel: "Machinery / process", weight: 0.14, overrideCoeff: 1.50 },
+  { key: "c8", code: "C8", exportLabel: "Vehicle traffic", weight: 0.10, overrideCoeff: 1.30 },
+  { key: "c9", code: "C9", exportLabel: "Organizational load", weight: 0.08, overrideCoeff: null },
 ];
+
+export function r2dParamTitleKey(paramKey: string): string {
+  return `r2dParams.${paramKey}.label`;
+}
+
+export function r2dParamDescriptionKey(paramKey: string): string {
+  return `r2dParams.${paramKey}.description`;
+}
+
+export function r2dParamSourceKey(): string {
+  return "r2dParams.source.visualAnalysis";
+}
 
 export type R2DValues = Record<string, number>; // c1..c9 -> [0,1]
 
@@ -81,17 +112,17 @@ export function calculateR2D(values: R2DValues): R2DResult {
   const dominantParam = contributions[0]?.code ?? "C1";
 
   // 5. Siniflandirma
-  const { riskClass, label, action, color } = classifyR2D(score);
+  const { riskClass, labelKey, actionKey, label, action, color } = classifyR2D(score);
 
-  return { score, sBase, sPeak, riskClass, label, action, color, dominantParam, paramContributions: contributions };
+  return { score, sBase, sPeak, riskClass, labelKey, actionKey, label, action, color, dominantParam, paramContributions: contributions };
 }
 
-function classifyR2D(score: number): { riskClass: RiskClass; label: string; action: string; color: string } {
-  if (score < 0.20) return { riskClass: "follow_up", label: "İzleme", action: "Rutin izleme yeterli", color: "#10B981" };
-  if (score < 0.40) return { riskClass: "low", label: "Düşük", action: "Planlı değerlendirme yapılmalı", color: "#F59E0B" };
-  if (score < 0.60) return { riskClass: "medium", label: "Orta", action: "Artırılmış gözetim gerekli", color: "#F97316" };
-  if (score < 0.80) return { riskClass: "high", label: "Yüksek", action: "Öncelikli müdahale gerekli", color: "#DC2626" };
-  return { riskClass: "critical", label: "Kritik", action: "İş durdurma değerlendirmesi yapılmalı", color: "#7F1D1D" };
+function classifyR2D(score: number): Pick<RiskResult, "riskClass" | "labelKey" | "actionKey" | "label" | "action" | "color"> {
+  if (score < 0.20) return band("r2d", "follow_up", { label: "Monitoring", action: "Routine monitoring is sufficient" }, "#10B981");
+  if (score < 0.40) return band("r2d", "low", { label: "Low", action: "Schedule structured reassessment" }, "#F59E0B");
+  if (score < 0.60) return band("r2d", "medium", { label: "Medium", action: "Increased supervision required" }, "#F97316");
+  if (score < 0.80) return band("r2d", "high", { label: "High", action: "Priority intervention required" }, "#DC2626");
+  return band("r2d", "critical", { label: "Critical", action: "Evaluate work stoppage" }, "#7F1D1D");
 }
 
 /* ================================================================== */
@@ -101,35 +132,35 @@ function classifyR2D(score: number): { riskClass: RiskClass; label: string; acti
 export interface FKOption {
   value: number;
   label: string;
-  description: string;
+  descriptionKey: string;
 }
 
 export const FK_LIKELIHOOD: FKOption[] = [
-  { value: 0.1, label: "0.1", description: "Neredeyse imkansız" },
-  { value: 0.2, label: "0.2", description: "Çok düşük ihtimal" },
-  { value: 0.5, label: "0.5", description: "Beklenmeyen ama mümkün" },
-  { value: 1, label: "1", description: "Düşük ihtimal, olasılık dışı değil" },
-  { value: 3, label: "3", description: "Nadir ama mümkün" },
-  { value: 6, label: "6", description: "Oldukça olası" },
-  { value: 10, label: "10", description: "Çok olası / beklenen" },
+  { value: 0.1, label: "0.1", descriptionKey: "fk.likelihood.v0_1" },
+  { value: 0.2, label: "0.2", descriptionKey: "fk.likelihood.v0_2" },
+  { value: 0.5, label: "0.5", descriptionKey: "fk.likelihood.v0_5" },
+  { value: 1, label: "1", descriptionKey: "fk.likelihood.v1" },
+  { value: 3, label: "3", descriptionKey: "fk.likelihood.v3" },
+  { value: 6, label: "6", descriptionKey: "fk.likelihood.v6" },
+  { value: 10, label: "10", descriptionKey: "fk.likelihood.v10" },
 ];
 
 export const FK_SEVERITY: FKOption[] = [
-  { value: 1, label: "1", description: "Dikkate değer, ilk yardım gerektiren" },
-  { value: 3, label: "3", description: "Önemli, dış tedavi gerektiren" },
-  { value: 7, label: "7", description: "Ciddi, kalıcı hasar" },
-  { value: 15, label: "15", description: "Çok ciddi, uzuv kaybı" },
-  { value: 40, label: "40", description: "Felaket, bir ölüm" },
-  { value: 100, label: "100", description: "Kitlesel felaket, çoklu ölüm" },
+  { value: 1, label: "1", descriptionKey: "fk.severity.v1" },
+  { value: 3, label: "3", descriptionKey: "fk.severity.v3" },
+  { value: 7, label: "7", descriptionKey: "fk.severity.v7" },
+  { value: 15, label: "15", descriptionKey: "fk.severity.v15" },
+  { value: 40, label: "40", descriptionKey: "fk.severity.v40" },
+  { value: 100, label: "100", descriptionKey: "fk.severity.v100" },
 ];
 
 export const FK_EXPOSURE: FKOption[] = [
-  { value: 0.5, label: "0.5", description: "Çok nadir (yılda bir)" },
-  { value: 1, label: "1", description: "Nadir (ayda bir)" },
-  { value: 2, label: "2", description: "Ara sıra (haftada bir)" },
-  { value: 3, label: "3", description: "Bazen (haftada birkaç)" },
-  { value: 6, label: "6", description: "Sıklıkla (her gün)" },
-  { value: 10, label: "10", description: "Sürekli (günün büyük bölümü)" },
+  { value: 0.5, label: "0.5", descriptionKey: "fk.exposure.v0_5" },
+  { value: 1, label: "1", descriptionKey: "fk.exposure.v1" },
+  { value: 2, label: "2", descriptionKey: "fk.exposure.v2" },
+  { value: 3, label: "3", descriptionKey: "fk.exposure.v3" },
+  { value: 6, label: "6", descriptionKey: "fk.exposure.v6" },
+  { value: 10, label: "10", descriptionKey: "fk.exposure.v10" },
 ];
 
 export interface FKValues {
@@ -146,37 +177,31 @@ export interface FKResult extends RiskResult {
 
 export function calculateFK(values: FKValues): FKResult {
   const score = values.likelihood * values.severity * values.exposure;
-  const { riskClass, label, action, color } = classifyFK(score);
-  return { score, riskClass, label, action, color, ...values };
+  const { riskClass, labelKey, actionKey, label, action, color } = classifyFK(score);
+  return { score, riskClass, labelKey, actionKey, label, action, color, ...values };
 }
 
-function classifyFK(score: number): { riskClass: RiskClass; label: string; action: string; color: string } {
-  if (score < 20) return { riskClass: "follow_up", label: "Kabul Edilebilir", action: "Önlem önerisi gerekebilir, acil önlem gerekmez", color: "#10B981" };
-  if (score < 70) return { riskClass: "low", label: "Dikkate Değer", action: "Gözetim altında tutulmalı, iyileştirme planlanmalı", color: "#F59E0B" };
-  if (score < 200) return { riskClass: "medium", label: "Önemli", action: "Kısa vadede önlem alınmalı", color: "#F97316" };
-  if (score < 400) return { riskClass: "high", label: "Yüksek Risk", action: "Hemen önlem alınmalı, iş durdurulmalı", color: "#DC2626" };
-  return { riskClass: "critical", label: "Çok Yüksek Risk", action: "Çalışma derhal durdurulmalı", color: "#7F1D1D" };
+function classifyFK(score: number): Pick<RiskResult, "riskClass" | "labelKey" | "actionKey" | "label" | "action" | "color"> {
+  if (score < 20) return band("fk", "follow_up", { label: "Acceptable", action: "May need improvement suggestions; no urgent action" }, "#10B981");
+  if (score < 70) return band("fk", "low", { label: "Moderate concern", action: "Keep under review; plan improvements" }, "#F59E0B");
+  if (score < 200) return band("fk", "medium", { label: "Significant", action: "Take action in the short term" }, "#F97316");
+  if (score < 400) return band("fk", "high", { label: "High risk", action: "Immediate action; consider stopping work" }, "#DC2626");
+  return band("fk", "critical", { label: "Very high risk", action: "Stop work immediately" }, "#7F1D1D");
 }
 
 /* ================================================================== */
 /* 5x5 L-Tipi Matris                                                   */
 /* ================================================================== */
 
-export const MATRIX_LIKELIHOOD_LABELS = [
-  "Çok düşük (Hemen hemen imkansız)",
-  "Düşük (Çok az, beklenmiyor)",
-  "Orta (Az ama mümkün)",
-  "Yüksek (Muhtemel, şaşırtmaz)",
-  "Çok yüksek (Beklenen, kaçınılamaz)",
-];
+/** 1-based likelihood index → message key (use with useTranslations("riskScoring")) */
+export function matrixLikelihoodDescriptionKey(likelihood1to5: number): string {
+  return `matrix.likelihood.i${Math.min(5, Math.max(1, likelihood1to5))}.description`;
+}
 
-export const MATRIX_SEVERITY_LABELS = [
-  "Çok hafif (İş günü kaybı yok)",
-  "Hafif (İş günü kaybına yol açmayan)",
-  "Orta (İş günü kaybı gerektiren)",
-  "Ciddi (Uzuv kaybı, kalıcı hasar)",
-  "Çok ciddi (Ölüm, toplu ölüm)",
-];
+/** 1-based severity index → message key */
+export function matrixSeverityDescriptionKey(severity1to5: number): string {
+  return `matrix.severity.i${Math.min(5, Math.max(1, severity1to5))}.description`;
+}
 
 export interface MatrixValues {
   likelihood: number; // 1-5
@@ -201,16 +226,16 @@ const MATRIX_COLORS: string[][] = [
 export function calculateMatrix(values: MatrixValues): MatrixResult {
   const score = values.likelihood * values.severity;
   const cellColor = MATRIX_COLORS[values.likelihood - 1]?.[values.severity - 1] ?? "#64748B";
-  const { riskClass, label, action, color } = classifyMatrix(score);
-  return { score, riskClass, label, action, color: cellColor, cellColor, ...values };
+  const { riskClass, labelKey, actionKey, label, action, color } = classifyMatrix(score);
+  return { score, riskClass, labelKey, actionKey, label, action, color: cellColor, cellColor, ...values };
 }
 
-function classifyMatrix(score: number): { riskClass: RiskClass; label: string; action: string; color: string } {
-  if (score <= 2) return { riskClass: "follow_up", label: "Kabul Edilebilir", action: "Ek önlem gerekmeyebilir, izleme yeterli", color: "#10B981" };
-  if (score <= 4) return { riskClass: "low", label: "Düşük Risk", action: "Mevcut kontroller yeterli, gözlem sürdürülmeli", color: "#F59E0B" };
-  if (score <= 9) return { riskClass: "medium", label: "Orta Risk", action: "İyileştirme çalışmaları planlanmalı", color: "#F97316" };
-  if (score <= 15) return { riskClass: "high", label: "Yüksek Risk", action: "Kısa sürede önlem alınmalı", color: "#DC2626" };
-  return { riskClass: "critical", label: "Tolere Edilemez", action: "İş derhal durdurulmalı, acil önlem", color: "#7F1D1D" };
+function classifyMatrix(score: number): Pick<RiskResult, "riskClass" | "labelKey" | "actionKey" | "label" | "action" | "color"> {
+  if (score <= 2) return band("matrix", "follow_up", { label: "Acceptable", action: "Further measures may not be needed; monitoring sufficient" }, "#10B981");
+  if (score <= 4) return band("matrix", "low", { label: "Low risk", action: "Existing controls adequate; keep observing" }, "#F59E0B");
+  if (score <= 9) return band("matrix", "medium", { label: "Medium risk", action: "Plan improvement activities" }, "#F97316");
+  if (score <= 15) return band("matrix", "high", { label: "High risk", action: "Take action soon" }, "#DC2626");
+  return band("matrix", "critical", { label: "Intolerable", action: "Stop work immediately; emergency measures" }, "#7F1D1D");
 }
 
 /* ================================================================== */
@@ -246,56 +271,56 @@ export interface FMEAResult extends RiskResult {
 }
 
 export const FMEA_SEVERITY_OPTIONS: FKOption[] = [
-  { value: 1, label: "1", description: "Etkisiz — fark edilmez" },
-  { value: 2, label: "2", description: "Çok küçük — ihmal edilebilir etki" },
-  { value: 3, label: "3", description: "Küçük — hafif rahatsızlık" },
-  { value: 4, label: "4", description: "Düşük — performans düşüşü" },
-  { value: 5, label: "5", description: "Orta — önemli performans kaybı" },
-  { value: 6, label: "6", description: "Yüksek — sistem işlevi bozulur" },
-  { value: 7, label: "7", description: "Çok yüksek — çalışamaz duruma gelir" },
-  { value: 8, label: "8", description: "Tehlikeli (uyarılı) — yaralanma riski" },
-  { value: 9, label: "9", description: "Tehlikeli (uyarısız) — ciddi yaralanma" },
-  { value: 10, label: "10", description: "Felaket — ölüm/toplu kaza" },
+  { value: 1, label: "1", descriptionKey: "fmea.severity.v1" },
+  { value: 2, label: "2", descriptionKey: "fmea.severity.v2" },
+  { value: 3, label: "3", descriptionKey: "fmea.severity.v3" },
+  { value: 4, label: "4", descriptionKey: "fmea.severity.v4" },
+  { value: 5, label: "5", descriptionKey: "fmea.severity.v5" },
+  { value: 6, label: "6", descriptionKey: "fmea.severity.v6" },
+  { value: 7, label: "7", descriptionKey: "fmea.severity.v7" },
+  { value: 8, label: "8", descriptionKey: "fmea.severity.v8" },
+  { value: 9, label: "9", descriptionKey: "fmea.severity.v9" },
+  { value: 10, label: "10", descriptionKey: "fmea.severity.v10" },
 ];
 
 export const FMEA_OCCURRENCE_OPTIONS: FKOption[] = [
-  { value: 1, label: "1", description: "Neredeyse imkansız (< 1/1.000.000)" },
-  { value: 2, label: "2", description: "Uzak ihtimal (1/20.000)" },
-  { value: 3, label: "3", description: "Çok düşük (1/4.000)" },
-  { value: 4, label: "4", description: "Düşük (1/1.000)" },
-  { value: 5, label: "5", description: "Orta-düşük (1/400)" },
-  { value: 6, label: "6", description: "Orta (1/80)" },
-  { value: 7, label: "7", description: "Orta-yüksek (1/40)" },
-  { value: 8, label: "8", description: "Yüksek (1/20)" },
-  { value: 9, label: "9", description: "Çok yüksek (1/8)" },
-  { value: 10, label: "10", description: "Neredeyse kesin (≥ 1/2)" },
+  { value: 1, label: "1", descriptionKey: "fmea.occurrence.v1" },
+  { value: 2, label: "2", descriptionKey: "fmea.occurrence.v2" },
+  { value: 3, label: "3", descriptionKey: "fmea.occurrence.v3" },
+  { value: 4, label: "4", descriptionKey: "fmea.occurrence.v4" },
+  { value: 5, label: "5", descriptionKey: "fmea.occurrence.v5" },
+  { value: 6, label: "6", descriptionKey: "fmea.occurrence.v6" },
+  { value: 7, label: "7", descriptionKey: "fmea.occurrence.v7" },
+  { value: 8, label: "8", descriptionKey: "fmea.occurrence.v8" },
+  { value: 9, label: "9", descriptionKey: "fmea.occurrence.v9" },
+  { value: 10, label: "10", descriptionKey: "fmea.occurrence.v10" },
 ];
 
 export const FMEA_DETECTION_OPTIONS: FKOption[] = [
-  { value: 1, label: "1", description: "Neredeyse kesin tespit" },
-  { value: 2, label: "2", description: "Çok yüksek tespit şansı" },
-  { value: 3, label: "3", description: "Yüksek tespit şansı" },
-  { value: 4, label: "4", description: "Orta-yüksek tespit" },
-  { value: 5, label: "5", description: "Orta tespit" },
-  { value: 6, label: "6", description: "Düşük-orta tespit" },
-  { value: 7, label: "7", description: "Düşük tespit" },
-  { value: 8, label: "8", description: "Çok düşük tespit" },
-  { value: 9, label: "9", description: "Uzak ihtimal tespit" },
-  { value: 10, label: "10", description: "Tespit edilemez" },
+  { value: 1, label: "1", descriptionKey: "fmea.detection.v1" },
+  { value: 2, label: "2", descriptionKey: "fmea.detection.v2" },
+  { value: 3, label: "3", descriptionKey: "fmea.detection.v3" },
+  { value: 4, label: "4", descriptionKey: "fmea.detection.v4" },
+  { value: 5, label: "5", descriptionKey: "fmea.detection.v5" },
+  { value: 6, label: "6", descriptionKey: "fmea.detection.v6" },
+  { value: 7, label: "7", descriptionKey: "fmea.detection.v7" },
+  { value: 8, label: "8", descriptionKey: "fmea.detection.v8" },
+  { value: 9, label: "9", descriptionKey: "fmea.detection.v9" },
+  { value: 10, label: "10", descriptionKey: "fmea.detection.v10" },
 ];
 
 export function calculateFMEA(values: FMEAValues): FMEAResult {
   const rpn = values.severity * values.occurrence * values.detection;
-  const { riskClass, label, action, color } = classifyFMEA(rpn);
-  return { score: rpn, rpn, riskClass, label, action, color, ...values };
+  const { riskClass, labelKey, actionKey, label, action, color } = classifyFMEA(rpn);
+  return { score: rpn, rpn, riskClass, labelKey, actionKey, label, action, color, ...values };
 }
 
-function classifyFMEA(rpn: number): { riskClass: RiskClass; label: string; action: string; color: string } {
-  if (rpn < 50) return { riskClass: "follow_up", label: "Kabul Edilebilir", action: "Mevcut kontroller yeterli, izleme sürdürülmeli", color: "#10B981" };
-  if (rpn < 100) return { riskClass: "low", label: "Düşük Risk", action: "İyileştirme planlanmalı", color: "#F59E0B" };
-  if (rpn < 200) return { riskClass: "medium", label: "Orta Risk", action: "Önlem alınmalı, kontroller güçlendirilmeli", color: "#F97316" };
-  if (rpn < 500) return { riskClass: "high", label: "Yüksek Risk", action: "Acil önlem gerekli, tasarım değişikliği değerlendirilmeli", color: "#DC2626" };
-  return { riskClass: "critical", label: "Kritik Risk", action: "İş durdurulmalı, kök neden analizi yapılmalı", color: "#7F1D1D" };
+function classifyFMEA(rpn: number): Pick<RiskResult, "riskClass" | "labelKey" | "actionKey" | "label" | "action" | "color"> {
+  if (rpn < 50) return band("fmea", "follow_up", { label: "Acceptable", action: "Current controls sufficient; keep monitoring" }, "#10B981");
+  if (rpn < 100) return band("fmea", "low", { label: "Low risk", action: "Plan improvements" }, "#F59E0B");
+  if (rpn < 200) return band("fmea", "medium", { label: "Medium risk", action: "Take action; strengthen controls" }, "#F97316");
+  if (rpn < 500) return band("fmea", "high", { label: "High risk", action: "Urgent action; consider design change" }, "#DC2626");
+  return band("fmea", "critical", { label: "Critical risk", action: "Stop work; perform root cause analysis" }, "#7F1D1D");
 }
 
 /* ================================================================== */
@@ -318,30 +343,45 @@ export interface HAZOPResult extends RiskResult {
   detectability: number;
 }
 
-export const HAZOP_GUIDE_WORDS = [
-  "Yok (No/Not)", "Az (Less)", "Çok (More)", "Kısmen (Part of)",
-  "Tersi (Reverse)", "Başka (Other than)", "Erken (Early)", "Geç (Late)",
-  "Önce (Before)", "Sonra (After)",
+/** Stored value stays stable for saved assessments; UI uses labelKey with riskScoring. */
+export const HAZOP_GUIDE_WORDS: { value: string; labelKey: string }[] = [
+  { value: "Yok (No/Not)", labelKey: "hazop.guideWords.noNot" },
+  { value: "Az (Less)", labelKey: "hazop.guideWords.less" },
+  { value: "Çok (More)", labelKey: "hazop.guideWords.more" },
+  { value: "Kısmen (Part of)", labelKey: "hazop.guideWords.partOf" },
+  { value: "Tersi (Reverse)", labelKey: "hazop.guideWords.reverse" },
+  { value: "Başka (Other than)", labelKey: "hazop.guideWords.otherThan" },
+  { value: "Erken (Early)", labelKey: "hazop.guideWords.early" },
+  { value: "Geç (Late)", labelKey: "hazop.guideWords.late" },
+  { value: "Önce (Before)", labelKey: "hazop.guideWords.before" },
+  { value: "Sonra (After)", labelKey: "hazop.guideWords.after" },
 ];
 
-export const HAZOP_PARAMETERS = [
-  "Akış (Flow)", "Basınç (Pressure)", "Sıcaklık (Temperature)", "Seviye (Level)",
-  "Zaman (Time)", "Kompozisyon (Composition)", "pH", "Hız (Speed)",
-  "Karıştırma (Mixing)", "Reaksiyon (Reaction)",
+export const HAZOP_PARAMETERS: { value: string; labelKey: string }[] = [
+  { value: "Akış (Flow)", labelKey: "hazop.parameters.flow" },
+  { value: "Basınç (Pressure)", labelKey: "hazop.parameters.pressure" },
+  { value: "Sıcaklık (Temperature)", labelKey: "hazop.parameters.temperature" },
+  { value: "Seviye (Level)", labelKey: "hazop.parameters.level" },
+  { value: "Zaman (Time)", labelKey: "hazop.parameters.time" },
+  { value: "Kompozisyon (Composition)", labelKey: "hazop.parameters.composition" },
+  { value: "pH", labelKey: "hazop.parameters.ph" },
+  { value: "Hız (Speed)", labelKey: "hazop.parameters.speed" },
+  { value: "Karıştırma (Mixing)", labelKey: "hazop.parameters.mixing" },
+  { value: "Reaksiyon (Reaction)", labelKey: "hazop.parameters.reaction" },
 ];
 
 export function calculateHAZOP(values: HAZOPValues): HAZOPResult {
   const score = values.severity * values.likelihood * (6 - values.detectability);
-  const { riskClass, label, action, color } = classifyHAZOP(score);
-  return { score, riskClass, label, action, color, severity: values.severity, likelihood: values.likelihood, detectability: values.detectability };
+  const { riskClass, labelKey, actionKey, label, action, color } = classifyHAZOP(score);
+  return { score, riskClass, labelKey, actionKey, label, action, color, severity: values.severity, likelihood: values.likelihood, detectability: values.detectability };
 }
 
-function classifyHAZOP(score: number): { riskClass: RiskClass; label: string; action: string; color: string } {
-  if (score <= 10) return { riskClass: "follow_up", label: "Kabul Edilebilir", action: "Mevcut kontroller yeterli", color: "#10B981" };
-  if (score <= 25) return { riskClass: "low", label: "Düşük", action: "İzleme ve iyileştirme planlanmalı", color: "#F59E0B" };
-  if (score <= 50) return { riskClass: "medium", label: "Orta", action: "Ek koruma katmanları değerlendirilmeli", color: "#F97316" };
-  if (score <= 75) return { riskClass: "high", label: "Yüksek", action: "Proses değişikliği veya ek bariyer gerekli", color: "#DC2626" };
-  return { riskClass: "critical", label: "Tolere Edilemez", action: "Proses durdurulmalı, tasarım revizyonu yapılmalı", color: "#7F1D1D" };
+function classifyHAZOP(score: number): Pick<RiskResult, "riskClass" | "labelKey" | "actionKey" | "label" | "action" | "color"> {
+  if (score <= 10) return band("hazop", "follow_up", { label: "Acceptable", action: "Current controls sufficient" }, "#10B981");
+  if (score <= 25) return band("hazop", "low", { label: "Low", action: "Plan monitoring and improvements" }, "#F59E0B");
+  if (score <= 50) return band("hazop", "medium", { label: "Medium", action: "Evaluate additional protection layers" }, "#F97316");
+  if (score <= 75) return band("hazop", "high", { label: "High", action: "Process change or extra barrier required" }, "#DC2626");
+  return band("hazop", "critical", { label: "Intolerable", action: "Stop process; revise design" }, "#7F1D1D");
 }
 
 /* ================================================================== */
@@ -370,16 +410,16 @@ export function calculateBowTie(values: BowTieValues): BowTieResult {
   const divisor = 1 + values.preventionBarriers + values.mitigationBarriers;
   const residualRisk = rawRisk / divisor;
   const normalized = Math.min(1, residualRisk / 25); // 0-1 arasi normalize
-  const { riskClass, label, action, color } = classifyBowTie(normalized);
-  return { score: normalized, rawRisk, residualRisk, riskClass, label, action, color, ...values };
+  const { riskClass, labelKey, actionKey, label, action, color } = classifyBowTie(normalized);
+  return { score: normalized, rawRisk, residualRisk, riskClass, labelKey, actionKey, label, action, color, ...values };
 }
 
-function classifyBowTie(score: number): { riskClass: RiskClass; label: string; action: string; color: string } {
-  if (score <= 0.20) return { riskClass: "follow_up", label: "Kabul Edilebilir", action: "Bariyerler yeterli, izleme sürdürülmeli", color: "#10B981" };
-  if (score <= 0.40) return { riskClass: "low", label: "Düşük", action: "Bariyer etkinliği gözden geçirilmeli", color: "#F59E0B" };
-  if (score <= 0.60) return { riskClass: "medium", label: "Orta", action: "Ek bariyer eklenmeli", color: "#F97316" };
-  if (score <= 0.80) return { riskClass: "high", label: "Yüksek", action: "Acil bariyer takviyesi, proses gözden geçirilmeli", color: "#DC2626" };
-  return { riskClass: "critical", label: "Kritik", action: "İş durdurulmalı, tüm bariyerler yeniden tasarlanmalı", color: "#7F1D1D" };
+function classifyBowTie(score: number): Pick<RiskResult, "riskClass" | "labelKey" | "actionKey" | "label" | "action" | "color"> {
+  if (score <= 0.20) return band("bow_tie", "follow_up", { label: "Acceptable", action: "Barriers adequate; continue monitoring" }, "#10B981");
+  if (score <= 0.40) return band("bow_tie", "low", { label: "Low", action: "Review barrier effectiveness" }, "#F59E0B");
+  if (score <= 0.60) return band("bow_tie", "medium", { label: "Medium", action: "Add further barriers" }, "#F97316");
+  if (score <= 0.80) return band("bow_tie", "high", { label: "High", action: "Urgent barrier reinforcement; review process" }, "#DC2626");
+  return band("bow_tie", "critical", { label: "Critical", action: "Stop work; redesign barriers" }, "#7F1D1D");
 }
 
 /* ================================================================== */
@@ -411,21 +451,21 @@ export function calculateFTA(values: FTAValues): FTAResult {
   }
 
   const finalScore = Math.min(1, systemProbability * (values.systemCriticality / 5));
-  const { riskClass, label, action, color } = classifyFTA(finalScore);
+  const { riskClass, labelKey, actionKey, label, action, color } = classifyFTA(finalScore);
   return {
     score: finalScore, systemProbability, gateType: values.gateType,
     systemCriticality: values.systemCriticality,
     componentCount: values.components.length,
-    riskClass, label, action, color,
+    riskClass, labelKey, actionKey, label, action, color,
   };
 }
 
-function classifyFTA(score: number): { riskClass: RiskClass; label: string; action: string; color: string } {
-  if (score < 0.10) return { riskClass: "follow_up", label: "Kabul Edilebilir", action: "Sistem güvenilirliği yeterli", color: "#10B981" };
-  if (score < 0.30) return { riskClass: "low", label: "Düşük", action: "Yedekleme sistemleri değerlendirilmeli", color: "#F59E0B" };
-  if (score < 0.50) return { riskClass: "medium", label: "Orta", action: "Kritik bileşenlere yedek eklenmeli", color: "#F97316" };
-  if (score < 0.75) return { riskClass: "high", label: "Yüksek", action: "Sistem yeniden tasarlanmalı", color: "#DC2626" };
-  return { riskClass: "critical", label: "Kritik", action: "Sistem kullanılmamalı, kök neden giderilmeli", color: "#7F1D1D" };
+function classifyFTA(score: number): Pick<RiskResult, "riskClass" | "labelKey" | "actionKey" | "label" | "action" | "color"> {
+  if (score < 0.10) return band("fta", "follow_up", { label: "Acceptable", action: "System reliability adequate" }, "#10B981");
+  if (score < 0.30) return band("fta", "low", { label: "Low", action: "Evaluate redundancy / backups" }, "#F59E0B");
+  if (score < 0.50) return band("fta", "medium", { label: "Medium", action: "Add redundancy to critical components" }, "#F97316");
+  if (score < 0.75) return band("fta", "high", { label: "High", action: "Redesign the system" }, "#DC2626");
+  return band("fta", "critical", { label: "Critical", action: "Do not operate; eliminate root causes" }, "#7F1D1D");
 }
 
 /* ================================================================== */
@@ -469,21 +509,21 @@ export function calculateChecklist(values: ChecklistValues): ChecklistResult {
   }
 
   const compliancePercent = maxPoints > 0 ? Math.round((earnedPoints / maxPoints) * 100) : 100;
-  const { riskClass, label, action, color } = classifyChecklist(compliancePercent);
+  const { riskClass, labelKey, actionKey, label, action, color } = classifyChecklist(compliancePercent);
   return {
     score: 100 - compliancePercent, // yuksek risk = dusuk uygunluk
     compliancePercent, totalItems: applicable.length,
     compliantCount: compliant, nonCompliantCount: nonCompliant, partialCount: partial,
-    riskClass, label, action, color,
+    riskClass, labelKey, actionKey, label, action, color,
   };
 }
 
-function classifyChecklist(percent: number): { riskClass: RiskClass; label: string; action: string; color: string } {
-  if (percent >= 90) return { riskClass: "follow_up", label: "Uygun", action: "Mevcut durum sürdürülmeli", color: "#10B981" };
-  if (percent >= 75) return { riskClass: "low", label: "Kabul Edilebilir", action: "Eksiklikler kısa vadede giderilmeli", color: "#F59E0B" };
-  if (percent >= 50) return { riskClass: "medium", label: "İyileştirme Gerekli", action: "Kapsamlı iyileştirme planı hazırlanmalı", color: "#F97316" };
-  if (percent >= 25) return { riskClass: "high", label: "Yetersiz", action: "Acil düzeltici faaliyet başlatılmalı", color: "#DC2626" };
-  return { riskClass: "critical", label: "Kritik Yetersizlik", action: "Faaliyet durdurulmalı, tam revizyon yapılmalı", color: "#7F1D1D" };
+function classifyChecklist(percent: number): Pick<RiskResult, "riskClass" | "labelKey" | "actionKey" | "label" | "action" | "color"> {
+  if (percent >= 90) return band("checklist", "follow_up", { label: "Compliant", action: "Maintain current practice" }, "#10B981");
+  if (percent >= 75) return band("checklist", "low", { label: "Acceptable", action: "Close gaps in the short term" }, "#F59E0B");
+  if (percent >= 50) return band("checklist", "medium", { label: "Improvement needed", action: "Prepare a broader improvement plan" }, "#F97316");
+  if (percent >= 25) return band("checklist", "high", { label: "Inadequate", action: "Start urgent corrective actions" }, "#DC2626");
+  return band("checklist", "critical", { label: "Critically inadequate", action: "Stop activity; full revision" }, "#7F1D1D");
 }
 
 /* ================================================================== */
@@ -525,8 +565,8 @@ export function calculateJSA(values: JSAValues): JSAResult {
   const overallScore = (maxStepScore + avgStepScore) / 2;
   const highRiskStepCount = stepScores.filter(s => s.riskClass === "high" || s.riskClass === "critical").length;
 
-  const { riskClass, label, action, color } = classifyMatrix(Math.round(overallScore)); // L-Matris siniflandirmasi
-  return { score: overallScore, stepScores, maxStepScore, avgStepScore, highRiskStepCount, riskClass, label, action, color };
+  const { riskClass, labelKey, actionKey, label, action, color } = classifyMatrix(Math.round(overallScore)); // L-Matris siniflandirmasi
+  return { score: overallScore, stepScores, maxStepScore, avgStepScore, highRiskStepCount, riskClass, labelKey, actionKey, label, action, color };
 }
 
 function classifyJSAStep(score: number): RiskClass {
@@ -564,18 +604,18 @@ export interface LOPAResult extends RiskResult {
 }
 
 export const LOPA_INIT_FREQ_OPTIONS: FKOption[] = [
-  { value: 1, label: "1", description: "Yılda 1 kez — çok sık" },
-  { value: 0.1, label: "10⁻¹", description: "10 yılda 1 — sık" },
-  { value: 0.01, label: "10⁻²", description: "100 yılda 1 — ara sıra" },
-  { value: 0.001, label: "10⁻³", description: "1000 yılda 1 — nadir" },
-  { value: 0.0001, label: "10⁻⁴", description: "10.000 yılda 1 — çok nadir" },
-  { value: 0.00001, label: "10⁻⁵", description: "100.000 yılda 1 — son derece nadir" },
+  { value: 1, label: "1", descriptionKey: "lopa.initFreq.v1" },
+  { value: 0.1, label: "10⁻¹", descriptionKey: "lopa.initFreq.v0_1" },
+  { value: 0.01, label: "10⁻²", descriptionKey: "lopa.initFreq.v0_01" },
+  { value: 0.001, label: "10⁻³", descriptionKey: "lopa.initFreq.v0_001" },
+  { value: 0.0001, label: "10⁻⁴", descriptionKey: "lopa.initFreq.v0_0001" },
+  { value: 0.00001, label: "10⁻⁵", descriptionKey: "lopa.initFreq.v0_00001" },
 ];
 
 export const LOPA_PFD_OPTIONS: FKOption[] = [
-  { value: 0.1, label: "10⁻¹", description: "Basit idari kontrol" },
-  { value: 0.01, label: "10⁻²", description: "Eğitimli operatör yanıtı / alarm" },
-  { value: 0.001, label: "10⁻³", description: "Otomatik güvenlik sistemi (SIL-1)" },
+  { value: 0.1, label: "10⁻¹", descriptionKey: "lopa.pfd.v0_1" },
+  { value: 0.01, label: "10⁻²", descriptionKey: "lopa.pfd.v0_01" },
+  { value: 0.001, label: "10⁻³", descriptionKey: "lopa.pfd.v0_001" },
 ];
 
 export function calculateLOPA(values: LOPAValues): LOPAResult {
@@ -589,7 +629,7 @@ export function calculateLOPA(values: LOPAValues): LOPAResult {
   const targetFreq = 1e-5;
   const meetsTarget = mitigatedFreq <= targetFreq;
 
-  const { riskClass, label, action, color } = classifyLOPA(mitigatedFreq);
+  const { riskClass, labelKey, actionKey, label, action, color } = classifyLOPA(mitigatedFreq);
   return {
     score: riskScore,
     initiatingEventFreq: values.initiatingEventFreq,
@@ -597,16 +637,16 @@ export function calculateLOPA(values: LOPAValues): LOPAResult {
     consequenceSeverity: values.consequenceSeverity,
     layerCount: values.layers.length,
     meetsTarget,
-    riskClass, label, action, color,
+    riskClass, labelKey, actionKey, label, action, color,
   };
 }
 
-function classifyLOPA(freq: number): { riskClass: RiskClass; label: string; action: string; color: string } {
-  if (freq <= 1e-6) return { riskClass: "follow_up", label: "Kabul Edilebilir", action: "Mevcut koruma katmanları yeterli", color: "#10B981" };
-  if (freq <= 1e-5) return { riskClass: "low", label: "ALARP", action: "Makul derecede uygulanabilir en düşük risk", color: "#F59E0B" };
-  if (freq <= 1e-4) return { riskClass: "medium", label: "İyileştirme Gerekli", action: "Ek koruma katmanı eklenmeli", color: "#F97316" };
-  if (freq <= 1e-3) return { riskClass: "high", label: "Yüksek Risk", action: "Birden fazla ek katman veya proses değişikliği gerekli", color: "#DC2626" };
-  return { riskClass: "critical", label: "Tolere Edilemez", action: "Proses durdurulmalı, tasarım revizyonu yapılmalı", color: "#7F1D1D" };
+function classifyLOPA(freq: number): Pick<RiskResult, "riskClass" | "labelKey" | "actionKey" | "label" | "action" | "color"> {
+  if (freq <= 1e-6) return band("lopa", "follow_up", { label: "Acceptable", action: "Current protection layers sufficient" }, "#10B981");
+  if (freq <= 1e-5) return band("lopa", "low", { label: "ALARP", action: "As low as reasonably practicable" }, "#F59E0B");
+  if (freq <= 1e-4) return band("lopa", "medium", { label: "Improvement needed", action: "Add an extra protection layer" }, "#F97316");
+  if (freq <= 1e-3) return band("lopa", "high", { label: "High risk", action: "Multiple layers or process change required" }, "#DC2626");
+  return band("lopa", "critical", { label: "Intolerable", action: "Stop process; revise design" }, "#7F1D1D");
 }
 
 /* ================================================================== */
@@ -621,8 +661,8 @@ export interface MethodInfo {
   shortName: string;
   icon: string;
   color: string;
-  description: string;
-  tooltip: string;
+  descriptionKey: string;
+  tooltipKey: string;
   paramCount: number;
   scoreRange: string;
 }
@@ -630,62 +670,62 @@ export interface MethodInfo {
 export const METHOD_CATALOG: MethodInfo[] = [
   {
     id: "r_skor", name: "R-SKOR 2D", shortName: "R₂D", icon: "🎯", color: "#6366F1",
-    description: "9 parametreli ağırlıklı saha tarama skoru",
-    tooltip: "RiskNova'nın özgün yöntemi. 9 parametre (C1-C9) ile sahadan toplanan verileri ağırlıklı olarak değerlendirir. Görsel analiz ile otomatik skorlama yapılabilir.",
+    descriptionKey: "methods.r_skor.description",
+    tooltipKey: "methods.r_skor.tooltip",
     paramCount: 9, scoreRange: "0–1",
   },
   {
     id: "fine_kinney", name: "Fine-Kinney", shortName: "FK", icon: "⚖️", color: "#8B5CF6",
-    description: "Olasılık × Şiddet × Maruziyet çarpımı",
-    tooltip: "En yaygın kullanılan nicel risk değerlendirme yöntemi. Olasılık (0.1-10), Şiddet (1-100) ve Maruziyet (0.5-10) çarpılarak risk skoru elde edilir. ISO 31000 uyumlu.",
+    descriptionKey: "methods.fine_kinney.description",
+    tooltipKey: "methods.fine_kinney.tooltip",
     paramCount: 3, scoreRange: "0.05–10.000",
   },
   {
     id: "l_matrix", name: "L-Tipi Matris", shortName: "5×5", icon: "📊", color: "#EC4899",
-    description: "5×5 olasılık-şiddet risk matrisi",
-    tooltip: "Basit ve anlaşılır matris yöntemi. Olasılık (1-5) ve Şiddet (1-5) seçilerek 25 hücreli renkli matris üzerinden risk seviyesi belirlenir. 6331 İSG Kanunu uyumlu.",
+    descriptionKey: "methods.l_matrix.description",
+    tooltipKey: "methods.l_matrix.tooltip",
     paramCount: 2, scoreRange: "1–25",
   },
   {
     id: "fmea", name: "FMEA", shortName: "FMEA", icon: "🔧", color: "#F59E0B",
-    description: "Hata Türü ve Etkileri Analizi — RPN hesaplama",
-    tooltip: "Failure Mode & Effects Analysis. Şiddet (1-10) × Oluşma Olasılığı (1-10) × Tespit Edilebilirlik (1-10) = RPN. Üretim, bakım ve proses güvenliği için ideal. IEC 60812 standardı.",
+    descriptionKey: "methods.fmea.description",
+    tooltipKey: "methods.fmea.tooltip",
     paramCount: 3, scoreRange: "1–1000",
   },
   {
     id: "hazop", name: "HAZOP", shortName: "HAZOP", icon: "🏭", color: "#EF4444",
-    description: "Tehlike ve İşletilebilirlik Çalışması",
-    tooltip: "Hazard and Operability Study. Kılavuz kelimeler (Yok, Az, Çok, Tersi) ile proses sapmalarını analiz eder. Kimya, petrokimya ve enerji sektörü için zorunlu. IEC 61882.",
+    descriptionKey: "methods.hazop.description",
+    tooltipKey: "methods.hazop.tooltip",
     paramCount: 3, scoreRange: "1–125",
   },
   {
     id: "bow_tie", name: "Bow-Tie", shortName: "BT", icon: "🎀", color: "#14B8A6",
-    description: "Papyon analizi — tehdit-bariyer-sonuç modeli",
-    tooltip: "Tehdit olasılığı ve sonuç şiddeti arasındaki önleyici ve azaltıcı bariyerleri değerlendirir. Bariyer etkinliğine göre residüel risk hesaplanır. Körfez/petrol sektöründe yaygın.",
+    descriptionKey: "methods.bow_tie.description",
+    tooltipKey: "methods.bow_tie.tooltip",
     paramCount: 4, scoreRange: "0–1",
   },
   {
     id: "fta", name: "FTA", shortName: "FTA", icon: "🌳", color: "#6366F1",
-    description: "Hata Ağacı Analizi — sistem güvenilirliği",
-    tooltip: "Fault Tree Analysis. Sistem arızasını bileşen hatalarına ayırır. AND/OR kapıları ile sistem arıza olasılığı hesaplanır. Havacılık, nükleer ve kritik sistemlerde kullanılır. IEC 61025.",
+    descriptionKey: "methods.fta.description",
+    tooltipKey: "methods.fta.tooltip",
     paramCount: -1, scoreRange: "0–1",
   },
   {
     id: "checklist", name: "Checklist", shortName: "CL", icon: "✅", color: "#22C55E",
-    description: "Kontrol listesi — uygunluk yüzdesi",
-    tooltip: "Standart kontrol maddelerinin Uygun/Uygun Değil/Kısmi olarak değerlendirilmesi. Ağırlıklı uygunluk yüzdesi hesaplanır. Denetim, teftiş ve periyodik kontroller için ideal.",
+    descriptionKey: "methods.checklist.description",
+    tooltipKey: "methods.checklist.tooltip",
     paramCount: -1, scoreRange: "0–100%",
   },
   {
     id: "jsa", name: "JSA", shortName: "JSA", icon: "👷", color: "#F97316",
-    description: "İş Güvenliği Analizi — adım bazlı tehlike değerlendirme",
-    tooltip: "Job Safety Analysis. İş adımları tek tek analiz edilerek her adımda Şiddet × Olasılık / Kontrol Etkinliği hesaplanır. İnşaat, üretim ve saha işleri için vazgeçilmez.",
+    descriptionKey: "methods.jsa.description",
+    tooltipKey: "methods.jsa.tooltip",
     paramCount: -1, scoreRange: "1–25",
   },
   {
     id: "lopa", name: "LOPA", shortName: "LOPA", icon: "🛡️", color: "#3B82F6",
-    description: "Koruma Katmanı Analizi — frekans azaltma",
-    tooltip: "Layer of Protection Analysis. Başlangıç olay frekansını koruma katmanlarının PFD değerleri ile çarparak azaltılmış frekans hesaplar. Proses güvenliği için SIL değerlendirmesi ile birlikte kullanılır.",
+    descriptionKey: "methods.lopa.description",
+    tooltipKey: "methods.lopa.tooltip",
     paramCount: -1, scoreRange: "Logaritmik",
   },
 ];

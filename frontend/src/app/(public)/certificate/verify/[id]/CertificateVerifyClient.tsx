@@ -2,11 +2,19 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { verifyCertificateByQr, type CertificateRecord } from "@/lib/supabase/certificate-api";
+
+function intlLocale(locale: string): string {
+  if (locale === "zh") return "zh-CN";
+  return locale;
+}
 
 export function CertificateVerifyClient() {
   const params = useParams();
   const qrCode = params.id as string;
+  const t = useTranslations("certificateVerify");
+  const locale = useLocale();
 
   const [cert, setCert] = useState<CertificateRecord | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,12 +33,14 @@ export function CertificateVerifyClient() {
 
   useEffect(() => { load(); }, [load]);
 
+  const loc = intlLocale(locale);
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center">
           <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-[#b8860b] border-t-transparent" />
-          <p className="text-gray-500">Doğrulanıyor...</p>
+          <p className="text-gray-500">{t("loading")}</p>
         </div>
       </div>
     );
@@ -43,8 +53,8 @@ export function CertificateVerifyClient() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
           </div>
-          <h2 className="text-xl font-bold text-gray-900">Sertifika Bulunamadı</h2>
-          <p className="mt-2 text-gray-500">Bu doğrulama kodu ile eşleşen bir sertifika bulunamadı.</p>
+          <h2 className="text-xl font-bold text-gray-900">{t("notFoundTitle")}</h2>
+          <p className="mt-2 text-gray-500">{t("notFoundDesc")}</p>
         </div>
       </div>
     );
@@ -55,7 +65,6 @@ export function CertificateVerifyClient() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
       <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-lg">
-        {/* Verification badge */}
         <div className="mb-6 text-center">
           <div className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full ${
             isExpired ? "bg-amber-100" : "bg-emerald-100"
@@ -67,35 +76,34 @@ export function CertificateVerifyClient() {
             )}
           </div>
           <h2 className="text-xl font-bold text-gray-900">
-            {isExpired ? "Süresi Dolmuş Sertifika" : "Doğrulanmış Sertifika"}
+            {isExpired ? t("expiredCertTitle") : t("verifiedTitle")}
           </h2>
           <p className="mt-1 text-sm text-gray-500">
-            {isExpired ? "Bu sertifikanın geçerlilik süresi dolmuştur" : "Bu sertifika RiskNova tarafından doğrulanmıştır"}
+            {isExpired ? t("expiredCertSubtitle") : t("verifiedSubtitle")}
           </p>
         </div>
 
-        {/* Certificate details */}
         <div className="space-y-3 rounded-xl bg-gray-50 p-5">
           <div className="flex justify-between">
-            <span className="text-sm text-gray-500">Sertifika No</span>
+            <span className="text-sm text-gray-500">{t("certNo")}</span>
             <span className="text-sm font-medium text-gray-900">{cert?.certificateNo}</span>
           </div>
           <div className="border-t border-gray-200" />
           <div className="flex justify-between">
-            <span className="text-sm text-gray-500">Ad Soyad</span>
+            <span className="text-sm text-gray-500">{t("fullName")}</span>
             <span className="text-sm font-medium text-gray-900">{cert?.personName}</span>
           </div>
           <div className="border-t border-gray-200" />
           <div className="flex justify-between">
-            <span className="text-sm text-gray-500">Eğitim</span>
+            <span className="text-sm text-gray-500">{t("training")}</span>
             <span className="text-sm font-medium text-gray-900">{cert?.trainingName}</span>
           </div>
           {cert?.trainingDate && (
             <>
               <div className="border-t border-gray-200" />
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">Tarih</span>
-                <span className="text-sm font-medium text-gray-900">{new Date(cert.trainingDate).toLocaleDateString("tr-TR")}</span>
+                <span className="text-sm text-gray-500">{t("date")}</span>
+                <span className="text-sm font-medium text-gray-900">{new Date(cert.trainingDate).toLocaleDateString(loc)}</span>
               </div>
             </>
           )}
@@ -103,7 +111,7 @@ export function CertificateVerifyClient() {
             <>
               <div className="border-t border-gray-200" />
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">Süre</span>
+                <span className="text-sm text-gray-500">{t("duration")}</span>
                 <span className="text-sm font-medium text-gray-900">{cert.trainingDuration}</span>
               </div>
             </>
@@ -112,8 +120,8 @@ export function CertificateVerifyClient() {
             <>
               <div className="border-t border-gray-200" />
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">Puan</span>
-                <span className="text-sm font-medium text-gray-900">%{cert.score}</span>
+                <span className="text-sm text-gray-500">{t("score")}</span>
+                <span className="text-sm font-medium text-gray-900">{`${cert.score}%`}</span>
               </div>
             </>
           )}
@@ -121,7 +129,7 @@ export function CertificateVerifyClient() {
             <>
               <div className="border-t border-gray-200" />
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">Eğitimci</span>
+                <span className="text-sm text-gray-500">{t("trainer")}</span>
                 <span className="text-sm font-medium text-gray-900">{cert.trainerName}</span>
               </div>
             </>
@@ -130,35 +138,32 @@ export function CertificateVerifyClient() {
             <>
               <div className="border-t border-gray-200" />
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">Kurum</span>
+                <span className="text-sm text-gray-500">{t("institution")}</span>
                 <span className="text-sm font-medium text-gray-900">{cert.companyName}</span>
               </div>
             </>
           )}
           <div className="border-t border-gray-200" />
           <div className="flex justify-between">
-            <span className="text-sm text-gray-500">Veriliş Tarihi</span>
-            <span className="text-sm font-medium text-gray-900">{new Date(cert!.issuedAt).toLocaleDateString("tr-TR")}</span>
+            <span className="text-sm text-gray-500">{t("issuedAt")}</span>
+            <span className="text-sm font-medium text-gray-900">{new Date(cert!.issuedAt).toLocaleDateString(loc)}</span>
           </div>
           {cert?.validUntil && (
             <>
               <div className="border-t border-gray-200" />
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">Geçerlilik</span>
+                <span className="text-sm text-gray-500">{t("validUntil")}</span>
                 <span className={`text-sm font-medium ${isExpired ? "text-red-600" : "text-gray-900"}`}>
-                  {new Date(cert.validUntil).toLocaleDateString("tr-TR")}
-                  {isExpired && " (Süresi dolmuş)"}
+                  {new Date(cert.validUntil).toLocaleDateString(loc)}
+                  {isExpired ? t("expiredSuffix") : ""}
                 </span>
               </div>
             </>
           )}
         </div>
 
-        {/* Footer */}
         <div className="mt-6 text-center">
-          <p className="text-xs text-gray-400">
-            RiskNova ISG Platformu tarafından üretilmiştir
-          </p>
+          <p className="text-xs text-gray-400">{t("footer")}</p>
         </div>
       </div>
     </div>

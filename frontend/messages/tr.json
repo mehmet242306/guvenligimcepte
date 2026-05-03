@@ -25,7 +25,38 @@
     "retry": "Yeniden dene",
     "genericError": "Bir sorun oluştu. Lütfen tekrar deneyin.",
     "emptyTitle": "Henüz içerik yok",
-    "emptyDescription": "Bu görünüm için gösterilecek veri bulunmuyor."
+    "emptyDescription": "Bu görünüm için gösterilecek veri bulunmuyor.",
+    "languagePickerAria": "Dil seçimi"
+  },
+  "activeCompanyBar": {
+    "companyTypeIndividual": "Bireysel",
+    "companyTypeOsgb": "OSGB",
+    "companyTypeEnterprise": "Kurumsal",
+    "personnelCountTitle": "Aktif personel / toplam",
+    "inactiveBadge": "Pasif firma",
+    "detailLink": "Firma detayı",
+    "detailLinkTitle": "Firma detay sayfasına git",
+    "nacePrefix": "NACE"
+  },
+  "consentGate": {
+    "eyebrow": "KVKK ve onaylar",
+    "title": "Platforma devam etmeden önce zorunlu metinleri onaylayın",
+    "description": "Zorunlu kullanım şartları/KVKK metinleri, aydınlatma metni ve gerekli açık rıza metinlerinin yayında olan son sürümleri burada listelenir. Pazarlama izni zorunlu değildir; isteğe bağlıdır. Zorunlu metinler değiştikçe sistem yeniden onay isteyebilir.",
+    "signOutTemp": "Şimdilik çıkış yap",
+    "mandatoryBadge": "Zorunlu",
+    "readAcknowledge": "Bu metni okudum ve onaylıyorum",
+    "progress": "{approved}/{total} metin onaylandı",
+    "saving": "Onaylar kaydediliyor…",
+    "submit": "Onayları tamamla",
+    "errMustAcknowledge": "Devam etmek için tüm zorunlu metinleri onaylamalısınız.",
+    "errSaveFailed": "Onay kaydı tamamlanamadı. Lütfen tekrar deneyin.",
+    "consentType": {
+      "aydinlatma": "Aydınlatma",
+      "acik_riza": "Açık rıza",
+      "kvkk": "KVKK",
+      "yurt_disi_aktarim": "Yurt dışı aktarım",
+      "pazarlama": "Pazarlama"
+    }
   },
   "header": {
     "notificationsAria": "Bildirimler",
@@ -301,6 +332,7 @@
     "footerLegal": "Yasal",
     "footerPrivacy": "Gizlilik Politikası",
     "footerTerms": "Kullanım Koşulları",
+    "footerCookie": "Çerez Politikası",
     "footerContact": "İletişim",
     "footerRights": "Tüm hakları saklıdır."
   },
@@ -388,7 +420,8 @@
       "passwordLabel": "Şifre",
       "passwordPlaceholder": "Şifrenizi girin",
       "submitButton": "Giriş yap",
-      "forgotLink": "Şifremi unuttum"
+      "forgotLink": "Şifremi unuttum",
+      "privilegedLoginBlocked": "OSGB ve kurumsal hesaplar için bu giriş yolu kapalıdır. Teklif ve erişim için ekibimizle iletişime geçin."
     },
     "registerPage": {
       "eyebrow": "Yeni hesap",
@@ -421,7 +454,13 @@
       "passwordLabel": "Şifre",
       "passwordPlaceholder": "En az 8 karakter",
       "passwordHint": "Güçlü bir şifre belirleyin. Hesap türü seçimini kayıt sonrası tamamlayacaksınız.",
-      "submitButton": "Hesap oluştur"
+      "submitButton": "Hesap oluştur",
+      "legalCheckboxTerms": "Kullanım Şartları",
+      "legalCheckboxAfterTerms": ", ",
+      "legalCheckboxPrivacy": "Gizlilik Politikası ve KVKK Aydınlatma Metni",
+      "legalCheckboxAfterPrivacy": " ile ",
+      "legalCheckboxCookie": "Çerez Politikası",
+      "legalCheckboxAfterCookie": "'nı okudum ve kabul ediyorum. Hesap oluşturduktan sonra zorunlu platform onayları uygulama içinde ayrıca sunulabilir."
     },
     "forgotPage": {
       "eyebrow": "Şifre sıfırlama",
@@ -447,7 +486,11 @@
       "passwordLabel": "Yeni şifre",
       "passwordPlaceholder": "En az 8 karakter",
       "passwordHint": "Güvenli bir şifre belirleyin.",
-      "submitButton": "Şifreyi güncelle"
+      "submitButton": "Şifreyi güncelle",
+      "preparingSession": "Şifre yenileme oturumu hazırlanıyor…",
+      "errPrepareSession": "Oturum hazırlanamadı. Lütfen bağlantıyı tekrar açın.",
+      "errInvalidResetLink": "Şifre yenileme bağlantısı geçersiz veya süresi dolmuş olabilir.",
+      "errSessionRefresh": "Oturum hazırlanamadı. Sayfayı yenileyip tekrar deneyin."
     },
     "social": {
       "supabaseError": "Kimlik doğrulama hizmetine bağlanılamadı.",
@@ -1351,6 +1394,1310 @@
         "İade kararları kullanım, abonelik türü, yasal gereklilikler ve Paddle faturalama kurallarına bağlı olabilir. Onaylanan iadeler Paddle aracılığıyla ödeme yöntemine iade edilir.",
         "İade talepleri için RiskNova web sitesindeki iletişim kanalları üzerinden bize ulaşın ve hesap e-postası ile sipariş ayrıntılarını ekleyin."
       ]
+    },
+    "cookiePolicy": {
+      "eyebrow": "Çerez politikası",
+      "title": "RiskNova Çerez Politikası",
+      "lastUpdated": "Son güncelleme: 2 Mayıs 2026",
+      "metaTitle": "Çerez Politikası",
+      "metaDescription": "RiskNova’nın zorunlu oturum, güvenlik ve dil tercihi çerezleri ile benzer teknolojileri nasıl kullandığı.",
+      "ogTitle": "Çerez Politikası | RiskNova",
+      "ogDescription": "Oturum açma, güvenlik ve tercihler için zorunlu çerezler; çekirdek akışta analitik veya pazarlama çerezi zorunlu değildir.",
+      "sections": [
+        {
+          "title": "Çerez nedir?",
+          "content": "Çerezler ve benzer yerel saklama teknolojileri, web uygulamasının oturum, güvenlik, dil tercihi ve ürün işlevlerini hatırlaması için kullanılan küçük teknik kayıtlardır."
+        },
+        {
+          "title": "Zorunlu çerezler",
+          "content": "RiskNova; oturumun sürdürülmesi, Supabase kimlik doğrulama akışı, OAuth yönlendirmeleri, parola yenileme, güvenlik kontrolleri, CSRF/akış tutarlılığı ve dil tercihi için zorunlu çerezler kullanır. Bu çerezler kapatılırsa platformun temel işlevleri çalışmayabilir."
+        },
+        {
+          "title": "Tercih ve ürün çerezleri",
+          "content": "Dil, bölge, arayüz tercihi, son seçilen çalışma alanı veya benzeri ürün tercihleri çerez ya da localStorage içinde tutulabilir. Bu kayıtlar kullanıcı deneyimini tutarlı hale getirmek için kullanılır."
+        },
+        {
+          "title": "Analitik ve pazarlama çerezleri",
+          "content": "Bu sürümde kullanıcı takibi veya pazarlama amaçlı üçüncü taraf çerezleri zorunlu akışın parçası değildir. İleride analitik veya pazarlama çerezi devreye alınırsa, kullanıcıya ayrı bilgilendirme ve gerekiyorsa izin kontrolü sunulur."
+        },
+        {
+          "title": "Çerezleri yönetme",
+          "content": "Tarayıcı ayarlarınızdan çerezleri silebilir veya engelleyebilirsiniz. Ancak oturum, güvenlik ve dil tercihi gibi zorunlu çerezlerin engellenmesi login, kayıt, ödeme veya uygulama içi iş akışlarını bozabilir."
+        },
+        {
+          "title": "İletişim",
+          "content": "Çerezler veya gizlilik ayarlarıyla ilgili sorular için support@getrisknova.com adresine yazabilirsiniz."
+        }
+      ]
+    }
+  },
+  "pwaInstallPage": {
+    "metaTitle": "RiskNova Uygulaması",
+    "metaDescription": "RiskNova'yı iOS, Android ve Windows cihazlarınıza mağaza gerektirmeden PWA olarak kurun.",
+    "eyebrow": "Store gerektirmeyen uygulama",
+    "heroTitle": "RiskNova'yı mobil ve masaüstünde uygulama gibi kullanın",
+    "heroBody": "iOS, Android ve Windows cihazlarda RiskNova'yı ana ekrana veya masaüstüne ekleyin. Siteye gelen güncellemeler uygulama deneyimine de otomatik yansır.",
+    "ctaRegister": "Ücretsiz başla",
+    "ctaLogin": "Platforma giriş yap",
+    "updatesTitle": "Güncellemeler otomatik gelir",
+    "updatesBody": "RiskNova web uygulaması güncellendiğinde PWA da yeni sürümü alır. Bu yüzden mağaza güncellemesi beklemezsiniz.",
+    "cards": {
+      "android": {
+        "title": "Android",
+        "text": "Chrome veya Edge ile RiskNova'yı açın; kurulum bildirimi görünürse Cihaza kur seçeneğini kullanın.",
+        "step1": "getrisknova.com adresini aç",
+        "step2": "Cihaza kur butonuna bas",
+        "step3": "RiskNova ikonundan giriş yap"
+      },
+      "ios": {
+        "title": "iPhone ve iPad",
+        "text": "Safari ile açın; Paylaş menüsünden Ana Ekrana Ekle seçeneğini kullanarak RiskNova ikonunu oluşturun.",
+        "step1": "Safari'de siteyi aç",
+        "step2": "Paylaş ikonuna dokun",
+        "step3": "Ana Ekrana Ekle seçeneğini seç"
+      },
+      "windows": {
+        "title": "Windows",
+        "text": "Chrome veya Edge adres çubuğundaki uygulama kur ikonuyla RiskNova'yı ayrı masaüstü penceresi olarak açın.",
+        "step1": "Edge veya Chrome ile aç",
+        "step2": "Uygulamayı yükle ikonuna bas",
+        "step3": "Başlat menüsünden RiskNova'yı aç"
+      }
+    }
+  },
+  "pwaPrompt": {
+    "publicTitle": "RiskNova'yı uygulama gibi kur",
+    "publicDescription": "iOS, Android ve Windows'ta ayrı pencereyle hızlı aç.",
+    "publicButton": "Cihaza kur",
+    "appTitle": "RiskNova uygulamasını kur",
+    "appDescription": "Saha, doküman ve Nova akışlarına ana ekrandan dön.",
+    "appButton": "Kur",
+    "iosHint": "iPhone/iPad için Paylaş menüsünden Ana Ekrana Ekle seçeneğini kullan.",
+    "asideAria": "RiskNova uygulama kurulumu",
+    "dismissAria": "Kurulum hatırlatıcısını kapat"
+  },
+  "publicInvite": {
+    "brandEyebrow": "RiskNova",
+    "shellTitle": "Firma daveti",
+    "backHome": "Ana sayfaya dön",
+    "dbErrorTitle": "Bağlantı sorunu",
+    "dbErrorDesc": "Veritabanına ulaşılamadı. Lütfen daha sonra tekrar deneyin.",
+    "notFoundTitle": "Davet bulunamadı",
+    "notFoundDesc": "Bu davet artık mevcut değil ya da bağlantı geçersiz. Davet eden kişiden yeni bağlantı isteyin.",
+    "acceptedTitle": "Davet zaten kabul edilmiş",
+    "acceptedDesc": "Bu davet daha önce kabul edilmiş. Firmaya erişiminizi kontrol panelinden sürdürebilirsiniz.",
+    "acceptedCta": "Kontrol paneline git",
+    "declinedTitle": "Davet reddedildi",
+    "declinedDesc": "Bu davet daha önce reddedildi. Yeni davet için davet edenle iletişime geçin.",
+    "revokedTitle": "Davet iptal edildi",
+    "revokedDesc": "Bu davet, gönderen tarafından iptal edildi.",
+    "expiredTitle": "Davetin süresi geçti",
+    "expiredDesc": "Bu davetin geçerlilik süresi dolmuş. Yeni davet talep edin.",
+    "cardEyebrow": "Firma daveti",
+    "inviteTitle": "{company} sizi RiskNova çalışma alanına davet etti.",
+    "unknownCompany": "Bir firma",
+    "dtInviter": "Davet eden",
+    "dtInvitee": "Davet edilen",
+    "dtNote": "Not",
+    "dtExpires": "Son geçerlilik",
+    "unspecified": "Belirtilmemiş",
+    "loginPrompt": "Daveti kabul etmek için {email} adresine kayıtlı bir hesabınız olmalıdır.",
+    "btnLogin": "Giriş yap",
+    "btnRegister": "Hesap oluştur"
+  },
+  "publicInviteActions": {
+    "emailMismatch": "Bu davet {inviteeEmail} adresine gönderildi; şu an {currentUserEmail} ile oturum açmış durumdasınız.",
+    "emailMismatchHint": "Daveti kabul etmek için lütfen doğru hesapla giriş yapın.",
+    "acceptedRedirecting": "Davet kabul edildi. Kontrol paneline yönlendiriliyorsunuz…",
+    "declinedMessage": "Daveti reddettiniz. İstediğiniz zaman yeni bir davet talep edebilirsiniz.",
+    "dbError": "Veritabanı bağlantısı kurulamadı.",
+    "accepting": "Kabul ediliyor…",
+    "declineProcessing": "İşleniyor…",
+    "acceptBtn": "Daveti kabul et",
+    "declineBtn": "Reddet",
+    "errUnexpected": "Beklenmeyen bir hata oluştu.",
+    "errExpired": "Bu davetin süresi dolmuş.",
+    "errNotPending": "Bu davet artık bekleyen durumda değil (kabul, red veya iptal edilmiş olabilir).",
+    "errWrongUser": "Bu davet, giriş yaptığınız kullanıcıya ait değil. Doğru hesapla giriş yapın.",
+    "errNotFound": "Davet bulunamadı.",
+    "errAuthRequired": "Daveti kabul etmek için giriş yapmalısınız."
+  },
+  "certificateVerify": {
+    "loading": "Doğrulanıyor…",
+    "notFoundTitle": "Sertifika bulunamadı",
+    "notFoundDesc": "Bu doğrulama kodu ile eşleşen bir sertifika bulunamadı.",
+    "expiredCertTitle": "Süresi dolmuş sertifika",
+    "verifiedTitle": "Doğrulanmış sertifika",
+    "expiredCertSubtitle": "Bu sertifikanın geçerlilik süresi dolmuştur.",
+    "verifiedSubtitle": "Bu sertifika RiskNova tarafından doğrulanmıştır.",
+    "certNo": "Sertifika no",
+    "fullName": "Ad soyad",
+    "training": "Eğitim",
+    "date": "Tarih",
+    "duration": "Süre",
+    "score": "Puan",
+    "trainer": "Eğitimci",
+    "institution": "Kurum",
+    "issuedAt": "Veriliş tarihi",
+    "validUntil": "Geçerlilik",
+    "expiredSuffix": " (süresi dolmuş)",
+    "footer": "RiskNova İSG platformu tarafından üretilmiştir."
+  },
+  "publicSurvey": {
+    "loading": "Yükleniyor…",
+    "invalidTitle": "Geçersiz bağlantı",
+    "invalidDesc": "Bu bağlantı artık geçerli değil veya bulunamadı.",
+    "expiredTitle": "Süre dolmuş",
+    "expiredDesc": "Bu bağlantının süresi dolmuş.",
+    "verifyTitle": "Kimlik doğrulama",
+    "verifySubtitleExam": "Sınava başlamadan önce kimliğinizi doğrulayın.",
+    "verifySubtitleSurvey": "Ankete başlamadan önce kimliğinizi doğrulayın.",
+    "participantLabel": "Katılımcı:",
+    "questionCount": "{count} soru",
+    "minutesPipe": "| {minutes} dakika",
+    "passPipe": "| Geçme: {score}%",
+    "startButton": "Ben {name}, başla",
+    "congrats": "Tebrikler!",
+    "sorry": "Maalesef",
+    "thanks": "Teşekkürler!",
+    "examPassDesc": "Sınavı {score}% puanla geçtiniz.",
+    "examFailDesc": "Sınav puanınız: {score}%. Geçme puanı: {pass}%.",
+    "surveyCompleteDesc": "Yanıtlarınız başarıyla kaydedildi.",
+    "questionBadge": "Soru {n}",
+    "required": "* Zorunlu",
+    "yes": "Evet",
+    "no": "Hayır",
+    "openEndedPlaceholder": "Cevabınızı yazın…",
+    "submitError": "Yanıtlar kaydedilemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.",
+    "prev": "Önceki",
+    "next": "Sonraki",
+    "sending": "Gönderiliyor…",
+    "submit": "Gönder"
+  },
+  "sharedDocument": {
+    "loading": "Belge yükleniyor…",
+    "sharedBadge": "Paylaşılan doküman",
+    "createdOn": "Oluşturulma: {date}",
+    "statusDraft": "Taslak",
+    "statusReady": "Hazır",
+    "statusPendingApproval": "Onay bekliyor",
+    "statusRevision": "Revizyon",
+    "signaturesHeading": "İmzalar",
+    "footerCreatedWith": "RiskNova ile oluşturuldu",
+    "hashLabel": "Hash:"
+  },
+  "sharedRisk": {
+    "defaultTitle": "Risk analizi raporu",
+    "reportEyebrow": "Risk analizi raporu",
+    "platformLabel": "RiskNova İSG platformu",
+    "locationLabel": "Lokasyon:",
+    "departmentLabel": "Bölüm:",
+    "statTotal": "Toplam tespit",
+    "statCritical": "Kritik",
+    "statHigh": "Yüksek",
+    "teamHeading": "Analiz ekibi",
+    "analysisNoteHeading": "Analiz notu",
+    "findingsByRowHeading": "Satır bazlı risk tespitleri",
+    "rowTitleFallback": "Satır {n}",
+    "findingsImagesCount": "{findings} tespit · {images} görsel",
+    "recommendation": "Öneri",
+    "legalBasisHeading": "Mevzuat dayanağı",
+    "noFindingsInRow": "Bu satırda tespit yok.",
+    "footerGeneratedBy": "Bu rapor RiskNova İSG platformu tarafından oluşturulmuştur.",
+    "footerMethodNote": "Rapor içeriği {method} yöntemi ile değerlendirilmiştir.",
+    "methods": {
+      "r_skor": "R-SKOR 2D",
+      "fine_kinney": "Fine-Kinney",
+      "l_matrix": "L-Matris",
+      "fmea": "FMEA",
+      "hazop": "HAZOP"
+    },
+    "severity": {
+      "critical": "Kritik",
+      "high": "Yüksek",
+      "medium": "Orta",
+      "low": "Düşük"
+    }
+  },
+  "workplaceRisk": {
+    "level": {
+      "incomplete": "Eksik değerlendirilmiş",
+      "critical": "Kritik",
+      "high": "Yüksek",
+      "medium": "Orta",
+      "controlled": "Kontrollü"
+    },
+    "hazardClass": {
+      "az": "Az tehlikeli",
+      "moderate": "Tehlikeli",
+      "high": "Çok tehlikeli"
+    }
+  },
+  "companiesList": {
+    "defaults": {
+      "companyName": "Yeni Firma / Kurum",
+      "shortName": "Yeni Kayıt",
+      "kind": "Özel Sektör"
+    },
+    "confirmPermanentDelete": {
+      "word": "SİL",
+      "placeholder": "\"SİL\" yazın"
+    },
+    "eyebrow": {
+      "osgb": "OSGB Firmaları",
+      "singleWorksite": "Çalışma Alanı",
+      "multi": "Firmalarım / Kurumlarım"
+    },
+    "title": {
+      "osgb": "Firma ve çalışma alanları",
+      "single": "Çalışma alanı ve operasyon içeriği",
+      "multi": "Firmalarım / Kurumlarım"
+    },
+    "description": {
+      "single": "Aktif çalışma alanındaki personel ve diğer operasyon kayıtlarını yönetin.",
+      "multi": "Sorumlu olduğunuz firmaları yönetin, çalışma alanlarına erişin."
+    },
+    "usage": {
+      "activeOnly": "{count} aktif firma / workspace",
+      "activeOfMax": "{current} / {max} aktif firma hakkı kullanılıyor"
+    },
+    "limitReachedBanner": "Aktif firma / workspace limitine ulaştın. Yeni kayıt açmak veya arşivden geri yüklemek için önce bir firmayı arşivle ya da paket yükselt.",
+    "tabs": {
+      "active": "Aktif",
+      "archived": "Arşiv",
+      "deleted": "Silinen"
+    },
+    "stats": {
+      "totalCompanies": "Toplam Firma",
+      "totalWorksites": "Toplam Çalışma Alanı",
+      "employees": "Toplam Çalışan",
+      "criticalCompanies": "Kritik Firma",
+      "criticalWorksites": "Kritik Çalışma Alanı",
+      "openActions": "Açık Aksiyon",
+      "overdueTasks": "Geciken İş",
+      "avgMaturity": "Ort. Olgunluk"
+    },
+    "filters": {
+      "search": "Ara",
+      "searchPlaceholder": "Ad, sektör, tür, NACE...",
+      "hazardClass": "Tehlike Sınıfı",
+      "sector": "Sektör",
+      "kind": "Tür",
+      "sort": "Sıralama",
+      "all": "Tümü"
+    },
+    "sort": {
+      "name": "Ada Göre",
+      "employees": "Çalışan",
+      "risk": "Risk",
+      "overdue": "Geciken"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "clearFilters": "Filtreleri temizle",
+    "metrics": {
+      "hazard": "Tehlike",
+      "employees": "Çalışan",
+      "actions": "Aksiyon",
+      "overdue": "Geciken",
+      "locations": "Lokasyon",
+      "departments": "Bölüm"
+    },
+    "progress": {
+      "coverage": "Kapsam",
+      "maturity": "Olgunluk"
+    },
+    "links": {
+      "workspace": "Çalışma Alanı",
+      "riskAnalysis": "Risk Analizi"
+    },
+    "archive": "Arşivle",
+    "restore": "Geri Yükle",
+    "delete": "Sil",
+    "confirmArchive": {
+      "title": "“{name}” arşive alınsın mı?",
+      "hint": "Firma aktif listeden ayrılacak.",
+      "confirm": "Onayla"
+    },
+    "confirmDelete": {
+      "title": "“{name}” silinsin mi?",
+      "instruction": "Onay için şunu yazın:",
+      "confirm": "Sil"
+    },
+    "empty": {
+      "noMatchCompany": "Eşleşen firma bulunamadı",
+      "noMatchWorksite": "Eşleşen çalışma alanı bulunamadı",
+      "noMatchDescription": "Arama kriterlerinize uygun kayıt yok.",
+      "clearFilters": "Filtreleri Temizle",
+      "archiveBannerCompany": "Arşivlenen firmalar. Geri yükleme yapabilirsiniz.",
+      "archiveBannerWorksite": "Arşivlenen çalışma alanı kayıtları. Geri yükleme yapabilirsiniz.",
+      "archiveEmptyCompany": "Arşivde firma bulunmuyor",
+      "archiveEmptyWorksite": "Arşivde çalışma alanı bulunmuyor",
+      "archiveEmptyDescCompany": "Henüz arşivlenmiş firma yok.",
+      "archiveEmptyDescWorksite": "Henüz arşivlenmiş çalışma alanı yok.",
+      "deletedBannerCompany": "Silinen firmalar. Kalıcı silme geri alınamaz.",
+      "deletedBannerWorksite": "Silinen çalışma alanı kayıtları. Kalıcı silme geri alınamaz.",
+      "deletedEmptyCompany": "Silinen firma bulunmuyor",
+      "deletedEmptyWorksite": "Silinen çalışma alanı bulunmuyor",
+      "deletedEmptyDescCompany": "Henüz silinmiş firma yok.",
+      "deletedEmptyDescWorksite": "Henüz silinmiş çalışma alanı yok.",
+      "initialTitleCompany": "Henüz kayıtlı firma bulunmuyor",
+      "initialTitleWorksite": "Çalışma alanı kaydı henüz görünmüyor",
+      "initialDescCompany": "İlk firmanızı oluşturarak başlayın.",
+      "initialDescWorksite": "Bu alan aktif çalışma alanı verileriyle dolar. Çalışma alanı kurulumunu tamamladığınızda personel ve diğer kayıtlar burada görünür.",
+      "completeWorksite": "Çalışma Alanını Tamamla",
+      "newCompany": "Yeni Firma",
+      "sampleData": "Örnek Veriler"
+    },
+    "entity": {
+      "companyPlural": "firma",
+      "worksitePlural": "çalışma alanı"
+    },
+    "storage": {
+      "supabase": "Supabase",
+      "local": "Yerel"
+    },
+    "actions": {
+      "newCompany": "Yeni Firma",
+      "sampleData": "Örnek Veriler"
+    },
+    "badge": {
+      "archived": "Arşivde",
+      "deleted": "Silindi"
+    },
+    "permanentDelete": "Kalıcı Sil",
+    "employeesSuffix": "çalışan",
+    "discard": "Vazgeç"
+  },
+  "companyWorkspace": {
+    "docTitle": "{name} — Workspace · RiskNova",
+    "docTitleFallback": "Workspace · RiskNova",
+    "notFound": {
+      "title": "Firma bulunamadı",
+      "description": "Bu ID ile eşleşen firma kaydı yok.",
+      "back": "Firmalara Dön"
+    },
+    "backLink": "Çalışma Alanları",
+    "logo": {
+      "uploadTitle": "Logo yükle",
+      "fileTooLarge": "Dosya boyutu çok büyük ({sizeMb} MB). Maksimum 5 MB olmalı.",
+      "imagesOnly": "Sadece resim dosyaları yüklenebilir (PNG, JPEG, WebP, SVG).",
+      "updated": "Logo/görsel güncellendi.",
+      "uploadFailed": "Yükleme başarısız. Lütfen farklı bir dosya deneyin."
+    },
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "invite": "Davet Et",
+    "riskBadgeScore": "{label} {score}",
+    "riskBadgeLabelOnly": "{label}",
+    "stats": {
+      "employees": "Çalışan",
+      "locations": "Lokasyon",
+      "departments": "Bölüm",
+      "openActions": "Açık Aksiyon",
+      "overdue": "Geciken",
+      "maturity": "Olgunluk"
+    },
+    "sidebar": {
+      "title": "Çalışma Alanı Bölümleri",
+      "hint": "Sol menüden bir alan seç, içeriği sağ tarafta yönet."
+    },
+    "tabs": {
+      "structure": "Yerleşke",
+      "risk": "Risk ve Saha",
+      "people": "Ekip",
+      "personnel": "Personel",
+      "tracking": "Takip",
+      "ohs_file": "İSG Dosyası",
+      "organization": "Organizasyon",
+      "history": "Geçmiş"
+    }
+  },
+  "osgbFirms": {
+    "emptyCompany": {
+      "name": "Yeni OSGB firması",
+      "shortName": "Yeni firma",
+      "kind": "Özel Sektör"
+    },
+    "loading": {
+      "eyebrow": "OSGB Firmaları",
+      "title": "Firma portföyü hazırlanıyor",
+      "description": "Müşteri firmalar, görevlendirmeler ve doküman akışları yüklenirken hazırlıyoruz."
+    },
+    "header": {
+      "eyebrow": "OSGB Firma Yönetimi",
+      "title": "Firmalar ve çalışma alanları",
+      "description": "Müşteri firmalarınızı, firma bazlı workspace yapılarını ve bu firmalara atanan personel akışlarını buradan yönetin."
+    },
+    "badges": {
+      "activeCompaniesUnlimited": "{count} aktif firma",
+      "activeCompaniesMax": "{count} / {max} aktif firma",
+      "activeStaffUnlimited": "{count} aktif personel",
+      "activeStaffMax": "{count} / {max} aktif personel"
+    },
+    "topActions": {
+      "personnelInvite": "Personel ve davet",
+      "openAssignments": "Görevlendirmeleri aç",
+      "addCompany": "Yeni firma ekle"
+    },
+    "stats": {
+      "activeFirms": {
+        "label": "Aktif firma",
+        "hint": "OSGB panelinde takip edilen aktif müşteri firma sayısı."
+      },
+      "assignedProfessionals": {
+        "label": "Atanan profesyonel",
+        "hint": "Firmalara dağıtılan uzman, hekim ve DSP toplam atama sayısı."
+      },
+      "totalEmployees": {
+        "label": "Toplam çalışan",
+        "hint": "Firma kayıtlarındaki toplam çalışan hacmi ve planlama girdisi."
+      },
+      "overdueWork": {
+        "label": "Geciken iş",
+        "hint": "Görevlendirme ve DÖF akışlarında dikkate alınması gereken açık işler."
+      }
+    },
+    "focus": {
+      "title": "OSGB odaklı kurgu",
+      "p1": "Bu yüzey yalnızca OSGB owner ve admin kullanıcıları içindir. Firmalar, görevlendirmeler, sözleşmeler ve doküman takibi tek yerden yönetilir.",
+      "p2": "Görevlendirilen personel bu paneli değil, kendi profesyonel akışlarını kullanır. Personel sadece atandığı firma workspace verilerine kendi hesabı üzerinden erişir.",
+      "sidebarEyebrow": "Yönetim odağı",
+      "sidebarBody": "{firms} aktif firma, {professionals} atanmış profesyonel ve {overdue} dikkat isteyen iş bu merkezden yönetiliyor."
+    },
+    "quickLinks": {
+      "inviteStaff": "Personel davet et",
+      "manageAssignments": "Görevlendirmeleri yönet",
+      "openContracts": "Sözleşmeleri aç",
+      "docCenter": "Doküman merkezine git"
+    },
+    "nova": {
+      "title": "Nova OSGB Manager",
+      "subtitle": "Yönetim yardımcısı; personel ve firma performansını izler.",
+      "bullet1": "Firma bazlı yük dağılımını gör.",
+      "bullet2": "Geciken görev ve dokümanları ayıkla.",
+      "bullet3": "Personel görevlendirme boşluklarını tespit et.",
+      "bullet4": "Sözleşme ve rapor yenileme risklerini önceliklendir.",
+      "openTasks": "OSGB işlerini aç",
+      "reviewOverdue": "Geciken işleri incele",
+      "seeAssignmentGaps": "Atama boşluklarını gör"
+    },
+    "limitBanner": "Aktif firma limitine ulaşıldı. Yeni firma eklemek için bir firmayı arşive al ya da paketi yükselt.",
+    "activeSection": {
+      "title": "Aktif firmalar",
+      "description": "Firma, görevlendirme, doküman ve risk akışlarınızı firma workspace bazında yönetin.",
+      "searchLabel": "Firma ara",
+      "searchPlaceholder": "Firma, sektör, adres veya NACE ara"
+    },
+    "emptyActive": {
+      "title": "Aktif firma bulunamadı",
+      "description": "OSGB paneline bağlı müşteri firmaları burada listelenecek.",
+      "cta": "İlk firmayı ekle"
+    },
+    "companyCard": {
+      "sectorUnknown": "Sektör tanımsız",
+      "assignedProfessionals": "{count} atanmış profesyonel",
+      "documentsCount": "{count} doküman",
+      "employees": "{count} çalışan",
+      "overdueTasks": "{count} geciken iş",
+      "workspace": "Firma workspace",
+      "personnelInvite": "Personel ve davet",
+      "assignments": "Görevlendirme",
+      "taskTracking": "İş takibi",
+      "documentsLink": "Dokümanlar",
+      "contracts": "Sözleşmeler",
+      "archiving": "Arşivleniyor...",
+      "archive": "Arşive al"
+    },
+    "archivedSection": {
+      "title": "Arşivlenen firmalar",
+      "description": "Arşivlenen firmalar aktif limit hesabına dahil edilmez; risk ve doküman geçmişi korunur.",
+      "badge": "{count} arşiv kaydı"
+    },
+    "emptyArchived": {
+      "title": "Arşivde firma yok",
+      "description": "Bir firmayı arşive aldığında burada göreceksin."
+    },
+    "archivedRow": {
+      "restoring": "Geri yükleniyor...",
+      "restore": "Geri yükle"
+    }
+  },
+  "riskScoring": {
+    "classification": {
+      "r2d": {
+        "follow_up": {
+          "label": "İzleme",
+          "action": "Rutin izleme yeterli"
+        },
+        "low": {
+          "label": "Düşük",
+          "action": "Planlı değerlendirme yapılmalı"
+        },
+        "medium": {
+          "label": "Orta",
+          "action": "Artırılmış gözetim gerekli"
+        },
+        "high": {
+          "label": "Yüksek",
+          "action": "Öncelikli müdahale gerekli"
+        },
+        "critical": {
+          "label": "Kritik",
+          "action": "İş durdurma değerlendirmesi yapılmalı"
+        }
+      },
+      "fk": {
+        "follow_up": {
+          "label": "Kabul Edilebilir",
+          "action": "Önlem önerisi gerekebilir, acil önlem gerekmez"
+        },
+        "low": {
+          "label": "Dikkate Değer",
+          "action": "Gözetim altında tutulmalı, iyileştirme planlanmalı"
+        },
+        "medium": {
+          "label": "Önemli",
+          "action": "Kısa vadede önlem alınmalı"
+        },
+        "high": {
+          "label": "Yüksek Risk",
+          "action": "Hemen önlem alınmalı, iş durdurulmalı"
+        },
+        "critical": {
+          "label": "Çok Yüksek Risk",
+          "action": "Çalışma derhal durdurulmalı"
+        }
+      },
+      "matrix": {
+        "follow_up": {
+          "label": "Kabul Edilebilir",
+          "action": "Ek önlem gerekmeyebilir, izleme yeterli"
+        },
+        "low": {
+          "label": "Düşük Risk",
+          "action": "Mevcut kontroller yeterli, gözlem sürdürülmeli"
+        },
+        "medium": {
+          "label": "Orta Risk",
+          "action": "İyileştirme çalışmaları planlanmalı"
+        },
+        "high": {
+          "label": "Yüksek Risk",
+          "action": "Kısa sürede önlem alınmalı"
+        },
+        "critical": {
+          "label": "Tolere Edilemez",
+          "action": "İş derhal durdurulmalı, acil önlem"
+        }
+      },
+      "fmea": {
+        "follow_up": {
+          "label": "Kabul Edilebilir",
+          "action": "Mevcut kontroller yeterli, izleme sürdürülmeli"
+        },
+        "low": {
+          "label": "Düşük Risk",
+          "action": "İyileştirme planlanmalı"
+        },
+        "medium": {
+          "label": "Orta Risk",
+          "action": "Önlem alınmalı, kontroller güçlendirilmeli"
+        },
+        "high": {
+          "label": "Yüksek Risk",
+          "action": "Acil önlem gerekli, tasarım değişikliği değerlendirilmeli"
+        },
+        "critical": {
+          "label": "Kritik Risk",
+          "action": "İş durdurulmalı, kök neden analizi yapılmalı"
+        }
+      },
+      "hazop": {
+        "follow_up": {
+          "label": "Kabul Edilebilir",
+          "action": "Mevcut kontroller yeterli"
+        },
+        "low": {
+          "label": "Düşük",
+          "action": "İzleme ve iyileştirme planlanmalı"
+        },
+        "medium": {
+          "label": "Orta",
+          "action": "Ek koruma katmanları değerlendirilmeli"
+        },
+        "high": {
+          "label": "Yüksek",
+          "action": "Proses değişikliği veya ek bariyer gerekli"
+        },
+        "critical": {
+          "label": "Tolere Edilemez",
+          "action": "Proses durdurulmalı, tasarım revizyonu yapılmalı"
+        }
+      },
+      "bow_tie": {
+        "follow_up": {
+          "label": "Kabul Edilebilir",
+          "action": "Bariyerler yeterli, izleme sürdürülmeli"
+        },
+        "low": {
+          "label": "Düşük",
+          "action": "Bariyer etkinliği gözden geçirilmeli"
+        },
+        "medium": {
+          "label": "Orta",
+          "action": "Ek bariyer eklenmeli"
+        },
+        "high": {
+          "label": "Yüksek",
+          "action": "Acil bariyer takviyesi, proses gözden geçirilmeli"
+        },
+        "critical": {
+          "label": "Kritik",
+          "action": "İş durdurulmalı, tüm bariyerler yeniden tasarlanmalı"
+        }
+      },
+      "fta": {
+        "follow_up": {
+          "label": "Kabul Edilebilir",
+          "action": "Sistem güvenilirliği yeterli"
+        },
+        "low": {
+          "label": "Düşük",
+          "action": "Yedekleme sistemleri değerlendirilmeli"
+        },
+        "medium": {
+          "label": "Orta",
+          "action": "Kritik bileşenlere yedek eklenmeli"
+        },
+        "high": {
+          "label": "Yüksek",
+          "action": "Sistem yeniden tasarlanmalı"
+        },
+        "critical": {
+          "label": "Kritik",
+          "action": "Sistem kullanılmamalı, kök neden giderilmeli"
+        }
+      },
+      "checklist": {
+        "follow_up": {
+          "label": "Uygun",
+          "action": "Mevcut durum sürdürülmeli"
+        },
+        "low": {
+          "label": "Kabul Edilebilir",
+          "action": "Eksiklikler kısa vadede giderilmeli"
+        },
+        "medium": {
+          "label": "İyileştirme Gerekli",
+          "action": "Kapsamlı iyileştirme planı hazırlanmalı"
+        },
+        "high": {
+          "label": "Yetersiz",
+          "action": "Acil düzeltici faaliyet başlatılmalı"
+        },
+        "critical": {
+          "label": "Kritik Yetersizlik",
+          "action": "Faaliyet durdurulmalı, tam revizyon yapılmalı"
+        }
+      },
+      "lopa": {
+        "follow_up": {
+          "label": "Kabul Edilebilir",
+          "action": "Mevcut koruma katmanları yeterli"
+        },
+        "low": {
+          "label": "ALARP",
+          "action": "Makul derecede uygulanabilir en düşük risk"
+        },
+        "medium": {
+          "label": "İyileştirme Gerekli",
+          "action": "Ek koruma katmanı eklenmeli"
+        },
+        "high": {
+          "label": "Yüksek Risk",
+          "action": "Birden fazla ek katman veya proses değişikliği gerekli"
+        },
+        "critical": {
+          "label": "Tolere Edilemez",
+          "action": "Proses durdurulmalı, tasarım revizyonu yapılmalı"
+        }
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "Çok düşük (Hemen hemen imkansız)"
+        },
+        "i2": {
+          "description": "Düşük (Çok az, beklenmiyor)"
+        },
+        "i3": {
+          "description": "Orta (Az ama mümkün)"
+        },
+        "i4": {
+          "description": "Yüksek (Muhtemel, şaşırtmaz)"
+        },
+        "i5": {
+          "description": "Çok yüksek (Beklenen, kaçınılamaz)"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "Çok hafif (İş günü kaybı yok)"
+        },
+        "i2": {
+          "description": "Hafif (İş günü kaybına yol açmayan)"
+        },
+        "i3": {
+          "description": "Orta (İş günü kaybı gerektiren)"
+        },
+        "i4": {
+          "description": "Ciddi (Uzuv kaybı, kalıcı hasar)"
+        },
+        "i5": {
+          "description": "Çok ciddi (Ölüm, toplu ölüm)"
+        }
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "label": "Tehlike Yoğunluğu",
+        "description": "Sahada tespit edilen tehlikeli nesne sayısı / yoğunluğu"
+      },
+      "c2": {
+        "label": "KKD Eksikliği",
+        "description": "Baret, eldiven, gözlük gibi KKD takılmamış durumlar"
+      },
+      "c3": {
+        "label": "Davranış Riski",
+        "description": "Yasak bölgeye giriş, korumasız çalışma, yüksekten düşme tehlikesi"
+      },
+      "c4": {
+        "label": "Çevresel Stres",
+        "description": "Aşırı sıcaklık, gürültü, titreşim gibi çevresel faktörler"
+      },
+      "c5": {
+        "label": "Kimyasal/Elektrik Tehlike",
+        "description": "Gaz kaçağı, kimyasal madde, elektrik tehlikesi"
+      },
+      "c6": {
+        "label": "Erişim / Engel",
+        "description": "Kaçış yolu tıkalı, ıslak zemin, geçiş engeli"
+      },
+      "c7": {
+        "label": "Makine / Proses",
+        "description": "Makine koruması devre dışı, bakım gecikmesi"
+      },
+      "c8": {
+        "label": "Araç Trafiği",
+        "description": "Forklift yoğunluğu, hat kesişimi, yaya-araç çatışması"
+      },
+      "c9": {
+        "label": "Örgütsel Yük",
+        "description": "Eğitim eksikliği, uyarı levhası eksikliği"
+      },
+      "source": {
+        "visualAnalysis": "Görsel Analiz"
+      }
+    },
+    "fk": {
+      "likelihood": {
+        "v0_1": "Neredeyse imkansız",
+        "v0_2": "Çok düşük ihtimal",
+        "v0_5": "Beklenmeyen ama mümkün",
+        "v1": "Düşük ihtimal, olasılık dışı değil",
+        "v3": "Nadir ama mümkün",
+        "v6": "Oldukça olası",
+        "v10": "Çok olası / beklenen"
+      },
+      "severity": {
+        "v1": "Dikkate değer, ilk yardım gerektiren",
+        "v3": "Önemli, dış tedavi gerektiren",
+        "v7": "Ciddi, kalıcı hasar",
+        "v15": "Çok ciddi, uzuv kaybı",
+        "v40": "Felaket, bir ölüm",
+        "v100": "Kitlesel felaket, çoklu ölüm"
+      },
+      "exposure": {
+        "v0_5": "Çok nadir (yılda bir)",
+        "v1": "Nadir (ayda bir)",
+        "v2": "Ara sıra (haftada bir)",
+        "v3": "Bazen (haftada birkaç)",
+        "v6": "Sıklıkla (her gün)",
+        "v10": "Sürekli (günün büyük bölümü)"
+      }
+    },
+    "fmea": {
+      "severity": {
+        "v1": "Etkisiz — fark edilmez",
+        "v2": "Çok küçük — ihmal edilebilir etki",
+        "v3": "Küçük — hafif rahatsızlık",
+        "v4": "Düşük — performans düşüşü",
+        "v5": "Orta — önemli performans kaybı",
+        "v6": "Yüksek — sistem işlevi bozulur",
+        "v7": "Çok yüksek — çalışamaz duruma gelir",
+        "v8": "Tehlikeli (uyarılı) — yaralanma riski",
+        "v9": "Tehlikeli (uyarısız) — ciddi yaralanma",
+        "v10": "Felaket — ölüm/toplu kaza"
+      },
+      "occurrence": {
+        "v1": "Neredeyse imkansız (< 1/1.000.000)",
+        "v2": "Uzak ihtimal (1/20.000)",
+        "v3": "Çok düşük (1/4.000)",
+        "v4": "Düşük (1/1.000)",
+        "v5": "Orta-düşük (1/400)",
+        "v6": "Orta (1/80)",
+        "v7": "Orta-yüksek (1/40)",
+        "v8": "Yüksek (1/20)",
+        "v9": "Çok yüksek (1/8)",
+        "v10": "Neredeyse kesin (≥ 1/2)"
+      },
+      "detection": {
+        "v1": "Neredeyse kesin tespit",
+        "v2": "Çok yüksek tespit şansı",
+        "v3": "Yüksek tespit şansı",
+        "v4": "Orta-yüksek tespit",
+        "v5": "Orta tespit",
+        "v6": "Düşük-orta tespit",
+        "v7": "Düşük tespit",
+        "v8": "Çok düşük tespit",
+        "v9": "Uzak ihtimal tespit",
+        "v10": "Tespit edilemez"
+      }
+    },
+    "methods": {
+      "r_skor": {
+        "name": "R-SKOR 2D",
+        "description": "9 parametreli ağırlıklı saha tarama skoru",
+        "tooltip": "RiskNova'nın özgün yöntemi. 9 parametre (C1-C9) ile sahadan toplanan verileri ağırlıklı olarak değerlendirir. Görsel analiz ile otomatik skorlama yapılabilir."
+      },
+      "fine_kinney": {
+        "name": "Fine-Kinney",
+        "description": "Olasılık × Şiddet × Maruziyet çarpımı",
+        "tooltip": "En yaygın kullanılan nicel risk değerlendirme yöntemi. Olasılık (0.1-10), Şiddet (1-100) ve Maruziyet (0.5-10) çarpılarak risk skoru elde edilir. ISO 31000 uyumlu."
+      },
+      "l_matrix": {
+        "name": "L-Tipi Matris",
+        "description": "5×5 olasılık-şiddet risk matrisi",
+        "tooltip": "Basit ve anlaşılır matris yöntemi. Olasılık (1-5) ve Şiddet (1-5) seçilerek 25 hücreli renkli matris üzerinden risk seviyesi belirlenir. 6331 İSG Kanunu uyumlu."
+      },
+      "fmea": {
+        "name": "FMEA",
+        "description": "Hata Türü ve Etkileri Analizi — RPN hesaplama",
+        "tooltip": "Failure Mode & Effects Analysis. Şiddet (1-10) × Oluşma Olasılığı (1-10) × Tespit Edilebilirlik (1-10) = RPN. Üretim, bakım ve proses güvenliği için ideal. IEC 60812 standardı."
+      },
+      "hazop": {
+        "name": "HAZOP",
+        "description": "Tehlike ve İşletilebilirlik Çalışması",
+        "tooltip": "Hazard and Operability Study. Kılavuz kelimeler (Yok, Az, Çok, Tersi) ile proses sapmalarını analiz eder. Kimya, petrokimya ve enerji sektörü için zorunlu. IEC 61882."
+      },
+      "bow_tie": {
+        "name": "Bow-Tie",
+        "description": "Papyon analizi — tehdit-bariyer-sonuç modeli",
+        "tooltip": "Tehdit olasılığı ve sonuç şiddeti arasındaki önleyici ve azaltıcı bariyerleri değerlendirir. Bariyer etkinliğine göre residüel risk hesaplanır. Körfez/petrol sektöründe yaygın."
+      },
+      "fta": {
+        "name": "FTA",
+        "description": "Hata Ağacı Analizi — sistem güvenilirliği",
+        "tooltip": "Fault Tree Analysis. Sistem arızasını bileşen hatalarına ayırır. AND/OR kapıları ile sistem arıza olasılığı hesaplanır. Havacılık, nükleer ve kritik sistemlerde kullanılır. IEC 61025."
+      },
+      "checklist": {
+        "name": "Checklist",
+        "description": "Kontrol listesi — uygunluk yüzdesi",
+        "tooltip": "Standart kontrol maddelerinin Uygun/Uygun Değil/Kısmi olarak değerlendirilmesi. Ağırlıklı uygunluk yüzdesi hesaplanır. Denetim, teftiş ve periyodik kontroller için ideal."
+      },
+      "jsa": {
+        "name": "JSA",
+        "description": "İş Güvenliği Analizi — adım bazlı tehlike değerlendirme",
+        "tooltip": "Job Safety Analysis. İş adımları tek tek analiz edilerek her adımda Şiddet × Olasılık / Kontrol Etkinliği hesaplanır. İnşaat, üretim ve saha işleri için vazgeçilmez."
+      },
+      "lopa": {
+        "name": "LOPA",
+        "description": "Koruma Katmanı Analizi — frekans azaltma",
+        "tooltip": "Layer of Protection Analysis. Başlangıç olay frekansını koruma katmanlarının PFD değerleri ile çarparak azaltılmış frekans hesaplar. Proses güvenliği için SIL değerlendirmesi ile birlikte kullanılır."
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "noNot": "Yok (No/Not)",
+        "less": "Az (Less)",
+        "more": "Çok (More)",
+        "partOf": "Kısmen (Part of)",
+        "reverse": "Tersi (Reverse)",
+        "otherThan": "Başka (Other than)",
+        "early": "Erken (Early)",
+        "late": "Geç (Late)",
+        "before": "Önce (Before)",
+        "after": "Sonra (After)"
+      },
+      "parameters": {
+        "flow": "Akış (Flow)",
+        "pressure": "Basınç (Pressure)",
+        "temperature": "Sıcaklık (Temperature)",
+        "level": "Seviye (Level)",
+        "time": "Zaman (Time)",
+        "composition": "Kompozisyon (Composition)",
+        "ph": "pH",
+        "speed": "Hız (Speed)",
+        "mixing": "Karıştırma (Mixing)",
+        "reaction": "Reaksiyon (Reaction)"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v1": "Yılda 1 kez — çok sık",
+        "v0_1": "10 yılda 1 — sık",
+        "v0_01": "100 yılda 1 — ara sıra",
+        "v0_001": "1000 yılda 1 — nadir",
+        "v0_0001": "10.000 yılda 1 — çok nadir",
+        "v0_00001": "100.000 yılda 1 — son derece nadir"
+      },
+      "pfd": {
+        "v0_1": "Basit idari kontrol",
+        "v0_01": "Eğitimli operatör yanıtı / alarm",
+        "v0_001": "Otomatik güvenlik sistemi (SIL-1)"
+      }
+    },
+    "panel": {
+      "hazop": {
+        "guideWord": "Kılavuz Kelime",
+        "parameter": "Proses Parametresi",
+        "deviation": "Sapma Açıklaması",
+        "deviationPlaceholder": "Sapma tanımı…",
+        "severity": "Şiddet",
+        "likelihood": "Olasılık",
+        "detectability": "Tespit",
+        "detectEasy": "Kolay",
+        "detectHard": "Zor"
+      },
+      "fmea": {
+        "severity": "Ciddiyet (S)",
+        "occurrence": "Oluşma Olasılığı (O)",
+        "detection": "Tespit Edilebilirlik (D)",
+        "formula": "S × O × D = RPN"
+      },
+      "lopa": {
+        "initFreq": "Başlangıç Olay Frekansı",
+        "consequence": "Sonuç Şiddeti",
+        "layerPfd": "Katman PFD",
+        "meetsTarget": "Hedef tolere edilebilirlik",
+        "riskReduction": "Risk Azaltma",
+        "target": "Hedef",
+        "targetMet": "Karşılandı",
+        "targetNotMet": "Karşılanmadı",
+        "layersHeading": "Koruma Katmanları ({count})",
+        "addLayer": "+ Ekle",
+        "layerDefault": "Katman {n}",
+        "layerNamePlaceholder": "Katman adı",
+        "removeTitle": "Sil",
+        "consequenceV1": "Düşük",
+        "consequenceV2": "Hafif",
+        "consequenceV3": "Orta",
+        "consequenceV4": "Ciddi",
+        "consequenceV5": "Felaket"
+      },
+      "bowtie": {
+        "threat": "Tehdit Olasılığı",
+        "consequence": "Sonuç Şiddeti",
+        "prevention": "Önleyici Bariyer",
+        "mitigation": "Azaltıcı Bariyer",
+        "rawRisk": "Ham Risk",
+        "residualRisk": "Artık Risk"
+      },
+      "fta": {
+        "systemProb": "Sistem P",
+        "gate": "Kapı",
+        "gateType": "Kapı Tipi:",
+        "systemCriticality": "Sistem Kritikliği",
+        "componentsHeading": "Bileşenler ({count})",
+        "add": "+ Ekle",
+        "componentDefault": "Bileşen {n}",
+        "componentPlaceholder": "Bileşen adı",
+        "failureRateTitle": "Arıza olasılığı (0–1)",
+        "removeTitle": "Sil"
+      },
+      "checklist": {
+        "statusUygun": "Uygun",
+        "statusKismi": "Kısmi",
+        "statusUygunDegil": "Uygun Değil",
+        "statusNa": "N/A",
+        "itemsHeading": "Kontrol Maddeleri ({count})",
+        "compliantLine": "{n} uygun",
+        "partialLine": "{n} kısmi",
+        "nonCompliantLine": "{n} uygun değil",
+        "itemPlaceholder": "Kontrol maddesi…",
+        "add": "+ Ekle",
+        "removeTitle": "Sil"
+      },
+      "jsa": {
+        "max": "Max",
+        "avg": "Ort.",
+        "highRisk": "Yüksek riskli adım",
+        "jobTitle": "İş Tanımı",
+        "jobPlaceholder": "İş adı…",
+        "stepsHeading": "İş Adımları ({count})",
+        "stepDefault": "Adım {n}",
+        "stepDescPlaceholder": "Adım açıklaması…",
+        "hazardPlaceholder": "Tehlike…",
+        "severity": "Şiddet",
+        "likelihood": "Olasılık",
+        "control": "Kontrol",
+        "controlsPlaceholder": "Kontrol önlemleri…",
+        "stepScoreIntro": "Adım skoru:",
+        "add": "+ Ekle",
+        "removeTitle": "Sil"
+      }
+    },
+    "ui": {
+      "severity": {
+        "low": "Düşük",
+        "medium": "Orta",
+        "high": "Yüksek",
+        "critical": "Kritik"
+      },
+      "r2d": {
+        "base": "Taban",
+        "peak": "Tepe",
+        "dominant": "Dominant",
+        "parameters": "Parametreler"
+      },
+      "fk": {
+        "likelihood": "Olasılık (L)",
+        "severity": "Şiddet (S)",
+        "exposure": "Frekans / Maruziyet (E)"
+      },
+      "matrix": {
+        "axisOs": "O\\S",
+        "likelihoodHeading": "Olasılık ({n})",
+        "severityHeading": "Şiddet ({n})"
+      },
+      "page": {
+        "analysisTitlePlaceholder": "Saha Risk Analizi",
+        "analysisNotePlaceholder": "Her satır bir risk konusu veya uygunsuzluk grubunu temsil eder. Aynı satıra bir veya birden fazla fotoğraf eklenebilir.",
+        "describeRiskGroup": "Risk grubunu kısaca açıkla"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employer": "İşveren",
+        "employer_representative": "İşveren Vekili",
+        "ohs_specialist": "İş Güvenliği Uzmanı",
+        "workplace_physician": "İşyeri Hekimi",
+        "other_health_personnel": "Diğer Sağlık Personeli",
+        "employee_representative": "Çalışan Temsilcisi",
+        "support_staff": "Destek Elemanı",
+        "knowledgeable_employee": "Riskler Hakkında Bilgi Sahibi Çalışan"
+      }
+    },
+    "wizard": {
+      "common": {
+        "delete": "Sil",
+        "cancel": "İptal",
+        "yes": "Evet",
+        "no": "Hayır",
+        "back": "Geri",
+        "next": "İleri",
+        "goToResults": "Sonuçlara Git",
+        "save": "Kaydet",
+        "update": "Güncelle",
+        "saving": "Kaydediliyor…",
+        "companyFallback": "Firma",
+        "add": "Ekle",
+        "row": "Satır",
+        "risk": "Risk",
+        "report": "Rapor",
+        "findings": "Tespit",
+        "images": "Görsel",
+        "visual": "Görsel",
+        "lines": "Satır",
+        "location": "Lokasyon",
+        "method": "Yöntem",
+        "type": "Tür",
+        "address": "Adres",
+        "description": "Açıklama",
+        "scoreDetailPrefix": "Skor Detayı —"
+      },
+      "list": {
+        "eyebrow": "Risk Analizi",
+        "title": "Risk Analizi Yönetimi",
+        "description": "Firma seçin, geçmiş analizleri görüntüleyin veya yeni analiz başlatın.",
+        "companyLabel": "Firma / Kurum Seçin",
+        "companyPlaceholder": "— Firma seçin —",
+        "newAnalysis": "+ Yeni Analiz Başlat",
+        "historyTitle": "{name} — Risk Analizi Geçmişi",
+        "historyCount": "{count} kayıtlı analiz",
+        "emptyTitle": "Henüz analiz kaydı yok",
+        "emptyDescription": "Bu firma için ilk risk analizinizi başlatmak için yukarıdaki butonu kullanın.",
+        "statusCompleted": "Tamamlandı",
+        "statusArchived": "Arşivlendi",
+        "statusDraft": "Taslak",
+        "findingsCount": "{count} tespit",
+        "confirmDelete": "Emin misin?",
+        "deleteAnalysis": "Sil"
+      },
+      "header": {
+        "wizardTitle": "Görsel Tabanlı Risk Analizi",
+        "wizardDescription": "Firma seç, ekip tanımla, görseller yükle, AI + manuel tespit ve skorlama ile analiz oluştur.",
+        "badgeAiManual": "AI + Manuel Tespit",
+        "badgeExport": "PDF / Word / Excel",
+        "backToList": "Listeye Dön",
+        "newAnalysis": "Yeni Analiz"
+      },
+      "steps": {
+        "context": "Analiz Bağlamı",
+        "team": "Analiz Ekibi",
+        "images": "Görseller",
+        "results": "Sonuçlar"
+      },
+      "validate": {
+        "company": "Önce firma / kurum seçmelisin.",
+        "location": "Lokasyon / çalışma alanı seçmelisin.",
+        "department": "Bölüm / birim seçmelisin.",
+        "participants": "En az bir görevli kişi adı ve rolü girilmelidir.",
+        "firmLocationDept": "Firma, lokasyon ve bölüm seçmelisin.",
+        "step2Participants": "En az bir görevli adı ve rolü girilmelidir.",
+        "step3Images": "En az bir görsel eklemelisin."
+      },
+      "messages": {
+        "needImageToAnalyze": "Analiz başlatmak için en az bir görsel eklemelisin.",
+        "analysisStarting": "Analiz başlatılıyor…",
+        "analyzingImageProgress": "Görsel {current}/{total} analiz ediliyor: {fileName}",
+        "analyzingRowImage": "Görsel analiz ediliyor: Satır {row}, {fileName}…",
+        "analysisComplete": "Analiz tamamlandı!",
+        "analysisFailed": "Analiz tamamlanamadı.",
+        "analysisFailedDetail": "AI analizi tamamlanamadı. {detail}",
+        "analysisPartial": "AI analizi kısmen tamamlandı. {successful}/{total} görsel işlendi; {errors} görselde hata var.",
+        "analysisSummary": "AI analizi tamamlandı. {risks} risk, {positive} olumlu tespit.",
+        "genericAiError": "OpenAI veya Anthropic aşamasında hata oluştu."
+      },
+      "save": {
+        "noCompany": "Firma seçilmeden analiz kaydedilemez.",
+        "oversized": "{fileName} 10 MB sınırını aşıyor. Kaydetmeden önce daha küçük bir görsel yükleyin.",
+        "successNew": "Analiz başarıyla kaydedildi!",
+        "successUpdated": "Analiz başarıyla güncellendi!",
+        "error": "Kayıt sırasında hata oluştu."
+      },
+      "notifications": {
+        "savedTitle": "Risk analizi kaydedildi",
+        "updatedTitle": "Risk analizi güncellendi",
+        "savedBody": "{title} — {findings} tespit, {critical} kritik/yüksek"
+      },
+      "step1": {
+        "title": "Analiz Bağlamı",
+        "subtitle": "Bu risk analizinin hangi firma, lokasyon ve bölüm için yapıldığını seç.",
+        "company": "Firma / Kurum",
+        "companyPlaceholder": "Firma / kurum seç",
+        "companyRequired": "Analiz için firma seçimi zorunludur",
+        "method": "Analiz Yöntemi",
+        "location": "Lokasyon / Çalışma Alanı",
+        "locationPlaceholder": "Lokasyon seç",
+        "locationRequired": "Lokasyon seçimi zorunludur",
+        "department": "Bölüm / Birim",
+        "departmentPlaceholder": "Bölüm seç",
+        "departmentRequired": "Bölüm seçimi zorunludur",
+        "analysisTitle": "Analiz Başlığı",
+        "analysisNote": "Analiz Notu",
+        "editCompanyStructure": "Firma Yapısını Düzenle",
+        "companyCardType": "Tür:",
+        "companyCardAddress": "Adres:"
+      },
+      "step2": {
+        "title": "Risk Analizinde Görev Alanlar",
+        "subtitle": "Kayıtlı personelden seçebilir veya manuel ekleyebilirsin.",
+        "addParticipant": "Manuel Görevli Ekle",
+        "pickFromTeam": "Firma Ekibinden Seç",
+        "noTeamTitle": "Risk Değerlendirme Ekibi Tanımlı Değil",
+        "noTeamBody": "Bu firma için henüz ekip üyesi tanımlanmamış. Firma sayfasında Ekip sekmesinden \"Risk Değerlendirme Ekibi\" oluşturup üyelerinizi ekleyin — burada otomatik listelenecek.",
+        "noTeamLink": "Firma Ekip Yönetimine Git",
+        "participantN": "Görevli {n}",
+        "fullName": "Ad Soyad",
+        "roleType": "Rol / Ünvan Türü",
+        "rolePlaceholder": "Rol seç",
+        "titleField": "Görev / Unvan Açıklaması",
+        "titlePlaceholder": "Örn. A sınıfı uzman",
+        "certificate": "Belge / Sertifika No (varsa)",
+        "certificatePlaceholder": "Varsa gir"
+      },
+      "step3": {
+        "title": "Risk Satırları ve Görseller",
+        "subtitle": "Her satır bir risk konusunu temsil eder. Görselleri yükle, sonra AI analizi başlat.",
+        "aiAnalyzing": "AI Analiz Yapılıyor…",
+        "aiStart": "AI ile Risk Analizini Başlat",
+        "aiSub": "Nova AI her görseli ayrı ayrı analiz eder.",
+        "newRow": "Yeni Satır Ekle",
+        "bulkUpload": "Toplu Yükle (Her Biri Ayrı Satır)",
+        "rowTitle": "Satır Başlığı",
+        "rowTitlePlaceholder": "Örn. İstifleme alanı",
+        "rowHint": "Genel ve yakın açıları bu satır altında toplayın.",
+        "deleteRow": "Satırı Sil",
+        "rowN": "Satır {n}",
+        "addImage": "Görsel Ekle",
+        "summaryCompany": "Firma",
+        "summaryLocation": "Lokasyon",
+        "summaryMethod": "Yöntem",
+        "summaryImages": "Görseller"
+      },
+      "step4": {
+        "totalFindings": "Toplam Tespit",
+        "criticalHigh": "Kritik / Yüksek",
+        "capaCandidate": "DÖF Adayı",
+        "avgScore": "Ort. Skor",
+        "saveWarning": "Analiz sonuçlarınız henüz kaydedilmedi! Kaydetmezseniz tüm tespitler kaybolacaktır.",
+        "resultsTitle": "Anotasyonlu Tespit Sonuçları",
+        "resultsSubtitle": "Risk kartı ile görsel üstündeki anotasyonlar bağlı çalışır. Parametreleri ayarlayarak skoru değiştir.",
+        "analyzingInline": "Analiz yapılıyor…",
+        "emptyResultsTitle": "Henüz sonuç üretilmedi",
+        "emptyResultsDesc": "3. adımda görselleri yükleyip analizi başlat.",
+        "deleteFindingTitle": "Tespiti Sil",
+        "deleteFindingConfirm": "“{title}” tespitini silmek istediğinize emin misiniz?",
+        "pinModeActive": "Pin Modu Aktif…",
+        "addRiskPin": "Risk İşareti Ekle",
+        "visualN": "Görsel {n}",
+        "cleanNoRisk": "Temiz — risk tespit edilmedi",
+        "riskCount": "Risk: {count}",
+        "pinBanner": "Görsele tıklayarak risk işareti ekle",
+        "manualPinTitle": "Manuel Risk İşareti Ekle",
+        "manualPinConfirm": "Ekle",
+        "findingTitle": "Tespit Başlığı",
+        "findingTitlePlaceholder": "Örn. Korkuluk eksik",
+        "severity": "Ciddiyet",
+        "noRiskThisImageTitle": "Bu görselde belirgin risk tespit edilmedi",
+        "noRiskThisImageBody": "AI analizi sonucunda somut risk unsuru bulunamamıştır. Manuel risk ekleyebilirsiniz.",
+        "scorePanelIntro": "Skor Detayı — {method}",
+        "deleteFindingAria": "Tespiti sil",
+        "capaBadge": "DÖF Adayı",
+        "addedLater": "Sonradan Eklendi",
+        "confidenceHigh": "Kesin Tespit",
+        "confidenceMedium": "AI Tespiti",
+        "confidenceLow": "Doğrulama Önerilir",
+        "aiAnalyzingDetail": "Nova AI her görseli ayrı ayrı analiz ediyor…",
+        "rowImagesFindings": "Görsel: {images} · Tespit: {findings}",
+        "notRealPhotoTitle": "Gerçek Fotoğraf Değil",
+        "cannotAnalyzeTitle": "Risk Analizi Yapılamadı",
+        "notRealPhotoBody": "Bu görsel bir çizim, illüstrasyon veya dijital üretim. Risk analizi yalnızca gerçek saha fotoğrafları üzerinde yapılabilir.",
+        "cannotAnalyzeBody": "Bu görsel risk analizi için uygun değil.",
+        "detectedPrefix": "Tespit:",
+        "noRiskDetectedTitle": "Risk Tespit Edilmedi",
+        "noRiskDetectedBody": "AI analizi bu görselde anlamlı bir risk veya uygunsuzluk tespit edemedi.",
+        "positiveObservationsHint": " Olumlu gözlemler aşağıda listelenmiştir.",
+        "manualPinHint": " Manuel pin ekleyerek kendi tespitinizi oluşturabilirsiniz.",
+        "photoQuality": "Görsel kalitesi:",
+        "photoQualityLow": "Düşük",
+        "photoQualityMedium": "Orta",
+        "areaAssessment": "Alan Değerlendirmesi",
+        "peopleDetected": "{count} kişi tespit edildi",
+        "positiveFindings": "Olumlu Tespitler",
+        "metaEyebrowArea": "Alan Değerlendirmesi",
+        "metaEyebrowPositive": "Olumlu Tespitler"
+      },
+      "nav": {
+        "aiAnalyzingShort": "Analiz Yapılıyor…",
+        "aiStartShort": "AI Analiz Başlat"
+      },
+      "methodCard": {
+        "score": "Skor:",
+        "params": "{count} parametre"
+      }
     }
   }
 }

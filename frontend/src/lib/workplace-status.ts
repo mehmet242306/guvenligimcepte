@@ -1,6 +1,17 @@
 ﻿import type { CompanyRecord } from "@/lib/company-directory";
 
+/** Stable codes for overall workplace risk — use with i18n, not `label`. */
+export type WorkplaceRiskLevel =
+  | "incomplete"
+  | "critical"
+  | "high"
+  | "medium"
+  | "controlled";
+
 export type WorkplaceRiskState = {
+  /** Locale-independent level for logic and translations */
+  level: WorkplaceRiskLevel;
+  /** Turkish display string (legacy / tooling); prefer `level` + messages in UI */
   label: string;
   className: string;
   score: number | null;
@@ -10,6 +21,32 @@ export type WorkplaceRiskState = {
   maturity: number;
   openPressure: number;
 };
+
+export function workplaceRiskLevelBadgeVariant(
+  level: WorkplaceRiskLevel,
+): "success" | "warning" | "danger" | "neutral" {
+  switch (level) {
+    case "critical":
+      return "danger";
+    case "high":
+    case "medium":
+      return "warning";
+    case "controlled":
+      return "success";
+    default:
+      return "neutral";
+  }
+}
+
+/** Map regulated Turkish hazard class strings to message keys under `workplaceRisk.hazardClass.*`. */
+export function hazardClassToMessageKey(
+  hazardClass: string,
+): "az" | "moderate" | "high" | null {
+  if (hazardClass === "Az Tehlikeli") return "az";
+  if (hazardClass === "Tehlikeli") return "moderate";
+  if (hazardClass === "Çok Tehlikeli") return "high";
+  return null;
+}
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
@@ -49,6 +86,7 @@ export function getOverallRiskState(company: CompanyRecord): WorkplaceRiskState 
 
   if (coverage < 35) {
     return {
+      level: "incomplete",
       label: "Eksik Değerlendirilmiş",
       className: "border border-slate-200 bg-slate-50 text-slate-700",
       score: null,
@@ -71,6 +109,7 @@ export function getOverallRiskState(company: CompanyRecord): WorkplaceRiskState 
 
   if (normalized >= 75) {
     return {
+      level: "critical",
       label: "Kritik",
       className: "border border-red-200 bg-red-50 text-red-700",
       score: normalized,
@@ -85,6 +124,7 @@ export function getOverallRiskState(company: CompanyRecord): WorkplaceRiskState 
 
   if (normalized >= 55) {
     return {
+      level: "high",
       label: "Yüksek",
       className: "border border-orange-200 bg-orange-50 text-orange-700",
       score: normalized,
@@ -99,6 +139,7 @@ export function getOverallRiskState(company: CompanyRecord): WorkplaceRiskState 
 
   if (normalized >= 35) {
     return {
+      level: "medium",
       label: "Orta",
       className: "border border-amber-200 bg-amber-50 text-amber-700",
       score: normalized,
@@ -112,6 +153,7 @@ export function getOverallRiskState(company: CompanyRecord): WorkplaceRiskState 
   }
 
   return {
+    level: "controlled",
     label: "Kontrollü",
     className: "border border-emerald-200 bg-emerald-50 text-emerald-700",
     score: normalized,

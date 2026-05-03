@@ -11,6 +11,7 @@ import {
   type CompanyProfile,
 } from "@/lib/supabase/company-profile";
 import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
+import { useI18n } from "@/lib/i18n";
 
 // =============================================================================
 // Aktif Firma Şeridi — global header'ın hemen altında tüm sayfalarda görünür
@@ -30,18 +31,17 @@ function hazardTone(cls: string | null): "success" | "warning" | "danger" | "neu
   return "neutral";
 }
 
-function companyTypeLabel(t: string | null): string {
-  if (!t) return "";
-  const map: Record<string, string> = {
-    bireysel: "Bireysel",
-    osgb: "OSGB",
-    enterprise: "Kurumsal",
-    kurumsal: "Kurumsal",
-  };
-  return map[t.toLowerCase()] ?? t;
+function companyTypeLabel(raw: string | null, translate: (key: string) => string): string {
+  if (!raw) return "";
+  const k = raw.toLowerCase();
+  if (k === "bireysel") return translate("activeCompanyBar.companyTypeIndividual");
+  if (k === "osgb") return translate("activeCompanyBar.companyTypeOsgb");
+  if (k === "enterprise" || k === "kurumsal") return translate("activeCompanyBar.companyTypeEnterprise");
+  return raw;
 }
 
 export function ActiveCompanyBar() {
+  const { t } = useI18n();
   const [profile, setProfile] = useState<CompanyProfile | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -83,7 +83,7 @@ export function ActiveCompanyBar() {
   if (!loaded || !profile) return null;
 
   const locationText = [profile.district, profile.city].filter(Boolean).join(", ");
-  const typeLabel = companyTypeLabel(profile.companyType);
+  const typeLabel = companyTypeLabel(profile.companyType, t);
 
   return (
     <div
@@ -137,7 +137,7 @@ export function ActiveCompanyBar() {
             ) : null}
             {profile.naceCode ? (
               <Badge variant="neutral" className="hidden font-mono md:inline-flex">
-                NACE {profile.naceCode}
+                {t("activeCompanyBar.nacePrefix")} {profile.naceCode}
               </Badge>
             ) : null}
           </div>
@@ -146,7 +146,7 @@ export function ActiveCompanyBar() {
 
           {/* Personel + konum */}
           <div className="flex items-center gap-3 text-muted-foreground">
-            <span className="inline-flex items-center gap-1 whitespace-nowrap" title="Aktif personel / toplam">
+            <span className="inline-flex items-center gap-1 whitespace-nowrap" title={t("activeCompanyBar.personnelCountTitle")}>
               <Users className="h-3.5 w-3.5" />
               <span className="font-medium text-foreground">{profile.personnelActive}</span>
               <span className="opacity-70">/ {profile.personnelTotal}</span>
@@ -156,7 +156,7 @@ export function ActiveCompanyBar() {
                 {locationText}
               </span>
             ) : null}
-            {!profile.isActive ? <Badge variant="danger">Pasif firma</Badge> : null}
+            {!profile.isActive ? <Badge variant="danger">{t("activeCompanyBar.inactiveBadge")}</Badge> : null}
           </div>
 
           {/* Sağ tarafta firma detayı linki */}
@@ -165,9 +165,9 @@ export function ActiveCompanyBar() {
             className={cn(
               "ml-auto inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground",
             )}
-            title="Firma detay sayfasına git"
+            title={t("activeCompanyBar.detailLinkTitle")}
           >
-            <span className="hidden sm:inline">Firma detayı</span>
+            <span className="hidden sm:inline">{t("activeCompanyBar.detailLink")}</span>
             <ChevronRight className="h-3.5 w-3.5" />
           </Link>
         </div>

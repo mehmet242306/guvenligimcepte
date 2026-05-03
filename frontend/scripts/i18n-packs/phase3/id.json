@@ -1,0 +1,305 @@
+{
+  "companiesList": {
+    "actions": {
+      "newCompany": "Perusahaan baru",
+      "sampleData": "Data contoh"
+    },
+    "archive": "Arsip",
+    "badge": {
+      "archived": "Diarsipkan",
+      "deleted": "Dihapus"
+    },
+    "clearFilters": "Hapus filter",
+    "confirmArchive": {
+      "confirm": "Konfirmasi",
+      "hint": "Akan keluar dari daftar aktif.",
+      "title": "Arsipkan \"{name}\"?"
+    },
+    "confirmDelete": {
+      "confirm": "Hapus",
+      "instruction": "Ketik kata ini untuk konfirmasi:",
+      "title": "Hapus \"{name}\"?"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "Ketik DELETE",
+      "word": "DELETE"
+    },
+    "defaults": {
+      "companyName": "Perusahaan / organisasi baru",
+      "kind": "Sektor swasta",
+      "shortName": "Rekaman baru"
+    },
+    "delete": "Hapus",
+    "description": {
+      "multi": "Kelola perusahaan yang menjadi tanggung jawab Anda dan akses lokasi kerja mereka.",
+      "single": "Kelola personel dan catatan operasional lainnya untuk lokasi kerja aktif Anda."
+    },
+    "discard": "Batal",
+    "employeesSuffix": "karyawan",
+    "empty": {
+      "archiveBannerCompany": "Perusahaan yang diarsipkan. Anda dapat memulihkannya.",
+      "archiveBannerWorksite": "Catatan lokasi kerja yang diarsipkan. Anda dapat memulihkannya.",
+      "archiveEmptyCompany": "Tidak ada di arsip",
+      "archiveEmptyDescCompany": "Belum ada perusahaan yang diarsipkan.",
+      "archiveEmptyDescWorksite": "Belum ada lokasi kerja yang diarsipkan.",
+      "archiveEmptyWorksite": "Tidak ada di arsip",
+      "clearFilters": "Hapus filter",
+      "completeWorksite": "Selesaikan pengaturan lokasi kerja",
+      "deletedBannerCompany": "Perusahaan yang dihapus. Penghapusan permanen tidak dapat dibatalkan.",
+      "deletedBannerWorksite": "Catatan lokasi kerja yang dihapus. Penghapusan permanen tidak dapat dibatalkan.",
+      "deletedEmptyCompany": "Tidak ada perusahaan yang dihapus",
+      "deletedEmptyDescCompany": "Belum ada perusahaan yang dihapus.",
+      "deletedEmptyDescWorksite": "Belum ada lokasi kerja yang dihapus.",
+      "deletedEmptyWorksite": "Tidak ada lokasi kerja yang dihapus",
+      "initialDescCompany": "Buat perusahaan pertama Anda untuk memulai.",
+      "initialDescWorksite": "Area ini akan terisi dengan data lokasi kerja aktif Anda. Selesaikan pengaturan lokasi kerja untuk melihat personel dan catatan lainnya.",
+      "initialTitleCompany": "Belum ada perusahaan",
+      "initialTitleWorksite": "Belum ada catatan lokasi kerja",
+      "newCompany": "Perusahaan baru",
+      "noMatchCompany": "Tidak ada perusahaan yang cocok",
+      "noMatchDescription": "Tidak ada catatan yang cocok dengan filter Anda.",
+      "noMatchWorksite": "Tidak ada lokasi kerja yang cocok",
+      "sampleData": "Data contoh"
+    },
+    "entity": {
+      "companyPlural": "perusahaan",
+      "worksitePlural": "lokasi kerja"
+    },
+    "eyebrow": {
+      "multi": "Perusahaan / organisasi saya",
+      "osgb": "Perusahaan OSGB",
+      "singleWorksite": "Lokasi Kerja"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "Semua",
+      "hazardClass": "Kelas bahaya",
+      "kind": "Jenis",
+      "search": "Cari",
+      "searchPlaceholder": "Nama, sektor, jenis, NACE…",
+      "sector": "Sektor",
+      "sort": "Urutkan"
+    },
+    "limitReachedBanner": "Anda telah mencapai batas perusahaan / ruang kerja aktif. Arsipkan perusahaan atau tingkatkan paket Anda sebelum menambah atau memulihkan.",
+    "links": {
+      "riskAnalysis": "Analisis risiko",
+      "workspace": "Ruang kerja"
+    },
+    "metrics": {
+      "actions": "Tindakan",
+      "departments": "Departemen",
+      "employees": "Karyawan",
+      "hazard": "Bahaya",
+      "locations": "Lokasi",
+      "overdue": "Terlambat"
+    },
+    "permanentDelete": "Hapus permanen",
+    "progress": {
+      "coverage": "Cakupan",
+      "maturity": "Kematangan"
+    },
+    "restore": "Pulihkan",
+    "sort": {
+      "employees": "Karyawan",
+      "name": "Berdasarkan nama",
+      "overdue": "Terlambat",
+      "risk": "Risiko"
+    },
+    "stats": {
+      "avgMaturity": "Rata-rata kematangan",
+      "criticalCompanies": "Perusahaan kritis",
+      "criticalWorksites": "Lokasi kerja kritis",
+      "employees": "Karyawan",
+      "openActions": "Tindakan terbuka",
+      "overdueTasks": "Tugas terlambat",
+      "totalCompanies": "Total perusahaan",
+      "totalWorksites": "Total lokasi kerja"
+    },
+    "storage": {
+      "local": "Lokal",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "Aktif",
+      "archived": "Arsip",
+      "deleted": "Dihapus"
+    },
+    "title": {
+      "multi": "Perusahaan / organisasi saya",
+      "osgb": "Perusahaan dan lokasi kerja",
+      "single": "Konten lokasi kerja dan operasional"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} slot perusahaan aktif digunakan",
+      "activeOnly": "{count} perusahaan / ruang kerja aktif"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "Lokasi Kerja",
+    "docTitle": "{name} — Ruang Kerja · RiskNova",
+    "docTitleFallback": "Ruang Kerja · RiskNova",
+    "invite": "Undang",
+    "logo": {
+      "fileTooLarge": "File terlalu besar ({sizeMb} MB). Ukuran maksimum adalah 5 MB.",
+      "imagesOnly": "Hanya file gambar yang dapat diunggah (PNG, JPEG, WebP, SVG).",
+      "updated": "Logo/gambar diperbarui.",
+      "uploadFailed": "Unggah gagal. Coba file lain.",
+      "uploadTitle": "Unggah logo"
+    },
+    "notFound": {
+      "back": "Kembali ke perusahaan",
+      "description": "Tidak ada perusahaan yang cocok dengan ID ini.",
+      "title": "Perusahaan tidak ditemukan"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "Simpan",
+    "saving": "Menyimpan…",
+    "sidebar": {
+      "hint": "Pilih area di sebelah kiri; kelola konten di sebelah kanan.",
+      "title": "Bagian lokasi kerja"
+    },
+    "stats": {
+      "departments": "Departemen",
+      "employees": "Karyawan",
+      "locations": "Lokasi",
+      "maturity": "Kematangan",
+      "openActions": "Tindakan terbuka",
+      "overdue": "Terlambat"
+    },
+    "tabs": {
+      "history": "Riwayat",
+      "ohs_file": "File K3",
+      "organization": "Organisasi",
+      "people": "Tim",
+      "personnel": "Personel",
+      "risk": "Risiko & lapangan",
+      "structure": "Tempat",
+      "tracking": "Pelacakan"
+    }
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "Kelola alur perusahaan, penugasan, dokumen, dan risiko per ruang kerja perusahaan.",
+      "searchLabel": "Cari perusahaan",
+      "searchPlaceholder": "Cari perusahaan, sektor, alamat, atau NACE",
+      "title": "Perusahaan aktif"
+    },
+    "archivedRow": {
+      "restore": "Pulihkan",
+      "restoring": "Memulihkan…"
+    },
+    "archivedSection": {
+      "badge": "{count} catatan terarsip",
+      "description": "Perusahaan terarsip tidak dihitung dalam batas aktif; riwayat risiko dan dokumen tetap disimpan.",
+      "title": "Perusahaan terarsip"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} perusahaan aktif",
+      "activeCompaniesUnlimited": "Perusahaan aktif {count}",
+      "activeStaffMax": "{count} / {max} staf aktif",
+      "activeStaffUnlimited": "{count} staf aktif"
+    },
+    "companyCard": {
+      "archive": "Arsipkan",
+      "archiving": "Mengarsipkan…",
+      "assignedProfessionals": "{count} profesional yang ditugaskan",
+      "assignments": "Penugasan",
+      "contracts": "Kontrak",
+      "documentsCount": "{count} dokumen",
+      "documentsLink": "Dokumen",
+      "employees": "{count} karyawan",
+      "overdueTasks": "{count} item terlambat",
+      "personnelInvite": "Staf & undangan",
+      "sectorUnknown": "Sektor belum diatur",
+      "taskTracking": "Pelacakan tugas",
+      "workspace": "Ruang kerja perusahaan"
+    },
+    "emptyActive": {
+      "cta": "Tambah perusahaan pertama",
+      "description": "Perusahaan klien yang terhubung ke panel OSGB akan terdaftar di sini.",
+      "title": "Tidak ada perusahaan aktif"
+    },
+    "emptyArchived": {
+      "description": "Ketika Anda mengarsipkan perusahaan, akan muncul di sini.",
+      "title": "Tidak ada perusahaan terarsip"
+    },
+    "emptyCompany": {
+      "kind": "Sektor swasta",
+      "name": "Perusahaan klien OSGB baru",
+      "shortName": "Perusahaan baru"
+    },
+    "focus": {
+      "p1": "Area ini hanya untuk pemilik dan admin OSGB. Perusahaan, penugasan, kontrak, dan pelacakan dokumen dikelola di satu tempat.",
+      "p2": "Staf yang ditugaskan tidak menggunakan panel ini untuk alur kerja harian; mereka mengakses data ruang kerja perusahaan yang ditugaskan melalui akun mereka sendiri.",
+      "sidebarBody": "{firms} perusahaan aktif, {professionals} profesional yang ditugaskan, dan {overdue} item yang memerlukan perhatian dikoordinasikan di sini.",
+      "sidebarEyebrow": "Fokus manajemen",
+      "title": "Permukaan fokus OSGB"
+    },
+    "header": {
+      "description": "Kelola perusahaan klien, ruang kerja per perusahaan, dan alur personel yang ditugaskan kepada mereka.",
+      "eyebrow": "Manajemen perusahaan OSGB",
+      "title": "Perusahaan dan lokasi kerja"
+    },
+    "limitBanner": "Batas perusahaan aktif tercapai. Arsipkan perusahaan atau tingkatkan paket untuk menambah lebih banyak.",
+    "loading": {
+      "description": "Kami sedang memuat perusahaan klien, penugasan, dan alur dokumen.",
+      "eyebrow": "Perusahaan OSGB",
+      "title": "Menyiapkan portofolio Anda"
+    },
+    "nova": {
+      "bullet1": "Lihat distribusi beban kerja berdasarkan perusahaan.",
+      "bullet2": "Filter tugas dan dokumen yang terlambat.",
+      "bullet3": "Temukan kesenjangan penugasan staf.",
+      "bullet4": "Prioritaskan risiko perpanjangan kontrak dan laporan.",
+      "openTasks": "Buka tugas OSGB",
+      "reviewOverdue": "Tinjau pekerjaan terlambat",
+      "seeAssignmentGaps": "Lihat kesenjangan penugasan",
+      "subtitle": "Asisten manajemen; memantau kinerja staf dan perusahaan.",
+      "title": "Manajer Nova OSGB"
+    },
+    "quickLinks": {
+      "docCenter": "Buka pusat dokumen",
+      "inviteStaff": "Undang staf",
+      "manageAssignments": "Kelola penugasan",
+      "openContracts": "Buka kontrak"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "Perusahaan klien aktif yang dilacak di panel OSGB.",
+        "label": "Perusahaan aktif"
+      },
+      "assignedProfessionals": {
+        "hint": "Total penugasan ahli, dokter, dan DSP ke perusahaan.",
+        "label": "Profesional yang ditugaskan"
+      },
+      "overdueWork": {
+        "hint": "Item terbuka untuk dipantau dalam alur penugasan dan CAPA.",
+        "label": "Pekerjaan terlambat"
+      },
+      "totalEmployees": {
+        "hint": "Total jumlah karyawan dari catatan perusahaan untuk perencanaan.",
+        "label": "Total karyawan"
+      }
+    },
+    "topActions": {
+      "addCompany": "Tambah perusahaan",
+      "openAssignments": "Buka penugasan",
+      "personnelInvite": "Staf & undangan"
+    }
+  },
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "Kurang berbahaya",
+      "high": "Sangat berbahaya",
+      "moderate": "Berbahaya"
+    },
+    "level": {
+      "controlled": "Terkendali",
+      "critical": "Kritis",
+      "high": "Tinggi",
+      "incomplete": "Belum dievaluasi",
+      "medium": "Sedang"
+    }
+  }
+}

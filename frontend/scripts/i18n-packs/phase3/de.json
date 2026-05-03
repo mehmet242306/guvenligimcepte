@@ -1,0 +1,305 @@
+{
+  "companiesList": {
+    "actions": {
+      "newCompany": "Neues Unternehmen",
+      "sampleData": "Beispieldaten"
+    },
+    "archive": "Archiv",
+    "badge": {
+      "archived": "Archiviert",
+      "deleted": "Gelöscht"
+    },
+    "clearFilters": "Filter löschen",
+    "confirmArchive": {
+      "confirm": "Bestätigen",
+      "hint": "Es wird die aktive Liste verlassen.",
+      "title": "Archiv „{name}\" erstellen?"
+    },
+    "confirmDelete": {
+      "confirm": "Löschen",
+      "instruction": "Geben Sie dieses Wort zur Bestätigung ein:",
+      "title": "{name}\" löschen?"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "DELETE eingeben",
+      "word": "LÖSCHEN"
+    },
+    "defaults": {
+      "companyName": "Neues Unternehmen / Organisation",
+      "kind": "Privatsektor",
+      "shortName": "Neuer Datensatz"
+    },
+    "delete": "Löschen",
+    "description": {
+      "multi": "Verwalten Sie die Unternehmen, für die Sie verantwortlich sind, und greifen Sie auf deren Arbeitsstätten zu.",
+      "single": "Verwalten Sie Personal und andere operative Datensätze für Ihre aktive Arbeitsstätte."
+    },
+    "discard": "Abbrechen",
+    "employeesSuffix": "Mitarbeiter",
+    "empty": {
+      "archiveBannerCompany": "Archivierte Unternehmen. Sie können sie wiederherstellen.",
+      "archiveBannerWorksite": "Archivierte Arbeitsplatz-Datensätze. Sie können sie wiederherstellen.",
+      "archiveEmptyCompany": "Nichts im Archiv",
+      "archiveEmptyDescCompany": "Noch keine archivierten Unternehmen.",
+      "archiveEmptyDescWorksite": "Noch keine archivierten Arbeitsplätze.",
+      "archiveEmptyWorksite": "Nichts im Archiv",
+      "clearFilters": "Filter löschen",
+      "completeWorksite": "Arbeitsplatz-Einrichtung abschließen",
+      "deletedBannerCompany": "Gelöschte Unternehmen. Endgültige Löschung kann nicht rückgängig gemacht werden.",
+      "deletedBannerWorksite": "Gelöschte Arbeitsplatz-Datensätze. Endgültige Löschung kann nicht rückgängig gemacht werden.",
+      "deletedEmptyCompany": "Keine gelöschten Unternehmen",
+      "deletedEmptyDescCompany": "Noch keine gelöschten Unternehmen.",
+      "deletedEmptyDescWorksite": "Noch keine gelöschten Arbeitsplätze.",
+      "deletedEmptyWorksite": "Keine gelöschten Arbeitsplätze",
+      "initialDescCompany": "Erstellen Sie Ihr erstes Unternehmen, um zu beginnen.",
+      "initialDescWorksite": "Dieser Bereich füllt sich mit Ihren aktiven Arbeitsplatz-Daten. Schließen Sie die Arbeitsplatz-Einrichtung ab, um Personal und andere Datensätze zu sehen.",
+      "initialTitleCompany": "Noch keine Unternehmen",
+      "initialTitleWorksite": "Noch kein Arbeitsplatz-Datensatz",
+      "newCompany": "Neues Unternehmen",
+      "noMatchCompany": "Keine passenden Unternehmen",
+      "noMatchDescription": "Keine Datensätze entsprechen Ihren Filtern.",
+      "noMatchWorksite": "Keine passenden Arbeitsplätze",
+      "sampleData": "Beispieldaten"
+    },
+    "entity": {
+      "companyPlural": "Unternehmen",
+      "worksitePlural": "Arbeitsstätten"
+    },
+    "eyebrow": {
+      "multi": "Meine Unternehmen / Organisationen",
+      "osgb": "OSGB-Unternehmen",
+      "singleWorksite": "Arbeitsstätte"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "Alle",
+      "hazardClass": "Gefahrenklasse",
+      "kind": "Typ",
+      "search": "Suchen",
+      "searchPlaceholder": "Name, Branche, Typ, NACE…",
+      "sector": "Branche",
+      "sort": "Sortieren"
+    },
+    "limitReachedBanner": "Sie haben das Limit für aktive Unternehmen / Arbeitsbereiche erreicht. Archivieren Sie ein Unternehmen oder upgraden Sie Ihren Plan, bevor Sie eines hinzufügen oder wiederherstellen.",
+    "links": {
+      "riskAnalysis": "Risikoanalyse",
+      "workspace": "Arbeitsbereich"
+    },
+    "metrics": {
+      "actions": "Maßnahmen",
+      "departments": "Abteilungen",
+      "employees": "Mitarbeiter",
+      "hazard": "Gefahr",
+      "locations": "Standorte",
+      "overdue": "Überfällig"
+    },
+    "permanentDelete": "Dauerhaft löschen",
+    "progress": {
+      "coverage": "Abdeckung",
+      "maturity": "Reifegrad"
+    },
+    "restore": "Wiederherstellen",
+    "sort": {
+      "employees": "Mitarbeiter",
+      "name": "Nach Name",
+      "overdue": "Überfällig",
+      "risk": "Risiko"
+    },
+    "stats": {
+      "avgMaturity": "Durchschn. Reifegrad",
+      "criticalCompanies": "Kritische Unternehmen",
+      "criticalWorksites": "Kritische Arbeitsstätten",
+      "employees": "Mitarbeiter",
+      "openActions": "Offene Maßnahmen",
+      "overdueTasks": "Überfällige Aufgaben",
+      "totalCompanies": "Unternehmen gesamt",
+      "totalWorksites": "Arbeitsstätten gesamt"
+    },
+    "storage": {
+      "local": "Lokal",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "Aktiv",
+      "archived": "Archiv",
+      "deleted": "Gelöscht"
+    },
+    "title": {
+      "multi": "Meine Unternehmen / Organisationen",
+      "osgb": "Unternehmen und Arbeitsstätten",
+      "single": "Arbeitsplatz- und Betriebsinhalte"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} aktive Unternehmensplätze verwendet",
+      "activeOnly": "{count} aktive Unternehmen / Arbeitsbereiche"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "Arbeitsplätze",
+    "docTitle": "{name} — Arbeitsbereich · RiskNova",
+    "docTitleFallback": "Arbeitsbereich · RiskNova",
+    "invite": "Einladen",
+    "logo": {
+      "fileTooLarge": "Datei ist zu groß ({sizeMb} MB). Maximale Größe ist 5 MB.",
+      "imagesOnly": "Nur Bilddateien können hochgeladen werden (PNG, JPEG, WebP, SVG).",
+      "updated": "Logo/Bild aktualisiert.",
+      "uploadFailed": "Upload fehlgeschlagen. Versuchen Sie eine andere Datei.",
+      "uploadTitle": "Logo hochladen"
+    },
+    "notFound": {
+      "back": "Zurück zu Unternehmen",
+      "description": "Kein Unternehmen entspricht dieser ID.",
+      "title": "Unternehmen nicht gefunden"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "Speichern",
+    "saving": "Speichern…",
+    "sidebar": {
+      "hint": "Wählen Sie einen Bereich links; verwalten Sie Inhalte rechts.",
+      "title": "Arbeitsplatz-Bereiche"
+    },
+    "stats": {
+      "departments": "Abteilungen",
+      "employees": "Mitarbeiter",
+      "locations": "Standorte",
+      "maturity": "Reifegrad",
+      "openActions": "Offene Maßnahmen",
+      "overdue": "Überfällig"
+    },
+    "tabs": {
+      "history": "Verlauf",
+      "ohs_file": "AuS-Akte",
+      "organization": "Organisation",
+      "people": "Team",
+      "personnel": "Personal",
+      "risk": "Risiko & Feld",
+      "structure": "Räumlichkeiten",
+      "tracking": "Verfolgung"
+    }
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "Verwalten Sie Unternehmen, Zuweisungen, Dokumente und Risikoabläufe pro Unternehmensarbeitsbereich.",
+      "searchLabel": "Unternehmen suchen",
+      "searchPlaceholder": "Unternehmen, Sektor, Adresse oder NACE suchen",
+      "title": "Aktive Unternehmen"
+    },
+    "archivedRow": {
+      "restore": "Wiederherstellen",
+      "restoring": "Wiederherstellen…"
+    },
+    "archivedSection": {
+      "badge": "{count} archivierte Datensätze",
+      "description": "Archivierte Unternehmen zählen nicht zum aktiven Limit; Risiko- und Dokumentenverlauf wird beibehalten.",
+      "title": "Archivierte Unternehmen"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} aktive Unternehmen",
+      "activeCompaniesUnlimited": "Aktive Unternehmen: {count}",
+      "activeStaffMax": "{count} / {max} aktive Mitarbeiter",
+      "activeStaffUnlimited": "{count} aktive Mitarbeiter"
+    },
+    "companyCard": {
+      "archive": "Archivieren",
+      "archiving": "Archivierung…",
+      "assignedProfessionals": "{count} zugewiesene Fachkräfte",
+      "assignments": "Zuweisungen",
+      "contracts": "Verträge",
+      "documentsCount": "{count} Dokumente",
+      "documentsLink": "Dokumente",
+      "employees": "{count} Mitarbeiter",
+      "overdueTasks": "{count} überfällige Elemente",
+      "personnelInvite": "Personal & Einladungen",
+      "sectorUnknown": "Sektor nicht festgelegt",
+      "taskTracking": "Aufgabenverfolgung",
+      "workspace": "Unternehmens-Arbeitsbereich"
+    },
+    "emptyActive": {
+      "cta": "Erstes Unternehmen hinzufügen",
+      "description": "Mit dem OSGB-Panel verknüpfte Kundenunternehmen werden hier aufgelistet.",
+      "title": "Keine aktiven Unternehmen"
+    },
+    "emptyArchived": {
+      "description": "Wenn Sie ein Unternehmen archivieren, erscheint es hier.",
+      "title": "Keine archivierten Unternehmen"
+    },
+    "emptyCompany": {
+      "kind": "Privatsektor",
+      "name": "Neues OSGB-Kundenunternehmen",
+      "shortName": "Neues Unternehmen"
+    },
+    "focus": {
+      "p1": "Dieser Bereich ist nur für OSGB-Eigentümer und Administratoren. Unternehmen, Zuweisungen, Verträge und Dokumentenverfolgung werden zentral verwaltet.",
+      "p2": "Zugewiesene Mitarbeiter nutzen dieses Panel nicht für ihren täglichen Arbeitsablauf; sie greifen über ihr eigenes Konto auf zugewiesene Unternehmens-Arbeitsbereichsdaten zu.",
+      "sidebarBody": "Hier werden {firms} aktive Unternehmen, {professionals} zugewiesene Fachkräfte und {overdue} aufmerksamkeitsbedürftige Elemente koordiniert.",
+      "sidebarEyebrow": "Management-Fokus",
+      "title": "OSGB-fokussierte Oberfläche"
+    },
+    "header": {
+      "description": "Verwalten Sie Ihre Kundenunternehmen, unternehmensweise Arbeitsbereiche und zugewiesene Personalabläufe.",
+      "eyebrow": "OSGB-Unternehmensmanagement",
+      "title": "Unternehmen und Arbeitsstätten"
+    },
+    "limitBanner": "Limit für aktive Unternehmen erreicht. Archivieren Sie ein Unternehmen oder upgraden Sie Ihren Plan, um weitere hinzuzufügen.",
+    "loading": {
+      "description": "Wir laden Kundenunternehmen, Zuweisungen und Dokumentenabläufe.",
+      "eyebrow": "OSGB-Unternehmen",
+      "title": "Ihr Portfolio wird vorbereitet"
+    },
+    "nova": {
+      "bullet1": "Arbeitsbelastungsverteilung nach Unternehmen anzeigen.",
+      "bullet2": "Überfällige Aufgaben und Dokumente filtern.",
+      "bullet3": "Personalzuweisungslücken erkennen.",
+      "bullet4": "Vertrags- und Berichtserneuerungsrisiken priorisieren.",
+      "openTasks": "OSGB-Aufgaben öffnen",
+      "reviewOverdue": "Überfällige Arbeiten überprüfen",
+      "seeAssignmentGaps": "Zuweisungslücken anzeigen",
+      "subtitle": "Management-Assistent; überwacht Personal- und Unternehmensleistung.",
+      "title": "Nova OSGB Manager"
+    },
+    "quickLinks": {
+      "docCenter": "Zum Dokumentenzentrum",
+      "inviteStaff": "Personal einladen",
+      "manageAssignments": "Aufträge verwalten",
+      "openContracts": "Verträge öffnen"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "Aktive Kundenunternehmen, die im OSGB-Panel verfolgt werden.",
+        "label": "Aktive Unternehmen"
+      },
+      "assignedProfessionals": {
+        "hint": "Gesamtzahl der Zuweisungen von Experten, Ärzten und DSP an Unternehmen.",
+        "label": "Zugewiesene Fachkräfte"
+      },
+      "overdueWork": {
+        "hint": "Offene Punkte zur Überwachung in Auftrags- und CAPA-Abläufen.",
+        "label": "Überfällige Arbeiten"
+      },
+      "totalEmployees": {
+        "hint": "Gesamte Mitarbeiterzahl aus Unternehmensunterlagen für die Planung.",
+        "label": "Gesamte Mitarbeiter"
+      }
+    },
+    "topActions": {
+      "addCompany": "Unternehmen hinzufügen",
+      "openAssignments": "Aufträge öffnen",
+      "personnelInvite": "Personal & Einladungen"
+    }
+  },
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "Weniger gefährlich",
+      "high": "Sehr gefährlich",
+      "moderate": "Gefährlich"
+    },
+    "level": {
+      "controlled": "Kontrolliert",
+      "critical": "Kritisch",
+      "high": "Hoch",
+      "incomplete": "Nicht bewertet",
+      "medium": "Mittel"
+    }
+  }
+}

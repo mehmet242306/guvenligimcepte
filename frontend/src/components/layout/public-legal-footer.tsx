@@ -24,7 +24,7 @@ export async function PublicLegalFooter() {
           </Link>
           {" · "}
           <Link href="/cookie-policy" className="font-medium text-foreground underline-offset-4 hover:underline">
-            Çerez Politikası
+            {t("footerCookie")}
           </Link>
           .
         </p>

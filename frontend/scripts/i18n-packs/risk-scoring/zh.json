@@ -1,0 +1,780 @@
+{
+  "riskScoring": {
+    "classification": {
+      "bow_tie": {
+        "critical": {
+          "action": "停止作业；重新设计屏障",
+          "label": "严重"
+        },
+        "follow_up": {
+          "action": "屏障充分；继续监控",
+          "label": "可接受"
+        },
+        "high": {
+          "action": "紧急加强屏障；审查流程",
+          "label": "高"
+        },
+        "low": {
+          "action": "审查屏障有效性",
+          "label": "低"
+        },
+        "medium": {
+          "action": "增加更多屏障",
+          "label": "中等"
+        }
+      },
+      "checklist": {
+        "critical": {
+          "action": "停止活动；全面修订",
+          "label": "严重不足"
+        },
+        "follow_up": {
+          "action": "保持当前做法",
+          "label": "合规"
+        },
+        "high": {
+          "action": "启动紧急纠正措施",
+          "label": "不足"
+        },
+        "low": {
+          "action": "短期内消除差距",
+          "label": "可接受"
+        },
+        "medium": {
+          "action": "制定更广泛的改进计划",
+          "label": "需要改进"
+        }
+      },
+      "fk": {
+        "critical": {
+          "action": "立即停止作业",
+          "label": "极高风险"
+        },
+        "follow_up": {
+          "action": "可能需要改进建议；无紧急行动",
+          "label": "可接受"
+        },
+        "high": {
+          "action": "立即行动；考虑停止作业",
+          "label": "高风险"
+        },
+        "low": {
+          "action": "保持审查；计划改进",
+          "label": "中度关注"
+        },
+        "medium": {
+          "action": "短期内采取行动",
+          "label": "重大"
+        }
+      },
+      "fmea": {
+        "critical": {
+          "action": "停止作业；执行根本原因分析",
+          "label": "严重风险"
+        },
+        "follow_up": {
+          "action": "当前控制措施充分；保持监控",
+          "label": "可接受"
+        },
+        "high": {
+          "action": "紧急行动；考虑设计变更",
+          "label": "高风险"
+        },
+        "low": {
+          "action": "计划改进",
+          "label": "低风险"
+        },
+        "medium": {
+          "action": "采取行动；加强控制",
+          "label": "中等风险"
+        }
+      },
+      "fta": {
+        "critical": {
+          "action": "不得操作；消除根本原因",
+          "label": "严重"
+        },
+        "follow_up": {
+          "action": "系统可靠性充分",
+          "label": "可接受"
+        },
+        "high": {
+          "action": "重新设计系统",
+          "label": "高"
+        },
+        "low": {
+          "action": "评估冗余/备份",
+          "label": "低"
+        },
+        "medium": {
+          "action": "为关键组件增加冗余",
+          "label": "中"
+        }
+      },
+      "hazop": {
+        "critical": {
+          "action": "停止工艺；修订设计",
+          "label": "不可容忍"
+        },
+        "follow_up": {
+          "action": "当前控制措施充分",
+          "label": "可接受"
+        },
+        "high": {
+          "action": "需要工艺变更或额外屏障",
+          "label": "高"
+        },
+        "low": {
+          "action": "制定监控和改进计划",
+          "label": "低"
+        },
+        "medium": {
+          "action": "评估额外保护层",
+          "label": "中"
+        }
+      },
+      "lopa": {
+        "critical": {
+          "action": "停止工艺；修订设计",
+          "label": "不可容忍"
+        },
+        "follow_up": {
+          "action": "当前保护层充分",
+          "label": "可接受"
+        },
+        "high": {
+          "action": "需要多层保护或工艺变更",
+          "label": "高风险"
+        },
+        "low": {
+          "action": "合理可行的最低水平",
+          "label": "ALARP"
+        },
+        "medium": {
+          "action": "增加额外保护层",
+          "label": "需要改进"
+        }
+      },
+      "matrix": {
+        "critical": {
+          "action": "立即停工；紧急措施",
+          "label": "不可容忍"
+        },
+        "follow_up": {
+          "action": "可能不需要进一步措施；监控充分",
+          "label": "可接受"
+        },
+        "high": {
+          "action": "尽快采取行动",
+          "label": "高风险"
+        },
+        "low": {
+          "action": "现有控制措施充分；继续观察",
+          "label": "低风险"
+        },
+        "medium": {
+          "action": "制定改进活动计划",
+          "label": "中风险"
+        }
+      },
+      "r2d": {
+        "critical": {
+          "action": "评估停工",
+          "label": "关键"
+        },
+        "follow_up": {
+          "action": "常规监控充分",
+          "label": "监控"
+        },
+        "high": {
+          "action": "需要优先干预",
+          "label": "高"
+        },
+        "low": {
+          "action": "安排结构化重新评估",
+          "label": "低"
+        },
+        "medium": {
+          "action": "需要加强监督",
+          "label": "中"
+        }
+      }
+    },
+    "fk": {
+      "exposure": {
+        "v0_5": "非常罕见（每年一次）",
+        "v1": "罕见（每月一次）",
+        "v10": "持续（一天中大部分时间）",
+        "v2": "偶尔（每周一次）",
+        "v3": "有时（每周数次）",
+        "v6": "频繁（每日）"
+      },
+      "likelihood": {
+        "v0_1": "几乎不可能",
+        "v0_2": "极不可能",
+        "v0_5": "意外但可能",
+        "v1": "可能性低，不可忽视",
+        "v10": "很可能/预期",
+        "v3": "罕见但可能",
+        "v6": "相当可能"
+      },
+      "severity": {
+        "v1": "显著，急救",
+        "v100": "大规模灾难，多人死亡",
+        "v15": "非常严重，肢体缺失",
+        "v3": "重大，外部治疗",
+        "v40": "灾难，单人死亡",
+        "v7": "严重，永久伤害"
+      }
+    },
+    "fmea": {
+      "detection": {
+        "v1": "几乎确定检测",
+        "v10": "无法检测",
+        "v2": "检测可能性很高",
+        "v3": "检测可能性高",
+        "v4": "中高",
+        "v5": "中等",
+        "v6": "中低",
+        "v7": "低",
+        "v8": "很低",
+        "v9": "微小可能"
+      },
+      "occurrence": {
+        "v1": "几乎不可能（< 1/1,000,000）",
+        "v10": "几乎确定（≥ 1/2）",
+        "v2": "微小（1/20,000）",
+        "v3": "很低（1/4,000）",
+        "v4": "低（1/1,000）",
+        "v5": "中低（1/400）",
+        "v6": "中等（1/80）",
+        "v7": "中高（1/40）",
+        "v8": "高（1/20）",
+        "v9": "很高（1/8）"
+      },
+      "severity": {
+        "v1": "无影响 — 未察觉",
+        "v10": "灾难性 — 死亡/大规模事故",
+        "v2": "极轻微 — 可忽略影响",
+        "v3": "轻微 — 轻微干扰",
+        "v4": "低 — 性能下降",
+        "v5": "中等 — 显著性能损失",
+        "v6": "高 — 系统功能受损",
+        "v7": "极高 — 无法运行",
+        "v8": "危险（有警告）— 伤害风险",
+        "v9": "危险（无警告）— 严重伤害"
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "after": "之后",
+        "before": "之前",
+        "early": "提前",
+        "late": "延迟",
+        "less": "较少",
+        "more": "较多",
+        "noNot": "无/非",
+        "otherThan": "异于",
+        "partOf": "部分",
+        "reverse": "反向"
+      },
+      "parameters": {
+        "composition": "成分",
+        "flow": "流量",
+        "level": "液位",
+        "mixing": "混合",
+        "ph": "pH值",
+        "pressure": "压力",
+        "reaction": "反应",
+        "speed": "速度",
+        "temperature": "温度",
+        "time": "时间"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v0_00001": "十万年一遇 — 极其罕见",
+        "v0_0001": "万年一遇 — 非常罕见",
+        "v0_001": "千年一遇 — 罕见",
+        "v0_01": "百年一遇 — 偶发",
+        "v0_1": "十年一遇 — 频繁",
+        "v1": "每年一次 — 非常频繁"
+      },
+      "pfd": {
+        "v0_001": "自动安全系统（SIL-1级）",
+        "v0_01": "训练有素的操作员响应/报警",
+        "v0_1": "简单管理控制"
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "极低（几乎不可能）"
+        },
+        "i2": {
+          "description": "低（罕见，意外）"
+        },
+        "i3": {
+          "description": "中等（不太可能但可能）"
+        },
+        "i4": {
+          "description": "高（可能，不意外）"
+        },
+        "i5": {
+          "description": "极高（预期，不可避免）"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "极轻微（无误工）"
+        },
+        "i2": {
+          "description": "轻微（无误工伤害）"
+        },
+        "i3": {
+          "description": "中等（误工伤害）"
+        },
+        "i4": {
+          "description": "重大（永久伤害，截肢）"
+        },
+        "i5": {
+          "description": "灾难性（死亡，多人死亡）"
+        }
+      }
+    },
+    "methods": {
+      "bow_tie": {
+        "description": "蝴蝶结 — 威胁-屏障-后果",
+        "name": "蝴蝶结",
+        "tooltip": "威胁可能性和后果严重性，包含预防和缓解屏障；基于屏障强度的剩余风险。"
+      },
+      "checklist": {
+        "description": "检查清单 — 合规百分比",
+        "name": "检查清单",
+        "tooltip": "基于合格/不合格/部分合规项目的加权合规性——适用于审计和检查。"
+      },
+      "fine_kinney": {
+        "description": "可能性 × 严重性 × 暴露度乘积",
+        "name": "Fine-Kinney",
+        "tooltip": "常用定量风险方法：L (0.1–10)、S (1–100)、E (0.5–10)；符合ISO 31000标准。"
+      },
+      "fmea": {
+        "description": "失效模式与影响分析 — RPN",
+        "name": "FMEA",
+        "tooltip": "严重性 (1–10) × 发生率 (1–10) × 检测度 (1–10) = RPN。适用于运营和维护；IEC 60812标准。"
+      },
+      "fta": {
+        "description": "故障树分析 — 系统可靠性",
+        "name": "FTA",
+        "tooltip": "使用与/或门分解系统故障；用于航空、核能和关键系统；IEC 61025标准。"
+      },
+      "hazop": {
+        "description": "危险与可操作性研究",
+        "name": "HAZOP",
+        "tooltip": "引导词（无、少、多、反向等）探索工艺偏差；常用于化工/石化工厂；IEC 61882标准。"
+      },
+      "jsa": {
+        "description": "作业安全分析 — 基于步骤的危险",
+        "name": "JSA",
+        "tooltip": "每步骤严重性 × 可能性 / 控制有效性；建筑和现场作业必备。"
+      },
+      "l_matrix": {
+        "description": "5×5可能性-严重性风险矩阵",
+        "name": "L型矩阵",
+        "tooltip": "选择可能性 (1–5) 和严重性 (1–5)；从25格彩色矩阵读取风险（符合土耳其职业健康安全实践）。"
+      },
+      "lopa": {
+        "description": "保护层分析 — 频率降低",
+        "name": "LOPA",
+        "tooltip": "将初始频率乘以保护层PFD值；常与工艺安全中的SIL目标配对使用。"
+      },
+      "r_skor": {
+        "description": "9参数加权现场筛选评分",
+        "name": "R-SKOR 2D",
+        "tooltip": "RiskNova方法：九个参数 (C1–C9) 加权视觉和现场输入；支持基于图像的自动评分。"
+      }
+    },
+    "panel": {
+      "bowtie": {
+        "consequence": "后果严重性",
+        "mitigation": "缓解屏障",
+        "prevention": "预防屏障",
+        "rawRisk": "原始风险",
+        "residualRisk": "剩余风险",
+        "threat": "威胁可能性"
+      },
+      "checklist": {
+        "add": "+ 添加",
+        "compliantLine": "{n} 项合规",
+        "itemPlaceholder": "控制项目…",
+        "itemsHeading": "检查项目 ({count})",
+        "nonCompliantLine": "{n} 项不合规",
+        "partialLine": "{n} 项部分合规",
+        "removeTitle": "移除",
+        "statusKismi": "部分合规",
+        "statusNa": "不适用",
+        "statusUygun": "合规",
+        "statusUygunDegil": "不合规"
+      },
+      "fmea": {
+        "detection": "检测性 (D)",
+        "formula": "S × O × D = RPN",
+        "occurrence": "发生性 (O)",
+        "severity": "严重性 (S)"
+      },
+      "fta": {
+        "add": "+ 添加",
+        "componentDefault": "组件 {n}",
+        "componentPlaceholder": "组件名称",
+        "componentsHeading": "组件 ({count})",
+        "failureRateTitle": "失效概率 (0–1)",
+        "gate": "门",
+        "gateType": "门类型：",
+        "removeTitle": "移除",
+        "systemCriticality": "系统关键性",
+        "systemProb": "系统 P"
+      },
+      "hazop": {
+        "detectability": "可检测性",
+        "detectEasy": "容易",
+        "detectHard": "困难",
+        "deviation": "偏差描述",
+        "deviationPlaceholder": "描述偏差…",
+        "guideWord": "引导词",
+        "likelihood": "可能性",
+        "parameter": "工艺参数",
+        "severity": "严重性"
+      },
+      "jsa": {
+        "add": "+ 添加",
+        "avg": "平均",
+        "control": "控制",
+        "controlsPlaceholder": "控制措施…",
+        "hazardPlaceholder": "危险…",
+        "highRisk": "高风险步骤",
+        "jobPlaceholder": "作业名称…",
+        "jobTitle": "作业标题",
+        "likelihood": "可能性",
+        "max": "最大",
+        "removeTitle": "移除",
+        "severity": "严重性",
+        "stepDefault": "步骤 {n}",
+        "stepDescPlaceholder": "步骤描述…",
+        "stepScoreIntro": "步骤评分：",
+        "stepsHeading": "作业步骤 ({count})"
+      },
+      "lopa": {
+        "addLayer": "+ 添加",
+        "consequence": "后果严重性",
+        "consequenceV1": "轻微",
+        "consequenceV2": "较小",
+        "consequenceV3": "中等",
+        "consequenceV4": "严重",
+        "consequenceV5": "灾难性",
+        "initFreq": "初始事件频率",
+        "layerDefault": "防护层 {n}",
+        "layerNamePlaceholder": "防护层名称",
+        "layerPfd": "防护层失效概率",
+        "layersHeading": "防护层 ({count})",
+        "meetsTarget": "满足可接受目标",
+        "removeTitle": "移除",
+        "riskReduction": "风险降低",
+        "target": "目标",
+        "targetMet": "已满足",
+        "targetNotMet": "未满足"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employee_representative": "员工代表",
+        "employer": "雇主",
+        "employer_representative": "雇主代表",
+        "knowledgeable_employee": "了解风险的员工",
+        "ohs_specialist": "职业健康安全专员",
+        "other_health_personnel": "其他健康人员",
+        "support_staff": "支持人员",
+        "workplace_physician": "职场医生"
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "description": "现场观察到的危险物体数量/密度",
+        "label": "危险密度"
+      },
+      "c2": {
+        "description": "缺少安全帽、手套、护目镜等",
+        "label": "个人防护用品缺失"
+      },
+      "c3": {
+        "description": "进入限制区域、无防护作业、坠落风险",
+        "label": "行为风险"
+      },
+      "c4": {
+        "description": "高温、噪音、振动等类似压力源",
+        "label": "环境压力"
+      },
+      "c5": {
+        "description": "气体泄漏、化学品、电气危险",
+        "label": "化学/电气"
+      },
+      "c6": {
+        "description": "出口堵塞、地面湿滑、通道障碍",
+        "label": "通道/阻塞"
+      },
+      "c7": {
+        "description": "防护装置被绕过、维护过期",
+        "label": "机械/工艺"
+      },
+      "c8": {
+        "description": "叉车作业强度、线路交叉、行人-车辆冲突",
+        "label": "车辆交通"
+      },
+      "c9": {
+        "description": "培训缺失、警示标识缺失",
+        "label": "组织负荷"
+      },
+      "source": {
+        "visualAnalysis": "目视分析"
+      }
+    },
+    "ui": {
+      "fk": {
+        "exposure": "暴露度 (E)",
+        "likelihood": "可能性 (L)",
+        "severity": "严重性 (S)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "可能性 ({n})",
+        "severityHeading": "严重性 ({n})"
+      },
+      "page": {
+        "analysisNotePlaceholder": "每行是一个风险主题或不符合项组。每行可以附加一张或多张照片。",
+        "analysisTitlePlaceholder": "现场风险分析",
+        "describeRiskGroup": "简要描述风险组"
+      },
+      "r2d": {
+        "base": "基础",
+        "dominant": "主导",
+        "parameters": "参数",
+        "peak": "峰值"
+      },
+      "severity": {
+        "critical": "严重",
+        "high": "高",
+        "low": "低",
+        "medium": "中"
+      }
+    },
+    "wizard": {
+      "common": {
+        "add": "添加",
+        "address": "地址",
+        "back": "返回",
+        "cancel": "取消",
+        "companyFallback": "公司",
+        "delete": "删除",
+        "description": "描述",
+        "findings": "发现",
+        "goToResults": "查看结果",
+        "images": "图片",
+        "lines": "行",
+        "location": "位置",
+        "method": "方法",
+        "next": "下一步",
+        "no": "否",
+        "report": "报告",
+        "risk": "风险",
+        "row": "行",
+        "save": "保存",
+        "saving": "保存中…",
+        "scoreDetailPrefix": "评分详情 —",
+        "type": "类型",
+        "update": "更新",
+        "visual": "图片",
+        "yes": "是"
+      },
+      "header": {
+        "backToList": "返回列表",
+        "badgeAiManual": "AI + 人工发现",
+        "badgeExport": "PDF / Word / Excel",
+        "newAnalysis": "新分析",
+        "wizardDescription": "选择公司，定义团队，上传图片，然后运行AI + 人工发现和评分。",
+        "wizardTitle": "可视化风险分析"
+      },
+      "list": {
+        "companyLabel": "公司/组织",
+        "companyPlaceholder": "— 选择公司 —",
+        "confirmDelete": "确定吗？",
+        "deleteAnalysis": "删除",
+        "description": "选择公司，查看过往分析，或开始新分析。",
+        "emptyDescription": "使用上方按钮为该公司开始首次风险分析。",
+        "emptyTitle": "暂无分析",
+        "eyebrow": "风险分析",
+        "findingsCount": "{count} 项发现",
+        "historyCount": "{count} 个已保存分析",
+        "historyTitle": "{name} — 分析历史",
+        "newAnalysis": "+ 开始新分析",
+        "statusArchived": "已归档",
+        "statusCompleted": "已完成",
+        "statusDraft": "草稿",
+        "title": "风险分析管理"
+      },
+      "messages": {
+        "analysisComplete": "分析完成！",
+        "analysisFailed": "无法完成分析。",
+        "analysisFailedDetail": "AI分析失败。{detail}",
+        "analysisPartial": "AI分析部分完成。已处理 {successful}/{total} 张图像；{errors} 张图像出现错误。",
+        "analysisStarting": "正在开始分析…",
+        "analysisSummary": "AI分析完成。{risks} 个风险，{positive} 个积极观察。",
+        "analyzingImageProgress": "正在分析图像 {current}/{total}：{fileName}",
+        "analyzingRowImage": "正在分析图像：第 {row} 行，{fileName}…",
+        "genericAiError": "在OpenAI或Anthropic阶段发生错误。",
+        "needImageToAnalyze": "至少添加一张图像以开始分析。"
+      },
+      "methodCard": {
+        "params": "{count} 个参数",
+        "score": "评分："
+      },
+      "nav": {
+        "aiAnalyzingShort": "正在分析…",
+        "aiStartShort": "开始AI分析"
+      },
+      "notifications": {
+        "savedBody": "{title} — {findings} 项发现，{critical} 项关键/高风险",
+        "savedTitle": "风险分析已保存",
+        "updatedTitle": "风险分析已更新"
+      },
+      "save": {
+        "error": "保存时发生错误。",
+        "noCompany": "未选择公司无法保存。",
+        "oversized": "{fileName} 超过10MB限制。保存前请上传较小的图像。",
+        "successNew": "分析保存成功！",
+        "successUpdated": "分析更新成功！"
+      },
+      "step1": {
+        "analysisNote": "分析备注",
+        "analysisTitle": "分析标题",
+        "company": "公司/组织",
+        "companyCardAddress": "地址：",
+        "companyCardType": "类型：",
+        "companyPlaceholder": "选择公司/组织",
+        "companyRequired": "分析需要选择公司。",
+        "department": "部门/单位",
+        "departmentPlaceholder": "选择部门",
+        "departmentRequired": "需要选择部门。",
+        "editCompanyStructure": "编辑公司结构",
+        "location": "位置/工作区域",
+        "locationPlaceholder": "选择位置",
+        "locationRequired": "必须选择位置。",
+        "method": "分析方法",
+        "subtitle": "选择此风险分析适用的公司、位置和部门。",
+        "title": "分析背景"
+      },
+      "step2": {
+        "addParticipant": "手动添加参与者",
+        "certificate": "证书编号（如有）",
+        "certificatePlaceholder": "如适用请输入",
+        "fullName": "全名",
+        "noTeamBody": "此公司尚未设置团队成员。在公司页面中，打开团队选项卡，创建\"风险评估团队\"并添加成员——他们将自动显示在此处。",
+        "noTeamLink": "转到公司团队管理",
+        "noTeamTitle": "未定义风险评估团队",
+        "participantN": "参与者 {n}",
+        "pickFromTeam": "从公司团队中选择",
+        "rolePlaceholder": "选择角色",
+        "roleType": "角色/职位类型",
+        "subtitle": "从已保存的员工中选择或手动添加参与者。",
+        "title": "参与风险分析的人员",
+        "titleField": "角色/职位描述",
+        "titlePlaceholder": "例如：A级专家"
+      },
+      "step3": {
+        "addImage": "添加图片",
+        "aiAnalyzing": "正在运行AI分析…",
+        "aiStart": "开始AI风险分析",
+        "aiSub": "Nova AI分别分析每张图片。",
+        "bulkUpload": "批量上传（每个作为单独行）",
+        "deleteRow": "删除行",
+        "newRow": "添加行",
+        "rowHint": "将广角和特写镜头归类到此行下。",
+        "rowN": "行 {n}",
+        "rowTitle": "行标题",
+        "rowTitlePlaceholder": "例如：堆放区域",
+        "subtitle": "每行是一个风险主题。上传图片，然后开始AI分析。",
+        "summaryCompany": "公司",
+        "summaryImages": "图片",
+        "summaryLocation": "位置",
+        "summaryMethod": "方法",
+        "title": "风险行和图片"
+      },
+      "step4": {
+        "addedLater": "稍后添加",
+        "addRiskPin": "添加风险标记",
+        "aiAnalyzingDetail": "Nova AI正在分析每张图片…",
+        "analyzingInline": "分析中…",
+        "areaAssessment": "区域评估",
+        "avgScore": "平均分数",
+        "cannotAnalyzeBody": "此图像不适用于风险分析。",
+        "cannotAnalyzeTitle": "无法运行风险分析",
+        "capaBadge": "CAPA候选项",
+        "capaCandidate": "CAPA候选项",
+        "cleanNoRisk": "清除 — 未检测到风险",
+        "confidenceHigh": "确认发现",
+        "confidenceLow": "建议验证",
+        "confidenceMedium": "AI发现",
+        "criticalHigh": "严重/高",
+        "deleteFindingAria": "删除发现",
+        "deleteFindingConfirm": "删除发现\"{title}\"？",
+        "deleteFindingTitle": "删除发现",
+        "detectedPrefix": "检测到：",
+        "emptyResultsDesc": "在第3步中，上传图像并运行分析。",
+        "emptyResultsTitle": "暂无结果",
+        "findingTitle": "发现标题",
+        "findingTitlePlaceholder": "例如：缺少护栏",
+        "manualPinConfirm": "添加",
+        "manualPinHint": "您可以通过手动标记添加自己的发现。",
+        "manualPinTitle": "添加手动风险标记",
+        "metaEyebrowArea": "区域评估",
+        "metaEyebrowPositive": "积极观察",
+        "noRiskDetectedBody": "AI未在此图像上发现有意义的危险或不符合项。",
+        "noRiskDetectedTitle": "未检测到风险",
+        "noRiskThisImageBody": "AI在此图像上未发现具体危险。您仍可添加手动发现。",
+        "noRiskThisImageTitle": "此图像无重大风险",
+        "notRealPhotoBody": "此图像是绘图、插图或合成渲染图。风险分析仅适用于真实现场照片。",
+        "notRealPhotoTitle": "非真实照片",
+        "peopleDetected": "{count}人被检测到",
+        "photoQuality": "图像质量：",
+        "photoQualityLow": "低",
+        "photoQualityMedium": "中等",
+        "pinBanner": "点击图像添加风险标记",
+        "pinModeActive": "标记模式激活中...",
+        "positiveFindings": "积极观察",
+        "positiveObservationsHint": "积极观察列表如下。",
+        "resultsSubtitle": "风险卡与图像上的标注保持关联。调整参数以更改评分。",
+        "resultsTitle": "标注发现",
+        "riskCount": "风险：{count}",
+        "rowImagesFindings": "图像：{images} · 发现：{findings}",
+        "saveWarning": "结果尚未保存！如果不保存就离开，所有发现都将丢失。",
+        "scorePanelIntro": "评分详情 — {method}",
+        "severity": "严重程度",
+        "totalFindings": "总发现数",
+        "visualN": "图像{n}"
+      },
+      "steps": {
+        "context": "分析背景",
+        "images": "图像",
+        "results": "结果",
+        "team": "分析团队"
+      },
+      "validate": {
+        "company": "请先选择公司/组织。",
+        "department": "请选择部门/单位。",
+        "firmLocationDept": "请选择公司、地点和部门。",
+        "location": "请选择工作地点。",
+        "participants": "请至少输入一名负责人的姓名和职务。",
+        "step2Participants": "请至少输入一名负责人的姓名和职务。",
+        "step3Images": "请至少添加一张图像。"
+      }
+    }
+  }
+}

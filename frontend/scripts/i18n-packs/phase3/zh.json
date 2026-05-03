@@ -1,0 +1,305 @@
+{
+  "companiesList": {
+    "actions": {
+      "newCompany": "新建公司",
+      "sampleData": "示例数据"
+    },
+    "archive": "归档",
+    "badge": {
+      "archived": "已归档",
+      "deleted": "已删除"
+    },
+    "clearFilters": "清除筛选",
+    "confirmArchive": {
+      "confirm": "确认",
+      "hint": "它将离开活动列表。",
+      "title": "归档\"{name}\"？"
+    },
+    "confirmDelete": {
+      "confirm": "删除",
+      "instruction": "输入此词以确认：",
+      "title": "删除\"{name}\"？"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "输入 DELETE",
+      "word": "删除"
+    },
+    "defaults": {
+      "companyName": "新公司/组织",
+      "kind": "私营部门",
+      "shortName": "新记录"
+    },
+    "delete": "删除",
+    "description": {
+      "multi": "管理您负责的公司并访问其工作场所。",
+      "single": "管理您活跃工作场所的人员和其他运营记录。"
+    },
+    "discard": "取消",
+    "employeesSuffix": "员工",
+    "empty": {
+      "archiveBannerCompany": "已归档的公司。您可以恢复它们。",
+      "archiveBannerWorksite": "已归档的工地记录。您可以恢复它们。",
+      "archiveEmptyCompany": "归档中无内容",
+      "archiveEmptyDescCompany": "暂无已归档的公司。",
+      "archiveEmptyDescWorksite": "暂无已归档的工地。",
+      "archiveEmptyWorksite": "归档中无内容",
+      "clearFilters": "清除筛选条件",
+      "completeWorksite": "完成工地设置",
+      "deletedBannerCompany": "已删除的公司。永久删除无法撤销。",
+      "deletedBannerWorksite": "已删除的工地记录。永久删除无法撤销。",
+      "deletedEmptyCompany": "无已删除的公司",
+      "deletedEmptyDescCompany": "暂无已删除的公司。",
+      "deletedEmptyDescWorksite": "暂无已删除的工地。",
+      "deletedEmptyWorksite": "无已删除的工地",
+      "initialDescCompany": "创建您的第一家公司以开始使用。",
+      "initialDescWorksite": "此区域将显示您的活跃工地数据。完成工地设置以查看人员和其他记录。",
+      "initialTitleCompany": "暂无公司",
+      "initialTitleWorksite": "暂无工地记录",
+      "newCompany": "新建公司",
+      "noMatchCompany": "无匹配的公司",
+      "noMatchDescription": "无记录匹配您的筛选条件。",
+      "noMatchWorksite": "无匹配的工地",
+      "sampleData": "示例数据"
+    },
+    "entity": {
+      "companyPlural": "公司",
+      "worksitePlural": "工作场所"
+    },
+    "eyebrow": {
+      "multi": "我的公司/组织",
+      "osgb": "OSGB公司",
+      "singleWorksite": "工作场所"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "全部",
+      "hazardClass": "危险等级",
+      "kind": "类型",
+      "search": "搜索",
+      "searchPlaceholder": "名称、行业、类型、NACE…",
+      "sector": "行业",
+      "sort": "排序"
+    },
+    "limitReachedBanner": "您已达到活跃公司/工作区限制。请归档一个公司或升级您的计划后再添加或恢复。",
+    "links": {
+      "riskAnalysis": "风险分析",
+      "workspace": "工作区"
+    },
+    "metrics": {
+      "actions": "行动",
+      "departments": "部门",
+      "employees": "员工",
+      "hazard": "危险",
+      "locations": "位置",
+      "overdue": "逾期"
+    },
+    "permanentDelete": "永久删除",
+    "progress": {
+      "coverage": "覆盖率",
+      "maturity": "成熟度"
+    },
+    "restore": "恢复",
+    "sort": {
+      "employees": "员工",
+      "name": "按名称",
+      "overdue": "逾期",
+      "risk": "风险"
+    },
+    "stats": {
+      "avgMaturity": "平均成熟度",
+      "criticalCompanies": "关键公司",
+      "criticalWorksites": "关键工作场所",
+      "employees": "员工",
+      "openActions": "待处理行动",
+      "overdueTasks": "逾期任务",
+      "totalCompanies": "公司总数",
+      "totalWorksites": "工作场所总数"
+    },
+    "storage": {
+      "local": "本地",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "活跃",
+      "archived": "归档",
+      "deleted": "已删除"
+    },
+    "title": {
+      "multi": "我的公司/组织",
+      "osgb": "公司和工作场所",
+      "single": "工作场所和运营内容"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} 个活跃公司位置已使用",
+      "activeOnly": "{count} 个活跃公司/工作区"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "工作场所",
+    "docTitle": "{name} — 工作区 · RiskNova",
+    "docTitleFallback": "工作区 · RiskNova",
+    "invite": "邀请",
+    "logo": {
+      "fileTooLarge": "文件过大（{sizeMb} MB）。最大大小为 5 MB。",
+      "imagesOnly": "只能上传图像文件（PNG、JPEG、WebP、SVG）。",
+      "updated": "徽标/图像已更新。",
+      "uploadFailed": "上传失败。请尝试其他文件。",
+      "uploadTitle": "上传徽标"
+    },
+    "notFound": {
+      "back": "返回公司",
+      "description": "没有公司匹配此 ID。",
+      "title": "未找到公司"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "保存",
+    "saving": "保存中…",
+    "sidebar": {
+      "hint": "在左侧选择区域；在右侧管理内容。",
+      "title": "工作场所部分"
+    },
+    "stats": {
+      "departments": "部门",
+      "employees": "员工",
+      "locations": "位置",
+      "maturity": "成熟度",
+      "openActions": "待处理操作",
+      "overdue": "逾期"
+    },
+    "tabs": {
+      "history": "历史记录",
+      "ohs_file": "职业健康安全文件",
+      "organization": "组织",
+      "people": "团队",
+      "personnel": "人员",
+      "risk": "风险与现场",
+      "structure": "场所",
+      "tracking": "跟踪"
+    }
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "管理每个公司工作区的公司、分配、文档和风险流程。",
+      "searchLabel": "搜索公司",
+      "searchPlaceholder": "搜索公司、行业、地址或 NACE",
+      "title": "活跃公司"
+    },
+    "archivedRow": {
+      "restore": "恢复",
+      "restoring": "恢复中…"
+    },
+    "archivedSection": {
+      "badge": "{count} 条已归档记录",
+      "description": "已归档的公司不计入活跃限制；风险和文档历史记录将保留。",
+      "title": "已归档公司"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} 个活跃公司",
+      "activeCompaniesUnlimited": "活跃公司 {count} 家",
+      "activeStaffMax": "活跃员工 {count} / {max}",
+      "activeStaffUnlimited": "活跃员工 {count} 人"
+    },
+    "companyCard": {
+      "archive": "归档",
+      "archiving": "正在归档…",
+      "assignedProfessionals": "已分配专业人员 {count} 人",
+      "assignments": "分配",
+      "contracts": "合同",
+      "documentsCount": "文档 {count} 个",
+      "documentsLink": "文档",
+      "employees": "员工 {count} 人",
+      "overdueTasks": "逾期项目 {count} 个",
+      "personnelInvite": "员工和邀请",
+      "sectorUnknown": "未设置行业",
+      "taskTracking": "任务跟踪",
+      "workspace": "公司工作区"
+    },
+    "emptyActive": {
+      "cta": "添加第一家公司",
+      "description": "与 OSGB 面板关联的客户公司将在此列出。",
+      "title": "无活跃公司"
+    },
+    "emptyArchived": {
+      "description": "归档公司将显示在此处。",
+      "title": "无已归档公司"
+    },
+    "emptyCompany": {
+      "kind": "私营部门",
+      "name": "新 OSGB 客户公司",
+      "shortName": "新公司"
+    },
+    "focus": {
+      "p1": "此区域仅供 OSGB 所有者和管理员用户使用。公司、分配、合同和文档跟踪在此统一管理。",
+      "p2": "分配的员工不使用此面板进行日常工作流程；他们通过自己的账户访问分配的公司工作区数据。",
+      "sidebarBody": "此处协调 {firms} 家活跃公司、{professionals} 名分配专业人员和 {overdue} 个需要关注的项目。",
+      "sidebarEyebrow": "管理焦点",
+      "title": "OSGB 专用界面"
+    },
+    "header": {
+      "description": "管理您的客户公司、各公司工作区和分配给它们的人员流程。",
+      "eyebrow": "OSGB 公司管理",
+      "title": "公司和工作场所"
+    },
+    "limitBanner": "已达到活跃公司限制。请归档公司或升级计划以添加更多。",
+    "loading": {
+      "description": "正在加载客户公司、分配和文档流程。",
+      "eyebrow": "OSGB 公司",
+      "title": "准备您的投资组合"
+    },
+    "nova": {
+      "bullet1": "按公司查看工作负载分布。",
+      "bullet2": "筛选逾期任务和文档。",
+      "bullet3": "发现人员分配缺口。",
+      "bullet4": "优先处理合同和报告续签风险。",
+      "openTasks": "打开 OSGB 任务",
+      "reviewOverdue": "审查逾期工作",
+      "seeAssignmentGaps": "查看分配缺口",
+      "subtitle": "管理助手；监控员工和公司绩效。",
+      "title": "Nova OSGB 管理器"
+    },
+    "quickLinks": {
+      "docCenter": "前往文档中心",
+      "inviteStaff": "邀请员工",
+      "manageAssignments": "管理分配",
+      "openContracts": "打开合同"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "OSGB面板中跟踪的活跃客户公司。",
+        "label": "活跃公司"
+      },
+      "assignedProfessionals": {
+        "hint": "专家、医师和DSP分配给公司的总数。",
+        "label": "已分配专业人员"
+      },
+      "overdueWork": {
+        "hint": "分配和CAPA流程中需要关注的待办事项。",
+        "label": "逾期工作"
+      },
+      "totalEmployees": {
+        "hint": "来自公司记录的员工总数，用于规划。",
+        "label": "员工总数"
+      }
+    },
+    "topActions": {
+      "addCompany": "添加公司",
+      "openAssignments": "打开分配",
+      "personnelInvite": "员工和邀请"
+    }
+  },
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "低危险性",
+      "high": "高危险性",
+      "moderate": "危险性"
+    },
+    "level": {
+      "controlled": "受控",
+      "critical": "严重",
+      "high": "高",
+      "incomplete": "未充分评估",
+      "medium": "中等"
+    }
+  }
+}

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 export function ResetPasswordSessionClient({ code }: { code?: string | null }) {
+  const t = useTranslations("auth.resetPage");
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(!code);
 
@@ -15,7 +17,7 @@ export function ResetPasswordSessionClient({ code }: { code?: string | null }) {
 
       const supabase = createClient();
       if (!supabase) {
-        setError("Oturum hazirlanamadi. Lutfen baglantiyi tekrar acin.");
+        setError(t("errPrepareSession"));
         setReady(true);
         return;
       }
@@ -24,7 +26,6 @@ export function ResetPasswordSessionClient({ code }: { code?: string | null }) {
       let session = exchangeResult.data.session;
       let exchangeError = exchangeResult.error;
 
-      /** Kod tek kullanimlik; takas basarisizsa oturum zaten yazildiysa getSession yeter */
       if (exchangeError || !session?.access_token || !session.refresh_token) {
         const { data: existing } = await supabase.auth.getSession();
         if (existing.session?.access_token && existing.session.refresh_token) {
@@ -36,7 +37,7 @@ export function ResetPasswordSessionClient({ code }: { code?: string | null }) {
       if (cancelled) return;
 
       if (exchangeError || !session?.access_token || !session.refresh_token) {
-        setError("Sifre yenileme baglantisi gecersiz veya suresi dolmus olabilir.");
+        setError(t("errInvalidResetLink"));
         const cleanUrl = new URL(window.location.href);
         cleanUrl.searchParams.delete("code");
         window.history.replaceState({}, "", cleanUrl.toString());
@@ -52,7 +53,7 @@ export function ResetPasswordSessionClient({ code }: { code?: string | null }) {
       if (cancelled) return;
 
       if (cookieError) {
-        setError("Oturum hazirlanamadi. Sayfayi yenileyip tekrar deneyin.");
+        setError(t("errSessionRefresh"));
       }
 
       const cleanUrl = new URL(window.location.href);
@@ -71,7 +72,7 @@ export function ResetPasswordSessionClient({ code }: { code?: string | null }) {
   if (!ready) {
     return (
       <div className="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700">
-        Sifre yenileme oturumu hazirlaniyor...
+        {t("preparingSession")}
       </div>
     );
   }

@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import {
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
+} from "@/lib/account/account-routing";
 import { AuthShell } from "@/components/layout/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +20,13 @@ export default async function LoginPage({
   const reset = params?.reset === "1" || params?.passwordUpdated === "1";
   const next = params?.next || "/dashboard";
   const t = await getTranslations("auth.loginPage");
+
+  const errorBanner =
+    error &&
+    (error === PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE ||
+      error === PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE)
+      ? t("privilegedLoginBlocked")
+      : error;
 
   return (
     <AuthShell
@@ -54,9 +65,9 @@ export default async function LoginPage({
         </p>
       }
     >
-      {error ? (
+      {errorBanner ? (
         <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-          {error}
+          {errorBanner}
         </div>
       ) : null}
 

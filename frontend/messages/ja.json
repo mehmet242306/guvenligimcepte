@@ -1,65 +1,1061 @@
 {
+  "activeCompanyBar": {
+    "companyTypeEnterprise": "エンタープライズ",
+    "companyTypeIndividual": "個人",
+    "companyTypeOsgb": "OSGB",
+    "detailLink": "会社詳細",
+    "detailLinkTitle": "会社詳細ページに移動",
+    "inactiveBadge": "非アクティブな会社",
+    "nacePrefix": "NACE",
+    "personnelCountTitle": "アクティブ / 総人員"
+  },
+  "auth": {
+    "demoModal": {
+      "bodyDisabled": "デモアクセスが管理者によって無効化されました。",
+      "bodyExpired": "デモ時間が終了しました。RiskNovaデモセッションは最大{hours}時間有効です。その後セッションは終了します。",
+      "calloutDisabledLead": "注意：",
+      "calloutDisabledRest": "デモアカウントは通常{hours}時間に制限されています。管理者によってアクセスが終了された可能性もあります。",
+      "calloutExpiredLead": "リマインダー：",
+      "calloutExpiredRest": "{hours}時間以内にデモの探索を完了してください。終了後は無料または商用アカウントを作成して継続できます。",
+      "closeAria": "閉じる",
+      "ctaLater": "後で",
+      "ctaPrimary": "登録を開始",
+      "pathEnterpriseDesc": "マルチサイト組織",
+      "pathEnterpriseLabel": "エンタープライズ",
+      "pathIndividualDesc": "独立専門家",
+      "pathIndividualLabel": "個人",
+      "pathOsgbDesc": "クライアント企業と人員管理",
+      "pathOsgbLabel": "OSGB",
+      "pathsHighlight": "全機能への完全アクセス",
+      "pathsIntro": "中断したところから再開し",
+      "pathsSuffix": "を取得するには、アカウントを作成してください。3つのパスから選択できます：",
+      "subtitle": "RiskNovaをお試しいただき",
+      "title": "ありがとうございます！"
+    },
+    "forgotBack": "サインインに戻る",
+    "forgotButton": "リセットリンクを送信",
+    "forgotDescription": "メールアドレスを入力してください。パスワードリセットリンクをお送りします。",
+    "forgotPage": {
+      "backToLogin": "サインインに戻る",
+      "description": "メールアドレスを入力してください。パスワードリセットリンクをお送りします。",
+      "emailHint": "登録時に使用したメールアドレスを入力してください。",
+      "emailLabel": "メールアドレス",
+      "emailPlaceholder": "you@company.com",
+      "eyebrow": "パスワードリセット",
+      "sentBanner": "メールアドレスが有効な場合、パスワードリセットリンクを送信しました。",
+      "submitButton": "リセットリンクを送信",
+      "title": "パスワードをリセット"
+    },
+    "forgotTitle": "パスワードをリセット",
+    "loginButton": "サインイン",
+    "loginDescription": "単一プラットフォームでリスク分析、フィールド追跡、レポート作成プロセスの管理を継続します。",
+    "loginEmail": "メールアドレス",
+    "loginForgot": "パスワードを忘れた場合",
+    "loginLoading": "サインイン中...",
+    "loginNoAccount": "アカウントをお持ちでない場合",
+    "loginPage": {
+      "description": "RiskNovaアカウントにサインインしてください。プラットフォーム管理者は管理コンソールに、その他のユーザーはアカウントタイプに対応するワークスペースに移動します。",
+      "emailLabel": "メールアドレス",
+      "emailPlaceholder": "you@company.com",
+      "eyebrow": "サインイン",
+      "footerPrefix": "アカウントをお持ちでない場合",
+      "footerRegisterLink": "サインアップ",
+      "forgotLink": "パスワードを忘れた場合",
+      "highlight1Desc": "自社の企業、組織、ワークスペースを管理する個人専門家向けです。",
+      "highlight1Title": "個人サインイン",
+      "highlight2Desc": "OSGBチームがクライアント、人員、割り当て、リスクプロセスを管理するためのものです。",
+      "highlight2Title": "OSGBサインイン",
+      "highlight3Desc": "プラットフォーム管理者の役割は公開アカウントタイプとして提供されていません。対象ユーザーはサインイン後に管理コンソールに転送されます。",
+      "highlight3Title": "プラットフォーム管理",
+      "passwordLabel": "パスワード",
+      "passwordPlaceholder": "パスワードを入力してください",
+      "passwordUpdatedBanner": "パスワードが更新されました。新しいパスワードでサインインできます。",
+      "privilegedLoginBlocked": "OSGBおよびエンタープライズアカウントはこのサインインパスを使用できません。見積もりとアクセスについてはチームまでお問い合わせください。",
+      "spotlightP1": "サインイン画面はすべてのユーザーが共有します。セッション後のルーティングはアカウントコンテキストによって決まります。",
+      "spotlightP2": "プラットフォーム管理者の役割は公開セルフサービス登録では利用できません。個人、OSGB、エンタープライズが顧客向けアカウントパスです。",
+      "submitButton": "サインイン",
+      "title": "アカウントにサインイン"
+    },
+    "loginPassword": "パスワード",
+    "loginRegister": "サインアップ",
+    "loginTitle": "アカウントにサインイン",
+    "registerButton": "サインアップ",
+    "registerDescription": "OHSプロセスをデジタル化し、AI搭載の意思決定メカニズムの恩恵を受けましょう。",
+    "registerEmail": "メールアドレス",
+    "registerHasAccount": "既にアカウントをお持ちですか？",
+    "registerLoading": "アカウント作成中...",
+    "registerLogin": "サインイン",
+    "registerName": "氏名",
+    "registerPage": {
+      "checkEmailBanner": "登録を開始しました。確認が必要な場合は受信トレイをご確認ください。",
+      "demoDisabledBody": "管理者によって終了された可能性があります（デモアカウントは通常{hours}時間に制限されています）。継続利用のため以下でアカウントを作成してください。",
+      "demoDisabledTitle": "デモアクセスが無効になりました。",
+      "demoExpiredBody": "RiskNovaデモアクセスは{hours}時間に制限されており、期限が切れるとセッションが終了します。以下で無料アカウントを作成するか、Googleで続行して永続アカウントに移行してください。",
+      "demoExpiredTitle": "デモ期間が終了しました。",
+      "demoLegacyDisabledHelp": "ヘルプ：",
+      "demoLegacyDisabledLead": "デモアクセスが無効になりました。",
+      "demoLegacyDisabledLogin": "サインイン",
+      "demoLegacyDisabledRest": "パブリックデモは提供を終了しました。登録するか",
+      "demoLegacyExpiredLead": "デモセッションが終了しました。",
+      "demoLegacyExpiredLogin": "サインイン",
+      "demoLegacyExpiredRest": "パブリックデモは提供を終了しました。以下でアカウントを作成するか",
+      "demoLegacyExpiredSupport": "問題については",
+      "description": "まずアカウントタイプ、地域、言語を選択してください。個人アカウントはそのままフォームに進み、OSGBおよび企業構造はお問い合わせと見積もりフローから開始します。",
+      "emailHint": "オンボーディングとアクセスフローでこのアドレスを使用します。",
+      "emailLabel": "メールアドレス",
+      "emailPlaceholder": "you@company.com",
+      "eyebrow": "新しいアカウント",
+      "footerLoginLink": "サインイン",
+      "footerPrefix": "すでにアカウントをお持ちですか？",
+      "highlight1Desc": "地域と言語の選択後、登録を完了してオンボーディングに進みます。",
+      "highlight1Title": "個人セルフサービス",
+      "highlight2Desc": "料金とプラン比較はプランページに残るため、登録は集中して行えます。",
+      "highlight2Title": "プランは別ページにあります",
+      "highlight3Desc": "マルチサイトまたは専門的な構造は、弊社チームとのお問い合わせと見積もりを通じて進みます。",
+      "highlight3Title": "組織向けカスタム見積もり",
+      "legalCheckboxAfterCookie": "。私はこれらを読み、同意します。アカウント作成後、アプリ内で追加の必須プラットフォーム承認が表示される場合があります。",
+      "legalCheckboxAfterPrivacy": "、および",
+      "legalCheckboxAfterTerms": "、",
+      "legalCheckboxCookie": "Cookie ポリシー",
+      "legalCheckboxPrivacy": "プライバシーポリシーおよびKVKK開示",
+      "legalCheckboxTerms": "利用規約",
+      "passwordHint": "強力なパスワードを選択してください。サインアップ後にアカウントタイプの選択を完了します。",
+      "passwordLabel": "パスワード",
+      "passwordPlaceholder": "8文字以上",
+      "submitButton": "アカウント作成",
+      "title": "RiskNovaアカウントを作成"
+    },
+    "registerPassword": "パスワード",
+    "registerTitle": "アカウントを作成",
+    "registerWizard": {
+      "accounts": {
+        "enterprise": {
+          "description": "複数拠点や専門的な規制要件に対応します。",
+          "title": "企業・法人"
+        },
+        "individual": {
+          "description": "専門家、医師、DSP、監査人向けの個人ワークスペースです。",
+          "title": "個人専門家"
+        },
+        "osgb": {
+          "description": "クライアントポートフォリオ、チーム、割り当てワークフローの設定をリクエストします。",
+          "title": "OSGB"
+        }
+      },
+      "closeAria": "登録アシスタントを閉じる",
+      "commercialIntroBody": "お客様の国、言語、役割が送信され、当社チームが適切なパッケージとオンボーディングで対応いたします。",
+      "commercialIntroEnterpriseTitle": "企業見積もりフロー",
+      "commercialIntroOsgbTitle": "OSGB見積もりフロー",
+      "countryHints": {
+        "AE": "英語・アラビア語チーム対応。",
+        "AZ": "アゼルバイジャン地域、アゼルバイジャン語デフォルト。",
+        "CN": "中国語およびアジア太平洋地域対応。",
+        "DE": "ドイツ地域、ドイツ語デフォルト。",
+        "ES": "スペイン地域、スペイン語デフォルト。",
+        "FR": "フランス地域、フランス語デフォルト。",
+        "GB": "英国業務、英語デフォルト。",
+        "ID": "インドネシア語対応。",
+        "IN": "ヒンディー語・英語チーム対応。",
+        "JP": "日本語およびアジア太平洋地域対応。",
+        "KR": "韓国語およびアジア太平洋地域対応。",
+        "RU": "ロシア語および地域対応。",
+        "SA": "アラビア語および湾岸地域業務対応。",
+        "TR": "トルコの法規制とトルコ語のデフォルト設定です。",
+        "US": "米国での運用と英語のデフォルト設定です。"
+      },
+      "prevAria": "前のステップ",
+      "roles": {
+        "auditor": {
+          "description": "現場監査、不適合事項、報告業務を行います。",
+          "title": "監査員"
+        },
+        "occupational_physician": {
+          "description": "健康管理、医療プロセス、従業員記録を管理します。",
+          "title": "産業医"
+        },
+        "safety_officer": {
+          "description": "健康チーム、現場サポート、フォローアップ業務を行います。",
+          "title": "DSP / 保健スタッフ"
+        },
+        "safety_professional": {
+          "description": "リスク分析、現場監査、対策、規制追跡を行います。",
+          "title": "労働安全衛生専門家"
+        },
+        "workspace_admin": {
+          "description": "ユーザー、企業、役割、ワークスペース設定を管理します。",
+          "title": "ワークスペース管理者"
+        }
+      },
+      "startWizard": "登録質問を開始",
+      "steps": {
+        "account": {
+          "description": "この選択により登録後のフローが決まります。",
+          "eyebrow": "1 / 4",
+          "title": "どのアカウントタイプで開始しますか？"
+        },
+        "country": {
+          "description": "法規制の適用範囲、RAGスコープ、デフォルトワークスペースがこの選択に合わせて設定されます。",
+          "eyebrow": "2 / 4",
+          "title": "主要なワークスペースはどの国にありますか？"
+        },
+        "language": {
+          "description": "すべての画面がまだ翻訳されていませんが、設定はアカウントに保存されます。",
+          "eyebrow": "3 / 4",
+          "title": "インターフェースと文書の言語"
+        },
+        "role": {
+          "description": "これによりオンボーディング時の最初のワークスペースが設定されます。",
+          "eyebrow": "4 / 4",
+          "title": "最初の役割は何ですか？"
+        }
+      },
+      "summaryChange": "変更",
+      "summaryTitle": "登録パスの準備が完了しました"
+    },
+    "resetPage": {
+      "backToLogin": "サインインに戻る",
+      "description": "新しいパスワードを入力してアカウントに戻ります。",
+      "descriptionRequired": "一時的な認証情報でサインインしました。続行する前に新しいパスワードを設定してください。",
+      "errInvalidResetLink": "このパスワードリセットリンクは無効または期限切れの可能性があります。",
+      "errPrepareSession": "セッションを準備できませんでした。リンクを再度開いてください。",
+      "errSessionRefresh": "セッションを準備できませんでした。ページを更新して再試行してください。",
+      "eyebrow": "新しいパスワード",
+      "eyebrowTemp": "一時サインイン",
+      "mfaBanner": "多要素認証が完了しました。新しいパスワードを選択できます。",
+      "passwordHint": "強力なパスワードを選択してください。",
+      "passwordLabel": "新しいパスワード",
+      "passwordPlaceholder": "8文字以上",
+      "preparingSession": "パスワードリセットセッションを準備中…",
+      "requiredBanner": "セキュリティのため、初回サインイン時にパスワードを変更する必要があります。",
+      "submitButton": "パスワードを更新",
+      "title": "新しいパスワードを選択",
+      "titleRequired": "新しいパスワードを設定"
+    },
+    "shell": {
+      "backHome": "ホームに戻る",
+      "fallbackSpotlight": "RiskNovaは単なるパネルではありません。リスク分析、現場業務、文書フロー、チーム調整を一つの製品言語で統合する専門的なOHSインフラストラクチャです。",
+      "highlightCorpDesc": "カスタム要件を持つマルチサイト組織向けのコミュニケーション主導型エンタープライズフロー。",
+      "highlightCorpTitle": "エンタープライズ",
+      "highlightIndividualDesc": "独立専門家、医師、DSP、個人専門家向けの迅速スタートフロー。",
+      "highlightIndividualTitle": "個人",
+      "highlightOsgbDesc": "クライアント企業、人員、割り当て、作業追跡を一つのパネルに統合するチームモデル。",
+      "highlightOsgbTitle": "OSGB",
+      "secureAccess": "セキュアアクセス"
+    },
+    "social": {
+      "divider": "またはメールで続行",
+      "googleContinue": "Googleで{brand}に続行",
+      "googleSignUp": "Googleで{brand}にサインアップ",
+      "oauthGenericError": "サインイン中に問題が発生しました。もう一度お試しください。",
+      "oauthRedirectHint": "GoogleサインインにはSupabaseリダイレクトURLが必要です：認証URL設定でhttps://getrisknova.com/auth/callback（および環境URL）を追加してください。",
+      "supabaseError": "認証サービスに接続できませんでした。"
+    }
+  },
+  "brand": {
+    "tagline": "AI搭載の労働安全衛生プラットフォーム"
+  },
+  "certificateVerify": {
+    "certNo": "証明書番号",
+    "date": "日付",
+    "duration": "期間",
+    "expiredCertSubtitle": "この証明書の有効期限が終了しています。",
+    "expiredCertTitle": "期限切れ証明書",
+    "expiredSuffix": " (期限切れ)",
+    "footer": "RiskNova労働安全衛生プラットフォームにより発行されました。",
+    "fullName": "氏名",
+    "institution": "組織",
+    "issuedAt": "発行日",
+    "loading": "確認中…",
+    "notFoundDesc": "この確認コードに一致する証明書がありません。",
+    "notFoundTitle": "証明書が見つかりません",
+    "score": "スコア",
+    "trainer": "講師",
+    "training": "研修",
+    "validUntil": "有効期限",
+    "verifiedSubtitle": "この証明書はRiskNovaにより確認されました。",
+    "verifiedTitle": "確認済み証明書"
+  },
   "common": {
-    "login": "ログイン",
-    "register": "今すぐ始める",
-    "freeStart": "無料で始める",
-    "platformLogin": "プラットフォームにログイン",
-    "profile": "Profile",
-    "settings": "Settings",
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close",
-    "search": "Search",
-    "loading": "Loading...",
-    "noData": "No data found",
-    "error": "An error occurred",
-    "success": "Success",
-    "download": "Download",
-    "copy": "Copy",
-    "saved": "Saved",
-    "menu": "Menu",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "retry": "Try again",
-    "genericError": "Something went wrong. Please try again.",
-    "emptyTitle": "Nothing here yet",
-    "emptyDescription": "There is no data to display for this view."
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "closeMenu": "メニューを閉じる",
+    "copy": "コピー",
+    "delete": "削除",
+    "download": "ダウンロード",
+    "edit": "編集",
+    "emptyDescription": "このビューに表示するデータがありません。",
+    "emptyTitle": "まだ何もありません",
+    "error": "エラーが発生しました",
+    "freeStart": "無料で開始",
+    "genericError": "問題が発生しました。もう一度お試しください。",
+    "languagePickerAria": "言語選択",
+    "loading": "読み込み中...",
+    "login": "サインイン",
+    "menu": "メニュー",
+    "noData": "データが見つかりません",
+    "openMenu": "メニューを開く",
+    "platformLogin": "プラットフォームにサインイン",
+    "profile": "プロフィール",
+    "register": "開始する",
+    "retry": "再試行",
+    "save": "保存",
+    "saved": "保存しました",
+    "search": "検索",
+    "settings": "設定",
+    "success": "成功"
+  },
+  "companiesList": {
+    "actions": {
+      "newCompany": "新しい会社",
+      "sampleData": "サンプルデータ"
+    },
+    "archive": "アーカイブ",
+    "badge": {
+      "archived": "アーカイブ済み",
+      "deleted": "削除済み"
+    },
+    "clearFilters": "フィルターをクリア",
+    "confirmArchive": {
+      "confirm": "確認",
+      "hint": "アクティブリストから除外されます。",
+      "title": "「{name}」をアーカイブしますか？"
+    },
+    "confirmDelete": {
+      "confirm": "削除",
+      "instruction": "確認のためこの単語を入力してください：",
+      "title": "「{name}」を削除しますか？"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "DELETEと入力",
+      "word": "DELETE"
+    },
+    "defaults": {
+      "companyName": "新しい会社・組織",
+      "kind": "民間部門",
+      "shortName": "新しい記録"
+    },
+    "delete": "削除",
+    "description": {
+      "multi": "担当する会社を管理し、その作業現場にアクセスします。",
+      "single": "アクティブな作業現場の人員およびその他の運用記録を管理します。"
+    },
+    "discard": "キャンセル",
+    "employeesSuffix": "従業員",
+    "empty": {
+      "archiveBannerCompany": "アーカイブされた会社です。復元できます。",
+      "archiveBannerWorksite": "アーカイブされた作業現場記録です。復元できます。",
+      "archiveEmptyCompany": "アーカイブに何もありません",
+      "archiveEmptyDescCompany": "アーカイブされた会社はまだありません。",
+      "archiveEmptyDescWorksite": "アーカイブされた作業現場はまだありません。",
+      "archiveEmptyWorksite": "アーカイブに何もありません",
+      "clearFilters": "フィルターをクリア",
+      "completeWorksite": "作業現場の設定を完了",
+      "deletedBannerCompany": "削除された会社です。完全削除は元に戻せません。",
+      "deletedBannerWorksite": "削除された作業現場記録です。完全削除は元に戻せません。",
+      "deletedEmptyCompany": "削除された会社はありません",
+      "deletedEmptyDescCompany": "削除された会社はまだありません。",
+      "deletedEmptyDescWorksite": "削除された作業場はまだありません。",
+      "deletedEmptyWorksite": "削除された作業場",
+      "initialDescCompany": "最初の会社を作成して開始してください。",
+      "initialDescWorksite": "このエリアには、アクティブな作業場データが表示されます。作業場の設定を完了すると、人員やその他の記録が表示されます。",
+      "initialTitleCompany": "会社はまだありません",
+      "initialTitleWorksite": "作業場の記録はまだありません",
+      "newCompany": "新しい会社",
+      "noMatchCompany": "一致する会社がありません",
+      "noMatchDescription": "フィルターに一致する記録がありません。",
+      "noMatchWorksite": "一致する作業場がありません",
+      "sampleData": "サンプルデータ"
+    },
+    "entity": {
+      "companyPlural": "会社",
+      "worksitePlural": "作業場"
+    },
+    "eyebrow": {
+      "multi": "マイ会社・組織",
+      "osgb": "OSGB会社",
+      "singleWorksite": "作業場"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "すべて",
+      "hazardClass": "危険クラス",
+      "kind": "種類",
+      "search": "検索",
+      "searchPlaceholder": "名前、業界、種類、NACE…",
+      "sector": "業界",
+      "sort": "並び替え"
+    },
+    "limitReachedBanner": "アクティブな会社・ワークスペースの上限に達しました。会社をアーカイブするか、プランをアップグレードしてから追加または復元してください。",
+    "links": {
+      "riskAnalysis": "リスク分析",
+      "workspace": "ワークスペース"
+    },
+    "metrics": {
+      "actions": "アクション",
+      "departments": "部門",
+      "employees": "従業員",
+      "hazard": "危険",
+      "locations": "場所",
+      "overdue": "期限切れ"
+    },
+    "permanentDelete": "完全に削除",
+    "progress": {
+      "coverage": "カバレッジ",
+      "maturity": "成熟度"
+    },
+    "restore": "復元",
+    "sort": {
+      "employees": "従業員",
+      "name": "名前順",
+      "overdue": "期限切れ",
+      "risk": "リスク"
+    },
+    "stats": {
+      "avgMaturity": "平均成熟度",
+      "criticalCompanies": "重要な企業",
+      "criticalWorksites": "重要な作業現場",
+      "employees": "従業員",
+      "openActions": "未完了アクション",
+      "overdueTasks": "期限切れタスク",
+      "totalCompanies": "総企業数",
+      "totalWorksites": "総作業現場数"
+    },
+    "storage": {
+      "local": "ローカル",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "アクティブ",
+      "archived": "アーカイブ",
+      "deleted": "削除済み"
+    },
+    "title": {
+      "multi": "マイ企業・組織",
+      "osgb": "企業・事業所",
+      "single": "事業所・運用コンテンツ"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} アクティブ企業スロット使用中",
+      "activeOnly": "{count} アクティブ企業・ワークスペース"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "事業所",
+    "docTitle": "{name} — ワークスペース · RiskNova",
+    "docTitleFallback": "ワークスペース · RiskNova",
+    "invite": "招待",
+    "logo": {
+      "fileTooLarge": "ファイルサイズが大きすぎます（{sizeMb} MB）。最大サイズは5MBです。",
+      "imagesOnly": "画像ファイルのみアップロード可能です（PNG、JPEG、WebP、SVG）。",
+      "updated": "ロゴ・画像を更新しました。",
+      "uploadFailed": "アップロードに失敗しました。別のファイルをお試しください。",
+      "uploadTitle": "ロゴをアップロード"
+    },
+    "notFound": {
+      "back": "企業一覧に戻る",
+      "description": "このIDに一致する企業がありません。",
+      "title": "企業が見つかりません"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "保存",
+    "saving": "保存中…",
+    "sidebar": {
+      "hint": "左側でエリアを選択し、右側でコンテンツを管理してください。",
+      "title": "事業所セクション"
+    },
+    "stats": {
+      "departments": "部門",
+      "employees": "従業員",
+      "locations": "拠点",
+      "maturity": "成熟度",
+      "openActions": "未完了アクション",
+      "overdue": "期限超過"
+    },
+    "tabs": {
+      "history": "履歴",
+      "ohs_file": "労働安全衛生ファイル",
+      "organization": "組織",
+      "people": "チーム",
+      "personnel": "人事",
+      "risk": "リスク・現場",
+      "structure": "施設",
+      "tracking": "追跡"
+    }
+  },
+  "consent": {
+    "description": "有効な開示およびKVKKテキストがここに一覧表示されます。新しいバージョンが公開されると、システムから再度同意を求められます。",
+    "empty": "公開された同意テキストがありません。",
+    "lastStatus": "最新ステータス",
+    "loading": "同意記録を読み込み中...",
+    "mandatory": "必須",
+    "mandatoryNo": "いいえ",
+    "mandatoryYes": "はい",
+    "notGranted": "まだ許可されていません",
+    "stats": "{active}件の有効な同意 - {pending}件の必須テキストが保留中",
+    "statusApproved": "承認済み",
+    "statusOptional": "任意",
+    "statusPending": "必須テキストが保留中",
+    "title": "プライバシーと同意",
+    "types": {
+      "acik_riza": "明示的同意",
+      "aydinlatma": "開示",
+      "kvkk": "KVKK",
+      "pazarlama": "マーケティング",
+      "yurt_disi_aktarim": "国境を越えた移転"
+    }
+  },
+  "consentGate": {
+    "consentType": {
+      "acik_riza": "明示的同意",
+      "aydinlatma": "プライバシー通知",
+      "kvkk": "KVKK",
+      "pazarlama": "マーケティング",
+      "yurt_disi_aktarim": "国境を越えた移転"
+    },
+    "description": "必須の利用規約・KVKK通知、プライバシー開示、および必要な明示的同意テキストが、最新の公開版でここに一覧表示されています。マーケティング同意は任意です。必須テキストが変更された場合、システムから再度確認を求められることがあります。",
+    "errMustAcknowledge": "続行するには、すべての必須テキストに同意する必要があります。",
+    "errSaveFailed": "同意を保存できませんでした。もう一度お試しください。",
+    "eyebrow": "KVKK・同意",
+    "mandatoryBadge": "必須",
+    "progress": "{total}件中{approved}件のテキストに同意済み",
+    "readAcknowledge": "このテキストを読み、同意します",
+    "saving": "同意を保存中…",
+    "signOutTemp": "今すぐサインアウト",
+    "submit": "同意を完了",
+    "title": "続行する前に必須テキストに同意してください"
+  },
+  "country": {
+    "AE": "アラブ首長国連邦",
+    "AZ": "アゼルバイジャン",
+    "CN": "中国",
+    "DE": "ドイツ",
+    "ES": "スペイン",
+    "FR": "フランス",
+    "GB": "イギリス",
+    "ID": "インドネシア",
+    "IN": "インド",
+    "JP": "日本",
+    "KR": "韓国",
+    "RU": "ロシア",
+    "SA": "サウジアラビア",
+    "TR": "トルコ",
+    "US": "アメリカ合衆国"
+  },
+  "dashboard": {
+    "badgeCommandCenter": "コントロールセンター",
+    "badgeLiveOps": "ライブオペレーション",
+    "badgeRemoteSync": "リモートSupabase同期",
+    "companiesTotal": "{count}社",
+    "companyManageCta": "会社を管理",
+    "companySummaryCountLabel": "登録会社数",
+    "companySummaryTitle": "会社概要",
+    "docStatusDraft": "下書き",
+    "docStatusPending": "承認待ち",
+    "docStatusReady": "準備完了",
+    "docStatusRevision": "修正",
+    "fallbackUserName": "ユーザー",
+    "goToPlans": "プランを表示",
+    "greetingAfternoon": "こんにちは",
+    "greetingEvening": "こんばんは",
+    "greetingMorning": "おはようございます",
+    "heroIntro": "リスク、ライブラリ出力、インシデント、タスク、会社フォローアップなど、OHS運用全体を1つの画面で監視できます。より明確なコマンドビューでまとめて表示されます。",
+    "moduleAssessment": "試験・調査",
+    "moduleAssessmentDesc": "AI支援測定フロー",
+    "moduleEmergency": "緊急事態",
+    "moduleEmergencyDesc": "計画と訓練",
+    "moduleLegal": "法令",
+    "moduleLegalDesc": "法令・ガイダンスライブラリ",
+    "moduleLibrary": "OHSライブラリ",
+    "moduleLibraryDesc": "文書・テンプレート",
+    "moduleRisk": "リスク分析",
+    "moduleRiskDesc": "{count}件の評価",
+    "modulesSubtitle": "プラットフォーム上のアクティブな運用エリアです。",
+    "modulesTitle": "OHSモジュール",
+    "moduleTraining": "研修",
+    "moduleTrainingDesc": "追跡と記録",
+    "operationCalm": "安定した運用",
+    "operationControlled": "管理下",
+    "operationHeavy": "重点フォローアップ",
+    "planDefaultBody": "より多くのワークスペースやモジュールが必要な場合は、プランを確認してください。アップグレードはセルフサービスで実行できます。",
+    "planDefaultTitle": "プランと容量",
+    "planDemoBody": "本格運用に移行するための適切なプランを選択してください。支払いと請求はプランページで管理されます。",
+    "planDemoEyebrow": "デモ・アップグレード",
+    "planDemoTitle": "デモアカウントをご利用中です",
+    "planSelfServeEyebrow": "セルフサービスアップグレード",
+    "priorityHighRisk": "高リスク",
+    "priorityIncidents": "インシデント",
+    "priorityOpenTasks": "未完了タスク",
+    "quickCompanies": "企業",
+    "quickEducation": "研修",
+    "quickFieldAudit": "現場監査",
+    "quickFlowsBadge": "プラットフォーム",
+    "quickFlowsSubtitle": "ワンクリックで最もよく使用するモジュールにジャンプできます。",
+    "quickFlowsTitle": "クイックワークフロー",
+    "quickIncident": "インシデント報告",
+    "quickLibrary": "OHSライブラリ",
+    "quickPlanner": "プランナー",
+    "quickReports": "レポート",
+    "quickRisk": "リスク分析",
+    "recentDocsCta": "ライブラリを開く",
+    "recentDocsEmpty": "ライブラリの出力がまだありません。OHSライブラリのテンプレートから開始してください。",
+    "recentDocsSubtitle": "OHSライブラリフローから最近編集されたドキュメントがここに要約されます。",
+    "recentDocsTitle": "最新のライブラリ出力",
+    "sessionLoadingHint": "セッションを確認しています。数秒かかる場合があります。何も起こらない場合は、再度サインインしてください。",
+    "sessionLoadingTitle": "セッションを読み込み中…",
+    "signalCompanies": "企業カバレッジ",
+    "signalOperation": "運用ステータス",
+    "signalWorkload": "優先負荷",
+    "statIncidents": "インシデント",
+    "statIncidentsSub": "総レコード数",
+    "statLibExam": "ライブラリ試験",
+    "statLibExamSub": "インポート済み試験",
+    "statLibraryDocs": "ライブラリドキュメント",
+    "statLibraryDocsSub": "{ready}件準備完了・{draft}件下書き",
+    "statLibSurvey": "ライブラリトレーニング",
+    "statLibSurveySub": "インポート済み調査・トレーニング",
+    "statLive": "ライブ",
+    "statRisk": "リスク分析",
+    "statRiskSubHigh": "{count}件の高リスク",
+    "statRiskSubNone": "高リスクなし",
+    "statTasks": "未完了タスク",
+    "statTasksSub": "フォローアップ待ち",
+    "todayCardTitle": "今日",
+    "todayFocusEyebrow": "今日の重点項目",
+    "todayFocusTitle": "重要項目を優先",
+    "todayTasksDone": "すべてのタスクが完了しました",
+    "todayTasksPending": "{count}件の未完了タスクが待機中",
+    "trackChipActions": "{count}件のアクション",
+    "trackChipControls": "検査{count}件",
+    "trackChipTraining": "研修{count}件",
+    "trackCommitteeLabel": "委員会保留中",
+    "trackCommitteeSub": "予定されているOHS委員会会議",
+    "trackCompaniesCta": "企業",
+    "trackEmpty": "企業がまだ定義されていません。企業を追加すると、ここに追跡指標が表示されます。",
+    "trackExpiringTrainingLabel": "今後の研修",
+    "trackExpiringTrainingSub": "30日以内",
+    "trackHealthExamLabel": "今後の健康診断",
+    "trackHealthExamSub": "30日以内の健康監視",
+    "trackOpenActionLabel": "未完了アクション",
+    "trackOpenActionSub": "リスク所見 + CAPA + タスク",
+    "trackOverdueControlLabel": "期限切れ検査",
+    "trackOverdueControlSub": "定期検査期間を経過",
+    "trackPriorityCompanies": "優先対応待ちの企業",
+    "trackSubtitle": "全企業の概要。監視対象企業{companyCount}社、フォローアップ待ちアクション{totalActionable}件。",
+    "trackTitle": "追跡概要",
+    "workloadFollowups": "{count}項目"
+  },
+  "dataRights": {
+    "adminNotes": "管理者メモ",
+    "deletionActive": "アクティブな削除リクエストが存在します",
+    "deletionConfirm": "これにより、お客様のアカウントの30日間削除プロセスが開始されます。続行しますか？",
+    "deletionDescription": "リクエストを作成すると、お客様のアカウントと関連する個人データが削除プロセスに入ります。保持ポリシーに従い、30日後に完全削除が完了します。",
+    "deletionEmpty": "削除リクエストはまだありません。",
+    "deletionExists": "既にアクティブな削除リクエストがあります。",
+    "deletionFailed": "削除リクエストを作成できませんでした。",
+    "deletionLoading": "削除リクエストを読み込み中...",
+    "deletionReasonPlaceholder": "任意の説明または理由",
+    "deletionReceived": "削除リクエストを受け付けました。完全削除予定日：{date}。",
+    "deletionSubmit": "削除リクエストを作成",
+    "deletionTitle": "マイデータを削除",
+    "deletionWarning": "削除リクエストは、プロセスが不可逆的になる前に管理者によってキャンセルできます。",
+    "description": "個人データをダウンロードし、削除リクエストを作成して、現在のKVKKプロセスのステータスを追跡します。",
+    "download": "ダウンロード",
+    "errorMsg": "エラー",
+    "exportCsvDesc": "表形式レポートと外部転送",
+    "exportCsvTitle": "CSVエクスポート",
+    "exportDescription": "プロファイル、同意記録、セキュリティイベント、データ権利履歴をJSONまたはCSV形式でダウンロードできます。",
+    "exportDownloadCount": "ダウンロード回数",
+    "exportFailed": "エクスポートを作成できませんでした。",
+    "exportHistoryEmpty": "データエクスポート記録はまだ作成されていません。",
+    "exportHistoryLoading": "エクスポート履歴を読み込み中...",
+    "exportJsonDesc": "すべてのデータの構造化バンドル",
+    "exportJsonTitle": "JSONエクスポート",
+    "exportReady": "{format}エクスポートの準備が完了し、ダウンロードされました。",
+    "exportTitle": "マイデータをダウンロード",
+    "requestDate": "リクエスト日",
+    "scheduledPurge": "永久削除予定",
+    "scope": {
+      "admin": "管理者",
+      "self": "個人リクエスト"
+    },
+    "statActive": "アクティブプロセス",
+    "statActiveNo": "いいえ",
+    "statActiveYes": "はい",
+    "statDeletion": "削除リクエスト",
+    "statExport": "エクスポート",
+    "status": {
+      "cancelled": "キャンセル済み",
+      "completed": "完了",
+      "expired": "期限切れ",
+      "failed": "失敗",
+      "processing": "処理中",
+      "rejected": "拒否",
+      "scheduled": "予定済み"
+    },
+    "title": "データ権利"
+  },
+  "demoRequest": {
+    "accountTypeEnterprise": "企業・法人",
+    "accountTypeIndividual": "個人（単独専門家）",
+    "accountTypeLabel": "アカウントタイプ",
+    "accountTypeOsgb": "OSGB",
+    "accountTypeUnset": "未定・検討中",
+    "cancel": "キャンセル",
+    "closeAria": "閉じる",
+    "dialogSubtitle": "お客様のニーズに合わせた短時間のウォークスルーを計画いたします。",
+    "dialogTitle": "デモをリクエスト",
+    "fieldCompany": "会社・組織",
+    "fieldEmail": "メールアドレス *",
+    "fieldName": "氏名 *",
+    "fieldPhone": "電話番号",
+    "messageLabel": "メッセージ（任意）",
+    "messagePlaceholder": "どのモジュールにご興味がありますか？従業員数は？ご希望の連絡時間は？",
+    "placeholderCompany": "株式会社アクメ",
+    "placeholderEmail": "you@company.com",
+    "placeholderName": "田中太郎",
+    "placeholderPhone": "+81 …",
+    "privacyError": "続行するにはプライバシー通知をご確認ください。",
+    "privacyLabel": "プライバシー通知：",
+    "privacyText": "私の連絡先情報がこのリクエストへの回答のためのみに処理されることに同意します。",
+    "submit": "リクエストを送信",
+    "submitError": "リクエストを送信できませんでした。もう一度お試しください。",
+    "submitting": "送信中...",
+    "successBody": "担当者より間もなくご連絡いたします。お問い合わせいただきありがとうございます。",
+    "successClose": "閉じる",
+    "successTitle": "リクエストを受信しました"
+  },
+  "header": {
+    "authLoading": "セキュアセッションを確認中…",
+    "lockedModuleTooltip": "このモジュールを使用するには、まずワークスペースを作成してください。",
+    "markAllRead": "すべて既読にする",
+    "noNotificationsYet": "通知はまだありません",
+    "notificationsAria": "通知",
+    "notificationsTitle": "通知",
+    "platformAdminShort": "管理者",
+    "seeAllNotifications": "すべて表示",
+    "signingOut": "サインアウト中…",
+    "signOut": "サインアウト",
+    "themeDarkAria": "ダークテーマ",
+    "themeLightAria": "ライトテーマ",
+    "workspaceLoading": "ワークスペースを準備中…"
+  },
+  "landing": {
+    "badge": "AI搭載OHSプラットフォーム",
+    "bottomCtaDescription": "RiskNovaで、リスク分析からレポート作成まで、職場安全業務のすべてを単一プラットフォームで管理できます。",
+    "bottomCtaLine1": "変革しましょう",
+    "bottomCtaLine2": "OHSプロセスを",
+    "ctaDemo": "デモをリクエスト",
+    "ctaDescription": "プロフェッショナルな外観、強力なインフラ、AI支援により、OHSプロセスを単一プラットフォームで管理できます。",
+    "ctaEyebrow": "CTA準備エリア",
+    "ctaTitle": "リスクモジュールを製品ショーケースに変換",
+    "enterpriseCtaShort": "エンタープライズ：見積もり・お問い合わせ",
+    "feat1Desc": "手動またはモジュールベースのリスク入力を単一のフローで収集し、結果をより見やすくする製品基盤です。",
+    "feat1Title": "AI搭載リスク分析",
+    "feat2Desc": "監査、発見事項、タスク、追跡エリアを運用チームが読みやすい順序でまとめます。",
+    "feat2Title": "現場発見事項・アクション管理",
+    "feat3Desc": "生成された結果を履歴、詳細、出力プロセスにリンクできる一貫したスクリーンバックボーンを提供します。",
+    "feat3Title": "レポート・記録インフラ",
+    "feat4Desc": "リスク分析画面、結果画面、スコア履歴などのエリアに対してプロフェッショナルで信頼感のある基盤を準備します。",
+    "feat4Title": "リスクモジュール製品ショーケース",
+    "feat5Desc": "シングルカラム、ツーカラム、ワイドスクリーンレイアウトで異なるデバイス間での読みやすさを維持します。",
+    "feat5Title": "モバイル・タブレット・デスクトップ対応",
+    "feat6Desc": "クリーンな表面、制御されたコントラスト、明確なCTA構造でプロフェッショナルなSaaS感を演出します。",
+    "feat6Title": "企業向け・モダンなビジュアル言語",
+    "featuresDescription": "OHSプロセスをエンドツーエンドで管理するプロフェッショナルツールです。",
+    "featuresEyebrow": "機能",
+    "featuresTitle1": "包括的",
+    "featuresTitle2": "ソリューション",
+    "footerBlurb": "AI搭載OHSリスク分析・運用プラットフォーム — プロフェッショナル、信頼性、モダン。",
+    "footerCompany": "会社",
+    "footerContact": "お問い合わせ",
+    "footerCookie": "クッキーポリシー",
+    "footerDescription": "AI搭載OHS意思決定支援プラットフォーム",
+    "footerHelp": "ヘルプ",
+    "footerHome": "ホーム",
+    "footerLegal": "法的事項",
+    "footerPrivacy": "プライバシーポリシー",
+    "footerProduct": "製品",
+    "footerRefund": "返金ポリシー",
+    "footerRights": "全著作権所有。",
+    "footerSupport": "サポート",
+    "footerTerms": "利用規約",
+    "heroDescription": "RiskNovaは、リスク分析、現場追跡、記録、報告、意思決定支援プロセスを単一の製品体験に統合するよう設計されたAI搭載労働安全衛生プラットフォームです。",
+    "heroSubtitle": "測定から監査結果、アクション追跡、報告、アーカイブまで — プロセスを一つの屋根の下に統合します。個人からOSGB、マルチサイト企業まで対応します。",
+    "heroTitle1": "労働安全衛生リスク",
+    "heroTitle2": "管理を",
+    "heroTitle3": "アートに変革",
+    "heroTitleHighlight": "一つのプラットフォームから",
+    "heroTitlePrefix": "職場安全を管理",
+    "heroTitleSuffix": "",
+    "howDescription": "プラットフォームを始めるための簡単なステップです。",
+    "howEyebrow": "仕組み",
+    "howTitle1": "コントロールを",
+    "howTitle2": "4つのステップで",
+    "metaDescription": "AI搭載職場安全ソフトウェア：リスク分析、現場監査、結果、CAPA、報告を一つのプラットフォームで — 個人、OSGB、企業向け。",
+    "metaOgDescription": "測定から監査、アクション、報告まで — 安全プロセスを一箇所で実行。",
+    "metaOgTitle": "RiskNova — 一つのプラットフォームから労働安全衛生を管理",
+    "metaTitle": "一つのプラットフォームから労働安全衛生を管理 | RiskNova",
+    "osgbCtaShort": "OSGB：見積もり・お問い合わせ",
+    "solutionsLeadBold": "OSGBまたはマルチサイト組織ですか？",
+    "solutionsLeadRest": "プランを確認し、見積もりまたはサインアップでリードを残してください — チームがフォローアップいたします。",
+    "solutionsSectionAria": "OSGBおよび企業向けサービス",
+    "statsAnalysis": "分析時間",
+    "statsScoring": "リスクスコアリング",
+    "statsUptime": "稼働時間",
+    "statsUsers": "アクティブユーザー",
+    "statsValueAnalysis": "15秒",
+    "statsValueScore": "Rスコア",
+    "statsValueUptime": "99.5%",
+    "statsValueUsers": "500+",
+    "step1Desc": "組織固有のアカウントでプラットフォームに安全にサインインします。",
+    "step1Title": "セキュアアクセス",
+    "step2Desc": "現場監査、危険報告書、リスクパラメータをシステムに転送します。",
+    "step2Title": "リスクデータ入力",
+    "step3Desc": "AI搭載の分析エンジンがデータを処理してリスクスコアを算出します。",
+    "step3Title": "R-SCORE生成",
+    "step4Desc": "結果に基づいてアクションプランを作成し、追跡・報告します。",
+    "step4Title": "アクション・フォローアップ",
+    "subscriptionDisclaimer": "RiskNovaはサブスクリプション型の職場安全衛生ソフトウェアを提供します。",
+    "testimonial1Author": "Mehmet K.",
+    "testimonial1Quote": "RiskNovaにより現場監査がより体系的になりました。AIコメントは本当に役立ちます。",
+    "testimonial1Role": "労働安全衛生専門家",
+    "testimonial2Author": "Ayşe T.",
+    "testimonial2Quote": "リスク分析、報告、追跡が一つのプラットフォームにあることで運用効率が向上しました。",
+    "testimonial2Role": "労働安全衛生マネージャー",
+    "testimonial3Author": "Can D.",
+    "testimonial3Quote": "企業らしい外観と使いやすさで、チームが非常に迅速に導入できました。",
+    "testimonial3Role": "オペレーションマネージャー",
+    "testimonialsEyebrow": "お客様の声",
+    "testimonialsTitle1": "お客様が",
+    "testimonialsTitle2": "語ること",
+    "valueTryDesc": "フォーム、結果、スコア履歴、出力は一貫した画面を使用し、チームは摩擦なく作業を継続できます。",
+    "valueTryEyebrow": "今すぐお試しください",
+    "valueTryLogin": "サインイン",
+    "valueTryRegister": "アカウント作成",
+    "valueTryTitle": "リスク、監査、報告を一つの製品体験で",
+    "whyBullet1": "清潔で現代的な信頼感のあるOHS外観",
+    "whyBullet2": "運用重視の集中しやすい画面レイアウト",
+    "whyBullet3": "リスクインテリジェンスモジュール対応のデザインシステム",
+    "whyBullet4": "マルチテナント組織ベースのセキュアな構造",
+    "whyBullet5": "AI搭載の意思決定支援メカニズム",
+    "whyBullet6": "企業レポートとアーカイブインフラ",
+    "whyDescription": "青の信頼と金の品質を強調し、清潔な表面とソフトなコントラストでプロフェッショナルなSaaS体験を創出します。",
+    "whyEyebrow": "WHY RISKNOVA",
+    "whyTitle1": "信頼感",
+    "whyTitle2": "プレミアム",
+    "whyTitle3": "エクスペリエンス"
+  },
+  "lang": {
+    "ar": "العربية",
+    "az": "Azərbaycanca",
+    "de": "Deutsch",
+    "en": "English",
+    "es": "Español",
+    "fr": "Français",
+    "hi": "हिन्दी",
+    "id": "Bahasa Indonesia",
+    "ja": "日本語",
+    "ko": "한국어",
+    "ru": "Русский",
+    "tr": "Türkçe",
+    "zh": "中文"
+  },
+  "legal": {
+    "cookiePolicy": {
+      "eyebrow": "Cookieポリシー",
+      "lastUpdated": "最終更新日：2026年5月2日",
+      "metaDescription": "RiskNovaが必須セッション、セキュリティ、設定Cookieおよび類似技術をどのように使用するか。",
+      "metaTitle": "Cookieポリシー",
+      "ogDescription": "サインイン、セキュリティ、設定に必要な基本的なCookieです。現在、分析やマーケティングCookieはコアフローには含まれていません。",
+      "ogTitle": "Cookie ポリシー | RiskNova",
+      "sections": [
+        {
+          "content": "Cookieおよび類似のローカルストレージ技術は、Webアプリケーションがセッション、セキュリティ、言語設定、製品機能を記憶するための小さな技術記録です。",
+          "title": "Cookieとは何ですか？"
+        },
+        {
+          "content": "RiskNovaは、セッション維持、Supabase認証フロー、OAuthリダイレクト、パスワードリセット、セキュリティチェック、CSRF/フロー整合性、言語設定のために必須Cookieを使用します。これらのCookieが無効になると、コアプラットフォーム機能が動作しない場合があります。",
+          "title": "必須Cookie"
+        },
+        {
+          "content": "言語、地域、UI設定、最後に選択したワークスペースまたは類似の製品設定は、一貫したエクスペリエンスを維持するためにCookieまたはlocalStorageに保存される場合があります。",
+          "title": "設定および製品Cookie"
+        },
+        {
+          "content": "このリリースでは、必須フローの一部として第三者の分析やマーケティングCookieに依存していません。分析やマーケティングCookieが後で導入される場合、必要に応じてユーザーに別途通知と同意コントロールが提供されます。",
+          "title": "分析およびマーケティングCookie"
+        },
+        {
+          "content": "ブラウザ設定からCookieを削除またはブロックできます。必須のセッション、セキュリティ、言語Cookieをブロックすると、サインイン、登録、請求、アプリ内ワークフローが機能しなくなる場合があります。",
+          "title": "Cookieの管理"
+        },
+        {
+          "content": "Cookieやプライバシー設定に関するご質問は、support@getrisknova.comまでメールでお問い合わせください。",
+          "title": "お問い合わせ"
+        }
+      ],
+      "title": "RiskNova Cookie ポリシー"
+    },
+    "privacy": {
+      "eyebrow": "プライバシーポリシー",
+      "lastUpdated": "最終更新日：2026年5月2日",
+      "metaDescription": "RiskNovaプライバシーポリシー：アカウント、製品利用、請求、メール、セキュリティ、AI支援機能における個人データの処理方法について。",
+      "metaTitle": "プライバシーポリシー",
+      "ogDescription": "RiskNovaが個人データをどのように処理し、どの処理業者を使用し、ユーザーの権利をどのようにサポートするかについて。",
+      "ogTitle": "プライバシーポリシー | RiskNova",
+      "sections": [
+        {
+          "content": "このポリシーは、RiskNovaウェブサイト、登録、サインイン、サブスクリプション、OHSモジュール、文書生成、現場検査、トレーニング/試験/調査、Nova AI、サポートにおける個人データの処理方法を説明します。顧客がプラットフォームにアップロードした職場および従業員記録については、RiskNovaは一般的に処理業者として機能し、自社のアカウント、セキュリティ、請求、サポートプロセスについては管理者として機能します。",
+          "title": "データ管理者と範囲"
+        },
+        {
+          "content": "氏名、メールアドレス、電話番号、アカウント識別子、組織およびワークスペースの詳細、役割および権限記録、セッションおよびセキュリティログ、使用状況メトリクス、サポートチケット、サブスクリプションおよび支払い状況、IPおよびデバイスデータが処理される場合があります。ユーザーがアップロードした場合、リスク分析、検査、インシデントログ、トレーニング、試験、調査、文書、人事記録、メディアまたはデータファイルもプラットフォームに保存される場合があります。",
+          "title": "個人データのカテゴリ"
+        },
+        {
+          "content": "データは、契約の履行、プラットフォーム機能の提供、労働安全プロセスの実行、ユーザー認証、不正使用の防止、顧客への請求とサポート、法的義務の履行、製品の改善、ユーザーの選択の尊重のために処理されます。明示的な同意が必要な場合は、別途同意テキストが表示されます。コアサービスデータは、同意ではなく契約、法的義務、または正当な利益に依拠する場合があります。",
+          "title": "目的と法的根拠"
+        },
+        {
+          "content": "Nova AIは、リスク分析、文書草案、トレーニングコンテンツ、法律に基づく回答を作成する際に、ユーザー入力と関連コンテキストを処理する場合があります。出力は意思決定支援のみであり、最終的な専門的および法的判断はユーザーに委ねられます。コンテンツに機密データや特別カテゴリのデータが含まれる可能性がある場合、AIサービスに送信する前に明示的な同意および/または追加の開示フローが必要になる場合があります。",
+          "title": "AI支援機能"
+        },
+        {
+          "content": "ホスティング、データベース、認証、メール、決済、エラー監視、AI機能では、Supabase、Vercel、Resend、Paddle、OpenAI、Anthropicなどのプロバイダーを使用する場合があります。これらはサービス提供に必要な範囲でのみデータを処理します。カードデータはRiskNovaに保存されず、決済と請求はPaddleのインフラストラクチャで実行されます。",
+          "title": "サードパーティプロセッサー"
+        },
+        {
+          "content": "クラウドホスティング、メール、決済、AIサービスは技術的に海外のインフラストラクチャで実行される場合があるため、サービスが必要とする場合、一部のデータがお客様の国外のプロバイダーに転送される可能性があります。転送が適用される場合、適用法（関連する場合はKVKKを含む）に基づく開示と同意の手順は製品内で管理されます。",
+          "title": "国際転送"
+        },
+        {
+          "content": "RiskNovaは必要不可欠なセッション、セキュリティ、言語設定、製品のクッキーを使用します。マーケティングやサードパーティトラッキングクッキーが導入される場合は、必要に応じて別途クッキーポリシーと同意メカニズムが提供されます。詳細は/cookie-policyページをご覧ください。",
+          "title": "クッキーおよび類似技術"
+        },
+        {
+          "content": "データは、サービスの運営、契約、セキュリティ、法的および証拠要件を満たすために必要な期間保持されます。プラットフォームは、RLS、ロールチェック、サービスロールの分離、Webhookシグネチャ検証、レート制限、監査証跡、セキュリティイベントログなどの技術的措置を使用します。",
+          "title": "保持とセキュリティ"
+        },
+        {
+          "content": "適用されるデータ保護法（適用される場合はKVKK第11条を含む）に基づき、プロフィールのプライバシー/データ権利エリアまたはsupport@getrisknova.comにて、アクセス、修正、削除、異議申し立て、制限、ポータビリティ、情報提供を要求できます。削除要求は法的保持およびセキュリティログ要件とのバランスが考慮されます。",
+          "title": "お客様の権利"
+        },
+        {
+          "content": "この文書は時間の経過とともに変更される場合があります。重要な更新では、製品内での再承認または通知が必要な場合があります。プライバシーおよびデータ保護に関するお問い合わせは、support@getrisknova.comまでご連絡ください。",
+          "title": "お問い合わせと更新"
+        }
+      ],
+      "title": "RiskNovaプライバシーポリシー"
+    },
+    "privacySummary": {
+      "eyebrow": "プライバシーポリシー",
+      "lastUpdated": "最終更新日：2026年5月2日",
+      "metaDescription": "RiskNovaが個人データを収集・使用する方法の概要です。",
+      "metaTitle": "プライバシーポリシー",
+      "ogDescription": "アカウント、製品使用、サブプロセッサーに関する簡潔なプライバシー概要です。",
+      "ogTitle": "プライバシーポリシー | RiskNova",
+      "title": "RiskNovaプライバシーポリシー"
+    },
+    "refund": {
+      "eyebrow": "返金ポリシー",
+      "lastUpdated": "最終更新日：2026年5月2日",
+      "metaDescription": "RiskNovaがサブスクリプション返金、更新、Paddle請求ルールを処理する方法です。",
+      "metaTitle": "返金ポリシー",
+      "ogDescription": "返金期間、更新、請求修正について。",
+      "ogTitle": "返金ポリシー | RiskNova",
+      "title": "RiskNova返金ポリシー"
+    },
+    "terms": {
+      "eyebrow": "利用規約",
+      "lastUpdated": "最終更新日：2026年5月2日",
+      "metaDescription": "アカウント、サブスクリプション、請求、利用規定、AI出力、顧客データ責任に関するRiskNovaの利用規約です。",
+      "metaTitle": "利用規約",
+      "ogDescription": "RiskNova SaaSプラットフォームの規約：サブスクリプション、アカウントセキュリティ、AI出力、利用規定について。",
+      "ogTitle": "利用規約 | RiskNova",
+      "sections": [
+        {
+          "content": "RiskNovaは、労働安全衛生専門家、OSGB、企業向けのサブスクリプション型SaaSプラットフォームで、リスク分析、現場検査、文書生成、研修・試験・調査、レポート作成、法令対応検索、Nova AI意思決定支援機能を提供します。",
+          "title": "サービス範囲"
+        },
+        {
+          "content": "ユーザーは、アカウント詳細の正確性、パスワードの強度、アカウント下で実行される操作について責任を負います。組織管理者は、ユーザー、役割、ワークスペース、会社認証を正しく設定する必要があります。不正アクセスの疑いがある場合は、遅滞なくRiskNovaに報告する必要があります。",
+          "title": "アカウント、役割、セキュリティ"
+        },
+        {
+          "content": "プラットフォームは、合法的、専門的、職場安全関連の目的でのみ使用できます。不正アクセスの試行、リバースエンジニアリング、サービスの妨害、有害コンテンツのアップロード、第三者権利の侵害、クォータの回避、データの違法処理は禁止されています。",
+          "title": "利用規定"
+        },
+        {
+          "content": "リスク分析、検査記録、文書、人事データ、研修・試験・調査コンテンツ、アップロードファイルは顧客コンテンツです。ユーザーは、プラットフォームにアップロードするデータが合法的で、必要かつ認可された者に限定されていることを確認する必要があります。",
+          "title": "顧客データとコンテンツの責任"
+        },
+        {
+          "content": "Nova AIおよびその他のAI機能は、意思決定支援とドラフト作成のみを提供します。RiskNovaは、出力がエラーフリー、完全、または特定の法的・技術的結果に適していることを保証しません。ユーザーは、適用法、内部手順、専門的判断に照らして出力を検証する必要があります。",
+          "title": "AI支援出力"
+        },
+        {
+          "content": "プラン機能、料金、使用制限、請求期間は、価格設定または決済画面に表示されます。個人プランはセルフサービス決済を使用する場合があります。OSGBおよび企業モデルは見積もりと連絡フローに従う場合があります。支払いと請求は、Merchant of RecordとしてPaddleが処理する場合があります。",
+          "title": "サブスクリプション、請求、制限"
+        },
+        {
+          "content": "RiskNovaは、製品機能、プラン制限、統合、これらの規約を随時更新する場合があります。セキュリティ、メンテナンス、法的コンプライアンス、または悪用防止のため、アクセスが一時的に制限される場合があります。",
+          "title": "サービス変更とアクセス"
+        },
+        {
+          "content": "プラットフォームはプロセスの合理化を目的としており、雇用者、安全専門家、組織の法的義務を免除するものではありません。ユーザーは、プラットフォーム出力に依存する前に、現場、規制、専門家による審査について責任を負います。",
+          "title": "責任の制限"
+        },
+        {
+          "content": "これらの規約、サブスクリプション、またはアカウントに関するご質問は、support@getrisknova.comまでお問い合わせください。",
+          "title": "お問い合わせ"
+        }
+      ],
+      "title": "RiskNova利用規約"
+    },
+    "termsSummary": {
+      "eyebrow": "利用規約",
+      "lastUpdated": "最終更新日：2026年5月2日",
+      "metaDescription": "RiskNova利用規約、利用規定、サブスクリプションの概要です。",
+      "metaTitle": "利用規約",
+      "ogDescription": "サブスクリプション、AI支援機能、利用規定の概要。",
+      "ogTitle": "利用規約 | RiskNova",
+      "title": "RiskNova利用規約"
+    }
   },
   "nav": {
     "analizler": "分析",
     "appDashboard": "ダッシュボード",
-    "application": "アプリ",
+    "application": "アプリケーション",
     "companies": "企業",
     "correctiveActions": "CAPA",
     "dashboard": "ダッシュボード",
     "demoBuilderNav": "デモビルダー",
-    "demoRequestsNav": "デモ申込",
+    "demoRequestsNav": "デモリクエスト",
     "digitalTwin": "デジタルツイン",
-    "documents": "ドキュメント",
+    "documents": "文書",
     "dofRegister": "CAPA",
-    "enterpriseSolution": "エンタープライズ向け",
+    "enterpriseSolution": "エンタープライズソリューション",
     "exam": "試験",
     "features": "機能",
     "firmaWorkspace": "企業",
     "howItWorks": "仕組み",
     "incidents": "アクション",
     "incidentsPage": "インシデント",
-    "legalCorpus": "法規コーパス",
-    "library": "安全衛生ライブラリ",
-    "liveScan": "ライブ現場スキャン",
-    "mainNavigation": "メインナビ",
-    "mobileNavigation": "モバイルナビ",
-    "osgbAffiliations": "OSGB 連携",
-    "osgbAssignments": "アサイン",
-    "osgbClientFirms": "顧客企業",
+    "legalCorpus": "法的コーパス",
+    "library": "労働安全衛生ライブラリ",
+    "liveScan": "ライブフィールドスキャン",
+    "mainNavigation": "メインナビゲーション",
+    "mobileNavigation": "モバイルナビゲーション",
+    "osgbAffiliations": "OSGBリンク",
+    "osgbAssignments": "割り当て",
+    "osgbClientFirms": "クライアント企業",
     "osgbContracts": "契約",
-    "osgbOffersCapacity": "提案とキャパシティ",
+    "osgbOffersCapacity": "オファーと容量",
     "osgbPanel": "パネル",
     "osgbPersonnel": "スタッフ",
     "osgbProfessionals": "専門家",
-    "osgbSolution": "OSGB 向け",
+    "osgbSolution": "OSGB提供",
     "osgbWorkTracking": "作業追跡",
     "personalDocs": "マイドキュメント",
     "planner": "プランナー",
@@ -70,1287 +1066,1555 @@
     "scoreHistory": "現場監査",
     "settings": "設定",
     "solutionCenter": "Nova",
-    "survey": "アンケート",
-    "surveyExam": "アンケート / 試験",
+    "survey": "調査",
+    "surveyExam": "調査・試験",
     "timesheet": "タイムシート",
-    "training": "研修",
-    "trainingHub": "研修・アンケート・試験",
+    "training": "トレーニング",
+    "trainingHub": "トレーニング、調査、試験",
     "workplace": "職場",
     "workspace": "ワークスペース"
   },
-  "landing": {
-    "badge": "AI対応の労働安全衛生プラットフォーム",
-    "heroTitle1": "職場の安全衛生を",
-    "heroTitle2": "一元管理",
-    "heroTitle3": "",
-    "heroDescription": "RiskNovaは、リスク分析・現場追跡・記録・報告・意思決定支援をひとつのプロダクト体験にまとめるAI対応の労働安全衛生プラットフォームです。",
-    "statsUsers": "アクティブユーザー",
-    "statsUptime": "稼働率",
-    "statsAnalysis": "分析時間",
-    "statsScoring": "リスクスコア",
-    "featuresEyebrow": "機能",
-    "featuresTitle1": "包括的な",
-    "featuresTitle2": "ソリューション",
-    "featuresDescription": "労働安全衛生プロセスを端到端で管理するプロ向けツール。",
-    "feat1Title": "AIによるリスク分析",
-    "feat1Desc": "手入力やモジュール入力を単一フローに集約し、結果を見やすくします。",
-    "feat2Title": "現場指摘とアクション管理",
-    "feat2Desc": "監査・指摘・タスク・追跡を運用チームが読みやすい順序で統合します。",
-    "feat3Title": "報告・記録インフラ",
-    "feat3Desc": "生成結果を履歴・詳細・アウトプットとつなぐ一貫した画面骨格を提供します。",
-    "feat4Title": "リスクモジュールのプロダクト展示",
-    "feat4Desc": "分析画面・結果画面・スコア履歴などに信頼感のある土台を用意します。",
-    "feat5Title": "モバイル・タブレット・デスクトップ対応",
-    "feat5Desc": "1カラム／2カラム／ワイドレイアウトで読みやすさを維持します。",
-    "feat6Title": "コーポレートでモダンなビジュアル",
-    "feat6Desc": "クリーンな面、抑えたコントラスト、明瞭なCTAでプロフェッショナルなSaaS感を実現します。",
-    "howEyebrow": "使い方",
-    "howTitle1": "4つのステップで",
-    "howTitle2": "コントロール",
-    "howDescription": "簡単なステップで始められます。",
-    "step1Title": "安全なアクセス",
-    "step1Desc": "組織アカウントで安全にログインします。",
-    "step2Title": "リスクデータ入力",
-    "step2Desc": "現場監査・危険報告・パラメータをシステムへ取り込みます。",
-    "step3Title": "R-SCORE生成",
-    "step3Desc": "AI分析エンジンがデータを処理しリスクスコアを算出します。",
-    "step4Title": "アクションとフォロー",
-    "step4Desc": "結果に基づく計画を立て、追跡し報告します。",
-    "whyEyebrow": "選ばれる理由",
-    "whyTitle1": "信頼感のある",
-    "whyTitle2": "プレミアム",
-    "whyTitle3": "体験",
-    "whyDescription": "ブルーの信頼とゴールドの品質を強調し、クリーンな面と柔らかいコントラストでプロのSaaS体験を実現します。",
-    "whyBullet1": "クリーンでモダンな安全衛生の見え方",
-    "whyBullet2": "現場志向でノイズの少ない画面構成",
-    "whyBullet3": "Risk Intelligenceモジュールに備えたデザインシステム",
-    "whyBullet4": "マルチテナントで組織単位に安全な構造",
-    "whyBullet5": "AIによる意思決定支援",
-    "whyBullet6": "企業レポートとアーカイブ基盤",
-    "ctaEyebrow": "CTAエリア",
-    "ctaTitle": "リスクモジュールをプロダクトの顔に",
-    "ctaDescription": "プロフェッショナルな見た目、強いインフラ、AI支援で安全衛生活動を一元管理します。",
-    "metaTitle": "安全衛生をひとつのプラットフォームで | RiskNova",
-    "metaDescription": "AIの職場安全ソフト：リスク分析・現場監査・指摘・CAPA・報告を統合。個人・OSGB・企業向け。",
-    "metaOgTitle": "RiskNova — 安全衛生をひとつのプラットフォームで",
-    "metaOgDescription": "測定から監査、アクション、報告までを一か所で。",
-    "heroTitlePrefix": "職場の安全衛生を",
-    "heroTitleHighlight": "ひとつのプラットフォームで",
-    "heroTitleSuffix": "管理",
-    "heroSubtitle": "測定から監査指摘、アクション追跡、報告、アーカイブまでをひとつに。個人からOSGB、複数拠点企業まで同じプロダクトで拡張できます。",
-    "statsValueUsers": "500+",
-    "statsValueUptime": "99.5%",
-    "statsValueAnalysis": "15秒",
-    "statsValueScore": "R-SCORE",
-    "solutionsLeadBold": "OSGBまたは複数拠点の組織ですか？",
-    "solutionsSectionAria": "OSGBと企業向けリンク",
-    "solutionsLeadRest": "プランを確認し、見積もりや登録からリードを残してください。チームがフォローします。",
-    "osgbCtaShort": "OSGB：見積・連絡",
-    "enterpriseCtaShort": "企業：見積・連絡",
-    "valueTryEyebrow": "今すぐ試す",
-    "valueTryTitle": "リスク・監査・報告をひとつの体験に",
-    "valueTryDesc": "フォーム・結果・スコア履歴・アウトプットを一貫した画面で提供し、チームの運用を妨げません。",
-    "valueTryRegister": "アカウント作成",
-    "valueTryLogin": "ログイン",
-    "testimonialsEyebrow": "ユーザーの声",
-    "testimonialsTitle1": "利用者の",
-    "testimonialsTitle2": "コメント",
-    "testimonial1Quote": "RiskNovaで現場監査がより体系的になりました。AIコメントが本当に役立ちます。",
-    "testimonial1Author": "Mehmet K.",
-    "testimonial1Role": "安全衛生スペシャリスト",
-    "testimonial2Quote": "分析・報告・追跡が一体になり運用効率が上がりました。",
-    "testimonial2Author": "Ayşe T.",
-    "testimonial2Role": "安全衛生マネージャー",
-    "testimonial3Quote": "コーポレートな見た目と使いやすさでチーム定着が早かったです。",
-    "testimonial3Author": "Can D.",
-    "testimonial3Role": "オペレーション責任者",
-    "bottomCtaLine1": "安全衛生プロセスを",
-    "bottomCtaLine2": "アップデート",
-    "bottomCtaDescription": "リスク分析から報告まで、RiskNovaで安全衛生活動を一元管理します。",
-    "ctaDemo": "デモを依頼",
-    "footerBlurb": "AIによるリスク分析と運用の安全衛生プラットフォーム — プロフェッショナルで信頼できモダン。",
-    "footerCompany": "会社",
-    "footerSupport": "サポート",
-    "footerHome": "ホーム",
-    "footerHelp": "ヘルプ",
-    "footerRefund": "返金ポリシー",
-    "subscriptionDisclaimer": "RiskNovaはサブスクリプション型の労働安全衛生ソフトウェアを提供します。",
-    "footerDescription": "AIによる安全衛生意思決定支援プラットフォーム",
-    "footerProduct": "プロダクト",
-    "footerLegal": "法的情報",
-    "footerPrivacy": "プライバシーポリシー",
-    "footerTerms": "利用規約",
-    "footerContact": "お問い合わせ",
-    "footerRights": "無断転載を禁じます。"
+  "ohsFile": {
+    "alreadyRunning": "アーカイブを現在準備中です。完了までお待ちください。",
+    "asyncHint": "アーカイブはバックグラウンドで準備されます。準備完了時に通知いたします。",
+    "cancel": "キャンセル",
+    "completedAt": "完了",
+    "createdAt": "作成日",
+    "createNew": "新しいアーカイブを作成",
+    "description": "リスクアセスメント、インシデント、研修記録、文書、および{company}の関連データをすべて年度ベースの単一ZIPアーカイブとしてダウンロードします。",
+    "download": "ダウンロード",
+    "empty": "まだアーカイブが作成されていません。",
+    "historyTitle": "過去のアーカイブ",
+    "loading": "読み込み中...",
+    "openCompany": "会社ページを開く",
+    "prepareButton": "アーカイブを準備",
+    "refresh": "更新",
+    "required": "必須",
+    "scopeEmpty": "スコープテンプレートを読み込めませんでした。",
+    "scopeLabel": "スコープ",
+    "status": {
+      "cancelled": "キャンセル済み",
+      "completed": "準備完了",
+      "expired": "期限切れ",
+      "failed": "失敗",
+      "pending": "待機中",
+      "processing": "準備中"
+    },
+    "title": "職場OHSファイル",
+    "widgetAll": "すべて",
+    "widgetEmpty": "OHSファイルがまだありません。会社を開いて「OHSファイル」タブに移動してください。",
+    "widgetSubtitle": "最近準備された職場アーカイブへのクイックアクセス。",
+    "widgetTitle": "最近のOHSファイル",
+    "yearLabel": "年度"
   },
-  "auth": {
-    "loginTitle": "Sign in to your account",
-    "loginDescription": "Continue managing risk analysis, field tracking and reporting processes on a single platform.",
-    "loginEmail": "Email address",
-    "loginPassword": "Password",
-    "loginButton": "Sign In",
-    "loginLoading": "Signing in...",
-    "loginForgot": "Forgot password",
-    "loginNoAccount": "Don't have an account?",
-    "loginRegister": "Sign up",
-    "registerTitle": "Create an account",
-    "registerDescription": "Digitize your OHS processes and benefit from AI-powered decision-making mechanisms.",
-    "registerName": "Full Name",
-    "registerEmail": "Email address",
-    "registerPassword": "Password",
-    "registerButton": "Sign Up",
-    "registerLoading": "Creating account...",
-    "registerHasAccount": "Already have an account?",
-    "registerLogin": "Sign in",
-    "forgotTitle": "Reset your password",
-    "forgotDescription": "Enter your email address and we'll send you a password reset link.",
-    "forgotButton": "Send reset link",
-    "forgotBack": "Back to sign in",
-    "shell": {
-      "secureAccess": "Secure access",
-      "backHome": "Back to home",
-      "highlightIndividualTitle": "Individual",
-      "highlightIndividualDesc": "A fast start flow for independent specialists, physicians, DSPs and solo professionals.",
-      "highlightOsgbTitle": "OSGB",
-      "highlightOsgbDesc": "Team model that brings client firms, personnel, assignments and work tracking into one panel.",
-      "highlightCorpTitle": "Enterprise",
-      "highlightCorpDesc": "Communication-led enterprise flow for multi-site organisations with bespoke requirements.",
-      "fallbackSpotlight": "RiskNova is not just a panel — it is professional OHS infrastructure that unifies risk analysis, field operations, document flows and team coordination in one product language."
+  "osgbFirms": {
+    "activeSection": {
+      "description": "会社ワークスペースごとに会社、割り当て、文書、リスクフローを管理します。",
+      "searchLabel": "会社を検索",
+      "searchPlaceholder": "会社名、業界、住所、またはNACEで検索",
+      "title": "アクティブな会社"
     },
-    "loginPage": {
-      "eyebrow": "Sign in",
-      "title": "Sign in to your account",
-      "description": "Sign in to your RiskNova account. Platform administrators are routed to the admin console; everyone else lands on the workspace that matches their account type.",
-      "highlight1Title": "Individual sign-in",
-      "highlight1Desc": "For individual professionals managing their own firms, organisations and workspaces.",
-      "highlight2Title": "OSGB sign-in",
-      "highlight2Desc": "For OSGB teams managing clients, personnel, assignments and risk processes.",
-      "highlight3Title": "Platform administration",
-      "highlight3Desc": "The platform administrator role is not offered as a public account type; eligible users are routed to the admin console after sign-in.",
-      "spotlightP1": "The sign-in screen is shared by everyone; routing after the session depends on your account context.",
-      "spotlightP2": "The platform administrator role is not available in public self-service signup. Individual, OSGB and enterprise are the customer-facing account paths.",
-      "footerPrefix": "Don't have an account?",
-      "footerRegisterLink": "Sign up",
-      "passwordUpdatedBanner": "Your password was updated. You can sign in with your new password.",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com",
-      "passwordLabel": "Password",
-      "passwordPlaceholder": "Enter your password",
-      "submitButton": "Sign in",
-      "forgotLink": "Forgot password"
+    "archivedRow": {
+      "restore": "復元",
+      "restoring": "復元中…"
     },
-    "registerPage": {
-      "eyebrow": "New account",
-      "title": "Create your RiskNova account",
-      "description": "Choose account type, region and language first. Individual accounts continue straight to the form; OSGB and company structures start the contact and quote flow.",
-      "highlight1Title": "Individual self-service",
-      "highlight1Desc": "After region and language selection you complete registration and continue with onboarding.",
-      "highlight2Title": "Plans live on a separate page",
-      "highlight2Desc": "Pricing and plan comparison stay on the Plans page so registration stays focused.",
-      "highlight3Title": "Bespoke quote for organisations",
-      "highlight3Desc": "Multi-site or specialised structures move through contact and quote with our team.",
-      "footerPrefix": "Already have an account?",
-      "footerLoginLink": "Sign in",
-      "demoExpiredTitle": "Your demo period has ended.",
-      "demoExpiredBody": "RiskNova demo access is limited to {hours} hours; when it expires the session closes. Create a free account below or continue with Google to move to a permanent account.",
-      "demoDisabledTitle": "Your demo access was disabled.",
-      "demoDisabledBody": "It may have been ended by an administrator (demo accounts are usually limited to {hours} hours). Create an account below for ongoing use.",
-      "demoLegacyExpiredLead": "Your demo session has ended.",
-      "demoLegacyExpiredRest": "Public demos are no longer offered. Create an account below or",
-      "demoLegacyExpiredLogin": "sign in",
-      "demoLegacyExpiredSupport": "For issues contact",
-      "demoLegacyDisabledLead": "Your demo access was disabled.",
-      "demoLegacyDisabledRest": "Public demos are no longer offered. Register or",
-      "demoLegacyDisabledLogin": "sign in",
-      "demoLegacyDisabledHelp": "Help:",
-      "checkEmailBanner": "Registration started. Check your inbox if confirmation is required.",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com",
-      "emailHint": "Onboarding and access flows use this address.",
-      "passwordLabel": "Password",
-      "passwordPlaceholder": "At least 8 characters",
-      "passwordHint": "Choose a strong password. You will finish account-type selection after signup.",
-      "submitButton": "Create account"
+    "archivedSection": {
+      "badge": "{count}件のアーカイブ記録",
+      "description": "アーカイブされた会社はアクティブ制限にカウントされません。リスクと文書履歴は保持されます。",
+      "title": "アーカイブされた会社"
     },
-    "forgotPage": {
-      "eyebrow": "Password reset",
-      "title": "Reset your password",
-      "description": "Enter your email and we will send you a password reset link.",
-      "backToLogin": "Back to sign in",
-      "sentBanner": "If the email address is valid, we sent a password reset link.",
-      "emailHint": "Use the email you registered with.",
-      "submitButton": "Send reset link",
-      "emailLabel": "Email",
-      "emailPlaceholder": "you@company.com"
+    "badges": {
+      "activeCompaniesMax": "{count} / {max}のアクティブな会社",
+      "activeCompaniesUnlimited": "{count}のアクティブな会社",
+      "activeStaffMax": "{count} / {max}のアクティブスタッフ",
+      "activeStaffUnlimited": "{count}のアクティブスタッフ"
     },
-    "resetPage": {
-      "eyebrow": "New password",
-      "eyebrowTemp": "Temporary sign-in",
-      "title": "Choose a new password",
-      "titleRequired": "Set a new password",
-      "description": "Enter your new password and return to your account.",
-      "descriptionRequired": "You signed in with temporary credentials. Set a new password before continuing.",
-      "backToLogin": "Back to sign in",
-      "requiredBanner": "For security you must change your password on first sign-in.",
-      "mfaBanner": "Multi-factor verification is complete. You can now choose a new password.",
-      "passwordLabel": "New password",
-      "passwordPlaceholder": "At least 8 characters",
-      "passwordHint": "Choose a strong password.",
-      "submitButton": "Update password"
+    "companyCard": {
+      "archive": "アーカイブ",
+      "archiving": "アーカイブ中…",
+      "assignedProfessionals": "{count}名の担当専門家",
+      "assignments": "割り当て",
+      "contracts": "契約",
+      "documentsCount": "{count}件の文書",
+      "documentsLink": "文書",
+      "employees": "{count}名の従業員",
+      "overdueTasks": "{count}件の期限切れ項目",
+      "personnelInvite": "スタッフと招待",
+      "sectorUnknown": "業界未設定",
+      "taskTracking": "タスク追跡",
+      "workspace": "会社ワークスペース"
     },
-    "social": {
-      "supabaseError": "Could not connect to authentication services.",
-      "oauthRedirectHint": "Google sign-in needs the Supabase redirect URL: add https://getrisknova.com/auth/callback (and your environment URLs) under Authentication URL configuration.",
-      "oauthGenericError": "Something went wrong during sign-in. Please try again.",
-      "googleContinue": "Continue to {brand} with Google",
-      "googleSignUp": "Sign up for {brand} with Google",
-      "divider": "or continue with email"
+    "emptyActive": {
+      "cta": "最初の会社を追加",
+      "description": "OSGBパネルにリンクされたクライアント会社がここに表示されます。",
+      "title": "アクティブな会社がありません"
     },
-    "registerWizard": {
-      "prevAria": "Previous step",
-      "closeAria": "Close registration assistant",
-      "startWizard": "Start registration questions",
-      "summaryTitle": "Your registration path is ready",
-      "summaryChange": "Change",
-      "commercialIntroOsgbTitle": "OSGB quote flow",
-      "commercialIntroEnterpriseTitle": "Enterprise quote flow",
-      "commercialIntroBody": "Your country, language and role are sent with the form so our team can respond with the right package and onboarding.",
-      "steps": {
-        "account": {
-          "eyebrow": "1 / 4",
-          "title": "Which account type are you starting with?",
-          "description": "This choice defines the flow after registration."
-        },
-        "country": {
-          "eyebrow": "2 / 4",
-          "title": "Which country is your primary workspace in?",
-          "description": "Legislation coverage, RAG scope and the default workspace are aligned with this choice."
-        },
-        "language": {
-          "eyebrow": "3 / 4",
-          "title": "Interface and document language",
-          "description": "Not every screen is translated yet, but your preference is stored on the account."
-        },
-        "role": {
-          "eyebrow": "4 / 4",
-          "title": "What is your first role?",
-          "description": "This seeds the first workspace during onboarding."
-        }
+    "emptyArchived": {
+      "description": "会社をアーカイブすると、ここに表示されます。",
+      "title": "アーカイブされた会社はありません"
+    },
+    "emptyCompany": {
+      "kind": "民間セクター",
+      "name": "新しいOSGBクライアント会社",
+      "shortName": "新しい会社"
+    },
+    "focus": {
+      "p1": "この領域はOSGBオーナーおよび管理者ユーザー専用です。会社、割り当て、契約、および文書追跡を一箇所で管理します。",
+      "p2": "割り当てられたスタッフは日常業務でこのパネルを使用しません。自分のアカウントを通じて割り当てられた会社ワークスペースデータにアクセスします。",
+      "sidebarBody": "{firms}のアクティブな会社、{professionals}の割り当て済み専門家、および{overdue}の注意が必要な項目がここで調整されます。",
+      "sidebarEyebrow": "管理フォーカス",
+      "title": "OSGB専用画面"
+    },
+    "header": {
+      "description": "クライアント会社、会社別ワークスペース、および割り当てられた人員フローを管理します。",
+      "eyebrow": "OSGB会社管理",
+      "title": "会社とワークサイト"
+    },
+    "limitBanner": "アクティブな会社の上限に達しました。会社をアーカイブするか、プランをアップグレードして追加してください。",
+    "loading": {
+      "description": "クライアント会社、割り当て、および文書フローを読み込んでいます。",
+      "eyebrow": "OSGB会社",
+      "title": "ポートフォリオを準備中"
+    },
+    "nova": {
+      "bullet1": "会社別のワークロード分散を確認します。",
+      "bullet2": "期限切れのタスクと文書をフィルタリングします。",
+      "bullet3": "スタッフ割り当てのギャップを発見します。",
+      "bullet4": "契約とレポート更新リスクを優先順位付けします。",
+      "openTasks": "OSGBタスクを開く",
+      "reviewOverdue": "期限切れの作業を確認",
+      "seeAssignmentGaps": "割り当てギャップを確認",
+      "subtitle": "管理アシスタント；スタッフと会社のパフォーマンスを監視します。",
+      "title": "Nova OSGB Manager"
+    },
+    "quickLinks": {
+      "docCenter": "文書ハブに移動",
+      "inviteStaff": "スタッフを招待",
+      "manageAssignments": "割り当てを管理",
+      "openContracts": "契約を開く"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "OSGBパネルで追跡されているアクティブなクライアント企業です。",
+        "label": "アクティブな企業"
       },
-      "accounts": {
-        "individual": {
-          "title": "Individual professional",
-          "description": "Specialist, physician, DSP or auditor starting with your own workspace."
-        },
-        "osgb": {
-          "title": "OSGB",
-          "description": "Request setup for client portfolios, teams and assignment workflows."
-        },
-        "enterprise": {
-          "title": "Company / enterprise",
-          "description": "For multi-site or specialised regulatory needs."
-        }
+      "assignedProfessionals": {
+        "hint": "企業への専門家、医師、DSPの総割り当て数です。",
+        "label": "割り当て済み専門家"
       },
-      "countryHints": {
-        "TR": "Türkiye legislation with Turkish defaults.",
-        "AZ": "Azerbaijan region with Azerbaijani defaults.",
-        "US": "US operations with English defaults.",
-        "GB": "UK operations with English defaults.",
-        "DE": "Germany region with German defaults.",
-        "FR": "France region with French defaults.",
-        "ES": "Spain region with Spanish defaults.",
-        "RU": "Russian language and regional readiness.",
-        "SA": "Arabic language and Gulf operations readiness.",
-        "AE": "English / Arabic team readiness.",
-        "CN": "Chinese language and Asia-Pacific readiness.",
-        "JP": "Japanese language and Asia-Pacific readiness.",
-        "KR": "Korean language and Asia-Pacific readiness.",
-        "IN": "Hindi / English team readiness.",
-        "ID": "Bahasa Indonesia preference."
+      "overdueWork": {
+        "hint": "割り当てとCAPAフローで監視すべき未完了項目です。",
+        "label": "期限超過作業"
       },
-      "roles": {
-        "safety_professional": {
-          "title": "OHS specialist",
-          "description": "Risk analysis, field audits, actions and regulatory tracking."
-        },
-        "occupational_physician": {
-          "title": "Occupational physician",
-          "description": "Health surveillance, medical processes and employee records."
-        },
-        "safety_officer": {
-          "title": "DSP / health personnel",
-          "description": "Health team, field support and follow-up tasks."
-        },
-        "auditor": {
-          "title": "Auditor",
-          "description": "Field audits, non-conformities and reporting."
-        },
-        "workspace_admin": {
-          "title": "Workspace administrator",
-          "description": "Manages users, firms, roles and workspace settings."
-        }
+      "totalEmployees": {
+        "hint": "計画のための企業記録からの総従業員数です。",
+        "label": "総従業員数"
       }
     },
-    "demoModal": {
-      "closeAria": "Close",
-      "title": "Thanks!",
-      "subtitle": "For trying RiskNova",
-      "bodyDisabled": "Your demo access was disabled by an administrator.",
-      "bodyExpired": "Your demo time has ended. RiskNova demo sessions are valid for up to {hours} hours; after that the session closes.",
-      "calloutExpiredLead": "Reminder:",
-      "calloutExpiredRest": "Finish exploring the demo within {hours} hours; when it ends you can continue by creating your own free or commercial account.",
-      "calloutDisabledLead": "Note:",
-      "calloutDisabledRest": "Demo accounts are usually limited to {hours} hours; access may also have been ended by an administrator.",
-      "pathsIntro": "To pick up where you left off and get",
-      "pathsHighlight": "full access to all features",
-      "pathsSuffix": ", create your account. You can choose one of three paths:",
-      "pathIndividualLabel": "Individual",
-      "pathIndividualDesc": "independent professionals",
-      "pathOsgbLabel": "OSGB",
-      "pathOsgbDesc": "client firm and personnel management",
-      "pathEnterpriseLabel": "Enterprise",
-      "pathEnterpriseDesc": "multi-site organisations",
-      "ctaPrimary": "Start registration",
-      "ctaLater": "Later"
-    }
-  },
-  "solutionCenter": {
-    "title": "Nova",
-    "description": "Nova is the operational OHS agent that interprets legislation, routes you to the right module, and starts document or workflow actions.",
-    "inputPlaceholder": "Tell Nova what you want to do...",
-    "queries": "queries",
-    "referenced": "with references",
-    "sources": "legislation sources",
-    "save": "Save",
-    "saved": "Saved",
-    "copy": "Copy",
-    "chat": "Chat",
-    "history": "History",
-    "documents": "My Documents"
-  },
-  "profile": {
-    "loading": "Loading profile...",
-    "membership": "Member since",
-    "updated": "Updated",
-    "changePhoto": "Change photo",
-    "tabs": {
-      "profile": "Profile",
-      "security": "Security",
-      "privacy": "Privacy & Consents",
-      "preferences": "Preferences",
-      "activity": "Activity"
-    },
-    "personal": {
-      "title": "Personal Information",
-      "fullName": "Full Name",
-      "fullNamePlaceholder": "Full Name",
-      "jobTitle": "Title / Position",
-      "jobTitlePlaceholder": "OHS Specialist",
-      "email": "Email",
-      "phone": "Phone",
-      "phonePlaceholder": "+1 xxx xxx xxxx",
-      "save": "Save"
-    },
-    "org": {
-      "title": "Organization Info",
-      "name": "Organization Name",
-      "city": "City"
-    },
-    "roles": {
-      "title": "Roles & Permissions",
-      "super_admin": "Super Admin",
-      "platform_admin": "Platform Admin",
-      "organization_admin": "Organization Admin",
-      "osgb_manager": "OSGB Manager",
-      "ohs_specialist": "OHS Specialist",
-      "workplace_physician": "Workplace Physician",
-      "dsp": "DSP",
-      "viewer": "Viewer"
-    },
-    "email": {
-      "title": "Change Email",
-      "current": "Current Email",
-      "new": "New Email",
-      "newPlaceholder": "name@company.com",
-      "submit": "Start Change",
-      "info": "Email changes require verification. The account email will not update until you open the link sent to the new address."
-    },
-    "password": {
-      "title": "Change Password",
-      "current": "Current Password",
-      "new": "New Password",
-      "newPlaceholder": "At least 12 chars, upper/lower case, number and symbol",
-      "repeat": "New Password (Repeat)",
-      "submit": "Update Password"
-    },
-    "mfa": {
-      "title": "Two-Factor Authentication",
-      "description": "Works with Google Authenticator, Authy and similar TOTP apps. Once enabled, this account is protected by a second factor.",
-      "open": "2FA On",
-      "closed": "2FA Off",
-      "onlyPassword": "Your account is currently protected only by password.",
-      "addDevice": "Add New Device",
-      "addDeviceHint": "Scan the QR code with Google Authenticator. You can give the device a custom name.",
-      "connect": "Connect Google Authenticator",
-      "deviceName": "Device Name",
-      "deviceNamePlaceholder": "e.g. Mehmet's iPhone",
-      "backupWarning": "Backup codes are not supported. For critical accounts, enroll at least two different TOTP devices.",
-      "setupKey": "Setup Key",
-      "verifyCodePlaceholder": "123456",
-      "verify": "Verify",
-      "verifying": "Verifying...",
-      "registeredDevices": "Registered MFA Devices",
-      "loading": "Loading...",
-      "noDevices": "No MFA device is connected yet.",
-      "removeDevice": "Remove"
-    },
-    "sessions": {
-      "title": "Active Sessions",
-      "thisDevice": "Sign out this device",
-      "allDevices": "Sign out all devices",
-      "active": "Active",
-      "lastActive": "Last active",
-      "ip": "IP",
-      "opened": "Opened"
-    },
-    "danger": {
-      "title": "Danger Zone",
-      "description": "Deleting your account permanently removes all your data and this action cannot be undone. Under KVKK, the deletion completes within 30 days.",
-      "button": "Delete Account",
-      "redirectMsg": "Account deletion flow is opened in the Privacy & Consents tab."
-    },
-    "prefs": {
-      "theme": "Theme",
-      "themeLight": "Light",
-      "themeDark": "Dark",
-      "themeSystem": "System",
-      "language": "Language",
-      "notifications": "Notifications",
-      "emailNotif": "Email Notifications",
-      "emailNotifDesc": "Task reminders and updates",
-      "pushNotif": "Push Notifications",
-      "pushNotifDesc": "Browser instant notifications",
-      "save": "Save Preferences"
-    },
-    "activity": {
-      "total": "Total Tasks",
-      "completed": "Completed",
-      "pending": "Pending",
-      "overdue": "Overdue",
-      "recentOps": "Recent Activity",
-      "noActivity": "No activity records yet",
-      "planned": "Planned",
-      "in_progress": "In Progress",
-      "complete": "Completed",
-      "overdueStatus": "Overdue",
-      "cancelled": "Cancelled"
-    },
-    "msg": {
-      "photoUpdated": "Photo updated.",
-      "photoError": "Photo upload failed.",
-      "profileSaved": "Profile saved.",
-      "profileError": "Could not save profile.",
-      "passwordMismatch": "New passwords do not match.",
-      "passwordUpdated": "Password updated successfully.",
-      "passwordError": "Could not update password.",
-      "emailServiceError": "Could not reach email update service.",
-      "emailEmpty": "New email address cannot be empty.",
-      "emailInvalid": "Enter a valid email address.",
-      "emailSame": "New email cannot be the same as current.",
-      "emailConfirmSent": "Verification link sent to the new address.",
-      "mfaServiceError": "Could not reach two-factor auth service.",
-      "mfaEnrolled": "Enrollment created. Verify the code now to enable 2FA.",
-      "mfaCodeInvalid": "Verification code must be 6 digits.",
-      "mfaEnabled": "Two-factor authentication enabled.",
-      "mfaRemoved": "MFA device removed.",
-      "mfaRemoveConfirm": "Are you sure you want to remove this MFA device?",
-      "prefsSaved": "Preferences saved.",
-      "sessionServiceError": "Could not reach session service.",
-      "signedOut": "Signed out from this device.",
-      "signedOutAll": "Signed out from all devices."
-    }
-  },
-  "consent": {
-    "title": "Privacy & Consents",
-    "description": "Active disclosure and KVKK texts are listed here. When a new version is published, the system prompts you to consent again.",
-    "stats": "{active} active consents - {pending} pending required texts",
-    "loading": "Loading consent records...",
-    "empty": "No published consent text.",
-    "mandatory": "Required",
-    "mandatoryYes": "Yes",
-    "mandatoryNo": "No",
-    "lastStatus": "Last status",
-    "notGranted": "Not granted yet",
-    "statusApproved": "Approved",
-    "statusPending": "Pending required text",
-    "statusOptional": "Optional",
-    "types": {
-      "aydinlatma": "Disclosure",
-      "acik_riza": "Explicit Consent",
-      "kvkk": "KVKK",
-      "yurt_disi_aktarim": "Cross-Border Transfer",
-      "pazarlama": "Marketing"
-    }
-  },
-  "dataRights": {
-    "title": "Data Rights",
-    "description": "Download your personal data, create a deletion request and track the status of your current KVKK processes.",
-    "statExport": "Export",
-    "statDeletion": "Deletion Request",
-    "statActive": "Active Process",
-    "statActiveYes": "Yes",
-    "statActiveNo": "No",
-    "exportTitle": "Download My Data",
-    "exportDescription": "Profile, consent records, security events and data-rights history can be downloaded as JSON or CSV.",
-    "exportJsonTitle": "JSON export",
-    "exportJsonDesc": "Structured bundle of all your data",
-    "exportCsvTitle": "CSV export",
-    "exportCsvDesc": "Tabular reporting and external transfer",
-    "exportHistoryLoading": "Loading export history...",
-    "exportHistoryEmpty": "No data export record created yet.",
-    "exportDownloadCount": "Download count",
-    "download": "Download",
-    "deletionTitle": "Delete My Data",
-    "deletionDescription": "When you create a request, your account and related personal data enter the deletion process. Permanent deletion completes after 30 days per retention policy.",
-    "deletionReasonPlaceholder": "Optional description or reason",
-    "deletionWarning": "A deletion request can be cancelled administratively before the process becomes irreversible.",
-    "deletionSubmit": "Create deletion request",
-    "deletionActive": "Active deletion request exists",
-    "deletionLoading": "Loading deletion requests...",
-    "deletionEmpty": "No deletion request yet.",
-    "deletionConfirm": "This will start a 30-day deletion process for your account. Do you want to continue?",
-    "deletionExists": "You already have an active deletion request.",
-    "deletionReceived": "Your deletion request was received. Scheduled permanent deletion: {date}.",
-    "deletionFailed": "Could not create deletion request.",
-    "exportReady": "{format} export is ready and downloaded.",
-    "exportFailed": "Could not create export.",
-    "scope": {
-      "self": "Personal request",
-      "admin": "Admin"
-    },
-    "requestDate": "Request date",
-    "scheduledPurge": "Scheduled permanent deletion",
-    "adminNotes": "Admin note",
-    "errorMsg": "Error",
-    "status": {
-      "scheduled": "Scheduled",
-      "processing": "Processing",
-      "completed": "Completed",
-      "cancelled": "Cancelled",
-      "rejected": "Rejected",
-      "failed": "Failed",
-      "expired": "Expired"
-    }
-  },
-  "lang": {
-    "tr": "Türkçe",
-    "en": "English",
-    "ar": "العربية",
-    "ru": "Русский",
-    "de": "Deutsch",
-    "fr": "Français",
-    "es": "Español",
-    "zh": "中文",
-    "ja": "日本語",
-    "ko": "한국어",
-    "hi": "हिन्दी",
-    "az": "Azərbaycanca",
-    "id": "Bahasa Indonesia"
-  },
-  "workspace": {
-    "switcher": "Workspace",
-    "active": "Active",
-    "noWorkspace": "No workspace",
-    "newWorkspace": "New workspace",
-    "countryLabel": "Country",
-    "languageLabel": "Default language",
-    "switchError": "Could not switch workspace",
-    "loading": "Loading workspaces..."
-  },
-  "country": {
-    "TR": "Türkiye",
-    "US": "United States",
-    "GB": "United Kingdom",
-    "DE": "Germany",
-    "FR": "France",
-    "ES": "Spain",
-    "RU": "Russia",
-    "CN": "China",
-    "JP": "Japan",
-    "KR": "South Korea",
-    "IN": "India",
-    "SA": "Saudi Arabia",
-    "AZ": "Azerbaijan",
-    "ID": "Indonesia",
-    "AE": "United Arab Emirates"
-  },
-  "ohsFile": {
-    "title": "Workplace OHS File",
-    "description": "Download all risk assessments, incidents, training records, documents and related data for {company} as a single year-based ZIP archive.",
-    "createNew": "Create New Archive",
-    "yearLabel": "Calendar Year",
-    "scopeLabel": "Scope",
-    "scopeEmpty": "Scope template could not be loaded.",
-    "required": "Required",
-    "prepareButton": "Prepare Archive",
-    "asyncHint": "The archive is prepared in the background. You will be notified when it is ready.",
-    "alreadyRunning": "An archive is currently being prepared; please wait for it to finish.",
-    "historyTitle": "Past Archives",
-    "refresh": "Refresh",
-    "loading": "Loading...",
-    "empty": "No archives created yet.",
-    "download": "Download",
-    "cancel": "Cancel",
-    "createdAt": "Created",
-    "completedAt": "Completed",
-    "widgetTitle": "Recent OHS Files",
-    "widgetSubtitle": "Quick access to the most recently prepared workplace archives.",
-    "widgetEmpty": "No OHS file yet. Open a company and go to the 'OHS File' tab.",
-    "widgetAll": "All",
-    "openCompany": "Open company page",
-    "status": {
-      "pending": "Queued",
-      "processing": "Preparing",
-      "completed": "Ready",
-      "failed": "Failed",
-      "expired": "Expired",
-      "cancelled": "Cancelled"
+    "topActions": {
+      "addCompany": "企業を追加",
+      "openAssignments": "割り当てを開く",
+      "personnelInvite": "スタッフと招待"
     }
   },
   "platformAdmin": {
     "leads": {
-      "backLink": "Back to platform admin",
-      "title": "Demo & quote requests",
-      "description": "All requests from the landing “Request demo”, registration “OSGB” and “Enterprise” forms are listed here. Update status, mark contacted leads, and close converted ones.",
-      "loadError": "Could not load requests: {message}",
-      "kpiTotal": "Total",
-      "kpiNew": "New",
-      "kpiContacted": "Contacted",
-      "kpiConverted": "Converted",
-      "filterStatus": "Status:",
-      "filterSource": "Source:",
-      "statusAll": "All",
-      "statusNew": "New",
-      "filterStatusContacted": "Contacted",
-      "statusContacted": "Contacted",
-      "statusQualified": "Qualified",
-      "statusConverted": "Won",
-      "statusRejected": "Rejected",
-      "sourceAll": "All",
-      "source_landing_demo": "Landing demo",
-      "source_register": "Registration form",
-      "source_cozumler_kurumsal": "Enterprise page",
-      "source_cozumler_osgb": "OSGB page",
-      "source_unknown": "Other",
-      "emptyTitle": "No requests for this filter.",
-      "emptyDescription": "OSGB/enterprise quote flows and landing “Request demo” submissions appear here.",
-      "tableColContact": "Contact",
-      "tableColCompany": "Company",
-      "tableColSourceType": "Source / type",
-      "tableColDate": "Date",
-      "tableColStatus": "Status",
-      "detailFullName": "Full name",
-      "detailEmail": "Email",
-      "detailPhone": "Phone",
-      "detailCompany": "Company",
-      "detailRequestType": "Request type",
-      "detailSource": "Source",
-      "detailEstCompanies": "Est. companies",
-      "detailEstEmployees": "Est. employees",
-      "detailEstLocations": "Est. locations",
-      "detailEstProfessionals": "Est. professionals",
-      "messageHeading": "Message",
-      "internalNoteTitle": "Internal note (manual quote, limits, pricing)",
-      "internalNoteHint": "Not shown to the customer. Capture agreed terms or plan codes here.",
-      "notesPlaceholder": "e.g. Professional custom: 50 users, annual fee…",
-      "saveNote": "Save note",
-      "savingNote": "Saving…",
-      "titleEmail": "Send email",
-      "titleCall": "Call",
-      "titleCopy": "Copy",
-      "errorNotesSave": "Could not save note",
-      "errorStatusUpdate": "Could not update",
-      "sourceUnknown": "Unknown"
+      "backLink": "プラットフォーム管理に戻る",
+      "description": "ランディングページの「デモをリクエスト」、登録の「OSGB」および「Enterprise」フォームからのすべてのリクエストがここに表示されます。ステータスを更新し、連絡済みリードをマークし、コンバートされたものをクローズしてください。",
+      "detailCompany": "企業",
+      "detailEmail": "メール",
+      "detailEstCompanies": "推定企業数",
+      "detailEstEmployees": "推定従業員数",
+      "detailEstLocations": "推定拠点数",
+      "detailEstProfessionals": "推定専門家数",
+      "detailFullName": "氏名",
+      "detailPhone": "電話番号",
+      "detailRequestType": "リクエストタイプ",
+      "detailSource": "ソース",
+      "emptyDescription": "OSGB/エンタープライズ見積もりフローとランディングページの「デモをリクエスト」送信がここに表示されます。",
+      "emptyTitle": "このフィルターに該当するリクエストはありません。",
+      "errorNotesSave": "メモを保存できませんでした",
+      "errorStatusUpdate": "更新できませんでした",
+      "filterSource": "ソース:",
+      "filterStatus": "ステータス:",
+      "filterStatusContacted": "連絡済み",
+      "internalNoteHint": "お客様には表示されません。合意した条件やプランコードをここに記録してください。",
+      "internalNoteTitle": "内部メモ（手動見積もり、制限、価格設定）",
+      "kpiContacted": "連絡済み",
+      "kpiConverted": "成約",
+      "kpiNew": "新規",
+      "kpiTotal": "合計",
+      "loadError": "リクエストを読み込めませんでした: {message}",
+      "messageHeading": "メッセージ",
+      "notesPlaceholder": "例：プロフェッショナルカスタム：50ユーザー、年間料金…",
+      "saveNote": "メモを保存",
+      "savingNote": "保存中…",
+      "source_cozumler_kurumsal": "エンタープライズページ",
+      "source_cozumler_osgb": "OSGBページ",
+      "source_landing_demo": "ランディングデモ",
+      "source_register": "登録フォーム",
+      "source_unknown": "その他",
+      "sourceAll": "すべて",
+      "sourceUnknown": "不明",
+      "statusAll": "すべて",
+      "statusContacted": "連絡済み",
+      "statusConverted": "成約",
+      "statusNew": "新規",
+      "statusQualified": "適格",
+      "statusRejected": "却下",
+      "tableColCompany": "会社名",
+      "tableColContact": "連絡先",
+      "tableColDate": "日付",
+      "tableColSourceType": "ソース / タイプ",
+      "tableColStatus": "ステータス",
+      "title": "デモ・見積もりリクエスト",
+      "titleCall": "電話",
+      "titleCopy": "コピー",
+      "titleEmail": "メール送信"
     },
     "legalCorpus": {
-      "title": "Legal corpus by country",
-      "description": "Official regulatory documents ingested for RAG, grouped by jurisdiction. Tenant-private uploads stay on the tenant workspace path.",
-      "backLink": "Back to platform admin",
-      "refresh": "Refresh",
-      "statsHeading": "Documents by jurisdiction",
-      "officialOnly": "Official corpus only",
-      "tableHeading": "Documents (name order)",
-      "colTitle": "Title",
-      "colNumber": "Reference",
-      "colType": "Type",
-      "colJurisdiction": "Jurisdiction",
-      "colScope": "Scope",
-      "colActive": "Active",
-      "colSource": "Source URL",
-      "ingestHeading": "Ingest from official feeds",
-      "ingestUkHint": "Imports the latest UK Statutory Instruments entries from legislation.gov.uk Atom (titles + summaries).",
-      "ingestUkButton": "Import UK SI (Atom)",
-      "ingesting": "Importing…",
-      "ingestResult": "Inserted: {inserted}, skipped (already in DB): {skipped}",
-      "ingestError": "Import failed",
-      "emptyDocuments": "No documents match the filter.",
-      "scopeOfficial": "Official",
-      "scopePrivate": "Tenant",
-      "yes": "Yes",
-      "no": "No"
+      "backLink": "プラットフォーム管理に戻る",
+      "colActive": "アクティブ",
+      "colJurisdiction": "管轄区域",
+      "colNumber": "参照番号",
+      "colScope": "スコープ",
+      "colSource": "ソースURL",
+      "colTitle": "タイトル",
+      "colType": "タイプ",
+      "description": "RAG用に取り込まれた公式規制文書を管轄区域別にグループ化。テナント専用アップロードはテナントワークスペースパスに保持されます。",
+      "emptyDocuments": "フィルターに一致する文書がありません。",
+      "ingestError": "インポートに失敗しました",
+      "ingestHeading": "公式フィードから取り込み",
+      "ingesting": "インポート中…",
+      "ingestResult": "{inserted}件挿入、{skipped}件スキップ（既にDBに存在）",
+      "ingestUkButton": "UK SI（Atom）をインポート",
+      "ingestUkHint": "legislation.gov.ukのAtomから最新の英国制定法令エントリ（タイトル+要約）をインポートします。",
+      "no": "いいえ",
+      "officialOnly": "公式コーパスのみ",
+      "refresh": "更新",
+      "scopeOfficial": "公式",
+      "scopePrivate": "テナント",
+      "statsHeading": "管轄別文書",
+      "tableHeading": "文書（名前順）",
+      "title": "国別法的コーパス",
+      "yes": "はい"
     }
   },
-  "demoRequest": {
-    "dialogTitle": "デモを依頼",
-    "dialogSubtitle": "ニーズに合わせた短いご案内を調整します。",
-    "closeAria": "閉じる",
-    "successTitle": "受け付けました",
-    "successBody": "担当よりまもなくご連絡します。ありがとうございます。",
-    "successClose": "閉じる",
-    "fieldName": "氏名 *",
-    "fieldEmail": "メール *",
-    "fieldPhone": "電話",
-    "fieldCompany": "会社 / 組織",
-    "placeholderName": "山田太郎",
-    "placeholderEmail": "you@company.jp",
-    "placeholderPhone": "+81 …",
-    "placeholderCompany": "株式会社サンプル",
-    "accountTypeLabel": "アカウント種別",
-    "accountTypeUnset": "未定",
-    "accountTypeIndividual": "個人（単独の専門家）",
-    "accountTypeOsgb": "OSGB",
-    "accountTypeEnterprise": "企業 / 法人",
-    "messageLabel": "メッセージ（任意）",
-    "messagePlaceholder": "関心のあるモジュール、人数、連絡しやすい時間帯など",
-    "privacyLabel": "プライバシー告知：",
-    "privacyText": "このお問い合わせへの回答目的に限り連絡先を処理することに同意します。",
-    "privacyError": "プライバシー告知への同意を確認してください。",
-    "submitError": "送信に失敗しました。再度お試しください。",
-    "cancel": "キャンセル",
-    "submit": "送信",
-    "submitting": "送信中…"
-  },
   "pricing": {
-    "heroEyebrow": "Individual plans",
-    "heroTitle": "Clear, scalable plans for workplace safety professionals.",
-    "heroDescription": "Start on Free and grow through Starter, Plus and Professional — Nova, risk analysis, field audits and library-backed document generation scale with your pace. On paid plans you choose monthly or yearly billing on each card.",
-    "introTitle": "Choose your individual plan",
-    "introBody": "On paid plans you can pick monthly or yearly billing on each card. Yearly billing covers twelve months for the price of ten (the card total updates accordingly). OSGB and enterprise customers use the quote flow. Each card shows “Who is it for?” and “Move up a tier” so you can see the next step for your profile.",
-    "billingPeriodAria": "Billing period",
-    "monthly": "Monthly",
-    "yearly": "Yearly",
-    "yearlyBadge": "· 2 months included",
-    "whoForLabel": "Who is it for?",
-    "upgradeSectionTitle": "Move up a tier",
-    "limitNotIncluded": "Not included",
-    "priceSuffixMonth": "/ mo",
-    "priceSuffixYear": "/ yr",
-    "priceFreeNote": "Free to start",
-    "priceYearlyNote": "About {monthly}/mo equivalent — 2 months included",
-    "priceMonthlyNote": "Monthly billing — upgrade whenever you need",
-    "freeStart": "Start free",
-    "currentPlan": "Current plan",
-    "selectPlan": "Choose plan",
-    "osgbOfferLink": "OSGB quote",
-    "enterpriseOfferLink": "Enterprise quote",
-    "planHighlights": {
-      "mostPopular": "Most popular",
-      "premium": "Premium"
-    },
     "actions": {
-      "nova_message": "Nova messages",
-      "ai_analysis": "AI analyses",
-      "document_generation": "Document generation",
-      "risk_analysis": "Risk analyses"
+      "ai_analysis": "AI分析",
+      "document_generation": "文書生成",
+      "nova_message": "Novaメッセージ",
+      "risk_analysis": "リスク分析"
     },
-    "footerLimitsTitle": "Enforced on the server",
-    "footerLimitsBody": "Nova, analysis and generation allowances are consumed at the API layer — not only on screen.",
-    "footerOsgbTitle": "OSGB and enterprise separately",
-    "footerOsgbBody": "Team seats, portfolios, white-label, onboarding and invoicing are handled through the dedicated quote flow.",
-    "footerPro149Title": "Professional 149 recommended",
-    "footerPro149Body": "Balanced capacity for analyses, documents and field work for active individual professionals.",
-    "enterpriseTitle": "OSGB or enterprise use",
-    "enterpriseBody": "For multiple users, client portfolios, white-label, bespoke onboarding and invoicing there is no self‑serve checkout on this path — contact us to agree scope and contract.",
-    "enterpriseOsgbCta": "Request OSGB quote",
-    "enterpriseCorporateCta": "Request enterprise quote",
-    "enterpriseExplore": "Explore the product",
-    "enterpriseFootnoteLead": "Solution pages:",
-    "enterpriseFootnoteOsgb": "OSGB offering",
-    "enterpriseFootnoteEnterprise": "Enterprise offering",
+    "billingPeriodAria": "請求期間",
+    "currentPlan": "現在のプラン",
+    "enterpriseBody": "複数ユーザー、クライアントポートフォリオ、ホワイトラベル、専用オンボーディング、請求については、このパスでのセルフサービスチェックアウトはありません。範囲と契約について合意するためにお問い合わせください。",
+    "enterpriseCorporateCta": "エンタープライズ見積もりを依頼",
+    "enterpriseExplore": "製品を詳しく見る",
+    "enterpriseFootnoteEnterprise": "エンタープライズ提供",
+    "enterpriseFootnoteLead": "ソリューションページ：",
+    "enterpriseFootnoteOsgb": "OSGB提供",
+    "enterpriseOfferLink": "エンタープライズ見積もり",
+    "enterpriseOsgbCta": "OSGB見積もりを依頼",
+    "enterpriseTitle": "OSGBまたはエンタープライズ利用",
+    "footerLimitsBody": "Nova、分析、生成の使用量はAPIレイヤーで消費されます（画面上だけではありません）。",
+    "footerLimitsTitle": "サーバーで強制",
+    "footerOsgbBody": "チームシート、ポートフォリオ、ホワイトラベル、オンボーディング、請求は専用見積もりフローで処理されます。",
+    "footerOsgbTitle": "OSGBとエンタープライズは別々",
+    "footerPro149Body": "アクティブな個人専門家向けの分析、文書、フィールドワークのバランス取れた容量。",
+    "footerPro149Title": "Professional 149を推奨",
+    "freeStart": "無料で開始",
+    "heroDescription": "無料で開始し、Starter、Plus、Professionalへと成長してください。Nova、リスク分析、フィールド監査、ライブラリ支援文書生成があなたのペースに合わせてスケールします。有料プランでは各カードで月次または年次請求を選択できます。",
+    "heroEyebrow": "個人プラン",
+    "heroTitle": "職場安全の専門家のための明確でスケーラブルなプランです。",
+    "introBody": "有料プランでは、各カードで月次または年次請求を選択できます。年次請求は10か月分の価格で12か月をカバーします（カード合計は適宜更新されます）。OSGBおよび企業のお客様は見積もりフローをご利用ください。各カードには「どなたに適しているか？」と「上位ティアへの移行」が表示され、お客様のプロファイルに応じた次のステップをご確認いただけます。",
+    "introTitle": "個人プランをお選びください",
+    "limitNotIncluded": "含まれていません",
+    "monthly": "月次",
+    "osgbOfferLink": "OSGB見積もり",
+    "planHighlights": {
+      "mostPopular": "最も人気",
+      "premium": "プレミアム"
+    },
     "plans": {
       "free": {
-        "name": "Free",
-        "whoFor": "Trying RiskNova, students and light occasional use.",
-        "description": "Entry tier with monthly quotas to explore Nova chat, analyses and a small document workflow.",
-        "upgradeHint": "Upgrade to Starter when you need predictable quotas every month.",
-        "features": [
-          "Nova chat within monthly limits",
-          "Foundational AI analyses for risk workflows",
-          "Limited document generation",
-          "Field inspection entries within quotas",
-          "Exports within plan limits"
-        ]
-      },
-      "starter": {
-        "name": "Starter",
-        "whoFor": "Freelance specialists and steady but modest monthly workloads.",
-        "description": "Higher quotas for Nova, analyses and documents so weekly routines run without friction.",
-        "upgradeHint": "Choose Plus when incident analysis and training outputs become part of your workflow.",
-        "features": [
-          "Stronger Nova and analysis quotas",
-          "More monthly document generation",
-          "Incident analysis allowance",
-          "Training slides where included in quota",
-          "Exports scaled for individuals"
-        ]
+        "description": "Novaチャット、分析、小規模なドキュメントワークフローを探索するための月次クォータ付きエントリーティアです。",
+        "name": "無料",
+        "upgradeHint": "毎月予測可能なクォータが必要になったらStarterにアップグレードしてください。",
+        "whoFor": "RiskNovaをお試しの方、学生、軽度の時々利用の方。"
       },
       "plus": {
+        "description": "チャット、分析、リスクモデリング、フィールドデータ全体でバランスの取れた容量です。",
         "name": "Plus",
-        "whoFor": "Active consultants managing several clients each month.",
-        "description": "Balanced capacity across chat, analyses, risk modelling and field data.",
-        "upgradeHint": "Move to Professional when you need deeper inspection and reporting throughput.",
-        "features": [
-          "Higher caps across all core actions",
-          "More incident and training outputs",
-          "Field inspection headroom for busy weeks",
-          "Document throughput for recurring packs",
-          "Exports suited to multi-client work"
-        ]
-      },
-      "professional": {
-        "name": "Professional 99",
-        "whoFor": "Full-time OHS experts with dense weekly usage.",
-        "description": "Enterprise-grade individual ceiling before the top Professional tiers.",
-        "upgradeHint": "Step up to Professional 149 for the best value at scale.",
-        "features": [
-          "High Nova and AI analysis limits",
-          "Strong document generation cadence",
-          "Broad risk and field inspection capacity",
-          "Incident programme support within quota",
-          "Exports for intensive reporting"
-        ]
+        "upgradeHint": "より深い検査とレポート処理能力が必要になったらProfessionalに移行してください。",
+        "whoFor": "毎月複数のクライアントを管理するアクティブなコンサルタント。"
       },
       "professional_149": {
+        "description": "推奨ティア — 分析、ドキュメント、フィールドワークフロー全体で余裕のある上限です。",
         "name": "Professional 149",
-        "whoFor": "Senior consultants and power users who live in the product.",
-        "description": "Recommended tier — generous ceilings across analyses, documents and field workflows.",
-        "upgradeHint": "Professional 199 adds maximum headroom for the busiest desks.",
-        "features": [
-          "Very high Nova and analysis quotas",
-          "Heavy document generation allowance",
-          "Large risk and inspection budgets",
-          "Incident and training outputs at scale",
-          "Exports aligned with premium throughput"
-        ]
+        "upgradeHint": "Professional 199は最も忙しいデスクに最大限の余裕を追加します。",
+        "whoFor": "製品を日常的に使用するシニアコンサルタントおよびパワーユーザー。"
       },
       "professional_199": {
+        "description": "OSGBまたは企業契約前の最上位セルフサービスティアです。",
         "name": "Professional 199",
-        "whoFor": "Peak individual workloads and premium throughput expectations.",
-        "description": "Top self-serve tier before OSGB or enterprise contracting.",
-        "upgradeHint": "Need seats, portfolios or invoicing? Use OSGB or enterprise quotes.",
-        "features": [
-          "Maximum published individual quotas",
-          "Peak AI and document capacity",
-          "Largest inspection and risk envelopes",
-          "Full incident and training allowances in tier",
-          "Exports for the heaviest reporting cycles"
-        ]
+        "upgradeHint": "席数、ポートフォリオ、請求書発行が必要ですか？OSGBまたは企業見積もりをご利用ください。",
+        "whoFor": "ピーク時の個人ワークロードとプレミアム処理能力への期待に対応"
+      },
+      "professional": {
+        "description": "最上位Professionalティア前のエンタープライズグレード個人上限です。",
+        "name": "Professional 99",
+        "upgradeHint": "スケールでの最高の価値を得るためにProfessional 149にステップアップしてください。",
+        "whoFor": "密度の高い週次利用を行うフルタイムOHS専門家。"
+      },
+      "starter": {
+        "description": "Novaの高い割当量、分析、文書により週次ルーチンが円滑に実行されます",
+        "name": "スターター",
+        "upgradeHint": "インシデント分析とトレーニング出力がワークフローの一部になったらPlusをお選びください",
+        "whoFor": "フリーランス専門家と安定した月次ワークロード"
+      }
+    },
+    "priceFreeNote": "無料で開始",
+    "priceMonthlyNote": "月次請求 — 必要な時にいつでもアップグレード",
+    "priceSuffixMonth": "/ 月",
+    "priceSuffixYear": "/ 年",
+    "priceYearlyNote": "約{monthly}/月相当 — 2ヶ月分含む",
+    "selectPlan": "プランを選択",
+    "upgradeSectionTitle": "上位プランに移行",
+    "whoForLabel": "対象者",
+    "yearly": "年次",
+    "yearlyBadge": "· 2ヶ月分含む"
+  },
+  "profile": {
+    "activity": {
+      "cancelled": "キャンセル済み",
+      "complete": "完了",
+      "completed": "完了",
+      "in_progress": "進行中",
+      "noActivity": "アクティビティ記録はまだありません",
+      "overdue": "期限超過",
+      "overdueStatus": "期限超過",
+      "pending": "保留中",
+      "planned": "計画済み",
+      "recentOps": "最近のアクティビティ",
+      "total": "総タスク数"
+    },
+    "changePhoto": "写真を変更",
+    "danger": {
+      "button": "アカウントを削除",
+      "description": "アカウントを削除すると、すべてのデータが完全に削除され、この操作は元に戻すことができません。KVKKに基づき、削除は30日以内に完了します。",
+      "redirectMsg": "アカウント削除フローは「プライバシーと同意」タブで開かれます。",
+      "title": "危険ゾーン"
+    },
+    "email": {
+      "current": "現在のメールアドレス",
+      "info": "メールアドレスの変更には確認が必要です。新しいアドレスに送信されたリンクを開くまで、アカウントのメールアドレスは更新されません。",
+      "new": "新しいメールアドレス",
+      "newPlaceholder": "name@company.com",
+      "submit": "変更開始",
+      "title": "メールアドレス変更"
+    },
+    "loading": "プロフィールを読み込み中...",
+    "membership": "メンバー登録日",
+    "mfa": {
+      "addDevice": "新しいデバイスを追加",
+      "addDeviceHint": "Google AuthenticatorでQRコードをスキャンしてください。デバイスにカスタム名を付けることができます。",
+      "backupWarning": "バックアップコードはサポートされていません。重要なアカウントの場合は、少なくとも2つの異なるTOTPデバイスを登録してください。",
+      "closed": "2FA オフ",
+      "connect": "Google Authenticatorを接続",
+      "description": "Google Authenticator、Authy、および類似のTOTPアプリで動作します。有効にすると、このアカウントは第二要素で保護されます。",
+      "deviceName": "デバイス名",
+      "deviceNamePlaceholder": "例：太郎のiPhone",
+      "loading": "読み込み中...",
+      "noDevices": "MFAデバイスはまだ接続されていません。",
+      "onlyPassword": "現在、アカウントはパスワードのみで保護されています。",
+      "open": "2FA オン",
+      "registeredDevices": "登録済みMFAデバイス",
+      "removeDevice": "削除",
+      "setupKey": "セットアップキー",
+      "title": "二要素認証",
+      "verify": "確認",
+      "verifyCodePlaceholder": "123456",
+      "verifying": "確認中..."
+    },
+    "msg": {
+      "emailConfirmSent": "新しいアドレスに確認リンクを送信しました。",
+      "emailEmpty": "新しいメールアドレスを入力してください。",
+      "emailInvalid": "有効なメールアドレスを入力してください。",
+      "emailSame": "新しいメールアドレスは現在のものと同じにできません。",
+      "emailServiceError": "メール更新サービスに接続できませんでした。",
+      "mfaCodeInvalid": "確認コードは6桁で入力してください。",
+      "mfaEnabled": "二要素認証が有効になりました。",
+      "mfaEnrolled": "登録が作成されました。今すぐコードを確認して2FAを有効にしてください。",
+      "mfaRemoveConfirm": "このMFAデバイスを削除してもよろしいですか？",
+      "mfaRemoved": "MFAデバイスが削除されました。",
+      "mfaServiceError": "二要素認証サービスに接続できませんでした。",
+      "passwordError": "パスワードを更新できませんでした。",
+      "passwordMismatch": "新しいパスワードが一致しません。",
+      "passwordUpdated": "パスワードが正常に更新されました。",
+      "photoError": "写真のアップロードに失敗しました。",
+      "photoUpdated": "写真が更新されました。",
+      "prefsSaved": "設定が保存されました。",
+      "profileError": "プロフィールを保存できませんでした。",
+      "profileSaved": "プロフィールが保存されました。",
+      "sessionServiceError": "セッションサービスに接続できませんでした。",
+      "signedOut": "このデバイスからサインアウトしました。",
+      "signedOutAll": "すべてのデバイスからサインアウトしました。"
+    },
+    "org": {
+      "city": "市区町村",
+      "name": "組織名",
+      "title": "組織情報"
+    },
+    "password": {
+      "current": "現在のパスワード",
+      "new": "新しいパスワード",
+      "newPlaceholder": "12文字以上、大文字・小文字・数字・記号を含む",
+      "repeat": "新しいパスワード（再入力）",
+      "submit": "パスワードを更新",
+      "title": "パスワード変更"
+    },
+    "personal": {
+      "email": "メールアドレス",
+      "fullName": "氏名",
+      "fullNamePlaceholder": "氏名",
+      "jobTitle": "役職・職位",
+      "jobTitlePlaceholder": "OHS専門家",
+      "phone": "電話番号",
+      "phonePlaceholder": "+1 xxx xxx xxxx",
+      "save": "保存",
+      "title": "個人情報"
+    },
+    "prefs": {
+      "emailNotif": "メール通知",
+      "emailNotifDesc": "タスクのリマインダーと更新情報",
+      "language": "言語",
+      "notifications": "通知",
+      "pushNotif": "プッシュ通知",
+      "pushNotifDesc": "ブラウザの即座通知",
+      "save": "設定を保存",
+      "theme": "テーマ",
+      "themeDark": "ダーク",
+      "themeLight": "ライト",
+      "themeSystem": "システム"
+    },
+    "roles": {
+      "dsp": "DSP",
+      "ohs_specialist": "OHS専門家",
+      "organization_admin": "組織管理者",
+      "osgb_manager": "OSGB マネージャー",
+      "platform_admin": "プラットフォーム管理者",
+      "super_admin": "スーパー管理者",
+      "title": "役割と権限",
+      "viewer": "閲覧者",
+      "workplace_physician": "産業医"
+    },
+    "sessions": {
+      "active": "アクティブ",
+      "allDevices": "すべてのデバイスからサインアウト",
+      "ip": "IP",
+      "lastActive": "最終アクティブ",
+      "opened": "開始",
+      "thisDevice": "このデバイスからサインアウト",
+      "title": "アクティブセッション"
+    },
+    "tabs": {
+      "activity": "アクティビティ",
+      "preferences": "設定",
+      "privacy": "プライバシーと同意",
+      "profile": "プロフィール",
+      "security": "セキュリティ"
+    },
+    "updated": "更新済み"
+  },
+  "publicInvite": {
+    "acceptedCta": "ダッシュボードへ移動",
+    "acceptedDesc": "この招待は既に承認されています。ダッシュボードから会社にアクセスできます。",
+    "acceptedTitle": "招待は既に承認済みです",
+    "backHome": "ホームに戻る",
+    "brandEyebrow": "RiskNova",
+    "btnLogin": "サインイン",
+    "btnRegister": "アカウント作成",
+    "cardEyebrow": "会社への招待",
+    "dbErrorDesc": "データベースに接続できませんでした。後でもう一度お試しください。",
+    "dbErrorTitle": "接続の問題",
+    "declinedDesc": "この招待は以前に辞退されました。新しい招待が必要な場合は、招待者にお問い合わせください。",
+    "declinedTitle": "招待が辞退されました",
+    "dtExpires": "有効期限",
+    "dtInvitee": "招待者",
+    "dtInviter": "招待元",
+    "dtNote": "メモ",
+    "expiredDesc": "この招待は期限切れです。新しい招待をリクエストしてください。",
+    "expiredTitle": "招待の期限切れ",
+    "inviteTitle": "{company}からRiskNovaワークスペースへの参加招待が届いています。",
+    "loginPrompt": "招待を承諾するには、{email}で登録されたアカウントが必要です。",
+    "notFoundDesc": "この招待は利用できないか、リンクが無効です。招待者に新しいリンクをお求めください。",
+    "notFoundTitle": "招待が見つかりません",
+    "revokedDesc": "この招待は送信者によってキャンセルされました。",
+    "revokedTitle": "招待がキャンセルされました",
+    "shellTitle": "会社からの招待",
+    "unknownCompany": "ある会社",
+    "unspecified": "未指定"
+  },
+  "publicInviteActions": {
+    "acceptBtn": "招待を承諾",
+    "acceptedRedirecting": "招待を承諾しました。ダッシュボードにリダイレクトしています…",
+    "accepting": "承諾中…",
+    "dbError": "データベースに接続できませんでした。",
+    "declineBtn": "辞退",
+    "declinedMessage": "招待を辞退しました。いつでも新しい招待をリクエストできます。",
+    "declineProcessing": "処理中…",
+    "emailMismatch": "この招待は{inviteeEmail}宛に送信されましたが、現在{currentUserEmail}でサインインしています。",
+    "emailMismatchHint": "承諾するには正しいアカウントでサインインしてください。",
+    "errAuthRequired": "招待を承諾するにはサインインが必要です。",
+    "errExpired": "この招待は期限切れです。",
+    "errNotFound": "招待が見つかりません。",
+    "errNotPending": "この招待は保留中ではありません（承認、拒否、またはキャンセルされた可能性があります）。",
+    "errUnexpected": "予期しないエラーが発生しました。",
+    "errWrongUser": "この招待はサインインしているユーザーのものではありません。正しいアカウントでサインインしてください。"
+  },
+  "publicSurvey": {
+    "congrats": "おめでとうございます！",
+    "examFailDesc": "あなたのスコア：{score}%。合格点：{pass}%。",
+    "examPassDesc": "試験に{score}%で合格しました。",
+    "expiredDesc": "このリンクは期限切れです。",
+    "expiredTitle": "リンクが期限切れです",
+    "invalidDesc": "このリンクは無効であるか、見つかりませんでした。",
+    "invalidTitle": "無効なリンクです",
+    "loading": "読み込み中…",
+    "minutesPipe": "| {minutes}分",
+    "next": "次へ",
+    "no": "いいえ",
+    "openEndedPlaceholder": "回答を入力してください…",
+    "participantLabel": "参加者：",
+    "passPipe": "| 合格：{score}%",
+    "prev": "前へ",
+    "questionBadge": "質問{n}",
+    "questionCount": "{count}問",
+    "required": "* 必須",
+    "sending": "送信中…",
+    "sorry": "申し訳ございません",
+    "startButton": "私は{name}です。開始",
+    "submit": "送信",
+    "submitError": "回答を保存できませんでした。接続を確認してもう一度お試しください。",
+    "surveyCompleteDesc": "回答が正常に保存されました。",
+    "thanks": "ありがとうございます！",
+    "verifySubtitleExam": "試験を開始する前に本人確認を行ってください。",
+    "verifySubtitleSurvey": "アンケートを開始する前に本人確認を行ってください。",
+    "verifyTitle": "本人確認",
+    "yes": "はい"
+  },
+  "pwaInstallPage": {
+    "cards": {
+      "android": {
+        "step1": "getrisknova.comを開きます",
+        "step2": "「アプリをインストール」をタップします",
+        "step3": "RiskNovaアイコンからサインインします",
+        "text": "ChromeまたはEdgeでRiskNovaを開き、インストールプロンプトが表示されたら「アプリをインストール」を選択してください。",
+        "title": "Android"
+      },
+      "ios": {
+        "step1": "Safariでサイトを開きます",
+        "step2": "共有アイコンをタップします",
+        "step3": "「ホーム画面に追加」を選択します",
+        "text": "Safariで開き、共有→ホーム画面に追加を使用してRiskNovaアイコンを作成してください。",
+        "title": "iPhone & iPad"
+      },
+      "windows": {
+        "step1": "EdgeまたはChromeで開きます",
+        "step2": "アプリインストールアイコンをクリックします",
+        "step3": "スタートメニューからRiskNovaを開きます",
+        "text": "ChromeまたはEdgeのアドレスバーにあるインストールアイコンを使用して、RiskNovaを独立したデスクトップウィンドウで開いてください。",
+        "title": "Windows"
+      }
+    },
+    "ctaLogin": "プラットフォームにサインイン",
+    "ctaRegister": "無料で開始",
+    "eyebrow": "アプリストア不要",
+    "heroBody": "iOS、Android、WindowsでRiskNovaをホーム画面やデスクトップに追加できます。サイトの更新は、インストールされた環境に自動的に反映されます。",
+    "heroTitle": "モバイルとデスクトップでRiskNovaをアプリのように使用",
+    "metaDescription": "アプリストアを使わずに、iOS、Android、WindowsでRiskNovaをPWAとしてインストールできます。",
+    "metaTitle": "RiskNovaアプリ",
+    "updatesBody": "RiskNova ウェブアプリが更新されると、PWA が新しいバージョンを取得します。ストアの更新を待つ必要はありません。",
+    "updatesTitle": "更新は自動的に配信されます"
+  },
+  "pwaPrompt": {
+    "appButton": "インストール",
+    "appDescription": "ホーム画面から現場作業、文書、Nova にすぐに戻れます。",
+    "appTitle": "RiskNova アプリをインストール",
+    "asideAria": "RiskNova アプリのインストール",
+    "dismissAria": "インストール通知を閉じる",
+    "iosHint": "iPhone/iPad では、共有 → ホーム画面に追加 をご利用ください。",
+    "publicButton": "アプリをインストール",
+    "publicDescription": "iOS、Android、Windows で別ウィンドウですばやく開きます。",
+    "publicTitle": "RiskNova をアプリのようにインストール"
+  },
+  "riskScoring": {
+    "classification": {
+      "bow_tie": {
+        "critical": {
+          "action": "作業停止；バリア再設計",
+          "label": "クリティカル"
+        },
+        "follow_up": {
+          "action": "バリア適切；監視継続",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "緊急バリア強化；プロセス見直し",
+          "label": "高"
+        },
+        "low": {
+          "action": "バリア有効性確認",
+          "label": "低"
+        },
+        "medium": {
+          "action": "追加バリア設置",
+          "label": "中"
+        }
+      },
+      "checklist": {
+        "critical": {
+          "action": "活動停止；全面見直し",
+          "label": "極めて不適切"
+        },
+        "follow_up": {
+          "action": "現在の実践を維持",
+          "label": "適合"
+        },
+        "high": {
+          "action": "緊急是正措置開始",
+          "label": "不適切"
+        },
+        "low": {
+          "action": "短期間でギャップを解消",
+          "label": "許容可能"
+        },
+        "medium": {
+          "action": "より広範な改善計画を準備してください",
+          "label": "改善が必要"
+        }
+      },
+      "fk": {
+        "critical": {
+          "action": "直ちに作業を停止してください",
+          "label": "非常に高いリスク"
+        },
+        "follow_up": {
+          "action": "改善提案が必要な場合があります；緊急対応は不要",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "即座の対応；作業停止を検討してください",
+          "label": "高リスク"
+        },
+        "low": {
+          "action": "監視を継続し改善を計画してください",
+          "label": "中程度の懸念"
+        },
+        "medium": {
+          "action": "短期的に対応してください",
+          "label": "重要"
+        }
+      },
+      "fmea": {
+        "critical": {
+          "action": "作業を停止し根本原因分析を実施してください",
+          "label": "クリティカルリスク"
+        },
+        "follow_up": {
+          "action": "現在の管理策で十分；監視を継続してください",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "緊急対応；設計変更を検討してください",
+          "label": "高リスク"
+        },
+        "low": {
+          "action": "改善を計画してください",
+          "label": "低リスク"
+        },
+        "medium": {
+          "action": "対応を取り管理策を強化してください",
+          "label": "中リスク"
+        }
+      },
+      "fta": {
+        "critical": {
+          "action": "運用しないでください；根本原因を排除してください",
+          "label": "クリティカル"
+        },
+        "follow_up": {
+          "action": "システムの信頼性は適切です",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "システムを再設計してください",
+          "label": "高"
+        },
+        "low": {
+          "action": "冗長性/バックアップを評価",
+          "label": "低"
+        },
+        "medium": {
+          "action": "重要コンポーネントに冗長性を追加",
+          "label": "中"
+        }
+      },
+      "hazop": {
+        "critical": {
+          "action": "プロセス停止；設計見直し",
+          "label": "許容不可"
+        },
+        "follow_up": {
+          "action": "現在の管理で十分",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "プロセス変更または追加バリアが必要",
+          "label": "高"
+        },
+        "low": {
+          "action": "監視と改善を計画",
+          "label": "低"
+        },
+        "medium": {
+          "action": "追加保護層を評価",
+          "label": "中"
+        }
+      },
+      "lopa": {
+        "critical": {
+          "action": "プロセス停止；設計見直し",
+          "label": "許容不可"
+        },
+        "follow_up": {
+          "action": "現在の保護層で十分",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "複数層またはプロセス変更が必要",
+          "label": "高リスク"
+        },
+        "low": {
+          "action": "合理的に実行可能な限り低く",
+          "label": "ALARP"
+        },
+        "medium": {
+          "action": "追加保護層を追加",
+          "label": "改善が必要"
+        }
+      },
+      "matrix": {
+        "critical": {
+          "action": "直ちに作業停止；緊急措置",
+          "label": "許容不可"
+        },
+        "follow_up": {
+          "action": "追加措置は不要の可能性；監視で十分",
+          "label": "許容可能"
+        },
+        "high": {
+          "action": "早急に対策を講じる",
+          "label": "高リスク"
+        },
+        "low": {
+          "action": "既存の管理策で十分；継続監視",
+          "label": "低リスク"
+        },
+        "medium": {
+          "action": "改善活動を計画する",
+          "label": "中リスク"
+        }
+      },
+      "r2d": {
+        "critical": {
+          "action": "作業停止の検討",
+          "label": "重大"
+        },
+        "follow_up": {
+          "action": "定期監視で十分",
+          "label": "監視"
+        },
+        "high": {
+          "action": "優先的な介入が必要",
+          "label": "高"
+        },
+        "low": {
+          "action": "構造化された再評価を実施",
+          "label": "低"
+        },
+        "medium": {
+          "action": "監督強化が必要",
+          "label": "中"
+        }
+      }
+    },
+    "fk": {
+      "exposure": {
+        "v0_5": "極めて稀（年1回）",
+        "v1": "稀（月1回）",
+        "v10": "継続的（1日の大部分）",
+        "v2": "時々（週1回）",
+        "v3": "しばしば（週数回）",
+        "v6": "頻繁（毎日）"
+      },
+      "likelihood": {
+        "v0_1": "ほぼ不可能",
+        "v0_2": "極めて低い",
+        "v0_5": "予期しないが可能性あり",
+        "v1": "低い可能性、無視できない",
+        "v10": "極めて高い／予想される",
+        "v3": "稀だが可能性あり",
+        "v6": "かなり可能性が高い"
+      },
+      "severity": {
+        "v1": "軽微、応急処置",
+        "v100": "大災害、複数の死亡者",
+        "v15": "非常に深刻、四肢の損失",
+        "v3": "重大、外部治療",
+        "v40": "災害、単一の死亡者",
+        "v7": "深刻、永続的な害"
+      }
+    },
+    "fmea": {
+      "detection": {
+        "v1": "ほぼ確実に検出",
+        "v10": "検出不可",
+        "v2": "検出の可能性が非常に高い",
+        "v3": "検出の可能性が高い",
+        "v4": "中高",
+        "v5": "中程度",
+        "v6": "低中",
+        "v7": "低い",
+        "v8": "非常に低い",
+        "v9": "わずかな可能性"
+      },
+      "occurrence": {
+        "v1": "ほぼ不可能（< 1/1,000,000）",
+        "v10": "ほぼ確実（≥ 1/2）",
+        "v2": "稀（1/20,000）",
+        "v3": "非常に低い（1/4,000）",
+        "v4": "低い（1/1,000）",
+        "v5": "中低（1/400）",
+        "v6": "中程度（1/80）",
+        "v7": "中高（1/40）",
+        "v8": "高い（1/20）",
+        "v9": "非常に高い（1/8）"
+      },
+      "severity": {
+        "v1": "影響なし — 気づかれない",
+        "v10": "破滅的 — 死亡事故/大規模事故",
+        "v2": "極軽微 — 無視できる影響",
+        "v3": "軽微 — わずかな支障",
+        "v4": "低 — 性能低下",
+        "v5": "中程度 — 著しい性能低下",
+        "v6": "高 — システム機能障害",
+        "v7": "極めて高 — 動作不能",
+        "v8": "危険（警告あり） — 負傷リスク",
+        "v9": "危険（警告なし） — 重傷"
+      }
+    },
+    "hazop": {
+      "guideWords": {
+        "after": "後",
+        "before": "前",
+        "early": "早期",
+        "late": "遅延",
+        "less": "少ない",
+        "more": "多い",
+        "noNot": "なし/ない",
+        "otherThan": "以外",
+        "partOf": "一部",
+        "reverse": "逆"
+      },
+      "parameters": {
+        "composition": "組成",
+        "flow": "流量",
+        "level": "レベル",
+        "mixing": "混合",
+        "ph": "pH",
+        "pressure": "圧力",
+        "reaction": "反応",
+        "speed": "速度",
+        "temperature": "温度",
+        "time": "時間"
+      }
+    },
+    "lopa": {
+      "initFreq": {
+        "v0_00001": "10万年に1回 — 極めて稀",
+        "v0_0001": "1万年に1回 — 非常に稀",
+        "v0_001": "1,000年に1回 — 稀",
+        "v0_01": "100年に1回 — 時々",
+        "v0_1": "10年に1回 — 頻繁",
+        "v1": "年1回 — 非常に頻繁"
+      },
+      "pfd": {
+        "v0_001": "自動安全システム（SIL-1クラス）",
+        "v0_01": "訓練されたオペレーターの対応/アラーム",
+        "v0_1": "簡単な管理統制"
+      }
+    },
+    "matrix": {
+      "likelihood": {
+        "i1": {
+          "description": "非常に低い（ほぼ不可能）"
+        },
+        "i2": {
+          "description": "低い（稀、予期しない）"
+        },
+        "i3": {
+          "description": "中程度（起こりにくいが可能）"
+        },
+        "i4": {
+          "description": "高い（起こりやすい、驚くことではない）"
+        },
+        "i5": {
+          "description": "非常に高い（予想される、避けられない）"
+        }
+      },
+      "severity": {
+        "i1": {
+          "description": "非常に軽微（休業なし）"
+        },
+        "i2": {
+          "description": "軽微（休業災害なし）"
+        },
+        "i3": {
+          "description": "中程度（休業災害）"
+        },
+        "i4": {
+          "description": "重大（永続的な害、切断）"
+        },
+        "i5": {
+          "description": "破滅的（死亡、複数の死亡）"
+        }
+      }
+    },
+    "methods": {
+      "bow_tie": {
+        "description": "ボウタイ — 脅威–バリア–結果",
+        "name": "ボウタイ",
+        "tooltip": "予防・軽減バリアを含む脅威の可能性と結果の重大度、バリア強度からの残存リスク"
+      },
+      "checklist": {
+        "description": "チェックリスト — 適合率",
+        "name": "チェックリスト",
+        "tooltip": "OK/NG/部分的項目からの重み付け適合性—監査・検査に適している"
+      },
+      "fine_kinney": {
+        "description": "可能性 × 重大度 × 暴露の積",
+        "name": "Fine-Kinney",
+        "tooltip": "一般的な定量的リスク手法：L（0.1-10）、S（1-100）、E（0.5-10）；ISO 31000に準拠します。"
+      },
+      "fmea": {
+        "description": "故障モード影響解析 — RPN",
+        "name": "FMEA",
+        "tooltip": "深刻度（1-10）× 発生度（1-10）× 検出度（1-10）= RPN。運用・保守に最適；IEC 60812準拠。"
+      },
+      "fta": {
+        "description": "フォルトツリー解析 — システム信頼性",
+        "name": "FTA",
+        "tooltip": "AND/ORゲートでシステム故障を分解；航空、原子力、重要システムで使用；IEC 61025準拠。"
+      },
+      "hazop": {
+        "description": "危険性と運転性の研究",
+        "name": "HAZOP",
+        "tooltip": "ガイドワード（No、Less、More、Reverse等）でプロセス逸脱を探索；化学・石油プラントで一般的；IEC 61882準拠。"
+      },
+      "jsa": {
+        "description": "作業安全分析 — ステップベース危険性",
+        "name": "JSA",
+        "tooltip": "ステップ毎の深刻度 × 可能性 / 管理有効性；建設・現場作業に必須。"
+      },
+      "l_matrix": {
+        "description": "5×5可能性-深刻度リスクマトリックス",
+        "name": "L型マトリックス",
+        "tooltip": "可能性（1-5）と深刻度（1-5）を選択；25セルのカラーマトリックスからリスクを読み取り（トルコOHS実務に準拠）。"
+      },
+      "lopa": {
+        "description": "防護層解析 — 頻度削減",
+        "name": "LOPA",
+        "tooltip": "開始頻度に層のPFD値を乗算；プロセス安全でSIL目標と組み合わせて使用。"
+      },
+      "r_skor": {
+        "description": "9パラメータによる重み付きフィールドスクリーニングスコア",
+        "name": "R-SKOR 2D",
+        "tooltip": "RiskNova手法：9つのパラメータ（C1-C9）で視覚・フィールド入力を重み付け；画像からの自動スコアリングをサポート。"
+      }
+    },
+    "panel": {
+      "bowtie": {
+        "consequence": "結果の深刻度",
+        "mitigation": "緩和バリア",
+        "prevention": "予防バリア",
+        "rawRisk": "生リスク",
+        "residualRisk": "残存リスク",
+        "threat": "脅威の可能性"
+      },
+      "checklist": {
+        "add": "+ 追加",
+        "compliantLine": "{n} 適合",
+        "itemPlaceholder": "管理項目…",
+        "itemsHeading": "チェック項目 ({count})",
+        "nonCompliantLine": "{n} 不適合",
+        "partialLine": "{n} 部分的",
+        "removeTitle": "削除",
+        "statusKismi": "部分的",
+        "statusNa": "N/A",
+        "statusUygun": "適合",
+        "statusUygunDegil": "不適合"
+      },
+      "fmea": {
+        "detection": "検出度 (D)",
+        "formula": "S × O × D = RPN",
+        "occurrence": "発生度 (O)",
+        "severity": "深刻度 (S)"
+      },
+      "fta": {
+        "add": "+ 追加",
+        "componentDefault": "コンポーネント {n}",
+        "componentPlaceholder": "コンポーネント名",
+        "componentsHeading": "コンポーネント ({count})",
+        "failureRateTitle": "故障確率 (0–1)",
+        "gate": "ゲート",
+        "gateType": "ゲートタイプ:",
+        "removeTitle": "削除",
+        "systemCriticality": "システム重要度",
+        "systemProb": "システム P"
+      },
+      "hazop": {
+        "detectEasy": "容易",
+        "detectHard": "困難",
+        "detectability": "検出可能性",
+        "deviation": "逸脱の説明",
+        "deviationPlaceholder": "逸脱を説明してください…",
+        "guideWord": "ガイドワード",
+        "likelihood": "発生可能性",
+        "parameter": "プロセスパラメータ",
+        "severity": "重大度"
+      },
+      "jsa": {
+        "add": "+ 追加",
+        "avg": "平均",
+        "control": "管理策",
+        "controlsPlaceholder": "管理措置…",
+        "hazardPlaceholder": "危険要因…",
+        "highRisk": "高リスクステップ",
+        "jobPlaceholder": "作業名…",
+        "jobTitle": "作業タイトル",
+        "likelihood": "発生可能性",
+        "max": "最大",
+        "removeTitle": "削除",
+        "severity": "重大度",
+        "stepDefault": "ステップ {n}",
+        "stepDescPlaceholder": "ステップの説明…",
+        "stepScoreIntro": "ステップスコア:",
+        "stepsHeading": "作業ステップ ({count})"
+      },
+      "lopa": {
+        "addLayer": "+ 追加",
+        "consequence": "結果の重大度",
+        "consequenceV1": "軽微",
+        "consequenceV2": "軽度",
+        "consequenceV3": "中程度",
+        "consequenceV4": "重大",
+        "consequenceV5": "破滅的",
+        "initFreq": "初期事象頻度",
+        "layerDefault": "レイヤー {n}",
+        "layerNamePlaceholder": "レイヤー名",
+        "layerPfd": "レイヤー PFD",
+        "layersHeading": "保護レイヤー ({count})",
+        "meetsTarget": "許容目標を満たします",
+        "removeTitle": "削除",
+        "riskReduction": "リスク低減",
+        "target": "目標",
+        "targetMet": "達成",
+        "targetNotMet": "未達成"
+      }
+    },
+    "participants": {
+      "roles": {
+        "employee_representative": "従業員代表",
+        "employer": "雇用者",
+        "employer_representative": "雇用者代表",
+        "knowledgeable_employee": "リスクに精通した従業員",
+        "ohs_specialist": "労働安全衛生専門家",
+        "other_health_personnel": "その他の保健従事者",
+        "support_staff": "サポートスタッフ",
+        "workplace_physician": "産業医"
+      }
+    },
+    "r2dParams": {
+      "c1": {
+        "description": "現場で観察された危険物の数/密度",
+        "label": "危険密度"
+      },
+      "c2": {
+        "description": "ヘルメット、手袋、ゴーグルなどの不備",
+        "label": "PPE不備"
+      },
+      "c3": {
+        "description": "立入禁止区域への侵入、無防備な作業、転落危険",
+        "label": "行動リスク"
+      },
+      "c4": {
+        "description": "熱、騒音、振動および類似のストレス要因",
+        "label": "環境ストレス"
+      },
+      "c5": {
+        "description": "ガス漏れ、化学物質、電気的危険",
+        "label": "化学物質・電気"
+      },
+      "c6": {
+        "description": "出口の閉鎖、濡れた床、通路の障害物",
+        "label": "アクセス・障害"
+      },
+      "c7": {
+        "description": "ガードの迂回、保守の遅れ",
+        "label": "機械・プロセス"
+      },
+      "c8": {
+        "description": "フォークリフトの集中、ライン交差、歩行者と車両の衝突",
+        "label": "車両交通"
+      },
+      "c9": {
+        "description": "訓練の不足、警告標識の欠如",
+        "label": "組織的負荷"
+      },
+      "source": {
+        "visualAnalysis": "視覚分析"
+      }
+    },
+    "ui": {
+      "fk": {
+        "exposure": "暴露度 (E)",
+        "likelihood": "可能性 (L)",
+        "severity": "重要度 (S)"
+      },
+      "matrix": {
+        "axisOs": "L\\S",
+        "likelihoodHeading": "可能性 ({n})",
+        "severityHeading": "重要度 ({n})"
+      },
+      "page": {
+        "analysisNotePlaceholder": "各行はリスクトピックまたは不適合グループです。行ごとに1つ以上の写真を添付できます。",
+        "analysisTitlePlaceholder": "現場リスク分析",
+        "describeRiskGroup": "リスクグループを簡潔に説明してください"
+      },
+      "r2d": {
+        "base": "ベース",
+        "dominant": "支配的",
+        "parameters": "パラメータ",
+        "peak": "ピーク"
+      },
+      "severity": {
+        "critical": "重大",
+        "high": "高",
+        "low": "低",
+        "medium": "中"
+      }
+    },
+    "wizard": {
+      "common": {
+        "add": "追加",
+        "address": "住所",
+        "back": "戻る",
+        "cancel": "キャンセル",
+        "companyFallback": "会社",
+        "delete": "削除",
+        "description": "説明",
+        "findings": "検出事項",
+        "goToResults": "結果を表示",
+        "images": "画像",
+        "lines": "行",
+        "location": "場所",
+        "method": "方法",
+        "next": "次へ",
+        "no": "いいえ",
+        "report": "レポート",
+        "risk": "リスク",
+        "row": "行",
+        "save": "保存",
+        "saving": "保存中…",
+        "scoreDetailPrefix": "スコア詳細 —",
+        "type": "種類",
+        "update": "更新",
+        "visual": "画像",
+        "yes": "はい"
+      },
+      "header": {
+        "backToList": "リストに戻る",
+        "badgeAiManual": "AI + 手動検出事項",
+        "badgeExport": "PDF / Word / Excel",
+        "newAnalysis": "新規分析",
+        "wizardDescription": "会社を選択し、チームを定義し、画像をアップロードしてから、AIと手動による発見とスコアリングを実行します。",
+        "wizardTitle": "視覚的リスク分析"
+      },
+      "list": {
+        "companyLabel": "会社・組織",
+        "companyPlaceholder": "— 会社を選択 —",
+        "confirmDelete": "よろしいですか？",
+        "deleteAnalysis": "削除",
+        "description": "会社を選択し、過去の分析を確認するか、新しい分析を開始してください。",
+        "emptyDescription": "上のボタンを使用して、この会社の最初のリスク分析を開始してください。",
+        "emptyTitle": "まだ分析がありません",
+        "eyebrow": "リスク分析",
+        "findingsCount": "{count}件の発見",
+        "historyCount": "{count}件の保存された分析",
+        "historyTitle": "{name} — 分析履歴",
+        "newAnalysis": "+ 新規分析を開始",
+        "statusArchived": "アーカイブ済み",
+        "statusCompleted": "完了",
+        "statusDraft": "下書き",
+        "title": "リスク分析管理"
+      },
+      "messages": {
+        "analysisComplete": "分析が完了しました！",
+        "analysisFailed": "分析を完了できませんでした。",
+        "analysisFailedDetail": "AI分析が失敗しました。{detail}",
+        "analysisPartial": "AI分析が部分的に完了しました。{successful}/{total}枚の画像を処理しました。{errors}枚の画像でエラーが発生しました。",
+        "analysisStarting": "分析を開始しています…",
+        "analysisSummary": "AI分析が完了しました。{risks}件のリスク、{positive}件のポジティブな観察。",
+        "analyzingImageProgress": "画像を分析中 {current}/{total}: {fileName}",
+        "analyzingRowImage": "画像を分析中: 行{row}、{fileName}…",
+        "genericAiError": "OpenAIまたはAnthropic段階でエラーが発生しました。",
+        "needImageToAnalyze": "分析を開始するには、少なくとも1つの画像を追加してください。"
+      },
+      "methodCard": {
+        "params": "{count}個のパラメータ",
+        "score": "スコア:"
+      },
+      "nav": {
+        "aiAnalyzingShort": "分析中…",
+        "aiStartShort": "AI分析を開始"
+      },
+      "notifications": {
+        "savedBody": "{title} — {findings}件の発見、{critical}件が重要/高リスク",
+        "savedTitle": "リスク分析が保存されました",
+        "updatedTitle": "リスク分析が更新されました"
+      },
+      "save": {
+        "error": "保存中にエラーが発生しました。",
+        "noCompany": "会社を選択せずに保存することはできません。",
+        "oversized": "{fileName}は10MBの制限を超えています。保存前により小さい画像をアップロードしてください。",
+        "successNew": "分析が正常に保存されました！",
+        "successUpdated": "分析が正常に更新されました！"
+      },
+      "step1": {
+        "analysisNote": "分析メモ",
+        "analysisTitle": "分析タイトル",
+        "company": "会社・組織",
+        "companyCardAddress": "住所:",
+        "companyCardType": "種別:",
+        "companyPlaceholder": "会社・組織を選択",
+        "companyRequired": "分析には会社の選択が必要です。",
+        "department": "部門・部署",
+        "departmentPlaceholder": "部門を選択",
+        "departmentRequired": "部門の選択が必要です。",
+        "editCompanyStructure": "会社構造を編集",
+        "location": "場所・作業エリア",
+        "locationPlaceholder": "場所を選択",
+        "locationRequired": "場所の選択が必要です。",
+        "method": "分析方法",
+        "subtitle": "このリスク分析が適用される会社、場所、部門を選択してください。",
+        "title": "分析コンテキスト"
+      },
+      "step2": {
+        "addParticipant": "参加者を手動で追加",
+        "certificate": "証明書番号（該当する場合）",
+        "certificatePlaceholder": "該当する場合は入力",
+        "fullName": "氏名",
+        "noTeamBody": "この会社にはまだチームメンバーが設定されていません。会社ページでチームタブを開き、「リスク評価チーム」を作成してメンバーを追加してください。メンバーは自動的にここに表示されます。",
+        "noTeamLink": "会社チーム管理に移動",
+        "noTeamTitle": "リスク評価チームが定義されていません",
+        "participantN": "参加者 {n}",
+        "pickFromTeam": "会社チームから選択",
+        "rolePlaceholder": "役職を選択",
+        "roleType": "役職・肩書きタイプ",
+        "subtitle": "保存されたスタッフから選択するか、参加者を手動で追加してください。",
+        "title": "リスク分析に関わる人員",
+        "titleField": "役職・肩書きの説明",
+        "titlePlaceholder": "例：クラスA専門家"
+      },
+      "step3": {
+        "addImage": "画像を追加",
+        "aiAnalyzing": "AI分析を実行中…",
+        "aiStart": "Nova AIリスク分析を開始",
+        "aiSub": "Nova AIは各画像を個別に分析します。",
+        "bulkUpload": "一括アップロード（それぞれ別の行として）",
+        "deleteRow": "行を削除",
+        "newRow": "行を追加",
+        "rowHint": "この行の下に全体図とクローズアップ画像をグループ化してください。",
+        "rowN": "行 {n}",
+        "rowTitle": "行タイトル",
+        "rowTitlePlaceholder": "例：積み重ねエリア",
+        "subtitle": "各行は1つのリスクトピックです。画像をアップロードしてAI分析を開始してください。",
+        "summaryCompany": "会社",
+        "summaryImages": "画像",
+        "summaryLocation": "場所",
+        "summaryMethod": "方法",
+        "title": "リスク行と画像"
+      },
+      "step4": {
+        "addedLater": "後で追加",
+        "addRiskPin": "リスクピンを追加",
+        "aiAnalyzingDetail": "Nova AIが各画像を分析しています…",
+        "analyzingInline": "分析中…",
+        "areaAssessment": "エリア評価",
+        "avgScore": "平均スコア",
+        "cannotAnalyzeBody": "この画像はリスク分析に適していません。",
+        "cannotAnalyzeTitle": "リスク分析を実行できません",
+        "capaBadge": "CAPA候補",
+        "capaCandidate": "CAPA候補",
+        "cleanNoRisk": "クリア — リスクは検出されませんでした",
+        "confidenceHigh": "確認済み所見",
+        "confidenceLow": "検証を推奨",
+        "confidenceMedium": "AI所見",
+        "criticalHigh": "重大/高",
+        "deleteFindingAria": "所見を削除",
+        "deleteFindingConfirm": "所見「{title}」を削除しますか？",
+        "deleteFindingTitle": "所見を削除",
+        "detectedPrefix": "検出：",
+        "emptyResultsDesc": "ステップ3で画像をアップロードして分析を実行してください。",
+        "emptyResultsTitle": "まだ結果がありません",
+        "findingTitle": "発見事項のタイトル",
+        "findingTitlePlaceholder": "例：手すりの欠如",
+        "manualPinConfirm": "追加",
+        "manualPinHint": "手動ピンで独自の発見事項を追加できます。",
+        "manualPinTitle": "手動リスクピンを追加",
+        "metaEyebrowArea": "エリア評価",
+        "metaEyebrowPositive": "ポジティブな観察事項",
+        "noRiskDetectedBody": "AIはこの画像で意味のある危険や不適合を発見しませんでした。",
+        "noRiskDetectedTitle": "リスクは検出されませんでした",
+        "noRiskThisImageBody": "AIはこの画像で具体的な危険を発見しませんでした。手動で発見事項を追加することもできます。",
+        "noRiskThisImageTitle": "この画像に重大なリスクはありません",
+        "notRealPhotoBody": "この画像は図面、イラスト、または合成レンダリングです。リスク分析は実際の現場写真でのみ実行されます。",
+        "notRealPhotoTitle": "実際の写真ではありません",
+        "peopleDetected": "{count}人が検出されました",
+        "photoQuality": "画質：",
+        "photoQualityLow": "低",
+        "photoQualityMedium": "中",
+        "pinBanner": "画像をクリックしてリスクピンを追加",
+        "pinModeActive": "ピンモードがアクティブです…",
+        "positiveFindings": "ポジティブな観察事項",
+        "positiveObservationsHint": "ポジティブな観察事項は以下に記載されています。",
+        "resultsSubtitle": "リスクカードは画像の注釈にリンクされたままです。スコアを変更するにはパラメータを調整してください。",
+        "resultsTitle": "注釈付き発見事項",
+        "riskCount": "リスク：{count}",
+        "rowImagesFindings": "画像：{images}・発見事項：{findings}",
+        "saveWarning": "結果はまだ保存されていません！保存せずに離れると、すべての発見事項が失われます。",
+        "scorePanelIntro": "スコア詳細 — {method}",
+        "severity": "重要度",
+        "totalFindings": "総発見事項",
+        "visualN": "画像 {n}"
+      },
+      "steps": {
+        "context": "分析コンテキスト",
+        "images": "画像",
+        "results": "結果",
+        "team": "分析チーム"
+      },
+      "validate": {
+        "company": "最初に会社・組織を選択してください。",
+        "department": "部門・部署を選択してください。",
+        "firmLocationDept": "会社、場所、部門を選択してください。",
+        "location": "勤務場所を選択してください。",
+        "participants": "責任者の氏名と役職を少なくとも1名入力してください。",
+        "step2Participants": "責任者の氏名と役職を少なくとも1名入力してください。",
+        "step3Images": "画像を少なくとも1枚追加してください。"
       }
     }
   },
+  "sharedDocument": {
+    "createdOn": "作成日: {date}",
+    "footerCreatedWith": "RiskNovaで作成",
+    "hashLabel": "ハッシュ:",
+    "loading": "文書を読み込み中…",
+    "sharedBadge": "共有文書",
+    "signaturesHeading": "署名",
+    "statusDraft": "下書き",
+    "statusPendingApproval": "承認待ち",
+    "statusReady": "準備完了",
+    "statusRevision": "修正"
+  },
+  "sharedRisk": {
+    "analysisNoteHeading": "評価メモ",
+    "defaultTitle": "リスク評価レポート",
+    "departmentLabel": "部門:",
+    "findingsByRowHeading": "行ベースのリスク発見事項",
+    "findingsImagesCount": "{findings}件の発見事項 · {images}枚の画像",
+    "footerGeneratedBy": "このレポートはRiskNova OHSプラットフォームによって生成されました。",
+    "footerMethodNote": "レポート内容は{method}手法を使用して評価されました。",
+    "legalBasisHeading": "規制参照",
+    "locationLabel": "場所:",
+    "methods": {
+      "fine_kinney": "Fine-Kinney",
+      "fmea": "FMEA",
+      "hazop": "HAZOP",
+      "l_matrix": "L-Matrix",
+      "r_skor": "R-SCORE 2D"
+    },
+    "noFindingsInRow": "この行には所見がありません。",
+    "platformLabel": "RiskNova OHSプラットフォーム",
+    "recommendation": "推奨事項",
+    "reportEyebrow": "リスクアセスメントレポート",
+    "rowTitleFallback": "行 {n}",
+    "severity": {
+      "critical": "重大",
+      "high": "高",
+      "low": "低",
+      "medium": "中"
+    },
+    "statCritical": "重大",
+    "statHigh": "高",
+    "statTotal": "総所見数",
+    "teamHeading": "評価チーム"
+  },
+  "solutionCenter": {
+    "chat": "チャット",
+    "copy": "コピー",
+    "description": "Novaは法令を解釈し、適切なモジュールに案内し、文書やワークフローアクションを開始する運用OHSエージェントです。",
+    "documents": "マイドキュメント",
+    "history": "履歴",
+    "inputPlaceholder": "Novaに実行したい内容をお伝えください...",
+    "queries": "クエリ",
+    "referenced": "参照付き",
+    "save": "保存",
+    "saved": "保存済み",
+    "sources": "法令ソース",
+    "title": "Nova"
+  },
   "solutions": {
-    "osgbPage": {
-      "metaTitle": "OSGB solution and quote | RiskNova",
-      "metaDescription": "Package options and tailored quote requests for OSGBs serving multiple workplaces.",
-      "heroEyebrow": "OSGB",
-      "heroTitleLead": "Bring your client portfolio and team together in",
-      "heroTitleAccent": "one panel",
-      "heroTitleTrail": ".",
-      "heroBody": "Clarify personnel, task tracking and client sites. Individual plans start from {starterPrice}/month Starter; the OSGB model covers multi-site portfolios and extra seats, so the figures below are indicative USD segments — exact terms are confirmed after the quote form or registration flow.",
-      "ctaRegister": "Request a quote via registration",
-      "ctaForm": "Go to quote form",
-      "footerNoteLead": "Single employer across many locations?",
-      "footerNoteLink": "See the enterprise solution page",
-      "footerNoteTrail": "."
-    },
-    "enterprisePage": {
-      "metaTitle": "Enterprise solution and quote | RiskNova",
-      "metaDescription": "Quote requests and contact for multi-site organisations with specialised OHS needs.",
-      "heroEyebrow": "Enterprise",
-      "heroTitle": "Consistent OHS operations across your locations with bespoke onboarding.",
-      "heroBody": "We do not offer self-service card checkout for enterprise use. Share your needs and our sales team will follow up with a tailored quote, limits and implementation.",
-      "ctaRegister": "Request a quote via registration",
-      "ctaForm": "Contact us (form)",
-      "footerNoteLead": "Serving clients as an OSGB?",
-      "footerNoteLink": "OSGB packages page",
-      "footerNoteTrail": "."
-    },
     "commercial": {
-      "osgbSectionTitle": "OSGB packages",
-      "osgbSectionIntro": "Amounts are indicative starting segments in USD; tax, FX and contract scope are confirmed when the quote is finalised. There is no card checkout — we align limits and pricing once we understand your structure.",
-      "enterpriseSectionTitle": "Company / enterprise quote",
-      "enterpriseSectionIntro": "For multi-site organisations, field-heavy operations and bespoke setups there is no card payment on this path. Share your context so we can return with a tailored offer.",
-      "enterpriseCta": "Create quote request",
-      "enterpriseSecondaryCta": "Write us for an OSGB package",
-      "osgbFooterHint": "Single employer across many locations?",
-      "osgbFooterLink": "See the enterprise solution page",
-      "enterpriseFooterHint": "Serving clients as an OSGB?",
-      "enterpriseFooterLink": "Go to OSGB packages page",
-      "recommended": "Recommended",
+      "enterpriseCta": "見積もりリクエストを作成",
+      "enterpriseFooterHint": "OSGBとしてクライアントにサービスを提供していますか？",
+      "enterpriseFooterLink": "OSGBパッケージページへ移動",
+      "enterpriseSecondaryCta": "OSGBパッケージについてお問い合わせください",
+      "enterpriseSectionIntro": "マルチサイト組織、現場集約型業務、カスタムセットアップの場合、このパスではカード決済はご利用いただけません。お客様の状況をお聞かせいただければ、カスタマイズされたオファーをご提案いたします。",
+      "enterpriseSectionTitle": "企業・法人見積もり",
       "offers": {
         "osgb_starter": {
+          "ctaLabel": "Starter見積もりをリクエスト",
           "name": "OSGB Starter",
-          "pricePeriod": "from / month",
-          "priceFinePrint": "Indicative starting segment. Final pricing depends on firm count and seats after the quote.",
-          "summary": "For smaller OSGB teams with a limited portfolio — unlike the individual Starter at {individualStarter}/month it covers multi-site and team workflows.",
-          "workspacesLabel": "5 active firms / workspaces",
-          "seatsLabel": "2 active team seats",
-          "features": [
-            "Personnel module and invitation flows",
-            "Tasks, work tracking and assignment board",
-            "Client workplace portfolio view",
-            "Announcements and core operational flows"
-          ],
-          "ctaLabel": "Request Starter quote"
+          "priceFinePrint": "参考開始セグメント。最終価格は見積もり後の企業数とシート数によって決まります。",
+          "pricePeriod": "月額 / から",
+          "seatsLabel": "アクティブチームシート2席",
+          "summary": "限定的なポートフォリオを持つ小規模OSGBチーム向け — 個人向けStarter（月額{individualStarter}）とは異なり、マルチサイトとチームワークフローに対応しています。",
+          "workspacesLabel": "アクティブ企業・ワークスペース5社"
         },
         "osgb_team": {
+          "ctaLabel": "Team見積もりをリクエスト",
           "name": "OSGB Team",
-          "pricePeriod": "from / month",
-          "priceFinePrint": "Indicative mid segment; tailored quote reflects field intensity, reporting and seats.",
-          "summary": "Growing OSGBs: more firms, field coordination and team scale.",
-          "workspacesLabel": "15 active firms / workspaces",
-          "seatsLabel": "5 active team seats",
-          "features": [
-            "Everything in Starter",
-            "Advanced reporting and exports",
-            "Field audits and checklists (per agreement)",
-            "Priority solution / onboarding channel"
-          ],
-          "ctaLabel": "Request Team quote"
+          "priceFinePrint": "参考中間セグメント。カスタマイズ見積もりは現場強度、レポート、シート数を反映します。",
+          "pricePeriod": "月額 / から",
+          "seatsLabel": "アクティブチームシート5席",
+          "summary": "成長中のOSGB：より多くの企業、現場調整、チーム規模の拡大。",
+          "workspacesLabel": "アクティブ企業・ワークスペース15社"
         }
       },
-      "enterpriseHighlights": [
-        "Multi-site companies and institutions",
-        "Tailored quote aligned with operational volume",
-        "Integration and onboarding planning when needed"
-      ]
+      "osgbFooterHint": "多拠点にわたる単一雇用主ですか？",
+      "osgbFooterLink": "エンタープライズソリューションページをご覧ください",
+      "osgbSectionIntro": "金額は米ドルでの参考開始セグメントです。税金、為替、契約範囲は見積もり確定時に確認されます。カード決済はありません。お客様の構造を理解した上で制限と価格設定を調整いたします。",
+      "osgbSectionTitle": "OSGB パッケージ",
+      "recommended": "推奨"
+    },
+    "enterprisePage": {
+      "ctaForm": "お問い合わせ（フォーム）",
+      "ctaRegister": "登録による見積もり依頼",
+      "footerNoteLead": "OSGB としてクライアントにサービスを提供していますか？",
+      "footerNoteLink": "OSGB パッケージページ",
+      "footerNoteTrail": "。",
+      "heroBody": "企業利用向けのセルフサービスカード決済は提供しておりません。ご要望をお聞かせください。営業チームがカスタマイズされた見積もり、制限、導入についてフォローアップいたします。",
+      "heroEyebrow": "エンタープライズ",
+      "heroTitle": "カスタマイズされたオンボーディングによる各拠点での一貫したOHS運用。",
+      "metaDescription": "専門的なOHSニーズを持つマルチサイト組織向けの見積もり依頼とお問い合わせ。",
+      "metaTitle": "エンタープライズソリューションと見積もり | RiskNova"
     },
     "leadDialog": {
-      "closeAria": "Close",
-      "regionChip": "Region: {code}",
-      "languageChip": "Language: {code}",
-      "submittedTitle": "Request received",
-      "submittedBody": "Our sales team will contact you shortly to clarify scope and share quote and onboarding options. No card payment in this flow — terms are agreed via email or call.",
-      "okButton": "OK",
-      "contactLabel": "Contact person",
-      "contactPlaceholder": "Full name",
-      "workEmailLabel": "Work email",
-      "phoneLabel": "Phone",
-      "phonePlaceholder": "+1 …",
-      "messageLabel": "Your needs (short)",
-      "messagePlaceholder": "How many sites, which modules matter, what rollout do you expect?",
-      "messageHint": "Helps us prepare the right package and migration path.",
-      "cancelButton": "Cancel",
-      "submitting": "Sending…",
-      "errorUnexpected": "An unexpected error occurred while saving the request.",
-      "errorFailed": "Could not save the request.",
-      "companyPlaceholder": "Organisation name",
-      "scalePlaceholder": "e.g. 12",
-      "employeePlaceholder": "e.g. 250",
-      "professionalPlaceholder": "e.g. 8",
-      "osgb": {
-        "badge": "OSGB contact request",
-        "title": "Tell us about your OSGB",
-        "description": "Share how many clients you serve, team shape and operational intensity so we can propose the right package and migration options.",
-        "primaryCta": "Send request",
-        "companyLabel": "OSGB / organisation name",
-        "scaleLabel": "Active client firms you serve",
-        "employeeLabel": "Total employees across those workplaces",
-        "professionalLabel": "Specialists / physicians / DSP headcount"
-      },
+      "cancelButton": "キャンセル",
+      "closeAria": "閉じる",
+      "companyPlaceholder": "組織名",
+      "contactLabel": "担当者",
+      "contactPlaceholder": "氏名",
+      "employeePlaceholder": "例：250",
       "enterprise": {
-        "badge": "Company / enterprise contact",
-        "title": "Tell us about your organisation",
-        "description": "There is no payment step here. When you submit, our sales or solutions team follows up to agree bespoke limits and pricing.",
-        "primaryCta": "Send request",
-        "companyLabel": "Company / organisation name",
-        "scaleLabel": "Locations / sites",
-        "employeeLabel": "Total employees",
-        "professionalLabel": "People involved in coordination"
+        "badge": "企業・法人お問い合わせ",
+        "companyLabel": "企業・組織名",
+        "description": "こちらに支払い手続きはありません。送信後、営業またはソリューションチームがカスタマイズされた制限と価格設定について合意するためにフォローアップいたします。",
+        "employeeLabel": "総従業員数",
+        "primaryCta": "リクエスト送信",
+        "professionalLabel": "調整に関わる人数",
+        "scaleLabel": "拠点・サイト数",
+        "title": "組織についてお聞かせください"
       },
+      "errorFailed": "リクエストを保存できませんでした。",
+      "errorUnexpected": "リクエストの保存中に予期しないエラーが発生しました。",
+      "languageChip": "言語: {code}",
+      "messageHint": "適切なパッケージと移行パスを準備するのに役立ちます。",
+      "messageLabel": "ご要望（簡潔に）",
+      "messagePlaceholder": "サイト数、重要なモジュール、想定される展開について教えてください",
+      "okButton": "OK",
+      "osgb": {
+        "badge": "OSGB連絡リクエスト",
+        "companyLabel": "OSGB / 組織名",
+        "description": "サービス提供先のクライアント数、チーム構成、業務強度をお聞かせください。適切なパッケージと移行オプションをご提案いたします。",
+        "employeeLabel": "全職場の総従業員数",
+        "primaryCta": "リクエスト送信",
+        "professionalLabel": "専門家 / 医師 / DSP人数",
+        "scaleLabel": "サービス提供中のクライアント企業数",
+        "title": "OSGBについて教えてください"
+      },
+      "phoneLabel": "電話番号",
+      "phonePlaceholder": "+1 …",
+      "professionalPlaceholder": "例: 8",
+      "regionChip": "地域: {code}",
+      "scalePlaceholder": "例: 12",
+      "submittedBody": "営業チームが間もなくご連絡し、範囲を明確にして見積もりとオンボーディングオプションをお伝えします。この流れではカード決済はありません。条件はメールまたは電話で合意します。",
+      "submittedTitle": "リクエストを受信しました",
+      "submitting": "送信中…",
+      "workEmailLabel": "勤務先メールアドレス",
       "workEmailPlaceholder": "you@company.com"
+    },
+    "osgbPage": {
+      "ctaForm": "見積もりフォームへ",
+      "ctaRegister": "登録経由で見積もりリクエスト",
+      "footerNoteLead": "複数拠点の単一雇用主ですか？",
+      "footerNoteLink": "エンタープライズソリューションページをご覧ください",
+      "footerNoteTrail": "。",
+      "heroBody": "人員、タスク追跡、クライアントサイトを明確化します。個人プランは{starterPrice}/月のスターターから開始。OSGBモデルはマルチサイトポートフォリオと追加席をカバーするため、以下の数値は参考的なUSDセグメントです。正確な条件は見積もりフォームまたは登録フローの後に確認されます。",
+      "heroEyebrow": "OSGB",
+      "heroTitleAccent": "ワンパネル",
+      "heroTitleLead": "クライアントポートフォリオとチームを統合",
+      "heroTitleTrail": "。",
+      "metaDescription": "複数の職場にサービスを提供するOSGB向けのパッケージオプションとカスタマイズ見積もりリクエスト。",
+      "metaTitle": "OSGBソリューションと見積もり | RiskNova"
     }
   },
-  "legal": {
-    "privacy": {
-      "eyebrow": "Privacy policy",
-      "title": "RiskNova Privacy Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Privacy Policy",
-      "metaDescription": "RiskNova privacy policy: how we process personal data across accounts, product use, billing, email, security and AI-assisted features.",
-      "ogTitle": "Privacy Policy | RiskNova",
-      "ogDescription": "How RiskNova processes personal data, which processors we use and how we support user rights.",
-      "sections": [
-        {
-          "title": "Data controller and scope",
-          "content": "This policy describes how personal data is processed across the RiskNova website, registration, sign-in, subscription, OHS modules, document generation, field inspections, training/exams/surveys, Nova AI and support. For workplace and employee records uploaded by the customer to the platform, RiskNova generally acts as a processor; for its own account, security, billing and support processes it acts as a controller."
-        },
-        {
-          "title": "Categories of personal data",
-          "content": "Name, surname, email, phone, account identifier, organisation and workspace details, role and permission records, session and security logs, usage metrics, support tickets, subscription and payment status, IP and device data may be processed. If users upload them, risk analyses, inspections, incident logs, training, exams, surveys, documents, personnel records and media or data files may also be stored on the platform."
-        },
-        {
-          "title": "Purposes and legal bases",
-          "content": "Data are processed to perform the contract, deliver platform features, run occupational safety processes, authenticate users, prevent abuse, bill and support customers, meet legal obligations, improve the product and respect user choices. Where explicit consent is required, a separate consent text is shown; core service data may rely on contract, legal obligation or legitimate interest instead of consent."
-        },
-        {
-          "title": "AI-assisted features",
-          "content": "Nova AI may process user inputs and related context when producing risk analyses, document drafts, training content or legislation-aware answers. Outputs are decision-support only; final professional and legal judgement remains with the user. Where content may include sensitive or special-category data, explicit consent and/or additional disclosure flows may be required before sending it to AI services."
-        },
-        {
-          "title": "Third-party processors",
-          "content": "Hosting, database, authentication, email, payment, error monitoring and AI features may use providers such as Supabase, Vercel, Resend, Paddle, OpenAI, Anthropic and similar vendors. They process data only as needed to provide the service. Card data are not stored by RiskNova; payments and invoicing run on Paddle infrastructure."
-        },
-        {
-          "title": "International transfers",
-          "content": "Cloud hosting, email, payment and AI services may technically run on infrastructure located abroad, so some data may be transferred to providers outside your country where the service requires it. Where transfers apply, disclosure and consent steps under applicable law (including KVKK where relevant) are managed in the product."
-        },
-        {
-          "title": "Cookies and similar technologies",
-          "content": "RiskNova uses essential session, security, language preference and product cookies. If marketing or third-party tracking cookies are introduced, a separate cookie policy and consent mechanism will be provided as needed. Details are on the /cookie-policy page."
-        },
-        {
-          "title": "Retention and security",
-          "content": "Data are kept for as long as needed to operate the service, meet contractual, security, legal and evidentiary requirements. The platform uses technical measures such as RLS, role checks, separation of service roles, webhook signature verification, rate limiting, audit trails and security event logging."
-        },
-        {
-          "title": "Your rights",
-          "content": "Under applicable data-protection law (including KVKK Article 11 where it applies), you may request access, rectification, erasure, objection, restriction, portability and information via the Privacy / Data Rights area in your profile or at support@getrisknova.com. Erasure requests are balanced against legal retention and security logging requirements."
-        },
-        {
-          "title": "Contact and updates",
-          "content": "This text may change over time. Material updates may require renewed acknowledgement or notice in the product. For privacy and data-protection requests, contact support@getrisknova.com."
-        }
-      ]
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "低危険",
+      "high": "非常に危険",
+      "moderate": "危険"
     },
-    "privacySummary": {
-      "eyebrow": "Privacy policy",
-      "title": "RiskNova Privacy Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Privacy policy",
-      "metaDescription": "Summary of how RiskNova collects and uses personal data.",
-      "ogTitle": "Privacy policy | RiskNova",
-      "ogDescription": "Short privacy summary covering account, product use and subprocessors.",
-      "paragraphs": [
-        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
-        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
-        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
-        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
-        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
-        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
-      ]
-    },
-    "terms": {
-      "eyebrow": "Terms of use",
-      "title": "RiskNova Terms of Use",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Terms of use",
-      "metaDescription": "RiskNova terms of use covering accounts, subscription, billing, acceptable use, AI outputs and customer data responsibilities.",
-      "ogTitle": "Terms of use | RiskNova",
-      "ogDescription": "Terms for the RiskNova SaaS platform: subscription, account security, AI outputs and acceptable use.",
-      "sections": [
-        {
-          "title": "Service scope",
-          "content": "RiskNova is a subscription SaaS platform for occupational health and safety professionals, OSGBs and enterprises, offering risk analysis, field inspections, document generation, training/exams/surveys, reporting, legislation-aware search and Nova AI decision-support features."
-        },
-        {
-          "title": "Account, roles and security",
-          "content": "Users are responsible for the accuracy of account details, password strength and actions taken under their account. Organisation administrators must correctly configure users, roles, workspaces and company authorisations. Suspected unauthorised access must be reported to RiskNova without delay."
-        },
-        {
-          "title": "Acceptable use",
-          "content": "The platform may be used only for lawful, professional and workplace-safety-related purposes. Attempting unauthorised access, reverse engineering, disrupting the service, uploading harmful content, infringing third-party rights, circumventing quotas or processing data unlawfully is prohibited."
-        },
-        {
-          "title": "Customer data and content responsibility",
-          "content": "Risk analyses, inspection records, documents, personnel data, training/exam/survey content and uploaded files are customer content. Users must ensure data uploaded to the platform is lawful, necessary and limited to authorised persons."
-        },
-        {
-          "title": "AI-assisted outputs",
-          "content": "Nova AI and other AI features provide decision support and drafts only. RiskNova does not warrant that outputs are error-free, complete or fit for a particular legal or technical outcome. Users must validate outputs against applicable law, internal procedures and professional judgement."
-        },
-        {
-          "title": "Subscription, billing and limits",
-          "content": "Plan features, fees, usage limits and billing periods are shown on pricing or checkout screens. Individual plans may use self-service checkout; OSGB and enterprise models may follow quote and contact flows. Payments and invoicing may be handled by Paddle as Merchant of Record."
-        },
-        {
-          "title": "Service changes and access",
-          "content": "RiskNova may update product features, plan limits, integrations and these terms over time. Access may be temporarily restricted for security, maintenance, legal compliance or abuse prevention."
-        },
-        {
-          "title": "Limitation of responsibility",
-          "content": "The platform is designed to streamline processes; it does not remove legal duties of employers, safety professionals or organisations. Users remain responsible for field, regulatory and expert review before relying on platform outputs."
-        },
-        {
-          "title": "Contact",
-          "content": "For questions about these terms, subscriptions or accounts, contact support@getrisknova.com."
-        }
-      ]
-    },
-    "termsSummary": {
-      "eyebrow": "Terms of service",
-      "title": "RiskNova Terms and Conditions",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Terms of service",
-      "metaDescription": "Summary of RiskNova terms of service, acceptable use and subscriptions.",
-      "ogTitle": "Terms of service | RiskNova",
-      "ogDescription": "Summary of subscription, AI-assisted features and acceptable use.",
-      "paragraphs": [
-        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
-        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
-        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
-        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
-        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
-        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
-      ]
-    },
-    "refund": {
-      "eyebrow": "Refund policy",
-      "title": "RiskNova Refund Policy",
-      "lastUpdated": "Last updated: 2 May 2026",
-      "metaTitle": "Refund policy",
-      "metaDescription": "How RiskNova handles subscription refunds, renewals and Paddle billing rules.",
-      "ogTitle": "Refund policy | RiskNova",
-      "ogDescription": "Refund window, renewals and billing corrections.",
-      "paragraphs": [
-        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
-        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
-        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
-        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
-        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
-        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
-      ]
+    "level": {
+      "controlled": "管理済み",
+      "critical": "重大",
+      "high": "高",
+      "incomplete": "未評価",
+      "medium": "中"
     }
   },
-  "brand": {
-    "tagline": "AI-powered occupational health & safety platform"
-  },
-  "dashboard": {
-    "sessionLoadingTitle": "セッションを読み込み中…",
-    "sessionLoadingHint": "セッションを確認しています。数秒かかる場合があります。進まない場合は再度サインインしてください。",
-    "greetingMorning": "おはようございます",
-    "greetingAfternoon": "こんにちは",
-    "greetingEvening": "こんばんは",
-    "fallbackUserName": "ユーザー",
-    "badgeCommandCenter": "コントロールセンター",
-    "badgeLiveOps": "ライブ運用",
-    "badgeRemoteSync": "リモート Supabase 同期",
-    "heroIntro": "リスク、ライブラリ成果物、インシデント、タスク、企業フォローアップまで、労働安全衛生の運用を一画面で把握 — 見やすいコマンドビューに集約。",
-    "signalOperation": "運用状況",
-    "signalWorkload": "優先度の負荷",
-    "signalCompanies": "企業カバレッジ",
-    "operationHeavy": "フォローが集中",
-    "operationControlled": "管理下",
-    "operationCalm": "安定運用",
-    "workloadFollowups": "{count} 件",
-    "companiesTotal": "{count} 社",
-    "todayFocusEyebrow": "今日のフォーカス",
-    "todayFocusTitle": "重要項目を先に",
-    "priorityHighRisk": "高リスク",
-    "priorityOpenTasks": "未完了タスク",
-    "priorityIncidents": "インシデント",
-    "planDemoEyebrow": "デモ · アップグレード",
-    "planSelfServeEyebrow": "セルフサービスでアップグレード",
-    "planDemoTitle": "デモアカウントを利用中です",
-    "planDefaultTitle": "プランとキャパシティ",
-    "planDemoBody": "本番利用に適したプランを選択してください。お支払いと請求は「プラン」ページで管理します。",
-    "planDefaultBody": "ワークスペースやモジュールが必要ならプランを確認してください。セルフサービスでアップグレードできます。",
-    "goToPlans": "プランを見る",
-    "statRisk": "リスク分析",
-    "statRiskSubHigh": "高リスク {count} 件",
-    "statRiskSubNone": "高リスクなし",
-    "statLibraryDocs": "ライブラリ文書",
-    "statLibraryDocsSub": "準備完了 {ready} · 下書き {draft}",
-    "statIncidents": "インシデント",
-    "statIncidentsSub": "記録の合計",
-    "statTasks": "未完了タスク",
-    "statTasksSub": "フォロー待ち",
-    "statLibSurvey": "ライブラリ研修",
-    "statLibSurveySub": "取り込んだアンケート / 研修",
-    "statLibExam": "ライブラリ試験",
-    "statLibExamSub": "取り込んだ試験",
-    "quickFlowsTitle": "クイックワークフロー",
-    "quickFlowsSubtitle": "よく使うモジュールへワンクリックで移動。",
-    "quickFlowsBadge": "プラットフォーム",
-    "quickRisk": "リスク分析",
-    "quickLibrary": "安全衛生ライブラリ",
-    "quickIncident": "インシデント報告",
-    "quickPlanner": "プランナー",
-    "quickEducation": "研修",
-    "quickReports": "レポート",
-    "quickCompanies": "企業",
-    "quickFieldAudit": "現場監査",
-    "recentDocsTitle": "最新のライブラリ出力",
-    "recentDocsSubtitle": "安全衛生ライブラリフローで最近編集した文書をここに表示します。",
-    "recentDocsCta": "ライブラリを開く",
-    "recentDocsEmpty": "まだライブラリ出力がありません。ライブラリのテンプレートから始めてください。",
-    "docStatusDraft": "下書き",
-    "docStatusReady": "準備完了",
-    "docStatusPending": "承認",
-    "docStatusRevision": "改訂",
-    "companySummaryTitle": "企業スナップショット",
-    "companySummaryCountLabel": "登録企業",
-    "companyManageCta": "企業を管理",
-    "modulesTitle": "安全衛生モジュール",
-    "modulesSubtitle": "プラットフォーム上のアクティブな運用領域。",
-    "moduleRisk": "リスク分析",
-    "moduleRiskDesc": "{count} 件の評価",
-    "moduleLibrary": "安全衛生ライブラリ",
-    "moduleLibraryDesc": "文書とテンプレート",
-    "moduleEmergency": "緊急時",
-    "moduleEmergencyDesc": "計画と訓練",
-    "moduleTraining": "研修",
-    "moduleTrainingDesc": "追跡と記録",
-    "moduleAssessment": "試験とアンケート",
-    "moduleAssessmentDesc": "AI 支援の測定フロー",
-    "moduleLegal": "法規制",
-    "moduleLegalDesc": "法令とガイダンスのライブラリ",
-    "todayCardTitle": "今日",
-    "todayTasksPending": "未完了タスク {count} 件が待機中",
-    "todayTasksDone": "すべてのタスクが完了しました",
-    "statLive": "ライブ",
-    "trackTitle": "フォローアップ概要",
-    "trackEmpty": "まだ企業が登録されていません。企業を追加すると指標がここに表示されます。",
-    "trackSubtitle": "全企業のサマリー。{companyCount} 社を監視、{totalActionable} 件のアクションが待機中です。",
-    "trackCompaniesCta": "企業",
-    "trackOpenActionLabel": "未完了アクション",
-    "trackOpenActionSub": "リスク指摘 + CAPA + タスク",
-    "trackExpiringTrainingLabel": "予定の研修",
-    "trackExpiringTrainingSub": "30 日以内",
-    "trackOverdueControlLabel": "期限超過の点検",
-    "trackOverdueControlSub": "定期点検の期限を過ぎています",
-    "trackCommitteeLabel": "待ちの委員会",
-    "trackCommitteeSub": "計画された安全衛生委員会",
-    "trackHealthExamLabel": "予定の健康診断",
-    "trackHealthExamSub": "30 日以内の健康監視",
-    "trackPriorityCompanies": "優先対応が必要な企業",
-    "trackChipActions": "{count} 件のアクション",
-    "trackChipTraining": "{count} 件の研修",
-    "trackChipControls": "{count} 件の点検"
-  },
-  "header": {
-    "authLoading": "セキュアなセッションを確認しています…",
-    "lockedModuleTooltip": "このモジュールを使うには、まずワークスペースを作成してください。",
-    "markAllRead": "すべて既読にする",
-    "noNotificationsYet": "通知はまだありません",
-    "notificationsAria": "通知",
-    "notificationsTitle": "通知",
-    "platformAdminShort": "管理",
-    "seeAllNotifications": "すべて表示",
-    "signOut": "ログアウト",
-    "signingOut": "ログアウト中…",
-    "themeDarkAria": "ダークテーマ",
-    "themeLightAria": "ライトテーマ",
-    "workspaceLoading": "ワークスペースを準備しています…"
+  "workspace": {
+    "active": "アクティブ",
+    "countryLabel": "国",
+    "languageLabel": "デフォルト言語",
+    "loading": "ワークスペースを読み込み中...",
+    "newWorkspace": "新しいワークスペース",
+    "noWorkspace": "ワークスペースなし",
+    "switcher": "ワークスペース",
+    "switchError": "ワークスペースを切り替えできませんでした"
   }
 }

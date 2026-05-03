@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
 import {
   isPrivilegedAccountSelfServiceLoginBlocked,
-  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE,
 } from "@/lib/account/account-routing";
 
 function toLoginError(message: string | undefined): string {
@@ -238,7 +238,7 @@ export function AuthSessionRecoverClient({
             })
           ) {
             await supabase.auth.signOut();
-            redirectToLoginWithError(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE);
+            redirectToLoginWithError(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE);
             return;
           }
         }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   useCallback,
   useEffect,
@@ -49,8 +50,10 @@ import {
   HAZOP_PARAMETERS,
   LOPA_INIT_FREQ_OPTIONS,
   LOPA_PFD_OPTIONS,
-  MATRIX_LIKELIHOOD_LABELS,
-  MATRIX_SEVERITY_LABELS,
+  matrixLikelihoodDescriptionKey,
+  matrixSeverityDescriptionKey,
+  r2dParamDescriptionKey,
+  type RiskResult,
   type R2DValues,
   type R2DResult,
   type FKValues,
@@ -79,6 +82,7 @@ import {
 import { MethodIcon } from "@/components/risk-analysis/MethodIcon";
 import { FMEAPanel, HAZOPPanel, BowTiePanel, FTAPanel, ChecklistPanel, JSAPanel, LOPAPanel } from "@/components/risk-analysis/panels";
 import { useI18n } from "@/lib/i18n";
+import type { Locale } from "@/i18n/routing";
 // Export fonksiyonları runtime'da yüklenir (ExcelJS + docx ~1MB)
 // böylece /risk-analysis sayfası açıldığında initial bundle'a girmiyor.
 import type {
@@ -116,11 +120,6 @@ type RiskLine = {
   title: string;
   description: string;
   images: UploadedImage[];
-};
-
-type ParticipantRole = {
-  code: string;
-  label: string;
 };
 
 type Participant = {
@@ -238,16 +237,16 @@ type AiImageAnalysisResult = {
 /* Constants & catalogs                                                */
 /* ================================================================== */
 
-const participantRoleCatalog: ParticipantRole[] = [
-  { code: "employer", label: "İşveren" },
-  { code: "employer_representative", label: "İşveren Vekili" },
-  { code: "ohs_specialist", label: "İş Güvenliği Uzmanı" },
-  { code: "workplace_physician", label: "İşyeri Hekimi" },
-  { code: "other_health_personnel", label: "Diğer Sağlık Personeli" },
-  { code: "employee_representative", label: "Çalışan Temsilcisi" },
-  { code: "support_staff", label: "Destek Elemanı" },
-  { code: "knowledgeable_employee", label: "Riskler Hakkında Bilgi Sahibi Çalışan" },
-];
+const PARTICIPANT_ROLE_CODES = [
+  "employer",
+  "employer_representative",
+  "ohs_specialist",
+  "workplace_physician",
+  "other_health_personnel",
+  "employee_representative",
+  "support_staff",
+  "knowledgeable_employee",
+] as const;
 
 /** Firma ekip kategorisinden ISG rol kodu tahmin et */
 function guessRoleFromCategory(categoryName: string | null): string {
@@ -339,19 +338,38 @@ function createParticipant(): Participant {
   return { id: crypto.randomUUID(), fullName: "", roleCode: "", title: "", certificateNo: "" };
 }
 
-function methodLabel(method: AnalysisMethod) {
-  const info = METHOD_CATALOG.find(m => m.id === method);
-  return info?.name || method;
+function methodLabel(method: AnalysisMethod, tr: (key: string) => string) {
+  return tr(`methods.${method}.name`);
 }
 
-function severityLabel(severity: DetectionSeverity) {
-  switch (severity) {
-    case "low": return "Düşük";
-    case "medium": return "Orta";
-    case "high": return "Yüksek";
-    case "critical": return "Kritik";
-    default: return severity;
+function severityLabel(severity: DetectionSeverity, tr: (key: string) => string) {
+  if (severity === "low" || severity === "medium" || severity === "high" || severity === "critical") {
+    return tr(`ui.severity.${severity}`);
   }
+  return severity;
+}
+
+function participantRoleLabel(roleCode: string, tr: (key: string) => string) {
+  return tr(`participants.roles.${roleCode}`);
+}
+
+function intlLocaleTag(locale: Locale): string {
+  const map: Partial<Record<Locale, string>> = {
+    tr: "tr-TR",
+    en: "en-US",
+    ar: "ar-SA",
+    ru: "ru-RU",
+    de: "de-DE",
+    fr: "fr-FR",
+    es: "es-ES",
+    zh: "zh-CN",
+    ja: "ja-JP",
+    ko: "ko-KR",
+    hi: "hi-IN",
+    az: "az-AZ",
+    id: "id-ID",
+  };
+  return map[locale] ?? "en-US";
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -388,18 +406,27 @@ function getDefaultsForSeverity(severity: DetectionSeverity) {
   };
 }
 
-function getActiveScore(finding: VisualFinding, method: AnalysisMethod): { score: number; label: string; color: string; action: string } {
+function getActiveScore(
+  finding: VisualFinding,
+  method: AnalysisMethod,
+  trScore?: (key: string) => string,
+): { score: number; label: string; color: string; action: string } {
+  const wrap = (r: RiskResult | null | undefined) => {
+    if (!r) return null;
+    if (trScore) return { score: r.score, label: trScore(r.labelKey), color: r.color, action: trScore(r.actionKey) };
+    return { score: r.score, label: r.label, color: r.color, action: r.action };
+  };
   const resultMap: Record<AnalysisMethod, { score: number; label: string; color: string; action: string } | null> = {
-    r_skor: finding.r2dResult ? { score: finding.r2dResult.score, label: finding.r2dResult.label, color: finding.r2dResult.color, action: finding.r2dResult.action } : null,
-    fine_kinney: finding.fkResult ? { score: finding.fkResult.score, label: finding.fkResult.label, color: finding.fkResult.color, action: finding.fkResult.action } : null,
-    l_matrix: finding.matrixResult ? { score: finding.matrixResult.score, label: finding.matrixResult.label, color: finding.matrixResult.color, action: finding.matrixResult.action } : null,
-    fmea: finding.fmeaResult ? { score: finding.fmeaResult.score, label: finding.fmeaResult.label, color: finding.fmeaResult.color, action: finding.fmeaResult.action } : null,
-    hazop: finding.hazopResult ? { score: finding.hazopResult.score, label: finding.hazopResult.label, color: finding.hazopResult.color, action: finding.hazopResult.action } : null,
-    bow_tie: finding.bowTieResult ? { score: finding.bowTieResult.score, label: finding.bowTieResult.label, color: finding.bowTieResult.color, action: finding.bowTieResult.action } : null,
-    fta: finding.ftaResult ? { score: finding.ftaResult.score, label: finding.ftaResult.label, color: finding.ftaResult.color, action: finding.ftaResult.action } : null,
-    checklist: finding.checklistResult ? { score: finding.checklistResult.score, label: finding.checklistResult.label, color: finding.checklistResult.color, action: finding.checklistResult.action } : null,
-    jsa: finding.jsaResult ? { score: finding.jsaResult.score, label: finding.jsaResult.label, color: finding.jsaResult.color, action: finding.jsaResult.action } : null,
-    lopa: finding.lopaResult ? { score: finding.lopaResult.score, label: finding.lopaResult.label, color: finding.lopaResult.color, action: finding.lopaResult.action } : null,
+    r_skor: wrap(finding.r2dResult),
+    fine_kinney: wrap(finding.fkResult),
+    l_matrix: wrap(finding.matrixResult),
+    fmea: wrap(finding.fmeaResult),
+    hazop: wrap(finding.hazopResult),
+    bow_tie: wrap(finding.bowTieResult),
+    fta: wrap(finding.ftaResult),
+    checklist: wrap(finding.checklistResult),
+    jsa: wrap(finding.jsaResult),
+    lopa: wrap(finding.lopaResult),
   };
   return resultMap[method] ?? { score: 0, label: "-", color: "#64748B", action: "-" };
 }
@@ -521,7 +548,15 @@ function renderAnnotation(annotation: FindingAnnotation, active: boolean, onClic
 /* ================================================================== */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function R2DPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f: VisualFinding) => void }) {
+function R2DPanel({
+  finding,
+  onUpdate,
+  tr,
+}: {
+  finding: VisualFinding;
+  onUpdate: (f: VisualFinding) => void;
+  tr: (key: string, values?: Record<string, string | number>) => string;
+}) {
   const result = finding.r2dResult;
   if (!result) return null;
 
@@ -537,28 +572,28 @@ function R2DPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f:
           {(result.score * 100).toFixed(0)}
         </div>
         <div>
-          <p className="text-sm font-semibold text-foreground">{result.label}</p>
-          <p className="text-xs text-muted-foreground">{result.action}</p>
+          <p className="text-sm font-semibold text-foreground">{tr(result.labelKey)}</p>
+          <p className="text-xs text-muted-foreground">{tr(result.actionKey)}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-center">
         <div className="rounded-xl border border-border bg-card px-2 py-2">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Taban</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{tr("ui.r2d.base")}</p>
           <p className="text-sm font-bold text-foreground">{(result.sBase * 100).toFixed(1)}</p>
         </div>
         <div className="rounded-xl border border-border bg-card px-2 py-2">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Tepe</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{tr("ui.r2d.peak")}</p>
           <p className="text-sm font-bold text-foreground">{(result.sPeak * 100).toFixed(1)}</p>
         </div>
         <div className="rounded-xl border border-border bg-card px-2 py-2">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Dominant</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{tr("ui.r2d.dominant")}</p>
           <p className="text-sm font-bold" style={{ color: "var(--accent)" }}>{result.dominantParam}</p>
         </div>
       </div>
 
       <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Parametreler</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{tr("ui.r2d.parameters")}</p>
         {R2D_PARAMS.map((param) => {
           const val = finding.r2dValues[param.key] ?? 0;
           const contrib = result.paramContributions.find((c) => c.code === param.code);
@@ -583,7 +618,7 @@ function R2DPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f:
                   value={Math.round(val * 100)}
                   onChange={(e) => updateParam(param.key, Number(e.target.value) / 100)}
                   className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-[var(--accent)] dark:bg-slate-700"
-                  title={param.description}
+                  title={tr(r2dParamDescriptionKey(param.key))}
                 />
                 <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
                   <div className="h-full rounded-full bg-[var(--accent)] transition-all" style={{ width: `${Math.min(100, barWidth)}%` }} />
@@ -598,7 +633,15 @@ function R2DPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f:
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function FKPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f: VisualFinding) => void }) {
+function FKPanel({
+  finding,
+  onUpdate,
+  tr,
+}: {
+  finding: VisualFinding;
+  onUpdate: (f: VisualFinding) => void;
+  tr: (key: string, values?: Record<string, string | number>) => string;
+}) {
   const result = finding.fkResult;
   if (!result) return null;
 
@@ -616,8 +659,8 @@ function FKPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f: 
           {Math.round(result.score)}
         </div>
         <div>
-          <p className="text-sm font-semibold text-foreground">{result.label}</p>
-          <p className="text-xs text-muted-foreground">{result.action}</p>
+          <p className="text-sm font-semibold text-foreground">{tr(result.labelKey)}</p>
+          <p className="text-xs text-muted-foreground">{tr(result.actionKey)}</p>
         </div>
       </div>
 
@@ -627,21 +670,21 @@ function FKPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f: 
 
       <div className="space-y-2">
         <div>
-          <label className="text-xs font-semibold text-muted-foreground">Olasılık (L)</label>
+          <label className="text-xs font-semibold text-muted-foreground">{tr("ui.fk.likelihood")}</label>
           <select value={finding.fkValues.likelihood} onChange={(e) => update("likelihood", Number(e.target.value))} className={selectClass}>
-            {FK_LIKELIHOOD.map((o) => <option key={o.value} value={o.value}>{o.label} — {o.description}</option>)}
+            {FK_LIKELIHOOD.map((o) => <option key={o.value} value={o.value}>{o.label} — {tr(o.descriptionKey)}</option>)}
           </select>
         </div>
         <div>
-          <label className="text-xs font-semibold text-muted-foreground">Şiddet (S)</label>
+          <label className="text-xs font-semibold text-muted-foreground">{tr("ui.fk.severity")}</label>
           <select value={finding.fkValues.severity} onChange={(e) => update("severity", Number(e.target.value))} className={selectClass}>
-            {FK_SEVERITY.map((o) => <option key={o.value} value={o.value}>{o.label} — {o.description}</option>)}
+            {FK_SEVERITY.map((o) => <option key={o.value} value={o.value}>{o.label} — {tr(o.descriptionKey)}</option>)}
           </select>
         </div>
         <div>
-          <label className="text-xs font-semibold text-muted-foreground">Frekans / Maruziyet (E)</label>
+          <label className="text-xs font-semibold text-muted-foreground">{tr("ui.fk.exposure")}</label>
           <select value={finding.fkValues.exposure} onChange={(e) => update("exposure", Number(e.target.value))} className={selectClass}>
-            {FK_EXPOSURE.map((o) => <option key={o.value} value={o.value}>{o.label} — {o.description}</option>)}
+            {FK_EXPOSURE.map((o) => <option key={o.value} value={o.value}>{o.label} — {tr(o.descriptionKey)}</option>)}
           </select>
         </div>
       </div>
@@ -650,7 +693,15 @@ function FKPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f: 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function MatrixPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: (f: VisualFinding) => void }) {
+function MatrixPanel({
+  finding,
+  onUpdate,
+  tr,
+}: {
+  finding: VisualFinding;
+  onUpdate: (f: VisualFinding) => void;
+  tr: (key: string, values?: Record<string, string | number>) => string;
+}) {
   const result = finding.matrixResult;
   if (!result) return null;
   const grid = getMatrixGrid();
@@ -667,8 +718,8 @@ function MatrixPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: 
           {result.score}
         </div>
         <div>
-          <p className="text-sm font-semibold text-foreground">{result.label}</p>
-          <p className="text-xs text-muted-foreground">{result.action}</p>
+          <p className="text-sm font-semibold text-foreground">{tr(result.labelKey)}</p>
+          <p className="text-xs text-muted-foreground">{tr(result.actionKey)}</p>
         </div>
       </div>
 
@@ -676,7 +727,7 @@ function MatrixPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: 
         <table className="w-full border-collapse text-[10px]">
           <thead>
             <tr>
-              <th className="border-b border-r border-border bg-card p-1 text-muted-foreground">O\S</th>
+              <th className="border-b border-r border-border bg-card p-1 text-muted-foreground">{tr("ui.matrix.axisOs")}</th>
               {[1, 2, 3, 4, 5].map((s) => (
                 <th key={s} className="border-b border-border bg-card p-1 text-center text-muted-foreground">{s}</th>
               ))}
@@ -708,12 +759,12 @@ function MatrixPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: 
 
       <div className="grid grid-cols-2 gap-2 text-xs">
         <div>
-          <p className="font-semibold text-muted-foreground">Olasılık ({finding.matrixValues.likelihood})</p>
-          <p className="text-foreground">{MATRIX_LIKELIHOOD_LABELS[finding.matrixValues.likelihood - 1]}</p>
+          <p className="font-semibold text-muted-foreground">{tr("ui.matrix.likelihoodHeading", { n: finding.matrixValues.likelihood })}</p>
+          <p className="text-foreground">{tr(matrixLikelihoodDescriptionKey(finding.matrixValues.likelihood))}</p>
         </div>
         <div>
-          <p className="font-semibold text-muted-foreground">Şiddet ({finding.matrixValues.severity})</p>
-          <p className="text-foreground">{MATRIX_SEVERITY_LABELS[finding.matrixValues.severity - 1]}</p>
+          <p className="font-semibold text-muted-foreground">{tr("ui.matrix.severityHeading", { n: finding.matrixValues.severity })}</p>
+          <p className="text-foreground">{tr(matrixSeverityDescriptionKey(finding.matrixValues.severity))}</p>
         </div>
       </div>
     </div>
@@ -727,6 +778,17 @@ function MatrixPanel({ finding, onUpdate }: { finding: VisualFinding; onUpdate: 
 export function RiskAnalysisClient() {
   const searchParams = useSearchParams();
   const { locale } = useI18n();
+  const trRiskScoring = useTranslations("riskScoring");
+
+  const stepLabels = useMemo(
+    () => [
+      trRiskScoring("wizard.steps.context"),
+      trRiskScoring("wizard.steps.team"),
+      trRiskScoring("wizard.steps.images"),
+      trRiskScoring("wizard.steps.results"),
+    ],
+    [trRiskScoring],
+  );
 
   /* ── Setup state (persisted across page navigation) ── */
   const [analysisTitle, setAnalysisTitle] = usePersistedState("risk:title", "Saha Risk Analizi");
@@ -956,6 +1018,7 @@ export function RiskAnalysisClient() {
   const [savedAnalyses, setSavedAnalyses] = useState<SavedAssessment[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
+  const [saveTone, setSaveTone] = useState<"success" | "danger">("danger");
   const [exportQuotaMessage, setExportQuotaMessage] = useState<string | null>(null);
   const [currentAssessmentId, setCurrentAssessmentId] = useState<string | null>(null);
   const [loadingAnalyses, setLoadingAnalyses] = useState(false);
@@ -1005,10 +1068,10 @@ export function RiskAnalysisClient() {
 
   /* ── Validation ── */
   function validateSetup(): string | null {
-    if (!selectedCompanyId) return "Önce firma / kurum seçmelisin.";
-    if (!selectedLocation) return "Lokasyon / çalışma alanı seçmelisin.";
-    if (!selectedDepartment) return "Bölüm / birim seçmelisin.";
-    if (validParticipants.length === 0) return "En az bir görevli kişi adı ve rolü girilmelidir.";
+    if (!selectedCompanyId) return trRiskScoring("wizard.validate.company");
+    if (!selectedLocation) return trRiskScoring("wizard.validate.location");
+    if (!selectedDepartment) return trRiskScoring("wizard.validate.department");
+    if (validParticipants.length === 0) return trRiskScoring("wizard.validate.participants");
     return null;
   }
 
@@ -1323,11 +1386,11 @@ export function RiskAnalysisClient() {
   async function handleAnalyze(): Promise<boolean> {
     const err = validateSetup();
     if (err) { setSetupMessage(err); setSetupMessageType("error"); return false; }
-    if (totalImageCount === 0) { setSetupMessage("Analiz başlatmak için en az bir görsel eklemelisin."); setSetupMessageType("error"); return false; }
+    if (totalImageCount === 0) { setSetupMessage(trRiskScoring("wizard.messages.needImageToAnalyze")); setSetupMessageType("error"); return false; }
 
     setIsAnalyzing(true);
     setAnalysisProgress(0);
-    setAnalysisMessage("Analiz başlatılıyor...");
+    setAnalysisMessage(trRiskScoring("wizard.messages.analysisStarting"));
 
     // Manuel findings'i koru
     const existingManualFindings: Record<string, VisualFinding[]> = {};
@@ -1356,8 +1419,8 @@ export function RiskAnalysisClient() {
         processedImages++;
         const pct = Math.round((processedImages / totalImages) * 100);
         setAnalysisProgress(Math.min(95, pct));
-        setAnalysisMessage(`Görsel ${processedImages}/${totalImages} analiz ediliyor: ${img.file.name}`);
-        setSetupMessage(`Görsel analiz ediliyor: Satır ${li + 1}, ${img.file.name}...`);
+        setAnalysisMessage(trRiskScoring("wizard.messages.analyzingImageProgress", { current: processedImages, total: totalImages, fileName: img.file.name }));
+        setSetupMessage(trRiskScoring("wizard.messages.analyzingRowImage", { row: li + 1, fileName: img.file.name }));
         setSetupMessageType("success");
 
         const analysis = await analyzeImageWithAI(img.file, img.id);
@@ -1424,7 +1487,7 @@ export function RiskAnalysisClient() {
 
       const result: LineResult = {
         rowId: line.id,
-        rowTitle: line.title.trim() || `Satır ${li + 1}`,
+        rowTitle: line.title.trim() || trRiskScoring("wizard.step3.rowN", { n: li + 1 }),
         imageCount: line.images.length,
         findings: allFindings,
       };
@@ -1438,7 +1501,7 @@ export function RiskAnalysisClient() {
     }
 
     setAnalysisProgress(100);
-    setAnalysisMessage("Analiz tamamlandı!");
+    setAnalysisMessage(trRiskScoring("wizard.messages.analysisComplete"));
     setResults(newResults);
     setImageMetaMap(newImageMeta);
     setNoRiskImages(newNoRiskImages);
@@ -1447,17 +1510,23 @@ export function RiskAnalysisClient() {
     const totalFound = newResults.reduce((s, r) => s + r.findings.length, 0);
     const totalPositive = Object.values(newImageMeta).reduce((s, m) => s + m.positiveObservations.length, 0);
     if (successfulImages === 0) {
-      setAnalysisMessage("Analiz tamamlanamadi.");
-      setSetupMessage(`AI analizi tamamlanamadi. ${analysisErrors[0] ?? "OpenAI veya Anthropic asamasinda hata olustu."}`);
+      setAnalysisMessage(trRiskScoring("wizard.messages.analysisFailed"));
+      setSetupMessage(trRiskScoring("wizard.messages.analysisFailedDetail", {
+        detail: analysisErrors[0] ?? trRiskScoring("wizard.messages.genericAiError"),
+      }));
       setSetupMessageType("error");
       setIsAnalyzing(false);
       return false;
     }
     if (analysisErrors.length > 0) {
-      setSetupMessage(`AI analizi kismen tamamlandi. ${successfulImages}/${totalImages} gorsel islendi; ${analysisErrors.length} gorselde hata var.`);
+      setSetupMessage(trRiskScoring("wizard.messages.analysisPartial", {
+        successful: successfulImages,
+        total: totalImages,
+        errors: analysisErrors.length,
+      }));
       setSetupMessageType("error");
     } else {
-      setSetupMessage(`AI analizi tamamlandi. ${totalFound} risk, ${totalPositive} olumlu tespit.`);
+      setSetupMessage(trRiskScoring("wizard.messages.analysisSummary", { risks: totalFound, positive: totalPositive }));
       setSetupMessageType("success");
     }
     setIsAnalyzing(false);
@@ -1739,7 +1808,7 @@ JSON formatında döndür:
         title: f.title,
         category: f.category,
         severity: f.severity,
-        severityLabel: severityLabel(f.severity),
+        severityLabel: severityLabel(f.severity, trRiskScoring),
         score: sc.score,
         scoreLabel: sc.label,
         riskClass: rc,
@@ -1749,10 +1818,10 @@ JSON formatında döndür:
         isManual: f.isManual,
         correctiveActionRequired: f.correctiveActionRequired,
         method: method,
-        methodLabel: methodLabel(method),
+        methodLabel: methodLabel(method, trRiskScoring),
         paramDetails: f.r2dResult ? R2D_PARAMS.map((p) => ({
           code: p.code,
-          label: p.label,
+          label: p.exportLabel,
           value: f.r2dValues[p.key] ?? 0,
           contribution: f.r2dResult!.paramContributions.find((c) => c.code === p.code)?.contribution ?? 0,
         })) : undefined,
@@ -1808,10 +1877,10 @@ JSON formatında döndür:
       location: selectedLocation,
       department: selectedDepartment,
       method,
-      methodLabel: methodLabel(method),
+      methodLabel: methodLabel(method, trRiskScoring),
       participants: validParticipants.map((p) => ({
         fullName: p.fullName,
-        role: participantRoleCatalog.find((r) => r.code === p.roleCode)?.label ?? p.roleCode,
+        role: participantRoleLabel(p.roleCode, trRiskScoring),
         title: p.title,
         certificateNo: p.certificateNo,
       })),
@@ -1820,7 +1889,7 @@ JSON formatında döndür:
       totalFindings: totalDetectionCount,
       criticalCount: criticalHighCount,
       dofCandidateCount,
-      date: new Date().toLocaleDateString("tr-TR"),
+      date: new Date().toLocaleDateString(intlLocaleTag(locale as Locale)),
     };
   }
 
@@ -1850,14 +1919,20 @@ JSON formatında döndür:
   /* ── Kaydet ── */
   async function handleSaveAnalysis() {
     if (results.length === 0) return;
-    if (!selectedCompanyId) { setSaveMessage("Firma seçilmeden analiz kaydedilemez."); return; }
+    if (!selectedCompanyId) {
+      setSaveTone("danger");
+      setSaveMessage(trRiskScoring("wizard.save.noCompany"));
+      return;
+    }
     const oversizedImage = lines.flatMap((line) => line.images).find((img) => img.file.size > 10 * 1024 * 1024);
     if (oversizedImage) {
-      setSaveMessage(`${oversizedImage.file.name} 10 MB sinirini asiyor. Kaydetmeden once daha kucuk bir gorsel yukleyin.`);
+      setSaveTone("danger");
+      setSaveMessage(trRiskScoring("wizard.save.oversized", { fileName: oversizedImage.file.name }));
       return;
     }
     setIsSaving(true);
     setSaveMessage("");
+    setSaveTone("danger");
 
     try {
       const input: SaveRiskAnalysisInput = {
@@ -1936,11 +2011,15 @@ JSON formatında döndür:
         : await saveRiskAnalysis(input);
       if (assessmentId) {
         setCurrentAssessmentId(assessmentId);
-        setSaveMessage(isUpdate ? "Analiz başarıyla güncellendi!" : "Analiz başarıyla kaydedildi!");
-        // Bildirim oluştur
+        setSaveTone("success");
+        setSaveMessage(isUpdate ? trRiskScoring("wizard.save.successUpdated") : trRiskScoring("wizard.save.successNew"));
         void createNotification({
-          title: isUpdate ? "Risk analizi güncellendi" : "Risk analizi kaydedildi",
-          message: `${input.title} — ${input.totalFindings} tespit, ${input.criticalCount} kritik/yüksek`,
+          title: isUpdate ? trRiskScoring("wizard.notifications.updatedTitle") : trRiskScoring("wizard.notifications.savedTitle"),
+          message: trRiskScoring("wizard.notifications.savedBody", {
+            title: input.title,
+            findings: input.totalFindings,
+            critical: input.criticalCount,
+          }),
           type: "risk_analysis",
           level: input.criticalCount > 0 ? "warning" : "info",
           link: `/companies/${selectedCompanyId}?tab=risk`,
@@ -1949,11 +2028,13 @@ JSON formatında döndür:
         const list = await listRiskAssessments(selectedCompanyId);
         setSavedAnalyses(list);
       } else {
-        setSaveMessage("Kayıt sırasında hata oluştu.");
+        setSaveTone("danger");
+        setSaveMessage(trRiskScoring("wizard.save.error"));
       }
     } catch (err) {
       console.warn("[save] error:", err);
-      setSaveMessage("Kayıt sırasında hata oluştu.");
+      setSaveTone("danger");
+      setSaveMessage(trRiskScoring("wizard.save.error"));
     } finally {
       setIsSaving(false);
       setTimeout(() => setSaveMessage(""), 4000);
@@ -1973,8 +2054,8 @@ JSON formatında döndür:
   function resetAll() {
     const keepCompanyId = selectedCompanyId; // Firma seçimini koru
     lines.forEach((l) => l.images.forEach((i) => URL.revokeObjectURL(i.previewUrl)));
-    setAnalysisTitle("Saha Risk Analizi");
-    setAnalysisNote("Her satır bir risk konusu veya uygunsuzluk grubunu temsil eder. Aynı satıra bir veya birden fazla fotoğraf eklenebilir.");
+    setAnalysisTitle(trRiskScoring("ui.page.analysisTitlePlaceholder"));
+    setAnalysisNote(trRiskScoring("ui.page.analysisNotePlaceholder"));
     setMethod("r_skor");
     setSelectedLocation(""); setSelectedDepartment("");
     setParticipants([createParticipant()]);
@@ -1993,8 +2074,8 @@ JSON formatında döndür:
   /** Wizard'a geç (yeni analiz başlat) */
   function startNewAnalysis() {
     lines.forEach((l) => l.images.forEach((i) => URL.revokeObjectURL(i.previewUrl)));
-    setAnalysisTitle("Saha Risk Analizi");
-    setAnalysisNote("Her satır bir risk konusu veya uygunsuzluk grubunu temsil eder. Aynı satıra bir veya birden fazla fotoğraf eklenebilir.");
+    setAnalysisTitle(trRiskScoring("ui.page.analysisTitlePlaceholder"));
+    setAnalysisNote(trRiskScoring("ui.page.analysisNotePlaceholder"));
     setSelectedLocation(""); setSelectedDepartment("");
     setParticipants([createParticipant()]);
     setSetupMessage(""); setSetupMessageType("");
@@ -2019,8 +2100,6 @@ JSON formatında döndür:
   const selectCls = "h-12 rounded-2xl border border-primary/15 bg-white px-4 text-sm text-foreground shadow-[0_8px_20px_rgba(15,23,42,0.05)] transition-colors transition-shadow hover:border-primary/30 focus-visible:border-primary focus-visible:shadow-[0_0_0_4px_var(--ring),0_12px_28px_rgba(11,95,193,0.12)] dark:bg-[var(--navy-mid)] dark:border-border dark:text-white [&_option]:bg-white [&_option]:text-slate-900 dark:[&_option]:bg-[var(--navy-mid)] dark:[&_option]:text-white";
 
   /* ── Step navigation helpers ── */
-  const stepLabels = ["Analiz Bağlamı", "Analiz Ekibi", "Görseller", "Sonuçlar"];
-
   function canGoNext(): boolean {
     if (step === 1) return !!selectedCompanyId && !!selectedLocation && !!selectedDepartment;
     if (step === 2) return validParticipants.length > 0;
@@ -2029,9 +2108,9 @@ JSON formatında döndür:
   }
 
   function goNext() {
-    if (step === 1 && !canGoNext()) { setSetupMessage("Firma, lokasyon ve bölüm seçmelisin."); setSetupMessageType("error"); return; }
-    if (step === 2 && !canGoNext()) { setSetupMessage("En az bir görevli adı ve rolü girilmelidir."); setSetupMessageType("error"); return; }
-    if (step === 3 && !canGoNext()) { setSetupMessage("En az bir görsel eklemelisin."); setSetupMessageType("error"); return; }
+    if (step === 1 && !canGoNext()) { setSetupMessage(trRiskScoring("wizard.validate.firmLocationDept")); setSetupMessageType("error"); return; }
+    if (step === 2 && !canGoNext()) { setSetupMessage(trRiskScoring("wizard.validate.step2Participants")); setSetupMessageType("error"); return; }
+    if (step === 3 && !canGoNext()) { setSetupMessage(trRiskScoring("wizard.validate.step3Images")); setSetupMessageType("error"); return; }
     setSetupMessage(""); setSetupMessageType("");
     if (step < 4) setStep((step + 1) as 1 | 2 | 3 | 4);
   }
@@ -2047,10 +2126,12 @@ JSON formatında döndür:
 
   /* ── Tarih formatı helper ── */
   function fmtDate(d: string) {
-    try { return new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" }); } catch { return d; }
+    try {
+      return new Date(d).toLocaleDateString(intlLocaleTag(locale as Locale), { day: "2-digit", month: "long", year: "numeric" });
+    } catch { return d; }
   }
   function methodBadge(m: string) {
-    return methodLabel(m as AnalysisMethod);
+    return methodLabel(m as AnalysisMethod, trRiskScoring);
   }
   function riskBadgeColor(level: string | null) {
     if (!level) return "bg-muted text-muted-foreground";
@@ -2068,22 +2149,22 @@ JSON formatında döndür:
     return (
       <div className="space-y-6">
         <PageHeader
-          eyebrow="Risk Analizi"
-          title="Risk Analizi Yönetimi"
-          description="Firma seçin, geçmiş analizleri görüntüleyin veya yeni analiz başlatın."
+          eyebrow={trRiskScoring("wizard.list.eyebrow")}
+          title={trRiskScoring("wizard.list.title")}
+          description={trRiskScoring("wizard.list.description")}
         />
 
         {/* ── Firma Seçimi ── */}
         <div className="surface-card rounded-[1.75rem] border border-border p-4 shadow-[var(--shadow-card)] sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex-1">
-              <label className="mb-2 block text-sm font-semibold text-foreground">Firma / Kurum Seçin</label>
+              <label className="mb-2 block text-sm font-semibold text-foreground">{trRiskScoring("wizard.list.companyLabel")}</label>
               <select
                 value={selectedCompanyId}
                 onChange={(e) => setSelectedCompanyId(e.target.value)}
                 className={selectCls + " w-full"}
               >
-                <option value="">— Firma seçin —</option>
+                <option value="">{trRiskScoring("wizard.list.companyPlaceholder")}</option>
                 {companies.map((c) => (
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
@@ -2096,7 +2177,7 @@ JSON formatında döndür:
               onClick={startNewAnalysis}
               className="h-12 w-full rounded-xl px-5 text-sm font-bold shadow-lg sm:w-auto sm:px-8 sm:text-base"
             >
-              + Yeni Analiz Başlat
+              {trRiskScoring("wizard.list.newAnalysis")}
             </Button>
           </div>
         </div>
@@ -2107,10 +2188,10 @@ JSON formatında döndür:
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-foreground">
-                  {selectedCompany?.name ?? "Firma"} — Risk Analizi Geçmişi
+                  {trRiskScoring("wizard.list.historyTitle", { name: selectedCompany?.name ?? trRiskScoring("wizard.common.companyFallback") })}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {savedAnalyses.length} kayıtlı analiz
+                  {trRiskScoring("wizard.list.historyCount", { count: savedAnalyses.length })}
                 </p>
               </div>
             </div>
@@ -2121,8 +2202,8 @@ JSON formatında döndür:
               </div>
             ) : savedAnalyses.length === 0 ? (
               <EmptyState
-                title="Henüz analiz kaydı yok"
-                description="Bu firma için ilk risk analizinizi başlatmak için yukarıdaki butonu kullanın."
+                title={trRiskScoring("wizard.list.emptyTitle")}
+                description={trRiskScoring("wizard.list.emptyDescription")}
               />
             ) : (
               <div className="space-y-3">
@@ -2143,12 +2224,12 @@ JSON formatında döndür:
                             : a.status === "archived" ? "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
                             : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
                           }`}>
-                            {a.status === "completed" ? "Tamamlandı" : a.status === "archived" ? "Arşivlendi" : "Taslak"}
+                            {a.status === "completed" ? trRiskScoring("wizard.list.statusCompleted") : a.status === "archived" ? trRiskScoring("wizard.list.statusArchived") : trRiskScoring("wizard.list.statusDraft")}
                           </span>
                         </div>
                         <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
                           <span>{fmtDate(a.assessmentDate)}</span>
-                          <span>{a.itemCount} tespit</span>
+                          <span>{trRiskScoring("wizard.list.findingsCount", { count: a.itemCount })}</span>
                           {a.locationText && <span>{a.locationText}</span>}
                           {a.departmentName && <span>{a.departmentName}</span>}
                         </div>
@@ -2156,13 +2237,13 @@ JSON formatında döndür:
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         {deleteConfirmId === a.id ? (
                           <div className="flex items-center gap-1 rounded-xl border border-red-400 bg-red-50 px-2 py-1 dark:border-red-600 dark:bg-red-950">
-                            <span className="text-xs text-red-600 dark:text-red-400 mr-1">Emin misin?</span>
-                            <Button type="button" variant="ghost" className="h-6 px-2 text-xs text-red-600 hover:bg-red-100 dark:text-red-400" onClick={() => { handleDeleteAnalysis(a.id); setDeleteConfirmId(null); }}>Evet</Button>
-                            <Button type="button" variant="ghost" className="h-6 px-2 text-xs" onClick={() => setDeleteConfirmId(null)}>Hayır</Button>
+                            <span className="text-xs text-red-600 dark:text-red-400 mr-1">{trRiskScoring("wizard.list.confirmDelete")}</span>
+                            <Button type="button" variant="ghost" className="h-6 px-2 text-xs text-red-600 hover:bg-red-100 dark:text-red-400" onClick={() => { handleDeleteAnalysis(a.id); setDeleteConfirmId(null); }}>{trRiskScoring("wizard.common.yes")}</Button>
+                            <Button type="button" variant="ghost" className="h-6 px-2 text-xs" onClick={() => setDeleteConfirmId(null)}>{trRiskScoring("wizard.common.no")}</Button>
                           </div>
                         ) : (
                           <>
-                            <Button type="button" variant="ghost" className="h-7 px-2 text-xs text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={() => setDeleteConfirmId(a.id)}>Sil</Button>
+                            <Button type="button" variant="ghost" className="h-7 px-2 text-xs text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={() => setDeleteConfirmId(a.id)}>{trRiskScoring("wizard.list.deleteAnalysis")}</Button>
                           </>
                         )}
                       </div>
@@ -2184,20 +2265,20 @@ JSON formatında döndür:
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Risk Analizi"
-        title="Görsel Tabanlı Risk Analizi"
-        description="Firma seç, ekip tanımla, görseller yükle, AI + manuel tespit ve 3 yöntemli skorlama ile analiz oluştur."
+        eyebrow={trRiskScoring("wizard.list.eyebrow")}
+        title={trRiskScoring("wizard.header.wizardTitle")}
+        description={trRiskScoring("wizard.header.wizardDescription")}
         meta={
           <>
-            <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">{methodLabel(method)}</span>
-            <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">AI + Manuel Tespit</span>
-            <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">PDF / Word / Excel</span>
+            <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">{methodLabel(method, trRiskScoring)}</span>
+            <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">{trRiskScoring("wizard.header.badgeAiManual")}</span>
+            <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">{trRiskScoring("wizard.header.badgeExport")}</span>
           </>
         }
         actions={
           <div className="flex gap-2.5">
-            <Button type="button" variant="outline" onClick={backToList} className="h-10 rounded-xl px-5 text-sm font-semibold">Listeye Dön</Button>
-            <Button type="button" variant="accent" onClick={resetAll} className="h-10 rounded-xl px-5 text-sm font-bold shadow-md">Yeni Analiz</Button>
+            <Button type="button" variant="outline" onClick={backToList} className="h-10 rounded-xl px-5 text-sm font-semibold">{trRiskScoring("wizard.header.backToList")}</Button>
+            <Button type="button" variant="accent" onClick={resetAll} className="h-10 rounded-xl px-5 text-sm font-bold shadow-md">{trRiskScoring("wizard.header.newAnalysis")}</Button>
           </div>
         }
       />
@@ -2238,22 +2319,22 @@ JSON formatında döndür:
       {step === 1 && (
         <div className="surface-card rounded-[1.75rem] border border-border p-6 shadow-[var(--shadow-card)]">
           <div className="mb-5">
-            <h2 className="text-xl font-semibold text-foreground">Analiz Bağlamı</h2>
-            <p className="mt-2 text-sm leading-7 text-muted-foreground">Bu risk analizinin hangi firma, lokasyon ve bölüm için yapıldığını seç.</p>
+            <h2 className="text-xl font-semibold text-foreground">{trRiskScoring("wizard.step1.title")}</h2>
+            <p className="mt-2 text-sm leading-7 text-muted-foreground">{trRiskScoring("wizard.step1.subtitle")}</p>
           </div>
 
           <div className="space-y-5">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-foreground">Firma / Kurum <span className="text-red-500">*</span></label>
+              <label className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step1.company")} <span className="text-red-500">*</span></label>
               <select value={selectedCompanyId} onChange={(e) => { setSelectedCompanyId(e.target.value); setSelectedLocation(""); setSelectedDepartment(""); setSetupMessage(""); setSetupMessageType(""); }} className={selectCls + (!selectedCompanyId ? " !border-amber-400/60 !shadow-[0_0_0_3px_rgba(245,158,11,0.15)]" : "")}>
-                <option value="">Firma / kurum seç</option>
+                <option value="">{trRiskScoring("wizard.step1.companyPlaceholder")}</option>
                 {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
-              {!selectedCompanyId && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">Analiz için firma seçimi zorunludur</p>}
+              {!selectedCompanyId && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">{trRiskScoring("wizard.step1.companyRequired")}</p>}
             </div>
 
             <div className="flex flex-col gap-3">
-              <label className="text-sm font-semibold text-foreground">Analiz Yöntemi <span className="text-red-500">*</span></label>
+              <label className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step1.method")} <span className="text-red-500">*</span></label>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                 {METHOD_CATALOG.map((m) => {
                   const selected = method === m.id;
@@ -2292,7 +2373,7 @@ JSON formatında döndür:
                         </p>
 
                         {/* Yontem adi */}
-                        <p className="mt-1 text-[11px] leading-tight text-muted-foreground line-clamp-1">{m.name}</p>
+                        <p className="mt-1 text-[11px] leading-tight text-muted-foreground line-clamp-1">{trRiskScoring(`methods.${m.id}.name`)}</p>
 
                         {/* Secili gosterge noktasi */}
                         {selected && (
@@ -2306,12 +2387,12 @@ JSON formatında döndür:
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ backgroundColor: `${m.color}15` }}>
                             <MethodIcon method={m.id} color={m.color} size={18} />
                           </div>
-                          <span className="font-bold text-sm text-foreground">{m.name}</span>
+                          <span className="font-bold text-sm text-foreground">{trRiskScoring(`methods.${m.id}.name`)}</span>
                         </div>
-                        <p className="text-xs text-muted-foreground leading-relaxed">{m.tooltip}</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{trRiskScoring(m.tooltipKey)}</p>
                         <div className="mt-2.5 flex items-center gap-2 text-[10px] text-muted-foreground">
-                          <span className="rounded-md bg-muted px-2 py-0.5 font-medium">Skor: {m.scoreRange}</span>
-                          {m.paramCount > 0 && <span className="rounded-md bg-muted px-2 py-0.5 font-medium">{m.paramCount} parametre</span>}
+                          <span className="rounded-md bg-muted px-2 py-0.5 font-medium">{trRiskScoring("wizard.methodCard.score")} {m.scoreRange}</span>
+                          {m.paramCount > 0 && <span className="rounded-md bg-muted px-2 py-0.5 font-medium">{trRiskScoring("wizard.methodCard.params", { count: m.paramCount })}</span>}
                         </div>
                         <div className="absolute left-1/2 top-full -translate-x-1/2 border-[6px] border-transparent border-t-border" />
                       </div>
@@ -2323,37 +2404,37 @@ JSON formatında döndür:
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-foreground">Lokasyon / Çalışma Alanı <span className="text-red-500">*</span></label>
+                <label className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step1.location")} <span className="text-red-500">*</span></label>
                 <select value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)} className={selectCls + (selectedCompanyId && !selectedLocation ? " !border-amber-400/60 !shadow-[0_0_0_3px_rgba(245,158,11,0.15)]" : "")}>
-                  <option value="">Lokasyon seç</option>
+                  <option value="">{trRiskScoring("wizard.step1.locationPlaceholder")}</option>
                   {(selectedCompany?.locations ?? []).map((loc) => <option key={loc} value={loc}>{loc}</option>)}
                 </select>
-                {selectedCompanyId && !selectedLocation && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">Lokasyon seçimi zorunludur</p>}
+                {selectedCompanyId && !selectedLocation && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">{trRiskScoring("wizard.step1.locationRequired")}</p>}
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-foreground">Bölüm / Birim <span className="text-red-500">*</span></label>
+                <label className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step1.department")} <span className="text-red-500">*</span></label>
                 <select value={selectedDepartment} onChange={(e) => setSelectedDepartment(e.target.value)} className={selectCls + (selectedCompanyId && !selectedDepartment ? " !border-amber-400/60 !shadow-[0_0_0_3px_rgba(245,158,11,0.15)]" : "")}>
-                  <option value="">Bölüm seç</option>
+                  <option value="">{trRiskScoring("wizard.step1.departmentPlaceholder")}</option>
                   {(selectedCompany?.departments ?? []).map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
-                {selectedCompanyId && !selectedDepartment && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">Bölüm seçimi zorunludur</p>}
+                {selectedCompanyId && !selectedDepartment && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">{trRiskScoring("wizard.step1.departmentRequired")}</p>}
               </div>
             </div>
           </div>
 
           <div className="mt-5 grid gap-4">
-            <Input label="Analiz Başlığı" value={analysisTitle} onChange={(e) => setAnalysisTitle(e.target.value)} />
-            <Textarea label="Analiz Notu" rows={3} value={analysisNote} onChange={(e) => setAnalysisNote(e.target.value)} />
+            <Input label={trRiskScoring("wizard.step1.analysisTitle")} value={analysisTitle} onChange={(e) => setAnalysisTitle(e.target.value)} placeholder={trRiskScoring("ui.page.analysisTitlePlaceholder")} />
+            <Textarea label={trRiskScoring("wizard.step1.analysisNote")} rows={3} value={analysisNote} onChange={(e) => setAnalysisNote(e.target.value)} placeholder={trRiskScoring("ui.page.analysisNotePlaceholder")} />
           </div>
 
           {selectedCompany && (
             <div className="mt-5 rounded-2xl border border-border bg-card px-4 py-3">
               <p className="text-xs font-semibold text-muted-foreground">{selectedCompany.name}</p>
-              <p className="text-xs text-muted-foreground">Tür: {selectedCompany.kind || "-"} · Adres: {selectedCompany.address || "-"}</p>
+              <p className="text-xs text-muted-foreground">{trRiskScoring("wizard.step1.companyCardType")} {selectedCompany.kind || "-"} · {trRiskScoring("wizard.step1.companyCardAddress")} {selectedCompany.address || "-"}</p>
             </div>
           )}
 
-          <div className="mt-4"><Link href="/companies"><Button type="button" variant="outline" className="h-10 rounded-xl px-5 text-sm font-semibold">Firma Yapısını Düzenle</Button></Link></div>
+          <div className="mt-4"><Link href="/companies"><Button type="button" variant="outline" className="h-10 rounded-xl px-5 text-sm font-semibold">{trRiskScoring("wizard.step1.editCompanyStructure")}</Button></Link></div>
 
           {setupMessage && <StatusAlert tone={setupMessageType === "success" ? "success" : "danger"} className="mt-5">{setupMessage}</StatusAlert>}
         </div>
@@ -2364,16 +2445,16 @@ JSON formatında döndür:
         <div className="surface-card rounded-[1.75rem] border border-border p-6 shadow-[var(--shadow-card)]">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-foreground">Risk Analizinde Görev Alanlar</h2>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">Kayıtlı personelden seçebilir veya manuel ekleyebilirsin.</p>
+              <h2 className="text-xl font-semibold text-foreground">{trRiskScoring("wizard.step2.title")}</h2>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">{trRiskScoring("wizard.step2.subtitle")}</p>
             </div>
-            <Button type="button" variant="outline" onClick={addParticipant} className="h-10 rounded-xl px-5 text-sm font-semibold">Manuel Görevli Ekle</Button>
+            <Button type="button" variant="outline" onClick={addParticipant} className="h-10 rounded-xl px-5 text-sm font-semibold">{trRiskScoring("wizard.step2.addParticipant")}</Button>
           </div>
 
           {/* Firma ekip uyelerinden hizli secim */}
           {teamMembers.length > 0 && (
             <div className="mb-5 rounded-[1.25rem] border border-border bg-card p-4">
-              <p className="eyebrow mb-3">Firma Ekibinden Seç</p>
+              <p className="eyebrow mb-3">{trRiskScoring("wizard.step2.pickFromTeam")}</p>
               <div className="flex flex-wrap gap-2">
                 {teamMembers.map((tm) => {
                   const alreadyAdded = participants.some((p) => p.fullName === tm.full_name);
@@ -2414,17 +2495,16 @@ JSON formatında döndür:
               <div className="flex items-start gap-3">
                 <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Risk Değerlendirme Ekibi Tanımlı Değil</p>
+                  <p className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step2.noTeamTitle")}</p>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Bu firma için henüz ekip üyesi tanımlanmamış. Firma sayfasında <strong>Ekip</strong> sekmesinden
-                    &quot;Risk Değerlendirme Ekibi&quot; oluşturup üyelerinizi ekleyin — burada otomatik listelenecek.
+                    {trRiskScoring("wizard.step2.noTeamBody")}
                   </p>
                   <Link
                     href={`/companies/${selectedCompanyId}?tab=people`}
                     className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-amber-400 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition-colors hover:bg-amber-100 dark:border-amber-600 dark:bg-amber-950 dark:text-amber-300 dark:hover:bg-amber-900"
                   >
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
-                    Firma Ekip Yönetimine Git
+                    {trRiskScoring("wizard.step2.noTeamLink")}
                   </Link>
                 </div>
               </div>
@@ -2435,20 +2515,20 @@ JSON formatında döndür:
             {participants.map((p, i) => (
               <div key={p.id} className="rounded-[1.25rem] border border-border bg-card p-4 shadow-[0_10px_22px_rgba(15,23,42,0.05)]">
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="eyebrow">Görevli {i + 1}</p>
-                  {participants.length > 1 && <Button type="button" variant="ghost" onClick={() => removeParticipant(p.id)}>Sil</Button>}
+                  <p className="eyebrow">{trRiskScoring("wizard.step2.participantN", { n: i + 1 })}</p>
+                  {participants.length > 1 && <Button type="button" variant="ghost" onClick={() => removeParticipant(p.id)}>{trRiskScoring("wizard.common.delete")}</Button>}
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Input label="Ad Soyad" value={p.fullName} onChange={(e) => updateParticipant(p.id, "fullName", e.target.value)} />
+                  <Input label={trRiskScoring("wizard.step2.fullName")} value={p.fullName} onChange={(e) => updateParticipant(p.id, "fullName", e.target.value)} />
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-foreground">Rol / Ünvan Türü</label>
+                    <label className="text-sm font-medium text-foreground">{trRiskScoring("wizard.step2.roleType")}</label>
                     <select value={p.roleCode} onChange={(e) => updateParticipant(p.id, "roleCode", e.target.value)} className={selectCls}>
-                      <option value="">Rol seç</option>
-                      {participantRoleCatalog.map((r) => <option key={r.code} value={r.code}>{r.label}</option>)}
+                      <option value="">{trRiskScoring("wizard.step2.rolePlaceholder")}</option>
+                      {PARTICIPANT_ROLE_CODES.map((code) => <option key={code} value={code}>{participantRoleLabel(code, trRiskScoring)}</option>)}
                     </select>
                   </div>
-                  <Input label="Görev / Unvan Açıklaması" value={p.title} onChange={(e) => updateParticipant(p.id, "title", e.target.value)} placeholder="Örn. A sınıfı uzman" />
-                  <Input label="Belge / Sertifika No (varsa)" value={p.certificateNo} onChange={(e) => updateParticipant(p.id, "certificateNo", e.target.value)} placeholder="Varsa gir" />
+                  <Input label={trRiskScoring("wizard.step2.titleField")} value={p.title} onChange={(e) => updateParticipant(p.id, "title", e.target.value)} placeholder={trRiskScoring("wizard.step2.titlePlaceholder")} />
+                  <Input label={trRiskScoring("wizard.step2.certificate")} value={p.certificateNo} onChange={(e) => updateParticipant(p.id, "certificateNo", e.target.value)} placeholder={trRiskScoring("wizard.step2.certificatePlaceholder")} />
                 </div>
               </div>
             ))}
@@ -2462,26 +2542,26 @@ JSON formatında döndür:
       {step === 3 && (
         <div className="surface-card rounded-[1.75rem] border border-border p-6 shadow-[var(--shadow-card)]">
           <div className="mb-5">
-            <h2 className="text-xl font-semibold text-foreground">Risk Satırları ve Görseller</h2>
-            <p className="mt-2 text-sm leading-7 text-muted-foreground">Her satır bir risk konusunu temsil eder. Görselleri yükle, sonra AI analizi başlat.</p>
+            <h2 className="text-xl font-semibold text-foreground">{trRiskScoring("wizard.step3.title")}</h2>
+            <p className="mt-2 text-sm leading-7 text-muted-foreground">{trRiskScoring("wizard.step3.subtitle")}</p>
           </div>
 
           {/* Ozet bandi */}
           <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
-              <p className="eyebrow">Firma</p>
+              <p className="eyebrow">{trRiskScoring("wizard.step3.summaryCompany")}</p>
               <p className="mt-1 truncate text-sm font-semibold text-foreground">{selectedCompany?.shortName || selectedCompany?.name || "-"}</p>
             </div>
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
-              <p className="eyebrow">Lokasyon</p>
+              <p className="eyebrow">{trRiskScoring("wizard.step3.summaryLocation")}</p>
               <p className="mt-1 truncate text-sm font-semibold text-foreground">{selectedLocation || "-"}</p>
             </div>
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
-              <p className="eyebrow">Yöntem</p>
-              <p className="mt-1 text-sm font-semibold text-foreground">{methodLabel(method)}</p>
+              <p className="eyebrow">{trRiskScoring("wizard.step3.summaryMethod")}</p>
+              <p className="mt-1 text-sm font-semibold text-foreground">{methodLabel(method, trRiskScoring)}</p>
             </div>
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
-              <p className="eyebrow">Görseller</p>
+              <p className="eyebrow">{trRiskScoring("wizard.step3.summaryImages")}</p>
               <p className="mt-1 text-lg font-bold text-foreground">{totalImageCount}</p>
             </div>
           </div>
@@ -2504,8 +2584,8 @@ JSON formatında döndür:
                     <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" /></svg>
                   </div>
                   <div>
-                    <p className="text-base font-bold text-white">{isAnalyzing ? "AI Analiz Yapiliyor..." : "AI ile Risk Analizini Baslat"}</p>
-                    <p className="mt-0.5 text-xs text-white/70">Nova AI her gorseli ayri ayri analiz eder</p>
+                    <p className="text-base font-bold text-white">{isAnalyzing ? trRiskScoring("wizard.step3.aiAnalyzing") : trRiskScoring("wizard.step3.aiStart")}</p>
+                    <p className="mt-0.5 text-xs text-white/70">{trRiskScoring("wizard.step3.aiSub")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -2513,12 +2593,12 @@ JSON formatında döndür:
                     <div className="flex items-center gap-3 text-white/90">
                       <div className="text-center">
                         <p className="text-lg font-bold">{totalImageCount}</p>
-                        <p className="text-[10px] uppercase tracking-wider text-white/60">G?rsel</p>
+                        <p className="text-[10px] uppercase tracking-wider text-white/60">{trRiskScoring("wizard.common.visual")}</p>
                       </div>
                       <div className="h-8 w-px bg-white/20" />
                       <div className="text-center">
                         <p className="text-lg font-bold">{lines.length}</p>
-                        <p className="text-[10px] uppercase tracking-wider text-white/60">Satir</p>
+                        <p className="text-[10px] uppercase tracking-wider text-white/60">{trRiskScoring("wizard.common.lines")}</p>
                       </div>
                     </div>
                   )}
@@ -2537,7 +2617,7 @@ JSON formatında döndür:
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                 </div>
-                Yeni Satir Ekle
+                {trRiskScoring("wizard.step3.newRow")}
               </button>
               <button
                 type="button"
@@ -2547,7 +2627,7 @@ JSON formatında döndür:
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 transition-colors group-hover:bg-emerald-200 dark:bg-emerald-900/50 dark:text-emerald-400">
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                 </div>
-                Toplu Yukle (Her Biri Ayri Satir)
+                {trRiskScoring("wizard.step3.bulkUpload")}
               </button>
             </div>
           </div>
@@ -2559,17 +2639,17 @@ JSON formatında döndür:
               <div key={line.id} className="rounded-[1.5rem] border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="eyebrow">Satır {idx + 1}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">Genel ve yakın açıları bu satır altında toplayın.</p>
+                    <p className="eyebrow">{trRiskScoring("wizard.step3.rowN", { n: idx + 1 })}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{trRiskScoring("wizard.step3.rowHint")}</p>
                   </div>
-                  {lines.length > 1 && <Button type="button" variant="ghost" onClick={() => removeLine(line.id)} className="rounded-xl text-sm font-semibold text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20">Satırı Sil</Button>}
+                  {lines.length > 1 && <Button type="button" variant="ghost" onClick={() => removeLine(line.id)} className="rounded-xl text-sm font-semibold text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20">{trRiskScoring("wizard.step3.deleteRow")}</Button>}
                 </div>
 
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                  <Input label="Satır Başlığı" value={line.title} onChange={(e) => updateLine(line.id, "title", e.target.value)} placeholder="Örn. İstifleme alanı" />
+                  <Input label={trRiskScoring("wizard.step3.rowTitle")} value={line.title} onChange={(e) => updateLine(line.id, "title", e.target.value)} placeholder={trRiskScoring("wizard.step3.rowTitlePlaceholder")} />
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-foreground">Açıklama</label>
-                    <input type="text" value={line.description} onChange={(e) => updateLine(line.id, "description", e.target.value)} placeholder="Risk grubunu kısaca açıkla" className="h-12 rounded-2xl border border-border bg-card px-4 text-sm text-foreground" />
+                    <label className="text-sm font-medium text-foreground">{trRiskScoring("wizard.common.description")}</label>
+                    <input type="text" value={line.description} onChange={(e) => updateLine(line.id, "description", e.target.value)} placeholder={trRiskScoring("ui.page.describeRiskGroup")} className="h-12 rounded-2xl border border-border bg-card px-4 text-sm text-foreground" />
                   </div>
                 </div>
 
@@ -2579,7 +2659,7 @@ JSON formatında döndür:
                 <div className="mt-4">
                   <Button type="button" onClick={() => fileInputRefs.current[line.id]?.click()} className="h-10 rounded-xl px-5 text-sm font-semibold shadow-sm">
                     <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                    Görsel Ekle
+                    {trRiskScoring("wizard.step3.addImage")}
                   </Button>
                 </div>
 
@@ -2593,7 +2673,7 @@ JSON formatında döndür:
                         </div>
                         <div className="flex items-center justify-between p-2">
                           <p className="truncate text-xs text-muted-foreground">{img.file.name}</p>
-                          <Button type="button" variant="ghost" onClick={() => removeImage(line.id, img.id)} className="h-6 px-2 text-xs">Sil</Button>
+                          <Button type="button" variant="ghost" onClick={() => removeImage(line.id, img.id)} className="h-6 px-2 text-xs">{trRiskScoring("wizard.common.delete")}</Button>
                         </div>
                       </div>
                     ))}
@@ -2613,25 +2693,25 @@ JSON formatında döndür:
           {/* Ozet bandi */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
-              <p className="eyebrow">Toplam Tespit</p>
+              <p className="eyebrow">{trRiskScoring("wizard.step4.totalFindings")}</p>
               <p className="mt-1 text-2xl font-bold text-foreground">{totalDetectionCount}</p>
             </div>
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
-              <p className="eyebrow">Kritik / Yüksek</p>
+              <p className="eyebrow">{trRiskScoring("wizard.step4.criticalHigh")}</p>
               <p className="mt-1 text-2xl font-bold text-red-600 dark:text-red-400">{criticalHighCount}</p>
             </div>
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
-              <p className="eyebrow">DÖF Adayı</p>
+              <p className="eyebrow">{trRiskScoring("wizard.step4.capaCandidate")}</p>
               <p className="mt-1 text-2xl font-bold text-foreground">{dofCandidateCount}</p>
             </div>
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
-              <p className="eyebrow">Ort. Skor</p>
+              <p className="eyebrow">{trRiskScoring("wizard.step4.avgScore")}</p>
               <p className="mt-1 text-2xl font-bold text-foreground">
                 {totalDetectionCount === 0 ? "-" : method === "r_skor" ? (avgScore * 100).toFixed(0) : Math.round(avgScore)}
               </p>
             </div>
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center sm:col-span-2 lg:col-span-1">
-              <p className="eyebrow">Rapor</p>
+              <p className="eyebrow">{trRiskScoring("wizard.common.report")}</p>
               <div className="mt-1 flex flex-wrap justify-center gap-1.5">
                 <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[4.5rem] rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" onClick={() => void exportRiskReport("pdf")} disabled={results.length === 0}>PDF</Button>
                 <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[4.5rem] rounded-xl px-3 text-xs font-bold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20" onClick={() => void exportRiskReport("word")} disabled={results.length === 0}>Word</Button>
@@ -2642,7 +2722,7 @@ JSON formatında döndür:
 
           {/* Kayit mesaji */}
           {saveMessage && (
-            <StatusAlert tone={saveMessage.includes("başarı") ? "success" : "danger"} className="mt-2">{saveMessage}</StatusAlert>
+            <StatusAlert tone={saveTone === "success" ? "success" : "danger"} className="mt-2">{saveMessage}</StatusAlert>
           )}
           {exportQuotaMessage ? (
             <StatusAlert tone="danger" className="mt-2">{exportQuotaMessage}</StatusAlert>
@@ -2652,10 +2732,10 @@ JSON formatında döndür:
           <div className="surface-card rounded-[1.75rem] border border-border p-6 shadow-[var(--shadow-card)]">
             <div className="mb-5 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-foreground">Anotasyonlu Tespit Sonuçları</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Risk kartı ile görsel üstündeki anotasyonlar bağlı çalışır. Parametreleri ayarlayarak skoru değiştir.</p>
+                <h2 className="text-xl font-semibold text-foreground">{trRiskScoring("wizard.step4.resultsTitle")}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">{trRiskScoring("wizard.step4.resultsSubtitle")}</p>
               </div>
-              {isAnalyzing && <span className="text-xs text-muted-foreground">Analiz yapılıyor...</span>}
+              {isAnalyzing && <span className="text-xs text-muted-foreground">{trRiskScoring("wizard.step4.analyzingInline")}</span>}
             </div>
 
             {isAnalyzing ? (
@@ -2679,21 +2759,21 @@ JSON formatında döndür:
                 </div>
 
                 <p className="text-sm font-medium text-foreground">{analysisMessage}</p>
-                <p className="mt-2 text-xs text-muted-foreground">Nova AI her görseli ayrı ayrı analiz ediyor...</p>
+                <p className="mt-2 text-xs text-muted-foreground">{trRiskScoring("wizard.step4.aiAnalyzingDetail")}</p>
               </div>
             ) : results.length === 0 ? (
-              <EmptyState title="Henüz sonuç üretilmedi" description="3. adımda görselleri yükleyip analizi başlat." />
+              <EmptyState title={trRiskScoring("wizard.step4.emptyResultsTitle")} description={trRiskScoring("wizard.step4.emptyResultsDesc")} />
             ) : (
               <div className="space-y-6">
 
                 {/* ── Tespit silme onay dialog ── */}
                 {pendingDeleteFinding && (
               <div className="rounded-2xl border-2 border-red-400 bg-red-50 p-4 dark:border-red-600 dark:bg-red-950">
-                <p className="text-sm font-semibold text-foreground">Tespiti Sil</p>
-                <p className="mt-1 text-sm text-muted-foreground">&quot;{pendingDeleteFinding.title}&quot; tespitini silmek istediğinize emin misiniz?</p>
+                <p className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step4.deleteFindingTitle")}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{trRiskScoring("wizard.step4.deleteFindingConfirm", { title: pendingDeleteFinding.title })}</p>
                 <div className="mt-3 flex gap-2">
-                  <Button type="button" variant="accent" className="!bg-red-600 hover:!bg-red-700" onClick={() => deleteFinding(pendingDeleteFinding.rowId, pendingDeleteFinding.findingId)}>Sil</Button>
-                  <Button type="button" variant="ghost" onClick={() => setPendingDeleteFinding(null)}>İptal</Button>
+                  <Button type="button" variant="accent" className="!bg-red-600 hover:!bg-red-700" onClick={() => deleteFinding(pendingDeleteFinding.rowId, pendingDeleteFinding.findingId)}>{trRiskScoring("wizard.common.delete")}</Button>
+                  <Button type="button" variant="ghost" onClick={() => setPendingDeleteFinding(null)}>{trRiskScoring("wizard.common.cancel")}</Button>
                 </div>
               </div>
             )}
@@ -2711,9 +2791,9 @@ JSON formatında döndür:
                 <div key={result.rowId} className="rounded-[1.5rem] border border-border bg-card p-5">
                   <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="eyebrow">Satır {ri + 1}</p>
+                      <p className="eyebrow">{trRiskScoring("wizard.step3.rowN", { n: ri + 1 })}</p>
                       <h3 className="mt-1 text-lg font-semibold text-foreground">{result.rowTitle}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">Görsel: {result.imageCount} · Tespit: {result.findings.length}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{trRiskScoring("wizard.step4.rowImagesFindings", { images: result.imageCount, findings: result.findings.length })}</p>
                     </div>
                     <div className="flex gap-2">
                       <Button
@@ -2722,7 +2802,7 @@ JSON formatında döndür:
                         onClick={() => setPinMode(pinMode === result.rowId ? null : result.rowId)}
                         className="h-10 rounded-xl px-5 text-sm font-semibold shadow-sm"
                       >
-                        {pinMode === result.rowId ? "Pin Modu Aktif..." : "Risk İşareti Ekle"}
+                        {pinMode === result.rowId ? trRiskScoring("wizard.step4.pinModeActive") : trRiskScoring("wizard.step4.addRiskPin")}
                       </Button>
                     </div>
                   </div>
@@ -2749,12 +2829,12 @@ JSON formatında döndür:
                                 <img src={img.previewUrl} alt={img.file.name} className="h-full w-full object-cover" />
                               </div>
                               <div className="p-3">
-                                <p className="eyebrow">Görsel {ii + 1}</p>
+                                <p className="eyebrow">{trRiskScoring("wizard.step4.visualN", { n: ii + 1 })}</p>
                                 <p className="mt-1 truncate text-sm font-medium text-foreground">{img.file.name}</p>
                                 {noRiskImages.has(img.id) ? (
-                                  <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400 font-medium">Temiz — risk tespit edilmedi</p>
+                                  <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400 font-medium">{trRiskScoring("wizard.step4.cleanNoRisk")}</p>
                                 ) : (
-                                  <p className="mt-1 text-xs text-muted-foreground">Risk: {imgFindings.length}</p>
+                                  <p className="mt-1 text-xs text-muted-foreground">{trRiskScoring("wizard.step4.riskCount", { count: imgFindings.length })}</p>
                                 )}
                               </div>
                             </button>
@@ -2793,7 +2873,7 @@ JSON formatında döndür:
                             ))}
                             {pinMode === result.rowId && (
                               <div className="pointer-events-none absolute bottom-0 left-0 right-0 bg-amber-500/90 px-3 py-1.5 text-center text-xs font-semibold text-white">
-                                Görsele tıklayarak risk işareti ekle
+                                {trRiskScoring("wizard.step4.pinBanner")}
                               </div>
                             )}
                           </div>
@@ -2803,21 +2883,21 @@ JSON formatında döndür:
                       {/* ── Pending pin dialog — görselin hemen altında ── */}
                       {pendingPin && pendingPin.rowId === result.rowId && (
                         <div className="rounded-2xl border-2 border-amber-400 bg-amber-50 p-4 dark:border-amber-600 dark:bg-amber-950">
-                          <p className="text-sm font-semibold text-foreground">Manuel Risk İşareti Ekle</p>
+                          <p className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step4.manualPinTitle")}</p>
                           <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                            <Input label="Tespit Başlığı" value={pendingPinTitle} onChange={(e) => setPendingPinTitle(e.target.value)} placeholder="Örn. Korkuluk eksik" autoFocus />
+                            <Input label={trRiskScoring("wizard.step4.findingTitle")} value={pendingPinTitle} onChange={(e) => setPendingPinTitle(e.target.value)} placeholder={trRiskScoring("wizard.step4.findingTitlePlaceholder")} autoFocus />
                             <div className="flex flex-col gap-2">
-                              <label className="text-sm font-medium text-foreground">Ciddiyet</label>
+                              <label className="text-sm font-medium text-foreground">{trRiskScoring("wizard.step4.severity")}</label>
                               <select value={pendingPinSeverity} onChange={(e) => setPendingPinSeverity(e.target.value as DetectionSeverity)} className={selectCls}>
-                                <option value="low">Düşük</option>
-                                <option value="medium">Orta</option>
-                                <option value="high">Yüksek</option>
-                                <option value="critical">Kritik</option>
+                                <option value="low">{severityLabel("low", trRiskScoring)}</option>
+                                <option value="medium">{severityLabel("medium", trRiskScoring)}</option>
+                                <option value="high">{severityLabel("high", trRiskScoring)}</option>
+                                <option value="critical">{severityLabel("critical", trRiskScoring)}</option>
                               </select>
                             </div>
                             <div className="flex items-end gap-2">
-                              <Button type="button" variant="accent" onClick={confirmManualPin} disabled={!pendingPinTitle.trim()}>Ekle</Button>
-                              <Button type="button" variant="ghost" onClick={() => setPendingPin(null)}>İptal</Button>
+                              <Button type="button" variant="accent" onClick={confirmManualPin} disabled={!pendingPinTitle.trim()}>{trRiskScoring("wizard.step4.manualPinConfirm")}</Button>
+                              <Button type="button" variant="ghost" onClick={() => setPendingPin(null)}>{trRiskScoring("wizard.common.cancel")}</Button>
                             </div>
                           </div>
                         </div>
@@ -2837,13 +2917,13 @@ JSON formatında döndür:
                                 <span className="text-2xl">{m.imageRelevance === "not_real_photo" ? "🖼️" : "🚫"}</span>
                                 <div>
                                   <p className="text-sm font-semibold text-foreground">
-                                    {m.imageRelevance === "not_real_photo" ? "Gerçek Fotoğraf Değil" : "Risk Analizi Yapılamadı"}
+                                    {m.imageRelevance === "not_real_photo" ? trRiskScoring("wizard.step4.notRealPhotoTitle") : trRiskScoring("wizard.step4.cannotAnalyzeTitle")}
                                   </p>
                                   <p className="mt-1 text-xs text-muted-foreground">
                                     {m.imageRelevance === "not_real_photo"
-                                      ? "Bu görsel bir çizim, illüstrasyon veya dijital üretim. Risk analizi yalnızca gerçek saha fotoğrafları üzerinde yapılabilir."
-                                      : "Bu görsel risk analizi için uygun değil."}
-                                    {m.imageDescription ? ` Tespit: ${m.imageDescription}` : ""}
+                                      ? trRiskScoring("wizard.step4.notRealPhotoBody")
+                                      : trRiskScoring("wizard.step4.cannotAnalyzeBody")}
+                                    {m.imageDescription ? ` ${trRiskScoring("wizard.step4.detectedPrefix")} ${m.imageDescription}` : ""}
                                   </p>
                                 </div>
                               </div>
@@ -2853,11 +2933,11 @@ JSON formatında döndür:
                               <div className="flex items-start gap-3 rounded-xl border-2 border-emerald-300 bg-emerald-50 px-4 py-3 dark:border-emerald-700 dark:bg-emerald-950">
                                 <span className="text-2xl">✅</span>
                                 <div>
-                                  <p className="text-sm font-semibold text-foreground">Risk Tespit Edilmedi</p>
+                                  <p className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step4.noRiskDetectedTitle")}</p>
                                   <p className="mt-1 text-xs text-muted-foreground">
-                                    AI analizi bu görselde anlamlı bir risk veya uygunsuzluk tespit edemedi.
-                                    {m.positiveObservations.length > 0 && " Olumlu gözlemler aşağıda listelenmiştir."}
-                                    {" "}Manuel pin ekleyerek kendi tespitinizi oluşturabilirsiniz.
+                                    {trRiskScoring("wizard.step4.noRiskDetectedBody")}
+                                    {m.positiveObservations.length > 0 && trRiskScoring("wizard.step4.positiveObservationsHint")}
+                                    {trRiskScoring("wizard.step4.manualPinHint")}
                                   </p>
                                 </div>
                               </div>
@@ -2866,21 +2946,21 @@ JSON formatında döndür:
                             {m.imageRelevance === "relevant" && m.photoQuality.level !== "good" && (
                               <div className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs ${m.photoQuality.level === "poor" ? "border-red-300 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300" : "border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300"}`}>
                                 <span className="text-sm">{m.photoQuality.level === "poor" ? "⚠️" : "📷"}</span>
-                                <span>Görsel kalitesi: {m.photoQuality.level === "poor" ? "Düşük" : "Orta"}{m.photoQuality.note ? ` — ${m.photoQuality.note}` : ""}</span>
+                                <span>{trRiskScoring("wizard.step4.photoQuality")} {m.photoQuality.level === "poor" ? trRiskScoring("wizard.step4.photoQualityLow") : trRiskScoring("wizard.step4.photoQualityMedium")}{m.photoQuality.note ? ` — ${m.photoQuality.note}` : ""}</span>
                               </div>
                             )}
                             {/* Alan özeti */}
                             {m.areaSummary && (
                               <div className="rounded-xl border border-border bg-card px-3 py-2">
-                                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">Alan Değerlendirmesi</p>
+                                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">{trRiskScoring("wizard.step4.metaEyebrowArea")}</p>
                                 <p className="text-xs text-foreground leading-relaxed">{m.areaSummary}</p>
-                                {m.personCount > 0 && <p className="mt-1 text-[10px] text-muted-foreground">{m.personCount} kişi tespit edildi</p>}
+                                {m.personCount > 0 && <p className="mt-1 text-[10px] text-muted-foreground">{trRiskScoring("wizard.step4.peopleDetected", { count: m.personCount })}</p>}
                               </div>
                             )}
                             {/* Olumlu tespitler */}
                             {m.positiveObservations.length > 0 && (
                               <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 dark:border-emerald-800 dark:bg-emerald-950">
-                                <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 mb-1">Olumlu Tespitler</p>
+                                <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 mb-1">{trRiskScoring("wizard.step4.metaEyebrowPositive")}</p>
                                 {m.positiveObservations.map((obs, oi) => (
                                   <div key={oi} className="flex items-start gap-1.5 text-xs text-emerald-800 dark:text-emerald-200">
                                     <span className="mt-0.5 flex-shrink-0">✓</span>
@@ -2898,15 +2978,15 @@ JSON formatında döndür:
                           <div className="flex items-start gap-3">
                             <span className="text-xl">✅</span>
                             <div>
-                              <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">Bu görselde belirgin risk tespit edilmedi</p>
-                              <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-300">AI analizi sonucunda somut risk unsuru bulunamamıştır. Manuel risk ekleyebilirsiniz.</p>
+                              <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">{trRiskScoring("wizard.step4.noRiskThisImageTitle")}</p>
+                              <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-300">{trRiskScoring("wizard.step4.noRiskThisImageBody")}</p>
                             </div>
                           </div>
                         </div>
                       ) : (
                         visibleFindings.map((finding, fi) => {
                           const active = selectedFindingId === finding.id;
-                          const sc = getActiveScore(finding, method);
+                          const sc = getActiveScore(finding, method, trRiskScoring);
 
                           return (
                             <button
@@ -2925,11 +3005,11 @@ JSON formatında döndür:
                               <div className="flex items-start justify-between gap-2">
                                 <div className="min-w-0">
                                   <div className="flex items-center gap-2">
-                                    <p className="eyebrow">Risk {fi + 1}</p>
-                                    {finding.isManual && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-900 dark:text-amber-300">Sonradan Eklendi</span>}
-                                    {!finding.isManual && finding.confidenceTier === "high" && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">Kesin Tespit</span>}
-                                    {!finding.isManual && finding.confidenceTier === "medium" && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">AI Tespiti</span>}
-                                    {!finding.isManual && finding.confidenceTier === "low" && <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-semibold text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">Dogrulama Onerilir</span>}
+                                    <p className="eyebrow">{trRiskScoring("wizard.common.risk")} {fi + 1}</p>
+                                    {finding.isManual && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-900 dark:text-amber-300">{trRiskScoring("wizard.step4.addedLater")}</span>}
+                                    {!finding.isManual && finding.confidenceTier === "high" && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">{trRiskScoring("wizard.step4.confidenceHigh")}</span>}
+                                    {!finding.isManual && finding.confidenceTier === "medium" && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">{trRiskScoring("wizard.step4.confidenceMedium")}</span>}
+                                    {!finding.isManual && finding.confidenceTier === "low" && <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-semibold text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">{trRiskScoring("wizard.step4.confidenceLow")}</span>}
                                   </div>
                                   <h4 className="mt-1 text-base font-semibold text-foreground">{finding.title}</h4>
                                   <p className="mt-1 text-sm text-muted-foreground">{finding.category}</p>
@@ -2944,7 +3024,7 @@ JSON formatında döndür:
                                     onClick={(e) => { e.stopPropagation(); setPendingDeleteFinding({ rowId: result.rowId, findingId: finding.id, title: finding.title }); }}
                                     onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); setPendingDeleteFinding({ rowId: result.rowId, findingId: finding.id, title: finding.title }); } }}
                                     className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground/50 transition-colors hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
-                                    title="Tespiti sil"
+                                    title={trRiskScoring("wizard.step4.deleteFindingAria")}
                                   >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                                   </div>
@@ -2953,7 +3033,7 @@ JSON formatında döndür:
 
                               {finding.correctiveActionRequired && (
                                 <div className="mt-2 inline-flex rounded-full bg-red-100 px-2.5 py-0.5 text-[11px] font-semibold text-red-700 dark:bg-red-900 dark:text-red-300">
-                                  DÖF Adayı
+                                  {trRiskScoring("wizard.step4.capaBadge")}
                                 </div>
                               )}
 
@@ -2984,18 +3064,18 @@ JSON formatında döndür:
                       {selectedFinding && (
                         <div className="mt-4 rounded-xl border border-border bg-background p-4">
                           <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                            Skor Detayı — {METHOD_CATALOG.find(m => m.id === method)?.name ?? method}
+                            {trRiskScoring("wizard.step4.scorePanelIntro", { method: methodLabel(method, trRiskScoring) })}
                           </p>
-                          {method === "r_skor" && <R2DPanel finding={selectedFinding} onUpdate={(f) => updateFinding(result.rowId, f)} />}
-                          {method === "fine_kinney" && <FKPanel finding={selectedFinding} onUpdate={(f) => updateFinding(result.rowId, f)} />}
-                          {method === "l_matrix" && <MatrixPanel finding={selectedFinding} onUpdate={(f) => updateFinding(result.rowId, f)} />}
-                          {method === "fmea" && <FMEAPanel fmeaValues={selectedFinding.fmeaValues} fmeaResult={selectedFinding.fmeaResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, fmeaValues: v }))} />}
-                          {method === "hazop" && <HAZOPPanel hazopValues={selectedFinding.hazopValues} hazopResult={selectedFinding.hazopResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, hazopValues: v }))} />}
-                          {method === "bow_tie" && <BowTiePanel bowTieValues={selectedFinding.bowTieValues} bowTieResult={selectedFinding.bowTieResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, bowTieValues: v }))} />}
-                          {method === "fta" && <FTAPanel ftaValues={selectedFinding.ftaValues} ftaResult={selectedFinding.ftaResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, ftaValues: v }))} />}
-                          {method === "checklist" && <ChecklistPanel checklistValues={selectedFinding.checklistValues} checklistResult={selectedFinding.checklistResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, checklistValues: v }))} />}
-                          {method === "jsa" && <JSAPanel jsaValues={selectedFinding.jsaValues} jsaResult={selectedFinding.jsaResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, jsaValues: v }))} />}
-                          {method === "lopa" && <LOPAPanel lopaValues={selectedFinding.lopaValues} lopaResult={selectedFinding.lopaResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, lopaValues: v }))} />}
+                          {method === "r_skor" && <R2DPanel finding={selectedFinding} onUpdate={(f) => updateFinding(result.rowId, f)} tr={trRiskScoring} />}
+                          {method === "fine_kinney" && <FKPanel finding={selectedFinding} onUpdate={(f) => updateFinding(result.rowId, f)} tr={trRiskScoring} />}
+                          {method === "l_matrix" && <MatrixPanel finding={selectedFinding} onUpdate={(f) => updateFinding(result.rowId, f)} tr={trRiskScoring} />}
+                          {method === "fmea" && <FMEAPanel fmeaValues={selectedFinding.fmeaValues} fmeaResult={selectedFinding.fmeaResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, fmeaValues: v }))} tr={trRiskScoring} />}
+                          {method === "hazop" && <HAZOPPanel hazopValues={selectedFinding.hazopValues} hazopResult={selectedFinding.hazopResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, hazopValues: v }))} tr={trRiskScoring} />}
+                          {method === "bow_tie" && <BowTiePanel bowTieValues={selectedFinding.bowTieValues} bowTieResult={selectedFinding.bowTieResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, bowTieValues: v }))} tr={trRiskScoring} />}
+                          {method === "fta" && <FTAPanel ftaValues={selectedFinding.ftaValues} ftaResult={selectedFinding.ftaResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, ftaValues: v }))} tr={trRiskScoring} />}
+                          {method === "checklist" && <ChecklistPanel checklistValues={selectedFinding.checklistValues} checklistResult={selectedFinding.checklistResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, checklistValues: v }))} tr={trRiskScoring} />}
+                          {method === "jsa" && <JSAPanel jsaValues={selectedFinding.jsaValues} jsaResult={selectedFinding.jsaResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, jsaValues: v }))} tr={trRiskScoring} />}
+                          {method === "lopa" && <LOPAPanel lopaValues={selectedFinding.lopaValues} lopaResult={selectedFinding.lopaResult} onValuesChange={(v) => updateFinding(result.rowId, computeAllScores({ ...selectedFinding, lopaValues: v }))} tr={trRiskScoring} />}
                         </div>
                       )}
                     </div>
@@ -3015,13 +3095,13 @@ JSON formatında döndür:
         {step === 4 && results.length > 0 && !currentAssessmentId && (
           <div className="mb-3 flex items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-50 px-4 py-2.5 dark:border-amber-600/30 dark:bg-amber-950/30">
             <svg className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>
-            <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">Analiz sonuçlarınız henüz kaydedilmedi! Kaydetmezseniz tüm tespitler kaybolacaktır.</p>
+            <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">{trRiskScoring("wizard.step4.saveWarning")}</p>
           </div>
         )}
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             {step > 1 && (
-              <Button type="button" variant="outline" onClick={goBack} className="h-10 rounded-xl px-5 text-sm font-semibold">Geri</Button>
+              <Button type="button" variant="outline" onClick={goBack} className="h-10 rounded-xl px-5 text-sm font-semibold">{trRiskScoring("wizard.common.back")}</Button>
             )}
           </div>
           <div className="flex items-center gap-3">
@@ -3034,20 +3114,20 @@ JSON formatında döndür:
                 className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 px-5 text-sm font-bold text-white shadow-md transition-all hover:shadow-lg hover:brightness-105 disabled:opacity-50"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" /></svg>
-                {isAnalyzing ? "Analiz Yapılıyor..." : "AI Analiz Başlat"}
+                {isAnalyzing ? trRiskScoring("wizard.nav.aiAnalyzingShort") : trRiskScoring("wizard.nav.aiStartShort")}
               </button>
             )}
             {step < 4 && !(step === 3 && totalImageCount > 0) && (
               <Button type="button" variant="accent" onClick={goNext} className="h-10 rounded-xl px-6 text-sm font-bold shadow-md">
-                {step === 3 ? "Sonuçlara Git" : "İleri"}
+                {step === 3 ? trRiskScoring("wizard.common.goToResults") : trRiskScoring("wizard.common.next")}
               </Button>
             )}
             {step === 4 && (
               <>
                 <Button type="button" variant="accent" onClick={handleSaveAnalysis} disabled={isSaving || results.length === 0} className="h-10 rounded-xl px-6 text-sm font-bold shadow-md">
-                  {isSaving ? "Kaydediliyor..." : currentAssessmentId ? "Güncelle" : "Kaydet"}
+                  {isSaving ? trRiskScoring("wizard.common.saving") : currentAssessmentId ? trRiskScoring("wizard.common.update") : trRiskScoring("wizard.common.save")}
                 </Button>
-                <Button type="button" variant="outline" onClick={backToList} className="h-10 rounded-xl px-5 text-sm font-semibold">Listeye Dön</Button>
+                <Button type="button" variant="outline" onClick={backToList} className="h-10 rounded-xl px-5 text-sm font-semibold">{trRiskScoring("wizard.header.backToList")}</Button>
               </>
             )}
           </div>

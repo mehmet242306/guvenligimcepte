@@ -9,15 +9,18 @@ import {
   FMEA_DETECTION_OPTIONS,
 } from "@/lib/risk-scoring";
 
+type TrRisk = (key: string, values?: Record<string, string | number | Date>) => string;
+
 interface FMEAPanelProps {
   fmeaValues: FMEAValues;
   fmeaResult: FMEAResult | null;
   onValuesChange: (values: FMEAValues) => void;
+  tr: TrRisk;
 }
 
 const selectClass = "h-10 w-full rounded-xl border border-border bg-card px-3 text-sm text-foreground [&_option]:bg-white [&_option]:text-slate-900 dark:[&_option]:bg-[var(--navy-mid)] dark:[&_option]:text-white";
 
-export function FMEAPanel({ fmeaValues, fmeaResult, onValuesChange }: FMEAPanelProps) {
+export function FMEAPanel({ fmeaValues, fmeaResult, onValuesChange, tr }: FMEAPanelProps) {
   const result = fmeaResult ?? calculateFMEA(fmeaValues);
 
   const update = (field: keyof FMEAValues, value: number) => {
@@ -31,32 +34,32 @@ export function FMEAPanel({ fmeaValues, fmeaResult, onValuesChange }: FMEAPanelP
           {Math.round(result.rpn)}
         </div>
         <div>
-          <p className="text-sm font-semibold text-foreground">{result.label}</p>
-          <p className="text-xs text-muted-foreground">{result.action}</p>
+          <p className="text-sm font-semibold text-foreground">{tr(result.labelKey)}</p>
+          <p className="text-xs text-muted-foreground">{tr(result.actionKey)}</p>
         </div>
       </div>
 
       <div className="rounded-xl border border-border bg-card p-3 text-center text-xs text-muted-foreground">
-        S({fmeaValues.severity}) x O({fmeaValues.occurrence}) x D({fmeaValues.detection}) = <span className="font-bold text-foreground">RPN {Math.round(result.rpn)}</span>
+        S({fmeaValues.severity}) × O({fmeaValues.occurrence}) × D({fmeaValues.detection}) = <span className="font-bold text-foreground">RPN {Math.round(result.rpn)}</span>
       </div>
 
       <div className="space-y-2">
         <div>
-          <label className="text-xs font-semibold text-muted-foreground">Ciddiyet (S)</label>
+          <label className="text-xs font-semibold text-muted-foreground">{tr("panel.fmea.severity")}</label>
           <select value={fmeaValues.severity} onChange={(e) => update("severity", Number(e.target.value))} className={selectClass}>
-            {FMEA_SEVERITY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label} — {o.description}</option>)}
+            {FMEA_SEVERITY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label} — {tr(o.descriptionKey)}</option>)}
           </select>
         </div>
         <div>
-          <label className="text-xs font-semibold text-muted-foreground">Oluşma Olasılığı (O)</label>
+          <label className="text-xs font-semibold text-muted-foreground">{tr("panel.fmea.occurrence")}</label>
           <select value={fmeaValues.occurrence} onChange={(e) => update("occurrence", Number(e.target.value))} className={selectClass}>
-            {FMEA_OCCURRENCE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label} — {o.description}</option>)}
+            {FMEA_OCCURRENCE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label} — {tr(o.descriptionKey)}</option>)}
           </select>
         </div>
         <div>
-          <label className="text-xs font-semibold text-muted-foreground">Tespit Edilebilirlik (D)</label>
+          <label className="text-xs font-semibold text-muted-foreground">{tr("panel.fmea.detection")}</label>
           <select value={fmeaValues.detection} onChange={(e) => update("detection", Number(e.target.value))} className={selectClass}>
-            {FMEA_DETECTION_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label} — {o.description}</option>)}
+            {FMEA_DETECTION_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label} — {tr(o.descriptionKey)}</option>)}
           </select>
         </div>
       </div>

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
@@ -11,7 +12,11 @@ import { Building2 } from "lucide-react";
 import { PremiumIconBadge } from "@/components/ui/premium-icon-badge";
 import type { PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { defaultCompanyDirectory, loadCompanyDirectory, saveCompanyDirectory, type CompanyRecord } from "@/lib/company-directory";
-import { getOverallRiskState } from "@/lib/workplace-status";
+import {
+  getOverallRiskState,
+  hazardClassToMessageKey,
+  workplaceRiskLevelBadgeVariant,
+} from "@/lib/workplace-status";
 import { fetchCompaniesFromSupabase, fetchArchivedFromSupabase, fetchDeletedFromSupabase, createCompanyInSupabase, archiveCompanyInSupabase, restoreCompanyInSupabase, deleteCompanyInSupabase, permanentDeleteFromSupabase } from "@/lib/supabase/company-api";
 import {
   fetchAccountContext,
@@ -27,18 +32,35 @@ function svA(l: CompanyRecord[]) { localStorage.setItem(AK, JSON.stringify(l)); 
 function ldD(): CompanyRecord[] { if (typeof window === "undefined") return []; try { return JSON.parse(localStorage.getItem(DK) || "[]") as CompanyRecord[]; } catch { return []; } }
 function svD(l: CompanyRecord[]) { localStorage.setItem(DK, JSON.stringify(l)); }
 
-function mkEmpty(): CompanyRecord {
-  return { id: crypto.randomUUID(), name: "Yeni Firma / Kurum", shortName: "Yeni Kayıt", kind: "Özel Sektör", companyType: "bagimsiz", address: "", city: "", district: "", sector: "", naceCode: "", hazardClass: "", taxNumber: "", taxOffice: "", sgkWorkplaceNumber: "", fax: "", employerTitle: "", employeeCount: 0, shiftModel: "", phone: "", email: "", contactPerson: "", employerName: "", employerRepresentative: "", notes: "", activeProfessionals: 0, employeeRepresentativeCount: 0, supportStaffCount: 0, openActions: 0, overdueActions: 0, openRiskAssessments: 0, documentCount: 0, completionRate: 0, maturityScore: 0, openRiskScore: 0, last30DayImprovement: 0, completedTrainingCount: 0, expiringTrainingCount: 0, periodicControlCount: 0, overduePeriodicControlCount: 0, lastAnalysisDate: "", lastInspectionDate: "", lastDrillDate: "", locations: [""], departments: [""] };
+function mkEmpty(labels: { name: string; shortName: string; kind: string }): CompanyRecord {
+  return { id: crypto.randomUUID(), name: labels.name, shortName: labels.shortName, kind: labels.kind, companyType: "bagimsiz", address: "", city: "", district: "", sector: "", naceCode: "", hazardClass: "", taxNumber: "", taxOffice: "", sgkWorkplaceNumber: "", fax: "", employerTitle: "", employeeCount: 0, shiftModel: "", phone: "", email: "", contactPerson: "", employerName: "", employerRepresentative: "", notes: "", activeProfessionals: 0, employeeRepresentativeCount: 0, supportStaffCount: 0, openActions: 0, overdueActions: 0, openRiskAssessments: 0, documentCount: 0, completionRate: 0, maturityScore: 0, openRiskScore: 0, last30DayImprovement: 0, completedTrainingCount: 0, expiringTrainingCount: 0, periodicControlCount: 0, overduePeriodicControlCount: 0, lastAnalysisDate: "", lastInspectionDate: "", lastDrillDate: "", locations: [""], departments: [""] };
 }
 
-function rBV(l: string): "success" | "warning" | "danger" | "neutral" { if (l === "Kritik") return "danger"; if (l === "Yüksek" || l === "Orta") return "warning"; if (l === "Kontrollü") return "success"; return "neutral"; }
 function hBV(h: string): "danger" | "warning" | "success" | "neutral" { if (h === "Çok Tehlikeli") return "danger"; if (h === "Tehlikeli") return "warning"; if (h === "Az Tehlikeli") return "success"; return "neutral"; }
+
+function HazardLabelBadge({
+  value,
+  tw,
+}: {
+  value: string;
+  tw: (key: string) => string;
+}) {
+  const hk = hazardClassToMessageKey(value);
+  return (
+    <Badge variant={hBV(value)} className="text-[10px]">
+      {hk ? tw(`hazardClass.${hk}`) : value}
+    </Badge>
+  );
+}
 
 type VM = "active" | "archived" | "deleted";
 type SK = "name" | "employees" | "risk" | "overdue";
 
 export function CompaniesListClient() {
   const router = useRouter();
+  const t = useTranslations("companiesList");
+  const tw = useTranslations("workplaceRisk");
+  const locale = useLocale();
   const [mounted, setMounted] = useState(false);
   const [cos, setCos] = useState<CompanyRecord[]>([]);
   const [arCos, setArCos] = useState<CompanyRecord[]>([]);
@@ -78,12 +100,12 @@ export function CompaniesListClient() {
   const filtered = useMemo(() => {
     const s = q.toLowerCase().trim();
     const f = src.filter(c => { const h = [c.name, c.shortName, c.kind, c.sector, c.address, c.naceCode].join(" ").toLowerCase(); return (!s || h.includes(s)) && (!hf || c.hazardClass === hf) && (!sf || c.sector === sf) && (!kf || c.kind === kf); });
-    return [...f].sort((a, b) => { if (sk === "employees") return b.employeeCount - a.employeeCount; if (sk === "risk") return (getOverallRiskState(b).score ?? 0) - (getOverallRiskState(a).score ?? 0); if (sk === "overdue") return b.overdueActions - a.overdueActions; return a.name.localeCompare(b.name, "tr"); });
-  }, [src, q, hf, sf, kf, sk]);
+    return [...f].sort((a, b) => { if (sk === "employees") return b.employeeCount - a.employeeCount; if (sk === "risk") return (getOverallRiskState(b).score ?? 0) - (getOverallRiskState(a).score ?? 0); if (sk === "overdue") return b.overdueActions - a.overdueActions; return a.name.localeCompare(b.name, locale, { sensitivity: "base" }); });
+  }, [src, q, hf, sf, kf, sk, locale]);
 
   const stats = useMemo(() => {
     const te = cos.reduce((s, c) => s + c.employeeCount, 0);
-    const cr = cos.filter(c => getOverallRiskState(c).label === "Kritik").length;
+    const cr = cos.filter(c => getOverallRiskState(c).level === "critical").length;
     const am = cos.length > 0 ? Math.round(cos.reduce((s, c) => s + c.maturityScore, 0) / cos.length) : 0;
     return { total: cos.length, emp: te, crit: cr, mat: am, oa: cos.reduce((s, c) => s + c.openActions, 0), od: cos.reduce((s, c) => s + c.overdueActions, 0) };
   }, [cos]);
@@ -92,10 +114,13 @@ export function CompaniesListClient() {
     const usage = account?.usage;
     if (!usage) return null;
     if (usage.maxActiveWorkspaces === null) {
-      return `${usage.activeWorkspaceCount} aktif firma / workspace`;
+      return t("usage.activeOnly", { count: usage.activeWorkspaceCount });
     }
-    return `${usage.activeWorkspaceCount} / ${usage.maxActiveWorkspaces} aktif firma hakkı kullanılıyor`;
-  }, [account]);
+    return t("usage.activeOfMax", {
+      current: usage.activeWorkspaceCount,
+      max: usage.maxActiveWorkspaces,
+    });
+  }, [account, t]);
 
   const activeWorkspaceLimitReached = Boolean(
     account?.usage &&
@@ -106,33 +131,36 @@ export function CompaniesListClient() {
   const isSingleWorksiteAccount =
     account?.context.accountType === "individual" && !isManagedOsgbAccount;
   const moduleEyebrow = isManagedOsgbAccount
-    ? "OSGB Firmaları"
+    ? t("eyebrow.osgb")
     : isSingleWorksiteAccount
-      ? "Çalışma Alanı"
-      : "Firmalarım / Kurumlarım";
+      ? t("eyebrow.singleWorksite")
+      : t("eyebrow.multi");
   const moduleTitle = isManagedOsgbAccount
-    ? "Firma ve çalışma alanları"
+    ? t("title.osgb")
     : isSingleWorksiteAccount
-      ? "Çalışma alanı ve operasyon içeriği"
-      : "Firmalarım / Kurumlarım";
+      ? t("title.single")
+      : t("title.multi");
   const moduleDescription =
     workspaceUsageText ??
-    (isSingleWorksiteAccount
-      ? "Aktif çalışma alanındaki personel ve diğer operasyon kayıtlarını yönetin."
-      : "Sorumlu olduğunuz firmaları yönetin, çalışma alanlarına erişin.");
-  const entitySingular = isSingleWorksiteAccount ? "çalışma alanı" : "firma";
-  const entityPlural = isSingleWorksiteAccount ? "çalışma alanı" : "firma";
+    (isSingleWorksiteAccount ? t("description.single") : t("description.multi"));
+  const entityPlural = isSingleWorksiteAccount ? t("entity.worksitePlural") : t("entity.companyPlural");
   const emptyStateTitle = isSingleWorksiteAccount
-    ? "Çalışma alanı kaydı henüz görünmüyor"
-    : "Henüz kayıtlı firma bulunmuyor";
+    ? t("empty.initialTitleWorksite")
+    : t("empty.initialTitleCompany");
   const emptyStateDescription = isSingleWorksiteAccount
-    ? "Bu alan aktif çalışma alanı verileriyle dolar. Çalışma alanı kurulumunu tamamladığınızda personel ve diğer kayıtlar burada görünür."
-    : "İlk firmanızı oluşturarak başlayın.";
+    ? t("empty.initialDescWorksite")
+    : t("empty.initialDescCompany");
+  const deleteWord = t("confirmPermanentDelete.word");
 
   async function onCreate() {
     if (isSingleWorksiteAccount) return;
     if (activeWorkspaceLimitReached) return;
-    const n = mkEmpty(); const sid = await createCompanyInSupabase(n); if (sid) { await loadAll(); router.push(`/workspace/${sid}`); return; } saveCompanyDirectory([...loadCompanyDirectory(), n]); rl(); router.push(`/workspace/${n.id}`);
+    const n = mkEmpty({
+      name: t("defaults.companyName"),
+      shortName: t("defaults.shortName"),
+      kind: t("defaults.kind"),
+    });
+    const sid = await createCompanyInSupabase(n); if (sid) { await loadAll(); router.push(`/workspace/${sid}`); return; } saveCompanyDirectory([...loadCompanyDirectory(), n]); rl(); router.push(`/workspace/${n.id}`);
   }
   function onReset() {
     if (isSingleWorksiteAccount) return;
@@ -164,12 +192,12 @@ export function CompaniesListClient() {
         action={
           isSingleWorksiteAccount ? (
             <Button variant="outline" onClick={() => router.push("/workspace/onboarding")}>
-              Çalışma Alanını Tamamla
+              {t("empty.completeWorksite")}
             </Button>
           ) : (
             <div className="flex flex-wrap justify-center gap-3">
-              <Button onClick={() => void onCreate()} disabled={activeWorkspaceLimitReached}>Yeni Firma</Button>
-              <Button variant="outline" onClick={onReset}>Ornek Veriler</Button>
+              <Button onClick={() => void onCreate()} disabled={activeWorkspaceLimitReached}>{t("empty.newCompany")}</Button>
+              <Button variant="outline" onClick={onReset}>{t("empty.sampleData")}</Button>
             </div>
           )
         }
@@ -187,12 +215,12 @@ export function CompaniesListClient() {
           <div className="flex flex-wrap items-center gap-2">
             {!isSingleWorksiteAccount ? (
               <>
-                <Button size="sm" onClick={() => void onCreate()} disabled={activeWorkspaceLimitReached}>Yeni Firma</Button>
-                <Button variant="outline" size="sm" onClick={onReset}>Ornek Veriler</Button>
+                <Button size="sm" onClick={() => void onCreate()} disabled={activeWorkspaceLimitReached}>{t("actions.newCompany")}</Button>
+                <Button variant="outline" size="sm" onClick={onReset}>{t("actions.sampleData")}</Button>
               </>
             ) : null}
             <Badge variant={ds === "supabase" ? "success" : "neutral"} className="text-[10px]">
-              {ds === "supabase" ? "Supabase" : "Yerel"}
+              {ds === "supabase" ? t("storage.supabase") : t("storage.local")}
             </Badge>
           </div>
         }
@@ -200,18 +228,18 @@ export function CompaniesListClient() {
 
       {activeWorkspaceLimitReached && !isSingleWorksiteAccount ? (
         <div className="rounded-xl border border-warning/30 bg-warning/5 px-4 py-3 text-sm text-foreground">
-          Aktif firma / workspace limitine ulaştın. Yeni kayıt açmak veya arşivden geri yüklemek için önce bir firmayı arşivle ya da paket yükselt.
+          {t("limitReachedBanner")}
         </div>
       ) : null}
 
       <div className="border-b border-border">
         <div className="flex gap-0">
-          {([{ k: "active" as VM, l: "Aktif", n: cos.length }, { k: "archived" as VM, l: "Arşiv", n: arCos.length }, { k: "deleted" as VM, l: "Silinen", n: dlCos.length }]).map(t => (
-            <button key={t.k} type="button" onClick={() => setVm(t.k)}
-              className={`relative inline-flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors ${vm === t.k ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}>
-              {t.l}
-              {t.n > 0 && <span className={`inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold ${vm === t.k ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>{t.n}</span>}
-              {vm === t.k && <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-primary" />}
+          {([{ k: "active" as VM, l: t("tabs.active"), n: cos.length }, { k: "archived" as VM, l: t("tabs.archived"), n: arCos.length }, { k: "deleted" as VM, l: t("tabs.deleted"), n: dlCos.length }]).map((tabRow) => (
+            <button key={tabRow.k} type="button" onClick={() => setVm(tabRow.k)}
+              className={`relative inline-flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors ${vm === tabRow.k ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}>
+              {tabRow.l}
+              {tabRow.n > 0 && <span className={`inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold ${vm === tabRow.k ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>{tabRow.n}</span>}
+              {vm === tabRow.k && <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-primary" />}
             </button>
           ))}
         </div>
@@ -219,7 +247,7 @@ export function CompaniesListClient() {
 
       {vm === "active" && (
         <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 xl:grid-cols-6">
-          {[{ l: isSingleWorksiteAccount ? "Toplam Çalışma Alanı" : "Toplam Firma", v: stats.total, a: false }, { l: "Toplam Çalışan", v: stats.emp, a: false }, { l: isSingleWorksiteAccount ? "Kritik Çalışma Alanı" : "Kritik Firma", v: stats.crit, a: stats.crit > 0 }, { l: "Açık Aksiyon", v: stats.oa, a: false }, { l: "Geciken İş", v: stats.od, a: stats.od > 0 }, { l: "Ort. Olgunluk", v: `%${stats.mat}`, a: false }].map(s => (
+          {[{ l: isSingleWorksiteAccount ? t("stats.totalWorksites") : t("stats.totalCompanies"), v: stats.total, a: false }, { l: t("stats.employees"), v: stats.emp, a: false }, { l: isSingleWorksiteAccount ? t("stats.criticalWorksites") : t("stats.criticalCompanies"), v: stats.crit, a: stats.crit > 0 }, { l: t("stats.openActions"), v: stats.oa, a: false }, { l: t("stats.overdueTasks"), v: stats.od, a: stats.od > 0 }, { l: t("stats.avgMaturity"), v: `%${stats.mat}`, a: false }].map(s => (
             <div key={s.l} className="rounded-xl border border-border bg-card p-3.5 shadow-[var(--shadow-soft)]">
               <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{s.l}</p>
               <p className={`mt-1 text-xl font-semibold tabular-nums ${s.a ? "text-danger" : "text-foreground"}`}>{s.v}</p>
@@ -231,17 +259,17 @@ export function CompaniesListClient() {
       <div className="rounded-xl border border-border bg-card p-4 shadow-[var(--shadow-soft)]">
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1fr_140px_140px_140px_130px]">
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Ara</label>
-            <input value={q} onChange={e => setQ(e.target.value)} placeholder={"Ad, sektör, tür, NACE..."} className="h-9 rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground/60" />
+            <label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("filters.search")}</label>
+            <input value={q} onChange={e => setQ(e.target.value)} placeholder={t("filters.searchPlaceholder")} className="h-9 rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground/60" />
           </div>
-          <div className="flex flex-col gap-1"><label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{"Tehlike Sınıfı"}</label><select value={hf} onChange={e => setHf(e.target.value)} className={selC}><option value="">{"Tümü"}</option><option value="Az Tehlikeli">Az Tehlikeli</option><option value="Tehlikeli">Tehlikeli</option><option value={"Çok Tehlikeli"}>{"Çok Tehlikeli"}</option></select></div>
-          <div className="flex flex-col gap-1"><label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{"Sektör"}</label><select value={sf} onChange={e => setSf(e.target.value)} className={selC}><option value="">{"Tümü"}</option>{sectors.map(s => <option key={s} value={s}>{s}</option>)}</select></div>
-          <div className="flex flex-col gap-1"><label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{"Tür"}</label><select value={kf} onChange={e => setKf(e.target.value)} className={selC}><option value="">{"Tümü"}</option>{kinds.map(k => <option key={k} value={k}>{k}</option>)}</select></div>
-          <div className="flex flex-col gap-1"><label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{"Sıralama"}</label><select value={sk} onChange={e => setSk(e.target.value as SK)} className={selC}><option value="name">{"Ada Göre"}</option><option value="employees">{"Çalışan"}</option><option value="risk">Risk</option><option value="overdue">Geciken</option></select></div>
+          <div className="flex flex-col gap-1"><label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("filters.hazardClass")}</label><select value={hf} onChange={e => setHf(e.target.value)} className={selC}><option value="">{t("filters.all")}</option><option value="Az Tehlikeli">{tw("hazardClass.az")}</option><option value="Tehlikeli">{tw("hazardClass.moderate")}</option><option value={"Çok Tehlikeli"}>{tw("hazardClass.high")}</option></select></div>
+          <div className="flex flex-col gap-1"><label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("filters.sector")}</label><select value={sf} onChange={e => setSf(e.target.value)} className={selC}><option value="">{t("filters.all")}</option>{sectors.map(s => <option key={s} value={s}>{s}</option>)}</select></div>
+          <div className="flex flex-col gap-1"><label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("filters.kind")}</label><select value={kf} onChange={e => setKf(e.target.value)} className={selC}><option value="">{t("filters.all")}</option>{kinds.map(k => <option key={k} value={k}>{k}</option>)}</select></div>
+          <div className="flex flex-col gap-1"><label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("filters.sort")}</label><select value={sk} onChange={e => setSk(e.target.value as SK)} className={selC}><option value="name">{t("sort.name")}</option><option value="employees">{t("sort.employees")}</option><option value="risk">{t("sort.risk")}</option><option value="overdue">{t("sort.overdue")}</option></select></div>
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <p className="text-xs text-muted-foreground">{filtered.length} / {src.length} {entityPlural}</p>
-          {hasF && <button type="button" onClick={clr} className="text-xs font-medium text-primary hover:underline">Filtreleri temizle</button>}
+          <p className="text-xs text-muted-foreground">{t("filterCount", { filtered: filtered.length, total: src.length, entityPlural })}</p>
+          {hasF && <button type="button" onClick={clr} className="text-xs font-medium text-primary hover:underline">{t("clearFilters")}</button>}
         </div>
       </div>
 
@@ -275,16 +303,16 @@ export function CompaniesListClient() {
                         <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">{co.kind}{co.sector ? ` · ${co.sector}` : ""}{co.address ? ` · ${co.address}` : ""}</p>
                       </div>
                     </div>
-                    <Badge variant={rBV(risk.label)} className="mt-1 shrink-0 text-[10px]">{risk.label}{risk.score !== null ? ` ${risk.score}` : ""}</Badge>
+                    <Badge variant={workplaceRiskLevelBadgeVariant(risk.level)} className="mt-1 shrink-0 text-[10px]">{risk.score !== null ? tw(`level.${risk.level}`) + ` ${risk.score}` : tw(`level.${risk.level}`)}</Badge>
                   </div>
                 </div>
                 {/* ── Metrics Grid ── */}
                 <div className="grid grid-cols-3 gap-px border-y border-border/60 bg-border/60 sm:grid-cols-6">
-                  {[{ l: "Tehlike", badge: true, h: co.hazardClass }, { l: "Çalışan", v: co.employeeCount }, { l: "Aksiyon", v: co.openActions }, { l: "Geciken", v: co.overdueActions, warn: co.overdueActions > 0 }, { l: "Lokasyon", v: lc }, { l: "Bölüm", v: dc }].map((m) => (
+                  {[{ l: t("metrics.hazard"), badge: true, h: co.hazardClass }, { l: t("metrics.employees"), v: co.employeeCount }, { l: t("metrics.actions"), v: co.openActions }, { l: t("metrics.overdue"), v: co.overdueActions, warn: co.overdueActions > 0 }, { l: t("metrics.locations"), v: lc }, { l: t("metrics.departments"), v: dc }].map((m) => (
                     <div key={m.l} className="bg-card px-3.5 py-2.5">
                       <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{m.l}</p>
                       {"badge" in m && m.badge ? (
-                        <div className="mt-1">{m.h ? <Badge variant={hBV(m.h)} className="text-[10px]">{m.h}</Badge> : <span className="text-sm text-muted-foreground">{"—"}</span>}</div>
+                        <div className="mt-1">{m.h ? <HazardLabelBadge value={m.h as string} tw={tw} /> : <span className="text-sm text-muted-foreground">{"—"}</span>}</div>
                       ) : (
                         <p className={`mt-1 text-base font-bold tabular-nums ${"warn" in m && m.warn ? "text-danger" : "text-foreground"}`}>{m.v}</p>
                       )}
@@ -294,58 +322,58 @@ export function CompaniesListClient() {
                 {/* ── Progress & NACE ── */}
                 <div className="px-5 pt-3.5">
                   <div className="flex flex-wrap items-center gap-5 text-xs">
-                    <span className="flex min-w-0 items-center gap-2 text-muted-foreground">Kapsam <span className="inline-block h-2 w-20 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-primary transition-all" style={{ width: `${Math.min(co.completionRate, 100)}%` }} /></span> <span className="font-bold text-foreground">%{co.completionRate}</span></span>
-                    <span className="flex min-w-0 items-center gap-2 text-muted-foreground">Olgunluk <span className="inline-block h-2 w-20 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-accent transition-all" style={{ width: `${Math.min(co.maturityScore, 100)}%` }} /></span> <span className="font-bold text-foreground">%{co.maturityScore}</span></span>
+                    <span className="flex min-w-0 items-center gap-2 text-muted-foreground">{t("progress.coverage")} <span className="inline-block h-2 w-20 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-primary transition-all" style={{ width: `${Math.min(co.completionRate, 100)}%` }} /></span> <span className="font-bold text-foreground">%{co.completionRate}</span></span>
+                    <span className="flex min-w-0 items-center gap-2 text-muted-foreground">{t("progress.maturity")} <span className="inline-block h-2 w-20 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-accent transition-all" style={{ width: `${Math.min(co.maturityScore, 100)}%` }} /></span> <span className="font-bold text-foreground">%{co.maturityScore}</span></span>
                     {co.naceCode && <span className="min-w-0 truncate text-muted-foreground">NACE: <span className="font-bold text-foreground">{co.naceCode}</span></span>}
                   </div>
                 </div>
                 {/* ── Actions ── */}
                 <div className="flex flex-wrap items-center gap-2.5 px-5 pb-4 pt-3.5">
-                  <Link href={`/workspace/${co.slug || co.id}`} className="inline-flex h-9 shrink-0 items-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary-hover">{"Çalışma Alanı"}</Link>
-                  <Link href="/risk-analysis" className="inline-flex h-9 shrink-0 items-center rounded-xl border border-border bg-card px-3.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary">Risk Analizi</Link>
+                  <Link href={`/workspace/${co.slug || co.id}`} className="inline-flex h-9 shrink-0 items-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary-hover">{t("links.workspace")}</Link>
+                  <Link href="/risk-analysis" className="inline-flex h-9 shrink-0 items-center rounded-xl border border-border bg-card px-3.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary">{t("links.riskAnalysis")}</Link>
                   <div className="ml-auto flex min-w-0 flex-wrap items-center gap-2">
-                    <button type="button" onClick={() => { setCaId(co.id); setCdId(null); setDct(""); }} className="inline-flex h-8 items-center rounded-xl border border-warning/30 bg-warning/10 px-3 text-[11px] font-semibold text-warning transition-colors hover:bg-warning/20">{"Arşivle"}</button>
-                    <button type="button" onClick={() => { setCdId(co.id); setCaId(null); setDct(""); }} className="inline-flex h-8 items-center rounded-xl border border-danger/30 bg-danger/10 px-3 text-[11px] font-semibold text-danger transition-colors hover:bg-danger/20">Sil</button>
+                    <button type="button" onClick={() => { setCaId(co.id); setCdId(null); setDct(""); }} className="inline-flex h-8 items-center rounded-xl border border-warning/30 bg-warning/10 px-3 text-[11px] font-semibold text-warning transition-colors hover:bg-warning/20">{t("archive")}</button>
+                    <button type="button" onClick={() => { setCdId(co.id); setCaId(null); setDct(""); }} className="inline-flex h-8 items-center rounded-xl border border-danger/30 bg-danger/10 px-3 text-[11px] font-semibold text-danger transition-colors hover:bg-danger/20">{t("delete")}</button>
                   </div>
                 </div>
-                {caId === co.id && <div className="mx-4 mb-3.5 rounded-lg border border-warning/30 bg-warning/5 p-3.5"><p className="text-sm font-semibold text-foreground">{`“${co.name}” arşive alınsın mı?`}</p><p className="mt-1 text-sm text-muted-foreground">{"Firma aktif listeden ayrılacak."}</p><div className="mt-3 flex flex-wrap gap-2"><Button size="sm" onClick={() => void doArchive(co.id)}>Onayla</Button><Button variant="outline" size="sm" onClick={() => setCaId(null)}>{"Vazgeç"}</Button></div></div>}
-                {cdId === co.id && <div className="mx-4 mb-3.5 rounded-lg border border-danger/30 bg-danger/5 p-3.5"><p className="text-sm font-semibold text-foreground">{`“${co.name}” silinsin mi?`}</p><p className="mt-1 text-sm text-muted-foreground">{"Onay için"} <span className="font-bold">{"SİL"}</span> {"yazın:"}</p><input value={dct} onChange={e => setDct(e.target.value)} placeholder={'"SİL" yazın'} className="mt-2 h-9 w-full max-w-xs rounded-lg border border-danger/30 bg-card px-3 text-sm" /><div className="mt-3 flex flex-wrap gap-2"><button type="button" disabled={dct.trim() !== "SİL"} onClick={() => void doDelete(co.id)} className={`inline-flex h-8 items-center rounded-lg px-4 text-sm font-medium text-white transition-colors ${dct.trim() === "SİL" ? "bg-danger hover:bg-red-700" : "cursor-not-allowed bg-danger/40"}`}>Sil</button><Button variant="outline" size="sm" onClick={() => { setCdId(null); setDct(""); }}>{"Vazgeç"}</Button></div></div>}
+                {caId === co.id && <div className="mx-4 mb-3.5 rounded-lg border border-warning/30 bg-warning/5 p-3.5"><p className="text-sm font-semibold text-foreground">{t("confirmArchive.title", { name: co.name })}</p><p className="mt-1 text-sm text-muted-foreground">{t("confirmArchive.hint")}</p><div className="mt-3 flex flex-wrap gap-2"><Button size="sm" onClick={() => void doArchive(co.id)}>{t("confirmArchive.confirm")}</Button><Button variant="outline" size="sm" onClick={() => setCaId(null)}>{t("discard")}</Button></div></div>}
+                {cdId === co.id && <div className="mx-4 mb-3.5 rounded-lg border border-danger/30 bg-danger/5 p-3.5"><p className="text-sm font-semibold text-foreground">{t("confirmDelete.title", { name: co.name })}</p><p className="mt-1 text-sm text-muted-foreground">{t("confirmDelete.instruction")} <span className="font-bold">{deleteWord}</span></p><input value={dct} onChange={e => setDct(e.target.value)} placeholder={t("confirmPermanentDelete.placeholder")} className="mt-2 h-9 w-full max-w-xs rounded-lg border border-danger/30 bg-card px-3 text-sm" /><div className="mt-3 flex flex-wrap gap-2"><button type="button" disabled={dct.trim() !== deleteWord} onClick={() => void doDelete(co.id)} className={`inline-flex h-8 items-center rounded-lg px-4 text-sm font-medium text-white transition-colors ${dct.trim() === deleteWord ? "bg-danger hover:bg-red-700" : "cursor-not-allowed bg-danger/40"}`}>{t("confirmDelete.confirm")}</button><Button variant="outline" size="sm" onClick={() => { setCdId(null); setDct(""); }}>{t("discard")}</Button></div></div>}
               </div>
             );
           })}</div>
-        ) : (<EmptyState title={`Eşleşen ${entitySingular} bulunamadı`} description={"Arama kriterlerinize uygun kayıt yok."} action={<Button variant="outline" onClick={clr}>Filtreleri Temizle</Button>} />)
+        ) : (<EmptyState title={isSingleWorksiteAccount ? t("empty.noMatchWorksite") : t("empty.noMatchCompany")} description={t("empty.noMatchDescription")} action={<Button variant="outline" onClick={clr}>{t("empty.clearFilters")}</Button>} />)
       ) : null}
 
       {vm === "archived" ? (
         filtered.length > 0 ? (
           <div className="space-y-4">
-            <div className="rounded-xl border border-warning/30 bg-warning/5 px-4 py-3"><p className="text-sm font-medium text-foreground">{isSingleWorksiteAccount ? "Arşivlenen çalışma alanı kayıtları. Geri yükleme yapabilirsiniz." : "Arşivlenen firmalar. Geri yükleme yapabilirsiniz."}</p></div>
+            <div className="rounded-xl border border-warning/30 bg-warning/5 px-4 py-3"><p className="text-sm font-medium text-foreground">{isSingleWorksiteAccount ? t("empty.archiveBannerWorksite") : t("empty.archiveBannerCompany")}</p></div>
             <div className="grid gap-4 xl:grid-cols-2">{filtered.map(c => (
               <div key={c.id} className="rounded-xl border border-warning/30 bg-card p-4 shadow-[var(--shadow-soft)]">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="min-w-0 flex-1"><h3 className="text-base font-semibold text-foreground">{c.name}</h3><p className="mt-0.5 text-sm text-muted-foreground">{c.kind}{c.sector ? ` · ${c.sector}` : ""}</p><p className="mt-0.5 text-xs text-muted-foreground">{c.employeeCount} {"çalışan"}</p></div>
-                  <div className="flex shrink-0 items-center gap-2"><Button size="sm" onClick={() => void doRestore(c.id)}>{"Geri Yükle"}</Button><Badge variant="warning">{"Arşivde"}</Badge></div>
+                  <div className="min-w-0 flex-1"><h3 className="text-base font-semibold text-foreground">{c.name}</h3><p className="mt-0.5 text-sm text-muted-foreground">{c.kind}{c.sector ? ` · ${c.sector}` : ""}</p>                  <p className="mt-0.5 text-xs text-muted-foreground">{c.employeeCount} {t("employeesSuffix")}</p></div>
+                  <div className="flex shrink-0 items-center gap-2"><Button size="sm" onClick={() => void doRestore(c.id)}>{t("restore")}</Button><Badge variant="warning">{t("badge.archived")}</Badge></div>
                 </div>
               </div>
             ))}</div>
           </div>
-        ) : (<EmptyState title={`Arşivde ${entitySingular} bulunmuyor`} description={`Henüz arşivlenmiş ${entitySingular} yok.`} />)
+        ) : (<EmptyState title={isSingleWorksiteAccount ? t("empty.archiveEmptyWorksite") : t("empty.archiveEmptyCompany")} description={isSingleWorksiteAccount ? t("empty.archiveEmptyDescWorksite") : t("empty.archiveEmptyDescCompany")} />)
       ) : null}
 
       {vm === "deleted" ? (
         filtered.length > 0 ? (
           <div className="space-y-4">
-            <div className="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3"><p className="text-sm font-medium text-foreground">{isSingleWorksiteAccount ? "Silinen çalışma alanı kayıtları. Kalıcı silme geri alınamaz." : "Silinen firmalar. Kalıcı silme geri alınamaz."}</p></div>
+            <div className="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3"><p className="text-sm font-medium text-foreground">{isSingleWorksiteAccount ? t("empty.deletedBannerWorksite") : t("empty.deletedBannerCompany")}</p></div>
             <div className="grid gap-4 xl:grid-cols-2">{filtered.map(c => (
               <div key={c.id} className="rounded-xl border border-danger/30 bg-card p-4 shadow-[var(--shadow-soft)]">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0 flex-1"><h3 className="text-base font-semibold text-foreground">{c.name}</h3><p className="mt-0.5 text-sm text-muted-foreground">{c.kind}{c.sector ? ` · ${c.sector}` : ""}</p></div>
-                  <div className="flex shrink-0 items-center gap-2"><button type="button" onClick={() => void doPerm(c.id)} className="inline-flex h-8 items-center rounded-lg border border-danger/30 bg-danger/10 px-3 text-xs font-medium text-danger hover:bg-danger/20 transition-colors">{"Kalıcı Sil"}</button><Badge variant="danger">Silindi</Badge></div>
+                  <div className="flex shrink-0 items-center gap-2"><button type="button" onClick={() => void doPerm(c.id)} className="inline-flex h-8 items-center rounded-lg border border-danger/30 bg-danger/10 px-3 text-xs font-medium text-danger hover:bg-danger/20 transition-colors">{t("permanentDelete")}</button><Badge variant="danger">{t("badge.deleted")}</Badge></div>
                 </div>
               </div>
             ))}</div>
           </div>
-        ) : (<EmptyState title={`Silinen ${entitySingular} bulunmuyor`} description={`Henüz silinmiş ${entitySingular} yok.`} />)
+        ) : (<EmptyState title={isSingleWorksiteAccount ? t("empty.deletedEmptyWorksite") : t("empty.deletedEmptyCompany")} description={isSingleWorksiteAccount ? t("empty.deletedEmptyDescWorksite") : t("empty.deletedEmptyDescCompany")} />)
       ) : null}
     </div>
   );

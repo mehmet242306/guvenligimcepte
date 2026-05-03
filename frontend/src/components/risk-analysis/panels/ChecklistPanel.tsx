@@ -7,22 +7,25 @@ import {
   calculateChecklist,
 } from "@/lib/risk-scoring";
 
+type TrRisk = (key: string, values?: Record<string, string | number | Date>) => string;
+
 interface ChecklistPanelProps {
   checklistValues: ChecklistValues;
   checklistResult: ChecklistResult | null;
   onValuesChange: (values: ChecklistValues) => void;
+  tr: TrRisk;
 }
 
 const inputClass = "h-9 w-full rounded-lg border border-border bg-card px-2 text-sm text-foreground placeholder:text-muted-foreground";
 
-const statusOptions: { value: ChecklistItem["status"]; label: string; color: string }[] = [
-  { value: "uygun", label: "Uygun", color: "bg-emerald-500" },
-  { value: "kismi", label: "Kısmi", color: "bg-amber-500" },
-  { value: "uygun_degil", label: "Uygun Değil", color: "bg-red-500" },
-  { value: "na", label: "N/A", color: "bg-slate-400" },
+const statusOptions: { value: ChecklistItem["status"]; labelKey: string; color: string }[] = [
+  { value: "uygun", labelKey: "panel.checklist.statusUygun", color: "bg-emerald-500" },
+  { value: "kismi", labelKey: "panel.checklist.statusKismi", color: "bg-amber-500" },
+  { value: "uygun_degil", labelKey: "panel.checklist.statusUygunDegil", color: "bg-red-500" },
+  { value: "na", labelKey: "panel.checklist.statusNa", color: "bg-slate-400" },
 ];
 
-export function ChecklistPanel({ checklistValues, checklistResult, onValuesChange }: ChecklistPanelProps) {
+export function ChecklistPanel({ checklistValues, checklistResult, onValuesChange, tr }: ChecklistPanelProps) {
   const result = checklistResult ?? calculateChecklist(checklistValues);
 
   const updateItem = (idx: number, field: keyof ChecklistItem, value: string | number) => {
@@ -50,8 +53,8 @@ export function ChecklistPanel({ checklistValues, checklistResult, onValuesChang
           %{result.compliancePercent}
         </div>
         <div>
-          <p className="text-sm font-semibold text-foreground">{result.label}</p>
-          <p className="text-xs text-muted-foreground">{result.action}</p>
+          <p className="text-sm font-semibold text-foreground">{tr(result.labelKey)}</p>
+          <p className="text-xs text-muted-foreground">{tr(result.actionKey)}</p>
         </div>
       </div>
 
@@ -61,24 +64,24 @@ export function ChecklistPanel({ checklistValues, checklistResult, onValuesChang
           <div className="h-full rounded-full transition-all" style={{ width: `${result.compliancePercent}%`, backgroundColor: result.color }} />
         </div>
         <div className="flex justify-between text-[10px] text-muted-foreground">
-          <span>{result.compliantCount} uygun</span>
-          <span>{result.partialCount} kısmi</span>
-          <span>{result.nonCompliantCount} uygun değil</span>
+          <span>{tr("panel.checklist.compliantLine", { n: result.compliantCount })}</span>
+          <span>{tr("panel.checklist.partialLine", { n: result.partialCount })}</span>
+          <span>{tr("panel.checklist.nonCompliantLine", { n: result.nonCompliantCount })}</span>
         </div>
       </div>
 
       {/* Items */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold uppercase text-muted-foreground">Kontrol Maddeleri ({checklistValues.items.length})</span>
-          <button type="button" onClick={addItem} className="text-xs font-semibold text-[var(--accent)] hover:underline">+ Ekle</button>
+          <span className="text-xs font-semibold uppercase text-muted-foreground">{tr("panel.checklist.itemsHeading", { count: checklistValues.items.length })}</span>
+          <button type="button" onClick={addItem} className="text-xs font-semibold text-[var(--accent)] hover:underline">{tr("panel.checklist.add")}</button>
         </div>
         {checklistValues.items.map((item, idx) => (
           <div key={item.id} className="space-y-1.5 rounded-lg border border-border p-2">
             <div className="flex items-center gap-2">
-              <input type="text" value={item.text} onChange={(e) => updateItem(idx, "text", e.target.value)} className={`${inputClass} flex-1`} placeholder="Kontrol maddesi..." />
+              <input type="text" value={item.text} onChange={(e) => updateItem(idx, "text", e.target.value)} className={`${inputClass} flex-1`} placeholder={tr("panel.checklist.itemPlaceholder")} />
               {checklistValues.items.length > 1 && (
-                <button type="button" onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-700 text-sm font-bold px-1" title="Sil">x</button>
+                <button type="button" onClick={() => removeItem(idx)} className="text-red-500 hover:text-red-700 text-sm font-bold px-1" title={tr("panel.checklist.removeTitle")}>x</button>
               )}
             </div>
             <div className="flex items-center gap-2">
@@ -90,7 +93,7 @@ export function ChecklistPanel({ checklistValues, checklistResult, onValuesChang
                     onClick={() => updateItem(idx, "status", opt.value)}
                     className={`flex-1 px-1.5 py-1 text-[10px] font-semibold transition-colors ${item.status === opt.value ? `${opt.color} text-white` : "bg-card text-muted-foreground hover:bg-muted"}`}
                   >
-                    {opt.label}
+                    {tr(opt.labelKey)}
                   </button>
                 ))}
               </div>

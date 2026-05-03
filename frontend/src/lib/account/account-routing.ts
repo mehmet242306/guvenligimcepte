@@ -593,5 +593,9 @@ export function isPrivilegedAccountSelfServiceLoginBlocked(
   return context.accountType === "osgb" || context.accountType === "enterprise";
 }
 
+/** Value for `/login?error=` — resolved via `auth.loginPage.privilegedLoginBlocked`. */
+export const PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE = "privileged_login_blocked";
+
+/** @deprecated Prefer `PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE` in URLs. Kept so old links still map to the same message on the login page. */
 export const PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE =
   "OSGB ve kurumsal hesaplar icin bu giris yolu kapalidir. Teklif ve erisim icin ekibimizle iletisime gecin.";

@@ -1,0 +1,305 @@
+{
+  "companiesList": {
+    "actions": {
+      "newCompany": "नई कंपनी",
+      "sampleData": "नमूना डेटा"
+    },
+    "archive": "संग्रहालय",
+    "badge": {
+      "archived": "संग्रहीत",
+      "deleted": "हटाया गया"
+    },
+    "clearFilters": "फ़िल्टर साफ़ करें",
+    "confirmArchive": {
+      "confirm": "पुष्टि करें",
+      "hint": "यह सक्रिय सूची से हट जाएगा।",
+      "title": "आर्काइव \"{name}\"?"
+    },
+    "confirmDelete": {
+      "confirm": "हटाएं",
+      "instruction": "पुष्टि के लिए यह शब्द टाइप करें:",
+      "title": "क्या \"{name}\" को हटाना है?"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "DELETE टाइप करें",
+      "word": "DELETE"
+    },
+    "defaults": {
+      "companyName": "नई कंपनी / संगठन",
+      "kind": "निजी क्षेत्र",
+      "shortName": "नया रिकॉर्ड"
+    },
+    "delete": "हटाएं",
+    "description": {
+      "multi": "उन कंपनियों का प्रबंधन करें जिनकी आप जिम्मेदार हैं और उनकी कार्यस्थलों तक पहुंचें।",
+      "single": "अपनी सक्रिय कार्यस्थल के लिए कर्मचारियों और अन्य परिचालन रिकॉर्ड का प्रबंधन करें।"
+    },
+    "discard": "रद्द करें",
+    "employeesSuffix": "कर्मचारी",
+    "empty": {
+      "archiveBannerCompany": "संग्रहीत कंपनियां। आप इन्हें पुनर्स्थापित कर सकते हैं।",
+      "archiveBannerWorksite": "संग्रहीत कार्यस्थल रिकॉर्ड। आप इन्हें पुनर्स्थापित कर सकते हैं।",
+      "archiveEmptyCompany": "संग्रह में कुछ नहीं",
+      "archiveEmptyDescCompany": "अभी तक कोई संग्रहीत कंपनी नहीं।",
+      "archiveEmptyDescWorksite": "अभी तक कोई संग्रहीत कार्यस्थल नहीं।",
+      "archiveEmptyWorksite": "संग्रह में कुछ नहीं",
+      "clearFilters": "फ़िल्टर साफ़ करें",
+      "completeWorksite": "कार्यस्थल सेटअप पूरा करें",
+      "deletedBannerCompany": "हटाई गई कंपनियां। स्थायी हटाना पूर्ववत नहीं किया जा सकता।",
+      "deletedBannerWorksite": "हटाए गए कार्यस्थल रिकॉर्ड। स्थायी हटाना पूर्ववत नहीं किया जा सकता।",
+      "deletedEmptyCompany": "कोई हटाई गई कंपनी नहीं",
+      "deletedEmptyDescCompany": "अभी तक कोई हटाई गई कंपनी नहीं।",
+      "deletedEmptyDescWorksite": "अभी तक कोई हटाया गया कार्यस्थल नहीं।",
+      "deletedEmptyWorksite": "कोई हटाया गया कार्यस्थल नहीं",
+      "initialDescCompany": "शुरुआत करने के लिए अपनी पहली कंपनी बनाएं।",
+      "initialDescWorksite": "यह क्षेत्र आपके सक्रिय कार्यस्थल डेटा से भरता है। कर्मचारी और अन्य रिकॉर्ड देखने के लिए कार्यस्थल सेटअप पूरा करें।",
+      "initialTitleCompany": "अभी तक कोई कंपनी नहीं",
+      "initialTitleWorksite": "अभी तक कोई कार्यस्थल रिकॉर्ड नहीं",
+      "newCompany": "नई कंपनी",
+      "noMatchCompany": "कोई मेल खाती कंपनी नहीं",
+      "noMatchDescription": "कोई रिकॉर्ड आपके फ़िल्टर से मेल नहीं खाता।",
+      "noMatchWorksite": "कोई मेल खाता कार्यस्थल नहीं",
+      "sampleData": "नमूना डेटा"
+    },
+    "entity": {
+      "companyPlural": "कंपनियां",
+      "worksitePlural": "कार्यस्थल"
+    },
+    "eyebrow": {
+      "multi": "मेरी कंपनियां / संगठन",
+      "osgb": "OSGB कंपनियां",
+      "singleWorksite": "कार्यस्थल"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "सभी",
+      "hazardClass": "खतरा वर्ग",
+      "kind": "प्रकार",
+      "search": "खोजें",
+      "searchPlaceholder": "नाम, क्षेत्र, प्रकार, NACE…",
+      "sector": "क्षेत्र",
+      "sort": "क्रमबद्ध करें"
+    },
+    "limitReachedBanner": "आपने सक्रिय कंपनी / कार्यक्षेत्र की सीमा पहुंचा दी है। कोई नई जोड़ने या पुनर्स्थापित करने से पहले किसी कंपनी को संग्रहीत करें या अपनी योजना को अपग्रेड करें।",
+    "links": {
+      "riskAnalysis": "जोखिम विश्लेषण",
+      "workspace": "कार्यक्षेत्र"
+    },
+    "metrics": {
+      "actions": "कार्य",
+      "departments": "विभाग",
+      "employees": "कर्मचारी",
+      "hazard": "खतरा",
+      "locations": "स्थान",
+      "overdue": "देरी से"
+    },
+    "permanentDelete": "स्थायी रूप से हटाएं",
+    "progress": {
+      "coverage": "कवरेज",
+      "maturity": "परिपक्वता"
+    },
+    "restore": "पुनर्स्थापित करें",
+    "sort": {
+      "employees": "कर्मचारी",
+      "name": "नाम के अनुसार",
+      "overdue": "देरी से",
+      "risk": "जोखिम"
+    },
+    "stats": {
+      "avgMaturity": "औसत परिपक्वता",
+      "criticalCompanies": "महत्वपूर्ण कंपनियां",
+      "criticalWorksites": "महत्वपूर्ण कार्यस्थल",
+      "employees": "कर्मचारी",
+      "openActions": "खुले कार्य",
+      "overdueTasks": "देरी से कार्य",
+      "totalCompanies": "कुल कंपनियां",
+      "totalWorksites": "कुल कार्यस्थल"
+    },
+    "storage": {
+      "local": "स्थानीय",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "सक्रिय",
+      "archived": "संग्रह",
+      "deleted": "हटाए गए"
+    },
+    "title": {
+      "multi": "मेरी कंपनियां / संगठन",
+      "osgb": "कंपनियां और कार्यस्थल",
+      "single": "कार्यस्थल और परिचालन सामग्री"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} सक्रिय कंपनी स्लॉट उपयोग में",
+      "activeOnly": "{count} सक्रिय कंपनियां / कार्यक्षेत्र"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "कार्यस्थल",
+    "docTitle": "{name} — कार्यक्षेत्र · RiskNova",
+    "docTitleFallback": "कार्यक्षेत्र · RiskNova",
+    "invite": "आमंत्रित करें",
+    "logo": {
+      "fileTooLarge": "फ़ाइल बहुत बड़ी है ({sizeMb} MB)। अधिकतम आकार 5 MB है।",
+      "imagesOnly": "केवल छवि फ़ाइलें अपलोड की जा सकती हैं (PNG, JPEG, WebP, SVG)।",
+      "updated": "लोगो/छवि अपडेट हो गई।",
+      "uploadFailed": "अपलोड असफल। कोई अन्य फ़ाइल आज़माएं।",
+      "uploadTitle": "लोगो अपलोड करें"
+    },
+    "notFound": {
+      "back": "कंपनियों पर वापस जाएं",
+      "description": "इस ID से कोई कंपनी मेल नहीं खाती।",
+      "title": "कंपनी नहीं मिली"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "सहेजें",
+    "saving": "सहेजा जा रहा है…",
+    "sidebar": {
+      "hint": "बाईं ओर कोई क्षेत्र चुनें; दाईं ओर सामग्री प्रबंधित करें।",
+      "title": "कार्यस्थल अनुभाग"
+    },
+    "stats": {
+      "departments": "विभाग",
+      "employees": "कर्मचारी",
+      "locations": "स्थान",
+      "maturity": "परिपक्वता",
+      "openActions": "खुली कार्रवाइयां",
+      "overdue": "देर से"
+    },
+    "tabs": {
+      "history": "इतिहास",
+      "ohs_file": "OHS फ़ाइल",
+      "organization": "संगठन",
+      "people": "टीम",
+      "personnel": "कार्मिक",
+      "risk": "जोखिम और क्षेत्र",
+      "structure": "परिसर",
+      "tracking": "ट्रैकिंग"
+    }
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "प्रति कंपनी कार्यक्षेत्र कंपनी, असाइनमेंट, दस्तावेज़, और जोखिम प्रवाह प्रबंधित करें।",
+      "searchLabel": "कंपनियां खोजें",
+      "searchPlaceholder": "कंपनी, क्षेत्र, पता, या NACE खोजें",
+      "title": "सक्रिय कंपनियां"
+    },
+    "archivedRow": {
+      "restore": "पुनर्स्थापित करें",
+      "restoring": "पुनर्स्थापित किया जा रहा है…"
+    },
+    "archivedSection": {
+      "badge": "{count} संग्रहीत रिकॉर्ड",
+      "description": "संग्रहीत कंपनियां सक्रिय सीमा में नहीं गिनी जातीं; जोखिम और दस्तावेज़ इतिहास रखा जाता है।",
+      "title": "संग्रहीत कंपनियां"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} सक्रिय कंपनियां",
+      "activeCompaniesUnlimited": "सक्रिय कंपनियां {count}",
+      "activeStaffMax": "{count} / {max} सक्रिय स्टाफ",
+      "activeStaffUnlimited": "{count} सक्रिय स्टाफ"
+    },
+    "companyCard": {
+      "archive": "संग्रहीत करें",
+      "archiving": "संग्रहीत कर रहे हैं…",
+      "assignedProfessionals": "{count} नियुक्त पेशेवर",
+      "assignments": "असाइनमेंट",
+      "contracts": "अनुबंध",
+      "documentsCount": "{count} दस्तावेज़",
+      "documentsLink": "दस्तावेज़",
+      "employees": "{count} कर्मचारी",
+      "overdueTasks": "{count} अतिदेय आइटम",
+      "personnelInvite": "स्टाफ और आमंत्रण",
+      "sectorUnknown": "सेक्टर सेट नहीं",
+      "taskTracking": "कार्य ट्रैकिंग",
+      "workspace": "कंपनी वर्कस्पेस"
+    },
+    "emptyActive": {
+      "cta": "पहली कंपनी जोड़ें",
+      "description": "OSGB पैनल से जुड़ी क्लाइंट कंपनियां यहां सूचीबद्ध होंगी।",
+      "title": "कोई सक्रिय कंपनी नहीं"
+    },
+    "emptyArchived": {
+      "description": "जब आप किसी कंपनी को संग्रहीत करते हैं तो वह यहां दिखाई देगी।",
+      "title": "कोई संग्रहीत कंपनी नहीं"
+    },
+    "emptyCompany": {
+      "kind": "निजी क्षेत्र",
+      "name": "नई OSGB क्लाइंट कंपनी",
+      "shortName": "नई कंपनी"
+    },
+    "focus": {
+      "p1": "यह क्षेत्र केवल OSGB स्वामी और एडमिन उपयोगकर्ताओं के लिए है। कंपनियां, असाइनमेंट, अनुबंध, और दस्तावेज़ ट्रैकिंग एक स्थान पर प्रबंधित होते हैं।",
+      "p2": "नियुक्त स्टाफ अपने दैनिक कार्यप्रवाह के लिए इस पैनल का उपयोग नहीं करते; वे अपने खाते के माध्यम से नियुक्त कंपनी वर्कस्पेस डेटा तक पहुंचते हैं।",
+      "sidebarBody": "{firms} सक्रिय कंपनियां, {professionals} नियुक्त पेशेवर, और {overdue} आइटम जिन पर ध्यान देने की आवश्यकता है, यहां समन्वित हैं।",
+      "sidebarEyebrow": "प्रबंधन फोकस",
+      "title": "OSGB-केंद्रित सतह"
+    },
+    "header": {
+      "description": "अपनी क्लाइंट कंपनियों, प्रति-कंपनी वर्कस्पेस, और उनसे नियुक्त कर्मचारी प्रवाह का प्रबंधन करें।",
+      "eyebrow": "OSGB कंपनी प्रबंधन",
+      "title": "कंपनियां और कार्यस्थल"
+    },
+    "limitBanner": "सक्रिय कंपनी सीमा पहुंच गई। अधिक जोड़ने के लिए किसी कंपनी को संग्रहीत करें या अपनी योजना अपग्रेड करें।",
+    "loading": {
+      "description": "हम क्लाइंट कंपनियां, असाइनमेंट, और दस्तावेज़ प्रवाह लोड कर रहे हैं।",
+      "eyebrow": "OSGB कंपनियां",
+      "title": "आपका पोर्टफोलियो तैयार कर रहे हैं"
+    },
+    "nova": {
+      "bullet1": "कंपनी के अनुसार कार्यभार वितरण देखें।",
+      "bullet2": "अतिदेय कार्य और दस्तावेज़ फिल्टर करें।",
+      "bullet3": "स्टाफिंग असाइनमेंट अंतराल की पहचान करें।",
+      "bullet4": "अनुबंध और रिपोर्ट नवीकरण जोखिमों को प्राथमिकता दें।",
+      "openTasks": "OSGB कार्य खोलें",
+      "reviewOverdue": "अतिदेय कार्य की समीक्षा करें",
+      "seeAssignmentGaps": "असाइनमेंट अंतराल देखें",
+      "subtitle": "प्रबंधन सहायक; स्टाफ और कंपनी प्रदर्शन की निगरानी करता है।",
+      "title": "Nova OSGB प्रबंधक"
+    },
+    "quickLinks": {
+      "docCenter": "दस्तावेज़ हब पर जाएं",
+      "inviteStaff": "स्टाफ को आमंत्रित करें",
+      "manageAssignments": "असाइनमेंट प्रबंधित करें",
+      "openContracts": "अनुबंध खोलें"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "OSGB पैनल में ट्रैक की गई सक्रिय क्लाइंट कंपनियां।",
+        "label": "सक्रिय कंपनियां"
+      },
+      "assignedProfessionals": {
+        "hint": "कंपनियों को विशेषज्ञों, चिकित्सकों और DSP के कुल असाइनमेंट।",
+        "label": "असाइन किए गए पेशेवर"
+      },
+      "overdueWork": {
+        "hint": "असाइनमेंट और CAPA फ़्लो में देखने के लिए खुले आइटम।",
+        "label": "अतिदेय कार्य"
+      },
+      "totalEmployees": {
+        "hint": "योजना के लिए कंपनी रिकॉर्ड से कुल कर्मचारी संख्या।",
+        "label": "कुल कर्मचारी"
+      }
+    },
+    "topActions": {
+      "addCompany": "कंपनी जोड़ें",
+      "openAssignments": "असाइनमेंट खोलें",
+      "personnelInvite": "स्टाफ और आमंत्रण"
+    }
+  },
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "कम खतरनाक",
+      "high": "अत्यधिक खतरनाक",
+      "moderate": "खतरनाक"
+    },
+    "level": {
+      "controlled": "नियंत्रित",
+      "critical": "गंभीर",
+      "high": "उच्च",
+      "incomplete": "अमूल्यांकित",
+      "medium": "मध्यम"
+    }
+  }
+}

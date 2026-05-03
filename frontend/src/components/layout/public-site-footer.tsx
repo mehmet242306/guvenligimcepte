@@ -19,7 +19,7 @@ export async function PublicLegalBar() {
             {t("footerTerms")}
           </Link>
           <Link href="/cookie-policy" className="text-muted-foreground underline-offset-4 hover:underline">
-            Çerez Politikası
+            {t("footerCookie")}
           </Link>
           <Link href="/refund-policy" className="text-muted-foreground underline-offset-4 hover:underline">
             {t("footerRefund")}
@@ -44,7 +44,7 @@ export async function PublicSiteFooter() {
         { label: tn("features"), href: "/#features" },
         { label: tn("howItWorks"), href: "/#how-it-works" },
         { label: tn("pricing"), href: "/pricing" },
-        { label: "Uygulama", href: "/uygulama" },
+        { label: tn("application"), href: "/uygulama" },
         { label: tn("osgbSolution"), href: "/cozumler/osgb" },
         { label: tn("enterpriseSolution"), href: "/cozumler/kurumsal" },
       ],
@@ -54,7 +54,7 @@ export async function PublicSiteFooter() {
       links: [
         { label: t("footerPrivacy"), href: "/privacy" },
         { label: t("footerTerms"), href: "/terms" },
-        { label: "Çerez Politikası", href: "/cookie-policy" },
+        { label: t("footerCookie"), href: "/cookie-policy" },
         { label: t("footerRefund"), href: "/refund-policy" },
       ],
     },
@@ -120,7 +120,7 @@ export async function PublicSiteFooter() {
                 {t("footerTerms")}
               </Link>
               <Link href="/cookie-policy" className={linkClass}>
-                Çerez Politikası
+                {t("footerCookie")}
               </Link>
               <Link href="/refund-policy" className={linkClass}>
                 {t("footerRefund")}

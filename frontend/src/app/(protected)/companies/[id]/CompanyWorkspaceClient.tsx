@@ -4,16 +4,27 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePersistedState } from "@/lib/use-persisted-state";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { loadCompanyDirectory, saveCompanyDirectory, type CompanyRecord } from "@/lib/company-directory";
-import { getOverallRiskState } from "@/lib/workplace-status";
+import {
+  getOverallRiskState,
+  hazardClassToMessageKey,
+  workplaceRiskLevelBadgeVariant,
+} from "@/lib/workplace-status";
 import { CompanyManagementActions } from "@/components/companies/CompanyManagementActions";
 import { PersonnelManagementPanel } from "@/components/companies/PersonnelManagementPanel";
 import { fetchCompaniesFromSupabase, saveCompanyToSupabase, archiveCompanyInSupabase, deleteCompanyInSupabase, uploadCompanyLogo } from "@/lib/supabase/company-api";
 import { computeCompanyRiskScores } from "@/lib/supabase/risk-assessment-api";
 import { fetchWorkspacePersonnelStats } from "@/lib/supabase/personnel-api";
-import { type WTab, StructureTab, RiskTab, TrackingTab, HistoryTab } from "@/components/companies/WorkspaceTabs";
+import {
+  type WTab,
+  StructureTab,
+  RiskTab,
+  TrackingTab,
+  HistoryTab,
+} from "@/components/companies/WorkspaceTabs";
 import { TeamManagementTab } from "@/components/companies/TeamManagementTab";
 import { OrganizationPanel } from "@/components/companies/OrganizationPanel";
 import { OhsFileTab } from "@/components/companies/OhsFileTab";
@@ -57,23 +68,27 @@ function svAr(l: CompanyRecord[]) { localStorage.setItem(AK, JSON.stringify(l));
 function ldDl(): CompanyRecord[] { if (typeof window === "undefined") return []; try { return JSON.parse(localStorage.getItem(DK) || "[]"); } catch { return []; } }
 function svDl(l: CompanyRecord[]) { localStorage.setItem(DK, JSON.stringify(l)); }
 
-const TABS: { k: WTab; l: string }[] = [
-  { k: "structure", l: "Yerleşke" },
-  { k: "risk", l: "Risk ve Saha" },
-  { k: "people", l: "Ekip" },
-  { k: "personnel", l: "Personel" },
-  { k: "tracking", l: "Takip" },
-  { k: "ohs_file", l: "İSG Dosyası" },
-  { k: "organization", l: "Organizasyon" },
-  { k: "history", l: "Geçmiş" },
-];
-
-function rbv(l: string): "success" | "warning" | "danger" | "neutral" { if (l === "Kritik") return "danger"; if (l === "Y\u00FCksek" || l === "Orta") return "warning"; if (l === "Kontroll\u00FC") return "success"; return "neutral"; }
 function hbv(h: string): "danger" | "warning" | "success" | "neutral" { if (h === "\u00C7ok Tehlikeli") return "danger"; if (h === "Tehlikeli") return "warning"; if (h === "Az Tehlikeli") return "success"; return "neutral"; }
 
 export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("companyWorkspace");
+  const tw = useTranslations("workplaceRisk");
+
+  const TABS: { k: WTab; l: string }[] = useMemo(
+    () => [
+      { k: "structure", l: t("tabs.structure") },
+      { k: "risk", l: t("tabs.risk") },
+      { k: "people", l: t("tabs.people") },
+      { k: "personnel", l: t("tabs.personnel") },
+      { k: "tracking", l: t("tabs.tracking") },
+      { k: "ohs_file", l: t("tabs.ohs_file") },
+      { k: "organization", l: t("tabs.organization") },
+      { k: "history", l: t("tabs.history") },
+    ],
+    [t],
+  );
   const [company, setCompany] = useState<CompanyRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -124,9 +139,9 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
   useEffect(() => {
     if (typeof document === "undefined") return;
     const original = document.title;
-    document.title = company?.name ? `${company.name} — Workspace · RiskNova` : "Workspace · RiskNova";
+    document.title = company?.name ? t("docTitle", { name: company.name }) : t("docTitleFallback");
     return () => { document.title = original; };
-  }, [company?.name]);
+  }, [company?.name, t]);
 
   // URL slug normalization — UUID ile geldiyse slug'a yönlendir
   useEffect(() => {
@@ -166,13 +181,16 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
     // Client-side validation
     const MAX_SIZE = 5 * 1024 * 1024; // 5MB
     if (file.size > MAX_SIZE) {
-      setLogoFeedback({ ok: false, msg: `Dosya boyutu çok büyük (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimum 5MB olmalı.` });
+      setLogoFeedback({
+        ok: false,
+        msg: t("logo.fileTooLarge", { sizeMb: (file.size / 1024 / 1024).toFixed(1) }),
+      });
       setTimeout(() => setLogoFeedback(null), 4000);
       return;
     }
 
     if (!file.type.startsWith("image/")) {
-      setLogoFeedback({ ok: false, msg: "Sadece resim dosyaları yüklenebilir (PNG, JPEG, WebP, SVG)." });
+      setLogoFeedback({ ok: false, msg: t("logo.imagesOnly") });
       setTimeout(() => setLogoFeedback(null), 4000);
       return;
     }
@@ -191,13 +209,13 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
     const url = await uploadCompanyLogo(company.id, uploadFile);
     if (url) {
       setCompany((prev) => prev ? { ...prev, logo_url: url } : prev);
-      setLogoFeedback({ ok: true, msg: "Logo/görsel güncellendi." });
+      setLogoFeedback({ ok: true, msg: t("logo.updated") });
     } else {
-      setLogoFeedback({ ok: false, msg: "Yükleme başarısız. Lütfen farklı bir dosya deneyin." });
+      setLogoFeedback({ ok: false, msg: t("logo.uploadFailed") });
     }
     setLogoUploading(false);
     setTimeout(() => setLogoFeedback(null), 3000);
-  }, [company]);
+  }, [company, t]);
 
   // Hero üst şeridindeki risk rozetinde kullanılıyor.
   const risk = useMemo(() => (company ? getOverallRiskState(company) : null), [company]);
@@ -227,9 +245,9 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
 
   if (!company) return (
     <div className="rounded-xl border border-border bg-card p-8 text-center shadow-[var(--shadow-soft)]">
-      <p className="text-lg font-semibold text-foreground">{"Firma bulunamad\u0131"}</p>
-      <p className="mt-2 text-sm text-muted-foreground">{"Bu ID ile e\u015Fle\u015Fen firma kayd\u0131 yok."}</p>
-      <Link href="/companies" className="mt-4 inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary-hover transition-colors">{"Firmalara D\u00F6n"}</Link>
+      <p className="text-lg font-semibold text-foreground">{t("notFound.title")}</p>
+      <p className="mt-2 text-sm text-muted-foreground">{t("notFound.description")}</p>
+      <Link href="/companies" className="mt-4 inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary-hover transition-colors">{t("notFound.back")}</Link>
     </div>
   );
 
@@ -246,6 +264,9 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
   // Çalışan sayısı: canlı personel tablosundan (cached metadata.employeeCount
   // senkron olmayabiliyor — özellikle toplu içe aktarım sonrası).
   const employeeCount = liveStats?.active ?? company.employeeCount;
+
+  const riskDisplayLabel = risk ? tw(`level.${risk.level}`) : "";
+  const hazardMsgKey = company.hazardClass ? hazardClassToMessageKey(company.hazardClass) : null;
 
   return (
     <div className="space-y-0">
@@ -279,7 +300,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
                 type="button"
                 onClick={() => logoInputRef.current?.click()}
                 disabled={logoUploading}
-                title="Logo yükle"
+                title={t("logo.uploadTitle")}
                 className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-card bg-primary text-white shadow transition hover:brightness-110 disabled:opacity-60"
               >
                 {logoUploading ? (
@@ -306,7 +327,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
             <div className="min-w-0 flex-1">
               <Link href="/companies" className="inline-flex items-center gap-1.5 rounded-xl border border-border/60 bg-secondary/40 px-3 py-1.5 text-xs font-semibold text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground hover:border-primary hover:shadow-md">
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-                Çalışma Alanları
+                {t("backLink")}
               </Link>
               <h1 className="mt-0.5 text-lg font-semibold tracking-tight text-foreground sm:text-xl">{company.name}</h1>
               <p className="mt-0.5 text-sm text-muted-foreground">
@@ -315,21 +336,31 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">
-            {risk && <Badge variant={rbv(risk.label)} className="px-3 py-1 text-xs">{risk.label}{risk.score !== null ? ` ${risk.score}` : ""}</Badge>}
-            {company.hazardClass && <Badge variant={hbv(company.hazardClass)} className="px-3 py-1 text-xs">{company.hazardClass}</Badge>}
-            <Button onClick={() => void save()} disabled={saving} className="h-10 rounded-xl px-6 text-sm font-bold shadow-md">{saving ? "Kaydediliyor..." : "Kaydet"}</Button>
-            <Button variant="outline" onClick={() => setTab("organization")} className="h-10 rounded-xl px-5 text-sm font-semibold">Davet Et</Button>
+            {risk && (
+              <Badge variant={workplaceRiskLevelBadgeVariant(risk.level)} className="px-3 py-1 text-xs">
+                {risk.score !== null
+                  ? t("riskBadgeScore", { label: riskDisplayLabel, score: risk.score })
+                  : t("riskBadgeLabelOnly", { label: riskDisplayLabel })}
+              </Badge>
+            )}
+            {company.hazardClass && (
+              <Badge variant={hbv(company.hazardClass)} className="px-3 py-1 text-xs">
+                {hazardMsgKey ? tw(`hazardClass.${hazardMsgKey}`) : company.hazardClass}
+              </Badge>
+            )}
+            <Button onClick={() => void save()} disabled={saving} className="h-10 rounded-xl px-6 text-sm font-bold shadow-md">{saving ? t("saving") : t("save")}</Button>
+            <Button variant="outline" onClick={() => setTab("organization")} className="h-10 rounded-xl px-5 text-sm font-semibold">{t("invite")}</Button>
           </div>
         </div>
         {/* Mini stat cards — premium */}
         <div className="mt-3 grid grid-cols-3 gap-2.5 sm:grid-cols-6">
           {[
-            { l: "\u00C7al\u0131\u015Fan", v: employeeCount, warn: false },
-            { l: "Lokasyon", v: lc, warn: false },
-            { l: "B\u00F6l\u00FCm", v: dc, warn: false },
-            { l: "A\u00E7\u0131k Aksiyon", v: company.openActions, warn: false },
-            { l: "Geciken", v: company.overdueActions, warn: company.overdueActions > 0 },
-            { l: "Olgunluk", v: `%${company.maturityScore}`, warn: false },
+            { l: t("stats.employees"), v: employeeCount, warn: false },
+            { l: t("stats.locations"), v: lc, warn: false },
+            { l: t("stats.departments"), v: dc, warn: false },
+            { l: t("stats.openActions"), v: company.openActions, warn: false },
+            { l: t("stats.overdue"), v: company.overdueActions, warn: company.overdueActions > 0 },
+            { l: t("stats.maturity"), v: `%${company.maturityScore}`, warn: false },
           ].map((s) => (
             <div key={s.l} className="flex h-14 flex-col justify-center rounded-[1.1rem] border border-border/60 bg-card px-3 text-center shadow-sm transition-shadow hover:shadow-[var(--shadow-card)]">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{s.l}</p>
@@ -344,10 +375,10 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
           <div className="rounded-[1.6rem] border border-border/80 bg-card p-3 shadow-[var(--shadow-card)]">
             <div className="px-2 pb-3 pt-1">
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">
-                Çalışma Alanı Bölümleri
+                {t("sidebar.title")}
               </p>
               <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                Sol menüden bir alan seç, içeriği sağ tarafta yönet.
+                {t("sidebar.hint")}
               </p>
             </div>
 

@@ -1,0 +1,305 @@
+{
+  "companiesList": {
+    "actions": {
+      "newCompany": "Nouvelle entreprise",
+      "sampleData": "Données d'exemple"
+    },
+    "archive": "Archiver",
+    "badge": {
+      "archived": "Archivé",
+      "deleted": "Supprimé"
+    },
+    "clearFilters": "Effacer les filtres",
+    "confirmArchive": {
+      "confirm": "Confirmer",
+      "hint": "Elle quittera la liste active.",
+      "title": "Archiver « {name} » ?"
+    },
+    "confirmDelete": {
+      "confirm": "Supprimer",
+      "instruction": "Tapez ce mot pour confirmer :",
+      "title": "Supprimer « {name} » ?"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "Tapez SUPPRIMER",
+      "word": "SUPPRIMER"
+    },
+    "defaults": {
+      "companyName": "Nouvelle entreprise / organisation",
+      "kind": "Secteur privé",
+      "shortName": "Nouvel enregistrement"
+    },
+    "delete": "Supprimer",
+    "description": {
+      "multi": "Gérez les entreprises dont vous êtes responsable et accédez à leurs chantiers.",
+      "single": "Gérez le personnel et autres dossiers opérationnels pour votre chantier actif."
+    },
+    "discard": "Annuler",
+    "employeesSuffix": "employés",
+    "empty": {
+      "archiveBannerCompany": "Entreprises archivées. Vous pouvez les restaurer.",
+      "archiveBannerWorksite": "Dossiers de chantier archivés. Vous pouvez les restaurer.",
+      "archiveEmptyCompany": "Rien dans l'archive",
+      "archiveEmptyDescCompany": "Aucune entreprise archivée pour le moment.",
+      "archiveEmptyDescWorksite": "Aucun chantier archivé pour le moment.",
+      "archiveEmptyWorksite": "Rien dans l'archive",
+      "clearFilters": "Effacer les filtres",
+      "completeWorksite": "Terminer la configuration du chantier",
+      "deletedBannerCompany": "Entreprises supprimées. La suppression définitive ne peut pas être annulée.",
+      "deletedBannerWorksite": "Dossiers de chantier supprimés. La suppression définitive ne peut pas être annulée.",
+      "deletedEmptyCompany": "Aucune entreprise supprimée",
+      "deletedEmptyDescCompany": "Aucune entreprise supprimée pour le moment.",
+      "deletedEmptyDescWorksite": "Aucun chantier supprimé pour le moment.",
+      "deletedEmptyWorksite": "Aucun chantier supprimé",
+      "initialDescCompany": "Créez votre première entreprise pour commencer.",
+      "initialDescWorksite": "Cette zone se remplit avec les données de votre chantier actif. Terminez la configuration du chantier pour voir le personnel et autres dossiers.",
+      "initialTitleCompany": "Aucune entreprise pour le moment",
+      "initialTitleWorksite": "Aucun dossier de chantier pour le moment",
+      "newCompany": "Nouvelle entreprise",
+      "noMatchCompany": "Aucune entreprise correspondante",
+      "noMatchDescription": "Aucun dossier ne correspond à vos filtres.",
+      "noMatchWorksite": "Aucun chantier correspondant",
+      "sampleData": "Données d'exemple"
+    },
+    "entity": {
+      "companyPlural": "entreprises",
+      "worksitePlural": "sites de travail"
+    },
+    "eyebrow": {
+      "multi": "Mes entreprises / organisations",
+      "osgb": "Entreprises OSGB",
+      "singleWorksite": "Site de travail"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "Tous",
+      "hazardClass": "Classe de danger",
+      "kind": "Type",
+      "search": "Rechercher",
+      "searchPlaceholder": "Nom, secteur, type, NACE…",
+      "sector": "Secteur",
+      "sort": "Trier"
+    },
+    "limitReachedBanner": "Vous avez atteint la limite d'entreprises / espaces de travail actifs. Archivez une entreprise ou améliorez votre forfait avant d'en ajouter ou d'en restaurer une.",
+    "links": {
+      "riskAnalysis": "Analyse des risques",
+      "workspace": "Espace de travail"
+    },
+    "metrics": {
+      "actions": "Actions",
+      "departments": "Départements",
+      "employees": "Employés",
+      "hazard": "Danger",
+      "locations": "Emplacements",
+      "overdue": "En retard"
+    },
+    "permanentDelete": "Supprimer définitivement",
+    "progress": {
+      "coverage": "Couverture",
+      "maturity": "Maturité"
+    },
+    "restore": "Restaurer",
+    "sort": {
+      "employees": "Employés",
+      "name": "Par nom",
+      "overdue": "En retard",
+      "risk": "Risque"
+    },
+    "stats": {
+      "avgMaturity": "Maturité moy.",
+      "criticalCompanies": "Entreprises critiques",
+      "criticalWorksites": "Sites de travail critiques",
+      "employees": "Employés",
+      "openActions": "Actions ouvertes",
+      "overdueTasks": "Tâches en retard",
+      "totalCompanies": "Total entreprises",
+      "totalWorksites": "Total sites de travail"
+    },
+    "storage": {
+      "local": "Local",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "Actif",
+      "archived": "Archive",
+      "deleted": "Supprimé"
+    },
+    "title": {
+      "multi": "Mes entreprises / organisations",
+      "osgb": "Entreprises et sites de travail",
+      "single": "Contenu du site de travail et opérationnel"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} créneaux d'entreprise active utilisés",
+      "activeOnly": "{count} entreprises / espaces de travail actifs"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "Sites de travail",
+    "docTitle": "{name} — Espace de travail · RiskNova",
+    "docTitleFallback": "Espace de travail · RiskNova",
+    "invite": "Inviter",
+    "logo": {
+      "fileTooLarge": "Le fichier est trop volumineux ({sizeMb} MB). La taille maximale est de 5 MB.",
+      "imagesOnly": "Seuls les fichiers image peuvent être téléchargés (PNG, JPEG, WebP, SVG).",
+      "updated": "Logo/image mis à jour.",
+      "uploadFailed": "Échec du téléchargement. Essayez un autre fichier.",
+      "uploadTitle": "Télécharger le logo"
+    },
+    "notFound": {
+      "back": "Retour aux entreprises",
+      "description": "Aucune entreprise ne correspond à cet ID.",
+      "title": "Entreprise introuvable"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "sidebar": {
+      "hint": "Choisissez une zone à gauche ; gérez le contenu à droite.",
+      "title": "Sections du site de travail"
+    },
+    "stats": {
+      "departments": "Départements",
+      "employees": "Employés",
+      "locations": "Emplacements",
+      "maturity": "Maturité",
+      "openActions": "Actions ouvertes",
+      "overdue": "En retard"
+    },
+    "tabs": {
+      "history": "Historique",
+      "ohs_file": "Dossier SST",
+      "organization": "Organisation",
+      "people": "Équipe",
+      "personnel": "Personnel",
+      "risk": "Risque et terrain",
+      "structure": "Locaux",
+      "tracking": "Suivi"
+    }
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "Gérer les flux d'entreprise, d'affectation, de document et de risque par espace de travail d'entreprise.",
+      "searchLabel": "Rechercher des entreprises",
+      "searchPlaceholder": "Rechercher entreprise, secteur, adresse ou NACE",
+      "title": "Entreprises actives"
+    },
+    "archivedRow": {
+      "restore": "Restaurer",
+      "restoring": "Restauration…"
+    },
+    "archivedSection": {
+      "badge": "{count} enregistrements archivés",
+      "description": "Les entreprises archivées ne comptent pas dans la limite active ; l'historique des risques et documents est conservé.",
+      "title": "Entreprises archivées"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} entreprises actives",
+      "activeCompaniesUnlimited": "Entreprises actives : {count}",
+      "activeStaffMax": "{count} / {max} personnel actif",
+      "activeStaffUnlimited": "{count} personnel actif"
+    },
+    "companyCard": {
+      "archive": "Archiver",
+      "archiving": "Archivage…",
+      "assignedProfessionals": "{count} professionnels assignés",
+      "assignments": "Affectations",
+      "contracts": "Contrats",
+      "documentsCount": "{count} documents",
+      "documentsLink": "Documents",
+      "employees": "{count} employés",
+      "overdueTasks": "{count} éléments en retard",
+      "personnelInvite": "Personnel et invitations",
+      "sectorUnknown": "Secteur non défini",
+      "taskTracking": "Suivi des tâches",
+      "workspace": "Espace de travail entreprise"
+    },
+    "emptyActive": {
+      "cta": "Ajouter la première entreprise",
+      "description": "Les entreprises clientes liées au panel OSGB seront listées ici.",
+      "title": "Aucune entreprise active"
+    },
+    "emptyArchived": {
+      "description": "Lorsque vous archivez une entreprise, elle apparaîtra ici.",
+      "title": "Aucune entreprise archivée"
+    },
+    "emptyCompany": {
+      "kind": "Secteur privé",
+      "name": "Nouvelle entreprise cliente OSGB",
+      "shortName": "Nouvelle entreprise"
+    },
+    "focus": {
+      "p1": "Cette zone est réservée aux propriétaires et administrateurs OSGB. Les entreprises, affectations, contrats et suivi documentaire sont gérés en un seul endroit.",
+      "p2": "Le personnel assigné n'utilise pas ce panel pour son flux quotidien ; il accède aux données de l'espace de travail de l'entreprise assignée via son propre compte.",
+      "sidebarBody": "{firms} entreprises actives, {professionals} professionnels assignés, et {overdue} éléments nécessitant une attention sont coordonnés ici.",
+      "sidebarEyebrow": "Focus de gestion",
+      "title": "Interface centrée OSGB"
+    },
+    "header": {
+      "description": "Gérez vos entreprises clientes, les espaces de travail par entreprise, et les flux de personnel qui leur sont assignés.",
+      "eyebrow": "Gestion des entreprises OSGB",
+      "title": "Entreprises et sites de travail"
+    },
+    "limitBanner": "Limite d'entreprises actives atteinte. Archivez une entreprise ou améliorez votre plan pour en ajouter plus.",
+    "loading": {
+      "description": "Nous chargeons les entreprises clientes, affectations et flux documentaires.",
+      "eyebrow": "Entreprises OSGB",
+      "title": "Préparation de votre portefeuille"
+    },
+    "nova": {
+      "bullet1": "Voir la répartition de la charge de travail par entreprise.",
+      "bullet2": "Filtrer les tâches et documents en retard.",
+      "bullet3": "Repérer les lacunes d'affectation du personnel.",
+      "bullet4": "Prioriser les risques de renouvellement de contrats et rapports.",
+      "openTasks": "Tâches OSGB ouvertes",
+      "reviewOverdue": "Réviser le travail en retard",
+      "seeAssignmentGaps": "Voir les lacunes d'affectation",
+      "subtitle": "Assistant de gestion ; surveille les performances du personnel et des entreprises.",
+      "title": "Gestionnaire Nova OSGB"
+    },
+    "quickLinks": {
+      "docCenter": "Accéder au centre de documents",
+      "inviteStaff": "Inviter du personnel",
+      "manageAssignments": "Gérer les affectations",
+      "openContracts": "Ouvrir les contrats"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "Entreprises clientes actives suivies dans le panneau OSGB.",
+        "label": "Entreprises actives"
+      },
+      "assignedProfessionals": {
+        "hint": "Total des affectations d'experts, médecins et DSP aux entreprises.",
+        "label": "Professionnels affectés"
+      },
+      "overdueWork": {
+        "hint": "Éléments ouverts à surveiller dans les flux d'affectation et CAPA.",
+        "label": "Travail en retard"
+      },
+      "totalEmployees": {
+        "hint": "Effectif total d'employés des dossiers d'entreprise pour la planification.",
+        "label": "Total employés"
+      }
+    },
+    "topActions": {
+      "addCompany": "Ajouter une entreprise",
+      "openAssignments": "Ouvrir les affectations",
+      "personnelInvite": "Personnel et invitations"
+    }
+  },
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "Moins dangereux",
+      "high": "Très dangereux",
+      "moderate": "Dangereux"
+    },
+    "level": {
+      "controlled": "Contrôlé",
+      "critical": "Critique",
+      "high": "Élevé",
+      "incomplete": "Sous-évalué",
+      "medium": "Moyen"
+    }
+  }
+}

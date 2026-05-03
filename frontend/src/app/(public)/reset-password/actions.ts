@@ -9,7 +9,7 @@ import { validateStrongPassword } from "@/lib/security/server";
 import {
   getAccountContextForUser,
   isPrivilegedAccountSelfServiceLoginBlocked,
-  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE,
+  PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE,
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
 
@@ -99,7 +99,7 @@ export async function updatePasswordAction(formData: FormData) {
   if (resolved.blocked) {
     await supabase.auth.signOut();
     redirect(
-      `/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_MESSAGE)}`,
+      `/login?error=${encodeURIComponent(PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE)}`,
     );
   }
 

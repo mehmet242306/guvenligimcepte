@@ -1,0 +1,305 @@
+{
+  "companiesList": {
+    "actions": {
+      "newCompany": "Yeni şirkət",
+      "sampleData": "Nümunə məlumatları"
+    },
+    "archive": "Arxiv",
+    "badge": {
+      "archived": "Arxivləşdirilmiş",
+      "deleted": "Silinmiş"
+    },
+    "clearFilters": "Filterləri təmizlə",
+    "confirmArchive": {
+      "confirm": "Təsdiq et",
+      "hint": "Aktiv siyahıdan çıxacaq.",
+      "title": "Arxiv \"{name}\"?"
+    },
+    "confirmDelete": {
+      "confirm": "Sil",
+      "instruction": "Təsdiq etmək üçün bu sözü yazın:",
+      "title": "{name}\" silinsin?"
+    },
+    "confirmPermanentDelete": {
+      "placeholder": "DELETE yazın",
+      "word": "SİL"
+    },
+    "defaults": {
+      "companyName": "Yeni şirkət / təşkilat",
+      "kind": "Özəl sektor",
+      "shortName": "Yeni qeyd"
+    },
+    "delete": "Sil",
+    "description": {
+      "multi": "Məsul olduğunuz şirkətləri idarə edin və onların iş yerlərini əldə edin.",
+      "single": "Aktiv iş yeriniz üçün personal və digər əməliyyat qeydlərini idarə edin."
+    },
+    "discard": "Ləğv et",
+    "employeesSuffix": "işçilər",
+    "empty": {
+      "archiveBannerCompany": "Arxivləşdirilmiş şirkətlər. Onları bərpa edə bilərsiniz.",
+      "archiveBannerWorksite": "Arxivləşdirilmiş iş sahəsi qeydləri. Onları bərpa edə bilərsiniz.",
+      "archiveEmptyCompany": "Arxivdə heç nə yoxdur",
+      "archiveEmptyDescCompany": "Hələ arxivləşdirilmiş şirkət yoxdur.",
+      "archiveEmptyDescWorksite": "Hələ arxivləşdirilmiş iş sahəsi yoxdur.",
+      "archiveEmptyWorksite": "Arxivdə heç nə yoxdur",
+      "clearFilters": "Filterləri təmizlə",
+      "completeWorksite": "İş sahəsi quraşdırmasını tamamla",
+      "deletedBannerCompany": "Silinmiş şirkətlər. Daimi silinmə geri qaytarıla bilməz.",
+      "deletedBannerWorksite": "Silinmiş iş sahəsi qeydləri. Daimi silinmə geri qaytarıla bilməz.",
+      "deletedEmptyCompany": "Silinmiş şirkət yoxdur",
+      "deletedEmptyDescCompany": "Hələ silinmiş şirkət yoxdur.",
+      "deletedEmptyDescWorksite": "Hələ silinmiş iş sahəsi yoxdur.",
+      "deletedEmptyWorksite": "Silinmiş iş sahəsi yoxdur",
+      "initialDescCompany": "Başlamaq üçün ilk şirkətinizi yaradın.",
+      "initialDescWorksite": "Bu sahə aktiv iş sahəsi məlumatlarınızla doldurulur. Personal və digər qeydləri görmək üçün iş sahəsi quraşdırmasını tamamlayın.",
+      "initialTitleCompany": "Hələ şirkət yoxdur",
+      "initialTitleWorksite": "Hələ iş sahəsi qeydi yoxdur",
+      "newCompany": "Yeni şirkət",
+      "noMatchCompany": "Uyğun şirkət yoxdur",
+      "noMatchDescription": "Heç bir qeyd filterlərinizə uyğun gəlmir.",
+      "noMatchWorksite": "Uyğun iş sahəsi yoxdur",
+      "sampleData": "Nümunə məlumatları"
+    },
+    "entity": {
+      "companyPlural": "şirkətlər",
+      "worksitePlural": "iş yerləri"
+    },
+    "eyebrow": {
+      "multi": "Mənim şirkətlərim / təşkilatlarım",
+      "osgb": "OSGB şirkətləri",
+      "singleWorksite": "İş yeri"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "filters": {
+      "all": "Hamısı",
+      "hazardClass": "Təhlükə sinfi",
+      "kind": "Növ",
+      "search": "Axtarış",
+      "searchPlaceholder": "Ad, sektor, növ, NACE…",
+      "sector": "Sektor",
+      "sort": "Sıralama"
+    },
+    "limitReachedBanner": "Aktiv şirkət / iş sahəsi limitinə çatdınız. Yenisini əlavə etmək və ya bərpa etmək üçün şirkəti arxivləyin və ya planınızı yüksəldin.",
+    "links": {
+      "riskAnalysis": "Risk analizi",
+      "workspace": "İş sahəsi"
+    },
+    "metrics": {
+      "actions": "Fəaliyyətlər",
+      "departments": "Şöbələr",
+      "employees": "İşçilər",
+      "hazard": "Təhlükə",
+      "locations": "Yerlər",
+      "overdue": "Gecikmiş"
+    },
+    "permanentDelete": "Həmişəlik sil",
+    "progress": {
+      "coverage": "Əhatə",
+      "maturity": "Yetkinlik"
+    },
+    "restore": "Bərpa et",
+    "sort": {
+      "employees": "İşçilər",
+      "name": "Ada görə",
+      "overdue": "Gecikmiş",
+      "risk": "Risk"
+    },
+    "stats": {
+      "avgMaturity": "Ort. yetkinlik",
+      "criticalCompanies": "Kritik şirkətlər",
+      "criticalWorksites": "Kritik iş yerləri",
+      "employees": "İşçilər",
+      "openActions": "Açıq fəaliyyətlər",
+      "overdueTasks": "Gecikmiş tapşırıqlar",
+      "totalCompanies": "Ümumi şirkətlər",
+      "totalWorksites": "Ümumi iş yerləri"
+    },
+    "storage": {
+      "local": "Lokal",
+      "supabase": "Supabase"
+    },
+    "tabs": {
+      "active": "Aktiv",
+      "archived": "Arxiv",
+      "deleted": "Silinmiş"
+    },
+    "title": {
+      "multi": "Mənim şirkətlərim / təşkilatlarım",
+      "osgb": "Şirkətlər və iş yerləri",
+      "single": "İş yeri və əməliyyat məzmunu"
+    },
+    "usage": {
+      "activeOfMax": "{current} / {max} aktiv şirkət slotu istifadə edilib",
+      "activeOnly": "{count} aktiv şirkət / iş sahəsi"
+    }
+  },
+  "companyWorkspace": {
+    "backLink": "İş yerləri",
+    "docTitle": "{name} — İş sahəsi · RiskNova",
+    "docTitleFallback": "İş sahəsi · RiskNova",
+    "invite": "Dəvət et",
+    "logo": {
+      "fileTooLarge": "Fayl çox böyükdür ({sizeMb} MB). Maksimum ölçü 5 MB-dır.",
+      "imagesOnly": "Yalnız şəkil faylları yüklənə bilər (PNG, JPEG, WebP, SVG).",
+      "updated": "Loqo/şəkil yeniləndi.",
+      "uploadFailed": "Yükləmə uğursuz oldu. Başqa fayl sınayın.",
+      "uploadTitle": "Loqo yüklə"
+    },
+    "notFound": {
+      "back": "Şirkətlərə qayıt",
+      "description": "Bu ID-yə uyğun şirkət yoxdur.",
+      "title": "Şirkət tapılmadı"
+    },
+    "riskBadgeLabelOnly": "{label}",
+    "riskBadgeScore": "{label} {score}",
+    "save": "Yadda saxla",
+    "saving": "Yadda saxlanır…",
+    "sidebar": {
+      "hint": "Solda sahə seçin; sağda məzmunu idarə edin.",
+      "title": "İş yeri bölmələri"
+    },
+    "stats": {
+      "departments": "Şöbələr",
+      "employees": "İşçilər",
+      "locations": "Yerlər",
+      "maturity": "Yetkinlik",
+      "openActions": "Açıq tədbirlər",
+      "overdue": "Gecikmiş"
+    },
+    "tabs": {
+      "history": "Tarixçə",
+      "ohs_file": "OHS faylı",
+      "organization": "Təşkilat",
+      "people": "Komanda",
+      "personnel": "Kadr",
+      "risk": "Risk və sahə",
+      "structure": "Binalar",
+      "tracking": "İzləmə"
+    }
+  },
+  "osgbFirms": {
+    "activeSection": {
+      "description": "Şirkət iş sahəsi üzrə şirkət, təyinat, sənəd və risk axınlarını idarə edin.",
+      "searchLabel": "Şirkət axtar",
+      "searchPlaceholder": "Şirkət, sektor, ünvan və ya NACE axtar",
+      "title": "Aktiv şirkətlər"
+    },
+    "archivedRow": {
+      "restore": "Bərpa et",
+      "restoring": "Bərpa edilir…"
+    },
+    "archivedSection": {
+      "badge": "{count} arxivləşdirilmiş qeyd",
+      "description": "Arxivləşdirilmiş şirkətlər aktiv limitə daxil edilmir; risk və sənəd tarixçəsi saxlanılır.",
+      "title": "Arxivləşdirilmiş şirkətlər"
+    },
+    "badges": {
+      "activeCompaniesMax": "{count} / {max} aktiv şirkət",
+      "activeCompaniesUnlimited": "Aktiv {count} şirkət",
+      "activeStaffMax": "{count} / {max} aktiv işçi",
+      "activeStaffUnlimited": "{count} aktiv işçi"
+    },
+    "companyCard": {
+      "archive": "Arxiv",
+      "archiving": "Arxivləşdirilir…",
+      "assignedProfessionals": "{count} təyin edilmiş mütəxəssis",
+      "assignments": "Tapşırıqlar",
+      "contracts": "Müqavilələr",
+      "documentsCount": "{count} sənəd",
+      "documentsLink": "Sənədlər",
+      "employees": "{count} işçi",
+      "overdueTasks": "{count} gecikmiş element",
+      "personnelInvite": "Heyət və dəvətlər",
+      "sectorUnknown": "Sektor təyin edilməyib",
+      "taskTracking": "Tapşırıq izləmə",
+      "workspace": "Şirkət iş sahəsi"
+    },
+    "emptyActive": {
+      "cta": "İlk şirkəti əlavə et",
+      "description": "OSGB panelinə bağlı müştəri şirkətləri burada siyahılanacaq.",
+      "title": "Aktiv şirkət yoxdur"
+    },
+    "emptyArchived": {
+      "description": "Şirkəti arxivləşdirdiyiniz zaman burada görünəcək.",
+      "title": "Arxivləşdirilmiş şirkət yoxdur"
+    },
+    "emptyCompany": {
+      "kind": "Özəl sektor",
+      "name": "Yeni OSGB müştəri şirkəti",
+      "shortName": "Yeni şirkət"
+    },
+    "focus": {
+      "p1": "Bu sahə yalnız OSGB sahibi və admin istifadəçiləri üçündür. Şirkətlər, tapşırıqlar, müqavilələr və sənəd izləmə bir yerdə idarə olunur.",
+      "p2": "Təyin edilmiş heyət gündəlik iş axını üçün bu paneldən istifadə etmir; onlar öz hesabları vasitəsilə təyin edilmiş şirkət iş sahəsi məlumatlarına daxil olurlar.",
+      "sidebarBody": "{firms} aktiv şirkət, {professionals} təyin edilmiş mütəxəssis və diqqət tələb edən {overdue} element burada koordinasiya edilir.",
+      "sidebarEyebrow": "İdarəetmə fokus",
+      "title": "OSGB-yönümlü səth"
+    },
+    "header": {
+      "description": "Müştəri şirkətlərinizi, şirkət üzrə iş sahələrini və onlara təyin edilmiş heyət axınlarını idarə edin.",
+      "eyebrow": "OSGB şirkət idarəetməsi",
+      "title": "Şirkətlər və iş sahələri"
+    },
+    "limitBanner": "Aktiv şirkət limiti çatdı. Şirkəti arxivləşdirin və ya daha çox əlavə etmək üçün planınızı yüksəldin.",
+    "loading": {
+      "description": "Müştəri şirkətləri, tapşırıqlar və sənəd axınları yüklənir.",
+      "eyebrow": "OSGB şirkətləri",
+      "title": "Portfeliniz hazırlanır"
+    },
+    "nova": {
+      "bullet1": "Şirkət üzrə iş yükü bölgüsünü görün.",
+      "bullet2": "Gecikmiş tapşırıq və sənədləri filtrləyin.",
+      "bullet3": "Heyət təyinatı boşluqlarını müəyyən edin.",
+      "bullet4": "Müqavilə və hesabat yenilənmə risklərini prioritetləşdirin.",
+      "openTasks": "Açıq OSGB tapşırıqları",
+      "reviewOverdue": "Gecikmiş işləri nəzərdən keçirin",
+      "seeAssignmentGaps": "Təyinat boşluqlarını görün",
+      "subtitle": "İdarəetmə köməkçisi; heyət və şirkət performansını izləyir.",
+      "title": "Nova OSGB Meneceri"
+    },
+    "quickLinks": {
+      "docCenter": "Sənəd mərkəzinə keç",
+      "inviteStaff": "Heyəti dəvət et",
+      "manageAssignments": "Tapşırıqları idarə et",
+      "openContracts": "Müqavilələri aç"
+    },
+    "stats": {
+      "activeFirms": {
+        "hint": "OSGB panelində izlənilən aktiv müştəri şirkətləri.",
+        "label": "Aktiv şirkətlər"
+      },
+      "assignedProfessionals": {
+        "hint": "Mütəxəssislərin, həkimlərin və DSP-nin şirkətlərə ümumi tapşırıqları.",
+        "label": "Təyin edilmiş mütəxəssislər"
+      },
+      "overdueWork": {
+        "hint": "Tapşırıq və CAPA axınlarında izləniləcək açıq elementlər.",
+        "label": "Gecikmiş işlər"
+      },
+      "totalEmployees": {
+        "hint": "Planlaşdırma üçün şirkət qeydlərindən ümumi işçi sayı.",
+        "label": "Ümumi işçilər"
+      }
+    },
+    "topActions": {
+      "addCompany": "Şirkət əlavə et",
+      "openAssignments": "Tapşırıqları aç",
+      "personnelInvite": "Heyət və dəvətlər"
+    }
+  },
+  "workplaceRisk": {
+    "hazardClass": {
+      "az": "Az təhlükəli",
+      "high": "Çox təhlükəli",
+      "moderate": "Təhlükəli"
+    },
+    "level": {
+      "controlled": "Nəzarət edilən",
+      "critical": "Kritik",
+      "high": "Yüksək",
+      "incomplete": "Qiymətləndirilməmiş",
+      "medium": "Orta"
+    }
+  }
+}

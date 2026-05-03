@@ -1,0 +1,305 @@
+{
+  "workplaceRisk": {
+    "level": {
+      "incomplete": "Eksik değerlendirilmiş",
+      "critical": "Kritik",
+      "high": "Yüksek",
+      "medium": "Orta",
+      "controlled": "Kontrollü"
+    },
+    "hazardClass": {
+      "az": "Az tehlikeli",
+      "moderate": "Tehlikeli",
+      "high": "Çok tehlikeli"
+    }
+  },
+  "companiesList": {
+    "defaults": {
+      "companyName": "Yeni Firma / Kurum",
+      "shortName": "Yeni Kayıt",
+      "kind": "Özel Sektör"
+    },
+    "confirmPermanentDelete": {
+      "word": "SİL",
+      "placeholder": "\"SİL\" yazın"
+    },
+    "eyebrow": {
+      "osgb": "OSGB Firmaları",
+      "singleWorksite": "Çalışma Alanı",
+      "multi": "Firmalarım / Kurumlarım"
+    },
+    "title": {
+      "osgb": "Firma ve çalışma alanları",
+      "single": "Çalışma alanı ve operasyon içeriği",
+      "multi": "Firmalarım / Kurumlarım"
+    },
+    "description": {
+      "single": "Aktif çalışma alanındaki personel ve diğer operasyon kayıtlarını yönetin.",
+      "multi": "Sorumlu olduğunuz firmaları yönetin, çalışma alanlarına erişin."
+    },
+    "usage": {
+      "activeOnly": "{count} aktif firma / workspace",
+      "activeOfMax": "{current} / {max} aktif firma hakkı kullanılıyor"
+    },
+    "limitReachedBanner": "Aktif firma / workspace limitine ulaştın. Yeni kayıt açmak veya arşivden geri yüklemek için önce bir firmayı arşivle ya da paket yükselt.",
+    "tabs": {
+      "active": "Aktif",
+      "archived": "Arşiv",
+      "deleted": "Silinen"
+    },
+    "stats": {
+      "totalCompanies": "Toplam Firma",
+      "totalWorksites": "Toplam Çalışma Alanı",
+      "employees": "Toplam Çalışan",
+      "criticalCompanies": "Kritik Firma",
+      "criticalWorksites": "Kritik Çalışma Alanı",
+      "openActions": "Açık Aksiyon",
+      "overdueTasks": "Geciken İş",
+      "avgMaturity": "Ort. Olgunluk"
+    },
+    "filters": {
+      "search": "Ara",
+      "searchPlaceholder": "Ad, sektör, tür, NACE...",
+      "hazardClass": "Tehlike Sınıfı",
+      "sector": "Sektör",
+      "kind": "Tür",
+      "sort": "Sıralama",
+      "all": "Tümü"
+    },
+    "sort": {
+      "name": "Ada Göre",
+      "employees": "Çalışan",
+      "risk": "Risk",
+      "overdue": "Geciken"
+    },
+    "filterCount": "{filtered} / {total} {entityPlural}",
+    "clearFilters": "Filtreleri temizle",
+    "metrics": {
+      "hazard": "Tehlike",
+      "employees": "Çalışan",
+      "actions": "Aksiyon",
+      "overdue": "Geciken",
+      "locations": "Lokasyon",
+      "departments": "Bölüm"
+    },
+    "progress": {
+      "coverage": "Kapsam",
+      "maturity": "Olgunluk"
+    },
+    "links": {
+      "workspace": "Çalışma Alanı",
+      "riskAnalysis": "Risk Analizi"
+    },
+    "archive": "Arşivle",
+    "restore": "Geri Yükle",
+    "delete": "Sil",
+    "confirmArchive": {
+      "title": "“{name}” arşive alınsın mı?",
+      "hint": "Firma aktif listeden ayrılacak.",
+      "confirm": "Onayla"
+    },
+    "confirmDelete": {
+      "title": "“{name}” silinsin mi?",
+      "instruction": "Onay için şunu yazın:",
+      "confirm": "Sil"
+    },
+    "empty": {
+      "noMatchCompany": "Eşleşen firma bulunamadı",
+      "noMatchWorksite": "Eşleşen çalışma alanı bulunamadı",
+      "noMatchDescription": "Arama kriterlerinize uygun kayıt yok.",
+      "clearFilters": "Filtreleri Temizle",
+      "archiveBannerCompany": "Arşivlenen firmalar. Geri yükleme yapabilirsiniz.",
+      "archiveBannerWorksite": "Arşivlenen çalışma alanı kayıtları. Geri yükleme yapabilirsiniz.",
+      "archiveEmptyCompany": "Arşivde firma bulunmuyor",
+      "archiveEmptyWorksite": "Arşivde çalışma alanı bulunmuyor",
+      "archiveEmptyDescCompany": "Henüz arşivlenmiş firma yok.",
+      "archiveEmptyDescWorksite": "Henüz arşivlenmiş çalışma alanı yok.",
+      "deletedBannerCompany": "Silinen firmalar. Kalıcı silme geri alınamaz.",
+      "deletedBannerWorksite": "Silinen çalışma alanı kayıtları. Kalıcı silme geri alınamaz.",
+      "deletedEmptyCompany": "Silinen firma bulunmuyor",
+      "deletedEmptyWorksite": "Silinen çalışma alanı bulunmuyor",
+      "deletedEmptyDescCompany": "Henüz silinmiş firma yok.",
+      "deletedEmptyDescWorksite": "Henüz silinmiş çalışma alanı yok.",
+      "initialTitleCompany": "Henüz kayıtlı firma bulunmuyor",
+      "initialTitleWorksite": "Çalışma alanı kaydı henüz görünmüyor",
+      "initialDescCompany": "İlk firmanızı oluşturarak başlayın.",
+      "initialDescWorksite": "Bu alan aktif çalışma alanı verileriyle dolar. Çalışma alanı kurulumunu tamamladığınızda personel ve diğer kayıtlar burada görünür.",
+      "completeWorksite": "Çalışma Alanını Tamamla",
+      "newCompany": "Yeni Firma",
+      "sampleData": "Örnek Veriler"
+    },
+    "entity": {
+      "companyPlural": "firma",
+      "worksitePlural": "çalışma alanı"
+    },
+    "storage": {
+      "supabase": "Supabase",
+      "local": "Yerel"
+    },
+    "actions": {
+      "newCompany": "Yeni Firma",
+      "sampleData": "Örnek Veriler"
+    },
+    "badge": {
+      "archived": "Arşivde",
+      "deleted": "Silindi"
+    },
+    "permanentDelete": "Kalıcı Sil",
+    "employeesSuffix": "çalışan",
+    "discard": "Vazgeç"
+  },
+  "companyWorkspace": {
+    "docTitle": "{name} — Workspace · RiskNova",
+    "docTitleFallback": "Workspace · RiskNova",
+    "notFound": {
+      "title": "Firma bulunamadı",
+      "description": "Bu ID ile eşleşen firma kaydı yok.",
+      "back": "Firmalara Dön"
+    },
+    "backLink": "Çalışma Alanları",
+    "logo": {
+      "uploadTitle": "Logo yükle",
+      "fileTooLarge": "Dosya boyutu çok büyük ({sizeMb} MB). Maksimum 5 MB olmalı.",
+      "imagesOnly": "Sadece resim dosyaları yüklenebilir (PNG, JPEG, WebP, SVG).",
+      "updated": "Logo/görsel güncellendi.",
+      "uploadFailed": "Yükleme başarısız. Lütfen farklı bir dosya deneyin."
+    },
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "invite": "Davet Et",
+    "riskBadgeScore": "{label} {score}",
+    "riskBadgeLabelOnly": "{label}",
+    "stats": {
+      "employees": "Çalışan",
+      "locations": "Lokasyon",
+      "departments": "Bölüm",
+      "openActions": "Açık Aksiyon",
+      "overdue": "Geciken",
+      "maturity": "Olgunluk"
+    },
+    "sidebar": {
+      "title": "Çalışma Alanı Bölümleri",
+      "hint": "Sol menüden bir alan seç, içeriği sağ tarafta yönet."
+    },
+    "tabs": {
+      "structure": "Yerleşke",
+      "risk": "Risk ve Saha",
+      "people": "Ekip",
+      "personnel": "Personel",
+      "tracking": "Takip",
+      "ohs_file": "İSG Dosyası",
+      "organization": "Organizasyon",
+      "history": "Geçmiş"
+    }
+  },
+  "osgbFirms": {
+    "emptyCompany": {
+      "name": "Yeni OSGB firması",
+      "shortName": "Yeni firma",
+      "kind": "Özel Sektör"
+    },
+    "loading": {
+      "eyebrow": "OSGB Firmaları",
+      "title": "Firma portföyü hazırlanıyor",
+      "description": "Müşteri firmalar, görevlendirmeler ve doküman akışları yüklenirken hazırlıyoruz."
+    },
+    "header": {
+      "eyebrow": "OSGB Firma Yönetimi",
+      "title": "Firmalar ve çalışma alanları",
+      "description": "Müşteri firmalarınızı, firma bazlı workspace yapılarını ve bu firmalara atanan personel akışlarını buradan yönetin."
+    },
+    "badges": {
+      "activeCompaniesUnlimited": "{count} aktif firma",
+      "activeCompaniesMax": "{count} / {max} aktif firma",
+      "activeStaffUnlimited": "{count} aktif personel",
+      "activeStaffMax": "{count} / {max} aktif personel"
+    },
+    "topActions": {
+      "personnelInvite": "Personel ve davet",
+      "openAssignments": "Görevlendirmeleri aç",
+      "addCompany": "Yeni firma ekle"
+    },
+    "stats": {
+      "activeFirms": {
+        "label": "Aktif firma",
+        "hint": "OSGB panelinde takip edilen aktif müşteri firma sayısı."
+      },
+      "assignedProfessionals": {
+        "label": "Atanan profesyonel",
+        "hint": "Firmalara dağıtılan uzman, hekim ve DSP toplam atama sayısı."
+      },
+      "totalEmployees": {
+        "label": "Toplam çalışan",
+        "hint": "Firma kayıtlarındaki toplam çalışan hacmi ve planlama girdisi."
+      },
+      "overdueWork": {
+        "label": "Geciken iş",
+        "hint": "Görevlendirme ve DÖF akışlarında dikkate alınması gereken açık işler."
+      }
+    },
+    "focus": {
+      "title": "OSGB odaklı kurgu",
+      "p1": "Bu yüzey yalnızca OSGB owner ve admin kullanıcıları içindir. Firmalar, görevlendirmeler, sözleşmeler ve doküman takibi tek yerden yönetilir.",
+      "p2": "Görevlendirilen personel bu paneli değil, kendi profesyonel akışlarını kullanır. Personel sadece atandığı firma workspace verilerine kendi hesabı üzerinden erişir.",
+      "sidebarEyebrow": "Yönetim odağı",
+      "sidebarBody": "{firms} aktif firma, {professionals} atanmış profesyonel ve {overdue} dikkat isteyen iş bu merkezden yönetiliyor."
+    },
+    "quickLinks": {
+      "inviteStaff": "Personel davet et",
+      "manageAssignments": "Görevlendirmeleri yönet",
+      "openContracts": "Sözleşmeleri aç",
+      "docCenter": "Doküman merkezine git"
+    },
+    "nova": {
+      "title": "Nova OSGB Manager",
+      "subtitle": "Yönetim yardımcısı; personel ve firma performansını izler.",
+      "bullet1": "Firma bazlı yük dağılımını gör.",
+      "bullet2": "Geciken görev ve dokümanları ayıkla.",
+      "bullet3": "Personel görevlendirme boşluklarını tespit et.",
+      "bullet4": "Sözleşme ve rapor yenileme risklerini önceliklendir.",
+      "openTasks": "OSGB işlerini aç",
+      "reviewOverdue": "Geciken işleri incele",
+      "seeAssignmentGaps": "Atama boşluklarını gör"
+    },
+    "limitBanner": "Aktif firma limitine ulaşıldı. Yeni firma eklemek için bir firmayı arşive al ya da paketi yükselt.",
+    "activeSection": {
+      "title": "Aktif firmalar",
+      "description": "Firma, görevlendirme, doküman ve risk akışlarınızı firma workspace bazında yönetin.",
+      "searchLabel": "Firma ara",
+      "searchPlaceholder": "Firma, sektör, adres veya NACE ara"
+    },
+    "emptyActive": {
+      "title": "Aktif firma bulunamadı",
+      "description": "OSGB paneline bağlı müşteri firmaları burada listelenecek.",
+      "cta": "İlk firmayı ekle"
+    },
+    "companyCard": {
+      "sectorUnknown": "Sektör tanımsız",
+      "assignedProfessionals": "{count} atanmış profesyonel",
+      "documentsCount": "{count} doküman",
+      "employees": "{count} çalışan",
+      "overdueTasks": "{count} geciken iş",
+      "workspace": "Firma workspace",
+      "personnelInvite": "Personel ve davet",
+      "assignments": "Görevlendirme",
+      "taskTracking": "İş takibi",
+      "documentsLink": "Dokümanlar",
+      "contracts": "Sözleşmeler",
+      "archiving": "Arşivleniyor...",
+      "archive": "Arşive al"
+    },
+    "archivedSection": {
+      "title": "Arşivlenen firmalar",
+      "description": "Arşivlenen firmalar aktif limit hesabına dahil edilmez; risk ve doküman geçmişi korunur.",
+      "badge": "{count} arşiv kaydı"
+    },
+    "emptyArchived": {
+      "title": "Arşivde firma yok",
+      "description": "Bir firmayı arşive aldığında burada göreceksin."
+    },
+    "archivedRow": {
+      "restoring": "Geri yükleniyor...",
+      "restore": "Geri yükle"
+    }
+  }
+}

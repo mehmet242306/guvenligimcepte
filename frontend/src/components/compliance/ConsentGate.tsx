@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { quickSignOut } from "@/lib/auth/quick-sign-out";
 import {
   listActiveConsentRequirements,
@@ -8,15 +9,16 @@ import {
   type ConsentRequirementRow,
 } from "@/lib/supabase/consent-api";
 
-const consentTypeLabels: Record<string, string> = {
-  aydinlatma: "Aydinlatma",
-  acik_riza: "Acik Riza",
-  kvkk: "KVKK",
-  yurt_disi_aktarim: "Yurt Disi Aktarim",
-  pazarlama: "Pazarlama",
-};
+const CONSENT_TYPES = ["aydinlatma", "acik_riza", "kvkk", "yurt_disi_aktarim", "pazarlama"] as const;
+
+function consentTypeLabel(type: string, tType: (key: string) => string) {
+  if ((CONSENT_TYPES as readonly string[]).includes(type)) return tType(type);
+  return type;
+}
 
 export function ConsentGate() {
+  const t = useTranslations("consentGate");
+  const tType = useTranslations("consentGate.consentType");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [requirements, setRequirements] = useState<ConsentRequirementRow[]>([]);
@@ -55,7 +57,7 @@ export function ConsentGate() {
     const userAgent = typeof navigator !== "undefined" ? navigator.userAgent : null;
     for (const requirement of pendingRequirements) {
       if (!acknowledged[requirement.version_id]) {
-        setError("Devam etmek icin tum zorunlu metinleri onaylamalisiniz.");
+        setError(t("errMustAcknowledge"));
         setSaving(false);
         return;
       }
@@ -67,7 +69,7 @@ export function ConsentGate() {
       });
 
       if (!ok) {
-        setError("Onay kaydi tamamlanamadi. Lutfen tekrar deneyin.");
+        setError(t("errSaveFailed"));
         setSaving(false);
         return;
       }
@@ -82,20 +84,20 @@ export function ConsentGate() {
     return null;
   }
 
+  const approvedCount = Object.values(acknowledged).filter(Boolean).length;
+
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
       <div className="w-full max-w-5xl rounded-[2rem] border border-border bg-card shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
         <div className="border-b border-border px-6 py-5 sm:px-8">
-          <span className="eyebrow">KVKK ve Onaylar</span>
+          <span className="eyebrow">{t("eyebrow")}</span>
           <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-                Platforma devam etmeden once zorunlu metinleri onaylayin
+                {t("title")}
               </h2>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                Zorunlu kullanım şartları/KVKK metinleri, aydınlatma metni ve gerekli açık rıza metinlerinin
-                yayında olan son sürümleri burada listelenir. Pazarlama izni zorunlu değildir; isteğe bağlıdır.
-                Zorunlu metinler değiştikçe sistem yeniden onay ister.
+                {t("description")}
               </p>
             </div>
             <button
@@ -103,7 +105,7 @@ export function ConsentGate() {
               onClick={() => void quickSignOut("/login")}
               className="inline-flex h-11 items-center justify-center rounded-2xl border border-border bg-background px-4 text-sm font-semibold text-foreground transition hover:border-primary hover:text-primary"
             >
-              Simdilik cikis yap
+              {t("signOutTemp")}
             </button>
           </div>
         </div>
@@ -125,11 +127,11 @@ export function ConsentGate() {
                   <div>
                     <div className="text-sm font-semibold text-foreground">{requirement.title}</div>
                     <div className="mt-1 text-xs text-muted-foreground">
-                      {consentTypeLabels[requirement.consent_type] ?? requirement.consent_type} · {requirement.version}
+                      {consentTypeLabel(requirement.consent_type, tType)} · {requirement.version}
                     </div>
                   </div>
                   <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
-                    Zorunlu
+                    {t("mandatoryBadge")}
                   </span>
                 </div>
                 {requirement.version_summary && (
@@ -146,7 +148,7 @@ export function ConsentGate() {
                       }))
                     }
                   />
-                  Bu metni okudum ve onayliyorum
+                  {t("readAcknowledge")}
                 </label>
               </button>
             ))}
@@ -160,7 +162,7 @@ export function ConsentGate() {
                 <div key={requirement.version_id} className="space-y-4">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-secondary-foreground">
-                      {consentTypeLabels[requirement.consent_type] ?? requirement.consent_type}
+                      {consentTypeLabel(requirement.consent_type, tType)}
                     </span>
                     <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-secondary-foreground">
                       {requirement.version}
@@ -191,7 +193,7 @@ export function ConsentGate() {
 
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
               <span className="text-xs text-muted-foreground">
-                {Object.values(acknowledged).filter(Boolean).length}/{pendingRequirements.length} metin onaylandi
+                {t("progress", { approved: approvedCount, total: pendingRequirements.length })}
               </span>
               <button
                 type="button"
@@ -199,7 +201,7 @@ export function ConsentGate() {
                 disabled={saving}
                 className="inline-flex h-11 items-center justify-center rounded-2xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {saving ? "Onaylar kaydediliyor..." : "Onaylari tamamla"}
+                {saving ? t("saving") : t("submit")}
               </button>
             </div>
           </section>
