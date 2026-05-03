@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Download, FileArchive, Loader2, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ type Props = {
 };
 
 export function CompanyFileSection({ companyWorkspaceId, companyName }: Props) {
+  const t = useTranslations("reports.companyFile");
   const [orgId, setOrgId] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [categories, setCategories] = useState<CompanyFileCategory[]>([]);
@@ -106,7 +108,7 @@ export function CompanyFileSection({ companyWorkspaceId, companyName }: Props) {
     if (selected.size === 0 || totalSelected === 0) {
       setFeedback({
         tone: "warning",
-        message: "En az bir kategori seçmelisin (içinde kayıt olan).",
+        message: t("warnSelectCategory"),
       });
       return;
     }
@@ -127,14 +129,12 @@ export function CompanyFileSection({ companyWorkspaceId, companyName }: Props) {
       });
       setFeedback({
         tone: "success",
-        message: `Firma dosyası hazırlandı ve tarayıcına indirildi. Toplam ${totalSelected} kayıt arşivlendi.`,
+        message: t("successZip", { count: totalSelected }),
       });
     } catch (err) {
       setFeedback({
         tone: "danger",
-        message: `Firma dosyası oluşturulamadı: ${
-          err instanceof Error ? err.message : String(err)
-        }`,
+        message: `${t("failZipPrefix")} ${err instanceof Error ? err.message : String(err)}`,
       });
     } finally {
       setGenerating(false);
@@ -146,22 +146,18 @@ export function CompanyFileSection({ companyWorkspaceId, companyName }: Props) {
       {/* Section header */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
-          <h2 className="text-lg font-bold text-foreground">
-            Raporlar ve Firma Dosyası
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            {companyName} için analitik özet ve tüm evrakları ZIP olarak indir.
-          </p>
+          <h2 className="text-lg font-bold text-foreground">{t("title")}</h2>
+          <p className="text-sm text-muted-foreground">{t("subtitle", { companyName })}</p>
         </div>
         <div className="flex items-center gap-2 text-xs">
           {!loading ? (
             <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 font-medium text-muted-foreground">
-              {totalSelected} kayıt seçili
+              {t("selectedCount", { count: totalSelected })}
             </span>
           ) : null}
           <Button variant="outline" size="sm" onClick={() => void loadContext()} disabled={loading}>
             <RefreshCw className={cn("mr-1.5 h-4 w-4", loading && "animate-spin")} />
-            Yenile
+            {t("refresh")}
           </Button>
         </div>
       </div>
@@ -181,10 +177,8 @@ export function CompanyFileSection({ companyWorkspaceId, companyName }: Props) {
               <FileArchive className="h-5 w-5 text-[var(--gold)]" />
             </span>
             <div>
-              <h3 className="text-base font-semibold text-foreground">Firma Dosyası</h3>
-              <p className="text-xs text-muted-foreground">
-                Seçtiğin kategoriler için özet PDF'ler ve ZIP paketi hazırlanır.
-              </p>
+              <h3 className="text-base font-semibold text-foreground">{t("sectionTitle")}</h3>
+              <p className="text-xs text-muted-foreground">{t("sectionHint")}</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -194,10 +188,10 @@ export function CompanyFileSection({ companyWorkspaceId, companyName }: Props) {
                 checked={includeItemPdfs}
                 onChange={(e) => setIncludeItemPdfs(e.target.checked)}
               />
-              <span>Her kayıt için ayrı PDF üret</span>
+              <span>{t("includePdfPerRecord")}</span>
             </label>
             <Button variant="outline" size="sm" onClick={toggleAll} disabled={loading}>
-              {selected.size === categories.length ? "Hiçbirini seçme" : "Hepsini seç"}
+              {selected.size === categories.length ? t("selectNone") : t("selectAll")}
             </Button>
             <Button
               onClick={handleDownload}
@@ -208,7 +202,7 @@ export function CompanyFileSection({ companyWorkspaceId, companyName }: Props) {
               ) : (
                 <Download className="mr-1.5 h-4 w-4" />
               )}
-              {generating ? "Hazırlanıyor..." : "ZIP olarak indir"}
+              {generating ? t("downloading") : t("downloadZip")}
             </Button>
           </div>
         </div>
@@ -217,15 +211,15 @@ export function CompanyFileSection({ companyWorkspaceId, companyName }: Props) {
           {loading ? (
             <div className="col-span-full flex items-center justify-center gap-2 py-10 text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Kayıtlar toplanıyor...</span>
+              <span>{t("loadingRecords")}</span>
             </div>
           ) : !orgId ? (
             <div className="col-span-full rounded-xl border border-dashed border-border bg-muted/20 px-6 py-10 text-center text-sm text-muted-foreground">
-              Organizasyon bilgisi bulunamadı. Lütfen oturumunuzu kontrol edin.
+              {t("noOrg")}
             </div>
           ) : categories.length === 0 ? (
             <div className="col-span-full rounded-xl border border-dashed border-border bg-muted/20 px-6 py-10 text-center text-sm text-muted-foreground">
-              Bu firma için henüz kayıt yok.
+              {t("noCompanyRecords")}
             </div>
           ) : (
             categories.map((cat) => {
@@ -255,11 +249,7 @@ export function CompanyFileSection({ companyWorkspaceId, companyName }: Props) {
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {isEmpty
-                      ? "Kayıt yok"
-                      : isSelected
-                        ? "ZIP'e dahil edilecek"
-                        : "Seçmek için tıkla"}
+                    {isEmpty ? t("categoryEmpty") : isSelected ? t("categoryIncluded") : t("categoryHint")}
                   </p>
                 </button>
               );

@@ -1104,6 +1104,7 @@
   },
   "profile": {
     "loading": "Profil yükleniyor...",
+    "fallbackUserName": "Kullanıcı",
     "membership": "Üyelik",
     "updated": "Güncelleme",
     "changePhoto": "Fotoğraf değiştir",
@@ -1176,7 +1177,17 @@
       "registeredDevices": "Kayıtlı MFA Cihazları",
       "loading": "Yükleniyor...",
       "noDevices": "Henüz bağlı bir MFA cihazı yok.",
-      "removeDevice": "Kaldır"
+      "removeDevice": "Kaldır",
+      "defaultAuthenticatorName": "Google Authenticator",
+      "statusAal2Session": "Bu oturum ikinci adım doğrulamasıyla korunuyor.",
+      "statusVerifiedNeedsChallenge": "İki adımlı doğrulama açık. Bu oturumda henüz ikinci adım tamamlanmadı.",
+      "statusVerifiedDeviceNextLogin": "Hesabınızda doğrulanmış bir güvenlik cihazı var. Yeni girişlerde ikinci adım istenecek.",
+      "qrAlt": "MFA QR kodu",
+      "enrollStep1Title": "1. QR kodunu okutun",
+      "enrollStep1Body": "Google Authenticator uygulamasında yeni hesap ekleyin ve bu kodu taratın.",
+      "enrollManualUri": "Elle kurulum URI'sini göster",
+      "enrollStep2Label": "2. Uygulamadan 6 haneli kodu girin",
+      "factorFallbackName": "Authenticator"
     },
     "sessions": {
       "title": "Aktif Oturumlar",
@@ -1217,7 +1228,8 @@
       "in_progress": "Devam Ediyor",
       "complete": "Tamamlandı",
       "overdueStatus": "Gecikmiş",
-      "cancelled": "İptal"
+      "cancelled": "İptal",
+      "resetFilter": "Tümünü göster"
     },
     "msg": {
       "photoUpdated": "Fotoğraf güncellendi.",
@@ -1241,7 +1253,16 @@
       "prefsSaved": "Tercihler kaydedildi.",
       "sessionServiceError": "Oturum servisine bağlanılamadı.",
       "signedOut": "Bu cihazdan çıkış yapıldı.",
-      "signedOutAll": "Tüm cihazlardan çıkış yapıldı."
+      "signedOutAll": "Tüm cihazlardan çıkış yapıldı.",
+      "genericSaveError": "Kayıt başarısız.",
+      "emailChangeFailed": "E-posta değişikliği başlatılamadı.",
+      "emailConfirmSentDetailed": "{email} adresine onay bağlantısı gönderildi. Maili açıp değişikliği tamamlayın.",
+      "totpEnrollmentMissing": "TOTP kurulum verisi alınamadı.",
+      "mfaEnrollFailed": "İki adımlı doğrulama başlatılamadı.",
+      "mfaVerifyFailed": "Doğrulama başarısız.",
+      "mfaRemoveFailed": "MFA cihazı kaldırılamadı.",
+      "signOutFailed": "Oturum kapatılamadı.",
+      "signOutAllFailed": "Tüm cihazlardan çıkış yapılamadı."
     }
   },
   "consent": {
@@ -1314,6 +1335,228 @@
       "rejected": "Reddedildi",
       "failed": "Başarısız",
       "expired": "Süresi doldu"
+    }
+  },
+  "isgLibrary": {
+    "errors": {
+      "supabaseConnect": "Supabase bağlantısı kurulamadı.",
+      "sessionNotFound": "Oturum bulunamadı.",
+      "profileLoadFailed": "Profil yüklenemedi."
+    },
+    "user": {
+      "defaultDisplayName": "RiskNova Kullanıcısı"
+    },
+    "templateDescription": "{group} — \"{item}\" şablonunu doküman akışında açar.",
+    "contentTypes": {
+      "video": "Video",
+      "link": "Bağlantı",
+      "docx": "DOCX",
+      "pdf": "PDF",
+      "unknown": "Dosya"
+    },
+    "badges": {
+      "file": "Dosya",
+      "training": "Eğitim",
+      "flow": "Akış",
+      "form": "Form",
+      "plan": "Plan",
+      "instruction": "Talimat",
+      "regulation": "Yönetmelik",
+      "legal": "Mevzuat",
+      "category": "Kategori"
+    },
+    "usage": {
+      "usageCount": "{count} kullanım"
+    },
+    "assign": {
+      "companiesCount": "{count} firma"
+    },
+    "source": {
+      "template": "Şablon",
+      "surveyFlow": "Anket akışı",
+      "presentation": "Sunum",
+      "catalog": "Katalog"
+    },
+    "footer": {
+      "convertedToDocument": "Doküman şablonuna dönüştürüldü ({count})",
+      "generalUse": "Genel kullanım"
+    },
+    "emptyState": {
+      "addContent": "İçerik Ekle"
+    },
+    "preview": {
+      "eyebrow": "Şablon Önizleme",
+      "emptyHeading": "Henüz içerik yok",
+      "emptyBody": "Önizlemek için listeden bir şablon seçin.",
+      "emTitle": "Şablon Önizleme",
+      "loadError": "Önizleme içeriği şu anda yüklenemedi. Bu şablonu yine de indirip düzenleyebilirsiniz."
+    },
+    "buttons": {
+      "view": "Görüntüle",
+      "download": "İndir",
+      "edit": "Düzenle",
+      "assignToCompany": "Firmaya Ata",
+      "savedToAllCompanies": "Tüm firmalara kaydedildi",
+      "assignCatalogPending": "Katalogdan ata"
+    },
+    "categories": {
+      "all": "Tümü",
+      "documentation": "Dokümantasyon",
+      "education": "Eğitim",
+      "assessment": "Sınav ve Anket",
+      "forms": "Form ve Checklist",
+      "emergency": "Acil Durum",
+      "instructions": "Talimatlar",
+      "legal": "Mevzuat ve rehberler"
+    },
+    "catalog": {
+      "noDescriptionShort": "Bu içerik için kısa açıklama henüz eklenmedi."
+    },
+    "card": {
+      "usageCount": "{count} kullanım",
+      "companiesCount": "{count} firmada"
+    },
+    "empty": {
+      "titleAll": "Henüz içerik bulunmuyor",
+      "titleCategory": "{category} kategorisinde henüz içerik bulunmuyor",
+      "descSavedOnly": "Firmalarınıza kaydedilmiş içerik bulunamadı. Bir içeriği kart üzerinden firmaya atayarak bu görünümde listeleyebilirsiniz.",
+      "descDefault": "Bu kategoride henüz içerik bulunmuyor. İçerikler eklendiğinde burada kart görünümüyle listelenecek."
+    },
+    "header": {
+      "eyebrow": "İSG Kütüphanesi",
+      "title": "İSG Kütüphanesi",
+      "description": "Global katalog yapısıyla doküman, eğitim, sınav, form, acil durum ve mevzuat içeriklerini firma seçmeden inceleyin; ihtiyaç duyduğunuz içeriği sonradan firmanıza kaydedin.",
+      "contentCount": "{count} içerik",
+      "savedToCompanies": "{count} içerik firmalara kaydedildi"
+    },
+    "company": {
+      "workingCompany": "Çalışılan firma:",
+      "workingCompanyMenu": "Çalışılan Firma",
+      "selectCompany": "Firma seçin",
+      "anonymousCompany": "İsimsiz Firma"
+    },
+    "savedToggle": "Firmama Kaydedilenler",
+    "filters": {
+      "searchPlaceholder": "Başlık, açıklama veya etiket ara…",
+      "typeAll": "Tüm tipler",
+      "sectorAll": "Tüm sektörler",
+      "typeOption": "Tip",
+      "sectorOption": "Sektör",
+      "sortOption": "Sırala",
+      "sortLabel": "Sıralama",
+      "sortNewest": "Yeniden eskiye",
+      "sortOldest": "Eskiden yeniye",
+      "sortNewestShort": "En yeni",
+      "sortOldestShort": "En eski",
+      "sortAz": "A → Z",
+      "sortZa": "Z → A"
+    },
+    "sidebar": {
+      "subcategoriesTitle": "Alt kategoriler",
+      "allSubcategories": "Tüm alt kategoriler",
+      "all": "Tümü",
+      "addCategory": "Kategori ekle",
+      "resultsCount": "{count} sonuç"
+    },
+    "emptyPanel": {
+      "title": "Listeden bir öğe seçin",
+      "body": "Şablon veya kayıtlı içerik seçtiğinizde burada önizleme, aksiyonlar ve notlar görünür.",
+      "footerNote": "Öneriler RiskNova rehber içerikleriyle oluşturulur."
+    },
+    "cta": {
+      "aiSlides": "Yapay zekâ slayt paketleri",
+      "aiTrainingPrepare": "AI Destekli Eğitim Hazırla",
+      "openSlideLibrary": "Slayt Kütüphanesini Aç",
+      "addCategory": "Kategori ekle",
+      "newExam": "Yeni sınav",
+      "newSurvey": "Yeni anket",
+      "newExamCreate": "Yeni Sınav Oluştur",
+      "newSurveyCreate": "Yeni Anket Oluştur",
+      "createInEditor": "Doküman Editöründe Oluştur",
+      "uploadFromDevice": "Cihazdan Doküman Yükle",
+      "importingFile": "Dosya Yükleniyor...",
+      "uploadPlaceholder": "DOC, DOCX, PPT, PPTX, XLS, XLSX, PDF (maks. 10 MB)",
+      "uploadDocNote": "Dokümanlar kaydedildiğinde düzenlenebilir RiskNova doküman şablonuna dönüştürülür.",
+      "uploadFooterNote": "Yüklediğiniz dosya editörde açılır; isterseniz düzenleyip kaydedebilir, daha sonra tekrar düzenleyebilirsiniz."
+    },
+    "emptySubcategory": {
+      "title": "Bu alt kategoride henüz içerik yok",
+      "body": "Soldaki listeden farklı bir alt kategori seçebilir veya yeni içerik ekleyebilirsiniz.",
+      "footerNote": "Doküman oluşturma ve yükleme işlemleri, üst alandaki firma seçimine göre ilgili çalışma alanına bağlanır."
+    },
+    "errorsInline": {
+      "selectCompanyFirst": "Önce bir firma seçin.",
+      "previewFailed": "Önizleme açılamadı.",
+      "previewTemplateFailed": "Şablon önizlemesi yüklenemedi. Lütfen tekrar deneyin.",
+      "downloadFailed": "İndirme başarısız. Lütfen tekrar deneyin.",
+      "downloadHtmlFailed": "İndirme dosyası oluşturulamadı. Lütfen tekrar deneyin.",
+      "importFailed": "Dosya içe aktarılamadı. Lütfen tekrar deneyin.",
+      "importConnection": "Dosya içe aktarılamadı. Bağlantınızı kontrol edin.",
+      "importUploadError": "Dosya yüklenirken bir hata oluştu. Lütfen tekrar deneyin.",
+      "assignSelectCompany": "Önce bir firma seçin.",
+      "assignSaveFailed": "Kayıt yapılamadı. Lütfen tekrar deneyin.",
+      "assignRecordFailed": "Kayıt oluşturulamadı. Lütfen tekrar deneyin.",
+      "editNeedsTemplate": "Şablonları katalogdan düzenleyebilirsiniz.",
+      "editOnlyTemplates": "Düzenleme şu an yalnızca şablon kartlarında destekleniyor.",
+      "selectCompanyEditor": "Lütfen önce üst alandan firma seçin.",
+      "companyRequiredImport": "Lütfen önce içerik oluşturulacak firmayı seçin.",
+      "categoryFirst": "Önce bir ana kategori seçin.",
+      "categoryNameEmpty": "Kategori adı boş bırakılamaz.",
+      "categoryExists": "Bu alt kategori zaten mevcut.",
+      "subcategoryCreated": "“{name}” alt kategorisi oluşturuldu."
+    },
+    "assignModal": {
+      "title": "Firmaya Ata",
+      "description": "{title} içeriğini seçtiğiniz firmaya kaydederek firma kütüphanesine ekleyin.",
+      "descriptionLong": "Seçili katalog öğesini aktif firmaya kaydedin. Ardından doküman akışından açabilirsiniz.",
+      "company": "Firma",
+      "companyPlaceholder": "Firma seçin",
+      "alreadySaved": "Bu firmaya zaten kaydedildi",
+      "optionAlreadySaved": " (zaten kayıtlı)",
+      "cancel": "Vazgeç",
+      "saving": "Kaydediliyor...",
+      "saveToCompany": "Firmaya Kaydet"
+    },
+    "categoryModal": {
+      "title": "Kategori ekle",
+      "titleNew": "Yeni Alt Kategori",
+      "description": "Yeni alt kategori için bir ad girin. Seçili ana kategorinin altında görünecektir.",
+      "descriptionUnderCategory": "{category} altında görünecek yeni kategori adını yazın.",
+      "nameLabel": "Kategori Adı",
+      "namePlaceholder": "Örn. Acil Toplanma Noktaları",
+      "cancel": "Vazgeç",
+      "save": "Kaydet"
+    },
+    "status": {
+      "assignedToCompany": "{title} çalışma alanına atanmıştır.",
+      "contentSavedToCompany": "{title} seçilen firmaya kaydedildi."
+    },
+    "legacy": {
+      "surveyIntro": "Kütüphanedeki anket girişi",
+      "surveyAvailable": "RiskNova kütüphanesinden erişilebilen anket",
+      "deckPolishedSlides": "Sunuma hazır slayt destesi",
+      "examEditor": "Editörde sınav",
+      "surveyEditor": "Editörde anket",
+      "templateLibraryPreview": "Şablon kütüphanesi önizlemesi",
+      "newDocument": "Yeni Doküman",
+      "draftSuffix": " Taslağı",
+      "fileNumber": "Dosya {n}",
+      "readyStatus": "Hazır",
+      "surveyFlowSubtitle": "{type} akışını görüntüleyin ve yönetin.",
+      "deckDefaultDescription": "Hazır eğitim içeriğini açın ve sunum akışını yönetin."
+    },
+    "download": {
+      "filenameFallback": "dokuman"
+    },
+    "types": {
+      "template": "Şablon",
+      "presentation": "Sunum",
+      "doc": "Doküman",
+      "survey": "Anket",
+      "surveyAlt": "Anket",
+      "exam": "Sınav",
+      "training": "Eğitim",
+      "unknown": "Bilinmiyor"
     }
   },
   "lang": {
@@ -2800,6 +3043,19 @@
         "removeTitle": "Sil"
       }
     },
+    "defaults": {
+      "hazopGuideWord": "Çok (More)",
+      "hazopParameter": "Akış (Flow)",
+      "checklistItem1": "Kontrol maddesi 1",
+      "checklistItemSeed": "Kontrol maddesi",
+      "checklistCategoryGeneral": "Genel",
+      "firstLineTitle": "İstifleme alanı",
+      "firstLineDescription": "Aynı durumun genel ve yakın açıdan çekilmiş görselleri birlikte eklenebilir.",
+      "manualPinCategory": "Manuel Tespit",
+      "manualPinRecommendation": "Manuel olarak işaretlendi. Detaylı değerlendirme yapılmalıdır.",
+      "canvasNoContext": "Canvas bağlamı oluşturulamadı.",
+      "aiRequestFailed": "AI analizi tamamlanamadı."
+    },
     "ui": {
       "severity": {
         "low": "Düşük",
@@ -3049,6 +3305,509 @@
       "methodCard": {
         "score": "Skor:",
         "params": "{count} parametre"
+      }
+    }
+  },
+  "planner": {
+    "yearlyWorkPlan": {
+      "months": [
+        "Oca",
+        "Şub",
+        "Mar",
+        "Nis",
+        "May",
+        "Haz",
+        "Tem",
+        "Ağu",
+        "Eyl",
+        "Eki",
+        "Kas",
+        "Ara"
+      ],
+      "errors": {
+        "noSupabase": "Supabase bağlantısı yok",
+        "loadFailed": "Plan yüklenemedi",
+        "selectCompany": "Lütfen bir firma seçin",
+        "sessionNotFound": "Oturum bulunamadı",
+        "orgNotFound": "Organizasyon bilgisi bulunamadı",
+        "saveFailed": "Kayıt başarısız"
+      },
+      "card": {
+        "title": "Yıllık İSG Çalışma Planı",
+        "description": "6331 sayılı İSG Kanunu gereği yıllık çalışma planı. Firma × yıl bazlı arşivlenir. Her satır düzenlenebilir, ay takvimi tıklanarak değiştirilebilir."
+      },
+      "fields": {
+        "company": "Firma",
+        "companyPlaceholder": "Firma seçin",
+        "year": "Çalışma Yılı",
+        "revNo": "Revizyon No"
+      },
+      "signers": {
+        "blockLabel": "İmzacılar (PDF'in alt bölümünde imza alanlarına yazılır)",
+        "employer": "İşveren / İşveren Vekili",
+        "employerPlaceholder": "Ad Soyad",
+        "physician": "İşyeri Hekimi",
+        "physicianPlaceholder": "Dr. Ad Soyad",
+        "safetyExpert": "İş Güvenliği Uzmanı",
+        "safetyExpertPlaceholder": "Ad Soyad · Sınıf (A/B/C)"
+      },
+      "actions": {
+        "saving": "Kaydediliyor...",
+        "saved": "Kaydedildi",
+        "save": "Kaydet",
+        "pdfPrint": "PDF olarak indir / yazdır",
+        "archivedBadge": "Bu firma için {year} planı arşivde mevcut"
+      },
+      "loading": "Plan yükleniyor...",
+      "preview": {
+        "title": "Önizleme & Düzenleme",
+        "description": "Satırları düzenlemek için tıklayın · ay hücresi toggle"
+      },
+      "table": {
+        "num": "#",
+        "topic": "Çalışma Konusu",
+        "responsible": "Sorumlu",
+        "regulation": "Mevzuat",
+        "addRow": "Satır ekle",
+        "deleteRowAria": "Satırı sil"
+      },
+      "pdf": {
+        "htmlTitle": "Yıllık İSG Çalışma Planı — {companyName}",
+        "mainTitle": "İŞ SAĞLIĞI VE GÜVENLİĞİ YILLIK ÇALIŞMA PLANI",
+        "headerLine": "FİRMA: {companyName} · YIL: {year} · REV: {revNo}",
+        "colOrder": "Sıra",
+        "colTopic": "Çalışma Konusu",
+        "colResponsible": "Sorumlu",
+        "colRegulation": "Mevzuat",
+        "sigEmployer": "İşveren / İşveren Vekili",
+        "sigPhysician": "İşyeri Hekimi",
+        "sigSafety": "İş Güvenliği Uzmanı",
+        "sigLine": "İmza / Tarih"
+      },
+      "defaultTemplate": [
+        {
+          "id": "1",
+          "title": "İş Sağlığı ve Güvenliği Kurul Çalışmaları",
+          "items": [
+            {
+              "title": "İSG Kurulunun Oluşturulması",
+              "responsible": "İşveren",
+              "regulation": "İSG Kurulları Hakkındaki Yönetmelik",
+              "months": [
+                0
+              ]
+            },
+            {
+              "title": "İSG Kurul Atamalarının Üyelere Tebliğ Edilmesi",
+              "responsible": "İşveren",
+              "regulation": "İSG Kurulları Yönetmeliği",
+              "months": [
+                0
+              ]
+            },
+            {
+              "title": "Aylık İSG Kurul Toplantılarının Gerçekleştirilmesi",
+              "responsible": "İSG Kurulu",
+              "regulation": "İSG Kurulları Yönetmeliği",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
+            },
+            {
+              "title": "İSG Kurulu Yıllık Çalışma Raporunun Oluşturulması",
+              "responsible": "İSG Kurulu",
+              "regulation": "İSG Kurulları Yönetmeliği",
+              "months": [
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "title": "Risk Analizi ve Değerlendirilmesi",
+          "items": [
+            {
+              "title": "Makine Envanterinin Oluşturulması veya Alınması",
+              "responsible": "İş Güvenliği Uzmanı",
+              "regulation": "İSG Risk Değerlendirmesi Yönetmeliği",
+              "months": [
+                0
+              ]
+            },
+            {
+              "title": "Organizasyon Şemasının Alınması",
+              "responsible": "İş Güvenliği Uzmanı",
+              "regulation": "İSG Risk Değerlendirmesi Yönetmeliği",
+              "months": [
+                0
+              ]
+            },
+            {
+              "title": "Ön Durum Tespiti ve Raporlanması",
+              "responsible": "İş Güvenliği Uzmanı",
+              "regulation": "İSG Risk Değerlendirmesi Yönetmeliği",
+              "months": [
+                1
+              ]
+            },
+            {
+              "title": "Risk Analizi Çalışması / Değerlendirilmesi",
+              "responsible": "İş Güvenliği Uzmanı",
+              "regulation": "İSG Risk Değerlendirmesi Yönetmeliği",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
+            },
+            {
+              "title": "Periyodik Risk Analizi Güncellemesi",
+              "responsible": "İSG Uzmanı",
+              "regulation": "İSG Risk Değerlendirmesi Yönetmeliği",
+              "months": [
+                5,
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "id": "3",
+          "title": "Periyodik Kontroller ve Ölçümler",
+          "items": [
+            {
+              "title": "Elektrik Makinaları/Topraklama Kontrolü",
+              "responsible": "Teknik Birim",
+              "regulation": "İSG ve İş Ekipmanları Yönetmeliği",
+              "months": [
+                3
+              ]
+            },
+            {
+              "title": "Elektrik Ölçümleri (Topraklama, Paratoner...)",
+              "responsible": "Teknik Birim",
+              "regulation": "İSG ve İş Ekipmanları Yönetmeliği",
+              "months": [
+                3
+              ]
+            },
+            {
+              "title": "Kaldırma Araçları Periyodik Kontrolleri",
+              "responsible": "Teknik Birim",
+              "regulation": "İş Ekipmanları Yönetmeliği",
+              "months": [
+                5,
+                11
+              ]
+            },
+            {
+              "title": "Ortam Gürültü Ölçümü",
+              "responsible": "Teknik Birim",
+              "regulation": "Gürültü Yönetmeliği",
+              "months": [
+                5
+              ]
+            },
+            {
+              "title": "Ortam Aydınlatma Ölçümü",
+              "responsible": "Teknik Birim",
+              "regulation": "İSG Yönetmeliği",
+              "months": [
+                5
+              ]
+            },
+            {
+              "title": "İçme Suyu Tahlilleri",
+              "responsible": "Teknik Birim",
+              "regulation": "İnsani Tüketim Amaçlı Sular Yön.",
+              "months": [
+                2,
+                8
+              ]
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "title": "Acil Durumlar",
+          "items": [
+            {
+              "title": "Tahliye ve Söndürme Tatbikatları",
+              "responsible": "İş Güvenliği Uzmanı",
+              "regulation": "Acil Durumlar Yönetmeliği",
+              "months": [
+                5,
+                11
+              ]
+            },
+            {
+              "title": "Tatbikat Tutanağının Oluşturulması",
+              "responsible": "Teknik Birim",
+              "regulation": "Acil Durumlar Yönetmeliği",
+              "months": [
+                5,
+                11
+              ]
+            },
+            {
+              "title": "Acil Durum Ekipmanlarının Kontrolü",
+              "responsible": "Teknik Birim",
+              "regulation": "Acil Durumlar Yönetmeliği",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
+            },
+            {
+              "title": "Acil Durum Eylem Planının Hazırlanması",
+              "responsible": "İş Güvenliği Uzmanı",
+              "regulation": "Acil Durumlar Yönetmeliği",
+              "months": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "id": "5",
+          "title": "Sağlık Kontrolleri",
+          "items": [
+            {
+              "title": "Sağlık Denetimleri",
+              "responsible": "İşyeri Hekimi",
+              "regulation": "İş Sağlığı Yönetmeliği",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
+            },
+            {
+              "title": "Sağlık Birimi Yıllık Çalışma Planı",
+              "responsible": "İşyeri Hekimi",
+              "regulation": "İş Sağlığı Yönetmeliği",
+              "months": [
+                0
+              ]
+            },
+            {
+              "title": "İşe Giriş Raporları",
+              "responsible": "İşyeri Hekimi",
+              "regulation": "İş Sağlığı Yönetmeliği",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
+            },
+            {
+              "title": "Periyodik Muayene Raporları",
+              "responsible": "İşyeri Hekimi",
+              "regulation": "İş Sağlığı Yönetmeliği",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6",
+          "title": "Kimyasallar",
+          "items": [
+            {
+              "title": "MSDS'lerin Temininin Sağlanması",
+              "responsible": "İş Güvenliği Uzmanı",
+              "regulation": "Kimyasallar Yönetmeliği",
+              "months": [
+                2
+              ]
+            },
+            {
+              "title": "Kimyasal Risk Değerlendirmesi",
+              "responsible": "İş Güvenliği Uzmanı",
+              "regulation": "Kimyasallar Yönetmeliği",
+              "months": [
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "reports": {
+    "companyFile": {
+      "title": "Raporlar ve Firma Dosyası",
+      "subtitle": "{companyName} için analitik özet ve tüm evrakları ZIP olarak indir.",
+      "selectedCount": "{count} kayıt seçili",
+      "refresh": "Yenile",
+      "sectionTitle": "Firma Dosyası",
+      "sectionHint": "Seçtiğin kategoriler için özet PDF'ler ve ZIP paketi hazırlanır.",
+      "includePdfPerRecord": "Her kayıt için ayrı PDF üret",
+      "selectNone": "Hiçbirini seçme",
+      "selectAll": "Hepsini seç",
+      "downloading": "Hazırlanıyor...",
+      "downloadZip": "ZIP olarak indir",
+      "loadingRecords": "Kayıtlar toplanıyor...",
+      "noOrg": "Organizasyon bilgisi bulunamadı. Lütfen oturumunuzu kontrol edin.",
+      "noCompanyRecords": "Bu firma için henüz kayıt yok.",
+      "categoryEmpty": "Kayıt yok",
+      "categoryIncluded": "ZIP'e dahil edilecek",
+      "categoryHint": "Seçmek için tıkla",
+      "warnSelectCategory": "En az bir kategori seçmelisin (içinde kayıt olan).",
+      "successZip": "Firma dosyası hazırlandı ve tarayıcına indirildi. Toplam {count} kayıt arşivlendi.",
+      "failZipPrefix": "Firma dosyası oluşturulamadı:"
+    }
+  },
+  "incidents": {
+    "dof": {
+      "status": {
+        "open": "Açık",
+        "in_progress": "Devam Ediyor",
+        "completed": "Tamamlandı",
+        "verified": "Doğrulandı"
+      },
+      "header": {
+        "newDof": "Yeni DÖF",
+        "description": "Düzeltici ve Önleyici Faaliyet + Kök Neden Analizi",
+        "backToIncident": "Olay Detayına Dön"
+      },
+      "export": {
+        "pdf": "PDF",
+        "word": "Word"
+      },
+      "ishikawa": {
+        "title": "Kök Neden Analizi - İshikawa (Balıkkılçığı)",
+        "subtitle": "6M metoduyla olayın kök nedenlerini sistematik olarak analiz edin.",
+        "aiFill": "AI ile Doldur",
+        "problemLabel": "Problem Tanımı",
+        "problemPlaceholder": "Analiz edilen problemi tanımlayın...",
+        "addCause": "+ Neden ekle",
+        "causePlaceholder": "{category} nedeni...",
+        "conclusionTitle": "Kök Neden Sonucu",
+        "causesCount": "{count} neden belirlendi",
+        "conclusionPlaceholder": "Tüm analiz sonucunda belirlenen kök neden(ler)...",
+        "categories": {
+          "man": {
+            "label": "İnsan",
+            "desc": "Eğitim eksikliği, dikkatsizlik, yorgunluk, deneyimsizlik..."
+          },
+          "machine": {
+            "label": "Makine",
+            "desc": "Arızalı ekipman, bakım eksikliği, koruyucu eksikliği..."
+          },
+          "method": {
+            "label": "Metot",
+            "desc": "Prosedür eksikliği, yanlış iş talimatı, yetersiz planlama..."
+          },
+          "material": {
+            "label": "Malzeme",
+            "desc": "Kalitesiz malzeme, yanlış depolama, tehlikeli kimyasal..."
+          },
+          "environment": {
+            "label": "Çevre",
+            "desc": "Yetersiz aydınlatma, gürültü, sıcaklık, zemin koşulları..."
+          },
+          "measurement": {
+            "label": "Ölçüm",
+            "desc": "Kalibrasyon hatası, yanlış ölçüm, denetim eksikliği..."
+          }
+        }
+      },
+      "dofDetail": {
+        "title": "DÖF Detayı",
+        "rootSummaryLabel": "Kök Neden Özeti",
+        "rootSummaryPlaceholder": "İshikawa analizinden çıkan temel neden...",
+        "analysisLabel": "Detaylı Analiz (5 Neden vb.)",
+        "analysisPlaceholder": "5 Neden analizi veya ek detaylar..."
+      },
+      "corrective": {
+        "title": "Düzeltici Faaliyetler",
+        "add": "Ekle",
+        "description": "Olayın tekrar etmemesi için yapılacak düzeltici aksiyonlar.",
+        "empty": "Henüz düzeltici faaliyet eklenmedi.",
+        "itemLabel": "Faaliyet {n}",
+        "actionPlaceholder": "Faaliyet açıklaması",
+        "assigneePlaceholder": "Sorumlu"
+      },
+      "preventive": {
+        "title": "Önleyici Faaliyetler",
+        "add": "Ekle",
+        "description": "Benzer olayların gelecekte oluşmaması için alınacak önlemler.",
+        "empty": "Henüz önleyici faaliyet eklenmedi.",
+        "itemLabel": "Faaliyet {n}",
+        "actionPlaceholder": "Faaliyet açıklaması",
+        "assigneePlaceholder": "Sorumlu"
+      },
+      "assignment": {
+        "title": "Atama ve Durum",
+        "assigneeLabel": "Sorumlu Kişi",
+        "deadlineLabel": "Son Tarih",
+        "statusLabel": "Durum"
+      },
+      "photos": {
+        "title": "Fotoğraflar",
+        "description": "Sorunla ilgili fotoğrafları ekleyin (olay yeri, hasar, düzeltme öncesi/sonrası).",
+        "addButton": "Fotoğraf Ekle",
+        "emptyHint": "Fotoğraf yüklemek için tıklayın",
+        "captionPlaceholder": "Fotoğraf açıklaması...",
+        "alt": "DÖF fotoğrafı"
+      },
+      "save": {
+        "saving": "Kaydediliyor...",
+        "all": "Tümünü Kaydet"
+      },
+      "modal": {
+        "title": "DÖF Kapatma Onayı",
+        "leadCompleted": "DÖF'ü tamamlandı olarak işaretlemek üzeresiniz.",
+        "leadVerified": "DÖF'ü doğrulandı olarak işaretlemek üzeresiniz.",
+        "noPhotosTitle": "Henüz fotoğraf eklenmedi!",
+        "noPhotosBody": "DÖF kapatmadan önce düzeltme sonrası fotoğraf eklemek ister misiniz?",
+        "checklist": "Tüm düzeltici ve önleyici faaliyetler tamamlandı mı?",
+        "cancel": "İptal",
+        "addPhoto": "Fotoğraf Ekle",
+        "confirm": "Onayla ve Kapat"
+      },
+      "ai": {
+        "noDescription": "Olay açıklaması henüz girilmedi.",
+        "equipmentPrefix": "Ekipman: {tool}",
+        "busy": "AI şu an meşgul, manuel doldurabilirsiniz."
       }
     }
   }

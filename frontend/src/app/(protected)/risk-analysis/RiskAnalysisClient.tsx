@@ -383,26 +383,38 @@ function _severityBadge(severity: DetectionSeverity) {
   }
 }
 
+type RiskScoringTr = (key: string, values?: Record<string, string | number | Date>) => string;
+
 /* ── Default value factories for new methods ── */
 function getDefaultFMEAValues(): FMEAValues { return { severity: 5, occurrence: 5, detection: 5 }; }
-function getDefaultHAZOPValues(): HAZOPValues { return { severity: 3, likelihood: 3, detectability: 3, guideWord: "Çok (More)", parameter: "Akış (Flow)", deviation: "" }; }
+function getDefaultHAZOPValues(tr: RiskScoringTr): HAZOPValues {
+  return { severity: 3, likelihood: 3, detectability: 3, guideWord: tr("defaults.hazopGuideWord"), parameter: tr("defaults.hazopParameter"), deviation: "" };
+}
 function getDefaultBowTieValues(): BowTieValues { return { threatProbability: 3, consequenceSeverity: 3, preventionBarriers: 1, mitigationBarriers: 1 }; }
-function getDefaultFTAValues(): FTAValues { return { components: [{ name: "Bileşen 1", failureRate: 0.1 }], gateType: "OR", systemCriticality: 3 }; }
-function getDefaultChecklistValues(): ChecklistValues { return { items: [{ id: crypto.randomUUID(), text: "Kontrol maddesi 1", status: "uygun", weight: 1 }], category: "Genel" }; }
-function getDefaultJSAValues(): JSAValues { return { jobTitle: "", steps: [{ id: crypto.randomUUID(), stepDescription: "Adım 1", hazard: "", severity: 3, likelihood: 3, controlEffectiveness: 3, controlMeasures: "" }] }; }
-function getDefaultLOPAValues(): LOPAValues { return { initiatingEventFreq: 0.1, consequenceSeverity: 3, layers: [{ id: crypto.randomUUID(), name: "Koruma Katmanı 1", pfd: 0.1 }] }; }
+function getDefaultFTAValues(tr: RiskScoringTr): FTAValues {
+  return { components: [{ name: tr("panel.fta.componentDefault", { n: 1 }), failureRate: 0.1 }], gateType: "OR", systemCriticality: 3 };
+}
+function getDefaultChecklistValues(tr: RiskScoringTr): ChecklistValues {
+  return { items: [{ id: crypto.randomUUID(), text: tr("defaults.checklistItem1"), status: "uygun", weight: 1 }], category: tr("defaults.checklistCategoryGeneral") };
+}
+function getDefaultJSAValues(tr: RiskScoringTr): JSAValues {
+  return { jobTitle: "", steps: [{ id: crypto.randomUUID(), stepDescription: tr("panel.jsa.stepDefault", { n: 1 }), hazard: "", severity: 3, likelihood: 3, controlEffectiveness: 3, controlMeasures: "" }] };
+}
+function getDefaultLOPAValues(tr: RiskScoringTr): LOPAValues {
+  return { initiatingEventFreq: 0.1, consequenceSeverity: 3, layers: [{ id: crypto.randomUUID(), name: tr("panel.lopa.layerDefault", { n: 1 }), pfd: 0.1 }] };
+}
 
 /** Severity bazli default degerler (yeni yontemler icin) */
-function getDefaultsForSeverity(severity: DetectionSeverity) {
+function getDefaultsForSeverity(severity: DetectionSeverity, tr: RiskScoringTr) {
   const sev = severity === "critical" ? 5 : severity === "high" ? 4 : severity === "medium" ? 3 : 2;
   return {
     fmea: { severity: sev * 2, occurrence: sev * 2, detection: 11 - sev * 2 } as FMEAValues,
-    hazop: { severity: sev, likelihood: sev, detectability: 6 - sev, guideWord: "Çok (More)", parameter: "Akış (Flow)", deviation: "" } as HAZOPValues,
+    hazop: { severity: sev, likelihood: sev, detectability: 6 - sev, guideWord: tr("defaults.hazopGuideWord"), parameter: tr("defaults.hazopParameter"), deviation: "" } as HAZOPValues,
     bowTie: { threatProbability: sev, consequenceSeverity: sev, preventionBarriers: Math.max(0, 3 - sev), mitigationBarriers: Math.max(0, 3 - sev) } as BowTieValues,
-    fta: { components: [{ name: "Bileşen 1", failureRate: sev * 0.15 }], gateType: "OR" as const, systemCriticality: sev },
-    checklist: { items: [{ id: crypto.randomUUID(), text: "Kontrol maddesi", status: (sev >= 4 ? "uygun_degil" : sev >= 3 ? "kismi" : "uygun") as ChecklistItem["status"], weight: 2 }], category: "Genel" } as ChecklistValues,
-    jsa: { jobTitle: "", steps: [{ id: crypto.randomUUID(), stepDescription: "Adım 1", hazard: "", severity: sev, likelihood: sev, controlEffectiveness: 6 - sev, controlMeasures: "" }] } as JSAValues,
-    lopa: { initiatingEventFreq: Math.pow(10, -(5 - sev)), consequenceSeverity: sev, layers: [{ id: crypto.randomUUID(), name: "Koruma Katmanı 1", pfd: 0.1 }] } as LOPAValues,
+    fta: { components: [{ name: tr("panel.fta.componentDefault", { n: 1 }), failureRate: sev * 0.15 }], gateType: "OR" as const, systemCriticality: sev },
+    checklist: { items: [{ id: crypto.randomUUID(), text: tr("defaults.checklistItemSeed"), status: (sev >= 4 ? "uygun_degil" : sev >= 3 ? "kismi" : "uygun") as ChecklistItem["status"], weight: 2 }], category: tr("defaults.checklistCategoryGeneral") } as ChecklistValues,
+    jsa: { jobTitle: "", steps: [{ id: crypto.randomUUID(), stepDescription: tr("panel.jsa.stepDefault", { n: 1 }), hazard: "", severity: sev, likelihood: sev, controlEffectiveness: 6 - sev, controlMeasures: "" }] } as JSAValues,
+    lopa: { initiatingEventFreq: Math.pow(10, -(5 - sev)), consequenceSeverity: sev, layers: [{ id: crypto.randomUUID(), name: tr("panel.lopa.layerDefault", { n: 1 }), pfd: 0.1 }] } as LOPAValues,
   };
 }
 
@@ -791,8 +803,8 @@ export function RiskAnalysisClient() {
   );
 
   /* ── Setup state (persisted across page navigation) ── */
-  const [analysisTitle, setAnalysisTitle] = usePersistedState("risk:title", "Saha Risk Analizi");
-  const [analysisNote, setAnalysisNote] = usePersistedState("risk:note", "Her satır bir risk konusu veya uygunsuzluk grubunu temsil eder. Aynı satıra bir veya birden fazla fotoğraf eklenebilir.");
+  const [analysisTitle, setAnalysisTitle] = usePersistedState("risk:title", trRiskScoring("ui.page.analysisTitlePlaceholder"));
+  const [analysisNote, setAnalysisNote] = usePersistedState("risk:note", trRiskScoring("ui.page.analysisNotePlaceholder"));
   const [method, setMethod] = usePersistedState<AnalysisMethod>("risk:method", "r_skor");
 
   const [companies, setCompanies] = useState<CompanyRecord[]>([]);
@@ -933,17 +945,17 @@ export function RiskAnalysisClient() {
           matrixResult: (f.matrixResult ?? null) as MatrixResult | null,
           fmeaValues: ((f as Record<string, unknown>).fmeaValues ?? getDefaultFMEAValues()) as FMEAValues,
           fmeaResult: ((f as Record<string, unknown>).fmeaResult ?? null) as FMEAResult | null,
-          hazopValues: ((f as Record<string, unknown>).hazopValues ?? getDefaultHAZOPValues()) as HAZOPValues,
+          hazopValues: ((f as Record<string, unknown>).hazopValues ?? getDefaultHAZOPValues(trRiskScoring)) as HAZOPValues,
           hazopResult: ((f as Record<string, unknown>).hazopResult ?? null) as HAZOPResult | null,
           bowTieValues: ((f as Record<string, unknown>).bowTieValues ?? getDefaultBowTieValues()) as BowTieValues,
           bowTieResult: ((f as Record<string, unknown>).bowTieResult ?? null) as BowTieResult | null,
-          ftaValues: ((f as Record<string, unknown>).ftaValues ?? getDefaultFTAValues()) as FTAValues,
+          ftaValues: ((f as Record<string, unknown>).ftaValues ?? getDefaultFTAValues(trRiskScoring)) as FTAValues,
           ftaResult: ((f as Record<string, unknown>).ftaResult ?? null) as FTAResult | null,
-          checklistValues: ((f as Record<string, unknown>).checklistValues ?? getDefaultChecklistValues()) as ChecklistValues,
+          checklistValues: ((f as Record<string, unknown>).checklistValues ?? getDefaultChecklistValues(trRiskScoring)) as ChecklistValues,
           checklistResult: ((f as Record<string, unknown>).checklistResult ?? null) as ChecklistResult | null,
-          jsaValues: ((f as Record<string, unknown>).jsaValues ?? getDefaultJSAValues()) as JSAValues,
+          jsaValues: ((f as Record<string, unknown>).jsaValues ?? getDefaultJSAValues(trRiskScoring)) as JSAValues,
           jsaResult: ((f as Record<string, unknown>).jsaResult ?? null) as JSAResult | null,
-          lopaValues: ((f as Record<string, unknown>).lopaValues ?? getDefaultLOPAValues()) as LOPAValues,
+          lopaValues: ((f as Record<string, unknown>).lopaValues ?? getDefaultLOPAValues(trRiskScoring)) as LOPAValues,
           lopaResult: ((f as Record<string, unknown>).lopaResult ?? null) as LOPAResult | null,
         }));
 
@@ -996,7 +1008,16 @@ export function RiskAnalysisClient() {
   const [setupMessageType, setSetupMessageType] = useState<"success" | "error" | "">("");
 
   /* ── Lines state ── */
-  const [lines, setLines] = useState<RiskLine[]>([{ id: crypto.randomUUID(), title: "İstifleme alanı", description: "Aynı durumun genel ve yakın açıdan çekilmiş görselleri birlikte eklenebilir.", images: [] }]);
+  const defaultFirstLine = useMemo(
+    () => ({
+      id: crypto.randomUUID(),
+      title: trRiskScoring("defaults.firstLineTitle"),
+      description: trRiskScoring("defaults.firstLineDescription"),
+      images: [] as UploadedImage[],
+    }),
+    [trRiskScoring],
+  );
+  const [lines, setLines] = useState<RiskLine[]>([defaultFirstLine]);
 
   /* ── Results state ── */
   const [results, setResults] = useState<LineResult[]>([]);
@@ -1171,7 +1192,7 @@ export function RiskAnalysisClient() {
         canvas.width = w;
         canvas.height = h;
         const ctx = canvas.getContext("2d");
-        if (!ctx) { reject(new Error("Canvas context yok")); return; }
+        if (!ctx) { reject(new Error(trRiskScoring("defaults.canvasNoContext"))); return; }
         ctx.drawImage(img, 0, 0, w, h);
         const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
         const base64 = dataUrl.split(",")[1];
@@ -1240,7 +1261,7 @@ export function RiskAnalysisClient() {
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({}));
         console.error("AI analiz hatası:", res.status, errBody);
-        const message = typeof errBody?.error === "string" ? errBody.error : "AI analizi tamamlanamadi.";
+        const message = typeof errBody?.error === "string" ? errBody.error : trRiskScoring("defaults.aiRequestFailed");
         const stage = typeof errBody?.stage === "string" ? errBody.stage : "unknown";
         return { findings: [], meta: emptyMeta, error: message, stage };
       }
@@ -1296,7 +1317,7 @@ export function RiskAnalysisClient() {
           : getMatrixForCategory(risk.category, risk.severity);
 
         // Method-specific params from AI
-        const sevDefaults = getDefaultsForSeverity(risk.severity);
+        const sevDefaults = getDefaultsForSeverity(risk.severity, trRiskScoring);
 
         const aiFmea = risk.fmeaParams;
         const fmeaValues: FMEAValues = aiFmea
@@ -1305,7 +1326,14 @@ export function RiskAnalysisClient() {
 
         const aiHazop = risk.hazopParams;
         const hazopValues: HAZOPValues = aiHazop
-          ? { severity: aiHazop.severity ?? 3, likelihood: aiHazop.likelihood ?? 3, detectability: aiHazop.detectability ?? 3, guideWord: aiHazop.guideWord ?? "Çok (More)", parameter: aiHazop.parameter ?? "Akış (Flow)", deviation: aiHazop.deviation ?? "" }
+          ? {
+              severity: aiHazop.severity ?? 3,
+              likelihood: aiHazop.likelihood ?? 3,
+              detectability: aiHazop.detectability ?? 3,
+              guideWord: aiHazop.guideWord ?? trRiskScoring("defaults.hazopGuideWord"),
+              parameter: aiHazop.parameter ?? trRiskScoring("defaults.hazopParameter"),
+              deviation: aiHazop.deviation ?? "",
+            }
           : sevDefaults.hazop;
 
         const aiBt = risk.bowTieParams;
@@ -1557,17 +1585,17 @@ export function RiskAnalysisClient() {
     const r2dValues = getR2DForCategory("diğer", pendingPinSeverity);
     const fkValues = getFKForCategory("diğer", pendingPinSeverity);
     const matrixValues = getMatrixForCategory("diğer", pendingPinSeverity);
-    const sevDefaults = getDefaultsForSeverity(pendingPinSeverity);
+    const sevDefaults = getDefaultsForSeverity(pendingPinSeverity, trRiskScoring);
 
     const findingId = crypto.randomUUID();
     const newFinding: VisualFinding = computeAllScores({
       id: findingId,
       imageId,
       title: pendingPinTitle.trim(),
-      category: "Manuel Tespit",
+      category: trRiskScoring("defaults.manualPinCategory"),
       confidence: 1,
       severity: pendingPinSeverity,
-      recommendation: "Manuel olarak işaretlendi. Detaylı değerlendirme yapılmalıdır.",
+      recommendation: trRiskScoring("defaults.manualPinRecommendation"),
       correctiveActionRequired: pendingPinSeverity === "critical" || pendingPinSeverity === "high",
       isManual: true,
       legalReferences: [],

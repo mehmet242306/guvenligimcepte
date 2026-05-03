@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import type { JSONContent } from "@tiptap/react";
 import {
   Building2,
@@ -19,6 +20,7 @@ import {
   GraduationCap,
   LayoutGrid,
   Link2,
+  Scale,
   ScrollText,
   Search,
   Siren,
@@ -121,46 +123,6 @@ type CategoryTone = {
   editButton: string;
   assignButton: string;
 };
-
-const CATEGORY_DEFINITIONS: CategoryDefinition[] = [
-  { key: "all", label: "Tümü", icon: LayoutGrid, subcategories: [] },
-  {
-    key: "documentation",
-    label: "Dokümantasyon",
-    icon: FileText,
-    subcategories: DOCUMENT_GROUPS.map((group) => group.title),
-  },
-  {
-    key: "education",
-    label: "Eğitim",
-    icon: GraduationCap,
-    subcategories: ["Temel İSG Eğitimi", "Mesleki Eğitim", "Acil Durum Eğitimi", "Yenileme Eğitimleri"],
-  },
-  {
-    key: "assessment",
-    label: "Sınav ve Anket",
-    icon: ClipboardCheck,
-    subcategories: ["Sınavlar", "Anketler", "Değerlendirme Formları", "Ölçme ve İzleme"],
-  },
-  {
-    key: "forms",
-    label: "Form ve Checklist",
-    icon: FileCheck2,
-    subcategories: ["Günlük Kontroller", "Periyodik Kontroller", "Denetim Formları"],
-  },
-  {
-    key: "emergency",
-    label: "Acil Durum",
-    icon: Siren,
-    subcategories: ["Acil Durum Planları", "Tahliye", "Yangın", "Tatbikat", "Toplanma Alanları"],
-  },
-  {
-    key: "instructions",
-    label: "Talimatlar",
-    icon: ScrollText,
-    subcategories: ["Makine Talimatları", "İş Akışı Talimatları", "KKD Talimatları", "Saha Uygulamaları"],
-  },
-];
 
 const CATEGORY_TONES: Record<CategoryKey, CategoryTone> = {
   all: {
@@ -301,9 +263,62 @@ const MANAGE_ROLE_CODES = new Set([
   "ohs_specialist",
 ]);
 
-function createTemplateDescription(groupTitle: string, itemTitle: string) {
-  return `${groupTitle} altında yer alan "${itemTitle}" şablonunu doküman akışı içinde açabilirsiniz.`;
+const ISG_LIBRARY_DATE_LOCALE: Record<string, string> = {
+  tr: "tr-TR",
+  en: "en-US",
+  ar: "ar-SA",
+  ru: "ru-RU",
+  de: "de-DE",
+  fr: "fr-FR",
+  es: "es-ES",
+  zh: "zh-CN",
+  ja: "ja-JP",
+  ko: "ko-KR",
+  hi: "hi-IN",
+  az: "az-AZ",
+  id: "id-ID",
+};
+
+const LEGACY_CATEGORY_SLUG_MAP: Record<string, CategoryKey> = {
+  tumu: "all",
+  dokumantasyon: "documentation",
+  egitim: "education",
+  "sinav-ve-anket": "assessment",
+  "sinav-anket": "assessment",
+  "form-ve-checklist": "forms",
+  formlar: "forms",
+  "acil-durum": "emergency",
+  talimatlar: "instructions",
+  "mevzuat-ve-rehberler": "legal",
+  "mevzuat-rehberler": "legal",
+};
+
+const ALL_CATEGORY_KEYS: CategoryKey[] = [
+  "all",
+  "documentation",
+  "education",
+  "assessment",
+  "forms",
+  "emergency",
+  "instructions",
+  "legal",
+];
+
+const STATIC_SUBCATEGORIES: Partial<Record<Exclude<CategoryKey, "all">, string[]>> = {
+  education: ["Temel İSG Eğitimi", "Mesleki Eğitim", "Acil Durum Eğitimi", "Yenileme Eğitimleri"],
+  assessment: ["Sınavlar", "Anketler", "Değerlendirme Formları", "Ölçme ve İzleme"],
+  forms: ["Günlük Kontroller", "Periyodik Kontroller", "Denetim Formları"],
+  emergency: ["Acil Durum Planları", "Tahliye", "Yangın", "Tatbikat", "Toplanma Alanları"],
+  instructions: ["Makine Talimatları", "İş Akışı Talimatları", "KKD Talimatları", "Saha Uygulamaları"],
+};
+
+function getStaticSubcategories(category: CategoryKey): string[] {
+  if (category === "all") return [];
+  if (category === "documentation") return DOCUMENT_GROUPS.map((group) => group.title);
+  return STATIC_SUBCATEGORIES[category] ?? [];
 }
+
+type IsgLibraryTranslator = ReturnType<typeof useTranslations<"isgLibrary">>;
 
 function slugify(value: string) {
   return value
@@ -321,10 +336,10 @@ function slugify(value: string) {
 function parseCategory(value: string | null): CategoryKey {
   if (!value) return "all";
   const normalized = slugify(value);
-  const match = CATEGORY_DEFINITIONS.find(
-    (item) => item.key === normalized || slugify(item.label) === normalized,
-  );
-  return match?.key ?? "all";
+  if ((ALL_CATEGORY_KEYS as string[]).includes(normalized)) {
+    return normalized as CategoryKey;
+  }
+  return LEGACY_CATEGORY_SLUG_MAP[normalized] ?? "all";
 }
 
 function normalizeCategory(value: string | null | undefined): Exclude<CategoryKey, "all"> | null {
@@ -370,25 +385,20 @@ function getCategoryTone(category: CategoryKey | Exclude<CategoryKey, "all">) {
   return CATEGORY_TONES[category] ?? CATEGORY_TONES.all;
 }
 
-function getSubcategoryOptions(category: CategoryKey) {
-  return CATEGORY_DEFINITIONS.find((item) => item.key === category)?.subcategories ?? [];
-}
-
-function parseSubcategory(value: string | null, category: CategoryKey) {
+function parseSubcategoryFromUrl(value: string | null, category: CategoryKey) {
   if (!value || category === "all") return "";
-  const options = getSubcategoryOptions(category);
+  const options = getStaticSubcategories(category);
   const normalized = slugify(value);
-  const match = options.find((item) => slugify(item) === normalized);
-  return match ?? "";
+  return options.find((item) => slugify(item) === normalized) ?? "";
 }
 
-function getContentTypeMeta(type: string | null) {
+function getContentTypeMeta(type: string | null, t: IsgLibraryTranslator) {
   const normalized = (type ?? "").toLowerCase();
 
-  if (normalized.includes("video")) return { label: "Video", icon: Video };
-  if (normalized.includes("link")) return { label: "Link", icon: Link2 };
-  if (normalized.includes("doc")) return { label: "DOCX", icon: FileBadge };
-  return { label: (type ?? "PDF").toUpperCase(), icon: FileText };
+  if (normalized.includes("video")) return { label: t("contentTypes.video"), icon: Video };
+  if (normalized.includes("link")) return { label: t("contentTypes.link"), icon: Link2 };
+  if (normalized.includes("doc")) return { label: t("contentTypes.docx"), icon: FileBadge };
+  return { label: (type ?? t("contentTypes.pdf")).toUpperCase(), icon: FileText };
 }
 
 function buildAddContentHref(category: CategoryKey) {
@@ -407,6 +417,8 @@ function buildAddContentHref(category: CategoryKey) {
 function buildDocumentEditorHref(
   category: CategoryKey,
   subcategory: string,
+  definitions: CategoryDefinition[],
+  t: IsgLibraryTranslator,
   options?: {
     mode?: "new" | "custom";
     companyId?: string;
@@ -434,60 +446,64 @@ function buildDocumentEditorHref(
   params.set("library", "1");
   params.set("librarySection", category === "all" ? "documentation" : category);
 
-  const title =
-    options?.title || subcategory || CATEGORY_DEFINITIONS.find((item) => item.key === category)?.label || "Yeni Doküman";
-  params.set("title", mode === "custom" ? `${title} Taslağı` : title);
+  const baseTitle =
+    options?.title ||
+    subcategory ||
+    definitions.find((item) => item.key === category)?.label ||
+    t("legacy.newDocument");
+  const titleForParams = mode === "custom" ? `${baseTitle}${t("legacy.draftSuffix")}` : baseTitle;
+  params.set("title", titleForParams);
 
   return `/documents/new?${params.toString()}`;
 }
 
-function getSubcategoryBadgeMeta(category: CategoryKey) {
+function getSubcategoryBadgeMeta(category: CategoryKey, t: IsgLibraryTranslator) {
   switch (category) {
     case "documentation":
       return {
-        label: "Dosya",
+        label: t("badges.file"),
         className: "border-sky-200 bg-sky-50 text-sky-700",
       };
     case "education":
       return {
-        label: "Eğitim",
+        label: t("badges.training"),
         className: "border-emerald-200 bg-emerald-50 text-emerald-700",
       };
     case "assessment":
       return {
-        label: "Akış",
+        label: t("badges.flow"),
         className: "border-violet-200 bg-violet-50 text-violet-700",
       };
     case "forms":
       return {
-        label: "Form",
+        label: t("badges.form"),
         className: "border-amber-200 bg-amber-50 text-amber-700",
       };
     case "emergency":
       return {
-        label: "Plan",
+        label: t("badges.plan"),
         className: "border-red-200 bg-red-50 text-red-700",
       };
     case "instructions":
       return {
-        label: "Talimat",
+        label: t("badges.instruction"),
         className: "border-teal-200 bg-teal-50 text-teal-700",
       };
     case "legal":
       return {
-        label: "Mevzuat",
+        label: t("badges.legal"),
         className: "border-indigo-200 bg-indigo-50 text-indigo-700",
       };
     default:
       return {
-        label: "Kategori",
+        label: t("badges.category"),
         className: "border-slate-200 bg-slate-50 text-slate-700",
       };
   }
 }
 
-function formatDate(value: string) {
-  return new Date(value).toLocaleDateString("tr-TR", {
+function formatDate(value: string, dateLocale: string) {
+  return new Date(value).toLocaleDateString(dateLocale, {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -532,6 +548,7 @@ function EmptyState(props: {
   description: string;
   canManageCatalog: boolean;
   addHref: string;
+  addContentLabel: string;
 }) {
   return (
     <section className="rounded-[2rem] border border-dashed border-[var(--gold)]/30 bg-card/95 px-6 py-12 text-center shadow-[var(--shadow-card)]">
@@ -548,7 +565,7 @@ function EmptyState(props: {
             href={props.addHref}
             className="inline-flex h-11 items-center justify-center rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-white transition hover:brightness-110"
           >
-            İçerik Ekle
+            {props.addContentLabel}
           </Link>
         </div>
       ) : null}
@@ -560,11 +577,65 @@ export function IsgLibraryClient() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations("isgLibrary");
+  const locale = useLocale();
+  const dateLocaleTag = ISG_LIBRARY_DATE_LOCALE[locale] ?? "en-US";
 
   const initialCategory = parseCategory(searchParams.get("category") ?? searchParams.get("section"));
 
+  const categoryDefinitions = useMemo<CategoryDefinition[]>(
+    () => [
+      { key: "all", label: t("categories.all"), icon: LayoutGrid, subcategories: [] },
+      {
+        key: "documentation",
+        label: t("categories.documentation"),
+        icon: FileText,
+        subcategories: DOCUMENT_GROUPS.map((group) => group.title),
+      },
+      {
+        key: "education",
+        label: t("categories.education"),
+        icon: GraduationCap,
+        subcategories: STATIC_SUBCATEGORIES.education!,
+      },
+      {
+        key: "assessment",
+        label: t("categories.assessment"),
+        icon: ClipboardCheck,
+        subcategories: STATIC_SUBCATEGORIES.assessment!,
+      },
+      {
+        key: "forms",
+        label: t("categories.forms"),
+        icon: FileCheck2,
+        subcategories: STATIC_SUBCATEGORIES.forms!,
+      },
+      {
+        key: "emergency",
+        label: t("categories.emergency"),
+        icon: Siren,
+        subcategories: STATIC_SUBCATEGORIES.emergency!,
+      },
+      {
+        key: "instructions",
+        label: t("categories.instructions"),
+        icon: ScrollText,
+        subcategories: STATIC_SUBCATEGORIES.instructions!,
+      },
+      {
+        key: "legal",
+        label: t("categories.legal"),
+        icon: Scale,
+        subcategories: [],
+      },
+    ],
+    [t],
+  );
+
   const [category, setCategory] = useState<CategoryKey>(initialCategory);
-  const [subcategory, setSubcategory] = useState(() => parseSubcategory(searchParams.get("subcategory"), initialCategory));
+  const [subcategory, setSubcategory] = useState(() =>
+    parseSubcategoryFromUrl(searchParams.get("subcategory"), initialCategory),
+  );
   const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const [typeFilter, setTypeFilter] = useState(() => searchParams.get("type") ?? "all");
   const [sectorFilter, setSectorFilter] = useState(() => searchParams.get("sector") ?? "all");
@@ -577,7 +648,7 @@ export function IsgLibraryClient() {
 
   const [userContext, setUserContext] = useState<UserContext>({
     profileId: null,
-    fullName: "RiskNova Kullanıcısı",
+    fullName: t("user.defaultDisplayName"),
     canManageCatalog: false,
   });
   const [companies, setCompanies] = useState<CompanyOption[]>([]);
@@ -663,7 +734,7 @@ export function IsgLibraryClient() {
       const supabase = createClient();
       if (!supabase) {
         if (!cancelled) {
-          setErrorMessage("Supabase bağlantısı kurulamadı.");
+          setErrorMessage(t("errors.supabaseConnect"));
           setLoading(false);
         }
         return;
@@ -675,7 +746,7 @@ export function IsgLibraryClient() {
 
       if (!user) {
         if (!cancelled) {
-          setErrorMessage("Oturum bulunamadı.");
+          setErrorMessage(t("errors.sessionNotFound"));
           setLoading(false);
         }
         return;
@@ -689,7 +760,7 @@ export function IsgLibraryClient() {
 
       if (profileError || !profile?.organization_id) {
         if (!cancelled) {
-          setErrorMessage("Kullanıcı profili yüklenemedi.");
+          setErrorMessage(t("errors.profileLoadFailed"));
           setLoading(false);
         }
         return;
@@ -754,7 +825,7 @@ export function IsgLibraryClient() {
 
         return [{
           id: identity.id ?? row.company_identity_id,
-          name: identity.official_name || row.display_name || "İsimsiz Firma",
+          name: identity.official_name || row.display_name || t("company.anonymousCompany"),
           sector: identity.sector || "",
           hazardClass: identity.hazard_class || "",
           city: identity.city || "",
@@ -770,14 +841,14 @@ export function IsgLibraryClient() {
           return group.items.map((groupItem, index) => ({
             id: `template-${group.key}-${groupItem.id}`,
             title: groupItem.title,
-            description: createTemplateDescription(group.title, groupItem.title),
+            description: t("templateDescription", { group: group.title, item: groupItem.title }),
             category: "documentation" as const,
             subcategory: group.title,
-            contentType: "Şablon",
+            contentType: t("types.template"),
             tags: [
-              `Dosya ${DOCUMENT_GROUPS.findIndex((entry) => entry.key === group.key) + 1}`,
-              groupItem.isP1 ? "P1" : "Hazır",
-              groupItem.isP2 ? "P2" : "Şablon",
+              t("legacy.fileNumber", { n: DOCUMENT_GROUPS.findIndex((entry) => entry.key === group.key) + 1 }),
+              groupItem.isP1 ? "P1" : t("legacy.readyStatus"),
+              groupItem.isP2 ? "P2" : t("types.template"),
             ],
             sector: [],
             createdAt: matchingDocs[index]?.updated_at ?? new Date().toISOString(),
@@ -807,10 +878,10 @@ export function IsgLibraryClient() {
         ...[...myDecksResponse, ...orgDecksResponse].map((deck) => ({
           id: `deck-${deck.id}`,
           title: deck.title,
-          description: deck.description || "Hazır eğitim içeriğini açın ve sunum akışını yönetin.",
+          description: deck.description || t("legacy.deckDefaultDescription"),
           category: "education" as const,
           subcategory: "Mesleki Eğitim",
-          contentType: "Sunum",
+          contentType: t("types.presentation"),
           tags: [...(deck.tags ?? [])].slice(0, 3),
           sector: [],
           createdAt: deck.updated_at,
@@ -825,7 +896,7 @@ export function IsgLibraryClient() {
       if (!cancelled) {
         setUserContext({
           profileId: profile.id,
-          fullName: profile.full_name || user.email || "RiskNova Kullanıcısı",
+          fullName: profile.full_name || user.email || t("user.defaultDisplayName"),
           canManageCatalog: roleCodes.some((code) => MANAGE_ROLE_CODES.has(code)),
         });
         setCompanies(accessibleCompanies);
@@ -842,7 +913,7 @@ export function IsgLibraryClient() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (!statusMessage) return undefined;
@@ -859,7 +930,7 @@ export function IsgLibraryClient() {
     const catalogItems = contents.map((item) => ({
       id: item.id,
       title: item.title,
-      description: item.description || "Bu içerik için kısa açıklama henüz eklenmedi.",
+      description: item.description || t("catalog.noDescriptionShort"),
       category: normalizeCategory(item.category) ?? "documentation",
       subcategory: item.subcategory,
       contentType: item.content_type || "PDF",
@@ -874,7 +945,7 @@ export function IsgLibraryClient() {
     }));
 
     return [...catalogItems, ...legacyItems];
-  }, [contents, legacyItems]);
+  }, [contents, legacyItems, t]);
 
   const savedCompaniesByContent = useMemo(() => {
     const map = new Map<string, string[]>();
@@ -906,17 +977,17 @@ export function IsgLibraryClient() {
           .map((item) => item.contentType?.trim())
           .filter((item): item is string => Boolean(item)),
       ),
-    ).sort((left, right) => left.localeCompare(right, "tr"));
-  }, [allItems]);
+    ).sort((left, right) => left.localeCompare(right, locale));
+  }, [allItems, locale]);
 
   const sectorOptions = useMemo(() => {
     return Array.from(
       new Set(allItems.flatMap((item) => item.sector ?? []).filter(Boolean)),
-    ).sort((left, right) => left.localeCompare(right, "tr"));
-  }, [allItems]);
+    ).sort((left, right) => left.localeCompare(right, locale));
+  }, [allItems, locale]);
 
   const filteredContents = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase("tr-TR");
+    const normalizedQuery = query.trim().toLocaleLowerCase(dateLocaleTag);
 
     const nextItems = allItems.filter((item) => {
       const itemSubcategorySlug = slugify(item.subcategory);
@@ -926,7 +997,7 @@ export function IsgLibraryClient() {
       const matchesType =
         typeFilter === "all"
           ? true
-          : item.contentType.toLocaleLowerCase("tr-TR") === typeFilter.toLocaleLowerCase("tr-TR");
+          : item.contentType.toLocaleLowerCase(dateLocaleTag) === typeFilter.toLocaleLowerCase(dateLocaleTag);
       const matchesSector = sectorFilter === "all" ? true : item.sector.includes(sectorFilter);
       const haystack = [
         item.title,
@@ -936,7 +1007,7 @@ export function IsgLibraryClient() {
         ...item.tags,
       ]
         .join(" ")
-        .toLocaleLowerCase("tr-TR");
+        .toLocaleLowerCase(dateLocaleTag);
       const matchesQuery = normalizedQuery ? haystack.includes(normalizedQuery) : true;
 
       return matchesCategory && matchesSubcategory && matchesSaved && matchesType && matchesSector && matchesQuery;
@@ -947,15 +1018,27 @@ export function IsgLibraryClient() {
         case "oldest":
           return new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime();
         case "az":
-          return left.title.localeCompare(right.title, "tr");
+          return left.title.localeCompare(right.title, locale);
         case "za":
-          return right.title.localeCompare(left.title, "tr");
+          return right.title.localeCompare(left.title, locale);
         case "newest":
         default:
           return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
       }
     });
-  }, [allItems, category, query, savedContentIds, savedOnly, sectorFilter, sortBy, subcategory, typeFilter]);
+  }, [
+    allItems,
+    category,
+    dateLocaleTag,
+    locale,
+    query,
+    savedContentIds,
+    savedOnly,
+    sectorFilter,
+    sortBy,
+    subcategory,
+    typeFilter,
+  ]);
 
   const hydratedContents = useMemo(
     () =>
@@ -975,15 +1058,16 @@ export function IsgLibraryClient() {
     [filteredContents, templateUsageCounts],
   );
 
-  const activeCategoryMeta = CATEGORY_DEFINITIONS.find((item) => item.key === category) ?? CATEGORY_DEFINITIONS[0];
+  const activeCategoryMeta =
+    categoryDefinitions.find((item) => item.key === category) ?? categoryDefinitions[0]!;
   const activeTone = getCategoryTone(category);
   const selectedCreationCompany = companies.find((company) => company.id === creationCompanyId) ?? null;
   const subcategoryOptions = useMemo(() => {
     if (category === "all") return [];
-    const baseOptions = getSubcategoryOptions(category);
+    const baseOptions = categoryDefinitions.find((item) => item.key === category)?.subcategories ?? [];
     const customOptions = customSubcategories[category] ?? [];
     return [...baseOptions, ...customOptions];
-  }, [category, customSubcategories]);
+  }, [category, categoryDefinitions, customSubcategories]);
 
   function handleCategoryChange(nextCategory: CategoryKey) {
     setCategory(nextCategory);
@@ -993,25 +1077,26 @@ export function IsgLibraryClient() {
       return;
     }
 
-    const nextOptions = [...getSubcategoryOptions(nextCategory), ...(customSubcategories[nextCategory] ?? [])];
+    const baseOptions = categoryDefinitions.find((item) => item.key === nextCategory)?.subcategories ?? [];
+    const nextOptions = [...baseOptions, ...(customSubcategories[nextCategory] ?? [])];
     setSubcategory((current) => (current && nextOptions.includes(current) ? current : ""));
   }
 
   function handleCreateSubcategory() {
     if (category === "all") {
-      setErrorMessage("Önce bir ana kategori seçin.");
+      setErrorMessage(t("errorsInline.categoryFirst"));
       return;
     }
 
     const trimmedName = newCategoryName.trim();
     if (!trimmedName) {
-      setErrorMessage("Kategori adı boş bırakılamaz.");
+      setErrorMessage(t("errorsInline.categoryNameEmpty"));
       return;
     }
 
     const exists = subcategoryOptions.some((item) => slugify(item) === slugify(trimmedName));
     if (exists) {
-      setErrorMessage("Bu alt kategori zaten mevcut.");
+      setErrorMessage(t("errorsInline.categoryExists"));
       return;
     }
 
@@ -1023,7 +1108,7 @@ export function IsgLibraryClient() {
     setNewCategoryName("");
     setCategoryModalOpen(false);
     setErrorMessage(null);
-    setStatusMessage(`“${trimmedName}” alt kategorisi oluşturuldu.`);
+    setStatusMessage(t("errorsInline.subcategoryCreated", { name: trimmedName }));
   }
 
   function openAssignModal(content: LibraryContentRecord) {
@@ -1067,7 +1152,7 @@ export function IsgLibraryClient() {
           } as JSONContent),
       });
     } catch {
-      setErrorMessage("Şablon önizlemesi yüklenemedi. Lütfen tekrar deneyin.");
+      setErrorMessage(t("errorsInline.previewTemplateFailed"));
       setPreviewState(null);
     } finally {
       setPreviewLoading(false);
@@ -1095,7 +1180,7 @@ export function IsgLibraryClient() {
         } as JSONContent);
 
       const html = `<!doctype html>
-<html lang="tr">
+<html lang="${locale}">
   <head>
     <meta charset="utf-8" />
     <title>${escapeHtml(template?.title ?? item.title)}</title>
@@ -1117,29 +1202,29 @@ export function IsgLibraryClient() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${slugify(template?.title ?? item.title) || "dokuman"}.html`;
+      link.download = `${slugify(template?.title ?? item.title) || t("download.filenameFallback")}.html`;
       document.body.appendChild(link);
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
     } catch {
-      setErrorMessage("İndirme dosyası oluşturulamadı. Lütfen tekrar deneyin.");
+      setErrorMessage(t("errorsInline.downloadHtmlFailed"));
     }
   }
 
   function handleEdit(item: UnifiedLibraryItem) {
     if (!creationCompanyId) {
-      setErrorMessage("Lütfen önce üst alandan firma seçin.");
+      setErrorMessage(t("errorsInline.selectCompanyEditor"));
       return;
     }
 
     if (item.sourceKind !== "template") {
-      setErrorMessage("Düzenleme şu an yalnızca şablon kartlarında destekleniyor.");
+      setErrorMessage(t("errorsInline.editOnlyTemplates"));
       return;
     }
 
     router.push(
-      buildDocumentEditorHref(item.category, item.subcategory, {
+      buildDocumentEditorHref(item.category, item.subcategory, categoryDefinitions, t, {
         companyId: creationCompanyId,
         templateId: item.templateId ?? undefined,
         title: item.title,
@@ -1149,7 +1234,7 @@ export function IsgLibraryClient() {
 
   async function processImportedFile(file: File) {
     if (!selectedCreationCompany) {
-      setErrorMessage("Lütfen önce içerik oluşturulacak firmayı seçin.");
+      setErrorMessage(t("errorsInline.companyRequiredImport"));
       return;
     }
 
@@ -1159,7 +1244,7 @@ export function IsgLibraryClient() {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("documentTitle", subcategory || activeCategoryMeta.label || "Yeni Doküman");
+      formData.append("documentTitle", subcategory || activeCategoryMeta.label || t("legacy.newDocument"));
 
       const matchingGroup = DOCUMENT_GROUPS.find((group) => group.title === subcategory);
       if (matchingGroup) {
@@ -1175,7 +1260,7 @@ export function IsgLibraryClient() {
       });
 
       if (!res.ok) {
-        setErrorMessage("Dosya yüklenirken bir hata oluştu. Lütfen tekrar deneyin.");
+        setErrorMessage(t("errorsInline.importUploadError"));
         return;
       }
 
@@ -1194,7 +1279,7 @@ export function IsgLibraryClient() {
 
       router.push(`/documents/new?${params.toString()}`);
     } catch {
-      setErrorMessage("Bağlantı hatası nedeniyle dosya yüklenemedi.");
+      setErrorMessage(t("errorsInline.importConnection"));
     } finally {
       setImportingDocument(false);
     }
@@ -1210,7 +1295,7 @@ export function IsgLibraryClient() {
 
   async function handleAssignSubmit() {
     if (!assignContent || !assignCompanyId) {
-      setAssignMessage("Lütfen bir firma seçin.");
+      setAssignMessage(t("errorsInline.assignSelectCompany"));
       return;
     }
 
@@ -1225,7 +1310,7 @@ export function IsgLibraryClient() {
 
     if (!savedRow) {
       setAssigning(false);
-      setAssignMessage("Kayıt oluşturulamadı. Lütfen tekrar deneyin.");
+      setAssignMessage(t("errorsInline.assignRecordFailed"));
       return;
     }
 
@@ -1235,7 +1320,7 @@ export function IsgLibraryClient() {
       );
       return [savedRow, ...withoutDuplicate];
     });
-    setStatusMessage(`“${assignContent.title}” seçilen firmaya kaydedildi.`);
+    setStatusMessage(t("status.contentSavedToCompany", { title: assignContent.title }));
     setAssigning(false);
     setAssignModalOpen(false);
   }
@@ -1245,17 +1330,12 @@ export function IsgLibraryClient() {
   }
 
   const emptyTitle =
-    category === "all"
-      ? "Henüz içerik bulunmuyor"
-      : `${activeCategoryMeta.label} kategorisinde henüz içerik bulunmuyor`;
+    category === "all" ? t("empty.titleAll") : t("empty.titleCategory", { category: activeCategoryMeta.label });
 
-  const emptyDescription =
-    savedOnly
-      ? "Firmalarınıza kaydedilmiş içerik bulunamadı. Bir içeriği kart üzerinden firmaya atayarak bu görünümde listeleyebilirsiniz."
-      : "Bu kategoride henüz içerik bulunmuyor. İçerikler eklendiğinde burada kart görünümüyle listelenecek.";
+  const emptyDescription = savedOnly ? t("empty.descSavedOnly") : t("empty.descDefault");
 
   const contentCards = hydratedContents.map((item) => {
-    const typeMeta = getContentTypeMeta(item.contentType);
+    const typeMeta = getContentTypeMeta(item.contentType, t);
     const itemTone = getCategoryTone(item.category);
     const TypeIcon = typeMeta.icon;
     const assignedCompanyIds = item.libraryContentId
@@ -1266,12 +1346,12 @@ export function IsgLibraryClient() {
     const canAssign = Boolean(item.libraryContentId);
     const sourceBadge =
       item.sourceKind === "template"
-        ? "Şablon"
+        ? t("source.template")
         : item.sourceKind === "survey"
-          ? "Akış"
+          ? t("source.surveyFlow")
           : item.sourceKind === "deck"
-            ? "Sunum"
-            : "Katalog";
+            ? t("source.presentation")
+            : t("source.catalog");
 
     return (
       <Card
@@ -1291,11 +1371,11 @@ export function IsgLibraryClient() {
             </span>
             {item.sourceKind === "template" ? (
               <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold", itemTone.countBadge)}>
-                {item.usageCount ?? 0} kullanım
+                {t("card.usageCount", { count: item.usageCount ?? 0 })}
               </span>
             ) : assignedCompanyIds.length > 0 ? (
               <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold", itemTone.countBadge)}>
-                {assignedCompanyIds.length} firmada
+                {t("card.companiesCount", { count: assignedCompanyIds.length })}
               </span>
             ) : (
               <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold", itemTone.metaBadge)}>
@@ -1307,13 +1387,13 @@ export function IsgLibraryClient() {
           <div className="space-y-2">
             <CardTitle className="text-xl leading-snug">{item.title}</CardTitle>
             <p className="line-clamp-2 min-h-11 text-sm leading-6 text-muted-foreground">
-              {item.description || "Bu içerik için kısa açıklama henüz eklenmedi."}
+              {item.description || t("catalog.noDescriptionShort")}
             </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
             <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold", itemTone.metaBadge)}>
-              {CATEGORY_DEFINITIONS.find((entry) => entry.key === item.category)?.label ?? item.category}
+              {categoryDefinitions.find((entry) => entry.key === item.category)?.label ?? item.category}
             </span>
             <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold", itemTone.metaBadge)}>
               {item.subcategory}
@@ -1340,7 +1420,7 @@ export function IsgLibraryClient() {
               disabled={!item.viewHref && item.sourceKind !== "template"}
             >
               <Eye size={16} />
-              Görüntüle
+              {t("buttons.view")}
             </button>
             <button
               type="button"
@@ -1354,7 +1434,7 @@ export function IsgLibraryClient() {
               disabled={!item.downloadHref && item.sourceKind !== "template"}
             >
               <Download size={16} />
-              İndir
+              {t("buttons.download")}
             </button>
             <button
               type="button"
@@ -1368,7 +1448,7 @@ export function IsgLibraryClient() {
               disabled={item.sourceKind !== "template" || !creationCompanyId}
             >
               <FilePenLine size={16} />
-              Düzenle
+              {t("buttons.edit")}
             </button>
           </div>
 
@@ -1395,12 +1475,20 @@ export function IsgLibraryClient() {
             )}
           >
             {isFullyAssigned ? <Check size={16} /> : <Building2 size={16} />}
-            {isFullyAssigned ? "Tüm firmalara kaydedildi" : canAssign ? "Firmaya Ata" : "Katalog kaydı bekleniyor"}
+            {isFullyAssigned
+              ? t("buttons.savedToAllCompanies")
+              : canAssign
+                ? t("buttons.assignToCompany")
+                : t("buttons.assignCatalogPending")}
           </button>
 
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>{item.sourceKind === "template" ? `${item.usageCount ?? 0} kez dokümana dönüştürüldü` : item.sector.slice(0, 2).join(", ") || "Genel kullanım"}</span>
-            <span>{formatDate(item.createdAt)}</span>
+            <span>
+              {item.sourceKind === "template"
+                ? t("footer.convertedToDocument", { count: item.usageCount ?? 0 })
+                : item.sector.slice(0, 2).join(", ") || t("footer.generalUse")}
+            </span>
+            <span>{formatDate(item.createdAt, dateLocaleTag)}</span>
           </div>
         </CardContent>
       </Card>
@@ -1410,9 +1498,9 @@ export function IsgLibraryClient() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="İSG Kütüphanesi"
-        title="İSG Kütüphanesi"
-        description="Global katalog yapısıyla doküman, eğitim, sınav, form, acil durum ve mevzuat içeriklerini firma seçmeden inceleyin; ihtiyaç duyduğunuz içeriği sonradan firmanıza kaydedin."
+        eyebrow={t("header.eyebrow")}
+        title={t("header.title")}
+        description={t("header.description")}
         className="relative overflow-visible border-border bg-card dark:text-slate-100"
         meta={
           <>
@@ -1420,10 +1508,10 @@ export function IsgLibraryClient() {
               {userContext.fullName}
             </span>
             <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">
-              {allItems.length} içerik
+              {t("header.contentCount", { count: allItems.length })}
             </span>
             <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">
-              {savedContentIds.size} içerik firmalara kaydedildi
+              {t("header.savedToCompanies", { count: savedContentIds.size })}
             </span>
           </>
         }
@@ -1431,7 +1519,7 @@ export function IsgLibraryClient() {
           <>
             <div className="min-w-[260px]" ref={companyMenuRef}>
               <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]/90">
-                Çalışılan Firma
+                {t("company.workingCompanyMenu")}
               </span>
               <div className="relative">
                 <button
@@ -1442,7 +1530,7 @@ export function IsgLibraryClient() {
                   <span className="flex min-w-0 items-center gap-3">
                     <Building2 size={16} className="shrink-0 text-[var(--gold)]/90" />
                     <span className="truncate text-left">
-                      {selectedCreationCompany?.name || "Firma seçin"}
+                      {selectedCreationCompany?.name || t("company.selectCompany")}
                     </span>
                   </span>
                   <ChevronDown
@@ -1496,7 +1584,7 @@ export function IsgLibraryClient() {
                   : "border-border bg-background/85 text-muted-foreground hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white",
               )}
             >
-              Firmama Kaydedilenler
+              {t("savedToggle")}
             </button>
           </>
         }
@@ -1507,7 +1595,7 @@ export function IsgLibraryClient() {
         <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 translate-x-[-20%] translate-y-[35%] rotate-12 rounded-[1.5rem] border border-slate-200/60 bg-white/30 dark:border-white/10 dark:bg-white/5" />
 
         <div className="grid grid-cols-2 gap-3 pb-2 md:grid-cols-3 xl:grid-cols-7">
-          {CATEGORY_DEFINITIONS.map((item) => {
+          {categoryDefinitions.map((item) => {
             const Icon = item.icon;
             const isActive = item.key === category;
             const tone = getCategoryTone(item.key);
@@ -1534,7 +1622,7 @@ export function IsgLibraryClient() {
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Başlık, açıklama veya etiket ara..."
+              placeholder={t("filters.searchPlaceholder")}
               className="h-12 w-full rounded-2xl border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
             />
           </label>
@@ -1546,7 +1634,7 @@ export function IsgLibraryClient() {
               onChange={(event) => setTypeFilter(event.target.value)}
               className="h-12 w-full rounded-2xl border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
             >
-              <option value="all">Tip</option>
+              <option value="all">{t("filters.typeOption")}</option>
               {typeOptions.map((item) => (
                 <option key={item} value={item}>
                   {item.toUpperCase()}
@@ -1562,7 +1650,7 @@ export function IsgLibraryClient() {
               onChange={(event) => setSectorFilter(event.target.value)}
               className="h-12 w-full rounded-2xl border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
             >
-              <option value="all">Sektör</option>
+              <option value="all">{t("filters.sectorOption")}</option>
               {sectorOptions.map((item) => (
                 <option key={item} value={item}>
                   {item}
@@ -1578,11 +1666,11 @@ export function IsgLibraryClient() {
               onChange={(event) => setSortBy(parseSort(event.target.value))}
               className="h-12 w-full rounded-2xl border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
             >
-              <option value="newest">Sırala</option>
-              <option value="newest">En yeni</option>
-              <option value="oldest">En eski</option>
-              <option value="az">A-Z</option>
-              <option value="za">Z-A</option>
+              <option value="newest">{t("filters.sortOption")}</option>
+              <option value="newest">{t("filters.sortNewestShort")}</option>
+              <option value="oldest">{t("filters.sortOldestShort")}</option>
+              <option value="az">{t("filters.sortAz")}</option>
+              <option value="za">{t("filters.sortZa")}</option>
             </select>
           </label>
         </div>
@@ -1592,7 +1680,7 @@ export function IsgLibraryClient() {
             <div className={cn("rounded-[1.5rem] border p-3 shadow-sm", activeTone.panel)}>
               <div className="mb-3 flex items-center gap-2 px-2">
                 <Filter size={16} className="text-[var(--gold)]" />
-                <span className="text-sm font-semibold text-foreground">Alt Kategoriler</span>
+                <span className="text-sm font-semibold text-foreground">{t("sidebar.subcategoriesTitle")}</span>
               </div>
 
               <div className="space-y-2">
@@ -1604,19 +1692,19 @@ export function IsgLibraryClient() {
                     !subcategory ? activeTone.sidebarActive : activeTone.sidebarIdle,
                   )}
                 >
-                  <span className="font-medium">Tüm alt kategoriler</span>
+                  <span className="font-medium">{t("sidebar.allSubcategories")}</span>
                   <span
                     className={cn(
                       "rounded-full border px-2 py-0.5 text-[11px] font-semibold",
                       !subcategory ? "border-white/25 bg-white/20 text-current" : activeTone.sidebarBadge,
                     )}
                   >
-                    Tümü
+                    {t("sidebar.all")}
                   </span>
                 </button>
 
                 {subcategoryOptions.map((item) => {
-                  const badgeMeta = getSubcategoryBadgeMeta(category);
+                  const badgeMeta = getSubcategoryBadgeMeta(category, t);
 
                   return (
                     <button
@@ -1651,7 +1739,7 @@ export function IsgLibraryClient() {
                   }}
                   className={cn("inline-flex h-11 w-full items-center justify-center rounded-2xl border px-4 text-sm font-semibold transition", activeTone.editButton)}
                 >
-                  Kategori Ekle
+                  {t("sidebar.addCategory")}
                 </button>
               </div>
             </div>
@@ -1663,11 +1751,11 @@ export function IsgLibraryClient() {
                     {activeCategoryMeta.label}
                   </p>
                   <h2 className="mt-2 text-lg font-semibold text-foreground">
-                    {subcategory || "Tüm alt kategoriler"}
+                    {subcategory || t("sidebar.allSubcategories")}
                   </h2>
                 </div>
                 <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold", activeTone.countBadge)}>
-                  {filteredContents.length} sonuç
+                  {t("sidebar.resultsCount", { count: filteredContents.length })}
                 </span>
               </div>
 
@@ -1677,13 +1765,13 @@ export function IsgLibraryClient() {
                     <LayoutGrid size={24} />
                   </div>
                   <h3 className="mt-4 text-lg font-semibold text-[#1f2f46] dark:text-white">
-                    Bu alt kategoride henüz içerik yok
+                    {t("emptySubcategory.title")}
                   </h3>
                   <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-                    Soldaki listeden farklı bir alt kategori seçebilir veya yeni içerik ekleyebilirsiniz.
+                    {t("emptySubcategory.body")}
                   </p>
                   <p className="mt-4 text-xs text-muted-foreground">
-                    Doküman oluşturma ve yükleme işlemleri, üst alandaki firma seçimine göre ilgili çalışma alanına bağlanır.
+                    {t("emptySubcategory.footerNote")}
                   </p>
                   {category === "education" ? (
                     <div className="mt-6 grid w-full max-w-3xl gap-3 sm:grid-cols-2">
@@ -1691,13 +1779,13 @@ export function IsgLibraryClient() {
                         href="/training/slides?ai=1"
                         className="inline-flex h-11 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 px-5 text-sm font-semibold text-white transition hover:brightness-110"
                       >
-                        AI Destekli Egitim Hazirla
+                        {t("cta.aiTrainingPrepare")}
                       </Link>
                       <Link
                         href="/training/slides"
                         className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--gold)]/35 bg-white/80 px-5 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--gold)]/45 hover:bg-[var(--gold)]/10 dark:bg-white/10 dark:text-[#f0c36b]"
                       >
-                        Slayt Kutuphanesini Ac
+                        {t("cta.openSlideLibrary")}
                       </Link>
                       <button
                         type="button"
@@ -1707,7 +1795,7 @@ export function IsgLibraryClient() {
                         }}
                         className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--card)] px-5 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--accent)]"
                       >
-                        Kategori Ekle
+                        {t("cta.addCategory")}
                       </button>
                     </div>
                   ) : category === "assessment" ? (
@@ -1716,13 +1804,13 @@ export function IsgLibraryClient() {
                         href="/training/new?prefillType=exam"
                         className="inline-flex h-11 items-center justify-center rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-white transition hover:brightness-110"
                       >
-                        Yeni Sinav Olustur
+                        {t("cta.newExamCreate")}
                       </Link>
                       <Link
                         href="/training/new?prefillType=survey"
                         className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--gold)]/35 bg-white/80 px-5 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--gold)]/45 hover:bg-[var(--gold)]/10 dark:bg-white/10 dark:text-[#f0c36b]"
                       >
-                        Yeni Anket Olustur
+                        {t("cta.newSurveyCreate")}
                       </Link>
                       <button
                         type="button"
@@ -1732,17 +1820,23 @@ export function IsgLibraryClient() {
                         }}
                         className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--card)] px-5 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--accent)]"
                       >
-                        Kategori Ekle
+                        {t("cta.addCategory")}
                       </button>
                     </div>
                   ) : (
                     <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                       <Link
-                        href={creationCompanyId ? buildDocumentEditorHref(category, subcategory, { companyId: creationCompanyId }) : "#"}
+                        href={
+                          creationCompanyId
+                            ? buildDocumentEditorHref(category, subcategory, categoryDefinitions, t, {
+                                companyId: creationCompanyId,
+                              })
+                            : "#"
+                        }
                         onClick={(event) => {
                           if (!creationCompanyId) {
                             event.preventDefault();
-                            setErrorMessage("Lütfen önce içerik oluşturulacak firmayı seçin.");
+                            setErrorMessage(t("errorsInline.companyRequiredImport"));
                           }
                         }}
                         className={cn(
@@ -1752,7 +1846,7 @@ export function IsgLibraryClient() {
                             : "cursor-not-allowed bg-slate-300 text-white dark:bg-slate-700 dark:text-slate-300",
                         )}
                       >
-                        Doküman Editöründe Oluştur
+                        {t("cta.createInEditor")}
                       </Link>
                       <button
                         type="button"
@@ -1763,12 +1857,12 @@ export function IsgLibraryClient() {
                           importingDocument || !creationCompanyId ? "cursor-not-allowed opacity-60" : "",
                         )}
                       >
-                        {importingDocument ? "Dosya Yükleniyor..." : "Cihazdan Doküman Yükle"}
+                        {importingDocument ? t("cta.importingFile") : t("cta.uploadFromDevice")}
                       </button>
                     </div>
                   )}
                   <p className="mt-3 text-xs text-muted-foreground">
-                    Yüklediğiniz dosya editörde açılır; isterseniz düzenleyip kaydedebilir, daha sonra tekrar düzenleyebilirsiniz.
+                    {t("cta.uploadFooterNote")}
                   </p>
                 </div>
               ) : (
@@ -1808,6 +1902,7 @@ export function IsgLibraryClient() {
             description={emptyDescription}
             canManageCatalog={userContext.canManageCatalog}
             addHref={buildAddContentHref(category)}
+            addContentLabel={t("emptyState.addContent")}
           />
         ) : (
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
@@ -1821,9 +1916,9 @@ export function IsgLibraryClient() {
           <div className="w-full max-w-lg rounded-[2rem] border border-border bg-card p-6 shadow-[var(--shadow-elevated)]">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-xl font-semibold text-foreground">Firmaya Ata</h2>
+                <h2 className="text-xl font-semibold text-foreground">{t("assignModal.title")}</h2>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  “{assignContent.title}” içeriğini seçtiğiniz firmaya kaydederek firma kütüphanesine ekleyin.
+                  {t("assignModal.description", { title: assignContent.title })}
                 </p>
               </div>
               <button
@@ -1837,19 +1932,19 @@ export function IsgLibraryClient() {
 
             <div className="mt-6 space-y-4">
               <label className="space-y-2">
-                <span className="text-sm font-medium text-foreground">Firma</span>
+                <span className="text-sm font-medium text-foreground">{t("assignModal.company")}</span>
                 <select
                   value={assignCompanyId}
                   onChange={(event) => setAssignCompanyId(event.target.value)}
                   className="h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
                 >
-                  <option value="">Firma seçin</option>
+                  <option value="">{t("assignModal.companyPlaceholder")}</option>
                   {companies.map((company) => {
                     const alreadyAssigned = (savedCompaniesByContent.get(assignContent.id) ?? []).includes(company.id);
                     return (
                       <option key={company.id} value={company.id} disabled={alreadyAssigned}>
                         {company.name}
-                        {alreadyAssigned ? " (zaten kayıtlı)" : ""}
+                        {alreadyAssigned ? t("assignModal.optionAlreadySaved") : ""}
                       </option>
                     );
                   })}
@@ -1868,7 +1963,7 @@ export function IsgLibraryClient() {
                   onClick={() => setAssignModalOpen(false)}
                   className="inline-flex h-11 items-center justify-center rounded-2xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition hover:border-[var(--gold)]/35"
                 >
-                  Vazgeç
+                  {t("assignModal.cancel")}
                 </button>
                 <button
                   type="button"
@@ -1881,7 +1976,7 @@ export function IsgLibraryClient() {
                       : "bg-[var(--primary)] hover:brightness-110",
                   )}
                 >
-                  {assigning ? "Kaydediliyor..." : "Firmaya Kaydet"}
+                  {assigning ? t("assignModal.saving") : t("assignModal.saveToCompany")}
                 </button>
               </div>
             </div>
@@ -1906,9 +2001,9 @@ export function IsgLibraryClient() {
           <div className="w-full max-w-md rounded-[2rem] border border-border bg-card p-6 shadow-[var(--shadow-elevated)]">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-xl font-semibold text-foreground">Yeni Alt Kategori</h2>
+                <h2 className="text-xl font-semibold text-foreground">{t("categoryModal.titleNew")}</h2>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {activeCategoryMeta.label} altında görünecek yeni kategori adını yazın.
+                  {t("categoryModal.descriptionUnderCategory", { category: activeCategoryMeta.label })}
                 </p>
               </div>
               <button
@@ -1922,11 +2017,11 @@ export function IsgLibraryClient() {
 
             <div className="mt-6 space-y-4">
               <label className="space-y-2">
-                <span className="text-sm font-medium text-foreground">Kategori Adı</span>
+                <span className="text-sm font-medium text-foreground">{t("categoryModal.nameLabel")}</span>
                 <input
                   value={newCategoryName}
                   onChange={(event) => setNewCategoryName(event.target.value)}
-                  placeholder="Örn. Acil Toplanma Noktaları"
+                  placeholder={t("categoryModal.namePlaceholder")}
                   className="h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
                 />
               </label>
@@ -1937,14 +2032,14 @@ export function IsgLibraryClient() {
                   onClick={() => setCategoryModalOpen(false)}
                   className="inline-flex h-11 items-center justify-center rounded-2xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition hover:border-[var(--gold)]/35"
                 >
-                  Vazgeç
+                  {t("categoryModal.cancel")}
                 </button>
                 <button
                   type="button"
                   onClick={handleCreateSubcategory}
                   className="inline-flex h-11 items-center justify-center rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-white transition hover:brightness-110"
                 >
-                  Kaydet
+                  {t("categoryModal.save")}
                 </button>
               </div>
             </div>
@@ -2027,6 +2122,7 @@ function TemplatePreview(props: {
   loading: boolean;
   onClose: () => void;
 }) {
+  const t = useTranslations("isgLibrary.preview");
   const hasRenderableContent = Boolean(props.content?.content?.length);
   const previewHtml = useMemo(
     () => (props.content ? renderJsonNodeToHtml(props.content) : ""),
@@ -2041,7 +2137,7 @@ function TemplatePreview(props: {
         <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]/90">
-              Şablon Önizleme
+              {t("eyebrow")}
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-foreground">{props.title}</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{props.description}</p>
@@ -2072,7 +2168,7 @@ function TemplatePreview(props: {
                 />
               ) : (
                 <div className="flex min-h-[240px] items-center justify-center rounded-[1.25rem] border border-dashed border-border/70 bg-background/50 px-6 text-center text-sm text-muted-foreground">
-                  Önizleme içeriği şu anda yüklenemedi. Bu şablonu yine de indirip düzenleyebilirsiniz.
+                  {t("loadError")}
                 </div>
               )}
             </div>

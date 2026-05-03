@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 // qrcode runtime'da yüklenir — sadece MFA enrollment akışında lazım,
 // /profile sayfası açıldığında initial bundle'a girmesin.
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useI18n, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import {
   AlertTriangle,
@@ -118,6 +118,22 @@ const primaryButtonClass =
 const secondaryButtonClass =
   "inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-border/80 bg-background/90 px-5 text-sm font-medium text-foreground shadow-[0_8px_20px_rgba(15,23,42,0.08)] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:bg-secondary/70 hover:text-primary dark:bg-card/90 dark:shadow-[0_12px_24px_rgba(0,0,0,0.28)] disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60";
 
+const PROFILE_DATE_LOCALE: Record<string, string> = {
+  tr: "tr-TR",
+  en: "en-US",
+  ar: "ar-SA",
+  ru: "ru-RU",
+  de: "de-DE",
+  fr: "fr-FR",
+  es: "es-ES",
+  zh: "zh-CN",
+  ja: "ja-JP",
+  ko: "ko-KR",
+  hi: "hi-IN",
+  az: "az-AZ",
+  id: "id-ID",
+};
+
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 function Toggle({
@@ -205,6 +221,7 @@ function LanguagePicker() {
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function ProfileClient() {
+  const locale = useLocale();
   const t = useTranslations("profile");
   const tMsg = useTranslations("profile.msg");
   const tCommon = useTranslations("common");
@@ -437,7 +454,7 @@ export default function ProfileClient() {
       setProfile((prev) => prev ? { ...prev, full_name: fullName, title, phone } : prev);
       setFeedback({ type: "success", msg: tMsg("profileSaved") });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Kayıt başarısız.";
+      const msg = err instanceof Error ? err.message : tMsg("genericSaveError");
       setFeedback({ type: "error", msg });
     } finally {
       setSaving(false);
@@ -471,7 +488,7 @@ export default function ProfileClient() {
       setConfirmPassword("");
       setFeedback({ type: "success", msg: tMsg("passwordUpdated") });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Şifre güncellenemedi.";
+      const msg = err instanceof Error ? err.message : tMsg("passwordError");
       setFeedback({ type: "error", msg });
     } finally {
       setSaving(false);
@@ -522,10 +539,10 @@ export default function ProfileClient() {
 
       setFeedback({
         type: "success",
-        msg: `${nextEmail} adresine onay bağlantısı gönderildi. Maili açıp değişikliği tamamlayın.`,
+        msg: tMsg("emailConfirmSentDetailed", { email: nextEmail }),
       });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "E-posta değişikliği başlatılamadı.";
+      const msg = err instanceof Error ? err.message : tMsg("emailChangeFailed");
       setFeedback({ type: "error", msg });
     } finally {
       setEmailUpdating(false);
@@ -587,14 +604,14 @@ export default function ProfileClient() {
     setFeedback(null);
 
     try {
-      const friendlyName = mfaFriendlyName.trim() || "Google Authenticator";
+      const friendlyName = mfaFriendlyName.trim() || t("mfa.defaultAuthenticatorName");
       const { data, error } = await supabase.auth.mfa.enroll({
         factorType: "totp",
         friendlyName,
       });
 
       if (error) throw error;
-      if (!data?.totp) throw new Error("TOTP kurulum verisi alınamadı.");
+      if (!data?.totp) throw new Error(tMsg("totpEnrollmentMissing"));
 
       const qrImageSrc = await buildMfaQrImageSrc(data.totp.uri, data.totp.qr_code);
 
@@ -609,7 +626,7 @@ export default function ProfileClient() {
       await loadMfaState(supabase);
       setFeedback({ type: "success", msg: tMsg("mfaEnrolled") });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "İki adımlı doğrulama başlatılamadı.";
+      const msg = err instanceof Error ? err.message : tMsg("mfaEnrollFailed");
       setFeedback({ type: "error", msg });
     } finally {
       setMfaBusy(false);
@@ -648,7 +665,7 @@ export default function ProfileClient() {
       await loadMfaState(supabase);
       setFeedback({ type: "success", msg: tMsg("mfaEnabled") });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Doğrulama başarısız.";
+      const msg = err instanceof Error ? err.message : tMsg("mfaVerifyFailed");
       setFeedback({ type: "error", msg });
     } finally {
       setMfaBusy(false);
@@ -696,7 +713,7 @@ export default function ProfileClient() {
       await loadMfaState(supabase);
       setFeedback({ type: "success", msg: tMsg("mfaRemoved") });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "MFA cihazı kaldırılamadı.";
+      const msg = err instanceof Error ? err.message : tMsg("mfaRemoveFailed");
       setFeedback({ type: "error", msg });
     } finally {
       setMfaBusy(false);
@@ -728,7 +745,7 @@ export default function ProfileClient() {
       // Theme & language are already applied on click via handleThemeChange/handleLanguageChange
       setFeedback({ type: "success", msg: tMsg("prefsSaved") });
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Kayıt başarısız.";
+      const msg = err instanceof Error ? err.message : tMsg("genericSaveError");
       setFeedback({ type: "error", msg });
     } finally {
       setSaving(false);
@@ -744,7 +761,7 @@ export default function ProfileClient() {
     try {
       await quickSignOut("/login");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Oturum kapatılamadı.";
+      const msg = err instanceof Error ? err.message : tMsg("signOutFailed");
       setFeedback({ type: "error", msg });
       setSigningOut(false);
     }
@@ -780,7 +797,7 @@ export default function ProfileClient() {
 
       window.location.replace("/login");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Tüm cihazlardan çıkış yapılamadı.";
+      const msg = err instanceof Error ? err.message : tMsg("signOutAllFailed");
       setFeedback({ type: "error", msg });
       setSigningOutAll(false);
     }
@@ -889,22 +906,23 @@ export default function ProfileClient() {
 
   function formatDate(iso: string | undefined) {
     if (!iso) return "—";
-    return new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium" }).format(new Date(iso));
+    const tag = PROFILE_DATE_LOCALE[locale] ?? "en-US";
+    return new Intl.DateTimeFormat(tag, { dateStyle: "medium" }).format(new Date(iso));
   }
 
   // ─── Loading state ───────────────────────────────────────────────────────
 
   function getMfaStatusText() {
     if (mfaCurrentLevel === "aal2") {
-      return "Bu oturum ikinci adım doğrulamasıyla korunuyor.";
+      return t("mfa.statusAal2Session");
     }
     if (mfaFactors.some((factor) => factor.status === "verified")) {
-      return "İki adımlı doğrulama açık. Bu oturumda henüz ikinci adım tamamlanmadı.";
+      return t("mfa.statusVerifiedNeedsChallenge");
     }
     if (mfaNextLevel === "aal2") {
-      return "Hesabınızda doğrulanmış bir güvenlik cihazı var. Yeni girişlerde ikinci adım istenecek.";
+      return t("mfa.statusVerifiedDeviceNextLogin");
     }
-    return "Hesabınız şu anda yalnızca şifre ile korunuyor.";
+    return t("mfa.onlyPassword");
   }
 
   if (loading) {
@@ -918,7 +936,7 @@ export default function ProfileClient() {
     );
   }
 
-  const displayName = profile?.full_name || authUser?.email || "Kullanıcı";
+  const displayName = profile?.full_name || authUser?.email || t("fallbackUserName");
   const email = authUser?.email || profile?.email || "";
 
   // ─── Render ──────────────────────────────────────────────────────────────
@@ -1305,7 +1323,7 @@ export default function ProfileClient() {
                         <div className="flex w-full max-w-[220px] items-center justify-center rounded-2xl border border-border bg-white p-3">
                           <Image
                             src={mfaEnrollment.qrImageSrc}
-                            alt="MFA QR kodu"
+                            alt={t("mfa.qrAlt")}
                             width={176}
                             height={176}
                             unoptimized
@@ -1314,10 +1332,8 @@ export default function ProfileClient() {
                         </div>
                         <div className="min-w-0 flex-1 space-y-3">
                           <div>
-                            <div className="text-sm font-semibold text-foreground">1. QR kodunu okutun</div>
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              Google Authenticator uygulamasında yeni hesap ekleyin ve bu kodu taratın.
-                            </p>
+                            <div className="text-sm font-semibold text-foreground">{t("mfa.enrollStep1Title")}</div>
+                            <p className="mt-1 text-sm text-muted-foreground">{t("mfa.enrollStep1Body")}</p>
                           </div>
                           <div className="space-y-1.5">
                             <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("mfa.setupKey")}</label>
@@ -1328,7 +1344,7 @@ export default function ProfileClient() {
                             />
                           </div>
                           <details className="rounded-xl border border-border bg-background px-3 py-2 text-xs text-muted-foreground">
-                            <summary className="cursor-pointer font-medium text-foreground">Elle kurulum URI&apos;sini göster</summary>
+                            <summary className="cursor-pointer font-medium text-foreground">{t("mfa.enrollManualUri")}</summary>
                             <div className="mt-2 break-all">{mfaEnrollment.uri}</div>
                           </details>
                         </div>
@@ -1336,7 +1352,7 @@ export default function ProfileClient() {
 
                       <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-end">
                         <div className="space-y-1.5">
-                          <label className="text-sm font-medium text-foreground">2. Uygulamadan 6 haneli kodu girin</label>
+                          <label className="text-sm font-medium text-foreground">{t("mfa.enrollStep2Label")}</label>
                           <input
                             inputMode="numeric"
                             autoComplete="one-time-code"
@@ -1390,7 +1406,7 @@ export default function ProfileClient() {
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="text-sm font-semibold text-foreground">
-                              {factor.friendly_name || "Authenticator"}
+                              {factor.friendly_name || t("mfa.factorFallbackName")}
                             </span>
                             <span className="inline-flex items-center rounded-lg bg-secondary px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                               {factor.factor_type}
@@ -1667,7 +1683,7 @@ export default function ProfileClient() {
                   onClick={() => setActivityFilter("all")}
                   className="text-xs text-primary hover:underline"
                 >
-                  {tCommon("close")}
+                  {t("activity.resetFilter")}
                 </button>
               )}
             </div>

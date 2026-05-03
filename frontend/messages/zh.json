@@ -41,7 +41,7 @@
           "label": "MORT"
         },
         "r2d_rca": {
-          "badge": "RiskNova独有 · 推荐",
+          "badge": "RiskNova专属 · 推荐",
           "bestFor": "数值化、可重复测量；AI辅助评分；持续监控和数字孪生对齐。",
           "example": "操作员在六个月内对工作台的干预增加；哪个维度破坏了风险概况？AI在九个维度上生成t₀/t₁，比较它们，并在超过覆盖阈值时显示主要根本原因。",
           "label": "R₂D-RCA"
@@ -61,32 +61,7 @@
       "toggleExpand": "展开指南",
       "whatIsBody": "这是一种系统性技术，用于找到事件的结构性或系统性驱动因素——不仅仅是表面症状。应用得当时，它可以防止同类事故再次发生：它治疗疾病，而不仅仅是症状。在职业健康安全领域，土耳其法律6331和ISO 45001要求对事故进行根本原因分析。",
       "whatIsHeading": "什么是根本原因分析？",
-      "whenHeading": "何时使用？",
-      "whenUse": [
-        "After a work accident or near miss — often a legal requirement",
-        "Recurring non-conformities — the same issue keeps coming back",
-        "Proactive review of high-risk processes (fire, chemicals, work at height)",
-        "Systemic correction after audits or customer feedback",
-        "Suspected occupational disease — long exposure chains"
-      ],
-      "tips": [
-        "Need a quick read → 5 Whys or R₂D-RCA",
-        "Team brainstorming → Ishikawa",
-        "Complex causal logic (AND/OR, conditions) → FTA",
-        "Classic OHS incident (slip, strike) → SCAT",
-        "High-risk work + barrier analysis → Bow-tie",
-        "Major event + organisational analysis → MORT",
-        "Continuous monitoring + numeric comparison → R₂D-RCA (RiskNova-specific)"
-      ],
-      "processSteps": [
-        "Define the event clearly (company, location, date, who/what/where/how)",
-        "Choose the right method (use the tips above)",
-        "Generate a first draft with AI or fill manually",
-        "Review with the team and close gaps",
-        "Confirm root causes → build corrective/preventive (CAPA) actions",
-        "Produce a PDF report and share (QR for mobile access)",
-        "Follow up: action closure timelines + prevention of recurrence"
-      ]
+      "whenHeading": "何时使用？"
     }
   },
   "auth": {
@@ -106,8 +81,8 @@
       "pathIndividualLabel": "个人版",
       "pathOsgbDesc": "客户公司和人员管理",
       "pathOsgbLabel": "OSGB",
-      "pathsHighlight": "完整访问所有功能",
-      "pathsIntro": "要从上次离开的地方继续并获得",
+      "pathsHighlight": "完全访问所有功能",
+      "pathsIntro": "要从上次中断的地方继续并获得",
       "pathsSuffix": "，请创建您的账户。您可以选择三种路径之一：",
       "subtitle": "试用 RiskNova",
       "title": "谢谢！"
@@ -131,7 +106,7 @@
     "loginDescription": "在单一平台上继续管理风险分析、现场跟踪和报告流程。",
     "loginEmail": "邮箱地址",
     "loginForgot": "忘记密码",
-    "loginLoading": "登录中...",
+    "loginLoading": "正在登录...",
     "loginNoAccount": "还没有账户？",
     "loginPage": {
       "description": "登录您的 RiskNova 账户。平台管理员将被路由到管理控制台；其他人将进入与其账户类型匹配的工作区。",
@@ -141,7 +116,7 @@
       "footerPrefix": "还没有账户？",
       "footerRegisterLink": "注册",
       "forgotLink": "忘记密码",
-      "highlight1Desc": "适用于管理自己公司、组织和工作区的个人专业人士。",
+      "highlight1Desc": "适用于管理自己公司、组织和工作空间的专业人士。",
       "highlight1Title": "个人登录",
       "highlight2Desc": "适用于管理客户、人员、任务和风险流程的OSGB团队。",
       "highlight2Title": "OSGB登录",
@@ -174,8 +149,8 @@
       "verifyCta": "继续"
     },
     "registerButton": "注册",
-    "registerDescription": "数字化您的职业健康安全流程，受益于AI驱动的决策机制。",
-    "registerEmail": "电子邮箱地址",
+    "registerDescription": "将您的职业健康安全流程数字化，并受益于AI驱动的决策机制。",
+    "registerEmail": "电子邮件地址",
     "registerHasAccount": "已有账户？",
     "registerLoading": "正在创建账户...",
     "registerLogin": "登录",
@@ -189,10 +164,10 @@
       "demoLegacyDisabledHelp": "帮助：",
       "demoLegacyDisabledLead": "您的演示访问权限已被禁用。",
       "demoLegacyDisabledLogin": "登录",
-      "demoLegacyDisabledRest": "不再提供公开演示。请注册或",
+      "demoLegacyDisabledRest": "不再提供公共演示。请注册或",
       "demoLegacyExpiredLead": "您的演示会话已结束。",
       "demoLegacyExpiredLogin": "登录",
-      "demoLegacyExpiredRest": "不再提供公开演示。请在下方创建账户或",
+      "demoLegacyExpiredRest": "不再提供公共演示。请在下方创建账户或",
       "demoLegacyExpiredSupport": "如有问题请联系",
       "description": "请先选择账户类型、地区和语言。个人账户直接进入表单；OSGB和公司结构开始联系和报价流程。",
       "emailHint": "入职和访问流程使用此地址。",
@@ -203,11 +178,11 @@
       "footerPrefix": "已有账户？",
       "highlight1Desc": "选择地区和语言后，您将完成注册并继续入门流程。",
       "highlight1Title": "个人自助服务",
-      "highlight2Desc": "定价和计划比较保留在计划页面，使注册保持专注。",
-      "highlight2Title": "计划位于单独页面",
-      "highlight3Desc": "多站点或专业化结构需要通过我们团队的联系和报价流程。",
+      "highlight2Desc": "定价和方案比较保留在方案页面，使注册保持专注。",
+      "highlight2Title": "方案位于单独页面",
+      "highlight3Desc": "多站点或专业化结构需通过联系我们的团队获取报价。",
       "highlight3Title": "组织定制报价",
-      "legalCheckboxAfterCookie": "。我已阅读并接受这些条款。创建账户后，应用程序中可能会显示其他强制性平台批准。",
+      "legalCheckboxAfterCookie": "。我已阅读并接受这些条款。创建账户后，应用程序中可能会显示其他必需的平台批准。",
       "legalCheckboxAfterPrivacy": "，以及",
       "legalCheckboxAfterTerms": "，",
       "legalCheckboxCookie": "Cookie政策",
@@ -228,7 +203,7 @@
           "title": "公司/企业"
         },
         "individual": {
-          "description": "专家、医师、DSP或审计师从自己的工作区开始。",
+          "description": "专家、医师、DSP或审计师，从您自己的工作区开始。",
           "title": "个人专业人士"
         },
         "osgb": {
@@ -242,20 +217,20 @@
       "commercialIntroOsgbTitle": "OSGB报价流程",
       "countryHints": {
         "AE": "英语/阿拉伯语团队准备就绪。",
-        "AZ": "阿塞拜疆地区，默认阿塞拜疆语。",
+        "AZ": "阿塞拜疆地区，默认阿塞拜疆语设置。",
         "CN": "中文语言和亚太地区准备就绪。",
-        "DE": "德国地区，默认德语。",
-        "ES": "西班牙地区，默认西班牙语。",
-        "FR": "法国地区，默认法语。",
-        "GB": "英国运营，默认英语。",
-        "ID": "印尼语偏好。",
+        "DE": "德国地区，默认德语设置。",
+        "ES": "西班牙地区，默认西班牙语设置。",
+        "FR": "法国地区，默认法语设置。",
+        "GB": "英国运营，默认英语设置。",
+        "ID": "印尼语偏好设置。",
         "IN": "印地语/英语团队准备就绪。",
         "JP": "日语语言和亚太地区准备就绪。",
         "KR": "韩语语言和亚太地区准备就绪。",
         "RU": "俄语语言和地区准备就绪。",
-        "SA": "阿拉伯语语言和海湾运营准备就绪。",
-        "TR": "土耳其法律，默认土耳其语。",
-        "US": "美国运营，默认英语。"
+        "SA": "阿拉伯语语言和海湾地区运营准备就绪。",
+        "TR": "土耳其法规，默认土耳其语设置。",
+        "US": "美国运营，默认英语设置。"
       },
       "prevAria": "上一步",
       "roles": {
@@ -264,7 +239,7 @@
           "title": "审计员"
         },
         "occupational_physician": {
-          "description": "健康监督、医疗流程和员工记录。",
+          "description": "健康监护、医疗流程和员工记录。",
           "title": "职业医师"
         },
         "safety_officer": {
@@ -337,7 +312,7 @@
       "secureAccess": "安全访问"
     },
     "social": {
-      "divider": "或使用邮箱继续",
+      "divider": "或继续使用邮箱",
       "googleContinue": "使用Google继续访问{brand}",
       "googleSignUp": "使用Google注册{brand}",
       "oauthGenericError": "登录过程中出现问题，请重试。",
@@ -456,7 +431,7 @@
       "initialTitleWorksite": "暂无工作场所记录",
       "newCompany": "新公司",
       "noMatchCompany": "无匹配的公司",
-      "noMatchDescription": "没有记录符合您的筛选条件。",
+      "noMatchDescription": "没有记录匹配您的筛选条件。",
       "noMatchWorksite": "没有匹配的工作场所",
       "sampleData": "示例数据"
     },
@@ -479,10 +454,10 @@
       "sector": "行业",
       "sort": "排序"
     },
-    "limitReachedBanner": "您已达到活跃公司/工作空间限制。请归档公司或升级计划后再添加或恢复。",
+    "limitReachedBanner": "您已达到活跃公司/工作区限制。请归档公司或升级您的计划后再添加或恢复。",
     "links": {
       "riskAnalysis": "风险分析",
-      "workspace": "工作空间"
+      "workspace": "工作区"
     },
     "metrics": {
       "actions": "操作",
@@ -541,9 +516,9 @@
     "logo": {
       "fileTooLarge": "文件过大（{sizeMb} MB）。最大大小为 5 MB。",
       "imagesOnly": "只能上传图片文件（PNG、JPEG、WebP、SVG）。",
-      "updated": "标志/图片已更新。",
+      "updated": "徽标/图片已更新。",
       "uploadFailed": "上传失败。请尝试其他文件。",
-      "uploadTitle": "上传标志"
+      "uploadTitle": "上传徽标"
     },
     "notFound": {
       "back": "返回公司",
@@ -553,7 +528,7 @@
     "riskBadgeLabelOnly": "{label}",
     "riskBadgeScore": "{label} {score}",
     "save": "保存",
-    "saving": "正在保存…",
+    "saving": "保存中…",
     "sidebar": {
       "hint": "在左侧选择区域；在右侧管理内容。",
       "title": "工作场所部分"
@@ -579,18 +554,18 @@
   },
   "consent": {
     "description": "此处列出了有效的披露和KVKK文本。当发布新版本时，系统会提示您重新同意。",
-    "empty": "未发布同意文本。",
-    "lastStatus": "最新状态",
-    "loading": "正在加载同意记录...",
+    "empty": "未发布同意书文本。",
+    "lastStatus": "最后状态",
+    "loading": "正在加载同意书记录...",
     "mandatory": "必需",
     "mandatoryNo": "否",
     "mandatoryYes": "是",
     "notGranted": "尚未授予",
-    "stats": "{active} 个有效同意 - {pending} 个待处理必需文本",
+    "stats": "{active} 个有效同意书 - {pending} 个待处理必需文本",
     "statusApproved": "已批准",
     "statusOptional": "可选",
     "statusPending": "待处理必需文本",
-    "title": "隐私与同意",
+    "title": "隐私与同意书",
     "types": {
       "acik_riza": "明确同意",
       "aydinlatma": "披露",
@@ -607,10 +582,10 @@
       "pazarlama": "营销",
       "yurt_disi_aktarim": "跨境传输"
     },
-    "description": "强制性条款/KVKK通知、隐私披露和必需的明确同意文本在此以最新发布版本列出。营销同意为可选项。当强制性文本发生变更时，系统可能要求您重新确认。",
+    "description": "强制性条款/KVKK通知、隐私披露和必需的明确同意书文本在此以最新发布版本列出。营销同意为可选项。当强制性文本发生变更时，系统可能要求您重新确认。",
     "errMustAcknowledge": "您必须确认所有必需文本才能继续。",
-    "errSaveFailed": "无法保存同意。请重试。",
-    "eyebrow": "KVKK与同意",
+    "errSaveFailed": "无法保存同意书。请重试。",
+    "eyebrow": "KVKK与同意书",
     "mandatoryBadge": "必需",
     "progress": "{approved} / {total} 个文本已确认",
     "readAcknowledge": "我已阅读并接受此文本",
@@ -653,7 +628,7 @@
     "greetingAfternoon": "下午好",
     "greetingEvening": "晚上好",
     "greetingMorning": "早上好",
-    "heroIntro": "在一个屏幕上监控您的整个职业健康安全运营：风险、资料库输出、事故、任务和公司跟进——汇聚在更清晰的指挥视图中。",
+    "heroIntro": "在一个屏幕上监控您的整个职业健康安全运营：风险、资料库输出、事件、任务和公司跟进——汇集在更清晰的指挥视图中。",
     "moduleAssessment": "考试和调查",
     "moduleAssessmentDesc": "AI辅助测量流程",
     "moduleEmergency": "应急",
@@ -692,7 +667,7 @@
     "quickFlowsTitle": "快速工作流",
     "quickIncident": "报告事故",
     "quickLibrary": "职业健康安全库",
-    "quickPlanner": "计划器",
+    "quickPlanner": "规划器",
     "quickReports": "报告",
     "quickRisk": "风险分析",
     "recentDocsCta": "打开库",
@@ -733,21 +708,21 @@
     "trackExpiringTrainingLabel": "即将到期的培训",
     "trackExpiringTrainingSub": "30天内",
     "trackHealthExamLabel": "即将到期的体检",
-    "trackHealthExamSub": "30天内的健康监督",
+    "trackHealthExamSub": "30天内健康监测",
     "trackOpenActionLabel": "待处理行动",
     "trackOpenActionSub": "风险发现 + CAPA + 任务",
     "trackOverdueControlLabel": "逾期检查",
     "trackOverdueControlSub": "定期检查窗口已过",
     "trackPriorityCompanies": "等待优先处理的公司",
-    "trackSubtitle": "所有公司概览。监控{companyCount}家公司，{totalActionable}项行动等待跟进。",
+    "trackSubtitle": "所有公司概览。监控 {companyCount} 家公司，{totalActionable} 项行动等待跟进。",
     "trackTitle": "跟踪摘要",
-    "workloadFollowups": "{count}项"
+    "workloadFollowups": "{count} 项"
   },
   "dataRights": {
     "adminNotes": "管理员备注",
     "deletionActive": "存在活跃的删除请求",
     "deletionConfirm": "这将为您的账户启动30天删除流程。您要继续吗？",
-    "deletionDescription": "当您创建请求时，您的账户和相关个人数据将进入删除流程。根据保留政策，永久删除将在30天后完成。",
+    "deletionDescription": "创建请求后，您的账户和相关个人数据将进入删除流程。根据保留政策，永久删除将在30天后完成。",
     "deletionEmpty": "尚无删除请求。",
     "deletionExists": "您已有一个活跃的删除请求。",
     "deletionFailed": "无法创建删除请求。",
@@ -762,7 +737,7 @@
     "errorMsg": "错误",
     "exportCsvDesc": "表格报告和外部传输",
     "exportCsvTitle": "CSV导出",
-    "exportDescription": "个人资料、同意记录、安全事件和数据权限历史记录可下载为JSON或CSV格式。",
+    "exportDescription": "个人资料、同意记录、安全事件和数据权限历史记录可以下载为JSON或CSV格式。",
     "exportDownloadCount": "下载次数",
     "exportFailed": "无法创建导出。",
     "exportHistoryEmpty": "尚未创建数据导出记录。",
@@ -798,10 +773,10 @@
     "accountTypeIndividual": "个人（单一专家）",
     "accountTypeLabel": "账户类型",
     "accountTypeOsgb": "OSGB",
-    "accountTypeUnset": "不确定/决定中",
+    "accountTypeUnset": "不确定/正在决定",
     "cancel": "取消",
     "closeAria": "关闭",
-    "dialogSubtitle": "我们将为您量身定制简短的产品演示。",
+    "dialogSubtitle": "我们将为您量身定制一个简短的演示。",
     "dialogTitle": "申请演示",
     "fieldCompany": "公司/组织",
     "fieldEmail": "邮箱 *",
@@ -823,6 +798,15 @@
     "successClose": "关闭",
     "successTitle": "请求已收到"
   },
+  "errors": {
+    "global": {
+      "description": "错误已报告给管理员。请使用下方按钮重试。",
+      "eyebrow": "严重错误",
+      "retry": "重试",
+      "title": "发生意外情况",
+      "unknownClientError": "未知客户端错误"
+    }
+  },
   "header": {
     "authLoading": "正在验证安全会话…",
     "lockedModuleTooltip": "请先创建工作区以使用此模块。",
@@ -838,37 +822,375 @@
     "themeLightAria": "浅色主题",
     "workspaceLoading": "正在准备工作区…"
   },
+  "incidents": {
+    "dof": {
+      "ai": {
+        "busy": "AI正忙，您可以手动填写。",
+        "equipmentPrefix": "设备：{tool}",
+        "noDescription": "尚未输入事故描述。"
+      },
+      "assignment": {
+        "assigneeLabel": "责任人",
+        "deadlineLabel": "截止日期",
+        "statusLabel": "状态",
+        "title": "分配和状态"
+      },
+      "corrective": {
+        "actionPlaceholder": "措施描述",
+        "add": "添加",
+        "assigneePlaceholder": "负责人",
+        "description": "防止事故再次发生的纠正措施。",
+        "empty": "暂无纠正措施。",
+        "itemLabel": "措施 {n}",
+        "title": "纠正措施"
+      },
+      "dofDetail": {
+        "analysisLabel": "详细分析（5个为什么等）",
+        "analysisPlaceholder": "五个为什么分析或其他详细信息…",
+        "rootSummaryLabel": "根本原因总结",
+        "rootSummaryPlaceholder": "石川图分析的主要原因…",
+        "title": "CAPA详情"
+      },
+      "export": {
+        "pdf": "PDF",
+        "word": "Word"
+      },
+      "header": {
+        "backToIncident": "返回事故",
+        "description": "纠正和预防措施 + 根本原因分析",
+        "newDof": "新建CAPA"
+      },
+      "ishikawa": {
+        "addCause": "+ 添加原因",
+        "aiFill": "AI填充",
+        "categories": {
+          "environment": {
+            "desc": "照明不良、噪音、温度、地面条件…",
+            "label": "环境"
+          },
+          "machine": {
+            "desc": "设备故障、维护不当、缺少防护…",
+            "label": "机器"
+          },
+          "man": {
+            "desc": "培训不足、注意力不集中、疲劳、缺乏经验…",
+            "label": "人员"
+          },
+          "material": {
+            "desc": "材料质量差、储存错误、危险化学品…",
+            "label": "材料"
+          },
+          "measurement": {
+            "desc": "校准错误、读数错误、缺少检查…",
+            "label": "测量"
+          },
+          "method": {
+            "desc": "缺少程序、工作指导错误、计划薄弱…",
+            "label": "方法"
+          }
+        },
+        "causePlaceholder": "{category}原因…",
+        "causesCount": "{count}个原因已记录",
+        "conclusionPlaceholder": "从分析中识别出的根本原因…",
+        "conclusionTitle": "根本原因结论",
+        "problemLabel": "问题陈述",
+        "problemPlaceholder": "描述正在分析的问题…",
+        "subtitle": "使用6M方法系统性分析根本原因。",
+        "title": "根本原因分析 — 石川图（鱼骨图）"
+      },
+      "modal": {
+        "addPhoto": "添加照片",
+        "cancel": "取消",
+        "checklist": "所有纠正和预防措施是否已完成？",
+        "confirm": "确认并关闭",
+        "leadCompleted": "您即将标记CAPA为已完成。",
+        "leadVerified": "您即将标记CAPA为已验证。",
+        "noPhotosBody": "在关闭CAPA之前是否要添加修复后照片？",
+        "noPhotosTitle": "尚未添加照片！",
+        "title": "关闭CAPA确认"
+      },
+      "photos": {
+        "addButton": "添加照片",
+        "alt": "CAPA照片",
+        "captionPlaceholder": "照片说明…",
+        "description": "添加与问题相关的照片（现场、损坏、修复前后）。",
+        "emptyHint": "点击上传照片",
+        "title": "照片"
+      },
+      "preventive": {
+        "actionPlaceholder": "措施描述",
+        "add": "添加",
+        "assigneePlaceholder": "责任人",
+        "description": "防止类似事件再次发生的措施。",
+        "empty": "暂无预防措施。",
+        "itemLabel": "措施 {n}",
+        "title": "预防措施"
+      },
+      "save": {
+        "all": "全部保存",
+        "saving": "保存中…"
+      },
+      "status": {
+        "completed": "已完成",
+        "in_progress": "进行中",
+        "open": "开放",
+        "verified": "已验证"
+      }
+    }
+  },
+  "isgLibrary": {
+    "assign": {
+      "companiesCount": "{count} 家公司"
+    },
+    "assignModal": {
+      "alreadySaved": "已保存到此公司",
+      "cancel": "取消",
+      "company": "公司",
+      "companyPlaceholder": "选择公司",
+      "description": "将 {title} 保存到所选公司以添加到公司库中。",
+      "descriptionLong": "将所选目录项注册到活跃公司。然后您可以从文档流程中打开它。",
+      "optionAlreadySaved": " (已保存)",
+      "saveToCompany": "保存到公司",
+      "saving": "保存中…",
+      "title": "分配给公司"
+    },
+    "badges": {
+      "category": "类别",
+      "file": "文件",
+      "flow": "流程",
+      "form": "表单",
+      "instruction": "说明",
+      "legal": "法规",
+      "plan": "计划",
+      "regulation": "法规",
+      "training": "培训"
+    },
+    "buttons": {
+      "assignCatalogPending": "分配目录",
+      "assignToCompany": "分配给公司",
+      "download": "下载",
+      "edit": "编辑",
+      "savedToAllCompanies": "已保存到所有公司",
+      "view": "查看"
+    },
+    "card": {
+      "companiesCount": "{count} 家公司",
+      "usageCount": "{count} 次使用"
+    },
+    "catalog": {
+      "noDescriptionShort": "此内容尚未添加简短描述。"
+    },
+    "categories": {
+      "all": "全部",
+      "assessment": "考试和调查",
+      "documentation": "文档",
+      "education": "教育",
+      "emergency": "紧急情况",
+      "forms": "表格和清单",
+      "instructions": "说明",
+      "legal": "法规和指南"
+    },
+    "categoryModal": {
+      "cancel": "取消",
+      "description": "为新子类别输入名称。它将显示在所选主类别下。",
+      "descriptionUnderCategory": "输入将显示在 {category} 下的名称。",
+      "nameLabel": "子类别名称",
+      "namePlaceholder": "例如：现场检查",
+      "save": "保存",
+      "title": "添加类别",
+      "titleNew": "新子类别"
+    },
+    "company": {
+      "anonymousCompany": "未命名公司",
+      "selectCompany": "选择公司",
+      "workingCompany": "工作公司：",
+      "workingCompanyMenu": "工作公司"
+    },
+    "contentTypes": {
+      "docx": "DOCX",
+      "link": "链接",
+      "pdf": "PDF",
+      "unknown": "文件",
+      "video": "视频"
+    },
+    "cta": {
+      "addCategory": "添加类别",
+      "aiSlides": "AI幻灯片包",
+      "aiTrainingPrepare": "使用AI创建培训",
+      "createInEditor": "在编辑器中创建",
+      "importingFile": "正在上传文件…",
+      "newExam": "新考试",
+      "newExamCreate": "创建新考试",
+      "newSurvey": "新调查",
+      "newSurveyCreate": "创建新调查",
+      "openSlideLibrary": "打开幻灯片库",
+      "uploadDocNote": "文档在保存时会转换为可编辑的RiskNova文档模板。",
+      "uploadFooterNote": "上传的文件在编辑器中打开；您可以编辑、保存并稍后修订。",
+      "uploadFromDevice": "从设备上传",
+      "uploadPlaceholder": "DOC、DOCX、PPT、PPTX、XLS、XLSX、PDF（最大10MB）"
+    },
+    "download": {
+      "filenameFallback": "文档"
+    },
+    "empty": {
+      "descDefault": "此类别中暂无内容。添加项目后，它们将以卡片形式显示在这里。",
+      "descSavedOnly": "未找到保存到您公司的项目。从卡片分配内容以在此视图中列出。",
+      "titleAll": "暂无内容",
+      "titleCategory": "在{category}中暂无内容"
+    },
+    "emptyPanel": {
+      "body": "当您选择模板或保存的项目时，预览、操作和备注将显示在这里。",
+      "footerNote": "建议是根据RiskNova指导内容生成的。",
+      "title": "从列表中选择一个项目"
+    },
+    "emptyState": {
+      "addContent": "添加内容"
+    },
+    "emptySubcategory": {
+      "body": "从列表中选择其他子类别或添加新内容。",
+      "footerNote": "文档创建和上传使用上面选择的公司。",
+      "title": "此子类别中暂无内容"
+    },
+    "errors": {
+      "profileLoadFailed": "无法加载配置文件。",
+      "sessionNotFound": "未找到会话。",
+      "supabaseConnect": "无法连接到 Supabase。"
+    },
+    "errorsInline": {
+      "assignRecordFailed": "无法创建记录。请重试。",
+      "assignSaveFailed": "无法保存。请重试。",
+      "assignSelectCompany": "请先选择公司。",
+      "categoryExists": "类别已存在。",
+      "categoryFirst": "请先选择类别。",
+      "categoryNameEmpty": "类别名称不能为空。",
+      "companyRequiredImport": "请先选择用于创建内容的公司。",
+      "downloadFailed": "下载失败。请重试。",
+      "downloadHtmlFailed": "无法创建下载文件。请重试。",
+      "editNeedsTemplate": "您可以从目录中编辑模板。",
+      "editOnlyTemplates": "目前仅支持编辑模板卡片。",
+      "importConnection": "无法导入文件。请检查您的连接。",
+      "importFailed": "无法导入文件。请重试。",
+      "importUploadError": "上传文件时出错。请重试。",
+      "previewFailed": "无法打开预览。",
+      "previewTemplateFailed": "无法加载模板预览。请重试。",
+      "selectCompanyEditor": "请先选择公司以编辑文档。",
+      "selectCompanyFirst": "请先选择公司。",
+      "subcategoryCreated": "已添加子类别：\"{name}\""
+    },
+    "filters": {
+      "searchPlaceholder": "搜索标题、描述、标签…",
+      "sectorAll": "所有行业",
+      "sectorOption": "行业",
+      "sortAz": "A → Z",
+      "sortLabel": "排序",
+      "sortNewest": "新 → 旧",
+      "sortNewestShort": "最新",
+      "sortOldest": "旧 → 新",
+      "sortOldestShort": "最旧",
+      "sortOption": "排序",
+      "sortZa": "Z → A",
+      "typeAll": "所有类型",
+      "typeOption": "类型"
+    },
+    "footer": {
+      "convertedToDocument": "已转换为文档模板 ({count})",
+      "generalUse": "通用"
+    },
+    "header": {
+      "contentCount": "共 {count} 项",
+      "description": "浏览全球目录中的文档、培训、考试、表单、应急和法规内容，无需先选择公司；稍后将所需内容保存到您的公司。",
+      "eyebrow": "ISG 资料库",
+      "savedToCompanies": "已保存 {count} 项到公司",
+      "title": "ISG 资料库"
+    },
+    "legacy": {
+      "deckDefaultDescription": "打开现成的培训内容并管理演示流程。",
+      "deckPolishedSlides": "精美幻灯片，可直接演示",
+      "draftSuffix": " 草稿",
+      "examEditor": "编辑器中的考试",
+      "fileNumber": "文件 {n}",
+      "newDocument": "新建文档",
+      "readyStatus": "就绪",
+      "surveyAvailable": "RiskNova 资料库提供调查问卷",
+      "surveyEditor": "编辑器中的调查问卷",
+      "surveyFlowSubtitle": "查看和管理{type}流程。",
+      "surveyIntro": "来自库的调查介绍",
+      "templateLibraryPreview": "模板库预览"
+    },
+    "preview": {
+      "emptyBody": "从列表中选择模板进行预览。",
+      "emptyHeading": "暂无内容",
+      "emTitle": "模板预览",
+      "eyebrow": "模板预览",
+      "loadError": "无法加载预览内容。您仍可以下载和编辑此模板。"
+    },
+    "savedToggle": "已保存到我的公司",
+    "sidebar": {
+      "addCategory": "添加类别",
+      "all": "全部",
+      "allSubcategories": "所有子类别",
+      "resultsCount": "{count}个结果",
+      "subcategoriesTitle": "子类别"
+    },
+    "source": {
+      "catalog": "目录",
+      "presentation": "演示文稿",
+      "surveyFlow": "调查流程",
+      "template": "模板"
+    },
+    "status": {
+      "assignedToCompany": "已分配给{title}工作区。",
+      "contentSavedToCompany": "{title} 已保存到所选公司。"
+    },
+    "templateDescription": "{group} — 在文档流程中打开\"{item}\"模板。",
+    "types": {
+      "doc": "文档",
+      "exam": "考试",
+      "presentation": "演示文稿",
+      "survey": "调查",
+      "surveyAlt": "调查",
+      "template": "模板",
+      "training": "培训",
+      "unknown": "未知"
+    },
+    "usage": {
+      "usageCount": "{count} 次使用"
+    },
+    "user": {
+      "defaultDisplayName": "RiskNova 用户"
+    }
+  },
   "landing": {
     "badge": "AI驱动的职业健康安全平台",
-    "bottomCtaDescription": "在RiskNova单一平台上管理您的所有工作场所安全操作，从风险分析到报告。",
+    "bottomCtaDescription": "在RiskNova单一平台上管理您的所有工作场所安全运营，从风险分析到报告。",
     "bottomCtaLine1": "转变您的",
     "bottomCtaLine2": "职业健康安全流程",
     "ctaDemo": "申请演示",
     "ctaDescription": "在具有专业外观、强大基础设施和AI支持的单一平台上管理您的职业健康安全流程。",
-    "ctaEyebrow": "准备就绪CTA区域",
+    "ctaEyebrow": "准备就绪的行动区域",
     "ctaTitle": "将您的风险模块转变为产品展示",
     "enterpriseCtaShort": "企业版：报价与联系",
     "feat1Desc": "一个产品基础，在单一流程中收集手动或基于模块的风险输入，并使结果更加可见。",
     "feat1Title": "AI驱动的风险分析",
-    "feat2Desc": "以运营团队可读的顺序整合审计、发现、任务和跟踪区域。",
+    "feat2Desc": "将审计、发现、任务和跟踪区域以运营团队可读的顺序整合在一起。",
     "feat2Title": "现场发现与行动管理",
     "feat3Desc": "提供一致的屏幕框架，生成的结果可以链接到历史记录、详细信息和输出流程。",
-    "feat3Title": "报告和记录基础设施",
-    "feat4Desc": "为风险分析界面、结果界面和评分历史等领域准备专业且值得信赖的基础。",
-    "feat4Title": "风险模块产品展示",
+    "feat3Title": "报告与记录基础设施",
+    "feat4Desc": "为风险分析屏幕、结果屏幕和评分历史等区域准备专业且值得信赖的基础。",
+    "feat4Title": "风险模块的产品展示",
     "feat5Desc": "通过单列、双列和宽屏布局在不同设备上保持可读性。",
     "feat5Title": "移动端、平板和桌面响应式",
-    "feat6Desc": "通过简洁的界面、可控的对比度和清晰的CTA结构创造专业的SaaS体验。",
+    "feat6Desc": "通过简洁的界面、受控的对比度和清晰的行动按钮结构创造专业的SaaS体验。",
     "feat6Title": "企业级现代视觉语言",
-    "featuresDescription": "端到端管理您OHS流程的专业工具。",
+    "featuresDescription": "端到端管理您职业健康安全流程的专业工具。",
     "featuresEyebrow": "功能特性",
-    "featuresTitle1": "全面",
+    "featuresTitle1": "全面的",
     "featuresTitle2": "解决方案",
-    "footerBlurb": "AI驱动的OHS风险分析和运营平台——专业、可靠且现代。",
+    "footerBlurb": "AI驱动的职业健康安全风险分析和运营平台——专业、可靠、现代。",
     "footerCompany": "公司",
     "footerContact": "联系我们",
     "footerCookie": "Cookie政策",
-    "footerDescription": "AI驱动的OHS决策支持平台",
+    "footerDescription": "AI驱动的职业健康安全决策支持平台",
     "footerHelp": "帮助",
     "footerHome": "首页",
     "footerLegal": "法律",
@@ -878,37 +1200,37 @@
     "footerRights": "版权所有。",
     "footerSupport": "支持",
     "footerTerms": "使用条款",
-    "heroDescription": "RiskNova是一个AI驱动的OHS平台，旨在将风险分析、现场跟踪、记录、报告和决策支持流程统一到单一产品体验中。",
-    "heroSubtitle": "从测量到审计发现、行动跟踪、报告和档案——在一个平台下统一流程。可从个人扩展到OSGB和多站点企业。",
-    "heroTitle1": "变革OHS风险",
+    "heroDescription": "RiskNova是一个AI驱动的职业健康安全平台，旨在将风险分析、现场跟踪、记录、报告和决策支持流程统一到单一产品体验中。",
+    "heroSubtitle": "从测量到审计发现、行动跟踪、报告和归档——在一个平台下统一流程。适用于个人到职业安全健康监管机构和多站点企业。",
+    "heroTitle1": "将职业健康安全风险",
     "heroTitle2": "管理",
-    "heroTitle3": "成为艺术",
-    "heroTitleHighlight": "从一个平台",
+    "heroTitle3": "转化为艺术",
+    "heroTitleHighlight": "通过一个平台",
     "heroTitlePrefix": "管理工作场所安全",
     "heroTitleSuffix": "",
     "howDescription": "开始使用我们平台的简单步骤。",
     "howEyebrow": "工作原理",
     "howTitle1": "控制于",
     "howTitle2": "四个步骤",
-    "metaDescription": "AI驱动的工作场所安全软件：风险分析、现场审计、发现、CAPA和报告集于一个平台——个人、OSGB和企业。",
+    "metaDescription": "AI驱动的工作场所安全软件：风险分析、现场审计、发现、CAPA和报告集于一个平台——适用于个人、职业安全健康监管机构和企业。",
     "metaOgDescription": "从测量到审计、行动和报告——在一个地方运行安全流程。",
     "metaOgTitle": "RiskNova — 从一个平台管理职业健康安全",
     "metaTitle": "从一个平台管理职业健康安全 | RiskNova",
     "osgbCtaShort": "OSGB：报价与联系",
     "solutionsLeadBold": "您是OSGB还是多站点组织？",
-    "solutionsLeadRest": "查看计划，通过报价留下线索或注册——我们的团队将跟进。",
+    "solutionsLeadRest": "查看计划，通过报价留下线索或注册 — 我们的团队将跟进。",
     "solutionsSectionAria": "OSGB和企业解决方案",
     "statsAnalysis": "分析时间",
     "statsScoring": "风险评分",
     "statsUptime": "正常运行时间",
     "statsUsers": "活跃用户",
     "statsValueAnalysis": "15秒",
-    "statsValueScore": "R-评分",
+    "statsValueScore": "R-SCORE",
     "statsValueUptime": "99.5%",
     "statsValueUsers": "500+",
     "step1Desc": "使用您的组织专用账户安全登录平台。",
     "step1Title": "安全访问",
-    "step2Desc": "将现场审计、危险报告和风险参数传输到系统。",
+    "step2Desc": "将现场审核、危险报告和风险参数传输到系统。",
     "step2Title": "风险数据录入",
     "step3Desc": "我们的AI驱动分析引擎处理您的数据以计算风险评分。",
     "step3Title": "R-SCORE生成",
@@ -916,7 +1238,7 @@
     "step4Title": "行动与跟进",
     "subscriptionDisclaimer": "RiskNova提供基于订阅的职场健康安全软件。",
     "testimonial1Author": "Mehmet K.",
-    "testimonial1Quote": "使用RiskNova后，现场审计变得更加系统化。AI评论确实很有帮助。",
+    "testimonial1Quote": "使用RiskNova后，现场审核变得更加系统化。AI评论确实很有帮助。",
     "testimonial1Role": "职业健康安全专员",
     "testimonial2Author": "Ayşe T.",
     "testimonial2Quote": "在一个平台上进行风险分析、报告和跟踪提高了我们的运营效率。",
@@ -927,19 +1249,19 @@
     "testimonialsEyebrow": "客户见证",
     "testimonialsTitle1": "我们的用户",
     "testimonialsTitle2": "怎么说",
-    "valueTryDesc": "表单、结果、评分历史和输出使用一致的界面——您的团队可以无摩擦地持续操作。",
+    "valueTryDesc": "表单、结果、评分历史和输出使用一致的界面——您的团队可以无摩擦地持续运营。",
     "valueTryEyebrow": "立即试用",
     "valueTryLogin": "登录",
     "valueTryRegister": "创建账户",
     "valueTryTitle": "风险、审计和报告一体化产品体验",
     "whyBullet1": "简洁、现代且值得信赖的职业健康安全外观",
-    "whyBullet2": "专注运营、无干扰的屏幕布局",
+    "whyBullet2": "以运营为中心、无干扰的屏幕布局",
     "whyBullet3": "为风险智能模块准备的设计系统",
     "whyBullet4": "基于多租户组织的安全架构",
     "whyBullet5": "AI驱动的决策支持机制",
-    "whyBullet6": "企业报告和档案基础设施",
-    "whyDescription": "创造专业的SaaS体验，强调蓝色信任和金色品质，界面简洁，对比柔和。",
-    "whyEyebrow": "为什么选择RISKNOVA",
+    "whyBullet6": "企业报告和归档基础设施",
+    "whyDescription": "创造专业的SaaS体验，采用蓝色信任和金色品质强调，简洁界面和柔和对比。",
+    "whyEyebrow": "为什么选择RiskNova",
     "whyTitle1": "值得信赖",
     "whyTitle2": "高端",
     "whyTitle3": "体验"
@@ -974,23 +1296,23 @@
         },
         {
           "content": "RiskNova使用必要Cookie来维护您的会话、Supabase身份验证流程、OAuth重定向、密码重置、安全检查、CSRF/流程一致性和语言偏好。如果禁用这些Cookie，核心平台功能可能无法正常工作。",
-          "title": "必需Cookie"
+          "title": "必要Cookie"
         },
         {
-          "content": "语言、地区、界面偏好、最后选择的工作区或类似产品设置可能存储在Cookie或localStorage中，以保持体验一致性。",
+          "content": "语言、地区、UI偏好、最后选择的工作区或类似产品设置可能存储在Cookie或localStorage中，以保持体验的一致性。",
           "title": "偏好和产品Cookie"
         },
         {
-          "content": "此版本不依赖第三方分析或营销Cookie作为必需流程的一部分。如果以后引入分析或营销Cookie，用户将在需要时收到单独的通知和同意控制。",
+          "content": "此版本不依赖第三方分析或营销Cookie作为强制流程的一部分。如果以后引入分析或营销Cookie，用户将在需要时收到单独的通知和同意控制。",
           "title": "分析和营销Cookie"
         },
         {
-          "content": "您可以从浏览器设置中删除或阻止Cookie。阻止必需的会话、安全或语言Cookie可能会中断登录、注册、计费或应用内工作流程。",
+          "content": "您可以从浏览器设置中删除或阻止Cookie。阻止必要的会话、安全或语言Cookie可能会破坏登录、注册、计费或应用内工作流程。",
           "title": "管理Cookie"
         },
         {
           "content": "有关Cookie或隐私设置的问题，请发送邮件至support@getrisknova.com。",
-          "title": "联系方式"
+          "title": "联系我们"
         }
       ],
       "title": "RiskNova Cookie政策"
@@ -1000,15 +1322,15 @@
       "lastUpdated": "最后更新：2026年5月2日",
       "metaDescription": "RiskNova隐私政策：我们如何处理账户、产品使用、计费、邮件、安全和AI辅助功能中的个人数据。",
       "metaTitle": "隐私政策",
-      "ogDescription": "RiskNova如何处理个人数据、我们使用哪些处理商以及我们如何支持用户权利。",
+      "ogDescription": "RiskNova如何处理个人数据，我们使用哪些处理商以及我们如何支持用户权利。",
       "ogTitle": "隐私政策 | RiskNova",
       "sections": [
         {
-          "content": "本政策描述了个人数据在RiskNova网站、注册、登录、订阅、职业健康安全模块、文档生成、现场检查、培训/考试/调查、Nova AI和支持中的处理方式。对于客户上传到平台的工作场所和员工记录，RiskNova通常作为处理商；对于其自身的账户、安全、计费和支持流程，它作为控制者。",
+          "content": "本政策描述了在RiskNova网站、注册、登录、订阅、职业健康安全模块、文档生成、现场检查、培训/考试/调查、Nova AI和支持服务中如何处理个人数据。对于客户上传到平台的工作场所和员工记录，RiskNova通常作为处理商；对于其自身的账户、安全、计费和支持流程，则作为控制者。",
           "title": "数据控制者和范围"
         },
         {
-          "content": "可能处理姓名、电子邮件、电话、账户标识符、组织和工作区详情、角色和权限记录、会话和安全日志、使用指标、支持工单、订阅和付款状态、IP和设备数据。如果用户上传，风险分析、检查、事故日志、培训、考试、调查、文档、人事记录和媒体或数据文件也可能存储在平台上。",
+          "content": "可能处理姓名、电子邮件、电话、账户标识符、组织和工作区详情、角色和权限记录、会话和安全日志、使用指标、支持工单、订阅和付款状态、IP和设备数据。如果用户上传，风险分析、检查、事故日志、培训、考试、调查、文档、人员记录和媒体或数据文件也可能存储在平台上。",
           "title": "个人数据类别"
         },
         {
@@ -1016,31 +1338,31 @@
           "title": "目的和法律依据"
         },
         {
-          "content": "Nova AI在生成风险分析、文档草稿、培训内容或法规感知答案时可能处理用户输入和相关上下文。输出仅供决策支持；最终的专业和法律判断仍由用户承担。当内容可能包含敏感或特殊类别数据时，在发送到AI服务之前可能需要明确同意和/或额外的披露流程。",
+          "content": "Nova AI在生成风险分析、文档草稿、培训内容或法规感知答案时可能处理用户输入和相关上下文。输出仅供决策支持；最终的专业和法律判断仍由用户负责。当内容可能包含敏感或特殊类别数据时，在发送到AI服务之前可能需要明确同意和/或额外的披露流程。",
           "title": "AI辅助功能"
         },
         {
-          "content": "托管、数据库、身份验证、邮件、支付、错误监控和AI功能可能使用Supabase、Vercel、Resend、Paddle、OpenAI、Anthropic等类似供应商。他们仅在提供服务所需的范围内处理数据。RiskNova不存储卡片数据；支付和开票在Paddle基础设施上运行。",
+          "content": "托管、数据库、身份验证、邮件、支付、错误监控和AI功能可能使用Supabase、Vercel、Resend、Paddle、OpenAI、Anthropic等供应商。他们仅在提供服务所需的范围内处理数据。RiskNova不存储卡片数据；支付和开票在Paddle基础设施上运行。",
           "title": "第三方处理商"
         },
         {
-          "content": "云托管、邮件、支付和AI服务可能在技术上运行在海外基础设施上，因此在服务需要时，某些数据可能会传输给您所在国家/地区以外的供应商。在适用传输的情况下，适用法律（包括相关的KVKK）下的披露和同意步骤在产品中管理。",
+          "content": "云托管、邮件、支付和AI服务可能在技术上运行在海外基础设施上，因此在服务需要时，某些数据可能会传输到您所在国家/地区以外的供应商。在适用传输的情况下，适用法律（包括相关的KVKK）下的披露和同意步骤在产品中管理。",
           "title": "国际传输"
         },
         {
-          "content": "RiskNova使用必要的会话、安全、语言偏好和产品Cookie。如果引入营销或第三方跟踪Cookie，将根据需要提供单独的Cookie政策和同意机制。详细信息请查看/cookie-policy页面。",
+          "content": "RiskNova使用必要的会话、安全、语言偏好和产品cookie。如果引入营销或第三方跟踪cookie，将根据需要提供单独的cookie政策和同意机制。详情请见/cookie-policy页面。",
           "title": "Cookie和类似技术"
         },
         {
-          "content": "数据保留时间以运营服务、满足合同、安全、法律和证据要求为准。平台使用RLS、角色检查、服务角色分离、webhook签名验证、速率限制、审计跟踪和安全事件日志等技术措施。",
+          "content": "数据保留时间为运营服务、满足合同、安全、法律和证据要求所需的时间。平台使用RLS、角色检查、服务角色分离、webhook签名验证、速率限制、审计跟踪和安全事件记录等技术措施。",
           "title": "保留和安全"
         },
         {
-          "content": "根据适用的数据保护法律（包括适用的KVKK第11条），您可以通过个人资料中的隐私/数据权利区域或发送邮件至support@getrisknova.com请求访问、更正、删除、反对、限制、可携带性和信息。删除请求需要与法律保留和安全日志要求进行平衡。",
+          "content": "根据适用的数据保护法（包括适用的KVKK第11条），您可以通过个人资料中的隐私/数据权利区域或support@getrisknova.com请求访问、更正、删除、反对、限制、可携性和信息。删除请求需要与法律保留和安全记录要求进行平衡。",
           "title": "您的权利"
         },
         {
-          "content": "本文本可能会随时间变化。重大更新可能需要重新确认或在产品中通知。如有隐私和数据保护请求，请联系support@getrisknova.com。",
+          "content": "本文本可能随时间变化。重大更新可能需要在产品中重新确认或通知。有关隐私和数据保护请求，请联系support@getrisknova.com。",
           "title": "联系和更新"
         }
       ],
@@ -1051,17 +1373,9 @@
       "lastUpdated": "最后更新：2026年5月2日",
       "metaDescription": "RiskNova如何收集和使用个人数据的摘要。",
       "metaTitle": "隐私政策",
-      "ogDescription": "涵盖账户、产品使用和子处理器的简短隐私摘要。",
+      "ogDescription": "涵盖账户、产品使用和子处理商的简要隐私摘要。",
       "ogTitle": "隐私政策 | RiskNova",
-      "title": "RiskNova隐私政策",
-      "paragraphs": [
-        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
-        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
-        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
-        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
-        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
-        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
-      ]
+      "title": "RiskNova隐私政策"
     },
     "refund": {
       "eyebrow": "退款政策",
@@ -1070,15 +1384,7 @@
       "metaTitle": "退款政策",
       "ogDescription": "退款窗口、续费和计费更正。",
       "ogTitle": "退款政策 | RiskNova",
-      "title": "RiskNova退款政策",
-      "paragraphs": [
-        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
-        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
-        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
-        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
-        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
-        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
-      ]
+      "title": "RiskNova退款政策"
     },
     "terms": {
       "eyebrow": "使用条款",
@@ -1093,15 +1399,15 @@
           "title": "服务范围"
         },
         {
-          "content": "用户负责账户详细信息的准确性、密码强度以及在其账户下采取的行动。组织管理员必须正确配置用户、角色、工作区和公司授权。必须立即向RiskNova报告疑似未经授权的访问。",
+          "content": "用户负责账户详细信息的准确性、密码强度和在其账户下采取的行动。组织管理员必须正确配置用户、角色、工作区和公司授权。必须立即向RiskNova报告疑似未经授权的访问。",
           "title": "账户、角色和安全"
         },
         {
-          "content": "平台只能用于合法、专业和工作场所安全相关的目的。禁止尝试未经授权的访问、逆向工程、干扰服务、上传有害内容、侵犯第三方权利、规避配额或非法处理数据。",
+          "content": "平台只能用于合法、专业和与工作场所安全相关的目的。禁止尝试未经授权的访问、逆向工程、干扰服务、上传有害内容、侵犯第三方权利、规避配额或非法处理数据。",
           "title": "可接受使用"
         },
         {
-          "content": "风险分析、检查记录、文档、人员数据、培训/考试/调查内容和上传文件均为客户内容。用户必须确保上传到平台的数据是合法的、必要的且仅限于授权人员。",
+          "content": "风险分析、检查记录、文档、人员数据、培训/考试/调查内容和上传的文件均为客户内容。用户必须确保上传到平台的数据是合法的、必要的且仅限于授权人员。",
           "title": "客户数据和内容责任"
         },
         {
@@ -1113,16 +1419,16 @@
           "title": "订阅、计费和限制"
         },
         {
-          "content": "RiskNova可能会随时更新产品功能、计划限制、集成和这些条款。出于安全、维护、法律合规或滥用防范目的，访问可能会暂时受限。",
+          "content": "RiskNova可能会随时更新产品功能、计划限制、集成和这些条款。出于安全、维护、法律合规或滥用防护目的，访问可能会暂时受限。",
           "title": "服务变更和访问"
         },
         {
-          "content": "该平台旨在简化流程；它不会免除雇主、安全专业人员或组织的法律义务。在依赖平台输出之前，用户仍需负责现场、监管和专家审查。",
+          "content": "该平台旨在简化流程；它不会免除雇主、安全专业人员或组织的法律义务。用户在依赖平台输出之前，仍需负责现场、监管和专家审查。",
           "title": "责任限制"
         },
         {
-          "content": "有关这些条款、订阅或账户的问题，请联系support@getrisknova.com。",
-          "title": "联系"
+          "content": "如对这些条款、订阅或账户有疑问，请联系support@getrisknova.com。",
+          "title": "联系方式"
         }
       ],
       "title": "RiskNova使用条款"
@@ -1134,15 +1440,7 @@
       "metaTitle": "服务条款",
       "ogDescription": "订阅、AI辅助功能和可接受使用摘要。",
       "ogTitle": "服务条款 | RiskNova",
-      "title": "RiskNova条款和条件",
-      "paragraphs": [
-        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
-        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
-        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
-        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
-        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
-        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
-      ]
+      "title": "RiskNova条款和条件"
     }
   },
   "nav": {
@@ -1174,18 +1472,18 @@
     "osgbClientFirms": "客户公司",
     "osgbContracts": "合同",
     "osgbOffersCapacity": "报价与产能",
-    "osgbPanel": "面板",
+    "osgbPanel": "专家组",
     "osgbPersonnel": "员工",
     "osgbProfessionals": "专业人员",
-    "osgbSolution": "OSGB产品",
+    "osgbSolution": "OSGB服务",
     "osgbWorkTracking": "工作跟踪",
     "personalDocs": "我的文档",
-    "planner": "计划器",
+    "planner": "规划器",
     "platformAdminHome": "平台管理",
-    "pricing": "套餐",
+    "pricing": "方案",
     "reports": "报告",
     "riskAnalysis": "风险分析",
-    "scoreHistory": "现场审核",
+    "scoreHistory": "现场审计",
     "settings": "设置",
     "solutionCenter": "Nova",
     "survey": "调查",
@@ -1197,19 +1495,19 @@
     "workspace": "工作区"
   },
   "ohsFile": {
-    "alreadyRunning": "正在准备存档文件，请等待完成。",
-    "asyncHint": "存档文件正在后台准备中。准备就绪时将通知您。",
+    "alreadyRunning": "正在准备存档，请等待完成。",
+    "asyncHint": "存档在后台准备中。准备就绪时将通知您。",
     "cancel": "取消",
     "completedAt": "已完成",
     "createdAt": "已创建",
     "createNew": "创建新存档",
-    "description": "下载{company}的所有风险评估、事故记录、培训记录、文档和相关数据，打包为按年份分类的ZIP存档文件。",
+    "description": "下载 {company} 的所有风险评估、事件、培训记录、文档和相关数据，作为单个基于年份的ZIP存档。",
     "download": "下载",
-    "empty": "尚未创建档案。",
-    "historyTitle": "历史档案",
+    "empty": "尚未创建存档。",
+    "historyTitle": "历史存档",
     "loading": "加载中...",
     "openCompany": "打开公司页面",
-    "prepareButton": "准备档案",
+    "prepareButton": "准备存档",
     "refresh": "刷新",
     "required": "必填",
     "scopeEmpty": "无法加载范围模板。",
@@ -1224,236 +1522,236 @@
     },
     "title": "工作场所职业健康安全档案",
     "widgetAll": "全部",
-    "widgetEmpty": "尚无职业健康安全档案。打开公司并转到\"职业健康安全档案\"选项卡。",
+    "widgetEmpty": "尚无职业健康安全档案。请打开公司并转到\"职业健康安全档案\"选项卡。",
     "widgetSubtitle": "快速访问最近准备的工作场所档案。",
     "widgetTitle": "最近的职业健康安全档案",
     "yearLabel": "日历年"
   },
   "osgb": {
+    "assignmentsPage": {
+      "emptyNoAssignments": {
+        "ctaPersonnel": "打开人员库",
+        "description": "所选范围内无活跃分配。请打开人员库或公司组织架构来创建分配。",
+        "title": "无活跃分配"
+      },
+      "panelMatrix": {
+        "description": "多名专业人员可以在同一公司工作。访问权限仅限于从其自己账户分配给他们的工作区。",
+        "title": "权限矩阵"
+      },
+      "stats": {
+        "activeDesc": "按公司统计的活跃专家、医师和DSP分配总数。",
+        "activeTitle": "活跃分配",
+        "approveDesc": "可以批准风险或运营流程的活跃人员分配。",
+        "approveTitle": "审批权限",
+        "signDesc": "具有合同、报告或审批签署权的活跃分配。",
+        "signTitle": "签署权限",
+        "suspendedDesc": "暂停的分配和标记为缺少权限集的分配。",
+        "suspendedTitle": "暂停/关键"
+      }
+    },
     "chrome": {
       "allCompanies": "所有公司",
-      "scopeDescription": "OSGB管理界面按公司选择进行筛选。未选择公司时，显示完整投资组合。",
+      "scopeDescription": "OSGB管理界面按公司选择进行筛选。未选择公司时，显示完整组合。",
       "scopeEyebrow": "公司范围"
     },
     "contractsPage": {
-      "stats": {
-        "recordTitle": "Contract records",
-        "recordDesc": "Personnel file and contract-focused document records in the selected scope.",
-        "readyTitle": "Ready",
-        "readyDesc": "Documents ready for signing or publishing to the customer portal.",
-        "pendingTitle": "Pending approval",
-        "pendingDesc": "Contracts and attachments that require authorised manager or employer approval.",
-        "missingTitle": "Missing templates",
-        "missingDesc": "Recommended templates for OSGB personnel and service flows that have not been created yet."
-      },
-      "panelInvite": {
-        "title": "Invite and contract linkage",
-        "description": "When staff are assigned to a company they are invited by email, a seat is reserved, and related contract documents are tracked in this flow."
-      },
-      "panelChecklist": {
-        "title": "Missing checklist",
-        "description": "Core documents in the personnel HR group are the backbone of the OSGB audit package."
+      "emptyNoContracts": {
+        "ctaDocuments": "打开文档中心",
+        "description": "所选范围内无合同或人员记录。请打开文档中心和人员HR组来创建新文档。",
+        "title": "未找到合同记录"
       },
       "panelActiveContracts": {
-        "title": "Active contract and personnel file records",
-        "descAll": "Contract and personnel file records across all companies.",
-        "descScoped": "Latest contract activity linked to {companyName}."
+        "descAll": "所有公司的合同和人事档案记录。",
+        "descScoped": "与{companyName}关联的最新合同活动。",
+        "title": "活跃的合同和人事档案记录"
       },
-      "emptyNoContracts": {
-        "title": "No contract records found",
-        "description": "No contract or personnel record in the selected scope. Open the document centre and the personnel HR group to create a new document.",
-        "ctaDocuments": "Open document centre"
-      }
-    },
-    "tasksPage": {
-      "stats": {
-        "openTitle": "Open tasks",
-        "openDesc": "Tasks not yet started. Nova prioritises them by priority and company risk.",
-        "inProgressTitle": "In progress",
-        "inProgressDesc": "Ongoing operations, CAPA or document preparation work.",
-        "overdueTitle": "Overdue",
-        "overdueDesc": "Tasks past their follow-up date. Creates audit and service SLA risk.",
-        "doneTitle": "Completed",
-        "doneDesc": "Closed work with a complete evidence trail."
-      },
-      "panelTaskCentre": {
-        "title": "Task centre",
-        "descAll": "Tasks across all companies. Filter by company, assignment and document flows to monitor them together.",
-        "descScoped": "Tasks, assigned staff and due dates for {companyName}."
-      }
-    },
-    "assignmentsPage": {
-      "stats": {
-        "activeTitle": "Active assignments",
-        "activeDesc": "Total active specialist, physician and DSP assignments by company.",
-        "signTitle": "Signature authority",
-        "signDesc": "Active assignments with signing rights for contracts, reports or approvals.",
-        "approveTitle": "Approval authority",
-        "approveDesc": "Active personnel assignments that can approve risk or operational flows.",
-        "suspendedTitle": "Suspended / critical",
-        "suspendedDesc": "Suspended assignments and those flagged for missing authority sets."
-      },
-      "panelMatrix": {
-        "title": "Authority matrix",
-        "description": "Several professionals can work on the same company. Access is scoped only to workspaces they are assigned to from their own account."
-      },
-      "emptyNoAssignments": {
-        "title": "No active assignments",
-        "description": "No active assignment in the selected scope. Open the personnel pool or company organisation to create assignments.",
-        "ctaPersonnel": "Open personnel pool"
-      }
-    },
-    "personnelPage": {
-      "stats": {
-        "activeStaffTitle": "Active staff",
-        "activeStaffDesc": "Active seat-holding users on the OSGB account and package seat limit.",
-        "assignedTitle": "Assigned staff",
-        "assignedDesc": "Specialists, physicians or DSP records with at least one active company assignment.",
-        "openTasksTitle": "Open tasks",
-        "openTasksDesc": "Total view of open and in-progress tasks assigned to staff.",
-        "overdueTasksTitle": "Overdue tasks",
-        "overdueTasksDesc": "Tasks past follow-up date. Nova OSGB Manager highlights these areas."
+      "panelChecklist": {
+        "description": "人事HR组中的核心文档是OSGB审计包的基础。",
+        "title": "缺失清单"
       },
       "panelInvite": {
-        "title": "Invite and first login flow",
-        "description": "New staff first receive an OSGB seat, then are assigned to companies. The invite email includes company/role; users set their password on first login."
+        "description": "当员工被分配到公司时，他们会收到邮件邀请，预留席位，相关合同文档在此流程中跟踪。",
+        "title": "邀请和合同关联"
       },
-      "panelNova": {
-        "title": "Nova OSGB Manager focus",
-        "description": "Nova behaves differently from the professional assistant on this surface; it analyses load, company assignment and delays."
-      },
-      "panelList": {
-        "title": "OSGB personnel list",
-        "descAll": "Staff linked to the OSGB account, company counts and task status.",
-        "descScoped": "People assigned to {companyName} and their task load."
-      },
-      "emptyNoPersonnel": {
-        "title": "No personnel found",
-        "description": "The OSGB personnel pool is empty. Send the first invite from the company organisation tab to add a specialist, physician or DSP.",
-        "ctaOrganisation": "Open company organisation"
+      "stats": {
+        "missingDesc": "尚未创建的OSGB人员和服务流程推荐模板。",
+        "missingTitle": "缺失模板",
+        "pendingDesc": "需要授权经理或雇主批准的合同和附件。",
+        "pendingTitle": "待批准",
+        "readyDesc": "准备签署或发布到客户门户的文档。",
+        "readyTitle": "就绪",
+        "recordDesc": "所选范围内以人事档案和合同为重点的文档记录。",
+        "recordTitle": "合同记录"
       }
     },
     "documentsPage": {
-      "panelOperations": {
-        "title": "Daily operations desk",
-        "description": "From this surface the OSGB manager runs company scope, professional document production, audit pack preparation and archive actions together."
-      },
-      "stats": {
-        "totalDocsTitle": "Total documents",
-        "totalDocsDesc": "Active document cards and field outputs in the selected company scope.",
-        "readyTitle": "Ready",
-        "readyDesc": "Records ready for signing, publishing or adding to an audit pack.",
-        "archiveRecordTitle": "Archive records",
-        "archiveRecordDesc": "Non-deleted records with preserved history moved to cold archive by company.",
-        "archivePackageTitle": "Archive package",
-        "archivePackageDescProcessing": "{count} packages are currently being prepared.",
-        "archivePackageDescIdle": "Downloadable audit and workplace OHS file packages.",
-        "sharedTitle": "Shared documents",
-        "sharedDesc": "Documents published for the portal, share links or audit outputs.",
-        "preparedTitle": "Preparer trace",
-        "preparedDesc": "Active documents with preparer professional information recorded.",
-        "approvedTitle": "Approved",
-        "approvedDesc": "Active records with approval timestamp that passed the management chain.",
-        "signedTitle": "Signed documents",
-        "signedDesc": "Records with document signature trail entering the audit chain.",
-        "auditReadyTitle": "Audit-ready package",
-        "auditReadyDesc": "Package families with mandatory group coverage and approval or usage trace.",
-        "traceabilityTitle": "Traceability",
-        "traceabilityDesc": "Share of active documents carrying preparer, approval, signature or publish trace.",
-        "approvalQueueTitle": "Approval queue",
-        "approvalQueueDesc": "Active records awaiting managerial control before archive and publish.",
-        "failedPackageTitle": "Failed packages",
-        "failedPackageDesc": "Archive or packaging attempts that need to be retried."
-      },
-      "panelArchiveLayout": {
-        "title": "Company-scoped archive design",
-        "description": "All document, report and evidence flow is kept in company workspace context. Assigned professionals attach their outputs to this spine; OSGB management produces audit packs and archives from the same spine."
-      },
-      "panelProfessional": {
-        "title": "Professional production trace",
-        "description": "OSGB management monitors company-scoped document production through the relevant specialists and physicians."
-      },
-      "panelStreams": {
-        "title": "Document flow lanes",
-        "description": "The OSGB document system is not a single box; different document flows driven by legislation and operations converge on the same company spine."
-      },
-      "panelAuditPrep": {
-        "title": "Audit pack readiness level",
-        "description": "For each company the audit pack is not a single PDF; it is tracked as an audit spine built from different document families."
-      },
-      "panelIntegration": {
-        "title": "External document intake layer",
-        "description": "Documents are fed not from a single channel but from web services, operator-assisted portals and standard file import layers."
-      },
-      "panelArchiveSelect": {
-        "title": "Select a company and prepare an archive pack",
-        "description": "An archive pack is always prepared for a single company workspace. At portfolio level you can see recent packs and pick a company for a new pack."
-      },
-      "emptyNoCompanies": {
-        "title": "No companies found",
-        "description": "Create a company and prepare the workspace context first. Professional production and archive packs cannot open without a company.",
-        "ctaFirms": "Go to companies"
-      },
-      "emptyNoArchiveJobs": {
-        "title": "No archive packs yet",
-        "description": "No workplace OHS file pack has been created for any company yet. Pick a company above to prepare the first pack."
-      },
-      "panelRetention": {
-        "title": "Retention and archiving matrix",
-        "description": "Professional records arriving by company are subject to different archive rules by document type, not a single retention period."
-      },
-      "panelGuarantees": {
-        "title": "Archive assurances",
-        "description": "This screen is not only a file list; it runs as a document spine focused on traceability and legal assurance."
-      },
-      "panelRecentMoves": {
-        "title": "Latest professional document movements",
-        "descAll": "Latest active document movements from professionals across all companies.",
-        "descScoped": "Latest active records produced or updated by professionals for {companyName}."
-      },
       "emptyNoActiveDocs": {
-        "title": "No active document records",
-        "description": "No active documents in the selected scope. Create the first record from the document centre or pick a company to monitor professional production.",
-        "ctaDocuments": "Open document centre"
-      },
-      "panelApproved": {
-        "title": "Approved documents",
-        "descAll": "Documents that passed the approval chain across all companies.",
-        "descScoped": "Documents with approval metadata for {companyName}."
+        "ctaDocuments": "打开文档中心",
+        "description": "所选范围内没有活跃文档。从文档中心创建第一条记录或选择公司来监控专业生产。",
+        "title": "无活跃文档记录"
       },
       "emptyNoApproved": {
-        "title": "No approved documents",
-        "description": "No documents with an approved_at record in the selected company scope."
-      },
-      "panelInUse": {
-        "title": "Documents in use",
-        "descAll": "Documents in use across all companies carrying share or signature trace.",
-        "descScoped": "Shared or signed documents for {companyName}."
-      },
-      "emptyNoUsed": {
-        "title": "No documents in use",
-        "description": "No documents with share or signature trace in the selected company scope."
-      },
-      "panelArchived": {
-        "title": "Archived records",
-        "descAll": "Archived documents across all companies. Narrow with the company filter.",
-        "descScoped": "Records moved to cold archive for {companyName}. They are excluded from active counters but keep audit trace."
+        "description": "所选公司范围内没有带有approved_at记录的文档。",
+        "title": "无已批准文档"
       },
       "emptyNoArchived": {
-        "title": "No archive records",
-        "description": "No archived documents in the selected scope. Records appear here when archived from the editor or company workspace."
+        "description": "所选范围内没有已归档文档。当从编辑器或公司工作区归档时，记录会出现在这里。",
+        "title": "无归档记录"
+      },
+      "emptyNoArchiveJobs": {
+        "description": "尚未为任何公司创建工作场所OHS文件包。请选择上方的公司来准备第一个文件包。",
+        "title": "暂无归档包"
+      },
+      "emptyNoCompanies": {
+        "ctaFirms": "前往公司",
+        "description": "首先创建公司并准备工作区上下文。没有公司就无法打开专业生产和归档包。",
+        "title": "未找到公司"
+      },
+      "emptyNoUsed": {
+        "description": "所选公司范围内没有带有共享或签名记录的文档。",
+        "title": "无使用中文档"
       },
       "panelApprovalQueue": {
-        "title": "Approval and publish queue",
-        "description": "Documents awaiting manager, authorised manager or employer approval before entering the archive pack are collected here.",
-        "notice": "{count} documents are still awaiting approval in the selected scope. Complete these records before tightening ready pack counters.",
-        "ctaApprovals": "Open approval records"
+        "ctaApprovals": "打开审批记录",
+        "description": "等待经理、授权经理或雇主审批后进入归档包的文档在此收集。",
+        "notice": "所选范围内仍有 {count} 个文档等待审批。请完成这些记录后再收紧就绪包计数器。",
+        "title": "审批和发布队列"
+      },
+      "panelApproved": {
+        "descAll": "通过所有公司审批链的文档。",
+        "descScoped": "包含 {companyName} 审批元数据的文档。",
+        "title": "已审批文档"
+      },
+      "panelArchived": {
+        "descAll": "所有公司的已归档文档。使用公司筛选器缩小范围。",
+        "descScoped": "已移至 {companyName} 冷归档的记录。它们被排除在活跃计数器之外，但保留审计记录。",
+        "title": "已归档记录"
+      },
+      "panelArchiveLayout": {
+        "description": "所有文档、报告和证据流都保存在公司工作区上下文中。指定的专业人员将其输出附加到此主干；OSGB 管理层从同一主干生成审计包和归档。",
+        "title": "公司范围归档设计"
+      },
+      "panelArchiveSelect": {
+        "description": "归档包始终为单个公司工作区准备。在投资组合级别，您可以查看最近的包并为新包选择公司。",
+        "title": "选择公司并准备归档包"
+      },
+      "panelAuditPrep": {
+        "description": "对于每个公司，审计包不是单个 PDF；它作为由不同文档系列构建的审计主干进行跟踪。",
+        "title": "审计包就绪级别"
+      },
+      "panelGuarantees": {
+        "description": "此屏幕不仅是文件列表；它作为专注于可追溯性和法律保证的文档主干运行。",
+        "title": "归档保证"
+      },
+      "panelIntegration": {
+        "description": "文档不是从单一渠道输入，而是来自 Web 服务、操作员辅助门户和标准文件导入层。",
+        "title": "外部文档接收层"
+      },
+      "panelInUse": {
+        "descAll": "所有公司使用中带有共享或签名记录的文档。",
+        "descScoped": "{companyName} 的共享或已签名文档。",
+        "title": "使用中文档"
+      },
+      "panelOperations": {
+        "description": "OSGB 经理从此界面统一运行公司范围、专业文档制作、审计包准备和归档操作。",
+        "title": "日常运营台"
+      },
+      "panelProfessional": {
+        "description": "OSGB 管理层通过相关专家和医师监控公司范围的文档制作。",
+        "title": "专业生产追踪"
+      },
+      "panelRecentMoves": {
+        "descAll": "来自所有公司专业人员的最新活跃文档移动。",
+        "descScoped": "由专业人员为{companyName}生产或更新的最新活跃记录。",
+        "title": "最新专业文档移动"
+      },
+      "panelRetention": {
+        "description": "按公司到达的专业记录根据文档类型遵循不同的归档规则，而非单一保留期。",
+        "title": "保留和归档矩阵"
+      },
+      "panelStreams": {
+        "description": "OSGB文档系统不是单一盒子；由法规和运营驱动的不同文档流汇聚到同一公司主干。",
+        "title": "文档流通道"
+      },
+      "stats": {
+        "approvalQueueDesc": "等待管理控制后归档和发布的活跃记录。",
+        "approvalQueueTitle": "审批队列",
+        "approvedDesc": "已通过管理链且具有审批时间戳的活跃记录。",
+        "approvedTitle": "已审批",
+        "archivePackageDescIdle": "可下载的审计和工作场所职业健康安全文件包。",
+        "archivePackageDescProcessing": "当前正在准备{count}个包。",
+        "archivePackageTitle": "归档包",
+        "archiveRecordDesc": "按公司移至冷归档的具有保留历史的非删除记录。",
+        "archiveRecordTitle": "归档记录",
+        "auditReadyDesc": "具有强制组覆盖和审批或使用追踪的包系列。",
+        "auditReadyTitle": "审计就绪包",
+        "failedPackageDesc": "需要重试的归档或打包尝试。",
+        "failedPackageTitle": "失败包",
+        "preparedDesc": "记录了准备者专业信息的活跃文档。",
+        "preparedTitle": "准备者追踪",
+        "readyDesc": "准备签名、发布或添加到审计包的记录。",
+        "readyTitle": "就绪",
+        "sharedDesc": "为门户、共享链接或审计输出发布的文档。",
+        "sharedTitle": "共享文档",
+        "signedDesc": "具有文档签名轨迹进入审计链的记录。",
+        "signedTitle": "已签署文件",
+        "totalDocsDesc": "所选公司范围内的活跃文件卡和字段输出。",
+        "totalDocsTitle": "文件总数",
+        "traceabilityDesc": "携带准备者、审批、签名或发布跟踪的活跃文件份额。",
+        "traceabilityTitle": "可追溯性"
+      }
+    },
+    "personnelPage": {
+      "emptyNoPersonnel": {
+        "ctaOrganisation": "打开公司组织",
+        "description": "OSGB人员库为空。从公司组织选项卡发送第一个邀请，以添加专家、医师或DSP。",
+        "title": "未找到人员"
+      },
+      "panelInvite": {
+        "description": "新员工首先获得OSGB席位，然后被分配到公司。邀请邮件包含公司/角色；用户在首次登录时设置密码。",
+        "title": "邀请和首次登录流程"
+      },
+      "panelList": {
+        "descAll": "链接到OSGB账户的员工、公司数量和任务状态。",
+        "descScoped": "分配给{companyName}的人员及其任务负载。",
+        "title": "OSGB人员列表"
+      },
+      "panelNova": {
+        "description": "Nova在此界面上的行为与专业助手不同；它分析负载、公司分配和延迟。",
+        "title": "Nova OSGB管理器焦点"
+      },
+      "stats": {
+        "activeStaffDesc": "OSGB账户上的活跃席位持有用户和套餐席位限制。",
+        "activeStaffTitle": "活跃员工",
+        "assignedDesc": "至少有一个活跃公司分配的专家、医师或DSP记录。",
+        "assignedTitle": "已分配员工",
+        "openTasksDesc": "分配给员工的开放和进行中任务的总览。",
+        "openTasksTitle": "开放任务",
+        "overdueTasksDesc": "超过跟进日期的任务。Nova OSGB管理器突出显示这些区域。",
+        "overdueTasksTitle": "逾期任务"
+      }
+    },
+    "tasksPage": {
+      "panelTaskCentre": {
+        "descAll": "跨所有公司的任务。按公司、分配和文件流程筛选以统一监控。",
+        "descScoped": "{companyName}的任务、已分配员工和截止日期。",
+        "title": "任务中心"
+      },
+      "stats": {
+        "doneDesc": "具有完整证据链的已关闭工作。",
+        "doneTitle": "已完成",
+        "inProgressDesc": "正在进行的运营、CAPA或文档准备工作。",
+        "inProgressTitle": "进行中",
+        "openDesc": "尚未开始的任务。Nova按优先级和公司风险进行排序。",
+        "openTitle": "待办任务",
+        "overdueDesc": "超过跟进日期的任务。产生审计和服务SLA风险。",
+        "overdueTitle": "逾期"
       }
     }
   },
   "osgbFirms": {
     "activeSection": {
-      "description": "按公司工作区管理公司、分配、文档和风险流程。",
+      "description": "管理每个公司工作区的公司、分配、文档和风险流程。",
       "searchLabel": "搜索公司",
       "searchPlaceholder": "搜索公司、行业、地址或NACE",
       "title": "活跃公司"
@@ -1463,54 +1761,54 @@
       "restoring": "恢复中…"
     },
     "archivedSection": {
-      "badge": "{count} 条已归档记录",
+      "badge": "{count} 个已归档记录",
       "description": "已归档的公司不计入活跃限制；风险和文档历史记录将保留。",
       "title": "已归档公司"
     },
     "badges": {
-      "activeCompaniesMax": "{count} / {max} 活跃公司",
-      "activeCompaniesUnlimited": "{count} 活跃公司",
-      "activeStaffMax": "{count} / {max} 活跃员工",
-      "activeStaffUnlimited": "{count} 活跃员工"
+      "activeCompaniesMax": "{count} / {max} 个活跃公司",
+      "activeCompaniesUnlimited": "{count} 个活跃公司",
+      "activeStaffMax": "{count} / {max} 个活跃员工",
+      "activeStaffUnlimited": "{count} 个活跃员工"
     },
     "companyCard": {
       "archive": "归档",
       "archiving": "归档中…",
-      "assignedProfessionals": "{count} 指派专业人员",
-      "assignments": "指派",
+      "assignedProfessionals": "{count} 个分配的专业人员",
+      "assignments": "分配",
       "contracts": "合同",
-      "documentsCount": "{count} 文档",
+      "documentsCount": "{count} 个文档",
       "documentsLink": "文档",
-      "employees": "{count} 员工",
-      "overdueTasks": "{count} 逾期项目",
+      "employees": "{count} 个员工",
+      "overdueTasks": "{count} 个逾期项目",
       "personnelInvite": "员工和邀请",
       "sectorUnknown": "未设置行业",
       "taskTracking": "任务跟踪",
       "workspace": "公司工作区"
     },
     "emptyActive": {
-      "cta": "添加第一家公司",
+      "cta": "添加首家公司",
       "description": "与OSGB面板关联的客户公司将在此列出。",
       "title": "无活跃公司"
     },
     "emptyArchived": {
-      "description": "当您归档公司时，它将显示在此处。",
+      "description": "当您归档公司时，它将出现在这里。",
       "title": "无已归档公司"
     },
     "emptyCompany": {
       "kind": "私营部门",
-      "name": "新建OSGB客户公司",
+      "name": "新OSGB客户公司",
       "shortName": "新公司"
     },
     "focus": {
-      "p1": "此区域仅供OSGB所有者和管理员用户使用。公司、分配、合同和文档跟踪在此统一管理。",
+      "p1": "此区域仅供OSGB所有者和管理员用户使用。公司、分配、合同和文档跟踪在一处管理。",
       "p2": "分配的员工不使用此面板进行日常工作流程；他们通过自己的账户访问分配的公司工作区数据。",
-      "sidebarBody": "{firms}家活跃公司、{professionals}名分配专业人员和{overdue}项需要关注的事项在此协调管理。",
+      "sidebarBody": "{firms}家活跃公司、{professionals}名分配专业人员和{overdue}项需要关注的事项在此协调。",
       "sidebarEyebrow": "管理焦点",
       "title": "OSGB专用界面"
     },
     "header": {
-      "description": "管理您的客户公司、各公司工作区以及分配给它们的人员流程。",
+      "description": "管理您的客户公司、每家公司的工作区以及分配给他们的人员流程。",
       "eyebrow": "OSGB公司管理",
       "title": "公司和工作场所"
     },
@@ -1543,7 +1841,7 @@
         "label": "活跃公司"
       },
       "assignedProfessionals": {
-        "hint": "专家、医师和DSP分配给公司的总任务数。",
+        "hint": "专家、医师和DSP分配给公司的总数。",
         "label": "已分配专业人员"
       },
       "overdueWork": {
@@ -1561,10 +1859,237 @@
       "personnelInvite": "员工和邀请"
     }
   },
+  "planner": {
+    "yearlyWorkPlan": {
+      "actions": {
+        "archivedBadge": "{year}年的计划已为此公司存档",
+        "pdfPrint": "下载/打印PDF",
+        "save": "保存",
+        "saved": "已保存",
+        "saving": "保存中…"
+      },
+      "card": {
+        "description": "土耳其职业健康安全法6331要求的年度工作计划。按公司×年份存储。每行可编辑；点击月份单元格切换。",
+        "title": "年度职业健康安全工作计划"
+      },
+      "defaultTemplate": [
+        {
+          "id": "1",
+          "items": [
+            {
+              "regulation": "职业健康安全委员会条例",
+              "responsible": "雇主",
+              "title": "建立职业健康安全委员会"
+            },
+            {
+              "regulation": "职业健康安全委员会条例",
+              "responsible": "雇主",
+              "title": "向成员通知委员会任命"
+            },
+            {
+              "regulation": "职业健康安全委员会条例",
+              "responsible": "职业健康安全委员会",
+              "title": "召开月度职业健康安全委员会会议"
+            },
+            {
+              "regulation": "职业健康安全委员会条例",
+              "responsible": "职业健康安全委员会",
+              "title": "编制职业健康安全委员会年度活动报告"
+            }
+          ],
+          "title": "职业健康安全委员会工作"
+        },
+        {
+          "id": "2",
+          "items": [
+            {
+              "regulation": "职业健康安全风险评估条例",
+              "responsible": "职业健康安全专员",
+              "title": "创建或获取机器清单"
+            },
+            {
+              "regulation": "职业健康安全风险评估条例",
+              "responsible": "职业健康安全专员",
+              "title": "获取组织架构图"
+            },
+            {
+              "regulation": "职业健康安全风险评估条例",
+              "responsible": "职业健康安全专员",
+              "title": "初始状况评估和报告"
+            },
+            {
+              "regulation": "职业健康安全风险评估条例",
+              "responsible": "职业健康安全专员",
+              "title": "风险分析/评估工作"
+            },
+            {
+              "regulation": "职业健康安全风险评估条例",
+              "responsible": "职业健康安全专员",
+              "title": "定期风险分析更新"
+            }
+          ],
+          "title": "风险分析和评估"
+        },
+        {
+          "id": "3",
+          "items": [
+            {
+              "regulation": "职业健康安全和工作设备法规",
+              "responsible": "技术部门",
+              "title": "电气机械/接地检查"
+            },
+            {
+              "regulation": "职业健康安全和工作设备法规",
+              "responsible": "技术部门",
+              "title": "电气测量（接地、避雷针等）"
+            },
+            {
+              "regulation": "工作设备法规",
+              "responsible": "技术部门",
+              "title": "起重设备定期检查"
+            },
+            {
+              "regulation": "噪音法规",
+              "responsible": "技术部门",
+              "title": "环境噪音测量"
+            },
+            {
+              "regulation": "职业健康安全法规",
+              "responsible": "技术部门",
+              "title": "环境照明测量"
+            },
+            {
+              "regulation": "人类饮用水法规",
+              "responsible": "技术部门",
+              "title": "饮用水分析"
+            }
+          ],
+          "title": "定期检查和测量"
+        },
+        {
+          "id": "4",
+          "items": [
+            {
+              "regulation": "应急法规",
+              "responsible": "职业健康安全专员",
+              "title": "疏散和消防演练"
+            },
+            {
+              "regulation": "应急法规",
+              "responsible": "技术部门",
+              "title": "准备演练记录"
+            },
+            {
+              "regulation": "应急法规",
+              "responsible": "技术部门",
+              "title": "应急设备检查"
+            },
+            {
+              "regulation": "应急法规",
+              "responsible": "职业健康安全专员",
+              "title": "制定应急行动计划"
+            }
+          ],
+          "title": "应急事务"
+        },
+        {
+          "id": "5",
+          "items": [
+            {
+              "regulation": "职业健康法规",
+              "responsible": "职场医师",
+              "title": "健康检查"
+            },
+            {
+              "regulation": "职业健康法规",
+              "responsible": "职场医师",
+              "title": "健康部门年度工作计划"
+            },
+            {
+              "regulation": "职业健康法规",
+              "responsible": "职场医师",
+              "title": "入职前体检报告"
+            },
+            {
+              "regulation": "职业健康法规",
+              "responsible": "职场医师",
+              "title": "定期体检报告"
+            }
+          ],
+          "title": "健康监护"
+        },
+        {
+          "id": "6",
+          "items": [
+            {
+              "regulation": "化学品法规",
+              "responsible": "职业健康安全专员",
+              "title": "确保获取SDS"
+            },
+            {
+              "regulation": "化学品法规",
+              "responsible": "职业健康安全专员",
+              "title": "化学品风险评估"
+            }
+          ],
+          "title": "化学品"
+        }
+      ],
+      "errors": {
+        "loadFailed": "无法加载计划",
+        "noSupabase": "无Supabase连接",
+        "orgNotFound": "未找到组织信息",
+        "saveFailed": "保存失败",
+        "selectCompany": "请选择公司",
+        "sessionNotFound": "未找到会话"
+      },
+      "fields": {
+        "company": "公司",
+        "companyPlaceholder": "选择公司",
+        "revNo": "修订号",
+        "year": "计划年度"
+      },
+      "loading": "正在加载计划…",
+      "pdf": {
+        "colOrder": "序号",
+        "colRegulation": "法规",
+        "colResponsible": "负责人",
+        "colTopic": "工作主题",
+        "headerLine": "公司：{companyName} · 年度：{year} · 修订：{revNo}",
+        "htmlTitle": "年度职业健康安全工作计划 — {companyName}",
+        "mainTitle": "职业健康安全年度工作计划",
+        "sigEmployer": "雇主/代表",
+        "sigLine": "签名/日期",
+        "sigPhysician": "职业医师",
+        "sigSafety": "职业健康安全专员"
+      },
+      "preview": {
+        "description": "点击行编辑 · 月份单元格切换",
+        "title": "预览和编辑"
+      },
+      "signers": {
+        "blockLabel": "签署人（打印在PDF签名区域）",
+        "employer": "雇主/雇主代表",
+        "employerPlaceholder": "全名",
+        "physician": "职业医师",
+        "physicianPlaceholder": "医生全名",
+        "safetyExpert": "职业健康安全专家",
+        "safetyExpertPlaceholder": "全名 · 等级 (A/B/C)"
+      },
+      "table": {
+        "addRow": "添加行",
+        "deleteRowAria": "删除行",
+        "num": "#",
+        "regulation": "法规",
+        "responsible": "负责人",
+        "topic": "工作主题"
+      }
+    }
+  },
   "platformAdmin": {
     "leads": {
       "backLink": "返回平台管理",
-      "description": "来自登录页面\"申请演示\"、注册\"OSGB\"和\"企业\"表单的所有请求都在此列出。更新状态，标记已联系的潜在客户，并关闭已转化的客户。",
+      "description": "来自落地页\"申请演示\"、注册\"OSGB\"和\"企业\"表单的所有请求都在此列出。更新状态，标记已联系的潜在客户，并关闭已转化的客户。",
       "detailCompany": "公司",
       "detailEmail": "邮箱",
       "detailEstCompanies": "预计公司数",
@@ -1575,14 +2100,14 @@
       "detailPhone": "电话",
       "detailRequestType": "请求类型",
       "detailSource": "来源",
-      "emptyDescription": "OSGB/企业报价流程和登录页面\"申请演示\"提交的内容显示在此处。",
+      "emptyDescription": "OSGB/企业报价流程和落地页\"申请演示\"提交在此显示。",
       "emptyTitle": "此筛选条件下无请求。",
       "errorNotesSave": "无法保存备注",
       "errorStatusUpdate": "无法更新",
       "filterSource": "来源：",
       "filterStatus": "状态：",
       "filterStatusContacted": "已联系",
-      "internalNoteHint": "不向客户显示。在此记录约定条款或计划代码。",
+      "internalNoteHint": "不向客户显示。在此记录商定条款或计划代码。",
       "internalNoteTitle": "内部备注（手动报价、限制、定价）",
       "kpiContacted": "已联系",
       "kpiConverted": "已转化",
@@ -1625,11 +2150,11 @@
       "colSource": "来源URL",
       "colTitle": "标题",
       "colType": "类型",
-      "description": "按管辖区分组的用于RAG的官方监管文档。租户私有上传保留在租户工作区路径中。",
+      "description": "为RAG摄取的官方监管文档，按管辖区分组。租户私有上传保留在租户工作区路径中。",
       "emptyDocuments": "没有文档匹配筛选条件。",
       "ingestError": "导入失败",
-      "ingestHeading": "从官方数据源导入",
-      "ingesting": "正在导入...",
+      "ingestHeading": "从官方数据源摄取",
+      "ingesting": "导入中…",
       "ingestResult": "已插入：{inserted}，已跳过（数据库中已存在）：{skipped}",
       "ingestUkButton": "导入英国法定文书（Atom）",
       "ingestUkHint": "从legislation.gov.uk Atom导入最新的英国法定文书条目（标题+摘要）。",
@@ -1638,8 +2163,8 @@
       "refresh": "刷新",
       "scopeOfficial": "官方",
       "scopePrivate": "租户",
-      "statsHeading": "按管辖区分类的文档",
-      "tableHeading": "文档（姓名顺序）",
+      "statsHeading": "按司法管辖区分类的文档",
+      "tableHeading": "文档（按名称排序）",
       "title": "按国家分类的法律语料库",
       "yes": "是"
     }
@@ -1653,7 +2178,7 @@
     },
     "billingPeriodAria": "计费周期",
     "currentPlan": "当前计划",
-    "enterpriseBody": "对于多用户、客户组合、白标、定制入职和开票，此路径没有自助结账 — 请联系我们协商范围和合同。",
+    "enterpriseBody": "对于多用户、客户组合、白标、定制入职和发票，此路径没有自助结账 — 请联系我们商定范围和合同。",
     "enterpriseCorporateCta": "申请企业报价",
     "enterpriseExplore": "探索产品",
     "enterpriseFootnoteEnterprise": "企业产品",
@@ -1664,15 +2189,15 @@
     "enterpriseTitle": "OSGB或企业使用",
     "footerLimitsBody": "Nova、分析和生成配额在API层消耗 — 不仅仅在屏幕上。",
     "footerLimitsTitle": "在服务器上强制执行",
-    "footerOsgbBody": "团队席位、组合、白标、入职和开票通过专门的报价流程处理。",
+    "footerOsgbBody": "团队席位、组合、白标、入职和发票通过专门的报价流程处理。",
     "footerOsgbTitle": "OSGB和企业分别处理",
     "footerPro149Body": "为活跃的个人专业人士提供分析、文档和现场工作的均衡容量。",
     "footerPro149Title": "推荐专业版149",
     "freeStart": "免费开始",
     "heroDescription": "从免费版开始，逐步升级到入门版、增强版和专业版 — Nova、风险分析、现场审计和基于库的文档生成随您的节奏扩展。在付费计划中，您可以在每张卡上选择月付或年付。",
     "heroEyebrow": "个人计划",
-    "heroTitle": "为工作场所安全专业人士提供清晰、可扩展的计划。",
-    "introBody": "在付费计划中，您可以在每张卡片上选择月付或年付。年付覆盖十二个月，价格相当于十个月（卡片总额会相应更新）。OSGB和企业客户使用报价流程。每张卡片显示\"适合谁？\"和\"升级到更高级别\"，以便您了解您的配置文件的下一步。",
+    "heroTitle": "为职场安全专业人士提供清晰、可扩展的计划。",
+    "introBody": "在付费计划中，您可以在每张卡片上选择月付或年付。年付覆盖十二个月但只需支付十个月的价格（卡片总额会相应更新）。OSGB和企业客户使用报价流程。每张卡片显示\"适合谁？\"和\"升级到更高级别\"，以便您了解您的配置文件的下一步。",
     "introTitle": "选择您的个人计划",
     "limitNotIncluded": "不包含",
     "monthly": "月付",
@@ -1686,87 +2211,45 @@
         "description": "入门级别，提供月度配额来探索Nova聊天、分析和小型文档工作流。",
         "name": "免费版",
         "upgradeHint": "当您需要每月可预测的配额时，升级到入门版。",
-        "whoFor": "试用RiskNova的用户、学生和轻度偶尔使用者。",
-        "features": [
-          "Nova chat within monthly limits",
-          "Foundational AI analyses for risk workflows",
-          "Limited document generation",
-          "Field inspection entries within quotas",
-          "Exports within plan limits"
-        ]
+        "whoFor": "试用RiskNova的用户、学生和轻度偶尔使用者。"
       },
       "plus": {
         "description": "在聊天、分析、风险建模和现场数据方面提供均衡容量。",
         "name": "增强版",
         "upgradeHint": "当您需要更深入的检查和报告吞吐量时，升级到专业版。",
-        "whoFor": "每月管理多个客户的活跃顾问。",
-        "features": [
-          "Higher caps across all core actions",
-          "More incident and training outputs",
-          "Field inspection headroom for busy weeks",
-          "Document throughput for recurring packs",
-          "Exports suited to multi-client work"
-        ]
+        "whoFor": "每月管理多个客户的活跃顾问。"
       },
       "professional_149": {
         "description": "推荐级别——在分析、文档和现场工作流方面提供充足的上限。",
         "name": "专业版149",
         "upgradeHint": "专业版199为最繁忙的工作台提供最大余量。",
-        "whoFor": "在产品中工作的高级顾问和高级用户。",
-        "features": [
-          "Very high Nova and analysis quotas",
-          "Heavy document generation allowance",
-          "Large risk and inspection budgets",
-          "Incident and training outputs at scale",
-          "Exports aligned with premium throughput"
-        ]
+        "whoFor": "在产品中工作的高级顾问和高级用户。"
       },
       "professional_199": {
-        "description": "OSGB或企业合同之前的顶级自助服务级别。",
+        "description": "OSGB或企业合同前的顶级自助服务级别。",
         "name": "专业版199",
         "upgradeHint": "需要席位、投资组合或开票？使用OSGB或企业报价。",
-        "whoFor": "个人工作负载峰值和高级吞吐量期望。",
-        "features": [
-          "Maximum published individual quotas",
-          "Peak AI and document capacity",
-          "Largest inspection and risk envelopes",
-          "Full incident and training allowances in tier",
-          "Exports for the heaviest reporting cycles"
-        ]
+        "whoFor": "峰值个人工作负载和高级吞吐量期望。"
       },
       "professional": {
-        "description": "顶级专业版级别之前的企业级个人上限。",
+        "description": "顶级专业版级别前的企业级个人上限。",
         "name": "专业版99",
         "upgradeHint": "升级到专业版149以获得规模化的最佳价值。",
-        "whoFor": "密集每周使用的全职OHS专家。",
-        "features": [
-          "High Nova and AI analysis limits",
-          "Strong document generation cadence",
-          "Broad risk and field inspection capacity",
-          "Incident programme support within quota",
-          "Exports for intensive reporting"
-        ]
+        "whoFor": "密集每周使用的全职OHS专家。"
       },
       "starter": {
-        "description": "为Nova、分析和文档提供更高配额，使每周例行工作顺畅运行。",
+        "description": "提高Nova、分析和文档的配额，让每周例行工作顺畅进行。",
         "name": "入门版",
         "upgradeHint": "当事件分析和培训输出成为您工作流程的一部分时，请选择增强版。",
-        "whoFor": "自由职业专家和稳定但适中的月度工作量。",
-        "features": [
-          "Stronger Nova and analysis quotas",
-          "More monthly document generation",
-          "Incident analysis allowance",
-          "Training slides where included in quota",
-          "Exports scaled for individuals"
-        ]
+        "whoFor": "自由职业专家和稳定但适中的月度工作量。"
       }
     },
     "priceFreeNote": "免费开始",
     "priceMonthlyNote": "按月计费 — 随时可升级",
     "priceSuffixMonth": "/ 月",
     "priceSuffixYear": "/ 年",
-    "priceYearlyNote": "约 {monthly}/月等价 — 包含2个月",
-    "selectPlan": "选择计划",
+    "priceYearlyNote": "约相当于 {monthly}/月 — 包含2个月",
+    "selectPlan": "选择方案",
     "upgradeSectionTitle": "升级套餐",
     "whoForLabel": "适合谁？",
     "yearly": "按年付费",
@@ -1784,12 +2267,13 @@
       "pending": "待处理",
       "planned": "已计划",
       "recentOps": "最近活动",
+      "resetFilter": "显示全部",
       "total": "总任务数"
     },
     "changePhoto": "更换照片",
     "danger": {
       "button": "删除账户",
-      "description": "删除您的账户将永久移除您的所有数据，此操作无法撤销。根据KVKK法规，删除将在30天内完成。",
+      "description": "删除您的账户将永久移除所有数据，此操作无法撤销。根据KVKK规定，删除将在30天内完成。",
       "redirectMsg": "账户删除流程已在隐私与同意选项卡中打开。",
       "title": "危险区域"
     },
@@ -1801,41 +2285,58 @@
       "submit": "开始更改",
       "title": "更改邮箱"
     },
+    "fallbackUserName": "用户",
     "loading": "正在加载个人资料...",
     "membership": "注册时间",
     "mfa": {
       "addDevice": "添加新设备",
-      "addDeviceHint": "使用Google身份验证器扫描二维码。您可以为设备自定义名称。",
+      "addDeviceHint": "使用Google身份验证器扫描二维码。您可以为设备设置自定义名称。",
       "backupWarning": "不支持备份码。对于重要账户，请至少注册两个不同的TOTP设备。",
       "closed": "双重验证关闭",
       "connect": "连接Google身份验证器",
-      "description": "适用于Google身份验证器、Authy和类似的TOTP应用。启用后，此账户将受到第二重因素保护。",
+      "defaultAuthenticatorName": "Google身份验证器",
+      "description": "兼容Google身份验证器、Authy和类似的TOTP应用。启用后，此账户将受到第二重因素保护。",
       "deviceName": "设备名称",
-      "deviceNamePlaceholder": "例如：张三的iPhone",
+      "deviceNamePlaceholder": "例如：小明的iPhone",
+      "enrollManualUri": "显示手动设置URI",
+      "enrollStep1Body": "在您的身份验证器应用中添加新账户并扫描此代码。",
+      "enrollStep1Title": "1. 扫描二维码",
+      "enrollStep2Label": "2. 输入应用中的6位数字代码",
+      "factorFallbackName": "身份验证器",
       "loading": "正在加载...",
       "noDevices": "尚未连接MFA设备。",
       "onlyPassword": "您的账户目前仅受密码保护。",
-      "open": "双重验证开启",
-      "registeredDevices": "已注册的MFA设备",
+      "open": "双重验证已开启",
+      "qrAlt": "多重身份验证二维码",
+      "registeredDevices": "已注册的多重身份验证设备",
       "removeDevice": "移除",
       "setupKey": "设置密钥",
+      "statusAal2Session": "此会话已通过第二步验证保护。",
+      "statusVerifiedDeviceNextLogin": "您有一个已验证的安全设备。新的登录将需要第二步验证。",
+      "statusVerifiedNeedsChallenge": "双重身份验证已开启。此会话尚未完成第二步验证。",
       "title": "双重身份验证",
       "verify": "验证",
       "verifyCodePlaceholder": "123456",
       "verifying": "正在验证..."
     },
     "msg": {
-      "emailConfirmSent": "验证链接已发送至新邮箱地址。",
+      "emailChangeFailed": "无法开始邮箱更改。",
+      "emailConfirmSent": "验证链接已发送至新地址。",
+      "emailConfirmSentDetailed": "确认链接已发送至 {email}。请打开邮件完成更改。",
       "emailEmpty": "新邮箱地址不能为空。",
       "emailInvalid": "请输入有效的邮箱地址。",
       "emailSame": "新邮箱不能与当前邮箱相同。",
       "emailServiceError": "无法连接邮箱更新服务。",
+      "genericSaveError": "无法保存。",
       "mfaCodeInvalid": "验证码必须为6位数字。",
-      "mfaEnabled": "双因素认证已启用。",
-      "mfaEnrolled": "注册已创建。请立即验证代码以启用双因素认证。",
-      "mfaRemoveConfirm": "确定要移除此多因素认证设备吗？",
-      "mfaRemoved": "多因素认证设备已移除。",
+      "mfaEnabled": "双重身份验证已启用。",
+      "mfaEnrolled": "注册已创建。请立即验证代码以启用双重验证。",
+      "mfaEnrollFailed": "无法启动双重身份验证。",
+      "mfaRemoveConfirm": "您确定要移除此多重身份验证设备吗？",
+      "mfaRemoved": "多重身份验证设备已移除。",
+      "mfaRemoveFailed": "无法移除多重身份验证设备。",
       "mfaServiceError": "无法连接双因素认证服务。",
+      "mfaVerifyFailed": "验证失败。",
       "passwordError": "无法更新密码。",
       "passwordMismatch": "新密码不匹配。",
       "passwordUpdated": "密码更新成功。",
@@ -1846,7 +2347,10 @@
       "profileSaved": "个人资料已保存。",
       "sessionServiceError": "无法连接会话服务。",
       "signedOut": "已从此设备退出登录。",
-      "signedOutAll": "已从所有设备退出登录。"
+      "signedOutAll": "已从所有设备退出登录。",
+      "signOutAllFailed": "无法从所有设备退出登录。",
+      "signOutFailed": "无法退出登录。",
+      "totpEnrollmentMissing": "无法加载TOTP注册数据。"
     },
     "org": {
       "city": "城市",
@@ -1857,7 +2361,7 @@
       "current": "当前密码",
       "new": "新密码",
       "newPlaceholder": "至少12个字符，包含大小写字母、数字和符号",
-      "repeat": "重复新密码",
+      "repeat": "新密码（重复）",
       "submit": "更新密码",
       "title": "更改密码"
     },
@@ -1901,7 +2405,7 @@
       "allDevices": "退出所有设备",
       "ip": "IP地址",
       "lastActive": "最后活跃",
-      "opened": "已打开",
+      "opened": "打开时间",
       "thisDevice": "退出此设备",
       "title": "活跃会话"
     },
@@ -1923,7 +2427,7 @@
     "btnLogin": "登录",
     "btnRegister": "创建账户",
     "cardEyebrow": "公司邀请",
-    "dbErrorDesc": "无法连接到数据库。请稍后重试。",
+    "dbErrorDesc": "无法连接数据库。请稍后重试。",
     "dbErrorTitle": "连接问题",
     "declinedDesc": "此邀请之前已被拒绝。如需新邀请请联系邀请人。",
     "declinedTitle": "邀请已拒绝",
@@ -1931,7 +2435,7 @@
     "dtInvitee": "受邀人",
     "dtInviter": "邀请人",
     "dtNote": "备注",
-    "expiredDesc": "此邀请已过期。请申请新的邀请。",
+    "expiredDesc": "此邀请已过期。请申请新邀请。",
     "expiredTitle": "邀请已过期",
     "inviteTitle": "{company} 邀请您加入他们的 RiskNova 工作空间。",
     "loginPrompt": "要接受邀请，您需要使用 {email} 注册的账户。",
@@ -1949,9 +2453,9 @@
     "accepting": "正在接受…",
     "dbError": "无法连接到数据库。",
     "declineBtn": "拒绝",
-    "declinedMessage": "您已拒绝此邀请。您可以随时申请新的邀请。",
+    "declinedMessage": "您已拒绝邀请。您可以随时请求新的邀请。",
     "declineProcessing": "处理中…",
-    "emailMismatch": "此邀请发送给了 {inviteeEmail}，但您当前登录的是 {currentUserEmail}。",
+    "emailMismatch": "此邀请发送给 {inviteeEmail}，但您当前登录的是 {currentUserEmail}。",
     "emailMismatchHint": "请使用正确的账户登录以接受邀请。",
     "errAuthRequired": "您必须登录才能接受邀请。",
     "errExpired": "此邀请已过期。",
@@ -1963,7 +2467,7 @@
   "publicSurvey": {
     "congrats": "恭喜！",
     "examFailDesc": "您的得分：{score}%。及格分数：{pass}%。",
-    "examPassDesc": "您以{score}%的成绩通过了考试。",
+    "examPassDesc": "您以 {score}% 的成绩通过了考试。",
     "expiredDesc": "此链接已过期。",
     "expiredTitle": "链接已过期",
     "invalidDesc": "此链接不再有效或无法找到。",
@@ -1974,17 +2478,17 @@
     "no": "否",
     "openEndedPlaceholder": "输入您的答案…",
     "participantLabel": "参与者：",
-    "passPipe": "| 及格：{score}%",
+    "passPipe": "| 通过：{score}%",
     "prev": "上一步",
-    "questionBadge": "第 {n} 题",
-    "questionCount": "{count} 道题",
+    "questionBadge": "问题 {n}",
+    "questionCount": "{count} 个问题",
     "required": "* 必填",
     "sending": "提交中…",
     "sorry": "抱歉",
-    "startButton": "我是{name}，开始",
+    "startButton": "我是 {name}，开始",
     "submit": "提交",
-    "submitError": "无法保存回答。请检查网络连接并重试。",
-    "surveyCompleteDesc": "您的回答已成功保存。",
+    "submitError": "无法保存回复。请检查您的连接并重试。",
+    "surveyCompleteDesc": "您的回复已成功保存。",
     "thanks": "谢谢！",
     "verifySubtitleExam": "开始考试前请验证您的身份。",
     "verifySubtitleSurvey": "开始调查前请验证您的身份。",
@@ -1997,7 +2501,7 @@
         "step1": "打开 getrisknova.com",
         "step2": "点击安装应用",
         "step3": "从 RiskNova 图标登录",
-        "text": "在 Chrome 或 Edge 中打开 RiskNova；如果看到安装提示，请选择安装应用。",
+        "text": "在 Chrome 或 Edge 中打开 RiskNova；如果看到安装提示，选择安装应用。",
         "title": "Android"
       },
       "ios": {
@@ -2018,23 +2522,47 @@
     "ctaLogin": "登录平台",
     "ctaRegister": "免费开始",
     "eyebrow": "无需应用商店",
-    "heroBody": "在 iOS、Android 和 Windows 上将 RiskNova 添加到您的主屏幕或桌面。网站更新会自动推送到您安装的应用中。",
-    "heroTitle": "在移动设备和桌面上像使用应用一样使用 RiskNova",
-    "metaDescription": "无需应用商店，在 iOS、Android 和 Windows 上将 RiskNova 安装为 PWA。",
+    "heroBody": "在 iOS、Android 和 Windows 上将 RiskNova 添加到主屏幕或桌面。网站更新会自动推送到您安装的应用体验中。",
+    "heroTitle": "像应用一样在移动设备和桌面上使用 RiskNova",
+    "metaDescription": "无需应用商店即可在 iOS、Android 和 Windows 上安装 RiskNova 作为 PWA。",
     "metaTitle": "RiskNova 应用",
-    "updatesBody": "当 RiskNova 网页应用更新时，您的 PWA 会自动获取新版本——无需等待商店更新。",
+    "updatesBody": "当 RiskNova 网络应用更新时，您的 PWA 会获取新版本——无需等待商店更新。",
     "updatesTitle": "更新自动到达"
   },
   "pwaPrompt": {
     "appButton": "安装",
-    "appDescription": "从主屏幕快速返回现场工作、文档和Nova。",
-    "appTitle": "安装RiskNova应用",
-    "asideAria": "RiskNova应用安装",
+    "appDescription": "从主屏幕快速返回现场工作、文档和 Nova。",
+    "appTitle": "安装 RiskNova 应用",
+    "asideAria": "RiskNova 应用安装",
     "dismissAria": "关闭安装提醒",
-    "iosHint": "在iPhone/iPad上，使用分享→添加到主屏幕。",
+    "iosHint": "在 iPhone/iPad 上，使用分享 → 添加到主屏幕。",
     "publicButton": "安装应用",
-    "publicDescription": "在iOS、Android和Windows上快速在独立窗口中打开。",
+    "publicDescription": "在iOS、Android和Windows上快速在单独窗口中打开。",
     "publicTitle": "像应用一样安装RiskNova"
+  },
+  "reports": {
+    "companyFile": {
+      "categoryEmpty": "无记录",
+      "categoryHint": "点击选择",
+      "categoryIncluded": "将包含在ZIP中",
+      "downloading": "准备中…",
+      "downloadZip": "下载为ZIP",
+      "failZipPrefix": "无法创建公司文件：",
+      "includePdfPerRecord": "为每条记录生成单独的PDF",
+      "loadingRecords": "收集记录中…",
+      "noCompanyRecords": "该公司暂无记录。",
+      "noOrg": "未找到组织信息。请检查您的会话。",
+      "refresh": "刷新",
+      "sectionHint": "为您选择的类别准备摘要PDF和ZIP包。",
+      "sectionTitle": "公司文件",
+      "selectAll": "全选",
+      "selectedCount": "{count}条记录已选择",
+      "selectNone": "全不选",
+      "subtitle": "分析摘要并下载{companyName}的所有文档为ZIP。",
+      "successZip": "公司文件已准备并下载。{count}条记录已归档。",
+      "title": "报告和公司文件",
+      "warnSelectCategory": "至少选择一个类别（包含记录）。"
+    }
   },
   "riskScoring": {
     "classification": {
@@ -2056,8 +2584,8 @@
           "label": "低"
         },
         "medium": {
-          "action": "增加更多屏障",
-          "label": "中等"
+          "action": "增加进一步屏障",
+          "label": "中"
         }
       },
       "checklist": {
@@ -2084,7 +2612,7 @@
       },
       "fk": {
         "critical": {
-          "action": "立即停止工作",
+          "action": "立即停工",
           "label": "极高风险"
         },
         "follow_up": {
@@ -2092,12 +2620,12 @@
           "label": "可接受"
         },
         "high": {
-          "action": "立即行动；考虑停止工作",
+          "action": "立即行动；考虑停工",
           "label": "高风险"
         },
         "low": {
-          "action": "保持监控；计划改进",
-          "label": "中等关注"
+          "action": "保持审查；规划改进",
+          "label": "中度关注"
         },
         "medium": {
           "action": "短期内采取行动",
@@ -2106,8 +2634,8 @@
       },
       "fmea": {
         "critical": {
-          "action": "停止工作；执行根本原因分析",
-          "label": "关键风险"
+          "action": "停工；执行根本原因分析",
+          "label": "严重风险"
         },
         "follow_up": {
           "action": "当前控制措施充分；保持监控",
@@ -2118,7 +2646,7 @@
           "label": "高风险"
         },
         "low": {
-          "action": "计划改进",
+          "action": "制定改进计划",
           "label": "低风险"
         },
         "medium": {
@@ -2128,11 +2656,11 @@
       },
       "fta": {
         "critical": {
-          "action": "不得操作；消除根本原因",
+          "action": "停止操作；消除根本原因",
           "label": "关键"
         },
         "follow_up": {
-          "action": "系统可靠性充分",
+          "action": "系统可靠性充足",
           "label": "可接受"
         },
         "high": {
@@ -2145,7 +2673,7 @@
         },
         "medium": {
           "action": "为关键组件增加冗余",
-          "label": "中"
+          "label": "中等"
         }
       },
       "hazop": {
@@ -2154,7 +2682,7 @@
           "label": "不可容忍"
         },
         "follow_up": {
-          "action": "当前控制措施充分",
+          "action": "当前控制充分",
           "label": "可接受"
         },
         "high": {
@@ -2167,7 +2695,7 @@
         },
         "medium": {
           "action": "评估额外保护层",
-          "label": "中"
+          "label": "中等"
         }
       },
       "lopa": {
@@ -2176,15 +2704,15 @@
           "label": "不可容忍"
         },
         "follow_up": {
-          "action": "当前保护层充分",
+          "action": "当前保护层足够",
           "label": "可接受"
         },
         "high": {
-          "action": "需要多层保护或流程变更",
+          "action": "需要多层保护或工艺变更",
           "label": "高风险"
         },
         "low": {
-          "action": "在合理可行范围内尽可能低",
+          "action": "合理可行的最低水平",
           "label": "ALARP"
         },
         "medium": {
@@ -2194,11 +2722,11 @@
       },
       "matrix": {
         "critical": {
-          "action": "立即停止工作；采取紧急措施",
+          "action": "立即停工；紧急措施",
           "label": "不可容忍"
         },
         "follow_up": {
-          "action": "可能不需要进一步措施；监控即可",
+          "action": "可能不需要进一步措施；监控足够",
           "label": "可接受"
         },
         "high": {
@@ -2220,7 +2748,7 @@
           "label": "严重"
         },
         "follow_up": {
-          "action": "常规监控即可",
+          "action": "常规监控足够",
           "label": "监控"
         },
         "high": {
@@ -2237,11 +2765,24 @@
         }
       }
     },
+    "defaults": {
+      "aiRequestFailed": "AI分析无法完成。",
+      "canvasNoContext": "画布上下文不可用。",
+      "checklistCategoryGeneral": "常规",
+      "checklistItem1": "控制项目1",
+      "checklistItemSeed": "控制项目",
+      "firstLineDescription": "您可以在此行附加同一情况的广角和特写照片。",
+      "firstLineTitle": "堆放区域",
+      "hazopGuideWord": "更多",
+      "hazopParameter": "流量",
+      "manualPinCategory": "手动发现",
+      "manualPinRecommendation": "手动标记。执行详细评估。"
+    },
     "fk": {
       "exposure": {
-        "v0_5": "极少见（每年一次）",
+        "v0_5": "极少发生（每年一次）",
         "v1": "罕见（每月一次）",
-        "v10": "持续（一天中大部分时间）",
+        "v10": "持续（一天中的大部分时间）",
         "v2": "偶尔（每周一次）",
         "v3": "有时（每周数次）",
         "v6": "频繁（每日）"
@@ -2256,12 +2797,12 @@
         "v6": "相当可能"
       },
       "severity": {
-        "v1": "显著，急救",
+        "v1": "显著，需急救",
         "v100": "大规模灾难，多人死亡",
         "v15": "非常严重，肢体缺失",
         "v3": "重大，外部治疗",
-        "v40": "灾难，单人死亡",
-        "v7": "严重，永久伤害"
+        "v40": "灾难性，单一死亡",
+        "v7": "严重，永久性伤害"
       }
     },
     "fmea": {
@@ -2291,9 +2832,9 @@
       },
       "severity": {
         "v1": "无影响 — 未察觉",
-        "v10": "灾难性 — 死亡/大规模事故",
-        "v2": "极轻微 — 影响可忽略不计",
-        "v3": "轻微 — 轻微干扰",
+        "v10": "灾难性 — 死亡/重大事故",
+        "v2": "很轻微 — 可忽略影响",
+        "v3": "轻微 — 轻度困扰",
         "v4": "低 — 性能下降",
         "v5": "中等 — 显著性能损失",
         "v6": "高 — 系统功能受损",
@@ -2331,15 +2872,15 @@
     "lopa": {
       "initFreq": {
         "v0_00001": "十万年一次 — 极其罕见",
-        "v0_0001": "一万年一次 — 非常罕见",
-        "v0_001": "一千年一次 — 罕见",
-        "v0_01": "一百年一次 — 偶发",
-        "v0_1": "十年一次 — 频繁",
+        "v0_0001": "万年一次 — 非常罕见",
+        "v0_001": "千年一次 — 罕见",
+        "v0_01": "百年一遇 — 偶发",
+        "v0_1": "十年一遇 — 频繁",
         "v1": "每年一次 — 非常频繁"
       },
       "pfd": {
         "v0_001": "自动安全系统（SIL-1级）",
-        "v0_01": "训练有素的操作员响应/警报",
+        "v0_01": "训练有素的操作员响应/报警",
         "v0_1": "简单管理控制"
       }
     },
@@ -2383,12 +2924,12 @@
       "bow_tie": {
         "description": "蝴蝶结 — 威胁-屏障-后果",
         "name": "蝴蝶结",
-        "tooltip": "威胁可能性和后果严重性与预防和缓解屏障；屏障强度的剩余风险。"
+        "tooltip": "威胁可能性和后果严重性与预防和缓解屏障；屏障强度的残余风险。"
       },
       "checklist": {
         "description": "检查清单 — 合规百分比",
         "name": "检查清单",
-        "tooltip": "来自合格/不合格/部分项目的加权合规性—适用于审计和检查。"
+        "tooltip": "来自OK/不OK/部分项目的加权合规性—适用于审计和检查。"
       },
       "fine_kinney": {
         "description": "可能性 × 严重性 × 暴露乘积",
@@ -2398,7 +2939,7 @@
       "fmea": {
         "description": "失效模式与影响分析 — RPN",
         "name": "FMEA",
-        "tooltip": "严重度 (1–10) × 发生率 (1–10) × 检测度 (1–10) = RPN。适用于运营和维护；IEC 60812。"
+        "tooltip": "严重性（1-10）× 发生率（1-10）× 检测度（1-10）= RPN。适用于运营和维护；IEC 60812。"
       },
       "fta": {
         "description": "故障树分析 — 系统可靠性",
@@ -2413,51 +2954,51 @@
       "jsa": {
         "description": "作业安全分析 — 基于步骤的危险",
         "name": "JSA",
-        "tooltip": "每步严重度 × 可能性 / 控制有效性；建筑和现场作业必备。"
+        "tooltip": "每步严重性 × 可能性 / 控制有效性；建筑和现场作业必备。"
       },
       "l_matrix": {
-        "description": "5×5可能性-严重度风险矩阵",
+        "description": "5×5可能性-严重性风险矩阵",
         "name": "L型矩阵",
-        "tooltip": "选择可能性 (1–5) 和严重度 (1–5)；从25格彩色矩阵读取风险（符合土耳其职业健康安全实践）。"
+        "tooltip": "选择可能性（1-5）和严重性（1-5）；从25格彩色矩阵读取风险（符合土耳其职业健康安全实践）。"
       },
       "lopa": {
         "description": "保护层分析 — 频率降低",
         "name": "LOPA",
-        "tooltip": "将启动频率乘以保护层PFD值；常与工艺安全中的SIL目标配对。"
+        "tooltip": "将初始频率乘以保护层PFD值；常与过程安全中的SIL目标配对。"
       },
       "r_skor": {
         "description": "9参数加权现场筛选评分",
         "name": "R-SKOR 2D",
-        "tooltip": "RiskNova方法：九个参数 (C1–C9) 加权视觉和现场输入；支持从图像自动评分。"
+        "tooltip": "RiskNova方法：九个参数（C1-C9）权衡视觉和现场输入；支持从图像自动评分。"
       }
     },
     "panel": {
       "bowtie": {
-        "consequence": "后果严重度",
+        "consequence": "后果严重性",
         "mitigation": "缓解屏障",
         "prevention": "预防屏障",
         "rawRisk": "原始风险",
-        "residualRisk": "残余风险",
+        "residualRisk": "剩余风险",
         "threat": "威胁可能性"
       },
       "checklist": {
         "add": "+ 添加",
         "compliantLine": "{n} 合规",
         "itemPlaceholder": "控制项目…",
-        "itemsHeading": "检查项目 ({count})",
-        "nonCompliantLine": "{n} 不合规",
-        "partialLine": "{n} 部分合规",
+        "itemsHeading": "检查项目（{count}）",
+        "nonCompliantLine": "不合规 {n} 项",
+        "partialLine": "部分合规 {n} 项",
         "removeTitle": "移除",
-        "statusKismi": "部分合规",
+        "statusKismi": "部分",
         "statusNa": "不适用",
         "statusUygun": "合规",
         "statusUygunDegil": "不合规"
       },
       "fmea": {
-        "detection": "检测度 (D)",
+        "detection": "检测性 (D)",
         "formula": "S × O × D = RPN",
-        "occurrence": "发生度 (O)",
-        "severity": "严重度 (S)"
+        "occurrence": "发生率 (O)",
+        "severity": "严重性 (S)"
       },
       "fta": {
         "add": "+ 添加",
@@ -2480,7 +3021,7 @@
         "guideWord": "引导词",
         "likelihood": "可能性",
         "parameter": "工艺参数",
-        "severity": "严重性"
+        "severity": "严重程度"
       },
       "jsa": {
         "add": "+ 添加",
@@ -2494,7 +3035,7 @@
         "likelihood": "可能性",
         "max": "最大",
         "removeTitle": "移除",
-        "severity": "严重性",
+        "severity": "严重程度",
         "stepDefault": "步骤 {n}",
         "stepDescPlaceholder": "步骤描述…",
         "stepScoreIntro": "步骤评分：",
@@ -2502,17 +3043,17 @@
       },
       "lopa": {
         "addLayer": "+ 添加",
-        "consequence": "后果严重性",
-        "consequenceV1": "低",
-        "consequenceV2": "轻微",
+        "consequence": "后果严重程度",
+        "consequenceV1": "轻微",
+        "consequenceV2": "较小",
         "consequenceV3": "中等",
         "consequenceV4": "严重",
         "consequenceV5": "灾难性",
         "initFreq": "初始事件频率",
-        "layerDefault": "第{n}层",
-        "layerNamePlaceholder": "层名称",
-        "layerPfd": "层PFD",
-        "layersHeading": "保护层（{count}）",
+        "layerDefault": "层级 {n}",
+        "layerNamePlaceholder": "层级名称",
+        "layerPfd": "层级失效概率",
+        "layersHeading": "防护层 ({count})",
         "meetsTarget": "满足可容忍目标",
         "removeTitle": "移除",
         "riskReduction": "风险降低",
@@ -2530,7 +3071,7 @@
         "ohs_specialist": "职业健康安全专家",
         "other_health_personnel": "其他健康人员",
         "support_staff": "支持人员",
-        "workplace_physician": "职场医生"
+        "workplace_physician": "职场医师"
       }
     },
     "r2dParams": {
@@ -2540,14 +3081,14 @@
       },
       "c2": {
         "description": "缺少安全帽、手套、护目镜等",
-        "label": "个人防护用品缺口"
+        "label": "个人防护用品缺失"
       },
       "c3": {
         "description": "限制区域进入、无防护作业、坠落暴露",
         "label": "行为风险"
       },
       "c4": {
-        "description": "高温、噪音、振动和类似压力源",
+        "description": "高温、噪音、振动及类似压力源",
         "label": "环境压力"
       },
       "c5": {
@@ -2555,19 +3096,19 @@
         "label": "化学/电气"
       },
       "c6": {
-        "description": "出口堵塞、地面湿滑、通道障碍",
+        "description": "出口堵塞、湿滑地面、通道障碍",
         "label": "通道/阻塞"
       },
       "c7": {
-        "description": "防护装置被绕过、维护逾期",
+        "description": "防护装置被绕过，维护过期",
         "label": "机械/工艺"
       },
       "c8": {
-        "description": "叉车强度、线路交叉、行人-车辆冲突",
+        "description": "叉车强度，线路交叉，行人-车辆冲突",
         "label": "车辆交通"
       },
       "c9": {
-        "description": "培训缺口、缺少警示标识",
+        "description": "培训缺口，缺少警示标识",
         "label": "组织负荷"
       },
       "source": {
@@ -2586,7 +3127,7 @@
         "severityHeading": "严重性 ({n})"
       },
       "page": {
-        "analysisNotePlaceholder": "每行是一个风险主题或不符合项组。每行可以附加一张或多张照片。",
+        "analysisNotePlaceholder": "每行是一个风险主题或不合规组。每行可以附加一张或多张照片。",
         "analysisTitlePlaceholder": "现场风险分析",
         "describeRiskGroup": "简要描述风险组"
       },
@@ -2614,7 +3155,7 @@
         "description": "描述",
         "findings": "发现",
         "goToResults": "查看结果",
-        "images": "图片",
+        "images": "图像",
         "lines": "行数",
         "location": "位置",
         "method": "方法",
@@ -2628,7 +3169,7 @@
         "scoreDetailPrefix": "评分详情 —",
         "type": "类型",
         "update": "更新",
-        "visual": "图片",
+        "visual": "图像",
         "yes": "是"
       },
       "header": {
@@ -2636,20 +3177,20 @@
         "badgeAiManual": "AI + 人工发现",
         "badgeExport": "PDF / Word / Excel",
         "newAnalysis": "新分析",
-        "wizardDescription": "选择公司，定义团队，上传图像，然后运行AI+人工发现和评分。",
+        "wizardDescription": "选择公司，定义团队，上传图像，然后运行AI + 人工发现和评分。",
         "wizardTitle": "可视化风险分析"
       },
       "list": {
         "companyLabel": "公司/组织",
         "companyPlaceholder": "— 选择公司 —",
-        "confirmDelete": "您确定吗？",
+        "confirmDelete": "确定吗？",
         "deleteAnalysis": "删除",
-        "description": "选择公司，查看过往分析，或开始新分析。",
+        "description": "选择公司、查看历史分析或开始新分析。",
         "emptyDescription": "使用上方按钮开始该公司的首次风险分析。",
         "emptyTitle": "暂无分析",
         "eyebrow": "风险分析",
-        "findingsCount": "{count}项发现",
-        "historyCount": "{count}个已保存分析",
+        "findingsCount": "{count} 项发现",
+        "historyCount": "{count} 个已保存分析",
         "historyTitle": "{name} — 分析历史",
         "newAnalysis": "+ 开始新分析",
         "statusArchived": "已归档",
@@ -2661,16 +3202,16 @@
         "analysisComplete": "分析完成！",
         "analysisFailed": "无法完成分析。",
         "analysisFailedDetail": "AI分析失败。{detail}",
-        "analysisPartial": "AI分析部分完成。已处理{successful}/{total}张图像；{errors}张图像出现错误。",
-        "analysisStarting": "正在开始分析…",
-        "analysisSummary": "AI分析完成。{risks}个风险，{positive}个积极观察。",
-        "analyzingImageProgress": "正在分析图像{current}/{total}：{fileName}",
-        "analyzingRowImage": "正在分析图像：第{row}行，{fileName}…",
-        "genericAiError": "在OpenAI或Anthropic阶段发生错误。",
-        "needImageToAnalyze": "至少添加一张图像以开始分析。"
+        "analysisPartial": "AI分析部分完成。已处理 {successful}/{total} 张图片；{errors} 张图片出现错误。",
+        "analysisStarting": "开始分析…",
+        "analysisSummary": "AI分析完成。{risks} 个风险，{positive} 个积极观察。",
+        "analyzingImageProgress": "正在分析图片 {current}/{total}：{fileName}",
+        "analyzingRowImage": "正在分析图片：第 {row} 行，{fileName}…",
+        "genericAiError": "OpenAI或Anthropic阶段发生错误。",
+        "needImageToAnalyze": "至少添加一张图片以开始分析。"
       },
       "methodCard": {
-        "params": "参数 {count} 个",
+        "params": "{count} 个参数",
         "score": "评分："
       },
       "nav": {
@@ -2678,14 +3219,14 @@
         "aiStartShort": "开始AI分析"
       },
       "notifications": {
-        "savedBody": "{title} — {findings} 项发现，{critical} 项严重/高风险",
+        "savedBody": "{title} — {findings}项发现，{critical}项严重/高风险",
         "savedTitle": "风险分析已保存",
         "updatedTitle": "风险分析已更新"
       },
       "save": {
         "error": "保存时发生错误。",
         "noCompany": "未选择公司无法保存。",
-        "oversized": "{fileName} 超出10MB限制。请上传较小的图片后再保存。",
+        "oversized": "{fileName}超过10MB限制。请在保存前上传较小的图片。",
         "successNew": "分析保存成功！",
         "successUpdated": "分析更新成功！"
       },
@@ -2713,7 +3254,7 @@
         "certificate": "证书编号（如有）",
         "certificatePlaceholder": "如适用请输入",
         "fullName": "全名",
-        "noTeamBody": "该公司尚未设置团队成员。在公司页面中，打开团队选项卡，创建\"风险评估团队\"并添加成员——他们将自动显示在此处。",
+        "noTeamBody": "该公司尚未设置团队成员。在公司页面中，打开团队选项卡，创建\"风险评估团队\"并添加成员——他们将自动显示在这里。",
         "noTeamLink": "前往公司团队管理",
         "noTeamTitle": "未定义风险评估团队",
         "participantN": "参与者 {n}",
@@ -2723,23 +3264,23 @@
         "subtitle": "从已保存的员工中选择或手动添加参与者。",
         "title": "参与风险分析的人员",
         "titleField": "角色/职位描述",
-        "titlePlaceholder": "例如：A级专家"
+        "titlePlaceholder": "例如：A类专家"
       },
       "step3": {
         "addImage": "添加图片",
         "aiAnalyzing": "正在运行AI分析…",
         "aiStart": "开始AI风险分析",
-        "aiSub": "Nova AI会分别分析每张图片。",
-        "bulkUpload": "批量上传（每个作为单独行）",
+        "aiSub": "Nova AI会单独分析每张图片。",
+        "bulkUpload": "批量上传（每张作为单独行）",
         "deleteRow": "删除行",
         "newRow": "添加行",
-        "rowHint": "将广角和特写镜头归入此行。",
-        "rowN": "第 {n} 行",
+        "rowHint": "将广角和特写镜头归类到此行下。",
+        "rowN": "行 {n}",
         "rowTitle": "行标题",
         "rowTitlePlaceholder": "例如：堆放区域",
         "subtitle": "每行代表一个风险主题。上传图片，然后开始AI分析。",
         "summaryCompany": "公司",
-        "summaryImages": "图像",
+        "summaryImages": "图片",
         "summaryLocation": "位置",
         "summaryMethod": "方法",
         "title": "风险行和图像"
@@ -2754,15 +3295,15 @@
         "cannotAnalyzeBody": "此图像不适合进行风险分析。",
         "cannotAnalyzeTitle": "无法运行风险分析",
         "capaBadge": "CAPA候选",
-        "capaCandidate": "CAPA候选项",
-        "cleanNoRisk": "清除 — 未检测到风险",
+        "capaCandidate": "CAPA候选",
+        "cleanNoRisk": "清洁 — 未检测到风险",
         "confidenceHigh": "已确认发现",
         "confidenceLow": "建议验证",
         "confidenceMedium": "AI发现",
-        "criticalHigh": "关键/高",
+        "criticalHigh": "严重/高",
         "deleteFindingAria": "删除发现",
         "deleteFindingConfirm": "删除发现\"{title}\"？",
-        "deleteFindingTitle": "删除发现",
+        "deleteFindingTitle": "删除发现项",
         "detectedPrefix": "检测到：",
         "emptyResultsDesc": "在第3步中，上传图像并运行分析。",
         "emptyResultsTitle": "暂无结果",
@@ -2773,7 +3314,7 @@
         "manualPinTitle": "添加手动风险标记",
         "metaEyebrowArea": "区域评估",
         "metaEyebrowPositive": "积极观察",
-        "noRiskDetectedBody": "AI在此图像上未发现有意义的危险或不合规项。",
+        "noRiskDetectedBody": "AI在此图像上未发现有意义的危险或不合规情况。",
         "noRiskDetectedTitle": "未检测到风险",
         "noRiskThisImageBody": "AI在此图像上未发现具体危险。您仍可添加手动发现。",
         "noRiskThisImageTitle": "此图像无重大风险",
@@ -2798,7 +3339,7 @@
         "visualN": "图像{n}"
       },
       "steps": {
-        "context": "分析背景",
+        "context": "分析上下文",
         "images": "图像",
         "results": "结果",
         "team": "分析团队"
@@ -2808,9 +3349,9 @@
         "department": "请选择部门/单位。",
         "firmLocationDept": "请选择公司、地点和部门。",
         "location": "请选择工作地点。",
-        "participants": "请至少输入一位负责人的姓名和职务。",
-        "step2Participants": "请至少输入一位负责人的姓名和职务。",
-        "step3Images": "请至少添加一张图像。"
+        "participants": "请至少输入一名负责人的姓名和职务。",
+        "step2Participants": "请至少输入一名负责人的姓名和职务。",
+        "step3Images": "请至少添加一张图片。"
       }
     }
   },
@@ -2831,11 +3372,11 @@
     "defaultTitle": "风险评估报告",
     "departmentLabel": "部门：",
     "findingsByRowHeading": "基于行的风险发现",
-    "findingsImagesCount": "{findings} 项发现 · {images} 张图像",
-    "footerGeneratedBy": "此报告由 RiskNova 职业健康安全平台生成。",
+    "findingsImagesCount": "{findings} 项发现 · {images} 张图片",
+    "footerGeneratedBy": "本报告由 RiskNova 职业健康安全平台生成。",
     "footerMethodNote": "报告内容使用 {method} 方法进行评估。",
     "legalBasisHeading": "法规依据",
-    "locationLabel": "位置：",
+    "locationLabel": "地点：",
     "methods": {
       "fine_kinney": "Fine-Kinney",
       "fmea": "FMEA",
@@ -2866,29 +3407,29 @@
       "clickToSelect": "点击选择文件",
       "hintImage": "JPEG、PNG、WebP、GIF、SVG — 最大50MB",
       "hintUrlImage": "您可以粘贴外部图片URL。",
-      "hintUrlVideo": "YouTube和Vimeo链接将自动转换为嵌入播放器。",
+      "hintUrlVideo": "YouTube和Vimeo链接将自动转换为嵌入式播放器。",
       "hintVideo": "MP4、WebM — 最大50MB",
       "labelImageUrl": "图片URL",
-      "labelVideoUrl": "视频网址（YouTube、Vimeo、MP4）",
+      "labelVideoUrl": "视频URL（YouTube、Vimeo、MP4）",
       "libraryEmpty": "暂无媒体文件。请从上传标签页添加文件。",
       "libraryLoading": "加载中…",
       "placeholderImageUrl": "https://…",
       "placeholderVideoUrl": "https://youtube.com/watch?v=…",
-      "tabLibrary": "媒体库（{count}）",
+      "tabLibrary": "资料库 ({count})",
       "tabUpload": "上传",
-      "tabUrl": "网址",
+      "tabUrl": "URL",
       "uploadError": "上传失败",
       "uploading": "上传中…",
-      "useUrl": "使用网址"
+      "useUrl": "使用URL"
     }
   },
   "solutionCenter": {
     "chat": "聊天",
     "copy": "复制",
-    "description": "Nova 是运营职业健康安全代理，能够解释法规、引导您到正确的模块，并启动文档或工作流操作。",
+    "description": "Nova是运营职业健康安全代理，能够解释法规，引导您到正确的模块，并启动文档或工作流操作。",
     "documents": "我的文档",
     "history": "历史记录",
-    "inputPlaceholder": "告诉 Nova 您想要做什么...",
+    "inputPlaceholder": "告诉Nova您想要做什么...",
     "queries": "查询",
     "referenced": "带参考资料",
     "save": "保存",
@@ -2899,53 +3440,36 @@
   "solutions": {
     "commercial": {
       "enterpriseCta": "创建报价请求",
-      "enterpriseFooterHint": "为客户提供 OSGB 服务？",
-      "enterpriseFooterLink": "前往 OSGB 套餐页面",
-      "enterpriseSecondaryCta": "联系我们获取 OSGB 套餐",
-      "enterpriseSectionIntro": "对于多站点组织、现场密集型运营和定制设置，此路径不支持卡片支付。请分享您的情况，我们将为您提供定制报价。",
+      "enterpriseFooterHint": "为客户提供OSGB服务？",
+      "enterpriseFooterLink": "前往OSGB套餐页面",
+      "enterpriseSecondaryCta": "联系我们获取OSGB套餐",
+      "enterpriseSectionIntro": "对于多站点组织、现场密集型运营和定制设置，此路径不支持卡支付。请分享您的情况，我们将提供量身定制的报价。",
       "enterpriseSectionTitle": "公司/企业报价",
       "offers": {
         "osgb_starter": {
           "ctaLabel": "申请入门版报价",
-          "name": "OSGB 入门版",
+          "name": "OSGB入门版",
           "priceFinePrint": "指示性起始价格段。最终定价取决于报价后的公司数量和席位数。",
-          "pricePeriod": "起价/月",
+          "pricePeriod": "起 / 月",
           "seatsLabel": "2个活跃团队席位",
           "summary": "适用于投资组合有限的小型OSGB团队——与个人入门版{individualStarter}/月不同，它涵盖多站点和团队工作流程。",
-          "workspacesLabel": "5个活跃公司/工作区",
-          "features": [
-            "Personnel module and invitation flows",
-            "Tasks, work tracking and assignment board",
-            "Client workplace portfolio view",
-            "Announcements and core operational flows"
-          ]
+          "workspacesLabel": "5个活跃公司/工作区"
         },
         "osgb_team": {
-          "ctaLabel": "申请团队版报价",
-          "name": "OSGB 团队版",
-          "priceFinePrint": "指示性中档价格段；定制报价反映现场强度、报告和席位需求。",
-          "pricePeriod": "起价/月",
+          "ctaLabel": "申请团队报价",
+          "name": "OSGB团队版",
+          "priceFinePrint": "指示性中段价格；定制报价反映现场强度、报告和席位需求。",
+          "pricePeriod": "起 / 月",
           "seatsLabel": "5个活跃团队席位",
           "summary": "成长中的OSGB：更多公司、现场协调和团队规模。",
-          "workspacesLabel": "15个活跃公司/工作区",
-          "features": [
-            "Everything in Starter",
-            "Advanced reporting and exports",
-            "Field audits and checklists (per agreement)",
-            "Priority solution / onboarding channel"
-          ]
+          "workspacesLabel": "15个活跃公司/工作区"
         }
       },
       "osgbFooterHint": "单一雇主跨多个地点？",
       "osgbFooterLink": "查看企业解决方案页面",
-      "osgbSectionIntro": "金额为美元指示性起始价格段；税费、汇率和合同范围在报价确定时确认。无卡片结账——我们在了解您的结构后调整限制和定价。",
+      "osgbSectionIntro": "金额为美元指示性起始价格段；税费、汇率和合同范围在报价确定时确认。无信用卡结账——我们在了解您的结构后调整限制和定价。",
       "osgbSectionTitle": "OSGB套餐",
-      "recommended": "推荐",
-      "enterpriseHighlights": [
-        "Multi-site companies and institutions",
-        "Tailored quote aligned with operational volume",
-        "Integration and onboarding planning when needed"
-      ]
+      "recommended": "推荐"
     },
     "enterprisePage": {
       "ctaForm": "联系我们（表单）",
@@ -2953,10 +3477,10 @@
       "footerNoteLead": "为客户提供OSGB服务？",
       "footerNoteLink": "OSGB套餐页面",
       "footerNoteTrail": "。",
-      "heroBody": "我们不为企业使用提供自助卡片结账。请分享您的需求，我们的销售团队将跟进提供定制报价、限制和实施方案。",
+      "heroBody": "我们不为企业用户提供自助信用卡结账服务。请分享您的需求，我们的销售团队将跟进提供定制报价、限制和实施方案。",
       "heroEyebrow": "企业版",
-      "heroTitle": "通过定制入职在您的各个地点实现一致的职业健康安全运营。",
-      "metaDescription": "多站点组织专业职业健康安全需求的报价请求和联系。",
+      "heroTitle": "通过定制入职培训在您的各个地点实现一致的职业健康安全运营。",
+      "metaDescription": "为有专业职业健康安全需求的多站点组织提供报价申请和联系服务。",
       "metaTitle": "企业解决方案和报价 | RiskNova"
     },
     "leadDialog": {
@@ -2969,7 +3493,7 @@
       "enterprise": {
         "badge": "公司/企业联系",
         "companyLabel": "公司/组织名称",
-        "description": "这里没有付款步骤。提交后，我们的销售或解决方案团队将跟进，协商定制限制和定价。",
+        "description": "这里没有付款步骤。当您提交时，我们的销售或解决方案团队会跟进，协商定制限额和定价。",
         "employeeLabel": "员工总数",
         "primaryCta": "发送请求",
         "professionalLabel": "参与协调的人员",
@@ -2989,8 +3513,8 @@
         "description": "分享您服务多少客户、团队结构和运营强度，以便我们提出合适的套餐和迁移选项。",
         "employeeLabel": "这些工作场所的员工总数",
         "primaryCta": "发送请求",
-        "professionalLabel": "专家/医师/DSP人员数量",
-        "scaleLabel": "您服务的活跃客户企业",
+        "professionalLabel": "专家/医师/DSP人数",
+        "scaleLabel": "您服务的活跃客户公司",
         "title": "告诉我们您的OSGB情况"
       },
       "phoneLabel": "电话",
@@ -2998,8 +3522,8 @@
       "professionalPlaceholder": "例如 8",
       "regionChip": "地区：{code}",
       "scalePlaceholder": "例如 12",
-      "submittedBody": "我们的销售团队将很快联系您，明确范围并分享报价和入职选项。此流程中无需卡付款——条款通过邮件或电话确认。",
-      "submittedTitle": "请求已收到",
+      "submittedBody": "我们的销售团队将很快联系您，以明确范围并分享报价和入职选项。此流程中无需卡付款——条款通过电子邮件或电话达成一致。",
+      "submittedTitle": "已收到请求",
       "submitting": "发送中…",
       "workEmailLabel": "工作邮箱",
       "workEmailPlaceholder": "you@company.com"
@@ -3010,13 +3534,13 @@
       "footerNoteLead": "单一雇主跨多个地点？",
       "footerNoteLink": "查看企业解决方案页面",
       "footerNoteTrail": "。",
-      "heroBody": "明确人员、任务跟踪和客户站点。个人计划从{starterPrice}/月起步版开始；OSGB模式涵盖多站点组合和额外席位，因此以下数字为指示性美元区间——确切条款在报价表单或注册流程后确认。",
+      "heroBody": "明确人员、任务跟踪和客户站点。个人计划从 {starterPrice}/月 入门版开始；OSGB 模式涵盖多站点组合和额外席位，因此以下数字为指示性美元区间——确切条款在报价表单或注册流程后确认。",
       "heroEyebrow": "OSGB",
       "heroTitleAccent": "一个面板",
       "heroTitleLead": "将您的客户组合和团队整合到",
-      "heroTitleTrail": "。",
-      "metaDescription": "为服务多个工作场所的OSGB提供的套餐选项和定制报价请求。",
-      "metaTitle": "OSGB解决方案和报价 | RiskNova"
+      "heroTitleTrail": ".",
+      "metaDescription": "为服务多个工作场所的 OSGB 提供的套餐选项和定制报价请求。",
+      "metaTitle": "OSGB 解决方案和报价 | RiskNova"
     }
   },
   "workplaceRisk": {
@@ -3029,7 +3553,7 @@
       "controlled": "受控",
       "critical": "严重",
       "high": "高",
-      "incomplete": "未评估",
+      "incomplete": "未充分评估",
       "medium": "中等"
     }
   },
@@ -3042,14 +3566,5 @@
     "noWorkspace": "无工作区",
     "switcher": "工作区",
     "switchError": "无法切换工作区"
-  },
-  "errors": {
-    "global": {
-      "eyebrow": "Critical error",
-      "title": "Something unexpected happened",
-      "description": "The error was reported to administrators. Use the button below to try again.",
-      "retry": "Try again",
-      "unknownClientError": "Unknown client error"
-    }
   }
 }

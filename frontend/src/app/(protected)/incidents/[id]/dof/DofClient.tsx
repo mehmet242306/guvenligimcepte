@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,27 +37,32 @@ type UploadedPhoto = {
   caption: string;
 };
 
-const statusLabels: Record<DofStatus, string> = {
-  open: "Açık",
-  in_progress: "Devam Ediyor",
-  completed: "Tamamlandı",
-  verified: "Doğrulandı",
-};
-
 type CategoryKey = "man" | "machine" | "method" | "material" | "environment" | "measurement";
 
-const ishikawaCategories: { key: CategoryKey; label: string; color: string; desc: string }[] = [
-  { key: "man", label: "İnsan", color: "#B8860B", desc: "Eğitim eksikliği, dikkatsizlik, yorgunluk, deneyimsizlik..." },
-  { key: "machine", label: "Makine", color: "#D4A017", desc: "Arızalı ekipman, bakım eksikliği, koruyucu eksikliği..." },
-  { key: "method", label: "Metot", color: "#F59E0B", desc: "Prosedür eksikliği, yanlış iş talimatı, yetersiz planlama..." },
-  { key: "material", label: "Malzeme", color: "#FB923C", desc: "Kalitesiz malzeme, yanlış depolama, tehlikeli kimyasal..." },
-  { key: "environment", label: "Çevre", color: "#10B981", desc: "Yetersiz aydınlatma, gürültü, sıcaklık, zemin koşulları..." },
-  { key: "measurement", label: "Ölçüm", color: "#38BDF8", desc: "Kalibrasyon hatası, yanlış ölçüm, denetim eksikliği..." },
-];
+const ISHIKAWA_COLORS: Record<CategoryKey, string> = {
+  man: "#B8860B",
+  machine: "#D4A017",
+  method: "#F59E0B",
+  material: "#FB923C",
+  environment: "#10B981",
+  measurement: "#38BDF8",
+};
 
 export function DofClient() {
+  const t = useTranslations("incidents.dof");
   const params = useParams();
   const incidentId = params.id as string;
+
+  const ishikawaCategories = useMemo(
+    () =>
+      (Object.keys(ISHIKAWA_COLORS) as CategoryKey[]).map((key) => ({
+        key,
+        label: t(`ishikawa.categories.${key}.label`),
+        desc: t(`ishikawa.categories.${key}.desc`),
+        color: ISHIKAWA_COLORS[key],
+      })),
+    [t],
+  );
 
   const [incident, setIncident] = useState<IncidentRecord | null>(null);
   const [dof, setDof] = useState<DofRecord | null>(null);
@@ -206,14 +212,14 @@ export function DofClient() {
         incident.accidentCauseDescription,
         incident.generalActivity,
         incident.specificActivity,
-        incident.toolUsed ? `Ekipman: ${incident.toolUsed}` : null,
+        incident.toolUsed ? t("ai.equipmentPrefix", { tool: incident.toolUsed }) : null,
       ].filter(Boolean);
 
       const ishikawaResult = await requestIshikawaAnalysis({
         incidentType: incident.incidentType,
         companyWorkspaceId: incident.companyWorkspaceId,
         location: incident.incidentLocation ?? incident.incidentDepartment ?? "",
-        narrative: narrativeParts.join("\n").trim() || "Olay açıklaması henüz girilmedi.",
+        narrative: narrativeParts.join("\n").trim() || t("ai.noDescription"),
         affectedCount: 1,
       });
 
@@ -270,7 +276,7 @@ export function DofClient() {
         );
       }
     } catch (error) {
-      setAiError(error instanceof Error ? error.message : "AI şu an meşgul, manuel doldurabilirsiniz.");
+      setAiError(error instanceof Error ? error.message : t("ai.busy"));
     } finally {
       setAiLoading(false);
     }
@@ -319,23 +325,33 @@ export function DofClient() {
   return (
     <div className="page-stack">
       <PageHeader
-        title={dof ? dof.dofCode : "Yeni DÖF"}
-        description="Düzeltici ve Önleyici Faaliyet + Kök Neden Analizi"
+        title={dof ? dof.dofCode : t("header.newDof")}
+        description={t("header.description")}
         meta={
           <Link href={`/incidents/${incidentId}`} className="text-sm text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="mr-1 inline size-4" /> Olay Detayına Dön
+            <ArrowLeft className="mr-1 inline size-4" /> {t("header.backToIncident")}
           </Link>
         }
         actions={
           <div className="flex items-center gap-2">
-            {dof && <Badge variant={status === "completed" ? "success" : status === "open" ? "danger" : "warning"}>{statusLabels[status]}</Badge>}
+            {dof && (
+              <Badge variant={status === "completed" ? "success" : status === "open" ? "danger" : "warning"}>
+                {status === "open"
+                  ? t("status.open")
+                  : status === "in_progress"
+                    ? t("status.in_progress")
+                    : status === "completed"
+                      ? t("status.completed")
+                      : t("status.verified")}
+              </Badge>
+            )}
             {incident && (
               <>
                 <Button variant="outline" size="sm" onClick={() => exportDofAsPDF({ incident, dof, ishikawa })}>
-                  <Download className="mr-1 size-3.5" /> PDF
+                  <Download className="mr-1 size-3.5" /> {t("export.pdf")}
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => exportDofAsWord({ incident, dof, ishikawa })}>
-                  <FileText className="mr-1 size-3.5" /> Word
+                  <FileText className="mr-1 size-3.5" /> {t("export.word")}
                 </Button>
               </>
             )}
@@ -350,14 +366,12 @@ export function DofClient() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <GitBranch className="size-5 text-[var(--gold)]" />
-            Kök Neden Analizi - İshikawa (Balıkkılçığı)
+            {t("ishikawa.title")}
           </CardTitle>
           <div className="flex items-center justify-between">
-            <CardDescription>
-              6M metoduyla olayın kök nedenlerini sistematik olarak analiz edin.
-            </CardDescription>
+            <CardDescription>{t("ishikawa.subtitle")}</CardDescription>
             <Button variant="accent" size="sm" onClick={() => void applyAISuggestion()} disabled={aiLoading}>
-              <Sparkles className="mr-1 size-3.5" /> AI ile Doldur
+              <Sparkles className="mr-1 size-3.5" /> {t("ishikawa.aiFill")}
             </Button>
           </div>
         </CardHeader>
@@ -389,7 +403,7 @@ export function DofClient() {
                   {causes[cat.key].length === 0 && (
                     <button type="button" onClick={() => addCause(cat.key)}
                       className="w-full rounded-lg border border-dashed border-border py-2 text-xs text-muted-foreground hover:border-primary/30 hover:text-foreground transition-colors">
-                      + Neden ekle
+                      {t("ishikawa.addCause")}
                     </button>
                   )}
                   {causes[cat.key].map((cause, idx) => (
@@ -397,7 +411,7 @@ export function DofClient() {
                       <div className="size-1.5 shrink-0 rounded-full" style={{ background: cat.color }} />
                       <input type="text" value={cause}
                         onChange={(e) => updateCause(cat.key, idx, e.target.value)}
-                        placeholder={`${cat.label} nedeni...`}
+                        placeholder={t("ishikawa.causePlaceholder", { category: cat.label })}
                         className="h-8 flex-1 rounded-lg border border-border bg-input px-2 text-xs text-foreground placeholder:text-muted-foreground" />
                       <button type="button" onClick={() => removeCause(cat.key, idx)} className="text-muted-foreground hover:text-danger">
                         <Trash2 className="size-3" />
@@ -411,13 +425,13 @@ export function DofClient() {
 
           <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-foreground">Kök Neden Sonucu</span>
-              <span className="text-xs text-muted-foreground">{totalCauses} neden belirlendi</span>
+              <span className="text-sm font-semibold text-foreground">{t("ishikawa.conclusionTitle")}</span>
+              <span className="text-xs text-muted-foreground">{t("ishikawa.causesCount", { count: totalCauses })}</span>
             </div>
             <Textarea
               value={rootCauseConclusion}
               onChange={(e) => setRootCauseConclusion(e.target.value)}
-              placeholder="Tüm analiz sonucunda belirlenen kök neden(ler)..."
+              placeholder={t("ishikawa.conclusionPlaceholder")}
             />
           </div>
         </CardContent>
@@ -430,12 +444,22 @@ export function DofClient() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ClipboardCheck className="size-5 text-[var(--gold)]" />
-            DÖF Detayı
+            {t("dofDetail.title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Textarea label="Kök Neden Özeti" value={rootCause} onChange={(e) => setRootCause(e.target.value)} placeholder="İshikawa analizinden çıkan temel neden..." />
-          <Textarea label="Detaylı Analiz (5 Neden vb.)" value={rootCauseAnalysis} onChange={(e) => setRootCauseAnalysis(e.target.value)} placeholder="5 Neden analizi veya ek detaylar..." />
+          <Textarea
+            label={t("dofDetail.rootSummaryLabel")}
+            value={rootCause}
+            onChange={(e) => setRootCause(e.target.value)}
+            placeholder={t("dofDetail.rootSummaryPlaceholder")}
+          />
+          <Textarea
+            label={t("dofDetail.analysisLabel")}
+            value={rootCauseAnalysis}
+            onChange={(e) => setRootCauseAnalysis(e.target.value)}
+            placeholder={t("dofDetail.analysisPlaceholder")}
+          />
         </CardContent>
       </Card>
 
@@ -445,29 +469,29 @@ export function DofClient() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Düzeltici Faaliyetler</CardTitle>
+            <CardTitle>{t("corrective.title")}</CardTitle>
             <Button variant="outline" size="sm" onClick={() => addAction("corrective")}>
-              <Plus className="mr-1 size-3.5" /> Ekle
+              <Plus className="mr-1 size-3.5" /> {t("corrective.add")}
             </Button>
           </div>
-          <CardDescription>Olayın tekrar etmemesi için yapılacak düzeltici aksiyonlar.</CardDescription>
+          <CardDescription>{t("corrective.description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {correctiveActions.length === 0 && (
-            <p className="py-4 text-center text-sm text-muted-foreground">Henüz düzeltici faaliyet eklenmedi.</p>
+            <p className="py-4 text-center text-sm text-muted-foreground">{t("corrective.empty")}</p>
           )}
           {correctiveActions.map((a, idx) => (
             <div key={idx} className="rounded-xl border border-border bg-muted/50 p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <input type="checkbox" checked={a.done} onChange={(e) => updateAction("corrective", idx, "done", e.target.checked)} className="size-4 rounded" />
-                  <span className="text-xs font-medium text-muted-foreground">Faaliyet {idx + 1}</span>
+                  <span className="text-xs font-medium text-muted-foreground">{t("corrective.itemLabel", { n: idx + 1 })}</span>
                 </div>
                 <button type="button" onClick={() => removeAction("corrective", idx)} className="text-xs text-danger hover:underline"><Trash2 className="size-3.5" /></button>
               </div>
-              <Input placeholder="Faaliyet açıklaması" value={a.action} onChange={(e) => updateAction("corrective", idx, "action", e.target.value)} />
+              <Input placeholder={t("corrective.actionPlaceholder")} value={a.action} onChange={(e) => updateAction("corrective", idx, "action", e.target.value)} />
               <div className="grid gap-3 sm:grid-cols-2">
-                <Input placeholder="Sorumlu" value={a.assignedTo} onChange={(e) => updateAction("corrective", idx, "assignedTo", e.target.value)} />
+                <Input placeholder={t("corrective.assigneePlaceholder")} value={a.assignedTo} onChange={(e) => updateAction("corrective", idx, "assignedTo", e.target.value)} />
                 <Input type="date" value={a.deadline} onChange={(e) => updateAction("corrective", idx, "deadline", e.target.value)} />
               </div>
             </div>
@@ -481,29 +505,29 @@ export function DofClient() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Önleyici Faaliyetler</CardTitle>
+            <CardTitle>{t("preventive.title")}</CardTitle>
             <Button variant="outline" size="sm" onClick={() => addAction("preventive")}>
-              <Plus className="mr-1 size-3.5" /> Ekle
+              <Plus className="mr-1 size-3.5" /> {t("preventive.add")}
             </Button>
           </div>
-          <CardDescription>Benzer olayların gelecekte oluşmaması için alınacak önlemler.</CardDescription>
+          <CardDescription>{t("preventive.description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {preventiveActions.length === 0 && (
-            <p className="py-4 text-center text-sm text-muted-foreground">Henüz önleyici faaliyet eklenmedi.</p>
+            <p className="py-4 text-center text-sm text-muted-foreground">{t("preventive.empty")}</p>
           )}
           {preventiveActions.map((a, idx) => (
             <div key={idx} className="rounded-xl border border-border bg-muted/50 p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <input type="checkbox" checked={a.done} onChange={(e) => updateAction("preventive", idx, "done", e.target.checked)} className="size-4 rounded" />
-                  <span className="text-xs font-medium text-muted-foreground">Faaliyet {idx + 1}</span>
+                  <span className="text-xs font-medium text-muted-foreground">{t("preventive.itemLabel", { n: idx + 1 })}</span>
                 </div>
                 <button type="button" onClick={() => removeAction("preventive", idx)} className="text-xs text-danger hover:underline"><Trash2 className="size-3.5" /></button>
               </div>
-              <Input placeholder="Faaliyet açıklaması" value={a.action} onChange={(e) => updateAction("preventive", idx, "action", e.target.value)} />
+              <Input placeholder={t("preventive.actionPlaceholder")} value={a.action} onChange={(e) => updateAction("preventive", idx, "action", e.target.value)} />
               <div className="grid gap-3 sm:grid-cols-2">
-                <Input placeholder="Sorumlu" value={a.assignedTo} onChange={(e) => updateAction("preventive", idx, "assignedTo", e.target.value)} />
+                <Input placeholder={t("preventive.assigneePlaceholder")} value={a.assignedTo} onChange={(e) => updateAction("preventive", idx, "assignedTo", e.target.value)} />
                 <Input type="date" value={a.deadline} onChange={(e) => updateAction("preventive", idx, "deadline", e.target.value)} />
               </div>
             </div>
@@ -515,19 +539,19 @@ export function DofClient() {
       {/* BÖLÜM 5: Atama ve Durum                                      */}
       {/* ============================================================ */}
       <Card>
-        <CardHeader><CardTitle>Atama ve Durum</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{t("assignment.title")}</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-3">
-            <Input label="Sorumlu Kişi" value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} />
-            <Input label="Son Tarih" type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
+            <Input label={t("assignment.assigneeLabel")} value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} />
+            <Input label={t("assignment.deadlineLabel")} type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
             <div>
-              <label className="mb-1 block text-sm font-medium text-foreground">Durum</label>
+              <label className="mb-1 block text-sm font-medium text-foreground">{t("assignment.statusLabel")}</label>
               <select value={status} onChange={(e) => handleStatusChange(e.target.value as DofStatus)}
                 className="h-10 w-full rounded-xl border border-border bg-input px-3 text-sm text-foreground">
-                <option value="open">Açık</option>
-                <option value="in_progress">Devam Ediyor</option>
-                <option value="completed">Tamamlandı</option>
-                <option value="verified">Doğrulandı</option>
+                <option value="open">{t("status.open")}</option>
+                <option value="in_progress">{t("status.in_progress")}</option>
+                <option value="completed">{t("status.completed")}</option>
+                <option value="verified">{t("status.verified")}</option>
               </select>
             </div>
           </div>
@@ -543,14 +567,14 @@ export function DofClient() {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <ImagePlus className="size-5 text-[var(--gold)]" />
-                Fotoğraflar
+                {t("photos.title")}
               </CardTitle>
-              <CardDescription>Sorunla ilgili fotoğrafları ekleyin (olay yeri, hasar, düzeltme öncesi/sonrası).</CardDescription>
+              <CardDescription>{t("photos.description")}</CardDescription>
             </div>
             <label className="cursor-pointer">
               <input type="file" accept="image/*" multiple onChange={handlePhotoUpload} className="hidden" />
               <span className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary">
-                <ImagePlus className="size-4" /> Fotoğraf Ekle
+                <ImagePlus className="size-4" /> {t("photos.addButton")}
               </span>
             </label>
           </div>
@@ -560,21 +584,21 @@ export function DofClient() {
             <label className="flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-dashed border-border py-10 text-center transition-colors hover:border-primary/30">
               <input type="file" accept="image/*" multiple onChange={handlePhotoUpload} className="hidden" />
               <ImagePlus className="size-8 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Fotoğraf yüklemek için tıklayın</span>
+              <span className="text-sm text-muted-foreground">{t("photos.emptyHint")}</span>
             </label>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {photos.map((photo) => (
                 <div key={photo.id} className="group relative rounded-xl border border-border overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={photo.previewUrl} alt={photo.caption || "DÖF fotoğrafı"} className="aspect-video w-full object-cover" />
+                  <img src={photo.previewUrl} alt={photo.caption || t("photos.alt")} className="aspect-video w-full object-cover" />
                   <button type="button" onClick={() => removePhoto(photo.id)}
                     className="absolute right-2 top-2 inline-flex size-7 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100">
                     <X className="size-4" />
                   </button>
                   <div className="p-3">
                     <input type="text" value={photo.caption} onChange={(e) => updatePhotoCaption(photo.id, e.target.value)}
-                      placeholder="Fotoğraf açıklaması..."
+                      placeholder={t("photos.captionPlaceholder")}
                       className="h-8 w-full rounded-lg border border-border bg-input px-2 text-xs text-foreground placeholder:text-muted-foreground" />
                   </div>
                 </div>
@@ -587,7 +611,7 @@ export function DofClient() {
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={saving} size="lg">
           <Save className="mr-2 size-4" />
-          {saving ? "Kaydediliyor..." : "Tümünü Kaydet"}
+          {saving ? t("save.saving") : t("save.all")}
         </Button>
       </div>
 
@@ -599,41 +623,37 @@ export function DofClient() {
               <span className="inline-flex size-10 items-center justify-center rounded-xl bg-warning/10">
                 <AlertTriangle className="size-5 text-warning" />
               </span>
-              <h3 className="text-lg font-semibold text-foreground">DÖF Kapatma Onayı</h3>
+              <h3 className="text-lg font-semibold text-foreground">{t("modal.title")}</h3>
             </div>
 
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                DÖF&apos;ü <strong>{pendingStatus === "completed" ? "tamamlandı" : "doğrulandı"}</strong> olarak işaretlemek üzeresiniz.
+                {pendingStatus === "completed" ? t("modal.leadCompleted") : t("modal.leadVerified")}
               </p>
 
               {photos.length === 0 && (
                 <div className="rounded-xl border border-warning/30 bg-warning/5 p-4">
-                  <p className="text-sm font-medium text-warning">Henüz fotoğraf eklenmedi!</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    DÖF kapatmadan önce düzeltme sonrası fotoğraf eklemek ister misiniz?
-                  </p>
+                  <p className="text-sm font-medium text-warning">{t("modal.noPhotosTitle")}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{t("modal.noPhotosBody")}</p>
                 </div>
               )}
 
-              <p className="text-sm text-muted-foreground">
-                Tüm düzeltici ve önleyici faaliyetler tamamlandı mı?
-              </p>
+              <p className="text-sm text-muted-foreground">{t("modal.checklist")}</p>
 
               <div className="flex gap-3">
                 <Button variant="outline" className="flex-1" onClick={() => { setShowCloseModal(false); setPendingStatus(null); }}>
-                  İptal
+                  {t("modal.cancel")}
                 </Button>
                 {photos.length === 0 && (
                   <label className="flex-1 cursor-pointer">
                     <input type="file" accept="image/*" multiple onChange={(e) => { handlePhotoUpload(e); setShowCloseModal(false); setPendingStatus(null); }} className="hidden" />
                     <span className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-secondary">
-                      <ImagePlus className="size-4" /> Fotoğraf Ekle
+                      <ImagePlus className="size-4" /> {t("modal.addPhoto")}
                     </span>
                   </label>
                 )}
                 <Button className="flex-1" onClick={confirmClose}>
-                  Onayla ve Kapat
+                  {t("modal.confirm")}
                 </Button>
               </div>
             </div>

@@ -3,32 +3,87 @@
     "companyTypeEnterprise": "기업",
     "companyTypeIndividual": "개인",
     "companyTypeOsgb": "OSGB",
-    "detailLink": "회사 상세정보",
+    "detailLink": "회사 세부정보",
     "detailLinkTitle": "회사 상세 페이지로 이동",
     "inactiveBadge": "비활성 회사",
     "nacePrefix": "NACE",
     "personnelCountTitle": "활성 / 전체 인원"
+  },
+  "analysis": {
+    "rcaIntro": {
+      "bestForLabel": "적합한 경우:",
+      "description": "각 방법의 용도, 선택 시기, 예시 시나리오를 확인하세요.",
+      "exampleLabel": "예시:",
+      "methods": {
+        "bow_tie": {
+          "bestFor": "위험 + 장벽 사고; 고위험 작업 및 공정 안전.",
+          "example": "화학물질 누출: 위협(밸브 고장, 압력), 예방 장벽(경보, 밸브 테스트), 결과(부상, 화재), 완화 장벽(응급 대응, 스프링클러).",
+          "label": "보우타이"
+        },
+        "fault_tree": {
+          "bestFor": "복잡한 시스템, 논리적 조건(AND/OR), 확률적 사고.",
+          "example": "폭발 위험: 점화원, 가연성 분위기, 환기 실패 등에 대한 AND/OR 게이트가 있는 최상위 사건 \"화재 발생\".",
+          "label": "결함 트리(FTA)"
+        },
+        "five_why": {
+          "bestFor": "빠른 단일 초점 근본원인 확인 및 단순 인과관계 체인.",
+          "example": "유압 프레스 오일 누출 → 왜? 씰 마모 → 왜? 정기 점검 없음 → 왜? 점검 계획 없음 → 근본원인: 점검 관리 시스템 부재.",
+          "label": "5 Whys"
+        },
+        "ishikawa": {
+          "bestFor": "다중 요인 사건, 팀 브레인스토밍, 시각적 분류(6M).",
+          "example": "생산 라인 제품 불량 증가; 사람/기계/방법/재료/측정/환경 하에서 가능한 원인을 매핑하고 팀과 논의.",
+          "label": "이시카와(어골도)"
+        },
+        "mort": {
+          "bestFor": "관리 시스템 약점; 주요 사건 후 조직 학습.",
+          "example": "대형 사고 후: 감독 공백, 정책 허점, 보증 시스템 실패, 교훈을 체계적으로 그룹화.",
+          "label": "MORT"
+        },
+        "r2d_rca": {
+          "badge": "RiskNova 독점 · 권장",
+          "bestFor": "수치적, 반복 가능한 측정; AI 지원 점수; 지속적 모니터링 및 디지털 트윈 정렬.",
+          "example": "6개월 동안 벤치에서 운영자 개입이 증가; 어떤 차원이 위험 프로필을 깨뜨렸나요? AI가 9개 차원에서 t₀/t₁을 생성하고 비교하여 임계값 초과 시 주요 근본 원인을 찾아냅니다.",
+          "label": "R₂D-RCA"
+        },
+        "scat": {
+          "bestFor": "전통적인 산업안전보건 사고 조사: 즉시 → 기본 → 체계적 원인 연쇄.",
+          "example": "낙상 후: 즉시 사건(낙상), 즉시 원인(미끄러운 바닥), 기본 원인(교육 부족), 체계적 격차(점검 절차 없음).",
+          "label": "SCAT (조류 모델)"
+        }
+      },
+      "methodsHeading": "7가지 방법 · 언제 어떤 것을?",
+      "panelAria": "근본 원인 분석 가이드 패널",
+      "processHeading": "일반적인 프로세스",
+      "tipsHeading": "결정 팁",
+      "title": "근본 원인 분석 가이드",
+      "toggleCollapse": "가이드 접기",
+      "toggleExpand": "가이드 펼치기",
+      "whatIsBody": "표면적 증상이 아닌 사건의 구조적 또는 체계적 동인을 찾는 체계적 기법입니다. 잘 적용하면 동일한 유형의 사고 재발을 방지합니다: 증상뿐만 아니라 질병을 치료합니다. 산업안전보건에서 터키 법률 6331과 ISO 45001은 사고에 대한 근본 원인 작업을 요구합니다.",
+      "whatIsHeading": "근본 원인 분석이란?",
+      "whenHeading": "언제 사용되나요?"
+    }
   },
   "auth": {
     "demoModal": {
       "bodyDisabled": "관리자가 데모 액세스를 비활성화했습니다.",
       "bodyExpired": "데모 시간이 종료되었습니다. RiskNova 데모 세션은 최대 {hours}시간 유효하며, 이후 세션이 종료됩니다.",
       "calloutDisabledLead": "참고:",
-      "calloutDisabledRest": "데모 계정은 일반적으로 {hours}시간으로 제한되며, 관리자에 의해 액세스가 종료될 수도 있습니다.",
+      "calloutDisabledRest": "데모 계정은 보통 {hours}시간으로 제한되며, 관리자가 액세스를 종료했을 수도 있습니다.",
       "calloutExpiredLead": "알림:",
-      "calloutExpiredRest": "데모 탐색을 {hours}시간 내에 완료하세요. 종료 후 무료 또는 상용 계정을 생성하여 계속 이용할 수 있습니다.",
+      "calloutExpiredRest": "{hours}시간 내에 데모 탐색을 완료하세요. 종료 후 무료 또는 상용 계정을 생성하여 계속 이용할 수 있습니다.",
       "closeAria": "닫기",
       "ctaLater": "나중에",
       "ctaPrimary": "등록 시작",
       "pathEnterpriseDesc": "다중 사이트 조직",
-      "pathEnterpriseLabel": "기업",
+      "pathEnterpriseLabel": "Enterprise",
       "pathIndividualDesc": "독립 전문가",
-      "pathIndividualLabel": "개인",
+      "pathIndividualLabel": "Individual",
       "pathOsgbDesc": "고객사 및 인력 관리",
       "pathOsgbLabel": "OSGB",
       "pathsHighlight": "모든 기능에 대한 전체 액세스",
-      "pathsIntro": "중단한 지점부터 계속하고",
-      "pathsSuffix": "를 얻으려면 계정을 생성하세요. 세 가지 경로 중 하나를 선택할 수 있습니다:",
+      "pathsIntro": "중단한 지점부터 다시 시작하고",
+      "pathsSuffix": "계정을 생성하세요. 세 가지 경로 중 하나를 선택할 수 있습니다:",
       "subtitle": "RiskNova 체험용",
       "title": "감사합니다!"
     },
@@ -50,20 +105,20 @@
     "loginButton": "로그인",
     "loginDescription": "단일 플랫폼에서 위험 분석, 현장 추적 및 보고 프로세스를 계속 관리하세요.",
     "loginEmail": "이메일 주소",
-    "loginForgot": "비밀번호 찾기",
+    "loginForgot": "비밀번호를 잊으셨나요?",
     "loginLoading": "로그인 중...",
     "loginNoAccount": "계정이 없으신가요?",
     "loginPage": {
-      "description": "RiskNova 계정에 로그인하세요. 플랫폼 관리자는 관리 콘솔로, 다른 사용자는 계정 유형에 맞는 작업공간으로 이동합니다.",
+      "description": "RiskNova 계정에 로그인하세요. 플랫폼 관리자는 관리 콘솔로, 다른 사용자는 계정 유형에 맞는 작업공간으로 이동됩니다.",
       "emailLabel": "이메일",
       "emailPlaceholder": "you@company.com",
       "eyebrow": "로그인",
       "footerPrefix": "계정이 없으신가요?",
       "footerRegisterLink": "회원가입",
       "forgotLink": "비밀번호 찾기",
-      "highlight1Desc": "자체 회사, 조직 및 작업공간을 관리하는 개인 전문가를 위한 서비스입니다.",
+      "highlight1Desc": "개인 전문가가 자신의 회사, 조직 및 워크스페이스를 관리하기 위한 서비스입니다.",
       "highlight1Title": "개인 로그인",
-      "highlight2Desc": "클라이언트, 인력, 업무 할당 및 위험 프로세스를 관리하는 OSGB 팀을 위한 솔루션입니다.",
+      "highlight2Desc": "OSGB 팀이 고객, 인력, 업무 및 위험 프로세스를 관리하기 위한 서비스입니다.",
       "highlight2Title": "OSGB 로그인",
       "highlight3Desc": "플랫폼 관리자 역할은 공개 계정 유형으로 제공되지 않으며, 해당 사용자는 로그인 후 관리자 콘솔로 이동됩니다.",
       "highlight3Title": "플랫폼 관리",
@@ -71,14 +126,28 @@
       "passwordPlaceholder": "비밀번호를 입력하세요",
       "passwordUpdatedBanner": "비밀번호가 업데이트되었습니다. 새 비밀번호로 로그인할 수 있습니다.",
       "privilegedLoginBlocked": "OSGB 및 기업 계정은 이 로그인 경로를 사용할 수 없습니다. 견적 및 액세스에 대해서는 저희 팀에 문의하세요.",
-      "spotlightP1": "로그인 화면은 모든 사용자가 공유하며, 세션 후 라우팅은 계정 컨텍스트에 따라 결정됩니다.",
-      "spotlightP2": "플랫폼 관리자 역할은 공개 셀프서비스 가입에서 사용할 수 없습니다. 개인, OSGB 및 기업이 고객 대상 계정 경로입니다.",
+      "spotlightP1": "로그인 화면은 모든 사용자가 공유하며, 세션 후 라우팅은 계정 컨텍스트에 따라 달라집니다.",
+      "spotlightP2": "플랫폼 관리자 역할은 공개 셀프 서비스 가입에서 사용할 수 없습니다. 개인, OSGB 및 기업이 고객 대상 계정 경로입니다.",
       "submitButton": "로그인",
       "title": "계정에 로그인"
     },
     "loginPassword": "비밀번호",
     "loginRegister": "회원가입",
     "loginTitle": "계정에 로그인",
+    "mfa": {
+      "codeHintDefault": "인증 앱에서 현재 코드를 입력하세요.",
+      "codeHintWithFactor": "{factorName}에서 현재 코드를 입력하세요.",
+      "codeLabel": "인증 코드",
+      "deviceLabel": "인증 기기",
+      "errCodeFormat": "6자리 인증 코드를 입력하세요.",
+      "errNoFactor": "인증을 위해 선택할 수 있는 MFA 기기가 없습니다.",
+      "errNoSupabase": "인증 서비스에 연결할 수 없습니다.",
+      "errVerifyFallback": "코드를 확인할 수 없습니다. 다시 시도하세요.",
+      "intro": "<email></email> — 2단계 인증이 필요합니다. 계속하려면 인증 앱에서 6자리 코드를 입력하세요.",
+      "signOutCta": "로그아웃",
+      "verifyBusy": "확인 중...",
+      "verifyCta": "계속"
+    },
     "registerButton": "회원가입",
     "registerDescription": "OHS 프로세스를 디지털화하고 AI 기반 의사결정 메커니즘의 혜택을 누리세요.",
     "registerEmail": "이메일 주소",
@@ -90,7 +159,7 @@
       "checkEmailBanner": "가입이 시작되었습니다. 확인이 필요한 경우 받은편지함을 확인하세요.",
       "demoDisabledBody": "관리자에 의해 종료되었을 수 있습니다(데모 계정은 보통 {hours}시간으로 제한됩니다). 지속적인 사용을 위해 아래에서 계정을 생성하세요.",
       "demoDisabledTitle": "데모 액세스가 비활성화되었습니다.",
-      "demoExpiredBody": "RiskNova 데모 액세스는 {hours}시간으로 제한되며, 만료 시 세션이 종료됩니다. 아래에서 무료 계정을 생성하거나 Google로 계속하여 영구 계정으로 이동하세요.",
+      "demoExpiredBody": "RiskNova 데모 액세스는 {hours}시간으로 제한되며, 만료되면 세션이 종료됩니다. 아래에서 무료 계정을 생성하거나 Google로 계속하여 영구 계정으로 이동하세요.",
       "demoExpiredTitle": "데모 기간이 종료되었습니다.",
       "demoLegacyDisabledHelp": "도움말:",
       "demoLegacyDisabledLead": "데모 액세스가 비활성화되었습니다.",
@@ -99,9 +168,9 @@
       "demoLegacyExpiredLead": "데모 세션이 종료되었습니다.",
       "demoLegacyExpiredLogin": "로그인",
       "demoLegacyExpiredRest": "공개 데모는 더 이상 제공되지 않습니다. 아래에서 계정을 생성하거나",
-      "demoLegacyExpiredSupport": "문제가 있으시면 연락하세요",
-      "description": "먼저 계정 유형, 지역 및 언어를 선택하세요. 개인 계정은 바로 양식으로 진행되며, OSGB 및 회사 구조는 연락 및 견적 절차를 시작합니다.",
-      "emailHint": "온보딩 및 액세스 절차에서 이 주소를 사용합니다.",
+      "demoLegacyExpiredSupport": "문제가 있으면 연락하세요",
+      "description": "먼저 계정 유형, 지역 및 언어를 선택하세요. 개인 계정은 바로 양식으로 진행되며, OSGB 및 회사 구조는 연락처 및 견적 플로우를 시작합니다.",
+      "emailHint": "온보딩 및 액세스 플로우에서 이 주소를 사용합니다.",
       "emailLabel": "이메일",
       "emailPlaceholder": "you@company.com",
       "eyebrow": "새 계정",
@@ -109,11 +178,11 @@
       "footerPrefix": "이미 계정이 있으신가요?",
       "highlight1Desc": "지역 및 언어 선택 후 등록을 완료하고 온보딩을 진행합니다.",
       "highlight1Title": "개인 셀프서비스",
-      "highlight2Desc": "가격 및 플랜 비교는 플랜 페이지에 유지되어 등록에 집중할 수 있습니다.",
+      "highlight2Desc": "요금제 및 플랜 비교는 플랜 페이지에서 확인하여 등록에 집중할 수 있습니다.",
       "highlight2Title": "플랜은 별도 페이지에 있습니다",
-      "highlight3Desc": "다중 사이트 또는 전문 구조는 저희 팀과 연락 및 견적 절차를 진행합니다.",
+      "highlight3Desc": "다중 사이트 또는 전문 구조는 저희 팀과의 상담 및 견적을 통해 진행됩니다.",
       "highlight3Title": "조직을 위한 맞춤 견적",
-      "legalCheckboxAfterCookie": ". 이를 읽고 동의합니다. 계정 생성 후 앱에서 추가 필수 플랫폼 승인이 제시될 수 있습니다.",
+      "legalCheckboxAfterCookie": ". 해당 내용을 읽고 동의합니다. 계정 생성 후 앱에서 추가 필수 플랫폼 승인이 제시될 수 있습니다.",
       "legalCheckboxAfterPrivacy": ", 그리고 ",
       "legalCheckboxAfterTerms": ", ",
       "legalCheckboxCookie": "쿠키 정책",
@@ -121,90 +190,90 @@
       "legalCheckboxTerms": "이용약관",
       "passwordHint": "강력한 비밀번호를 선택하세요. 가입 후 계정 유형 선택을 완료합니다.",
       "passwordLabel": "비밀번호",
-      "passwordPlaceholder": "최소 8자 이상",
+      "passwordPlaceholder": "최소 8자",
       "submitButton": "계정 생성",
-      "title": "RiskNova 계정을 생성하세요"
+      "title": "RiskNova 계정 생성"
     },
     "registerPassword": "비밀번호",
     "registerTitle": "계정 생성",
     "registerWizard": {
       "accounts": {
         "enterprise": {
-          "description": "다중 사이트 또는 전문 규제 요구사항을 위한 서비스입니다.",
+          "description": "다중 사이트 또는 전문 규제 요구사항을 위한 계정입니다.",
           "title": "회사 / 기업"
         },
         "individual": {
-          "description": "전문가, 의사, DSP 또는 감사관을 위한 개인 워크스페이스입니다.",
+          "description": "자체 워크스페이스로 시작하는 전문가, 의사, DSP 또는 감사관.",
           "title": "개인 전문가"
         },
         "osgb": {
-          "description": "클라이언트 포트폴리오, 팀 및 업무 할당 워크플로우 설정을 요청합니다.",
+          "description": "클라이언트 포트폴리오, 팀 및 할당 워크플로 설정을 요청하세요.",
           "title": "OSGB"
         }
       },
       "closeAria": "등록 도우미 닫기",
-      "commercialIntroBody": "귀하의 국가, 언어 및 역할 정보가 양식과 함께 전송되어 저희 팀이 적합한 패키지와 온보딩으로 응답할 수 있습니다.",
-      "commercialIntroEnterpriseTitle": "기업 견적 프로세스",
-      "commercialIntroOsgbTitle": "OSGB 견적 프로세스",
+      "commercialIntroBody": "귀하의 국가, 언어 및 역할이 양식과 함께 전송되어 저희 팀이 적절한 패키지와 온보딩으로 응답할 수 있습니다.",
+      "commercialIntroEnterpriseTitle": "기업 견적 플로우",
+      "commercialIntroOsgbTitle": "OSGB 견적 플로우",
       "countryHints": {
-        "AE": "영어/아랍어 팀 준비 완료.",
-        "AZ": "아제르바이잔어 기본 설정으로 아제르바이잔 지역.",
-        "CN": "중국어 및 아시아-태평양 지역 준비 완료.",
-        "DE": "독일어 기본 설정으로 독일 지역.",
-        "ES": "스페인어 기본 설정으로 스페인 지역.",
-        "FR": "프랑스어 기본 설정으로 프랑스 지역.",
-        "GB": "영어 기본 설정으로 영국 운영.",
-        "ID": "인도네시아어 선호 설정.",
-        "IN": "힌디어/영어 팀 준비 완료.",
-        "JP": "일본어 및 아시아-태평양 지역 준비 완료.",
-        "KR": "한국어 및 아시아-태평양 지역 준비 완료.",
-        "RU": "러시아어 및 지역 준비 완료.",
-        "SA": "아랍어 및 걸프 지역 운영 준비 완료.",
-        "TR": "터키 법률 및 터키어 기본 설정",
-        "US": "미국 운영 및 영어 기본 설정"
+        "AE": "영어/아랍어 팀 준비 상태",
+        "AZ": "아제르바이잔어 기본값을 가진 아제르바이잔 지역",
+        "CN": "중국어 및 아시아 태평양 준비 상태",
+        "DE": "독일어 기본값을 가진 독일 지역",
+        "ES": "스페인어 기본값을 가진 스페인 지역",
+        "FR": "프랑스어 기본값을 가진 프랑스 지역",
+        "GB": "영어 기본값을 가진 영국 운영",
+        "ID": "바하사 인도네시아어 선호",
+        "IN": "힌디어/영어 팀 준비 상태",
+        "JP": "일본어 및 아시아 태평양 준비 상태",
+        "KR": "한국어 및 아시아 태평양 준비 상태",
+        "RU": "러시아어 및 지역 준비 상태",
+        "SA": "아랍어 및 걸프 운영 준비 상태",
+        "TR": "터키어 기본값을 가진 터키 법률",
+        "US": "영어 기본값을 가진 미국 운영"
       },
       "prevAria": "이전 단계",
       "roles": {
         "auditor": {
           "description": "현장 감사, 부적합 사항 및 보고",
-          "title": "감사자"
+          "title": "감사관"
         },
         "occupational_physician": {
           "description": "건강 감시, 의료 프로세스 및 직원 기록",
           "title": "산업의학 전문의"
         },
         "safety_officer": {
-          "description": "보건팀, 현장 지원 및 후속 업무",
+          "description": "보건팀, 현장 지원 및 후속 작업",
           "title": "DSP / 보건 담당자"
         },
         "safety_professional": {
-          "description": "위험 분석, 현장 감사, 조치 및 규제 추적",
-          "title": "산업안전보건 전문가"
+          "description": "위험 분석, 현장 감사, 조치 및 규제 추적.",
+          "title": "산업보건안전 전문가"
         },
         "workspace_admin": {
-          "description": "사용자, 회사, 역할 및 워크스페이스 설정 관리",
+          "description": "사용자, 회사, 역할 및 워크스페이스 설정을 관리합니다.",
           "title": "워크스페이스 관리자"
         }
       },
       "startWizard": "등록 질문 시작",
       "steps": {
         "account": {
-          "description": "이 선택은 등록 후 흐름을 결정합니다",
+          "description": "이 선택은 등록 후 흐름을 결정합니다.",
           "eyebrow": "1 / 4",
           "title": "어떤 계정 유형으로 시작하시겠습니까?"
         },
         "country": {
-          "description": "법률 적용 범위, RAG 범위 및 기본 워크스페이스가 이 선택에 맞춰집니다",
+          "description": "법률 적용 범위, RAG 범위 및 기본 워크스페이스가 이 선택에 맞춰집니다.",
           "eyebrow": "2 / 4",
           "title": "주요 워크스페이스가 위치한 국가는 어디입니까?"
         },
         "language": {
-          "description": "모든 화면이 번역되지는 않았지만 계정에 설정이 저장됩니다",
+          "description": "모든 화면이 번역되지는 않았지만 설정이 계정에 저장됩니다.",
           "eyebrow": "3 / 4",
           "title": "인터페이스 및 문서 언어"
         },
         "role": {
-          "description": "온보딩 중 첫 번째 워크스페이스를 생성합니다",
+          "description": "온보딩 중 첫 번째 워크스페이스를 생성합니다.",
           "eyebrow": "4 / 4",
           "title": "첫 번째 역할은 무엇입니까?"
         }
@@ -233,36 +302,22 @@
     },
     "shell": {
       "backHome": "홈으로 돌아가기",
-      "fallbackSpotlight": "RiskNova는 단순한 패널이 아닙니다. 위험 분석, 현장 운영, 문서 흐름 및 팀 협업을 하나의 제품 언어로 통합하는 전문 OHS 인프라입니다.",
-      "highlightCorpDesc": "맞춤형 요구사항을 가진 다중 사이트 조직을 위한 커뮤니케이션 중심 엔터프라이즈 플로우입니다.",
-      "highlightCorpTitle": "Enterprise",
+      "fallbackSpotlight": "RiskNova는 단순한 패널이 아닙니다. 위험 분석, 현장 운영, 문서 흐름, 팀 협업을 하나의 제품 언어로 통합하는 전문 산업안전보건 인프라입니다.",
+      "highlightCorpDesc": "맞춤형 요구사항을 가진 다중 사이트 조직을 위한 커뮤니케이션 중심 기업 플로우입니다.",
+      "highlightCorpTitle": "기업",
       "highlightIndividualDesc": "독립 전문가, 의사, DSP 및 개인 전문가를 위한 빠른 시작 플로우입니다.",
-      "highlightIndividualTitle": "Individual",
-      "highlightOsgbDesc": "고객사, 인력, 업무 할당 및 작업 추적을 하나의 패널로 통합하는 팀 모델입니다.",
+      "highlightIndividualTitle": "개인",
+      "highlightOsgbDesc": "고객사, 인력, 업무 배정, 작업 추적을 하나의 패널로 통합하는 팀 모델입니다.",
       "highlightOsgbTitle": "OSGB",
-      "secureAccess": "보안 액세스"
+      "secureAccess": "보안 접근"
     },
     "social": {
-      "divider": "또는 이메일로 계속",
-      "googleContinue": "Google로 {brand}에 계속하기",
-      "googleSignUp": "Google로 {brand} 가입하기",
-      "oauthGenericError": "로그인 중 오류가 발생했습니다. 다시 시도해 주세요.",
-      "oauthRedirectHint": "Google 로그인에는 Supabase 리디렉션 URL이 필요합니다: Authentication URL 설정에서 https://getrisknova.com/auth/callback (및 환경 URL)을 추가하세요.",
+      "divider": "또는 이메일로 계속하기",
+      "googleContinue": "{brand}에 Google로 계속하기",
+      "googleSignUp": "{brand}에 Google로 가입하기",
+      "oauthGenericError": "로그인 중 문제가 발생했습니다. 다시 시도해 주세요.",
+      "oauthRedirectHint": "Google 로그인에는 Supabase 리디렉션 URL이 필요합니다: 인증 URL 구성에서 https://getrisknova.com/auth/callback (및 환경 URL)을 추가하세요.",
       "supabaseError": "인증 서비스에 연결할 수 없습니다."
-    },
-    "mfa": {
-      "intro": "<email></email> — second-factor verification is required. Enter the 6-digit code from your authenticator app to continue.",
-      "deviceLabel": "Verification device",
-      "codeLabel": "Verification code",
-      "codeHintWithFactor": "Enter the current code from {factorName}.",
-      "codeHintDefault": "Enter the current code from your authenticator app.",
-      "verifyBusy": "Verifying…",
-      "verifyCta": "Continue",
-      "signOutCta": "Sign out",
-      "errNoFactor": "No MFA device could be selected for verification.",
-      "errCodeFormat": "Enter the 6-digit verification code.",
-      "errNoSupabase": "Could not connect to the authentication service.",
-      "errVerifyFallback": "Code could not be verified. Try again."
     }
   },
   "brand": {
@@ -272,12 +327,12 @@
     "certNo": "인증서 번호",
     "date": "날짜",
     "duration": "기간",
-    "expiredCertSubtitle": "이 인증서의 유효기간이 만료되었습니다.",
+    "expiredCertSubtitle": "이 인증서의 유효 기간이 만료되었습니다.",
     "expiredCertTitle": "만료된 인증서",
     "expiredSuffix": " (만료됨)",
-    "footer": "RiskNova OHS 플랫폼에서 발급됨.",
+    "footer": "RiskNova OHS 플랫폼에서 발급되었습니다.",
     "fullName": "성명",
-    "institution": "기관",
+    "institution": "조직",
     "issuedAt": "발급일",
     "loading": "확인 중…",
     "notFoundDesc": "이 확인 코드와 일치하는 인증서가 없습니다.",
@@ -285,7 +340,7 @@
     "score": "점수",
     "trainer": "강사",
     "training": "교육",
-    "validUntil": "유효기간",
+    "validUntil": "유효 기간",
     "verifiedSubtitle": "이 인증서는 RiskNova에서 확인되었습니다.",
     "verifiedTitle": "확인된 인증서"
   },
@@ -297,8 +352,8 @@
     "delete": "삭제",
     "download": "다운로드",
     "edit": "편집",
-    "emptyDescription": "이 보기에 표시할 데이터가 없습니다.",
-    "emptyTitle": "아직 아무것도 없습니다",
+    "emptyDescription": "이 화면에 표시할 데이터가 없습니다.",
+    "emptyTitle": "아직 내용이 없습니다",
     "error": "오류가 발생했습니다",
     "freeStart": "무료 시작",
     "genericError": "문제가 발생했습니다. 다시 시도해 주세요.",
@@ -306,7 +361,7 @@
     "loading": "로딩 중...",
     "login": "로그인",
     "menu": "메뉴",
-    "noData": "데이터를 찾을 수 없습니다",
+    "noData": "데이터가 없습니다",
     "openMenu": "메뉴 열기",
     "platformLogin": "플랫폼 로그인",
     "profile": "프로필",
@@ -328,16 +383,16 @@
       "archived": "보관됨",
       "deleted": "삭제됨"
     },
-    "clearFilters": "필터 초기화",
+    "clearFilters": "필터 지우기",
     "confirmArchive": {
       "confirm": "확인",
-      "hint": "활성 목록에서 제거됩니다.",
-      "title": "'{name}' 보관하시겠습니까?"
+      "hint": "활성 목록에서 제외됩니다.",
+      "title": "\"{name}\"을(를) 보관하시겠습니까?"
     },
     "confirmDelete": {
       "confirm": "삭제",
       "instruction": "확인을 위해 이 단어를 입력하세요:",
-      "title": "{name}\"을(를) 삭제하시겠습니까?"
+      "title": "\"{name}\"을(를) 삭제하시겠습니까?"
     },
     "confirmPermanentDelete": {
       "placeholder": "DELETE 입력",
@@ -350,32 +405,32 @@
     },
     "delete": "삭제",
     "description": {
-      "multi": "담당하는 회사들을 관리하고 작업장에 접근하세요.",
-      "single": "활성 작업장의 인력 및 기타 운영 기록을 관리합니다."
+      "multi": "담당하는 회사를 관리하고 해당 작업장에 접근하세요.",
+      "single": "활성 작업장의 인력 및 기타 운영 기록을 관리하세요."
     },
     "discard": "취소",
-    "employeesSuffix": "명의 직원",
+    "employeesSuffix": "직원",
     "empty": {
       "archiveBannerCompany": "보관된 회사입니다. 복원할 수 있습니다.",
       "archiveBannerWorksite": "보관된 작업장 기록입니다. 복원할 수 있습니다.",
-      "archiveEmptyCompany": "보관함이 비어있습니다",
+      "archiveEmptyCompany": "보관함이 비어있음",
       "archiveEmptyDescCompany": "아직 보관된 회사가 없습니다.",
       "archiveEmptyDescWorksite": "아직 보관된 작업장이 없습니다.",
-      "archiveEmptyWorksite": "보관함이 비어있습니다",
+      "archiveEmptyWorksite": "보관함이 비어있음",
       "clearFilters": "필터 지우기",
       "completeWorksite": "작업장 설정 완료",
       "deletedBannerCompany": "삭제된 회사입니다. 영구 삭제는 되돌릴 수 없습니다.",
       "deletedBannerWorksite": "삭제된 작업장 기록입니다. 영구 삭제는 되돌릴 수 없습니다.",
       "deletedEmptyCompany": "삭제된 회사 없음",
-      "deletedEmptyDescCompany": "삭제된 회사가 없습니다.",
-      "deletedEmptyDescWorksite": "삭제된 작업장이 없습니다.",
+      "deletedEmptyDescCompany": "아직 삭제된 회사가 없습니다.",
+      "deletedEmptyDescWorksite": "아직 삭제된 작업장이 없습니다.",
       "deletedEmptyWorksite": "삭제된 작업장 없음",
-      "initialDescCompany": "첫 번째 회사를 생성하여 시작하세요.",
-      "initialDescWorksite": "활성 작업장 데이터가 이 영역에 표시됩니다. 작업장 설정을 완료하면 인력 및 기타 기록을 확인할 수 있습니다.",
-      "initialTitleCompany": "회사가 없습니다",
-      "initialTitleWorksite": "작업장 기록이 없습니다",
+      "initialDescCompany": "시작하려면 첫 번째 회사를 생성하세요.",
+      "initialDescWorksite": "이 영역은 활성 작업장 데이터로 채워집니다. 인력 및 기타 기록을 보려면 작업장 설정을 완료하세요.",
+      "initialTitleCompany": "아직 회사가 없음",
+      "initialTitleWorksite": "아직 작업장 기록이 없음",
       "newCompany": "새 회사",
-      "noMatchCompany": "일치하는 회사가 없습니다",
+      "noMatchCompany": "일치하는 회사 없음",
       "noMatchDescription": "필터와 일치하는 기록이 없습니다.",
       "noMatchWorksite": "일치하는 작업장이 없습니다",
       "sampleData": "샘플 데이터"
@@ -399,38 +454,38 @@
       "sector": "업종",
       "sort": "정렬"
     },
-    "limitReachedBanner": "활성 회사/작업공간 한도에 도달했습니다. 추가하거나 복원하기 전에 회사를 보관하거나 플랜을 업그레이드하세요.",
+    "limitReachedBanner": "활성 회사/워크스페이스 한도에 도달했습니다. 추가하거나 복원하기 전에 회사를 보관하거나 플랜을 업그레이드하세요.",
     "links": {
       "riskAnalysis": "위험 분석",
-      "workspace": "작업공간"
+      "workspace": "워크스페이스"
     },
     "metrics": {
-      "actions": "조치사항",
+      "actions": "작업",
       "departments": "부서",
       "employees": "직원",
-      "hazard": "위험요소",
+      "hazard": "위험",
       "locations": "위치",
-      "overdue": "연체"
+      "overdue": "지연"
     },
     "permanentDelete": "영구 삭제",
     "progress": {
-      "coverage": "적용범위",
+      "coverage": "적용 범위",
       "maturity": "성숙도"
     },
     "restore": "복원",
     "sort": {
-      "employees": "직원",
+      "employees": "직원 수",
       "name": "이름순",
       "overdue": "연체",
       "risk": "위험도"
     },
     "stats": {
       "avgMaturity": "평균 성숙도",
-      "criticalCompanies": "중요 회사",
-      "criticalWorksites": "중요 작업장",
-      "employees": "직원",
-      "openActions": "진행 중인 조치사항",
-      "overdueTasks": "연체된 작업",
+      "criticalCompanies": "위험 회사",
+      "criticalWorksites": "위험 작업장",
+      "employees": "직원 수",
+      "openActions": "미완료 조치",
+      "overdueTasks": "연체 작업",
       "totalCompanies": "전체 회사",
       "totalWorksites": "전체 작업장"
     },
@@ -444,13 +499,13 @@
       "deleted": "삭제됨"
     },
     "title": {
-      "multi": "내 회사 / 조직",
+      "multi": "내 회사/조직",
       "osgb": "회사 및 작업장",
       "single": "작업장 및 운영 콘텐츠"
     },
     "usage": {
       "activeOfMax": "{current} / {max} 활성 회사 슬롯 사용 중",
-      "activeOnly": "{count}개 활성 회사 / 워크스페이스"
+      "activeOnly": "{count}개 활성 회사/워크스페이스"
     }
   },
   "companyWorkspace": {
@@ -459,14 +514,14 @@
     "docTitleFallback": "워크스페이스 · RiskNova",
     "invite": "초대",
     "logo": {
-      "fileTooLarge": "파일이 너무 큽니다 ({sizeMb} MB). 최대 크기는 5 MB입니다.",
-      "imagesOnly": "이미지 파일만 업로드할 수 있습니다 (PNG, JPEG, WebP, SVG).",
+      "fileTooLarge": "파일이 너무 큽니다({sizeMb} MB). 최대 크기는 5MB입니다.",
+      "imagesOnly": "이미지 파일만 업로드 가능합니다 (PNG, JPEG, WebP, SVG).",
       "updated": "로고/이미지가 업데이트되었습니다.",
-      "uploadFailed": "업로드 실패. 다른 파일을 시도하세요.",
+      "uploadFailed": "업로드 실패. 다른 파일을 시도해 주세요.",
       "uploadTitle": "로고 업로드"
     },
     "notFound": {
-      "back": "회사로 돌아가기",
+      "back": "회사 목록으로 돌아가기",
       "description": "이 ID와 일치하는 회사가 없습니다.",
       "title": "회사를 찾을 수 없음"
     },
@@ -488,7 +543,7 @@
     },
     "tabs": {
       "history": "기록",
-      "ohs_file": "산업안전보건 파일",
+      "ohs_file": "OHS 파일",
       "organization": "조직",
       "people": "팀",
       "personnel": "인사",
@@ -506,38 +561,38 @@
     "mandatoryNo": "아니오",
     "mandatoryYes": "예",
     "notGranted": "아직 승인되지 않음",
-    "stats": "{active}개 활성 동의 - {pending}개 대기 중인 필수 텍스트",
+    "stats": "{active}개 활성 동의 - {pending}개 필수 텍스트 대기 중",
     "statusApproved": "승인됨",
     "statusOptional": "선택사항",
-    "statusPending": "대기 중인 필수 텍스트",
+    "statusPending": "필수 텍스트 대기 중",
     "title": "개인정보 및 동의",
     "types": {
       "acik_riza": "명시적 동의",
-      "aydinlatma": "공개",
+      "aydinlatma": "고지",
       "kvkk": "KVKK",
       "pazarlama": "마케팅",
-      "yurt_disi_aktarim": "국경 간 전송"
+      "yurt_disi_aktarim": "국외 이전"
     }
   },
   "consentGate": {
     "consentType": {
       "acik_riza": "명시적 동의",
-      "aydinlatma": "개인정보 처리방침",
+      "aydinlatma": "개인정보 고지",
       "kvkk": "KVKK",
       "pazarlama": "마케팅",
-      "yurt_disi_aktarim": "국경 간 전송"
+      "yurt_disi_aktarim": "국외 이전"
     },
-    "description": "필수 약관/KVKK 고지사항, 개인정보 공개 및 필수 명시적 동의 텍스트가 최신 게시 버전으로 여기에 나열됩니다. 마케팅 동의는 선택사항입니다. 필수 텍스트가 변경되면 시스템에서 다시 확인을 요청할 수 있습니다.",
+    "description": "필수 약관/KVKK 고지, 개인정보 공개 및 필수 명시적 동의 텍스트가 최신 게시 버전으로 여기에 나열됩니다. 마케팅 동의는 선택사항입니다. 필수 텍스트가 변경되면 시스템에서 다시 확인을 요청할 수 있습니다.",
     "errMustAcknowledge": "계속하려면 모든 필수 텍스트를 확인해야 합니다.",
     "errSaveFailed": "동의를 저장할 수 없습니다. 다시 시도해 주세요.",
     "eyebrow": "KVKK 및 동의",
     "mandatoryBadge": "필수",
     "progress": "{total}개 중 {approved}개 텍스트 확인됨",
-    "readAcknowledge": "이 텍스트를 읽고 동의합니다",
-    "saving": "동의 저장 중…",
+    "readAcknowledge": "이 내용을 읽고 동의합니다",
+    "saving": "동의사항 저장 중…",
     "signOutTemp": "지금 로그아웃",
     "submit": "동의 완료",
-    "title": "계속하기 전에 필수 텍스트를 확인하세요"
+    "title": "계속하려면 필수 텍스트를 확인하세요"
   },
   "country": {
     "AE": "아랍에미리트",
@@ -565,15 +620,15 @@
     "companySummaryCountLabel": "등록된 회사",
     "companySummaryTitle": "회사 현황",
     "docStatusDraft": "초안",
-    "docStatusPending": "승인 대기",
-    "docStatusReady": "준비 완료",
+    "docStatusPending": "승인",
+    "docStatusReady": "준비완료",
     "docStatusRevision": "수정",
     "fallbackUserName": "사용자",
     "goToPlans": "요금제 보기",
     "greetingAfternoon": "안녕하세요",
     "greetingEvening": "안녕하세요",
     "greetingMorning": "안녕하세요",
-    "heroIntro": "하나의 화면에서 전체 OHS 운영을 모니터링하세요: 위험, 라이브러리 출력, 사고, 작업 및 회사 후속 조치를 더 명확한 명령 보기로 통합했습니다.",
+    "heroIntro": "한 화면에서 전체 OHS 운영을 모니터링하세요: 위험, 라이브러리 출력, 사고, 작업 및 회사 후속 조치를 더 명확한 명령 보기로 통합했습니다.",
     "moduleAssessment": "시험 및 설문조사",
     "moduleAssessmentDesc": "AI 지원 측정 플로우",
     "moduleEmergency": "비상사태",
@@ -584,27 +639,31 @@
     "moduleLibraryDesc": "문서 및 템플릿",
     "moduleRisk": "위험 분석",
     "moduleRiskDesc": "{count}개 평가",
-    "modulesSubtitle": "플랫폼의 활성 운영 영역입니다.",
+    "modulesSubtitle": "플랫폼의 활성 운영 영역",
     "modulesTitle": "OHS 모듈",
     "moduleTraining": "교육",
     "moduleTrainingDesc": "추적 및 기록",
     "operationCalm": "안정적 운영",
     "operationControlled": "통제 중",
-    "operationHeavy": "집중 관리",
+    "operationHeavy": "집중 후속조치",
     "planDefaultBody": "더 많은 워크스페이스나 모듈이 필요하시면 요금제를 검토하세요. 업그레이드는 셀프서비스로 가능합니다.",
     "planDefaultTitle": "요금제 및 용량",
-    "planDemoBody": "프로덕션 사용을 위한 적절한 요금제를 선택하세요. 결제 및 청구는 요금제 페이지에서 관리됩니다.",
+    "planDemoBody": "프로덕션 사용을 위한 적절한 플랜을 선택하세요. 결제 및 청구는 플랜 페이지에서 관리됩니다.",
     "planDemoEyebrow": "데모 · 업그레이드",
     "planDemoTitle": "데모 계정을 사용 중입니다",
-    "planSelfServeEyebrow": "셀프서비스 업그레이드",
+    "planSelfServeEyebrow": "셀프 서비스 업그레이드",
     "priorityHighRisk": "고위험",
     "priorityIncidents": "사고",
     "priorityOpenTasks": "미완료 작업",
+    "pwaBody": "Android, iPhone/iPad, Windows에서 RiskNova를 앱처럼 열 수 있습니다. 프라이빗 브라우징에서는 설치 안내가 나타나지 않을 수 있으니 일반 브라우저 창을 사용하세요.",
+    "pwaCta": "설정 단계 열기",
+    "pwaEyebrow": "모바일 및 데스크톱 액세스",
+    "pwaTitle": "홈 화면에 RiskNova 추가",
     "quickCompanies": "회사",
     "quickEducation": "교육",
     "quickFieldAudit": "현장 감사",
     "quickFlowsBadge": "플랫폼",
-    "quickFlowsSubtitle": "자주 사용하는 모듈에 원클릭으로 바로 이동하세요.",
+    "quickFlowsSubtitle": "자주 사용하는 모듈에 한 번의 클릭으로 바로 이동하세요.",
     "quickFlowsTitle": "빠른 워크플로",
     "quickIncident": "사고 신고",
     "quickLibrary": "OHS 라이브러리",
@@ -615,57 +674,53 @@
     "recentDocsEmpty": "아직 라이브러리 출력물이 없습니다. OHS 라이브러리의 템플릿에서 시작하세요.",
     "recentDocsSubtitle": "OHS 라이브러리 플로우에서 최근 편집된 문서가 여기에 요약됩니다.",
     "recentDocsTitle": "최신 라이브러리 출력물",
-    "sessionLoadingHint": "세션을 확인 중입니다. 몇 초 정도 소요될 수 있으며, 아무 일도 일어나지 않으면 다시 로그인해 주세요.",
+    "sessionLoadingHint": "세션을 확인하고 있습니다. 몇 초 정도 걸릴 수 있으며, 아무 일도 일어나지 않으면 다시 로그인해 주세요.",
     "sessionLoadingTitle": "세션 로딩 중…",
-    "signalCompanies": "회사 범위",
+    "signalCompanies": "회사 적용 범위",
     "signalOperation": "운영 상태",
     "signalWorkload": "우선순위 부하",
     "statIncidents": "사고",
-    "statIncidentsSub": "총 기록",
-    "statLibExam": "라이브러리 시험",
-    "statLibExamSub": "가져온 시험",
-    "statLibSurvey": "라이브러리 교육",
-    "statLibSurveySub": "가져온 설문조사/교육",
+    "statIncidentsSub": "전체 기록",
+    "statLibExam": "라이브러리 검사",
+    "statLibExamSub": "가져온 검사",
     "statLibraryDocs": "라이브러리 문서",
-    "statLibraryDocsSub": "{ready}개 준비완료 · {draft}개 초안",
+    "statLibraryDocsSub": "{ready}개 준비됨 · {draft}개 초안",
+    "statLibSurvey": "라이브러리 교육",
+    "statLibSurveySub": "가져온 설문/교육",
     "statLive": "실시간",
     "statRisk": "위험 분석",
     "statRiskSubHigh": "{count}개 고위험",
     "statRiskSubNone": "고위험 없음",
-    "statTasks": "진행 중인 작업",
+    "statTasks": "열린 작업",
     "statTasksSub": "후속 조치 대기",
     "todayCardTitle": "오늘",
     "todayFocusEyebrow": "오늘의 집중 사항",
     "todayFocusTitle": "중요 항목 우선",
     "todayTasksDone": "모든 작업 완료",
-    "todayTasksPending": "{count}개 진행 중인 작업 대기",
+    "todayTasksPending": "{count}개 열린 작업 대기 중",
     "trackChipActions": "{count}개 조치",
-    "trackChipControls": "검사 {count}건",
-    "trackChipTraining": "{count} 교육",
+    "trackChipControls": "{count}개 점검",
+    "trackChipTraining": "{count}개 교육",
     "trackCommitteeLabel": "위원회 대기",
     "trackCommitteeSub": "계획된 산업안전보건위원회 회의",
     "trackCompaniesCta": "회사",
-    "trackEmpty": "아직 정의된 회사가 없습니다. 회사를 추가하면 추적 지표가 여기에 표시됩니다.",
+    "trackEmpty": "아직 회사가 정의되지 않았습니다. 회사를 추가하면 추적 지표가 여기에 표시됩니다.",
     "trackExpiringTrainingLabel": "예정된 교육",
     "trackExpiringTrainingSub": "30일 이내",
     "trackHealthExamLabel": "예정된 건강검진",
-    "trackHealthExamSub": "30일 이내 건강감시",
+    "trackHealthExamSub": "30일 이내 건강 감시",
     "trackOpenActionLabel": "미해결 조치사항",
-    "trackOpenActionSub": "위험 발견사항 + CAPA + 작업",
-    "trackOverdueControlLabel": "연체된 검사",
-    "trackOverdueControlSub": "정기 검사 기간 경과",
+    "trackOpenActionSub": "위험 발견 + CAPA + 작업",
+    "trackOverdueControlLabel": "연체된 점검",
+    "trackOverdueControlSub": "정기 점검 기간 경과",
     "trackPriorityCompanies": "우선순위 대기 회사",
-    "trackSubtitle": "모든 회사 요약. {companyCount}개 회사 모니터링 중, {totalActionable}개 조치사항 후속조치 대기.",
+    "trackSubtitle": "{companyCount}개 회사 모니터링, {totalActionable}개 후속 조치 대기 중인 전체 회사 요약.",
     "trackTitle": "추적 요약",
-    "workloadFollowups": "{count}개 항목",
-    "pwaEyebrow": "Mobile and desktop access",
-    "pwaTitle": "Add RiskNova to your home screen",
-    "pwaBody": "Open RiskNova like an app on Android, iPhone/iPad and Windows. Install prompts may not appear in private browsing; use a normal browser window.",
-    "pwaCta": "Open setup steps"
+    "workloadFollowups": "{count}개 항목"
   },
   "dataRights": {
     "adminNotes": "관리자 메모",
-    "deletionActive": "활성 삭제 요청 존재",
+    "deletionActive": "활성 삭제 요청이 존재합니다",
     "deletionConfirm": "계정에 대한 30일 삭제 프로세스가 시작됩니다. 계속하시겠습니까?",
     "deletionDescription": "요청을 생성하면 계정과 관련 개인정보가 삭제 프로세스에 들어갑니다. 보존 정책에 따라 30일 후 영구 삭제가 완료됩니다.",
     "deletionEmpty": "아직 삭제 요청이 없습니다.",
@@ -676,23 +731,23 @@
     "deletionReceived": "삭제 요청이 접수되었습니다. 예정된 영구 삭제: {date}.",
     "deletionSubmit": "삭제 요청 생성",
     "deletionTitle": "내 데이터 삭제",
-    "deletionWarning": "삭제 요청은 되돌릴 수 없는 과정이 시작되기 전까지 관리자가 취소할 수 있습니다.",
-    "description": "개인 데이터를 다운로드하고, 삭제 요청을 생성하며, 현재 KVKK 프로세스 상태를 추적하세요.",
+    "deletionWarning": "삭제 요청은 프로세스가 되돌릴 수 없게 되기 전에 관리자가 취소할 수 있습니다.",
+    "description": "개인정보를 다운로드하고, 삭제 요청을 생성하며, 현재 KVKK 프로세스 상태를 추적하세요.",
     "download": "다운로드",
     "errorMsg": "오류",
     "exportCsvDesc": "표 형식 보고서 및 외부 전송",
     "exportCsvTitle": "CSV 내보내기",
-    "exportDescription": "프로필, 동의 기록, 보안 이벤트 및 데이터 권리 이력을 JSON 또는 CSV로 다운로드할 수 있습니다.",
+    "exportDescription": "프로필, 동의 기록, 보안 이벤트 및 데이터 권한 기록을 JSON 또는 CSV로 다운로드할 수 있습니다.",
     "exportDownloadCount": "다운로드 횟수",
     "exportFailed": "내보내기를 생성할 수 없습니다.",
     "exportHistoryEmpty": "아직 생성된 데이터 내보내기 기록이 없습니다.",
-    "exportHistoryLoading": "내보내기 이력 로딩 중...",
+    "exportHistoryLoading": "내보내기 기록 로딩 중...",
     "exportJsonDesc": "모든 데이터의 구조화된 번들",
     "exportJsonTitle": "JSON 내보내기",
     "exportReady": "{format} 내보내기가 준비되어 다운로드되었습니다.",
     "exportTitle": "내 데이터 다운로드",
     "requestDate": "요청 날짜",
-    "scheduledPurge": "영구 삭제 예정",
+    "scheduledPurge": "영구 삭제 예약됨",
     "scope": {
       "admin": "관리자",
       "self": "개인 요청"
@@ -718,10 +773,10 @@
     "accountTypeIndividual": "개인 (단일 전문가)",
     "accountTypeLabel": "계정 유형",
     "accountTypeOsgb": "OSGB",
-    "accountTypeUnset": "확실하지 않음/결정 중",
+    "accountTypeUnset": "확실하지 않음 / 결정 중",
     "cancel": "취소",
     "closeAria": "닫기",
-    "dialogSubtitle": "귀하의 요구에 맞춘 간단한 안내를 계획해 드리겠습니다.",
+    "dialogSubtitle": "귀하의 요구사항에 맞춘 간단한 안내를 계획해 드리겠습니다.",
     "dialogTitle": "데모 요청",
     "fieldCompany": "회사/조직",
     "fieldEmail": "이메일 *",
@@ -732,7 +787,7 @@
     "placeholderCompany": "Acme Ltd.",
     "placeholderEmail": "you@company.com",
     "placeholderName": "홍길동",
-    "placeholderPhone": "+44 …",
+    "placeholderPhone": "+82 …",
     "privacyError": "계속하려면 개인정보 처리방침에 동의해 주세요.",
     "privacyLabel": "개인정보 처리방침:",
     "privacyText": "본 요청에 대한 응답 목적으로만 연락처 정보가 처리되는 것에 동의합니다.",
@@ -743,11 +798,20 @@
     "successClose": "닫기",
     "successTitle": "요청이 접수되었습니다"
   },
+  "errors": {
+    "global": {
+      "description": "오류가 관리자에게 보고되었습니다. 아래 버튼을 사용하여 다시 시도하세요.",
+      "eyebrow": "심각한 오류",
+      "retry": "다시 시도",
+      "title": "예상치 못한 문제가 발생했습니다",
+      "unknownClientError": "알 수 없는 클라이언트 오류"
+    }
+  },
   "header": {
     "authLoading": "보안 세션 확인 중…",
     "lockedModuleTooltip": "이 모듈을 사용하려면 먼저 워크스페이스를 생성하세요.",
     "markAllRead": "모두 읽음으로 표시",
-    "noNotificationsYet": "알림이 없습니다",
+    "noNotificationsYet": "아직 알림이 없습니다",
     "notificationsAria": "알림",
     "notificationsTitle": "알림",
     "platformAdminShort": "관리자",
@@ -758,37 +822,375 @@
     "themeLightAria": "라이트 테마",
     "workspaceLoading": "워크스페이스 준비 중…"
   },
+  "incidents": {
+    "dof": {
+      "ai": {
+        "busy": "AI가 처리 중입니다. 수동으로 입력할 수 있습니다.",
+        "equipmentPrefix": "장비: {tool}",
+        "noDescription": "사고 설명이 아직 입력되지 않았습니다."
+      },
+      "assignment": {
+        "assigneeLabel": "담당자",
+        "deadlineLabel": "마감일",
+        "statusLabel": "상태",
+        "title": "할당 및 상태"
+      },
+      "corrective": {
+        "actionPlaceholder": "조치 설명",
+        "add": "추가",
+        "assigneePlaceholder": "담당자",
+        "description": "사고 재발 방지를 위한 시정조치",
+        "empty": "아직 시정조치가 없습니다.",
+        "itemLabel": "조치 {n}",
+        "title": "시정조치"
+      },
+      "dofDetail": {
+        "analysisLabel": "상세 분석 (5 Whys 등)",
+        "analysisPlaceholder": "5 Whys 분석 또는 추가 세부사항…",
+        "rootSummaryLabel": "근본원인 요약",
+        "rootSummaryPlaceholder": "이시카와 분석의 주요 원인…",
+        "title": "CAPA 세부사항"
+      },
+      "export": {
+        "pdf": "PDF",
+        "word": "Word"
+      },
+      "header": {
+        "backToIncident": "사고로 돌아가기",
+        "description": "시정 및 예방조치 + 근본원인 분석",
+        "newDof": "새 CAPA"
+      },
+      "ishikawa": {
+        "addCause": "+ 원인 추가",
+        "aiFill": "AI로 채우기",
+        "categories": {
+          "environment": {
+            "desc": "조명 불량, 소음, 온도, 바닥 상태…",
+            "label": "환경"
+          },
+          "machine": {
+            "desc": "장비 결함, 정비 불량, 보호장치 부족…",
+            "label": "기계"
+          },
+          "man": {
+            "desc": "교육 부족, 부주의, 피로, 경험 부족…",
+            "label": "사람"
+          },
+          "material": {
+            "desc": "불량 자재, 잘못된 보관, 위험 화학물질…",
+            "label": "자재"
+          },
+          "measurement": {
+            "desc": "교정 오류, 잘못된 측정값, 점검 누락…",
+            "label": "측정"
+          },
+          "method": {
+            "desc": "절차 부재, 잘못된 작업지침, 계획 미흡…",
+            "label": "방법"
+          }
+        },
+        "causePlaceholder": "{category} 원인…",
+        "causesCount": "{count}개 원인 파악됨",
+        "conclusionPlaceholder": "분석을 통해 식별된 근본 원인…",
+        "conclusionTitle": "근본 원인 결론",
+        "problemLabel": "문제 정의",
+        "problemPlaceholder": "분석할 문제를 설명하세요…",
+        "subtitle": "6M 방법을 사용하여 근본 원인을 체계적으로 분석합니다.",
+        "title": "근본 원인 분석 — 이시카와 (어골도)"
+      },
+      "modal": {
+        "addPhoto": "사진 추가",
+        "cancel": "취소",
+        "checklist": "모든 시정 및 예방 조치가 완료되었습니까?",
+        "confirm": "확인 후 종료",
+        "leadCompleted": "CAPA를 완료로 표시하려고 합니다.",
+        "leadVerified": "CAPA를 검증됨으로 표시하려고 합니다.",
+        "noPhotosBody": "CAPA를 종료하기 전에 수정 후 사진을 추가하시겠습니까?",
+        "noPhotosTitle": "아직 추가된 사진이 없습니다!",
+        "title": "CAPA 종료 확인"
+      },
+      "photos": {
+        "addButton": "사진 추가",
+        "alt": "CAPA 사진",
+        "captionPlaceholder": "사진 설명…",
+        "description": "문제와 관련된 사진을 추가하세요 (현장, 손상, 수정 전후).",
+        "emptyHint": "클릭하여 사진 업로드",
+        "title": "사진"
+      },
+      "preventive": {
+        "actionPlaceholder": "조치 설명",
+        "add": "추가",
+        "assigneePlaceholder": "담당자",
+        "description": "유사한 사건을 방지하기 위한 조치.",
+        "empty": "예방 조치가 아직 없습니다.",
+        "itemLabel": "조치 {n}",
+        "title": "예방 조치"
+      },
+      "save": {
+        "all": "모두 저장",
+        "saving": "저장 중…"
+      },
+      "status": {
+        "completed": "완료됨",
+        "in_progress": "진행 중",
+        "open": "열림",
+        "verified": "확인됨"
+      }
+    }
+  },
+  "isgLibrary": {
+    "assign": {
+      "companiesCount": "{count}개 회사"
+    },
+    "assignModal": {
+      "alreadySaved": "이미 이 회사에 저장됨",
+      "cancel": "취소",
+      "company": "회사",
+      "companyPlaceholder": "회사 선택",
+      "description": "{title}을(를) 선택한 회사에 저장하여 회사 라이브러리에 추가합니다.",
+      "descriptionLong": "선택한 카탈로그 항목을 활성 회사에 등록합니다. 이후 문서 플로우에서 열 수 있습니다.",
+      "optionAlreadySaved": " (이미 저장됨)",
+      "saveToCompany": "회사에 저장",
+      "saving": "저장 중…",
+      "title": "회사에 할당"
+    },
+    "badges": {
+      "category": "카테고리",
+      "file": "파일",
+      "flow": "플로우",
+      "form": "양식",
+      "instruction": "지침",
+      "legal": "규정",
+      "plan": "계획",
+      "regulation": "규정",
+      "training": "교육"
+    },
+    "buttons": {
+      "assignCatalogPending": "카탈로그 할당",
+      "assignToCompany": "회사에 할당",
+      "download": "다운로드",
+      "edit": "편집",
+      "savedToAllCompanies": "모든 회사에 저장됨",
+      "view": "보기"
+    },
+    "card": {
+      "companiesCount": "{count}개 회사",
+      "usageCount": "{count}회 사용"
+    },
+    "catalog": {
+      "noDescriptionShort": "이 콘텐츠에 대한 간단한 설명이 아직 추가되지 않았습니다."
+    },
+    "categories": {
+      "all": "전체",
+      "assessment": "시험 및 설문조사",
+      "documentation": "문서",
+      "education": "교육",
+      "emergency": "응급상황",
+      "forms": "양식 및 체크리스트",
+      "instructions": "지침",
+      "legal": "규정 및 가이드"
+    },
+    "categoryModal": {
+      "cancel": "취소",
+      "description": "새 하위 카테고리의 이름을 입력하세요. 선택한 주 카테고리 아래에 표시됩니다.",
+      "descriptionUnderCategory": "{category} 아래에 표시될 이름을 입력하세요.",
+      "nameLabel": "하위 카테고리 이름",
+      "namePlaceholder": "예: 현장 점검",
+      "save": "저장",
+      "title": "카테고리 추가",
+      "titleNew": "새 하위 카테고리"
+    },
+    "company": {
+      "anonymousCompany": "이름 없는 회사",
+      "selectCompany": "회사 선택",
+      "workingCompany": "작업 회사:",
+      "workingCompanyMenu": "작업 회사"
+    },
+    "contentTypes": {
+      "docx": "DOCX",
+      "link": "링크",
+      "pdf": "PDF",
+      "unknown": "파일",
+      "video": "비디오"
+    },
+    "cta": {
+      "addCategory": "카테고리 추가",
+      "aiSlides": "AI 슬라이드 팩",
+      "aiTrainingPrepare": "AI로 교육 생성",
+      "createInEditor": "에디터에서 생성",
+      "importingFile": "파일 업로드 중…",
+      "newExam": "새 시험",
+      "newExamCreate": "새 시험 생성",
+      "newSurvey": "새 설문조사",
+      "newSurveyCreate": "새 설문조사 생성",
+      "openSlideLibrary": "슬라이드 라이브러리 열기",
+      "uploadDocNote": "문서는 저장 시 편집 가능한 RiskNova 문서 템플릿으로 변환됩니다.",
+      "uploadFooterNote": "업로드된 파일은 에디터에서 열리며, 편집, 저장 및 나중에 수정할 수 있습니다.",
+      "uploadFromDevice": "기기에서 업로드",
+      "uploadPlaceholder": "DOC, DOCX, PPT, PPTX, XLS, XLSX, PDF (최대 10MB)"
+    },
+    "download": {
+      "filenameFallback": "문서"
+    },
+    "empty": {
+      "descDefault": "이 카테고리에는 아직 콘텐츠가 없습니다. 항목이 추가되면 카드로 표시됩니다.",
+      "descSavedOnly": "회사에 저장된 항목이 없습니다. 카드에서 콘텐츠를 할당하면 이 보기에 나타납니다.",
+      "titleAll": "콘텐츠 없음",
+      "titleCategory": "{category}에 콘텐츠 없음"
+    },
+    "emptyPanel": {
+      "body": "템플릿이나 저장된 항목을 선택하면 미리보기, 작업 및 메모가 여기에 표시됩니다.",
+      "footerNote": "제안사항은 RiskNova 가이드 콘텐츠로 생성됩니다.",
+      "title": "목록에서 항목을 선택하세요"
+    },
+    "emptyState": {
+      "addContent": "콘텐츠 추가"
+    },
+    "emptySubcategory": {
+      "body": "목록에서 다른 하위 카테고리를 선택하거나 새 콘텐츠를 추가하세요.",
+      "footerNote": "문서 생성 및 업로드는 위에서 선택한 회사를 사용합니다.",
+      "title": "이 하위 카테고리에 콘텐츠가 없습니다"
+    },
+    "errors": {
+      "profileLoadFailed": "프로필을 불러올 수 없습니다.",
+      "sessionNotFound": "세션을 찾을 수 없습니다.",
+      "supabaseConnect": "Supabase에 연결할 수 없습니다."
+    },
+    "errorsInline": {
+      "assignRecordFailed": "레코드를 생성할 수 없습니다. 다시 시도해 주세요.",
+      "assignSaveFailed": "저장할 수 없습니다. 다시 시도해 주세요.",
+      "assignSelectCompany": "먼저 회사를 선택하세요.",
+      "categoryExists": "카테고리가 이미 존재합니다.",
+      "categoryFirst": "먼저 카테고리를 선택하세요.",
+      "categoryNameEmpty": "카테고리 이름은 비워둘 수 없습니다.",
+      "companyRequiredImport": "먼저 콘텐츠 생성을 위한 회사를 선택하세요.",
+      "downloadFailed": "다운로드에 실패했습니다. 다시 시도해 주세요.",
+      "downloadHtmlFailed": "다운로드 파일을 생성할 수 없습니다. 다시 시도해 주세요.",
+      "editNeedsTemplate": "카탈로그에서 템플릿을 편집할 수 있습니다.",
+      "editOnlyTemplates": "현재 템플릿 카드에서만 편집이 지원됩니다.",
+      "importConnection": "파일을 가져올 수 없습니다. 연결을 확인하세요.",
+      "importFailed": "파일을 가져올 수 없습니다. 다시 시도해 주세요.",
+      "importUploadError": "파일 업로드 중 오류가 발생했습니다. 다시 시도해 주세요.",
+      "previewFailed": "미리보기를 열 수 없습니다.",
+      "previewTemplateFailed": "템플릿 미리보기를 불러올 수 없습니다. 다시 시도해 주세요.",
+      "selectCompanyEditor": "문서를 편집하려면 먼저 회사를 선택하세요.",
+      "selectCompanyFirst": "먼저 회사를 선택하세요.",
+      "subcategoryCreated": "하위 카테고리가 추가되었습니다: \"{name}\""
+    },
+    "filters": {
+      "searchPlaceholder": "제목, 설명, 태그 검색…",
+      "sectorAll": "모든 섹터",
+      "sectorOption": "섹터",
+      "sortAz": "A → Z",
+      "sortLabel": "정렬",
+      "sortNewest": "최신 → 오래된",
+      "sortNewestShort": "최신",
+      "sortOldest": "오래된 → 최신",
+      "sortOldestShort": "오래된",
+      "sortOption": "정렬",
+      "sortZa": "Z → A",
+      "typeAll": "모든 유형",
+      "typeOption": "유형"
+    },
+    "footer": {
+      "convertedToDocument": "문서 템플릿으로 변환됨 ({count})",
+      "generalUse": "일반 사용"
+    },
+    "header": {
+      "contentCount": "{count}개 항목",
+      "description": "회사를 먼저 선택하지 않고 글로벌 카탈로그에서 문서, 교육, 시험, 양식, 응급상황 및 규제 콘텐츠를 탐색하고, 필요한 것을 나중에 회사에 저장하세요.",
+      "eyebrow": "ISG Library",
+      "savedToCompanies": "{count}개 항목이 회사에 저장됨",
+      "title": "ISG Library"
+    },
+    "legacy": {
+      "deckDefaultDescription": "준비된 교육 콘텐츠를 열고 프레젠테이션 흐름을 관리합니다.",
+      "deckPolishedSlides": "발표 준비가 완료된 완성된 슬라이드 덱",
+      "draftSuffix": " 초안",
+      "examEditor": "편집기의 시험",
+      "fileNumber": "파일 {n}",
+      "newDocument": "새 문서",
+      "readyStatus": "준비됨",
+      "surveyAvailable": "RiskNova 라이브러리에서 설문조사 이용 가능",
+      "surveyEditor": "편집기의 설문조사",
+      "surveyFlowSubtitle": "{type} 플로우를 보고 관리합니다.",
+      "surveyIntro": "라이브러리의 설문조사 소개",
+      "templateLibraryPreview": "템플릿 라이브러리 미리보기"
+    },
+    "preview": {
+      "emptyBody": "목록에서 템플릿을 선택하여 미리보기하세요.",
+      "emptyHeading": "아직 콘텐츠가 없습니다",
+      "emTitle": "템플릿 미리보기",
+      "eyebrow": "템플릿 미리보기",
+      "loadError": "미리보기 콘텐츠를 로드할 수 없습니다. 여전히 이 템플릿을 다운로드하고 편집할 수 있습니다."
+    },
+    "savedToggle": "내 회사에 저장됨",
+    "sidebar": {
+      "addCategory": "카테고리 추가",
+      "all": "전체",
+      "allSubcategories": "모든 하위 카테고리",
+      "resultsCount": "{count}개 결과",
+      "subcategoriesTitle": "하위 카테고리"
+    },
+    "source": {
+      "catalog": "카탈로그",
+      "presentation": "프레젠테이션",
+      "surveyFlow": "설문조사 플로우",
+      "template": "템플릿"
+    },
+    "status": {
+      "assignedToCompany": "{title} 워크스페이스에 할당됨",
+      "contentSavedToCompany": "{title}이(가) 선택한 회사에 저장되었습니다"
+    },
+    "templateDescription": "{group} — 문서 플로우에서 \"{item}\" 템플릿을 엽니다",
+    "types": {
+      "doc": "문서",
+      "exam": "시험",
+      "presentation": "프레젠테이션",
+      "survey": "설문조사",
+      "surveyAlt": "설문조사",
+      "template": "템플릿",
+      "training": "교육",
+      "unknown": "알 수 없음"
+    },
+    "usage": {
+      "usageCount": "{count}회 사용"
+    },
+    "user": {
+      "defaultDisplayName": "RiskNova 사용자"
+    }
+  },
   "landing": {
-    "badge": "AI 기반 산업안전보건 플랫폼",
-    "bottomCtaDescription": "RiskNova로 위험 분석부터 보고까지 모든 작업장 안전 업무를 하나의 플랫폼에서 관리하세요.",
-    "bottomCtaLine1": "산업안전보건",
-    "bottomCtaLine2": "프로세스를 혁신하세요",
+    "badge": "AI 기반 OHS 플랫폼",
+    "bottomCtaDescription": "RiskNova로 위험 분석부터 보고까지 모든 직장 안전 업무를 단일 플랫폼에서 관리하세요.",
+    "bottomCtaLine1": "OHS 프로세스를",
+    "bottomCtaLine2": "혁신하세요",
     "ctaDemo": "데모 요청",
-    "ctaDescription": "전문적인 외관, 강력한 인프라, AI 지원으로 하나의 플랫폼에서 산업안전보건 프로세스를 관리하세요.",
+    "ctaDescription": "전문적인 외관, 강력한 인프라, AI 지원으로 단일 플랫폼에서 OHS 프로세스를 관리하세요.",
     "ctaEyebrow": "준비된 CTA 영역",
     "ctaTitle": "위험 모듈을 제품 쇼케이스로 전환",
     "enterpriseCtaShort": "기업용: 견적 및 문의",
-    "feat1Desc": "단일 플로우에서 수동 또는 모듈 기반 위험 입력을 수집하고 결과를 더 명확하게 표시하는 제품 기반입니다.",
+    "feat1Desc": "수동 또는 모듈 기반 위험 입력을 단일 플로우로 수집하고 결과를 더 명확하게 표시하는 제품 기반.",
     "feat1Title": "AI 기반 위험 분석",
-    "feat2Desc": "감사, 발견사항, 작업 및 추적 영역을 운영팀이 읽을 수 있는 순서로 통합합니다.",
+    "feat2Desc": "운영팀이 읽을 수 있는 순서로 감사, 발견사항, 작업 및 추적 영역을 통합.",
     "feat2Title": "현장 발견사항 및 조치 관리",
-    "feat3Desc": "생성된 결과를 이력, 세부사항 및 출력 프로세스에 연결할 수 있는 일관된 화면 구조를 제공합니다.",
+    "feat3Desc": "생성된 결과를 이력, 세부사항 및 출력 프로세스에 연결할 수 있는 일관된 화면 구조 제공.",
     "feat3Title": "보고 및 기록 인프라",
-    "feat4Desc": "위험 분석 화면, 결과 화면, 점수 이력 등의 영역에 전문적이고 신뢰할 수 있는 기반을 제공합니다.",
-    "feat4Title": "위험 모듈 제품 쇼케이스",
-    "feat5Desc": "단일 열, 이중 열, 와이드 스크린 레이아웃으로 다양한 기기에서 가독성을 유지합니다.",
+    "feat4Desc": "위험 분석 화면, 결과 화면, 점수 이력 등의 영역에 전문적이고 신뢰할 수 있는 기반 제공.",
+    "feat4Title": "위험 모듈용 제품 쇼케이스",
+    "feat5Desc": "단일 열, 두 열, 와이드 스크린 레이아웃으로 다양한 기기에서 가독성 유지.",
     "feat5Title": "모바일, 태블릿 및 데스크톱 반응형",
-    "feat6Desc": "깔끔한 표면, 제어된 대비, 명확한 CTA 구조로 전문적인 SaaS 느낌을 제공합니다.",
+    "feat6Desc": "깔끔한 표면, 제어된 대비, 명확한 CTA 구조로 전문적인 SaaS 느낌 구현.",
     "feat6Title": "기업용 및 현대적 비주얼 언어",
-    "featuresDescription": "OHS 프로세스를 종단간 관리하는 전문 도구입니다.",
+    "featuresDescription": "OHS 프로세스를 종단간 관리하는 전문 도구.",
     "featuresEyebrow": "기능",
-    "featuresTitle1": "포괄적",
+    "featuresTitle1": "포괄적인",
     "featuresTitle2": "솔루션",
-    "footerBlurb": "AI 기반 OHS 위험 분석 및 운영 플랫폼 — 전문적이고 신뢰할 수 있으며 현대적입니다.",
+    "footerBlurb": "AI 기반 산업안전보건 위험 분석 및 운영 플랫폼 — 전문적이고 신뢰할 수 있는 현대적 솔루션.",
     "footerCompany": "회사",
     "footerContact": "문의",
     "footerCookie": "쿠키 정책",
-    "footerDescription": "AI 기반 OHS 의사결정 지원 플랫폼",
+    "footerDescription": "AI 기반 산업안전보건 의사결정 지원 플랫폼",
     "footerHelp": "도움말",
     "footerHome": "홈",
     "footerLegal": "법적 고지",
@@ -799,68 +1201,68 @@
     "footerSupport": "지원",
     "footerTerms": "이용약관",
     "heroDescription": "RiskNova는 위험 분석, 현장 추적, 기록, 보고 및 의사결정 지원 프로세스를 하나의 제품 경험으로 통합하도록 설계된 AI 기반 산업안전보건 플랫폼입니다.",
-    "heroSubtitle": "측정부터 감사 결과, 조치 추적, 보고 및 아카이브까지 — 모든 프로세스를 한 곳에서 통합하세요. 개인부터 산업안전보건관리책임자 및 다중 사업장 기업까지 확장 가능합니다.",
+    "heroSubtitle": "측정부터 감사 결과, 조치 추적, 보고 및 아카이브까지 — 모든 프로세스를 하나로 통합합니다. 개인부터 안전보건관리책임자 및 다중 사업장 기업까지 확장 가능합니다.",
     "heroTitle1": "산업안전보건 위험",
     "heroTitle2": "관리를",
-    "heroTitle3": "예술로 변화시키세요",
+    "heroTitle3": "예술로 변화",
     "heroTitleHighlight": "하나의 플랫폼에서",
-    "heroTitlePrefix": "직장 안전 관리",
+    "heroTitlePrefix": "작업장 안전 관리",
     "heroTitleSuffix": "",
-    "howDescription": "플랫폼 시작을 위한 간단한 단계들",
+    "howDescription": "플랫폼 시작을 위한 간단한 단계들.",
     "howEyebrow": "작동 방식",
-    "howTitle1": "제어",
+    "howTitle1": "제어를",
     "howTitle2": "4단계로",
-    "metaDescription": "AI 기반 직장 안전 소프트웨어: 위험 분석, 현장 감사, 결과, CAPA 및 보고를 하나의 플랫폼에서 — 개인, 산업안전보건관리책임자 및 기업용",
+    "metaDescription": "AI 기반 작업장 안전 소프트웨어: 위험 분석, 현장 감사, 결과, CAPA 및 보고를 하나의 플랫폼에서 — 개인, 안전보건관리책임자 및 기업용.",
     "metaOgDescription": "측정부터 감사, 조치 및 보고까지 — 안전 프로세스를 한 곳에서 운영하세요.",
     "metaOgTitle": "RiskNova — 하나의 플랫폼에서 산업안전보건 관리",
     "metaTitle": "하나의 플랫폼에서 산업안전보건 관리 | RiskNova",
-    "osgbCtaShort": "산업안전보건관리책임자: 견적 및 문의",
-    "solutionsLeadBold": "산업안전보건관리책임자 또는 다중 사업장 조직이신가요?",
-    "solutionsLeadRest": "요금제를 검토하고 견적을 통해 리드를 남기거나 가입하세요 — 저희 팀이 후속 조치를 취하겠습니다.",
-    "solutionsSectionAria": "산업안전보건관리책임자 및 기업 서비스",
+    "osgbCtaShort": "OSGB: 견적 및 문의",
+    "solutionsLeadBold": "OSGB 또는 다중 사업장 조직이신가요?",
+    "solutionsLeadRest": "플랜을 검토하고 견적을 통해 문의하거나 가입하세요 — 저희 팀이 후속 조치를 취하겠습니다.",
+    "solutionsSectionAria": "OSGB 및 기업용 서비스",
     "statsAnalysis": "분석 시간",
     "statsScoring": "위험 점수",
-    "statsUptime": "가동 시간",
+    "statsUptime": "가동률",
     "statsUsers": "활성 사용자",
     "statsValueAnalysis": "15초",
-    "statsValueScore": "R-점수",
+    "statsValueScore": "R-SCORE",
     "statsValueUptime": "99.5%",
     "statsValueUsers": "500+",
     "step1Desc": "조직별 계정으로 플랫폼에 안전하게 로그인하세요.",
     "step1Title": "보안 접근",
-    "step2Desc": "현장 감사, 위험 보고서 및 위험 매개변수를 시스템에 전송합니다.",
+    "step2Desc": "현장 감사, 위험 보고서 및 위험 매개변수를 시스템에 전송하세요.",
     "step2Title": "위험 데이터 입력",
     "step3Desc": "AI 기반 분석 엔진이 데이터를 처리하여 위험 점수를 계산합니다.",
     "step3Title": "R-SCORE 생성",
-    "step4Desc": "결과를 바탕으로 실행 계획을 수립하고 추적 및 보고합니다.",
-    "step4Title": "조치 및 후속조치",
+    "step4Desc": "결과를 바탕으로 실행 계획을 수립하고 추적 및 보고하세요.",
+    "step4Title": "조치 및 후속 관리",
     "subscriptionDisclaimer": "RiskNova는 구독 기반 직장 보건 및 안전 소프트웨어를 제공합니다.",
     "testimonial1Author": "Mehmet K.",
     "testimonial1Quote": "RiskNova로 현장 감사가 훨씬 체계적이 되었습니다. AI 해설이 정말 도움이 됩니다.",
-    "testimonial1Role": "산업보건안전 전문가",
+    "testimonial1Role": "산업안전보건 전문가",
     "testimonial2Author": "Ayşe T.",
     "testimonial2Quote": "위험 분석, 보고 및 추적을 하나의 플랫폼에서 처리하여 운영 효율성이 향상되었습니다.",
-    "testimonial2Role": "산업보건안전 관리자",
+    "testimonial2Role": "OHS 관리자",
     "testimonial3Author": "Can D.",
-    "testimonial3Quote": "기업용 디자인과 사용 편의성 덕분에 팀이 매우 빠르게 도입했습니다.",
+    "testimonial3Quote": "기업적인 외관과 사용 편의성으로 팀이 매우 빠르게 도입했습니다.",
     "testimonial3Role": "운영 관리자",
     "testimonialsEyebrow": "고객 후기",
     "testimonialsTitle1": "사용자들이",
     "testimonialsTitle2": "말하는 것",
-    "valueTryDesc": "양식, 결과, 점수 이력 및 출력이 일관된 화면을 사용하여 팀이 원활하게 작업할 수 있습니다.",
+    "valueTryDesc": "양식, 결과, 점수 기록 및 출력이 일관된 화면을 사용하여 팀이 원활하게 운영할 수 있습니다.",
     "valueTryEyebrow": "지금 사용해보기",
     "valueTryLogin": "로그인",
     "valueTryRegister": "계정 생성",
     "valueTryTitle": "하나의 제품 경험으로 위험, 감사 및 보고",
     "whyBullet1": "깔끔하고 현대적이며 신뢰감을 주는 OHS 외관",
     "whyBullet2": "운영 중심의 방해 요소 없는 화면 레이아웃",
-    "whyBullet3": "Risk Intelligence 모듈을 위한 디자인 시스템",
+    "whyBullet3": "위험 인텔리전스 모듈을 위한 디자인 시스템",
     "whyBullet4": "멀티 테넌트 조직 기반 보안 구조",
     "whyBullet5": "AI 기반 의사결정 지원 메커니즘",
     "whyBullet6": "기업 보고 및 아카이브 인프라",
     "whyDescription": "파란색 신뢰와 금색 품질 강조, 깔끔한 표면과 부드러운 대비로 전문적인 SaaS 경험을 제공합니다.",
-    "whyEyebrow": "WHY RiskNova",
-    "whyTitle1": "신뢰감",
+    "whyEyebrow": "RiskNova를 선택하는 이유",
+    "whyTitle1": "신뢰할 수 있는",
     "whyTitle2": "프리미엄",
     "whyTitle3": "경험"
   },
@@ -889,19 +1291,19 @@
       "ogTitle": "쿠키 정책 | RiskNova",
       "sections": [
         {
-          "content": "쿠키 및 유사한 로컬 저장소 기술은 웹 애플리케이션이 세션, 보안, 언어 설정 및 제품 기능을 기억하도록 돕는 작은 기술적 기록입니다.",
+          "content": "쿠키 및 유사한 로컬 저장소 기술은 웹 애플리케이션이 세션, 보안, 언어 환경설정 및 제품 기능을 기억하는 데 도움이 되는 작은 기술적 기록입니다.",
           "title": "쿠키란 무엇인가요?"
         },
         {
-          "content": "RiskNova는 세션 유지, Supabase 인증 플로우, OAuth 리디렉션, 비밀번호 재설정, 보안 검사, CSRF/플로우 일관성 및 언어 설정을 위해 필수 쿠키를 사용합니다. 이러한 쿠키가 비활성화되면 핵심 플랫폼 기능이 작동하지 않을 수 있습니다.",
+          "content": "RiskNova는 세션 유지, Supabase 인증 플로우, OAuth 리디렉션, 비밀번호 재설정, 보안 검사, CSRF/플로우 일관성 및 언어 환경설정을 위해 필수 쿠키를 사용합니다. 이러한 쿠키가 비활성화되면 핵심 플랫폼 기능이 작동하지 않을 수 있습니다.",
           "title": "필수 쿠키"
         },
         {
-          "content": "언어, 지역, UI 설정, 마지막 선택한 워크스페이스 또는 유사한 제품 설정이 일관된 경험을 유지하기 위해 쿠키나 localStorage에 저장될 수 있습니다.",
+          "content": "언어, 지역, UI 환경설정, 마지막으로 선택한 워크스페이스 또는 유사한 제품 설정이 일관된 경험을 유지하기 위해 쿠키 또는 localStorage에 저장될 수 있습니다.",
           "title": "환경설정 및 제품 쿠키"
         },
         {
-          "content": "이 릴리스는 필수 플로우의 일부로 제3자 분석 또는 마케팅 쿠키에 의존하지 않습니다. 나중에 분석 또는 마케팅 쿠키가 도입되면 필요한 경우 사용자에게 별도의 알림 및 동의 제어가 제공됩니다.",
+          "content": "이 릴리스는 필수 플로우의 일부로 타사 분석 또는 마케팅 쿠키에 의존하지 않습니다. 나중에 분석 또는 마케팅 쿠키가 도입되면 필요한 경우 사용자에게 별도의 알림 및 동의 제어가 제공됩니다.",
           "title": "분석 및 마케팅 쿠키"
         },
         {
@@ -916,15 +1318,15 @@
       "title": "RiskNova 쿠키 정책"
     },
     "privacy": {
-      "eyebrow": "개인정보처리방침",
+      "eyebrow": "개인정보 처리방침",
       "lastUpdated": "최종 업데이트: 2026년 5월 2일",
-      "metaDescription": "RiskNova 개인정보처리방침: 계정, 제품 사용, 결제, 이메일, 보안 및 AI 지원 기능 전반에서 개인데이터를 처리하는 방법입니다.",
+      "metaDescription": "RiskNova 개인정보처리방침: 계정, 제품 사용, 결제, 이메일, 보안 및 AI 지원 기능에서 개인데이터를 처리하는 방법입니다.",
       "metaTitle": "개인정보처리방침",
-      "ogDescription": "RiskNova가 개인데이터를 처리하는 방법, 사용하는 처리업체 및 사용자 권리를 지원하는 방법입니다.",
+      "ogDescription": "RiskNova가 개인데이터를 처리하는 방법, 사용하는 처리업체 및 사용자 권리 지원 방법입니다.",
       "ogTitle": "개인정보처리방침 | RiskNova",
       "sections": [
         {
-          "content": "이 정책은 RiskNova 웹사이트, 등록, 로그인, 구독, OHS 모듈, 문서 생성, 현장 점검, 교육/시험/설문조사, Nova AI 및 지원 전반에서 개인데이터가 처리되는 방법을 설명합니다. 고객이 플랫폼에 업로드한 직장 및 직원 기록의 경우 RiskNova는 일반적으로 처리업체 역할을 하며, 자체 계정, 보안, 결제 및 지원 프로세스에 대해서는 관리자 역할을 합니다.",
+          "content": "본 방침은 RiskNova 웹사이트, 등록, 로그인, 구독, OHS 모듈, 문서 생성, 현장 점검, 교육/시험/설문조사, Nova AI 및 지원에서 개인데이터가 처리되는 방법을 설명합니다. 고객이 플랫폼에 업로드한 직장 및 직원 기록의 경우 RiskNova는 일반적으로 처리업체 역할을 하며, 자체 계정, 보안, 결제 및 지원 프로세스에서는 관리자 역할을 합니다.",
           "title": "데이터 관리자 및 범위"
         },
         {
@@ -932,23 +1334,23 @@
           "title": "개인데이터 범주"
         },
         {
-          "content": "데이터는 계약 이행, 플랫폼 기능 제공, 산업안전 프로세스 실행, 사용자 인증, 남용 방지, 고객 청구 및 지원, 법적 의무 충족, 제품 개선 및 사용자 선택 존중을 위해 처리됩니다. 명시적 동의가 필요한 경우 별도의 동의 텍스트가 표시되며, 핵심 서비스 데이터는 동의 대신 계약, 법적 의무 또는 정당한 이익에 의존할 수 있습니다.",
+          "content": "데이터는 계약 이행, 플랫폼 기능 제공, 산업안전 프로세스 실행, 사용자 인증, 남용 방지, 고객 청구 및 지원, 법적 의무 이행, 제품 개선 및 사용자 선택 존중을 위해 처리됩니다. 명시적 동의가 필요한 경우 별도의 동의 텍스트가 표시되며, 핵심 서비스 데이터는 동의 대신 계약, 법적 의무 또는 정당한 이익에 의존할 수 있습니다.",
           "title": "목적 및 법적 근거"
         },
         {
-          "content": "Nova AI는 위험 분석, 문서 초안, 교육 콘텐츠 또는 법률 인식 답변을 생성할 때 사용자 입력 및 관련 컨텍스트를 처리할 수 있습니다. 출력은 의사결정 지원 목적으로만 제공되며, 최종적인 전문적 및 법적 판단은 사용자에게 있습니다. 콘텐츠에 민감하거나 특별 범주의 데이터가 포함될 수 있는 경우, AI 서비스로 전송하기 전에 명시적 동의 및/또는 추가 공개 플로우가 필요할 수 있습니다.",
+          "content": "Nova AI는 위험 분석, 문서 초안, 교육 콘텐츠 또는 법률 인식 답변을 생성할 때 사용자 입력 및 관련 컨텍스트를 처리할 수 있습니다. 출력은 의사결정 지원용이며, 최종적인 전문적 및 법적 판단은 사용자에게 있습니다. 콘텐츠에 민감하거나 특별 범주 데이터가 포함될 수 있는 경우, AI 서비스로 전송하기 전에 명시적 동의 및/또는 추가 공개 절차가 필요할 수 있습니다.",
           "title": "AI 지원 기능"
         },
         {
-          "content": "호스팅, 데이터베이스, 인증, 이메일, 결제, 오류 모니터링 및 AI 기능은 Supabase, Vercel, Resend, Paddle, OpenAI, Anthropic 등의 제공업체를 사용할 수 있습니다. 이들은 서비스 제공에 필요한 범위에서만 데이터를 처리합니다. 카드 데이터는 RiskNova에 저장되지 않으며, 결제 및 청구는 Paddle 인프라에서 실행됩니다.",
+          "content": "호스팅, 데이터베이스, 인증, 이메일, 결제, 오류 모니터링 및 AI 기능은 Supabase, Vercel, Resend, Paddle, OpenAI, Anthropic 등의 공급업체를 사용할 수 있습니다. 이들은 서비스 제공에 필요한 경우에만 데이터를 처리합니다. 카드 데이터는 RiskNova에 저장되지 않으며, 결제 및 청구는 Paddle 인프라에서 실행됩니다.",
           "title": "제3자 처리업체"
         },
         {
-          "content": "클라우드 호스팅, 이메일, 결제 및 AI 서비스는 기술적으로 해외 인프라에서 실행될 수 있어, 서비스 요구사항에 따라 일부 데이터가 귀하의 국가 외부 제공업체로 전송될 수 있습니다. 전송이 적용되는 경우, 관련 법률(해당되는 경우 KVKK 포함)에 따른 공개 및 동의 절차는 제품 내에서 관리됩니다.",
+          "content": "클라우드 호스팅, 이메일, 결제 및 AI 서비스는 기술적으로 해외에 위치한 인프라에서 실행될 수 있으므로, 서비스에서 필요한 경우 일부 데이터가 귀하의 국가 외부 공급업체로 전송될 수 있습니다. 전송이 적용되는 경우, 해당 법률(관련 시 KVKK 포함)에 따른 공개 및 동의 단계가 제품에서 관리됩니다.",
           "title": "국제 전송"
         },
         {
-          "content": "RiskNova는 필수 세션, 보안, 언어 설정 및 제품 쿠키를 사용합니다. 마케팅 또는 제3자 추적 쿠키가 도입되는 경우, 필요에 따라 별도의 쿠키 정책 및 동의 메커니즘이 제공됩니다. 자세한 내용은 /cookie-policy 페이지에서 확인하세요.",
+          "content": "RiskNova는 필수 세션, 보안, 언어 설정 및 제품 쿠키를 사용합니다. 마케팅 또는 제3자 추적 쿠키가 도입되는 경우, 필요에 따라 별도의 쿠키 정책 및 동의 메커니즘이 제공됩니다. 자세한 내용은 /cookie-policy 페이지에서 확인할 수 있습니다.",
           "title": "쿠키 및 유사 기술"
         },
         {
@@ -956,56 +1358,40 @@
           "title": "보관 및 보안"
         },
         {
-          "content": "해당 데이터 보호법(해당되는 경우 KVKK 제11조 포함)에 따라, 프로필의 개인정보 보호/데이터 권리 영역 또는 support@getrisknova.com을 통해 접근, 정정, 삭제, 이의제기, 제한, 이동성 및 정보 요청을 할 수 있습니다. 삭제 요청은 법적 보관 및 보안 로깅 요구사항과 균형을 맞춰 처리됩니다.",
+          "content": "해당 개인정보보호법(적용되는 경우 KVKK 제11조 포함)에 따라 프로필의 개인정보보호/데이터 권리 영역 또는 support@getrisknova.com을 통해 접근, 정정, 삭제, 반대, 제한, 이동성 및 정보를 요청할 수 있습니다. 삭제 요청은 법적 보관 및 보안 로깅 요구사항과 균형을 맞춥니다.",
           "title": "귀하의 권리"
         },
         {
-          "content": "이 내용은 시간이 지남에 따라 변경될 수 있습니다. 중요한 업데이트는 제품 내에서 새로운 승인 또는 통지가 필요할 수 있습니다. 개인정보 보호 및 데이터 보호 요청은 support@getrisknova.com으로 문의하세요.",
+          "content": "본 텍스트는 시간이 지남에 따라 변경될 수 있습니다. 중요한 업데이트는 제품에서 새로운 승인 또는 통지가 필요할 수 있습니다. 개인정보보호 및 데이터 보호 요청은 support@getrisknova.com으로 문의하십시오.",
           "title": "연락처 및 업데이트"
         }
       ],
-      "title": "RiskNova 개인정보 처리방침"
+      "title": "RiskNova 개인정보처리방침"
     },
     "privacySummary": {
-      "eyebrow": "개인정보 처리방침",
+      "eyebrow": "개인정보처리방침",
       "lastUpdated": "최종 업데이트: 2026년 5월 2일",
-      "metaDescription": "RiskNova가 개인 데이터를 수집하고 사용하는 방법에 대한 요약입니다.",
+      "metaDescription": "RiskNova가 개인정보를 수집하고 사용하는 방법에 대한 요약입니다.",
       "metaTitle": "개인정보 처리방침",
       "ogDescription": "계정, 제품 사용 및 하위 처리업체를 다루는 간단한 개인정보 요약입니다.",
       "ogTitle": "개인정보 처리방침 | RiskNova",
-      "title": "RiskNova 개인정보 처리방침",
-      "paragraphs": [
-        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
-        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
-        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
-        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
-        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
-        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
-      ]
+      "title": "RiskNova 개인정보 처리방침"
     },
     "refund": {
       "eyebrow": "환불 정책",
       "lastUpdated": "최종 업데이트: 2026년 5월 2일",
-      "metaDescription": "RiskNova가 구독 환불, 갱신 및 Paddle 청구 규칙을 처리하는 방법입니다.",
+      "metaDescription": "RiskNova의 구독 환불, 갱신 및 Paddle 결제 규칙 처리 방법입니다.",
       "metaTitle": "환불 정책",
-      "ogDescription": "환불 기간, 갱신 및 청구 수정입니다.",
+      "ogDescription": "환불 기간, 갱신 및 결제 수정에 관한 내용입니다.",
       "ogTitle": "환불 정책 | RiskNova",
-      "title": "RiskNova 환불 정책",
-      "paragraphs": [
-        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
-        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
-        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
-        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
-        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
-        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
-      ]
+      "title": "RiskNova 환불 정책"
     },
     "terms": {
       "eyebrow": "이용약관",
       "lastUpdated": "최종 업데이트: 2026년 5월 2일",
       "metaDescription": "계정, 구독, 결제, 허용 사용, AI 출력 및 고객 데이터 책임을 다루는 RiskNova 이용약관입니다.",
       "metaTitle": "이용약관",
-      "ogDescription": "RiskNova SaaS 플랫폼 약관: 구독, 계정 보안, AI 출력 및 허용 사용.",
+      "ogDescription": "RiskNova SaaS 플랫폼 약관: 구독, 계정 보안, AI 출력 및 허용 사용에 관한 내용입니다.",
       "ogTitle": "이용약관 | RiskNova",
       "sections": [
         {
@@ -1013,11 +1399,11 @@
           "title": "서비스 범위"
         },
         {
-          "content": "사용자는 계정 정보의 정확성, 비밀번호 강도 및 계정으로 수행하는 모든 행위에 대해 책임집니다. 조직 관리자는 사용자, 역할, 워크스페이스 및 회사 권한을 올바르게 구성해야 합니다. 무단 접근이 의심되는 경우 즉시 RiskNova에 신고해야 합니다.",
+          "content": "사용자는 계정 정보의 정확성, 비밀번호 강도 및 계정으로 수행한 작업에 대해 책임집니다. 조직 관리자는 사용자, 역할, 워크스페이스 및 회사 권한을 올바르게 구성해야 합니다. 무단 접근이 의심되는 경우 즉시 RiskNova에 신고해야 합니다.",
           "title": "계정, 역할 및 보안"
         },
         {
-          "content": "플랫폼은 합법적이고 전문적이며 직장 안전과 관련된 목적으로만 사용할 수 있습니다. 무단 접근 시도, 리버스 엔지니어링, 서비스 방해, 유해 콘텐츠 업로드, 제3자 권리 침해, 할당량 우회 또는 불법적인 데이터 처리는 금지됩니다.",
+          "content": "플랫폼은 합법적이고 전문적이며 직장 안전 관련 목적으로만 사용할 수 있습니다. 무단 접근 시도, 역공학, 서비스 방해, 유해 콘텐츠 업로드, 제3자 권리 침해, 할당량 우회 또는 불법적인 데이터 처리는 금지됩니다.",
           "title": "허용 사용"
         },
         {
@@ -1025,23 +1411,23 @@
           "title": "고객 데이터 및 콘텐츠 책임"
         },
         {
-          "content": "Nova AI 및 기타 AI 기능은 의사결정 지원과 초안만을 제공합니다. RiskNova는 출력물이 오류가 없고 완전하거나 특정 법적 또는 기술적 결과에 적합하다고 보장하지 않습니다. 사용자는 해당 법률, 내부 절차 및 전문적 판단에 따라 출력물을 검증해야 합니다.",
+          "content": "Nova AI 및 기타 AI 기능은 의사결정 지원 및 초안만 제공합니다. RiskNova는 출력이 오류가 없고 완전하거나 특정 법적 또는 기술적 결과에 적합하다고 보증하지 않습니다. 사용자는 해당 법률, 내부 절차 및 전문적 판단에 따라 출력을 검증해야 합니다.",
           "title": "AI 지원 출력"
         },
         {
-          "content": "플랜 기능, 요금, 사용 한도 및 결제 주기는 가격 또는 결제 화면에 표시됩니다. 개인 플랜은 셀프서비스 결제를 사용할 수 있으며, OSGB 및 기업 모델은 견적 및 연락 절차를 따를 수 있습니다. 결제 및 청구는 Paddle이 판매자로서 처리할 수 있습니다.",
-          "title": "구독, 결제 및 한도"
+          "content": "요금제 기능, 수수료, 사용 한도 및 청구 기간은 가격 책정 또는 결제 화면에 표시됩니다. 개별 요금제는 셀프서비스 결제를 사용할 수 있으며, OSGB 및 기업 모델은 견적 및 연락 절차를 따를 수 있습니다. 결제 및 청구는 Paddle이 판매자로서 처리할 수 있습니다.",
+          "title": "구독, 청구 및 한도"
         },
         {
-          "content": "RiskNova는 시간이 지남에 따라 제품 기능, 플랜 한도, 통합 및 이 약관을 업데이트할 수 있습니다. 보안, 유지보수, 법적 준수 또는 남용 방지를 위해 접근이 일시적으로 제한될 수 있습니다.",
-          "title": "서비스 변경 및 접근"
+          "content": "RiskNova는 시간이 지남에 따라 제품 기능, 요금제 한도, 통합 및 이 약관을 업데이트할 수 있습니다. 보안, 유지보수, 법적 준수 또는 남용 방지를 위해 액세스가 일시적으로 제한될 수 있습니다.",
+          "title": "서비스 변경 및 액세스"
         },
         {
           "content": "플랫폼은 프로세스를 간소화하도록 설계되었으나, 고용주, 안전 전문가 또는 조직의 법적 의무를 제거하지는 않습니다. 사용자는 플랫폼 출력에 의존하기 전에 현장, 규제 및 전문가 검토에 대한 책임을 집니다.",
           "title": "책임의 제한"
         },
         {
-          "content": "이 약관, 구독 또는 계정에 대한 문의사항은 support@getrisknova.com으로 연락하시기 바랍니다.",
+          "content": "이 약관, 구독 또는 계정에 대한 문의사항은 support@getrisknova.com으로 연락하십시오.",
           "title": "연락처"
         }
       ],
@@ -1050,19 +1436,11 @@
     "termsSummary": {
       "eyebrow": "서비스 약관",
       "lastUpdated": "최종 업데이트: 2026년 5월 2일",
-      "metaDescription": "RiskNova 서비스 약관, 허용 사용 및 구독 요약입니다.",
+      "metaDescription": "RiskNova 서비스 약관, 허용 가능한 사용 및 구독 요약입니다.",
       "metaTitle": "서비스 약관",
-      "ogDescription": "구독, AI 지원 기능 및 허용 사용에 대한 요약",
+      "ogDescription": "구독, AI 지원 기능 및 허용 가능한 사용 요약입니다.",
       "ogTitle": "서비스 약관 | RiskNova",
-      "title": "RiskNova 이용약관",
-      "paragraphs": [
-        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
-        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
-        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
-        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
-        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
-        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
-      ]
+      "title": "RiskNova 이용약관"
     }
   },
   "nav": {
@@ -1085,9 +1463,9 @@
     "incidents": "조치",
     "incidentsPage": "사고",
     "legalCorpus": "법률 코퍼스",
-    "library": "산업안전보건 라이브러리",
-    "liveScan": "현장 실시간 스캔",
-    "mainNavigation": "주 내비게이션",
+    "library": "OHS 라이브러리",
+    "liveScan": "실시간 현장 스캔",
+    "mainNavigation": "메인 내비게이션",
     "mobileNavigation": "모바일 내비게이션",
     "osgbAffiliations": "OSGB 링크",
     "osgbAssignments": "할당",
@@ -1098,10 +1476,10 @@
     "osgbPersonnel": "직원",
     "osgbProfessionals": "전문가",
     "osgbSolution": "OSGB 서비스",
-    "osgbWorkTracking": "업무 추적",
+    "osgbWorkTracking": "작업 추적",
     "personalDocs": "내 문서",
     "planner": "플래너",
-    "platformAdminHome": "플랫폼 관리",
+    "platformAdminHome": "플랫폼 관리자",
     "pricing": "요금제",
     "reports": "보고서",
     "riskAnalysis": "위험 분석",
@@ -1109,7 +1487,7 @@
     "settings": "설정",
     "solutionCenter": "Nova",
     "survey": "설문조사",
-    "surveyExam": "설문조사/시험",
+    "surveyExam": "설문조사 / 시험",
     "timesheet": "근무시간표",
     "training": "교육",
     "trainingHub": "교육, 설문조사 및 시험",
@@ -1118,14 +1496,14 @@
   },
   "ohsFile": {
     "alreadyRunning": "현재 아카이브를 준비 중입니다. 완료될 때까지 기다려 주세요.",
-    "asyncHint": "아카이브가 백그라운드에서 준비됩니다. 준비되면 알림을 받게 됩니다.",
+    "asyncHint": "아카이브가 백그라운드에서 준비됩니다. 준비가 완료되면 알림을 받게 됩니다.",
     "cancel": "취소",
     "completedAt": "완료됨",
     "createdAt": "생성됨",
     "createNew": "새 아카이브 생성",
     "description": "{company}의 모든 위험 평가, 사고, 교육 기록, 문서 및 관련 데이터를 연도별 ZIP 아카이브로 다운로드합니다.",
     "download": "다운로드",
-    "empty": "생성된 아카이브가 없습니다.",
+    "empty": "아직 생성된 아카이브가 없습니다.",
     "historyTitle": "과거 아카이브",
     "loading": "로딩 중...",
     "openCompany": "회사 페이지 열기",
@@ -1136,24 +1514,246 @@
     "scopeLabel": "범위",
     "status": {
       "cancelled": "취소됨",
-      "completed": "준비됨",
+      "completed": "준비 완료",
       "expired": "만료됨",
       "failed": "실패",
       "pending": "대기 중",
       "processing": "준비 중"
     },
-    "title": "직장 OHS 파일",
+    "title": "사업장 산업안전보건 파일",
     "widgetAll": "전체",
-    "widgetEmpty": "OHS 파일이 없습니다. 회사를 열고 'OHS 파일' 탭으로 이동하세요.",
-    "widgetSubtitle": "최근 준비된 직장 아카이브에 빠르게 액세스합니다.",
-    "widgetTitle": "최근 OHS 파일",
+    "widgetEmpty": "아직 산업안전보건 파일이 없습니다. 회사를 열고 '산업안전보건 파일' 탭으로 이동하세요.",
+    "widgetSubtitle": "최근 준비된 사업장 아카이브에 빠르게 접근합니다.",
+    "widgetTitle": "최근 산업안전보건 파일",
     "yearLabel": "연도"
+  },
+  "osgb": {
+    "assignmentsPage": {
+      "emptyNoAssignments": {
+        "ctaPersonnel": "인력 풀 열기",
+        "description": "선택된 범위에 활성 배정이 없습니다. 인력 풀이나 회사 조직을 열어 배정을 생성하세요.",
+        "title": "활성 배정 없음"
+      },
+      "panelMatrix": {
+        "description": "여러 전문가가 동일한 회사에서 작업할 수 있습니다. 접근 권한은 자신의 계정에서 배정받은 작업공간으로만 제한됩니다.",
+        "title": "권한 매트릭스"
+      },
+      "stats": {
+        "activeDesc": "회사별 총 활성 전문가, 의사 및 DSP 배정 현황입니다.",
+        "activeTitle": "활성 배정",
+        "approveDesc": "위험 또는 운영 흐름을 승인할 수 있는 활성 인력 배정입니다.",
+        "approveTitle": "승인 권한",
+        "signDesc": "계약서, 보고서 또는 승인에 대한 서명 권한이 있는 활성 배정입니다.",
+        "signTitle": "서명 권한",
+        "suspendedDesc": "일시 중단된 배정 및 권한 세트 누락으로 표시된 배정입니다.",
+        "suspendedTitle": "일시 중단 / 중요"
+      }
+    },
+    "chrome": {
+      "allCompanies": "모든 회사",
+      "scopeDescription": "OSGB 관리 화면은 회사 선택에 따라 필터링됩니다. 회사가 선택되지 않으면 전체 포트폴리오가 표시됩니다.",
+      "scopeEyebrow": "회사 범위"
+    },
+    "contractsPage": {
+      "emptyNoContracts": {
+        "ctaDocuments": "문서 센터 열기",
+        "description": "선택된 범위에 계약서나 인력 기록이 없습니다. 문서 센터와 인력 HR 그룹을 열어 새 문서를 생성하세요.",
+        "title": "계약 기록을 찾을 수 없습니다"
+      },
+      "panelActiveContracts": {
+        "descAll": "모든 회사의 계약 및 인사 파일 기록입니다.",
+        "descScoped": "최근 {companyName}과 연결된 계약 활동입니다.",
+        "title": "활성 계약 및 인사 파일 기록"
+      },
+      "panelChecklist": {
+        "description": "인사 HR 그룹의 핵심 문서는 OSGB 감사 패키지의 기반입니다.",
+        "title": "누락된 체크리스트"
+      },
+      "panelInvite": {
+        "description": "직원이 회사에 배정되면 이메일로 초대되고, 좌석이 예약되며, 관련 계약 문서가 이 흐름에서 추적됩니다.",
+        "title": "초대 및 계약 연결"
+      },
+      "stats": {
+        "missingDesc": "아직 생성되지 않은 OSGB 인사 및 서비스 흐름에 대한 권장 템플릿입니다.",
+        "missingTitle": "누락된 템플릿",
+        "pendingDesc": "승인된 관리자 또는 고용주의 승인이 필요한 계약 및 첨부 파일입니다.",
+        "pendingTitle": "승인 대기 중",
+        "readyDesc": "서명 또는 고객 포털 게시 준비가 완료된 문서입니다.",
+        "readyTitle": "준비 완료",
+        "recordDesc": "선택된 범위의 인사 파일 및 계약 중심 문서 기록입니다.",
+        "recordTitle": "계약 기록"
+      }
+    },
+    "documentsPage": {
+      "emptyNoActiveDocs": {
+        "ctaDocuments": "문서 센터 열기",
+        "description": "선택된 범위에 활성 문서가 없습니다. 문서 센터에서 첫 번째 기록을 생성하거나 회사를 선택하여 전문 제작을 모니터링하세요.",
+        "title": "활성 문서 기록 없음"
+      },
+      "emptyNoApproved": {
+        "description": "선택된 회사 범위에 approved_at 기록이 있는 문서가 없습니다.",
+        "title": "승인된 문서 없음"
+      },
+      "emptyNoArchived": {
+        "description": "선택된 범위에 보관된 문서가 없습니다. 편집기 또는 회사 워크스페이스에서 보관될 때 여기에 기록이 나타납니다.",
+        "title": "보관 기록 없음"
+      },
+      "emptyNoArchiveJobs": {
+        "description": "아직 어떤 회사에도 직장 OHS 파일 팩이 생성되지 않았습니다. 위에서 회사를 선택하여 첫 번째 팩을 준비하세요.",
+        "title": "보관 팩 없음"
+      },
+      "emptyNoCompanies": {
+        "ctaFirms": "회사로 이동",
+        "description": "먼저 회사를 생성하고 워크스페이스 컨텍스트를 준비하세요. 회사 없이는 전문 제작 및 보관 팩을 열 수 없습니다.",
+        "title": "회사를 찾을 수 없습니다"
+      },
+      "emptyNoUsed": {
+        "description": "선택된 회사 범위에서 공유 또는 서명 기록이 있는 문서가 없습니다.",
+        "title": "사용 중인 문서 없음"
+      },
+      "panelApprovalQueue": {
+        "ctaApprovals": "승인 기록 열기",
+        "description": "아카이브 팩에 포함되기 전 관리자, 권한 관리자 또는 고용주 승인을 대기 중인 문서들이 여기에 수집됩니다.",
+        "notice": "{count}개 문서가 선택된 범위에서 승인을 대기 중입니다. 준비 팩 카운터를 조정하기 전에 이 기록들을 완료하세요.",
+        "title": "승인 및 게시 대기열"
+      },
+      "panelApproved": {
+        "descAll": "모든 회사에서 승인 체인을 통과한 문서들입니다.",
+        "descScoped": "{companyName}의 승인 메타데이터가 있는 문서들입니다.",
+        "title": "승인된 문서"
+      },
+      "panelArchived": {
+        "descAll": "모든 회사의 아카이브된 문서들입니다. 회사 필터로 범위를 좁히세요.",
+        "descScoped": "{companyName}의 콜드 아카이브로 이동된 기록들입니다. 활성 카운터에서는 제외되지만 감사 추적은 유지됩니다.",
+        "title": "아카이브된 기록"
+      },
+      "panelArchiveLayout": {
+        "description": "모든 문서, 보고서 및 증거 흐름은 회사 워크스페이스 컨텍스트에서 유지됩니다. 할당된 전문가들이 이 스파인에 결과물을 첨부하고, OSGB 관리팀이 동일한 스파인에서 감사 팩과 아카이브를 생성합니다.",
+        "title": "회사 범위 아카이브 설계"
+      },
+      "panelArchiveSelect": {
+        "description": "아카이브 팩은 항상 단일 회사 워크스페이스를 위해 준비됩니다. 포트폴리오 레벨에서 최근 팩을 확인하고 새 팩을 위한 회사를 선택할 수 있습니다.",
+        "title": "회사를 선택하고 아카이브 팩 준비"
+      },
+      "panelAuditPrep": {
+        "description": "각 회사의 감사 팩은 단일 PDF가 아니라 다양한 문서 패밀리로 구성된 감사 스파인으로 추적됩니다.",
+        "title": "감사 팩 준비 수준"
+      },
+      "panelGuarantees": {
+        "description": "이 화면은 단순한 파일 목록이 아니라 추적성과 법적 보증에 중점을 둔 문서 스파인으로 작동합니다.",
+        "title": "아카이브 보증"
+      },
+      "panelIntegration": {
+        "description": "문서는 단일 채널이 아닌 웹 서비스, 운영자 지원 포털 및 표준 파일 가져오기 레이어에서 공급됩니다.",
+        "title": "외부 문서 수집 레이어"
+      },
+      "panelInUse": {
+        "descAll": "공유 또는 서명 기록이 있는 모든 회사의 사용 중인 문서들입니다.",
+        "descScoped": "{companyName}의 공유 또는 서명된 문서들입니다.",
+        "title": "사용 중인 문서"
+      },
+      "panelOperations": {
+        "description": "이 화면에서 OSGB 관리자는 회사 범위, 전문가 문서 생산, 감사 팩 준비 및 아카이브 작업을 함께 실행합니다.",
+        "title": "일일 운영 데스크"
+      },
+      "panelProfessional": {
+        "description": "OSGB 관리팀은 관련 전문가와 의사를 통해 회사 범위 문서 생산을 모니터링합니다.",
+        "title": "전문가 생산 추적"
+      },
+      "panelRecentMoves": {
+        "descAll": "모든 회사의 전문가들로부터 최신 활성 문서 이동 내역입니다.",
+        "descScoped": "전문가가 {companyName}을 위해 생산하거나 업데이트한 최신 활성 기록입니다.",
+        "title": "최신 전문가 문서 이동"
+      },
+      "panelRetention": {
+        "description": "회사별로 도착하는 전문가 기록은 단일 보존 기간이 아닌 문서 유형별로 다른 보관 규칙이 적용됩니다.",
+        "title": "보존 및 보관 매트릭스"
+      },
+      "panelStreams": {
+        "description": "OSGB 문서 시스템은 단일 박스가 아닙니다. 법률과 운영에 의해 구동되는 다양한 문서 흐름이 동일한 회사 백본에 수렴됩니다.",
+        "title": "문서 흐름 레인"
+      },
+      "stats": {
+        "approvalQueueDesc": "보관 및 게시 전 관리자 승인을 대기 중인 활성 기록입니다.",
+        "approvalQueueTitle": "승인 대기열",
+        "approvedDesc": "관리 체인을 통과한 승인 타임스탬프가 있는 활성 기록입니다.",
+        "approvedTitle": "승인됨",
+        "archivePackageDescIdle": "다운로드 가능한 감사 및 직장 OHS 파일 패키지입니다.",
+        "archivePackageDescProcessing": "{count}개 패키지가 현재 준비 중입니다.",
+        "archivePackageTitle": "보관 패키지",
+        "archiveRecordDesc": "회사별로 콜드 아카이브로 이동된 보존된 이력이 있는 삭제되지 않은 기록입니다.",
+        "archiveRecordTitle": "보관 기록",
+        "auditReadyDesc": "필수 그룹 적용 범위와 승인 또는 사용 추적이 있는 패키지 패밀리입니다.",
+        "auditReadyTitle": "감사 준비 패키지",
+        "failedPackageDesc": "재시도가 필요한 보관 또는 패키징 시도입니다.",
+        "failedPackageTitle": "실패한 패키지",
+        "preparedDesc": "작성자 전문가 정보가 기록된 활성 문서입니다.",
+        "preparedTitle": "작성자 추적",
+        "readyDesc": "서명, 게시 또는 감사 팩 추가 준비가 완료된 기록입니다.",
+        "readyTitle": "준비됨",
+        "sharedDesc": "포털, 공유 링크 또는 감사 출력용으로 게시된 문서입니다.",
+        "sharedTitle": "공유 문서",
+        "signedDesc": "감사 체인에 진입하는 문서 서명 추적이 있는 기록입니다.",
+        "signedTitle": "서명된 문서",
+        "totalDocsDesc": "선택된 회사 범위 내 활성 문서 카드 및 필드 출력",
+        "totalDocsTitle": "전체 문서",
+        "traceabilityDesc": "작성자, 승인, 서명 또는 게시 추적 정보를 포함한 활성 문서 비율",
+        "traceabilityTitle": "추적 가능성"
+      }
+    },
+    "personnelPage": {
+      "emptyNoPersonnel": {
+        "ctaOrganisation": "회사 조직 열기",
+        "description": "OSGB 인력 풀이 비어 있습니다. 전문가, 의사 또는 DSP를 추가하려면 회사 조직 탭에서 첫 번째 초대를 보내세요.",
+        "title": "인력을 찾을 수 없음"
+      },
+      "panelInvite": {
+        "description": "신규 직원은 먼저 OSGB 좌석을 받은 후 회사에 배정됩니다. 초대 이메일에는 회사/역할이 포함되며, 사용자는 첫 로그인 시 비밀번호를 설정합니다.",
+        "title": "초대 및 첫 로그인 절차"
+      },
+      "panelList": {
+        "descAll": "OSGB 계정에 연결된 직원, 회사 수 및 작업 상태",
+        "descScoped": "{companyName}에 배정된 인력과 작업 부하",
+        "title": "OSGB 인력 목록"
+      },
+      "panelNova": {
+        "description": "Nova는 이 화면에서 전문 어시스턴트와 다르게 작동하며, 부하, 회사 배정 및 지연을 분석합니다.",
+        "title": "Nova OSGB 관리자 포커스"
+      },
+      "stats": {
+        "activeStaffDesc": "OSGB 계정의 활성 좌석 보유 사용자 및 패키지 좌석 제한",
+        "activeStaffTitle": "활성 직원",
+        "assignedDesc": "최소 하나의 활성 회사 배정을 가진 전문가, 의사 또는 DSP 기록",
+        "assignedTitle": "배정된 직원",
+        "openTasksDesc": "직원에게 배정된 진행 중 및 미완료 작업의 전체 보기",
+        "openTasksTitle": "진행 중인 작업",
+        "overdueTasksDesc": "후속 조치 날짜가 지난 작업. Nova OSGB 관리자가 이러한 영역을 강조 표시합니다.",
+        "overdueTasksTitle": "지연된 작업"
+      }
+    },
+    "tasksPage": {
+      "panelTaskCentre": {
+        "descAll": "모든 회사의 작업. 회사, 배정 및 문서 흐름별로 필터링하여 함께 모니터링하세요.",
+        "descScoped": "회사, 배정된 직원 및 {companyName}의 마감일",
+        "title": "작업 센터"
+      },
+      "stats": {
+        "doneDesc": "완전한 증거 추적이 포함된 완료된 작업",
+        "doneTitle": "완료됨",
+        "inProgressDesc": "진행 중인 운영, CAPA 또는 문서 준비 작업입니다.",
+        "inProgressTitle": "진행 중",
+        "openDesc": "아직 시작되지 않은 작업입니다. Nova가 우선순위와 회사 위험도에 따라 우선순위를 정합니다.",
+        "openTitle": "열린 작업",
+        "overdueDesc": "후속 조치 날짜가 지난 작업입니다. 감사 및 서비스 SLA 위험을 발생시킵니다.",
+        "overdueTitle": "지연됨"
+      }
+    }
   },
   "osgbFirms": {
     "activeSection": {
       "description": "회사 작업공간별로 회사, 할당, 문서 및 위험 흐름을 관리합니다.",
       "searchLabel": "회사 검색",
-      "searchPlaceholder": "회사명, 업종, 주소 또는 NACE 검색",
+      "searchPlaceholder": "회사, 업종, 주소 또는 NACE 검색",
       "title": "활성 회사"
     },
     "archivedRow": {
@@ -1174,8 +1774,8 @@
     "companyCard": {
       "archive": "보관",
       "archiving": "보관 중…",
-      "assignedProfessionals": "{count}명 배정된 전문가",
-      "assignments": "배정",
+      "assignedProfessionals": "{count}명 할당된 전문가",
+      "assignments": "할당",
       "contracts": "계약",
       "documentsCount": "{count}개 문서",
       "documentsLink": "문서",
@@ -1188,7 +1788,7 @@
     },
     "emptyActive": {
       "cta": "첫 번째 회사 추가",
-      "description": "OSGB 패널에 연결된 고객 회사가 여기에 표시됩니다.",
+      "description": "OSGB 패널에 연결된 고객사가 여기에 표시됩니다.",
       "title": "활성 회사 없음"
     },
     "emptyArchived": {
@@ -1201,33 +1801,33 @@
       "shortName": "새 회사"
     },
     "focus": {
-      "p1": "이 영역은 OSGB 소유자 및 관리자 전용입니다. 회사, 배정, 계약 및 문서 추적을 한 곳에서 관리합니다.",
-      "p2": "배정된 직원은 일상 업무에서 이 패널을 사용하지 않으며, 자신의 계정을 통해 배정된 회사 워크스페이스 데이터에 액세스합니다.",
-      "sidebarBody": "{firms}개 활성 회사, {professionals}명 배정된 전문가, {overdue}개 주의 필요 항목이 여기서 조정됩니다.",
-      "sidebarEyebrow": "관리 집중",
+      "p1": "이 영역은 OSGB 소유자 및 관리자 전용입니다. 회사, 할당, 계약 및 문서 추적을 한 곳에서 관리합니다.",
+      "p2": "할당된 직원은 일상 업무에 이 패널을 사용하지 않으며, 자신의 계정을 통해 할당된 회사 워크스페이스 데이터에 액세스합니다.",
+      "sidebarBody": "{firms}개 활성 회사, {professionals}명 할당된 전문가, {overdue}개 주의 필요 항목이 여기서 조정됩니다.",
+      "sidebarEyebrow": "관리 포커스",
       "title": "OSGB 중심 화면"
     },
     "header": {
-      "description": "고객사, 회사별 워크스페이스 및 배정된 인력 흐름을 관리하세요.",
+      "description": "고객사, 회사별 워크스페이스 및 할당된 인력 흐름을 관리하세요.",
       "eyebrow": "OSGB 회사 관리",
       "title": "회사 및 작업장"
     },
     "limitBanner": "활성 회사 한도에 도달했습니다. 회사를 보관하거나 플랜을 업그레이드하여 더 추가하세요.",
     "loading": {
-      "description": "고객사, 배정 및 문서 흐름을 로딩 중입니다.",
+      "description": "고객사, 할당 및 문서 흐름을 로딩 중입니다.",
       "eyebrow": "OSGB 회사",
       "title": "포트폴리오 준비 중"
     },
     "nova": {
       "bullet1": "회사별 업무량 분배를 확인하세요.",
       "bullet2": "지연된 작업 및 문서를 필터링하세요.",
-      "bullet3": "직원 배정 공백을 파악하세요.",
-      "bullet4": "계약 및 보고서 갱신 위험의 우선순위를 정하세요.",
+      "bullet3": "인력 할당 공백을 파악하세요.",
+      "bullet4": "계약 및 보고서 갱신 위험을 우선순위화하세요.",
       "openTasks": "OSGB 작업 열기",
-      "reviewOverdue": "지연 업무 검토",
+      "reviewOverdue": "지연된 작업 검토",
       "seeAssignmentGaps": "배정 공백 확인",
-      "subtitle": "관리 어시스턴트; 직원 및 회사 성과를 모니터링합니다.",
-      "title": "Nova OSGB 매니저"
+      "subtitle": "직원 및 회사 성과를 모니터링하는 관리 어시스턴트",
+      "title": "Nova OSGB 관리자"
     },
     "quickLinks": {
       "docCenter": "문서 허브로 이동",
@@ -1237,19 +1837,19 @@
     },
     "stats": {
       "activeFirms": {
-        "hint": "OSGB 패널에서 추적되는 활성 고객사입니다.",
+        "hint": "OSGB 패널에서 추적되는 활성 고객사",
         "label": "활성 회사"
       },
       "assignedProfessionals": {
-        "hint": "회사에 배정된 전문가, 의사, DSP의 총 배정 수입니다.",
+        "hint": "전문가, 의사, DSP의 회사별 총 배정 수",
         "label": "배정된 전문가"
       },
       "overdueWork": {
-        "hint": "배정 및 CAPA 플로우에서 주의해야 할 미해결 항목입니다.",
+        "hint": "배정 및 CAPA 플로우에서 확인할 미해결 항목",
         "label": "지연된 작업"
       },
       "totalEmployees": {
-        "hint": "계획 수립을 위한 회사 기록의 총 직원 수입니다.",
+        "hint": "계획 수립을 위한 회사 기록의 총 직원 수",
         "label": "총 직원 수"
       }
     },
@@ -1259,28 +1859,255 @@
       "personnelInvite": "직원 및 초대"
     }
   },
+  "planner": {
+    "yearlyWorkPlan": {
+      "actions": {
+        "archivedBadge": "이 회사의 {year}년 계획이 이미 보관되었습니다",
+        "pdfPrint": "PDF 다운로드/인쇄",
+        "save": "저장",
+        "saved": "저장됨",
+        "saving": "저장 중…"
+      },
+      "card": {
+        "description": "터키 산업안전보건법 6331에 따라 요구되는 연간 작업 계획. 회사 × 연도별로 저장. 각 행은 편집 가능하며, 월 셀을 클릭하여 토글할 수 있습니다.",
+        "title": "연간 산업안전보건 작업 계획"
+      },
+      "defaultTemplate": [
+        {
+          "id": "1",
+          "items": [
+            {
+              "regulation": "산업안전보건위원회 규정",
+              "responsible": "사업주",
+              "title": "산업안전보건위원회 구성"
+            },
+            {
+              "regulation": "산업안전보건위원회 규정",
+              "responsible": "사업주",
+              "title": "위원회 위원 임명 통지"
+            },
+            {
+              "regulation": "산업안전보건위원회 규정",
+              "responsible": "산업안전보건위원회",
+              "title": "월례 산업안전보건위원회 개최"
+            },
+            {
+              "regulation": "산업안전보건위원회 규정",
+              "responsible": "산업안전보건위원회",
+              "title": "산업안전보건위원회 연간 활동보고서 작성"
+            }
+          ],
+          "title": "산업안전보건위원회 업무"
+        },
+        {
+          "id": "2",
+          "items": [
+            {
+              "regulation": "산업안전보건 위험성평가 규정",
+              "responsible": "산업안전보건관리자",
+              "title": "기계 목록 작성 또는 확보"
+            },
+            {
+              "regulation": "산업안전보건 위험성평가 규정",
+              "responsible": "산업안전보건관리자",
+              "title": "조직도 확보"
+            },
+            {
+              "regulation": "산업안전보건 위험성평가 규정",
+              "responsible": "산업안전보건관리자",
+              "title": "초기 현황 평가 및 보고"
+            },
+            {
+              "regulation": "산업안전보건 위험성평가 규정",
+              "responsible": "산업안전보건관리자",
+              "title": "위험성 분석/평가 업무"
+            },
+            {
+              "regulation": "산업안전보건 위험성평가 규정",
+              "responsible": "산업안전보건관리자",
+              "title": "정기 위험 분석 업데이트"
+            }
+          ],
+          "title": "위험 분석 및 평가"
+        },
+        {
+          "id": "3",
+          "items": [
+            {
+              "regulation": "산업안전보건 및 작업장비 규정",
+              "responsible": "기술부서",
+              "title": "전기기계/접지 점검"
+            },
+            {
+              "regulation": "산업안전보건 및 작업장비 규정",
+              "responsible": "기술부서",
+              "title": "전기 측정 (접지, 피뢰침 등)"
+            },
+            {
+              "regulation": "작업장비 규정",
+              "responsible": "기술부서",
+              "title": "승강장비 정기 점검"
+            },
+            {
+              "regulation": "소음 규정",
+              "responsible": "기술부서",
+              "title": "환경 소음 측정"
+            },
+            {
+              "regulation": "산업안전보건 규정",
+              "responsible": "기술부서",
+              "title": "환경 조명 측정"
+            },
+            {
+              "regulation": "음용수 규정",
+              "responsible": "기술부서",
+              "title": "음용수 분석"
+            }
+          ],
+          "title": "정기 점검 및 측정"
+        },
+        {
+          "id": "4",
+          "items": [
+            {
+              "regulation": "비상사태 규정",
+              "responsible": "산업안전보건 전문가",
+              "title": "대피 및 소방 훈련"
+            },
+            {
+              "regulation": "비상사태 규정",
+              "responsible": "기술부서",
+              "title": "훈련 회의록 작성"
+            },
+            {
+              "regulation": "비상사태 규정",
+              "responsible": "기술부서",
+              "title": "비상장비 점검"
+            },
+            {
+              "regulation": "비상사태 규정",
+              "responsible": "산업보건 전문가",
+              "title": "비상행동계획 수립"
+            }
+          ],
+          "title": "비상사태"
+        },
+        {
+          "id": "5",
+          "items": [
+            {
+              "regulation": "산업보건 규정",
+              "responsible": "사업장 의사",
+              "title": "보건 점검"
+            },
+            {
+              "regulation": "산업보건 규정",
+              "responsible": "사업장 의사",
+              "title": "보건부서 연간 업무계획"
+            },
+            {
+              "regulation": "산업보건 규정",
+              "responsible": "사업장 의사",
+              "title": "채용 전 건강진단서"
+            },
+            {
+              "regulation": "산업보건 규정",
+              "responsible": "사업장 의사",
+              "title": "정기 건강진단서"
+            }
+          ],
+          "title": "건강 감시"
+        },
+        {
+          "id": "6",
+          "items": [
+            {
+              "regulation": "화학물질 규정",
+              "responsible": "산업보건 전문가",
+              "title": "SDS 확보"
+            },
+            {
+              "regulation": "화학물질 규정",
+              "responsible": "산업보건 전문가",
+              "title": "화학물질 위험성 평가"
+            }
+          ],
+          "title": "화학물질"
+        }
+      ],
+      "errors": {
+        "loadFailed": "계획을 불러올 수 없습니다",
+        "noSupabase": "Supabase 연결이 없습니다",
+        "orgNotFound": "조직 정보를 찾을 수 없습니다",
+        "saveFailed": "저장에 실패했습니다",
+        "selectCompany": "회사를 선택해 주세요",
+        "sessionNotFound": "세션을 찾을 수 없습니다"
+      },
+      "fields": {
+        "company": "회사",
+        "companyPlaceholder": "회사 선택",
+        "revNo": "개정 번호",
+        "year": "계획 연도"
+      },
+      "loading": "계획 로딩 중…",
+      "pdf": {
+        "colOrder": "번호",
+        "colRegulation": "법령",
+        "colResponsible": "담당자",
+        "colTopic": "작업 주제",
+        "headerLine": "회사: {companyName} · 연도: {year} · 개정: {revNo}",
+        "htmlTitle": "연간 산업안전보건 작업계획 — {companyName}",
+        "mainTitle": "산업안전보건 연간 작업계획",
+        "sigEmployer": "사업주 / 대리인",
+        "sigLine": "서명 / 날짜",
+        "sigPhysician": "사업장 의사",
+        "sigSafety": "산업안전보건 전문가"
+      },
+      "preview": {
+        "description": "행을 클릭하여 편집 · 월 셀 토글",
+        "title": "미리보기 및 편집"
+      },
+      "signers": {
+        "blockLabel": "서명자 (PDF 서명 영역에 인쇄됨)",
+        "employer": "사업주 / 사업주 대리인",
+        "employerPlaceholder": "성명",
+        "physician": "산업의학 전문의",
+        "physicianPlaceholder": "의사 성명",
+        "safetyExpert": "산업안전보건 전문가",
+        "safetyExpertPlaceholder": "성명 · 등급 (A/B/C)"
+      },
+      "table": {
+        "addRow": "행 추가",
+        "deleteRowAria": "행 삭제",
+        "num": "#",
+        "regulation": "법령",
+        "responsible": "담당자",
+        "topic": "작업 주제"
+      }
+    }
+  },
   "platformAdmin": {
     "leads": {
-      "backLink": "플랫폼 관리로 돌아가기",
-      "description": "랜딩 \"데모 요청\", 등록 \"OSGB\" 및 \"Enterprise\" 양식의 모든 요청이 여기에 나열됩니다. 상태를 업데이트하고, 연락한 리드를 표시하며, 전환된 리드를 종료하세요.",
+      "backLink": "플랫폼 관리자로 돌아가기",
+      "description": "랜딩 페이지 \"데모 요청\", \"OSGB\" 및 \"Enterprise\" 등록 양식의 모든 요청이 여기에 나열됩니다. 상태를 업데이트하고 연락한 리드를 표시하며 전환된 리드를 종료하세요.",
       "detailCompany": "회사",
       "detailEmail": "이메일",
       "detailEstCompanies": "예상 회사 수",
       "detailEstEmployees": "예상 직원 수",
-      "detailEstLocations": "예상 위치 수",
+      "detailEstLocations": "예상 사업장 수",
       "detailEstProfessionals": "예상 전문가 수",
       "detailFullName": "성명",
       "detailPhone": "전화번호",
       "detailRequestType": "요청 유형",
       "detailSource": "출처",
-      "emptyDescription": "OSGB/엔터프라이즈 견적 플로우 및 랜딩 \"데모 요청\" 제출이 여기에 표시됩니다.",
-      "emptyTitle": "이 필터에 대한 요청이 없습니다.",
+      "emptyDescription": "OSGB/엔터프라이즈 견적 플로우 및 랜딩 페이지 \"데모 요청\" 제출이 여기에 표시됩니다.",
+      "emptyTitle": "이 필터에 해당하는 요청이 없습니다.",
       "errorNotesSave": "메모를 저장할 수 없습니다",
       "errorStatusUpdate": "업데이트할 수 없습니다",
-      "filterSource": "소스:",
+      "filterSource": "출처:",
       "filterStatus": "상태:",
       "filterStatusContacted": "연락됨",
-      "internalNoteHint": "고객에게 표시되지 않습니다. 합의된 조건이나 플랜 코드를 여기에 기록하세요.",
+      "internalNoteHint": "고객에게 표시되지 않음. 합의된 조건이나 플랜 코드를 여기에 기록하세요.",
       "internalNoteTitle": "내부 메모 (수동 견적, 제한사항, 가격)",
       "kpiContacted": "연락됨",
       "kpiConverted": "전환됨",
@@ -1315,7 +2142,7 @@
       "titleEmail": "이메일 발송"
     },
     "legalCorpus": {
-      "backLink": "플랫폼 관리로 돌아가기",
+      "backLink": "플랫폼 관리자로 돌아가기",
       "colActive": "활성",
       "colJurisdiction": "관할권",
       "colNumber": "참조",
@@ -1323,12 +2150,12 @@
       "colSource": "소스 URL",
       "colTitle": "제목",
       "colType": "유형",
-      "description": "RAG를 위해 수집된 공식 규제 문서로, 관할권별로 그룹화됩니다. 테넌트 전용 업로드는 테넌트 워크스페이스 경로에 유지됩니다.",
+      "description": "RAG를 위해 수집된 공식 규제 문서로, 관할권별로 그룹화됩니다. 테넌트 전용 업로드는 테넌트 작업공간 경로에 유지됩니다.",
       "emptyDocuments": "필터와 일치하는 문서가 없습니다.",
       "ingestError": "가져오기 실패",
       "ingestHeading": "공식 피드에서 수집",
       "ingesting": "가져오는 중…",
-      "ingestResult": "삽입됨: {inserted}, 건너뜀 (이미 DB에 존재): {skipped}",
+      "ingestResult": "삽입됨: {inserted}, 건너뜀 (이미 DB에 있음): {skipped}",
       "ingestUkButton": "영국 SI 가져오기 (Atom)",
       "ingestUkHint": "legislation.gov.uk Atom에서 최신 영국 법정 문서 항목을 가져옵니다 (제목 + 요약).",
       "no": "아니오",
@@ -1338,7 +2165,7 @@
       "scopePrivate": "테넌트",
       "statsHeading": "관할권별 문서",
       "tableHeading": "문서 (이름순)",
-      "title": "국가별 법률 코퍼스",
+      "title": "국가별 법률 말뭉치",
       "yes": "예"
     }
   },
@@ -1349,9 +2176,9 @@
       "nova_message": "Nova 메시지",
       "risk_analysis": "위험 분석"
     },
-    "billingPeriodAria": "결제 주기",
+    "billingPeriodAria": "청구 주기",
     "currentPlan": "현재 플랜",
-    "enterpriseBody": "다중 사용자, 클라이언트 포트폴리오, 화이트라벨, 맞춤 온보딩 및 인보이싱의 경우 셀프서비스 결제가 불가능합니다 — 범위와 계약 협의를 위해 문의해 주세요.",
+    "enterpriseBody": "다중 사용자, 클라이언트 포트폴리오, 화이트라벨, 맞춤 온보딩 및 청구서 발행의 경우 셀프서비스 결제가 불가능합니다. 범위와 계약 협의를 위해 문의해 주세요.",
     "enterpriseCorporateCta": "엔터프라이즈 견적 요청",
     "enterpriseExplore": "제품 살펴보기",
     "enterpriseFootnoteEnterprise": "엔터프라이즈 제공",
@@ -1360,16 +2187,16 @@
     "enterpriseOfferLink": "엔터프라이즈 견적",
     "enterpriseOsgbCta": "OSGB 견적 요청",
     "enterpriseTitle": "OSGB 또는 엔터프라이즈 사용",
-    "footerLimitsBody": "Nova, 분석 및 생성 허용량은 화면뿐만 아니라 API 레이어에서 소비됩니다.",
+    "footerLimitsBody": "Nova, 분석 및 생성 허용량은 화면뿐만 아니라 API 계층에서 소비됩니다.",
     "footerLimitsTitle": "서버에서 적용",
-    "footerOsgbBody": "팀 시트, 포트폴리오, 화이트라벨, 온보딩 및 인보이싱은 전용 견적 플로우를 통해 처리됩니다.",
+    "footerOsgbBody": "팀 시트, 포트폴리오, 화이트라벨, 온보딩 및 청구서 발행은 전용 견적 플로우를 통해 처리됩니다.",
     "footerOsgbTitle": "OSGB와 엔터프라이즈 별도",
-    "footerPro149Body": "활동적인 개별 전문가를 위한 분석, 문서 및 현장 작업의 균형 잡힌 용량.",
+    "footerPro149Body": "활발한 개인 전문가를 위한 분석, 문서 및 현장 작업의 균형잡힌 용량.",
     "footerPro149Title": "Professional 149 권장",
-    "freeStart": "무료로 시작",
-    "heroDescription": "무료로 시작하여 Starter, Plus, Professional로 성장하세요 — Nova, 위험 분석, 현장 감사 및 라이브러리 기반 문서 생성이 귀하의 속도에 맞춰 확장됩니다. 유료 플랜에서는 각 카드별로 월간 또는 연간 결제를 선택할 수 있습니다.",
+    "freeStart": "무료 시작",
+    "heroDescription": "무료로 시작하여 Starter, Plus, Professional로 성장하세요. Nova, 위험 분석, 현장 감사 및 라이브러리 기반 문서 생성이 귀하의 속도에 맞춰 확장됩니다. 유료 플랜에서는 각 카드별로 월간 또는 연간 청구를 선택할 수 있습니다.",
     "heroEyebrow": "개인 플랜",
-    "heroTitle": "직장 안전 전문가를 위한 명확하고 확장 가능한 플랜입니다.",
+    "heroTitle": "직장 안전 전문가를 위한 명확하고 확장 가능한 요금제입니다.",
     "introBody": "유료 플랜에서는 각 카드별로 월간 또는 연간 결제를 선택할 수 있습니다. 연간 결제는 10개월 가격으로 12개월을 이용할 수 있습니다(카드 총액이 그에 따라 업데이트됩니다). OSGB 및 기업 고객은 견적 절차를 이용합니다. 각 카드에는 '누구를 위한 것인가?'와 '상위 티어로 이동'이 표시되어 귀하의 프로필에 맞는 다음 단계를 확인할 수 있습니다.",
     "introTitle": "개인 플랜을 선택하세요",
     "limitNotIncluded": "포함되지 않음",
@@ -1383,80 +2210,38 @@
       "free": {
         "description": "Nova 채팅, 분석 및 소규모 문서 워크플로를 탐색할 수 있는 월간 할당량이 있는 입문 티어입니다.",
         "name": "무료",
-        "upgradeHint": "매월 예측 가능한 할당량이 필요할 때 Starter로 업그레이드하세요.",
-        "whoFor": "RiskNova를 시도하는 사용자, 학생 및 가벼운 occasional 사용.",
-        "features": [
-          "Nova chat within monthly limits",
-          "Foundational AI analyses for risk workflows",
-          "Limited document generation",
-          "Field inspection entries within quotas",
-          "Exports within plan limits"
-        ]
+        "upgradeHint": "매월 예측 가능한 할당량이 필요할 때 스타터로 업그레이드하세요.",
+        "whoFor": "RiskNova를 시도하는 사용자, 학생 및 가벼운 occasional 사용."
       },
       "plus": {
         "description": "채팅, 분석, 위험 모델링 및 현장 데이터 전반에 걸친 균형 잡힌 용량.",
-        "name": "Plus",
+        "name": "플러스",
         "upgradeHint": "더 깊은 검사 및 보고 처리량이 필요할 때 Professional로 이동하세요.",
-        "whoFor": "매월 여러 고객을 관리하는 활성 컨설턴트.",
-        "features": [
-          "Higher caps across all core actions",
-          "More incident and training outputs",
-          "Field inspection headroom for busy weeks",
-          "Document throughput for recurring packs",
-          "Exports suited to multi-client work"
-        ]
+        "whoFor": "매월 여러 고객을 관리하는 활성 컨설턴트."
       },
       "professional_149": {
         "description": "권장 티어 — 분석, 문서 및 현장 워크플로 전반에 걸친 넉넉한 한도.",
         "name": "Professional 149",
         "upgradeHint": "Professional 199는 가장 바쁜 데스크를 위한 최대 여유 공간을 추가합니다.",
-        "whoFor": "제품에서 생활하는 시니어 컨설턴트 및 파워 유저.",
-        "features": [
-          "Very high Nova and analysis quotas",
-          "Heavy document generation allowance",
-          "Large risk and inspection budgets",
-          "Incident and training outputs at scale",
-          "Exports aligned with premium throughput"
-        ]
+        "whoFor": "제품에서 생활하는 시니어 컨설턴트 및 파워 유저."
       },
       "professional_199": {
-        "description": "OSGB 또는 기업 계약 이전의 최상위 셀프 서비스 티어.",
+        "description": "OSGB 또는 기업 계약 이전의 최고 셀프 서비스 티어.",
         "name": "Professional 199",
         "upgradeHint": "좌석, 포트폴리오 또는 인보이싱이 필요하신가요? OSGB 또는 기업 견적을 이용하세요.",
-        "whoFor": "최고 개인 작업량과 프리미엄 처리량 요구사항.",
-        "features": [
-          "Maximum published individual quotas",
-          "Peak AI and document capacity",
-          "Largest inspection and risk envelopes",
-          "Full incident and training allowances in tier",
-          "Exports for the heaviest reporting cycles"
-        ]
+        "whoFor": "최고 개인 워크로드 및 프리미엄 처리량 기대치."
       },
       "professional": {
-        "description": "최상위 Professional 티어 이전의 엔터프라이즈급 개인 한도.",
+        "description": "최고 Professional 티어 이전의 엔터프라이즈급 개인 한도.",
         "name": "Professional 99",
         "upgradeHint": "규모에서 최고의 가치를 위해 Professional 149로 업그레이드하세요.",
-        "whoFor": "집중적인 주간 사용량을 가진 풀타임 OHS 전문가.",
-        "features": [
-          "High Nova and AI analysis limits",
-          "Strong document generation cadence",
-          "Broad risk and field inspection capacity",
-          "Incident programme support within quota",
-          "Exports for intensive reporting"
-        ]
+        "whoFor": "집중적인 주간 사용량을 가진 풀타임 OHS 전문가."
       },
       "starter": {
         "description": "Nova, 분석 및 문서에 대한 높은 할당량으로 주간 루틴이 원활하게 실행됩니다.",
         "name": "스타터",
-        "upgradeHint": "사고 분석과 교육 결과가 워크플로의 일부가 될 때 플러스를 선택하세요.",
-        "whoFor": "프리랜스 전문가와 꾸준하지만 적당한 월간 작업량.",
-        "features": [
-          "Stronger Nova and analysis quotas",
-          "More monthly document generation",
-          "Incident analysis allowance",
-          "Training slides where included in quota",
-          "Exports scaled for individuals"
-        ]
+        "upgradeHint": "사고 분석과 교육 결과물이 워크플로의 일부가 될 때 플러스를 선택하세요.",
+        "whoFor": "프리랜서 전문가와 꾸준하지만 적당한 월간 업무량."
       }
     },
     "priceFreeNote": "무료로 시작",
@@ -1482,23 +2267,25 @@
       "pending": "대기 중",
       "planned": "계획됨",
       "recentOps": "최근 활동",
-      "total": "전체 작업"
+      "resetFilter": "전체 보기",
+      "total": "총 작업"
     },
     "changePhoto": "사진 변경",
     "danger": {
       "button": "계정 삭제",
-      "description": "계정을 삭제하면 모든 데이터가 영구적으로 제거되며 이 작업은 되돌릴 수 없습니다. KVKK에 따라 삭제는 30일 이내에 완료됩니다.",
-      "redirectMsg": "계정 삭제 절차는 개인정보 보호 및 동의 탭에서 진행됩니다.",
+      "description": "계정을 삭제하면 모든 데이터가 영구적으로 제거되며 이 작업은 취소할 수 없습니다. KVKK에 따라 삭제는 30일 이내에 완료됩니다.",
+      "redirectMsg": "계정 삭제 절차는 개인정보 및 동의 탭에서 진행됩니다.",
       "title": "위험 구역"
     },
     "email": {
       "current": "현재 이메일",
-      "info": "이메일 변경 시 인증이 필요합니다. 새 주소로 전송된 링크를 클릭하기 전까지는 계정 이메일이 업데이트되지 않습니다.",
+      "info": "이메일 변경 시 인증이 필요합니다. 새 주소로 발송된 링크를 클릭하기 전까지는 계정 이메일이 업데이트되지 않습니다.",
       "new": "새 이메일",
       "newPlaceholder": "name@company.com",
       "submit": "변경 시작",
       "title": "이메일 변경"
     },
+    "fallbackUserName": "사용자",
     "loading": "프로필 로딩 중...",
     "membership": "가입일",
     "mfa": {
@@ -1507,44 +2294,63 @@
       "backupWarning": "백업 코드는 지원되지 않습니다. 중요한 계정의 경우 최소 두 개의 서로 다른 TOTP 기기를 등록하세요.",
       "closed": "2FA 비활성화",
       "connect": "Google Authenticator 연결",
+      "defaultAuthenticatorName": "Google Authenticator",
       "description": "Google Authenticator, Authy 및 유사한 TOTP 앱과 호환됩니다. 활성화하면 이 계정은 2단계 인증으로 보호됩니다.",
       "deviceName": "기기 이름",
       "deviceNamePlaceholder": "예: 철수의 iPhone",
+      "enrollManualUri": "수동 설정 URI 표시",
+      "enrollStep1Body": "인증 앱에서 새 계정을 추가하고 이 코드를 스캔하세요.",
+      "enrollStep1Title": "1. QR 코드 스캔",
+      "enrollStep2Label": "2. 앱에서 6자리 코드 입력",
+      "factorFallbackName": "인증기",
       "loading": "로딩 중...",
       "noDevices": "아직 연결된 MFA 기기가 없습니다.",
       "onlyPassword": "현재 계정은 비밀번호로만 보호되고 있습니다.",
-      "open": "2FA 활성화",
+      "open": "2단계 인증 켜짐",
+      "qrAlt": "MFA QR 코드",
       "registeredDevices": "등록된 MFA 기기",
       "removeDevice": "제거",
       "setupKey": "설정 키",
+      "statusAal2Session": "이 세션은 2단계 인증으로 보호되고 있습니다.",
+      "statusVerifiedDeviceNextLogin": "인증된 보안 기기가 있습니다. 새 로그인 시 2단계 인증이 필요합니다.",
+      "statusVerifiedNeedsChallenge": "2단계 인증이 켜져 있습니다. 이 세션에서 2단계 인증이 아직 완료되지 않았습니다.",
       "title": "2단계 인증",
       "verify": "인증",
       "verifyCodePlaceholder": "123456",
-      "verifying": "확인 중..."
+      "verifying": "인증 중..."
     },
     "msg": {
-      "emailConfirmSent": "새 주소로 인증 링크를 발송했습니다.",
-      "emailEmpty": "새 이메일 주소를 입력해주세요.",
+      "emailChangeFailed": "이메일 변경을 시작할 수 없습니다.",
+      "emailConfirmSent": "새 주소로 인증 링크를 보냈습니다.",
+      "emailConfirmSentDetailed": "확인 링크가 {email}로 전송되었습니다. 이메일을 열어 변경을 완료하세요.",
+      "emailEmpty": "새 이메일 주소를 입력해야 합니다.",
       "emailInvalid": "유효한 이메일 주소를 입력하세요.",
-      "emailSame": "새 이메일은 현재 이메일과 달라야 합니다.",
+      "emailSame": "새 이메일은 현재 이메일과 같을 수 없습니다.",
       "emailServiceError": "이메일 업데이트 서비스에 연결할 수 없습니다.",
+      "genericSaveError": "저장할 수 없습니다.",
       "mfaCodeInvalid": "인증 코드는 6자리여야 합니다.",
       "mfaEnabled": "2단계 인증이 활성화되었습니다.",
-      "mfaEnrolled": "등록이 완료되었습니다. 2FA 활성화를 위해 코드를 확인하세요.",
+      "mfaEnrolled": "등록이 생성되었습니다. 지금 코드를 인증하여 2단계 인증을 활성화하세요.",
+      "mfaEnrollFailed": "2단계 인증을 시작할 수 없습니다.",
       "mfaRemoveConfirm": "이 MFA 기기를 제거하시겠습니까?",
       "mfaRemoved": "MFA 기기가 제거되었습니다.",
-      "mfaServiceError": "2단계 인증 서비스에 연결할 수 없습니다.",
+      "mfaRemoveFailed": "MFA 기기를 제거할 수 없습니다.",
+      "mfaServiceError": "이중 인증 서비스에 연결할 수 없습니다.",
+      "mfaVerifyFailed": "인증에 실패했습니다.",
       "passwordError": "비밀번호를 업데이트할 수 없습니다.",
       "passwordMismatch": "새 비밀번호가 일치하지 않습니다.",
       "passwordUpdated": "비밀번호가 성공적으로 업데이트되었습니다.",
       "photoError": "사진 업로드에 실패했습니다.",
       "photoUpdated": "사진이 업데이트되었습니다.",
-      "prefsSaved": "설정이 저장되었습니다.",
+      "prefsSaved": "환경설정이 저장되었습니다.",
       "profileError": "프로필을 저장할 수 없습니다.",
       "profileSaved": "프로필이 저장되었습니다.",
       "sessionServiceError": "세션 서비스에 연결할 수 없습니다.",
       "signedOut": "이 기기에서 로그아웃되었습니다.",
-      "signedOutAll": "모든 기기에서 로그아웃되었습니다."
+      "signedOutAll": "모든 기기에서 로그아웃되었습니다.",
+      "signOutAllFailed": "모든 기기에서 로그아웃할 수 없습니다.",
+      "signOutFailed": "로그아웃할 수 없습니다.",
+      "totpEnrollmentMissing": "TOTP 등록 데이터를 로드할 수 없습니다."
     },
     "org": {
       "city": "도시",
@@ -1564,7 +2370,7 @@
       "fullName": "성명",
       "fullNamePlaceholder": "성명",
       "jobTitle": "직책/직위",
-      "jobTitlePlaceholder": "OHS 전문가",
+      "jobTitlePlaceholder": "산업안전보건 전문가",
       "phone": "전화번호",
       "phonePlaceholder": "+1 xxx xxx xxxx",
       "save": "저장",
@@ -1577,7 +2383,7 @@
       "notifications": "알림",
       "pushNotif": "푸시 알림",
       "pushNotifDesc": "브라우저 즉시 알림",
-      "save": "환경설정 저장",
+      "save": "설정 저장",
       "theme": "테마",
       "themeDark": "다크",
       "themeLight": "라이트",
@@ -1585,14 +2391,14 @@
     },
     "roles": {
       "dsp": "DSP",
-      "ohs_specialist": "OHS 전문가",
+      "ohs_specialist": "산업안전보건 전문가",
       "organization_admin": "조직 관리자",
-      "osgb_manager": "OSGB 관리자",
+      "osgb_manager": "OSGB 매니저",
       "platform_admin": "플랫폼 관리자",
-      "super_admin": "최고 관리자",
+      "super_admin": "슈퍼 관리자",
       "title": "역할 및 권한",
       "viewer": "뷰어",
-      "workplace_physician": "산업의"
+      "workplace_physician": "사업장 의사"
     },
     "sessions": {
       "active": "활성",
@@ -1614,28 +2420,28 @@
   },
   "publicInvite": {
     "acceptedCta": "대시보드로 이동",
-    "acceptedDesc": "이 초대는 이미 수락되었습니다. 대시보드에서 회사에 접근할 수 있습니다.",
-    "acceptedTitle": "초대 이미 수락됨",
+    "acceptedDesc": "이 초대는 이미 수락되었습니다. 대시보드에서 회사에 액세스할 수 있습니다.",
+    "acceptedTitle": "초대가 이미 수락됨",
     "backHome": "홈으로 돌아가기",
     "brandEyebrow": "RiskNova",
     "btnLogin": "로그인",
-    "btnRegister": "계정 생성",
+    "btnRegister": "계정 만들기",
     "cardEyebrow": "회사 초대",
     "dbErrorDesc": "데이터베이스에 연결할 수 없습니다. 나중에 다시 시도해 주세요.",
     "dbErrorTitle": "연결 문제",
-    "declinedDesc": "이 초대는 이전에 거절되었습니다. 새 초대가 필요하시면 초대한 사람에게 문의하세요.",
+    "declinedDesc": "이 초대는 이전에 거절되었습니다. 새 초대가 필요하면 초대자에게 문의하세요.",
     "declinedTitle": "초대 거절됨",
     "dtExpires": "만료일",
     "dtInvitee": "초대받은 사람",
-    "dtInviter": "초대한 사람",
+    "dtInviter": "초대자",
     "dtNote": "메모",
-    "expiredDesc": "이 초대가 만료되었습니다. 새 초대를 요청하세요.",
-    "expiredTitle": "초대 만료됨",
+    "expiredDesc": "이 초대는 만료되었습니다. 새 초대를 요청하세요.",
+    "expiredTitle": "초대 만료",
     "inviteTitle": "{company}에서 RiskNova 워크스페이스에 참여하도록 초대했습니다.",
     "loginPrompt": "초대를 수락하려면 {email}로 등록된 계정이 필요합니다.",
     "notFoundDesc": "이 초대는 더 이상 사용할 수 없거나 링크가 유효하지 않습니다. 초대한 사람에게 새 링크를 요청하세요.",
     "notFoundTitle": "초대를 찾을 수 없음",
-    "revokedDesc": "이 초대는 보낸 사람에 의해 취소되었습니다.",
+    "revokedDesc": "이 초대는 발송자에 의해 취소되었습니다.",
     "revokedTitle": "초대 취소됨",
     "shellTitle": "회사 초대",
     "unknownCompany": "회사",
@@ -1650,13 +2456,13 @@
     "declinedMessage": "초대를 거절했습니다. 언제든지 새 초대를 요청할 수 있습니다.",
     "declineProcessing": "처리 중…",
     "emailMismatch": "이 초대는 {inviteeEmail}로 발송되었지만, 현재 {currentUserEmail}로 로그인되어 있습니다.",
-    "emailMismatchHint": "수락하려면 올바른 계정으로 로그인하세요.",
+    "emailMismatchHint": "올바른 계정으로 로그인하여 수락하세요.",
     "errAuthRequired": "초대를 수락하려면 로그인해야 합니다.",
-    "errExpired": "이 초대가 만료되었습니다.",
+    "errExpired": "이 초대는 만료되었습니다.",
     "errNotFound": "초대를 찾을 수 없습니다.",
     "errNotPending": "이 초대는 더 이상 대기 중이 아닙니다 (수락, 거절 또는 취소되었을 수 있습니다).",
     "errUnexpected": "예상치 못한 오류가 발생했습니다.",
-    "errWrongUser": "이 초대는 로그인한 사용자의 것이 아닙니다. 올바른 계정으로 로그인하세요."
+    "errWrongUser": "이 초대는 로그인된 사용자의 것이 아닙니다. 올바른 계정으로 로그인하세요."
   },
   "publicSurvey": {
     "congrats": "축하합니다!",
@@ -1674,8 +2480,8 @@
     "participantLabel": "참가자:",
     "passPipe": "| 합격: {score}%",
     "prev": "이전",
-    "questionBadge": "문제 {n}",
-    "questionCount": "{count}개 문제",
+    "questionBadge": "질문 {n}",
+    "questionCount": "{count}개 질문",
     "required": "* 필수",
     "sending": "제출 중…",
     "sorry": "죄송합니다",
@@ -1684,8 +2490,8 @@
     "submitError": "응답을 저장할 수 없습니다. 연결을 확인하고 다시 시도하세요.",
     "surveyCompleteDesc": "응답이 성공적으로 저장되었습니다.",
     "thanks": "감사합니다!",
-    "verifySubtitleExam": "시험 시작 전 신원을 확인하세요.",
-    "verifySubtitleSurvey": "설문 시작 전 신원을 확인하세요.",
+    "verifySubtitleExam": "시험을 시작하기 전에 신원을 확인하세요.",
+    "verifySubtitleSurvey": "설문조사를 시작하기 전에 신원을 확인하세요.",
     "verifyTitle": "신원 확인",
     "yes": "예"
   },
@@ -1700,10 +2506,10 @@
       },
       "ios": {
         "step1": "Safari에서 사이트 열기",
-        "step2": "공유 아이콘 탭하기",
+        "step2": "공유 아이콘 탭",
         "step3": "홈 화면에 추가 선택",
         "text": "Safari에서 열고 공유 → 홈 화면에 추가를 사용하여 RiskNova 아이콘을 생성하세요.",
-        "title": "iPhone & iPad"
+        "title": "iPhone 및 iPad"
       },
       "windows": {
         "step1": "Edge 또는 Chrome에서 열기",
@@ -1720,12 +2526,12 @@
     "heroTitle": "모바일과 데스크톱에서 RiskNova를 앱처럼 사용",
     "metaDescription": "앱 스토어 없이 iOS, Android, Windows에서 RiskNova를 PWA로 설치하세요.",
     "metaTitle": "RiskNova 앱",
-    "updatesBody": "RiskNova 웹 앱이 업데이트되면 PWA가 새 버전을 자동으로 받아옵니다. 스토어 업데이트를 기다릴 필요가 없습니다.",
-    "updatesTitle": "업데이트가 자동으로 도착합니다"
+    "updatesBody": "RiskNova 웹앱이 업데이트되면 PWA가 새 버전을 자동으로 받아옵니다. 스토어 업데이트를 기다릴 필요가 없습니다.",
+    "updatesTitle": "업데이트 자동 적용"
   },
   "pwaPrompt": {
     "appButton": "설치",
-    "appDescription": "홈 화면에서 현장 작업, 문서, Nova로 바로 돌아가세요.",
+    "appDescription": "홈 화면에서 현장 작업, 문서, Nova로 바로 이동하세요.",
     "appTitle": "RiskNova 앱 설치",
     "asideAria": "RiskNova 앱 설치",
     "dismissAria": "설치 알림 닫기",
@@ -1734,12 +2540,36 @@
     "publicDescription": "iOS, Android, Windows에서 별도 창으로 빠르게 열기",
     "publicTitle": "RiskNova를 앱처럼 설치"
   },
+  "reports": {
+    "companyFile": {
+      "categoryEmpty": "기록 없음",
+      "categoryHint": "클릭하여 선택",
+      "categoryIncluded": "ZIP에 포함됨",
+      "downloading": "준비 중…",
+      "downloadZip": "ZIP으로 다운로드",
+      "failZipPrefix": "회사 파일을 생성할 수 없습니다:",
+      "includePdfPerRecord": "각 기록에 대해 별도 PDF 생성",
+      "loadingRecords": "기록 수집 중…",
+      "noCompanyRecords": "이 회사에 대한 기록이 아직 없습니다.",
+      "noOrg": "조직 정보를 찾을 수 없습니다. 세션을 확인해 주세요.",
+      "refresh": "새로고침",
+      "sectionHint": "선택한 카테고리에 대해 요약 PDF와 ZIP 패키지가 준비됩니다.",
+      "sectionTitle": "회사 파일",
+      "selectAll": "모두 선택",
+      "selectedCount": "{count}개 기록 선택됨",
+      "selectNone": "선택 해제",
+      "subtitle": "{companyName}에 대한 분석 요약 및 모든 문서를 ZIP으로 다운로드",
+      "successZip": "회사 파일이 준비되어 다운로드되었습니다. {count}개 기록이 보관되었습니다.",
+      "title": "보고서 및 회사 파일",
+      "warnSelectCategory": "최소 하나의 카테고리(기록 포함)를 선택하세요."
+    }
+  },
   "riskScoring": {
     "classification": {
       "bow_tie": {
         "critical": {
           "action": "작업 중단; 장벽 재설계",
-          "label": "치명적"
+          "label": "위험"
         },
         "follow_up": {
           "action": "장벽 적절; 모니터링 지속",
@@ -1754,13 +2584,13 @@
           "label": "낮음"
         },
         "medium": {
-          "action": "추가 장벽 구축",
+          "action": "추가 장벽 설치",
           "label": "보통"
         }
       },
       "checklist": {
         "critical": {
-          "action": "활동 중단; 전면 수정",
+          "action": "활동 중단; 전면 재검토",
           "label": "심각한 부적절"
         },
         "follow_up": {
@@ -1768,7 +2598,7 @@
           "label": "준수"
         },
         "high": {
-          "action": "긴급 시정 조치 시작",
+          "action": "긴급 시정조치 시작",
           "label": "부적절"
         },
         "low": {
@@ -1794,39 +2624,39 @@
           "label": "높은 위험"
         },
         "low": {
-          "action": "검토 유지; 개선 계획 수립",
+          "action": "지속 검토; 개선 계획 수립",
           "label": "보통 우려"
         },
         "medium": {
           "action": "단기간 내 조치",
-          "label": "중대함"
+          "label": "중대"
         }
       },
       "fmea": {
         "critical": {
-          "action": "작업 중단; 근본 원인 분석 수행",
-          "label": "치명적 위험"
+          "action": "작업 중단; 근본원인 분석 수행",
+          "label": "심각한 위험"
         },
         "follow_up": {
-          "action": "현재 통제 충분; 모니터링 유지",
+          "action": "현재 통제 충분; 지속 모니터링",
           "label": "허용 가능"
         },
         "high": {
-          "action": "긴급 조치; 설계 변경 고려",
-          "label": "높은 위험"
+          "action": "긴급 조치; 설계 변경 검토",
+          "label": "고위험"
         },
         "low": {
           "action": "개선 계획 수립",
-          "label": "낮은 위험"
+          "label": "저위험"
         },
         "medium": {
-          "action": "조치 취함; 통제 강화",
-          "label": "중간 위험"
+          "action": "조치 실행; 통제 강화",
+          "label": "중위험"
         }
       },
       "fta": {
         "critical": {
-          "action": "운영 금지; 근본 원인 제거",
+          "action": "운영 중단; 근본 원인 제거",
           "label": "치명적"
         },
         "follow_up": {
@@ -1852,7 +2682,7 @@
           "label": "허용 불가"
         },
         "follow_up": {
-          "action": "현재 통제 수단으로 충분",
+          "action": "현재 통제 충분",
           "label": "허용 가능"
         },
         "high": {
@@ -1860,11 +2690,11 @@
           "label": "높음"
         },
         "low": {
-          "action": "모니터링 및 개선 계획 수립",
+          "action": "모니터링 및 개선 계획",
           "label": "낮음"
         },
         "medium": {
-          "action": "추가 보호층 평가",
+          "action": "추가 보호 계층 평가",
           "label": "보통"
         }
       },
@@ -1874,12 +2704,12 @@
           "label": "허용 불가"
         },
         "follow_up": {
-          "action": "현재 보호층으로 충분",
+          "action": "현재 보호층 충분",
           "label": "허용 가능"
         },
         "high": {
-          "action": "다중층 또는 프로세스 변경 필요",
-          "label": "높은 위험"
+          "action": "다중 보호층 또는 공정 변경 필요",
+          "label": "고위험"
         },
         "low": {
           "action": "합리적으로 실행 가능한 한 낮게",
@@ -1892,24 +2722,24 @@
       },
       "matrix": {
         "critical": {
-          "action": "즉시 작업 중단; 응급 조치",
+          "action": "즉시 작업 중단; 비상 조치",
           "label": "허용 불가"
         },
         "follow_up": {
-          "action": "추가 조치 불필요할 수 있음; 모니터링으로 충분",
+          "action": "추가 조치 불필요; 모니터링으로 충분",
           "label": "허용 가능"
         },
         "high": {
-          "action": "조속히 조치 필요",
-          "label": "높은 위험"
+          "action": "조속한 조치 필요",
+          "label": "고위험"
         },
         "low": {
-          "action": "기존 통제 적절함; 지속 관찰",
-          "label": "낮은 위험"
+          "action": "기존 통제 적절; 지속 관찰",
+          "label": "저위험"
         },
         "medium": {
           "action": "개선 활동 계획",
-          "label": "중간 위험"
+          "label": "중위험"
         }
       },
       "r2d": {
@@ -1918,7 +2748,7 @@
           "label": "치명적"
         },
         "follow_up": {
-          "action": "일상적 모니터링으로 충분",
+          "action": "일상 모니터링으로 충분",
           "label": "모니터링"
         },
         "high": {
@@ -1926,14 +2756,27 @@
           "label": "높음"
         },
         "low": {
-          "action": "구조적 재평가 일정 수립",
+          "action": "구조화된 재평가 일정",
           "label": "낮음"
         },
         "medium": {
           "action": "강화된 감독 필요",
-          "label": "중간"
+          "label": "보통"
         }
       }
+    },
+    "defaults": {
+      "aiRequestFailed": "AI 분석을 완료할 수 없습니다.",
+      "canvasNoContext": "캔버스 컨텍스트를 사용할 수 없습니다.",
+      "checklistCategoryGeneral": "일반",
+      "checklistItem1": "통제 항목 1",
+      "checklistItemSeed": "통제 항목",
+      "firstLineDescription": "이 행에 동일한 상황의 광각 및 근접 사진을 첨부할 수 있습니다.",
+      "firstLineTitle": "적재 구역",
+      "hazopGuideWord": "더 보기",
+      "hazopParameter": "흐름",
+      "manualPinCategory": "수동 발견사항",
+      "manualPinRecommendation": "수동으로 표시됨. 세부 평가를 수행하세요."
     },
     "fk": {
       "exposure": {
@@ -1941,7 +2784,7 @@
         "v1": "드묾 (월 1회)",
         "v10": "지속적 (하루 대부분)",
         "v2": "가끔 (주 1회)",
-        "v3": "때때로 (주 수회)",
+        "v3": "때때로 (주 여러 회)",
         "v6": "빈번함 (매일)"
       },
       "likelihood": {
@@ -1950,16 +2793,16 @@
         "v0_5": "예상치 못하지만 가능",
         "v1": "낮은 가능성, 무시할 수 없음",
         "v10": "매우 높음 / 예상됨",
-        "v3": "드물지만 가능함",
-        "v6": "상당히 가능성 높음"
+        "v3": "드물지만 가능",
+        "v6": "상당히 높음"
       },
       "severity": {
-        "v1": "경미함, 응급처치 수준",
+        "v1": "주목할 만함, 응급처치",
         "v100": "대규모 재해, 다수 사망",
-        "v15": "매우 심각함, 신체 절단",
-        "v3": "중대함, 외부 치료 필요",
+        "v15": "매우 심각함, 사지 손실",
+        "v3": "중대, 외부 치료",
         "v40": "재해, 단일 사망",
-        "v7": "심각함, 영구적 손상"
+        "v7": "심각, 영구적 손상"
       }
     },
     "fmea": {
@@ -1968,9 +2811,9 @@
         "v10": "탐지 불가",
         "v2": "매우 높은 탐지 가능성",
         "v3": "높은 가능성",
-        "v4": "중상급",
-        "v5": "보통",
-        "v6": "중하급",
+        "v4": "중상",
+        "v5": "중간",
+        "v6": "중하",
         "v7": "낮음",
         "v8": "매우 낮음",
         "v9": "원격 가능성"
@@ -1981,23 +2824,23 @@
         "v2": "원격 (1/20,000)",
         "v3": "매우 낮음 (1/4,000)",
         "v4": "낮음 (1/1,000)",
-        "v5": "중하급 (1/400)",
-        "v6": "보통 (1/80)",
-        "v7": "중상급 (1/40)",
+        "v5": "중하 (1/400)",
+        "v6": "중간 (1/80)",
+        "v7": "중상 (1/40)",
         "v8": "높음 (1/20)",
         "v9": "매우 높음 (1/8)"
       },
       "severity": {
         "v1": "영향 없음 — 인지되지 않음",
-        "v10": "치명적 — 사망/대형사고",
+        "v10": "치명적 — 사망 / 대형 사고",
         "v2": "매우 경미 — 무시할 수 있는 영향",
         "v3": "경미 — 약간의 불편",
         "v4": "낮음 — 성능 저하",
         "v5": "보통 — 상당한 성능 손실",
         "v6": "높음 — 시스템 기능 손상",
         "v7": "매우 높음 — 작동 불가",
-        "v8": "위험(경고 있음) — 부상 위험",
-        "v9": "위험(경고 없음) — 심각한 부상"
+        "v8": "위험 (경고 포함) — 부상 위험",
+        "v9": "위험 (경고 없음) — 심각한 부상"
       }
     },
     "hazop": {
@@ -2008,7 +2851,7 @@
         "late": "지연",
         "less": "적음",
         "more": "많음",
-        "noNot": "없음/아님",
+        "noNot": "없음 / 아님",
         "otherThan": "다른",
         "partOf": "일부",
         "reverse": "역방향"
@@ -2037,7 +2880,7 @@
       },
       "pfd": {
         "v0_001": "자동 안전 시스템 (SIL-1 등급)",
-        "v0_01": "훈련된 운영자 대응 / 경보",
+        "v0_01": "훈련된 운전자 대응 / 경보",
         "v0_1": "단순 관리적 통제"
       }
     },
@@ -2056,52 +2899,52 @@
           "description": "높음 (가능성 높고 놀랍지 않음)"
         },
         "i5": {
-          "description": "매우 높음 (예상되고 불가피)"
+          "description": "매우 높음 (예상되고 불가피함)"
         }
       },
       "severity": {
         "i1": {
-          "description": "매우 경미 (작업 손실 시간 없음)"
+          "description": "매우 경미 (근무 손실 없음)"
         },
         "i2": {
-          "description": "경미 (무재해 부상)"
+          "description": "경미 (근무손실 부상 없음)"
         },
         "i3": {
-          "description": "보통 (작업 손실 부상)"
+          "description": "보통 (근무손실 부상)"
         },
         "i4": {
-          "description": "중대 (영구 손상, 절단)"
+          "description": "심각 (영구 손상, 절단)"
         },
         "i5": {
-          "description": "재해 (사망, 다중 사망)"
+          "description": "치명적 (사망, 다중 사망)"
         }
       }
     },
     "methods": {
       "bow_tie": {
-        "description": "보우타이 — 위협–장벽–결과",
-        "name": "보우타이",
-        "tooltip": "예방 및 완화 장벽을 통한 위협 가능성과 결과 심각도; 장벽 강도로부터의 잔여 위험"
+        "description": "Bow-tie — 위협–장벽–결과",
+        "name": "Bow-Tie",
+        "tooltip": "예방 및 완화 장벽을 통한 위협 가능성과 결과 심각도; 장벽 강도에 따른 잔여 위험."
       },
       "checklist": {
-        "description": "체크리스트 — 준수율",
+        "description": "체크리스트 — 준수 비율",
         "name": "체크리스트",
-        "tooltip": "OK / 미준수 / 부분 항목의 가중 준수율—감사 및 점검에 적합"
+        "tooltip": "OK / Not OK / 부분 항목의 가중 준수도—감사 및 검사에 적합."
       },
       "fine_kinney": {
         "description": "가능성 × 심각도 × 노출 곱",
         "name": "Fine-Kinney",
-        "tooltip": "일반적인 정량적 위험 평가 방법: L (0.1–10), S (1–100), E (0.5–10); ISO 31000 준수."
+        "tooltip": "일반적인 정량적 위험 방법: L (0.1–10), S (1–100), E (0.5–10); ISO 31000 준수."
       },
       "fmea": {
         "description": "고장 모드 및 영향 분석 — RPN",
         "name": "FMEA",
-        "tooltip": "심각도 (1–10) × 발생도 (1–10) × 검출도 (1–10) = RPN. 운영 및 유지보수에 적합; IEC 60812."
+        "tooltip": "심각도 (1–10) × 발생 (1–10) × 검출 (1–10) = RPN. 운영 및 유지보수에 이상적; IEC 60812."
       },
       "fta": {
         "description": "결함 트리 분석 — 시스템 신뢰성",
         "name": "FTA",
-        "tooltip": "AND/OR 게이트로 시스템 고장 분해; 항공, 원자력 및 중요 시스템에 사용; IEC 61025."
+        "tooltip": "AND/OR 게이트로 시스템 장애를 분해; 항공, 원자력 및 중요 시스템에서 사용; IEC 61025."
       },
       "hazop": {
         "description": "위험 및 운전성 연구",
@@ -2111,22 +2954,22 @@
       "jsa": {
         "description": "작업 안전 분석 — 단계별 위험",
         "name": "JSA",
-        "tooltip": "단계별 심각도 × 가능성 / 통제 효과성; 건설 및 현장 작업에 필수."
+        "tooltip": "단계별 심각도 × 가능성 / 제어 효과성; 건설 및 현장 작업에 필수."
       },
       "l_matrix": {
         "description": "5×5 가능성-심각도 위험 매트릭스",
         "name": "L형 매트릭스",
-        "tooltip": "가능성 (1–5)과 심각도 (1–5) 선택; 25셀 컬러 매트릭스에서 위험 확인 (터키 산업안전보건 관행 준수)."
+        "tooltip": "가능성(1-5)과 심각도(1-5) 선택; 25셀 컬러 매트릭스에서 위험 읽기(터키 산업안전보건 관행에 맞춤)."
       },
       "lopa": {
         "description": "보호층 분석 — 빈도 감소",
         "name": "LOPA",
-        "tooltip": "초기 빈도에 보호층 PFD 값 곱셈; 공정 안전의 SIL 목표와 자주 연계."
+        "tooltip": "개시 빈도에 층별 PFD 값을 곱함; 공정 안전에서 SIL 목표와 자주 연계."
       },
       "r_skor": {
         "description": "9개 매개변수를 사용한 가중 현장 스크리닝 점수",
         "name": "R-SKOR 2D",
-        "tooltip": "RiskNova 방법: 9개 매개변수 (C1–C9)가 시각적 및 현장 입력에 가중치 적용; 이미지 기반 자동 점수 지원."
+        "tooltip": "RiskNova 방법: 9개 매개변수(C1-C9)가 시각적 및 현장 입력을 가중; 이미지에서 자동 점수 지원."
       }
     },
     "panel": {
@@ -2140,19 +2983,19 @@
       },
       "checklist": {
         "add": "+ 추가",
-        "compliantLine": "{n}개 준수",
-        "itemPlaceholder": "통제 항목…",
-        "itemsHeading": "점검 항목 ({count}개)",
-        "nonCompliantLine": "{n}개 미준수",
-        "partialLine": "{n}개 부분 준수",
+        "compliantLine": "{n} 준수",
+        "itemPlaceholder": "제어 항목…",
+        "itemsHeading": "확인 항목 ({count})",
+        "nonCompliantLine": "비준수 {n}개",
+        "partialLine": "부분 준수 {n}개",
         "removeTitle": "제거",
         "statusKismi": "부분 준수",
-        "statusNa": "해당없음",
+        "statusNa": "해당 없음",
         "statusUygun": "준수",
-        "statusUygunDegil": "미준수"
+        "statusUygunDegil": "비준수"
       },
       "fmea": {
-        "detection": "탐지도 (D)",
+        "detection": "검출성 (D)",
         "formula": "S × O × D = RPN",
         "occurrence": "발생도 (O)",
         "severity": "심각도 (S)"
@@ -2161,7 +3004,7 @@
         "add": "+ 추가",
         "componentDefault": "구성요소 {n}",
         "componentPlaceholder": "구성요소 이름",
-        "componentsHeading": "구성요소 ({count}개)",
+        "componentsHeading": "구성요소 ({count})",
         "failureRateTitle": "고장 확률 (0–1)",
         "gate": "게이트",
         "gateType": "게이트 유형:",
@@ -2170,26 +3013,26 @@
         "systemProb": "시스템 P"
       },
       "hazop": {
+        "detectability": "검출 가능성",
         "detectEasy": "쉬움",
         "detectHard": "어려움",
-        "detectability": "탐지 가능성",
         "deviation": "편차 설명",
         "deviationPlaceholder": "편차를 설명하세요…",
         "guideWord": "가이드 워드",
-        "likelihood": "발생 가능성",
+        "likelihood": "가능성",
         "parameter": "공정 매개변수",
         "severity": "심각도"
       },
       "jsa": {
         "add": "+ 추가",
         "avg": "평균",
-        "control": "통제",
-        "controlsPlaceholder": "통제 조치…",
+        "control": "제어",
+        "controlsPlaceholder": "제어 조치…",
         "hazardPlaceholder": "위험요소…",
         "highRisk": "고위험 단계",
         "jobPlaceholder": "작업명…",
-        "jobTitle": "작업 제목",
-        "likelihood": "발생 가능성",
+        "jobTitle": "직무명",
+        "likelihood": "가능성",
         "max": "최대",
         "removeTitle": "제거",
         "severity": "심각도",
@@ -2207,8 +3050,8 @@
         "consequenceV4": "심각",
         "consequenceV5": "치명적",
         "initFreq": "초기 사건 빈도",
-        "layerDefault": "레이어 {n}",
-        "layerNamePlaceholder": "레이어 이름",
+        "layerDefault": "계층 {n}",
+        "layerNamePlaceholder": "계층명",
         "layerPfd": "레이어 PFD",
         "layersHeading": "보호 레이어 ({count})",
         "meetsTarget": "허용 목표 달성",
@@ -2233,7 +3076,7 @@
     },
     "r2dParams": {
       "c1": {
-        "description": "현장에서 관찰된 위험 물질의 수/밀도",
+        "description": "현장에서 관찰된 위험 물체의 수/밀도",
         "label": "위험 밀도"
       },
       "c2": {
@@ -2241,7 +3084,7 @@
         "label": "개인보호구 누락"
       },
       "c3": {
-        "description": "제한구역 출입, 무방비 작업, 추락 위험",
+        "description": "제한구역 진입, 무방비 작업, 추락 위험",
         "label": "행동 위험"
       },
       "c4": {
@@ -2250,22 +3093,22 @@
       },
       "c5": {
         "description": "가스 누출, 화학물질, 전기 위험",
-        "label": "화학물질 / 전기"
+        "label": "화학/전기"
       },
       "c6": {
-        "description": "출구 차단, 젖은 바닥, 통로 장애물",
-        "label": "접근 / 장애물"
+        "description": "비상구 차단, 젖은 바닥, 통로 장애물",
+        "label": "접근/장애물"
       },
       "c7": {
         "description": "안전장치 우회, 정비 지연",
-        "label": "기계 / 공정"
+        "label": "기계/공정"
       },
       "c8": {
-        "description": "지게차 운행 강도, 교차로, 보행자-차량 충돌",
+        "description": "지게차 운행 강도, 교차로 통과, 보행자-차량 충돌",
         "label": "차량 통행"
       },
       "c9": {
-        "description": "교육 부족, 경고 표지 누락",
+        "description": "교육 부족, 경고 표지판 누락",
         "label": "조직적 부하"
       },
       "source": {
@@ -2304,7 +3147,7 @@
     "wizard": {
       "common": {
         "add": "추가",
-        "address": "주소",
+        "address": "처리",
         "back": "뒤로",
         "cancel": "취소",
         "companyFallback": "회사",
@@ -2334,34 +3177,34 @@
         "badgeAiManual": "AI + 수동 발견사항",
         "badgeExport": "PDF / Word / Excel",
         "newAnalysis": "새 분석",
-        "wizardDescription": "회사 선택, 팀 정의, 이미지 업로드 후 AI + 수동 발견사항 및 점수 산정을 실행하세요.",
+        "wizardDescription": "회사 선택, 팀 정의, 이미지 업로드 후 AI + 수동 발견사항 및 점수 매기기를 실행하세요.",
         "wizardTitle": "시각적 위험 분석"
       },
       "list": {
         "companyLabel": "회사 / 조직",
         "companyPlaceholder": "— 회사 선택 —",
-        "confirmDelete": "확실합니까?",
+        "confirmDelete": "정말 삭제하시겠습니까?",
         "deleteAnalysis": "삭제",
         "description": "회사를 선택하고 과거 분석을 확인하거나 새 분석을 시작하세요.",
         "emptyDescription": "위 버튼을 사용하여 이 회사의 첫 번째 위험 분석을 시작하세요.",
-        "emptyTitle": "분석 없음",
+        "emptyTitle": "분석 내역이 없습니다",
         "eyebrow": "위험 분석",
         "findingsCount": "{count}개 발견사항",
         "historyCount": "{count}개 저장된 분석",
-        "historyTitle": "{name} — 분석 기록",
+        "historyTitle": "{name} — 분석 이력",
         "newAnalysis": "+ 새 분석 시작",
         "statusArchived": "보관됨",
         "statusCompleted": "완료됨",
-        "statusDraft": "초안",
+        "statusDraft": "임시저장",
         "title": "위험 분석 관리"
       },
       "messages": {
         "analysisComplete": "분석 완료!",
         "analysisFailed": "분석을 완료할 수 없습니다.",
         "analysisFailedDetail": "AI 분석 실패. {detail}",
-        "analysisPartial": "AI 분석 부분 완료. {successful}/{total}개 이미지 처리됨; {errors}개 이미지에서 오류.",
+        "analysisPartial": "AI 분석이 부분적으로 완료되었습니다. {successful}/{total}개 이미지 처리됨; {errors}개 이미지에서 오류 발생.",
         "analysisStarting": "분석 시작 중…",
-        "analysisSummary": "AI 분석 완료. {risks}개 위험, {positive}개 긍정적 관찰사항.",
+        "analysisSummary": "AI 분석 완료. 위험 {risks}개, 긍정적 관찰 {positive}개.",
         "analyzingImageProgress": "이미지 분석 중 {current}/{total}: {fileName}",
         "analyzingRowImage": "이미지 분석 중: 행 {row}, {fileName}…",
         "genericAiError": "OpenAI 또는 Anthropic 단계에서 오류가 발생했습니다.",
@@ -2376,14 +3219,14 @@
         "aiStartShort": "AI 분석 시작"
       },
       "notifications": {
-        "savedBody": "{title} — {findings}개 발견사항, {critical}개 중요/높음",
+        "savedBody": "{title} — {findings}개 발견사항, {critical}개 심각/높음",
         "savedTitle": "위험 분석이 저장되었습니다",
         "updatedTitle": "위험 분석이 업데이트되었습니다"
       },
       "save": {
         "error": "저장 중 오류가 발생했습니다.",
         "noCompany": "회사를 선택하지 않으면 저장할 수 없습니다.",
-        "oversized": "{fileName}이(가) 10MB 제한을 초과합니다. 저장하기 전에 더 작은 이미지를 업로드하세요.",
+        "oversized": "{fileName}이 10MB 제한을 초과합니다. 저장하기 전에 더 작은 이미지를 업로드하세요.",
         "successNew": "분석이 성공적으로 저장되었습니다!",
         "successUpdated": "분석이 성공적으로 업데이트되었습니다!"
       },
@@ -2408,10 +3251,10 @@
       },
       "step2": {
         "addParticipant": "참가자 수동 추가",
-        "certificate": "자격증 번호 (해당시)",
-        "certificatePlaceholder": "해당되는 경우 입력",
+        "certificate": "인증서 번호(있는 경우)",
+        "certificatePlaceholder": "해당 시 입력",
         "fullName": "성명",
-        "noTeamBody": "이 회사에 대해 설정된 팀 구성원이 없습니다. 회사 페이지에서 팀 탭을 열고 \"위험 평가 팀\"을 생성한 후 구성원을 추가하면 여기에 자동으로 표시됩니다.",
+        "noTeamBody": "이 회사에는 아직 팀원이 설정되지 않았습니다. 회사 페이지에서 팀 탭을 열고 \"위험 평가 팀\"을 생성한 후 구성원을 추가하면 여기에 자동으로 표시됩니다.",
         "noTeamLink": "회사 팀 관리로 이동",
         "noTeamTitle": "위험 평가 팀이 정의되지 않음",
         "participantN": "참가자 {n}",
@@ -2419,7 +3262,7 @@
         "rolePlaceholder": "역할 선택",
         "roleType": "역할/직책 유형",
         "subtitle": "저장된 직원에서 선택하거나 참가자를 수동으로 추가하세요.",
-        "title": "위험 분석에 참여하는 사람들",
+        "title": "위험 분석에 참여하는 인원",
         "titleField": "역할/직책 설명",
         "titlePlaceholder": "예: A급 전문가"
       },
@@ -2427,11 +3270,11 @@
         "addImage": "이미지 추가",
         "aiAnalyzing": "AI 분석 실행 중…",
         "aiStart": "AI 위험 분석 시작",
-        "aiSub": "Nova AI는 각 이미지를 개별적으로 분석합니다.",
+        "aiSub": "Nova AI가 각 이미지를 개별적으로 분석합니다.",
         "bulkUpload": "일괄 업로드 (각각 별도 행으로)",
         "deleteRow": "행 삭제",
         "newRow": "행 추가",
-        "rowHint": "이 행 아래에 광각 및 클로즈업 샷을 그룹화하세요.",
+        "rowHint": "이 행에 전체 및 근접 촬영을 그룹화하세요.",
         "rowN": "행 {n}",
         "rowTitle": "행 제목",
         "rowTitlePlaceholder": "예: 적재 구역",
@@ -2447,68 +3290,68 @@
         "addRiskPin": "위험 핀 추가",
         "aiAnalyzingDetail": "Nova AI가 각 이미지를 분석 중입니다…",
         "analyzingInline": "분석 중…",
-        "areaAssessment": "구역 평가",
+        "areaAssessment": "영역 평가",
         "avgScore": "평균 점수",
         "cannotAnalyzeBody": "이 이미지는 위험 분석에 적합하지 않습니다.",
         "cannotAnalyzeTitle": "위험 분석을 실행할 수 없음",
         "capaBadge": "CAPA 후보",
         "capaCandidate": "CAPA 후보",
-        "cleanNoRisk": "정상 — 위험이 감지되지 않음",
+        "cleanNoRisk": "정상 — 위험 감지되지 않음",
         "confidenceHigh": "확인된 발견사항",
         "confidenceLow": "검증 권장",
         "confidenceMedium": "AI 발견사항",
-        "criticalHigh": "심각 / 높음",
+        "criticalHigh": "치명적 / 높음",
         "deleteFindingAria": "발견사항 삭제",
         "deleteFindingConfirm": "발견사항 \"{title}\"을(를) 삭제하시겠습니까?",
         "deleteFindingTitle": "발견사항 삭제",
         "detectedPrefix": "감지됨:",
         "emptyResultsDesc": "3단계에서 이미지를 업로드하고 분석을 실행하세요.",
         "emptyResultsTitle": "아직 결과 없음",
-        "findingTitle": "발견 사항 제목",
-        "findingTitlePlaceholder": "예: 안전난간 누락",
+        "findingTitle": "발견사항 제목",
+        "findingTitlePlaceholder": "예: 가드레일 누락",
         "manualPinConfirm": "추가",
-        "manualPinHint": " 수동 핀으로 직접 발견 사항을 추가할 수 있습니다.",
+        "manualPinHint": "수동 핀으로 직접 발견사항을 추가할 수 있습니다.",
         "manualPinTitle": "수동 위험 핀 추가",
         "metaEyebrowArea": "구역 평가",
-        "metaEyebrowPositive": "긍정적 관찰 사항",
+        "metaEyebrowPositive": "긍정적 관찰사항",
         "noRiskDetectedBody": "AI가 이 이미지에서 의미 있는 위험이나 부적합 사항을 발견하지 못했습니다.",
-        "noRiskDetectedTitle": "위험 미감지",
-        "noRiskThisImageBody": "AI가 이 이미지에서 구체적인 위험을 발견하지 못했습니다. 수동으로 발견 사항을 추가할 수 있습니다.",
+        "noRiskDetectedTitle": "위험 감지되지 않음",
+        "noRiskThisImageBody": "AI가 이 이미지에서 구체적인 위험을 발견하지 못했습니다. 수동으로 발견사항을 추가할 수 있습니다.",
         "noRiskThisImageTitle": "이 이미지에 중대한 위험 없음",
-        "notRealPhotoBody": "이 이미지는 도면, 일러스트 또는 합성 렌더링입니다. 위험 분석은 실제 현장 사진에서만 실행됩니다.",
+        "notRealPhotoBody": "이 이미지는 도면, 일러스트레이션 또는 합성 렌더링입니다. 위험 분석은 실제 현장 사진에서만 실행됩니다.",
         "notRealPhotoTitle": "실제 사진이 아님",
         "peopleDetected": "{count}명 감지됨",
         "photoQuality": "이미지 품질:",
         "photoQualityLow": "낮음",
         "photoQualityMedium": "보통",
-        "pinBanner": "이미지를 클릭하여 위험 핀 추가",
+        "pinBanner": "이미지를 클릭하여 위험 핀을 추가하세요",
         "pinModeActive": "핀 모드 활성화 중…",
-        "positiveFindings": "긍정적 관찰 사항",
-        "positiveObservationsHint": " 긍정적 관찰 사항이 아래에 나열됩니다.",
+        "positiveFindings": "긍정적 관찰사항",
+        "positiveObservationsHint": "긍정적 관찰사항이 아래에 나열됩니다.",
         "resultsSubtitle": "위험 카드는 이미지의 주석과 연결됩니다. 점수를 변경하려면 매개변수를 조정하세요.",
-        "resultsTitle": "주석이 달린 발견 사항",
-        "riskCount": "위험: {count}개",
-        "rowImagesFindings": "이미지: {images}개 · 발견 사항: {findings}개",
-        "saveWarning": "결과가 아직 저장되지 않았습니다! 저장하지 않고 나가면 모든 발견 사항이 손실됩니다.",
-        "scorePanelIntro": "점수 상세 — {method}",
+        "resultsTitle": "주석이 달린 발견사항",
+        "riskCount": "위험: {count}",
+        "rowImagesFindings": "이미지: {images} · 발견사항: {findings}",
+        "saveWarning": "결과가 아직 저장되지 않았습니다! 저장하지 않고 나가면 모든 발견사항이 손실됩니다.",
+        "scorePanelIntro": "점수 세부사항 — {method}",
         "severity": "심각도",
         "totalFindings": "총 발견사항",
         "visualN": "이미지 {n}"
       },
       "steps": {
-        "context": "분석 맥락",
+        "context": "분석 컨텍스트",
         "images": "이미지",
         "results": "결과",
         "team": "분석팀"
       },
       "validate": {
-        "company": "먼저 회사/조직을 선택하세요.",
+        "company": "회사/조직을 먼저 선택하세요.",
         "department": "부서/단위를 선택하세요.",
         "firmLocationDept": "회사, 위치, 부서를 선택하세요.",
         "location": "작업 위치를 선택하세요.",
         "participants": "최소 한 명의 담당자 이름과 역할을 입력하세요.",
         "step2Participants": "최소 한 명의 담당자 이름과 역할을 입력하세요.",
-        "step3Images": "최소 하나의 이미지를 추가하세요."
+        "step3Images": "최소 한 개의 이미지를 추가하세요."
       }
     }
   },
@@ -2525,8 +3368,8 @@
     "statusRevision": "수정"
   },
   "sharedRisk": {
-    "analysisNoteHeading": "평가 노트",
-    "defaultTitle": "위험 평가 보고서",
+    "analysisNoteHeading": "평가 메모",
+    "defaultTitle": "위험성 평가 보고서",
     "departmentLabel": "부서:",
     "findingsByRowHeading": "행별 위험 발견사항",
     "findingsImagesCount": "{findings}개 발견사항 · {images}개 이미지",
@@ -2543,24 +3386,47 @@
     },
     "noFindingsInRow": "이 행에 대한 발견사항이 없습니다.",
     "platformLabel": "RiskNova OHS 플랫폼",
-    "recommendation": "권장사항",
+    "recommendation": "권고사항",
     "reportEyebrow": "위험성 평가 보고서",
-    "rowTitleFallback": "{n}행",
+    "rowTitleFallback": "행 {n}",
     "severity": {
-      "critical": "치명적",
+      "critical": "심각",
       "high": "높음",
       "low": "낮음",
       "medium": "보통"
     },
-    "statCritical": "치명적",
+    "statCritical": "심각",
     "statHigh": "높음",
     "statTotal": "총 발견사항",
     "teamHeading": "평가팀"
   },
+  "slides": {
+    "mediaPicker": {
+      "addImage": "이미지 추가",
+      "addVideo": "동영상 추가",
+      "clickToSelect": "파일을 선택하려면 클릭하세요",
+      "hintImage": "JPEG, PNG, WebP, GIF, SVG — 최대 50MB",
+      "hintUrlImage": "외부 이미지 URL을 붙여넣을 수 있습니다.",
+      "hintUrlVideo": "YouTube 및 Vimeo URL은 자동으로 임베드 플레이어로 변환됩니다.",
+      "hintVideo": "MP4, WebM — 최대 50MB",
+      "labelImageUrl": "이미지 URL",
+      "labelVideoUrl": "동영상 URL (YouTube, Vimeo, MP4)",
+      "libraryEmpty": "미디어가 없습니다. 업로드 탭에서 파일을 추가하세요.",
+      "libraryLoading": "로딩 중…",
+      "placeholderImageUrl": "https://…",
+      "placeholderVideoUrl": "https://youtube.com/watch?v=…",
+      "tabLibrary": "라이브러리 ({count})",
+      "tabUpload": "업로드",
+      "tabUrl": "URL",
+      "uploadError": "업로드 실패",
+      "uploading": "업로드 중…",
+      "useUrl": "URL 사용"
+    }
+  },
   "solutionCenter": {
     "chat": "채팅",
     "copy": "복사",
-    "description": "Nova는 법규를 해석하고 적절한 모듈로 안내하며 문서 또는 워크플로 작업을 시작하는 운영 OHS 에이전트입니다.",
+    "description": "Nova는 법규를 해석하고 적절한 모듈로 안내하며 문서나 워크플로 작업을 시작하는 운영 OHS 에이전트입니다.",
     "documents": "내 문서",
     "history": "기록",
     "inputPlaceholder": "Nova에게 원하는 작업을 말씀해 주세요...",
@@ -2568,70 +3434,53 @@
     "referenced": "참조 포함",
     "save": "저장",
     "saved": "저장됨",
-    "sources": "법령 출처",
+    "sources": "법규 출처",
     "title": "Nova"
   },
   "solutions": {
     "commercial": {
       "enterpriseCta": "견적 요청 생성",
-      "enterpriseFooterHint": "OSGB로 고객에게 서비스를 제공하시나요?",
+      "enterpriseFooterHint": "OSGB로 고객에게 서비스를 제공하고 계신가요?",
       "enterpriseFooterLink": "OSGB 패키지 페이지로 이동",
       "enterpriseSecondaryCta": "OSGB 패키지 문의하기",
-      "enterpriseSectionIntro": "다중 사업장 조직, 현장 집약적 운영 및 맞춤형 설정의 경우 이 경로에서는 카드 결제가 불가능합니다. 상황을 공유해 주시면 맞춤형 제안을 드리겠습니다.",
+      "enterpriseSectionIntro": "다중 사이트 조직, 현장 집약적 운영 및 맞춤형 설정의 경우 이 경로에서는 카드 결제가 불가능합니다. 상황을 공유해 주시면 맞춤형 제안을 드리겠습니다.",
       "enterpriseSectionTitle": "기업/엔터프라이즈 견적",
       "offers": {
         "osgb_starter": {
-          "ctaLabel": "Starter 견적 요청",
-          "name": "OSGB Starter",
-          "priceFinePrint": "참고용 시작 구간입니다. 최종 가격은 견적 후 회사 수와 좌석 수에 따라 결정됩니다.",
-          "pricePeriod": "월 ~원부터",
+          "ctaLabel": "스타터 견적 요청",
+          "name": "OSGB 스타터",
+          "priceFinePrint": "지시적 시작 구간입니다. 최종 가격은 견적 후 회사 수와 좌석 수에 따라 결정됩니다.",
+          "pricePeriod": "부터 / 월",
           "seatsLabel": "활성 팀 좌석 2개",
-          "summary": "제한된 포트폴리오를 가진 소규모 OSGB 팀용 — 월 {individualStarter}원인 개인 Starter와 달리 다중 사업장 및 팀 워크플로를 지원합니다.",
-          "workspacesLabel": "활성 회사/워크스페이스 5개",
-          "features": [
-            "Personnel module and invitation flows",
-            "Tasks, work tracking and assignment board",
-            "Client workplace portfolio view",
-            "Announcements and core operational flows"
-          ]
+          "summary": "제한된 포트폴리오를 가진 소규모 OSGB 팀용 — {individualStarter}/월의 개별 스타터와 달리 다중 사이트 및 팀 워크플로를 지원합니다.",
+          "workspacesLabel": "활성 회사/워크스페이스 5개"
         },
         "osgb_team": {
-          "ctaLabel": "Team 견적 요청",
-          "name": "OSGB Team",
-          "priceFinePrint": "참고용 중간 구간; 맞춤형 견적은 현장 강도, 보고 및 좌석 수를 반영합니다.",
-          "pricePeriod": "월 ~원부터",
+          "ctaLabel": "팀 견적 요청",
+          "name": "OSGB 팀",
+          "priceFinePrint": "지시적 중간 구간; 맞춤 견적은 현장 강도, 보고 및 좌석을 반영합니다.",
+          "pricePeriod": "부터 / 월",
           "seatsLabel": "활성 팀 좌석 5개",
           "summary": "성장하는 OSGB: 더 많은 회사, 현장 조정 및 팀 규모.",
-          "workspacesLabel": "활성 회사/워크스페이스 15개",
-          "features": [
-            "Everything in Starter",
-            "Advanced reporting and exports",
-            "Field audits and checklists (per agreement)",
-            "Priority solution / onboarding channel"
-          ]
+          "workspacesLabel": "활성 회사/워크스페이스 15개"
         }
       },
-      "osgbFooterHint": "여러 지역에 걸친 단일 고용주이신가요?",
-      "osgbFooterLink": "엔터프라이즈 솔루션 페이지 보기",
-      "osgbSectionIntro": "금액은 USD 기준 참고용 시작 구간이며, 세금, 환율 및 계약 범위는 견적 확정 시 확인됩니다. 카드 결제는 제공하지 않으며, 귀하의 구조를 파악한 후 한도와 가격을 조정합니다.",
+      "osgbFooterHint": "여러 위치의 단일 고용주이신가요?",
+      "osgbFooterLink": "기업 솔루션 페이지 보기",
+      "osgbSectionIntro": "금액은 USD 기준 지시적 시작 구간이며, 세금, 환율 및 계약 범위는 견적 확정 시 확인됩니다. 카드 결제는 없으며, 귀하의 구조를 파악한 후 한도와 가격을 조정합니다.",
       "osgbSectionTitle": "OSGB 패키지",
-      "recommended": "추천",
-      "enterpriseHighlights": [
-        "Multi-site companies and institutions",
-        "Tailored quote aligned with operational volume",
-        "Integration and onboarding planning when needed"
-      ]
+      "recommended": "추천"
     },
     "enterprisePage": {
       "ctaForm": "문의하기 (양식)",
       "ctaRegister": "등록을 통한 견적 요청",
-      "footerNoteLead": "OSGB로 고객에게 서비스를 제공하고 계신가요?",
+      "footerNoteLead": "OSGB로 고객에게 서비스를 제공하시나요?",
       "footerNoteLink": "OSGB 패키지 페이지",
       "footerNoteTrail": ".",
-      "heroBody": "기업용 셀프서비스 카드 결제는 제공하지 않습니다. 귀하의 요구사항을 공유해 주시면 영업팀이 맞춤형 견적, 한도 및 구현 방안으로 후속 조치를 취하겠습니다.",
-      "heroEyebrow": "기업용",
-      "heroTitle": "맞춤형 온보딩을 통한 모든 사업장의 일관된 OHS 운영.",
-      "metaDescription": "전문적인 OHS 요구사항을 가진 다중 사이트 조직을 위한 견적 요청 및 문의.",
+      "heroBody": "기업용 셀프서비스 카드 결제는 제공하지 않습니다. 귀하의 요구사항을 공유해 주시면 영업팀이 맞춤 견적, 한도 및 구현 방안으로 후속 조치를 취하겠습니다.",
+      "heroEyebrow": "기업",
+      "heroTitle": "맞춤형 온보딩을 통한 모든 위치에서의 일관된 OHS 운영.",
+      "metaDescription": "전문 OHS 요구사항을 가진 다중 사이트 조직을 위한 견적 요청 및 문의.",
       "metaTitle": "기업 솔루션 및 견적 | RiskNova"
     },
     "leadDialog": {
@@ -2642,30 +3491,30 @@
       "contactPlaceholder": "성명",
       "employeePlaceholder": "예: 250",
       "enterprise": {
-        "badge": "회사/기업 담당자",
+        "badge": "기업/조직 담당자",
         "companyLabel": "회사/조직명",
-        "description": "결제 단계는 없습니다. 제출하시면 영업 또는 솔루션 팀이 맞춤형 한도와 가격에 대해 협의하기 위해 후속 조치를 취합니다.",
+        "description": "결제 단계는 없습니다. 제출하시면 영업팀이나 솔루션팀에서 맞춤형 한도와 가격을 협의하기 위해 연락드립니다.",
         "employeeLabel": "총 직원 수",
         "primaryCta": "요청 보내기",
         "professionalLabel": "조정 업무 담당자",
-        "scaleLabel": "위치/사이트",
+        "scaleLabel": "위치/사업장",
         "title": "조직에 대해 알려주세요"
       },
       "errorFailed": "요청을 저장할 수 없습니다.",
-      "errorUnexpected": "요청을 저장하는 중 예기치 않은 오류가 발생했습니다.",
+      "errorUnexpected": "요청 저장 중 예상치 못한 오류가 발생했습니다.",
       "languageChip": "언어: {code}",
       "messageHint": "적합한 패키지와 마이그레이션 경로를 준비하는 데 도움이 됩니다.",
       "messageLabel": "귀하의 요구사항 (간단히)",
-      "messagePlaceholder": "사이트 수, 필요한 모듈, 예상 배포 일정은 어떻게 되나요?",
+      "messagePlaceholder": "사업장 수, 필요한 모듈, 예상 도입 계획은 어떻게 되나요?",
       "okButton": "확인",
       "osgb": {
         "badge": "OSGB 연락 요청",
-        "companyLabel": "OSGB / 조직명",
-        "description": "서비스하는 고객 수, 팀 구성, 운영 강도를 공유해 주시면 적합한 패키지와 마이그레이션 옵션을 제안해 드리겠습니다.",
+        "companyLabel": "OSGB/조직명",
+        "description": "서비스하는 고객 수, 팀 구성, 운영 강도를 알려주시면 적합한 패키지와 마이그레이션 옵션을 제안해드립니다.",
         "employeeLabel": "해당 사업장의 총 직원 수",
         "primaryCta": "요청 보내기",
-        "professionalLabel": "전문의 / 의사 / DSP 인원 수",
-        "scaleLabel": "서비스하는 활성 고객사 수",
+        "professionalLabel": "전문가/의사/DSP 인원 수",
+        "scaleLabel": "서비스 중인 활성 고객사 수",
         "title": "OSGB에 대해 알려주세요"
       },
       "phoneLabel": "전화번호",
@@ -2673,7 +3522,7 @@
       "professionalPlaceholder": "예: 8",
       "regionChip": "지역: {code}",
       "scalePlaceholder": "예: 12",
-      "submittedBody": "영업팀에서 곧 연락드려 범위를 명확히 하고 견적 및 온보딩 옵션을 공유해 드립니다. 이 과정에서는 카드 결제가 없으며, 조건은 이메일이나 통화로 합의됩니다.",
+      "submittedBody": "영업팀에서 곧 연락드려 범위를 확인하고 견적 및 온보딩 옵션을 공유해드립니다. 이 과정에서는 카드 결제가 없으며, 조건은 이메일 또는 통화를 통해 합의됩니다.",
       "submittedTitle": "요청이 접수되었습니다",
       "submitting": "전송 중…",
       "workEmailLabel": "업무용 이메일",
@@ -2682,15 +3531,15 @@
     "osgbPage": {
       "ctaForm": "견적 양식으로 이동",
       "ctaRegister": "등록을 통한 견적 요청",
-      "footerNoteLead": "여러 지역에 걸친 단일 고용주인가요?",
+      "footerNoteLead": "여러 지역에 걸친 단일 고용주이신가요?",
       "footerNoteLink": "기업 솔루션 페이지 보기",
       "footerNoteTrail": ".",
-      "heroBody": "직원, 작업 추적 및 고객 사이트를 명확히 하세요. 개인 플랜은 {starterPrice}/월 스타터부터 시작됩니다. OSGB 모델은 다중 사이트 포트폴리오와 추가 좌석을 포함하므로 아래 수치는 참고용 USD 구간입니다. 정확한 조건은 견적 양식이나 등록 절차 후 확정됩니다.",
+      "heroBody": "인력, 업무 추적 및 고객 사이트를 명확히 하세요. 개인 플랜은 {starterPrice}/월 스타터부터 시작하며, OSGB 모델은 다중 사이트 포트폴리오와 추가 좌석을 포함하므로 아래 수치는 참고용 USD 구간입니다. 정확한 조건은 견적 양식 또는 등록 과정 후 확인됩니다.",
       "heroEyebrow": "OSGB",
       "heroTitleAccent": "하나의 패널",
-      "heroTitleLead": "고객 포트폴리오와 팀을 함께 연결하세요",
+      "heroTitleLead": "고객 포트폴리오와 팀을 함께 모으세요",
       "heroTitleTrail": ".",
-      "metaDescription": "여러 작업장을 담당하는 OSGB를 위한 패키지 옵션 및 맞춤형 견적 요청.",
+      "metaDescription": "여러 작업장을 서비스하는 OSGB를 위한 패키지 옵션 및 맞춤 견적 요청.",
       "metaTitle": "OSGB 솔루션 및 견적 | RiskNova"
     }
   },
@@ -2702,7 +3551,7 @@
     },
     "level": {
       "controlled": "통제됨",
-      "critical": "치명적",
+      "critical": "위험",
       "high": "높음",
       "incomplete": "미평가",
       "medium": "보통"
@@ -2716,340 +3565,6 @@
     "newWorkspace": "새 워크스페이스",
     "noWorkspace": "워크스페이스 없음",
     "switcher": "워크스페이스",
-    "switchError": "워크스페이스를 전환할 수 없습니다"
-  },
-  "osgb": {
-    "chrome": {
-      "scopeEyebrow": "Company scope",
-      "scopeDescription": "OSGB management screens are filtered by company selection. When no company is selected, the full portfolio is shown.",
-      "allCompanies": "All companies"
-    },
-    "contractsPage": {
-      "stats": {
-        "recordTitle": "Contract records",
-        "recordDesc": "Personnel file and contract-focused document records in the selected scope.",
-        "readyTitle": "Ready",
-        "readyDesc": "Documents ready for signing or publishing to the customer portal.",
-        "pendingTitle": "Pending approval",
-        "pendingDesc": "Contracts and attachments that require authorised manager or employer approval.",
-        "missingTitle": "Missing templates",
-        "missingDesc": "Recommended templates for OSGB personnel and service flows that have not been created yet."
-      },
-      "panelInvite": {
-        "title": "Invite and contract linkage",
-        "description": "When staff are assigned to a company they are invited by email, a seat is reserved, and related contract documents are tracked in this flow."
-      },
-      "panelChecklist": {
-        "title": "Missing checklist",
-        "description": "Core documents in the personnel HR group are the backbone of the OSGB audit package."
-      },
-      "panelActiveContracts": {
-        "title": "Active contract and personnel file records",
-        "descAll": "Contract and personnel file records across all companies.",
-        "descScoped": "Latest contract activity linked to {companyName}."
-      },
-      "emptyNoContracts": {
-        "title": "No contract records found",
-        "description": "No contract or personnel record in the selected scope. Open the document centre and the personnel HR group to create a new document.",
-        "ctaDocuments": "Open document centre"
-      }
-    },
-    "tasksPage": {
-      "stats": {
-        "openTitle": "Open tasks",
-        "openDesc": "Tasks not yet started. Nova prioritises them by priority and company risk.",
-        "inProgressTitle": "In progress",
-        "inProgressDesc": "Ongoing operations, CAPA or document preparation work.",
-        "overdueTitle": "Overdue",
-        "overdueDesc": "Tasks past their follow-up date. Creates audit and service SLA risk.",
-        "doneTitle": "Completed",
-        "doneDesc": "Closed work with a complete evidence trail."
-      },
-      "panelTaskCentre": {
-        "title": "Task centre",
-        "descAll": "Tasks across all companies. Filter by company, assignment and document flows to monitor them together.",
-        "descScoped": "Tasks, assigned staff and due dates for {companyName}."
-      }
-    },
-    "assignmentsPage": {
-      "stats": {
-        "activeTitle": "Active assignments",
-        "activeDesc": "Total active specialist, physician and DSP assignments by company.",
-        "signTitle": "Signature authority",
-        "signDesc": "Active assignments with signing rights for contracts, reports or approvals.",
-        "approveTitle": "Approval authority",
-        "approveDesc": "Active personnel assignments that can approve risk or operational flows.",
-        "suspendedTitle": "Suspended / critical",
-        "suspendedDesc": "Suspended assignments and those flagged for missing authority sets."
-      },
-      "panelMatrix": {
-        "title": "Authority matrix",
-        "description": "Several professionals can work on the same company. Access is scoped only to workspaces they are assigned to from their own account."
-      },
-      "emptyNoAssignments": {
-        "title": "No active assignments",
-        "description": "No active assignment in the selected scope. Open the personnel pool or company organisation to create assignments.",
-        "ctaPersonnel": "Open personnel pool"
-      }
-    },
-    "personnelPage": {
-      "stats": {
-        "activeStaffTitle": "Active staff",
-        "activeStaffDesc": "Active seat-holding users on the OSGB account and package seat limit.",
-        "assignedTitle": "Assigned staff",
-        "assignedDesc": "Specialists, physicians or DSP records with at least one active company assignment.",
-        "openTasksTitle": "Open tasks",
-        "openTasksDesc": "Total view of open and in-progress tasks assigned to staff.",
-        "overdueTasksTitle": "Overdue tasks",
-        "overdueTasksDesc": "Tasks past follow-up date. Nova OSGB Manager highlights these areas."
-      },
-      "panelInvite": {
-        "title": "Invite and first login flow",
-        "description": "New staff first receive an OSGB seat, then are assigned to companies. The invite email includes company/role; users set their password on first login."
-      },
-      "panelNova": {
-        "title": "Nova OSGB Manager focus",
-        "description": "Nova behaves differently from the professional assistant on this surface; it analyses load, company assignment and delays."
-      },
-      "panelList": {
-        "title": "OSGB personnel list",
-        "descAll": "Staff linked to the OSGB account, company counts and task status.",
-        "descScoped": "People assigned to {companyName} and their task load."
-      },
-      "emptyNoPersonnel": {
-        "title": "No personnel found",
-        "description": "The OSGB personnel pool is empty. Send the first invite from the company organisation tab to add a specialist, physician or DSP.",
-        "ctaOrganisation": "Open company organisation"
-      }
-    },
-    "documentsPage": {
-      "panelOperations": {
-        "title": "Daily operations desk",
-        "description": "From this surface the OSGB manager runs company scope, professional document production, audit pack preparation and archive actions together."
-      },
-      "stats": {
-        "totalDocsTitle": "Total documents",
-        "totalDocsDesc": "Active document cards and field outputs in the selected company scope.",
-        "readyTitle": "Ready",
-        "readyDesc": "Records ready for signing, publishing or adding to an audit pack.",
-        "archiveRecordTitle": "Archive records",
-        "archiveRecordDesc": "Non-deleted records with preserved history moved to cold archive by company.",
-        "archivePackageTitle": "Archive package",
-        "archivePackageDescProcessing": "{count} packages are currently being prepared.",
-        "archivePackageDescIdle": "Downloadable audit and workplace OHS file packages.",
-        "sharedTitle": "Shared documents",
-        "sharedDesc": "Documents published for the portal, share links or audit outputs.",
-        "preparedTitle": "Preparer trace",
-        "preparedDesc": "Active documents with preparer professional information recorded.",
-        "approvedTitle": "Approved",
-        "approvedDesc": "Active records with approval timestamp that passed the management chain.",
-        "signedTitle": "Signed documents",
-        "signedDesc": "Records with document signature trail entering the audit chain.",
-        "auditReadyTitle": "Audit-ready package",
-        "auditReadyDesc": "Package families with mandatory group coverage and approval or usage trace.",
-        "traceabilityTitle": "Traceability",
-        "traceabilityDesc": "Share of active documents carrying preparer, approval, signature or publish trace.",
-        "approvalQueueTitle": "Approval queue",
-        "approvalQueueDesc": "Active records awaiting managerial control before archive and publish.",
-        "failedPackageTitle": "Failed packages",
-        "failedPackageDesc": "Archive or packaging attempts that need to be retried."
-      },
-      "panelArchiveLayout": {
-        "title": "Company-scoped archive design",
-        "description": "All document, report and evidence flow is kept in company workspace context. Assigned professionals attach their outputs to this spine; OSGB management produces audit packs and archives from the same spine."
-      },
-      "panelProfessional": {
-        "title": "Professional production trace",
-        "description": "OSGB management monitors company-scoped document production through the relevant specialists and physicians."
-      },
-      "panelStreams": {
-        "title": "Document flow lanes",
-        "description": "The OSGB document system is not a single box; different document flows driven by legislation and operations converge on the same company spine."
-      },
-      "panelAuditPrep": {
-        "title": "Audit pack readiness level",
-        "description": "For each company the audit pack is not a single PDF; it is tracked as an audit spine built from different document families."
-      },
-      "panelIntegration": {
-        "title": "External document intake layer",
-        "description": "Documents are fed not from a single channel but from web services, operator-assisted portals and standard file import layers."
-      },
-      "panelArchiveSelect": {
-        "title": "Select a company and prepare an archive pack",
-        "description": "An archive pack is always prepared for a single company workspace. At portfolio level you can see recent packs and pick a company for a new pack."
-      },
-      "emptyNoCompanies": {
-        "title": "No companies found",
-        "description": "Create a company and prepare the workspace context first. Professional production and archive packs cannot open without a company.",
-        "ctaFirms": "Go to companies"
-      },
-      "emptyNoArchiveJobs": {
-        "title": "No archive packs yet",
-        "description": "No workplace OHS file pack has been created for any company yet. Pick a company above to prepare the first pack."
-      },
-      "panelRetention": {
-        "title": "Retention and archiving matrix",
-        "description": "Professional records arriving by company are subject to different archive rules by document type, not a single retention period."
-      },
-      "panelGuarantees": {
-        "title": "Archive assurances",
-        "description": "This screen is not only a file list; it runs as a document spine focused on traceability and legal assurance."
-      },
-      "panelRecentMoves": {
-        "title": "Latest professional document movements",
-        "descAll": "Latest active document movements from professionals across all companies.",
-        "descScoped": "Latest active records produced or updated by professionals for {companyName}."
-      },
-      "emptyNoActiveDocs": {
-        "title": "No active document records",
-        "description": "No active documents in the selected scope. Create the first record from the document centre or pick a company to monitor professional production.",
-        "ctaDocuments": "Open document centre"
-      },
-      "panelApproved": {
-        "title": "Approved documents",
-        "descAll": "Documents that passed the approval chain across all companies.",
-        "descScoped": "Documents with approval metadata for {companyName}."
-      },
-      "emptyNoApproved": {
-        "title": "No approved documents",
-        "description": "No documents with an approved_at record in the selected company scope."
-      },
-      "panelInUse": {
-        "title": "Documents in use",
-        "descAll": "Documents in use across all companies carrying share or signature trace.",
-        "descScoped": "Shared or signed documents for {companyName}."
-      },
-      "emptyNoUsed": {
-        "title": "No documents in use",
-        "description": "No documents with share or signature trace in the selected company scope."
-      },
-      "panelArchived": {
-        "title": "Archived records",
-        "descAll": "Archived documents across all companies. Narrow with the company filter.",
-        "descScoped": "Records moved to cold archive for {companyName}. They are excluded from active counters but keep audit trace."
-      },
-      "emptyNoArchived": {
-        "title": "No archive records",
-        "description": "No archived documents in the selected scope. Records appear here when archived from the editor or company workspace."
-      },
-      "panelApprovalQueue": {
-        "title": "Approval and publish queue",
-        "description": "Documents awaiting manager, authorised manager or employer approval before entering the archive pack are collected here.",
-        "notice": "{count} documents are still awaiting approval in the selected scope. Complete these records before tightening ready pack counters.",
-        "ctaApprovals": "Open approval records"
-      }
-    }
-  },
-  "slides": {
-    "mediaPicker": {
-      "addVideo": "Add video",
-      "addImage": "Add image",
-      "tabUpload": "Upload",
-      "tabLibrary": "Library ({count})",
-      "tabUrl": "URL",
-      "uploading": "Uploading…",
-      "clickToSelect": "Click to choose a file",
-      "hintVideo": "MP4, WebM — max 50 MB",
-      "hintImage": "JPEG, PNG, WebP, GIF, SVG — max 50 MB",
-      "libraryLoading": "Loading…",
-      "libraryEmpty": "No media yet. Add files from the Upload tab.",
-      "labelVideoUrl": "Video URL (YouTube, Vimeo, MP4)",
-      "labelImageUrl": "Image URL",
-      "placeholderVideoUrl": "https://youtube.com/watch?v=…",
-      "placeholderImageUrl": "https://…",
-      "useUrl": "Use URL",
-      "hintUrlVideo": "YouTube and Vimeo URLs are converted to embedded players automatically.",
-      "hintUrlImage": "You can paste an external image URL.",
-      "uploadError": "Upload failed"
-    }
-  },
-  "analysis": {
-    "rcaIntro": {
-      "panelAria": "Root cause analysis guide panel",
-      "title": "Root cause analysis guide",
-      "description": "See what each method is for, when to pick it, and example scenarios.",
-      "toggleExpand": "Expand guide",
-      "toggleCollapse": "Collapse guide",
-      "whatIsHeading": "What is root cause analysis?",
-      "whatIsBody": "It is a systematic technique to find structural or systemic drivers of an event—not just the surface symptom. Applied well, it prevents the same class of incident from recurring: it treats the disease, not only the symptom. In OHS, Turkish Law 6331 and ISO 45001 require root-cause work for incidents.",
-      "whenHeading": "When is it used?",
-      "whenUse": [
-        "After a work accident or near miss — often a legal requirement",
-        "Recurring non-conformities — the same issue keeps coming back",
-        "Proactive review of high-risk processes (fire, chemicals, work at height)",
-        "Systemic correction after audits or customer feedback",
-        "Suspected occupational disease — long exposure chains"
-      ],
-      "methodsHeading": "Seven methods · which one when?",
-      "bestForLabel": "Best for:",
-      "exampleLabel": "Example:",
-      "methods": {
-        "r2d_rca": {
-          "label": "R₂D-RCA",
-          "badge": "RiskNova exclusive · Recommended",
-          "bestFor": "Numeric, repeatable measurement; AI-assisted scoring; continuous monitoring and digital-twin alignment.",
-          "example": "Operator interventions on a bench rise over six months; which dimension broke the risk profile? AI produces t₀/t₁ across nine dimensions, compares them, and surfaces a primary root cause when override thresholds are exceeded."
-        },
-        "ishikawa": {
-          "label": "Ishikawa (fishbone)",
-          "bestFor": "Multi-factor events, team brainstorming, visual classification (6M).",
-          "example": "Product defects rise on a line; map likely causes under people/machine/method/material/measurement/environment and discuss with the team."
-        },
-        "five_why": {
-          "label": "5 Whys",
-          "bestFor": "Fast single-focus root-cause checks and simple causal chains.",
-          "example": "Hydraulic press leaks oil → Why? Worn seal → Why? No periodic maintenance → Why? No maintenance plan → Root cause: missing maintenance management system."
-        },
-        "fault_tree": {
-          "label": "Fault tree (FTA)",
-          "bestFor": "Complex systems, logical conditions (AND/OR), probability thinking.",
-          "example": "Explosion risk: top event “fire occurs” with AND/OR gates for spark sources, flammable atmosphere, failed ventilation, etc."
-        },
-        "scat": {
-          "label": "SCAT (bird model)",
-          "bestFor": "Classic OHS incident investigation: immediate → basic → systemic cause chains.",
-          "example": "After a fall: immediate event (fall), immediate causes (slippery floor), basic causes (training gaps), systemic gaps (no inspection procedure)."
-        },
-        "bow_tie": {
-          "label": "Bow-tie",
-          "bestFor": "Hazard + barrier thinking; high-risk work and process safety.",
-          "example": "Chemical release: threats (valve failure, pressure), preventive barriers (alarms, valve testing), consequences (injury, fire), mitigating barriers (emergency response, sprinklers)."
-        },
-        "mort": {
-          "label": "MORT",
-          "bestFor": "Management-system weaknesses; organisational learning after major events.",
-          "example": "After a large incident: supervisory gaps, policy holes, failed assurance systems, and lessons learned grouped systematically."
-        }
-      },
-      "tipsHeading": "Decision tips",
-      "tips": [
-        "Need a quick read → 5 Whys or R₂D-RCA",
-        "Team brainstorming → Ishikawa",
-        "Complex causal logic (AND/OR, conditions) → FTA",
-        "Classic OHS incident (slip, strike) → SCAT",
-        "High-risk work + barrier analysis → Bow-tie",
-        "Major event + organisational analysis → MORT",
-        "Continuous monitoring + numeric comparison → R₂D-RCA (RiskNova-specific)"
-      ],
-      "processHeading": "Typical process",
-      "processSteps": [
-        "Define the event clearly (company, location, date, who/what/where/how)",
-        "Choose the right method (use the tips above)",
-        "Generate a first draft with AI or fill manually",
-        "Review with the team and close gaps",
-        "Confirm root causes → build corrective/preventive (CAPA) actions",
-        "Produce a PDF report and share (QR for mobile access)",
-        "Follow up: action closure timelines + prevention of recurrence"
-      ]
-    }
-  },
-  "errors": {
-    "global": {
-      "eyebrow": "Critical error",
-      "title": "Something unexpected happened",
-      "description": "The error was reported to administrators. Use the button below to try again.",
-      "retry": "Try again",
-      "unknownClientError": "Unknown client error"
-    }
+    "switchError": "워크스페이스 전환 실패"
   }
 }

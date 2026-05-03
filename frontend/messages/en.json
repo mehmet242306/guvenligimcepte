@@ -1104,6 +1104,7 @@
   },
   "profile": {
     "loading": "Loading profile...",
+    "fallbackUserName": "User",
     "membership": "Member since",
     "updated": "Updated",
     "changePhoto": "Change photo",
@@ -1176,7 +1177,17 @@
       "registeredDevices": "Registered MFA Devices",
       "loading": "Loading...",
       "noDevices": "No MFA device is connected yet.",
-      "removeDevice": "Remove"
+      "removeDevice": "Remove",
+      "defaultAuthenticatorName": "Google Authenticator",
+      "statusAal2Session": "This session is protected with a second verification step.",
+      "statusVerifiedNeedsChallenge": "Two-factor authentication is on. The second step is not yet completed for this session.",
+      "statusVerifiedDeviceNextLogin": "You have a verified security device. New sign-ins will require the second step.",
+      "qrAlt": "MFA QR code",
+      "enrollStep1Title": "1. Scan the QR code",
+      "enrollStep1Body": "Add a new account in your authenticator app and scan this code.",
+      "enrollManualUri": "Show manual setup URI",
+      "enrollStep2Label": "2. Enter the 6-digit code from the app",
+      "factorFallbackName": "Authenticator"
     },
     "sessions": {
       "title": "Active Sessions",
@@ -1217,7 +1228,8 @@
       "in_progress": "In Progress",
       "complete": "Completed",
       "overdueStatus": "Overdue",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "resetFilter": "Show all"
     },
     "msg": {
       "photoUpdated": "Photo updated.",
@@ -1241,7 +1253,16 @@
       "prefsSaved": "Preferences saved.",
       "sessionServiceError": "Could not reach session service.",
       "signedOut": "Signed out from this device.",
-      "signedOutAll": "Signed out from all devices."
+      "signedOutAll": "Signed out from all devices.",
+      "genericSaveError": "Could not save.",
+      "emailChangeFailed": "Could not start email change.",
+      "emailConfirmSentDetailed": "A confirmation link was sent to {email}. Open the email to complete the change.",
+      "totpEnrollmentMissing": "Could not load TOTP enrollment data.",
+      "mfaEnrollFailed": "Could not start two-factor authentication.",
+      "mfaVerifyFailed": "Verification failed.",
+      "mfaRemoveFailed": "Could not remove MFA device.",
+      "signOutFailed": "Could not sign out.",
+      "signOutAllFailed": "Could not sign out from all devices."
     }
   },
   "consent": {
@@ -1314,6 +1335,228 @@
       "rejected": "Rejected",
       "failed": "Failed",
       "expired": "Expired"
+    }
+  },
+  "isgLibrary": {
+    "errors": {
+      "supabaseConnect": "Could not connect to Supabase.",
+      "sessionNotFound": "Session not found.",
+      "profileLoadFailed": "Could not load profile."
+    },
+    "user": {
+      "defaultDisplayName": "RiskNova User"
+    },
+    "templateDescription": "{group} — opens \"{item}\" template in the document flow.",
+    "contentTypes": {
+      "video": "Video",
+      "link": "Link",
+      "docx": "DOCX",
+      "pdf": "PDF",
+      "unknown": "File"
+    },
+    "badges": {
+      "file": "File",
+      "training": "Training",
+      "flow": "Flow",
+      "form": "Form",
+      "plan": "Plan",
+      "instruction": "Instruction",
+      "regulation": "Regulation",
+      "legal": "Regulation",
+      "category": "Category"
+    },
+    "usage": {
+      "usageCount": "{count} uses"
+    },
+    "assign": {
+      "companiesCount": "{count} companies"
+    },
+    "source": {
+      "template": "Template",
+      "surveyFlow": "Survey flow",
+      "presentation": "Presentation",
+      "catalog": "Catalog"
+    },
+    "footer": {
+      "convertedToDocument": "Converted to document template ({count})",
+      "generalUse": "General use"
+    },
+    "emptyState": {
+      "addContent": "Add content"
+    },
+    "preview": {
+      "eyebrow": "Template preview",
+      "emptyHeading": "No content yet",
+      "emptyBody": "Select a template from the list to preview.",
+      "emTitle": "Template preview",
+      "loadError": "Preview content could not be loaded. You can still download and edit this template."
+    },
+    "buttons": {
+      "view": "View",
+      "download": "Download",
+      "edit": "Edit",
+      "assignToCompany": "Assign to company",
+      "savedToAllCompanies": "Saved to all companies",
+      "assignCatalogPending": "Assign catalog"
+    },
+    "categories": {
+      "all": "All",
+      "documentation": "Documentation",
+      "education": "Education",
+      "assessment": "Exams & surveys",
+      "forms": "Forms & checklists",
+      "emergency": "Emergency",
+      "instructions": "Instructions",
+      "legal": "Regulations & guides"
+    },
+    "catalog": {
+      "noDescriptionShort": "No short description has been added for this content yet."
+    },
+    "card": {
+      "usageCount": "{count} uses",
+      "companiesCount": "{count} companies"
+    },
+    "empty": {
+      "titleAll": "No content yet",
+      "titleCategory": "No content in {category} yet",
+      "descSavedOnly": "No items saved to your companies were found. Assign content from a card to list it in this view.",
+      "descDefault": "No content in this category yet. Items will appear here as cards when they are added."
+    },
+    "header": {
+      "eyebrow": "ISG Library",
+      "title": "ISG Library",
+      "description": "Browse documents, training, exams, forms, emergency, and regulatory content in a global catalog without selecting a company first; save what you need to your company later.",
+      "contentCount": "{count} items",
+      "savedToCompanies": "{count} items saved to companies"
+    },
+    "company": {
+      "workingCompany": "Working company:",
+      "workingCompanyMenu": "Working company",
+      "selectCompany": "Select company",
+      "anonymousCompany": "Unnamed company"
+    },
+    "savedToggle": "Saved to my companies",
+    "filters": {
+      "searchPlaceholder": "Search title, description, tags…",
+      "typeAll": "All types",
+      "sectorAll": "All sectors",
+      "typeOption": "Type",
+      "sectorOption": "Sector",
+      "sortOption": "Sort",
+      "sortLabel": "Sort",
+      "sortNewest": "New → old",
+      "sortOldest": "Old → new",
+      "sortNewestShort": "Newest",
+      "sortOldestShort": "Oldest",
+      "sortAz": "A → Z",
+      "sortZa": "Z → A"
+    },
+    "sidebar": {
+      "subcategoriesTitle": "Subcategories",
+      "allSubcategories": "All subcategories",
+      "all": "All",
+      "addCategory": "Add category",
+      "resultsCount": "{count} results"
+    },
+    "emptyPanel": {
+      "title": "Select an item from the list",
+      "body": "When you select templates or saved items, a preview, actions, and notes appear here.",
+      "footerNote": "Suggestions are generated with RiskNova guidance content."
+    },
+    "cta": {
+      "aiSlides": "AI slide packs",
+      "aiTrainingPrepare": "Create training with AI",
+      "openSlideLibrary": "Open slide library",
+      "addCategory": "Add category",
+      "newExam": "New exam",
+      "newSurvey": "New survey",
+      "newExamCreate": "Create new exam",
+      "newSurveyCreate": "Create new survey",
+      "createInEditor": "Create in editor",
+      "uploadFromDevice": "Upload from device",
+      "importingFile": "Uploading file…",
+      "uploadPlaceholder": "DOC, DOCX, PPT, PPTX, XLS, XLSX, PDF (max 10 MB)",
+      "uploadDocNote": "Documents are converted to editable RiskNova document templates when saved.",
+      "uploadFooterNote": "Uploaded files open in the editor; you can edit, save, and revise them later."
+    },
+    "emptySubcategory": {
+      "title": "No content in this subcategory yet",
+      "body": "Choose another subcategory from the list or add new content.",
+      "footerNote": "Document creation and uploads use the company selected above."
+    },
+    "errorsInline": {
+      "selectCompanyFirst": "Select a company first.",
+      "previewFailed": "Could not open preview.",
+      "previewTemplateFailed": "Could not load template preview. Please try again.",
+      "downloadFailed": "Download failed. Please try again.",
+      "downloadHtmlFailed": "Could not create the download file. Please try again.",
+      "importFailed": "Could not import file. Please try again.",
+      "importConnection": "Could not import file. Check your connection.",
+      "importUploadError": "Something went wrong while uploading the file. Please try again.",
+      "assignSelectCompany": "Select a company first.",
+      "assignSaveFailed": "Could not save. Please try again.",
+      "assignRecordFailed": "Could not create the record. Please try again.",
+      "editNeedsTemplate": "You can edit templates from the catalog.",
+      "editOnlyTemplates": "Editing is only supported on template cards for now.",
+      "selectCompanyEditor": "Select a company first to edit the document.",
+      "companyRequiredImport": "Select the company for creating content first.",
+      "categoryFirst": "Select a category first.",
+      "categoryNameEmpty": "Category name cannot be empty.",
+      "categoryExists": "Category already exists.",
+      "subcategoryCreated": "Subcategory added: \"{name}\""
+    },
+    "assignModal": {
+      "title": "Assign to company",
+      "description": "Save {title} to the selected company to add it to the company library.",
+      "descriptionLong": "Register the selected catalog item to the active company. You can then open it from the document flow.",
+      "company": "Company",
+      "companyPlaceholder": "Select company",
+      "alreadySaved": "Already saved to this company",
+      "optionAlreadySaved": " (already saved)",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "saveToCompany": "Save to company"
+    },
+    "categoryModal": {
+      "title": "Add category",
+      "titleNew": "New subcategory",
+      "description": "Enter a name for the new subcategory. It will appear under the selected main category.",
+      "descriptionUnderCategory": "Enter a name that will appear under {category}.",
+      "nameLabel": "Subcategory name",
+      "namePlaceholder": "e.g. Site inspections",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "status": {
+      "assignedToCompany": "Assigned to the {title} workspace.",
+      "contentSavedToCompany": "{title} was saved to the selected company."
+    },
+    "legacy": {
+      "surveyIntro": "Survey intro from the library",
+      "surveyAvailable": "Survey available from RiskNova library",
+      "deckPolishedSlides": "Polished slide deck ready to present",
+      "examEditor": "Exam in editor",
+      "surveyEditor": "Survey in editor",
+      "templateLibraryPreview": "Template library preview",
+      "newDocument": "New document",
+      "draftSuffix": " draft",
+      "fileNumber": "File {n}",
+      "readyStatus": "Ready",
+      "surveyFlowSubtitle": "View and manage the {type} flow.",
+      "deckDefaultDescription": "Open ready training content and manage the presentation flow."
+    },
+    "download": {
+      "filenameFallback": "document"
+    },
+    "types": {
+      "template": "Template",
+      "presentation": "Presentation",
+      "doc": "Doc",
+      "survey": "Survey",
+      "surveyAlt": "Survey",
+      "exam": "Exam",
+      "training": "Training",
+      "unknown": "Unknown"
     }
   },
   "lang": {
@@ -2800,6 +3043,19 @@
         "removeTitle": "Remove"
       }
     },
+    "defaults": {
+      "hazopGuideWord": "More",
+      "hazopParameter": "Flow",
+      "checklistItem1": "Control item 1",
+      "checklistItemSeed": "Control item",
+      "checklistCategoryGeneral": "General",
+      "firstLineTitle": "Stacking area",
+      "firstLineDescription": "You can attach wide-angle and close-up photos of the same situation to this row.",
+      "manualPinCategory": "Manual finding",
+      "manualPinRecommendation": "Marked manually. Perform a detailed assessment.",
+      "canvasNoContext": "Canvas context unavailable.",
+      "aiRequestFailed": "AI analysis could not be completed."
+    },
     "ui": {
       "severity": {
         "low": "Low",
@@ -3049,6 +3305,509 @@
       "methodCard": {
         "score": "Score:",
         "params": "{count} parameters"
+      }
+    }
+  },
+  "planner": {
+    "yearlyWorkPlan": {
+      "months": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ],
+      "errors": {
+        "noSupabase": "No Supabase connection",
+        "loadFailed": "Could not load plan",
+        "selectCompany": "Please select a company",
+        "sessionNotFound": "Session not found",
+        "orgNotFound": "Organisation information not found",
+        "saveFailed": "Save failed"
+      },
+      "card": {
+        "title": "Annual OHS work plan",
+        "description": "Annual work plan required by Turkish OHS Law 6331. Stored per company × year. Each row is editable; click month cells to toggle."
+      },
+      "fields": {
+        "company": "Company",
+        "companyPlaceholder": "Select a company",
+        "year": "Plan year",
+        "revNo": "Revision no."
+      },
+      "signers": {
+        "blockLabel": "Signatories (printed in the PDF signature area)",
+        "employer": "Employer / employer representative",
+        "employerPlaceholder": "Full name",
+        "physician": "Workplace physician",
+        "physicianPlaceholder": "Dr. Full name",
+        "safetyExpert": "OHS specialist",
+        "safetyExpertPlaceholder": "Full name · Class (A/B/C)"
+      },
+      "actions": {
+        "saving": "Saving…",
+        "saved": "Saved",
+        "save": "Save",
+        "pdfPrint": "Download / print PDF",
+        "archivedBadge": "Plan for {year} is already archived for this company"
+      },
+      "loading": "Loading plan…",
+      "preview": {
+        "title": "Preview & edit",
+        "description": "Click rows to edit · month cell toggles"
+      },
+      "table": {
+        "num": "#",
+        "topic": "Work topic",
+        "responsible": "Responsible",
+        "regulation": "Legislation",
+        "addRow": "Add row",
+        "deleteRowAria": "Delete row"
+      },
+      "pdf": {
+        "htmlTitle": "Annual OHS work plan — {companyName}",
+        "mainTitle": "OCCUPATIONAL HEALTH AND SAFETY ANNUAL WORK PLAN",
+        "headerLine": "COMPANY: {companyName} · YEAR: {year} · REV: {revNo}",
+        "colOrder": "No.",
+        "colTopic": "Work topic",
+        "colResponsible": "Responsible",
+        "colRegulation": "Legislation",
+        "sigEmployer": "Employer / representative",
+        "sigPhysician": "Workplace physician",
+        "sigSafety": "OHS specialist",
+        "sigLine": "Signature / date"
+      },
+      "defaultTemplate": [
+        {
+          "id": "1",
+          "title": "OHS committee work",
+          "items": [
+            {
+              "title": "Establishing the OHS committee",
+              "responsible": "Employer",
+              "regulation": "Regulation on OHS committees",
+              "months": [
+                0
+              ]
+            },
+            {
+              "title": "Notifying committee appointments to members",
+              "responsible": "Employer",
+              "regulation": "Regulation on OHS committees",
+              "months": [
+                0
+              ]
+            },
+            {
+              "title": "Holding monthly OHS committee meetings",
+              "responsible": "OHS committee",
+              "regulation": "Regulation on OHS committees",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
+            },
+            {
+              "title": "Preparing the OHS committee annual activity report",
+              "responsible": "OHS committee",
+              "regulation": "Regulation on OHS committees",
+              "months": [
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "title": "Risk analysis and assessment",
+          "items": [
+            {
+              "title": "Creating or obtaining the machine inventory",
+              "responsible": "OHS specialist",
+              "regulation": "OHS risk assessment regulation",
+              "months": [
+                0
+              ]
+            },
+            {
+              "title": "Obtaining the organisation chart",
+              "responsible": "OHS specialist",
+              "regulation": "OHS risk assessment regulation",
+              "months": [
+                0
+              ]
+            },
+            {
+              "title": "Initial situation assessment and reporting",
+              "responsible": "OHS specialist",
+              "regulation": "OHS risk assessment regulation",
+              "months": [
+                1
+              ]
+            },
+            {
+              "title": "Risk analysis / assessment work",
+              "responsible": "OHS specialist",
+              "regulation": "OHS risk assessment regulation",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
+            },
+            {
+              "title": "Periodic risk analysis update",
+              "responsible": "OHS specialist",
+              "regulation": "OHS risk assessment regulation",
+              "months": [
+                5,
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "id": "3",
+          "title": "Periodic inspections and measurements",
+          "items": [
+            {
+              "title": "Electrical machinery / earthing inspection",
+              "responsible": "Technical unit",
+              "regulation": "OHS and work equipment regulation",
+              "months": [
+                3
+              ]
+            },
+            {
+              "title": "Electrical measurements (earthing, lightning rod…)",
+              "responsible": "Technical unit",
+              "regulation": "OHS and work equipment regulation",
+              "months": [
+                3
+              ]
+            },
+            {
+              "title": "Periodic inspections of lifting equipment",
+              "responsible": "Technical unit",
+              "regulation": "Work equipment regulation",
+              "months": [
+                5,
+                11
+              ]
+            },
+            {
+              "title": "Environmental noise measurement",
+              "responsible": "Technical unit",
+              "regulation": "Noise regulation",
+              "months": [
+                5
+              ]
+            },
+            {
+              "title": "Environmental lighting measurement",
+              "responsible": "Technical unit",
+              "regulation": "OHS regulation",
+              "months": [
+                5
+              ]
+            },
+            {
+              "title": "Drinking water analyses",
+              "responsible": "Technical unit",
+              "regulation": "Regulation on water for human consumption",
+              "months": [
+                2,
+                8
+              ]
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "title": "Emergencies",
+          "items": [
+            {
+              "title": "Evacuation and fire-fighting drills",
+              "responsible": "OHS specialist",
+              "regulation": "Emergencies regulation",
+              "months": [
+                5,
+                11
+              ]
+            },
+            {
+              "title": "Preparing drill minutes",
+              "responsible": "Technical unit",
+              "regulation": "Emergencies regulation",
+              "months": [
+                5,
+                11
+              ]
+            },
+            {
+              "title": "Inspection of emergency equipment",
+              "responsible": "Technical unit",
+              "regulation": "Emergencies regulation",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
+            },
+            {
+              "title": "Preparing the emergency action plan",
+              "responsible": "OHS specialist",
+              "regulation": "Emergencies regulation",
+              "months": [
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "id": "5",
+          "title": "Health surveillance",
+          "items": [
+            {
+              "title": "Health inspections",
+              "responsible": "Workplace physician",
+              "regulation": "Occupational health regulation",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
+            },
+            {
+              "title": "Health unit annual work plan",
+              "responsible": "Workplace physician",
+              "regulation": "Occupational health regulation",
+              "months": [
+                0
+              ]
+            },
+            {
+              "title": "Pre-employment medical reports",
+              "responsible": "Workplace physician",
+              "regulation": "Occupational health regulation",
+              "months": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
+            },
+            {
+              "title": "Periodic medical examination reports",
+              "responsible": "Workplace physician",
+              "regulation": "Occupational health regulation",
+              "months": [
+                2,
+                5,
+                8,
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6",
+          "title": "Chemicals",
+          "items": [
+            {
+              "title": "Ensuring SDS are obtained",
+              "responsible": "OHS specialist",
+              "regulation": "Chemicals regulation",
+              "months": [
+                2
+              ]
+            },
+            {
+              "title": "Chemical risk assessment",
+              "responsible": "OHS specialist",
+              "regulation": "Chemicals regulation",
+              "months": [
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "reports": {
+    "companyFile": {
+      "title": "Reports & company file",
+      "subtitle": "Analytical summary and download all documents as a ZIP for {companyName}.",
+      "selectedCount": "{count} records selected",
+      "refresh": "Refresh",
+      "sectionTitle": "Company file",
+      "sectionHint": "Summary PDFs and a ZIP package are prepared for the categories you select.",
+      "includePdfPerRecord": "Generate a separate PDF for each record",
+      "selectNone": "Select none",
+      "selectAll": "Select all",
+      "downloading": "Preparing…",
+      "downloadZip": "Download as ZIP",
+      "loadingRecords": "Collecting records…",
+      "noOrg": "Organisation information not found. Please check your session.",
+      "noCompanyRecords": "No records for this company yet.",
+      "categoryEmpty": "No records",
+      "categoryIncluded": "Will be included in ZIP",
+      "categoryHint": "Click to select",
+      "warnSelectCategory": "Select at least one category (with records).",
+      "successZip": "Company file prepared and downloaded. {count} records archived.",
+      "failZipPrefix": "Could not create company file:"
+    }
+  },
+  "incidents": {
+    "dof": {
+      "status": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "completed": "Completed",
+        "verified": "Verified"
+      },
+      "header": {
+        "newDof": "New CAPA",
+        "description": "Corrective and preventive actions + root cause analysis",
+        "backToIncident": "Back to incident"
+      },
+      "export": {
+        "pdf": "PDF",
+        "word": "Word"
+      },
+      "ishikawa": {
+        "title": "Root cause analysis — Ishikawa (fishbone)",
+        "subtitle": "Analyse root causes systematically using the 6M method.",
+        "aiFill": "Fill with AI",
+        "problemLabel": "Problem statement",
+        "problemPlaceholder": "Describe the problem under analysis…",
+        "addCause": "+ Add cause",
+        "causePlaceholder": "{category} cause…",
+        "conclusionTitle": "Root cause conclusion",
+        "causesCount": "{count} causes captured",
+        "conclusionPlaceholder": "Root cause(s) identified from the analysis…",
+        "categories": {
+          "man": {
+            "label": "People",
+            "desc": "Training gaps, inattention, fatigue, inexperience…"
+          },
+          "machine": {
+            "label": "Machine",
+            "desc": "Faulty equipment, poor maintenance, missing guards…"
+          },
+          "method": {
+            "label": "Method",
+            "desc": "Missing procedures, wrong work instructions, weak planning…"
+          },
+          "material": {
+            "label": "Material",
+            "desc": "Poor quality material, wrong storage, hazardous chemicals…"
+          },
+          "environment": {
+            "label": "Environment",
+            "desc": "Poor lighting, noise, temperature, floor conditions…"
+          },
+          "measurement": {
+            "label": "Measurement",
+            "desc": "Calibration errors, wrong readings, missing inspections…"
+          }
+        }
+      },
+      "dofDetail": {
+        "title": "CAPA detail",
+        "rootSummaryLabel": "Root cause summary",
+        "rootSummaryPlaceholder": "Main cause from the Ishikawa analysis…",
+        "analysisLabel": "Detailed analysis (5 Whys, etc.)",
+        "analysisPlaceholder": "Five-whys analysis or additional detail…"
+      },
+      "corrective": {
+        "title": "Corrective actions",
+        "add": "Add",
+        "description": "Corrective actions to prevent the incident from recurring.",
+        "empty": "No corrective actions yet.",
+        "itemLabel": "Action {n}",
+        "actionPlaceholder": "Action description",
+        "assigneePlaceholder": "Responsible person"
+      },
+      "preventive": {
+        "title": "Preventive actions",
+        "add": "Add",
+        "description": "Measures to prevent similar events in future.",
+        "empty": "No preventive actions yet.",
+        "itemLabel": "Action {n}",
+        "actionPlaceholder": "Action description",
+        "assigneePlaceholder": "Responsible person"
+      },
+      "assignment": {
+        "title": "Assignment and status",
+        "assigneeLabel": "Responsible person",
+        "deadlineLabel": "Due date",
+        "statusLabel": "Status"
+      },
+      "photos": {
+        "title": "Photos",
+        "description": "Add photos related to the issue (scene, damage, before/after fix).",
+        "addButton": "Add photo",
+        "emptyHint": "Click to upload photos",
+        "captionPlaceholder": "Photo caption…",
+        "alt": "CAPA photo"
+      },
+      "save": {
+        "saving": "Saving…",
+        "all": "Save all"
+      },
+      "modal": {
+        "title": "Close CAPA confirmation",
+        "leadCompleted": "You are about to mark the CAPA as completed.",
+        "leadVerified": "You are about to mark the CAPA as verified.",
+        "noPhotosTitle": "No photos added yet!",
+        "noPhotosBody": "Would you like to add after-fix photos before closing the CAPA?",
+        "checklist": "Have all corrective and preventive actions been completed?",
+        "cancel": "Cancel",
+        "addPhoto": "Add photo",
+        "confirm": "Confirm and close"
+      },
+      "ai": {
+        "noDescription": "Incident description has not been entered yet.",
+        "equipmentPrefix": "Equipment: {tool}",
+        "busy": "AI is busy; you can fill manually."
       }
     }
   }

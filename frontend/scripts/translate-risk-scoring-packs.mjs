@@ -18,6 +18,11 @@
  *   phase3       → npm run i18n:merge-phase3 && npm run i18n:verify-locale-parity
  *   messages     → writes messages/{locale}.json directly; then npm run i18n:verify-locale-parity
  *                  Use --force to retranslate a locale that already differs from en (full refresh).
+ *
+ * Optional: --prefix=namespace (messages pack only)
+ *   Translates only string leaves under that top-level key (e.g. --prefix=isgLibrary), merges into each
+ *   existing locale file, and leaves all other keys untouched. --resume skips a locale when that
+ *   subtree is no longer identical to English (already localized).
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -55,6 +60,8 @@ function parsePackName() {
 
 const PACK = parsePackName();
 const rootDir = path.join(__dirname, "..");
+/** Monorepo root (parent of `frontend/`) — API keys are often stored here instead of `frontend/.env.local`. */
+const repoRootDir = path.join(rootDir, "..");
 const packDir =
   PACK === "messages" ? path.join(rootDir, "messages") : path.join(__dirname, "i18n-packs", PACK);
 
@@ -88,8 +95,14 @@ function missingSourceHint() {
   return "run npm run i18n:generate-risk-scoring first.";
 }
 
-dotenv.config({ path: path.join(rootDir, ".env.local") });
-dotenv.config({ path: path.join(rootDir, ".env") });
+for (const envPath of [
+  path.join(repoRootDir, ".env.local"),
+  path.join(repoRootDir, ".env"),
+  path.join(rootDir, ".env.local"),
+  path.join(rootDir, ".env"),
+]) {
+  dotenv.config({ path: envPath, override: true });
+}
 
 const SOURCE_LOCALE = "en";
 const TARGETS = APP_MESSAGE_LOCALES.filter((l) => l !== "tr" && l !== "en");
@@ -445,6 +458,64 @@ function parseBoolFlag(name) {
   return process.argv.slice(2).includes(name);
 }
 
+/** Top-level JSON key only, e.g. isgLibrary */
+function parsePrefix() {
+  const arg = process.argv.find((a) => a.startsWith("--prefix="));
+  if (!arg) return null;
+  const raw = arg.slice("--prefix=".length).trim();
+  if (!/^[a-zA-Z0-9_-]+$/.test(raw)) {
+    throw new Error(`Invalid --prefix (use a single top-level key): ${raw}`);
+  }
+  return raw;
+}
+
+function getSubtree(obj, prefix) {
+  const parts = prefix.split(".");
+  let cur = obj;
+  for (const p of parts) {
+    if (cur == null || typeof cur !== "object") return undefined;
+    cur = cur[p];
+  }
+  return cur;
+}
+
+function deepMergeTarget(target, source) {
+  if (source === null || typeof source !== "object" || Array.isArray(source)) {
+    return;
+  }
+  for (const k of Object.keys(source)) {
+    const sv = source[k];
+    const tv = target[k];
+    if (sv !== null && typeof sv === "object" && !Array.isArray(sv)) {
+      if (tv === null || typeof tv !== "object" || Array.isArray(tv)) {
+        target[k] = structuredClone(sv);
+      } else {
+        deepMergeTarget(tv, sv);
+      }
+    } else {
+      target[k] = sv;
+    }
+  }
+}
+
+function filterFlatByPrefix(flat, prefix) {
+  const p = `${prefix}.`;
+  const out = {};
+  for (const [k, v] of Object.entries(flat)) {
+    if (k === prefix || k.startsWith(p)) out[k] = v;
+  }
+  return out;
+}
+
+function isSubtreeIdenticalToEn(localePath, enTree, prefix) {
+  if (!fs.existsSync(localePath)) return false;
+  const loc = JSON.parse(fs.readFileSync(localePath, "utf8"));
+  const a = getSubtree(loc, prefix);
+  const b = getSubtree(enTree, prefix);
+  if (a === undefined && b === undefined) return true;
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 /** True if file is still a byte-for-byte copy of the English pack (untranslated). */
 function isEnglishDuplicatePack(localePath, enCanonical) {
   if (!fs.existsSync(localePath)) return true;
@@ -470,7 +541,9 @@ async function main() {
     console.error(
       "No API key: set one of",
       [...OPENAI_KEY_NAMES, ...ANTHROPIC_KEY_NAMES].join(", "),
-      "in frontend/.env.local",
+      "in either:",
+      `  ${path.join(repoRootDir, ".env.local")} or ${path.join(repoRootDir, ".env")} (repo root), or`,
+      `  ${path.join(rootDir, ".env.local")} or ${path.join(rootDir, ".env")} (frontend).`,
     );
     process.exit(1);
   }
@@ -486,6 +559,18 @@ async function main() {
     targets = filterLocales;
   }
 
+  let prefix;
+  try {
+    prefix = parsePrefix();
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+  if (prefix && PACK !== "messages") {
+    console.error("--prefix is only supported with --pack=messages");
+    process.exit(1);
+  }
+
   const enPath = path.join(packDir, `${SOURCE_LOCALE}.json`);
   if (!fs.existsSync(enPath)) {
     console.error("Missing", enPath, "—", missingSourceHint());
@@ -493,30 +578,63 @@ async function main() {
   }
 
   console.log("i18n pack:", PACK, "→", packDir);
+  if (prefix) console.log("prefix (partial translate):", prefix);
 
   const sourceTree = JSON.parse(fs.readFileSync(enPath, "utf8"));
-  const sourceFlat = flattenStrings(sourceTree);
+  let sourceFlat = flattenStrings(sourceTree);
+  if (prefix) {
+    sourceFlat = filterFlatByPrefix(sourceFlat, prefix);
+    if (!Object.keys(sourceFlat).length) {
+      console.error(`No string leaves under "${prefix}" in ${SOURCE_LOCALE}.json`);
+      process.exit(1);
+    }
+  }
   const keyCount = Object.keys(sourceFlat).length;
-  console.log(`Source ${SOURCE_LOCALE}.json: ${keyCount} string leaves`);
+  console.log(`Source ${SOURCE_LOCALE}.json: ${keyCount} string leaves${prefix ? ` (filtered)` : ""}`);
 
   const resume = parseBoolFlag("--resume");
   const force = parseBoolFlag("--force");
   const enCanonical = JSON.stringify(sourceTree);
 
   if (resume) {
-    console.log("--resume: skipping locales that already differ from en.json (use --force to redo)");
+    if (prefix) {
+      console.log(
+        "--resume: skipping locales whose subtree is no longer identical to English under",
+        prefix,
+        "(use --force to redo)",
+      );
+    } else {
+      console.log("--resume: skipping locales that already differ from en.json (use --force to redo)");
+    }
   }
 
   for (const locale of targets) {
     const outPath = path.join(packDir, `${locale}.json`);
-    if (resume && !force && !isEnglishDuplicatePack(outPath, enCanonical)) {
-      console.log(`Skipping ${locale} (already translated)`);
-      continue;
+    if (resume && !force) {
+      if (prefix) {
+        if (!isSubtreeIdenticalToEn(outPath, sourceTree, prefix)) {
+          console.log(`Skipping ${locale} (${prefix} already localized or edited)`);
+          continue;
+        }
+      } else if (!isEnglishDuplicatePack(outPath, enCanonical)) {
+        console.log(`Skipping ${locale} (already translated)`);
+        continue;
+      }
     }
     console.log(`Translating → ${locale} (${LOCALE_NAMES[locale]})…`);
     const flat = await translateLocale(provider, client, locale, sourceFlat);
     const tree = unflattenPaths(flat);
-    fs.writeFileSync(outPath, `${JSON.stringify(tree, null, 2)}\n`);
+    if (prefix) {
+      if (!fs.existsSync(outPath)) {
+        console.error("Missing", outPath, "— create locale file or run i18n:merge-missing-from-en first");
+        process.exit(1);
+      }
+      const existing = JSON.parse(fs.readFileSync(outPath, "utf8"));
+      deepMergeTarget(existing, tree);
+      fs.writeFileSync(outPath, `${JSON.stringify(existing, null, 2)}\n`);
+    } else {
+      fs.writeFileSync(outPath, `${JSON.stringify(tree, null, 2)}\n`);
+    }
     console.log("  wrote", outPath);
   }
 
