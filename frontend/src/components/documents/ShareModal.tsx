@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { X, Link2, Copy, Check, QrCode, Share2, MessageCircle, Smartphone, ExternalLink } from 'lucide-react';
 import QRCode from 'qrcode';
 import { toggleDocumentSharing } from '@/lib/supabase/document-api';
@@ -16,6 +17,7 @@ interface ShareModalProps {
 }
 
 export function ShareModal({ isOpen, onClose, documentId, documentTitle, shareToken, isShared, onShareChanged }: ShareModalProps) {
+  const t = useTranslations('documentEditor.shareModal');
   const [shared, setShared] = useState(isShared);
   const [token, setToken] = useState(shareToken);
   const [copied, setCopied] = useState(false);
@@ -85,7 +87,7 @@ export function ShareModal({ isOpen, onClose, documentId, documentTitle, shareTo
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--gold)]/20">
           <div className="flex items-center gap-2">
             <Share2 size={18} className="text-[var(--gold)]" />
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">Dokümanı Paylaş</h3>
+            <h3 className="text-sm font-bold text-[var(--text-primary)]">{t('title')}</h3>
           </div>
           <button onClick={onClose} className="p-1 rounded-md hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)]">
             <X size={18} />
@@ -96,9 +98,9 @@ export function ShareModal({ isOpen, onClose, documentId, documentTitle, shareTo
           {/* Toggle sharing */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[var(--text-primary)]">Paylaşım Linki</p>
+              <p className="text-sm font-medium text-[var(--text-primary)]">{t('linkTitle')}</p>
               <p className="text-[11px] text-[var(--text-secondary)]">
-                {shared ? 'Link ile herkes görüntüleyebilir' : 'Paylaşım kapalı'}
+                {shared ? t('linkOn') : t('linkOff')}
               </p>
             </div>
             <button
@@ -125,7 +127,7 @@ export function ShareModal({ isOpen, onClose, documentId, documentTitle, shareTo
                 <button
                   onClick={copyLink}
                   className="p-2 bg-[var(--gold)] text-white rounded-lg hover:bg-[var(--gold-hover)] transition-colors shrink-0"
-                  title="Linki Kopyala"
+                  title={t('copyLinkTitle')}
                 >
                   {copied ? <Check size={14} /> : <Copy size={14} />}
                 </button>
@@ -134,8 +136,8 @@ export function ShareModal({ isOpen, onClose, documentId, documentTitle, shareTo
               {/* QR Code */}
               {qrDataUrl && (
                 <div className="flex flex-col items-center py-3">
-                  <img src={qrDataUrl} alt="QR Code" className="w-[160px] h-[160px] rounded-lg border border-gray-200 dark:border-gray-700" />
-                  <p className="text-[10px] text-[var(--text-secondary)] mt-2">QR kodu taratarak dokümanı görüntüleyin</p>
+                  <img src={qrDataUrl} alt="" className="w-[160px] h-[160px] rounded-lg border border-gray-200 dark:border-gray-700" />
+                  <p className="text-[10px] text-[var(--text-secondary)] mt-2">{t('qrCaption')}</p>
                 </div>
               )}
 
@@ -161,7 +163,7 @@ export function ShareModal({ isOpen, onClose, documentId, documentTitle, shareTo
                     className="flex flex-col items-center gap-1.5 p-3 rounded-lg border border-purple-200 dark:border-purple-800/30 hover:bg-purple-50 dark:hover:bg-purple-900/10 transition-colors"
                   >
                     <ExternalLink size={20} className="text-purple-600" />
-                    <span className="text-[10px] font-medium text-purple-700 dark:text-purple-400">Diğer</span>
+                    <span className="text-[10px] font-medium text-purple-700 dark:text-purple-400">{t('otherNative')}</span>
                   </button>
                 )}
               </div>

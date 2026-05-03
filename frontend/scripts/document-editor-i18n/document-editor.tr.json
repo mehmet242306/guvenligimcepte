@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "Yeni doküman",
+  "loading": "Doküman yükleniyor…",
+  "titlePlaceholder": "Doküman başlığı…",
+  "editorPlaceholder": "Doküman içeriğini buraya yazın…",
+  "breadcrumb": {
+    "backToLibrary": "Kütüphaneye dön",
+    "documents": "Dokümanlar"
+  },
+  "status": {
+    "taslak": "Taslak",
+    "hazir": "Hazır",
+    "onay_bekliyor": "Onay bekliyor",
+    "revizyon": "Revizyon",
+    "arsiv": "Arşiv"
+  },
+  "saveLocation": {
+    "customDocs": "Kişisel dokümanlar",
+    "companyDocs": "Firma dokümanları"
+  },
+  "saveNotice": "Kaydedildi: {path}",
+  "continueEditingHint": "Belge açık kaldı; düzenlemeye devam edebilirsiniz.",
+  "autosaveError": "Otomatik kayıt tamamlanamadı.",
+  "saveErrorUnexpected": "Doküman kaydı sırasında beklenmeyen bir hata oluştu.",
+  "confirmClear": "Editör içeriği temizlenecek. Emin misiniz?",
+  "tooltips": {
+    "clearPage": "Sayfayı temizle",
+    "aiPanelClose": "AI panelini kapat",
+    "aiAssistant": "AI asistan",
+    "shareDisabled": "Önce dokümanı kaydedin",
+    "shareEnabled": "QR kod, bağlantı veya WhatsApp ile paylaşın",
+    "signDisabled": "Önce dokümanı kaydedin",
+    "signEnabled": "E-imza / mobil imza ile imzalayın"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "Paylaş",
+    "sign": "İmzala",
+    "signWithCount": "İmzala ({count})",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "saved": "Kaydedildi!"
+  },
+  "pdf": {
+    "qrAlt": "QR doğrulama",
+    "verificationCaption": "RiskNova doğrulama"
+  },
+  "floatingAi": {
+    "ariaOpen": "AI asistanı aç",
+    "tooltip": "AI asistan",
+    "label": "AI asistan"
+  },
+  "sidebarCloseMobile": "AI panelini kapat",
+  "validationQr": "Doğrulama: /share/{token}",
+  "statusBar": {
+    "words": "{count} kelime",
+    "chars": "{count} karakter",
+    "saving": "Kaydediliyor…",
+    "lastSave": "Son kayıt:",
+    "neverSaved": "Henüz kaydedilmedi"
+  },
+  "signatureDefaults": {
+    "signerName": "İmzalayan",
+    "signerRole": "İSG uzmanı"
+  },
+  "toolbar": {
+    "undo": "Geri al (Ctrl+Z)",
+    "redo": "İleri al (Ctrl+Y)",
+    "fontSizeTitle": "Yazı boyutu",
+    "fontSizeButton": "Boyut",
+    "insertTable": "Tablo ekle",
+    "tableSizeHint": "Tablo boyutu seçin",
+    "removeColor": "Rengi kaldır",
+    "heading1": "Başlık 1",
+    "heading2": "Başlık 2",
+    "heading3": "Başlık 3",
+    "bold": "Kalın (Ctrl+B)",
+    "italic": "İtalik (Ctrl+I)",
+    "underline": "Altı çizili (Ctrl+U)",
+    "strike": "Üstü çizili",
+    "textColor": "Yazı rengi",
+    "highlightColor": "Vurgu rengi",
+    "alignLeft": "Sola hizala",
+    "alignCenter": "Ortala",
+    "alignRight": "Sağa hizala",
+    "alignJustify": "İki yana yasla",
+    "bulletList": "Madde işareti",
+    "orderedList": "Numaralı liste",
+    "blockquote": "Alıntı",
+    "hr": "Yatay çizgi",
+    "print": "Yazdır (Ctrl+P)"
+  },
+  "shareModal": {
+    "title": "Dokümanı paylaş",
+    "linkTitle": "Paylaşım bağlantısı",
+    "linkOn": "Bağlantı ile herkes görüntüleyebilir",
+    "linkOff": "Paylaşım kapalı",
+    "copyLinkTitle": "Bağlantıyı kopyala",
+    "qrCaption": "QR kodu taratarak dokümanı görüntüleyin",
+    "otherNative": "Diğer"
+  },
+  "signatureModal": {
+    "title": "Dokümanı imzala",
+    "canvasHint": "Aşağıdaki alana imzanızı atın",
+    "clear": "Temizle",
+    "legal": "İmzalayarak bu dokümanın içeriğini okuduğunuzu ve onayladığınızı beyan etmiş olursunuz. İmzanız dijital olarak kaydedilecek ve doküman bütünlüğü hash ile doğrulanabilecektir.",
+    "cancel": "İptal",
+    "sign": "İmzala ve onayla",
+    "signing": "İmzalanıyor…",
+    "errorAlert": "İmza kaydedilirken bir hata oluştu."
+  },
+  "ai": {
+    "title": "AI asistan",
+    "subtitleWithCompany": "{company} için içerik üretimi ve düzenleme",
+    "subtitleNoCompany": "İçerik üretimi ve düzenleme",
+    "quick": {
+      "fullDoc": {
+        "label": "Tam doküman oluştur",
+        "prompt": "Bu dokümanı profesyonelce oluştur. Tüm bölümleri, tabloları ve yasal referansları ekle. Firma bilgilerini içeriğe yerleştir, boş alan bırakma."
+      },
+      "intro": {
+        "label": "Giriş bölümü yaz",
+        "prompt": "Bu doküman için profesyonel bir giriş ve amaç bölümü yaz. Firma adını ve sektörünü kullan."
+      },
+      "legal": {
+        "label": "Yasal dayanak ekle",
+        "prompt": "6331 sayılı kanun ve ilgili yönetmeliklere göre yasal dayanak bölümü hazırla."
+      },
+      "regs": {
+        "label": "Mevzuat referansları",
+        "prompt": "Bu doküman türü için geçerli tüm mevzuat referanslarını listele."
+      }
+    },
+    "customRequestLabel": "Özel istek",
+    "customRequestPlaceholder": "Ne üretmemi istersiniz?",
+    "improveSelected": "Seçili metni iyileştir",
+    "improveHint": "Editörde metin seçip bu butonu tıklayın.",
+    "generating": "İçerik oluşturuluyor…",
+    "generatingMobileNote": "Mobilde bağlantı uzarsa sistem beklemede kalmaz; otomatik yerel taslak hazırlar.",
+    "emptyState": "Yukarıdaki butonlardan birini tıklayarak AI ile içerik oluşturmaya başlayın.",
+    "resultInserted": "Editöre eklendi",
+    "resultDegraded": "Yerel taslak",
+    "resultDefault": "AI sonucu",
+    "copy": "Kopyala",
+    "degradedNotice": "AI servisi geçici olarak korumalı modda çalıştı. Yerel taslak üretildi; düzenleyip kaydedebilirsiniz.",
+    "degradedQueue": "Kuyruk görevi: {taskId}",
+    "degradedQueueHint": "İstek arka planda işleniyor olabilir; kısa süre sonra tekrar deneyin.",
+    "addToEditor": "Editöre ekle",
+    "addDegradedToEditor": "Yerel taslağı editöre ekle",
+    "insertedSuccess": "İçerik editöre başarıyla eklendi",
+    "improveDialogTitle": "Metni iyileştir",
+    "improveSelectedLabel": "Seçili metin:",
+    "improveChooseType": "Ne tür iyileştirme yapılsın?",
+    "improveCustomPlaceholder": "Özel iyileştirme isteği…",
+    "improveTextBlockLabel": "İyileştirilecek metin:",
+    "errors": {
+      "quotaDefault": "Doküman AI paket limitiniz doldu. Paketinizi yükselterek devam edebilirsiniz.",
+      "serviceUnavailable": "Hata: AI şu anda yanıt veremiyor. Lütfen tekrar deneyin.",
+      "emptyResponseWithFallback": "AI servisi boş yanıt verdi. Mobilde işlemin yarıda kalmaması için yerel taslak hazırlandı.",
+      "abortWithFallback": "AI isteği zaman aşımına uğradı. Mobilde beklemede kalmamanız için yerel taslak hazırlandı.",
+      "connectionWithFallback": "Bağlantı hatası oluştu. Mobilde işlemin boş kalmaması için yerel taslak hazırlandı.",
+      "emptyResponseImprove": "AI servisi boş yanıt verdi. Lütfen daha kısa bir metin seçip tekrar deneyin.",
+      "abortImprove": "AI isteği zaman aşımına uğradı. Lütfen daha kısa bir metin seçip tekrar deneyin.",
+      "connectionImprove": "Bağlantı hatası. Lütfen tekrar deneyin.",
+      "serviceUnavailableImprove": "Hata: AI servisi şu anda yanıt veremiyor.",
+      "quotaShort": "Doküman AI paket limitiniz doldu."
+    },
+    "improve": {
+      "professionalize": {
+        "label": "Profesyonelleştir",
+        "prompt": "Bu metni profesyonel İSG dili ile yeniden yaz. Resmi ve kurumsal ton kullan."
+      },
+      "shorten": {
+        "label": "Kısalt",
+        "prompt": "Bu metni öznü bozmadan kısalt ve sadeleştir."
+      },
+      "detail": {
+        "label": "Detaylandır",
+        "prompt": "Bu metni daha detaylı ve kapsamlı hale getir. Eksik bilgileri tamamla."
+      },
+      "legal": {
+        "label": "Yasal referans ekle",
+        "prompt": "Bu metne ilgili 6331 sayılı kanun maddeleri ve yönetmelik referanslarını ekle."
+      }
+    },
+    "fallback": {
+      "untitled": "Doküman taslağı",
+      "sectionCompany": "Firma bilgileri",
+      "tableHeaderField": "Alan",
+      "tableHeaderValue": "Bilgi",
+      "rowCompany": "Firma / kurum",
+      "rowSector": "Sektör",
+      "rowHazard": "Tehlike sınıfı",
+      "rowNace": "NACE kodu",
+      "rowEmployees": "Çalışan sayısı",
+      "rowDate": "Doküman tarihi",
+      "placeholderCompany": "Firma bilgisi eklenecek",
+      "placeholderSector": "Sektör bilgisi eklenecek",
+      "placeholderHazard": "Tehlike sınıfı eklenecek",
+      "placeholderNace": "NACE bilgisi eklenecek",
+      "placeholderEmployees": "Çalışan sayısı eklenecek",
+      "sectionPurpose": "Amaç ve kapsam",
+      "paragraphScope": "Bu doküman {company} için İSG, operasyon ve kayıt süreçlerinde kullanılmak üzere hazırlanmıştır.",
+      "sectionImplementation": "Uygulama esasları",
+      "bullet1": "Sorumlu kişiler ve onay akışının belirlenmesi",
+      "bullet2": "Gerekli kayıtların RiskNova üzerinde tutulması",
+      "bullet3": "Yasal dayanak ve firma prosedürlerine uygun hareket edilmesi",
+      "bullet4": "Uygunsuzlukların ve kritik risklerin gecikmeden raporlanması",
+      "sectionLegal": "Yasal dayanak",
+      "legal1": "6331 sayılı İş Sağlığı ve Güvenliği Kanunu",
+      "legal2": "İlgili yönetmelikler ve firma iç prosedürleri",
+      "sectionSignature": "İmza ve onay",
+      "tableHeaderParty": "Taraf",
+      "tableHeaderName": "Ad soyad / unvan",
+      "tableHeaderSign": "İmza",
+      "tableHeaderDate": "Tarih",
+      "rowPreparer": "Hazırlayan",
+      "rowEmployer": "İşveren / işveren vekili",
+      "specialistFallback": "İSG profesyoneli"
+    }
+  }
+}

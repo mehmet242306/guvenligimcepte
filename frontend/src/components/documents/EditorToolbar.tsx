@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import type { Editor } from '@tiptap/react';
 import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
@@ -70,9 +71,9 @@ const COLORS = [
 ];
 
 function ColorPicker({
-  icon: Icon, title, currentColor, onSelect,
+  icon: Icon, title, currentColor, onSelect, removeColorLabel,
 }: {
-  icon: LucideIcon; title: string; currentColor?: string; onSelect: (color: string) => void;
+  icon: LucideIcon; title: string; currentColor?: string; onSelect: (color: string) => void; removeColorLabel: string;
 }) {
   const { triggerRef, open, pos, toggle, close } = useFixedPopup();
 
@@ -111,7 +112,7 @@ function ColorPicker({
               onClick={() => { onSelect(''); close(); }}
               className="w-full mt-1.5 text-[10px] text-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] py-1"
             >
-              Rengi Kaldır
+              {removeColorLabel}
             </button>
           </div>
         </>
@@ -122,12 +123,13 @@ function ColorPicker({
 
 /* ── Table Grid Picker ── */
 function TablePicker({ editor }: { editor: Editor }) {
+  const tt = useTranslations('documentEditor.toolbar');
   const { triggerRef, open, pos, toggle, close } = useFixedPopup();
   const [hover, setHover] = useState({ r: 0, c: 0 });
 
   return (
     <div ref={triggerRef}>
-      <Btn onClick={toggle} title="Tablo Ekle">
+      <Btn onClick={toggle} title={tt('insertTable')}>
         <TableIcon size={15} />
       </Btn>
       {open && (
@@ -138,7 +140,7 @@ function TablePicker({ editor }: { editor: Editor }) {
             style={{ top: pos.top, left: pos.left }}
           >
             <div className="text-[10px] text-[var(--text-secondary)] text-center mb-1.5">
-              {hover.r > 0 ? `${hover.r} × ${hover.c}` : 'Tablo boyutu seçin'}
+              {hover.r > 0 ? `${hover.r} × ${hover.c}` : tt('tableSizeHint')}
             </div>
             <div className="table-grid">
               {Array.from({ length: 6 }, (_, r) =>
@@ -167,6 +169,7 @@ function TablePicker({ editor }: { editor: Editor }) {
 const FONT_SIZES = ['12', '14', '16', '18', '20', '24', '28', '32'];
 
 function FontSizeSelect({ editor }: { editor: Editor }) {
+  const tt = useTranslations('documentEditor.toolbar');
   const { triggerRef, open, pos, toggle, close } = useFixedPopup();
 
   return (
@@ -174,10 +177,10 @@ function FontSizeSelect({ editor }: { editor: Editor }) {
       <button
         type="button"
         onClick={toggle}
-        title="Yazı Boyutu"
+        title={tt('fontSizeTitle')}
         className="h-7 px-2 text-xs rounded border border-[var(--card-border)] bg-transparent text-[var(--text-primary)] cursor-pointer hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center gap-1"
       >
-        Boyut <span className="text-[10px] opacity-50">&#9662;</span>
+        {tt('fontSizeButton')} <span className="text-[10px] opacity-50">&#9662;</span>
       </button>
       {open && (
         <>
@@ -210,15 +213,16 @@ function FontSizeSelect({ editor }: { editor: Editor }) {
 /* Main Toolbar                                                  */
 /* ══════════════════════════════════════════════════════════════ */
 export function EditorToolbar({ editor }: EditorToolbarProps) {
+  const tt = useTranslations('documentEditor.toolbar');
   const s = 15;
 
   return (
     <div className="editor-toolbar flex items-center gap-0.5 px-3 py-1.5 overflow-x-auto">
       {/* History */}
-      <Btn onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} title="Geri Al (Ctrl+Z)">
+      <Btn onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} title={tt('undo')}>
         <Undo size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} title="İleri Al (Ctrl+Y)">
+      <Btn onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} title={tt('redo')}>
         <Redo size={s} />
       </Btn>
 
@@ -243,16 +247,16 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       <Divider />
 
       {/* Text Formatting */}
-      <Btn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Kalın (Ctrl+B)">
+      <Btn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title={tt('bold')}>
         <Bold size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')} title="İtalik (Ctrl+I)">
+      <Btn onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')} title={tt('italic')}>
         <Italic size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive('underline')} title="Altı Çizili (Ctrl+U)">
+      <Btn onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive('underline')} title={tt('underline')}>
         <UnderlineIcon size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')} title="Üstü Çizili">
+      <Btn onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')} title={tt('strike')}>
         <Strikethrough size={s} />
       </Btn>
 
@@ -261,7 +265,8 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       {/* Colors */}
       <ColorPicker
         icon={Type}
-        title="Yazı Rengi"
+        title={tt('textColor')}
+        removeColorLabel={tt('removeColor')}
         currentColor={editor.getAttributes('textStyle').color || '#000'}
         onSelect={(c) => {
           if (c) editor.chain().focus().setColor(c).run();
@@ -270,7 +275,8 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       />
       <ColorPicker
         icon={Highlighter}
-        title="Vurgu Rengi"
+        title={tt('highlightColor')}
+        removeColorLabel={tt('removeColor')}
         currentColor={editor.getAttributes('highlight').color || '#fef08a'}
         onSelect={(c) => {
           if (c) editor.chain().focus().toggleHighlight({ color: c }).run();
@@ -281,29 +287,29 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       <Divider />
 
       {/* Alignment */}
-      <Btn onClick={() => editor.chain().focus().setTextAlign('left').run()} active={editor.isActive({ textAlign: 'left' })} title="Sola Hizala">
+      <Btn onClick={() => editor.chain().focus().setTextAlign('left').run()} active={editor.isActive({ textAlign: 'left' })} title={tt('alignLeft')}>
         <AlignLeft size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().setTextAlign('center').run()} active={editor.isActive({ textAlign: 'center' })} title="Ortala">
+      <Btn onClick={() => editor.chain().focus().setTextAlign('center').run()} active={editor.isActive({ textAlign: 'center' })} title={tt('alignCenter')}>
         <AlignCenter size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().setTextAlign('right').run()} active={editor.isActive({ textAlign: 'right' })} title="Sağa Hizala">
+      <Btn onClick={() => editor.chain().focus().setTextAlign('right').run()} active={editor.isActive({ textAlign: 'right' })} title={tt('alignRight')}>
         <AlignRight size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().setTextAlign('justify').run()} active={editor.isActive({ textAlign: 'justify' })} title="İki Yana Yasla">
+      <Btn onClick={() => editor.chain().focus().setTextAlign('justify').run()} active={editor.isActive({ textAlign: 'justify' })} title={tt('alignJustify')}>
         <AlignJustify size={s} />
       </Btn>
 
       <Divider />
 
       {/* Lists */}
-      <Btn onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')} title="Madde İşareti">
+      <Btn onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')} title={tt('bulletList')}>
         <List size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title="Numaralı Liste">
+      <Btn onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title={tt('orderedList')}>
         <ListOrdered size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')} title="Alıntı">
+      <Btn onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')} title={tt('blockquote')}>
         <Quote size={s} />
       </Btn>
 
@@ -318,7 +324,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       <Divider />
 
       {/* Print */}
-      <Btn onClick={() => window.print()} title="Yazdır (Ctrl+P)">
+      <Btn onClick={() => window.print()} title={tt('print')}>
         <Printer size={s} />
       </Btn>
     </div>

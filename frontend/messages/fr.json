@@ -4116,5 +4116,228 @@
     "noWorkspace": "Aucun espace de travail",
     "switcher": "Espace de travail",
     "switchError": "Impossible de changer d'espace de travail"
+  },
+  "documentEditor": {
+    "defaultTitle": "New document",
+    "loading": "Loading document…",
+    "titlePlaceholder": "Document title…",
+    "editorPlaceholder": "Write your document content here…",
+    "breadcrumb": {
+      "backToLibrary": "Back to library",
+      "documents": "Documents"
+    },
+    "status": {
+      "taslak": "Draft",
+      "hazir": "Ready",
+      "onay_bekliyor": "Pending approval",
+      "revizyon": "Revision",
+      "arsiv": "Archived"
+    },
+    "saveLocation": {
+      "customDocs": "Personal documents",
+      "companyDocs": "Company documents"
+    },
+    "saveNotice": "Saved: {path}",
+    "continueEditingHint": "The document stays open; you can keep editing.",
+    "autosaveError": "Auto-save could not be completed.",
+    "saveErrorUnexpected": "An unexpected error occurred while saving the document.",
+    "confirmClear": "The editor content will be cleared. Continue?",
+    "tooltips": {
+      "clearPage": "Clear page",
+      "aiPanelClose": "Close AI panel",
+      "aiAssistant": "AI assistant",
+      "shareDisabled": "Save the document first",
+      "shareEnabled": "Share via QR code, link, or WhatsApp",
+      "signDisabled": "Save the document first",
+      "signEnabled": "Sign with e-signature / mobile signature"
+    },
+    "actions": {
+      "word": "Word",
+      "pdf": "PDF",
+      "share": "Share",
+      "sign": "Sign",
+      "signWithCount": "Sign ({count})",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved!"
+    },
+    "pdf": {
+      "qrAlt": "QR verification",
+      "verificationCaption": "RiskNova verification"
+    },
+    "floatingAi": {
+      "ariaOpen": "Open AI assistant",
+      "tooltip": "AI assistant",
+      "label": "AI assistant"
+    },
+    "sidebarCloseMobile": "Close AI panel",
+    "validationQr": "Verification: /share/{token}",
+    "statusBar": {
+      "words": "{count} words",
+      "chars": "{count} characters",
+      "saving": "Saving…",
+      "lastSave": "Last saved:",
+      "neverSaved": "Not saved yet"
+    },
+    "signatureDefaults": {
+      "signerName": "Signer",
+      "signerRole": "OHS specialist"
+    },
+    "toolbar": {
+      "undo": "Undo (Ctrl+Z)",
+      "redo": "Redo (Ctrl+Y)",
+      "fontSizeTitle": "Font size",
+      "fontSizeButton": "Size",
+      "insertTable": "Insert table",
+      "tableSizeHint": "Choose table size",
+      "removeColor": "Remove color",
+      "heading1": "Heading 1",
+      "heading2": "Heading 2",
+      "heading3": "Heading 3",
+      "bold": "Bold (Ctrl+B)",
+      "italic": "Italic (Ctrl+I)",
+      "underline": "Underline (Ctrl+U)",
+      "strike": "Strikethrough",
+      "textColor": "Text color",
+      "highlightColor": "Highlight color",
+      "alignLeft": "Align left",
+      "alignCenter": "Align center",
+      "alignRight": "Align right",
+      "alignJustify": "Justify",
+      "bulletList": "Bullet list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "hr": "Horizontal rule",
+      "print": "Print (Ctrl+P)"
+    },
+    "shareModal": {
+      "title": "Share document",
+      "linkTitle": "Share link",
+      "linkOn": "Anyone with the link can view",
+      "linkOff": "Sharing is off",
+      "copyLinkTitle": "Copy link",
+      "qrCaption": "Scan the QR code to open the document",
+      "otherNative": "Other"
+    },
+    "signatureModal": {
+      "title": "Sign document",
+      "canvasHint": "Draw your signature in the area below",
+      "clear": "Clear",
+      "legal": "By signing, you confirm that you have read and approve this document. Your signature will be stored digitally and the document integrity can be verified with a hash.",
+      "cancel": "Cancel",
+      "sign": "Sign and confirm",
+      "signing": "Signing…",
+      "errorAlert": "An error occurred while saving the signature."
+    },
+    "ai": {
+      "title": "AI assistant",
+      "subtitleWithCompany": "Content generation and editing for {company}",
+      "subtitleNoCompany": "Content generation and editing",
+      "quick": {
+        "fullDoc": {
+          "label": "Create full document",
+          "prompt": "Create this document professionally. Include all sections, tables, and legal references. Place company information in the content; do not leave empty placeholders."
+        },
+        "intro": {
+          "label": "Write introduction",
+          "prompt": "Write a professional introduction and purpose section for this document. Use the company name and sector."
+        },
+        "legal": {
+          "label": "Add legal basis",
+          "prompt": "Prepare a legal basis section according to Law 6331 on occupational health and safety and related regulations (adapt references to the applicable jurisdiction where relevant)."
+        },
+        "regs": {
+          "label": "Legislative references",
+          "prompt": "List all applicable legislative references for this document type."
+        }
+      },
+      "customRequestLabel": "Custom request",
+      "customRequestPlaceholder": "What would you like me to generate?",
+      "improveSelected": "Improve selected text",
+      "improveHint": "Select text in the editor, then click this button.",
+      "generating": "Generating content…",
+      "generatingMobileNote": "If the connection is slow on mobile, the system prepares a local draft so you are not left waiting.",
+      "emptyState": "Click one of the buttons above to start generating content with AI.",
+      "resultInserted": "Added to editor",
+      "resultDegraded": "Local draft",
+      "resultDefault": "AI result",
+      "copy": "Copy",
+      "degradedNotice": "The AI service ran in a protected mode. A local draft was produced; you can edit and save it.",
+      "degradedQueue": "Queue task: {taskId}",
+      "degradedQueueHint": "The request may still be processing in the background; try again shortly.",
+      "addToEditor": "Add to editor",
+      "addDegradedToEditor": "Add local draft to editor",
+      "insertedSuccess": "Content was added to the editor successfully",
+      "improveDialogTitle": "Improve text",
+      "improveSelectedLabel": "Selected text:",
+      "improveChooseType": "What kind of improvement should be applied?",
+      "improveCustomPlaceholder": "Custom improvement request…",
+      "improveTextBlockLabel": "Text to improve:",
+      "errors": {
+        "quotaDefault": "Your document AI package limit has been reached. Upgrade your plan to continue.",
+        "serviceUnavailable": "Error: the AI service is not responding. Please try again.",
+        "emptyResponseWithFallback": "The AI returned an empty response. A local draft was prepared so the action does not stall on mobile.",
+        "abortWithFallback": "The AI request timed out. A local draft was prepared so you are not left waiting on mobile.",
+        "connectionWithFallback": "A connection error occurred. A local draft was prepared so the result is not empty on mobile.",
+        "emptyResponseImprove": "The AI returned an empty response. Try selecting a shorter piece of text.",
+        "abortImprove": "The AI request timed out. Try selecting a shorter piece of text.",
+        "connectionImprove": "Connection error. Please try again.",
+        "serviceUnavailableImprove": "Error: the AI service is not responding.",
+        "quotaShort": "Your document AI package limit has been reached."
+      },
+      "improve": {
+        "professionalize": {
+          "label": "Make more professional",
+          "prompt": "Rewrite this text in professional occupational health and safety language. Use a formal, corporate tone."
+        },
+        "shorten": {
+          "label": "Shorten",
+          "prompt": "Shorten and simplify this text without losing the core meaning."
+        },
+        "detail": {
+          "label": "Add detail",
+          "prompt": "Expand this text to be more detailed and comprehensive. Fill in missing information where appropriate."
+        },
+        "legal": {
+          "label": "Add legal references",
+          "prompt": "Add relevant articles from Law 6331 and regulation references to this text (adapt to the applicable jurisdiction where relevant)."
+        }
+      },
+      "fallback": {
+        "untitled": "Document draft",
+        "sectionCompany": "Company information",
+        "tableHeaderField": "Field",
+        "tableHeaderValue": "Value",
+        "rowCompany": "Company / organization",
+        "rowSector": "Sector",
+        "rowHazard": "Hazard class",
+        "rowNace": "NACE code",
+        "rowEmployees": "Number of employees",
+        "rowDate": "Document date",
+        "placeholderCompany": "Company information to be added",
+        "placeholderSector": "Sector information to be added",
+        "placeholderHazard": "Hazard class to be added",
+        "placeholderNace": "NACE information to be added",
+        "placeholderEmployees": "Employee count to be added",
+        "sectionPurpose": "Purpose and scope",
+        "paragraphScope": "This document was prepared for {company} for use in OHS, operations, and record-keeping processes.",
+        "sectionImplementation": "Implementation principles",
+        "bullet1": "Define responsible persons and approval flow",
+        "bullet2": "Keep required records in RiskNova",
+        "bullet3": "Act in line with legal basis and company procedures",
+        "bullet4": "Report nonconformities and critical risks without delay",
+        "sectionLegal": "Legal basis",
+        "legal1": "Law 6331 on occupational health and safety (and applicable national equivalents)",
+        "legal2": "Related regulations and internal company procedures",
+        "sectionSignature": "Signature and approval",
+        "tableHeaderParty": "Party",
+        "tableHeaderName": "Name / title",
+        "tableHeaderSign": "Signature",
+        "tableHeaderDate": "Date",
+        "rowPreparer": "Prepared by",
+        "rowEmployer": "Employer / employer representative",
+        "specialistFallback": "OHS professional"
+      }
+    }
   }
 }

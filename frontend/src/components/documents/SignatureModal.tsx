@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { X, PenTool, RotateCcw, Check, Loader2 } from 'lucide-react';
 import SignaturePadLib from 'signature_pad';
 import { createSignature } from '@/lib/supabase/document-api';
@@ -19,6 +20,7 @@ interface SignatureModalProps {
 export function SignatureModal({
   isOpen, onClose, documentId, signerName, signerRole, signerUserId, contentHash, onSigned,
 }: SignatureModalProps) {
+  const t = useTranslations('documentEditor.signatureModal');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const padRef = useRef<SignaturePadLib | null>(null);
   const [signing, setSigning] = useState(false);
@@ -82,7 +84,7 @@ export function SignatureModal({
       onClose();
     } catch (err) {
       console.error('Signature error:', err);
-      alert('İmza kaydedilirken bir hata oluştu.');
+      alert(t('errorAlert'));
     } finally {
       setSigning(false);
     }
@@ -97,7 +99,7 @@ export function SignatureModal({
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--gold)]/20">
           <div className="flex items-center gap-2">
             <PenTool size={18} className="text-[var(--gold)]" />
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">Dokümanı İmzala</h3>
+            <h3 className="text-sm font-bold text-[var(--text-primary)]">{t('title')}</h3>
           </div>
           <button onClick={onClose} className="p-1 rounded-md hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)]">
             <X size={18} />
@@ -116,7 +118,7 @@ export function SignatureModal({
           {/* Signature canvas */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[11px] font-medium text-[var(--text-secondary)]">Aşağıdaki alana imzanızı atın</p>
+              <p className="text-[11px] font-medium text-[var(--text-secondary)]">{t('canvasHint')}</p>
               <button
                 onClick={handleClear}
                 className="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] hover:text-red-500 transition-colors"
@@ -136,8 +138,7 @@ export function SignatureModal({
 
           {/* Legal note */}
           <p className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
-            İmzalayarak bu dokümanın içeriğini okuduğunuzu ve onayladığınızı beyan etmiş olursunuz.
-            İmzanız dijital olarak kaydedilecek ve doküman bütünlüğü hash ile doğrulanabilecektir.
+            {t('legal')}
           </p>
 
           {/* Actions */}
@@ -146,7 +147,7 @@ export function SignatureModal({
               onClick={onClose}
               className="flex-1 px-4 py-2.5 text-xs font-medium border border-[var(--gold)]/20 rounded-lg text-[var(--text-secondary)] hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
-              İptal
+              {t('cancel')}
             </button>
             <button
               onClick={handleSign}
@@ -154,7 +155,7 @@ export function SignatureModal({
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium bg-[var(--gold)] text-white rounded-lg hover:bg-[var(--gold-hover)] transition-colors disabled:opacity-50"
             >
               {signing ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
-              {signing ? 'İmzalanıyor...' : 'İmzala ve Onayla'}
+              {signing ? t('signing') : t('sign')}
             </button>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import type { Editor } from '@tiptap/react';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   AlertTriangle,
   BookOpen,
@@ -19,6 +20,7 @@ import {
   Wand2,
   X,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { markdownToTipTapJSON } from '@/lib/markdown-to-tiptap';
 
 interface CompanyDataForAI {
@@ -55,58 +57,73 @@ type DocumentAiResponse = {
   };
 };
 
-const QUICK_PROMPTS = [
-  {
-    icon: Wand2,
-    label: 'Tam Dokuman Olustur',
-    prompt:
-      'Bu dokumani profesyonelce olustur. Tum bolumleri, tabloları ve yasal referanslari ekle. Firma bilgilerini icerige yerlestir, bos alan birakma.',
-    primary: true,
-  },
-  {
-    icon: FileText,
-    label: 'Giris Bolumu Yaz',
-    prompt: 'Bu dokuman icin profesyonel bir giris ve amac bolumu yaz. Firma adini ve sektorunu kullan.',
-  },
-  {
-    icon: AlertTriangle,
-    label: 'Yasal Dayanak Ekle',
-    prompt: '6331 sayili kanun ve ilgili yonetmeliklere gore yasal dayanak bolumu hazirla.',
-  },
-  {
-    icon: BookOpen,
-    label: 'Mevzuat Referanslari',
-    prompt: 'Bu dokuman turu icin gecerli tum mevzuat referanslarini listele.',
-  },
-] as const satisfies ReadonlyArray<{
-  icon: typeof Wand2;
-  label: string;
-  prompt: string;
-  primary?: boolean;
-}>;
+const QUICK_KEYS = ['fullDoc', 'intro', 'legal', 'regs'] as const;
+const QUICK_ICONS: Record<(typeof QUICK_KEYS)[number], LucideIcon> = {
+  fullDoc: Wand2,
+  intro: FileText,
+  legal: AlertTriangle,
+  regs: BookOpen,
+};
 
-const IMPROVE_OPTIONS = [
-  {
-    icon: Wand2,
-    label: 'Professionellestir',
-    prompt: 'Bu metni profesyonel ISG dili ile yeniden yaz. Resmi ve kurumsal ton kullan.',
+const IMPROVE_KEYS = ['professionalize', 'shorten', 'detail', 'legal'] as const;
+const IMPROVE_ICONS: Record<(typeof IMPROVE_KEYS)[number], LucideIcon> = {
+  professionalize: Wand2,
+  shorten: Scissors,
+  detail: Maximize2,
+  legal: Scale,
+};
+
+function buildClientFallbackDocument(
+  tf: (key: string, values?: Record<string, string>) => string,
+  params: {
+    documentTitle: string;
+    companyName: string;
+    companyData?: CompanyDataForAI;
+    today: string;
   },
-  {
-    icon: Scissors,
-    label: 'Kisalt',
-    prompt: 'Bu metni ozunu bozmadan kisalt ve sadeleştir.',
-  },
-  {
-    icon: Maximize2,
-    label: 'Detaylandir',
-    prompt: 'Bu metni daha detayli ve kapsamli hale getir. Eksik bilgileri tamamla.',
-  },
-  {
-    icon: Scale,
-    label: 'Yasal Referans Ekle',
-    prompt: 'Bu metne ilgili 6331 sayili kanun maddeleri ve yonetmelik referanslarini ekle.',
-  },
-] as const;
+) {
+  const { documentTitle, companyName, companyData, today } = params;
+  const effectiveCompany = companyName || tf('placeholderCompany');
+
+  return [
+    `# ${documentTitle || tf('untitled')}`,
+    '',
+    `## ${tf('sectionCompany')}`,
+    '',
+    `| ${tf('tableHeaderField')} | ${tf('tableHeaderValue')} |`,
+    '| --- | --- |',
+    `| ${tf('rowCompany')} | ${effectiveCompany} |`,
+    `| ${tf('rowSector')} | ${companyData?.sector || tf('placeholderSector')} |`,
+    `| ${tf('rowHazard')} | ${companyData?.hazard_class || tf('placeholderHazard')} |`,
+    `| ${tf('rowNace')} | ${companyData?.nace_code || tf('placeholderNace')} |`,
+    `| ${tf('rowEmployees')} | ${companyData?.employee_count != null ? String(companyData.employee_count) : tf('placeholderEmployees')} |`,
+    `| ${tf('rowDate')} | ${today} |`,
+    '',
+    `## ${tf('sectionPurpose')}`,
+    '',
+    tf('paragraphScope', { company: effectiveCompany }),
+    '',
+    `## ${tf('sectionImplementation')}`,
+    '',
+    `- ${tf('bullet1')}`,
+    `- ${tf('bullet2')}`,
+    `- ${tf('bullet3')}`,
+    `- ${tf('bullet4')}`,
+    '',
+    `## ${tf('sectionLegal')}`,
+    '',
+    `- ${tf('legal1')}`,
+    `- ${tf('legal2')}`,
+    '',
+    `## ${tf('sectionSignature')}`,
+    '',
+    `| ${tf('tableHeaderParty')} | ${tf('tableHeaderName')} | ${tf('tableHeaderSign')} | ${tf('tableHeaderDate')} |`,
+    '| --- | --- | --- | --- |',
+    `| ${tf('rowPreparer')} | ${companyData?.specialist_name || tf('specialistFallback')} |  | ${today} |`,
+    `| ${tf('rowEmployer')} |  |  |  |`,
+    '',
+  ].join('\n');
+}
 
 function extractContent(data: DocumentAiResponse) {
   return data.content || data.analysis || data.response || '';
@@ -114,58 +131,6 @@ function extractContent(data: DocumentAiResponse) {
 
 function extractAiMessage(data: DocumentAiResponse, fallbackMessage: string) {
   return data.message || data.error || fallbackMessage;
-}
-
-function buildClientFallbackDocument({
-  documentTitle,
-  companyName,
-  companyData,
-}: {
-  documentTitle: string;
-  companyName: string;
-  companyData?: CompanyDataForAI;
-}) {
-  const today = new Date().toLocaleDateString('tr-TR');
-  const effectiveCompany = companyName || 'Firma bilgisi eklenecek';
-
-  return [
-    `# ${documentTitle || 'Dokuman Taslagi'}`,
-    '',
-    '## Firma Bilgileri',
-    '',
-    '| Alan | Bilgi |',
-    '| --- | --- |',
-    `| Firma / Kurum | ${effectiveCompany} |`,
-    `| Sektor | ${companyData?.sector || 'Sektor bilgisi eklenecek'} |`,
-    `| Tehlike Sinifi | ${companyData?.hazard_class || 'Tehlike sinifi eklenecek'} |`,
-    `| NACE Kodu | ${companyData?.nace_code || 'NACE bilgisi eklenecek'} |`,
-    `| Calisan Sayisi | ${companyData?.employee_count || 'Calisan sayisi eklenecek'} |`,
-    `| Dokuman Tarihi | ${today} |`,
-    '',
-    '## Amac ve Kapsam',
-    '',
-    `Bu dokuman ${effectiveCompany} icin ISG, operasyon ve kayit sureclerinde kullanilmak uzere hazirlanmistir.`,
-    '',
-    '## Uygulama Esaslari',
-    '',
-    '- Sorumlu kisiler ve onay akisinin belirlenmesi',
-    '- Gerekli kayitlarin RiskNova uzerinde tutulmasi',
-    '- Yasal dayanak ve firma prosedurlerine uygun hareket edilmesi',
-    '- Uygunsuzluklarin ve kritik risklerin gecikmeden raporlanmasi',
-    '',
-    '## Yasal Dayanak',
-    '',
-    '- 6331 sayili Is Sagligi ve Guvenligi Kanunu',
-    '- Ilgili yonetmelikler ve firma ic prosedurleri',
-    '',
-    '## Imza ve Onay',
-    '',
-    '| Taraf | Ad Soyad / Unvan | Imza | Tarih |',
-    '| --- | --- | --- | --- |',
-    `| Hazirlayan | ${companyData?.specialist_name || 'ISG Profesyoneli'} |  | ${today} |`,
-    '| Isveren / Isveren Vekili |  |  |  |',
-    '',
-  ].join('\n');
 }
 
 async function readDocumentAiResponse(response: Response) {
@@ -179,6 +144,11 @@ export function AIAssistantPanel({
   companyName,
   companyData,
 }: AIAssistantPanelProps) {
+  const locale = useLocale();
+  const t = useTranslations('documentEditor.ai');
+  const tf = useTranslations('documentEditor.ai.fallback');
+  const tim = useTranslations('documentEditor.ai.improve');
+  const terr = useTranslations('documentEditor.ai.errors');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [degraded, setDegraded] = useState(false);
@@ -268,10 +238,11 @@ export function AIAssistantPanel({
 
   const applyClientFallback = useCallback(
     (message: string, autoInsert: boolean) => {
-      const fallbackContent = buildClientFallbackDocument({
+      const fallbackContent = buildClientFallbackDocument(tf, {
         documentTitle,
         companyName,
         companyData,
+        today: new Date().toLocaleDateString(locale),
       });
 
       setDegraded(true);
@@ -282,7 +253,7 @@ export function AIAssistantPanel({
         insertToEditor(fallbackContent);
       }
     },
-    [companyData, companyName, documentTitle, insertToEditor],
+    [companyData, companyName, documentTitle, insertToEditor, tf, locale],
   );
 
   const requestDocumentAi = useCallback(
@@ -324,13 +295,13 @@ export function AIAssistantPanel({
               ? data.message
               : typeof data.error === "string"
                 ? data.error
-                : "Dokuman AI paket limitiniz doldu. Paketinizi yukselterek devam edebilirsiniz.";
+                : terr('quotaDefault');
           setResult(quotaMsg);
           return;
         }
         const fallbackContent = applyAiError(
           data,
-          'Hata: AI servisi su anda yanit veremiyor. Lutfen tekrar deneyin.',
+          terr('serviceUnavailable'),
         );
         if (autoInsert && fallbackContent) {
           insertToEditor(fallbackContent);
@@ -346,14 +317,12 @@ export function AIAssistantPanel({
         insertToEditor(content);
       }
       if (!content) {
-        applyClientFallback('AI servisi bos yanit verdi. Mobilde islemin yarida kalmamasi icin yerel taslak hazirlandi.', autoInsert);
+        applyClientFallback(terr('emptyResponseWithFallback'), autoInsert);
       }
     } catch (error) {
       const isAbort = error instanceof DOMException && error.name === 'AbortError';
       applyClientFallback(
-        isAbort
-          ? 'AI istegi zaman asimina ugradi. Mobilde beklemede kalmamasi icin yerel taslak hazirlandi.'
-          : 'Baglanti hatasi olustu. Mobilde islemin bos kalmamasi icin yerel taslak hazirlandi.',
+        isAbort ? terr('abortWithFallback') : terr('connectionWithFallback'),
         autoInsert,
       );
     } finally {
@@ -371,7 +340,7 @@ export function AIAssistantPanel({
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 75000);
 
-    const fullPrompt = `${improvePrompt}\n\nIyilestirilecek metin:\n"${savedSelection.text}"`;
+    const fullPrompt = `${improvePrompt}\n\n${t('improveTextBlockLabel')}\n"${savedSelection.text}"`;
 
     try {
       const { response: res, data } = await requestDocumentAi(fullPrompt, controller.signal);
@@ -385,11 +354,11 @@ export function AIAssistantPanel({
               ? data.message
               : typeof data.error === "string"
                 ? data.error
-                : "Dokuman AI paket limitiniz doldu.",
+                : terr('quotaShort'),
           );
           return;
         }
-        applyAiError(data, 'Hata: AI servisi su anda yanit veremiyor.');
+        applyAiError(data, terr('serviceUnavailableImprove'));
         return;
       }
 
@@ -402,14 +371,12 @@ export function AIAssistantPanel({
         replaceSelection(content, savedSelection.from, savedSelection.to);
         setInserted(true);
       } else {
-        setResult('AI servisi bos yanit verdi. Lutfen daha kisa bir metin secip tekrar deneyin.');
+        setResult(terr('emptyResponseImprove'));
       }
     } catch (error) {
       const isAbort = error instanceof DOMException && error.name === 'AbortError';
       setResult(
-        isAbort
-          ? 'AI istegi zaman asimina ugradi. Lutfen daha kisa bir metin secip tekrar deneyin.'
-          : 'Baglanti hatasi. Lutfen tekrar deneyin.',
+        isAbort ? terr('abortImprove') : terr('connectionImprove'),
       );
     } finally {
       window.clearTimeout(timeout);
@@ -429,36 +396,37 @@ export function AIAssistantPanel({
       <div className="border-b border-[var(--gold)]/25 bg-gradient-to-r from-[var(--gold)]/14 to-transparent px-4 py-3">
         <div className="flex items-center gap-2">
           <Sparkles size={16} className="text-[var(--gold)]" />
-          <h3 className="text-sm font-bold text-[var(--text-primary)]">AI Asistan</h3>
+          <h3 className="text-sm font-bold text-[var(--text-primary)]">{t('title')}</h3>
         </div>
         <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
-          {companyName ? `${companyName} icin ` : ''}icerik uretimi ve duzenleme
+          {companyName ? t('subtitleWithCompany', { company: companyName }) : t('subtitleNoCompany')}
         </p>
       </div>
 
       <div className="space-y-2 border-b border-[var(--gold)]/20 px-4 py-3">
-        {QUICK_PROMPTS.map((prompt) => {
-          const Icon = prompt.icon;
+        {QUICK_KEYS.map((key) => {
+          const Icon = QUICK_ICONS[key];
+          const isPrimary = key === 'fullDoc';
           return (
             <button
-              key={prompt.label}
-              onClick={() => void generateContent(prompt.prompt, true)}
+              key={key}
+              onClick={() => void generateContent(t(`quick.${key}.prompt`), true)}
               disabled={loading}
               className={`w-full rounded-lg px-3 py-2 text-xs font-semibold transition-colors disabled:cursor-wait disabled:opacity-70 ${
-                ("primary" in prompt && prompt.primary)
+                isPrimary
                   ? 'flex items-center gap-2 bg-[var(--gold)] text-[var(--primary-foreground)] shadow-sm shadow-[var(--gold-glow)] hover:bg-[var(--gold-hover)]'
                   : 'flex items-center gap-2 border border-[var(--gold)]/30 bg-[var(--gold)]/6 text-[var(--text-primary)] hover:border-[var(--gold)]/60 hover:bg-[var(--gold)]/14'
               }`}
             >
               <Icon size={14} />
-              {prompt.label}
+              {t(`quick.${key}.label`)}
             </button>
           );
         })}
       </div>
 
       <div className="border-b border-[var(--gold)]/20 px-4 py-3">
-        <label className="mb-1.5 block text-[11px] font-medium text-[var(--text-secondary)]">Ozel Istek</label>
+        <label className="mb-1.5 block text-[11px] font-medium text-[var(--text-secondary)]">{t('customRequestLabel')}</label>
         <div className="flex gap-2">
           <input
             value={customPrompt}
@@ -468,7 +436,7 @@ export function AIAssistantPanel({
                 handleCustomPrompt();
               }
             }}
-            placeholder="Ne uretmemi istersiniz?"
+            placeholder={t('customRequestPlaceholder')}
             className="flex-1 rounded-lg border border-[var(--gold)]/30 bg-[var(--bg-primary)] px-2.5 py-2 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)]"
           />
           <button
@@ -500,14 +468,14 @@ export function AIAssistantPanel({
           }`}
         >
           <Wand2 size={13} />
-          Secili Metni Iyilestir
+          {t('improveSelected')}
           {savedSelection ? (
             <span className="ml-auto max-w-[120px] truncate text-[10px] text-[var(--gold)]/70">
               &ldquo;{savedSelection.text.slice(0, 25)}...&rdquo;
             </span>
           ) : null}
         </button>
-        <p className="mt-1 text-[10px] text-[var(--text-secondary)]">Editorde metin secip bu butonu tiklayin.</p>
+        <p className="mt-1 text-[10px] text-[var(--text-secondary)]">{t('improveHint')}</p>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-3">
@@ -515,10 +483,10 @@ export function AIAssistantPanel({
           <div className="rounded-xl border border-[var(--gold)]/25 bg-[var(--gold)]/8 px-3 py-6">
             <div className="flex items-center justify-center gap-2">
             <RotateCcw size={16} className="animate-spin text-[var(--gold)]" />
-            <span className="text-sm text-[var(--text-secondary)]">Icerik olusturuluyor...</span>
+            <span className="text-sm text-[var(--text-secondary)]">{t('generating')}</span>
             </div>
             <p className="mt-2 text-center text-[11px] leading-5 text-[var(--text-secondary)]">
-              Mobilde baglanti uzarsa sistem beklemede kalmaz; otomatik yerel taslak hazirlar.
+              {t('generatingMobileNote')}
             </p>
           </div>
         ) : null}
@@ -526,11 +494,7 @@ export function AIAssistantPanel({
         {!loading && !result ? (
           <div className="py-8 text-center">
             <Sparkles size={28} className="mx-auto mb-3 text-[var(--gold)]/55" />
-            <p className="text-xs text-[var(--text-secondary)]">
-              Yukaridaki butonlardan birini tiklayarak
-              <br />
-              AI ile icerik olusturmaya baslayin.
-            </p>
+            <p className="text-xs text-[var(--text-secondary)]">{t('emptyState')}</p>
           </div>
         ) : null}
 
@@ -546,7 +510,7 @@ export function AIAssistantPanel({
                       : 'text-[var(--gold)]'
                 }`}
               >
-                {inserted ? 'Editora Eklendi' : degraded ? 'Yerel Taslak' : 'AI Sonucu'}
+                {inserted ? t('resultInserted') : degraded ? t('resultDegraded') : t('resultDefault')}
               </span>
               <button
                 onClick={() => {
@@ -557,7 +521,7 @@ export function AIAssistantPanel({
                 className="flex items-center gap-1 text-[10px] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
               >
                 {copied ? <Check size={10} /> : <Copy size={10} />}
-                Kopyala
+                {t('copy')}
               </button>
             </div>
 
@@ -575,10 +539,8 @@ export function AIAssistantPanel({
 
             {degraded ? (
               <div className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-800 dark:border-amber-800/40 dark:bg-amber-950/20 dark:text-amber-200">
-                AI servisi gecici olarak korumali modda calisti. Yerel taslak uretildi; duzenleyip kaydedebilirsiniz.
-                {queueTaskId
-                  ? ` Kuyruk gorevi: ${queueTaskId}`
-                  : ' Istek arka planda isleniyor olabilir; kisa sure sonra tekrar deneyin.'}
+                {t('degradedNotice')}
+                {queueTaskId ? ` ${t('degradedQueue', { taskId: queueTaskId })}` : ` ${t('degradedQueueHint')}`}
               </div>
             ) : null}
 
@@ -588,14 +550,14 @@ export function AIAssistantPanel({
                 className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--gold)] px-3 py-2 text-xs font-semibold text-[var(--primary-foreground)] transition-colors hover:bg-[var(--gold-hover)]"
               >
                 <FileText size={14} />
-                {degraded ? 'Yerel Taslagi Editore Ekle' : 'Editore Ekle'}
+                {degraded ? t('addDegradedToEditor') : t('addToEditor')}
               </button>
             ) : null}
 
             {inserted ? (
               <div className="mt-2 flex items-center justify-center gap-1.5 py-1.5 text-xs text-green-600 dark:text-green-400">
                 <CheckCircle2 size={13} />
-                Icerik editore basariyla eklendi
+                {t('insertedSuccess')}
               </div>
             ) : null}
           </div>
@@ -608,7 +570,7 @@ export function AIAssistantPanel({
             <div className="flex items-center justify-between border-b border-[var(--gold)]/20 px-4 py-3">
               <div className="flex items-center gap-2">
                 <Wand2 size={16} className="text-[var(--gold)]" />
-                <h3 className="text-sm font-bold text-[var(--text-primary)]">Metni Iyilestir</h3>
+                <h3 className="text-sm font-bold text-[var(--text-primary)]">{t('improveDialogTitle')}</h3>
               </div>
               <button
                 onClick={() => {
@@ -622,24 +584,24 @@ export function AIAssistantPanel({
             </div>
 
             <div className="px-4 py-3">
-              <p className="mb-1 text-[11px] text-[var(--text-secondary)]">Secili metin:</p>
+              <p className="mb-1 text-[11px] text-[var(--text-secondary)]">{t('improveSelectedLabel')}</p>
               <p className="mb-4 max-h-[80px] overflow-y-auto rounded-lg bg-[var(--gold)]/5 p-2 text-xs italic text-[var(--text-primary)]">
                 &ldquo;{savedSelection.text.slice(0, 200)}
                 {savedSelection.text.length > 200 ? '...' : ''}&rdquo;
               </p>
 
-              <p className="mb-2 text-[11px] font-medium text-[var(--text-secondary)]">Ne tur iyilestirme yapilsin?</p>
+              <p className="mb-2 text-[11px] font-medium text-[var(--text-secondary)]">{t('improveChooseType')}</p>
               <div className="space-y-1.5">
-                {IMPROVE_OPTIONS.map((option) => {
-                  const Icon = option.icon;
+                {IMPROVE_KEYS.map((key) => {
+                  const Icon = IMPROVE_ICONS[key];
                   return (
                     <button
-                      key={option.label}
-                      onClick={() => void generateImprovement(option.prompt)}
+                      key={key}
+                      onClick={() => void generateImprovement(tim(`${key}.prompt`))}
                       className="flex w-full items-center gap-2 rounded-lg border border-[var(--gold)]/20 px-3 py-2 text-xs font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--gold)]/40 hover:bg-[var(--gold)]/10"
                     >
                       <Icon size={13} className="text-[var(--gold)]" />
-                      {option.label}
+                      {tim(`${key}.label`)}
                     </button>
                   );
                 })}
@@ -656,7 +618,7 @@ export function AIAssistantPanel({
                         setCustomImprovePrompt('');
                       }
                     }}
-                    placeholder="Ozel iyilestirme istegi..."
+                    placeholder={t('improveCustomPlaceholder')}
                     className="flex-1 rounded-lg border border-[var(--gold)]/20 bg-white px-2.5 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)] dark:bg-[#0f172a]"
                   />
                   <button

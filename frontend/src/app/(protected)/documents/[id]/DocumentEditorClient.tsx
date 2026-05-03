@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef, use } from 'react';
+import { useState, useEffect, useCallback, useRef, use, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table';
@@ -16,7 +16,7 @@ import {
   ArrowLeft, Save, Download, ChevronRight,
   CheckCircle2, RotateCcw,
   PanelRightOpen, PanelRightClose,
-  FileText, Clock, FileEdit, AlertCircle,
+  FileText, Clock, FileEdit, AlertCircle, Archive,
   ZoomIn, Trash2, Share2, PenTool, X, Sparkles,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -38,13 +38,6 @@ import { SignatureModal } from '@/components/documents/SignatureModal';
 import QRCode from 'qrcode';
 import type { JSONContent } from '@tiptap/react';
 import { consumeExportQuotaClient } from '@/lib/billing/export-quota-client';
-
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: LucideIcon }> = {
-  taslak: { label: 'Taslak', color: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400', icon: FileEdit },
-  hazir: { label: 'Hazır', color: 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle2 },
-  onay_bekliyor: { label: 'Onay Bekliyor', color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400', icon: Clock },
-  revizyon: { label: 'Revizyon', color: 'text-orange-600 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400', icon: AlertCircle },
-};
 
 function normalizeDocumentLookup(value: string) {
   return value
@@ -85,6 +78,8 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const locale = useLocale();
+  const t = useTranslations('documentEditor');
+  const tGroups = useTranslations('isgLibrary.documentCatalog.groups');
   const resolvedParams = paramsPromise ? use(paramsPromise) : null;
   const documentId = resolvedParams?.id;
 
@@ -100,7 +95,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
 
   // State
   const [doc, setDoc] = useState<DocumentRecord | null>(null);
-  const [title, setTitle] = useState(qTitle || 'Yeni Doküman');
+  const [title, setTitle] = useState(qTitle || t('defaultTitle'));
   const [groupKey, setGroupKey] = useState(qGroup || '');
   const [status, setStatus] = useState<DocumentRecord['status']>('taslak');
   const [saving, setSaving] = useState(false);
@@ -149,7 +144,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
       TableRow,
       TableCell,
       TableHeader,
-      Placeholder.configure({ placeholder: 'Doküman içeriğini buraya yazın...' }),
+      Placeholder.configure({ placeholder: t('editorPlaceholder') }),
       Highlight.configure({ multicolor: true }),
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Underline,
@@ -177,7 +172,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
         class: 'focus:outline-none min-h-[800px]',
       },
     },
-  });
+  }, [locale, t]);
 
   // Set initial content when loaded
   useEffect(() => {
@@ -323,21 +318,19 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
       setSaveError(null);
     } catch (err) {
       console.error('Auto-save error:', err);
-      setSaveError(err instanceof Error ? err.message : 'Otomatik kayit tamamlanamadi.');
+      setSaveError(err instanceof Error ? err.message : t('autosaveError'));
     } finally {
       setSaving(false);
     }
-  }, [orgId, doc, title, status]);
+  }, [orgId, doc, title, status, t]);
 
   const getSaveLocationLabel = useCallback(() => {
-    const currentGroup = getGroupByKey(groupKey);
+    const scope = qMode === 'custom' ? t('saveLocation.customDocs') : t('saveLocation.companyDocs');
+    const grp =
+      groupKey && getGroupByKey(groupKey) ? tGroups(`${groupKey}.title` as never) || getGroupByKey(groupKey)?.title : null;
 
-    return [
-      qMode === "custom" ? "Kisisel dokumanlar" : "Firma dokumanlari",
-      companyData.official_name || null,
-      currentGroup?.title || groupKey || null,
-    ].filter(Boolean).join(" / ");
-  }, [companyData.official_name, groupKey, qMode]);
+    return [scope, companyData.official_name || null, grp].filter(Boolean).join(' / ');
+  }, [companyData.official_name, groupKey, qMode, t, tGroups]);
 
   // Manual save
   const handleSave = useCallback(async () => {
@@ -392,7 +385,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
       }
       setLastSavedAt(new Date());
       setSaved(true);
-      setSaveNotice(`Kaydedildi: ${getSaveLocationLabel() || title}`);
+      setSaveNotice(t('saveNotice', { path: getSaveLocationLabel() || title }));
       setHasUnsavedChanges(false);
       setTimeout(() => {
         setSaved(false);
@@ -400,13 +393,11 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
       }, 4500);
     } catch (err) {
       console.error('Save error:', err);
-      setSaveError(
-        err instanceof Error ? err.message : 'Dokuman kaydi sirasinda beklenmeyen bir hata olustu.',
-      );
+      setSaveError(err instanceof Error ? err.message : t('saveErrorUnexpected'));
     } finally {
       setSaving(false);
     }
-  }, [orgId, editor, doc, title, status, groupKey, userId, companyData, qCompanyId, fromLibrary, librarySection, workspaceId, qMode, getSaveLocationLabel]);
+  }, [orgId, editor, doc, title, status, groupKey, userId, companyData, qCompanyId, fromLibrary, librarySection, workspaceId, qMode, getSaveLocationLabel, t]);
 
   const consumeExportQuota = useCallback(async (): Promise<boolean> => {
     const result = await consumeExportQuotaClient();
@@ -449,6 +440,9 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
+    const pdfDate = new Date().toLocaleDateString(locale);
+    const pdfQrCaption = t('pdf.verificationCaption');
+
     printWindow.document.write(`<!DOCTYPE html>
 <html><head><title>${title}</title>
 <style>
@@ -481,15 +475,14 @@ ${content}
 <div class="footer">
   <div>
     <span>${title}</span><br/>
-    <span>${new Date().toLocaleDateString('tr-TR')}</span>
+    <span>${pdfDate}</span>
   </div>
-  ${qrDataUrl ? `<div class="qr-section"><img src="${qrDataUrl}" alt="QR"/><p>RiskNova Doğrulama</p></div>` : ''}
+  ${qrDataUrl ? `<div class="qr-section"><img src="${qrDataUrl}" alt=""/><p>${pdfQrCaption}</p></div>` : ''}
 </div>
 <script>setTimeout(()=>window.print(),500)<\/script>
 </body></html>`);
     printWindow.document.close();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor, title, companyData, consumeExportQuota]);
+  }, [editor, title, companyData, consumeExportQuota, locale, t, qrDataUrl]);
 
   useEffect(() => {
     if (!qDownload || !editor || loading || autoDownloadTriggeredRef.current) return;
@@ -510,6 +503,27 @@ ${content}
     void runDownload();
   }, [editor, handleExport, handlePdfExport, loading, qDownload]);
 
+  const statusConfigMap = useMemo(
+    () =>
+      ({
+        taslak: { label: t('status.taslak'), color: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400', icon: FileEdit },
+        hazir: { label: t('status.hazir'), color: 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle2 },
+        onay_bekliyor: {
+          label: t('status.onay_bekliyor'),
+          color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400',
+          icon: Clock,
+        },
+        revizyon: { label: t('status.revizyon'), color: 'text-orange-600 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400', icon: AlertCircle },
+        arsiv: { label: t('status.arsiv'), color: 'text-slate-600 bg-slate-100 dark:bg-slate-900/30 dark:text-slate-400', icon: Archive },
+      }) satisfies Record<string, { label: string; color: string; icon: LucideIcon }>,
+    [t],
+  );
+  const statusCfg = statusConfigMap[status] || statusConfigMap.taslak;
+  const StatusIcon = statusCfg.icon;
+  const group = getGroupByKey(groupKey);
+  const groupTitleTranslated =
+    group && groupKey ? tGroups(`${groupKey}.title` as never) || group.title : '';
+
   const documentsBackParams = new URLSearchParams();
   if (groupKey || qGroup) {
     documentsBackParams.set('group', groupKey || qGroup);
@@ -524,17 +538,12 @@ ${content}
   const documentsBackHref = `/documents${documentsBackParams.toString() ? `?${documentsBackParams.toString()}` : ''}`;
   const libraryBackHref = `/isg-library?category=${librarySection}`;
 
-
-  const group = getGroupByKey(groupKey);
-  const statusCfg = STATUS_CONFIG[status] || STATUS_CONFIG.taslak;
-  const StatusIcon = statusCfg.icon;
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
         <div className="text-center">
           <div className="w-10 h-10 border-2 border-[var(--gold)] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-sm text-[var(--text-secondary)]">Doküman yükleniyor...</p>
+          <p className="text-sm text-[var(--text-secondary)]">{t('loading')}</p>
         </div>
       </div>
     );
@@ -559,10 +568,10 @@ ${content}
               className="hover:text-[var(--text-primary)] cursor-pointer shrink-0"
               onClick={() => router.push(fromLibrary ? libraryBackHref : documentsBackHref)}
             >
-              {fromLibrary ? 'Kütüphaneye Dön' : 'Dokümanlar'}
+              {fromLibrary ? t('breadcrumb.backToLibrary') : t('breadcrumb.documents')}
             </span>
             <ChevronRight size={12} className="opacity-40 shrink-0" />
-            {group && <span className="shrink-0">{group.title}</span>}
+            {group && <span className="shrink-0">{groupTitleTranslated}</span>}
             {group && <ChevronRight size={12} className="opacity-40 shrink-0" />}
           </nav>
           <input
@@ -570,7 +579,7 @@ ${content}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="text-sm font-semibold text-[var(--text-primary)] bg-transparent border-none outline-none min-w-0 flex-1 truncate"
-            placeholder="Doküman başlığı..."
+            placeholder={t('titlePlaceholder')}
           />
         </div>
 
@@ -587,16 +596,17 @@ ${content}
             onChange={(e) => setStatus(e.target.value as DocumentRecord['status'])}
             className="text-xs px-1.5 py-1 rounded border border-[var(--card-border)] bg-transparent text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)]"
           >
-            <option value="taslak">Taslak</option>
-            <option value="hazir">Hazır</option>
-            <option value="onay_bekliyor">Onay Bekliyor</option>
-            <option value="revizyon">Revizyon</option>
+            <option value="taslak">{t('status.taslak')}</option>
+            <option value="hazir">{t('status.hazir')}</option>
+            <option value="onay_bekliyor">{t('status.onay_bekliyor')}</option>
+            <option value="revizyon">{t('status.revizyon')}</option>
+            <option value="arsiv">{t('status.arsiv')}</option>
           </select>
 
           <button
             onClick={() => setShowSidebar(!showSidebar)}
             className="p-1.5 rounded-md text-[var(--text-secondary)] transition-colors hover:bg-[var(--gold)]/10 hover:text-[var(--gold)]"
-            title={showSidebar ? 'AI Paneli Kapat' : 'AI Asistan'}
+            title={showSidebar ? t('tooltips.aiPanelClose') : t('tooltips.aiAssistant')}
           >
             {showSidebar ? <PanelRightClose size={16} /> : <PanelRightOpen size={16} />}
           </button>
@@ -605,13 +615,13 @@ ${content}
             onClick={() => {
               if (!editor) return;
               if (editor.state.doc.textContent.trim().length === 0) return;
-              if (window.confirm('Editör içeriği temizlenecek. Emin misiniz?')) {
+              if (window.confirm(t('confirmClear'))) {
                 editor.commands.clearContent();
                 setHasUnsavedChanges(false);
               }
             }}
             className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-[var(--text-secondary)] hover:text-red-500"
-            title="Sayfayı Temizle"
+            title={t('tooltips.clearPage')}
           >
             <Trash2 size={14} />
           </button>
@@ -622,20 +632,20 @@ ${content}
             className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium border border-[var(--gold)]/35 rounded-md hover:bg-[var(--gold)]/10 transition-colors text-[var(--text-primary)] disabled:opacity-50"
           >
             <Download size={13} />
-            {exporting ? '...' : 'Word'}
+            {exporting ? '...' : t('actions.word')}
           </button>
           <button
             onClick={handlePdfExport}
             className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium border border-[var(--gold)]/35 rounded-md hover:bg-[var(--gold)]/10 transition-colors text-[var(--text-primary)]"
           >
             <FileText size={13} />
-            PDF
+            {t('actions.pdf')}
           </button>
 
           <button
             onClick={() => doc && setShowShareModal(true)}
             disabled={!doc}
-            title={!doc ? 'Önce dokümanı kaydedin' : 'QR Kod, Link, WhatsApp ile paylaş'}
+            title={!doc ? t('tooltips.shareDisabled') : t('tooltips.shareEnabled')}
             className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium border rounded-md transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
               doc?.is_shared
                 ? 'border-green-300 text-green-600 bg-green-50 dark:bg-green-900/20 dark:border-green-800'
@@ -643,13 +653,13 @@ ${content}
             }`}
           >
             <Share2 size={13} />
-            Paylaş
+            {t('actions.share')}
           </button>
 
           <button
             onClick={() => doc && setShowSignModal(true)}
             disabled={!doc}
-            title={!doc ? 'Önce dokümanı kaydedin' : 'E-İmza / Mobil İmza ile imzala'}
+            title={!doc ? t('tooltips.signDisabled') : t('tooltips.signEnabled')}
             className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium border rounded-md transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
               signatures.length > 0
                 ? 'border-blue-300 text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800'
@@ -657,7 +667,7 @@ ${content}
             }`}
           >
             <PenTool size={13} />
-            İmzala {signatures.length > 0 && `(${signatures.length})`}
+            {signatures.length > 0 ? t('actions.signWithCount', { count: signatures.length }) : t('actions.sign')}
           </button>
 
           <button
@@ -666,7 +676,7 @@ ${content}
             className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold bg-[var(--gold)] text-[var(--primary-foreground)] rounded-md hover:bg-[var(--gold-hover)] transition-colors disabled:opacity-60"
           >
             {saving ? <RotateCcw size={13} className="animate-spin" /> : saved ? <CheckCircle2 size={13} /> : <Save size={13} />}
-            {saving ? 'Kaydediliyor...' : saved ? 'Kaydedildi!' : 'Kaydet'}
+            {saving ? t('actions.saving') : saved ? t('actions.saved') : t('actions.save')}
           </button>
         </div>
       </div>
@@ -688,7 +698,7 @@ ${content}
             {saveNotice}
           </span>
           <span className="text-xs text-[var(--text-secondary)]">
-            Belge acik kaldi; duzenlemeye devam edebilirsiniz.
+            {t('continueEditingHint')}
           </span>
         </div>
       ) : null}
@@ -709,10 +719,10 @@ ${content}
             {editor && <EditorContent editor={editor} />}
             {/* QR Code — sağ alt köşe */}
             {qrDataUrl && doc && (
-              <div className="absolute bottom-6 right-6 flex flex-col items-center gap-1 opacity-70 hover:opacity-100 transition-opacity print:opacity-100" title={`Doğrulama: /share/${doc.share_token}`}>
+              <div className="absolute bottom-6 right-6 flex flex-col items-center gap-1 opacity-70 hover:opacity-100 transition-opacity print:opacity-100" title={t('validationQr', { token: doc.share_token || '' })}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={qrDataUrl} alt="QR Doğrulama" className="w-16 h-16 rounded" />
-                <span className="text-[7px] text-gray-400 font-mono">RiskNova Doğrulama</span>
+                <img src={qrDataUrl} alt={t('pdf.qrAlt')} className="w-16 h-16 rounded" />
+                <span className="text-[7px] text-gray-400 font-mono">{t('pdf.verificationCaption')}</span>
               </div>
             )}
           </div>
@@ -737,7 +747,7 @@ ${content}
                 type="button"
                 onClick={() => setShowSidebar(false)}
                 className="absolute right-2 top-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-md text-[var(--text-secondary)] transition-colors hover:bg-[var(--gold)]/10 hover:text-[var(--gold)] lg:hidden"
-                aria-label="AI Paneli Kapat"
+                aria-label={t('sidebarCloseMobile')}
               >
                 <X size={18} />
               </button>
@@ -761,31 +771,32 @@ ${content}
           type="button"
           onClick={() => setShowSidebar(true)}
           className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.25rem)] right-4 z-[60] inline-flex h-12 items-center gap-2 rounded-full bg-[var(--gold)] px-4 text-sm font-semibold text-white shadow-lg transition-all hover:brightness-110 active:scale-95 lg:hidden"
-          aria-label="AI Asistan Aç"
-          title="AI Asistan"
+          aria-label={t('floatingAi.ariaOpen')}
+          title={t('floatingAi.tooltip')}
         >
           <Sparkles size={16} />
-          <span>AI Asistan</span>
+          <span>{t('floatingAi.label')}</span>
         </button>
       )}
 
       {/* ── Status Bar ── */}
       <div className="editor-statusbar flex items-center justify-between px-4 py-1.5 text-[11px] text-[var(--text-secondary)]">
         <div className="flex items-center gap-3">
-          <span>{wordCount} kelime</span>
+          <span>{t('statusBar.words', { count: wordCount })}</span>
           <span className="opacity-40">|</span>
-          <span>{charCount.toLocaleString('tr-TR')} karakter</span>
+          <span>{t('statusBar.chars', { count: charCount.toLocaleString(locale) })}</span>
         </div>
 
         <div className="flex items-center gap-1">
-          {saving && <span className="text-[var(--gold)]">Kaydediliyor...</span>}
+          {saving && <span className="text-[var(--gold)]">{t('statusBar.saving')}</span>}
           {!saving && lastSavedAt && (
             <span>
-              Son kayit: {lastSavedAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+              {t('statusBar.lastSave')}{' '}
+              {lastSavedAt.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
               {getSaveLocationLabel() ? ` / ${getSaveLocationLabel()}` : ''}
             </span>
           )}
-          {!saving && !lastSavedAt && <span>Henüz kaydedilmedi</span>}
+          {!saving && !lastSavedAt && <span>{t('statusBar.neverSaved')}</span>}
         </div>
 
         <div className="flex items-center gap-1.5">
@@ -821,8 +832,8 @@ ${content}
             isOpen={showSignModal}
             onClose={() => setShowSignModal(false)}
             documentId={doc.id}
-            signerName={userName || 'İmzalayan'}
-            signerRole="İSG Uzmanı"
+            signerName={userName || t('signatureDefaults.signerName')}
+            signerRole={t('signatureDefaults.signerRole')}
             signerUserId={userId}
             contentHash={JSON.stringify(editor?.getJSON() || {}).slice(0, 64)}
             onSigned={async () => {
