@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Calendar, FileText, GraduationCap, ClipboardList } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { PlannerCore } from "./PlannerClient";
 import YearlyWorkPlanTab from "./YearlyWorkPlanTab";
 import YearlyTrainingTab from "./YearlyTrainingTab";
@@ -10,33 +11,28 @@ import { scanUpcomingAjandaTasks } from "@/lib/supabase/ajanda-sync";
 
 type TabKey = "planlayici" | "yillik-calisma" | "yillik-egitim" | "puantaj";
 
-const TABS: { key: TabKey; label: string; icon: typeof Calendar; desc: string }[] = [
-  { key: "planlayici",    label: "Planlayıcı",           icon: Calendar,       desc: "Takvim · görevler · hatırlatıcılar" },
-  { key: "yillik-calisma", label: "Yıllık Çalışma Planı", icon: FileText,       desc: "İSG yıllık çalışma planı (resmi form)" },
-  { key: "yillik-egitim",  label: "Yıllık Eğitim",         icon: GraduationCap,  desc: "Yıllık eğitim planı — katılımcılar & sertifika takibi" },
-  { key: "puantaj",        label: "Puantaj",               icon: ClipboardList,  desc: "Saat/ücret takibi" },
+const TABS: { key: TabKey; icon: typeof Calendar; labelKey: string; descKey: string }[] = [
+  { key: "planlayici", icon: Calendar, labelKey: "tabs.planner.label", descKey: "tabs.planner.desc" },
+  { key: "yillik-calisma", icon: FileText, labelKey: "tabs.workPlan.label", descKey: "tabs.workPlan.desc" },
+  { key: "yillik-egitim", icon: GraduationCap, labelKey: "tabs.trainingPlan.label", descKey: "tabs.trainingPlan.desc" },
+  { key: "puantaj", icon: ClipboardList, labelKey: "tabs.timesheet.label", descKey: "tabs.timesheet.desc" },
 ];
 
 export default function PlannerTabsShell() {
+  const t = useTranslations("planner.shell");
   const [active, setActive] = useState<TabKey>("planlayici");
 
-  // Her sayfa açılışında yaklaşan görevler için günlük tarama
-  // (aynı gün tekrar çağrılırsa skip — duplike önlemi)
   useEffect(() => {
     void scanUpcomingAjandaTasks({ daysAhead: 7 });
   }, []);
 
   return (
     <div className="space-y-5">
-      {/* Başlık */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Planlayıcı</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          İSG görevleri · yıllık çalışma planı · eğitim planı · puantaj — hepsi tek çatı altında.
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">{t("title")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
       </div>
 
-      {/* Sekme seçici — belirgin kart butonlar */}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {TABS.map((tab) => {
           const Icon = tab.icon;
@@ -57,18 +53,15 @@ export default function PlannerTabsShell() {
                 <span className={`inline-flex size-9 items-center justify-center rounded-lg ${isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground group-hover:bg-primary/15 group-hover:text-primary"}`}>
                   <Icon className="size-4" />
                 </span>
-                {isActive && (
-                  <span className="inline-flex size-2 rounded-full bg-primary" aria-hidden="true" />
-                )}
+                {isActive && <span className="inline-flex size-2 rounded-full bg-primary" aria-hidden="true" />}
               </div>
-              <div className={`text-sm font-semibold ${isActive ? "text-foreground" : ""}`}>{tab.label}</div>
-              <div className="text-[10px] leading-4 text-muted-foreground">{tab.desc}</div>
+              <div className={`text-sm font-semibold ${isActive ? "text-foreground" : ""}`}>{t(tab.labelKey)}</div>
+              <div className="text-[10px] leading-4 text-muted-foreground">{t(tab.descKey)}</div>
             </button>
           );
         })}
       </div>
 
-      {/* İçerik */}
       <div>
         {active === "planlayici" && <PlannerCore showHeader={false} />}
         {active === "yillik-calisma" && <YearlyWorkPlanTab />}

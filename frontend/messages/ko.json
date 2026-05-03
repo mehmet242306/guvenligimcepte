@@ -2575,6 +2575,512 @@
         "Nov",
         "Dec"
       ]
+    },
+    "shell": {
+      "title": "Planner",
+      "description": "OHS tasks, annual work plan, training plan and timesheet under one roof.",
+      "tabs": {
+        "planner": {
+          "label": "Planner",
+          "desc": "Calendar ? tasks ? reminders"
+        },
+        "workPlan": {
+          "label": "Annual work plan",
+          "desc": "OHS annual work plan (official form)"
+        },
+        "trainingPlan": {
+          "label": "Annual training",
+          "desc": "Training plan, participants and certificates"
+        },
+        "timesheet": {
+          "label": "Timesheet",
+          "desc": "Hours and fee tracking"
+        }
+      }
+    },
+    "core": {
+      "months": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ],
+      "weekdays": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
+      ],
+      "pageTitle": "OHS planner",
+      "pageDescription": "Plan and track occupational health and safety tasks.",
+      "actions": {
+        "newTask": "New task",
+        "dismissError": "Dismiss error",
+        "cancel": "Cancel",
+        "saving": "Saving...",
+        "create": "Create",
+        "update": "Update"
+      },
+      "stats": {
+        "total": "Total"
+      },
+      "filters": {
+        "allCategories": "All categories",
+        "allStatuses": "All statuses",
+        "allCompanies": "All companies"
+      },
+      "views": {
+        "month": "Calendar",
+        "list": "List"
+      },
+      "sidebar": {
+        "categories": "Categories",
+        "all": "All",
+        "addCategory": "Add category",
+        "quickAdd": "Quick add"
+      },
+      "calendar": {
+        "more": "+{count} more"
+      },
+      "empty": {
+        "title": "No tasks yet",
+        "description": "Click the New task button above."
+      },
+      "recurrence": {
+        "none": "Does not repeat",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "biannual": "Every six months",
+        "annual": "Annual"
+      },
+      "status": {
+        "planned": "Planned",
+        "in_progress": "In progress",
+        "completed": "Completed",
+        "overdue": "Overdue",
+        "cancelled": "Cancelled"
+      },
+      "categories": {
+        "periodicControl": "Periodic inspection",
+        "training": "Training",
+        "healthFollowUp": "Health follow-up",
+        "meetingDrill": "Meeting & drill",
+        "legalObligation": "Legal obligation",
+        "fieldVisit": "Field visit",
+        "ohsCommitteeMeeting": "OHS committee meeting",
+        "other": "Other"
+      },
+      "modal": {
+        "newTitle": "New task",
+        "editTitle": "Edit task",
+        "optional": "- optional",
+        "fields": {
+          "title": "Title *",
+          "description": "Description",
+          "category": "Category",
+          "status": "Status",
+          "company": "Company",
+          "startDate": "Start date *",
+          "endDate": "End date",
+          "recurrence": "Repeat",
+          "reminderDays": "Reminder (days before)",
+          "includeTimesheet": "Add to timesheet",
+          "timesheetHours": "Working time (hours)",
+          "hourlyRate": "Hourly rate"
+        },
+        "placeholders": {
+          "title": "Task title",
+          "description": "Task description...",
+          "category": "Select category...",
+          "company": "Select company...",
+          "hours": "e.g. 4.5",
+          "rate": "e.g. 250"
+        }
+      }
+    },
+    "yearlyTraining": {
+      "defaultTrainings": [
+        {
+          "category": "genel",
+          "title": "Information on occupational health and safety legislation",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "genel",
+          "title": "General information on employee rights and responsibilities",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "genel",
+          "title": "Workplace cleanliness and order",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "genel",
+          "title": "Legal consequences of occupational accidents and diseases",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "saglik",
+          "title": "Causes of occupational diseases",
+          "trainer": "Workplace physician",
+          "audience": "Employees"
+        },
+        {
+          "category": "saglik",
+          "title": "Prevention principles and protection techniques for occupational diseases",
+          "trainer": "Workplace physician",
+          "audience": "Employees"
+        },
+        {
+          "category": "saglik",
+          "title": "Biological risk factors and the occupational diseases they may cause",
+          "trainer": "Workplace physician",
+          "audience": "Employees"
+        },
+        {
+          "category": "saglik",
+          "title": "First aid and rescue techniques",
+          "trainer": "External training (first aider)",
+          "audience": "Selected employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Risk factors when working with chemicals",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Physical risk factors",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Ergonomic risk factors",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Manual lifting and carrying",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Flash, explosion, fire and fire protection",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Safe use of work equipment and related risks",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Working with display screen equipment and related risks",
+          "trainer": "OHS specialist",
+          "audience": "Office employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Electrical hazards, risks and precautions",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Causes of occupational accidents and prevention principles",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Falls and health impacts (accident prevention)",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Selection and use of personal protective equipment",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "General OHS rules and basic safety",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Evacuation and rescue",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Causes of accidents and injuries and prevention principles",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Occupational hygiene and risks from the working environment",
+          "trainer": "OHS specialist",
+          "audience": "Employees"
+        },
+        {
+          "category": "teknik",
+          "title": "Working at height",
+          "trainer": "External training",
+          "audience": "Relevant employees"
+        }
+      ],
+      "errors": {
+        "noSupabase": "No Supabase connection",
+        "loadFailed": "Could not load plan",
+        "selectCompany": "Please select a company",
+        "sessionNotFound": "Session not found",
+        "orgNotFound": "Organisation information not found",
+        "saveFailed": "Save failed"
+      },
+      "card": {
+        "title": "Annual OHS training plan",
+        "description": "24 standard training topics under the OHS training regulation. Stored per company ? year; planned date, duration, actual date, certificate and attendance are editable per row."
+      },
+      "fields": {
+        "company": "Company",
+        "companyPlaceholder": "Select a company",
+        "year": "Training year"
+      },
+      "signers": {
+        "blockLabel": "Signatories (printed in the PDF signature area)",
+        "employer": "Employer / employer representative",
+        "employerPlaceholder": "Full name",
+        "physician": "Workplace physician",
+        "physicianPlaceholder": "Dr. Full name",
+        "safetyExpert": "OHS specialist",
+        "safetyExpertPlaceholder": "Full name ? Class (A/B/C)"
+      },
+      "actions": {
+        "saving": "Saving...",
+        "saved": "Saved",
+        "save": "Save",
+        "pdfPrint": "Download / print PDF",
+        "archivedBadge": "Training plan for {year} is archived for this company"
+      },
+      "loading": "Loading plan...",
+      "preview": {
+        "title": "Preview & edit",
+        "description": "Edit rows: date / duration / certificate / attendance"
+      },
+      "table": {
+        "topic": "Training topic",
+        "trainer": "Trainer",
+        "audience": "Audience",
+        "planned": "Planned",
+        "duration": "Duration",
+        "realized": "Actual",
+        "certificate": "Certificate",
+        "attendance": "Attendance",
+        "addRow": "Add row",
+        "deleteRowAria": "Delete row"
+      },
+      "categories": {
+        "genel": "GENERAL TOPICS (4 hours)",
+        "saglik": "HEALTH TOPICS (4 hours)",
+        "teknik": "TECHNICAL TOPICS (4 hours)"
+      },
+      "certificate": {
+        "yes": "Yes",
+        "no": "No",
+        "empty": "?"
+      },
+      "defaults": {
+        "trainer": "OHS specialist",
+        "audience": "Employees"
+      },
+      "pdf": {
+        "htmlTitle": "Annual OHS training plan ? {companyName}",
+        "mainTitle": "ANNUAL TRAINING PLAN",
+        "headerLine": "COMPANY: {companyName} ? YEAR: {year}",
+        "colNo": "No.",
+        "colTopic": "Training topic",
+        "colTrainer": "Trainer",
+        "colAudience": "Audience",
+        "colPlanned": "Planned",
+        "colDuration": "Duration",
+        "colRealized": "Actual",
+        "colCertificate": "Certificate",
+        "colAttendance": "Attendance",
+        "sigEmployer": "Employer",
+        "sigPhysician": "Workplace physician",
+        "sigSafety": "OHS specialist",
+        "sigLine": "Signature / date",
+        "empty": "?"
+      }
+    },
+    "timesheet": {
+      "months": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ],
+      "title": "Timesheet",
+      "defaultProfessional": "OHS professional",
+      "tabs": {
+        "grid": "Timesheet",
+        "archive": "Archive",
+        "settings": "Settings"
+      },
+      "status": {
+        "draft": "Draft",
+        "submitted": "Submitted",
+        "approved": "Approved",
+        "paid": "Paid"
+      },
+      "actions": {
+        "submit": "Submit",
+        "approve": "Approve",
+        "markPaid": "Mark as paid",
+        "revert": "Revert",
+        "previewPdf": "Preview PDF",
+        "timesheetExcel": "Timesheet Excel",
+        "payrollExcel": "Payroll Excel",
+        "payrollPdf": "Payroll PDF",
+        "view": "View",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "saving": "Saving..."
+      },
+      "stats": {
+        "workedDays": "Worked days",
+        "totalHours": "Total hours",
+        "activeCompanies": "Active companies",
+        "gross": "Gross amount",
+        "stampTax": "Stamp tax",
+        "netPaid": "Net paid"
+      },
+      "filters": {
+        "allStatuses": "All statuses"
+      },
+      "empty": {
+        "noCompanies": "No companies found",
+        "noArchive": "No timesheet record for {year}"
+      },
+      "table": {
+        "company": "Company",
+        "totalShort": "TOTAL",
+        "total": "TOTAL"
+      },
+      "archive": {
+        "period": "Period",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "settings": {
+        "headerTitle": "Header settings",
+        "headerType": "Header type",
+        "headerTypes": {
+          "custom": "Custom",
+          "government": "Official"
+        },
+        "line1": "Line 1 (main title)",
+        "line2": "Line 2 (subtitle)",
+        "line3": "Line 3 (extra info)",
+        "line1Placeholder": "e.g. Ministry of Labour",
+        "line2Placeholder": "e.g. Occupational health and safety services",
+        "line3Placeholder": "e.g. Monthly work schedule",
+        "professionalTitle": "Professional information",
+        "professionalRole": "Title",
+        "professionalRolePlaceholder": "e.g. OHS specialist (Class A)",
+        "certificateNo": "Registry / certificate no.",
+        "certificateNoPlaceholder": "e.g. ISG-A-12345",
+        "payrollTitle": "Payroll settings",
+        "governmentEmployee": "Civil servant / public employee",
+        "salaryCoefficient": "Salary coefficient",
+        "baseIndicator": "Indicator",
+        "stampTaxRate": "Stamp tax rate",
+        "formulaTitle": "Calculation formula:",
+        "hourlyRateFormula": "Hourly rate = Indicator ({indicator}) ? coefficient ({coefficient}) = ?{amount}",
+        "grossFormula": "Gross amount = hourly rate ? total hours",
+        "stampFormula": "Stamp tax = gross amount ? %{rate}",
+        "netFormula": "Net paid = gross amount - stamp tax",
+        "footerNote": "Footer note",
+        "footerNotePlaceholder": "Note shown at the bottom of Excel/PDF exports...",
+        "save": "Save settings",
+        "saved": "Settings saved.",
+        "errorPrefix": "Error: {message}",
+        "errorPrefixStart": "Error"
+      },
+      "delete": {
+        "title": "Delete timesheet",
+        "description": "This timesheet and all entries will be permanently deleted. Are you sure?"
+      },
+      "pdf": {
+        "title": "Timesheet - {month} {year}",
+        "previewTitle": "PDF preview",
+        "printDownload": "Print / download PDF",
+        "preparedBy": "Prepared by",
+        "approvedBy": "Approved by",
+        "employerRepresentative": "Employer / representative",
+        "workScheduleTitle": "{month} {year} ? Work schedule",
+        "narrative": "The person named above, {profileName}, provided a total of {total} hours of occupational safety service in {month} {year}."
+      },
+      "payroll": {
+        "title": "Payroll",
+        "calculationTitle": "Civil servant payroll calculation",
+        "pdfTitle": "Payroll - {month} {year}",
+        "periodLine": "Month: {month}   Year: {year}",
+        "pdfMainTitle": "MISCELLANEOUS PAYMENTS PAYROLL",
+        "warning": "NOTICE",
+        "legalNotice": "The payroll is prepared in accordance with Article 8 of Turkish Occupational Health and Safety Law No. 6331.",
+        "columns": {
+          "no": "No.",
+          "fullName": "FULL NAME",
+          "salaryCoefficient": "Civil servant salary coefficient",
+          "paymentCoefficient": "Payment coefficient",
+          "hourlyRate": "Hourly rate (TRY)",
+          "assignmentHours": "Assignment duration (hours)",
+          "gross": "Gross amount (TRY)",
+          "stampTax": "Stamp tax deduction (TRY)",
+          "netPaid": "Net paid (TRY)"
+        },
+        "indicatorCoefficient": "Indicator ? coefficient",
+        "hourlyRate": "Hourly rate",
+        "stampTaxWithRate": "Stamp tax (%{rate})"
+      }
     }
   },
   "platformAdmin": {
@@ -4118,225 +4624,225 @@
     "switchError": "워크스페이스 전환 실패"
   },
   "documentEditor": {
-    "defaultTitle": "New document",
-    "loading": "Loading document…",
-    "titlePlaceholder": "Document title…",
-    "editorPlaceholder": "Write your document content here…",
+    "defaultTitle": "새 문서",
+    "loading": "문서를 불러오는 중…",
+    "titlePlaceholder": "문서 제목…",
+    "editorPlaceholder": "여기에 문서 내용을 입력하세요…",
     "breadcrumb": {
-      "backToLibrary": "Back to library",
-      "documents": "Documents"
+      "backToLibrary": "라이브러리로 돌아가기",
+      "documents": "문서"
     },
     "status": {
-      "taslak": "Draft",
-      "hazir": "Ready",
-      "onay_bekliyor": "Pending approval",
-      "revizyon": "Revision",
-      "arsiv": "Archived"
+      "taslak": "초안",
+      "hazir": "준비됨",
+      "onay_bekliyor": "승인 대기",
+      "revizyon": "개정",
+      "arsiv": "보관됨"
     },
     "saveLocation": {
-      "customDocs": "Personal documents",
-      "companyDocs": "Company documents"
+      "customDocs": "개인 문서",
+      "companyDocs": "회사 문서"
     },
-    "saveNotice": "Saved: {path}",
-    "continueEditingHint": "The document stays open; you can keep editing.",
-    "autosaveError": "Auto-save could not be completed.",
-    "saveErrorUnexpected": "An unexpected error occurred while saving the document.",
-    "confirmClear": "The editor content will be cleared. Continue?",
+    "saveNotice": "저장됨: {path}",
+    "continueEditingHint": "문서가 열린 채로 유지됩니다. 계속 편집할 수 있습니다.",
+    "autosaveError": "자동 저장을 완료할 수 없습니다.",
+    "saveErrorUnexpected": "문서 저장 중 예기치 않은 오류가 발생했습니다.",
+    "confirmClear": "편집기 내용이 지워집니다. 계속할까요?",
     "tooltips": {
-      "clearPage": "Clear page",
-      "aiPanelClose": "Close AI panel",
-      "aiAssistant": "AI assistant",
-      "shareDisabled": "Save the document first",
-      "shareEnabled": "Share via QR code, link, or WhatsApp",
-      "signDisabled": "Save the document first",
-      "signEnabled": "Sign with e-signature / mobile signature"
+      "clearPage": "페이지 지우기",
+      "aiPanelClose": "AI 패널 닫기",
+      "aiAssistant": "AI 도우미",
+      "shareDisabled": "먼저 문서를 저장하세요",
+      "shareEnabled": "QR 코드, 링크 또는 WhatsApp으로 공유",
+      "signDisabled": "먼저 문서를 저장하세요",
+      "signEnabled": "전자서명 / 모바일 서명으로 서명"
     },
     "actions": {
       "word": "Word",
       "pdf": "PDF",
-      "share": "Share",
-      "sign": "Sign",
-      "signWithCount": "Sign ({count})",
-      "save": "Save",
-      "saving": "Saving…",
-      "saved": "Saved!"
+      "share": "공유",
+      "sign": "서명",
+      "signWithCount": "서명 ({count})",
+      "save": "저장",
+      "saving": "저장 중…",
+      "saved": "저장됨!"
     },
     "pdf": {
-      "qrAlt": "QR verification",
-      "verificationCaption": "RiskNova verification"
+      "qrAlt": "QR 확인",
+      "verificationCaption": "RiskNova 확인"
     },
     "floatingAi": {
-      "ariaOpen": "Open AI assistant",
-      "tooltip": "AI assistant",
-      "label": "AI assistant"
+      "ariaOpen": "AI 도우미 열기",
+      "tooltip": "AI 도우미",
+      "label": "AI 도우미"
     },
-    "sidebarCloseMobile": "Close AI panel",
-    "validationQr": "Verification: /share/{token}",
+    "sidebarCloseMobile": "AI 패널 닫기",
+    "validationQr": "확인: /share/{token}",
     "statusBar": {
-      "words": "{count} words",
-      "chars": "{count} characters",
-      "saving": "Saving…",
-      "lastSave": "Last saved:",
-      "neverSaved": "Not saved yet"
+      "words": "{count}단어",
+      "chars": "{count}자",
+      "saving": "저장 중…",
+      "lastSave": "마지막 저장:",
+      "neverSaved": "아직 저장되지 않음"
     },
     "signatureDefaults": {
-      "signerName": "Signer",
-      "signerRole": "OHS specialist"
+      "signerName": "서명자",
+      "signerRole": "산업안전보건 전문가"
     },
     "toolbar": {
-      "undo": "Undo (Ctrl+Z)",
-      "redo": "Redo (Ctrl+Y)",
-      "fontSizeTitle": "Font size",
-      "fontSizeButton": "Size",
-      "insertTable": "Insert table",
-      "tableSizeHint": "Choose table size",
-      "removeColor": "Remove color",
-      "heading1": "Heading 1",
-      "heading2": "Heading 2",
-      "heading3": "Heading 3",
-      "bold": "Bold (Ctrl+B)",
-      "italic": "Italic (Ctrl+I)",
-      "underline": "Underline (Ctrl+U)",
-      "strike": "Strikethrough",
-      "textColor": "Text color",
-      "highlightColor": "Highlight color",
-      "alignLeft": "Align left",
-      "alignCenter": "Align center",
-      "alignRight": "Align right",
-      "alignJustify": "Justify",
-      "bulletList": "Bullet list",
-      "orderedList": "Numbered list",
-      "blockquote": "Quote",
-      "hr": "Horizontal rule",
-      "print": "Print (Ctrl+P)"
+      "undo": "실행 취소 (Ctrl+Z)",
+      "redo": "다시 실행 (Ctrl+Y)",
+      "fontSizeTitle": "글꼴 크기",
+      "fontSizeButton": "크기",
+      "insertTable": "표 삽입",
+      "tableSizeHint": "표 크기 선택",
+      "removeColor": "색 제거",
+      "heading1": "제목 1",
+      "heading2": "제목 2",
+      "heading3": "제목 3",
+      "bold": "굵게 (Ctrl+B)",
+      "italic": "기울임 (Ctrl+I)",
+      "underline": "밑줄 (Ctrl+U)",
+      "strike": "취소선",
+      "textColor": "글자 색",
+      "highlightColor": "강조 색",
+      "alignLeft": "왼쪽 맞춤",
+      "alignCenter": "가운데 맞춤",
+      "alignRight": "오른쪽 맞춤",
+      "alignJustify": "양쪽 맞춤",
+      "bulletList": "글머리 기호",
+      "orderedList": "번호 매기기",
+      "blockquote": "인용",
+      "hr": "가로줄",
+      "print": "인쇄 (Ctrl+P)"
     },
     "shareModal": {
-      "title": "Share document",
-      "linkTitle": "Share link",
-      "linkOn": "Anyone with the link can view",
-      "linkOff": "Sharing is off",
-      "copyLinkTitle": "Copy link",
-      "qrCaption": "Scan the QR code to open the document",
-      "otherNative": "Other"
+      "title": "문서 공유",
+      "linkTitle": "공유 링크",
+      "linkOn": "링크가 있으면 누구나 볼 수 있음",
+      "linkOff": "공유 꺼짐",
+      "copyLinkTitle": "링크 복사",
+      "qrCaption": "QR 코드를 스캔하여 문서 열기",
+      "otherNative": "기타"
     },
     "signatureModal": {
-      "title": "Sign document",
-      "canvasHint": "Draw your signature in the area below",
-      "clear": "Clear",
-      "legal": "By signing, you confirm that you have read and approve this document. Your signature will be stored digitally and the document integrity can be verified with a hash.",
-      "cancel": "Cancel",
-      "sign": "Sign and confirm",
-      "signing": "Signing…",
-      "errorAlert": "An error occurred while saving the signature."
+      "title": "문서 서명",
+      "canvasHint": "아래 영역에 서명을 그리세요",
+      "clear": "지우기",
+      "legal": "서명함으로써 본 문서 내용을 읽고 승인했음을 확인합니다. 서명은 디지털로 저장되며 문서 무결성은 해시로 검증할 수 있습니다.",
+      "cancel": "취소",
+      "sign": "서명 및 확인",
+      "signing": "서명 중…",
+      "errorAlert": "서명 저장 중 오류가 발생했습니다."
     },
     "ai": {
-      "title": "AI assistant",
-      "subtitleWithCompany": "Content generation and editing for {company}",
-      "subtitleNoCompany": "Content generation and editing",
+      "title": "AI 도우미",
+      "subtitleWithCompany": "{company}를 위한 콘텐츠 생성 및 편집",
+      "subtitleNoCompany": "콘텐츠 생성 및 편집",
       "quick": {
         "fullDoc": {
-          "label": "Create full document",
-          "prompt": "Create this document professionally. Include all sections, tables, and legal references. Place company information in the content; do not leave empty placeholders."
+          "label": "전체 문서 만들기",
+          "prompt": "이 문서를 전문적으로 작성하세요. 모든 섹션, 표, 법적 참조를 포함하세요. 회사 정보를 본문에 넣고 빈 자리 표시자를 남기지 마세요."
         },
         "intro": {
-          "label": "Write introduction",
-          "prompt": "Write a professional introduction and purpose section for this document. Use the company name and sector."
+          "label": "서론 작성",
+          "prompt": "이 문서의 전문적인 서론 및 목적 절을 작성하세요. 회사명과 업종을 사용하세요."
         },
         "legal": {
-          "label": "Add legal basis",
-          "prompt": "Prepare a legal basis section according to Law 6331 on occupational health and safety and related regulations (adapt references to the applicable jurisdiction where relevant)."
+          "label": "법적 근거 추가",
+          "prompt": "터키 산업보건법 6331호 및 관련 규정에 따른 법적 근거 절을 준비하세요(필요 시 관할에 맞게 참조를 조정)."
         },
         "regs": {
-          "label": "Legislative references",
-          "prompt": "List all applicable legislative references for this document type."
+          "label": "법령 참조",
+          "prompt": "이 문서 유형에 적용되는 모든 법령 참조를 나열하세요."
         }
       },
-      "customRequestLabel": "Custom request",
-      "customRequestPlaceholder": "What would you like me to generate?",
-      "improveSelected": "Improve selected text",
-      "improveHint": "Select text in the editor, then click this button.",
-      "generating": "Generating content…",
-      "generatingMobileNote": "If the connection is slow on mobile, the system prepares a local draft so you are not left waiting.",
-      "emptyState": "Click one of the buttons above to start generating content with AI.",
-      "resultInserted": "Added to editor",
-      "resultDegraded": "Local draft",
-      "resultDefault": "AI result",
-      "copy": "Copy",
-      "degradedNotice": "The AI service ran in a protected mode. A local draft was produced; you can edit and save it.",
-      "degradedQueue": "Queue task: {taskId}",
-      "degradedQueueHint": "The request may still be processing in the background; try again shortly.",
-      "addToEditor": "Add to editor",
-      "addDegradedToEditor": "Add local draft to editor",
-      "insertedSuccess": "Content was added to the editor successfully",
-      "improveDialogTitle": "Improve text",
-      "improveSelectedLabel": "Selected text:",
-      "improveChooseType": "What kind of improvement should be applied?",
-      "improveCustomPlaceholder": "Custom improvement request…",
-      "improveTextBlockLabel": "Text to improve:",
+      "customRequestLabel": "사용자 요청",
+      "customRequestPlaceholder": "무엇을 생성할까요?",
+      "improveSelected": "선택한 텍스트 개선",
+      "improveHint": "편집기에서 텍스트를 선택한 뒤 이 버튼을 클릭하세요.",
+      "generating": "콘텐츠 생성 중…",
+      "generatingMobileNote": "모바일에서 연결이 느리면 기다리지 않도록 로컬 초안을 준비합니다.",
+      "emptyState": "위 버튼 중 하나를 클릭하여 AI로 콘텐츠 생성을 시작하세요.",
+      "resultInserted": "편집기에 추가됨",
+      "resultDegraded": "로컬 초안",
+      "resultDefault": "AI 결과",
+      "copy": "복사",
+      "degradedNotice": "AI 서비스가 보호 모드로 실행되었습니다. 로컬 초안이 생성되었으며 편집 후 저장할 수 있습니다.",
+      "degradedQueue": "대기 작업: {taskId}",
+      "degradedQueueHint": "요청이 백그라운드에서 처리 중일 수 있습니다. 잠시 후 다시 시도하세요.",
+      "addToEditor": "편집기에 추가",
+      "addDegradedToEditor": "로컬 초안을 편집기에 추가",
+      "insertedSuccess": "콘텐츠가 편집기에 성공적으로 추가되었습니다",
+      "improveDialogTitle": "텍스트 개선",
+      "improveSelectedLabel": "선택한 텍스트:",
+      "improveChooseType": "어떤 개선을 적용할까요?",
+      "improveCustomPlaceholder": "사용자 지정 개선 요청…",
+      "improveTextBlockLabel": "개선할 텍스트:",
       "errors": {
-        "quotaDefault": "Your document AI package limit has been reached. Upgrade your plan to continue.",
-        "serviceUnavailable": "Error: the AI service is not responding. Please try again.",
-        "emptyResponseWithFallback": "The AI returned an empty response. A local draft was prepared so the action does not stall on mobile.",
-        "abortWithFallback": "The AI request timed out. A local draft was prepared so you are not left waiting on mobile.",
-        "connectionWithFallback": "A connection error occurred. A local draft was prepared so the result is not empty on mobile.",
-        "emptyResponseImprove": "The AI returned an empty response. Try selecting a shorter piece of text.",
-        "abortImprove": "The AI request timed out. Try selecting a shorter piece of text.",
-        "connectionImprove": "Connection error. Please try again.",
-        "serviceUnavailableImprove": "Error: the AI service is not responding.",
-        "quotaShort": "Your document AI package limit has been reached."
+        "quotaDefault": "문서 AI 패키지 한도에 도달했습니다. 계속하려면 요금제를 업그레이드하세요.",
+        "serviceUnavailable": "오류: AI 서비스가 응답하지 않습니다. 다시 시도하세요.",
+        "emptyResponseWithFallback": "AI가 빈 응답을 반환했습니다. 모바일에서 멈추지 않도록 로컬 초안을 준비했습니다.",
+        "abortWithFallback": "AI 요청이 시간 초과되었습니다. 모바일에서 기다리지 않도록 로컬 초안을 준비했습니다.",
+        "connectionWithFallback": "연결 오류가 발생했습니다. 모바일에서 결과가 비지 않도록 로컬 초안을 준비했습니다.",
+        "emptyResponseImprove": "AI가 빈 응답을 반환했습니다. 더 짧은 텍스트를 선택하세요.",
+        "abortImprove": "AI 요청이 시간 초과되었습니다. 더 짧은 텍스트를 선택하세요.",
+        "connectionImprove": "연결 오류. 다시 시도하세요.",
+        "serviceUnavailableImprove": "오류: AI 서비스가 응답하지 않습니다.",
+        "quotaShort": "문서 AI 패키지 한도에 도달했습니다."
       },
       "improve": {
         "professionalize": {
-          "label": "Make more professional",
-          "prompt": "Rewrite this text in professional occupational health and safety language. Use a formal, corporate tone."
+          "label": "더 전문적으로",
+          "prompt": "이 텍스트를 전문적인 산업보건 언어로 다시 쓰세요. 공식적이고 기업적인 어조를 사용하세요."
         },
         "shorten": {
-          "label": "Shorten",
-          "prompt": "Shorten and simplify this text without losing the core meaning."
+          "label": "줄이기",
+          "prompt": "핵심 의미를 잃지 않고 이 텍스트를 짧게 단순화하세요."
         },
         "detail": {
-          "label": "Add detail",
-          "prompt": "Expand this text to be more detailed and comprehensive. Fill in missing information where appropriate."
+          "label": "세부 추가",
+          "prompt": "이 텍스트를 더 자세하고 포괄적으로 확장하세요. 필요 시 누락 정보를 채우세요."
         },
         "legal": {
-          "label": "Add legal references",
-          "prompt": "Add relevant articles from Law 6331 and regulation references to this text (adapt to the applicable jurisdiction where relevant)."
+          "label": "법적 참조 추가",
+          "prompt": "이 텍스트에 6331호 법 관련 조항과 규정 참조를 추가하세요(필요 시 관할에 맞게 조정)."
         }
       },
       "fallback": {
-        "untitled": "Document draft",
-        "sectionCompany": "Company information",
-        "tableHeaderField": "Field",
-        "tableHeaderValue": "Value",
-        "rowCompany": "Company / organization",
-        "rowSector": "Sector",
-        "rowHazard": "Hazard class",
-        "rowNace": "NACE code",
-        "rowEmployees": "Number of employees",
-        "rowDate": "Document date",
-        "placeholderCompany": "Company information to be added",
-        "placeholderSector": "Sector information to be added",
-        "placeholderHazard": "Hazard class to be added",
-        "placeholderNace": "NACE information to be added",
-        "placeholderEmployees": "Employee count to be added",
-        "sectionPurpose": "Purpose and scope",
-        "paragraphScope": "This document was prepared for {company} for use in OHS, operations, and record-keeping processes.",
-        "sectionImplementation": "Implementation principles",
-        "bullet1": "Define responsible persons and approval flow",
-        "bullet2": "Keep required records in RiskNova",
-        "bullet3": "Act in line with legal basis and company procedures",
-        "bullet4": "Report nonconformities and critical risks without delay",
-        "sectionLegal": "Legal basis",
-        "legal1": "Law 6331 on occupational health and safety (and applicable national equivalents)",
-        "legal2": "Related regulations and internal company procedures",
-        "sectionSignature": "Signature and approval",
-        "tableHeaderParty": "Party",
-        "tableHeaderName": "Name / title",
-        "tableHeaderSign": "Signature",
-        "tableHeaderDate": "Date",
-        "rowPreparer": "Prepared by",
-        "rowEmployer": "Employer / employer representative",
-        "specialistFallback": "OHS professional"
+        "untitled": "문서 초안",
+        "sectionCompany": "회사 정보",
+        "tableHeaderField": "항목",
+        "tableHeaderValue": "값",
+        "rowCompany": "회사 / 조직",
+        "rowSector": "업종",
+        "rowHazard": "위험 등급",
+        "rowNace": "NACE 코드",
+        "rowEmployees": "직원 수",
+        "rowDate": "문서 날짜",
+        "placeholderCompany": "회사 정보가 추가됩니다",
+        "placeholderSector": "업종 정보가 추가됩니다",
+        "placeholderHazard": "위험 등급이 추가됩니다",
+        "placeholderNace": "NACE 정보가 추가됩니다",
+        "placeholderEmployees": "직원 수가 추가됩니다",
+        "sectionPurpose": "목적과 범위",
+        "paragraphScope": "이 문서는 {company}의 산업보건, 운영 및 기록 프로세스용으로 작성되었습니다.",
+        "sectionImplementation": "실시 원칙",
+        "bullet1": "책임자와 승인 흐름 정의",
+        "bullet2": "필요한 기록을 RiskNova에 보관",
+        "bullet3": "법적 근거 및 회사 절차 준수",
+        "bullet4": "부적합 및 중대 위험을 지체 없이 보고",
+        "sectionLegal": "법적 근거",
+        "legal1": "산업보건법 6331호(및 해당 국가 법규)",
+        "legal2": "관련 규정 및 회사 내부 절차",
+        "sectionSignature": "서명 및 승인",
+        "tableHeaderParty": "당사자",
+        "tableHeaderName": "이름 / 직함",
+        "tableHeaderSign": "서명",
+        "tableHeaderDate": "날짜",
+        "rowPreparer": "작성자",
+        "rowEmployer": "사용자 / 사용자 대표",
+        "specialistFallback": "산업보건 전문가"
       }
     }
   }

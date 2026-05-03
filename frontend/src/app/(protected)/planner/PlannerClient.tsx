@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Wrench, GraduationCap, Building2, ClipboardCheck, Scale, MapPin, Stethoscope, CalendarDays, Plus, Tag } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { createClient } from "@/lib/supabase/client";
 
@@ -49,24 +50,11 @@ type IsgTask = {
 };
 
 type CalendarView = "month" | "list";
+type RecurrenceKey = IsgTask["recurrence"];
+type StatusKey = IsgTask["status"];
 
-const RECURRENCE_LABELS: Record<string, string> = {
-  none: "Tekrarsız",
-  daily: "Günlük",
-  weekly: "Haftalık",
-  monthly: "Aylık",
-  quarterly: "3 Aylık",
-  biannual: "Altı Aylık",
-  annual: "Yıllık",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  planned: "Planlandı",
-  in_progress: "Devam Ediyor",
-  completed: "Tamamlandı",
-  overdue: "Gecikmiş",
-  cancelled: "İptal Edildi",
-};
+const RECURRENCE_KEYS: RecurrenceKey[] = ["none", "daily", "weekly", "monthly", "quarterly", "biannual", "annual"];
+const STATUS_KEYS: StatusKey[] = ["planned", "in_progress", "completed", "overdue", "cancelled"];
 
 const STATUS_STYLES: Record<string, string> = {
   planned:     "bg-blue-100  text-blue-700  dark:bg-blue-950  dark:text-blue-300  [&>option]:dark:bg-slate-800 [&>option]:dark:text-white",
@@ -86,10 +74,21 @@ function firstDayOfMonth(year: number, month: number) {
   return new Date(year, month, 1).getDay();
 }
 
-const MONTH_NAMES = [
-  "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
-  "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık",
-];
+const CATEGORY_KEY_BY_NAME: Record<string, string> = {
+  "Periyodik Kontrol": "periodicControl",
+  "Eğitim": "training",
+  "Sağlık Takibi": "healthFollowUp",
+  "Toplantı & Tatbikat": "meetingDrill",
+  "Yasal Yükümlülük": "legalObligation",
+  "Saha Ziyareti": "fieldVisit",
+  "İSG Kurul Toplantısı": "ohsCommitteeMeeting",
+  "Diğer": "other",
+};
+
+function categoryLabel(name: string, t: (key: string) => string) {
+  const key = CATEGORY_KEY_BY_NAME[name];
+  return key ? t(`categories.${key}`) : name;
+}
 
 // ─── TaskModal ───────────────────────────────────────────────────────────────
 
@@ -108,6 +107,15 @@ type TaskModalProps = {
 function TaskModal({
   categories, companies, task, defaultDate, fixedCompanyId, onSave, onClose, saving,
 }: TaskModalProps) {
+  const t = useTranslations("planner.core");
+  const recurrenceLabels = useMemo(
+    () => Object.fromEntries(RECURRENCE_KEYS.map((key) => [key, t(`recurrence.${key}`)])) as Record<RecurrenceKey, string>,
+    [t],
+  );
+  const statusLabels = useMemo(
+    () => Object.fromEntries(STATUS_KEYS.map((key) => [key, t(`status.${key}`)])) as Record<StatusKey, string>,
+    [t],
+  );
   const [form, setForm] = useState<Partial<IsgTask>>({
     title: "",
     description: "",
@@ -136,7 +144,7 @@ function TaskModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <h2 className="text-lg font-semibold text-foreground">
-            {task?.id ? "Görevi Düzenle" : "Yeni Görev"}
+            {task?.id ? t("modal.editTitle") : t("modal.newTitle")}
           </h2>
           <button
             type="button"
@@ -153,23 +161,23 @@ function TaskModal({
         <div className="max-h-[70vh] overflow-y-auto px-6 py-5 space-y-4">
           {/* Title */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">Başlık *</label>
+            <label className="text-sm font-medium text-foreground">{t("modal.fields.title")}</label>
             <input
               value={form.title ?? ""}
               onChange={(e) => set("title", e.target.value)}
-              placeholder="Görev başlığı"
+              placeholder={t("modal.placeholders.title")}
               className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
           </div>
 
           {/* Description */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">Açıklama</label>
+            <label className="text-sm font-medium text-foreground">{t("modal.fields.description")}</label>
             <textarea
               value={form.description ?? ""}
               onChange={(e) => set("description", e.target.value)}
               rows={3}
-              placeholder="Görev açıklaması..."
+              placeholder={t("modal.placeholders.description")}
               className="w-full resize-none rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
           </div>
@@ -177,28 +185,28 @@ function TaskModal({
           {/* Category + Status */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Kategori</label>
+              <label className="text-sm font-medium text-foreground">{t("modal.fields.category")}</label>
               <select
                 value={form.category_id ?? ""}
                 onChange={(e) => set("category_id", e.target.value || null)}
                 className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
               >
-                <option value="">Kategori seçin...</option>
+                <option value="">{t("modal.placeholders.category")}</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.icon} {c.name}
+                    {c.icon} {categoryLabel(c.name, t)}
                   </option>
                 ))}
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Durum</label>
+              <label className="text-sm font-medium text-foreground">{t("modal.fields.status")}</label>
               <select
                 value={form.status ?? "planned"}
                 onChange={(e) => set("status", e.target.value as IsgTask["status"])}
                 className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
               >
-                {Object.entries(STATUS_LABELS).map(([v, l]) => (
+                {Object.entries(statusLabels).map(([v, l]) => (
                   <option key={v} value={v}>{l}</option>
                 ))}
               </select>
@@ -208,13 +216,13 @@ function TaskModal({
           {/* Company (only when not fixed) */}
           {!fixedCompanyId && (
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Firma</label>
+              <label className="text-sm font-medium text-foreground">{t("modal.fields.company")}</label>
               <select
                 value={form.company_workspace_id ?? ""}
                 onChange={(e) => set("company_workspace_id", e.target.value || null)}
                 className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
               >
-                <option value="">Firma seçin...</option>
+                <option value="">{t("modal.placeholders.company")}</option>
                 {companies.map((c) => (
                   <option key={c.id} value={c.id}>{c.display_name}</option>
                 ))}
@@ -225,7 +233,7 @@ function TaskModal({
           {/* Dates */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Başlangıç Tarihi *</label>
+              <label className="text-sm font-medium text-foreground">{t("modal.fields.startDate")}</label>
               <input
                 type="date"
                 value={form.start_date ?? ""}
@@ -234,7 +242,7 @@ function TaskModal({
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Bitiş Tarihi</label>
+              <label className="text-sm font-medium text-foreground">{t("modal.fields.endDate")}</label>
               <input
                 type="date"
                 value={form.end_date ?? ""}
@@ -247,19 +255,19 @@ function TaskModal({
           {/* Recurrence + Reminder */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Tekrar</label>
+              <label className="text-sm font-medium text-foreground">{t("modal.fields.recurrence")}</label>
               <select
                 value={form.recurrence ?? "none"}
                 onChange={(e) => set("recurrence", e.target.value as IsgTask["recurrence"])}
                 className="h-11 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
               >
-                {Object.entries(RECURRENCE_LABELS).map(([v, l]) => (
+                {Object.entries(recurrenceLabels).map(([v, l]) => (
                   <option key={v} value={v}>{l}</option>
                 ))}
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Hatırlatma (gün önce)</label>
+              <label className="text-sm font-medium text-foreground">{t("modal.fields.reminderDays")}</label>
               <input
                 type="number"
                 min={0}
@@ -280,12 +288,12 @@ function TaskModal({
                 onChange={(e) => set("include_in_timesheet", e.target.checked)}
                 className="h-4 w-4 rounded border-border text-[#0b5fc1] focus:ring-[#0b5fc1]/40"
               />
-              <span className="text-sm font-medium text-foreground">Puantaja Ekle</span>
+              <span className="text-sm font-medium text-foreground">{t("modal.fields.includeTimesheet")}</span>
             </label>
             {form.include_in_timesheet && (
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground">Çalışma Süresi (saat)</label>
+                  <label className="text-xs font-medium text-muted-foreground">{t("modal.fields.timesheetHours")}</label>
                   <input
                     type="number"
                     min={0}
@@ -293,19 +301,19 @@ function TaskModal({
                     step={0.5}
                     value={form.timesheet_hours ?? ""}
                     onChange={(e) => set("timesheet_hours", e.target.value ? parseFloat(e.target.value) : null)}
-                    placeholder="Ör: 4.5"
+                    placeholder={t("modal.placeholders.hours")}
                     className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-slate-800 dark:text-white dark:border-slate-600"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground">Saat Ücreti (TL) <span className="text-muted-foreground/60">- opsiyonel</span></label>
+                  <label className="text-xs font-medium text-muted-foreground">{t("modal.fields.hourlyRate")} <span className="text-muted-foreground/60">{t("modal.optional")}</span></label>
                   <input
                     type="number"
                     min={0}
                     step={0.01}
                     value={form.hourly_rate ?? ""}
                     onChange={(e) => set("hourly_rate", e.target.value ? parseFloat(e.target.value) : null)}
-                    placeholder="Ör: 250"
+                    placeholder={t("modal.placeholders.rate")}
                     className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-slate-800 dark:text-white dark:border-slate-600"
                   />
                 </div>
@@ -321,7 +329,7 @@ function TaskModal({
             onClick={onClose}
             className="inline-flex h-10 items-center justify-center rounded-xl border border-border bg-secondary px-4 text-sm font-medium text-foreground transition hover:bg-secondary/80"
           >
-            İptal
+            {t("actions.cancel")}
           </button>
           <button
             type="button"
@@ -332,9 +340,9 @@ function TaskModal({
             {saving ? (
               <>
                 <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                Kaydediliyor...
+                {t("actions.saving")}
               </>
-            ) : (task?.id ? "Güncelle" : "Oluştur")}
+            ) : (task?.id ? t("actions.update") : t("actions.create"))}
           </button>
         </div>
       </div>
@@ -352,6 +360,7 @@ export type PlannerCoreProps = {
 };
 
 export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
+  const t = useTranslations("planner.core");
   const today = new Date();
   const [view, setView] = useState<CalendarView>("month");
   const [year, setYear] = useState(today.getFullYear());
@@ -368,6 +377,16 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterCategoryId, setFilterCategoryId] = useState<string>("all");
   const [filterCompanyId, setFilterCompanyId] = useState<string>("all");
+  const monthNames = useMemo(() => t.raw("months") as string[], [t]);
+  const weekdays = useMemo(() => t.raw("weekdays") as string[], [t]);
+  const recurrenceLabels = useMemo(
+    () => Object.fromEntries(RECURRENCE_KEYS.map((key) => [key, t(`recurrence.${key}`)])) as Record<RecurrenceKey, string>,
+    [t],
+  );
+  const statusLabels = useMemo(
+    () => Object.fromEntries(STATUS_KEYS.map((key) => [key, t(`status.${key}`)])) as Record<StatusKey, string>,
+    [t],
+  );
 
   // ─── Load data ────────────────────────────────────────────────────────
 
@@ -648,10 +667,8 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
       {showHeader && (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">İSG Planlayıcı</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              İş sağlığı ve güvenliği görevlerini planlayın ve takip edin.
-            </p>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">{t("pageTitle")}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{t("pageDescription")}</p>
           </div>
           <button
             type="button"
@@ -661,7 +678,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
-            Yeni Görev
+            {t("actions.newTask")}
           </button>
         </div>
       )}
@@ -677,7 +694,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
-            Yeni Görev
+            {t("actions.newTask")}
           </button>
         </div>
       )}
@@ -689,18 +706,18 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
           </svg>
           <span>{saveError}</span>
-          <button type="button" onClick={() => setSaveError(null)} className="ml-auto shrink-0 opacity-60 hover:opacity-100">✕</button>
+          <button type="button" onClick={() => setSaveError(null)} className="ml-auto shrink-0 opacity-60 hover:opacity-100" aria-label={t("actions.dismissError")}>x</button>
         </div>
       )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {[
-          { key: "total",       label: "Toplam",        color: "text-foreground",                                    bg: "bg-gradient-to-br from-secondary/50 to-transparent" },
-          { key: "planned",     label: "Planlandı",     color: "text-blue-600 dark:text-blue-400",                  bg: "bg-gradient-to-br from-blue-500/8 to-transparent dark:from-blue-500/12" },
-          { key: "in_progress", label: "Devam Ediyor",  color: "text-amber-600 dark:text-amber-400",               bg: "bg-gradient-to-br from-amber-500/8 to-transparent dark:from-amber-500/12" },
-          { key: "completed",   label: "Tamamlandı",    color: "text-green-600 dark:text-green-400",               bg: "bg-gradient-to-br from-green-500/8 to-transparent dark:from-green-500/12" },
-          { key: "overdue",     label: "Gecikmiş",      color: "text-red-600 dark:text-red-400",                   bg: "bg-gradient-to-br from-red-500/8 to-transparent dark:from-red-500/12" },
+          { key: "total",       label: t("stats.total"), color: "text-foreground",                                  bg: "bg-gradient-to-br from-secondary/50 to-transparent" },
+          { key: "planned",     label: statusLabels.planned, color: "text-blue-600 dark:text-blue-400",             bg: "bg-gradient-to-br from-blue-500/8 to-transparent dark:from-blue-500/12" },
+          { key: "in_progress", label: statusLabels.in_progress, color: "text-amber-600 dark:text-amber-400",       bg: "bg-gradient-to-br from-amber-500/8 to-transparent dark:from-amber-500/12" },
+          { key: "completed",   label: statusLabels.completed, color: "text-green-600 dark:text-green-400",         bg: "bg-gradient-to-br from-green-500/8 to-transparent dark:from-green-500/12" },
+          { key: "overdue",     label: statusLabels.overdue, color: "text-red-600 dark:text-red-400",               bg: "bg-gradient-to-br from-red-500/8 to-transparent dark:from-red-500/12" },
         ].map(({ key, label, color, bg }) => (
           <div key={key} className={`rounded-[1.25rem] border border-border/60 ${bg} px-5 py-4 shadow-sm`}>
             <div className={`text-3xl font-bold ${color}`}>{stats[key as keyof typeof stats]}</div>
@@ -717,9 +734,9 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
           onChange={(e) => setFilterCategoryId(e.target.value)}
           className="h-11 rounded-xl border border-border/60 bg-card px-4 text-sm font-semibold text-foreground shadow-sm transition-all focus:outline-none focus:border-[var(--gold)]/40 focus:shadow-md dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
         >
-          <option value="all">Tüm Kategoriler</option>
+          <option value="all">{t("filters.allCategories")}</option>
           {categories.filter((c) => c.name !== "Diğer").map((c) => (
-            <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
+            <option key={c.id} value={c.id}>{c.icon} {categoryLabel(c.name, t)}</option>
           ))}
         </select>
 
@@ -729,8 +746,8 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
           onChange={(e) => setFilterStatus(e.target.value)}
           className="h-11 rounded-xl border border-border/60 bg-card px-4 text-sm font-semibold text-foreground shadow-sm transition-all focus:outline-none focus:border-[var(--gold)]/40 focus:shadow-md dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
         >
-          <option value="all">Tüm Durumlar</option>
-          {Object.entries(STATUS_LABELS).map(([v, l]) => (
+          <option value="all">{t("filters.allStatuses")}</option>
+          {Object.entries(statusLabels).map(([v, l]) => (
             <option key={v} value={v}>{l}</option>
           ))}
         </select>
@@ -742,7 +759,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
             onChange={(e) => setFilterCompanyId(e.target.value)}
             className="h-11 rounded-xl border border-border/60 bg-card px-4 text-sm font-semibold text-foreground shadow-sm transition-all focus:outline-none focus:border-[var(--gold)]/40 focus:shadow-md dark:bg-slate-800 dark:text-white dark:border-slate-600 [&>option]:bg-white [&>option]:text-foreground dark:[&>option]:bg-slate-800 dark:[&>option]:text-white"
           >
-            <option value="all">Tüm Firmalar</option>
+            <option value="all">{t("filters.allCompanies")}</option>
             {companies.map((c) => (
               <option key={c.id} value={c.id}>{c.display_name}</option>
             ))}
@@ -760,7 +777,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
                 view === v ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary hover:text-foreground",
               ].join(" ")}
             >
-              {v === "month" ? "Takvim" : "Liste"}
+              {v === "month" ? t("views.month") : t("views.list")}
             </button>
           ))}
         </div>
@@ -778,7 +795,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
       <div className="grid gap-5 lg:grid-cols-[220px_1fr]">
         {/* Sol: Kategori navigasyonu */}
         <aside className="rounded-[1.5rem] border border-border/80 bg-card p-4 shadow-[var(--shadow-card)] lg:sticky lg:top-24 lg:self-start">
-          <p className="mb-3 px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Kategoriler</p>
+          <p className="mb-3 px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t("sidebar.categories")}</p>
           <nav className="space-y-1">
             <button
               type="button"
@@ -787,7 +804,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
             >
               <span className="flex items-center gap-2.5">
                 <PremiumIconBadge icon={CalendarDays} tone={filterCategoryId === "all" ? "gold" : "neutral"} size="xs" />
-                Tümü
+                {t("sidebar.all")}
               </span>
               <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${filterCategoryId === "all" ? "bg-white/20" : "bg-muted"}`}>{tasks.length}</span>
             </button>
@@ -805,7 +822,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
                 >
                   <span className="flex items-center gap-2.5 truncate">
                     <PremiumIconBadge icon={ci.icon} tone={isActive ? "gold" : ci.tone} size="xs" />
-                    <span className="truncate">{c.name}</span>
+                    <span className="truncate">{categoryLabel(c.name, t)}</span>
                   </span>
                   {count > 0 && <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${isActive ? "bg-white/20" : "bg-muted"}`}>{count}</span>}
                 </button>
@@ -818,11 +835,11 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
               onClick={() => { setModalDate(new Date().toISOString().split("T")[0]); setModalTask(null); }}
               className="flex w-full items-center gap-2.5 rounded-xl border border-dashed border-border/50 px-3 py-2.5 text-sm text-muted-foreground transition-all hover:bg-secondary hover:text-foreground"
             >
-              <Plus size={15} /> Kategori Ekle
+              <Plus size={15} /> {t("sidebar.addCategory")}
             </button>
           </div>
           <div className="mt-3 border-t border-border/60 pt-3">
-            <p className="px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Hızlı Ekle</p>
+            <p className="px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t("sidebar.quickAdd")}</p>
             <div className="mt-2 space-y-1">
               {categories.filter((c) => c.name !== "Diğer").map((c) => (
                 <button
@@ -832,7 +849,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
                   className="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 >
                   <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
-                  + {c.name}
+                  + {categoryLabel(c.name, t)}
                 </button>
               ))}
             </div>
@@ -853,7 +870,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
               </svg>
             </button>
-            <h2 className="text-lg font-semibold text-foreground">{MONTH_NAMES[month]} {year}</h2>
+            <h2 className="text-lg font-semibold text-foreground">{monthNames[month]} {year}</h2>
             <button
               type="button"
               onClick={nextMonth}
@@ -866,7 +883,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
           </div>
 
           <div className="grid grid-cols-7 border-b border-border">
-            {["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"].map((d) => (
+            {weekdays.map((d) => (
               <div key={d} className="py-2 text-center text-xs font-semibold text-muted-foreground">{d}</div>
             ))}
           </div>
@@ -911,7 +928,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
                       );
                     })}
                     {dayTasks.length > 3 && (
-                      <div className="px-1.5 text-[10px] text-muted-foreground">+{dayTasks.length - 3} daha</div>
+                      <div className="px-1.5 text-[10px] text-muted-foreground">{t("calendar.more", { count: dayTasks.length - 3 })}</div>
                     )}
                   </div>
                 </div>
@@ -927,8 +944,8 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
           {filteredTasks.length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-16 text-center">
               <div className="text-5xl">📋</div>
-              <p className="font-medium text-muted-foreground">Henüz görev yok</p>
-              <p className="text-sm text-muted-foreground">Yukarıdaki &quot;Yeni Görev&quot; butonuna tıklayın.</p>
+              <p className="font-medium text-muted-foreground">{t("empty.title")}</p>
+              <p className="text-sm text-muted-foreground">{t("empty.description")}</p>
             </div>
           ) : (
             <div className="divide-y divide-border">
@@ -945,7 +962,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-medium text-foreground">{task.title}</span>
                         {cat && (
-                          <span className="text-xs text-muted-foreground">{cat.icon} {cat.name}</span>
+                          <span className="text-xs text-muted-foreground">{cat.icon} {categoryLabel(cat.name, t)}</span>
                         )}
                         {companyName && !fixedCompanyId && (
                           <span className="inline-flex items-center rounded-lg bg-secondary px-2 py-0.5 text-xs text-muted-foreground">
@@ -958,7 +975,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
                       )}
                       <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         <span>{task.start_date}</span>
-                        {task.recurrence !== "none" && <span>· {RECURRENCE_LABELS[task.recurrence]}</span>}
+                        {task.recurrence !== "none" && <span>· {recurrenceLabels[task.recurrence]}</span>}
                       </div>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
@@ -970,7 +987,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
                           STATUS_STYLES[task.status],
                         ].join(" ")}
                       >
-                        {Object.entries(STATUS_LABELS).map(([v, l]) => (
+                        {Object.entries(statusLabels).map(([v, l]) => (
                           <option key={v} value={v}>{l}</option>
                         ))}
                       </select>

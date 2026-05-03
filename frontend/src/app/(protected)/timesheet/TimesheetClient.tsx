@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { exportTimesheetExcel, exportPayrollExcel, downloadBlob, type TimesheetExportData } from "@/lib/timesheet-export";
 
@@ -47,11 +48,11 @@ type MainTab = "grid" | "archive" | "settings";
 // ─── Constants ─────────────────────────────────────────────────────────────
 
 const MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-const STATUS_MAP: Record<string, { label: string; cls: string; next?: string }> = {
-  draft:     { label: "Taslak",     cls: "bg-secondary text-muted-foreground", next: "submitted" },
-  submitted: { label: "Gönderildi", cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", next: "approved" },
-  approved:  { label: "Onaylandı",  cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", next: "paid" },
-  paid:      { label: "Ödendi",     cls: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400" },
+const STATUS_MAP: Record<string, { labelKey: string; cls: string; next?: string }> = {
+  draft:     { labelKey: "status.draft", cls: "bg-secondary text-muted-foreground", next: "submitted" },
+  submitted: { labelKey: "status.submitted", cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", next: "approved" },
+  approved:  { labelKey: "status.approved", cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", next: "paid" },
+  paid:      { labelKey: "status.paid", cls: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400" },
 };
 
 const selectCls = "h-10 rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-slate-800 dark:text-white dark:border-slate-600";
@@ -83,6 +84,8 @@ function calcGovPayment(hours: number, coef: number, indicator: number, stampRat
 // ─── Main Component ────────────────────────────────────────────────────────
 
 export default function TimesheetClient() {
+  const t = useTranslations("planner.timesheet");
+  const locale = useLocale();
   const today = new Date();
   const [tab, setTab] = useState<MainTab>("grid");
   const [month, setMonth] = useState(today.getMonth() + 1);
@@ -114,6 +117,8 @@ export default function TimesheetClient() {
   const [showPdfPreview, setShowPdfPreview] = useState(false);
 
   const daysInMonth = new Date(year, month, 0).getDate();
+  const monthNames = t.raw("months") as string[];
+  const statusLabel = useCallback((status: string) => t(STATUS_MAP[status]?.labelKey ?? "status.draft"), [t]);
 
   // ═══════════════════════════════════════════
   // Data Loading
@@ -271,7 +276,7 @@ export default function TimesheetClient() {
       is_government_employee: settings.is_government_employee,
     }, { onConflict: "user_profile_id" });
     setSavingSettings(false);
-    setSettingsFeedback(error ? "Hata: " + error.message : "Ayarlar kaydedildi.");
+    setSettingsFeedback(error ? t("settings.errorPrefix", { message: error.message }) : t("settings.saved"));
   }
 
   // ═══════════════════════════════════════════
@@ -296,12 +301,12 @@ export default function TimesheetClient() {
 
   async function handleExportTimesheet() {
     const blob = await exportTimesheetExcel(buildExportData());
-    downloadBlob(blob, `${profileName || "Puantaj"}_Puantaj_${MONTHS[month - 1]}_${year}.xlsx`);
+    downloadBlob(blob, `${profileName || t("title")}_${t("title")}_${monthNames[month - 1]}_${year}.xlsx`);
   }
 
   async function handleExportPayroll() {
     const blob = await exportPayrollExcel(buildExportData());
-    downloadBlob(blob, `${profileName || "Bordro"}_Bordro_${MONTHS[month - 1]}_${year}.xlsx`);
+    downloadBlob(blob, `${profileName || t("payroll.title")}_${t("payroll.title")}_${monthNames[month - 1]}_${year}.xlsx`);
   }
 
   function printPdf() {
@@ -309,7 +314,7 @@ export default function TimesheetClient() {
     if (!el) return;
     const w = window.open("", "_blank", "width=900,height=700");
     if (!w) return;
-    w.document.write(`<!DOCTYPE html><html><head><title>Puantaj - ${MONTHS[month - 1]} ${year}</title>
+    w.document.write(`<!DOCTYPE html><html lang="${locale}"><head><title>${t("pdf.title", { month: monthNames[month - 1], year })}</title>
       <style>
         body{font-family:Arial,sans-serif;padding:30px;color:#1a1a1a;font-size:12px}
         table{border-collapse:collapse;width:100%}
@@ -336,10 +341,10 @@ export default function TimesheetClient() {
   function printPayrollPdf() {
     const gp = govPay;
     if (!gp) return;
-    const monthName = MONTHS[month - 1].toUpperCase();
-    const legalText = 'UYARI: Ödeme Bordrosu 6331 Sayılı İş Sağlığı ve Güvenliği Kanunun 8. Maddesi "Kamu kurum ve kuruluşlarında ilgili mevzuata göre çalıştırılan işyeri hekimi veya iş güvenliği uzmanı olma niteliğini haiz personel, gerekli belgeye sahip olmaları şartıyla asli görevlerinin yanında, belirlenen çalışma süresine riayet ederek çalışmakta oldukları kurumda veya ilgili personelin muvafakati ve üst yöneticinin onayı ile diğer kamu kurum ve kuruluşlarında görevlendirilebilir. Bu şekilde görevlendirilecek personele, görev yaptığı her saat için (200) gösterge rakamının memur aylık katsayısı ile çarpımı tutarında ilave ödeme, hizmet alan kurum tarafından yapılır. Bu ödemeden damga vergisi hariç herhangi bir kesinti yapılmaz. Bu durumdaki görevlendirmeye ilişkin ilave ödemelerde, günlük mesai saatlerine bağlı kalmak kaydıyla, aylık toplam seksen saatten fazla olan görevlendirmeler dikkate alınmaz." hükmüne uygun şekilde hazırlanmıştır.';
+    const monthName = monthNames[month - 1].toUpperCase();
+    const legalText = t("payroll.legalNotice");
 
-    const html = `<!DOCTYPE html><html><head><title>Bordro - ${MONTHS[month - 1]} ${year}</title>
+    const html = `<!DOCTYPE html><html lang="${locale}"><head><title>${t("payroll.pdfTitle", { month: monthNames[month - 1], year })}</title>
       <style>
         body{font-family:Arial,sans-serif;padding:30px;color:#1a1a1a;font-size:12px}
         table{border-collapse:collapse;width:100%}
@@ -360,13 +365,13 @@ export default function TimesheetClient() {
       <div class="center"><h2 style="margin:2px 0">${settings.header_line1 || "T.C."}</h2></div>
       <div class="center"><p style="margin:2px 0">${settings.header_line2 || ""}</p></div>
       <div class="center"><p style="margin:2px 0">${settings.header_line3 || ""}</p></div>
-      <div class="right" style="margin-top:8px;font-size:10px">Ait Olduğu Ay: ${monthName} &nbsp;&nbsp; Yıl: ${year}</div>
-      <h2 class="center" style="margin:15px 0">ÇEŞİTLİ ÖDEMELER BORDROSU</h2>
+      <div class="right" style="margin-top:8px;font-size:10px">${t("payroll.periodLine", { month: monthName, year })}</div>
+      <h2 class="center" style="margin:15px 0">${t("payroll.pdfMainTitle")}</h2>
       <table>
         <thead><tr>
-          <th>S.N.</th><th>ADI SOYADI</th><th>Memur Maaş<br/>Katsayısı</th><th>Ödeme<br/>Katsayısı</th>
-          <th>Saatlik<br/>Ücret (TL)</th><th>Görevlendirme<br/>Süresi (Saat)</th>
-          <th>Brüt Tutar<br/>(TL)</th><th>Damga Vergisi<br/>Kesintisi (TL)</th><th>Net Ödenen<br/>(TL)</th>
+          <th>${t("payroll.columns.no")}</th><th>${t("payroll.columns.fullName")}</th><th>${t("payroll.columns.salaryCoefficient")}</th><th>${t("payroll.columns.paymentCoefficient")}</th>
+          <th>${t("payroll.columns.hourlyRate")}</th><th>${t("payroll.columns.assignmentHours")}</th>
+          <th>${t("payroll.columns.gross")}</th><th>${t("payroll.columns.stampTax")}</th><th>${t("payroll.columns.netPaid")}</th>
         </tr></thead>
         <tbody>
           <tr>
@@ -377,7 +382,7 @@ export default function TimesheetClient() {
           </tr>
           ${Array.from({ length: 9 }, (_, i) => `<tr><td class="center">${i + 2}</td>${"<td></td>".repeat(8)}</tr>`).join("")}
           <tr class="total-row">
-            <td></td><td>TOPLAM</td><td></td><td></td><td></td>
+            <td></td><td>${t("table.total")}</td><td></td><td></td><td></td>
             <td class="center">${grandTotal}</td><td class="right">${fmtTL(gp.gross)}</td>
             <td class="right">${fmtTL(gp.stampTax)}</td><td class="right bold">${fmtTL(gp.net)}</td>
           </tr>
@@ -386,8 +391,8 @@ export default function TimesheetClient() {
       <div class="legal">${legalText}</div>
       ${settings.footer_note ? `<p style="font-size:9px;color:#666;margin-top:10px;font-style:italic">${settings.footer_note}</p>` : ""}
       <div class="signatures">
-        <div class="sig-box"><div class="sig-line">DÜZENLEYEN</div><div class="sig-name">${profileName}<br/>${settings.professional_title || "İş Güvenliği Uzmanı"}</div></div>
-        <div class="sig-box"><div class="sig-line">ONAYLAYAN</div><div class="sig-name">İşveren / Yetkilisi</div></div>
+        <div class="sig-box"><div class="sig-line">${t("pdf.preparedBy")}</div><div class="sig-name">${profileName}<br/>${settings.professional_title || t("defaultProfessional")}</div></div>
+        <div class="sig-box"><div class="sig-line">${t("pdf.approvedBy")}</div><div class="sig-name">${t("pdf.employerRepresentative")}</div></div>
       </div>
     </body></html>`;
 
@@ -424,16 +429,16 @@ export default function TimesheetClient() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Puantaj</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {profileName && <span className="font-medium text-foreground">{profileName}</span>}
             {profileName && " — "}
-            {settings.professional_title || "İSG Profesyoneli"}
+            {settings.professional_title || t("defaultProfessional")}
             {settings.certificate_no && ` · ${settings.certificate_no}`}
           </p>
         </div>
         <div className="flex rounded-xl border border-border bg-secondary/50 p-0.5">
-          {([["grid","Puantaj"],["archive","Arşiv"],["settings","Ayarlar"]] as [MainTab,string][]).map(([k,l]) => (
+          {([["grid",t("tabs.grid")],["archive",t("tabs.archive")],["settings",t("tabs.settings")]] as [MainTab,string][]).map(([k,l]) => (
             <button key={k} type="button" onClick={() => setTab(k)}
               className={["rounded-lg px-3 py-1.5 text-xs font-medium transition-all", tab === k ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"].join(" ")}
             >{l}</button>
@@ -454,37 +459,37 @@ export default function TimesheetClient() {
             <select value={year} onChange={(e) => setYear(Number(e.target.value))} className={selectCls}>
               {[year - 1, year, year + 1].map((y) => <option key={y} value={y}>{y}</option>)}
             </select>
-            <span className={`ml-1 inline-flex rounded-lg px-2.5 py-1 text-xs font-medium ${st.cls}`}>{st.label}</span>
+            <span className={`ml-1 inline-flex rounded-lg px-2.5 py-1 text-xs font-medium ${st.cls}`}>{statusLabel(timesheet?.status ?? "draft")}</span>
 
             <div className="ml-auto flex flex-wrap items-center gap-2">
               {/* Status transitions */}
               {timesheet && st.next && entries.length > 0 && (
                 <button type="button" onClick={() => updateStatus(st.next!)} className={btnPrimary}>
-                  {st.next === "submitted" ? "Gönder" : st.next === "approved" ? "Onayla" : "Ödendi Olarak İşaretle"}
+                  {st.next === "submitted" ? t("actions.submit") : st.next === "approved" ? t("actions.approve") : t("actions.markPaid")}
                 </button>
               )}
               {timesheet && (timesheet.status === "approved" || timesheet.status === "submitted") && (
                 <button type="button" onClick={() => updateStatus("draft")} className={btnSecondary}>
-                  Geri Al
+                  {t("actions.revert")}
                 </button>
               )}
               <button type="button" onClick={() => setShowPdfPreview(true)} disabled={entries.length === 0} className={btnSecondary + " disabled:opacity-50"}>
                 <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                PDF Önizle
+                {t("actions.previewPdf")}
               </button>
               <button type="button" onClick={handleExportTimesheet} disabled={entries.length === 0} className={btnSecondary + " disabled:opacity-50"}>
                 <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                Puantaj Excel
+                {t("actions.timesheetExcel")}
               </button>
               {settings.is_government_employee && (
                 <>
                   <button type="button" onClick={handleExportPayroll} disabled={entries.length === 0} className={btnSecondary + " disabled:opacity-50"}>
                     <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
-                    Bordro Excel
+                    {t("actions.payrollExcel")}
                   </button>
                   <button type="button" onClick={printPayrollPdf} disabled={entries.length === 0} className={btnSecondary + " disabled:opacity-50"}>
                     <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-                    Bordro PDF
+                    {t("actions.payrollPdf")}
                   </button>
                 </>
               )}
@@ -493,14 +498,14 @@ export default function TimesheetClient() {
 
           {/* Stats */}
           <div className={`grid gap-4 ${govPay ? "grid-cols-2 sm:grid-cols-4 lg:grid-cols-6" : "grid-cols-3"}`}>
-            <StatCard icon="📅" color="text-blue-500" value={String(uniqueDays)} label="Çalışılan Gün" />
-            <StatCard icon="⏱️" color="text-amber-500" value={grandTotal.toFixed(1)} label="Toplam Saat" />
-            <StatCard icon="🏢" color="text-green-500" value={String(activeCompanies.length)} label="Aktif Firma" />
+            <StatCard icon="📅" color="text-blue-500" value={String(uniqueDays)} label={t("stats.workedDays")} />
+            <StatCard icon="⏱️" color="text-amber-500" value={grandTotal.toFixed(1)} label={t("stats.totalHours")} />
+            <StatCard icon="🏢" color="text-green-500" value={String(activeCompanies.length)} label={t("stats.activeCompanies")} />
             {govPay && (
               <>
-                <StatCard icon="💰" color="text-emerald-600" value={`₺${fmtTL(govPay.gross)}`} label="Brüt Tutar" />
-                <StatCard icon="📄" color="text-red-500" value={`₺${fmtTL(govPay.stampTax)}`} label="Damga Vergisi" />
-                <StatCard icon="✅" color="text-[#0b5fc1]" value={`₺${fmtTL(govPay.net)}`} label="Net Ödenen" />
+                <StatCard icon="💰" color="text-emerald-600" value={`₺${fmtTL(govPay.gross)}`} label={t("stats.gross")} />
+                <StatCard icon="📄" color="text-red-500" value={`₺${fmtTL(govPay.stampTax)}`} label={t("stats.stampTax")} />
+                <StatCard icon="✅" color="text-[#0b5fc1]" value={`₺${fmtTL(govPay.net)}`} label={t("stats.netPaid")} />
               </>
             )}
           </div>
@@ -510,19 +515,19 @@ export default function TimesheetClient() {
             {companies.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-12 text-center">
                 <div className="text-4xl">🏢</div>
-                <p className="text-sm font-medium text-muted-foreground">Firma bulunamadı</p>
+                <p className="text-sm font-medium text-muted-foreground">{t("empty.noCompanies")}</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-xs border-collapse">
                   <thead>
                     <tr className="bg-secondary/40">
-                      <th className="sticky left-0 z-10 bg-secondary/40 border-b border-r border-border px-3 py-2.5 text-left font-semibold text-foreground min-w-[160px]">Firma</th>
+                      <th className="sticky left-0 z-10 bg-secondary/40 border-b border-r border-border px-3 py-2.5 text-left font-semibold text-foreground min-w-[160px]">{t("table.company")}</th>
                       {Array.from({ length: daysInMonth }, (_, i) => {
                         const d = i + 1, we = isWeekend(year, month, d);
                         return <th key={d} className={["border-b border-r border-border px-1 py-2.5 text-center font-semibold min-w-[36px]", we ? "bg-red-50 text-red-500 dark:bg-red-900/20 dark:text-red-400" : "text-foreground"].join(" ")}>{d}</th>;
                       })}
-                      <th className="border-b border-border px-3 py-2.5 text-center font-semibold text-foreground min-w-[60px] bg-secondary/60">TOP.</th>
+                      <th className="border-b border-border px-3 py-2.5 text-center font-semibold text-foreground min-w-[60px] bg-secondary/60">{t("table.totalShort")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -551,7 +556,7 @@ export default function TimesheetClient() {
                   </tbody>
                   <tfoot>
                     <tr className="bg-secondary/40 font-bold">
-                      <td className="sticky left-0 z-10 bg-secondary/40 border-r border-border px-3 py-2.5 text-foreground">TOPLAM</td>
+                      <td className="sticky left-0 z-10 bg-secondary/40 border-r border-border px-3 py-2.5 text-foreground">{t("table.total")}</td>
                       {Array.from({ length: daysInMonth }, (_, i) => {
                         const d = i + 1;
                         const dt = entries.filter((e) => e.entry_date === ds(year, month, d)).reduce((s, e) => s + e.hours, 0);
@@ -568,7 +573,7 @@ export default function TimesheetClient() {
           {/* Gov payment summary (if applicable) */}
           {govPay && entries.length > 0 && (
             <div className="rounded-[1.25rem] border border-border bg-card p-5 shadow-[var(--shadow-soft)] space-y-3">
-              <h3 className="text-sm font-semibold text-foreground">Memur Bordro Hesabı</h3>
+              <h3 className="text-sm font-semibold text-foreground">{t("payroll.calculationTitle")}</h3>
               <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-sm sm:grid-cols-4">
                 <div><span className="text-muted-foreground">Gösterge:</span> <span className="font-medium text-foreground">{settings.base_indicator}</span></div>
                 <div><span className="text-muted-foreground">Katsayı:</span> <span className="font-medium text-foreground">{settings.salary_coefficient}</span></div>
@@ -593,11 +598,11 @@ export default function TimesheetClient() {
               {[year - 2, year - 1, year, year + 1].map((y) => <option key={y} value={y}>{y}</option>)}
             </select>
             <select value={archiveStatus} onChange={(e) => setArchiveStatus(e.target.value)} className={selectCls}>
-              <option value="all">Tüm Durumlar</option>
-              <option value="draft">Taslak</option>
-              <option value="submitted">Gönderildi</option>
-              <option value="approved">Onaylandı</option>
-              <option value="paid">Ödendi</option>
+              <option value="all">{t("filters.allStatuses")}</option>
+              <option value="draft">{t("status.draft")}</option>
+              <option value="submitted">{t("status.submitted")}</option>
+              <option value="approved">{t("status.approved")}</option>
+              <option value="paid">{t("status.paid")}</option>
             </select>
           </div>
 
@@ -607,16 +612,16 @@ export default function TimesheetClient() {
             ) : archiveSheets.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-12 text-center">
                 <div className="text-4xl">📦</div>
-                <p className="text-sm font-medium text-muted-foreground">{archiveYear} yılı için puantaj kaydı yok</p>
+                <p className="text-sm font-medium text-muted-foreground">{t("empty.noArchive", { year: archiveYear })}</p>
               </div>
             ) : (
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-secondary/40">
-                    <th className="px-4 py-3 text-left font-semibold text-foreground">Dönem</th>
-                    <th className="px-4 py-3 text-right font-semibold text-foreground">Toplam Saat</th>
-                    <th className="px-4 py-3 text-center font-semibold text-foreground">Durum</th>
-                    <th className="px-4 py-3 text-right font-semibold text-foreground">İşlemler</th>
+                    <th className="px-4 py-3 text-left font-semibold text-foreground">{t("archive.period")}</th>
+                    <th className="px-4 py-3 text-right font-semibold text-foreground">{t("stats.totalHours")}</th>
+                    <th className="px-4 py-3 text-center font-semibold text-foreground">{t("archive.status")}</th>
+                    <th className="px-4 py-3 text-right font-semibold text-foreground">{t("archive.actions")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -624,18 +629,18 @@ export default function TimesheetClient() {
                     const sm = STATUS_MAP[s.status] ?? STATUS_MAP.draft;
                     return (
                       <tr key={s.id} className="hover:bg-secondary/20 transition-colors">
-                        <td className="px-4 py-3 font-medium text-foreground">{MONTHS[s.month - 1]} {s.year}</td>
+                        <td className="px-4 py-3 font-medium text-foreground">{monthNames[s.month - 1]} {s.year}</td>
                         <td className="px-4 py-3 text-right text-foreground">{s.total_hours}</td>
                         <td className="px-4 py-3 text-center">
-                          <span className={`inline-flex rounded-lg px-2 py-0.5 text-xs font-medium ${sm.cls}`}>{sm.label}</span>
+                          <span className={`inline-flex rounded-lg px-2 py-0.5 text-xs font-medium ${sm.cls}`}>{statusLabel(s.status)}</span>
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex items-center justify-end gap-1.5">
                             <button type="button" onClick={() => { setMonth(s.month); setYear(s.year); setTab("grid"); }}
-                              className="rounded-lg px-2 py-1 text-xs text-[#0b5fc1] hover:bg-[#0b5fc1]/10 transition-colors">Görüntüle</button>
+                              className="rounded-lg px-2 py-1 text-xs text-[#0b5fc1] hover:bg-[#0b5fc1]/10 transition-colors">{t("actions.view")}</button>
                             {s.status === "draft" && (
                               <button type="button" onClick={() => setDeleteConfirm(s.id)}
-                                className="rounded-lg px-2 py-1 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Sil</button>
+                                className="rounded-lg px-2 py-1 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">{t("actions.delete")}</button>
                             )}
                           </div>
                         </td>
@@ -655,76 +660,76 @@ export default function TimesheetClient() {
       {tab === "settings" && (
         <div className="max-w-2xl space-y-5">
           {settingsFeedback && (
-            <div className={["rounded-xl px-4 py-3 text-sm font-medium", settingsFeedback.startsWith("Hata") ? "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400" : "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400"].join(" ")}>
+            <div className={["rounded-xl px-4 py-3 text-sm font-medium", settingsFeedback.startsWith(t("settings.errorPrefixStart")) ? "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400" : "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400"].join(" ")}>
               {settingsFeedback}
             </div>
           )}
 
           {/* Header settings */}
-          <SettingsCard title="Antet Ayarları">
-            <Field label="Antet Tipi">
+          <SettingsCard title={t("settings.headerTitle")}>
+            <Field label={t("settings.headerType")}>
               <select value={settings.header_type} onChange={(e) => setSettings((s) => ({ ...s, header_type: e.target.value }))} className={selectCls + " w-full"}>
-                <option value="custom">Özel</option><option value="osgb">OSGB</option><option value="company">Firma</option><option value="government">Resmi</option>
+                <option value="custom">{t("settings.headerTypes.custom")}</option><option value="osgb">OSGB</option><option value="company">{t("table.company")}</option><option value="government">{t("settings.headerTypes.government")}</option>
               </select>
             </Field>
-            <Field label="Satır 1 (Ana Başlık)"><input value={settings.header_line1} onChange={(e) => setSettings((s) => ({ ...s, header_line1: e.target.value }))} placeholder="Ör: T.C. Çalışma ve Sosyal Güvenlik Bakanlığı" className={inputCls} /></Field>
-            <Field label="Satır 2 (Alt Başlık)"><input value={settings.header_line2} onChange={(e) => setSettings((s) => ({ ...s, header_line2: e.target.value }))} placeholder="Ör: İş Sağlığı ve Güvenliği Hizmetleri" className={inputCls} /></Field>
-            <Field label="Satır 3 (Ek Bilgi)"><input value={settings.header_line3} onChange={(e) => setSettings((s) => ({ ...s, header_line3: e.target.value }))} placeholder="Ör: Aylık Çalışma Çizelgesi" className={inputCls} /></Field>
+            <Field label={t("settings.line1")}><input value={settings.header_line1} onChange={(e) => setSettings((s) => ({ ...s, header_line1: e.target.value }))} placeholder={t("settings.line1Placeholder")} className={inputCls} /></Field>
+            <Field label={t("settings.line2")}><input value={settings.header_line2} onChange={(e) => setSettings((s) => ({ ...s, header_line2: e.target.value }))} placeholder={t("settings.line2Placeholder")} className={inputCls} /></Field>
+            <Field label={t("settings.line3")}><input value={settings.header_line3} onChange={(e) => setSettings((s) => ({ ...s, header_line3: e.target.value }))} placeholder={t("settings.line3Placeholder")} className={inputCls} /></Field>
           </SettingsCard>
 
           {/* Professional info */}
-          <SettingsCard title="Profesyonel Bilgileri">
+          <SettingsCard title={t("settings.professionalTitle")}>
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Unvan"><input value={settings.professional_title} onChange={(e) => setSettings((s) => ({ ...s, professional_title: e.target.value }))} placeholder="Ör: İş Güvenliği Uzmanı (A Sınıfı)" className={inputCls} /></Field>
-              <Field label="Sicil / Belge No"><input value={settings.certificate_no} onChange={(e) => setSettings((s) => ({ ...s, certificate_no: e.target.value }))} placeholder="Ör: ISG-A-12345" className={inputCls} /></Field>
+              <Field label={t("settings.professionalRole")}><input value={settings.professional_title} onChange={(e) => setSettings((s) => ({ ...s, professional_title: e.target.value }))} placeholder={t("settings.professionalRolePlaceholder")} className={inputCls} /></Field>
+              <Field label={t("settings.certificateNo")}><input value={settings.certificate_no} onChange={(e) => setSettings((s) => ({ ...s, certificate_no: e.target.value }))} placeholder={t("settings.certificateNoPlaceholder")} className={inputCls} /></Field>
             </div>
           </SettingsCard>
 
           {/* Government payroll */}
-          <SettingsCard title="Bordro Ayarları">
+          <SettingsCard title={t("settings.payrollTitle")}>
             <label className="flex items-center gap-3 cursor-pointer">
               <input type="checkbox" checked={settings.is_government_employee}
                 onChange={(e) => setSettings((s) => ({ ...s, is_government_employee: e.target.checked }))}
                 className="h-4 w-4 rounded border-border text-[#0b5fc1] focus:ring-[#0b5fc1]/40" />
-              <span className="text-sm font-medium text-foreground">Memur / Kamu Çalışanı</span>
+              <span className="text-sm font-medium text-foreground">{t("settings.governmentEmployee")}</span>
             </label>
             {settings.is_government_employee && (
               <div className="mt-3 space-y-4 rounded-xl border border-border bg-secondary/20 p-4">
                 <div className="grid grid-cols-3 gap-4">
-                  <Field label="Maaş Katsayısı">
+                  <Field label={t("settings.salaryCoefficient")}>
                     <input type="number" step="0.000001" value={settings.salary_coefficient}
                       onChange={(e) => setSettings((s) => ({ ...s, salary_coefficient: parseFloat(e.target.value) || 0 }))}
                       className={inputCls} />
                   </Field>
-                  <Field label="Gösterge">
+                  <Field label={t("settings.baseIndicator")}>
                     <input type="number" value={settings.base_indicator} readOnly className={inputCls + " opacity-60 cursor-not-allowed"} />
                   </Field>
-                  <Field label="Damga Vergisi Oranı">
+                  <Field label={t("settings.stampTaxRate")}>
                     <input type="text" value={`%${(settings.stamp_tax_rate * 100).toFixed(3)}`} readOnly className={inputCls + " opacity-60 cursor-not-allowed"} />
                   </Field>
                 </div>
                 <div className="rounded-lg bg-[#0b5fc1]/5 p-3 text-xs text-muted-foreground dark:bg-[#0b5fc1]/10">
-                  <p className="font-medium text-foreground mb-1">Hesaplama Formülü:</p>
-                  <p>Saatlik Ücret = Gösterge ({settings.base_indicator}) × Katsayı ({settings.salary_coefficient}) = <strong>₺{fmtTL(settings.base_indicator * settings.salary_coefficient)}</strong></p>
-                  <p>Brüt Tutar = Saatlik Ücret × Toplam Saat</p>
-                  <p>Damga Vergisi = Brüt Tutar × %{(settings.stamp_tax_rate * 100).toFixed(3)}</p>
-                  <p>Net Ödenen = Brüt Tutar − Damga Vergisi</p>
+                  <p className="font-medium text-foreground mb-1">{t("settings.formulaTitle")}</p>
+                  <p>{t("settings.hourlyRateFormula", { indicator: settings.base_indicator, coefficient: settings.salary_coefficient, amount: fmtTL(settings.base_indicator * settings.salary_coefficient) })}</p>
+                  <p>{t("settings.grossFormula")}</p>
+                  <p>{t("settings.stampFormula", { rate: (settings.stamp_tax_rate * 100).toFixed(3) })}</p>
+                  <p>{t("settings.netFormula")}</p>
                 </div>
               </div>
             )}
           </SettingsCard>
 
           {/* Footer note */}
-          <SettingsCard title="Alt Not">
+          <SettingsCard title={t("settings.footerNote")}>
             <textarea value={settings.footer_note} onChange={(e) => setSettings((s) => ({ ...s, footer_note: e.target.value }))}
-              placeholder="Excel/PDF çıktısının alt kısmında görünecek not..." rows={3}
+              placeholder={t("settings.footerNotePlaceholder")} rows={3}
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#0b5fc1]/40 dark:bg-slate-800 dark:text-white dark:border-slate-600 resize-none" />
           </SettingsCard>
 
           <div className="flex justify-end">
             <button type="button" onClick={handleSettingsSave} disabled={savingSettings}
               className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#0b5fc1] px-5 text-sm font-medium text-white shadow-lg hover:bg-[#0a4fa8] disabled:opacity-60 transition-colors">
-              {savingSettings ? <><span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />Kaydediliyor...</> : "Ayarları Kaydet"}
+              {savingSettings ? <><span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />{t("actions.saving")}</> : t("settings.save")}
             </button>
           </div>
         </div>
@@ -736,12 +741,12 @@ export default function TimesheetClient() {
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-[1.5rem] border border-border bg-card p-6 shadow-[0_32px_80px_rgba(0,0,0,0.3)] space-y-4">
-            <h2 className="text-lg font-semibold text-foreground">Puantajı Sil</h2>
-            <p className="text-sm text-muted-foreground">Bu puantaj ve tüm girişleri kalıcı olarak silinecek. Emin misiniz?</p>
+            <h2 className="text-lg font-semibold text-foreground">{t("delete.title")}</h2>
+            <p className="text-sm text-muted-foreground">{t("delete.description")}</p>
             <div className="flex justify-end gap-3">
-              <button type="button" onClick={() => setDeleteConfirm(null)} className={btnSecondary}>İptal</button>
+              <button type="button" onClick={() => setDeleteConfirm(null)} className={btnSecondary}>{t("actions.cancel")}</button>
               <button type="button" onClick={() => deleteTimesheet(deleteConfirm)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700 transition-colors">Sil</button>
+                className="inline-flex items-center gap-1.5 rounded-xl bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700 transition-colors">{t("actions.delete")}</button>
             </div>
           </div>
         </div>
@@ -755,9 +760,9 @@ export default function TimesheetClient() {
           <div className="flex max-h-[90vh] w-full max-w-4xl flex-col rounded-[1.5rem] border border-border bg-card shadow-[0_32px_80px_rgba(0,0,0,0.3)]">
             {/* Modal header */}
             <div className="flex items-center justify-between border-b border-border px-6 py-4">
-              <h2 className="text-lg font-semibold text-foreground">PDF Önizleme</h2>
+              <h2 className="text-lg font-semibold text-foreground">{t("pdf.previewTitle")}</h2>
               <div className="flex items-center gap-2">
-                <button type="button" onClick={printPdf} className={btnPrimary}>Yazdır / PDF İndir</button>
+                <button type="button" onClick={printPdf} className={btnPrimary}>{t("pdf.printDownload")}</button>
                 <button type="button" onClick={() => setShowPdfPreview(false)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
@@ -771,7 +776,7 @@ export default function TimesheetClient() {
                   {settings.header_line1 && <h1 style={{ fontSize: "14px", fontWeight: "bold", margin: "2px 0" }}>{settings.header_line1}</h1>}
                   {settings.header_line2 && <h2 style={{ fontSize: "12px", fontWeight: "normal", margin: "2px 0" }}>{settings.header_line2}</h2>}
                   {settings.header_line3 && <h2 style={{ fontSize: "12px", fontWeight: "normal", margin: "2px 0" }}>{settings.header_line3}</h2>}
-                  <h2 style={{ fontSize: "13px", fontWeight: "bold", margin: "10px 0 5px" }}>{MONTHS[month - 1]} {year} — Çalışma Çizelgesi</h2>
+                  <h2 style={{ fontSize: "13px", fontWeight: "bold", margin: "10px 0 5px" }}>{t("pdf.workScheduleTitle", { month: monthNames[month - 1], year })}</h2>
                   <p style={{ fontSize: "11px", color: "#555" }}>
                     {profileName}{settings.professional_title && ` — ${settings.professional_title}`}{settings.certificate_no && ` · ${settings.certificate_no}`}
                   </p>
@@ -781,12 +786,12 @@ export default function TimesheetClient() {
                 <table style={{ borderCollapse: "collapse", width: "100%", marginBottom: "15px" }}>
                   <thead>
                     <tr>
-                      <th style={{ border: "1px solid #333", padding: "4px 6px", textAlign: "left", background: "#e8e8e8", fontWeight: "bold", fontSize: "10px" }}>Firma</th>
+                      <th style={{ border: "1px solid #333", padding: "4px 6px", textAlign: "left", background: "#e8e8e8", fontWeight: "bold", fontSize: "10px" }}>{t("table.company")}</th>
                       {Array.from({ length: daysInMonth }, (_, i) => {
                         const d = i + 1, we = isWeekend(year, month, d);
                         return <th key={d} style={{ border: "1px solid #333", padding: "2px", textAlign: "center", background: we ? "#fee2e2" : "#e8e8e8", fontWeight: "bold", fontSize: "9px", minWidth: "18px" }}>{d}</th>;
                       })}
-                      <th style={{ border: "1px solid #333", padding: "4px 6px", textAlign: "center", background: "#d0d0d0", fontWeight: "bold", fontSize: "10px" }}>TOP.</th>
+                      <th style={{ border: "1px solid #333", padding: "4px 6px", textAlign: "center", background: "#d0d0d0", fontWeight: "bold", fontSize: "10px" }}>{t("table.totalShort")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -803,7 +808,7 @@ export default function TimesheetClient() {
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td style={{ border: "1px solid #333", padding: "4px 6px", fontWeight: "bold", fontSize: "10px", background: "#e8e8e8" }}>TOPLAM</td>
+                      <td style={{ border: "1px solid #333", padding: "4px 6px", fontWeight: "bold", fontSize: "10px", background: "#e8e8e8" }}>{t("table.total")}</td>
                       {Array.from({ length: daysInMonth }, (_, i) => {
                         const d = i + 1;
                         const dt = entries.filter((e) => e.entry_date === ds(year, month, d)).reduce((s, e) => s + e.hours, 0);
@@ -818,25 +823,25 @@ export default function TimesheetClient() {
                 {govPay && (
                   <table style={{ borderCollapse: "collapse", width: "50%", margin: "15px 0" }}>
                     <tbody>
-                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px" }}>Gösterge × Katsayı</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", textAlign: "right" }}>{settings.base_indicator} × {settings.salary_coefficient}</td></tr>
-                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px" }}>Saatlik Ücret</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", textAlign: "right" }}>₺{fmtTL(govPay.hourlyRate)}</td></tr>
-                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px" }}>Toplam Saat</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", textAlign: "right" }}>{grandTotal}</td></tr>
-                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", fontWeight: "bold" }}>Brüt Tutar</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", textAlign: "right", fontWeight: "bold" }}>₺{fmtTL(govPay.gross)}</td></tr>
-                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", color: "red" }}>Damga Vergisi (%{(settings.stamp_tax_rate * 100).toFixed(3)})</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", textAlign: "right", color: "red" }}>-₺{fmtTL(govPay.stampTax)}</td></tr>
-                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "12px", fontWeight: "bold" }}>Net Ödenen</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "12px", textAlign: "right", fontWeight: "bold", color: "#0b5fc1" }}>₺{fmtTL(govPay.net)}</td></tr>
+                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px" }}>{t("payroll.indicatorCoefficient")}</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", textAlign: "right" }}>{settings.base_indicator} × {settings.salary_coefficient}</td></tr>
+                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px" }}>{t("payroll.hourlyRate")}</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", textAlign: "right" }}>₺{fmtTL(govPay.hourlyRate)}</td></tr>
+                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px" }}>{t("stats.totalHours")}</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", textAlign: "right" }}>{grandTotal}</td></tr>
+                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", fontWeight: "bold" }}>{t("stats.gross")}</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", textAlign: "right", fontWeight: "bold" }}>₺{fmtTL(govPay.gross)}</td></tr>
+                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", color: "red" }}>{t("payroll.stampTaxWithRate", { rate: (settings.stamp_tax_rate * 100).toFixed(3) })}</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "11px", textAlign: "right", color: "red" }}>-₺{fmtTL(govPay.stampTax)}</td></tr>
+                      <tr><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "12px", fontWeight: "bold" }}>{t("stats.netPaid")}</td><td style={{ border: "1px solid #333", padding: "4px 8px", fontSize: "12px", textAlign: "right", fontWeight: "bold", color: "#0b5fc1" }}>₺{fmtTL(govPay.net)}</td></tr>
                     </tbody>
                   </table>
                 )}
 
                 {/* Narrative text */}
                 <p style={{ margin: "15px 0", fontSize: "11px", fontStyle: "italic" }}>
-                  Yukarıda belirtilen görevli {profileName} tarafından {year} yılı {MONTHS[month - 1].toUpperCase()} ayında toplam {grandTotal} saat olmak üzere toplamda {grandTotal} saat iş güvenliği hizmeti vermişlerdir.
+                  {t("pdf.narrative", { profileName, year, month: monthNames[month - 1].toUpperCase(), total: grandTotal })}
                 </p>
 
                 {/* Legal notice — only for government payroll */}
                 {settings.is_government_employee && (
                   <div style={{ margin: "20px 0", padding: "10px", border: "1px solid #ccc", fontSize: "8px", color: "#333", lineHeight: "1.5" }}>
-                    <strong>UYARI:</strong> Ödeme Bordrosu 6331 Sayılı İş Sağlığı ve Güvenliği Kanunun 8. Maddesi &quot;Kamu kurum ve kuruluşlarında ilgili mevzuata göre çalıştırılan işyeri hekimi veya iş güvenliği uzmanı olma niteliğini haiz personel, gerekli belgeye sahip olmaları şartıyla asli görevlerinin yanında, belirlenen çalışma süresine riayet ederek çalışmakta oldukları kurumda veya ilgili personelin muvafakati ve üst yöneticinin onayı ile diğer kamu kurum ve kuruluşlarında görevlendirilebilir. Bu şekilde görevlendirilecek personele, görev yaptığı her saat için (200) gösterge rakamının memur aylık katsayısı ile çarpımı tutarında ilave ödeme, hizmet alan kurum tarafından yapılır. Bu ödemeden damga vergisi hariç herhangi bir kesinti yapılmaz. Bu durumdaki görevlendirmeye ilişkin ilave ödemelerde, günlük mesai saatlerine bağlı kalmak kaydıyla, aylık toplam seksen saatten fazla olan görevlendirmeler dikkate alınmaz.&quot; hükmüne uygun şekilde hazırlanmıştır.
+                    <strong>{t("payroll.warning")}:</strong> {t("payroll.legalNotice")}
                   </div>
                 )}
 
@@ -848,13 +853,13 @@ export default function TimesheetClient() {
                 {/* Signatures */}
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "50px" }}>
                   <div style={{ textAlign: "center", width: "200px" }}>
-                    <div style={{ borderTop: "1px solid #333", marginTop: "60px", paddingTop: "5px", fontSize: "11px" }}>Düzenleyen</div>
+                    <div style={{ borderTop: "1px solid #333", marginTop: "60px", paddingTop: "5px", fontSize: "11px" }}>{t("pdf.preparedBy")}</div>
                     <div style={{ fontSize: "10px", color: "#666" }}>{profileName}</div>
                     <div style={{ fontSize: "10px", color: "#666" }}>{settings.professional_title}</div>
                   </div>
                   <div style={{ textAlign: "center", width: "200px" }}>
-                    <div style={{ borderTop: "1px solid #333", marginTop: "60px", paddingTop: "5px", fontSize: "11px" }}>Onaylayan</div>
-                    <div style={{ fontSize: "10px", color: "#666" }}>İşveren / Yetkilisi</div>
+                    <div style={{ borderTop: "1px solid #333", marginTop: "60px", paddingTop: "5px", fontSize: "11px" }}>{t("pdf.approvedBy")}</div>
+                    <div style={{ fontSize: "10px", color: "#666" }}>{t("pdf.employerRepresentative")}</div>
                   </div>
                 </div>
               </div>
