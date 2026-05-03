@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table';
@@ -83,6 +84,7 @@ interface Props {
 export function DocumentEditorClient({ paramsPromise }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
   const resolvedParams = paramsPromise ? use(paramsPromise) : null;
   const documentId = resolvedParams?.id;
 
@@ -293,7 +295,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
           setInitialContent(json);
         }
       } else if (resolvedTemplateId) {
-        const template = await getTemplate(resolvedTemplateId);
+        const template = await getTemplate(resolvedTemplateId, locale);
         if (template) {
           setInitialContent(template.content);
           setTitle(template.title);
@@ -305,7 +307,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
     }
     load();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [documentId, resolvedTemplateId]);
+  }, [documentId, resolvedTemplateId, locale]);
 
   // Auto-save
   const handleAutoSave = useCallback(async (contentJson: JSONContent) => {

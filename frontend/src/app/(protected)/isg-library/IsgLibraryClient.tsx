@@ -1214,7 +1214,7 @@ export function IsgLibraryClient() {
     });
 
     try {
-      const template = await getTemplate(item.templateId);
+      const template = await getTemplate(item.templateId, locale);
       setPreviewState({
         title: template?.title ?? templateDisplayTitle,
         description: template?.description ?? item.description,
@@ -1245,7 +1245,7 @@ export function IsgLibraryClient() {
     }
 
     try {
-      const template = await getTemplate(item.templateId);
+      const template = await getTemplate(item.templateId, locale);
       const downloadTitle =
         item.templateId && getGroupByKey(item.subcategory)
           ? t(`documentCatalog.groups.${item.subcategory}.items.${item.templateId}`)

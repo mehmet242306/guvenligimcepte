@@ -4,6 +4,7 @@
 // ============================================================
 
 import type { JSONContent } from '@tiptap/react';
+import { getDocumentTemplateLocalePatch } from './document-template-locale-load';
 
 export interface P1Template {
   id: string;
@@ -494,30 +495,12 @@ export const P1_TEMPLATES: P1Template[] = [
   TESPIT_ONERI_DEFTERI,
 ];
 
-// Lazy-loaded full template registry (all 101 templates)
+// Registry: only the five `P1_TEMPLATES` (extended template packs removed).
 let _allTemplates: P1Template[] | null = null;
 
 async function loadAllTemplates(): Promise<P1Template[]> {
   if (_allTemplates) return _allTemplates;
-
-  const [g1, g2, g3, g4, g5, g6] = await Promise.all([
-    import('./document-templates-g1'),
-    import('./document-templates-g2'),
-    import('./document-templates-g3'),
-    import('./document-templates-g4'),
-    import('./document-templates-g5'),
-    import('./document-templates-g6'),
-  ]);
-
-  _allTemplates = [
-    ...P1_TEMPLATES,
-    ...g1.GROUP1_TEMPLATES, ...g1.GROUP2_TEMPLATES,
-    ...g2.GROUP3_TEMPLATES, ...g2.GROUP4_TEMPLATES, ...g2.GROUP5_TEMPLATES,
-    ...g3.GROUP6_TEMPLATES, ...g3.GROUP7_TEMPLATES, ...g3.GROUP8_TEMPLATES, ...g3.GROUP9_TEMPLATES, ...g3.GROUP10_TEMPLATES,
-    ...g4.GROUP11_TEMPLATES, ...g4.GROUP12_TEMPLATES, ...g4.GROUP13_TEMPLATES, ...g4.GROUP14_TEMPLATES, ...g4.GROUP15_TEMPLATES,
-    ...g5.GROUP16_TEMPLATES, ...g5.GROUP17_TEMPLATES, ...g5.GROUP18_TEMPLATES, ...g5.GROUP19_TEMPLATES, ...g5.GROUP20_TEMPLATES,
-    ...g6.GROUP21_TEMPLATES,
-  ];
+  _allTemplates = [...P1_TEMPLATES];
   return _allTemplates;
 }
 
@@ -526,13 +509,41 @@ export function getP1Template(id: string): P1Template | undefined {
   return P1_TEMPLATES.find((t) => t.id === id);
 }
 
-// Async: search ALL templates including lazy-loaded groups
-export async function getTemplate(id: string): Promise<P1Template | undefined> {
-  // Check P1 first (no import needed)
+async function getTemplateBase(id: string): Promise<P1Template | undefined> {
   const p1 = P1_TEMPLATES.find((t) => t.id === id);
   if (p1) return p1;
-
-  // Load all templates
   const all = await loadAllTemplates();
   return all.find((t) => t.id === id);
+}
+
+/**
+ * Loads a document template. Turkish (`tr`) uses the built-in definitions.
+ * Other locales merge overrides from `document-template-locales/bundles/{locale}.json`
+ * (fallback: English bundle, then Turkish base).
+ */
+export async function getTemplate(id: string, locale?: string): Promise<P1Template | undefined> {
+  const base = await getTemplateBase(id);
+  if (!base) return undefined;
+  const loc = (locale ?? "tr").toLowerCase();
+  if (loc === "tr") return base;
+
+  const patch =
+    getDocumentTemplateLocalePatch(loc, id) ??
+    (loc !== "en" ? getDocumentTemplateLocalePatch("en", id) : undefined);
+  if (!patch) return base;
+
+  return {
+    ...base,
+    title: patch.title ?? base.title,
+    description: patch.description ?? base.description,
+    content: patch.content ?? base.content,
+  };
+}
+
+/** Export all templates (Turkish source) for offline translation scripts. */
+export async function exportAllTemplatesAsRecord(): Promise<
+  Record<string, Pick<P1Template, "title" | "description" | "content">>
+> {
+  const all = await loadAllTemplates();
+  return Object.fromEntries(all.map((t) => [t.id, { title: t.title, description: t.description, content: t.content }]));
 }
