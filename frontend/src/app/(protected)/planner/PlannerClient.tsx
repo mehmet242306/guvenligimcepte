@@ -465,7 +465,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
     }
 
     if (!currentOrgId) {
-      setSaveError("Kuruluş bilgisi bulunamadı. Lütfen tekrar giriş yapın.");
+      setSaveError(t("errors.orgNotFound"));
       setSaving(false);
       return;
     }
@@ -572,7 +572,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
       const supaErr = err as { message?: string; details?: string; code?: string };
       const msg = supaErr.message ?? supaErr.details ?? JSON.stringify(err);
       console.error("[PlannerCore] save error:", JSON.stringify(err, null, 2), "message:", msg);
-      setSaveError(msg || "Kayıt sırasında bir hata oluştu.");
+      setSaveError(msg || t("errors.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -581,7 +581,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
   // ─── Delete task ────────────────────────────────────────────────────────
 
   async function handleDelete(id: string) {
-    if (!confirm("Bu görevi silmek istediğinizden emin misiniz?")) return;
+    if (!confirm(t("confirmDeleteTask"))) return;
     const supabase = createClient();
     if (!supabase) return;
     const { error } = await supabase.from("isg_tasks").delete().eq("id", id);

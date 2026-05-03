@@ -3977,68 +3977,68 @@
       ]
     },
     "shell": {
-      "title": "Planlay?c?",
-      "description": "?SG g?revleri, y?ll?k ?al??ma plan?, e?itim plan? ve puantaj tek ?at? alt?nda.",
+      "title": "Planlayıcı",
+      "description": "İSG görevleri, yıllık çalışma planı, eğitim planı ve puantaj tek çatı altında.",
       "tabs": {
         "planner": {
-          "label": "Planlay?c?",
-          "desc": "Takvim ? g?revler ? hat?rlat?c?lar"
+          "label": "Planlayıcı",
+          "desc": "Takvim, görevler ve hatırlatıcılar"
         },
         "workPlan": {
-          "label": "Y?ll?k ?al??ma Plan?",
-          "desc": "?SG y?ll?k ?al??ma plan? (resmi form)"
+          "label": "Yıllık Çalışma Planı",
+          "desc": "İSG yıllık çalışma planı (resmi form)"
         },
         "trainingPlan": {
-          "label": "Y?ll?k E?itim",
-          "desc": "E?itim plan?, kat?l?mc?lar ve sertifika takibi"
+          "label": "Yıllık Eğitim",
+          "desc": "Eğitim planı, katılımcılar ve sertifika takibi"
         },
         "timesheet": {
           "label": "Puantaj",
-          "desc": "Saat/?cret takibi"
+          "desc": "Saat/ücret takibi"
         }
       }
     },
     "core": {
       "months": [
         "Ocak",
-        "?ubat",
+        "Şubat",
         "Mart",
         "Nisan",
-        "May?s",
+        "Mayıs",
         "Haziran",
         "Temmuz",
-        "A?ustos",
-        "Eyl?l",
+        "Ağustos",
+        "Eylül",
         "Ekim",
-        "Kas?m",
-        "Aral?k"
+        "Kasım",
+        "Aralık"
       ],
       "weekdays": [
         "Pzt",
         "Sal",
-        "?ar",
+        "Çar",
         "Per",
         "Cum",
         "Cmt",
         "Paz"
       ],
-      "pageTitle": "?SG Planlay?c?",
-      "pageDescription": "?? sa?l??? ve g?venli?i g?revlerini planlay?n ve takip edin.",
+      "pageTitle": "İSG Planlayıcı",
+      "pageDescription": "İş sağlığı ve güvenliği görevlerini planlayın ve takip edin.",
       "actions": {
-        "newTask": "Yeni G?rev",
-        "dismissError": "Hatay? kapat",
-        "cancel": "?ptal",
+        "newTask": "Yeni Görev",
+        "dismissError": "Hatayı kapat",
+        "cancel": "İptal",
         "saving": "Kaydediliyor...",
-        "create": "Olu?tur",
-        "update": "G?ncelle"
+        "create": "Oluştur",
+        "update": "Güncelle"
       },
       "stats": {
         "total": "Toplam"
       },
       "filters": {
-        "allCategories": "T?m Kategoriler",
-        "allStatuses": "T?m Durumlar",
-        "allCompanies": "T?m Firmalar"
+        "allCategories": "Tüm Kategoriler",
+        "allStatuses": "Tüm Durumlar",
+        "allCompanies": "Tüm Firmalar"
       },
       "views": {
         "month": "Takvim",
@@ -4046,358 +4046,363 @@
       },
       "sidebar": {
         "categories": "Kategoriler",
-        "all": "T?m?",
+        "all": "Tümü",
         "addCategory": "Kategori Ekle",
-        "quickAdd": "H?zl? Ekle"
+        "quickAdd": "Hızlı Ekle"
       },
       "calendar": {
         "more": "+{count} daha"
       },
       "empty": {
-        "title": "Hen?z g?rev yok",
-        "description": "Yukar?daki Yeni G?rev butonuna t?klay?n."
+        "title": "Henüz görev yok",
+        "description": "Yukarıdaki Yeni Görev butonuna tıklayın."
       },
       "recurrence": {
-        "none": "Tekrars?z",
-        "daily": "G?nl?k",
-        "weekly": "Haftal?k",
-        "monthly": "Ayl?k",
-        "quarterly": "3 Ayl?k",
-        "biannual": "Alt? Ayl?k",
-        "annual": "Y?ll?k"
+        "none": "Tekrarsız",
+        "daily": "Günlük",
+        "weekly": "Haftalık",
+        "monthly": "Aylık",
+        "quarterly": "3 Aylık",
+        "biannual": "Altı Aylık",
+        "annual": "Yıllık"
       },
       "status": {
-        "planned": "Planland?",
+        "planned": "Planlandı",
         "in_progress": "Devam Ediyor",
-        "completed": "Tamamland?",
-        "overdue": "Gecikmi?",
-        "cancelled": "?ptal Edildi"
+        "completed": "Tamamlandı",
+        "overdue": "Gecikmiş",
+        "cancelled": "İptal Edildi"
       },
       "categories": {
         "periodicControl": "Periyodik Kontrol",
-        "training": "E?itim",
-        "healthFollowUp": "Sa?l?k Takibi",
-        "meetingDrill": "Toplant? & Tatbikat",
-        "legalObligation": "Yasal Y?k?ml?l?k",
+        "training": "Eğitim",
+        "healthFollowUp": "Sağlık Takibi",
+        "meetingDrill": "Toplantı & Tatbikat",
+        "legalObligation": "Yasal Yükümlülük",
         "fieldVisit": "Saha Ziyareti",
-        "ohsCommitteeMeeting": "?SG Kurul Toplant?s?",
-        "other": "Di?er"
+        "ohsCommitteeMeeting": "İSG Kurul Toplantısı",
+        "other": "Diğer"
       },
       "modal": {
-        "newTitle": "Yeni G?rev",
-        "editTitle": "G?revi D?zenle",
+        "newTitle": "Yeni Görev",
+        "editTitle": "Görevi Düzenle",
         "optional": "- opsiyonel",
         "fields": {
-          "title": "Ba?l?k *",
-          "description": "A??klama",
+          "title": "Başlık *",
+          "description": "Açıklama",
           "category": "Kategori",
           "status": "Durum",
           "company": "Firma",
-          "startDate": "Ba?lang?? Tarihi *",
-          "endDate": "Biti? Tarihi",
+          "startDate": "Başlangıç Tarihi *",
+          "endDate": "Bitiş Tarihi",
           "recurrence": "Tekrar",
-          "reminderDays": "Hat?rlatma (g?n ?nce)",
+          "reminderDays": "Hatırlatma (gün önce)",
           "includeTimesheet": "Puantaja Ekle",
-          "timesheetHours": "?al??ma S?resi (saat)",
-          "hourlyRate": "Saat ?creti"
+          "timesheetHours": "Çalışma Süresi (saat)",
+          "hourlyRate": "Saat Ücreti"
         },
         "placeholders": {
-          "title": "G?rev ba?l???",
-          "description": "G?rev a??klamas?...",
-          "category": "Kategori se?in...",
-          "company": "Firma se?in...",
-          "hours": "?r: 4.5",
-          "rate": "?r: 250"
+          "title": "Görev başlığı",
+          "description": "Görev açıklaması...",
+          "category": "Kategori seçin...",
+          "company": "Firma seçin...",
+          "hours": "Örn: 4.5",
+          "rate": "Örn: 250"
         }
-      }
+      },
+      "errors": {
+        "orgNotFound": "Kuruluş bilgisi bulunamadı. Lütfen tekrar giriş yapın.",
+        "saveFailed": "Kayıt sırasında bir hata oluştu."
+      },
+      "confirmDeleteTask": "Bu görevi silmek istediğinizden emin misiniz?"
     },
     "yearlyTraining": {
       "defaultTrainings": [
         {
           "category": "genel",
-          "title": "?? sa?l??? ve g?venli?i ?al??ma mevzuat? ile ilgili bilgiler",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "İş sağlığı ve güvenliği mevzuatı ile ilgili bilgiler",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "genel",
-          "title": "?al??anlar?n hak ve sorumluluklar? hakk?nda genel bilgiler",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "Çalışanların hak ve sorumlulukları hakkında genel bilgiler",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "genel",
-          "title": "?? yeri temizli?i ve d?zeni",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "İş yeri temizliği ve düzeni",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "genel",
-          "title": "?? kazas? ve meslek hastal???ndan do?an hukuki sonu?lar",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "İş kazası ve meslek hastalığından doğan hukuki sonuçlar",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "saglik",
-          "title": "Meslek hastal?klar?n?n sebepleri",
-          "trainer": "??yeri Hekimi",
-          "audience": "?al??anlar"
+          "title": "Meslek hastalıklarının sebepleri",
+          "trainer": "İşyeri Hekimi",
+          "audience": "Çalışanlar"
         },
         {
           "category": "saglik",
-          "title": "Meslek hastal?klar?ndan korunma prensipleri ve korunma tekniklerinin uygulanmas?",
-          "trainer": "??yeri Hekimi",
-          "audience": "?al??anlar"
+          "title": "Meslek hastalıklarından korunma prensipleri ve korunma tekniklerinin uygulanması",
+          "trainer": "İşyeri Hekimi",
+          "audience": "Çalışanlar"
         },
         {
           "category": "saglik",
-          "title": "Biyolojik risk etkenleri ve biyolojik risk etkenlerinin sebep olduklar? meslek hastal?klar?",
-          "trainer": "??yeri Hekimi",
-          "audience": "?al??anlar"
+          "title": "Biyolojik risk etkenleri ve biyolojik risk etkenlerinin sebep olduğu meslek hastalıkları",
+          "trainer": "İşyeri Hekimi",
+          "audience": "Çalışanlar"
         },
         {
           "category": "saglik",
-          "title": "?lk yard?m ve kurtarma teknikleri",
-          "trainer": "D?? E?itim (?lk Yard?mc?)",
-          "audience": "Se?ili ?al??anlar"
+          "title": "İlk yardım ve kurtarma teknikleri",
+          "trainer": "Dış Eğitim (İlk Yardımcı)",
+          "audience": "Seçili çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "Kimyasal maddelerle ?al??ma risk etmenleri",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "Kimyasal maddelerle çalışma risk etmenleri",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
           "title": "Fiziksel risk etmenleri",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
           "title": "Ergonomik risk etmenleri",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "Elle kald?rma ve ta??ma",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "Elle kaldırma ve taşıma",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "Parlama, patlama, yang?n ve yang?ndan korunma",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "Parlama, patlama, yangın ve yangından korunma",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "?? ekipmanlar?n?n g?venli kullan?m? ve riskleri",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "İş ekipmanlarının güvenli kullanımı ve riskleri",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "Ekranl? ara?larda ?al??ma ve riskleri",
-          "trainer": "?SG Uzman?",
-          "audience": "Ofis ?al??anlar?"
+          "title": "Ekranlı araçlarda çalışma ve riskleri",
+          "trainer": "İSG Uzmanı",
+          "audience": "Ofis çalışanları"
         },
         {
           "category": "teknik",
-          "title": "Elektrik, tehlikeleri, riskleri ve ?nlemleri",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "Elektrik, tehlikeleri, riskleri ve önlemleri",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "?? kazalar?n?n sebepleri ve korunma prensipleri",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "İş kazalarının sebepleri ve korunma prensipleri",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "D??me ve sa?l?k ?arpmalar? (kazalardan korunma)",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "Düşme ve sağlık çarpmaları (kazalardan korunma)",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "Ki?isel koruyucu donan?m se?imi ve kullan?m?",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "Kişisel koruyucu donanım seçimi ve kullanımı",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "?? sa?l??? ve g?venli?i genel kurallar? ve temel g?venlik",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "İş sağlığı ve güvenliği genel kuralları ve temel güvenlik",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
           "title": "Tahliye ve kurtarma",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
           "title": "Kaza ve yaralanma sebepleri ile korunma prensipleri",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "?? hijyeni ve ?al??ma ortam?ndan do?an riskler",
-          "trainer": "?SG Uzman?",
-          "audience": "?al??anlar"
+          "title": "İş hijyeni ve çalışma ortamından doğan riskler",
+          "trainer": "İSG Uzmanı",
+          "audience": "Çalışanlar"
         },
         {
           "category": "teknik",
-          "title": "Y?ksekte ?al??ma",
-          "trainer": "D?? E?itim",
-          "audience": "?lgili ?al??anlar"
+          "title": "Yüksekte çalışma",
+          "trainer": "Dış Eğitim",
+          "audience": "İlgili çalışanlar"
         }
       ],
       "errors": {
-        "noSupabase": "Supabase ba?lant?s? yok",
-        "loadFailed": "Plan y?klenemedi",
-        "selectCompany": "L?tfen bir firma se?in",
-        "sessionNotFound": "Oturum bulunamad?",
-        "orgNotFound": "Organizasyon bilgisi bulunamad?",
-        "saveFailed": "Kay?t ba?ar?s?z"
+        "noSupabase": "Supabase bağlantısı yok",
+        "loadFailed": "Plan yüklenemedi",
+        "selectCompany": "Lütfen bir firma seçin",
+        "sessionNotFound": "Oturum bulunamadı",
+        "orgNotFound": "Organizasyon bilgisi bulunamadı",
+        "saveFailed": "Kayıt başarısız"
       },
       "card": {
-        "title": "Y?ll?k ?SG E?itim Plan?",
-        "description": "?SG E?itim Usul ve Esaslar? Y?netmeli?i gere?i 24 standart e?itim konusu. Firma ? y?l bazl? ar?ivlenir; planlanan tarih, s?re, ger?ekle?en tarih, sertifika ve kat?l?m sat?r baz?nda d?zenlenebilir."
+        "title": "Yıllık İSG Eğitim Planı",
+        "description": "İSG Eğitimlerinin Usul ve Esasları Hakkında Yönetmelik gereği 24 standart eğitim konusu. Firma × yıl bazlı arşivlenir; planlanan tarih, süre, gerçekleşen tarih, sertifika ve katılım satır bazında düzenlenebilir."
       },
       "fields": {
         "company": "Firma",
-        "companyPlaceholder": "Firma se?in",
-        "year": "E?itim Y?l?"
+        "companyPlaceholder": "Firma seçin",
+        "year": "Eğitim Yılı"
       },
       "signers": {
-        "blockLabel": "?mzac?lar (PDF'in alt b?l?m?nde imza alanlar?na yaz?l?r)",
-        "employer": "??veren / ??veren Vekili",
+        "blockLabel": "İmzacılar (PDF'in alt bölümünde imza alanlarına yazılır)",
+        "employer": "İşveren / İşveren Vekili",
         "employerPlaceholder": "Ad Soyad",
-        "physician": "??yeri Hekimi",
+        "physician": "İşyeri Hekimi",
         "physicianPlaceholder": "Dr. Ad Soyad",
-        "safetyExpert": "?? G?venli?i Uzman?",
-        "safetyExpertPlaceholder": "Ad Soyad ? S?n?f (A/B/C)"
+        "safetyExpert": "İş Güvenliği Uzmanı",
+        "safetyExpertPlaceholder": "Ad Soyad · Sınıf (A/B/C)"
       },
       "actions": {
         "saving": "Kaydediliyor...",
         "saved": "Kaydedildi",
         "save": "Kaydet",
-        "pdfPrint": "PDF olarak indir / yazd?r",
-        "archivedBadge": "Bu firma i?in {year} e?itim plan? ar?ivde mevcut"
+        "pdfPrint": "PDF olarak indir / yazdır",
+        "archivedBadge": "Bu firma için {year} eğitim planı arşivde mevcut"
       },
-      "loading": "Plan y?kleniyor...",
+      "loading": "Plan yükleniyor...",
       "preview": {
-        "title": "?nizleme & D?zenleme",
-        "description": "Sat?rlar? d?zenleyin: tarih / s?re / sertifika / kat?l?m"
+        "title": "Önizleme ve düzenleme",
+        "description": "Satırları düzenleyin: tarih / süre / sertifika / katılım"
       },
       "table": {
-        "topic": "E?itim Konusu",
-        "trainer": "E?itimi Verecek",
-        "audience": "Kat?l?mc?",
+        "topic": "Eğitim konusu",
+        "trainer": "Eğitimi verecek",
+        "audience": "Katılımcı",
         "planned": "Planlanan",
-        "duration": "S?re",
-        "realized": "Ger?ekle?en",
+        "duration": "Süre",
+        "realized": "Gerçekleşen",
         "certificate": "Sertifika",
-        "attendance": "Kat?l?m",
-        "addRow": "Sat?r ekle",
-        "deleteRowAria": "Sat?r? sil"
+        "attendance": "Katılım",
+        "addRow": "Satır ekle",
+        "deleteRowAria": "Satırı sil"
       },
       "categories": {
         "genel": "GENEL KONULAR (4 saat)",
-        "saglik": "SA?LIK KONULARI (4 saat)",
-        "teknik": "TEKN?K KONULAR (4 saat)"
+        "saglik": "SAĞLIK KONULARI (4 saat)",
+        "teknik": "TEKNİK KONULAR (4 saat)"
       },
       "certificate": {
         "yes": "Var",
         "no": "Yok",
-        "empty": "?"
+        "empty": "—"
       },
       "defaults": {
-        "trainer": "?SG Uzman?",
-        "audience": "?al??anlar"
+        "trainer": "İSG Uzmanı",
+        "audience": "Çalışanlar"
       },
       "pdf": {
-        "htmlTitle": "Y?ll?k ?SG E?itim Plan? ? {companyName}",
-        "mainTitle": "YILLIK E??T?M PLANI",
-        "headerLine": "F?RMA: {companyName} ? YIL: {year}",
+        "htmlTitle": "Yıllık İSG Eğitim Planı — {companyName}",
+        "mainTitle": "YILLIK EĞİTİM PLANI",
+        "headerLine": "FİRMA: {companyName} · YIL: {year}",
         "colNo": "No",
-        "colTopic": "E?itim Konusu",
-        "colTrainer": "E?itimi Verecek",
-        "colAudience": "Kat?l?mc?",
+        "colTopic": "Eğitim konusu",
+        "colTrainer": "Eğitimi verecek",
+        "colAudience": "Katılımcı",
         "colPlanned": "Planlanan",
-        "colDuration": "S?re",
-        "colRealized": "Ger?ekle?en",
+        "colDuration": "Süre",
+        "colRealized": "Gerçekleşen",
         "colCertificate": "Sertifika",
-        "colAttendance": "Kat?l?m",
-        "sigEmployer": "??veren",
-        "sigPhysician": "??yeri Hekimi",
-        "sigSafety": "?? G?venli?i Uzman?",
-        "sigLine": "?mza / Tarih",
-        "empty": "?"
+        "colAttendance": "Katılım",
+        "sigEmployer": "İşveren",
+        "sigPhysician": "İşyeri Hekimi",
+        "sigSafety": "İş Güvenliği Uzmanı",
+        "sigLine": "İmza / Tarih",
+        "empty": "—"
       }
     },
     "timesheet": {
       "months": [
         "Ocak",
-        "?ubat",
+        "Şubat",
         "Mart",
         "Nisan",
-        "May?s",
+        "Mayıs",
         "Haziran",
         "Temmuz",
-        "A?ustos",
-        "Eyl?l",
+        "Ağustos",
+        "Eylül",
         "Ekim",
-        "Kas?m",
-        "Aral?k"
+        "Kasım",
+        "Aralık"
       ],
       "title": "Puantaj",
-      "defaultProfessional": "?SG Profesyoneli",
+      "defaultProfessional": "İSG profesyoneli",
       "tabs": {
         "grid": "Puantaj",
-        "archive": "Ar?iv",
+        "archive": "Arşiv",
         "settings": "Ayarlar"
       },
       "status": {
         "draft": "Taslak",
-        "submitted": "G?nderildi",
-        "approved": "Onayland?",
-        "paid": "?dendi"
+        "submitted": "Gönderildi",
+        "approved": "Onaylandı",
+        "paid": "Ödendi"
       },
       "actions": {
-        "submit": "G?nder",
+        "submit": "Gönder",
         "approve": "Onayla",
-        "markPaid": "?dendi Olarak ??aretle",
-        "revert": "Geri Al",
-        "previewPdf": "PDF ?nizle",
+        "markPaid": "Ödendi olarak işaretle",
+        "revert": "Geri al",
+        "previewPdf": "PDF önizle",
         "timesheetExcel": "Puantaj Excel",
         "payrollExcel": "Bordro Excel",
         "payrollPdf": "Bordro PDF",
-        "view": "G?r?nt?le",
+        "view": "Görüntüle",
         "delete": "Sil",
-        "cancel": "?ptal",
+        "cancel": "İptal",
         "saving": "Kaydediliyor..."
       },
       "stats": {
-        "workedDays": "?al???lan G?n",
-        "totalHours": "Toplam Saat",
-        "activeCompanies": "Aktif Firma",
-        "gross": "Br?t Tutar",
-        "stampTax": "Damga Vergisi",
-        "netPaid": "Net ?denen"
+        "workedDays": "Çalışılan gün",
+        "totalHours": "Toplam saat",
+        "activeCompanies": "Aktif firma",
+        "gross": "Brüt tutar",
+        "stampTax": "Damga vergisi",
+        "netPaid": "Net ödenen"
       },
       "filters": {
-        "allStatuses": "T?m Durumlar"
+        "allStatuses": "Tüm durumlar"
       },
       "empty": {
-        "noCompanies": "Firma bulunamad?",
-        "noArchive": "{year} y?l? i?in puantaj kayd? yok"
+        "noCompanies": "Firma bulunamadı",
+        "noArchive": "{year} yılı için puantaj kaydı yok"
       },
       "table": {
         "company": "Firma",
@@ -4405,81 +4410,81 @@
         "total": "TOPLAM"
       },
       "archive": {
-        "period": "D?nem",
+        "period": "Dönem",
         "status": "Durum",
-        "actions": "??lemler"
+        "actions": "İşlemler"
       },
       "settings": {
-        "headerTitle": "Antet Ayarlar?",
-        "headerType": "Antet Tipi",
+        "headerTitle": "Antet ayarları",
+        "headerType": "Antet tipi",
         "headerTypes": {
-          "custom": "?zel",
+          "custom": "Özel",
           "government": "Resmi"
         },
-        "line1": "Sat?r 1 (Ana Ba?l?k)",
-        "line2": "Sat?r 2 (Alt Ba?l?k)",
-        "line3": "Sat?r 3 (Ek Bilgi)",
-        "line1Placeholder": "?r: T.C. ?al??ma ve Sosyal G?venlik Bakanl???",
-        "line2Placeholder": "?r: ?? Sa?l??? ve G?venli?i Hizmetleri",
-        "line3Placeholder": "?r: Ayl?k ?al??ma ?izelgesi",
-        "professionalTitle": "Profesyonel Bilgileri",
+        "line1": "Satır 1 (ana başlık)",
+        "line2": "Satır 2 (alt başlık)",
+        "line3": "Satır 3 (ek bilgi)",
+        "line1Placeholder": "Örn: T.C. Çalışma ve Sosyal Güvenlik Bakanlığı",
+        "line2Placeholder": "Örn: İş sağlığı ve güvenliği hizmetleri",
+        "line3Placeholder": "Örn: Aylık çalışma çizelgesi",
+        "professionalTitle": "Profesyonel bilgileri",
         "professionalRole": "Unvan",
-        "professionalRolePlaceholder": "?r: ?? G?venli?i Uzman? (A S?n?f?)",
-        "certificateNo": "Sicil / Belge No",
-        "certificateNoPlaceholder": "e.g. ISG-A-12345",
-        "payrollTitle": "Bordro Ayarlar?",
-        "governmentEmployee": "Memur / Kamu ?al??an?",
-        "salaryCoefficient": "Maa? Katsay?s?",
-        "baseIndicator": "G?sterge",
-        "stampTaxRate": "Damga Vergisi Oran?",
-        "formulaTitle": "Hesaplama Form?l?:",
-        "hourlyRateFormula": "Saatlik ?cret = G?sterge ({indicator}) ? Katsay? ({coefficient}) = ?{amount}",
-        "grossFormula": "Br?t Tutar = Saatlik ?cret ? Toplam Saat",
-        "stampFormula": "Damga Vergisi = Br?t Tutar ? %{rate}",
-        "netFormula": "Net ?denen = Br?t Tutar ? Damga Vergisi",
-        "footerNote": "Alt Not",
-        "footerNotePlaceholder": "Excel/PDF ??kt?s?n?n alt k?sm?nda g?r?necek not...",
-        "save": "Ayarlar? Kaydet",
+        "professionalRolePlaceholder": "Örn: İş güvenliği uzmanı (A sınıfı)",
+        "certificateNo": "Sicil / belge no.",
+        "certificateNoPlaceholder": "örn. ISG-A-12345",
+        "payrollTitle": "Bordro ayarları",
+        "governmentEmployee": "Memur / kamu çalışanı",
+        "salaryCoefficient": "Maaş katsayısı",
+        "baseIndicator": "Gösterge",
+        "stampTaxRate": "Damga vergisi oranı",
+        "formulaTitle": "Hesaplama formülü:",
+        "hourlyRateFormula": "Saatlik ücret = Gösterge ({indicator}) × Katsayı ({coefficient}) = ₺{amount}",
+        "grossFormula": "Brüt tutar = saatlik ücret × toplam saat",
+        "stampFormula": "Damga vergisi = brüt tutar × %{rate}",
+        "netFormula": "Net ödenen = brüt tutar − damga vergisi",
+        "footerNote": "Alt not",
+        "footerNotePlaceholder": "Excel/PDF çıktısının alt kısmında görünecek not...",
+        "save": "Ayarları kaydet",
         "saved": "Ayarlar kaydedildi.",
         "errorPrefix": "Hata: {message}",
         "errorPrefixStart": "Hata"
       },
       "delete": {
-        "title": "Puantaj? Sil",
-        "description": "Bu puantaj ve t?m giri?leri kal?c? olarak silinecek. Emin misiniz?"
+        "title": "Puantajı sil",
+        "description": "Bu puantaj ve tüm girişleri kalıcı olarak silinecek. Emin misiniz?"
       },
       "pdf": {
-        "title": "Puantaj - {month} {year}",
-        "previewTitle": "PDF ?nizleme",
-        "printDownload": "Yazd?r / PDF ?ndir",
-        "preparedBy": "D?zenleyen",
+        "title": "Puantaj — {month} {year}",
+        "previewTitle": "PDF önizleme",
+        "printDownload": "Yazdır / PDF indir",
+        "preparedBy": "Düzenleyen",
         "approvedBy": "Onaylayan",
-        "employerRepresentative": "??veren / Yetkilisi",
-        "workScheduleTitle": "{month} {year} ? ?al??ma ?izelgesi",
-        "narrative": "Yukar?da belirtilen g?revli {profileName} taraf?ndan {year} y?l? {month} ay?nda toplam {total} saat i? g?venli?i hizmeti verilmi?tir."
+        "employerRepresentative": "İşveren / yetkilisi",
+        "workScheduleTitle": "{month} {year} — çalışma çizelgesi",
+        "narrative": "Yukarıda belirtilen görevli {profileName} tarafından {year} yılı {month} ayında toplam {total} saat iş güvenliği hizmeti verilmiştir."
       },
       "payroll": {
         "title": "Bordro",
-        "calculationTitle": "Memur Bordro Hesab?",
-        "pdfTitle": "Bordro - {month} {year}",
-        "periodLine": "Ait Oldu?u Ay: {month}   Y?l: {year}",
-        "pdfMainTitle": "?E??TL? ?DEMELER BORDROSU",
+        "calculationTitle": "Memur bordro hesabı",
+        "pdfTitle": "Bordro — {month} {year}",
+        "periodLine": "Ait olduğu ay: {month}   Yıl: {year}",
+        "pdfMainTitle": "ÇEŞİTLİ ÖDEMELER BORDROSU",
         "warning": "UYARI",
-        "legalNotice": "?deme bordrosu 6331 say?l? ?? Sa?l??? ve G?venli?i Kanununun 8. maddesine uygun ?ekilde haz?rlanm??t?r.",
+        "legalNotice": "Ödeme bordrosu 6331 sayılı İş Sağlığı ve Güvenliği Kanununun 8. maddesine uygun şekilde hazırlanmıştır.",
         "columns": {
           "no": "S.N.",
           "fullName": "ADI SOYADI",
-          "salaryCoefficient": "Memur Maa? Katsay?s?",
-          "paymentCoefficient": "?deme Katsay?s?",
-          "hourlyRate": "Saatlik ?cret (TL)",
-          "assignmentHours": "G?revlendirme S?resi (Saat)",
-          "gross": "Br?t Tutar (TL)",
-          "stampTax": "Damga Vergisi Kesintisi (TL)",
-          "netPaid": "Net ?denen (TL)"
+          "salaryCoefficient": "Memur maaş katsayısı",
+          "paymentCoefficient": "Ödeme katsayısı",
+          "hourlyRate": "Saatlik ücret (TL)",
+          "assignmentHours": "Görevlendirme süresi (saat)",
+          "gross": "Brüt tutar (TL)",
+          "stampTax": "Damga vergisi kesintisi (TL)",
+          "netPaid": "Net ödenen (TL)"
         },
-        "indicatorCoefficient": "G?sterge ? Katsay?",
-        "hourlyRate": "Saatlik ?cret",
-        "stampTaxWithRate": "Damga Vergisi (%{rate})"
+        "indicatorCoefficient": "Gösterge × katsayı",
+        "hourlyRate": "Saatlik ücret",
+        "stampTaxWithRate": "Damga vergisi (%{rate})"
       }
     }
   },

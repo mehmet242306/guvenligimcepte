@@ -2709,7 +2709,12 @@
           "hours": "e.g. 4.5",
           "rate": "e.g. 250"
         }
-      }
+      },
+      "errors": {
+        "orgNotFound": "Organisation information not found. Please sign in again.",
+        "saveFailed": "An error occurred while saving."
+      },
+      "confirmDeleteTask": "Are you sure you want to delete this task?"
     },
     "yearlyTraining": {
       "defaultTrainings": [
