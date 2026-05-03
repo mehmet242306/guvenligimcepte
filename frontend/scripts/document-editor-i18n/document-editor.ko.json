@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "새 문서",
+  "loading": "문서를 불러오는 중…",
+  "titlePlaceholder": "문서 제목…",
+  "editorPlaceholder": "여기에 문서 내용을 입력하세요…",
+  "breadcrumb": {
+    "backToLibrary": "라이브러리로 돌아가기",
+    "documents": "문서"
+  },
+  "status": {
+    "taslak": "초안",
+    "hazir": "준비됨",
+    "onay_bekliyor": "승인 대기",
+    "revizyon": "개정",
+    "arsiv": "보관됨"
+  },
+  "saveLocation": {
+    "customDocs": "개인 문서",
+    "companyDocs": "회사 문서"
+  },
+  "saveNotice": "저장됨: {path}",
+  "continueEditingHint": "문서가 열린 채로 유지됩니다. 계속 편집할 수 있습니다.",
+  "autosaveError": "자동 저장을 완료할 수 없습니다.",
+  "saveErrorUnexpected": "문서 저장 중 예기치 않은 오류가 발생했습니다.",
+  "confirmClear": "편집기 내용이 지워집니다. 계속할까요?",
+  "tooltips": {
+    "clearPage": "페이지 지우기",
+    "aiPanelClose": "AI 패널 닫기",
+    "aiAssistant": "AI 도우미",
+    "shareDisabled": "먼저 문서를 저장하세요",
+    "shareEnabled": "QR 코드, 링크 또는 WhatsApp으로 공유",
+    "signDisabled": "먼저 문서를 저장하세요",
+    "signEnabled": "전자서명 / 모바일 서명으로 서명"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "공유",
+    "sign": "서명",
+    "signWithCount": "서명 ({count})",
+    "save": "저장",
+    "saving": "저장 중…",
+    "saved": "저장됨!"
+  },
+  "pdf": {
+    "qrAlt": "QR 확인",
+    "verificationCaption": "RiskNova 확인"
+  },
+  "floatingAi": {
+    "ariaOpen": "AI 도우미 열기",
+    "tooltip": "AI 도우미",
+    "label": "AI 도우미"
+  },
+  "sidebarCloseMobile": "AI 패널 닫기",
+  "validationQr": "확인: /share/{token}",
+  "statusBar": {
+    "words": "{count}단어",
+    "chars": "{count}자",
+    "saving": "저장 중…",
+    "lastSave": "마지막 저장:",
+    "neverSaved": "아직 저장되지 않음"
+  },
+  "signatureDefaults": {
+    "signerName": "서명자",
+    "signerRole": "산업안전보건 전문가"
+  },
+  "toolbar": {
+    "undo": "실행 취소 (Ctrl+Z)",
+    "redo": "다시 실행 (Ctrl+Y)",
+    "fontSizeTitle": "글꼴 크기",
+    "fontSizeButton": "크기",
+    "insertTable": "표 삽입",
+    "tableSizeHint": "표 크기 선택",
+    "removeColor": "색 제거",
+    "heading1": "제목 1",
+    "heading2": "제목 2",
+    "heading3": "제목 3",
+    "bold": "굵게 (Ctrl+B)",
+    "italic": "기울임 (Ctrl+I)",
+    "underline": "밑줄 (Ctrl+U)",
+    "strike": "취소선",
+    "textColor": "글자 색",
+    "highlightColor": "강조 색",
+    "alignLeft": "왼쪽 맞춤",
+    "alignCenter": "가운데 맞춤",
+    "alignRight": "오른쪽 맞춤",
+    "alignJustify": "양쪽 맞춤",
+    "bulletList": "글머리 기호",
+    "orderedList": "번호 매기기",
+    "blockquote": "인용",
+    "hr": "가로줄",
+    "print": "인쇄 (Ctrl+P)"
+  },
+  "shareModal": {
+    "title": "문서 공유",
+    "linkTitle": "공유 링크",
+    "linkOn": "링크가 있으면 누구나 볼 수 있음",
+    "linkOff": "공유 꺼짐",
+    "copyLinkTitle": "링크 복사",
+    "qrCaption": "QR 코드를 스캔하여 문서 열기",
+    "otherNative": "기타"
+  },
+  "signatureModal": {
+    "title": "문서 서명",
+    "canvasHint": "아래 영역에 서명을 그리세요",
+    "clear": "지우기",
+    "legal": "서명함으로써 본 문서 내용을 읽고 승인했음을 확인합니다. 서명은 디지털로 저장되며 문서 무결성은 해시로 검증할 수 있습니다.",
+    "cancel": "취소",
+    "sign": "서명 및 확인",
+    "signing": "서명 중…",
+    "errorAlert": "서명 저장 중 오류가 발생했습니다."
+  },
+  "ai": {
+    "title": "AI 도우미",
+    "subtitleWithCompany": "{company}를 위한 콘텐츠 생성 및 편집",
+    "subtitleNoCompany": "콘텐츠 생성 및 편집",
+    "quick": {
+      "fullDoc": {
+        "label": "전체 문서 만들기",
+        "prompt": "이 문서를 전문적으로 작성하세요. 모든 섹션, 표, 법적 참조를 포함하세요. 회사 정보를 본문에 넣고 빈 자리 표시자를 남기지 마세요."
+      },
+      "intro": {
+        "label": "서론 작성",
+        "prompt": "이 문서의 전문적인 서론 및 목적 절을 작성하세요. 회사명과 업종을 사용하세요."
+      },
+      "legal": {
+        "label": "법적 근거 추가",
+        "prompt": "터키 산업보건법 6331호 및 관련 규정에 따른 법적 근거 절을 준비하세요(필요 시 관할에 맞게 참조를 조정)."
+      },
+      "regs": {
+        "label": "법령 참조",
+        "prompt": "이 문서 유형에 적용되는 모든 법령 참조를 나열하세요."
+      }
+    },
+    "customRequestLabel": "사용자 요청",
+    "customRequestPlaceholder": "무엇을 생성할까요?",
+    "improveSelected": "선택한 텍스트 개선",
+    "improveHint": "편집기에서 텍스트를 선택한 뒤 이 버튼을 클릭하세요.",
+    "generating": "콘텐츠 생성 중…",
+    "generatingMobileNote": "모바일에서 연결이 느리면 기다리지 않도록 로컬 초안을 준비합니다.",
+    "emptyState": "위 버튼 중 하나를 클릭하여 AI로 콘텐츠 생성을 시작하세요.",
+    "resultInserted": "편집기에 추가됨",
+    "resultDegraded": "로컬 초안",
+    "resultDefault": "AI 결과",
+    "copy": "복사",
+    "degradedNotice": "AI 서비스가 보호 모드로 실행되었습니다. 로컬 초안이 생성되었으며 편집 후 저장할 수 있습니다.",
+    "degradedQueue": "대기 작업: {taskId}",
+    "degradedQueueHint": "요청이 백그라운드에서 처리 중일 수 있습니다. 잠시 후 다시 시도하세요.",
+    "addToEditor": "편집기에 추가",
+    "addDegradedToEditor": "로컬 초안을 편집기에 추가",
+    "insertedSuccess": "콘텐츠가 편집기에 성공적으로 추가되었습니다",
+    "improveDialogTitle": "텍스트 개선",
+    "improveSelectedLabel": "선택한 텍스트:",
+    "improveChooseType": "어떤 개선을 적용할까요?",
+    "improveCustomPlaceholder": "사용자 지정 개선 요청…",
+    "improveTextBlockLabel": "개선할 텍스트:",
+    "errors": {
+      "quotaDefault": "문서 AI 패키지 한도에 도달했습니다. 계속하려면 요금제를 업그레이드하세요.",
+      "serviceUnavailable": "오류: AI 서비스가 응답하지 않습니다. 다시 시도하세요.",
+      "emptyResponseWithFallback": "AI가 빈 응답을 반환했습니다. 모바일에서 멈추지 않도록 로컬 초안을 준비했습니다.",
+      "abortWithFallback": "AI 요청이 시간 초과되었습니다. 모바일에서 기다리지 않도록 로컬 초안을 준비했습니다.",
+      "connectionWithFallback": "연결 오류가 발생했습니다. 모바일에서 결과가 비지 않도록 로컬 초안을 준비했습니다.",
+      "emptyResponseImprove": "AI가 빈 응답을 반환했습니다. 더 짧은 텍스트를 선택하세요.",
+      "abortImprove": "AI 요청이 시간 초과되었습니다. 더 짧은 텍스트를 선택하세요.",
+      "connectionImprove": "연결 오류. 다시 시도하세요.",
+      "serviceUnavailableImprove": "오류: AI 서비스가 응답하지 않습니다.",
+      "quotaShort": "문서 AI 패키지 한도에 도달했습니다."
+    },
+    "improve": {
+      "professionalize": {
+        "label": "더 전문적으로",
+        "prompt": "이 텍스트를 전문적인 산업보건 언어로 다시 쓰세요. 공식적이고 기업적인 어조를 사용하세요."
+      },
+      "shorten": {
+        "label": "줄이기",
+        "prompt": "핵심 의미를 잃지 않고 이 텍스트를 짧게 단순화하세요."
+      },
+      "detail": {
+        "label": "세부 추가",
+        "prompt": "이 텍스트를 더 자세하고 포괄적으로 확장하세요. 필요 시 누락 정보를 채우세요."
+      },
+      "legal": {
+        "label": "법적 참조 추가",
+        "prompt": "이 텍스트에 6331호 법 관련 조항과 규정 참조를 추가하세요(필요 시 관할에 맞게 조정)."
+      }
+    },
+    "fallback": {
+      "untitled": "문서 초안",
+      "sectionCompany": "회사 정보",
+      "tableHeaderField": "항목",
+      "tableHeaderValue": "값",
+      "rowCompany": "회사 / 조직",
+      "rowSector": "업종",
+      "rowHazard": "위험 등급",
+      "rowNace": "NACE 코드",
+      "rowEmployees": "직원 수",
+      "rowDate": "문서 날짜",
+      "placeholderCompany": "회사 정보가 추가됩니다",
+      "placeholderSector": "업종 정보가 추가됩니다",
+      "placeholderHazard": "위험 등급이 추가됩니다",
+      "placeholderNace": "NACE 정보가 추가됩니다",
+      "placeholderEmployees": "직원 수가 추가됩니다",
+      "sectionPurpose": "목적과 범위",
+      "paragraphScope": "이 문서는 {company}의 산업보건, 운영 및 기록 프로세스용으로 작성되었습니다.",
+      "sectionImplementation": "실시 원칙",
+      "bullet1": "책임자와 승인 흐름 정의",
+      "bullet2": "필요한 기록을 RiskNova에 보관",
+      "bullet3": "법적 근거 및 회사 절차 준수",
+      "bullet4": "부적합 및 중대 위험을 지체 없이 보고",
+      "sectionLegal": "법적 근거",
+      "legal1": "산업보건법 6331호(및 해당 국가 법규)",
+      "legal2": "관련 규정 및 회사 내부 절차",
+      "sectionSignature": "서명 및 승인",
+      "tableHeaderParty": "당사자",
+      "tableHeaderName": "이름 / 직함",
+      "tableHeaderSign": "서명",
+      "tableHeaderDate": "날짜",
+      "rowPreparer": "작성자",
+      "rowEmployer": "사용자 / 사용자 대표",
+      "specialistFallback": "산업보건 전문가"
+    }
+  }
+}

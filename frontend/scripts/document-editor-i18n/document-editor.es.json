@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "Nuevo documento",
+  "loading": "Cargando documento…",
+  "titlePlaceholder": "Título del documento…",
+  "editorPlaceholder": "Escriba aquí el contenido del documento…",
+  "breadcrumb": {
+    "backToLibrary": "Volver a la biblioteca",
+    "documents": "Documentos"
+  },
+  "status": {
+    "taslak": "Borrador",
+    "hazir": "Listo",
+    "onay_bekliyor": "Pendiente de aprobación",
+    "revizyon": "Revisión",
+    "arsiv": "Archivado"
+  },
+  "saveLocation": {
+    "customDocs": "Documentos personales",
+    "companyDocs": "Documentos de la empresa"
+  },
+  "saveNotice": "Guardado: {path}",
+  "continueEditingHint": "El documento sigue abierto; puede seguir editando.",
+  "autosaveError": "No se pudo completar el guardado automático.",
+  "saveErrorUnexpected": "Ocurrió un error inesperado al guardar el documento.",
+  "confirmClear": "Se borrará el contenido del editor. ¿Continuar?",
+  "tooltips": {
+    "clearPage": "Limpiar página",
+    "aiPanelClose": "Cerrar panel de IA",
+    "aiAssistant": "Asistente de IA",
+    "shareDisabled": "Guarde primero el documento",
+    "shareEnabled": "Compartir por código QR, enlace o WhatsApp",
+    "signDisabled": "Guarde primero el documento",
+    "signEnabled": "Firmar con firma electrónica / móvil"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "Compartir",
+    "sign": "Firmar",
+    "signWithCount": "Firmar ({count})",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "saved": "¡Guardado!"
+  },
+  "pdf": {
+    "qrAlt": "Verificación QR",
+    "verificationCaption": "Verificación RiskNova"
+  },
+  "floatingAi": {
+    "ariaOpen": "Abrir asistente de IA",
+    "tooltip": "Asistente de IA",
+    "label": "Asistente de IA"
+  },
+  "sidebarCloseMobile": "Cerrar panel de IA",
+  "validationQr": "Verificación: /share/{token}",
+  "statusBar": {
+    "words": "{count} palabras",
+    "chars": "{count} caracteres",
+    "saving": "Guardando…",
+    "lastSave": "Último guardado:",
+    "neverSaved": "Aún no guardado"
+  },
+  "signatureDefaults": {
+    "signerName": "Firmante",
+    "signerRole": "Especialista en PRL"
+  },
+  "toolbar": {
+    "undo": "Deshacer (Ctrl+Z)",
+    "redo": "Rehacer (Ctrl+Y)",
+    "fontSizeTitle": "Tamaño de fuente",
+    "fontSizeButton": "Tamaño",
+    "insertTable": "Insertar tabla",
+    "tableSizeHint": "Elija el tamaño de la tabla",
+    "removeColor": "Quitar color",
+    "heading1": "Título 1",
+    "heading2": "Título 2",
+    "heading3": "Título 3",
+    "bold": "Negrita (Ctrl+B)",
+    "italic": "Cursiva (Ctrl+I)",
+    "underline": "Subrayado (Ctrl+U)",
+    "strike": "Tachado",
+    "textColor": "Color del texto",
+    "highlightColor": "Color de resaltado",
+    "alignLeft": "Alinear a la izquierda",
+    "alignCenter": "Centrar",
+    "alignRight": "Alinear a la derecha",
+    "alignJustify": "Justificar",
+    "bulletList": "Lista con viñetas",
+    "orderedList": "Lista numerada",
+    "blockquote": "Cita",
+    "hr": "Línea horizontal",
+    "print": "Imprimir (Ctrl+P)"
+  },
+  "shareModal": {
+    "title": "Compartir documento",
+    "linkTitle": "Enlace de uso compartido",
+    "linkOn": "Cualquiera con el enlace puede verlo",
+    "linkOff": "Uso compartido desactivado",
+    "copyLinkTitle": "Copiar enlace",
+    "qrCaption": "Escanee el código QR para abrir el documento",
+    "otherNative": "Otro"
+  },
+  "signatureModal": {
+    "title": "Firmar documento",
+    "canvasHint": "Dibuje su firma en el área inferior",
+    "clear": "Borrar",
+    "legal": "Al firmar confirma que ha leído y aprueba este documento. Su firma se guardará de forma digital y la integridad del documento podrá verificarse con un hash.",
+    "cancel": "Cancelar",
+    "sign": "Firmar y confirmar",
+    "signing": "Firmando…",
+    "errorAlert": "Ocurrió un error al guardar la firma."
+  },
+  "ai": {
+    "title": "Asistente de IA",
+    "subtitleWithCompany": "Generación y edición de contenido para {company}",
+    "subtitleNoCompany": "Generación y edición de contenido",
+    "quick": {
+      "fullDoc": {
+        "label": "Crear documento completo",
+        "prompt": "Cree este documento de forma profesional. Incluya todas las secciones, tablas y referencias legales. Incorpore la información de la empresa en el contenido; no deje marcadores vacíos."
+      },
+      "intro": {
+        "label": "Escribir introducción",
+        "prompt": "Escriba una introducción y una sección de propósito profesionales para este documento. Use el nombre de la empresa y el sector."
+      },
+      "legal": {
+        "label": "Añadir base legal",
+        "prompt": "Prepare una sección de base legal según la ley turca 6331 de salud y seguridad en el trabajo y normativas relacionadas (adapte las referencias a la jurisdicción aplicable si procede)."
+      },
+      "regs": {
+        "label": "Referencias legislativas",
+        "prompt": "Enumere todas las referencias legislativas aplicables a este tipo de documento."
+      }
+    },
+    "customRequestLabel": "Solicitud personalizada",
+    "customRequestPlaceholder": "¿Qué desea que genere?",
+    "improveSelected": "Mejorar texto seleccionado",
+    "improveHint": "Seleccione texto en el editor y pulse este botón.",
+    "generating": "Generando contenido…",
+    "generatingMobileNote": "Si la conexión es lenta en el móvil, el sistema prepara un borrador local para que no se quede esperando.",
+    "emptyState": "Pulse uno de los botones de arriba para empezar a generar contenido con IA.",
+    "resultInserted": "Añadido al editor",
+    "resultDegraded": "Borrador local",
+    "resultDefault": "Resultado de IA",
+    "copy": "Copiar",
+    "degradedNotice": "El servicio de IA funcionó en modo protegido. Se generó un borrador local; puede editarlo y guardarlo.",
+    "degradedQueue": "Tarea en cola: {taskId}",
+    "degradedQueueHint": "La solicitud puede seguir procesándose en segundo plano; inténtelo de nuevo en breve.",
+    "addToEditor": "Añadir al editor",
+    "addDegradedToEditor": "Añadir borrador local al editor",
+    "insertedSuccess": "El contenido se añadió correctamente al editor",
+    "improveDialogTitle": "Mejorar texto",
+    "improveSelectedLabel": "Texto seleccionado:",
+    "improveChooseType": "¿Qué tipo de mejora desea aplicar?",
+    "improveCustomPlaceholder": "Solicitud de mejora personalizada…",
+    "improveTextBlockLabel": "Texto a mejorar:",
+    "errors": {
+      "quotaDefault": "Ha alcanzado el límite del paquete de IA para documentos. Mejore su plan para continuar.",
+      "serviceUnavailable": "Error: el servicio de IA no responde. Inténtelo de nuevo.",
+      "emptyResponseWithFallback": "La IA devolvió una respuesta vacía. Se preparó un borrador local para que la acción no se detenga en el móvil.",
+      "abortWithFallback": "La solicitud a la IA agotó el tiempo de espera. Se preparó un borrador local para no esperar en el móvil.",
+      "connectionWithFallback": "Error de conexión. Se preparó un borrador local para que el resultado no quede vacío en el móvil.",
+      "emptyResponseImprove": "La IA devolvió una respuesta vacía. Seleccione un fragmento de texto más corto.",
+      "abortImprove": "La solicitud a la IA agotó el tiempo de espera. Seleccione un fragmento más corto.",
+      "connectionImprove": "Error de conexión. Inténtelo de nuevo.",
+      "serviceUnavailableImprove": "Error: el servicio de IA no responde.",
+      "quotaShort": "Ha alcanzado el límite del paquete de IA para documentos."
+    },
+    "improve": {
+      "professionalize": {
+        "label": "Hacer más profesional",
+        "prompt": "Reescriba este texto en lenguaje profesional de salud y seguridad en el trabajo. Tono formal y corporativo."
+      },
+      "shorten": {
+        "label": "Acortar",
+        "prompt": "Acorte y simplifique este texto sin perder el sentido principal."
+      },
+      "detail": {
+        "label": "Añadir detalle",
+        "prompt": "Amplíe este texto con más detalle y amplitud. Complete la información que falte cuando corresponda."
+      },
+      "legal": {
+        "label": "Añadir referencias legales",
+        "prompt": "Añada a este texto los artículos pertinentes de la ley 6331 y referencias normativas (adapte a la jurisdicción aplicable si procede)."
+      }
+    },
+    "fallback": {
+      "untitled": "Borrador de documento",
+      "sectionCompany": "Información de la empresa",
+      "tableHeaderField": "Campo",
+      "tableHeaderValue": "Valor",
+      "rowCompany": "Empresa / organización",
+      "rowSector": "Sector",
+      "rowHazard": "Clase de peligro",
+      "rowNace": "Código NACE",
+      "rowEmployees": "Número de empleados",
+      "rowDate": "Fecha del documento",
+      "placeholderCompany": "Se añadirá información de la empresa",
+      "placeholderSector": "Se añadirá información del sector",
+      "placeholderHazard": "Se añadirá la clase de peligro",
+      "placeholderNace": "Se añadirá información NACE",
+      "placeholderEmployees": "Se añadirá el número de empleados",
+      "sectionPurpose": "Objetivo y alcance",
+      "paragraphScope": "Este documento se preparó para {company} para su uso en procesos de PRL, operación y registros.",
+      "sectionImplementation": "Principios de aplicación",
+      "bullet1": "Definir responsables y flujo de aprobación",
+      "bullet2": "Mantener los registros requeridos en RiskNova",
+      "bullet3": "Actuar conforme a la base legal y a los procedimientos de la empresa",
+      "bullet4": "Informar sin demora de no conformidades y riesgos críticos",
+      "sectionLegal": "Base legal",
+      "legal1": "Ley 6331 de salud y seguridad en el trabajo (y equivalentes nacionales)",
+      "legal2": "Normativas relacionadas y procedimientos internos de la empresa",
+      "sectionSignature": "Firma y aprobación",
+      "tableHeaderParty": "Parte",
+      "tableHeaderName": "Nombre / cargo",
+      "tableHeaderSign": "Firma",
+      "tableHeaderDate": "Fecha",
+      "rowPreparer": "Elaborado por",
+      "rowEmployer": "Empresario / representante del empresario",
+      "specialistFallback": "Profesional de PRL"
+    }
+  }
+}

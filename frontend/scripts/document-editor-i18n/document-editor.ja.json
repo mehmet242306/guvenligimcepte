@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "新しいドキュメント",
+  "loading": "ドキュメントを読み込み中…",
+  "titlePlaceholder": "ドキュメントのタイトル…",
+  "editorPlaceholder": "ここにドキュメントの内容を入力してください…",
+  "breadcrumb": {
+    "backToLibrary": "ライブラリに戻る",
+    "documents": "ドキュメント"
+  },
+  "status": {
+    "taslak": "下書き",
+    "hazir": "準備完了",
+    "onay_bekliyor": "承認待ち",
+    "revizyon": "改訂",
+    "arsiv": "アーカイブ済み"
+  },
+  "saveLocation": {
+    "customDocs": "個人用ドキュメント",
+    "companyDocs": "会社のドキュメント"
+  },
+  "saveNotice": "保存しました: {path}",
+  "continueEditingHint": "ドキュメントは開いたままです。編集を続けられます。",
+  "autosaveError": "自動保存を完了できませんでした。",
+  "saveErrorUnexpected": "ドキュメントの保存中に予期しないエラーが発生しました。",
+  "confirmClear": "エディターの内容が消去されます。続行しますか？",
+  "tooltips": {
+    "clearPage": "ページをクリア",
+    "aiPanelClose": "AIパネルを閉じる",
+    "aiAssistant": "AIアシスタント",
+    "shareDisabled": "先にドキュメントを保存してください",
+    "shareEnabled": "QRコード・リンク・WhatsAppで共有",
+    "signDisabled": "先にドキュメントを保存してください",
+    "signEnabled": "電子署名／モバイル署名で署名"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "共有",
+    "sign": "署名",
+    "signWithCount": "署名（{count}）",
+    "save": "保存",
+    "saving": "保存中…",
+    "saved": "保存しました！"
+  },
+  "pdf": {
+    "qrAlt": "QR確認",
+    "verificationCaption": "RiskNova確認"
+  },
+  "floatingAi": {
+    "ariaOpen": "AIアシスタントを開く",
+    "tooltip": "AIアシスタント",
+    "label": "AIアシスタント"
+  },
+  "sidebarCloseMobile": "AIパネルを閉じる",
+  "validationQr": "確認: /share/{token}",
+  "statusBar": {
+    "words": "{count} 語",
+    "chars": "{count} 文字",
+    "saving": "保存中…",
+    "lastSave": "最終保存:",
+    "neverSaved": "未保存"
+  },
+  "signatureDefaults": {
+    "signerName": "署名者",
+    "signerRole": "労働安全衛生専門家"
+  },
+  "toolbar": {
+    "undo": "元に戻す（Ctrl+Z）",
+    "redo": "やり直す（Ctrl+Y）",
+    "fontSizeTitle": "フォントサイズ",
+    "fontSizeButton": "サイズ",
+    "insertTable": "表を挿入",
+    "tableSizeHint": "表のサイズを選択",
+    "removeColor": "色を解除",
+    "heading1": "見出し1",
+    "heading2": "見出し2",
+    "heading3": "見出し3",
+    "bold": "太字（Ctrl+B）",
+    "italic": "斜体（Ctrl+I）",
+    "underline": "下線（Ctrl+U）",
+    "strike": "取り消し線",
+    "textColor": "文字色",
+    "highlightColor": "強調色",
+    "alignLeft": "左揃え",
+    "alignCenter": "中央揃え",
+    "alignRight": "右揃え",
+    "alignJustify": "両端揃え",
+    "bulletList": "箇条書き",
+    "orderedList": "番号付きリスト",
+    "blockquote": "引用",
+    "hr": "水平線",
+    "print": "印刷（Ctrl+P）"
+  },
+  "shareModal": {
+    "title": "ドキュメントを共有",
+    "linkTitle": "共有リンク",
+    "linkOn": "リンクを知っている人は表示可能",
+    "linkOff": "共有はオフです",
+    "copyLinkTitle": "リンクをコピー",
+    "qrCaption": "QRコードをスキャンしてドキュメントを開く",
+    "otherNative": "その他"
+  },
+  "signatureModal": {
+    "title": "ドキュメントに署名",
+    "canvasHint": "下の領域に署名を描いてください",
+    "clear": "クリア",
+    "legal": "署名により、本ドキュメントの内容を読み承認したことを表明します。署名はデジタル保存され、ドキュメントの完全性はハッシュで検証できます。",
+    "cancel": "キャンセル",
+    "sign": "署名して確定",
+    "signing": "署名中…",
+    "errorAlert": "署名の保存中にエラーが発生しました。"
+  },
+  "ai": {
+    "title": "AIアシスタント",
+    "subtitleWithCompany": "{company}向けのコンテンツ生成・編集",
+    "subtitleNoCompany": "コンテンツの生成と編集",
+    "quick": {
+      "fullDoc": {
+        "label": "全文書を作成",
+        "prompt": "このドキュメントを専門的に作成してください。すべての節、表、法的参照を含めてください。会社情報を本文に組み込み、空のプレースホルダーを残さないでください。"
+      },
+      "intro": {
+        "label": "はじめにを書く",
+        "prompt": "このドキュメントの専門的なはじめにと目的の節を書いてください。会社名と業種を使用してください。"
+      },
+      "legal": {
+        "label": "法的根拠を追加",
+        "prompt": "トルコ労働安全衛生法6331号および関連規則に基づく法的根拠の節を作成してください（必要に応じて管轄に合わせて参照を調整）。"
+      },
+      "regs": {
+        "label": "法令参照",
+        "prompt": "このドキュメント種別に適用されるすべての法令参照を列挙してください。"
+      }
+    },
+    "customRequestLabel": "カスタム依頼",
+    "customRequestPlaceholder": "何を生成しますか？",
+    "improveSelected": "選択したテキストを改善",
+    "improveHint": "エディターでテキストを選択してからこのボタンをクリックしてください。",
+    "generating": "コンテンツを生成中…",
+    "generatingMobileNote": "モバイルで接続が遅い場合、待たされないようローカル下書きを準備します。",
+    "emptyState": "上のボタンのいずれかをクリックしてAIでコンテンツ生成を始めてください。",
+    "resultInserted": "エディターに追加済み",
+    "resultDegraded": "ローカル下書き",
+    "resultDefault": "AIの結果",
+    "copy": "コピー",
+    "degradedNotice": "AIサービスは保護モードで動作しました。ローカル下書きが作成されました。編集して保存できます。",
+    "degradedQueue": "キュータスク: {taskId}",
+    "degradedQueueHint": "リクエストはバックグラウンドで処理中の可能性があります。しばらくしてから再試行してください。",
+    "addToEditor": "エディターに追加",
+    "addDegradedToEditor": "ローカル下書きをエディターに追加",
+    "insertedSuccess": "コンテンツがエディターに正常に追加されました",
+    "improveDialogTitle": "テキストを改善",
+    "improveSelectedLabel": "選択したテキスト:",
+    "improveChooseType": "どの改善を適用しますか？",
+    "improveCustomPlaceholder": "カスタム改善依頼…",
+    "improveTextBlockLabel": "改善するテキスト:",
+    "errors": {
+      "quotaDefault": "ドキュメントAIパッケージの上限に達しました。プランをアップグレードして続行してください。",
+      "serviceUnavailable": "エラー: AIサービスが応答していません。再試行してください。",
+      "emptyResponseWithFallback": "AIが空の応答を返しました。モバイルで処理が止まらないようローカル下書きを用意しました。",
+      "abortWithFallback": "AIリクエストがタイムアウトしました。モバイルで待たされないようローカル下書きを用意しました。",
+      "connectionWithFallback": "接続エラーが発生しました。モバイルで結果が空にならないようローカル下書きを用意しました。",
+      "emptyResponseImprove": "AIが空の応答を返しました。より短いテキストを選択してください。",
+      "abortImprove": "AIリクエストがタイムアウトしました。より短いテキストを選択してください。",
+      "connectionImprove": "接続エラー。再試行してください。",
+      "serviceUnavailableImprove": "エラー: AIサービスが応答していません。",
+      "quotaShort": "ドキュメントAIパッケージの上限に達しました。"
+    },
+    "improve": {
+      "professionalize": {
+        "label": "より専門的に",
+        "prompt": "このテキストを専門的な労働安全衛生の文体で書き直してください。正式で企業向けのトーンを使用してください。"
+      },
+      "shorten": {
+        "label": "短くする",
+        "prompt": "核心の意味を失わずに、このテキストを短く簡潔にしてください。"
+      },
+      "detail": {
+        "label": "詳細を追加",
+        "prompt": "このテキストをより詳しく包括的に拡張してください。不足情報があれば補ってください。"
+      },
+      "legal": {
+        "label": "法的参照を追加",
+        "prompt": "このテキストに6331号法の関連条項と規則参照を追加してください（必要に応じて管轄に合わせて調整）。"
+      }
+    },
+    "fallback": {
+      "untitled": "ドキュメント下書き",
+      "sectionCompany": "会社情報",
+      "tableHeaderField": "項目",
+      "tableHeaderValue": "値",
+      "rowCompany": "会社／組織",
+      "rowSector": "業種",
+      "rowHazard": "危険等級",
+      "rowNace": "NACEコード",
+      "rowEmployees": "従業員数",
+      "rowDate": "ドキュメント日付",
+      "placeholderCompany": "会社情報は追記されます",
+      "placeholderSector": "業種情報は追記されます",
+      "placeholderHazard": "危険等級は追記されます",
+      "placeholderNace": "NACE情報は追記されます",
+      "placeholderEmployees": "従業員数は追記されます",
+      "sectionPurpose": "目的と範囲",
+      "paragraphScope": "本ドキュメントは{company}の労働安全衛生・運用・記録プロセス向けに作成されました。",
+      "sectionImplementation": "実施原則",
+      "bullet1": "責任者と承認フローの明確化",
+      "bullet2": "必要な記録をRiskNovaで保管",
+      "bullet3": "法的根拠と社内手順に沿った運用",
+      "bullet4": "不適合と重大リスクを遅滞なく報告",
+      "sectionLegal": "法的根拠",
+      "legal1": "労働安全衛生に関する6331号法（および各国の相当法令）",
+      "legal2": "関連規則と社内手順",
+      "sectionSignature": "署名と承認",
+      "tableHeaderParty": "当事者",
+      "tableHeaderName": "氏名／役職",
+      "tableHeaderSign": "署名",
+      "tableHeaderDate": "日付",
+      "rowPreparer": "作成者",
+      "rowEmployer": "使用者／使用者代表",
+      "specialistFallback": "労働安全衛生の専門家"
+    }
+  }
+}

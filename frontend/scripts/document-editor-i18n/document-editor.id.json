@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "Dokumen baru",
+  "loading": "Memuat dokumen…",
+  "titlePlaceholder": "Judul dokumen…",
+  "editorPlaceholder": "Tulis konten dokumen di sini…",
+  "breadcrumb": {
+    "backToLibrary": "Kembali ke perpustakaan",
+    "documents": "Dokumen"
+  },
+  "status": {
+    "taslak": "Draf",
+    "hazir": "Siap",
+    "onay_bekliyor": "Menunggu persetujuan",
+    "revizyon": "Revisi",
+    "arsiv": "Diarsipkan"
+  },
+  "saveLocation": {
+    "customDocs": "Dokumen pribadi",
+    "companyDocs": "Dokumen perusahaan"
+  },
+  "saveNotice": "Disimpan: {path}",
+  "continueEditingHint": "Dokumen tetap terbuka; Anda dapat melanjutkan pengeditan.",
+  "autosaveError": "Penyimpanan otomatis tidak dapat diselesaikan.",
+  "saveErrorUnexpected": "Terjadi kesalahan tak terduga saat menyimpan dokumen.",
+  "confirmClear": "Konten editor akan dikosongkan. Lanjutkan?",
+  "tooltips": {
+    "clearPage": "Bersihkan halaman",
+    "aiPanelClose": "Tutup panel AI",
+    "aiAssistant": "Asisten AI",
+    "shareDisabled": "Simpan dokumen terlebih dahulu",
+    "shareEnabled": "Bagikan lewat QR, tautan, atau WhatsApp",
+    "signDisabled": "Simpan dokumen terlebih dahulu",
+    "signEnabled": "Tandatangani dengan e-tanda tangan / tanda tangan mobile"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "Bagikan",
+    "sign": "Tandatangani",
+    "signWithCount": "Tandatangani ({count})",
+    "save": "Simpan",
+    "saving": "Menyimpan…",
+    "saved": "Tersimpan!"
+  },
+  "pdf": {
+    "qrAlt": "Verifikasi QR",
+    "verificationCaption": "Verifikasi RiskNova"
+  },
+  "floatingAi": {
+    "ariaOpen": "Buka asisten AI",
+    "tooltip": "Asisten AI",
+    "label": "Asisten AI"
+  },
+  "sidebarCloseMobile": "Tutup panel AI",
+  "validationQr": "Verifikasi: /share/{token}",
+  "statusBar": {
+    "words": "{count} kata",
+    "chars": "{count} karakter",
+    "saving": "Menyimpan…",
+    "lastSave": "Terakhir disimpan:",
+    "neverSaved": "Belum disimpan"
+  },
+  "signatureDefaults": {
+    "signerName": "Penandatangan",
+    "signerRole": "Ahli K3"
+  },
+  "toolbar": {
+    "undo": "Urungkan (Ctrl+Z)",
+    "redo": "Ulangi (Ctrl+Y)",
+    "fontSizeTitle": "Ukuran font",
+    "fontSizeButton": "Ukuran",
+    "insertTable": "Sisipkan tabel",
+    "tableSizeHint": "Pilih ukuran tabel",
+    "removeColor": "Hapus warna",
+    "heading1": "Judul 1",
+    "heading2": "Judul 2",
+    "heading3": "Judul 3",
+    "bold": "Tebal (Ctrl+B)",
+    "italic": "Miring (Ctrl+I)",
+    "underline": "Garis bawah (Ctrl+U)",
+    "strike": "Coret",
+    "textColor": "Warna teks",
+    "highlightColor": "Warna sorotan",
+    "alignLeft": "Rata kiri",
+    "alignCenter": "Rata tengah",
+    "alignRight": "Rata kanan",
+    "alignJustify": "Rata kanan-kiri",
+    "bulletList": "Daftar poin",
+    "orderedList": "Daftar bernomor",
+    "blockquote": "Kutipan",
+    "hr": "Garis horizontal",
+    "print": "Cetak (Ctrl+P)"
+  },
+  "shareModal": {
+    "title": "Bagikan dokumen",
+    "linkTitle": "Tautan berbagi",
+    "linkOn": "Siapa pun dengan tautan dapat melihat",
+    "linkOff": "Berbagi dimatikan",
+    "copyLinkTitle": "Salin tautan",
+    "qrCaption": "Pindai kode QR untuk membuka dokumen",
+    "otherNative": "Lainnya"
+  },
+  "signatureModal": {
+    "title": "Tandatangani dokumen",
+    "canvasHint": "Gambar tanda tangan Anda di area di bawah",
+    "clear": "Bersihkan",
+    "legal": "Dengan menandatangani, Anda menyatakan telah membaca dan menyetujui dokumen ini. Tanda tangan Anda akan disimpan secara digital; integritas dokumen dapat diverifikasi dengan hash.",
+    "cancel": "Batal",
+    "sign": "Tandatangani dan konfirmasi",
+    "signing": "Menandatangani…",
+    "errorAlert": "Terjadi kesalahan saat menyimpan tanda tangan."
+  },
+  "ai": {
+    "title": "Asisten AI",
+    "subtitleWithCompany": "Pembuatan dan pengeditan konten untuk {company}",
+    "subtitleNoCompany": "Pembuatan dan pengeditan konten",
+    "quick": {
+      "fullDoc": {
+        "label": "Buat dokumen lengkap",
+        "prompt": "Buat dokumen ini secara profesional. Sertakan semua bagian, tabel, dan referensi hukum. Masukkan informasi perusahaan ke dalam konten; jangan biarkan placeholder kosong."
+      },
+      "intro": {
+        "label": "Tulis pendahuluan",
+        "prompt": "Tulis bagian pendahuluan dan tujuan yang profesional untuk dokumen ini. Gunakan nama perusahaan dan sektor."
+      },
+      "legal": {
+        "label": "Tambahkan dasar hukum",
+        "prompt": "Siapkan bagian dasar hukum sesuai Undang-Undang Turki 6331 tentang K3 dan peraturan terkait (sesuaikan referensi dengan yurisdiksi yang berlaku jika perlu)."
+      },
+      "regs": {
+        "label": "Referensi perundang-undangan",
+        "prompt": "Cantumkan semua referensi perundang-undangan yang berlaku untuk jenis dokumen ini."
+      }
+    },
+    "customRequestLabel": "Permintaan khusus",
+    "customRequestPlaceholder": "Apa yang ingin saya hasilkan?",
+    "improveSelected": "Perbaiki teks yang dipilih",
+    "improveHint": "Pilih teks di editor, lalu klik tombol ini.",
+    "generating": "Menghasilkan konten…",
+    "generatingMobileNote": "Jika koneksi lambat di ponsel, sistem menyiapkan draf lokal agar Anda tidak menunggu lama.",
+    "emptyState": "Klik salah satu tombol di atas untuk mulai menghasilkan konten dengan AI.",
+    "resultInserted": "Ditambahkan ke editor",
+    "resultDegraded": "Draf lokal",
+    "resultDefault": "Hasil AI",
+    "copy": "Salin",
+    "degradedNotice": "Layanan AI berjalan dalam mode terlindungi. Draf lokal dibuat; Anda dapat mengedit dan menyimpannya.",
+    "degradedQueue": "Tugas antrean: {taskId}",
+    "degradedQueueHint": "Permintaan mungkin masih diproses di latar belakang; coba lagi sebentar lagi.",
+    "addToEditor": "Tambahkan ke editor",
+    "addDegradedToEditor": "Tambahkan draf lokal ke editor",
+    "insertedSuccess": "Konten berhasil ditambahkan ke editor",
+    "improveDialogTitle": "Perbaiki teks",
+    "improveSelectedLabel": "Teks yang dipilih:",
+    "improveChooseType": "Jenis perbaikan apa yang diterapkan?",
+    "improveCustomPlaceholder": "Permintaan perbaikan khusus…",
+    "improveTextBlockLabel": "Teks yang akan diperbaiki:",
+    "errors": {
+      "quotaDefault": "Batas paket AI dokumen Anda telah tercapai. Tingkatkan paket untuk melanjutkan.",
+      "serviceUnavailable": "Kesalahan: layanan AI tidak merespons. Silakan coba lagi.",
+      "emptyResponseWithFallback": "AI mengembalikan respons kosong. Draf lokal disiapkan agar tindakan tidak macet di ponsel.",
+      "abortWithFallback": "Permintaan AI habis waktu. Draf lokal disiapkan agar Anda tidak menunggu di ponsel.",
+      "connectionWithFallback": "Terjadi kesalahan koneksi. Draf lokal disiapkan agar hasil tidak kosong di ponsel.",
+      "emptyResponseImprove": "AI mengembalikan respons kosong. Pilih potongan teks yang lebih pendek.",
+      "abortImprove": "Permintaan AI habis waktu. Pilih potongan teks yang lebih pendek.",
+      "connectionImprove": "Kesalahan koneksi. Silakan coba lagi.",
+      "serviceUnavailableImprove": "Kesalahan: layanan AI tidak merespons.",
+      "quotaShort": "Batas paket AI dokumen Anda telah tercapai."
+    },
+    "improve": {
+      "professionalize": {
+        "label": "Lebih profesional",
+        "prompt": "Tulis ulang teks ini dalam bahasa K3 profesional. Gunakan nada formal dan korporat."
+      },
+      "shorten": {
+        "label": "Persingkat",
+        "prompt": "Persingkat dan sederhanakan teks ini tanpa kehilangan makna inti."
+      },
+      "detail": {
+        "label": "Tambah detail",
+        "prompt": "Perluas teks ini agar lebih rinci dan komprehensif. Lengkapi informasi yang kurang jika perlu."
+      },
+      "legal": {
+        "label": "Tambah referensi hukum",
+        "prompt": "Tambahkan pasal relevan dari UU 6331 dan referensi peraturan ke teks ini (sesuaikan dengan yurisdiksi yang berlaku jika perlu)."
+      }
+    },
+    "fallback": {
+      "untitled": "Draf dokumen",
+      "sectionCompany": "Informasi perusahaan",
+      "tableHeaderField": "Bidang",
+      "tableHeaderValue": "Nilai",
+      "rowCompany": "Perusahaan / organisasi",
+      "rowSector": "Sektor",
+      "rowHazard": "Kelas bahaya",
+      "rowNace": "Kode NACE",
+      "rowEmployees": "Jumlah karyawan",
+      "rowDate": "Tanggal dokumen",
+      "placeholderCompany": "Informasi perusahaan akan ditambahkan",
+      "placeholderSector": "Informasi sektor akan ditambahkan",
+      "placeholderHazard": "Kelas bahaya akan ditambahkan",
+      "placeholderNace": "Informasi NACE akan ditambahkan",
+      "placeholderEmployees": "Jumlah karyawan akan ditambahkan",
+      "sectionPurpose": "Tujuan dan ruang lingkup",
+      "paragraphScope": "Dokumen ini disiapkan untuk {company} untuk digunakan dalam proses K3, operasi, dan pencatatan.",
+      "sectionImplementation": "Prinsip penerapan",
+      "bullet1": "Tetapkan orang bertanggung jawab dan alur persetujuan",
+      "bullet2": "Simpan catatan yang diperlukan di RiskNova",
+      "bullet3": "Bertindak sesuai dasar hukum dan prosedur perusahaan",
+      "bullet4": "Laporkan ketidaksesuaian dan risiko kritis tanpa penundaan",
+      "sectionLegal": "Dasar hukum",
+      "legal1": "UU 6331 tentang K3 (dan setara nasional)",
+      "legal2": "Peraturan terkait dan prosedur internal perusahaan",
+      "sectionSignature": "Tanda tangan dan persetujuan",
+      "tableHeaderParty": "Pihak",
+      "tableHeaderName": "Nama / jabatan",
+      "tableHeaderSign": "Tanda tangan",
+      "tableHeaderDate": "Tanggal",
+      "rowPreparer": "Disusun oleh",
+      "rowEmployer": "Pengusaha / wakil pengusaha",
+      "specialistFallback": "Profesional K3"
+    }
+  }
+}

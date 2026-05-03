@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "مستند جديد",
+  "loading": "جاري تحميل المستند…",
+  "titlePlaceholder": "عنوان المستند…",
+  "editorPlaceholder": "اكتب محتوى المستند هنا…",
+  "breadcrumb": {
+    "backToLibrary": "العودة إلى المكتبة",
+    "documents": "المستندات"
+  },
+  "status": {
+    "taslak": "مسودة",
+    "hazir": "جاهز",
+    "onay_bekliyor": "بانتظار الموافقة",
+    "revizyon": "مراجعة",
+    "arsiv": "مؤرشف"
+  },
+  "saveLocation": {
+    "customDocs": "مستندات شخصية",
+    "companyDocs": "مستندات الشركة"
+  },
+  "saveNotice": "تم الحفظ: {path}",
+  "continueEditingHint": "يبقى المستند مفتوحًا؛ يمكنك متابعة التحرير.",
+  "autosaveError": "تعذر إكمال الحفظ التلقائي.",
+  "saveErrorUnexpected": "حدث خطأ غير متوقع أثناء حفظ المستند.",
+  "confirmClear": "سيتم مسح محتوى المحرر. هل تريد المتابعة؟",
+  "tooltips": {
+    "clearPage": "مسح الصفحة",
+    "aiPanelClose": "إغلاق لوحة الذكاء الاصطناعي",
+    "aiAssistant": "مساعد الذكاء الاصطناعي",
+    "shareDisabled": "احفظ المستند أولاً",
+    "shareEnabled": "المشاركة عبر رمز الاستجابة السريعة أو الرابط أو واتساب",
+    "signDisabled": "احفظ المستند أولاً",
+    "signEnabled": "التوقيع بالتوقيع الإلكتروني / التوقيع على الجوال"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "مشاركة",
+    "sign": "توقيع",
+    "signWithCount": "توقيع ({count})",
+    "save": "حفظ",
+    "saving": "جاري الحفظ…",
+    "saved": "تم الحفظ!"
+  },
+  "pdf": {
+    "qrAlt": "التحقق عبر رمز QR",
+    "verificationCaption": "التحقق RiskNova"
+  },
+  "floatingAi": {
+    "ariaOpen": "فتح مساعد الذكاء الاصطناعي",
+    "tooltip": "مساعد الذكاء الاصطناعي",
+    "label": "مساعد الذكاء الاصطناعي"
+  },
+  "sidebarCloseMobile": "إغلاق لوحة الذكاء الاصطناعي",
+  "validationQr": "التحقق: /share/{token}",
+  "statusBar": {
+    "words": "{count} كلمة",
+    "chars": "{count} حرفًا",
+    "saving": "جاري الحفظ…",
+    "lastSave": "آخر حفظ:",
+    "neverSaved": "لم يُحفظ بعد"
+  },
+  "signatureDefaults": {
+    "signerName": "المُوقّع",
+    "signerRole": "أخصائي سلامة وصحة مهنية"
+  },
+  "toolbar": {
+    "undo": "تراجع (Ctrl+Z)",
+    "redo": "إعادة (Ctrl+Y)",
+    "fontSizeTitle": "حجم الخط",
+    "fontSizeButton": "الحجم",
+    "insertTable": "إدراج جدول",
+    "tableSizeHint": "اختر حجم الجدول",
+    "removeColor": "إزالة اللون",
+    "heading1": "عنوان 1",
+    "heading2": "عنوان 2",
+    "heading3": "عنوان 3",
+    "bold": "غامق (Ctrl+B)",
+    "italic": "مائل (Ctrl+I)",
+    "underline": "تسطير (Ctrl+U)",
+    "strike": "يتوسطه خط",
+    "textColor": "لون النص",
+    "highlightColor": "لون التمييز",
+    "alignLeft": "محاذاة لليسار",
+    "alignCenter": "توسيط",
+    "alignRight": "محاذاة لليمين",
+    "alignJustify": "ضبط",
+    "bulletList": "قائمة نقطية",
+    "orderedList": "قائمة مرقمة",
+    "blockquote": "اقتباس",
+    "hr": "خط أفقي",
+    "print": "طباعة (Ctrl+P)"
+  },
+  "shareModal": {
+    "title": "مشاركة المستند",
+    "linkTitle": "رابط المشاركة",
+    "linkOn": "يمكن لأي شخص لديه الرابط العرض",
+    "linkOff": "المشاركة مغلقة",
+    "copyLinkTitle": "نسخ الرابط",
+    "qrCaption": "امسح رمز الاستجابة السريعة لفتح المستند",
+    "otherNative": "أخرى"
+  },
+  "signatureModal": {
+    "title": "توقيع المستند",
+    "canvasHint": "ارسم توقيعك في المنطقة أدناه",
+    "clear": "مسح",
+    "legal": "بالتوقيع تؤكد أنك قرأت المحتوى ووافقت عليه. سيُخزَّن توقيعك رقميًا ويمكن التحقق من سلامة المستند عبر التجزئة.",
+    "cancel": "إلغاء",
+    "sign": "توقيع وتأكيد",
+    "signing": "جاري التوقيع…",
+    "errorAlert": "حدث خطأ أثناء حفظ التوقيع."
+  },
+  "ai": {
+    "title": "مساعد الذكاء الاصطناعي",
+    "subtitleWithCompany": "إنشاء المحتوى وتحريره لـ {company}",
+    "subtitleNoCompany": "إنشاء المحتوى وتحريره",
+    "quick": {
+      "fullDoc": {
+        "label": "إنشاء المستند كاملًا",
+        "prompt": "أنشئ هذا المستند بشكل احترافي. أدرج جميع الأقسام والجداول والمراجع القانونية. ضمّن معلومات الشركة في المحتوى؛ لا تترك حقولًا فارغة."
+      },
+      "intro": {
+        "label": "كتابة المقدمة",
+        "prompt": "اكتب مقدمة وقسم أهداف احترافيًا لهذا المستند. استخدم اسم الشركة والقطاع."
+      },
+      "legal": {
+        "label": "إضافة الأساس القانوني",
+        "prompt": "أعد قسم الأساس القانوني وفقًا للقانون التركي رقم 6331 لصحة وسلامة العمل واللوائح ذات الصلة (كيّف المراجع للولاية القضائية المناسبة عند الحاجة)."
+      },
+      "regs": {
+        "label": "مراجع تشريعية",
+        "prompt": "اذكر جميع المراجع التشريعية المنطبقة على نوع هذا المستند."
+      }
+    },
+    "customRequestLabel": "طلب مخصص",
+    "customRequestPlaceholder": "ماذا تريد أن أُنشئ؟",
+    "improveSelected": "تحسين النص المحدد",
+    "improveHint": "حدد النص في المحرر ثم انقر هذا الزر.",
+    "generating": "جاري إنشاء المحتوى…",
+    "generatingMobileNote": "إذا كان الاتصال بطيئًا على الجوال، يُعدّ النظام مسودة محلية حتى لا تبقى في الانتظار.",
+    "emptyState": "انقر أحد الأزرار أعلاه لبدء إنشاء المحتوى بالذكاء الاصطناعي.",
+    "resultInserted": "أُضيف إلى المحرر",
+    "resultDegraded": "مسودة محلية",
+    "resultDefault": "نتيجة الذكاء الاصطناعي",
+    "copy": "نسخ",
+    "degradedNotice": "عملت خدمة الذكاء الاصطناعي في وضع محمٍ. أُنشئت مسودة محلية؛ يمكنك تحريرها وحفظها.",
+    "degradedQueue": "مهمة في قائمة الانتظار: {taskId}",
+    "degradedQueueHint": "قد تُعالَج الطلبية في الخلفية؛ أعد المحاولة بعد قليل.",
+    "addToEditor": "إضافة إلى المحرر",
+    "addDegradedToEditor": "إضافة المسودة المحلية إلى المحرر",
+    "insertedSuccess": "أُضيف المحتوى إلى المحرر بنجاح",
+    "improveDialogTitle": "تحسين النص",
+    "improveSelectedLabel": "النص المحدد:",
+    "improveChooseType": "ما نوع التحسين المطلوب؟",
+    "improveCustomPlaceholder": "طلب تحسين مخصص…",
+    "improveTextBlockLabel": "النص المراد تحسينه:",
+    "errors": {
+      "quotaDefault": "بلغت حد حزمة الذكاء الاصطناعي للمستندات. قم بترقية خطتك للمتابعة.",
+      "serviceUnavailable": "خطأ: خدمة الذكاء الاصطناعي لا تستجيب. حاول مرة أخرى.",
+      "emptyResponseWithFallback": "أعادت الذكاء الاصطناعي استجابة فارغة. أُعدّت مسودة محلية حتى لا يتعطل الإجراء على الجوال.",
+      "abortWithFallback": "انتهت مهلة طلب الذكاء الاصطناعي. أُعدّت مسودة محلية حتى لا تنتظر على الجوال.",
+      "connectionWithFallback": "حدث خطأ في الاتصال. أُعدّت مسودة محلية حتى لا يكون الناتج فارغًا على الجوال.",
+      "emptyResponseImprove": "أعادت الذكاء الاصطناعي استجابة فارغة. جرّب تحديد جزء أقصر من النص.",
+      "abortImprove": "انتهت مهلة طلب الذكاء الاصطناعي. جرّب تحديد جزء أقصر من النص.",
+      "connectionImprove": "خطأ في الاتصال. حاول مرة أخرى.",
+      "serviceUnavailableImprove": "خطأ: خدمة الذكاء الاصطناعي لا تستجيب.",
+      "quotaShort": "بلغت حد حزمة الذكاء الاصطناعي للمستندات."
+    },
+    "improve": {
+      "professionalize": {
+        "label": "جعله أكثر احترافية",
+        "prompt": "أعد صياغة هذا النص بلغة سلامة وصحة مهنية احترافية. استخدم نبرة رسمية ومؤسسية."
+      },
+      "shorten": {
+        "label": "اختصار",
+        "prompt": "اختصر وبسّط هذا النص دون فقدان المعنى الأساسي."
+      },
+      "detail": {
+        "label": "إضافة تفاصيل",
+        "prompt": "وسّع هذا النص ليكون أكثر تفصيلًا وشمولية. أكمل المعلومات الناقصة حيث يلزم."
+      },
+      "legal": {
+        "label": "إضافة مراجع قانونية",
+        "prompt": "أضف المواد ذات الصلة من القانون 6331 ومراجع اللوائح إلى هذا النص (كيّف للولاية القضائية المناسبة عند الحاجة)."
+      }
+    },
+    "fallback": {
+      "untitled": "مسودة مستند",
+      "sectionCompany": "معلومات الشركة",
+      "tableHeaderField": "الحقل",
+      "tableHeaderValue": "القيمة",
+      "rowCompany": "الشركة / المنظمة",
+      "rowSector": "القطاع",
+      "rowHazard": "فئة الخطر",
+      "rowNace": "رمز NACE",
+      "rowEmployees": "عدد الموظفين",
+      "rowDate": "تاريخ المستند",
+      "placeholderCompany": "ستُضاف معلومات الشركة",
+      "placeholderSector": "ستُضاف معلومات القطاع",
+      "placeholderHazard": "ستُضاف فئة الخطر",
+      "placeholderNace": "ستُضاف معلومات NACE",
+      "placeholderEmployees": "سيُضاف عدد الموظفين",
+      "sectionPurpose": "الغرض والنطاق",
+      "paragraphScope": "أُعدّ هذا المستند لـ {company} للاستخدام في عمليات السلامة والصحة المهنية والتشغيل والسجلات.",
+      "sectionImplementation": "مبادئ التنفيذ",
+      "bullet1": "تحديد الأشخاص المسؤولين ومسار الموافقة",
+      "bullet2": "الاحتفاظ بالسجلات المطلوبة في RiskNova",
+      "bullet3": "الالتزام بالأساس القانوني وإجراءات الشركة",
+      "bullet4": "الإبلاغ عن عدم المطابقة والمخاطر الحرجة دون تأخير",
+      "sectionLegal": "الأساس القانوني",
+      "legal1": "القانون 6331 لصحة وسلامة العمل (وما يعادله وطنيًا)",
+      "legal2": "اللوائح ذات الصلة وإجراءات الشركة الداخلية",
+      "sectionSignature": "التوقيع والموافقة",
+      "tableHeaderParty": "الطرف",
+      "tableHeaderName": "الاسم / المسمى",
+      "tableHeaderSign": "التوقيع",
+      "tableHeaderDate": "التاريخ",
+      "rowPreparer": "أعدّه",
+      "rowEmployer": "صاحب العمل / ممثل صاحب العمل",
+      "specialistFallback": "أخصائي سلامة وصحة مهنية"
+    }
+  }
+}

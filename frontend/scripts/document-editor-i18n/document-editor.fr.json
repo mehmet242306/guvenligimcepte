@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "Nouveau document",
+  "loading": "Chargement du document…",
+  "titlePlaceholder": "Titre du document…",
+  "editorPlaceholder": "Saisissez le contenu du document ici…",
+  "breadcrumb": {
+    "backToLibrary": "Retour à la bibliothèque",
+    "documents": "Documents"
+  },
+  "status": {
+    "taslak": "Brouillon",
+    "hazir": "Prêt",
+    "onay_bekliyor": "En attente d’approbation",
+    "revizyon": "Révision",
+    "arsiv": "Archivé"
+  },
+  "saveLocation": {
+    "customDocs": "Documents personnels",
+    "companyDocs": "Documents d’entreprise"
+  },
+  "saveNotice": "Enregistré : {path}",
+  "continueEditingHint": "Le document reste ouvert ; vous pouvez continuer à le modifier.",
+  "autosaveError": "L’enregistrement automatique n’a pas pu être terminé.",
+  "saveErrorUnexpected": "Une erreur inattendue s’est produite lors de l’enregistrement du document.",
+  "confirmClear": "Le contenu de l’éditeur sera effacé. Continuer ?",
+  "tooltips": {
+    "clearPage": "Effacer la page",
+    "aiPanelClose": "Fermer le panneau IA",
+    "aiAssistant": "Assistant IA",
+    "shareDisabled": "Enregistrez d’abord le document",
+    "shareEnabled": "Partager via QR code, lien ou WhatsApp",
+    "signDisabled": "Enregistrez d’abord le document",
+    "signEnabled": "Signer par signature électronique / mobile"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "Partager",
+    "sign": "Signer",
+    "signWithCount": "Signer ({count})",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "saved": "Enregistré !"
+  },
+  "pdf": {
+    "qrAlt": "Vérification QR",
+    "verificationCaption": "Vérification RiskNova"
+  },
+  "floatingAi": {
+    "ariaOpen": "Ouvrir l’assistant IA",
+    "tooltip": "Assistant IA",
+    "label": "Assistant IA"
+  },
+  "sidebarCloseMobile": "Fermer le panneau IA",
+  "validationQr": "Vérification : /share/{token}",
+  "statusBar": {
+    "words": "{count} mots",
+    "chars": "{count} caractères",
+    "saving": "Enregistrement…",
+    "lastSave": "Dernier enregistrement :",
+    "neverSaved": "Pas encore enregistré"
+  },
+  "signatureDefaults": {
+    "signerName": "Signataire",
+    "signerRole": "Spécialiste SST"
+  },
+  "toolbar": {
+    "undo": "Annuler (Ctrl+Z)",
+    "redo": "Rétablir (Ctrl+Y)",
+    "fontSizeTitle": "Taille de police",
+    "fontSizeButton": "Taille",
+    "insertTable": "Insérer un tableau",
+    "tableSizeHint": "Choisir la taille du tableau",
+    "removeColor": "Supprimer la couleur",
+    "heading1": "Titre 1",
+    "heading2": "Titre 2",
+    "heading3": "Titre 3",
+    "bold": "Gras (Ctrl+B)",
+    "italic": "Italique (Ctrl+I)",
+    "underline": "Souligné (Ctrl+U)",
+    "strike": "Barré",
+    "textColor": "Couleur du texte",
+    "highlightColor": "Couleur de surlignage",
+    "alignLeft": "Aligner à gauche",
+    "alignCenter": "Centrer",
+    "alignRight": "Aligner à droite",
+    "alignJustify": "Justifier",
+    "bulletList": "Liste à puces",
+    "orderedList": "Liste numérotée",
+    "blockquote": "Citation",
+    "hr": "Ligne horizontale",
+    "print": "Imprimer (Ctrl+P)"
+  },
+  "shareModal": {
+    "title": "Partager le document",
+    "linkTitle": "Lien de partage",
+    "linkOn": "Toute personne disposant du lien peut consulter",
+    "linkOff": "Partage désactivé",
+    "copyLinkTitle": "Copier le lien",
+    "qrCaption": "Scannez le code QR pour ouvrir le document",
+    "otherNative": "Autre"
+  },
+  "signatureModal": {
+    "title": "Signer le document",
+    "canvasHint": "Tracez votre signature dans la zone ci-dessous",
+    "clear": "Effacer",
+    "legal": "En signant, vous confirmez avoir lu et approuvé ce document. Votre signature sera stockée numériquement ; l’intégrité du document pourra être vérifiée par hachage.",
+    "cancel": "Annuler",
+    "sign": "Signer et confirmer",
+    "signing": "Signature…",
+    "errorAlert": "Une erreur s’est produite lors de l’enregistrement de la signature."
+  },
+  "ai": {
+    "title": "Assistant IA",
+    "subtitleWithCompany": "Création et édition de contenu pour {company}",
+    "subtitleNoCompany": "Création et édition de contenu",
+    "quick": {
+      "fullDoc": {
+        "label": "Créer le document complet",
+        "prompt": "Créez ce document de manière professionnelle. Incluez toutes les sections, tableaux et références juridiques. Intégrez les informations de l’entreprise dans le contenu ; ne laissez pas d’emplacements vides."
+      },
+      "intro": {
+        "label": "Rédiger l’introduction",
+        "prompt": "Rédigez une introduction et une section objectifs professionnelles pour ce document. Utilisez le nom de l’entreprise et le secteur."
+      },
+      "legal": {
+        "label": "Ajouter la base juridique",
+        "prompt": "Préparez une section de base juridique conformément à la loi turque n° 6331 sur la santé et la sécurité au travail et aux règlements associés (adaptez les références à la juridiction applicable si nécessaire)."
+      },
+      "regs": {
+        "label": "Références législatives",
+        "prompt": "Listez toutes les références législatives applicables à ce type de document."
+      }
+    },
+    "customRequestLabel": "Demande personnalisée",
+    "customRequestPlaceholder": "Que souhaitez-vous que je génère ?",
+    "improveSelected": "Améliorer le texte sélectionné",
+    "improveHint": "Sélectionnez du texte dans l’éditeur, puis cliquez sur ce bouton.",
+    "generating": "Génération du contenu…",
+    "generatingMobileNote": "Si la connexion est lente sur mobile, le système prépare un brouillon local pour éviter d’attendre.",
+    "emptyState": "Cliquez sur l’un des boutons ci-dessus pour commencer à générer du contenu avec l’IA.",
+    "resultInserted": "Ajouté à l’éditeur",
+    "resultDegraded": "Brouillon local",
+    "resultDefault": "Résultat IA",
+    "copy": "Copier",
+    "degradedNotice": "Le service IA a fonctionné en mode protégé. Un brouillon local a été produit ; vous pouvez l’éditer et l’enregistrer.",
+    "degradedQueue": "Tâche en file : {taskId}",
+    "degradedQueueHint": "La demande peut encore être traitée en arrière-plan ; réessayez sous peu.",
+    "addToEditor": "Ajouter à l’éditeur",
+    "addDegradedToEditor": "Ajouter le brouillon local à l’éditeur",
+    "insertedSuccess": "Le contenu a été ajouté à l’éditeur avec succès",
+    "improveDialogTitle": "Améliorer le texte",
+    "improveSelectedLabel": "Texte sélectionné :",
+    "improveChooseType": "Quel type d’amélioration appliquer ?",
+    "improveCustomPlaceholder": "Demande d’amélioration personnalisée…",
+    "improveTextBlockLabel": "Texte à améliorer :",
+    "errors": {
+      "quotaDefault": "Vous avez atteint la limite du forfait IA documents. Passez à une offre supérieure pour continuer.",
+      "serviceUnavailable": "Erreur : le service IA ne répond pas. Veuillez réessayer.",
+      "emptyResponseWithFallback": "L’IA a renvoyé une réponse vide. Un brouillon local a été préparé pour éviter un blocage sur mobile.",
+      "abortWithFallback": "La requête IA a expiré. Un brouillon local a été préparé pour éviter l’attente sur mobile.",
+      "connectionWithFallback": "Erreur de connexion. Un brouillon local a été préparé pour éviter un résultat vide sur mobile.",
+      "emptyResponseImprove": "L’IA a renvoyé une réponse vide. Sélectionnez un extrait de texte plus court.",
+      "abortImprove": "La requête IA a expiré. Sélectionnez un extrait plus court.",
+      "connectionImprove": "Erreur de connexion. Veuillez réessayer.",
+      "serviceUnavailableImprove": "Erreur : le service IA ne répond pas.",
+      "quotaShort": "Vous avez atteint la limite du forfait IA documents."
+    },
+    "improve": {
+      "professionalize": {
+        "label": "Rendre plus professionnel",
+        "prompt": "Réécrivez ce texte dans un langage professionnel de santé et sécurité au travail. Ton formel et d’entreprise."
+      },
+      "shorten": {
+        "label": "Raccourcir",
+        "prompt": "Raccourcissez et simplifiez ce texte sans en perdre le sens principal."
+      },
+      "detail": {
+        "label": "Ajouter du détail",
+        "prompt": "Développez ce texte pour le rendre plus détaillé et complet. Complétez les informations manquantes le cas échéant."
+      },
+      "legal": {
+        "label": "Ajouter des références légales",
+        "prompt": "Ajoutez au texte les articles pertinents de la loi 6331 et les références réglementaires (adaptez à la juridiction applicable si nécessaire)."
+      }
+    },
+    "fallback": {
+      "untitled": "Brouillon de document",
+      "sectionCompany": "Informations sur l’entreprise",
+      "tableHeaderField": "Champ",
+      "tableHeaderValue": "Valeur",
+      "rowCompany": "Entreprise / organisation",
+      "rowSector": "Secteur",
+      "rowHazard": "Classe de danger",
+      "rowNace": "Code NACE",
+      "rowEmployees": "Effectif",
+      "rowDate": "Date du document",
+      "placeholderCompany": "Les informations entreprise seront ajoutées",
+      "placeholderSector": "Les informations secteur seront ajoutées",
+      "placeholderHazard": "La classe de danger sera ajoutée",
+      "placeholderNace": "Les informations NACE seront ajoutées",
+      "placeholderEmployees": "L’effectif sera ajouté",
+      "sectionPurpose": "Objet et champ d’application",
+      "paragraphScope": "Ce document a été préparé pour {company} pour les processus SST, exploitation et tenue de dossiers.",
+      "sectionImplementation": "Principes de mise en œuvre",
+      "bullet1": "Définir les responsables et le circuit d’approbation",
+      "bullet2": "Tenir les registres requis dans RiskNova",
+      "bullet3": "Agir conformément au cadre légal et aux procédures internes",
+      "bullet4": "Signaler sans délai les écarts et les risques critiques",
+      "sectionLegal": "Base juridique",
+      "legal1": "Loi n° 6331 sur la santé et la sécurité au travail (et équivalents nationaux)",
+      "legal2": "Règlements connexes et procédures internes de l’entreprise",
+      "sectionSignature": "Signature et validation",
+      "tableHeaderParty": "Partie",
+      "tableHeaderName": "Nom / fonction",
+      "tableHeaderSign": "Signature",
+      "tableHeaderDate": "Date",
+      "rowPreparer": "Établi par",
+      "rowEmployer": "Employeur / représentant de l’employeur",
+      "specialistFallback": "Professionnel SST"
+    }
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "Yeni sənəd",
+  "loading": "Sənəd yüklənir…",
+  "titlePlaceholder": "Sənəd başlığı…",
+  "editorPlaceholder": "Sənəd məzmununu buraya yazın…",
+  "breadcrumb": {
+    "backToLibrary": "Kitabxanaya qayıt",
+    "documents": "Sənədlər"
+  },
+  "status": {
+    "taslak": "Qaralama",
+    "hazir": "Hazırdır",
+    "onay_bekliyor": "Təsdiq gözləyir",
+    "revizyon": "Reviziya",
+    "arsiv": "Arxivlənib"
+  },
+  "saveLocation": {
+    "customDocs": "Şəxsi sənədlər",
+    "companyDocs": "Şirkət sənədləri"
+  },
+  "saveNotice": "Saxlanıldı: {path}",
+  "continueEditingHint": "Sənəd açıq qalır; redaktəyə davam edə bilərsiniz.",
+  "autosaveError": "Avtomatik saxlama tamamlanmadı.",
+  "saveErrorUnexpected": "Sənədi saxlayarkən gözlənilməz xəta baş verdi.",
+  "confirmClear": "Redaktor məzmunu silinəcək. Davam edilsin?",
+  "tooltips": {
+    "clearPage": "Səhifəni təmizlə",
+    "aiPanelClose": "AI panelini bağla",
+    "aiAssistant": "AI köməkçi",
+    "shareDisabled": "Əvvəlcə sənədi saxlayın",
+    "shareEnabled": "QR, link və ya WhatsApp ilə paylaşın",
+    "signDisabled": "Əvvəlcə sənədi saxlayın",
+    "signEnabled": "Elektron / mobil imza ilə imzalayın"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "Paylaş",
+    "sign": "İmzala",
+    "signWithCount": "İmzala ({count})",
+    "save": "Saxla",
+    "saving": "Saxlanılır…",
+    "saved": "Saxlanıldı!"
+  },
+  "pdf": {
+    "qrAlt": "QR təsdiqi",
+    "verificationCaption": "RiskNova təsdiqi"
+  },
+  "floatingAi": {
+    "ariaOpen": "AI köməkçini aç",
+    "tooltip": "AI köməkçi",
+    "label": "AI köməkçi"
+  },
+  "sidebarCloseMobile": "AI panelini bağla",
+  "validationQr": "Təsdiq: /share/{token}",
+  "statusBar": {
+    "words": "{count} söz",
+    "chars": "{count} simvol",
+    "saving": "Saxlanılır…",
+    "lastSave": "Son saxlama:",
+    "neverSaved": "Hələ saxlanmayıb"
+  },
+  "signatureDefaults": {
+    "signerName": "İmzalayan",
+    "signerRole": "Əməyin mühafizəsi mütəxəssisi"
+  },
+  "toolbar": {
+    "undo": "Geri al (Ctrl+Z)",
+    "redo": "Təkrarla (Ctrl+Y)",
+    "fontSizeTitle": "Şrift ölçüsü",
+    "fontSizeButton": "Ölçü",
+    "insertTable": "Cədvəl əlavə et",
+    "tableSizeHint": "Cədvəl ölçüsünü seçin",
+    "removeColor": "Rəngi sil",
+    "heading1": "Başlıq 1",
+    "heading2": "Başlıq 2",
+    "heading3": "Başlıq 3",
+    "bold": "Qalın (Ctrl+B)",
+    "italic": "Maili (Ctrl+I)",
+    "underline": "Alt xətt (Ctrl+U)",
+    "strike": "Üstündən xətt",
+    "textColor": "Mətn rəngi",
+    "highlightColor": "Vurğu rəngi",
+    "alignLeft": "Sola düzləndir",
+    "alignCenter": "Mərkəzə",
+    "alignRight": "Sağa düzləndir",
+    "alignJustify": "Hər iki tərəfə",
+    "bulletList": "Marker siyahısı",
+    "orderedList": "Nömrəli siyahı",
+    "blockquote": "Sitat",
+    "hr": "Üfüqi xətt",
+    "print": "Çap (Ctrl+P)"
+  },
+  "shareModal": {
+    "title": "Sənədi paylaş",
+    "linkTitle": "Paylaşım linki",
+    "linkOn": "Linki olan hər kəs görə bilər",
+    "linkOff": "Paylaşım söndürülüb",
+    "copyLinkTitle": "Linki kopyala",
+    "qrCaption": "Sənədi açmaq üçün QR kodu skan edin",
+    "otherNative": "Digər"
+  },
+  "signatureModal": {
+    "title": "Sənədi imzala",
+    "canvasHint": "Aşağıdakı sahəyə imzanızı çəkin",
+    "clear": "Təmizlə",
+    "legal": "İmzalayaraq bu sənədin məzmununu oxuduğunuzu və təsdiqlədiyinizi bildirirsiniz. İmzanız rəqəmsal saxlanacaq; sənədin bütövlüyü hash ilə yoxlana bilər.",
+    "cancel": "Ləğv et",
+    "sign": "İmzala və təsdiqlə",
+    "signing": "İmzalanır…",
+    "errorAlert": "İmza saxlanarkən xəta baş verdi."
+  },
+  "ai": {
+    "title": "AI köməkçi",
+    "subtitleWithCompany": "{company} üçün məzmun yaradılması və redaktəsi",
+    "subtitleNoCompany": "Məzmun yaradılması və redaktəsi",
+    "quick": {
+      "fullDoc": {
+        "label": "Tam sənəd yarat",
+        "prompt": "Bu sənədi peşəkar şəkildə hazırlayın. Bütün bölmələri, cədvəlləri və hüquqi istinadları daxil edin. Şirkət məlumatlarını məzmuna yerləşdirin; boş yer saxlamayın."
+      },
+      "intro": {
+        "label": "Giriş yaz",
+        "prompt": "Bu sənəd üçün peşəkar giriş və məqsəd bölməsi yazın. Şirkət adı və sektorundan istifadə edin."
+      },
+      "legal": {
+        "label": "Hüquqi əsas əlavə et",
+        "prompt": "6331 saylı qanun və əlaqəli normativ aktlara uyğun hüquqi əsas bölməsi hazırlayın (lazım olduqda yurisdiksiyaya uyğunlaşdırın)."
+      },
+      "regs": {
+        "label": "Qanunvericilik istinadları",
+        "prompt": "Bu sənəd növü üçün tətbiq olunan bütün qanunvericilik istinadlarını sadalayın."
+      }
+    },
+    "customRequestLabel": "Xüsusi sorğu",
+    "customRequestPlaceholder": "Nə yaratmamı istəyirsiniz?",
+    "improveSelected": "Seçilmiş mətni təkmilləşdir",
+    "improveHint": "Redaktorda mətn seçin, sonra bu düyməyə basın.",
+    "generating": "Məzmun yaradılır…",
+    "generatingMobileNote": "Mobil əlaqə yavaş olsa, gözləməmək üçün yerli qaralama hazırlanır.",
+    "emptyState": "AI ilə məzmun yaratmağa başlamaq üçün yuxarıdakı düymələrdən birinə basın.",
+    "resultInserted": "Redaktora əlavə edildi",
+    "resultDegraded": "Yerli qaralama",
+    "resultDefault": "AI nəticəsi",
+    "copy": "Kopyala",
+    "degradedNotice": "AI xidməti müvəqqəti qorunmuş rejimdə işlədi. Yerli qaralama yaradıldı; redaktə edib saxlaya bilərsiniz.",
+    "degradedQueue": "Növbə tapşırığı: {taskId}",
+    "degradedQueueHint": "Sorğu arxa planda emal olunur ola bilər; bir az sonra yenidən cəhd edin.",
+    "addToEditor": "Redaktora əlavə et",
+    "addDegradedToEditor": "Yerli qaralamanı redaktora əlavə et",
+    "insertedSuccess": "Məzmun redaktora uğurla əlavə edildi",
+    "improveDialogTitle": "Mətni təkmilləşdir",
+    "improveSelectedLabel": "Seçilmiş mətn:",
+    "improveChooseType": "Hansı təkmilləşdirmə tətbiq olunsun?",
+    "improveCustomPlaceholder": "Xüsusi təkmilləşdirmə sorğusu…",
+    "improveTextBlockLabel": "Təkmilləşdiriləcək mətn:",
+    "errors": {
+      "quotaDefault": "Sənəd AI paket limitiniz dolub. Davam etmək üçün paketi yüksəldin.",
+      "serviceUnavailable": "Xəta: AI xidməti cavab vermir. Yenidən cəhd edin.",
+      "emptyResponseWithFallback": "AI boş cavab verdi. Mobil cihazda dayanmamaq üçün yerli qaralama hazırlandı.",
+      "abortWithFallback": "AI sorğusu vaxtı bitdi. Mobil cihazda gözləməmək üçün yerli qaralama hazırlandı.",
+      "connectionWithFallback": "Bağlantı xətası. Mobil cihazda nəticə boş qalmamaq üçün yerli qaralama hazırlandı.",
+      "emptyResponseImprove": "AI boş cavab verdi. Daha qısa mətn seçin.",
+      "abortImprove": "AI sorğusu vaxtı bitdi. Daha qısa mətn seçin.",
+      "connectionImprove": "Bağlantı xətası. Yenidən cəhd edin.",
+      "serviceUnavailableImprove": "Xəta: AI xidməti cavab vermir.",
+      "quotaShort": "Sənəd AI paket limitiniz dolub."
+    },
+    "improve": {
+      "professionalize": {
+        "label": "Daha peşəkar et",
+        "prompt": "Bu mətni peşəkar əməyin mühafizəsi dilində yenidən yazın. Rəsmi, korporativ ton istifadə edin."
+      },
+      "shorten": {
+        "label": "Qısalt",
+        "prompt": "Əsas mənanı itirmədən mətni qısaltın və sadələşdirin."
+      },
+      "detail": {
+        "label": "Ətraflı et",
+        "prompt": "Mətni daha ətraflı və genişləndirin. Çatışmayan məlumatları tamamlayın."
+      },
+      "legal": {
+        "label": "Hüquqi istinadlar əlavə et",
+        "prompt": "Bu mətnə 6331 saylı qanunun müvafiq maddələri və normativ istinadları əlavə edin (lazım olduqda uyğunlaşdırın)."
+      }
+    },
+    "fallback": {
+      "untitled": "Sənəd qaralaması",
+      "sectionCompany": "Şirkət məlumatları",
+      "tableHeaderField": "Sahə",
+      "tableHeaderValue": "Dəyər",
+      "rowCompany": "Şirkət / təşkilat",
+      "rowSector": "Sektor",
+      "rowHazard": "Təhlükə sinfi",
+      "rowNace": "NACE kodu",
+      "rowEmployees": "İşçi sayı",
+      "rowDate": "Sənəd tarixi",
+      "placeholderCompany": "Şirkət məlumatı əlavə ediləcək",
+      "placeholderSector": "Sektor məlumatı əlavə ediləcək",
+      "placeholderHazard": "Təhlükə sinfi əlavə ediləcək",
+      "placeholderNace": "NACE məlumatı əlavə ediləcək",
+      "placeholderEmployees": "İşçi sayı əlavə ediləcək",
+      "sectionPurpose": "Məqsəd və əhatə",
+      "paragraphScope": "Bu sənəd {company} üçün əməyin mühafizəsi, əməliyyat və qeydiyyat proseslərində istifadə üçün hazırlanmışdır.",
+      "sectionImplementation": "Tətbiq prinsipləri",
+      "bullet1": "Məsul şəxslər və təsdiq axınının müəyyənləşdirilməsi",
+      "bullet2": "Lazımi qeydlərin RiskNova-da saxlanması",
+      "bullet3": "Hüquqi əsas və şirkət prosedurlarına uyğun hərəkət",
+      "bullet4": "Uyğunsuzluq və kritik risklərin gecikmədən bildirilməsi",
+      "sectionLegal": "Hüquqi əsas",
+      "legal1": "6331 saylı Əməyin mühafizəsi və təhlükəsizliyi haqqında qanun (və milli ekvivalentlər)",
+      "legal2": "Əlaqəli normativ aktlar və daxili şirkət prosedurları",
+      "sectionSignature": "İmza və təsdiq",
+      "tableHeaderParty": "Tərəf",
+      "tableHeaderName": "Ad soyad / vəzifə",
+      "tableHeaderSign": "İmza",
+      "tableHeaderDate": "Tarix",
+      "rowPreparer": "Hazırlayan",
+      "rowEmployer": "İşəgötürən / işəgötürən nümayəndəsi",
+      "specialistFallback": "Əməyin mühafizəsi mütəxəssisi"
+    }
+  }
+}

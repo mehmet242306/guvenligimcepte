@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "नया दस्तावेज़",
+  "loading": "दस्तावेज़ लोड हो रहा है…",
+  "titlePlaceholder": "दस्तावेज़ शीर्षक…",
+  "editorPlaceholder": "दस्तावेज़ की सामग्री यहाँ लिखें…",
+  "breadcrumb": {
+    "backToLibrary": "पुस्तकालय में वापस",
+    "documents": "दस्तावेज़"
+  },
+  "status": {
+    "taslak": "मसौदा",
+    "hazir": "तैयार",
+    "onay_bekliyor": "अनुमोदन लंबित",
+    "revizyon": "संशोधन",
+    "arsiv": "संग्रहीत"
+  },
+  "saveLocation": {
+    "customDocs": "व्यक्तिगत दस्तावेज़",
+    "companyDocs": "कंपनी दस्तावेज़"
+  },
+  "saveNotice": "सहेजा गया: {path}",
+  "continueEditingHint": "दस्तावेज़ खुला रहता है; आप संपादन जारी रख सकते हैं।",
+  "autosaveError": "स्वतः-सहेज पूरा नहीं हो सका।",
+  "saveErrorUnexpected": "दस्तावेज़ सहेजते समय अप्रत्याशित त्रुटि हुई।",
+  "confirmClear": "संपादक सामग्री साफ़ हो जाएगी। जारी रखें?",
+  "tooltips": {
+    "clearPage": "पृष्ठ साफ़ करें",
+    "aiPanelClose": "AI पैनल बंद करें",
+    "aiAssistant": "AI सहायक",
+    "shareDisabled": "पहले दस्तावेज़ सहेजें",
+    "shareEnabled": "QR, लिंक या WhatsApp से साझा करें",
+    "signDisabled": "पहले दस्तावेज़ सहेजें",
+    "signEnabled": "ई-हस्ताक्षर / मोबाइल हस्ताक्षर से हस्ताक्षर करें"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "साझा करें",
+    "sign": "हस्ताक्षर",
+    "signWithCount": "हस्ताक्षर ({count})",
+    "save": "सहेजें",
+    "saving": "सहेजा जा रहा है…",
+    "saved": "सहेजा गया!"
+  },
+  "pdf": {
+    "qrAlt": "QR सत्यापन",
+    "verificationCaption": "RiskNova सत्यापन"
+  },
+  "floatingAi": {
+    "ariaOpen": "AI सहायक खोलें",
+    "tooltip": "AI सहायक",
+    "label": "AI सहायक"
+  },
+  "sidebarCloseMobile": "AI पैनल बंद करें",
+  "validationQr": "सत्यापन: /share/{token}",
+  "statusBar": {
+    "words": "{count} शब्द",
+    "chars": "{count} अक्षर",
+    "saving": "सहेजा जा रहा है…",
+    "lastSave": "अंतिम सहेज:",
+    "neverSaved": "अभी तक सहेजा नहीं गया"
+  },
+  "signatureDefaults": {
+    "signerName": "हस्ताक्षरकर्ता",
+    "signerRole": "औद्योगिक सुरक्षा विशेषज्ञ"
+  },
+  "toolbar": {
+    "undo": "पूर्ववत (Ctrl+Z)",
+    "redo": "फिर से करें (Ctrl+Y)",
+    "fontSizeTitle": "फ़ॉन्ट आकार",
+    "fontSizeButton": "आकार",
+    "insertTable": "तालिका डालें",
+    "tableSizeHint": "तालिका आकार चुनें",
+    "removeColor": "रंग हटाएँ",
+    "heading1": "शीर्षक 1",
+    "heading2": "शीर्षक 2",
+    "heading3": "शीर्षक 3",
+    "bold": "मोटा (Ctrl+B)",
+    "italic": "तिरछा (Ctrl+I)",
+    "underline": "रेखांकित (Ctrl+U)",
+    "strike": "काटा हुआ",
+    "textColor": "पाठ रंग",
+    "highlightColor": "हाइलाइट रंग",
+    "alignLeft": "बाएँ संरेखित",
+    "alignCenter": "केंद्र",
+    "alignRight": "दाएँ संरेखित",
+    "alignJustify": "दोनों किनारों से संरेखित",
+    "bulletList": "बुलेट सूची",
+    "orderedList": "क्रमांकित सूची",
+    "blockquote": "उद्धरण",
+    "hr": "क्षैतिज रेखा",
+    "print": "छापें (Ctrl+P)"
+  },
+  "shareModal": {
+    "title": "दस्तावेज़ साझा करें",
+    "linkTitle": "साझाकरण लिंक",
+    "linkOn": "लिंक वाला कोई भी देख सकता है",
+    "linkOff": "साझाकरण बंद है",
+    "copyLinkTitle": "लिंक कॉपी करें",
+    "qrCaption": "दस्तावेज़ खोलने के लिए QR स्कैन करें",
+    "otherNative": "अन्य"
+  },
+  "signatureModal": {
+    "title": "दस्तावेज़ पर हस्ताक्षर",
+    "canvasHint": "नीचे के क्षेत्र में अपना हस्ताक्षर बनाएँ",
+    "clear": "साफ़ करें",
+    "legal": "हस्ताक्षर करके आप पुष्टि करते हैं कि आपने सामग्री पढ़ी है और स्वीकार की है। आपका हस्ताक्षर डिजिटल रूप से संग्रहीत होगा; हैश से दस्तावेज़ की अखंडता सत्यापित की जा सकती है।",
+    "cancel": "रद्द करें",
+    "sign": "हस्ताक्षर करें और पुष्टि करें",
+    "signing": "हस्ताक्षर हो रहा है…",
+    "errorAlert": "हस्ताक्षर सहेजते समय त्रुटि हुई।"
+  },
+  "ai": {
+    "title": "AI सहायक",
+    "subtitleWithCompany": "{company} के लिए सामग्री निर्माण और संपादन",
+    "subtitleNoCompany": "सामग्री निर्माण और संपादन",
+    "quick": {
+      "fullDoc": {
+        "label": "पूर्ण दस्तावेज़ बनाएँ",
+        "prompt": "इस दस्तावेज़ को पेशेवर रूप से बनाएँ। सभी खंड, तालिकाएँ और कानूनी संदर्भ शामिल करें। कंपनी की जानकारी सामग्री में डालें; खाली प्लेसहोल्डर न छोड़ें।"
+      },
+      "intro": {
+        "label": "प्रस्तावना लिखें",
+        "prompt": "इस दस्तावेज़ के लिए पेशेवर प्रस्तावना और उद्देश्य खंड लिखें। कंपनी का नाम और क्षेत्र उपयोग करें।"
+      },
+      "legal": {
+        "label": "कानूनी आधार जोड़ें",
+        "prompt": "तुर्की कानून 6331 और संबंधित नियमों के अनुसार कानूनी आधार खंड तैयार करें (आवश्यक हो तो क्षेत्राधिकार के अनुसार संदर्भ समायोजित करें)।"
+      },
+      "regs": {
+        "label": "विधायी संदर्भ",
+        "prompt": "इस दस्तावेज़ प्रकार के लिए सभी लागू विधायी संदर्भ सूचीबद्ध करें।"
+      }
+    },
+    "customRequestLabel": "कस्टम अनुरोध",
+    "customRequestPlaceholder": "आप क्या उत्पन्न करवाना चाहते हैं?",
+    "improveSelected": "चयनित पाठ सुधारें",
+    "improveHint": "संपादक में पाठ चुनें, फिर यह बटन दबाएँ।",
+    "generating": "सामग्री उत्पन्न हो रही है…",
+    "generatingMobileNote": "मोबाइल पर कनेक्शन धीमा हो तो प्रतीक्षा न हो, स्थानीय मसौदा तैयार किया जाता है।",
+    "emptyState": "AI से सामग्री शुरू करने के लिए ऊपर के किसी बटन पर क्लिक करें।",
+    "resultInserted": "संपादक में जोड़ा गया",
+    "resultDegraded": "स्थानीय मसौदा",
+    "resultDefault": "AI परिणाम",
+    "copy": "कॉपी करें",
+    "degradedNotice": "AI सेवा संरक्षित मोड में चली। स्थानीय मसौदा बनाया गया; आप संपादित कर सहेज सकते हैं।",
+    "degradedQueue": "कतार कार्य: {taskId}",
+    "degradedQueueHint": "अनुरोध पृष्ठभूमि में संसाधित हो सकता है; थोड़ी देर बाद पुनः प्रयास करें।",
+    "addToEditor": "संपादक में जोड़ें",
+    "addDegradedToEditor": "स्थानीय मसौदा संपादक में जोड़ें",
+    "insertedSuccess": "सामग्री संपादक में सफलतापूर्वक जोड़ी गई",
+    "improveDialogTitle": "पाठ सुधारें",
+    "improveSelectedLabel": "चयनित पाठ:",
+    "improveChooseType": "किस प्रकार का सुधार लागू करें?",
+    "improveCustomPlaceholder": "कस्टम सुधार अनुरोध…",
+    "improveTextBlockLabel": "सुधार के लिए पाठ:",
+    "errors": {
+      "quotaDefault": "दस्तावेज़ AI पैकेज सीमा पूरी हो गई। जारी रखने के लिए योजना अपग्रेड करें।",
+      "serviceUnavailable": "त्रुटि: AI सेवा उत्तर नहीं दे रही। पुनः प्रयास करें।",
+      "emptyResponseWithFallback": "AI ने खाली उत्तर दिया। मोबाइल पर रुकावट न हो, स्थानीय मसौदा तैयार किया गया।",
+      "abortWithFallback": "AI अनुरोध समय समाप्त। मोबाइल पर इंतज़ार न हो, स्थानीय मसौदा तैयार किया गया।",
+      "connectionWithFallback": "कनेक्शन त्रुटि। मोबाइल पर परिणाम खाली न हो, स्थानीय मसौदा तैयार किया गया।",
+      "emptyResponseImprove": "AI ने खाली उत्तर दिया। छोटा पाठ चुनकर पुनः प्रयास करें।",
+      "abortImprove": "AI अनुरोध समय समाप्त। छोटा पाठ चुनें।",
+      "connectionImprove": "कनेक्शन त्रुटि। पुनः प्रयास करें।",
+      "serviceUnavailableImprove": "त्रुटि: AI सेवा उत्तर नहीं दे रही।",
+      "quotaShort": "दस्तावेज़ AI पैकेज सीमा पूरी हो गई।"
+    },
+    "improve": {
+      "professionalize": {
+        "label": "अधिक पेशेवर बनाएँ",
+        "prompt": "इस पाठ को पेशेवर औद्योगिक सुरक्षा भाषा में फिर से लिखें। औपचारिक, कॉर्पोरेट शैली।"
+      },
+      "shorten": {
+        "label": "छोटा करें",
+        "prompt": "मुख्य अर्थ बिना खोए इस पाठ को छोटा और सरल करें।"
+      },
+      "detail": {
+        "label": "विवरण जोड़ें",
+        "prompt": "इस पाठ को अधिक विस्तृत और व्यापक बनाएँ। जहाँ उपयुक्त हो अनुपलब्ध जानकारी भरें।"
+      },
+      "legal": {
+        "label": "कानूनी संदर्भ जोड़ें",
+        "prompt": "इस पाठ में कानून 6331 के प्रासंगिक अनुच्छेद और नियम संदर्भ जोड़ें (आवश्यक हो तो क्षेत्राधिकार अनुसार समायोजित करें)।"
+      }
+    },
+    "fallback": {
+      "untitled": "दस्तावेज़ मसौदा",
+      "sectionCompany": "कंपनी जानकारी",
+      "tableHeaderField": "क्षेत्र",
+      "tableHeaderValue": "मान",
+      "rowCompany": "कंपनी / संगठन",
+      "rowSector": "क्षेत्र",
+      "rowHazard": "खतरे की श्रेणी",
+      "rowNace": "NACE कोड",
+      "rowEmployees": "कर्मचारियों की संख्या",
+      "rowDate": "दस्तावेज़ दिनांक",
+      "placeholderCompany": "कंपनी जानकारी जोड़ी जाएगी",
+      "placeholderSector": "क्षेत्र जानकारी जोड़ी जाएगी",
+      "placeholderHazard": "खतरे की श्रेणी जोड़ी जाएगी",
+      "placeholderNace": "NACE जानकारी जोड़ी जाएगी",
+      "placeholderEmployees": "कर्मचारी संख्या जोड़ी जाएगी",
+      "sectionPurpose": "उद्देश्य और दायरा",
+      "paragraphScope": "यह दस्तावेज़ {company} के लिए औद्योगिक सुरक्षा, संचालन और अभिलेख प्रक्रियाओं हेतु तैयार किया गया है।",
+      "sectionImplementation": "कार्यान्वयन सिद्धांत",
+      "bullet1": "जिम्मेदार व्यक्ति और अनुमोदन प्रवाह निर्धारित करें",
+      "bullet2": "आवश्यक अभिलेख RiskNova में रखें",
+      "bullet3": "कानूनी आधार और कंपनी प्रक्रियाओं का पालन करें",
+      "bullet4": "गैर-अनुरूपता और गंभीर जोखिम बिना देरी रिपोर्ट करें",
+      "sectionLegal": "कानूनी आधार",
+      "legal1": "औद्योगिक सुरक्षा पर कानून 6331 (और राष्ट्रीय समकक्ष)",
+      "legal2": "संबंधित नियम और आंतरिक कंपनी प्रक्रियाएँ",
+      "sectionSignature": "हस्ताक्षर और अनुमोदन",
+      "tableHeaderParty": "पक्ष",
+      "tableHeaderName": "नाम / पद",
+      "tableHeaderSign": "हस्ताक्षर",
+      "tableHeaderDate": "दिनांक",
+      "rowPreparer": "तैयारकर्ता",
+      "rowEmployer": "नियोक्ता / नियोक्ता प्रतिनिधि",
+      "specialistFallback": "औद्योगिक सुरक्षा पेशेवर"
+    }
+  }
+}

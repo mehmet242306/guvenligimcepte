@@ -1,0 +1,223 @@
+{
+  "defaultTitle": "新文档",
+  "loading": "正在加载文档…",
+  "titlePlaceholder": "文档标题…",
+  "editorPlaceholder": "在此编写文档内容…",
+  "breadcrumb": {
+    "backToLibrary": "返回资料库",
+    "documents": "文档"
+  },
+  "status": {
+    "taslak": "草稿",
+    "hazir": "就绪",
+    "onay_bekliyor": "待审批",
+    "revizyon": "修订",
+    "arsiv": "已归档"
+  },
+  "saveLocation": {
+    "customDocs": "个人文档",
+    "companyDocs": "公司文档"
+  },
+  "saveNotice": "已保存：{path}",
+  "continueEditingHint": "文档保持打开；您可以继续编辑。",
+  "autosaveError": "无法完成自动保存。",
+  "saveErrorUnexpected": "保存文档时发生意外错误。",
+  "confirmClear": "将清空编辑器内容。是否继续？",
+  "tooltips": {
+    "clearPage": "清空页面",
+    "aiPanelClose": "关闭 AI 面板",
+    "aiAssistant": "AI 助手",
+    "shareDisabled": "请先保存文档",
+    "shareEnabled": "通过二维码、链接或 WhatsApp 分享",
+    "signDisabled": "请先保存文档",
+    "signEnabled": "使用电子签名 / 移动签名签署"
+  },
+  "actions": {
+    "word": "Word",
+    "pdf": "PDF",
+    "share": "分享",
+    "sign": "签署",
+    "signWithCount": "签署（{count}）",
+    "save": "保存",
+    "saving": "正在保存…",
+    "saved": "已保存！"
+  },
+  "pdf": {
+    "qrAlt": "二维码核验",
+    "verificationCaption": "RiskNova 核验"
+  },
+  "floatingAi": {
+    "ariaOpen": "打开 AI 助手",
+    "tooltip": "AI 助手",
+    "label": "AI 助手"
+  },
+  "sidebarCloseMobile": "关闭 AI 面板",
+  "validationQr": "核验：/share/{token}",
+  "statusBar": {
+    "words": "{count} 个词",
+    "chars": "{count} 个字符",
+    "saving": "正在保存…",
+    "lastSave": "上次保存：",
+    "neverSaved": "尚未保存"
+  },
+  "signatureDefaults": {
+    "signerName": "签署人",
+    "signerRole": "职业安全与健康专员"
+  },
+  "toolbar": {
+    "undo": "撤销（Ctrl+Z）",
+    "redo": "重做（Ctrl+Y）",
+    "fontSizeTitle": "字号",
+    "fontSizeButton": "大小",
+    "insertTable": "插入表格",
+    "tableSizeHint": "选择表格大小",
+    "removeColor": "清除颜色",
+    "heading1": "标题 1",
+    "heading2": "标题 2",
+    "heading3": "标题 3",
+    "bold": "粗体（Ctrl+B）",
+    "italic": "斜体（Ctrl+I）",
+    "underline": "下划线（Ctrl+U）",
+    "strike": "删除线",
+    "textColor": "文字颜色",
+    "highlightColor": "高亮颜色",
+    "alignLeft": "左对齐",
+    "alignCenter": "居中",
+    "alignRight": "右对齐",
+    "alignJustify": "两端对齐",
+    "bulletList": "项目符号列表",
+    "orderedList": "编号列表",
+    "blockquote": "引用",
+    "hr": "水平线",
+    "print": "打印（Ctrl+P）"
+  },
+  "shareModal": {
+    "title": "分享文档",
+    "linkTitle": "分享链接",
+    "linkOn": "拥有链接的任何人可查看",
+    "linkOff": "分享已关闭",
+    "copyLinkTitle": "复制链接",
+    "qrCaption": "扫描二维码打开文档",
+    "otherNative": "其他"
+  },
+  "signatureModal": {
+    "title": "签署文档",
+    "canvasHint": "请在下方区域绘制签名",
+    "clear": "清除",
+    "legal": "签署即表示您已阅读并同意本文档内容。您的签名将以数字方式保存，并可通过哈希验证文档完整性。",
+    "cancel": "取消",
+    "sign": "签署并确认",
+    "signing": "正在签署…",
+    "errorAlert": "保存签名时出错。"
+  },
+  "ai": {
+    "title": "AI 助手",
+    "subtitleWithCompany": "为 {company} 生成与编辑内容",
+    "subtitleNoCompany": "内容生成与编辑",
+    "quick": {
+      "fullDoc": {
+        "label": "生成完整文档",
+        "prompt": "请专业地撰写此文档。包含所有章节、表格与法律依据。将公司信息写入正文；不要留下空白占位。"
+      },
+      "intro": {
+        "label": "撰写引言",
+        "prompt": "为此文档撰写专业的引言与目的章节。使用公司名称与行业。"
+      },
+      "legal": {
+        "label": "添加法律依据",
+        "prompt": "根据土耳其第 6331 号职业健康与安全法及相关法规编写法律依据章节（必要时按适用司法辖区调整引用）。"
+      },
+      "regs": {
+        "label": "法规引用",
+        "prompt": "列出此文档类型适用的全部法规引用。"
+      }
+    },
+    "customRequestLabel": "自定义请求",
+    "customRequestPlaceholder": "您希望我生成什么？",
+    "improveSelected": "改进所选文本",
+    "improveHint": "在编辑器中选择文本，然后点击此按钮。",
+    "generating": "正在生成内容…",
+    "generatingMobileNote": "若移动网络较慢，系统会准备本地草稿以免长时间等待。",
+    "emptyState": "点击上方任一按钮，开始使用 AI 生成内容。",
+    "resultInserted": "已添加到编辑器",
+    "resultDegraded": "本地草稿",
+    "resultDefault": "AI 结果",
+    "copy": "复制",
+    "degradedNotice": "AI 服务在保护模式下运行。已生成本地草稿；您可编辑并保存。",
+    "degradedQueue": "队列任务：{taskId}",
+    "degradedQueueHint": "请求可能仍在后台处理；请稍后重试。",
+    "addToEditor": "添加到编辑器",
+    "addDegradedToEditor": "将本地草稿添加到编辑器",
+    "insertedSuccess": "内容已成功添加到编辑器",
+    "improveDialogTitle": "改进文本",
+    "improveSelectedLabel": "所选文本：",
+    "improveChooseType": "要应用哪种改进？",
+    "improveCustomPlaceholder": "自定义改进请求…",
+    "improveTextBlockLabel": "待改进文本：",
+    "errors": {
+      "quotaDefault": "文档 AI 套餐用量已达上限。请升级套餐以继续。",
+      "serviceUnavailable": "错误：AI 服务无响应。请重试。",
+      "emptyResponseWithFallback": "AI 返回空响应。已准备本地草稿，以免在移动端卡住。",
+      "abortWithFallback": "AI 请求超时。已准备本地草稿，以免在移动端等待。",
+      "connectionWithFallback": "连接错误。已准备本地草稿，以免在移动端结果为空。",
+      "emptyResponseImprove": "AI 返回空响应。请选择更短的文本片段后重试。",
+      "abortImprove": "AI 请求超时。请选择更短的文本片段后重试。",
+      "connectionImprove": "连接错误。请重试。",
+      "serviceUnavailableImprove": "错误：AI 服务无响应。",
+      "quotaShort": "文档 AI 套餐用量已达上限。"
+    },
+    "improve": {
+      "professionalize": {
+        "label": "更专业化",
+        "prompt": "用专业的职业健康与安全语言重写此文本。使用正式、企业化语气。"
+      },
+      "shorten": {
+        "label": "缩短",
+        "prompt": "在不丢失核心含义的前提下缩短并简化此文本。"
+      },
+      "detail": {
+        "label": "补充细节",
+        "prompt": "扩展此文本，使其更详细、更全面。酌情补全缺失信息。"
+      },
+      "legal": {
+        "label": "添加法律引用",
+        "prompt": "为此文本添加土耳其第 6331 号法律相关条款及法规引用（必要时按适用司法辖区调整）。"
+      }
+    },
+    "fallback": {
+      "untitled": "文档草稿",
+      "sectionCompany": "公司信息",
+      "tableHeaderField": "字段",
+      "tableHeaderValue": "值",
+      "rowCompany": "公司 / 组织",
+      "rowSector": "行业",
+      "rowHazard": "危险等级",
+      "rowNace": "NACE 代码",
+      "rowEmployees": "员工人数",
+      "rowDate": "文档日期",
+      "placeholderCompany": "将添加公司信息",
+      "placeholderSector": "将添加行业信息",
+      "placeholderHazard": "将添加危险等级",
+      "placeholderNace": "将添加 NACE 信息",
+      "placeholderEmployees": "将添加员工人数",
+      "sectionPurpose": "目的与范围",
+      "paragraphScope": "本文档为 {company} 编制，用于职业安全与健康、运营及记录流程。",
+      "sectionImplementation": "实施原则",
+      "bullet1": "明确责任人及审批流程",
+      "bullet2": "在 RiskNova 中保存所需记录",
+      "bullet3": "遵守法律依据与公司规程",
+      "bullet4": "及时报告不符合项与重大风险",
+      "sectionLegal": "法律依据",
+      "legal1": "第 6331 号职业健康与安全法（及本国等效法规）",
+      "legal2": "相关法规与公司内部规程",
+      "sectionSignature": "签署与批准",
+      "tableHeaderParty": "方",
+      "tableHeaderName": "姓名 / 职务",
+      "tableHeaderSign": "签名",
+      "tableHeaderDate": "日期",
+      "rowPreparer": "编制人",
+      "rowEmployer": "雇主 / 雇主代表",
+      "specialistFallback": "职业安全与健康专业人员"
+    }
+  }
+}

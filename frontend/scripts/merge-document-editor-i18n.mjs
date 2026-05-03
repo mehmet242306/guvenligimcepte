@@ -3,7 +3,7 @@
  * into `messages/{locale}.json` as root key `documentEditor`.
  *
  * - `document-editor.en.json` is the canonical key tree (reference strings).
- * - Optional `document-editor.tr.json`, `document-editor.de.json`, … must match
+ * - Optional `document-editor.<locale>.json` packs (tr, de, ar, …) must match
  *   the same string leaf keys as English; any `messages/{locale}.json` without
  *   a pack falls back to English.
  *
