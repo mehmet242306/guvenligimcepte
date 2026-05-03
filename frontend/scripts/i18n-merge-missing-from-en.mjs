@@ -35,7 +35,14 @@ function main() {
   const en = JSON.parse(fs.readFileSync(enPath, "utf8"));
   const files = fs
     .readdirSync(MESSAGES)
-    .filter((f) => f.endsWith(".json") && !f.includes("bundle") && f !== "en.json" && f !== "translations");
+    .filter(
+      (f) =>
+        f.endsWith(".json") &&
+        !f.includes("bundle") &&
+        f !== "en.json" &&
+        f !== "translations" &&
+        !f.startsWith("_"),
+    );
 
   for (const f of files.sort()) {
     const p = path.join(MESSAGES, f);

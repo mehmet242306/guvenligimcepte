@@ -76,6 +76,15 @@
   "brand": {
     "tagline": "AI destekli İSG platformu"
   },
+  "errors": {
+    "global": {
+      "eyebrow": "Kritik hata",
+      "title": "Beklenmeyen bir sorun oluştu",
+      "description": "Hata kaydı yönetim paneline iletildi. Sayfayı yeniden denemek için aşağıdaki düğmeyi kullanabilirsiniz.",
+      "retry": "Tekrar dene",
+      "unknownClientError": "Bilinmeyen istemci hatası"
+    }
+  },
   "dashboard": {
     "sessionLoadingTitle": "Oturum yükleniyor…",
     "sessionLoadingHint": "Oturumunuz doğrulanıyor. Birkaç saniye sürebilir; devam etmezse lütfen yeniden giriş yapın.",
@@ -188,6 +197,221 @@
       "scopeEyebrow": "Firma kapsamı",
       "scopeDescription": "OSGB yönetim ekranları firma seçimiyle filtrelenir. Seçili firma olmadığında tüm portföy görünür.",
       "allCompanies": "Tüm firmalar"
+    },
+    "contractsPage": {
+      "stats": {
+        "recordTitle": "Sözleşme kaydı",
+        "recordDesc": "Seçili kapsamdaki personel özlük ve kontrat odaklı doküman kayıtları.",
+        "readyTitle": "Hazır",
+        "readyDesc": "İmzaya veya müşteri portalına yayımlanmaya hazır belgeler.",
+        "pendingTitle": "Onay bekleyen",
+        "pendingDesc": "Sorumlu müdür ya da işveren onayı gerektiren kontrat ve ekler.",
+        "missingTitle": "Eksik şablon",
+        "missingDesc": "OSGB personel ve hizmet akışlarında tavsiye edilen ama henüz oluşturulmamış şablonlar."
+      },
+      "panelInvite": {
+        "title": "Davet ve sözleşme bağlantısı",
+        "description": "Personel firma bazlı atanırken mail ile davet edilir, oturum koltuğu ayrılır ve ilgili sözleşme belgeleri bu akışla birlikte takip edilir."
+      },
+      "panelChecklist": {
+        "title": "Eksik kontrol listesi",
+        "description": "Personel özlük grubundaki temel belgeler OSGB denetim paketinin omurgasını oluşturur."
+      },
+      "panelActiveContracts": {
+        "title": "Aktif kontrat ve özlük belgeleri",
+        "descAll": "Tüm firmalardaki kontrat ve personel özlük odaklı belge kayıtları.",
+        "descScoped": "{companyName} firmasına bağlı son sözleşme hareketleri."
+      },
+      "emptyNoContracts": {
+        "title": "Sözleşme kaydı bulunamadı",
+        "description": "Seçili kapsama ait kontrat veya özlük belgesi yok. Doküman merkezinden personel özlük grubunu açarak yeni belge oluşturabilirsin.",
+        "ctaDocuments": "Doküman merkezine git"
+      }
+    },
+    "tasksPage": {
+      "stats": {
+        "openTitle": "Açık görev",
+        "openDesc": "Henüz işleme alınmamış görevler. Nova bunları öncelik ve firma riskine göre sıralar.",
+        "inProgressTitle": "İşlemde",
+        "inProgressDesc": "Devam eden operasyon, DÖF veya belge hazırlık görevleri.",
+        "overdueTitle": "Geciken iş",
+        "overdueDesc": "Takip tarihi geçmiş görevler. Denetim ve hizmet SLA riski oluşturur.",
+        "doneTitle": "Tamamlanan",
+        "doneDesc": "Kapatılan ve kanıt zinciri tamamlanan işler."
+      },
+      "panelTaskCentre": {
+        "title": "Görev merkezi",
+        "descAll": "Tüm firmalardaki görevler. Firma, görevlendirme ve doküman akışlarını birlikte izlemek için filtreleyebilirsin.",
+        "descScoped": "{companyName} firmasına ait görevler, atanan personel ve son tarihler."
+      }
+    },
+    "assignmentsPage": {
+      "stats": {
+        "activeTitle": "Aktif atama",
+        "activeDesc": "Firma bazlı aktif uzman, hekim ve DSP atamalarının toplam sayısı.",
+        "signTitle": "İmza yetkisi",
+        "signDesc": "Sözleşme, rapor veya onay akışı için imza yetkisi tanımlı kayıtlar.",
+        "approveTitle": "Onay yetkisi",
+        "approveDesc": "Risk ya da operasyon akışında onay verebilen aktif personel atamaları.",
+        "suspendedTitle": "Askıda / kritik",
+        "suspendedDesc": "Askıya alınmış ve yetki seti eksik olduğu için yönetici kontrolü gereken atamalar."
+      },
+      "panelMatrix": {
+        "title": "Yetki matrisi",
+        "description": "Aynı firma için birden fazla uzman çalışabilir. Erişim hakları personelin kendi hesabı üzerinden yalnızca atandığı workspace verilerine açılır."
+      },
+      "emptyNoAssignments": {
+        "title": "Aktif görevlendirme bulunamadı",
+        "description": "Seçili kapsama ait aktif atama yok. Personel havuzu ve firma organizasyonu üzerinden yeni görevlendirme açabilirsin.",
+        "ctaPersonnel": "Personel havuzunu aç"
+      }
+    },
+    "personnelPage": {
+      "stats": {
+        "activeStaffTitle": "Aktif personel",
+        "activeStaffDesc": "OSGB hesabına bağlı aktif oturum sahibi personel sayısı ve paket limiti.",
+        "assignedTitle": "Atama alan personel",
+        "assignedDesc": "En az bir firmaya aktif olarak atanmış uzman, hekim veya DSP kayıtları.",
+        "openTasksTitle": "Açık görev",
+        "openTasksDesc": "Personellere atanmış açık ve işlemde görevlerin toplam görünümü.",
+        "overdueTasksTitle": "Geciken görev",
+        "overdueTasksDesc": "Takip tarihi geçmiş görevler. Nova OSGB Manager bu alanları öne çıkarır."
+      },
+      "panelInvite": {
+        "title": "Davet ve ilk giriş akışı",
+        "description": "Yeni personel önce OSGB oturum koltuğuna dahil edilir, sonra ilgili firmalara atanır. Davet maili firma/rol bilgisiyle gider; kullanıcıya geçici giriş bilgisi veya şifre yenileme talimatı iletilir ve ilk girişte şifresini değiştirmesi beklenir."
+      },
+      "panelNova": {
+        "title": "Nova OSGB Manager odağı",
+        "description": "Nova bu yüzeyde profesyonel asistandan farklı davranır; personel yükünü, firma atamalarını ve gecikmeleri analiz eder."
+      },
+      "panelList": {
+        "title": "OSGB personel listesi",
+        "descAll": "OSGB hesabına bağlı personeller, firma sayıları ve görev durumları.",
+        "descScoped": "{companyName} firmasına atanan personeller ve ilgili görev yükleri."
+      },
+      "emptyNoPersonnel": {
+        "title": "Personel kaydı bulunamadı",
+        "description": "OSGB personel havuzu boş. Firma organizasyon sekmesinden ilk daveti göndererek uzman, hekim veya DSP ekleyebilirsin.",
+        "ctaOrganisation": "Firma organizasyonuna git"
+      }
+    },
+    "documentsPage": {
+      "panelOperations": {
+        "title": "Günlük operasyon masası",
+        "description": "OSGB yöneticisi bu yüzeyden firma kapsamını, profesyonel doküman üretimini, denetim paketi hazırlığını ve arşiv aksiyonlarını aynı anda yönetir."
+      },
+      "stats": {
+        "totalDocsTitle": "Toplam doküman",
+        "totalDocsDesc": "Seçili firma kapsamına ait aktif doküman kartları ve saha çıktıları.",
+        "readyTitle": "Hazır",
+        "readyDesc": "İmza, yayın veya denetim paketine eklenmeye hazır kayıtlar.",
+        "archiveRecordTitle": "Arşiv kaydı",
+        "archiveRecordDesc": "Silinmeyen, geçmişi korunmuş ve firma bazlı soğuk arşive alınmış kayıtlar.",
+        "archivePackageTitle": "Arşiv paketi",
+        "archivePackageDescProcessing": "{count} paket şu anda hazırlanıyor.",
+        "archivePackageDescIdle": "İndirilebilir durumda olan denetim ve işyeri İSG dosyası paketleri.",
+        "sharedTitle": "Paylaşılan belge",
+        "sharedDesc": "Portal, paylaşım linki veya denetim çıkışı için yayımlanmış dokümanlar.",
+        "preparedTitle": "Hazırlayan izi",
+        "preparedDesc": "Hazırlayan profesyonel bilgisi kayda alınmış aktif dokümanlar.",
+        "approvedTitle": "Onaylanmış",
+        "approvedDesc": "Onay zamanı yazılmış, yönetim zincirinden geçmiş aktif kayıtlar.",
+        "signedTitle": "İmzalı belge",
+        "signedDesc": "Doküman imza kaydı olan ve audit zincirine giren kayıtlar.",
+        "auditReadyTitle": "Denetime hazır paket",
+        "auditReadyDesc": "Zorunlu grup kapsamı dolmuş ve onay veya kullanım izi taşıyan paket aileleri.",
+        "traceabilityTitle": "İzlenebilirlik",
+        "traceabilityDesc": "Hazırlayan, onay, imza veya yayın izi taşıyan aktif doküman oranı.",
+        "approvalQueueTitle": "Onay kuyruğu",
+        "approvalQueueDesc": "Arşiv ve yayın öncesi yönetsel kontrol bekleyen aktif kayıtlar.",
+        "failedPackageTitle": "Hata veren paket",
+        "failedPackageDesc": "Yeniden ele alınması gereken arşiv veya paketleme denemeleri."
+      },
+      "panelArchiveLayout": {
+        "title": "Firma bazlı arşiv kurgusu",
+        "description": "Tüm doküman, rapor ve kanıt akışı firma workspace bağlamında tutulur. Görevlendirilen profesyoneller kendi ürettikleri kayıtları bu omurgaya ekler; OSGB yönetimi ise aynı omurgadan denetim paketi ve arşiv üretir."
+      },
+      "panelProfessional": {
+        "title": "Profesyonel üretim izi",
+        "description": "OSGB yönetimi, firma bazlı doküman üretimini ilgili uzman ve hekimler üzerinden izler."
+      },
+      "panelStreams": {
+        "title": "Belge akış hatları",
+        "description": "OSGB doküman sistemi tek kutu değil; mevzuat ve operasyon doğasına göre farklı belge akışları aynı firma omurgasında toplanır."
+      },
+      "panelAuditPrep": {
+        "title": "Denetim paketi hazırlık seviyesi",
+        "description": "Paylaştığın akışa uygun olarak her firma için denetim paketi tek PDF değil; farklı belge ailelerinden oluşan bir audit omurgası olarak izlenir."
+      },
+      "panelIntegration": {
+        "title": "Dış kaynak belge toplama katmanı",
+        "description": "Belgeler tek kanaldan değil, web servis, operatör destekli portal ve standart dosya import katmanlarından beslenir."
+      },
+      "panelArchiveSelect": {
+        "title": "Firma seç ve arşiv paketi hazırla",
+        "description": "Arşiv paketi her zaman tek bir firma workspace'i için hazırlanır. Portföy seviyesinde son paketleri görebilir, yeni paket için ilgili firmayı seçebilirsin."
+      },
+      "emptyNoCompanies": {
+        "title": "Firma bulunamadı",
+        "description": "Önce firma oluşturup workspace bağlamını hazırlamalısın. Firma olmadan profesyonel üretimi ve arşiv paketi açılmaz.",
+        "ctaFirms": "Firmalara git"
+      },
+      "emptyNoArchiveJobs": {
+        "title": "Hazır arşiv paketi yok",
+        "description": "Henüz hiçbir firma için İSG dosyası paketi oluşturulmamış. Yukarıdan firma seçerek ilk paketi hazırlayabilirsin."
+      },
+      "panelRetention": {
+        "title": "Saklama ve arşivleme matrisi",
+        "description": "Firma bazlı gelen profesyonel kayıtlar, tek bir saklama süresine değil belge türüne göre farklı arşiv kurallarına tabidir."
+      },
+      "panelGuarantees": {
+        "title": "Arşiv güvenceleri",
+        "description": "Bu ekran sadece dosya listesi değil; izlenebilirlik ve hukuk güvencesi odaklı bir belge omurgası olarak çalışır."
+      },
+      "panelRecentMoves": {
+        "title": "Son profesyonel doküman hareketleri",
+        "descAll": "Tüm firmalardaki profesyonel kaynaklı son aktif doküman hareketleri.",
+        "descScoped": "{companyName} firması için profesyonellerin son ürettiği veya güncellediği aktif kayıtlar."
+      },
+      "emptyNoActiveDocs": {
+        "title": "Aktif doküman kaydı bulunamadı",
+        "description": "Seçili kapsama ait aktif doküman yok. Doküman merkezinden ilk kaydı oluşturabilir veya firma seçerek profesyonel üretimini izleyebilirsin.",
+        "ctaDocuments": "Doküman merkezini aç"
+      },
+      "panelApproved": {
+        "title": "Onaylanmış dokümanlar",
+        "descAll": "Tüm firmalarda onay zincirinden geçmiş dokümanlar.",
+        "descScoped": "{companyName} firması için onay kaydı düşülmüş dokümanlar."
+      },
+      "emptyNoApproved": {
+        "title": "Onaylı doküman bulunamadı",
+        "description": "Seçili firma kapsamında approved_at kaydı bulunan doküman yok."
+      },
+      "panelInUse": {
+        "title": "Kullanımda olan dokümanlar",
+        "descAll": "Tüm firmalardaki kullanımda olan, paylaşım ya da imza izi taşıyan dokümanlar.",
+        "descScoped": "{companyName} firması için paylaşılmış veya imzalanmış dokümanlar."
+      },
+      "emptyNoUsed": {
+        "title": "Kullanımda doküman bulunamadı",
+        "description": "Seçili firma kapsamında paylaşım veya imza izi bulunan doküman yok."
+      },
+      "panelArchived": {
+        "title": "Arşive alınan kayıtlar",
+        "descAll": "Tüm firmalardaki arşive alınmış dokümanlar. Firma bazlı filtre kullanarak daraltabilirsin.",
+        "descScoped": "{companyName} firmasında soğuk arşive alınmış kayıtlar. Bu kayıtlar aktif sayaçlara dahil edilmez ama denetim izi korunur."
+      },
+      "emptyNoArchived": {
+        "title": "Arşiv kaydı bulunamadı",
+        "description": "Seçili kapsama ait arşivlenmiş doküman yok. Kayıtlar editör ya da firma workspace içinden arşive alındığında burada görünür."
+      },
+      "panelApprovalQueue": {
+        "title": "Onay ve yayın kuyruğu",
+        "description": "Arşiv paketine girmeden önce yönetici, sorumlu müdür veya işveren onayı bekleyen dokümanlar burada toplanır.",
+        "notice": "Seçili kapsamda {count} doküman halen onay bekliyor. Hazır paket sayacını etkilemeden önce bu kayıtları tamamlaman iyi olur.",
+        "ctaApprovals": "Onay kayıtlarını aç"
+      }
     }
   },
   "slides": {

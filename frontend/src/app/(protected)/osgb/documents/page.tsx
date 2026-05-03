@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/ui/page-header";
 import { OhsFileTab } from "@/components/companies/OhsFileTab";
 import { OsgbEmpty, OsgbPanel, OsgbScopeBar, OsgbStatCard } from "@/components/osgb/OsgbPageChrome";
@@ -175,6 +176,7 @@ export default async function OsgbDocumentsPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
+  const td = await getTranslations("osgb.documentsPage");
   const manager = await requireOsgbManagerContext();
   const service = createServiceClient();
   const selectedCompany = resolveWorkspaceFilter(manager.companies, params.workspaceId);
@@ -525,8 +527,8 @@ export default async function OsgbDocumentsPage({
       />
 
       <OsgbPanel
-        title="Gunluk operasyon masasi"
-        description="OSGB yoneticisi bu yuzeyden firma kapsamini, profesyonel dokuman uretimini, denetim paketi hazirligini ve arsiv aksiyonlarini ayni anda yonetir."
+        title={td("panelOperations.title")}
+        description={td("panelOperations.description")}
         actions={
           <>
             <Link
@@ -625,28 +627,28 @@ export default async function OsgbDocumentsPage({
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <OsgbStatCard
-          title="Toplam dokuman"
+          title={td("stats.totalDocsTitle")}
           value={activeDocuments.length}
-          description="Secili firma kapsamina ait aktif dokuman kartlari ve saha ciktilari."
+          description={td("stats.totalDocsDesc")}
         />
         <OsgbStatCard
-          title="Hazir"
+          title={td("stats.readyTitle")}
           value={readyCount}
-          description="Imza, yayin veya denetim paketine eklenmeye hazir kayitlar."
+          description={td("stats.readyDesc")}
           accent="text-success"
         />
         <OsgbStatCard
-          title="Arsiv kaydi"
+          title={td("stats.archiveRecordTitle")}
           value={archivedDocuments.length}
-          description="Silinmeyen, gecmisi korunmus ve firma bazli soguk arsive alinmis kayitlar."
+          description={td("stats.archiveRecordDesc")}
         />
         <OsgbStatCard
-          title="Arsiv paketi"
+          title={td("stats.archivePackageTitle")}
           value={completedArchiveCount}
           description={
             processingArchiveCount > 0
-              ? `${processingArchiveCount} paket su anda hazirlaniyor.`
-              : "Indirilebilir durumda olan denetim ve isyeri ISG dosyasi paketleri."
+              ? td("stats.archivePackageDescProcessing", { count: processingArchiveCount })
+              : td("stats.archivePackageDescIdle")
           }
           accent={failedArchiveCount > 0 ? "text-warning" : "text-primary"}
         />
@@ -654,8 +656,8 @@ export default async function OsgbDocumentsPage({
 
       <div className="grid gap-4 xl:grid-cols-[1.2fr_1fr]">
         <OsgbPanel
-          title="Firma bazli arsiv kurgusu"
-          description="Tum dokuman, rapor ve kanit akisi firma workspace baglaminda tutulur. Gorevlendirilen profesyoneller kendi urettikleri kayitlari bu omurgaya ekler; OSGB yonetimi ise ayni omurgadan denetim paketi ve arsiv uretir."
+          title={td("panelArchiveLayout.title")}
+          description={td("panelArchiveLayout.description")}
         >
           <div className="grid gap-3 md:grid-cols-2">
             <div className="rounded-2xl border border-border bg-background p-4">
@@ -678,8 +680,8 @@ export default async function OsgbDocumentsPage({
         </OsgbPanel>
 
         <OsgbPanel
-          title="Profesyonel uretim izi"
-          description="OSGB yonetimi, firma bazli dokuman uretimini ilgili uzman ve hekimler uzerinden izler."
+          title={td("panelProfessional.title")}
+          description={td("panelProfessional.description")}
         >
           {professionalActivity.length === 0 ? (
             <p className="text-sm text-muted-foreground">
@@ -712,57 +714,57 @@ export default async function OsgbDocumentsPage({
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <OsgbStatCard
-          title="Paylasilan belge"
+          title={td("stats.sharedTitle")}
           value={sharedCount}
-          description="Portal, paylasim linki veya denetim cikisi icin yayinlanmis dokumanlar."
+          description={td("stats.sharedDesc")}
         />
         <OsgbStatCard
-          title="Hazirlayan izi"
+          title={td("stats.preparedTitle")}
           value={preparedCount}
-          description="Hazirlayan profesyonel bilgisi kayda alinmis aktif dokumanlar."
+          description={td("stats.preparedDesc")}
         />
         <OsgbStatCard
-          title="Onaylanmis"
+          title={td("stats.approvedTitle")}
           value={approvedCount}
-          description="Onay zamani yazilmis, yonetim zincirinden gecmis aktif kayitlar."
+          description={td("stats.approvedDesc")}
           accent="text-success"
         />
         <OsgbStatCard
-          title="Imzali belge"
+          title={td("stats.signedTitle")}
           value={signedDocumentCount}
-          description="Dokuman imza kaydi olan ve audit zincirine giren kayitlar."
+          description={td("stats.signedDesc")}
         />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <OsgbStatCard
-          title="Denetime hazir paket"
+          title={td("stats.auditReadyTitle")}
           value={readyAuditPackageCount}
-          description="Zorunlu grup kapsami dolmus ve onay veya kullanim izi tasiyan paket aileleri."
+          description={td("stats.auditReadyDesc")}
           accent="text-success"
         />
         <OsgbStatCard
-          title="Izlenebilirlik"
+          title={td("stats.traceabilityTitle")}
           value={`${traceabilityPercent}%`}
-          description="Hazirlayan, onay, imza veya yayin izi tasiyan aktif dokuman orani."
+          description={td("stats.traceabilityDesc")}
         />
         <OsgbStatCard
-          title="Onay kuyrugu"
+          title={td("stats.approvalQueueTitle")}
           value={waitingApprovalCount}
-          description="Arsiv ve yayin oncesi yonetsel kontrol bekleyen aktif kayitlar."
+          description={td("stats.approvalQueueDesc")}
           accent={waitingApprovalCount > 0 ? "text-warning" : "text-success"}
         />
         <OsgbStatCard
-          title="Hata veren paket"
+          title={td("stats.failedPackageTitle")}
           value={failedArchiveCount}
-          description="Yeniden ele alinmasi gereken arsiv veya paketleme denemeleri."
+          description={td("stats.failedPackageDesc")}
           accent={failedArchiveCount > 0 ? "text-danger" : "text-primary"}
         />
       </div>
 
       <OsgbPanel
-        title="Belge akis hatlari"
-        description="OSGB dokuman sistemi tek kutu degil; mevzuat ve operasyon dogasina gore farkli belge akislari ayni firma omurgasinda toplanir."
+        title={td("panelStreams.title")}
+        description={td("panelStreams.description")}
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {streamSnapshots.map((stream) => (
@@ -818,8 +820,8 @@ export default async function OsgbDocumentsPage({
       </OsgbPanel>
 
       <OsgbPanel
-        title="Denetim paketi hazirlik seviyesi"
-        description="Paylastigin akisa uygun olarak her firma icin denetim paketi tek PDF degil; farkli belge ailelerinden olusan bir audit omurgasi olarak izlenir."
+        title={td("panelAuditPrep.title")}
+        description={td("panelAuditPrep.description")}
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {auditPackageSections.map((section) => (
@@ -896,8 +898,8 @@ export default async function OsgbDocumentsPage({
       </OsgbPanel>
 
       <OsgbPanel
-        title="Dis kaynak belge toplama katmani"
-        description="Notundaki uc desenli entegrasyon mimarisini ekrana tasidim. Belgeler tek kanaldan degil, web servis, operator destekli portal ve standart dosya import katmanlarindan beslenir."
+        title={td("panelIntegration.title")}
+        description={td("panelIntegration.description")}
       >
         <div className="grid gap-4 xl:grid-cols-3">
           {OSGB_DOCUMENT_INTEGRATION_LANES.map((lane) => (
@@ -979,19 +981,19 @@ export default async function OsgbDocumentsPage({
           />
         ) : (
           <OsgbPanel
-            title="Firma sec ve arsiv paketi hazirla"
-            description="Arsiv paketi her zaman tek bir firma workspace'i icin hazirlanir. Portfoy seviyesinde son paketleri gorebilir, yeni paket icin ilgili firmayi secebilirsin."
+            title={td("panelArchiveSelect.title")}
+            description={td("panelArchiveSelect.description")}
           >
             {manager.companies.length === 0 ? (
               <OsgbEmpty
-                title="Firma bulunamadi"
-                description="Once firma olusturup workspace baglamini hazirlamalisin. Firma olmadan profesyonel uretimi ve arsiv paketi acilmaz."
+                title={td("emptyNoCompanies.title")}
+                description={td("emptyNoCompanies.description")}
                 action={
                   <Link
                     href="/osgb/firms"
                     className="inline-flex h-10 items-center rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                   >
-                    Firmalara git
+                    {td("emptyNoCompanies.ctaFirms")}
                   </Link>
                 }
               />
@@ -1011,8 +1013,8 @@ export default async function OsgbDocumentsPage({
 
                 {archiveJobs.length === 0 ? (
                   <OsgbEmpty
-                    title="Hazir arsiv paketi yok"
-                    description="Henuz hicbir firma icin ISG dosyasi paketi olusturulmamis. Yukaridan firma secerek ilk paketi hazirlayabilirsin."
+                    title={td("emptyNoArchiveJobs.title")}
+                    description={td("emptyNoArchiveJobs.description")}
                   />
                 ) : (
                   <div className="space-y-3">
@@ -1072,8 +1074,8 @@ export default async function OsgbDocumentsPage({
       </div>
 
       <OsgbPanel
-        title="Saklama ve arsivleme matrisi"
-        description="Firma bazli gelen profesyonel kayitlar, tek bir saklama suresine degil belge turune gore farkli arsiv kurallarina tabidir."
+        title={td("panelRetention.title")}
+        description={td("panelRetention.description")}
         actions={
           <>
             <Link
@@ -1116,8 +1118,8 @@ export default async function OsgbDocumentsPage({
       </OsgbPanel>
 
       <OsgbPanel
-        title="Arsiv guvenceleri"
-        description="Notundaki arsiv katmani gereksinimlerini UI diline tasidim. Bu ekran sadece dosya listesi degil, izlenebilirlik ve hukuk guvencesi odakli bir belge omurgasi olarak calisir."
+        title={td("panelGuarantees.title")}
+        description={td("panelGuarantees.description")}
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {OSGB_ARCHIVE_GUARANTEES.map((item) => (
@@ -1171,23 +1173,23 @@ export default async function OsgbDocumentsPage({
       </OsgbPanel>
 
       <OsgbPanel
-        title="Son profesyonel dokuman hareketleri"
+        title={td("panelRecentMoves.title")}
         description={
           selectedCompany
-            ? `${selectedCompany.displayName} firmasi icin profesyonellerin son urettigi veya guncelledigi aktif kayitlar.`
-            : "Tum firmalardaki profesyonel kaynakli son aktif dokuman hareketleri."
+            ? td("panelRecentMoves.descScoped", { companyName: selectedCompany.displayName })
+            : td("panelRecentMoves.descAll")
         }
       >
         {activeDocuments.length === 0 ? (
           <OsgbEmpty
-            title="Aktif dokuman kaydi bulunamadi"
-            description="Secili kapsama ait aktif dokuman yok. Dokuman merkezinden ilk kaydi olusturabilir veya firma secerek profesyonel uretimini izleyebilirsin."
+            title={td("emptyNoActiveDocs.title")}
+            description={td("emptyNoActiveDocs.description")}
             action={
               <Link
                 href={documentsHref}
                 className="inline-flex h-10 items-center rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                Dokuman merkezini ac
+                {td("emptyNoActiveDocs.ctaDocuments")}
               </Link>
             }
           />
@@ -1243,17 +1245,17 @@ export default async function OsgbDocumentsPage({
 
       <div className="grid gap-4 xl:grid-cols-2">
         <OsgbPanel
-          title="Onaylanmis dokumanlar"
+          title={td("panelApproved.title")}
           description={
             selectedCompany
-              ? `${selectedCompany.displayName} firmasi icin onay kaydi dusulmus dokumanlar.`
-              : "Tum firmalarda onay zincirinden gecmis dokumanlar."
+              ? td("panelApproved.descScoped", { companyName: selectedCompany.displayName })
+              : td("panelApproved.descAll")
           }
         >
           {approvedDocuments.length === 0 ? (
             <OsgbEmpty
-              title="Onayli dokuman bulunamadi"
-              description="Secili firma kapsaminda approved_at kaydi bulunan dokuman yok."
+              title={td("emptyNoApproved.title")}
+              description={td("emptyNoApproved.description")}
             />
           ) : (
             <div className="space-y-4">
@@ -1297,17 +1299,17 @@ export default async function OsgbDocumentsPage({
         </OsgbPanel>
 
         <OsgbPanel
-          title="Kullanimda olan dokumanlar"
+          title={td("panelInUse.title")}
           description={
             selectedCompany
-              ? `${selectedCompany.displayName} firmasi icin paylasilmis veya imzalanmis dokumanlar.`
-              : "Tum firmalardaki kullanimda olan, paylasim ya da imza izi tasiyan dokumanlar."
+              ? td("panelInUse.descScoped", { companyName: selectedCompany.displayName })
+              : td("panelInUse.descAll")
           }
         >
           {usedDocuments.length === 0 ? (
             <OsgbEmpty
-              title="Kullanimda dokuman bulunamadi"
-              description="Secili firma kapsaminda paylasim veya imza izi bulunan dokuman yok."
+              title={td("emptyNoUsed.title")}
+              description={td("emptyNoUsed.description")}
             />
           ) : (
             <div className="space-y-4">
@@ -1356,17 +1358,17 @@ export default async function OsgbDocumentsPage({
       </div>
 
       <OsgbPanel
-        title="Arsive alinan kayitlar"
+        title={td("panelArchived.title")}
         description={
           selectedCompany
-            ? `${selectedCompany.displayName} firmasinda soguk arsive alinmis kayitlar. Bu kayitlar aktif sayaçlara dahil edilmez ama denetim izi korunur.`
-            : "Tum firmalardaki arsive alinmis dokumanlar. Firma bazli filtre kullanarak daraltabilirsin."
+            ? td("panelArchived.descScoped", { companyName: selectedCompany.displayName })
+            : td("panelArchived.descAll")
         }
       >
         {archivedDocuments.length === 0 ? (
           <OsgbEmpty
-            title="Arsiv kaydi bulunamadi"
-            description="Secili kapsama ait arsivlenmis dokuman yok. Kayitlar editor ya da firma workspace icinden arsive alindiginda burada gorunur."
+            title={td("emptyNoArchived.title")}
+            description={td("emptyNoArchived.description")}
           />
         ) : (
           <div className="space-y-4">
@@ -1419,19 +1421,19 @@ export default async function OsgbDocumentsPage({
 
       {waitingApprovalCount > 0 ? (
         <OsgbPanel
-          title="Onay ve yayin kuyrugu"
-          description="Arsiv paketine girmeden once yonetici, sorumlu mudur veya isveren onayi bekleyen dokumanlar burada toplanir."
+          title={td("panelApprovalQueue.title")}
+          description={td("panelApprovalQueue.description")}
           actions={
             <Link
               href={documentsHref}
               className="inline-flex h-10 items-center rounded-xl border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
             >
-              Onay kayitlarini ac
+              {td("panelApprovalQueue.ctaApprovals")}
             </Link>
           }
         >
           <div className="rounded-2xl border border-warning/30 bg-warning/10 px-4 py-4 text-sm text-foreground">
-            Secili kapsamda {waitingApprovalCount} dokuman halen onay bekliyor. Hazir paket sayacini etkilemeden once bu kayitlari tamamlaman iyi olur.
+            {td("panelApprovalQueue.notice", { count: waitingApprovalCount })}
           </div>
         </OsgbPanel>
       ) : null}

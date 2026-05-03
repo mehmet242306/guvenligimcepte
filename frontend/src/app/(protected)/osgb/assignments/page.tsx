@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/ui/page-header";
 import { OsgbEmpty, OsgbPanel, OsgbScopeBar, OsgbStatCard } from "@/components/osgb/OsgbPageChrome";
 import { OsgbAssignmentsBoardClient } from "./OsgbAssignmentsBoardClient";
@@ -20,6 +21,7 @@ export default async function OsgbAssignmentsPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
+  const ta = await getTranslations("osgb.assignmentsPage");
   const manager = await requireOsgbManagerContext();
   const service = createServiceClient();
   const selectedCompany = resolveWorkspaceFilter(manager.companies, params.workspaceId);
@@ -142,24 +144,24 @@ export default async function OsgbAssignmentsPage({
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <OsgbStatCard
-          title="Aktif atama"
+          title={ta("stats.activeTitle")}
           value={activeAssignments}
-          description="Firma bazli aktif uzman, hekim ve DSP atamalarinin toplam sayisi."
+          description={ta("stats.activeDesc")}
         />
         <OsgbStatCard
-          title="Imza yetkisi"
+          title={ta("stats.signTitle")}
           value={signCapableAssignments}
-          description="Sozlesme, rapor veya onay akisi icin imza yetkisi tanimli kayitlar."
+          description={ta("stats.signDesc")}
         />
         <OsgbStatCard
-          title="Onay yetkisi"
+          title={ta("stats.approveTitle")}
           value={approvalCapableAssignments}
-          description="Risk ya da operasyon akisinda onay verebilen aktif personel atamalari."
+          description={ta("stats.approveDesc")}
         />
         <OsgbStatCard
-          title="Askida / kritik"
+          title={ta("stats.suspendedTitle")}
           value={`${suspendedAssignments} / ${criticalAssignments}`}
-          description="Askiya alinmis ve yetki seti eksik oldugu icin yonetici kontrolu gereken atamalar."
+          description={ta("stats.suspendedDesc")}
           accent={
             suspendedAssignments > 0 || criticalAssignments > 0
               ? "text-danger"
@@ -169,13 +171,13 @@ export default async function OsgbAssignmentsPage({
       </div>
 
       <OsgbPanel
-        title="Yetki matrisi"
-        description="Ayni firma icin birden fazla uzman calisabilir. Erisim haklari personelin kendi hesabi uzerinden yalnizca atandigi workspace verilerine acilir."
+        title={ta("panelMatrix.title")}
+        description={ta("panelMatrix.description")}
       >
         {visibleAssignments.length === 0 ? (
           <OsgbEmpty
-            title="Aktif gorevlendirme bulunamadi"
-            description="Secili kapsama ait aktif atama yok. Personel havuzu ve firma organizasyonu uzerinden yeni gorevlendirme acabilirsin."
+            title={ta("emptyNoAssignments.title")}
+            description={ta("emptyNoAssignments.description")}
             action={
               <Link
                 href={
@@ -185,7 +187,7 @@ export default async function OsgbAssignmentsPage({
                 }
                 className="inline-flex h-10 items-center rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                Personel havuzunu ac
+                {ta("emptyNoAssignments.ctaPersonnel")}
               </Link>
             }
           />

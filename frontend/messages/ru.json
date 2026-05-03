@@ -61,7 +61,32 @@
       "toggleExpand": "Развернуть руководство",
       "whatIsBody": "Это систематический метод поиска структурных или системных факторов события — не только поверхностного симптома. При правильном применении он предотвращает повторение того же класса инцидентов: лечит болезнь, а не только симптом. В ОТ турецкий закон 6331 и ISO 45001 требуют работы с первопричинами для инцидентов.",
       "whatIsHeading": "Что такое анализ первопричин?",
-      "whenHeading": "Когда он используется?"
+      "whenHeading": "Когда он используется?",
+      "whenUse": [
+        "After a work accident or near miss — often a legal requirement",
+        "Recurring non-conformities — the same issue keeps coming back",
+        "Proactive review of high-risk processes (fire, chemicals, work at height)",
+        "Systemic correction after audits or customer feedback",
+        "Suspected occupational disease — long exposure chains"
+      ],
+      "tips": [
+        "Need a quick read → 5 Whys or R₂D-RCA",
+        "Team brainstorming → Ishikawa",
+        "Complex causal logic (AND/OR, conditions) → FTA",
+        "Classic OHS incident (slip, strike) → SCAT",
+        "High-risk work + barrier analysis → Bow-tie",
+        "Major event + organisational analysis → MORT",
+        "Continuous monitoring + numeric comparison → R₂D-RCA (RiskNova-specific)"
+      ],
+      "processSteps": [
+        "Define the event clearly (company, location, date, who/what/where/how)",
+        "Choose the right method (use the tips above)",
+        "Generate a first draft with AI or fill manually",
+        "Review with the team and close gaps",
+        "Confirm root causes → build corrective/preventive (CAPA) actions",
+        "Produce a PDF report and share (QR for mobile access)",
+        "Follow up: action closure timelines + prevention of recurrence"
+      ]
     }
   },
   "auth": {
@@ -1028,7 +1053,15 @@
       "metaTitle": "Политика конфиденциальности",
       "ogDescription": "Краткое изложение конфиденциальности, охватывающее аккаунт, использование продукта и субпроцессоры.",
       "ogTitle": "Политика конфиденциальности | RiskNova",
-      "title": "Политика конфиденциальности RiskNova"
+      "title": "Политика конфиденциальности RiskNova",
+      "paragraphs": [
+        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
+        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
+        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
+        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
+        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
+        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
+      ]
     },
     "refund": {
       "eyebrow": "Политика возврата",
@@ -1037,7 +1070,15 @@
       "metaTitle": "Политика возврата",
       "ogDescription": "Окно возврата, продления и исправления биллинга.",
       "ogTitle": "Политика возврата | RiskNova",
-      "title": "Политика возврата RiskNova"
+      "title": "Политика возврата RiskNova",
+      "paragraphs": [
+        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
+        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
+        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
+        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
+        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
+        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
+      ]
     },
     "terms": {
       "eyebrow": "Условия использования",
@@ -1093,7 +1134,15 @@
       "metaTitle": "Условия обслуживания",
       "ogDescription": "Краткое изложение подписки, функций с помощью ИИ и допустимого использования.",
       "ogTitle": "Условия обслуживания | RiskNova",
-      "title": "Условия и положения RiskNova"
+      "title": "Условия и положения RiskNova",
+      "paragraphs": [
+        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
+        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
+        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
+        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
+        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
+        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
+      ]
     }
   },
   "nav": {
@@ -1185,6 +1234,221 @@
       "allCompanies": "Все компании",
       "scopeDescription": "Экраны управления OSGB фильтруются по выбору компании. Когда компания не выбрана, отображается весь портфель.",
       "scopeEyebrow": "Область действия компании"
+    },
+    "contractsPage": {
+      "stats": {
+        "recordTitle": "Contract records",
+        "recordDesc": "Personnel file and contract-focused document records in the selected scope.",
+        "readyTitle": "Ready",
+        "readyDesc": "Documents ready for signing or publishing to the customer portal.",
+        "pendingTitle": "Pending approval",
+        "pendingDesc": "Contracts and attachments that require authorised manager or employer approval.",
+        "missingTitle": "Missing templates",
+        "missingDesc": "Recommended templates for OSGB personnel and service flows that have not been created yet."
+      },
+      "panelInvite": {
+        "title": "Invite and contract linkage",
+        "description": "When staff are assigned to a company they are invited by email, a seat is reserved, and related contract documents are tracked in this flow."
+      },
+      "panelChecklist": {
+        "title": "Missing checklist",
+        "description": "Core documents in the personnel HR group are the backbone of the OSGB audit package."
+      },
+      "panelActiveContracts": {
+        "title": "Active contract and personnel file records",
+        "descAll": "Contract and personnel file records across all companies.",
+        "descScoped": "Latest contract activity linked to {companyName}."
+      },
+      "emptyNoContracts": {
+        "title": "No contract records found",
+        "description": "No contract or personnel record in the selected scope. Open the document centre and the personnel HR group to create a new document.",
+        "ctaDocuments": "Open document centre"
+      }
+    },
+    "tasksPage": {
+      "stats": {
+        "openTitle": "Open tasks",
+        "openDesc": "Tasks not yet started. Nova prioritises them by priority and company risk.",
+        "inProgressTitle": "In progress",
+        "inProgressDesc": "Ongoing operations, CAPA or document preparation work.",
+        "overdueTitle": "Overdue",
+        "overdueDesc": "Tasks past their follow-up date. Creates audit and service SLA risk.",
+        "doneTitle": "Completed",
+        "doneDesc": "Closed work with a complete evidence trail."
+      },
+      "panelTaskCentre": {
+        "title": "Task centre",
+        "descAll": "Tasks across all companies. Filter by company, assignment and document flows to monitor them together.",
+        "descScoped": "Tasks, assigned staff and due dates for {companyName}."
+      }
+    },
+    "assignmentsPage": {
+      "stats": {
+        "activeTitle": "Active assignments",
+        "activeDesc": "Total active specialist, physician and DSP assignments by company.",
+        "signTitle": "Signature authority",
+        "signDesc": "Active assignments with signing rights for contracts, reports or approvals.",
+        "approveTitle": "Approval authority",
+        "approveDesc": "Active personnel assignments that can approve risk or operational flows.",
+        "suspendedTitle": "Suspended / critical",
+        "suspendedDesc": "Suspended assignments and those flagged for missing authority sets."
+      },
+      "panelMatrix": {
+        "title": "Authority matrix",
+        "description": "Several professionals can work on the same company. Access is scoped only to workspaces they are assigned to from their own account."
+      },
+      "emptyNoAssignments": {
+        "title": "No active assignments",
+        "description": "No active assignment in the selected scope. Open the personnel pool or company organisation to create assignments.",
+        "ctaPersonnel": "Open personnel pool"
+      }
+    },
+    "personnelPage": {
+      "stats": {
+        "activeStaffTitle": "Active staff",
+        "activeStaffDesc": "Active seat-holding users on the OSGB account and package seat limit.",
+        "assignedTitle": "Assigned staff",
+        "assignedDesc": "Specialists, physicians or DSP records with at least one active company assignment.",
+        "openTasksTitle": "Open tasks",
+        "openTasksDesc": "Total view of open and in-progress tasks assigned to staff.",
+        "overdueTasksTitle": "Overdue tasks",
+        "overdueTasksDesc": "Tasks past follow-up date. Nova OSGB Manager highlights these areas."
+      },
+      "panelInvite": {
+        "title": "Invite and first login flow",
+        "description": "New staff first receive an OSGB seat, then are assigned to companies. The invite email includes company/role; users set their password on first login."
+      },
+      "panelNova": {
+        "title": "Nova OSGB Manager focus",
+        "description": "Nova behaves differently from the professional assistant on this surface; it analyses load, company assignment and delays."
+      },
+      "panelList": {
+        "title": "OSGB personnel list",
+        "descAll": "Staff linked to the OSGB account, company counts and task status.",
+        "descScoped": "People assigned to {companyName} and their task load."
+      },
+      "emptyNoPersonnel": {
+        "title": "No personnel found",
+        "description": "The OSGB personnel pool is empty. Send the first invite from the company organisation tab to add a specialist, physician or DSP.",
+        "ctaOrganisation": "Open company organisation"
+      }
+    },
+    "documentsPage": {
+      "panelOperations": {
+        "title": "Daily operations desk",
+        "description": "From this surface the OSGB manager runs company scope, professional document production, audit pack preparation and archive actions together."
+      },
+      "stats": {
+        "totalDocsTitle": "Total documents",
+        "totalDocsDesc": "Active document cards and field outputs in the selected company scope.",
+        "readyTitle": "Ready",
+        "readyDesc": "Records ready for signing, publishing or adding to an audit pack.",
+        "archiveRecordTitle": "Archive records",
+        "archiveRecordDesc": "Non-deleted records with preserved history moved to cold archive by company.",
+        "archivePackageTitle": "Archive package",
+        "archivePackageDescProcessing": "{count} packages are currently being prepared.",
+        "archivePackageDescIdle": "Downloadable audit and workplace OHS file packages.",
+        "sharedTitle": "Shared documents",
+        "sharedDesc": "Documents published for the portal, share links or audit outputs.",
+        "preparedTitle": "Preparer trace",
+        "preparedDesc": "Active documents with preparer professional information recorded.",
+        "approvedTitle": "Approved",
+        "approvedDesc": "Active records with approval timestamp that passed the management chain.",
+        "signedTitle": "Signed documents",
+        "signedDesc": "Records with document signature trail entering the audit chain.",
+        "auditReadyTitle": "Audit-ready package",
+        "auditReadyDesc": "Package families with mandatory group coverage and approval or usage trace.",
+        "traceabilityTitle": "Traceability",
+        "traceabilityDesc": "Share of active documents carrying preparer, approval, signature or publish trace.",
+        "approvalQueueTitle": "Approval queue",
+        "approvalQueueDesc": "Active records awaiting managerial control before archive and publish.",
+        "failedPackageTitle": "Failed packages",
+        "failedPackageDesc": "Archive or packaging attempts that need to be retried."
+      },
+      "panelArchiveLayout": {
+        "title": "Company-scoped archive design",
+        "description": "All document, report and evidence flow is kept in company workspace context. Assigned professionals attach their outputs to this spine; OSGB management produces audit packs and archives from the same spine."
+      },
+      "panelProfessional": {
+        "title": "Professional production trace",
+        "description": "OSGB management monitors company-scoped document production through the relevant specialists and physicians."
+      },
+      "panelStreams": {
+        "title": "Document flow lanes",
+        "description": "The OSGB document system is not a single box; different document flows driven by legislation and operations converge on the same company spine."
+      },
+      "panelAuditPrep": {
+        "title": "Audit pack readiness level",
+        "description": "For each company the audit pack is not a single PDF; it is tracked as an audit spine built from different document families."
+      },
+      "panelIntegration": {
+        "title": "External document intake layer",
+        "description": "Documents are fed not from a single channel but from web services, operator-assisted portals and standard file import layers."
+      },
+      "panelArchiveSelect": {
+        "title": "Select a company and prepare an archive pack",
+        "description": "An archive pack is always prepared for a single company workspace. At portfolio level you can see recent packs and pick a company for a new pack."
+      },
+      "emptyNoCompanies": {
+        "title": "No companies found",
+        "description": "Create a company and prepare the workspace context first. Professional production and archive packs cannot open without a company.",
+        "ctaFirms": "Go to companies"
+      },
+      "emptyNoArchiveJobs": {
+        "title": "No archive packs yet",
+        "description": "No workplace OHS file pack has been created for any company yet. Pick a company above to prepare the first pack."
+      },
+      "panelRetention": {
+        "title": "Retention and archiving matrix",
+        "description": "Professional records arriving by company are subject to different archive rules by document type, not a single retention period."
+      },
+      "panelGuarantees": {
+        "title": "Archive assurances",
+        "description": "This screen is not only a file list; it runs as a document spine focused on traceability and legal assurance."
+      },
+      "panelRecentMoves": {
+        "title": "Latest professional document movements",
+        "descAll": "Latest active document movements from professionals across all companies.",
+        "descScoped": "Latest active records produced or updated by professionals for {companyName}."
+      },
+      "emptyNoActiveDocs": {
+        "title": "No active document records",
+        "description": "No active documents in the selected scope. Create the first record from the document centre or pick a company to monitor professional production.",
+        "ctaDocuments": "Open document centre"
+      },
+      "panelApproved": {
+        "title": "Approved documents",
+        "descAll": "Documents that passed the approval chain across all companies.",
+        "descScoped": "Documents with approval metadata for {companyName}."
+      },
+      "emptyNoApproved": {
+        "title": "No approved documents",
+        "description": "No documents with an approved_at record in the selected company scope."
+      },
+      "panelInUse": {
+        "title": "Documents in use",
+        "descAll": "Documents in use across all companies carrying share or signature trace.",
+        "descScoped": "Shared or signed documents for {companyName}."
+      },
+      "emptyNoUsed": {
+        "title": "No documents in use",
+        "description": "No documents with share or signature trace in the selected company scope."
+      },
+      "panelArchived": {
+        "title": "Archived records",
+        "descAll": "Archived documents across all companies. Narrow with the company filter.",
+        "descScoped": "Records moved to cold archive for {companyName}. They are excluded from active counters but keep audit trace."
+      },
+      "emptyNoArchived": {
+        "title": "No archive records",
+        "description": "No archived documents in the selected scope. Records appear here when archived from the editor or company workspace."
+      },
+      "panelApprovalQueue": {
+        "title": "Approval and publish queue",
+        "description": "Documents awaiting manager, authorised manager or employer approval before entering the archive pack are collected here.",
+        "notice": "{count} documents are still awaiting approval in the selected scope. Complete these records before tightening ready pack counters.",
+        "ctaApprovals": "Open approval records"
+      }
     }
   },
   "osgbFirms": {
@@ -1422,37 +1686,79 @@
         "description": "Начальный уровень с ежемесячными квотами для изучения чата Nova, анализов и небольшого документооборота.",
         "name": "Бесплатный",
         "upgradeHint": "Переходите на Starter, когда вам нужны предсказуемые квоты каждый месяц.",
-        "whoFor": "Знакомство с RiskNova, студенты и легкое периодическое использование."
+        "whoFor": "Знакомство с RiskNova, студенты и легкое периодическое использование.",
+        "features": [
+          "Nova chat within monthly limits",
+          "Foundational AI analyses for risk workflows",
+          "Limited document generation",
+          "Field inspection entries within quotas",
+          "Exports within plan limits"
+        ]
       },
       "plus": {
         "description": "Сбалансированная мощность для чата, анализов, моделирования рисков и полевых данных.",
         "name": "Plus",
         "upgradeHint": "Переходите на Professional, когда нужна более глубокая проверка и пропускная способность отчетов.",
-        "whoFor": "Активные консультанты, управляющие несколькими клиентами каждый месяц."
+        "whoFor": "Активные консультанты, управляющие несколькими клиентами каждый месяц.",
+        "features": [
+          "Higher caps across all core actions",
+          "More incident and training outputs",
+          "Field inspection headroom for busy weeks",
+          "Document throughput for recurring packs",
+          "Exports suited to multi-client work"
+        ]
       },
       "professional_149": {
         "description": "Рекомендуемый уровень — щедрые лимиты для анализов, документов и полевых процессов.",
         "name": "Professional 149",
         "upgradeHint": "Professional 199 добавляет максимальный запас для самых загруженных рабочих мест.",
-        "whoFor": "Старшие консультанты и опытные пользователи, которые живут в продукте."
+        "whoFor": "Старшие консультанты и опытные пользователи, которые живут в продукте.",
+        "features": [
+          "Very high Nova and analysis quotas",
+          "Heavy document generation allowance",
+          "Large risk and inspection budgets",
+          "Incident and training outputs at scale",
+          "Exports aligned with premium throughput"
+        ]
       },
       "professional_199": {
         "description": "Высший уровень самообслуживания перед контрактами OSGB или корпоративными.",
         "name": "Professional 199",
         "upgradeHint": "Нужны места, портфели или выставление счетов? Используйте предложения OSGB или корпоративные.",
-        "whoFor": "Пиковые индивидуальные нагрузки и премиальные ожидания пропускной способности."
+        "whoFor": "Пиковые индивидуальные нагрузки и премиальные ожидания пропускной способности.",
+        "features": [
+          "Maximum published individual quotas",
+          "Peak AI and document capacity",
+          "Largest inspection and risk envelopes",
+          "Full incident and training allowances in tier",
+          "Exports for the heaviest reporting cycles"
+        ]
       },
       "professional": {
         "description": "Индивидуальный лимит корпоративного уровня перед высшими уровнями Professional.",
         "name": "Professional 99",
         "upgradeHint": "Переходите на Professional 149 для лучшего соотношения цены и качества в масштабе.",
-        "whoFor": "Штатные эксперты по охране труда с интенсивным еженедельным использованием."
+        "whoFor": "Штатные эксперты по охране труда с интенсивным еженедельным использованием.",
+        "features": [
+          "High Nova and AI analysis limits",
+          "Strong document generation cadence",
+          "Broad risk and field inspection capacity",
+          "Incident programme support within quota",
+          "Exports for intensive reporting"
+        ]
       },
       "starter": {
         "description": "Более высокие квоты для Nova, анализов и документов, чтобы еженедельные процедуры выполнялись без трений.",
         "name": "Стартовый",
         "upgradeHint": "Выберите Plus, когда анализ инцидентов и результаты обучения станут частью вашего рабочего процесса.",
-        "whoFor": "Фрилансеры-специалисты и стабильные, но умеренные ежемесячные нагрузки."
+        "whoFor": "Фрилансеры-специалисты и стабильные, но умеренные ежемесячные нагрузки.",
+        "features": [
+          "Stronger Nova and analysis quotas",
+          "More monthly document generation",
+          "Incident analysis allowance",
+          "Training slides where included in quota",
+          "Exports scaled for individuals"
+        ]
       }
     },
     "priceFreeNote": "Бесплатно для начала",
@@ -2606,7 +2912,13 @@
           "pricePeriod": "от / месяц",
           "seatsLabel": "2 активных места в команде",
           "summary": "Для небольших команд OSGB с ограниченным портфолио — в отличие от индивидуального Starter за {individualStarter}/месяц покрывает многосайтовые и командные рабочие процессы.",
-          "workspacesLabel": "5 активных компаний / рабочих пространств"
+          "workspacesLabel": "5 активных компаний / рабочих пространств",
+          "features": [
+            "Personnel module and invitation flows",
+            "Tasks, work tracking and assignment board",
+            "Client workplace portfolio view",
+            "Announcements and core operational flows"
+          ]
         },
         "osgb_team": {
           "ctaLabel": "Запросить предложение Team",
@@ -2615,14 +2927,25 @@
           "pricePeriod": "от / месяц",
           "seatsLabel": "5 активных мест в команде",
           "summary": "Растущие OSGB: больше компаний, координация на местах и масштаб команды.",
-          "workspacesLabel": "15 активных компаний / рабочих пространств"
+          "workspacesLabel": "15 активных компаний / рабочих пространств",
+          "features": [
+            "Everything in Starter",
+            "Advanced reporting and exports",
+            "Field audits and checklists (per agreement)",
+            "Priority solution / onboarding channel"
+          ]
         }
       },
       "osgbFooterHint": "Один работодатель в нескольких локациях?",
       "osgbFooterLink": "См. страницу корпоративного решения",
       "osgbSectionIntro": "Суммы являются ориентировочными начальными сегментами в USD; налоги, валютный курс и объем контракта подтверждаются при финализации предложения. Оплата картой недоступна — мы согласовываем лимиты и цены после понимания вашей структуры.",
       "osgbSectionTitle": "Пакеты OSGB",
-      "recommended": "Рекомендуется"
+      "recommended": "Рекомендуется",
+      "enterpriseHighlights": [
+        "Multi-site companies and institutions",
+        "Tailored quote aligned with operational volume",
+        "Integration and onboarding planning when needed"
+      ]
     },
     "enterprisePage": {
       "ctaForm": "Связаться с нами (форма)",
@@ -2719,5 +3042,14 @@
     "noWorkspace": "Нет рабочего пространства",
     "switcher": "Рабочее пространство",
     "switchError": "Не удалось переключить рабочее пространство"
+  },
+  "errors": {
+    "global": {
+      "eyebrow": "Critical error",
+      "title": "Something unexpected happened",
+      "description": "The error was reported to administrators. Use the button below to try again.",
+      "retry": "Try again",
+      "unknownClientError": "Unknown client error"
+    }
   }
 }

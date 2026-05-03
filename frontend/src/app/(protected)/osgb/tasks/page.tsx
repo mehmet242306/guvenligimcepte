@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/ui/page-header";
 import { OsgbPanel, OsgbScopeBar, OsgbStatCard } from "@/components/osgb/OsgbPageChrome";
 import { OsgbTasksBoardClient } from "./OsgbTasksBoardClient";
@@ -26,6 +27,7 @@ export default async function OsgbTasksPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
+  const tt = await getTranslations("osgb.tasksPage");
   const manager = await requireOsgbManagerContext();
   const service = createServiceClient();
   const selectedCompany = resolveWorkspaceFilter(manager.companies, params.workspaceId);
@@ -222,36 +224,36 @@ export default async function OsgbTasksPage({
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <OsgbStatCard
-          title="Acik gorev"
+          title={tt("stats.openTitle")}
           value={openCount}
-          description="Heniz isleme alinmamis gorevler. Nova bunlari oncelik ve firma riskine gore siralar."
+          description={tt("stats.openDesc")}
         />
         <OsgbStatCard
-          title="Islemde"
+          title={tt("stats.inProgressTitle")}
           value={inProgressCount}
-          description="Devam eden operasyon, DOF veya belge hazirlik gorevleri."
+          description={tt("stats.inProgressDesc")}
           accent="text-primary"
         />
         <OsgbStatCard
-          title="Geciken is"
+          title={tt("stats.overdueTitle")}
           value={overdueCount}
-          description="Takip tarihi gecmis gorevler. Denetim ve hizmet SLA riski olusturur."
+          description={tt("stats.overdueDesc")}
           accent="text-danger"
         />
         <OsgbStatCard
-          title="Tamamlanan"
+          title={tt("stats.doneTitle")}
           value={doneCount}
-          description="Kapatilan ve kanit zinciri tamamlanan isler."
+          description={tt("stats.doneDesc")}
           accent="text-success"
         />
       </div>
 
       <OsgbPanel
-        title="Gorev merkezi"
+        title={tt("panelTaskCentre.title")}
         description={
           selectedCompany
-            ? `${selectedCompany.displayName} firmasina ait gorevler, atanan personel ve son tarihler.`
-            : "Tum firmalardaki gorevler. Firma, gorevlendirme ve dokuman akislarini birlikte izlemek icin filtreleyebilirsin."
+            ? tt("panelTaskCentre.descScoped", { companyName: selectedCompany.displayName })
+            : tt("panelTaskCentre.descAll")
         }
       >
         <OsgbTasksBoardClient

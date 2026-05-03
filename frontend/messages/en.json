@@ -76,6 +76,15 @@
   "brand": {
     "tagline": "AI-powered occupational health & safety platform"
   },
+  "errors": {
+    "global": {
+      "eyebrow": "Critical error",
+      "title": "Something unexpected happened",
+      "description": "The error was reported to administrators. Use the button below to try again.",
+      "retry": "Try again",
+      "unknownClientError": "Unknown client error"
+    }
+  },
   "dashboard": {
     "sessionLoadingTitle": "Loading session…",
     "sessionLoadingHint": "We are verifying your session. This may take a few seconds; if nothing happens, please sign in again.",
@@ -188,6 +197,221 @@
       "scopeEyebrow": "Company scope",
       "scopeDescription": "OSGB management screens are filtered by company selection. When no company is selected, the full portfolio is shown.",
       "allCompanies": "All companies"
+    },
+    "contractsPage": {
+      "stats": {
+        "recordTitle": "Contract records",
+        "recordDesc": "Personnel file and contract-focused document records in the selected scope.",
+        "readyTitle": "Ready",
+        "readyDesc": "Documents ready for signing or publishing to the customer portal.",
+        "pendingTitle": "Pending approval",
+        "pendingDesc": "Contracts and attachments that require authorised manager or employer approval.",
+        "missingTitle": "Missing templates",
+        "missingDesc": "Recommended templates for OSGB personnel and service flows that have not been created yet."
+      },
+      "panelInvite": {
+        "title": "Invite and contract linkage",
+        "description": "When staff are assigned to a company they are invited by email, a seat is reserved, and related contract documents are tracked in this flow."
+      },
+      "panelChecklist": {
+        "title": "Missing checklist",
+        "description": "Core documents in the personnel HR group are the backbone of the OSGB audit package."
+      },
+      "panelActiveContracts": {
+        "title": "Active contract and personnel file records",
+        "descAll": "Contract and personnel file records across all companies.",
+        "descScoped": "Latest contract activity linked to {companyName}."
+      },
+      "emptyNoContracts": {
+        "title": "No contract records found",
+        "description": "No contract or personnel record in the selected scope. Open the document centre and the personnel HR group to create a new document.",
+        "ctaDocuments": "Open document centre"
+      }
+    },
+    "tasksPage": {
+      "stats": {
+        "openTitle": "Open tasks",
+        "openDesc": "Tasks not yet started. Nova prioritises them by priority and company risk.",
+        "inProgressTitle": "In progress",
+        "inProgressDesc": "Ongoing operations, CAPA or document preparation work.",
+        "overdueTitle": "Overdue",
+        "overdueDesc": "Tasks past their follow-up date. Creates audit and service SLA risk.",
+        "doneTitle": "Completed",
+        "doneDesc": "Closed work with a complete evidence trail."
+      },
+      "panelTaskCentre": {
+        "title": "Task centre",
+        "descAll": "Tasks across all companies. Filter by company, assignment and document flows to monitor them together.",
+        "descScoped": "Tasks, assigned staff and due dates for {companyName}."
+      }
+    },
+    "assignmentsPage": {
+      "stats": {
+        "activeTitle": "Active assignments",
+        "activeDesc": "Total active specialist, physician and DSP assignments by company.",
+        "signTitle": "Signature authority",
+        "signDesc": "Active assignments with signing rights for contracts, reports or approvals.",
+        "approveTitle": "Approval authority",
+        "approveDesc": "Active personnel assignments that can approve risk or operational flows.",
+        "suspendedTitle": "Suspended / critical",
+        "suspendedDesc": "Suspended assignments and those flagged for missing authority sets."
+      },
+      "panelMatrix": {
+        "title": "Authority matrix",
+        "description": "Several professionals can work on the same company. Access is scoped only to workspaces they are assigned to from their own account."
+      },
+      "emptyNoAssignments": {
+        "title": "No active assignments",
+        "description": "No active assignment in the selected scope. Open the personnel pool or company organisation to create assignments.",
+        "ctaPersonnel": "Open personnel pool"
+      }
+    },
+    "personnelPage": {
+      "stats": {
+        "activeStaffTitle": "Active staff",
+        "activeStaffDesc": "Active seat-holding users on the OSGB account and package seat limit.",
+        "assignedTitle": "Assigned staff",
+        "assignedDesc": "Specialists, physicians or DSP records with at least one active company assignment.",
+        "openTasksTitle": "Open tasks",
+        "openTasksDesc": "Total view of open and in-progress tasks assigned to staff.",
+        "overdueTasksTitle": "Overdue tasks",
+        "overdueTasksDesc": "Tasks past follow-up date. Nova OSGB Manager highlights these areas."
+      },
+      "panelInvite": {
+        "title": "Invite and first login flow",
+        "description": "New staff first receive an OSGB seat, then are assigned to companies. The invite email includes company/role; users set their password on first login."
+      },
+      "panelNova": {
+        "title": "Nova OSGB Manager focus",
+        "description": "Nova behaves differently from the professional assistant on this surface; it analyses load, company assignment and delays."
+      },
+      "panelList": {
+        "title": "OSGB personnel list",
+        "descAll": "Staff linked to the OSGB account, company counts and task status.",
+        "descScoped": "People assigned to {companyName} and their task load."
+      },
+      "emptyNoPersonnel": {
+        "title": "No personnel found",
+        "description": "The OSGB personnel pool is empty. Send the first invite from the company organisation tab to add a specialist, physician or DSP.",
+        "ctaOrganisation": "Open company organisation"
+      }
+    },
+    "documentsPage": {
+      "panelOperations": {
+        "title": "Daily operations desk",
+        "description": "From this surface the OSGB manager runs company scope, professional document production, audit pack preparation and archive actions together."
+      },
+      "stats": {
+        "totalDocsTitle": "Total documents",
+        "totalDocsDesc": "Active document cards and field outputs in the selected company scope.",
+        "readyTitle": "Ready",
+        "readyDesc": "Records ready for signing, publishing or adding to an audit pack.",
+        "archiveRecordTitle": "Archive records",
+        "archiveRecordDesc": "Non-deleted records with preserved history moved to cold archive by company.",
+        "archivePackageTitle": "Archive package",
+        "archivePackageDescProcessing": "{count} packages are currently being prepared.",
+        "archivePackageDescIdle": "Downloadable audit and workplace OHS file packages.",
+        "sharedTitle": "Shared documents",
+        "sharedDesc": "Documents published for the portal, share links or audit outputs.",
+        "preparedTitle": "Preparer trace",
+        "preparedDesc": "Active documents with preparer professional information recorded.",
+        "approvedTitle": "Approved",
+        "approvedDesc": "Active records with approval timestamp that passed the management chain.",
+        "signedTitle": "Signed documents",
+        "signedDesc": "Records with document signature trail entering the audit chain.",
+        "auditReadyTitle": "Audit-ready package",
+        "auditReadyDesc": "Package families with mandatory group coverage and approval or usage trace.",
+        "traceabilityTitle": "Traceability",
+        "traceabilityDesc": "Share of active documents carrying preparer, approval, signature or publish trace.",
+        "approvalQueueTitle": "Approval queue",
+        "approvalQueueDesc": "Active records awaiting managerial control before archive and publish.",
+        "failedPackageTitle": "Failed packages",
+        "failedPackageDesc": "Archive or packaging attempts that need to be retried."
+      },
+      "panelArchiveLayout": {
+        "title": "Company-scoped archive design",
+        "description": "All document, report and evidence flow is kept in company workspace context. Assigned professionals attach their outputs to this spine; OSGB management produces audit packs and archives from the same spine."
+      },
+      "panelProfessional": {
+        "title": "Professional production trace",
+        "description": "OSGB management monitors company-scoped document production through the relevant specialists and physicians."
+      },
+      "panelStreams": {
+        "title": "Document flow lanes",
+        "description": "The OSGB document system is not a single box; different document flows driven by legislation and operations converge on the same company spine."
+      },
+      "panelAuditPrep": {
+        "title": "Audit pack readiness level",
+        "description": "For each company the audit pack is not a single PDF; it is tracked as an audit spine built from different document families."
+      },
+      "panelIntegration": {
+        "title": "External document intake layer",
+        "description": "Documents are fed not from a single channel but from web services, operator-assisted portals and standard file import layers."
+      },
+      "panelArchiveSelect": {
+        "title": "Select a company and prepare an archive pack",
+        "description": "An archive pack is always prepared for a single company workspace. At portfolio level you can see recent packs and pick a company for a new pack."
+      },
+      "emptyNoCompanies": {
+        "title": "No companies found",
+        "description": "Create a company and prepare the workspace context first. Professional production and archive packs cannot open without a company.",
+        "ctaFirms": "Go to companies"
+      },
+      "emptyNoArchiveJobs": {
+        "title": "No archive packs yet",
+        "description": "No workplace OHS file pack has been created for any company yet. Pick a company above to prepare the first pack."
+      },
+      "panelRetention": {
+        "title": "Retention and archiving matrix",
+        "description": "Professional records arriving by company are subject to different archive rules by document type, not a single retention period."
+      },
+      "panelGuarantees": {
+        "title": "Archive assurances",
+        "description": "This screen is not only a file list; it runs as a document spine focused on traceability and legal assurance."
+      },
+      "panelRecentMoves": {
+        "title": "Latest professional document movements",
+        "descAll": "Latest active document movements from professionals across all companies.",
+        "descScoped": "Latest active records produced or updated by professionals for {companyName}."
+      },
+      "emptyNoActiveDocs": {
+        "title": "No active document records",
+        "description": "No active documents in the selected scope. Create the first record from the document centre or pick a company to monitor professional production.",
+        "ctaDocuments": "Open document centre"
+      },
+      "panelApproved": {
+        "title": "Approved documents",
+        "descAll": "Documents that passed the approval chain across all companies.",
+        "descScoped": "Documents with approval metadata for {companyName}."
+      },
+      "emptyNoApproved": {
+        "title": "No approved documents",
+        "description": "No documents with an approved_at record in the selected company scope."
+      },
+      "panelInUse": {
+        "title": "Documents in use",
+        "descAll": "Documents in use across all companies carrying share or signature trace.",
+        "descScoped": "Shared or signed documents for {companyName}."
+      },
+      "emptyNoUsed": {
+        "title": "No documents in use",
+        "description": "No documents with share or signature trace in the selected company scope."
+      },
+      "panelArchived": {
+        "title": "Archived records",
+        "descAll": "Archived documents across all companies. Narrow with the company filter.",
+        "descScoped": "Records moved to cold archive for {companyName}. They are excluded from active counters but keep audit trace."
+      },
+      "emptyNoArchived": {
+        "title": "No archive records",
+        "description": "No archived documents in the selected scope. Records appear here when archived from the editor or company workspace."
+      },
+      "panelApprovalQueue": {
+        "title": "Approval and publish queue",
+        "description": "Documents awaiting manager, authorised manager or employer approval before entering the archive pack are collected here.",
+        "notice": "{count} documents are still awaiting approval in the selected scope. Complete these records before tightening ready pack counters.",
+        "ctaApprovals": "Open approval records"
+      }
     }
   },
   "slides": {

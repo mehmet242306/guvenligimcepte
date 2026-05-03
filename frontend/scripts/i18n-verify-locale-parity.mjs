@@ -31,7 +31,9 @@ function flattenStrings(obj, prefix = "") {
 function main() {
   const files = fs
     .readdirSync(MESSAGES)
-    .filter((f) => f.endsWith(".json") && !f.includes("bundle") && f !== "translations");
+    .filter(
+      (f) => f.endsWith(".json") && !f.includes("bundle") && f !== "translations" && !f.startsWith("_"),
+    );
 
   const enPath = path.join(MESSAGES, "en.json");
   if (!fs.existsSync(enPath)) {

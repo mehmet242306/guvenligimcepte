@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/ui/page-header";
 import { OsgbEmpty, OsgbPanel, OsgbScopeBar, OsgbStatCard } from "@/components/osgb/OsgbPageChrome";
 import { OsgbPersonnelInviteCard } from "./OsgbPersonnelInviteCard";
@@ -84,6 +85,7 @@ export default async function OsgbPersonnelPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
+  const tp = await getTranslations("osgb.personnelPage");
   const manager = await requireOsgbManagerContext();
   const service = createServiceClient();
   const selectedCompany = resolveWorkspaceFilter(manager.companies, params.workspaceId);
@@ -338,37 +340,37 @@ export default async function OsgbPersonnelPage({
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <OsgbStatCard
-          title="Aktif personel"
+          title={tp("stats.activeStaffTitle")}
           value={
             manager.usage?.maxActiveStaffSeats
               ? `${manager.usage.activeStaffCount} / ${manager.usage.maxActiveStaffSeats}`
               : manager.usage?.activeStaffCount ?? personnelRows.length
           }
-          description="OSGB hesabina bagli aktif oturum sahibi personel sayisi ve paket limiti."
+          description={tp("stats.activeStaffDesc")}
           accent={seatLimitReached ? "text-danger" : "text-foreground"}
         />
         <OsgbStatCard
-          title="Atama alan personel"
+          title={tp("stats.assignedTitle")}
           value={personnelRows.filter((row) => row.assignmentCount > 0).length}
-          description="En az bir firmaya aktif olarak atanmis uzman, hekim veya DSP kayitlari."
+          description={tp("stats.assignedDesc")}
         />
         <OsgbStatCard
-          title="Acik gorev"
+          title={tp("stats.openTasksTitle")}
           value={personnelRows.reduce((sum, row) => sum + row.openTasks, 0)}
-          description="Personellere atanmis acik ve islemde gorevlerin toplam gorunumu."
+          description={tp("stats.openTasksDesc")}
         />
         <OsgbStatCard
-          title="Geciken gorev"
+          title={tp("stats.overdueTasksTitle")}
           value={personnelRows.reduce((sum, row) => sum + row.overdueTasks, 0)}
-          description="Takip tarihi gecmis gorevler. Nova OSGB Manager bu alanlari one cikarir."
+          description={tp("stats.overdueTasksDesc")}
           accent="text-danger"
         />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
         <OsgbPanel
-          title="Davet ve ilk giris akisi"
-          description="Yeni personel once OSGB oturum koltuguna dahil edilir, sonra ilgili firmalara atanir. Davet maili firma/rol bilgisiyle gider; kullaniciya gecici giris bilgisi veya sifre yenileme talimati iletilir ve ilk giriste sifresini degistirmesi beklenir."
+          title={tp("panelInvite.title")}
+          description={tp("panelInvite.description")}
         >
           <div className="grid gap-3 md:grid-cols-2">
             <div className="rounded-2xl border border-border bg-background p-4">
@@ -405,8 +407,8 @@ export default async function OsgbPersonnelPage({
         </OsgbPanel>
 
         <OsgbPanel
-          title="Nova OSGB Manager odagi"
-          description="Nova bu yuzeyde profesyonel asistandan farkli davranir; personel yukunu, firma atamalarini ve gecikmeleri analiz eder."
+          title={tp("panelNova.title")}
+          description={tp("panelNova.description")}
         >
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>Hangi uzmanın gorev yuku arttigini gor.</li>
@@ -418,23 +420,23 @@ export default async function OsgbPersonnelPage({
       </div>
 
       <OsgbPanel
-        title="OSGB personel listesi"
+        title={tp("panelList.title")}
         description={
           selectedCompany
-            ? `${selectedCompany.displayName} firmasina atanan personeller ve ilgili gorev yukleri.`
-            : "OSGB hesabina bagli personeller, firma sayilari ve gorev durumlari."
+            ? tp("panelList.descScoped", { companyName: selectedCompany.displayName })
+            : tp("panelList.descAll")
         }
       >
         {personnelRows.length === 0 ? (
           <OsgbEmpty
-            title="Personel kaydi bulunamadi"
-            description="OSGB personel havuzu bos. Firma organizasyon sekmesinden ilk daveti gondererek uzman, hekim veya DSP ekleyebilirsin."
+            title={tp("emptyNoPersonnel.title")}
+            description={tp("emptyNoPersonnel.description")}
             action={
               <Link
                 href={selectedCompanyWorkspaceHref}
                 className="inline-flex h-10 items-center rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                Firma organizasyonuna git
+                {tp("emptyNoPersonnel.ctaOrganisation")}
               </Link>
             }
           />

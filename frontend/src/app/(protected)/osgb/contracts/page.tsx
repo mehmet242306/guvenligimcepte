@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/ui/page-header";
 import { OsgbEmpty, OsgbPanel, OsgbScopeBar, OsgbStatCard } from "@/components/osgb/OsgbPageChrome";
 import { getGroupByKey } from "@/lib/document-groups";
@@ -57,6 +58,7 @@ export default async function OsgbContractsPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
+  const tc = await getTranslations("osgb.contractsPage");
   const manager = await requireOsgbManagerContext();
   const service = createServiceClient();
   const selectedCompany = resolveWorkspaceFilter(manager.companies, params.workspaceId);
@@ -184,34 +186,34 @@ export default async function OsgbContractsPage({
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <OsgbStatCard
-          title="Sozlesme kaydi"
+          title={tc("stats.recordTitle")}
           value={contractDocuments.length}
-          description="Secili kapsamdaki personel ozluk ve kontrat odakli dokuman kayitlari."
+          description={tc("stats.recordDesc")}
         />
         <OsgbStatCard
-          title="Hazir"
+          title={tc("stats.readyTitle")}
           value={readyCount}
-          description="Imzaya veya musteri portalina yayinlamaya hazir belgeler."
+          description={tc("stats.readyDesc")}
           accent="text-success"
         />
         <OsgbStatCard
-          title="Onay bekleyen"
+          title={tc("stats.pendingTitle")}
           value={pendingCount}
-          description="Sorumlu mudur ya da isveren onayi gerektiren kontrat ve ekler."
+          description={tc("stats.pendingDesc")}
           accent="text-warning"
         />
         <OsgbStatCard
-          title="Eksik sablon"
+          title={tc("stats.missingTitle")}
           value={missingTemplates.length}
-          description="OSGB personel ve hizmet akislarinda tavsiye edilen ama henuz olusturulmamis sablonlar."
+          description={tc("stats.missingDesc")}
           accent="text-danger"
         />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.2fr_1fr]">
         <OsgbPanel
-          title="Davet ve sozlesme baglantisi"
-          description="Personel firma bazli atanirken mail ile davet edilir, oturum koltugu ayrilir ve ilgili sozlesme belgeleri bu akisla birlikte takip edilir."
+          title={tc("panelInvite.title")}
+          description={tc("panelInvite.description")}
           actions={
             <>
               <Link
@@ -304,8 +306,8 @@ export default async function OsgbContractsPage({
         </OsgbPanel>
 
         <OsgbPanel
-          title="Eksik kontrol listesi"
-          description="Personel ozluk grubundaki temel belgeler OSGB denetim paketinin omurgasini olusturur."
+          title={tc("panelChecklist.title")}
+          description={tc("panelChecklist.description")}
           actions={
             <Link
               href={documentsHref}
@@ -352,23 +354,23 @@ export default async function OsgbContractsPage({
       </div>
 
       <OsgbPanel
-        title="Aktif kontrat ve ozluk belgeleri"
+        title={tc("panelActiveContracts.title")}
         description={
           selectedCompany
-            ? `${selectedCompany.displayName} firmasina bagli son sozlesme hareketleri.`
-            : "Tum firmalardaki kontrat ve personel ozluk odakli belge kayitlari."
+            ? tc("panelActiveContracts.descScoped", { companyName: selectedCompany.displayName })
+            : tc("panelActiveContracts.descAll")
         }
       >
         {contractDocuments.length === 0 ? (
           <OsgbEmpty
-            title="Sozlesme kaydi bulunamadi"
-            description="Secili kapsama ait kontrat veya ozluk belgesi yok. Dokuman merkezinden personel ozluk grubunu acarak yeni belge olusturabilirsin."
+            title={tc("emptyNoContracts.title")}
+            description={tc("emptyNoContracts.description")}
             action={
               <Link
                 href={documentsHref}
                 className="inline-flex h-10 items-center rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                Dokuman merkezine git
+                {tc("emptyNoContracts.ctaDocuments")}
               </Link>
             }
           />
