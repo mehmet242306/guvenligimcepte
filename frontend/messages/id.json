@@ -425,6 +425,20 @@
       "pathEnterpriseDesc": "multi-site organisations",
       "ctaPrimary": "Start registration",
       "ctaLater": "Later"
+    },
+    "mfa": {
+      "intro": "<email></email> — second-factor verification is required. Enter the 6-digit code from your authenticator app to continue.",
+      "deviceLabel": "Verification device",
+      "codeLabel": "Verification code",
+      "codeHintWithFactor": "Enter the current code from {factorName}.",
+      "codeHintDefault": "Enter the current code from your authenticator app.",
+      "verifyBusy": "Verifying…",
+      "verifyCta": "Continue",
+      "signOutCta": "Sign out",
+      "errNoFactor": "No MFA device could be selected for verification.",
+      "errCodeFormat": "Enter the 6-digit verification code.",
+      "errNoSupabase": "Could not connect to the authentication service.",
+      "errVerifyFallback": "Code could not be verified. Try again."
     }
   },
   "solutionCenter": {
@@ -1384,7 +1398,11 @@
     "trackPriorityCompanies": "Perusahaan prioritas",
     "trackChipActions": "{count} tindakan",
     "trackChipTraining": "{count} pelatihan",
-    "trackChipControls": "{count} inspeksi"
+    "trackChipControls": "{count} inspeksi",
+    "pwaEyebrow": "Mobile and desktop access",
+    "pwaTitle": "Add RiskNova to your home screen",
+    "pwaBody": "Open RiskNova like an app on Android, iPhone/iPad and Windows. Install prompts may not appear in private browsing; use a normal browser window.",
+    "pwaCta": "Open setup steps"
   },
   "header": {
     "authLoading": "Memverifikasi sesi aman…",
@@ -2698,6 +2716,116 @@
         "step2Participants": "Masukkan minimal satu nama dan peran penanggung jawab.",
         "step3Images": "Tambahkan minimal satu gambar."
       }
+    }
+  },
+  "osgb": {
+    "chrome": {
+      "scopeEyebrow": "Company scope",
+      "scopeDescription": "OSGB management screens are filtered by company selection. When no company is selected, the full portfolio is shown.",
+      "allCompanies": "All companies"
+    }
+  },
+  "slides": {
+    "mediaPicker": {
+      "addVideo": "Add video",
+      "addImage": "Add image",
+      "tabUpload": "Upload",
+      "tabLibrary": "Library ({count})",
+      "tabUrl": "URL",
+      "uploading": "Uploading…",
+      "clickToSelect": "Click to choose a file",
+      "hintVideo": "MP4, WebM — max 50 MB",
+      "hintImage": "JPEG, PNG, WebP, GIF, SVG — max 50 MB",
+      "libraryLoading": "Loading…",
+      "libraryEmpty": "No media yet. Add files from the Upload tab.",
+      "labelVideoUrl": "Video URL (YouTube, Vimeo, MP4)",
+      "labelImageUrl": "Image URL",
+      "placeholderVideoUrl": "https://youtube.com/watch?v=…",
+      "placeholderImageUrl": "https://…",
+      "useUrl": "Use URL",
+      "hintUrlVideo": "YouTube and Vimeo URLs are converted to embedded players automatically.",
+      "hintUrlImage": "You can paste an external image URL.",
+      "uploadError": "Upload failed"
+    }
+  },
+  "analysis": {
+    "rcaIntro": {
+      "panelAria": "Root cause analysis guide panel",
+      "title": "Root cause analysis guide",
+      "description": "See what each method is for, when to pick it, and example scenarios.",
+      "toggleExpand": "Expand guide",
+      "toggleCollapse": "Collapse guide",
+      "whatIsHeading": "What is root cause analysis?",
+      "whatIsBody": "It is a systematic technique to find structural or systemic drivers of an event—not just the surface symptom. Applied well, it prevents the same class of incident from recurring: it treats the disease, not only the symptom. In OHS, Turkish Law 6331 and ISO 45001 require root-cause work for incidents.",
+      "whenHeading": "When is it used?",
+      "whenUse": [
+        "After a work accident or near miss — often a legal requirement",
+        "Recurring non-conformities — the same issue keeps coming back",
+        "Proactive review of high-risk processes (fire, chemicals, work at height)",
+        "Systemic correction after audits or customer feedback",
+        "Suspected occupational disease — long exposure chains"
+      ],
+      "methodsHeading": "Seven methods · which one when?",
+      "bestForLabel": "Best for:",
+      "exampleLabel": "Example:",
+      "methods": {
+        "r2d_rca": {
+          "label": "R₂D-RCA",
+          "badge": "RiskNova exclusive · Recommended",
+          "bestFor": "Numeric, repeatable measurement; AI-assisted scoring; continuous monitoring and digital-twin alignment.",
+          "example": "Operator interventions on a bench rise over six months; which dimension broke the risk profile? AI produces t₀/t₁ across nine dimensions, compares them, and surfaces a primary root cause when override thresholds are exceeded."
+        },
+        "ishikawa": {
+          "label": "Ishikawa (fishbone)",
+          "bestFor": "Multi-factor events, team brainstorming, visual classification (6M).",
+          "example": "Product defects rise on a line; map likely causes under people/machine/method/material/measurement/environment and discuss with the team."
+        },
+        "five_why": {
+          "label": "5 Whys",
+          "bestFor": "Fast single-focus root-cause checks and simple causal chains.",
+          "example": "Hydraulic press leaks oil → Why? Worn seal → Why? No periodic maintenance → Why? No maintenance plan → Root cause: missing maintenance management system."
+        },
+        "fault_tree": {
+          "label": "Fault tree (FTA)",
+          "bestFor": "Complex systems, logical conditions (AND/OR), probability thinking.",
+          "example": "Explosion risk: top event “fire occurs” with AND/OR gates for spark sources, flammable atmosphere, failed ventilation, etc."
+        },
+        "scat": {
+          "label": "SCAT (bird model)",
+          "bestFor": "Classic OHS incident investigation: immediate → basic → systemic cause chains.",
+          "example": "After a fall: immediate event (fall), immediate causes (slippery floor), basic causes (training gaps), systemic gaps (no inspection procedure)."
+        },
+        "bow_tie": {
+          "label": "Bow-tie",
+          "bestFor": "Hazard + barrier thinking; high-risk work and process safety.",
+          "example": "Chemical release: threats (valve failure, pressure), preventive barriers (alarms, valve testing), consequences (injury, fire), mitigating barriers (emergency response, sprinklers)."
+        },
+        "mort": {
+          "label": "MORT",
+          "bestFor": "Management-system weaknesses; organisational learning after major events.",
+          "example": "After a large incident: supervisory gaps, policy holes, failed assurance systems, and lessons learned grouped systematically."
+        }
+      },
+      "tipsHeading": "Decision tips",
+      "tips": [
+        "Need a quick read → 5 Whys or R₂D-RCA",
+        "Team brainstorming → Ishikawa",
+        "Complex causal logic (AND/OR, conditions) → FTA",
+        "Classic OHS incident (slip, strike) → SCAT",
+        "High-risk work + barrier analysis → Bow-tie",
+        "Major event + organisational analysis → MORT",
+        "Continuous monitoring + numeric comparison → R₂D-RCA (RiskNova-specific)"
+      ],
+      "processHeading": "Typical process",
+      "processSteps": [
+        "Define the event clearly (company, location, date, who/what/where/how)",
+        "Choose the right method (use the tips above)",
+        "Generate a first draft with AI or fill manually",
+        "Review with the team and close gaps",
+        "Confirm root causes → build corrective/preventive (CAPA) actions",
+        "Produce a PDF report and share (QR for mobile access)",
+        "Follow up: action closure timelines + prevention of recurrence"
+      ]
     }
   }
 }

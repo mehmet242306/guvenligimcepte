@@ -177,7 +177,121 @@
     "trackPriorityCompanies": "Öncelik Bekleyen Firmalar",
     "trackChipActions": "{count} aksiyon",
     "trackChipTraining": "{count} eğitim",
-    "trackChipControls": "{count} kontrol"
+    "trackChipControls": "{count} kontrol",
+    "pwaEyebrow": "Mobil ve masaüstü erişim",
+    "pwaTitle": "RiskNova'yı ana ekrana ekle",
+    "pwaBody": "Android, iPhone/iPad ve Windows'ta RiskNova'yı uygulama gibi açın. Gizli modda kurulum görünmez; normal tarayıcı penceresinde deneyin.",
+    "pwaCta": "Kurulum adımlarını aç"
+  },
+  "osgb": {
+    "chrome": {
+      "scopeEyebrow": "Firma kapsamı",
+      "scopeDescription": "OSGB yönetim ekranları firma seçimiyle filtrelenir. Seçili firma olmadığında tüm portföy görünür.",
+      "allCompanies": "Tüm firmalar"
+    }
+  },
+  "slides": {
+    "mediaPicker": {
+      "addVideo": "Video ekle",
+      "addImage": "Görsel ekle",
+      "tabUpload": "Yükle",
+      "tabLibrary": "Kütüphane ({count})",
+      "tabUrl": "URL",
+      "uploading": "Yükleniyor…",
+      "clickToSelect": "Dosya seçmek için tıkla",
+      "hintVideo": "MP4, WebM — en fazla 50 MB",
+      "hintImage": "JPEG, PNG, WebP, GIF, SVG — en fazla 50 MB",
+      "libraryLoading": "Yükleniyor…",
+      "libraryEmpty": "Henüz medya yok. \"Yükle\" sekmesinden ekleyebilirsin.",
+      "labelVideoUrl": "Video URL (YouTube, Vimeo, MP4)",
+      "labelImageUrl": "Görsel URL",
+      "placeholderVideoUrl": "https://youtube.com/watch?v=…",
+      "placeholderImageUrl": "https://…",
+      "useUrl": "URL'yi kullan",
+      "hintUrlVideo": "YouTube ve Vimeo URL'leri otomatik gömülü oynatıcıya dönüşür.",
+      "hintUrlImage": "Harici bir görsel URL'si girebilirsin.",
+      "uploadError": "Yükleme hatası"
+    }
+  },
+  "analysis": {
+    "rcaIntro": {
+      "panelAria": "Kök neden analizi rehber paneli",
+      "title": "Kök neden analizi rehberi",
+      "description": "Yöntemlerin ne işe yaradığını, ne zaman seçeceğinizi ve örnek senaryoları gözden geçirin",
+      "toggleExpand": "Rehberi aç",
+      "toggleCollapse": "Rehberi kapat",
+      "whatIsHeading": "Kök Neden Analizi Nedir?",
+      "whatIsBody": "Olayın yüzeysel sebebini değil, gerçekleşmesini tetikleyen yapısal/sistemik nedenleri bulmaya yönelik sistematik bir tekniktir. Doğru uygulandığında aynı tip olayın tekrarını önler, yalnızca semptomu değil hastalığı tedavi eder. ISG'de 6331 sayılı Kanun ve ISO 45001 her olay için kök neden çalışmasını zorunlu kılar.",
+      "whenHeading": "Ne Zaman Kullanılır?",
+      "whenUse": [
+        "İş kazası veya ramak kala sonrası — yasal zorunluluk",
+        "Tekrarlayan uygunsuzluklar — aynı sorun ısrarla geri geliyor",
+        "Yüksek riskli süreçlerin proaktif değerlendirmesi (yangın, kimyasal, yüksekte çalışma)",
+        "Denetim/müşteri geri bildirimi sonrası sistemik düzeltme",
+        "Meslek hastalığı şüphesi — uzun vadeli maruziyet zinciri"
+      ],
+      "methodsHeading": "7 Yöntem · Hangi Durumda Hangisi?",
+      "bestForLabel": "En iyi:",
+      "exampleLabel": "Örnek:",
+      "methods": {
+        "r2d_rca": {
+          "label": "R₂D-RCA",
+          "badge": "RiskNova Özel · Önerilen",
+          "bestFor": "Sayısal, tekrarlanabilir ölçüm. AI destekli skorlama. Sürekli izleme & dijital ikiz entegrasyonu.",
+          "example": "Bir tezgahta 6 ay boyunca operatör müdahaleleri artıyor; risk profili hangi boyutta bozulmuş? AI 9 boyutta t₀/t₁ üretip karşılaştırır, override eşiğini geçen birincil kök nedeni bulur."
+        },
+        "ishikawa": {
+          "label": "Ishikawa (Balık Kılçığı)",
+          "bestFor": "Çok faktörlü olaylar, ekip beyin fırtınası, görsel sınıflandırma (6M).",
+          "example": "Üretim hattında ürün hatası artmış; insan/makine/metot/malzeme/ölçüm/çevre kategorilerinde olası nedenleri görselleştirip ekiple tartışmak."
+        },
+        "five_why": {
+          "label": "5 Neden (5 Why)",
+          "bestFor": "Tek odaklı, hızlı kök neden tespiti. Basit nedensel zincirler.",
+          "example": "Hidrolik pres yağı sızdırıyor → Neden? Conta yıpranmış → Neden? Periyodik bakım yapılmamış → Neden? Bakım planı eksik → Kök neden: Bakım yönetim sistemi yok."
+        },
+        "fault_tree": {
+          "label": "Hata Ağacı (FTA)",
+          "bestFor": "Karmaşık sistemler, mantıksal koşullar (VE/VEYA), olasılık analizi.",
+          "example": "Patlama riski analizi: 'Yangın olur' üst olayı için VE/VEYA kapılarıyla 'Kıvılcım kaynağı', 'Yanıcı atmosfer', 'Havalandırma yok' gibi temel olayları haritalamak."
+        },
+        "scat": {
+          "label": "SCAT (Bird Modeli)",
+          "bestFor": "Klasik İSG kaza soruşturması. Anlık → temel → sistemik neden zinciri.",
+          "example": "İş kazası sonrası: anlık olay (düşme), anlık nedenler (kaygan zemin), temel nedenler (eğitim eksikliği), kontrol eksiklikleri (denetim prosedürü yok)."
+        },
+        "bow_tie": {
+          "label": "Bow-Tie (Kelebek)",
+          "bestFor": "Tehlike + bariyer odaklı analiz. Yüksek riskli iş, proses güvenliği.",
+          "example": "Kimyasal sızıntı için: tehditler (vana arızası, basınç), önleyici bariyerler (alarm, vana periyodik testi), sonuçlar (yaralanma, yangın), hafifletici bariyerler (acil müdahale, sprinkler)."
+        },
+        "mort": {
+          "label": "MORT",
+          "bestFor": "Yönetim sistemi zafiyetleri. Büyük olay sonrası organizasyonel analiz.",
+          "example": "Büyük çaplı kaza sonrası: yönetim gözetim eksikliği, politika boşlukları, denetim sistemi başarısızlıkları ve çıkarılan dersleri kategorize eder."
+        }
+      },
+      "tipsHeading": "Karar İpuçları",
+      "tips": [
+        "Hızlı tespit istiyorsan → 5 Neden veya R₂D-RCA",
+        "Ekip beyin fırtınası yapacaksan → Ishikawa",
+        "Karmaşık nedensel ilişki var (VE/VEYA, koşullar) → FTA",
+        "Klasik İSG kazası (düşme, çarpma) → SCAT",
+        "Yüksek riskli iş + bariyer analizi → Bow-Tie",
+        "Büyük olay + organizasyonel analiz → MORT",
+        "Sürekli izleme + sayısal karşılaştırma → R₂D-RCA (RiskNova özel)"
+      ],
+      "processHeading": "Tipik Süreç",
+      "processSteps": [
+        "Olayı net tanımla (firma, lokasyon, tarih, kim/ne/nerede/nasıl)",
+        "Uygun yöntemi seç (yukarıdaki ipuçlarını kullan)",
+        "AI ile ilk taslağı üret veya manuel doldur",
+        "Ekiple gözden geçir, eksikleri ekle",
+        "Kök nedeni netleştir → DÖF (Düzeltici/Önleyici Faaliyet) planını oluştur",
+        "PDF rapor üret, paylaş (QR kod ile mobil erişim)",
+        "Takip et: aksiyonların kapanma süresi + tekrarın önlenmesi"
+      ]
+    }
   },
   "nav": {
     "dashboard": "Panel",
@@ -606,6 +720,20 @@
       "pathEnterpriseDesc": "çok lokasyonlu kurumsal kullanım",
       "ctaPrimary": "Kayıt olmaya başla →",
       "ctaLater": "Daha sonra"
+    },
+    "mfa": {
+      "intro": "<email></email> hesabı için ikinci adım doğrulama zorunlu. Authenticator uygulamandaki 6 haneli kodu girerek devam edebilirsin.",
+      "deviceLabel": "Doğrulama cihazı",
+      "codeLabel": "Doğrulama kodu",
+      "codeHintWithFactor": "{factorName} uygulamasındaki mevcut kodu girin.",
+      "codeHintDefault": "Authenticator uygulamandaki mevcut kodu girin.",
+      "verifyBusy": "Doğrulanıyor…",
+      "verifyCta": "Devam Et",
+      "signOutCta": "Oturumu Kapat",
+      "errNoFactor": "Doğrulama yapılacak bir MFA cihazı seçilemedi.",
+      "errCodeFormat": "6 haneli doğrulama kodunu girin.",
+      "errNoSupabase": "Kimlik doğrulama servisine bağlanılamadı.",
+      "errVerifyFallback": "Kod doğrulanamadı. Tekrar deneyin."
     }
   },
   "pricing": {

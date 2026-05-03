@@ -249,6 +249,20 @@
       "oauthGenericError": "サインイン中に問題が発生しました。もう一度お試しください。",
       "oauthRedirectHint": "GoogleサインインにはSupabaseリダイレクトURLが必要です：認証URL設定でhttps://getrisknova.com/auth/callback（および環境URL）を追加してください。",
       "supabaseError": "認証サービスに接続できませんでした。"
+    },
+    "mfa": {
+      "intro": "<email></email> — second-factor verification is required. Enter the 6-digit code from your authenticator app to continue.",
+      "deviceLabel": "Verification device",
+      "codeLabel": "Verification code",
+      "codeHintWithFactor": "Enter the current code from {factorName}.",
+      "codeHintDefault": "Enter the current code from your authenticator app.",
+      "verifyBusy": "Verifying…",
+      "verifyCta": "Continue",
+      "signOutCta": "Sign out",
+      "errNoFactor": "No MFA device could be selected for verification.",
+      "errCodeFormat": "Enter the 6-digit verification code.",
+      "errNoSupabase": "Could not connect to the authentication service.",
+      "errVerifyFallback": "Code could not be verified. Try again."
     }
   },
   "brand": {
@@ -643,7 +657,11 @@
     "trackPriorityCompanies": "優先対応待ちの企業",
     "trackSubtitle": "全企業の概要。監視対象企業{companyCount}社、フォローアップ待ちアクション{totalActionable}件。",
     "trackTitle": "追跡概要",
-    "workloadFollowups": "{count}項目"
+    "workloadFollowups": "{count}項目",
+    "pwaEyebrow": "Mobile and desktop access",
+    "pwaTitle": "Add RiskNova to your home screen",
+    "pwaBody": "Open RiskNova like an app on Android, iPhone/iPad and Windows. Install prompts may not appear in private browsing; use a normal browser window.",
+    "pwaCta": "Open setup steps"
   },
   "dataRights": {
     "adminNotes": "管理者メモ",
@@ -955,7 +973,15 @@
       "metaTitle": "プライバシーポリシー",
       "ogDescription": "アカウント、製品使用、サブプロセッサーに関する簡潔なプライバシー概要です。",
       "ogTitle": "プライバシーポリシー | RiskNova",
-      "title": "RiskNovaプライバシーポリシー"
+      "title": "RiskNovaプライバシーポリシー",
+      "paragraphs": [
+        "RiskNova collects account, workspace, billing, and product usage information needed to provide occupational health and safety software services.",
+        "We use this information to authenticate users, provide subscribed features, process payments, support customers, improve the product, and maintain security. Payment processing is handled by Paddle; RiskNova does not store full card details.",
+        "Users may upload workplace safety content such as risk analysis information, documents, training materials, and inspection notes. This content is used to provide the requested product features and is not sold to third parties.",
+        "We use trusted service providers for hosting, authentication, analytics, AI processing, email, and billing. These providers may process data only as necessary to deliver the service.",
+        "Users can request access, correction, export, or deletion of their personal data subject to legal, security, and operational retention requirements.",
+        "For privacy questions or data requests, contact us through the contact channels listed on the RiskNova website."
+      ]
     },
     "refund": {
       "eyebrow": "返金ポリシー",
@@ -964,7 +990,15 @@
       "metaTitle": "返金ポリシー",
       "ogDescription": "返金期間、更新、請求修正について。",
       "ogTitle": "返金ポリシー | RiskNova",
-      "title": "RiskNova返金ポリシー"
+      "title": "RiskNova返金ポリシー",
+      "paragraphs": [
+        "RiskNova subscriptions are billed monthly or annually according to the plan selected at checkout.",
+        "Customers may request a refund within 14 days of the initial purchase if the service has not been materially used and the request is not abusive or fraudulent.",
+        "Renewal payments are generally non-refundable once a new billing period has started. Customers can cancel future renewals from their account or by contacting support.",
+        "If a billing error, duplicate charge, or unauthorized transaction is confirmed, we will work with Paddle to correct the issue.",
+        "Refund decisions may depend on usage, subscription type, legal requirements, and Paddle billing rules. Approved refunds are returned to the original payment method through Paddle.",
+        "For refund requests, contact us through the contact channels listed on the RiskNova website and include the account email and order details."
+      ]
     },
     "terms": {
       "eyebrow": "利用規約",
@@ -1020,7 +1054,15 @@
       "metaTitle": "利用規約",
       "ogDescription": "サブスクリプション、AI支援機能、利用規定の概要。",
       "ogTitle": "利用規約 | RiskNova",
-      "title": "RiskNova利用規約"
+      "title": "RiskNova利用規約",
+      "paragraphs": [
+        "RiskNova is a subscription-based SaaS platform for occupational health and safety professionals. By creating an account or using RiskNova, you agree to use the service only for lawful professional safety, documentation, analysis, and workflow management purposes.",
+        "Individual plans are intended for self-service professional use. OSGB and corporate use cases may require a separate commercial agreement and onboarding process.",
+        "RiskNova may include AI-assisted analysis and document generation. Users remain responsible for reviewing outputs, applying their own professional judgment, and complying with applicable laws, standards, and workplace procedures.",
+        "Subscription access, limits, billing cycles, and available features are shown on the pricing page before checkout. We may update plans or features over time, but active subscriptions will continue under the terms presented at purchase unless otherwise communicated.",
+        "Users must not misuse the service, attempt unauthorized access, upload unlawful content, or use RiskNova to replace required legal, medical, engineering, or regulatory professional review.",
+        "For questions about these terms, contact us through the contact channels listed on the RiskNova website."
+      ]
     }
   },
   "nav": {
@@ -1342,37 +1384,79 @@
         "description": "Novaチャット、分析、小規模なドキュメントワークフローを探索するための月次クォータ付きエントリーティアです。",
         "name": "無料",
         "upgradeHint": "毎月予測可能なクォータが必要になったらStarterにアップグレードしてください。",
-        "whoFor": "RiskNovaをお試しの方、学生、軽度の時々利用の方。"
+        "whoFor": "RiskNovaをお試しの方、学生、軽度の時々利用の方。",
+        "features": [
+          "Nova chat within monthly limits",
+          "Foundational AI analyses for risk workflows",
+          "Limited document generation",
+          "Field inspection entries within quotas",
+          "Exports within plan limits"
+        ]
       },
       "plus": {
         "description": "チャット、分析、リスクモデリング、フィールドデータ全体でバランスの取れた容量です。",
         "name": "Plus",
         "upgradeHint": "より深い検査とレポート処理能力が必要になったらProfessionalに移行してください。",
-        "whoFor": "毎月複数のクライアントを管理するアクティブなコンサルタント。"
+        "whoFor": "毎月複数のクライアントを管理するアクティブなコンサルタント。",
+        "features": [
+          "Higher caps across all core actions",
+          "More incident and training outputs",
+          "Field inspection headroom for busy weeks",
+          "Document throughput for recurring packs",
+          "Exports suited to multi-client work"
+        ]
       },
       "professional_149": {
         "description": "推奨ティア — 分析、ドキュメント、フィールドワークフロー全体で余裕のある上限です。",
         "name": "Professional 149",
         "upgradeHint": "Professional 199は最も忙しいデスクに最大限の余裕を追加します。",
-        "whoFor": "製品を日常的に使用するシニアコンサルタントおよびパワーユーザー。"
+        "whoFor": "製品を日常的に使用するシニアコンサルタントおよびパワーユーザー。",
+        "features": [
+          "Very high Nova and analysis quotas",
+          "Heavy document generation allowance",
+          "Large risk and inspection budgets",
+          "Incident and training outputs at scale",
+          "Exports aligned with premium throughput"
+        ]
       },
       "professional_199": {
         "description": "OSGBまたは企業契約前の最上位セルフサービスティアです。",
         "name": "Professional 199",
         "upgradeHint": "席数、ポートフォリオ、請求書発行が必要ですか？OSGBまたは企業見積もりをご利用ください。",
-        "whoFor": "ピーク時の個人ワークロードとプレミアム処理能力への期待に対応"
+        "whoFor": "ピーク時の個人ワークロードとプレミアム処理能力への期待に対応",
+        "features": [
+          "Maximum published individual quotas",
+          "Peak AI and document capacity",
+          "Largest inspection and risk envelopes",
+          "Full incident and training allowances in tier",
+          "Exports for the heaviest reporting cycles"
+        ]
       },
       "professional": {
         "description": "最上位Professionalティア前のエンタープライズグレード個人上限です。",
         "name": "Professional 99",
         "upgradeHint": "スケールでの最高の価値を得るためにProfessional 149にステップアップしてください。",
-        "whoFor": "密度の高い週次利用を行うフルタイムOHS専門家。"
+        "whoFor": "密度の高い週次利用を行うフルタイムOHS専門家。",
+        "features": [
+          "High Nova and AI analysis limits",
+          "Strong document generation cadence",
+          "Broad risk and field inspection capacity",
+          "Incident programme support within quota",
+          "Exports for intensive reporting"
+        ]
       },
       "starter": {
         "description": "Novaの高い割当量、分析、文書により週次ルーチンが円滑に実行されます",
         "name": "スターター",
         "upgradeHint": "インシデント分析とトレーニング出力がワークフローの一部になったらPlusをお選びください",
-        "whoFor": "フリーランス専門家と安定した月次ワークロード"
+        "whoFor": "フリーランス専門家と安定した月次ワークロード",
+        "features": [
+          "Stronger Nova and analysis quotas",
+          "More monthly document generation",
+          "Incident analysis allowance",
+          "Training slides where included in quota",
+          "Exports scaled for individuals"
+        ]
       }
     },
     "priceFreeNote": "無料で開始",
@@ -2503,7 +2587,13 @@
           "pricePeriod": "月額 / から",
           "seatsLabel": "アクティブチームシート2席",
           "summary": "限定的なポートフォリオを持つ小規模OSGBチーム向け — 個人向けStarter（月額{individualStarter}）とは異なり、マルチサイトとチームワークフローに対応しています。",
-          "workspacesLabel": "アクティブ企業・ワークスペース5社"
+          "workspacesLabel": "アクティブ企業・ワークスペース5社",
+          "features": [
+            "Personnel module and invitation flows",
+            "Tasks, work tracking and assignment board",
+            "Client workplace portfolio view",
+            "Announcements and core operational flows"
+          ]
         },
         "osgb_team": {
           "ctaLabel": "Team見積もりをリクエスト",
@@ -2512,14 +2602,25 @@
           "pricePeriod": "月額 / から",
           "seatsLabel": "アクティブチームシート5席",
           "summary": "成長中のOSGB：より多くの企業、現場調整、チーム規模の拡大。",
-          "workspacesLabel": "アクティブ企業・ワークスペース15社"
+          "workspacesLabel": "アクティブ企業・ワークスペース15社",
+          "features": [
+            "Everything in Starter",
+            "Advanced reporting and exports",
+            "Field audits and checklists (per agreement)",
+            "Priority solution / onboarding channel"
+          ]
         }
       },
       "osgbFooterHint": "多拠点にわたる単一雇用主ですか？",
       "osgbFooterLink": "エンタープライズソリューションページをご覧ください",
       "osgbSectionIntro": "金額は米ドルでの参考開始セグメントです。税金、為替、契約範囲は見積もり確定時に確認されます。カード決済はありません。お客様の構造を理解した上で制限と価格設定を調整いたします。",
       "osgbSectionTitle": "OSGB パッケージ",
-      "recommended": "推奨"
+      "recommended": "推奨",
+      "enterpriseHighlights": [
+        "Multi-site companies and institutions",
+        "Tailored quote aligned with operational volume",
+        "Integration and onboarding planning when needed"
+      ]
     },
     "enterprisePage": {
       "ctaForm": "お問い合わせ（フォーム）",
@@ -2616,5 +2717,115 @@
     "noWorkspace": "ワークスペースなし",
     "switcher": "ワークスペース",
     "switchError": "ワークスペースを切り替えできませんでした"
+  },
+  "osgb": {
+    "chrome": {
+      "scopeEyebrow": "Company scope",
+      "scopeDescription": "OSGB management screens are filtered by company selection. When no company is selected, the full portfolio is shown.",
+      "allCompanies": "All companies"
+    }
+  },
+  "slides": {
+    "mediaPicker": {
+      "addVideo": "Add video",
+      "addImage": "Add image",
+      "tabUpload": "Upload",
+      "tabLibrary": "Library ({count})",
+      "tabUrl": "URL",
+      "uploading": "Uploading…",
+      "clickToSelect": "Click to choose a file",
+      "hintVideo": "MP4, WebM — max 50 MB",
+      "hintImage": "JPEG, PNG, WebP, GIF, SVG — max 50 MB",
+      "libraryLoading": "Loading…",
+      "libraryEmpty": "No media yet. Add files from the Upload tab.",
+      "labelVideoUrl": "Video URL (YouTube, Vimeo, MP4)",
+      "labelImageUrl": "Image URL",
+      "placeholderVideoUrl": "https://youtube.com/watch?v=…",
+      "placeholderImageUrl": "https://…",
+      "useUrl": "Use URL",
+      "hintUrlVideo": "YouTube and Vimeo URLs are converted to embedded players automatically.",
+      "hintUrlImage": "You can paste an external image URL.",
+      "uploadError": "Upload failed"
+    }
+  },
+  "analysis": {
+    "rcaIntro": {
+      "panelAria": "Root cause analysis guide panel",
+      "title": "Root cause analysis guide",
+      "description": "See what each method is for, when to pick it, and example scenarios.",
+      "toggleExpand": "Expand guide",
+      "toggleCollapse": "Collapse guide",
+      "whatIsHeading": "What is root cause analysis?",
+      "whatIsBody": "It is a systematic technique to find structural or systemic drivers of an event—not just the surface symptom. Applied well, it prevents the same class of incident from recurring: it treats the disease, not only the symptom. In OHS, Turkish Law 6331 and ISO 45001 require root-cause work for incidents.",
+      "whenHeading": "When is it used?",
+      "whenUse": [
+        "After a work accident or near miss — often a legal requirement",
+        "Recurring non-conformities — the same issue keeps coming back",
+        "Proactive review of high-risk processes (fire, chemicals, work at height)",
+        "Systemic correction after audits or customer feedback",
+        "Suspected occupational disease — long exposure chains"
+      ],
+      "methodsHeading": "Seven methods · which one when?",
+      "bestForLabel": "Best for:",
+      "exampleLabel": "Example:",
+      "methods": {
+        "r2d_rca": {
+          "label": "R₂D-RCA",
+          "badge": "RiskNova exclusive · Recommended",
+          "bestFor": "Numeric, repeatable measurement; AI-assisted scoring; continuous monitoring and digital-twin alignment.",
+          "example": "Operator interventions on a bench rise over six months; which dimension broke the risk profile? AI produces t₀/t₁ across nine dimensions, compares them, and surfaces a primary root cause when override thresholds are exceeded."
+        },
+        "ishikawa": {
+          "label": "Ishikawa (fishbone)",
+          "bestFor": "Multi-factor events, team brainstorming, visual classification (6M).",
+          "example": "Product defects rise on a line; map likely causes under people/machine/method/material/measurement/environment and discuss with the team."
+        },
+        "five_why": {
+          "label": "5 Whys",
+          "bestFor": "Fast single-focus root-cause checks and simple causal chains.",
+          "example": "Hydraulic press leaks oil → Why? Worn seal → Why? No periodic maintenance → Why? No maintenance plan → Root cause: missing maintenance management system."
+        },
+        "fault_tree": {
+          "label": "Fault tree (FTA)",
+          "bestFor": "Complex systems, logical conditions (AND/OR), probability thinking.",
+          "example": "Explosion risk: top event “fire occurs” with AND/OR gates for spark sources, flammable atmosphere, failed ventilation, etc."
+        },
+        "scat": {
+          "label": "SCAT (bird model)",
+          "bestFor": "Classic OHS incident investigation: immediate → basic → systemic cause chains.",
+          "example": "After a fall: immediate event (fall), immediate causes (slippery floor), basic causes (training gaps), systemic gaps (no inspection procedure)."
+        },
+        "bow_tie": {
+          "label": "Bow-tie",
+          "bestFor": "Hazard + barrier thinking; high-risk work and process safety.",
+          "example": "Chemical release: threats (valve failure, pressure), preventive barriers (alarms, valve testing), consequences (injury, fire), mitigating barriers (emergency response, sprinklers)."
+        },
+        "mort": {
+          "label": "MORT",
+          "bestFor": "Management-system weaknesses; organisational learning after major events.",
+          "example": "After a large incident: supervisory gaps, policy holes, failed assurance systems, and lessons learned grouped systematically."
+        }
+      },
+      "tipsHeading": "Decision tips",
+      "tips": [
+        "Need a quick read → 5 Whys or R₂D-RCA",
+        "Team brainstorming → Ishikawa",
+        "Complex causal logic (AND/OR, conditions) → FTA",
+        "Classic OHS incident (slip, strike) → SCAT",
+        "High-risk work + barrier analysis → Bow-tie",
+        "Major event + organisational analysis → MORT",
+        "Continuous monitoring + numeric comparison → R₂D-RCA (RiskNova-specific)"
+      ],
+      "processHeading": "Typical process",
+      "processSteps": [
+        "Define the event clearly (company, location, date, who/what/where/how)",
+        "Choose the right method (use the tips above)",
+        "Generate a first draft with AI or fill manually",
+        "Review with the team and close gaps",
+        "Confirm root causes → build corrective/preventive (CAPA) actions",
+        "Produce a PDF report and share (QR for mobile access)",
+        "Follow up: action closure timelines + prevention of recurrence"
+      ]
+    }
   }
 }

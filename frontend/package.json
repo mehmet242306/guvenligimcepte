@@ -30,6 +30,7 @@
     "i18n:translate-messages:force": "node scripts/translate-risk-scoring-packs.mjs --pack=messages --force",
     "i18n:merge-risk-scoring": "node scripts/merge-risk-scoring-i18n.mjs",
     "i18n:verify-locale-parity": "node scripts/i18n-verify-locale-parity.mjs",
+    "i18n:merge-missing-from-en": "node scripts/i18n-merge-missing-from-en.mjs",
     "i18n:phase0-inventory": "node scripts/i18n-phase0-inventory.mjs",
     "i18n:phase0": "npm run i18n:verify-locale-parity && npm run i18n:phase0-inventory",
     "i18n:phase1-bootstrap-locales": "node scripts/i18n-phase1-sync-bootstrap-locales.mjs",

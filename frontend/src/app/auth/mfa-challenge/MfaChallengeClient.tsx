@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabase/client";
@@ -23,6 +24,7 @@ export function MfaChallengeClient({
   userEmail,
   factors,
 }: MfaChallengeClientProps) {
+  const t = useTranslations("auth.mfa");
   const router = useRouter();
   const [selectedFactorId, setSelectedFactorId] = useState(factors[0]?.id ?? "");
   const [code, setCode] = useState("");
@@ -37,17 +39,17 @@ export function MfaChallengeClient({
   async function handleVerify() {
     const normalizedCode = code.replace(/\s+/g, "");
     if (!selectedFactorId) {
-      setError("Doğrulama yapılacak bir MFA cihazı seçilemedi.");
+      setError(t("errNoFactor"));
       return;
     }
     if (!/^\d{6}$/.test(normalizedCode)) {
-      setError("6 haneli doğrulama kodunu girin.");
+      setError(t("errCodeFormat"));
       return;
     }
 
     const supabase = createClient();
     if (!supabase) {
-      setError("Kimlik doğrulama servisine bağlanılamadı.");
+      setError(t("errNoSupabase"));
       return;
     }
 
@@ -65,8 +67,7 @@ export function MfaChallengeClient({
       router.replace(next);
       router.refresh();
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Kod doğrulanamadı. Tekrar deneyin.";
+      const message = err instanceof Error ? err.message : t("errVerifyFallback");
       setError(message);
     } finally {
       setBusy(false);
@@ -95,17 +96,15 @@ export function MfaChallengeClient({
     <div className="space-y-6">
       <div className="rounded-2xl border border-border bg-secondary/35 p-4">
         <p className="text-sm leading-7 text-muted-foreground">
-          <span className="font-medium text-foreground">{userEmail}</span> hesabı
-          için ikinci adım doğrulama zorunlu. Authenticator uygulamandaki 6 haneli
-          kodu girerek devam edebilirsin.
+          {t.rich("intro", {
+            email: () => <span className="font-medium text-foreground">{userEmail}</span>,
+          })}
         </p>
       </div>
 
       {factors.length > 1 ? (
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">
-            Doğrulama cihazı
-          </label>
+          <label className="text-sm font-medium text-foreground">{t("deviceLabel")}</label>
           <div className="grid gap-2">
             {factors.map((factor) => (
               <button
@@ -133,7 +132,7 @@ export function MfaChallengeClient({
 
       <Input
         id="mfa-code"
-        label="Doğrulama Kodu"
+        label={t("codeLabel")}
         inputMode="numeric"
         autoComplete="one-time-code"
         value={code}
@@ -143,8 +142,8 @@ export function MfaChallengeClient({
         placeholder="123456"
         hint={
           selectedFactor
-            ? `${selectedFactor.friendlyName} uygulamasındaki mevcut kodu girin.`
-            : "Authenticator uygulamandaki mevcut kodu girin."
+            ? t("codeHintWithFactor", { factorName: selectedFactor.friendlyName })
+            : t("codeHintDefault")
         }
         error={error ?? undefined}
         className="tracking-[0.25em]"
@@ -157,7 +156,7 @@ export function MfaChallengeClient({
           disabled={busy || code.length !== 6 || !selectedFactorId}
           className="sm:min-w-44"
         >
-          {busy ? "Doğrulanıyor..." : "Devam Et"}
+          {busy ? t("verifyBusy") : t("verifyCta")}
         </Button>
         <Button
           type="button"
@@ -166,7 +165,7 @@ export function MfaChallengeClient({
           disabled={busy}
           className="sm:min-w-36"
         >
-          Oturumu Kapat
+          {t("signOutCta")}
         </Button>
       </div>
     </div>

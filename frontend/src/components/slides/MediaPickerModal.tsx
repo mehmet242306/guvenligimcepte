@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type MediaAsset = {
   id: string;
@@ -20,6 +21,7 @@ type Props = {
 };
 
 export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: Props) {
+  const t = useTranslations("slides.mediaPicker");
   const [assets, setAssets] = useState<MediaAsset[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -57,7 +59,7 @@ export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: 
       const res = await fetch("/api/slide-media-upload", { method: "POST", body: fd });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Yükleme hatası");
+        throw new Error(err.error || t("uploadError"));
       }
       const data = await res.json();
       onSelect(data.url, data.asset_type);
@@ -100,7 +102,7 @@ export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: 
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[var(--border)] p-4">
           <h2 className="text-lg font-bold text-[var(--foreground)]">
-            {accept === "video" ? "Video Ekle" : "Görsel Ekle"}
+            {accept === "video" ? t("addVideo") : t("addImage")}
           </h2>
           <button
             onClick={onClose}
@@ -118,7 +120,7 @@ export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: 
               tab === "upload" ? "bg-[var(--gold)] text-white" : "text-[var(--muted-foreground)] hover:bg-[var(--accent)]"
             }`}
           >
-            ⬆️ Yükle
+            ⬆️ {t("tabUpload")}
           </button>
           <button
             onClick={() => setTab("library")}
@@ -126,7 +128,7 @@ export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: 
               tab === "library" ? "bg-[var(--gold)] text-white" : "text-[var(--muted-foreground)] hover:bg-[var(--accent)]"
             }`}
           >
-            📚 Kütüphane ({filtered.length})
+            📚 {t("tabLibrary", { count: filtered.length })}
           </button>
           <button
             onClick={() => setTab("url")}
@@ -134,7 +136,7 @@ export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: 
               tab === "url" ? "bg-[var(--gold)] text-white" : "text-[var(--muted-foreground)] hover:bg-[var(--accent)]"
             }`}
           >
-            🔗 URL
+            🔗 {t("tabUrl")}
           </button>
         </div>
 
@@ -156,10 +158,10 @@ export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: 
               >
                 <div className="mb-3 text-5xl">{uploading ? "⏳" : accept === "video" ? "🎥" : "🖼️"}</div>
                 <div className="text-sm font-semibold text-[var(--foreground)]">
-                  {uploading ? "Yükleniyor..." : "Dosya seçmek için tıkla"}
+                  {uploading ? t("uploading") : t("clickToSelect")}
                 </div>
                 <div className="mt-1 text-xs text-[var(--muted-foreground)]">
-                  {accept === "video" ? "MP4, WebM" : "JPEG, PNG, WebP, GIF, SVG"} — Maks. 50 MB
+                  {accept === "video" ? t("hintVideo") : t("hintImage")}
                 </div>
               </button>
               {error && (
@@ -173,11 +175,9 @@ export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: 
           {tab === "library" && (
             <>
               {loading ? (
-                <div className="text-center text-sm text-[var(--muted-foreground)] py-12">Yükleniyor...</div>
+                <div className="text-center text-sm text-[var(--muted-foreground)] py-12">{t("libraryLoading")}</div>
               ) : filtered.length === 0 ? (
-                <div className="text-center text-sm text-[var(--muted-foreground)] py-12">
-                  Henüz medya yok. "Yükle" sekmesinden ekleyebilirsin.
-                </div>
+                <div className="text-center text-sm text-[var(--muted-foreground)] py-12">{t("libraryEmpty")}</div>
               ) : (
                 <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
                   {filtered.map((a) => (
@@ -210,13 +210,13 @@ export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: 
           {tab === "url" && (
             <div>
               <label className="mb-2 block text-xs font-semibold text-[var(--muted-foreground)]">
-                {accept === "video" ? "Video URL (YouTube, Vimeo, MP4)" : "Görsel URL"}
+                {accept === "video" ? t("labelVideoUrl") : t("labelImageUrl")}
               </label>
               <input
                 type="text"
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}
-                placeholder={accept === "video" ? "https://youtube.com/watch?v=..." : "https://..."}
+                placeholder={accept === "video" ? t("placeholderVideoUrl") : t("placeholderImageUrl")}
                 className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--foreground)]"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleUrlSubmit();
@@ -227,12 +227,10 @@ export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: 
                 disabled={!urlInput.trim()}
                 className="mt-3 w-full rounded-lg bg-[var(--gold)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
               >
-                URL'yi Kullan
+                {t("useUrl")}
               </button>
               <p className="mt-3 text-xs text-[var(--muted-foreground)]">
-                {accept === "video"
-                  ? "YouTube ve Vimeo URL'leri otomatik gömülü oynatıcıya dönüşür."
-                  : "Harici bir görsel URL'si girebilirsin."}
+                {accept === "video" ? t("hintUrlVideo") : t("hintUrlImage")}
               </p>
             </div>
           )}

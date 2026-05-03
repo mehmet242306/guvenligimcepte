@@ -333,13 +333,13 @@ export function DashboardClient() {
             </span>
             <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-teal-700 dark:text-teal-200">
-                Mobil ve masaüstü erişim
+                {t('pwaEyebrow')}
               </p>
               <p className="mt-1.5 text-lg font-bold tracking-tight text-foreground sm:text-xl">
-                RiskNova'yı ana ekrana ekle
+                {t('pwaTitle')}
               </p>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-                Android, iPhone/iPad ve Windows'ta RiskNova'yı uygulama gibi açın. Gizli modda kurulum görünmez; normal tarayıcı penceresinde deneyin.
+                {t('pwaBody')}
               </p>
             </div>
           </div>
@@ -347,7 +347,7 @@ export function DashboardClient() {
             href="/uygulama"
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-teal-600 px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_36px_rgba(13,148,136,0.35)] transition hover:bg-teal-500"
           >
-            Kurulum adımlarını aç
+            {t('pwaCta')}
             <ArrowUpRight className="h-4 w-4" aria-hidden />
           </Link>
         </div>
