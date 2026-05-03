@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 
 const FALLBACK_COUNT = 94750;
-const SESSION_KEY = "risknova-site-visit-counted";
 
 function formatCount(value: number) {
   return new Intl.NumberFormat("tr-TR").format(value);
@@ -16,19 +15,14 @@ export function SiteVisitCounter() {
     let cancelled = false;
 
     async function syncVisitCount() {
-      const alreadyCounted = sessionStorage.getItem(SESSION_KEY) === "1";
       const response = await fetch("/api/site-visits", {
-        method: alreadyCounted ? "GET" : "POST",
+        method: "POST",
         cache: "no-store",
       });
       const payload = (await response.json().catch(() => null)) as { count?: number } | null;
 
       if (!cancelled && typeof payload?.count === "number") {
         setCount(payload.count);
-      }
-
-      if (!alreadyCounted) {
-        sessionStorage.setItem(SESSION_KEY, "1");
       }
     }
 
