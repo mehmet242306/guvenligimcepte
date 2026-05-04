@@ -1375,7 +1375,8 @@
       "template": "Şablon",
       "surveyFlow": "Anket akışı",
       "presentation": "Sunum",
-      "catalog": "Katalog"
+      "catalog": "Katalog",
+      "document": "Doküman"
     },
     "footer": {
       "convertedToDocument": "Doküman şablonuna dönüştürüldü ({count})",
@@ -1873,6 +1874,22 @@
     "delete": {
       "confirmCompany": "{title} seçili firma kütüphanesinden kaldırılsın mı?",
       "confirmSource": "{title} kalıcı olarak silinsin mi?"
+    },
+    "addCard": {
+      "title": "Yeni içerik",
+      "description": "Editörde yeni kütüphane içeriği oluşturun."
+    },
+    "documentCard": {
+      "description": "Kaydedilmiş editör dokümanı",
+      "descriptionWithCompany": "{company} için kaydedildi",
+      "version": "v{version}",
+      "status": {
+        "taslak": "Taslak",
+        "hazir": "Hazır",
+        "onay_bekliyor": "Onay bekliyor",
+        "revizyon": "Revizyon",
+        "arsiv": "Arşiv"
+      }
     }
   },
   "lang": {

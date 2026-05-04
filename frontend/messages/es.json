@@ -1916,7 +1916,8 @@
       "catalog": "Catálogo",
       "presentation": "Presentación",
       "surveyFlow": "Flujo de encuesta",
-      "template": "Plantilla"
+      "template": "Plantilla",
+      "document": "Documento"
     },
     "status": {
       "assignedToCompany": "Asignado al espacio de trabajo {title}.",
@@ -2250,6 +2251,22 @@
     "delete": {
       "confirmCompany": "¿Quitar {title} de la biblioteca de la empresa seleccionada?",
       "confirmSource": "¿Eliminar {title} permanentemente?"
+    },
+    "addCard": {
+      "title": "Nuevo contenido",
+      "description": "Crea un nuevo contenido de biblioteca en el editor."
+    },
+    "documentCard": {
+      "description": "Documento guardado del editor",
+      "descriptionWithCompany": "Guardado para {company}",
+      "version": "v{version}",
+      "status": {
+        "taslak": "Borrador",
+        "hazir": "Listo",
+        "onay_bekliyor": "Pendiente de aprobación",
+        "revizyon": "Revisión",
+        "arsiv": "Archivado"
+      }
     }
   },
   "landing": {

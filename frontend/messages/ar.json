@@ -1916,7 +1916,8 @@
       "catalog": "الكتالوج",
       "presentation": "العرض التقديمي",
       "surveyFlow": "تدفق الاستطلاع",
-      "template": "القالب"
+      "template": "القالب",
+      "document": "مستند"
     },
     "status": {
       "assignedToCompany": "مخصص لمساحة عمل {title}.",
@@ -2250,6 +2251,22 @@
     "delete": {
       "confirmCompany": "هل تريد إزالة {title} من مكتبة الشركة المحددة؟",
       "confirmSource": "هل تريد حذف {title} نهائيًا؟"
+    },
+    "addCard": {
+      "title": "محتوى جديد",
+      "description": "أنشئ عنصر مكتبة جديدًا في المحرر."
+    },
+    "documentCard": {
+      "description": "مستند محفوظ من المحرر",
+      "descriptionWithCompany": "تم الحفظ لـ {company}",
+      "version": "v{version}",
+      "status": {
+        "taslak": "مسودة",
+        "hazir": "جاهز",
+        "onay_bekliyor": "بانتظار الموافقة",
+        "revizyon": "مراجعة",
+        "arsiv": "مؤرشف"
+      }
     }
   },
   "landing": {

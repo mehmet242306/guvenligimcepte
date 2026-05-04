@@ -1916,7 +1916,8 @@
       "catalog": "目录",
       "presentation": "演示文稿",
       "surveyFlow": "调查流程",
-      "template": "模板"
+      "template": "模板",
+      "document": "文档"
     },
     "status": {
       "assignedToCompany": "已分配给{title}工作区。",
@@ -2250,6 +2251,22 @@
     "delete": {
       "confirmCompany": "是否从所选公司的资料库中移除“{title}”？",
       "confirmSource": "是否永久删除“{title}”？"
+    },
+    "addCard": {
+      "title": "新内容",
+      "description": "在编辑器中创建新的资料库项目。"
+    },
+    "documentCard": {
+      "description": "已保存的编辑器文档",
+      "descriptionWithCompany": "已为 {company} 保存",
+      "version": "v{version}",
+      "status": {
+        "taslak": "草稿",
+        "hazir": "就绪",
+        "onay_bekliyor": "待审批",
+        "revizyon": "修订",
+        "arsiv": "已归档"
+      }
     }
   },
   "landing": {

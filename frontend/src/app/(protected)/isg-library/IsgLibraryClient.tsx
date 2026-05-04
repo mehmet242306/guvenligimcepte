@@ -27,6 +27,7 @@ import {
   Trash2,
   Video,
   X,
+  Plus,
   type LucideIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +37,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DOCUMENT_GROUPS, getGroupByKey } from "@/lib/document-groups";
 import { getTemplate } from "@/lib/document-templates-p1";
 import { createClient } from "@/lib/supabase/client";
-import { fetchDocuments } from "@/lib/supabase/document-api";
+import { deleteDocument, fetchDocuments } from "@/lib/supabase/document-api";
 import { deleteDeck, fetchOrgDecks, fetchMyDecks } from "@/lib/supabase/slide-deck-api";
 import { deleteSurvey, fetchSurveys } from "@/lib/supabase/survey-api";
 import {
@@ -90,7 +91,7 @@ type UnifiedLibraryItem = {
   viewHref: string | null;
   downloadHref: string | null;
   libraryContentId: string | null;
-  sourceKind: "catalog" | "template" | "survey" | "deck";
+  sourceKind: "catalog" | "template" | "survey" | "deck" | "document";
   sourceId: string | null;
   sourceOwnerId: string | null;
   templateId?: string | null;
@@ -434,6 +435,14 @@ function getCategoryTone(category: CategoryKey | Exclude<CategoryKey, "all">) {
   return CATEGORY_TONES[category] ?? CATEGORY_TONES.all;
 }
 
+function getDocumentLibraryCategory(doc: DocumentRecord): Exclude<CategoryKey, "all"> {
+  const rawSection =
+    typeof doc.variables_data?.__library_section === "string" ? doc.variables_data.__library_section : "";
+  const parsedSection = parseCategory(rawSection);
+  if (parsedSection !== "all") return parsedSection;
+  return "documentation";
+}
+
 function getContentTypeMeta(type: string | null, t: IsgLibraryTranslator) {
   const normalized = (type ?? "").toLowerCase();
 
@@ -614,6 +623,35 @@ function EmptyState(props: {
         </div>
       ) : null}
     </section>
+  );
+}
+
+function AddContentCard(props: {
+  href: string;
+  title: string;
+  description: string;
+  disabled: boolean;
+  onDisabledClick: () => void;
+}) {
+  return (
+    <Link
+      href={props.disabled ? "#" : props.href}
+      onClick={(event) => {
+        if (!props.disabled) return;
+        event.preventDefault();
+        props.onDisabledClick();
+      }}
+      className={cn(
+        "group flex min-h-[280px] flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-[var(--gold)]/55 bg-gradient-to-br from-white via-amber-50/55 to-yellow-50/75 p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--gold)] hover:shadow-[0_22px_55px_rgba(184,134,11,0.18)] dark:border-[#6f5320] dark:from-slate-950 dark:via-amber-950/20 dark:to-slate-950",
+        props.disabled ? "cursor-not-allowed opacity-60 hover:translate-y-0 hover:shadow-sm" : "",
+      )}
+    >
+      <span className="flex h-20 w-20 items-center justify-center rounded-[1.5rem] border border-[var(--gold)]/45 bg-[var(--gold)]/15 text-[var(--gold)] transition group-hover:scale-105">
+        <Plus size={44} strokeWidth={2.4} />
+      </span>
+      <h3 className="mt-5 text-xl font-semibold text-foreground">{props.title}</h3>
+      <p className="mt-2 max-w-[18rem] text-sm leading-6 text-muted-foreground">{props.description}</p>
+    </Link>
   );
 }
 
@@ -1044,12 +1082,49 @@ export function IsgLibraryClient() {
       templateId: null,
     }));
 
+    const documentItems = documents.map((doc) => {
+      const docCategory = getDocumentLibraryCategory(doc);
+      const group = getGroupByKey(doc.group_key);
+      const variables = doc.variables_data ?? {};
+      const companyName =
+        typeof variables.official_name === "string"
+          ? variables.official_name
+          : typeof variables.company_name === "string"
+            ? variables.company_name
+            : "";
+
+      return {
+        id: `document-${doc.id}`,
+        title: doc.title,
+        description: companyName
+          ? t("documentCard.descriptionWithCompany", { company: companyName })
+          : t("documentCard.description"),
+        category: docCategory,
+        subcategory: doc.group_key || group?.key || t("types.doc"),
+        contentType: t("types.doc"),
+        tags: [
+          t(`documentCard.status.${doc.status}` as never),
+          t("documentCard.version", { version: doc.version }),
+        ],
+        sector: [],
+        createdAt: doc.updated_at,
+        viewHref: `/documents/${doc.id}?library=1&librarySection=${docCategory}`,
+        downloadHref: null,
+        libraryContentId: null,
+        sourceKind: "document" as const,
+        sourceId: doc.id,
+        sourceOwnerId: doc.created_by ?? null,
+        templateId: doc.template_id,
+      };
+    });
+
     const deletedTemplates = new Set(deletedTemplateIds);
     return [
       ...catalogItems,
+      ...documentItems,
       ...legacyItems.filter((item) => item.sourceKind !== "template" || !deletedTemplates.has(item.id)),
     ];
-  }, [contents, deletedTemplateIds, legacyItems, t]);
+  }, [contents, deletedTemplateIds, documents, legacyItems, t]);
 
   const savedCompaniesByContent = useMemo(() => {
     const map = new Map<string, string[]>();
@@ -1177,6 +1252,11 @@ export function IsgLibraryClient() {
     categoryDefinitions.find((item) => item.key === category) ?? categoryDefinitions[0]!;
   const activeTone = getCategoryTone(category);
   const selectedCreationCompany = companies.find((company) => company.id === creationCompanyId) ?? null;
+  const newContentCategory = category === "all" ? "documentation" : category;
+  const newContentHref = buildDocumentEditorHref(newContentCategory, subcategory, categoryDefinitions, t, {
+    companyId: creationCompanyId,
+    mode: "custom",
+  });
   const subcategoryOptions = useMemo(() => {
     if (category === "all") return [];
     const baseOptions = categoryDefinitions.find((item) => item.key === category)?.subcategories ?? [];
@@ -1337,6 +1417,11 @@ export function IsgLibraryClient() {
   }
 
   function handleEdit(item: UnifiedLibraryItem) {
+    if (item.sourceKind === "document" && item.viewHref) {
+      router.push(item.viewHref);
+      return;
+    }
+
     if (!creationCompanyId) {
       setErrorMessage(t("errorsInline.selectCompanyEditor"));
       return;
@@ -1503,14 +1588,20 @@ export function IsgLibraryClient() {
           ? await deleteSurvey(item.sourceId)
           : item.sourceKind === "deck" && item.sourceId
             ? await deleteDeck(item.sourceId)
-            : false;
+            : item.sourceKind === "document" && item.sourceId
+              ? await deleteDocument(item.sourceId)
+              : false;
 
       if (!ok) {
         setErrorMessage(t("errorsInline.deleteFailed"));
         return;
       }
 
-      setLegacyItems((current) => current.filter((entry) => entry.id !== item.id));
+      if (item.sourceKind === "document" && item.sourceId) {
+        setDocuments((current) => current.filter((entry) => entry.id !== item.sourceId));
+      } else {
+        setLegacyItems((current) => current.filter((entry) => entry.id !== item.id));
+      }
       setStatusMessage(t("status.contentDeleted", { title }));
     } finally {
       setDeletingItemId(null);
@@ -1557,7 +1648,7 @@ export function IsgLibraryClient() {
     const deleteMode: DeleteMode | null =
       item.sourceKind === "template"
         ? "template"
-        : (item.sourceKind === "survey" || item.sourceKind === "deck") &&
+        : (item.sourceKind === "survey" || item.sourceKind === "deck" || item.sourceKind === "document") &&
             (item.sourceOwnerId === userContext.authUserId || userContext.canManageCatalog)
           ? "source"
           : item.libraryContentId && creationCompanyId && assignedCompanyIds.includes(creationCompanyId)
@@ -1571,7 +1662,9 @@ export function IsgLibraryClient() {
           ? t("source.surveyFlow")
           : item.sourceKind === "deck"
             ? t("source.presentation")
-            : t("source.catalog");
+            : item.sourceKind === "document"
+              ? t("source.document")
+              : t("source.catalog");
 
     return (
       <Card
@@ -1675,11 +1768,11 @@ export function IsgLibraryClient() {
               onClick={() => handleEdit(item)}
               className={cn(
                 "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-2xl border text-sm font-semibold transition",
-                item.sourceKind === "template" && creationCompanyId
+                (item.sourceKind === "template" && creationCompanyId) || item.sourceKind === "document"
                   ? itemTone.editButton
                   : "pointer-events-none border-border/60 bg-muted/40 text-muted-foreground",
               )}
-              disabled={item.sourceKind !== "template" || !creationCompanyId}
+              disabled={item.sourceKind !== "document" && (item.sourceKind !== "template" || !creationCompanyId)}
             >
               <FilePenLine size={16} />
               {t("buttons.edit")}
@@ -2106,10 +2199,26 @@ export function IsgLibraryClient() {
                   <p className="mt-3 text-xs text-muted-foreground">
                     {t("cta.uploadFooterNote")}
                   </p>
+                  <div className="mt-6 w-full max-w-sm">
+                    <AddContentCard
+                      href={newContentHref}
+                      title={t("addCard.title")}
+                      description={t("addCard.description")}
+                      disabled={!creationCompanyId}
+                      onDisabledClick={() => setErrorMessage(t("errorsInline.companyRequiredImport"))}
+                    />
+                  </div>
                 </div>
               ) : (
                 <div className="mt-5 grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
                   {contentCards}
+                  <AddContentCard
+                    href={newContentHref}
+                    title={t("addCard.title")}
+                    description={t("addCard.description")}
+                    disabled={!creationCompanyId}
+                    onDisabledClick={() => setErrorMessage(t("errorsInline.companyRequiredImport"))}
+                  />
                 </div>
               )}
             </div>
@@ -2149,6 +2258,13 @@ export function IsgLibraryClient() {
         ) : (
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {contentCards}
+            <AddContentCard
+              href={newContentHref}
+              title={t("addCard.title")}
+              description={t("addCard.description")}
+              disabled={!creationCompanyId}
+              onDisabledClick={() => setErrorMessage(t("errorsInline.companyRequiredImport"))}
+            />
           </section>
         )
       ) : null}

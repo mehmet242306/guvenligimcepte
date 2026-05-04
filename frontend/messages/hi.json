@@ -1916,7 +1916,8 @@
       "catalog": "कैटलॉग",
       "presentation": "प्रेजेंटेशन",
       "surveyFlow": "सर्वे फ़्लो",
-      "template": "टेम्प्लेट"
+      "template": "टेम्प्लेट",
+      "document": "दस्तावेज़"
     },
     "status": {
       "assignedToCompany": "{title} वर्कस्पेस को असाइन किया गया।",
@@ -2250,6 +2251,22 @@
     "delete": {
       "confirmCompany": "क्या {title} को चयनित कंपनी लाइब्रेरी से हटाना है?",
       "confirmSource": "क्या {title} को स्थायी रूप से हटाना है?"
+    },
+    "addCard": {
+      "title": "नई सामग्री",
+      "description": "एडिटर में नया लाइब्रेरी आइटम बनाएं।"
+    },
+    "documentCard": {
+      "description": "सहेजा गया एडिटर दस्तावेज़",
+      "descriptionWithCompany": "{company} के लिए सहेजा गया",
+      "version": "v{version}",
+      "status": {
+        "taslak": "ड्राफ्ट",
+        "hazir": "तैयार",
+        "onay_bekliyor": "अनुमोदन लंबित",
+        "revizyon": "संशोधन",
+        "arsiv": "संग्रहीत"
+      }
     }
   },
   "landing": {

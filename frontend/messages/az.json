@@ -1916,7 +1916,8 @@
       "catalog": "Kataloq",
       "presentation": "Təqdimat",
       "surveyFlow": "Sorğu axını",
-      "template": "Şablon"
+      "template": "Şablon",
+      "document": "Sənəd"
     },
     "status": {
       "assignedToCompany": "{title} iş sahəsinə təyin edildi.",
@@ -2250,6 +2251,22 @@
     "delete": {
       "confirmCompany": "{title} seçilmiş şirkət kitabxanasından silinsin?",
       "confirmSource": "{title} həmişəlik silinsin?"
+    },
+    "addCard": {
+      "title": "Yeni məzmun",
+      "description": "Redaktorda yeni kitabxana məzmunu yaradın."
+    },
+    "documentCard": {
+      "description": "Yadda saxlanmış redaktor sənədi",
+      "descriptionWithCompany": "{company} üçün yadda saxlanıldı",
+      "version": "v{version}",
+      "status": {
+        "taslak": "Qaralama",
+        "hazir": "Hazır",
+        "onay_bekliyor": "Təsdiq gözləyir",
+        "revizyon": "Reviziya",
+        "arsiv": "Arxiv"
+      }
     }
   },
   "landing": {

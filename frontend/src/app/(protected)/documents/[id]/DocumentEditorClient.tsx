@@ -364,6 +364,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
           variables_data: {
             ...companyData,
             __company_identity_id: qCompanyId || null,
+            __library_section: fromLibrary ? librarySection : null,
             __custom_scope: isPrivateCustomDocument ? "private" : "workspace",
             __custom_entry: isPrivateCustomDocument,
           },

@@ -1916,7 +1916,8 @@
       "catalog": "카탈로그",
       "presentation": "프레젠테이션",
       "surveyFlow": "설문조사 플로우",
-      "template": "템플릿"
+      "template": "템플릿",
+      "document": "문서"
     },
     "status": {
       "assignedToCompany": "{title} 워크스페이스에 할당됨",
@@ -2250,6 +2251,22 @@
     "delete": {
       "confirmCompany": "선택한 회사 라이브러리에서 {title}을(를) 제거할까요?",
       "confirmSource": "{title}을(를) 영구 삭제할까요?"
+    },
+    "addCard": {
+      "title": "새 콘텐츠",
+      "description": "편집기에서 새 라이브러리 항목을 만드세요."
+    },
+    "documentCard": {
+      "description": "저장된 편집기 문서",
+      "descriptionWithCompany": "{company}에 저장됨",
+      "version": "v{version}",
+      "status": {
+        "taslak": "초안",
+        "hazir": "준비됨",
+        "onay_bekliyor": "승인 대기",
+        "revizyon": "수정",
+        "arsiv": "보관됨"
+      }
     }
   },
   "landing": {

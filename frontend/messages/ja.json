@@ -1916,7 +1916,8 @@
       "catalog": "カタログ",
       "presentation": "プレゼンテーション",
       "surveyFlow": "アンケートフロー",
-      "template": "テンプレート"
+      "template": "テンプレート",
+      "document": "ドキュメント"
     },
     "status": {
       "assignedToCompany": "{title}ワークスペースに割り当てられました。",
@@ -2250,6 +2251,22 @@
     "delete": {
       "confirmCompany": "「{title}」を選択した会社のライブラリから削除しますか？",
       "confirmSource": "「{title}」を完全に削除しますか？"
+    },
+    "addCard": {
+      "title": "新しいコンテンツ",
+      "description": "エディターで新しいライブラリアイテムを作成します。"
+    },
+    "documentCard": {
+      "description": "保存済みエディタードキュメント",
+      "descriptionWithCompany": "{company} 用に保存済み",
+      "version": "v{version}",
+      "status": {
+        "taslak": "下書き",
+        "hazir": "準備完了",
+        "onay_bekliyor": "承認待ち",
+        "revizyon": "改訂",
+        "arsiv": "アーカイブ済み"
+      }
     }
   },
   "landing": {

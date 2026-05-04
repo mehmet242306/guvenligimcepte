@@ -1375,7 +1375,8 @@
       "template": "Template",
       "surveyFlow": "Survey flow",
       "presentation": "Presentation",
-      "catalog": "Catalog"
+      "catalog": "Catalog",
+      "document": "Document"
     },
     "footer": {
       "convertedToDocument": "Converted to document template ({count})",
@@ -1873,6 +1874,22 @@
     "delete": {
       "confirmCompany": "Remove {title} from the selected company library?",
       "confirmSource": "Delete {title} permanently?"
+    },
+    "addCard": {
+      "title": "New content",
+      "description": "Create a new library item in the editor."
+    },
+    "documentCard": {
+      "description": "Saved editor document",
+      "descriptionWithCompany": "Saved for {company}",
+      "version": "v{version}",
+      "status": {
+        "taslak": "Draft",
+        "hazir": "Ready",
+        "onay_bekliyor": "Pending approval",
+        "revizyon": "Revision",
+        "arsiv": "Archived"
+      }
     }
   },
   "lang": {

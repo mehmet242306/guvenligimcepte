@@ -1916,7 +1916,8 @@
       "catalog": "Каталог",
       "presentation": "Презентация",
       "surveyFlow": "Поток опроса",
-      "template": "Шаблон"
+      "template": "Шаблон",
+      "document": "Документ"
     },
     "status": {
       "assignedToCompany": "Назначено рабочему пространству {title}.",
@@ -2250,6 +2251,22 @@
     "delete": {
       "confirmCompany": "Удалить «{title}» из библиотеки выбранной компании?",
       "confirmSource": "Удалить «{title}» безвозвратно?"
+    },
+    "addCard": {
+      "title": "Новый контент",
+      "description": "Создайте новый материал библиотеки в редакторе."
+    },
+    "documentCard": {
+      "description": "Сохраненный документ редактора",
+      "descriptionWithCompany": "Сохранено для {company}",
+      "version": "v{version}",
+      "status": {
+        "taslak": "Черновик",
+        "hazir": "Готово",
+        "onay_bekliyor": "Ожидает утверждения",
+        "revizyon": "Редакция",
+        "arsiv": "Архив"
+      }
     }
   },
   "landing": {
