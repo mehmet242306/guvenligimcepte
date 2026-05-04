@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,12 +29,9 @@ import {
 } from "lucide-react";
 import { AnalizlerContent } from "./AnalizlerContent";
 
-const typeLabels: Record<IncidentType, string> = {
-  work_accident: "Is Kazasi",
-  near_miss: "Ramak Kala",
-  occupational_disease: "Meslek Hastaligi",
-  other: "Diger",
-};
+const TYPE_KEYS: IncidentType[] = ["work_accident", "near_miss", "occupational_disease", "other"];
+
+const STATUS_KEYS: IncidentStatus[] = ["draft", "reported", "investigating", "dof_open", "closed"];
 
 const typeBadgeVariant: Record<IncidentType, "danger" | "warning" | "accent" | "neutral"> = {
   work_accident: "danger",
@@ -49,14 +47,6 @@ const typeIcons: Record<IncidentType, typeof AlertTriangle> = {
   other: Eye,
 };
 
-const statusLabels: Record<IncidentStatus, string> = {
-  draft: "Taslak",
-  reported: "Bildirildi",
-  investigating: "Inceleniyor",
-  dof_open: "DOF Acik",
-  closed: "Kapatildi",
-};
-
 const statusBadgeVariant: Record<IncidentStatus, "neutral" | "accent" | "warning" | "danger" | "success"> = {
   draft: "neutral",
   reported: "accent",
@@ -66,11 +56,36 @@ const statusBadgeVariant: Record<IncidentStatus, "neutral" | "accent" | "warning
 };
 
 export function IncidentsListClient() {
+  const t = useTranslations("incidents");
   const [tab, setTab] = useState<"incidents" | "analizler">("incidents");
   const [incidents, setIncidents] = useState<IncidentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<IncidentType | "all">("all");
   const [filterStatus, setFilterStatus] = useState<IncidentStatus | "all">("all");
+
+  const typeLabels = useMemo(
+    () =>
+      TYPE_KEYS.reduce(
+        (acc, k) => {
+          acc[k] = t(`types.${k}`);
+          return acc;
+        },
+        {} as Record<IncidentType, string>,
+      ),
+    [t],
+  );
+
+  const statusLabels = useMemo(
+    () =>
+      STATUS_KEYS.reduce(
+        (acc, k) => {
+          acc[k] = t(`statuses.${k}`);
+          return acc;
+        },
+        {} as Record<IncidentStatus, string>,
+      ),
+    [t],
+  );
 
   useEffect(() => {
     (async () => {
@@ -95,25 +110,20 @@ export function IncidentsListClient() {
   return (
     <div className="page-stack">
       <PageHeader
-        title={tab === "incidents" ? "Olay Kayitlari" : "Kok Neden Analizi"}
-        description={
-          tab === "incidents"
-            ? "Is kazasi, ramak kala olay ve meslek hastaligi kayitlarini yonetin."
-            : "Olay kaydina bagli veya serbest kok neden analizi yapin."
-        }
+        title={tab === "incidents" ? t("hub.titleIncidents") : t("hub.titleRca")}
+        description={tab === "incidents" ? t("hub.descIncidents") : t("hub.descRca")}
         actions={
           tab === "incidents" ? (
             <Link href="/incidents/new">
               <Button size="lg">
                 <Plus className="size-4" />
-                Yeni Olay Kaydi
+                {t("hub.newIncident")}
               </Button>
             </Link>
           ) : undefined
         }
       />
 
-      {/* Sekme Butonlari */}
       <div className="flex gap-3">
         <button
           type="button"
@@ -125,7 +135,7 @@ export function IncidentsListClient() {
           }`}
         >
           <ClipboardList className="size-5" />
-          Olay Kayitlari
+          {t("hub.tabIncidents")}
         </button>
 
         <div className="group relative">
@@ -139,7 +149,7 @@ export function IncidentsListClient() {
             }`}
           >
             <GitBranch className="size-5" />
-            Kok Neden Analizi
+            {t("hub.tabRca")}
           </button>
           {tab !== "analizler" && (
             <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground shadow-sm">
@@ -147,16 +157,14 @@ export function IncidentsListClient() {
             </span>
           )}
           <div className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 rounded-xl border border-border bg-card px-4 py-3 opacity-0 shadow-[var(--shadow-elevated)] transition-opacity group-hover:opacity-100">
-            <p className="mb-1.5 whitespace-nowrap text-xs font-semibold text-foreground">6 farkli kok neden analiz yontemi</p>
-            <p className="whitespace-nowrap text-[11px] text-muted-foreground">Ishikawa, 5 Neden, Hata Agaci, SCAT, Bow-Tie, MORT</p>
+            <p className="mb-1.5 whitespace-nowrap text-xs font-semibold text-foreground">{t("hub.tooltipTitle")}</p>
+            <p className="whitespace-nowrap text-[11px] text-muted-foreground">{t("hub.tooltipBody")}</p>
           </div>
         </div>
       </div>
 
-      {/* Olaylar Tab */}
       {tab === "incidents" && (
         <>
-          {/* Istatistik Kartlari */}
           <div className="grid gap-4 sm:grid-cols-3">
             <Card className="overflow-hidden">
               <div className="h-1 w-full bg-[linear-gradient(90deg,var(--gold),var(--gold-light))]" />
@@ -164,7 +172,7 @@ export function IncidentsListClient() {
                 <PremiumIconBadge icon={ClipboardList} tone="gold" size="sm" />
                 <div>
                   <p className="text-2xl font-bold text-foreground">{totalCount}</p>
-                  <p className="text-xs text-muted-foreground">Toplam Olay</p>
+                  <p className="text-xs text-muted-foreground">{t("hub.statTotal")}</p>
                 </div>
               </CardContent>
             </Card>
@@ -175,7 +183,7 @@ export function IncidentsListClient() {
                 <PremiumIconBadge icon={FileWarning} tone="amber" size="sm" />
                 <div>
                   <p className="text-2xl font-bold text-foreground">{openDofCount}</p>
-                  <p className="text-xs text-muted-foreground">Acik DOF</p>
+                  <p className="text-xs text-muted-foreground">{t("hub.statOpenCapa")}</p>
                 </div>
               </CardContent>
             </Card>
@@ -186,40 +194,46 @@ export function IncidentsListClient() {
                 <PremiumIconBadge icon={TrendingUp} tone="success" size="sm" />
                 <div>
                   <p className="text-2xl font-bold text-foreground">{thisMonthCount}</p>
-                  <p className="text-xs text-muted-foreground">Bu Ay</p>
+                  <p className="text-xs text-muted-foreground">{t("hub.statThisMonth")}</p>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Filtreler */}
           <div className="flex flex-wrap items-center gap-3">
             <select
               className="h-9 rounded-xl border border-border bg-card px-3 text-sm text-foreground"
               value={filterType}
-              onChange={(e) => { setFilterType(e.target.value as IncidentType | "all"); setLoading(true); }}
+              onChange={(e) => {
+                setFilterType(e.target.value as IncidentType | "all");
+                setLoading(true);
+              }}
             >
-              <option value="all">Tum Tipler</option>
-              <option value="work_accident">Is Kazasi</option>
-              <option value="near_miss">Ramak Kala</option>
-              <option value="occupational_disease">Meslek Hastaligi</option>
+              <option value="all">{t("hub.filterAllTypes")}</option>
+              {TYPE_KEYS.map((k) => (
+                <option key={k} value={k}>
+                  {typeLabels[k]}
+                </option>
+              ))}
             </select>
 
             <select
               className="h-9 rounded-xl border border-border bg-card px-3 text-sm text-foreground"
               value={filterStatus}
-              onChange={(e) => { setFilterStatus(e.target.value as IncidentStatus | "all"); setLoading(true); }}
+              onChange={(e) => {
+                setFilterStatus(e.target.value as IncidentStatus | "all");
+                setLoading(true);
+              }}
             >
-              <option value="all">Tum Durumlar</option>
-              <option value="draft">Taslak</option>
-              <option value="reported">Bildirildi</option>
-              <option value="investigating">Inceleniyor</option>
-              <option value="dof_open">DOF Acik</option>
-              <option value="closed">Kapatildi</option>
+              <option value="all">{t("hub.filterAllStatuses")}</option>
+              {STATUS_KEYS.map((k) => (
+                <option key={k} value={k}>
+                  {statusLabels[k]}
+                </option>
+              ))}
             </select>
           </div>
 
-          {/* Liste */}
           {loading ? (
             <div className="space-y-3">
               {[1, 2, 3].map((i) => (
@@ -227,10 +241,7 @@ export function IncidentsListClient() {
               ))}
             </div>
           ) : incidents.length === 0 ? (
-            <EmptyState
-              title="Henuz olay kaydi yok"
-              description="Is kazasi, ramak kala olay veya meslek hastaligi kaydi olusturmak icin baslayin."
-            />
+            <EmptyState title={t("hub.emptyTitle")} description={t("hub.emptyDesc")} />
           ) : (
             <div className="space-y-3">
               {incidents.map((item) => {
@@ -253,18 +264,14 @@ export function IncidentsListClient() {
 
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-medium text-muted-foreground">
-                              {item.incidentCode}
-                            </span>
+                            <span className="text-xs font-medium text-muted-foreground">{item.incidentCode}</span>
                             <Badge variant={typeBadgeVariant[item.incidentType]}>
                               {typeLabels[item.incidentType]}
                             </Badge>
-                            <Badge variant={statusBadgeVariant[item.status]}>
-                              {statusLabels[item.status]}
-                            </Badge>
+                            <Badge variant={statusBadgeVariant[item.status]}>{statusLabels[item.status]}</Badge>
                           </div>
                           <p className="mt-1 truncate text-sm font-medium text-foreground">
-                            {item.description || "Aciklama girilmemis"}
+                            {item.description || t("hub.noDescription")}
                           </p>
                           <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
                             {item.companyName && <span>{item.companyName}</span>}
@@ -284,7 +291,6 @@ export function IncidentsListClient() {
         </>
       )}
 
-      {/* Analizler Tab */}
       {tab === "analizler" && <AnalizlerContent />}
     </div>
   );

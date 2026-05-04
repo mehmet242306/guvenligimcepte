@@ -382,10 +382,10 @@ export function DofClient() {
             </div>
           )}
           <Textarea
-            label="Problem Tanımı"
+            label={t("ishikawa.problemLabel")}
             value={problemStatement}
             onChange={(e) => setProblemStatement(e.target.value)}
-            placeholder="Analiz edilen problemi tanımlayın..."
+            placeholder={t("ishikawa.problemPlaceholder")}
           />
 
           {/* 6M Grid */}

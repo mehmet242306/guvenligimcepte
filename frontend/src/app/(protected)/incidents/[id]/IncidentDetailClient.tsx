@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,7 @@ import {
   type IncidentStatus,
   type WitnessRecord,
   type DofRecord,
+  type DofStatus,
   type IshikawaRecord,
 } from "@/lib/supabase/incident-api";
 import {
@@ -29,24 +31,10 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-const typeLabels: Partial<Record<IncidentType, string>> = {
-  work_accident: "İş Kazası",
-  near_miss: "Ramak Kala",
-  occupational_disease: "Meslek Hastalığı",
-};
-
 const typeBadgeVariant: Partial<Record<IncidentType, "danger" | "warning" | "accent">> = {
   work_accident: "danger",
   near_miss: "warning",
   occupational_disease: "accent",
-};
-
-const statusLabels: Record<IncidentStatus, string> = {
-  draft: "Taslak",
-  reported: "Bildirildi",
-  investigating: "İnceleniyor",
-  dof_open: "DÖF Açık",
-  closed: "Kapatıldı",
 };
 
 const statusBadgeVariant: Record<IncidentStatus, "neutral" | "accent" | "warning" | "danger" | "success"> = {
@@ -61,12 +49,15 @@ function InfoRow({ label, value }: { label: string; value: string | number | nul
   return (
     <div className="flex items-start gap-2 py-2 border-b border-border last:border-0">
       <span className="w-40 shrink-0 text-xs font-medium text-muted-foreground">{label}</span>
-      <span className="text-sm text-foreground">{value || "-"}</span>
+      <span className="text-sm text-foreground">{value ?? "-"}</span>
     </div>
   );
 }
 
 export function IncidentDetailClient() {
+  const t = useTranslations("incidents");
+  const td = useTranslations("incidents.detail");
+  const tdof = useTranslations("incidents.dof.status");
   const params = useParams();
   const id = params.id as string;
 
@@ -92,6 +83,10 @@ export function IncidentDetailClient() {
     });
   }, [id]);
 
+  function dofStatusLabel(s: DofStatus) {
+    return tdof(s);
+  }
+
   if (loading) {
     return (
       <div className="page-stack">
@@ -104,8 +99,8 @@ export function IncidentDetailClient() {
   if (!incident) {
     return (
       <div className="page-stack">
-        <PageHeader title="Olay bulunamadı" />
-        <Link href="/incidents" className="text-sm text-primary underline">Listeye dön</Link>
+        <PageHeader title={td("notFoundTitle")} />
+        <Link href="/incidents" className="text-sm text-primary underline">{td("backToList")}</Link>
       </div>
     );
   }
@@ -116,22 +111,25 @@ export function IncidentDetailClient() {
     setIncident({ ...incident, status: newStatus });
   }
 
+  const typeKey = `types.${incident.incidentType}` as const;
+  const statusKey = `statuses.${incident.status}` as const;
+
   return (
     <div className="page-stack">
       <PageHeader
         title={incident.incidentCode}
         meta={
           <Link href="/incidents" className="text-sm text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="mr-1 inline size-4" /> Olay Listesi
+            <ArrowLeft className="mr-1 inline size-4" /> {td("incidentList")}
           </Link>
         }
         actions={
           <div className="flex items-center gap-2">
-            <Badge variant={typeBadgeVariant[incident.incidentType]}>
-              {typeLabels[incident.incidentType]}
+            <Badge variant={typeBadgeVariant[incident.incidentType] ?? "neutral"}>
+              {t(typeKey)}
             </Badge>
             <Badge variant={statusBadgeVariant[incident.status]}>
-              {statusLabels[incident.status]}
+              {t(statusKey)}
             </Badge>
           </div>
         }
@@ -147,12 +145,12 @@ export function IncidentDetailClient() {
               </span>
               <div className="flex-1">
                 <p className="text-base font-semibold text-foreground">
-                  {dof ? `DÖF: ${dof.dofCode}` : "DÖF + Kök Neden Analizi Başlat"}
+                  {dof ? td("dofCtaWithCode", { code: dof.dofCode }) : td("dofCtaStart")}
                 </p>
                 <p className="text-sm text-muted-foreground">
                   {dof
-                    ? `Durum: ${dof.status === "open" ? "Açık" : dof.status === "in_progress" ? "Devam Ediyor" : dof.status === "completed" ? "Tamamlandı" : "Doğrulandı"}`
-                    : "Düzeltici/Önleyici Faaliyet ve İshikawa balıkkılçığı analizi"}
+                    ? td("dofCtaStatusLine", { status: dofStatusLabel(dof.status) })
+                    : td("dofCtaSub")}
                 </p>
               </div>
               <ChevronRight className="size-5 text-muted-foreground" />
@@ -168,10 +166,10 @@ export function IncidentDetailClient() {
               </span>
               <div className="flex-1">
                 <p className="text-base font-semibold text-foreground">
-                  {ishikawa ? "İshikawa Diyagramı" : "İshikawa Diyagramı Görüntüle"}
+                  {ishikawa ? td("ishikawaCtaHas") : td("ishikawaCtaEmpty")}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {ishikawa?.rootCauseConclusion || "Balıkkılçığı görsel diyagram"}
+                  {ishikawa?.rootCauseConclusion || td("ishikawaSubDefault")}
                 </p>
               </div>
               <ChevronRight className="size-5 text-muted-foreground" />
@@ -188,27 +186,27 @@ export function IncidentDetailClient() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="size-5 text-[var(--gold)]" />
-                Olay Detayları
+                {td("sectionDetails")}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <InfoRow label="Olay Tarihi" value={incident.incidentDate} />
-              <InfoRow label="Olay Saati" value={incident.incidentTime} />
-              <InfoRow label="Lokasyon" value={incident.incidentLocation} />
-              <InfoRow label="Bölüm" value={incident.incidentDepartment} />
-              <InfoRow label="Vardiya" value={incident.shiftStartTime && incident.shiftEndTime ? `${incident.shiftStartTime} - ${incident.shiftEndTime}` : null} />
-              <InfoRow label="Genel Faaliyet" value={incident.generalActivity} />
-              <InfoRow label="Özel Faaliyet" value={incident.specificActivity} />
-              <InfoRow label="Kullanılan Araç" value={incident.toolUsed} />
-              <InfoRow label="Firma" value={incident.companyName} />
-              <InfoRow label="Personel" value={incident.personnelName} />
+              <InfoRow label={td("fields.incidentDate")} value={incident.incidentDate} />
+              <InfoRow label={td("fields.incidentTime")} value={incident.incidentTime} />
+              <InfoRow label={td("fields.location")} value={incident.incidentLocation} />
+              <InfoRow label={td("fields.department")} value={incident.incidentDepartment} />
+              <InfoRow label={td("fields.shift")} value={incident.shiftStartTime && incident.shiftEndTime ? `${incident.shiftStartTime} - ${incident.shiftEndTime}` : null} />
+              <InfoRow label={td("fields.generalActivity")} value={incident.generalActivity} />
+              <InfoRow label={td("fields.specificActivity")} value={incident.specificActivity} />
+              <InfoRow label={td("fields.toolUsed")} value={incident.toolUsed} />
+              <InfoRow label={td("fields.company")} value={incident.companyName} />
+              <InfoRow label={td("fields.personnel")} value={incident.personnelName} />
             </CardContent>
           </Card>
 
           {/* Açıklama */}
           {incident.description && (
             <Card>
-              <CardHeader><CardTitle>Olay Açıklaması</CardTitle></CardHeader>
+              <CardHeader><CardTitle>{td("sectionDescription")}</CardTitle></CardHeader>
               <CardContent>
                 <p className="text-sm leading-7 text-foreground">{incident.description}</p>
               </CardContent>
@@ -220,24 +218,24 @@ export function IncidentDetailClient() {
             <Card>
               <CardHeader>
                 <CardTitle>
-                  {incident.incidentType === "occupational_disease" ? "Meslek Hastalığı" : "Yaralanma Bilgileri"}
+                  {incident.incidentType === "occupational_disease" ? td("sectionOccupationalDisease") : td("sectionInjury")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {incident.incidentType === "work_accident" ? (
                   <>
-                    <InfoRow label="Yaranın Türü" value={incident.injuryType} />
-                    <InfoRow label="Vücuttaki Yeri" value={incident.injuryBodyPart} />
-                    <InfoRow label="Neden Olan Olay" value={incident.injuryCauseEvent} />
-                    <InfoRow label="Neden Olan Araç" value={incident.injuryCauseTool} />
-                    <InfoRow label="İş Göremezlik" value={incident.workDisability ? "Evet" : "Hayır"} />
-                    <InfoRow label="Kayıp İş Günü" value={incident.daysLost} />
+                    <InfoRow label={td("fields.injuryType")} value={incident.injuryType} />
+                    <InfoRow label={td("fields.injuryBodyPart")} value={incident.injuryBodyPart} />
+                    <InfoRow label={td("fields.injuryCauseEvent")} value={incident.injuryCauseEvent} />
+                    <InfoRow label={td("fields.injuryCauseTool")} value={incident.injuryCauseTool} />
+                    <InfoRow label={td("fields.workDisability")} value={incident.workDisability ? td("yes") : td("no")} />
+                    <InfoRow label={td("fields.daysLost")} value={incident.daysLost} />
                   </>
                 ) : (
                   <>
-                    <InfoRow label="Hastalık Etkeni" value={incident.diseaseAgent} />
-                    <InfoRow label="Etken Süresi" value={incident.diseaseAgentDuration} />
-                    <InfoRow label="Tanı" value={incident.diseaseDiagnosis} />
+                    <InfoRow label={td("fields.diseaseAgent")} value={incident.diseaseAgent} />
+                    <InfoRow label={td("fields.diseaseAgentDuration")} value={incident.diseaseAgentDuration} />
+                    <InfoRow label={td("fields.diseaseDiagnosis")} value={incident.diseaseDiagnosis} />
                   </>
                 )}
               </CardContent>
@@ -247,12 +245,12 @@ export function IncidentDetailClient() {
           {/* Tıbbi Müdahale */}
           {incident.medicalIntervention && (
             <Card>
-              <CardHeader><CardTitle>Tıbbi Müdahale</CardTitle></CardHeader>
+              <CardHeader><CardTitle>{td("sectionMedical")}</CardTitle></CardHeader>
               <CardContent>
-                <InfoRow label="Müdahale Yapan" value={incident.medicalPerson} />
-                <InfoRow label="Yapılan Yer" value={incident.medicalLocation} />
-                <InfoRow label="İl" value={incident.medicalCity} />
-                <InfoRow label="Tarih" value={incident.medicalDate} />
+                <InfoRow label={td("fields.medicalPerson")} value={incident.medicalPerson} />
+                <InfoRow label={td("fields.medicalLocation")} value={incident.medicalLocation} />
+                <InfoRow label={td("fields.medicalCity")} value={incident.medicalCity} />
+                <InfoRow label={td("fields.medicalDate")} value={incident.medicalDate} />
               </CardContent>
             </Card>
           )}
@@ -260,14 +258,14 @@ export function IncidentDetailClient() {
           {/* Şahitler */}
           {witnesses.length > 0 && (
             <Card>
-              <CardHeader><CardTitle>Şahitler ({witnesses.length})</CardTitle></CardHeader>
+              <CardHeader><CardTitle>{td("sectionWitnesses", { count: witnesses.length })}</CardTitle></CardHeader>
               <CardContent className="space-y-3">
                 {witnesses.map((w) => (
                   <div key={w.id} className="rounded-xl border border-border bg-muted/50 p-4">
                     <p className="text-sm font-medium text-foreground">{w.fullName}</p>
                     <div className="mt-1 flex flex-wrap gap-3 text-xs text-muted-foreground">
-                      {w.tcIdentity && <span>TC: {w.tcIdentity}</span>}
-                      {w.phone && <span>Tel: {w.phone}</span>}
+                      {w.tcIdentity && <span>{td("witnessTc")}: {w.tcIdentity}</span>}
+                      {w.phone && <span>{td("witnessTel")}: {w.phone}</span>}
                       {w.email && <span>{w.email}</span>}
                     </div>
                   </div>
@@ -281,7 +279,7 @@ export function IncidentDetailClient() {
         <div className="space-y-4">
           {/* Durum Değiştir */}
           <Card>
-            <CardHeader><CardTitle>Durum Yönetimi</CardTitle></CardHeader>
+            <CardHeader><CardTitle>{td("sectionStatusMgmt")}</CardTitle></CardHeader>
             <CardContent className="space-y-2">
               {(["reported", "investigating", "dof_open", "closed"] as IncidentStatus[]).map((s) => (
                 <button
@@ -295,7 +293,7 @@ export function IncidentDetailClient() {
                       : "border-border bg-card text-foreground hover:border-primary/30"
                   }`}
                 >
-                  {statusLabels[s]}
+                  {t(`statuses.${s}`)}
                 </button>
               ))}
             </CardContent>
@@ -303,21 +301,21 @@ export function IncidentDetailClient() {
 
           {/* DÖF */}
           <Card>
-            <CardHeader><CardTitle className="flex items-center gap-2"><ClipboardCheck className="size-4 text-[var(--gold)]" /> DÖF</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="flex items-center gap-2"><ClipboardCheck className="size-4 text-[var(--gold)]" /> {td("sidebarDof")}</CardTitle></CardHeader>
             <CardContent>
               {dof ? (
                 <Link href={`/incidents/${id}/dof`} className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 p-4">
                   <div>
                     <p className="text-sm font-semibold text-foreground">{dof.dofCode}</p>
                     <Badge variant={dof.status === "completed" ? "success" : dof.status === "open" ? "danger" : "warning"}>
-                      {dof.status === "open" ? "Açık" : dof.status === "in_progress" ? "Devam Ediyor" : dof.status === "completed" ? "Tamamlandı" : "Doğrulandı"}
+                      {dofStatusLabel(dof.status)}
                     </Badge>
                   </div>
                   <ChevronRight className="size-4 text-muted-foreground" />
                 </Link>
               ) : (
                 <Link href={`/incidents/${id}/dof`}>
-                  <Button variant="outline" className="w-full">DÖF Oluştur</Button>
+                  <Button variant="outline" className="w-full">{td("createDof")}</Button>
                 </Link>
               )}
             </CardContent>
@@ -325,19 +323,19 @@ export function IncidentDetailClient() {
 
           {/* İshikawa */}
           <Card>
-            <CardHeader><CardTitle className="flex items-center gap-2"><GitBranch className="size-4 text-[var(--gold)]" /> İshikawa</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="flex items-center gap-2"><GitBranch className="size-4 text-[var(--gold)]" /> {td("sidebarIshikawa")}</CardTitle></CardHeader>
             <CardContent>
               {ishikawa ? (
                 <Link href={`/incidents/${id}/ishikawa`} className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 p-4">
                   <div>
-                    <p className="text-sm font-semibold text-foreground">Balıkkılçığı Analizi</p>
-                    <p className="text-xs text-muted-foreground">{ishikawa.rootCauseConclusion || "Analiz devam ediyor"}</p>
+                    <p className="text-sm font-semibold text-foreground">{td("fishboneAnalysis")}</p>
+                    <p className="text-xs text-muted-foreground">{ishikawa.rootCauseConclusion || td("ishikawaSubProgress")}</p>
                   </div>
                   <ChevronRight className="size-4 text-muted-foreground" />
                 </Link>
               ) : (
                 <Link href={`/incidents/${id}/ishikawa`}>
-                  <Button variant="outline" className="w-full">İshikawa Oluştur</Button>
+                  <Button variant="outline" className="w-full">{td("createIshikawa")}</Button>
                 </Link>
               )}
             </CardContent>
