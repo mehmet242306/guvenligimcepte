@@ -1,21 +1,138 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Wrench, GraduationCap, Building2, ClipboardCheck, Scale, MapPin, Stethoscope, CalendarDays, Plus, Tag } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { Wrench, GraduationCap, Building2, ClipboardCheck, Scale, MapPin, Stethoscope, CalendarDays, Plus } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { getCalendarMonthNamesLong, getCalendarWeekdayLabels } from "@/lib/calendar-locale-labels";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { createClient } from "@/lib/supabase/client";
 
-const CAT_ICON_MAP: Record<string, { icon: React.ElementType; tone: PremiumIconTone }> = {
-  "Periyodik Kontrol": { icon: Wrench, tone: "danger" },
-  "Eğitim": { icon: GraduationCap, tone: "cobalt" },
-  "Sağlık Takibi": { icon: Stethoscope, tone: "emerald" },
-  "Toplantı & Tatbikat": { icon: ClipboardCheck, tone: "violet" },
-  "Yasal Yükümlülük": { icon: Scale, tone: "amber" },
-  "Saha Ziyareti": { icon: MapPin, tone: "success" },
-  "İSG Kurul Toplantısı": { icon: Building2, tone: "indigo" },
+type PlannerCatMsgKey =
+  | "periodicControl"
+  | "training"
+  | "healthFollowUp"
+  | "meetingDrill"
+  | "legalObligation"
+  | "fieldVisit"
+  | "ohsCommitteeMeeting"
+  | "other";
+
+/** Maps default category `name` values from the DB (any supported UI language) to `planner.core.categories.*` keys. */
+const CATEGORY_NAMES_TO_MSG_KEY: Record<string, PlannerCatMsgKey> = {
+  "Periyodik Kontrol": "periodicControl",
+  "Periodic inspection": "periodicControl",
+  "Периодический контроль": "periodicControl",
+  "Periodische Prüfung": "periodicControl",
+  "Contrôle périodique": "periodicControl",
+  "Inspección periódica": "periodicControl",
+  "定期检查": "periodicControl",
+  "定期検査": "periodicControl",
+  "정기 점검": "periodicControl",
+  "आवधिक निरीक्षण": "periodicControl",
+  "Dövri yoxlama": "periodicControl",
+  "Inspeksi berkala": "periodicControl",
+  "Eğitim": "training",
+  Training: "training",
+  "Обучение": "training",
+  Schulung: "training",
+  Formation: "training",
+  Formación: "training",
+  "培训": "training",
+  "研修": "training",
+  "교육": "training",
+  "प्रशिक्षण": "training",
+  Tədris: "training",
+  Pelatihan: "training",
+  "Sağlık Takibi": "healthFollowUp",
+  "Health follow-up": "healthFollowUp",
+  "Медицинское наблюдение": "healthFollowUp",
+  "Gesundheitliche Nachbetreuung": "healthFollowUp",
+  "Suivi de santé": "healthFollowUp",
+  "Seguimiento de salud": "healthFollowUp",
+  "健康随访": "healthFollowUp",
+  "健康フォロー": "healthFollowUp",
+  "건강 관리": "healthFollowUp",
+  "स्वास्थ्य अनुवर्ती": "healthFollowUp",
+  "Sağlamlıq izləməsi": "healthFollowUp",
+  "Tindak lanjut kesehatan": "healthFollowUp",
+  "Toplantı & Tatbikat": "meetingDrill",
+  "Meeting & drill": "meetingDrill",
+  "Совещания и учения": "meetingDrill",
+  "Besprechung & Übung": "meetingDrill",
+  "Réunion et exercice": "meetingDrill",
+  "Reunión y simulacro": "meetingDrill",
+  "会议与演练": "meetingDrill",
+  "会議・訓練": "meetingDrill",
+  "회의 및 훈련": "meetingDrill",
+  "बैठक और मॉकड्रिल": "meetingDrill",
+  "İclas və təlim": "meetingDrill",
+  "Rapat & simulasi": "meetingDrill",
+  "Yasal Yükümlülük": "legalObligation",
+  "Legal obligation": "legalObligation",
+  "Законодательные обязательства": "legalObligation",
+  "Gesetzliche Pflicht": "legalObligation",
+  "Obligation légale": "legalObligation",
+  "Obligación legal": "legalObligation",
+  "法定义务": "legalObligation",
+  "法的義務": "legalObligation",
+  "법적 의무": "legalObligation",
+  "कानूनी दायित्व": "legalObligation",
+  "Hüquqi öhdəlik": "legalObligation",
+  "Kewajiban hukum": "legalObligation",
+  "Saha Ziyareti": "fieldVisit",
+  "Field visit": "fieldVisit",
+  "Выезд на объект": "fieldVisit",
+  "Begehung vor Ort": "fieldVisit",
+  "Visite sur site": "fieldVisit",
+  "Visita de campo": "fieldVisit",
+  "现场访问": "fieldVisit",
+  "現場巡回": "fieldVisit",
+  "현장 방문": "fieldVisit",
+  "क्षेत्र भ्रमण": "fieldVisit",
+  "Sahə səfəri": "fieldVisit",
+  "Kunjungan lapangan": "fieldVisit",
+  "İSG Kurul Toplantısı": "ohsCommitteeMeeting",
+  "OHS committee meeting": "ohsCommitteeMeeting",
+  "Заседание комитета по ОТ": "ohsCommitteeMeeting",
+  "ASR-Ausschusssitzung": "ohsCommitteeMeeting",
+  "Réunion du comité SST": "ohsCommitteeMeeting",
+  "Reunión del comité de PRL": "ohsCommitteeMeeting",
+  "职业健康安全委员会会议": "ohsCommitteeMeeting",
+  "安全衛生委員会": "ohsCommitteeMeeting",
+  "산업안전보건 위원회": "ohsCommitteeMeeting",
+  "ओएचएस समिति बैठक": "ohsCommitteeMeeting",
+  "İSG komitə iclası": "ohsCommitteeMeeting",
+  "Rapat panitia K3": "ohsCommitteeMeeting",
+  "Diğer": "other",
+  Other: "other",
+  "Прочее": "other",
+  Sonstiges: "other",
+  Autre: "other",
+  Otra: "other",
+  "其他": "other",
+  "その他": "other",
+  "기타": "other",
+  "अन्य": "other",
+  "Digər": "other",
+  "Lainnya": "other",
 };
-function getCatIcon(name: string) { return CAT_ICON_MAP[name] ?? { icon: CalendarDays, tone: "gold" as PremiumIconTone }; }
+
+const CAT_ICON_BY_KEY: Record<PlannerCatMsgKey, { icon: React.ElementType; tone: PremiumIconTone }> = {
+  periodicControl: { icon: Wrench, tone: "danger" },
+  training: { icon: GraduationCap, tone: "cobalt" },
+  healthFollowUp: { icon: Stethoscope, tone: "emerald" },
+  meetingDrill: { icon: ClipboardCheck, tone: "violet" },
+  legalObligation: { icon: Scale, tone: "amber" },
+  fieldVisit: { icon: MapPin, tone: "success" },
+  ohsCommitteeMeeting: { icon: Building2, tone: "indigo" },
+  other: { icon: CalendarDays, tone: "gold" },
+};
+
+function getCatIcon(name: string) {
+  const key = CATEGORY_NAMES_TO_MSG_KEY[name];
+  if (key) return CAT_ICON_BY_KEY[key];
+  return { icon: CalendarDays, tone: "gold" as PremiumIconTone };
+}
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -74,19 +191,8 @@ function firstDayOfMonth(year: number, month: number) {
   return new Date(year, month, 1).getDay();
 }
 
-const CATEGORY_KEY_BY_NAME: Record<string, string> = {
-  "Periyodik Kontrol": "periodicControl",
-  "Eğitim": "training",
-  "Sağlık Takibi": "healthFollowUp",
-  "Toplantı & Tatbikat": "meetingDrill",
-  "Yasal Yükümlülük": "legalObligation",
-  "Saha Ziyareti": "fieldVisit",
-  "İSG Kurul Toplantısı": "ohsCommitteeMeeting",
-  "Diğer": "other",
-};
-
 function categoryLabel(name: string, t: (key: string) => string) {
-  const key = CATEGORY_KEY_BY_NAME[name];
+  const key = CATEGORY_NAMES_TO_MSG_KEY[name];
   return key ? t(`categories.${key}`) : name;
 }
 
@@ -361,6 +467,7 @@ export type PlannerCoreProps = {
 
 export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
   const t = useTranslations("planner.core");
+  const locale = useLocale();
   const today = new Date();
   const [view, setView] = useState<CalendarView>("month");
   const [year, setYear] = useState(today.getFullYear());
@@ -377,8 +484,8 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterCategoryId, setFilterCategoryId] = useState<string>("all");
   const [filterCompanyId, setFilterCompanyId] = useState<string>("all");
-  const monthNames = useMemo(() => t.raw("months") as string[], [t]);
-  const weekdays = useMemo(() => t.raw("weekdays") as string[], [t]);
+  const monthNames = useMemo(() => getCalendarMonthNamesLong(locale), [locale]);
+  const weekdays = useMemo(() => getCalendarWeekdayLabels(locale), [locale]);
   const recurrenceLabels = useMemo(
     () => Object.fromEntries(RECURRENCE_KEYS.map((key) => [key, t(`recurrence.${key}`)])) as Record<RecurrenceKey, string>,
     [t],

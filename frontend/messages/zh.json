@@ -348,6 +348,62 @@
   "brand": {
     "tagline": "AI驱动的职业健康安全平台"
   },
+  "trainingHubPage": {
+    "title": "??",
+    "description": "??????????????????????????????",
+    "actions": {
+      "aiTraining": "? AI ????",
+      "slideLibrary": "??????",
+      "certificates": "??",
+      "createNew": "??"
+    },
+    "library": {
+      "back": "???????",
+      "eyebrow": "?????????",
+      "title": "??????????????",
+      "tabs": {
+        "education": "????",
+        "assessment": "???????"
+      },
+      "emptyPrefix": "????????????????????????",
+      "emptyLink": "?????????",
+      "fallbackDescription": "???",
+      "openContent": "????",
+      "useInModule": "??????"
+    },
+    "tabs": {
+      "all": "??",
+      "surveys": "??",
+      "exams": "??"
+    },
+    "filters": {
+      "searchPlaceholder": "???????...",
+      "allStatuses": "??"
+    },
+    "status": {
+      "draft": "??",
+      "active": "??",
+      "closed": "???",
+      "archived": "??"
+    },
+    "types": {
+      "exam": "??",
+      "survey": "??"
+    },
+    "empty": {
+      "title": "????????",
+      "description": "??????????????????"
+    },
+    "card": {
+      "passScore": "?????{score}%",
+      "duration": "???{minutes} ??"
+    },
+    "errors": {
+      "noSession": "????????????",
+      "authRequired": "?????",
+      "organizationMissing": "???????????????????????"
+    }
+  },
   "certificateVerify": {
     "certNo": "证书编号",
     "date": "日期",
@@ -575,6 +631,168 @@
       "risk": "风险与现场",
       "structure": "场所",
       "tracking": "跟踪"
+    },
+    "structure": {
+      "summaryLocation": "Location",
+      "summaryDepartment": "Department",
+      "summaryEmployee": "Employee",
+      "locationsTitle": "Locations",
+      "locationsSubtitle": "Company physical sites",
+      "departmentsTitle": "Departments",
+      "departmentsSubtitle": "Organisational units",
+      "locationPlaceholder": "Enter location name",
+      "departmentPlaceholder": "Enter department name",
+      "addLocation": "Add location",
+      "addDepartment": "Add department"
+    },
+    "risk": {
+      "pageTitle": "Risk and field management",
+      "pageSubtitle": "Risk classification, analysis history and process tracking.",
+      "tabMap": "Risk map",
+      "tabAnalyses": "Analyses ({count})",
+      "newAnalysis": "New analysis",
+      "metricTotalFindings": "Total findings",
+      "metricCritical": "Critical",
+      "metricHigh": "High",
+      "metricAnalysisCount": "Analyses",
+      "badgeCritical": "Critical: {count}",
+      "badgeHigh": "High: {count}",
+      "badgeMedium": "Medium: {count}",
+      "badgeLow": "Low: {count}",
+      "noFindingsCategory": "No findings yet",
+      "addCategoryTitle": "Add category",
+      "addCategoryHint": "Define a custom risk category",
+      "categoryRisksTitle": "{label} risks",
+      "findingsCountLabel": "{count} findings",
+      "noFindingsInCategory": "No findings in this category yet.",
+      "analysisPrefix": "Analysis:",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "discard": "Discard",
+      "recommendation": "Recommendation",
+      "action": "Action",
+      "notes": "Notes",
+      "status": "Status",
+      "note": "Note",
+      "notePlaceholder": "Work done, observations…",
+      "emptyAnalysesTitle": "No risk analysis yet",
+      "emptyAnalysesDescription": "Start the first analysis for this company from the Risk analysis page.",
+      "findingsInRow": "{count} findings",
+      "archiveTitle": "Archive",
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "confirmDelete": "Delete?",
+      "yes": "Yes",
+      "no": "No",
+      "exportPdfTitle": "Download PDF",
+      "exportWordTitle": "Download Word",
+      "exportExcelTitle": "Download Excel",
+      "analysisStatus": {
+        "completed": "Completed",
+        "archived": "Archived",
+        "draft": "Draft"
+      },
+      "trackingStatus": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "archived": "Archived"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "method": {
+        "r_skor": "R-SCORE 2D",
+        "fine_kinney": "Fine-Kinney",
+        "l_matrix": "L-Matrix",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "shareTitle": "Report sharing",
+      "shareDescription": "Anyone with the link can view this report.",
+      "shareEnable": "Enable sharing link",
+      "shareActive": "Sharing on",
+      "shareCopyTitle": "Copy link",
+      "shareCopied": "Copied",
+      "shareWhatsappTitle": "Share via WhatsApp",
+      "shareButtonTitle": "Share",
+      "shareWhatsappBody": "RiskNova — {title}\n{url}",
+      "participantsHeading": "Participants",
+      "analysisNoteHeading": "Analysis note",
+      "emptyAnalysisRows": "No rows in this analysis yet.",
+      "rowFindingCount": "({count})",
+      "recommendationInline": "Recommendation:",
+      "actionInline": "Action:",
+      "qrAlt": "QR code",
+      "qrCaption": "Share with QR",
+      "categories": {
+        "fiziksel": {
+          "label": "Physical",
+          "examples": "Noise, vibration, lighting, temperature"
+        },
+        "kimyasal": {
+          "label": "Chemical",
+          "examples": "Gas, dust, vapour, chemicals"
+        },
+        "biyolojik": {
+          "label": "Biological",
+          "examples": "Bacteria, viruses, mould, biological agents"
+        },
+        "ergonomik": {
+          "label": "Ergonomic",
+          "examples": "Poor posture, heavy loads, repetitive motion"
+        },
+        "psikososyal": {
+          "label": "Psychosocial",
+          "examples": "Stress, bullying, workload, shifts"
+        },
+        "mekanik": {
+          "label": "Mechanical",
+          "examples": "Machinery, equipment, falls, crushing"
+        },
+        "elektrik": {
+          "label": "Electrical",
+          "examples": "Electric shock, short circuit, earthing"
+        },
+        "yangin": {
+          "label": "Fire / explosion",
+          "examples": "Flammable material, explosive atmosphere, LPG"
+        },
+        "trafik": {
+          "label": "Traffic",
+          "examples": "Vehicles, forklifts, pedestrian–vehicle conflict"
+        },
+        "cevre": {
+          "label": "Environmental",
+          "examples": "Waste, emissions, noise pollution"
+        }
+      }
+    },
+    "tracking": {
+      "sectionActions": "Open actions",
+      "sectionTrainings": "Trainings",
+      "sectionControls": "Periodic inspection",
+      "sectionCommittee": "OHS committee",
+      "hazardUnknown": "Not determined",
+      "actionsTitle": "Open actions",
+      "actionsDesc": "Open actions from risk findings, CAPA and OHS tasks.",
+      "noActions": "No open actions.",
+      "badgeTotal": "Total: {count}",
+      "sourceRisk": "Risk",
+      "sourceDof": "CAPA",
+      "sourceTask": "Task",
+      "statusButton": "Status",
+      "trainingsTitle": "Training tracking",
+      "trainingsDesc": "Company training plans and records.",
+      "controlsTitle": "Periodic inspections",
+      "controlsDesc": "Legally required periodic inspections and examinations.",
+      "committeeTitle": "OHS committee meetings",
+      "committeeDesc": "Hazard class: {hazardClass} — every {months} months"
     }
   },
   "consent": {
@@ -2560,531 +2778,480 @@
         "regulation": "法规",
         "responsible": "负责人",
         "topic": "工作主题"
-      },
-      "months": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ]
+      }
     },
     "shell": {
-      "title": "Planner",
-      "description": "OHS tasks, annual work plan, training plan and timesheet under one roof.",
+      "title": "计划器",
+      "description": "职业健康安全任务、年度工作计划、培训计划和工时表一站式管理。",
       "tabs": {
         "planner": {
-          "label": "Planner",
-          "desc": "Calendar ? tasks ? reminders"
+          "label": "计划器",
+          "desc": "日历、任务和提醒"
         },
         "workPlan": {
-          "label": "Annual work plan",
-          "desc": "OHS annual work plan (official form)"
+          "label": "年度工作计划",
+          "desc": "职业健康安全年度工作计划（官方表格）"
         },
         "trainingPlan": {
-          "label": "Annual training",
-          "desc": "Training plan, participants and certificates"
+          "label": "年度培训",
+          "desc": "培训计划、参与者和证书"
         },
         "timesheet": {
-          "label": "Timesheet",
-          "desc": "Hours and fee tracking"
+          "label": "工时表",
+          "desc": "工时和费用跟踪"
         }
       }
     },
     "core": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "weekdays": [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-      ],
-      "pageTitle": "OHS planner",
-      "pageDescription": "Plan and track occupational health and safety tasks.",
+      "pageTitle": "职业健康安全规划器",
+      "pageDescription": "规划和跟踪职业健康安全任务。",
       "actions": {
-        "newTask": "New task",
-        "dismissError": "Dismiss error",
-        "cancel": "Cancel",
-        "saving": "Saving...",
-        "create": "Create",
-        "update": "Update"
+        "newTask": "新任务",
+        "dismissError": "忽略错误",
+        "cancel": "取消",
+        "saving": "保存中...",
+        "create": "创建",
+        "update": "更新"
       },
       "stats": {
-        "total": "Total"
+        "total": "总计"
       },
       "filters": {
-        "allCategories": "All categories",
-        "allStatuses": "All statuses",
-        "allCompanies": "All companies"
+        "allCategories": "所有类别",
+        "allStatuses": "所有状态",
+        "allCompanies": "所有公司"
       },
       "views": {
-        "month": "Calendar",
-        "list": "List"
+        "month": "日历",
+        "list": "列表"
       },
       "sidebar": {
-        "categories": "Categories",
-        "all": "All",
-        "addCategory": "Add category",
-        "quickAdd": "Quick add"
+        "categories": "类别",
+        "all": "全部",
+        "addCategory": "添加类别",
+        "quickAdd": "快速添加"
       },
       "calendar": {
-        "more": "+{count} more"
+        "more": "+{count} 更多"
       },
       "empty": {
-        "title": "No tasks yet",
-        "description": "Click the New task button above."
+        "title": "暂无任务",
+        "description": "点击上方的新任务按钮。"
       },
       "recurrence": {
-        "none": "Does not repeat",
-        "daily": "Daily",
-        "weekly": "Weekly",
-        "monthly": "Monthly",
-        "quarterly": "Quarterly",
-        "biannual": "Every six months",
-        "annual": "Annual"
+        "none": "不重复",
+        "daily": "每日",
+        "weekly": "每周",
+        "monthly": "每月",
+        "quarterly": "季度",
+        "biannual": "每六个月",
+        "annual": "年度"
       },
       "status": {
-        "planned": "Planned",
-        "in_progress": "In progress",
-        "completed": "Completed",
-        "overdue": "Overdue",
-        "cancelled": "Cancelled"
+        "planned": "已计划",
+        "in_progress": "进行中",
+        "completed": "已完成",
+        "overdue": "逾期",
+        "cancelled": "已取消"
       },
       "categories": {
-        "periodicControl": "Periodic inspection",
-        "training": "Training",
-        "healthFollowUp": "Health follow-up",
-        "meetingDrill": "Meeting & drill",
-        "legalObligation": "Legal obligation",
-        "fieldVisit": "Field visit",
-        "ohsCommitteeMeeting": "OHS committee meeting",
-        "other": "Other"
+        "periodicControl": "定期检查",
+        "training": "培训",
+        "healthFollowUp": "健康跟进",
+        "meetingDrill": "会议和演练",
+        "legalObligation": "法律义务",
+        "fieldVisit": "现场访问",
+        "ohsCommitteeMeeting": "职业健康安全委员会会议",
+        "other": "其他"
       },
       "modal": {
-        "newTitle": "New task",
-        "editTitle": "Edit task",
-        "optional": "- optional",
+        "newTitle": "新任务",
+        "editTitle": "编辑任务",
+        "optional": "- 可选",
         "fields": {
-          "title": "Title *",
-          "description": "Description",
-          "category": "Category",
-          "status": "Status",
-          "company": "Company",
-          "startDate": "Start date *",
-          "endDate": "End date",
-          "recurrence": "Repeat",
-          "reminderDays": "Reminder (days before)",
-          "includeTimesheet": "Add to timesheet",
-          "timesheetHours": "Working time (hours)",
-          "hourlyRate": "Hourly rate"
+          "title": "标题 *",
+          "description": "描述",
+          "category": "类别",
+          "status": "状态",
+          "company": "公司",
+          "startDate": "开始日期 *",
+          "endDate": "结束日期",
+          "recurrence": "重复",
+          "reminderDays": "提醒（提前天数）",
+          "includeTimesheet": "添加到工时表",
+          "timesheetHours": "工作时间（小时）",
+          "hourlyRate": "小时费率"
         },
         "placeholders": {
-          "title": "Task title",
-          "description": "Task description...",
-          "category": "Select category...",
-          "company": "Select company...",
-          "hours": "e.g. 4.5",
-          "rate": "e.g. 250"
+          "title": "任务标题",
+          "description": "任务描述...",
+          "category": "选择类别...",
+          "company": "选择公司...",
+          "hours": "例如 4.5",
+          "rate": "例如 250"
         }
       },
       "errors": {
-        "orgNotFound": "Organisation information not found. Please sign in again.",
-        "saveFailed": "An error occurred while saving."
+        "orgNotFound": "未找到组织信息。请重新登录。",
+        "saveFailed": "保存时发生错误。"
       },
-      "confirmDeleteTask": "Are you sure you want to delete this task?"
+      "confirmDeleteTask": "您确定要删除此任务吗？"
     },
     "yearlyTraining": {
       "defaultTrainings": [
         {
+          "audience": "员工",
           "category": "genel",
-          "title": "Information on occupational health and safety legislation",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "职业健康安全法律法规信息",
+          "trainer": "职业健康安全专员"
         },
         {
+          "audience": "员工",
           "category": "genel",
-          "title": "General information on employee rights and responsibilities",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "员工权利和责任的一般信息",
+          "trainer": "职业健康安全专员"
         },
         {
+          "audience": "员工",
           "category": "genel",
-          "title": "Workplace cleanliness and order",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "工作场所清洁和秩序",
+          "trainer": "职业健康安全专员"
         },
         {
+          "audience": "员工",
           "category": "genel",
-          "title": "Legal consequences of occupational accidents and diseases",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "职业事故和职业病的法律后果",
+          "trainer": "职业健康安全专家"
         },
         {
+          "audience": "员工",
           "category": "saglik",
-          "title": "Causes of occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "职业病的成因",
+          "trainer": "职场医师"
         },
         {
+          "audience": "员工",
           "category": "saglik",
-          "title": "Prevention principles and protection techniques for occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "职业病预防原则和防护技术",
+          "trainer": "职场医师"
         },
         {
+          "audience": "员工",
           "category": "saglik",
-          "title": "Biological risk factors and the occupational diseases they may cause",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "生物危险因素及其可能引起的职业病",
+          "trainer": "职场医师"
         },
         {
+          "audience": "指定员工",
           "category": "saglik",
-          "title": "First aid and rescue techniques",
-          "trainer": "External training (first aider)",
-          "audience": "Selected employees"
+          "title": "急救和救援技术",
+          "trainer": "外部培训（急救员）"
         },
         {
+          "audience": "员工",
           "category": "teknik",
-          "title": "Risk factors when working with chemicals",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "化学品作业风险因素",
+          "trainer": "职业健康安全专家"
         },
         {
+          "audience": "员工",
           "category": "teknik",
-          "title": "Physical risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "物理危险因素",
+          "trainer": "职业健康安全专家"
         },
         {
+          "audience": "员工",
           "category": "teknik",
-          "title": "Ergonomic risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "人体工程学风险因素",
+          "trainer": "职业健康安全专员"
         },
         {
+          "audience": "员工",
           "category": "teknik",
-          "title": "Manual lifting and carrying",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "手工搬运和搬运",
+          "trainer": "职业健康安全专员"
         },
         {
-          "category": "teknik",
-          "title": "Flash, explosion, fire and fire protection",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "audience": "员工",
+          "category": "技术",
+          "title": "闪燃、爆炸、火灾和消防防护",
+          "trainer": "职业健康安全专员"
         },
         {
-          "category": "teknik",
-          "title": "Safe use of work equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "audience": "员工",
+          "category": "技术",
+          "title": "工作设备安全使用及相关风险",
+          "trainer": "职业健康安全专员"
         },
         {
-          "category": "teknik",
-          "title": "Working with display screen equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Office employees"
+          "audience": "办公室员工",
+          "category": "技术",
+          "title": "显示屏设备使用及相关风险",
+          "trainer": "职业健康安全专员"
         },
         {
-          "category": "teknik",
-          "title": "Electrical hazards, risks and precautions",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "audience": "员工",
+          "category": "技术",
+          "title": "电气危险、风险和预防措施",
+          "trainer": "职业健康安全专员"
         },
         {
-          "category": "teknik",
-          "title": "Causes of occupational accidents and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "audience": "员工",
+          "category": "技术",
+          "title": "职业事故原因和预防原则",
+          "trainer": "职业健康安全专员"
         },
         {
-          "category": "teknik",
-          "title": "Falls and health impacts (accident prevention)",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "audience": "员工",
+          "category": "技术",
+          "title": "跌落及健康影响（事故预防）",
+          "trainer": "职业健康安全专员"
         },
         {
-          "category": "teknik",
-          "title": "Selection and use of personal protective equipment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "audience": "员工",
+          "category": "技术",
+          "title": "个人防护设备的选择和使用",
+          "trainer": "职业健康安全专员"
         },
         {
+          "audience": "员工",
           "category": "teknik",
-          "title": "General OHS rules and basic safety",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "一般职业健康安全规则和基本安全",
+          "trainer": "职业健康安全专员"
         },
         {
+          "audience": "员工",
           "category": "teknik",
-          "title": "Evacuation and rescue",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "疏散和救援",
+          "trainer": "职业健康安全专员"
         },
         {
+          "audience": "员工",
           "category": "teknik",
-          "title": "Causes of accidents and injuries and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "事故和伤害的原因及预防原则",
+          "trainer": "职业健康安全专员"
         },
         {
+          "audience": "员工",
           "category": "teknik",
-          "title": "Occupational hygiene and risks from the working environment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "职业卫生和工作环境风险",
+          "trainer": "职业健康安全专员"
         },
         {
+          "audience": "相关员工",
           "category": "teknik",
-          "title": "Working at height",
-          "trainer": "External training",
-          "audience": "Relevant employees"
+          "title": "高空作业",
+          "trainer": "外部培训"
         }
       ],
       "errors": {
-        "noSupabase": "No Supabase connection",
-        "loadFailed": "Could not load plan",
-        "selectCompany": "Please select a company",
-        "sessionNotFound": "Session not found",
-        "orgNotFound": "Organisation information not found",
-        "saveFailed": "Save failed"
+        "noSupabase": "无Supabase连接",
+        "loadFailed": "无法加载计划",
+        "selectCompany": "请选择公司",
+        "sessionNotFound": "未找到会话",
+        "orgNotFound": "未找到组织信息",
+        "saveFailed": "保存失败"
       },
       "card": {
-        "title": "Annual OHS training plan",
-        "description": "24 standard training topics under the OHS training regulation. Stored per company ? year; planned date, duration, actual date, certificate and attendance are editable per row."
+        "title": "年度职业健康安全培训计划",
+        "description": "职业健康安全培训法规下的24个标准培训主题。按公司×年度存储；计划日期、持续时间、实际日期、证书和出勤情况可按行编辑。"
       },
       "fields": {
-        "company": "Company",
-        "companyPlaceholder": "Select a company",
-        "year": "Training year"
+        "company": "公司",
+        "companyPlaceholder": "选择公司",
+        "year": "培训年度"
       },
       "signers": {
-        "blockLabel": "Signatories (printed in the PDF signature area)",
-        "employer": "Employer / employer representative",
-        "employerPlaceholder": "Full name",
-        "physician": "Workplace physician",
-        "physicianPlaceholder": "Dr. Full name",
-        "safetyExpert": "OHS specialist",
-        "safetyExpertPlaceholder": "Full name ? Class (A/B/C)"
+        "blockLabel": "签署人（打印在PDF签名区域）",
+        "employer": "雇主/雇主代表",
+        "employerPlaceholder": "全名",
+        "physician": "职场医生",
+        "physicianPlaceholder": "医生 全名",
+        "safetyExpert": "职业健康安全专家",
+        "safetyExpertPlaceholder": "全名 · 等级（A/B/C）"
       },
       "actions": {
-        "saving": "Saving...",
-        "saved": "Saved",
-        "save": "Save",
-        "pdfPrint": "Download / print PDF",
-        "archivedBadge": "Training plan for {year} is archived for this company"
+        "saving": "保存中...",
+        "saved": "已保存",
+        "save": "保存",
+        "pdfPrint": "下载/打印PDF",
+        "archivedBadge": "该公司{year}年度培训计划已归档"
       },
-      "loading": "Loading plan...",
+      "loading": "正在加载计划...",
       "preview": {
-        "title": "Preview & edit",
-        "description": "Edit rows: date / duration / certificate / attendance"
+        "title": "预览和编辑",
+        "description": "编辑行：日期/时长/证书/出勤"
       },
       "table": {
-        "topic": "Training topic",
-        "trainer": "Trainer",
-        "audience": "Audience",
-        "planned": "Planned",
-        "duration": "Duration",
-        "realized": "Actual",
-        "certificate": "Certificate",
-        "attendance": "Attendance",
-        "addRow": "Add row",
-        "deleteRowAria": "Delete row"
+        "topic": "培训主题",
+        "trainer": "培训师",
+        "audience": "受众",
+        "planned": "计划",
+        "duration": "时长",
+        "realized": "实际",
+        "certificate": "证书",
+        "attendance": "出勤",
+        "addRow": "添加行",
+        "deleteRowAria": "删除行"
       },
       "categories": {
-        "genel": "GENERAL TOPICS (4 hours)",
-        "saglik": "HEALTH TOPICS (4 hours)",
-        "teknik": "TECHNICAL TOPICS (4 hours)"
+        "genel": "一般主题（4小时）",
+        "saglik": "健康主题（4小时）",
+        "teknik": "技术主题（4小时）"
       },
       "certificate": {
-        "yes": "Yes",
-        "no": "No",
-        "empty": "?"
+        "yes": "是",
+        "no": "否",
+        "empty": "？"
       },
       "defaults": {
-        "trainer": "OHS specialist",
-        "audience": "Employees"
+        "trainer": "职业健康安全专员",
+        "audience": "员工"
       },
       "pdf": {
-        "htmlTitle": "Annual OHS training plan ? {companyName}",
-        "mainTitle": "ANNUAL TRAINING PLAN",
-        "headerLine": "COMPANY: {companyName} ? YEAR: {year}",
-        "colNo": "No.",
-        "colTopic": "Training topic",
-        "colTrainer": "Trainer",
-        "colAudience": "Audience",
-        "colPlanned": "Planned",
-        "colDuration": "Duration",
-        "colRealized": "Actual",
-        "colCertificate": "Certificate",
-        "colAttendance": "Attendance",
-        "sigEmployer": "Employer",
-        "sigPhysician": "Workplace physician",
-        "sigSafety": "OHS specialist",
-        "sigLine": "Signature / date",
+        "htmlTitle": "年度职业健康安全培训计划 — {companyName}",
+        "mainTitle": "年度培训计划",
+        "headerLine": "公司：{companyName} · 年度：{year}",
+        "colNo": "序号",
+        "colTopic": "培训主题",
+        "colTrainer": "培训师",
+        "colAudience": "受众",
+        "colPlanned": "计划",
+        "colDuration": "时长",
+        "colRealized": "实际",
+        "colCertificate": "证书",
+        "colAttendance": "出勤",
+        "sigEmployer": "雇主",
+        "sigPhysician": "职业医师",
+        "sigSafety": "职业健康安全专家",
+        "sigLine": "签名/日期",
         "empty": "?"
       }
     },
     "timesheet": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "title": "Timesheet",
-      "defaultProfessional": "OHS professional",
+      "title": "工时表",
+      "defaultProfessional": "职业健康安全专业人员",
       "tabs": {
-        "grid": "Timesheet",
-        "archive": "Archive",
-        "settings": "Settings"
+        "grid": "工时表",
+        "archive": "存档",
+        "settings": "设置"
       },
       "status": {
-        "draft": "Draft",
-        "submitted": "Submitted",
-        "approved": "Approved",
-        "paid": "Paid"
+        "draft": "草稿",
+        "submitted": "已提交",
+        "approved": "已批准",
+        "paid": "已支付"
       },
       "actions": {
-        "submit": "Submit",
-        "approve": "Approve",
-        "markPaid": "Mark as paid",
-        "revert": "Revert",
-        "previewPdf": "Preview PDF",
-        "timesheetExcel": "Timesheet Excel",
-        "payrollExcel": "Payroll Excel",
-        "payrollPdf": "Payroll PDF",
-        "view": "View",
-        "delete": "Delete",
-        "cancel": "Cancel",
-        "saving": "Saving..."
+        "submit": "提交",
+        "approve": "批准",
+        "markPaid": "标记为已付款",
+        "revert": "撤销",
+        "previewPdf": "预览PDF",
+        "timesheetExcel": "工时表Excel",
+        "payrollExcel": "工资单Excel",
+        "payrollPdf": "工资单PDF",
+        "view": "查看",
+        "delete": "删除",
+        "cancel": "取消",
+        "saving": "保存中..."
       },
       "stats": {
-        "workedDays": "Worked days",
-        "totalHours": "Total hours",
-        "activeCompanies": "Active companies",
-        "gross": "Gross amount",
-        "stampTax": "Stamp tax",
-        "netPaid": "Net paid"
+        "workedDays": "工作天数",
+        "totalHours": "总工时",
+        "activeCompanies": "活跃公司",
+        "gross": "总金额",
+        "stampTax": "印花税",
+        "netPaid": "实付金额"
       },
       "filters": {
-        "allStatuses": "All statuses"
+        "allStatuses": "所有状态"
       },
       "empty": {
-        "noCompanies": "No companies found",
-        "noArchive": "No timesheet record for {year}"
+        "noCompanies": "未找到公司",
+        "noArchive": "没有{year}年的工时表记录"
       },
       "table": {
-        "company": "Company",
-        "totalShort": "TOTAL",
-        "total": "TOTAL"
+        "company": "公司",
+        "totalShort": "总计",
+        "total": "总计"
       },
       "archive": {
-        "period": "Period",
-        "status": "Status",
-        "actions": "Actions"
+        "period": "期间",
+        "status": "状态",
+        "actions": "操作"
       },
       "settings": {
-        "headerTitle": "Header settings",
-        "headerType": "Header type",
+        "headerTitle": "页眉设置",
+        "headerType": "页眉类型",
         "headerTypes": {
-          "custom": "Custom",
-          "government": "Official"
+          "custom": "自定义",
+          "government": "官方"
         },
-        "line1": "Line 1 (main title)",
-        "line2": "Line 2 (subtitle)",
-        "line3": "Line 3 (extra info)",
-        "line1Placeholder": "e.g. Ministry of Labour",
-        "line2Placeholder": "e.g. Occupational health and safety services",
-        "line3Placeholder": "e.g. Monthly work schedule",
-        "professionalTitle": "Professional information",
-        "professionalRole": "Title",
-        "professionalRolePlaceholder": "e.g. OHS specialist (Class A)",
-        "certificateNo": "Registry / certificate no.",
-        "certificateNoPlaceholder": "e.g. ISG-A-12345",
-        "payrollTitle": "Payroll settings",
-        "governmentEmployee": "Civil servant / public employee",
-        "salaryCoefficient": "Salary coefficient",
-        "baseIndicator": "Indicator",
-        "stampTaxRate": "Stamp tax rate",
-        "formulaTitle": "Calculation formula:",
-        "hourlyRateFormula": "Hourly rate = Indicator ({indicator}) ? coefficient ({coefficient}) = ?{amount}",
-        "grossFormula": "Gross amount = hourly rate ? total hours",
-        "stampFormula": "Stamp tax = gross amount ? %{rate}",
-        "netFormula": "Net paid = gross amount - stamp tax",
-        "footerNote": "Footer note",
-        "footerNotePlaceholder": "Note shown at the bottom of Excel/PDF exports...",
-        "save": "Save settings",
-        "saved": "Settings saved.",
-        "errorPrefix": "Error: {message}",
-        "errorPrefixStart": "Error"
+        "line1": "第1行（主标题）",
+        "line2": "第二行（副标题）",
+        "line3": "第三行（额外信息）",
+        "line1Placeholder": "例如：劳动部",
+        "line2Placeholder": "例如：职业健康安全服务",
+        "line3Placeholder": "例如：月度工作计划",
+        "professionalTitle": "专业信息",
+        "professionalRole": "职务",
+        "professionalRolePlaceholder": "例如：职业健康安全专员（A级）",
+        "certificateNo": "注册/证书编号",
+        "certificateNoPlaceholder": "例如：ISG-A-12345",
+        "payrollTitle": "工资单设置",
+        "governmentEmployee": "公务员/公职人员",
+        "salaryCoefficient": "工资系数",
+        "baseIndicator": "指标",
+        "stampTaxRate": "印花税率",
+        "formulaTitle": "计算公式：",
+        "hourlyRateFormula": "时薪 = 指标 ({indicator}) × 系数 ({coefficient}) = ¥{amount}",
+        "grossFormula": "总金额 = 时薪 × 总工时",
+        "stampFormula": "印花税 = 总金额 × %{rate}",
+        "netFormula": "实付金额 = 总金额 - 印花税",
+        "footerNote": "页脚备注",
+        "footerNotePlaceholder": "在 Excel/PDF 导出底部显示的备注...",
+        "save": "保存设置",
+        "saved": "设置已保存。",
+        "errorPrefix": "错误：{message}",
+        "errorPrefixStart": "错误"
       },
       "delete": {
-        "title": "Delete timesheet",
-        "description": "This timesheet and all entries will be permanently deleted. Are you sure?"
+        "title": "删除工时表",
+        "description": "此工时表及所有条目将被永久删除。您确定吗？"
       },
       "pdf": {
-        "title": "Timesheet - {month} {year}",
-        "previewTitle": "PDF preview",
-        "printDownload": "Print / download PDF",
-        "preparedBy": "Prepared by",
-        "approvedBy": "Approved by",
-        "employerRepresentative": "Employer / representative",
-        "workScheduleTitle": "{month} {year} ? Work schedule",
-        "narrative": "The person named above, {profileName}, provided a total of {total} hours of occupational safety service in {month} {year}."
+        "title": "工时表 - {year} 年 {month} 月",
+        "previewTitle": "PDF 预览",
+        "printDownload": "打印/下载 PDF",
+        "preparedBy": "制表人",
+        "approvedBy": "批准人",
+        "employerRepresentative": "雇主/代表",
+        "workScheduleTitle": "{year} 年 {month} 月工作安排",
+        "narrative": "上述人员 {profileName} 在 {year} 年 {month} 月提供了总计 {total} 小时的职业安全服务。"
       },
       "payroll": {
-        "title": "Payroll",
-        "calculationTitle": "Civil servant payroll calculation",
-        "pdfTitle": "Payroll - {month} {year}",
-        "periodLine": "Month: {month}   Year: {year}",
-        "pdfMainTitle": "MISCELLANEOUS PAYMENTS PAYROLL",
-        "warning": "NOTICE",
-        "legalNotice": "The payroll is prepared in accordance with Article 8 of Turkish Occupational Health and Safety Law No. 6331.",
+        "title": "工资单",
+        "calculationTitle": "公务员工资计算",
+        "pdfTitle": "工资单 - {month} {year}",
+        "periodLine": "月份：{month}   年份：{year}",
+        "pdfMainTitle": "杂项支付工资单",
+        "warning": "注意事项",
+        "legalNotice": "工资单根据土耳其第6331号职业健康安全法第8条编制。",
         "columns": {
-          "no": "No.",
-          "fullName": "FULL NAME",
-          "salaryCoefficient": "Civil servant salary coefficient",
-          "paymentCoefficient": "Payment coefficient",
-          "hourlyRate": "Hourly rate (TRY)",
-          "assignmentHours": "Assignment duration (hours)",
-          "gross": "Gross amount (TRY)",
-          "stampTax": "Stamp tax deduction (TRY)",
-          "netPaid": "Net paid (TRY)"
+          "no": "序号",
+          "fullName": "姓名",
+          "salaryCoefficient": "公务员工资系数",
+          "paymentCoefficient": "支付系数",
+          "hourlyRate": "时薪（土耳其里拉）",
+          "assignmentHours": "分配时长（小时）",
+          "gross": "总金额（土耳其里拉）",
+          "stampTax": "印花税扣除（土耳其里拉）",
+          "netPaid": "实付金额（土耳其里拉）"
         },
-        "indicatorCoefficient": "Indicator ? coefficient",
-        "hourlyRate": "Hourly rate",
-        "stampTaxWithRate": "Stamp tax (%{rate})"
+        "indicatorCoefficient": "指标系数",
+        "hourlyRate": "时薪",
+        "stampTaxWithRate": "印花税 (%{rate})"
       }
     }
   },
@@ -3404,7 +3571,7 @@
     "password": {
       "current": "当前密码",
       "new": "新密码",
-      "newPlaceholder": "至少12个字符，包含大小写字母、数字和符号",
+      "newPlaceholder": "至少8个字符，包含大小写字母、数字和符号",
       "repeat": "新密码（重复）",
       "submit": "更新密码",
       "title": "更改密码"

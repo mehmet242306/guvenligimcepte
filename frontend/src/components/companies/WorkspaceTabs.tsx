@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus, FileSearch, Archive, Pencil, Trash2, ChevronDown, ClipboardList, Share2, Copy, Check, MessageCircle, QrCode } from "lucide-react";
 import type { PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,23 @@ import {
 
 export type WTab = "structure" | "risk" | "people" | "personnel" | "planner" | "tracking" | "ohs_file" | "organization" | "history";
 
+function fmtDateLocale(d: string, locale: string) {
+  try {
+    return new Date(d).toLocaleDateString(locale, { day: "2-digit", month: "long", year: "numeric" });
+  } catch {
+    return d;
+  }
+}
+
+function fmtDateShortLocale(d: string | null, locale: string) {
+  if (!d) return "—";
+  try {
+    return new Date(d).toLocaleDateString(locale, { day: "2-digit", month: "short", year: "numeric" });
+  } catch {
+    return d;
+  }
+}
+
 function Sec({ title, desc, children, icon, tone }: { title: string; desc?: string; children: React.ReactNode; icon?: React.ElementType; tone?: PremiumIconTone }) {
   return (
     <section className="rounded-[1.7rem] border border-border/80 bg-card p-6 shadow-[var(--shadow-card)]">
@@ -40,6 +58,7 @@ function Sec({ title, desc, children, icon, tone }: { title: string; desc?: stri
 
 /* ── STRUCTURE ── */
 export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p: Partial<CompanyRecord>) => void }) {
+  const ts = useTranslations("companyWorkspace.structure");
   const locCount = company.locations.filter(Boolean).length;
   const depCount = company.departments.filter(Boolean).length;
 
@@ -52,15 +71,15 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
       {/* Üst özet kartları */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-[1.25rem] border border-border/80 bg-card p-5 text-center shadow-[var(--shadow-card)]">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Lokasyon</p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{ts("summaryLocation")}</p>
           <p className="mt-1.5 text-3xl font-bold text-foreground">{locCount}</p>
         </div>
         <div className="rounded-[1.25rem] border border-border/80 bg-card p-5 text-center shadow-[var(--shadow-card)]">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Bölüm</p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{ts("summaryDepartment")}</p>
           <p className="mt-1.5 text-3xl font-bold text-foreground">{depCount}</p>
         </div>
         <div className="rounded-[1.25rem] border border-border/80 bg-card p-5 text-center shadow-[var(--shadow-card)]">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Çalışan</p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{ts("summaryEmployee")}</p>
           <p className="mt-1.5 text-3xl font-bold text-foreground">{company.employeeCount}</p>
         </div>
       </div>
@@ -73,8 +92,8 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
             <div className="flex items-center gap-3">
               <PremiumIconBadge icon={MapPin} tone="amber" size="md" />
               <div>
-                <h3 className="text-sm font-semibold text-foreground">Lokasyonlar</h3>
-                <p className="text-[11px] text-muted-foreground">Firmanın fiziksel yerleşkeleri</p>
+                <h3 className="text-sm font-semibold text-foreground">{ts("locationsTitle")}</h3>
+                <p className="text-[11px] text-muted-foreground">{ts("locationsSubtitle")}</p>
               </div>
             </div>
             <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-300">{locCount}</span>
@@ -87,7 +106,7 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
                   value={loc}
                   onChange={(e) => { const n = [...company.locations]; n[i] = e.target.value; upd({ locations: n }); }}
                   className="flex-1 !border-0 !bg-transparent !shadow-none !ring-0 text-sm"
-                  placeholder="Lokasyon adı girin"
+                  placeholder={ts("locationPlaceholder")}
                 />
                 <button
                   type="button"
@@ -105,7 +124,7 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
             className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border py-2.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
           >
             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-            Lokasyon Ekle
+            {ts("addLocation")}
           </button>
         </section>
 
@@ -115,8 +134,8 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
             <div className="flex items-center gap-3">
               <PremiumIconBadge icon={Building2} tone="cobalt" size="md" />
               <div>
-                <h3 className="text-sm font-semibold text-foreground">Bölümler</h3>
-                <p className="text-[11px] text-muted-foreground">Organizasyonel birimler</p>
+                <h3 className="text-sm font-semibold text-foreground">{ts("departmentsTitle")}</h3>
+                <p className="text-[11px] text-muted-foreground">{ts("departmentsSubtitle")}</p>
               </div>
             </div>
             <span className="rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-0.5 text-[10px] font-bold text-blue-700 dark:text-blue-300">{depCount}</span>
@@ -129,7 +148,7 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
                   value={dep}
                   onChange={(e) => { const n = [...company.departments]; n[i] = e.target.value; upd({ departments: n }); }}
                   className="flex-1 !border-0 !bg-transparent !shadow-none !ring-0 text-sm"
-                  placeholder="Bölüm adı girin"
+                  placeholder={ts("departmentPlaceholder")}
                 />
                 <button
                   type="button"
@@ -147,7 +166,7 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
             className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border py-2.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
           >
             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-            Bölüm Ekle
+            {ts("addDepartment")}
           </button>
         </section>
       </div>
@@ -156,23 +175,25 @@ export function StructureTab({ company, upd }: { company: CompanyRecord; upd: (p
 }
 
 /* ── RISK ── */
-/* Risk kategori tanımları — süreç yönetimi kartları */
-const RISK_CATEGORIES: Array<{ key: string; label: string; icon: string; lucideIcon: React.ElementType; tone: PremiumIconTone; color: string; examples: string }> = [
-  { key: "fiziksel", label: "Fiziksel", icon: "⚡", lucideIcon: Zap, tone: "cobalt", color: "#3B82F6", examples: "Gürültü, titreşim, aydınlatma, sıcaklık" },
-  { key: "kimyasal", label: "Kimyasal", icon: "🧪", lucideIcon: FlaskConical, tone: "violet", color: "#8B5CF6", examples: "Gaz, toz, buhar, kimyasal madde" },
-  { key: "biyolojik", label: "Biyolojik", icon: "🦠", lucideIcon: Bug, tone: "emerald", color: "#10B981", examples: "Bakteri, virüs, küf, biyolojik etkenler" },
-  { key: "ergonomik", label: "Ergonomik", icon: "🧍", lucideIcon: PersonStanding, tone: "amber", color: "#F59E0B", examples: "Duruş bozukluğu, ağır yük, tekrarlı hareket" },
-  { key: "psikososyal", label: "Psikososyal", icon: "🧠", lucideIcon: Brain, tone: "plum", color: "#EC4899", examples: "Stres, mobbing, iş yükü, vardiya" },
-  { key: "mekanik", label: "Mekanik", icon: "⚙️", lucideIcon: Cog, tone: "orange", color: "#F97316", examples: "Makine, ekipman, düşme, sıkışma" },
-  { key: "elektrik", label: "Elektrik", icon: "🔌", lucideIcon: Plug, tone: "risk", color: "#EF4444", examples: "Çarpma, kısa devre, topraklama" },
-  { key: "yangin", label: "Yangın / Patlama", icon: "🔥", lucideIcon: Flame, tone: "danger", color: "#DC2626", examples: "Yanıcı madde, patlayıcı ortam, LPG" },
-  { key: "trafik", label: "Trafik", icon: "🚛", lucideIcon: Truck, tone: "indigo", color: "#6366F1", examples: "Araç, forklift, yaya-araç çatışması" },
-  { key: "cevre", label: "Çevresel", icon: "🌿", lucideIcon: Leaf, tone: "success", color: "#059669", examples: "Atık, emisyon, gürültü kirliliği" },
-];
+/* Risk kategori meta — etiketler messages/companyWorkspace.risk.categories.* altında */
+const RISK_CATEGORY_META = [
+  { key: "fiziksel", icon: "⚡", lucideIcon: Zap, tone: "cobalt" as PremiumIconTone, color: "#3B82F6" },
+  { key: "kimyasal", icon: "🧪", lucideIcon: FlaskConical, tone: "violet" as PremiumIconTone, color: "#8B5CF6" },
+  { key: "biyolojik", icon: "🦠", lucideIcon: Bug, tone: "emerald" as PremiumIconTone, color: "#10B981" },
+  { key: "ergonomik", icon: "🧍", lucideIcon: PersonStanding, tone: "amber" as PremiumIconTone, color: "#F59E0B" },
+  { key: "psikososyal", icon: "🧠", lucideIcon: Brain, tone: "plum" as PremiumIconTone, color: "#EC4899" },
+  { key: "mekanik", icon: "⚙️", lucideIcon: Cog, tone: "orange" as PremiumIconTone, color: "#F97316" },
+  { key: "elektrik", icon: "🔌", lucideIcon: Plug, tone: "risk" as PremiumIconTone, color: "#EF4444" },
+  { key: "yangin", icon: "🔥", lucideIcon: Flame, tone: "danger" as PremiumIconTone, color: "#DC2626" },
+  { key: "trafik", icon: "🚛", lucideIcon: Truck, tone: "indigo" as PremiumIconTone, color: "#6366F1" },
+  { key: "cevre", icon: "🌿", lucideIcon: Leaf, tone: "success" as PremiumIconTone, color: "#059669" },
+] as const;
 
 type CategoryStats = { key: string; total: number; critical: number; high: number; medium: number; low: number };
 
 export function RiskTab({ company }: { company: CompanyRecord }) {
+  const t = useTranslations("companyWorkspace.risk");
+  const locale = useLocale();
   const [analyses, setAnalyses] = useState<SavedAssessment[]>([]);
   const [catStats, setCatStats] = useState<CategoryStats[]>([]);
   const [loading, setLoading] = useState(true);
@@ -216,7 +237,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
 
           if (findings) {
             const stats: Record<string, CategoryStats> = {};
-            for (const cat of RISK_CATEGORIES) stats[cat.key] = { key: cat.key, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
+            for (const cat of RISK_CATEGORY_META) stats[cat.key] = { key: cat.key, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
 
             for (const f of findings) {
               const catKey = (f as Record<string, string>).category_key || mapCategoryToKey(f.category);
@@ -298,7 +319,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
           .in("assessment_id", remainingIds);
         if (updatedFindings) {
           const stats: Record<string, CategoryStats> = {};
-          for (const cat of RISK_CATEGORIES) stats[cat.key] = { key: cat.key, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
+          for (const cat of RISK_CATEGORY_META) stats[cat.key] = { key: cat.key, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
           for (const f of updatedFindings) {
             const catKey = mapCategoryToKey(f.category);
             if (!stats[catKey]) stats[catKey] = { key: catKey, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
@@ -325,12 +346,27 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
     }
   }
 
-  function fmtDate(d: string) { try { return new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" }); } catch { return d; } }
-  function methodLabel(m: string) { return m === "r_skor" ? "R-SKOR 2D" : m === "fine_kinney" ? "Fine-Kinney" : m === "l_matrix" ? "L-Matris" : m; }
+  function fmtDate(d: string) {
+    return fmtDateLocale(d, locale);
+  }
+  function methodLabel(m: string) {
+    switch (m) {
+      case "r_skor": return t("method.r_skor");
+      case "fine_kinney": return t("method.fine_kinney");
+      case "l_matrix": return t("method.l_matrix");
+      case "fmea": return t("method.fmea");
+      case "hazop": return t("method.hazop");
+      default: return m;
+    }
+  }
   function statusBadge(s: string) {
-    if (s === "completed") return { label: "Tamamlandı", cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" };
-    if (s === "archived") return { label: "Arşivlendi", cls: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400" };
-    return { label: "Taslak", cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" };
+    if (s === "completed") return { label: t("analysisStatus.completed"), cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" };
+    if (s === "archived") return { label: t("analysisStatus.archived"), cls: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400" };
+    return { label: t("analysisStatus.draft"), cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" };
+  }
+
+  function riskCategoryText(key: (typeof RISK_CATEGORY_META)[number]["key"], field: "label" | "examples") {
+    return (t as (path: string) => string)(`categories.${key}.${field}`);
   }
 
   const totalFindings = catStats.reduce((s, c) => s + c.total, 0);
@@ -343,23 +379,23 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
       <div className="rounded-[1.7rem] border border-border/80 bg-card p-5 shadow-[var(--shadow-card)]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="section-title text-base">Risk ve Saha Yönetimi</h2>
-            <p className="mt-0.5 text-xs text-muted-foreground">Risk sınıflandırması, analiz geçmişi ve süreç takibi.</p>
+            <h2 className="section-title text-base">{t("pageTitle")}</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">{t("pageSubtitle")}</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex rounded-xl border border-border/60 bg-secondary/20 p-1 shadow-sm">
               <button type="button" onClick={() => { setActiveSection("overview"); setSelectedAnalysis(null); setExpandedAnalysisId(null); }}
                 className={`rounded-[0.6rem] px-4 py-2 text-sm font-semibold transition-all ${activeSection === "overview" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
-                Risk Haritası
+                {t("tabMap")}
               </button>
               <button type="button" onClick={() => { setActiveSection("analyses"); setSelectedCategory(null); }}
                 className={`rounded-[0.6rem] px-4 py-2 text-sm font-semibold transition-all ${activeSection === "analyses" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
-                Analizler ({analyses.length})
+                {t("tabAnalyses", { count: analyses.length })}
               </button>
             </div>
             <Link href={`/risk-analysis?companyId=${company.id}`} className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:brightness-110 hover:shadow-lg">
               <Plus size={16} strokeWidth={2.5} />
-              Yeni Analiz
+              {t("newAnalysis")}
             </Link>
           </div>
         </div>
@@ -367,19 +403,19 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
         {/* Üst metriler */}
         <div className="mt-4 grid gap-3 grid-cols-2 sm:grid-cols-4">
           <div className="rounded-[1.25rem] border border-border/60 bg-gradient-to-br from-blue-500/5 to-transparent p-4 text-center shadow-sm dark:from-blue-500/8">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Toplam Tespit</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{t("metricTotalFindings")}</p>
             <p className="mt-1.5 text-2xl font-bold text-foreground">{totalFindings}</p>
           </div>
           <div className="rounded-[1.25rem] border border-border/60 bg-gradient-to-br from-red-500/5 to-transparent p-4 text-center shadow-sm dark:from-red-500/8">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Kritik</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{t("metricCritical")}</p>
             <p className={`mt-1.5 text-2xl font-bold ${totalCritical > 0 ? "text-red-600" : "text-muted-foreground"}`}>{totalCritical}</p>
           </div>
           <div className="rounded-[1.25rem] border border-border/60 bg-gradient-to-br from-orange-500/5 to-transparent p-4 text-center shadow-sm dark:from-orange-500/8">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Yüksek</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{t("metricHigh")}</p>
             <p className={`mt-1.5 text-2xl font-bold ${totalHigh > 0 ? "text-orange-500" : "text-muted-foreground"}`}>{totalHigh}</p>
           </div>
           <div className="rounded-[1.25rem] border border-border/60 bg-gradient-to-br from-emerald-500/5 to-transparent p-4 text-center shadow-sm dark:from-emerald-500/8">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Analiz Sayısı</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{t("metricAnalysisCount")}</p>
             <p className="mt-1.5 text-2xl font-bold text-foreground">{analyses.length}</p>
           </div>
         </div>
@@ -391,7 +427,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
         <>
           {/* Risk Haritası — Premium kategori kartları */}
           <div className="grid gap-4 sm:grid-cols-2">
-            {RISK_CATEGORIES.map((cat) => {
+            {RISK_CATEGORY_META.map((cat) => {
               const stat = catStats.find((s) => s.key === cat.key);
               const total = stat?.total ?? 0;
               const hasCritical = (stat?.critical ?? 0) > 0;
@@ -415,8 +451,8 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                     <div className="flex items-center gap-3.5">
                       <PremiumIconBadge icon={cat.lucideIcon} tone={cat.tone} size="md" />
                       <div>
-                        <h4 className="text-base font-semibold text-foreground">{cat.label}</h4>
-                        <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">{cat.examples}</p>
+                        <h4 className="text-base font-semibold text-foreground">{riskCategoryText(cat.key, "label")}</h4>
+                        <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">{riskCategoryText(cat.key, "examples")}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -430,14 +466,14 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                   </div>
                   {total > 0 && (
                     <div className="mt-3.5 flex flex-wrap gap-2">
-                      {(stat?.critical ?? 0) > 0 && <span className="rounded-full bg-red-100 px-2.5 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">Kritik: {stat!.critical}</span>}
-                      {(stat?.high ?? 0) > 0 && <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-[10px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">Yüksek: {stat!.high}</span>}
-                      {(stat?.medium ?? 0) > 0 && <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Orta: {stat!.medium}</span>}
-                      {(stat?.low ?? 0) > 0 && <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">Düşük: {stat!.low}</span>}
+                      {(stat?.critical ?? 0) > 0 && <span className="rounded-full bg-red-100 px-2.5 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">{t("badgeCritical", { count: stat!.critical })}</span>}
+                      {(stat?.high ?? 0) > 0 && <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-[10px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">{t("badgeHigh", { count: stat!.high })}</span>}
+                      {(stat?.medium ?? 0) > 0 && <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">{t("badgeMedium", { count: stat!.medium })}</span>}
+                      {(stat?.low ?? 0) > 0 && <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">{t("badgeLow", { count: stat!.low })}</span>}
                     </div>
                   )}
                   {total === 0 && (
-                    <p className="mt-3 text-xs text-muted-foreground/50">Henüz tespit yok</p>
+                    <p className="mt-3 text-xs text-muted-foreground/50">{t("noFindingsCategory")}</p>
                   )}
                 </button>
               );
@@ -451,8 +487,8 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                 <Plus size={20} className="text-muted-foreground" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-muted-foreground">Yeni Kategori Ekle</p>
-                <p className="mt-0.5 text-[11px] text-muted-foreground/60">Özel risk kategorisi tanımlayın</p>
+                <p className="text-sm font-semibold text-muted-foreground">{t("addCategoryTitle")}</p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground/60">{t("addCategoryHint")}</p>
               </div>
             </button>
           </div>
@@ -462,7 +498,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
             <div ref={catDetailRef}>
               <CategoryDetailPanel
                 categoryKey={selectedCategory}
-                category={RISK_CATEGORIES.find((c) => c.key === selectedCategory)!}
+                category={RISK_CATEGORY_META.find((c) => c.key === selectedCategory)!}
                 findings={categoryFindings}
                 loading={catDetailLoading}
                 editingFinding={editingFinding}
@@ -487,8 +523,8 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
               <div className="flex flex-col items-center gap-3 rounded-[1.7rem] border-2 border-dashed border-border/50 bg-card/50 p-10 text-center">
                 <PremiumIconBadge icon={ClipboardList} tone="gold" size="lg" />
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Henüz risk analizi yapılmamış</p>
-                  <p className="mt-1 text-xs text-muted-foreground">Risk Analizi sayfasından bu firma için ilk analizinizi başlatın.</p>
+                  <p className="text-sm font-semibold text-foreground">{t("emptyAnalysesTitle")}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{t("emptyAnalysesDescription")}</p>
                 </div>
               </div>
             ) : analyses.map((a) => {
@@ -516,7 +552,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                           </div>
                           <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
                             <span>{fmtDate(a.assessmentDate)}</span>
-                            <span className="font-semibold text-foreground">{a.itemCount} tespit</span>
+                            <span className="font-semibold text-foreground">{t("findingsInRow", { count: a.itemCount })}</span>
                             {a.locationText && <span>{a.locationText}</span>}
                           </div>
                         </div>
@@ -525,21 +561,21 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                     {/* İşlem butonları */}
                     <div className="flex items-center gap-1 ml-4">
                       {a.status !== "archived" && (
-                        <button type="button" className="rounded-xl p-2.5 text-amber-600 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-900/20 transition-colors" onClick={() => handleArchive(a.id)} title="Arşivle">
+                        <button type="button" className="rounded-xl p-2.5 text-amber-600 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-900/20 transition-colors" onClick={() => handleArchive(a.id)} title={t("archiveTitle")}>
                           <Archive size={18} strokeWidth={2} />
                         </button>
                       )}
-                      <Link href={`/risk-analysis?companyId=${company.id}&loadId=${a.id}`} className="rounded-xl p-2.5 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20 transition-colors" title="Düzenle">
+                      <Link href={`/risk-analysis?companyId=${company.id}&loadId=${a.id}`} className="rounded-xl p-2.5 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20 transition-colors" title={t("editTitle")}>
                         <Pencil size={18} strokeWidth={2} />
                       </Link>
                       {confirmDeleteId === a.id ? (
                         <div className="flex items-center gap-1.5 rounded-xl border border-red-400/40 bg-red-50 px-3 py-1.5 dark:border-red-600/40 dark:bg-red-950/30">
-                          <span className="text-[11px] font-semibold text-red-600 dark:text-red-400">Sil?</span>
-                          <button type="button" className="rounded-lg px-2 py-0.5 text-[11px] font-bold text-red-600 hover:bg-red-100 dark:text-red-400" onClick={() => handleDelete(a.id)}>Evet</button>
-                          <button type="button" className="rounded-lg px-2 py-0.5 text-[11px] font-medium text-muted-foreground hover:bg-secondary" onClick={() => setConfirmDeleteId(null)}>Hayır</button>
+                          <span className="text-[11px] font-semibold text-red-600 dark:text-red-400">{t("confirmDelete")}</span>
+                          <button type="button" className="rounded-lg px-2 py-0.5 text-[11px] font-bold text-red-600 hover:bg-red-100 dark:text-red-400" onClick={() => handleDelete(a.id)}>{t("yes")}</button>
+                          <button type="button" className="rounded-lg px-2 py-0.5 text-[11px] font-medium text-muted-foreground hover:bg-secondary" onClick={() => setConfirmDeleteId(null)}>{t("no")}</button>
                         </div>
                       ) : (
-                        <button type="button" className="rounded-xl p-2.5 text-red-500 hover:bg-red-50 hover:text-red-600 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors" onClick={() => setConfirmDeleteId(a.id)} title="Sil">
+                        <button type="button" className="rounded-xl p-2.5 text-red-500 hover:bg-red-50 hover:text-red-600 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors" onClick={() => setConfirmDeleteId(a.id)} title={t("deleteTitle")}>
                           <Trash2 size={18} strokeWidth={2} />
                         </button>
                       )}
@@ -573,29 +609,16 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
   );
 }
 
-/* ── Tracking Status Helpers ── */
-const TRACKING_STATUSES = [
-  { value: "open" as const, label: "Açık", cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
-  { value: "in_progress" as const, label: "Devam Ediyor", cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
-  { value: "resolved" as const, label: "Çözüldü", cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" },
-  { value: "archived" as const, label: "Arşivlendi", cls: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400" },
-];
-
-function severityBadge(s: string) {
-  if (s === "critical") return { label: "Kritik", cls: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" };
-  if (s === "high") return { label: "Yüksek", cls: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400" };
-  if (s === "medium") return { label: "Orta", cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" };
-  return { label: "Düşük", cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" };
-}
-
 /* ── Kategori Detay Paneli ── */
+type RiskCategoryMetaRow = (typeof RISK_CATEGORY_META)[number];
+
 function CategoryDetailPanel({
   categoryKey, category, findings, loading,
   editingFinding, editStatus, editNotes, savingFinding,
   onStartEdit, onCancelEdit, onChangeStatus, onChangeNotes, onSave, onClose,
 }: {
   categoryKey: string;
-  category: { key: string; label: string; icon: string; lucideIcon: React.ElementType; tone: PremiumIconTone; color: string; examples: string };
+  category: RiskCategoryMetaRow;
   findings: FindingWithContext[];
   loading: boolean;
   editingFinding: string | null;
@@ -609,6 +632,21 @@ function CategoryDetailPanel({
   onSave: (id: string) => void;
   onClose: () => void;
 }) {
+  const t = useTranslations("companyWorkspace.risk");
+  const trackingRows = [
+    { value: "open" as const, label: t("trackingStatus.open"), cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
+    { value: "in_progress" as const, label: t("trackingStatus.in_progress"), cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
+    { value: "resolved" as const, label: t("trackingStatus.resolved"), cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" },
+    { value: "archived" as const, label: t("trackingStatus.archived"), cls: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400" },
+  ];
+  function severityRow(s: string) {
+    if (s === "critical") return { label: t("severity.critical"), cls: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" };
+    if (s === "high") return { label: t("severity.high"), cls: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400" };
+    if (s === "medium") return { label: t("severity.medium"), cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" };
+    return { label: t("severity.low"), cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" };
+  }
+  const catLabel = (t as (path: string) => string)(`categories.${categoryKey}.label`);
+
   return (
     <div className="rounded-[1.7rem] border-2 border-primary/30 bg-card p-5 shadow-[var(--shadow-elevated)]">
       {/* Header */}
@@ -616,8 +654,8 @@ function CategoryDetailPanel({
         <div className="flex items-center gap-3.5">
           <PremiumIconBadge icon={category.lucideIcon} tone={category.tone} size="md" />
           <div>
-            <h3 className="text-base font-bold text-foreground">{category.label} Riskleri</h3>
-            <p className="text-xs text-muted-foreground">{findings.length} tespit bulundu</p>
+            <h3 className="text-base font-bold text-foreground">{t("categoryRisksTitle", { label: catLabel })}</h3>
+            <p className="text-xs text-muted-foreground">{t("findingsCountLabel", { count: findings.length })}</p>
           </div>
         </div>
         <button type="button" onClick={onClose} className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
@@ -628,12 +666,12 @@ function CategoryDetailPanel({
       {loading ? (
         <div className="flex justify-center py-8"><div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>
       ) : findings.length === 0 ? (
-        <p className="mt-4 text-center text-sm text-muted-foreground">Bu kategoride henüz tespit yok.</p>
+        <p className="mt-4 text-center text-sm text-muted-foreground">{t("noFindingsInCategory")}</p>
       ) : (
         <div className="mt-4 space-y-3">
           {findings.map((f) => {
-            const sev = severityBadge(f.severity);
-            const ts = TRACKING_STATUSES.find((t) => t.value === f.trackingStatus) ?? TRACKING_STATUSES[0];
+            const sev = severityRow(f.severity);
+            const trk = trackingRows.find((row) => row.value === f.trackingStatus) ?? trackingRows[0];
             const isEditing = editingFinding === f.id;
 
             return (
@@ -643,28 +681,28 @@ function CategoryDetailPanel({
                     <div className="flex items-center gap-2 flex-wrap">
                       <h4 className="text-sm font-semibold text-foreground">{f.title}</h4>
                       <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${sev.cls}`}>{sev.label}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${ts.cls}`}>{ts.label}</span>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${trk.cls}`}>{trk.label}</span>
                     </div>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">Analiz: {f.assessmentTitle}</p>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground">{t("analysisPrefix")} {f.assessmentTitle}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => isEditing ? onCancelEdit() : onStartEdit(f)}
                     className="shrink-0 rounded-lg px-2.5 py-1 text-[11px] font-medium text-primary hover:bg-primary/10 transition-colors"
                   >
-                    {isEditing ? "İptal" : "Düzenle"}
+                    {isEditing ? t("cancel") : t("edit")}
                   </button>
                 </div>
 
                 {f.recommendation && (
                   <div className="mt-2 rounded-lg bg-amber-50/50 p-2.5 dark:bg-amber-900/10">
-                    <p className="text-[10px] font-medium uppercase tracking-wider text-amber-600 dark:text-amber-400">Öneri</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-amber-600 dark:text-amber-400">{t("recommendation")}</p>
                     <p className="mt-0.5 text-xs text-foreground leading-5">{f.recommendation}</p>
                   </div>
                 )}
                 {f.actionText && (
                   <div className="mt-2 rounded-lg bg-blue-50/50 p-2.5 dark:bg-blue-900/10">
-                    <p className="text-[10px] font-medium uppercase tracking-wider text-blue-600 dark:text-blue-400">Aksiyon</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-blue-600 dark:text-blue-400">{t("action")}</p>
                     <p className="mt-0.5 text-xs text-foreground leading-5">{f.actionText}</p>
                   </div>
                 )}
@@ -681,7 +719,7 @@ function CategoryDetailPanel({
 
                 {!isEditing && f.trackingNotes && (
                   <div className="mt-2 rounded-lg bg-secondary/50 p-2.5">
-                    <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Notlar</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("notes")}</p>
                     <p className="mt-0.5 text-xs text-foreground leading-5 whitespace-pre-wrap">{f.trackingNotes}</p>
                   </div>
                 )}
@@ -689,35 +727,35 @@ function CategoryDetailPanel({
                 {isEditing && (
                   <div className="mt-3 space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
                     <div>
-                      <label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Durum</label>
+                      <label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("status")}</label>
                       <select
                         value={editStatus}
                         onChange={(e) => onChangeStatus(e.target.value as typeof editStatus)}
                         className="mt-1 h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"
                       >
-                        {TRACKING_STATUSES.map((ts) => (
-                          <option key={ts.value} value={ts.value}>{ts.label}</option>
+                        {trackingRows.map((row) => (
+                          <option key={row.value} value={row.value}>{row.label}</option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Not</label>
+                      <label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("note")}</label>
                       <textarea
                         value={editNotes}
                         onChange={(e) => onChangeNotes(e.target.value)}
                         rows={3}
-                        placeholder="Yapılan çalışmalar, gözlemler..."
+                        placeholder={t("notePlaceholder")}
                         className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 resize-none"
                       />
                     </div>
                     <div className="flex items-center gap-2">
                       <button type="button" onClick={() => onSave(f.id)} disabled={savingFinding}
                         className="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors disabled:opacity-50">
-                        {savingFinding ? "Kaydediliyor..." : "Kaydet"}
+                        {savingFinding ? t("saving") : t("save")}
                       </button>
                       <button type="button" onClick={onCancelEdit}
                         className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary transition-colors">
-                        Vazgeç
+                        {t("discard")}
                       </button>
                     </div>
                   </div>
@@ -733,9 +771,33 @@ function CategoryDetailPanel({
 
 /* ── Analiz Detay Paneli ── */
 function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAssessment; onClose: () => void; company?: CompanyRecord }) {
-  function fmtDate(d: string) { try { return new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" }); } catch { return d; } }
-  function methodLabel(m: string) { return m === "r_skor" ? "R-SKOR 2D" : m === "fine_kinney" ? "Fine-Kinney" : m === "l_matrix" ? "L-Matris" : m; }
-  function sevLabel(s: string) { return s === "critical" ? "Kritik" : s === "high" ? "Yüksek" : s === "medium" ? "Orta" : "Düşük"; }
+  const t = useTranslations("companyWorkspace.risk");
+  const locale = useLocale();
+  function fmtDate(d: string) {
+    return fmtDateLocale(d, locale);
+  }
+  function methodLabel(m: string) {
+    switch (m) {
+      case "r_skor": return t("method.r_skor");
+      case "fine_kinney": return t("method.fine_kinney");
+      case "l_matrix": return t("method.l_matrix");
+      case "fmea": return t("method.fmea");
+      case "hazop": return t("method.hazop");
+      default: return m;
+    }
+  }
+  function sevLabel(s: string) {
+    if (s === "critical") return t("severity.critical");
+    if (s === "high") return t("severity.high");
+    if (s === "medium") return t("severity.medium");
+    return t("severity.low");
+  }
+  function severityRow(s: string) {
+    if (s === "critical") return { label: t("severity.critical"), cls: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" };
+    if (s === "high") return { label: t("severity.high"), cls: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400" };
+    if (s === "medium") return { label: t("severity.medium"), cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" };
+    return { label: t("severity.low"), cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" };
+  }
   const [exporting, setExporting] = useState<string | null>(null);
   const [showShare, setShowShare] = useState(false);
   const [shareToken, setShareToken] = useState<string | null>(null);
@@ -766,7 +828,7 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
   }
 
   function shareWhatsApp() {
-    const text = `RiskNova - ${analysis.title} Risk Analizi Raporu\n${shareUrl}`;
+    const text = t("shareWhatsappBody", { title: analysis.title, url: shareUrl });
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   }
 
@@ -877,24 +939,24 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
           <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
             <span>{fmtDate(analysis.assessmentDate)}</span>
             <span>{methodLabel(analysis.method)}</span>
-            <span className="font-semibold text-foreground">{totalFindings} tespit</span>
+            <span className="font-semibold text-foreground">{t("findingsInRow", { count: totalFindings })}</span>
             {analysis.locationText && <span>{analysis.locationText}</span>}
             {analysis.departmentName && <span>{analysis.departmentName}</span>}
           </div>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 rounded-xl border border-border/60 bg-secondary/30 p-1">
-            <button type="button" onClick={() => void handleExport("pdf")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/20" title="PDF İndir">
+            <button type="button" onClick={() => void handleExport("pdf")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/20" title={t("exportPdfTitle")}>
               {exporting === "pdf" ? "..." : "PDF"}
             </button>
-            <button type="button" onClick={() => void handleExport("word")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-blue-600 transition-colors hover:bg-blue-50 disabled:opacity-50 dark:text-blue-400 dark:hover:bg-blue-900/20" title="Word İndir">
+            <button type="button" onClick={() => void handleExport("word")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-blue-600 transition-colors hover:bg-blue-50 disabled:opacity-50 dark:text-blue-400 dark:hover:bg-blue-900/20" title={t("exportWordTitle")}>
               {exporting === "word" ? "..." : "Word"}
             </button>
-            <button type="button" onClick={() => void handleExport("excel")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-emerald-600 transition-colors hover:bg-emerald-50 disabled:opacity-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" title="Excel İndir">
+            <button type="button" onClick={() => void handleExport("excel")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-emerald-600 transition-colors hover:bg-emerald-50 disabled:opacity-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" title={t("exportExcelTitle")}>
               {exporting === "excel" ? "..." : "Excel"}
             </button>
           </div>
-          <button type="button" onClick={() => setShowShare(!showShare)} className={`rounded-xl p-2 transition-colors ${showShare ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`} title="Paylaş">
+          <button type="button" onClick={() => setShowShare(!showShare)} className={`rounded-xl p-2 transition-colors ${showShare ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`} title={t("shareButtonTitle")}>
             <Share2 size={18} strokeWidth={2} />
           </button>
           <button type="button" onClick={onClose} className="rounded-xl p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
@@ -908,8 +970,8 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
         <div className="border-b border-border bg-gradient-to-r from-emerald-50/50 to-transparent px-5 py-4 dark:from-emerald-950/20">
           <div className="flex flex-wrap items-start gap-5">
             <div className="flex-1 min-w-[200px]">
-              <h4 className="text-base font-bold text-foreground">Rapor Paylaşımı</h4>
-              <p className="mt-1 text-sm text-muted-foreground">Paylaşım linkini açarak bu raporu herkesle paylaşabilirsiniz.</p>
+              <h4 className="text-base font-bold text-foreground">{t("shareTitle")}</h4>
+              <p className="mt-1 text-sm text-muted-foreground">{t("shareDescription")}</p>
               <div className="mt-4 flex items-center gap-3">
                 <button
                   type="button"
@@ -917,14 +979,14 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
                   disabled={sharingToggle}
                   className={`h-11 rounded-xl px-6 text-sm font-bold shadow-md transition-all hover:shadow-lg ${shareToken ? "bg-emerald-600 text-white hover:bg-emerald-700" : "bg-[var(--gold)] text-white hover:brightness-110"}`}
                 >
-                  {sharingToggle ? "..." : shareToken ? "✓ Paylaşım Aktif" : "Paylaşım Linkini Aç"}
+                  {sharingToggle ? "..." : shareToken ? t("shareActive") : t("shareEnable")}
                 </button>
                 {shareToken && (
                   <>
-                    <button type="button" onClick={copyShareLink} className="inline-flex h-11 items-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-semibold text-foreground shadow-sm transition-all hover:bg-secondary hover:shadow-md" title="Linki Kopyala">
-                      {copied ? <><Check size={16} className="text-emerald-600" /> Kopyalandı</> : <><Copy size={16} /> Kopyala</>}
+                    <button type="button" onClick={copyShareLink} className="inline-flex h-11 items-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-semibold text-foreground shadow-sm transition-all hover:bg-secondary hover:shadow-md" title={t("shareCopyTitle")}>
+                      {copied ? <><Check size={16} className="text-emerald-600" /> {t("shareCopied")}</> : <><Copy size={16} /> {t("shareCopyTitle")}</>}
                     </button>
-                    <button type="button" onClick={shareWhatsApp} className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#25D366] px-5 text-sm font-bold text-white shadow-md transition-all hover:brightness-110 hover:shadow-lg" title="WhatsApp ile Paylaş">
+                    <button type="button" onClick={shareWhatsApp} className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#25D366] px-5 text-sm font-bold text-white shadow-md transition-all hover:brightness-110 hover:shadow-lg" title={t("shareWhatsappTitle")}>
                       <MessageCircle size={18} /> WhatsApp
                     </button>
                   </>
@@ -940,9 +1002,9 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
               <div className="flex flex-col items-center gap-2">
                 <div className="rounded-xl border border-border bg-white p-2 shadow-sm">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={qrDataUrl} alt="QR Kod" width={120} height={120} />
+                  <img src={qrDataUrl} alt={t("qrAlt")} width={120} height={120} />
                 </div>
-                <p className="text-[10px] text-muted-foreground">QR ile paylaş</p>
+                <p className="text-[10px] text-muted-foreground">{t("qrCaption")}</p>
               </div>
             )}
           </div>
@@ -952,7 +1014,7 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
       {/* Katılımcılar */}
       {Array.isArray(analysis.participants) && analysis.participants.length > 0 && (
         <div className="border-b border-border px-5 py-3">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Katılımcılar</p>
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("participantsHeading")}</p>
           <div className="mt-1.5 flex flex-wrap gap-2">
             {(analysis.participants as { fullName: string; title: string }[]).map((p, i) => (
               <span key={i} className="rounded-full border border-border px-2.5 py-0.5 text-xs text-foreground">
@@ -966,7 +1028,7 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
       {/* Analiz notu */}
       {analysis.analysisNote && (
         <div className="border-b border-border px-5 py-3">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Analiz Notu</p>
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("analysisNoteHeading")}</p>
           <p className="mt-1 text-sm text-foreground leading-6">{analysis.analysisNote}</p>
         </div>
       )}
@@ -974,13 +1036,13 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
       {/* Satırlar — görseller ve tespitler */}
       <div className="p-5 space-y-6">
         {analysis.rows.length === 0 ? (
-          <p className="text-center text-sm text-muted-foreground">Bu analizde henüz satır yok.</p>
+          <p className="text-center text-sm text-muted-foreground">{t("emptyAnalysisRows")}</p>
         ) : analysis.rows.map((row, ri) => (
           <div key={row.id} className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">{ri + 1}</span>
               <h4 className="text-sm font-semibold text-foreground">{row.title}</h4>
-              <span className="text-xs text-muted-foreground">({row.findings.length} tespit)</span>
+              <span className="text-xs text-muted-foreground">{t("rowFindingCount", { count: row.findings.length })}</span>
             </div>
             {row.description && <p className="text-xs text-muted-foreground ml-8">{row.description}</p>}
 
@@ -1009,7 +1071,7 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
             {row.findings.length > 0 && (
               <div className="ml-8 space-y-2">
                 {row.findings.map((f) => {
-                  const sev = severityBadge(f.severity);
+                  const sev = severityRow(f.severity);
                   return (
                     <div key={f.id} className="rounded-lg border border-border bg-secondary/20 p-3">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -1018,10 +1080,10 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
                         <span className="text-[10px] text-muted-foreground">{f.category}</span>
                       </div>
                       {f.recommendation && (
-                        <p className="mt-1.5 text-xs text-muted-foreground leading-5"><span className="font-medium text-foreground">Öneri:</span> {f.recommendation}</p>
+                        <p className="mt-1.5 text-xs text-muted-foreground leading-5"><span className="font-medium text-foreground">{t("recommendationInline")}</span> {f.recommendation}</p>
                       )}
                       {f.actionText && (
-                        <p className="mt-1 text-xs text-muted-foreground leading-5"><span className="font-medium text-foreground">Aksiyon:</span> {f.actionText}</p>
+                        <p className="mt-1 text-xs text-muted-foreground leading-5"><span className="font-medium text-foreground">{t("actionInline")}</span> {f.actionText}</p>
                       )}
                       {f.legalReferences.length > 0 && (
                         <div className="mt-1.5 flex flex-wrap gap-1">
@@ -1081,6 +1143,9 @@ export function PeopleTab({ company, upd }: { company: CompanyRecord; upd: (p: P
 type TrackingSection = "actions" | "trainings" | "controls" | "committee";
 
 export function TrackingTab({ company }: { company: CompanyRecord }) {
+  const tt = useTranslations("companyWorkspace.tracking");
+  const tr = useTranslations("companyWorkspace.risk");
+  const locale = useLocale();
   const [section, setSection] = useState<TrackingSection>("actions");
   const [, setSummary] = useState<TrackingSummary | null>(null);
   const [loading, setLoading] = useState(true);
@@ -1123,17 +1188,16 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
   }, [company.id]);
 
   function fmtDate(d: string | null) {
-    if (!d) return "—";
-    try { return new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "short", year: "numeric" }); } catch { return d; }
+    return fmtDateShortLocale(d, locale);
   }
 
   const today = new Date().toISOString().split("T")[0];
 
   const SECTIONS: { k: TrackingSection; l: string; count: number }[] = [
-    { k: "actions", l: "Açık Aksiyonlar", count: actions.length },
-    { k: "trainings", l: "Eğitimler", count: trainings.length },
-    { k: "controls", l: "Periyodik Kontrol", count: controls.length },
-    { k: "committee", l: "İSG Kurul", count: meetings.length },
+    { k: "actions", l: tt("sectionActions"), count: actions.length },
+    { k: "trainings", l: tt("sectionTrainings"), count: trainings.length },
+    { k: "controls", l: tt("sectionControls"), count: controls.length },
+    { k: "committee", l: tt("sectionCommittee"), count: meetings.length },
   ];
 
   return (
@@ -1156,9 +1220,9 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
         <>
           {/* Açık Aksiyonlar */}
           {section === "actions" && (
-            <Sec title="Açık Aksiyonlar" desc="Risk tespitleri, DÖF ve İSG görevlerinden gelen açık aksiyonlar.">
+            <Sec title={tt("actionsTitle")} desc={tt("actionsDesc")}>
               {actions.length === 0 ? (
-                <p className="text-center text-sm text-muted-foreground py-6">Açık aksiyon bulunmuyor.</p>
+                <p className="text-center text-sm text-muted-foreground py-6">{tt("noActions")}</p>
               ) : (
                 <>
                 {/* Severity breakdown */}
@@ -1173,15 +1237,15 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                     const task = actions.filter((a) => a.source === "isg_task").length;
                     return (
                       <>
-                        <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-bold text-foreground">Toplam: {actions.length}</span>
-                        {cr > 0 && <span className="rounded-full bg-red-100 px-2.5 py-1 text-[11px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">Kritik: {cr}</span>}
-                        {hi > 0 && <span className="rounded-full bg-orange-100 px-2.5 py-1 text-[11px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">Yüksek: {hi}</span>}
-                        {md > 0 && <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Orta: {md}</span>}
-                        {lo > 0 && <span className="rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">Düşük: {lo}</span>}
+                        <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-bold text-foreground">{tt("badgeTotal", { count: actions.length })}</span>
+                        {cr > 0 && <span className="rounded-full bg-red-100 px-2.5 py-1 text-[11px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">{tr("badgeCritical", { count: cr })}</span>}
+                        {hi > 0 && <span className="rounded-full bg-orange-100 px-2.5 py-1 text-[11px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">{tr("badgeHigh", { count: hi })}</span>}
+                        {md > 0 && <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">{tr("badgeMedium", { count: md })}</span>}
+                        {lo > 0 && <span className="rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">{tr("badgeLow", { count: lo })}</span>}
                         <span className="ml-auto" />
-                        {risk > 0 && <span className="rounded-full bg-blue-50 px-2 py-1 text-[10px] font-medium text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">Risk: {risk}</span>}
-                        {dof > 0 && <span className="rounded-full bg-purple-50 px-2 py-1 text-[10px] font-medium text-purple-600 dark:bg-purple-900/20 dark:text-purple-400">DÖF: {dof}</span>}
-                        {task > 0 && <span className="rounded-full bg-cyan-50 px-2 py-1 text-[10px] font-medium text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400">Görev: {task}</span>}
+                        {risk > 0 && <span className="rounded-full bg-blue-50 px-2 py-1 text-[10px] font-medium text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">{tt("sourceRisk")}: {risk}</span>}
+                        {dof > 0 && <span className="rounded-full bg-purple-50 px-2 py-1 text-[10px] font-medium text-purple-600 dark:bg-purple-900/20 dark:text-purple-400">{tt("sourceDof")}: {dof}</span>}
+                        {task > 0 && <span className="rounded-full bg-cyan-50 px-2 py-1 text-[10px] font-medium text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400">{tt("sourceTask")}: {task}</span>}
                       </>
                     );
                   })()}
@@ -1195,7 +1259,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                     const srcCls = a.source === "risk" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
                       : a.source === "dof" ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
                       : "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400";
-                    const srcLabel = a.source === "risk" ? "Risk" : a.source === "dof" ? "DÖF" : "Görev";
+                    const srcLabel = a.source === "risk" ? tt("sourceRisk") : a.source === "dof" ? tt("sourceDof") : tt("sourceTask");
                     const isEditingThis = editingActionId === a.id && a.source === "risk";
                     return (
                       <div key={a.id} className="rounded-lg border border-border bg-secondary/20 p-3">
@@ -1203,9 +1267,9 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="text-sm font-medium text-foreground">{a.title}</span>
-                              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${sevCls}`}>{a.severity === "critical" ? "Kritik" : a.severity === "high" ? "Yüksek" : a.severity === "medium" ? "Orta" : "Düşük"}</span>
+                              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${sevCls}`}>{a.severity === "critical" ? tr("severity.critical") : a.severity === "high" ? tr("severity.high") : a.severity === "medium" ? tr("severity.medium") : tr("severity.low")}</span>
                               <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${srcCls}`}>{srcLabel}</span>
-                              {a.status === "in_progress" && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Devam Ediyor</span>}
+                              {a.status === "in_progress" && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">{tr("trackingStatus.in_progress")}</span>}
                             </div>
                             <p className="mt-0.5 text-[11px] text-muted-foreground">{a.sourceLabel}</p>
                           </div>
@@ -1215,7 +1279,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                             )}
                             {a.source === "risk" && !isEditingThis && (
                               <button type="button" onClick={() => { setEditingActionId(a.id); setActionNewStatus(a.status === "in_progress" ? "in_progress" : "open"); }}
-                                className="rounded-lg px-2 py-1 text-[11px] font-medium text-primary hover:bg-primary/10 transition-colors">Durum</button>
+                                className="rounded-lg px-2 py-1 text-[11px] font-medium text-primary hover:bg-primary/10 transition-colors">{tt("statusButton")}</button>
                             )}
                           </div>
                         </div>
@@ -1223,9 +1287,9 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                           <div className="mt-2 flex items-center gap-2 rounded-lg bg-primary/5 p-2">
                             <select value={actionNewStatus} onChange={(e) => setActionNewStatus(e.target.value as typeof actionNewStatus)}
                               className="h-8 rounded-lg border border-border bg-card px-2 text-xs text-foreground">
-                              <option value="open">Açık</option>
-                              <option value="in_progress">Devam Ediyor</option>
-                              <option value="resolved">Çözüldü</option>
+                              <option value="open">{tr("trackingStatus.open")}</option>
+                              <option value="in_progress">{tr("trackingStatus.in_progress")}</option>
+                              <option value="resolved">{tr("trackingStatus.resolved")}</option>
                             </select>
                             <button type="button" disabled={savingAction} onClick={async () => {
                               setSavingAction(true);
@@ -1241,10 +1305,10 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                               setSavingAction(false);
                               setEditingActionId(null);
                             }} className="rounded-lg bg-primary px-2.5 py-1 text-[11px] font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50">
-                              {savingAction ? "..." : "Kaydet"}
+                              {savingAction ? "..." : tr("save")}
                             </button>
                             <button type="button" onClick={() => setEditingActionId(null)}
-                              className="rounded-lg border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground hover:bg-secondary">Vazgeç</button>
+                              className="rounded-lg border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground hover:bg-secondary">{tr("discard")}</button>
                           </div>
                         )}
                       </div>
@@ -1322,7 +1386,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
 
           {/* Periyodik Kontroller */}
           {section === "controls" && (
-            <Sec title="Periyodik Kontroller" desc="Yasal zorunlu periyodik kontrol ve muayeneler.">
+            <Sec title={tt("controlsTitle")} desc={tt("controlsDesc")}>
               <div className="flex justify-end mb-3">
                 <button type="button" onClick={() => { setEditingControl(null); setShowControlForm(!showControlForm); }}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors">
@@ -1389,7 +1453,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
 
           {/* İSG Kurul */}
           {section === "committee" && (
-            <Sec title="İSG Kurul Toplantıları" desc={`Tehlike sınıfı: ${company.hazardClass || "Belirlenmedi"} — Periyod: ${getCommitteePeriodMonths(company.hazardClass)} ayda bir`}>
+            <Sec title={tt("committeeTitle")} desc={tt("committeeDesc", { hazardClass: company.hazardClass || tt("hazardUnknown"), months: getCommitteePeriodMonths(company.hazardClass) })}>
               <div className="flex justify-end mb-3">
                 <button type="button" onClick={() => { setEditingMeeting(null); setShowMeetingForm(!showMeetingForm); }}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors">

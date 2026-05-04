@@ -348,6 +348,62 @@
   "brand": {
     "tagline": "AI-संचालित व्यावसायिक स्वास्थ्य और सुरक्षा प्लेटफॉर्म"
   },
+  "trainingHubPage": {
+    "title": "प्रशिक्षण",
+    "description": "स्लाइड लाइब्रेरी, सर्वे और परीक्षा प्रवाह, निजी लिंक और परिणाम विश्लेषण इस मॉड्यूल में हैं.",
+    "actions": {
+      "aiTraining": "AI से प्रशिक्षण बनाएं",
+      "slideLibrary": "मेरी स्लाइड लाइब्रेरी",
+      "certificates": "प्रमाणपत्र",
+      "createNew": "नया बनाएं"
+    },
+    "library": {
+      "back": "OHS लाइब्रेरी",
+      "eyebrow": "OHS लाइब्रेरी एकीकरण",
+      "title": "इस मॉड्यूल में प्रशिक्षण और परीक्षा सामग्री प्रबंधित करें",
+      "tabs": {
+        "education": "प्रशिक्षण सामग्री",
+        "assessment": "परीक्षा और सर्वे सामग्री"
+      },
+      "emptyPrefix": "इस श्रेणी में अभी कोई लाइब्रेरी सामग्री नहीं है. सामग्री जोड़ने या सभी रिकॉर्ड देखने के लिए",
+      "emptyLink": "OHS लाइब्रेरी पर जाएं",
+      "fallbackDescription": "लाइब्रेरी सामग्री",
+      "openContent": "सामग्री खोलें",
+      "useInModule": "मॉड्यूल में उपयोग करें"
+    },
+    "tabs": {
+      "all": "सभी",
+      "surveys": "सर्वे",
+      "exams": "परीक्षाएं"
+    },
+    "filters": {
+      "searchPlaceholder": "सर्वे या परीक्षा खोजें...",
+      "allStatuses": "सभी"
+    },
+    "status": {
+      "draft": "ड्राफ्ट",
+      "active": "सक्रिय",
+      "closed": "बंद",
+      "archived": "आर्काइव"
+    },
+    "types": {
+      "exam": "परीक्षा",
+      "survey": "सर्वे"
+    },
+    "empty": {
+      "title": "अभी कोई सर्वे या परीक्षा नहीं",
+      "description": "अपना पहला सर्वे या परीक्षा बनाने के लिए \"नया बनाएं\" पर क्लिक करें"
+    },
+    "card": {
+      "passScore": "उत्तीर्ण अंक: {score}%",
+      "duration": "अवधि: {minutes} मिनट"
+    },
+    "errors": {
+      "noSession": "कोई सत्र नहीं मिला. पेज रीफ्रेश करें.",
+      "authRequired": "साइन इन आवश्यक है.",
+      "organizationMissing": "संगठन कनेक्शन नहीं मिला. अपनी प्रोफ़ाइल या सदस्यता सेटिंग जांचें."
+    }
+  },
   "certificateVerify": {
     "certNo": "प्रमाणपत्र संख्या",
     "date": "दिनांक",
@@ -575,6 +631,168 @@
       "risk": "जोखिम और फील्ड",
       "structure": "परिसर",
       "tracking": "ट्रैकिंग"
+    },
+    "structure": {
+      "summaryLocation": "Location",
+      "summaryDepartment": "Department",
+      "summaryEmployee": "Employee",
+      "locationsTitle": "Locations",
+      "locationsSubtitle": "Company physical sites",
+      "departmentsTitle": "Departments",
+      "departmentsSubtitle": "Organisational units",
+      "locationPlaceholder": "Enter location name",
+      "departmentPlaceholder": "Enter department name",
+      "addLocation": "Add location",
+      "addDepartment": "Add department"
+    },
+    "risk": {
+      "pageTitle": "Risk and field management",
+      "pageSubtitle": "Risk classification, analysis history and process tracking.",
+      "tabMap": "Risk map",
+      "tabAnalyses": "Analyses ({count})",
+      "newAnalysis": "New analysis",
+      "metricTotalFindings": "Total findings",
+      "metricCritical": "Critical",
+      "metricHigh": "High",
+      "metricAnalysisCount": "Analyses",
+      "badgeCritical": "Critical: {count}",
+      "badgeHigh": "High: {count}",
+      "badgeMedium": "Medium: {count}",
+      "badgeLow": "Low: {count}",
+      "noFindingsCategory": "No findings yet",
+      "addCategoryTitle": "Add category",
+      "addCategoryHint": "Define a custom risk category",
+      "categoryRisksTitle": "{label} risks",
+      "findingsCountLabel": "{count} findings",
+      "noFindingsInCategory": "No findings in this category yet.",
+      "analysisPrefix": "Analysis:",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "discard": "Discard",
+      "recommendation": "Recommendation",
+      "action": "Action",
+      "notes": "Notes",
+      "status": "Status",
+      "note": "Note",
+      "notePlaceholder": "Work done, observations…",
+      "emptyAnalysesTitle": "No risk analysis yet",
+      "emptyAnalysesDescription": "Start the first analysis for this company from the Risk analysis page.",
+      "findingsInRow": "{count} findings",
+      "archiveTitle": "Archive",
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "confirmDelete": "Delete?",
+      "yes": "Yes",
+      "no": "No",
+      "exportPdfTitle": "Download PDF",
+      "exportWordTitle": "Download Word",
+      "exportExcelTitle": "Download Excel",
+      "analysisStatus": {
+        "completed": "Completed",
+        "archived": "Archived",
+        "draft": "Draft"
+      },
+      "trackingStatus": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "archived": "Archived"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "method": {
+        "r_skor": "R-SCORE 2D",
+        "fine_kinney": "Fine-Kinney",
+        "l_matrix": "L-Matrix",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "shareTitle": "Report sharing",
+      "shareDescription": "Anyone with the link can view this report.",
+      "shareEnable": "Enable sharing link",
+      "shareActive": "Sharing on",
+      "shareCopyTitle": "Copy link",
+      "shareCopied": "Copied",
+      "shareWhatsappTitle": "Share via WhatsApp",
+      "shareButtonTitle": "Share",
+      "shareWhatsappBody": "RiskNova — {title}\n{url}",
+      "participantsHeading": "Participants",
+      "analysisNoteHeading": "Analysis note",
+      "emptyAnalysisRows": "No rows in this analysis yet.",
+      "rowFindingCount": "({count})",
+      "recommendationInline": "Recommendation:",
+      "actionInline": "Action:",
+      "qrAlt": "QR code",
+      "qrCaption": "Share with QR",
+      "categories": {
+        "fiziksel": {
+          "label": "Physical",
+          "examples": "Noise, vibration, lighting, temperature"
+        },
+        "kimyasal": {
+          "label": "Chemical",
+          "examples": "Gas, dust, vapour, chemicals"
+        },
+        "biyolojik": {
+          "label": "Biological",
+          "examples": "Bacteria, viruses, mould, biological agents"
+        },
+        "ergonomik": {
+          "label": "Ergonomic",
+          "examples": "Poor posture, heavy loads, repetitive motion"
+        },
+        "psikososyal": {
+          "label": "Psychosocial",
+          "examples": "Stress, bullying, workload, shifts"
+        },
+        "mekanik": {
+          "label": "Mechanical",
+          "examples": "Machinery, equipment, falls, crushing"
+        },
+        "elektrik": {
+          "label": "Electrical",
+          "examples": "Electric shock, short circuit, earthing"
+        },
+        "yangin": {
+          "label": "Fire / explosion",
+          "examples": "Flammable material, explosive atmosphere, LPG"
+        },
+        "trafik": {
+          "label": "Traffic",
+          "examples": "Vehicles, forklifts, pedestrian–vehicle conflict"
+        },
+        "cevre": {
+          "label": "Environmental",
+          "examples": "Waste, emissions, noise pollution"
+        }
+      }
+    },
+    "tracking": {
+      "sectionActions": "Open actions",
+      "sectionTrainings": "Trainings",
+      "sectionControls": "Periodic inspection",
+      "sectionCommittee": "OHS committee",
+      "hazardUnknown": "Not determined",
+      "actionsTitle": "Open actions",
+      "actionsDesc": "Open actions from risk findings, CAPA and OHS tasks.",
+      "noActions": "No open actions.",
+      "badgeTotal": "Total: {count}",
+      "sourceRisk": "Risk",
+      "sourceDof": "CAPA",
+      "sourceTask": "Task",
+      "statusButton": "Status",
+      "trainingsTitle": "Training tracking",
+      "trainingsDesc": "Company training plans and records.",
+      "controlsTitle": "Periodic inspections",
+      "controlsDesc": "Legally required periodic inspections and examinations.",
+      "committeeTitle": "OHS committee meetings",
+      "committeeDesc": "Hazard class: {hazardClass} — every {months} months"
     }
   },
   "consent": {
@@ -2560,531 +2778,480 @@
         "regulation": "कानून",
         "responsible": "जिम्मेदार",
         "topic": "कार्य विषय"
-      },
-      "months": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ]
+      }
     },
     "shell": {
-      "title": "Planner",
-      "description": "OHS tasks, annual work plan, training plan and timesheet under one roof.",
+      "title": "प्लानर",
+      "description": "OHS कार्य, वार्षिक कार्य योजना, प्रशिक्षण योजना और टाइमशीट एक ही स्थान पर।",
       "tabs": {
         "planner": {
-          "label": "Planner",
-          "desc": "Calendar ? tasks ? reminders"
+          "label": "प्लानर",
+          "desc": "कैलेंडर, कार्य और अनुस्मारक"
         },
         "workPlan": {
-          "label": "Annual work plan",
-          "desc": "OHS annual work plan (official form)"
+          "label": "वार्षिक कार्य योजना",
+          "desc": "OHS वार्षिक कार्य योजना (आधिकारिक फॉर्म)"
         },
         "trainingPlan": {
-          "label": "Annual training",
-          "desc": "Training plan, participants and certificates"
+          "label": "वार्षिक प्रशिक्षण",
+          "desc": "प्रशिक्षण योजना, प्रतिभागी और प्रमाणपत्र"
         },
         "timesheet": {
-          "label": "Timesheet",
-          "desc": "Hours and fee tracking"
+          "label": "टाइमशीट",
+          "desc": "घंटे और शुल्क ट्रैकिंग"
         }
       }
     },
     "core": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "weekdays": [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-      ],
-      "pageTitle": "OHS planner",
-      "pageDescription": "Plan and track occupational health and safety tasks.",
+      "pageTitle": "OHS प्लानर",
+      "pageDescription": "व्यावसायिक स्वास्थ्य और सुरक्षा कार्यों की योजना बनाएं और ट्रैक करें।",
       "actions": {
-        "newTask": "New task",
-        "dismissError": "Dismiss error",
-        "cancel": "Cancel",
-        "saving": "Saving...",
-        "create": "Create",
-        "update": "Update"
+        "newTask": "नया कार्य",
+        "dismissError": "त्रुटि खारिज करें",
+        "cancel": "रद्द करें",
+        "saving": "सहेजा जा रहा है...",
+        "create": "बनाएं",
+        "update": "अपडेट करें"
       },
       "stats": {
-        "total": "Total"
+        "total": "कुल"
       },
       "filters": {
-        "allCategories": "All categories",
-        "allStatuses": "All statuses",
-        "allCompanies": "All companies"
+        "allCategories": "सभी श्रेणियां",
+        "allStatuses": "सभी स्थितियां",
+        "allCompanies": "सभी कंपनियां"
       },
       "views": {
-        "month": "Calendar",
-        "list": "List"
+        "month": "कैलेंडर",
+        "list": "सूची"
       },
       "sidebar": {
-        "categories": "Categories",
-        "all": "All",
-        "addCategory": "Add category",
-        "quickAdd": "Quick add"
+        "categories": "श्रेणियां",
+        "all": "सभी",
+        "addCategory": "श्रेणी जोड़ें",
+        "quickAdd": "त्वरित जोड़ें"
       },
       "calendar": {
-        "more": "+{count} more"
+        "more": "+{count} और"
       },
       "empty": {
-        "title": "No tasks yet",
-        "description": "Click the New task button above."
+        "title": "अभी तक कोई कार्य नहीं",
+        "description": "ऊपर नया कार्य बटन पर क्लिक करें।"
       },
       "recurrence": {
-        "none": "Does not repeat",
-        "daily": "Daily",
-        "weekly": "Weekly",
-        "monthly": "Monthly",
-        "quarterly": "Quarterly",
-        "biannual": "Every six months",
-        "annual": "Annual"
+        "none": "दोहराता नहीं",
+        "daily": "दैनिक",
+        "weekly": "साप्ताहिक",
+        "monthly": "मासिक",
+        "quarterly": "त्रैमासिक",
+        "biannual": "हर छह महीने",
+        "annual": "वार्षिक"
       },
       "status": {
-        "planned": "Planned",
-        "in_progress": "In progress",
-        "completed": "Completed",
-        "overdue": "Overdue",
-        "cancelled": "Cancelled"
+        "planned": "नियोजित",
+        "in_progress": "प्रगति में",
+        "completed": "पूर्ण",
+        "overdue": "देरी से",
+        "cancelled": "रद्द"
       },
       "categories": {
-        "periodicControl": "Periodic inspection",
-        "training": "Training",
-        "healthFollowUp": "Health follow-up",
-        "meetingDrill": "Meeting & drill",
-        "legalObligation": "Legal obligation",
-        "fieldVisit": "Field visit",
-        "ohsCommitteeMeeting": "OHS committee meeting",
-        "other": "Other"
+        "periodicControl": "आवधिक निरीक्षण",
+        "training": "प्रशिक्षण",
+        "healthFollowUp": "स्वास्थ्य फॉलो-अप",
+        "meetingDrill": "मीटिंग और ड्रिल",
+        "legalObligation": "कानूनी दायित्व",
+        "fieldVisit": "फील्ड विज़िट",
+        "ohsCommitteeMeeting": "OHS समिति मीटिंग",
+        "other": "अन्य"
       },
       "modal": {
-        "newTitle": "New task",
-        "editTitle": "Edit task",
-        "optional": "- optional",
+        "newTitle": "नया कार्य",
+        "editTitle": "कार्य संपादित करें",
+        "optional": "- वैकल्पिक",
         "fields": {
-          "title": "Title *",
-          "description": "Description",
-          "category": "Category",
-          "status": "Status",
-          "company": "Company",
-          "startDate": "Start date *",
-          "endDate": "End date",
-          "recurrence": "Repeat",
-          "reminderDays": "Reminder (days before)",
-          "includeTimesheet": "Add to timesheet",
-          "timesheetHours": "Working time (hours)",
-          "hourlyRate": "Hourly rate"
+          "title": "शीर्षक *",
+          "description": "विवरण",
+          "category": "श्रेणी",
+          "status": "स्थिति",
+          "company": "कंपनी",
+          "startDate": "प्रारंभ तिथि *",
+          "endDate": "समाप्ति तिथि",
+          "recurrence": "दोहराएं",
+          "reminderDays": "रिमाइंडर (दिन पहले)",
+          "includeTimesheet": "टाइमशीट में जोड़ें",
+          "timesheetHours": "कार्य समय (घंटे)",
+          "hourlyRate": "प्रति घंटा दर"
         },
         "placeholders": {
-          "title": "Task title",
-          "description": "Task description...",
-          "category": "Select category...",
-          "company": "Select company...",
-          "hours": "e.g. 4.5",
-          "rate": "e.g. 250"
+          "title": "कार्य शीर्षक",
+          "description": "कार्य विवरण...",
+          "category": "श्रेणी चुनें...",
+          "company": "कंपनी चुनें...",
+          "hours": "जैसे 4.5",
+          "rate": "जैसे 250"
         }
       },
       "errors": {
-        "orgNotFound": "Organisation information not found. Please sign in again.",
-        "saveFailed": "An error occurred while saving."
+        "orgNotFound": "संगठन की जानकारी नहीं मिली। कृपया फिर से साइन इन करें।",
+        "saveFailed": "सहेजते समय त्रुटि हुई।"
       },
-      "confirmDeleteTask": "Are you sure you want to delete this task?"
+      "confirmDeleteTask": "क्या आप वाकई इस कार्य को हटाना चाहते हैं?"
     },
     "yearlyTraining": {
       "defaultTrainings": [
         {
+          "audience": "कर्मचारी",
           "category": "genel",
-          "title": "Information on occupational health and safety legislation",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "व्यावसायिक स्वास्थ्य और सुरक्षा कानून की जानकारी",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "genel",
-          "title": "General information on employee rights and responsibilities",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "कर्मचारी अधिकार और जिम्मेदारियों की सामान्य जानकारी",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "genel",
-          "title": "Workplace cleanliness and order",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "कार्यस्थल स्वच्छता और व्यवस्था",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "genel",
-          "title": "Legal consequences of occupational accidents and diseases",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "व्यावसायिक दुर्घटनाओं और बीमारियों के कानूनी परिणाम",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "saglik",
-          "title": "Causes of occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "व्यावसायिक बीमारियों के कारण",
+          "trainer": "कार्यक्षेत्र चिकित्सक"
         },
         {
+          "audience": "कर्मचारी",
           "category": "saglik",
-          "title": "Prevention principles and protection techniques for occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "व्यावसायिक बीमारियों के लिए रोकथाम सिद्धांत और सुरक्षा तकनीकें",
+          "trainer": "कार्यक्षेत्र चिकित्सक"
         },
         {
+          "audience": "कर्मचारी",
           "category": "saglik",
-          "title": "Biological risk factors and the occupational diseases they may cause",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "जैविक जोखिम कारक और उनसे होने वाली व्यावसायिक बीमारियां",
+          "trainer": "कार्यक्षेत्र चिकित्सक"
         },
         {
+          "audience": "चयनित कर्मचारी",
           "category": "saglik",
-          "title": "First aid and rescue techniques",
-          "trainer": "External training (first aider)",
-          "audience": "Selected employees"
+          "title": "प्राथमिक चिकित्सा और बचाव तकनीकें",
+          "trainer": "बाहरी प्रशिक्षण (प्राथमिक चिकित्सक)"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Risk factors when working with chemicals",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "रसायनों के साथ काम करते समय जोखिम कारक",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Physical risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "भौतिक जोखिम कारक",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Ergonomic risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "एर्गोनॉमिक जोखिम कारक",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Manual lifting and carrying",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "मैन्युअल उठाना और ले जाना",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Flash, explosion, fire and fire protection",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "फ्लैश, विस्फोट, आग और अग्नि सुरक्षा",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Safe use of work equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "कार्य उपकरण का सुरक्षित उपयोग और संबंधित जोखिम",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कार्यालयीन कर्मचारी",
           "category": "teknik",
-          "title": "Working with display screen equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Office employees"
+          "title": "डिस्प्ले स्क्रीन उपकरण के साथ कार्य और संबंधित जोखिम",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Electrical hazards, risks and precautions",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "विद्युत खतरे, जोखिम और सावधानियां",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Causes of occupational accidents and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "व्यावसायिक दुर्घटनाओं के कारण और रोकथाम सिद्धांत",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Falls and health impacts (accident prevention)",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "गिरना और स्वास्थ्य प्रभाव (दुर्घटना रोकथाम)",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Selection and use of personal protective equipment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "व्यक्तिगत सुरक्षा उपकरण का चयन और उपयोग",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "General OHS rules and basic safety",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "सामान्य OHS नियम और बुनियादी सुरक्षा",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Evacuation and rescue",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "निकासी और बचाव",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Causes of accidents and injuries and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "दुर्घटनाओं और चोटों के कारण और रोकथाम सिद्धांत",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "कर्मचारी",
           "category": "teknik",
-          "title": "Occupational hygiene and risks from the working environment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "व्यावसायिक स्वच्छता और कार्य वातावरण से जोखिम",
+          "trainer": "OHS विशेषज्ञ"
         },
         {
+          "audience": "संबंधित कर्मचारी",
           "category": "teknik",
-          "title": "Working at height",
-          "trainer": "External training",
-          "audience": "Relevant employees"
+          "title": "ऊंचाई पर काम",
+          "trainer": "बाहरी प्रशिक्षण"
         }
       ],
       "errors": {
-        "noSupabase": "No Supabase connection",
-        "loadFailed": "Could not load plan",
-        "selectCompany": "Please select a company",
-        "sessionNotFound": "Session not found",
-        "orgNotFound": "Organisation information not found",
-        "saveFailed": "Save failed"
+        "noSupabase": "कोई Supabase कनेक्शन नहीं",
+        "loadFailed": "योजना लोड नहीं हो सकी",
+        "selectCompany": "कृपया एक कंपनी चुनें",
+        "sessionNotFound": "सेशन नहीं मिला",
+        "orgNotFound": "संगठन की जानकारी नहीं मिली",
+        "saveFailed": "सेव नहीं हो सका"
       },
       "card": {
-        "title": "Annual OHS training plan",
-        "description": "24 standard training topics under the OHS training regulation. Stored per company ? year; planned date, duration, actual date, certificate and attendance are editable per row."
+        "title": "वार्षिक OHS प्रशिक्षण योजना",
+        "description": "OHS प्रशिक्षण नियमावली के तहत 24 मानक प्रशिक्षण विषय। कंपनी × वर्ष के अनुसार संग्रहीत; नियोजित तिथि, अवधि, वास्तविक तिथि, प्रमाणपत्र और उपस्थिति प्रत्येक पंक्ति में संपादन योग्य हैं।"
       },
       "fields": {
-        "company": "Company",
-        "companyPlaceholder": "Select a company",
-        "year": "Training year"
+        "company": "कंपनी",
+        "companyPlaceholder": "एक कंपनी चुनें",
+        "year": "प्रशिक्षण वर्ष"
       },
       "signers": {
-        "blockLabel": "Signatories (printed in the PDF signature area)",
-        "employer": "Employer / employer representative",
-        "employerPlaceholder": "Full name",
-        "physician": "Workplace physician",
-        "physicianPlaceholder": "Dr. Full name",
-        "safetyExpert": "OHS specialist",
-        "safetyExpertPlaceholder": "Full name ? Class (A/B/C)"
+        "blockLabel": "हस्ताक्षरकर्ता (PDF हस्ताक्षर क्षेत्र में मुद्रित)",
+        "employer": "नियोक्ता / नियोक्ता प्रतिनिधि",
+        "employerPlaceholder": "पूरा नाम",
+        "physician": "कार्यस्थल चिकित्सक",
+        "physicianPlaceholder": "डॉ. पूरा नाम",
+        "safetyExpert": "व्यावसायिक स्वास्थ्य एवं सुरक्षा विशेषज्ञ",
+        "safetyExpertPlaceholder": "पूरा नाम · श्रेणी (A/B/C)"
       },
       "actions": {
-        "saving": "Saving...",
-        "saved": "Saved",
-        "save": "Save",
-        "pdfPrint": "Download / print PDF",
-        "archivedBadge": "Training plan for {year} is archived for this company"
+        "saving": "सेव हो रहा है...",
+        "saved": "सेव किया गया",
+        "save": "सेव करें",
+        "pdfPrint": "PDF डाउनलोड / प्रिंट करें",
+        "archivedBadge": "इस कंपनी के लिए {year} का प्रशिक्षण योजना संग्रहीत है"
       },
-      "loading": "Loading plan...",
+      "loading": "योजना लोड हो रही है...",
       "preview": {
-        "title": "Preview & edit",
-        "description": "Edit rows: date / duration / certificate / attendance"
+        "title": "पूर्वावलोकन और संपादन",
+        "description": "पंक्तियाँ संपादित करें: दिनांक / अवधि / प्रमाणपत्र / उपस्थिति"
       },
       "table": {
-        "topic": "Training topic",
-        "trainer": "Trainer",
-        "audience": "Audience",
-        "planned": "Planned",
-        "duration": "Duration",
-        "realized": "Actual",
-        "certificate": "Certificate",
-        "attendance": "Attendance",
-        "addRow": "Add row",
-        "deleteRowAria": "Delete row"
+        "topic": "प्रशिक्षण विषय",
+        "trainer": "प्रशिक्षक",
+        "audience": "श्रोतागण",
+        "planned": "नियोजित",
+        "duration": "अवधि",
+        "realized": "वास्तविक",
+        "certificate": "प्रमाणपत्र",
+        "attendance": "उपस्थिति",
+        "addRow": "पंक्ति जोड़ें",
+        "deleteRowAria": "पंक्ति हटाएं"
       },
       "categories": {
-        "genel": "GENERAL TOPICS (4 hours)",
-        "saglik": "HEALTH TOPICS (4 hours)",
-        "teknik": "TECHNICAL TOPICS (4 hours)"
+        "genel": "सामान्य विषय (4 घंटे)",
+        "saglik": "स्वास्थ्य विषय (4 घंटे)",
+        "teknik": "तकनीकी विषय (4 घंटे)"
       },
       "certificate": {
-        "yes": "Yes",
-        "no": "No",
+        "yes": "हाँ",
+        "no": "नहीं",
         "empty": "?"
       },
       "defaults": {
-        "trainer": "OHS specialist",
-        "audience": "Employees"
+        "trainer": "व्यावसायिक स्वास्थ्य एवं सुरक्षा विशेषज्ञ",
+        "audience": "कर्मचारी"
       },
       "pdf": {
-        "htmlTitle": "Annual OHS training plan ? {companyName}",
-        "mainTitle": "ANNUAL TRAINING PLAN",
-        "headerLine": "COMPANY: {companyName} ? YEAR: {year}",
-        "colNo": "No.",
-        "colTopic": "Training topic",
-        "colTrainer": "Trainer",
-        "colAudience": "Audience",
-        "colPlanned": "Planned",
-        "colDuration": "Duration",
-        "colRealized": "Actual",
-        "colCertificate": "Certificate",
-        "colAttendance": "Attendance",
-        "sigEmployer": "Employer",
-        "sigPhysician": "Workplace physician",
-        "sigSafety": "OHS specialist",
-        "sigLine": "Signature / date",
+        "htmlTitle": "वार्षिक व्यावसायिक स्वास्थ्य एवं सुरक्षा प्रशिक्षण योजना — {companyName}",
+        "mainTitle": "वार्षिक प्रशिक्षण योजना",
+        "headerLine": "कंपनी: {companyName} · वर्ष: {year}",
+        "colNo": "क्र.",
+        "colTopic": "प्रशिक्षण विषय",
+        "colTrainer": "प्रशिक्षक",
+        "colAudience": "श्रोता",
+        "colPlanned": "नियोजित",
+        "colDuration": "अवधि",
+        "colRealized": "वास्तविक",
+        "colCertificate": "प्रमाणपत्र",
+        "colAttendance": "उपस्थिति",
+        "sigEmployer": "नियोक्ता",
+        "sigPhysician": "कार्यस्थल चिकित्सक",
+        "sigSafety": "व्यावसायिक स्वास्थ्य एवं सुरक्षा विशेषज्ञ",
+        "sigLine": "हस्ताक्षर / दिनांक",
         "empty": "?"
       }
     },
     "timesheet": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "title": "Timesheet",
-      "defaultProfessional": "OHS professional",
+      "title": "टाइमशीट",
+      "defaultProfessional": "OHS पेशेवर",
       "tabs": {
-        "grid": "Timesheet",
-        "archive": "Archive",
-        "settings": "Settings"
+        "grid": "टाइमशीट",
+        "archive": "आर्काइव",
+        "settings": "सेटिंग्स"
       },
       "status": {
-        "draft": "Draft",
-        "submitted": "Submitted",
-        "approved": "Approved",
-        "paid": "Paid"
+        "draft": "ड्राफ्ट",
+        "submitted": "सबमिट किया गया",
+        "approved": "अनुमोदित",
+        "paid": "भुगतान किया गया"
       },
       "actions": {
-        "submit": "Submit",
-        "approve": "Approve",
-        "markPaid": "Mark as paid",
-        "revert": "Revert",
-        "previewPdf": "Preview PDF",
-        "timesheetExcel": "Timesheet Excel",
-        "payrollExcel": "Payroll Excel",
-        "payrollPdf": "Payroll PDF",
-        "view": "View",
-        "delete": "Delete",
-        "cancel": "Cancel",
-        "saving": "Saving..."
+        "submit": "जमा करें",
+        "approve": "अनुमोदित करें",
+        "markPaid": "भुगतान के रूप में चिह्नित करें",
+        "revert": "वापस करें",
+        "previewPdf": "PDF पूर्वावलोकन",
+        "timesheetExcel": "टाइमशीट Excel",
+        "payrollExcel": "पेरोल Excel",
+        "payrollPdf": "पेरोल PDF",
+        "view": "देखें",
+        "delete": "हटाएं",
+        "cancel": "रद्द करें",
+        "saving": "सहेज रहा है..."
       },
       "stats": {
-        "workedDays": "Worked days",
-        "totalHours": "Total hours",
-        "activeCompanies": "Active companies",
-        "gross": "Gross amount",
-        "stampTax": "Stamp tax",
-        "netPaid": "Net paid"
+        "workedDays": "कार्य दिवस",
+        "totalHours": "कुल घंटे",
+        "activeCompanies": "सक्रिय कंपनियां",
+        "gross": "सकल राशि",
+        "stampTax": "स्टाम्प टैक्स",
+        "netPaid": "नेट भुगतान"
       },
       "filters": {
-        "allStatuses": "All statuses"
+        "allStatuses": "सभी स्थितियां"
       },
       "empty": {
-        "noCompanies": "No companies found",
-        "noArchive": "No timesheet record for {year}"
+        "noCompanies": "कोई कंपनी नहीं मिली",
+        "noArchive": "{year} के लिए कोई टाइमशीट रिकॉर्ड नहीं"
       },
       "table": {
-        "company": "Company",
-        "totalShort": "TOTAL",
-        "total": "TOTAL"
+        "company": "कंपनी",
+        "totalShort": "कुल",
+        "total": "कुल"
       },
       "archive": {
-        "period": "Period",
-        "status": "Status",
-        "actions": "Actions"
+        "period": "अवधि",
+        "status": "स्थिति",
+        "actions": "कार्य"
       },
       "settings": {
-        "headerTitle": "Header settings",
-        "headerType": "Header type",
+        "headerTitle": "हेडर सेटिंग्स",
+        "headerType": "हेडर प्रकार",
         "headerTypes": {
-          "custom": "Custom",
-          "government": "Official"
+          "custom": "कस्टम",
+          "government": "आधिकारिक"
         },
-        "line1": "Line 1 (main title)",
-        "line2": "Line 2 (subtitle)",
-        "line3": "Line 3 (extra info)",
-        "line1Placeholder": "e.g. Ministry of Labour",
-        "line2Placeholder": "e.g. Occupational health and safety services",
-        "line3Placeholder": "e.g. Monthly work schedule",
-        "professionalTitle": "Professional information",
-        "professionalRole": "Title",
-        "professionalRolePlaceholder": "e.g. OHS specialist (Class A)",
-        "certificateNo": "Registry / certificate no.",
-        "certificateNoPlaceholder": "e.g. ISG-A-12345",
-        "payrollTitle": "Payroll settings",
-        "governmentEmployee": "Civil servant / public employee",
-        "salaryCoefficient": "Salary coefficient",
-        "baseIndicator": "Indicator",
-        "stampTaxRate": "Stamp tax rate",
-        "formulaTitle": "Calculation formula:",
-        "hourlyRateFormula": "Hourly rate = Indicator ({indicator}) ? coefficient ({coefficient}) = ?{amount}",
-        "grossFormula": "Gross amount = hourly rate ? total hours",
-        "stampFormula": "Stamp tax = gross amount ? %{rate}",
-        "netFormula": "Net paid = gross amount - stamp tax",
-        "footerNote": "Footer note",
-        "footerNotePlaceholder": "Note shown at the bottom of Excel/PDF exports...",
-        "save": "Save settings",
-        "saved": "Settings saved.",
-        "errorPrefix": "Error: {message}",
-        "errorPrefixStart": "Error"
+        "line1": "लाइन 1 (मुख्य शीर्षक)",
+        "line2": "लाइन 2 (उपशीर्षक)",
+        "line3": "लाइन 3 (अतिरिक्त जानकारी)",
+        "line1Placeholder": "जैसे श्रम मंत्रालय",
+        "line2Placeholder": "जैसे व्यावसायिक स्वास्थ्य और सुरक्षा सेवाएं",
+        "line3Placeholder": "जैसे मासिक कार्य अनुसूची",
+        "professionalTitle": "व्यावसायिक जानकारी",
+        "professionalRole": "शीर्षक",
+        "professionalRolePlaceholder": "जैसे OHS विशेषज्ञ (क्लास A)",
+        "certificateNo": "रजिस्ट्री / प्रमाणपत्र संख्या",
+        "certificateNoPlaceholder": "जैसे ISG-A-12345",
+        "payrollTitle": "पेरोल सेटिंग्स",
+        "governmentEmployee": "सिविल सेवक / सरकारी कर्मचारी",
+        "salaryCoefficient": "वेतन गुणांक",
+        "baseIndicator": "संकेतक",
+        "stampTaxRate": "स्टाम्प टैक्स दर",
+        "formulaTitle": "गणना सूत्र:",
+        "hourlyRateFormula": "घंटे की दर = संकेतक ({indicator}) × गुणांक ({coefficient}) = ₹{amount}",
+        "grossFormula": "सकल राशि = घंटे की दर × कुल घंटे",
+        "stampFormula": "स्टाम्प टैक्स = सकल राशि ? %{rate}",
+        "netFormula": "नेट भुगतान = सकल राशि - स्टाम्प टैक्स",
+        "footerNote": "फुटर नोट",
+        "footerNotePlaceholder": "Excel/PDF निर्यात के नीचे दिखाया गया नोट...",
+        "save": "सेटिंग्स सेव करें",
+        "saved": "सेटिंग्स सेव हो गईं।",
+        "errorPrefix": "त्रुटि: {message}",
+        "errorPrefixStart": "त्रुटि"
       },
       "delete": {
-        "title": "Delete timesheet",
-        "description": "This timesheet and all entries will be permanently deleted. Are you sure?"
+        "title": "टाइमशीट हटाएं",
+        "description": "यह टाइमशीट और सभी प्रविष्टियां स्थायी रूप से हटा दी जाएंगी। क्या आप सुनिश्चित हैं?"
       },
       "pdf": {
-        "title": "Timesheet - {month} {year}",
-        "previewTitle": "PDF preview",
-        "printDownload": "Print / download PDF",
-        "preparedBy": "Prepared by",
-        "approvedBy": "Approved by",
-        "employerRepresentative": "Employer / representative",
-        "workScheduleTitle": "{month} {year} ? Work schedule",
-        "narrative": "The person named above, {profileName}, provided a total of {total} hours of occupational safety service in {month} {year}."
+        "title": "टाइमशीट - {month} {year}",
+        "previewTitle": "PDF पूर्वावलोकन",
+        "printDownload": "PDF प्रिंट / डाउनलोड करें",
+        "preparedBy": "द्वारा तैयार",
+        "approvedBy": "द्वारा अनुमोदित",
+        "employerRepresentative": "नियोक्ता / प्रतिनिधि",
+        "workScheduleTitle": "{month} {year} ? कार्य अनुसूची",
+        "narrative": "उपरोक्त नामित व्यक्ति, {profileName}, ने {month} {year} में कुल {total} घंटे की व्यावसायिक सुरक्षा सेवा प्रदान की।"
       },
       "payroll": {
-        "title": "Payroll",
-        "calculationTitle": "Civil servant payroll calculation",
-        "pdfTitle": "Payroll - {month} {year}",
-        "periodLine": "Month: {month}   Year: {year}",
-        "pdfMainTitle": "MISCELLANEOUS PAYMENTS PAYROLL",
-        "warning": "NOTICE",
-        "legalNotice": "The payroll is prepared in accordance with Article 8 of Turkish Occupational Health and Safety Law No. 6331.",
+        "title": "पेरोल",
+        "calculationTitle": "सिविल सेवक पेरोल गणना",
+        "pdfTitle": "पेरोल - {month} {year}",
+        "periodLine": "महीना: {month}   वर्ष: {year}",
+        "pdfMainTitle": "विविध भुगतान पेरोल",
+        "warning": "सूचना",
+        "legalNotice": "पेरोल तुर्की व्यावसायिक स्वास्थ्य और सुरक्षा कानून संख्या 6331 के अनुच्छेद 8 के अनुसार तैयार किया गया है।",
         "columns": {
-          "no": "No.",
-          "fullName": "FULL NAME",
-          "salaryCoefficient": "Civil servant salary coefficient",
-          "paymentCoefficient": "Payment coefficient",
-          "hourlyRate": "Hourly rate (TRY)",
-          "assignmentHours": "Assignment duration (hours)",
-          "gross": "Gross amount (TRY)",
-          "stampTax": "Stamp tax deduction (TRY)",
-          "netPaid": "Net paid (TRY)"
+          "no": "क्रमांक",
+          "fullName": "पूरा नाम",
+          "salaryCoefficient": "सिविल सेवक वेतन गुणांक",
+          "paymentCoefficient": "भुगतान गुणांक",
+          "hourlyRate": "प्रति घंटा दर (TRY)",
+          "assignmentHours": "असाइनमेंट अवधि (घंटे)",
+          "gross": "सकल राशि (TRY)",
+          "stampTax": "स्टाम्प कर कटौती (TRY)",
+          "netPaid": "नेट भुगतान (TRY)"
         },
-        "indicatorCoefficient": "Indicator ? coefficient",
-        "hourlyRate": "Hourly rate",
-        "stampTaxWithRate": "Stamp tax (%{rate})"
+        "indicatorCoefficient": "संकेतक ? गुणांक",
+        "hourlyRate": "प्रति घंटा दर",
+        "stampTaxWithRate": "स्टाम्प टैक्स (%{rate})"
       }
     }
   },
@@ -3404,7 +3571,7 @@
     "password": {
       "current": "वर्तमान पासवर्ड",
       "new": "नया पासवर्ड",
-      "newPlaceholder": "कम से कम 12 अक्षर, बड़े/छोटे अक्षर, संख्या और प्रतीक",
+      "newPlaceholder": "कम से कम 8 अक्षर, बड़े/छोटे अक्षर, संख्या और प्रतीक",
       "repeat": "नया पासवर्ड (दोहराएं)",
       "submit": "पासवर्ड अपडेट करें",
       "title": "पासवर्ड बदलें"

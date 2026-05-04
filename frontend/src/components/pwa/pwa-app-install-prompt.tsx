@@ -36,7 +36,7 @@ export function PwaAppInstallPrompt() {
   if (isPublicPath(pathname)) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-x-3 bottom-3 z-50 flex justify-center sm:inset-x-auto sm:right-4 sm:justify-end">
+    <div className="pointer-events-none fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center sm:inset-x-auto sm:right-4 sm:justify-end">
       <PwaInstallPrompt
         surface="app"
         className="pointer-events-auto w-full max-w-sm shadow-[0_18px_50px_rgba(15,23,42,0.28)]"

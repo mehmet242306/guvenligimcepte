@@ -1154,7 +1154,7 @@
       "title": "Change Password",
       "current": "Current Password",
       "new": "New Password",
-      "newPlaceholder": "At least 12 chars, upper/lower case, number and symbol",
+      "newPlaceholder": "At least 8 chars, upper/lower case, number and symbol",
       "repeat": "New Password (Repeat)",
       "submit": "Update Password"
     },
@@ -2423,6 +2423,62 @@
     "errNotFound": "Invitation not found.",
     "errAuthRequired": "You must be signed in to accept the invitation."
   },
+  "trainingHubPage": {
+    "title": "Training",
+    "description": "Slide library, survey and exam flows, personal links, and result analytics live in this module.",
+    "actions": {
+      "aiTraining": "Create training with AI",
+      "slideLibrary": "My slide library",
+      "certificates": "Certificates",
+      "createNew": "Create new"
+    },
+    "library": {
+      "back": "OHS Library",
+      "eyebrow": "OHS Library Integration",
+      "title": "Manage training and exam content in this module",
+      "tabs": {
+        "education": "Training content",
+        "assessment": "Exam and survey content"
+      },
+      "emptyPrefix": "No library content exists in this category yet. To add content or view all records,",
+      "emptyLink": "go to the OHS Library",
+      "fallbackDescription": "Library content",
+      "openContent": "Open content",
+      "useInModule": "Use in module"
+    },
+    "tabs": {
+      "all": "All",
+      "surveys": "Surveys",
+      "exams": "Exams"
+    },
+    "filters": {
+      "searchPlaceholder": "Search surveys or exams...",
+      "allStatuses": "All"
+    },
+    "status": {
+      "draft": "Draft",
+      "active": "Active",
+      "closed": "Closed",
+      "archived": "Archive"
+    },
+    "types": {
+      "exam": "Exam",
+      "survey": "Survey"
+    },
+    "empty": {
+      "title": "No surveys or exams yet",
+      "description": "Click \"Create new\" to create your first survey or exam"
+    },
+    "card": {
+      "passScore": "Passing score: {score}%",
+      "duration": "Duration: {minutes} min"
+    },
+    "errors": {
+      "noSession": "No session found. Refresh the page.",
+      "authRequired": "Sign-in required.",
+      "organizationMissing": "Organization connection was not found. Check your profile or membership settings."
+    }
+  },
   "certificateVerify": {
     "loading": "Verifying…",
     "notFoundTitle": "Certificate not found",
@@ -2711,6 +2767,138 @@
       "ohs_file": "OHS file",
       "organization": "Organization",
       "history": "History"
+    },
+    "structure": {
+      "summaryLocation": "Location",
+      "summaryDepartment": "Department",
+      "summaryEmployee": "Employee",
+      "locationsTitle": "Locations",
+      "locationsSubtitle": "Company physical sites",
+      "departmentsTitle": "Departments",
+      "departmentsSubtitle": "Organisational units",
+      "locationPlaceholder": "Enter location name",
+      "departmentPlaceholder": "Enter department name",
+      "addLocation": "Add location",
+      "addDepartment": "Add department"
+    },
+    "risk": {
+      "pageTitle": "Risk and field management",
+      "pageSubtitle": "Risk classification, analysis history and process tracking.",
+      "tabMap": "Risk map",
+      "tabAnalyses": "Analyses ({count})",
+      "newAnalysis": "New analysis",
+      "metricTotalFindings": "Total findings",
+      "metricCritical": "Critical",
+      "metricHigh": "High",
+      "metricAnalysisCount": "Analyses",
+      "badgeCritical": "Critical: {count}",
+      "badgeHigh": "High: {count}",
+      "badgeMedium": "Medium: {count}",
+      "badgeLow": "Low: {count}",
+      "noFindingsCategory": "No findings yet",
+      "addCategoryTitle": "Add category",
+      "addCategoryHint": "Define a custom risk category",
+      "categoryRisksTitle": "{label} risks",
+      "findingsCountLabel": "{count} findings",
+      "noFindingsInCategory": "No findings in this category yet.",
+      "analysisPrefix": "Analysis:",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "discard": "Discard",
+      "recommendation": "Recommendation",
+      "action": "Action",
+      "notes": "Notes",
+      "status": "Status",
+      "note": "Note",
+      "notePlaceholder": "Work done, observations…",
+      "emptyAnalysesTitle": "No risk analysis yet",
+      "emptyAnalysesDescription": "Start the first analysis for this company from the Risk analysis page.",
+      "findingsInRow": "{count} findings",
+      "archiveTitle": "Archive",
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "confirmDelete": "Delete?",
+      "yes": "Yes",
+      "no": "No",
+      "exportPdfTitle": "Download PDF",
+      "exportWordTitle": "Download Word",
+      "exportExcelTitle": "Download Excel",
+      "analysisStatus": {
+        "completed": "Completed",
+        "archived": "Archived",
+        "draft": "Draft"
+      },
+      "trackingStatus": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "archived": "Archived"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "method": {
+        "r_skor": "R-SCORE 2D",
+        "fine_kinney": "Fine-Kinney",
+        "l_matrix": "L-Matrix",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "shareTitle": "Report sharing",
+      "shareDescription": "Anyone with the link can view this report.",
+      "shareEnable": "Enable sharing link",
+      "shareActive": "Sharing on",
+      "shareCopyTitle": "Copy link",
+      "shareCopied": "Copied",
+      "shareWhatsappTitle": "Share via WhatsApp",
+      "shareButtonTitle": "Share",
+      "shareWhatsappBody": "RiskNova — {title}\n{url}",
+      "participantsHeading": "Participants",
+      "analysisNoteHeading": "Analysis note",
+      "emptyAnalysisRows": "No rows in this analysis yet.",
+      "rowFindingCount": "({count} findings)",
+      "recommendationInline": "Recommendation:",
+      "actionInline": "Action:",
+      "qrAlt": "QR code",
+      "qrCaption": "Share with QR",
+      "categories": {
+        "fiziksel": { "label": "Physical", "examples": "Noise, vibration, lighting, temperature" },
+        "kimyasal": { "label": "Chemical", "examples": "Gas, dust, vapour, chemicals" },
+        "biyolojik": { "label": "Biological", "examples": "Bacteria, viruses, mould, biological agents" },
+        "ergonomik": { "label": "Ergonomic", "examples": "Poor posture, heavy loads, repetitive motion" },
+        "psikososyal": { "label": "Psychosocial", "examples": "Stress, bullying, workload, shifts" },
+        "mekanik": { "label": "Mechanical", "examples": "Machinery, equipment, falls, crushing" },
+        "elektrik": { "label": "Electrical", "examples": "Electric shock, short circuit, earthing" },
+        "yangin": { "label": "Fire / explosion", "examples": "Flammable material, explosive atmosphere, LPG" },
+        "trafik": { "label": "Traffic", "examples": "Vehicles, forklifts, pedestrian–vehicle conflict" },
+        "cevre": { "label": "Environmental", "examples": "Waste, emissions, noise pollution" }
+      }
+    },
+    "tracking": {
+      "sectionActions": "Open actions",
+      "sectionTrainings": "Trainings",
+      "sectionControls": "Periodic inspection",
+      "sectionCommittee": "OHS committee",
+      "hazardUnknown": "Not determined",
+      "actionsTitle": "Open actions",
+      "actionsDesc": "Open actions from risk findings, CAPA and OHS tasks.",
+      "noActions": "No open actions.",
+      "badgeTotal": "Total: {count}",
+      "sourceRisk": "Risk",
+      "sourceDof": "CAPA",
+      "sourceTask": "Task",
+      "statusButton": "Status",
+      "trainingsTitle": "Training tracking",
+      "trainingsDesc": "Company training plans and records.",
+      "controlsTitle": "Periodic inspections",
+      "controlsDesc": "Legally required periodic inspections and examinations.",
+      "committeeTitle": "OHS committee meetings",
+      "committeeDesc": "Hazard class: {hazardClass} — every {months} months"
     }
   },
   "osgbFirms": {
@@ -3616,20 +3804,6 @@
   },
   "planner": {
     "yearlyWorkPlan": {
-      "months": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ],
       "errors": {
         "noSupabase": "No Supabase connection",
         "loadFailed": "Could not load plan",
@@ -3999,29 +4173,6 @@
       }
     },
     "core": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "weekdays": [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-      ],
       "pageTitle": "OHS planner",
       "pageDescription": "Plan and track occupational health and safety tasks.",
       "actions": {
@@ -4348,20 +4499,6 @@
       }
     },
     "timesheet": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
       "title": "Timesheet",
       "defaultProfessional": "OHS professional",
       "tabs": {

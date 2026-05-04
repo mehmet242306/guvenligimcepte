@@ -13,6 +13,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { getCalendarMonthNamesShort } from "@/lib/calendar-locale-labels";
 import { Download, FileText, Loader2, Plus, Save, Trash2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -74,7 +75,7 @@ function newEmptyItem(sectionId: string, itemIndex: number): WorkItem {
 export default function YearlyWorkPlanTab() {
   const t = useTranslations("planner.yearlyWorkPlan");
   const locale = useLocale();
-  const monthShort = useMemo(() => (t.raw("months") as string[]) ?? [], [t]);
+  const monthShort = useMemo(() => getCalendarMonthNamesShort(locale), [locale]);
   const defaultSections = useMemo(() => hydrateDefaultSections(t.raw("defaultTemplate")), [t]);
 
   const companies = useMemo(() => loadCompanyDirectory(), []);

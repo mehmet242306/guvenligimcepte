@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { fetchSurveys, type SurveyRecord } from "@/lib/supabase/survey-api";
 import { fetchLibraryContents, type LibraryContentRecord } from "@/lib/supabase/isg-library-api";
@@ -36,6 +37,8 @@ function normalizeLibraryCategory(category: string | null | undefined): LibraryT
 export function TrainingClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("trainingHubPage");
+  const locale = useLocale();
   const initialCompanyId = searchParams.get("companyId") ?? undefined;
   const fromLibrary = searchParams.get("library") === "1";
   const librarySection = searchParams.get("librarySection") ?? "education";
@@ -80,21 +83,21 @@ export function TrainingClient() {
       setListError(null);
       const supabase = createClient();
       if (!supabase) {
-        setListError("Oturum bulunamadi. Sayfayi yenileyin.");
+        setListError(t("errors.noSession"));
         setLoading(false);
         setLibraryLoading(false);
         return;
       }
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setListError("Giris gerekli.");
+        setListError(t("errors.authRequired"));
         setLoading(false);
         setLibraryLoading(false);
         return;
       }
       const { data: profile } = await supabase.from("user_profiles").select("organization_id").eq("auth_user_id", user.id).single();
       if (!profile?.organization_id) {
-        setListError("Organizasyon baglantisi bulunamadi. Profil veya uyelik ayarlarinizi kontrol edin.");
+        setListError(t("errors.organizationMissing"));
         setLoading(false);
         setLibraryLoading(false);
         return;
@@ -110,7 +113,7 @@ export function TrainingClient() {
     }
 
     void loadSurveys();
-  }, [initialCompanyId]);
+  }, [initialCompanyId, t]);
 
   const filtered = surveys.filter(s => {
     if (tab !== "all" && s.type !== tab) return false;
@@ -133,10 +136,10 @@ export function TrainingClient() {
   };
 
   const statusLabels: Record<string, string> = {
-    draft: "Taslak",
-    active: "Aktif",
-    closed: "Kapalı",
-    archived: "Arşiv",
+    draft: t("status.draft"),
+    active: t("status.active"),
+    closed: t("status.closed"),
+    archived: t("status.archived"),
   };
 
   const buildTrainingHref = (pathname: string, extra?: Record<string, string>) => {
@@ -186,12 +189,12 @@ export function TrainingClient() {
                 className="mb-4 inline-flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent)]"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                ISG Kutuphanesi
+                {t("library.back")}
               </button>
             ) : null}
-            <h1 className="text-2xl font-bold text-[var(--foreground)]">Eğitim</h1>
+            <h1 className="text-2xl font-bold text-[var(--foreground)]">{t("title")}</h1>
             <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-              Slayt kütüphanesi, anket ve sınav akışları; kişiye özel link ve sonuç analizi bu modülde.
+              {t("description")}
             </p>
           </div>
           <div className="flex min-w-0 flex-wrap gap-2">
@@ -200,28 +203,28 @@ export function TrainingClient() {
               className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-110"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 3.8L18 9l-4.1 2.2L12 15l-1.9-3.8L6 9l4.1-2.2L12 3z"/><path d="M5 18l.8 1.6L7.5 21l-1.7.9L5 23.5l-.8-1.6L2.5 21l1.7-.9L5 18z"/></svg>
-              AI Destekli Egitim Hazirla
+              {t("actions.aiTraining")}
             </Link>
             <Link
               href={buildTrainingHref("/training/slides")}
               className="inline-flex items-center gap-2 rounded-xl border border-[var(--gold)]/40 bg-[var(--gold)]/5 px-4 py-2.5 text-sm font-semibold text-[var(--gold)] shadow-sm transition-colors hover:bg-[var(--gold)]/10"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-              Slayt Kütüphanem
+              {t("actions.slideLibrary")}
             </Link>
             <Link
               href={buildTrainingHref("/training/certificates")}
               className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm font-medium text-[var(--foreground)] shadow-sm transition-colors hover:bg-[var(--accent)]"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Sertifikalar
+              {t("actions.certificates")}
             </Link>
             <Link
               href={buildTrainingHref("/training/new")}
               className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:brightness-110"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Yeni Olustur
+              {t("actions.createNew")}
             </Link>
           </div>
         </div>
@@ -239,10 +242,10 @@ export function TrainingClient() {
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--gold)]">
-                ISG Kutuphanesi Entegrasyonu
+                {t("library.eyebrow")}
               </p>
               <h2 className="mt-1 text-base font-semibold text-[var(--foreground)]">
-                Egitim ve sinav iceriklerini bu modulde yonetin
+                {t("library.title")}
               </h2>
             </div>
           </div>
@@ -256,7 +259,7 @@ export function TrainingClient() {
                   : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               }`}
             >
-              Egitim Icerikleri
+              {t("library.tabs.education")}
             </button>
             <button
               type="button"
@@ -267,7 +270,7 @@ export function TrainingClient() {
                   : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               }`}
             >
-              Sinav ve Anket Icerikleri
+              {t("library.tabs.assessment")}
             </button>
           </div>
           {libraryLoading ? (
@@ -278,10 +281,10 @@ export function TrainingClient() {
             </div>
           ) : embeddedLibraryItems.length === 0 ? (
             <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--background)] p-4 text-sm text-[var(--muted-foreground)]">
-              Bu kategoride kutuphane icerigi henuz bulunmuyor. Icerik eklemek veya tum kayitlari gormek icin
+              {t("library.emptyPrefix")}
               {" "}
               <Link href={libraryTab === "education" ? libraryEducationHref : libraryAssessmentHref} className="font-semibold text-[var(--gold)] hover:underline">
-                ISG Kutuphanesine git
+                {t("library.emptyLink")}
               </Link>
               .
             </div>
@@ -291,7 +294,7 @@ export function TrainingClient() {
                 <article key={item.id} className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-4">
                   <p className="text-sm font-semibold text-[var(--foreground)]">{item.title}</p>
                   <p className="mt-1 line-clamp-2 text-xs text-[var(--muted-foreground)]">
-                    {item.description || "Kutuphane icerigi"}
+                    {item.description || t("library.fallbackDescription")}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {item.file_url ? (
@@ -301,14 +304,14 @@ export function TrainingClient() {
                         rel="noreferrer"
                         className="inline-flex items-center rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--accent)]"
                       >
-                        Icerigi Ac
+                        {t("library.openContent")}
                       </a>
                     ) : null}
                     <Link
                       href={buildLibraryPrefillHref(item, libraryTab)}
                       className="inline-flex items-center rounded-lg bg-[var(--gold)] px-3 py-1.5 text-xs font-semibold text-white hover:brightness-110"
                     >
-                      Modulde Kullan
+                      {t("library.useInModule")}
                     </Link>
                   </div>
                 </article>
@@ -319,19 +322,19 @@ export function TrainingClient() {
 
         {/* Tabs */}
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-1 rounded-xl bg-[var(--card)] p-1 shadow-sm border border-[var(--border)]">
-          {(["all", "survey", "exam"] as TabType[]).map(t => (
+          {(["all", "survey", "exam"] as TabType[]).map((tabKey) => (
             <button
               type="button"
-              key={t}
-              onClick={() => setTabInUrl(t)}
+              key={tabKey}
+              onClick={() => setTabInUrl(tabKey)}
               className={`min-h-[44px] flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
-                tab === t
+                tab === tabKey
                   ? "bg-[var(--gold)] text-white shadow"
                   : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               }`}
             >
-              {t === "all" ? "Tümü" : t === "survey" ? "Anketler" : "Sınavlar"}
-              <span className="ml-1.5 text-xs opacity-75">({counts[t]})</span>
+              {tabKey === "all" ? t("tabs.all") : tabKey === "survey" ? t("tabs.surveys") : t("tabs.exams")}
+              <span className="ml-1.5 text-xs opacity-75">({counts[tabKey]})</span>
             </button>
           ))}
         </div>
@@ -342,7 +345,7 @@ export function TrainingClient() {
             <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input
               type="text"
-              placeholder="Anket veya sınav ara..."
+              placeholder={t("filters.searchPlaceholder")}
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] py-2.5 pl-10 pr-4 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30"
@@ -359,7 +362,7 @@ export function TrainingClient() {
                     : "text-[var(--muted-foreground)] hover:bg-[var(--accent)]"
                 }`}
               >
-                {s === "all" ? "Tümü" : statusLabels[s]}
+                {s === "all" ? t("filters.allStatuses") : statusLabels[s]}
               </button>
             ))}
           </div>
@@ -377,16 +380,16 @@ export function TrainingClient() {
             <div className="mb-4 rounded-full bg-[var(--gold)]/10 p-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
             </div>
-            <h3 className="text-lg font-semibold text-[var(--foreground)]">Henüz anket veya sınav yok</h3>
+            <h3 className="text-lg font-semibold text-[var(--foreground)]">{t("empty.title")}</h3>
             <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-              İlk anket veya sınavınızı oluşturmak için &quot;Yeni Oluştur&quot; butonuna tıklayın
+              {t("empty.description")}
             </p>
             <Link
               href={buildTrainingHref("/training/new")}
               className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-5 py-2.5 text-sm font-semibold text-white shadow transition-colors hover:brightness-110"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Yeni Oluştur
+              {t("actions.createNew")}
             </Link>
           </div>
         ) : (
@@ -424,19 +427,19 @@ export function TrainingClient() {
                         ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
                         : "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
                     }`}>
-                      {s.type === "exam" ? "Sınav" : "Anket"}
+                      {s.type === "exam" ? t("types.exam") : t("types.survey")}
                     </span>
                   </div>
                   {s.description && (
                     <p className="mt-0.5 text-sm text-[var(--muted-foreground)] truncate">{s.description}</p>
                   )}
                   <div className="mt-1 flex items-center gap-3 text-xs text-[var(--muted-foreground)]">
-                    <span>{new Date(s.createdAt).toLocaleDateString("tr-TR")}</span>
+                    <span>{new Date(s.createdAt).toLocaleDateString(locale)}</span>
                     {s.type === "exam" && s.passScore && (
-                      <span>Geçme puanı: {s.passScore}%</span>
+                      <span>{t("card.passScore", { score: s.passScore })}</span>
                     )}
                     {s.type === "exam" && s.timeLimitMinutes && (
-                      <span>Süre: {s.timeLimitMinutes} dk</span>
+                      <span>{t("card.duration", { minutes: s.timeLimitMinutes })}</span>
                     )}
                   </div>
                 </div>

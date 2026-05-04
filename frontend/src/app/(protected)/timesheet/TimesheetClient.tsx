@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
+import { getCalendarMonthNamesLong } from "@/lib/calendar-locale-labels";
 import { exportTimesheetExcel, exportPayrollExcel, downloadBlob, type TimesheetExportData } from "@/lib/timesheet-export";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
@@ -47,7 +48,6 @@ type MainTab = "grid" | "archive" | "settings";
 
 // ─── Constants ─────────────────────────────────────────────────────────────
 
-const MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
 const STATUS_MAP: Record<string, { labelKey: string; cls: string; next?: string }> = {
   draft:     { labelKey: "status.draft", cls: "bg-secondary text-muted-foreground", next: "submitted" },
   submitted: { labelKey: "status.submitted", cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", next: "approved" },
@@ -117,7 +117,7 @@ export default function TimesheetClient() {
   const [showPdfPreview, setShowPdfPreview] = useState(false);
 
   const daysInMonth = new Date(year, month, 0).getDate();
-  const monthNames = t.raw("months") as string[];
+  const monthNames = useMemo(() => getCalendarMonthNamesLong(locale), [locale]);
   const statusLabel = useCallback((status: string) => t(STATUS_MAP[status]?.labelKey ?? "status.draft"), [t]);
 
   // ═══════════════════════════════════════════
@@ -454,7 +454,7 @@ export default function TimesheetClient() {
           {/* Filters */}
           <div className="flex flex-wrap items-center gap-2">
             <select value={month} onChange={(e) => setMonth(Number(e.target.value))} className={selectCls}>
-              {MONTHS.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
+              {monthNames.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
             </select>
             <select value={year} onChange={(e) => setYear(Number(e.target.value))} className={selectCls}>
               {[year - 1, year, year + 1].map((y) => <option key={y} value={y}>{y}</option>)}

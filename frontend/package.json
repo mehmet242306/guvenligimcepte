@@ -43,7 +43,9 @@
     "i18n:phase0-inventory": "node scripts/i18n-phase0-inventory.mjs",
     "i18n:phase0": "npm run i18n:verify-locale-parity && npm run i18n:phase0-inventory",
     "i18n:phase1-bootstrap-locales": "node scripts/i18n-phase1-sync-bootstrap-locales.mjs",
-    "i18n:phase2-bootstrap-locales": "node scripts/i18n-phase2-sync-bootstrap-locales.mjs"
+    "i18n:phase2-bootstrap-locales": "node scripts/i18n-phase2-sync-bootstrap-locales.mjs",
+    "i18n:translate-planner-tabs": "node scripts/translate-risk-scoring-packs.mjs --pack=messages --prefix=planner.shell,planner.core,planner.yearlyTraining,planner.timesheet",
+    "i18n:translate-company-workspace": "node scripts/translate-risk-scoring-packs.mjs --pack=messages --prefix=companyWorkspace"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",

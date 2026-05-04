@@ -348,6 +348,62 @@
   "brand": {
     "tagline": "KI-gestützte Arbeitsschutz-Plattform"
   },
+  "trainingHubPage": {
+    "title": "Schulung",
+    "description": "Folienbibliothek, Umfrage- und Prüfungsabläufe, persönliche Links und Ergebnisanalysen befinden sich in diesem Modul.",
+    "actions": {
+      "aiTraining": "Schulung mit KI erstellen",
+      "slideLibrary": "Meine Folienbibliothek",
+      "certificates": "Zertifikate",
+      "createNew": "Neu erstellen"
+    },
+    "library": {
+      "back": "Arbeitsschutz-Bibliothek",
+      "eyebrow": "Integration der Arbeitsschutz-Bibliothek",
+      "title": "Schulungs- und Prüfungsinhalte in diesem Modul verwalten",
+      "tabs": {
+        "education": "Schulungsinhalte",
+        "assessment": "Prüfungs- und Umfrageinhalte"
+      },
+      "emptyPrefix": "In dieser Kategorie gibt es noch keine Bibliotheksinhalte. Um Inhalte hinzuzufügen oder alle Einträge zu sehen,",
+      "emptyLink": "zur Arbeitsschutz-Bibliothek gehen",
+      "fallbackDescription": "Bibliotheksinhalt",
+      "openContent": "Inhalt öffnen",
+      "useInModule": "Im Modul verwenden"
+    },
+    "tabs": {
+      "all": "Alle",
+      "surveys": "Umfragen",
+      "exams": "Prüfungen"
+    },
+    "filters": {
+      "searchPlaceholder": "Umfrage oder Prüfung suchen...",
+      "allStatuses": "Alle"
+    },
+    "status": {
+      "draft": "Entwurf",
+      "active": "Aktiv",
+      "closed": "Geschlossen",
+      "archived": "Archiv"
+    },
+    "types": {
+      "exam": "Prüfung",
+      "survey": "Umfrage"
+    },
+    "empty": {
+      "title": "Noch keine Umfragen oder Prüfungen",
+      "description": "Klicken Sie auf \"Neu erstellen\", um Ihre erste Umfrage oder Prüfung anzulegen"
+    },
+    "card": {
+      "passScore": "Bestehensgrenze: {score}%",
+      "duration": "Dauer: {minutes} Min."
+    },
+    "errors": {
+      "noSession": "Keine Sitzung gefunden. Aktualisieren Sie die Seite.",
+      "authRequired": "Anmeldung erforderlich.",
+      "organizationMissing": "Organisationsverbindung wurde nicht gefunden. Prüfen Sie Profil- oder Mitgliedschaftseinstellungen."
+    }
+  },
   "certificateVerify": {
     "certNo": "Zertifikat-Nr.",
     "date": "Datum",
@@ -575,6 +631,168 @@
       "risk": "Risiko & Feld",
       "structure": "Räumlichkeiten",
       "tracking": "Verfolgung"
+    },
+    "structure": {
+      "summaryLocation": "Location",
+      "summaryDepartment": "Department",
+      "summaryEmployee": "Employee",
+      "locationsTitle": "Locations",
+      "locationsSubtitle": "Company physical sites",
+      "departmentsTitle": "Departments",
+      "departmentsSubtitle": "Organisational units",
+      "locationPlaceholder": "Enter location name",
+      "departmentPlaceholder": "Enter department name",
+      "addLocation": "Add location",
+      "addDepartment": "Add department"
+    },
+    "risk": {
+      "pageTitle": "Risk and field management",
+      "pageSubtitle": "Risk classification, analysis history and process tracking.",
+      "tabMap": "Risk map",
+      "tabAnalyses": "Analyses ({count})",
+      "newAnalysis": "New analysis",
+      "metricTotalFindings": "Total findings",
+      "metricCritical": "Critical",
+      "metricHigh": "High",
+      "metricAnalysisCount": "Analyses",
+      "badgeCritical": "Critical: {count}",
+      "badgeHigh": "High: {count}",
+      "badgeMedium": "Medium: {count}",
+      "badgeLow": "Low: {count}",
+      "noFindingsCategory": "No findings yet",
+      "addCategoryTitle": "Add category",
+      "addCategoryHint": "Define a custom risk category",
+      "categoryRisksTitle": "{label} risks",
+      "findingsCountLabel": "{count} findings",
+      "noFindingsInCategory": "No findings in this category yet.",
+      "analysisPrefix": "Analysis:",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "discard": "Discard",
+      "recommendation": "Recommendation",
+      "action": "Action",
+      "notes": "Notes",
+      "status": "Status",
+      "note": "Note",
+      "notePlaceholder": "Work done, observations…",
+      "emptyAnalysesTitle": "No risk analysis yet",
+      "emptyAnalysesDescription": "Start the first analysis for this company from the Risk analysis page.",
+      "findingsInRow": "{count} findings",
+      "archiveTitle": "Archive",
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "confirmDelete": "Delete?",
+      "yes": "Yes",
+      "no": "No",
+      "exportPdfTitle": "Download PDF",
+      "exportWordTitle": "Download Word",
+      "exportExcelTitle": "Download Excel",
+      "analysisStatus": {
+        "completed": "Completed",
+        "archived": "Archived",
+        "draft": "Draft"
+      },
+      "trackingStatus": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "archived": "Archived"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "method": {
+        "r_skor": "R-SCORE 2D",
+        "fine_kinney": "Fine-Kinney",
+        "l_matrix": "L-Matrix",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "shareTitle": "Report sharing",
+      "shareDescription": "Anyone with the link can view this report.",
+      "shareEnable": "Enable sharing link",
+      "shareActive": "Sharing on",
+      "shareCopyTitle": "Copy link",
+      "shareCopied": "Copied",
+      "shareWhatsappTitle": "Share via WhatsApp",
+      "shareButtonTitle": "Share",
+      "shareWhatsappBody": "RiskNova — {title}\n{url}",
+      "participantsHeading": "Participants",
+      "analysisNoteHeading": "Analysis note",
+      "emptyAnalysisRows": "No rows in this analysis yet.",
+      "rowFindingCount": "({count})",
+      "recommendationInline": "Recommendation:",
+      "actionInline": "Action:",
+      "qrAlt": "QR code",
+      "qrCaption": "Share with QR",
+      "categories": {
+        "fiziksel": {
+          "label": "Physical",
+          "examples": "Noise, vibration, lighting, temperature"
+        },
+        "kimyasal": {
+          "label": "Chemical",
+          "examples": "Gas, dust, vapour, chemicals"
+        },
+        "biyolojik": {
+          "label": "Biological",
+          "examples": "Bacteria, viruses, mould, biological agents"
+        },
+        "ergonomik": {
+          "label": "Ergonomic",
+          "examples": "Poor posture, heavy loads, repetitive motion"
+        },
+        "psikososyal": {
+          "label": "Psychosocial",
+          "examples": "Stress, bullying, workload, shifts"
+        },
+        "mekanik": {
+          "label": "Mechanical",
+          "examples": "Machinery, equipment, falls, crushing"
+        },
+        "elektrik": {
+          "label": "Electrical",
+          "examples": "Electric shock, short circuit, earthing"
+        },
+        "yangin": {
+          "label": "Fire / explosion",
+          "examples": "Flammable material, explosive atmosphere, LPG"
+        },
+        "trafik": {
+          "label": "Traffic",
+          "examples": "Vehicles, forklifts, pedestrian–vehicle conflict"
+        },
+        "cevre": {
+          "label": "Environmental",
+          "examples": "Waste, emissions, noise pollution"
+        }
+      }
+    },
+    "tracking": {
+      "sectionActions": "Open actions",
+      "sectionTrainings": "Trainings",
+      "sectionControls": "Periodic inspection",
+      "sectionCommittee": "OHS committee",
+      "hazardUnknown": "Not determined",
+      "actionsTitle": "Open actions",
+      "actionsDesc": "Open actions from risk findings, CAPA and OHS tasks.",
+      "noActions": "No open actions.",
+      "badgeTotal": "Total: {count}",
+      "sourceRisk": "Risk",
+      "sourceDof": "CAPA",
+      "sourceTask": "Task",
+      "statusButton": "Status",
+      "trainingsTitle": "Training tracking",
+      "trainingsDesc": "Company training plans and records.",
+      "controlsTitle": "Periodic inspections",
+      "controlsDesc": "Legally required periodic inspections and examinations.",
+      "committeeTitle": "OHS committee meetings",
+      "committeeDesc": "Hazard class: {hazardClass} — every {months} months"
     }
   },
   "consent": {
@@ -2560,531 +2778,480 @@
         "regulation": "Rechtsgrundlage",
         "responsible": "Verantwortlich",
         "topic": "Arbeitsthema"
-      },
-      "months": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ]
+      }
     },
     "shell": {
-      "title": "Planner",
-      "description": "OHS tasks, annual work plan, training plan and timesheet under one roof.",
+      "title": "Planer",
+      "description": "OHS-Aufgaben, Jahresarbeitsplan, Schulungsplan und Stundenzettel unter einem Dach.",
       "tabs": {
         "planner": {
-          "label": "Planner",
-          "desc": "Calendar ? tasks ? reminders"
+          "label": "Planer",
+          "desc": "Kalender, Aufgaben und Erinnerungen"
         },
         "workPlan": {
-          "label": "Annual work plan",
-          "desc": "OHS annual work plan (official form)"
+          "label": "Jahresarbeitsplan",
+          "desc": "OHS-Jahresarbeitsplan (offizielles Formular)"
         },
         "trainingPlan": {
-          "label": "Annual training",
-          "desc": "Training plan, participants and certificates"
+          "label": "Jahresschulung",
+          "desc": "Schulungsplan, Teilnehmer und Zertifikate"
         },
         "timesheet": {
-          "label": "Timesheet",
-          "desc": "Hours and fee tracking"
+          "label": "Stundenzettel",
+          "desc": "Stunden- und Gebührenverfolgung"
         }
       }
     },
     "core": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "weekdays": [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-      ],
-      "pageTitle": "OHS planner",
-      "pageDescription": "Plan and track occupational health and safety tasks.",
+      "pageTitle": "Arbeitsschutzplaner",
+      "pageDescription": "Arbeitsschutz- und Sicherheitsaufgaben planen und verfolgen.",
       "actions": {
-        "newTask": "New task",
-        "dismissError": "Dismiss error",
-        "cancel": "Cancel",
-        "saving": "Saving...",
-        "create": "Create",
-        "update": "Update"
+        "newTask": "Neue Aufgabe",
+        "dismissError": "Fehler schließen",
+        "cancel": "Abbrechen",
+        "saving": "Speichern...",
+        "create": "Erstellen",
+        "update": "Aktualisieren"
       },
       "stats": {
-        "total": "Total"
+        "total": "Gesamt"
       },
       "filters": {
-        "allCategories": "All categories",
-        "allStatuses": "All statuses",
-        "allCompanies": "All companies"
+        "allCategories": "Alle Kategorien",
+        "allStatuses": "Alle Status",
+        "allCompanies": "Alle Unternehmen"
       },
       "views": {
-        "month": "Calendar",
-        "list": "List"
+        "month": "Kalender",
+        "list": "Liste"
       },
       "sidebar": {
-        "categories": "Categories",
-        "all": "All",
-        "addCategory": "Add category",
-        "quickAdd": "Quick add"
+        "categories": "Kategorien",
+        "all": "Alle",
+        "addCategory": "Kategorie hinzufügen",
+        "quickAdd": "Schnell hinzufügen"
       },
       "calendar": {
-        "more": "+{count} more"
+        "more": "+{count} weitere"
       },
       "empty": {
-        "title": "No tasks yet",
-        "description": "Click the New task button above."
+        "title": "Noch keine Aufgaben",
+        "description": "Klicken Sie oben auf die Schaltfläche Neue Aufgabe."
       },
       "recurrence": {
-        "none": "Does not repeat",
-        "daily": "Daily",
-        "weekly": "Weekly",
-        "monthly": "Monthly",
-        "quarterly": "Quarterly",
-        "biannual": "Every six months",
-        "annual": "Annual"
+        "none": "Wiederholt sich nicht",
+        "daily": "Täglich",
+        "weekly": "Wöchentlich",
+        "monthly": "Monatlich",
+        "quarterly": "Vierteljährlich",
+        "biannual": "Alle sechs Monate",
+        "annual": "Jährlich"
       },
       "status": {
-        "planned": "Planned",
-        "in_progress": "In progress",
-        "completed": "Completed",
-        "overdue": "Overdue",
-        "cancelled": "Cancelled"
+        "planned": "Geplant",
+        "in_progress": "In Bearbeitung",
+        "completed": "Abgeschlossen",
+        "overdue": "Überfällig",
+        "cancelled": "Abgebrochen"
       },
       "categories": {
-        "periodicControl": "Periodic inspection",
-        "training": "Training",
-        "healthFollowUp": "Health follow-up",
-        "meetingDrill": "Meeting & drill",
-        "legalObligation": "Legal obligation",
-        "fieldVisit": "Field visit",
-        "ohsCommitteeMeeting": "OHS committee meeting",
-        "other": "Other"
+        "periodicControl": "Regelmäßige Kontrolle",
+        "training": "Schulung",
+        "healthFollowUp": "Gesundheitsnachsorge",
+        "meetingDrill": "Besprechung & Übung",
+        "legalObligation": "Rechtliche Verpflichtung",
+        "fieldVisit": "Vor-Ort-Besichtigung",
+        "ohsCommitteeMeeting": "Arbeitsschutzausschuss-Sitzung",
+        "other": "Sonstiges"
       },
       "modal": {
-        "newTitle": "New task",
-        "editTitle": "Edit task",
+        "newTitle": "Neue Aufgabe",
+        "editTitle": "Aufgabe bearbeiten",
         "optional": "- optional",
         "fields": {
-          "title": "Title *",
-          "description": "Description",
-          "category": "Category",
+          "title": "Titel *",
+          "description": "Beschreibung",
+          "category": "Kategorie",
           "status": "Status",
-          "company": "Company",
-          "startDate": "Start date *",
-          "endDate": "End date",
-          "recurrence": "Repeat",
-          "reminderDays": "Reminder (days before)",
-          "includeTimesheet": "Add to timesheet",
-          "timesheetHours": "Working time (hours)",
-          "hourlyRate": "Hourly rate"
+          "company": "Unternehmen",
+          "startDate": "Startdatum *",
+          "endDate": "Enddatum",
+          "recurrence": "Wiederholen",
+          "reminderDays": "Erinnerung (Tage vorher)",
+          "includeTimesheet": "Zu Zeiterfassung hinzufügen",
+          "timesheetHours": "Arbeitszeit (Stunden)",
+          "hourlyRate": "Stundensatz"
         },
         "placeholders": {
-          "title": "Task title",
-          "description": "Task description...",
-          "category": "Select category...",
-          "company": "Select company...",
-          "hours": "e.g. 4.5",
-          "rate": "e.g. 250"
+          "title": "Aufgabentitel",
+          "description": "Aufgabenbeschreibung...",
+          "category": "Kategorie auswählen...",
+          "company": "Unternehmen auswählen...",
+          "hours": "z.B. 4,5",
+          "rate": "z.B. 250"
         }
       },
       "errors": {
-        "orgNotFound": "Organisation information not found. Please sign in again.",
-        "saveFailed": "An error occurred while saving."
+        "orgNotFound": "Organisationsinformationen nicht gefunden. Bitte melden Sie sich erneut an.",
+        "saveFailed": "Beim Speichern ist ein Fehler aufgetreten."
       },
-      "confirmDeleteTask": "Are you sure you want to delete this task?"
+      "confirmDeleteTask": "Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?"
     },
     "yearlyTraining": {
       "defaultTrainings": [
         {
+          "audience": "Mitarbeiter",
           "category": "genel",
-          "title": "Information on occupational health and safety legislation",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Informationen zur Arbeitsschutzgesetzgebung",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "genel",
-          "title": "General information on employee rights and responsibilities",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Allgemeine Informationen zu Arbeitnehmerrechten und -pflichten",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "genel",
-          "title": "Workplace cleanliness and order",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Sauberkeit und Ordnung am Arbeitsplatz",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "genel",
-          "title": "Legal consequences of occupational accidents and diseases",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Rechtliche Folgen von Arbeitsunfällen und Berufskrankheiten",
+          "trainer": "Fachkraft für Arbeitssicherheit"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "saglik",
-          "title": "Causes of occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Ursachen von Berufskrankheiten",
+          "trainer": "Betriebsarzt"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "saglik",
-          "title": "Prevention principles and protection techniques for occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Präventionsprinzipien und Schutztechniken für Berufskrankheiten",
+          "trainer": "Betriebsarzt"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "saglik",
-          "title": "Biological risk factors and the occupational diseases they may cause",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Biologische Risikofaktoren und die Berufskrankheiten, die sie verursachen können",
+          "trainer": "Betriebsarzt"
         },
         {
+          "audience": "Ausgewählte Mitarbeiter",
           "category": "saglik",
-          "title": "First aid and rescue techniques",
-          "trainer": "External training (first aider)",
-          "audience": "Selected employees"
+          "title": "Erste-Hilfe- und Rettungstechniken",
+          "trainer": "Externe Schulung (Ersthelfer)"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Risk factors when working with chemicals",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Risikofaktoren beim Umgang mit Chemikalien",
+          "trainer": "Fachkraft für Arbeitssicherheit"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Physical risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Physische Risikofaktoren",
+          "trainer": "Fachkraft für Arbeitssicherheit"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Ergonomic risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Ergonomische Risikofaktoren",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Manual lifting and carrying",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Manuelles Heben und Tragen",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Flash, explosion, fire and fire protection",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Blitz, Explosion, Feuer und Brandschutz",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Safe use of work equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Sichere Verwendung von Arbeitsmitteln und damit verbundene Risiken",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Büroangestellte",
           "category": "teknik",
-          "title": "Working with display screen equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Office employees"
+          "title": "Arbeiten mit Bildschirmgeräten und damit verbundene Risiken",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Electrical hazards, risks and precautions",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Elektrische Gefahren, Risiken und Vorsichtsmaßnahmen",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Causes of occupational accidents and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Ursachen von Arbeitsunfällen und Präventionsgrundsätze",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Falls and health impacts (accident prevention)",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Stürze und Gesundheitsauswirkungen (Unfallverhütung)",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Selection and use of personal protective equipment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Auswahl und Verwendung persönlicher Schutzausrüstung",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "General OHS rules and basic safety",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Allgemeine Arbeitsschutzregeln und Grundlagen der Sicherheit",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Evacuation and rescue",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Evakuierung und Rettung",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Causes of accidents and injuries and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Unfallursachen und Verletzungen sowie Präventionsgrundsätze",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Mitarbeiter",
           "category": "teknik",
-          "title": "Occupational hygiene and risks from the working environment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Arbeitshygiene und Risiken aus der Arbeitsumgebung",
+          "trainer": "Arbeitsschutzfachkraft"
         },
         {
+          "audience": "Betroffene Mitarbeiter",
           "category": "teknik",
-          "title": "Working at height",
-          "trainer": "External training",
-          "audience": "Relevant employees"
+          "title": "Arbeiten in der Höhe",
+          "trainer": "Externe Schulung"
         }
       ],
       "errors": {
-        "noSupabase": "No Supabase connection",
-        "loadFailed": "Could not load plan",
-        "selectCompany": "Please select a company",
-        "sessionNotFound": "Session not found",
-        "orgNotFound": "Organisation information not found",
-        "saveFailed": "Save failed"
+        "noSupabase": "Keine Supabase-Verbindung",
+        "loadFailed": "Plan konnte nicht geladen werden",
+        "selectCompany": "Bitte wählen Sie ein Unternehmen aus",
+        "sessionNotFound": "Sitzung nicht gefunden",
+        "orgNotFound": "Organisationsinformationen nicht gefunden",
+        "saveFailed": "Speichern fehlgeschlagen"
       },
       "card": {
-        "title": "Annual OHS training plan",
-        "description": "24 standard training topics under the OHS training regulation. Stored per company ? year; planned date, duration, actual date, certificate and attendance are editable per row."
+        "title": "Jährlicher Arbeitsschutz-Schulungsplan",
+        "description": "24 Standard-Schulungsthemen unter der Arbeitsschutz-Schulungsverordnung. Gespeichert pro Unternehmen × Jahr; geplantes Datum, Dauer, tatsächliches Datum, Zertifikat und Teilnahme sind pro Zeile bearbeitbar."
       },
       "fields": {
-        "company": "Company",
-        "companyPlaceholder": "Select a company",
-        "year": "Training year"
+        "company": "Unternehmen",
+        "companyPlaceholder": "Unternehmen auswählen",
+        "year": "Schulungsjahr"
       },
       "signers": {
-        "blockLabel": "Signatories (printed in the PDF signature area)",
-        "employer": "Employer / employer representative",
-        "employerPlaceholder": "Full name",
-        "physician": "Workplace physician",
-        "physicianPlaceholder": "Dr. Full name",
-        "safetyExpert": "OHS specialist",
-        "safetyExpertPlaceholder": "Full name ? Class (A/B/C)"
+        "blockLabel": "Unterzeichner (gedruckt im PDF-Unterschriftenbereich)",
+        "employer": "Arbeitgeber / Arbeitgebervertreter",
+        "employerPlaceholder": "Vollständiger Name",
+        "physician": "Betriebsarzt",
+        "physicianPlaceholder": "Dr. Vollständiger Name",
+        "safetyExpert": "Fachkraft für Arbeitssicherheit",
+        "safetyExpertPlaceholder": "Vollständiger Name · Klasse (A/B/C)"
       },
       "actions": {
-        "saving": "Saving...",
-        "saved": "Saved",
-        "save": "Save",
-        "pdfPrint": "Download / print PDF",
-        "archivedBadge": "Training plan for {year} is archived for this company"
+        "saving": "Speichern...",
+        "saved": "Gespeichert",
+        "save": "Speichern",
+        "pdfPrint": "PDF herunterladen / drucken",
+        "archivedBadge": "Schulungsplan für {year} ist für dieses Unternehmen archiviert"
       },
-      "loading": "Loading plan...",
+      "loading": "Plan wird geladen...",
       "preview": {
-        "title": "Preview & edit",
-        "description": "Edit rows: date / duration / certificate / attendance"
+        "title": "Vorschau & bearbeiten",
+        "description": "Zeilen bearbeiten: Datum / Dauer / Bescheinigung / Teilnahme"
       },
       "table": {
-        "topic": "Training topic",
+        "topic": "Schulungsthema",
         "trainer": "Trainer",
-        "audience": "Audience",
-        "planned": "Planned",
-        "duration": "Duration",
-        "realized": "Actual",
-        "certificate": "Certificate",
-        "attendance": "Attendance",
-        "addRow": "Add row",
-        "deleteRowAria": "Delete row"
+        "audience": "Zielgruppe",
+        "planned": "Geplant",
+        "duration": "Dauer",
+        "realized": "Tatsächlich",
+        "certificate": "Bescheinigung",
+        "attendance": "Teilnahme",
+        "addRow": "Zeile hinzufügen",
+        "deleteRowAria": "Zeile löschen"
       },
       "categories": {
-        "genel": "GENERAL TOPICS (4 hours)",
-        "saglik": "HEALTH TOPICS (4 hours)",
-        "teknik": "TECHNICAL TOPICS (4 hours)"
+        "genel": "ALLGEMEINE THEMEN (4 Stunden)",
+        "saglik": "GESUNDHEITSTHEMEN (4 Stunden)",
+        "teknik": "TECHNISCHE THEMEN (4 Stunden)"
       },
       "certificate": {
-        "yes": "Yes",
-        "no": "No",
+        "yes": "Ja",
+        "no": "Nein",
         "empty": "?"
       },
       "defaults": {
-        "trainer": "OHS specialist",
-        "audience": "Employees"
+        "trainer": "Fachkraft für Arbeitssicherheit",
+        "audience": "Mitarbeiter"
       },
       "pdf": {
-        "htmlTitle": "Annual OHS training plan ? {companyName}",
-        "mainTitle": "ANNUAL TRAINING PLAN",
-        "headerLine": "COMPANY: {companyName} ? YEAR: {year}",
-        "colNo": "No.",
-        "colTopic": "Training topic",
+        "htmlTitle": "Jährlicher Arbeitsschutz-Schulungsplan — {companyName}",
+        "mainTitle": "JÄHRLICHER SCHULUNGSPLAN",
+        "headerLine": "UNTERNEHMEN: {companyName} · JAHR: {year}",
+        "colNo": "Nr.",
+        "colTopic": "Schulungsthema",
         "colTrainer": "Trainer",
-        "colAudience": "Audience",
-        "colPlanned": "Planned",
-        "colDuration": "Duration",
-        "colRealized": "Actual",
-        "colCertificate": "Certificate",
-        "colAttendance": "Attendance",
-        "sigEmployer": "Employer",
-        "sigPhysician": "Workplace physician",
-        "sigSafety": "OHS specialist",
-        "sigLine": "Signature / date",
+        "colAudience": "Zielgruppe",
+        "colPlanned": "Geplant",
+        "colDuration": "Dauer",
+        "colRealized": "Tatsächlich",
+        "colCertificate": "Zertifikat",
+        "colAttendance": "Teilnahme",
+        "sigEmployer": "Arbeitgeber",
+        "sigPhysician": "Betriebsarzt",
+        "sigSafety": "Fachkraft für Arbeitssicherheit",
+        "sigLine": "Unterschrift / Datum",
         "empty": "?"
       }
     },
     "timesheet": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "title": "Timesheet",
-      "defaultProfessional": "OHS professional",
+      "title": "Stundenzettel",
+      "defaultProfessional": "Arbeitsschutzfachkraft",
       "tabs": {
-        "grid": "Timesheet",
-        "archive": "Archive",
-        "settings": "Settings"
+        "grid": "Stundenzettel",
+        "archive": "Archiv",
+        "settings": "Einstellungen"
       },
       "status": {
-        "draft": "Draft",
-        "submitted": "Submitted",
-        "approved": "Approved",
-        "paid": "Paid"
+        "draft": "Entwurf",
+        "submitted": "Eingereicht",
+        "approved": "Genehmigt",
+        "paid": "Bezahlt"
       },
       "actions": {
-        "submit": "Submit",
-        "approve": "Approve",
-        "markPaid": "Mark as paid",
-        "revert": "Revert",
-        "previewPdf": "Preview PDF",
-        "timesheetExcel": "Timesheet Excel",
-        "payrollExcel": "Payroll Excel",
-        "payrollPdf": "Payroll PDF",
-        "view": "View",
-        "delete": "Delete",
-        "cancel": "Cancel",
-        "saving": "Saving..."
+        "submit": "Einreichen",
+        "approve": "Genehmigen",
+        "markPaid": "Als bezahlt markieren",
+        "revert": "Rückgängig",
+        "previewPdf": "PDF-Vorschau",
+        "timesheetExcel": "Stundenzettel Excel",
+        "payrollExcel": "Lohnabrechnung Excel",
+        "payrollPdf": "Lohnabrechnung PDF",
+        "view": "Anzeigen",
+        "delete": "Löschen",
+        "cancel": "Abbrechen",
+        "saving": "Speichern..."
       },
       "stats": {
-        "workedDays": "Worked days",
-        "totalHours": "Total hours",
-        "activeCompanies": "Active companies",
-        "gross": "Gross amount",
-        "stampTax": "Stamp tax",
-        "netPaid": "Net paid"
+        "workedDays": "Arbeitstage",
+        "totalHours": "Gesamtstunden",
+        "activeCompanies": "Aktive Unternehmen",
+        "gross": "Bruttobetrag",
+        "stampTax": "Stempelsteuer",
+        "netPaid": "Netto gezahlt"
       },
       "filters": {
-        "allStatuses": "All statuses"
+        "allStatuses": "Alle Status"
       },
       "empty": {
-        "noCompanies": "No companies found",
-        "noArchive": "No timesheet record for {year}"
+        "noCompanies": "Keine Unternehmen gefunden",
+        "noArchive": "Kein Stundenzetteleintrag für {year}"
       },
       "table": {
-        "company": "Company",
-        "totalShort": "TOTAL",
-        "total": "TOTAL"
+        "company": "Unternehmen",
+        "totalShort": "GESAMT",
+        "total": "GESAMT"
       },
       "archive": {
-        "period": "Period",
+        "period": "Zeitraum",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Aktionen"
       },
       "settings": {
-        "headerTitle": "Header settings",
-        "headerType": "Header type",
+        "headerTitle": "Kopfzeilen-Einstellungen",
+        "headerType": "Kopfzeilen-Typ",
         "headerTypes": {
-          "custom": "Custom",
-          "government": "Official"
+          "custom": "Benutzerdefiniert",
+          "government": "Amtlich"
         },
-        "line1": "Line 1 (main title)",
-        "line2": "Line 2 (subtitle)",
-        "line3": "Line 3 (extra info)",
-        "line1Placeholder": "e.g. Ministry of Labour",
-        "line2Placeholder": "e.g. Occupational health and safety services",
-        "line3Placeholder": "e.g. Monthly work schedule",
-        "professionalTitle": "Professional information",
-        "professionalRole": "Title",
-        "professionalRolePlaceholder": "e.g. OHS specialist (Class A)",
-        "certificateNo": "Registry / certificate no.",
-        "certificateNoPlaceholder": "e.g. ISG-A-12345",
-        "payrollTitle": "Payroll settings",
-        "governmentEmployee": "Civil servant / public employee",
-        "salaryCoefficient": "Salary coefficient",
-        "baseIndicator": "Indicator",
-        "stampTaxRate": "Stamp tax rate",
-        "formulaTitle": "Calculation formula:",
-        "hourlyRateFormula": "Hourly rate = Indicator ({indicator}) ? coefficient ({coefficient}) = ?{amount}",
-        "grossFormula": "Gross amount = hourly rate ? total hours",
-        "stampFormula": "Stamp tax = gross amount ? %{rate}",
-        "netFormula": "Net paid = gross amount - stamp tax",
-        "footerNote": "Footer note",
-        "footerNotePlaceholder": "Note shown at the bottom of Excel/PDF exports...",
-        "save": "Save settings",
-        "saved": "Settings saved.",
-        "errorPrefix": "Error: {message}",
-        "errorPrefixStart": "Error"
+        "line1": "Zeile 1 (Haupttitel)",
+        "line2": "Zeile 2 (Untertitel)",
+        "line3": "Zeile 3 (Zusatzinfo)",
+        "line1Placeholder": "z.B. Arbeitsministerium",
+        "line2Placeholder": "z.B. Arbeitsschutz- und Gesundheitsdienste",
+        "line3Placeholder": "z.B. Monatlicher Arbeitsplan",
+        "professionalTitle": "Berufliche Informationen",
+        "professionalRole": "Titel",
+        "professionalRolePlaceholder": "z.B. Fachkraft für Arbeitssicherheit (Klasse A)",
+        "certificateNo": "Register- / Zertifikatsnr.",
+        "certificateNoPlaceholder": "z.B. ISG-A-12345",
+        "payrollTitle": "Lohnbuchhaltungseinstellungen",
+        "governmentEmployee": "Beamter / öffentlicher Angestellter",
+        "salaryCoefficient": "Gehaltskoeffizient",
+        "baseIndicator": "Indikator",
+        "stampTaxRate": "Stempelsteuersatz",
+        "formulaTitle": "Berechnungsformel:",
+        "hourlyRateFormula": "Stundensatz = Indikator ({indicator}) × Koeffizient ({coefficient}) = €{amount}",
+        "grossFormula": "Bruttobetrag = Stundensatz × Gesamtstunden",
+        "stampFormula": "Stempelsteuer = Bruttobetrag ? %{rate}",
+        "netFormula": "Netto gezahlt = Bruttobetrag - Stempelsteuer",
+        "footerNote": "Fußnote",
+        "footerNotePlaceholder": "Hinweis am Ende der Excel/PDF-Exporte...",
+        "save": "Einstellungen speichern",
+        "saved": "Einstellungen gespeichert.",
+        "errorPrefix": "Fehler: {message}",
+        "errorPrefixStart": "Fehler"
       },
       "delete": {
-        "title": "Delete timesheet",
-        "description": "This timesheet and all entries will be permanently deleted. Are you sure?"
+        "title": "Stundenzettel löschen",
+        "description": "Dieser Stundenzettel und alle Einträge werden dauerhaft gelöscht. Sind Sie sicher?"
       },
       "pdf": {
-        "title": "Timesheet - {month} {year}",
-        "previewTitle": "PDF preview",
-        "printDownload": "Print / download PDF",
-        "preparedBy": "Prepared by",
-        "approvedBy": "Approved by",
-        "employerRepresentative": "Employer / representative",
-        "workScheduleTitle": "{month} {year} ? Work schedule",
-        "narrative": "The person named above, {profileName}, provided a total of {total} hours of occupational safety service in {month} {year}."
+        "title": "Stundenzettel - {month} {year}",
+        "previewTitle": "PDF-Vorschau",
+        "printDownload": "PDF drucken / herunterladen",
+        "preparedBy": "Erstellt von",
+        "approvedBy": "Genehmigt von",
+        "employerRepresentative": "Arbeitgeber / Vertreter",
+        "workScheduleTitle": "{month} {year} – Arbeitsplan",
+        "narrative": "Die oben genannte Person, {profileName}, hat im {month} {year} insgesamt {total} Stunden Arbeitsschutzdienstleistung erbracht."
       },
       "payroll": {
-        "title": "Payroll",
-        "calculationTitle": "Civil servant payroll calculation",
-        "pdfTitle": "Payroll - {month} {year}",
-        "periodLine": "Month: {month}   Year: {year}",
-        "pdfMainTitle": "MISCELLANEOUS PAYMENTS PAYROLL",
-        "warning": "NOTICE",
-        "legalNotice": "The payroll is prepared in accordance with Article 8 of Turkish Occupational Health and Safety Law No. 6331.",
+        "title": "Lohnabrechnung",
+        "calculationTitle": "Beamtengehaltsabrechnung",
+        "pdfTitle": "Gehaltsabrechnung - {month} {year}",
+        "periodLine": "Monat: {month}   Jahr: {year}",
+        "pdfMainTitle": "SONSTIGE ZAHLUNGEN GEHALTSABRECHNUNG",
+        "warning": "HINWEIS",
+        "legalNotice": "Die Gehaltsabrechnung wird gemäß Artikel 8 des türkischen Arbeitsschutzgesetzes Nr. 6331 erstellt.",
         "columns": {
-          "no": "No.",
-          "fullName": "FULL NAME",
-          "salaryCoefficient": "Civil servant salary coefficient",
-          "paymentCoefficient": "Payment coefficient",
-          "hourlyRate": "Hourly rate (TRY)",
-          "assignmentHours": "Assignment duration (hours)",
-          "gross": "Gross amount (TRY)",
-          "stampTax": "Stamp tax deduction (TRY)",
-          "netPaid": "Net paid (TRY)"
+          "no": "Nr.",
+          "fullName": "VOLLSTÄNDIGER NAME",
+          "salaryCoefficient": "Beamtengehaltskoeffizient",
+          "paymentCoefficient": "Zahlungskoeffizient",
+          "hourlyRate": "Stundensatz (TRY)",
+          "assignmentHours": "Einsatzdauer (Stunden)",
+          "gross": "Bruttobetrag (TRY)",
+          "stampTax": "Stempelsteuerabzug (TRY)",
+          "netPaid": "Netto ausgezahlt (TRY)"
         },
-        "indicatorCoefficient": "Indicator ? coefficient",
-        "hourlyRate": "Hourly rate",
-        "stampTaxWithRate": "Stamp tax (%{rate})"
+        "indicatorCoefficient": "Indikator ? Koeffizient",
+        "hourlyRate": "Stundensatz",
+        "stampTaxWithRate": "Stempelsteuer (%{rate})"
       }
     }
   },
@@ -3404,7 +3571,7 @@
     "password": {
       "current": "Aktuelles Passwort",
       "new": "Neues Passwort",
-      "newPlaceholder": "Mind. 12 Zeichen, Groß-/Kleinbuchstaben, Zahl und Symbol",
+      "newPlaceholder": "Mind. 8 Zeichen, Groß-/Kleinbuchstaben, Zahl und Symbol",
       "repeat": "Neues Passwort (Wiederholen)",
       "submit": "Passwort aktualisieren",
       "title": "Passwort ändern"

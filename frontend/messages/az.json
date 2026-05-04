@@ -348,6 +348,62 @@
   "brand": {
     "tagline": "AI ilə gücləndirilmiş əmək sağlamlığı və təhlükəsizliyi platforması"
   },
+  "trainingHubPage": {
+    "title": "Təlim",
+    "description": "Slayd kitabxanası, sorğu və imtahan axınları, şəxsi linklər və nəticə analitikası bu moduldadır.",
+    "actions": {
+      "aiTraining": "AI ilə təlim hazırla",
+      "slideLibrary": "Slayd kitabxanam",
+      "certificates": "Sertifikatlar",
+      "createNew": "Yeni yarat"
+    },
+    "library": {
+      "back": "ƏMT Kitabxanası",
+      "eyebrow": "ƏMT Kitabxanası İnteqrasiyası",
+      "title": "Təlim və imtahan məzmunlarını bu modulda idarə edin",
+      "tabs": {
+        "education": "Təlim məzmunları",
+        "assessment": "İmtahan və sorğu məzmunları"
+      },
+      "emptyPrefix": "Bu kateqoriyada hələ kitabxana məzmunu yoxdur. Məzmun əlavə etmək və ya bütün qeydləri görmək üçün",
+      "emptyLink": "ƏMT Kitabxanasına keçin",
+      "fallbackDescription": "Kitabxana məzmunu",
+      "openContent": "Məzmunu aç",
+      "useInModule": "Modulda istifadə et"
+    },
+    "tabs": {
+      "all": "Hamısı",
+      "surveys": "Sorğular",
+      "exams": "İmtahanlar"
+    },
+    "filters": {
+      "searchPlaceholder": "Sorğu və ya imtahan axtar...",
+      "allStatuses": "Hamısı"
+    },
+    "status": {
+      "draft": "Qaralama",
+      "active": "Aktiv",
+      "closed": "Bağlı",
+      "archived": "Arxiv"
+    },
+    "types": {
+      "exam": "İmtahan",
+      "survey": "Sorğu"
+    },
+    "empty": {
+      "title": "Hələ sorğu və ya imtahan yoxdur",
+      "description": "İlk sorğu və ya imtahanı yaratmaq üçün \"Yeni yarat\" düyməsinə klikləyin"
+    },
+    "card": {
+      "passScore": "Keçid balı: {score}%",
+      "duration": "Müddət: {minutes} dəq"
+    },
+    "errors": {
+      "noSession": "Sessiya tapılmadı. Səhifəni yeniləyin.",
+      "authRequired": "Giriş tələb olunur.",
+      "organizationMissing": "Təşkilat bağlantısı tapılmadı. Profil və ya üzvlük ayarlarınızı yoxlayın."
+    }
+  },
   "certificateVerify": {
     "certNo": "Sertifikat nömrəsi",
     "date": "Tarix",
@@ -575,6 +631,168 @@
       "risk": "Risk və sahə",
       "structure": "Binalar",
       "tracking": "İzləmə"
+    },
+    "structure": {
+      "summaryLocation": "Location",
+      "summaryDepartment": "Department",
+      "summaryEmployee": "Employee",
+      "locationsTitle": "Locations",
+      "locationsSubtitle": "Company physical sites",
+      "departmentsTitle": "Departments",
+      "departmentsSubtitle": "Organisational units",
+      "locationPlaceholder": "Enter location name",
+      "departmentPlaceholder": "Enter department name",
+      "addLocation": "Add location",
+      "addDepartment": "Add department"
+    },
+    "risk": {
+      "pageTitle": "Risk and field management",
+      "pageSubtitle": "Risk classification, analysis history and process tracking.",
+      "tabMap": "Risk map",
+      "tabAnalyses": "Analyses ({count})",
+      "newAnalysis": "New analysis",
+      "metricTotalFindings": "Total findings",
+      "metricCritical": "Critical",
+      "metricHigh": "High",
+      "metricAnalysisCount": "Analyses",
+      "badgeCritical": "Critical: {count}",
+      "badgeHigh": "High: {count}",
+      "badgeMedium": "Medium: {count}",
+      "badgeLow": "Low: {count}",
+      "noFindingsCategory": "No findings yet",
+      "addCategoryTitle": "Add category",
+      "addCategoryHint": "Define a custom risk category",
+      "categoryRisksTitle": "{label} risks",
+      "findingsCountLabel": "{count} findings",
+      "noFindingsInCategory": "No findings in this category yet.",
+      "analysisPrefix": "Analysis:",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "discard": "Discard",
+      "recommendation": "Recommendation",
+      "action": "Action",
+      "notes": "Notes",
+      "status": "Status",
+      "note": "Note",
+      "notePlaceholder": "Work done, observations…",
+      "emptyAnalysesTitle": "No risk analysis yet",
+      "emptyAnalysesDescription": "Start the first analysis for this company from the Risk analysis page.",
+      "findingsInRow": "{count} findings",
+      "archiveTitle": "Archive",
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "confirmDelete": "Delete?",
+      "yes": "Yes",
+      "no": "No",
+      "exportPdfTitle": "Download PDF",
+      "exportWordTitle": "Download Word",
+      "exportExcelTitle": "Download Excel",
+      "analysisStatus": {
+        "completed": "Completed",
+        "archived": "Archived",
+        "draft": "Draft"
+      },
+      "trackingStatus": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "archived": "Archived"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "method": {
+        "r_skor": "R-SCORE 2D",
+        "fine_kinney": "Fine-Kinney",
+        "l_matrix": "L-Matrix",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "shareTitle": "Report sharing",
+      "shareDescription": "Anyone with the link can view this report.",
+      "shareEnable": "Enable sharing link",
+      "shareActive": "Sharing on",
+      "shareCopyTitle": "Copy link",
+      "shareCopied": "Copied",
+      "shareWhatsappTitle": "Share via WhatsApp",
+      "shareButtonTitle": "Share",
+      "shareWhatsappBody": "RiskNova — {title}\n{url}",
+      "participantsHeading": "Participants",
+      "analysisNoteHeading": "Analysis note",
+      "emptyAnalysisRows": "No rows in this analysis yet.",
+      "rowFindingCount": "({count})",
+      "recommendationInline": "Recommendation:",
+      "actionInline": "Action:",
+      "qrAlt": "QR code",
+      "qrCaption": "Share with QR",
+      "categories": {
+        "fiziksel": {
+          "label": "Physical",
+          "examples": "Noise, vibration, lighting, temperature"
+        },
+        "kimyasal": {
+          "label": "Chemical",
+          "examples": "Gas, dust, vapour, chemicals"
+        },
+        "biyolojik": {
+          "label": "Biological",
+          "examples": "Bacteria, viruses, mould, biological agents"
+        },
+        "ergonomik": {
+          "label": "Ergonomic",
+          "examples": "Poor posture, heavy loads, repetitive motion"
+        },
+        "psikososyal": {
+          "label": "Psychosocial",
+          "examples": "Stress, bullying, workload, shifts"
+        },
+        "mekanik": {
+          "label": "Mechanical",
+          "examples": "Machinery, equipment, falls, crushing"
+        },
+        "elektrik": {
+          "label": "Electrical",
+          "examples": "Electric shock, short circuit, earthing"
+        },
+        "yangin": {
+          "label": "Fire / explosion",
+          "examples": "Flammable material, explosive atmosphere, LPG"
+        },
+        "trafik": {
+          "label": "Traffic",
+          "examples": "Vehicles, forklifts, pedestrian–vehicle conflict"
+        },
+        "cevre": {
+          "label": "Environmental",
+          "examples": "Waste, emissions, noise pollution"
+        }
+      }
+    },
+    "tracking": {
+      "sectionActions": "Open actions",
+      "sectionTrainings": "Trainings",
+      "sectionControls": "Periodic inspection",
+      "sectionCommittee": "OHS committee",
+      "hazardUnknown": "Not determined",
+      "actionsTitle": "Open actions",
+      "actionsDesc": "Open actions from risk findings, CAPA and OHS tasks.",
+      "noActions": "No open actions.",
+      "badgeTotal": "Total: {count}",
+      "sourceRisk": "Risk",
+      "sourceDof": "CAPA",
+      "sourceTask": "Task",
+      "statusButton": "Status",
+      "trainingsTitle": "Training tracking",
+      "trainingsDesc": "Company training plans and records.",
+      "controlsTitle": "Periodic inspections",
+      "controlsDesc": "Legally required periodic inspections and examinations.",
+      "committeeTitle": "OHS committee meetings",
+      "committeeDesc": "Hazard class: {hazardClass} — every {months} months"
     }
   },
   "consent": {
@@ -2560,531 +2778,480 @@
         "regulation": "Qanunvericilik",
         "responsible": "Məsul",
         "topic": "İş mövzusu"
-      },
-      "months": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ]
+      }
     },
     "shell": {
-      "title": "Planner",
-      "description": "OHS tasks, annual work plan, training plan and timesheet under one roof.",
+      "title": "Planlaşdırıcı",
+      "description": "İEMT tapşırıqları, illik iş planı, təlim planı və iş vaxtı cədvəli bir yerdə.",
       "tabs": {
         "planner": {
-          "label": "Planner",
-          "desc": "Calendar ? tasks ? reminders"
+          "label": "Planlaşdırıcı",
+          "desc": "Təqvim, tapşırıqlar və xatırlatmalar"
         },
         "workPlan": {
-          "label": "Annual work plan",
-          "desc": "OHS annual work plan (official form)"
+          "label": "İllik iş planı",
+          "desc": "İEMT illik iş planı (rəsmi forma)"
         },
         "trainingPlan": {
-          "label": "Annual training",
-          "desc": "Training plan, participants and certificates"
+          "label": "İllik təlim",
+          "desc": "Təlim planı, iştirakçılar və sertifikatlar"
         },
         "timesheet": {
-          "label": "Timesheet",
-          "desc": "Hours and fee tracking"
+          "label": "İş vaxtı cədvəli",
+          "desc": "Saat və ödəniş izləmə"
         }
       }
     },
     "core": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "weekdays": [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-      ],
-      "pageTitle": "OHS planner",
-      "pageDescription": "Plan and track occupational health and safety tasks.",
+      "pageTitle": "PTS planlaşdırıcısı",
+      "pageDescription": "Peşə təhlükəsizliyi və sağlamlıq tapşırıqlarını planlaşdırın və izləyin.",
       "actions": {
-        "newTask": "New task",
-        "dismissError": "Dismiss error",
-        "cancel": "Cancel",
-        "saving": "Saving...",
-        "create": "Create",
-        "update": "Update"
+        "newTask": "Yeni tapşırıq",
+        "dismissError": "Xətanı rədd et",
+        "cancel": "Ləğv et",
+        "saving": "Saxlanılır...",
+        "create": "Yarat",
+        "update": "Yenilə"
       },
       "stats": {
-        "total": "Total"
+        "total": "Cəmi"
       },
       "filters": {
-        "allCategories": "All categories",
-        "allStatuses": "All statuses",
-        "allCompanies": "All companies"
+        "allCategories": "Bütün kateqoriyalar",
+        "allStatuses": "Bütün statuslar",
+        "allCompanies": "Bütün şirkətlər"
       },
       "views": {
-        "month": "Calendar",
-        "list": "List"
+        "month": "Təqvim",
+        "list": "Siyahı"
       },
       "sidebar": {
-        "categories": "Categories",
-        "all": "All",
-        "addCategory": "Add category",
-        "quickAdd": "Quick add"
+        "categories": "Kateqoriyalar",
+        "all": "Hamısı",
+        "addCategory": "Kateqoriya əlavə et",
+        "quickAdd": "Sürətli əlavə et"
       },
       "calendar": {
-        "more": "+{count} more"
+        "more": "+{count} daha çox"
       },
       "empty": {
-        "title": "No tasks yet",
-        "description": "Click the New task button above."
+        "title": "Hələ tapşırıq yoxdur",
+        "description": "Yuxarıdakı Yeni tapşırıq düyməsini basın."
       },
       "recurrence": {
-        "none": "Does not repeat",
-        "daily": "Daily",
-        "weekly": "Weekly",
-        "monthly": "Monthly",
-        "quarterly": "Quarterly",
-        "biannual": "Every six months",
-        "annual": "Annual"
+        "none": "Təkrarlanmır",
+        "daily": "Gündəlik",
+        "weekly": "Həftəlik",
+        "monthly": "Aylıq",
+        "quarterly": "Rüblük",
+        "biannual": "Altı ayda bir",
+        "annual": "İllik"
       },
       "status": {
-        "planned": "Planned",
-        "in_progress": "In progress",
-        "completed": "Completed",
-        "overdue": "Overdue",
-        "cancelled": "Cancelled"
+        "planned": "Planlaşdırılıb",
+        "in_progress": "Davam edir",
+        "completed": "Tamamlanıb",
+        "overdue": "Vaxtı keçib",
+        "cancelled": "Ləğv edilib"
       },
       "categories": {
-        "periodicControl": "Periodic inspection",
-        "training": "Training",
-        "healthFollowUp": "Health follow-up",
-        "meetingDrill": "Meeting & drill",
-        "legalObligation": "Legal obligation",
-        "fieldVisit": "Field visit",
-        "ohsCommitteeMeeting": "OHS committee meeting",
-        "other": "Other"
+        "periodicControl": "Dövri yoxlama",
+        "training": "Təlim",
+        "healthFollowUp": "Sağlamlıq izləməsi",
+        "meetingDrill": "Görüş və təlim",
+        "legalObligation": "Hüquqi öhdəlik",
+        "fieldVisit": "Sahə ziyarəti",
+        "ohsCommitteeMeeting": "ƏMTƏ komitəsi görüşü",
+        "other": "Digər"
       },
       "modal": {
-        "newTitle": "New task",
-        "editTitle": "Edit task",
-        "optional": "- optional",
+        "newTitle": "Yeni tapşırıq",
+        "editTitle": "Tapşırığı redaktə et",
+        "optional": "- ixtiyari",
         "fields": {
-          "title": "Title *",
-          "description": "Description",
-          "category": "Category",
+          "title": "Başlıq *",
+          "description": "Təsvir",
+          "category": "Kateqoriya",
           "status": "Status",
-          "company": "Company",
-          "startDate": "Start date *",
-          "endDate": "End date",
-          "recurrence": "Repeat",
-          "reminderDays": "Reminder (days before)",
-          "includeTimesheet": "Add to timesheet",
-          "timesheetHours": "Working time (hours)",
-          "hourlyRate": "Hourly rate"
+          "company": "Şirkət",
+          "startDate": "Başlama tarixi *",
+          "endDate": "Bitmə tarixi",
+          "recurrence": "Təkrarla",
+          "reminderDays": "Xatırlatma (neçə gün əvvəl)",
+          "includeTimesheet": "Vaxt cədvəlinə əlavə et",
+          "timesheetHours": "İş vaxtı (saat)",
+          "hourlyRate": "Saatlıq tarif"
         },
         "placeholders": {
-          "title": "Task title",
-          "description": "Task description...",
-          "category": "Select category...",
-          "company": "Select company...",
-          "hours": "e.g. 4.5",
-          "rate": "e.g. 250"
+          "title": "Tapşırıq başlığı",
+          "description": "Tapşırıq təsviri...",
+          "category": "Kateqoriya seçin...",
+          "company": "Şirkət seçin...",
+          "hours": "məs. 4.5",
+          "rate": "məs. 250"
         }
       },
       "errors": {
-        "orgNotFound": "Organisation information not found. Please sign in again.",
-        "saveFailed": "An error occurred while saving."
+        "orgNotFound": "Təşkilat məlumatları tapılmadı. Zəhmət olmasa yenidən daxil olun.",
+        "saveFailed": "Saxlama zamanı xəta baş verdi."
       },
-      "confirmDeleteTask": "Are you sure you want to delete this task?"
+      "confirmDeleteTask": "Bu tapşırığı silmək istədiyinizə əminsiniz?"
     },
     "yearlyTraining": {
       "defaultTrainings": [
         {
+          "audience": "İşçilər",
           "category": "genel",
-          "title": "Information on occupational health and safety legislation",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Peşə sağlamlığı və təhlükəsizliyi qanunvericiliyi haqqında məlumat",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "genel",
-          "title": "General information on employee rights and responsibilities",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "İşçi hüquq və məsuliyyətləri haqqında ümumi məlumat",
+          "trainer": "ƏTM mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "genel",
-          "title": "Workplace cleanliness and order",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "İş yerində təmizlik və nizam",
+          "trainer": "ƏTM mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "genel",
-          "title": "Legal consequences of occupational accidents and diseases",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Peşə qəzaları və xəstəliklərinin hüquqi nəticələri",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "saglik",
-          "title": "Causes of occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Peşə xəstəliklərinin səbəbləri",
+          "trainer": "İş yeri həkimi"
         },
         {
+          "audience": "İşçilər",
           "category": "saglik",
-          "title": "Prevention principles and protection techniques for occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Peşə xəstəliklərinin qarşısının alınması prinsipləri və qorunma texnikaları",
+          "trainer": "İş yeri həkimi"
         },
         {
+          "audience": "İşçilər",
           "category": "saglik",
-          "title": "Biological risk factors and the occupational diseases they may cause",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Bioloji risk faktorları və onların səbəb ola biləcəyi peşə xəstəlikləri",
+          "trainer": "İş yeri həkimi"
         },
         {
+          "audience": "Seçilmiş işçilər",
           "category": "saglik",
-          "title": "First aid and rescue techniques",
-          "trainer": "External training (first aider)",
-          "audience": "Selected employees"
+          "title": "İlk yardım və xilasetmə texnikaları",
+          "trainer": "Xarici təlim (ilk yardımçı)"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Risk factors when working with chemicals",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Kimyəvi maddələrlə işləyərkən risk faktorları",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Physical risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Fiziki risk faktorları",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Ergonomic risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Erqonomik risk faktorları",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Manual lifting and carrying",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Əl ilə qaldırma və daşıma",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Flash, explosion, fire and fire protection",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Partlayış, yanğın və yanğından mühafizə",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Safe use of work equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "İş avadanlığının təhlükəsiz istifadəsi və əlaqəli risklər",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "Ofis işçiləri",
           "category": "teknik",
-          "title": "Working with display screen equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Office employees"
+          "title": "Displey ekran avadanlığı ilə işləmə və əlaqəli risklər",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Electrical hazards, risks and precautions",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Elektrik təhlükələri, risklər və ehtiyat tədbirləri",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Causes of occupational accidents and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Peşə qəzalarının səbəbləri və qarşısının alınması prinsipləri",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Falls and health impacts (accident prevention)",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Yıxılmalar və sağlamlığa təsiri (qəza qarşısının alınması)",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Selection and use of personal protective equipment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Fərdi mühafizə vasitələrinin seçimi və istifadəsi",
+          "trainer": "İEMT mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "General OHS rules and basic safety",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Ümumi ƏTM qaydaları və əsas təhlükəsizlik",
+          "trainer": "ƏTM mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Evacuation and rescue",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Təxliyə və xilasetmə",
+          "trainer": "ƏTM mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Causes of accidents and injuries and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Qəza və zədələnmələrin səbəbləri və qarşısının alınması prinsipləri",
+          "trainer": "ƏTM mütəxəssisi"
         },
         {
+          "audience": "İşçilər",
           "category": "teknik",
-          "title": "Occupational hygiene and risks from the working environment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Peşə gigiyenası və iş mühitindən gələn risklər",
+          "trainer": "ƏTM mütəxəssisi"
         },
         {
+          "audience": "Müvafiq işçilər",
           "category": "teknik",
-          "title": "Working at height",
-          "trainer": "External training",
-          "audience": "Relevant employees"
+          "title": "Hündürlükdə işləmə",
+          "trainer": "Xarici təlim"
         }
       ],
       "errors": {
-        "noSupabase": "No Supabase connection",
-        "loadFailed": "Could not load plan",
-        "selectCompany": "Please select a company",
-        "sessionNotFound": "Session not found",
-        "orgNotFound": "Organisation information not found",
-        "saveFailed": "Save failed"
+        "noSupabase": "Supabase bağlantısı yoxdur",
+        "loadFailed": "Plan yüklənə bilmədi",
+        "selectCompany": "Zəhmət olmasa şirkət seçin",
+        "sessionNotFound": "Sessiya tapılmadı",
+        "orgNotFound": "Təşkilat məlumatları tapılmadı",
+        "saveFailed": "Saxlama uğursuz oldu"
       },
       "card": {
-        "title": "Annual OHS training plan",
-        "description": "24 standard training topics under the OHS training regulation. Stored per company ? year; planned date, duration, actual date, certificate and attendance are editable per row."
+        "title": "İllik İEMT təlim planı",
+        "description": "İEMT təlim qaydası altında 24 standart təlim mövzusu. Şirkət × il əsasında saxlanılır; planlaşdırılan tarix, müddət, faktiki tarix, sertifikat və iştirak hər sətir üçün redaktə edilə bilər."
       },
       "fields": {
-        "company": "Company",
-        "companyPlaceholder": "Select a company",
-        "year": "Training year"
+        "company": "Şirkət",
+        "companyPlaceholder": "Şirkət seçin",
+        "year": "Təlim ili"
       },
       "signers": {
-        "blockLabel": "Signatories (printed in the PDF signature area)",
-        "employer": "Employer / employer representative",
-        "employerPlaceholder": "Full name",
-        "physician": "Workplace physician",
-        "physicianPlaceholder": "Dr. Full name",
-        "safetyExpert": "OHS specialist",
-        "safetyExpertPlaceholder": "Full name ? Class (A/B/C)"
+        "blockLabel": "İmzalayanlar (PDF imza sahəsində çap olunur)",
+        "employer": "İşəgötürən / işəgötürən nümayəndəsi",
+        "employerPlaceholder": "Tam ad",
+        "physician": "İş yeri həkimi",
+        "physicianPlaceholder": "Dr. Tam ad",
+        "safetyExpert": "İEG mütəxəssisi",
+        "safetyExpertPlaceholder": "Tam ad · Sinif (A/B/C)"
       },
       "actions": {
-        "saving": "Saving...",
-        "saved": "Saved",
-        "save": "Save",
-        "pdfPrint": "Download / print PDF",
-        "archivedBadge": "Training plan for {year} is archived for this company"
+        "saving": "Yadda saxlanılır...",
+        "saved": "Yadda saxlanıldı",
+        "save": "Yadda saxla",
+        "pdfPrint": "PDF yüklə / çap et",
+        "archivedBadge": "{year} ili üçün təlim planı bu şirkət üçün arxivləşdirilib"
       },
-      "loading": "Loading plan...",
+      "loading": "Plan yüklənir...",
       "preview": {
-        "title": "Preview & edit",
-        "description": "Edit rows: date / duration / certificate / attendance"
+        "title": "Önizləmə və redaktə",
+        "description": "Sətirləri redaktə edin: tarix / müddət / sertifikat / iştirak"
       },
       "table": {
-        "topic": "Training topic",
-        "trainer": "Trainer",
-        "audience": "Audience",
-        "planned": "Planned",
-        "duration": "Duration",
-        "realized": "Actual",
-        "certificate": "Certificate",
-        "attendance": "Attendance",
-        "addRow": "Add row",
-        "deleteRowAria": "Delete row"
+        "topic": "Təlim mövzusu",
+        "trainer": "Təlimçi",
+        "audience": "Auditoriya",
+        "planned": "Planlaşdırılmış",
+        "duration": "Müddət",
+        "realized": "Faktiki",
+        "certificate": "Sertifikat",
+        "attendance": "İştirak",
+        "addRow": "Sətir əlavə et",
+        "deleteRowAria": "Sətiri sil"
       },
       "categories": {
-        "genel": "GENERAL TOPICS (4 hours)",
-        "saglik": "HEALTH TOPICS (4 hours)",
-        "teknik": "TECHNICAL TOPICS (4 hours)"
+        "genel": "ÜMUMI MÖVZULAR (4 saat)",
+        "saglik": "SAĞLAMLIQ MÖVZULARI (4 saat)",
+        "teknik": "TEXNİKİ MÖVZULAR (4 saat)"
       },
       "certificate": {
-        "yes": "Yes",
-        "no": "No",
+        "yes": "Bəli",
+        "no": "Xeyr",
         "empty": "?"
       },
       "defaults": {
-        "trainer": "OHS specialist",
-        "audience": "Employees"
+        "trainer": "ƏMTƏH mütəxəssisi",
+        "audience": "İşçilər"
       },
       "pdf": {
-        "htmlTitle": "Annual OHS training plan ? {companyName}",
-        "mainTitle": "ANNUAL TRAINING PLAN",
-        "headerLine": "COMPANY: {companyName} ? YEAR: {year}",
-        "colNo": "No.",
-        "colTopic": "Training topic",
-        "colTrainer": "Trainer",
-        "colAudience": "Audience",
-        "colPlanned": "Planned",
-        "colDuration": "Duration",
-        "colRealized": "Actual",
-        "colCertificate": "Certificate",
-        "colAttendance": "Attendance",
-        "sigEmployer": "Employer",
-        "sigPhysician": "Workplace physician",
-        "sigSafety": "OHS specialist",
-        "sigLine": "Signature / date",
+        "htmlTitle": "İllik ƏMTƏH təlim planı — {companyName}",
+        "mainTitle": "İLLİK TƏLİM PLANI",
+        "headerLine": "ŞİRKƏT: {companyName} · İL: {year}",
+        "colNo": "№",
+        "colTopic": "Təlim mövzusu",
+        "colTrainer": "Təlimçi",
+        "colAudience": "Auditoriya",
+        "colPlanned": "Planlaşdırılmış",
+        "colDuration": "Müddət",
+        "colRealized": "Faktiki",
+        "colCertificate": "Sertifikat",
+        "colAttendance": "İştirak",
+        "sigEmployer": "İşəgötürən",
+        "sigPhysician": "İş yeri həkimi",
+        "sigSafety": "İEG mütəxəssisi",
+        "sigLine": "İmza / tarix",
         "empty": "?"
       }
     },
     "timesheet": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "title": "Timesheet",
-      "defaultProfessional": "OHS professional",
+      "title": "İş vaxtı cədvəli",
+      "defaultProfessional": "OHS mütəxəssisi",
       "tabs": {
-        "grid": "Timesheet",
-        "archive": "Archive",
-        "settings": "Settings"
+        "grid": "İş vaxtı cədvəli",
+        "archive": "Arxiv",
+        "settings": "Parametrlər"
       },
       "status": {
-        "draft": "Draft",
-        "submitted": "Submitted",
-        "approved": "Approved",
-        "paid": "Paid"
+        "draft": "Layihə",
+        "submitted": "Təqdim edilib",
+        "approved": "Təsdiqlənib",
+        "paid": "Ödənilib"
       },
       "actions": {
-        "submit": "Submit",
-        "approve": "Approve",
-        "markPaid": "Mark as paid",
-        "revert": "Revert",
-        "previewPdf": "Preview PDF",
-        "timesheetExcel": "Timesheet Excel",
-        "payrollExcel": "Payroll Excel",
-        "payrollPdf": "Payroll PDF",
-        "view": "View",
-        "delete": "Delete",
-        "cancel": "Cancel",
-        "saving": "Saving..."
+        "submit": "Təqdim et",
+        "approve": "Təsdiq et",
+        "markPaid": "Ödənilmiş kimi qeyd et",
+        "revert": "Geri qaytar",
+        "previewPdf": "PDF önizləmə",
+        "timesheetExcel": "Vaxt cədvəli Excel",
+        "payrollExcel": "Əmək haqqı Excel",
+        "payrollPdf": "Əmək haqqı PDF",
+        "view": "Bax",
+        "delete": "Sil",
+        "cancel": "Ləğv et",
+        "saving": "Saxlanılır..."
       },
       "stats": {
-        "workedDays": "Worked days",
-        "totalHours": "Total hours",
-        "activeCompanies": "Active companies",
-        "gross": "Gross amount",
-        "stampTax": "Stamp tax",
-        "netPaid": "Net paid"
+        "workedDays": "İşlənilən günlər",
+        "totalHours": "Ümumi saatlar",
+        "activeCompanies": "Aktiv şirkətlər",
+        "gross": "Ümumi məbləğ",
+        "stampTax": "Möhür vergisi",
+        "netPaid": "Xalis ödəniş"
       },
       "filters": {
-        "allStatuses": "All statuses"
+        "allStatuses": "Bütün statuslar"
       },
       "empty": {
-        "noCompanies": "No companies found",
-        "noArchive": "No timesheet record for {year}"
+        "noCompanies": "Şirkət tapılmadı",
+        "noArchive": "{year} üçün vaxt cədvəli qeydi yoxdur"
       },
       "table": {
-        "company": "Company",
-        "totalShort": "TOTAL",
-        "total": "TOTAL"
+        "company": "Şirkət",
+        "totalShort": "CƏMİ",
+        "total": "CƏMİ"
       },
       "archive": {
-        "period": "Period",
+        "period": "Dövr",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Əməliyyatlar"
       },
       "settings": {
-        "headerTitle": "Header settings",
-        "headerType": "Header type",
+        "headerTitle": "Başlıq parametrləri",
+        "headerType": "Başlıq növü",
         "headerTypes": {
-          "custom": "Custom",
-          "government": "Official"
+          "custom": "Fərdi",
+          "government": "Rəsmi"
         },
-        "line1": "Line 1 (main title)",
-        "line2": "Line 2 (subtitle)",
-        "line3": "Line 3 (extra info)",
-        "line1Placeholder": "e.g. Ministry of Labour",
-        "line2Placeholder": "e.g. Occupational health and safety services",
-        "line3Placeholder": "e.g. Monthly work schedule",
-        "professionalTitle": "Professional information",
-        "professionalRole": "Title",
-        "professionalRolePlaceholder": "e.g. OHS specialist (Class A)",
-        "certificateNo": "Registry / certificate no.",
-        "certificateNoPlaceholder": "e.g. ISG-A-12345",
-        "payrollTitle": "Payroll settings",
-        "governmentEmployee": "Civil servant / public employee",
-        "salaryCoefficient": "Salary coefficient",
-        "baseIndicator": "Indicator",
-        "stampTaxRate": "Stamp tax rate",
-        "formulaTitle": "Calculation formula:",
-        "hourlyRateFormula": "Hourly rate = Indicator ({indicator}) ? coefficient ({coefficient}) = ?{amount}",
-        "grossFormula": "Gross amount = hourly rate ? total hours",
-        "stampFormula": "Stamp tax = gross amount ? %{rate}",
-        "netFormula": "Net paid = gross amount - stamp tax",
-        "footerNote": "Footer note",
-        "footerNotePlaceholder": "Note shown at the bottom of Excel/PDF exports...",
-        "save": "Save settings",
-        "saved": "Settings saved.",
-        "errorPrefix": "Error: {message}",
-        "errorPrefixStart": "Error"
+        "line1": "Sətir 1 (əsas başlıq)",
+        "line2": "Xətt 2 (alt başlıq)",
+        "line3": "Xətt 3 (əlavə məlumat)",
+        "line1Placeholder": "məs. Əmək Nazirliyi",
+        "line2Placeholder": "məs. Əmək mühafizəsi və təhlükəsizliyi xidmətləri",
+        "line3Placeholder": "məs. Aylıq iş cədvəli",
+        "professionalTitle": "Peşəkar məlumatlar",
+        "professionalRole": "Vəzifə",
+        "professionalRolePlaceholder": "məs. ƏMT mütəxəssisi (A sinfi)",
+        "certificateNo": "Qeydiyyat / sertifikat nömrəsi",
+        "certificateNoPlaceholder": "məs. ISG-A-12345",
+        "payrollTitle": "Əmək haqqı parametrləri",
+        "governmentEmployee": "Dövlət qulluqçusu / dövlət işçisi",
+        "salaryCoefficient": "Əmək haqqı əmsalı",
+        "baseIndicator": "Göstərici",
+        "stampTaxRate": "Möhür vergisi dərəcəsi",
+        "formulaTitle": "Hesablama düsturu:",
+        "hourlyRateFormula": "Saatlıq tarif = Göstərici ({indicator}) × əmsal ({coefficient}) = ₼{amount}",
+        "grossFormula": "Ümumi məbləğ = saatlıq tarif × ümumi saatlar",
+        "stampFormula": "Möhür vergisi = ümumi məbləğ ? %{rate}",
+        "netFormula": "Xalis ödəniş = ümumi məbləğ - möhür vergisi",
+        "footerNote": "Alt qeyd",
+        "footerNotePlaceholder": "Excel/PDF ixracının altında göstərilən qeyd...",
+        "save": "Parametrləri saxla",
+        "saved": "Parametrlər saxlanıldı.",
+        "errorPrefix": "Xəta: {message}",
+        "errorPrefixStart": "Xəta"
       },
       "delete": {
-        "title": "Delete timesheet",
-        "description": "This timesheet and all entries will be permanently deleted. Are you sure?"
+        "title": "Vaxt cədvəlini sil",
+        "description": "Bu vaxt cədvəli və bütün qeydlər həmişəlik silinəcək. Əminsiniz?"
       },
       "pdf": {
-        "title": "Timesheet - {month} {year}",
-        "previewTitle": "PDF preview",
-        "printDownload": "Print / download PDF",
-        "preparedBy": "Prepared by",
-        "approvedBy": "Approved by",
-        "employerRepresentative": "Employer / representative",
-        "workScheduleTitle": "{month} {year} ? Work schedule",
-        "narrative": "The person named above, {profileName}, provided a total of {total} hours of occupational safety service in {month} {year}."
+        "title": "İş cədvəli - {month} {year}",
+        "previewTitle": "PDF önizləmə",
+        "printDownload": "PDF çap et / yüklə",
+        "preparedBy": "Hazırlayan",
+        "approvedBy": "Təsdiq edən",
+        "employerRepresentative": "İşəgötürən / nümayəndə",
+        "workScheduleTitle": "{month} {year} İş cədvəli",
+        "narrative": "{profileName} adlı şəxs {month} {year} tarixində cəmi {total} saat əmək təhlükəsizliyi xidməti göstərmişdir."
       },
       "payroll": {
-        "title": "Payroll",
-        "calculationTitle": "Civil servant payroll calculation",
-        "pdfTitle": "Payroll - {month} {year}",
-        "periodLine": "Month: {month}   Year: {year}",
-        "pdfMainTitle": "MISCELLANEOUS PAYMENTS PAYROLL",
-        "warning": "NOTICE",
-        "legalNotice": "The payroll is prepared in accordance with Article 8 of Turkish Occupational Health and Safety Law No. 6331.",
+        "title": "Əmək haqqı",
+        "calculationTitle": "Dövlət qulluqçusu maaş hesablaması",
+        "pdfTitle": "Maaş cədvəli - {month} {year}",
+        "periodLine": "Ay: {month}   İl: {year}",
+        "pdfMainTitle": "MÜXTƏLİF ÖDƏNIŞLƏR MAAŞ CƏDVƏLİ",
+        "warning": "XƏBƏRDARLIQ",
+        "legalNotice": "Maaş hesablaması Türkiyə İş Sağlığı və Təhlükəsizliyi Qanunu № 6331-in 8-ci maddəsinə uyğun hazırlanmışdır.",
         "columns": {
-          "no": "No.",
-          "fullName": "FULL NAME",
-          "salaryCoefficient": "Civil servant salary coefficient",
-          "paymentCoefficient": "Payment coefficient",
-          "hourlyRate": "Hourly rate (TRY)",
-          "assignmentHours": "Assignment duration (hours)",
-          "gross": "Gross amount (TRY)",
-          "stampTax": "Stamp tax deduction (TRY)",
-          "netPaid": "Net paid (TRY)"
+          "no": "№",
+          "fullName": "AD SOYAD",
+          "salaryCoefficient": "Dövlət qulluqçusu maaş əmsalı",
+          "paymentCoefficient": "Ödəniş əmsalı",
+          "hourlyRate": "Saatlıq tarif (TRY)",
+          "assignmentHours": "Tapşırıq müddəti (saat)",
+          "gross": "Ümumi məbləğ (TRY)",
+          "stampTax": "Damğa vergisi tutulması (TRY)",
+          "netPaid": "Xalis ödənilən (TRY)"
         },
-        "indicatorCoefficient": "Indicator ? coefficient",
-        "hourlyRate": "Hourly rate",
-        "stampTaxWithRate": "Stamp tax (%{rate})"
+        "indicatorCoefficient": "Göstərici ? əmsalı",
+        "hourlyRate": "Saatlıq tarif",
+        "stampTaxWithRate": "Marka vergisi (%{rate})"
       }
     }
   },
@@ -3404,7 +3571,7 @@
     "password": {
       "current": "Cari Parol",
       "new": "Yeni Parol",
-      "newPlaceholder": "Ən azı 12 simvol, böyük/kiçik hərf, rəqəm və simvol",
+      "newPlaceholder": "Ən azı 8 simvol, böyük/kiçik hərf, rəqəm və simvol",
       "repeat": "Yeni Parol (Təkrar)",
       "submit": "Parolu Yenilə",
       "title": "Parolu Dəyiş"

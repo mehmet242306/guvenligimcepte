@@ -348,6 +348,62 @@
   "brand": {
     "tagline": "منصة الصحة والسلامة المهنية المدعومة بالذكاء الاصطناعي"
   },
+  "trainingHubPage": {
+    "title": "التدريب",
+    "description": "توجد مكتبة الشرائح وتدفقات الاستبيانات والاختبارات والروابط الشخصية وتحليل النتائج في هذا القسم.",
+    "actions": {
+      "aiTraining": "إنشاء تدريب بالذكاء الاصطناعي",
+      "slideLibrary": "مكتبتي للشرائح",
+      "certificates": "الشهادات",
+      "createNew": "إنشاء جديد"
+    },
+    "library": {
+      "back": "مكتبة السلامة المهنية",
+      "eyebrow": "تكامل مكتبة السلامة المهنية",
+      "title": "إدارة محتوى التدريب والاختبارات في هذا القسم",
+      "tabs": {
+        "education": "محتوى التدريب",
+        "assessment": "محتوى الاختبارات والاستبيانات"
+      },
+      "emptyPrefix": "لا يوجد محتوى مكتبة في هذه الفئة بعد. لإضافة محتوى أو عرض كل السجلات،",
+      "emptyLink": "انتقل إلى مكتبة السلامة المهنية",
+      "fallbackDescription": "محتوى المكتبة",
+      "openContent": "فتح المحتوى",
+      "useInModule": "استخدام في القسم"
+    },
+    "tabs": {
+      "all": "الكل",
+      "surveys": "الاستبيانات",
+      "exams": "الاختبارات"
+    },
+    "filters": {
+      "searchPlaceholder": "ابحث عن استبيان أو اختبار...",
+      "allStatuses": "الكل"
+    },
+    "status": {
+      "draft": "مسودة",
+      "active": "نشط",
+      "closed": "مغلق",
+      "archived": "الأرشيف"
+    },
+    "types": {
+      "exam": "اختبار",
+      "survey": "استبيان"
+    },
+    "empty": {
+      "title": "لا توجد استبيانات أو اختبارات بعد",
+      "description": "انقر على \"إنشاء جديد\" لإنشاء أول استبيان أو اختبار"
+    },
+    "card": {
+      "passScore": "درجة النجاح: {score}%",
+      "duration": "المدة: {minutes} دقيقة"
+    },
+    "errors": {
+      "noSession": "لم يتم العثور على جلسة. حدّث الصفحة.",
+      "authRequired": "تسجيل الدخول مطلوب.",
+      "organizationMissing": "لم يتم العثور على ارتباط المؤسسة. تحقق من إعدادات ملفك الشخصي أو العضوية."
+    }
+  },
   "certificateVerify": {
     "certNo": "رقم الشهادة",
     "date": "التاريخ",
@@ -575,6 +631,168 @@
       "risk": "المخاطر والميدان",
       "structure": "المباني",
       "tracking": "التتبع"
+    },
+    "structure": {
+      "summaryLocation": "Location",
+      "summaryDepartment": "Department",
+      "summaryEmployee": "Employee",
+      "locationsTitle": "Locations",
+      "locationsSubtitle": "Company physical sites",
+      "departmentsTitle": "Departments",
+      "departmentsSubtitle": "Organisational units",
+      "locationPlaceholder": "Enter location name",
+      "departmentPlaceholder": "Enter department name",
+      "addLocation": "Add location",
+      "addDepartment": "Add department"
+    },
+    "risk": {
+      "pageTitle": "Risk and field management",
+      "pageSubtitle": "Risk classification, analysis history and process tracking.",
+      "tabMap": "Risk map",
+      "tabAnalyses": "Analyses ({count})",
+      "newAnalysis": "New analysis",
+      "metricTotalFindings": "Total findings",
+      "metricCritical": "Critical",
+      "metricHigh": "High",
+      "metricAnalysisCount": "Analyses",
+      "badgeCritical": "Critical: {count}",
+      "badgeHigh": "High: {count}",
+      "badgeMedium": "Medium: {count}",
+      "badgeLow": "Low: {count}",
+      "noFindingsCategory": "No findings yet",
+      "addCategoryTitle": "Add category",
+      "addCategoryHint": "Define a custom risk category",
+      "categoryRisksTitle": "{label} risks",
+      "findingsCountLabel": "{count} findings",
+      "noFindingsInCategory": "No findings in this category yet.",
+      "analysisPrefix": "Analysis:",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "discard": "Discard",
+      "recommendation": "Recommendation",
+      "action": "Action",
+      "notes": "Notes",
+      "status": "Status",
+      "note": "Note",
+      "notePlaceholder": "Work done, observations…",
+      "emptyAnalysesTitle": "No risk analysis yet",
+      "emptyAnalysesDescription": "Start the first analysis for this company from the Risk analysis page.",
+      "findingsInRow": "{count} findings",
+      "archiveTitle": "Archive",
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "confirmDelete": "Delete?",
+      "yes": "Yes",
+      "no": "No",
+      "exportPdfTitle": "Download PDF",
+      "exportWordTitle": "Download Word",
+      "exportExcelTitle": "Download Excel",
+      "analysisStatus": {
+        "completed": "Completed",
+        "archived": "Archived",
+        "draft": "Draft"
+      },
+      "trackingStatus": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "archived": "Archived"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "method": {
+        "r_skor": "R-SCORE 2D",
+        "fine_kinney": "Fine-Kinney",
+        "l_matrix": "L-Matrix",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "shareTitle": "Report sharing",
+      "shareDescription": "Anyone with the link can view this report.",
+      "shareEnable": "Enable sharing link",
+      "shareActive": "Sharing on",
+      "shareCopyTitle": "Copy link",
+      "shareCopied": "Copied",
+      "shareWhatsappTitle": "Share via WhatsApp",
+      "shareButtonTitle": "Share",
+      "shareWhatsappBody": "RiskNova — {title}\n{url}",
+      "participantsHeading": "Participants",
+      "analysisNoteHeading": "Analysis note",
+      "emptyAnalysisRows": "No rows in this analysis yet.",
+      "rowFindingCount": "({count})",
+      "recommendationInline": "Recommendation:",
+      "actionInline": "Action:",
+      "qrAlt": "QR code",
+      "qrCaption": "Share with QR",
+      "categories": {
+        "fiziksel": {
+          "label": "Physical",
+          "examples": "Noise, vibration, lighting, temperature"
+        },
+        "kimyasal": {
+          "label": "Chemical",
+          "examples": "Gas, dust, vapour, chemicals"
+        },
+        "biyolojik": {
+          "label": "Biological",
+          "examples": "Bacteria, viruses, mould, biological agents"
+        },
+        "ergonomik": {
+          "label": "Ergonomic",
+          "examples": "Poor posture, heavy loads, repetitive motion"
+        },
+        "psikososyal": {
+          "label": "Psychosocial",
+          "examples": "Stress, bullying, workload, shifts"
+        },
+        "mekanik": {
+          "label": "Mechanical",
+          "examples": "Machinery, equipment, falls, crushing"
+        },
+        "elektrik": {
+          "label": "Electrical",
+          "examples": "Electric shock, short circuit, earthing"
+        },
+        "yangin": {
+          "label": "Fire / explosion",
+          "examples": "Flammable material, explosive atmosphere, LPG"
+        },
+        "trafik": {
+          "label": "Traffic",
+          "examples": "Vehicles, forklifts, pedestrian–vehicle conflict"
+        },
+        "cevre": {
+          "label": "Environmental",
+          "examples": "Waste, emissions, noise pollution"
+        }
+      }
+    },
+    "tracking": {
+      "sectionActions": "Open actions",
+      "sectionTrainings": "Trainings",
+      "sectionControls": "Periodic inspection",
+      "sectionCommittee": "OHS committee",
+      "hazardUnknown": "Not determined",
+      "actionsTitle": "Open actions",
+      "actionsDesc": "Open actions from risk findings, CAPA and OHS tasks.",
+      "noActions": "No open actions.",
+      "badgeTotal": "Total: {count}",
+      "sourceRisk": "Risk",
+      "sourceDof": "CAPA",
+      "sourceTask": "Task",
+      "statusButton": "Status",
+      "trainingsTitle": "Training tracking",
+      "trainingsDesc": "Company training plans and records.",
+      "controlsTitle": "Periodic inspections",
+      "controlsDesc": "Legally required periodic inspections and examinations.",
+      "committeeTitle": "OHS committee meetings",
+      "committeeDesc": "Hazard class: {hazardClass} — every {months} months"
     }
   },
   "consent": {
@@ -2560,531 +2778,480 @@
         "regulation": "التشريع",
         "responsible": "المسؤول",
         "topic": "موضوع العمل"
-      },
-      "months": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ]
+      }
     },
     "shell": {
-      "title": "Planner",
-      "description": "OHS tasks, annual work plan, training plan and timesheet under one roof.",
+      "title": "المخطط",
+      "description": "مهام السلامة والصحة المهنية، خطة العمل السنوية، خطة التدريب وجدول الحضور تحت سقف واحد.",
       "tabs": {
         "planner": {
-          "label": "Planner",
-          "desc": "Calendar ? tasks ? reminders"
+          "label": "المخطط",
+          "desc": "التقويم والمهام والتذكيرات"
         },
         "workPlan": {
-          "label": "Annual work plan",
-          "desc": "OHS annual work plan (official form)"
+          "label": "خطة العمل السنوية",
+          "desc": "خطة العمل السنوية للسلامة والصحة المهنية (النموذج الرسمي)"
         },
         "trainingPlan": {
-          "label": "Annual training",
-          "desc": "Training plan, participants and certificates"
+          "label": "التدريب السنوي",
+          "desc": "خطة التدريب والمشاركين والشهادات"
         },
         "timesheet": {
-          "label": "Timesheet",
-          "desc": "Hours and fee tracking"
+          "label": "جدول الحضور",
+          "desc": "تتبع الساعات والرسوم"
         }
       }
     },
     "core": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "weekdays": [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-      ],
-      "pageTitle": "OHS planner",
-      "pageDescription": "Plan and track occupational health and safety tasks.",
+      "pageTitle": "مخطط الصحة والسلامة المهنية",
+      "pageDescription": "خطط وتتبع مهام الصحة والسلامة المهنية.",
       "actions": {
-        "newTask": "New task",
-        "dismissError": "Dismiss error",
-        "cancel": "Cancel",
-        "saving": "Saving...",
-        "create": "Create",
-        "update": "Update"
+        "newTask": "مهمة جديدة",
+        "dismissError": "إغلاق الخطأ",
+        "cancel": "إلغاء",
+        "saving": "جاري الحفظ...",
+        "create": "إنشاء",
+        "update": "تحديث"
       },
       "stats": {
-        "total": "Total"
+        "total": "المجموع"
       },
       "filters": {
-        "allCategories": "All categories",
-        "allStatuses": "All statuses",
-        "allCompanies": "All companies"
+        "allCategories": "جميع الفئات",
+        "allStatuses": "جميع الحالات",
+        "allCompanies": "جميع الشركات"
       },
       "views": {
-        "month": "Calendar",
-        "list": "List"
+        "month": "التقويم",
+        "list": "قائمة"
       },
       "sidebar": {
-        "categories": "Categories",
-        "all": "All",
-        "addCategory": "Add category",
-        "quickAdd": "Quick add"
+        "categories": "الفئات",
+        "all": "الكل",
+        "addCategory": "إضافة فئة",
+        "quickAdd": "إضافة سريعة"
       },
       "calendar": {
-        "more": "+{count} more"
+        "more": "+{count} أكثر"
       },
       "empty": {
-        "title": "No tasks yet",
-        "description": "Click the New task button above."
+        "title": "لا توجد مهام بعد",
+        "description": "انقر على زر المهمة الجديدة أعلاه."
       },
       "recurrence": {
-        "none": "Does not repeat",
-        "daily": "Daily",
-        "weekly": "Weekly",
-        "monthly": "Monthly",
-        "quarterly": "Quarterly",
-        "biannual": "Every six months",
-        "annual": "Annual"
+        "none": "لا يتكرر",
+        "daily": "يومي",
+        "weekly": "أسبوعي",
+        "monthly": "شهري",
+        "quarterly": "ربع سنوي",
+        "biannual": "كل ستة أشهر",
+        "annual": "سنوي"
       },
       "status": {
-        "planned": "Planned",
-        "in_progress": "In progress",
-        "completed": "Completed",
-        "overdue": "Overdue",
-        "cancelled": "Cancelled"
+        "planned": "مخطط",
+        "in_progress": "قيد التنفيذ",
+        "completed": "مكتمل",
+        "overdue": "متأخر",
+        "cancelled": "ملغي"
       },
       "categories": {
-        "periodicControl": "Periodic inspection",
-        "training": "Training",
-        "healthFollowUp": "Health follow-up",
-        "meetingDrill": "Meeting & drill",
-        "legalObligation": "Legal obligation",
-        "fieldVisit": "Field visit",
-        "ohsCommitteeMeeting": "OHS committee meeting",
-        "other": "Other"
+        "periodicControl": "فحص دوري",
+        "training": "تدريب",
+        "healthFollowUp": "متابعة صحية",
+        "meetingDrill": "اجتماع وتدريب",
+        "legalObligation": "التزام قانوني",
+        "fieldVisit": "زيارة ميدانية",
+        "ohsCommitteeMeeting": "اجتماع لجنة السلامة والصحة المهنية",
+        "other": "أخرى"
       },
       "modal": {
-        "newTitle": "New task",
-        "editTitle": "Edit task",
-        "optional": "- optional",
+        "newTitle": "مهمة جديدة",
+        "editTitle": "تعديل المهمة",
+        "optional": "- اختياري",
         "fields": {
-          "title": "Title *",
-          "description": "Description",
-          "category": "Category",
-          "status": "Status",
-          "company": "Company",
-          "startDate": "Start date *",
-          "endDate": "End date",
-          "recurrence": "Repeat",
-          "reminderDays": "Reminder (days before)",
-          "includeTimesheet": "Add to timesheet",
-          "timesheetHours": "Working time (hours)",
-          "hourlyRate": "Hourly rate"
+          "title": "العنوان *",
+          "description": "الوصف",
+          "category": "الفئة",
+          "status": "الحالة",
+          "company": "الشركة",
+          "startDate": "تاريخ البدء *",
+          "endDate": "تاريخ الانتهاء",
+          "recurrence": "تكرار",
+          "reminderDays": "تذكير (أيام قبل)",
+          "includeTimesheet": "إضافة إلى جدول الوقت",
+          "timesheetHours": "وقت العمل (ساعات)",
+          "hourlyRate": "المعدل بالساعة"
         },
         "placeholders": {
-          "title": "Task title",
-          "description": "Task description...",
-          "category": "Select category...",
-          "company": "Select company...",
-          "hours": "e.g. 4.5",
-          "rate": "e.g. 250"
+          "title": "عنوان المهمة",
+          "description": "وصف المهمة...",
+          "category": "اختر الفئة...",
+          "company": "اختر الشركة...",
+          "hours": "مثال 4.5",
+          "rate": "مثال 250"
         }
       },
       "errors": {
-        "orgNotFound": "Organisation information not found. Please sign in again.",
-        "saveFailed": "An error occurred while saving."
+        "orgNotFound": "لم يتم العثور على معلومات المؤسسة. يرجى تسجيل الدخول مرة أخرى.",
+        "saveFailed": "حدث خطأ أثناء الحفظ."
       },
-      "confirmDeleteTask": "Are you sure you want to delete this task?"
+      "confirmDeleteTask": "هل أنت متأكد من أنك تريد حذف هذه المهمة؟"
     },
     "yearlyTraining": {
       "defaultTrainings": [
         {
+          "audience": "الموظفون",
           "category": "genel",
-          "title": "Information on occupational health and safety legislation",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "معلومات حول تشريعات السلامة والصحة المهنية",
+          "trainer": "أخصائي السلامة والصحة المهنية"
         },
         {
+          "audience": "الموظفون",
+          "category": "عام",
+          "title": "معلومات عامة حول حقوق ومسؤوليات الموظفين",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
+        },
+        {
+          "audience": "الموظفون",
+          "category": "عام",
+          "title": "نظافة وترتيب مكان العمل",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
+        },
+        {
+          "audience": "الموظفون",
           "category": "genel",
-          "title": "General information on employee rights and responsibilities",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "العواقب القانونية لحوادث وأمراض العمل",
+          "trainer": "أخصائي السلامة والصحة المهنية"
         },
         {
-          "category": "genel",
-          "title": "Workplace cleanliness and order",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
-        },
-        {
-          "category": "genel",
-          "title": "Legal consequences of occupational accidents and diseases",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
-        },
-        {
+          "audience": "الموظفون",
           "category": "saglik",
-          "title": "Causes of occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "أسباب الأمراض المهنية",
+          "trainer": "طبيب مكان العمل"
         },
         {
+          "audience": "الموظفون",
           "category": "saglik",
-          "title": "Prevention principles and protection techniques for occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "مبادئ الوقاية وتقنيات الحماية من الأمراض المهنية",
+          "trainer": "طبيب مكان العمل"
         },
         {
+          "audience": "الموظفون",
           "category": "saglik",
-          "title": "Biological risk factors and the occupational diseases they may cause",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "عوامل الخطر البيولوجية والأمراض المهنية التي قد تسببها",
+          "trainer": "طبيب مكان العمل"
         },
         {
+          "audience": "موظفون مختارون",
           "category": "saglik",
-          "title": "First aid and rescue techniques",
-          "trainer": "External training (first aider)",
-          "audience": "Selected employees"
+          "title": "تقنيات الإسعافات الأولية والإنقاذ",
+          "trainer": "تدريب خارجي (مسعف أولي)"
         },
         {
+          "audience": "الموظفون",
           "category": "teknik",
-          "title": "Risk factors when working with chemicals",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "عوامل الخطر عند العمل مع المواد الكيميائية",
+          "trainer": "أخصائي السلامة والصحة المهنية"
         },
         {
+          "audience": "الموظفون",
           "category": "teknik",
-          "title": "Physical risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "عوامل الخطر الفيزيائية",
+          "trainer": "أخصائي السلامة والصحة المهنية"
         },
         {
+          "audience": "الموظفون",
           "category": "teknik",
-          "title": "Ergonomic risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "عوامل المخاطر الأرجونومية",
+          "trainer": "أخصائي السلامة والصحة المهنية"
         },
         {
+          "audience": "الموظفون",
           "category": "teknik",
-          "title": "Manual lifting and carrying",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "الرفع والحمل اليدوي",
+          "trainer": "أخصائي السلامة والصحة المهنية"
         },
         {
+          "audience": "الموظفون",
           "category": "teknik",
-          "title": "Flash, explosion, fire and fire protection",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "الوميض والانفجار والحريق والحماية من الحرائق",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
+          "audience": "الموظفون",
           "category": "teknik",
-          "title": "Safe use of work equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "الاستخدام الآمن لمعدات العمل والمخاطر ذات الصلة",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
+          "audience": "موظفو المكاتب",
           "category": "teknik",
-          "title": "Working with display screen equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Office employees"
+          "title": "العمل مع معدات شاشات العرض والمخاطر ذات الصلة",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
+          "audience": "الموظفون",
           "category": "teknik",
-          "title": "Electrical hazards, risks and precautions",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "المخاطر الكهربائية والمخاطر والاحتياطات",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
+          "audience": "الموظفون",
           "category": "teknik",
-          "title": "Causes of occupational accidents and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "أسباب حوادث العمل ومبادئ الوقاية",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
+          "audience": "الموظفون",
           "category": "teknik",
-          "title": "Falls and health impacts (accident prevention)",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "السقوط والتأثيرات الصحية (منع الحوادث)",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
+          "audience": "الموظفون",
           "category": "teknik",
-          "title": "Selection and use of personal protective equipment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "اختيار واستخدام معدات الحماية الشخصية",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
-          "category": "teknik",
-          "title": "General OHS rules and basic safety",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "audience": "الموظفون",
+          "category": "تقني",
+          "title": "قواعد الصحة والسلامة المهنية العامة والسلامة الأساسية",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
-          "category": "teknik",
-          "title": "Evacuation and rescue",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "audience": "الموظفون",
+          "category": "تقني",
+          "title": "الإخلاء والإنقاذ",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
-          "category": "teknik",
-          "title": "Causes of accidents and injuries and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "audience": "الموظفون",
+          "category": "تقني",
+          "title": "أسباب الحوادث والإصابات ومبادئ الوقاية",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
-          "category": "teknik",
-          "title": "Occupational hygiene and risks from the working environment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "audience": "الموظفون",
+          "category": "تقني",
+          "title": "النظافة المهنية والمخاطر من بيئة العمل",
+          "trainer": "أخصائي الصحة والسلامة المهنية"
         },
         {
-          "category": "teknik",
-          "title": "Working at height",
-          "trainer": "External training",
-          "audience": "Relevant employees"
+          "audience": "الموظفون ذوو الصلة",
+          "category": "تقني",
+          "title": "العمل على الارتفاع",
+          "trainer": "تدريب خارجي"
         }
       ],
       "errors": {
-        "noSupabase": "No Supabase connection",
-        "loadFailed": "Could not load plan",
-        "selectCompany": "Please select a company",
-        "sessionNotFound": "Session not found",
-        "orgNotFound": "Organisation information not found",
-        "saveFailed": "Save failed"
+        "noSupabase": "لا يوجد اتصال بـ Supabase",
+        "loadFailed": "تعذر تحميل الخطة",
+        "selectCompany": "يرجى اختيار شركة",
+        "sessionNotFound": "الجلسة غير موجودة",
+        "orgNotFound": "معلومات المؤسسة غير موجودة",
+        "saveFailed": "فشل الحفظ"
       },
       "card": {
-        "title": "Annual OHS training plan",
-        "description": "24 standard training topics under the OHS training regulation. Stored per company ? year; planned date, duration, actual date, certificate and attendance are editable per row."
+        "title": "خطة التدريب السنوية للسلامة والصحة المهنية",
+        "description": "24 موضوع تدريبي معياري تحت لائحة تدريب السلامة والصحة المهنية. مخزن لكل شركة × سنة؛ التاريخ المخطط والمدة والتاريخ الفعلي والشهادة والحضور قابلة للتحرير لكل صف."
       },
       "fields": {
-        "company": "Company",
-        "companyPlaceholder": "Select a company",
-        "year": "Training year"
+        "company": "الشركة",
+        "companyPlaceholder": "اختر شركة",
+        "year": "سنة التدريب"
       },
       "signers": {
-        "blockLabel": "Signatories (printed in the PDF signature area)",
-        "employer": "Employer / employer representative",
-        "employerPlaceholder": "Full name",
-        "physician": "Workplace physician",
-        "physicianPlaceholder": "Dr. Full name",
-        "safetyExpert": "OHS specialist",
-        "safetyExpertPlaceholder": "Full name ? Class (A/B/C)"
+        "blockLabel": "الموقعون (مطبوع في منطقة التوقيع بملف PDF)",
+        "employer": "صاحب العمل / ممثل صاحب العمل",
+        "employerPlaceholder": "الاسم الكامل",
+        "physician": "طبيب مكان العمل",
+        "physicianPlaceholder": "د. الاسم الكامل",
+        "safetyExpert": "أخصائي الصحة والسلامة المهنية",
+        "safetyExpertPlaceholder": "الاسم الكامل · الفئة (أ/ب/ج)"
       },
       "actions": {
-        "saving": "Saving...",
-        "saved": "Saved",
-        "save": "Save",
-        "pdfPrint": "Download / print PDF",
-        "archivedBadge": "Training plan for {year} is archived for this company"
+        "saving": "جاري الحفظ...",
+        "saved": "تم الحفظ",
+        "save": "حفظ",
+        "pdfPrint": "تحميل / طباعة PDF",
+        "archivedBadge": "خطة التدريب لعام {year} مؤرشفة لهذه الشركة"
       },
-      "loading": "Loading plan...",
+      "loading": "جاري تحميل الخطة...",
       "preview": {
-        "title": "Preview & edit",
-        "description": "Edit rows: date / duration / certificate / attendance"
+        "title": "معاينة وتحرير",
+        "description": "تحرير الصفوف: التاريخ / المدة / الشهادة / الحضور"
       },
       "table": {
-        "topic": "Training topic",
-        "trainer": "Trainer",
-        "audience": "Audience",
-        "planned": "Planned",
-        "duration": "Duration",
-        "realized": "Actual",
-        "certificate": "Certificate",
-        "attendance": "Attendance",
-        "addRow": "Add row",
-        "deleteRowAria": "Delete row"
+        "topic": "موضوع التدريب",
+        "trainer": "المدرب",
+        "audience": "الجمهور",
+        "planned": "مخطط",
+        "duration": "المدة",
+        "realized": "فعلي",
+        "certificate": "الشهادة",
+        "attendance": "الحضور",
+        "addRow": "إضافة صف",
+        "deleteRowAria": "حذف الصف"
       },
       "categories": {
-        "genel": "GENERAL TOPICS (4 hours)",
-        "saglik": "HEALTH TOPICS (4 hours)",
-        "teknik": "TECHNICAL TOPICS (4 hours)"
+        "genel": "المواضيع العامة (4 ساعات)",
+        "saglik": "المواضيع الصحية (4 ساعات)",
+        "teknik": "المواضيع التقنية (4 ساعات)"
       },
       "certificate": {
-        "yes": "Yes",
-        "no": "No",
-        "empty": "?"
+        "yes": "نعم",
+        "no": "لا",
+        "empty": "؟"
       },
       "defaults": {
-        "trainer": "OHS specialist",
-        "audience": "Employees"
+        "trainer": "أخصائي الصحة والسلامة المهنية",
+        "audience": "الموظفون"
       },
       "pdf": {
-        "htmlTitle": "Annual OHS training plan ? {companyName}",
-        "mainTitle": "ANNUAL TRAINING PLAN",
-        "headerLine": "COMPANY: {companyName} ? YEAR: {year}",
-        "colNo": "No.",
-        "colTopic": "Training topic",
-        "colTrainer": "Trainer",
-        "colAudience": "Audience",
-        "colPlanned": "Planned",
-        "colDuration": "Duration",
-        "colRealized": "Actual",
-        "colCertificate": "Certificate",
-        "colAttendance": "Attendance",
-        "sigEmployer": "Employer",
-        "sigPhysician": "Workplace physician",
-        "sigSafety": "OHS specialist",
-        "sigLine": "Signature / date",
-        "empty": "?"
+        "htmlTitle": "خطة التدريب السنوية للصحة والسلامة المهنية — {companyName}",
+        "mainTitle": "خطة التدريب السنوية",
+        "headerLine": "الشركة: {companyName} · السنة: {year}",
+        "colNo": "الرقم",
+        "colTopic": "موضوع التدريب",
+        "colTrainer": "المدرب",
+        "colAudience": "الجمهور",
+        "colPlanned": "مخطط",
+        "colDuration": "المدة",
+        "colRealized": "فعلي",
+        "colCertificate": "الشهادة",
+        "colAttendance": "الحضور",
+        "sigEmployer": "صاحب العمل",
+        "sigPhysician": "طبيب مكان العمل",
+        "sigSafety": "أخصائي الصحة والسلامة المهنية",
+        "sigLine": "التوقيع / التاريخ",
+        "empty": "؟"
       }
     },
     "timesheet": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "title": "Timesheet",
-      "defaultProfessional": "OHS professional",
+      "title": "جدول الحضور",
+      "defaultProfessional": "مختص الصحة والسلامة المهنية",
       "tabs": {
-        "grid": "Timesheet",
-        "archive": "Archive",
-        "settings": "Settings"
+        "grid": "جدول الحضور",
+        "archive": "الأرشيف",
+        "settings": "الإعدادات"
       },
       "status": {
-        "draft": "Draft",
-        "submitted": "Submitted",
-        "approved": "Approved",
-        "paid": "Paid"
+        "draft": "مسودة",
+        "submitted": "مُقدم",
+        "approved": "معتمد",
+        "paid": "مدفوع"
       },
       "actions": {
-        "submit": "Submit",
-        "approve": "Approve",
-        "markPaid": "Mark as paid",
-        "revert": "Revert",
-        "previewPdf": "Preview PDF",
-        "timesheetExcel": "Timesheet Excel",
-        "payrollExcel": "Payroll Excel",
-        "payrollPdf": "Payroll PDF",
-        "view": "View",
-        "delete": "Delete",
-        "cancel": "Cancel",
-        "saving": "Saving..."
+        "submit": "إرسال",
+        "approve": "موافقة",
+        "markPaid": "تحديد كمدفوع",
+        "revert": "تراجع",
+        "previewPdf": "معاينة PDF",
+        "timesheetExcel": "جدول زمني Excel",
+        "payrollExcel": "كشف الرواتب Excel",
+        "payrollPdf": "كشف الرواتب PDF",
+        "view": "عرض",
+        "delete": "حذف",
+        "cancel": "إلغاء",
+        "saving": "جاري الحفظ..."
       },
       "stats": {
-        "workedDays": "Worked days",
-        "totalHours": "Total hours",
-        "activeCompanies": "Active companies",
-        "gross": "Gross amount",
-        "stampTax": "Stamp tax",
-        "netPaid": "Net paid"
+        "workedDays": "أيام العمل",
+        "totalHours": "إجمالي الساعات",
+        "activeCompanies": "الشركات النشطة",
+        "gross": "المبلغ الإجمالي",
+        "stampTax": "ضريبة الطوابع",
+        "netPaid": "صافي المدفوع"
       },
       "filters": {
-        "allStatuses": "All statuses"
+        "allStatuses": "جميع الحالات"
       },
       "empty": {
-        "noCompanies": "No companies found",
-        "noArchive": "No timesheet record for {year}"
+        "noCompanies": "لم يتم العثور على شركات",
+        "noArchive": "لا يوجد سجل جدول زمني لعام {year}"
       },
       "table": {
-        "company": "Company",
-        "totalShort": "TOTAL",
-        "total": "TOTAL"
+        "company": "الشركة",
+        "totalShort": "الإجمالي",
+        "total": "الإجمالي"
       },
       "archive": {
-        "period": "Period",
-        "status": "Status",
-        "actions": "Actions"
+        "period": "الفترة",
+        "status": "الحالة",
+        "actions": "الإجراءات"
       },
       "settings": {
-        "headerTitle": "Header settings",
-        "headerType": "Header type",
+        "headerTitle": "إعدادات الرأس",
+        "headerType": "نوع الرأس",
         "headerTypes": {
-          "custom": "Custom",
-          "government": "Official"
+          "custom": "مخصص",
+          "government": "رسمي"
         },
-        "line1": "Line 1 (main title)",
-        "line2": "Line 2 (subtitle)",
-        "line3": "Line 3 (extra info)",
-        "line1Placeholder": "e.g. Ministry of Labour",
-        "line2Placeholder": "e.g. Occupational health and safety services",
-        "line3Placeholder": "e.g. Monthly work schedule",
-        "professionalTitle": "Professional information",
-        "professionalRole": "Title",
-        "professionalRolePlaceholder": "e.g. OHS specialist (Class A)",
-        "certificateNo": "Registry / certificate no.",
-        "certificateNoPlaceholder": "e.g. ISG-A-12345",
-        "payrollTitle": "Payroll settings",
-        "governmentEmployee": "Civil servant / public employee",
-        "salaryCoefficient": "Salary coefficient",
-        "baseIndicator": "Indicator",
-        "stampTaxRate": "Stamp tax rate",
-        "formulaTitle": "Calculation formula:",
-        "hourlyRateFormula": "Hourly rate = Indicator ({indicator}) ? coefficient ({coefficient}) = ?{amount}",
-        "grossFormula": "Gross amount = hourly rate ? total hours",
-        "stampFormula": "Stamp tax = gross amount ? %{rate}",
-        "netFormula": "Net paid = gross amount - stamp tax",
-        "footerNote": "Footer note",
-        "footerNotePlaceholder": "Note shown at the bottom of Excel/PDF exports...",
-        "save": "Save settings",
-        "saved": "Settings saved.",
-        "errorPrefix": "Error: {message}",
-        "errorPrefixStart": "Error"
+        "line1": "السطر 1 (العنوان الرئيسي)",
+        "line2": "السطر 2 (العنوان الفرعي)",
+        "line3": "السطر 3 (معلومات إضافية)",
+        "line1Placeholder": "مثال: وزارة العمل",
+        "line2Placeholder": "مثال: خدمات الصحة والسلامة المهنية",
+        "line3Placeholder": "مثال: جدول العمل الشهري",
+        "professionalTitle": "المعلومات المهنية",
+        "professionalRole": "المسمى الوظيفي",
+        "professionalRolePlaceholder": "مثال: أخصائي الصحة والسلامة المهنية (فئة أ)",
+        "certificateNo": "رقم السجل / الشهادة",
+        "certificateNoPlaceholder": "مثال: ISG-A-12345",
+        "payrollTitle": "إعدادات كشف الرواتب",
+        "governmentEmployee": "موظف مدني / موظف عام",
+        "salaryCoefficient": "معامل الراتب",
+        "baseIndicator": "المؤشر",
+        "stampTaxRate": "معدل ضريبة الطوابع",
+        "formulaTitle": "صيغة الحساب:",
+        "hourlyRateFormula": "السعر بالساعة = المؤشر ({indicator}) ؟ المعامل ({coefficient}) = ؟{amount}",
+        "grossFormula": "المبلغ الإجمالي = السعر بالساعة ؟ إجمالي الساعات",
+        "stampFormula": "ضريبة الطوابع = المبلغ الإجمالي ? %{rate}",
+        "netFormula": "صافي المدفوع = المبلغ الإجمالي - ضريبة الطوابع",
+        "footerNote": "ملاحظة التذييل",
+        "footerNotePlaceholder": "ملاحظة تظهر في أسفل صادرات Excel/PDF...",
+        "save": "حفظ الإعدادات",
+        "saved": "تم حفظ الإعدادات.",
+        "errorPrefix": "خطأ: {message}",
+        "errorPrefixStart": "خطأ"
       },
       "delete": {
-        "title": "Delete timesheet",
-        "description": "This timesheet and all entries will be permanently deleted. Are you sure?"
+        "title": "حذف الجدول الزمني",
+        "description": "سيتم حذف هذا الجدول الزمني وجميع الإدخالات نهائياً. هل أنت متأكد؟"
       },
       "pdf": {
-        "title": "Timesheet - {month} {year}",
-        "previewTitle": "PDF preview",
-        "printDownload": "Print / download PDF",
-        "preparedBy": "Prepared by",
-        "approvedBy": "Approved by",
-        "employerRepresentative": "Employer / representative",
-        "workScheduleTitle": "{month} {year} ? Work schedule",
-        "narrative": "The person named above, {profileName}, provided a total of {total} hours of occupational safety service in {month} {year}."
+        "title": "جدول الحضور - {month} {year}",
+        "previewTitle": "معاينة PDF",
+        "printDownload": "طباعة / تحميل PDF",
+        "preparedBy": "أعد من قبل",
+        "approvedBy": "معتمد من قبل",
+        "employerRepresentative": "صاحب العمل / الممثل",
+        "workScheduleTitle": "{month} {year} ؟ جدول العمل",
+        "narrative": "الشخص المذكور أعلاه، {profileName}، قدم إجمالي {total} ساعة من خدمة السلامة المهنية في {month} {year}."
       },
       "payroll": {
-        "title": "Payroll",
-        "calculationTitle": "Civil servant payroll calculation",
-        "pdfTitle": "Payroll - {month} {year}",
-        "periodLine": "Month: {month}   Year: {year}",
-        "pdfMainTitle": "MISCELLANEOUS PAYMENTS PAYROLL",
-        "warning": "NOTICE",
-        "legalNotice": "The payroll is prepared in accordance with Article 8 of Turkish Occupational Health and Safety Law No. 6331.",
+        "title": "كشف الرواتب",
+        "calculationTitle": "حساب راتب الموظف المدني",
+        "pdfTitle": "كشف الراتب - {month} {year}",
+        "periodLine": "الشهر: {month}   السنة: {year}",
+        "pdfMainTitle": "كشف رواتب المدفوعات المتنوعة",
+        "warning": "إشعار",
+        "legalNotice": "يتم إعداد كشف الراتب وفقاً للمادة 8 من قانون الصحة والسلامة المهنية التركي رقم 6331.",
         "columns": {
-          "no": "No.",
-          "fullName": "FULL NAME",
-          "salaryCoefficient": "Civil servant salary coefficient",
-          "paymentCoefficient": "Payment coefficient",
-          "hourlyRate": "Hourly rate (TRY)",
-          "assignmentHours": "Assignment duration (hours)",
-          "gross": "Gross amount (TRY)",
-          "stampTax": "Stamp tax deduction (TRY)",
-          "netPaid": "Net paid (TRY)"
+          "no": "رقم",
+          "fullName": "الاسم الكامل",
+          "salaryCoefficient": "معامل راتب الموظف المدني",
+          "paymentCoefficient": "معامل الدفع",
+          "hourlyRate": "السعر بالساعة (ليرة تركية)",
+          "assignmentHours": "مدة المهمة (ساعات)",
+          "gross": "المبلغ الإجمالي (ليرة تركية)",
+          "stampTax": "خصم ضريبة الطوابع (ليرة تركية)",
+          "netPaid": "صافي المدفوع (ليرة تركية)"
         },
-        "indicatorCoefficient": "Indicator ? coefficient",
-        "hourlyRate": "Hourly rate",
-        "stampTaxWithRate": "Stamp tax (%{rate})"
+        "indicatorCoefficient": "معامل المؤشر ؟",
+        "hourlyRate": "السعر بالساعة",
+        "stampTaxWithRate": "ضريبة الطوابع (%{rate})"
       }
     }
   },
@@ -3404,7 +3571,7 @@
     "password": {
       "current": "كلمة المرور الحالية",
       "new": "كلمة المرور الجديدة",
-      "newPlaceholder": "12 حرف على الأقل، أحرف كبيرة/صغيرة، رقم ورمز",
+      "newPlaceholder": "8 أحرف على الأقل، أحرف كبيرة/صغيرة، رقم ورمز",
       "repeat": "كلمة المرور الجديدة (تكرار)",
       "submit": "تحديث كلمة المرور",
       "title": "تغيير كلمة المرور"

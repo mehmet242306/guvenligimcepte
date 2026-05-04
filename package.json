@@ -17,6 +17,8 @@
     "i18n:merge-missing-from-en": "npm --prefix frontend run i18n:merge-missing-from-en",
     "i18n:translate-messages": "npm --prefix frontend run i18n:translate-messages",
     "i18n:translate-messages:resume": "npm --prefix frontend run i18n:translate-messages:resume",
-    "i18n:translate-messages:force": "npm --prefix frontend run i18n:translate-messages:force"
+    "i18n:translate-messages:force": "npm --prefix frontend run i18n:translate-messages:force",
+    "i18n:translate-planner-tabs": "npm --prefix frontend run i18n:translate-planner-tabs",
+    "i18n:translate-company-workspace": "npm --prefix frontend run i18n:translate-company-workspace"
   }
 }

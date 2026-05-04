@@ -348,6 +348,62 @@
   "brand": {
     "tagline": "AI 기반 산업안전보건 플랫폼"
   },
+  "trainingHubPage": {
+    "title": "교육",
+    "description": "슬라이드 라이브러리, 설문 및 시험 흐름, 개인 링크와 결과 분석을 이 모듈에서 관리합니다.",
+    "actions": {
+      "aiTraining": "AI로 교육 만들기",
+      "slideLibrary": "내 슬라이드 라이브러리",
+      "certificates": "수료증",
+      "createNew": "새로 만들기"
+    },
+    "library": {
+      "back": "산업안전보건 라이브러리",
+      "eyebrow": "산업안전보건 라이브러리 연동",
+      "title": "이 모듈에서 교육 및 시험 콘텐츠를 관리하세요",
+      "tabs": {
+        "education": "교육 콘텐츠",
+        "assessment": "시험 및 설문 콘텐츠"
+      },
+      "emptyPrefix": "이 카테고리에는 아직 라이브러리 콘텐츠가 없습니다. 콘텐츠를 추가하거나 모든 기록을 보려면",
+      "emptyLink": "산업안전보건 라이브러리로 이동",
+      "fallbackDescription": "라이브러리 콘텐츠",
+      "openContent": "콘텐츠 열기",
+      "useInModule": "모듈에서 사용"
+    },
+    "tabs": {
+      "all": "전체",
+      "surveys": "설문",
+      "exams": "시험"
+    },
+    "filters": {
+      "searchPlaceholder": "설문 또는 시험 검색...",
+      "allStatuses": "전체"
+    },
+    "status": {
+      "draft": "초안",
+      "active": "활성",
+      "closed": "종료",
+      "archived": "아카이브"
+    },
+    "types": {
+      "exam": "시험",
+      "survey": "설문"
+    },
+    "empty": {
+      "title": "아직 설문 또는 시험이 없습니다",
+      "description": "첫 설문 또는 시험을 만들려면 \"새로 만들기\"를 클릭하세요"
+    },
+    "card": {
+      "passScore": "합격 점수: {score}%",
+      "duration": "시간: {minutes}분"
+    },
+    "errors": {
+      "noSession": "세션을 찾을 수 없습니다. 페이지를 새로고침하세요.",
+      "authRequired": "로그인이 필요합니다.",
+      "organizationMissing": "조직 연결을 찾을 수 없습니다. 프로필 또는 멤버십 설정을 확인하세요."
+    }
+  },
   "certificateVerify": {
     "certNo": "인증서 번호",
     "date": "날짜",
@@ -575,6 +631,168 @@
       "risk": "위험 및 현장",
       "structure": "시설",
       "tracking": "추적"
+    },
+    "structure": {
+      "summaryLocation": "Location",
+      "summaryDepartment": "Department",
+      "summaryEmployee": "Employee",
+      "locationsTitle": "Locations",
+      "locationsSubtitle": "Company physical sites",
+      "departmentsTitle": "Departments",
+      "departmentsSubtitle": "Organisational units",
+      "locationPlaceholder": "Enter location name",
+      "departmentPlaceholder": "Enter department name",
+      "addLocation": "Add location",
+      "addDepartment": "Add department"
+    },
+    "risk": {
+      "pageTitle": "Risk and field management",
+      "pageSubtitle": "Risk classification, analysis history and process tracking.",
+      "tabMap": "Risk map",
+      "tabAnalyses": "Analyses ({count})",
+      "newAnalysis": "New analysis",
+      "metricTotalFindings": "Total findings",
+      "metricCritical": "Critical",
+      "metricHigh": "High",
+      "metricAnalysisCount": "Analyses",
+      "badgeCritical": "Critical: {count}",
+      "badgeHigh": "High: {count}",
+      "badgeMedium": "Medium: {count}",
+      "badgeLow": "Low: {count}",
+      "noFindingsCategory": "No findings yet",
+      "addCategoryTitle": "Add category",
+      "addCategoryHint": "Define a custom risk category",
+      "categoryRisksTitle": "{label} risks",
+      "findingsCountLabel": "{count} findings",
+      "noFindingsInCategory": "No findings in this category yet.",
+      "analysisPrefix": "Analysis:",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "discard": "Discard",
+      "recommendation": "Recommendation",
+      "action": "Action",
+      "notes": "Notes",
+      "status": "Status",
+      "note": "Note",
+      "notePlaceholder": "Work done, observations…",
+      "emptyAnalysesTitle": "No risk analysis yet",
+      "emptyAnalysesDescription": "Start the first analysis for this company from the Risk analysis page.",
+      "findingsInRow": "{count} findings",
+      "archiveTitle": "Archive",
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "confirmDelete": "Delete?",
+      "yes": "Yes",
+      "no": "No",
+      "exportPdfTitle": "Download PDF",
+      "exportWordTitle": "Download Word",
+      "exportExcelTitle": "Download Excel",
+      "analysisStatus": {
+        "completed": "Completed",
+        "archived": "Archived",
+        "draft": "Draft"
+      },
+      "trackingStatus": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "archived": "Archived"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "method": {
+        "r_skor": "R-SCORE 2D",
+        "fine_kinney": "Fine-Kinney",
+        "l_matrix": "L-Matrix",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "shareTitle": "Report sharing",
+      "shareDescription": "Anyone with the link can view this report.",
+      "shareEnable": "Enable sharing link",
+      "shareActive": "Sharing on",
+      "shareCopyTitle": "Copy link",
+      "shareCopied": "Copied",
+      "shareWhatsappTitle": "Share via WhatsApp",
+      "shareButtonTitle": "Share",
+      "shareWhatsappBody": "RiskNova — {title}\n{url}",
+      "participantsHeading": "Participants",
+      "analysisNoteHeading": "Analysis note",
+      "emptyAnalysisRows": "No rows in this analysis yet.",
+      "rowFindingCount": "({count})",
+      "recommendationInline": "Recommendation:",
+      "actionInline": "Action:",
+      "qrAlt": "QR code",
+      "qrCaption": "Share with QR",
+      "categories": {
+        "fiziksel": {
+          "label": "Physical",
+          "examples": "Noise, vibration, lighting, temperature"
+        },
+        "kimyasal": {
+          "label": "Chemical",
+          "examples": "Gas, dust, vapour, chemicals"
+        },
+        "biyolojik": {
+          "label": "Biological",
+          "examples": "Bacteria, viruses, mould, biological agents"
+        },
+        "ergonomik": {
+          "label": "Ergonomic",
+          "examples": "Poor posture, heavy loads, repetitive motion"
+        },
+        "psikososyal": {
+          "label": "Psychosocial",
+          "examples": "Stress, bullying, workload, shifts"
+        },
+        "mekanik": {
+          "label": "Mechanical",
+          "examples": "Machinery, equipment, falls, crushing"
+        },
+        "elektrik": {
+          "label": "Electrical",
+          "examples": "Electric shock, short circuit, earthing"
+        },
+        "yangin": {
+          "label": "Fire / explosion",
+          "examples": "Flammable material, explosive atmosphere, LPG"
+        },
+        "trafik": {
+          "label": "Traffic",
+          "examples": "Vehicles, forklifts, pedestrian–vehicle conflict"
+        },
+        "cevre": {
+          "label": "Environmental",
+          "examples": "Waste, emissions, noise pollution"
+        }
+      }
+    },
+    "tracking": {
+      "sectionActions": "Open actions",
+      "sectionTrainings": "Trainings",
+      "sectionControls": "Periodic inspection",
+      "sectionCommittee": "OHS committee",
+      "hazardUnknown": "Not determined",
+      "actionsTitle": "Open actions",
+      "actionsDesc": "Open actions from risk findings, CAPA and OHS tasks.",
+      "noActions": "No open actions.",
+      "badgeTotal": "Total: {count}",
+      "sourceRisk": "Risk",
+      "sourceDof": "CAPA",
+      "sourceTask": "Task",
+      "statusButton": "Status",
+      "trainingsTitle": "Training tracking",
+      "trainingsDesc": "Company training plans and records.",
+      "controlsTitle": "Periodic inspections",
+      "controlsDesc": "Legally required periodic inspections and examinations.",
+      "committeeTitle": "OHS committee meetings",
+      "committeeDesc": "Hazard class: {hazardClass} — every {months} months"
     }
   },
   "consent": {
@@ -2560,531 +2778,480 @@
         "regulation": "법령",
         "responsible": "담당자",
         "topic": "작업 주제"
-      },
-      "months": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ]
+      }
     },
     "shell": {
-      "title": "Planner",
-      "description": "OHS tasks, annual work plan, training plan and timesheet under one roof.",
+      "title": "플래너",
+      "description": "OHS 업무, 연간 작업 계획, 교육 계획 및 근무표를 한 곳에서 관리합니다.",
       "tabs": {
         "planner": {
-          "label": "Planner",
-          "desc": "Calendar ? tasks ? reminders"
+          "label": "플래너",
+          "desc": "일정, 업무 및 알림"
         },
         "workPlan": {
-          "label": "Annual work plan",
-          "desc": "OHS annual work plan (official form)"
+          "label": "연간 작업 계획",
+          "desc": "OHS 연간 작업 계획 (공식 양식)"
         },
         "trainingPlan": {
-          "label": "Annual training",
-          "desc": "Training plan, participants and certificates"
+          "label": "연간 교육",
+          "desc": "교육 계획, 참가자 및 인증서"
         },
         "timesheet": {
-          "label": "Timesheet",
-          "desc": "Hours and fee tracking"
+          "label": "근무표",
+          "desc": "시간 및 비용 추적"
         }
       }
     },
     "core": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "weekdays": [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-      ],
-      "pageTitle": "OHS planner",
-      "pageDescription": "Plan and track occupational health and safety tasks.",
+      "pageTitle": "OHS 플래너",
+      "pageDescription": "산업안전보건 작업을 계획하고 추적합니다.",
       "actions": {
-        "newTask": "New task",
-        "dismissError": "Dismiss error",
-        "cancel": "Cancel",
-        "saving": "Saving...",
-        "create": "Create",
-        "update": "Update"
+        "newTask": "새 작업",
+        "dismissError": "오류 닫기",
+        "cancel": "취소",
+        "saving": "저장 중...",
+        "create": "생성",
+        "update": "업데이트"
       },
       "stats": {
-        "total": "Total"
+        "total": "총계"
       },
       "filters": {
-        "allCategories": "All categories",
-        "allStatuses": "All statuses",
-        "allCompanies": "All companies"
+        "allCategories": "모든 카테고리",
+        "allStatuses": "모든 상태",
+        "allCompanies": "모든 회사"
       },
       "views": {
-        "month": "Calendar",
-        "list": "List"
+        "month": "달력",
+        "list": "목록"
       },
       "sidebar": {
-        "categories": "Categories",
-        "all": "All",
-        "addCategory": "Add category",
-        "quickAdd": "Quick add"
+        "categories": "카테고리",
+        "all": "전체",
+        "addCategory": "카테고리 추가",
+        "quickAdd": "빠른 추가"
       },
       "calendar": {
-        "more": "+{count} more"
+        "more": "+{count}개 더"
       },
       "empty": {
-        "title": "No tasks yet",
-        "description": "Click the New task button above."
+        "title": "아직 작업이 없습니다",
+        "description": "위의 새 작업 버튼을 클릭하세요."
       },
       "recurrence": {
-        "none": "Does not repeat",
-        "daily": "Daily",
-        "weekly": "Weekly",
-        "monthly": "Monthly",
-        "quarterly": "Quarterly",
-        "biannual": "Every six months",
-        "annual": "Annual"
+        "none": "반복 안함",
+        "daily": "매일",
+        "weekly": "매주",
+        "monthly": "매월",
+        "quarterly": "분기별",
+        "biannual": "6개월마다",
+        "annual": "연간"
       },
       "status": {
-        "planned": "Planned",
-        "in_progress": "In progress",
-        "completed": "Completed",
-        "overdue": "Overdue",
-        "cancelled": "Cancelled"
+        "planned": "계획됨",
+        "in_progress": "진행 중",
+        "completed": "완료됨",
+        "overdue": "지연됨",
+        "cancelled": "취소됨"
       },
       "categories": {
-        "periodicControl": "Periodic inspection",
-        "training": "Training",
-        "healthFollowUp": "Health follow-up",
-        "meetingDrill": "Meeting & drill",
-        "legalObligation": "Legal obligation",
-        "fieldVisit": "Field visit",
-        "ohsCommitteeMeeting": "OHS committee meeting",
-        "other": "Other"
+        "periodicControl": "정기 점검",
+        "training": "교육",
+        "healthFollowUp": "건강 추적 관리",
+        "meetingDrill": "회의 및 훈련",
+        "legalObligation": "법적 의무",
+        "fieldVisit": "현장 방문",
+        "ohsCommitteeMeeting": "산업안전보건위원회 회의",
+        "other": "기타"
       },
       "modal": {
-        "newTitle": "New task",
-        "editTitle": "Edit task",
-        "optional": "- optional",
+        "newTitle": "새 작업",
+        "editTitle": "작업 편집",
+        "optional": "- 선택사항",
         "fields": {
-          "title": "Title *",
-          "description": "Description",
-          "category": "Category",
-          "status": "Status",
-          "company": "Company",
-          "startDate": "Start date *",
-          "endDate": "End date",
-          "recurrence": "Repeat",
-          "reminderDays": "Reminder (days before)",
-          "includeTimesheet": "Add to timesheet",
-          "timesheetHours": "Working time (hours)",
-          "hourlyRate": "Hourly rate"
+          "title": "제목 *",
+          "description": "설명",
+          "category": "카테고리",
+          "status": "상태",
+          "company": "회사",
+          "startDate": "시작 날짜 *",
+          "endDate": "종료일",
+          "recurrence": "반복",
+          "reminderDays": "알림 (며칠 전)",
+          "includeTimesheet": "타임시트에 추가",
+          "timesheetHours": "작업 시간 (시간)",
+          "hourlyRate": "시간당 요금"
         },
         "placeholders": {
-          "title": "Task title",
-          "description": "Task description...",
-          "category": "Select category...",
-          "company": "Select company...",
-          "hours": "e.g. 4.5",
-          "rate": "e.g. 250"
+          "title": "작업 제목",
+          "description": "작업 설명...",
+          "category": "카테고리 선택...",
+          "company": "회사 선택...",
+          "hours": "예: 4.5",
+          "rate": "예: 250"
         }
       },
       "errors": {
-        "orgNotFound": "Organisation information not found. Please sign in again.",
-        "saveFailed": "An error occurred while saving."
+        "orgNotFound": "조직 정보를 찾을 수 없습니다. 다시 로그인해 주세요.",
+        "saveFailed": "저장 중 오류가 발생했습니다."
       },
-      "confirmDeleteTask": "Are you sure you want to delete this task?"
+      "confirmDeleteTask": "이 작업을 삭제하시겠습니까?"
     },
     "yearlyTraining": {
       "defaultTrainings": [
         {
+          "audience": "직원",
           "category": "genel",
-          "title": "Information on occupational health and safety legislation",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "산업안전보건 법령 정보",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "genel",
-          "title": "General information on employee rights and responsibilities",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "직원 권리와 책임에 대한 일반 정보",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "genel",
-          "title": "Workplace cleanliness and order",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "작업장 청결 및 정리정돈",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "genel",
-          "title": "Legal consequences of occupational accidents and diseases",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "산업재해 및 직업병의 법적 결과",
+          "trainer": "산업보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "saglik",
-          "title": "Causes of occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "직업병의 원인",
+          "trainer": "사업장 의사"
         },
         {
+          "audience": "직원",
           "category": "saglik",
-          "title": "Prevention principles and protection techniques for occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "직업병 예방 원칙 및 보호 기법",
+          "trainer": "사업장 의사"
         },
         {
+          "audience": "직원",
           "category": "saglik",
-          "title": "Biological risk factors and the occupational diseases they may cause",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "생물학적 위험요인과 유발 가능한 직업병",
+          "trainer": "사업장 의사"
         },
         {
+          "audience": "선별된 직원",
           "category": "saglik",
-          "title": "First aid and rescue techniques",
-          "trainer": "External training (first aider)",
-          "audience": "Selected employees"
+          "title": "응급처치 및 구조 기법",
+          "trainer": "외부 교육 (응급처치자)"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Risk factors when working with chemicals",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "화학물질 취급 시 위험요인",
+          "trainer": "산업보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Physical risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "물리적 위험요인",
+          "trainer": "산업보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Ergonomic risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "인간공학적 위험요소",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Manual lifting and carrying",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "수동 들기 및 운반",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Flash, explosion, fire and fire protection",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "화재, 폭발, 화재 및 화재 방호",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Safe use of work equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "작업 장비의 안전한 사용 및 관련 위험",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "사무직 직원",
           "category": "teknik",
-          "title": "Working with display screen equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Office employees"
+          "title": "디스플레이 화면 장비 작업 및 관련 위험",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Electrical hazards, risks and precautions",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "전기 위험, 리스크 및 예방 조치",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Causes of occupational accidents and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "산업재해 원인 및 예방 원칙",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Falls and health impacts (accident prevention)",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "낙상 및 건강 영향 (사고 예방)",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Selection and use of personal protective equipment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "개인보호장비 선택 및 사용",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "General OHS rules and basic safety",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "일반 산업안전보건 규칙 및 기본 안전",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Evacuation and rescue",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "대피 및 구조",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Causes of accidents and injuries and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "사고 및 부상 원인과 예방 원칙",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "직원",
           "category": "teknik",
-          "title": "Occupational hygiene and risks from the working environment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "직업 위생 및 작업환경 위험요소",
+          "trainer": "산업안전보건 전문가"
         },
         {
+          "audience": "해당 직원",
           "category": "teknik",
-          "title": "Working at height",
-          "trainer": "External training",
-          "audience": "Relevant employees"
+          "title": "고소작업",
+          "trainer": "외부 교육"
         }
       ],
       "errors": {
-        "noSupabase": "No Supabase connection",
-        "loadFailed": "Could not load plan",
-        "selectCompany": "Please select a company",
-        "sessionNotFound": "Session not found",
-        "orgNotFound": "Organisation information not found",
-        "saveFailed": "Save failed"
+        "noSupabase": "Supabase 연결 없음",
+        "loadFailed": "계획을 불러올 수 없습니다",
+        "selectCompany": "회사를 선택해 주세요",
+        "sessionNotFound": "세션을 찾을 수 없습니다",
+        "orgNotFound": "조직 정보를 찾을 수 없습니다",
+        "saveFailed": "저장 실패"
       },
       "card": {
-        "title": "Annual OHS training plan",
-        "description": "24 standard training topics under the OHS training regulation. Stored per company ? year; planned date, duration, actual date, certificate and attendance are editable per row."
+        "title": "연간 산업안전보건 교육 계획",
+        "description": "산업안전보건 교육 규정에 따른 24개 표준 교육 주제입니다. 회사 × 연도별로 저장되며, 계획 날짜, 기간, 실제 날짜, 수료증 및 출석은 행별로 편집 가능합니다."
       },
       "fields": {
-        "company": "Company",
-        "companyPlaceholder": "Select a company",
-        "year": "Training year"
+        "company": "회사",
+        "companyPlaceholder": "회사 선택",
+        "year": "교육 연도"
       },
       "signers": {
-        "blockLabel": "Signatories (printed in the PDF signature area)",
-        "employer": "Employer / employer representative",
-        "employerPlaceholder": "Full name",
-        "physician": "Workplace physician",
-        "physicianPlaceholder": "Dr. Full name",
-        "safetyExpert": "OHS specialist",
-        "safetyExpertPlaceholder": "Full name ? Class (A/B/C)"
+        "blockLabel": "서명자 (PDF 서명 영역에 인쇄됨)",
+        "employer": "고용주 / 고용주 대리인",
+        "employerPlaceholder": "성명",
+        "physician": "사업장 의사",
+        "physicianPlaceholder": "의사 성명",
+        "safetyExpert": "산업안전보건 전문가",
+        "safetyExpertPlaceholder": "성명 · 등급 (A/B/C)"
       },
       "actions": {
-        "saving": "Saving...",
-        "saved": "Saved",
-        "save": "Save",
-        "pdfPrint": "Download / print PDF",
-        "archivedBadge": "Training plan for {year} is archived for this company"
+        "saving": "저장 중...",
+        "saved": "저장됨",
+        "save": "저장",
+        "pdfPrint": "PDF 다운로드/인쇄",
+        "archivedBadge": "{year}년 교육 계획이 이 회사에 대해 보관되었습니다"
       },
-      "loading": "Loading plan...",
+      "loading": "계획 로딩 중...",
       "preview": {
-        "title": "Preview & edit",
-        "description": "Edit rows: date / duration / certificate / attendance"
+        "title": "미리보기 및 편집",
+        "description": "행 편집: 날짜 / 시간 / 증명서 / 참석"
       },
       "table": {
-        "topic": "Training topic",
-        "trainer": "Trainer",
-        "audience": "Audience",
-        "planned": "Planned",
-        "duration": "Duration",
-        "realized": "Actual",
-        "certificate": "Certificate",
-        "attendance": "Attendance",
-        "addRow": "Add row",
-        "deleteRowAria": "Delete row"
+        "topic": "교육 주제",
+        "trainer": "강사",
+        "audience": "대상",
+        "planned": "계획",
+        "duration": "시간",
+        "realized": "실제",
+        "certificate": "증명서",
+        "attendance": "참석",
+        "addRow": "행 추가",
+        "deleteRowAria": "행 삭제"
       },
       "categories": {
-        "genel": "GENERAL TOPICS (4 hours)",
-        "saglik": "HEALTH TOPICS (4 hours)",
-        "teknik": "TECHNICAL TOPICS (4 hours)"
+        "genel": "일반 주제 (4시간)",
+        "saglik": "보건 주제 (4시간)",
+        "teknik": "기술 주제 (4시간)"
       },
       "certificate": {
-        "yes": "Yes",
-        "no": "No",
+        "yes": "예",
+        "no": "아니오",
         "empty": "?"
       },
       "defaults": {
-        "trainer": "OHS specialist",
-        "audience": "Employees"
+        "trainer": "산업보건 전문가",
+        "audience": "직원"
       },
       "pdf": {
-        "htmlTitle": "Annual OHS training plan ? {companyName}",
-        "mainTitle": "ANNUAL TRAINING PLAN",
-        "headerLine": "COMPANY: {companyName} ? YEAR: {year}",
-        "colNo": "No.",
-        "colTopic": "Training topic",
-        "colTrainer": "Trainer",
-        "colAudience": "Audience",
-        "colPlanned": "Planned",
-        "colDuration": "Duration",
-        "colRealized": "Actual",
-        "colCertificate": "Certificate",
-        "colAttendance": "Attendance",
-        "sigEmployer": "Employer",
-        "sigPhysician": "Workplace physician",
-        "sigSafety": "OHS specialist",
-        "sigLine": "Signature / date",
+        "htmlTitle": "연간 산업보건 교육계획 — {companyName}",
+        "mainTitle": "연간 교육계획",
+        "headerLine": "회사: {companyName} · 연도: {year}",
+        "colNo": "번호",
+        "colTopic": "교육 주제",
+        "colTrainer": "강사",
+        "colAudience": "대상",
+        "colPlanned": "계획",
+        "colDuration": "기간",
+        "colRealized": "실제",
+        "colCertificate": "인증서",
+        "colAttendance": "출석",
+        "sigEmployer": "고용주",
+        "sigPhysician": "산업의학 전문의",
+        "sigSafety": "산업안전보건 전문가",
+        "sigLine": "서명 / 날짜",
         "empty": "?"
       }
     },
     "timesheet": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "title": "Timesheet",
-      "defaultProfessional": "OHS professional",
+      "title": "근무시간표",
+      "defaultProfessional": "산업안전보건 전문가",
       "tabs": {
-        "grid": "Timesheet",
-        "archive": "Archive",
-        "settings": "Settings"
+        "grid": "근무시간표",
+        "archive": "보관함",
+        "settings": "설정"
       },
       "status": {
-        "draft": "Draft",
-        "submitted": "Submitted",
-        "approved": "Approved",
-        "paid": "Paid"
+        "draft": "임시저장",
+        "submitted": "제출됨",
+        "approved": "승인됨",
+        "paid": "지급완료"
       },
       "actions": {
-        "submit": "Submit",
-        "approve": "Approve",
-        "markPaid": "Mark as paid",
-        "revert": "Revert",
-        "previewPdf": "Preview PDF",
-        "timesheetExcel": "Timesheet Excel",
-        "payrollExcel": "Payroll Excel",
-        "payrollPdf": "Payroll PDF",
-        "view": "View",
-        "delete": "Delete",
-        "cancel": "Cancel",
-        "saving": "Saving..."
+        "submit": "제출",
+        "approve": "승인",
+        "markPaid": "지급 완료로 표시",
+        "revert": "되돌리기",
+        "previewPdf": "PDF 미리보기",
+        "timesheetExcel": "근무시간표 Excel",
+        "payrollExcel": "급여 Excel",
+        "payrollPdf": "급여 PDF",
+        "view": "보기",
+        "delete": "삭제",
+        "cancel": "취소",
+        "saving": "저장 중..."
       },
       "stats": {
-        "workedDays": "Worked days",
-        "totalHours": "Total hours",
-        "activeCompanies": "Active companies",
-        "gross": "Gross amount",
-        "stampTax": "Stamp tax",
-        "netPaid": "Net paid"
+        "workedDays": "근무일수",
+        "totalHours": "총 시간",
+        "activeCompanies": "활성 회사",
+        "gross": "총액",
+        "stampTax": "인지세",
+        "netPaid": "실수령액"
       },
       "filters": {
-        "allStatuses": "All statuses"
+        "allStatuses": "모든 상태"
       },
       "empty": {
-        "noCompanies": "No companies found",
-        "noArchive": "No timesheet record for {year}"
+        "noCompanies": "회사를 찾을 수 없음",
+        "noArchive": "{year}년 근무시간표 기록 없음"
       },
       "table": {
-        "company": "Company",
-        "totalShort": "TOTAL",
-        "total": "TOTAL"
+        "company": "회사",
+        "totalShort": "합계",
+        "total": "합계"
       },
       "archive": {
-        "period": "Period",
-        "status": "Status",
-        "actions": "Actions"
+        "period": "기간",
+        "status": "상태",
+        "actions": "작업"
       },
       "settings": {
-        "headerTitle": "Header settings",
-        "headerType": "Header type",
+        "headerTitle": "헤더 설정",
+        "headerType": "헤더 유형",
         "headerTypes": {
-          "custom": "Custom",
-          "government": "Official"
+          "custom": "사용자 정의",
+          "government": "공식"
         },
-        "line1": "Line 1 (main title)",
-        "line2": "Line 2 (subtitle)",
-        "line3": "Line 3 (extra info)",
-        "line1Placeholder": "e.g. Ministry of Labour",
-        "line2Placeholder": "e.g. Occupational health and safety services",
-        "line3Placeholder": "e.g. Monthly work schedule",
-        "professionalTitle": "Professional information",
-        "professionalRole": "Title",
-        "professionalRolePlaceholder": "e.g. OHS specialist (Class A)",
-        "certificateNo": "Registry / certificate no.",
-        "certificateNoPlaceholder": "e.g. ISG-A-12345",
-        "payrollTitle": "Payroll settings",
-        "governmentEmployee": "Civil servant / public employee",
-        "salaryCoefficient": "Salary coefficient",
-        "baseIndicator": "Indicator",
-        "stampTaxRate": "Stamp tax rate",
-        "formulaTitle": "Calculation formula:",
-        "hourlyRateFormula": "Hourly rate = Indicator ({indicator}) ? coefficient ({coefficient}) = ?{amount}",
-        "grossFormula": "Gross amount = hourly rate ? total hours",
-        "stampFormula": "Stamp tax = gross amount ? %{rate}",
-        "netFormula": "Net paid = gross amount - stamp tax",
-        "footerNote": "Footer note",
-        "footerNotePlaceholder": "Note shown at the bottom of Excel/PDF exports...",
-        "save": "Save settings",
-        "saved": "Settings saved.",
-        "errorPrefix": "Error: {message}",
-        "errorPrefixStart": "Error"
+        "line1": "1행 (주제목)",
+        "line2": "2번째 줄 (부제목)",
+        "line3": "3번째 줄 (추가 정보)",
+        "line1Placeholder": "예: 고용노동부",
+        "line2Placeholder": "예: 산업안전보건 서비스",
+        "line3Placeholder": "예: 월간 근무 일정",
+        "professionalTitle": "전문가 정보",
+        "professionalRole": "직책",
+        "professionalRolePlaceholder": "예: 산업안전보건 전문가 (A급)",
+        "certificateNo": "등록번호 / 인증번호",
+        "certificateNoPlaceholder": "예: ISG-A-12345",
+        "payrollTitle": "급여 설정",
+        "governmentEmployee": "공무원 / 공공기관 직원",
+        "salaryCoefficient": "급여 계수",
+        "baseIndicator": "지표",
+        "stampTaxRate": "인지세율",
+        "formulaTitle": "계산 공식:",
+        "hourlyRateFormula": "시간당 요율 = 지표 ({indicator}) × 계수 ({coefficient}) = ₩{amount}",
+        "grossFormula": "총액 = 시간당 요율 × 총 시간",
+        "stampFormula": "인지세 = 총액 ? %{rate}",
+        "netFormula": "실수령액 = 총액 - 인지세",
+        "footerNote": "바닥글 메모",
+        "footerNotePlaceholder": "Excel/PDF 내보내기 하단에 표시되는 메모...",
+        "save": "설정 저장",
+        "saved": "설정이 저장되었습니다.",
+        "errorPrefix": "오류: {message}",
+        "errorPrefixStart": "오류"
       },
       "delete": {
-        "title": "Delete timesheet",
-        "description": "This timesheet and all entries will be permanently deleted. Are you sure?"
+        "title": "근무시간표 삭제",
+        "description": "이 근무시간표와 모든 항목이 영구적으로 삭제됩니다. 계속하시겠습니까?"
       },
       "pdf": {
-        "title": "Timesheet - {month} {year}",
-        "previewTitle": "PDF preview",
-        "printDownload": "Print / download PDF",
-        "preparedBy": "Prepared by",
-        "approvedBy": "Approved by",
-        "employerRepresentative": "Employer / representative",
-        "workScheduleTitle": "{month} {year} ? Work schedule",
-        "narrative": "The person named above, {profileName}, provided a total of {total} hours of occupational safety service in {month} {year}."
+        "title": "근무시간표 - {year}년 {month}월",
+        "previewTitle": "PDF 미리보기",
+        "printDownload": "PDF 인쇄 / 다운로드",
+        "preparedBy": "작성자",
+        "approvedBy": "승인자",
+        "employerRepresentative": "고용주 / 대리인",
+        "workScheduleTitle": "{year}년 {month}월 근무일정",
+        "narrative": "위에 명시된 {profileName}님은 {year}년 {month}월에 총 {total}시간의 산업안전보건 서비스를 제공했습니다."
       },
       "payroll": {
-        "title": "Payroll",
-        "calculationTitle": "Civil servant payroll calculation",
-        "pdfTitle": "Payroll - {month} {year}",
-        "periodLine": "Month: {month}   Year: {year}",
-        "pdfMainTitle": "MISCELLANEOUS PAYMENTS PAYROLL",
-        "warning": "NOTICE",
-        "legalNotice": "The payroll is prepared in accordance with Article 8 of Turkish Occupational Health and Safety Law No. 6331.",
+        "title": "급여",
+        "calculationTitle": "공무원 급여 계산",
+        "pdfTitle": "급여대장 - {month} {year}",
+        "periodLine": "월: {month}   년: {year}",
+        "pdfMainTitle": "기타 지급 급여대장",
+        "warning": "공지사항",
+        "legalNotice": "급여는 터키 산업안전보건법 제6331호 제8조에 따라 작성되었습니다.",
         "columns": {
-          "no": "No.",
-          "fullName": "FULL NAME",
-          "salaryCoefficient": "Civil servant salary coefficient",
-          "paymentCoefficient": "Payment coefficient",
-          "hourlyRate": "Hourly rate (TRY)",
-          "assignmentHours": "Assignment duration (hours)",
-          "gross": "Gross amount (TRY)",
-          "stampTax": "Stamp tax deduction (TRY)",
-          "netPaid": "Net paid (TRY)"
+          "no": "번호",
+          "fullName": "성명",
+          "salaryCoefficient": "공무원 급여 계수",
+          "paymentCoefficient": "지급 계수",
+          "hourlyRate": "시간당 요율 (TRY)",
+          "assignmentHours": "업무 시간 (시간)",
+          "gross": "총액 (TRY)",
+          "stampTax": "인지세 공제 (TRY)",
+          "netPaid": "실수령액 (TRY)"
         },
-        "indicatorCoefficient": "Indicator ? coefficient",
-        "hourlyRate": "Hourly rate",
-        "stampTaxWithRate": "Stamp tax (%{rate})"
+        "indicatorCoefficient": "지표 ? 계수",
+        "hourlyRate": "시간당 요율",
+        "stampTaxWithRate": "인지세 (%{rate})"
       }
     }
   },
@@ -3404,7 +3571,7 @@
     "password": {
       "current": "현재 비밀번호",
       "new": "새 비밀번호",
-      "newPlaceholder": "최소 12자, 대소문자, 숫자, 특수문자 포함",
+      "newPlaceholder": "최소 8자, 대소문자, 숫자, 특수문자 포함",
       "repeat": "새 비밀번호 (재입력)",
       "submit": "비밀번호 업데이트",
       "title": "비밀번호 변경"

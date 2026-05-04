@@ -1154,7 +1154,7 @@
       "title": "Şifre Değiştir",
       "current": "Mevcut Şifre",
       "new": "Yeni Şifre",
-      "newPlaceholder": "En az 12 karakter, büyük-küçük harf, rakam ve sembol",
+      "newPlaceholder": "En az 8 karakter, büyük-küçük harf, rakam ve sembol",
       "repeat": "Yeni Şifre (Tekrar)",
       "submit": "Şifreyi Güncelle"
     },
@@ -2423,6 +2423,62 @@
     "errNotFound": "Davet bulunamadı.",
     "errAuthRequired": "Daveti kabul etmek için giriş yapmalısınız."
   },
+  "trainingHubPage": {
+    "title": "Eğitim",
+    "description": "Slayt kütüphanesi, anket ve sınav akışları; kişiye özel link ve sonuç analizi bu modülde.",
+    "actions": {
+      "aiTraining": "AI Destekli Eğitim Hazırla",
+      "slideLibrary": "Slayt Kütüphanem",
+      "certificates": "Sertifikalar",
+      "createNew": "Yeni Oluştur"
+    },
+    "library": {
+      "back": "İSG Kütüphanesi",
+      "eyebrow": "İSG Kütüphanesi Entegrasyonu",
+      "title": "Eğitim ve sınav içeriklerini bu modülde yönetin",
+      "tabs": {
+        "education": "Eğitim İçerikleri",
+        "assessment": "Sınav ve Anket İçerikleri"
+      },
+      "emptyPrefix": "Bu kategoride kütüphane içeriği henüz bulunmuyor. İçerik eklemek veya tüm kayıtları görmek için",
+      "emptyLink": "İSG Kütüphanesine git",
+      "fallbackDescription": "Kütüphane içeriği",
+      "openContent": "İçeriği Aç",
+      "useInModule": "Modülde Kullan"
+    },
+    "tabs": {
+      "all": "Tümü",
+      "surveys": "Anketler",
+      "exams": "Sınavlar"
+    },
+    "filters": {
+      "searchPlaceholder": "Anket veya sınav ara...",
+      "allStatuses": "Tümü"
+    },
+    "status": {
+      "draft": "Taslak",
+      "active": "Aktif",
+      "closed": "Kapalı",
+      "archived": "Arşiv"
+    },
+    "types": {
+      "exam": "Sınav",
+      "survey": "Anket"
+    },
+    "empty": {
+      "title": "Henüz anket veya sınav yok",
+      "description": "İlk anket veya sınavınızı oluşturmak için \"Yeni Oluştur\" butonuna tıklayın"
+    },
+    "card": {
+      "passScore": "Geçme puanı: {score}%",
+      "duration": "Süre: {minutes} dk"
+    },
+    "errors": {
+      "noSession": "Oturum bulunamadı. Sayfayı yenileyin.",
+      "authRequired": "Giriş gerekli.",
+      "organizationMissing": "Organizasyon bağlantısı bulunamadı. Profil veya üyelik ayarlarınızı kontrol edin."
+    }
+  },
   "certificateVerify": {
     "loading": "Doğrulanıyor…",
     "notFoundTitle": "Sertifika bulunamadı",
@@ -2711,6 +2767,168 @@
       "ohs_file": "İSG Dosyası",
       "organization": "Organizasyon",
       "history": "Geçmiş"
+    },
+    "structure": {
+      "summaryLocation": "Lokasyon",
+      "summaryDepartment": "Bölüm",
+      "summaryEmployee": "Çalışan",
+      "locationsTitle": "Lokasyonlar",
+      "locationsSubtitle": "Firmanın fiziksel yerleşkeleri",
+      "departmentsTitle": "Bölümler",
+      "departmentsSubtitle": "Organizasyonel birimler",
+      "locationPlaceholder": "Lokasyon adı girin",
+      "departmentPlaceholder": "Bölüm adı girin",
+      "addLocation": "Lokasyon Ekle",
+      "addDepartment": "Bölüm Ekle"
+    },
+    "risk": {
+      "pageTitle": "Risk ve Saha Yönetimi",
+      "pageSubtitle": "Risk sınıflandırması, analiz geçmişi ve süreç takibi.",
+      "tabMap": "Risk Haritası",
+      "tabAnalyses": "Analizler ({count})",
+      "newAnalysis": "Yeni Analiz",
+      "metricTotalFindings": "Toplam Tespit",
+      "metricCritical": "Kritik",
+      "metricHigh": "Yüksek",
+      "metricAnalysisCount": "Analiz Sayısı",
+      "badgeCritical": "Kritik: {count}",
+      "badgeHigh": "Yüksek: {count}",
+      "badgeMedium": "Orta: {count}",
+      "badgeLow": "Düşük: {count}",
+      "noFindingsCategory": "Henüz tespit yok",
+      "addCategoryTitle": "Yeni Kategori Ekle",
+      "addCategoryHint": "Özel risk kategorisi tanımlayın",
+      "categoryRisksTitle": "{label} Riskleri",
+      "findingsCountLabel": "{count} tespit bulundu",
+      "noFindingsInCategory": "Bu kategoride henüz tespit yok.",
+      "analysisPrefix": "Analiz:",
+      "edit": "Düzenle",
+      "cancel": "İptal",
+      "save": "Kaydet",
+      "saving": "Kaydediliyor...",
+      "discard": "Vazgeç",
+      "recommendation": "Öneri",
+      "action": "Aksiyon",
+      "notes": "Notlar",
+      "status": "Durum",
+      "note": "Not",
+      "notePlaceholder": "Yapılan çalışmalar, gözlemler...",
+      "emptyAnalysesTitle": "Henüz risk analizi yapılmamış",
+      "emptyAnalysesDescription": "Risk Analizi sayfasından bu firma için ilk analizinizi başlatın.",
+      "findingsInRow": "{count} tespit",
+      "archiveTitle": "Arşivle",
+      "editTitle": "Düzenle",
+      "deleteTitle": "Sil",
+      "confirmDelete": "Sil?",
+      "yes": "Evet",
+      "no": "Hayır",
+      "exportPdfTitle": "PDF İndir",
+      "exportWordTitle": "Word İndir",
+      "exportExcelTitle": "Excel İndir",
+      "analysisStatus": {
+        "completed": "Tamamlandı",
+        "archived": "Arşivlendi",
+        "draft": "Taslak"
+      },
+      "trackingStatus": {
+        "open": "Açık",
+        "in_progress": "Devam Ediyor",
+        "resolved": "Çözüldü",
+        "archived": "Arşivlendi"
+      },
+      "severity": {
+        "critical": "Kritik",
+        "high": "Yüksek",
+        "medium": "Orta",
+        "low": "Düşük"
+      },
+      "method": {
+        "r_skor": "R-SKOR 2D",
+        "fine_kinney": "Fine-Kinney",
+        "l_matrix": "L-Matris",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "shareTitle": "Rapor Paylaşımı",
+      "shareDescription": "Paylaşım linkini açarak bu raporu herkesle paylaşabilirsiniz.",
+      "shareEnable": "Paylaşım Linkini Aç",
+      "shareActive": "✓ Paylaşım Aktif",
+      "shareCopyTitle": "Linki Kopyala",
+      "shareCopied": "Kopyalandı",
+      "shareWhatsappTitle": "WhatsApp ile Paylaş",
+      "shareButtonTitle": "Paylaş",
+      "shareWhatsappBody": "RiskNova — {title} Risk Analizi Raporu\n{url}",
+      "participantsHeading": "Katılımcılar",
+      "analysisNoteHeading": "Analiz Notu",
+      "emptyAnalysisRows": "Bu analizde henüz satır yok.",
+      "rowFindingCount": "({count} tespit)",
+      "recommendationInline": "Öneri:",
+      "actionInline": "Aksiyon:",
+      "qrAlt": "QR Kod",
+      "qrCaption": "QR ile paylaş",
+      "categories": {
+        "fiziksel": {
+          "label": "Fiziksel",
+          "examples": "Gürültü, titreşim, aydınlatma, sıcaklık"
+        },
+        "kimyasal": {
+          "label": "Kimyasal",
+          "examples": "Gaz, toz, buhar, kimyasal madde"
+        },
+        "biyolojik": {
+          "label": "Biyolojik",
+          "examples": "Bakteri, virüs, küf, biyolojik etkenler"
+        },
+        "ergonomik": {
+          "label": "Ergonomik",
+          "examples": "Duruş bozukluğu, ağır yük, tekrarlı hareket"
+        },
+        "psikososyal": {
+          "label": "Psikososyal",
+          "examples": "Stres, mobbing, iş yükü, vardiya"
+        },
+        "mekanik": {
+          "label": "Mekanik",
+          "examples": "Makine, ekipman, düşme, sıkışma"
+        },
+        "elektrik": {
+          "label": "Elektrik",
+          "examples": "Çarpma, kısa devre, topraklama"
+        },
+        "yangin": {
+          "label": "Yangın / Patlama",
+          "examples": "Yanıcı madde, patlayıcı ortam, LPG"
+        },
+        "trafik": {
+          "label": "Trafik",
+          "examples": "Araç, forklift, yaya-araç çatışması"
+        },
+        "cevre": {
+          "label": "Çevresel",
+          "examples": "Atık, emisyon, gürültü kirliliği"
+        }
+      }
+    },
+    "tracking": {
+      "sectionActions": "Açık Aksiyonlar",
+      "sectionTrainings": "Eğitimler",
+      "sectionControls": "Periyodik Kontrol",
+      "sectionCommittee": "İSG Kurul",
+      "hazardUnknown": "Belirlenmedi",
+      "actionsTitle": "Açık Aksiyonlar",
+      "actionsDesc": "Risk tespitleri, DÖF ve İSG görevlerinden gelen açık aksiyonlar.",
+      "noActions": "Açık aksiyon bulunmuyor.",
+      "badgeTotal": "Toplam: {count}",
+      "sourceRisk": "Risk",
+      "sourceDof": "DÖF",
+      "sourceTask": "Görev",
+      "statusButton": "Durum",
+      "trainingsTitle": "Eğitim Takibi",
+      "trainingsDesc": "Firma eğitim planları ve kayıtları.",
+      "controlsTitle": "Periyodik Kontroller",
+      "controlsDesc": "Yasal zorunlu periyodik kontrol ve muayeneler.",
+      "committeeTitle": "İSG Kurul Toplantıları",
+      "committeeDesc": "Tehlike sınıfı: {hazardClass} — Periyod: {months} ayda bir"
     }
   },
   "osgbFirms": {
@@ -3616,20 +3834,6 @@
   },
   "planner": {
     "yearlyWorkPlan": {
-      "months": [
-        "Oca",
-        "Şub",
-        "Mar",
-        "Nis",
-        "May",
-        "Haz",
-        "Tem",
-        "Ağu",
-        "Eyl",
-        "Eki",
-        "Kas",
-        "Ara"
-      ],
       "errors": {
         "noSupabase": "Supabase bağlantısı yok",
         "loadFailed": "Plan yüklenemedi",
@@ -3999,29 +4203,6 @@
       }
     },
     "core": {
-      "months": [
-        "Ocak",
-        "Şubat",
-        "Mart",
-        "Nisan",
-        "Mayıs",
-        "Haziran",
-        "Temmuz",
-        "Ağustos",
-        "Eylül",
-        "Ekim",
-        "Kasım",
-        "Aralık"
-      ],
-      "weekdays": [
-        "Pzt",
-        "Sal",
-        "Çar",
-        "Per",
-        "Cum",
-        "Cmt",
-        "Paz"
-      ],
       "pageTitle": "İSG Planlayıcı",
       "pageDescription": "İş sağlığı ve güvenliği görevlerini planlayın ve takip edin.",
       "actions": {
@@ -4348,20 +4529,6 @@
       }
     },
     "timesheet": {
-      "months": [
-        "Ocak",
-        "Şubat",
-        "Mart",
-        "Nisan",
-        "Mayıs",
-        "Haziran",
-        "Temmuz",
-        "Ağustos",
-        "Eylül",
-        "Ekim",
-        "Kasım",
-        "Aralık"
-      ],
       "title": "Puantaj",
       "defaultProfessional": "İSG profesyoneli",
       "tabs": {

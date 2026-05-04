@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Download, MonitorDown, Smartphone, X } from "lucide-react";
+import { Download, ExternalLink, MonitorDown, Smartphone, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type BeforeInstallPromptEvent = Event & {
@@ -81,7 +81,7 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
       window.removeEventListener("appinstalled", handleAppInstalled);
     };
-  }, []);
+  }, [surface]);
 
   if (!visible) return null;
 
@@ -94,6 +94,7 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
   const iosHint = "iPhone/iPad için Paylaş menüsünden Ana Ekrana Ekle seçeneğini kullan.";
   const manualHint =
     "Kurulum butonu görünmüyorsa normal tarayıcı penceresinde üç nokta menüsünden Uygulamayı yükle veya Ana ekrana ekle seçeneğini kullanın.";
+  const showGuideLink = showIosHint || showManualHint;
 
   async function install() {
     if (!installEvent) return;
@@ -160,7 +161,7 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
               <Download className="h-4 w-4" />
               {button}
             </button>
-          ) : showManualHint ? (
+          ) : showGuideLink ? (
             <a
               href="/uygulama"
               className={cn(
@@ -170,8 +171,8 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
                   : "bg-primary text-primary-foreground hover:bg-primary/90",
               )}
             >
-              <Download className="h-4 w-4" />
-              Ana ekrana ekle
+              {showIosHint ? <ExternalLink className="h-4 w-4" /> : <Download className="h-4 w-4" />}
+              {showIosHint ? "iOS adımlarını aç" : "Ana ekrana ekle"}
             </a>
           ) : null}
         </div>

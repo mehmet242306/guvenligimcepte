@@ -1,5 +1,5 @@
 const PASSWORD_RULES = {
-  minLength: 12,
+  minLength: 8,
   lowercase: /[a-z]/,
   uppercase: /[A-Z]/,
   digit: /\d/,
@@ -8,7 +8,7 @@ const PASSWORD_RULES = {
 
 export function validateStrongPassword(password: string) {
   if (password.length < PASSWORD_RULES.minLength) {
-    return "Sifre en az 12 karakter olmali.";
+    return "Sifre en az 8 karakter olmali.";
   }
 
   if (!PASSWORD_RULES.lowercase.test(password)) {

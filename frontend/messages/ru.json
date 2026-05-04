@@ -348,6 +348,62 @@
   "brand": {
     "tagline": "ИИ-платформа для охраны труда и промышленной безопасности"
   },
+  "trainingHubPage": {
+    "title": "Обучение",
+    "description": "Библиотека слайдов, опросы и экзамены, персональные ссылки и аналитика результатов находятся в этом модуле.",
+    "actions": {
+      "aiTraining": "Подготовить обучение с AI",
+      "slideLibrary": "Моя библиотека слайдов",
+      "certificates": "Сертификаты",
+      "createNew": "Создать"
+    },
+    "library": {
+      "back": "Библиотека ОТ",
+      "eyebrow": "Интеграция библиотеки ОТ",
+      "title": "Управляйте учебными и экзаменационными материалами в этом модуле",
+      "tabs": {
+        "education": "Учебные материалы",
+        "assessment": "Экзамены и опросы"
+      },
+      "emptyPrefix": "В этой категории пока нет материалов библиотеки. Чтобы добавить материал или посмотреть все записи,",
+      "emptyLink": "перейдите в библиотеку ОТ",
+      "fallbackDescription": "Материал библиотеки",
+      "openContent": "Открыть материал",
+      "useInModule": "Использовать в модуле"
+    },
+    "tabs": {
+      "all": "Все",
+      "surveys": "Опросы",
+      "exams": "Экзамены"
+    },
+    "filters": {
+      "searchPlaceholder": "Искать опрос или экзамен...",
+      "allStatuses": "Все"
+    },
+    "status": {
+      "draft": "Черновик",
+      "active": "Активно",
+      "closed": "Закрыто",
+      "archived": "Архив"
+    },
+    "types": {
+      "exam": "Экзамен",
+      "survey": "Опрос"
+    },
+    "empty": {
+      "title": "Опросов или экзаменов пока нет",
+      "description": "Нажмите «Создать», чтобы создать первый опрос или экзамен"
+    },
+    "card": {
+      "passScore": "Проходной балл: {score}%",
+      "duration": "Длительность: {minutes} мин"
+    },
+    "errors": {
+      "noSession": "Сессия не найдена. Обновите страницу.",
+      "authRequired": "Требуется вход.",
+      "organizationMissing": "Связь с организацией не найдена. Проверьте профиль или настройки членства."
+    }
+  },
   "certificateVerify": {
     "certNo": "Номер сертификата",
     "date": "Дата",
@@ -575,6 +631,168 @@
       "risk": "Риски и поле",
       "structure": "Помещения",
       "tracking": "Отслеживание"
+    },
+    "structure": {
+      "summaryLocation": "Location",
+      "summaryDepartment": "Department",
+      "summaryEmployee": "Employee",
+      "locationsTitle": "Locations",
+      "locationsSubtitle": "Company physical sites",
+      "departmentsTitle": "Departments",
+      "departmentsSubtitle": "Organisational units",
+      "locationPlaceholder": "Enter location name",
+      "departmentPlaceholder": "Enter department name",
+      "addLocation": "Add location",
+      "addDepartment": "Add department"
+    },
+    "risk": {
+      "pageTitle": "Risk and field management",
+      "pageSubtitle": "Risk classification, analysis history and process tracking.",
+      "tabMap": "Risk map",
+      "tabAnalyses": "Analyses ({count})",
+      "newAnalysis": "New analysis",
+      "metricTotalFindings": "Total findings",
+      "metricCritical": "Critical",
+      "metricHigh": "High",
+      "metricAnalysisCount": "Analyses",
+      "badgeCritical": "Critical: {count}",
+      "badgeHigh": "High: {count}",
+      "badgeMedium": "Medium: {count}",
+      "badgeLow": "Low: {count}",
+      "noFindingsCategory": "No findings yet",
+      "addCategoryTitle": "Add category",
+      "addCategoryHint": "Define a custom risk category",
+      "categoryRisksTitle": "{label} risks",
+      "findingsCountLabel": "{count} findings",
+      "noFindingsInCategory": "No findings in this category yet.",
+      "analysisPrefix": "Analysis:",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "discard": "Discard",
+      "recommendation": "Recommendation",
+      "action": "Action",
+      "notes": "Notes",
+      "status": "Status",
+      "note": "Note",
+      "notePlaceholder": "Work done, observations…",
+      "emptyAnalysesTitle": "No risk analysis yet",
+      "emptyAnalysesDescription": "Start the first analysis for this company from the Risk analysis page.",
+      "findingsInRow": "{count} findings",
+      "archiveTitle": "Archive",
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "confirmDelete": "Delete?",
+      "yes": "Yes",
+      "no": "No",
+      "exportPdfTitle": "Download PDF",
+      "exportWordTitle": "Download Word",
+      "exportExcelTitle": "Download Excel",
+      "analysisStatus": {
+        "completed": "Completed",
+        "archived": "Archived",
+        "draft": "Draft"
+      },
+      "trackingStatus": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "archived": "Archived"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "method": {
+        "r_skor": "R-SCORE 2D",
+        "fine_kinney": "Fine-Kinney",
+        "l_matrix": "L-Matrix",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "shareTitle": "Report sharing",
+      "shareDescription": "Anyone with the link can view this report.",
+      "shareEnable": "Enable sharing link",
+      "shareActive": "Sharing on",
+      "shareCopyTitle": "Copy link",
+      "shareCopied": "Copied",
+      "shareWhatsappTitle": "Share via WhatsApp",
+      "shareButtonTitle": "Share",
+      "shareWhatsappBody": "RiskNova — {title}\n{url}",
+      "participantsHeading": "Participants",
+      "analysisNoteHeading": "Analysis note",
+      "emptyAnalysisRows": "No rows in this analysis yet.",
+      "rowFindingCount": "({count})",
+      "recommendationInline": "Recommendation:",
+      "actionInline": "Action:",
+      "qrAlt": "QR code",
+      "qrCaption": "Share with QR",
+      "categories": {
+        "fiziksel": {
+          "label": "Physical",
+          "examples": "Noise, vibration, lighting, temperature"
+        },
+        "kimyasal": {
+          "label": "Chemical",
+          "examples": "Gas, dust, vapour, chemicals"
+        },
+        "biyolojik": {
+          "label": "Biological",
+          "examples": "Bacteria, viruses, mould, biological agents"
+        },
+        "ergonomik": {
+          "label": "Ergonomic",
+          "examples": "Poor posture, heavy loads, repetitive motion"
+        },
+        "psikososyal": {
+          "label": "Psychosocial",
+          "examples": "Stress, bullying, workload, shifts"
+        },
+        "mekanik": {
+          "label": "Mechanical",
+          "examples": "Machinery, equipment, falls, crushing"
+        },
+        "elektrik": {
+          "label": "Electrical",
+          "examples": "Electric shock, short circuit, earthing"
+        },
+        "yangin": {
+          "label": "Fire / explosion",
+          "examples": "Flammable material, explosive atmosphere, LPG"
+        },
+        "trafik": {
+          "label": "Traffic",
+          "examples": "Vehicles, forklifts, pedestrian–vehicle conflict"
+        },
+        "cevre": {
+          "label": "Environmental",
+          "examples": "Waste, emissions, noise pollution"
+        }
+      }
+    },
+    "tracking": {
+      "sectionActions": "Open actions",
+      "sectionTrainings": "Trainings",
+      "sectionControls": "Periodic inspection",
+      "sectionCommittee": "OHS committee",
+      "hazardUnknown": "Not determined",
+      "actionsTitle": "Open actions",
+      "actionsDesc": "Open actions from risk findings, CAPA and OHS tasks.",
+      "noActions": "No open actions.",
+      "badgeTotal": "Total: {count}",
+      "sourceRisk": "Risk",
+      "sourceDof": "CAPA",
+      "sourceTask": "Task",
+      "statusButton": "Status",
+      "trainingsTitle": "Training tracking",
+      "trainingsDesc": "Company training plans and records.",
+      "controlsTitle": "Periodic inspections",
+      "controlsDesc": "Legally required periodic inspections and examinations.",
+      "committeeTitle": "OHS committee meetings",
+      "committeeDesc": "Hazard class: {hazardClass} — every {months} months"
     }
   },
   "consent": {
@@ -2560,531 +2778,480 @@
         "regulation": "Законодательство",
         "responsible": "Ответственный",
         "topic": "Тема работы"
-      },
-      "months": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ]
+      }
     },
     "shell": {
-      "title": "Planner",
-      "description": "OHS tasks, annual work plan, training plan and timesheet under one roof.",
+      "title": "Планировщик",
+      "description": "Задачи ОТ, годовой план работ, план обучения и табель под одной крышей.",
       "tabs": {
         "planner": {
-          "label": "Planner",
-          "desc": "Calendar ? tasks ? reminders"
+          "label": "Планировщик",
+          "desc": "Календарь, задачи и напоминания"
         },
         "workPlan": {
-          "label": "Annual work plan",
-          "desc": "OHS annual work plan (official form)"
+          "label": "Годовой план работ",
+          "desc": "Годовой план работ по ОТ (официальная форма)"
         },
         "trainingPlan": {
-          "label": "Annual training",
-          "desc": "Training plan, participants and certificates"
+          "label": "Годовое обучение",
+          "desc": "План обучения, участники и сертификаты"
         },
         "timesheet": {
-          "label": "Timesheet",
-          "desc": "Hours and fee tracking"
+          "label": "Табель",
+          "desc": "Учет часов и оплаты"
         }
       }
     },
     "core": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "weekdays": [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-      ],
-      "pageTitle": "OHS planner",
-      "pageDescription": "Plan and track occupational health and safety tasks.",
+      "pageTitle": "Планировщик ОТ",
+      "pageDescription": "Планируйте и отслеживайте задачи по охране труда и технике безопасности.",
       "actions": {
-        "newTask": "New task",
-        "dismissError": "Dismiss error",
-        "cancel": "Cancel",
-        "saving": "Saving...",
-        "create": "Create",
-        "update": "Update"
+        "newTask": "Новая задача",
+        "dismissError": "Закрыть ошибку",
+        "cancel": "Отмена",
+        "saving": "Сохранение...",
+        "create": "Создать",
+        "update": "Обновить"
       },
       "stats": {
-        "total": "Total"
+        "total": "Всего"
       },
       "filters": {
-        "allCategories": "All categories",
-        "allStatuses": "All statuses",
-        "allCompanies": "All companies"
+        "allCategories": "Все категории",
+        "allStatuses": "Все статусы",
+        "allCompanies": "Все компании"
       },
       "views": {
-        "month": "Calendar",
-        "list": "List"
+        "month": "Календарь",
+        "list": "Список"
       },
       "sidebar": {
-        "categories": "Categories",
-        "all": "All",
-        "addCategory": "Add category",
-        "quickAdd": "Quick add"
+        "categories": "Категории",
+        "all": "Все",
+        "addCategory": "Добавить категорию",
+        "quickAdd": "Быстрое добавление"
       },
       "calendar": {
-        "more": "+{count} more"
+        "more": "+{count} ещё"
       },
       "empty": {
-        "title": "No tasks yet",
-        "description": "Click the New task button above."
+        "title": "Задач пока нет",
+        "description": "Нажмите кнопку «Новая задача» выше."
       },
       "recurrence": {
-        "none": "Does not repeat",
-        "daily": "Daily",
-        "weekly": "Weekly",
-        "monthly": "Monthly",
-        "quarterly": "Quarterly",
-        "biannual": "Every six months",
-        "annual": "Annual"
+        "none": "Не повторяется",
+        "daily": "Ежедневно",
+        "weekly": "Еженедельно",
+        "monthly": "Ежемесячно",
+        "quarterly": "Ежеквартально",
+        "biannual": "Каждые шесть месяцев",
+        "annual": "Ежегодно"
       },
       "status": {
-        "planned": "Planned",
-        "in_progress": "In progress",
-        "completed": "Completed",
-        "overdue": "Overdue",
-        "cancelled": "Cancelled"
+        "planned": "Запланировано",
+        "in_progress": "В процессе",
+        "completed": "Завершено",
+        "overdue": "Просрочено",
+        "cancelled": "Отменено"
       },
       "categories": {
-        "periodicControl": "Periodic inspection",
-        "training": "Training",
-        "healthFollowUp": "Health follow-up",
-        "meetingDrill": "Meeting & drill",
-        "legalObligation": "Legal obligation",
-        "fieldVisit": "Field visit",
-        "ohsCommitteeMeeting": "OHS committee meeting",
-        "other": "Other"
+        "periodicControl": "Периодический контроль",
+        "training": "Обучение",
+        "healthFollowUp": "Медицинское наблюдение",
+        "meetingDrill": "Совещание и учения",
+        "legalObligation": "Правовое обязательство",
+        "fieldVisit": "Выездная проверка",
+        "ohsCommitteeMeeting": "Заседание комитета по ОТ",
+        "other": "Другое"
       },
       "modal": {
-        "newTitle": "New task",
-        "editTitle": "Edit task",
-        "optional": "- optional",
+        "newTitle": "Новая задача",
+        "editTitle": "Редактировать задачу",
+        "optional": "- необязательно",
         "fields": {
-          "title": "Title *",
-          "description": "Description",
-          "category": "Category",
-          "status": "Status",
-          "company": "Company",
-          "startDate": "Start date *",
-          "endDate": "End date",
-          "recurrence": "Repeat",
-          "reminderDays": "Reminder (days before)",
-          "includeTimesheet": "Add to timesheet",
-          "timesheetHours": "Working time (hours)",
-          "hourlyRate": "Hourly rate"
+          "title": "Название *",
+          "description": "Описание",
+          "category": "Категория",
+          "status": "Статус",
+          "company": "Компания",
+          "startDate": "Дата начала *",
+          "endDate": "Дата окончания",
+          "recurrence": "Повторять",
+          "reminderDays": "Напоминание (дней до)",
+          "includeTimesheet": "Добавить в табель",
+          "timesheetHours": "Рабочее время (часы)",
+          "hourlyRate": "Почасовая ставка"
         },
         "placeholders": {
-          "title": "Task title",
-          "description": "Task description...",
-          "category": "Select category...",
-          "company": "Select company...",
-          "hours": "e.g. 4.5",
-          "rate": "e.g. 250"
+          "title": "Название задачи",
+          "description": "Описание задачи...",
+          "category": "Выберите категорию...",
+          "company": "Выберите компанию...",
+          "hours": "например, 4.5",
+          "rate": "например, 250"
         }
       },
       "errors": {
-        "orgNotFound": "Organisation information not found. Please sign in again.",
-        "saveFailed": "An error occurred while saving."
+        "orgNotFound": "Информация об организации не найдена. Пожалуйста, войдите в систему снова.",
+        "saveFailed": "Произошла ошибка при сохранении."
       },
-      "confirmDeleteTask": "Are you sure you want to delete this task?"
+      "confirmDeleteTask": "Вы уверены, что хотите удалить эту задачу?"
     },
     "yearlyTraining": {
       "defaultTrainings": [
         {
+          "audience": "Сотрудники",
           "category": "genel",
-          "title": "Information on occupational health and safety legislation",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Информация о законодательстве по охране труда",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "genel",
-          "title": "General information on employee rights and responsibilities",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Общая информация о правах и обязанностях сотрудников",
+          "trainer": "Специалист по ОТ"
         },
         {
+          "audience": "Сотрудники",
           "category": "genel",
-          "title": "Workplace cleanliness and order",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Чистота и порядок на рабочем месте",
+          "trainer": "Специалист по ОТ"
         },
         {
+          "audience": "Сотрудники",
           "category": "genel",
-          "title": "Legal consequences of occupational accidents and diseases",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Правовые последствия несчастных случаев и профессиональных заболеваний на производстве",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "saglik",
-          "title": "Causes of occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Причины профессиональных заболеваний",
+          "trainer": "Врач по гигиене труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "saglik",
-          "title": "Prevention principles and protection techniques for occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Принципы профилактики и методы защиты от профессиональных заболеваний",
+          "trainer": "Врач по гигиене труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "saglik",
-          "title": "Biological risk factors and the occupational diseases they may cause",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Биологические факторы риска и профессиональные заболевания, которые они могут вызвать",
+          "trainer": "Врач по гигиене труда"
         },
         {
+          "audience": "Отдельные сотрудники",
           "category": "saglik",
-          "title": "First aid and rescue techniques",
-          "trainer": "External training (first aider)",
-          "audience": "Selected employees"
+          "title": "Методы оказания первой помощи и спасения",
+          "trainer": "Внешнее обучение (оказывающий первую помощь)"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Risk factors when working with chemicals",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Факторы риска при работе с химическими веществами",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Physical risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Физические факторы риска",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Ergonomic risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Эргономические факторы риска",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Manual lifting and carrying",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Ручной подъем и перенос грузов",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Flash, explosion, fire and fire protection",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Вспышка, взрыв, пожар и противопожарная защита",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Safe use of work equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Безопасное использование рабочего оборудования и связанные риски",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Офисные сотрудники",
           "category": "teknik",
-          "title": "Working with display screen equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Office employees"
+          "title": "Работа с оборудованием с дисплеем и связанные риски",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Electrical hazards, risks and precautions",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Электрические опасности, риски и меры предосторожности",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Causes of occupational accidents and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Причины производственных несчастных случаев и принципы предотвращения",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Falls and health impacts (accident prevention)",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Падения и воздействие на здоровье (предотвращение несчастных случаев)",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Selection and use of personal protective equipment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Выбор и использование средств индивидуальной защиты",
+          "trainer": "Специалист по охране труда"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "General OHS rules and basic safety",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Общие правила ОТ и основы безопасности",
+          "trainer": "Специалист по ОТ"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Evacuation and rescue",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Эвакуация и спасение",
+          "trainer": "Специалист по ОТ"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Causes of accidents and injuries and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Причины несчастных случаев и травм и принципы предотвращения",
+          "trainer": "Специалист по ОТ"
         },
         {
+          "audience": "Сотрудники",
           "category": "teknik",
-          "title": "Occupational hygiene and risks from the working environment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Гигиена труда и риски рабочей среды",
+          "trainer": "Специалист по ОТ"
         },
         {
+          "audience": "Соответствующие сотрудники",
           "category": "teknik",
-          "title": "Working at height",
-          "trainer": "External training",
-          "audience": "Relevant employees"
+          "title": "Работа на высоте",
+          "trainer": "Внешнее обучение"
         }
       ],
       "errors": {
-        "noSupabase": "No Supabase connection",
-        "loadFailed": "Could not load plan",
-        "selectCompany": "Please select a company",
-        "sessionNotFound": "Session not found",
-        "orgNotFound": "Organisation information not found",
-        "saveFailed": "Save failed"
+        "noSupabase": "Нет подключения к Supabase",
+        "loadFailed": "Не удалось загрузить план",
+        "selectCompany": "Пожалуйста, выберите компанию",
+        "sessionNotFound": "Сессия не найдена",
+        "orgNotFound": "Информация об организации не найдена",
+        "saveFailed": "Сохранение не удалось"
       },
       "card": {
-        "title": "Annual OHS training plan",
-        "description": "24 standard training topics under the OHS training regulation. Stored per company ? year; planned date, duration, actual date, certificate and attendance are editable per row."
+        "title": "Годовой план обучения по охране труда",
+        "description": "24 стандартные темы обучения согласно регламенту обучения по охране труда. Хранятся по компаниям × годам; плановая дата, продолжительность, фактическая дата, сертификат и посещаемость редактируются по строкам."
       },
       "fields": {
-        "company": "Company",
-        "companyPlaceholder": "Select a company",
-        "year": "Training year"
+        "company": "Компания",
+        "companyPlaceholder": "Выберите компанию",
+        "year": "Год обучения"
       },
       "signers": {
-        "blockLabel": "Signatories (printed in the PDF signature area)",
-        "employer": "Employer / employer representative",
-        "employerPlaceholder": "Full name",
-        "physician": "Workplace physician",
-        "physicianPlaceholder": "Dr. Full name",
-        "safetyExpert": "OHS specialist",
-        "safetyExpertPlaceholder": "Full name ? Class (A/B/C)"
+        "blockLabel": "Подписанты (печатается в области подписи PDF)",
+        "employer": "Работодатель / представитель работодателя",
+        "employerPlaceholder": "Полное имя",
+        "physician": "Врач по гигиене труда",
+        "physicianPlaceholder": "Д-р Полное имя",
+        "safetyExpert": "Специалист по охране труда",
+        "safetyExpertPlaceholder": "Полное имя · Класс (A/B/C)"
       },
       "actions": {
-        "saving": "Saving...",
-        "saved": "Saved",
-        "save": "Save",
-        "pdfPrint": "Download / print PDF",
-        "archivedBadge": "Training plan for {year} is archived for this company"
+        "saving": "Сохранение...",
+        "saved": "Сохранено",
+        "save": "Сохранить",
+        "pdfPrint": "Скачать / печать PDF",
+        "archivedBadge": "План обучения на {year} год архивирован для данной компании"
       },
-      "loading": "Loading plan...",
+      "loading": "Загрузка плана...",
       "preview": {
-        "title": "Preview & edit",
-        "description": "Edit rows: date / duration / certificate / attendance"
+        "title": "Предварительный просмотр и редактирование",
+        "description": "Редактировать строки: дата / продолжительность / сертификат / посещаемость"
       },
       "table": {
-        "topic": "Training topic",
-        "trainer": "Trainer",
-        "audience": "Audience",
-        "planned": "Planned",
-        "duration": "Duration",
-        "realized": "Actual",
-        "certificate": "Certificate",
-        "attendance": "Attendance",
-        "addRow": "Add row",
-        "deleteRowAria": "Delete row"
+        "topic": "Тема обучения",
+        "trainer": "Преподаватель",
+        "audience": "Аудитория",
+        "planned": "Запланировано",
+        "duration": "Продолжительность",
+        "realized": "Фактически",
+        "certificate": "Сертификат",
+        "attendance": "Посещаемость",
+        "addRow": "Добавить строку",
+        "deleteRowAria": "Удалить строку"
       },
       "categories": {
-        "genel": "GENERAL TOPICS (4 hours)",
-        "saglik": "HEALTH TOPICS (4 hours)",
-        "teknik": "TECHNICAL TOPICS (4 hours)"
+        "genel": "ОБЩИЕ ТЕМЫ (4 часа)",
+        "saglik": "ТЕМЫ ЗДОРОВЬЯ (4 часа)",
+        "teknik": "ТЕХНИЧЕСКИЕ ТЕМЫ (4 часа)"
       },
       "certificate": {
-        "yes": "Yes",
-        "no": "No",
+        "yes": "Да",
+        "no": "Нет",
         "empty": "?"
       },
       "defaults": {
-        "trainer": "OHS specialist",
-        "audience": "Employees"
+        "trainer": "Специалист по охране труда",
+        "audience": "Сотрудники"
       },
       "pdf": {
-        "htmlTitle": "Annual OHS training plan ? {companyName}",
-        "mainTitle": "ANNUAL TRAINING PLAN",
-        "headerLine": "COMPANY: {companyName} ? YEAR: {year}",
-        "colNo": "No.",
-        "colTopic": "Training topic",
-        "colTrainer": "Trainer",
-        "colAudience": "Audience",
-        "colPlanned": "Planned",
-        "colDuration": "Duration",
-        "colRealized": "Actual",
-        "colCertificate": "Certificate",
-        "colAttendance": "Attendance",
-        "sigEmployer": "Employer",
-        "sigPhysician": "Workplace physician",
-        "sigSafety": "OHS specialist",
-        "sigLine": "Signature / date",
+        "htmlTitle": "Годовой план обучения по охране труда — {companyName}",
+        "mainTitle": "ГОДОВОЙ ПЛАН ОБУЧЕНИЯ",
+        "headerLine": "КОМПАНИЯ: {companyName} · ГОД: {year}",
+        "colNo": "№",
+        "colTopic": "Тема обучения",
+        "colTrainer": "Тренер",
+        "colAudience": "Аудитория",
+        "colPlanned": "Запланировано",
+        "colDuration": "Продолжительность",
+        "colRealized": "Фактически",
+        "colCertificate": "Сертификат",
+        "colAttendance": "Посещаемость",
+        "sigEmployer": "Работодатель",
+        "sigPhysician": "Врач по гигиене труда",
+        "sigSafety": "Специалист по охране труда",
+        "sigLine": "Подпись / дата",
         "empty": "?"
       }
     },
     "timesheet": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "title": "Timesheet",
-      "defaultProfessional": "OHS professional",
+      "title": "Табель",
+      "defaultProfessional": "Специалист по ОТ",
       "tabs": {
-        "grid": "Timesheet",
-        "archive": "Archive",
-        "settings": "Settings"
+        "grid": "Табель",
+        "archive": "Архив",
+        "settings": "Настройки"
       },
       "status": {
-        "draft": "Draft",
-        "submitted": "Submitted",
-        "approved": "Approved",
-        "paid": "Paid"
+        "draft": "Черновик",
+        "submitted": "Отправлено",
+        "approved": "Утверждено",
+        "paid": "Оплачено"
       },
       "actions": {
-        "submit": "Submit",
-        "approve": "Approve",
-        "markPaid": "Mark as paid",
-        "revert": "Revert",
-        "previewPdf": "Preview PDF",
-        "timesheetExcel": "Timesheet Excel",
-        "payrollExcel": "Payroll Excel",
-        "payrollPdf": "Payroll PDF",
-        "view": "View",
-        "delete": "Delete",
-        "cancel": "Cancel",
-        "saving": "Saving..."
+        "submit": "Отправить",
+        "approve": "Утвердить",
+        "markPaid": "Отметить как оплачено",
+        "revert": "Отменить",
+        "previewPdf": "Предпросмотр PDF",
+        "timesheetExcel": "Excel табеля",
+        "payrollExcel": "Ведомость Excel",
+        "payrollPdf": "Ведомость PDF",
+        "view": "Просмотр",
+        "delete": "Удалить",
+        "cancel": "Отменить",
+        "saving": "Сохранение..."
       },
       "stats": {
-        "workedDays": "Worked days",
-        "totalHours": "Total hours",
-        "activeCompanies": "Active companies",
-        "gross": "Gross amount",
-        "stampTax": "Stamp tax",
-        "netPaid": "Net paid"
+        "workedDays": "Рабочие дни",
+        "totalHours": "Общее количество часов",
+        "activeCompanies": "Активные компании",
+        "gross": "Валовая сумма",
+        "stampTax": "Гербовый сбор",
+        "netPaid": "К выплате"
       },
       "filters": {
-        "allStatuses": "All statuses"
+        "allStatuses": "Все статусы"
       },
       "empty": {
-        "noCompanies": "No companies found",
-        "noArchive": "No timesheet record for {year}"
+        "noCompanies": "Компании не найдены",
+        "noArchive": "Нет записей табеля за {year}"
       },
       "table": {
-        "company": "Company",
-        "totalShort": "TOTAL",
-        "total": "TOTAL"
+        "company": "Компания",
+        "totalShort": "ИТОГО",
+        "total": "ИТОГО"
       },
       "archive": {
-        "period": "Period",
-        "status": "Status",
-        "actions": "Actions"
+        "period": "Период",
+        "status": "Статус",
+        "actions": "Действия"
       },
       "settings": {
-        "headerTitle": "Header settings",
-        "headerType": "Header type",
+        "headerTitle": "Настройки заголовка",
+        "headerType": "Тип заголовка",
         "headerTypes": {
-          "custom": "Custom",
-          "government": "Official"
+          "custom": "Пользовательский",
+          "government": "Официальный"
         },
-        "line1": "Line 1 (main title)",
-        "line2": "Line 2 (subtitle)",
-        "line3": "Line 3 (extra info)",
-        "line1Placeholder": "e.g. Ministry of Labour",
-        "line2Placeholder": "e.g. Occupational health and safety services",
-        "line3Placeholder": "e.g. Monthly work schedule",
-        "professionalTitle": "Professional information",
-        "professionalRole": "Title",
-        "professionalRolePlaceholder": "e.g. OHS specialist (Class A)",
-        "certificateNo": "Registry / certificate no.",
-        "certificateNoPlaceholder": "e.g. ISG-A-12345",
-        "payrollTitle": "Payroll settings",
-        "governmentEmployee": "Civil servant / public employee",
-        "salaryCoefficient": "Salary coefficient",
-        "baseIndicator": "Indicator",
-        "stampTaxRate": "Stamp tax rate",
-        "formulaTitle": "Calculation formula:",
-        "hourlyRateFormula": "Hourly rate = Indicator ({indicator}) ? coefficient ({coefficient}) = ?{amount}",
-        "grossFormula": "Gross amount = hourly rate ? total hours",
-        "stampFormula": "Stamp tax = gross amount ? %{rate}",
-        "netFormula": "Net paid = gross amount - stamp tax",
-        "footerNote": "Footer note",
-        "footerNotePlaceholder": "Note shown at the bottom of Excel/PDF exports...",
-        "save": "Save settings",
-        "saved": "Settings saved.",
-        "errorPrefix": "Error: {message}",
-        "errorPrefixStart": "Error"
+        "line1": "Строка 1 (основной заголовок)",
+        "line2": "Строка 2 (подзаголовок)",
+        "line3": "Строка 3 (дополнительная информация)",
+        "line1Placeholder": "например, Министерство труда",
+        "line2Placeholder": "например, Услуги по охране труда",
+        "line3Placeholder": "например, Месячный график работы",
+        "professionalTitle": "Профессиональная информация",
+        "professionalRole": "Должность",
+        "professionalRolePlaceholder": "например, Специалист по ОТ (Класс А)",
+        "certificateNo": "Номер реестра / сертификата",
+        "certificateNoPlaceholder": "например, ISG-A-12345",
+        "payrollTitle": "Настройки зарплаты",
+        "governmentEmployee": "Государственный служащий / государственный работник",
+        "salaryCoefficient": "Коэффициент заработной платы",
+        "baseIndicator": "Показатель",
+        "stampTaxRate": "Ставка гербового сбора",
+        "formulaTitle": "Формула расчета:",
+        "hourlyRateFormula": "Почасовая ставка = Показатель ({indicator}) × коэффициент ({coefficient}) = ₽{amount}",
+        "grossFormula": "Валовая сумма = почасовая ставка × общее количество часов",
+        "stampFormula": "Гербовый сбор = валовая сумма ? %{rate}",
+        "netFormula": "К выплате = валовая сумма - гербовый сбор",
+        "footerNote": "Примечание в нижнем колонтитуле",
+        "footerNotePlaceholder": "Примечание, отображаемое внизу экспорта Excel/PDF...",
+        "save": "Сохранить настройки",
+        "saved": "Настройки сохранены.",
+        "errorPrefix": "Ошибка: {message}",
+        "errorPrefixStart": "Ошибка"
       },
       "delete": {
-        "title": "Delete timesheet",
-        "description": "This timesheet and all entries will be permanently deleted. Are you sure?"
+        "title": "Удалить табель",
+        "description": "Этот табель и все записи будут безвозвратно удалены. Вы уверены?"
       },
       "pdf": {
-        "title": "Timesheet - {month} {year}",
-        "previewTitle": "PDF preview",
-        "printDownload": "Print / download PDF",
-        "preparedBy": "Prepared by",
-        "approvedBy": "Approved by",
-        "employerRepresentative": "Employer / representative",
-        "workScheduleTitle": "{month} {year} ? Work schedule",
-        "narrative": "The person named above, {profileName}, provided a total of {total} hours of occupational safety service in {month} {year}."
+        "title": "Табель учета рабочего времени - {month} {year}",
+        "previewTitle": "Предварительный просмотр PDF",
+        "printDownload": "Печать / скачать PDF",
+        "preparedBy": "Подготовлено",
+        "approvedBy": "Утверждено",
+        "employerRepresentative": "Работодатель / представитель",
+        "workScheduleTitle": "{month} {year} — График работы",
+        "narrative": "Вышеназванное лицо, {profileName}, предоставило в общей сложности {total} часов услуг по охране труда в {month} {year}."
       },
       "payroll": {
-        "title": "Payroll",
-        "calculationTitle": "Civil servant payroll calculation",
-        "pdfTitle": "Payroll - {month} {year}",
-        "periodLine": "Month: {month}   Year: {year}",
-        "pdfMainTitle": "MISCELLANEOUS PAYMENTS PAYROLL",
-        "warning": "NOTICE",
-        "legalNotice": "The payroll is prepared in accordance with Article 8 of Turkish Occupational Health and Safety Law No. 6331.",
+        "title": "Заработная плата",
+        "calculationTitle": "Расчет заработной платы госслужащих",
+        "pdfTitle": "Ведомость заработной платы - {month} {year}",
+        "periodLine": "Месяц: {month}   Год: {year}",
+        "pdfMainTitle": "ВЕДОМОСТЬ РАЗНЫХ ВЫПЛАТ",
+        "warning": "УВЕДОМЛЕНИЕ",
+        "legalNotice": "Расчет заработной платы подготовлен в соответствии со статьей 8 Турецкого закона об охране труда и технике безопасности № 6331.",
         "columns": {
-          "no": "No.",
-          "fullName": "FULL NAME",
-          "salaryCoefficient": "Civil servant salary coefficient",
-          "paymentCoefficient": "Payment coefficient",
-          "hourlyRate": "Hourly rate (TRY)",
-          "assignmentHours": "Assignment duration (hours)",
-          "gross": "Gross amount (TRY)",
-          "stampTax": "Stamp tax deduction (TRY)",
-          "netPaid": "Net paid (TRY)"
+          "no": "№",
+          "fullName": "ПОЛНОЕ ИМЯ",
+          "salaryCoefficient": "Коэффициент зарплаты госслужащего",
+          "paymentCoefficient": "Коэффициент оплаты",
+          "hourlyRate": "Почасовая ставка (TRY)",
+          "assignmentHours": "Продолжительность назначения (часы)",
+          "gross": "Валовая сумма (TRY)",
+          "stampTax": "Удержание гербового сбора (TRY)",
+          "netPaid": "К выплате (TRY)"
         },
-        "indicatorCoefficient": "Indicator ? coefficient",
-        "hourlyRate": "Hourly rate",
-        "stampTaxWithRate": "Stamp tax (%{rate})"
+        "indicatorCoefficient": "Коэффициент показателя ?",
+        "hourlyRate": "Почасовая ставка",
+        "stampTaxWithRate": "Гербовый сбор (%{rate})"
       }
     }
   },
@@ -3404,7 +3571,7 @@
     "password": {
       "current": "Текущий пароль",
       "new": "Новый пароль",
-      "newPlaceholder": "Минимум 12 символов, заглавные/строчные буквы, цифра и символ",
+      "newPlaceholder": "Минимум 8 символов, заглавные/строчные буквы, цифра и символ",
       "repeat": "Новый пароль (повтор)",
       "submit": "Обновить пароль",
       "title": "Изменить пароль"

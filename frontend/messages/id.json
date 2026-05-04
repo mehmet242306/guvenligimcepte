@@ -348,6 +348,62 @@
   "brand": {
     "tagline": "Platform keselamatan dan kesehatan kerja bertenaga AI"
   },
+  "trainingHubPage": {
+    "title": "Pelatihan",
+    "description": "Pustaka slide, alur survei dan ujian, tautan personal, serta analisis hasil ada di modul ini.",
+    "actions": {
+      "aiTraining": "Buat pelatihan dengan AI",
+      "slideLibrary": "Pustaka slide saya",
+      "certificates": "Sertifikat",
+      "createNew": "Buat baru"
+    },
+    "library": {
+      "back": "Pustaka K3",
+      "eyebrow": "Integrasi Pustaka K3",
+      "title": "Kelola konten pelatihan dan ujian di modul ini",
+      "tabs": {
+        "education": "Konten pelatihan",
+        "assessment": "Konten ujian dan survei"
+      },
+      "emptyPrefix": "Belum ada konten pustaka dalam kategori ini. Untuk menambahkan konten atau melihat semua catatan,",
+      "emptyLink": "buka Pustaka K3",
+      "fallbackDescription": "Konten pustaka",
+      "openContent": "Buka konten",
+      "useInModule": "Gunakan di modul"
+    },
+    "tabs": {
+      "all": "Semua",
+      "surveys": "Survei",
+      "exams": "Ujian"
+    },
+    "filters": {
+      "searchPlaceholder": "Cari survei atau ujian...",
+      "allStatuses": "Semua"
+    },
+    "status": {
+      "draft": "Draf",
+      "active": "Aktif",
+      "closed": "Ditutup",
+      "archived": "Arsip"
+    },
+    "types": {
+      "exam": "Ujian",
+      "survey": "Survei"
+    },
+    "empty": {
+      "title": "Belum ada survei atau ujian",
+      "description": "Klik \"Buat baru\" untuk membuat survei atau ujian pertama Anda"
+    },
+    "card": {
+      "passScore": "Nilai lulus: {score}%",
+      "duration": "Durasi: {minutes} mnt"
+    },
+    "errors": {
+      "noSession": "Sesi tidak ditemukan. Muat ulang halaman.",
+      "authRequired": "Masuk diperlukan.",
+      "organizationMissing": "Koneksi organisasi tidak ditemukan. Periksa profil atau pengaturan keanggotaan Anda."
+    }
+  },
   "certificateVerify": {
     "certNo": "No. sertifikat",
     "date": "Tanggal",
@@ -575,6 +631,168 @@
       "risk": "Risiko & lapangan",
       "structure": "Tempat",
       "tracking": "Pelacakan"
+    },
+    "structure": {
+      "summaryLocation": "Location",
+      "summaryDepartment": "Department",
+      "summaryEmployee": "Employee",
+      "locationsTitle": "Locations",
+      "locationsSubtitle": "Company physical sites",
+      "departmentsTitle": "Departments",
+      "departmentsSubtitle": "Organisational units",
+      "locationPlaceholder": "Enter location name",
+      "departmentPlaceholder": "Enter department name",
+      "addLocation": "Add location",
+      "addDepartment": "Add department"
+    },
+    "risk": {
+      "pageTitle": "Risk and field management",
+      "pageSubtitle": "Risk classification, analysis history and process tracking.",
+      "tabMap": "Risk map",
+      "tabAnalyses": "Analyses ({count})",
+      "newAnalysis": "New analysis",
+      "metricTotalFindings": "Total findings",
+      "metricCritical": "Critical",
+      "metricHigh": "High",
+      "metricAnalysisCount": "Analyses",
+      "badgeCritical": "Critical: {count}",
+      "badgeHigh": "High: {count}",
+      "badgeMedium": "Medium: {count}",
+      "badgeLow": "Low: {count}",
+      "noFindingsCategory": "No findings yet",
+      "addCategoryTitle": "Add category",
+      "addCategoryHint": "Define a custom risk category",
+      "categoryRisksTitle": "{label} risks",
+      "findingsCountLabel": "{count} findings",
+      "noFindingsInCategory": "No findings in this category yet.",
+      "analysisPrefix": "Analysis:",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "discard": "Discard",
+      "recommendation": "Recommendation",
+      "action": "Action",
+      "notes": "Notes",
+      "status": "Status",
+      "note": "Note",
+      "notePlaceholder": "Work done, observations…",
+      "emptyAnalysesTitle": "No risk analysis yet",
+      "emptyAnalysesDescription": "Start the first analysis for this company from the Risk analysis page.",
+      "findingsInRow": "{count} findings",
+      "archiveTitle": "Archive",
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "confirmDelete": "Delete?",
+      "yes": "Yes",
+      "no": "No",
+      "exportPdfTitle": "Download PDF",
+      "exportWordTitle": "Download Word",
+      "exportExcelTitle": "Download Excel",
+      "analysisStatus": {
+        "completed": "Completed",
+        "archived": "Archived",
+        "draft": "Draft"
+      },
+      "trackingStatus": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "archived": "Archived"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "method": {
+        "r_skor": "R-SCORE 2D",
+        "fine_kinney": "Fine-Kinney",
+        "l_matrix": "L-Matrix",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "shareTitle": "Report sharing",
+      "shareDescription": "Anyone with the link can view this report.",
+      "shareEnable": "Enable sharing link",
+      "shareActive": "Sharing on",
+      "shareCopyTitle": "Copy link",
+      "shareCopied": "Copied",
+      "shareWhatsappTitle": "Share via WhatsApp",
+      "shareButtonTitle": "Share",
+      "shareWhatsappBody": "RiskNova — {title}\n{url}",
+      "participantsHeading": "Participants",
+      "analysisNoteHeading": "Analysis note",
+      "emptyAnalysisRows": "No rows in this analysis yet.",
+      "rowFindingCount": "({count})",
+      "recommendationInline": "Recommendation:",
+      "actionInline": "Action:",
+      "qrAlt": "QR code",
+      "qrCaption": "Share with QR",
+      "categories": {
+        "fiziksel": {
+          "label": "Physical",
+          "examples": "Noise, vibration, lighting, temperature"
+        },
+        "kimyasal": {
+          "label": "Chemical",
+          "examples": "Gas, dust, vapour, chemicals"
+        },
+        "biyolojik": {
+          "label": "Biological",
+          "examples": "Bacteria, viruses, mould, biological agents"
+        },
+        "ergonomik": {
+          "label": "Ergonomic",
+          "examples": "Poor posture, heavy loads, repetitive motion"
+        },
+        "psikososyal": {
+          "label": "Psychosocial",
+          "examples": "Stress, bullying, workload, shifts"
+        },
+        "mekanik": {
+          "label": "Mechanical",
+          "examples": "Machinery, equipment, falls, crushing"
+        },
+        "elektrik": {
+          "label": "Electrical",
+          "examples": "Electric shock, short circuit, earthing"
+        },
+        "yangin": {
+          "label": "Fire / explosion",
+          "examples": "Flammable material, explosive atmosphere, LPG"
+        },
+        "trafik": {
+          "label": "Traffic",
+          "examples": "Vehicles, forklifts, pedestrian–vehicle conflict"
+        },
+        "cevre": {
+          "label": "Environmental",
+          "examples": "Waste, emissions, noise pollution"
+        }
+      }
+    },
+    "tracking": {
+      "sectionActions": "Open actions",
+      "sectionTrainings": "Trainings",
+      "sectionControls": "Periodic inspection",
+      "sectionCommittee": "OHS committee",
+      "hazardUnknown": "Not determined",
+      "actionsTitle": "Open actions",
+      "actionsDesc": "Open actions from risk findings, CAPA and OHS tasks.",
+      "noActions": "No open actions.",
+      "badgeTotal": "Total: {count}",
+      "sourceRisk": "Risk",
+      "sourceDof": "CAPA",
+      "sourceTask": "Task",
+      "statusButton": "Status",
+      "trainingsTitle": "Training tracking",
+      "trainingsDesc": "Company training plans and records.",
+      "controlsTitle": "Periodic inspections",
+      "controlsDesc": "Legally required periodic inspections and examinations.",
+      "committeeTitle": "OHS committee meetings",
+      "committeeDesc": "Hazard class: {hazardClass} — every {months} months"
     }
   },
   "consent": {
@@ -1843,7 +2061,7 @@
     "solutionCenter": "Nova",
     "survey": "Survei",
     "surveyExam": "Survei / ujian",
-    "timesheet": "Timesheet",
+    "timesheet": "Lembar waktu",
     "training": "Pelatihan",
     "trainingHub": "Pelatihan, survei & ujian",
     "workplace": "Tempat Kerja",
@@ -2560,531 +2778,480 @@
         "regulation": "Peraturan",
         "responsible": "Penanggung jawab",
         "topic": "Topik kerja"
-      },
-      "months": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ]
+      }
     },
     "shell": {
-      "title": "Planner",
-      "description": "OHS tasks, annual work plan, training plan and timesheet under one roof.",
+      "title": "Perencana",
+      "description": "Tugas K3, rencana kerja tahunan, rencana pelatihan dan timesheet dalam satu tempat.",
       "tabs": {
         "planner": {
-          "label": "Planner",
-          "desc": "Calendar ? tasks ? reminders"
+          "label": "Perencana",
+          "desc": "Kalender, tugas dan pengingat"
         },
         "workPlan": {
-          "label": "Annual work plan",
-          "desc": "OHS annual work plan (official form)"
+          "label": "Rencana kerja tahunan",
+          "desc": "Rencana kerja tahunan K3 (formulir resmi)"
         },
         "trainingPlan": {
-          "label": "Annual training",
-          "desc": "Training plan, participants and certificates"
+          "label": "Pelatihan tahunan",
+          "desc": "Rencana pelatihan, peserta dan sertifikat"
         },
         "timesheet": {
           "label": "Timesheet",
-          "desc": "Hours and fee tracking"
+          "desc": "Pelacakan jam dan biaya"
         }
       }
     },
     "core": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "weekdays": [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-      ],
-      "pageTitle": "OHS planner",
-      "pageDescription": "Plan and track occupational health and safety tasks.",
+      "pageTitle": "Perencana K3",
+      "pageDescription": "Rencanakan dan lacak tugas keselamatan dan kesehatan kerja.",
       "actions": {
-        "newTask": "New task",
-        "dismissError": "Dismiss error",
-        "cancel": "Cancel",
-        "saving": "Saving...",
-        "create": "Create",
-        "update": "Update"
+        "newTask": "Tugas baru",
+        "dismissError": "Tutup error",
+        "cancel": "Batal",
+        "saving": "Menyimpan...",
+        "create": "Buat",
+        "update": "Perbarui"
       },
       "stats": {
         "total": "Total"
       },
       "filters": {
-        "allCategories": "All categories",
-        "allStatuses": "All statuses",
-        "allCompanies": "All companies"
+        "allCategories": "Semua kategori",
+        "allStatuses": "Semua status",
+        "allCompanies": "Semua perusahaan"
       },
       "views": {
-        "month": "Calendar",
-        "list": "List"
+        "month": "Kalender",
+        "list": "Daftar"
       },
       "sidebar": {
-        "categories": "Categories",
-        "all": "All",
-        "addCategory": "Add category",
-        "quickAdd": "Quick add"
+        "categories": "Kategori",
+        "all": "Semua",
+        "addCategory": "Tambah kategori",
+        "quickAdd": "Tambah cepat"
       },
       "calendar": {
-        "more": "+{count} more"
+        "more": "+{count} lainnya"
       },
       "empty": {
-        "title": "No tasks yet",
-        "description": "Click the New task button above."
+        "title": "Belum ada tugas",
+        "description": "Klik tombol Tugas baru di atas."
       },
       "recurrence": {
-        "none": "Does not repeat",
-        "daily": "Daily",
-        "weekly": "Weekly",
-        "monthly": "Monthly",
-        "quarterly": "Quarterly",
-        "biannual": "Every six months",
-        "annual": "Annual"
+        "none": "Tidak berulang",
+        "daily": "Harian",
+        "weekly": "Mingguan",
+        "monthly": "Bulanan",
+        "quarterly": "Triwulanan",
+        "biannual": "Setiap enam bulan",
+        "annual": "Tahunan"
       },
       "status": {
-        "planned": "Planned",
-        "in_progress": "In progress",
-        "completed": "Completed",
-        "overdue": "Overdue",
-        "cancelled": "Cancelled"
+        "planned": "Direncanakan",
+        "in_progress": "Sedang berlangsung",
+        "completed": "Selesai",
+        "overdue": "Terlambat",
+        "cancelled": "Dibatalkan"
       },
       "categories": {
-        "periodicControl": "Periodic inspection",
-        "training": "Training",
-        "healthFollowUp": "Health follow-up",
-        "meetingDrill": "Meeting & drill",
-        "legalObligation": "Legal obligation",
-        "fieldVisit": "Field visit",
-        "ohsCommitteeMeeting": "OHS committee meeting",
-        "other": "Other"
+        "periodicControl": "Inspeksi berkala",
+        "training": "Pelatihan",
+        "healthFollowUp": "Tindak lanjut kesehatan",
+        "meetingDrill": "Rapat & latihan",
+        "legalObligation": "Kewajiban hukum",
+        "fieldVisit": "Kunjungan lapangan",
+        "ohsCommitteeMeeting": "Rapat komite K3",
+        "other": "Lainnya"
       },
       "modal": {
-        "newTitle": "New task",
-        "editTitle": "Edit task",
-        "optional": "- optional",
+        "newTitle": "Tugas baru",
+        "editTitle": "Edit tugas",
+        "optional": "- opsional",
         "fields": {
-          "title": "Title *",
-          "description": "Description",
-          "category": "Category",
+          "title": "Judul *",
+          "description": "Deskripsi",
+          "category": "Kategori",
           "status": "Status",
-          "company": "Company",
-          "startDate": "Start date *",
-          "endDate": "End date",
-          "recurrence": "Repeat",
-          "reminderDays": "Reminder (days before)",
-          "includeTimesheet": "Add to timesheet",
-          "timesheetHours": "Working time (hours)",
-          "hourlyRate": "Hourly rate"
+          "company": "Perusahaan",
+          "startDate": "Tanggal mulai *",
+          "endDate": "Tanggal berakhir",
+          "recurrence": "Ulangi",
+          "reminderDays": "Pengingat (hari sebelumnya)",
+          "includeTimesheet": "Tambahkan ke timesheet",
+          "timesheetHours": "Waktu kerja (jam)",
+          "hourlyRate": "Tarif per jam"
         },
         "placeholders": {
-          "title": "Task title",
-          "description": "Task description...",
-          "category": "Select category...",
-          "company": "Select company...",
-          "hours": "e.g. 4.5",
-          "rate": "e.g. 250"
+          "title": "Judul tugas",
+          "description": "Deskripsi tugas...",
+          "category": "Pilih kategori...",
+          "company": "Pilih perusahaan...",
+          "hours": "mis. 4.5",
+          "rate": "mis. 250"
         }
       },
       "errors": {
-        "orgNotFound": "Organisation information not found. Please sign in again.",
-        "saveFailed": "An error occurred while saving."
+        "orgNotFound": "Informasi organisasi tidak ditemukan. Silakan masuk kembali.",
+        "saveFailed": "Terjadi kesalahan saat menyimpan."
       },
-      "confirmDeleteTask": "Are you sure you want to delete this task?"
+      "confirmDeleteTask": "Apakah Anda yakin ingin menghapus tugas ini?"
     },
     "yearlyTraining": {
       "defaultTrainings": [
         {
+          "audience": "Karyawan",
           "category": "genel",
-          "title": "Information on occupational health and safety legislation",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Informasi tentang peraturan perundang-undangan kesehatan dan keselamatan kerja",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "genel",
-          "title": "General information on employee rights and responsibilities",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Informasi umum tentang hak dan tanggung jawab karyawan",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "genel",
-          "title": "Workplace cleanliness and order",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Kebersihan dan keteraturan tempat kerja",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "genel",
-          "title": "Legal consequences of occupational accidents and diseases",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Konsekuensi hukum kecelakaan dan penyakit kerja",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "saglik",
-          "title": "Causes of occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Penyebab penyakit akibat kerja",
+          "trainer": "Dokter perusahaan"
         },
         {
+          "audience": "Karyawan",
           "category": "saglik",
-          "title": "Prevention principles and protection techniques for occupational diseases",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Prinsip pencegahan dan teknik perlindungan penyakit akibat kerja",
+          "trainer": "Dokter perusahaan"
         },
         {
+          "audience": "Karyawan",
           "category": "saglik",
-          "title": "Biological risk factors and the occupational diseases they may cause",
-          "trainer": "Workplace physician",
-          "audience": "Employees"
+          "title": "Faktor risiko biologis dan penyakit akibat kerja yang dapat ditimbulkan",
+          "trainer": "Dokter perusahaan"
         },
         {
+          "audience": "Karyawan terpilih",
           "category": "saglik",
-          "title": "First aid and rescue techniques",
-          "trainer": "External training (first aider)",
-          "audience": "Selected employees"
+          "title": "Teknik pertolongan pertama dan penyelamatan",
+          "trainer": "Pelatihan eksternal (petugas P3K)"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Risk factors when working with chemicals",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Faktor risiko saat bekerja dengan bahan kimia",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Physical risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Faktor risiko fisik",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Ergonomic risk factors",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Faktor risiko ergonomis",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Manual lifting and carrying",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Pengangkatan dan pengangkutan manual",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Flash, explosion, fire and fire protection",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Kilat, ledakan, kebakaran dan perlindungan kebakaran",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Safe use of work equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Penggunaan peralatan kerja yang aman dan risiko terkait",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan kantor",
           "category": "teknik",
-          "title": "Working with display screen equipment and related risks",
-          "trainer": "OHS specialist",
-          "audience": "Office employees"
+          "title": "Bekerja dengan peralatan layar tampilan dan risiko terkait",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Electrical hazards, risks and precautions",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Bahaya listrik, risiko dan tindakan pencegahan",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Causes of occupational accidents and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Penyebab kecelakaan kerja dan prinsip pencegahan",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Falls and health impacts (accident prevention)",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Jatuh dan dampak kesehatan (pencegahan kecelakaan)",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Selection and use of personal protective equipment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Pemilihan dan penggunaan alat pelindung diri",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "General OHS rules and basic safety",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Aturan K3 umum dan keselamatan dasar",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Evacuation and rescue",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Evakuasi dan penyelamatan",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Causes of accidents and injuries and prevention principles",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Penyebab kecelakaan dan cedera serta prinsip pencegahan",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan",
           "category": "teknik",
-          "title": "Occupational hygiene and risks from the working environment",
-          "trainer": "OHS specialist",
-          "audience": "Employees"
+          "title": "Higiene kerja dan risiko dari lingkungan kerja",
+          "trainer": "Spesialis K3"
         },
         {
+          "audience": "Karyawan terkait",
           "category": "teknik",
-          "title": "Working at height",
-          "trainer": "External training",
-          "audience": "Relevant employees"
+          "title": "Bekerja di ketinggian",
+          "trainer": "Pelatihan eksternal"
         }
       ],
       "errors": {
-        "noSupabase": "No Supabase connection",
-        "loadFailed": "Could not load plan",
-        "selectCompany": "Please select a company",
-        "sessionNotFound": "Session not found",
-        "orgNotFound": "Organisation information not found",
-        "saveFailed": "Save failed"
+        "noSupabase": "Tidak ada koneksi Supabase",
+        "loadFailed": "Tidak dapat memuat rencana",
+        "selectCompany": "Silakan pilih perusahaan",
+        "sessionNotFound": "Sesi tidak ditemukan",
+        "orgNotFound": "Informasi organisasi tidak ditemukan",
+        "saveFailed": "Gagal menyimpan"
       },
       "card": {
-        "title": "Annual OHS training plan",
-        "description": "24 standard training topics under the OHS training regulation. Stored per company ? year; planned date, duration, actual date, certificate and attendance are editable per row."
+        "title": "Rencana pelatihan K3 tahunan",
+        "description": "24 topik pelatihan standar di bawah peraturan pelatihan K3. Disimpan per perusahaan × tahun; tanggal rencana, durasi, tanggal aktual, sertifikat dan kehadiran dapat diedit per baris."
       },
       "fields": {
-        "company": "Company",
-        "companyPlaceholder": "Select a company",
-        "year": "Training year"
+        "company": "Perusahaan",
+        "companyPlaceholder": "Pilih perusahaan",
+        "year": "Tahun pelatihan"
       },
       "signers": {
-        "blockLabel": "Signatories (printed in the PDF signature area)",
-        "employer": "Employer / employer representative",
-        "employerPlaceholder": "Full name",
-        "physician": "Workplace physician",
-        "physicianPlaceholder": "Dr. Full name",
-        "safetyExpert": "OHS specialist",
-        "safetyExpertPlaceholder": "Full name ? Class (A/B/C)"
+        "blockLabel": "Penandatangan (dicetak di area tanda tangan PDF)",
+        "employer": "Pengusaha / perwakilan pengusaha",
+        "employerPlaceholder": "Nama lengkap",
+        "physician": "Dokter perusahaan",
+        "physicianPlaceholder": "Dr. Nama lengkap",
+        "safetyExpert": "Spesialis K3",
+        "safetyExpertPlaceholder": "Nama lengkap · Kelas (A/B/C)"
       },
       "actions": {
-        "saving": "Saving...",
-        "saved": "Saved",
-        "save": "Save",
-        "pdfPrint": "Download / print PDF",
-        "archivedBadge": "Training plan for {year} is archived for this company"
+        "saving": "Menyimpan...",
+        "saved": "Tersimpan",
+        "save": "Simpan",
+        "pdfPrint": "Unduh / cetak PDF",
+        "archivedBadge": "Rencana pelatihan untuk {year} telah diarsipkan untuk perusahaan ini"
       },
-      "loading": "Loading plan...",
+      "loading": "Memuat rencana...",
       "preview": {
-        "title": "Preview & edit",
-        "description": "Edit rows: date / duration / certificate / attendance"
+        "title": "Pratinjau & edit",
+        "description": "Edit baris: tanggal / durasi / sertifikat / kehadiran"
       },
       "table": {
-        "topic": "Training topic",
-        "trainer": "Trainer",
-        "audience": "Audience",
-        "planned": "Planned",
-        "duration": "Duration",
-        "realized": "Actual",
-        "certificate": "Certificate",
-        "attendance": "Attendance",
-        "addRow": "Add row",
-        "deleteRowAria": "Delete row"
+        "topic": "Topik pelatihan",
+        "trainer": "Pelatih",
+        "audience": "Peserta",
+        "planned": "Direncanakan",
+        "duration": "Durasi",
+        "realized": "Aktual",
+        "certificate": "Sertifikat",
+        "attendance": "Kehadiran",
+        "addRow": "Tambah baris",
+        "deleteRowAria": "Hapus baris"
       },
       "categories": {
-        "genel": "GENERAL TOPICS (4 hours)",
-        "saglik": "HEALTH TOPICS (4 hours)",
-        "teknik": "TECHNICAL TOPICS (4 hours)"
+        "genel": "TOPIK UMUM (4 jam)",
+        "saglik": "TOPIK KESEHATAN (4 jam)",
+        "teknik": "TOPIK TEKNIS (4 jam)"
       },
       "certificate": {
-        "yes": "Yes",
-        "no": "No",
+        "yes": "Ya",
+        "no": "Tidak",
         "empty": "?"
       },
       "defaults": {
-        "trainer": "OHS specialist",
-        "audience": "Employees"
+        "trainer": "Spesialis K3",
+        "audience": "Karyawan"
       },
       "pdf": {
-        "htmlTitle": "Annual OHS training plan ? {companyName}",
-        "mainTitle": "ANNUAL TRAINING PLAN",
-        "headerLine": "COMPANY: {companyName} ? YEAR: {year}",
+        "htmlTitle": "Rencana pelatihan K3 tahunan — {companyName}",
+        "mainTitle": "RENCANA PELATIHAN TAHUNAN",
+        "headerLine": "PERUSAHAAN: {companyName} · TAHUN: {year}",
         "colNo": "No.",
-        "colTopic": "Training topic",
-        "colTrainer": "Trainer",
-        "colAudience": "Audience",
-        "colPlanned": "Planned",
-        "colDuration": "Duration",
-        "colRealized": "Actual",
-        "colCertificate": "Certificate",
-        "colAttendance": "Attendance",
-        "sigEmployer": "Employer",
-        "sigPhysician": "Workplace physician",
-        "sigSafety": "OHS specialist",
-        "sigLine": "Signature / date",
+        "colTopic": "Topik pelatihan",
+        "colTrainer": "Pelatih",
+        "colAudience": "Peserta",
+        "colPlanned": "Direncanakan",
+        "colDuration": "Durasi",
+        "colRealized": "Aktual",
+        "colCertificate": "Sertifikat",
+        "colAttendance": "Kehadiran",
+        "sigEmployer": "Pemberi kerja",
+        "sigPhysician": "Dokter perusahaan",
+        "sigSafety": "Spesialis K3",
+        "sigLine": "Tanda tangan / tanggal",
         "empty": "?"
       }
     },
     "timesheet": {
-      "months": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ],
-      "title": "Timesheet",
-      "defaultProfessional": "OHS professional",
+      "title": "Lembar Waktu",
+      "defaultProfessional": "Profesional K3",
       "tabs": {
-        "grid": "Timesheet",
-        "archive": "Archive",
-        "settings": "Settings"
+        "grid": "Lembar Waktu",
+        "archive": "Arsip",
+        "settings": "Pengaturan"
       },
       "status": {
-        "draft": "Draft",
-        "submitted": "Submitted",
-        "approved": "Approved",
-        "paid": "Paid"
+        "draft": "Draf",
+        "submitted": "Dikirim",
+        "approved": "Disetujui",
+        "paid": "Dibayar"
       },
       "actions": {
-        "submit": "Submit",
-        "approve": "Approve",
-        "markPaid": "Mark as paid",
-        "revert": "Revert",
-        "previewPdf": "Preview PDF",
-        "timesheetExcel": "Timesheet Excel",
+        "submit": "Kirim",
+        "approve": "Setujui",
+        "markPaid": "Tandai sebagai dibayar",
+        "revert": "Kembalikan",
+        "previewPdf": "Pratinjau PDF",
+        "timesheetExcel": "Excel Timesheet",
         "payrollExcel": "Payroll Excel",
         "payrollPdf": "Payroll PDF",
-        "view": "View",
-        "delete": "Delete",
-        "cancel": "Cancel",
-        "saving": "Saving..."
+        "view": "Lihat",
+        "delete": "Hapus",
+        "cancel": "Batal",
+        "saving": "Menyimpan..."
       },
       "stats": {
-        "workedDays": "Worked days",
-        "totalHours": "Total hours",
-        "activeCompanies": "Active companies",
-        "gross": "Gross amount",
-        "stampTax": "Stamp tax",
-        "netPaid": "Net paid"
+        "workedDays": "Hari kerja",
+        "totalHours": "Total jam",
+        "activeCompanies": "Perusahaan aktif",
+        "gross": "Jumlah bruto",
+        "stampTax": "Pajak meterai",
+        "netPaid": "Dibayar bersih"
       },
       "filters": {
-        "allStatuses": "All statuses"
+        "allStatuses": "Semua status"
       },
       "empty": {
-        "noCompanies": "No companies found",
-        "noArchive": "No timesheet record for {year}"
+        "noCompanies": "Tidak ada perusahaan ditemukan",
+        "noArchive": "Tidak ada catatan timesheet untuk {year}"
       },
       "table": {
-        "company": "Company",
+        "company": "Perusahaan",
         "totalShort": "TOTAL",
         "total": "TOTAL"
       },
       "archive": {
-        "period": "Period",
+        "period": "Periode",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Tindakan"
       },
       "settings": {
-        "headerTitle": "Header settings",
-        "headerType": "Header type",
+        "headerTitle": "Pengaturan header",
+        "headerType": "Jenis header",
         "headerTypes": {
-          "custom": "Custom",
-          "government": "Official"
+          "custom": "Kustom",
+          "government": "Resmi"
         },
-        "line1": "Line 1 (main title)",
-        "line2": "Line 2 (subtitle)",
-        "line3": "Line 3 (extra info)",
-        "line1Placeholder": "e.g. Ministry of Labour",
-        "line2Placeholder": "e.g. Occupational health and safety services",
-        "line3Placeholder": "e.g. Monthly work schedule",
-        "professionalTitle": "Professional information",
-        "professionalRole": "Title",
-        "professionalRolePlaceholder": "e.g. OHS specialist (Class A)",
-        "certificateNo": "Registry / certificate no.",
-        "certificateNoPlaceholder": "e.g. ISG-A-12345",
-        "payrollTitle": "Payroll settings",
-        "governmentEmployee": "Civil servant / public employee",
-        "salaryCoefficient": "Salary coefficient",
-        "baseIndicator": "Indicator",
-        "stampTaxRate": "Stamp tax rate",
-        "formulaTitle": "Calculation formula:",
-        "hourlyRateFormula": "Hourly rate = Indicator ({indicator}) ? coefficient ({coefficient}) = ?{amount}",
-        "grossFormula": "Gross amount = hourly rate ? total hours",
-        "stampFormula": "Stamp tax = gross amount ? %{rate}",
-        "netFormula": "Net paid = gross amount - stamp tax",
-        "footerNote": "Footer note",
-        "footerNotePlaceholder": "Note shown at the bottom of Excel/PDF exports...",
-        "save": "Save settings",
-        "saved": "Settings saved.",
+        "line1": "Baris 1 (judul utama)",
+        "line2": "Baris 2 (subjudul)",
+        "line3": "Baris 3 (info tambahan)",
+        "line1Placeholder": "mis. Kementerian Tenaga Kerja",
+        "line2Placeholder": "mis. Layanan kesehatan dan keselamatan kerja",
+        "line3Placeholder": "mis. Jadwal kerja bulanan",
+        "professionalTitle": "Informasi profesional",
+        "professionalRole": "Jabatan",
+        "professionalRolePlaceholder": "mis. Spesialis K3 (Kelas A)",
+        "certificateNo": "No. registrasi / sertifikat",
+        "certificateNoPlaceholder": "mis. ISG-A-12345",
+        "payrollTitle": "Pengaturan penggajian",
+        "governmentEmployee": "Pegawai negeri sipil / pegawai publik",
+        "salaryCoefficient": "Koefisien gaji",
+        "baseIndicator": "Indikator",
+        "stampTaxRate": "Tarif pajak meterai",
+        "formulaTitle": "Rumus perhitungan:",
+        "hourlyRateFormula": "Tarif per jam = Indikator ({indicator}) ? koefisien ({coefficient}) = ?{amount}",
+        "grossFormula": "Jumlah bruto = tarif per jam ? total jam",
+        "stampFormula": "Pajak meterai = jumlah bruto ? %{rate}",
+        "netFormula": "Dibayar bersih = jumlah bruto - pajak meterai",
+        "footerNote": "Catatan kaki",
+        "footerNotePlaceholder": "Catatan yang ditampilkan di bagian bawah ekspor Excel/PDF...",
+        "save": "Simpan pengaturan",
+        "saved": "Pengaturan tersimpan.",
         "errorPrefix": "Error: {message}",
         "errorPrefixStart": "Error"
       },
       "delete": {
-        "title": "Delete timesheet",
-        "description": "This timesheet and all entries will be permanently deleted. Are you sure?"
+        "title": "Hapus timesheet",
+        "description": "Timesheet ini dan semua entri akan dihapus secara permanen. Apakah Anda yakin?"
       },
       "pdf": {
-        "title": "Timesheet - {month} {year}",
-        "previewTitle": "PDF preview",
-        "printDownload": "Print / download PDF",
-        "preparedBy": "Prepared by",
-        "approvedBy": "Approved by",
-        "employerRepresentative": "Employer / representative",
-        "workScheduleTitle": "{month} {year} ? Work schedule",
-        "narrative": "The person named above, {profileName}, provided a total of {total} hours of occupational safety service in {month} {year}."
+        "title": "Lembar waktu - {month} {year}",
+        "previewTitle": "Pratinjau PDF",
+        "printDownload": "Cetak / unduh PDF",
+        "preparedBy": "Disiapkan oleh",
+        "approvedBy": "Disetujui oleh",
+        "employerRepresentative": "Pemberi kerja / perwakilan",
+        "workScheduleTitle": "{month} {year} ? Jadwal kerja",
+        "narrative": "Orang yang disebutkan di atas, {profileName}, telah memberikan total {total} jam layanan keselamatan kerja pada {month} {year}."
       },
       "payroll": {
-        "title": "Payroll",
-        "calculationTitle": "Civil servant payroll calculation",
-        "pdfTitle": "Payroll - {month} {year}",
-        "periodLine": "Month: {month}   Year: {year}",
-        "pdfMainTitle": "MISCELLANEOUS PAYMENTS PAYROLL",
-        "warning": "NOTICE",
-        "legalNotice": "The payroll is prepared in accordance with Article 8 of Turkish Occupational Health and Safety Law No. 6331.",
+        "title": "Penggajian",
+        "calculationTitle": "Perhitungan gaji pegawai negeri",
+        "pdfTitle": "Daftar Gaji - {month} {year}",
+        "periodLine": "Bulan: {month}   Tahun: {year}",
+        "pdfMainTitle": "DAFTAR GAJI PEMBAYARAN LAIN-LAIN",
+        "warning": "PEMBERITAHUAN",
+        "legalNotice": "Penggajian disiapkan sesuai dengan Pasal 8 Undang-Undang Keselamatan dan Kesehatan Kerja Turki No. 6331.",
         "columns": {
           "no": "No.",
-          "fullName": "FULL NAME",
-          "salaryCoefficient": "Civil servant salary coefficient",
-          "paymentCoefficient": "Payment coefficient",
-          "hourlyRate": "Hourly rate (TRY)",
-          "assignmentHours": "Assignment duration (hours)",
-          "gross": "Gross amount (TRY)",
-          "stampTax": "Stamp tax deduction (TRY)",
-          "netPaid": "Net paid (TRY)"
+          "fullName": "NAMA LENGKAP",
+          "salaryCoefficient": "Koefisien gaji pegawai negeri",
+          "paymentCoefficient": "Koefisien pembayaran",
+          "hourlyRate": "Tarif per jam (TRY)",
+          "assignmentHours": "Durasi penugasan (jam)",
+          "gross": "Jumlah bruto (TRY)",
+          "stampTax": "Potongan pajak materai (TRY)",
+          "netPaid": "Dibayar bersih (TRY)"
         },
-        "indicatorCoefficient": "Indicator ? coefficient",
-        "hourlyRate": "Hourly rate",
-        "stampTaxWithRate": "Stamp tax (%{rate})"
+        "indicatorCoefficient": "Koefisien indikator ?",
+        "hourlyRate": "Tarif per jam",
+        "stampTaxWithRate": "Bea meterai (%{rate})"
       }
     }
   },
@@ -3404,7 +3571,7 @@
     "password": {
       "current": "Kata Sandi Saat Ini",
       "new": "Kata Sandi Baru",
-      "newPlaceholder": "Minimal 12 karakter, huruf besar/kecil, angka dan simbol",
+      "newPlaceholder": "Minimal 8 karakter, huruf besar/kecil, angka dan simbol",
       "repeat": "Kata Sandi Baru (Ulangi)",
       "submit": "Perbarui Kata Sandi",
       "title": "Ubah Kata Sandi"
