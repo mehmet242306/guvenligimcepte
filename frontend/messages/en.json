@@ -1397,7 +1397,9 @@
       "edit": "Edit",
       "assignToCompany": "Assign to company",
       "savedToAllCompanies": "Saved to all companies",
-      "assignCatalogPending": "Assign catalog"
+      "assignCatalogPending": "Assign catalog",
+      "delete": "Delete",
+      "removeFromCompany": "Remove from company"
     },
     "categories": {
       "all": "All",
@@ -1503,7 +1505,9 @@
       "categoryFirst": "Select a category first.",
       "categoryNameEmpty": "Category name cannot be empty.",
       "categoryExists": "Category already exists.",
-      "subcategoryCreated": "Subcategory added: \"{name}\""
+      "subcategoryCreated": "Subcategory added: \"{name}\"",
+      "deleteFailed": "Could not delete the item. Please try again.",
+      "removeFromCompanyFailed": "Could not remove the item from the company. Please try again."
     },
     "assignModal": {
       "title": "Assign to company",
@@ -1529,7 +1533,9 @@
     },
     "status": {
       "assignedToCompany": "Assigned to the {title} workspace.",
-      "contentSavedToCompany": "{title} was saved to the selected company."
+      "contentSavedToCompany": "{title} was saved to the selected company.",
+      "contentDeleted": "{title} was deleted.",
+      "contentRemovedFromCompany": "{title} was removed from the selected company."
     },
     "legacy": {
       "surveyIntro": "Survey intro from the library",
@@ -1863,6 +1869,10 @@
         "PPE instructions",
         "Field practices"
       ]
+    },
+    "delete": {
+      "confirmCompany": "Remove {title} from the selected company library?",
+      "confirmSource": "Delete {title} permanently?"
     }
   },
   "lang": {

@@ -24,6 +24,7 @@ import {
   ScrollText,
   Search,
   Siren,
+  Trash2,
   Video,
   X,
   type LucideIcon,
@@ -36,12 +37,13 @@ import { DOCUMENT_GROUPS, getGroupByKey } from "@/lib/document-groups";
 import { getTemplate } from "@/lib/document-templates-p1";
 import { createClient } from "@/lib/supabase/client";
 import { fetchDocuments } from "@/lib/supabase/document-api";
-import { fetchOrgDecks, fetchMyDecks } from "@/lib/supabase/slide-deck-api";
-import { fetchSurveys } from "@/lib/supabase/survey-api";
+import { deleteDeck, fetchOrgDecks, fetchMyDecks } from "@/lib/supabase/slide-deck-api";
+import { deleteSurvey, fetchSurveys } from "@/lib/supabase/survey-api";
 import {
   assignLibraryContentToCompany,
   fetchCompanyLibraryItems,
   fetchLibraryContents,
+  removeLibraryContentFromCompany,
   type CompanyLibraryItemRecord,
   type LibraryContentRecord,
 } from "@/lib/supabase/isg-library-api";
@@ -69,6 +71,7 @@ type CompanyOption = {
 };
 
 type UserContext = {
+  authUserId: string | null;
   profileId: string | null;
   fullName: string;
   canManageCatalog: boolean;
@@ -88,6 +91,8 @@ type UnifiedLibraryItem = {
   downloadHref: string | null;
   libraryContentId: string | null;
   sourceKind: "catalog" | "template" | "survey" | "deck";
+  sourceId: string | null;
+  sourceOwnerId: string | null;
   templateId?: string | null;
   usageCount?: number;
 };
@@ -106,6 +111,8 @@ type CategoryDefinition = {
 };
 
 type CustomSubcategoryMap = Partial<Record<Exclude<CategoryKey, "all">, string[]>>;
+
+type DeleteMode = "source" | "company";
 
 type CategoryTone = {
   tabActive: string;
@@ -620,13 +627,16 @@ export function IsgLibraryClient() {
 
   const initialCategory = parseCategory(searchParams.get("category") ?? searchParams.get("section"));
 
-  const subcategoryLists: SubcategoryLists = {
-    education: (t.raw("subcategories.education") as string[]) ?? [],
-    assessment: (t.raw("subcategories.assessment") as string[]) ?? [],
-    forms: (t.raw("subcategories.forms") as string[]) ?? [],
-    emergency: (t.raw("subcategories.emergency") as string[]) ?? [],
-    instructions: (t.raw("subcategories.instructions") as string[]) ?? [],
-  };
+  const subcategoryLists = useMemo<SubcategoryLists>(
+    () => ({
+      education: (t.raw("subcategories.education") as string[]) ?? [],
+      assessment: (t.raw("subcategories.assessment") as string[]) ?? [],
+      forms: (t.raw("subcategories.forms") as string[]) ?? [],
+      emergency: (t.raw("subcategories.emergency") as string[]) ?? [],
+      instructions: (t.raw("subcategories.instructions") as string[]) ?? [],
+    }),
+    [t],
+  );
 
   const categoryDefinitions = useMemo<CategoryDefinition[]>(
     () => [
@@ -692,6 +702,7 @@ export function IsgLibraryClient() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const [userContext, setUserContext] = useState<UserContext>({
+    authUserId: null,
     profileId: null,
     fullName: t("user.defaultDisplayName"),
     canManageCatalog: false,
@@ -707,6 +718,7 @@ export function IsgLibraryClient() {
   const [assignContent, setAssignContent] = useState<LibraryContentRecord | null>(null);
   const [assignCompanyId, setAssignCompanyId] = useState("");
   const [assignMessage, setAssignMessage] = useState<string | null>(null);
+  const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
   const [importingDocument, setImportingDocument] = useState(false);
   const [creationCompanyId, setCreationCompanyId] = useState("");
   const [companyMenuOpen, setCompanyMenuOpen] = useState(false);
@@ -907,6 +919,8 @@ export function IsgLibraryClient() {
             downloadHref: null,
             libraryContentId: null,
             sourceKind: "template" as const,
+            sourceId: null,
+            sourceOwnerId: null,
             templateId: groupItem.id,
           }));
         }),
@@ -934,6 +948,8 @@ export function IsgLibraryClient() {
           downloadHref: null,
           libraryContentId: null,
           sourceKind: "survey" as const,
+          sourceId: survey.id,
+          sourceOwnerId: survey.createdBy,
           templateId: null,
         })),
         ...[...myDecksResponse, ...orgDecksResponse].map((deck) => ({
@@ -950,12 +966,15 @@ export function IsgLibraryClient() {
           downloadHref: null,
           libraryContentId: null,
           sourceKind: "deck" as const,
+          sourceId: deck.id,
+          sourceOwnerId: deck.created_by,
           templateId: null,
         })),
       ];
 
       if (!cancelled) {
         setUserContext({
+          authUserId: user.id,
           profileId: profile.id,
           fullName: profile.full_name || user.email || t("user.defaultDisplayName"),
           canManageCatalog: roleCodes.some((code) => MANAGE_ROLE_CODES.has(code)),
@@ -1002,6 +1021,8 @@ export function IsgLibraryClient() {
       downloadHref: item.file_url,
       libraryContentId: item.id,
       sourceKind: "catalog" as const,
+      sourceId: item.id,
+      sourceOwnerId: null,
       templateId: null,
     }));
 
@@ -1408,6 +1429,66 @@ export function IsgLibraryClient() {
     setAssignModalOpen(false);
   }
 
+  async function handleDeleteItem(item: UnifiedLibraryItem, mode: DeleteMode) {
+    const title = item.sourceKind === "template" ? localizedTemplateCardTitle(item) : item.title;
+    const confirmMessage =
+      mode === "company"
+        ? t("delete.confirmCompany", { title })
+        : t("delete.confirmSource", { title });
+
+    if (!window.confirm(confirmMessage)) {
+      return;
+    }
+
+    setDeletingItemId(item.id);
+    setErrorMessage(null);
+
+    try {
+      if (mode === "company") {
+        if (!creationCompanyId || !item.libraryContentId) {
+          setErrorMessage(t("errorsInline.removeFromCompanyFailed"));
+          return;
+        }
+
+        const ok = await removeLibraryContentFromCompany({
+          companyId: creationCompanyId,
+          contentId: item.libraryContentId,
+        });
+
+        if (!ok) {
+          setErrorMessage(t("errorsInline.removeFromCompanyFailed"));
+          return;
+        }
+
+        setSavedItems((current) =>
+          current.filter(
+            (savedItem) =>
+              !(savedItem.company_id === creationCompanyId && savedItem.content_id === item.libraryContentId),
+          ),
+        );
+        setStatusMessage(t("status.contentRemovedFromCompany", { title }));
+        return;
+      }
+
+      const ok =
+        item.sourceKind === "survey" && item.sourceId
+          ? await deleteSurvey(item.sourceId)
+          : item.sourceKind === "deck" && item.sourceId
+            ? await deleteDeck(item.sourceId)
+            : false;
+
+      if (!ok) {
+        setErrorMessage(t("errorsInline.deleteFailed"));
+        return;
+      }
+
+      setLegacyItems((current) => current.filter((entry) => entry.id !== item.id));
+      setStatusMessage(t("status.contentDeleted", { title }));
+    } finally {
+      setDeletingItemId(null);
+    }
+  }
+
   function localizedDocumentGroupTitle(groupKey: string) {
     return getGroupByKey(groupKey) ? t(`documentCatalog.groups.${groupKey}.title`) : groupKey;
   }
@@ -1445,6 +1526,14 @@ export function IsgLibraryClient() {
     const availableCompanies = companies.filter((company) => !assignedCompanyIds.includes(company.id));
     const isFullyAssigned = companies.length > 0 && availableCompanies.length === 0;
     const canAssign = Boolean(item.libraryContentId);
+    const deleteMode: DeleteMode | null =
+      (item.sourceKind === "survey" || item.sourceKind === "deck") &&
+      (item.sourceOwnerId === userContext.authUserId || userContext.canManageCatalog)
+        ? "source"
+        : item.libraryContentId && creationCompanyId && assignedCompanyIds.includes(creationCompanyId)
+          ? "company"
+          : null;
+    const isDeleting = deletingItemId === item.id;
     const sourceBadge =
       item.sourceKind === "template"
         ? t("source.template")
@@ -1464,8 +1553,20 @@ export function IsgLibraryClient() {
       >
         <span className={cn("absolute inset-y-0 left-0 w-1.5", itemTone.cardAccent)} />
         <span className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/55 blur-2xl transition-opacity group-hover:opacity-80 dark:bg-white/5" />
+        {deleteMode ? (
+          <button
+            type="button"
+            onClick={() => void handleDeleteItem(item, deleteMode)}
+            disabled={isDeleting}
+            title={deleteMode === "company" ? t("buttons.removeFromCompany") : t("buttons.delete")}
+            aria-label={deleteMode === "company" ? t("buttons.removeFromCompany") : t("buttons.delete")}
+            className="absolute right-4 top-4 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-700 opacity-95 shadow-sm transition hover:border-rose-300 hover:bg-rose-100 hover:text-rose-800 disabled:cursor-wait disabled:opacity-60 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200 dark:hover:bg-rose-400/15"
+          >
+            <Trash2 size={15} />
+          </button>
+        ) : null}
         <CardHeader className="relative space-y-4">
-          <div className="flex items-center justify-between gap-3">
+          <div className={cn("flex items-center justify-between gap-3", deleteMode ? "pr-10" : "")}>
             <span className={cn("inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold", itemTone.metaBadge)}>
               <TypeIcon size={14} />
               {typeMeta.label}

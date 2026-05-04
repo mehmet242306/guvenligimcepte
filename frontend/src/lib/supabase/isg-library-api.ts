@@ -112,3 +112,24 @@ export async function assignLibraryContentToCompany(input: {
 
   return data as CompanyLibraryItemRecord;
 }
+
+export async function removeLibraryContentFromCompany(input: {
+  companyId: string;
+  contentId: string;
+}): Promise<boolean> {
+  const supabase = createClient();
+  if (!supabase) return false;
+
+  const { error } = await supabase
+    .from("company_library_items")
+    .delete()
+    .eq("company_id", input.companyId)
+    .eq("content_id", input.contentId);
+
+  if (error) {
+    logLibraryWarning("[isg-library-api] removeLibraryContentFromCompany", error);
+    return false;
+  }
+
+  return true;
+}

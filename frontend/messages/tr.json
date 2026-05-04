@@ -1397,7 +1397,9 @@
       "edit": "Düzenle",
       "assignToCompany": "Firmaya Ata",
       "savedToAllCompanies": "Tüm firmalara kaydedildi",
-      "assignCatalogPending": "Katalogdan ata"
+      "assignCatalogPending": "Katalogdan ata",
+      "delete": "Sil",
+      "removeFromCompany": "Firmadan kaldır"
     },
     "categories": {
       "all": "Tümü",
@@ -1503,7 +1505,9 @@
       "categoryFirst": "Önce bir ana kategori seçin.",
       "categoryNameEmpty": "Kategori adı boş bırakılamaz.",
       "categoryExists": "Bu alt kategori zaten mevcut.",
-      "subcategoryCreated": "“{name}” alt kategorisi oluşturuldu."
+      "subcategoryCreated": "“{name}” alt kategorisi oluşturuldu.",
+      "deleteFailed": "İçerik silinemedi. Lütfen tekrar deneyin.",
+      "removeFromCompanyFailed": "İçerik firmadan kaldırılamadı. Lütfen tekrar deneyin."
     },
     "assignModal": {
       "title": "Firmaya Ata",
@@ -1529,7 +1533,9 @@
     },
     "status": {
       "assignedToCompany": "{title} çalışma alanına atanmıştır.",
-      "contentSavedToCompany": "{title} seçilen firmaya kaydedildi."
+      "contentSavedToCompany": "{title} seçilen firmaya kaydedildi.",
+      "contentDeleted": "{title} silindi.",
+      "contentRemovedFromCompany": "{title} seçili firmadan kaldırıldı."
     },
     "legacy": {
       "surveyIntro": "Kütüphanedeki anket girişi",
@@ -1863,6 +1869,10 @@
         "KKD Talimatları",
         "Saha Uygulamaları"
       ]
+    },
+    "delete": {
+      "confirmCompany": "{title} seçili firma kütüphanesinden kaldırılsın mı?",
+      "confirmSource": "{title} kalıcı olarak silinsin mi?"
     }
   },
   "lang": {

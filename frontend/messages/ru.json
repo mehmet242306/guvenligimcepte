@@ -1747,7 +1747,9 @@
       "download": "Скачать",
       "edit": "Редактировать",
       "savedToAllCompanies": "Сохранено для всех компаний",
-      "view": "Просмотр"
+      "view": "Просмотр",
+      "delete": "Удалить",
+      "removeFromCompany": "Убрать из компании"
     },
     "card": {
       "companiesCount": "{count} компаний",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "Не удалось загрузить предварительный просмотр шаблона. Попробуйте еще раз.",
       "selectCompanyEditor": "Сначала выберите компанию для редактирования документа.",
       "selectCompanyFirst": "Сначала выберите компанию.",
-      "subcategoryCreated": "Подкатегория добавлена: \"{name}\""
+      "subcategoryCreated": "Подкатегория добавлена: \"{name}\"",
+      "deleteFailed": "Не удалось удалить материал. Повторите попытку.",
+      "removeFromCompanyFailed": "Не удалось убрать материал из компании. Повторите попытку."
     },
     "filters": {
       "searchPlaceholder": "Поиск по названию, описанию, тегам…",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "Назначено рабочему пространству {title}.",
-      "contentSavedToCompany": "Элемент {title} сохранен в выбранной компании."
+      "contentSavedToCompany": "Элемент {title} сохранен в выбранной компании.",
+      "contentDeleted": "{title} удалено.",
+      "contentRemovedFromCompany": "{title} убрано из выбранной компании."
     },
     "templateDescription": "{group} — открывает шаблон \"{item}\" в потоке документов.",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "Измерение",
       "feedback": "Обратная связь"
+    },
+    "delete": {
+      "confirmCompany": "Удалить «{title}» из библиотеки выбранной компании?",
+      "confirmSource": "Удалить «{title}» безвозвратно?"
     }
   },
   "landing": {

@@ -1747,7 +1747,9 @@
       "download": "Yüklə",
       "edit": "Redaktə et",
       "savedToAllCompanies": "Bütün şirkətlərə saxlanıldı",
-      "view": "Bax"
+      "view": "Bax",
+      "delete": "Sil",
+      "removeFromCompany": "Şirkətdən sil"
     },
     "card": {
       "companiesCount": "{count} şirkət",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "Şablon önizləməsi yüklənə bilmədi. Zəhmət olmasa yenidən cəhd edin.",
       "selectCompanyEditor": "Sənədi redaktə etmək üçün əvvəlcə şirkət seçin.",
       "selectCompanyFirst": "Əvvəlcə şirkət seçin.",
-      "subcategoryCreated": "Alt kateqoriya əlavə edildi: \"{name}\""
+      "subcategoryCreated": "Alt kateqoriya əlavə edildi: \"{name}\"",
+      "deleteFailed": "Məzmun silinə bilmədi. Yenidən cəhd edin.",
+      "removeFromCompanyFailed": "Məzmun şirkətdən silinə bilmədi. Yenidən cəhd edin."
     },
     "filters": {
       "searchPlaceholder": "Başlıq, təsvir, etiketlər axtarın…",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "{title} iş sahəsinə təyin edildi.",
-      "contentSavedToCompany": "{title} seçilmiş şirkətə saxlanıldı."
+      "contentSavedToCompany": "{title} seçilmiş şirkətə saxlanıldı.",
+      "contentDeleted": "{title} silindi.",
+      "contentRemovedFromCompany": "{title} seçilmiş şirkətdən silindi."
     },
     "templateDescription": "{group} — sənəd axınında \"{item}\" şablonunu açır.",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "Ölçmə",
       "feedback": "Rəy"
+    },
+    "delete": {
+      "confirmCompany": "{title} seçilmiş şirkət kitabxanasından silinsin?",
+      "confirmSource": "{title} həmişəlik silinsin?"
     }
   },
   "landing": {

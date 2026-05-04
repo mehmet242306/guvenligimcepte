@@ -1747,7 +1747,9 @@
       "download": "Herunterladen",
       "edit": "Bearbeiten",
       "savedToAllCompanies": "Für alle Unternehmen gespeichert",
-      "view": "Anzeigen"
+      "view": "Anzeigen",
+      "delete": "Löschen",
+      "removeFromCompany": "Aus Firma entfernen"
     },
     "card": {
       "companiesCount": "{count} Unternehmen",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "Vorlagenvorschau konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
       "selectCompanyEditor": "Wählen Sie zuerst ein Unternehmen aus, um das Dokument zu bearbeiten.",
       "selectCompanyFirst": "Wählen Sie zuerst ein Unternehmen aus.",
-      "subcategoryCreated": "Unterkategorie hinzugefügt: \"{name}\""
+      "subcategoryCreated": "Unterkategorie hinzugefügt: \"{name}\"",
+      "deleteFailed": "Der Inhalt konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
+      "removeFromCompanyFailed": "Der Inhalt konnte nicht aus der Firma entfernt werden. Bitte versuchen Sie es erneut."
     },
     "filters": {
       "searchPlaceholder": "Titel, Beschreibung, Tags durchsuchen…",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "Dem {title}-Arbeitsbereich zugewiesen.",
-      "contentSavedToCompany": "{title} wurde im ausgewählten Unternehmen gespeichert."
+      "contentSavedToCompany": "{title} wurde im ausgewählten Unternehmen gespeichert.",
+      "contentDeleted": "{title} wurde gelöscht.",
+      "contentRemovedFromCompany": "{title} wurde aus der ausgewählten Firma entfernt."
     },
     "templateDescription": "{group} — öffnet Vorlage \"{item}\" im Dokumentenablauf.",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "Messung",
       "feedback": "Feedback"
+    },
+    "delete": {
+      "confirmCompany": "{title} aus der Bibliothek der ausgewählten Firma entfernen?",
+      "confirmSource": "{title} dauerhaft löschen?"
     }
   },
   "landing": {

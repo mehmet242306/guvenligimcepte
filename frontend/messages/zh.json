@@ -1747,7 +1747,9 @@
       "download": "下载",
       "edit": "编辑",
       "savedToAllCompanies": "已保存到所有公司",
-      "view": "查看"
+      "view": "查看",
+      "delete": "删除",
+      "removeFromCompany": "从公司移除"
     },
     "card": {
       "companiesCount": "{count} 家公司",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "无法加载模板预览。请重试。",
       "selectCompanyEditor": "请先选择公司以编辑文档。",
       "selectCompanyFirst": "请先选择公司。",
-      "subcategoryCreated": "已添加子类别：\"{name}\""
+      "subcategoryCreated": "已添加子类别：\"{name}\"",
+      "deleteFailed": "无法删除内容。请重试。",
+      "removeFromCompanyFailed": "无法从公司移除内容。请重试。"
     },
     "filters": {
       "searchPlaceholder": "搜索标题、描述、标签…",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "已分配给{title}工作区。",
-      "contentSavedToCompany": "{title} 已保存到所选公司。"
+      "contentSavedToCompany": "{title} 已保存到所选公司。",
+      "contentDeleted": "已删除 {title}。",
+      "contentRemovedFromCompany": "已从所选公司移除 {title}。"
     },
     "templateDescription": "{group}——在文档流程中打开「{item}」模板。",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "测评",
       "feedback": "反馈"
+    },
+    "delete": {
+      "confirmCompany": "是否从所选公司的资料库中移除“{title}”？",
+      "confirmSource": "是否永久删除“{title}”？"
     }
   },
   "landing": {

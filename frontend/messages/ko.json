@@ -1747,7 +1747,9 @@
       "download": "다운로드",
       "edit": "편집",
       "savedToAllCompanies": "모든 회사에 저장됨",
-      "view": "보기"
+      "view": "보기",
+      "delete": "삭제",
+      "removeFromCompany": "회사에서 제거"
     },
     "card": {
       "companiesCount": "{count}개 회사",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "템플릿 미리보기를 불러올 수 없습니다. 다시 시도해 주세요.",
       "selectCompanyEditor": "문서를 편집하려면 먼저 회사를 선택하세요.",
       "selectCompanyFirst": "먼저 회사를 선택하세요.",
-      "subcategoryCreated": "하위 카테고리가 추가되었습니다: \"{name}\""
+      "subcategoryCreated": "하위 카테고리가 추가되었습니다: \"{name}\"",
+      "deleteFailed": "콘텐츠를 삭제할 수 없습니다. 다시 시도하세요.",
+      "removeFromCompanyFailed": "회사에서 콘텐츠를 제거할 수 없습니다. 다시 시도하세요."
     },
     "filters": {
       "searchPlaceholder": "제목, 설명, 태그 검색…",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "{title} 워크스페이스에 할당됨",
-      "contentSavedToCompany": "{title}이(가) 선택한 회사에 저장되었습니다"
+      "contentSavedToCompany": "{title}이(가) 선택한 회사에 저장되었습니다",
+      "contentDeleted": "{title}이(가) 삭제되었습니다.",
+      "contentRemovedFromCompany": "{title}이(가) 선택한 회사에서 제거되었습니다."
     },
     "templateDescription": "{group} — 문서 플로우에서 \"{item}\" 템플릿을 엽니다.",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "측정",
       "feedback": "피드백"
+    },
+    "delete": {
+      "confirmCompany": "선택한 회사 라이브러리에서 {title}을(를) 제거할까요?",
+      "confirmSource": "{title}을(를) 영구 삭제할까요?"
     }
   },
   "landing": {

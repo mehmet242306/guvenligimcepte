@@ -1747,7 +1747,9 @@
       "download": "ダウンロード",
       "edit": "編集",
       "savedToAllCompanies": "すべての会社に保存済み",
-      "view": "表示"
+      "view": "表示",
+      "delete": "削除",
+      "removeFromCompany": "会社から削除"
     },
     "card": {
       "companiesCount": "{count} 社",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "テンプレートプレビューを読み込めませんでした。もう一度お試しください。",
       "selectCompanyEditor": "文書を編集するには、最初に会社を選択してください。",
       "selectCompanyFirst": "最初に会社を選択してください。",
-      "subcategoryCreated": "サブカテゴリが追加されました：\"{name}\""
+      "subcategoryCreated": "サブカテゴリが追加されました：\"{name}\"",
+      "deleteFailed": "コンテンツを削除できませんでした。もう一度お試しください。",
+      "removeFromCompanyFailed": "会社からコンテンツを削除できませんでした。もう一度お試しください。"
     },
     "filters": {
       "searchPlaceholder": "タイトル、説明、タグを検索…",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "{title}ワークスペースに割り当てられました。",
-      "contentSavedToCompany": "{title}が選択された企業に保存されました。"
+      "contentSavedToCompany": "{title}が選択された企業に保存されました。",
+      "contentDeleted": "{title}を削除しました。",
+      "contentRemovedFromCompany": "{title}を選択した会社から削除しました。"
     },
     "templateDescription": "{group} — 文書フローで「{item}」テンプレートを開きます。",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "測定",
       "feedback": "フィードバック"
+    },
+    "delete": {
+      "confirmCompany": "「{title}」を選択した会社のライブラリから削除しますか？",
+      "confirmSource": "「{title}」を完全に削除しますか？"
     }
   },
   "landing": {

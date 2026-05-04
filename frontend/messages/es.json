@@ -1747,7 +1747,9 @@
       "download": "Descargar",
       "edit": "Editar",
       "savedToAllCompanies": "Guardado en todas las empresas",
-      "view": "Ver"
+      "view": "Ver",
+      "delete": "Eliminar",
+      "removeFromCompany": "Quitar de la empresa"
     },
     "card": {
       "companiesCount": "{count} empresas",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "No se pudo cargar la vista previa de la plantilla. Inténtalo de nuevo.",
       "selectCompanyEditor": "Selecciona una empresa primero para editar el documento.",
       "selectCompanyFirst": "Selecciona una empresa primero.",
-      "subcategoryCreated": "Subcategoría agregada: \"{name}\""
+      "subcategoryCreated": "Subcategoría agregada: \"{name}\"",
+      "deleteFailed": "No se pudo eliminar el contenido. Inténtalo de nuevo.",
+      "removeFromCompanyFailed": "No se pudo quitar el contenido de la empresa. Inténtalo de nuevo."
     },
     "filters": {
       "searchPlaceholder": "Buscar título, descripción, etiquetas…",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "Asignado al espacio de trabajo {title}.",
-      "contentSavedToCompany": "Se guardó {title} en la empresa seleccionada."
+      "contentSavedToCompany": "Se guardó {title} en la empresa seleccionada.",
+      "contentDeleted": "{title} se eliminó.",
+      "contentRemovedFromCompany": "{title} se quitó de la empresa seleccionada."
     },
     "templateDescription": "{group} — abre la plantilla \"{item}\" en el flujo de documentos.",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "Medición",
       "feedback": "Retroalimentación"
+    },
+    "delete": {
+      "confirmCompany": "¿Quitar {title} de la biblioteca de la empresa seleccionada?",
+      "confirmSource": "¿Eliminar {title} permanentemente?"
     }
   },
   "landing": {

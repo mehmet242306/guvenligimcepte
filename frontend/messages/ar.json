@@ -1747,7 +1747,9 @@
       "download": "تحميل",
       "edit": "تحرير",
       "savedToAllCompanies": "محفوظ لجميع الشركات",
-      "view": "عرض"
+      "view": "عرض",
+      "delete": "حذف",
+      "removeFromCompany": "إزالة من الشركة"
     },
     "card": {
       "companiesCount": "{count} شركات",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "تعذر تحميل معاينة القالب. يرجى المحاولة مرة أخرى.",
       "selectCompanyEditor": "اختر شركة أولاً لتحرير المستند.",
       "selectCompanyFirst": "اختر شركة أولاً.",
-      "subcategoryCreated": "تمت إضافة الفئة الفرعية: \"{name}\""
+      "subcategoryCreated": "تمت إضافة الفئة الفرعية: \"{name}\"",
+      "deleteFailed": "تعذر حذف المحتوى. يرجى المحاولة مرة أخرى.",
+      "removeFromCompanyFailed": "تعذر إزالة المحتوى من الشركة. يرجى المحاولة مرة أخرى."
     },
     "filters": {
       "searchPlaceholder": "البحث في العنوان، الوصف، العلامات...",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "مخصص لمساحة عمل {title}.",
-      "contentSavedToCompany": "تم حفظ {title} في الشركة المحددة."
+      "contentSavedToCompany": "تم حفظ {title} في الشركة المحددة.",
+      "contentDeleted": "تم حذف {title}.",
+      "contentRemovedFromCompany": "تمت إزالة {title} من الشركة المحددة."
     },
     "templateDescription": "{group} — يفتح قالب \"{item}\" في تدفق المستندات.",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "القياس",
       "feedback": "التغذية الراجعة"
+    },
+    "delete": {
+      "confirmCompany": "هل تريد إزالة {title} من مكتبة الشركة المحددة؟",
+      "confirmSource": "هل تريد حذف {title} نهائيًا؟"
     }
   },
   "landing": {

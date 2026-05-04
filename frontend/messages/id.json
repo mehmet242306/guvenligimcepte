@@ -1747,7 +1747,9 @@
       "download": "Unduh",
       "edit": "Edit",
       "savedToAllCompanies": "Disimpan ke semua perusahaan",
-      "view": "Lihat"
+      "view": "Lihat",
+      "delete": "Hapus",
+      "removeFromCompany": "Hapus dari perusahaan"
     },
     "card": {
       "companiesCount": "{count} perusahaan",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "Tidak dapat memuat pratinjau template. Silakan coba lagi.",
       "selectCompanyEditor": "Pilih perusahaan terlebih dahulu untuk mengedit dokumen.",
       "selectCompanyFirst": "Pilih perusahaan terlebih dahulu.",
-      "subcategoryCreated": "Subkategori ditambahkan: \"{name}\""
+      "subcategoryCreated": "Subkategori ditambahkan: \"{name}\"",
+      "deleteFailed": "Konten tidak dapat dihapus. Coba lagi.",
+      "removeFromCompanyFailed": "Konten tidak dapat dihapus dari perusahaan. Coba lagi."
     },
     "filters": {
       "searchPlaceholder": "Cari judul, deskripsi, tag…",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "Ditugaskan ke ruang kerja {title}.",
-      "contentSavedToCompany": "{title} telah disimpan ke perusahaan yang dipilih."
+      "contentSavedToCompany": "{title} telah disimpan ke perusahaan yang dipilih.",
+      "contentDeleted": "{title} telah dihapus.",
+      "contentRemovedFromCompany": "{title} telah dihapus dari perusahaan yang dipilih."
     },
     "templateDescription": "{group} — membuka template \"{item}\" dalam alur dokumen.",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "Pengukuran",
       "feedback": "Umpan balik"
+    },
+    "delete": {
+      "confirmCompany": "Hapus {title} dari pustaka perusahaan yang dipilih?",
+      "confirmSource": "Hapus {title} secara permanen?"
     }
   },
   "landing": {

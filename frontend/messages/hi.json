@@ -1747,7 +1747,9 @@
       "download": "डाउनलोड",
       "edit": "संपादित करें",
       "savedToAllCompanies": "सभी कंपनियों में सहेजा गया",
-      "view": "देखें"
+      "view": "देखें",
+      "delete": "हटाएं",
+      "removeFromCompany": "कंपनी से हटाएं"
     },
     "card": {
       "companiesCount": "{count} कंपनियां",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "टेम्प्लेट पूर्वावलोकन लोड नहीं हो सका। कृपया पुनः प्रयास करें।",
       "selectCompanyEditor": "दस्तावेज़ संपादित करने के लिए पहले कंपनी चुनें।",
       "selectCompanyFirst": "पहले कंपनी चुनें।",
-      "subcategoryCreated": "उपश्रेणी जोड़ी गई: \"{name}\""
+      "subcategoryCreated": "उपश्रेणी जोड़ी गई: \"{name}\"",
+      "deleteFailed": "सामग्री हटाई नहीं जा सकी। कृपया फिर कोशिश करें।",
+      "removeFromCompanyFailed": "सामग्री कंपनी से हटाई नहीं जा सकी। कृपया फिर कोशिश करें।"
     },
     "filters": {
       "searchPlaceholder": "शीर्षक, विवरण, टैग खोजें…",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "{title} वर्कस्पेस को असाइन किया गया।",
-      "contentSavedToCompany": "{title} को चयनित कंपनी में सहेजा गया।"
+      "contentSavedToCompany": "{title} को चयनित कंपनी में सहेजा गया।",
+      "contentDeleted": "{title} हटा दिया गया।",
+      "contentRemovedFromCompany": "{title} चयनित कंपनी से हटा दिया गया।"
     },
     "templateDescription": "{group} — दस्तावेज़ प्रवाह में \"{item}\" टेम्प्लेट खोलता है।",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "मापन",
       "feedback": "फीडबैक"
+    },
+    "delete": {
+      "confirmCompany": "क्या {title} को चयनित कंपनी लाइब्रेरी से हटाना है?",
+      "confirmSource": "क्या {title} को स्थायी रूप से हटाना है?"
     }
   },
   "landing": {

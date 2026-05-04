@@ -1747,7 +1747,9 @@
       "download": "Télécharger",
       "edit": "Modifier",
       "savedToAllCompanies": "Enregistré pour toutes les entreprises",
-      "view": "Voir"
+      "view": "Voir",
+      "delete": "Supprimer",
+      "removeFromCompany": "Retirer de l’entreprise"
     },
     "card": {
       "companiesCount": "{count} entreprises",
@@ -1851,7 +1853,9 @@
       "previewTemplateFailed": "Impossible de charger l'aperçu du modèle. Veuillez réessayer.",
       "selectCompanyEditor": "Sélectionnez d'abord une entreprise pour modifier le document.",
       "selectCompanyFirst": "Sélectionnez d'abord une entreprise.",
-      "subcategoryCreated": "Sous-catégorie ajoutée : \"{name}\""
+      "subcategoryCreated": "Sous-catégorie ajoutée : \"{name}\"",
+      "deleteFailed": "Impossible de supprimer le contenu. Veuillez réessayer.",
+      "removeFromCompanyFailed": "Impossible de retirer le contenu de l’entreprise. Veuillez réessayer."
     },
     "filters": {
       "searchPlaceholder": "Rechercher titre, description, tags…",
@@ -1916,7 +1920,9 @@
     },
     "status": {
       "assignedToCompany": "Assigné à l'espace de travail {title}.",
-      "contentSavedToCompany": "{title} a été enregistré dans l'entreprise sélectionnée."
+      "contentSavedToCompany": "{title} a été enregistré dans l'entreprise sélectionnée.",
+      "contentDeleted": "{title} a été supprimé.",
+      "contentRemovedFromCompany": "{title} a été retiré de l’entreprise sélectionnée."
     },
     "templateDescription": "{group} — ouvre le modèle \"{item}\" dans le flux de documents.",
     "types": {
@@ -2240,6 +2246,10 @@
     "surveyTags": {
       "measurement": "Mesure",
       "feedback": "Commentaires"
+    },
+    "delete": {
+      "confirmCompany": "Retirer « {title} » de la bibliothèque de l’entreprise sélectionnée ?",
+      "confirmSource": "Supprimer définitivement « {title} » ?"
     }
   },
   "landing": {
