@@ -3,10 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus, FileSearch, Archive, Pencil, Trash2, ChevronDown, ClipboardList, Share2, Copy, Check, MessageCircle, QrCode } from "lucide-react";
+import { MapPin, Building2, Zap, FlaskConical, Bug, PersonStanding, Brain, Cog, Plug, Flame, Truck, Leaf, Plus, FileSearch, Archive, Pencil, Trash2, ChevronDown, ClipboardList, Share2, Copy, Check, MessageCircle } from "lucide-react";
 import type { PremiumIconTone } from "@/components/ui/premium-icon-badge";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { PremiumIconBadge } from "@/components/ui/premium-icon-badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,6 +37,10 @@ function fmtDateShortLocale(d: string | null, locale: string) {
   } catch {
     return d;
   }
+}
+
+function isoDateAfterDays(days = 0) {
+  return new Date(Date.now() + days * 86400000).toISOString().split("T")[0];
 }
 
 function Sec({ title, desc, children, icon, tone }: { title: string; desc?: string; children: React.ReactNode; icon?: React.ElementType; tone?: PremiumIconTone }) {
@@ -1191,7 +1193,8 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
     return fmtDateShortLocale(d, locale);
   }
 
-  const today = new Date().toISOString().split("T")[0];
+  const [today] = useState(() => isoDateAfterDays());
+  const [soonThreshold] = useState(() => isoDateAfterDays(30));
 
   const SECTIONS: { k: TrackingSection; l: string; count: number }[] = [
     { k: "actions", l: tt("sectionActions"), count: actions.length },
@@ -1409,7 +1412,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                 <div className="space-y-2">
                   {controls.map((c) => {
                     const isOverdue = c.nextInspectionDate && c.nextInspectionDate < today;
-                    const isSoon = c.nextInspectionDate && !isOverdue && c.nextInspectionDate <= new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0];
+                    const isSoon = c.nextInspectionDate && !isOverdue && c.nextInspectionDate <= soonThreshold;
                     const resCls = c.result === "uygun" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                       : c.result === "uygun_degil" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                       : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
@@ -1583,6 +1586,7 @@ function TrainingForm({ companyId, editing, onSaved, onCancel }: { companyId: st
         <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("trainer")}</label><Input value={trainerName} onChange={(e) => setTrainerName(e.target.value)} className="mt-1" /></div>
         <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("date")}</label><Input type="date" value={trainingDate} onChange={(e) => setTrainingDate(e.target.value)} className="mt-1" /></div>
         <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("durationHours")}</label><Input type="number" value={durationHours} onChange={(e) => setDurationHours(e.target.value)} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("location")}</label><Input value={location} onChange={(e) => setLocation(e.target.value)} className="mt-1" /></div>
         <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("statusLabel")}</label><select value={status} onChange={(e) => setStatus(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="planned">{tt("status.planned")}</option><option value="completed">{tt("status.completed")}</option><option value="cancelled">{tt("status.cancelled")}</option></select></div>
       </div>
       <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("note")}</label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className="mt-1" /></div>
@@ -1650,17 +1654,14 @@ function CommitteeMeetingForm({ companyId, nextNumber, periodMonths, editing, on
   onSaved: () => void; onCancel: () => void;
 }) {
   const tt = useTranslations("companyWorkspace.tracking");
-  const today = new Date().toISOString().split("T")[0];
-  const nextDate = new Date(Date.now() + periodMonths * 30 * 86400000).toISOString().split("T")[0];
-
-  const [meetingDate, setMeetingDate] = useState(editing?.meetingDate ?? today);
+  const [meetingDate, setMeetingDate] = useState(() => editing?.meetingDate ?? isoDateAfterDays());
   const [meetingNumber, setMeetingNumber] = useState(editing?.meetingNumber ?? nextNumber);
   const [attendees, setAttendees] = useState(editing?.attendees ?? "");
   const [agenda, setAgenda] = useState(editing?.agenda ?? "");
   const [decisions, setDecisions] = useState<{ text: string; responsible: string; deadline: string }[]>(
     editing?.decisions?.length ? editing.decisions : [{ text: "", responsible: "", deadline: "" }]
   );
-  const [nextMeetingDate, setNextMeetingDate] = useState(editing?.nextMeetingDate ?? nextDate);
+  const [nextMeetingDate, setNextMeetingDate] = useState(() => editing?.nextMeetingDate ?? isoDateAfterDays(periodMonths * 30));
   const [notes, setNotes] = useState(editing?.notes ?? "");
   const [status, setStatus] = useState<string>(editing?.status ?? "completed");
   const [saving, setSaving] = useState(false);
@@ -1734,7 +1735,7 @@ function CommitteeMeetingForm({ companyId, nextNumber, periodMonths, editing, on
 }
 
 /* ── ORGANIZATION (members/permissions/invitations/requests) ── */
-export function OrganizationTab({ company, setInviteOpen }: { company: CompanyRecord; setInviteOpen: (v: boolean) => void }) {
+export function OrganizationTab({ setInviteOpen }: { company: CompanyRecord; setInviteOpen: (v: boolean) => void }) {
   return (
     <div className="space-y-6">
       <Sec title="Organizasyon" desc="Firma organizasyon yapısı, üyelik ve erişim yönetimi.">
