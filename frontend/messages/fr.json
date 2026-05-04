@@ -874,7 +874,8 @@
         "addDecision": "+ Ajouter une décision",
         "decisionText": "Texte de la décision",
         "nextDate": "Date de la prochaine réunion"
-      }
+      },
+      "location": "Emplacement"
     },
     "personnel": {
       "title": "Gestion du personnel",
@@ -5687,7 +5688,6 @@
       "naReasonPlaceholder": "N/A justification (required)"
     },
     "findings": {
-      "intro": "Review screen: for the findings below you can choose a link to risk, action, or CAPA, or mark the record as reviewed. This step connects the field with office follow-up.",
       "sidebarTitle": "Findings ({count})",
       "emptySidebar": "No findings yet. Non-conform or critical answers appear here.",
       "decisionPending": "Decision pending",
@@ -5809,197 +5809,197 @@
   },
   "workspaceOnboarding": {
     "eyebrow": "Espaces de travail",
-    "title": "Dans quel espace de travail veux-tu continuer ?",
-    "description": "First select a workspace or create a new one. Choose from the left panel, complete that workspace record on the right; when activated, risk analysis, documents, library and field modules use the active workspace context.",
-    "localWorkspaceName": "Local Workspace",
-    "goToWorkspace": "Go to workspace",
-    "activateAndGo": "Activate this workspace and go",
+    "title": "Dans quel espace de travail souhaitez-vous continuer ?",
+    "description": "Sélectionnez d’abord un espace de travail ou créez-en un. Choisissez dans le panneau de gauche et complétez l’enregistrement à droite ; une fois activé, l’analyse des risques, les documents, la bibliothèque et les modules terrain utilisent le contexte de l’espace actif.",
+    "localWorkspaceName": "Espace de travail local",
+    "goToWorkspace": "Aller à l’espace de travail",
+    "activateAndGo": "Activer cet espace et continuer",
     "common": {
-      "email": "Email",
-      "phone": "Phone",
-      "saving": "Saving...",
-      "select": "Select"
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "saving": "Enregistrement…",
+      "select": "Sélectionner"
     },
     "plans": {
-      "individualFree": "Individual Free",
+      "individualFree": "Individuel gratuit",
       "osgbStarter": "OSGB Starter",
-      "enterprise": "Enterprise",
-      "unknown": "Unknown plan"
+      "enterprise": "Entreprise",
+      "unknown": "Forfait inconnu"
     },
     "state": {
-      "selected": "Selected",
-      "active": "Active",
-      "default": "Default",
-      "ready": "Ready"
+      "selected": "Sélectionné",
+      "active": "Actif",
+      "default": "Par défaut",
+      "ready": "Prêt"
     },
     "meta": {
-      "package": "Plan: {plan}",
-      "unlimited": "{count} workspace ready",
-      "usage": "{count} / {limit} workspaces used",
-      "activeSelected": "Active workspace selected",
-      "selectionPending": "Waiting for workspace selection"
+      "package": "Forfait : {plan}",
+      "unlimited": "{count} espace de travail prêt",
+      "usage": "{count} / {limit} espaces utilisés",
+      "activeSelected": "Espace actif sélectionné",
+      "selectionPending": "En attente de sélection d’un espace"
     },
     "account": {
-      "eyebrow": "Account Type",
-      "title": "Gestion de l’espace de travail",
-      "description": "Choose an individual, OSGB or enterprise flow. The next screens will adapt to it.",
-      "cardTitle": "Which structure will you start with?",
-      "cardDescription": "Individual accounts continue with a single workspace context; OSGB accounts continue with multi-company management.",
-      "info": "The individual flow is always open on this screen. OSGB and enterprise options become active only when granted by an admin.",
-      "adminApprovalRequired": "Admin approval is required.",
-      "displayName": "Account display name",
-      "displayNamePlaceholder": "Example: Mehmet Yildirim",
-      "companyName": "Company name",
-      "contactName": "Contact person",
-      "continue": "Continue",
+      "eyebrow": "Type de compte",
+      "title": "Choisissez votre compte RiskNova",
+      "description": "Choisissez un parcours individuel, OSGB ou entreprise. Les écrans suivants s’adaptent.",
+      "cardTitle": "Avec quelle structure commencez-vous ?",
+      "cardDescription": "Les comptes individuels ont un seul contexte d’espace ; les comptes OSGB gèrent plusieurs entreprises.",
+      "info": "Le parcours individuel est toujours disponible sur cet écran. Les options OSGB et entreprise ne s’activent que si un administrateur les autorise.",
+      "adminApprovalRequired": "Approbation administrateur requise.",
+      "displayName": "Nom d’affichage du compte",
+      "displayNamePlaceholder": "Exemple : Mehmet Yildirim",
+      "companyName": "Nom de l’entreprise",
+      "contactName": "Personne de contact",
+      "continue": "Continuer",
       "options": {
         "individual": {
-          "title": "Individual",
-          "description": "For a single professional or specialist."
+          "title": "Individuel",
+          "description": "Pour un professionnel ou une spécialiste seul(e)."
         },
         "osgb": {
           "title": "OSGB",
-          "description": "For multi-company and team management."
+          "description": "Pour la gestion multi-entreprises et d’équipe."
         },
         "enterprise": {
-          "title": "Enterprise",
-          "description": "Creates a contact request for enterprise needs."
+          "title": "Entreprise",
+          "description": "Crée une demande de contact pour les besoins entreprise."
         }
       }
     },
     "errors": {
-      "timeout": "Session or workspace information could not be retrieved in time. Refresh the page and try again; if the issue continues, sign out and sign in again.",
-      "fetchFailed": "Connection could not be established. Refresh the page and try again through getrisknova.com; if the session does not recover automatically, sign out and sign in again.",
-      "schemaMissing": "The new database fields required for account setup are not ready yet. Please try again after the migration is complete.",
-      "accountContextFailed": "Account context could not be read.",
-      "workspaceDataFailed": "Workspace data could not be retrieved.",
-      "accountTypeUnavailable": "Account type selection cannot be completed right now.",
-      "accountTypeFailed": "Account type selection could not be completed.",
-      "workspaceSaveUnavailable": "Workspace record cannot be completed right now.",
-      "workspaceSaveFailed": "Workspace record could not be completed.",
-      "activateFailed": "The selected workspace could not be activated.",
-      "dataTitle": "Workspace data could not be read",
-      "dataDescription": "This screen could not be prepared because the profile or workspace context is missing."
+      "timeout": "Les informations de session ou d’espace n’ont pas pu être récupérées à temps. Actualisez la page ; si le problème persiste, déconnectez-vous puis reconnectez-vous.",
+      "fetchFailed": "Connexion impossible. Actualisez et réessayez via getrisknova.com ; si la session ne se rétablit pas, déconnectez-vous puis reconnectez-vous.",
+      "schemaMissing": "Les nouveaux champs base de données nécessaires à la configuration du compte ne sont pas prêts. Réessayez après la migration.",
+      "accountContextFailed": "Impossible de lire le contexte du compte.",
+      "workspaceDataFailed": "Impossible de récupérer les données de l’espace de travail.",
+      "accountTypeUnavailable": "Le type de compte ne peut pas être choisi pour le moment.",
+      "accountTypeFailed": "Le type de compte n’a pas pu être choisi.",
+      "workspaceSaveUnavailable": "L’enregistrement de l’espace ne peut pas être terminé pour le moment.",
+      "workspaceSaveFailed": "L’enregistrement de l’espace n’a pas pu être terminé.",
+      "activateFailed": "L’espace sélectionné n’a pas pu être activé.",
+      "dataTitle": "Impossible de lire les données de l’espace",
+      "dataDescription": "Cet écran n’a pas pu être préparé car le profil ou le contexte d’espace est manquant."
     },
     "messages": {
-      "workspaceLimitReached": "You have reached the workspace limit in your plan. Use one of the existing workspaces or upgrade your plan before creating a new one.",
-      "localFallback": "Workspace tables are not complete in this environment yet. The selection was saved as a local context and you can use this workspace.",
-      "localContextUpdated": "{name} was updated as a local context.",
-      "workspaceSaved": "{name} was saved and selected as the active workspace."
+      "workspaceLimitReached": "Vous avez atteint la limite d’espaces de votre forfait. Utilisez un espace existant ou passez à un forfait supérieur avant d’en créer un nouveau.",
+      "localFallback": "Les tables d’espaces ne sont pas complètes dans cet environnement. La sélection a été enregistrée en contexte local ; vous pouvez utiliser cet espace.",
+      "localContextUpdated": "{name} a été mis à jour en contexte local.",
+      "workspaceSaved": "{name} a été enregistré et sélectionné comme espace actif."
     },
     "list": {
       "title": "Espaces de travail",
-      "description": "Each workspace carries a separate operational context. Select and edit here or change the active workspace.",
-      "empty": "No workspace is ready yet. Use the “New workspace” option below and complete the form on the right to create your first workspace.",
-      "currentlyActive": "This workspace is currently active across the system.",
-      "canSwitch": "You can switch to this workspace if you want.",
-      "view": "View"
+      "description": "Chaque espace a son propre contexte opérationnel. Sélectionnez et modifiez ici ou changez l’espace actif.",
+      "empty": "Aucun espace n’est prêt. Utilisez « Nouvel espace » ci-dessous et complétez le formulaire à droite pour créer le premier.",
+      "currentlyActive": "Cet espace est actuellement actif sur tout le système.",
+      "canSwitch": "Vous pouvez passer à cet espace si vous le souhaitez.",
+      "view": "Voir"
     },
     "newWorkspace": {
-      "title": "New workspace",
-      "description": "Start with an empty record; fill in company and workspace details yourself on the right.",
-      "newBadge": "New",
-      "limitBadge": "Limit"
+      "title": "Nouvel espace de travail",
+      "description": "Commencez avec un enregistrement vide ; complétez vous-même les informations entreprise et espace à droite.",
+      "newBadge": "Nouveau",
+      "limitBadge": "Limite"
     },
     "limit": {
-      "slotsLeft": "You can open {count} more empty workspace slots.",
-      "reached": "You have reached the active workspace limit in your current plan."
+      "slotsLeft": "Vous pouvez encore ouvrir {count} emplacements d’espace vides.",
+      "reached": "Vous avez atteint la limite d’espaces actifs de votre forfait actuel."
     },
     "details": {
-      "selectedTitle": "Selected workspace details",
-      "newTitle": "Create new workspace",
-      "description": "Select a workspace from the left. Complete the company / workspace record on the right; country and language define the Nova context, while company details feed all operation modules.",
-      "contextInfo": "The country selection in this workspace determines the official legislation filter; the language selection determines Nova and RAG terminology. Each workspace runs with its own operational context; once activated, modules use the active workspace context instead of asking again."
+      "selectedTitle": "Détails de l’espace sélectionné",
+      "newTitle": "Créer un nouvel espace",
+      "description": "Sélectionnez un espace à gauche. Complétez l’enregistrement entreprise / espace à droite ; le pays et la langue définissent le contexte Nova, les détails entreprise alimentent tous les modules opérationnels.",
+      "contextInfo": "Le pays détermine le filtre législatif officiel ; la langue détermine la terminologie Nova et RAG. Chaque espace a son propre contexte ; une fois activé, les modules utilisent l’espace actif sans redemander."
     },
     "fields": {
-      "workspaceName": "Workspace label",
-      "country": "Country",
-      "language": "Language",
-      "role": "Role",
+      "workspaceName": "Libellé de l’espace",
+      "country": "Pays",
+      "language": "Langue",
+      "role": "Rôle",
       "certification": "Certification",
-      "noCertification": "Continue without selecting a certification"
+      "noCertification": "Continuer sans certification"
     },
     "hints": {
-      "languageTimezone": "It will work with {language} language and {timezone} time zone.",
-      "certification": "If you select a certification matching the country and role context, the workspace expertise label becomes clearer."
+      "languageTimezone": "Fonctionnera en {language} avec le fuseau {timezone}.",
+      "certification": "Si vous choisissez une certification adaptée au pays et au rôle, le libellé d’expertise de l’espace sera plus clair."
     },
     "company": {
-      "sectionTitle": "Company / workspace record",
-      "sectionDescription": "The main information previously filled on the old companies screen should live here. When you select a workspace from the left, you edit that workspace record on the right.",
-      "officialName": "Official company / workspace name",
-      "shortName": "Short name / display name",
-      "kind": "Workspace type",
-      "sector": "Sector",
-      "naceCode": "NACE code",
-      "hazardClass": "Hazard class",
-      "address": "Address",
-      "city": "City",
+      "sectionTitle": "Enregistrement entreprise / espace",
+      "sectionDescription": "Les informations principales autrefois sur l’écran entreprises doivent être ici. En sélectionnant un espace à gauche, vous modifiez son enregistrement à droite.",
+      "officialName": "Nom officiel entreprise / espace",
+      "shortName": "Nom court / nom affiché",
+      "kind": "Type d’espace",
+      "sector": "Secteur",
+      "naceCode": "Code NACE",
+      "hazardClass": "Classe de danger",
+      "address": "Adresse",
+      "city": "Ville",
       "district": "District",
-      "contactPerson": "Contact person",
-      "sgkNumber": "Social security workplace no.",
-      "taxNumber": "Tax no.",
-      "taxOffice": "Tax office",
-      "employeeCount": "Employee count",
-      "shiftModel": "Shift model",
-      "employerTitle": "Employer title",
-      "employerName": "Employer",
-      "employerRepresentative": "Employer representative",
-      "locations": "Locations",
-      "departments": "Departments",
+      "contactPerson": "Personne de contact",
+      "sgkNumber": "N° d’établissement de sécurité sociale",
+      "taxNumber": "N° fiscal",
+      "taxOffice": "Service des impôts",
+      "employeeCount": "Effectif",
+      "shiftModel": "Modèle de postes",
+      "employerTitle": "Titre de l’employeur",
+      "employerName": "Employeur",
+      "employerRepresentative": "Représentant de l’employeur",
+      "locations": "Sites",
+      "departments": "Services",
       "notes": "Notes",
-      "locationsPlaceholder": "Write one location per line.",
-      "departmentsPlaceholder": "Write one department per line.",
-      "notesPlaceholder": "Write operation and field notes for this workspace.",
+      "locationsPlaceholder": "Un site par ligne.",
+      "departmentsPlaceholder": "Un service par ligne.",
+      "notesPlaceholder": "Notes opérationnelles et terrain pour cet espace.",
       "kindOptions": {
-        "private": "Private Sector",
-        "public": "Public Institution",
-        "municipality": "Municipality",
-        "ngo": "NGO / Foundation",
-        "construction": "Construction Site"
+        "private": "Secteur privé",
+        "public": "Institution publique",
+        "municipality": "Municipalité",
+        "ngo": "ONG / fondation",
+        "construction": "Chantier"
       },
       "hazardOptions": {
-        "low": "Low Hazard",
-        "medium": "Hazardous",
-        "high": "Very Hazardous"
+        "low": "Faible danger",
+        "medium": "Dangereux",
+        "high": "Très dangereux"
       }
     },
     "actions": {
-      "saveSettings": "Save workspace settings",
-      "createWorkspace": "Create workspace"
+      "saveSettings": "Enregistrer les paramètres de l’espace",
+      "createWorkspace": "Créer l’espace"
     },
     "profile": {
-      "open": "Open profile",
-      "title": "Personal information",
-      "description": "This information is shared across the whole site. Workspaces only separate operation, country and language context.",
-      "fullName": "Full name",
-      "titleField": "Title",
-      "notAdded": "Not added yet",
-      "completeInProfile": "To be completed in profile",
-      "footer": "Profile information remains common across the whole experience. When the workspace changes, only the operation context, legislation filter and language preference change."
+      "open": "Ouvrir le profil",
+      "title": "Informations personnelles",
+      "description": "Ces informations sont communes sur tout le site. Les espaces séparent uniquement le contexte opérationnel, le pays et la langue.",
+      "fullName": "Nom complet",
+      "titleField": "Titre",
+      "notAdded": "Pas encore renseigné",
+      "completeInProfile": "À compléter dans le profil",
+      "footer": "Les données de profil restent communes. Quand l’espace change, seuls le contexte opérationnel, le filtre légal et la langue changent."
     },
     "languages": {
-      "tr": "Turkish",
-      "en": "English",
-      "de": "German",
-      "fr": "French",
-      "es": "Spanish",
-      "ru": "Russian",
-      "az": "Azerbaijani",
-      "ar": "Arabic",
+      "tr": "Turc",
+      "en": "Anglais",
+      "de": "Allemand",
+      "fr": "Français",
+      "es": "Espagnol",
+      "ru": "Russe",
+      "az": "Azéri",
+      "ar": "Arabe",
       "hi": "Hindi",
-      "id": "Indonesian",
-      "ja": "Japanese",
-      "ko": "Korean",
-      "zh": "Chinese"
+      "id": "Indonésien",
+      "ja": "Japonais",
+      "ko": "Coréen",
+      "zh": "Chinois"
     },
     "roles": {
-      "safetyProfessional": "OHS specialist",
-      "workplaceDoctor": "Workplace doctor",
-      "employer": "Employer",
-      "employerRepresentative": "Employer representative",
-      "employeeRepresentative": "Employee representative",
-      "viewer": "Viewer",
-      "admin": "Admin"
+      "safetyProfessional": "Spécialiste SST",
+      "workplaceDoctor": "Médecin du travail",
+      "employer": "Employeur",
+      "employerRepresentative": "Représentant de l’employeur",
+      "employeeRepresentative": "Représentant du personnel",
+      "viewer": "Lecteur",
+      "admin": "Administrateur"
     }
   }
 }

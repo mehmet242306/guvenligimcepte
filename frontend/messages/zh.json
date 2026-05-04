@@ -874,7 +874,8 @@
         "addDecision": "+ Karar Ekle",
         "decisionText": "Karar metni",
         "nextDate": "Sonraki Toplantı Tarihi"
-      }
+      },
+      "location": "地点"
     },
     "personnel": {
       "title": "Personel Yönetimi",
@@ -5687,7 +5688,6 @@
       "naReasonPlaceholder": "N/A justification (required)"
     },
     "findings": {
-      "intro": "Review screen: for the findings below you can choose a link to risk, action, or CAPA, or mark the record as reviewed. This step connects the field with office follow-up.",
       "sidebarTitle": "Findings ({count})",
       "emptySidebar": "No findings yet. Non-conform or critical answers appear here.",
       "decisionPending": "Decision pending",
@@ -5809,197 +5809,197 @@
   },
   "workspaceOnboarding": {
     "eyebrow": "工作区",
-    "title": "你要在哪个工作区继续？",
-    "description": "First select a workspace or create a new one. Choose from the left panel, complete that workspace record on the right; when activated, risk analysis, documents, library and field modules use the active workspace context.",
-    "localWorkspaceName": "Local Workspace",
-    "goToWorkspace": "Go to workspace",
-    "activateAndGo": "Activate this workspace and go",
+    "title": "您要在哪个工作区继续？",
+    "description": "请先选择工作区或新建一个。在左侧面板选择，在右侧完成该工作区的档案；激活后，风险分析、文档、资料库和现场模块都会使用当前激活的工作区上下文。",
+    "localWorkspaceName": "本地工作区",
+    "goToWorkspace": "进入工作区",
+    "activateAndGo": "激活此工作区并继续",
     "common": {
-      "email": "Email",
-      "phone": "Phone",
-      "saving": "Saving...",
-      "select": "Select"
+      "email": "电子邮件",
+      "phone": "电话",
+      "saving": "正在保存…",
+      "select": "选择"
     },
     "plans": {
-      "individualFree": "Individual Free",
+      "individualFree": "个人免费版",
       "osgbStarter": "OSGB Starter",
-      "enterprise": "Enterprise",
-      "unknown": "Unknown plan"
+      "enterprise": "企业版",
+      "unknown": "未知套餐"
     },
     "state": {
-      "selected": "Selected",
-      "active": "Active",
-      "default": "Default",
-      "ready": "Ready"
+      "selected": "已选",
+      "active": "激活",
+      "default": "默认",
+      "ready": "就绪"
     },
     "meta": {
-      "package": "Plan: {plan}",
-      "unlimited": "{count} workspace ready",
-      "usage": "{count} / {limit} workspaces used",
-      "activeSelected": "Active workspace selected",
-      "selectionPending": "Waiting for workspace selection"
+      "package": "套餐：{plan}",
+      "unlimited": "已有 {count} 个工作区可用",
+      "usage": "已使用 {count} / {limit} 个工作区",
+      "activeSelected": "已选择当前激活的工作区",
+      "selectionPending": "等待选择工作区"
     },
     "account": {
-      "eyebrow": "Account Type",
-      "title": "管理工作区",
-      "description": "Choose an individual, OSGB or enterprise flow. The next screens will adapt to it.",
-      "cardTitle": "Which structure will you start with?",
-      "cardDescription": "Individual accounts continue with a single workspace context; OSGB accounts continue with multi-company management.",
-      "info": "The individual flow is always open on this screen. OSGB and enterprise options become active only when granted by an admin.",
-      "adminApprovalRequired": "Admin approval is required.",
-      "displayName": "Account display name",
-      "displayNamePlaceholder": "Example: Mehmet Yildirim",
-      "companyName": "Company name",
-      "contactName": "Contact person",
-      "continue": "Continue",
+      "eyebrow": "账户类型",
+      "title": "选择您的 RiskNova 账户",
+      "description": "选择个人、OSGB 或企业流程，后续界面将随之调整。",
+      "cardTitle": "您将以哪种结构开始？",
+      "cardDescription": "个人账户在单一工作区上下文中继续；OSGB 账户用于多公司管理。",
+      "info": "此屏幕上个人流程始终可用。OSGB 与企业选项仅在管理员授权后才会启用。",
+      "adminApprovalRequired": "需要管理员批准。",
+      "displayName": "账户显示名称",
+      "displayNamePlaceholder": "示例：Mehmet Yildirim",
+      "companyName": "公司名称",
+      "contactName": "联系人",
+      "continue": "继续",
       "options": {
         "individual": {
-          "title": "Individual",
-          "description": "For a single professional or specialist."
+          "title": "个人",
+          "description": "适用于单个专业人员或专家。"
         },
         "osgb": {
           "title": "OSGB",
-          "description": "For multi-company and team management."
+          "description": "适用于多公司与团队管理。"
         },
         "enterprise": {
-          "title": "Enterprise",
-          "description": "Creates a contact request for enterprise needs."
+          "title": "企业",
+          "description": "为企业需求创建联系请求。"
         }
       }
     },
     "errors": {
-      "timeout": "Session or workspace information could not be retrieved in time. Refresh the page and try again; if the issue continues, sign out and sign in again.",
-      "fetchFailed": "Connection could not be established. Refresh the page and try again through getrisknova.com; if the session does not recover automatically, sign out and sign in again.",
-      "schemaMissing": "The new database fields required for account setup are not ready yet. Please try again after the migration is complete.",
-      "accountContextFailed": "Account context could not be read.",
-      "workspaceDataFailed": "Workspace data could not be retrieved.",
-      "accountTypeUnavailable": "Account type selection cannot be completed right now.",
-      "accountTypeFailed": "Account type selection could not be completed.",
-      "workspaceSaveUnavailable": "Workspace record cannot be completed right now.",
-      "workspaceSaveFailed": "Workspace record could not be completed.",
-      "activateFailed": "The selected workspace could not be activated.",
-      "dataTitle": "Workspace data could not be read",
-      "dataDescription": "This screen could not be prepared because the profile or workspace context is missing."
+      "timeout": "未能及时获取会话或工作区信息。请刷新页面；若仍失败，请退出后重新登录。",
+      "fetchFailed": "无法建立连接。请刷新页面并通过 getrisknova.com 重试；若会话无法自动恢复，请退出后重新登录。",
+      "schemaMissing": "账户设置所需的新数据库字段尚未就绪。请在迁移完成后再试。",
+      "accountContextFailed": "无法读取账户上下文。",
+      "workspaceDataFailed": "无法获取工作区数据。",
+      "accountTypeUnavailable": "当前无法完成账户类型选择。",
+      "accountTypeFailed": "无法完成账户类型选择。",
+      "workspaceSaveUnavailable": "当前无法完成工作区档案。",
+      "workspaceSaveFailed": "无法完成工作区档案。",
+      "activateFailed": "无法激活所选工作区。",
+      "dataTitle": "无法读取工作区数据",
+      "dataDescription": "由于缺少个人资料或工作区上下文，无法准备此界面。"
     },
     "messages": {
-      "workspaceLimitReached": "You have reached the workspace limit in your plan. Use one of the existing workspaces or upgrade your plan before creating a new one.",
-      "localFallback": "Workspace tables are not complete in this environment yet. The selection was saved as a local context and you can use this workspace.",
-      "localContextUpdated": "{name} was updated as a local context.",
-      "workspaceSaved": "{name} was saved and selected as the active workspace."
+      "workspaceLimitReached": "您已达到套餐中的工作区上限。创建新的之前请使用现有工作区或升级套餐。",
+      "localFallback": "此环境中工作区相关表尚未完整。选择已保存为本地上下文，您仍可使用该工作区。",
+      "localContextUpdated": "{name} 已更新为本地上下文。",
+      "workspaceSaved": "{name} 已保存并被选为激活工作区。"
     },
     "list": {
       "title": "工作区",
-      "description": "Each workspace carries a separate operational context. Select and edit here or change the active workspace.",
-      "empty": "No workspace is ready yet. Use the “New workspace” option below and complete the form on the right to create your first workspace.",
-      "currentlyActive": "This workspace is currently active across the system.",
-      "canSwitch": "You can switch to this workspace if you want.",
-      "view": "View"
+      "description": "每个工作区都有独立的运营上下文。在此选择并编辑，或切换激活的工作区。",
+      "empty": "尚无可用工作区。请使用下方「新建工作区」，并在右侧完成表单以创建第一个。",
+      "currentlyActive": "该工作区当前在系统范围内处于激活状态。",
+      "canSwitch": "如需可以切换到该工作区。",
+      "view": "查看"
     },
     "newWorkspace": {
-      "title": "New workspace",
-      "description": "Start with an empty record; fill in company and workspace details yourself on the right.",
-      "newBadge": "New",
-      "limitBadge": "Limit"
+      "title": "新建工作区",
+      "description": "从空白档案开始；请在右侧自行填写公司与工作区详情。",
+      "newBadge": "新",
+      "limitBadge": "限额"
     },
     "limit": {
-      "slotsLeft": "You can open {count} more empty workspace slots.",
-      "reached": "You have reached the active workspace limit in your current plan."
+      "slotsLeft": "您还可以再开启 {count} 个空白工作区名额。",
+      "reached": "您已达到当前套餐的激活工作区上限。"
     },
     "details": {
-      "selectedTitle": "Selected workspace details",
-      "newTitle": "Create new workspace",
-      "description": "Select a workspace from the left. Complete the company / workspace record on the right; country and language define the Nova context, while company details feed all operation modules.",
-      "contextInfo": "The country selection in this workspace determines the official legislation filter; the language selection determines Nova and RAG terminology. Each workspace runs with its own operational context; once activated, modules use the active workspace context instead of asking again."
+      "selectedTitle": "所选工作区详情",
+      "newTitle": "创建工作区",
+      "description": "在左侧选择工作区。在右侧完成公司/工作区档案；国家与语言定义 Nova 上下文，公司信息供所有运营模块使用。",
+      "contextInfo": "此工作区中的国家选择决定官方法规筛选；语言选择决定 Nova 与 RAG 术语。每个工作区在自身运营上下文中运行；激活后，各模块使用激活的工作区上下文而不再重复询问。"
     },
     "fields": {
-      "workspaceName": "Workspace label",
-      "country": "Country",
-      "language": "Language",
-      "role": "Role",
-      "certification": "Certification",
-      "noCertification": "Continue without selecting a certification"
+      "workspaceName": "工作区标签",
+      "country": "国家/地区",
+      "language": "语言",
+      "role": "角色",
+      "certification": "资质认证",
+      "noCertification": "不选择认证并继续"
     },
     "hints": {
-      "languageTimezone": "It will work with {language} language and {timezone} time zone.",
-      "certification": "If you select a certification matching the country and role context, the workspace expertise label becomes clearer."
+      "languageTimezone": "将使用 {language} 语言与 {timezone} 时区。",
+      "certification": "若选择与国家和角色相符的认证，工作区的专业标签会更清晰。"
     },
     "company": {
-      "sectionTitle": "Company / workspace record",
-      "sectionDescription": "The main information previously filled on the old companies screen should live here. When you select a workspace from the left, you edit that workspace record on the right.",
-      "officialName": "Official company / workspace name",
-      "shortName": "Short name / display name",
-      "kind": "Workspace type",
-      "sector": "Sector",
-      "naceCode": "NACE code",
-      "hazardClass": "Hazard class",
-      "address": "Address",
-      "city": "City",
-      "district": "District",
-      "contactPerson": "Contact person",
-      "sgkNumber": "Social security workplace no.",
-      "taxNumber": "Tax no.",
-      "taxOffice": "Tax office",
-      "employeeCount": "Employee count",
-      "shiftModel": "Shift model",
-      "employerTitle": "Employer title",
-      "employerName": "Employer",
-      "employerRepresentative": "Employer representative",
-      "locations": "Locations",
-      "departments": "Departments",
-      "notes": "Notes",
-      "locationsPlaceholder": "Write one location per line.",
-      "departmentsPlaceholder": "Write one department per line.",
-      "notesPlaceholder": "Write operation and field notes for this workspace.",
+      "sectionTitle": "公司/工作区档案",
+      "sectionDescription": "原「公司」界面填写的主要信息应集中在此。在左侧选择工作区后，在右侧编辑该工作区的档案。",
+      "officialName": "公司/工作区正式名称",
+      "shortName": "简称/显示名称",
+      "kind": "工作区类型",
+      "sector": "行业",
+      "naceCode": "NACE 代码",
+      "hazardClass": "危险等级",
+      "address": "地址",
+      "city": "城市",
+      "district": "区/县",
+      "contactPerson": "联系人",
+      "sgkNumber": "社保登记工作场所编号",
+      "taxNumber": "税号",
+      "taxOffice": "税务机关",
+      "employeeCount": "员工人数",
+      "shiftModel": "轮班模式",
+      "employerTitle": "用人单位职务",
+      "employerName": "用人单位",
+      "employerRepresentative": "用人单位代表",
+      "locations": "地点",
+      "departments": "部门",
+      "notes": "备注",
+      "locationsPlaceholder": "每行填写一个地点。",
+      "departmentsPlaceholder": "每行填写一个部门。",
+      "notesPlaceholder": "填写与本工作区相关的运营与现场备注。",
       "kindOptions": {
-        "private": "Private Sector",
-        "public": "Public Institution",
-        "municipality": "Municipality",
-        "ngo": "NGO / Foundation",
-        "construction": "Construction Site"
+        "private": "私营部门",
+        "public": "公共机构",
+        "municipality": "市政",
+        "ngo": "非政府组织/基金会",
+        "construction": "建筑工地"
       },
       "hazardOptions": {
-        "low": "Low Hazard",
-        "medium": "Hazardous",
-        "high": "Very Hazardous"
+        "low": "低危险",
+        "medium": "危险",
+        "high": "非常危险"
       }
     },
     "actions": {
-      "saveSettings": "Save workspace settings",
-      "createWorkspace": "Create workspace"
+      "saveSettings": "保存工作区设置",
+      "createWorkspace": "创建工作区"
     },
     "profile": {
-      "open": "Open profile",
-      "title": "Personal information",
-      "description": "This information is shared across the whole site. Workspaces only separate operation, country and language context.",
-      "fullName": "Full name",
-      "titleField": "Title",
-      "notAdded": "Not added yet",
-      "completeInProfile": "To be completed in profile",
-      "footer": "Profile information remains common across the whole experience. When the workspace changes, only the operation context, legislation filter and language preference change."
+      "open": "打开个人资料",
+      "title": "个人信息",
+      "description": "这些信息在全站共享。工作区仅区分运营、国家与语言上下文。",
+      "fullName": "姓名",
+      "titleField": "职务",
+      "notAdded": "尚未填写",
+      "completeInProfile": "在个人资料中完善",
+      "footer": "个人资料信息在整个体验中保持通用。更换工作区时，仅运营上下文、法规筛选与语言偏好会改变。"
     },
     "languages": {
-      "tr": "Turkish",
-      "en": "English",
-      "de": "German",
-      "fr": "French",
-      "es": "Spanish",
-      "ru": "Russian",
-      "az": "Azerbaijani",
-      "ar": "Arabic",
-      "hi": "Hindi",
-      "id": "Indonesian",
-      "ja": "Japanese",
-      "ko": "Korean",
-      "zh": "Chinese"
+      "tr": "土耳其语",
+      "en": "英语",
+      "de": "德语",
+      "fr": "法语",
+      "es": "西班牙语",
+      "ru": "俄语",
+      "az": "阿塞拜疆语",
+      "ar": "阿拉伯语",
+      "hi": "印地语",
+      "id": "印尼语",
+      "ja": "日语",
+      "ko": "韩语",
+      "zh": "中文"
     },
     "roles": {
-      "safetyProfessional": "OHS specialist",
-      "workplaceDoctor": "Workplace doctor",
-      "employer": "Employer",
-      "employerRepresentative": "Employer representative",
-      "employeeRepresentative": "Employee representative",
-      "viewer": "Viewer",
-      "admin": "Admin"
+      "safetyProfessional": "职业健康安全专员",
+      "workplaceDoctor": "企业医师",
+      "employer": "用人单位",
+      "employerRepresentative": "用人单位代表",
+      "employeeRepresentative": "职工代表",
+      "viewer": "只读查看",
+      "admin": "管理员"
     }
   }
 }

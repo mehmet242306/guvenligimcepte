@@ -874,7 +874,8 @@
         "addDecision": "+ Karar Ekle",
         "decisionText": "Karar metni",
         "nextDate": "Sonraki Toplantı Tarihi"
-      }
+      },
+      "location": "Lokasiya"
     },
     "personnel": {
       "title": "Personel Yönetimi",
@@ -5687,7 +5688,6 @@
       "naReasonPlaceholder": "N/A justification (required)"
     },
     "findings": {
-      "intro": "Review screen: for the findings below you can choose a link to risk, action, or CAPA, or mark the record as reviewed. This step connects the field with office follow-up.",
       "sidebarTitle": "Findings ({count})",
       "emptySidebar": "No findings yet. Non-conform or critical answers appear here.",
       "decisionPending": "Decision pending",
@@ -5808,197 +5808,197 @@
     "sidebarDefaultEmpty": "No content."
   },
   "workspaceOnboarding": {
-    "eyebrow": "İş sahələri",
-    "title": "Hansı iş sahəsində davam edəcəksən?",
-    "description": "First select a workspace or create a new one. Choose from the left panel, complete that workspace record on the right; when activated, risk analysis, documents, library and field modules use the active workspace context.",
-    "localWorkspaceName": "Local Workspace",
-    "goToWorkspace": "Go to workspace",
-    "activateAndGo": "Activate this workspace and go",
+    "eyebrow": "İş mühitləri",
+    "title": "Hansı iş mühitində davam etmək istəyirsiniz?",
+    "description": "Əvvəlcə iş mühiti seçin və ya yenisini yaradın. Soldan seçin, sağdakı qeydi tamamlayın; aktivləşdikdən sonra risk təhlili, sənədlər, kitabxana və sahə modulları aktiv iş mühiti kontekstindən istifadə edir.",
+    "localWorkspaceName": "Lokal iş mühiti",
+    "goToWorkspace": "İş mühitinə keç",
+    "activateAndGo": "Bu mühiti aktiv et və davam et",
     "common": {
-      "email": "Email",
-      "phone": "Phone",
-      "saving": "Saving...",
-      "select": "Select"
+      "email": "E-poçt",
+      "phone": "Telefon",
+      "saving": "Saxlanılır…",
+      "select": "Seçin"
     },
     "plans": {
-      "individualFree": "Individual Free",
+      "individualFree": "Fərdi pulsuz",
       "osgbStarter": "OSGB Starter",
-      "enterprise": "Enterprise",
-      "unknown": "Unknown plan"
+      "enterprise": "Korporativ",
+      "unknown": "Naməlum plan"
     },
     "state": {
-      "selected": "Selected",
-      "active": "Active",
-      "default": "Default",
-      "ready": "Ready"
+      "selected": "Seçilib",
+      "active": "Aktiv",
+      "default": "Varsayılan",
+      "ready": "Hazır"
     },
     "meta": {
       "package": "Plan: {plan}",
-      "unlimited": "{count} workspace ready",
-      "usage": "{count} / {limit} workspaces used",
-      "activeSelected": "Active workspace selected",
-      "selectionPending": "Waiting for workspace selection"
+      "unlimited": "{count} iş mühiti hazırdır",
+      "usage": "{count} / {limit} iş mühiti istifadə olunur",
+      "activeSelected": "Aktiv iş mühiti seçilib",
+      "selectionPending": "İş mühiti seçimi gözlənilir"
     },
     "account": {
-      "eyebrow": "Account Type",
-      "title": "İş sahəsini idarə et",
-      "description": "Choose an individual, OSGB or enterprise flow. The next screens will adapt to it.",
-      "cardTitle": "Which structure will you start with?",
-      "cardDescription": "Individual accounts continue with a single workspace context; OSGB accounts continue with multi-company management.",
-      "info": "The individual flow is always open on this screen. OSGB and enterprise options become active only when granted by an admin.",
-      "adminApprovalRequired": "Admin approval is required.",
-      "displayName": "Account display name",
-      "displayNamePlaceholder": "Example: Mehmet Yildirim",
-      "companyName": "Company name",
-      "contactName": "Contact person",
-      "continue": "Continue",
+      "eyebrow": "Hesab növü",
+      "title": "RiskNova hesabınızı seçin",
+      "description": "Fərdi, OSGB və ya korporativ axını seçin. Növbəti ekranlar buna uyğunlaşacaq.",
+      "cardTitle": "Hansı strukturla başlayacaqsınız?",
+      "cardDescription": "Fərdi hesablar tək iş mühiti konteksti ilə; OSGB hesabları çox şirkət idarəetməsi ilə davam edir.",
+      "info": "Bu ekranda fərdi axın həmişə açıqdır. OSGB və korporativ seçimlər yalnız admin icazəsi ilə aktiv olur.",
+      "adminApprovalRequired": "Admin təsdiqi tələb olunur.",
+      "displayName": "Hesab görünən adı",
+      "displayNamePlaceholder": "Nümunə: Mehmet Yildirim",
+      "companyName": "Şirkət adı",
+      "contactName": "Əlaqə şəxsi",
+      "continue": "Davam et",
       "options": {
         "individual": {
-          "title": "Individual",
-          "description": "For a single professional or specialist."
+          "title": "Fərdi",
+          "description": "Tək mütəxəssis və ya peşəkar üçün."
         },
         "osgb": {
           "title": "OSGB",
-          "description": "For multi-company and team management."
+          "description": "Çox şirkət və komanda idarəetməsi üçün."
         },
         "enterprise": {
-          "title": "Enterprise",
-          "description": "Creates a contact request for enterprise needs."
+          "title": "Korporativ",
+          "description": "Korporativ ehtiyaclar üçün əlaqə sorğusu yaradır."
         }
       }
     },
     "errors": {
-      "timeout": "Session or workspace information could not be retrieved in time. Refresh the page and try again; if the issue continues, sign out and sign in again.",
-      "fetchFailed": "Connection could not be established. Refresh the page and try again through getrisknova.com; if the session does not recover automatically, sign out and sign in again.",
-      "schemaMissing": "The new database fields required for account setup are not ready yet. Please try again after the migration is complete.",
-      "accountContextFailed": "Account context could not be read.",
-      "workspaceDataFailed": "Workspace data could not be retrieved.",
-      "accountTypeUnavailable": "Account type selection cannot be completed right now.",
-      "accountTypeFailed": "Account type selection could not be completed.",
-      "workspaceSaveUnavailable": "Workspace record cannot be completed right now.",
-      "workspaceSaveFailed": "Workspace record could not be completed.",
-      "activateFailed": "The selected workspace could not be activated.",
-      "dataTitle": "Workspace data could not be read",
-      "dataDescription": "This screen could not be prepared because the profile or workspace context is missing."
+      "timeout": "Sessiya və ya iş mühiti məlumatı vaxtında alına bilmədi. Səhifəni yeniləyin; davam edərsə çıxış edib yenidən daxil olun.",
+      "fetchFailed": "Bağlantı qurula bilmədi. Səhifəni yeniləyib getrisknova.com vasitəsilə yenidən cəhd edin; sessiya bərpa olunmazsa çıxış edib yenidən daxil olun.",
+      "schemaMissing": "Hesab qurulumu üçün yeni verilənlər bazası sahələri hələ hazır deyil. Miqrasiya bitdikdən sonra yenidən cəhd edin.",
+      "accountContextFailed": "Hesab konteksti oxuna bilmədi.",
+      "workspaceDataFailed": "İş mühiti məlumatı alına bilmədi.",
+      "accountTypeUnavailable": "Hesab növü seçimi hazırda tamamlana bilmir.",
+      "accountTypeFailed": "Hesab növü seçimi tamamlana bilmədi.",
+      "workspaceSaveUnavailable": "İş mühiti qeydi hazırda tamamlana bilmir.",
+      "workspaceSaveFailed": "İş mühiti qeydi tamamlana bilmədi.",
+      "activateFailed": "Seçilmiş iş mühiti aktivləşdirilə bilmədi.",
+      "dataTitle": "İş mühiti məlumatı oxuna bilmədi",
+      "dataDescription": "Profil və ya iş mühiti konteksti olmadığı üçün bu ekran hazırlana bilmədi."
     },
     "messages": {
-      "workspaceLimitReached": "You have reached the workspace limit in your plan. Use one of the existing workspaces or upgrade your plan before creating a new one.",
-      "localFallback": "Workspace tables are not complete in this environment yet. The selection was saved as a local context and you can use this workspace.",
-      "localContextUpdated": "{name} was updated as a local context.",
-      "workspaceSaved": "{name} was saved and selected as the active workspace."
+      "workspaceLimitReached": "Planınızdakı iş mühiti limitinə çatdınız. Yenisini yaratmazdan əvvəl mövcud mühitlərdən birini istifadə edin və ya planı yüksəldin.",
+      "localFallback": "İş mühiti cədvəlləri bu mühitdə hələ tam deyil. Seçim lokal kontekst kimi saxlanıldı; bu mühitdən istifadə edə bilərsiniz.",
+      "localContextUpdated": "{name} lokal kontekst kimi yeniləndi.",
+      "workspaceSaved": "{name} saxlanıldı və aktiv iş mühiti kimi seçildi."
     },
     "list": {
-      "title": "İş sahələri",
-      "description": "Each workspace carries a separate operational context. Select and edit here or change the active workspace.",
-      "empty": "No workspace is ready yet. Use the “New workspace” option below and complete the form on the right to create your first workspace.",
-      "currentlyActive": "This workspace is currently active across the system.",
-      "canSwitch": "You can switch to this workspace if you want.",
-      "view": "View"
+      "title": "İş mühitləri",
+      "description": "Hər mühit ayrı əməliyyat konteksti daşıyır. Buradan seçib redaktə edin və ya aktiv mühiti dəyişin.",
+      "empty": "Hələ hazır iş mühiti yoxdur. Aşağıdakı «Yeni iş mühiti» ilə sağdakı formu dolduraraq birincisini yaradın.",
+      "currentlyActive": "Bu mühit hazırda bütün sistemdə aktivdir.",
+      "canSwitch": "İstəsəniz bu mühitə keçə bilərsiniz.",
+      "view": "Baxış"
     },
     "newWorkspace": {
-      "title": "New workspace",
-      "description": "Start with an empty record; fill in company and workspace details yourself on the right.",
-      "newBadge": "New",
+      "title": "Yeni iş mühiti",
+      "description": "Boş qeydlə başlayın; şirkət və iş mühiti məlumatlarını sağda özünüz doldurun.",
+      "newBadge": "Yeni",
       "limitBadge": "Limit"
     },
     "limit": {
-      "slotsLeft": "You can open {count} more empty workspace slots.",
-      "reached": "You have reached the active workspace limit in your current plan."
+      "slotsLeft": "Daha {count} boş iş mühiti yeri aça bilərsiniz.",
+      "reached": "Cari planınızdakı aktiv iş mühiti limitinə çatdınız."
     },
     "details": {
-      "selectedTitle": "Selected workspace details",
-      "newTitle": "Create new workspace",
-      "description": "Select a workspace from the left. Complete the company / workspace record on the right; country and language define the Nova context, while company details feed all operation modules.",
-      "contextInfo": "The country selection in this workspace determines the official legislation filter; the language selection determines Nova and RAG terminology. Each workspace runs with its own operational context; once activated, modules use the active workspace context instead of asking again."
+      "selectedTitle": "Seçilmiş iş mühiti təfərrüatları",
+      "newTitle": "Yeni iş mühiti yarat",
+      "description": "Soldan mühit seçin. Sağda şirkət / iş mühiti qeydini tamamlayın; ölkə və dil Nova kontekstini, şirkət məlumatları isə bütün əməliyyat modullarını qidalandırır.",
+      "contextInfo": "Bu mühitdə ölkə seçimi rəsmi qanunvericilik süzgəcini, dil seçimi isə Nova və RAG terminologiyasını müəyyən edir. Hər mühit öz konteksti ilə işləyir; aktivləşdikdən sonra modullar yenidən soruşmadan aktiv mühitdən istifadə edir."
     },
     "fields": {
-      "workspaceName": "Workspace label",
-      "country": "Country",
-      "language": "Language",
-      "role": "Role",
-      "certification": "Certification",
-      "noCertification": "Continue without selecting a certification"
+      "workspaceName": "İş mühiti etiketi",
+      "country": "Ölkə",
+      "language": "Dil",
+      "role": "Rol",
+      "certification": "Sertifikat",
+      "noCertification": "Sertifikat seçmədən davam et"
     },
     "hints": {
-      "languageTimezone": "It will work with {language} language and {timezone} time zone.",
-      "certification": "If you select a certification matching the country and role context, the workspace expertise label becomes clearer."
+      "languageTimezone": "{language} dili və {timezone} saat qurşağı ilə işləyəcək.",
+      "certification": "Ölkə və rol kontekstinə uyğun sertifikat seçsəniz, mühitin ekspertiza etiketi daha aydın olar."
     },
     "company": {
-      "sectionTitle": "Company / workspace record",
-      "sectionDescription": "The main information previously filled on the old companies screen should live here. When you select a workspace from the left, you edit that workspace record on the right.",
-      "officialName": "Official company / workspace name",
-      "shortName": "Short name / display name",
-      "kind": "Workspace type",
-      "sector": "Sector",
-      "naceCode": "NACE code",
-      "hazardClass": "Hazard class",
-      "address": "Address",
-      "city": "City",
-      "district": "District",
-      "contactPerson": "Contact person",
-      "sgkNumber": "Social security workplace no.",
-      "taxNumber": "Tax no.",
-      "taxOffice": "Tax office",
-      "employeeCount": "Employee count",
-      "shiftModel": "Shift model",
-      "employerTitle": "Employer title",
-      "employerName": "Employer",
-      "employerRepresentative": "Employer representative",
-      "locations": "Locations",
-      "departments": "Departments",
-      "notes": "Notes",
-      "locationsPlaceholder": "Write one location per line.",
-      "departmentsPlaceholder": "Write one department per line.",
-      "notesPlaceholder": "Write operation and field notes for this workspace.",
+      "sectionTitle": "Şirkət / iş mühiti qeydi",
+      "sectionDescription": "Köhnə şirkətlər ekranında doldurulan əsas məlumatlar burada olmalıdır. Soldan mühit seçəndə sağda onun qeydini redaktə edirsiniz.",
+      "officialName": "Rəsmi şirkət / iş mühiti adı",
+      "shortName": "Qısa ad / görünən ad",
+      "kind": "İş mühiti tipi",
+      "sector": "Sektor",
+      "naceCode": "NACE kodu",
+      "hazardClass": "Təhlükə sinfi",
+      "address": "Ünvan",
+      "city": "Şəhər",
+      "district": "Rayon",
+      "contactPerson": "Əlaqə şəxsi",
+      "sgkNumber": "Sosial sığorta iş yeri nömrəsi",
+      "taxNumber": "VÖEN",
+      "taxOffice": "Vergi idarəsi",
+      "employeeCount": "İşçi sayı",
+      "shiftModel": "Növbə modeli",
+      "employerTitle": "İşəgötürən vəzifəsi",
+      "employerName": "İşəgötürən",
+      "employerRepresentative": "İşəgötürən nümayəndəsi",
+      "locations": "Lokasiyalar",
+      "departments": "Şöbələr",
+      "notes": "Qeydlər",
+      "locationsPlaceholder": "Hər sətirdə bir lokasiya yazın.",
+      "departmentsPlaceholder": "Hər sətirdə bir şöbə yazın.",
+      "notesPlaceholder": "Bu iş mühiti üçün əməliyyat və sahə qeydləri.",
       "kindOptions": {
-        "private": "Private Sector",
-        "public": "Public Institution",
-        "municipality": "Municipality",
-        "ngo": "NGO / Foundation",
-        "construction": "Construction Site"
+        "private": "Özəl sektor",
+        "public": "Dövlət qurumu",
+        "municipality": "Bələdiyyə",
+        "ngo": "QHT / fond",
+        "construction": "Tikinti meydançası"
       },
       "hazardOptions": {
-        "low": "Low Hazard",
-        "medium": "Hazardous",
-        "high": "Very Hazardous"
+        "low": "Az təhlükəli",
+        "medium": "Təhlükəli",
+        "high": "Çox təhlükəli"
       }
     },
     "actions": {
-      "saveSettings": "Save workspace settings",
-      "createWorkspace": "Create workspace"
+      "saveSettings": "İş mühiti parametrlərini saxla",
+      "createWorkspace": "İş mühiti yarat"
     },
     "profile": {
-      "open": "Open profile",
-      "title": "Personal information",
-      "description": "This information is shared across the whole site. Workspaces only separate operation, country and language context.",
-      "fullName": "Full name",
-      "titleField": "Title",
-      "notAdded": "Not added yet",
-      "completeInProfile": "To be completed in profile",
-      "footer": "Profile information remains common across the whole experience. When the workspace changes, only the operation context, legislation filter and language preference change."
+      "open": "Profili aç",
+      "title": "Şəxsi məlumatlar",
+      "description": "Bu məlumatlar bütün saytda ortaqdır. İş mühitləri yalnız əməliyyat, ölkə və dil kontekstini ayırır.",
+      "fullName": "Ad soyad",
+      "titleField": "Vəzifə",
+      "notAdded": "Hələ əlavə edilməyib",
+      "completeInProfile": "Profildə tamamlanacaq",
+      "footer": "Profil məlumatları bütün təcrübədə ortaq qalır. İş mühiti dəyişəndə yalnız əməliyyat konteksti, qanunvericilik süzgəci və dil seçimi dəyişir."
     },
     "languages": {
-      "tr": "Turkish",
-      "en": "English",
-      "de": "German",
-      "fr": "French",
-      "es": "Spanish",
-      "ru": "Russian",
-      "az": "Azerbaijani",
-      "ar": "Arabic",
-      "hi": "Hindi",
-      "id": "Indonesian",
-      "ja": "Japanese",
-      "ko": "Korean",
-      "zh": "Chinese"
+      "tr": "Türkcə",
+      "en": "İngiliscə",
+      "de": "Almanca",
+      "fr": "Fransızca",
+      "es": "İspanca",
+      "ru": "Rusca",
+      "az": "Azərbaycanca",
+      "ar": "Ərəbcə",
+      "hi": "Hindcə",
+      "id": "İndoneziya dili",
+      "ja": "Yaponca",
+      "ko": "Koreya dili",
+      "zh": "Çincə"
     },
     "roles": {
-      "safetyProfessional": "OHS specialist",
-      "workplaceDoctor": "Workplace doctor",
-      "employer": "Employer",
-      "employerRepresentative": "Employer representative",
-      "employeeRepresentative": "Employee representative",
-      "viewer": "Viewer",
+      "safetyProfessional": "İSG mütəxəssisi",
+      "workplaceDoctor": "İş həkimi",
+      "employer": "İşəgötürən",
+      "employerRepresentative": "İşəgötürən nümayəndəsi",
+      "employeeRepresentative": "İşçi nümayəndəsi",
+      "viewer": "Baxıcı",
       "admin": "Admin"
     }
   }

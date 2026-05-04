@@ -1,0 +1,195 @@
+{
+  "eyebrow": "Espacios de trabajo",
+  "title": "¿Con qué espacio de trabajo desea continuar?",
+  "description": "Primero seleccione un espacio de trabajo o cree uno nuevo. Elija en el panel izquierdo y complete el registro a la derecha; al activarlo, el análisis de riesgos, documentos, biblioteca y módulos de campo usan el contexto del espacio activo.",
+  "localWorkspaceName": "Espacio de trabajo local",
+  "goToWorkspace": "Ir al espacio de trabajo",
+  "activateAndGo": "Activar este espacio e ir",
+  "common": {
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "saving": "Guardando…",
+    "select": "Seleccionar"
+  },
+  "plans": {
+    "individualFree": "Individual gratuito",
+    "osgbStarter": "OSGB Starter",
+    "enterprise": "Empresa",
+    "unknown": "Plan desconocido"
+  },
+  "state": {
+    "selected": "Seleccionado",
+    "active": "Activo",
+    "default": "Predeterminado",
+    "ready": "Listo"
+  },
+  "meta": {
+    "package": "Plan: {plan}",
+    "unlimited": "{count} espacio de trabajo listo",
+    "usage": "{count} / {limit} espacios en uso",
+    "activeSelected": "Espacio activo seleccionado",
+    "selectionPending": "Esperando selección de espacio"
+  },
+  "account": {
+    "eyebrow": "Tipo de cuenta",
+    "title": "Seleccione su cuenta RiskNova",
+    "description": "Elija un flujo individual, OSGB o empresa. Las pantallas siguientes se adaptarán.",
+    "cardTitle": "¿Con qué estructura comenzará?",
+    "cardDescription": "Las cuentas individuales usan un solo contexto de espacio; las cuentas OSGB gestionan varias empresas.",
+    "info": "El flujo individual siempre está abierto en esta pantalla. Las opciones OSGB y empresa solo se activan si un administrador lo autoriza.",
+    "adminApprovalRequired": "Se requiere aprobación del administrador.",
+    "displayName": "Nombre para mostrar de la cuenta",
+    "displayNamePlaceholder": "Ejemplo: Mehmet Yildirim",
+    "companyName": "Nombre de la empresa",
+    "contactName": "Persona de contacto",
+    "continue": "Continuar",
+    "options": {
+      "individual": {
+        "title": "Individual",
+        "description": "Para un profesional o especialista único."
+      },
+      "osgb": {
+        "title": "OSGB",
+        "description": "Para gestión multiempresa y de equipos."
+      },
+      "enterprise": {
+        "title": "Empresa",
+        "description": "Crea una solicitud de contacto para necesidades empresariales."
+      }
+    }
+  },
+  "errors": {
+    "timeout": "No se pudo obtener la sesión o la información del espacio a tiempo. Actualice la página; si continúa, cierre sesión y vuelva a entrar.",
+    "fetchFailed": "No se pudo establecer la conexión. Actualice e intente de nuevo en getrisknova.com; si la sesión no se recupera, cierre sesión y vuelva a entrar.",
+    "schemaMissing": "Los nuevos campos de base de datos para la configuración de la cuenta aún no están listos. Inténtelo tras completar la migración.",
+    "accountContextFailed": "No se pudo leer el contexto de la cuenta.",
+    "workspaceDataFailed": "No se pudieron obtener los datos del espacio de trabajo.",
+    "accountTypeUnavailable": "No se puede completar la selección del tipo de cuenta en este momento.",
+    "accountTypeFailed": "No se pudo completar la selección del tipo de cuenta.",
+    "workspaceSaveUnavailable": "No se puede completar el registro del espacio en este momento.",
+    "workspaceSaveFailed": "No se pudo completar el registro del espacio.",
+    "activateFailed": "No se pudo activar el espacio seleccionado.",
+    "dataTitle": "No se pudieron leer los datos del espacio",
+    "dataDescription": "No se pudo preparar esta pantalla porque falta el perfil o el contexto del espacio."
+  },
+  "messages": {
+    "workspaceLimitReached": "Ha alcanzado el límite de espacios de su plan. Use un espacio existente o mejore el plan antes de crear uno nuevo.",
+    "localFallback": "Las tablas de espacios aún no están completas en este entorno. La selección se guardó como contexto local; puede usar este espacio.",
+    "localContextUpdated": "{name} se actualizó como contexto local.",
+    "workspaceSaved": "{name} se guardó y se seleccionó como espacio activo."
+  },
+  "list": {
+    "title": "Espacios de trabajo",
+    "description": "Cada espacio tiene su propio contexto operativo. Seleccione y edite aquí o cambie el espacio activo.",
+    "empty": "Aún no hay ningún espacio listo. Use «Nuevo espacio de trabajo» abajo y complete el formulario a la derecha para crear el primero.",
+    "currentlyActive": "Este espacio está activo en todo el sistema.",
+    "canSwitch": "Puede cambiar a este espacio si lo desea.",
+    "view": "Ver"
+  },
+  "newWorkspace": {
+    "title": "Nuevo espacio de trabajo",
+    "description": "Comience con un registro vacío; complete usted mismo los datos de empresa y espacio a la derecha.",
+    "newBadge": "Nuevo",
+    "limitBadge": "Límite"
+  },
+  "limit": {
+    "slotsLeft": "Puede abrir {count} ranuras de espacio vacías más.",
+    "reached": "Ha alcanzado el límite de espacios activos de su plan actual."
+  },
+  "details": {
+    "selectedTitle": "Detalles del espacio seleccionado",
+    "newTitle": "Crear nuevo espacio de trabajo",
+    "description": "Seleccione un espacio a la izquierda. Complete el registro de empresa / espacio a la derecha; el país y el idioma definen el contexto Nova y los datos de empresa alimentan todos los módulos operativos.",
+    "contextInfo": "El país determina el filtro legislativo oficial; el idioma determina la terminología Nova y RAG. Cada espacio tiene su propio contexto; al activarlo, los módulos usan el espacio activo sin volver a preguntar."
+  },
+  "fields": {
+    "workspaceName": "Etiqueta del espacio",
+    "country": "País",
+    "language": "Idioma",
+    "role": "Rol",
+    "certification": "Certificación",
+    "noCertification": "Continuar sin certificación"
+  },
+  "hints": {
+    "languageTimezone": "Funcionará en {language} con la zona horaria {timezone}.",
+    "certification": "Si selecciona una certificación acorde al país y al rol, la etiqueta de experiencia del espacio será más clara."
+  },
+  "company": {
+    "sectionTitle": "Registro de empresa / espacio de trabajo",
+    "sectionDescription": "La información principal de la antigua pantalla de empresas debe estar aquí. Al seleccionar un espacio a la izquierda, edita su registro a la derecha.",
+    "officialName": "Nombre oficial de empresa / espacio",
+    "shortName": "Nombre corto / nombre para mostrar",
+    "kind": "Tipo de espacio",
+    "sector": "Sector",
+    "naceCode": "Código NACE",
+    "hazardClass": "Clase de peligro",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "district": "Distrito",
+    "contactPerson": "Persona de contacto",
+    "sgkNumber": "N.º de centro de seguridad social",
+    "taxNumber": "NIF / N.º fiscal",
+    "taxOffice": "Oficina de impuestos",
+    "employeeCount": "Número de empleados",
+    "shiftModel": "Modelo de turnos",
+    "employerTitle": "Título del empresario",
+    "employerName": "Empresario",
+    "employerRepresentative": "Representante del empresario",
+    "locations": "Ubicaciones",
+    "departments": "Departamentos",
+    "notes": "Notas",
+    "locationsPlaceholder": "Escriba una ubicación por línea.",
+    "departmentsPlaceholder": "Escriba un departamento por línea.",
+    "notesPlaceholder": "Notas operativas y de campo para este espacio.",
+    "kindOptions": {
+      "private": "Sector privado",
+      "public": "Institución pública",
+      "municipality": "Municipio",
+      "ngo": "ONG / fundación",
+      "construction": "Obra / construcción"
+    },
+    "hazardOptions": {
+      "low": "Bajo riesgo",
+      "medium": "Peligroso",
+      "high": "Muy peligroso"
+    }
+  },
+  "actions": {
+    "saveSettings": "Guardar ajustes del espacio",
+    "createWorkspace": "Crear espacio de trabajo"
+  },
+  "profile": {
+    "open": "Abrir perfil",
+    "title": "Información personal",
+    "description": "Esta información es común en todo el sitio. Los espacios solo separan el contexto operativo, el país y el idioma.",
+    "fullName": "Nombre completo",
+    "titleField": "Cargo",
+    "notAdded": "Aún no añadido",
+    "completeInProfile": "Completar en el perfil",
+    "footer": "Los datos del perfil permanecen comunes. Al cambiar de espacio solo cambian el contexto operativo, el filtro legal y el idioma."
+  },
+  "languages": {
+    "tr": "Turco",
+    "en": "Inglés",
+    "de": "Alemán",
+    "fr": "Francés",
+    "es": "Español",
+    "ru": "Ruso",
+    "az": "Azerbaiyano",
+    "ar": "Árabe",
+    "hi": "Hindi",
+    "id": "Indonesio",
+    "ja": "Japonés",
+    "ko": "Coreano",
+    "zh": "Chino"
+  },
+  "roles": {
+    "safetyProfessional": "Especialista en PRL",
+    "workplaceDoctor": "Médico del trabajo",
+    "employer": "Empresario",
+    "employerRepresentative": "Representante del empresario",
+    "employeeRepresentative": "Representante de los trabajadores",
+    "viewer": "Solo lectura",
+    "admin": "Administrador"
+  }
+}

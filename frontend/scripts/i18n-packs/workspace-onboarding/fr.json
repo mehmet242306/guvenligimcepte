@@ -1,0 +1,195 @@
+{
+  "eyebrow": "Espaces de travail",
+  "title": "Dans quel espace de travail souhaitez-vous continuer ?",
+  "description": "Sélectionnez d’abord un espace de travail ou créez-en un. Choisissez dans le panneau de gauche et complétez l’enregistrement à droite ; une fois activé, l’analyse des risques, les documents, la bibliothèque et les modules terrain utilisent le contexte de l’espace actif.",
+  "localWorkspaceName": "Espace de travail local",
+  "goToWorkspace": "Aller à l’espace de travail",
+  "activateAndGo": "Activer cet espace et continuer",
+  "common": {
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "saving": "Enregistrement…",
+    "select": "Sélectionner"
+  },
+  "plans": {
+    "individualFree": "Individuel gratuit",
+    "osgbStarter": "OSGB Starter",
+    "enterprise": "Entreprise",
+    "unknown": "Forfait inconnu"
+  },
+  "state": {
+    "selected": "Sélectionné",
+    "active": "Actif",
+    "default": "Par défaut",
+    "ready": "Prêt"
+  },
+  "meta": {
+    "package": "Forfait : {plan}",
+    "unlimited": "{count} espace de travail prêt",
+    "usage": "{count} / {limit} espaces utilisés",
+    "activeSelected": "Espace actif sélectionné",
+    "selectionPending": "En attente de sélection d’un espace"
+  },
+  "account": {
+    "eyebrow": "Type de compte",
+    "title": "Choisissez votre compte RiskNova",
+    "description": "Choisissez un parcours individuel, OSGB ou entreprise. Les écrans suivants s’adaptent.",
+    "cardTitle": "Avec quelle structure commencez-vous ?",
+    "cardDescription": "Les comptes individuels ont un seul contexte d’espace ; les comptes OSGB gèrent plusieurs entreprises.",
+    "info": "Le parcours individuel est toujours disponible sur cet écran. Les options OSGB et entreprise ne s’activent que si un administrateur les autorise.",
+    "adminApprovalRequired": "Approbation administrateur requise.",
+    "displayName": "Nom d’affichage du compte",
+    "displayNamePlaceholder": "Exemple : Mehmet Yildirim",
+    "companyName": "Nom de l’entreprise",
+    "contactName": "Personne de contact",
+    "continue": "Continuer",
+    "options": {
+      "individual": {
+        "title": "Individuel",
+        "description": "Pour un professionnel ou une spécialiste seul(e)."
+      },
+      "osgb": {
+        "title": "OSGB",
+        "description": "Pour la gestion multi-entreprises et d’équipe."
+      },
+      "enterprise": {
+        "title": "Entreprise",
+        "description": "Crée une demande de contact pour les besoins entreprise."
+      }
+    }
+  },
+  "errors": {
+    "timeout": "Les informations de session ou d’espace n’ont pas pu être récupérées à temps. Actualisez la page ; si le problème persiste, déconnectez-vous puis reconnectez-vous.",
+    "fetchFailed": "Connexion impossible. Actualisez et réessayez via getrisknova.com ; si la session ne se rétablit pas, déconnectez-vous puis reconnectez-vous.",
+    "schemaMissing": "Les nouveaux champs base de données nécessaires à la configuration du compte ne sont pas prêts. Réessayez après la migration.",
+    "accountContextFailed": "Impossible de lire le contexte du compte.",
+    "workspaceDataFailed": "Impossible de récupérer les données de l’espace de travail.",
+    "accountTypeUnavailable": "Le type de compte ne peut pas être choisi pour le moment.",
+    "accountTypeFailed": "Le type de compte n’a pas pu être choisi.",
+    "workspaceSaveUnavailable": "L’enregistrement de l’espace ne peut pas être terminé pour le moment.",
+    "workspaceSaveFailed": "L’enregistrement de l’espace n’a pas pu être terminé.",
+    "activateFailed": "L’espace sélectionné n’a pas pu être activé.",
+    "dataTitle": "Impossible de lire les données de l’espace",
+    "dataDescription": "Cet écran n’a pas pu être préparé car le profil ou le contexte d’espace est manquant."
+  },
+  "messages": {
+    "workspaceLimitReached": "Vous avez atteint la limite d’espaces de votre forfait. Utilisez un espace existant ou passez à un forfait supérieur avant d’en créer un nouveau.",
+    "localFallback": "Les tables d’espaces ne sont pas complètes dans cet environnement. La sélection a été enregistrée en contexte local ; vous pouvez utiliser cet espace.",
+    "localContextUpdated": "{name} a été mis à jour en contexte local.",
+    "workspaceSaved": "{name} a été enregistré et sélectionné comme espace actif."
+  },
+  "list": {
+    "title": "Espaces de travail",
+    "description": "Chaque espace a son propre contexte opérationnel. Sélectionnez et modifiez ici ou changez l’espace actif.",
+    "empty": "Aucun espace n’est prêt. Utilisez « Nouvel espace » ci-dessous et complétez le formulaire à droite pour créer le premier.",
+    "currentlyActive": "Cet espace est actuellement actif sur tout le système.",
+    "canSwitch": "Vous pouvez passer à cet espace si vous le souhaitez.",
+    "view": "Voir"
+  },
+  "newWorkspace": {
+    "title": "Nouvel espace de travail",
+    "description": "Commencez avec un enregistrement vide ; complétez vous-même les informations entreprise et espace à droite.",
+    "newBadge": "Nouveau",
+    "limitBadge": "Limite"
+  },
+  "limit": {
+    "slotsLeft": "Vous pouvez encore ouvrir {count} emplacements d’espace vides.",
+    "reached": "Vous avez atteint la limite d’espaces actifs de votre forfait actuel."
+  },
+  "details": {
+    "selectedTitle": "Détails de l’espace sélectionné",
+    "newTitle": "Créer un nouvel espace",
+    "description": "Sélectionnez un espace à gauche. Complétez l’enregistrement entreprise / espace à droite ; le pays et la langue définissent le contexte Nova, les détails entreprise alimentent tous les modules opérationnels.",
+    "contextInfo": "Le pays détermine le filtre législatif officiel ; la langue détermine la terminologie Nova et RAG. Chaque espace a son propre contexte ; une fois activé, les modules utilisent l’espace actif sans redemander."
+  },
+  "fields": {
+    "workspaceName": "Libellé de l’espace",
+    "country": "Pays",
+    "language": "Langue",
+    "role": "Rôle",
+    "certification": "Certification",
+    "noCertification": "Continuer sans certification"
+  },
+  "hints": {
+    "languageTimezone": "Fonctionnera en {language} avec le fuseau {timezone}.",
+    "certification": "Si vous choisissez une certification adaptée au pays et au rôle, le libellé d’expertise de l’espace sera plus clair."
+  },
+  "company": {
+    "sectionTitle": "Enregistrement entreprise / espace",
+    "sectionDescription": "Les informations principales autrefois sur l’écran entreprises doivent être ici. En sélectionnant un espace à gauche, vous modifiez son enregistrement à droite.",
+    "officialName": "Nom officiel entreprise / espace",
+    "shortName": "Nom court / nom affiché",
+    "kind": "Type d’espace",
+    "sector": "Secteur",
+    "naceCode": "Code NACE",
+    "hazardClass": "Classe de danger",
+    "address": "Adresse",
+    "city": "Ville",
+    "district": "District",
+    "contactPerson": "Personne de contact",
+    "sgkNumber": "N° d’établissement de sécurité sociale",
+    "taxNumber": "N° fiscal",
+    "taxOffice": "Service des impôts",
+    "employeeCount": "Effectif",
+    "shiftModel": "Modèle de postes",
+    "employerTitle": "Titre de l’employeur",
+    "employerName": "Employeur",
+    "employerRepresentative": "Représentant de l’employeur",
+    "locations": "Sites",
+    "departments": "Services",
+    "notes": "Notes",
+    "locationsPlaceholder": "Un site par ligne.",
+    "departmentsPlaceholder": "Un service par ligne.",
+    "notesPlaceholder": "Notes opérationnelles et terrain pour cet espace.",
+    "kindOptions": {
+      "private": "Secteur privé",
+      "public": "Institution publique",
+      "municipality": "Municipalité",
+      "ngo": "ONG / fondation",
+      "construction": "Chantier"
+    },
+    "hazardOptions": {
+      "low": "Faible danger",
+      "medium": "Dangereux",
+      "high": "Très dangereux"
+    }
+  },
+  "actions": {
+    "saveSettings": "Enregistrer les paramètres de l’espace",
+    "createWorkspace": "Créer l’espace"
+  },
+  "profile": {
+    "open": "Ouvrir le profil",
+    "title": "Informations personnelles",
+    "description": "Ces informations sont communes sur tout le site. Les espaces séparent uniquement le contexte opérationnel, le pays et la langue.",
+    "fullName": "Nom complet",
+    "titleField": "Titre",
+    "notAdded": "Pas encore renseigné",
+    "completeInProfile": "À compléter dans le profil",
+    "footer": "Les données de profil restent communes. Quand l’espace change, seuls le contexte opérationnel, le filtre légal et la langue changent."
+  },
+  "languages": {
+    "tr": "Turc",
+    "en": "Anglais",
+    "de": "Allemand",
+    "fr": "Français",
+    "es": "Espagnol",
+    "ru": "Russe",
+    "az": "Azéri",
+    "ar": "Arabe",
+    "hi": "Hindi",
+    "id": "Indonésien",
+    "ja": "Japonais",
+    "ko": "Coréen",
+    "zh": "Chinois"
+  },
+  "roles": {
+    "safetyProfessional": "Spécialiste SST",
+    "workplaceDoctor": "Médecin du travail",
+    "employer": "Employeur",
+    "employerRepresentative": "Représentant de l’employeur",
+    "employeeRepresentative": "Représentant du personnel",
+    "viewer": "Lecteur",
+    "admin": "Administrateur"
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "eyebrow": "Ruang kerja",
+  "title": "Dengan ruang kerja mana Anda ingin melanjutkan?",
+  "description": "Pilih ruang kerja atau buat yang baru. Pilih di panel kiri, lengkapi catatan di kanan; setelah diaktifkan, modul analisis risiko, dokumen, perpustakaan, dan lapangan memakai konteks ruang kerja aktif.",
+  "localWorkspaceName": "Ruang kerja lokal",
+  "goToWorkspace": "Buka ruang kerja",
+  "activateAndGo": "Aktifkan ruang kerja ini dan lanjutkan",
+  "common": {
+    "email": "Email",
+    "phone": "Telepon",
+    "saving": "Menyimpan…",
+    "select": "Pilih"
+  },
+  "plans": {
+    "individualFree": "Individu gratis",
+    "osgbStarter": "OSGB Starter",
+    "enterprise": "Perusahaan",
+    "unknown": "Paket tidak dikenal"
+  },
+  "state": {
+    "selected": "Dipilih",
+    "active": "Aktif",
+    "default": "Default",
+    "ready": "Siap"
+  },
+  "meta": {
+    "package": "Paket: {plan}",
+    "unlimited": "{count} ruang kerja siap",
+    "usage": "{count} / {limit} ruang kerja terpakai",
+    "activeSelected": "Ruang kerja aktif dipilih",
+    "selectionPending": "Menunggu pemilihan ruang kerja"
+  },
+  "account": {
+    "eyebrow": "Jenis akun",
+    "title": "Pilih akun RiskNova Anda",
+    "description": "Pilih alur individu, OSGB, atau perusahaan. Layar berikutnya akan menyesuaikan.",
+    "cardTitle": "Struktur mana yang akan Anda mulai?",
+    "cardDescription": "Akun individu melanjutkan dengan satu konteks ruang kerja; akun OSGB mengelola banyak perusahaan.",
+    "info": "Alur individu selalu terbuka di layar ini. Opsi OSGB dan perusahaan hanya aktif jika diizinkan admin.",
+    "adminApprovalRequired": "Perlu persetujuan admin.",
+    "displayName": "Nama tampilan akun",
+    "displayNamePlaceholder": "Contoh: Mehmet Yildirim",
+    "companyName": "Nama perusahaan",
+    "contactName": "Kontak person",
+    "continue": "Lanjutkan",
+    "options": {
+      "individual": {
+        "title": "Individu",
+        "description": "Untuk satu profesional atau spesialis."
+      },
+      "osgb": {
+        "title": "OSGB",
+        "description": "Untuk manajemen multi-perusahaan dan tim."
+      },
+      "enterprise": {
+        "title": "Perusahaan",
+        "description": "Membuat permintaan kontak untuk kebutuhan perusahaan."
+      }
+    }
+  },
+  "errors": {
+    "timeout": "Informasi sesi atau ruang kerja tidak dapat diambil tepat waktu. Muat ulang halaman; jika berlanjut, keluar lalu masuk lagi.",
+    "fetchFailed": "Koneksi tidak dapat dibuat. Muat ulang dan coba lagi melalui getrisknova.com; jika sesi tidak pulih, keluar lalu masuk lagi.",
+    "schemaMissing": "Field database baru untuk pengaturan akun belum siap. Coba lagi setelah migrasi selesai.",
+    "accountContextFailed": "Konteks akun tidak dapat dibaca.",
+    "workspaceDataFailed": "Data ruang kerja tidak dapat diambil.",
+    "accountTypeUnavailable": "Pemilihan jenis akun tidak dapat diselesaikan saat ini.",
+    "accountTypeFailed": "Pemilihan jenis akun tidak dapat diselesaikan.",
+    "workspaceSaveUnavailable": "Catatan ruang kerja tidak dapat diselesaikan saat ini.",
+    "workspaceSaveFailed": "Catatan ruang kerja tidak dapat diselesaikan.",
+    "activateFailed": "Ruang kerja yang dipilih tidak dapat diaktifkan.",
+    "dataTitle": "Data ruang kerja tidak dapat dibaca",
+    "dataDescription": "Layar ini tidak dapat disiapkan karena profil atau konteks ruang kerja hilang."
+  },
+  "messages": {
+    "workspaceLimitReached": "Anda mencapai batas ruang kerja pada paket. Gunakan ruang yang ada atau tingkatkan paket sebelum membuat yang baru.",
+    "localFallback": "Tabel ruang kerja belum lengkap di lingkungan ini. Pilihan disimpan sebagai konteks lokal; Anda dapat memakai ruang kerja ini.",
+    "localContextUpdated": "{name} diperbarui sebagai konteks lokal.",
+    "workspaceSaved": "{name} disimpan dan dipilih sebagai ruang kerja aktif."
+  },
+  "list": {
+    "title": "Ruang kerja",
+    "description": "Setiap ruang kerja membawa konteks operasional terpisah. Pilih dan ubah di sini atau ganti ruang aktif.",
+    "empty": "Belum ada ruang kerja siap. Gunakan «Ruang kerja baru» di bawah dan lengkapi formulir di kanan untuk membuat yang pertama.",
+    "currentlyActive": "Ruang kerja ini saat ini aktif di seluruh sistem.",
+    "canSwitch": "Anda dapat beralih ke ruang kerja ini jika mau.",
+    "view": "Lihat"
+  },
+  "newWorkspace": {
+    "title": "Ruang kerja baru",
+    "description": "Mulai dengan catatan kosong; isi detail perusahaan dan ruang kerja sendiri di kanan.",
+    "newBadge": "Baru",
+    "limitBadge": "Batas"
+  },
+  "limit": {
+    "slotsLeft": "Anda dapat membuka {count} slot ruang kerja kosong lagi.",
+    "reached": "Anda mencapai batas ruang kerja aktif pada paket saat ini."
+  },
+  "details": {
+    "selectedTitle": "Detail ruang kerja terpilih",
+    "newTitle": "Buat ruang kerja baru",
+    "description": "Pilih ruang kerja di kiri. Lengkapi catatan perusahaan / ruang kerja di kanan; negara dan bahasa menentukan konteks Nova, detail perusahaan mengisi semua modul operasi.",
+    "contextInfo": "Pilihan negara menentukan filter perundangan resmi; pilihan bahasa menentukan terminologi Nova dan RAG. Setiap ruang kerja berjalan dengan konteksnya sendiri; setelah diaktifkan, modul memakai ruang aktif tanpa bertanya lagi."
+  },
+  "fields": {
+    "workspaceName": "Label ruang kerja",
+    "country": "Negara",
+    "language": "Bahasa",
+    "role": "Peran",
+    "certification": "Sertifikasi",
+    "noCertification": "Lanjut tanpa memilih sertifikasi"
+  },
+  "hints": {
+    "languageTimezone": "Akan berjalan dengan bahasa {language} dan zona waktu {timezone}.",
+    "certification": "Jika Anda memilih sertifikasi yang sesuai negara dan peran, label keahlian ruang kerja menjadi lebih jelas."
+  },
+  "company": {
+    "sectionTitle": "Catatan perusahaan / ruang kerja",
+    "sectionDescription": "Informasi utama yang dulu di layar perusahaan harus ada di sini. Saat memilih ruang kerja di kiri, Anda mengedit catatannya di kanan.",
+    "officialName": "Nama resmi perusahaan / ruang kerja",
+    "shortName": "Nama pendek / nama tampilan",
+    "kind": "Jenis ruang kerja",
+    "sector": "Sektor",
+    "naceCode": "Kode NACE",
+    "hazardClass": "Kelas bahaya",
+    "address": "Alamat",
+    "city": "Kota",
+    "district": "Distrik",
+    "contactPerson": "Kontak person",
+    "sgkNumber": "Nomor tempat kerja jaminan sosial",
+    "taxNumber": "NPWP / nomor pajak",
+    "taxOffice": "Kantor pajak",
+    "employeeCount": "Jumlah karyawan",
+    "shiftModel": "Model shift",
+    "employerTitle": "Jabatan pengusaha",
+    "employerName": "Pengusaha",
+    "employerRepresentative": "Perwakilan pengusaha",
+    "locations": "Lokasi",
+    "departments": "Departemen",
+    "notes": "Catatan",
+    "locationsPlaceholder": "Satu lokasi per baris.",
+    "departmentsPlaceholder": "Satu departemen per baris.",
+    "notesPlaceholder": "Catatan operasi dan lapangan untuk ruang kerja ini.",
+    "kindOptions": {
+      "private": "Sektor swasta",
+      "public": "Institusi publik",
+      "municipality": "Municipalitas",
+      "ngo": "LSM / yayasan",
+      "construction": "Lokasi konstruksi"
+    },
+    "hazardOptions": {
+      "low": "Rendah bahaya",
+      "medium": "Berbahaya",
+      "high": "Sangat berbahaya"
+    }
+  },
+  "actions": {
+    "saveSettings": "Simpan pengaturan ruang kerja",
+    "createWorkspace": "Buat ruang kerja"
+  },
+  "profile": {
+    "open": "Buka profil",
+    "title": "Informasi pribadi",
+    "description": "Informasi ini dipakai bersama di seluruh situs. Ruang kerja hanya memisahkan konteks operasi, negara, dan bahasa.",
+    "fullName": "Nama lengkap",
+    "titleField": "Gelar",
+    "notAdded": "Belum ditambahkan",
+    "completeInProfile": "Lengkapi di profil",
+    "footer": "Data profil tetap bersama. Saat ruang kerja berubah, hanya konteks operasi, filter perundangan, dan preferensi bahasa yang berubah."
+  },
+  "languages": {
+    "tr": "Turki",
+    "en": "Inggris",
+    "de": "Jerman",
+    "fr": "Prancis",
+    "es": "Spanyol",
+    "ru": "Rusia",
+    "az": "Azerbaijani",
+    "ar": "Arab",
+    "hi": "Hindi",
+    "id": "Indonesia",
+    "ja": "Jepang",
+    "ko": "Korea",
+    "zh": "Mandarin"
+  },
+  "roles": {
+    "safetyProfessional": "Spesialis K3",
+    "workplaceDoctor": "Dokter perusahaan",
+    "employer": "Pengusaha",
+    "employerRepresentative": "Perwakilan pengusaha",
+    "employeeRepresentative": "Perwakilan pekerja",
+    "viewer": "Pembaca",
+    "admin": "Admin"
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "eyebrow": "İş mühitləri",
+  "title": "Hansı iş mühitində davam etmək istəyirsiniz?",
+  "description": "Əvvəlcə iş mühiti seçin və ya yenisini yaradın. Soldan seçin, sağdakı qeydi tamamlayın; aktivləşdikdən sonra risk təhlili, sənədlər, kitabxana və sahə modulları aktiv iş mühiti kontekstindən istifadə edir.",
+  "localWorkspaceName": "Lokal iş mühiti",
+  "goToWorkspace": "İş mühitinə keç",
+  "activateAndGo": "Bu mühiti aktiv et və davam et",
+  "common": {
+    "email": "E-poçt",
+    "phone": "Telefon",
+    "saving": "Saxlanılır…",
+    "select": "Seçin"
+  },
+  "plans": {
+    "individualFree": "Fərdi pulsuz",
+    "osgbStarter": "OSGB Starter",
+    "enterprise": "Korporativ",
+    "unknown": "Naməlum plan"
+  },
+  "state": {
+    "selected": "Seçilib",
+    "active": "Aktiv",
+    "default": "Varsayılan",
+    "ready": "Hazır"
+  },
+  "meta": {
+    "package": "Plan: {plan}",
+    "unlimited": "{count} iş mühiti hazırdır",
+    "usage": "{count} / {limit} iş mühiti istifadə olunur",
+    "activeSelected": "Aktiv iş mühiti seçilib",
+    "selectionPending": "İş mühiti seçimi gözlənilir"
+  },
+  "account": {
+    "eyebrow": "Hesab növü",
+    "title": "RiskNova hesabınızı seçin",
+    "description": "Fərdi, OSGB və ya korporativ axını seçin. Növbəti ekranlar buna uyğunlaşacaq.",
+    "cardTitle": "Hansı strukturla başlayacaqsınız?",
+    "cardDescription": "Fərdi hesablar tək iş mühiti konteksti ilə; OSGB hesabları çox şirkət idarəetməsi ilə davam edir.",
+    "info": "Bu ekranda fərdi axın həmişə açıqdır. OSGB və korporativ seçimlər yalnız admin icazəsi ilə aktiv olur.",
+    "adminApprovalRequired": "Admin təsdiqi tələb olunur.",
+    "displayName": "Hesab görünən adı",
+    "displayNamePlaceholder": "Nümunə: Mehmet Yildirim",
+    "companyName": "Şirkət adı",
+    "contactName": "Əlaqə şəxsi",
+    "continue": "Davam et",
+    "options": {
+      "individual": {
+        "title": "Fərdi",
+        "description": "Tək mütəxəssis və ya peşəkar üçün."
+      },
+      "osgb": {
+        "title": "OSGB",
+        "description": "Çox şirkət və komanda idarəetməsi üçün."
+      },
+      "enterprise": {
+        "title": "Korporativ",
+        "description": "Korporativ ehtiyaclar üçün əlaqə sorğusu yaradır."
+      }
+    }
+  },
+  "errors": {
+    "timeout": "Sessiya və ya iş mühiti məlumatı vaxtında alına bilmədi. Səhifəni yeniləyin; davam edərsə çıxış edib yenidən daxil olun.",
+    "fetchFailed": "Bağlantı qurula bilmədi. Səhifəni yeniləyib getrisknova.com vasitəsilə yenidən cəhd edin; sessiya bərpa olunmazsa çıxış edib yenidən daxil olun.",
+    "schemaMissing": "Hesab qurulumu üçün yeni verilənlər bazası sahələri hələ hazır deyil. Miqrasiya bitdikdən sonra yenidən cəhd edin.",
+    "accountContextFailed": "Hesab konteksti oxuna bilmədi.",
+    "workspaceDataFailed": "İş mühiti məlumatı alına bilmədi.",
+    "accountTypeUnavailable": "Hesab növü seçimi hazırda tamamlana bilmir.",
+    "accountTypeFailed": "Hesab növü seçimi tamamlana bilmədi.",
+    "workspaceSaveUnavailable": "İş mühiti qeydi hazırda tamamlana bilmir.",
+    "workspaceSaveFailed": "İş mühiti qeydi tamamlana bilmədi.",
+    "activateFailed": "Seçilmiş iş mühiti aktivləşdirilə bilmədi.",
+    "dataTitle": "İş mühiti məlumatı oxuna bilmədi",
+    "dataDescription": "Profil və ya iş mühiti konteksti olmadığı üçün bu ekran hazırlana bilmədi."
+  },
+  "messages": {
+    "workspaceLimitReached": "Planınızdakı iş mühiti limitinə çatdınız. Yenisini yaratmazdan əvvəl mövcud mühitlərdən birini istifadə edin və ya planı yüksəldin.",
+    "localFallback": "İş mühiti cədvəlləri bu mühitdə hələ tam deyil. Seçim lokal kontekst kimi saxlanıldı; bu mühitdən istifadə edə bilərsiniz.",
+    "localContextUpdated": "{name} lokal kontekst kimi yeniləndi.",
+    "workspaceSaved": "{name} saxlanıldı və aktiv iş mühiti kimi seçildi."
+  },
+  "list": {
+    "title": "İş mühitləri",
+    "description": "Hər mühit ayrı əməliyyat konteksti daşıyır. Buradan seçib redaktə edin və ya aktiv mühiti dəyişin.",
+    "empty": "Hələ hazır iş mühiti yoxdur. Aşağıdakı «Yeni iş mühiti» ilə sağdakı formu dolduraraq birincisini yaradın.",
+    "currentlyActive": "Bu mühit hazırda bütün sistemdə aktivdir.",
+    "canSwitch": "İstəsəniz bu mühitə keçə bilərsiniz.",
+    "view": "Baxış"
+  },
+  "newWorkspace": {
+    "title": "Yeni iş mühiti",
+    "description": "Boş qeydlə başlayın; şirkət və iş mühiti məlumatlarını sağda özünüz doldurun.",
+    "newBadge": "Yeni",
+    "limitBadge": "Limit"
+  },
+  "limit": {
+    "slotsLeft": "Daha {count} boş iş mühiti yeri aça bilərsiniz.",
+    "reached": "Cari planınızdakı aktiv iş mühiti limitinə çatdınız."
+  },
+  "details": {
+    "selectedTitle": "Seçilmiş iş mühiti təfərrüatları",
+    "newTitle": "Yeni iş mühiti yarat",
+    "description": "Soldan mühit seçin. Sağda şirkət / iş mühiti qeydini tamamlayın; ölkə və dil Nova kontekstini, şirkət məlumatları isə bütün əməliyyat modullarını qidalandırır.",
+    "contextInfo": "Bu mühitdə ölkə seçimi rəsmi qanunvericilik süzgəcini, dil seçimi isə Nova və RAG terminologiyasını müəyyən edir. Hər mühit öz konteksti ilə işləyir; aktivləşdikdən sonra modullar yenidən soruşmadan aktiv mühitdən istifadə edir."
+  },
+  "fields": {
+    "workspaceName": "İş mühiti etiketi",
+    "country": "Ölkə",
+    "language": "Dil",
+    "role": "Rol",
+    "certification": "Sertifikat",
+    "noCertification": "Sertifikat seçmədən davam et"
+  },
+  "hints": {
+    "languageTimezone": "{language} dili və {timezone} saat qurşağı ilə işləyəcək.",
+    "certification": "Ölkə və rol kontekstinə uyğun sertifikat seçsəniz, mühitin ekspertiza etiketi daha aydın olar."
+  },
+  "company": {
+    "sectionTitle": "Şirkət / iş mühiti qeydi",
+    "sectionDescription": "Köhnə şirkətlər ekranında doldurulan əsas məlumatlar burada olmalıdır. Soldan mühit seçəndə sağda onun qeydini redaktə edirsiniz.",
+    "officialName": "Rəsmi şirkət / iş mühiti adı",
+    "shortName": "Qısa ad / görünən ad",
+    "kind": "İş mühiti tipi",
+    "sector": "Sektor",
+    "naceCode": "NACE kodu",
+    "hazardClass": "Təhlükə sinfi",
+    "address": "Ünvan",
+    "city": "Şəhər",
+    "district": "Rayon",
+    "contactPerson": "Əlaqə şəxsi",
+    "sgkNumber": "Sosial sığorta iş yeri nömrəsi",
+    "taxNumber": "VÖEN",
+    "taxOffice": "Vergi idarəsi",
+    "employeeCount": "İşçi sayı",
+    "shiftModel": "Növbə modeli",
+    "employerTitle": "İşəgötürən vəzifəsi",
+    "employerName": "İşəgötürən",
+    "employerRepresentative": "İşəgötürən nümayəndəsi",
+    "locations": "Lokasiyalar",
+    "departments": "Şöbələr",
+    "notes": "Qeydlər",
+    "locationsPlaceholder": "Hər sətirdə bir lokasiya yazın.",
+    "departmentsPlaceholder": "Hər sətirdə bir şöbə yazın.",
+    "notesPlaceholder": "Bu iş mühiti üçün əməliyyat və sahə qeydləri.",
+    "kindOptions": {
+      "private": "Özəl sektor",
+      "public": "Dövlət qurumu",
+      "municipality": "Bələdiyyə",
+      "ngo": "QHT / fond",
+      "construction": "Tikinti meydançası"
+    },
+    "hazardOptions": {
+      "low": "Az təhlükəli",
+      "medium": "Təhlükəli",
+      "high": "Çox təhlükəli"
+    }
+  },
+  "actions": {
+    "saveSettings": "İş mühiti parametrlərini saxla",
+    "createWorkspace": "İş mühiti yarat"
+  },
+  "profile": {
+    "open": "Profili aç",
+    "title": "Şəxsi məlumatlar",
+    "description": "Bu məlumatlar bütün saytda ortaqdır. İş mühitləri yalnız əməliyyat, ölkə və dil kontekstini ayırır.",
+    "fullName": "Ad soyad",
+    "titleField": "Vəzifə",
+    "notAdded": "Hələ əlavə edilməyib",
+    "completeInProfile": "Profildə tamamlanacaq",
+    "footer": "Profil məlumatları bütün təcrübədə ortaq qalır. İş mühiti dəyişəndə yalnız əməliyyat konteksti, qanunvericilik süzgəci və dil seçimi dəyişir."
+  },
+  "languages": {
+    "tr": "Türkcə",
+    "en": "İngiliscə",
+    "de": "Almanca",
+    "fr": "Fransızca",
+    "es": "İspanca",
+    "ru": "Rusca",
+    "az": "Azərbaycanca",
+    "ar": "Ərəbcə",
+    "hi": "Hindcə",
+    "id": "İndoneziya dili",
+    "ja": "Yaponca",
+    "ko": "Koreya dili",
+    "zh": "Çincə"
+  },
+  "roles": {
+    "safetyProfessional": "İSG mütəxəssisi",
+    "workplaceDoctor": "İş həkimi",
+    "employer": "İşəgötürən",
+    "employerRepresentative": "İşəgötürən nümayəndəsi",
+    "employeeRepresentative": "İşçi nümayəndəsi",
+    "viewer": "Baxıcı",
+    "admin": "Admin"
+  }
+}

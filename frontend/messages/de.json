@@ -874,7 +874,8 @@
         "addDecision": "+ Beschluss hinzufügen",
         "decisionText": "Beschlusstext",
         "nextDate": "Datum der nächsten Sitzung"
-      }
+      },
+      "location": "Standort"
     },
     "personnel": {
       "title": "Personalverwaltung",
@@ -5687,7 +5688,6 @@
       "naReasonPlaceholder": "N/A justification (required)"
     },
     "findings": {
-      "intro": "Review screen: for the findings below you can choose a link to risk, action, or CAPA, or mark the record as reviewed. This step connects the field with office follow-up.",
       "sidebarTitle": "Findings ({count})",
       "emptySidebar": "No findings yet. Non-conform or critical answers appear here.",
       "decisionPending": "Decision pending",
@@ -5809,197 +5809,197 @@
   },
   "workspaceOnboarding": {
     "eyebrow": "Arbeitsbereiche",
-    "title": "Mit welchem Arbeitsbereich möchtest du fortfahren?",
-    "description": "First select a workspace or create a new one. Choose from the left panel, complete that workspace record on the right; when activated, risk analysis, documents, library and field modules use the active workspace context.",
-    "localWorkspaceName": "Local Workspace",
-    "goToWorkspace": "Go to workspace",
-    "activateAndGo": "Activate this workspace and go",
+    "title": "Mit welchem Arbeitsbereich möchten Sie fortfahren?",
+    "description": "Wählen Sie zuerst einen Arbeitsbereich oder legen Sie einen neuen an. Wählen Sie links aus und vervollständigen Sie rechts den Datensatz; nach der Aktivierung nutzen Risikoanalyse, Dokumente, Bibliothek und Feldmodule den Kontext des aktiven Arbeitsbereichs.",
+    "localWorkspaceName": "Lokaler Arbeitsbereich",
+    "goToWorkspace": "Zum Arbeitsbereich",
+    "activateAndGo": "Diesen Arbeitsbereich aktivieren und weiter",
     "common": {
-      "email": "Email",
-      "phone": "Phone",
-      "saving": "Saving...",
-      "select": "Select"
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "saving": "Wird gespeichert …",
+      "select": "Auswählen"
     },
     "plans": {
-      "individualFree": "Individual Free",
+      "individualFree": "Einzelperson kostenlos",
       "osgbStarter": "OSGB Starter",
-      "enterprise": "Enterprise",
-      "unknown": "Unknown plan"
+      "enterprise": "Unternehmen",
+      "unknown": "Unbekannter Tarif"
     },
     "state": {
-      "selected": "Selected",
-      "active": "Active",
-      "default": "Default",
-      "ready": "Ready"
+      "selected": "Ausgewählt",
+      "active": "Aktiv",
+      "default": "Standard",
+      "ready": "Bereit"
     },
     "meta": {
-      "package": "Plan: {plan}",
-      "unlimited": "{count} workspace ready",
-      "usage": "{count} / {limit} workspaces used",
-      "activeSelected": "Active workspace selected",
-      "selectionPending": "Waiting for workspace selection"
+      "package": "Tarif: {plan}",
+      "unlimited": "{count} Arbeitsbereich bereit",
+      "usage": "{count} / {limit} Arbeitsbereiche genutzt",
+      "activeSelected": "Aktiver Arbeitsbereich ausgewählt",
+      "selectionPending": "Warten auf Arbeitsbereichsauswahl"
     },
     "account": {
-      "eyebrow": "Account Type",
-      "title": "Arbeitsbereich verwalten",
-      "description": "Choose an individual, OSGB or enterprise flow. The next screens will adapt to it.",
-      "cardTitle": "Which structure will you start with?",
-      "cardDescription": "Individual accounts continue with a single workspace context; OSGB accounts continue with multi-company management.",
-      "info": "The individual flow is always open on this screen. OSGB and enterprise options become active only when granted by an admin.",
-      "adminApprovalRequired": "Admin approval is required.",
-      "displayName": "Account display name",
-      "displayNamePlaceholder": "Example: Mehmet Yildirim",
-      "companyName": "Company name",
-      "contactName": "Contact person",
-      "continue": "Continue",
+      "eyebrow": "Kontotyp",
+      "title": "Wählen Sie Ihr RiskNova-Konto",
+      "description": "Wählen Sie einen Einzel-, OSGB- oder Unternehmensablauf. Die folgenden Bildschirme passen sich an.",
+      "cardTitle": "Mit welcher Struktur möchten Sie starten?",
+      "cardDescription": "Einzelkonten arbeiten mit einem Arbeitsbereichskontext; OSGB-Konten mit Mehrfirmenverwaltung.",
+      "info": "Der Einzelablauf ist auf diesem Bildschirm immer verfügbar. OSGB- und Unternehmensoptionen werden nur aktiv, wenn ein Administrator sie freischaltet.",
+      "adminApprovalRequired": "Administratorfreigabe erforderlich.",
+      "displayName": "Anzeigename des Kontos",
+      "displayNamePlaceholder": "Beispiel: Mehmet Yildirim",
+      "companyName": "Firmenname",
+      "contactName": "Ansprechpartner",
+      "continue": "Weiter",
       "options": {
         "individual": {
-          "title": "Individual",
-          "description": "For a single professional or specialist."
+          "title": "Einzelperson",
+          "description": "Für eine einzelne Fachkraft oder Spezialistin."
         },
         "osgb": {
           "title": "OSGB",
-          "description": "For multi-company and team management."
+          "description": "Für Mehrfirmen- und Teamverwaltung."
         },
         "enterprise": {
-          "title": "Enterprise",
-          "description": "Creates a contact request for enterprise needs."
+          "title": "Unternehmen",
+          "description": "Erstellt eine Kontaktanfrage für Unternehmensanforderungen."
         }
       }
     },
     "errors": {
-      "timeout": "Session or workspace information could not be retrieved in time. Refresh the page and try again; if the issue continues, sign out and sign in again.",
-      "fetchFailed": "Connection could not be established. Refresh the page and try again through getrisknova.com; if the session does not recover automatically, sign out and sign in again.",
-      "schemaMissing": "The new database fields required for account setup are not ready yet. Please try again after the migration is complete.",
-      "accountContextFailed": "Account context could not be read.",
-      "workspaceDataFailed": "Workspace data could not be retrieved.",
-      "accountTypeUnavailable": "Account type selection cannot be completed right now.",
-      "accountTypeFailed": "Account type selection could not be completed.",
-      "workspaceSaveUnavailable": "Workspace record cannot be completed right now.",
-      "workspaceSaveFailed": "Workspace record could not be completed.",
-      "activateFailed": "The selected workspace could not be activated.",
-      "dataTitle": "Workspace data could not be read",
-      "dataDescription": "This screen could not be prepared because the profile or workspace context is missing."
+      "timeout": "Sitzungs- oder Arbeitsbereichsdaten konnten rechtzeitig nicht geladen werden. Seite neu laden und erneut versuchen; falls das Problem bleibt, ab- und wieder anmelden.",
+      "fetchFailed": "Verbindung konnte nicht hergestellt werden. Seite neu laden und über getrisknova.com erneut versuchen; wenn die Sitzung nicht automatisch wiederhergestellt wird, ab- und wieder anmelden.",
+      "schemaMissing": "Die für die Kontoeinrichtung benötigten neuen Datenbankfelder sind noch nicht bereit. Bitte nach Abschluss der Migration erneut versuchen.",
+      "accountContextFailed": "Kontext des Kontos konnte nicht gelesen werden.",
+      "workspaceDataFailed": "Arbeitsbereichsdaten konnten nicht abgerufen werden.",
+      "accountTypeUnavailable": "Kontotyp kann derzeit nicht ausgewählt werden.",
+      "accountTypeFailed": "Kontotyp konnte nicht ausgewählt werden.",
+      "workspaceSaveUnavailable": "Arbeitsbereichsdatensatz kann derzeit nicht gespeichert werden.",
+      "workspaceSaveFailed": "Arbeitsbereichsdatensatz konnte nicht gespeichert werden.",
+      "activateFailed": "Der ausgewählte Arbeitsbereich konnte nicht aktiviert werden.",
+      "dataTitle": "Arbeitsbereichsdaten konnten nicht gelesen werden",
+      "dataDescription": "Dieser Bildschirm konnte nicht geladen werden, weil Profil oder Arbeitsbereichskontext fehlt."
     },
     "messages": {
-      "workspaceLimitReached": "You have reached the workspace limit in your plan. Use one of the existing workspaces or upgrade your plan before creating a new one.",
-      "localFallback": "Workspace tables are not complete in this environment yet. The selection was saved as a local context and you can use this workspace.",
-      "localContextUpdated": "{name} was updated as a local context.",
-      "workspaceSaved": "{name} was saved and selected as the active workspace."
+      "workspaceLimitReached": "Sie haben das Arbeitsbereichslimit Ihres Tarifs erreicht. Nutzen Sie einen vorhandenen Arbeitsbereich oder upgraden Sie, bevor Sie einen neuen anlegen.",
+      "localFallback": "Arbeitsbereichstabellen sind in dieser Umgebung noch nicht vollständig. Die Auswahl wurde als lokaler Kontext gespeichert; Sie können diesen Arbeitsbereich nutzen.",
+      "localContextUpdated": "{name} wurde als lokaler Kontext aktualisiert.",
+      "workspaceSaved": "{name} wurde gespeichert und als aktiver Arbeitsbereich ausgewählt."
     },
     "list": {
       "title": "Arbeitsbereiche",
-      "description": "Each workspace carries a separate operational context. Select and edit here or change the active workspace.",
-      "empty": "No workspace is ready yet. Use the “New workspace” option below and complete the form on the right to create your first workspace.",
-      "currentlyActive": "This workspace is currently active across the system.",
-      "canSwitch": "You can switch to this workspace if you want.",
-      "view": "View"
+      "description": "Jeder Arbeitsbereich hat einen eigenen Betriebskontext. Hier auswählen und bearbeiten oder den aktiven Arbeitsbereich wechseln.",
+      "empty": "Noch kein Arbeitsbereich bereit. Nutzen Sie unten „Neuer Arbeitsbereich“ und füllen Sie das Formular rechts aus, um den ersten anzulegen.",
+      "currentlyActive": "Dieser Arbeitsbereich ist derzeit systemweit aktiv.",
+      "canSwitch": "Sie können bei Bedarf zu diesem Arbeitsbereich wechseln.",
+      "view": "Ansehen"
     },
     "newWorkspace": {
-      "title": "New workspace",
-      "description": "Start with an empty record; fill in company and workspace details yourself on the right.",
-      "newBadge": "New",
+      "title": "Neuer Arbeitsbereich",
+      "description": "Start mit leerem Datensatz; Firmen- und Arbeitsbereichsdaten tragen Sie rechts selbst ein.",
+      "newBadge": "Neu",
       "limitBadge": "Limit"
     },
     "limit": {
-      "slotsLeft": "You can open {count} more empty workspace slots.",
-      "reached": "You have reached the active workspace limit in your current plan."
+      "slotsLeft": "Sie können noch {count} weitere leere Arbeitsbereichs-Slots öffnen.",
+      "reached": "Sie haben das Limit aktiver Arbeitsbereiche in Ihrem aktuellen Tarif erreicht."
     },
     "details": {
-      "selectedTitle": "Selected workspace details",
-      "newTitle": "Create new workspace",
-      "description": "Select a workspace from the left. Complete the company / workspace record on the right; country and language define the Nova context, while company details feed all operation modules.",
-      "contextInfo": "The country selection in this workspace determines the official legislation filter; the language selection determines Nova and RAG terminology. Each workspace runs with its own operational context; once activated, modules use the active workspace context instead of asking again."
+      "selectedTitle": "Details des ausgewählten Arbeitsbereichs",
+      "newTitle": "Neuen Arbeitsbereich anlegen",
+      "description": "Wählen Sie links einen Arbeitsbereich. Vervollständigen Sie rechts den Firmen-/Arbeitsbereichsdatensatz; Land und Sprache definieren den Nova-Kontext, Firmendaten speisen alle Betriebsmodule.",
+      "contextInfo": "Die Länderauswahl bestimmt den offiziellen Rechtsfilter; die Sprachauswahl die Nova- und RAG-Terminologie. Jeder Arbeitsbereich läuft mit eigenem Kontext; nach Aktivierung nutzen die Module den aktiven Arbeitsbereich, ohne erneut zu fragen."
     },
     "fields": {
-      "workspaceName": "Workspace label",
-      "country": "Country",
-      "language": "Language",
-      "role": "Role",
-      "certification": "Certification",
-      "noCertification": "Continue without selecting a certification"
+      "workspaceName": "Bezeichnung des Arbeitsbereichs",
+      "country": "Land",
+      "language": "Sprache",
+      "role": "Rolle",
+      "certification": "Zertifizierung",
+      "noCertification": "Ohne Zertifizierung fortfahren"
     },
     "hints": {
-      "languageTimezone": "It will work with {language} language and {timezone} time zone.",
-      "certification": "If you select a certification matching the country and role context, the workspace expertise label becomes clearer."
+      "languageTimezone": "Es arbeitet mit Sprache {language} und Zeitzone {timezone}.",
+      "certification": "Wenn Sie eine Zertifizierung passend zu Land und Rolle wählen, wird die Expertisebezeichnung des Arbeitsbereichs klarer."
     },
     "company": {
-      "sectionTitle": "Company / workspace record",
-      "sectionDescription": "The main information previously filled on the old companies screen should live here. When you select a workspace from the left, you edit that workspace record on the right.",
-      "officialName": "Official company / workspace name",
-      "shortName": "Short name / display name",
-      "kind": "Workspace type",
-      "sector": "Sector",
-      "naceCode": "NACE code",
-      "hazardClass": "Hazard class",
-      "address": "Address",
-      "city": "City",
-      "district": "District",
-      "contactPerson": "Contact person",
-      "sgkNumber": "Social security workplace no.",
-      "taxNumber": "Tax no.",
-      "taxOffice": "Tax office",
-      "employeeCount": "Employee count",
-      "shiftModel": "Shift model",
-      "employerTitle": "Employer title",
-      "employerName": "Employer",
-      "employerRepresentative": "Employer representative",
-      "locations": "Locations",
-      "departments": "Departments",
-      "notes": "Notes",
-      "locationsPlaceholder": "Write one location per line.",
-      "departmentsPlaceholder": "Write one department per line.",
-      "notesPlaceholder": "Write operation and field notes for this workspace.",
+      "sectionTitle": "Firma / Arbeitsbereichsdatensatz",
+      "sectionDescription": "Die wesentlichen Angaben der früheren Firmenmaske gehören hierher. Wenn Sie links einen Arbeitsbereich wählen, bearbeiten Sie rechts dessen Datensatz.",
+      "officialName": "Offizieller Firmen- / Arbeitsbereichsname",
+      "shortName": "Kurzname / Anzeigename",
+      "kind": "Art des Arbeitsbereichs",
+      "sector": "Branche",
+      "naceCode": "NACE-Code",
+      "hazardClass": "Gefahrenklasse",
+      "address": "Adresse",
+      "city": "Stadt",
+      "district": "Bezirk",
+      "contactPerson": "Ansprechpartner",
+      "sgkNumber": "Betriebsnummer Sozialversicherung",
+      "taxNumber": "Steuernummer",
+      "taxOffice": "Finanzamt",
+      "employeeCount": "Mitarbeiterzahl",
+      "shiftModel": "Schichtmodell",
+      "employerTitle": "Titel des Arbeitgebers",
+      "employerName": "Arbeitgeber",
+      "employerRepresentative": "Arbeitgebervertretung",
+      "locations": "Standorte",
+      "departments": "Abteilungen",
+      "notes": "Notizen",
+      "locationsPlaceholder": "Je eine Zeile pro Standort.",
+      "departmentsPlaceholder": "Je eine Zeile pro Abteilung.",
+      "notesPlaceholder": "Betriebs- und Feldnotizen für diesen Arbeitsbereich.",
       "kindOptions": {
-        "private": "Private Sector",
-        "public": "Public Institution",
-        "municipality": "Municipality",
-        "ngo": "NGO / Foundation",
-        "construction": "Construction Site"
+        "private": "Privatwirtschaft",
+        "public": "Öffentliche Einrichtung",
+        "municipality": "Gemeinde",
+        "ngo": "NGO / Stiftung",
+        "construction": "Baustelle"
       },
       "hazardOptions": {
-        "low": "Low Hazard",
-        "medium": "Hazardous",
-        "high": "Very Hazardous"
+        "low": "Geringe Gefahr",
+        "medium": "Gefährlich",
+        "high": "Sehr gefährlich"
       }
     },
     "actions": {
-      "saveSettings": "Save workspace settings",
-      "createWorkspace": "Create workspace"
+      "saveSettings": "Arbeitsbereichseinstellungen speichern",
+      "createWorkspace": "Arbeitsbereich anlegen"
     },
     "profile": {
-      "open": "Open profile",
-      "title": "Personal information",
-      "description": "This information is shared across the whole site. Workspaces only separate operation, country and language context.",
-      "fullName": "Full name",
-      "titleField": "Title",
-      "notAdded": "Not added yet",
-      "completeInProfile": "To be completed in profile",
-      "footer": "Profile information remains common across the whole experience. When the workspace changes, only the operation context, legislation filter and language preference change."
+      "open": "Profil öffnen",
+      "title": "Persönliche Angaben",
+      "description": "Diese Informationen gelten siteweit. Arbeitsbereiche trennen nur Betrieb, Land und Sprache.",
+      "fullName": "Vollständiger Name",
+      "titleField": "Titel",
+      "notAdded": "Noch nicht ergänzt",
+      "completeInProfile": "Im Profil vervollständigen",
+      "footer": "Profildaten bleiben für die gesamte Nutzung gleich. Beim Wechsel des Arbeitsbereichs ändern sich nur Betriebskontext, Rechtsfilter und Spracheinstellung."
     },
     "languages": {
-      "tr": "Turkish",
-      "en": "English",
-      "de": "German",
-      "fr": "French",
-      "es": "Spanish",
-      "ru": "Russian",
-      "az": "Azerbaijani",
-      "ar": "Arabic",
+      "tr": "Türkisch",
+      "en": "Englisch",
+      "de": "Deutsch",
+      "fr": "Französisch",
+      "es": "Spanisch",
+      "ru": "Russisch",
+      "az": "Aserbaidschanisch",
+      "ar": "Arabisch",
       "hi": "Hindi",
-      "id": "Indonesian",
-      "ja": "Japanese",
-      "ko": "Korean",
-      "zh": "Chinese"
+      "id": "Indonesisch",
+      "ja": "Japanisch",
+      "ko": "Koreanisch",
+      "zh": "Chinesisch"
     },
     "roles": {
-      "safetyProfessional": "OHS specialist",
-      "workplaceDoctor": "Workplace doctor",
-      "employer": "Employer",
-      "employerRepresentative": "Employer representative",
-      "employeeRepresentative": "Employee representative",
-      "viewer": "Viewer",
-      "admin": "Admin"
+      "safetyProfessional": "Arbeitsschutzfachkraft",
+      "workplaceDoctor": "Betriebsarzt",
+      "employer": "Arbeitgeber",
+      "employerRepresentative": "Arbeitgebervertretung",
+      "employeeRepresentative": "Vertretung der Beschäftigten",
+      "viewer": "Nur-Lese-Zugriff",
+      "admin": "Administrator"
     }
   }
 }

@@ -874,7 +874,8 @@
         "addDecision": "+ Karar Ekle",
         "decisionText": "Karar metni",
         "nextDate": "Sonraki Toplantı Tarihi"
-      }
+      },
+      "location": "الموقع"
     },
     "personnel": {
       "title": "Personel Yönetimi",
@@ -5687,7 +5688,6 @@
       "naReasonPlaceholder": "N/A justification (required)"
     },
     "findings": {
-      "intro": "Review screen: for the findings below you can choose a link to risk, action, or CAPA, or mark the record as reviewed. This step connects the field with office follow-up.",
       "sidebarTitle": "Findings ({count})",
       "emptySidebar": "No findings yet. Non-conform or critical answers appear here.",
       "decisionPending": "Decision pending",
@@ -5810,196 +5810,196 @@
   "workspaceOnboarding": {
     "eyebrow": "مساحات العمل",
     "title": "في أي مساحة عمل تريد المتابعة؟",
-    "description": "First select a workspace or create a new one. Choose from the left panel, complete that workspace record on the right; when activated, risk analysis, documents, library and field modules use the active workspace context.",
-    "localWorkspaceName": "Local Workspace",
-    "goToWorkspace": "Go to workspace",
-    "activateAndGo": "Activate this workspace and go",
+    "description": "اختر مساحة عمل أو أنشئ واحدة جديدة. اختر من اللوحة اليسرى وأكمل السجل على اليمين؛ بعد التفعيل تستخدم وحدات تحليل المخاطر والمستندات والمكتبة والحقل سياق مساحة العمل النشطة.",
+    "localWorkspaceName": "مساحة عمل محلية",
+    "goToWorkspace": "الانتقال إلى مساحة العمل",
+    "activateAndGo": "تفعيل هذه المساحة والمتابعة",
     "common": {
-      "email": "Email",
-      "phone": "Phone",
-      "saving": "Saving...",
-      "select": "Select"
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "saving": "جارٍ الحفظ…",
+      "select": "اختر"
     },
     "plans": {
-      "individualFree": "Individual Free",
+      "individualFree": "فردي مجاني",
       "osgbStarter": "OSGB Starter",
-      "enterprise": "Enterprise",
-      "unknown": "Unknown plan"
+      "enterprise": "مؤسسي",
+      "unknown": "خطة غير معروفة"
     },
     "state": {
-      "selected": "Selected",
-      "active": "Active",
-      "default": "Default",
-      "ready": "Ready"
+      "selected": "محدد",
+      "active": "نشط",
+      "default": "افتراضي",
+      "ready": "جاهز"
     },
     "meta": {
-      "package": "Plan: {plan}",
-      "unlimited": "{count} workspace ready",
-      "usage": "{count} / {limit} workspaces used",
-      "activeSelected": "Active workspace selected",
-      "selectionPending": "Waiting for workspace selection"
+      "package": "الخطة: {plan}",
+      "unlimited": "{count} مساحة عمل جاهزة",
+      "usage": "{count} / {limit} مساحات مستخدمة",
+      "activeSelected": "تم اختيار مساحة العمل النشطة",
+      "selectionPending": "في انتظار اختيار مساحة العمل"
     },
     "account": {
-      "eyebrow": "Account Type",
-      "title": "إدارة مساحة العمل",
-      "description": "Choose an individual, OSGB or enterprise flow. The next screens will adapt to it.",
-      "cardTitle": "Which structure will you start with?",
-      "cardDescription": "Individual accounts continue with a single workspace context; OSGB accounts continue with multi-company management.",
-      "info": "The individual flow is always open on this screen. OSGB and enterprise options become active only when granted by an admin.",
-      "adminApprovalRequired": "Admin approval is required.",
-      "displayName": "Account display name",
-      "displayNamePlaceholder": "Example: Mehmet Yildirim",
-      "companyName": "Company name",
-      "contactName": "Contact person",
-      "continue": "Continue",
+      "eyebrow": "نوع الحساب",
+      "title": "اختر حساب RiskNova",
+      "description": "اختر مسارًا فرديًا أو OSGB أو مؤسسي. ستتكيف الشاشات التالية.",
+      "cardTitle": "بأي هيكل ستبدأ؟",
+      "cardDescription": "الحسابات الفردية تعمل بسياق مساحة واحدة؛ حسابات OSGB لإدارة عدة شركات.",
+      "info": "المسار الفردي متاح دائمًا على هذه الشاشة. خيارات OSGB والمؤسسة تنشط فقط بإذن من المسؤول.",
+      "adminApprovalRequired": "مطلوب موافقة المسؤول.",
+      "displayName": "اسم العرض للحساب",
+      "displayNamePlaceholder": "مثال: Mehmet Yildirim",
+      "companyName": "اسم الشركة",
+      "contactName": "جهة الاتصال",
+      "continue": "متابعة",
       "options": {
         "individual": {
-          "title": "Individual",
-          "description": "For a single professional or specialist."
+          "title": "فردي",
+          "description": "لمحترف أو أخصائي واحد."
         },
         "osgb": {
           "title": "OSGB",
-          "description": "For multi-company and team management."
+          "description": "لإدارة عدة شركات وفريق."
         },
         "enterprise": {
-          "title": "Enterprise",
-          "description": "Creates a contact request for enterprise needs."
+          "title": "مؤسسي",
+          "description": "ينشئ طلب اتصال لاحتياجات المؤسسة."
         }
       }
     },
     "errors": {
-      "timeout": "Session or workspace information could not be retrieved in time. Refresh the page and try again; if the issue continues, sign out and sign in again.",
-      "fetchFailed": "Connection could not be established. Refresh the page and try again through getrisknova.com; if the session does not recover automatically, sign out and sign in again.",
-      "schemaMissing": "The new database fields required for account setup are not ready yet. Please try again after the migration is complete.",
-      "accountContextFailed": "Account context could not be read.",
-      "workspaceDataFailed": "Workspace data could not be retrieved.",
-      "accountTypeUnavailable": "Account type selection cannot be completed right now.",
-      "accountTypeFailed": "Account type selection could not be completed.",
-      "workspaceSaveUnavailable": "Workspace record cannot be completed right now.",
-      "workspaceSaveFailed": "Workspace record could not be completed.",
-      "activateFailed": "The selected workspace could not be activated.",
-      "dataTitle": "Workspace data could not be read",
-      "dataDescription": "This screen could not be prepared because the profile or workspace context is missing."
+      "timeout": "تعذر جلب معلومات الجلسة أو مساحة العمل في الوقت المناسب. حدّث الصفحة؛ إذا استمرت المشكلة سجّل الخروج ثم الدخول مجددًا.",
+      "fetchFailed": "تعذر إنشاء الاتصال. حدّث الصفحة وحاول عبر getrisknova.com؛ إذا لم تُستعد الجلسة تلقائيًا سجّل الخروج ثم الدخول.",
+      "schemaMissing": "حقول قاعدة البيانات الجديدة لإعداد الحساب غير جاهزة بعد. حاول بعد اكتمال الترحيل.",
+      "accountContextFailed": "تعذر قراءة سياق الحساب.",
+      "workspaceDataFailed": "تعذر جلب بيانات مساحة العمل.",
+      "accountTypeUnavailable": "لا يمكن إكمال اختيار نوع الحساب الآن.",
+      "accountTypeFailed": "تعذر إكمال اختيار نوع الحساب.",
+      "workspaceSaveUnavailable": "لا يمكن إكمال سجل مساحة العمل الآن.",
+      "workspaceSaveFailed": "تعذر إكمال سجل مساحة العمل.",
+      "activateFailed": "تعذر تفعيل مساحة العمل المحددة.",
+      "dataTitle": "تعذر قراءة بيانات مساحة العمل",
+      "dataDescription": "تعذر تحضير هذه الشاشة لأن الملف الشخصي أو سياق مساحة العمل مفقود."
     },
     "messages": {
-      "workspaceLimitReached": "You have reached the workspace limit in your plan. Use one of the existing workspaces or upgrade your plan before creating a new one.",
-      "localFallback": "Workspace tables are not complete in this environment yet. The selection was saved as a local context and you can use this workspace.",
-      "localContextUpdated": "{name} was updated as a local context.",
-      "workspaceSaved": "{name} was saved and selected as the active workspace."
+      "workspaceLimitReached": "بلغت حد مساحات العمل في خطتك. استخدم مساحة قائمة أو قم بالترقية قبل إنشاء مساحة جديدة.",
+      "localFallback": "جداول مساحات العمل غير مكتملة في هذا البيئة. حُفظ الاختيار كسياق محلي ويمكنك استخدام هذه المساحة.",
+      "localContextUpdated": "تم تحديث {name} كسياق محلي.",
+      "workspaceSaved": "تم حفظ {name} واختياره كمساحة العمل النشطة."
     },
     "list": {
       "title": "مساحات العمل",
-      "description": "Each workspace carries a separate operational context. Select and edit here or change the active workspace.",
-      "empty": "No workspace is ready yet. Use the “New workspace” option below and complete the form on the right to create your first workspace.",
-      "currentlyActive": "This workspace is currently active across the system.",
-      "canSwitch": "You can switch to this workspace if you want.",
-      "view": "View"
+      "description": "لكل مساحة سياق تشغيلي منفصل. اختر وحرّر هنا أو غيّر المساحة النشطة.",
+      "empty": "لا توجد مساحة جاهزة بعد. استخدم «مساحة عمل جديدة» أدناه وأكمل النموذج على اليمين.",
+      "currentlyActive": "هذه المساحة نشطة حاليًا في النظام.",
+      "canSwitch": "يمكنك التبديل إلى هذه المساحة إذا أردت.",
+      "view": "عرض"
     },
     "newWorkspace": {
-      "title": "New workspace",
-      "description": "Start with an empty record; fill in company and workspace details yourself on the right.",
-      "newBadge": "New",
-      "limitBadge": "Limit"
+      "title": "مساحة عمل جديدة",
+      "description": "ابدأ بسجل فارغ؛ أكمل تفاصيل الشركة ومساحة العمل يمينًا بنفسك.",
+      "newBadge": "جديد",
+      "limitBadge": "حد"
     },
     "limit": {
-      "slotsLeft": "You can open {count} more empty workspace slots.",
-      "reached": "You have reached the active workspace limit in your current plan."
+      "slotsLeft": "يمكنك فتح {count} فتحات مساحة فارغة إضافية.",
+      "reached": "بلغت حد المساحات النشطة في خطتك الحالية."
     },
     "details": {
-      "selectedTitle": "Selected workspace details",
-      "newTitle": "Create new workspace",
-      "description": "Select a workspace from the left. Complete the company / workspace record on the right; country and language define the Nova context, while company details feed all operation modules.",
-      "contextInfo": "The country selection in this workspace determines the official legislation filter; the language selection determines Nova and RAG terminology. Each workspace runs with its own operational context; once activated, modules use the active workspace context instead of asking again."
+      "selectedTitle": "تفاصيل مساحة العمل المحددة",
+      "newTitle": "إنشاء مساحة عمل جديدة",
+      "description": "اختر مساحة من اليسار. أكمل سجل الشركة / مساحة العمل على اليمين؛ البلد واللغة يحددان سياق Nova، وتغذي تفاصيل الشركة جميع وحدات التشغيل.",
+      "contextInfo": "اختيار البلد يحدد مرشح التشريعات الرسمي؛ اختيار اللغة يحدد مصطلحات Nova وRAG. لكل مساحة سياقها؛ بعد التفعيل تستخدم الوحدات المساحة النشطة دون إعادة السؤال."
     },
     "fields": {
-      "workspaceName": "Workspace label",
-      "country": "Country",
-      "language": "Language",
-      "role": "Role",
-      "certification": "Certification",
-      "noCertification": "Continue without selecting a certification"
+      "workspaceName": "تسمية مساحة العمل",
+      "country": "البلد",
+      "language": "اللغة",
+      "role": "الدور",
+      "certification": "الشهادة",
+      "noCertification": "المتابعة دون اختيار شهادة"
     },
     "hints": {
-      "languageTimezone": "It will work with {language} language and {timezone} time zone.",
-      "certification": "If you select a certification matching the country and role context, the workspace expertise label becomes clearer."
+      "languageTimezone": "سيعمل بلغة {language} والمنطقة الزمنية {timezone}.",
+      "certification": "إذا اخترت شهادة تتوافق مع البلد والدور، تصبح تسمية خبرة المساحة أوضح."
     },
     "company": {
-      "sectionTitle": "Company / workspace record",
-      "sectionDescription": "The main information previously filled on the old companies screen should live here. When you select a workspace from the left, you edit that workspace record on the right.",
-      "officialName": "Official company / workspace name",
-      "shortName": "Short name / display name",
-      "kind": "Workspace type",
-      "sector": "Sector",
-      "naceCode": "NACE code",
-      "hazardClass": "Hazard class",
-      "address": "Address",
-      "city": "City",
-      "district": "District",
-      "contactPerson": "Contact person",
-      "sgkNumber": "Social security workplace no.",
-      "taxNumber": "Tax no.",
-      "taxOffice": "Tax office",
-      "employeeCount": "Employee count",
-      "shiftModel": "Shift model",
-      "employerTitle": "Employer title",
-      "employerName": "Employer",
-      "employerRepresentative": "Employer representative",
-      "locations": "Locations",
-      "departments": "Departments",
-      "notes": "Notes",
-      "locationsPlaceholder": "Write one location per line.",
-      "departmentsPlaceholder": "Write one department per line.",
-      "notesPlaceholder": "Write operation and field notes for this workspace.",
+      "sectionTitle": "سجل الشركة / مساحة العمل",
+      "sectionDescription": "المعلومات الأساسية من شاشة الشركات القديمة تُعرض هنا. عند اختيار مساحة من اليسار تُحرّر سجلها على اليمين.",
+      "officialName": "الاسم الرسمي للشركة / مساحة العمل",
+      "shortName": "الاسم المختصر / اسم العرض",
+      "kind": "نوع مساحة العمل",
+      "sector": "القطاع",
+      "naceCode": "رمز NACE",
+      "hazardClass": "فئة الخطر",
+      "address": "العنوان",
+      "city": "المدينة",
+      "district": "المنطقة",
+      "contactPerson": "جهة الاتصال",
+      "sgkNumber": "رقم مكان العمل للضمان الاجتماعي",
+      "taxNumber": "الرقم الضريبي",
+      "taxOffice": "مكتب الضرائب",
+      "employeeCount": "عدد الموظفين",
+      "shiftModel": "نموذج الورديات",
+      "employerTitle": "لقب صاحب العمل",
+      "employerName": "صاحب العمل",
+      "employerRepresentative": "ممثل صاحب العمل",
+      "locations": "المواقع",
+      "departments": "الأقسام",
+      "notes": "ملاحظات",
+      "locationsPlaceholder": "اكتب موقعًا واحدًا في كل سطر.",
+      "departmentsPlaceholder": "اكتب قسمًا واحدًا في كل سطر.",
+      "notesPlaceholder": "ملاحظات تشغيلية وميدانية لهذه المساحة.",
       "kindOptions": {
-        "private": "Private Sector",
-        "public": "Public Institution",
-        "municipality": "Municipality",
-        "ngo": "NGO / Foundation",
-        "construction": "Construction Site"
+        "private": "القطاع الخاص",
+        "public": "مؤسسة حكومية",
+        "municipality": "بلدية",
+        "ngo": "منظمة غير ربحية / مؤسسة",
+        "construction": "موقع إنشاءات"
       },
       "hazardOptions": {
-        "low": "Low Hazard",
-        "medium": "Hazardous",
-        "high": "Very Hazardous"
+        "low": "خطر منخفض",
+        "medium": "خطير",
+        "high": "خطير جدًا"
       }
     },
     "actions": {
-      "saveSettings": "Save workspace settings",
-      "createWorkspace": "Create workspace"
+      "saveSettings": "حفظ إعدادات مساحة العمل",
+      "createWorkspace": "إنشاء مساحة العمل"
     },
     "profile": {
-      "open": "Open profile",
-      "title": "Personal information",
-      "description": "This information is shared across the whole site. Workspaces only separate operation, country and language context.",
-      "fullName": "Full name",
-      "titleField": "Title",
-      "notAdded": "Not added yet",
-      "completeInProfile": "To be completed in profile",
-      "footer": "Profile information remains common across the whole experience. When the workspace changes, only the operation context, legislation filter and language preference change."
+      "open": "فتح الملف الشخصي",
+      "title": "المعلومات الشخصية",
+      "description": "تُشارك هذه المعلومات في الموقع بالكامل. تفصل مساحات العمل فقط سياق التشغيل والبلد واللغة.",
+      "fullName": "الاسم الكامل",
+      "titleField": "المسمى",
+      "notAdded": "لم يُضف بعد",
+      "completeInProfile": "يُكمل في الملف الشخصي",
+      "footer": "تبقى بيانات الملف الشخصي مشتركة. عند تغيير المساحة يتغير فقط سياق التشغيل ومرشح التشريع وتفضيل اللغة."
     },
     "languages": {
-      "tr": "Turkish",
-      "en": "English",
-      "de": "German",
-      "fr": "French",
-      "es": "Spanish",
-      "ru": "Russian",
-      "az": "Azerbaijani",
-      "ar": "Arabic",
-      "hi": "Hindi",
-      "id": "Indonesian",
-      "ja": "Japanese",
-      "ko": "Korean",
-      "zh": "Chinese"
+      "tr": "التركية",
+      "en": "الإنجليزية",
+      "de": "الألمانية",
+      "fr": "الفرنسية",
+      "es": "الإسبانية",
+      "ru": "الروسية",
+      "az": "الأذربيجانية",
+      "ar": "العربية",
+      "hi": "الهندية",
+      "id": "الإندونيسية",
+      "ja": "اليابانية",
+      "ko": "الكورية",
+      "zh": "الصينية"
     },
     "roles": {
-      "safetyProfessional": "OHS specialist",
-      "workplaceDoctor": "Workplace doctor",
-      "employer": "Employer",
-      "employerRepresentative": "Employer representative",
-      "employeeRepresentative": "Employee representative",
-      "viewer": "Viewer",
-      "admin": "Admin"
+      "safetyProfessional": "أخصائي الصحة والسلامة المهنية",
+      "workplaceDoctor": "طبيب العمل",
+      "employer": "صاحب العمل",
+      "employerRepresentative": "ممثل صاحب العمل",
+      "employeeRepresentative": "ممثل الموظفين",
+      "viewer": "عارض",
+      "admin": "مسؤول"
     }
   }
 }

@@ -874,7 +874,8 @@
         "addDecision": "+ Karar Ekle",
         "decisionText": "Karar metni",
         "nextDate": "Sonraki Toplantı Tarihi"
-      }
+      },
+      "location": "場所"
     },
     "personnel": {
       "title": "Personel Yönetimi",
@@ -5687,7 +5688,6 @@
       "naReasonPlaceholder": "N/A justification (required)"
     },
     "findings": {
-      "intro": "Review screen: for the findings below you can choose a link to risk, action, or CAPA, or mark the record as reviewed. This step connects the field with office follow-up.",
       "sidebarTitle": "Findings ({count})",
       "emptySidebar": "No findings yet. Non-conform or critical answers appear here.",
       "decisionPending": "Decision pending",
@@ -5810,196 +5810,196 @@
   "workspaceOnboarding": {
     "eyebrow": "ワークスペース",
     "title": "どのワークスペースで続行しますか？",
-    "description": "First select a workspace or create a new one. Choose from the left panel, complete that workspace record on the right; when activated, risk analysis, documents, library and field modules use the active workspace context.",
-    "localWorkspaceName": "Local Workspace",
-    "goToWorkspace": "Go to workspace",
-    "activateAndGo": "Activate this workspace and go",
+    "description": "まずワークスペースを選ぶか、新規作成してください。左のパネルで選択し、右側でレコードを完成させます。有効化すると、リスク分析・文書・ライブラリ・現場モジュールはアクティブなワークスペースのコンテキストを使います。",
+    "localWorkspaceName": "ローカルワークスペース",
+    "goToWorkspace": "ワークスペースへ進む",
+    "activateAndGo": "このワークスペースを有効化して進む",
     "common": {
-      "email": "Email",
-      "phone": "Phone",
-      "saving": "Saving...",
-      "select": "Select"
+      "email": "メール",
+      "phone": "電話",
+      "saving": "保存中…",
+      "select": "選択"
     },
     "plans": {
-      "individualFree": "Individual Free",
+      "individualFree": "個人無料",
       "osgbStarter": "OSGB Starter",
-      "enterprise": "Enterprise",
-      "unknown": "Unknown plan"
+      "enterprise": "エンタープライズ",
+      "unknown": "不明なプラン"
     },
     "state": {
-      "selected": "Selected",
-      "active": "Active",
-      "default": "Default",
-      "ready": "Ready"
+      "selected": "選択中",
+      "active": "アクティブ",
+      "default": "既定",
+      "ready": "準備完了"
     },
     "meta": {
-      "package": "Plan: {plan}",
-      "unlimited": "{count} workspace ready",
-      "usage": "{count} / {limit} workspaces used",
-      "activeSelected": "Active workspace selected",
-      "selectionPending": "Waiting for workspace selection"
+      "package": "プラン: {plan}",
+      "unlimited": "ワークスペース {count} 件が利用可能",
+      "usage": "{count} / {limit} 件のワークスペースを使用中",
+      "activeSelected": "アクティブなワークスペースが選択されています",
+      "selectionPending": "ワークスペースの選択待ち"
     },
     "account": {
-      "eyebrow": "Account Type",
-      "title": "ワークスペース管理",
-      "description": "Choose an individual, OSGB or enterprise flow. The next screens will adapt to it.",
-      "cardTitle": "Which structure will you start with?",
-      "cardDescription": "Individual accounts continue with a single workspace context; OSGB accounts continue with multi-company management.",
-      "info": "The individual flow is always open on this screen. OSGB and enterprise options become active only when granted by an admin.",
-      "adminApprovalRequired": "Admin approval is required.",
-      "displayName": "Account display name",
-      "displayNamePlaceholder": "Example: Mehmet Yildirim",
-      "companyName": "Company name",
-      "contactName": "Contact person",
-      "continue": "Continue",
+      "eyebrow": "アカウント種別",
+      "title": "RiskNova アカウントを選択",
+      "description": "個人・OSGB・エンタープライズの流れを選びます。以降の画面がそれに合わせて変わります。",
+      "cardTitle": "どの構成で始めますか？",
+      "cardDescription": "個人アカウントは単一のワークスペース文脈で進みます。OSGB アカウントは複数企業の管理向けです。",
+      "info": "この画面では個人向けフローは常に利用できます。OSGB とエンタープライズは管理者の付与がある場合のみ有効になります。",
+      "adminApprovalRequired": "管理者の承認が必要です。",
+      "displayName": "アカウント表示名",
+      "displayNamePlaceholder": "例: Mehmet Yildirim",
+      "companyName": "会社名",
+      "contactName": "担当者",
+      "continue": "続行",
       "options": {
         "individual": {
-          "title": "Individual",
-          "description": "For a single professional or specialist."
+          "title": "個人",
+          "description": "単独の専門職・スペシャリスト向け。"
         },
         "osgb": {
           "title": "OSGB",
-          "description": "For multi-company and team management."
+          "description": "複数企業とチーム管理向け。"
         },
         "enterprise": {
-          "title": "Enterprise",
-          "description": "Creates a contact request for enterprise needs."
+          "title": "エンタープライズ",
+          "description": "エンタープライズ向けの問い合わせを作成します。"
         }
       }
     },
     "errors": {
-      "timeout": "Session or workspace information could not be retrieved in time. Refresh the page and try again; if the issue continues, sign out and sign in again.",
-      "fetchFailed": "Connection could not be established. Refresh the page and try again through getrisknova.com; if the session does not recover automatically, sign out and sign in again.",
-      "schemaMissing": "The new database fields required for account setup are not ready yet. Please try again after the migration is complete.",
-      "accountContextFailed": "Account context could not be read.",
-      "workspaceDataFailed": "Workspace data could not be retrieved.",
-      "accountTypeUnavailable": "Account type selection cannot be completed right now.",
-      "accountTypeFailed": "Account type selection could not be completed.",
-      "workspaceSaveUnavailable": "Workspace record cannot be completed right now.",
-      "workspaceSaveFailed": "Workspace record could not be completed.",
-      "activateFailed": "The selected workspace could not be activated.",
-      "dataTitle": "Workspace data could not be read",
-      "dataDescription": "This screen could not be prepared because the profile or workspace context is missing."
+      "timeout": "セッションまたはワークスペース情報を時間内に取得できませんでした。ページを更新して再試行してください。解消しない場合はサインアウトして再度サインインしてください。",
+      "fetchFailed": "接続を確立できませんでした。ページを更新し getrisknova.com から再試行してください。セッションが自動復旧しない場合はサインアウト／サインインしてください。",
+      "schemaMissing": "アカウント設定に必要な新しいデータベース項目はまだ準備できていません。マイグレーション完了後に再試行してください。",
+      "accountContextFailed": "アカウントコンテキストを読み取れませんでした。",
+      "workspaceDataFailed": "ワークスペースデータを取得できませんでした。",
+      "accountTypeUnavailable": "現在、アカウント種別の選択を完了できません。",
+      "accountTypeFailed": "アカウント種別の選択を完了できませんでした。",
+      "workspaceSaveUnavailable": "現在、ワークスペースの登録を完了できません。",
+      "workspaceSaveFailed": "ワークスペースの登録を完了できませんでした。",
+      "activateFailed": "選択したワークスペースを有効化できませんでした。",
+      "dataTitle": "ワークスペースデータを読み取れませんでした",
+      "dataDescription": "プロフィールまたはワークスペースのコンテキストがないため、この画面を準備できませんでした。"
     },
     "messages": {
-      "workspaceLimitReached": "You have reached the workspace limit in your plan. Use one of the existing workspaces or upgrade your plan before creating a new one.",
-      "localFallback": "Workspace tables are not complete in this environment yet. The selection was saved as a local context and you can use this workspace.",
-      "localContextUpdated": "{name} was updated as a local context.",
-      "workspaceSaved": "{name} was saved and selected as the active workspace."
+      "workspaceLimitReached": "プランのワークスペース上限に達しました。新規作成前に既存のワークスペースを使うか、プランをアップグレードしてください。",
+      "localFallback": "この環境ではワークスペース用テーブルが未整備です。選択はローカルコンテキストとして保存され、このワークスペースを利用できます。",
+      "localContextUpdated": "{name} をローカルコンテキストとして更新しました。",
+      "workspaceSaved": "{name} を保存し、アクティブなワークスペースとして選択しました。"
     },
     "list": {
       "title": "ワークスペース",
-      "description": "Each workspace carries a separate operational context. Select and edit here or change the active workspace.",
-      "empty": "No workspace is ready yet. Use the “New workspace” option below and complete the form on the right to create your first workspace.",
-      "currentlyActive": "This workspace is currently active across the system.",
-      "canSwitch": "You can switch to this workspace if you want.",
-      "view": "View"
+      "description": "各ワークスペースは別の運用コンテキストを持ちます。ここで選択・編集するか、アクティブなワークスペースを切り替えます。",
+      "empty": "まだ利用可能なワークスペースがありません。下の「新しいワークスペース」から作成し、右のフォームを完成させてください。",
+      "currentlyActive": "このワークスペースは現在システム全体でアクティブです。",
+      "canSwitch": "必要に応じてこのワークスペースに切り替えられます。",
+      "view": "表示"
     },
     "newWorkspace": {
-      "title": "New workspace",
-      "description": "Start with an empty record; fill in company and workspace details yourself on the right.",
-      "newBadge": "New",
-      "limitBadge": "Limit"
+      "title": "新しいワークスペース",
+      "description": "空のレコードから始めます。会社とワークスペースの詳細は右側で入力してください。",
+      "newBadge": "新規",
+      "limitBadge": "上限"
     },
     "limit": {
-      "slotsLeft": "You can open {count} more empty workspace slots.",
-      "reached": "You have reached the active workspace limit in your current plan."
+      "slotsLeft": "あと {count} 件の空きワークスペース枠を開けます。",
+      "reached": "現在のプランでアクティブにできるワークスペースの上限に達しました。"
     },
     "details": {
-      "selectedTitle": "Selected workspace details",
-      "newTitle": "Create new workspace",
-      "description": "Select a workspace from the left. Complete the company / workspace record on the right; country and language define the Nova context, while company details feed all operation modules.",
-      "contextInfo": "The country selection in this workspace determines the official legislation filter; the language selection determines Nova and RAG terminology. Each workspace runs with its own operational context; once activated, modules use the active workspace context instead of asking again."
+      "selectedTitle": "選択中のワークスペースの詳細",
+      "newTitle": "新しいワークスペースを作成",
+      "description": "左からワークスペースを選び、右で会社／ワークスペースのレコードを完成させます。国と言語は Nova のコンテキストを、会社情報は全運用モジュールに反映されます。",
+      "contextInfo": "このワークスペースでの国の選択は公式な法令フィルターを、言語の選択は Nova と RAG の用語を決めます。各ワークスペースは独自の運用コンテキストで動作し、有効化後はモジュールが再度尋ねずアクティブなワークスペースを使います。"
     },
     "fields": {
-      "workspaceName": "Workspace label",
-      "country": "Country",
-      "language": "Language",
-      "role": "Role",
-      "certification": "Certification",
-      "noCertification": "Continue without selecting a certification"
+      "workspaceName": "ワークスペース名",
+      "country": "国",
+      "language": "言語",
+      "role": "役割",
+      "certification": "資格・認定",
+      "noCertification": "認定を選ばずに続行"
     },
     "hints": {
-      "languageTimezone": "It will work with {language} language and {timezone} time zone.",
-      "certification": "If you select a certification matching the country and role context, the workspace expertise label becomes clearer."
+      "languageTimezone": "{language} 表示と {timezone} タイムゾーンで動作します。",
+      "certification": "国と役割に合う認定を選ぶと、ワークスペースの専門性ラベルがより明確になります。"
     },
     "company": {
-      "sectionTitle": "Company / workspace record",
-      "sectionDescription": "The main information previously filled on the old companies screen should live here. When you select a workspace from the left, you edit that workspace record on the right.",
-      "officialName": "Official company / workspace name",
-      "shortName": "Short name / display name",
-      "kind": "Workspace type",
-      "sector": "Sector",
-      "naceCode": "NACE code",
-      "hazardClass": "Hazard class",
-      "address": "Address",
-      "city": "City",
-      "district": "District",
-      "contactPerson": "Contact person",
-      "sgkNumber": "Social security workplace no.",
-      "taxNumber": "Tax no.",
-      "taxOffice": "Tax office",
-      "employeeCount": "Employee count",
-      "shiftModel": "Shift model",
-      "employerTitle": "Employer title",
-      "employerName": "Employer",
-      "employerRepresentative": "Employer representative",
-      "locations": "Locations",
-      "departments": "Departments",
-      "notes": "Notes",
-      "locationsPlaceholder": "Write one location per line.",
-      "departmentsPlaceholder": "Write one department per line.",
-      "notesPlaceholder": "Write operation and field notes for this workspace.",
+      "sectionTitle": "会社／ワークスペース登録",
+      "sectionDescription": "以前の会社画面に入力していた主な情報はここに置きます。左でワークスペースを選ぶと、右でそのレコードを編集します。",
+      "officialName": "正式な会社／ワークスペース名",
+      "shortName": "短縮名／表示名",
+      "kind": "ワークスペース種別",
+      "sector": "業種",
+      "naceCode": "NACE コード",
+      "hazardClass": "危険度クラス",
+      "address": "住所",
+      "city": "市区町村",
+      "district": "地区",
+      "contactPerson": "担当者",
+      "sgkNumber": "社会保険の事業所番号",
+      "taxNumber": "税番号",
+      "taxOffice": "税務署",
+      "employeeCount": "従業員数",
+      "shiftModel": "シフト体制",
+      "employerTitle": "事業者の肩書",
+      "employerName": "事業者",
+      "employerRepresentative": "事業者代表",
+      "locations": "拠点",
+      "departments": "部署",
+      "notes": "メモ",
+      "locationsPlaceholder": "1 行に 1 拠点。",
+      "departmentsPlaceholder": "1 行に 1 部署。",
+      "notesPlaceholder": "このワークスペースの運用・現場メモ。",
       "kindOptions": {
-        "private": "Private Sector",
-        "public": "Public Institution",
-        "municipality": "Municipality",
-        "ngo": "NGO / Foundation",
-        "construction": "Construction Site"
+        "private": "民間企業",
+        "public": "公的機関",
+        "municipality": "自治体",
+        "ngo": "NGO／財団",
+        "construction": "建設現場"
       },
       "hazardOptions": {
-        "low": "Low Hazard",
-        "medium": "Hazardous",
-        "high": "Very Hazardous"
+        "low": "低危険",
+        "medium": "危険",
+        "high": "高度危険"
       }
     },
     "actions": {
-      "saveSettings": "Save workspace settings",
-      "createWorkspace": "Create workspace"
+      "saveSettings": "ワークスペース設定を保存",
+      "createWorkspace": "ワークスペースを作成"
     },
     "profile": {
-      "open": "Open profile",
-      "title": "Personal information",
-      "description": "This information is shared across the whole site. Workspaces only separate operation, country and language context.",
-      "fullName": "Full name",
-      "titleField": "Title",
-      "notAdded": "Not added yet",
-      "completeInProfile": "To be completed in profile",
-      "footer": "Profile information remains common across the whole experience. When the workspace changes, only the operation context, legislation filter and language preference change."
+      "open": "プロフィールを開く",
+      "title": "個人情報",
+      "description": "この情報はサイト全体で共通です。ワークスペースは運用・国・言語の文脈だけを分けます。",
+      "fullName": "氏名",
+      "titleField": "役職",
+      "notAdded": "未入力",
+      "completeInProfile": "プロフィールで入力",
+      "footer": "プロフィール情報は体験全体で共通のままです。ワークスペースを変えると、運用コンテキスト・法令フィルター・言語設定だけが変わります。"
     },
     "languages": {
-      "tr": "Turkish",
-      "en": "English",
-      "de": "German",
-      "fr": "French",
-      "es": "Spanish",
-      "ru": "Russian",
-      "az": "Azerbaijani",
-      "ar": "Arabic",
-      "hi": "Hindi",
-      "id": "Indonesian",
-      "ja": "Japanese",
-      "ko": "Korean",
-      "zh": "Chinese"
+      "tr": "トルコ語",
+      "en": "英語",
+      "de": "ドイツ語",
+      "fr": "フランス語",
+      "es": "スペイン語",
+      "ru": "ロシア語",
+      "az": "アゼルバイジャン語",
+      "ar": "アラビア語",
+      "hi": "ヒンディー語",
+      "id": "インドネシア語",
+      "ja": "日本語",
+      "ko": "韓国語",
+      "zh": "中国語"
     },
     "roles": {
-      "safetyProfessional": "OHS specialist",
-      "workplaceDoctor": "Workplace doctor",
-      "employer": "Employer",
-      "employerRepresentative": "Employer representative",
-      "employeeRepresentative": "Employee representative",
-      "viewer": "Viewer",
-      "admin": "Admin"
+      "safetyProfessional": "労働安全衛生スペシャリスト",
+      "workplaceDoctor": "産業医",
+      "employer": "事業者",
+      "employerRepresentative": "事業者代表",
+      "employeeRepresentative": "労働者代表",
+      "viewer": "閲覧者",
+      "admin": "管理者"
     }
   }
 }

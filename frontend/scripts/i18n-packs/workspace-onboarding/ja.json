@@ -1,0 +1,195 @@
+{
+  "eyebrow": "ワークスペース",
+  "title": "どのワークスペースで続行しますか？",
+  "description": "まずワークスペースを選ぶか、新規作成してください。左のパネルで選択し、右側でレコードを完成させます。有効化すると、リスク分析・文書・ライブラリ・現場モジュールはアクティブなワークスペースのコンテキストを使います。",
+  "localWorkspaceName": "ローカルワークスペース",
+  "goToWorkspace": "ワークスペースへ進む",
+  "activateAndGo": "このワークスペースを有効化して進む",
+  "common": {
+    "email": "メール",
+    "phone": "電話",
+    "saving": "保存中…",
+    "select": "選択"
+  },
+  "plans": {
+    "individualFree": "個人無料",
+    "osgbStarter": "OSGB Starter",
+    "enterprise": "エンタープライズ",
+    "unknown": "不明なプラン"
+  },
+  "state": {
+    "selected": "選択中",
+    "active": "アクティブ",
+    "default": "既定",
+    "ready": "準備完了"
+  },
+  "meta": {
+    "package": "プラン: {plan}",
+    "unlimited": "ワークスペース {count} 件が利用可能",
+    "usage": "{count} / {limit} 件のワークスペースを使用中",
+    "activeSelected": "アクティブなワークスペースが選択されています",
+    "selectionPending": "ワークスペースの選択待ち"
+  },
+  "account": {
+    "eyebrow": "アカウント種別",
+    "title": "RiskNova アカウントを選択",
+    "description": "個人・OSGB・エンタープライズの流れを選びます。以降の画面がそれに合わせて変わります。",
+    "cardTitle": "どの構成で始めますか？",
+    "cardDescription": "個人アカウントは単一のワークスペース文脈で進みます。OSGB アカウントは複数企業の管理向けです。",
+    "info": "この画面では個人向けフローは常に利用できます。OSGB とエンタープライズは管理者の付与がある場合のみ有効になります。",
+    "adminApprovalRequired": "管理者の承認が必要です。",
+    "displayName": "アカウント表示名",
+    "displayNamePlaceholder": "例: Mehmet Yildirim",
+    "companyName": "会社名",
+    "contactName": "担当者",
+    "continue": "続行",
+    "options": {
+      "individual": {
+        "title": "個人",
+        "description": "単独の専門職・スペシャリスト向け。"
+      },
+      "osgb": {
+        "title": "OSGB",
+        "description": "複数企業とチーム管理向け。"
+      },
+      "enterprise": {
+        "title": "エンタープライズ",
+        "description": "エンタープライズ向けの問い合わせを作成します。"
+      }
+    }
+  },
+  "errors": {
+    "timeout": "セッションまたはワークスペース情報を時間内に取得できませんでした。ページを更新して再試行してください。解消しない場合はサインアウトして再度サインインしてください。",
+    "fetchFailed": "接続を確立できませんでした。ページを更新し getrisknova.com から再試行してください。セッションが自動復旧しない場合はサインアウト／サインインしてください。",
+    "schemaMissing": "アカウント設定に必要な新しいデータベース項目はまだ準備できていません。マイグレーション完了後に再試行してください。",
+    "accountContextFailed": "アカウントコンテキストを読み取れませんでした。",
+    "workspaceDataFailed": "ワークスペースデータを取得できませんでした。",
+    "accountTypeUnavailable": "現在、アカウント種別の選択を完了できません。",
+    "accountTypeFailed": "アカウント種別の選択を完了できませんでした。",
+    "workspaceSaveUnavailable": "現在、ワークスペースの登録を完了できません。",
+    "workspaceSaveFailed": "ワークスペースの登録を完了できませんでした。",
+    "activateFailed": "選択したワークスペースを有効化できませんでした。",
+    "dataTitle": "ワークスペースデータを読み取れませんでした",
+    "dataDescription": "プロフィールまたはワークスペースのコンテキストがないため、この画面を準備できませんでした。"
+  },
+  "messages": {
+    "workspaceLimitReached": "プランのワークスペース上限に達しました。新規作成前に既存のワークスペースを使うか、プランをアップグレードしてください。",
+    "localFallback": "この環境ではワークスペース用テーブルが未整備です。選択はローカルコンテキストとして保存され、このワークスペースを利用できます。",
+    "localContextUpdated": "{name} をローカルコンテキストとして更新しました。",
+    "workspaceSaved": "{name} を保存し、アクティブなワークスペースとして選択しました。"
+  },
+  "list": {
+    "title": "ワークスペース",
+    "description": "各ワークスペースは別の運用コンテキストを持ちます。ここで選択・編集するか、アクティブなワークスペースを切り替えます。",
+    "empty": "まだ利用可能なワークスペースがありません。下の「新しいワークスペース」から作成し、右のフォームを完成させてください。",
+    "currentlyActive": "このワークスペースは現在システム全体でアクティブです。",
+    "canSwitch": "必要に応じてこのワークスペースに切り替えられます。",
+    "view": "表示"
+  },
+  "newWorkspace": {
+    "title": "新しいワークスペース",
+    "description": "空のレコードから始めます。会社とワークスペースの詳細は右側で入力してください。",
+    "newBadge": "新規",
+    "limitBadge": "上限"
+  },
+  "limit": {
+    "slotsLeft": "あと {count} 件の空きワークスペース枠を開けます。",
+    "reached": "現在のプランでアクティブにできるワークスペースの上限に達しました。"
+  },
+  "details": {
+    "selectedTitle": "選択中のワークスペースの詳細",
+    "newTitle": "新しいワークスペースを作成",
+    "description": "左からワークスペースを選び、右で会社／ワークスペースのレコードを完成させます。国と言語は Nova のコンテキストを、会社情報は全運用モジュールに反映されます。",
+    "contextInfo": "このワークスペースでの国の選択は公式な法令フィルターを、言語の選択は Nova と RAG の用語を決めます。各ワークスペースは独自の運用コンテキストで動作し、有効化後はモジュールが再度尋ねずアクティブなワークスペースを使います。"
+  },
+  "fields": {
+    "workspaceName": "ワークスペース名",
+    "country": "国",
+    "language": "言語",
+    "role": "役割",
+    "certification": "資格・認定",
+    "noCertification": "認定を選ばずに続行"
+  },
+  "hints": {
+    "languageTimezone": "{language} 表示と {timezone} タイムゾーンで動作します。",
+    "certification": "国と役割に合う認定を選ぶと、ワークスペースの専門性ラベルがより明確になります。"
+  },
+  "company": {
+    "sectionTitle": "会社／ワークスペース登録",
+    "sectionDescription": "以前の会社画面に入力していた主な情報はここに置きます。左でワークスペースを選ぶと、右でそのレコードを編集します。",
+    "officialName": "正式な会社／ワークスペース名",
+    "shortName": "短縮名／表示名",
+    "kind": "ワークスペース種別",
+    "sector": "業種",
+    "naceCode": "NACE コード",
+    "hazardClass": "危険度クラス",
+    "address": "住所",
+    "city": "市区町村",
+    "district": "地区",
+    "contactPerson": "担当者",
+    "sgkNumber": "社会保険の事業所番号",
+    "taxNumber": "税番号",
+    "taxOffice": "税務署",
+    "employeeCount": "従業員数",
+    "shiftModel": "シフト体制",
+    "employerTitle": "事業者の肩書",
+    "employerName": "事業者",
+    "employerRepresentative": "事業者代表",
+    "locations": "拠点",
+    "departments": "部署",
+    "notes": "メモ",
+    "locationsPlaceholder": "1 行に 1 拠点。",
+    "departmentsPlaceholder": "1 行に 1 部署。",
+    "notesPlaceholder": "このワークスペースの運用・現場メモ。",
+    "kindOptions": {
+      "private": "民間企業",
+      "public": "公的機関",
+      "municipality": "自治体",
+      "ngo": "NGO／財団",
+      "construction": "建設現場"
+    },
+    "hazardOptions": {
+      "low": "低危険",
+      "medium": "危険",
+      "high": "高度危険"
+    }
+  },
+  "actions": {
+    "saveSettings": "ワークスペース設定を保存",
+    "createWorkspace": "ワークスペースを作成"
+  },
+  "profile": {
+    "open": "プロフィールを開く",
+    "title": "個人情報",
+    "description": "この情報はサイト全体で共通です。ワークスペースは運用・国・言語の文脈だけを分けます。",
+    "fullName": "氏名",
+    "titleField": "役職",
+    "notAdded": "未入力",
+    "completeInProfile": "プロフィールで入力",
+    "footer": "プロフィール情報は体験全体で共通のままです。ワークスペースを変えると、運用コンテキスト・法令フィルター・言語設定だけが変わります。"
+  },
+  "languages": {
+    "tr": "トルコ語",
+    "en": "英語",
+    "de": "ドイツ語",
+    "fr": "フランス語",
+    "es": "スペイン語",
+    "ru": "ロシア語",
+    "az": "アゼルバイジャン語",
+    "ar": "アラビア語",
+    "hi": "ヒンディー語",
+    "id": "インドネシア語",
+    "ja": "日本語",
+    "ko": "韓国語",
+    "zh": "中国語"
+  },
+  "roles": {
+    "safetyProfessional": "労働安全衛生スペシャリスト",
+    "workplaceDoctor": "産業医",
+    "employer": "事業者",
+    "employerRepresentative": "事業者代表",
+    "employeeRepresentative": "労働者代表",
+    "viewer": "閲覧者",
+    "admin": "管理者"
+  }
+}
