@@ -1,0 +1,230 @@
+{
+  "workspaceShell": {
+    "eyebrow": "Çalışma Alanı",
+    "title": "Çalışma alanı yükleniyor",
+    "description": "Firma verileri tarayıcı tarafında hazırlanıyor. Lütfen bekleyin…"
+  },
+  "companyAccessRoles": {
+    "owner": "Sahip",
+    "admin": "Yönetici",
+    "manager": "Müdür",
+    "editor": "Editör",
+    "viewer": "Görüntüleyici"
+  },
+  "workspaceMemberRoles": {
+    "owner": "Sahip",
+    "admin": "Yönetici",
+    "member": "Üye",
+    "viewer": "Görüntüleyici",
+    "guest": "Misafir"
+  },
+  "people": {
+    "inviteMember": {
+      "inviteSendFailed": "Davet gönderilemedi.",
+      "panelTitle": "Kullanıcı Daveti",
+      "panelDescription": "E-posta ile yeni üye davet edin — kabul ettiklerinde firma çalışma alanınıza eklenir.",
+      "openButton": "Davet Et",
+      "expandedTitle": "Yeni Üye Davet Et",
+      "expandedSubtitle": "Davet linki e-posta ile gönderilir.",
+      "close": "Kapat",
+      "resultDelivered": "Davet {email} adresine gönderildi.",
+      "resultUndelivered": "Davet oluşturuldu (e-posta teslim edilemedi — link kopyalanabilir).",
+      "linkLabel": "Link:",
+      "newInvite": "Yeni Davet",
+      "emailLabel": "E-posta",
+      "emailPlaceholder": "ornek@firma.com",
+      "roleLabel": "Rol",
+      "noteOptional": "Not (opsiyonel)",
+      "notePlaceholder": "Davet alıcısına kısa not",
+      "cancel": "İptal",
+      "send": "Davet Gönder",
+      "sending": "Gönderiliyor…"
+    },
+    "certBadge": {
+      "expired": "Süresi Doldu",
+      "daysLeft": "{days} gün kaldı",
+      "valid": "Geçerli"
+    },
+    "memberForm": {
+      "fullNameLabel": "Ad Soyad *",
+      "fullNamePlaceholder": "Ad Soyad",
+      "titleLabel": "Ünvan / Görev",
+      "titlePlaceholder": "İSG Uzmanı",
+      "categoryLabel": "Kategori",
+      "selectCategory": "Seçiniz",
+      "phoneLabel": "Telefon",
+      "phonePlaceholder": "0500 000 00 00",
+      "emailLabel": "E-posta",
+      "emailPlaceholder": "ad@sirket.com",
+      "certNumberLabel": "Sertifika / Belge No",
+      "certNumberPlaceholder": "ISG-2024-001",
+      "certExpiryLabel": "Sertifika Bitiş",
+      "notesLabel": "Notlar",
+      "notesPlaceholder": "Ek bilgi…",
+      "activeMember": "Aktif üye"
+    },
+    "memberCard": {
+      "editTitle": "Düzenle",
+      "deleteTitle": "Sil",
+      "deleteConfirm": "Sil",
+      "cancel": "İptal",
+      "inactive": "Pasif"
+    },
+    "errors": {
+      "fullNameRequired": "Ad Soyad zorunludur.",
+      "orgMissing": "Organizasyon bilgisi alınamadı.",
+      "connectionError": "Bağlantı hatası."
+    },
+    "confirmDeleteCategory": "\"{name}\" kategorisini silmek istediğine emin misin?",
+    "confirmDeleteCategoryWithMembers": "\"{name}\" kategorisini silmek istediğine emin misin?\n\nBu kategoriye bağlı {count} üye \"Kategorisiz\" olarak görünecek.",
+    "alertDeleteFailed": "Silinemedi: {message}",
+    "header": {
+      "title": "Ekip Yönetimi",
+      "total": "Toplam:",
+      "active": "Aktif:",
+      "certExpired": "{count} sertifika süresi dolmuş",
+      "certExpiring": "{count} sertifika yakında dolacak",
+      "addFromPersonnel": "Personelden Ekle",
+      "addMember": "Üye Ekle"
+    },
+    "categoriesNav": {
+      "title": "Kategoriler",
+      "all": "Tümü",
+      "addCategory": "Kategori Ekle",
+      "deleteCategoryTitle": "Kategoriyi sil",
+      "deleteCategoryAria": "{name} kategorisini sil"
+    },
+    "emptyTeam": {
+      "title": "Henüz ekip üyesi yok",
+      "description": "İSG ekibini oluşturmak için üye ekleyin.",
+      "cta": "İlk Üyeyi Ekle"
+    },
+    "uncategorized": "Kategorisiz",
+    "addMemberToCategory": "Üye Ekle",
+    "modals": {
+      "addMemberTitle": "Ekip Üyesi Ekle",
+      "editMemberTitle": "Üyeyi Düzenle",
+      "bulkAddTitle": "Personelden Ekip Üyesi Ekle",
+      "addCategoryTitle": "Yeni Kategori",
+      "cancel": "İptal",
+      "save": "Kaydet",
+      "saving": "Kaydediliyor…",
+      "update": "Güncelle",
+      "create": "Oluştur",
+      "adding": "Ekleniyor…",
+      "addPeople": "{count} Kişiyi Ekle"
+    },
+    "personnelQuickFill": {
+      "label": "Personelden Doldur",
+      "placeholder": "Personel seç (bilgileri otomatik doldurur)"
+    },
+    "bulkAdd": {
+      "description": "Firma personelinden ekip üyesi olarak eklemek istediklerinizi seçin. Zaten ekipte olan kişiler işaretlenmiştir.",
+      "selectAll": "Tümünü Seç",
+      "clearSelection": "Seçimi Kaldır",
+      "selected": "{count} seçili",
+      "noTitle": "Görev belirtilmemiş",
+      "alreadyOnTeam": "Ekipte"
+    },
+    "categoryModal": {
+      "nameLabel": "Kategori Adı *",
+      "namePlaceholder": "ör. Yangın Söndürme Ekibi",
+      "colorLabel": "Renk",
+      "iconLabel": "İkon (emoji)",
+      "iconPlaceholder": "👤",
+      "previewFallback": "Kategori Adı"
+    },
+    "defaultCategories": {
+      "riskTeam": "Risk Değerlendirme Ekibi",
+      "oshExpert": "İSG Uzmanı",
+      "workplaceDoctor": "İşyeri Hekimi",
+      "emergencyLead": "Acil Durum Ekip Lideri"
+    },
+    "membersList": {
+      "title": "Firma Üyeleri ve Erişim Rolleri",
+      "description": "Davet kabul edilen üyeler ve erişim seviyeleri. 5'li rol modeli: Sahip / Yönetici / Müdür / Editör / Görüntüleyici.",
+      "loading": "Üyeler yükleniyor…",
+      "dbConnectionError": "Veritabanı bağlantısı kurulamadı.",
+      "empty": "Henüz üye yok. Yukarıdaki formdan e-posta ile davet gönderebilirsiniz.",
+      "userFallback": "Kullanıcı",
+      "youBadge": "SİZ",
+      "statusActive": "Aktif",
+      "saving": "Kaydediliyor…",
+      "roleChangeHint": "Rol değiştirmek için yönetici/sahip yetkisi gerekir."
+    }
+  },
+  "organization": {
+    "stats": {
+      "activeMembers": "Aktif Üye",
+      "activeMembersSub": "Bu firmaya erişimli",
+      "pendingInvites": "Bekleyen Davet",
+      "pendingInvitesSub": "Kabul bekleniyor",
+      "templates": "Yetki Şablonu",
+      "templatesSub": "Tanımlı rol"
+    },
+    "sections": {
+      "activeMembers": "Aktif Üyeler",
+      "sendInvite": "Davet Gönder",
+      "activeMembersEmpty": "Henüz aktif üye bulunmuyor. Davet göndererek ekip oluşturun.",
+      "pendingInvites": "Bekleyen Davetler",
+      "pendingInvitesEmpty": "Bekleyen davet yok.",
+      "templates": "Erişim Şablonları",
+      "templatesLoading": "Şablon yükleniyor..."
+    },
+    "memberRow": {
+      "unknownUser": "Bilinmeyen Kullanıcı",
+      "noEmail": "E-posta yok",
+      "joined": "Katıldı:",
+      "lastActive": "Son aktif:",
+      "permissionsCount": "{count} izin",
+      "edit": "Düzenle",
+      "cancel": "İptal",
+      "remove": "Çıkar",
+      "removeTitle": "Erişimi kaldır",
+      "roleLabel": "Rol:",
+      "save": "Kaydet",
+      "saving": "Kaydediliyor..."
+    },
+    "invitationRow": {
+      "sent": "Gönderildi:",
+      "expired": "Süresi doldu",
+      "daysLeft": "{days} gün kaldı",
+      "cancel": "İptal"
+    }
+  },
+  "inviteProfessional": {
+    "status": {
+      "pending": "Bekliyor",
+      "accepted": "Kabul Edildi",
+      "rejected": "Reddedildi",
+      "cancelled": "İptal Edildi"
+    },
+    "title": "Profesyonel Davet Et",
+    "subtitle": "Erişim yetkilerini belirleyerek davet gönderin",
+    "section1": "1. Davet edilecek kişi",
+    "pickFromTeam": "Ekipten seç",
+    "manualEntry": "— Manuel giriş —",
+    "fullName": "Ad Soyad",
+    "fullNamePlaceholder": "Ad Soyad (opsiyonel)",
+    "emailRequired": "E-posta *",
+    "emailPlaceholder": "ornek@domain.com",
+    "section2": "2. Hazır rol şablonu seç",
+    "section3": "3. İzinler",
+    "permissionsSelected": "{granted} / {total} izin seçili",
+    "toggleAllOn": "Tümünü Seç",
+    "toggleAllOff": "Tümünü Kaldır",
+    "sensitiveTag": "hassas",
+    "section4": "4. Ek seçenekler",
+    "validity": "Geçerlilik süresi",
+    "expiryDays": "{days} gün",
+    "messageLabel": "Davet mesajı (opsiyonel)",
+    "messagePlaceholder": "Kişiye iletmek istediğiniz bir mesaj...",
+    "emailRequiredError": "E-posta adresi gereklidir.",
+    "connectionError": "Bağlantı hatası.",
+    "sentInvitations": "Gönderilen Davetler",
+    "expiredSuffix": " · Süresi doldu",
+    "cancel": "İptal",
+    "send": "Davet Gönder",
+    "sending": "Gönderiliyor..."
+  }
+}

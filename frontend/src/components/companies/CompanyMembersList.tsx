@@ -2,12 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Users2, Shield, UserCheck, Clock } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { PremiumIconBadge } from "@/components/ui/premium-icon-badge";
 import {
-  ACCESS_ROLE_LABELS,
   ALL_ACCESS_ROLES,
-  accessRoleLabel,
   normalizeAccessRole,
   type AccessRole,
 } from "@/lib/company-role-adapter";
@@ -41,11 +40,11 @@ function roleBadgeTone(role: AccessRole): string {
   }
 }
 
-function formatDateShort(iso: string) {
-  return new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium" }).format(new Date(iso));
-}
-
 export function CompanyMembersList({ companyId }: { companyId: string }) {
+  const t = useTranslations("companyWorkspace.people.membersList");
+  const tRoles = useTranslations("companyWorkspace.companyAccessRoles");
+  const locale = useLocale();
+
   const [members, setMembers] = useState<MemberRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,13 +52,30 @@ export function CompanyMembersList({ companyId }: { companyId: string }) {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
+  const formatDateShort = useCallback(
+    (iso: string) =>
+      new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(iso)),
+    [locale],
+  );
+
+  const accessRoleLabel = useCallback(
+    (role: string | null | undefined) => {
+      if (!role) return "—";
+      if (ALL_ACCESS_ROLES.includes(role as AccessRole)) {
+        return tRoles(role as AccessRole);
+      }
+      return role;
+    },
+    [tRoles],
+  );
+
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     const supabase = createClient();
     if (!supabase) {
       setLoading(false);
-      setError("Veritabanı bağlantısı kurulamadı.");
+      setError(t("dbConnectionError"));
       return;
     }
 
@@ -119,7 +135,7 @@ export function CompanyMembersList({ companyId }: { companyId: string }) {
     setCanManage(me?.access_role === "owner" || me?.access_role === "admin");
 
     setLoading(false);
-  }, [companyId]);
+  }, [companyId, t]);
 
   useEffect(() => {
     load();
@@ -150,16 +166,14 @@ export function CompanyMembersList({ companyId }: { companyId: string }) {
       <div className="mb-4 flex items-center gap-3">
         <PremiumIconBadge icon={Users2} tone="cobalt" size="sm" />
         <div className="flex-1">
-          <h3 className="text-sm font-bold text-foreground">Firma Üyeleri ve Erişim Rolleri</h3>
-          <p className="text-xs text-muted-foreground">
-            Davet kabul edilen üyeler ve erişim seviyeleri. 5'li rol modeli: Sahip / Yönetici / Müdür / Editör / Görüntüleyici.
-          </p>
+          <h3 className="text-sm font-bold text-foreground">{t("title")}</h3>
+          <p className="text-xs text-muted-foreground">{t("description")}</p>
         </div>
       </div>
 
       {loading ? (
         <div className="rounded-lg border border-dashed border-border bg-secondary/20 p-6 text-center text-sm text-muted-foreground">
-          Üyeler yükleniyor…
+          {t("loading")}
         </div>
       ) : error ? (
         <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-200">
@@ -167,12 +181,12 @@ export function CompanyMembersList({ companyId }: { companyId: string }) {
         </div>
       ) : members.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border bg-secondary/20 p-6 text-center text-sm text-muted-foreground">
-          Henüz üye yok. Yukarıdaki formdan e-posta ile davet gönderebilirsiniz.
+          {t("empty")}
         </div>
       ) : (
         <div className="space-y-2">
           {members.map((m) => {
-            const label = m.full_name?.trim() || m.email || "Kullanıcı";
+            const label = m.full_name?.trim() || m.email || t("userFallback");
             const initial = label.charAt(0).toUpperCase();
             const isSelf = m.user_id === currentUserId;
             const isOwner = m.access_role === "owner";
@@ -190,7 +204,9 @@ export function CompanyMembersList({ companyId }: { companyId: string }) {
                     <div className="flex items-center gap-2">
                       <p className="truncate text-sm font-semibold text-foreground">{label}</p>
                       {isSelf && (
-                        <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">SİZ</span>
+                        <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
+                          {t("youBadge")}
+                        </span>
                       )}
                     </div>
                     {m.email && m.email !== label && (
@@ -198,7 +214,7 @@ export function CompanyMembersList({ companyId }: { companyId: string }) {
                     )}
                     <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px] text-muted-foreground">
                       <span className="inline-flex items-center gap-1">
-                        <UserCheck size={10} /> {m.status === "active" ? "Aktif" : m.status}
+                        <UserCheck size={10} /> {m.status === "active" ? t("statusActive") : m.status}
                       </span>
                       {m.employment_type && (
                         <span className="inline-flex items-center gap-1">
@@ -221,7 +237,7 @@ export function CompanyMembersList({ companyId }: { companyId: string }) {
                     >
                       {ALL_ACCESS_ROLES.filter((r) => r !== "owner").map((r) => (
                         <option key={r} value={r}>
-                          {ACCESS_ROLE_LABELS[r]}
+                          {tRoles(r)}
                         </option>
                       ))}
                     </select>
@@ -233,16 +249,14 @@ export function CompanyMembersList({ companyId }: { companyId: string }) {
                     </span>
                   )}
                   {savingId === m.id && (
-                    <span className="text-[10px] text-muted-foreground">Kaydediliyor…</span>
+                    <span className="text-[10px] text-muted-foreground">{t("saving")}</span>
                   )}
                 </div>
               </div>
             );
           })}
           {!canManage && members.length > 0 && (
-            <p className="mt-2 text-xs text-muted-foreground">
-              Rol değiştirmek için yönetici/sahip yetkisi gerekir.
-            </p>
+            <p className="mt-2 text-xs text-muted-foreground">{t("roleChangeHint")}</p>
           )}
         </div>
       )}

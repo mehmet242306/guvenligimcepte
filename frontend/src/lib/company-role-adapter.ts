@@ -21,20 +21,21 @@ export const ALL_ACCESS_ROLES: AccessRole[] = ["owner", "admin", "manager", "edi
  */
 export const INVITABLE_ROLES: AccessRole[] = ["admin", "manager", "editor", "viewer"];
 
+/** English fallbacks when `next-intl` is not available; UI should prefer messages. */
 export const ACCESS_ROLE_LABELS: Record<AccessRole, string> = {
-  owner: "Sahip",
-  admin: "Yönetici",
-  manager: "Müdür",
-  editor: "Editör",
-  viewer: "Görüntüleyici",
+  owner: "Owner",
+  admin: "Administrator",
+  manager: "Manager",
+  editor: "Editor",
+  viewer: "Viewer",
 };
 
 export const ACCESS_ROLE_DESCRIPTIONS: Record<AccessRole, string> = {
-  owner: "Tüm yetkiler, devredilebilir.",
-  admin: "Yönetim, üye davet ve silme yetkisi.",
-  manager: "Modül yönetimi, arşivleme ve rapor oluşturma.",
-  editor: "İçerik oluşturma ve düzenleme.",
-  viewer: "Sadece görüntüleme.",
+  owner: "Full control; transferable.",
+  admin: "Management, invite and remove members.",
+  manager: "Module management, archive, and reporting.",
+  editor: "Create and edit content.",
+  viewer: "View only.",
 };
 
 /** Tone mapping for badges (matches premium-icon-badge tones). */

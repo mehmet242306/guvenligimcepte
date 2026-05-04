@@ -1,0 +1,230 @@
+{
+  "workspaceShell": {
+    "eyebrow": "Workspace",
+    "title": "Loading workspace",
+    "description": "Company data is being prepared in your browser. Please wait…"
+  },
+  "companyAccessRoles": {
+    "owner": "Owner",
+    "admin": "Administrator",
+    "manager": "Manager",
+    "editor": "Editor",
+    "viewer": "Viewer"
+  },
+  "workspaceMemberRoles": {
+    "owner": "Owner",
+    "admin": "Administrator",
+    "member": "Member",
+    "viewer": "Viewer",
+    "guest": "Guest"
+  },
+  "people": {
+    "inviteMember": {
+      "inviteSendFailed": "Could not send invitation.",
+      "panelTitle": "Invite user",
+      "panelDescription": "Invite a new member by email — when they accept, they are added to this company workspace.",
+      "openButton": "Invite",
+      "expandedTitle": "Invite new member",
+      "expandedSubtitle": "The invitation link is sent by email.",
+      "close": "Close",
+      "resultDelivered": "Invitation sent to {email}.",
+      "resultUndelivered": "Invitation created (email could not be delivered — link can be copied).",
+      "linkLabel": "Link:",
+      "newInvite": "New invitation",
+      "emailLabel": "Email",
+      "emailPlaceholder": "name@company.com",
+      "roleLabel": "Role",
+      "noteOptional": "Note (optional)",
+      "notePlaceholder": "Short note to the invitee",
+      "cancel": "Cancel",
+      "send": "Send invitation",
+      "sending": "Sending…"
+    },
+    "certBadge": {
+      "expired": "Expired",
+      "daysLeft": "{days} days left",
+      "valid": "Valid"
+    },
+    "memberForm": {
+      "fullNameLabel": "Full name *",
+      "fullNamePlaceholder": "Full name",
+      "titleLabel": "Title / role",
+      "titlePlaceholder": "OHS specialist",
+      "categoryLabel": "Category",
+      "selectCategory": "Select",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "+1 555 000 0000",
+      "emailLabel": "Email",
+      "emailPlaceholder": "name@company.com",
+      "certNumberLabel": "Certificate / document no.",
+      "certNumberPlaceholder": "OHS-2024-001",
+      "certExpiryLabel": "Certificate expiry",
+      "notesLabel": "Notes",
+      "notesPlaceholder": "Additional information…",
+      "activeMember": "Active member"
+    },
+    "memberCard": {
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "deleteConfirm": "Delete",
+      "cancel": "Cancel",
+      "inactive": "Inactive"
+    },
+    "errors": {
+      "fullNameRequired": "Full name is required.",
+      "orgMissing": "Organization information could not be loaded.",
+      "connectionError": "Connection error."
+    },
+    "confirmDeleteCategory": "Are you sure you want to delete the \"{name}\" category?",
+    "confirmDeleteCategoryWithMembers": "Are you sure you want to delete the \"{name}\" category?\n\n{count} member(s) in this category will appear as uncategorized.",
+    "alertDeleteFailed": "Could not delete: {message}",
+    "header": {
+      "title": "Team management",
+      "total": "Total:",
+      "active": "Active:",
+      "certExpired": "{count} certificate(s) expired",
+      "certExpiring": "{count} certificate(s) expiring soon",
+      "addFromPersonnel": "Add from personnel",
+      "addMember": "Add member"
+    },
+    "categoriesNav": {
+      "title": "Categories",
+      "all": "All",
+      "addCategory": "Add category",
+      "deleteCategoryTitle": "Delete category",
+      "deleteCategoryAria": "Delete category {name}"
+    },
+    "emptyTeam": {
+      "title": "No team members yet",
+      "description": "Add members to build your OHS team.",
+      "cta": "Add first member"
+    },
+    "uncategorized": "Uncategorized",
+    "addMemberToCategory": "Add member",
+    "modals": {
+      "addMemberTitle": "Add team member",
+      "editMemberTitle": "Edit member",
+      "bulkAddTitle": "Add team members from personnel",
+      "addCategoryTitle": "New category",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "update": "Update",
+      "create": "Create",
+      "adding": "Adding…",
+      "addPeople": "Add {count} people"
+    },
+    "personnelQuickFill": {
+      "label": "Fill from personnel",
+      "placeholder": "Select personnel (auto-fills fields)"
+    },
+    "bulkAdd": {
+      "description": "Select people from company personnel to add as team members. People already on the team are marked.",
+      "selectAll": "Select all",
+      "clearSelection": "Clear selection",
+      "selected": "{count} selected",
+      "noTitle": "No title specified",
+      "alreadyOnTeam": "On team"
+    },
+    "categoryModal": {
+      "nameLabel": "Category name *",
+      "namePlaceholder": "e.g. Fire response team",
+      "colorLabel": "Color",
+      "iconLabel": "Icon (emoji)",
+      "iconPlaceholder": "👤",
+      "previewFallback": "Category name"
+    },
+    "defaultCategories": {
+      "riskTeam": "Risk assessment team",
+      "oshExpert": "OHS specialist",
+      "workplaceDoctor": "Workplace physician",
+      "emergencyLead": "Emergency team lead"
+    },
+    "membersList": {
+      "title": "Company members and access roles",
+      "description": "Members who accepted invitations and their access levels. Five-tier model: Owner / Administrator / Manager / Editor / Viewer.",
+      "loading": "Loading members…",
+      "dbConnectionError": "Database connection could not be established.",
+      "empty": "No members yet. You can send email invitations using the form above.",
+      "userFallback": "User",
+      "youBadge": "YOU",
+      "statusActive": "Active",
+      "saving": "Saving…",
+      "roleChangeHint": "Administrator or owner role is required to change roles."
+    }
+  },
+  "organization": {
+    "stats": {
+      "activeMembers": "Active members",
+      "activeMembersSub": "With access to this company",
+      "pendingInvites": "Pending invitations",
+      "pendingInvitesSub": "Awaiting acceptance",
+      "templates": "Permission templates",
+      "templatesSub": "Defined roles"
+    },
+    "sections": {
+      "activeMembers": "Active members",
+      "sendInvite": "Send invitation",
+      "activeMembersEmpty": "No active members yet. Send invitations to build your team.",
+      "pendingInvites": "Pending invitations",
+      "pendingInvitesEmpty": "No pending invitations.",
+      "templates": "Access templates",
+      "templatesLoading": "Loading templates…"
+    },
+    "memberRow": {
+      "unknownUser": "Unknown user",
+      "noEmail": "No email",
+      "joined": "Joined:",
+      "lastActive": "Last active:",
+      "permissionsCount": "{count} permission(s)",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "remove": "Remove",
+      "removeTitle": "Remove access",
+      "roleLabel": "Role:",
+      "save": "Save",
+      "saving": "Saving…"
+    },
+    "invitationRow": {
+      "sent": "Sent:",
+      "expired": "Expired",
+      "daysLeft": "{days} days left",
+      "cancel": "Cancel"
+    }
+  },
+  "inviteProfessional": {
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled"
+    },
+    "title": "Invite professional",
+    "subtitle": "Send an invitation with access permissions",
+    "section1": "1. Person to invite",
+    "pickFromTeam": "Pick from team",
+    "manualEntry": "— Manual entry —",
+    "fullName": "Full name",
+    "fullNamePlaceholder": "Full name (optional)",
+    "emailRequired": "Email *",
+    "emailPlaceholder": "name@domain.com",
+    "section2": "2. Choose a role template",
+    "section3": "3. Permissions",
+    "permissionsSelected": "{granted} / {total} permissions selected",
+    "toggleAllOn": "Select all",
+    "toggleAllOff": "Clear all",
+    "sensitiveTag": "sensitive",
+    "section4": "4. Additional options",
+    "validity": "Validity period",
+    "expiryDays": "{days} days",
+    "messageLabel": "Invitation message (optional)",
+    "messagePlaceholder": "A message to include with the invitation…",
+    "emailRequiredError": "Email address is required.",
+    "connectionError": "Connection error.",
+    "sentInvitations": "Sent invitations",
+    "expiredSuffix": " · Expired",
+    "cancel": "Cancel",
+    "send": "Send invitation",
+    "sending": "Sending…"
+  }
+}

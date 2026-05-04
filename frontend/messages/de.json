@@ -633,78 +633,78 @@
       "tracking": "Verfolgung"
     },
     "structure": {
-      "summaryLocation": "Location",
-      "summaryDepartment": "Department",
-      "summaryEmployee": "Employee",
-      "locationsTitle": "Locations",
-      "locationsSubtitle": "Company physical sites",
-      "departmentsTitle": "Departments",
-      "departmentsSubtitle": "Organisational units",
-      "locationPlaceholder": "Enter location name",
-      "departmentPlaceholder": "Enter department name",
-      "addLocation": "Add location",
-      "addDepartment": "Add department"
+      "summaryLocation": "Standort",
+      "summaryDepartment": "Abteilung",
+      "summaryEmployee": "Beschäftigte",
+      "locationsTitle": "Standorte",
+      "locationsSubtitle": "Physische Standorte des Unternehmens",
+      "departmentsTitle": "Abteilungen",
+      "departmentsSubtitle": "Organisationseinheiten",
+      "locationPlaceholder": "Standortnamen eingeben",
+      "departmentPlaceholder": "Abteilungsnamen eingeben",
+      "addLocation": "Standort hinzufügen",
+      "addDepartment": "Abteilung hinzufügen"
     },
     "risk": {
-      "pageTitle": "Risk and field management",
-      "pageSubtitle": "Risk classification, analysis history and process tracking.",
-      "tabMap": "Risk map",
-      "tabAnalyses": "Analyses ({count})",
-      "newAnalysis": "New analysis",
-      "metricTotalFindings": "Total findings",
-      "metricCritical": "Critical",
-      "metricHigh": "High",
-      "metricAnalysisCount": "Analyses",
-      "badgeCritical": "Critical: {count}",
-      "badgeHigh": "High: {count}",
-      "badgeMedium": "Medium: {count}",
-      "badgeLow": "Low: {count}",
-      "noFindingsCategory": "No findings yet",
-      "addCategoryTitle": "Add category",
-      "addCategoryHint": "Define a custom risk category",
-      "categoryRisksTitle": "{label} risks",
-      "findingsCountLabel": "{count} findings",
-      "noFindingsInCategory": "No findings in this category yet.",
-      "analysisPrefix": "Analysis:",
-      "edit": "Edit",
-      "cancel": "Cancel",
-      "save": "Save",
-      "saving": "Saving…",
-      "discard": "Discard",
-      "recommendation": "Recommendation",
-      "action": "Action",
-      "notes": "Notes",
+      "pageTitle": "Risiko- und Feldmanagement",
+      "pageSubtitle": "Risikoklassifizierung, Analyseverlauf und Prozessverfolgung.",
+      "tabMap": "Risikokarte",
+      "tabAnalyses": "Analysen ({count})",
+      "newAnalysis": "Neue Analyse",
+      "metricTotalFindings": "Feststellungen gesamt",
+      "metricCritical": "Kritisch",
+      "metricHigh": "Hoch",
+      "metricAnalysisCount": "Analysen",
+      "badgeCritical": "Kritisch: {count}",
+      "badgeHigh": "Hoch: {count}",
+      "badgeMedium": "Mittel: {count}",
+      "badgeLow": "Niedrig: {count}",
+      "noFindingsCategory": "Noch keine Feststellungen",
+      "addCategoryTitle": "Kategorie hinzufügen",
+      "addCategoryHint": "Benutzerdefinierte Risikokategorie festlegen",
+      "categoryRisksTitle": "Risiken — {label}",
+      "findingsCountLabel": "{count} Feststellungen",
+      "noFindingsInCategory": "In dieser Kategorie gibt es noch keine Feststellungen.",
+      "analysisPrefix": "Analyse:",
+      "edit": "Bearbeiten",
+      "cancel": "Abbrechen",
+      "save": "Speichern",
+      "saving": "Speichern…",
+      "discard": "Verwerfen",
+      "recommendation": "Empfehlung",
+      "action": "Maßnahme",
+      "notes": "Notizen",
       "status": "Status",
-      "note": "Note",
-      "notePlaceholder": "Work done, observations…",
-      "emptyAnalysesTitle": "No risk analysis yet",
-      "emptyAnalysesDescription": "Start the first analysis for this company from the Risk analysis page.",
-      "findingsInRow": "{count} findings",
-      "archiveTitle": "Archive",
-      "editTitle": "Edit",
-      "deleteTitle": "Delete",
-      "confirmDelete": "Delete?",
-      "yes": "Yes",
-      "no": "No",
-      "exportPdfTitle": "Download PDF",
-      "exportWordTitle": "Download Word",
-      "exportExcelTitle": "Download Excel",
+      "note": "Notiz",
+      "notePlaceholder": "Durchgeführte Arbeiten, Beobachtungen…",
+      "emptyAnalysesTitle": "Noch keine Risikoanalyse",
+      "emptyAnalysesDescription": "Starten Sie die erste Analyse für dieses Unternehmen auf der Seite „Risikoanalyse“.",
+      "findingsInRow": "{count} Feststellungen",
+      "archiveTitle": "Archivieren",
+      "editTitle": "Bearbeiten",
+      "deleteTitle": "Löschen",
+      "confirmDelete": "Löschen?",
+      "yes": "Ja",
+      "no": "Nein",
+      "exportPdfTitle": "PDF herunterladen",
+      "exportWordTitle": "Word herunterladen",
+      "exportExcelTitle": "Excel herunterladen",
       "analysisStatus": {
-        "completed": "Completed",
-        "archived": "Archived",
-        "draft": "Draft"
+        "completed": "Abgeschlossen",
+        "archived": "Archiviert",
+        "draft": "Entwurf"
       },
       "trackingStatus": {
-        "open": "Open",
-        "in_progress": "In progress",
-        "resolved": "Resolved",
-        "archived": "Archived"
+        "open": "Offen",
+        "in_progress": "In Bearbeitung",
+        "resolved": "Erledigt",
+        "archived": "Archiviert"
       },
       "severity": {
-        "critical": "Critical",
-        "high": "High",
-        "medium": "Medium",
-        "low": "Low"
+        "critical": "Kritisch",
+        "high": "Hoch",
+        "medium": "Mittel",
+        "low": "Niedrig"
       },
       "method": {
         "r_skor": "R-SCORE 2D",
@@ -713,86 +713,86 @@
         "fmea": "FMEA",
         "hazop": "HAZOP"
       },
-      "shareTitle": "Report sharing",
-      "shareDescription": "Anyone with the link can view this report.",
-      "shareEnable": "Enable sharing link",
-      "shareActive": "Sharing on",
-      "shareCopyTitle": "Copy link",
-      "shareCopied": "Copied",
-      "shareWhatsappTitle": "Share via WhatsApp",
-      "shareButtonTitle": "Share",
+      "shareTitle": "Bericht teilen",
+      "shareDescription": "Jede Person mit dem Link kann diesen Bericht ansehen.",
+      "shareEnable": "Freigabelink aktivieren",
+      "shareActive": "Freigabe aktiv",
+      "shareCopyTitle": "Link kopieren",
+      "shareCopied": "Kopiert",
+      "shareWhatsappTitle": "Per WhatsApp teilen",
+      "shareButtonTitle": "Teilen",
       "shareWhatsappBody": "RiskNova — {title}\n{url}",
-      "participantsHeading": "Participants",
-      "analysisNoteHeading": "Analysis note",
-      "emptyAnalysisRows": "No rows in this analysis yet.",
-      "rowFindingCount": "({count})",
-      "recommendationInline": "Recommendation:",
-      "actionInline": "Action:",
-      "qrAlt": "QR code",
-      "qrCaption": "Share with QR",
+      "participantsHeading": "Teilnehmende",
+      "analysisNoteHeading": "Analysenotiz",
+      "emptyAnalysisRows": "In dieser Analyse sind noch keine Zeilen vorhanden.",
+      "rowFindingCount": "({count} Feststellungen)",
+      "recommendationInline": "Empfehlung:",
+      "actionInline": "Maßnahme:",
+      "qrAlt": "QR-Code",
+      "qrCaption": "Per QR teilen",
       "categories": {
         "fiziksel": {
-          "label": "Physical",
-          "examples": "Noise, vibration, lighting, temperature"
+          "label": "Physikalisch",
+          "examples": "Lärm, Vibration, Beleuchtung, Temperatur"
         },
         "kimyasal": {
-          "label": "Chemical",
-          "examples": "Gas, dust, vapour, chemicals"
+          "label": "Chemisch",
+          "examples": "Gas, Staub, Dampf, Chemikalien"
         },
         "biyolojik": {
-          "label": "Biological",
-          "examples": "Bacteria, viruses, mould, biological agents"
+          "label": "Biologisch",
+          "examples": "Bakterien, Viren, Schimmel, biologische Arbeitsstoffe"
         },
         "ergonomik": {
-          "label": "Ergonomic",
-          "examples": "Poor posture, heavy loads, repetitive motion"
+          "label": "Ergonomisch",
+          "examples": "Fehlhaltung, schwere Lasten, repetitive Bewegungen"
         },
         "psikososyal": {
-          "label": "Psychosocial",
-          "examples": "Stress, bullying, workload, shifts"
+          "label": "Psychosozial",
+          "examples": "Stress, Mobbing, Arbeitsbelastung, Schichtarbeit"
         },
         "mekanik": {
-          "label": "Mechanical",
-          "examples": "Machinery, equipment, falls, crushing"
+          "label": "Mechanisch",
+          "examples": "Maschinen, Anlagen, Stürze, Quetschungen"
         },
         "elektrik": {
-          "label": "Electrical",
-          "examples": "Electric shock, short circuit, earthing"
+          "label": "Elektrisch",
+          "examples": "Stromschlag, Kurzschluss, Erdung"
         },
         "yangin": {
-          "label": "Fire / explosion",
-          "examples": "Flammable material, explosive atmosphere, LPG"
+          "label": "Brand / Explosion",
+          "examples": "Brennbare Stoffe, explosionsfähige Atmosphäre, LPG"
         },
         "trafik": {
-          "label": "Traffic",
-          "examples": "Vehicles, forklifts, pedestrian–vehicle conflict"
+          "label": "Verkehr / Flurförderung",
+          "examples": "Fahrzeuge, Stapler, Konflikte Fußgänger–Fahrzeug"
         },
         "cevre": {
-          "label": "Environmental",
-          "examples": "Waste, emissions, noise pollution"
+          "label": "Umwelt",
+          "examples": "Abfall, Emissionen, Geräuschimmissionen"
         }
       }
     },
     "tracking": {
-      "sectionActions": "Open actions",
-      "sectionTrainings": "Trainings",
-      "sectionControls": "Periodic inspection",
-      "sectionCommittee": "OHS committee",
-      "hazardUnknown": "Not determined",
-      "actionsTitle": "Open actions",
-      "actionsDesc": "Open actions from risk findings, CAPA and OHS tasks.",
-      "noActions": "No open actions.",
-      "badgeTotal": "Total: {count}",
-      "sourceRisk": "Risk",
+      "sectionActions": "Offene Maßnahmen",
+      "sectionTrainings": "Schulungen",
+      "sectionControls": "Periodische Prüfung",
+      "sectionCommittee": "Arbeitsschutzausschuss",
+      "hazardUnknown": "Nicht festgelegt",
+      "actionsTitle": "Offene Maßnahmen",
+      "actionsDesc": "Offene Maßnahmen aus Risikofeststellungen, CAPA und Arbeitsschutzaufgaben.",
+      "noActions": "Keine offenen Maßnahmen.",
+      "badgeTotal": "Gesamt: {count}",
+      "sourceRisk": "Risiko",
       "sourceDof": "CAPA",
-      "sourceTask": "Task",
+      "sourceTask": "Aufgabe",
       "statusButton": "Status",
-      "trainingsTitle": "Training tracking",
-      "trainingsDesc": "Company training plans and records.",
-      "controlsTitle": "Periodic inspections",
-      "controlsDesc": "Legally required periodic inspections and examinations.",
-      "committeeTitle": "OHS committee meetings",
-      "committeeDesc": "Hazard class: {hazardClass} — every {months} months",
+      "trainingsTitle": "Schulungsverfolgung",
+      "trainingsDesc": "Unternehmensweite Schulungspläne und Nachweise.",
+      "controlsTitle": "Periodische Prüfungen",
+      "controlsDesc": "Gesetzlich vorgeschriebene periodische Prüfungen und Untersuchungen.",
+      "committeeTitle": "ASA-Sitzungen",
+      "committeeDesc": "Gefahrenklasse: {hazardClass} — alle {months} Monate",
       "newTraining": "Neue Schulung",
       "noTrainings": "Noch keine Schulungen.",
       "newControl": "Neue Kontrolle",
@@ -803,84 +803,84 @@
         "planned": "Geplant",
         "completed": "Abgeschlossen",
         "cancelled": "Abgebrochen",
-        "overdue": "Overdue"
+        "overdue": "Überfällig"
       },
       "trainingTypes": {
         "zorunlu": "Pflicht",
         "yenileme": "Auffrischung",
         "istege_bagli": "Optional"
       },
-      "hours": "{count} hours",
+      "hours": "{count} Stunden",
       "edit": "Bearbeiten",
       "delete": "Löschen",
       "results": {
-        "uygun": "Fit",
-        "sartli_uygun": "Conditionally Fit",
-        "uygun_degil": "Unfit"
+        "uygun": "Einsatzfähig",
+        "sartli_uygun": "Bedingt einsatzfähig",
+        "uygun_degil": "Nicht einsatzfähig"
       },
       "controlTypes": {
-        "elektrik": "Electrical",
-        "asansor": "Elevator",
-        "yangin": "Fire",
-        "basinc": "Pressure Vessel",
-        "vinc": "Crane",
-        "kompressor": "Compressor",
-        "forklift": "Forklift",
-        "diger": "Other"
+        "elektrik": "Elektro",
+        "asansor": "Aufzug",
+        "yangin": "Brandschutz",
+        "basinc": "Druckbehälter",
+        "vinc": "Kran",
+        "kompressor": "Kompressor",
+        "forklift": "Gabelstapler",
+        "diger": "Sonstiges"
       },
-      "overdue": "Overdue!",
+      "overdue": "Überfällig!",
       "last": "Letzte",
       "next": "Nächste",
       "meetingNumber": "Sitzung #{number}",
-      "agenda": "Agenda",
+      "agenda": "Tagesordnung",
       "attendees": "Teilnehmer",
       "decisions": "Beschlüsse",
       "responsible": "Verantwortlich",
       "deadline": "Frist",
       "nextMeeting": "Nächste Sitzung",
       "save": "Speichern",
-      "saving": "Speichern...",
+      "saving": "Speichern…",
       "cancel": "Abbrechen",
-      "type": "Type",
-      "trainer": "Trainer",
-      "date": "Date",
-      "durationHours": "Duration (hours)",
+      "type": "Art",
+      "trainer": "Schulungsleitung",
+      "date": "Datum",
+      "durationHours": "Dauer (Stunden)",
       "statusLabel": "Status",
-      "note": "Note",
-      "inspector": "Inspector",
-      "inspectionDate": "Inspection Date",
-      "nextControl": "Next Control",
-      "result": "Result",
-      "reportReference": "Report Reference",
+      "note": "Notiz",
+      "inspector": "Prüfer/in",
+      "inspectionDate": "Prüfdatum",
+      "nextControl": "Nächste Prüfung",
+      "result": "Ergebnis",
+      "reportReference": "Berichtsreferenz",
       "trainingForm": {
-        "newTitle": "Add New Training",
-        "editTitle": "Edit Training",
-        "nameRequired": "Training Name *",
-        "namePlaceholder": "OHS Basic Training"
+        "newTitle": "Neue Schulung hinzufügen",
+        "editTitle": "Schulung bearbeiten",
+        "nameRequired": "Schulungsbezeichnung *",
+        "namePlaceholder": "Grundschulung Arbeitssicherheit"
       },
       "controlForm": {
-        "newTitle": "Add New Periodic Control",
-        "editTitle": "Edit Periodic Control",
-        "nameRequired": "Control Name *",
-        "namePlaceholder": "Electrical installation inspection"
+        "newTitle": "Neue periodische Prüfung hinzufügen",
+        "editTitle": "Periodische Prüfung bearbeiten",
+        "nameRequired": "Prüfungsbezeichnung *",
+        "namePlaceholder": "Prüfung elektrischer Anlagen"
       },
       "meetingForm": {
-        "newTitle": "New OHS Committee Meeting",
-        "editTitle": "Edit Meeting",
-        "dateRequired": "Meeting Date *",
-        "number": "Meeting No",
-        "attendeesPlaceholder": "OHS specialist, employer representative, employee representative...",
-        "agendaPlaceholder": "1. Review of risk analysis results\n2. Training plan...",
-        "addDecision": "+ Add Decision",
-        "decisionText": "Decision text",
-        "nextDate": "Next Meeting Date"
+        "newTitle": "Neue ASA-Sitzung",
+        "editTitle": "Sitzung bearbeiten",
+        "dateRequired": "Sitzungsdatum *",
+        "number": "Sitzungs-Nr.",
+        "attendeesPlaceholder": "Fachkraft für Arbeitssicherheit, Arbeitgebervertretung, Beschäftigtenvertretung …",
+        "agendaPlaceholder": "1. Auswertung der Risikoanalyse\n2. Schulungsplan …",
+        "addDecision": "+ Beschluss hinzufügen",
+        "decisionText": "Beschlusstext",
+        "nextDate": "Datum der nächsten Sitzung"
       }
     },
     "personnel": {
       "title": "Personalverwaltung",
       "description": "Personalakten für {companyName} verwalten.",
       "sourceLocal": "Lokal",
-      "loading": "Loading personnel data...",
+      "loading": "Personaldaten werden geladen…",
       "summary": {
         "total": "Personal gesamt",
         "active": "Aktiv",
@@ -894,87 +894,87 @@
         "health": "Gesundheitsüberwachung"
       },
       "empty": {
-        "title": "No personnel records yet",
-        "description": "Download the CSV template and upload it from the Import tab."
+        "title": "Noch keine Personaldaten",
+        "description": "Laden Sie die CSV-Vorlage herunter und importieren Sie sie im Tab „Import“."
       },
       "list": {
-        "count": "{count} personnel records",
-        "sort": "Sort"
+        "count": "{count} Personaldatensätze",
+        "sort": "Sortieren"
       },
       "actions": {
         "templateDownload": "Vorlage herunterladen",
         "goImport": "Zum Import",
-        "deleting": "Deleting...",
-        "deleteSelected": "Delete Selected ({count})",
+        "deleting": "Wird gelöscht…",
+        "deleteSelected": "Auswahl löschen ({count})",
         "export": "Exportieren",
         "newImport": "Neuer Import",
         "import": "Importieren",
-        "uploading": "Uploading...",
+        "uploading": "Wird hochgeladen…",
         "profile": "Akte",
         "special": "Besonders",
         "delete": "Löschen",
         "remove": "Entfernen",
-        "saving": "Saving...",
-        "close": "Close",
+        "saving": "Speichern…",
+        "close": "Schließen",
         "save": "Speichern",
         "cancel": "Abbrechen"
       },
       "import": {
-        "chooseFile": "Please select a CSV file.",
-        "noValidRecords": "No valid records were found in the file.",
-        "successSupabase": "{count} personnel records imported successfully. (Supabase) · Total: {total}",
-        "successLocal": "{count} personnel records imported successfully. (Local) · Total: {total}",
-        "readError": "An error occurred while reading the file.",
-        "templateTitle": "Download CSV Template",
-        "templateDesc": "Download the template below and fill in personnel information.",
-        "uploadTitle": "Upload CSV File",
-        "uploadDesc": "Select the completed CSV file and import it."
+        "chooseFile": "Bitte eine CSV-Datei auswählen.",
+        "noValidRecords": "In der Datei wurden keine gültigen Datensätze gefunden.",
+        "successSupabase": "{count} Personaldatensätze erfolgreich importiert. (Supabase) · Gesamt: {total}",
+        "successLocal": "{count} Personaldatensätze erfolgreich importiert. (Lokal) · Gesamt: {total}",
+        "readError": "Beim Lesen der Datei ist ein Fehler aufgetreten.",
+        "templateTitle": "CSV-Vorlage herunterladen",
+        "templateDesc": "Laden Sie die Vorlage herunter und tragen Sie die Personaldaten ein.",
+        "uploadTitle": "CSV-Datei hochladen",
+        "uploadDesc": "Wählen Sie die ausgefüllte CSV-Datei aus und starten Sie den Import."
       },
       "table": {
-        "employeeCode": "Employee ID",
-        "fullName": "Full Name",
-        "identity": "National ID",
-        "department": "Department",
+        "employeeCode": "Personal-Nr.",
+        "fullName": "Vollständiger Name",
+        "identity": "Ausweis-Nr.",
+        "department": "Abteilung",
         "position": "Position",
-        "location": "Location",
+        "location": "Standort",
         "status": "Status",
-        "employment": "Employment",
-        "actions": "Actions",
-        "phone": "Phone",
-        "email": "Email",
-        "hireDate": "Hire Date",
-        "bloodType": "Blood Type",
-        "emergency": "Emergency",
-        "profilePage": "Personnel File",
-        "positionMissing": "Position not specified",
-        "noDepartment": "No department"
+        "employment": "Beschäftigung",
+        "actions": "Aktionen",
+        "phone": "Telefon",
+        "email": "E-Mail",
+        "hireDate": "Eintrittsdatum",
+        "bloodType": "Blutgruppe",
+        "emergency": "Notfallkontakt",
+        "profilePage": "Personalakte",
+        "positionMissing": "Keine Position angegeben",
+        "noDepartment": "Keine Abteilung"
       },
       "statuses": {
-        "active": "Active",
-        "on_leave": "On leave",
-        "suspended": "Suspended",
-        "terminated": "Terminated"
+        "active": "Aktiv",
+        "on_leave": "Abwesend",
+        "suspended": "Ausgesetzt",
+        "terminated": "Ausgeschieden"
       },
       "employmentTypes": {
-        "full_time": "Full-time",
-        "part_time": "Part-time",
-        "temporary": "Temporary",
-        "intern": "Intern",
-        "subcontractor": "Subcontractor"
+        "full_time": "Vollzeit",
+        "part_time": "Teilzeit",
+        "temporary": "Befristet",
+        "intern": "Praktikant/in",
+        "subcontractor": "Subunternehmer"
       },
       "sort": {
-        "employeeCode": "Employee ID",
-        "fullName": "Full Name",
-        "department": "Department",
+        "employeeCode": "Personal-Nr.",
+        "fullName": "Name",
+        "department": "Abteilung",
         "positionTitle": "Position",
-        "location": "Location",
+        "location": "Standort",
         "employmentStatus": "Status",
-        "employmentType": "Employment",
-        "ascTitle": "Ascending (A→Z)",
-        "descTitle": "Descending (Z→A)",
-        "ascAria": "Ascending sort",
-        "descAria": "Descending sort",
-        "columnAria": "Sort by {label} column"
+        "employmentType": "Beschäftigung",
+        "ascTitle": "Aufsteigend (A→Z)",
+        "descTitle": "Absteigend (Z→A)",
+        "ascAria": "Aufsteigend sortieren",
+        "descAria": "Absteigend sortieren",
+        "columnAria": "Nach Spalte „{label}“ sortieren"
       },
       "special": {
         "title": "Kategorien für besondere Überwachung",
@@ -988,36 +988,36 @@
         "assignmentDescription": "Kategorie für besondere Überwachung auswählen.",
         "categories": {
           "pregnant": {
-            "label": "Pregnant Employee",
-            "desc": "Special protection is required for pregnant or nursing employees."
+            "label": "Schwangere Beschäftigte",
+            "desc": "Für schwangere oder stillende Beschäftigte gelten besondere Schutzvorschriften."
           },
           "disabled": {
-            "label": "Disabled Employee",
-            "desc": "Work arrangements suitable for the disability status must be provided."
+            "label": "Beschäftigte mit Behinderung",
+            "desc": "Es sind arbeitsplatzgerechte Anpassungen entsprechend dem Behinderungsgrad erforderlich."
           },
           "foreign_national": {
-            "label": "Foreign National",
-            "desc": "Requires language, cultural adaptation and work permit tracking."
+            "label": "Ausländische Beschäftigte",
+            "desc": "Sprache, kulturelle Eingliederung und Aufenthalts-/Arbeitserlaubnis müssen nachverfolgt werden."
           },
           "young_worker": {
-            "label": "Young Worker (under 18)",
-            "desc": "Legal restrictions and additional protective measures must be applied."
+            "label": "Jugendlicher Arbeitnehmer (unter 18)",
+            "desc": "Gesetzliche Beschränkungen und zusätzliche Schutzmaßnahmen sind anzuwenden."
           },
           "night_shift": {
-            "label": "Night Shift Employee",
-            "desc": "Health risks and periodic checks related to night work."
+            "label": "Nachtarbeit",
+            "desc": "Gesundheitsrisiken und periodische Untersuchungen im Zusammenhang mit Nachtarbeit."
           },
           "chronic_condition": {
-            "label": "Chronic Condition",
-            "desc": "Requires continuous health monitoring and work fitness assessment."
+            "label": "Chronische Erkrankung",
+            "desc": "Fortlaufende gesundheitliche Überwachung und arbeitsmedizinische Beurteilung erforderlich."
           },
           "nursing_mother": {
-            "label": "Nursing Mother",
-            "desc": "Special working conditions must be provided during nursing."
+            "label": "Stillende Mutter",
+            "desc": "Während der Stillzeit sind besondere Arbeitsbedingungen vorzusehen."
           },
           "temporary_restriction": {
-            "label": "Temporary Restriction",
-            "desc": "Work restriction is applied due to a temporary health condition."
+            "label": "Vorübergehende Einschränkung",
+            "desc": "Aufgrund eines vorübergehenden Gesundheitszustands besteht eine Arbeitseinschränkung."
           }
         }
       },
@@ -1032,30 +1032,30 @@
         "report": "Bericht",
         "restriction": "Einschränkung",
         "recommendation": "Empfehlung",
-        "formTitle": "Add New Health Examination",
-        "personnelRequired": "Personnel *",
-        "examType": "Exam Type",
-        "examDateRequired": "Exam Date *",
-        "nextExam": "Next Exam",
-        "result": "Result",
-        "physicianName": "Physician Name",
+        "formTitle": "Neue arbeitsmedizinische Untersuchung",
+        "personnelRequired": "Personal *",
+        "examType": "Untersuchungsart",
+        "examDateRequired": "Untersuchungsdatum *",
+        "nextExam": "Nächste Untersuchung",
+        "result": "Ergebnis",
+        "physicianName": "Name der Ärztin / des Arztes",
         "institution": "Institution",
-        "reportNo": "Report No",
-        "restrictions": "Restrictions",
-        "restrictionsPlaceholder": "Cannot work at height, cannot lift heavy loads...",
-        "recommendedActions": "Recommendations",
-        "recommendedActionsPlaceholder": "Follow-up examination after 6 months...",
+        "reportNo": "Berichts-Nr.",
+        "restrictions": "Einschränkungen",
+        "restrictionsPlaceholder": "Keine Arbeit in der Höhe, kein schweres Heben …",
+        "recommendedActions": "Empfohlene Maßnahmen",
+        "recommendedActionsPlaceholder": "Nachuntersuchung nach 6 Monaten …",
         "examTypes": {
-          "ise_giris": "Pre-employment",
-          "periyodik": "Periodic",
-          "isten_ayrilma": "Exit",
-          "ozel": "Special"
+          "ise_giris": "Einstellungsuntersuchung",
+          "periyodik": "Periodisch",
+          "isten_ayrilma": "Austritt",
+          "ozel": "Sonderuntersuchung"
         },
         "results": {
-          "uygun": "Fit",
-          "sartli_uygun": "Conditionally Fit",
-          "uygun_degil": "Unfit",
-          "izleme": "Monitoring"
+          "uygun": "Einsatzfähig",
+          "sartli_uygun": "Bedingt einsatzfähig",
+          "uygun_degil": "Nicht einsatzfähig",
+          "izleme": "Beobachtung"
         }
       }
     },
@@ -1063,40 +1063,268 @@
       "title": "Historie und Audit-Trail",
       "description": "Aktionen und Änderungen am Unternehmen werden automatisch erfasst.",
       "noWorkspace": "Kein Unternehmensarbeitsbereich ausgewählt.",
-      "loading": "Historie wird geladen...",
+      "loading": "Historie wird geladen…",
       "empty": "Noch keine Historie vorhanden. Änderungen am Unternehmen werden hier angezeigt.",
-      "dbConnectionError": "Database connection could not be established.",
+      "dbConnectionError": "Keine Verbindung zur Datenbank möglich.",
       "systemActor": "Systemaktion",
       "change": "Änderung",
       "actions": {
-        "workspaceCreated": "Workspace created",
-        "workspaceArchived": "Workspace archived",
-        "workspaceRestored": "Workspace restored",
-        "expertAssigned": "Expert assigned",
-        "expertAssignmentUpdated": "Expert assignment updated",
-        "expertAssignmentDeleted": "Expert assignment deleted",
-        "riskAssessmentCreated": "Risk assessment created",
-        "riskAssessmentUpdated": "Risk assessment updated",
-        "riskAssessmentDeleted": "Risk assessment deleted",
-        "documentCreated": "Document created",
-        "documentUpdated": "Document updated",
-        "documentDeleted": "Document deleted",
-        "trainingAdded": "Training added",
-        "trainingUpdated": "Training updated",
-        "incidentCreated": "Incident record created",
-        "incidentUpdated": "Incident record updated"
+        "workspaceCreated": "Arbeitsbereich angelegt",
+        "workspaceArchived": "Arbeitsbereich archiviert",
+        "workspaceRestored": "Arbeitsbereich wiederhergestellt",
+        "expertAssigned": "Fachkraft zugewiesen",
+        "expertAssignmentUpdated": "Zuweisung der Fachkraft aktualisiert",
+        "expertAssignmentDeleted": "Zuweisung der Fachkraft gelöscht",
+        "riskAssessmentCreated": "Risikobewertung erstellt",
+        "riskAssessmentUpdated": "Risikobewertung aktualisiert",
+        "riskAssessmentDeleted": "Risikobewertung gelöscht",
+        "documentCreated": "Dokument erstellt",
+        "documentUpdated": "Dokument aktualisiert",
+        "documentDeleted": "Dokument gelöscht",
+        "trainingAdded": "Schulung hinzugefügt",
+        "trainingUpdated": "Schulung aktualisiert",
+        "incidentCreated": "Vorfall angelegt",
+        "incidentUpdated": "Vorfall aktualisiert"
       },
       "entities": {
-        "riskAssessments": "Risk Assessment",
-        "editorDocuments": "Document",
-        "incidents": "Incident",
-        "companyTrainings": "Training",
-        "committeeMeetings": "Committee Meeting",
-        "periodicControls": "Periodic Control",
-        "tasks": "Task",
-        "workspace": "Workspace",
-        "companyIdentity": "Company Identity"
+        "riskAssessments": "Risikobewertung",
+        "editorDocuments": "Dokument",
+        "incidents": "Vorfall",
+        "companyTrainings": "Schulung",
+        "committeeMeetings": "ASA-Sitzung",
+        "periodicControls": "Periodische Prüfung",
+        "tasks": "Aufgabe",
+        "workspace": "Arbeitsbereich",
+        "companyIdentity": "Unternehmensstammdaten"
       }
+    },
+    "workspaceShell": {
+      "eyebrow": "Workspace",
+      "title": "Loading workspace",
+      "description": "Company data is being prepared in your browser. Please wait…"
+    },
+    "companyAccessRoles": {
+      "owner": "Owner",
+      "admin": "Administrator",
+      "manager": "Manager",
+      "editor": "Editor",
+      "viewer": "Viewer"
+    },
+    "workspaceMemberRoles": {
+      "owner": "Owner",
+      "admin": "Administrator",
+      "member": "Member",
+      "viewer": "Viewer",
+      "guest": "Guest"
+    },
+    "people": {
+      "inviteMember": {
+        "inviteSendFailed": "Could not send invitation.",
+        "panelTitle": "Invite user",
+        "panelDescription": "Invite a new member by email — when they accept, they are added to this company workspace.",
+        "openButton": "Invite",
+        "expandedTitle": "Invite new member",
+        "expandedSubtitle": "The invitation link is sent by email.",
+        "close": "Close",
+        "resultDelivered": "Invitation sent to {email}.",
+        "resultUndelivered": "Invitation created (email could not be delivered — link can be copied).",
+        "linkLabel": "Link:",
+        "newInvite": "New invitation",
+        "emailLabel": "Email",
+        "emailPlaceholder": "name@company.com",
+        "roleLabel": "Role",
+        "noteOptional": "Note (optional)",
+        "notePlaceholder": "Short note to the invitee",
+        "cancel": "Cancel",
+        "send": "Send invitation",
+        "sending": "Sending…"
+      },
+      "certBadge": {
+        "expired": "Expired",
+        "daysLeft": "{days} days left",
+        "valid": "Valid"
+      },
+      "memberForm": {
+        "fullNameLabel": "Full name *",
+        "fullNamePlaceholder": "Full name",
+        "titleLabel": "Title / role",
+        "titlePlaceholder": "OHS specialist",
+        "categoryLabel": "Category",
+        "selectCategory": "Select",
+        "phoneLabel": "Phone",
+        "phonePlaceholder": "+1 555 000 0000",
+        "emailLabel": "Email",
+        "emailPlaceholder": "name@company.com",
+        "certNumberLabel": "Certificate / document no.",
+        "certNumberPlaceholder": "OHS-2024-001",
+        "certExpiryLabel": "Certificate expiry",
+        "notesLabel": "Notes",
+        "notesPlaceholder": "Additional information…",
+        "activeMember": "Active member"
+      },
+      "memberCard": {
+        "editTitle": "Edit",
+        "deleteTitle": "Delete",
+        "deleteConfirm": "Delete",
+        "cancel": "Cancel",
+        "inactive": "Inactive"
+      },
+      "errors": {
+        "fullNameRequired": "Full name is required.",
+        "orgMissing": "Organization information could not be loaded.",
+        "connectionError": "Connection error."
+      },
+      "confirmDeleteCategory": "Are you sure you want to delete the \"{name}\" category?",
+      "confirmDeleteCategoryWithMembers": "Are you sure you want to delete the \"{name}\" category?\n\n{count} member(s) in this category will appear as uncategorized.",
+      "alertDeleteFailed": "Could not delete: {message}",
+      "header": {
+        "title": "Team management",
+        "total": "Total:",
+        "active": "Active:",
+        "certExpired": "{count} certificate(s) expired",
+        "certExpiring": "{count} certificate(s) expiring soon",
+        "addFromPersonnel": "Add from personnel",
+        "addMember": "Add member"
+      },
+      "categoriesNav": {
+        "title": "Categories",
+        "all": "All",
+        "addCategory": "Add category",
+        "deleteCategoryTitle": "Delete category",
+        "deleteCategoryAria": "Delete category {name}"
+      },
+      "emptyTeam": {
+        "title": "No team members yet",
+        "description": "Add members to build your OHS team.",
+        "cta": "Add first member"
+      },
+      "uncategorized": "Uncategorized",
+      "addMemberToCategory": "Add member",
+      "modals": {
+        "addMemberTitle": "Add team member",
+        "editMemberTitle": "Edit member",
+        "bulkAddTitle": "Add team members from personnel",
+        "addCategoryTitle": "New category",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving…",
+        "update": "Update",
+        "create": "Create",
+        "adding": "Adding…",
+        "addPeople": "Add {count} people"
+      },
+      "personnelQuickFill": {
+        "label": "Fill from personnel",
+        "placeholder": "Select personnel (auto-fills fields)"
+      },
+      "bulkAdd": {
+        "description": "Select people from company personnel to add as team members. People already on the team are marked.",
+        "selectAll": "Select all",
+        "clearSelection": "Clear selection",
+        "selected": "{count} selected",
+        "noTitle": "No title specified",
+        "alreadyOnTeam": "On team"
+      },
+      "categoryModal": {
+        "nameLabel": "Category name *",
+        "namePlaceholder": "e.g. Fire response team",
+        "colorLabel": "Color",
+        "iconLabel": "Icon (emoji)",
+        "iconPlaceholder": "👤",
+        "previewFallback": "Category name"
+      },
+      "defaultCategories": {
+        "riskTeam": "Risk assessment team",
+        "oshExpert": "OHS specialist",
+        "workplaceDoctor": "Workplace physician",
+        "emergencyLead": "Emergency team lead"
+      },
+      "membersList": {
+        "title": "Company members and access roles",
+        "description": "Members who accepted invitations and their access levels. Five-tier model: Owner / Administrator / Manager / Editor / Viewer.",
+        "loading": "Loading members…",
+        "dbConnectionError": "Database connection could not be established.",
+        "empty": "No members yet. You can send email invitations using the form above.",
+        "userFallback": "User",
+        "youBadge": "YOU",
+        "statusActive": "Active",
+        "saving": "Saving…",
+        "roleChangeHint": "Administrator or owner role is required to change roles."
+      }
+    },
+    "organization": {
+      "stats": {
+        "activeMembers": "Active members",
+        "activeMembersSub": "With access to this company",
+        "pendingInvites": "Pending invitations",
+        "pendingInvitesSub": "Awaiting acceptance",
+        "templates": "Permission templates",
+        "templatesSub": "Defined roles"
+      },
+      "sections": {
+        "activeMembers": "Active members",
+        "sendInvite": "Send invitation",
+        "activeMembersEmpty": "No active members yet. Send invitations to build your team.",
+        "pendingInvites": "Pending invitations",
+        "pendingInvitesEmpty": "No pending invitations.",
+        "templates": "Access templates",
+        "templatesLoading": "Loading templates…"
+      },
+      "memberRow": {
+        "unknownUser": "Unknown user",
+        "noEmail": "No email",
+        "joined": "Joined:",
+        "lastActive": "Last active:",
+        "permissionsCount": "{count} permission(s)",
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "remove": "Remove",
+        "removeTitle": "Remove access",
+        "roleLabel": "Role:",
+        "save": "Save",
+        "saving": "Saving…"
+      },
+      "invitationRow": {
+        "sent": "Sent:",
+        "expired": "Expired",
+        "daysLeft": "{days} days left",
+        "cancel": "Cancel"
+      }
+    },
+    "inviteProfessional": {
+      "status": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled"
+      },
+      "title": "Invite professional",
+      "subtitle": "Send an invitation with access permissions",
+      "section1": "1. Person to invite",
+      "pickFromTeam": "Pick from team",
+      "manualEntry": "— Manual entry —",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Full name (optional)",
+      "emailRequired": "Email *",
+      "emailPlaceholder": "name@domain.com",
+      "section2": "2. Choose a role template",
+      "section3": "3. Permissions",
+      "permissionsSelected": "{granted} / {total} permissions selected",
+      "toggleAllOn": "Select all",
+      "toggleAllOff": "Clear all",
+      "sensitiveTag": "sensitive",
+      "section4": "4. Additional options",
+      "validity": "Validity period",
+      "expiryDays": "{days} days",
+      "messageLabel": "Invitation message (optional)",
+      "messagePlaceholder": "A message to include with the invitation…",
+      "emailRequiredError": "Email address is required.",
+      "connectionError": "Connection error.",
+      "sentInvitations": "Sent invitations",
+      "expiredSuffix": " · Expired",
+      "cancel": "Cancel",
+      "send": "Send invitation",
+      "sending": "Sending…"
     }
   },
   "consent": {

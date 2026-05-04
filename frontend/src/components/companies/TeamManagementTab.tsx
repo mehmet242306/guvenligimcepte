@@ -1,5 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Phone, Mail, Pencil, Trash2, UserPlus, Users, Plus, Shield, Target, ShieldCheck, Stethoscope, Siren, HardHat, HeartPulse, UserCog, Wrench, Search, User, Flame, DoorOpen } from "lucide-react";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 
@@ -20,27 +21,22 @@ function colorToTone(color: string): PremiumIconTone {
 function categoryIcon(name: string): React.ElementType {
   const n = (name || "").toLowerCase();
   if (n.includes("risk")) return Target;
-  if (n.includes("isg") || n.includes("uzman")) return ShieldCheck;
-  if (n.includes("hekim") || n.includes("doktor")) return Stethoscope;
-  if (n.includes("acil") || n.includes("lider")) return Siren;
-  if (n.includes("sağlık") || n.includes("saglik")) return HeartPulse;
-  if (n.includes("işveren") || n.includes("vekil")) return HardHat;
-  if (n.includes("temsilci") || n.includes("çalışan")) return UserCog;
-  if (n.includes("destek")) return Wrench;
-  if (n.includes("yangın") || n.includes("söndür")) return Flame;
-  if (n.includes("tahliye")) return DoorOpen;
-  if (n.includes("ilkyardım") || n.includes("ilk yardım")) return HeartPulse;
-  if (n.includes("bakım") || n.includes("teknik")) return Wrench;
-  if (n.includes("denetçi") || n.includes("müfettiş")) return Search;
+  if (n.includes("isg") || n.includes("uzman") || n.includes("osh") || n.includes("ehs")) return ShieldCheck;
+  if (n.includes("hekim") || n.includes("doktor") || n.includes("physician") || n.includes("doctor")) return Stethoscope;
+  if (n.includes("acil") || n.includes("lider") || n.includes("emergency") || n.includes("leader")) return Siren;
+  if (n.includes("sağlık") || n.includes("saglik") || n.includes("health")) return HeartPulse;
+  if (n.includes("işveren") || n.includes("vekil") || n.includes("employer") || n.includes("representative")) return HardHat;
+  if (n.includes("temsilci") || n.includes("çalışan") || n.includes("employee") || n.includes("worker")) return UserCog;
+  if (n.includes("destek") || n.includes("support")) return Wrench;
+  if (n.includes("yangın") || n.includes("söndür") || n.includes("fire")) return Flame;
+  if (n.includes("tahliye") || n.includes("evacuation")) return DoorOpen;
+  if (n.includes("ilkyardım") || n.includes("ilk yardım") || n.includes("first aid")) return HeartPulse;
+  if (n.includes("bakım") || n.includes("teknik") || n.includes("maintenance") || n.includes("technical")) return Wrench;
+  if (n.includes("denetçi") || n.includes("müfettiş") || n.includes("inspector") || n.includes("auditor")) return Search;
   return User;
 }
 import { createClient } from "@/lib/supabase/client";
-import {
-  ACCESS_ROLE_LABELS,
-  INVITABLE_ROLES,
-  canPerform,
-  type AccessRole,
-} from "@/lib/company-role-adapter";
+import { INVITABLE_ROLES, canPerform, type AccessRole } from "@/lib/company-role-adapter";
 import { useCompanyAccessRole } from "@/lib/hooks/use-company-access";
 import { CompanyMembersList } from "@/components/companies/CompanyMembersList";
 
@@ -102,14 +98,27 @@ function certDaysLeft(expiry: string | null): number | null {
 }
 
 function CertBadge({ expiry }: { expiry: string | null }) {
+  const t = useTranslations("companyWorkspace.people.certBadge");
   const status = certStatus(expiry);
   const days = certDaysLeft(expiry);
   if (status === "none") return null;
   if (status === "expired")
-    return <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Süresi Doldu</span>;
+    return (
+      <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+        {t("expired")}
+      </span>
+    );
   if (status === "expiring")
-    return <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">{days} gün kaldı</span>;
-  return <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Geçerli</span>;
+    return (
+      <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+        {t("daysLeft", { days: days ?? 0 })}
+      </span>
+    );
+  return (
+    <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+      {t("valid")}
+    </span>
+  );
 }
 
 /* ── Member form (inline or modal) ── */
@@ -124,55 +133,84 @@ function MemberFormFields({
   categories: TeamCategory[];
   showCategory: boolean;
 }) {
+  const t = useTranslations("companyWorkspace.people.memberForm");
   const inp = "h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600";
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <div className="sm:col-span-2">
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">Ad Soyad *</label>
-        <input className={inp} value={form.full_name} onChange={(e) => onChange({ full_name: e.target.value })} placeholder="Ad Soyad" />
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("fullNameLabel")}</label>
+        <input
+          className={inp}
+          value={form.full_name}
+          onChange={(e) => onChange({ full_name: e.target.value })}
+          placeholder={t("fullNamePlaceholder")}
+        />
       </div>
       <div>
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">Ünvan / Görev</label>
-        <input className={inp} value={form.title} onChange={(e) => onChange({ title: e.target.value })} placeholder="İSG Uzmanı" />
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("titleLabel")}</label>
+        <input
+          className={inp}
+          value={form.title}
+          onChange={(e) => onChange({ title: e.target.value })}
+          placeholder={t("titlePlaceholder")}
+        />
       </div>
       {showCategory && (
         <div>
-          <label className="mb-1 block text-xs font-medium text-muted-foreground">Kategori</label>
+          <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("categoryLabel")}</label>
           <select
             className={`${inp} [&>option]:dark:bg-slate-800 [&>option]:dark:text-white`}
             value={form.category_id}
             onChange={(e) => onChange({ category_id: e.target.value })}
           >
-            <option value="">Seçiniz</option>
+            <option value="">{t("selectCategory")}</option>
             {categories.map((c) => (
-              <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
+              <option key={c.id} value={c.id}>
+                {c.icon} {c.name}
+              </option>
             ))}
           </select>
         </div>
       )}
       <div>
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">Telefon</label>
-        <input className={inp} value={form.phone} onChange={(e) => onChange({ phone: e.target.value })} placeholder="0500 000 00 00" />
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("phoneLabel")}</label>
+        <input
+          className={inp}
+          value={form.phone}
+          onChange={(e) => onChange({ phone: e.target.value })}
+          placeholder={t("phonePlaceholder")}
+        />
       </div>
       <div>
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">E-posta</label>
-        <input className={inp} type="email" value={form.email} onChange={(e) => onChange({ email: e.target.value })} placeholder="ad@sirket.com" />
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("emailLabel")}</label>
+        <input
+          className={inp}
+          type="email"
+          value={form.email}
+          onChange={(e) => onChange({ email: e.target.value })}
+          placeholder={t("emailPlaceholder")}
+        />
       </div>
       <div>
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">Sertifika / Belge No</label>
-        <input className={inp} value={form.cert_number} onChange={(e) => onChange({ cert_number: e.target.value })} placeholder="ISG-2024-001" />
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("certNumberLabel")}</label>
+        <input
+          className={inp}
+          value={form.cert_number}
+          onChange={(e) => onChange({ cert_number: e.target.value })}
+          placeholder={t("certNumberPlaceholder")}
+        />
       </div>
       <div>
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">Sertifika Bitiş</label>
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("certExpiryLabel")}</label>
         <input className={inp} type="date" value={form.cert_expiry} onChange={(e) => onChange({ cert_expiry: e.target.value })} />
       </div>
       <div className="sm:col-span-2">
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">Notlar</label>
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("notesLabel")}</label>
         <textarea
           className="h-16 w-full resize-none rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600"
           value={form.notes}
           onChange={(e) => onChange({ notes: e.target.value })}
-          placeholder="Ek bilgi..."
+          placeholder={t("notesPlaceholder")}
         />
       </div>
       <div className="sm:col-span-2 flex items-center gap-2">
@@ -183,7 +221,9 @@ function MemberFormFields({
           onChange={(e) => onChange({ is_active: e.target.checked })}
           className="h-4 w-4 rounded border-border accent-primary"
         />
-        <label htmlFor="member-active" className="text-sm text-foreground">Aktif üye</label>
+        <label htmlFor="member-active" className="text-sm text-foreground">
+          {t("activeMember")}
+        </label>
       </div>
     </div>
   );
@@ -201,6 +241,7 @@ function MemberCard({
   onEdit: (m: TeamMember) => void;
   onDelete: (id: string) => void;
 }) {
+  const t = useTranslations("companyWorkspace.people.memberCard");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const status = certStatus(member.cert_expiry);
 
@@ -234,16 +275,38 @@ function MemberCard({
             </div>
           </div>
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button type="button" onClick={() => onEdit(member)} className="rounded-xl p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Düzenle">
+            <button
+              type="button"
+              onClick={() => onEdit(member)}
+              className="rounded-xl p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+              title={t("editTitle")}
+            >
               <Pencil size={15} strokeWidth={2} />
             </button>
             {confirmDelete ? (
               <>
-                <button type="button" onClick={() => onDelete(member.id)} className="rounded-xl px-2.5 py-1 text-[11px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-200">Sil</button>
-                <button type="button" onClick={() => setConfirmDelete(false)} className="rounded-xl px-2.5 py-1 text-[11px] font-medium bg-secondary text-muted-foreground hover:bg-secondary/80">İptal</button>
+                <button
+                  type="button"
+                  onClick={() => onDelete(member.id)}
+                  className="rounded-xl px-2.5 py-1 text-[11px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-200"
+                >
+                  {t("deleteConfirm")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(false)}
+                  className="rounded-xl px-2.5 py-1 text-[11px] font-medium bg-secondary text-muted-foreground hover:bg-secondary/80"
+                >
+                  {t("cancel")}
+                </button>
               </>
             ) : (
-              <button type="button" onClick={() => setConfirmDelete(true)} className="rounded-xl p-2 text-red-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 transition-colors" title="Sil">
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+                className="rounded-xl p-2 text-red-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 transition-colors"
+                title={t("deleteTitle")}
+              >
                 <Trash2 size={15} strokeWidth={2} />
               </button>
             )}
@@ -279,7 +342,9 @@ function MemberCard({
         {/* Inactive badge */}
         {!member.is_active && (
           <div className="mt-2">
-            <span className="inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium bg-secondary text-muted-foreground">Pasif</span>
+            <span className="inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium bg-secondary text-muted-foreground">
+              {t("inactive")}
+            </span>
           </div>
         )}
       </div>
@@ -310,6 +375,8 @@ function Modal({ title, onClose, children, footer }: { title: string; onClose: (
 type InviteRole = Extract<AccessRole, "admin" | "manager" | "editor" | "viewer">;
 
 function InviteMemberPanel({ companyId }: { companyId: string }) {
+  const t = useTranslations("companyWorkspace.people.inviteMember");
+  const tRoles = useTranslations("companyWorkspace.companyAccessRoles");
   const { role: accessRole, loading: accessLoading } = useCompanyAccessRole(companyId);
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -341,7 +408,7 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(json?.message || json?.error || "Davet gönderilemedi.");
+        setError(json?.message || json?.error || t("inviteSendFailed"));
         setSubmitting(false);
         return;
       }
@@ -354,7 +421,7 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
       setEmail("");
       setMessage("");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Davet gönderilemedi.");
+      setError(e instanceof Error ? e.message : t("inviteSendFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -366,10 +433,8 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
         <div className="flex items-center gap-3">
           <PremiumIconBadge icon={Mail} tone="cobalt" size="sm" />
           <div>
-            <h3 className="text-sm font-bold text-foreground">Kullanıcı Daveti</h3>
-            <p className="text-xs text-muted-foreground">
-              E-posta ile yeni üye davet edin — kabul ettiklerinde firma çalışma alanınıza eklenir.
-            </p>
+            <h3 className="text-sm font-bold text-foreground">{t("panelTitle")}</h3>
+            <p className="text-xs text-muted-foreground">{t("panelDescription")}</p>
           </div>
         </div>
         <button
@@ -377,7 +442,7 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
           onClick={() => setOpen(true)}
           className="inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-xl border border-border bg-secondary/40 px-4 text-xs font-semibold text-foreground transition hover:bg-secondary sm:self-auto"
         >
-          <UserPlus size={14} /> Davet Et
+          <UserPlus size={14} /> {t("openButton")}
         </button>
       </div>
     );
@@ -389,8 +454,8 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
         <div className="flex items-center gap-3">
           <PremiumIconBadge icon={Mail} tone="cobalt" size="sm" />
           <div>
-            <h3 className="text-sm font-bold text-foreground">Yeni Üye Davet Et</h3>
-            <p className="text-xs text-muted-foreground">Davet linki e-posta ile gönderilir.</p>
+            <h3 className="text-sm font-bold text-foreground">{t("expandedTitle")}</h3>
+            <p className="text-xs text-muted-foreground">{t("expandedSubtitle")}</p>
           </div>
         </div>
         <button
@@ -398,7 +463,7 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
           onClick={() => { setOpen(false); setError(null); setResult(null); }}
           className="text-xs text-muted-foreground hover:text-foreground"
         >
-          Kapat
+          {t("close")}
         </button>
       </div>
 
@@ -406,12 +471,12 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
         <div className="space-y-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100">
           <p>
             {result.delivered
-              ? `Davet ${result.email} adresine gönderildi.`
-              : `Davet oluşturuldu (e-posta teslim edilemedi — link kopyalanabilir).`}
+              ? t("resultDelivered", { email: result.email })
+              : t("resultUndelivered")}
           </p>
           {result.inviteUrl && (
             <p className="text-xs">
-              Link: <code className="break-all">{result.inviteUrl}</code>
+              {t("linkLabel")} <code className="break-all">{result.inviteUrl}</code>
             </p>
           )}
           <div className="flex gap-2">
@@ -420,31 +485,31 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
               onClick={() => { setResult(null); }}
               className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-secondary/50"
             >
-              Yeni Davet
+              {t("newInvite")}
             </button>
             <button
               type="button"
               onClick={() => { setOpen(false); setResult(null); }}
               className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
             >
-              Kapat
+              {t("close")}
             </button>
           </div>
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">E-posta</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("emailLabel")}</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="ornek@firma.com"
+              placeholder={t("emailPlaceholder")}
               className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">Rol</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("roleLabel")}</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as InviteRole)}
@@ -452,18 +517,18 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
             >
               {INVITABLE_ROLES.map((r) => (
                 <option key={r} value={r}>
-                  {ACCESS_ROLE_LABELS[r]}
+                  {tRoles(r)}
                 </option>
               ))}
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">Not (opsiyonel)</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("noteOptional")}</label>
             <input
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Davet alıcısına kısa not"
+              placeholder={t("notePlaceholder")}
               maxLength={2000}
               className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800"
             />
@@ -480,7 +545,7 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
               disabled={submitting}
               className="rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-secondary/50 disabled:opacity-50"
             >
-              İptal
+              {t("cancel")}
             </button>
             <button
               type="button"
@@ -488,7 +553,7 @@ function InviteMemberPanel({ companyId }: { companyId: string }) {
               disabled={submitting || !email.trim()}
               className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:opacity-50"
             >
-              {submitting ? "Gönderiliyor..." : "Davet Gönder"}
+              {submitting ? t("sending") : t("send")}
             </button>
           </div>
         </div>
@@ -505,6 +570,7 @@ export function TeamManagementTab({
   companyId: string;
   companyName?: string;
 }) {
+  const t = useTranslations("companyWorkspace.people");
   const [categories, setCategories] = useState<TeamCategory[]>([]);
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
@@ -579,10 +645,10 @@ export function TeamManagementTab({
     // yüklendiğinde geri geliyordu (tekrarlanan ekle).
     if (loadedCats.length === 0 && resolvedOrgId) {
       const defaultCats = [
-        { name: "Risk Değerlendirme Ekibi", color: "#DC2626", icon: "🎯", sort_order: 1 },
-        { name: "İSG Uzmanı", color: "#3B82F6", icon: "🛡️", sort_order: 2 },
-        { name: "İşyeri Hekimi", color: "#10B981", icon: "⚕️", sort_order: 3 },
-        { name: "Acil Durum Ekip Lideri", color: "#F97316", icon: "🚨", sort_order: 4 },
+        { name: t("defaultCategories.riskTeam"), color: "#DC2626", icon: "🎯", sort_order: 1 },
+        { name: t("defaultCategories.oshExpert"), color: "#3B82F6", icon: "🛡️", sort_order: 2 },
+        { name: t("defaultCategories.workplaceDoctor"), color: "#10B981", icon: "⚕️", sort_order: 3 },
+        { name: t("defaultCategories.emergencyLead"), color: "#F97316", icon: "🚨", sort_order: 4 },
       ];
       const inserts = defaultCats.map((d) => ({
         ...d,
@@ -596,7 +662,7 @@ export function TeamManagementTab({
     setCategories(loadedCats);
     setMembers((mems as TeamMember[]) ?? []);
     setLoading(false);
-  }, [companyId, orgId]);
+  }, [companyId, orgId, t]);
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void loadData(); }, [loadData]);
@@ -693,10 +759,19 @@ export function TeamManagementTab({
   }, [bulkSelected, orgId, personnel, members, selectedCategoryId, companyId, loadData]);
 
   const handleAdd = useCallback(async () => {
-    if (!addForm.full_name.trim()) { setAddError("Ad Soyad zorunludur."); return; }
-    if (!orgId) { setAddError("Organizasyon bilgisi alınamadı."); return; }
+    if (!addForm.full_name.trim()) {
+      setAddError(t("errors.fullNameRequired"));
+      return;
+    }
+    if (!orgId) {
+      setAddError(t("errors.orgMissing"));
+      return;
+    }
     const supabase = createClient();
-    if (!supabase) { setAddError("Bağlantı hatası."); return; }
+    if (!supabase) {
+      setAddError(t("errors.connectionError"));
+      return;
+    }
     setAddSaving(true);
     setAddError(null);
     const { error } = await supabase.from("team_members").insert({
@@ -716,7 +791,7 @@ export function TeamManagementTab({
     setAddOpen(false);
     setAddSaving(false);
     void loadData();
-  }, [addForm, companyId, orgId, loadData]);
+  }, [addForm, companyId, orgId, loadData, t]);
 
   /* ── Edit member ── */
   const openEdit = useCallback((m: TeamMember) => {
@@ -737,9 +812,15 @@ export function TeamManagementTab({
 
   const handleEdit = useCallback(async () => {
     if (!editMember) return;
-    if (!editForm.full_name.trim()) { setEditError("Ad Soyad zorunludur."); return; }
+    if (!editForm.full_name.trim()) {
+      setEditError(t("errors.fullNameRequired"));
+      return;
+    }
     const supabase = createClient();
-    if (!supabase) { setEditError("Bağlantı hatası."); return; }
+    if (!supabase) {
+      setEditError(t("errors.connectionError"));
+      return;
+    }
     setEditSaving(true);
     setEditError(null);
     const { error } = await supabase.from("team_members").update({
@@ -757,7 +838,7 @@ export function TeamManagementTab({
     setEditMember(null);
     setEditSaving(false);
     void loadData();
-  }, [editMember, editForm, loadData]);
+  }, [editMember, editForm, loadData, t]);
 
   /* ── Delete member ── */
   const handleDelete = useCallback(async (id: string) => {
@@ -770,9 +851,10 @@ export function TeamManagementTab({
   /* ── Delete category ── */
   const handleDeleteCategory = useCallback(async (cat: TeamCategory) => {
     const memberCount = members.filter((m) => m.category_id === cat.id).length;
-    const confirmMsg = memberCount > 0
-      ? `"${cat.name}" kategorisini silmek istediğine emin misin?\n\nBu kategoriye bağlı ${memberCount} üye "Kategorisiz" olarak görünecek.`
-      : `"${cat.name}" kategorisini silmek istediğine emin misin?`;
+    const confirmMsg =
+      memberCount > 0
+        ? t("confirmDeleteCategoryWithMembers", { name: cat.name, count: memberCount })
+        : t("confirmDeleteCategory", { name: cat.name });
     if (!window.confirm(confirmMsg)) return;
 
     const supabase = createClient();
@@ -785,13 +867,13 @@ export function TeamManagementTab({
     }
     const { error } = await supabase.from("team_categories").delete().eq("id", cat.id);
     if (error) {
-      window.alert(`Silinemedi: ${error.message}`);
+      window.alert(t("alertDeleteFailed", { message: error.message }));
       return;
     }
 
     if (selectedCategoryId === cat.id) setSelectedCategoryId("all");
     void loadData();
-  }, [members, selectedCategoryId, loadData]);
+  }, [members, selectedCategoryId, loadData, t]);
 
   /* ── Add category ── */
   const handleAddCategory = useCallback(async () => {
@@ -841,24 +923,28 @@ export function TeamManagementTab({
         <div className="flex items-center gap-3">
           <PremiumIconBadge icon={Users} tone="cobalt" size="md" />
           <div>
-            <h2 className="text-base font-bold text-foreground">Ekip Yönetimi</h2>
+            <h2 className="text-base font-bold text-foreground">{t("header.title")}</h2>
             {companyName && <p className="mt-0.5 text-sm text-muted-foreground">{companyName}</p>}
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Stats */}
           <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-secondary/20 px-4 py-2 text-sm">
-            <span className="text-muted-foreground">Toplam: <strong className="text-foreground">{totalMembers}</strong></span>
-            <span className="text-muted-foreground">Aktif: <strong className="text-foreground">{activeMembers}</strong></span>
+            <span className="text-muted-foreground">
+              {t("header.total")} <strong className="text-foreground">{totalMembers}</strong>
+            </span>
+            <span className="text-muted-foreground">
+              {t("header.active")} <strong className="text-foreground">{activeMembers}</strong>
+            </span>
           </div>
           {expiredCount > 0 && (
             <span className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400">
-              ⚠ {expiredCount} sertifika süresi dolmuş
+              ⚠ {t("header.certExpired", { count: expiredCount })}
             </span>
           )}
           {expiringCount > 0 && (
             <span className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
-              ⏰ {expiringCount} sertifika yakında dolacak
+              ⏰ {t("header.certExpiring", { count: expiringCount })}
             </span>
           )}
           {personnel.length > 0 && (
@@ -867,7 +953,7 @@ export function TeamManagementTab({
               onClick={() => { setBulkMode(true); setBulkSelected(new Set()); }}
               className="inline-flex h-10 items-center gap-2 rounded-xl border border-border/60 bg-card px-5 text-sm font-semibold text-foreground shadow-sm transition-all hover:bg-secondary hover:shadow-md"
             >
-              <UserPlus size={16} /> Personelden Ekle
+              <UserPlus size={16} /> {t("header.addFromPersonnel")}
             </button>
           )}
           <button
@@ -876,7 +962,7 @@ export function TeamManagementTab({
             className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--gold)] px-5 text-sm font-bold text-white shadow-md transition-all hover:brightness-110 hover:shadow-lg"
           >
             <Plus size={16} strokeWidth={2.5} />
-            Üye Ekle
+            {t("header.addMember")}
           </button>
         </div>
       </div>
@@ -885,7 +971,7 @@ export function TeamManagementTab({
       <div className="grid gap-5 lg:grid-cols-[240px_1fr]">
         {/* Sol: Kategori navigasyonu */}
         <aside className="rounded-[1.5rem] border border-border/80 bg-card p-4 shadow-[var(--shadow-card)] lg:sticky lg:top-24 lg:self-start">
-          <p className="mb-3 px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Kategoriler</p>
+          <p className="mb-3 px-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t("categoriesNav.title")}</p>
           <nav className="space-y-1">
             <button
               type="button"
@@ -896,7 +982,9 @@ export function TeamManagementTab({
                   : "text-foreground hover:bg-secondary"
               }`}
             >
-              <span className="flex items-center gap-2"><Shield size={15} /> Tümü</span>
+              <span className="flex items-center gap-2">
+                <Shield size={15} /> {t("categoriesNav.all")}
+              </span>
               <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${selectedCategoryId === "all" ? "bg-white/20" : "bg-muted"}`}>{members.length}</span>
             </button>
 
@@ -924,8 +1012,8 @@ export function TeamManagementTab({
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); void handleDeleteCategory(cat); }}
-                    title="Kategoriyi sil"
-                    aria-label={`${cat.name} kategorisini sil`}
+                    title={t("categoriesNav.deleteCategoryTitle")}
+                    aria-label={t("categoriesNav.deleteCategoryAria", { name: cat.name })}
                     className={`absolute right-1.5 top-1/2 -translate-y-1/2 rounded-md p-1 opacity-0 transition-all group-hover/cat:opacity-100 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 ${active ? "text-white/80" : "text-muted-foreground/60"}`}
                   >
                     <Trash2 size={13} strokeWidth={2} />
@@ -939,7 +1027,7 @@ export function TeamManagementTab({
               onClick={() => { setCatOpen(true); }}
               className="flex w-full items-center gap-2 rounded-xl border border-dashed border-border/50 px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             >
-              <Plus size={14} /> Kategori Ekle
+              <Plus size={14} /> {t("categoriesNav.addCategory")}
             </button>
           </nav>
         </aside>
@@ -950,15 +1038,15 @@ export function TeamManagementTab({
           <div className="flex flex-col items-center gap-4 rounded-[1.7rem] border-2 border-dashed border-border/50 bg-card/50 p-12 text-center">
             <PremiumIconBadge icon={Users} tone="gold" size="lg" />
             <div>
-              <p className="text-base font-semibold text-foreground">Henüz ekip üyesi yok</p>
-              <p className="mt-1 text-sm text-muted-foreground">İSG ekibini oluşturmak için üye ekleyin.</p>
+              <p className="text-base font-semibold text-foreground">{t("emptyTeam.title")}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{t("emptyTeam.description")}</p>
             </div>
             <button
               type="button"
               onClick={() => openAdd()}
               className="mt-2 inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--gold)] px-6 text-sm font-bold text-white shadow-md transition-all hover:brightness-110 hover:shadow-lg"
             >
-              <Plus size={16} strokeWidth={2.5} /> İlk Üyeyi Ekle
+              <Plus size={16} strokeWidth={2.5} /> {t("emptyTeam.cta")}
             </button>
           </div>
         ) : (
@@ -976,7 +1064,7 @@ export function TeamManagementTab({
                     onClick={() => openAdd(category.id)}
                     className="inline-flex h-9 items-center gap-2 rounded-xl border border-border/60 bg-card px-4 text-sm font-semibold text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--gold)]/30 hover:shadow-md"
                   >
-                    <Plus size={15} strokeWidth={2} /> Üye Ekle
+                    <Plus size={15} strokeWidth={2} /> {t("addMemberToCategory")}
                   </button>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -997,7 +1085,7 @@ export function TeamManagementTab({
               <div>
                 <div className="mb-3 flex items-center gap-2">
                   <div className="h-3 w-3 rounded-full bg-border" />
-                  <h3 className="text-sm font-semibold text-foreground">Kategorisiz</h3>
+                  <h3 className="text-sm font-semibold text-foreground">{t("uncategorized")}</h3>
                   <span className="text-xs text-muted-foreground">({uncategorized.length})</span>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -1021,13 +1109,13 @@ export function TeamManagementTab({
       {/* ── Add member modal ── */}
       {addOpen && (
         <Modal
-          title="Ekip Üyesi Ekle"
+          title={t("modals.addMemberTitle")}
           onClose={() => setAddOpen(false)}
           footer={
             <>
-              <button type="button" onClick={() => setAddOpen(false)} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary">İptal</button>
+              <button type="button" onClick={() => setAddOpen(false)} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary">{t("modals.cancel")}</button>
               <button type="button" onClick={() => void handleAdd()} disabled={addSaving} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-60">
-                {addSaving ? "Kaydediliyor..." : "Kaydet"}
+                {addSaving ? t("modals.saving") : t("modals.save")}
               </button>
             </>
           }
@@ -1037,7 +1125,7 @@ export function TeamManagementTab({
           {/* Personelden hizli doldurma */}
           {personnel.length > 0 && (
             <div className="mb-4 rounded-lg border border-border bg-muted/30 p-3">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Personelden Doldur</p>
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t("personnelQuickFill.label")}</p>
               <select
                 className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground [&>option]:dark:bg-slate-800 [&>option]:dark:text-white"
                 value=""
@@ -1054,7 +1142,7 @@ export function TeamManagementTab({
                   }
                 }}
               >
-                <option value="">Personel seç (bilgileri otomatik doldurur)</option>
+                <option value="">{t("personnelQuickFill.placeholder")}</option>
                 {personnel.map((p) => (
                   <option key={p.id} value={p.id}>{p.name}{p.title ? ` — ${p.title}` : ""}</option>
                 ))}
@@ -1074,13 +1162,13 @@ export function TeamManagementTab({
       {/* ── Edit member modal ── */}
       {editMember && (
         <Modal
-          title="Üyeyi Düzenle"
+          title={t("modals.editMemberTitle")}
           onClose={() => setEditMember(null)}
           footer={
             <>
-              <button type="button" onClick={() => setEditMember(null)} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary">İptal</button>
+              <button type="button" onClick={() => setEditMember(null)} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary">{t("modals.cancel")}</button>
               <button type="button" onClick={() => void handleEdit()} disabled={editSaving} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-60">
-                {editSaving ? "Kaydediliyor..." : "Güncelle"}
+                {editSaving ? t("modals.saving") : t("modals.update")}
               </button>
             </>
           }
@@ -1098,25 +1186,23 @@ export function TeamManagementTab({
       {/* ── Bulk add from personnel modal ── */}
       {bulkMode && (
         <Modal
-          title="Personelden Ekip Üyesi Ekle"
+          title={t("modals.bulkAddTitle")}
           onClose={() => setBulkMode(false)}
           footer={
             <>
-              <button type="button" onClick={() => setBulkMode(false)} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary">İptal</button>
+              <button type="button" onClick={() => setBulkMode(false)} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary">{t("modals.cancel")}</button>
               <button
                 type="button"
                 onClick={() => void handleBulkAdd()}
                 disabled={bulkSaving || bulkSelected.size === 0}
                 className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
               >
-                {bulkSaving ? "Ekleniyor..." : `${bulkSelected.size} Kişiyi Ekle`}
+                {bulkSaving ? t("modals.adding") : t("modals.addPeople", { count: bulkSelected.size })}
               </button>
             </>
           }
         >
-          <p className="mb-3 text-xs text-muted-foreground">
-            Firma personelinden ekip üyesi olarak eklemek istediklerinizi seçin. Zaten ekipte olan kişiler işaretlenmiştir.
-          </p>
+          <p className="mb-3 text-xs text-muted-foreground">{t("bulkAdd.description")}</p>
 
           {/* Tümünü seç */}
           <div className="mb-3 flex items-center gap-2">
@@ -1133,9 +1219,9 @@ export function TeamManagementTab({
               }}
               className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary"
             >
-              {bulkSelected.size > 0 ? "Seçimi Kaldır" : "Tümünü Seç"}
+              {bulkSelected.size > 0 ? t("bulkAdd.clearSelection") : t("bulkAdd.selectAll")}
             </button>
-            <span className="text-xs text-muted-foreground">{bulkSelected.size} seçili</span>
+            <span className="text-xs text-muted-foreground">{t("bulkAdd.selected", { count: bulkSelected.size })}</span>
           </div>
 
           <div className="max-h-[400px] space-y-1 overflow-y-auto">
@@ -1172,12 +1258,14 @@ export function TeamManagementTab({
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-foreground">{p.name}</p>
                     <p className="truncate text-xs text-muted-foreground">
-                      {p.title || "Görev belirtilmemiş"}
+                      {p.title || t("bulkAdd.noTitle")}
                       {p.phone && ` · ${p.phone}`}
                     </p>
                   </div>
                   {alreadyInTeam && (
-                    <span className="flex-shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">Ekipte</span>
+                    <span className="flex-shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+                      {t("bulkAdd.alreadyOnTeam")}
+                    </span>
                   )}
                 </label>
               );
@@ -1189,45 +1277,47 @@ export function TeamManagementTab({
       {/* ── Add category modal ── */}
       {catOpen && (
         <Modal
-          title="Yeni Kategori"
+          title={t("modals.addCategoryTitle")}
           onClose={() => setCatOpen(false)}
           footer={
             <>
-              <button type="button" onClick={() => setCatOpen(false)} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary">İptal</button>
+              <button type="button" onClick={() => setCatOpen(false)} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-secondary">{t("modals.cancel")}</button>
               <button type="button" onClick={() => void handleAddCategory()} disabled={catSaving || !catName.trim()} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-60">
-                {catSaving ? "Kaydediliyor..." : "Oluştur"}
+                {catSaving ? t("modals.saving") : t("modals.create")}
               </button>
             </>
           }
         >
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">Kategori Adı *</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("categoryModal.nameLabel")}</label>
               <input
                 className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600"
                 value={catName}
                 onChange={(e) => setCatName(e.target.value)}
-                placeholder="ör. Yangın Söndürme Ekibi"
+                placeholder={t("categoryModal.namePlaceholder")}
               />
             </div>
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="mb-1 block text-xs font-medium text-muted-foreground">Renk</label>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("categoryModal.colorLabel")}</label>
                 <input type="color" value={catColor} onChange={(e) => setCatColor(e.target.value)} className="h-9 w-full cursor-pointer rounded-lg border border-border p-1" />
               </div>
               <div className="flex-1">
-                <label className="mb-1 block text-xs font-medium text-muted-foreground">İkon (emoji)</label>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("categoryModal.iconLabel")}</label>
                 <input
                   className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-slate-800 dark:text-white dark:border-slate-600"
                   value={catIcon}
                   onChange={(e) => setCatIcon(e.target.value)}
-                  placeholder="👤"
+                  placeholder={t("categoryModal.iconPlaceholder")}
                 />
               </div>
             </div>
             <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/30 p-3">
               <div className="h-3 w-3 rounded-full" style={{ backgroundColor: catColor }} />
-              <span className="text-sm">{catIcon} {catName || "Kategori Adı"}</span>
+              <span className="text-sm">
+                {catIcon} {catName || t("categoryModal.previewFallback")}
+              </span>
             </div>
           </div>
         </Modal>
