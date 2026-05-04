@@ -294,16 +294,28 @@ export type CreateRunInput = {
   clientGeneratedAt?: string | null;
 };
 
+export type RunStartIssueKey =
+  | "noSession"
+  | "templateNotFound"
+  | "quotaExceeded"
+  | "quotaCheckFailed"
+  | "runInsertFailed"
+  | "invalidServerResponse"
+  | "generic";
+
+export type RunStartIssue =
+  | { key: RunStartIssueKey; limit?: number; used?: number; remaining?: number; detail?: string };
+
 export type CreateInspectionRunResult =
   | { ok: true; run: InspectionRunRecord }
-  | { ok: false; message: string; quotaExceeded?: boolean };
+  | { ok: false; issue: RunStartIssue; quotaExceeded?: boolean };
 
 export async function createInspectionRun(
   input: CreateRunInput,
 ): Promise<CreateInspectionRunResult> {
   const supabase = createClient();
   if (!supabase) {
-    return { ok: false, message: "Oturum bulunamadı." };
+    return { ok: false, issue: { key: "noSession" } };
   }
 
   const {
@@ -311,7 +323,7 @@ export async function createInspectionRun(
   } = await supabase.auth.getSession();
   if (!session?.access_token) {
     console.warn("createInspectionRun: no session");
-    return { ok: false, message: "Oturum bulunamadı." };
+    return { ok: false, issue: { key: "noSession" } };
   }
 
   const res = await fetch("/api/inspection/runs", {
@@ -337,29 +349,53 @@ export async function createInspectionRun(
     run?: LooseRow;
     error?: string;
     message?: string;
+    errorKey?: string;
+    limit?: number;
+    used?: number;
+    remaining?: number;
   };
 
   if (res.status === 402) {
     return {
       ok: false,
       quotaExceeded: true,
-      message:
-        typeof payload.message === "string"
-          ? payload.message
-          : "Saha denetimi paket limitiniz doldu. Paketinizi yükselterek devam edebilirsiniz.",
+      issue: {
+        key: "quotaExceeded",
+        limit: typeof payload.limit === "number" ? payload.limit : undefined,
+        used: typeof payload.used === "number" ? payload.used : undefined,
+        remaining: typeof payload.remaining === "number" ? payload.remaining : undefined,
+        detail:
+          typeof payload.message === "string"
+            ? payload.message
+            : typeof payload.error === "string"
+              ? payload.error
+              : undefined,
+      },
     };
   }
 
   if (!res.ok) {
     console.warn("createInspectionRun:", payload?.error ?? res.status);
+    if (res.status === 404) {
+      return { ok: false, issue: { key: "templateNotFound" } };
+    }
+    if (res.status === 500 && payload.errorKey === "runInsertFailed") {
+      return { ok: false, issue: { key: "runInsertFailed" } };
+    }
+    if (payload.errorKey === "quotaCheckFailed") {
+      return { ok: false, issue: { key: "quotaCheckFailed" } };
+    }
     return {
       ok: false,
-      message: payload.error || payload.message || "Denetim oturumu oluşturulamadı.",
+      issue: {
+        key: "generic",
+        detail: payload.error || payload.message || String(res.status),
+      },
     };
   }
 
   if (!payload.run) {
-    return { ok: false, message: "Sunucu yanıtı geçersiz." };
+    return { ok: false, issue: { key: "invalidServerResponse" } };
   }
   return { ok: true, run: mapRunRow(payload.run) };
 }

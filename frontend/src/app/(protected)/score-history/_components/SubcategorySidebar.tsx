@@ -1,6 +1,7 @@
 "use client";
 
 import { Filter } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import {
   SIDEBAR_ITEM_ACTIVE,
@@ -26,13 +27,17 @@ type Props = {
 };
 
 export function SubcategorySidebar({
-  title = "Alt Kategoriler",
+  title: titleProp,
   items,
   activeItemId,
   onSelect,
   footer,
-  emptyLabel = "İçerik bulunmuyor.",
+  emptyLabel: emptyLabelProp,
 }: Props) {
+  const t = useTranslations("fieldInspection");
+  const title = titleProp ?? t("sidebarDefaultTitle");
+  const emptyLabel = emptyLabelProp ?? t("sidebarDefaultEmpty");
+
   return (
     <div className="rounded-[1.5rem] border border-amber-200/70 bg-gradient-to-br from-white via-amber-50/50 to-orange-50/35 p-3 shadow-sm dark:border-amber-400/15 dark:from-slate-950 dark:via-amber-950/20 dark:to-slate-950">
       <div className="mb-3 flex items-center gap-2 px-2">

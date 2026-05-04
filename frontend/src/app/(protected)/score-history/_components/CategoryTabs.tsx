@@ -1,8 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import {
-  CATEGORY_DEFINITIONS,
+  CATEGORY_TAB_ORDER,
   getSurfaceTone,
   type SurfaceCategoryId,
 } from "../_lib/constants";
@@ -14,13 +15,15 @@ type Props = {
 };
 
 export function CategoryTabs({ active, onChange, counts = {} }: Props) {
+  const t = useTranslations("fieldInspection");
   return (
     <div className="grid grid-cols-2 gap-2 pb-2 min-[480px]:gap-3 md:grid-cols-3 xl:grid-cols-5">
-      {CATEGORY_DEFINITIONS.map((item) => {
+      {CATEGORY_TAB_ORDER.map((item) => {
         const Icon = item.icon;
         const isActive = item.key === active;
         const count = counts[item.key];
         const tone = getSurfaceTone(item.key);
+        const label = (t as (key: string) => string)(`tabs.${item.key}.label`);
         return (
           <button
             key={item.key}
@@ -32,7 +35,7 @@ export function CategoryTabs({ active, onChange, counts = {} }: Props) {
             )}
           >
             <Icon size={16} />
-            <span>{item.label}</span>
+            <span>{label}</span>
             {count !== undefined && count !== "" ? (
               <span
                 className={cn(

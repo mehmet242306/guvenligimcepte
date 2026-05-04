@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Sparkles, Wand2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { SubcategorySidebar, type SidebarItem } from "../SubcategorySidebar";
 import type { SessionActions } from "../../_hooks/useInspectionSession";
-import { MODE_COPY } from "../../_lib/constants";
+import { INSPECTION_MODE_ORDER, MODE_QUESTION_COUNTS, type InspectionModeKey } from "../../_lib/constants";
 import { createClient } from "@/lib/supabase/client";
 
 type Props = {
@@ -26,19 +27,26 @@ type NovaSources = {
   reports: boolean;
 };
 
-const SOURCE_ITEMS: Array<{ key: keyof NovaSources; label: string }> = [
-  { key: "risks", label: "Mevcut risk analizleri" },
-  { key: "previousFindings", label: "Geçmiş saha tespitleri" },
-  { key: "openActions", label: "Açık aksiyonlar" },
-  { key: "dof", label: "DÖF kayıtları" },
-  { key: "library", label: "İSG kütüphanesi" },
-  { key: "reports", label: "Önceki raporlar" },
+const SOURCE_KEYS: Array<keyof NovaSources> = [
+  "risks",
+  "previousFindings",
+  "openActions",
+  "dof",
+  "library",
+  "reports",
 ];
 
 export function NovaTab({ actions, onTemplateCreated }: Props) {
+  const t = useTranslations("fieldInspection");
   const [subItem, setSubItem] = useState<string>("studio");
-  const [purpose, setPurpose] = useState("Üretim hattında günlük İSG ortam gözetimi yapmak istiyorum.");
-  const [mode, setMode] = useState<keyof typeof MODE_COPY>("standard");
+  const [purpose, setPurpose] = useState("");
+  const purposeSeeded = useRef(false);
+  useLayoutEffect(() => {
+    if (purposeSeeded.current) return;
+    purposeSeeded.current = true;
+    setPurpose(t("nova.purposePlaceholder"));
+  }, [t]);
+  const [mode, setMode] = useState<InspectionModeKey>("standard");
   const [siteLabel, setSiteLabel] = useState("");
   const [sources, setSources] = useState<NovaSources>({
     risks: true,
@@ -51,21 +59,41 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
   const [creating, setCreating] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const sidebarItems: SidebarItem[] = [
-    { id: "studio", title: "Checklist stüdyosu", description: "Yeni taslak üret", badge: "Aktif" },
-    {
-      id: "memory",
-      title: "Kurumsal hafıza",
-      description: "Tekrar eden sorunlar (S4)",
-      badge: "Yakında",
-    },
-  ];
+  const sourceLabels = useMemo(
+    () =>
+      ({
+        risks: t("nova.sourceRisks"),
+        previousFindings: t("nova.sourcePastFindings"),
+        openActions: t("nova.sourceOpenActions"),
+        dof: t("nova.sourceDof"),
+        library: t("nova.sourceLibrary"),
+        reports: t("nova.sourceReports"),
+      }) satisfies Record<keyof NovaSources, string>,
+    [t],
+  );
+
+  const sidebarItems: SidebarItem[] = useMemo(
+    () => [
+      {
+        id: "studio",
+        title: t("nova.studioTitle"),
+        description: t("nova.studioDesc"),
+        badge: t("nova.studioBadge"),
+      },
+      {
+        id: "memory",
+        title: t("nova.memoryTitle"),
+        description: t("nova.memoryDesc"),
+        badge: t("nova.memoryBadge"),
+      },
+    ],
+    [t],
+  );
 
   const handleCreate = async () => {
     setCreating(true);
     setErrorMsg(null);
 
-    // Map UI source keys to edge function source keys
     const mappedSources: string[] = [];
     if (sources.risks) mappedSources.push("existing_risks");
     if (sources.previousFindings) mappedSources.push("past_findings");
@@ -76,7 +104,7 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
 
     const supabase = createClient();
     if (!supabase) {
-      setErrorMsg("Supabase istemcisi oluşturulamadı.");
+      setErrorMsg(t("nova.errNoClient"));
       setCreating(false);
       return;
     }
@@ -84,17 +112,16 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
     const { data: sessionData } = await supabase.auth.getSession();
     const accessToken = sessionData.session?.access_token;
     if (!accessToken) {
-      setErrorMsg("Oturum bulunamadı. Lütfen yeniden giriş yapın.");
+      setErrorMsg(t("nova.errNoSession"));
       setCreating(false);
       return;
     }
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const apiKey =
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!supabaseUrl || !apiKey) {
-      setErrorMsg("Supabase URL/apikey env eksik.");
+      setErrorMsg(t("nova.errEnv"));
       setCreating(false);
       return;
     }
@@ -117,7 +144,11 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
       });
     } catch (err) {
       setCreating(false);
-      setErrorMsg(`Ağ hatası: ${err instanceof Error ? err.message : String(err)}`);
+      setErrorMsg(
+        t("nova.errNetwork", {
+          message: err instanceof Error ? err.message : String(err),
+        }),
+      );
       return;
     }
 
@@ -126,16 +157,19 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
     if (!res.ok) {
       const text = await res.text().catch(() => "");
       console.warn(`nova-checklist-generator ${res.status}:`, text);
-      setErrorMsg(`Nova hatası ${res.status}: ${text.slice(0, 240) || "yanıt boş"}`);
+      setErrorMsg(
+        t("nova.errHttp", {
+          status: res.status,
+          text: text.slice(0, 240) || "—",
+        }),
+      );
       return;
     }
 
-    const data = (await res.json().catch(() => null)) as
-      | { checklist_id?: string }
-      | null;
+    const data = (await res.json().catch(() => null)) as { checklist_id?: string } | null;
     const checklistId = data?.checklist_id;
     if (!checklistId) {
-      setErrorMsg("Nova yanıtı beklenen formatta değil.");
+      setErrorMsg(t("nova.errBadResponse"));
       return;
     }
 
@@ -146,7 +180,7 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
   return (
     <div className="mt-4 grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
       <SubcategorySidebar
-        title="Nova Modülleri"
+        title={t("nova.sidebarTitle")}
         items={sidebarItems}
         activeItemId={subItem}
         onSelect={setSubItem}
@@ -157,8 +191,8 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
           <div className="rounded-[1.5rem] border border-violet-200/70 bg-gradient-to-br from-white via-violet-50/55 to-fuchsia-50/35 p-5 shadow-sm dark:border-violet-400/15 dark:from-slate-950 dark:via-violet-950/20 dark:to-slate-950">
             <div className="mb-4 flex items-center gap-2">
               <Sparkles size={18} className="text-[var(--gold)]" />
-              <h3 className="text-lg font-semibold text-foreground">Checklist Stüdyosu</h3>
-              <Badge variant="success">Nova AI aktif</Badge>
+              <h3 className="text-lg font-semibold text-foreground">{t("nova.panelTitle")}</h3>
+              <Badge variant="success">{t("nova.panelBadge")}</Badge>
             </div>
             {errorMsg ? (
               <div className="mb-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900 dark:border-red-800/40 dark:bg-red-950/20 dark:text-red-200">
@@ -169,13 +203,13 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
             <div className="space-y-4">
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Amaç
+                  {t("nova.purposeLabel")}
                 </label>
                 <Textarea
                   rows={3}
                   value={purpose}
                   onChange={(e) => setPurpose(e.target.value)}
-                  placeholder="Üretim hattında günlük İSG ortam gözetimi yapmak istiyorum."
+                  placeholder={t("nova.purposePlaceholder")}
                   className="mt-1"
                 />
               </div>
@@ -183,29 +217,29 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Denetim modu
+                    {t("nova.modeLabel")}
                   </label>
                   <select
                     value={mode}
-                    onChange={(e) => setMode(e.target.value as keyof typeof MODE_COPY)}
+                    onChange={(e) => setMode(e.target.value as InspectionModeKey)}
                     className="mt-1 h-10 w-full rounded-xl border border-border bg-background px-3 text-sm"
                   >
-                    {(Object.keys(MODE_COPY) as Array<keyof typeof MODE_COPY>).map((k) => (
+                    {INSPECTION_MODE_ORDER.map((k) => (
                       <option key={k} value={k}>
-                        {MODE_COPY[k].label} ({MODE_COPY[k].questionCount} soru)
+                        {t(`mode.${k}.label`)} ({t("checklists.questionsCount", { count: MODE_QUESTION_COUNTS[k] })})
                       </option>
                     ))}
                   </select>
-                  <p className="mt-1 text-xs text-muted-foreground">{MODE_COPY[mode].description}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{t(`mode.${mode}.description`)}</p>
                 </div>
                 <div>
                   <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Lokasyon / Hat
+                    {t("nova.locationLabel")}
                   </label>
                   <Input
                     value={siteLabel}
                     onChange={(e) => setSiteLabel(e.target.value)}
-                    placeholder="Üretim Hattı 1 · Gündüz"
+                    placeholder={t("nova.locationPlaceholder")}
                     className="mt-1"
                   />
                 </div>
@@ -213,25 +247,25 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
 
               <div>
                 <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Nova hangi kaynakları tarasın?
+                  {t("nova.sourcesLabel")}
                 </label>
                 <div className="grid gap-2 sm:grid-cols-2">
-                  {SOURCE_ITEMS.map((s) => (
+                  {SOURCE_KEYS.map((key) => (
                     <label
-                      key={s.key}
+                      key={key}
                       className={cn(
                         "flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-muted/20 px-3 py-2 text-sm transition",
-                        sources[s.key] && "border-[var(--gold)] bg-[var(--gold)]/10",
+                        sources[key] && "border-[var(--gold)] bg-[var(--gold)]/10",
                       )}
                     >
                       <input
                         type="checkbox"
-                        checked={sources[s.key]}
+                        checked={sources[key]}
                         onChange={(e) =>
-                          setSources((prev) => ({ ...prev, [s.key]: e.target.checked }))
+                          setSources((prev) => ({ ...prev, [key]: e.target.checked }))
                         }
                       />
-                      <span>{s.label}</span>
+                      <span>{sourceLabels[key]}</span>
                     </label>
                   ))}
                 </div>
@@ -240,22 +274,18 @@ export function NovaTab({ actions, onTemplateCreated }: Props) {
               <div className="flex items-center justify-end gap-2 border-t border-border pt-4">
                 <Button onClick={handleCreate} disabled={creating || !purpose.trim()}>
                   <Wand2 className="mr-2 h-4 w-4" />
-                  {creating ? "Oluşturuluyor..." : "Taslak oluştur"}
+                  {creating ? t("nova.creating") : t("nova.createDraft")}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Nova AI (claude-sonnet-4-6) org verilerini tarayıp bağlama uygun sorular üretir. İşlem 5-15 saniye sürebilir.
-              </p>
+              <p className="text-xs text-muted-foreground">{t("nova.footerHint")}</p>
             </div>
           </div>
         </div>
       ) : (
         <div className="flex min-h-[320px] flex-col items-center justify-center gap-2 rounded-[1.5rem] border border-dashed border-violet-200/70 bg-violet-50/40 px-8 py-16 text-center dark:border-violet-400/15 dark:bg-violet-950/15">
           <Sparkles size={32} className="text-muted-foreground" />
-          <p className="text-base font-semibold text-foreground">Kurumsal hafıza yakında</p>
-          <p className="text-sm text-muted-foreground">
-            Tekrar eden sorunlar ve açık aksiyon uyarıları S4'te gelecek.
-          </p>
+          <p className="text-base font-semibold text-foreground">{t("nova.memorySoonTitle")}</p>
+          <p className="text-sm text-muted-foreground">{t("nova.memorySoonBody")}</p>
         </div>
       )}
     </div>

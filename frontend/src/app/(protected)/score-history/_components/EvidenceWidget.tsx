@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Camera, Mic, Square, Trash2, Upload, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -65,8 +66,7 @@ async function transcribeVoiceNote(
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const apikey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !apikey) return { error: "env_missing" };
 
   const res = await fetch(`${url}/functions/v1/nova-transcribe-voice`, {
@@ -85,10 +85,10 @@ async function transcribeVoiceNote(
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    return { error: `${res.status}: ${text.slice(0, 200) || "yanıt boş"}` };
+    return { error: `${res.status}: ${text.slice(0, 200) || "empty"}` };
   }
   const data = (await res.json()) as { transcript?: string; language?: string };
-  if (!data.transcript) return { error: "transkript alınamadı" };
+  if (!data.transcript) return { error: "no_transcript" };
   return { transcript: data.transcript, language: data.language };
 }
 
@@ -109,6 +109,7 @@ function PhotoSection({
   onChange: (paths: string[]) => void;
   disabled?: boolean;
 }) {
+  const t = useTranslations("fieldInspection");
   const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -139,7 +140,7 @@ function PhotoSection({
     }
     setUploading(false);
     if (newPaths.length === 0) {
-      setError("Yükleme başarısız oldu.");
+      setError(t("evidence.uploadFailed"));
       return;
     }
     onChange([...paths, ...newPaths]);
@@ -155,7 +156,7 @@ function PhotoSection({
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
           <Camera className="h-3.5 w-3.5" />
-          <span>Fotoğraf ({paths.length})</span>
+          <span>{t("evidence.photoHeading", { count: paths.length })}</span>
         </div>
         <input
           ref={inputRef}
@@ -174,7 +175,7 @@ function PhotoSection({
           disabled={disabled || uploading}
         >
           <Upload className="mr-1.5 h-3.5 w-3.5" />
-          {uploading ? "Yükleniyor..." : "Fotoğraf ekle"}
+          {uploading ? t("evidence.uploading") : t("evidence.addPhoto")}
         </Button>
       </div>
       {error ? (
@@ -192,12 +193,12 @@ function PhotoSection({
                 {url ? (
                   <img
                     src={url}
-                    alt="Kanıt"
+                    alt={t("evidence.evidenceAlt")}
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-[10px] text-muted-foreground">
-                    yükleniyor
+                    {t("evidence.thumbLoading")}
                   </div>
                 )}
                 <button
@@ -205,7 +206,7 @@ function PhotoSection({
                   onClick={() => handleRemove(path)}
                   disabled={disabled}
                   className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition group-hover:opacity-100"
-                  aria-label="Fotoğrafı kaldır"
+                  aria-label={t("evidence.removePhotoAria")}
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -237,6 +238,7 @@ function VoiceSection({
   onChange: (path: string | null, transcript?: string | null) => void;
   disabled?: boolean;
 }) {
+  const t = useTranslations("fieldInspection");
   const [recording, setRecording] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
@@ -271,10 +273,12 @@ function VoiceSection({
     };
   }, []);
 
+  const formatTranscriptionError = (code: string) => t("evidence.transcriptionPrefix", { error: code });
+
   const startRecording = async () => {
     setError(null);
     if (!navigator.mediaDevices?.getUserMedia) {
-      setError("Tarayıcı ses kaydını desteklemiyor.");
+      setError(t("evidence.browserNoMic"));
       return;
     }
     try {
@@ -293,17 +297,15 @@ function VoiceSection({
         const result = await uploadInspectionAudio(runId, answerId, blob);
         setUploading(false);
         if (!result) {
-          setError("Ses notu yüklenemedi.");
+          setError(t("evidence.voiceUploadFailed"));
           return;
         }
-        // Save path immediately (optimistic), transcript arrives async
         onChange(result.path, null);
-        // Trigger transcription in background
         setTranscribing(true);
         const tx = await transcribeVoiceNote(result.path, answerId);
         setTranscribing(false);
         if ("error" in tx) {
-          setError(`Transkripsiyon: ${tx.error}`);
+          setError(formatTranscriptionError(tx.error));
         } else {
           onChange(result.path, tx.transcript);
         }
@@ -318,8 +320,10 @@ function VoiceSection({
     } catch (err) {
       setError(
         err instanceof Error && err.name === "NotAllowedError"
-          ? "Mikrofon izni reddedildi."
-          : `Mikrofon açılamadı: ${err instanceof Error ? err.message : String(err)}`,
+          ? t("evidence.micDenied")
+          : t("evidence.micFailed", {
+              message: err instanceof Error ? err.message : String(err),
+            }),
       );
     }
   };
@@ -347,7 +351,7 @@ function VoiceSection({
     const tx = await transcribeVoiceNote(path, answerId);
     setTranscribing(false);
     if ("error" in tx) {
-      setError(`Transkripsiyon: ${tx.error}`);
+      setError(formatTranscriptionError(tx.error));
     } else {
       onChange(path, tx.transcript);
     }
@@ -361,7 +365,7 @@ function VoiceSection({
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
           <Mic className="h-3.5 w-3.5" />
-          <span>Sesli not{path ? " (kaydedildi)" : ""}</span>
+          <span>{path ? t("evidence.voiceTitleSaved") : t("evidence.voiceTitle")}</span>
         </div>
         <div className="flex items-center gap-2">
           {recording ? (
@@ -369,28 +373,18 @@ function VoiceSection({
               <span className="text-xs font-mono text-red-600">● {mmss(elapsed)}</span>
               <Button variant="outline" size="sm" onClick={stopRecording}>
                 <Square className="mr-1.5 h-3.5 w-3.5" />
-                Durdur
+                {t("evidence.stop")}
               </Button>
             </>
           ) : path ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={removeVoiceNote}
-              disabled={disabled}
-            >
+            <Button variant="outline" size="sm" onClick={removeVoiceNote} disabled={disabled}>
               <Trash2 className="mr-1.5 h-3.5 w-3.5" />
-              Sil
+              {t("evidence.delete")}
             </Button>
           ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={startRecording}
-              disabled={disabled || uploading}
-            >
+            <Button variant="outline" size="sm" onClick={startRecording} disabled={disabled || uploading}>
               <Mic className="mr-1.5 h-3.5 w-3.5" />
-              {uploading ? "Yükleniyor..." : "Kaydet"}
+              {uploading ? t("evidence.uploading") : t("evidence.record")}
             </Button>
           )}
         </div>
@@ -399,18 +393,14 @@ function VoiceSection({
         <p className="mb-2 text-xs text-red-600 dark:text-red-400">{error}</p>
       ) : null}
       {path && signedUrl ? (
-        <audio
-          controls
-          src={signedUrl}
-          className={cn("h-10 w-full", disabled && "opacity-60")}
-        />
+        <audio controls src={signedUrl} className={cn("h-10 w-full", disabled && "opacity-60")} />
       ) : null}
       {path ? (
         <div className="mt-2 rounded-lg border border-border bg-muted/30 p-2">
           <div className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-            <span>Transkript</span>
+            <span>{t("evidence.transcriptHeading")}</span>
             {transcribing ? (
-              <span className="text-[var(--gold)]">AI yazıyor...</span>
+              <span className="text-[var(--gold)]">{t("evidence.aiWriting")}</span>
             ) : transcript ? (
               <button
                 type="button"
@@ -418,19 +408,17 @@ function VoiceSection({
                 disabled={disabled}
                 className="text-[10px] underline hover:text-foreground"
               >
-                Yeniden transkribe et
+                {t("evidence.retranscribe")}
               </button>
             ) : null}
           </div>
           {transcribing ? (
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-[var(--gold)]" />
-              <span>Ses metne çevriliyor (OpenAI Whisper)...</span>
+              <span>{t("evidence.transcribingWait")}</span>
             </div>
           ) : transcript ? (
-            <p className="whitespace-pre-wrap text-xs leading-relaxed text-foreground">
-              {transcript}
-            </p>
+            <p className="whitespace-pre-wrap text-xs leading-relaxed text-foreground">{transcript}</p>
           ) : (
             <button
               type="button"
@@ -438,7 +426,7 @@ function VoiceSection({
               disabled={disabled}
               className="text-xs text-[var(--gold)] underline"
             >
-              Transkript oluştur
+              {t("evidence.generateTranscript")}
             </button>
           )}
         </div>

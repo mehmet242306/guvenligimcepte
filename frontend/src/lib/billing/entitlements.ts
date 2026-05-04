@@ -46,7 +46,7 @@ export async function consumeEntitlement(
   if (error) {
     console.error("[billing] consume_subscription_quota failed:", error.message);
     return NextResponse.json(
-      { error: "Abonelik limiti kontrol edilemedi." },
+      { errorKey: "quotaCheckFailed", error: "Abonelik limiti kontrol edilemedi." },
       { status: 500 },
     );
   }
@@ -58,6 +58,7 @@ export async function consumeEntitlement(
 
   return NextResponse.json(
     {
+      errorKey: "quotaExceeded",
       error: "Paket limitiniz doldu.",
       action,
       actionLabel: BILLING_ACTION_LABEL_EN[action],

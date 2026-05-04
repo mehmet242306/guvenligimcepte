@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { CheckCircle2, Save, Target } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,11 +17,11 @@ import type { ResponseStatus } from "@/lib/supabase/inspection-api";
 type Props = {
   state: SessionState;
   actions: SessionActions;
-  /** Denetim kartlarından “Bulgular” sekmesine geçiş (tespit değerlendirme) */
   onOpenFindings?: () => void;
 };
 
 export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
+  const t = useTranslations("fieldInspection");
   const { activeTemplate, activeRun, answers, savingAnswer } = state;
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
@@ -38,10 +39,13 @@ export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
     const base: SidebarItem[] = [
       {
         id: "__all__",
-        title: "Tüm sorular",
-        description: `${questions.length} soru`,
+        title: t("inspection.allQuestions"),
+        description: t("inspection.questionsCount", { count: questions.length }),
         badge: activeRun
-          ? `${activeRun.answeredCount}/${activeRun.totalQuestions || questions.length}`
+          ? t("inspection.progressBadge", {
+              answered: activeRun.answeredCount,
+              total: activeRun.totalQuestions || questions.length,
+            })
           : "—",
       },
     ];
@@ -50,12 +54,12 @@ export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
       base.push({
         id: `section:${section}`,
         title: section,
-        description: `${qs.length} soru`,
-        badge: `${answered}/${qs.length}`,
+        description: t("inspection.questionsCount", { count: qs.length }),
+        badge: t("inspection.progressBadge", { answered, total: qs.length }),
       });
     }
     return base;
-  }, [questions, grouped, answers, activeRun]);
+  }, [questions, grouped, answers, activeRun, t]);
 
   const visibleQuestions = useMemo(() => {
     if (!selectedSection || selectedSection === "__all__") return questions;
@@ -74,10 +78,8 @@ export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
     return (
       <div className="mt-4 rounded-[1.5rem] border border-dashed border-border bg-muted/20 px-8 py-16 text-center">
         <Target className="mx-auto mb-3 h-10 w-10 text-[var(--gold)]" />
-        <p className="text-base font-semibold text-foreground">Önce bir checklist seçin</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          "Checklistler" sekmesinden bir şablon seçip denetimi başlatın.
-        </p>
+        <p className="text-base font-semibold text-foreground">{t("inspection.selectChecklistTitle")}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{t("inspection.selectChecklistHint")}</p>
       </div>
     );
   }
@@ -86,10 +88,8 @@ export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
     return (
       <div className="mt-4 rounded-[1.5rem] border border-dashed border-border bg-muted/20 px-8 py-16 text-center">
         <Target className="mx-auto mb-3 h-10 w-10 text-[var(--gold)]" />
-        <p className="text-base font-semibold text-foreground">Denetim henüz başlatılmadı</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          "Checklistler" sekmesinden "Denetimi başlat" ile resmi oturumu veya "Sanal prova" ile test oturumu açın.
-        </p>
+        <p className="text-base font-semibold text-foreground">{t("inspection.notStartedTitle")}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{t("inspection.notStartedHint")}</p>
       </div>
     );
   }
@@ -102,11 +102,8 @@ export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
             <Save className="h-4 w-4" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="font-semibold">Her cevap otomatik kaydedilir.</p>
-            <p className="text-xs leading-5 text-muted-foreground">
-              Ayrı bir gönder tuşu yok; seçim, not, fotoğraf ve ses kaydı anında denetim oturumuna işlenir. Tüm
-              uygunsuz ve kritik maddeleri &quot;Bulgular&quot; sekmesinde değerlendirebilirsiniz.
-            </p>
+            <p className="font-semibold">{t("inspection.autosaveTitle")}</p>
+            <p className="text-xs leading-5 text-muted-foreground">{t("inspection.autosaveBody")}</p>
           </div>
           <span className="rounded-full border border-amber-200 bg-white/80 px-3 py-1 text-xs font-semibold text-amber-800 dark:border-amber-400/20 dark:bg-white/10 dark:text-amber-100">
             {activeRun.code ?? activeRun.id.slice(0, 8)}
@@ -116,7 +113,7 @@ export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
 
       <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,280px)_minmax(0,1fr)]">
         <SubcategorySidebar
-          title="Bölümler"
+          title={t("inspection.sidebarSections")}
           items={sidebarItems}
           activeItemId={selectedSection ?? "__all__"}
           onSelect={(id) => {
@@ -127,7 +124,7 @@ export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
         <div className="min-w-0 space-y-3 pb-28 max-xl:max-w-full md:pb-20 lg:pb-10">
           {visibleQuestions.length === 0 ? (
             <div className="rounded-[1.5rem] border border-dashed border-border bg-muted/20 px-4 py-12 text-center text-sm text-muted-foreground sm:px-8">
-              Bu bölümde soru yok.
+              {t("inspection.emptySection")}
             </div>
           ) : (
             visibleQuestions.map((question, index) => (
@@ -151,16 +148,14 @@ export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
             <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/90 via-white to-sky-50/50 p-4 shadow-sm dark:border-amber-500/25 dark:from-amber-950/30 dark:via-slate-950 dark:to-sky-950/20 sm:p-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0 space-y-2">
-                  <p className="text-sm font-semibold text-foreground">Saha denetimi sonrası</p>
+                  <p className="text-sm font-semibold text-foreground">{t("inspection.afterVisitTitle")}</p>
                   <ul className="list-disc space-y-1 pl-4 text-xs leading-relaxed text-muted-foreground">
                     <li>
-                      Cevaplar kayıt altındadır. Uygunsuz veya kritik işaretlediğiniz maddeler{" "}
-                      <strong className="text-foreground">Bulgular</strong> sekmesinde toplanır.
+                      {t("inspection.afterVisitLi1", {
+                        findingsTab: t("tabs.findings.label"),
+                      })}
                     </li>
-                    <li>
-                      Orada tespiti riske, açık aksiyona veya DÖF&apos;e bağlayarak kurum içi takibi
-                      başlatabilirsiniz.
-                    </li>
+                    <li>{t("inspection.afterVisitLi2")}</li>
                   </ul>
                 </div>
                 <Button
@@ -169,8 +164,8 @@ export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
                   onClick={onOpenFindings}
                 >
                   {findingsCount > 0
-                    ? `Bulguları değerlendir (${findingsCount})`
-                    : "Bulgular sekmesine git"}
+                    ? t("inspection.reviewFindings", { count: findingsCount })
+                    : t("inspection.goFindingsTab")}
                 </Button>
               </div>
             </div>
@@ -210,11 +205,22 @@ function QuestionCard({
   onSetStatus,
   onUpdateField,
 }: QuestionCardProps) {
+  const t = useTranslations("fieldInspection");
+  const responseLabels = useMemo(
+    () =>
+      ({
+        uygun: t("response.uygun"),
+        uygunsuz: t("response.uygunsuz"),
+        kritik: t("response.kritik"),
+        na: t("response.na"),
+      }) satisfies Record<ResponseStatus, string>,
+    [t],
+  );
   const status = answer?.responseStatus;
   const needsDetail = status === "uygunsuz" || status === "kritik";
   const needsNaReason = status === "na";
   const tone = getResponseTone(status);
-  const statusLabel = status ? RESPONSE_COPY[status].label : "Cevap bekliyor";
+  const statusLabel = status ? responseLabels[status] : t("response.awaiting");
 
   return (
     <div
@@ -236,7 +242,9 @@ function QuestionCard({
             >
               {index + 1}
             </span>
-            <span className="font-medium text-foreground">Soru {index + 1} / {total}</span>
+            <span className="font-medium text-foreground">
+              {t("inspection.questionProgress", { current: index + 1, total })}
+            </span>
           </div>
           <p className="break-words text-[11px] leading-snug text-muted-foreground sm:text-xs">
             <span className="font-medium text-foreground/90">{question.section}</span>
@@ -281,7 +289,7 @@ function QuestionCard({
                 )}
               >
                 {selected ? <CheckCircle2 className="h-4 w-4 shrink-0" /> : null}
-                <span className="text-center">{meta.label}</span>
+                <span className="text-center">{responseLabels[rs]}</span>
               </button>
             );
           })}
@@ -290,20 +298,20 @@ function QuestionCard({
         {needsDetail ? (
           <div className="mt-3 space-y-3 rounded-2xl border border-border bg-muted/20 p-4">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-foreground">Tespit ayrıntıları</p>
+              <p className="text-sm font-semibold text-foreground">{t("inspection.findingDetails")}</p>
               {status === "kritik" ? (
-                <Badge variant="danger">Kritik: fotoğraf + aksiyon zorunlu</Badge>
+                <Badge variant="danger">{t("inspection.criticalBadge")}</Badge>
               ) : null}
             </div>
             <Textarea
-              placeholder="Saha notu"
+              placeholder={t("inspection.placeholderFieldNote")}
               defaultValue={answer?.note ?? ""}
               onBlur={(e) => onUpdateField({ note: e.currentTarget.value })}
               rows={2}
             />
             <div className="grid gap-2 sm:grid-cols-2">
               <Input
-                placeholder="Önerilen aksiyon"
+                placeholder={t("inspection.placeholderSuggestedAction")}
                 defaultValue={answer?.actionTitle ?? question.suggestedActionTitle ?? ""}
                 onBlur={(e) => onUpdateField({ actionTitle: e.currentTarget.value })}
               />
@@ -336,7 +344,7 @@ function QuestionCard({
         {needsNaReason ? (
           <div className="mt-3 rounded-2xl border border-border bg-muted/20 p-4">
             <Textarea
-              placeholder="N/A gerekçesi (zorunlu)"
+              placeholder={t("inspection.naReasonPlaceholder")}
               defaultValue={answer?.naReason ?? ""}
               onBlur={(e) => onUpdateField({ naReason: e.currentTarget.value })}
               rows={2}

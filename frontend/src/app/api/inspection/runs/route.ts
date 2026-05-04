@@ -30,7 +30,10 @@ export async function POST(request: NextRequest) {
     .maybeSingle();
 
   if (templateError || !template?.id || template.organization_id !== auth.organizationId) {
-    return NextResponse.json({ error: "Şablon bulunamadı veya erişim yok." }, { status: 404 });
+    return NextResponse.json(
+      { errorKey: "templateNotFound", error: "Şablon bulunamadı veya erişim yok." },
+      { status: 404 },
+    );
   }
 
   if (parsed.data.runMode !== "preview") {
@@ -58,7 +61,10 @@ export async function POST(request: NextRequest) {
 
   if (insertError || !row) {
     console.error("[inspection/runs] insert failed:", insertError?.message);
-    return NextResponse.json({ error: "Denetim oturumu oluşturulamadı." }, { status: 500 });
+    return NextResponse.json(
+      { errorKey: "runInsertFailed", error: "Denetim oturumu oluşturulamadı." },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ run: row });

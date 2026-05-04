@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Play, Save, Sparkles } from "lucide-react";
+import { Play, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusAlert } from "@/components/ui/status-alert";
@@ -13,6 +14,7 @@ import { FindingsTab } from "./_components/tabs/FindingsTab";
 import { NovaTab } from "./_components/tabs/NovaTab";
 import { ClosureTab } from "./_components/tabs/ClosureTab";
 import { useInspectionSession } from "./_hooks/useInspectionSession";
+import { formatRunStartIssue } from "./_lib/formatRunStartIssue";
 import type { SurfaceCategoryId } from "./_lib/constants";
 
 type WorkspaceContext = {
@@ -20,13 +22,8 @@ type WorkspaceContext = {
   countryCode: string;
 };
 
-const FALLBACK_WORKSPACE: WorkspaceContext = {
-  name: "Aktif çalışma alanı",
-  countryCode: "TR",
-};
-
-function mapWorkspace(row: WorkspaceRow | null): WorkspaceContext {
-  if (!row) return FALLBACK_WORKSPACE;
+function mapWorkspace(row: WorkspaceRow | null, fallbackName: string): WorkspaceContext {
+  if (!row) return { name: fallbackName, countryCode: "TR" };
   return {
     name: row.name,
     countryCode: row.country_code.toUpperCase(),
@@ -34,7 +31,11 @@ function mapWorkspace(row: WorkspaceRow | null): WorkspaceContext {
 }
 
 export function FieldInspectionClient() {
-  const [workspace, setWorkspace] = useState<WorkspaceContext>(FALLBACK_WORKSPACE);
+  const t = useTranslations("fieldInspection");
+  const [workspace, setWorkspace] = useState<WorkspaceContext>({
+    name: t("workspaceFallback"),
+    countryCode: "TR",
+  });
   const [activeCategory, setActiveCategory] = useState<SurfaceCategoryId>("checklists");
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{
@@ -44,34 +45,30 @@ export function FieldInspectionClient() {
 
   const [state, actions] = useInspectionSession();
 
-  // Workspace context (UI only)
   useEffect(() => {
     let mounted = true;
     getActiveWorkspace()
       .then((row) => {
-        if (mounted) setWorkspace(mapWorkspace(row));
+        if (mounted) setWorkspace(mapWorkspace(row, t("workspaceFallback")));
       })
       .catch(() => {
-        if (mounted) setWorkspace(FALLBACK_WORKSPACE);
+        if (mounted) setWorkspace(mapWorkspace(null, t("workspaceFallback")));
       });
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [t]);
 
-  // Feedback auto-dismiss
   useEffect(() => {
     if (!feedback) return;
-    const t = window.setTimeout(() => setFeedback(null), 5000);
-    return () => window.clearTimeout(t);
+    const timer = window.setTimeout(() => setFeedback(null), 5000);
+    return () => window.clearTimeout(timer);
   }, [feedback]);
 
-  // Keep selected template in sync with activeTemplate
   useEffect(() => {
     if (selectedTemplateId) {
       void actions.selectTemplate(selectedTemplateId);
     }
-    // actions is stable via useMemo; intentionally not in deps
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTemplateId]);
 
@@ -81,7 +78,7 @@ export function FieldInspectionClient() {
 
   const handleStartInspection = async (mode: "official" | "preview") => {
     if (!state.activeTemplate) {
-      setFeedback({ tone: "warning", message: "Önce sol listeden bir checklist seçin." });
+      setFeedback({ tone: "warning", message: t("feedback.selectChecklistFirst") });
       return;
     }
     const run = await actions.startRun({
@@ -93,12 +90,15 @@ export function FieldInspectionClient() {
         tone: mode === "preview" ? "info" : "success",
         message:
           mode === "preview"
-            ? `${state.activeTemplate.title} sanal prova modunda başladı.`
-            : `${state.activeTemplate.title} ile resmi denetim başladı (${run.code ?? run.id.slice(0, 8)}).`,
+            ? t("feedback.previewStarted", { title: state.activeTemplate.title })
+            : t("feedback.officialStarted", {
+                title: state.activeTemplate.title,
+                ref: run.code ?? run.id.slice(0, 8),
+              }),
       });
       setActiveCategory("inspection");
     } else {
-      setFeedback({ tone: "danger", message: "Denetim başlatılamadı. Oturumunuzu kontrol edin." });
+      setFeedback({ tone: "danger", message: t("feedback.startFailed") });
     }
   };
 
@@ -111,7 +111,7 @@ export function FieldInspectionClient() {
     setActiveCategory("checklists");
     setFeedback({
       tone: "success",
-      message: "Nova taslak checklist oluşturuldu. Düzenleyip yayınlayabilirsiniz.",
+      message: t("feedback.novaDraftCreated"),
     });
   };
 
@@ -127,23 +127,35 @@ export function FieldInspectionClient() {
         }).length || ""
       : "",
     nova: "",
-    closure: state.activeRun?.status === "report_ready" ? "Hazır" : state.activeRun ? "Bekliyor" : "",
+    closure:
+      state.activeRun?.status === "report_ready"
+        ? t("counts.closureReady")
+        : state.activeRun
+          ? t("counts.closureWaiting")
+          : "",
   };
+
+  const runIssueText = state.startRunIssue ? formatRunStartIssue(state.startRunIssue, t) : null;
 
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Saha Denetimi"
-        title="Saha ziyaretinde canlı checklist, anlık tespit ve kurumsal hafıza"
-        description="Checklist doldur → uygunsuzlukları tespite çevir → Nova ile mevcut risk, aksiyon ve DÖF kayıtlarına bağla → raporla."
+        eyebrow={t("header.eyebrow")}
+        title={t("header.title")}
+        description={t("header.description")}
         meta={
           <>
             <span className="rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground">
-              Aktif alan: {workspace.name}
+              {t("header.activeArea", { name: workspace.name })}
             </span>
             {state.activeRun ? (
               <span className="rounded-full border border-[var(--gold)]/40 bg-[var(--gold)]/10 px-3 py-1.5 text-xs font-semibold text-[var(--gold)]">
-                {state.activeRun.code ?? "Denetim devam ediyor"} · %{state.activeRun.readinessScore}
+                {state.activeRun.code
+                  ? t("header.auditRunning", {
+                      code: state.activeRun.code,
+                      percent: state.activeRun.readinessScore,
+                    })
+                  : t("header.auditRunningNoCode", { percent: state.activeRun.readinessScore })}
               </span>
             ) : null}
           </>
@@ -157,7 +169,7 @@ export function FieldInspectionClient() {
               onClick={() => handleStartInspection("official")}
             >
               <Play className="mr-1.5 h-4 w-4" />
-              Denetimi başlat
+              {t("actions.startAudit")}
             </Button>
             <Button
               size="lg"
@@ -166,7 +178,7 @@ export function FieldInspectionClient() {
               onClick={() => setActiveCategory("nova")}
             >
               <Sparkles className="mr-1.5 h-4 w-4" />
-              Nova ile checklist
+              {t("actions.checklistWithNova")}
             </Button>
           </>
         }
@@ -176,51 +188,45 @@ export function FieldInspectionClient() {
         <StatusAlert tone={feedback.tone}>{feedback.message}</StatusAlert>
       ) : null}
 
-      {state.startRunError ? (
-        <StatusAlert tone="danger">{state.startRunError}</StatusAlert>
-      ) : null}
+      {runIssueText ? <StatusAlert tone="danger">{runIssueText}</StatusAlert> : null}
 
       <section className="relative overflow-hidden rounded-[2rem] border border-amber-200/70 bg-gradient-to-br from-white via-amber-50/45 to-sky-50/35 p-4 shadow-[var(--shadow-card)] dark:border-white/10 dark:from-slate-950 dark:via-slate-900 dark:to-amber-950/20 sm:p-6">
         <span className="pointer-events-none absolute -right-24 -top-24 h-60 w-60 rounded-full bg-amber-300/25 blur-3xl dark:bg-amber-400/10" />
         <span className="pointer-events-none absolute -bottom-28 left-1/3 h-64 w-64 rounded-full bg-sky-300/20 blur-3xl dark:bg-sky-400/10" />
         <div className="relative">
-        <CategoryTabs
-          active={activeCategory}
-          onChange={setActiveCategory}
-          counts={counts}
-        />
+          <CategoryTabs active={activeCategory} onChange={setActiveCategory} counts={counts} />
 
-        {activeCategory === "checklists" ? (
-          <ChecklistsTab
-            state={state}
-            actions={actions}
-            selectedTemplateId={selectedTemplateId}
-            onSelectTemplate={handleSelectTemplate}
-            onStartOfficial={() => handleStartInspection("official")}
-            onStartPreview={() => handleStartInspection("preview")}
-            onOpenStudio={handleOpenStudio}
-          />
-        ) : null}
+          {activeCategory === "checklists" ? (
+            <ChecklistsTab
+              state={state}
+              actions={actions}
+              selectedTemplateId={selectedTemplateId}
+              onSelectTemplate={handleSelectTemplate}
+              onStartOfficial={() => handleStartInspection("official")}
+              onStartPreview={() => handleStartInspection("preview")}
+              onOpenStudio={handleOpenStudio}
+            />
+          ) : null}
 
-        {activeCategory === "inspection" ? (
-          <ActiveInspectionTab
-            state={state}
-            actions={actions}
-            onOpenFindings={() => setActiveCategory("findings")}
-          />
-        ) : null}
+          {activeCategory === "inspection" ? (
+            <ActiveInspectionTab
+              state={state}
+              actions={actions}
+              onOpenFindings={() => setActiveCategory("findings")}
+            />
+          ) : null}
 
-        {activeCategory === "findings" ? (
-          <FindingsTab state={state} actions={actions} />
-        ) : null}
+          {activeCategory === "findings" ? (
+            <FindingsTab state={state} actions={actions} />
+          ) : null}
 
-        {activeCategory === "nova" ? (
-          <NovaTab actions={actions} onTemplateCreated={handleNovaTemplateCreated} />
-        ) : null}
+          {activeCategory === "nova" ? (
+            <NovaTab actions={actions} onTemplateCreated={handleNovaTemplateCreated} />
+          ) : null}
 
-        {activeCategory === "closure" ? (
-          <ClosureTab state={state} actions={actions} />
-        ) : null}
+          {activeCategory === "closure" ? (
+            <ClosureTab state={state} actions={actions} />
+          ) : null}
         </div>
       </section>
     </div>

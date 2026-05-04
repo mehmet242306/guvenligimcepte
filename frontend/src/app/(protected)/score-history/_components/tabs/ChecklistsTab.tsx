@@ -2,12 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { ClipboardCheck, Play, PackageOpen, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SubcategorySidebar, type SidebarItem } from "../SubcategorySidebar";
 import type { SessionState, SessionActions } from "../../_hooks/useInspectionSession";
-import { SOURCE_LABELS } from "../../_lib/constants";
 import { seedStarterTemplates } from "@/lib/supabase/checklist-api";
 
 type Props = {
@@ -20,6 +20,15 @@ type Props = {
   onOpenStudio: () => void;
 };
 
+const SOURCE_KEYS = ["manual", "nova", "library", "risk_analysis", "imported"] as const;
+
+function sourceLabel(t: (key: string) => string, source: string) {
+  if ((SOURCE_KEYS as readonly string[]).includes(source)) {
+    return (t as (key: string) => string)(`sources.${source}`);
+  }
+  return source;
+}
+
 export function ChecklistsTab({
   state,
   actions,
@@ -29,6 +38,7 @@ export function ChecklistsTab({
   onStartPreview,
   onOpenStudio,
 }: Props) {
+  const t = useTranslations("fieldInspection");
   const { templates, activeTemplate, loadingTemplates, loadingActive } = state;
   const [seeding, setSeeding] = useState(false);
   const [seedMsg, setSeedMsg] = useState<string | null>(null);
@@ -41,47 +51,48 @@ export function ChecklistsTab({
     if (result.skipped) {
       setSeedMsg(
         result.reason === "already_seeded"
-          ? "Başlangıç paketi zaten yüklü."
-          : "Başlangıç paketi yüklenemedi.",
+          ? t("checklists.seedSkipped")
+          : t("checklists.seedFailed"),
       );
       return;
     }
-    setSeedMsg(`${result.created} şablon yüklendi.`);
+    setSeedMsg(t("checklists.seedLoaded", { count: result.created }));
     await actions.refreshTemplates();
   };
 
   const sidebarItems = useMemo<SidebarItem[]>(
     () =>
-      templates.map((t) => ({
-        id: t.id,
-        title: t.title,
-        description: `${t.questionCount ?? 0} soru · ${SOURCE_LABELS[t.source] ?? t.source}`,
+      templates.map((tmpl) => ({
+        id: tmpl.id,
+        title: tmpl.title,
+        description: t("checklists.sidebarItemDescription", {
+          count: tmpl.questionCount ?? 0,
+          source: sourceLabel(t, tmpl.source),
+        }),
         badge:
-          t.status === "draft"
-            ? "Taslak"
-            : t.status === "archived"
-              ? "Arşiv"
-              : "Yayında",
+          tmpl.status === "draft"
+            ? t("checklists.statusDraft")
+            : tmpl.status === "archived"
+              ? t("checklists.statusArchived")
+              : t("checklists.statusPublished"),
       })),
-    [templates],
+    [templates, t],
   );
 
   return (
     <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
       <SubcategorySidebar
-        title="Checklistler"
+        title={t("checklists.sidebarTitle")}
         items={sidebarItems}
         activeItemId={selectedTemplateId}
         onSelect={onSelectTemplate}
         emptyLabel={
-          loadingTemplates
-            ? "Yükleniyor..."
-            : "Henüz checklist yok. Nova ile oluşturabilir veya kütüphaneden kopyalayabilirsiniz."
+          loadingTemplates ? t("checklists.loading") : t("checklists.emptyList")
         }
         footer={
           <Button variant="outline" size="sm" className="w-full" onClick={onOpenStudio}>
             <Sparkles className="mr-2 h-4 w-4" />
-            Nova ile yeni checklist
+            {t("checklists.footerNova")}
           </Button>
         }
       />
@@ -106,7 +117,9 @@ export function ChecklistsTab({
                     {activeTemplate.title}
                   </h3>
                   <Badge variant={activeTemplate.status === "draft" ? "warning" : "success"}>
-                    {activeTemplate.status === "draft" ? "Taslak" : "Yayında"}
+                    {activeTemplate.status === "draft"
+                      ? t("checklists.statusDraft")
+                      : t("checklists.statusPublished")}
                   </Badge>
                 </div>
                 {activeTemplate.description ? (
@@ -115,21 +128,23 @@ export function ChecklistsTab({
                   </p>
                 ) : null}
                 <div className="flex flex-wrap gap-2 pt-2 text-xs text-muted-foreground">
-                  <span>{activeTemplate.questions.length} soru</span>
+                  <span>
+                    {t("checklists.questionsCount", { count: activeTemplate.questions.length })}
+                  </span>
                   <span>·</span>
-                  <span>Sürüm {activeTemplate.version}</span>
+                  <span>{t("checklists.version", { version: activeTemplate.version })}</span>
                   <span>·</span>
-                  <span>{SOURCE_LABELS[activeTemplate.source] ?? activeTemplate.source}</span>
+                  <span>{sourceLabel(t, activeTemplate.source)}</span>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 <Button onClick={onStartOfficial}>
                   <Play className="mr-1.5 h-4 w-4" />
-                  Denetimi başlat
+                  {t("checklists.startOfficial")}
                 </Button>
                 <Button variant="outline" onClick={onStartPreview}>
-                  Sanal prova
+                  {t("checklists.walkthrough")}
                 </Button>
               </div>
             </div>
@@ -137,7 +152,7 @@ export function ChecklistsTab({
             <div className="grid gap-2">
               {activeTemplate.questions.length === 0 ? (
                 <p className="rounded-xl border border-dashed border-border/60 bg-muted/20 px-4 py-6 text-center text-xs text-muted-foreground">
-                  Bu şablonda henüz soru yok. Nova stüdyosundan soru üretebilirsiniz.
+                  {t("checklists.noQuestionsHint")}
                 </p>
               ) : (
                 activeTemplate.questions.map((q, index) => (
@@ -184,13 +199,14 @@ function EmptyState({
   onSeedStarter,
   onOpenStudio,
 }: EmptyStateProps) {
+  const t = useTranslations("fieldInspection");
   if (loading) {
     return (
       <div className="flex min-h-[320px] flex-col items-center justify-center gap-3 text-center">
         <div className="rounded-full bg-[var(--gold)]/10 p-4">
           <ClipboardCheck size={32} className="text-[var(--gold)]" />
         </div>
-        <p className="text-sm text-muted-foreground">Şablon yükleniyor...</p>
+        <p className="text-sm text-muted-foreground">{t("checklists.emptyLoadingTemplates")}</p>
       </div>
     );
   }
@@ -201,20 +217,16 @@ function EmptyState({
         <div className="rounded-full bg-[var(--gold)]/10 p-4">
           <PackageOpen size={32} className="text-[var(--gold)]" />
         </div>
-        <p className="text-base font-semibold text-foreground">
-          Organizasyonunuzda henüz checklist yok
-        </p>
-        <p className="max-w-lg text-sm text-muted-foreground">
-          Başlangıç paketini yükleyerek 6 hazır şablonla (Ortam gözetimi, Yangın, Elektrik, KKD, Makine, Kimyasal) hemen kullanıma başlayabilir veya Nova AI ile kendi özel checklist'inizi üretebilirsiniz.
-        </p>
+        <p className="text-base font-semibold text-foreground">{t("checklists.emptyNoTemplatesTitle")}</p>
+        <p className="max-w-lg text-sm text-muted-foreground">{t("checklists.emptyNoTemplatesBody")}</p>
         <div className="mt-2 flex flex-wrap justify-center gap-2">
           <Button onClick={onSeedStarter} disabled={seeding}>
             <PackageOpen className="mr-2 h-4 w-4" />
-            {seeding ? "Yükleniyor..." : "Başlangıç paketini yükle"}
+            {seeding ? t("checklists.loading") : t("checklists.emptyNoTemplatesLoad")}
           </Button>
           <Button variant="outline" onClick={onOpenStudio}>
             <Sparkles className="mr-2 h-4 w-4" />
-            Nova ile oluştur
+            {t("checklists.emptyNoTemplatesNova")}
           </Button>
         </div>
         {seedMessage ? (
@@ -229,15 +241,11 @@ function EmptyState({
       <div className="rounded-full bg-[var(--gold)]/10 p-4">
         <ClipboardCheck size={32} className="text-[var(--gold)]" />
       </div>
-      <p className="text-base font-semibold text-foreground">
-        Bir checklist seçin veya yenisini oluşturun
-      </p>
-      <p className="max-w-md text-sm text-muted-foreground">
-        Sol listeden bir şablon seçerek ayrıntılarını görebilir, denetimi başlatabilir veya Nova ile kendi checklist'inizi üretebilirsiniz.
-      </p>
+      <p className="text-base font-semibold text-foreground">{t("checklists.emptyHasTemplatesTitle")}</p>
+      <p className="max-w-md text-sm text-muted-foreground">{t("checklists.emptyHasTemplatesBody")}</p>
       <Button variant="outline" size="sm" className="mt-2" onClick={onOpenStudio}>
         <Sparkles className="mr-2 h-4 w-4" />
-        Nova stüdyosunu aç
+        {t("checklists.emptyOpenStudio")}
       </Button>
     </div>
   );

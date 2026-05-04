@@ -20,6 +20,7 @@ import {
   type InspectionAnswerRecord,
   type InspectionRunMode,
   type InspectionRunRecord,
+  type RunStartIssue,
   type SuggestionDecision,
   type ResponseStatus,
   type DecisionTargetTable,
@@ -33,8 +34,8 @@ export type SessionState = {
   loadingTemplates: boolean;
   loadingActive: boolean;
   savingAnswer: boolean;
-  /** Denetim başlatılamadığında (ör. saha denetimi kotası) kullanıcı mesajı */
-  startRunError: string | null;
+  /** Denetim başlatılamadığında (ör. kota) — UI `fieldInspection.errors.*` ile çevrilir */
+  startRunIssue: RunStartIssue | null;
 };
 
 export type SessionActions = {
@@ -78,7 +79,7 @@ export function useInspectionSession(): [SessionState, SessionActions] {
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [loadingActive, setLoadingActive] = useState(false);
   const [savingAnswer, setSavingAnswer] = useState(false);
-  const [startRunError, setStartRunError] = useState<string | null>(null);
+  const [startRunIssue, setStartRunIssue] = useState<RunStartIssue | null>(null);
 
   const mountedRef = useRef(true);
   useEffect(() => {
@@ -90,7 +91,7 @@ export function useInspectionSession(): [SessionState, SessionActions] {
 
   const refreshTemplates = useCallback(async () => {
     setLoadingTemplates(true);
-    setStartRunError(null);
+    setStartRunIssue(null);
     const data = await listChecklistTemplates({ includeArchived: false });
     if (mountedRef.current) {
       setTemplates(data);
@@ -108,10 +109,10 @@ export function useInspectionSession(): [SessionState, SessionActions] {
         setActiveTemplate(null);
         setActiveRun(null);
         setAnswers({});
-        setStartRunError(null);
+        setStartRunIssue(null);
         return;
       }
-      setStartRunError(null);
+      setStartRunIssue(null);
       setLoadingActive(true);
       const tmpl = await fetchTemplateById(templateId);
       if (!mountedRef.current) return;
@@ -138,7 +139,7 @@ export function useInspectionSession(): [SessionState, SessionActions] {
   const startRun = useCallback<SessionActions["startRun"]>(
     async (args) => {
       if (!activeTemplate) return null;
-      setStartRunError(null);
+      setStartRunIssue(null);
       const result = await createInspectionRun({
         templateId: activeTemplate.id,
         runMode: args.mode,
@@ -151,7 +152,7 @@ export function useInspectionSession(): [SessionState, SessionActions] {
       });
       if (!result.ok) {
         if (mountedRef.current) {
-          setStartRunError(result.message);
+          setStartRunIssue(result.issue);
         }
         return null;
       }
@@ -296,9 +297,9 @@ export function useInspectionSession(): [SessionState, SessionActions] {
       loadingTemplates,
       loadingActive,
       savingAnswer,
-      startRunError,
+      startRunIssue,
     }),
-    [templates, activeTemplate, activeRun, answers, loadingTemplates, loadingActive, savingAnswer, startRunError],
+    [templates, activeTemplate, activeRun, answers, loadingTemplates, loadingActive, savingAnswer, startRunIssue],
   );
 
   const actions = useMemo<SessionActions>(
