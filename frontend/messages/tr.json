@@ -2928,7 +2928,311 @@
       "controlsTitle": "Periyodik Kontroller",
       "controlsDesc": "Yasal zorunlu periyodik kontrol ve muayeneler.",
       "committeeTitle": "İSG Kurul Toplantıları",
-      "committeeDesc": "Tehlike sınıfı: {hazardClass} — Periyod: {months} ayda bir"
+      "committeeDesc": "Tehlike sınıfı: {hazardClass} — Periyod: {months} ayda bir",
+      "newTraining": "Yeni Eğitim",
+      "noTrainings": "Henüz eğitim kaydı yok.",
+      "newControl": "Yeni Kontrol",
+      "noControls": "Henüz periyodik kontrol kaydı yok.",
+      "newMeeting": "Yeni Toplantı",
+      "noMeetings": "Henüz İSG kurul toplantısı kaydı yok.",
+      "status": {
+        "planned": "Planlandı",
+        "completed": "Tamamlandı",
+        "cancelled": "İptal",
+        "overdue": "Gecikmiş"
+      },
+      "trainingTypes": {
+        "zorunlu": "Zorunlu",
+        "yenileme": "Yenileme",
+        "istege_bagli": "İsteğe Bağlı"
+      },
+      "hours": "{count} saat",
+      "edit": "Düzenle",
+      "delete": "Sil",
+      "results": {
+        "uygun": "Uygun",
+        "sartli_uygun": "Şartlı Uygun",
+        "uygun_degil": "Uygun Değil"
+      },
+      "controlTypes": {
+        "elektrik": "Elektrik",
+        "asansor": "Asansör",
+        "yangin": "Yangın",
+        "basinc": "Basınçlı Kap",
+        "vinc": "Vinç",
+        "kompressor": "Kompresör",
+        "forklift": "Forklift",
+        "diger": "Diğer"
+      },
+      "overdue": "Gecikmiş!",
+      "last": "Son",
+      "next": "Sonraki",
+      "meetingNumber": "Toplantı #{number}",
+      "agenda": "Gündem",
+      "attendees": "Katılımcılar",
+      "decisions": "Kararlar",
+      "responsible": "Sorumlu",
+      "deadline": "Termin",
+      "nextMeeting": "Sonraki toplantı",
+      "save": "Kaydet",
+      "saving": "Kaydediliyor...",
+      "cancel": "Vazgeç",
+      "type": "Tür",
+      "trainer": "Eğitimci",
+      "date": "Tarih",
+      "durationHours": "Süre (saat)",
+      "statusLabel": "Durum",
+      "note": "Not",
+      "inspector": "Denetçi",
+      "inspectionDate": "Kontrol Tarihi",
+      "nextControl": "Sonraki Kontrol",
+      "result": "Sonuç",
+      "reportReference": "Rapor Referansı",
+      "trainingForm": {
+        "newTitle": "Yeni Eğitim Ekle",
+        "editTitle": "Eğitimi Düzenle",
+        "nameRequired": "Eğitim Adı *",
+        "namePlaceholder": "İSG Temel Eğitimi"
+      },
+      "controlForm": {
+        "newTitle": "Yeni Periyodik Kontrol Ekle",
+        "editTitle": "Periyodik Kontrolü Düzenle",
+        "nameRequired": "Kontrol Adı *",
+        "namePlaceholder": "Elektrik İç Tesisat Kontrolü"
+      },
+      "meetingForm": {
+        "newTitle": "Yeni İSG Kurul Toplantısı",
+        "editTitle": "Toplantıyı Düzenle",
+        "dateRequired": "Toplantı Tarihi *",
+        "number": "Toplantı No",
+        "attendeesPlaceholder": "İSG Uzmanı, İşveren Vekili, Çalışan Temsilcisi...",
+        "agendaPlaceholder": "1. Risk analizi sonuçlarının değerlendirilmesi\n2. Eğitim planı...",
+        "addDecision": "+ Karar Ekle",
+        "decisionText": "Karar metni",
+        "nextDate": "Sonraki Toplantı Tarihi"
+      }
+    },
+    "personnel": {
+      "title": "Personel Yönetimi",
+      "description": "{companyName} için personel kayıtlarını yönetin.",
+      "sourceLocal": "Yerel",
+      "loading": "Personel verileri yükleniyor...",
+      "summary": {
+        "total": "Toplam Personel",
+        "active": "Aktif",
+        "departments": "Bölüm",
+        "special": "Özel İzleme"
+      },
+      "tabs": {
+        "list": "Personel Listesi",
+        "import": "İçe Aktarma",
+        "special": "Özel İzleme",
+        "health": "Sağlık Gözetimi"
+      },
+      "empty": {
+        "title": "Henüz personel kaydı bulunmuyor",
+        "description": "CSV şablonunu indirip İçe Aktarma sekmesinden yükleyin."
+      },
+      "list": {
+        "count": "{count} personel kaydı",
+        "sort": "Sırala"
+      },
+      "actions": {
+        "templateDownload": "Şablonu İndir",
+        "goImport": "İçe Aktarmaya Git",
+        "deleting": "Siliniyor...",
+        "deleteSelected": "Seçilenleri Sil ({count})",
+        "export": "Dışa Aktar",
+        "newImport": "Yeni İçe Aktarma",
+        "import": "İçe Aktar",
+        "uploading": "Yükleniyor...",
+        "profile": "Özlük",
+        "special": "Özel",
+        "delete": "Sil",
+        "remove": "Kaldır",
+        "saving": "Kaydediliyor...",
+        "close": "Kapat",
+        "save": "Kaydet",
+        "cancel": "Vazgeç"
+      },
+      "import": {
+        "chooseFile": "Lütfen bir CSV dosyası seçin.",
+        "noValidRecords": "Dosyada geçerli kayıt bulunamadı.",
+        "successSupabase": "{count} personel kaydı başarıyla içe aktarıldı. (Supabase) · Toplam: {total}",
+        "successLocal": "{count} personel kaydı başarıyla içe aktarıldı. (Yerel) · Toplam: {total}",
+        "readError": "Dosya okunurken hata oluştu.",
+        "templateTitle": "CSV Şablonunu İndirin",
+        "templateDesc": "Aşağıdaki şablonu indirip personel bilgilerini doldurun.",
+        "uploadTitle": "CSV Dosyasını Yükleyin",
+        "uploadDesc": "Doldurduğunuz CSV dosyasını seçin ve içe aktarın."
+      },
+      "table": {
+        "employeeCode": "Sicil",
+        "fullName": "Ad Soyad",
+        "identity": "TC Kimlik",
+        "department": "Bölüm",
+        "position": "Pozisyon",
+        "location": "Lokasyon",
+        "status": "Durum",
+        "employment": "İstihdam",
+        "actions": "İşlem",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "hireDate": "İşe Başlama",
+        "bloodType": "Kan Grubu",
+        "emergency": "Acil Durum",
+        "profilePage": "Özlük Sayfası",
+        "positionMissing": "Pozisyon belirtilmemiş",
+        "noDepartment": "Bölüm yok"
+      },
+      "statuses": {
+        "active": "Aktif",
+        "on_leave": "İzinli",
+        "suspended": "Askıya Alınmış",
+        "terminated": "İşten Ayrılmış"
+      },
+      "employmentTypes": {
+        "full_time": "Tam Zamanlı",
+        "part_time": "Yarı Zamanlı",
+        "temporary": "Geçici",
+        "intern": "Stajyer",
+        "subcontractor": "Taşeron"
+      },
+      "sort": {
+        "employeeCode": "Sicil",
+        "fullName": "Ad Soyad",
+        "department": "Bölüm",
+        "positionTitle": "Pozisyon",
+        "location": "Lokasyon",
+        "employmentStatus": "Durum",
+        "employmentType": "İstihdam",
+        "ascTitle": "Artan (A→Z)",
+        "descTitle": "Azalan (Z→A)",
+        "ascAria": "Artan sıralama",
+        "descAria": "Azalan sıralama",
+        "columnAria": "{label} sütununa göre sırala"
+      },
+      "special": {
+        "title": "Özel İzleme Kategorileri",
+        "description": "Hassas gruplar ve özel izleme gerektiren çalışanlar.",
+        "sensitiveData": "Hassas Veri",
+        "accessControlled": "Erişim yetki kontrolüne tabidir",
+        "showEmployees": "▼ Çalışanları göster",
+        "hideList": "▲ Listeyi gizle",
+        "emptyCategory": "Bu kategoride kayıtlı çalışan bulunmuyor.",
+        "assignmentTitle": "Özel İzleme Ataması",
+        "assignmentDescription": "için özel izleme kategorisi seçin.",
+        "categories": {
+          "pregnant": {
+            "label": "Gebe Çalışan",
+            "desc": "Gebe veya emziren çalışanlar için özel koruma gereklidir."
+          },
+          "disabled": {
+            "label": "Engelli Çalışan",
+            "desc": "Engel durumuna uygun iş düzenlemesi sağlanmalıdır."
+          },
+          "foreign_national": {
+            "label": "Yabancı Uyruklu",
+            "desc": "Dil, kültürel uyum ve çalışma izni takibi gerektirir."
+          },
+          "young_worker": {
+            "label": "Genç Çalışan (18 yaş altı)",
+            "desc": "Yasal sınırlamalar ve ek koruma tedbirleri uygulanmalıdır."
+          },
+          "night_shift": {
+            "label": "Gece Vardiyası Çalışanı",
+            "desc": "Gece çalışmasına bağlı sağlık riskleri ve periyodik kontrol."
+          },
+          "chronic_condition": {
+            "label": "Kronik Hastalık",
+            "desc": "Sürekli sağlık gözetimi ve iş uyumu değerlendirmesi gerektirir."
+          },
+          "nursing_mother": {
+            "label": "Emziren Anne",
+            "desc": "Emzirme döneminde özel çalışma koşulları sağlanmalıdır."
+          },
+          "temporary_restriction": {
+            "label": "Geçici Kısıtlama",
+            "desc": "Geçici sağlık durumu nedeniyle iş kısıtlaması uygulanmaktadır."
+          }
+        }
+      },
+      "health": {
+        "title": "Sağlık Gözetimi",
+        "description": "İşe giriş, periyodik, işten ayrılma ve özel muayeneler.",
+        "newExam": "Yeni Muayene",
+        "empty": "Henüz sağlık muayenesi kaydı yok.",
+        "overdue": "Gecikmiş!",
+        "exam": "Muayene",
+        "next": "Sonraki",
+        "report": "Rapor",
+        "restriction": "Kısıtlama",
+        "recommendation": "Öneri",
+        "formTitle": "Yeni Sağlık Muayenesi Ekle",
+        "personnelRequired": "Personel *",
+        "examType": "Muayene Türü",
+        "examDateRequired": "Muayene Tarihi *",
+        "nextExam": "Sonraki Muayene",
+        "result": "Sonuç",
+        "physicianName": "Hekim Adı",
+        "institution": "Kurum",
+        "reportNo": "Rapor No",
+        "restrictions": "Kısıtlamalar",
+        "restrictionsPlaceholder": "Yüksekte çalışamaz, ağır kaldıramaz...",
+        "recommendedActions": "Öneriler",
+        "recommendedActionsPlaceholder": "6 ay sonra kontrol muayenesi...",
+        "examTypes": {
+          "ise_giris": "İşe Giriş",
+          "periyodik": "Periyodik",
+          "isten_ayrilma": "İşten Ayrılma",
+          "ozel": "Özel"
+        },
+        "results": {
+          "uygun": "Uygun",
+          "sartli_uygun": "Şartlı Uygun",
+          "uygun_degil": "Uygun Değil",
+          "izleme": "İzleme"
+        }
+      }
+    },
+    "history": {
+      "title": "Geçmiş ve Denetim İzi",
+      "description": "Firma üzerindeki işlemler ve değişiklik geçmişi otomatik olarak toplanır.",
+      "noWorkspace": "Firma çalışma alanı seçilmedi.",
+      "loading": "Geçmiş yükleniyor...",
+      "empty": "Henüz bir geçmiş kaydı yok. Firma üzerinde değişiklik yaptıkça burada listelenecektir.",
+      "dbConnectionError": "Veritabanı bağlantısı kurulamadı.",
+      "systemActor": "Sistem işlemi",
+      "change": "Değişiklik",
+      "actions": {
+        "workspaceCreated": "Çalışma alanı oluşturuldu",
+        "workspaceArchived": "Çalışma alanı arşivlendi",
+        "workspaceRestored": "Çalışma alanı geri yüklendi",
+        "expertAssigned": "Uzman atandı",
+        "expertAssignmentUpdated": "Uzman ataması güncellendi",
+        "expertAssignmentDeleted": "Uzman ataması silindi",
+        "riskAssessmentCreated": "Risk analizi oluşturuldu",
+        "riskAssessmentUpdated": "Risk analizi güncellendi",
+        "riskAssessmentDeleted": "Risk analizi silindi",
+        "documentCreated": "Döküman oluşturuldu",
+        "documentUpdated": "Döküman güncellendi",
+        "documentDeleted": "Döküman silindi",
+        "trainingAdded": "Eğitim eklendi",
+        "trainingUpdated": "Eğitim güncellendi",
+        "incidentCreated": "Olay kaydı oluşturuldu",
+        "incidentUpdated": "Olay kaydı güncellendi"
+      },
+      "entities": {
+        "riskAssessments": "Risk Analizi",
+        "editorDocuments": "Döküman",
+        "incidents": "Olay",
+        "companyTrainings": "Eğitim",
+        "committeeMeetings": "Komite Toplantısı",
+        "periodicControls": "Periyodik Kontrol",
+        "tasks": "Görev",
+        "workspace": "Çalışma Alanı",
+        "companyIdentity": "Firma Kimliği"
+      }
     }
   },
   "osgbFirms": {
@@ -5016,6 +5320,456 @@
         "rowEmployer": "İşveren / işveren vekili",
         "specialistFallback": "İSG profesyoneli"
       }
+    }
+  },
+  "fieldInspection": {
+    "workspaceFallback": "Aktif çalışma alanı",
+    "header": {
+      "eyebrow": "Saha denetimi",
+      "title": "Saha ziyaretinde canlı checklist, anlık tespit ve kurumsal hafıza",
+      "description": "Checklist doldur → uygunsuzlukları tespite çevir → Nova ile mevcut risk, aksiyon ve DÖF kayıtlarına bağla → raporla.",
+      "activeArea": "Aktif alan: {name}",
+      "auditRunning": "{code} · {percent}% hazırlık",
+      "auditRunningNoCode": "Denetim devam ediyor · {percent}% hazırlık"
+    },
+    "counts": {
+      "closureReady": "Hazır",
+      "closureWaiting": "Bekliyor"
+    },
+    "actions": {
+      "startAudit": "Denetimi başlat",
+      "checklistWithNova": "Nova ile checklist"
+    },
+    "feedback": {
+      "selectChecklistFirst": "Önce sol listeden bir checklist seçin.",
+      "previewStarted": "{title} sanal prova modunda başladı.",
+      "officialStarted": "{title} ile resmi denetim başladı ({ref}).",
+      "startFailed": "Denetim başlatılamadı. Oturumunuzu kontrol edin.",
+      "novaDraftCreated": "Nova taslak checklist oluşturuldu. Düzenleyip yayınlayabilirsiniz."
+    },
+    "errors": {
+      "noSession": "Oturum bulunamadı. Lütfen yeniden giriş yapın.",
+      "templateNotFound": "Şablon bulunamadı veya erişim yok.",
+      "quotaExceeded": "Bu özellik için aylık saha denetimi kotanız doldu ({used} / {limit}). Devam etmek için paketinizi yükseltin.",
+      "quotaCheckFailed": "Abonelik limiti kontrol edilemedi.",
+      "runInsertFailed": "Denetim oturumu oluşturulamadı.",
+      "invalidServerResponse": "Sunucu yanıtı geçersiz.",
+      "generic": "Bir hata oluştu: {detail}",
+      "genericUnknown": "Bir hata oluştu."
+    },
+    "tabs": {
+      "checklists": {
+        "label": "Checklistler",
+        "description": "Hazır checklist ve saha senaryoları"
+      },
+      "inspection": {
+        "label": "Aktif İnceleme",
+        "description": "Sahada doldurulan soru akışı"
+      },
+      "findings": {
+        "label": "Bulgular",
+        "description": "Tespitleri değerlendir, riske ve aksiyona bağla"
+      },
+      "nova": {
+        "label": "Nova",
+        "description": "Checklist stüdyosu ve akıllı öneriler"
+      },
+      "closure": {
+        "label": "Kapanış",
+        "description": "Denetim kontrolü ve raporlama"
+      }
+    },
+    "response": {
+      "uygun": "Uygun",
+      "uygunsuz": "Uygunsuz",
+      "kritik": "Kritik",
+      "na": "N/A",
+      "awaiting": "Cevap bekliyor"
+    },
+    "sources": {
+      "manual": "Manuel",
+      "nova": "Nova",
+      "library": "Kütüphane",
+      "risk_analysis": "Risk Analizi",
+      "imported": "İçe Aktarılan"
+    },
+    "mode": {
+      "quick": {
+        "label": "Hızlı kontrol",
+        "description": "8-12 soru ile sahada kısa tarama."
+      },
+      "standard": {
+        "label": "Standart denetim",
+        "description": "15-30 soruluk dengeli saha denetimi."
+      },
+      "detailed": {
+        "label": "Detaylı inceleme",
+        "description": "Kök neden ve tekrarları derinlemesine tarar."
+      }
+    },
+    "checklists": {
+      "sidebarTitle": "Checklistler",
+      "loading": "Yükleniyor...",
+      "emptyList": "Henüz checklist yok. Nova ile oluşturabilir veya kütüphaneden kopyalayabilirsiniz.",
+      "footerNova": "Nova ile yeni checklist",
+      "questionsCount": "{count} soru",
+      "sidebarItemDescription": "{count} soru · {source}",
+      "version": "Sürüm {version}",
+      "startOfficial": "Denetimi başlat",
+      "walkthrough": "Sanal prova",
+      "noQuestionsHint": "Bu şablonda henüz soru yok. Nova stüdyosundan soru üretebilirsiniz.",
+      "statusDraft": "Taslak",
+      "statusPublished": "Yayında",
+      "seedSkipped": "Başlangıç paketi zaten yüklü.",
+      "seedFailed": "Başlangıç paketi yüklenemedi.",
+      "seedLoaded": "{count} şablon yüklendi.",
+      "emptyLoadingTemplates": "Şablon yükleniyor...",
+      "emptyNoTemplatesTitle": "Organizasyonunuzda henüz checklist yok",
+      "emptyNoTemplatesBody": "Başlangıç paketini yükleyerek 6 hazır şablonla (Ortam gözetimi, Yangın, Elektrik, KKD, Makine, Kimyasal) hemen kullanıma başlayabilir veya Nova AI ile kendi özel checklist'inizi üretebilirsiniz.",
+      "emptyNoTemplatesLoad": "Başlangıç paketini yükle",
+      "emptyNoTemplatesNova": "Nova ile oluştur",
+      "emptyHasTemplatesTitle": "Bir checklist seçin veya yenisini oluşturun",
+      "emptyHasTemplatesBody": "Sol listeden bir şablon seçerek ayrıntılarını görebilir, denetimi başlatabilir veya Nova ile kendi checklist'inizi üretebilirsiniz.",
+      "emptyOpenStudio": "Nova stüdyosunu aç",
+      "questionsWord": "soru"
+    },
+    "inspection": {
+      "selectChecklistTitle": "Önce bir checklist seçin",
+      "selectChecklistHint": "\"Checklistler\" sekmesinden bir şablon seçip denetimi başlatın.",
+      "notStartedTitle": "Denetim henüz başlatılmadı",
+      "notStartedHint": "\"Checklistler\" sekmesinden \"Denetimi başlat\" ile resmi oturumu veya \"Sanal prova\" ile test oturumu açın.",
+      "autosaveTitle": "Her cevap otomatik kaydedilir.",
+      "autosaveBody": "Ayrı bir gönder tuşu yok; seçim, not, fotoğraf ve ses kaydı anında denetim oturumuna işlenir. Tüm uygunsuz ve kritik maddeleri \"Bulgular\" sekmesinde değerlendirebilirsiniz.",
+      "sidebarSections": "Bölümler",
+      "allQuestions": "Tüm sorular",
+      "questionsCount": "{count} soru",
+      "progressBadge": "{answered}/{total}",
+      "emptySection": "Bu bölümde soru yok.",
+      "afterVisitTitle": "Saha denetimi sonrası",
+      "afterVisitLi1": "Cevaplar kayıt altındadır. Uygunsuz veya kritik işaretlediğiniz maddeler {findingsTab} sekmesinde toplanır.",
+      "afterVisitLi2": "Orada tespiti riske, açık aksiyona veya DÖF'e bağlayarak kurum içi takibi başlatabilirsiniz.",
+      "reviewFindings": "Bulguları değerlendir ({count})",
+      "goFindingsTab": "Bulgular sekmesine git",
+      "questionProgress": "Soru {current} / {total}",
+      "findingDetails": "Tespit ayrıntıları",
+      "criticalBadge": "Kritik: fotoğraf + aksiyon zorunlu",
+      "placeholderFieldNote": "Saha notu",
+      "placeholderSuggestedAction": "Önerilen aksiyon",
+      "naReasonPlaceholder": "N/A gerekçesi (zorunlu)"
+    },
+    "findings": {
+      "introTitle": "Değerlendirme ekranı:",
+      "introBody": "Aşağıdaki bulgular için riske, aksiyona veya DÖF'e bağlantı seçebilir veya kaydı incelediğinizi işaretleyebilirsiniz. Bu adım saha ile ofis takibini birleştirir.",
+      "sidebarTitle": "Bulgular ({count})",
+      "emptySidebar": "Henüz tespit yok. Uygunsuz veya kritik cevaplar burada görünür.",
+      "decisionPending": "Karar bekliyor",
+      "decisionReviewed": "İncelendi",
+      "fieldNote": "Saha notu",
+      "suggestedAction": "Önerilen aksiyon",
+      "deadline": "Termin",
+      "photoCount": "Fotoğraf sayısı",
+      "novaSuggestionsTitle": "Nova bağlantı önerileri",
+      "novaSuggestionsBody": "Öneri üretimi için Nova edge function'ı henüz aktifleştirilmedi (S4). Şimdilik manuel karar verebilirsiniz.",
+      "linkExistingRisk": "Mevcut riske bağla",
+      "linkOpenAction": "Açık aksiyona bağla",
+      "startCapa": "DÖF başlat",
+      "newRiskDraft": "Yeni risk taslağı",
+      "ignore": "Yok say",
+      "reviewOnly": "Sadece incele",
+      "emptyTitle": "Henüz tespit yok",
+      "emptyBody": "Aktif inceleme sırasında uygunsuz veya kritik cevaplar burada tespit olarak görünür."
+    },
+    "nova": {
+      "sidebarTitle": "Nova Modülleri",
+      "studioTitle": "Checklist stüdyosu",
+      "studioDesc": "Yeni taslak üret",
+      "studioBadge": "Aktif",
+      "memoryTitle": "Kurumsal hafıza",
+      "memoryDesc": "Tekrar eden sorunlar (S4)",
+      "memoryBadge": "Yakında",
+      "panelTitle": "Checklist Stüdyosu",
+      "panelBadge": "Nova AI aktif",
+      "purposeLabel": "Amaç",
+      "purposePlaceholder": "Üretim hattında günlük İSG ortam gözetimi yapmak istiyorum.",
+      "modeLabel": "Denetim modu",
+      "locationLabel": "Lokasyon / Hat",
+      "locationPlaceholder": "Üretim Hattı 1 · Gündüz",
+      "sourcesLabel": "Nova hangi kaynakları tarasın?",
+      "sourceRisks": "Mevcut risk analizleri",
+      "sourcePastFindings": "Geçmiş saha tespitleri",
+      "sourceOpenActions": "Açık aksiyonlar",
+      "sourceDof": "DÖF kayıtları",
+      "sourceLibrary": "İSG kütüphanesi",
+      "sourceReports": "Önceki raporlar",
+      "createDraft": "Taslak oluştur",
+      "creating": "Oluşturuluyor...",
+      "footerHint": "Nova AI (claude-sonnet-4-6) org verilerini tarayıp bağlama uygun sorular üretir. İşlem 5-15 saniye sürebilir.",
+      "memorySoonTitle": "Kurumsal hafıza yakında",
+      "memorySoonBody": "Tekrar eden sorunlar ve açık aksiyon uyarıları S4'te gelecek.",
+      "errNoClient": "Supabase istemcisi oluşturulamadı.",
+      "errNoSession": "Oturum bulunamadı. Lütfen yeniden giriş yapın.",
+      "errEnv": "Supabase URL/apikey env eksik.",
+      "errNetwork": "Ağ hatası: {message}",
+      "errHttp": "Nova hatası {status}: {text}",
+      "errBadResponse": "Nova yanıtı beklenen formatta değil."
+    },
+    "closure": {
+      "sidebarTitle": "Kapanış Adımları",
+      "stepCheckTitle": "Denetim kontrolü",
+      "stepCheckDescReady": "Tamamlanmaya hazır",
+      "stepCheckDescGaps": "{count} eksik alan",
+      "badgeReady": "Hazır",
+      "badgeMissing": "Eksik",
+      "stepReportTitle": "Rapor & Paylaşım",
+      "stepReportDescDone": "Rapor oluşturuldu",
+      "stepReportDescWait": "Bekleniyor",
+      "badgeDash": "—",
+      "noRunTitle": "Aktif denetim yok",
+      "noRunBody": "Raporu oluşturmak için önce bir denetim başlatıp cevaplayın.",
+      "summaryTitle": "Denetim özeti",
+      "recordPending": "Kayıt bekleniyor",
+      "readiness": "{percent}% hazırlık",
+      "statUygun": "Uygun",
+      "statUygunsuz": "Uygunsuz",
+      "statKritik": "Kritik",
+      "statNa": "N/A",
+      "gapsTitle": "{count} eksik alan tespit edildi",
+      "gapsNone": "Tüm zorunlu alanlar tamam",
+      "complete": "Denetimi tamamla",
+      "completing": "Tamamlanıyor...",
+      "abandon": "Oturumu iptal et",
+      "reportTitle": "Rapor & Paylaşım",
+      "reportBody": "Denetim tamamlandığında PDF rapor oluşturma, risk analizine aktarma ve paylaşım seçenekleri burada görünür. PDF üretimi S6'da (edge function `inspection-report-pdf`) aktifleşecek.",
+      "pdfSoon": "PDF rapor (S6)",
+      "riskExportSoon": "Risk analizine aktar (S5)",
+      "emailSoon": "E-posta gönder (S6)",
+      "gapUnanswered": "\"{snippet}\" henüz cevaplanmadı.",
+      "gapCriticalNote": "\"{snippet}\" kritik: not eksik.",
+      "gapCriticalAction": "\"{snippet}\" kritik: aksiyon eksik.",
+      "gapCriticalDeadline": "\"{snippet}\" kritik: termin eksik.",
+      "gapCriticalPhoto": "\"{snippet}\" kritik: fotoğraf eksik.",
+      "gapNaReason": "\"{snippet}\" N/A: gerekçe eksik."
+    },
+    "evidence": {
+      "photoHeading": "Fotoğraf ({count})",
+      "addPhoto": "Fotoğraf ekle",
+      "uploading": "Yükleniyor...",
+      "uploadFailed": "Yükleme başarısız oldu.",
+      "evidenceAlt": "Kanıt",
+      "thumbLoading": "yükleniyor",
+      "removePhotoAria": "Fotoğrafı kaldır",
+      "voiceTitle": "Sesli not",
+      "voiceTitleSaved": "Sesli not (kaydedildi)",
+      "stop": "Durdur",
+      "delete": "Sil",
+      "record": "Kaydet",
+      "browserNoMic": "Tarayıcı ses kaydını desteklemiyor.",
+      "micDenied": "Mikrofon izni reddedildi.",
+      "micFailed": "Mikrofon açılamadı: {message}",
+      "voiceUploadFailed": "Ses notu yüklenemedi.",
+      "transcriptionPrefix": "Transkripsiyon: {error}",
+      "transcriptHeading": "Transkript",
+      "aiWriting": "AI yazıyor...",
+      "retranscribe": "Yeniden transkribe et",
+      "transcribingWait": "Ses metne çevriliyor (OpenAI Whisper)...",
+      "generateTranscript": "Transkript oluştur"
+    },
+    "sidebarDefaultTitle": "Alt Kategoriler",
+    "sidebarDefaultEmpty": "İçerik bulunmuyor."
+  },
+  "workspaceOnboarding": {
+    "eyebrow": "Çalışma Alanları",
+    "title": "Hangi çalışma alanında ilerleyeceksin?",
+    "description": "İlk adımda sadece çalışma alanını seç veya yeni alan oluştur. Sol panelden seçim yap, sağ tarafta o alana ait kaydı tamamla; bu alanı aktifleştirdiğinde risk analizi, dokümanlar, kütüphane ve saha modülleri aktif alan bağlamında çalışır.",
+    "localWorkspaceName": "Yerel Çalışma Alanı",
+    "goToWorkspace": "Çalışma alanına git",
+    "activateAndGo": "Bu alanı aktif yap ve git",
+    "common": {
+      "email": "E-posta",
+      "phone": "Telefon",
+      "saving": "Kaydediliyor...",
+      "select": "Seçiniz"
+    },
+    "plans": {
+      "individualFree": "Bireysel Free",
+      "osgbStarter": "OSGB Starter",
+      "enterprise": "Kurumsal",
+      "unknown": "Tanımsız paket"
+    },
+    "state": {
+      "selected": "Seçili",
+      "active": "Aktif",
+      "default": "Varsayılan",
+      "ready": "Hazır"
+    },
+    "meta": {
+      "package": "Paket: {plan}",
+      "unlimited": "{count} alan hazır",
+      "usage": "{count} / {limit} alan kullanılıyor",
+      "activeSelected": "Aktif alan seçili",
+      "selectionPending": "Alan seçimi bekleniyor"
+    },
+    "account": {
+      "eyebrow": "Hesap Tipi",
+      "title": "RiskNova hesabını seç",
+      "description": "Bireysel, OSGB veya kurumsal akışını seç. Sonraki ekranlar buna göre şekillenir.",
+      "cardTitle": "Hangi yapıyla başlayacaksın?",
+      "cardDescription": "Bireysel hesaplar tekil çalışma alanı bağlamıyla, OSGB hesapları ise çoklu firma yönetimiyle ilerler.",
+      "info": "Bu ekranda bireysel akış her zaman açık. OSGB ve kurumsal seçenekleri yalnızca admin tarafından yetki verildiğinde aktif olur.",
+      "adminApprovalRequired": "Admin onayı gereklidir.",
+      "displayName": "Hesap görünen adı",
+      "displayNamePlaceholder": "Örnek: Mehmet Yıldırım",
+      "companyName": "Şirket adı",
+      "contactName": "İletişim kişisi",
+      "continue": "Devam et",
+      "options": {
+        "individual": {
+          "title": "Bireysel",
+          "description": "Tekil profesyonel veya uzman kullanımı için."
+        },
+        "osgb": {
+          "title": "OSGB",
+          "description": "Çoklu firma ve ekip yönetimi için."
+        },
+        "enterprise": {
+          "title": "Kurumsal",
+          "description": "Kurumsal ihtiyaçlar için iletişim talebi oluşturur."
+        }
+      }
+    },
+    "errors": {
+      "timeout": "Oturum veya çalışma alanı bilgisi zamanında alınamadı. Sayfayı yenileyip tekrar deneyin; sorun sürerse çıkış yapıp yeniden giriş yapın.",
+      "fetchFailed": "Bağlantı kurulamadı. Sayfayı yenileyip getrisknova.com üzerinden tekrar deneyin; oturum otomatik toparlanmazsa çıkış yapıp yeniden giriş yapın.",
+      "schemaMissing": "Hesap kurulumu için gereken yeni veritabanı alanları henüz hazır değil. Lütfen migration tamamlandığında tekrar deneyin.",
+      "accountContextFailed": "Hesap bağlamı okunamadı.",
+      "workspaceDataFailed": "Çalışma alanı verisi alınamadı.",
+      "accountTypeUnavailable": "Hesap tipi seçimi şu anda tamamlanamıyor.",
+      "accountTypeFailed": "Hesap tipi seçimi tamamlanamadı.",
+      "workspaceSaveUnavailable": "Çalışma alanı kaydı şu anda tamamlanamıyor.",
+      "workspaceSaveFailed": "Çalışma alanı kaydı tamamlanamadı.",
+      "activateFailed": "Seçilen çalışma alanı aktif yapılamadı.",
+      "dataTitle": "Çalışma alanı verisi okunamadı",
+      "dataDescription": "Profil veya workspace bağlamı eksik olduğu için bu ekran hazırlanamadı."
+    },
+    "messages": {
+      "workspaceLimitReached": "Paketindeki çalışma alanı limitine ulaştın. Yeni alan açmadan önce mevcut alanlardan birini kullan veya paketini yükselt.",
+      "localFallback": "Workspace tabloları bu ortamda henüz tam değil. Seçim yerel bağlam olarak kaydedildi ve bu alanı kullanabilirsin.",
+      "localContextUpdated": "{name} yerel bağlam olarak güncellendi.",
+      "workspaceSaved": "{name} kaydedildi ve aktif çalışma alanı olarak seçildi."
+    },
+    "list": {
+      "title": "Çalışma alanları",
+      "description": "Her alan ayrı bir operasyon bağlamı taşır. Buradan seçip düzenleyebilir veya aktif alanı değiştirebilirsin.",
+      "empty": "Henüz hazır bir çalışma alanı yok. Aşağıdaki “Yeni çalışma alanı” seçeneğini kullanıp sağ taraftaki formu doldurarak ilk alanını oluştur.",
+      "currentlyActive": "Bu alan şu anda sistem genelinde aktif.",
+      "canSwitch": "İstersen bu alana geçiş yapabilirsin.",
+      "view": "Görüntüle"
+    },
+    "newWorkspace": {
+      "title": "Yeni çalışma alanı",
+      "description": "Boş bir kayıtla başla; firma ve çalışma alanı bilgilerini sağ tarafta kendin doldurursun.",
+      "newBadge": "Yeni",
+      "limitBadge": "Limit"
+    },
+    "limit": {
+      "slotsLeft": "{count} boş alan daha açabilirsin.",
+      "reached": "Mevcut paketindeki aktif alan limitine ulaştın."
+    },
+    "details": {
+      "selectedTitle": "Seçili çalışma alanı ayrıntıları",
+      "newTitle": "Yeni çalışma alanı oluştur",
+      "description": "Soldan bir alan seç. Sağ tarafta o alana bağlı firma / çalışma alanı kaydını doldur; ülke ve dil Nova bağlamını, firma bilgileri ise tüm operasyon modüllerini besler.",
+      "contextInfo": "Bu alandaki ülke seçimi resmi mevzuat filtresini, dil seçimi ise Nova ve RAG terminolojisini belirler. Her çalışma alanı kendi operasyon bağlamıyla çalışır; bu alanı aktifleştirdiğinde modüllerde tekrar ayrı bir alan seçmek yerine aktif alanın bağlamı kullanılır."
+    },
+    "fields": {
+      "workspaceName": "Çalışma alanı etiketi",
+      "country": "Ülke",
+      "language": "Dil",
+      "role": "Rol",
+      "certification": "Sertifika",
+      "noCertification": "Sertifika seçmeden devam et"
+    },
+    "hints": {
+      "languageTimezone": "{language} dili ve {timezone} saat dilimi ile çalışacak.",
+      "certification": "Ülke ve rol bağlamına uygun sertifika seçersen alanın uzmanlık etiketi daha net görünür."
+    },
+    "company": {
+      "sectionTitle": "Firma / çalışma alanı kaydı",
+      "sectionDescription": "Eski firmalar ekranında doldurulan ana bilgiler burada yaşasın. Sol panelden alan seçtiğinde sağ tarafta bu çalışma alanına ait kaydı düzenlersin.",
+      "officialName": "Firma / çalışma alanı resmi adı",
+      "shortName": "Kısa ad / görünen ad",
+      "kind": "Çalışma alanı tipi",
+      "sector": "Sektör",
+      "naceCode": "NACE kodu",
+      "hazardClass": "Tehlike sınıfı",
+      "address": "Adres",
+      "city": "İl",
+      "district": "İlçe",
+      "contactPerson": "Yetkili kişi",
+      "sgkNumber": "SGK işyeri sicil no",
+      "taxNumber": "Vergi no",
+      "taxOffice": "Vergi dairesi",
+      "employeeCount": "Çalışan sayısı",
+      "shiftModel": "Vardiya modeli",
+      "employerTitle": "İşveren unvanı",
+      "employerName": "İşveren",
+      "employerRepresentative": "İşveren vekili",
+      "locations": "Lokasyonlar",
+      "departments": "Bölümler",
+      "notes": "Notlar",
+      "locationsPlaceholder": "Her satıra bir lokasyon yaz.",
+      "departmentsPlaceholder": "Her satıra bir bölüm yaz.",
+      "notesPlaceholder": "Bu çalışma alanıyla ilgili operasyon ve saha notlarını yaz.",
+      "kindOptions": {
+        "private": "Özel Sektör",
+        "public": "Kamu Kurumu",
+        "municipality": "Belediye",
+        "ngo": "STK / Vakıf",
+        "construction": "Şantiye"
+      },
+      "hazardOptions": {
+        "low": "Az Tehlikeli",
+        "medium": "Tehlikeli",
+        "high": "Çok Tehlikeli"
+      }
+    },
+    "actions": {
+      "saveSettings": "Alan ayarlarını kaydet",
+      "createWorkspace": "Çalışma alanını oluştur"
+    },
+    "profile": {
+      "open": "Profili aç",
+      "title": "Kişisel bilgiler",
+      "description": "Bu bilgiler tüm sitede ortak kullanılır. Çalışma alanları ise sadece operasyon, ülke ve dil bağlamını ayırır.",
+      "fullName": "Ad soyad",
+      "titleField": "Unvan",
+      "notAdded": "Henüz eklenmedi",
+      "completeInProfile": "Profilde tamamlanacak",
+      "footer": "Profil bilgileri tüm deneyimde ortak kalır. Çalışma alanı değiştiğinde sadece operasyon bağlamı, mevzuat filtresi ve dil tercihi değişir."
+    },
+    "languages": {
+      "tr": "Türkçe",
+      "en": "İngilizce",
+      "de": "Almanca",
+      "fr": "Fransızca",
+      "es": "İspanyolca",
+      "ru": "Rusça",
+      "az": "Azerbaycanca",
+      "ar": "Arapça",
+      "hi": "Hintçe",
+      "id": "Endonezce",
+      "ja": "Japonca",
+      "ko": "Korece",
+      "zh": "Çince"
+    },
+    "roles": {
+      "safetyProfessional": "İSG uzmanı",
+      "workplaceDoctor": "İşyeri hekimi",
+      "employer": "İşveren",
+      "employerRepresentative": "İşveren vekili",
+      "employeeRepresentative": "Çalışan temsilcisi",
+      "viewer": "Görüntüleyici",
+      "admin": "Yönetici"
     }
   }
 }

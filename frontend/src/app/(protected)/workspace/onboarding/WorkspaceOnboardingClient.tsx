@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -145,6 +146,32 @@ type AccountOnboardingResponse = {
   redirectPath?: string;
 };
 
+const LANGUAGE_LABEL_KEYS: Record<string, string> = {
+  tr: "tr",
+  en: "en",
+  de: "de",
+  fr: "fr",
+  es: "es",
+  ru: "ru",
+  az: "az",
+  ar: "ar",
+  hi: "hi",
+  id: "id",
+  ja: "ja",
+  ko: "ko",
+  zh: "zh",
+};
+
+const ROLE_LABEL_KEYS: Record<string, string> = {
+  safety_professional: "safetyProfessional",
+  workplace_doctor: "workplaceDoctor",
+  employer: "employer",
+  employer_representative: "employerRepresentative",
+  employee_representative: "employeeRepresentative",
+  viewer: "viewer",
+  admin: "admin",
+};
+
 type WorkspaceOnboardingResponse = {
   ok?: boolean;
   error?: string;
@@ -211,16 +238,20 @@ async function buildAuthHeaders(base: HeadersInit = {}) {
   return headers;
 }
 
-function normalizeOnboardingError(error: unknown, fallback: string) {
+function normalizeOnboardingError(
+  error: unknown,
+  fallback: string,
+  t?: ReturnType<typeof useTranslations>,
+) {
   const message = error instanceof Error ? error.message : "";
   const normalized = message.toLowerCase();
 
   if (normalized.startsWith("timeout_")) {
-    return "Oturum veya calisma alani bilgisi zamaninda alinamadi. Sayfayi yenileyip tekrar deneyin; sorun surerse cikis yapip yeniden giris yapin.";
+    return t ? t("errors.timeout") : fallback;
   }
 
   if (normalized.includes("failed to fetch")) {
-    return "Baglanti kurulamadi. Sayfayi yenileyip getrisknova.com uzerinden tekrar deneyin; oturum otomatik toparlanmazsa cikis yapip yeniden giris yapin.";
+    return t ? t("errors.fetchFailed") : fallback;
   }
 
   if (
@@ -228,7 +259,7 @@ function normalizeOnboardingError(error: unknown, fallback: string) {
     normalized.includes("does not exist") ||
     normalized.includes("relation")
   ) {
-    return "Hesap kurulumu icin gereken yeni veritabani alanlari henuz hazir degil. Lutfen migration tamamlandiginda tekrar deneyin.";
+    return t ? t("errors.schemaMissing") : fallback;
   }
 
   return message || fallback;
@@ -283,16 +314,16 @@ function listToTextarea(value: string[]) {
   return value.join("\n");
 }
 
-function formatPlanLabel(planCode: string | null | undefined) {
+function formatPlanLabel(planCode: string | null | undefined, t: ReturnType<typeof useTranslations>) {
   switch (planCode) {
     case "individual_free":
-      return "Bireysel Free";
+      return t("plans.individualFree");
     case "osgb_starter":
-      return "OSGB Starter";
+      return t("plans.osgbStarter");
     case "enterprise":
-      return "Kurumsal";
+      return t("plans.enterprise");
     default:
-      return "Tanimsiz paket";
+      return t("plans.unknown");
   }
 }
 
@@ -300,21 +331,23 @@ function workspaceStateLabel(
   membership: ExistingMembership,
   activeWorkspaceId: string | null,
   selectedWorkspaceId: string | null,
+  t: ReturnType<typeof useTranslations>,
 ) {
-  if (membership.workspace.id === selectedWorkspaceId) return "Secili";
-  if (membership.workspace.id === activeWorkspaceId) return "Aktif";
-  if (membership.isPrimary) return "Varsayilan";
-  return "Hazir";
+  if (membership.workspace.id === selectedWorkspaceId) return t("state.selected");
+  if (membership.workspace.id === activeWorkspaceId) return t("state.active");
+  if (membership.isPrimary) return t("state.default");
+  return t("state.ready");
 }
 
 function goToWorkspaceLabel(
   membership: ExistingMembership | null,
   activeWorkspaceId: string | null,
+  t: ReturnType<typeof useTranslations>,
 ) {
-  if (!membership) return "Calisma alanina git";
+  if (!membership) return t("goToWorkspace");
   return membership.workspace.id === activeWorkspaceId
-    ? "Calisma alanina git"
-    : "Bu alani aktif yap ve git";
+    ? t("goToWorkspace")
+    : t("activateAndGo");
 }
 
 export function WorkspaceOnboardingClient({
@@ -324,6 +357,7 @@ export function WorkspaceOnboardingClient({
   nextPath?: string;
   initialMessage?: string;
 }) {
+  const t = useTranslations("workspaceOnboarding");
   const router = useRouter();
   const [accountLoading, setAccountLoading] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -383,8 +417,8 @@ export function WorkspaceOnboardingClient({
         if (!accountResponse.ok || !accountJson || !("context" in accountJson) || !accountJson.context) {
           throw new Error(
             accountJson && "error" in accountJson
-              ? accountJson.error || "Hesap baglami okunamadi."
-              : "Hesap baglami okunamadi.",
+              ? accountJson.error || t("errors.accountContextFailed")
+              : t("errors.accountContextFailed"),
           );
         }
 
@@ -417,7 +451,7 @@ export function WorkspaceOnboardingClient({
         const json = await readJsonSafely<OnboardingPayload | { error?: string }>(response);
         if (!response.ok || !json || ("error" in json && json.error)) {
           throw new Error(
-            json && "error" in json ? json.error || "Calisma alani verisi alinamadi." : "Calisma alani verisi alinamadi.",
+            json && "error" in json ? json.error || t("errors.workspaceDataFailed") : t("errors.workspaceDataFailed"),
           );
         }
 
@@ -440,7 +474,7 @@ export function WorkspaceOnboardingClient({
         if (!cancelled) {
           setMessage({
             tone: "danger",
-            text: normalizeOnboardingError(error, "Calisma alani verisi alinamadi."),
+            text: normalizeOnboardingError(error, t("errors.workspaceDataFailed"), t),
           });
         }
       } finally {
@@ -484,6 +518,16 @@ export function WorkspaceOnboardingClient({
     workspaceLimit === null ? 0 : Math.max(workspaceLimit - memberships.length, 0);
   const needsAccountTypeSelection = !accountLoading && !accountContext?.accountType;
   const allowedAccountTypes = accountContext?.allowedAccountTypes ?? ["individual"];
+
+  const languageLabel = (value: string, fallback: string) => {
+    const key = LANGUAGE_LABEL_KEYS[value.toLowerCase()];
+    return key ? t(`languages.${key}`) : fallback;
+  };
+
+  const roleLabel = (value: string, fallback: string) => {
+    const key = ROLE_LABEL_KEYS[value];
+    return key ? t(`roles.${key}`) : fallback;
+  };
 
   function updateCompanyProfile(patch: Partial<WorkspaceCompanyProfile>) {
     setCompanyProfile((current) => ({ ...current, ...patch }));
@@ -671,7 +715,7 @@ export function WorkspaceOnboardingClient({
       const json = await readJsonSafely<AccountOnboardingResponse>(response);
 
       if (!response.ok || !json?.ok || !json.redirectPath) {
-        throw new Error(json?.error || "Hesap tipi secimi su anda tamamlanamiyor.");
+        throw new Error(json?.error || t("errors.accountTypeUnavailable"));
       }
 
       router.refresh();
@@ -679,7 +723,7 @@ export function WorkspaceOnboardingClient({
     } catch (error) {
       setMessage({
         tone: "danger",
-        text: normalizeOnboardingError(error, "Hesap tipi secimi tamamlanamadi."),
+        text: normalizeOnboardingError(error, t("errors.accountTypeFailed"), t),
       });
     } finally {
       setAccountSubmitting(false);
@@ -693,7 +737,7 @@ export function WorkspaceOnboardingClient({
     if (!selectedMembership && !canCreateWorkspace) {
       setMessage({
         tone: "info",
-        text: "Paketindeki calisma alani limitine ulastin. Yeni alan acmadan once mevcut alanlardan birini kullan veya paketini yukselt.",
+        text: t("messages.workspaceLimitReached"),
       });
       return;
     }
@@ -706,7 +750,7 @@ export function WorkspaceOnboardingClient({
         const localWorkspace = {
           id: selectedMembership?.workspace.id ?? `local-${countryCode}`,
           name:
-            workspaceName || selectedCountry?.suggestedWorkspaceName || "Yerel Calisma Alani",
+            workspaceName || selectedCountry?.suggestedWorkspaceName || t("localWorkspaceName"),
           countryCode,
           defaultLanguage,
           timezone: selectedCountry?.timezone || "Europe/Istanbul",
@@ -732,7 +776,7 @@ export function WorkspaceOnboardingClient({
         );
         setMessage({
           tone: "info",
-          text: "Workspace tablolari bu ortamda henuz tam degil. Secim yerel baglam olarak kaydedildi ve bu alani kullanabilirsin.",
+          text: t("messages.localFallback"),
         });
         router.refresh();
         return;
@@ -762,7 +806,7 @@ export function WorkspaceOnboardingClient({
 
       const json = await readJsonSafely<WorkspaceOnboardingResponse>(response);
       if (!response.ok || !json?.ok || !json.workspace?.id) {
-        throw new Error(json?.error || "Calisma alani kaydi su anda tamamlanamiyor.");
+        throw new Error(json?.error || t("errors.workspaceSaveUnavailable"));
       }
 
       if (json.mode === "local_fallback") {
@@ -792,10 +836,10 @@ export function WorkspaceOnboardingClient({
             : "success",
         text:
           json.mode === "local_fallback"
-            ? json.warning || `${json.workspace.name} yerel baglam olarak guncellendi.`
+            ? json.warning || t("messages.localContextUpdated", { name: json.workspace.name })
             : json.companyWarning
               ? json.companyWarning
-            : `${json.workspace.name} kaydedildi ve aktif calisma alani olarak secildi.`,
+            : t("messages.workspaceSaved", { name: json.workspace.name }),
       });
 
       router.refresh();
@@ -804,7 +848,7 @@ export function WorkspaceOnboardingClient({
     } catch (error) {
       setMessage({
         tone: "danger",
-        text: normalizeOnboardingError(error, "Calisma alani kaydi tamamlanamadi."),
+        text: normalizeOnboardingError(error, t("errors.workspaceSaveFailed"), t),
       });
     } finally {
       setSubmitting(false);
@@ -817,7 +861,7 @@ export function WorkspaceOnboardingClient({
     if (!ok) {
       setMessage({
         tone: "danger",
-        text: "Secilen calisma alani aktif yapilamadi.",
+        text: t("errors.activateFailed"),
       });
       return;
     }
@@ -870,43 +914,42 @@ export function WorkspaceOnboardingClient({
     const accountOptions = [
       {
         value: "individual" as const,
-        title: "Bireysel",
-        description: "Tekil profesyonel veya uzman kullanimi icin.",
+        title: t("account.options.individual.title"),
+        description: t("account.options.individual.description"),
       },
       {
         value: "osgb" as const,
-        title: "OSGB",
-        description: "Coklu firma ve ekip yonetimi icin.",
+        title: t("account.options.osgb.title"),
+        description: t("account.options.osgb.description"),
       },
       {
         value: "enterprise" as const,
-        title: "Kurumsal",
-        description: "Kurumsal ihtiyaclar icin iletisim talebi olusturur.",
+        title: t("account.options.enterprise.title"),
+        description: t("account.options.enterprise.description"),
       },
     ];
 
     return (
       <div className="space-y-6">
         <PageHeader
-          eyebrow="Hesap Tipi"
-          title="RiskNova hesabini sec"
-          description="Bireysel, OSGB veya kurumsal akisini sec. Sonraki ekranlar buna gore sekillenir."
+          eyebrow={t("account.eyebrow")}
+          title={t("account.title")}
+          description={t("account.description")}
         />
 
         {message ? <StatusAlert tone={message.tone}>{message.text}</StatusAlert> : null}
 
         <Card>
           <CardHeader>
-            <CardTitle>Hangi yapiyla baslayacaksin?</CardTitle>
+            <CardTitle>{t("account.cardTitle")}</CardTitle>
           <CardDescription>
-              Bireysel hesaplar tekil calisma alani baglamiyla, OSGB hesaplari ise coklu firma yonetimiyle ilerler.
+              {t("account.cardDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-5" onSubmit={(event) => void handleAccountSubmit(event)}>
               <div className="rounded-2xl border border-border/70 bg-secondary/35 px-4 py-3 text-sm text-muted-foreground">
-                Bu ekranda bireysel akis her zaman acik. OSGB ve kurumsal secenekleri yalnizca admin
-                tarafindan yetki verildiginde aktif olur.
+                {t("account.info")}
               </div>
 
               <div className="grid gap-4 lg:grid-cols-3">
@@ -935,7 +978,7 @@ export function WorkspaceOnboardingClient({
                     <p className="mt-2 text-sm text-muted-foreground">{option.description}</p>
                     {!isAllowed ? (
                       <p className="mt-3 text-xs font-medium text-amber-700 dark:text-amber-300">
-                        Admin onayi gereklidir.
+                        {t("account.adminApprovalRequired")}
                       </p>
                     ) : null}
                   </button>
@@ -944,30 +987,30 @@ export function WorkspaceOnboardingClient({
               </div>
 
               <Input
-                label="Hesap gorunen adi"
+                label={t("account.displayName")}
                 value={accountName}
                 onChange={(event) => setAccountName(event.target.value)}
-                placeholder="Ornek: Mehmet Yildirim"
+                placeholder={t("account.displayNamePlaceholder")}
               />
 
               {accountType === "enterprise" ? (
                 <div className="grid gap-4 md:grid-cols-2">
                   <Input
-                    label="Sirket adi"
+                    label={t("account.companyName")}
                     value={enterpriseForm.companyName}
                     onChange={(event) =>
                       setEnterpriseForm((current) => ({ ...current, companyName: event.target.value }))
                     }
                   />
                   <Input
-                    label="Iletisim kisisi"
+                    label={t("account.contactName")}
                     value={enterpriseForm.contactName}
                     onChange={(event) =>
                       setEnterpriseForm((current) => ({ ...current, contactName: event.target.value }))
                     }
                   />
                   <Input
-                    label="E-posta"
+                    label={t("common.email")}
                     type="email"
                     value={enterpriseForm.email}
                     onChange={(event) =>
@@ -975,7 +1018,7 @@ export function WorkspaceOnboardingClient({
                     }
                   />
                   <Input
-                    label="Telefon"
+                    label={t("common.phone")}
                     value={enterpriseForm.phone}
                     onChange={(event) =>
                       setEnterpriseForm((current) => ({ ...current, phone: event.target.value }))
@@ -986,7 +1029,7 @@ export function WorkspaceOnboardingClient({
 
               <div className="flex flex-wrap items-center gap-3">
                 <Button type="submit" disabled={accountSubmitting}>
-                  {accountSubmitting ? "Kaydediliyor..." : "Devam et"}
+                  {accountSubmitting ? t("common.saving") : t("account.continue")}
                 </Button>
               </div>
             </form>
@@ -1000,9 +1043,9 @@ export function WorkspaceOnboardingClient({
     return (
       <div className="space-y-6">
         <PageHeader
-          eyebrow="Calisma Alanlari"
-          title="Calisma alani verisi okunamadi"
-          description="Profil veya workspace baglami eksik oldugu icin bu ekran hazirlanamadi."
+          eyebrow={t("eyebrow")}
+          title={t("errors.dataTitle")}
+          description={t("errors.dataDescription")}
         />
         {message ? <StatusAlert tone={message.tone}>{message.text}</StatusAlert> : null}
       </div>
@@ -1012,21 +1055,21 @@ export function WorkspaceOnboardingClient({
   return (
     <div className="space-y-6 rounded-[2rem] border border-border bg-card/90 p-5 shadow-[var(--shadow-elevated)] backdrop-blur sm:p-6 xl:p-8">
       <PageHeader
-        eyebrow="Calisma Alanlari"
-        title="Hangi calisma alaninda ilerleyeceksin?"
-        description="Ilk adimda sadece calisma alanini sec veya yeni alan olustur. Sol panelden secim yap, sag tarafta o alana ait kaydi tamamla; bu alani aktiflestirdiginde risk analizi, dokumanlar, kutuphane ve saha modulleri aktif alan baglaminda calisir."
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        description={t("description")}
         meta={
           <>
             <span className="rounded-full border border-border bg-secondary/45 px-3 py-1 text-xs font-semibold text-foreground">
-              Paket: {formatPlanLabel(accountContext?.currentPlanCode)}
+              {t("meta.package", { plan: formatPlanLabel(accountContext?.currentPlanCode, t) })}
             </span>
             <span className="rounded-full border border-border bg-secondary/45 px-3 py-1 text-xs font-semibold text-foreground">
               {workspaceLimit === null
-                ? `${memberships.length} alan hazir`
-                : `${memberships.length} / ${workspaceLimit} alan kullaniliyor`}
+                ? t("meta.unlimited", { count: memberships.length })
+                : t("meta.usage", { count: memberships.length, limit: workspaceLimit })}
             </span>
             <span className="rounded-full border border-border bg-secondary/45 px-3 py-1 text-xs font-semibold text-foreground">
-              {payload.profile.activeWorkspaceId ? "Aktif alan secili" : "Alan secimi bekleniyor"}
+              {payload.profile.activeWorkspaceId ? t("meta.activeSelected") : t("meta.selectionPending")}
             </span>
           </>
         }
@@ -1037,7 +1080,7 @@ export function WorkspaceOnboardingClient({
               onClick={() => void handleGoToWorkspace()}
               className="h-14 w-full min-w-0 rounded-2xl px-6 text-base font-bold shadow-[0_16px_34px_rgba(217,162,27,0.28)] sm:w-auto sm:min-w-[240px]"
             >
-              {goToWorkspaceLabel(selectedMembership, payload.profile.activeWorkspaceId)}
+              {goToWorkspaceLabel(selectedMembership, payload.profile.activeWorkspaceId, t)}
             </Button>
           ) : null
         }
@@ -1053,15 +1096,15 @@ export function WorkspaceOnboardingClient({
       <div className="grid min-w-0 gap-6 xl:grid-cols-[340px_minmax(0,1fr)]">
         <Card className="h-fit min-w-0 overflow-hidden">
           <CardHeader>
-            <CardTitle>Calisma alanlari</CardTitle>
+            <CardTitle>{t("list.title")}</CardTitle>
             <CardDescription>
-              Her alan ayri bir operasyon baglami tasir. Buradan secip duzenleyebilir veya aktif alani degistirebilirsin.
+              {t("list.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {memberships.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-primary/35 bg-primary/5 p-4 text-sm leading-6 text-muted-foreground">
-                Henuz hazir bir calisma alani yok. Asagidaki &quot;Yeni calisma alani&quot; secenegini kullanip sag taraftaki formu doldurarak ilk alanini olustur.
+                {t("list.empty")}
               </div>
             ) : null}
 
@@ -1072,6 +1115,7 @@ export function WorkspaceOnboardingClient({
                 membership,
                 payload.profile.activeWorkspaceId,
                 selectedWorkspaceId,
+                t,
               );
 
               return (
@@ -1091,7 +1135,7 @@ export function WorkspaceOnboardingClient({
                         {membership.workspace.name}
                       </p>
                       <p className="mt-1 break-all text-xs leading-5 text-muted-foreground">
-                        {membership.workspace.country_code} · {membership.workspace.default_language.toUpperCase()} · {membership.roleKey}
+                        {membership.workspace.country_code} · {languageLabel(membership.workspace.default_language, membership.workspace.default_language.toUpperCase())} · {roleLabel(membership.roleKey, membership.roleKey)}
                       </p>
                     </div>
                     <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold text-foreground">
@@ -1101,10 +1145,10 @@ export function WorkspaceOnboardingClient({
 
                   <div className="mt-3 flex min-w-0 flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
                     <span className="min-w-0 text-xs text-muted-foreground">
-                      {isActive ? "Bu alan su anda sistem genelinde aktif." : "Isterse bu alana gecis yapabilirsin."}
+                      {isActive ? t("list.currentlyActive") : t("list.canSwitch")}
                     </span>
                     {!isActive ? (
-                      <span className="text-xs font-semibold text-primary">Goruntule</span>
+                      <span className="text-xs font-semibold text-primary">{t("list.view")}</span>
                     ) : null}
                   </div>
                 </button>
@@ -1129,13 +1173,13 @@ export function WorkspaceOnboardingClient({
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-foreground">Yeni calisma alani</p>
+                  <p className="text-sm font-semibold text-foreground">{t("newWorkspace.title")}</p>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    Bos bir kayitla basla; firma ve calisma alani bilgilerini sag tarafta kendin doldurursun.
+                    {t("newWorkspace.description")}
                   </p>
                 </div>
                 <span className="shrink-0 self-start rounded-full bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground sm:self-auto">
-                  {canCreateWorkspace ? "Yeni" : "Limit"}
+                  {canCreateWorkspace ? t("newWorkspace.newBadge") : t("newWorkspace.limitBadge")}
                 </span>
               </div>
             </button>
@@ -1143,8 +1187,8 @@ export function WorkspaceOnboardingClient({
             {workspaceLimit !== null ? (
               <div className="rounded-2xl border border-border bg-secondary/20 p-4 text-xs leading-6 text-muted-foreground">
                 {pendingWorkspaceSlots > 0
-                  ? `${pendingWorkspaceSlots} bos alan daha acabilirsin.`
-                  : "Mevcut paketindeki aktif alan limitine ulastin."}
+                  ? t("limit.slotsLeft", { count: pendingWorkspaceSlots })
+                  : t("limit.reached")}
               </div>
             ) : null}
           </CardContent>
@@ -1154,17 +1198,17 @@ export function WorkspaceOnboardingClient({
             <Card>
               <CardHeader>
                 <CardTitle>
-                {selectedMembership ? "Secili calisma alani ayrintilari" : "Yeni calisma alani olustur"}
+                {selectedMembership ? t("details.selectedTitle") : t("details.newTitle")}
                 </CardTitle>
                 <CardDescription>
-                Soldan bir alan sec. Sag tarafta o alana bagli firma / calisma alani kaydini doldur; ulke ve dil Nova baglamini, firma bilgileri ise tum operasyon modullerini besler.
+                {t("details.description")}
                 </CardDescription>
               </CardHeader>
             <CardContent>
               <form className="space-y-5" onSubmit={(event) => void handleSubmit(event)}>
                 <Input
                   id="workspaceName"
-                  label="Calisma alani etiketi"
+                  label={t("fields.workspaceName")}
                   value={workspaceName}
                   onChange={(event) => {
                     setWorkspaceNameDirty(true);
@@ -1172,7 +1216,7 @@ export function WorkspaceOnboardingClient({
                   }}
                   hint={
                     selectedCountry
-                      ? `${selectedLanguageOption?.label ?? defaultLanguage.toUpperCase()} dili ve ${selectedCountry.timezone} saat dilimi ile calisacak.`
+                      ? t("hints.languageTimezone", { language: languageLabel(defaultLanguage, selectedLanguageOption?.label ?? defaultLanguage.toUpperCase()), timezone: selectedCountry.timezone })
                       : undefined
                   }
                 />
@@ -1180,7 +1224,7 @@ export function WorkspaceOnboardingClient({
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-foreground" htmlFor="countryCode">
-                      Ulke
+                      {t("fields.country")}
                     </label>
                     <div className="relative">
                       <select
@@ -1203,7 +1247,7 @@ export function WorkspaceOnboardingClient({
 
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-foreground" htmlFor="defaultLanguage">
-                      Dil
+                      {t("fields.language")}
                     </label>
                     <div className="relative">
                       <select
@@ -1214,7 +1258,7 @@ export function WorkspaceOnboardingClient({
                       >
                         {(payload.languageOptions ?? []).map((option) => (
                           <option key={option.value} value={option.value}>
-                            {option.label}
+                            {languageLabel(option.value, option.label)}
                           </option>
                         ))}
                       </select>
@@ -1226,7 +1270,7 @@ export function WorkspaceOnboardingClient({
 
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-foreground" htmlFor="roleKey">
-                      Rol
+                      {t("fields.role")}
                     </label>
                     <div className="relative">
                       <select
@@ -1237,7 +1281,7 @@ export function WorkspaceOnboardingClient({
                       >
                         {(payload.roleOptions ?? []).map((option) => (
                           <option key={option.value} value={option.value}>
-                            {option.label}
+                            {roleLabel(option.value, option.label)}
                           </option>
                         ))}
                       </select>
@@ -1250,7 +1294,7 @@ export function WorkspaceOnboardingClient({
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground" htmlFor="certificationId">
-                    Sertifika
+                    {t("fields.certification")}
                   </label>
                   <div className="relative">
                     <select
@@ -1259,7 +1303,7 @@ export function WorkspaceOnboardingClient({
                       value={certificationId}
                       onChange={(event) => setCertificationId(event.target.value)}
                     >
-                      <option value="">Sertifika secmeden devam et</option>
+                      <option value="">{t("fields.noCertification")}</option>
                       {availableCertifications.map((option) => (
                         <option key={option.id} value={option.id}>
                           {option.code} - {option.name}
@@ -1272,28 +1316,27 @@ export function WorkspaceOnboardingClient({
                     </span>
                   </div>
                   <p className="text-xs leading-5 text-muted-foreground">
-                    Ulke ve rol baglamina uygun sertifika secersen alanin uzmanlik etiketi daha net gorunur.
+                    {t("hints.certification")}
                   </p>
                 </div>
 
                 <div className="rounded-3xl border border-border bg-secondary/20 p-4 text-sm leading-6 text-muted-foreground">
-                  Bu alandaki ulke secimi resmi mevzuat filtresini, dil secimi ise Nova ve RAG terminolojisini belirler.
-                  Her calisma alani kendi operasyon baglamiyla calisir; bu alani aktiflestirdiginde modullerde tekrar ayri bir alan secmek yerine aktif alanin baglami kullanilir.
+                  {t("details.contextInfo")}
                 </div>
 
                 <div className="rounded-3xl border border-border bg-background/80 p-5">
                   <div className="mb-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                      Firma / calisma alani kaydi
+                      {t("company.sectionTitle")}
                     </p>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      Eski firmalar ekraninda doldurulan ana bilgiler burada yasasin. Sol panelden alan sectiginde sag tarafta bu calisma alanina ait kaydi duzenlersin.
+                      {t("company.sectionDescription")}
                     </p>
                   </div>
 
                   <div className="grid gap-4 md:grid-cols-2">
                     <Input
-                      label="Firma / calisma alani resmi adi"
+                      label={t("company.officialName")}
                       value={companyProfile.name}
                       onChange={(event) => {
                         setCompanyNameDirty(true);
@@ -1301,7 +1344,7 @@ export function WorkspaceOnboardingClient({
                       }}
                     />
                     <Input
-                      label="Kisa ad / gorunen ad"
+                      label={t("company.shortName")}
                       value={companyProfile.shortName}
                       onChange={(event) => {
                         setCompanyShortNameDirty(true);
@@ -1310,7 +1353,7 @@ export function WorkspaceOnboardingClient({
                     />
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground" htmlFor="companyKind">
-                        Calisma alani tipi
+                        {t("company.kind")}
                       </label>
                       <div className="relative">
                         <select
@@ -1319,11 +1362,11 @@ export function WorkspaceOnboardingClient({
                           value={companyProfile.kind}
                           onChange={(event) => updateCompanyProfile({ kind: event.target.value })}
                         >
-                          <option value="Ozel Sektor">Ozel Sektor</option>
-                          <option value="Kamu Kurumu">Kamu Kurumu</option>
-                          <option value="Belediye">Belediye</option>
-                          <option value="STK / Vakif">STK / Vakif</option>
-                          <option value="Santiye">Santiye</option>
+                          <option value="Ozel Sektor">{t("company.kindOptions.private")}</option>
+                          <option value="Kamu Kurumu">{t("company.kindOptions.public")}</option>
+                          <option value="Belediye">{t("company.kindOptions.municipality")}</option>
+                          <option value="STK / Vakif">{t("company.kindOptions.ngo")}</option>
+                          <option value="Santiye">{t("company.kindOptions.construction")}</option>
                         </select>
                         <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500 dark:text-slate-300">
                           ▾
@@ -1331,18 +1374,18 @@ export function WorkspaceOnboardingClient({
                       </div>
                     </div>
                     <Input
-                      label="Sektor"
+                      label={t("company.sector")}
                       value={companyProfile.sector}
                       onChange={(event) => updateCompanyProfile({ sector: event.target.value })}
                     />
                     <Input
-                      label="NACE kodu"
+                      label={t("company.naceCode")}
                       value={companyProfile.naceCode}
                       onChange={(event) => updateCompanyProfile({ naceCode: event.target.value })}
                     />
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground" htmlFor="hazardClass">
-                        Tehlike sinifi
+                        {t("company.hazardClass")}
                       </label>
                       <div className="relative">
                         <select
@@ -1351,10 +1394,10 @@ export function WorkspaceOnboardingClient({
                           value={companyProfile.hazardClass}
                           onChange={(event) => updateCompanyProfile({ hazardClass: event.target.value })}
                         >
-                          <option value="">Seciniz</option>
-                          <option value="Az Tehlikeli">Az Tehlikeli</option>
-                          <option value="Tehlikeli">Tehlikeli</option>
-                          <option value="Cok Tehlikeli">Cok Tehlikeli</option>
+                          <option value="">{t("common.select")}</option>
+                          <option value="Az Tehlikeli">{t("company.hazardOptions.low")}</option>
+                          <option value="Tehlikeli">{t("company.hazardOptions.medium")}</option>
+                          <option value="Cok Tehlikeli">{t("company.hazardOptions.high")}</option>
                         </select>
                         <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500 dark:text-slate-300">
                           ▾
@@ -1365,17 +1408,17 @@ export function WorkspaceOnboardingClient({
 
                   <div className="mt-4 grid gap-4 md:grid-cols-3">
                     <Input
-                      label="Adres"
+                      label={t("company.address")}
                       value={companyProfile.address}
                       onChange={(event) => updateCompanyProfile({ address: event.target.value })}
                     />
                     <Input
-                      label="Il"
+                      label={t("company.city")}
                       value={companyProfile.city}
                       onChange={(event) => updateCompanyProfile({ city: event.target.value })}
                     />
                     <Input
-                      label="Ilce"
+                      label={t("company.district")}
                       value={companyProfile.district}
                       onChange={(event) => updateCompanyProfile({ district: event.target.value })}
                     />
@@ -1383,17 +1426,17 @@ export function WorkspaceOnboardingClient({
 
                   <div className="mt-4 grid gap-4 md:grid-cols-3">
                     <Input
-                      label="Telefon"
+                      label={t("common.phone")}
                       value={companyProfile.phone}
                       onChange={(event) => updateCompanyProfile({ phone: event.target.value })}
                     />
                     <Input
-                      label="E-posta"
+                      label={t("common.email")}
                       value={companyProfile.email}
                       onChange={(event) => updateCompanyProfile({ email: event.target.value })}
                     />
                     <Input
-                      label="Yetkili kisi"
+                      label={t("company.contactPerson")}
                       value={companyProfile.contactPerson}
                       onChange={(event) => updateCompanyProfile({ contactPerson: event.target.value })}
                     />
@@ -1401,19 +1444,19 @@ export function WorkspaceOnboardingClient({
 
                   <div className="mt-4 grid gap-4 md:grid-cols-3">
                     <Input
-                      label="SGK isyeri sicil no"
+                      label={t("company.sgkNumber")}
                       value={companyProfile.sgkWorkplaceNumber}
                       onChange={(event) =>
                         updateCompanyProfile({ sgkWorkplaceNumber: event.target.value })
                       }
                     />
                     <Input
-                      label="Vergi no"
+                      label={t("company.taxNumber")}
                       value={companyProfile.taxNumber}
                       onChange={(event) => updateCompanyProfile({ taxNumber: event.target.value })}
                     />
                     <Input
-                      label="Vergi dairesi"
+                      label={t("company.taxOffice")}
                       value={companyProfile.taxOffice}
                       onChange={(event) => updateCompanyProfile({ taxOffice: event.target.value })}
                     />
@@ -1421,7 +1464,7 @@ export function WorkspaceOnboardingClient({
 
                   <div className="mt-4 grid gap-4 md:grid-cols-3">
                     <Input
-                      label="Calisan sayisi"
+                      label={t("company.employeeCount")}
                       type="number"
                       value={String(companyProfile.employeeCount)}
                       onChange={(event) =>
@@ -1431,12 +1474,12 @@ export function WorkspaceOnboardingClient({
                       }
                     />
                     <Input
-                      label="Vardiya modeli"
+                      label={t("company.shiftModel")}
                       value={companyProfile.shiftModel}
                       onChange={(event) => updateCompanyProfile({ shiftModel: event.target.value })}
                     />
                     <Input
-                      label="Isveren unvani"
+                      label={t("company.employerTitle")}
                       value={companyProfile.employerTitle}
                       onChange={(event) => updateCompanyProfile({ employerTitle: event.target.value })}
                     />
@@ -1444,12 +1487,12 @@ export function WorkspaceOnboardingClient({
 
                   <div className="mt-4 grid gap-4 md:grid-cols-2">
                     <Input
-                      label="Isveren"
+                      label={t("company.employerName")}
                       value={companyProfile.employerName}
                       onChange={(event) => updateCompanyProfile({ employerName: event.target.value })}
                     />
                     <Input
-                      label="Isveren vekili"
+                      label={t("company.employerRepresentative")}
                       value={companyProfile.employerRepresentative}
                       onChange={(event) =>
                         updateCompanyProfile({ employerRepresentative: event.target.value })
@@ -1460,7 +1503,7 @@ export function WorkspaceOnboardingClient({
                   <div className="mt-4 grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground" htmlFor="locations">
-                        Lokasyonlar
+                        {t("company.locations")}
                       </label>
                       <Textarea
                         id="locations"
@@ -1471,13 +1514,13 @@ export function WorkspaceOnboardingClient({
                             locations: normalizeStringListText(event.target.value),
                           })
                         }
-                        placeholder="Her satira bir lokasyon yaz."
+                        placeholder={t("company.locationsPlaceholder")}
                       />
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground" htmlFor="departments">
-                        Bolumler
+                        {t("company.departments")}
                       </label>
                       <Textarea
                         id="departments"
@@ -1488,21 +1531,21 @@ export function WorkspaceOnboardingClient({
                             departments: normalizeStringListText(event.target.value),
                           })
                         }
-                        placeholder="Her satira bir bolum yaz."
+                        placeholder={t("company.departmentsPlaceholder")}
                       />
                     </div>
                   </div>
 
                   <div className="mt-4 space-y-2">
                     <label className="text-sm font-medium text-foreground" htmlFor="companyNotes">
-                      Notlar
+                      {t("company.notes")}
                     </label>
                     <Textarea
                       id="companyNotes"
                       rows={4}
                       value={companyProfile.notes}
                       onChange={(event) => updateCompanyProfile({ notes: event.target.value })}
-                      placeholder="Bu calisma alaniyla ilgili operasyon ve saha notlarini yaz."
+                      placeholder={t("company.notesPlaceholder")}
                     />
                   </div>
                 </div>
@@ -1515,7 +1558,7 @@ export function WorkspaceOnboardingClient({
                       className="w-full sm:w-auto"
                       onClick={() => router.replace("/profile")}
                     >
-                      Profili ac
+                      {t("profile.open")}
                     </Button>
                   </div>
 
@@ -1530,10 +1573,10 @@ export function WorkspaceOnboardingClient({
                     }
                   >
                     {submitting
-                      ? "Kaydediliyor..."
+                      ? t("common.saving")
                       : selectedMembership
-                        ? "Alan ayarlarini kaydet"
-                        : "Calisma alanini olustur"}
+                        ? t("actions.saveSettings")
+                        : t("actions.createWorkspace")}
                   </Button>
                 </div>
               </form>
@@ -1542,17 +1585,17 @@ export function WorkspaceOnboardingClient({
 
           <Card>
             <CardHeader>
-              <CardTitle>Kisisel bilgiler</CardTitle>
+              <CardTitle>{t("profile.title")}</CardTitle>
               <CardDescription>
-                Bu bilgiler tum sitede ortak kullanilir. Calisma alanlari ise sadece operasyon, ulke ve dil baglamini ayirir.
+                {t("profile.description")}
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
               {[
-                { label: "Ad soyad", value: payload.profile.fullName || "Henuz eklenmedi" },
-                { label: "E-posta", value: payload.profile.email || "Henuz eklenmedi" },
-                { label: "Unvan", value: payload.profile.title || "Profilde tamamlanacak" },
-                { label: "Telefon", value: payload.profile.phone || "Profilde tamamlanacak" },
+                { label: t("profile.fullName"), value: payload.profile.fullName || t("profile.notAdded") },
+                { label: t("common.email"), value: payload.profile.email || t("profile.notAdded") },
+                { label: t("profile.titleField"), value: payload.profile.title || t("profile.completeInProfile") },
+                { label: t("common.phone"), value: payload.profile.phone || t("profile.completeInProfile") },
               ].map((item) => (
                 <div key={item.label} className="rounded-2xl border border-border bg-secondary/20 p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
@@ -1563,7 +1606,7 @@ export function WorkspaceOnboardingClient({
               ))}
 
               <div className="md:col-span-2 rounded-2xl border border-border bg-background/80 p-4 text-sm leading-6 text-muted-foreground">
-                Profil bilgileri tum deneyimde ortak kalir. Calisma alani degistiginde sadece operasyon baglami, mevzuat filtresi ve dil tercihi degisir.
+                {t("profile.footer")}
               </div>
             </CardContent>
           </Card>

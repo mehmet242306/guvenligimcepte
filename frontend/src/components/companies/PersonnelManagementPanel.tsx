@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useLocale, useTranslations } from "next-intl";
 import { Users, Plus, Download, Upload, FileDown, AlertTriangle, Stethoscope, Baby, Accessibility, Globe, Clock, Moon, HeartPulse, Milk, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,16 +38,16 @@ import {
 export type { PersonnelRecord } from "@/lib/supabase/personnel-api";
 
 /* ── Special monitoring categories ── */
-type SMCat = { key: string; label: string; desc: string; bv: "warning" | "danger" | "neutral" | "accent" };
+type SMCat = { key: string; bv: "warning" | "danger" | "neutral" | "accent" };
 const CATS: SMCat[] = [
-  { key: "pregnant", label: "Gebe Çalışan", desc: "Gebe veya emziren çalışanlar için özel koruma gereklidir.", bv: "warning" },
-  { key: "disabled", label: "Engelli Çalışan", desc: "Engel durumuna uygun iş düzenlemesi sağlanmalıdır.", bv: "accent" },
-  { key: "foreign_national", label: "Yabancı Uyruklu", desc: "Dil, kültürel uyum ve çalışma izni takibi gerektirir.", bv: "neutral" },
-  { key: "young_worker", label: "Genç Çalışan (18 yaş altı)", desc: "Yasal sınırlamalar ve ek koruma tedbirleri uygulanmalıdır.", bv: "danger" },
-  { key: "night_shift", label: "Gece Vardiyası Çalışanı", desc: "Gece çalışmasına bağlı sağlık riskleri ve periyodik kontrol.", bv: "neutral" },
-  { key: "chronic_condition", label: "Kronik Hastalık", desc: "Sürekli sağlık gözetimi ve iş uyumu değerlendirmesi gerektirir.", bv: "warning" },
-  { key: "nursing_mother", label: "Emziren Anne", desc: "Emzirme döneminde özel çalışma koşulları sağlanmalıdır.", bv: "warning" },
-  { key: "temporary_restriction", label: "Geçici Kısıtlama", desc: "Geçici sağlık durumu nedeniyle iş kısıtlaması uygulanmaktadır.", bv: "neutral" },
+  { key: "pregnant", bv: "warning" },
+  { key: "disabled", bv: "accent" },
+  { key: "foreign_national", bv: "neutral" },
+  { key: "young_worker", bv: "danger" },
+  { key: "night_shift", bv: "neutral" },
+  { key: "chronic_condition", bv: "warning" },
+  { key: "nursing_mother", bv: "warning" },
+  { key: "temporary_restriction", bv: "neutral" },
 ];
 
 /* ── Labels ── */
@@ -83,6 +84,7 @@ function toRecs(text: string): PersonnelRecord[] {
 
 /* ── Hover Card for personnel (portal-based, no overflow clipping) ── */
 function PersonnelHoverCard({ person }: { person: PersonnelRecord }) {
+  const t = useTranslations("companyWorkspace.personnel");
   const triggerRef = useRef<HTMLSpanElement>(null);
   const [show, setShow] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
@@ -111,23 +113,23 @@ function PersonnelHoverCard({ person }: { person: PersonnelRecord }) {
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate font-semibold text-foreground">{person.firstName} {person.lastName}</p>
-              <p className="truncate text-xs text-muted-foreground">{person.positionTitle || "Pozisyon belirtilmemis"}</p>
+              <p className="truncate text-xs text-muted-foreground">{person.positionTitle || t("table.positionMissing")}</p>
             </div>
           </div>
           {/* Details grid */}
           <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Sicil</p><p className="font-medium text-foreground">{person.employeeCode || "\u2014"}</p></div>
-            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">B\u00f6l\u00fcm</p><p className="font-medium text-foreground">{person.department || "\u2014"}</p></div>
-            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Lokasyon</p><p className="font-medium text-foreground">{person.location || "\u2014"}</p></div>
-            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Durum</p><p className="font-medium text-foreground">{STATUS_LABELS[person.employmentStatus] || person.employmentStatus}</p></div>
-            {person.phone && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Telefon</p><p className="font-medium text-foreground">{person.phone}</p></div>}
-            {person.email && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">E-posta</p><p className="truncate font-medium text-foreground">{person.email}</p></div>}
-            {person.hireDate && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">\u0130\u015fe Ba\u015flama</p><p className="font-medium text-foreground">{person.hireDate}</p></div>}
-            {person.bloodType && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">Kan Grubu</p><p className="font-medium text-foreground">{person.bloodType}</p></div>}
+            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("table.employeeCode")}</p><p className="font-medium text-foreground">{person.employeeCode || "\u2014"}</p></div>
+            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("table.department")}</p><p className="font-medium text-foreground">{person.department || "\u2014"}</p></div>
+            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("table.location")}</p><p className="font-medium text-foreground">{person.location || "\u2014"}</p></div>
+            <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("table.status")}</p><p className="font-medium text-foreground">{t(`statuses.${person.employmentStatus}`) || person.employmentStatus}</p></div>
+            {person.phone && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("table.phone")}</p><p className="font-medium text-foreground">{person.phone}</p></div>}
+            {person.email && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("table.email")}</p><p className="truncate font-medium text-foreground">{person.email}</p></div>}
+            {person.hireDate && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("table.hireDate")}</p><p className="font-medium text-foreground">{person.hireDate}</p></div>}
+            {person.bloodType && <div><p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("table.bloodType")}</p><p className="font-medium text-foreground">{person.bloodType}</p></div>}
           </div>
           {person.emergencyContactName && (
             <div className="mt-2 rounded-lg bg-danger/5 px-2.5 py-1.5 text-xs">
-              <p className="text-[10px] uppercase tracking-wider text-danger">Acil Durum</p>
+              <p className="text-[10px] uppercase tracking-wider text-danger">{t("table.emergency")}</p>
               <p className="font-medium text-foreground">{person.emergencyContactName} {person.emergencyContactPhone && `\u00b7 ${person.emergencyContactPhone}`}</p>
             </div>
           )}
@@ -138,7 +140,7 @@ function PersonnelHoverCard({ person }: { person: PersonnelRecord }) {
             onClick={e => e.stopPropagation()}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            Özlük Sayfası
+            {t("table.profilePage")}
           </a>
         </div>,
         document.body,
@@ -162,15 +164,16 @@ function PersonnelHoverCard({ person }: { person: PersonnelRecord }) {
 
 /* ── Employee table ── */
 function EmpTbl({ rows }: { rows: PersonnelRecord[] }) {
+  const t = useTranslations("companyWorkspace.personnel");
   return (
     <div className="mt-3 overflow-x-auto rounded-lg border border-border bg-card">
       <table className="w-full min-w-[560px] text-sm">
         <thead><tr className="border-b border-border bg-secondary/50">
-          <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Sicil</th>
-          <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Ad Soyad</th>
-          <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">B\u00F6l\u00FCm</th>
-          <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Pozisyon</th>
-          <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Lokasyon</th>
+          <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("table.employeeCode")}</th>
+          <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("table.fullName")}</th>
+          <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("table.department")}</th>
+          <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("table.position")}</th>
+          <th className="px-3 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t("table.location")}</th>
         </tr></thead>
         <tbody>{rows.map((p) => (
           <tr key={p.id} className="border-b border-border last:border-b-0 transition-colors hover:bg-secondary/30">
@@ -239,9 +242,10 @@ function sortValueFor(p: PersonnelRecord, key: SortKey): string {
 
 // Türkçe locale-aware karşılaştırma: "Ç", "Ğ", "İ", "Ö", "Ş", "Ü" doğru sıralanır.
 // Sicil gibi numerik alanlar için {numeric: true} kullanıyoruz ki "9" < "10" olsun.
-const trCollator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
-function sortPersonnel(rows: PersonnelRecord[], key: SortKey, dir: SortDir): PersonnelRecord[] {
+
+function sortPersonnel(rows: PersonnelRecord[], key: SortKey, dir: SortDir, locale: string): PersonnelRecord[] {
+  const collator = new Intl.Collator(locale, { numeric: true, sensitivity: "base" });
   const mul = dir === "asc" ? 1 : -1;
   const out = [...rows];
   out.sort((a, b) => {
@@ -251,7 +255,7 @@ function sortPersonnel(rows: PersonnelRecord[], key: SortKey, dir: SortDir): Per
     if (!av && !bv) return 0;
     if (!av) return 1;
     if (!bv) return -1;
-    return trCollator.compare(av, bv) * mul;
+    return collator.compare(av, bv) * mul;
   });
   return out;
 }
@@ -260,6 +264,8 @@ function sortPersonnel(rows: PersonnelRecord[], key: SortKey, dir: SortDir): Per
 type Props = { companyId: string; companyName: string; departments: string[]; locations: string[] };
 
 export function PersonnelManagementPanel({ companyId, companyName, departments, locations }: Props) {
+  const t = useTranslations("companyWorkspace.personnel");
+  const locale = useLocale();
   const [mounted, setMounted] = useState(false);
   const [ppl, setPpl] = useState<PersonnelRecord[]>([]);
   const [policies, setPolicies] = useState<Map<string, SpecialPolicyRecord[]>>(new Map());
@@ -321,7 +327,7 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
   void locs;
   const activeCount = useMemo(() => ppl.filter((p) => p.employmentStatus === "active").length, [ppl]);
 
-  const sortedPpl = useMemo(() => sortPersonnel(ppl, sortKey, sortDir), [ppl, sortKey, sortDir]);
+  const sortedPpl = useMemo(() => sortPersonnel(ppl, sortKey, sortDir, locale), [ppl, sortKey, sortDir, locale]);
 
   const onSortClick = useCallback(
     (key: SortKey) => {
@@ -338,20 +344,20 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
   const dl = useCallback(() => { dlCSV(mkCSV(), `${companyName.replace(/\s+/g, "_")}_personel_sablonu.csv`); }, [companyName]);
 
   const doImp = useCallback(async () => {
-    if (!impFile) { setImpMsg("Lütfen bir CSV dosyası seçin."); setImpOk(false); return; }
+    if (!impFile) { setImpMsg(t("import.chooseFile")); setImpOk(false); return; }
     setImpBusy(true); setImpMsg("");
     try {
       const text = await readEnc(impFile); const records = toRecs(text);
-      if (!records.length) { setImpMsg("Dosyada geçerli kayıt bulunamadı."); setImpOk(false); return; }
+      if (!records.length) { setImpMsg(t("import.noValidRecords")); setImpOk(false); return; }
       const sbResult = await importPersonnelToSupabase(companyId, records);
       const newList = [...ppl, ...records]; setPpl(newList); savePersonnelLocal(companyId, newList);
       const activeTotal = newList.filter((p) => p.employmentStatus === "active").length;
       await updateWorkspaceEmployeeCount(companyId, activeTotal);
-      setImpMsg(sbResult !== null ? `${records.length} personel kaydı başarıyla içe aktarıldı. (Supabase) · Toplam: ${newList.length}` : `${records.length} personel kaydı başarıyla içe aktarıldı. (Yerel) · Toplam: ${newList.length}`);
+      setImpMsg(sbResult !== null ? t("import.successSupabase", { count: records.length, total: newList.length }) : t("import.successLocal", { count: records.length, total: newList.length }));
       setImpOk(true); setImpFile(null); setSec("list");
-    } catch { setImpMsg("Dosya okunurken hata oluştu."); setImpOk(false); }
+    } catch { setImpMsg(t("import.readError")); setImpOk(false); }
     finally { setImpBusy(false); }
-  }, [impFile, companyId, ppl]);
+  }, [impFile, companyId, ppl, t]);
 
   const rm = useCallback(async (id: string) => {
     setRemovingId(id); await removePersonnelFromSupabase(id);
@@ -385,7 +391,7 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
     <div className="flex items-center justify-center py-12">
       <div className="text-center">
         <div className="mx-auto h-7 w-7 animate-spin rounded-full border-4 border-muted border-t-primary" />
-        <p className="mt-3 text-sm text-muted-foreground">Personel verileri yükleniyor...</p>
+        <p className="mt-3 text-sm text-muted-foreground">{t("loading")}</p>
       </div>
     </div>
   );
@@ -398,14 +404,14 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
           <div className="flex items-center gap-3">
             <PremiumIconBadge icon={Users} tone="cobalt" size="md" />
             <div>
-              <h3 className="text-base font-bold text-foreground">Personel Yönetimi</h3>
-              <p className="mt-0.5 text-sm text-muted-foreground">{companyName} için personel kayıtlarını yönetin.</p>
+              <h3 className="text-base font-bold text-foreground">{t("title")}</h3>
+              <p className="mt-0.5 text-sm text-muted-foreground">{t("description", { companyName })}</p>
             </div>
           </div>
-          <Badge variant={dataSource === "supabase" ? "success" : "neutral"} className="shrink-0 text-[10px]">{dataSource === "supabase" ? "Supabase" : "Yerel"}</Badge>
+          <Badge variant={dataSource === "supabase" ? "success" : "neutral"} className="shrink-0 text-[10px]">{dataSource === "supabase" ? "Supabase" : t("sourceLocal")}</Badge>
         </div>
         <div className="mt-4 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
-          {[{ l: "Toplam Personel", v: ppl.length, c: false }, { l: "Aktif", v: activeCount, c: false }, { l: "Bölüm", v: depts.length, c: false }, { l: "Özel İzleme", v: totalPolicies, c: totalPolicies > 0 }].map((s) => (
+          {[{ l: t("summary.total"), v: ppl.length, c: false }, { l: t("summary.active"), v: activeCount, c: false }, { l: t("summary.departments"), v: depts.length, c: false }, { l: t("summary.special"), v: totalPolicies, c: totalPolicies > 0 }].map((s) => (
             <div key={s.l} className="rounded-[1.25rem] border border-border/60 bg-gradient-to-br from-secondary/30 to-transparent p-4 shadow-sm">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{s.l}</p>
               <p className={`mt-1.5 text-2xl font-bold tabular-nums ${s.c ? "text-warning" : "text-foreground"}`}>{s.v}</p>
@@ -416,11 +422,11 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
 
       {/* Section tabs */}
       <div className="flex flex-wrap rounded-[1.25rem] border border-border/60 bg-secondary/20 p-1 shadow-sm">
-        {(["list", "import", "special", "health"] as const).map((t) => (
-          <button key={t} type="button" onClick={() => setSec(t)}
-            className={`inline-flex h-10 items-center rounded-[0.8rem] px-5 text-sm font-semibold transition-all ${sec === t ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
-            {t === "list" ? "Personel Listesi" : t === "import" ? "İçe Aktarma" : t === "special" ? "Özel İzleme" : "Sağlık Gözetimi"}
-            {t === "health" && healthExams.length > 0 && <span className="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">{healthExams.length}</span>}
+        {(["list", "import", "special", "health"] as const).map((tab) => (
+          <button key={tab} type="button" onClick={() => setSec(tab)}
+            className={`inline-flex h-10 items-center rounded-[0.8rem] px-5 text-sm font-semibold transition-all ${sec === tab ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
+            {t(`tabs.${tab}`)}
+            {tab === "health" && healthExams.length > 0 && <span className="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold">{healthExams.length}</span>}
           </button>
         ))}
       </div>
@@ -430,26 +436,26 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
         <div className="space-y-4">
           {ppl.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border bg-card px-6 py-8 text-center">
-              <p className="text-base font-semibold text-foreground">Henüz personel kaydı bulunmuyor</p>
-              <p className="mt-1.5 text-sm text-muted-foreground">CSV şablonunu indirip İçe Aktarma sekmesinden yükleyin.</p>
+              <p className="text-base font-semibold text-foreground">{t("empty.title")}</p>
+              <p className="mt-1.5 text-sm text-muted-foreground">{t("empty.description")}</p>
               <div className="mt-4 flex flex-wrap justify-center gap-3">
-                <Button variant="outline" size="sm" onClick={dl}>Şablonu İndir</Button>
-                <Button size="sm" onClick={() => setSec("import")}>İçe Aktarmaya Git</Button>
+                <Button variant="outline" size="sm" onClick={dl}>{t("actions.templateDownload")}</Button>
+                <Button size="sm" onClick={() => setSec("import")}>{t("actions.goImport")}</Button>
               </div>
             </div>
           ) : (
             <>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-3">
-                  <p className="text-sm text-muted-foreground">{ppl.length} personel kaydı</p>
+                  <p className="text-sm text-muted-foreground">{t("list.count", { count: ppl.length })}</p>
                   {selectedIds.size > 0 && (
                     <Button variant="danger" size="sm" onClick={() => void bulkRm()} disabled={bulkBusy}>
-                      {bulkBusy ? "Siliniyor..." : `Seçilenleri Sil (${selectedIds.size})`}
+                      {bulkBusy ? t("actions.deleting") : t("actions.deleteSelected", { count: selectedIds.size })}
                     </Button>
                   )}
                   <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-secondary/30 px-2 py-1.5">
                     <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground" htmlFor="personnel-sort">
-                      Sırala
+                      {t("list.sort")}
                     </label>
                     <select
                       id="personnel-sort"
@@ -458,14 +464,14 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                       className="rounded-lg border border-border bg-card px-2 py-1 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                     >
                       {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
-                        <option key={k} value={k}>{SORT_LABELS[k]}</option>
+                        <option key={k} value={k}>{t(`sort.${k}`)}</option>
                       ))}
                     </select>
                     <button
                       type="button"
                       onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
-                      title={sortDir === "asc" ? "Artan (A→Z)" : "Azalan (Z→A)"}
-                      aria-label={sortDir === "asc" ? "Artan sıralama" : "Azalan sıralama"}
+                      title={sortDir === "asc" ? t("sort.ascTitle") : t("sort.descTitle")}
+                      aria-label={sortDir === "asc" ? t("sort.ascAria") : t("sort.descAria")}
                       className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-card text-xs font-bold text-foreground transition hover:bg-secondary"
                     >
                       {sortDir === "asc" ? "A→Z" : "Z→A"}
@@ -473,9 +479,9 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2.5">
-                  <Button variant="outline" onClick={dl} className="h-10 rounded-xl px-4 text-sm font-semibold"><Download size={15} className="mr-2" />Şablonu İndir</Button>
-                  <Button variant="outline" onClick={doExport} className="h-10 rounded-xl px-4 text-sm font-semibold"><FileDown size={15} className="mr-2" />Dışa Aktar</Button>
-                  <Button onClick={() => setSec("import")} className="h-10 rounded-xl bg-[var(--gold)] px-5 text-sm font-bold text-white shadow-md hover:brightness-110"><Upload size={15} className="mr-2" />Yeni İçe Aktarma</Button>
+                  <Button variant="outline" onClick={dl} className="h-10 rounded-xl px-4 text-sm font-semibold"><Download size={15} className="mr-2" />{t("actions.templateDownload")}</Button>
+                  <Button variant="outline" onClick={doExport} className="h-10 rounded-xl px-4 text-sm font-semibold"><FileDown size={15} className="mr-2" />{t("actions.export")}</Button>
+                  <Button onClick={() => setSec("import")} className="h-10 rounded-xl bg-[var(--gold)] px-5 text-sm font-bold text-white shadow-md hover:brightness-110"><Upload size={15} className="mr-2" />{t("actions.newImport")}</Button>
                 </div>
               </div>
               <div className="overflow-x-auto rounded-xl border border-border bg-card">
@@ -483,15 +489,15 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                   <thead><tr className="border-b border-border bg-secondary/50">
                     <th className="w-10 px-3 py-2.5 text-center"><input type="checkbox" checked={selectedIds.size === ppl.length && ppl.length > 0} onChange={toggleSelectAll} className="h-4 w-4 rounded border-border accent-primary" /></th>
                     {([
-                      { label: "Sicil", key: "employeeCode" as SortKey },
-                      { label: "Ad Soyad", key: "fullName" as SortKey },
-                      { label: "TC Kimlik", key: null },
-                      { label: "Bölüm", key: "department" as SortKey },
-                      { label: "Pozisyon", key: "positionTitle" as SortKey },
-                      { label: "Lokasyon", key: "location" as SortKey },
-                      { label: "Durum", key: "employmentStatus" as SortKey },
-                      { label: "İstihdam", key: "employmentType" as SortKey },
-                      { label: "İşlem", key: null },
+                      { label: t("table.employeeCode"), key: "employeeCode" as SortKey },
+                      { label: t("table.fullName"), key: "fullName" as SortKey },
+                      { label: t("table.identity"), key: null },
+                      { label: t("table.department"), key: "department" as SortKey },
+                      { label: t("table.position"), key: "positionTitle" as SortKey },
+                      { label: t("table.location"), key: "location" as SortKey },
+                      { label: t("table.status"), key: "employmentStatus" as SortKey },
+                      { label: t("table.employment"), key: "employmentType" as SortKey },
+                      { label: t("table.actions"), key: null },
                     ] as Array<{ label: string; key: SortKey | null }>).map((h) => {
                       const isSortable = h.key !== null;
                       const isActive = isSortable && sortKey === h.key;
@@ -503,7 +509,7 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                               type="button"
                               onClick={() => onSortClick(h.key as SortKey)}
                               className={`inline-flex items-center gap-1 transition-colors hover:text-foreground ${isActive ? "text-foreground" : ""}`}
-                              aria-label={`${h.label} sütununa göre sırala`}
+                              aria-label={t("sort.columnAria", { label: h.label })}
                             >
                               {h.label}
                               <span className={`text-[9px] ${isActive ? "opacity-100" : "opacity-30"}`}>
@@ -526,13 +532,13 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                       <td className="px-3 py-2.5 text-muted-foreground">{p.department || "—"}</td>
                       <td className="px-3 py-2.5 text-muted-foreground">{p.positionTitle || "—"}</td>
                       <td className="px-3 py-2.5 text-muted-foreground">{p.location || "—"}</td>
-                      <td className="px-3 py-2.5"><Badge variant={statusBadgeVariant(p.employmentStatus)} className="text-[10px]">{STATUS_LABELS[p.employmentStatus] || p.employmentStatus}</Badge></td>
-                      <td className="px-3 py-2.5 text-xs text-muted-foreground">{TYPE_LABELS[p.employmentType] || p.employmentType}</td>
+                      <td className="px-3 py-2.5"><Badge variant={statusBadgeVariant(p.employmentStatus)} className="text-[10px]">{t(`statuses.${p.employmentStatus}`) || p.employmentStatus}</Badge></td>
+                      <td className="px-3 py-2.5 text-xs text-muted-foreground">{t(`employmentTypes.${p.employmentType}`) || p.employmentType}</td>
                       <td className="px-3 py-2.5">
                         <div className="flex items-center gap-2">
-                          <a href={`/personnel/${p.id}`} className="text-xs font-medium text-emerald-600 hover:underline">Özlük</a>
-                          <button type="button" onClick={() => setPolicyModal({ personnelId: p.id, name: `${p.firstName} ${p.lastName}` })} className="text-xs font-medium text-primary hover:underline">Özel</button>
-                          <button type="button" onClick={() => void rm(p.id)} disabled={removingId === p.id} className="text-xs font-medium text-danger hover:underline disabled:opacity-50">{removingId === p.id ? "..." : "Sil"}</button>
+                          <a href={`/personnel/${p.id}`} className="text-xs font-medium text-emerald-600 hover:underline">{t("actions.profile")}</a>
+                          <button type="button" onClick={() => setPolicyModal({ personnelId: p.id, name: `${p.firstName} ${p.lastName}` })} className="text-xs font-medium text-primary hover:underline">{t("actions.special")}</button>
+                          <button type="button" onClick={() => void rm(p.id)} disabled={removingId === p.id} className="text-xs font-medium text-danger hover:underline disabled:opacity-50">{removingId === p.id ? "..." : t("actions.delete")}</button>
                         </div>
                       </td>
                     </tr>
@@ -551,9 +557,9 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
             <div className="flex items-start gap-4">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">1</div>
               <div className="min-w-0 flex-1">
-                <h4 className="text-sm font-semibold text-foreground">CSV Şablonunu İndirin</h4>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">Aşağıdaki şablonu indirip personel bilgilerini doldurun.</p>
-                <Button variant="outline" size="sm" className="mt-2" onClick={dl}>Şablonu İndir</Button>
+                <h4 className="text-sm font-semibold text-foreground">{t("import.templateTitle")}</h4>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">{t("import.templateDesc")}</p>
+                <Button variant="outline" size="sm" className="mt-2" onClick={dl}>{t("actions.templateDownload")}</Button>
               </div>
             </div>
           </div>
@@ -561,11 +567,11 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
             <div className="flex items-start gap-4">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">2</div>
               <div className="min-w-0 flex-1">
-                <h4 className="text-sm font-semibold text-foreground">CSV Dosyasını Yükleyin</h4>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">Doldurduğunuz CSV dosyasını seçin ve içe aktarın.</p>
+                <h4 className="text-sm font-semibold text-foreground">{t("import.uploadTitle")}</h4>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">{t("import.uploadDesc")}</p>
                 <div className="mt-2 flex flex-wrap items-center gap-3">
                   <input type="file" accept=".csv,.txt" onChange={(e) => setImpFile(e.target.files?.[0] ?? null)} className="text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary" />
-                  <Button onClick={() => void doImp()} disabled={impBusy || !impFile}>{impBusy ? "Yükleniyor..." : "İçe Aktar"}</Button>
+                  <Button onClick={() => void doImp()} disabled={impBusy || !impFile}>{impBusy ? t("actions.uploading") : t("actions.import")}</Button>
                 </div>
               </div>
             </div>
@@ -583,13 +589,13 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
             <div className="flex items-center gap-3">
               <PremiumIconBadge icon={AlertTriangle} tone="orange" size="md" />
               <div>
-                <h3 className="text-base font-bold text-foreground">Özel İzleme Kategorileri</h3>
-                <p className="mt-0.5 text-sm text-muted-foreground">Hassas gruplar ve özel izleme gerektiren çalışanlar.</p>
+                <h3 className="text-base font-bold text-foreground">{t("special.title")}</h3>
+                <p className="mt-0.5 text-sm text-muted-foreground">{t("special.description")}</p>
               </div>
             </div>
             <div className="mt-3 flex items-center gap-2">
-              <Badge variant="warning" className="text-[10px]">Hassas Veri</Badge>
-              <span className="text-xs text-muted-foreground">Erişim yetki kontrolüne tabidir</span>
+              <Badge variant="warning" className="text-[10px]">{t("special.sensitiveData")}</Badge>
+              <span className="text-xs text-muted-foreground">{t("special.accessControlled")}</span>
             </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -604,18 +610,18 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                     <div className="flex items-start gap-3 min-w-0 flex-1">
                       <PremiumIconBadge icon={iconDef.icon} tone={iconDef.tone} size="sm" />
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-bold text-foreground">{cat.label}</p>
-                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{cat.desc}</p>
+                        <p className="text-sm font-bold text-foreground">{t(`special.categories.${cat.key}.label`)}</p>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{t(`special.categories.${cat.key}.desc`)}</p>
                       </div>
                     </div>
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-base font-bold text-foreground">{cnt}</div>
                   </button>
                   {cnt > 0 && (
                     <p className="mt-2 cursor-pointer text-xs font-medium text-primary" onClick={() => setExpCat(open ? null : cat.key)}>
-                      {open ? "▲ Listeyi gizle" : "▼ Çalışanları göster"}
+                      {open ? t("special.hideList") : t("special.showEmployees")}
                     </p>
                   )}
-                  {cnt === 0 && <p className="mt-2 text-xs text-muted-foreground">Bu kategoride kayıtlı çalışan bulunmuyor.</p>}
+                  {cnt === 0 && <p className="mt-2 text-xs text-muted-foreground">{t("special.emptyCategory")}</p>}
                   {open && cnt > 0 && (
                     <div className="mt-3">
                       <EmpTbl rows={emps} />
@@ -626,7 +632,7 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                           return thisCatPolicy ? (
                             <div key={emp.id} className="flex items-center justify-between rounded-lg bg-secondary/50 px-3 py-1.5 text-xs">
                               <span className="text-muted-foreground">{emp.firstName} {emp.lastName}</span>
-                              <button type="button" onClick={() => void rmPolicy(thisCatPolicy.id)} className="font-medium text-danger hover:underline">Kaldır</button>
+                              <button type="button" onClick={() => void rmPolicy(thisCatPolicy.id)} className="font-medium text-danger hover:underline">{t("actions.remove")}</button>
                             </div>
                           ) : null;
                         })}
@@ -649,14 +655,14 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
               <div className="flex items-center gap-3">
                 <PremiumIconBadge icon={Stethoscope} tone="emerald" size="md" />
                 <div>
-                  <h3 className="text-base font-bold text-foreground">Sağlık Gözetimi</h3>
-                  <p className="mt-0.5 text-sm text-muted-foreground">İşe giriş, periyodik, işten ayrılma ve özel muayeneler.</p>
+                  <h3 className="text-base font-bold text-foreground">{t("health.title")}</h3>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{t("health.description")}</p>
                 </div>
               </div>
               <button type="button" onClick={() => setShowHealthForm(!showHealthForm)}
                 className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--gold)] px-5 text-sm font-bold text-white shadow-md transition-all hover:brightness-110 hover:shadow-lg">
                 <Plus size={16} strokeWidth={2.5} />
-                Yeni Muayene
+                {t("health.newExam")}
               </button>
             </div>
 
@@ -673,7 +679,7 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
             )}
 
             {healthExams.length === 0 && !showHealthForm ? (
-              <p className="text-center text-sm text-muted-foreground py-8">Henüz sağlık muayenesi kaydı yok.</p>
+              <p className="text-center text-sm text-muted-foreground py-8">{t("health.empty")}</p>
             ) : (
               <div className="space-y-2">
                 {healthExams.map((h) => {
@@ -684,9 +690,9 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                     : h.result === "uygun_degil" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                     : h.result === "izleme" ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
                     : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
-                  const resLabel = h.result === "uygun" ? "Uygun" : h.result === "uygun_degil" ? "Uygun Değil" : h.result === "izleme" ? "İzleme" : "Şartlı Uygun";
-                  const typeLabel = h.examType === "ise_giris" ? "İşe Giriş" : h.examType === "periyodik" ? "Periyodik" : h.examType === "isten_ayrilma" ? "İşten Ayrılma" : "Özel";
-                  function fmtD(d: string | null) { if (!d) return "—"; try { return new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "short", year: "numeric" }); } catch { return d; } }
+                  const resLabel = h.result === "uygun" ? t("health.results.uygun") : h.result === "uygun_degil" ? t("health.results.uygun_degil") : h.result === "izleme" ? t("health.results.izleme") : t("health.results.sartli_uygun");
+                  const typeLabel = h.examType === "ise_giris" ? t("health.examTypes.ise_giris") : h.examType === "periyodik" ? t("health.examTypes.periyodik") : h.examType === "isten_ayrilma" ? t("health.examTypes.isten_ayrilma") : t("health.examTypes.ozel");
+                  function fmtD(d: string | null) { if (!d) return "—"; try { return new Date(d).toLocaleDateString(locale, { day: "2-digit", month: "short", year: "numeric" }); } catch { return d; } }
 
                   return (
                     <div key={h.id} className={`flex items-center justify-between rounded-lg border p-3 ${isOverdue ? "border-red-400/40 bg-red-50/5 dark:bg-red-950/10" : isDue ? "border-amber-400/30 bg-amber-50/5 dark:bg-amber-950/10" : "border-border bg-secondary/20"}`}>
@@ -695,16 +701,16 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                           <span className="text-sm font-medium text-foreground">{h.personnelName || "İsimsiz"}</span>
                           <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${resCls}`}>{resLabel}</span>
                           <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{typeLabel}</span>
-                          {isOverdue && <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">Gecikmiş!</span>}
+                          {isOverdue && <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">{t("health.overdue")}</span>}
                         </div>
                         <div className="mt-0.5 flex items-center gap-3 text-[11px] text-muted-foreground">
-                          <span>Muayene: {fmtD(h.examDate)}</span>
-                          {h.nextExamDate && <span className={isOverdue ? "text-red-500 font-medium" : ""}>Sonraki: {fmtD(h.nextExamDate)}</span>}
+                          <span>{t("health.exam")}: {fmtD(h.examDate)}</span>
+                          {h.nextExamDate && <span className={isOverdue ? "text-red-500 font-medium" : ""}>{t("health.next")}: {fmtD(h.nextExamDate)}</span>}
                           {h.physicianName && <span>Dr. {h.physicianName}</span>}
-                          {h.reportNumber && <span>Rapor: {h.reportNumber}</span>}
+                          {h.reportNumber && <span>{t("health.report")}: {h.reportNumber}</span>}
                         </div>
-                        {h.restrictions && <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-400">Kısıtlama: {h.restrictions}</p>}
-                        {h.recommendedActions && <p className="mt-0.5 text-[11px] text-blue-600 dark:text-blue-400">Öneri: {h.recommendedActions}</p>}
+                        {h.restrictions && <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-400">{t("health.restriction")}: {h.restrictions}</p>}
+                        {h.recommendedActions && <p className="mt-0.5 text-[11px] text-blue-600 dark:text-blue-400">{t("health.recommendation")}: {h.recommendedActions}</p>}
                       </div>
                       <button type="button" onClick={async () => {
                         if (await deleteHealthExam(h.id)) {
@@ -725,22 +731,22 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
       {policyModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4">
           <div className="w-full max-w-md overflow-hidden rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-elevated)]">
-            <h3 className="text-base font-semibold text-foreground">Özel İzleme Ataması</h3>
+            <h3 className="text-base font-semibold text-foreground">{t("special.assignmentTitle")}</h3>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">{policyModal.name}</span> için özel izleme kategorisi seçin.
+              <span className="font-medium text-foreground">{policyModal.name}</span> {t("special.assignmentDescription")}
             </p>
             <div className="mt-4 grid gap-2">
               {CATS.map((cat) => (
                 <button key={cat.key} type="button" disabled={policyBusy} onClick={() => void addPolicy(policyModal.personnelId, cat.key)}
                   className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2.5 text-left transition-colors hover:bg-secondary disabled:opacity-50">
-                  <Badge variant={cat.bv} className="shrink-0 text-[10px]">{cat.label}</Badge>
-                  <span className="min-w-0 flex-1 text-xs text-muted-foreground">{cat.desc}</span>
+                  <Badge variant={cat.bv} className="shrink-0 text-[10px]">{t(`special.categories.${cat.key}.label`)}</Badge>
+                  <span className="min-w-0 flex-1 text-xs text-muted-foreground">{t(`special.categories.${cat.key}.desc`)}</span>
                 </button>
               ))}
             </div>
             <div className="mt-4 flex justify-end">
               <Button variant="outline" size="sm" onClick={() => setPolicyModal(null)} disabled={policyBusy}>
-                {policyBusy ? "Kaydediliyor..." : "Kapat"}
+                {policyBusy ? t("actions.saving") : t("actions.close")}
               </Button>
             </div>
           </div>
@@ -755,6 +761,7 @@ function HealthExamForm({ personnel, companyId, onSaved, onCancel }: {
   personnel: PersonnelRecord[]; companyId: string;
   onSaved: () => void; onCancel: () => void;
 }) {
+  const t = useTranslations("companyWorkspace.personnel");
   const [personnelId, setPersonnelId] = useState(personnel[0]?.id ?? "");
   const [examType, setExamType] = useState("periyodik");
   const [examDate, setExamDate] = useState(new Date().toISOString().split("T")[0]);
@@ -781,45 +788,45 @@ function HealthExamForm({ personnel, companyId, onSaved, onCancel }: {
 
   return (
     <div className="mb-4 rounded-lg border-2 border-primary/30 bg-primary/5 p-4 space-y-3">
-      <h4 className="text-sm font-semibold text-foreground">Yeni Sağlık Muayenesi Ekle</h4>
+      <h4 className="text-sm font-semibold text-foreground">{t("health.formTitle")}</h4>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="text-[10px] font-medium uppercase text-muted-foreground">Personel *</label>
+          <label className="text-[10px] font-medium uppercase text-muted-foreground">{t("health.personnelRequired")}</label>
           <select value={personnelId} onChange={(e) => setPersonnelId(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground">
             {personnel.map((p) => (
-              <option key={p.id} value={p.id}>{p.firstName} {p.lastName} — {p.department || "Bölüm yok"}</option>
+              <option key={p.id} value={p.id}>{p.firstName} {p.lastName} — {p.department || t("table.noDepartment")}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="text-[10px] font-medium uppercase text-muted-foreground">Muayene Türü</label>
+          <label className="text-[10px] font-medium uppercase text-muted-foreground">{t("health.examType")}</label>
           <select value={examType} onChange={(e) => setExamType(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground">
-            <option value="ise_giris">İşe Giriş</option>
-            <option value="periyodik">Periyodik</option>
-            <option value="isten_ayrilma">İşten Ayrılma</option>
-            <option value="ozel">Özel</option>
+            <option value="ise_giris">{t("health.examTypes.ise_giris")}</option>
+            <option value="periyodik">{t("health.examTypes.periyodik")}</option>
+            <option value="isten_ayrilma">{t("health.examTypes.isten_ayrilma")}</option>
+            <option value="ozel">{t("health.examTypes.ozel")}</option>
           </select>
         </div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Muayene Tarihi *</label><input type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Sonraki Muayene</label><input type="date" value={nextExamDate} onChange={(e) => setNextExamDate(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{t("health.examDateRequired")}</label><input type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{t("health.nextExam")}</label><input type="date" value={nextExamDate} onChange={(e) => setNextExamDate(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
         <div>
-          <label className="text-[10px] font-medium uppercase text-muted-foreground">Sonuç</label>
+          <label className="text-[10px] font-medium uppercase text-muted-foreground">{t("health.result")}</label>
           <select value={result} onChange={(e) => setResult(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground">
-            <option value="uygun">Uygun</option>
-            <option value="sartli_uygun">Şartlı Uygun</option>
-            <option value="uygun_degil">Uygun Değil</option>
-            <option value="izleme">İzleme</option>
+            <option value="uygun">{t("health.results.uygun")}</option>
+            <option value="sartli_uygun">{t("health.results.sartli_uygun")}</option>
+            <option value="uygun_degil">{t("health.results.uygun_degil")}</option>
+            <option value="izleme">{t("health.results.izleme")}</option>
           </select>
         </div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Hekim Adı</label><input value={physicianName} onChange={(e) => setPhysicianName(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Kurum</label><input value={physicianInstitution} onChange={(e) => setPhysicianInstitution(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Rapor No</label><input value={reportNumber} onChange={(e) => setReportNumber(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{t("health.physicianName")}</label><input value={physicianName} onChange={(e) => setPhysicianName(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{t("health.institution")}</label><input value={physicianInstitution} onChange={(e) => setPhysicianInstitution(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{t("health.reportNo")}</label><input value={reportNumber} onChange={(e) => setReportNumber(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" /></div>
       </div>
-      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Kısıtlamalar</label><input value={restrictions} onChange={(e) => setRestrictions(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" placeholder="Yüksekte çalışamaz, ağır kaldıramaz..." /></div>
-      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Öneriler</label><input value={recommendedActions} onChange={(e) => setRecommendedActions(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" placeholder="6 ay sonra kontrol muayenesi..." /></div>
+      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{t("health.restrictions")}</label><input value={restrictions} onChange={(e) => setRestrictions(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" placeholder={t("health.restrictionsPlaceholder")} /></div>
+      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{t("health.recommendedActions")}</label><input value={recommendedActions} onChange={(e) => setRecommendedActions(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground" placeholder={t("health.recommendedActionsPlaceholder")} /></div>
       <div className="flex gap-2">
-        <button type="button" onClick={handleSubmit} disabled={saving || !personnelId || !examDate} className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50">{saving ? "Kaydediliyor..." : "Kaydet"}</button>
-        <button type="button" onClick={onCancel} className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary">Vazgeç</button>
+        <button type="button" onClick={handleSubmit} disabled={saving || !personnelId || !examDate} className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50">{saving ? t("actions.saving") : t("actions.save")}</button>
+        <button type="button" onClick={onCancel} className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary">{t("actions.cancel")}</button>
       </div>
     </div>
   );

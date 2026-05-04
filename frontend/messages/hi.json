@@ -792,7 +792,311 @@
       "controlsTitle": "Periodic inspections",
       "controlsDesc": "Legally required periodic inspections and examinations.",
       "committeeTitle": "OHS committee meetings",
-      "committeeDesc": "Hazard class: {hazardClass} — every {months} months"
+      "committeeDesc": "Hazard class: {hazardClass} — every {months} months",
+      "newTraining": "New Training",
+      "noTrainings": "No training records yet.",
+      "newControl": "New Control",
+      "noControls": "No periodic control records yet.",
+      "newMeeting": "New Meeting",
+      "noMeetings": "No OHS committee meeting records yet.",
+      "status": {
+        "planned": "Planned",
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "overdue": "Overdue"
+      },
+      "trainingTypes": {
+        "zorunlu": "Mandatory",
+        "yenileme": "Renewal",
+        "istege_bagli": "Optional"
+      },
+      "hours": "{count} hours",
+      "edit": "Edit",
+      "delete": "Delete",
+      "results": {
+        "uygun": "Fit",
+        "sartli_uygun": "Conditionally Fit",
+        "uygun_degil": "Unfit"
+      },
+      "controlTypes": {
+        "elektrik": "Electrical",
+        "asansor": "Elevator",
+        "yangin": "Fire",
+        "basinc": "Pressure Vessel",
+        "vinc": "Crane",
+        "kompressor": "Compressor",
+        "forklift": "Forklift",
+        "diger": "Other"
+      },
+      "overdue": "Overdue!",
+      "last": "Last",
+      "next": "Next",
+      "meetingNumber": "Meeting #{number}",
+      "agenda": "Agenda",
+      "attendees": "Attendees",
+      "decisions": "Decisions",
+      "responsible": "Responsible",
+      "deadline": "Deadline",
+      "nextMeeting": "Next meeting",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "type": "Type",
+      "trainer": "Trainer",
+      "date": "Date",
+      "durationHours": "Duration (hours)",
+      "statusLabel": "Status",
+      "note": "Note",
+      "inspector": "Inspector",
+      "inspectionDate": "Inspection Date",
+      "nextControl": "Next Control",
+      "result": "Result",
+      "reportReference": "Report Reference",
+      "trainingForm": {
+        "newTitle": "Add New Training",
+        "editTitle": "Edit Training",
+        "nameRequired": "Training Name *",
+        "namePlaceholder": "OHS Basic Training"
+      },
+      "controlForm": {
+        "newTitle": "Add New Periodic Control",
+        "editTitle": "Edit Periodic Control",
+        "nameRequired": "Control Name *",
+        "namePlaceholder": "Electrical installation inspection"
+      },
+      "meetingForm": {
+        "newTitle": "New OHS Committee Meeting",
+        "editTitle": "Edit Meeting",
+        "dateRequired": "Meeting Date *",
+        "number": "Meeting No",
+        "attendeesPlaceholder": "OHS specialist, employer representative, employee representative...",
+        "agendaPlaceholder": "1. Review of risk analysis results\n2. Training plan...",
+        "addDecision": "+ Add Decision",
+        "decisionText": "Decision text",
+        "nextDate": "Next Meeting Date"
+      }
+    },
+    "personnel": {
+      "title": "कार्मिक प्रबंधन",
+      "description": "{companyName} के कर्मियों के रिकॉर्ड प्रबंधित करें.",
+      "sourceLocal": "स्थानीय",
+      "loading": "Loading personnel data...",
+      "summary": {
+        "total": "Total personnel",
+        "active": "Active",
+        "departments": "Departments",
+        "special": "Special monitoring"
+      },
+      "tabs": {
+        "list": "Personnel List",
+        "import": "Import",
+        "special": "Special Monitoring",
+        "health": "Health Surveillance"
+      },
+      "empty": {
+        "title": "No personnel records yet",
+        "description": "Download the CSV template and upload it from the Import tab."
+      },
+      "list": {
+        "count": "{count} personnel records",
+        "sort": "Sort"
+      },
+      "actions": {
+        "templateDownload": "Download Template",
+        "goImport": "Go to Import",
+        "deleting": "Deleting...",
+        "deleteSelected": "Delete Selected ({count})",
+        "export": "Export",
+        "newImport": "New Import",
+        "import": "Import",
+        "uploading": "Uploading...",
+        "profile": "Profile",
+        "special": "Special",
+        "delete": "Delete",
+        "remove": "Remove",
+        "saving": "Saving...",
+        "close": "Close",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "import": {
+        "chooseFile": "Please select a CSV file.",
+        "noValidRecords": "No valid records were found in the file.",
+        "successSupabase": "{count} personnel records imported successfully. (Supabase) · Total: {total}",
+        "successLocal": "{count} personnel records imported successfully. (Local) · Total: {total}",
+        "readError": "An error occurred while reading the file.",
+        "templateTitle": "Download CSV Template",
+        "templateDesc": "Download the template below and fill in personnel information.",
+        "uploadTitle": "Upload CSV File",
+        "uploadDesc": "Select the completed CSV file and import it."
+      },
+      "table": {
+        "employeeCode": "Employee ID",
+        "fullName": "Full Name",
+        "identity": "National ID",
+        "department": "Department",
+        "position": "Position",
+        "location": "Location",
+        "status": "Status",
+        "employment": "Employment",
+        "actions": "Actions",
+        "phone": "Phone",
+        "email": "Email",
+        "hireDate": "Hire Date",
+        "bloodType": "Blood Type",
+        "emergency": "Emergency",
+        "profilePage": "Personnel File",
+        "positionMissing": "Position not specified",
+        "noDepartment": "No department"
+      },
+      "statuses": {
+        "active": "Active",
+        "on_leave": "On leave",
+        "suspended": "Suspended",
+        "terminated": "Terminated"
+      },
+      "employmentTypes": {
+        "full_time": "Full-time",
+        "part_time": "Part-time",
+        "temporary": "Temporary",
+        "intern": "Intern",
+        "subcontractor": "Subcontractor"
+      },
+      "sort": {
+        "employeeCode": "Employee ID",
+        "fullName": "Full Name",
+        "department": "Department",
+        "positionTitle": "Position",
+        "location": "Location",
+        "employmentStatus": "Status",
+        "employmentType": "Employment",
+        "ascTitle": "Ascending (A→Z)",
+        "descTitle": "Descending (Z→A)",
+        "ascAria": "Ascending sort",
+        "descAria": "Descending sort",
+        "columnAria": "Sort by {label} column"
+      },
+      "special": {
+        "title": "Special Monitoring Categories",
+        "description": "Sensitive groups and employees requiring special monitoring.",
+        "sensitiveData": "Sensitive Data",
+        "accessControlled": "Subject to access permission control",
+        "showEmployees": "▼ Show employees",
+        "hideList": "▲ Hide list",
+        "emptyCategory": "No employees are registered in this category.",
+        "assignmentTitle": "Special Monitoring Assignment",
+        "assignmentDescription": "select a special monitoring category.",
+        "categories": {
+          "pregnant": {
+            "label": "Pregnant Employee",
+            "desc": "Special protection is required for pregnant or nursing employees."
+          },
+          "disabled": {
+            "label": "Disabled Employee",
+            "desc": "Work arrangements suitable for the disability status must be provided."
+          },
+          "foreign_national": {
+            "label": "Foreign National",
+            "desc": "Requires language, cultural adaptation and work permit tracking."
+          },
+          "young_worker": {
+            "label": "Young Worker (under 18)",
+            "desc": "Legal restrictions and additional protective measures must be applied."
+          },
+          "night_shift": {
+            "label": "Night Shift Employee",
+            "desc": "Health risks and periodic checks related to night work."
+          },
+          "chronic_condition": {
+            "label": "Chronic Condition",
+            "desc": "Requires continuous health monitoring and work fitness assessment."
+          },
+          "nursing_mother": {
+            "label": "Nursing Mother",
+            "desc": "Special working conditions must be provided during nursing."
+          },
+          "temporary_restriction": {
+            "label": "Temporary Restriction",
+            "desc": "Work restriction is applied due to a temporary health condition."
+          }
+        }
+      },
+      "health": {
+        "title": "Health Surveillance",
+        "description": "Pre-employment, periodic, exit and special examinations.",
+        "newExam": "New Exam",
+        "empty": "No health examination records yet.",
+        "overdue": "Overdue!",
+        "exam": "Exam",
+        "next": "Next",
+        "report": "Report",
+        "restriction": "Restriction",
+        "recommendation": "Recommendation",
+        "formTitle": "Add New Health Examination",
+        "personnelRequired": "Personnel *",
+        "examType": "Exam Type",
+        "examDateRequired": "Exam Date *",
+        "nextExam": "Next Exam",
+        "result": "Result",
+        "physicianName": "Physician Name",
+        "institution": "Institution",
+        "reportNo": "Report No",
+        "restrictions": "Restrictions",
+        "restrictionsPlaceholder": "Cannot work at height, cannot lift heavy loads...",
+        "recommendedActions": "Recommendations",
+        "recommendedActionsPlaceholder": "Follow-up examination after 6 months...",
+        "examTypes": {
+          "ise_giris": "Pre-employment",
+          "periyodik": "Periodic",
+          "isten_ayrilma": "Exit",
+          "ozel": "Special"
+        },
+        "results": {
+          "uygun": "Fit",
+          "sartli_uygun": "Conditionally Fit",
+          "uygun_degil": "Unfit",
+          "izleme": "Monitoring"
+        }
+      }
+    },
+    "history": {
+      "title": "History and Audit Trail",
+      "description": "Actions and change history on the company are collected automatically.",
+      "noWorkspace": "No company workspace selected.",
+      "loading": "Loading history...",
+      "empty": "No history records yet. Changes made on the company will be listed here.",
+      "dbConnectionError": "Database connection could not be established.",
+      "systemActor": "System action",
+      "change": "Change",
+      "actions": {
+        "workspaceCreated": "Workspace created",
+        "workspaceArchived": "Workspace archived",
+        "workspaceRestored": "Workspace restored",
+        "expertAssigned": "Expert assigned",
+        "expertAssignmentUpdated": "Expert assignment updated",
+        "expertAssignmentDeleted": "Expert assignment deleted",
+        "riskAssessmentCreated": "Risk assessment created",
+        "riskAssessmentUpdated": "Risk assessment updated",
+        "riskAssessmentDeleted": "Risk assessment deleted",
+        "documentCreated": "Document created",
+        "documentUpdated": "Document updated",
+        "documentDeleted": "Document deleted",
+        "trainingAdded": "Training added",
+        "trainingUpdated": "Training updated",
+        "incidentCreated": "Incident record created",
+        "incidentUpdated": "Incident record updated"
+      },
+      "entities": {
+        "riskAssessments": "Risk Assessment",
+        "editorDocuments": "Document",
+        "incidents": "Incident",
+        "companyTrainings": "Training",
+        "committeeMeetings": "Committee Meeting",
+        "periodicControls": "Periodic Control",
+        "tasks": "Task",
+        "workspace": "Workspace",
+        "companyIdentity": "Company Identity"
+      }
     }
   },
   "consent": {
@@ -5016,6 +5320,458 @@
         "rowEmployer": "नियोक्ता / नियोक्ता प्रतिनिधि",
         "specialistFallback": "औद्योगिक सुरक्षा पेशेवर"
       }
+    }
+  },
+  "fieldInspection": {
+    "workspaceFallback": "Active workspace",
+    "header": {
+      "eyebrow": "Field inspection",
+      "title": "Live checklists on site, instant findings, and institutional memory",
+      "description": "Fill the checklist → turn non-conformities into findings → link to existing risk, action, and CAPA records with Nova → report.",
+      "activeArea": "Active area: {name}",
+      "auditRunning": "{code} · {percent}% readiness",
+      "auditRunningNoCode": "Inspection in progress · {percent}% readiness"
+    },
+    "counts": {
+      "closureReady": "Ready",
+      "closureWaiting": "Waiting"
+    },
+    "actions": {
+      "startAudit": "Start inspection",
+      "checklistWithNova": "Checklist with Nova"
+    },
+    "feedback": {
+      "selectChecklistFirst": "Select a checklist from the list on the left first.",
+      "previewStarted": "{title} started in walkthrough mode.",
+      "officialStarted": "{title} official inspection started ({ref}).",
+      "startFailed": "Could not start inspection. Check your session.",
+      "novaDraftCreated": "Nova created a draft checklist. You can edit and publish it."
+    },
+    "errors": {
+      "noSession": "No session found. Please sign in again.",
+      "templateNotFound": "Checklist template was not found or you do not have access.",
+      "quotaExceeded": "Your monthly field inspection quota is used ({used} / {limit}). Upgrade your plan to continue.",
+      "quotaCheckFailed": "Subscription quota could not be checked.",
+      "runInsertFailed": "The inspection session could not be created.",
+      "invalidServerResponse": "Invalid server response.",
+      "generic": "Something went wrong: {detail}",
+      "genericUnknown": "Something went wrong."
+    },
+    "tabs": {
+      "checklists": {
+        "label": "Checklists",
+        "description": "Ready-made checklists and field scenarios"
+      },
+      "inspection": {
+        "label": "Active review",
+        "description": "Question flow filled on site"
+      },
+      "findings": {
+        "label": "Findings",
+        "description": "Review findings and link to risk or action"
+      },
+      "nova": {
+        "label": "Nova",
+        "description": "Checklist studio and smart suggestions"
+      },
+      "closure": {
+        "label": "Closure",
+        "description": "Inspection sign-off and reporting"
+      }
+    },
+    "response": {
+      "uygun": "Conform",
+      "uygunsuz": "Non-conformity",
+      "kritik": "Critical",
+      "na": "N/A",
+      "awaiting": "Awaiting answer"
+    },
+    "sources": {
+      "manual": "Manual",
+      "nova": "Nova",
+      "library": "Library",
+      "risk_analysis": "Risk analysis",
+      "imported": "Imported"
+    },
+    "mode": {
+      "quick": {
+        "label": "Quick check",
+        "description": "Short on-site scan with 8–12 questions."
+      },
+      "standard": {
+        "label": "Standard inspection",
+        "description": "Balanced field inspection with 15–30 questions."
+      },
+      "detailed": {
+        "label": "Detailed review",
+        "description": "Deep scan of root causes and repeats."
+      }
+    },
+    "checklists": {
+      "sidebarTitle": "Checklists",
+      "loading": "Loading…",
+      "emptyList": "No checklists yet. Create with Nova or copy from the library.",
+      "footerNova": "New checklist with Nova",
+      "questionsCount": "{count} questions",
+      "sidebarItemDescription": "{count} questions · {source}",
+      "version": "Version {version}",
+      "startOfficial": "Start inspection",
+      "walkthrough": "Walkthrough",
+      "noQuestionsHint": "This template has no questions yet. You can generate questions from the Nova studio.",
+      "statusDraft": "Draft",
+      "statusPublished": "Published",
+      "seedSkipped": "Starter pack is already loaded.",
+      "seedFailed": "Starter pack could not be loaded.",
+      "seedLoaded": "{count} templates loaded.",
+      "emptyLoadingTemplates": "Loading template…",
+      "emptyNoTemplatesTitle": "No checklists in your organisation yet",
+      "emptyNoTemplatesBody": "Load the starter pack to get six ready-made templates (environment, fire, electrical, PPE, machinery, chemical) or generate your own checklist with Nova AI.",
+      "emptyNoTemplatesLoad": "Load starter pack",
+      "emptyNoTemplatesNova": "Create with Nova",
+      "emptyHasTemplatesTitle": "Select a checklist or create a new one",
+      "emptyHasTemplatesBody": "Pick a template from the list on the left to see details, start an inspection, or generate your own checklist with Nova.",
+      "emptyOpenStudio": "Open Nova studio",
+      "questionsWord": "questions",
+      "statusArchived": "संग्रहीत"
+    },
+    "inspection": {
+      "selectChecklistTitle": "Select a checklist first",
+      "selectChecklistHint": "From the Checklists tab, pick a template and start the inspection.",
+      "notStartedTitle": "Inspection not started yet",
+      "notStartedHint": "From the Checklists tab, use “Start inspection” for an official session or “Walkthrough” for a test run.",
+      "autosaveTitle": "Every answer is saved automatically.",
+      "autosaveBody": "There is no separate submit button; choice, note, photo, and voice are written to the session immediately. You can review all non-conform and critical items on the Findings tab.",
+      "sidebarSections": "Sections",
+      "allQuestions": "All questions",
+      "questionsCount": "{count} questions",
+      "progressBadge": "{answered}/{total}",
+      "emptySection": "No questions in this section.",
+      "afterVisitTitle": "After the site visit",
+      "afterVisitLi1": "Answers are recorded. Items you mark as non-conform or critical are collected on the Findings tab.",
+      "afterVisitLi2": "There you can link a finding to risk, open action, or CAPA to start internal tracking.",
+      "reviewFindings": "Review findings ({count})",
+      "goFindingsTab": "Go to Findings tab",
+      "questionProgress": "Question {current} / {total}",
+      "findingDetails": "Finding details",
+      "criticalBadge": "Critical: photo + action required",
+      "placeholderFieldNote": "Field note",
+      "placeholderSuggestedAction": "Suggested action",
+      "naReasonPlaceholder": "N/A justification (required)"
+    },
+    "findings": {
+      "intro": "Review screen: for the findings below you can choose a link to risk, action, or CAPA, or mark the record as reviewed. This step connects the field with office follow-up.",
+      "sidebarTitle": "Findings ({count})",
+      "emptySidebar": "No findings yet. Non-conform or critical answers appear here.",
+      "decisionPending": "Decision pending",
+      "decisionReviewed": "Reviewed",
+      "fieldNote": "Field note",
+      "suggestedAction": "Suggested action",
+      "deadline": "Due date",
+      "photoCount": "Photo count",
+      "novaSuggestionsTitle": "Nova link suggestions",
+      "novaSuggestionsBody": "Suggestion generation via the Nova edge function is not enabled yet (S4). You can record decisions manually for now.",
+      "linkExistingRisk": "Link to existing risk",
+      "linkOpenAction": "Link to open action",
+      "startCapa": "Start CAPA",
+      "newRiskDraft": "New risk draft",
+      "ignore": "Ignore",
+      "reviewOnly": "Mark reviewed only",
+      "emptyTitle": "No findings yet",
+      "emptyBody": "Non-conform or critical answers during the active review appear here as findings.",
+      "introTitle": "Review screen:",
+      "introBody": "For the findings below you can choose a link to risk, action, or CAPA, or mark the record as reviewed. This step connects the field with office follow-up."
+    },
+    "nova": {
+      "sidebarTitle": "Nova modules",
+      "studioTitle": "Checklist studio",
+      "studioDesc": "Generate new draft",
+      "studioBadge": "Active",
+      "memoryTitle": "Institutional memory",
+      "memoryDesc": "Recurring issues (S4)",
+      "memoryBadge": "Soon",
+      "panelTitle": "Checklist studio",
+      "panelBadge": "Nova AI active",
+      "purposeLabel": "Purpose",
+      "purposePlaceholder": "I want to run a daily OHS environment walkthrough on the production line.",
+      "modeLabel": "Inspection mode",
+      "locationLabel": "Location / line",
+      "locationPlaceholder": "Production line 1 · day shift",
+      "sourcesLabel": "Which sources should Nova scan?",
+      "sourceRisks": "Existing risk analyses",
+      "sourcePastFindings": "Past field findings",
+      "sourceOpenActions": "Open actions",
+      "sourceDof": "CAPA records",
+      "sourceLibrary": "OHS library",
+      "sourceReports": "Previous reports",
+      "createDraft": "Create draft",
+      "creating": "Creating…",
+      "footerHint": "Nova AI (Claude) scans your organisation data and generates contextual questions. This usually takes 5–15 seconds.",
+      "memorySoonTitle": "Institutional memory coming soon",
+      "memorySoonBody": "Recurring issues and open-action alerts will arrive in S4.",
+      "errNoClient": "Could not create Supabase client.",
+      "errNoSession": "No session found. Please sign in again.",
+      "errEnv": "Supabase URL or API key is missing from environment.",
+      "errNetwork": "Network error: {message}",
+      "errHttp": "Nova error {status}: {text}",
+      "errBadResponse": "Nova response was not in the expected format."
+    },
+    "closure": {
+      "sidebarTitle": "Closure steps",
+      "stepCheckTitle": "Inspection check",
+      "stepCheckDescReady": "Ready to complete",
+      "stepCheckDescGaps": "{count} gaps",
+      "badgeReady": "Ready",
+      "badgeMissing": "Gaps",
+      "stepReportTitle": "Report & sharing",
+      "stepReportDescDone": "Report generated",
+      "stepReportDescWait": "Waiting",
+      "badgeDash": "—",
+      "noRunTitle": "No active inspection",
+      "noRunBody": "Start and complete an inspection first to generate a report.",
+      "summaryTitle": "Inspection summary",
+      "recordPending": "Record pending",
+      "readiness": "{percent}% readiness",
+      "statUygun": "Conform",
+      "statUygunsuz": "Non-conform",
+      "statKritik": "Critical",
+      "statNa": "N/A",
+      "gapsTitle": "{count} gaps found",
+      "gapsNone": "All required fields complete",
+      "complete": "Complete inspection",
+      "completing": "Completing…",
+      "abandon": "Cancel session",
+      "reportTitle": "Report & sharing",
+      "reportBody": "When the inspection is complete, PDF export, push to risk analysis, and sharing options will appear here. PDF generation will be enabled in S6 (edge function `inspection-report-pdf`).",
+      "pdfSoon": "PDF report (S6)",
+      "riskExportSoon": "Send to risk analysis (S5)",
+      "emailSoon": "Send email (S6)",
+      "gapUnanswered": "\"{snippet}\" is not answered yet.",
+      "gapCriticalNote": "\"{snippet}\" critical: note missing.",
+      "gapCriticalAction": "\"{snippet}\" critical: action missing.",
+      "gapCriticalDeadline": "\"{snippet}\" critical: due date missing.",
+      "gapCriticalPhoto": "\"{snippet}\" critical: photo missing.",
+      "gapNaReason": "\"{snippet}\" N/A: justification missing."
+    },
+    "evidence": {
+      "photoHeading": "Photos ({count})",
+      "addPhoto": "Add photo",
+      "uploading": "Uploading…",
+      "uploadFailed": "Upload failed.",
+      "evidenceAlt": "Evidence",
+      "thumbLoading": "loading",
+      "removePhotoAria": "Remove photo",
+      "voiceTitle": "Voice note",
+      "voiceTitleSaved": "Voice note (saved)",
+      "stop": "Stop",
+      "delete": "Delete",
+      "record": "Record",
+      "browserNoMic": "This browser does not support audio recording.",
+      "micDenied": "Microphone permission denied.",
+      "micFailed": "Could not open microphone: {message}",
+      "voiceUploadFailed": "Voice note could not be uploaded.",
+      "transcriptionPrefix": "Transcription: {error}",
+      "transcriptHeading": "Transcript",
+      "aiWriting": "AI is typing…",
+      "retranscribe": "Transcribe again",
+      "transcribingWait": "Converting speech to text (OpenAI Whisper)…",
+      "generateTranscript": "Generate transcript"
+    },
+    "sidebarDefaultTitle": "Subcategories",
+    "sidebarDefaultEmpty": "No content."
+  },
+  "workspaceOnboarding": {
+    "eyebrow": "कार्यस्थान",
+    "title": "आप किस कार्यस्थान में आगे बढ़ेंगे?",
+    "description": "First select a workspace or create a new one. Choose from the left panel, complete that workspace record on the right; when activated, risk analysis, documents, library and field modules use the active workspace context.",
+    "localWorkspaceName": "Local Workspace",
+    "goToWorkspace": "Go to workspace",
+    "activateAndGo": "Activate this workspace and go",
+    "common": {
+      "email": "Email",
+      "phone": "Phone",
+      "saving": "Saving...",
+      "select": "Select"
+    },
+    "plans": {
+      "individualFree": "Individual Free",
+      "osgbStarter": "OSGB Starter",
+      "enterprise": "Enterprise",
+      "unknown": "Unknown plan"
+    },
+    "state": {
+      "selected": "Selected",
+      "active": "Active",
+      "default": "Default",
+      "ready": "Ready"
+    },
+    "meta": {
+      "package": "Plan: {plan}",
+      "unlimited": "{count} workspace ready",
+      "usage": "{count} / {limit} workspaces used",
+      "activeSelected": "Active workspace selected",
+      "selectionPending": "Waiting for workspace selection"
+    },
+    "account": {
+      "eyebrow": "Account Type",
+      "title": "कार्यस्थान प्रबंधन",
+      "description": "Choose an individual, OSGB or enterprise flow. The next screens will adapt to it.",
+      "cardTitle": "Which structure will you start with?",
+      "cardDescription": "Individual accounts continue with a single workspace context; OSGB accounts continue with multi-company management.",
+      "info": "The individual flow is always open on this screen. OSGB and enterprise options become active only when granted by an admin.",
+      "adminApprovalRequired": "Admin approval is required.",
+      "displayName": "Account display name",
+      "displayNamePlaceholder": "Example: Mehmet Yildirim",
+      "companyName": "Company name",
+      "contactName": "Contact person",
+      "continue": "Continue",
+      "options": {
+        "individual": {
+          "title": "Individual",
+          "description": "For a single professional or specialist."
+        },
+        "osgb": {
+          "title": "OSGB",
+          "description": "For multi-company and team management."
+        },
+        "enterprise": {
+          "title": "Enterprise",
+          "description": "Creates a contact request for enterprise needs."
+        }
+      }
+    },
+    "errors": {
+      "timeout": "Session or workspace information could not be retrieved in time. Refresh the page and try again; if the issue continues, sign out and sign in again.",
+      "fetchFailed": "Connection could not be established. Refresh the page and try again through getrisknova.com; if the session does not recover automatically, sign out and sign in again.",
+      "schemaMissing": "The new database fields required for account setup are not ready yet. Please try again after the migration is complete.",
+      "accountContextFailed": "Account context could not be read.",
+      "workspaceDataFailed": "Workspace data could not be retrieved.",
+      "accountTypeUnavailable": "Account type selection cannot be completed right now.",
+      "accountTypeFailed": "Account type selection could not be completed.",
+      "workspaceSaveUnavailable": "Workspace record cannot be completed right now.",
+      "workspaceSaveFailed": "Workspace record could not be completed.",
+      "activateFailed": "The selected workspace could not be activated.",
+      "dataTitle": "Workspace data could not be read",
+      "dataDescription": "This screen could not be prepared because the profile or workspace context is missing."
+    },
+    "messages": {
+      "workspaceLimitReached": "You have reached the workspace limit in your plan. Use one of the existing workspaces or upgrade your plan before creating a new one.",
+      "localFallback": "Workspace tables are not complete in this environment yet. The selection was saved as a local context and you can use this workspace.",
+      "localContextUpdated": "{name} was updated as a local context.",
+      "workspaceSaved": "{name} was saved and selected as the active workspace."
+    },
+    "list": {
+      "title": "कार्यस्थान",
+      "description": "Each workspace carries a separate operational context. Select and edit here or change the active workspace.",
+      "empty": "No workspace is ready yet. Use the “New workspace” option below and complete the form on the right to create your first workspace.",
+      "currentlyActive": "This workspace is currently active across the system.",
+      "canSwitch": "You can switch to this workspace if you want.",
+      "view": "View"
+    },
+    "newWorkspace": {
+      "title": "New workspace",
+      "description": "Start with an empty record; fill in company and workspace details yourself on the right.",
+      "newBadge": "New",
+      "limitBadge": "Limit"
+    },
+    "limit": {
+      "slotsLeft": "You can open {count} more empty workspace slots.",
+      "reached": "You have reached the active workspace limit in your current plan."
+    },
+    "details": {
+      "selectedTitle": "Selected workspace details",
+      "newTitle": "Create new workspace",
+      "description": "Select a workspace from the left. Complete the company / workspace record on the right; country and language define the Nova context, while company details feed all operation modules.",
+      "contextInfo": "The country selection in this workspace determines the official legislation filter; the language selection determines Nova and RAG terminology. Each workspace runs with its own operational context; once activated, modules use the active workspace context instead of asking again."
+    },
+    "fields": {
+      "workspaceName": "Workspace label",
+      "country": "Country",
+      "language": "Language",
+      "role": "Role",
+      "certification": "Certification",
+      "noCertification": "Continue without selecting a certification"
+    },
+    "hints": {
+      "languageTimezone": "It will work with {language} language and {timezone} time zone.",
+      "certification": "If you select a certification matching the country and role context, the workspace expertise label becomes clearer."
+    },
+    "company": {
+      "sectionTitle": "Company / workspace record",
+      "sectionDescription": "The main information previously filled on the old companies screen should live here. When you select a workspace from the left, you edit that workspace record on the right.",
+      "officialName": "Official company / workspace name",
+      "shortName": "Short name / display name",
+      "kind": "Workspace type",
+      "sector": "Sector",
+      "naceCode": "NACE code",
+      "hazardClass": "Hazard class",
+      "address": "Address",
+      "city": "City",
+      "district": "District",
+      "contactPerson": "Contact person",
+      "sgkNumber": "Social security workplace no.",
+      "taxNumber": "Tax no.",
+      "taxOffice": "Tax office",
+      "employeeCount": "Employee count",
+      "shiftModel": "Shift model",
+      "employerTitle": "Employer title",
+      "employerName": "Employer",
+      "employerRepresentative": "Employer representative",
+      "locations": "Locations",
+      "departments": "Departments",
+      "notes": "Notes",
+      "locationsPlaceholder": "Write one location per line.",
+      "departmentsPlaceholder": "Write one department per line.",
+      "notesPlaceholder": "Write operation and field notes for this workspace.",
+      "kindOptions": {
+        "private": "Private Sector",
+        "public": "Public Institution",
+        "municipality": "Municipality",
+        "ngo": "NGO / Foundation",
+        "construction": "Construction Site"
+      },
+      "hazardOptions": {
+        "low": "Low Hazard",
+        "medium": "Hazardous",
+        "high": "Very Hazardous"
+      }
+    },
+    "actions": {
+      "saveSettings": "Save workspace settings",
+      "createWorkspace": "Create workspace"
+    },
+    "profile": {
+      "open": "Open profile",
+      "title": "Personal information",
+      "description": "This information is shared across the whole site. Workspaces only separate operation, country and language context.",
+      "fullName": "Full name",
+      "titleField": "Title",
+      "notAdded": "Not added yet",
+      "completeInProfile": "To be completed in profile",
+      "footer": "Profile information remains common across the whole experience. When the workspace changes, only the operation context, legislation filter and language preference change."
+    },
+    "languages": {
+      "tr": "Turkish",
+      "en": "English",
+      "de": "German",
+      "fr": "French",
+      "es": "Spanish",
+      "ru": "Russian",
+      "az": "Azerbaijani",
+      "ar": "Arabic",
+      "hi": "Hindi",
+      "id": "Indonesian",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "zh": "Chinese"
+    },
+    "roles": {
+      "safetyProfessional": "OHS specialist",
+      "workplaceDoctor": "Workplace doctor",
+      "employer": "Employer",
+      "employerRepresentative": "Employer representative",
+      "employeeRepresentative": "Employee representative",
+      "viewer": "Viewer",
+      "admin": "Admin"
     }
   }
 }

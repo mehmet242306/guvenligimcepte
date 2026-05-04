@@ -1322,12 +1322,12 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
 
           {/* Eğitimler */}
           {section === "trainings" && (
-            <Sec title="Eğitim Takibi" desc="Firma eğitim planları ve kayıtları.">
+            <Sec title={tt("trainingsTitle")} desc={tt("trainingsDesc")}>
               <div className="flex justify-end mb-3">
                 <button type="button" onClick={() => { setEditingTraining(null); setShowTrainingForm(!showTrainingForm); }}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors">
                   <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-                  Yeni Eğitim
+                  {tt("newTraining")}
                 </button>
               </div>
 
@@ -1340,15 +1340,15 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
               )}
 
               {trainings.length === 0 && !showTrainingForm ? (
-                <p className="text-center text-sm text-muted-foreground py-6">Henüz eğitim kaydı yok.</p>
+                <p className="text-center text-sm text-muted-foreground py-6">{tt("noTrainings")}</p>
               ) : (
                 <div className="space-y-2">
                   {trainings.map((t) => {
                     const stCls = t.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                       : t.status === "cancelled" ? "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
                       : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
-                    const stLabel = t.status === "completed" ? "Tamamlandı" : t.status === "cancelled" ? "İptal" : "Planlandı";
-                    const typLabel = t.trainingType === "zorunlu" ? "Zorunlu" : t.trainingType === "yenileme" ? "Yenileme" : "İsteğe Bağlı";
+                    const stLabel = t.status === "completed" ? tt("status.completed") : t.status === "cancelled" ? tt("status.cancelled") : tt("status.planned");
+                    const typLabel = t.trainingType === "zorunlu" ? tt("trainingTypes.zorunlu") : t.trainingType === "yenileme" ? tt("trainingTypes.yenileme") : tt("trainingTypes.istege_bagli");
                     return (
                       <div key={t.id} className="flex items-center justify-between rounded-lg border border-border bg-secondary/20 p-3">
                         <div className="min-w-0 flex-1">
@@ -1359,12 +1359,12 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                           </div>
                           <div className="mt-0.5 flex items-center gap-3 text-[11px] text-muted-foreground">
                             {t.trainingDate && <span>{fmtDate(t.trainingDate)}</span>}
-                            {t.durationHours > 0 && <span>{t.durationHours} saat</span>}
+                            {t.durationHours > 0 && <span>{tt("hours", { count: t.durationHours })}</span>}
                             {t.trainerName && <span>{t.trainerName}</span>}
                           </div>
                         </div>
                         <div className="flex items-center gap-1">
-                          <button type="button" onClick={() => { setEditingTraining(t); setShowTrainingForm(true); }} className="rounded-lg p-1 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" title="Düzenle">
+                          <button type="button" onClick={() => { setEditingTraining(t); setShowTrainingForm(true); }} className="rounded-lg p-1 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" title={tt("edit")}>
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" /></svg>
                           </button>
                           <button type="button" onClick={async () => {
@@ -1372,7 +1372,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                               setTrainings((prev) => prev.filter((x) => x.id !== t.id));
                               setSummary(await getTrackingSummary(company.id));
                             }
-                          }} className="rounded-lg p-1 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Sil">
+                          }} className="rounded-lg p-1 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title={tt("delete")}>
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
                           </button>
                         </div>
@@ -1391,7 +1391,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                 <button type="button" onClick={() => { setEditingControl(null); setShowControlForm(!showControlForm); }}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors">
                   <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-                  Yeni Kontrol
+                  {tt("newControl")}
                 </button>
               </div>
 
@@ -1404,7 +1404,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
               )}
 
               {controls.length === 0 && !showControlForm ? (
-                <p className="text-center text-sm text-muted-foreground py-6">Henüz periyodik kontrol kaydı yok.</p>
+                <p className="text-center text-sm text-muted-foreground py-6">{tt("noControls")}</p>
               ) : (
                 <div className="space-y-2">
                   {controls.map((c) => {
@@ -1413,25 +1413,24 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                     const resCls = c.result === "uygun" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                       : c.result === "uygun_degil" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                       : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
-                    const resLabel = c.result === "uygun" ? "Uygun" : c.result === "uygun_degil" ? "Uygun Değil" : "Şartlı Uygun";
-                    const typeLabels: Record<string, string> = { elektrik: "Elektrik", asansor: "Asansör", yangin: "Yangın", basinc: "Basınçlı Kap", vinc: "Vinç", kompressor: "Kompresör", forklift: "Forklift", diger: "Diğer" };
+                    const resLabel = c.result === "uygun" ? tt("results.uygun") : c.result === "uygun_degil" ? tt("results.uygun_degil") : tt("results.sartli_uygun");
                     return (
                       <div key={c.id} className={`flex items-center justify-between rounded-lg border p-3 ${isOverdue ? "border-red-400/40 bg-red-50/5 dark:bg-red-950/10" : isSoon ? "border-amber-400/30 bg-amber-50/5 dark:bg-amber-950/10" : "border-border bg-secondary/20"}`}>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-sm font-medium text-foreground">{c.title}</span>
                             <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${resCls}`}>{resLabel}</span>
-                            <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{typeLabels[c.controlType] ?? c.controlType}</span>
-                            {isOverdue && <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">Gecikmiş!</span>}
+                            <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{tt(`controlTypes.${c.controlType}`) ?? c.controlType}</span>
+                            {isOverdue && <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">{tt("overdue")}</span>}
                           </div>
                           <div className="mt-0.5 flex items-center gap-3 text-[11px] text-muted-foreground">
-                            {c.inspectionDate && <span>Son: {fmtDate(c.inspectionDate)}</span>}
-                            {c.nextInspectionDate && <span className={isOverdue ? "text-red-500 font-medium" : ""}>Sonraki: {fmtDate(c.nextInspectionDate)}</span>}
+                            {c.inspectionDate && <span>{tt("last")}: {fmtDate(c.inspectionDate)}</span>}
+                            {c.nextInspectionDate && <span className={isOverdue ? "text-red-500 font-medium" : ""}>{tt("next")}: {fmtDate(c.nextInspectionDate)}</span>}
                             {c.inspectorName && <span>{c.inspectorName}</span>}
                           </div>
                         </div>
                         <div className="flex items-center gap-1">
-                          <button type="button" onClick={() => { setEditingControl(c); setShowControlForm(true); }} className="rounded-lg p-1 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" title="Düzenle">
+                          <button type="button" onClick={() => { setEditingControl(c); setShowControlForm(true); }} className="rounded-lg p-1 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" title={tt("edit")}>
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" /></svg>
                           </button>
                         <button type="button" onClick={async () => {
@@ -1439,7 +1438,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                             setControls((prev) => prev.filter((x) => x.id !== c.id));
                             setSummary(await getTrackingSummary(company.id));
                           }
-                        }} className="rounded-lg p-1 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Sil">
+                        }} className="rounded-lg p-1 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title={tt("delete")}>
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
                         </button>
                         </div>
@@ -1458,7 +1457,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                 <button type="button" onClick={() => { setEditingMeeting(null); setShowMeetingForm(!showMeetingForm); }}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors">
                   <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-                  Yeni Toplantı
+                  {tt("newMeeting")}
                 </button>
               </div>
 
@@ -1478,35 +1477,35 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
               )}
 
               {meetings.length === 0 && !showMeetingForm ? (
-                <p className="text-center text-sm text-muted-foreground py-6">Henüz İSG kurul toplantısı kaydı yok.</p>
+                <p className="text-center text-sm text-muted-foreground py-6">{tt("noMeetings")}</p>
               ) : (
                 <div className="space-y-3">
                   {meetings.map((m) => {
                     const stCls = m.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                       : m.status === "cancelled" ? "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
                       : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
-                    const stLabel = m.status === "completed" ? "Tamamlandı" : m.status === "cancelled" ? "İptal" : "Planlandı";
+                    const stLabel = m.status === "completed" ? tt("status.completed") : m.status === "cancelled" ? tt("status.cancelled") : tt("status.planned");
                     return (
                       <div key={m.id} className="rounded-lg border border-border bg-secondary/20 p-4">
                         <div className="flex items-start justify-between">
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-sm font-semibold text-foreground">Toplantı #{m.meetingNumber}</span>
+                              <span className="text-sm font-semibold text-foreground">{tt("meetingNumber", { number: m.meetingNumber })}</span>
                               <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${stCls}`}>{stLabel}</span>
                               <span className="text-xs text-muted-foreground">{fmtDate(m.meetingDate)}</span>
                             </div>
-                            {m.agenda && <p className="mt-1 text-xs text-muted-foreground">Gündem: {m.agenda}</p>}
-                            {m.attendees && <p className="mt-0.5 text-[11px] text-muted-foreground">Katılımcılar: {m.attendees}</p>}
+                            {m.agenda && <p className="mt-1 text-xs text-muted-foreground">{tt("agenda")}: {m.agenda}</p>}
+                            {m.attendees && <p className="mt-0.5 text-[11px] text-muted-foreground">{tt("attendees")}: {m.attendees}</p>}
                           </div>
                           <div className="flex items-center gap-1">
-                          <button type="button" onClick={() => { setEditingMeeting(m); setShowMeetingForm(true); }} className="rounded-lg p-1 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" title="Düzenle">
+                          <button type="button" onClick={() => { setEditingMeeting(m); setShowMeetingForm(true); }} className="rounded-lg p-1 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" title={tt("edit")}>
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" /></svg>
                           </button>
                           <button type="button" onClick={async () => {
                             if (await deleteCommitteeMeeting(m.id)) {
                               setMeetings((prev) => prev.filter((x) => x.id !== m.id));
                             }
-                          }} className="rounded-lg p-1 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Sil">
+                          }} className="rounded-lg p-1 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title={tt("delete")}>
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
                           </button>
                           </div>
@@ -1515,15 +1514,15 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                         {/* Kararlar */}
                         {m.decisions.length > 0 && (
                           <div className="mt-3 space-y-1.5">
-                            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Kararlar</p>
+                            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{tt("decisions")}</p>
                             {m.decisions.map((d, di) => (
                               <div key={di} className="flex items-start gap-2 rounded-lg bg-primary/5 p-2.5">
                                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">{di + 1}</span>
                                 <div className="min-w-0 flex-1">
                                   <p className="text-xs text-foreground">{d.text}</p>
                                   <div className="mt-0.5 flex items-center gap-2 text-[10px] text-muted-foreground">
-                                    {d.responsible && <span>Sorumlu: {d.responsible}</span>}
-                                    {d.deadline && <span>Termin: {fmtDate(d.deadline)}</span>}
+                                    {d.responsible && <span>{tt("responsible")}: {d.responsible}</span>}
+                                    {d.deadline && <span>{tt("deadline")}: {fmtDate(d.deadline)}</span>}
                                   </div>
                                 </div>
                               </div>
@@ -1532,7 +1531,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
                         )}
 
                         {m.nextMeetingDate && (
-                          <p className="mt-2 text-[11px] text-primary font-medium">Sonraki toplantı: {fmtDate(m.nextMeetingDate)}</p>
+                          <p className="mt-2 text-[11px] text-primary font-medium">{tt("nextMeeting")}: {fmtDate(m.nextMeetingDate)}</p>
                         )}
                       </div>
                     );
@@ -1551,6 +1550,7 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
 
 /* ── Eğitim Ekleme Formu ── */
 function TrainingForm({ companyId, editing, onSaved, onCancel }: { companyId: string; editing: TrainingRecord | null; onSaved: () => void; onCancel: () => void }) {
+  const tt = useTranslations("companyWorkspace.tracking");
   const [title, setTitle] = useState(editing?.title ?? "");
   const [trainingType, setTrainingType] = useState<string>(editing?.trainingType ?? "zorunlu");
   const [trainerName, setTrainerName] = useState(editing?.trainerName ?? "");
@@ -1576,19 +1576,19 @@ function TrainingForm({ companyId, editing, onSaved, onCancel }: { companyId: st
 
   return (
     <div className="mb-4 rounded-lg border-2 border-primary/30 bg-primary/5 p-4 space-y-3">
-      <h4 className="text-sm font-semibold text-foreground">{editing ? "Eğitimi Düzenle" : "Yeni Eğitim Ekle"}</h4>
+      <h4 className="text-sm font-semibold text-foreground">{editing ? tt("trainingForm.editTitle") : tt("trainingForm.newTitle")}</h4>
       <div className="grid gap-3 sm:grid-cols-2">
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Eğitim Adı *</label><Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1" placeholder="İSG Temel Eğitimi" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Tür</label><select value={trainingType} onChange={(e) => setTrainingType(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="zorunlu">Zorunlu</option><option value="istege_bagli">İsteğe Bağlı</option><option value="yenileme">Yenileme</option></select></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Eğitimci</label><Input value={trainerName} onChange={(e) => setTrainerName(e.target.value)} className="mt-1" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Tarih</label><Input type="date" value={trainingDate} onChange={(e) => setTrainingDate(e.target.value)} className="mt-1" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Süre (saat)</label><Input type="number" value={durationHours} onChange={(e) => setDurationHours(e.target.value)} className="mt-1" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Durum</label><select value={status} onChange={(e) => setStatus(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="planned">Planlandı</option><option value="completed">Tamamlandı</option><option value="cancelled">İptal</option></select></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("trainingForm.nameRequired")}</label><Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1" placeholder={tt("trainingForm.namePlaceholder")} /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("type")}</label><select value={trainingType} onChange={(e) => setTrainingType(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="zorunlu">{tt("trainingTypes.zorunlu")}</option><option value="istege_bagli">{tt("trainingTypes.istege_bagli")}</option><option value="yenileme">{tt("trainingTypes.yenileme")}</option></select></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("trainer")}</label><Input value={trainerName} onChange={(e) => setTrainerName(e.target.value)} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("date")}</label><Input type="date" value={trainingDate} onChange={(e) => setTrainingDate(e.target.value)} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("durationHours")}</label><Input type="number" value={durationHours} onChange={(e) => setDurationHours(e.target.value)} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("statusLabel")}</label><select value={status} onChange={(e) => setStatus(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="planned">{tt("status.planned")}</option><option value="completed">{tt("status.completed")}</option><option value="cancelled">{tt("status.cancelled")}</option></select></div>
       </div>
-      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Not</label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className="mt-1" /></div>
+      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("note")}</label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className="mt-1" /></div>
       <div className="flex gap-2">
-        <button type="button" onClick={handleSubmit} disabled={saving || !title.trim()} className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50">{saving ? "Kaydediliyor..." : "Kaydet"}</button>
-        <button type="button" onClick={onCancel} className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary">Vazgeç</button>
+        <button type="button" onClick={handleSubmit} disabled={saving || !title.trim()} className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50">{saving ? tt("saving") : tt("save")}</button>
+        <button type="button" onClick={onCancel} className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary">{tt("cancel")}</button>
       </div>
     </div>
   );
@@ -1596,6 +1596,7 @@ function TrainingForm({ companyId, editing, onSaved, onCancel }: { companyId: st
 
 /* ── Periyodik Kontrol Ekleme Formu ── */
 function PeriodicControlForm({ companyId, editing, onSaved, onCancel }: { companyId: string; editing: PeriodicControlRecord | null; onSaved: () => void; onCancel: () => void }) {
+  const tt = useTranslations("companyWorkspace.tracking");
   const [title, setTitle] = useState(editing?.title ?? "");
   const [controlType, setControlType] = useState<string>(editing?.controlType ?? "elektrik");
   const [inspectorName, setInspectorName] = useState(editing?.inspectorName ?? "");
@@ -1622,21 +1623,21 @@ function PeriodicControlForm({ companyId, editing, onSaved, onCancel }: { compan
 
   return (
     <div className="mb-4 rounded-lg border-2 border-primary/30 bg-primary/5 p-4 space-y-3">
-      <h4 className="text-sm font-semibold text-foreground">{editing ? "Periyodik Kontrolü Düzenle" : "Yeni Periyodik Kontrol Ekle"}</h4>
+      <h4 className="text-sm font-semibold text-foreground">{editing ? tt("controlForm.editTitle") : tt("controlForm.newTitle")}</h4>
       <div className="grid gap-3 sm:grid-cols-2">
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Kontrol Adı *</label><Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1" placeholder="Elektrik İç Tesisat Kontrolü" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Tür</label><select value={controlType} onChange={(e) => setControlType(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="elektrik">Elektrik</option><option value="asansor">Asansör</option><option value="yangin">Yangın</option><option value="basinc">Basınçlı Kap</option><option value="vinc">Vinç</option><option value="kompressor">Kompresör</option><option value="forklift">Forklift</option><option value="diger">Diğer</option></select></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Denetçi</label><Input value={inspectorName} onChange={(e) => setInspectorName(e.target.value)} className="mt-1" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Kontrol Tarihi</label><Input type="date" value={inspectionDate} onChange={(e) => setInspectionDate(e.target.value)} className="mt-1" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Sonraki Kontrol</label><Input type="date" value={nextInspectionDate} onChange={(e) => setNextInspectionDate(e.target.value)} className="mt-1" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Sonuç</label><select value={result} onChange={(e) => setResult(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="uygun">Uygun</option><option value="sartli_uygun">Şartlı Uygun</option><option value="uygun_degil">Uygun Değil</option></select></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Rapor Referansı</label><Input value={reportReference} onChange={(e) => setReportReference(e.target.value)} className="mt-1" placeholder="RPR-2026-001" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Durum</label><select value={status} onChange={(e) => setStatus(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="completed">Tamamlandı</option><option value="planned">Planlandı</option><option value="overdue">Gecikmiş</option></select></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("controlForm.nameRequired")}</label><Input value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1" placeholder={tt("controlForm.namePlaceholder")} /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("type")}</label><select value={controlType} onChange={(e) => setControlType(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="elektrik">{tt("controlTypes.elektrik")}</option><option value="asansor">{tt("controlTypes.asansor")}</option><option value="yangin">{tt("controlTypes.yangin")}</option><option value="basinc">{tt("controlTypes.basinc")}</option><option value="vinc">{tt("controlTypes.vinc")}</option><option value="kompressor">{tt("controlTypes.kompressor")}</option><option value="forklift">{tt("controlTypes.forklift")}</option><option value="diger">{tt("controlTypes.diger")}</option></select></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("inspector")}</label><Input value={inspectorName} onChange={(e) => setInspectorName(e.target.value)} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("inspectionDate")}</label><Input type="date" value={inspectionDate} onChange={(e) => setInspectionDate(e.target.value)} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("nextControl")}</label><Input type="date" value={nextInspectionDate} onChange={(e) => setNextInspectionDate(e.target.value)} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("result")}</label><select value={result} onChange={(e) => setResult(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="uygun">{tt("results.uygun")}</option><option value="sartli_uygun">{tt("results.sartli_uygun")}</option><option value="uygun_degil">{tt("results.uygun_degil")}</option></select></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("reportReference")}</label><Input value={reportReference} onChange={(e) => setReportReference(e.target.value)} className="mt-1" placeholder="RPR-2026-001" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("statusLabel")}</label><select value={status} onChange={(e) => setStatus(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="completed">{tt("status.completed")}</option><option value="planned">{tt("status.planned")}</option><option value="overdue">{tt("status.overdue")}</option></select></div>
       </div>
-      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Not</label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className="mt-1" /></div>
+      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("note")}</label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className="mt-1" /></div>
       <div className="flex gap-2">
-        <button type="button" onClick={handleSubmit} disabled={saving || !title.trim()} className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50">{saving ? "Kaydediliyor..." : "Kaydet"}</button>
-        <button type="button" onClick={onCancel} className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary">Vazgeç</button>
+        <button type="button" onClick={handleSubmit} disabled={saving || !title.trim()} className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50">{saving ? tt("saving") : tt("save")}</button>
+        <button type="button" onClick={onCancel} className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary">{tt("cancel")}</button>
       </div>
     </div>
   );
@@ -1648,6 +1649,7 @@ function CommitteeMeetingForm({ companyId, nextNumber, periodMonths, editing, on
   editing: CommitteeMeeting | null;
   onSaved: () => void; onCancel: () => void;
 }) {
+  const tt = useTranslations("companyWorkspace.tracking");
   const today = new Date().toISOString().split("T")[0];
   const nextDate = new Date(Date.now() + periodMonths * 30 * 86400000).toISOString().split("T")[0];
 
@@ -1684,28 +1686,28 @@ function CommitteeMeetingForm({ companyId, nextNumber, periodMonths, editing, on
 
   return (
     <div className="mb-4 rounded-lg border-2 border-primary/30 bg-primary/5 p-4 space-y-3">
-      <h4 className="text-sm font-semibold text-foreground">{editing ? "Toplantıyı Düzenle" : "Yeni İSG Kurul Toplantısı"}</h4>
+      <h4 className="text-sm font-semibold text-foreground">{editing ? tt("meetingForm.editTitle") : tt("meetingForm.newTitle")}</h4>
       <div className="grid gap-3 sm:grid-cols-3">
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Toplantı Tarihi *</label><Input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} className="mt-1" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Toplantı No</label><Input type="number" value={meetingNumber} onChange={(e) => setMeetingNumber(Number(e.target.value) || 1)} className="mt-1" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Durum</label><select value={status} onChange={(e) => setStatus(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="completed">Tamamlandı</option><option value="planned">Planlandı</option><option value="cancelled">İptal</option></select></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("meetingForm.dateRequired")}</label><Input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("meetingForm.number")}</label><Input type="number" value={meetingNumber} onChange={(e) => setMeetingNumber(Number(e.target.value) || 1)} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("statusLabel")}</label><select value={status} onChange={(e) => setStatus(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground"><option value="completed">{tt("status.completed")}</option><option value="planned">{tt("status.planned")}</option><option value="cancelled">{tt("status.cancelled")}</option></select></div>
       </div>
-      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Katılımcılar</label><Input value={attendees} onChange={(e) => setAttendees(e.target.value)} className="mt-1" placeholder="İSG Uzmanı, İşveren Vekili, Çalışan Temsilcisi..." /></div>
-      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Gündem</label><Textarea value={agenda} onChange={(e) => setAgenda(e.target.value)} rows={2} className="mt-1" placeholder="1. Risk analizi sonuçlarının değerlendirilmesi&#10;2. Eğitim planı..." /></div>
+      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("attendees")}</label><Input value={attendees} onChange={(e) => setAttendees(e.target.value)} className="mt-1" placeholder={tt("meetingForm.attendeesPlaceholder")} /></div>
+      <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("agenda")}</label><Textarea value={agenda} onChange={(e) => setAgenda(e.target.value)} rows={2} className="mt-1" placeholder={tt("meetingForm.agendaPlaceholder")} /></div>
 
       {/* Kararlar */}
       <div>
         <div className="flex items-center justify-between">
-          <label className="text-[10px] font-medium uppercase text-muted-foreground">Kararlar</label>
-          <button type="button" onClick={addDecision} className="text-[10px] font-medium text-primary hover:underline">+ Karar Ekle</button>
+          <label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("decisions")}</label>
+          <button type="button" onClick={addDecision} className="text-[10px] font-medium text-primary hover:underline">{tt("meetingForm.addDecision")}</button>
         </div>
         <div className="mt-1 space-y-2">
           {decisions.map((d, i) => (
             <div key={i} className="flex gap-2 items-start">
               <span className="mt-2.5 text-xs font-bold text-muted-foreground shrink-0">{i + 1}.</span>
               <div className="flex-1 grid gap-2 sm:grid-cols-3">
-                <Input value={d.text} onChange={(e) => updDecision(i, "text", e.target.value)} placeholder="Karar metni" className="sm:col-span-1" />
-                <Input value={d.responsible} onChange={(e) => updDecision(i, "responsible", e.target.value)} placeholder="Sorumlu" />
+                <Input value={d.text} onChange={(e) => updDecision(i, "text", e.target.value)} placeholder={tt("meetingForm.decisionText")} className="sm:col-span-1" />
+                <Input value={d.responsible} onChange={(e) => updDecision(i, "responsible", e.target.value)} placeholder={tt("responsible")} />
                 <Input type="date" value={d.deadline} onChange={(e) => updDecision(i, "deadline", e.target.value)} />
               </div>
               {decisions.length > 1 && (
@@ -1719,13 +1721,13 @@ function CommitteeMeetingForm({ companyId, nextNumber, periodMonths, editing, on
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Sonraki Toplantı Tarihi</label><Input type="date" value={nextMeetingDate} onChange={(e) => setNextMeetingDate(e.target.value)} className="mt-1" /></div>
-        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">Not</label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={1} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("meetingForm.nextDate")}</label><Input type="date" value={nextMeetingDate} onChange={(e) => setNextMeetingDate(e.target.value)} className="mt-1" /></div>
+        <div><label className="text-[10px] font-medium uppercase text-muted-foreground">{tt("note")}</label><Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={1} className="mt-1" /></div>
       </div>
 
       <div className="flex gap-2">
-        <button type="button" onClick={handleSubmit} disabled={saving || !meetingDate} className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50">{saving ? "Kaydediliyor..." : "Kaydet"}</button>
-        <button type="button" onClick={onCancel} className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary">Vazgeç</button>
+        <button type="button" onClick={handleSubmit} disabled={saving || !meetingDate} className="rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50">{saving ? tt("saving") : tt("save")}</button>
+        <button type="button" onClick={onCancel} className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary">{tt("cancel")}</button>
       </div>
     </div>
   );
@@ -1786,70 +1788,73 @@ type WorkspaceActivityRow = {
   created_at: string;
 };
 
-const ACTIVITY_ACTION_LABELS: Record<string, string> = {
-  "workspace.created": "Çalışma alanı oluşturuldu",
-  "workspace.archived": "Çalışma alanı arşivlendi",
-  "workspace.restored": "Çalışma alanı geri yüklendi",
-  "workspace.assignment.created": "Uzman atandı",
-  "workspace.assignment.updated": "Uzman ataması güncellendi",
-  "workspace.assignment.deleted": "Uzman ataması silindi",
-  "risk_assessment.created": "Risk analizi oluşturuldu",
-  "risk_assessment.updated": "Risk analizi güncellendi",
-  "risk_assessments.insert": "Risk analizi oluşturuldu",
-  "risk_assessments.update": "Risk analizi güncellendi",
-  "risk_assessments.delete": "Risk analizi silindi",
-  "editor_documents.insert": "Döküman oluşturuldu",
-  "editor_documents.update": "Döküman güncellendi",
-  "editor_documents.delete": "Döküman silindi",
-  "company_trainings.insert": "Eğitim eklendi",
-  "company_trainings.update": "Eğitim güncellendi",
-  "incidents.insert": "Olay kaydı oluşturuldu",
-  "incidents.update": "Olay kaydı güncellendi",
+const ACTIVITY_ACTION_KEYS: Record<string, string> = {
+  "workspace.created": "workspaceCreated",
+  "workspace.archived": "workspaceArchived",
+  "workspace.restored": "workspaceRestored",
+  "workspace.assignment.created": "expertAssigned",
+  "workspace.assignment.updated": "expertAssignmentUpdated",
+  "workspace.assignment.deleted": "expertAssignmentDeleted",
+  "risk_assessment.created": "riskAssessmentCreated",
+  "risk_assessment.updated": "riskAssessmentUpdated",
+  "risk_assessments.insert": "riskAssessmentCreated",
+  "risk_assessments.update": "riskAssessmentUpdated",
+  "risk_assessments.delete": "riskAssessmentDeleted",
+  "editor_documents.insert": "documentCreated",
+  "editor_documents.update": "documentUpdated",
+  "editor_documents.delete": "documentDeleted",
+  "company_trainings.insert": "trainingAdded",
+  "company_trainings.update": "trainingUpdated",
+  "incidents.insert": "incidentCreated",
+  "incidents.update": "incidentUpdated",
 };
 
-const ACTIVITY_ENTITY_LABELS: Record<string, string> = {
-  risk_assessments: "Risk Analizi",
-  editor_documents: "Döküman",
-  incidents: "Olay",
-  company_trainings: "Eğitim",
-  company_committee_meetings: "Komite Toplantısı",
-  company_periodic_controls: "Periyodik Kontrol",
-  isg_tasks: "Görev",
-  workspace: "Çalışma Alanı",
-  company_workspaces: "Çalışma Alanı",
-  company_identity: "Firma Kimliği",
+const ACTIVITY_ENTITY_KEYS: Record<string, string> = {
+  risk_assessments: "riskAssessments",
+  editor_documents: "editorDocuments",
+  incidents: "incidents",
+  company_trainings: "companyTrainings",
+  company_committee_meetings: "committeeMeetings",
+  company_periodic_controls: "periodicControls",
+  isg_tasks: "tasks",
+  workspace: "workspace",
+  company_workspaces: "workspace",
+  company_identity: "companyIdentity",
 };
 
-function formatActivityRelative(iso: string): string {
+function formatActivityRelative(iso: string, locale: string): string {
   const now = Date.now();
   const then = new Date(iso).getTime();
   const diff = now - then;
-  if (diff < 60_000) return "Az önce";
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+  if (diff < 60_000) return rtf.format(0, "minute");
   const mins = Math.floor(diff / 60_000);
-  if (mins < 60) return `${mins} dakika önce`;
+  if (mins < 60) return rtf.format(-mins, "minute");
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs} saat önce`;
+  if (hrs < 24) return rtf.format(-hrs, "hour");
   const days = Math.floor(hrs / 24);
-  if (days < 7) return `${days} gün önce`;
-  return new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
+  if (days < 7) return rtf.format(-days, "day");
+  return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 }
 
-function formatActivityActionLabel(row: WorkspaceActivityRow): string {
-  if (row.action_code && ACTIVITY_ACTION_LABELS[row.action_code]) {
-    return ACTIVITY_ACTION_LABELS[row.action_code];
+function formatActivityActionLabel(row: WorkspaceActivityRow, t: ReturnType<typeof useTranslations>): string {
+  if (row.action_code && ACTIVITY_ACTION_KEYS[row.action_code]) {
+    return t(`actions.${ACTIVITY_ACTION_KEYS[row.action_code]}`);
   }
   if (row.action_code) {
     return row.action_code.replace(/[._]/g, " ");
   }
-  return "Değişiklik";
+  return t("change");
 }
 
-function formatActivityEntityLabel(entityType: string | null | undefined): string {
+function formatActivityEntityLabel(entityType: string | null | undefined, t: ReturnType<typeof useTranslations>): string {
   if (!entityType) return "";
-  return ACTIVITY_ENTITY_LABELS[entityType] || entityType.replace(/_/g, " ");
+  return ACTIVITY_ENTITY_KEYS[entityType] ? t(`entities.${ACTIVITY_ENTITY_KEYS[entityType]}`) : entityType.replace(/_/g, " ");
 }
 
 export function HistoryTab({ companyWorkspaceId }: { companyWorkspaceId?: string }) {
+  const t = useTranslations("companyWorkspace.history");
+  const locale = useLocale();
   const [rows, setRows] = useState<WorkspaceActivityRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -1868,7 +1873,7 @@ export function HistoryTab({ companyWorkspaceId }: { companyWorkspaceId?: string
         if (!cancelled) {
           setLoading(false);
           setRows([]);
-          setError("Veritabanı bağlantısı kurulamadı.");
+          setError(t("dbConnectionError"));
         }
         return;
       }
@@ -1891,17 +1896,17 @@ export function HistoryTab({ companyWorkspaceId }: { companyWorkspaceId?: string
     return () => {
       cancelled = true;
     };
-  }, [companyWorkspaceId]);
+  }, [companyWorkspaceId, t]);
 
   return (
-    <Sec title="Geçmiş ve Denetim İzi" desc="Firma üzerindeki işlemler ve değişiklik geçmişi — otomatik olarak toplanır.">
+    <Sec title={t("title")} desc={t("description")}>
       {!companyWorkspaceId ? (
         <div className="rounded-lg border border-dashed border-border bg-secondary/20 p-6 text-center text-sm text-muted-foreground">
-          Firma çalışma alanı seçilmedi.
+          {t("noWorkspace")}
         </div>
       ) : loading ? (
         <div className="rounded-lg border border-dashed border-border bg-secondary/20 p-6 text-center text-sm text-muted-foreground">
-          Geçmiş yükleniyor...
+          {t("loading")}
         </div>
       ) : error ? (
         <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-200">
@@ -1909,15 +1914,15 @@ export function HistoryTab({ companyWorkspaceId }: { companyWorkspaceId?: string
         </div>
       ) : rows.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border bg-secondary/20 p-6 text-center text-sm text-muted-foreground">
-          Henüz bir geçmiş kaydı yok. Firma üzerinde değişiklik yaptıkça burada listelenecektir.
+          {t("empty")}
         </div>
       ) : (
         <div className="space-y-3">
           {rows.map((row) => {
-            const label = row.actor_name || row.actor_email || "Sistem işlemi";
+            const label = row.actor_name || row.actor_email || t("systemActor");
             const initial = label.charAt(0).toUpperCase();
-            const actionLabel = formatActivityActionLabel(row);
-            const entityLabel = formatActivityEntityLabel(row.entity_type);
+            const actionLabel = formatActivityActionLabel(row, t);
+            const entityLabel = formatActivityEntityLabel(row.entity_type, t);
             return (
               <div
                 key={`${row.source}-${row.id}`}
@@ -1930,7 +1935,7 @@ export function HistoryTab({ companyWorkspaceId }: { companyWorkspaceId?: string
                   <div className="flex items-center justify-between gap-2">
                     <p className="truncate text-sm font-semibold text-foreground">{label}</p>
                     <span className="shrink-0 text-[10px] text-muted-foreground" title={new Date(row.created_at).toISOString()}>
-                      {formatActivityRelative(row.created_at)}
+                      {formatActivityRelative(row.created_at, locale)}
                     </span>
                   </div>
                   {row.actor_email && row.actor_email !== label && (
