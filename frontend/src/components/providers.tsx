@@ -14,6 +14,7 @@ type Props = {
 export function Providers({ children, locale, messages }: Props) {
   return (
     <NextIntlClientProvider
+      key={locale}
       locale={locale}
       messages={messages}
       timeZone="Europe/Istanbul"

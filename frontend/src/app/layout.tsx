@@ -26,6 +26,9 @@ const playfair = Playfair_Display({
 const siteUrl =
   process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/+$/, "") || "https://www.getrisknova.com";
 
+/** Locale `risknova-locale` çerezinden gelir; önbellekte eski dil kalmaması için dinamik. */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
