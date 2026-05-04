@@ -1,0 +1,50 @@
+{
+  "title": "CAPA 관리",
+  "description": "시정 및 예방 조치를 한곳에서 추적합니다.",
+  "addManual": "수동 CAPA 추가",
+  "stats": {
+    "total": "전체",
+    "overdue": "지연",
+    "active": "진행 중",
+    "completed": "완료"
+  },
+  "list": {
+    "title": "CAPA 목록",
+    "description": "회사, 상태, 우선순위 및 텍스트 검색으로 레코드를 필터링합니다."
+  },
+  "searchPlaceholder": "코드, 제목, 근본 원인 검색…",
+  "filters": {
+    "allStatuses": "모든 상태",
+    "allPriorities": "모든 우선순위",
+    "allCompanies": "모든 회사"
+  },
+  "priorities": {
+    "low": "낮음",
+    "medium": "보통",
+    "high": "높음",
+    "critical": "심각"
+  },
+  "statuses": {
+    "tracking": "추적 중",
+    "in_progress": "처리 중",
+    "on_hold": "보류",
+    "completed": "종료",
+    "overdue": "지연"
+  },
+  "loading": "불러오는 중…",
+  "empty": {
+    "title": "일치하는 CAPA 레코드 없음",
+    "hint": "필터를 지우거나 사고 기록 흐름에서 새 CAPA를 만드세요."
+  },
+  "card": {
+    "codeFallback": "CAPA",
+    "sourceLabel": "출처:",
+    "standalone": "독립 레코드",
+    "noCompany": "회사 미지정",
+    "deadline": "기한",
+    "responsible": "담당:",
+    "unassigned": "미배정",
+    "completion": "{percent}% 완료",
+    "detail": "상세"
+  }
+}

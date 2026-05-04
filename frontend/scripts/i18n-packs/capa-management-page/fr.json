@@ -1,0 +1,50 @@
+{
+  "title": "Gestion CAPA",
+  "description": "Suivez vos actions correctives et préventives au même endroit.",
+  "addManual": "Ajouter une CAPA manuelle",
+  "stats": {
+    "total": "Total",
+    "overdue": "En retard",
+    "active": "Actives",
+    "completed": "Terminées"
+  },
+  "list": {
+    "title": "Liste CAPA",
+    "description": "Filtrez par entreprise, statut, priorité et recherche texte."
+  },
+  "searchPlaceholder": "Rechercher code, titre, cause racine…",
+  "filters": {
+    "allStatuses": "Tous les statuts",
+    "allPriorities": "Toutes les priorités",
+    "allCompanies": "Toutes les entreprises"
+  },
+  "priorities": {
+    "low": "Faible",
+    "medium": "Moyenne",
+    "high": "Élevée",
+    "critical": "Critique"
+  },
+  "statuses": {
+    "tracking": "Suivi en cours",
+    "in_progress": "En cours de traitement",
+    "on_hold": "En attente",
+    "completed": "Clôturée",
+    "overdue": "En retard"
+  },
+  "loading": "Chargement…",
+  "empty": {
+    "title": "Aucun enregistrement CAPA correspondant",
+    "hint": "Effacez les filtres ou créez une nouvelle CAPA depuis le flux incident."
+  },
+  "card": {
+    "codeFallback": "CAPA",
+    "sourceLabel": "Source :",
+    "standalone": "Enregistrement autonome",
+    "noCompany": "Entreprise non indiquée",
+    "deadline": "Échéance",
+    "responsible": "Responsable :",
+    "unassigned": "Non assigné",
+    "completion": "{percent} % terminé",
+    "detail": "Détails"
+  }
+}

@@ -6001,5 +6001,55 @@
       "viewer": "Pembaca",
       "admin": "Admin"
     }
+  },
+  "capaManagementPage": {
+    "title": "Manajemen CAPA",
+    "description": "Pantau tindakan korektif dan preventif Anda di satu tempat.",
+    "addManual": "Tambah CAPA manual",
+    "stats": {
+      "total": "Total",
+      "overdue": "Terlambat",
+      "active": "Aktif",
+      "completed": "Selesai"
+    },
+    "list": {
+      "title": "Daftar CAPA",
+      "description": "Saring rekaman berdasarkan perusahaan, status, prioritas, dan pencarian teks."
+    },
+    "searchPlaceholder": "Cari kode, judul, akar masalah…",
+    "filters": {
+      "allStatuses": "Semua status",
+      "allPriorities": "Semua prioritas",
+      "allCompanies": "Semua perusahaan"
+    },
+    "priorities": {
+      "low": "Rendah",
+      "medium": "Sedang",
+      "high": "Tinggi",
+      "critical": "Kritis"
+    },
+    "statuses": {
+      "tracking": "Dalam pelacakan",
+      "in_progress": "Sedang diproses",
+      "on_hold": "Ditahan",
+      "completed": "Ditutup",
+      "overdue": "Terlambat"
+    },
+    "loading": "Memuat…",
+    "empty": {
+      "title": "Tidak ada rekaman CAPA yang cocok",
+      "hint": "Hapus filter atau buat CAPA baru dari alur insiden."
+    },
+    "card": {
+      "codeFallback": "CAPA",
+      "sourceLabel": "Sumber:",
+      "standalone": "Rekaman mandiri",
+      "noCompany": "Perusahaan tidak ditentukan",
+      "deadline": "Batas waktu",
+      "responsible": "Penanggung jawab:",
+      "unassigned": "Belum ditugaskan",
+      "completion": "{percent}% selesai",
+      "detail": "Detail"
+    }
   }
 }

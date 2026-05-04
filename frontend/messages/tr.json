@@ -3010,7 +3010,8 @@
         "addDecision": "+ Karar Ekle",
         "decisionText": "Karar metni",
         "nextDate": "Sonraki Toplantı Tarihi"
-      }
+      },
+      "location": "Lokasyon"
     },
     "personnel": {
       "title": "Personel Yönetimi",
@@ -5659,7 +5660,8 @@
       "emptyHasTemplatesTitle": "Bir checklist seçin veya yenisini oluşturun",
       "emptyHasTemplatesBody": "Sol listeden bir şablon seçerek ayrıntılarını görebilir, denetimi başlatabilir veya Nova ile kendi checklist'inizi üretebilirsiniz.",
       "emptyOpenStudio": "Nova stüdyosunu aç",
-      "questionsWord": "soru"
+      "questionsWord": "soru",
+      "statusArchived": "Arşivli"
     },
     "inspection": {
       "selectChecklistTitle": "Önce bir checklist seçin",
@@ -5998,6 +6000,56 @@
       "employeeRepresentative": "Çalışan temsilcisi",
       "viewer": "Görüntüleyici",
       "admin": "Yönetici"
+    }
+  },
+  "capaManagementPage": {
+    "title": "DÖF Yönetimi",
+    "description": "Düzeltici ve önleyici faaliyetlerinizi merkezi olarak izleyin.",
+    "addManual": "Manuel DÖF Ekle",
+    "stats": {
+      "total": "Toplam",
+      "overdue": "Gecikmiş",
+      "active": "Aktif",
+      "completed": "Tamamlanan"
+    },
+    "list": {
+      "title": "DÖF Listesi",
+      "description": "Firma, durum, öncelik ve metin aramasıyla kayıtları süzebilirsiniz."
+    },
+    "searchPlaceholder": "Kod, başlık, kök neden ara...",
+    "filters": {
+      "allStatuses": "Tüm durumlar",
+      "allPriorities": "Tüm öncelikler",
+      "allCompanies": "Tüm firmalar"
+    },
+    "priorities": {
+      "low": "Düşük",
+      "medium": "Orta",
+      "high": "Yüksek",
+      "critical": "Kritik"
+    },
+    "statuses": {
+      "tracking": "Takip Ediliyor",
+      "in_progress": "İşlem Görüyor",
+      "on_hold": "Bekletiliyor",
+      "completed": "Sonuçlandırıldı",
+      "overdue": "Gecikmiş"
+    },
+    "loading": "Yükleniyor...",
+    "empty": {
+      "title": "Eşleşen DÖF kaydı yok",
+      "hint": "Filtreleri temizleyin veya olay kaydı akışından yeni DÖF oluşturun."
+    },
+    "card": {
+      "codeFallback": "DÖF",
+      "sourceLabel": "Kaynak:",
+      "standalone": "Bağımsız kayıt",
+      "noCompany": "Firma belirtilmedi",
+      "deadline": "Termin",
+      "responsible": "Sorumlu:",
+      "unassigned": "Atanmadı",
+      "completion": "{percent}% tamamlandı",
+      "detail": "Detay"
     }
   }
 }

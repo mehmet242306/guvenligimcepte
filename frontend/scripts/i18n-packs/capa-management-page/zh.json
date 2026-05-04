@@ -1,0 +1,50 @@
+{
+  "title": "CAPA 管理",
+  "description": "在一个地方集中跟踪纠正与预防措施。",
+  "addManual": "手动添加 CAPA",
+  "stats": {
+    "total": "总计",
+    "overdue": "逾期",
+    "active": "进行中",
+    "completed": "已完成"
+  },
+  "list": {
+    "title": "CAPA 列表",
+    "description": "可按公司、状态、优先级和文本搜索筛选记录。"
+  },
+  "searchPlaceholder": "搜索编号、标题、根本原因…",
+  "filters": {
+    "allStatuses": "全部状态",
+    "allPriorities": "全部优先级",
+    "allCompanies": "全部公司"
+  },
+  "priorities": {
+    "low": "低",
+    "medium": "中",
+    "high": "高",
+    "critical": "严重"
+  },
+  "statuses": {
+    "tracking": "跟踪中",
+    "in_progress": "处理中",
+    "on_hold": "暂停",
+    "completed": "已关闭",
+    "overdue": "逾期"
+  },
+  "loading": "加载中…",
+  "empty": {
+    "title": "没有匹配的 CAPA 记录",
+    "hint": "请清除筛选条件，或从事故记录流程创建新的 CAPA。"
+  },
+  "card": {
+    "codeFallback": "CAPA",
+    "sourceLabel": "来源：",
+    "standalone": "独立记录",
+    "noCompany": "未指定公司",
+    "deadline": "截止日期",
+    "responsible": "负责人：",
+    "unassigned": "未分配",
+    "completion": "已完成 {percent}%",
+    "detail": "详情"
+  }
+}

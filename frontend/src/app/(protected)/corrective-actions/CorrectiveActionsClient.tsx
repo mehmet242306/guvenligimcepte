@@ -2,25 +2,43 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { AlertTriangle, CheckCircle2, Clock3, ListTodo, Plus, Search } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { fetchCorrectiveActions, type CorrectiveActionRecord } from "@/lib/supabase/corrective-actions-api";
+import {
+  fetchCorrectiveActions,
+  type CorrectiveActionPriority,
+  type CorrectiveActionRecord,
+} from "@/lib/supabase/corrective-actions-api";
 
-const statusMeta: Record<
-  CorrectiveActionRecord["status"],
-  { label: string; badge: "accent" | "warning" | "neutral" | "success" | "danger" }
-> = {
-  tracking: { label: "Takip Ediliyor", badge: "accent" },
-  in_progress: { label: "İşlem Görüyor", badge: "warning" },
-  on_hold: { label: "Bekletiliyor", badge: "neutral" },
-  completed: { label: "Sonuçlandırıldı", badge: "success" },
-  overdue: { label: "Gecikmiş", badge: "danger" },
+const PRIORITY_ORDER: CorrectiveActionPriority[] = ["Düşük", "Orta", "Yüksek", "Kritik"];
+
+const PRIORITY_I18N_KEY: Record<CorrectiveActionPriority, "low" | "medium" | "high" | "critical"> = {
+  Düşük: "low",
+  Orta: "medium",
+  Yüksek: "high",
+  Kritik: "critical",
 };
 
 export function CorrectiveActionsClient() {
+  const t = useTranslations("capaManagementPage");
+
+  const statusMeta = useMemo(
+    (): Record<
+      CorrectiveActionRecord["status"],
+      { label: string; badge: "accent" | "warning" | "neutral" | "success" | "danger" }
+    > => ({
+      tracking: { label: t("statuses.tracking"), badge: "accent" },
+      in_progress: { label: t("statuses.in_progress"), badge: "warning" },
+      on_hold: { label: t("statuses.on_hold"), badge: "neutral" },
+      completed: { label: t("statuses.completed"), badge: "success" },
+      overdue: { label: t("statuses.overdue"), badge: "danger" },
+    }),
+    [t],
+  );
   const [items, setItems] = useState<CorrectiveActionRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -63,31 +81,33 @@ export function CorrectiveActionsClient() {
     });
   }, [items, search, statusFilter, priorityFilter, companyFilter]);
 
+  const statusKeys: CorrectiveActionRecord["status"][] = ["tracking", "in_progress", "on_hold", "completed", "overdue"];
+
   return (
     <div className="page-stack">
       <PageHeader
-        title="DÖF Yönetimi"
-        description="Düzeltici ve önleyici faaliyetlerinizi merkezi olarak izleyin."
+        title={t("title")}
+        description={t("description")}
         actions={
           <Link href="/incidents/new">
             <Button variant="accent">
-              <Plus className="mr-1 size-4" /> Manuel DÖF Ekle
+              <Plus className="mr-1 size-4" /> {t("addManual")}
             </Button>
           </Link>
         }
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Toplam" value={stats.total} icon={ListTodo} />
-        <StatCard title="Gecikmiş" value={stats.overdue} icon={AlertTriangle} tone="danger" />
-        <StatCard title="Aktif" value={stats.active} icon={Clock3} tone="warning" />
-        <StatCard title="Tamamlanan" value={stats.completed} icon={CheckCircle2} tone="success" />
+        <StatCard title={t("stats.total")} value={stats.total} icon={ListTodo} />
+        <StatCard title={t("stats.overdue")} value={stats.overdue} icon={AlertTriangle} tone="danger" />
+        <StatCard title={t("stats.active")} value={stats.active} icon={Clock3} tone="warning" />
+        <StatCard title={t("stats.completed")} value={stats.completed} icon={CheckCircle2} tone="success" />
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>DÖF Listesi</CardTitle>
-          <CardDescription>Firma, durum, öncelik ve metin aramasıyla kayıtları süzebilirsiniz.</CardDescription>
+          <CardTitle>{t("list.title")}</CardTitle>
+          <CardDescription>{t("list.description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -96,7 +116,7 @@ export function CorrectiveActionsClient() {
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Kod, başlık, kök neden ara..."
+                placeholder={t("searchPlaceholder")}
                 className="h-11 w-full rounded-xl border border-border bg-input pl-10 pr-3 text-sm text-foreground"
               />
             </label>
@@ -105,30 +125,31 @@ export function CorrectiveActionsClient() {
               onChange={(event) => setStatusFilter(event.target.value as CorrectiveActionRecord["status"] | "all")}
               className="h-11 rounded-xl border border-border bg-input px-3 text-sm text-foreground"
             >
-              <option value="all">Tüm durumlar</option>
-              <option value="tracking">Takip Ediliyor</option>
-              <option value="in_progress">İşlem Görüyor</option>
-              <option value="on_hold">Bekletiliyor</option>
-              <option value="completed">Sonuçlandırıldı</option>
-              <option value="overdue">Gecikmiş</option>
+              <option value="all">{t("filters.allStatuses")}</option>
+              {statusKeys.map((s) => (
+                <option key={s} value={s}>
+                  {t(`statuses.${s}`)}
+                </option>
+              ))}
             </select>
             <select
               value={priorityFilter}
               onChange={(event) => setPriorityFilter(event.target.value as CorrectiveActionRecord["priority"] | "all")}
               className="h-11 rounded-xl border border-border bg-input px-3 text-sm text-foreground"
             >
-              <option value="all">Tüm öncelikler</option>
-              <option value="Düşük">Düşük</option>
-              <option value="Orta">Orta</option>
-              <option value="Yüksek">Yüksek</option>
-              <option value="Kritik">Kritik</option>
+              <option value="all">{t("filters.allPriorities")}</option>
+              {PRIORITY_ORDER.map((p) => (
+                <option key={p} value={p}>
+                  {t(`priorities.${PRIORITY_I18N_KEY[p]}`)}
+                </option>
+              ))}
             </select>
             <select
               value={companyFilter}
               onChange={(event) => setCompanyFilter(event.target.value)}
               className="h-11 rounded-xl border border-border bg-input px-3 text-sm text-foreground"
             >
-              <option value="all">Tüm firmalar</option>
+              <option value="all">{t("filters.allCompanies")}</option>
               {companyOptions.map((company) => (
                 <option key={company} value={company ?? ""}>
                   {company}
@@ -138,11 +159,11 @@ export function CorrectiveActionsClient() {
           </div>
 
           {loading ? (
-            <p className="text-sm text-muted-foreground">Yükleniyor...</p>
+            <p className="text-sm text-muted-foreground">{t("loading")}</p>
           ) : filteredItems.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border p-8 text-center">
-              <p className="text-base font-semibold text-foreground">Eşleşen DÖF kaydı yok</p>
-              <p className="mt-2 text-sm text-muted-foreground">Filtreleri temizleyin veya olay kaydı akışından yeni DÖF oluşturun.</p>
+              <p className="text-base font-semibold text-foreground">{t("empty.title")}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{t("empty.hint")}</p>
             </div>
           ) : (
             filteredItems.map((item) => (
@@ -150,25 +171,32 @@ export function CorrectiveActionsClient() {
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="text-sm font-semibold text-foreground">{item.code ?? "DÖF"}</p>
+                      <p className="text-sm font-semibold text-foreground">{item.code ?? t("card.codeFallback")}</p>
                       <Badge variant={statusMeta[item.status].badge}>{statusMeta[item.status].label}</Badge>
                     </div>
                     <p className="mt-1 text-base font-semibold text-foreground">{item.title}</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Kaynak: {item.incidentCode ?? "Bağımsız kayıt"} · {item.companyName ?? "Firma belirtilmedi"}
+                      {t("card.sourceLabel")}{" "}
+                      {item.incidentCode ?? t("card.standalone")} · {item.companyName ?? t("card.noCompany")}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-muted-foreground">Termin</p>
+                    <p className="text-xs text-muted-foreground">{t("card.deadline")}</p>
                     <p className="text-sm font-medium text-foreground">{item.deadline}</p>
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between gap-3">
-                  <p className="text-xs text-muted-foreground">Sorumlu: {item.responsibleRole ?? "Atanmadı"}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("card.responsible")} {item.responsibleRole ?? t("card.unassigned")}
+                  </p>
                   <div className="flex items-center gap-3">
-                    <p className="text-xs text-muted-foreground">%{item.completionPercentage} tamamlandı</p>
+                    <p className="text-xs text-muted-foreground">
+                      {t("card.completion", { percent: item.completionPercentage })}
+                    </p>
                     <Link href={`/corrective-actions/${item.id}`}>
-                      <Button variant="outline" size="sm">Detay</Button>
+                      <Button variant="outline" size="sm">
+                        {t("card.detail")}
+                      </Button>
                     </Link>
                   </div>
                 </div>

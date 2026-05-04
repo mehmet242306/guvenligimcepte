@@ -1,0 +1,50 @@
+{
+  "title": "إدارة CAPA",
+  "description": "تتبع الإجراءات التصحيحية والوقائية في مكان واحد.",
+  "addManual": "إضافة CAPA يدويًا",
+  "stats": {
+    "total": "الإجمالي",
+    "overdue": "متأخر",
+    "active": "نشط",
+    "completed": "مكتمل"
+  },
+  "list": {
+    "title": "قائمة CAPA",
+    "description": "صفِ السجلات حسب الشركة والحالة والأولوية والبحث النصي."
+  },
+  "searchPlaceholder": "ابحث بالرمز أو العنوان أو السبب الجذري…",
+  "filters": {
+    "allStatuses": "جميع الحالات",
+    "allPriorities": "جميع الأولويات",
+    "allCompanies": "جميع الشركات"
+  },
+  "priorities": {
+    "low": "منخفض",
+    "medium": "متوسط",
+    "high": "مرتفع",
+    "critical": "حرج"
+  },
+  "statuses": {
+    "tracking": "قيد المتابعة",
+    "in_progress": "قيد المعالجة",
+    "on_hold": "معلّق",
+    "completed": "مغلق",
+    "overdue": "متأخر"
+  },
+  "loading": "جارٍ التحميل…",
+  "empty": {
+    "title": "لا توجد سجلات CAPA مطابقة",
+    "hint": "امسح المرشحات أو أنشئ CAPA جديدة من تدفق سجل الحوادث."
+  },
+  "card": {
+    "codeFallback": "CAPA",
+    "sourceLabel": "المصدر:",
+    "standalone": "سجل مستقل",
+    "noCompany": "لم يُذكر اسم الشركة",
+    "deadline": "الموعد النهائي",
+    "responsible": "المسؤول:",
+    "unassigned": "غير معيّن",
+    "completion": "{percent}% مكتمل",
+    "detail": "التفاصيل"
+  }
+}

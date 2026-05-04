@@ -3010,7 +3010,8 @@
         "addDecision": "+ Add Decision",
         "decisionText": "Decision text",
         "nextDate": "Next Meeting Date"
-      }
+      },
+      "location": "Location"
     },
     "personnel": {
       "title": "Personnel Management",
@@ -5659,7 +5660,8 @@
       "emptyHasTemplatesTitle": "Select a checklist or create a new one",
       "emptyHasTemplatesBody": "Pick a template from the list on the left to see details, start an inspection, or generate your own checklist with Nova.",
       "emptyOpenStudio": "Open Nova studio",
-      "questionsWord": "questions"
+      "questionsWord": "questions",
+      "statusArchived": "Archived"
     },
     "inspection": {
       "selectChecklistTitle": "Select a checklist first",
@@ -5804,6 +5806,56 @@
     },
     "sidebarDefaultTitle": "Subcategories",
     "sidebarDefaultEmpty": "No content."
+  },
+  "capaManagementPage": {
+    "title": "CAPA management",
+    "description": "Track your corrective and preventive actions in one place.",
+    "addManual": "Add manual CAPA",
+    "stats": {
+      "total": "Total",
+      "overdue": "Overdue",
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "list": {
+      "title": "CAPA list",
+      "description": "Filter records by company, status, priority, and text search."
+    },
+    "searchPlaceholder": "Search code, title, root cause…",
+    "filters": {
+      "allStatuses": "All statuses",
+      "allPriorities": "All priorities",
+      "allCompanies": "All companies"
+    },
+    "priorities": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "statuses": {
+      "tracking": "Under tracking",
+      "in_progress": "In progress",
+      "on_hold": "On hold",
+      "completed": "Closed out",
+      "overdue": "Overdue"
+    },
+    "loading": "Loading…",
+    "empty": {
+      "title": "No matching CAPA records",
+      "hint": "Clear filters or create a new CAPA from the incident record flow."
+    },
+    "card": {
+      "codeFallback": "CAPA",
+      "sourceLabel": "Source:",
+      "standalone": "Standalone record",
+      "noCompany": "No company specified",
+      "deadline": "Due date",
+      "responsible": "Responsible:",
+      "unassigned": "Unassigned",
+      "completion": "{percent}% complete",
+      "detail": "Details"
+    }
   },
   "workspaceOnboarding": {
     "eyebrow": "Workspaces",

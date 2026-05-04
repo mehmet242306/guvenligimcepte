@@ -6001,5 +6001,55 @@
       "viewer": "Baxıcı",
       "admin": "Admin"
     }
+  },
+  "capaManagementPage": {
+    "title": "CAPA idarəetməsi",
+    "description": "Düzəldici və qarşısını alan tədbirləri mərkəzləşdirilmiş izləyin.",
+    "addManual": "Manual CAPA əlavə et",
+    "stats": {
+      "total": "Cəmi",
+      "overdue": "Gecikmiş",
+      "active": "Aktiv",
+      "completed": "Tamamlanıb"
+    },
+    "list": {
+      "title": "CAPA siyahısı",
+      "description": "Şirkət, status, prioritet və mətn axtarışı ilə qeydləri süzün."
+    },
+    "searchPlaceholder": "Kod, başlıq, kök səbəb axtar…",
+    "filters": {
+      "allStatuses": "Bütün statuslar",
+      "allPriorities": "Bütün prioritetlər",
+      "allCompanies": "Bütün şirkətlər"
+    },
+    "priorities": {
+      "low": "Aşağı",
+      "medium": "Orta",
+      "high": "Yüksək",
+      "critical": "Kritik"
+    },
+    "statuses": {
+      "tracking": "İzlənir",
+      "in_progress": "İcrada",
+      "on_hold": "Gözləmədə",
+      "completed": "Bağlanıb",
+      "overdue": "Gecikmiş"
+    },
+    "loading": "Yüklənir…",
+    "empty": {
+      "title": "Uyğun CAPA qeydi yoxdur",
+      "hint": "Filtrləri təmizləyin və ya hadisə axınından yeni CAPA yaradın."
+    },
+    "card": {
+      "codeFallback": "CAPA",
+      "sourceLabel": "Mənbə:",
+      "standalone": "Müstəqil qeyd",
+      "noCompany": "Şirkət göstərilməyib",
+      "deadline": "Son tarix",
+      "responsible": "Məsul:",
+      "unassigned": "Təyin edilməyib",
+      "completion": "{percent}% tamamlanıb",
+      "detail": "Ətraflı"
+    }
   }
 }

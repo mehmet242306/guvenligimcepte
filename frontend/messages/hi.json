@@ -6001,5 +6001,55 @@
       "viewer": "दर्शक",
       "admin": "व्यवस्थापक"
     }
+  },
+  "capaManagementPage": {
+    "title": "CAPA प्रबंधन",
+    "description": "अपनी सुधारात्मक और निवारक कार्रवाइयों को एक स्थान पर ट्रैक करें।",
+    "addManual": "मैन्युअल CAPA जोड़ें",
+    "stats": {
+      "total": "कुल",
+      "overdue": "अतिदेय",
+      "active": "सक्रिय",
+      "completed": "पूर्ण"
+    },
+    "list": {
+      "title": "CAPA सूची",
+      "description": "कंपनी, स्थिति, प्राथमिकता और टेक्स्ट खोज से रिकॉर्ड फ़िल्टर करें।"
+    },
+    "searchPlaceholder": "कोड, शीर्षक, मूल कारण खोजें…",
+    "filters": {
+      "allStatuses": "सभी स्थितियाँ",
+      "allPriorities": "सभी प्राथमिकताएँ",
+      "allCompanies": "सभी कंपनियाँ"
+    },
+    "priorities": {
+      "low": "निम्न",
+      "medium": "मध्यम",
+      "high": "उच्च",
+      "critical": "गंभीर"
+    },
+    "statuses": {
+      "tracking": "ट्रैकिंग में",
+      "in_progress": "प्रगति पर",
+      "on_hold": "स्थगित",
+      "completed": "बंद",
+      "overdue": "अतिदेय"
+    },
+    "loading": "लोड हो रहा है…",
+    "empty": {
+      "title": "कोई मेल खाता CAPA रिकॉर्ड नहीं",
+      "hint": "फ़िल्टर साफ़ करें या घटना प्रवाह से नया CAPA बनाएँ।"
+    },
+    "card": {
+      "codeFallback": "CAPA",
+      "sourceLabel": "स्रोत:",
+      "standalone": "स्वतंत्र रिकॉर्ड",
+      "noCompany": "कंपनी निर्दिष्ट नहीं",
+      "deadline": "समय सीमा",
+      "responsible": "ज़िम्मेदार:",
+      "unassigned": "असाइन नहीं",
+      "completion": "{percent}% पूर्ण",
+      "detail": "विवरण"
+    }
   }
 }

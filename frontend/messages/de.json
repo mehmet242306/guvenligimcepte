@@ -6001,5 +6001,55 @@
       "viewer": "Nur-Lese-Zugriff",
       "admin": "Administrator"
     }
+  },
+  "capaManagementPage": {
+    "title": "CAPA-Verwaltung",
+    "description": "Behalten Sie korrigierende und vorbeugende Maßnahmen zentral im Blick.",
+    "addManual": "Manuelle CAPA hinzufügen",
+    "stats": {
+      "total": "Gesamt",
+      "overdue": "Überfällig",
+      "active": "Aktiv",
+      "completed": "Abgeschlossen"
+    },
+    "list": {
+      "title": "CAPA-Liste",
+      "description": "Datensätze nach Firma, Status, Priorität und Volltext filtern."
+    },
+    "searchPlaceholder": "Code, Titel, Ursache suchen…",
+    "filters": {
+      "allStatuses": "Alle Status",
+      "allPriorities": "Alle Prioritäten",
+      "allCompanies": "Alle Firmen"
+    },
+    "priorities": {
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "high": "Hoch",
+      "critical": "Kritisch"
+    },
+    "statuses": {
+      "tracking": "In Nachverfolgung",
+      "in_progress": "In Bearbeitung",
+      "on_hold": "Zurückgestellt",
+      "completed": "Abgeschlossen",
+      "overdue": "Überfällig"
+    },
+    "loading": "Wird geladen…",
+    "empty": {
+      "title": "Keine passenden CAPA-Einträge",
+      "hint": "Filter zurücksetzen oder im Vorfallprozess eine neue CAPA anlegen."
+    },
+    "card": {
+      "codeFallback": "CAPA",
+      "sourceLabel": "Quelle:",
+      "standalone": "Eigenständiger Eintrag",
+      "noCompany": "Keine Firma angegeben",
+      "deadline": "Frist",
+      "responsible": "Verantwortlich:",
+      "unassigned": "Nicht zugewiesen",
+      "completion": "{percent} % erledigt",
+      "detail": "Details"
+    }
   }
 }

@@ -1,0 +1,50 @@
+{
+  "title": "Управление CAPA",
+  "description": "Централизованно отслеживайте корректирующие и предупреждающие действия.",
+  "addManual": "Добавить CAPA вручную",
+  "stats": {
+    "total": "Всего",
+    "overdue": "Просрочено",
+    "active": "Активные",
+    "completed": "Завершено"
+  },
+  "list": {
+    "title": "Список CAPA",
+    "description": "Фильтруйте записи по компании, статусу, приоритету и тексту."
+  },
+  "searchPlaceholder": "Поиск по коду, заголовку, корневой причине…",
+  "filters": {
+    "allStatuses": "Все статусы",
+    "allPriorities": "Все приоритеты",
+    "allCompanies": "Все компании"
+  },
+  "priorities": {
+    "low": "Низкий",
+    "medium": "Средний",
+    "high": "Высокий",
+    "critical": "Критический"
+  },
+  "statuses": {
+    "tracking": "На контроле",
+    "in_progress": "В работе",
+    "on_hold": "Приостановлено",
+    "completed": "Закрыто",
+    "overdue": "Просрочено"
+  },
+  "loading": "Загрузка…",
+  "empty": {
+    "title": "Нет подходящих записей CAPA",
+    "hint": "Сбросьте фильтры или создайте новую CAPA в потоке инцидентов."
+  },
+  "card": {
+    "codeFallback": "CAPA",
+    "sourceLabel": "Источник:",
+    "standalone": "Автономная запись",
+    "noCompany": "Компания не указана",
+    "deadline": "Срок",
+    "responsible": "Ответственный:",
+    "unassigned": "Не назначено",
+    "completion": "{percent} % выполнено",
+    "detail": "Подробнее"
+  }
+}

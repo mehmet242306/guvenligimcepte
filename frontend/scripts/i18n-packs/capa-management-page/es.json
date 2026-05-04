@@ -1,0 +1,50 @@
+{
+  "title": "Gestión CAPA",
+  "description": "Supervise sus acciones correctivas y preventivas en un solo lugar.",
+  "addManual": "Añadir CAPA manual",
+  "stats": {
+    "total": "Total",
+    "overdue": "Vencidas",
+    "active": "Activas",
+    "completed": "Completadas"
+  },
+  "list": {
+    "title": "Lista CAPA",
+    "description": "Filtre registros por empresa, estado, prioridad y búsqueda de texto."
+  },
+  "searchPlaceholder": "Buscar código, título, causa raíz…",
+  "filters": {
+    "allStatuses": "Todos los estados",
+    "allPriorities": "Todas las prioridades",
+    "allCompanies": "Todas las empresas"
+  },
+  "priorities": {
+    "low": "Baja",
+    "medium": "Media",
+    "high": "Alta",
+    "critical": "Crítica"
+  },
+  "statuses": {
+    "tracking": "En seguimiento",
+    "in_progress": "En curso",
+    "on_hold": "En espera",
+    "completed": "Cerrada",
+    "overdue": "Vencida"
+  },
+  "loading": "Cargando…",
+  "empty": {
+    "title": "No hay registros CAPA coincidentes",
+    "hint": "Borre los filtros o cree una nueva CAPA desde el flujo de incidentes."
+  },
+  "card": {
+    "codeFallback": "CAPA",
+    "sourceLabel": "Origen:",
+    "standalone": "Registro independiente",
+    "noCompany": "Empresa no indicada",
+    "deadline": "Plazo",
+    "responsible": "Responsable:",
+    "unassigned": "Sin asignar",
+    "completion": "{percent} % completado",
+    "detail": "Detalle"
+  }
+}
