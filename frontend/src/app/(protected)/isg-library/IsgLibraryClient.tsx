@@ -112,7 +112,7 @@ type CategoryDefinition = {
 
 type CustomSubcategoryMap = Partial<Record<Exclude<CategoryKey, "all">, string[]>>;
 
-type DeleteMode = "source" | "company";
+type DeleteMode = "source" | "company" | "template";
 
 type CategoryTone = {
   tabActive: string;
@@ -712,6 +712,7 @@ export function IsgLibraryClient() {
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [legacyItems, setLegacyItems] = useState<UnifiedLibraryItem[]>([]);
   const [savedItems, setSavedItems] = useState<CompanyLibraryItemRecord[]>([]);
+  const [deletedTemplateIds, setDeletedTemplateIds] = useState<string[]>([]);
 
   const [assignModalOpen, setAssignModalOpen] = useState(false);
   const [assigning, setAssigning] = useState(false);
@@ -780,6 +781,23 @@ export function IsgLibraryClient() {
       JSON.stringify(customSubcategories),
     );
   }, [customSubcategories]);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem("risknova:isg-library-deleted-templates");
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      setDeletedTemplateIds(
+        Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [],
+      );
+    } catch {
+      // Ignore malformed local storage entries.
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("risknova:isg-library-deleted-templates", JSON.stringify(deletedTemplateIds));
+  }, [deletedTemplateIds]);
 
   useEffect(() => {
     let cancelled = false;
@@ -1026,8 +1044,12 @@ export function IsgLibraryClient() {
       templateId: null,
     }));
 
-    return [...catalogItems, ...legacyItems];
-  }, [contents, legacyItems, t]);
+    const deletedTemplates = new Set(deletedTemplateIds);
+    return [
+      ...catalogItems,
+      ...legacyItems.filter((item) => item.sourceKind !== "template" || !deletedTemplates.has(item.id)),
+    ];
+  }, [contents, deletedTemplateIds, legacyItems, t]);
 
   const savedCompaniesByContent = useMemo(() => {
     const map = new Map<string, string[]>();
@@ -1470,6 +1492,12 @@ export function IsgLibraryClient() {
         return;
       }
 
+      if (mode === "template") {
+        setDeletedTemplateIds((current) => (current.includes(item.id) ? current : [...current, item.id]));
+        setStatusMessage(t("status.contentDeleted", { title }));
+        return;
+      }
+
       const ok =
         item.sourceKind === "survey" && item.sourceId
           ? await deleteSurvey(item.sourceId)
@@ -1527,12 +1555,14 @@ export function IsgLibraryClient() {
     const isFullyAssigned = companies.length > 0 && availableCompanies.length === 0;
     const canAssign = Boolean(item.libraryContentId);
     const deleteMode: DeleteMode | null =
-      (item.sourceKind === "survey" || item.sourceKind === "deck") &&
-      (item.sourceOwnerId === userContext.authUserId || userContext.canManageCatalog)
-        ? "source"
-        : item.libraryContentId && creationCompanyId && assignedCompanyIds.includes(creationCompanyId)
-          ? "company"
-          : null;
+      item.sourceKind === "template"
+        ? "template"
+        : (item.sourceKind === "survey" || item.sourceKind === "deck") &&
+            (item.sourceOwnerId === userContext.authUserId || userContext.canManageCatalog)
+          ? "source"
+          : item.libraryContentId && creationCompanyId && assignedCompanyIds.includes(creationCompanyId)
+            ? "company"
+            : null;
     const isDeleting = deletingItemId === item.id;
     const sourceBadge =
       item.sourceKind === "template"
