@@ -1,0 +1,245 @@
+{
+  "deltaBar": {
+    "ariaLabel": "差值条形图 — 九个维度",
+    "datasetDelta": "Δ̂",
+    "title": "偏差严重程度 (Δ̂)"
+  },
+  "deltaRadar": {
+    "ariaLabel": "差值雷达迷你图",
+    "title": "Δ̂ 雷达轮廓"
+  },
+  "dimensions": {
+    "C1": {
+      "name": "危险强度",
+      "source": "视觉 (YOLO)"
+    },
+    "C2": {
+      "name": "PPE 不合规",
+      "source": "视觉 + 记录"
+    },
+    "C3": {
+      "name": "行为风险",
+      "source": "视觉 + 区域"
+    },
+    "C4": {
+      "name": "环境压力",
+      "source": "传感器"
+    },
+    "C5": {
+      "name": "化学/大气",
+      "source": "传感器 + SCADA"
+    },
+    "C6": {
+      "name": "通道/屏障风险",
+      "source": "视觉 + 传感器"
+    },
+    "C7": {
+      "name": "机器/工艺风险",
+      "source": "传感器 + CMMS"
+    },
+    "C8": {
+      "name": "车辆/交通风险",
+      "source": "视觉 + RTLS"
+    },
+    "C9": {
+      "name": "组织负荷/疲劳",
+      "source": "记录 + 传感器"
+    }
+  },
+  "doughnut": {
+    "ariaLabel": "优先级份额环形图",
+    "empty": "无损坏维度",
+    "title": "优先级贡献份额"
+  },
+  "gauge": {
+    "riskCritical": "严重风险",
+    "riskHigh": "高风险",
+    "riskLow": "低风险",
+    "riskMedium": "中等风险",
+    "title": "R₂D-RCA 评分"
+  },
+  "heatmap": {
+    "ariaLabel": "九维度热力图 — t₀ / t₁ / 差值",
+    "colDelta": "Δ̂ (增加)",
+    "colDimension": "维度",
+    "colT0": "t₀ (之前)",
+    "colT1": "t₁ (事故时)",
+    "title": "维度热力图"
+  },
+  "metricCards": {
+    "baseScoreBadge": "基础评分",
+    "dualHint": "两个候选项 — 手动决策",
+    "dualReportingBadge": "双重报告",
+    "maxDeltaCardAria": "最大偏差卡片",
+    "maxDeltaLabel": "最大偏差",
+    "modeCardAria": "计算模式卡片",
+    "modeLabel": "模式",
+    "overrideBadge": "覆盖",
+    "scoreCardAria": "R₂D-RCA 评分卡",
+    "scoreLabel": "R₂D-RCA 评分",
+    "stabilityCardAria": "稳定性定理卡",
+    "stabilityLabel": "稳定性",
+    "stableBadge": "稳定",
+    "stableHint": "单一主导根本原因",
+    "tauExceeded": "τ = 0.40 阈值已超过",
+    "tauNotExceeded": "τ = 0.40 阈值未超过"
+  },
+  "panel": {
+    "aiAnalyze": "AI 分析",
+    "aiAnalyzeAria": "使用 AI 运行分析",
+    "aiAnalyzing": "AI 生成评分中…",
+    "aiAnalyzingFooter": "AI 生成评分中…",
+    "aiEvalDescription": "由 RiskNova AI 生成 · 需要专家审查",
+    "aiEvalTitle": "AI 评估",
+    "aiGenerateScores": "使用 AI 生成评分",
+    "brokenStableLabel": "破坏/稳定",
+    "calculationBase": "基础评分",
+    "calculationOverride": "覆盖",
+    "cardDescription": "九维复合风险指标 · 基于增量的数值根本原因分析",
+    "cardTitle": "R₂D-RCA (C1–C9)",
+    "defaultBannerBody": "基于您的事故描述，AI 为所有九个维度提出 t₀ 和 t₁ 评分。如需要可手动调整。",
+    "defaultBannerTitle": "请先使用 AI 生成评分",
+    "detailDescription": "九维热力图 · 偏差严重程度 (Δ̂) · 优先级份额 · 瀑布图",
+    "detailTitle": "维度详情和优先级分布",
+    "dualReportBody": "最大 Δ̂ 维度 ({maxDeltaCode}) 与最高权重维度 ({weightedCode}) 不同。稳定性条件被破坏 — 报告应包含覆盖模式和基础评分模式。",
+    "dualReportTitle": "⚠ 需要双重报告",
+    "errorAiGeneric": "AI 错误",
+    "errorPdfFailed": "无法生成 PDF",
+    "livePreviewTitle": "实时预览",
+    "loadExample": "加载示例数据",
+    "maxDeltaLabel": "最大 Δ̂",
+    "pdfDownload": "PDF",
+    "pdfDownloaded": "已下载",
+    "pdfDownloadOkTitle": "下载 PDF 报告",
+    "pdfDownloadWarnTitle": "警告：尚未运行 AI 评分 — PDF 可能显示空白图表",
+    "pdfPreparing": "准备 PDF 中…",
+    "pdfShare": "分享 PDF",
+    "pdfShareAria": "分享为 PDF",
+    "pdfShared": "已分享",
+    "pdfShareHoverTitle": "生成 PDF 并通过设备分享表发送（WhatsApp、邮件、AirDrop 等）",
+    "profileDescription": "事故前 (t₀) 与事故时 (t₁) 对比 + 优先级排名",
+    "profileTitle": "九维风险概况 + 根本原因链",
+    "reportFileStem": "r2d-rca-report",
+    "save": "保存",
+    "saveSaving": "保存中…",
+    "saved": "已保存",
+    "scaleBadge": "连续刻度 [0, 1]",
+    "scoresDescription": "各维度的事故前 (t₀) 和事故时 (t₁) 分数。使用滑块调整或通过AI生成。",
+    "scoresTitle": "C1–C9 分数对比",
+    "sharePdfTitle": "R₂D-RCA 分析报告",
+    "shareTextDefault": "R₂D-RCA 分析报告",
+    "shareTextWithIncident": "R₂D-RCA 分析：{title}",
+    "stabilityDual": "双重报告",
+    "stabilityLabel": "稳定性",
+    "stabilityStable": "稳定",
+    "summaryDescription": "分数 · 最大偏差 · 定理状态 · 覆盖",
+    "summaryTitle": "执行摘要",
+    "weightLabel": "w = {value}"
+  },
+  "pdf": {
+    "calcModeBase": "基础分数模式（加权求和）",
+    "calcModeOverride": "覆盖模式（最大 Δ̂ ≥ 0.40）",
+    "chartDeltaRadarSub": "仅偏差幅度 — 风险增加的位置",
+    "chartDeltaRadarTitle": "Δ̂ 雷达图（9轴）",
+    "chartDeltaSub": "9个维度的偏差条形图，按 C1→C9 排序",
+    "chartDeltaTitle": "偏差严重程度 (Δ̂)",
+    "chartDonutSub": "P(C_i) = w_i · Δ̂_i — 仅损坏维度",
+    "chartDonutTitle": "优先级贡献份额",
+    "chartGaugeSub": "半圆仪表 — 0（绿色）→ 1（红色）",
+    "chartGaugeTitle": "R₂D-RCA 严重程度",
+    "chartHeatmapSub": "t₀ · t₁ · Δ̂ 颜色刻度（绿色→红色）",
+    "chartHeatmapTitle": "9维热力图",
+    "chartPolarSub": "每维度等角度，半径 = Δ̂ 幅度",
+    "chartPolarTitle": "极坐标区域 — 优先级分布",
+    "chartRadarSub": "9轴雷达 — 事故前 vs 事故时",
+    "chartRadarTitle": "风险概况（t₀ vs t₁）",
+    "chartWaterfallSub": "有序优先级贡献 + 总分",
+    "chartWaterfallTitle": "优先级累积（瀑布图）",
+    "defaultReportSubtitle": "九维复合风险指标 · 基于增量的根因分析",
+    "defaultReportTitle": "R₂D-RCA (C1–C9) 分析报告",
+    "donutEmpty": "无损坏维度",
+    "donutTotal": "总计",
+    "dualReportingBadge": "⚠ 需要双重报告",
+    "emptyStateWarning": "⚠ 尚无分析数据。所有维度的 Δ̂ = 0 — 事故前和事故时分数相同。要生成有意义的报告，请先使用 {aiButton} 生成分数或调整滑块，然后重新创建PDF。",
+    "gaugeBrand": "R₂D-RCA",
+    "legendMajor": "主要",
+    "legendMinor": "次要",
+    "legendOverride": "覆盖",
+    "legendSec": "章节",
+    "legendT0": "t₀（之前）",
+    "legendT1": "t₁（事故时）",
+    "notDetermined": "未确定",
+    "polarEmpty": "无破损维度",
+    "popupBlocked": "无法打开打印窗口。请检查您的弹窗拦截器。",
+    "primaryRootsTitle": "主要根本原因",
+    "rootChainEmpty": "无破损维度",
+    "rootChainEmptyAllZero": "无破损维度 — 所有 Δ̂ = 0",
+    "rootChainSub": "按优先级排序的破损维度 — 覆盖/主要/次要类别",
+    "scoreLabel": "R₂D-RCA 评分",
+    "sectionAiNarrative": "AI 评估",
+    "sectionHeatmapWaterfall": "维度详情 · 热图和优先级累积",
+    "sectionPolarDelta": "优先级极坐标分布 + Δ̂ 雷达图",
+    "sectionRanking": "优先级排名",
+    "sectionRootChain": "根本原因链（分类 + 排名）",
+    "sectionScoreTable": "九维评分对比",
+    "sectionStableDims": "稳定维度（Δ̂ = 0）",
+    "statBrokenStable": "破损/稳定",
+    "statMaxDelta": "最大 Δ̂",
+    "statNotTriggered": "未触发",
+    "statOverride": "覆盖",
+    "statTriggered": "已触发",
+    "tableFootnoteLegend": "Δ̂_i = max(0, t₁ − t₀) · 优先级 P(C_i) = w_i · Δ̂_i · [0,1] 连续量表评分 · 越高 = 风险越高",
+    "thDimension": "维度",
+    "thPriority": "优先级",
+    "thRank": "#",
+    "thWeight": "权重",
+    "visualSummaryTitle": "可视化摘要",
+    "waterfallEmpty": "无破损维度",
+    "waterfallFootnote": "优先级累积：C₁→Cₙ → Σ（总计 R_RCA）",
+    "waterfallTotalSymbol": "Σ"
+  },
+  "polar": {
+    "ariaLabel": "极坐标图 — 增量分布",
+    "empty": "无破损维度",
+    "title": "增量极坐标分布"
+  },
+  "radar": {
+    "ariaLabel": "R₂D-RCA 雷达图",
+    "datasetT0": "事故前（t₀）",
+    "datasetT1": "事故时（t₁）",
+    "title": "九维风险概况（t₀ vs t₁）"
+  },
+  "rootChain": {
+    "ariaLabel": "根本原因链 — 四类中的九个维度",
+    "badgeInactive": "未激活",
+    "badgeOverride": "覆盖",
+    "cardTitle": "根本原因链（9/9 维度）",
+    "majorDesc": "0.20 ≤ Δ̂ < 0.40",
+    "majorTitle": "次要因素",
+    "minorDesc": "0 < Δ̂ < 0.20",
+    "minorTitle": "低影响",
+    "noneDesc": "Δ̂ = 0",
+    "noneTitle": "未激活（无变化）",
+    "overrideDesc": "Δ̂ ≥ 0.40 — 触发覆盖",
+    "overrideTitle": "主要根本原因"
+  },
+  "statusCards": {
+    "brokenAria": "损坏维度计数",
+    "brokenLabel": "损坏",
+    "brokenOfNine": "{count} / 9 维度",
+    "overrideActive": "激活",
+    "overrideAria": "覆盖状态",
+    "overrideInactive": "非激活",
+    "overrideLabel": "覆盖",
+    "stableAria": "稳定维度计数",
+    "stableLabel": "稳定",
+    "stableOfNine": "{count} / 9 维度"
+  },
+  "waterfall": {
+    "ariaLabel": "瀑布图 — 贡献分析",
+    "empty": "无损坏维度 — 瀑布图不可用。",
+    "title": "贡献瀑布图",
+    "tooltipContribution": "贡献: {value}",
+    "total": "总计"
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface RCAGaugeProps {
@@ -22,7 +23,9 @@ function scoreColor(score: number): string {
   return "#639922";
 }
 
-export function RCAGauge({ score, label = "R₂D-RCA skoru" }: RCAGaugeProps) {
+export function RCAGauge({ score, label }: RCAGaugeProps) {
+  const t = useTranslations("incidents.r2dRca");
+  const title = label ?? t("gauge.title");
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -98,10 +101,13 @@ export function RCAGauge({ score, label = "R₂D-RCA skoru" }: RCAGaugeProps) {
     ctx.stroke();
   }, [score]);
 
+  const riskBand =
+    score >= 0.6 ? t("gauge.riskCritical") : score >= 0.4 ? t("gauge.riskHigh") : score >= 0.2 ? t("gauge.riskMedium") : t("gauge.riskLow");
+
   return (
-    <Card aria-label={`${label}: ${score.toFixed(3)}`}>
+    <Card aria-label={`${title}: ${score.toFixed(3)}`}>
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm">{label}</CardTitle>
+        <CardTitle className="text-sm">{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="relative" style={{ height: 140 }}>
@@ -112,7 +118,7 @@ export function RCAGauge({ score, label = "R₂D-RCA skoru" }: RCAGaugeProps) {
             {score.toFixed(3)}
           </div>
           <div className="mt-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-            {score >= 0.6 ? "Kritik" : score >= 0.4 ? "Yüksek" : score >= 0.2 ? "Orta" : "Düşük"} risk
+            {riskBand}
           </div>
         </div>
       </CardContent>

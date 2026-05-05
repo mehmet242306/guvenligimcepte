@@ -1,0 +1,247 @@
+{
+  "r2dRca": {
+    "deltaBar": {
+      "ariaLabel": "Graphique en barres delta — neuf dimensions",
+      "datasetDelta": "Δ̂",
+      "title": "Sévérité de déviation (Δ̂)"
+    },
+    "deltaRadar": {
+      "ariaLabel": "Mini graphique radar delta",
+      "title": "Profil radar Δ̂"
+    },
+    "dimensions": {
+      "C1": {
+        "name": "Intensité du danger",
+        "source": "Visuel (YOLO)"
+      },
+      "C2": {
+        "name": "Non-conformité EPI",
+        "source": "Visuel + registres"
+      },
+      "C3": {
+        "name": "Risque comportemental",
+        "source": "Visuel + zone"
+      },
+      "C4": {
+        "name": "Stress environnemental",
+        "source": "Capteur"
+      },
+      "C5": {
+        "name": "Chimique / atmosphérique",
+        "source": "Capteur + SCADA"
+      },
+      "C6": {
+        "name": "Risque d'accès / barrière",
+        "source": "Visuel + capteur"
+      },
+      "C7": {
+        "name": "Risque machine / processus",
+        "source": "Capteur + GMAO"
+      },
+      "C8": {
+        "name": "Risque véhicule / trafic",
+        "source": "Visuel + RTLS"
+      },
+      "C9": {
+        "name": "Charge organisationnelle / fatigue",
+        "source": "Registres + capteur"
+      }
+    },
+    "doughnut": {
+      "ariaLabel": "Graphique en secteurs de répartition des priorités",
+      "empty": "Aucune dimension défaillante",
+      "title": "Part de contribution prioritaire"
+    },
+    "gauge": {
+      "riskCritical": "Risque critique",
+      "riskHigh": "Risque élevé",
+      "riskLow": "Risque faible",
+      "riskMedium": "Risque moyen",
+      "title": "Score R₂D-RCA"
+    },
+    "heatmap": {
+      "ariaLabel": "Carte thermique neuf dimensions — t₀ / t₁ / delta",
+      "colDelta": "Δ̂ (augmentation)",
+      "colDimension": "Dimension",
+      "colT0": "t₀ (avant)",
+      "colT1": "t₁ (à l'incident)",
+      "title": "Carte thermique des dimensions"
+    },
+    "metricCards": {
+      "baseScoreBadge": "SCORE DE BASE",
+      "dualHint": "Deux candidats — décision manuelle",
+      "dualReportingBadge": "DOUBLE SIGNALEMENT",
+      "maxDeltaCardAria": "Carte de déviation maximale",
+      "maxDeltaLabel": "Déviation max",
+      "modeCardAria": "Carte de mode de calcul",
+      "modeLabel": "Mode",
+      "overrideBadge": "SUBSTITUTION",
+      "scoreCardAria": "Carte de score R₂D-RCA",
+      "scoreLabel": "Score R₂D-RCA",
+      "stabilityCardAria": "Carte du théorème de stabilité",
+      "stabilityLabel": "Stabilité",
+      "stableBadge": "STABLE",
+      "stableHint": "Cause racine dominante unique",
+      "tauExceeded": "Seuil τ = 0,40 dépassé",
+      "tauNotExceeded": "Seuil τ = 0,40 non dépassé"
+    },
+    "panel": {
+      "aiAnalyze": "Analyser avec IA",
+      "aiAnalyzeAria": "Exécuter l'analyse avec IA",
+      "aiAnalyzing": "Génération des scores avec IA…",
+      "aiAnalyzingFooter": "Génération des scores avec IA…",
+      "aiEvalDescription": "Généré par RiskNova IA · révision d'expert requise",
+      "aiEvalTitle": "Évaluation IA",
+      "aiGenerateScores": "Générer les scores avec IA",
+      "brokenStableLabel": "Cassé / stable",
+      "calculationBase": "Score de base",
+      "calculationOverride": "Remplacement",
+      "cardDescription": "Métrique de risque composite à neuf dimensions · analyse numérique des causes racines basée sur delta",
+      "cardTitle": "R₂D-RCA (C1–C9)",
+      "defaultBannerBody": "Basé sur votre description d'incident, l'IA propose des scores t₀ et t₁ pour les neuf dimensions. Vous pouvez les ajuster manuellement si nécessaire.",
+      "defaultBannerTitle": "Générer d'abord les scores avec IA",
+      "detailDescription": "Carte thermique à neuf dimensions · sévérité de déviation (Δ̂) · part de priorité · cascade",
+      "detailTitle": "Détail des dimensions et distribution des priorités",
+      "dualReportBody": "La dimension avec le plus grand Δ̂ ({maxDeltaCode}) diffère de la dimension la plus pondérée ({weightedCode}). La condition de stabilité est rompue — le rapport doit inclure le mode de remplacement et le mode de score de base.",
+      "dualReportTitle": "⚠ Rapport dual requis",
+      "errorAiGeneric": "Erreur IA",
+      "errorPdfFailed": "Impossible de générer le PDF",
+      "livePreviewTitle": "Aperçu en direct",
+      "loadExample": "Charger des données d'exemple",
+      "maxDeltaLabel": "Δ̂ max",
+      "pdfDownload": "PDF",
+      "pdfDownloaded": "Téléchargé",
+      "pdfDownloadOkTitle": "Télécharger le rapport PDF",
+      "pdfDownloadWarnTitle": "Attention : Scoring IA pas encore exécuté — le PDF peut afficher des graphiques vides",
+      "pdfPreparing": "Préparation du PDF…",
+      "pdfShare": "Partager PDF",
+      "pdfShareAria": "Partager en PDF",
+      "pdfShared": "Partagé",
+      "pdfShareHoverTitle": "Créer un PDF et envoyer via la feuille de partage de votre appareil (WhatsApp, Mail, AirDrop, etc.)",
+      "profileDescription": "Comparaison pré-incident (t₀) vs au-incident (t₁) + classement de priorité",
+      "profileTitle": "Profil de risque à neuf dimensions + chaîne de causes racines",
+      "reportFileStem": "rapport-r2d-rca",
+      "save": "Enregistrer",
+      "saveSaving": "Enregistrement…",
+      "saved": "Enregistré",
+      "scaleBadge": "Échelle continue [0, 1]",
+      "scoresDescription": "Scores pré-incident (t₀) et au moment de l'incident (t₁) par dimension. Ajustez avec les curseurs ou générez avec l'IA.",
+      "scoresTitle": "Comparaison des scores C1–C9",
+      "sharePdfTitle": "Rapport d'analyse R₂D-RCA",
+      "shareTextDefault": "Rapport d'analyse R₂D-RCA",
+      "shareTextWithIncident": "Analyse R₂D-RCA : {title}",
+      "stabilityDual": "Rapport dual",
+      "stabilityLabel": "Stabilité",
+      "stabilityStable": "Stable",
+      "summaryDescription": "Score · plus grand écart · statut théorème · dérogation",
+      "summaryTitle": "Résumé exécutif",
+      "weightLabel": "w = {value}"
+    },
+    "pdf": {
+      "calcModeBase": "Mode score de base (somme pondérée)",
+      "calcModeOverride": "Mode dérogation (max Δ̂ ≥ 0,40)",
+      "chartDeltaRadarSub": "Magnitudes d'écart uniquement — où le risque a augmenté",
+      "chartDeltaRadarTitle": "Profil radar Δ̂ (9 axes)",
+      "chartDeltaSub": "Barres d'écart pour 9 dimensions, ordonnées C1→C9",
+      "chartDeltaTitle": "Sévérité d'écart (Δ̂)",
+      "chartDonutSub": "P(C_i) = w_i · Δ̂_i — dimensions défaillantes uniquement",
+      "chartDonutTitle": "Part de contribution prioritaire",
+      "chartGaugeSub": "Jauge semi-circulaire — 0 (vert) → 1 (rouge)",
+      "chartGaugeTitle": "Sévérité R₂D-RCA",
+      "chartHeatmapSub": "Échelle de couleur t₀ · t₁ · Δ̂ (vert→rouge)",
+      "chartHeatmapTitle": "Carte thermique 9 dimensions",
+      "chartPolarSub": "Angle égal par dimension, rayon = magnitude Δ̂",
+      "chartPolarTitle": "Zone polaire — distribution des priorités",
+      "chartRadarSub": "Radar 9 axes — pré-incident vs au moment de l'incident",
+      "chartRadarTitle": "Profil de risque (t₀ vs t₁)",
+      "chartWaterfallSub": "Contributions prioritaires ordonnées + score total",
+      "chartWaterfallTitle": "Accumulation des priorités (cascade)",
+      "defaultReportSubtitle": "Métrique de risque composite à neuf dimensions · analyse de cause racine basée sur delta",
+      "defaultReportTitle": "Rapport d'analyse R₂D-RCA (C1–C9)",
+      "donutEmpty": "Aucune dimension défaillante",
+      "donutTotal": "Total",
+      "dualReportingBadge": "⚠ Rapport dual requis",
+      "emptyStateWarning": "⚠ Aucune donnée d'analyse encore. Toutes les dimensions ont Δ̂ = 0 — les scores pré-incident et au moment de l'incident sont identiques. Pour un rapport significatif, générez d'abord les scores avec {aiButton} ou ajustez les curseurs, puis créez à nouveau le PDF.",
+      "gaugeBrand": "R₂D-RCA",
+      "legendMajor": "Majeur",
+      "legendMinor": "Mineur",
+      "legendOverride": "Dérogation",
+      "legendSec": "Sec.",
+      "legendT0": "t₀ (avant)",
+      "legendT1": "t₁ (au moment de l'incident)",
+      "notDetermined": "Non déterminé",
+      "polarEmpty": "Aucune dimension défaillante",
+      "popupBlocked": "Impossible d'ouvrir la fenêtre d'impression. Veuillez vérifier votre bloqueur de pop-up.",
+      "primaryRootsTitle": "Cause(s) racine principale(s)",
+      "rootChainEmpty": "Aucune dimension défaillante",
+      "rootChainEmptyAllZero": "Aucune dimension défaillante — tous Δ̂ = 0",
+      "rootChainSub": "Dimensions défaillantes par ordre de priorité — Catégories Override / Majeur / Sec.",
+      "scoreLabel": "Score R₂D-RCA",
+      "sectionAiNarrative": "Évaluation IA",
+      "sectionHeatmapWaterfall": "Détail des dimensions · carte thermique et accumulation de priorité",
+      "sectionPolarDelta": "Distribution polaire de priorité + profil radar Δ̂",
+      "sectionRanking": "Classement de priorité",
+      "sectionRootChain": "Chaîne de causes racines (catégorisée + classée)",
+      "sectionScoreTable": "Comparaison de scores à neuf dimensions",
+      "sectionStableDims": "Dimensions stables (Δ̂ = 0)",
+      "statBrokenStable": "Défaillant / stable",
+      "statMaxDelta": "Plus grand Δ̂",
+      "statNotTriggered": "Non déclenché",
+      "statOverride": "Override",
+      "statTriggered": "Déclenché",
+      "tableFootnoteLegend": "Δ̂_i = max(0, t₁ − t₀) · Priorité P(C_i) = w_i · Δ̂_i · Scores sur échelle continue [0,1] · Plus élevé = risque plus élevé",
+      "thDimension": "Dimension",
+      "thPriority": "Priorité",
+      "thRank": "#",
+      "thWeight": "Poids",
+      "visualSummaryTitle": "Résumé visuel",
+      "waterfallEmpty": "Aucune dimension défaillante",
+      "waterfallFootnote": "Accumulation de priorité : C₁→Cₙ → Σ (total R_RCA)",
+      "waterfallTotalSymbol": "Σ"
+    },
+    "polar": {
+      "ariaLabel": "Graphique polaire — distribution delta",
+      "empty": "Aucune dimension défaillante",
+      "title": "Distribution polaire delta"
+    },
+    "radar": {
+      "ariaLabel": "Graphique radar R₂D-RCA",
+      "datasetT0": "Avant incident (t₀)",
+      "datasetT1": "À l'incident (t₁)",
+      "title": "Profil de risque à neuf dimensions (t₀ vs t₁)"
+    },
+    "rootChain": {
+      "ariaLabel": "Chaîne de causes racines — neuf dimensions en quatre catégories",
+      "badgeInactive": "INACTIF",
+      "badgeOverride": "OVERRIDE",
+      "cardTitle": "Chaîne de causes racines (9/9 dimensions)",
+      "majorDesc": "0,20 ≤ Δ̂ < 0,40",
+      "majorTitle": "Facteurs secondaires",
+      "minorDesc": "0 < Δ̂ < 0,20",
+      "minorTitle": "Faible impact",
+      "noneDesc": "Δ̂ = 0",
+      "noneTitle": "Inactif (aucun changement)",
+      "overrideDesc": "Δ̂ ≥ 0,40 — dérogation déclenchée",
+      "overrideTitle": "Cause racine principale"
+    },
+    "statusCards": {
+      "brokenAria": "Nombre de dimensions défaillantes",
+      "brokenLabel": "Défaillantes",
+      "brokenOfNine": "{count} / 9 dimensions",
+      "overrideActive": "Active",
+      "overrideAria": "Statut de dérogation",
+      "overrideInactive": "Inactive",
+      "overrideLabel": "Dérogation",
+      "stableAria": "Nombre de dimensions stables",
+      "stableLabel": "Stables",
+      "stableOfNine": "{count} / 9 dimensions"
+    },
+    "waterfall": {
+      "ariaLabel": "Graphique en cascade — analyse de contribution",
+      "empty": "Aucune dimension défaillante — cascade non disponible.",
+      "title": "Cascade de contribution",
+      "tooltipContribution": "Contribution : {value}",
+      "total": "Total"
+    }
+  }
+}

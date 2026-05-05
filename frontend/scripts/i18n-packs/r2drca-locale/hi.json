@@ -1,0 +1,247 @@
+{
+  "r2dRca": {
+    "deltaBar": {
+      "ariaLabel": "डेल्टा बार चार्ट — नौ आयाम",
+      "datasetDelta": "Δ̂",
+      "title": "विचलन गंभीरता (Δ̂)"
+    },
+    "deltaRadar": {
+      "ariaLabel": "डेल्टा रडार मिनी चार्ट",
+      "title": "Δ̂ रडार प्रोफाइल"
+    },
+    "dimensions": {
+      "C1": {
+        "name": "खतरा तीव्रता",
+        "source": "दृश्य (YOLO)"
+      },
+      "C2": {
+        "name": "PPE गैर-अनुपालन",
+        "source": "दृश्य + रिकॉर्ड"
+      },
+      "C3": {
+        "name": "व्यवहारिक जोखिम",
+        "source": "दृश्य + क्षेत्र"
+      },
+      "C4": {
+        "name": "पर्यावरणीय तनाव",
+        "source": "सेंसर"
+      },
+      "C5": {
+        "name": "रासायनिक / वायुमंडलीय",
+        "source": "सेंसर + SCADA"
+      },
+      "C6": {
+        "name": "पहुंच / बाधक जोखिम",
+        "source": "दृश्य + सेंसर"
+      },
+      "C7": {
+        "name": "मशीन / प्रक्रिया जोखिम",
+        "source": "सेंसर + CMMS"
+      },
+      "C8": {
+        "name": "वाहन / यातायात जोखिम",
+        "source": "दृश्य + RTLS"
+      },
+      "C9": {
+        "name": "संगठनात्मक भार / थकान",
+        "source": "रिकॉर्ड + सेंसर"
+      }
+    },
+    "doughnut": {
+      "ariaLabel": "प्राथमिकता शेयर डोनट चार्ट",
+      "empty": "कोई टूटे आयाम नहीं",
+      "title": "प्राथमिकता योगदान शेयर"
+    },
+    "gauge": {
+      "riskCritical": "गंभीर जोखिम",
+      "riskHigh": "उच्च जोखिम",
+      "riskLow": "निम्न जोखिम",
+      "riskMedium": "मध्यम जोखिम",
+      "title": "R₂D-RCA स्कोर"
+    },
+    "heatmap": {
+      "ariaLabel": "नौ-आयाम हीट मैप — t₀ / t₁ / डेल्टा",
+      "colDelta": "Δ̂ (वृद्धि)",
+      "colDimension": "आयाम",
+      "colT0": "t₀ (पहले)",
+      "colT1": "t₁ (घटना पर)",
+      "title": "आयाम हीट मैप"
+    },
+    "metricCards": {
+      "baseScoreBadge": "आधार स्कोर",
+      "dualHint": "दो उम्मीदवार — मैन्युअल निर्णय",
+      "dualReportingBadge": "द्विक रिपोर्टिंग",
+      "maxDeltaCardAria": "अधिकतम विचलन कार्ड",
+      "maxDeltaLabel": "अधिकतम विचलन",
+      "modeCardAria": "गणना मोड कार्ड",
+      "modeLabel": "मोड",
+      "overrideBadge": "ओवरराइड",
+      "scoreCardAria": "R₂D-RCA स्कोर कार्ड",
+      "scoreLabel": "R₂D-RCA स्कोर",
+      "stabilityCardAria": "स्थिरता प्रमेय कार्ड",
+      "stabilityLabel": "स्थिरता",
+      "stableBadge": "स्थिर",
+      "stableHint": "एकल प्रभावी मूल कारण",
+      "tauExceeded": "τ = 0.40 सीमा पार",
+      "tauNotExceeded": "τ = 0.40 सीमा नहीं पार"
+    },
+    "panel": {
+      "aiAnalyze": "AI के साथ विश्लेषण",
+      "aiAnalyzeAria": "AI के साथ विश्लेषण चलाएं",
+      "aiAnalyzing": "AI के साथ स्कोर जेनरेट कर रहे हैं…",
+      "aiAnalyzingFooter": "AI के साथ स्कोर जेनरेट कर रहे हैं…",
+      "aiEvalDescription": "RiskNova AI द्वारा जेनरेट किया गया · विशेषज्ञ समीक्षा आवश्यक",
+      "aiEvalTitle": "AI मूल्यांकन",
+      "aiGenerateScores": "AI के साथ स्कोर जेनरेट करें",
+      "brokenStableLabel": "टूटा / स्थिर",
+      "calculationBase": "आधार स्कोर",
+      "calculationOverride": "ओवरराइड",
+      "cardDescription": "नौ-आयामी संयुक्त जोखिम मेट्रिक · डेल्टा-आधारित संख्यात्मक मूल कारण विश्लेषण",
+      "cardTitle": "R₂D-RCA (C1–C9)",
+      "defaultBannerBody": "आपके घटना विवरण के आधार पर, AI सभी नौ आयामों के लिए t₀ और t₁ स्कोर प्रस्तावित करता है। आप आवश्यकता अनुसार मैन्युअल रूप से समायोजित कर सकते हैं।",
+      "defaultBannerTitle": "पहले AI के साथ स्कोर जेनरेट करें",
+      "detailDescription": "नौ-आयाम हीट मैप · विचलन गंभीरता (Δ̂) · प्राथमिकता हिस्सा · वॉटरफॉल",
+      "detailTitle": "आयाम विवरण और प्राथमिकता वितरण",
+      "dualReportBody": "सबसे बड़ा-Δ̂ आयाम ({maxDeltaCode}) सर्वोच्च-भारित आयाम ({weightedCode}) से भिन्न है। स्थिरता स्थिति टूटी है — रिपोर्ट में ओवरराइड मोड और आधार स्कोर मोड दोनों शामिल होने चाहिए।",
+      "dualReportTitle": "⚠ द्विक रिपोर्टिंग आवश्यक",
+      "errorAiGeneric": "AI त्रुटि",
+      "errorPdfFailed": "PDF जेनरेट नहीं हो सका",
+      "livePreviewTitle": "लाइव प्रीव्यू",
+      "loadExample": "नमूना डेटा लोड करें",
+      "maxDeltaLabel": "अधिकतम Δ̂",
+      "pdfDownload": "PDF",
+      "pdfDownloaded": "डाउनलोड हो गया",
+      "pdfDownloadOkTitle": "PDF रिपोर्ट डाउनलोड करें",
+      "pdfDownloadWarnTitle": "चेतावनी: AI स्कोरिंग अभी तक नहीं चली — PDF में खाली चार्ट दिख सकते हैं",
+      "pdfPreparing": "PDF तैयार कर रहे हैं…",
+      "pdfShare": "PDF साझा करें",
+      "pdfShareAria": "PDF के रूप में साझा करें",
+      "pdfShared": "साझा किया गया",
+      "pdfShareHoverTitle": "PDF बनाएं और अपने डिवाइस शेयर शीट के माध्यम से भेजें (WhatsApp, Mail, AirDrop, आदि)",
+      "profileDescription": "घटना-पूर्व (t₀) बनाम घटना-समय (t₁) तुलना + प्राथमिकता रैंकिंग",
+      "profileTitle": "नौ-आयामी जोखिम प्रोफाइल + मूल कारण श्रृंखला",
+      "reportFileStem": "r2d-rca-report",
+      "save": "सेव करें",
+      "saveSaving": "सेव कर रहे हैं…",
+      "saved": "सहेजा गया",
+      "scaleBadge": "निरंतर स्केल [0, 1]",
+      "scoresDescription": "घटना-पूर्व (t₀) और घटना-काल (t₁) प्रति आयाम स्कोर। स्लाइडर से समायोजित करें या AI से जेनरेट करें।",
+      "scoresTitle": "C1–C9 स्कोर तुलना",
+      "sharePdfTitle": "R₂D-RCA विश्लेषण रिपोर्ट",
+      "shareTextDefault": "R₂D-RCA विश्लेषण रिपोर्ट",
+      "shareTextWithIncident": "R₂D-RCA विश्लेषण: {title}",
+      "stabilityDual": "द्विक रिपोर्टिंग",
+      "stabilityLabel": "स्थिरता",
+      "stabilityStable": "स्थिर",
+      "summaryDescription": "स्कोर · सबसे बड़ा विचलन · प्रमेय स्थिति · ओवरराइड",
+      "summaryTitle": "कार्यकारी सारांश",
+      "weightLabel": "w = {value}"
+    },
+    "pdf": {
+      "calcModeBase": "बेस स्कोर मोड (भारित योग)",
+      "calcModeOverride": "ओवरराइड मोड (अधिकतम Δ̂ ≥ 0.40)",
+      "chartDeltaRadarSub": "केवल विचलन परिमाण — जहाँ जोखिम बढ़ा",
+      "chartDeltaRadarTitle": "Δ̂ रडार प्रोफाइल (9 अक्ष)",
+      "chartDeltaSub": "9 आयामों के लिए विचलन बार, C1→C9 क्रम में",
+      "chartDeltaTitle": "विचलन गंभीरता (Δ̂)",
+      "chartDonutSub": "P(C_i) = w_i · Δ̂_i — केवल टूटे आयाम",
+      "chartDonutTitle": "प्राथमिकता योगदान हिस्सा",
+      "chartGaugeSub": "अर्ध-वृत्तीय गेज — 0 (हरा) → 1 (लाल)",
+      "chartGaugeTitle": "R₂D-RCA गंभीरता",
+      "chartHeatmapSub": "t₀ · t₁ · Δ̂ रंग स्केल (हरा→लाल)",
+      "chartHeatmapTitle": "9-आयाम हीट मैप",
+      "chartPolarSub": "प्रति आयाम समान कोण, त्रिज्या = Δ̂ परिमाण",
+      "chartPolarTitle": "ध्रुवीय क्षेत्र — प्राथमिकता वितरण",
+      "chartRadarSub": "9-अक्ष रडार — घटना-पूर्व बनाम घटना-काल",
+      "chartRadarTitle": "जोखिम प्रोफाइल (t₀ बनाम t₁)",
+      "chartWaterfallSub": "क्रमबद्ध प्राथमिकता योगदान + कुल स्कोर",
+      "chartWaterfallTitle": "प्राथमिकता संचय (वॉटरफॉल)",
+      "defaultReportSubtitle": "नौ-आयामी समग्र जोखिम मेट्रिक · डेल्टा-आधारित मूल कारण विश्लेषण",
+      "defaultReportTitle": "R₂D-RCA (C1–C9) विश्लेषण रिपोर्ट",
+      "donutEmpty": "कोई टूटे आयाम नहीं",
+      "donutTotal": "कुल",
+      "dualReportingBadge": "⚠ द्विक रिपोर्टिंग आवश्यक",
+      "emptyStateWarning": "⚠ अभी तक कोई विश्लेषण डेटा नहीं। सभी आयामों में Δ̂ = 0 — घटना-पूर्व और घटना-काल स्कोर समान हैं। अर्थपूर्ण रिपोर्ट के लिए, पहले {aiButton} से स्कोर जेनरेट करें या स्लाइडर समायोजित करें, फिर PDF पुनः बनाएं।",
+      "gaugeBrand": "R₂D-RCA",
+      "legendMajor": "प्रमुख",
+      "legendMinor": "गौण",
+      "legendOverride": "ओवरराइड",
+      "legendSec": "सेक.",
+      "legendT0": "t₀ (पहले)",
+      "legendT1": "t₁ (घटना पर)",
+      "notDetermined": "निर्धारित नहीं",
+      "polarEmpty": "कोई टूटे आयाम नहीं",
+      "popupBlocked": "प्रिंट विंडो नहीं खुल सकी। कृपया अपना पॉप-अप ब्लॉकर जांचें।",
+      "primaryRootsTitle": "प्राथमिक मूल कारण",
+      "rootChainEmpty": "कोई टूटे आयाम नहीं",
+      "rootChainEmptyAllZero": "कोई टूटे आयाम नहीं — सभी Δ̂ = 0",
+      "rootChainSub": "प्राथमिकता क्रम में टूटे आयाम — ओवरराइड / मुख्य / द्वितीयक श्रेणियां",
+      "scoreLabel": "R₂D-RCA स्कोर",
+      "sectionAiNarrative": "AI मूल्यांकन",
+      "sectionHeatmapWaterfall": "आयाम विवरण · हीट मैप और प्राथमिकता संचय",
+      "sectionPolarDelta": "प्राथमिकता ध्रुवीय वितरण + Δ̂ रडार प्रोफाइल",
+      "sectionRanking": "प्राथमिकता रैंकिंग",
+      "sectionRootChain": "मूल कारण श्रृंखला (वर्गीकृत + रैंक किया गया)",
+      "sectionScoreTable": "नौ-आयामी स्कोर तुलना",
+      "sectionStableDims": "स्थिर आयाम (Δ̂ = 0)",
+      "statBrokenStable": "टूटा / स्थिर",
+      "statMaxDelta": "सबसे बड़ा Δ̂",
+      "statNotTriggered": "ट्रिगर नहीं हुआ",
+      "statOverride": "ओवरराइड",
+      "statTriggered": "ट्रिगर हुआ",
+      "tableFootnoteLegend": "Δ̂_i = max(0, t₁ − t₀) · प्राथमिकता P(C_i) = w_i · Δ̂_i · [0,1] निरंतर पैमाने पर स्कोर · उच्चतर = उच्चतर जोखिम",
+      "thDimension": "आयाम",
+      "thPriority": "प्राथमिकता",
+      "thRank": "#",
+      "thWeight": "भार",
+      "visualSummaryTitle": "दृश्य सारांश",
+      "waterfallEmpty": "कोई टूटे आयाम नहीं",
+      "waterfallFootnote": "प्राथमिकता संचय: C₁→Cₙ → Σ (कुल R_RCA)",
+      "waterfallTotalSymbol": "Σ"
+    },
+    "polar": {
+      "ariaLabel": "ध्रुवीय चार्ट — डेल्टा वितरण",
+      "empty": "कोई टूटे आयाम नहीं",
+      "title": "डेल्टा ध्रुवीय वितरण"
+    },
+    "radar": {
+      "ariaLabel": "R₂D-RCA रडार चार्ट",
+      "datasetT0": "घटना से पहले (t₀)",
+      "datasetT1": "घटना के समय (t₁)",
+      "title": "नौ-आयामी जोखिम प्रोफाइल (t₀ बनाम t₁)"
+    },
+    "rootChain": {
+      "ariaLabel": "मूल कारण श्रृंखला — चार श्रेणियों में नौ आयाम",
+      "badgeInactive": "निष्क्रिय",
+      "badgeOverride": "ओवरराइड",
+      "cardTitle": "मूल कारण श्रृंखला (9/9 आयाम)",
+      "majorDesc": "0.20 ≤ Δ̂ < 0.40",
+      "majorTitle": "द्वितीयक कारक",
+      "minorDesc": "0 < Δ̂ < 0.20",
+      "minorTitle": "कम प्रभाव",
+      "noneDesc": "Δ̂ = 0",
+      "noneTitle": "निष्क्रिय (कोई परिवर्तन नहीं)",
+      "overrideDesc": "Δ̂ ≥ 0.40 — ओवरराइड ट्रिगर हुआ",
+      "overrideTitle": "प्राथमिक मूल कारण"
+    },
+    "statusCards": {
+      "brokenAria": "टूटे आयामों की संख्या",
+      "brokenLabel": "टूटा",
+      "brokenOfNine": "{count} / 9 आयाम",
+      "overrideActive": "सक्रिय",
+      "overrideAria": "ओवरराइड स्थिति",
+      "overrideInactive": "निष्क्रिय",
+      "overrideLabel": "ओवरराइड",
+      "stableAria": "स्थिर आयामों की संख्या",
+      "stableLabel": "स्थिर",
+      "stableOfNine": "{count} / 9 आयाम"
+    },
+    "waterfall": {
+      "ariaLabel": "वॉटरफॉल चार्ट — योगदान विश्लेषण",
+      "empty": "कोई टूटे आयाम नहीं — वॉटरफॉल उपलब्ध नहीं।",
+      "title": "योगदान वॉटरफॉल",
+      "tooltipContribution": "योगदान: {value}",
+      "total": "कुल"
+    }
+  }
+}

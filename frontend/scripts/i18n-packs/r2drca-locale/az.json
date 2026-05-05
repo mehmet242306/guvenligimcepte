@@ -1,0 +1,247 @@
+{
+  "r2dRca": {
+    "deltaBar": {
+      "ariaLabel": "Delta bar diaqramı — doqquz ölçü",
+      "datasetDelta": "Δ̂",
+      "title": "Sapma şiddəti (Δ̂)"
+    },
+    "deltaRadar": {
+      "ariaLabel": "Delta radar mini diaqramı",
+      "title": "Δ̂ radar profili"
+    },
+    "dimensions": {
+      "C1": {
+        "name": "Təhlükə intensivliyi",
+        "source": "Vizual (YOLO)"
+      },
+      "C2": {
+        "name": "ŞMV uyğunsuzluğu",
+        "source": "Vizual + qeydlər"
+      },
+      "C3": {
+        "name": "Davranış riski",
+        "source": "Vizual + zona"
+      },
+      "C4": {
+        "name": "Ətraf mühit stresi",
+        "source": "Sensor"
+      },
+      "C5": {
+        "name": "Kimyəvi / atmosfer",
+        "source": "Sensor + SCADA"
+      },
+      "C6": {
+        "name": "Giriş / maneə riski",
+        "source": "Vizual + sensor"
+      },
+      "C7": {
+        "name": "Maşın / proses riski",
+        "source": "Sensor + CMMS"
+      },
+      "C8": {
+        "name": "Nəqliyyat / trafik riski",
+        "source": "Vizual + RTLS"
+      },
+      "C9": {
+        "name": "Təşkilati yük / yorğunluq",
+        "source": "Qeydlər + sensor"
+      }
+    },
+    "doughnut": {
+      "ariaLabel": "Prioritet payı halqavari diaqram",
+      "empty": "Pozulmuş ölçülər yoxdur",
+      "title": "Prioritet töhfə payı"
+    },
+    "gauge": {
+      "riskCritical": "Kritik risk",
+      "riskHigh": "Yüksək risk",
+      "riskLow": "Aşağı risk",
+      "riskMedium": "Orta risk",
+      "title": "R₂D-RCA balı"
+    },
+    "heatmap": {
+      "ariaLabel": "Doqquz ölçülü istilik xəritəsi — t₀ / t₁ / delta",
+      "colDelta": "Δ̂ (artım)",
+      "colDimension": "Ölçü",
+      "colT0": "t₀ (əvvəl)",
+      "colT1": "t₁ (hadisə zamanı)",
+      "title": "Ölçü istilik xəritəsi"
+    },
+    "metricCards": {
+      "baseScoreBadge": "ƏSAS BAL",
+      "dualHint": "İki namizəd — əl ilə qərar",
+      "dualReportingBadge": "İKİLİ HESABAT",
+      "maxDeltaCardAria": "Maksimum sapma kartı",
+      "maxDeltaLabel": "Maks sapma",
+      "modeCardAria": "Hesablama rejimi kartı",
+      "modeLabel": "Rejim",
+      "overrideBadge": "ÜSTÜNDƏKİ",
+      "scoreCardAria": "R₂D-RCA bal kartı",
+      "scoreLabel": "R₂D-RCA balı",
+      "stabilityCardAria": "Sabitlik teoremi kartı",
+      "stabilityLabel": "Sabitlik",
+      "stableBadge": "SABİT",
+      "stableHint": "Tək dominant kök səbəb",
+      "tauExceeded": "τ = 0.40 hədd aşıldı",
+      "tauNotExceeded": "τ = 0.40 hədd aşılmadı"
+    },
+    "panel": {
+      "aiAnalyze": "AI ilə təhlil et",
+      "aiAnalyzeAria": "AI ilə təhlil işə sal",
+      "aiAnalyzing": "AI ilə ballar yaradılır…",
+      "aiAnalyzingFooter": "AI ilə ballar yaradılır…",
+      "aiEvalDescription": "RiskNova AI tərəfindən yaradılıb · ekspert yoxlaması tələb olunur",
+      "aiEvalTitle": "AI qiymətləndirməsi",
+      "aiGenerateScores": "AI ilə ballar yarat",
+      "brokenStableLabel": "Pozulmuş / sabit",
+      "calculationBase": "Əsas bal",
+      "calculationOverride": "Ləğv etmə",
+      "cardDescription": "Doqquz ölçülü kompozit risk metriki · delta əsaslı ədədi kök səbəb təhlili",
+      "cardTitle": "R₂D-RCA (C1–C9)",
+      "defaultBannerBody": "Hadisə təsvirinizə əsasən, AI bütün doqquz ölçü üçün t₀ və t₁ balları təklif edir. Lazım gələrsə onları əl ilə tənzimləyə bilərsiniz.",
+      "defaultBannerTitle": "Əvvəlcə AI ilə ballar yaradın",
+      "detailDescription": "Doqquz ölçülü istilik xəritəsi · sapma şiddəti (Δ̂) · prioritet payı · şəlalə",
+      "detailTitle": "Ölçü təfərrüatı və prioritet bölgüsü",
+      "dualReportBody": "Ən böyük-Δ̂ ölçüsü ({maxDeltaCode}) ən yüksək çəkili ölçüdən ({weightedCode}) fərqlənir. Sabitlik şərti pozulub — hesabat həm ləğv etmə rejimi, həm də əsas bal rejimini əhatə etməlidir.",
+      "dualReportTitle": "⚠ İkili hesabat tələb olunur",
+      "errorAiGeneric": "AI xətası",
+      "errorPdfFailed": "PDF yaradıla bilmədi",
+      "livePreviewTitle": "Canlı önizləmə",
+      "loadExample": "Nümunə məlumatları yüklə",
+      "maxDeltaLabel": "Maks Δ̂",
+      "pdfDownload": "PDF",
+      "pdfDownloaded": "Yükləndi",
+      "pdfDownloadOkTitle": "PDF hesabatını yüklə",
+      "pdfDownloadWarnTitle": "Xəbərdarlıq: AI ballaması hələ işə salınmayıb — PDF boş qrafiklər göstərə bilər",
+      "pdfPreparing": "PDF hazırlanır…",
+      "pdfShare": "PDF paylaş",
+      "pdfShareAria": "PDF olaraq paylaş",
+      "pdfShared": "Paylaşıldı",
+      "pdfShareHoverTitle": "PDF yarat və cihazınızın paylaşma səhifəsi vasitəsilə göndər (WhatsApp, Mail, AirDrop və s.)",
+      "profileDescription": "Hadisə öncəsi (t₀) və hadisə zamanı (t₁) müqayisəsi + prioritet sıralaması",
+      "profileTitle": "Doqquz ölçülü risk profili + kök səbəb zənciri",
+      "reportFileStem": "r2d-rca-hesabat",
+      "save": "Saxla",
+      "saveSaving": "Saxlanılır…",
+      "saved": "Saxlanıldı",
+      "scaleBadge": "Davamlı miqyas [0, 1]",
+      "scoresDescription": "Hər ölçü üzrə hadisə-öncəsi (t₀) və hadisə-zamanı (t₁) balları. Sürüşdürücülərlə tənzimləyin və ya AI ilə yaradın.",
+      "scoresTitle": "C1–C9 bal müqayisəsi",
+      "sharePdfTitle": "R₂D-RCA analiz hesabatı",
+      "shareTextDefault": "R₂D-RCA analiz hesabatı",
+      "shareTextWithIncident": "R₂D-RCA analizi: {title}",
+      "stabilityDual": "İkili hesabat",
+      "stabilityLabel": "Sabitlik",
+      "stabilityStable": "Sabit",
+      "summaryDescription": "Bal · ən böyük sapma · teorem statusu · ləğv",
+      "summaryTitle": "İcraçı xülasə",
+      "weightLabel": "w = {value}"
+    },
+    "pdf": {
+      "calcModeBase": "Əsas bal rejimi (çəkili cəm)",
+      "calcModeOverride": "Ləğv rejimi (maks Δ̂ ≥ 0.40)",
+      "chartDeltaRadarSub": "Yalnız sapma böyüklükləri — riskin artdığı yerlər",
+      "chartDeltaRadarTitle": "Δ̂ radar profili (9 ox)",
+      "chartDeltaSub": "9 ölçü üçün sapma çubuqları, C1→C9 sırası ilə",
+      "chartDeltaTitle": "Sapma şiddəti (Δ̂)",
+      "chartDonutSub": "P(C_i) = w_i · Δ̂_i — yalnız pozulmuş ölçülər",
+      "chartDonutTitle": "Prioritet paylaşım payı",
+      "chartGaugeSub": "Yarım dairəvi ölçücü — 0 (yaşıl) → 1 (qırmızı)",
+      "chartGaugeTitle": "R₂D-RCA şiddəti",
+      "chartHeatmapSub": "t₀ · t₁ · Δ̂ rəng miqyası (yaşıl→qırmızı)",
+      "chartHeatmapTitle": "9-ölçülü istilik xəritəsi",
+      "chartPolarSub": "Hər ölçü üçün bərabər bucaq, radius = Δ̂ böyüklüyü",
+      "chartPolarTitle": "Qütb sahəsi — prioritet paylanması",
+      "chartRadarSub": "9-oxlu radar — hadisə-öncəsi və hadisə-zamanı",
+      "chartRadarTitle": "Risk profili (t₀ vs t₁)",
+      "chartWaterfallSub": "Sıralanmış prioritet töhfələri + ümumi bal",
+      "chartWaterfallTitle": "Prioritet yığılması (şəlalə)",
+      "defaultReportSubtitle": "Doqquz ölçülü kompozit risk metrikası · delta əsaslı kök səbəb analizi",
+      "defaultReportTitle": "R₂D-RCA (C1–C9) analiz hesabatı",
+      "donutEmpty": "Pozulmuş ölçü yoxdur",
+      "donutTotal": "Cəmi",
+      "dualReportingBadge": "⚠ İkili hesabat tələb olunur",
+      "emptyStateWarning": "⚠ Hələ analiz məlumatı yoxdur. Bütün ölçülərdə Δ̂ = 0 — hadisə-öncəsi və hadisə-zamanı balları eynidir. Mənalı hesabat üçün əvvəlcə {aiButton} ilə ballar yaradın və ya sürüşdürücüləri tənzimləyin, sonra yenidən PDF yaradın.",
+      "gaugeBrand": "R₂D-RCA",
+      "legendMajor": "Əsas",
+      "legendMinor": "Kiçik",
+      "legendOverride": "Ləğv",
+      "legendSec": "Bölmə",
+      "legendT0": "t₀ (əvvəl)",
+      "legendT1": "t₁ (hadisə zamanı)",
+      "notDetermined": "Müəyyən edilməyib",
+      "polarEmpty": "Pozulmuş ölçülər yoxdur",
+      "popupBlocked": "Çap pəncərəsi açıla bilmədi. Zəhmət olmasa pop-up blokerinizi yoxlayın.",
+      "primaryRootsTitle": "Əsas kök səbəb(lər)",
+      "rootChainEmpty": "Pozulmuş ölçülər yoxdur",
+      "rootChainEmptyAllZero": "Pozulmuş ölçülər yoxdur — bütün Δ̂ = 0",
+      "rootChainSub": "Prioritet sırası ilə pozulmuş ölçülər — Ləğvetmə / Əsas / İkinci kateqoriyalar",
+      "scoreLabel": "R₂D-RCA balı",
+      "sectionAiNarrative": "AI qiymətləndirməsi",
+      "sectionHeatmapWaterfall": "Ölçü təfərrüatı · istilik xəritəsi və prioritet toplanması",
+      "sectionPolarDelta": "Prioritet qütb paylanması + Δ̂ radar profili",
+      "sectionRanking": "Prioritet reytinqi",
+      "sectionRootChain": "Kök səbəb zənciri (kateqoriyalaşdırılmış + reytinqli)",
+      "sectionScoreTable": "Doqquz ölçülü bal müqayisəsi",
+      "sectionStableDims": "Sabit ölçülər (Δ̂ = 0)",
+      "statBrokenStable": "Pozulmuş / sabit",
+      "statMaxDelta": "Ən böyük Δ̂",
+      "statNotTriggered": "Tetiklənməyib",
+      "statOverride": "Ləğvetmə",
+      "statTriggered": "Tetiklənib",
+      "tableFootnoteLegend": "Δ̂_i = max(0, t₁ − t₀) · Prioritet P(C_i) = w_i · Δ̂_i · [0,1] davamlı miqyasda ballar · Yüksək = yüksək risk",
+      "thDimension": "Ölçü",
+      "thPriority": "Prioritet",
+      "thRank": "#",
+      "thWeight": "Çəki",
+      "visualSummaryTitle": "Vizual xülasə",
+      "waterfallEmpty": "Pozulmuş ölçülər yoxdur",
+      "waterfallFootnote": "Prioritet toplanması: C₁→Cₙ → Σ (ümumi R_RCA)",
+      "waterfallTotalSymbol": "Σ"
+    },
+    "polar": {
+      "ariaLabel": "Qütb diaqramı — delta paylanması",
+      "empty": "Pozulmuş ölçülər yoxdur",
+      "title": "Delta qütb paylanması"
+    },
+    "radar": {
+      "ariaLabel": "R₂D-RCA radar diaqramı",
+      "datasetT0": "Hadisədən əvvəl (t₀)",
+      "datasetT1": "Hadisə zamanı (t₁)",
+      "title": "Doqquz ölçülü risk profili (t₀ vs t₁)"
+    },
+    "rootChain": {
+      "ariaLabel": "Kök səbəb zənciri — dörd kateqoriyada doqquz ölçü",
+      "badgeInactive": "QEYRİ-AKTİV",
+      "badgeOverride": "LƏĞVETMƏ",
+      "cardTitle": "Kök səbəb zənciri (9/9 ölçü)",
+      "majorDesc": "0.20 ≤ Δ̂ < 0.40",
+      "majorTitle": "İkinci amillər",
+      "minorDesc": "0 < Δ̂ < 0.20",
+      "minorTitle": "Aşağı təsir",
+      "noneDesc": "Δ̂ = 0",
+      "noneTitle": "Qeyri-aktiv (dəyişiklik yoxdur)",
+      "overrideDesc": "Δ̂ ≥ 0.40 — ləğv tetiklendi",
+      "overrideTitle": "Əsas kök səbəb"
+    },
+    "statusCards": {
+      "brokenAria": "Qırıq ölçü sayı",
+      "brokenLabel": "Qırıq",
+      "brokenOfNine": "{count} / 9 ölçü",
+      "overrideActive": "Aktiv",
+      "overrideAria": "Ləğv statusu",
+      "overrideInactive": "Qeyri-aktiv",
+      "overrideLabel": "Ləğv",
+      "stableAria": "Sabit ölçü sayı",
+      "stableLabel": "Sabit",
+      "stableOfNine": "{count} / 9 ölçü"
+    },
+    "waterfall": {
+      "ariaLabel": "Şəlalə diaqramı — töhfə təhlili",
+      "empty": "Qırıq ölçülər yoxdur — şəlalə mövcud deyil.",
+      "title": "Töhfə şəlaləsi",
+      "tooltipContribution": "Töhfə: {value}",
+      "total": "Cəmi"
+    }
+  }
+}

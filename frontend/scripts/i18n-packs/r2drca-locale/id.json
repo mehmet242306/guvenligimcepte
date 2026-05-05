@@ -1,0 +1,247 @@
+{
+  "r2dRca": {
+    "deltaBar": {
+      "ariaLabel": "Grafik batang delta — sembilan dimensi",
+      "datasetDelta": "Δ̂",
+      "title": "Tingkat keparahan deviasi (Δ̂)"
+    },
+    "deltaRadar": {
+      "ariaLabel": "Grafik radar delta mini",
+      "title": "Profil radar Δ̂"
+    },
+    "dimensions": {
+      "C1": {
+        "name": "Intensitas bahaya",
+        "source": "Visual (YOLO)"
+      },
+      "C2": {
+        "name": "Ketidaksesuaian APD",
+        "source": "Visual + catatan"
+      },
+      "C3": {
+        "name": "Risiko perilaku",
+        "source": "Visual + zona"
+      },
+      "C4": {
+        "name": "Stres lingkungan",
+        "source": "Sensor"
+      },
+      "C5": {
+        "name": "Kimia / atmosfer",
+        "source": "Sensor + SCADA"
+      },
+      "C6": {
+        "name": "Risiko akses / penghalang",
+        "source": "Visual + sensor"
+      },
+      "C7": {
+        "name": "Risiko mesin / proses",
+        "source": "Sensor + CMMS"
+      },
+      "C8": {
+        "name": "Risiko kendaraan / lalu lintas",
+        "source": "Visual + RTLS"
+      },
+      "C9": {
+        "name": "Beban organisasi / kelelahan",
+        "source": "Catatan + sensor"
+      }
+    },
+    "doughnut": {
+      "ariaLabel": "Grafik donat bagian prioritas",
+      "empty": "Tidak ada dimensi yang rusak",
+      "title": "Bagian kontribusi prioritas"
+    },
+    "gauge": {
+      "riskCritical": "Risiko kritis",
+      "riskHigh": "Risiko tinggi",
+      "riskLow": "Risiko rendah",
+      "riskMedium": "Risiko sedang",
+      "title": "Skor R₂D-RCA"
+    },
+    "heatmap": {
+      "ariaLabel": "Peta panas sembilan dimensi — t₀ / t₁ / delta",
+      "colDelta": "Δ̂ (peningkatan)",
+      "colDimension": "Dimensi",
+      "colT0": "t₀ (sebelum)",
+      "colT1": "t₁ (saat insiden)",
+      "title": "Peta panas dimensi"
+    },
+    "metricCards": {
+      "baseScoreBadge": "SKOR DASAR",
+      "dualHint": "Dua kandidat — keputusan manual",
+      "dualReportingBadge": "PELAPORAN GANDA",
+      "maxDeltaCardAria": "Kartu deviasi maksimum",
+      "maxDeltaLabel": "Deviasi maks",
+      "modeCardAria": "Kartu mode perhitungan",
+      "modeLabel": "Mode",
+      "overrideBadge": "OVERRIDE",
+      "scoreCardAria": "Kartu skor R₂D-RCA",
+      "scoreLabel": "Skor R₂D-RCA",
+      "stabilityCardAria": "Kartu teorema stabilitas",
+      "stabilityLabel": "Stabilitas",
+      "stableBadge": "STABIL",
+      "stableHint": "Akar penyebab dominan tunggal",
+      "tauExceeded": "Ambang batas τ = 0,40 terlampaui",
+      "tauNotExceeded": "Ambang batas τ = 0,40 tidak terlampaui"
+    },
+    "panel": {
+      "aiAnalyze": "Analisis dengan AI",
+      "aiAnalyzeAria": "Jalankan analisis dengan AI",
+      "aiAnalyzing": "Menghasilkan skor dengan AI…",
+      "aiAnalyzingFooter": "Menghasilkan skor dengan AI…",
+      "aiEvalDescription": "Dihasilkan oleh RiskNova AI · tinjauan ahli diperlukan",
+      "aiEvalTitle": "Penilaian AI",
+      "aiGenerateScores": "Hasilkan skor dengan AI",
+      "brokenStableLabel": "Rusak / stabil",
+      "calculationBase": "Skor dasar",
+      "calculationOverride": "Penggantian",
+      "cardDescription": "Metrik risiko komposit sembilan dimensi · analisis akar penyebab numerik berbasis delta",
+      "cardTitle": "R₂D-RCA (C1–C9)",
+      "defaultBannerBody": "Berdasarkan deskripsi insiden Anda, AI mengusulkan skor t₀ dan t₁ untuk semua sembilan dimensi. Anda dapat menyesuaikannya secara manual jika diperlukan.",
+      "defaultBannerTitle": "Hasilkan skor dengan AI terlebih dahulu",
+      "detailDescription": "Peta panas sembilan dimensi · tingkat keparahan deviasi (Δ̂) · bagian prioritas · air terjun",
+      "detailTitle": "Detail dimensi dan distribusi prioritas",
+      "dualReportBody": "Dimensi Δ̂ terbesar ({maxDeltaCode}) berbeda dari dimensi berbobot tertinggi ({weightedCode}). Kondisi stabilitas rusak — laporan harus mencakup mode penggantian dan mode skor dasar.",
+      "dualReportTitle": "⚠ Pelaporan ganda diperlukan",
+      "errorAiGeneric": "Kesalahan AI",
+      "errorPdfFailed": "Tidak dapat menghasilkan PDF",
+      "livePreviewTitle": "Pratinjau langsung",
+      "loadExample": "Muat data sampel",
+      "maxDeltaLabel": "Δ̂ Maks",
+      "pdfDownload": "PDF",
+      "pdfDownloaded": "Diunduh",
+      "pdfDownloadOkTitle": "Unduh laporan PDF",
+      "pdfDownloadWarnTitle": "Peringatan: Penilaian AI belum dijalankan — PDF mungkin menampilkan grafik kosong",
+      "pdfPreparing": "Menyiapkan PDF…",
+      "pdfShare": "Bagikan PDF",
+      "pdfShareAria": "Bagikan sebagai PDF",
+      "pdfShared": "Dibagikan",
+      "pdfShareHoverTitle": "Buat PDF dan kirim melalui lembar berbagi perangkat Anda (WhatsApp, Mail, AirDrop, dll.)",
+      "profileDescription": "Perbandingan pra-insiden (t₀) vs saat-insiden (t₁) + peringkat prioritas",
+      "profileTitle": "Profil risiko sembilan dimensi + rantai akar penyebab",
+      "reportFileStem": "r2d-rca-report",
+      "save": "Simpan",
+      "saveSaving": "Menyimpan…",
+      "saved": "Tersimpan",
+      "scaleBadge": "Skala kontinu [0, 1]",
+      "scoresDescription": "Skor pra-insiden (t₀) dan saat-insiden (t₁) per dimensi. Sesuaikan dengan slider atau buat dengan AI.",
+      "scoresTitle": "Perbandingan skor C1–C9",
+      "sharePdfTitle": "Laporan analisis R₂D-RCA",
+      "shareTextDefault": "Laporan analisis R₂D-RCA",
+      "shareTextWithIncident": "Analisis R₂D-RCA: {title}",
+      "stabilityDual": "Pelaporan ganda",
+      "stabilityLabel": "Stabilitas",
+      "stabilityStable": "Stabil",
+      "summaryDescription": "Skor · deviasi terbesar · status teorema · override",
+      "summaryTitle": "Ringkasan eksekutif",
+      "weightLabel": "w = {value}"
+    },
+    "pdf": {
+      "calcModeBase": "Mode skor dasar (jumlah berbobot)",
+      "calcModeOverride": "Mode override (maks Δ̂ ≥ 0,40)",
+      "chartDeltaRadarSub": "Hanya magnitudo deviasi — dimana risiko meningkat",
+      "chartDeltaRadarTitle": "Profil radar Δ̂ (9 sumbu)",
+      "chartDeltaSub": "Bar deviasi untuk 9 dimensi, urutan C1→C9",
+      "chartDeltaTitle": "Tingkat keparahan deviasi (Δ̂)",
+      "chartDonutSub": "P(C_i) = w_i · Δ̂_i — hanya dimensi rusak",
+      "chartDonutTitle": "Bagian kontribusi prioritas",
+      "chartGaugeSub": "Gauge setengah lingkaran — 0 (hijau) → 1 (merah)",
+      "chartGaugeTitle": "Tingkat keparahan R₂D-RCA",
+      "chartHeatmapSub": "Skala warna t₀ · t₁ · Δ̂ (hijau→merah)",
+      "chartHeatmapTitle": "Peta panas 9 dimensi",
+      "chartPolarSub": "Sudut sama per dimensi, radius = magnitudo Δ̂",
+      "chartPolarTitle": "Area polar — distribusi prioritas",
+      "chartRadarSub": "Radar 9 sumbu — pra-insiden vs saat-insiden",
+      "chartRadarTitle": "Profil risiko (t₀ vs t₁)",
+      "chartWaterfallSub": "Kontribusi prioritas terurut + skor total",
+      "chartWaterfallTitle": "Akumulasi prioritas (waterfall)",
+      "defaultReportSubtitle": "Metrik risiko komposit sembilan dimensi · analisis akar penyebab berbasis delta",
+      "defaultReportTitle": "Laporan analisis R₂D-RCA (C1–C9)",
+      "donutEmpty": "Tidak ada dimensi rusak",
+      "donutTotal": "Total",
+      "dualReportingBadge": "⚠ Pelaporan ganda diperlukan",
+      "emptyStateWarning": "⚠ Belum ada data analisis. Semua dimensi memiliki Δ̂ = 0 — skor pra-insiden dan saat-insiden identik. Untuk laporan yang bermakna, pertama buat skor dengan {aiButton} atau sesuaikan slider, lalu buat PDF lagi.",
+      "gaugeBrand": "R₂D-RCA",
+      "legendMajor": "Mayor",
+      "legendMinor": "Minor",
+      "legendOverride": "Override",
+      "legendSec": "Sek.",
+      "legendT0": "t₀ (sebelum)",
+      "legendT1": "t₁ (saat insiden)",
+      "notDetermined": "Tidak ditentukan",
+      "polarEmpty": "Tidak ada dimensi yang rusak",
+      "popupBlocked": "Tidak dapat membuka jendela cetak. Silakan periksa pemblokir pop-up Anda.",
+      "primaryRootsTitle": "Akar penyebab utama",
+      "rootChainEmpty": "Tidak ada dimensi yang rusak",
+      "rootChainEmptyAllZero": "Tidak ada dimensi yang rusak — semua Δ̂ = 0",
+      "rootChainSub": "Dimensi rusak dalam urutan prioritas — kategori Override / Utama / Sekunder",
+      "scoreLabel": "Skor R₂D-RCA",
+      "sectionAiNarrative": "Penilaian AI",
+      "sectionHeatmapWaterfall": "Detail dimensi · peta panas dan akumulasi prioritas",
+      "sectionPolarDelta": "Distribusi polar prioritas + profil radar Δ̂",
+      "sectionRanking": "Peringkat prioritas",
+      "sectionRootChain": "Rantai akar penyebab (dikategorikan + diperingkat)",
+      "sectionScoreTable": "Perbandingan skor sembilan dimensi",
+      "sectionStableDims": "Dimensi stabil (Δ̂ = 0)",
+      "statBrokenStable": "Rusak / stabil",
+      "statMaxDelta": "Δ̂ terbesar",
+      "statNotTriggered": "Tidak terpicu",
+      "statOverride": "Override",
+      "statTriggered": "Terpicu",
+      "tableFootnoteLegend": "Δ̂_i = max(0, t₁ − t₀) · Prioritas P(C_i) = w_i · Δ̂_i · Skor pada skala kontinu [0,1] · Lebih tinggi = risiko lebih tinggi",
+      "thDimension": "Dimensi",
+      "thPriority": "Prioritas",
+      "thRank": "#",
+      "thWeight": "Bobot",
+      "visualSummaryTitle": "Ringkasan visual",
+      "waterfallEmpty": "Tidak ada dimensi yang rusak",
+      "waterfallFootnote": "Akumulasi prioritas: C₁→Cₙ → Σ (total R_RCA)",
+      "waterfallTotalSymbol": "Σ"
+    },
+    "polar": {
+      "ariaLabel": "Grafik polar — distribusi delta",
+      "empty": "Tidak ada dimensi yang rusak",
+      "title": "Distribusi polar delta"
+    },
+    "radar": {
+      "ariaLabel": "Grafik radar R₂D-RCA",
+      "datasetT0": "Sebelum insiden (t₀)",
+      "datasetT1": "Saat insiden (t₁)",
+      "title": "Profil risiko sembilan dimensi (t₀ vs t₁)"
+    },
+    "rootChain": {
+      "ariaLabel": "Rantai akar penyebab — sembilan dimensi dalam empat kategori",
+      "badgeInactive": "TIDAK AKTIF",
+      "badgeOverride": "OVERRIDE",
+      "cardTitle": "Rantai akar penyebab (9/9 dimensi)",
+      "majorDesc": "0,20 ≤ Δ̂ < 0,40",
+      "majorTitle": "Faktor sekunder",
+      "minorDesc": "0 < Δ̂ < 0,20",
+      "minorTitle": "Dampak rendah",
+      "noneDesc": "Δ̂ = 0",
+      "noneTitle": "Tidak aktif (tidak ada perubahan)",
+      "overrideDesc": "Δ̂ ≥ 0.40 — override dipicu",
+      "overrideTitle": "Akar penyebab utama"
+    },
+    "statusCards": {
+      "brokenAria": "Jumlah dimensi rusak",
+      "brokenLabel": "Rusak",
+      "brokenOfNine": "{count} / 9 dimensi",
+      "overrideActive": "Aktif",
+      "overrideAria": "Status override",
+      "overrideInactive": "Tidak aktif",
+      "overrideLabel": "Override",
+      "stableAria": "Jumlah dimensi stabil",
+      "stableLabel": "Stabil",
+      "stableOfNine": "{count} / 9 dimensi"
+    },
+    "waterfall": {
+      "ariaLabel": "Grafik waterfall — analisis kontribusi",
+      "empty": "Tidak ada dimensi rusak — waterfall tidak tersedia.",
+      "title": "Waterfall kontribusi",
+      "tooltipContribution": "Kontribusi: {value}",
+      "total": "Total"
+    }
+  }
+}

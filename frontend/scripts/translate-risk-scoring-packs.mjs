@@ -73,6 +73,9 @@ function translateDomainHint() {
   if (PACK === "phase3") {
     return "workplace / company & OSGB portfolio UI (lists, archives, workspace chrome).";
   }
+  if (PACK === "r2drca-locale") {
+    return "RiskNova R₂D-RCA incident root-cause UI (nine dimensions C1–C9, charts, PDF export). Keep symbols t₀, t₁, Δ̂, τ = 0.40, OVERRIDE, C1–C9, R₂D-RCA unchanged; translate surrounding words only.";
+  }
   return "industrial risk analysis software (HAZOP, LOPA, FMEA, bow-tie, matrix, field analysis).";
 }
 
@@ -83,6 +86,9 @@ function mergeCommandsHint() {
   if (PACK === "phase3") {
     return "npm run i18n:merge-phase3 && npm run i18n:verify-locale-parity";
   }
+  if (PACK === "r2drca-locale") {
+    return "node scripts/i18n-packs/incidents-hub/sync-r2drca-from-mini-pack.mjs && node scripts/i18n-packs/incidents-hub/fill-r2drca-from-en.mjs && node scripts/i18n-packs/incidents-hub/merge.mjs && npm run i18n:verify-locale-parity";
+  }
   return "npm run i18n:merge-risk-scoring && npm run i18n:verify-locale-parity";
 }
 
@@ -92,6 +98,9 @@ function missingSourceHint() {
   }
   if (PACK === "phase3") {
     return "Add scripts/i18n-packs/phase3/en.json (authoring / sync-phase3-packs).";
+  }
+  if (PACK === "r2drca-locale") {
+    return "Create scripts/i18n-packs/r2drca-locale/en.json wrapping incidents-hub/en.json `r2dRca` (see sync-r2drca-from-mini-pack.mjs).";
   }
   return "run npm run i18n:generate-risk-scoring first.";
 }
@@ -106,9 +115,14 @@ for (const envPath of [
 }
 
 const SOURCE_LOCALE = "en";
-const TARGETS = APP_MESSAGE_LOCALES.filter((l) => l !== "tr" && l !== "en");
+/** Turkish hub copy lives in `messages/tr.json`; default packs keep `tr` as authored. R2D-RCA mini-pack translates `tr` like other locales. */
+const TARGETS =
+  PACK === "r2drca-locale"
+    ? APP_MESSAGE_LOCALES.filter((l) => l !== "en")
+    : APP_MESSAGE_LOCALES.filter((l) => l !== "tr" && l !== "en");
 
 const LOCALE_NAMES = {
+  tr: "Turkish (professional UI; concise technical register)",
   ar: "Arabic",
   ru: "Russian",
   de: "German",

@@ -44,6 +44,8 @@ if (!enR2d) {
 
 for (const f of fs.readdirSync(DIR)) {
   if (!f.endsWith(".json") || f === "en.json") continue;
+  /** Patch fragments — not hub locale packs; merging en into them corrupts the tree. */
+  if (f.startsWith("r2dRca.locale.")) continue;
   const p = path.join(DIR, f);
   const data = JSON.parse(fs.readFileSync(p, "utf8"));
   data.r2dRca = deepMerge(enR2d, data.r2dRca ?? {});
@@ -51,17 +53,32 @@ for (const f of fs.readdirSync(DIR)) {
   fs.writeFileSync(p, `${JSON.stringify(data, null, 2)}\n`);
 }
 
+function stripAccidentalNestedR2dRca(patch) {
+  if (!patch || typeof patch !== "object" || Array.isArray(patch)) return patch;
+  const { r2dRca: _accidental, ...rest } = patch;
+  return rest;
+}
+
 const localePatches = [
+  ["ar.json", "r2dRca.locale.ar.json"],
+  ["az.json", "r2dRca.locale.az.json"],
+  ["de.json", "r2dRca.locale.de.json"],
+  ["es.json", "r2dRca.locale.es.json"],
+  ["fr.json", "r2dRca.locale.fr.json"],
+  ["hi.json", "r2dRca.locale.hi.json"],
+  ["id.json", "r2dRca.locale.id.json"],
+  ["ja.json", "r2dRca.locale.ja.json"],
+  ["ko.json", "r2dRca.locale.ko.json"],
   ["ru.json", "r2dRca.locale.ru.json"],
   ["tr.json", "r2dRca.locale.tr.json"],
-  ["ja.json", "r2dRca.locale.ja.json"],
+  ["zh.json", "r2dRca.locale.zh.json"],
 ];
 for (const [packFile, patchFile] of localePatches) {
   const patchPath = path.join(DIR, patchFile);
   if (!fs.existsSync(patchPath)) continue;
   const p = path.join(DIR, packFile);
   const data = JSON.parse(fs.readFileSync(p, "utf8"));
-  const patch = JSON.parse(fs.readFileSync(patchPath, "utf8"));
+  const patch = stripAccidentalNestedR2dRca(JSON.parse(fs.readFileSync(patchPath, "utf8")));
   data.r2dRca = deepMerge(data.r2dRca, patch);
   if (data.r2dRca?.r2dRca) delete data.r2dRca.r2dRca;
   fs.writeFileSync(p, `${JSON.stringify(data, null, 2)}\n`);

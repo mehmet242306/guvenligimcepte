@@ -1,0 +1,245 @@
+{
+  "deltaBar": {
+    "ariaLabel": "Delta-Balkendiagramm — neun Dimensionen",
+    "datasetDelta": "Δ̂",
+    "title": "Abweichungsschwere (Δ̂)"
+  },
+  "deltaRadar": {
+    "ariaLabel": "Delta-Radar-Minidiagramm",
+    "title": "Δ̂ Radarprofil"
+  },
+  "dimensions": {
+    "C1": {
+      "name": "Gefahrenintensität",
+      "source": "Visuell (YOLO)"
+    },
+    "C2": {
+      "name": "PSA-Nichtkonformität",
+      "source": "Visuell + Aufzeichnungen"
+    },
+    "C3": {
+      "name": "Verhaltensrisiko",
+      "source": "Visuell + Zone"
+    },
+    "C4": {
+      "name": "Umweltbelastung",
+      "source": "Sensor"
+    },
+    "C5": {
+      "name": "Chemisch / atmosphärisch",
+      "source": "Sensor + SCADA"
+    },
+    "C6": {
+      "name": "Zugangs-/Barriererisiko",
+      "source": "Visuell + Sensor"
+    },
+    "C7": {
+      "name": "Maschinen-/Prozessrisiko",
+      "source": "Sensor + CMMS"
+    },
+    "C8": {
+      "name": "Fahrzeug-/Verkehrsrisiko",
+      "source": "Visuell + RTLS"
+    },
+    "C9": {
+      "name": "Organisationsbelastung / Ermüdung",
+      "source": "Aufzeichnungen + Sensor"
+    }
+  },
+  "doughnut": {
+    "ariaLabel": "Prioritätsanteil-Ringdiagramm",
+    "empty": "Keine defekten Dimensionen",
+    "title": "Prioritätsbeitragsanteil"
+  },
+  "gauge": {
+    "riskCritical": "Kritisches Risiko",
+    "riskHigh": "Hohes Risiko",
+    "riskLow": "Niedriges Risiko",
+    "riskMedium": "Mittleres Risiko",
+    "title": "R₂D-RCA-Score"
+  },
+  "heatmap": {
+    "ariaLabel": "Neun-Dimensionen-Heatmap — t₀ / t₁ / Delta",
+    "colDelta": "Δ̂ (Zunahme)",
+    "colDimension": "Dimension",
+    "colT0": "t₀ (vorher)",
+    "colT1": "t₁ (bei Vorfall)",
+    "title": "Dimensions-Heatmap"
+  },
+  "metricCards": {
+    "baseScoreBadge": "BASISSCORE",
+    "dualHint": "Zwei Kandidaten — manuelle Entscheidung",
+    "dualReportingBadge": "DOPPELMELDUNG",
+    "maxDeltaCardAria": "Maximale Abweichungskarte",
+    "maxDeltaLabel": "Max. Abweichung",
+    "modeCardAria": "Berechnungsmodus-Karte",
+    "modeLabel": "Modus",
+    "overrideBadge": "ÜBERSCHREIBUNG",
+    "scoreCardAria": "R₂D-RCA Bewertungskarte",
+    "scoreLabel": "R₂D-RCA Bewertung",
+    "stabilityCardAria": "Stabilitätstheorem-Karte",
+    "stabilityLabel": "Stabilität",
+    "stableBadge": "STABIL",
+    "stableHint": "Einzelne dominante Grundursache",
+    "tauExceeded": "τ = 0,40 Schwellenwert überschritten",
+    "tauNotExceeded": "τ = 0,40 Schwellenwert nicht überschritten"
+  },
+  "panel": {
+    "aiAnalyze": "Mit KI analysieren",
+    "aiAnalyzeAria": "Analyse mit KI durchführen",
+    "aiAnalyzing": "Bewertungen mit KI generieren…",
+    "aiAnalyzingFooter": "Bewertungen mit KI generieren…",
+    "aiEvalDescription": "Generiert von RiskNova KI · Expertenprüfung erforderlich",
+    "aiEvalTitle": "KI-Bewertung",
+    "aiGenerateScores": "Bewertungen mit KI generieren",
+    "brokenStableLabel": "Gebrochen / stabil",
+    "calculationBase": "Grundbewertung",
+    "calculationOverride": "Überschreibung",
+    "cardDescription": "Neundimensionale zusammengesetzte Risikometrik · delta-basierte numerische Grundursachenanalyse",
+    "cardTitle": "R₂D-RCA (C1–C9)",
+    "defaultBannerBody": "Basierend auf Ihrer Vorfallbeschreibung schlägt die KI t₀- und t₁-Bewertungen für alle neun Dimensionen vor. Sie können diese bei Bedarf manuell anpassen.",
+    "defaultBannerTitle": "Zuerst Bewertungen mit KI generieren",
+    "detailDescription": "Neundimensionale Heatmap · Abweichungsschwere (Δ̂) · Prioritätsanteil · Wasserfall",
+    "detailTitle": "Dimensionsdetail und Prioritätsverteilung",
+    "dualReportBody": "Die größte-Δ̂-Dimension ({maxDeltaCode}) unterscheidet sich von der höchstgewichteten Dimension ({weightedCode}). Die Stabilitätsbedingung ist gebrochen — der Bericht sollte sowohl Überschreibungsmodus als auch Grundbewertungsmodus enthalten.",
+    "dualReportTitle": "⚠ Doppelte Berichterstattung erforderlich",
+    "errorAiGeneric": "KI-Fehler",
+    "errorPdfFailed": "PDF konnte nicht generiert werden",
+    "livePreviewTitle": "Live-Vorschau",
+    "loadExample": "Beispieldaten laden",
+    "maxDeltaLabel": "Max Δ̂",
+    "pdfDownload": "PDF",
+    "pdfDownloaded": "Heruntergeladen",
+    "pdfDownloadOkTitle": "PDF-Bericht herunterladen",
+    "pdfDownloadWarnTitle": "Warnung: KI-Bewertung noch nicht durchgeführt — PDF zeigt möglicherweise leere Diagramme",
+    "pdfPreparing": "PDF wird vorbereitet…",
+    "pdfShare": "PDF teilen",
+    "pdfShareAria": "Als PDF teilen",
+    "pdfShared": "Geteilt",
+    "pdfShareHoverTitle": "PDF erstellen und über das Teilen-Menü Ihres Geräts senden (WhatsApp, Mail, AirDrop, etc.)",
+    "profileDescription": "Vor-Vorfall (t₀) vs. Zum-Vorfall (t₁) Vergleich + Prioritätsranking",
+    "profileTitle": "Neundimensionales Risikoprofil + Grundursachenkette",
+    "reportFileStem": "r2d-rca-bericht",
+    "save": "Speichern",
+    "saveSaving": "Speichern…",
+    "saved": "Gespeichert",
+    "scaleBadge": "Kontinuierliche Skala [0, 1]",
+    "scoresDescription": "Vor-Vorfall (t₀) und Zum-Vorfall (t₁) Bewertungen pro Dimension. Mit Schiebereglern anpassen oder mit KI generieren.",
+    "scoresTitle": "C1–C9 Bewertungsvergleich",
+    "sharePdfTitle": "R₂D-RCA Analysebericht",
+    "shareTextDefault": "R₂D-RCA Analysebericht",
+    "shareTextWithIncident": "R₂D-RCA Analyse: {title}",
+    "stabilityDual": "Duale Berichterstattung",
+    "stabilityLabel": "Stabilität",
+    "stabilityStable": "Stabil",
+    "summaryDescription": "Bewertung · größte Abweichung · Theoremstatus · Überschreibung",
+    "summaryTitle": "Zusammenfassung",
+    "weightLabel": "w = {value}"
+  },
+  "pdf": {
+    "calcModeBase": "Basis-Bewertungsmodus (gewichtete Summe)",
+    "calcModeOverride": "Überschreibungsmodus (max Δ̂ ≥ 0,40)",
+    "chartDeltaRadarSub": "Nur Abweichungsgrößen — wo Risiko gestiegen ist",
+    "chartDeltaRadarTitle": "Δ̂ Radarprofil (9 Achsen)",
+    "chartDeltaSub": "Abweichungsbalken für 9 Dimensionen, geordnet C1→C9",
+    "chartDeltaTitle": "Abweichungsschwere (Δ̂)",
+    "chartDonutSub": "P(C_i) = w_i · Δ̂_i — nur defekte Dimensionen",
+    "chartDonutTitle": "Prioritätsbeitragsanteil",
+    "chartGaugeSub": "Halbkreisanzeige — 0 (grün) → 1 (rot)",
+    "chartGaugeTitle": "R₂D-RCA Schwere",
+    "chartHeatmapSub": "t₀ · t₁ · Δ̂ Farbskala (grün→rot)",
+    "chartHeatmapTitle": "9-Dimensionen Heatmap",
+    "chartPolarSub": "Gleicher Winkel pro Dimension, Radius = Δ̂ Größe",
+    "chartPolarTitle": "Polarfläche — Prioritätsverteilung",
+    "chartRadarSub": "9-Achsen Radar — Vor-Vorfall vs Zum-Vorfall",
+    "chartRadarTitle": "Risikoprofil (t₀ vs t₁)",
+    "chartWaterfallSub": "Geordnete Prioritätsbeiträge + Gesamtbewertung",
+    "chartWaterfallTitle": "Prioritätsakkumulation (Wasserfall)",
+    "defaultReportSubtitle": "Neundimensionale zusammengesetzte Risikometrik · delta-basierte Ursachenanalyse",
+    "defaultReportTitle": "R₂D-RCA (C1–C9) Analysebericht",
+    "donutEmpty": "Keine defekten Dimensionen",
+    "donutTotal": "Gesamt",
+    "dualReportingBadge": "⚠ Duale Berichterstattung erforderlich",
+    "emptyStateWarning": "⚠ Noch keine Analysedaten. Alle Dimensionen haben Δ̂ = 0 — Vor-Vorfall und Zum-Vorfall Bewertungen sind identisch. Für einen aussagekräftigen Bericht generieren Sie zuerst Bewertungen mit {aiButton} oder passen die Schieberegler an, dann erstellen Sie das PDF erneut.",
+    "gaugeBrand": "R₂D-RCA",
+    "legendMajor": "Schwerwiegend",
+    "legendMinor": "Geringfügig",
+    "legendOverride": "Überschreibung",
+    "legendSec": "Sek.",
+    "legendT0": "t₀ (vorher)",
+    "legendT1": "t₁ (beim Vorfall)",
+    "notDetermined": "Nicht bestimmt",
+    "polarEmpty": "Keine defekten Dimensionen",
+    "popupBlocked": "Das Druckfenster konnte nicht geöffnet werden. Bitte überprüfen Sie Ihren Pop-up-Blocker.",
+    "primaryRootsTitle": "Primäre Grundursache(n)",
+    "rootChainEmpty": "Keine defekten Dimensionen",
+    "rootChainEmptyAllZero": "Keine defekten Dimensionen — alle Δ̂ = 0",
+    "rootChainSub": "Defekte Dimensionen in Prioritätsreihenfolge — Override / Major / Sek. Kategorien",
+    "scoreLabel": "R₂D-RCA-Score",
+    "sectionAiNarrative": "KI-Bewertung",
+    "sectionHeatmapWaterfall": "Dimensionsdetail · Heatmap und Prioritätsakkumulation",
+    "sectionPolarDelta": "Prioritäts-Polarverteilung + Δ̂-Radarprofil",
+    "sectionRanking": "Prioritätsranking",
+    "sectionRootChain": "Grundursachenkette (kategorisiert + gerankt)",
+    "sectionScoreTable": "Neun-dimensionaler Score-Vergleich",
+    "sectionStableDims": "Stabile Dimensionen (Δ̂ = 0)",
+    "statBrokenStable": "Defekt / stabil",
+    "statMaxDelta": "Größtes Δ̂",
+    "statNotTriggered": "Nicht ausgelöst",
+    "statOverride": "Override",
+    "statTriggered": "Ausgelöst",
+    "tableFootnoteLegend": "Δ̂_i = max(0, t₁ − t₀) · Priorität P(C_i) = w_i · Δ̂_i · Scores auf [0,1] kontinuierlicher Skala · Höher = höheres Risiko",
+    "thDimension": "Dimension",
+    "thPriority": "Priorität",
+    "thRank": "#",
+    "thWeight": "Gewichtung",
+    "visualSummaryTitle": "Visuelle Zusammenfassung",
+    "waterfallEmpty": "Keine defekten Dimensionen",
+    "waterfallFootnote": "Prioritätsakkumulation: C₁→Cₙ → Σ (gesamt R_RCA)",
+    "waterfallTotalSymbol": "Σ"
+  },
+  "polar": {
+    "ariaLabel": "Polardiagramm — Delta-Verteilung",
+    "empty": "Keine defekten Dimensionen",
+    "title": "Delta-Polarverteilung"
+  },
+  "radar": {
+    "ariaLabel": "R₂D-RCA-Radardiagramm",
+    "datasetT0": "Vor Vorfall (t₀)",
+    "datasetT1": "Bei Vorfall (t₁)",
+    "title": "Neun-dimensionales Risikoprofil (t₀ vs t₁)"
+  },
+  "rootChain": {
+    "ariaLabel": "Grundursachenkette — neun Dimensionen in vier Kategorien",
+    "badgeInactive": "INAKTIV",
+    "badgeOverride": "OVERRIDE",
+    "cardTitle": "Grundursachenkette (9/9 Dimensionen)",
+    "majorDesc": "0,20 ≤ Δ̂ < 0,40",
+    "majorTitle": "Sekundäre Faktoren",
+    "minorDesc": "0 < Δ̂ < 0,20",
+    "minorTitle": "Geringe Auswirkung",
+    "noneDesc": "Δ̂ = 0",
+    "noneTitle": "Inaktiv (keine Änderung)",
+    "overrideDesc": "Δ̂ ≥ 0,40 — Überschreibung ausgelöst",
+    "overrideTitle": "Primäre Grundursache"
+  },
+  "statusCards": {
+    "brokenAria": "Anzahl defekter Dimensionen",
+    "brokenLabel": "Defekt",
+    "brokenOfNine": "{count} / 9 Dimensionen",
+    "overrideActive": "Aktiv",
+    "overrideAria": "Überschreibungsstatus",
+    "overrideInactive": "Inaktiv",
+    "overrideLabel": "Überschreibung",
+    "stableAria": "Anzahl stabiler Dimensionen",
+    "stableLabel": "Stabil",
+    "stableOfNine": "{count} / 9 Dimensionen"
+  },
+  "waterfall": {
+    "ariaLabel": "Wasserfalldiagramm — Beitragsanalyse",
+    "empty": "Keine defekten Dimensionen — Wasserfall nicht verfügbar.",
+    "title": "Beitrags-Wasserfall",
+    "tooltipContribution": "Beitrag: {value}",
+    "total": "Gesamt"
+  }
+}

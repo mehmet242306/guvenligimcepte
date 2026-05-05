@@ -1,0 +1,245 @@
+{
+  "deltaBar": {
+    "ariaLabel": "델타 막대 차트 — 9개 차원",
+    "datasetDelta": "Δ̂",
+    "title": "편차 심각도 (Δ̂)"
+  },
+  "deltaRadar": {
+    "ariaLabel": "델타 레이더 미니 차트",
+    "title": "Δ̂ 레이더 프로필"
+  },
+  "dimensions": {
+    "C1": {
+      "name": "위험 강도",
+      "source": "시각적 (YOLO)"
+    },
+    "C2": {
+      "name": "PPE 부적합",
+      "source": "시각적 + 기록"
+    },
+    "C3": {
+      "name": "행동 위험",
+      "source": "시각적 + 구역"
+    },
+    "C4": {
+      "name": "환경 스트레스",
+      "source": "센서"
+    },
+    "C5": {
+      "name": "화학적 / 대기",
+      "source": "센서 + SCADA"
+    },
+    "C6": {
+      "name": "접근 / 장벽 위험",
+      "source": "시각적 + 센서"
+    },
+    "C7": {
+      "name": "기계 / 공정 위험",
+      "source": "센서 + CMMS"
+    },
+    "C8": {
+      "name": "차량 / 교통 위험",
+      "source": "시각적 + RTLS"
+    },
+    "C9": {
+      "name": "조직 부하 / 피로",
+      "source": "기록 + 센서"
+    }
+  },
+  "doughnut": {
+    "ariaLabel": "우선순위 공유 도넛 차트",
+    "empty": "손상된 차원 없음",
+    "title": "우선순위 기여도 공유"
+  },
+  "gauge": {
+    "riskCritical": "치명적 위험",
+    "riskHigh": "높은 위험",
+    "riskLow": "낮은 위험",
+    "riskMedium": "중간 위험",
+    "title": "R₂D-RCA 점수"
+  },
+  "heatmap": {
+    "ariaLabel": "9차원 히트맵 — t₀ / t₁ / 델타",
+    "colDelta": "Δ̂ (증가)",
+    "colDimension": "차원",
+    "colT0": "t₀ (이전)",
+    "colT1": "t₁ (사고 시점)",
+    "title": "차원 히트맵"
+  },
+  "metricCards": {
+    "baseScoreBadge": "기본 점수",
+    "dualHint": "두 후보 — 수동 결정",
+    "dualReportingBadge": "이중 보고",
+    "maxDeltaCardAria": "최대 편차 카드",
+    "maxDeltaLabel": "최대 편차",
+    "modeCardAria": "계산 모드 카드",
+    "modeLabel": "모드",
+    "overrideBadge": "재정의",
+    "scoreCardAria": "R₂D-RCA 점수 카드",
+    "scoreLabel": "R₂D-RCA 점수",
+    "stabilityCardAria": "안정성 정리 카드",
+    "stabilityLabel": "안정성",
+    "stableBadge": "안정",
+    "stableHint": "단일 주요 근본원인",
+    "tauExceeded": "τ = 0.40 임계값 초과",
+    "tauNotExceeded": "τ = 0.40 임계값 미초과"
+  },
+  "panel": {
+    "aiAnalyze": "AI로 분석",
+    "aiAnalyzeAria": "AI로 분석 실행",
+    "aiAnalyzing": "AI로 점수 생성 중…",
+    "aiAnalyzingFooter": "AI로 점수 생성 중…",
+    "aiEvalDescription": "RiskNova AI 생성 · 전문가 검토 필요",
+    "aiEvalTitle": "AI 평가",
+    "aiGenerateScores": "AI로 점수 생성",
+    "brokenStableLabel": "불안정 / 안정",
+    "calculationBase": "기본 점수",
+    "calculationOverride": "재정의",
+    "cardDescription": "9차원 복합 위험 지표 · 델타 기반 수치 근본원인 분석",
+    "cardTitle": "R₂D-RCA (C1–C9)",
+    "defaultBannerBody": "사고 설명을 바탕으로 AI가 9개 차원의 t₀ 및 t₁ 점수를 제안합니다. 필요시 수동 조정 가능합니다.",
+    "defaultBannerTitle": "먼저 AI로 점수 생성",
+    "detailDescription": "9차원 히트맵 · 편차 심각도 (Δ̂) · 우선순위 비율 · 폭포수",
+    "detailTitle": "차원 세부사항 및 우선순위 분포",
+    "dualReportBody": "최대 Δ̂ 차원 ({maxDeltaCode})이 최고 가중치 차원 ({weightedCode})과 다릅니다. 안정성 조건이 깨짐 — 보고서에 재정의 모드와 기본 점수 모드를 모두 포함해야 합니다.",
+    "dualReportTitle": "⚠ 이중 보고 필요",
+    "errorAiGeneric": "AI 오류",
+    "errorPdfFailed": "PDF 생성 실패",
+    "livePreviewTitle": "실시간 미리보기",
+    "loadExample": "샘플 데이터 로드",
+    "maxDeltaLabel": "최대 Δ̂",
+    "pdfDownload": "PDF",
+    "pdfDownloaded": "다운로드됨",
+    "pdfDownloadOkTitle": "PDF 보고서 다운로드",
+    "pdfDownloadWarnTitle": "경고: AI 점수 생성이 아직 실행되지 않음 — PDF에 빈 차트가 표시될 수 있습니다",
+    "pdfPreparing": "PDF 준비 중…",
+    "pdfShare": "PDF 공유",
+    "pdfShareAria": "PDF로 공유",
+    "pdfShared": "공유됨",
+    "pdfShareHoverTitle": "PDF를 생성하여 기기 공유 시트를 통해 전송 (WhatsApp, 메일, AirDrop 등)",
+    "profileDescription": "사고 전 (t₀) vs 사고 시 (t₁) 비교 + 우선순위 순위",
+    "profileTitle": "9차원 위험 프로필 + 근본원인 체인",
+    "reportFileStem": "r2d-rca-report",
+    "save": "저장",
+    "saveSaving": "저장 중…",
+    "saved": "저장됨",
+    "scaleBadge": "연속 척도 [0, 1]",
+    "scoresDescription": "차원별 사고 전(t₀) 및 사고 시(t₁) 점수. 슬라이더로 조정하거나 AI로 생성하세요.",
+    "scoresTitle": "C1–C9 점수 비교",
+    "sharePdfTitle": "R₂D-RCA 분석 보고서",
+    "shareTextDefault": "R₂D-RCA 분석 보고서",
+    "shareTextWithIncident": "R₂D-RCA 분석: {title}",
+    "stabilityDual": "이중 보고",
+    "stabilityLabel": "안정성",
+    "stabilityStable": "안정",
+    "summaryDescription": "점수 · 최대 편차 · 정리 상태 · 재정의",
+    "summaryTitle": "경영진 요약",
+    "weightLabel": "w = {value}"
+  },
+  "pdf": {
+    "calcModeBase": "기본 점수 모드 (가중합)",
+    "calcModeOverride": "재정의 모드 (최대 Δ̂ ≥ 0.40)",
+    "chartDeltaRadarSub": "편차 크기만 — 위험이 증가한 곳",
+    "chartDeltaRadarTitle": "Δ̂ 레이더 프로필 (9축)",
+    "chartDeltaSub": "C1→C9 순서로 정렬된 9차원 편차 막대",
+    "chartDeltaTitle": "편차 심각도 (Δ̂)",
+    "chartDonutSub": "P(C_i) = w_i · Δ̂_i — 손상된 차원만",
+    "chartDonutTitle": "우선순위 기여 비율",
+    "chartGaugeSub": "반원형 게이지 — 0 (녹색) → 1 (빨간색)",
+    "chartGaugeTitle": "R₂D-RCA 심각도",
+    "chartHeatmapSub": "t₀ · t₁ · Δ̂ 색상 척도 (녹색→빨간색)",
+    "chartHeatmapTitle": "9차원 히트맵",
+    "chartPolarSub": "차원당 동일 각도, 반지름 = Δ̂ 크기",
+    "chartPolarTitle": "극좌표 영역 — 우선순위 분포",
+    "chartRadarSub": "9축 레이더 — 사고 전 vs 사고 시",
+    "chartRadarTitle": "위험 프로필 (t₀ vs t₁)",
+    "chartWaterfallSub": "정렬된 우선순위 기여도 + 총점",
+    "chartWaterfallTitle": "우선순위 누적 (폭포수)",
+    "defaultReportSubtitle": "9차원 복합 위험 지표 · 델타 기반 근본원인 분석",
+    "defaultReportTitle": "R₂D-RCA (C1–C9) 분석 보고서",
+    "donutEmpty": "손상된 차원 없음",
+    "donutTotal": "총계",
+    "dualReportingBadge": "⚠ 이중 보고 필요",
+    "emptyStateWarning": "⚠ 아직 분석 데이터가 없습니다. 모든 차원의 Δ̂ = 0 — 사고 전과 사고 시 점수가 동일합니다. 의미 있는 보고서를 위해 먼저 {aiButton}로 점수를 생성하거나 슬라이더를 조정한 후 PDF를 다시 생성하세요.",
+    "gaugeBrand": "R₂D-RCA",
+    "legendMajor": "주요",
+    "legendMinor": "부차적",
+    "legendOverride": "재정의",
+    "legendSec": "섹션",
+    "legendT0": "t₀ (이전)",
+    "legendT1": "t₁ (사고 시)",
+    "notDetermined": "미결정",
+    "polarEmpty": "손상된 차원 없음",
+    "popupBlocked": "인쇄 창을 열 수 없습니다. 팝업 차단기를 확인해 주세요.",
+    "primaryRootsTitle": "주요 근본 원인",
+    "rootChainEmpty": "손상된 차원 없음",
+    "rootChainEmptyAllZero": "손상된 차원 없음 — 모든 Δ̂ = 0",
+    "rootChainSub": "우선순위별 손상된 차원 — 재정의 / 주요 / 보조 범주",
+    "scoreLabel": "R₂D-RCA 점수",
+    "sectionAiNarrative": "AI 평가",
+    "sectionHeatmapWaterfall": "차원 세부사항 · 히트맵 및 우선순위 누적",
+    "sectionPolarDelta": "우선순위 극좌표 분포 + Δ̂ 레이더 프로필",
+    "sectionRanking": "우선순위 순위",
+    "sectionRootChain": "근본 원인 체인 (분류 + 순위)",
+    "sectionScoreTable": "9차원 점수 비교",
+    "sectionStableDims": "안정 차원 (Δ̂ = 0)",
+    "statBrokenStable": "손상 / 안정",
+    "statMaxDelta": "최대 Δ̂",
+    "statNotTriggered": "트리거되지 않음",
+    "statOverride": "재정의",
+    "statTriggered": "트리거됨",
+    "tableFootnoteLegend": "Δ̂_i = max(0, t₁ − t₀) · 우선순위 P(C_i) = w_i · Δ̂_i · [0,1] 연속 척도 점수 · 높을수록 위험도 높음",
+    "thDimension": "차원",
+    "thPriority": "우선순위",
+    "thRank": "#",
+    "thWeight": "가중치",
+    "visualSummaryTitle": "시각적 요약",
+    "waterfallEmpty": "손상된 차원 없음",
+    "waterfallFootnote": "우선순위 누적: C₁→Cₙ → Σ (총 R_RCA)",
+    "waterfallTotalSymbol": "Σ"
+  },
+  "polar": {
+    "ariaLabel": "극좌표 차트 — 델타 분포",
+    "empty": "손상된 차원 없음",
+    "title": "델타 극좌표 분포"
+  },
+  "radar": {
+    "ariaLabel": "R₂D-RCA 레이더 차트",
+    "datasetT0": "사고 전 (t₀)",
+    "datasetT1": "사고 시 (t₁)",
+    "title": "9차원 위험 프로필 (t₀ vs t₁)"
+  },
+  "rootChain": {
+    "ariaLabel": "근본 원인 체인 — 4개 범주의 9차원",
+    "badgeInactive": "비활성",
+    "badgeOverride": "재정의",
+    "cardTitle": "근본 원인 체인 (9/9 차원)",
+    "majorDesc": "0.20 ≤ Δ̂ < 0.40",
+    "majorTitle": "보조 요인",
+    "minorDesc": "0 < Δ̂ < 0.20",
+    "minorTitle": "낮은 영향",
+    "noneDesc": "Δ̂ = 0",
+    "noneTitle": "비활성 (변화 없음)",
+    "overrideDesc": "Δ̂ ≥ 0.40 — 재정의 트리거됨",
+    "overrideTitle": "주요 근본 원인"
+  },
+  "statusCards": {
+    "brokenAria": "손상된 차원 수",
+    "brokenLabel": "손상됨",
+    "brokenOfNine": "{count} / 9 차원",
+    "overrideActive": "활성",
+    "overrideAria": "재정의 상태",
+    "overrideInactive": "비활성",
+    "overrideLabel": "재정의",
+    "stableAria": "안정적 차원 수",
+    "stableLabel": "안정적",
+    "stableOfNine": "{count} / 9 차원"
+  },
+  "waterfall": {
+    "ariaLabel": "워터폴 차트 — 기여도 분석",
+    "empty": "손상된 차원 없음 — 워터폴을 사용할 수 없습니다.",
+    "title": "기여도 워터폴",
+    "tooltipContribution": "기여도: {value}",
+    "total": "합계"
+  }
+}

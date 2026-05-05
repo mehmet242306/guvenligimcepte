@@ -1,0 +1,247 @@
+{
+  "r2dRca": {
+    "deltaBar": {
+      "ariaLabel": "Delta çubuk grafik — dokuz boyut",
+      "datasetDelta": "Δ̂",
+      "title": "Sapma şiddeti (Δ̂)"
+    },
+    "deltaRadar": {
+      "ariaLabel": "Delta radar mini grafik",
+      "title": "Δ̂ radar profili"
+    },
+    "dimensions": {
+      "C1": {
+        "name": "Tehlike yoğunluğu",
+        "source": "Görsel (YOLO)"
+      },
+      "C2": {
+        "name": "KKD uygunsuzluğu",
+        "source": "Görsel + kayıtlar"
+      },
+      "C3": {
+        "name": "Davranışsal risk",
+        "source": "Görsel + bölge"
+      },
+      "C4": {
+        "name": "Çevresel stres",
+        "source": "Sensör"
+      },
+      "C5": {
+        "name": "Kimyasal / atmosferik",
+        "source": "Sensör + SCADA"
+      },
+      "C6": {
+        "name": "Erişim / bariyer riski",
+        "source": "Görsel + sensör"
+      },
+      "C7": {
+        "name": "Makine / süreç riski",
+        "source": "Sensör + CMMS"
+      },
+      "C8": {
+        "name": "Araç / trafik riski",
+        "source": "Görsel + RTLS"
+      },
+      "C9": {
+        "name": "Organizasyonel yük / yorgunluk",
+        "source": "Kayıtlar + sensör"
+      }
+    },
+    "doughnut": {
+      "ariaLabel": "Öncelik payı halka grafik",
+      "empty": "Bozuk boyut yok",
+      "title": "Öncelik katkı payı"
+    },
+    "gauge": {
+      "riskCritical": "Kritik risk",
+      "riskHigh": "Yüksek risk",
+      "riskLow": "Düşük risk",
+      "riskMedium": "Orta risk",
+      "title": "R₂D-RCA skoru"
+    },
+    "heatmap": {
+      "ariaLabel": "Dokuz boyut ısı haritası — t₀ / t₁ / delta",
+      "colDelta": "Δ̂ (artış)",
+      "colDimension": "Boyut",
+      "colT0": "t₀ (öncesi)",
+      "colT1": "t₁ (olay anında)",
+      "title": "Boyut ısı haritası"
+    },
+    "metricCards": {
+      "baseScoreBadge": "TEMEL SKOR",
+      "dualHint": "İki aday — manuel karar",
+      "dualReportingBadge": "ÇIFT RAPORLAMA",
+      "maxDeltaCardAria": "Maksimum sapma kartı",
+      "maxDeltaLabel": "Maks sapma",
+      "modeCardAria": "Hesaplama modu kartı",
+      "modeLabel": "Mod",
+      "overrideBadge": "OVERRIDE",
+      "scoreCardAria": "R₂D-RCA skor kartı",
+      "scoreLabel": "R₂D-RCA skoru",
+      "stabilityCardAria": "Kararlılık teoremi kartı",
+      "stabilityLabel": "Kararlılık",
+      "stableBadge": "KARLI",
+      "stableHint": "Tek baskın kök neden",
+      "tauExceeded": "τ = 0.40 eşiği aşıldı",
+      "tauNotExceeded": "τ = 0.40 eşiği aşılmadı"
+    },
+    "panel": {
+      "aiAnalyze": "AI ile analiz et",
+      "aiAnalyzeAria": "AI ile analiz çalıştır",
+      "aiAnalyzing": "AI ile skorlar oluşturuluyor…",
+      "aiAnalyzingFooter": "AI ile skorlar oluşturuluyor…",
+      "aiEvalDescription": "RiskNova AI tarafından oluşturuldu · uzman incelemesi gerekli",
+      "aiEvalTitle": "AI değerlendirmesi",
+      "aiGenerateScores": "AI ile skorlar oluştur",
+      "brokenStableLabel": "Bozuk / kararlı",
+      "calculationBase": "Temel skor",
+      "calculationOverride": "OVERRIDE",
+      "cardDescription": "Dokuz boyutlu bileşik risk metriği · delta tabanlı sayısal kök neden analizi",
+      "cardTitle": "R₂D-RCA (C1–C9)",
+      "defaultBannerBody": "Olay açıklamanıza dayanarak, AI tüm dokuz boyut için t₀ ve t₁ skorları önerir. Gerekirse bunları manuel olarak ayarlayabilirsiniz.",
+      "defaultBannerTitle": "Önce AI ile skorlar oluştur",
+      "detailDescription": "Dokuz boyut ısı haritası · sapma şiddeti (Δ̂) · öncelik payı · şelale",
+      "detailTitle": "Boyut detayı ve öncelik dağılımı",
+      "dualReportBody": "En büyük-Δ̂ boyutu ({maxDeltaCode}) en yüksek ağırlıklı boyuttan ({weightedCode}) farklı. Kararlılık koşulu bozuk — rapor hem OVERRIDE modu hem de temel skor modunu içermeli.",
+      "dualReportTitle": "⚠ İkili raporlama gerekli",
+      "errorAiGeneric": "AI hatası",
+      "errorPdfFailed": "PDF oluşturulamadı",
+      "livePreviewTitle": "Canlı önizleme",
+      "loadExample": "Örnek veri yükle",
+      "maxDeltaLabel": "Maks Δ̂",
+      "pdfDownload": "PDF",
+      "pdfDownloaded": "İndirildi",
+      "pdfDownloadOkTitle": "PDF raporu indir",
+      "pdfDownloadWarnTitle": "Uyarı: AI skorlama henüz çalıştırılmadı — PDF boş grafikler gösterebilir",
+      "pdfPreparing": "PDF hazırlanıyor…",
+      "pdfShare": "PDF paylaş",
+      "pdfShareAria": "PDF olarak paylaş",
+      "pdfShared": "Paylaşıldı",
+      "pdfShareHoverTitle": "PDF oluştur ve cihaz paylaşım sayfası üzerinden gönder (WhatsApp, Mail, AirDrop, vb.)",
+      "profileDescription": "Olay öncesi (t₀) vs olay anında (t₁) karşılaştırma + öncelik sıralaması",
+      "profileTitle": "Dokuz boyutlu risk profili + kök neden zinciri",
+      "reportFileStem": "r2d-rca-raporu",
+      "save": "Kaydet",
+      "saveSaving": "Kaydediliyor…",
+      "saved": "Kaydedildi",
+      "scaleBadge": "Sürekli ölçek [0, 1]",
+      "scoresDescription": "Boyut başına olay öncesi (t₀) ve olay anı (t₁) puanları. Kaydırıcılarla ayarlayın veya AI ile oluşturun.",
+      "scoresTitle": "C1–C9 puan karşılaştırması",
+      "sharePdfTitle": "R₂D-RCA analiz raporu",
+      "shareTextDefault": "R₂D-RCA analiz raporu",
+      "shareTextWithIncident": "R₂D-RCA analizi: {title}",
+      "stabilityDual": "İkili raporlama",
+      "stabilityLabel": "Kararlılık",
+      "stabilityStable": "Kararlı",
+      "summaryDescription": "Puan · en büyük sapma · teorem durumu · geçersiz kılma",
+      "summaryTitle": "Yönetici özeti",
+      "weightLabel": "w = {value}"
+    },
+    "pdf": {
+      "calcModeBase": "Temel puan modu (ağırlıklı toplam)",
+      "calcModeOverride": "Geçersiz kılma modu (maks Δ̂ ≥ 0.40)",
+      "chartDeltaRadarSub": "Yalnızca sapma büyüklükleri — riskin arttığı yerler",
+      "chartDeltaRadarTitle": "Δ̂ radar profili (9 eksen)",
+      "chartDeltaSub": "C1→C9 sıralı 9 boyut için sapma çubukları",
+      "chartDeltaTitle": "Sapma şiddeti (Δ̂)",
+      "chartDonutSub": "P(C_i) = w_i · Δ̂_i — yalnızca bozuk boyutlar",
+      "chartDonutTitle": "Öncelik katkı payı",
+      "chartGaugeSub": "Yarı dairesel gösterge — 0 (yeşil) → 1 (kırmızı)",
+      "chartGaugeTitle": "R₂D-RCA şiddeti",
+      "chartHeatmapSub": "t₀ · t₁ · Δ̂ renk ölçeği (yeşil→kırmızı)",
+      "chartHeatmapTitle": "9 boyutlu ısı haritası",
+      "chartPolarSub": "Boyut başına eşit açı, yarıçap = Δ̂ büyüklüğü",
+      "chartPolarTitle": "Kutupsal alan — öncelik dağılımı",
+      "chartRadarSub": "9 eksenli radar — olay öncesi vs olay anı",
+      "chartRadarTitle": "Risk profili (t₀ vs t₁)",
+      "chartWaterfallSub": "Sıralı öncelik katkıları + toplam puan",
+      "chartWaterfallTitle": "Öncelik birikimi (şelale)",
+      "defaultReportSubtitle": "Dokuz boyutlu bileşik risk metriği · delta tabanlı kök neden analizi",
+      "defaultReportTitle": "R₂D-RCA (C1–C9) analiz raporu",
+      "donutEmpty": "Bozuk boyut yok",
+      "donutTotal": "Toplam",
+      "dualReportingBadge": "⚠ İkili raporlama gerekli",
+      "emptyStateWarning": "⚠ Henüz analiz verisi yok. Tüm boyutlarda Δ̂ = 0 — olay öncesi ve olay anı puanları aynı. Anlamlı bir rapor için önce {aiButton} ile puan oluşturun veya kaydırıcıları ayarlayın, sonra PDF'i tekrar oluşturun.",
+      "gaugeBrand": "R₂D-RCA",
+      "legendMajor": "Majör",
+      "legendMinor": "Minör",
+      "legendOverride": "Geçersiz kılma",
+      "legendSec": "Sn.",
+      "legendT0": "t₀ (öncesi)",
+      "legendT1": "t₁ (olay anında)",
+      "notDetermined": "Belirlenmedi",
+      "polarEmpty": "Bozuk boyut yok",
+      "popupBlocked": "Yazdırma penceresi açılamadı. Lütfen açılır pencere engelleyicinizi kontrol edin.",
+      "primaryRootsTitle": "Birincil kök neden(ler)",
+      "rootChainEmpty": "Bozuk boyut yok",
+      "rootChainEmptyAllZero": "Bozuk boyut yok — tüm Δ̂ = 0",
+      "rootChainSub": "Öncelik sırasına göre bozuk boyutlar — OVERRIDE / Majör / İkincil kategoriler",
+      "scoreLabel": "R₂D-RCA skoru",
+      "sectionAiNarrative": "AI değerlendirmesi",
+      "sectionHeatmapWaterfall": "Boyut detayı · ısı haritası ve öncelik birikimi",
+      "sectionPolarDelta": "Öncelik polar dağılımı + Δ̂ radar profili",
+      "sectionRanking": "Öncelik sıralaması",
+      "sectionRootChain": "Kök neden zinciri (kategorize + sıralı)",
+      "sectionScoreTable": "Dokuz boyutlu skor karşılaştırması",
+      "sectionStableDims": "Kararlı boyutlar (Δ̂ = 0)",
+      "statBrokenStable": "Bozuk / kararlı",
+      "statMaxDelta": "En büyük Δ̂",
+      "statNotTriggered": "Tetiklenmedi",
+      "statOverride": "OVERRIDE",
+      "statTriggered": "Tetiklendi",
+      "tableFootnoteLegend": "Δ̂_i = max(0, t₁ − t₀) · Öncelik P(C_i) = w_i · Δ̂_i · [0,1] sürekli ölçekte skorlar · Yüksek = yüksek risk",
+      "thDimension": "Boyut",
+      "thPriority": "Öncelik",
+      "thRank": "#",
+      "thWeight": "Ağırlık",
+      "visualSummaryTitle": "Görsel özet",
+      "waterfallEmpty": "Bozuk boyut yok",
+      "waterfallFootnote": "Öncelik birikimi: C₁→Cₙ → Σ (toplam R_RCA)",
+      "waterfallTotalSymbol": "Σ"
+    },
+    "polar": {
+      "ariaLabel": "Polar grafik — delta dağılımı",
+      "empty": "Bozuk boyut yok",
+      "title": "Delta polar dağılımı"
+    },
+    "radar": {
+      "ariaLabel": "R₂D-RCA radar grafiği",
+      "datasetT0": "Olay öncesi (t₀)",
+      "datasetT1": "Olay anında (t₁)",
+      "title": "Dokuz boyutlu risk profili (t₀ vs t₁)"
+    },
+    "rootChain": {
+      "ariaLabel": "Kök neden zinciri — dört kategoride dokuz boyut",
+      "badgeInactive": "INACTIVE",
+      "badgeOverride": "OVERRIDE",
+      "cardTitle": "Kök neden zinciri (9/9 boyut)",
+      "majorDesc": "0.20 ≤ Δ̂ < 0.40",
+      "majorTitle": "İkincil faktörler",
+      "minorDesc": "0 < Δ̂ < 0.20",
+      "minorTitle": "Düşük etki",
+      "noneDesc": "Δ̂ = 0",
+      "noneTitle": "Pasif (değişiklik yok)",
+      "overrideDesc": "Δ̂ ≥ 0.40 — OVERRIDE tetiklendi",
+      "overrideTitle": "Birincil kök neden"
+    },
+    "statusCards": {
+      "brokenAria": "Bozuk boyut sayısı",
+      "brokenLabel": "Bozuk",
+      "brokenOfNine": "{count} / 9 boyut",
+      "overrideActive": "Aktif",
+      "overrideAria": "OVERRIDE durumu",
+      "overrideInactive": "Pasif",
+      "overrideLabel": "OVERRIDE",
+      "stableAria": "Kararlı boyut sayısı",
+      "stableLabel": "Kararlı",
+      "stableOfNine": "{count} / 9 boyut"
+    },
+    "waterfall": {
+      "ariaLabel": "Şelale grafiği — katkı analizi",
+      "empty": "Bozuk boyut yok — şelale mevcut değil.",
+      "title": "Katkı şelalesi",
+      "tooltipContribution": "Katkı: {value}",
+      "total": "Toplam"
+    }
+  }
+}

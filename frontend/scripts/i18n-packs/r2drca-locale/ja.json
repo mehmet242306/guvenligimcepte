@@ -1,0 +1,247 @@
+{
+  "r2dRca": {
+    "deltaBar": {
+      "ariaLabel": "デルタ棒グラフ — 9次元",
+      "datasetDelta": "Δ̂",
+      "title": "偏差重要度 (Δ̂)"
+    },
+    "deltaRadar": {
+      "ariaLabel": "デルタレーダーミニチャート",
+      "title": "Δ̂ レーダープロファイル"
+    },
+    "dimensions": {
+      "C1": {
+        "name": "危険強度",
+        "source": "視覚 (YOLO)"
+      },
+      "C2": {
+        "name": "PPE不適合",
+        "source": "視覚 + 記録"
+      },
+      "C3": {
+        "name": "行動リスク",
+        "source": "視覚 + ゾーン"
+      },
+      "C4": {
+        "name": "環境ストレス",
+        "source": "センサー"
+      },
+      "C5": {
+        "name": "化学 / 大気",
+        "source": "センサー + SCADA"
+      },
+      "C6": {
+        "name": "アクセス / バリアリスク",
+        "source": "視覚 + センサー"
+      },
+      "C7": {
+        "name": "機械 / プロセスリスク",
+        "source": "センサー + CMMS"
+      },
+      "C8": {
+        "name": "車両 / 交通リスク",
+        "source": "視覚 + RTLS"
+      },
+      "C9": {
+        "name": "組織負荷 / 疲労",
+        "source": "記録 + センサー"
+      }
+    },
+    "doughnut": {
+      "ariaLabel": "優先度シェアドーナツチャート",
+      "empty": "破損した次元なし",
+      "title": "優先度貢献シェア"
+    },
+    "gauge": {
+      "riskCritical": "重大リスク",
+      "riskHigh": "高リスク",
+      "riskLow": "低リスク",
+      "riskMedium": "中リスク",
+      "title": "R₂D-RCA スコア"
+    },
+    "heatmap": {
+      "ariaLabel": "9次元ヒートマップ — t₀ / t₁ / デルタ",
+      "colDelta": "Δ̂ (増加)",
+      "colDimension": "次元",
+      "colT0": "t₀ (前)",
+      "colT1": "t₁ (事故時)",
+      "title": "次元ヒートマップ"
+    },
+    "metricCards": {
+      "baseScoreBadge": "ベーススコア",
+      "dualHint": "2つの候補 — 手動決定",
+      "dualReportingBadge": "デュアルレポート",
+      "maxDeltaCardAria": "最大偏差カード",
+      "maxDeltaLabel": "最大偏差",
+      "modeCardAria": "計算モードカード",
+      "modeLabel": "モード",
+      "overrideBadge": "オーバーライド",
+      "scoreCardAria": "R₂D-RCA スコアカード",
+      "scoreLabel": "R₂D-RCA スコア",
+      "stabilityCardAria": "安定性定理カード",
+      "stabilityLabel": "安定性",
+      "stableBadge": "安定",
+      "stableHint": "単一の支配的根本原因",
+      "tauExceeded": "τ = 0.40 閾値を超過",
+      "tauNotExceeded": "τ = 0.40 閾値を超過していません"
+    },
+    "panel": {
+      "aiAnalyze": "AIで分析",
+      "aiAnalyzeAria": "AIで分析を実行",
+      "aiAnalyzing": "AIでスコアを生成中…",
+      "aiAnalyzingFooter": "AIでスコアを生成中…",
+      "aiEvalDescription": "RiskNova AIによって生成 · 専門家による確認が必要",
+      "aiEvalTitle": "AI評価",
+      "aiGenerateScores": "AIでスコアを生成",
+      "brokenStableLabel": "破綻 / 安定",
+      "calculationBase": "ベーススコア",
+      "calculationOverride": "オーバーライド",
+      "cardDescription": "9次元複合リスク指標 · デルタベース数値根本原因分析",
+      "cardTitle": "R₂D-RCA (C1–C9)",
+      "defaultBannerBody": "インシデント説明に基づき、AIが全9次元のt₀およびt₁スコアを提案します。必要に応じて手動で調整できます。",
+      "defaultBannerTitle": "まずAIでスコアを生成してください",
+      "detailDescription": "9次元ヒートマップ · 偏差重要度 (Δ̂) · 優先度シェア · ウォーターフォール",
+      "detailTitle": "次元詳細と優先度分布",
+      "dualReportBody": "最大Δ̂次元 ({maxDeltaCode}) が最高重み次元 ({weightedCode}) と異なります。安定性条件が破綻しています — レポートにはオーバーライドモードとベーススコアモードの両方を含める必要があります。",
+      "dualReportTitle": "⚠ デュアルレポートが必要",
+      "errorAiGeneric": "AIエラー",
+      "errorPdfFailed": "PDFを生成できませんでした",
+      "livePreviewTitle": "ライブプレビュー",
+      "loadExample": "サンプルデータを読み込み",
+      "maxDeltaLabel": "最大 Δ̂",
+      "pdfDownload": "PDF",
+      "pdfDownloaded": "ダウンロード完了",
+      "pdfDownloadOkTitle": "PDFレポートをダウンロード",
+      "pdfDownloadWarnTitle": "警告: AIスコアリングがまだ実行されていません — PDFに空のチャートが表示される可能性があります",
+      "pdfPreparing": "PDFを準備中…",
+      "pdfShare": "PDFを共有",
+      "pdfShareAria": "PDFとして共有",
+      "pdfShared": "共有完了",
+      "pdfShareHoverTitle": "PDFを作成してデバイスの共有シート（WhatsApp、メール、AirDropなど）で送信",
+      "profileDescription": "インシデント前 (t₀) 対インシデント時 (t₁) 比較 + 優先度ランキング",
+      "profileTitle": "9次元リスクプロファイル + 根本原因チェーン",
+      "reportFileStem": "r2d-rca-report",
+      "save": "保存",
+      "saveSaving": "保存中…",
+      "saved": "保存済み",
+      "scaleBadge": "連続スケール [0, 1]",
+      "scoresDescription": "各次元のインシデント前（t₀）およびインシデント時（t₁）のスコア。スライダーで調整するかAIで生成してください。",
+      "scoresTitle": "C1–C9スコア比較",
+      "sharePdfTitle": "R₂D-RCA分析レポート",
+      "shareTextDefault": "R₂D-RCA分析レポート",
+      "shareTextWithIncident": "R₂D-RCA分析: {title}",
+      "stabilityDual": "デュアルレポート",
+      "stabilityLabel": "安定性",
+      "stabilityStable": "安定",
+      "summaryDescription": "スコア・最大偏差・定理状態・オーバーライド",
+      "summaryTitle": "エグゼクティブサマリー",
+      "weightLabel": "w = {value}"
+    },
+    "pdf": {
+      "calcModeBase": "ベーススコアモード（加重合計）",
+      "calcModeOverride": "オーバーライドモード（最大Δ̂ ≥ 0.40）",
+      "chartDeltaRadarSub": "偏差の大きさのみ — リスクが増加した箇所",
+      "chartDeltaRadarTitle": "Δ̂レーダープロファイル（9軸）",
+      "chartDeltaSub": "9次元の偏差バー、C1→C9の順序",
+      "chartDeltaTitle": "偏差の重要度（Δ̂）",
+      "chartDonutSub": "P(C_i) = w_i · Δ̂_i — 破綻した次元のみ",
+      "chartDonutTitle": "優先度寄与率",
+      "chartGaugeSub": "半円ゲージ — 0（緑）→ 1（赤）",
+      "chartGaugeTitle": "R₂D-RCA重要度",
+      "chartHeatmapSub": "t₀・t₁・Δ̂カラースケール（緑→赤）",
+      "chartHeatmapTitle": "9次元ヒートマップ",
+      "chartPolarSub": "次元あたり等角、半径 = Δ̂の大きさ",
+      "chartPolarTitle": "極座標エリア — 優先度分布",
+      "chartRadarSub": "9軸レーダー — インシデント前 vs インシデント時",
+      "chartRadarTitle": "リスクプロファイル（t₀ vs t₁）",
+      "chartWaterfallSub": "優先度寄与の順序 + 総合スコア",
+      "chartWaterfallTitle": "優先度累積（ウォーターフォール）",
+      "defaultReportSubtitle": "9次元複合リスク指標・デルタベース根本原因分析",
+      "defaultReportTitle": "R₂D-RCA（C1–C9）分析レポート",
+      "donutEmpty": "破綻した次元なし",
+      "donutTotal": "合計",
+      "dualReportingBadge": "⚠ デュアルレポートが必要です",
+      "emptyStateWarning": "⚠ 分析データがまだありません。すべての次元でΔ̂ = 0です — インシデント前とインシデント時のスコアが同一です。意味のあるレポートを作成するには、まず{aiButton}でスコアを生成するかスライダーを調整してから、再度PDFを作成してください。",
+      "gaugeBrand": "R₂D-RCA",
+      "legendMajor": "重大",
+      "legendMinor": "軽微",
+      "legendOverride": "オーバーライド",
+      "legendSec": "セクション",
+      "legendT0": "t₀（前）",
+      "legendT1": "t₁（インシデント時）",
+      "notDetermined": "未確定",
+      "polarEmpty": "破損した次元なし",
+      "popupBlocked": "印刷ウィンドウを開けませんでした。ポップアップブロッカーを確認してください。",
+      "primaryRootsTitle": "主要根本原因",
+      "rootChainEmpty": "破損した次元なし",
+      "rootChainEmptyAllZero": "破損した次元なし — すべて Δ̂ = 0",
+      "rootChainSub": "優先順位による破損次元 — オーバーライド / 主要 / 二次カテゴリ",
+      "scoreLabel": "R₂D-RCA スコア",
+      "sectionAiNarrative": "AI 評価",
+      "sectionHeatmapWaterfall": "次元詳細 · ヒートマップと優先度累積",
+      "sectionPolarDelta": "優先度極分布 + Δ̂ レーダープロファイル",
+      "sectionRanking": "優先度ランキング",
+      "sectionRootChain": "根本原因チェーン（分類 + ランク付け）",
+      "sectionScoreTable": "9次元スコア比較",
+      "sectionStableDims": "安定次元（Δ̂ = 0）",
+      "statBrokenStable": "破損 / 安定",
+      "statMaxDelta": "最大 Δ̂",
+      "statNotTriggered": "トリガーされていません",
+      "statOverride": "オーバーライド",
+      "statTriggered": "トリガーされました",
+      "tableFootnoteLegend": "Δ̂_i = max(0, t₁ − t₀) · 優先度 P(C_i) = w_i · Δ̂_i · [0,1] 連続スケールでのスコア · 高い = 高リスク",
+      "thDimension": "次元",
+      "thPriority": "優先度",
+      "thRank": "#",
+      "thWeight": "重み",
+      "visualSummaryTitle": "視覚的サマリー",
+      "waterfallEmpty": "破損した次元なし",
+      "waterfallFootnote": "優先度累積: C₁→Cₙ → Σ (合計 R_RCA)",
+      "waterfallTotalSymbol": "Σ"
+    },
+    "polar": {
+      "ariaLabel": "極座標チャート — デルタ分布",
+      "empty": "破損した次元なし",
+      "title": "デルタ極分布"
+    },
+    "radar": {
+      "ariaLabel": "R₂D-RCA レーダーチャート",
+      "datasetT0": "インシデント前（t₀）",
+      "datasetT1": "インシデント時（t₁）",
+      "title": "9次元リスクプロファイル（t₀ vs t₁）"
+    },
+    "rootChain": {
+      "ariaLabel": "根本原因チェーン — 4カテゴリの9次元",
+      "badgeInactive": "非アクティブ",
+      "badgeOverride": "オーバーライド",
+      "cardTitle": "根本原因チェーン（9/9次元）",
+      "majorDesc": "0.20 ≤ Δ̂ < 0.40",
+      "majorTitle": "二次要因",
+      "minorDesc": "0 < Δ̂ < 0.20",
+      "minorTitle": "低影響",
+      "noneDesc": "Δ̂ = 0",
+      "noneTitle": "非アクティブ（変化なし）",
+      "overrideDesc": "Δ̂ ≥ 0.40 — オーバーライドが発動されました",
+      "overrideTitle": "主要根本原因"
+    },
+    "statusCards": {
+      "brokenAria": "破損ディメンション数",
+      "brokenLabel": "破損",
+      "brokenOfNine": "{count} / 9 ディメンション",
+      "overrideActive": "アクティブ",
+      "overrideAria": "オーバーライド状態",
+      "overrideInactive": "非アクティブ",
+      "overrideLabel": "オーバーライド",
+      "stableAria": "安定ディメンション数",
+      "stableLabel": "安定",
+      "stableOfNine": "{count} / 9 ディメンション"
+    },
+    "waterfall": {
+      "ariaLabel": "ウォーターフォールチャート — 寄与分析",
+      "empty": "破損ディメンションがありません — ウォーターフォールは利用できません。",
+      "title": "寄与ウォーターフォール",
+      "tooltipContribution": "寄与: {value}",
+      "total": "合計"
+    }
+  }
+}

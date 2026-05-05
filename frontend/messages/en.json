@@ -5878,6 +5878,13 @@
         "badgeOverride": "OVERRIDE",
         "badgeInactive": "INACTIVE"
       },
+      "gauge": {
+        "title": "R₂D-RCA score",
+        "riskCritical": "Critical risk",
+        "riskHigh": "High risk",
+        "riskMedium": "Medium risk",
+        "riskLow": "Low risk"
+      },
       "pdf": {
         "defaultReportTitle": "R₂D-RCA (C1–C9) analysis report",
         "defaultReportSubtitle": "Nine-dimensional composite risk metric · delta-based root cause analysis",

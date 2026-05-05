@@ -1,0 +1,245 @@
+{
+  "deltaBar": {
+    "ariaLabel": "مخطط شريطي دلتا — تسعة أبعاد",
+    "datasetDelta": "Δ̂",
+    "title": "شدة الانحراف (Δ̂)"
+  },
+  "deltaRadar": {
+    "ariaLabel": "مخطط رادار دلتا مصغر",
+    "title": "ملف تعريف رادار Δ̂"
+  },
+  "dimensions": {
+    "C1": {
+      "name": "شدة الخطر",
+      "source": "بصري (YOLO)"
+    },
+    "C2": {
+      "name": "عدم مطابقة معدات الحماية الشخصية",
+      "source": "بصري + سجلات"
+    },
+    "C3": {
+      "name": "مخاطر سلوكية",
+      "source": "بصري + منطقة"
+    },
+    "C4": {
+      "name": "ضغط بيئي",
+      "source": "مستشعر"
+    },
+    "C5": {
+      "name": "كيميائي / جوي",
+      "source": "مستشعر + SCADA"
+    },
+    "C6": {
+      "name": "مخاطر الوصول / الحاجز",
+      "source": "بصري + مستشعر"
+    },
+    "C7": {
+      "name": "مخاطر الآلة / العملية",
+      "source": "مستشعر + CMMS"
+    },
+    "C8": {
+      "name": "مخاطر المركبات / المرور",
+      "source": "بصري + RTLS"
+    },
+    "C9": {
+      "name": "الحمل التنظيمي / الإرهاق",
+      "source": "سجلات + مستشعر"
+    }
+  },
+  "doughnut": {
+    "ariaLabel": "مخطط دائري لحصة الأولوية",
+    "empty": "لا توجد أبعاد مكسورة",
+    "title": "حصة مساهمة الأولوية"
+  },
+  "gauge": {
+    "riskCritical": "مخاطر حرجة",
+    "riskHigh": "مخاطر عالية",
+    "riskLow": "مخاطر منخفضة",
+    "riskMedium": "مخاطر متوسطة",
+    "title": "نقاط R₂D-RCA"
+  },
+  "heatmap": {
+    "ariaLabel": "خريطة حرارية تسعة أبعاد — t₀ / t₁ / دلتا",
+    "colDelta": "Δ̂ (زيادة)",
+    "colDimension": "البعد",
+    "colT0": "t₀ (قبل)",
+    "colT1": "t₁ (عند الحادث)",
+    "title": "خريطة حرارية للأبعاد"
+  },
+  "metricCards": {
+    "baseScoreBadge": "النقاط الأساسية",
+    "dualHint": "مرشحان — قرار يدوي",
+    "dualReportingBadge": "تقرير مزدوج",
+    "maxDeltaCardAria": "بطاقة الانحراف الأقصى",
+    "maxDeltaLabel": "الانحراف الأقصى",
+    "modeCardAria": "بطاقة وضع الحساب",
+    "modeLabel": "الوضع",
+    "overrideBadge": "تجاوز",
+    "scoreCardAria": "بطاقة نقاط R₂D-RCA",
+    "scoreLabel": "نقاط R₂D-RCA",
+    "stabilityCardAria": "بطاقة نظرية الاستقرار",
+    "stabilityLabel": "الاستقرار",
+    "stableBadge": "مستقر",
+    "stableHint": "السبب الجذري المهيمن الوحيد",
+    "tauExceeded": "تم تجاوز عتبة τ = 0.40",
+    "tauNotExceeded": "لم يتم تجاوز عتبة τ = 0.40"
+  },
+  "panel": {
+    "aiAnalyze": "تحليل بالذكاء الاصطناعي",
+    "aiAnalyzeAria": "تشغيل التحليل بالذكاء الاصطناعي",
+    "aiAnalyzing": "إنتاج النقاط بالذكاء الاصطناعي...",
+    "aiAnalyzingFooter": "إنتاج النقاط بالذكاء الاصطناعي...",
+    "aiEvalDescription": "تم الإنتاج بواسطة RiskNova AI · مراجعة الخبراء مطلوبة",
+    "aiEvalTitle": "تقييم الذكاء الاصطناعي",
+    "aiGenerateScores": "إنتاج النقاط بالذكاء الاصطناعي",
+    "brokenStableLabel": "مكسور / مستقر",
+    "calculationBase": "النقاط الأساسية",
+    "calculationOverride": "تجاوز",
+    "cardDescription": "مقياس المخاطر المركب تسعة الأبعاد · تحليل السبب الجذري العددي القائم على الدلتا",
+    "cardTitle": "R₂D-RCA (C1–C9)",
+    "defaultBannerBody": "بناءً على وصف الحادث الخاص بك، يقترح الذكاء الاصطناعي نقاط t₀ و t₁ لجميع الأبعاد التسعة. يمكنك تعديلها يدوياً إذا لزم الأمر.",
+    "defaultBannerTitle": "إنتاج النقاط بالذكاء الاصطناعي أولاً",
+    "detailDescription": "خريطة حرارية تسعة الأبعاد · شدة الانحراف (Δ̂) · حصة الأولوية · شلال",
+    "detailTitle": "تفاصيل البُعد وتوزيع الأولوية",
+    "dualReportBody": "البُعد الأكبر-Δ̂ ({maxDeltaCode}) يختلف عن البُعد الأعلى وزناً ({weightedCode}). شرط الاستقرار مكسور — يجب أن يتضمن التقرير كلاً من وضع التجاوز ووضع النقاط الأساسية.",
+    "dualReportTitle": "⚠ التقرير المزدوج مطلوب",
+    "errorAiGeneric": "خطأ في الذكاء الاصطناعي",
+    "errorPdfFailed": "تعذر إنتاج PDF",
+    "livePreviewTitle": "معاينة مباشرة",
+    "loadExample": "تحميل بيانات عينة",
+    "maxDeltaLabel": "أقصى Δ̂",
+    "pdfDownload": "PDF",
+    "pdfDownloaded": "تم التحميل",
+    "pdfDownloadOkTitle": "تحميل تقرير PDF",
+    "pdfDownloadWarnTitle": "تحذير: لم يتم تشغيل تسجيل الذكاء الاصطناعي بعد — قد يظهر PDF مخططات فارغة",
+    "pdfPreparing": "إعداد PDF...",
+    "pdfShare": "مشاركة PDF",
+    "pdfShareAria": "مشاركة كـ PDF",
+    "pdfShared": "تم المشاركة",
+    "pdfShareHoverTitle": "إنشاء PDF وإرسال عبر ورقة مشاركة الجهاز (واتساب، البريد، AirDrop، إلخ.)",
+    "profileDescription": "مقارنة ما قبل الحادث (t₀) مقابل وقت الحادث (t₁) + ترتيب الأولوية",
+    "profileTitle": "ملف المخاطر تسعة الأبعاد + سلسلة السبب الجذري",
+    "reportFileStem": "r2d-rca-report",
+    "save": "حفظ",
+    "saveSaving": "جاري الحفظ...",
+    "saved": "محفوظ",
+    "scaleBadge": "مقياس مستمر [0, 1]",
+    "scoresDescription": "درجات ما قبل الحادث (t₀) وأثناء الحادث (t₁) لكل بُعد. اضبط بالمنزلقات أو أنشئ بالذكاء الاصطناعي.",
+    "scoresTitle": "مقارنة درجات C1–C9",
+    "sharePdfTitle": "تقرير تحليل R₂D-RCA",
+    "shareTextDefault": "تقرير تحليل R₂D-RCA",
+    "shareTextWithIncident": "تحليل R₂D-RCA: {title}",
+    "stabilityDual": "إبلاغ مزدوج",
+    "stabilityLabel": "الاستقرار",
+    "stabilityStable": "مستقر",
+    "summaryDescription": "الدرجة · أكبر انحراف · حالة النظرية · تجاوز",
+    "summaryTitle": "الملخص التنفيذي",
+    "weightLabel": "w = {value}"
+  },
+  "pdf": {
+    "calcModeBase": "وضع الدرجة الأساسية (مجموع مرجح)",
+    "calcModeOverride": "وضع التجاوز (max Δ̂ ≥ 0.40)",
+    "chartDeltaRadarSub": "مقادير الانحراف فقط — حيث زادت المخاطر",
+    "chartDeltaRadarTitle": "ملف Δ̂ الراداري (9 محاور)",
+    "chartDeltaSub": "أشرطة الانحراف لـ 9 أبعاد، مرتبة C1→C9",
+    "chartDeltaTitle": "شدة الانحراف (Δ̂)",
+    "chartDonutSub": "P(C_i) = w_i · Δ̂_i — الأبعاد المكسورة فقط",
+    "chartDonutTitle": "حصة مساهمة الأولوية",
+    "chartGaugeSub": "مقياس نصف دائري — 0 (أخضر) → 1 (أحمر)",
+    "chartGaugeTitle": "شدة R₂D-RCA",
+    "chartHeatmapSub": "مقياس ألوان t₀ · t₁ · Δ̂ (أخضر→أحمر)",
+    "chartHeatmapTitle": "خريطة حرارية 9 أبعاد",
+    "chartPolarSub": "زاوية متساوية لكل بُعد، نصف القطر = مقدار Δ̂",
+    "chartPolarTitle": "منطقة قطبية — توزيع الأولوية",
+    "chartRadarSub": "رادار 9 محاور — ما قبل الحادث مقابل أثناء الحادث",
+    "chartRadarTitle": "ملف المخاطر (t₀ مقابل t₁)",
+    "chartWaterfallSub": "مساهمات الأولوية المرتبة + الدرجة الإجمالية",
+    "chartWaterfallTitle": "تراكم الأولوية (شلال)",
+    "defaultReportSubtitle": "مقياس مخاطر مركب تسعة الأبعاد · تحليل السبب الجذري القائم على الدلتا",
+    "defaultReportTitle": "تقرير تحليل R₂D-RCA (C1–C9)",
+    "donutEmpty": "لا توجد أبعاد مكسورة",
+    "donutTotal": "الإجمالي",
+    "dualReportingBadge": "⚠ مطلوب إبلاغ مزدوج",
+    "emptyStateWarning": "⚠ لا توجد بيانات تحليل بعد. جميع الأبعاد لديها Δ̂ = 0 — درجات ما قبل الحادث وأثناء الحادث متطابقة. للحصول على تقرير مفيد، أنشئ الدرجات أولاً باستخدام {aiButton} أو اضبط المنزلقات، ثم أنشئ ملف PDF مرة أخرى.",
+    "gaugeBrand": "R₂D-RCA",
+    "legendMajor": "رئيسي",
+    "legendMinor": "ثانوي",
+    "legendOverride": "تجاوز",
+    "legendSec": "ثانية",
+    "legendT0": "t₀ (قبل)",
+    "legendT1": "t₁ (أثناء الحادث)",
+    "notDetermined": "غير محدد",
+    "polarEmpty": "لا توجد أبعاد مكسورة",
+    "popupBlocked": "تعذر فتح نافذة الطباعة. يرجى التحقق من حاجب النوافذ المنبثقة.",
+    "primaryRootsTitle": "السبب الجذري الأساسي",
+    "rootChainEmpty": "لا توجد أبعاد مكسورة",
+    "rootChainEmptyAllZero": "لا توجد أبعاد مكسورة — جميع Δ̂ = 0",
+    "rootChainSub": "الأبعاد المكسورة حسب الأولوية — فئات التجاوز / الرئيسية / الثانوية",
+    "scoreLabel": "نقاط R₂D-RCA",
+    "sectionAiNarrative": "تقييم الذكاء الاصطناعي",
+    "sectionHeatmapWaterfall": "تفاصيل الأبعاد · خريطة حرارية وتراكم الأولوية",
+    "sectionPolarDelta": "التوزيع القطبي للأولوية + ملف Δ̂ الراداري",
+    "sectionRanking": "ترتيب الأولوية",
+    "sectionRootChain": "سلسلة السبب الجذري (مصنفة ومرتبة)",
+    "sectionScoreTable": "مقارنة النقاط تسعة الأبعاد",
+    "sectionStableDims": "الأبعاد المستقرة (Δ̂ = 0)",
+    "statBrokenStable": "مكسور / مستقر",
+    "statMaxDelta": "أكبر Δ̂",
+    "statNotTriggered": "غير مفعل",
+    "statOverride": "تجاوز",
+    "statTriggered": "مفعل",
+    "tableFootnoteLegend": "Δ̂_i = max(0, t₁ − t₀) · الأولوية P(C_i) = w_i · Δ̂_i · النقاط على مقياس مستمر [0,1] · أعلى = مخاطر أعلى",
+    "thDimension": "البعد",
+    "thPriority": "الأولوية",
+    "thRank": "#",
+    "thWeight": "الوزن",
+    "visualSummaryTitle": "ملخص بصري",
+    "waterfallEmpty": "لا توجد أبعاد مكسورة",
+    "waterfallFootnote": "تراكم الأولوية: C₁→Cₙ → Σ (إجمالي R_RCA)",
+    "waterfallTotalSymbol": "Σ"
+  },
+  "polar": {
+    "ariaLabel": "مخطط قطبي — توزيع الدلتا",
+    "empty": "لا توجد أبعاد مكسورة",
+    "title": "التوزيع القطبي للدلتا"
+  },
+  "radar": {
+    "ariaLabel": "مخطط R₂D-RCA الراداري",
+    "datasetT0": "قبل الحادث (t₀)",
+    "datasetT1": "عند الحادث (t₁)",
+    "title": "ملف المخاطر تسعة الأبعاد (t₀ مقابل t₁)"
+  },
+  "rootChain": {
+    "ariaLabel": "سلسلة السبب الجذري — تسعة أبعاد في أربع فئات",
+    "badgeInactive": "غير نشط",
+    "badgeOverride": "تجاوز",
+    "cardTitle": "سلسلة السبب الجذري (9/9 أبعاد)",
+    "majorDesc": "0.20 ≤ Δ̂ < 0.40",
+    "majorTitle": "عوامل ثانوية",
+    "minorDesc": "0 < Δ̂ < 0.20",
+    "minorTitle": "تأثير منخفض",
+    "noneDesc": "Δ̂ = 0",
+    "noneTitle": "غير نشط (لا تغيير)",
+    "overrideDesc": "Δ̂ ≥ 0.40 — تم تشغيل التجاوز",
+    "overrideTitle": "السبب الجذري الأساسي"
+  },
+  "statusCards": {
+    "brokenAria": "عدد الأبعاد المعطلة",
+    "brokenLabel": "معطل",
+    "brokenOfNine": "{count} / 9 أبعاد",
+    "overrideActive": "نشط",
+    "overrideAria": "حالة التجاوز",
+    "overrideInactive": "غير نشط",
+    "overrideLabel": "تجاوز",
+    "stableAria": "عدد الأبعاد المستقرة",
+    "stableLabel": "مستقر",
+    "stableOfNine": "{count} / 9 أبعاد"
+  },
+  "waterfall": {
+    "ariaLabel": "مخطط الشلال — تحليل المساهمة",
+    "empty": "لا توجد أبعاد معطلة — الشلال غير متاح.",
+    "title": "شلال المساهمة",
+    "tooltipContribution": "المساهمة: {value}",
+    "total": "الإجمالي"
+  }
+}
