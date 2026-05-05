@@ -978,6 +978,7 @@ export async function POST(request: NextRequest) {
     }
 
     const accountContext = await getAccountContextForUser(authContext.userId);
+    const bypassNovaLimitsForAdmin = accountContext.isPlatformAdmin === true;
     const contextualHistory = [...payload.history];
 
     contextualHistory.unshift({
@@ -1104,37 +1105,39 @@ export async function POST(request: NextRequest) {
     }
 
     const plan = await resolveAiDailyLimit(authContext.userId);
-    const rateLimitResponse = await enforceRateLimit(request, {
-      userId: authContext.userId,
-      organizationId: authContext.organizationId,
-      endpoint: "/api/nova/chat",
-      scope: "ai",
-      limit: plan.dailyLimit,
-      windowSeconds: 24 * 60 * 60,
-      planKey: plan.planKey,
-      metadata: {
-        feature: "nova_agent",
-        context_surface: payload.context_surface,
-        mode: effectiveRequestMode,
-        current_page: payload.current_page ?? null,
-        company_workspace_id: effectiveCompanyWorkspaceId,
-      },
-    });
-
-    if (rateLimitResponse) {
-      return rateLimitResponse;
-    }
-
-    if (!usedReadOnlyLegalFallback) {
-      const entitlementResponse = await consumeEntitlement(
-        {
-          userId: authContext.userId,
-          organizationId: authContext.organizationId,
+    if (!bypassNovaLimitsForAdmin) {
+      const rateLimitResponse = await enforceRateLimit(request, {
+        userId: authContext.userId,
+        organizationId: authContext.organizationId,
+        endpoint: "/api/nova/chat",
+        scope: "ai",
+        limit: plan.dailyLimit,
+        windowSeconds: 24 * 60 * 60,
+        planKey: plan.planKey,
+        metadata: {
+          feature: "nova_agent",
+          context_surface: payload.context_surface,
+          mode: effectiveRequestMode,
+          current_page: payload.current_page ?? null,
+          company_workspace_id: effectiveCompanyWorkspaceId,
         },
-        "nova_message",
-      );
-      if (entitlementResponse) {
-        return entitlementResponse;
+      });
+
+      if (rateLimitResponse) {
+        return rateLimitResponse;
+      }
+
+      if (!usedReadOnlyLegalFallback) {
+        const entitlementResponse = await consumeEntitlement(
+          {
+            userId: authContext.userId,
+            organizationId: authContext.organizationId,
+          },
+          "nova_message",
+        );
+        if (entitlementResponse) {
+          return entitlementResponse;
+        }
       }
     }
 

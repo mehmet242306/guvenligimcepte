@@ -6,6 +6,7 @@ import { normalizeNovaAgentResponse, novaChatRequestSchema } from "@/lib/nova/ag
 import { assertNovaFeatureEnabled } from "@/lib/nova/governance";
 import { enforceRateLimit, parseJsonBody, resolveAiDailyLimit } from "@/lib/security/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
+import { getAccountContextForUser } from "@/lib/account/account-routing";
 
 export const maxDuration = 60;
 
@@ -47,20 +48,24 @@ export async function POST(request: NextRequest) {
   const payload = parsed.data;
   const auth = await requireAuth(request);
   if (!auth.ok) return auth.response;
+  const accountContext = await getAccountContextForUser(auth.userId);
+  const bypassNovaLimitsForAdmin = accountContext.isPlatformAdmin === true;
   const plan = await resolveAiDailyLimit(auth.userId);
-  const rateLimitResponse = await enforceRateLimit(request, {
-    userId: auth.userId,
-    organizationId: auth.organizationId,
-    endpoint: "/api/nova/legal-chat",
-    scope: "ai",
-    limit: plan.dailyLimit,
-    windowSeconds: 24 * 60 * 60,
-    planKey: plan.planKey,
-    metadata: { feature: "nova_legal_chat" },
-  });
-  if (rateLimitResponse) return rateLimitResponse;
-  const entitlementResponse = await consumeEntitlement(auth, "nova_message");
-  if (entitlementResponse) return entitlementResponse;
+  if (!bypassNovaLimitsForAdmin) {
+    const rateLimitResponse = await enforceRateLimit(request, {
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      endpoint: "/api/nova/legal-chat",
+      scope: "ai",
+      limit: plan.dailyLimit,
+      windowSeconds: 24 * 60 * 60,
+      planKey: plan.planKey,
+      metadata: { feature: "nova_legal_chat" },
+    });
+    if (rateLimitResponse) return rateLimitResponse;
+    const entitlementResponse = await consumeEntitlement(auth, "nova_message");
+    if (entitlementResponse) return entitlementResponse;
+  }
 
   const rolloutResponse = await assertNovaFeatureEnabled({
     featureKey: "nova.agent.chat",
