@@ -97,13 +97,16 @@ const platformAdminPrimaryNav = [
   { href: "/dashboard", key: "nav.appDashboard" },
   { href: "/companies", key: "nav.companies" },
   { href: "/risk-analysis", key: "nav.riskAnalysis" },
-  { href: "/corrective-actions", key: "nav.incidents" },
+  { href: "/corrective-actions", key: "nav.correctiveActions" },
+  { href: "/incidents", key: "nav.incidentsPage" },
   { href: "/isg-library", key: "nav.library" },
+  { href: "/training", key: "nav.trainingHub" },
+  { href: "/score-history", key: "nav.scoreHistory" },
+  { href: "/planner", key: "nav.planner" },
+  { href: "/settings", key: "nav.settings" },
   { href: "/platform-admin/demo-requests", key: "nav.demoRequestsNav" },
   { href: "/platform-admin/demo-builder", key: "nav.demoBuilderNav" },
   { href: "/platform-admin/legal-corpus", key: "nav.legalCorpus" },
-  { href: "/corrective-actions", key: "nav.correctiveActions" },
-  { href: "/incidents", key: "nav.incidentsPage" },
 ];
 
 function isActive(pathname: string, href: string) {
