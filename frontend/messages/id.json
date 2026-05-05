@@ -712,6 +712,238 @@
         "supportStaff": "Staf pendukung",
         "title": "Struktur tim dan perwakilan"
       }
+    },
+    "risk": {
+      "pageTitle": "Risk & field",
+      "pageSubtitle": "Risk map, saved analyses, and open findings for this worksite.",
+      "tabMap": "Category map",
+      "tabAnalyses": "Analyses ({count})",
+      "newAnalysis": "New analysis",
+      "metricTotalFindings": "Total findings",
+      "metricCritical": "Critical",
+      "metricHigh": "High",
+      "metricAnalysisCount": "Analyses",
+      "badgeCritical": "Critical: {count}",
+      "badgeHigh": "High: {count}",
+      "badgeMedium": "Medium: {count}",
+      "badgeLow": "Low: {count}",
+      "noFindingsCategory": "No findings in this category yet.",
+      "addCategoryTitle": "Expand the map",
+      "addCategoryHint": "Run assessments and record findings to see category heat.",
+      "emptyAnalysesTitle": "No analyses yet",
+      "emptyAnalysesDescription": "Start a risk assessment to populate this workspace.",
+      "findingsInRow": "{count} findings",
+      "archiveTitle": "Archive",
+      "editTitle": "Open in risk analysis",
+      "confirmDelete": "Delete this analysis?",
+      "yes": "Yes",
+      "no": "No",
+      "deleteTitle": "Delete",
+      "method": {
+        "r_skor": "R-score",
+        "fine_kinney": "Fine & Kinney",
+        "l_matrix": "L matrix",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "analysisStatus": {
+        "completed": "Completed",
+        "archived": "Archived",
+        "draft": "Draft"
+      },
+      "categories": {
+        "fiziksel": {
+          "label": "Physical",
+          "examples": "Noise, slips, PPE, housekeeping, working at height"
+        },
+        "kimyasal": {
+          "label": "Chemical",
+          "examples": "SDS, exposure, storage, labeling"
+        },
+        "biyolojik": {
+          "label": "Biological",
+          "examples": "Biological agents, hygiene"
+        },
+        "ergonomik": {
+          "label": "Ergonomic",
+          "examples": "Manual handling, posture, MSD"
+        },
+        "psikososyal": {
+          "label": "Psychosocial",
+          "examples": "Stress, workload, organization"
+        },
+        "mekanik": {
+          "label": "Mechanical",
+          "examples": "Moving parts, guarding, tools"
+        },
+        "elektrik": {
+          "label": "Electrical",
+          "examples": "Panels, lockout, arc flash"
+        },
+        "yangin": {
+          "label": "Fire",
+          "examples": "Ignition, extinguishing, evacuation"
+        },
+        "trafik": {
+          "label": "Traffic & mobile equipment",
+          "examples": "Vehicles, pedestrians, forklifts"
+        },
+        "cevre": {
+          "label": "Environment",
+          "examples": "Waste, emissions, spills"
+        }
+      },
+      "trackingStatus": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "resolved": "Resolved",
+        "archived": "Archived"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "categoryRisksTitle": "{label} — findings",
+      "findingsCountLabel": "{count} items",
+      "noFindingsInCategory": "No findings in this category.",
+      "analysisPrefix": "Analysis:",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "recommendation": "Recommendation",
+      "action": "Action",
+      "notes": "Notes",
+      "status": "Status",
+      "note": "Note",
+      "notePlaceholder": "Tracking note…",
+      "saving": "Saving…",
+      "save": "Save",
+      "discard": "Discard",
+      "shareWhatsappBody": "{title}\n{url}",
+      "exportPdfTitle": "Export PDF",
+      "exportWordTitle": "Export Word",
+      "exportExcelTitle": "Export Excel",
+      "shareButtonTitle": "Share read-only link",
+      "shareTitle": "Share analysis",
+      "shareDescription": "Generate a read-only link and QR code for this assessment.",
+      "shareActive": "Sharing on",
+      "shareEnable": "Enable sharing",
+      "shareCopyTitle": "Copy link",
+      "shareCopied": "Copied",
+      "shareWhatsappTitle": "Share on WhatsApp",
+      "qrAlt": "QR code for shared link",
+      "qrCaption": "Scan to open the shared assessment",
+      "participantsHeading": "Participants",
+      "analysisNoteHeading": "Assessment note",
+      "emptyAnalysisRows": "No hazard rows in this assessment.",
+      "rowFindingCount": "{count} findings",
+      "recommendationInline": "Recommendation:",
+      "actionInline": "Action:"
+    },
+    "tracking": {
+      "sectionActions": "Open actions",
+      "sectionTrainings": "Training",
+      "sectionControls": "Periodic controls",
+      "sectionCommittee": "OHS committee",
+      "actionsTitle": "Open actions",
+      "actionsDesc": "Risk findings, corrective actions (CAPA), and ISG tasks awaiting follow-up.",
+      "noActions": "No open actions.",
+      "badgeTotal": "Total {count}",
+      "sourceRisk": "Risk finding",
+      "sourceDof": "CAPA",
+      "sourceTask": "ISG task",
+      "statusButton": "Status",
+      "trainingsTitle": "Training records",
+      "trainingsDesc": "Planned and completed group trainings.",
+      "newTraining": "Add training",
+      "noTrainings": "No training records.",
+      "status": {
+        "planned": "Planned",
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "overdue": "Overdue"
+      },
+      "trainingTypes": {
+        "zorunlu": "Mandatory",
+        "istege_bagli": "Optional",
+        "yenileme": "Refresher"
+      },
+      "hours": "{count} h",
+      "edit": "Edit",
+      "delete": "Delete",
+      "controlsTitle": "Periodic inspections",
+      "controlsDesc": "Equipment and installation inspections (per regulation and your register).",
+      "newControl": "Add record",
+      "noControls": "No periodic control records.",
+      "results": {
+        "uygun": "Conforming",
+        "uygun_degil": "Non-conforming",
+        "sartli_uygun": "Conditional"
+      },
+      "controlTypes": {
+        "elektrik": "Electrical",
+        "asansor": "Lift / elevator",
+        "yangin": "Fire",
+        "basinc": "Pressure equipment",
+        "vinc": "Crane / hoist",
+        "kompressor": "Compressor",
+        "forklift": "Forklift",
+        "diger": "Other"
+      },
+      "overdue": "Overdue",
+      "last": "Last",
+      "next": "Next",
+      "committeeTitle": "OHS committee meetings",
+      "committeeDesc": "Hazard class {hazardClass}: plan full committee meetings about every {months} months where the regulation applies—confirm for your workplace.",
+      "hazardUnknown": "Not set",
+      "newMeeting": "New meeting",
+      "noMeetings": "No meetings recorded.",
+      "meetingNumber": "Meeting #{number}",
+      "agenda": "Agenda",
+      "attendees": "Attendees",
+      "decisions": "Decisions",
+      "responsible": "Owner",
+      "deadline": "Due",
+      "nextMeeting": "Next meeting",
+      "trainingForm": {
+        "editTitle": "Edit training",
+        "newTitle": "New training",
+        "nameRequired": "Title",
+        "namePlaceholder": "e.g. Fire awareness"
+      },
+      "type": "Type",
+      "trainer": "Trainer",
+      "date": "Date",
+      "durationHours": "Duration (hours)",
+      "location": "Location",
+      "statusLabel": "Status",
+      "note": "Notes",
+      "saving": "Saving…",
+      "save": "Save",
+      "cancel": "Cancel",
+      "controlForm": {
+        "editTitle": "Edit inspection",
+        "newTitle": "New inspection",
+        "nameRequired": "Subject",
+        "namePlaceholder": "Equipment or system"
+      },
+      "inspector": "Inspector / body",
+      "inspectionDate": "Inspection date",
+      "nextControl": "Next inspection",
+      "result": "Result",
+      "reportReference": "Report reference",
+      "meetingForm": {
+        "editTitle": "Edit meeting",
+        "newTitle": "New meeting",
+        "dateRequired": "Meeting date",
+        "number": "Meeting no.",
+        "attendeesPlaceholder": "Names and roles",
+        "agendaPlaceholder": "Discussion topics",
+        "addDecision": "Add decision",
+        "decisionText": "Decision text",
+        "nextDate": "Next meeting date"
+      }
     }
   },
   "consent": {

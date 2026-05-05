@@ -1206,13 +1206,19 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
 
   return (
     <div className="space-y-5">
-      {/* Sekme Seçici — Segmented control */}
-      <div className="flex flex-wrap rounded-[1.25rem] border border-border/60 bg-secondary/20 p-1 shadow-sm">
+      {/* Sekme seçici — dar alanda taşmayı önlemek için grid */}
+      <div className="grid grid-cols-2 gap-1 rounded-[1.25rem] border border-border/60 bg-secondary/20 p-1 shadow-sm sm:grid-cols-4">
         {SECTIONS.map((s) => (
-          <button key={s.k} type="button" onClick={() => setSection(s.k)}
-            className={`inline-flex flex-1 min-w-[140px] h-10 items-center justify-center gap-2 rounded-[0.8rem] px-4 text-sm font-semibold transition-all ${section === s.k ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
-            {s.l}
-            {s.count > 0 && <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${section === s.k ? "bg-white/20" : "bg-muted"}`}>{s.count}</span>}
+          <button
+            key={s.k}
+            type="button"
+            onClick={() => setSection(s.k)}
+            className={`inline-flex min-h-10 w-full items-center justify-center gap-1.5 rounded-[0.8rem] px-2 py-2 text-center text-xs font-semibold leading-tight transition-all sm:gap-2 sm:px-3 sm:text-sm ${section === s.k ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}
+          >
+            <span className="line-clamp-2">{s.l}</span>
+            {s.count > 0 && (
+              <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-bold sm:px-2 ${section === s.k ? "bg-white/20" : "bg-muted"}`}>{s.count}</span>
+            )}
           </button>
         ))}
       </div>

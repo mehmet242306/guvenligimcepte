@@ -2875,6 +2875,238 @@
         "templateFileSuffix": "personel_sablonu",
         "exportFileSuffix": "personel_listesi"
       }
+    },
+    "risk": {
+      "pageTitle": "Risk ve saha",
+      "pageSubtitle": "Risk haritası, kayıtlı analizler ve açık bulgular.",
+      "tabMap": "Kategori haritası",
+      "tabAnalyses": "Analizler ({count})",
+      "newAnalysis": "Yeni analiz",
+      "metricTotalFindings": "Toplam bulgu",
+      "metricCritical": "Kritik",
+      "metricHigh": "Yüksek",
+      "metricAnalysisCount": "Analiz sayısı",
+      "badgeCritical": "Kritik: {count}",
+      "badgeHigh": "Yüksek: {count}",
+      "badgeMedium": "Orta: {count}",
+      "badgeLow": "Düşük: {count}",
+      "noFindingsCategory": "Bu kategoride henüz bulgu yok.",
+      "addCategoryTitle": "Haritayı derinleştirin",
+      "addCategoryHint": "Analiz yapıp bulgu kaydedin; kategori yoğunluğu burada görünür.",
+      "emptyAnalysesTitle": "Henüz analiz yok",
+      "emptyAnalysesDescription": "Risk analizi başlatarak bu alanı doldurun.",
+      "findingsInRow": "{count} bulgu",
+      "archiveTitle": "Arşivle",
+      "editTitle": "Risk analizinde aç",
+      "confirmDelete": "Bu analiz silinsin mi?",
+      "yes": "Evet",
+      "no": "Hayır",
+      "deleteTitle": "Sil",
+      "method": {
+        "r_skor": "R skoru",
+        "fine_kinney": "Fine & Kinney",
+        "l_matrix": "L matrisi",
+        "fmea": "FMEA",
+        "hazop": "HAZOP"
+      },
+      "analysisStatus": {
+        "completed": "Tamamlandı",
+        "archived": "Arşivlendi",
+        "draft": "Taslak"
+      },
+      "categories": {
+        "fiziksel": {
+          "label": "Fiziksel",
+          "examples": "Gürültü, kayma, KKD, düzen, yüksekte çalışma"
+        },
+        "kimyasal": {
+          "label": "Kimyasal",
+          "examples": "BGB, maruziyet, depolama, etiket"
+        },
+        "biyolojik": {
+          "label": "Biyolojik",
+          "examples": "Biyolojik etkenler, hijyen"
+        },
+        "ergonomik": {
+          "label": "Ergonomik",
+          "examples": "Manuel kaldırma, duruş, KMY"
+        },
+        "psikososyal": {
+          "label": "Psikososyal",
+          "examples": "Stres, iş yükü, örgütlenme"
+        },
+        "mekanik": {
+          "label": "Mekanik",
+          "examples": "Hareketli parça, koruma, aletler"
+        },
+        "elektrik": {
+          "label": "Elektrik",
+          "examples": "Panolar, LOTO, ark"
+        },
+        "yangin": {
+          "label": "Yangın",
+          "examples": "Tutuşma, söndürme, tahliye"
+        },
+        "trafik": {
+          "label": "Trafik ve mobil ekipman",
+          "examples": "Araçlar, yaya, forklift"
+        },
+        "cevre": {
+          "label": "Çevre",
+          "examples": "Atık, emisyon, döküntü"
+        }
+      },
+      "trackingStatus": {
+        "open": "Açık",
+        "in_progress": "Devam ediyor",
+        "resolved": "Çözüldü",
+        "archived": "Arşiv"
+      },
+      "severity": {
+        "critical": "Kritik",
+        "high": "Yüksek",
+        "medium": "Orta",
+        "low": "Düşük"
+      },
+      "categoryRisksTitle": "{label} — bulgular",
+      "findingsCountLabel": "{count} kayıt",
+      "noFindingsInCategory": "Bu kategoride bulgu yok.",
+      "analysisPrefix": "Analiz:",
+      "cancel": "İptal",
+      "edit": "Düzenle",
+      "recommendation": "Öneri",
+      "action": "Aksiyon",
+      "notes": "Notlar",
+      "status": "Durum",
+      "note": "Not",
+      "notePlaceholder": "Takip notu…",
+      "saving": "Kaydediliyor…",
+      "save": "Kaydet",
+      "discard": "Vazgeç",
+      "shareWhatsappBody": "{title}\n{url}",
+      "exportPdfTitle": "PDF indir",
+      "exportWordTitle": "Word indir",
+      "exportExcelTitle": "Excel indir",
+      "shareButtonTitle": "Salt okunur bağlantı",
+      "shareTitle": "Analizi paylaş",
+      "shareDescription": "Bu değerlendirme için salt okunur bağlantı ve QR oluşturun.",
+      "shareActive": "Paylaşım açık",
+      "shareEnable": "Paylaşımı aç",
+      "shareCopyTitle": "Bağlantıyı kopyala",
+      "shareCopied": "Kopyalandı",
+      "shareWhatsappTitle": "WhatsApp ile paylaş",
+      "qrAlt": "Paylaşım QR kodu",
+      "qrCaption": "Taramak için paylaşılan analizi açar",
+      "participantsHeading": "Katılımcılar",
+      "analysisNoteHeading": "Analiz notu",
+      "emptyAnalysisRows": "Bu analizde satır yok.",
+      "rowFindingCount": "{count} bulgu",
+      "recommendationInline": "Öneri:",
+      "actionInline": "Aksiyon:"
+    },
+    "tracking": {
+      "sectionActions": "Açık aksiyonlar",
+      "sectionTrainings": "Eğitimler",
+      "sectionControls": "Periyodik kontroller",
+      "sectionCommittee": "İSG kurulu",
+      "actionsTitle": "Açık aksiyonlar",
+      "actionsDesc": "Risk bulguları, DÖF ve İSG görevleri — takip gerektiren kayıtlar.",
+      "noActions": "Açık aksiyon yok.",
+      "badgeTotal": "Toplam {count}",
+      "sourceRisk": "Risk bulgusu",
+      "sourceDof": "DÖF",
+      "sourceTask": "İSG görevi",
+      "statusButton": "Durum",
+      "trainingsTitle": "Eğitim kayıtları",
+      "trainingsDesc": "Planlanan ve tamamlanan grup eğitimleri.",
+      "newTraining": "Eğitim ekle",
+      "noTrainings": "Eğitim kaydı yok.",
+      "status": {
+        "planned": "Planlandı",
+        "completed": "Tamamlandı",
+        "cancelled": "İptal",
+        "overdue": "Gecikmiş"
+      },
+      "trainingTypes": {
+        "zorunlu": "Zorunlu",
+        "istege_bagli": "İsteğe bağlı",
+        "yenileme": "Yenileme"
+      },
+      "hours": "{count} saat",
+      "edit": "Düzenle",
+      "delete": "Sil",
+      "controlsTitle": "Periyodik kontroller",
+      "controlsDesc": "Ekipman ve tesisat kontrolleri (mevzuat ve envanterinize göre).",
+      "newControl": "Kayıt ekle",
+      "noControls": "Periyodik kontrol kaydı yok.",
+      "results": {
+        "uygun": "Uygun",
+        "uygun_degil": "Uygun değil",
+        "sartli_uygun": "Şartlı uygun"
+      },
+      "controlTypes": {
+        "elektrik": "Elektrik",
+        "asansor": "Asansör",
+        "yangin": "Yangın",
+        "basinc": "Basınçlı",
+        "vinc": "Vinç / kaldırma",
+        "kompressor": "Kompresör",
+        "forklift": "Forklift",
+        "diger": "Diğer"
+      },
+      "overdue": "Gecikmiş",
+      "last": "Son",
+      "next": "Sonraki",
+      "committeeTitle": "İSG kurulu toplantıları",
+      "committeeDesc": "Tehlike sınıfı {hazardClass}: mevzuata göre tam kurul toplantıları tipik olarak yaklaşık {months} ayda bir planlanır — işyerinize göre doğrulayın.",
+      "hazardUnknown": "Belirtilmedi",
+      "newMeeting": "Toplantı ekle",
+      "noMeetings": "Toplantı kaydı yok.",
+      "meetingNumber": "{number}. toplantı",
+      "agenda": "Gündem",
+      "attendees": "Katılımcılar",
+      "decisions": "Kararlar",
+      "responsible": "Sorumlu",
+      "deadline": "Termin",
+      "nextMeeting": "Sonraki toplantı",
+      "trainingForm": {
+        "editTitle": "Eğitimi düzenle",
+        "newTitle": "Yeni eğitim",
+        "nameRequired": "Başlık",
+        "namePlaceholder": "Örn. Yangın farkındalık"
+      },
+      "type": "Tür",
+      "trainer": "Eğitmen",
+      "date": "Tarih",
+      "durationHours": "Süre (saat)",
+      "location": "Yer",
+      "statusLabel": "Durum",
+      "note": "Not",
+      "saving": "Kaydediliyor…",
+      "save": "Kaydet",
+      "cancel": "İptal",
+      "controlForm": {
+        "editTitle": "Kontrol kaydını düzenle",
+        "newTitle": "Yeni periyodik kontrol",
+        "nameRequired": "Konu",
+        "namePlaceholder": "Ekipman veya sistem"
+      },
+      "inspector": "Kontrolör / kuruluş",
+      "inspectionDate": "Kontrol tarihi",
+      "nextControl": "Sonraki kontrol",
+      "result": "Sonuç",
+      "reportReference": "Rapor referansı",
+      "meetingForm": {
+        "editTitle": "Toplantıyı düzenle",
+        "newTitle": "Yeni kurul toplantısı",
+        "dateRequired": "Toplantı tarihi",
+        "number": "Toplantı no.",
+        "attendeesPlaceholder": "Ad, unvan",
+        "agendaPlaceholder": "Gündem maddeleri",
+        "addDecision": "Karar ekle",
+        "decisionText": "Karar metni",
+        "nextDate": "Sonraki toplantı tarihi"
+      }
     }
   },
   "osgbFirms": {
