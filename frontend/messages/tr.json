@@ -4128,7 +4128,7 @@
     },
     "shell": {
       "title": "Planlayıcı",
-      "description": "İSG görevleri, yıllık çalışma planı, eğitim planı ve puantaj tek çatı altında.",
+      "description": "İSG görevleri, yıllık çalışma ve eğitim planları, periyodik kontrol envanteri ve puantaj tek çatı altında.",
       "tabs": {
         "planner": {
           "label": "Planlayıcı",
@@ -4142,10 +4142,134 @@
           "label": "Yıllık Eğitim",
           "desc": "Eğitim planı, katılımcılar ve sertifika takibi"
         },
+        "periodicControls": {
+          "label": "Periyodik Kontroller",
+          "desc": "Mevzuat şablonu + sektör seçimi; manuel veya katalogdan satır"
+        },
         "timesheet": {
           "label": "Puantaj",
           "desc": "Saat/ücret takibi"
         }
+      }
+    },
+    "periodicControls": {
+      "card": {
+        "title": "Periyodik kontrol envanteri",
+        "description": "İşyerini özel veya kamu olarak sınıflandırın, sektör profilini seçin; İş Ekipmanları Yönetmeliği tablolarından önerilen kontrolleri yükleyin. Satırları manuel ekleyin veya sistem kataloğundan seçin; takip sekmesine planlı periyodik kontrol olarak aktarın."
+      },
+      "fields": {
+        "company": "Firma",
+        "companyPlaceholder": "Firma seçin",
+        "ownership": "İşyeri türü",
+        "sector": "Sektör profili",
+        "regulation": "Mevzuat / standart",
+        "period": "Tipik azami süre",
+        "tableRef": "Tablo"
+      },
+      "ownership": {
+        "private": "Özel sektör",
+        "public": "Kamu"
+      },
+      "sectors": {
+        "manufacturing": {
+          "label": "İmalat ve sanayi",
+          "desc": "Tezgâh, pres, vinç, forklift, raf, basınçlı hava tipik"
+        },
+        "construction": {
+          "label": "İnşaat ve montaj",
+          "desc": "İskele, mobil kule, yürüyen / sabit kaldırma tesisleri"
+        },
+        "logistics": {
+          "label": "Lojistik ve depo",
+          "desc": "Forklift, konveyör, endüstriyel kapı, raf"
+        },
+        "food": {
+          "label": "Gıda ve içecek",
+          "desc": "Buhar, HVAC, konveyör, otoklav, kompresör"
+        },
+        "chemical": {
+          "label": "Kimya ve proses",
+          "desc": "Basınçlı kap, tank, vinç, yangın, elektrik (Ex bölgeleri sahada doğrulanmalı)"
+        },
+        "healthcare": {
+          "label": "Sağlık",
+          "desc": "Otoklav, jeneratör, asansör, HVAC"
+        },
+        "energy": {
+          "label": "Enerji ve tesisat",
+          "desc": "Kazan, transformatör, jeneratör, elektrik"
+        },
+        "mining": {
+          "label": "Maden ve ağır sanayi",
+          "desc": "Kaldırma, kompresör, jeneratör"
+        },
+        "retail": {
+          "label": "Perakende ve AVM",
+          "desc": "Asansör, yürüyen merdiven, HVAC, raf"
+        },
+        "hospitality": {
+          "label": "Konaklama ve yemek",
+          "desc": "Yangın söndürme, asansör, mutfak davlumbaz sistemleri, HVAC"
+        },
+        "office_service": {
+          "label": "Ofis ve hizmet",
+          "desc": "Bina tesisatları, varsa asansör"
+        },
+        "education": {
+          "label": "Eğitim",
+          "desc": "Yangın sistemleri, asansör, HVAC"
+        },
+        "agriculture": {
+          "label": "Tarım",
+          "desc": "Kompresör, forklift tipi ekipman, jeneratör"
+        },
+        "transport": {
+          "label": "Ulaştırma ve servis",
+          "desc": "Kompresör, jeneratör, kaldırma aksesuarları"
+        },
+        "other": {
+          "label": "Diğer / karma",
+          "desc": "Yalnızca genel bina blokları; listeyi manuel detaylandırın"
+        }
+      },
+      "actions": {
+        "applySuggestions": "Önerilen listeyi yükle",
+        "addManual": "Manuel satır ekle",
+        "save": "Kaydet",
+        "saving": "Kaydediliyor...",
+        "saved": "Kaydedildi",
+        "openTracking": "Takip sekmesini aç",
+        "addFromTemplate": "Mevzuat kataloğundan ekle",
+        "pickTemplatePlaceholder": "Ekipman / tesisat seçin",
+        "addSelectedTemplate": "Ekle",
+        "toTracking": "Takibe aktar",
+        "deleteRow": "Satırı sil"
+      },
+      "errors": {
+        "noSupabase": "Supabase bağlantısı yok",
+        "loadFailed": "Kayıt yüklenemedi",
+        "selectCompany": "Bir firma seçin",
+        "sessionNotFound": "Oturum bulunamadı",
+        "orgNotFound": "Organizasyon bulunamadı",
+        "saveFailed": "Kayıt başarısız",
+        "needTitle": "Takibe göndermeden önce başlık girin",
+        "pushFailed": "Takip kaydı oluşturulamadı"
+      },
+      "loading": "Kayıt yükleniyor...",
+      "empty": "Henüz satır yok. Sektör ve işyeri türünü seçip önerilen listeyi yükleyin veya manuel ekleyin.",
+      "disclaimer": "Öneriler İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği tablolarından (basınçlı, kaldırma, tesisat, tezgâh vb.) türetilmiş özet satırlardır. Fiili kapsam işyerindeki ekipman envanterine bağlıdır; envanter, risk değerlendirmesi ve yazılı kontrol planlarını doğrulayın. Firma: {company}.",
+      "savedHint": "Kayıt firmaya özel saklanır. Firma → Takip için “Takibe aktar” kullanın.",
+      "table": {
+        "title": "Kontrol konusu",
+        "regulation": "Mevzuat / standart",
+        "period": "Tipik süre",
+        "tableRef": "Tablo",
+        "source": "Kaynak",
+        "actions": "İşlemler"
+      },
+      "source": {
+        "template": "Katalog",
+        "manual": "Manuel"
       }
     },
     "core": {

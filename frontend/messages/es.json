@@ -3444,7 +3444,7 @@
     },
     "shell": {
       "title": "Planificador",
-      "description": "Tareas de SST, plan de trabajo anual, plan de capacitación y hoja de tiempo bajo un mismo techo.",
+      "description": "OHS tasks, annual work and training plans, periodic inspection register and timesheet under one roof.",
       "tabs": {
         "planner": {
           "label": "Planificador",
@@ -3461,6 +3461,10 @@
         "timesheet": {
           "label": "Hoja de tiempo",
           "desc": "Seguimiento de horas y honorarios"
+        },
+        "periodicControls": {
+          "label": "Periodic inspections",
+          "desc": "Sector-based checklist from regulations + manual rows"
         }
       }
     },
@@ -3914,6 +3918,126 @@
         "indicatorCoefficient": "Coeficiente indicador ?",
         "hourlyRate": "Tarifa por hora",
         "stampTaxWithRate": "Impuesto de timbre (%{rate})"
+      }
+    },
+    "periodicControls": {
+      "card": {
+        "title": "Periodic inspection register",
+        "description": "Classify the workplace as private or public sector, pick a sector profile, then load regulation-based suggestions from the Work Equipment Regulation tables. Add rows manually or from the system catalog; push items to the tracking tab as planned periodic controls."
+      },
+      "fields": {
+        "company": "Company",
+        "companyPlaceholder": "Select company",
+        "ownership": "Workplace type",
+        "sector": "Sector profile",
+        "regulation": "Legal / standard basis",
+        "period": "Typical maximum period",
+        "tableRef": "Table"
+      },
+      "ownership": {
+        "private": "Private sector",
+        "public": "Public sector"
+      },
+      "sectors": {
+        "manufacturing": {
+          "label": "Manufacturing & industry",
+          "desc": "Machinery, presses, cranes, forklifts, racks, compressed air typical"
+        },
+        "construction": {
+          "label": "Construction & installation",
+          "desc": "Scaffolding, mobile towers, hoists, cranes"
+        },
+        "logistics": {
+          "label": "Logistics & warehouse",
+          "desc": "Forklifts, conveyors, industrial doors, racking"
+        },
+        "food": {
+          "label": "Food & beverage",
+          "desc": "Steam, HVAC, conveyors, autoclaves, compressors"
+        },
+        "chemical": {
+          "label": "Chemical & process",
+          "desc": "Pressure vessels, tanks, cranes, fire protection, electrical (Ex zones — verify on site)"
+        },
+        "healthcare": {
+          "label": "Healthcare",
+          "desc": "Autoclaves, generators, lifts, HVAC"
+        },
+        "energy": {
+          "label": "Energy & utilities",
+          "desc": "Boilers, transformers, generators, electrical"
+        },
+        "mining": {
+          "label": "Mining & heavy industry",
+          "desc": "Lifting, compressors, generators"
+        },
+        "retail": {
+          "label": "Retail & malls",
+          "desc": "Lifts, escalators, HVAC, racks"
+        },
+        "hospitality": {
+          "label": "Hospitality & catering",
+          "desc": "Fire suppression, lifts, kitchen systems, HVAC"
+        },
+        "office_service": {
+          "label": "Office & services",
+          "desc": "Building services, lifts where present"
+        },
+        "education": {
+          "label": "Education",
+          "desc": "Building fire systems, lifts, HVAC"
+        },
+        "agriculture": {
+          "label": "Agriculture",
+          "desc": "Compressors, forklift-type equipment, generators"
+        },
+        "transport": {
+          "label": "Transport & workshops",
+          "desc": "Compressors, generators, lifting accessories"
+        },
+        "other": {
+          "label": "Other / mixed",
+          "desc": "Only generic building blocks; refine manually"
+        }
+      },
+      "actions": {
+        "applySuggestions": "Load suggested checklist",
+        "addManual": "Manual row",
+        "save": "Save",
+        "saving": "Saving...",
+        "saved": "Saved",
+        "openTracking": "Open tracking tab",
+        "addFromTemplate": "Add from regulation catalog",
+        "pickTemplatePlaceholder": "Choose equipment / installation",
+        "addSelectedTemplate": "Add",
+        "toTracking": "Add to tracking",
+        "deleteRow": "Remove row"
+      },
+      "errors": {
+        "noSupabase": "No Supabase connection",
+        "loadFailed": "Could not load register",
+        "selectCompany": "Select a company",
+        "sessionNotFound": "Session not found",
+        "orgNotFound": "Organization not found",
+        "saveFailed": "Save failed",
+        "needTitle": "Enter a title before sending to tracking",
+        "pushFailed": "Could not create tracking record"
+      },
+      "loading": "Loading register...",
+      "empty": "No rows yet. Choose sector and workplace type, then load suggestions or add manually.",
+      "disclaimer": "Suggestions derive from the Turkish Work Equipment Regulation tables (e.g. pressure, lifting, installations, machines). Actual scope depends on equipment present on site — verify inventories, risk assessment and written inspection plans. Company: {company}.",
+      "savedHint": "Register stored per company. Use “Add to tracking” to create entries under Company → Tracking.",
+      "table": {
+        "title": "Control subject",
+        "regulation": "Legal / standard basis",
+        "period": "Typical period",
+        "tableRef": "Table",
+        "source": "Source",
+        "actions": "Actions"
+      },
+      "source": {
+        "template": "Catalog",
+        "manual": "Manual"
       }
     }
   },
