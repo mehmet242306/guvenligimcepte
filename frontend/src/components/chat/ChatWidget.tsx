@@ -99,6 +99,8 @@ type Message = {
   toolPreview?: NovaAgentToolPreview | null;
   draft?: NovaDraftPayload | null;
   safetyBlock?: NovaSafetyBlock | null;
+  confidence?: "high" | "medium" | "low";
+  sourceStatus?: "verified" | "partial" | "none";
   isError?: boolean;
 };
 
@@ -292,6 +294,38 @@ function writeActiveWidgetSessionId(sessionId: string) {
     return;
   }
   window.localStorage.removeItem(ACTIVE_WIDGET_SESSION_STORAGE_KEY);
+}
+
+function resolveActionableSuggestionsFromMessage(text: string): WidgetAction[] {
+  const normalized = text.toLowerCase();
+  const suggestions: WidgetAction[] = [];
+
+  const add = (label: string, path: string, icon: string) => {
+    if (!suggestions.some((item) => item.path === path)) {
+      suggestions.push({ label, path, icon });
+    }
+  };
+
+  if (/(risk analizi|risk degerlendirme|tehlike)/.test(normalized)) {
+    add("Risk Analizi", "/risk-analysis", "R");
+  }
+  if (/(olay|ramak kala|kaza|incident)/.test(normalized)) {
+    add("Olay Kaydi", "/incidents/new", "O");
+  }
+  if (/(dof|duzeltici|onleyici|capa)/.test(normalized)) {
+    add("DOF Modulu", "/corrective-actions", "D");
+  }
+  if (/(egitim|sinav|anket|katilim)/.test(normalized)) {
+    add("Egitim", "/training", "E");
+  }
+  if (/(dokuman|prosedur|talimat|form|mevzuat)/.test(normalized)) {
+    add("ISG Kutuphanesi", "/isg-library?section=documentation", "K");
+  }
+  if (/(gorev|takvim|plan|ajanda)/.test(normalized)) {
+    add("Ajanda", "/planner", "A");
+  }
+
+  return suggestions.slice(0, 3);
 }
 
 function mergeHistorySessionMessages(
@@ -573,6 +607,22 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       article_title: s.article_title || s.title || "",
     }));
 
+    const sourceStatus: Message["sourceStatus"] =
+      normalizedSources.length > 0
+        ? "verified"
+        : data?.safety_block
+          ? "none"
+          : "partial";
+    const confidence: Message["confidence"] =
+      sourceStatus === "verified" ? "high" : sourceStatus === "partial" ? "medium" : "low";
+    const actionSuggestions = resolveActionableSuggestionsFromMessage(answer);
+    const fallbackSuggestions =
+      navigation == null && answer.length < 220
+        ? authenticatedWelcomeActions.slice(0, 3)
+        : [];
+    const mergedSuggestions =
+      actionSuggestions.length > 0 ? actionSuggestions : fallbackSuggestions;
+
     return {
       id: crypto.randomUUID(),
       role: "bot",
@@ -588,10 +638,9 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       toolPreview: data.tool_preview || null,
       draft: data.draft || null,
       safetyBlock: data.safety_block || null,
-      suggestions:
-        navigation == null && answer.length < 220
-          ? authenticatedWelcomeActions.slice(0, 3)
-          : undefined,
+      confidence,
+      sourceStatus,
+      suggestions: mergedSuggestions.length > 0 ? mergedSuggestions : undefined,
       timestamp: new Date(),
     };
   }
@@ -1761,6 +1810,45 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                       </span>
                     ))}
                   </div>
+
+                  {msg.role === "bot" && (msg.confidence || msg.sourceStatus) && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {msg.confidence ? (
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                            msg.confidence === "high"
+                              ? "bg-emerald-500/15 text-emerald-700"
+                              : msg.confidence === "medium"
+                                ? "bg-amber-500/15 text-amber-700"
+                                : "bg-rose-500/15 text-rose-700"
+                          }`}
+                        >
+                          {msg.confidence === "high"
+                            ? "Guven: Yuksek"
+                            : msg.confidence === "medium"
+                              ? "Guven: Orta"
+                              : "Guven: Dusuk"}
+                        </span>
+                      ) : null}
+                      {msg.sourceStatus ? (
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                            msg.sourceStatus === "verified"
+                              ? "bg-blue-500/15 text-blue-700"
+                              : msg.sourceStatus === "partial"
+                                ? "bg-zinc-500/15 text-zinc-700"
+                                : "bg-rose-500/15 text-rose-700"
+                          }`}
+                        >
+                          {msg.sourceStatus === "verified"
+                            ? "Kaynak: Dogrulanmis"
+                            : msg.sourceStatus === "partial"
+                              ? "Kaynak: Kismi"
+                              : "Kaynak: Yok"}
+                        </span>
+                      ) : null}
+                    </div>
+                  )}
 
                   {/* Nova Sources Accordion */}
                   {msg.sources && msg.sources.length > 0 && (

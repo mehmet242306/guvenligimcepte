@@ -339,6 +339,48 @@ export function resolveNovaGuidanceIntent(message: string): NovaGuidanceIntent |
   };
 }
 
+export type NovaAuditSimulationIntent = {
+  answer: string;
+  navigation: {
+    action: "navigate";
+    url: string;
+    label: string;
+    reason: string;
+    destination: string;
+    auto_navigate: boolean;
+  };
+};
+
+export function resolveNovaAuditSimulationIntent(message: string): NovaAuditSimulationIntent | null {
+  const normalized = normalizeNovaNavigationText(message);
+  const auditPattern =
+    /(denetim simulasyon|simulasyon denetim|mufettis gelse|teftis provasi|audit simulasyon|audit simulation|denetime hazirlik)/;
+
+  if (!auditPattern.test(normalized)) {
+    return null;
+  }
+
+  return {
+    answer: [
+      "Denetim simulasyonu baslatalim. En hizli hazirlik icin sirayla su 4 kontrolu yapin:",
+      "- Mevzuata bagli zorunlu dokumanlar ve son guncelleme tarihleri",
+      "- Risk analizi kayitlarinin guncelligi ve acik aksiyonlar",
+      "- Egitim/katilim kanitlari ve gorev atamalari",
+      "- Olay-ramak kala kayitlari ile duzeltici faaliyet kapanislari",
+      "",
+      "Saha Denetimi ekranina gecip son denetimleri ve acik bulgulari birlikte tarayabiliriz.",
+    ].join("\n"),
+    navigation: {
+      action: "navigate",
+      url: "/score-history",
+      label: "Saha Denetimi",
+      reason: "Denetim gecmisi, bulgular ve kapanis takibi icin en uygun baslangic alani.",
+      destination: "audit_simulation_start",
+      auto_navigate: false,
+    },
+  };
+}
+
 /** Sunucu `/api/nova/chat` ile aynı mantık — navigation NovaAgentNavigation ile uyumlu */
 export function resolveNovaProductHelpIntent(message: string): NovaProductHelpIntent | null {
   const normalized = normalizeNovaNavigationText(message);

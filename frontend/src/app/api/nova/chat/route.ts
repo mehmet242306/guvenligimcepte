@@ -20,6 +20,7 @@ import {
 } from "@/lib/nova/navigation-intents";
 import { consumeEntitlement } from "@/lib/billing/entitlements";
 import {
+  resolveNovaAuditSimulationIntent,
   buildNovaSiteMapSummaryForPrompt,
   resolveNovaGuidanceIntent,
   resolveNovaProductHelpIntent,
@@ -73,6 +74,176 @@ function detectNovaIntentForPermission(
 
 function canUseReadOnlyLegalFallback(message: string) {
   return detectNovaIntentForPermission(message) === "regulation" && !isOperationalCommandQuery(message);
+}
+
+function resolveNovaProfessionalPerspective(message: string): "isg_uzmani" | "isyeri_hekimi" | "yonetici" | "ik" | null {
+  const normalized = normalizeNovaIntentText(message);
+
+  if (/(isg uzmani|is guvenligi uzmani|c sinifi|b sinifi|a sinifi)/.test(normalized)) {
+    return "isg_uzmani";
+  }
+  if (/(isyeri hekimi|hekim|doktor|isyeri doktoru|saglik gozetimi)/.test(normalized)) {
+    return "isyeri_hekimi";
+  }
+  if (/(yonetici|mudur|ceo|isveren|ust yonetim)/.test(normalized)) {
+    return "yonetici";
+  }
+  if (/(ik|insan kaynaklari|hr)/.test(normalized)) {
+    return "ik";
+  }
+
+  return null;
+}
+
+function resolveNovaOperationalKickoffIntent(message: string): {
+  answer: string;
+  toolPreview: {
+    toolName: string;
+    title: string;
+    summary: string;
+    riskClass: "read";
+    requiresConfirmation: false;
+    actionSurface: "read";
+  };
+  followUpActions: Array<{
+    id: string;
+    kind: "navigate" | "prompt";
+    label: string;
+    description: string;
+    url?: string;
+    prompt?: string;
+  }>;
+} | null {
+  if (!isOperationalCommandQuery(message)) {
+    return null;
+  }
+
+  const intent = detectNovaIntentForPermission(message);
+  if (!["incident", "planning", "training", "document"].includes(intent)) {
+    return null;
+  }
+
+  if (intent === "incident") {
+    return {
+      answer:
+        "Talebinizi hizli aksiyona donusturebiliriz. Once olay kaydini acin, ardindan Nova'ya olay ozetini yazin; ben size kok neden, DOF ve takip adimlarini cikarayim.",
+      toolPreview: {
+        toolName: "kickoff_incident_workflow",
+        title: "Olay aksiyon akisini baslat",
+        summary: "Olay kaydi + takip adimlari icin hizli baslangic.",
+        riskClass: "read",
+        requiresConfirmation: false,
+        actionSurface: "read",
+      },
+      followUpActions: [
+        {
+          id: crypto.randomUUID(),
+          kind: "navigate",
+          label: "Olay kaydi olustur",
+          description: "Olay formunu ac ve temel bilgileri gir.",
+          url: "/incidents/new",
+        },
+        {
+          id: crypto.randomUUID(),
+          kind: "prompt",
+          label: "Nova'ya olay ozeti yazdir",
+          description: "Tek mesajla olay ozetini ve oncelikli aksiyonlari hazirlat.",
+          prompt: "Yeni bir olay olusturuyorum. Kisa olay ozeti, kok neden ve ilk 3 DOF onerisi hazirla.",
+        },
+      ],
+    };
+  }
+
+  if (intent === "training") {
+    return {
+      answer:
+        "Egitim talebinizi tek akisa cevirelim: once Egitim modulu, sonra hedef kitle ve tarih. Ardindan Nova katilim/takip planini cikarir.",
+      toolPreview: {
+        toolName: "kickoff_training_workflow",
+        title: "Egitim planini baslat",
+        summary: "Egitim, sinav ve takip adimlari icin hizli yonlendirme.",
+        riskClass: "read",
+        requiresConfirmation: false,
+        actionSurface: "read",
+      },
+      followUpActions: [
+        {
+          id: crypto.randomUUID(),
+          kind: "navigate",
+          label: "Egitim modulu",
+          description: "Egitim/sinav ekranina gec.",
+          url: "/training",
+        },
+        {
+          id: crypto.randomUUID(),
+          kind: "prompt",
+          label: "Nova'dan egitim plani iste",
+          description: "Rol, tehlike sinifi ve sureye gore plan olustur.",
+          prompt: "Calisanlar icin mevzuata uygun 30 gunluk egitim ve takip plani hazirla.",
+        },
+      ],
+    };
+  }
+
+  if (intent === "planning") {
+    return {
+      answer:
+        "Plan/gorev talebinizi Ajanda uzerinden hizlica baslatabilirsiniz. Nova once 3 onceligi cikarir, sonra gorev dagilimini netlestirir.",
+      toolPreview: {
+        toolName: "kickoff_planning_workflow",
+        title: "Ajanda gorev akisini baslat",
+        summary: "Onceliklendirme ve gorev dagilimi icin hizli baslangic.",
+        riskClass: "read",
+        requiresConfirmation: false,
+        actionSurface: "read",
+      },
+      followUpActions: [
+        {
+          id: crypto.randomUUID(),
+          kind: "navigate",
+          label: "Ajandaya git",
+          description: "Gorev ve takvim ekranina gec.",
+          url: "/planner",
+        },
+        {
+          id: crypto.randomUUID(),
+          kind: "prompt",
+          label: "Nova'dan 3 oncelik cikar",
+          description: "Bugun/hafta icin kritik adimlari netlestir.",
+          prompt: "Bu hafta icin mevzuat riski en yuksek 3 gorevi ve sorumlulari cikar.",
+        },
+      ],
+    };
+  }
+
+  return {
+    answer:
+      "Dokuman talebinizi sohbet yerine dogru modulle hizlandiralim. ISG Kutuphanesi ve Dokuman Editoru uzerinden mevzuata uygun taslak akisini baslatabilirsiniz.",
+    toolPreview: {
+      toolName: "kickoff_document_workflow",
+      title: "Dokuman akisina basla",
+      summary: "Sablon secimi ve dokuman taslagi icin hizli yonlendirme.",
+      riskClass: "read",
+      requiresConfirmation: false,
+      actionSurface: "read",
+    },
+    followUpActions: [
+      {
+        id: crypto.randomUUID(),
+        kind: "navigate",
+        label: "ISG Kutuphanesi Dokumantasyon",
+        description: "Hazir sablon ve prosedurlere gec.",
+        url: "/isg-library?section=documentation",
+      },
+      {
+        id: crypto.randomUUID(),
+        kind: "navigate",
+        label: "Dokuman editoru",
+        description: "Sifirdan taslak olustur.",
+        url: "/documents/new",
+      },
+    ],
+  };
 }
 
 function isUuid(value: string | null | undefined) {
@@ -553,8 +724,11 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null;
     const navigationIntent = resolveNovaNavigationIntent(payload.message);
     const greetingIntent = resolveNovaGreetingIntent(payload.message);
+    const auditSimulationIntent = resolveNovaAuditSimulationIntent(payload.message);
     const guidanceIntent = resolveNovaGuidanceIntent(payload.message);
     const productHelpIntent = resolveNovaProductHelpIntent(payload.message);
+    const professionalPerspective = resolveNovaProfessionalPerspective(payload.message);
+    const operationalKickoffIntent = resolveNovaOperationalKickoffIntent(payload.message);
 
     let authContext =
       payload.access_token
@@ -573,10 +747,12 @@ export async function POST(request: NextRequest) {
       const allowReadOnlyLegalFallback = canUseReadOnlyLegalFallback(payload.message);
       const allowNavigationFallback = navigationIntent !== null;
       const allowGreetingFallback = greetingIntent !== null;
+      const allowAuditSimulationFallback = auditSimulationIntent !== null;
       const allowGuidanceFallback = guidanceIntent !== null;
       const allowProductHelpFallback = productHelpIntent !== null;
+      const allowOperationalKickoffFallback = operationalKickoffIntent !== null;
       const auth = allowReadOnlyLegalFallback || allowNavigationFallback || allowGreetingFallback || allowProductHelpFallback
-        || allowGuidanceFallback
+        || allowGuidanceFallback || allowAuditSimulationFallback || allowOperationalKickoffFallback
         ? await requireAuth(request)
         : await requirePermission(request, "ai.use");
       if (!auth.ok) return auth.response;
@@ -645,10 +821,10 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      const hasNovaPermission = navigationIntent || greetingIntent || guidanceIntent || productHelpIntent
+      const hasNovaPermission = navigationIntent || greetingIntent || guidanceIntent || auditSimulationIntent || productHelpIntent || operationalKickoffIntent
         ? true
         : await hasAiUsePermission(payload.access_token!);
-      const hasManagerAccess = navigationIntent || greetingIntent || guidanceIntent || productHelpIntent
+      const hasManagerAccess = navigationIntent || greetingIntent || guidanceIntent || auditSimulationIntent || productHelpIntent || operationalKickoffIntent
         ? true
         : await hasLegacyNovaManagerAccess(authContext.userId);
       const readOnlyLegalFallback =
@@ -732,6 +908,55 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (auditSimulationIntent) {
+      return NextResponse.json(
+        normalizeNovaAgentResponse({
+          type: "tool_preview",
+          answer: auditSimulationIntent.answer,
+          session_id: payload.session_id ?? null,
+          as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
+          answer_mode: payload.answer_mode,
+          jurisdiction_code: payload.jurisdiction_code ?? authContext.jurisdictionCode ?? "TR",
+          sources: [],
+          navigation: auditSimulationIntent.navigation,
+          tool_preview: {
+            toolName: "audit_simulation",
+            title: "Denetim Simulasyonu Baslat",
+            summary: "Saha denetimi ekraninda bulgulari ve kapanislari adim adim gozden gecirin.",
+            riskClass: "read",
+            requiresConfirmation: false,
+            actionSurface: "read",
+          },
+          telemetry: {
+            gateway_mode: "audit_simulation_fallback",
+            context_surface: payload.context_surface,
+            current_page: payload.current_page ?? null,
+          },
+        }),
+      );
+    }
+
+    if (operationalKickoffIntent) {
+      return NextResponse.json(
+        normalizeNovaAgentResponse({
+          type: "tool_preview",
+          answer: operationalKickoffIntent.answer,
+          session_id: payload.session_id ?? null,
+          as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
+          answer_mode: payload.answer_mode,
+          jurisdiction_code: payload.jurisdiction_code ?? authContext.jurisdictionCode ?? "TR",
+          sources: [],
+          tool_preview: operationalKickoffIntent.toolPreview,
+          follow_up_actions: operationalKickoffIntent.followUpActions,
+          telemetry: {
+            gateway_mode: "operational_kickoff_fallback",
+            context_surface: payload.context_surface,
+            current_page: payload.current_page ?? null,
+          },
+        }),
+      );
+    }
+
     if (guidanceIntent) {
       return NextResponse.json(
         normalizeNovaAgentResponse({
@@ -778,6 +1003,34 @@ export async function POST(request: NextRequest) {
       content:
         "Navigation guidance constraint: Keep users oriented in-site. If user is unsure, present 3-5 likely modules with one-line purpose and recommend the best next page. Prefer explicit in-product routing over generic advice. You may propose short path hints like: Header > Module, then first action.",
     });
+
+    contextualHistory.unshift({
+      role: "assistant",
+      content:
+        "Response format constraint: For substantial answers, structure in this order: 1) Kisa Yanit, 2) Yasal Dayanak/Kaynak, 3) Uygulanacak Adimlar, 4) RiskNova Icinde Sonraki Tik. If sources are missing, explicitly state verification status and avoid precise legal claims.",
+    });
+
+    contextualHistory.unshift({
+      role: "assistant",
+      content:
+        "Proactive copilot constraint: If the user asks broadly (for example: ne yapmaliyim, nereden baslayayim, oncelik ne), provide top 3 priority actions with rationale and route each action to the most relevant RiskNova module.",
+    });
+
+    if (professionalPerspective) {
+      const perspectiveNote =
+        professionalPerspective === "isg_uzmani"
+          ? "Perspective mode: Answer with ISG specialist emphasis (risk hierarchy, control measures, legal compliance cadence, field applicability)."
+          : professionalPerspective === "isyeri_hekimi"
+            ? "Perspective mode: Answer with occupational physician emphasis (health surveillance, fitness for work, exposure-health linkage, medical follow-up)."
+            : professionalPerspective === "yonetici"
+              ? "Perspective mode: Answer with manager/employer emphasis (priority, cost-risk balance, accountability, timeline and ownership)."
+              : "Perspective mode: Answer with HR emphasis (workforce records, training participation, communication and assignment tracking).";
+
+      contextualHistory.unshift({
+        role: "assistant",
+        content: perspectiveNote,
+      });
+    }
 
     contextualHistory.unshift({
       role: "assistant",
