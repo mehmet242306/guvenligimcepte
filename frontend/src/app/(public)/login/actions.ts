@@ -260,6 +260,8 @@ export async function login(formData: FormData) {
 
   const { data: assuranceData, error: assuranceError } =
     await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  const { data: factorData, error: factorError } =
+    await supabase.auth.mfa.listFactors();
 
   if (signedInUser) {
     try {
@@ -273,11 +275,22 @@ export async function login(formData: FormData) {
 
   revalidatePath("/", "layout");
 
-  if (
-    !assuranceError &&
-    assuranceData?.nextLevel === "aal2" &&
-    assuranceData.currentLevel !== "aal2"
-  ) {
+  const verifiedFactors = [
+    ...(factorData?.totp ?? []),
+    ...(factorData?.phone ?? []),
+    ...(factorData?.webauthn ?? []),
+  ].filter((factor) => factor.status === "verified");
+  const hasVerifiedMfaFactor = verifiedFactors.length > 0;
+  const mustCompleteMfa =
+    hasVerifiedMfaFactor || assuranceData?.nextLevel === "aal2";
+
+  if (hasVerifiedMfaFactor && (assuranceError || factorError)) {
+    await supabase.auth.signOut();
+    redirect("/login?error=Iki adimli dogrulama dogrulanamadi. Lutfen tekrar giris yapin.");
+  }
+
+  // Security hardening: if MFA is configured, never continue with aal1.
+  if (mustCompleteMfa && assuranceData?.currentLevel !== "aal2") {
     const resolvedNext = signedInUser
       ? resolveLoginRedirect(await getAccountContextForUser(signedInUser.id), next)
       : next;

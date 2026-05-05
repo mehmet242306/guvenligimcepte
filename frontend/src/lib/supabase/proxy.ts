@@ -212,5 +212,40 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if (user && (!isPublic || isRouteAuthApiEndpoint)) {
+    const [{ data: assuranceData, error: assuranceError }, { data: factorData, error: factorError }] = await Promise.all([
+      supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
+      supabase.auth.mfa.listFactors(),
+    ]);
+    const verifiedFactors = [
+      ...(factorData?.totp ?? []),
+      ...(factorData?.phone ?? []),
+      ...(factorData?.webauthn ?? []),
+    ].filter((factor) => factor.status === "verified");
+    const hasVerifiedMfaFactor = verifiedFactors.length > 0;
+    const mustCompleteMfa =
+      hasVerifiedMfaFactor || assuranceData?.nextLevel === "aal2";
+    const cannotConfirmAal = !!assuranceError && !!factorError;
+
+    if ((mustCompleteMfa && assuranceData?.currentLevel !== "aal2") || (hasVerifiedMfaFactor && cannotConfirmAal)) {
+      if (pathname.startsWith("/api")) {
+        return NextResponse.json(
+          {
+            error: "MFA verification required.",
+            code: "MFA_REQUIRED",
+          },
+          { status: 403 },
+        );
+      }
+
+      const url = request.nextUrl.clone();
+      const next = `${pathname}${request.nextUrl.search}`;
+      url.pathname = "/auth/mfa-challenge";
+      url.search = "";
+      url.searchParams.set("next", next);
+      return NextResponse.redirect(url);
+    }
+  }
+
   return supabaseResponse;
 }
