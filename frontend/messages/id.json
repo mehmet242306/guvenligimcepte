@@ -657,7 +657,7 @@
           "employmentType": "Jenis kepegawaian",
           "firstName": "Nama depan",
           "gender": "Jenis kelamin",
-          "hireDate": "Tanggal masuk",
+          "hireDate": "Tanggal masuk kerja",
           "identity": "KTP",
           "lastName": "Nama belakang",
           "location": "Lokasi",
@@ -668,7 +668,7 @@
           "positionTitle": "Posisi / jabatan",
           "shiftType": "Jenis shift"
         },
-        "templateFileSuffix": "template_personel"
+        "templateFileSuffix": "personnel_template"
       }
     },
     "legacyTabs": {

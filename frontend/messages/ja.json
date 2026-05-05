@@ -595,16 +595,16 @@
     "docTitleFallback": "ワークスペース · RiskNova",
     "invite": "招待",
     "logo": {
-      "fileTooLarge": "ファイルが大きすぎます（{sizeMb} MB）。最大サイズは5MBです。",
-      "imagesOnly": "画像ファイルのみアップロード可能です（PNG、JPEG、WebP、SVG）。",
-      "updated": "ロゴ/画像を更新しました。",
+      "fileTooLarge": "ファイルが大きすぎます（{sizeMb} MB）。最大サイズは5 MBです。",
+      "imagesOnly": "画像ファイルのみアップロードできます（PNG、JPEG、WebP、SVG）。",
+      "updated": "ロゴ/画像が更新されました。",
       "uploadFailed": "アップロードに失敗しました。別のファイルをお試しください。",
       "uploadTitle": "ロゴをアップロード"
     },
     "notFound": {
-      "back": "会社一覧に戻る",
-      "description": "このIDに一致する会社がありません。",
-      "title": "会社が見つかりません"
+      "back": "企業一覧に戻る",
+      "description": "このIDに一致する企業がありません。",
+      "title": "企業が見つかりません"
     },
     "riskBadgeLabelOnly": "{label}",
     "riskBadgeScore": "{label} {score}",
@@ -617,7 +617,7 @@
     "stats": {
       "departments": "部門",
       "employees": "従業員",
-      "locations": "拠点",
+      "locations": "所在地",
       "maturity": "成熟度",
       "openActions": "未完了アクション",
       "overdue": "期限超過"
@@ -630,16 +630,16 @@
       "personnel": "人事",
       "risk": "リスク・現場",
       "structure": "施設",
-      "tracking": "追跡"
+      "tracking": "トラッキング"
     },
     "personnel": {
       "csv": {
         "example": {
           "address": "イスタンブール、カドゥキョイ",
-          "department": "生産",
+          "department": "生産部",
           "firstName": "太郎",
           "lastName": "田中",
-          "location": "メインプラント",
+          "location": "本社工場",
           "positionTitle": "オペレーター"
         },
         "exportFileSuffix": "人事リスト",
@@ -655,20 +655,20 @@
           "employeeCode": "従業員コード",
           "employmentStatus": "雇用状況",
           "employmentType": "雇用形態",
-          "firstName": "名",
+          "firstName": "名前",
           "gender": "性別",
           "hireDate": "入社日",
           "identity": "身分証明書番号",
           "lastName": "姓",
-          "location": "勤務地",
+          "location": "所在地",
           "maritalStatus": "婚姻状況",
           "nationality": "国籍",
           "notes": "備考",
           "phone": "電話番号",
-          "positionTitle": "役職・職位",
-          "shiftType": "勤務シフト"
+          "positionTitle": "役職・肩書き",
+          "shiftType": "勤務形態"
         },
-        "templateFileSuffix": "人事テンプレート"
+        "templateFileSuffix": "personnel_template"
       }
     },
     "legacyTabs": {
@@ -698,7 +698,7 @@
         "description": "会社の組織構造、メンバーシップ、アクセス管理です。",
         "share": {
           "description": "会社データの共有とアクセス制御です。",
-          "note": "共有とアクセス管理モジュールは開発中です。会社データに対する詳細なアクセス制御は間もなく有効になります。",
+          "note": "共有とアクセス管理モジュールは開発中です。会社データの詳細なアクセス制御は間もなく有効になります。",
           "title": "共有とアクセス"
         },
         "title": "組織"

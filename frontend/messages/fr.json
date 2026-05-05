@@ -617,7 +617,7 @@
     "stats": {
       "departments": "Départements",
       "employees": "Employés",
-      "locations": "Emplacements",
+      "locations": "Lieux",
       "maturity": "Maturité",
       "openActions": "Actions ouvertes",
       "overdue": "En retard"
@@ -649,19 +649,19 @@
           "bloodType": "Groupe sanguin",
           "department": "Département",
           "educationLevel": "Niveau d'éducation",
-          "email": "E-mail",
-          "emergencyContact": "Personne à contacter en urgence",
+          "email": "Email",
+          "emergencyContact": "Personne de contact d'urgence",
           "emergencyPhone": "Téléphone de contact d'urgence",
           "employeeCode": "Code employé",
           "employmentStatus": "Statut d'emploi",
           "employmentType": "Type d'emploi",
           "firstName": "Prénom",
-          "gender": "Sexe",
+          "gender": "Genre",
           "hireDate": "Date d'embauche",
-          "identity": "Pièce d'identité nationale",
+          "identity": "Numéro d'identité nationale",
           "lastName": "Nom de famille",
-          "location": "Localisation",
-          "maritalStatus": "Statut matrimonial",
+          "location": "Lieu",
+          "maritalStatus": "État civil",
           "nationality": "Nationalité",
           "notes": "Notes",
           "phone": "Téléphone",
@@ -683,7 +683,7 @@
             "title": "Invitations"
           },
           "members": {
-            "description": "Utilisateurs pouvant accéder à l'entreprise et leurs rôles.",
+            "description": "Utilisateurs qui peuvent accéder à l'entreprise et leurs rôles.",
             "title": "Membres"
           },
           "permissions": {
@@ -698,15 +698,15 @@
         "description": "Structure organisationnelle de l'entreprise, adhésion et gestion des accès.",
         "share": {
           "description": "Contrôles de partage et d'accès aux données de l'entreprise.",
-          "note": "Le module de partage et de gestion des accès est en développement. Le contrôle d'accès granulaire aux données de l'entreprise sera bientôt activé.",
+          "note": "Le module de partage et de gestion des accès est en cours de développement. Le contrôle d'accès granulaire aux données de l'entreprise sera activé prochainement.",
           "title": "Partage et accès"
         },
         "title": "Organisation"
       },
       "people": {
         "activeProfessionals": "Professionnels actifs",
-        "description": "Professionnels SST, représentants du personnel et personnel de soutien.",
-        "employeeRepresentatives": "Représentants du personnel",
+        "description": "Professionnels SST, représentants des employés et personnel de soutien.",
+        "employeeRepresentatives": "Représentants des employés",
         "employerName": "Nom de l'employeur",
         "employerRepresentative": "Représentant de l'employeur",
         "supportStaff": "Personnel de soutien",

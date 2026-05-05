@@ -591,18 +591,18 @@
   },
   "companyWorkspace": {
     "backLink": "작업장",
-    "docTitle": "{name} — 작업공간 · RiskNova",
-    "docTitleFallback": "작업공간 · RiskNova",
+    "docTitle": "{name} — 워크스페이스 · RiskNova",
+    "docTitleFallback": "워크스페이스 · RiskNova",
     "invite": "초대",
     "logo": {
-      "fileTooLarge": "파일이 너무 큽니다 ({sizeMb} MB). 최대 크기는 5 MB입니다.",
-      "imagesOnly": "이미지 파일만 업로드할 수 있습니다 (PNG, JPEG, WebP, SVG).",
+      "fileTooLarge": "파일이 너무 큽니다({sizeMb} MB). 최대 크기는 5MB입니다.",
+      "imagesOnly": "이미지 파일만 업로드할 수 있습니다(PNG, JPEG, WebP, SVG).",
       "updated": "로고/이미지가 업데이트되었습니다.",
-      "uploadFailed": "업로드 실패. 다른 파일을 시도해보세요.",
+      "uploadFailed": "업로드에 실패했습니다. 다른 파일을 시도해 주세요.",
       "uploadTitle": "로고 업로드"
     },
     "notFound": {
-      "back": "회사로 돌아가기",
+      "back": "회사 목록으로 돌아가기",
       "description": "이 ID와 일치하는 회사가 없습니다.",
       "title": "회사를 찾을 수 없음"
     },
@@ -611,7 +611,7 @@
     "save": "저장",
     "saving": "저장 중…",
     "sidebar": {
-      "hint": "왼쪽에서 영역을 선택하고 오른쪽에서 콘텐츠를 관리하세요.",
+      "hint": "왼쪽에서 영역을 선택하고 오른쪽에서 내용을 관리하세요.",
       "title": "작업장 섹션"
     },
     "stats": {
@@ -619,11 +619,11 @@
       "employees": "직원",
       "locations": "위치",
       "maturity": "성숙도",
-      "openActions": "미해결 조치",
-      "overdue": "연체"
+      "openActions": "진행 중인 조치",
+      "overdue": "지연"
     },
     "tabs": {
-      "history": "이력",
+      "history": "기록",
       "ohs_file": "OHS 파일",
       "organization": "조직",
       "people": "팀",
@@ -636,13 +636,13 @@
       "csv": {
         "example": {
           "address": "이스탄불, 카디쾨이",
-          "department": "생산",
-          "firstName": "홍길동",
-          "lastName": "김",
+          "department": "생산부",
+          "firstName": "John",
+          "lastName": "Doe",
           "location": "본공장",
           "positionTitle": "작업자"
         },
-        "exportFileSuffix": "직원_목록",
+        "exportFileSuffix": "personnel_list",
         "headers": {
           "address": "주소",
           "birthDate": "생년월일",
@@ -653,33 +653,33 @@
           "emergencyContact": "비상연락처",
           "emergencyPhone": "비상연락처 전화번호",
           "employeeCode": "사원번호",
-          "employmentStatus": "재직상태",
+          "employmentStatus": "고용상태",
           "employmentType": "고용형태",
           "firstName": "이름",
           "gender": "성별",
           "hireDate": "입사일",
           "identity": "주민등록번호",
           "lastName": "성",
-          "location": "근무지",
-          "maritalStatus": "혼인상태",
+          "location": "위치",
+          "maritalStatus": "혼인 상태",
           "nationality": "국적",
-          "notes": "비고",
+          "notes": "메모",
           "phone": "전화번호",
           "positionTitle": "직책/직위",
-          "shiftType": "근무형태"
+          "shiftType": "근무 형태"
         },
-        "templateFileSuffix": "직원_템플릿"
+        "templateFileSuffix": "personnel_template"
       }
     },
     "legacyTabs": {
       "organization": {
         "actions": {
           "sendInvite": "초대 보내기",
-          "soon": "출시 예정"
+          "soon": "곧 출시"
         },
         "cards": {
           "invitations": {
-            "description": "발송되고 대기 중인 전문가 초대입니다.",
+            "description": "발송 및 대기 중인 전문가 초대입니다.",
             "title": "초대"
           },
           "members": {
@@ -704,11 +704,11 @@
         "title": "조직"
       },
       "people": {
-        "activeProfessionals": "활성 전문가",
+        "activeProfessionals": "활동 중인 전문가",
         "description": "산업보건 전문가, 근로자 대표, 지원 직원입니다.",
         "employeeRepresentatives": "근로자 대표",
-        "employerName": "사업주명",
-        "employerRepresentative": "사업주 대표",
+        "employerName": "고용주명",
+        "employerRepresentative": "고용주 대표",
         "supportStaff": "지원 직원",
         "title": "팀 및 대표 구조"
       }

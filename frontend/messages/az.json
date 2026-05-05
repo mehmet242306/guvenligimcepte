@@ -608,11 +608,11 @@
     },
     "riskBadgeLabelOnly": "{label}",
     "riskBadgeScore": "{label} {score}",
-    "save": "Yadda saxla",
-    "saving": "Yadda saxlanır…",
+    "save": "Saxla",
+    "saving": "Saxlanılır…",
     "sidebar": {
       "hint": "Solda sahə seçin; sağda məzmunu idarə edin.",
-      "title": "İş yeri bölmələri"
+      "title": "İş sahəsi bölmələri"
     },
     "stats": {
       "departments": "Şöbələr",
@@ -623,11 +623,11 @@
       "overdue": "Gecikmiş"
     },
     "tabs": {
-      "history": "Tarixçə",
+      "history": "Tarix",
       "ohs_file": "OHS faylı",
       "organization": "Təşkilat",
       "people": "Komanda",
-      "personnel": "Kadr",
+      "personnel": "Personal",
       "risk": "Risk və sahə",
       "structure": "Binalar",
       "tracking": "İzləmə"
@@ -642,7 +642,7 @@
           "location": "Əsas zavod",
           "positionTitle": "Operator"
         },
-        "exportFileSuffix": "personal_siyahısı",
+        "exportFileSuffix": "personal_siyahisi",
         "headers": {
           "address": "Ünvan",
           "birthDate": "Doğum tarixi",
@@ -659,7 +659,7 @@
           "gender": "Cins",
           "hireDate": "İşə qəbul tarixi",
           "identity": "Şəxsiyyət vəsiqəsi",
-          "lastName": "Soyad",
+          "lastName": "Soyadı",
           "location": "Yer",
           "maritalStatus": "Ailə vəziyyəti",
           "nationality": "Milliyyət",
@@ -705,7 +705,7 @@
       },
       "people": {
         "activeProfessionals": "Aktiv peşəkarlar",
-        "description": "ƏTM peşəkarları, işçi nümayəndələri və dəstək heyəti.",
+        "description": "İEMT peşəkarları, işçi nümayəndələri və dəstək heyəti.",
         "employeeRepresentatives": "İşçi nümayəndələri",
         "employerName": "İşəgötürən adı",
         "employerRepresentative": "İşəgötürən nümayəndəsi",

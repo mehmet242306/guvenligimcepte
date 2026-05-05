@@ -591,14 +591,14 @@
   },
   "companyWorkspace": {
     "backLink": "कार्यस्थल",
-    "docTitle": "{name} — कार्यक्षेत्र · RiskNova",
-    "docTitleFallback": "कार्यक्षेत्र · RiskNova",
+    "docTitle": "{name} — वर्कस्पेस · RiskNova",
+    "docTitleFallback": "वर्कस्पेस · RiskNova",
     "invite": "आमंत्रित करें",
     "logo": {
       "fileTooLarge": "फ़ाइल बहुत बड़ी है ({sizeMb} MB)। अधिकतम आकार 5 MB है।",
       "imagesOnly": "केवल छवि फ़ाइलें अपलोड की जा सकती हैं (PNG, JPEG, WebP, SVG)।",
-      "updated": "लोगो/छवि अपडेट हो गई।",
-      "uploadFailed": "अपलोड असफल। कोई अन्य फ़ाइल आज़माएं।",
+      "updated": "लोगो/छवि अपडेट हो गया।",
+      "uploadFailed": "अपलोड असफल। दूसरी फ़ाइल आज़माएं।",
       "uploadTitle": "लोगो अपलोड करें"
     },
     "notFound": {
@@ -609,9 +609,9 @@
     "riskBadgeLabelOnly": "{label}",
     "riskBadgeScore": "{label} {score}",
     "save": "सहेजें",
-    "saving": "सहेजा जा रहा है…",
+    "saving": "सहेज रहे हैं…",
     "sidebar": {
-      "hint": "बाईं ओर कोई क्षेत्र चुनें; दाईं ओर सामग्री प्रबंधित करें।",
+      "hint": "बाईं ओर एक क्षेत्र चुनें; दाईं ओर सामग्री प्रबंधित करें।",
       "title": "कार्यस्थल अनुभाग"
     },
     "stats": {
@@ -624,10 +624,10 @@
     },
     "tabs": {
       "history": "इतिहास",
-      "ohs_file": "OHS फ़ाइल",
+      "ohs_file": "OHS फाइल",
       "organization": "संगठन",
       "people": "टीम",
-      "personnel": "कार्मिक",
+      "personnel": "कर्मचारी",
       "risk": "जोखिम और क्षेत्र",
       "structure": "परिसर",
       "tracking": "ट्रैकिंग"
@@ -639,10 +639,10 @@
           "department": "उत्पादन",
           "firstName": "जॉन",
           "lastName": "डो",
-          "location": "मुख्य संयंत्र",
+          "location": "मुख्य प्लांट",
           "positionTitle": "ऑपरेटर"
         },
-        "exportFileSuffix": "कर्मचारी_सूची",
+        "exportFileSuffix": "personnel_list",
         "headers": {
           "address": "पता",
           "birthDate": "जन्म तिथि",
@@ -655,7 +655,7 @@
           "employeeCode": "कर्मचारी कोड",
           "employmentStatus": "रोजगार स्थिति",
           "employmentType": "रोजगार प्रकार",
-          "firstName": "प्रथम नाम",
+          "firstName": "पहला नाम",
           "gender": "लिंग",
           "hireDate": "नियुक्ति तिथि",
           "identity": "राष्ट्रीय पहचान",
@@ -668,19 +668,19 @@
           "positionTitle": "पद / शीर्षक",
           "shiftType": "शिफ्ट प्रकार"
         },
-        "templateFileSuffix": "कर्मचारी_टेम्प्लेट"
+        "templateFileSuffix": "personnel_template"
       }
     },
     "legacyTabs": {
       "organization": {
         "actions": {
-          "sendInvite": "निमंत्रण भेजें",
+          "sendInvite": "आमंत्रण भेजें",
           "soon": "जल्द आ रहा है"
         },
         "cards": {
           "invitations": {
-            "description": "भेजे गए और लंबित पेशेवर निमंत्रण।",
-            "title": "निमंत्रण"
+            "description": "भेजे गए और लंबित व्यावसायिक आमंत्रण।",
+            "title": "आमंत्रण"
           },
           "members": {
             "description": "उपयोगकर्ता जो कंपनी तक पहुंच सकते हैं और उनकी भूमिकाएं।",
@@ -691,7 +691,7 @@
             "title": "अनुमतियां"
           },
           "requests": {
-            "description": "कंपनी में शामिल होने के अनुरोध और अनुमोदन प्रक्रिया।",
+            "description": "कंपनी में शामिल होने के अनुरोध और अनुमोदन प्रवाह।",
             "title": "अनुरोध"
           }
         },
@@ -704,8 +704,8 @@
         "title": "संगठन"
       },
       "people": {
-        "activeProfessionals": "सक्रिय पेशेवर",
-        "description": "OHS पेशेवर, कर्मचारी प्रतिनिधि, और सहायक कर्मचारी।",
+        "activeProfessionals": "सक्रिय व्यावसायिक",
+        "description": "OHS व्यावसायिक, कर्मचारी प्रतिनिधि, और सहायक कर्मचारी।",
         "employeeRepresentatives": "कर्मचारी प्रतिनिधि",
         "employerName": "नियोक्ता का नाम",
         "employerRepresentative": "नियोक्ता प्रतिनिधि",

@@ -598,7 +598,7 @@
       "fileTooLarge": "El archivo es demasiado grande ({sizeMb} MB). El tamaño máximo es 5 MB.",
       "imagesOnly": "Solo se pueden subir archivos de imagen (PNG, JPEG, WebP, SVG).",
       "updated": "Logo/imagen actualizado.",
-      "uploadFailed": "Error al subir. Intenta con otro archivo.",
+      "uploadFailed": "Error en la carga. Intente con otro archivo.",
       "uploadTitle": "Subir logo"
     },
     "notFound": {
@@ -611,7 +611,7 @@
     "save": "Guardar",
     "saving": "Guardando…",
     "sidebar": {
-      "hint": "Elige un área a la izquierda; gestiona el contenido a la derecha.",
+      "hint": "Seleccione un área a la izquierda; gestione el contenido a la derecha.",
       "title": "Secciones del sitio de trabajo"
     },
     "stats": {
@@ -624,7 +624,7 @@
     },
     "tabs": {
       "history": "Historial",
-      "ohs_file": "Archivo OHS",
+      "ohs_file": "Archivo SST",
       "organization": "Organización",
       "people": "Equipo",
       "personnel": "Personal",
@@ -679,7 +679,7 @@
         },
         "cards": {
           "invitations": {
-            "description": "Invitaciones profesionales enviadas y pendientes.",
+            "description": "Invitaciones de profesionales enviadas y pendientes.",
             "title": "Invitaciones"
           },
           "members": {

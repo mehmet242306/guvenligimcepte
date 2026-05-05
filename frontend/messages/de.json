@@ -590,12 +590,12 @@
     }
   },
   "companyWorkspace": {
-    "backLink": "Arbeitsplätze",
+    "backLink": "Arbeitsstätten",
     "docTitle": "{name} — Arbeitsbereich · RiskNova",
     "docTitleFallback": "Arbeitsbereich · RiskNova",
     "invite": "Einladen",
     "logo": {
-      "fileTooLarge": "Datei ist zu groß ({sizeMb} MB). Maximale Größe ist 5 MB.",
+      "fileTooLarge": "Datei ist zu groß ({sizeMb} MB). Maximale Größe beträgt 5 MB.",
       "imagesOnly": "Nur Bilddateien können hochgeladen werden (PNG, JPEG, WebP, SVG).",
       "updated": "Logo/Bild aktualisiert.",
       "uploadFailed": "Upload fehlgeschlagen. Versuchen Sie eine andere Datei.",
@@ -624,12 +624,12 @@
     },
     "tabs": {
       "history": "Verlauf",
-      "ohs_file": "AuS-Akte",
+      "ohs_file": "Arbeitsschutz-Akte",
       "organization": "Organisation",
       "people": "Team",
       "personnel": "Personal",
       "risk": "Risiko & Feld",
-      "structure": "Räumlichkeiten",
+      "structure": "Betriebsstätte",
       "tracking": "Verfolgung"
     },
     "personnel": {
@@ -652,7 +652,7 @@
           "email": "E-Mail",
           "emergencyContact": "Notfallkontaktperson",
           "emergencyPhone": "Notfallkontakt-Telefon",
-          "employeeCode": "Mitarbeiternummer",
+          "employeeCode": "Mitarbeiterkennzeichen",
           "employmentStatus": "Beschäftigungsstatus",
           "employmentType": "Beschäftigungsart",
           "firstName": "Vorname",
@@ -666,7 +666,7 @@
           "notes": "Notizen",
           "phone": "Telefon",
           "positionTitle": "Position / Titel",
-          "shiftType": "Schichtart"
+          "shiftType": "Schichttyp"
         },
         "templateFileSuffix": "personal_vorlage"
       }
@@ -687,7 +687,7 @@
             "title": "Mitglieder"
           },
           "permissions": {
-            "description": "Modul-Zugriff und Autorisierungskontrollen.",
+            "description": "Modul-Zugriffs- und Autorisierungskontrollen.",
             "title": "Berechtigungen"
           },
           "requests": {

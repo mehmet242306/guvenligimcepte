@@ -598,7 +598,7 @@
       "fileTooLarge": "الملف كبير جداً ({sizeMb} ميجابايت). الحد الأقصى للحجم هو 5 ميجابايت.",
       "imagesOnly": "يمكن رفع ملفات الصور فقط (PNG، JPEG، WebP، SVG).",
       "updated": "تم تحديث الشعار/الصورة.",
-      "uploadFailed": "فشل الرفع. جرب ملف آخر.",
+      "uploadFailed": "فشل في الرفع. جرب ملف آخر.",
       "uploadTitle": "رفع الشعار"
     },
     "notFound": {
@@ -611,7 +611,7 @@
     "save": "حفظ",
     "saving": "جاري الحفظ...",
     "sidebar": {
-      "hint": "اختر منطقة على اليسار؛ إدارة المحتوى على اليمين.",
+      "hint": "اختر منطقة على اليسار؛ أدر المحتوى على اليمين.",
       "title": "أقسام موقع العمل"
     },
     "stats": {
@@ -650,8 +650,8 @@
           "department": "القسم",
           "educationLevel": "المستوى التعليمي",
           "email": "البريد الإلكتروني",
-          "emergencyContact": "جهة الاتصال في حالات الطوارئ",
-          "emergencyPhone": "هاتف الطوارئ",
+          "emergencyContact": "شخص الاتصال في حالات الطوارئ",
+          "emergencyPhone": "هاتف الاتصال في حالات الطوارئ",
           "employeeCode": "رمز الموظف",
           "employmentStatus": "حالة التوظيف",
           "employmentType": "نوع التوظيف",
@@ -665,10 +665,10 @@
           "nationality": "الجنسية",
           "notes": "ملاحظات",
           "phone": "الهاتف",
-          "positionTitle": "المنصب / المسمى الوظيفي",
+          "positionTitle": "المنصب / اللقب",
           "shiftType": "نوع الوردية"
         },
-        "templateFileSuffix": "نموذج_الموظفين"
+        "templateFileSuffix": "personnel_template"
       }
     },
     "legacyTabs": {
@@ -687,11 +687,11 @@
             "title": "الأعضاء"
           },
           "permissions": {
-            "description": "ضوابط الوصول والتخويل على مستوى الوحدة.",
+            "description": "ضوابط الوصول والتفويض على مستوى الوحدة.",
             "title": "الصلاحيات"
           },
           "requests": {
-            "description": "طلبات انضمام الشركة وتدفق الموافقة.",
+            "description": "طلبات الانضمام للشركة وتدفق الموافقة.",
             "title": "الطلبات"
           }
         },
@@ -705,11 +705,11 @@
       },
       "people": {
         "activeProfessionals": "المهنيون النشطون",
-        "description": "مهنيو الصحة والسلامة المهنية وممثلو الموظفين وموظفو الدعم.",
+        "description": "مهنيو الصحة والسلامة المهنية وممثلو الموظفين وطاقم الدعم.",
         "employeeRepresentatives": "ممثلو الموظفين",
         "employerName": "اسم صاحب العمل",
         "employerRepresentative": "ممثل صاحب العمل",
-        "supportStaff": "موظفو الدعم",
+        "supportStaff": "طاقم الدعم",
         "title": "هيكل الفريق والتمثيل"
       }
     }

@@ -597,13 +597,13 @@
     "logo": {
       "fileTooLarge": "文件过大（{sizeMb} MB）。最大大小为 5 MB。",
       "imagesOnly": "只能上传图像文件（PNG、JPEG、WebP、SVG）。",
-      "updated": "徽标/图像已更新。",
+      "updated": "标志/图片已更新。",
       "uploadFailed": "上传失败。请尝试其他文件。",
-      "uploadTitle": "上传徽标"
+      "uploadTitle": "上传标志"
     },
     "notFound": {
-      "back": "返回公司",
-      "description": "没有公司匹配此 ID。",
+      "back": "返回公司列表",
+      "description": "没有公司匹配此ID。",
       "title": "未找到公司"
     },
     "riskBadgeLabelOnly": "{label}",
@@ -619,7 +619,7 @@
       "employees": "员工",
       "locations": "位置",
       "maturity": "成熟度",
-      "openActions": "待处理操作",
+      "openActions": "待处理事项",
       "overdue": "逾期"
     },
     "tabs": {
@@ -636,10 +636,10 @@
       "csv": {
         "example": {
           "address": "伊斯坦布尔，卡德柯伊",
-          "department": "生产",
+          "department": "生产部",
           "firstName": "约翰",
           "lastName": "多伊",
-          "location": "主厂房",
+          "location": "主厂区",
           "positionTitle": "操作员"
         },
         "exportFileSuffix": "人员名单",
@@ -659,8 +659,8 @@
           "gender": "性别",
           "hireDate": "入职日期",
           "identity": "身份证号",
-          "lastName": "姓",
-          "location": "工作地点",
+          "lastName": "姓氏",
+          "location": "位置",
           "maritalStatus": "婚姻状况",
           "nationality": "国籍",
           "notes": "备注",
@@ -698,7 +698,7 @@
         "description": "公司组织结构、成员资格和访问管理。",
         "share": {
           "description": "公司数据的共享和访问控制。",
-          "note": "共享和访问管理模块正在开发中。对公司数据的精细访问控制将很快激活。",
+          "note": "共享和访问管理模块正在开发中。公司数据的精细访问控制将很快激活。",
           "title": "共享和访问"
         },
         "title": "组织"
