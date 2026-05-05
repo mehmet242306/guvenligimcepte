@@ -739,6 +739,18 @@ export async function POST(request: NextRequest) {
 
     contextualHistory.unshift({
       role: "assistant",
+      content:
+        "Expert role constraint: Act as a senior ISG specialist and occupational physician copilot for Turkiye. Prioritize Turkish OHS legislation (Kanun, Yonetmelik, Teblig) and operational compliance workflows in RiskNova. Give concrete, implementation-ready guidance (who does what, when, with what record). Ask a short clarifying question if workplace risk class, employee count, sector, or event details are missing and they change legal obligations.",
+    });
+
+    contextualHistory.unshift({
+      role: "assistant",
+      content:
+        "Answer quality constraint: Never invent law articles, deadlines, thresholds, or sanctions. If evidence is incomplete or a source cannot be verified, explicitly say uncertainty, provide the safest conservative path, and recommend checking the official text or an ISG professional. Keep answers concise but practical: summary, legal basis (if available), required actions, and immediate next step in RiskNova.",
+    });
+
+    contextualHistory.unshift({
+      role: "assistant",
       content: buildNovaSiteMapSummaryForPrompt(),
     });
 
