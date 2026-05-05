@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Radar } from "react-chartjs-2";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { R2D_DIMENSIONS } from "@/lib/r2d-rca-engine";
@@ -12,6 +13,8 @@ interface RCADeltaRadarProps {
 }
 
 export function RCADeltaRadar({ deltaHat }: RCADeltaRadarProps) {
+  const tr = useTranslations("incidents.r2dRca");
+
   const data = {
     labels: [...R2D_DIMENSIONS],
     datasets: [
@@ -46,9 +49,9 @@ export function RCADeltaRadar({ deltaHat }: RCADeltaRadarProps) {
   };
 
   return (
-    <Card aria-label="Delta radar mini grafik">
+    <Card aria-label={tr("deltaRadar.ariaLabel")}>
       <CardHeader className="pb-2">
-        <CardTitle className="text-xs">Δ̂ Radar Profili</CardTitle>
+        <CardTitle className="text-xs">{tr("deltaRadar.title")}</CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
         <div style={{ height: 140 }}>

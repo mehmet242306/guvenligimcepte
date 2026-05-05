@@ -1,8 +1,11 @@
 "use client";
 
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { Doughnut } from "react-chartjs-2";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { type PriorityItem, DIMENSION_META, TAU_PRIMARY, TAU_SECONDARY } from "@/lib/r2d-rca-engine";
+import { type PriorityItem, TAU_PRIMARY, TAU_SECONDARY } from "@/lib/r2d-rca-engine";
+import { useR2dRcaDimensionMap } from "@/lib/r2d-rca-i18n";
 import { registerRcaChartDependencies } from "./chart-register";
 
 registerRcaChartDependencies();
@@ -18,40 +21,44 @@ function itemColor(d: number): string {
 }
 
 export function RCADoughnutChart({ priorityRanking }: RCADoughnutChartProps) {
-  const labels = priorityRanking.map((p) => `${p.code} ${DIMENSION_META[p.code].nameTR}`);
-  const values = priorityRanking.map((p) => p.priority);
-  const colors = priorityRanking.map((p) => itemColor(p.deltaHat));
+  const tr = useTranslations("incidents.r2dRca");
+  const dim = useR2dRcaDimensionMap(tr);
 
-  const data = {
-    labels,
-    datasets: [
-      {
-        data: values,
-        backgroundColor: colors,
-        borderColor: "rgba(255,255,255,0.6)",
-        borderWidth: 2,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: "55%",
-    plugins: {
-      legend: { position: "bottom" as const, labels: { font: { size: 10 }, padding: 10, usePointStyle: true } },
-      tooltip: {
-        callbacks: {
-          label: (ctx: { label: string; parsed: number }) => `${ctx.label}: ${ctx.parsed.toFixed(4)}`,
+  const { data, options } = useMemo(() => {
+    const labels = priorityRanking.map((p) => `${p.code} ${dim[p.code].name}`);
+    const values = priorityRanking.map((p) => p.priority);
+    const colors = priorityRanking.map((p) => itemColor(p.deltaHat));
+    const dataInner = {
+      labels,
+      datasets: [
+        {
+          data: values,
+          backgroundColor: colors,
+          borderColor: "rgba(255,255,255,0.6)",
+          borderWidth: 2,
+        },
+      ],
+    };
+    const optionsInner = {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "55%",
+      plugins: {
+        legend: { position: "bottom" as const, labels: { font: { size: 10 }, padding: 10, usePointStyle: true } },
+        tooltip: {
+          callbacks: {
+            label: (ctx: { label: string; parsed: number }) => `${ctx.label}: ${ctx.parsed.toFixed(4)}`,
+          },
         },
       },
-    },
-  };
+    };
+    return { data: dataInner, options: optionsInner };
+  }, [dim, priorityRanking, tr]);
 
   return (
-    <Card aria-label="Katkı oranı halka grafiği">
+    <Card aria-label={tr("doughnut.ariaLabel")}>
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm">Priority Katkı Oranı</CardTitle>
+        <CardTitle className="text-sm">{tr("doughnut.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[260px]">
@@ -59,7 +66,7 @@ export function RCADoughnutChart({ priorityRanking }: RCADoughnutChartProps) {
             <Doughnut data={data} options={options} />
           ) : (
             <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-              Bozulan boyut yok
+              {tr("doughnut.empty")}
             </div>
           )}
         </div>

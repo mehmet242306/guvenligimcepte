@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   Activity, Sparkles, Save, Loader2, CheckCircle2, XCircle, Download, Share2,
   AlertTriangle, ShieldAlert, TrendingUp, GaugeCircle,
@@ -27,6 +28,7 @@ import { RCARootCauseChain } from "@/components/rca/RCARootCauseChain";
 import { RCAMetricCards } from "@/components/rca/RCAMetricCards";
 import { RCAStatusCards } from "@/components/rca/RCAStatusCards";
 import type { PdfReportMeta } from "@/lib/pdf-shared-template";
+import { useR2dRcaDimensionMap } from "@/lib/r2d-rca-i18n";
 
 /* ------------------------------------------------------------------ */
 /*  Props                                                              */
@@ -50,6 +52,8 @@ function num(n: number): string {
 }
 
 export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, pdfMeta }: R2dRcaPanelProps) {
+  const tr = useTranslations("incidents.r2dRca");
+  const dim = useR2dRcaDimensionMap(tr);
   const [t0, setT0] = useState<number[]>(initialData?.t0 && initialData.t0.length === 9 ? initialData.t0 : Array(9).fill(0.2));
   const [t1, setT1] = useState<number[]>(initialData?.t1 && initialData.t1.length === 9 ? initialData.t1 : Array(9).fill(0.2));
   const [narrative, setNarrative] = useState<string>(initialData?.narrative ?? "");
@@ -89,11 +93,11 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
       if (Array.isArray(aiResult?.t1) && aiResult.t1.length === 9) setT1(aiResult.t1);
       if (aiResult?.narrative) setNarrative(aiResult.narrative);
     } catch (e) {
-      setAiError(e instanceof Error ? e.message : "AI hatası");
+      setAiError(e instanceof Error ? e.message : tr("panel.errorAiGeneric"));
     } finally {
       setAiLoading(false);
     }
-  }, [onAiRequest]);
+  }, [onAiRequest, tr]);
 
   const handleSave = useCallback(async () => {
     setSaveLoading(true);
@@ -129,14 +133,16 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
           incidentTitle,
         },
       );
-      const safeTitle = (incidentTitle || "r2d-rca-rapor").replace(/[^a-z0-9-_]/gi, "_").slice(0, 60);
-      const fileName = `${safeTitle || "r2d-rca-rapor"}-${new Date().toISOString().slice(0, 10)}.pdf`;
+      const stem = tr("panel.reportFileStem");
+      const safeTitle = (incidentTitle || stem).replace(/[^a-z0-9-_]/gi, "_").slice(0, 60);
+      const fileName = `${safeTitle || stem}-${new Date().toISOString().slice(0, 10)}.pdf`;
+      const shareTitle = tr("panel.sharePdfTitle");
       const result = await shareOrDownloadPdf(
         blob,
         fileName,
-        "R₂D-RCA Analiz Raporu",
+        shareTitle,
         {
-          shareText: incidentTitle ? `R₂D-RCA analizi: ${incidentTitle}` : "R₂D-RCA Analiz Raporu",
+          shareText: incidentTitle ? tr("panel.shareTextWithIncident", { title: incidentTitle }) : tr("panel.shareTextDefault"),
           shareUrl: pdfMeta?.shareUrl ?? fallbackUrl ?? undefined,
         },
       );
@@ -146,11 +152,11 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
       setTimeout(() => setShareFeedback(null), 3000);
     } catch (e) {
       console.error("handleShare:", e);
-      setAiError(e instanceof Error ? e.message : "PDF üretilemedi");
+      setAiError(e instanceof Error ? e.message : tr("panel.errorPdfFailed"));
     } finally {
       setShareBusy(false);
     }
-  }, [t0, t1, narrative, pdfMeta, incidentTitle]);
+  }, [t0, t1, narrative, pdfMeta, incidentTitle, tr]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -163,21 +169,21 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
                 <Activity className="size-5 text-[#e05a7a]" />
               </span>
               <div>
-                <CardTitle className="text-base">R₂D-RCA (C1-C9)</CardTitle>
-                <CardDescription>9 boyutlu kompozit risk metriği · delta-tabanlı sayısal kök neden analizi</CardDescription>
+                <CardTitle className="text-base">{tr("panel.cardTitle")}</CardTitle>
+                <CardDescription>{tr("panel.cardDescription")}</CardDescription>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant="warning">Sürekli Skala [0,1]</Badge>
+              <Badge variant="warning">{tr("panel.scaleBadge")}</Badge>
               <Button
                 variant="accent"
                 size="sm"
                 onClick={handleAiRequest}
                 disabled={aiLoading}
-                aria-label="AI ile analiz yap"
+                aria-label={tr("panel.aiAnalyzeAria")}
               >
                 {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                {aiLoading ? "AI skor üretiyor..." : "AI ile Analiz Yap"}
+                {aiLoading ? tr("panel.aiAnalyzing") : tr("panel.aiAnalyze")}
               </Button>
             </div>
           </div>
@@ -188,35 +194,36 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
         <div className="flex items-start gap-3 rounded-2xl border border-[#e05a7a]/30 bg-[#e05a7a]/10 px-4 py-3">
           <Sparkles className="mt-0.5 size-4 shrink-0 text-[#e05a7a]" />
           <div className="text-sm text-[#e05a7a]">
-            <p className="font-semibold">Önce AI ile skorları oluşturun</p>
-            <p className="text-xs opacity-80">Olay açıklamasına göre AI 9 boyut için t₀ ve t₁ skorlarını üretir. Dilerseniz manuel de ayarlayabilirsiniz.</p>
+            <p className="font-semibold">{tr("panel.defaultBannerTitle")}</p>
+            <p className="text-xs opacity-80">{tr("panel.defaultBannerBody")}</p>
           </div>
-          <Button size="sm" variant="outline" onClick={loadExample} className="ml-auto shrink-0">Ornek Veri</Button>
+          <Button size="sm" variant="outline" onClick={loadExample} className="ml-auto shrink-0">{tr("panel.loadExample")}</Button>
         </div>
       )}
 
       {/* Score inputs — 9 satır */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm">C1-C9 Skor Karşılaştırması</CardTitle>
-          <CardDescription>Her boyut için olay öncesi (t₀) ve olay anı (t₁) skorları. Slider ile manuel ayarla veya AI'dan üret.</CardDescription>
+          <CardTitle className="text-sm">{tr("panel.scoresTitle")}</CardTitle>
+          <CardDescription>{tr("panel.scoresDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {R2D_DIMENSIONS.map((code, i) => {
             const meta = DIMENSION_META[code];
             const srcColor = SOURCE_COLORS[meta.sourceType];
             const delta = Math.max(0, t1[i] - t0[i]);
+            const dlab = dim[code];
             return (
               <div key={code} className="rounded-xl border border-border p-3">
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-xs font-bold text-foreground">{code}</span>
-                    <span className="text-sm font-medium text-foreground">{meta.nameTR}</span>
+                    <span className="text-sm font-medium text-foreground">{dlab.name}</span>
                     <span className="rounded px-1.5 py-0.5 text-[9px] font-medium" style={{ background: srcColor.bg, color: srcColor.fg }}>
-                      {meta.source}
+                      {dlab.source}
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-muted-foreground">w = {meta.weight.toFixed(3)}</span>
+                  <span className="font-mono text-[10px] text-muted-foreground">{tr("panel.weightLabel", { value: meta.weight.toFixed(3) })}</span>
                 </div>
                 <div className="grid grid-cols-[40px_1fr_60px] items-center gap-2">
                   <span className="text-[11px] text-muted-foreground">t₀</span>
@@ -256,10 +263,10 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm">Canlı Önizleme</CardTitle>
+            <CardTitle className="text-sm">{tr("panel.livePreviewTitle")}</CardTitle>
             <div className="flex items-center gap-2">
               <Badge variant={result.overrideTriggered ? "danger" : "warning"}>
-                {result.calculationMode === "override" ? "Override" : "Base Score"}
+                {result.calculationMode === "override" ? tr("panel.calculationOverride") : tr("panel.calculationBase")}
               </Badge>
               <span className={`font-mono text-xl font-bold ${result.rRcaScore >= 0.6 ? "text-red-600" : result.rRcaScore >= 0.4 ? "text-orange-600" : result.rRcaScore >= 0.2 ? "text-amber-600" : "text-emerald-600"}`}>
                 {num(result.rRcaScore)}
@@ -270,24 +277,24 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
         <CardContent>
           <div className="grid gap-2 sm:grid-cols-3">
             <div className="rounded-lg border border-border bg-muted/30 p-3">
-              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Max Δ̂</div>
+              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{tr("panel.maxDeltaLabel")}</div>
               <div className="mt-1 font-mono text-sm font-bold text-foreground">
                 C{result.maxDeltaHatIndex + 1} · {num(result.maxDeltaHat)}
               </div>
             </div>
             <div className="rounded-lg border border-border bg-muted/30 p-3">
-              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Bozulan / Stabil</div>
+              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{tr("panel.brokenStableLabel")}</div>
               <div className="mt-1 font-mono text-sm font-bold text-foreground">
                 {result.bozulanCount} / {result.stabilCount}
               </div>
             </div>
             <div className="rounded-lg border border-border bg-muted/30 p-3">
-              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Stabilite</div>
+              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{tr("panel.stabilityLabel")}</div>
               <div className="mt-1 text-sm font-bold text-foreground">
                 {result.isStable ? (
-                  <span className="inline-flex items-center gap-1 text-emerald-600"><CheckCircle2 className="size-3" /> Stabil</span>
+                  <span className="inline-flex items-center gap-1 text-emerald-600"><CheckCircle2 className="size-3" /> {tr("panel.stabilityStable")}</span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 text-amber-600"><XCircle className="size-3" /> Dual Reporting</span>
+                  <span className="inline-flex items-center gap-1 text-amber-600"><XCircle className="size-3" /> {tr("panel.stabilityDual")}</span>
                 )}
               </div>
             </div>
@@ -303,10 +310,12 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
           <CardContent className="flex items-start gap-3 pt-5">
             <AlertTriangle className="size-5 shrink-0 text-amber-600" />
             <div className="flex-1 text-sm">
-              <strong className="text-amber-700 dark:text-amber-400">⚠ Dual Reporting Gerekli</strong>
+              <strong className="text-amber-700 dark:text-amber-400">{tr("panel.dualReportTitle")}</strong>
               <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                En büyük Δ̂ boyutu (<strong>C{result.maxDeltaHatIndex + 1}</strong>) ile en yüksek ağırlıklı boyut (<strong>C{result.maxWeightedIndex + 1}</strong>) farklı.
-                Stabilite teoremi bozuldu — rapor hem override modu hem base score modunu içermeli.
+                {tr("panel.dualReportBody", {
+                  maxDeltaCode: `C${result.maxDeltaHatIndex + 1}`,
+                  weightedCode: `C${result.maxWeightedIndex + 1}`,
+                })}
               </p>
             </div>
           </CardContent>
@@ -320,9 +329,9 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-sm">
             <GaugeCircle className="size-4 text-[#e05a7a]" />
-            Üst Düzey Özet
+            {tr("panel.summaryTitle")}
           </CardTitle>
-          <CardDescription>Skor · En büyük sapma · Teorem durumu · Override</CardDescription>
+          <CardDescription>{tr("panel.summaryDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <RCAMetricCards result={result} />
@@ -345,9 +354,9 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-sm">
             <ShieldAlert className="size-4 text-[#D85A30]" />
-            9 Boyutlu Risk Profili + Kök Neden Zinciri
+            {tr("panel.profileTitle")}
           </CardTitle>
-          <CardDescription>Olay öncesi (t₀) ile olay anı (t₁) karşılaştırması + öncelik sıralaması</CardDescription>
+          <CardDescription>{tr("panel.profileDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 lg:grid-cols-2">
@@ -364,9 +373,9 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-sm">
             <TrendingUp className="size-4 text-[#1E2761]" />
-            Boyut Detayı ve Priority Dağılımı
+            {tr("panel.detailTitle")}
           </CardTitle>
-          <CardDescription>9 boyut ısı haritası · sapma şiddeti (Δ̂) · priority katkı · waterfall</CardDescription>
+          <CardDescription>{tr("panel.detailDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <RCAHeatmap t0={t0} t1={t1} deltaHat={result.deltaHat} />
@@ -385,9 +394,9 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-sm">
               <Sparkles className="size-4 text-[#e05a7a]" />
-              AI Değerlendirmesi
+              {tr("panel.aiEvalTitle")}
             </CardTitle>
-            <CardDescription>RiskNova AI tarafından üretildi · uzman kontrolü zorunlu</CardDescription>
+            <CardDescription>{tr("panel.aiEvalDescription")}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm leading-7 text-foreground">{narrative}</p>
@@ -406,7 +415,7 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="accent" size="md" onClick={handleAiRequest} disabled={aiLoading}>
           {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-          {aiLoading ? "AI skor üretiyor..." : "AI ile Skor Oluştur"}
+          {aiLoading ? tr("panel.aiAnalyzingFooter") : tr("panel.aiGenerateScores")}
         </Button>
 
         <div className="flex-1" />
@@ -416,17 +425,17 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
           size="md"
           onClick={() => void handleShare()}
           disabled={shareBusy}
-          aria-label="PDF olarak paylaş"
-          title="PDF üretip cihazın paylaşım menüsünden gönder (WhatsApp, Mail, AirDrop vb.)"
+          aria-label={tr("panel.pdfShareAria")}
+          title={tr("panel.pdfShareHoverTitle")}
         >
           {shareBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
           {shareBusy
-            ? "PDF hazırlanıyor..."
+            ? tr("panel.pdfPreparing")
             : shareFeedback === "shared"
-              ? "Paylaşıldı"
+              ? tr("panel.pdfShared")
               : shareFeedback === "downloaded"
-                ? "İndirildi"
-                : "PDF Paylaş"}
+                ? tr("panel.pdfDownloaded")
+                : tr("panel.pdfShare")}
         </Button>
 
         <Button
@@ -443,9 +452,9 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
               },
             );
           }}
-          title={isDefault ? "Uyarı: Henüz AI skorlama yapılmadı — PDF boş grafiklerle oluşturulur" : "PDF rapor indir"}
+          title={isDefault ? tr("panel.pdfDownloadWarnTitle") : tr("panel.pdfDownloadOkTitle")}
         >
-          <Download className="h-4 w-4" /> PDF
+          <Download className="h-4 w-4" /> {tr("panel.pdfDownload")}
         </Button>
 
         <Button
@@ -455,7 +464,7 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
           disabled={saveLoading}
         >
           {saveLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : savedFeedback ? <CheckCircle2 className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-          {savedFeedback ? "Kaydedildi" : "Kaydet"}
+          {savedFeedback ? tr("panel.saved") : tr("panel.save")}
         </Button>
       </div>
 
