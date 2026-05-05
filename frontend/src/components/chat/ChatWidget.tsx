@@ -1651,7 +1651,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           onPointerMove={dragLauncher}
           onPointerUp={stopLauncherDrag}
           onPointerCancel={stopLauncherDrag}
-          className={`group fixed z-50 inline-flex h-12 w-[3.25rem] touch-none cursor-move items-center justify-center rounded-[1.15rem] border border-white/35 bg-[linear-gradient(135deg,#0f2d62_0%,#1f4e96_48%,#5f8bdb_100%)] text-white shadow-[0_14px_32px_rgba(20,46,102,0.34)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-[0_22px_42px_rgba(20,46,102,0.45)] sm:h-[3.25rem] sm:w-[3.5rem] sm:rounded-[1.3rem] ${launcherPosition ? "" : "bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] right-3 sm:bottom-7 sm:right-7"}`}
+          className={`group fixed z-50 inline-flex h-12 w-[3.25rem] touch-none cursor-move items-center justify-center rounded-[1.15rem] border border-amber-200/45 bg-[linear-gradient(135deg,#B87910_0%,#D39B17_46%,#F4C33F_100%)] text-white shadow-[0_12px_26px_rgba(188,132,20,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-[0_18px_36px_rgba(188,132,20,0.35)] sm:h-[3.25rem] sm:w-[3.5rem] sm:rounded-[1.3rem] ${launcherPosition ? "" : "bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] right-3 sm:bottom-7 sm:right-7"}`}
           style={
             launcherPosition
               ? {
@@ -1663,11 +1663,32 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           aria-label={ui.widget.openAriaLabel}
           title="Nova'yi tasimak icin surukleyin, acmak icin tiklayin"
         >
-          <span className="pointer-events-none absolute -inset-4 rounded-full bg-[radial-gradient(circle,rgba(116,166,255,0.45)_0%,rgba(66,124,232,0.2)_42%,rgba(10,30,69,0)_72%)] blur-2xl" />
-          <span className="pointer-events-none absolute -inset-1 rounded-[1.25rem] border border-white/40 opacity-60" />
+          <span
+            className="pointer-events-none absolute -inset-6 rounded-full bg-[conic-gradient(from_0deg,rgba(255,255,255,0)_0deg,rgba(250,215,120,0.78)_68deg,rgba(255,255,255,0)_126deg,rgba(214,161,26,0.5)_212deg,rgba(255,255,255,0)_286deg,rgba(250,215,120,0.76)_360deg)] opacity-80 blur-[13px] animate-spin [animation-duration:6.8s]"
+          />
+          <span
+            className="pointer-events-none absolute -inset-5 rounded-full bg-[radial-gradient(circle,rgba(247,203,86,0.52)_0%,rgba(221,166,33,0.28)_30%,rgba(188,132,20,0.12)_54%,rgba(188,132,20,0)_78%)] blur-2xl"
+            style={{ animation: "pulse 2.1s ease-in-out infinite" }}
+          />
+          <span
+            className="pointer-events-none absolute -inset-4 rounded-full border border-amber-100/45 opacity-80 animate-ping [animation-duration:2.9s]"
+            style={{ boxShadow: "0 0 26px rgba(243,191,56,0.28)" }}
+          />
+          <span
+            className="pointer-events-none absolute -inset-2 rounded-full border border-amber-50/60 opacity-80 animate-ping [animation-duration:2.2s]"
+            style={{ animationDelay: "0.7s" }}
+          />
+          <span
+            className="pointer-events-none absolute -inset-4 rounded-full border border-amber-200/35 opacity-70"
+            style={{ animation: "pulse 3.8s ease-in-out infinite" }}
+          />
+          <span
+            className="pointer-events-none absolute -inset-2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.36)_0%,rgba(255,255,255,0.08)_42%,rgba(255,255,255,0)_68%)] blur-xl"
+            style={{ animation: "pulse 1.8s ease-in-out infinite" }}
+          />
           <span className="pointer-events-none absolute inset-[2px] rounded-[1.05rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.02)_38%,rgba(0,0,0,0.05)_100%)] sm:rounded-[1.2rem]" />
           <span
-            className="pointer-events-none absolute bottom-[0.26rem] right-[0.36rem] h-3 w-3 rotate-45 rounded-[0.24rem] border-r border-b border-sky-200/45 bg-[linear-gradient(135deg,#2c63b6_0%,#4c84d8_55%,#8ab3ff_100%)] shadow-[0_8px_16px_rgba(22,64,138,0.26)]"
+            className="pointer-events-none absolute bottom-[0.26rem] right-[0.36rem] h-3 w-3 rotate-45 rounded-[0.24rem] border-r border-b border-amber-200/45 bg-[linear-gradient(135deg,#C78B11_0%,#E1AB24_55%,#F4C33F_100%)] shadow-[0_8px_16px_rgba(188,132,20,0.16)]"
           />
           <MessageCircle className="relative z-10 size-5 -translate-y-[1px] transition-transform duration-300 group-hover:scale-110" />
         </button>
