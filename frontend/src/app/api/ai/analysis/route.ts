@@ -10,7 +10,11 @@ import {
   resolveAiDailyLimit,
 } from "@/lib/security/server";
 import type { AnalysisMethod } from "@/lib/analysis/types";
-import { R2D_RCA_COMPACT_PROMPT } from "@/lib/prompts/r2d_rca_prompt";
+import {
+  buildR2dRcaAnalysisSystemPrompt,
+  buildR2dRcaAnalysisUserPrompt,
+  normalizeR2dIncidentAiLocale,
+} from "@/lib/prompts/r2d-rca-incident-ai-locale";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const MODEL = "claude-sonnet-4-20250514";
@@ -32,6 +36,8 @@ const incidentAiAnalysisSchema = z.object({
   method: z.enum(ANALYSIS_METHODS),
   incidentTitle: z.string().trim().min(1).max(400),
   incidentDescription: z.string().trim().max(16000).optional(),
+  /** BCP 47 language tag or primary subtag (en, tr, ru) — used for R₂D-RCA AI prompts. */
+  locale: z.string().trim().max(32).optional(),
   context: z
     .unknown()
     .optional()
@@ -52,17 +58,19 @@ const incidentAiAnalysisSchema = z.object({
 /*  Yonteme gore system prompt                                         */
 /* ------------------------------------------------------------------ */
 
-function buildSystemPrompt(method: AnalysisMethod): string {
+function buildSystemPrompt(method: AnalysisMethod, locale?: string): string {
+  if (method === "r2d_rca") {
+    return buildR2dRcaAnalysisSystemPrompt(normalizeR2dIncidentAiLocale(locale));
+  }
   const base = `Sen 20+ yil deneyimli, Turkiye'de ISG uzmanisin. 6331 Sayili Kanun, ISO 45001 ve Turkiye ISG mevzuatina hakimsin. SADECE gecerli JSON don, aciklama YAZMA.`;
 
-  const specific: Record<AnalysisMethod, string> = {
+  const specific: Record<Exclude<AnalysisMethod, "r2d_rca">, string> = {
     ishikawa: `${base}\nIshikawa (6M) analizi yap. 6 kategoride her biri icin 2-4 kok neden uret.`,
     five_why: `${base}\n5 Neden (5 Why) analizi yap. Verilen baglamda bir sonraki neden sorusunu uret veya kok nedeni belirle.`,
     fault_tree: `${base}\nHata Agaci (FTA) analizi yap. Ust olay, alt olaylar, VE/VEYA kapilari ve temel olaylar iceren bir agac yapisi olustur.`,
     scat: `${base}\nSCAT (Bird modeli) analizi yap. 4 seviye: anlik olay, anlik nedenler, temel nedenler, kontrol eksiklikleri.`,
     bow_tie: `${base}\nBow-Tie analizi yap. Tehlike, kritik olay, tehditler, sonuclar, onleyici ve hafifletici bariyerler.`,
     mort: `${base}\nMORT analizi yap. Yonetim gozden gecirme ve risk agaci cercevesinde analiz olustur.`,
-    r2d_rca: `${base}\n\nSen bir R\u2082D-RCA (C1-C9) uzmanisin. 9 boyutlu R\u2082D risk metrik vektoru: C1 Tehlike Yogunlugu, C2 KKD Uygunsuzlugu, C3 Davranis Riski, C4 Cevresel Stres, C5 Kimyasal/Atmosferik, C6 Erisim/Engel, C7 Makine/Proses, C8 Arac-Trafik, C9 Orgutsel Yuk. Skorlar [0,1] araliginda SUREKLI (yuksek = yuksek risk). Verilen olaya gore olay oncesi (t0) ve olay ANI (t1) skorlari ure. Risk bir boyutta artmissa t1 > t0 olmali. Ayrica kisa Turkce narrative (2-3 cumle).`,
   };
 
   return specific[method];
@@ -78,10 +86,15 @@ function buildUserPrompt(
   description?: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context?: any,
+  locale?: string,
 ): string {
+  if (method === "r2d_rca") {
+    return buildR2dRcaAnalysisUserPrompt(normalizeR2dIncidentAiLocale(locale), title, description);
+  }
+
   const base = `OLAY: ${title}${description ? `\nACIKLAMA: ${description}` : ""}`;
 
-  const prompts: Record<AnalysisMethod, string> = {
+  const prompts: Record<Exclude<AnalysisMethod, "r2d_rca">, string> = {
     ishikawa: `${base}\n\nSADECE JSON:\n{"insan":["n1","n2","n3"],"makine":["n1","n2","n3"],"yontem":["n1","n2","n3"],"malzeme":["n1","n2","n3"],"cevre":["n1","n2","n3"],"yonetim":["n1","n2","n3"]}`,
 
     five_why: `${base}
@@ -232,8 +245,6 @@ SADECE JSON:
   "primaryRootCause": "Tek cumlede MORT metoduna gore sistemik kök neden",
   "recommendations": ["Oneri 1","Oneri 2","Oneri 3"]
 }`,
-
-    r2d_rca: `${base}\n\nOlay aciklamasini analiz et ve 9 R\u2082D boyut icin t0 (olay oncesi) + t1 (olay ani) skorlari ure. Skorlar [0,1] arasi surekli ondalik. Olay ile ilgili boyutlarda t1 > t0 olmali.\n\nBoyut sirasi (0-indexed array): [C1, C2, C3, C4, C5, C6, C7, C8, C9]\nC1=Tehlike Yogunlugu, C2=KKD Uygunsuzlugu, C3=Davranis Riski, C4=Cevresel Stres, C5=Kimyasal/Atmosferik, C6=Erisim/Engel, C7=Makine/Proses, C8=Arac-Trafik, C9=Orgutsel Yuk\n\nSADECE JSON (array'ler 9 elemanli):\n{"t0":[0.2,0.1,0.3,0.2,0.3,0.1,0.2,0.3,0.1],"t1":[0.2,0.1,0.5,0.4,0.7,0.1,0.8,0.3,0.4],"narrative":"Kisa Turkce yorum"}`,
   };
 
   return prompts[method];
@@ -270,7 +281,7 @@ export async function POST(request: NextRequest) {
     const parsedBody = await parseJsonBody(request, incidentAiAnalysisSchema);
     if (!parsedBody.ok) return parsedBody.response;
 
-    const { method, incidentTitle, incidentDescription, context } = parsedBody.data;
+    const { method, incidentTitle, incidentDescription, context, locale } = parsedBody.data;
 
     const entitlementResponse = await consumeEntitlement(auth, "incident_analysis");
     if (entitlementResponse) return entitlementResponse;
@@ -278,8 +289,8 @@ export async function POST(request: NextRequest) {
     const response = await client.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
-      system: buildSystemPrompt(method),
-      messages: [{ role: "user", content: buildUserPrompt(method, incidentTitle, incidentDescription, context) }],
+      system: buildSystemPrompt(method, locale),
+      messages: [{ role: "user", content: buildUserPrompt(method, incidentTitle, incidentDescription, context, locale) }],
     });
 
     const textBlock = response.content.find((b) => b.type === "text");

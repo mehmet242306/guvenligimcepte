@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocale } from "next-intl";
 import { ArrowLeft, CheckCircle2, CloudOff, Loader2, Sparkles, UploadCloud } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -170,6 +171,7 @@ export function RcaResultsClient({
   incidentTitle = "",
   events = [],
 }: RcaResultsClientProps) {
+  const locale = useLocale();
   const [t0, setT0] = useState<number[]>(initialT0 ?? DEMO_T0);
   const [t1, setT1] = useState<number[]>(initialT1 ?? DEMO_T1);
   const [narrative, setNarrative] = useState<string>(initialNarrative ?? "");
@@ -272,6 +274,7 @@ export function RcaResultsClient({
           maxDeltaHatIndex: result.maxDeltaHatIndex,
           maxWeightedIndex: result.maxWeightedIndex,
           incidentTitle,
+          locale,
         }),
       });
       if (!res.ok) {
@@ -289,7 +292,7 @@ export function RcaResultsClient({
     } finally {
       setNarrativeLoading(false);
     }
-  }, [t0, t1, result, incidentTitle, saveSnapshot]);
+  }, [t0, t1, result, incidentTitle, saveSnapshot, locale]);
 
   // AI ile skor oluştur (t0 + t1 değerlerini AI tahminle)
   const generateScores = useCallback(async () => {
@@ -303,6 +306,7 @@ export function RcaResultsClient({
           method: "r2d_rca",
           incidentTitle,
           incidentDescription: incidentTitle,
+          locale,
         }),
       });
       if (!res.ok) {
@@ -323,7 +327,7 @@ export function RcaResultsClient({
     } finally {
       setAiScoreLoading(false);
     }
-  }, [incidentTitle, t0, t1, narrative, saveSnapshot]);
+  }, [incidentTitle, t0, t1, narrative, saveSnapshot, locale]);
 
   // İlk kayıt yokken & propslarda skor varsa → narrative çek
   useEffect(() => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Bot, Check, ClipboardCheck, Download, GitBranch, HelpCircle, Network, Link as LinkIcon, Target, Building2, Plus, ShieldAlert, Sparkles, Stethoscope, TriangleAlert, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +44,7 @@ import { exportMortPdf, exportMortPdfBlob } from "@/lib/mort-pdf-template";
 import { shareOrDownloadPdf } from "@/lib/pdf-generator";
 import type { PdfReportMeta } from "@/lib/pdf-shared-template";
 import { createClient } from "@/lib/supabase/client";
+import { buildR2dRcaPdfI18n } from "@/lib/r2d-rca-pdf-i18n";
 
 const METHOD_ICON_MAP: Record<string, typeof GitBranch> = {
   GitBranch, HelpCircle, Network, Link: LinkIcon, Target, Building2, Activity,
@@ -132,6 +133,9 @@ export function NewIncidentWizard() {
   const t = useTranslations("incidents");
   const tw = useTranslations("incidents.wizard");
   const trca = useTranslations("incidents.rca");
+  const tr2d = useTranslations("incidents.r2dRca");
+  const locale = useLocale();
+  const r2dPdfI18n = useMemo(() => buildR2dRcaPdfI18n(tr2d, locale), [tr2d, locale]);
 
   const localizedMethodMeta = useMemo(() => {
     const out = {} as Record<AnalysisMethod, (typeof METHOD_META)[AnalysisMethod]>;
@@ -306,7 +310,7 @@ export function NewIncidentWizard() {
           if (!r2dRcaData) { alert(tw("alerts.r2dFill")); return; }
           // Lazy import — döngü olmasın diye
           import("@/lib/r2d-rca-pdf-template").then(({ exportR2dRcaPdf }) =>
-            exportR2dRcaPdf(r2dRcaData, meta),
+            exportR2dRcaPdf(r2dRcaData, meta, r2dPdfI18n),
           );
           break;
       }
@@ -381,7 +385,7 @@ export function NewIncidentWizard() {
           if (!r2dRcaData) { alert(tw("alerts.r2dFill")); return; }
           reportTitle = tw("pdfTitles.r2d");
           const { exportR2dRcaPdfBlob } = await import("@/lib/r2d-rca-pdf-template");
-          blob = await exportR2dRcaPdfBlob(r2dRcaData, meta);
+          blob = await exportR2dRcaPdfBlob(r2dRcaData, meta, r2dPdfI18n);
           break;
         }
       }
@@ -1047,7 +1051,14 @@ export function NewIncidentWizard() {
               incidentTitle={incidentTitleForAnalysis}
               initialData={r2dRcaData}
               onSave={(d) => setR2dRcaData(d)}
-              onAiRequest={() => requestAiAnalysis({ method: "r2d_rca", incidentTitle: incidentTitleForAnalysis, incidentDescription: narrative })}
+              onAiRequest={() =>
+                requestAiAnalysis({
+                  method: "r2d_rca",
+                  incidentTitle: incidentTitleForAnalysis,
+                  incidentDescription: narrative,
+                  locale,
+                })
+              }
             />
           )}
         </div>

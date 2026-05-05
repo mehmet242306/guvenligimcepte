@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   Activity, Sparkles, Save, Loader2, CheckCircle2, XCircle, Download, Share2,
   AlertTriangle, ShieldAlert, TrendingUp, GaugeCircle,
@@ -29,6 +29,7 @@ import { RCAMetricCards } from "@/components/rca/RCAMetricCards";
 import { RCAStatusCards } from "@/components/rca/RCAStatusCards";
 import type { PdfReportMeta } from "@/lib/pdf-shared-template";
 import { useR2dRcaDimensionMap } from "@/lib/r2d-rca-i18n";
+import { buildR2dRcaPdfI18n } from "@/lib/r2d-rca-pdf-i18n";
 
 /* ------------------------------------------------------------------ */
 /*  Props                                                              */
@@ -53,6 +54,8 @@ function num(n: number): string {
 
 export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, pdfMeta }: R2dRcaPanelProps) {
   const tr = useTranslations("incidents.r2dRca");
+  const locale = useLocale();
+  const pdfI18n = useMemo(() => buildR2dRcaPdfI18n(tr, locale), [tr, locale]);
   const dim = useR2dRcaDimensionMap(tr);
   const [t0, setT0] = useState<number[]>(initialData?.t0 && initialData.t0.length === 9 ? initialData.t0 : Array(9).fill(0.2));
   const [t1, setT1] = useState<number[]>(initialData?.t1 && initialData.t1.length === 9 ? initialData.t1 : Array(9).fill(0.2));
@@ -132,6 +135,7 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
           shareUrl: pdfMeta?.shareUrl ?? fallbackUrl,
           incidentTitle,
         },
+        pdfI18n,
       );
       const stem = tr("panel.reportFileStem");
       const safeTitle = (incidentTitle || stem).replace(/[^a-z0-9-_]/gi, "_").slice(0, 60);
@@ -156,7 +160,7 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
     } finally {
       setShareBusy(false);
     }
-  }, [t0, t1, narrative, pdfMeta, incidentTitle, tr]);
+  }, [t0, t1, narrative, pdfMeta, incidentTitle, tr, pdfI18n]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -450,6 +454,7 @@ export function R2dRcaPanel({ incidentTitle, initialData, onSave, onAiRequest, p
                 shareUrl: pdfMeta?.shareUrl ?? fallbackUrl,
                 incidentTitle,
               },
+              pdfI18n,
             );
           }}
           title={isDefault ? tr("panel.pdfDownloadWarnTitle") : tr("panel.pdfDownloadOkTitle")}

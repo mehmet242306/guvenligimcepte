@@ -162,6 +162,7 @@ export function AnalizlerContent() {
         method,
         incidentTitle: incidentTitle || trca("defaults.unknownIncident"),
         incidentDescription: freeTitle.trim() || undefined,
+        locale,
         context,
       });
     } catch (e) {

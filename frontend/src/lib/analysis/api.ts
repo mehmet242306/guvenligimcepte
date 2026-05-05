@@ -134,6 +134,8 @@ export async function requestAiAnalysis(params: {
   method: AnalysisMethod;
   incidentTitle: string;
   incidentDescription?: string;
+  /** BCP 47 tag or primary subtag — steers R₂D-RCA prompt language (en / tr / ru). */
+  locale?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

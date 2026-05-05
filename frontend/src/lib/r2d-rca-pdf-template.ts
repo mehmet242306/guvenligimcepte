@@ -8,6 +8,8 @@ import {
   generateQrDataUrl,
   escHtml as esc,
 } from "@/lib/pdf-shared-template";
+import type { R2dRcaPdfI18n } from "@/lib/r2d-rca-pdf-i18n";
+import { DEFAULT_R2D_RCA_PDF_I18N } from "@/lib/r2d-rca-pdf-i18n";
 
 function num(n: number, digits = 3): string {
   if (!Number.isFinite(n)) return "—";
@@ -27,7 +29,7 @@ function deltaColor(d: number): string {
 }
 
 /** Yatay Δ̂ bar chart — 9 boyut için sapma şiddeti */
-function renderDeltaBarSvg(deltaHat: number[]): string {
+function renderDeltaBarSvg(deltaHat: number[], L: R2dRcaPdfI18n): string {
   // W ve padL artırıldı ki boyut isimleri tam sığsın (önceden "Tehlike Yo" gibi kesiliyordu)
   const W = 440, H = 240, padL = 150, padR = 42, padT = 10, padB = 18;
   const innerW = W - padL - padR;
@@ -53,7 +55,7 @@ function renderDeltaBarSvg(deltaHat: number[]): string {
       const w = d > 0 ? Math.max(2, (d / xMax) * innerW) : 0;
       const color = deltaColor(d);
       // Tam isim (kesme yok), daha küçük font
-      const fullName = DIMENSION_META[code].nameTR;
+      const fullName = L.getDimension(code).name;
       return `
         <text x="${padL - 6}" y="${y + barH / 2 + 3}" font-size="8" fill="#111" text-anchor="end" font-weight="700">${code}</text>
         <text x="${padL - 22}" y="${y + barH / 2 + 3}" font-size="7.5" fill="#4b5563" text-anchor="end">${esc(fullName)}</text>
@@ -71,7 +73,7 @@ function renderDeltaBarSvg(deltaHat: number[]): string {
 }
 
 /** Yarım daire gauge — R₂D-RCA skoru */
-function renderGaugeSvg(score: number): string {
+function renderGaugeSvg(score: number, L: R2dRcaPdfI18n): string {
   // H artırıldı (140 → 180) ki altındaki skor yazısı SVG içinde tam görünsün
   const W = 240, H = 180;
   const cx = W / 2, cy = H - 48, r = 82, thickness = 16;
@@ -123,7 +125,7 @@ function renderGaugeSvg(score: number): string {
     <circle cx="${cx}" cy="${cy}" r="6" fill="#1f2937" />
     <circle cx="${cx}" cy="${cy}" r="3" fill="#fff" />
     <text x="${cx}" y="${cy + 30}" font-size="22" fill="${scoreColor}" text-anchor="middle" font-weight="700" font-family="monospace">${num(score)}</text>
-    <text x="${cx}" y="${cy + 42}" font-size="8" fill="#6b7280" text-anchor="middle" letter-spacing="0.5">R₂D-RCA</text>
+    <text x="${cx}" y="${cy + 42}" font-size="8" fill="#6b7280" text-anchor="middle" letter-spacing="0.5">${esc(L.gaugeBrand)}</text>
   </svg>`;
 }
 
@@ -171,7 +173,7 @@ function renderRadarSvg(t0: number[], t1: number[]): string {
 }
 
 /** Donut chart — priority katkı dağılımı (sadece bozulan boyutlar) */
-function renderDonutSvg(result: RCAResult): string {
+function renderDonutSvg(result: RCAResult, L: R2dRcaPdfI18n): string {
   const W = 220, H = 220;
   const cx = W / 2, cy = H / 2, rOuter = 78, rInner = 44;
 
@@ -181,7 +183,7 @@ function renderDonutSvg(result: RCAResult): string {
   if (total <= 0 || items.length === 0) {
     return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
       <circle cx="${cx}" cy="${cy}" r="${rOuter}" fill="none" stroke="#e5e7eb" stroke-width="${rOuter - rInner}" />
-      <text x="${cx}" y="${cy + 4}" font-size="9" fill="#6b7280" text-anchor="middle">Bozulan boyut yok</text>
+      <text x="${cx}" y="${cy + 4}" font-size="9" fill="#6b7280" text-anchor="middle">${esc(L.donutEmpty)}</text>
     </svg>`;
   }
 
@@ -219,7 +221,7 @@ function renderDonutSvg(result: RCAResult): string {
 
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
     ${slices}
-    <text x="${cx}" y="${cy - 4}" font-size="8" fill="#6b7280" text-anchor="middle">Toplam</text>
+    <text x="${cx}" y="${cy - 4}" font-size="8" fill="#6b7280" text-anchor="middle">${esc(L.donutTotal)}</text>
     <text x="${cx}" y="${cy + 10}" font-size="14" fill="#111" text-anchor="middle" font-weight="700" font-family="monospace">${num(total, 3)}</text>
   </svg>`;
 }
@@ -238,7 +240,7 @@ function heatColor(v: number): string {
   return "#dc2626";
 }
 
-function renderHeatmapSvg(t0: number[], t1: number[], deltaHat: number[]): string {
+function renderHeatmapSvg(t0: number[], t1: number[], deltaHat: number[], L: R2dRcaPdfI18n): string {
   const W = 420, H = 320;
   const colW = 80, rowH = 28, labelW = 130;
   const startX = labelW + 10, startY = 30;
@@ -249,7 +251,8 @@ function renderHeatmapSvg(t0: number[], t1: number[], deltaHat: number[]): strin
     .join("");
 
   const rows = R2D_DIMENSIONS.map((code, i) => {
-    const meta = DIMENSION_META[code];
+    const dmeta = L.getDimension(code);
+    const shortName = dmeta.name.length > 14 ? `${dmeta.name.slice(0, 14)}…` : dmeta.name;
     const y = startY + i * rowH;
     const cells = [t0[i], t1[i], deltaHat[i]].map((val, j) => {
       const bg = heatColor(val);
@@ -261,7 +264,7 @@ function renderHeatmapSvg(t0: number[], t1: number[], deltaHat: number[]): strin
       `;
     }).join("");
     return `
-      <text x="${labelW - 4}" y="${y + rowH / 2 + 3}" font-size="8" font-weight="600" fill="#374151" text-anchor="end">${code} ${esc(meta.nameTR.slice(0, 14))}</text>
+      <text x="${labelW - 4}" y="${y + rowH / 2 + 3}" font-size="8" font-weight="600" fill="#374151" text-anchor="end">${code} ${esc(shortName)}</text>
       ${cells}
     `;
   }).join("");
@@ -276,13 +279,13 @@ function renderHeatmapSvg(t0: number[], t1: number[], deltaHat: number[]): strin
 /*  Waterfall SVG — priority birikim grafiği                           */
 /* ------------------------------------------------------------------ */
 
-function renderWaterfallSvg(result: RCAResult): string {
+function renderWaterfallSvg(result: RCAResult, L: R2dRcaPdfI18n): string {
   const W = 420, H = 260;
   const items = result.priorityRanking;
 
   if (items.length === 0) {
     return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
-      <text x="${W / 2}" y="${H / 2}" font-size="10" fill="#6b7280" text-anchor="middle">Bozulan boyut yok</text>
+      <text x="${W / 2}" y="${H / 2}" font-size="10" fill="#6b7280" text-anchor="middle">${esc(L.waterfallEmpty)}</text>
     </svg>`;
   }
 
@@ -320,7 +323,7 @@ function renderWaterfallSvg(result: RCAResult): string {
   const totalBars = `
     <rect x="${totalX}" y="${(padT + innerH - totalBarH).toFixed(1)}" width="${barW}" height="${Math.max(1, totalBarH).toFixed(1)}" fill="#1E2761" stroke="#fff" stroke-width="1" />
     <text x="${totalX + barW / 2}" y="${(padT + innerH - totalBarH - 4).toFixed(1)}" font-size="8" font-weight="700" fill="#1E2761" text-anchor="middle">${num(totalScore)}</text>
-    <text x="${totalX + barW / 2}" y="${padT + innerH + 12}" font-size="8" font-weight="700" fill="#1E2761" text-anchor="middle">Σ</text>
+    <text x="${totalX + barW / 2}" y="${padT + innerH + 12}" font-size="8" font-weight="700" fill="#1E2761" text-anchor="middle">${esc(L.waterfallTotalSymbol)}</text>
   `;
 
   // Y axis
@@ -331,7 +334,7 @@ function renderWaterfallSvg(result: RCAResult): string {
     ${axisY}
     ${bars}
     ${totalBars}
-    <text x="${W / 2}" y="${H - 5}" font-size="8" fill="#6b7280" text-anchor="middle" font-style="italic">Priority birikim: C₁→Cₙ → Σ (toplam R_RCA)</text>
+    <text x="${W / 2}" y="${H - 5}" font-size="8" fill="#6b7280" text-anchor="middle" font-style="italic">${esc(L.waterfallFootnote)}</text>
   </svg>`;
 }
 
@@ -339,12 +342,12 @@ function renderWaterfallSvg(result: RCAResult): string {
 /*  Root Cause Chain SVG — kategorize bar list                          */
 /* ------------------------------------------------------------------ */
 
-function renderRootCauseChainSvg(result: RCAResult): string {
+function renderRootCauseChainSvg(result: RCAResult, L: R2dRcaPdfI18n): string {
   const W = 520, H = 340;
   const categorized = result.categorized.filter((c) => c.deltaHat > 0).slice(0, 9);
   if (categorized.length === 0) {
     return `<svg viewBox="0 0 ${W} 60" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
-      <text x="${W / 2}" y="35" font-size="10" fill="#6b7280" text-anchor="middle">Bozulan boyut yok — tüm Δ̂ = 0</text>
+      <text x="${W / 2}" y="35" font-size="10" fill="#6b7280" text-anchor="middle">${esc(L.rootChainEmptyAllZero)}</text>
     </svg>`;
   }
 
@@ -359,7 +362,7 @@ function renderRootCauseChainSvg(result: RCAResult): string {
     return `
       <text x="18" y="${y + rowH / 2 + 3}" font-size="8" font-weight="700" fill="${catColor}" text-anchor="start">#${c.rank ?? "-"}</text>
       <text x="42" y="${y + rowH / 2 - 1}" font-size="9" font-weight="700" fill="#111" text-anchor="start">${c.code}</text>
-      <text x="42" y="${y + rowH / 2 + 10}" font-size="7" fill="#6b7280" text-anchor="start">${esc(c.nameTR.slice(0, 22))}</text>
+      <text x="42" y="${y + rowH / 2 + 10}" font-size="7" fill="#6b7280" text-anchor="start">${esc(L.getDimension(c.code).name.slice(0, 22))}</text>
       <rect x="180" y="${y + 6}" width="${maxW}" height="14" rx="2" fill="#f3f4f6" />
       <rect x="180" y="${y + 6}" width="${barW.toFixed(1)}" height="14" rx="2" fill="${catColor}" />
       <text x="${180 + barW + 6}" y="${y + 17}" font-size="8" font-weight="700" fill="${catColor}" text-anchor="start">${num(c.deltaHat, 2)}</text>
@@ -375,7 +378,7 @@ function renderRootCauseChainSvg(result: RCAResult): string {
 /*  Polar Area SVG — priority dağılımı alternatif görünüm              */
 /* ------------------------------------------------------------------ */
 
-function renderPolarSvg(result: RCAResult): string {
+function renderPolarSvg(result: RCAResult, L: R2dRcaPdfI18n): string {
   const W = 220, H = 220;
   const cx = W / 2, cy = H / 2;
   const rMax = 82;
@@ -384,7 +387,7 @@ function renderPolarSvg(result: RCAResult): string {
   if (items.length === 0) {
     return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
       <circle cx="${cx}" cy="${cy}" r="${rMax}" fill="none" stroke="#e5e7eb" stroke-width="1" />
-      <text x="${cx}" y="${cy + 4}" font-size="9" fill="#6b7280" text-anchor="middle">Bozulan boyut yok</text>
+      <text x="${cx}" y="${cy + 4}" font-size="9" fill="#6b7280" text-anchor="middle">${esc(L.polarEmpty)}</text>
     </svg>`;
   }
 
@@ -480,17 +483,17 @@ function renderDeltaRadarSvg(deltaHat: number[]): string {
 
 type R2dRcaMetaInput = string | (Omit<PdfReportMeta, "reportTitle"> & Partial<Pick<PdfReportMeta, "reportTitle">>);
 
-function normalizeR2dRcaMeta(metaOrTitle: R2dRcaMetaInput): PdfReportMeta {
+function normalizeR2dRcaMeta(metaOrTitle: R2dRcaMetaInput, L: R2dRcaPdfI18n): PdfReportMeta {
   if (typeof metaOrTitle === "string") {
     return {
-      reportTitle: "R₂D-RCA (C1-C9) Analiz Raporu",
-      reportSubtitle: "9 boyutlu kompozit risk metriği · delta-tabanlı kök neden analizi",
+      reportTitle: L.defaultReportTitle,
+      reportSubtitle: L.defaultReportSubtitle,
       incidentTitle: metaOrTitle,
     };
   }
   return {
-    reportTitle: metaOrTitle.reportTitle ?? "R₂D-RCA (C1-C9) Analiz Raporu",
-    reportSubtitle: metaOrTitle.reportSubtitle ?? "9 boyutlu kompozit risk metriği · delta-tabanlı kök neden analizi",
+    reportTitle: metaOrTitle.reportTitle ?? L.defaultReportTitle,
+    reportSubtitle: metaOrTitle.reportSubtitle ?? L.defaultReportSubtitle,
     ...metaOrTitle,
   };
 }
@@ -507,17 +510,20 @@ export function buildR2dRcaPdfHtml(
   data: R2dRcaData,
   meta: PdfReportMeta,
   qrDataUrl: string,
+  i18n: R2dRcaPdfI18n = DEFAULT_R2D_RCA_PDF_I18N,
 ): string {
+  const L = i18n;
   const result = computeR2DRCA(data.t0, data.t1);
 
   const calcModeLabel = result.calculationMode === "override"
-    ? "Override Modu (max Δ̂ ≥ 0.40)"
-    : "Base Score Modu (ağırlıklı toplam)";
+    ? L.calcModeOverride
+    : L.calcModeBase;
   const modeBadgeColor = result.calculationMode === "override" ? "#dc2626" : "#d4a017";
 
   // 9 boyut tablosu
   const dimensionRows = R2D_DIMENSIONS.map((code, i) => {
     const meta = DIMENSION_META[code];
+    const dimLab = L.getDimension(code);
     const t0v = data.t0[i];
     const t1v = data.t1[i];
     const d = result.deltaHat[i];
@@ -530,8 +536,8 @@ export function buildR2dRcaPdfHtml(
       <tr style="${rowBg}">
         <td style="padding:6px 8px;border:1px solid #9ca3af;font-size:10px;${isPrimary ? "font-weight:700;" : ""}">
           <span style="display:inline-block;font-family:monospace;font-weight:700;margin-right:4px;">${code}</span>
-          ${esc(meta.nameTR)}
-          <span style="display:inline-block;margin-left:4px;padding:1px 5px;font-size:8px;border-radius:3px;background:${srcColor.bg};color:${srcColor.fg};">${esc(meta.source)}</span>
+          ${esc(dimLab.name)}
+          <span style="display:inline-block;margin-left:4px;padding:1px 5px;font-size:8px;border-radius:3px;background:${srcColor.bg};color:${srcColor.fg};">${esc(dimLab.source)}</span>
           ${isPrimary ? '<span style="color:#d4a017;margin-left:4px;">★</span>' : ""}
         </td>
         <td style="padding:6px 8px;border:1px solid #9ca3af;font-size:10px;text-align:center;">${num(t0v)}</td>
@@ -546,13 +552,13 @@ export function buildR2dRcaPdfHtml(
   // Öncelik sıralaması
   const rankingRows = result.priorityRanking
     .map((item) => {
-      const meta = DIMENSION_META[item.code];
+      const dimLab = L.getDimension(item.code);
       const isPrimary = result.primaryRootCauseIndices.includes(item.index);
       return `
         <tr ${isPrimary ? 'style="background:#fef3c7;"' : ""}>
           <td style="padding:6px 8px;border:1px solid #9ca3af;font-size:10px;text-align:center;font-weight:700;">${item.rank}</td>
           <td style="padding:6px 8px;border:1px solid #9ca3af;font-size:10px;">
-            <span style="font-family:monospace;font-weight:700;">${item.code}</span> ${esc(meta.nameTR)}
+            <span style="font-family:monospace;font-weight:700;">${item.code}</span> ${esc(dimLab.name)}
           </td>
           <td style="padding:6px 8px;border:1px solid #9ca3af;font-size:10px;text-align:center;">${num(item.deltaHat)}</td>
           <td style="padding:6px 8px;border:1px solid #9ca3af;font-size:10px;text-align:center;">${num(item.weight, 3)}</td>
@@ -566,19 +572,19 @@ export function buildR2dRcaPdfHtml(
   const primaryBadges = result.primaryRootCauseIndices
     .map((i) => {
       const code = R2D_DIMENSIONS[i];
-      const meta = DIMENSION_META[code];
-      return `<span style="display:inline-block;margin:2px 4px 2px 0;padding:3px 10px;background:#fef3c7;color:#92400e;border:1px solid #fbbf24;border-radius:12px;font-size:10px;font-weight:600;">★ ${code} ${esc(meta.nameTR)}</span>`;
+      const dimLab = L.getDimension(code);
+      return `<span style="display:inline-block;margin:2px 4px 2px 0;padding:3px 10px;background:#fef3c7;color:#92400e;border:1px solid #fbbf24;border-radius:12px;font-size:10px;font-weight:600;">★ ${code} ${esc(dimLab.name)}</span>`;
     })
     .join("");
 
   // Stabil boyutlar
   const stabilList = result.categorized
     .filter((c) => c.category === "none")
-    .map((c) => `${c.code} ${c.nameTR}`)
-    .join(", ") || "Yok";
+    .map((c) => `${c.code} ${L.getDimension(c.code).name}`)
+    .join(", ") || L.notDetermined;
 
   return `<!DOCTYPE html>
-    <html lang="tr">
+    <html lang="${esc(L.htmlLang)}">
       <head>
         <meta charset="UTF-8">
         <title>${esc(meta.reportTitle)}</title>
@@ -653,159 +659,153 @@ export function buildR2dRcaPdfHtml(
         <div style="margin-bottom:16px;">
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <div>
-              <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">R₂D-RCA Skoru</div>
+              <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;">${esc(L.scoreLabel)}</div>
               <div class="score-box">${num(result.rRcaScore)}</div>
             </div>
-            <div class="mode-badge">${calcModeLabel}</div>
-            ${result.dualReportingRequired ? '<span class="mode-badge" style="background:#dc262620;color:#dc2626;border-color:#dc2626;">⚠ Dual Reporting Gerekli</span>' : ""}
+            <div class="mode-badge">${esc(calcModeLabel)}</div>
+            ${result.dualReportingRequired ? `<span class="mode-badge" style="background:#dc262620;color:#dc2626;border-color:#dc2626;">${esc(L.dualReportingBadge)}</span>` : ""}
           </div>
         </div>
 
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-card-label">En Büyük Δ̂</div>
-            <div class="stat-card-value">C${result.maxDeltaHatIndex + 1} ${esc(DIMENSION_META[R2D_DIMENSIONS[result.maxDeltaHatIndex]].nameTR)} · ${num(result.maxDeltaHat)}</div>
+            <div class="stat-card-label">${esc(L.statMaxDelta)}</div>
+            <div class="stat-card-value">C${result.maxDeltaHatIndex + 1} ${esc(L.getDimension(R2D_DIMENSIONS[result.maxDeltaHatIndex]).name)} · ${num(result.maxDeltaHat)}</div>
           </div>
           <div class="stat-card">
-            <div class="stat-card-label">Override</div>
-            <div class="stat-card-value">${result.overrideTriggered ? "Tetiklendi" : "Tetiklenmedi"}</div>
+            <div class="stat-card-label">${esc(L.statOverride)}</div>
+            <div class="stat-card-value">${result.overrideTriggered ? L.statTriggered : L.statNotTriggered}</div>
           </div>
           <div class="stat-card">
-            <div class="stat-card-label">Bozulan / Stabil</div>
+            <div class="stat-card-label">${esc(L.statBrokenStable)}</div>
             <div class="stat-card-value">${result.bozulanCount} / ${result.stabilCount}</div>
           </div>
         </div>
 
         <div style="margin-bottom:14px;">
-          <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Birincil Kök Neden(ler)</div>
-          <div>${primaryBadges || '<span style="font-size:10px;color:#6b7280;">Belirlenmedi</span>'}</div>
+          <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">${esc(L.primaryRootsTitle)}</div>
+          <div>${primaryBadges || `<span style="font-size:10px;color:#6b7280;">${esc(L.notDetermined)}</span>`}</div>
         </div>
 
-        <h3>Görsel Özet</h3>
+        <h3>${esc(L.visualSummaryTitle)}</h3>
         ${
           result.bozulanCount === 0
-            ? `<div style="margin-bottom:10px;padding:10px 14px;background:#fef3c7;border-left:4px solid #d4a017;border-radius:4px;font-size:10px;line-height:1.5;color:#7c2d12;">
-                <strong>⚠ Henüz analiz verisi yok.</strong> Tüm boyutlarda Δ̂ = 0 — olay öncesi ve olay anı skorları aynı.
-                Anlamlı bir rapor için önce <strong>"AI ile Analiz Yap"</strong> butonuna basarak skorları üretin veya
-                slider'lar ile manuel ayarlayın, ardından PDF'i tekrar oluşturun.
-              </div>`
+            ? `<div style="margin-bottom:10px;padding:10px 14px;background:#fef3c7;border-left:4px solid #d4a017;border-radius:4px;font-size:10px;line-height:1.5;color:#7c2d12;">${esc(L.emptyStateWarning)}</div>`
             : ""
         }
         <div class="charts-grid">
           <div class="chart-card">
-            <div class="chart-card-title">R₂D-RCA Risk Şiddeti</div>
-            <div class="chart-card-sub">Yarım daire gauge — 0 (yeşil) → 1 (kırmızı)</div>
-            ${renderGaugeSvg(result.rRcaScore)}
+            <div class="chart-card-title">${esc(L.chartGaugeTitle)}</div>
+            <div class="chart-card-sub">${esc(L.chartGaugeSub)}</div>
+            ${renderGaugeSvg(result.rRcaScore, L)}
           </div>
           <div class="chart-card">
-            <div class="chart-card-title">Bozulma Şiddeti (Δ̂)</div>
-            <div class="chart-card-sub">9 boyut için sapma çubukları, sıralı C1→C9</div>
-            ${renderDeltaBarSvg(result.deltaHat)}
+            <div class="chart-card-title">${esc(L.chartDeltaTitle)}</div>
+            <div class="chart-card-sub">${esc(L.chartDeltaSub)}</div>
+            ${renderDeltaBarSvg(result.deltaHat, L)}
           </div>
           <div class="chart-card">
-            <div class="chart-card-title">Risk Profili (t₀ vs t₁)</div>
-            <div class="chart-card-sub">9-eksenli radar — olay öncesi vs olay anı</div>
+            <div class="chart-card-title">${esc(L.chartRadarTitle)}</div>
+            <div class="chart-card-sub">${esc(L.chartRadarSub)}</div>
             ${renderRadarSvg(data.t0, data.t1)}
             <div class="chart-legend">
-              <span><i style="background:#1E2761;"></i>t₀ (öncesi)</span>
-              <span><i style="background:#D85A30;"></i>t₁ (olay anı)</span>
+              <span><i style="background:#1E2761;"></i>${esc(L.legendT0)}</span>
+              <span><i style="background:#D85A30;"></i>${esc(L.legendT1)}</span>
             </div>
           </div>
           <div class="chart-card">
-            <div class="chart-card-title">Priority Katkı Dağılımı</div>
-            <div class="chart-card-sub">P(C_i) = w_i · Δ̂_i — sadece bozulan boyutlar</div>
-            ${renderDonutSvg(result)}
+            <div class="chart-card-title">${esc(L.chartDonutTitle)}</div>
+            <div class="chart-card-sub">${esc(L.chartDonutSub)}</div>
+            ${renderDonutSvg(result, L)}
             <div class="chart-legend">
-              <span><i style="background:#dc2626;"></i>Override</span>
-              <span><i style="background:#ea580c;"></i>Major</span>
-              <span><i style="background:#ca8a04;"></i>Sec.</span>
-              <span><i style="background:#9ca3af;"></i>Minor</span>
+              <span><i style="background:#dc2626;"></i>${esc(L.legendOverride)}</span>
+              <span><i style="background:#ea580c;"></i>${esc(L.legendMajor)}</span>
+              <span><i style="background:#ca8a04;"></i>${esc(L.legendSec)}</span>
+              <span><i style="background:#9ca3af;"></i>${esc(L.legendMinor)}</span>
             </div>
           </div>
         </div>
 
         <!-- EK SVG GRAFİKLER — Heatmap + Waterfall + Root Cause Chain + Polar + DeltaRadar -->
-        <h3>Boyut Detayı · Isı Haritası ve Priority Birikimi</h3>
+        <h3>${esc(L.sectionHeatmapWaterfall)}</h3>
         <div class="charts-grid">
           <div class="chart-card">
-            <div class="chart-card-title">9 Boyut Isı Haritası</div>
-            <div class="chart-card-sub">Her boyut için t₀ · t₁ · Δ̂ renkli skala (yeşil→kırmızı)</div>
-            ${renderHeatmapSvg(data.t0, data.t1, result.deltaHat)}
+            <div class="chart-card-title">${esc(L.chartHeatmapTitle)}</div>
+            <div class="chart-card-sub">${esc(L.chartHeatmapSub)}</div>
+            ${renderHeatmapSvg(data.t0, data.t1, result.deltaHat, L)}
           </div>
           <div class="chart-card">
-            <div class="chart-card-title">Priority Birikim (Waterfall)</div>
-            <div class="chart-card-sub">Sıralı priority katkıları birikimi + toplam skor</div>
-            ${renderWaterfallSvg(result)}
+            <div class="chart-card-title">${esc(L.chartWaterfallTitle)}</div>
+            <div class="chart-card-sub">${esc(L.chartWaterfallSub)}</div>
+            ${renderWaterfallSvg(result, L)}
           </div>
         </div>
 
-        <h3>Priority Polar Dağılımı + Δ̂ Radar Profili</h3>
+        <h3>${esc(L.sectionPolarDelta)}</h3>
         <div class="charts-grid">
           <div class="chart-card">
-            <div class="chart-card-title">Polar Area — Priority Dağılımı</div>
-            <div class="chart-card-sub">Her boyutun priority'si eşit açı, yarıçap = Δ̂ büyüklüğü</div>
-            ${renderPolarSvg(result)}
+            <div class="chart-card-title">${esc(L.chartPolarTitle)}</div>
+            <div class="chart-card-sub">${esc(L.chartPolarSub)}</div>
+            ${renderPolarSvg(result, L)}
             <div class="chart-legend">
-              <span><i style="background:#dc2626;"></i>Override</span>
-              <span><i style="background:#ea580c;"></i>Major</span>
-              <span><i style="background:#ca8a04;"></i>Sec.</span>
-              <span><i style="background:#9ca3af;"></i>Minor</span>
+              <span><i style="background:#dc2626;"></i>${esc(L.legendOverride)}</span>
+              <span><i style="background:#ea580c;"></i>${esc(L.legendMajor)}</span>
+              <span><i style="background:#ca8a04;"></i>${esc(L.legendSec)}</span>
+              <span><i style="background:#9ca3af;"></i>${esc(L.legendMinor)}</span>
             </div>
           </div>
           <div class="chart-card">
-            <div class="chart-card-title">Δ̂ Radar Profili (9 eksen)</div>
-            <div class="chart-card-sub">Sadece sapma miktarları — hangi boyutlarda artış var</div>
+            <div class="chart-card-title">${esc(L.chartDeltaRadarTitle)}</div>
+            <div class="chart-card-sub">${esc(L.chartDeltaRadarSub)}</div>
             ${renderDeltaRadarSvg(result.deltaHat)}
           </div>
         </div>
 
-        <h3>Kök Neden Zinciri (Kategorize + Öncelikli)</h3>
+        <h3>${esc(L.sectionRootChain)}</h3>
         <div class="chart-card" style="page-break-inside:avoid;">
-          <div class="chart-card-sub" style="margin-bottom:6px;">Bozulan boyutlar öncelik sırasıyla — Override / Major / Sec. kategorileri</div>
-          ${renderRootCauseChainSvg(result)}
+          <div class="chart-card-sub" style="margin-bottom:6px;">${esc(L.rootChainSub)}</div>
+          ${renderRootCauseChainSvg(result, L)}
         </div>
 
-        <h3>9 Boyutlu Skor Karşılaştırması</h3>
+        <h3>${esc(L.sectionScoreTable)}</h3>
         <table>
           <thead>
             <tr>
-              <th>Boyut</th>
+              <th>${esc(L.thDimension)}</th>
               <th class="c">t₀</th>
               <th class="c">t₁</th>
               <th class="c">Δ̂</th>
-              <th class="c">Ağırlık</th>
-              <th class="c">Öncelik</th>
+              <th class="c">${esc(L.thWeight)}</th>
+              <th class="c">${esc(L.thPriority)}</th>
             </tr>
           </thead>
           <tbody>${dimensionRows}</tbody>
         </table>
-        <p class="legend">
-          Δ̂_i = max(0, t₁ - t₀) · Öncelik P(C_i) = w_i · Δ̂_i · Skorlar [0,1] sürekli skala · Yüksek = yüksek risk
-        </p>
+        <p class="legend">${esc(L.tableFootnoteLegend)}</p>
 
         ${rankingRows ? `
-          <h3>Öncelik Sıralaması</h3>
+          <h3>${esc(L.sectionRanking)}</h3>
           <table>
             <thead>
               <tr>
-                <th class="c" style="width:40px;">#</th>
-                <th>Boyut</th>
+                <th class="c" style="width:40px;">${esc(L.thRank)}</th>
+                <th>${esc(L.thDimension)}</th>
                 <th class="c">Δ̂</th>
-                <th class="c">Ağırlık</th>
-                <th class="c">Öncelik</th>
+                <th class="c">${esc(L.thWeight)}</th>
+                <th class="c">${esc(L.thPriority)}</th>
               </tr>
             </thead>
             <tbody>${rankingRows}</tbody>
           </table>
         ` : ""}
 
-        <h3>Stabil Boyutlar (Δ̂ = 0)</h3>
+        <h3>${esc(L.sectionStableDims)}</h3>
         <div style="padding:10px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;font-size:10px;">
           ${esc(stabilList)}
         </div>
 
         ${data.narrative ? `
-          <h3>AI Değerlendirmesi</h3>
+          <h3>${esc(L.sectionAiNarrative)}</h3>
           <div class="narrative">${esc(data.narrative)}</div>
         ` : ""}
 
@@ -827,6 +827,7 @@ export function buildR2dRcaPdfHtml(
 export async function exportR2dRcaPdf(
   data: R2dRcaData,
   metaOrTitle: R2dRcaMetaInput,
+  i18n: R2dRcaPdfI18n = DEFAULT_R2D_RCA_PDF_I18N,
 ): Promise<void> {
   if (typeof window === "undefined") return;
   if (!Array.isArray(data.t0) || !Array.isArray(data.t1) || data.t0.length !== 9 || data.t1.length !== 9) {
@@ -834,13 +835,13 @@ export async function exportR2dRcaPdf(
     return;
   }
 
-  const meta = normalizeR2dRcaMeta(metaOrTitle);
+  const meta = normalizeR2dRcaMeta(metaOrTitle, i18n);
   const qrDataUrl = await generateQrDataUrl(meta.shareUrl);
-  const html = buildR2dRcaPdfHtml(data, meta, qrDataUrl);
+  const html = buildR2dRcaPdfHtml(data, meta, qrDataUrl, i18n);
 
   const printWindow = window.open("", "_blank", "width=1100,height=1400");
   if (!printWindow) {
-    alert("Yazıcı penceresi açılamadı. Lütfen pop-up engelleyiciyi kontrol edin.");
+    alert(i18n.popupBlocked);
     return;
   }
   printWindow.document.write(html);
@@ -864,6 +865,7 @@ export async function exportR2dRcaPdf(
 export async function exportR2dRcaPdfBlob(
   data: R2dRcaData,
   metaOrTitle: R2dRcaMetaInput,
+  i18n: R2dRcaPdfI18n = DEFAULT_R2D_RCA_PDF_I18N,
 ): Promise<Blob> {
   if (typeof window === "undefined") {
     throw new Error("exportR2dRcaPdfBlob: client-side only");
@@ -872,9 +874,9 @@ export async function exportR2dRcaPdfBlob(
     throw new Error("exportR2dRcaPdfBlob: invalid data (t0/t1 must be 9-element arrays)");
   }
 
-  const meta = normalizeR2dRcaMeta(metaOrTitle);
+  const meta = normalizeR2dRcaMeta(metaOrTitle, i18n);
   const qrDataUrl = await generateQrDataUrl(meta.shareUrl);
-  const html = buildR2dRcaPdfHtml(data, meta, qrDataUrl);
+  const html = buildR2dRcaPdfHtml(data, meta, qrDataUrl, i18n);
 
   // Lazy import — bundle boyutunu artırmasın diye sadece çağrıldığında yüklenir
   const { generatePdfBlob } = await import("@/lib/pdf-generator");
