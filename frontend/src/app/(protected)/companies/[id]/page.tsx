@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CompanyWorkspaceClient } from "./CompanyWorkspaceClient";
 
@@ -21,7 +21,11 @@ export default async function Page({
     if (data?.slug) {
       redirect(`/workspace/${data.slug}`);
     }
+    notFound();
   }
+
+  const { data: row } = await supabase.from("company_workspaces").select("id").eq("id", id).maybeSingle();
+  if (!row?.id) notFound();
 
   return <CompanyWorkspaceClient companyId={id} />;
 }

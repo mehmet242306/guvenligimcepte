@@ -119,7 +119,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
     if (sb) { found = sb.find((c) => c.id === companyId); }
     if (!found) {
       const loc = loadCompanyDirectory();
-      found = loc.find((c) => c.id === companyId) ?? loc[0];
+      found = loc.find((c) => c.id === companyId);
     }
     if (found) {
       // Dinamik skor hesaplama — DB'deki gerçek verilerden
