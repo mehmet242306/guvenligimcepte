@@ -2785,6 +2785,19 @@
       "title": "Çalışma Alanı Bölümleri",
       "hint": "Sol menüden bir alan seç, içeriği sağ tarafta yönet."
     },
+    "structure": {
+      "summaryLocation": "Lokasyon",
+      "summaryDepartment": "Bölüm",
+      "summaryEmployee": "Çalışan (personel sayısı)",
+      "locationsTitle": "Lokasyonlar",
+      "locationsSubtitle": "Tesis, bina veya çalışma alanları.",
+      "locationPlaceholder": "Örn. Ana fabrika, Depo A",
+      "addLocation": "Lokasyon ekle",
+      "departmentsTitle": "Bölümler",
+      "departmentsSubtitle": "Personel ve raporlarda kullanılan organizasyon birimleri.",
+      "departmentPlaceholder": "Örn. Üretim, Lojistik",
+      "addDepartment": "Bölüm ekle"
+    },
     "tabs": {
       "structure": "Yerleşke",
       "risk": "Risk ve Saha",
@@ -2838,6 +2851,187 @@
       }
     },
     "personnel": {
+      "title": "Personel",
+      "description": "{companyName} için personel kaydı: liste, CSV içe/dışa aktarma, özel izleme ve iş sağlığı muayeneleri.",
+      "loading": "Personel yükleniyor…",
+      "sourceLocal": "Yerel (tarayıcı)",
+      "summary": {
+        "total": "Toplam kişi",
+        "active": "Aktif",
+        "departments": "Bölüm (yerleşke)",
+        "special": "Özel izleme kaydı"
+      },
+      "tabs": {
+        "list": "Personel listesi",
+        "import": "CSV içe aktar",
+        "special": "Özel izleme",
+        "health": "Sağlık gözetimi"
+      },
+      "empty": {
+        "title": "Henüz personel yok",
+        "description": "CSV şablonunu indirip doldurun ve içe aktarın — veya İçe Aktar sekmesinden dosya yükleyin."
+      },
+      "list": {
+        "count": "Kayıtta {count} kişi",
+        "sort": "Sırala"
+      },
+      "sort": {
+        "employeeCode": "Sicil kodu",
+        "fullName": "Ad soyad",
+        "department": "Bölüm",
+        "positionTitle": "Pozisyon",
+        "location": "Lokasyon",
+        "employmentStatus": "Durum",
+        "employmentType": "İstihdam türü",
+        "ascTitle": "Artan sıra",
+        "descTitle": "Azalan sıra",
+        "ascAria": "Artan sırala",
+        "descAria": "Azalan sırala",
+        "columnAria": "{label} sütununa göre sırala"
+      },
+      "actions": {
+        "templateDownload": "Şablon indir",
+        "goImport": "İçe aktara git",
+        "export": "Listeyi dışa aktar (CSV)",
+        "newImport": "CSV içe aktar",
+        "deleteSelected": "Seçilenleri sil ({count})",
+        "deleting": "Siliniyor…",
+        "profile": "Özlük sayfası",
+        "special": "Özel izleme",
+        "delete": "Sil",
+        "import": "İçe aktar",
+        "uploading": "Yükleniyor…",
+        "remove": "Kaldır",
+        "saving": "Kaydediliyor…",
+        "close": "Kapat",
+        "save": "Kaydet",
+        "cancel": "İptal"
+      },
+      "import": {
+        "chooseFile": "Önce bir dosya seçin.",
+        "noValidRecords": "Dosyada geçerli satır bulunamadı.",
+        "successSupabase": "{count} satır içe aktarıldı. Bulutta toplam: {total}.",
+        "successLocal": "{count} satır içe aktarıldı. Yerelde toplam: {total}.",
+        "readError": "Dosya okunamadı.",
+        "templateTitle": "1. Şablonu indirin",
+        "templateDesc": "UTF-8 kodlamalı, noktalı virgülle ayrılmış CSV kullanın. Başlıklar şablonla aynı olmalıdır.",
+        "uploadTitle": "2. Dosyanızı yükleyin",
+        "uploadDesc": ".csv veya .txt dosyası seçin (Excel vb.)."
+      },
+      "special": {
+        "title": "Özel izleme",
+        "description": "Hamilelik, genç çalışan, gece çalışması vb. ek İSG önlemi gerektiren grupları işaretleyin. Verileri KVKK ve mevzuata uygun yönetin.",
+        "sensitiveData": "Hassas veri",
+        "accessControlled": "Yetkili kullanıcılarla sınırlıdır.",
+        "hideList": "Listeyi gizle",
+        "showEmployees": "Çalışanları göster",
+        "emptyCategory": "Bu kategoride çalışan yok.",
+        "assignmentTitle": "Özel izleme ata",
+        "assignmentDescription": "için kategori seçin.",
+        "categories": {
+          "pregnant": {
+            "label": "Gebe / emziren",
+            "desc": "6331 ve ilgili mevzuata göre önlemler."
+          },
+          "disabled": {
+            "label": "Engelli",
+            "desc": "Uygun iş düzenlemesi ve erişilebilirlik."
+          },
+          "foreign_national": {
+            "label": "Yabancı uyruklu",
+            "desc": "Eğitim, dil ve izin süreçlerinin takibi."
+          },
+          "young_worker": {
+            "label": "Genç çalışan",
+            "desc": "18 yaş altı — yasak işler ve sıkı gözetim."
+          },
+          "night_shift": {
+            "label": "Gece / vardiyalı",
+            "desc": "Gece ve vardiya çalışmasına bağlı sağlık gözetimi."
+          },
+          "chronic_condition": {
+            "label": "Kronik rahatsızlık",
+            "desc": "İşe uygunluk ve kısıtlamalar."
+          },
+          "nursing_mother": {
+            "label": "Emziren çalışan",
+            "desc": "Emzirme araları ve çalışma düzeni."
+          },
+          "temporary_restriction": {
+            "label": "Geçici kısıt",
+            "desc": "Kısa süreli tıbbi veya idari kısıtlama."
+          }
+        }
+      },
+      "health": {
+        "title": "İş sağlığı muayeneleri",
+        "description": "İşe giriş, periyodik, işten ayrılma ve özel muayene kayıtları.",
+        "newExam": "Muayene kaydı",
+        "empty": "Henüz sağlık muayenesi kaydı yok.",
+        "overdue": "Gecikmiş",
+        "exam": "Muayene tarihi",
+        "next": "Sonraki kontrol",
+        "report": "Rapor no",
+        "restriction": "Kısıtlama",
+        "recommendation": "Öneri",
+        "formTitle": "Yeni muayene kaydı",
+        "personnelRequired": "Personel *",
+        "examType": "Muayene türü",
+        "examDateRequired": "Muayene tarihi *",
+        "nextExam": "Sonraki muayene tarihi",
+        "result": "Sonuç",
+        "physicianName": "Hekim",
+        "institution": "Kurum / poliklinik",
+        "reportNo": "Rapor numarası",
+        "restrictions": "Kısıtlamalar",
+        "restrictionsPlaceholder": "Örn. gece çalışması yok",
+        "recommendedActions": "Önerilen işlemler",
+        "recommendedActionsPlaceholder": "Örn. 6 ay sonra tekrar",
+        "examTypes": {
+          "ise_giris": "İşe giriş",
+          "periyodik": "Periyodik",
+          "isten_ayrilma": "İşten ayrılma",
+          "ozel": "Özel / diğer"
+        },
+        "results": {
+          "uygun": "İşbaşı uygun",
+          "sartli_uygun": "Şartlı uygun",
+          "uygun_degil": "Uygun değil",
+          "izleme": "İzlemde"
+        }
+      },
+      "table": {
+        "positionMissing": "Unvan yok",
+        "employeeCode": "Sicil",
+        "department": "Bölüm",
+        "location": "Lokasyon",
+        "status": "Durum",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "hireDate": "İşe giriş",
+        "bloodType": "Kan grubu",
+        "emergency": "Acil kişi",
+        "profilePage": "Özlük sayfasını aç",
+        "fullName": "Ad soyad",
+        "position": "Pozisyon",
+        "identity": "Kimlik (maskeli)",
+        "employment": "Çalışma şekli",
+        "actions": "İşlemler",
+        "noDepartment": "Bölüm yok"
+      },
+      "statuses": {
+        "active": "Aktif",
+        "on_leave": "İzinli",
+        "suspended": "Askıda",
+        "terminated": "Ayrılmış"
+      },
+      "employmentTypes": {
+        "full_time": "Tam zamanlı",
+        "part_time": "Yarı zamanlı",
+        "contract": "Sözleşmeli",
+        "intern": "Stajyer",
+        "temporary": "Geçici"
+      },
       "csv": {
         "headers": {
           "employeeCode": "Sicil kodu",
@@ -2874,6 +3068,56 @@
         },
         "templateFileSuffix": "personel_sablonu",
         "exportFileSuffix": "personel_listesi"
+      }
+    },
+    "history": {
+      "title": "Geçmiş ve hareketler",
+      "description": "Bu firma çalışma alanındaki son değişiklikler (risk, doküman, eğitim, olay vb.).",
+      "loading": "Hareketler yükleniyor…",
+      "empty": "Henüz kayıtlı hareket yok.",
+      "noWorkspace": "Çalışma alanı yüklenemedi.",
+      "dbConnectionError": "Veritabanına bağlanılamadı.",
+      "systemActor": "Sistem / otomatik",
+      "change": "Değişiklik",
+      "actions": {
+        "workspaceCreated": "Çalışma alanı oluşturuldu",
+        "workspaceArchived": "Çalışma alanı arşivlendi",
+        "workspaceRestored": "Çalışma alanı geri yüklendi",
+        "expertAssigned": "Uzman atandı",
+        "expertAssignmentUpdated": "Uzman ataması güncellendi",
+        "expertAssignmentDeleted": "Uzman ataması kaldırıldı",
+        "riskAssessmentCreated": "Risk analizi oluşturuldu",
+        "riskAssessmentUpdated": "Risk analizi güncellendi",
+        "riskAssessmentDeleted": "Risk analizi silindi",
+        "documentCreated": "Doküman oluşturuldu",
+        "documentUpdated": "Doküman güncellendi",
+        "documentDeleted": "Doküman silindi",
+        "trainingAdded": "Eğitim kaydı eklendi",
+        "trainingUpdated": "Eğitim kaydı güncellendi",
+        "trainingDeleted": "Eğitim kaydı silindi",
+        "incidentCreated": "Olay kaydı oluşturuldu",
+        "incidentUpdated": "Olay kaydı güncellendi",
+        "incidentDeleted": "Olay kaydı silindi",
+        "periodicControlCreated": "Periyodik kontrol eklendi",
+        "periodicControlUpdated": "Periyodik kontrol güncellendi",
+        "periodicControlDeleted": "Periyodik kontrol silindi",
+        "committeeMeetingCreated": "İSG kurulu toplantısı eklendi",
+        "committeeMeetingUpdated": "İSG kurulu toplantısı güncellendi",
+        "committeeMeetingDeleted": "İSG kurulu toplantısı silindi",
+        "taskCreated": "İSG görevi oluşturuldu",
+        "taskUpdated": "İSG görevi güncellendi",
+        "taskDeleted": "İSG görevi silindi"
+      },
+      "entities": {
+        "riskAssessments": "Risk analizleri",
+        "editorDocuments": "Dokümanlar",
+        "incidents": "Olaylar",
+        "companyTrainings": "Eğitimler",
+        "committeeMeetings": "İSG kurulu toplantıları",
+        "periodicControls": "Periyodik kontroller",
+        "tasks": "İSG görevleri",
+        "workspace": "Çalışma alanı",
+        "companyIdentity": "Firma profili"
       }
     },
     "risk": {

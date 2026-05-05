@@ -669,6 +669,187 @@
           "shiftType": "शिफ्ट प्रकार"
         },
         "templateFileSuffix": "personnel_template"
+      },
+      "title": "Personnel",
+      "description": "Employee register for {companyName}: list, CSV import/export, special monitoring, and occupational health exams.",
+      "loading": "Loading personnel…",
+      "sourceLocal": "Local (browser)",
+      "summary": {
+        "total": "Total people",
+        "active": "Active",
+        "departments": "Departments (structure)",
+        "special": "Special monitoring records"
+      },
+      "tabs": {
+        "list": "Employee list",
+        "import": "Import CSV",
+        "special": "Special monitoring",
+        "health": "Health surveillance"
+      },
+      "empty": {
+        "title": "No personnel yet",
+        "description": "Download the CSV template, fill it in, and import — or open the Import tab to upload a file."
+      },
+      "list": {
+        "count": "{count} people in register",
+        "sort": "Sort by"
+      },
+      "sort": {
+        "employeeCode": "Employee code",
+        "fullName": "Full name",
+        "department": "Department",
+        "positionTitle": "Position",
+        "location": "Location",
+        "employmentStatus": "Status",
+        "employmentType": "Employment type",
+        "ascTitle": "Ascending order",
+        "descTitle": "Descending order",
+        "ascAria": "Sort ascending",
+        "descAria": "Sort descending",
+        "columnAria": "Sort by {label}"
+      },
+      "actions": {
+        "templateDownload": "Download template",
+        "goImport": "Go to import",
+        "export": "Export list (CSV)",
+        "newImport": "Import CSV",
+        "deleteSelected": "Delete selected ({count})",
+        "deleting": "Deleting…",
+        "profile": "Personnel file",
+        "special": "Special",
+        "delete": "Delete",
+        "import": "Import",
+        "uploading": "Uploading…",
+        "remove": "Remove",
+        "saving": "Saving…",
+        "close": "Close",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "import": {
+        "chooseFile": "Choose a file first.",
+        "noValidRecords": "No valid rows found in the file.",
+        "successSupabase": "Imported {count} row(s). Total in cloud: {total}.",
+        "successLocal": "Imported {count} row(s). Total stored locally: {total}.",
+        "readError": "Could not read the file.",
+        "templateTitle": "1. Download the template",
+        "templateDesc": "Use the semicolon-separated CSV with UTF-8 encoding. Headers must match the template.",
+        "uploadTitle": "2. Upload your file",
+        "uploadDesc": "Select a .csv or .txt file (e.g. exported from Excel)."
+      },
+      "special": {
+        "title": "Special monitoring",
+        "description": "Flag employees who need additional OHS measures (pregnancy, young workers, night work, etc.). Handle this data in line with privacy rules.",
+        "sensitiveData": "Sensitive",
+        "accessControlled": "Restricted to authorised users.",
+        "hideList": "Hide list",
+        "showEmployees": "Show employees",
+        "emptyCategory": "No employees in this category.",
+        "assignmentTitle": "Assign special monitoring",
+        "assignmentDescription": "— choose a category for this person.",
+        "categories": {
+          "pregnant": {
+            "label": "Pregnancy / maternity",
+            "desc": "Measures under pregnancy and breastfeeding regulations."
+          },
+          "disabled": {
+            "label": "Disability",
+            "desc": "Reasonable adjustments and workplace accessibility."
+          },
+          "foreign_national": {
+            "label": "Foreign national",
+            "desc": "Language, training, and permit-related follow-up."
+          },
+          "young_worker": {
+            "label": "Young worker",
+            "desc": "Under 18 — restricted tasks and enhanced supervision."
+          },
+          "night_shift": {
+            "label": "Night / shift work",
+            "desc": "Night and shift health surveillance where required."
+          },
+          "chronic_condition": {
+            "label": "Chronic condition",
+            "desc": "Fitness for work and medical restrictions."
+          },
+          "nursing_mother": {
+            "label": "Breastfeeding",
+            "desc": "Nursing breaks and workplace adjustments."
+          },
+          "temporary_restriction": {
+            "label": "Temporary restriction",
+            "desc": "Short-term medical or administrative limits."
+          }
+        }
+      },
+      "health": {
+        "title": "Occupational health exams",
+        "description": "Pre-employment, periodic, exit, and ad-hoc medical fitness records.",
+        "newExam": "Record exam",
+        "empty": "No health exam records yet.",
+        "overdue": "Overdue",
+        "exam": "Exam date",
+        "next": "Next due",
+        "report": "Report no.",
+        "restriction": "Restriction",
+        "recommendation": "Recommendation",
+        "formTitle": "New exam record",
+        "personnelRequired": "Employee *",
+        "examType": "Exam type",
+        "examDateRequired": "Exam date *",
+        "nextExam": "Next exam date",
+        "result": "Result",
+        "physicianName": "Physician",
+        "institution": "Institution / clinic",
+        "reportNo": "Report number",
+        "restrictions": "Restrictions",
+        "restrictionsPlaceholder": "e.g. no night work",
+        "recommendedActions": "Recommended actions",
+        "recommendedActionsPlaceholder": "e.g. repeat in 6 months",
+        "examTypes": {
+          "ise_giris": "Pre-employment",
+          "periyodik": "Periodic",
+          "isten_ayrilma": "Exit / transfer",
+          "ozel": "Special / other"
+        },
+        "results": {
+          "uygun": "Fit for duty",
+          "sartli_uygun": "Fit with conditions",
+          "uygun_degil": "Unfit",
+          "izleme": "Under medical follow-up"
+        }
+      },
+      "table": {
+        "positionMissing": "No title",
+        "employeeCode": "Code",
+        "department": "Department",
+        "location": "Location",
+        "status": "Status",
+        "phone": "Phone",
+        "email": "Email",
+        "hireDate": "Hire date",
+        "bloodType": "Blood type",
+        "emergency": "Emergency contact",
+        "profilePage": "Open personnel file",
+        "fullName": "Name",
+        "position": "Position",
+        "identity": "ID (masked)",
+        "employment": "Contract type",
+        "actions": "Actions",
+        "noDepartment": "No department"
+      },
+      "statuses": {
+        "active": "Active",
+        "on_leave": "On leave",
+        "suspended": "Suspended",
+        "terminated": "Terminated"
+      },
+      "employmentTypes": {
+        "full_time": "Full time",
+        "part_time": "Part time",
+        "contract": "Contract",
+        "intern": "Intern",
+        "temporary": "Temporary"
       }
     },
     "legacyTabs": {
@@ -1172,6 +1353,69 @@
       "cancel": "Cancel",
       "send": "Send invitation",
       "sending": "Sending…"
+    },
+    "structure": {
+      "summaryLocation": "Locations",
+      "summaryDepartment": "Departments",
+      "summaryEmployee": "Employees (headcount)",
+      "locationsTitle": "Locations",
+      "locationsSubtitle": "Worksites, buildings, or areas for this company.",
+      "locationPlaceholder": "e.g. Main plant, Warehouse A",
+      "addLocation": "Add location",
+      "departmentsTitle": "Departments",
+      "departmentsSubtitle": "Organisational units used in personnel and reporting.",
+      "departmentPlaceholder": "e.g. Production, Logistics",
+      "addDepartment": "Add department"
+    },
+    "history": {
+      "title": "Activity history",
+      "description": "Recent changes in this company workspace (risk, documents, trainings, incidents, and more).",
+      "loading": "Loading activity…",
+      "empty": "No activity recorded yet.",
+      "noWorkspace": "Workspace not loaded.",
+      "dbConnectionError": "Could not connect to the database.",
+      "systemActor": "System / automated",
+      "change": "Change",
+      "actions": {
+        "workspaceCreated": "Workspace created",
+        "workspaceArchived": "Workspace archived",
+        "workspaceRestored": "Workspace restored",
+        "expertAssigned": "Expert assigned",
+        "expertAssignmentUpdated": "Expert assignment updated",
+        "expertAssignmentDeleted": "Expert assignment removed",
+        "riskAssessmentCreated": "Risk assessment created",
+        "riskAssessmentUpdated": "Risk assessment updated",
+        "riskAssessmentDeleted": "Risk assessment deleted",
+        "documentCreated": "Document created",
+        "documentUpdated": "Document updated",
+        "documentDeleted": "Document deleted",
+        "trainingAdded": "Training record added",
+        "trainingUpdated": "Training record updated",
+        "trainingDeleted": "Training record deleted",
+        "incidentCreated": "Incident created",
+        "incidentUpdated": "Incident updated",
+        "incidentDeleted": "Incident deleted",
+        "periodicControlCreated": "Periodic control added",
+        "periodicControlUpdated": "Periodic control updated",
+        "periodicControlDeleted": "Periodic control deleted",
+        "committeeMeetingCreated": "Committee meeting added",
+        "committeeMeetingUpdated": "Committee meeting updated",
+        "committeeMeetingDeleted": "Committee meeting deleted",
+        "taskCreated": "ISG task created",
+        "taskUpdated": "ISG task updated",
+        "taskDeleted": "ISG task deleted"
+      },
+      "entities": {
+        "riskAssessments": "Risk assessments",
+        "editorDocuments": "Documents",
+        "incidents": "Incidents",
+        "companyTrainings": "Trainings",
+        "committeeMeetings": "Committee meetings",
+        "periodicControls": "Periodic controls",
+        "tasks": "ISG tasks",
+        "workspace": "Workspace",
+        "companyIdentity": "Company profile"
+      }
     }
   },
   "consent": {

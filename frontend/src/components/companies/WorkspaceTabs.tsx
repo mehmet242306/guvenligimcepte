@@ -1815,8 +1815,19 @@ const ACTIVITY_ACTION_KEYS: Record<string, string> = {
   "editor_documents.delete": "documentDeleted",
   "company_trainings.insert": "trainingAdded",
   "company_trainings.update": "trainingUpdated",
+  "company_trainings.delete": "trainingDeleted",
   "incidents.insert": "incidentCreated",
   "incidents.update": "incidentUpdated",
+  "incidents.delete": "incidentDeleted",
+  "company_periodic_controls.insert": "periodicControlCreated",
+  "company_periodic_controls.update": "periodicControlUpdated",
+  "company_periodic_controls.delete": "periodicControlDeleted",
+  "company_committee_meetings.insert": "committeeMeetingCreated",
+  "company_committee_meetings.update": "committeeMeetingUpdated",
+  "company_committee_meetings.delete": "committeeMeetingDeleted",
+  "isg_tasks.insert": "taskCreated",
+  "isg_tasks.update": "taskUpdated",
+  "isg_tasks.delete": "taskDeleted",
 };
 
 const ACTIVITY_ENTITY_KEYS: Record<string, string> = {
