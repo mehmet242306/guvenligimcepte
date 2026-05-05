@@ -11,6 +11,10 @@ jobs:
     env:
       APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
       SELF_HEALING_CRON_SECRET: ${{ secrets.SELF_HEALING_CRON_SECRET }}
+      # Vercel Deployment Protection açıksa, otomasyon istekleri 401 alır.
+      # Vercel: Project Settings > Deployment Protection > "Protection Bypass for Automation"
+      # üretilen secret'ı GitHub repo secret olarak ekleyin (isim aşağıdaki gibi).
+      VERCEL_PROTECTION_BYPASS_SECRET: ${{ secrets.VERCEL_PROTECTION_BYPASS_SECRET }}
     steps:
       - name: Process queued tasks
         shell: bash
@@ -20,11 +24,19 @@ jobs:
             echo "::notice title=Self-healing queue skipped::APP_BASE_URL veya SELF_HEALING_CRON_SECRET tanimli degil."
             exit 0
           fi
+          bypass=()
+          if [ -n "${VERCEL_PROTECTION_BYPASS_SECRET:-}" ]; then
+            bypass+=(-H "x-vercel-protection-bypass: ${VERCEL_PROTECTION_BYPASS_SECRET}")
+          fi
           # --retry/--retry-all-errors: Vercel function cold-start
           # 504 timeout'larında ikinci deneme (warm) genelde başarılı.
           # --max-time: tek denemenin üst sınırı.
-          curl -fsS --retry 2 --retry-delay 15 --retry-all-errors --max-time 60 \
+          if ! curl -fsS --retry 2 --retry-delay 15 --retry-all-errors --max-time 60 \
             -X POST "${APP_BASE_URL%/}/api/self-healing/queue/process" \
             -H "Content-Type: application/json" \
             -H "x-self-healing-key: ${SELF_HEALING_CRON_SECRET}" \
-            --data '{"batchSize":10}'
+            "${bypass[@]}" \
+            --data '{"batchSize":10}'; then
+            echo "::error::curl basarisiz (genelde HTTP 401). (1) Vercel'de Deployment Protection aciksa GitHub'a VERCEL_PROTECTION_BYPASS_SECRET ekleyin. (2) SELF_HEALING_CRON_SECRET degeri GitHub ile Vercel production env'de birebir ayni olmali."
+            exit 1
+          fi

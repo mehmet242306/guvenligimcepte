@@ -9,6 +9,7 @@ jobs:
     env:
       APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
       SELF_HEALING_CRON_SECRET: ${{ secrets.SELF_HEALING_CRON_SECRET }}
+      VERCEL_PROTECTION_BYPASS_SECRET: ${{ secrets.VERCEL_PROTECTION_BYPASS_SECRET }}
     steps:
       - name: Validate required secrets
         shell: bash
@@ -21,6 +22,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          bypass=()
+          if [ -n "${VERCEL_PROTECTION_BYPASS_SECRET:-}" ]; then
+            bypass+=(-H "x-vercel-protection-bypass: ${VERCEL_PROTECTION_BYPASS_SECRET}")
+          fi
           BUILD_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           SMOKE_COMPLETED="0"
           log_status() {
@@ -30,6 +35,7 @@ jobs:
             curl -fsS -X POST "${APP_BASE_URL%/}/api/self-healing/deployments/log" \
               -H "Content-Type: application/json" \
               -H "x-self-healing-key: ${SELF_HEALING_CRON_SECRET}" \
+              "${bypass[@]}" \
               --data "{\"environment\":\"production\",\"source\":\"github_actions\",\"status\":\"${status}\",\"smokeTestStatus\":\"${smoke_status}\",\"commitSha\":\"${GITHUB_SHA}\",\"branch\":\"${GITHUB_REF_NAME}\",\"buildUrl\":\"${BUILD_URL}\",\"initiatedBy\":\"github_actions\",\"details\":{\"summary\":\"${details}\"}}"
           }
           on_error() {
@@ -41,15 +47,15 @@ jobs:
 
           log_status "started" "pending" "Smoke suite started"
 
-          if ! health_response="$(curl -fsS "${APP_BASE_URL%/}/api/health")"; then
+          if ! health_response="$(curl -fsS "${APP_BASE_URL%/}/api/health" "${bypass[@]}")"; then
             log_status "failed" "failed" "Health endpoint request failed"
             exit 1
           fi
 
           printf '%s' "$health_response" | python3 -c "import json,sys; payload=json.load(sys.stdin); status=payload.get('status'); assert status in ('healthy','degraded'), f'Unexpected health status: {status}'"
 
-          curl -fsS "${APP_BASE_URL%/}/" > /dev/null
-          curl -fsS "${APP_BASE_URL%/}/login" > /dev/null
+          curl -fsS "${APP_BASE_URL%/}/" "${bypass[@]}" > /dev/null
+          curl -fsS "${APP_BASE_URL%/}/login" "${bypass[@]}" > /dev/null
 
           log_status "success" "success" "Smoke suite completed"
           SMOKE_COMPLETED="1"
