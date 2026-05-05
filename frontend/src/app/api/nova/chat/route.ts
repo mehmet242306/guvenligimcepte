@@ -98,6 +98,9 @@ function resolveNovaProfessionalPerspective(message: string): "isg_uzmani" | "is
 type NovaCreateRecordIntent = {
   kind: "task" | "corrective_action" | "training";
   title: string;
+  assigneeText?: string | null;
+  priority?: "Dusuk" | "Orta" | "Yuksek" | "Kritik" | null;
+  deadlineDate?: string | null;
 };
 
 function resolveNovaCreateRecordIntent(message: string): NovaCreateRecordIntent | null {
@@ -110,14 +113,51 @@ function resolveNovaCreateRecordIntent(message: string): NovaCreateRecordIntent 
     return "";
   };
 
+  const assigneeMatch = message.match(/(?:sorumlu|assignee|atanan)\s*[:=]\s*([^\n,.;]+)/i);
+  const assigneeText = assigneeMatch?.[1]?.trim() || null;
+  const priority =
+    /(kritik|critical)/i.test(message)
+      ? "Kritik"
+      : /(yuksek|high)/i.test(message)
+        ? "Yuksek"
+        : /(dusuk|low)/i.test(message)
+          ? "Dusuk"
+          : /(orta|medium)/i.test(message)
+            ? "Orta"
+            : null;
+
+  const dateMatch = message.match(/\b(\d{4}-\d{2}-\d{2}|\d{2}[./-]\d{2}[./-]\d{4})\b/);
+  const trDateLike = dateMatch?.[1] ?? null;
+  const today = new Date();
+  const toIso = (date: Date) => date.toISOString().slice(0, 10);
+  let deadlineDate: string | null = null;
+  if (trDateLike) {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trDateLike)) {
+      deadlineDate = trDateLike;
+    } else {
+      const [dd, mm, yyyy] = trDateLike.split(/[./-]/);
+      if (dd && mm && yyyy) {
+        deadlineDate = `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
+      }
+    }
+  } else if (/(yarin|tomorrow)/i.test(message)) {
+    const d = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+    deadlineDate = toIso(d);
+  } else if (/(haftaya|next week)/i.test(message)) {
+    const d = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+    deadlineDate = toIso(d);
+  } else if (/(bugun|today)/i.test(message)) {
+    deadlineDate = toIso(today);
+  }
+
   if (/(gorev olustur|gorev ac|task create|create task|yeni gorev)/.test(normalized)) {
-    return { kind: "task", title: extractTitle() || "Nova gorevi" };
+    return { kind: "task", title: extractTitle() || "Nova gorevi", assigneeText, priority, deadlineDate };
   }
   if (/(dof ac|dof olustur|duzeltici faaliyet ac|corrective action create|yeni dof)/.test(normalized)) {
-    return { kind: "corrective_action", title: extractTitle() || "Nova DOF kaydi" };
+    return { kind: "corrective_action", title: extractTitle() || "Nova DOF kaydi", assigneeText, priority, deadlineDate };
   }
   if (/(egitim olustur|egitim planla|training create|yeni egitim|egitim ekle)/.test(normalized)) {
-    return { kind: "training", title: extractTitle() || "Nova egitimi" };
+    return { kind: "training", title: extractTitle() || "Nova egitimi", assigneeText, priority, deadlineDate };
   }
 
   return null;
@@ -165,6 +205,32 @@ async function createRecordFromNovaIntent(params: {
   const in14Days = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 10);
+  const resolvedDeadline = params.intent.deadlineDate ?? in14Days;
+  const resolvedPriority = params.intent.priority ?? "Orta";
+  const correctiveActionPriority =
+    resolvedPriority === "Dusuk"
+      ? "Düşük"
+      : resolvedPriority === "Yuksek"
+        ? "Yüksek"
+        : resolvedPriority;
+
+  let assigneeAuthUserId: string | null = null;
+  let assigneeProfileId: string | null = null;
+  if (params.intent.assigneeText) {
+    const token = params.intent.assigneeText.trim();
+    const { data: profileRows } = await service
+      .from("user_profiles")
+      .select("id, auth_user_id, full_name, email")
+      .eq("organization_id", params.organizationId)
+      .or(`full_name.ilike.%${token}%,email.ilike.%${token}%`)
+      .limit(1);
+
+    const profile = (profileRows?.[0] ?? null) as
+      | { id?: string | null; auth_user_id?: string | null }
+      | null;
+    assigneeAuthUserId = profile?.auth_user_id ?? null;
+    assigneeProfileId = profile?.id ?? null;
+  }
 
   if (params.intent.kind === "task") {
     const basePayload: Record<string, unknown> = {
@@ -173,17 +239,25 @@ async function createRecordFromNovaIntent(params: {
       title: params.intent.title,
       description: "Nova tarafindan olusturulan gorev.",
       start_date: isoDate,
-      end_date: isoDate,
+      end_date: resolvedDeadline,
       status: "planned",
       reminder_days: 3,
       include_in_timesheet: false,
       recurrence: "none",
+      metadata: {
+        source: "nova_chat",
+        requested_priority: resolvedPriority,
+      },
     };
     const fallbackCategoryId = "9b722ae5-0a72-48c8-9d1f-836e1a114b8a";
 
     const { data, error } = await service
       .from("isg_tasks")
-      .insert({ ...basePayload, category_id: fallbackCategoryId })
+      .insert({
+        ...basePayload,
+        category_id: fallbackCategoryId,
+        ...(assigneeProfileId ? { assigned_to: assigneeProfileId } : {}),
+      })
       .select("id")
       .single();
 
@@ -217,11 +291,11 @@ async function createRecordFromNovaIntent(params: {
         title: params.intent.title,
         training_type: "zorunlu",
         trainer_name: "Nova plani",
-        training_date: in14Days,
+        training_date: resolvedDeadline,
         duration_hours: 2,
         location: "Saha",
         status: "planned",
-        notes: "Nova sohbetinden olusturulan egitim kaydi.",
+        notes: `Nova sohbetinden olusturulan egitim kaydi.${params.intent.assigneeText ? ` Sorumlu: ${params.intent.assigneeText}.` : ""}`,
       })
       .select("id")
       .single();
@@ -257,11 +331,11 @@ async function createRecordFromNovaIntent(params: {
       category: "Genel",
       corrective_action: "Sahada dogrulayip aksiyon adimlarini uygulayin.",
       preventive_action: "Tekrari onlemek icin periyodik kontrol planlayin.",
-      responsible_user_id: params.userId,
+      responsible_user_id: assigneeAuthUserId ?? params.userId,
       responsible_role: "isg_uzmani",
-      deadline: in14Days,
+      deadline: resolvedDeadline,
       status: "tracking",
-      priority: "Orta",
+      priority: correctiveActionPriority,
       completion_percentage: 0,
       ai_generated: true,
       ishikawa_snapshot: {},
