@@ -1974,6 +1974,21 @@
         "firstAidNotes": "Erste-Hilfe-Beschreibung",
         "witnesses": "Zeugen"
       },
+      "personnelPicker": {
+        "loading": "Loading personnel…",
+        "placeholderHasCompany": "Choose from company roster or search…",
+        "placeholderNoCompany": "Select a company first",
+        "noMatch": "No matching personnel",
+        "emptyRoster": "No personnel on file for this company",
+        "allSelected": "All have been selected",
+        "manualAdd": "Add manually (not on roster)",
+        "manualBadge": "Manual",
+        "fullNamePlaceholder": "Full name",
+        "phoneOptional": "Phone (optional)",
+        "emailOptional": "Email (optional)",
+        "add": "Add",
+        "cancel": "Cancel"
+      },
       "sgk": {
         "modalTitle": "Erinnerung SGK-Meldung",
         "modalBody": "Nach dem türkischen Arbeitsschutzgesetz 6331 muss dieser Arbeitsunfall innerhalb von 3 Werktagen der SGK gemeldet werden.",

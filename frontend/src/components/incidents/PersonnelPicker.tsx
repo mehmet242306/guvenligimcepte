@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Search, Plus, X, Users, UserPlus, Building2 } from "lucide-react";
 import { fetchPersonnelFromSupabase, type PersonnelRecord } from "@/lib/supabase/personnel-api";
 
@@ -23,6 +24,7 @@ interface PersonnelPickerProps {
 }
 
 export function PersonnelPicker({ companyId, selected, onChange, mode, label }: PersonnelPickerProps) {
+  const tp = useTranslations("incidents.wizard.personnelPicker");
   const [personnel, setPersonnel] = useState<PersonnelRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -108,7 +110,7 @@ export function PersonnelPicker({ companyId, selected, onChange, mode, label }: 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-sm font-medium text-foreground">{person.fullName}</span>
-                  {person.isManual && <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-300">Manuel</span>}
+                  {person.isManual && <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-300">{tp("manualBadge")}</span>}
                 </div>
                 {(person.positionTitle || person.department) && (
                   <div className="mt-0.5 text-xs text-muted-foreground">
@@ -140,7 +142,7 @@ export function PersonnelPicker({ companyId, selected, onChange, mode, label }: 
               value={search}
               onChange={(e) => { setSearch(e.target.value); setDropdownOpen(true); }}
               onFocus={() => setDropdownOpen(true)}
-              placeholder={companyId ? (loading ? "Personel yükleniyor..." : "Firma personelinden seç veya ara...") : "Önce firma seçin"}
+              placeholder={companyId ? (loading ? tp("loading") : tp("placeholderHasCompany")) : tp("placeholderNoCompany")}
               disabled={!companyId || loading}
               className="h-10 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
             />
@@ -153,7 +155,7 @@ export function PersonnelPicker({ companyId, selected, onChange, mode, label }: 
             <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-64 overflow-y-auto rounded-xl border border-border bg-card shadow-lg">
               {filtered.length === 0 ? (
                 <div className="px-3 py-4 text-center text-xs text-muted-foreground">
-                  {search ? "Eşleşen personel bulunamadı" : personnel.length === 0 ? "Firmada kayıtlı personel yok" : "Tümü seçildi"}
+                  {search ? tp("noMatch") : personnel.length === 0 ? tp("emptyRoster") : tp("allSelected")}
                 </div>
               ) : (
                 filtered.map((p) => (
@@ -188,7 +190,7 @@ export function PersonnelPicker({ companyId, selected, onChange, mode, label }: 
             onClick={() => setManualOpen(true)}
             className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
           >
-            <Plus className="size-3.5" /> Manuel Ekle (personel dışından)
+            <Plus className="size-3.5" /> {tp("manualAdd")}
           </button>
         ) : (
           <div className="space-y-2 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3">
@@ -196,7 +198,7 @@ export function PersonnelPicker({ companyId, selected, onChange, mode, label }: 
               type="text"
               value={manualForm.fullName}
               onChange={(e) => setManualForm({ ...manualForm, fullName: e.target.value })}
-              placeholder="Ad Soyad"
+              placeholder={tp("fullNamePlaceholder")}
               className="h-9 w-full rounded-lg border border-border bg-input px-3 text-sm text-foreground"
             />
             {mode === "witness" && (
@@ -205,14 +207,14 @@ export function PersonnelPicker({ companyId, selected, onChange, mode, label }: 
                   type="text"
                   value={manualForm.phone ?? ""}
                   onChange={(e) => setManualForm({ ...manualForm, phone: e.target.value })}
-                  placeholder="Telefon (opsiyonel)"
+                  placeholder={tp("phoneOptional")}
                   className="h-9 w-full rounded-lg border border-border bg-input px-3 text-sm text-foreground"
                 />
                 <input
                   type="email"
                   value={manualForm.email ?? ""}
                   onChange={(e) => setManualForm({ ...manualForm, email: e.target.value })}
-                  placeholder="E-posta (opsiyonel)"
+                  placeholder={tp("emailOptional")}
                   className="h-9 w-full rounded-lg border border-border bg-input px-3 text-sm text-foreground"
                 />
               </div>
@@ -224,14 +226,14 @@ export function PersonnelPicker({ companyId, selected, onChange, mode, label }: 
                 disabled={!manualForm.fullName.trim()}
                 className="flex-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground disabled:opacity-50"
               >
-                Ekle
+                {tp("add")}
               </button>
               <button
                 type="button"
                 onClick={() => { setManualOpen(false); setManualForm({ fullName: "", isManual: true }); }}
                 className="rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
               >
-                İptal
+                {tp("cancel")}
               </button>
             </div>
           </div>

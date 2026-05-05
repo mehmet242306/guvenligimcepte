@@ -260,6 +260,21 @@
       "firstAidNotes": "First aid description",
       "witnesses": "Witnesses"
     },
+    "personnelPicker": {
+      "loading": "Loading personnel…",
+      "placeholderHasCompany": "Choose from company roster or search…",
+      "placeholderNoCompany": "Select a company first",
+      "noMatch": "No matching personnel",
+      "emptyRoster": "No personnel on file for this company",
+      "allSelected": "All have been selected",
+      "manualAdd": "Add manually (not on roster)",
+      "manualBadge": "Manual",
+      "fullNamePlaceholder": "Full name",
+      "phoneOptional": "Phone (optional)",
+      "emailOptional": "Email (optional)",
+      "add": "Add",
+      "cancel": "Cancel"
+    },
     "sgk": {
       "modalTitle": "SGK notification reminder",
       "modalBody": "Under Law No. 6331 on occupational health and safety, this work accident must be reported to SGK within 3 business days.",
