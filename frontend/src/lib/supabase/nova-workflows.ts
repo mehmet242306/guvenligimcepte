@@ -501,22 +501,138 @@ export async function getNovaProactiveBrief(locale: string = "tr"): Promise<Nova
         : `Nova ogrendi: ${signal.signal_label}`,
     );
 
+  const overdueTaskCount = filterAccessibleRows(
+    (dueTasksRes.data || []) as Array<{
+      id: string;
+      title: string;
+      start_date: string;
+      status: string;
+      company_workspace_id?: string | null;
+    }>,
+    accessibleWorkspaceIds,
+    organizationWideAccess,
+  ).filter((task) => task.status === "overdue").length;
+
+  const openIncidentCount = filterAccessibleRows(
+    (incidentsRes.data || []) as Array<{
+      id: string;
+      incident_code: string;
+      status: string;
+      company_workspace_id?: string | null;
+      created_at: string;
+    }>,
+    accessibleWorkspaceIds,
+    organizationWideAccess,
+  ).length;
+
+  const pendingDocumentCount = filterAccessibleRows(
+    (documentsRes.data || []) as Array<{
+      id: string;
+      title: string;
+      status: string;
+      company_workspace_id?: string | null;
+      updated_at: string;
+    }>,
+    accessibleWorkspaceIds,
+    organizationWideAccess,
+  ).filter((document) => document.status === "onay_bekliyor").length;
+
+  const plannedTrainingCount = filterAccessibleRows(
+    (dueTrainingsRes.data || []) as Array<{
+      id: string;
+      title: string;
+      training_date: string;
+      status: string;
+      company_workspace_id?: string | null;
+    }>,
+    accessibleWorkspaceIds,
+    organizationWideAccess,
+  ).length;
+
+  const urgencyInsights: string[] = [];
+  if (overdueTaskCount > 0) {
+    urgencyInsights.push(
+      uiLanguage === "en"
+        ? `Critical: ${overdueTaskCount} overdue task(s) need immediate follow-up.`
+        : `Kritik: ${overdueTaskCount} gecikmis gorev icin hemen takip gerekiyor.`,
+    );
+  }
+  if (openIncidentCount > 0) {
+    urgencyInsights.push(
+      uiLanguage === "en"
+        ? `Warning: ${openIncidentCount} incident record(s) are still open.`
+        : `Uyari: ${openIncidentCount} olay kaydi halen acik durumda.`,
+    );
+  }
+  if (pendingDocumentCount > 0) {
+    urgencyInsights.push(
+      uiLanguage === "en"
+        ? `Reminder: ${pendingDocumentCount} document(s) are waiting for approval.`
+        : `Hatirlatma: ${pendingDocumentCount} dokuman onay bekliyor.`,
+    );
+  }
+  if (plannedTrainingCount > 0) {
+    urgencyInsights.push(
+      uiLanguage === "en"
+        ? `Planning: ${plannedTrainingCount} planned training(s) should be checked for attendance/readiness.`
+        : `Planlama: ${plannedTrainingCount} planli egitim icin katilim/hazirlik kontrolu gerekli.`,
+    );
+  }
+
+  const priorityPromptAction: NovaFollowUpAction = {
+    id: `prompt:priority-plan`,
+    label:
+      uiLanguage === "en"
+        ? "Build my top-3 operational priorities"
+        : "En kritik 3 operasyon onceligimi cikar",
+    description:
+      uiLanguage === "en"
+        ? "Nova will summarize what to do first, with owner and deadline suggestion."
+        : "Nova once yapilacaklari sorumlu ve hedef tarih onerisiyle listeler.",
+    kind: "prompt",
+    prompt:
+      uiLanguage === "en"
+        ? "Based on current open tasks, incidents, trainings and documents, list my top 3 priorities with owner and due date suggestion."
+        : "Acik gorev, olay, egitim ve dokuman durumuna gore en kritik 3 onceligi sorumlu ve hedef tarih onerisiyle listele.",
+  };
+
   const uniqueActions = actions
     .filter((action, index, arr) => arr.findIndex((candidate) => candidate.id === action.id) === index)
-    .slice(0, 6);
+    .sort((a, b) => {
+      const aScore =
+        String(a.status || "").toLowerCase() === "overdue"
+          ? 3
+          : String(a.status || "").toLowerCase().includes("dof_open") ||
+              String(a.status || "").toLowerCase().includes("investigating") ||
+              String(a.status || "").toLowerCase().includes("onay_bekliyor")
+            ? 2
+            : 1;
+      const bScore =
+        String(b.status || "").toLowerCase() === "overdue"
+          ? 3
+          : String(b.status || "").toLowerCase().includes("dof_open") ||
+              String(b.status || "").toLowerCase().includes("investigating") ||
+              String(b.status || "").toLowerCase().includes("onay_bekliyor")
+            ? 2
+            : 1;
+      return bScore - aScore;
+    })
+    .slice(0, 5);
+
+  const finalActions = [priorityPromptAction, ...uniqueActions].slice(0, 6);
 
   const summary = uiLanguage === "en"
-    ? activeWorkflows.length || uniqueActions.length
-      ? `Nova found ${activeWorkflows.length} active workflows and ${uniqueActions.length} follow-up actions for you.`
+    ? activeWorkflows.length || finalActions.length
+      ? `Nova found ${activeWorkflows.length} active workflows and ${finalActions.length} prioritized follow-up actions for you.`
       : "Nova does not see an urgent follow-up right now. You can still ask it to review your next operational step."
-    : activeWorkflows.length || uniqueActions.length
-      ? `Nova sizin icin ${activeWorkflows.length} aktif akis ve ${uniqueActions.length} takip adimi buldu.`
+    : activeWorkflows.length || finalActions.length
+      ? `Nova sizin icin ${activeWorkflows.length} aktif akis ve ${finalActions.length} oncelikli takip adimi buldu.`
       : "Nova su an acil bir takip gormuyor. Yine de bir sonraki operasyon adimini birlikte planlayabiliriz.";
 
   return {
     summary,
-    actions: uniqueActions,
-    insights,
+    actions: finalActions,
+    insights: [...urgencyInsights, ...insights].slice(0, 4),
     activeWorkflows,
   };
 }

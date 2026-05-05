@@ -772,6 +772,16 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         text: summaryLines.join("\n"),
         workflow: brief.activeWorkflows[0] ?? null,
         followUpActions: brief.actions,
+        confidence: "high",
+        sourceStatus: "verified",
+        suggestions: brief.actions
+          .filter((action) => action.kind === "navigate" && action.url)
+          .slice(0, 3)
+          .map((action) => ({
+            label: action.label,
+            path: action.url as string,
+            icon: (action.label?.[0] || "N").toUpperCase(),
+          })),
         timestamp: new Date(),
       };
 
