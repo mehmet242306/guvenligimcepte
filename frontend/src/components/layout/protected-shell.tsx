@@ -100,6 +100,9 @@ const platformAdminPrimaryNav = [
   { href: "/corrective-actions", key: "nav.correctiveActions" },
   { href: "/incidents", key: "nav.incidentsPage" },
   { href: "/isg-library", key: "nav.library" },
+];
+
+const platformAdminSecondaryNav = [
   { href: "/training", key: "nav.trainingHub" },
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/planner", key: "nav.planner" },
@@ -617,7 +620,7 @@ export function ProtectedShell({
       ? osgbPrimaryNav
       : visibleStandardPrimaryNav;
   const baseSecondaryNav = isPlatformAdminShell
-    ? []
+    ? [...platformAdminSecondaryNav]
     : isOsgbShell
       ? [...osgbSecondaryNav]
       : [
