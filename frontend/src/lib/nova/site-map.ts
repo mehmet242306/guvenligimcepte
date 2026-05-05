@@ -295,6 +295,50 @@ export type NovaProductHelpIntent = {
   };
 };
 
+export type NovaGuidanceIntent = {
+  answer: string;
+  navigation?: {
+    action: "navigate";
+    url: string;
+    label: string;
+    reason: string;
+    destination: string;
+    auto_navigate: boolean;
+  };
+};
+
+export function resolveNovaGuidanceIntent(message: string): NovaGuidanceIntent | null {
+  const normalized = normalizeNovaNavigationText(message);
+
+  const lostOrUnsurePattern =
+    /(kayboldum|kararsizim|ne yapacagimi bilmiyorum|nereden baslayayim|hangi sayfaya gideyim|hangi modulu kullanayim|yardim et yonlendir|yonlendirme lazim|adim adim gitmek istiyorum)/;
+
+  if (!lostOrUnsurePattern.test(normalized)) {
+    return null;
+  }
+
+  return {
+    answer: [
+      "Birlikte netlestirelim. Hedefinize gore en dogru baslangic sayfasi:",
+      "- Risk degerlendirme / tehlike analizi: Risk Analizi",
+      "- Kaza, ramak kala, olay kaydi: Olaylar",
+      "- Duzeltici-onleyici faaliyet takibi: DOF",
+      "- Gorev, plan, takvim: Ajanda",
+      "- Mevzuat, hazir sablon, prosedur: ISG Kutuphanesi",
+      "",
+      "Istersen once Panel'e gecip oradan modulu birlikte secelim; ya da hedefini tek cumleyle yaz, seni dogrudan ilgili sayfaya yonlendireyim.",
+    ].join("\n"),
+    navigation: {
+      action: "navigate",
+      url: "/dashboard",
+      label: "Panel",
+      reason: "Moduller arasinda kaybolmadan dogru ekrana yonlenmek icin en guvenli baslangic noktasi.",
+      destination: "guided_dashboard_start",
+      auto_navigate: false,
+    },
+  };
+}
+
 /** Sunucu `/api/nova/chat` ile aynı mantık — navigation NovaAgentNavigation ile uyumlu */
 export function resolveNovaProductHelpIntent(message: string): NovaProductHelpIntent | null {
   const normalized = normalizeNovaNavigationText(message);

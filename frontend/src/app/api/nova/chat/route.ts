@@ -21,6 +21,7 @@ import {
 import { consumeEntitlement } from "@/lib/billing/entitlements";
 import {
   buildNovaSiteMapSummaryForPrompt,
+  resolveNovaGuidanceIntent,
   resolveNovaProductHelpIntent,
 } from "@/lib/nova/site-map";
 
@@ -552,6 +553,7 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null;
     const navigationIntent = resolveNovaNavigationIntent(payload.message);
     const greetingIntent = resolveNovaGreetingIntent(payload.message);
+    const guidanceIntent = resolveNovaGuidanceIntent(payload.message);
     const productHelpIntent = resolveNovaProductHelpIntent(payload.message);
 
     let authContext =
@@ -571,8 +573,10 @@ export async function POST(request: NextRequest) {
       const allowReadOnlyLegalFallback = canUseReadOnlyLegalFallback(payload.message);
       const allowNavigationFallback = navigationIntent !== null;
       const allowGreetingFallback = greetingIntent !== null;
+      const allowGuidanceFallback = guidanceIntent !== null;
       const allowProductHelpFallback = productHelpIntent !== null;
       const auth = allowReadOnlyLegalFallback || allowNavigationFallback || allowGreetingFallback || allowProductHelpFallback
+        || allowGuidanceFallback
         ? await requireAuth(request)
         : await requirePermission(request, "ai.use");
       if (!auth.ok) return auth.response;
@@ -641,10 +645,10 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      const hasNovaPermission = navigationIntent || greetingIntent || productHelpIntent
+      const hasNovaPermission = navigationIntent || greetingIntent || guidanceIntent || productHelpIntent
         ? true
         : await hasAiUsePermission(payload.access_token!);
-      const hasManagerAccess = navigationIntent || greetingIntent || productHelpIntent
+      const hasManagerAccess = navigationIntent || greetingIntent || guidanceIntent || productHelpIntent
         ? true
         : await hasLegacyNovaManagerAccess(authContext.userId);
       const readOnlyLegalFallback =
@@ -728,6 +732,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (guidanceIntent) {
+      return NextResponse.json(
+        normalizeNovaAgentResponse({
+          type: "message",
+          answer: guidanceIntent.answer,
+          session_id: payload.session_id ?? null,
+          as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
+          answer_mode: payload.answer_mode,
+          jurisdiction_code: payload.jurisdiction_code ?? authContext.jurisdictionCode ?? "TR",
+          sources: [],
+          ...(guidanceIntent.navigation ? { navigation: guidanceIntent.navigation } : {}),
+          telemetry: {
+            gateway_mode: "guidance_fallback",
+            context_surface: payload.context_surface,
+            current_page: payload.current_page ?? null,
+          },
+        }),
+      );
+    }
+
     const accountContext = await getAccountContextForUser(authContext.userId);
     const contextualHistory = [...payload.history];
 
@@ -747,6 +771,12 @@ export async function POST(request: NextRequest) {
       role: "assistant",
       content:
         "Answer quality constraint: Never invent law articles, deadlines, thresholds, or sanctions. If evidence is incomplete or a source cannot be verified, explicitly say uncertainty, provide the safest conservative path, and recommend checking the official text or an ISG professional. Keep answers concise but practical: summary, legal basis (if available), required actions, and immediate next step in RiskNova.",
+    });
+
+    contextualHistory.unshift({
+      role: "assistant",
+      content:
+        "Navigation guidance constraint: Keep users oriented in-site. If user is unsure, present 3-5 likely modules with one-line purpose and recommend the best next page. Prefer explicit in-product routing over generic advice. You may propose short path hints like: Header > Module, then first action.",
     });
 
     contextualHistory.unshift({
