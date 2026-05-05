@@ -95,6 +95,204 @@ function resolveNovaProfessionalPerspective(message: string): "isg_uzmani" | "is
   return null;
 }
 
+type NovaCreateRecordIntent = {
+  kind: "task" | "corrective_action" | "training";
+  title: string;
+};
+
+function resolveNovaCreateRecordIntent(message: string): NovaCreateRecordIntent | null {
+  const normalized = normalizeNovaIntentText(message);
+  const extractTitle = () => {
+    const quoted = message.match(/["“](.+?)["”]/)?.[1]?.trim();
+    if (quoted) return quoted;
+    const afterColon = message.split(":").slice(1).join(":").trim();
+    if (afterColon) return afterColon.slice(0, 140);
+    return "";
+  };
+
+  if (/(gorev olustur|gorev ac|task create|create task|yeni gorev)/.test(normalized)) {
+    return { kind: "task", title: extractTitle() || "Nova gorevi" };
+  }
+  if (/(dof ac|dof olustur|duzeltici faaliyet ac|corrective action create|yeni dof)/.test(normalized)) {
+    return { kind: "corrective_action", title: extractTitle() || "Nova DOF kaydi" };
+  }
+  if (/(egitim olustur|egitim planla|training create|yeni egitim|egitim ekle)/.test(normalized)) {
+    return { kind: "training", title: extractTitle() || "Nova egitimi" };
+  }
+
+  return null;
+}
+
+async function createRecordFromNovaIntent(params: {
+  intent: NovaCreateRecordIntent;
+  organizationId: string;
+  userId: string;
+  companyWorkspaceId: string | null;
+  language?: string;
+}) {
+  if (!params.companyWorkspaceId) {
+    return {
+      ok: false as const,
+      answer:
+        params.language?.startsWith("en")
+          ? "I can create records directly, but I first need a selected company/workspace context. Please select a company and try again."
+          : "Kaydi dogrudan olusturabilirim ancak once secili bir firma/workspace baglami gerekiyor. Lutfen firma secip tekrar deneyin.",
+      navigation: {
+        action: "navigate" as const,
+        url: "/companies",
+        label: "Firmalar",
+        reason: "Kayit olusturmadan once firma secimi gerekiyor.",
+        destination: "companies_workspace_selection",
+        auto_navigate: false,
+      },
+      toolPreview: {
+        toolName: "select_workspace_for_record_create",
+        title: params.language?.startsWith("en") ? "Select Company First" : "Once Firma Secin",
+        summary:
+          params.language?.startsWith("en")
+            ? "A selected workspace is required for direct record creation."
+            : "Dogrudan kayit acmak icin secili workspace gerekli.",
+        riskClass: "read" as const,
+        requiresConfirmation: false,
+        actionSurface: "read" as const,
+      },
+    };
+  }
+
+  const service = createServiceClient();
+  const today = new Date();
+  const isoDate = today.toISOString().slice(0, 10);
+  const in14Days = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+
+  if (params.intent.kind === "task") {
+    const basePayload: Record<string, unknown> = {
+      organization_id: params.organizationId,
+      company_workspace_id: params.companyWorkspaceId,
+      title: params.intent.title,
+      description: "Nova tarafindan olusturulan gorev.",
+      start_date: isoDate,
+      end_date: isoDate,
+      status: "planned",
+      reminder_days: 3,
+      include_in_timesheet: false,
+      recurrence: "none",
+    };
+    const fallbackCategoryId = "9b722ae5-0a72-48c8-9d1f-836e1a114b8a";
+
+    const { data, error } = await service
+      .from("isg_tasks")
+      .insert({ ...basePayload, category_id: fallbackCategoryId })
+      .select("id")
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return {
+      ok: true as const,
+      answer: params.language?.startsWith("en")
+        ? `Task created successfully: ${params.intent.title}`
+        : `Gorev basariyla olusturuldu: ${params.intent.title}`,
+      navigation: {
+        action: "navigate" as const,
+        url: "/planner",
+        label: "Ajanda",
+        reason: "Yeni gorev ajandaya eklendi.",
+        destination: "planner_task_created",
+        auto_navigate: false,
+      },
+      createdId: data?.id as string | undefined,
+    };
+  }
+
+  if (params.intent.kind === "training") {
+    const { data, error } = await service
+      .from("company_trainings")
+      .insert({
+        organization_id: params.organizationId,
+        company_workspace_id: params.companyWorkspaceId,
+        title: params.intent.title,
+        training_type: "zorunlu",
+        trainer_name: "Nova plani",
+        training_date: in14Days,
+        duration_hours: 2,
+        location: "Saha",
+        status: "planned",
+        notes: "Nova sohbetinden olusturulan egitim kaydi.",
+      })
+      .select("id")
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return {
+      ok: true as const,
+      answer: params.language?.startsWith("en")
+        ? `Training record created: ${params.intent.title}`
+        : `Egitim kaydi olusturuldu: ${params.intent.title}`,
+      navigation: {
+        action: "navigate" as const,
+        url: `/companies/${params.companyWorkspaceId}?tab=tracking`,
+        label: "Takip",
+        reason: "Egitim kaydi takip sekmesine eklendi.",
+        destination: "training_created_tracking",
+        auto_navigate: false,
+      },
+      createdId: data?.id as string | undefined,
+    };
+  }
+
+  const { data, error } = await service
+    .from("corrective_actions")
+    .insert({
+      organization_id: params.organizationId,
+      company_workspace_id: params.companyWorkspaceId,
+      title: params.intent.title,
+      root_cause: "Nova ilk degerlendirme",
+      category: "Genel",
+      corrective_action: "Sahada dogrulayip aksiyon adimlarini uygulayin.",
+      preventive_action: "Tekrari onlemek icin periyodik kontrol planlayin.",
+      responsible_user_id: params.userId,
+      responsible_role: "isg_uzmani",
+      deadline: in14Days,
+      status: "tracking",
+      priority: "Orta",
+      completion_percentage: 0,
+      ai_generated: true,
+      ishikawa_snapshot: {},
+      metadata: { source: "nova_chat" },
+      created_by: params.userId,
+      updated_by: params.userId,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return {
+    ok: true as const,
+    answer: params.language?.startsWith("en")
+      ? `Corrective action created: ${params.intent.title}`
+      : `DOF kaydi olusturuldu: ${params.intent.title}`,
+    navigation: {
+      action: "navigate" as const,
+      url: data?.id ? `/corrective-actions/${data.id}` : "/corrective-actions",
+      label: "DOF",
+      reason: "Olusturulan kaydi detay ekraninda acabilirsiniz.",
+      destination: "corrective_action_created",
+      auto_navigate: false,
+    },
+    createdId: data?.id as string | undefined,
+  };
+}
+
 function resolveNovaOperationalKickoffIntent(message: string): {
   answer: string;
   toolPreview: {
@@ -729,6 +927,7 @@ export async function POST(request: NextRequest) {
     const productHelpIntent = resolveNovaProductHelpIntent(payload.message);
     const professionalPerspective = resolveNovaProfessionalPerspective(payload.message);
     const operationalKickoffIntent = resolveNovaOperationalKickoffIntent(payload.message);
+    const createRecordIntent = resolveNovaCreateRecordIntent(payload.message);
 
     let authContext =
       payload.access_token
@@ -751,8 +950,9 @@ export async function POST(request: NextRequest) {
       const allowGuidanceFallback = guidanceIntent !== null;
       const allowProductHelpFallback = productHelpIntent !== null;
       const allowOperationalKickoffFallback = operationalKickoffIntent !== null;
+      const allowCreateRecordFallback = createRecordIntent !== null;
       const auth = allowReadOnlyLegalFallback || allowNavigationFallback || allowGreetingFallback || allowProductHelpFallback
-        || allowGuidanceFallback || allowAuditSimulationFallback || allowOperationalKickoffFallback
+        || allowGuidanceFallback || allowAuditSimulationFallback || allowOperationalKickoffFallback || allowCreateRecordFallback
         ? await requireAuth(request)
         : await requirePermission(request, "ai.use");
       if (!auth.ok) return auth.response;
@@ -821,10 +1021,10 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      const hasNovaPermission = navigationIntent || greetingIntent || guidanceIntent || auditSimulationIntent || productHelpIntent || operationalKickoffIntent
+      const hasNovaPermission = navigationIntent || greetingIntent || guidanceIntent || auditSimulationIntent || productHelpIntent || operationalKickoffIntent || createRecordIntent
         ? true
         : await hasAiUsePermission(payload.access_token!);
-      const hasManagerAccess = navigationIntent || greetingIntent || guidanceIntent || auditSimulationIntent || productHelpIntent || operationalKickoffIntent
+      const hasManagerAccess = navigationIntent || greetingIntent || guidanceIntent || auditSimulationIntent || productHelpIntent || operationalKickoffIntent || createRecordIntent
         ? true
         : await hasLegacyNovaManagerAccess(authContext.userId);
       const readOnlyLegalFallback =
@@ -955,6 +1155,81 @@ export async function POST(request: NextRequest) {
           },
         }),
       );
+    }
+
+    if (createRecordIntent) {
+      try {
+        const created = await createRecordFromNovaIntent({
+          intent: createRecordIntent,
+          organizationId: authContext.organizationId,
+          userId: authContext.userId,
+          companyWorkspaceId: effectiveCompanyWorkspaceId,
+          language: payload.language,
+        });
+
+        return NextResponse.json(
+          normalizeNovaAgentResponse({
+            type: "tool_preview",
+            answer: created.answer,
+            session_id: payload.session_id ?? null,
+            as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
+            answer_mode: payload.answer_mode,
+            jurisdiction_code: payload.jurisdiction_code ?? authContext.jurisdictionCode ?? "TR",
+            sources: [],
+            navigation: created.navigation,
+            ...(created.ok
+              ? {
+                  tool_preview: {
+                    toolName: "record_create_success",
+                    title: payload.language?.startsWith("en")
+                      ? "Record Created"
+                      : "Kayit Olusturuldu",
+                    summary: payload.language?.startsWith("en")
+                      ? "Nova created a real database record from chat."
+                      : "Nova sohbetten gercek bir veritabani kaydi olusturdu.",
+                    riskClass: "read",
+                    requiresConfirmation: false,
+                    actionSurface: "read",
+                  },
+                }
+              : { tool_preview: created.toolPreview }),
+            telemetry: {
+              gateway_mode: "record_create_fallback",
+              context_surface: payload.context_surface,
+              current_page: payload.current_page ?? null,
+              company_workspace_id: effectiveCompanyWorkspaceId,
+              created_kind: createRecordIntent.kind,
+              created_id: created.ok ? (created.createdId ?? null) : null,
+            },
+          }),
+        );
+      } catch (error) {
+        return NextResponse.json(
+          normalizeNovaAgentResponse({
+            type: "safety_block",
+            answer:
+              payload.language?.startsWith("en")
+                ? "Nova could not create the record due to a technical issue."
+                : "Nova kaydi teknik bir nedenle olusturamadi.",
+            safety_block: {
+              code: "nova_record_create_failed",
+              title: payload.language?.startsWith("en")
+                ? "Record Creation Failed"
+                : "Kayit Olusturma Basarisiz",
+              message: error instanceof Error ? error.message : "unknown_error",
+            },
+            telemetry: {
+              gateway_mode: "record_create_fallback",
+              context_surface: payload.context_surface,
+              current_page: payload.current_page ?? null,
+              company_workspace_id: effectiveCompanyWorkspaceId,
+              created_kind: createRecordIntent.kind,
+              created_id: null,
+            },
+          }),
+          { status: 500 },
+        );
+      }
     }
 
     if (guidanceIntent) {
