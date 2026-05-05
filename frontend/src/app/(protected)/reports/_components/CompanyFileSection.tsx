@@ -14,6 +14,7 @@ import {
   type CompanyFileCategoryId,
 } from "../_lib/company-file-collector";
 import { downloadCompanyFileZip } from "../_lib/company-file-generator";
+import { AnnualEvaluationReportSection } from "./AnnualEvaluationReportSection";
 import { CompanyOverview } from "./CompanyOverview";
 
 // =============================================================================
@@ -168,6 +169,8 @@ export function CompanyFileSection({ companyWorkspaceId, companyName }: Props) {
 
       {/* Analitik şerit: KPI + 4 grafik */}
       <CompanyOverview categories={categories} loading={loading} />
+
+      <AnnualEvaluationReportSection companyWorkspaceId={companyWorkspaceId} companyName={companyName} />
 
       {/* Firma Dosyası kategori seçici + ZIP indir */}
       <section className="rounded-[1.75rem] border border-border bg-card p-5 shadow-[var(--shadow-card)]">

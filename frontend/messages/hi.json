@@ -4790,7 +4790,23 @@
       "subtitle": "{companyName} के लिए विश्लेषणात्मक सारांश और सभी दस्तावेज़ों को ZIP के रूप में डाउनलोड करें।",
       "successZip": "कंपनी फ़ाइल तैयार और डाउनलोड की गई। {count} रिकॉर्ड संग्रहीत।",
       "title": "रिपोर्ट और कंपनी फ़ाइल",
-      "warnSelectCategory": "कम से कम एक श्रेणी (रिकॉर्ड के साथ) चुनें।"
+      "warnSelectCategory": "कम से कम एक श्रेणी (रिकॉर्ड के साथ) चुनें।",
+      "annualEvaluation": {
+        "title": "Annual evaluation report (AI)",
+        "description": "One-page narrative for management: consolidates risk analyses, findings, CAPA, incidents, documents, field inspections, planner tasks, trainings, periodic controls and committee meetings recorded in RiskNova for the selected year. The model may use Markdown tables; figures come only from your data.",
+        "yearLabel": "Report year",
+        "generate": "Generate report",
+        "generating": "Generating…",
+        "copy": "Copy Markdown",
+        "copied": "Copied",
+        "downloadPdf": "Download PDF",
+        "subtitle": "{company} — calendar year {year}",
+        "pdfTitle": "Annual OHS evaluation — {year}",
+        "disclaimer": "This text is AI-assisted and must be reviewed by a responsible OHS professional before signature or external submission.",
+        "errorPrefix": "Report could not be generated:",
+        "errorGeneric": "Unexpected error",
+        "errorEmpty": "Empty AI response"
+      }
     }
   },
   "riskScoring": {

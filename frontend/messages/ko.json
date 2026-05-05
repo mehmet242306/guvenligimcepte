@@ -4790,7 +4790,23 @@
       "subtitle": "{companyName}에 대한 분석 요약 및 모든 문서를 ZIP으로 다운로드",
       "successZip": "회사 파일이 준비되어 다운로드되었습니다. {count}개 기록이 보관되었습니다.",
       "title": "보고서 및 회사 파일",
-      "warnSelectCategory": "최소 하나의 카테고리(기록 포함)를 선택하세요."
+      "warnSelectCategory": "최소 하나의 카테고리(기록 포함)를 선택하세요.",
+      "annualEvaluation": {
+        "title": "Annual evaluation report (AI)",
+        "description": "One-page narrative for management: consolidates risk analyses, findings, CAPA, incidents, documents, field inspections, planner tasks, trainings, periodic controls and committee meetings recorded in RiskNova for the selected year. The model may use Markdown tables; figures come only from your data.",
+        "yearLabel": "Report year",
+        "generate": "Generate report",
+        "generating": "Generating…",
+        "copy": "Copy Markdown",
+        "copied": "Copied",
+        "downloadPdf": "Download PDF",
+        "subtitle": "{company} — calendar year {year}",
+        "pdfTitle": "Annual OHS evaluation — {year}",
+        "disclaimer": "This text is AI-assisted and must be reviewed by a responsible OHS professional before signature or external submission.",
+        "errorPrefix": "Report could not be generated:",
+        "errorGeneric": "Unexpected error",
+        "errorEmpty": "Empty AI response"
+      }
     }
   },
   "riskScoring": {

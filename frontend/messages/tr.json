@@ -4978,7 +4978,23 @@
       "categoryHint": "Seçmek için tıkla",
       "warnSelectCategory": "En az bir kategori seçmelisin (içinde kayıt olan).",
       "successZip": "Firma dosyası hazırlandı ve tarayıcına indirildi. Toplam {count} kayıt arşivlendi.",
-      "failZipPrefix": "Firma dosyası oluşturulamadı:"
+      "failZipPrefix": "Firma dosyası oluşturulamadı:",
+      "annualEvaluation": {
+        "title": "Yıllık değerlendirme raporu (AI)",
+        "description": "Yönetim özeti: Seçilen takvim yılında RiskNova'ya işlenen risk analizleri, bulgular, DÖF, olaylar, dokümanlar, saha denetimleri, ajanda görevleri, eğitimler, periyodik kontroller ve İSG kurulu toplantılarını tek metinde birleştirir. Tablo kullanılabilir; rakamlar yalnızca verinizden gelir.",
+        "yearLabel": "Rapor yılı",
+        "generate": "Raporu oluştur",
+        "generating": "Oluşturuluyor…",
+        "copy": "Metni kopyala",
+        "copied": "Kopyalandı",
+        "downloadPdf": "PDF indir",
+        "subtitle": "{company} — {year} takvim yılı",
+        "pdfTitle": "Yıllık İSG değerlendirmesi — {year}",
+        "disclaimer": "Metin yapay zekâ desteklidir; imza veya dış paylaşım öncesi yetkili İSG profesyoneli tarafından gözden geçirilmelidir.",
+        "errorPrefix": "Rapor oluşturulamadı:",
+        "errorGeneric": "Beklenmeyen hata",
+        "errorEmpty": "Boş yanıt"
+      }
     }
   },
   "incidents": {
