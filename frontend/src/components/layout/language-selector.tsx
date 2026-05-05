@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -181,12 +182,21 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; right: number }>({ top: 0, right: 0 });
   const { locale, setLocale, t } = useI18n();
+  const isAdmin = useIsAdmin(false);
   const triggerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const current = languages.find((l) => l.code === locale) || languages[0];
+  const visibleLanguages = isAdmin ? languages : languages.filter((l) => l.code === "tr");
+  const current = visibleLanguages.find((l) => l.code === locale) || visibleLanguages[0];
   const FlagIcon = flagComponents[current.code] || FlagTR;
+
+  useEffect(() => {
+    // Non-admin users should only use Turkish in production UI.
+    if (!isAdmin && locale !== "tr") {
+      setLocale("tr");
+    }
+  }, [isAdmin, locale, setLocale]);
 
   const updateMenuPosition = useCallback(() => {
     const btn = buttonRef.current;
@@ -238,7 +248,7 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
         isLight ? "border-border bg-card" : "border-white/10 bg-[var(--navy-deep)]",
       )}
     >
-      {languages.map((lang) => {
+      {visibleLanguages.map((lang) => {
         const Flag = flagComponents[lang.code] || FlagTR;
         const isActive = current.code === lang.code;
         return (
