@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,16 +32,18 @@ import {
 
 type CategoryKey = "man" | "machine" | "method" | "material" | "environment" | "measurement";
 
-const ishikawaCategories: { key: CategoryKey; label: string; color: string; desc: string }[] = [
-  { key: "man", label: "Insan", color: "#B8860B", desc: "Egitim eksikligi, dikkatsizlik, yorgunluk, deneyimsizlik..." },
-  { key: "machine", label: "Makine", color: "#38BDF8", desc: "Arizali ekipman, bakim eksikligi, koruyucu eksikligi..." },
-  { key: "method", label: "Yontem", color: "#F59E0B", desc: "Prosedur eksikligi, yanlis is talimati, yetersiz planlama..." },
-  { key: "material", label: "Malzeme", color: "#D4A017", desc: "Kalitesiz malzeme, yanlis depolama, tehlikeli kimyasal..." },
-  { key: "environment", label: "Cevre", color: "#10B981", desc: "Yetersiz aydinlatma, gurultu, sicaklik, zemin kosullari..." },
-  { key: "measurement", label: "Olcum", color: "#A855F7", desc: "Kalibrasyon hatasi, yanlis olcum, denetim eksikligi..." },
+const ISHIKAWA_CATEGORIES: { key: CategoryKey; color: string }[] = [
+  { key: "man", color: "#B8860B" },
+  { key: "machine", color: "#38BDF8" },
+  { key: "method", color: "#F59E0B" },
+  { key: "material", color: "#D4A017" },
+  { key: "environment", color: "#10B981" },
+  { key: "measurement", color: "#A855F7" },
 ];
 
 export function IshikawaClient() {
+  const t = useTranslations("incidents.ishikawaPage");
+  const locale = useLocale();
   const params = useParams();
   const router = useRouter();
   const incidentId = params.id as string;
@@ -125,7 +128,7 @@ export function IshikawaClient() {
   // Silme
   async function handleDelete() {
     if (!ishikawa) return;
-    if (!confirm("Bu Ishikawa analizini silmek istediginize emin misiniz? Bu islem geri alinamaz.")) return;
+    if (!confirm(t("confirmDelete"))) return;
     const ok = await deleteIshikawa(ishikawa.id);
     if (ok) {
       router.push(`/incidents/${incidentId}`);
@@ -232,11 +235,11 @@ export function IshikawaClient() {
     return (
       <div className="page-stack">
         <PageHeader
-          title="Analiz Karsilastirmasi"
-          description="Iki Ishikawa analizini yan yana karsilastirin"
+          title={t("compare.title")}
+          description={t("compare.description")}
           meta={
             <button onClick={() => setCompareTarget(null)} className="text-sm text-muted-foreground hover:text-foreground">
-              <ArrowLeft className="mr-1 inline size-4" /> Analize Don
+              <ArrowLeft className="mr-1 inline size-4" /> {t("compare.back")}
             </button>
           }
         />
@@ -252,30 +255,30 @@ export function IshikawaClient() {
   return (
     <div className="page-stack">
       <PageHeader
-        title="Ishikawa (Balikkil\u00E7igi) Diyagrami"
-        description="6M kok neden analizi - gorsel diyagram"
+        title={t("title")}
+        description={t("description")}
         meta={
           <Link href={`/incidents/${incidentId}`} className="text-sm text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="mr-1 inline size-4" /> Olay Detayina Don
+            <ArrowLeft className="mr-1 inline size-4" /> {t("backToIncident")}
           </Link>
         }
         actions={
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={exportSVGasPDF}>
-              <Download className="mr-1 size-4" /> PNG Indir
+              <Download className="mr-1 size-4" /> {t("actions.downloadPng")}
             </Button>
             {ishikawa && (
               <>
                 <Button variant="outline" size="sm" onClick={handleToggleShare}>
                   <Share2 className="mr-1 size-4" />
-                  {ishikawa.sharedWithCompany ? "Paylasim Kapat" : "Firmayla Paylas"}
+                  {ishikawa.sharedWithCompany ? t("actions.disableShare") : t("actions.shareWithCompany")}
                 </Button>
                 <Button variant="outline" size="sm" onClick={handleCompareMode}>
                   <Scale className="mr-1 size-4" />
-                  {compareMode ? "Karsilastirmayi Kapat" : "Karsilastir"}
+                  {compareMode ? t("actions.closeCompare") : t("actions.compare")}
                 </Button>
                 <Button variant="outline" size="sm" onClick={handleDelete} className="text-danger hover:text-danger">
-                  <Trash2 className="mr-1 size-4" /> Sil
+                  <Trash2 className="mr-1 size-4" /> {t("actions.delete")}
                 </Button>
               </>
             )}
@@ -285,19 +288,19 @@ export function IshikawaClient() {
 
       {/* Paylasim badge */}
       {ishikawa?.sharedWithCompany && (
-        <Badge variant="success">Firmayla Paylasildi</Badge>
+        <Badge variant="success">{t("sharedBadge")}</Badge>
       )}
 
       {/* Karsilastirma icin analiz secimi */}
       {compareMode && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Karsilastirilacak Analizi Secin</CardTitle>
-            <CardDescription>Asagidaki listeden bir analiz secin, mevcut analizle yan yana karsilastirilacak.</CardDescription>
+            <CardTitle className="text-sm">{t("compare.pickTitle")}</CardTitle>
+            <CardDescription>{t("compare.pickDescription")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2 max-h-64 overflow-y-auto">
             {allAnalyses.length === 0 ? (
-              <p className="text-xs text-muted-foreground">Karsilastirilacak baska analiz bulunamadi.</p>
+              <p className="text-xs text-muted-foreground">{t("compare.noneFound")}</p>
             ) : allAnalyses.map((a) => (
               <button
                 key={a.id}
@@ -306,11 +309,11 @@ export function IshikawaClient() {
                 className="flex w-full items-center justify-between rounded-lg border border-border bg-card p-3 text-left transition-colors hover:border-primary/30"
               >
                 <div>
-                  <div className="text-sm font-medium text-foreground">{a.incidentCode || "Isimsiz"}</div>
-                  <div className="text-xs text-muted-foreground line-clamp-1">{a.incidentTitle || a.problemStatement || "Tanim yok"}</div>
+                  <div className="text-sm font-medium text-foreground">{a.incidentCode || t("compare.unnamed")}</div>
+                  <div className="text-xs text-muted-foreground line-clamp-1">{a.incidentTitle || a.problemStatement || t("compare.noDefinition")}</div>
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {new Date(a.createdAt).toLocaleDateString("tr-TR")}
+                  {new Date(a.createdAt).toLocaleDateString()}
                 </div>
               </button>
             ))}
@@ -328,34 +331,34 @@ export function IshikawaClient() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <GitBranch className="size-5 text-[var(--gold)]" />
-            Problem Tanimi
+            {t("problem.title")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Textarea value={problemStatement} onChange={(e) => setProblemStatement(e.target.value)}
-            placeholder="Analiz edilen problemi tanimlain..." />
+            placeholder={t("problem.placeholder")} />
         </CardContent>
       </Card>
 
       {/* 6M Kategorileri */}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {ishikawaCategories.map((cat) => (
+        {ISHIKAWA_CATEGORIES.map((cat) => (
           <Card key={cat.key}>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base" style={{ color: cat.color }}>{cat.label}</CardTitle>
+                <CardTitle className="text-base" style={{ color: cat.color }}>{t(`categories.${cat.key}.label`)}</CardTitle>
                 <button type="button" onClick={() => addCause(cat.key)}
                   className="inline-flex size-7 items-center justify-center rounded-lg bg-muted text-muted-foreground hover:text-foreground">
                   <Plus className="size-4" />
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">{cat.desc}</p>
+              <p className="text-xs text-muted-foreground">{t(`categories.${cat.key}.desc`)}</p>
             </CardHeader>
             <CardContent className="space-y-2">
               {causes[cat.key].length === 0 && (
                 <button type="button" onClick={() => addCause(cat.key)}
                   className="w-full rounded-lg border border-dashed border-border py-2.5 text-xs text-muted-foreground hover:border-primary/30 hover:text-foreground transition-colors">
-                  + Neden ekle
+                  {t("categories.addCause")}
                 </button>
               )}
               {causes[cat.key].map((cause, idx) => (
@@ -363,7 +366,7 @@ export function IshikawaClient() {
                   <div className="size-2 shrink-0 rounded-full" style={{ background: cat.color }} />
                   <input type="text" value={cause}
                     onChange={(e) => updateCause(cat.key, idx, e.target.value)}
-                    placeholder={`${cat.label} nedeni...`}
+                    placeholder={t("categories.causePlaceholder", { category: t(`categories.${cat.key}.label`) })}
                     className="h-8 flex-1 rounded-lg border border-border bg-input px-2 text-sm text-foreground placeholder:text-muted-foreground" />
                   <button type="button" onClick={() => removeCause(cat.key, idx)} className="text-muted-foreground hover:text-danger">
                     <Trash2 className="size-3.5" />
@@ -378,12 +381,12 @@ export function IshikawaClient() {
       {/* Kok Neden Sonucu */}
       <Card>
         <CardHeader>
-          <CardTitle>Kok Neden Sonucu</CardTitle>
-          <CardDescription>{totalCauses} neden belirlendi</CardDescription>
+          <CardTitle>{t("rootConclusion.title")}</CardTitle>
+          <CardDescription>{t("rootConclusion.count", { count: totalCauses })}</CardDescription>
         </CardHeader>
         <CardContent>
           <Textarea value={rootCauseConclusion} onChange={(e) => setRootCauseConclusion(e.target.value)}
-            placeholder="Tum analiz sonucunda belirlenen kok neden(ler)..." />
+            placeholder={t("rootConclusion.placeholder")} />
         </CardContent>
       </Card>
 
@@ -394,26 +397,26 @@ export function IshikawaClient() {
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-sm">
                 <History className="size-4" />
-                Versiyon Gecmisi
+                {t("versions.title")}
                 {versions.length > 0 && (
                   <Badge variant="neutral">{versions.length}</Badge>
                 )}
               </CardTitle>
               <Button variant="ghost" size="sm" onClick={handleToggleVersions}>
-                {showVersions ? "Gizle" : "Goster"}
+                {showVersions ? t("versions.hide") : t("versions.show")}
               </Button>
             </div>
           </CardHeader>
           {showVersions && (
             <CardContent className="space-y-2">
               {versions.length === 0 ? (
-                <p className="text-xs text-muted-foreground">Henuz versiyon gecmisi yok. Ilk kayit sonrasi her duzenleme otomatik olarak versiyonlanir.</p>
+                <p className="text-xs text-muted-foreground">{t("versions.empty")}</p>
               ) : versions.map((v) => (
                 <div key={v.id} className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2">
                   <div className="flex items-center gap-3">
                     <Badge variant="warning">v{v.versionNumber}</Badge>
                     <span className="text-xs text-muted-foreground">
-                      {new Date(v.createdAt).toLocaleDateString("tr-TR", {
+                      {new Date(v.createdAt).toLocaleDateString(locale, {
                         day: "numeric", month: "short", year: "numeric",
                         hour: "2-digit", minute: "2-digit",
                       })}
@@ -421,7 +424,7 @@ export function IshikawaClient() {
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => restoreVersion(v)}>
                     <RotateCcw className="mr-1 size-3.5" />
-                    Geri Yukle
+                    {t("versions.restore")}
                   </Button>
                 </div>
               ))}
@@ -433,7 +436,7 @@ export function IshikawaClient() {
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={saving} size="lg">
           <Save className="mr-2 size-4" />
-          {saving ? "Kaydediliyor..." : "Kaydet"}
+          {saving ? t("save.saving") : t("save.save")}
         </Button>
       </div>
     </div>

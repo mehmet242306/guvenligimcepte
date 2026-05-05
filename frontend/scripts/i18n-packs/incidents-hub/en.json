@@ -348,6 +348,128 @@
       "medicalDate": "Date"
     }
   },
+  "dofOsgbForm": {
+    "titleWithIndex": "CORRECTIVE PREVENTIVE ACTION FORM #{index}",
+    "actions": {
+      "pdf": "PDF",
+      "delete": "Delete"
+    },
+    "sections": {
+      "filledBy": "FILLED BY (completed by the reporting person)",
+      "form": "FORM",
+      "approvedBy": "APPROVED BY AUTHORIZED PERSON (completed by employer/authorized person)",
+      "result": "RESULT",
+      "closedBy": "CLOSED BY AUTHORIZED PERSON (completed by employer/employer representative)"
+    },
+    "fields": {
+      "fullName": "Full name",
+      "tcId": "National ID",
+      "company": "Company",
+      "signature": "Signature",
+      "type": "Type",
+      "date": "Date",
+      "place": "Location",
+      "description": "Description",
+      "rootCause": "Root cause",
+      "solutionProposal": "Solution proposal",
+      "companyRole": "Company / Role",
+      "actionsToTake": "Actions to take",
+      "deadlinePeriod": "Deadline period",
+      "status": "Status"
+    },
+    "formTypes": {
+      "duzeltici": "Corrective action",
+      "onleyici": "Preventive action",
+      "ramakKala": "Near miss",
+      "kaza": "Accident",
+      "uygunsuzluk": "Nonconformity",
+      "tehlike": "Hazard"
+    },
+    "resultOptions": {
+      "removed": "Risk eliminated",
+      "notRemoved": "Risk not eliminated"
+    },
+    "placeholders": {
+      "signature": "(digital signature / name-surname)",
+      "locationUnit": "Location / unit",
+      "incidentDesc": "Incident / nonconformity description",
+      "solutionProposal": "Corrective action (short term) + Preventive action (long term)",
+      "days": "{days} days"
+    }
+  },
+  "ishikawaPage": {
+    "title": "Ishikawa (fishbone) diagram",
+    "description": "6M root-cause analysis — visual diagram",
+    "backToIncident": "Back to incident detail",
+    "confirmDelete": "Are you sure you want to delete this Ishikawa analysis? This action cannot be undone.",
+    "sharedBadge": "Shared with company",
+    "actions": {
+      "downloadPng": "Download PNG",
+      "disableShare": "Disable sharing",
+      "shareWithCompany": "Share with company",
+      "closeCompare": "Close compare",
+      "compare": "Compare",
+      "delete": "Delete"
+    },
+    "compare": {
+      "title": "Analysis comparison",
+      "description": "Compare two Ishikawa analyses side by side",
+      "back": "Back to analysis",
+      "pickTitle": "Select analysis to compare",
+      "pickDescription": "Select an analysis from the list below to compare side by side.",
+      "noneFound": "No other analysis found for comparison.",
+      "unnamed": "Untitled",
+      "noDefinition": "No description"
+    },
+    "problem": {
+      "title": "Problem statement",
+      "placeholder": "Describe the analyzed problem..."
+    },
+    "categories": {
+      "addCause": "+ Add cause",
+      "causePlaceholder": "{category} cause...",
+      "man": {
+        "label": "People",
+        "desc": "Training gap, inattention, fatigue, inexperience..."
+      },
+      "machine": {
+        "label": "Machine",
+        "desc": "Faulty equipment, missing maintenance, missing guards..."
+      },
+      "method": {
+        "label": "Method",
+        "desc": "Missing procedures, wrong work instructions, poor planning..."
+      },
+      "material": {
+        "label": "Material",
+        "desc": "Poor material quality, wrong storage, hazardous chemicals..."
+      },
+      "environment": {
+        "label": "Environment",
+        "desc": "Insufficient lighting, noise, temperature, floor conditions..."
+      },
+      "measurement": {
+        "label": "Measurement",
+        "desc": "Calibration errors, incorrect measurements, missing inspections..."
+      }
+    },
+    "rootConclusion": {
+      "title": "Root-cause conclusion",
+      "count": "{count} causes identified",
+      "placeholder": "Root cause(s) identified from the overall analysis..."
+    },
+    "versions": {
+      "title": "Version history",
+      "show": "Show",
+      "hide": "Hide",
+      "empty": "No version history yet. After first save, every edit is versioned automatically.",
+      "restore": "Restore"
+    },
+    "save": {
+      "saving": "Saving...",
+      "save": "Save"
+    }
+  },
   "r2dRca": {
     "dimensions": {
       "C1": {

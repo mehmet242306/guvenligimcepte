@@ -348,6 +348,128 @@
       "medicalDate": "Tarih"
     }
   },
+  "dofOsgbForm": {
+    "titleWithIndex": "DÜZELTİCİ ÖNLEYİCİ FAALİYET FORMU #{index}",
+    "actions": {
+      "pdf": "PDF",
+      "delete": "Sil"
+    },
+    "sections": {
+      "filledBy": "FORMU DOLDURANIN (Bu bölüm bildirimi yapan kişi tarafından doldurulacaktır)",
+      "form": "FORMUN",
+      "approvedBy": "FORMU ONAYLAYAN YETKİLİNİN (Bu bölüm yetkili/işveren tarafından doldurulacaktır)",
+      "result": "SONUÇ",
+      "closedBy": "FORMU KAPATAN YETKİLİNİN (Bu bölüm işveren/işveren vekili tarafından doldurulacaktır)"
+    },
+    "fields": {
+      "fullName": "Adı Soyadı",
+      "tcId": "T.C. Kimlik No",
+      "company": "Firması",
+      "signature": "İmzası",
+      "type": "Türü",
+      "date": "Tarihi",
+      "place": "Yeri",
+      "description": "Tanımı",
+      "rootCause": "Kök Nedeni",
+      "solutionProposal": "Çözüm Önerisi",
+      "companyRole": "Firması/Görevi",
+      "actionsToTake": "Alınacak Aksiyonlar",
+      "deadlinePeriod": "Termin Süresi",
+      "status": "Durum"
+    },
+    "formTypes": {
+      "duzeltici": "Düzeltici Faaliyet",
+      "onleyici": "Önleyici Faaliyet",
+      "ramakKala": "Ramak Kala",
+      "kaza": "Kaza",
+      "uygunsuzluk": "Uygunsuzluk",
+      "tehlike": "Tehlike"
+    },
+    "resultOptions": {
+      "removed": "Risk Ortadan Kaldırıldı",
+      "notRemoved": "Risk Ortadan Kaldırılmadı"
+    },
+    "placeholders": {
+      "signature": "(dijital imza / ad-soyad)",
+      "locationUnit": "Lokasyon/birim",
+      "incidentDesc": "Olay/uygunsuzluk tanımı",
+      "solutionProposal": "Düzeltici faaliyet (kısa vade) + Önleyici faaliyet (uzun vade)",
+      "days": "{days} gün"
+    }
+  },
+  "ishikawaPage": {
+    "title": "İshikawa (Balık Kılçığı) Diyagramı",
+    "description": "6M kök neden analizi - görsel diyagram",
+    "backToIncident": "Olay Detayına Dön",
+    "confirmDelete": "Bu Ishikawa analizini silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
+    "sharedBadge": "Firmayla Paylaşıldı",
+    "actions": {
+      "downloadPng": "PNG İndir",
+      "disableShare": "Paylaşımı Kapat",
+      "shareWithCompany": "Firmayla Paylaş",
+      "closeCompare": "Karşılaştırmayı Kapat",
+      "compare": "Karşılaştır",
+      "delete": "Sil"
+    },
+    "compare": {
+      "title": "Analiz Karşılaştırması",
+      "description": "İki Ishikawa analizini yan yana karşılaştırın",
+      "back": "Analize Dön",
+      "pickTitle": "Karşılaştırılacak Analizi Seçin",
+      "pickDescription": "Aşağıdaki listeden bir analiz seçin, mevcut analizle yan yana karşılaştırılacak.",
+      "noneFound": "Karşılaştırılacak başka analiz bulunamadı.",
+      "unnamed": "İsimsiz",
+      "noDefinition": "Tanım yok"
+    },
+    "problem": {
+      "title": "Problem Tanımı",
+      "placeholder": "Analiz edilen problemi tanımlayın..."
+    },
+    "categories": {
+      "addCause": "+ Neden ekle",
+      "causePlaceholder": "{category} nedeni...",
+      "man": {
+        "label": "İnsan",
+        "desc": "Eğitim eksikliği, dikkatsizlik, yorgunluk, deneyimsizlik..."
+      },
+      "machine": {
+        "label": "Makine",
+        "desc": "Arızalı ekipman, bakım eksikliği, koruyucu eksikliği..."
+      },
+      "method": {
+        "label": "Yöntem",
+        "desc": "Prosedür eksikliği, yanlış iş talimatı, yetersiz planlama..."
+      },
+      "material": {
+        "label": "Malzeme",
+        "desc": "Kalitesiz malzeme, yanlış depolama, tehlikeli kimyasal..."
+      },
+      "environment": {
+        "label": "Çevre",
+        "desc": "Yetersiz aydınlatma, gürültü, sıcaklık, zemin koşulları..."
+      },
+      "measurement": {
+        "label": "Ölçüm",
+        "desc": "Kalibrasyon hatası, yanlış ölçüm, denetim eksikliği..."
+      }
+    },
+    "rootConclusion": {
+      "title": "Kök Neden Sonucu",
+      "count": "{count} neden belirlendi",
+      "placeholder": "Tüm analiz sonucunda belirlenen kök neden(ler)..."
+    },
+    "versions": {
+      "title": "Versiyon Geçmişi",
+      "show": "Göster",
+      "hide": "Gizle",
+      "empty": "Henüz versiyon geçmişi yok. İlk kayıt sonrası her düzenleme otomatik olarak versiyonlanır.",
+      "restore": "Geri Yükle"
+    },
+    "save": {
+      "saving": "Kaydediliyor...",
+      "save": "Kaydet"
+    }
+  },
   "r2dRca": {
     "dimensions": {
       "C1": {
