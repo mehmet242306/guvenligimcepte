@@ -54,6 +54,7 @@ for (const f of fs.readdirSync(DIR)) {
 const localePatches = [
   ["ru.json", "r2dRca.locale.ru.json"],
   ["tr.json", "r2dRca.locale.tr.json"],
+  ["ja.json", "r2dRca.locale.ja.json"],
 ];
 for (const [packFile, patchFile] of localePatches) {
   const patchPath = path.join(DIR, patchFile);
