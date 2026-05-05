@@ -467,7 +467,7 @@
     "clearFilters": "필터 지우기",
     "confirmArchive": {
       "confirm": "확인",
-      "hint": "활성 목록에서 제외됩니다.",
+      "hint": "활성 목록에서 제거됩니다.",
       "title": "\"{name}\"을(를) 보관하시겠습니까?"
     },
     "confirmDelete": {
@@ -490,30 +490,30 @@
       "single": "활성 작업장의 인력 및 기타 운영 기록을 관리하세요."
     },
     "discard": "취소",
-    "employeesSuffix": "직원",
+    "employeesSuffix": "명",
     "empty": {
-      "archiveBannerCompany": "보관된 회사입니다. 복원할 수 있습니다.",
-      "archiveBannerWorksite": "보관된 작업장 기록입니다. 복원할 수 있습니다.",
+      "archiveBannerCompany": "보관된 회사. 복원할 수 있습니다.",
+      "archiveBannerWorksite": "보관된 작업장 기록. 복원할 수 있습니다.",
       "archiveEmptyCompany": "보관함이 비어있음",
       "archiveEmptyDescCompany": "아직 보관된 회사가 없습니다.",
       "archiveEmptyDescWorksite": "아직 보관된 작업장이 없습니다.",
       "archiveEmptyWorksite": "보관함이 비어있음",
       "clearFilters": "필터 지우기",
       "completeWorksite": "작업장 설정 완료",
-      "deletedBannerCompany": "삭제된 회사입니다. 영구 삭제는 되돌릴 수 없습니다.",
-      "deletedBannerWorksite": "삭제된 작업장 기록입니다. 영구 삭제는 되돌릴 수 없습니다.",
+      "deletedBannerCompany": "삭제된 회사. 영구 삭제는 되돌릴 수 없습니다.",
+      "deletedBannerWorksite": "삭제된 작업장 기록. 영구 삭제는 되돌릴 수 없습니다.",
       "deletedEmptyCompany": "삭제된 회사 없음",
       "deletedEmptyDescCompany": "아직 삭제된 회사가 없습니다.",
       "deletedEmptyDescWorksite": "아직 삭제된 작업장이 없습니다.",
       "deletedEmptyWorksite": "삭제된 작업장 없음",
       "initialDescCompany": "시작하려면 첫 번째 회사를 생성하세요.",
       "initialDescWorksite": "이 영역은 활성 작업장 데이터로 채워집니다. 인력 및 기타 기록을 보려면 작업장 설정을 완료하세요.",
-      "initialTitleCompany": "아직 회사가 없음",
-      "initialTitleWorksite": "아직 작업장 기록이 없음",
+      "initialTitleCompany": "아직 회사가 없습니다",
+      "initialTitleWorksite": "아직 작업장 기록이 없습니다",
       "newCompany": "새 회사",
       "noMatchCompany": "일치하는 회사 없음",
       "noMatchDescription": "필터와 일치하는 기록이 없습니다.",
-      "noMatchWorksite": "일치하는 작업장이 없습니다",
+      "noMatchWorksite": "일치하는 작업장 없음",
       "sampleData": "샘플 데이터"
     },
     "entity": {
@@ -535,16 +535,16 @@
       "sector": "업종",
       "sort": "정렬"
     },
-    "limitReachedBanner": "활성 회사/워크스페이스 한도에 도달했습니다. 추가하거나 복원하기 전에 회사를 보관하거나 플랜을 업그레이드하세요.",
+    "limitReachedBanner": "활성 회사/작업공간 한도에 도달했습니다. 추가하거나 복원하기 전에 회사를 보관하거나 플랜을 업그레이드하세요.",
     "links": {
       "riskAnalysis": "위험 분석",
-      "workspace": "워크스페이스"
+      "workspace": "작업공간"
     },
     "metrics": {
-      "actions": "작업",
+      "actions": "조치사항",
       "departments": "부서",
       "employees": "직원",
-      "hazard": "위험",
+      "hazard": "위험요소",
       "locations": "위치",
       "overdue": "지연"
     },
@@ -555,18 +555,18 @@
     },
     "restore": "복원",
     "sort": {
-      "employees": "직원 수",
+      "employees": "직원",
       "name": "이름순",
-      "overdue": "연체",
+      "overdue": "지연",
       "risk": "위험도"
     },
     "stats": {
       "avgMaturity": "평균 성숙도",
       "criticalCompanies": "위험 회사",
       "criticalWorksites": "위험 작업장",
-      "employees": "직원 수",
-      "openActions": "미완료 조치",
-      "overdueTasks": "연체 작업",
+      "employees": "직원",
+      "openActions": "미완료 조치사항",
+      "overdueTasks": "지연된 작업",
       "totalCompanies": "전체 회사",
       "totalWorksites": "전체 작업장"
     },
@@ -580,752 +580,138 @@
       "deleted": "삭제됨"
     },
     "title": {
-      "multi": "내 회사/조직",
+      "multi": "내 회사 / 조직",
       "osgb": "회사 및 작업장",
       "single": "작업장 및 운영 콘텐츠"
     },
     "usage": {
-      "activeOfMax": "{current} / {max} 활성 회사 슬롯 사용 중",
-      "activeOnly": "{count}개 활성 회사/워크스페이스"
+      "activeOfMax": "{current} / {max} 활성 회사 슬롯 사용됨",
+      "activeOnly": "{count}개 활성 회사 / 작업공간"
     }
   },
   "companyWorkspace": {
-    "docTitle": "{name} — Workspace · RiskNova",
-    "docTitleFallback": "Workspace · RiskNova",
-    "notFound": {
-      "title": "Firma bulunamadı",
-      "description": "Bu ID ile eşleşen firma kaydı yok.",
-      "back": "Firmalara Dön"
-    },
-    "backLink": "Çalışma Alanları",
+    "backLink": "작업장",
+    "docTitle": "{name} — 작업공간 · RiskNova",
+    "docTitleFallback": "작업공간 · RiskNova",
+    "invite": "초대",
     "logo": {
-      "uploadTitle": "Logo yükle",
-      "fileTooLarge": "Dosya boyutu çok büyük ({sizeMb} MB). Maksimum 5 MB olmalı.",
-      "imagesOnly": "Sadece resim dosyaları yüklenebilir (PNG, JPEG, WebP, SVG).",
-      "updated": "Logo/görsel güncellendi.",
-      "uploadFailed": "Yükleme başarısız. Lütfen farklı bir dosya deneyin."
+      "fileTooLarge": "파일이 너무 큽니다 ({sizeMb} MB). 최대 크기는 5 MB입니다.",
+      "imagesOnly": "이미지 파일만 업로드할 수 있습니다 (PNG, JPEG, WebP, SVG).",
+      "updated": "로고/이미지가 업데이트되었습니다.",
+      "uploadFailed": "업로드 실패. 다른 파일을 시도해보세요.",
+      "uploadTitle": "로고 업로드"
     },
-    "save": "Kaydet",
-    "saving": "Kaydediliyor...",
-    "invite": "Davet Et",
-    "riskBadgeScore": "{label} {score}",
+    "notFound": {
+      "back": "회사로 돌아가기",
+      "description": "이 ID와 일치하는 회사가 없습니다.",
+      "title": "회사를 찾을 수 없음"
+    },
     "riskBadgeLabelOnly": "{label}",
-    "stats": {
-      "employees": "Çalışan",
-      "locations": "Lokasyon",
-      "departments": "Bölüm",
-      "openActions": "Açık Aksiyon",
-      "overdue": "Geciken",
-      "maturity": "Olgunluk"
-    },
+    "riskBadgeScore": "{label} {score}",
+    "save": "저장",
+    "saving": "저장 중…",
     "sidebar": {
-      "title": "Çalışma Alanı Bölümleri",
-      "hint": "Sol menüden bir alan seç, içeriği sağ tarafta yönet."
+      "hint": "왼쪽에서 영역을 선택하고 오른쪽에서 콘텐츠를 관리하세요.",
+      "title": "작업장 섹션"
+    },
+    "stats": {
+      "departments": "부서",
+      "employees": "직원",
+      "locations": "위치",
+      "maturity": "성숙도",
+      "openActions": "미해결 조치",
+      "overdue": "연체"
     },
     "tabs": {
-      "structure": "Yerleşke",
-      "risk": "Risk ve Saha",
-      "people": "Ekip",
-      "personnel": "Personel",
-      "tracking": "Takip",
-      "ohs_file": "İSG Dosyası",
-      "organization": "Organizasyon",
-      "history": "Geçmiş"
-    },
-    "structure": {
-      "summaryLocation": "Lokasyon",
-      "summaryDepartment": "Bölüm",
-      "summaryEmployee": "Çalışan",
-      "locationsTitle": "Lokasyonlar",
-      "locationsSubtitle": "Firmanın fiziksel yerleşkeleri",
-      "departmentsTitle": "Bölümler",
-      "departmentsSubtitle": "Organizasyonel birimler",
-      "locationPlaceholder": "Lokasyon adı girin",
-      "departmentPlaceholder": "Bölüm adı girin",
-      "addLocation": "Lokasyon Ekle",
-      "addDepartment": "Bölüm Ekle"
-    },
-    "risk": {
-      "pageTitle": "Risk ve Saha Yönetimi",
-      "pageSubtitle": "Risk sınıflandırması, analiz geçmişi ve süreç takibi.",
-      "tabMap": "Risk Haritası",
-      "tabAnalyses": "Analizler ({count})",
-      "newAnalysis": "Yeni Analiz",
-      "metricTotalFindings": "Toplam Tespit",
-      "metricCritical": "Kritik",
-      "metricHigh": "Yüksek",
-      "metricAnalysisCount": "Analiz Sayısı",
-      "badgeCritical": "Kritik: {count}",
-      "badgeHigh": "Yüksek: {count}",
-      "badgeMedium": "Orta: {count}",
-      "badgeLow": "Düşük: {count}",
-      "noFindingsCategory": "Henüz tespit yok",
-      "addCategoryTitle": "Yeni Kategori Ekle",
-      "addCategoryHint": "Özel risk kategorisi tanımlayın",
-      "categoryRisksTitle": "{label} Riskleri",
-      "findingsCountLabel": "{count} tespit bulundu",
-      "noFindingsInCategory": "Bu kategoride henüz tespit yok.",
-      "analysisPrefix": "Analiz:",
-      "edit": "Düzenle",
-      "cancel": "İptal",
-      "save": "Kaydet",
-      "saving": "Kaydediliyor...",
-      "discard": "Vazgeç",
-      "recommendation": "Öneri",
-      "action": "Aksiyon",
-      "notes": "Notlar",
-      "status": "Durum",
-      "note": "Not",
-      "notePlaceholder": "Yapılan çalışmalar, gözlemler...",
-      "emptyAnalysesTitle": "Henüz risk analizi yapılmamış",
-      "emptyAnalysesDescription": "Risk Analizi sayfasından bu firma için ilk analizinizi başlatın.",
-      "findingsInRow": "{count} tespit",
-      "archiveTitle": "Arşivle",
-      "editTitle": "Düzenle",
-      "deleteTitle": "Sil",
-      "confirmDelete": "Sil?",
-      "yes": "Evet",
-      "no": "Hayır",
-      "exportPdfTitle": "PDF İndir",
-      "exportWordTitle": "Word İndir",
-      "exportExcelTitle": "Excel İndir",
-      "analysisStatus": {
-        "completed": "Tamamlandı",
-        "archived": "Arşivlendi",
-        "draft": "Taslak"
-      },
-      "trackingStatus": {
-        "open": "Açık",
-        "in_progress": "Devam Ediyor",
-        "resolved": "Çözüldü",
-        "archived": "Arşivlendi"
-      },
-      "severity": {
-        "critical": "Kritik",
-        "high": "Yüksek",
-        "medium": "Orta",
-        "low": "Düşük"
-      },
-      "method": {
-        "r_skor": "R-SKOR 2D",
-        "fine_kinney": "Fine-Kinney",
-        "l_matrix": "L-Matris",
-        "fmea": "FMEA",
-        "hazop": "HAZOP"
-      },
-      "shareTitle": "Rapor Paylaşımı",
-      "shareDescription": "Paylaşım linkini açarak bu raporu herkesle paylaşabilirsiniz.",
-      "shareEnable": "Paylaşım Linkini Aç",
-      "shareActive": "✓ Paylaşım Aktif",
-      "shareCopyTitle": "Linki Kopyala",
-      "shareCopied": "Kopyalandı",
-      "shareWhatsappTitle": "WhatsApp ile Paylaş",
-      "shareButtonTitle": "Paylaş",
-      "shareWhatsappBody": "RiskNova — {title} Risk Analizi Raporu\n{url}",
-      "participantsHeading": "Katılımcılar",
-      "analysisNoteHeading": "Analiz Notu",
-      "emptyAnalysisRows": "Bu analizde henüz satır yok.",
-      "rowFindingCount": "({count} tespit)",
-      "recommendationInline": "Öneri:",
-      "actionInline": "Aksiyon:",
-      "qrAlt": "QR Kod",
-      "qrCaption": "QR ile paylaş",
-      "categories": {
-        "fiziksel": {
-          "label": "Fiziksel",
-          "examples": "Gürültü, titreşim, aydınlatma, sıcaklık"
-        },
-        "kimyasal": {
-          "label": "Kimyasal",
-          "examples": "Gaz, toz, buhar, kimyasal madde"
-        },
-        "biyolojik": {
-          "label": "Biyolojik",
-          "examples": "Bakteri, virüs, küf, biyolojik etkenler"
-        },
-        "ergonomik": {
-          "label": "Ergonomik",
-          "examples": "Duruş bozukluğu, ağır yük, tekrarlı hareket"
-        },
-        "psikososyal": {
-          "label": "Psikososyal",
-          "examples": "Stres, mobbing, iş yükü, vardiya"
-        },
-        "mekanik": {
-          "label": "Mekanik",
-          "examples": "Makine, ekipman, düşme, sıkışma"
-        },
-        "elektrik": {
-          "label": "Elektrik",
-          "examples": "Çarpma, kısa devre, topraklama"
-        },
-        "yangin": {
-          "label": "Yangın / Patlama",
-          "examples": "Yanıcı madde, patlayıcı ortam, LPG"
-        },
-        "trafik": {
-          "label": "Trafik",
-          "examples": "Araç, forklift, yaya-araç çatışması"
-        },
-        "cevre": {
-          "label": "Çevresel",
-          "examples": "Atık, emisyon, gürültü kirliliği"
-        }
-      }
-    },
-    "tracking": {
-      "sectionActions": "Açık Aksiyonlar",
-      "sectionTrainings": "Eğitimler",
-      "sectionControls": "Periyodik Kontrol",
-      "sectionCommittee": "İSG Kurul",
-      "hazardUnknown": "Belirlenmedi",
-      "actionsTitle": "Açık Aksiyonlar",
-      "actionsDesc": "Risk tespitleri, DÖF ve İSG görevlerinden gelen açık aksiyonlar.",
-      "noActions": "Açık aksiyon bulunmuyor.",
-      "badgeTotal": "Toplam: {count}",
-      "sourceRisk": "Risk",
-      "sourceDof": "DÖF",
-      "sourceTask": "Görev",
-      "statusButton": "Durum",
-      "trainingsTitle": "Eğitim Takibi",
-      "trainingsDesc": "Firma eğitim planları ve kayıtları.",
-      "controlsTitle": "Periyodik Kontroller",
-      "controlsDesc": "Yasal zorunlu periyodik kontrol ve muayeneler.",
-      "committeeTitle": "İSG Kurul Toplantıları",
-      "committeeDesc": "Tehlike sınıfı: {hazardClass} — Periyod: {months} ayda bir",
-      "newTraining": "Yeni Eğitim",
-      "noTrainings": "Henüz eğitim kaydı yok.",
-      "newControl": "Yeni Kontrol",
-      "noControls": "Henüz periyodik kontrol kaydı yok.",
-      "newMeeting": "Yeni Toplantı",
-      "noMeetings": "Henüz İSG kurul toplantısı kaydı yok.",
-      "status": {
-        "planned": "Planlandı",
-        "completed": "Tamamlandı",
-        "cancelled": "İptal",
-        "overdue": "Gecikmiş"
-      },
-      "trainingTypes": {
-        "zorunlu": "Zorunlu",
-        "yenileme": "Yenileme",
-        "istege_bagli": "İsteğe Bağlı"
-      },
-      "hours": "{count} saat",
-      "edit": "Düzenle",
-      "delete": "Sil",
-      "results": {
-        "uygun": "Uygun",
-        "sartli_uygun": "Şartlı Uygun",
-        "uygun_degil": "Uygun Değil"
-      },
-      "controlTypes": {
-        "elektrik": "Elektrik",
-        "asansor": "Asansör",
-        "yangin": "Yangın",
-        "basinc": "Basınçlı Kap",
-        "vinc": "Vinç",
-        "kompressor": "Kompresör",
-        "forklift": "Forklift",
-        "diger": "Diğer"
-      },
-      "overdue": "Gecikmiş!",
-      "last": "Son",
-      "next": "Sonraki",
-      "meetingNumber": "Toplantı #{number}",
-      "agenda": "Gündem",
-      "attendees": "Katılımcılar",
-      "decisions": "Kararlar",
-      "responsible": "Sorumlu",
-      "deadline": "Termin",
-      "nextMeeting": "Sonraki toplantı",
-      "save": "Kaydet",
-      "saving": "Kaydediliyor...",
-      "cancel": "Vazgeç",
-      "type": "Tür",
-      "trainer": "Eğitimci",
-      "date": "Tarih",
-      "durationHours": "Süre (saat)",
-      "statusLabel": "Durum",
-      "note": "Not",
-      "inspector": "Denetçi",
-      "inspectionDate": "Kontrol Tarihi",
-      "nextControl": "Sonraki Kontrol",
-      "result": "Sonuç",
-      "reportReference": "Rapor Referansı",
-      "trainingForm": {
-        "newTitle": "Yeni Eğitim Ekle",
-        "editTitle": "Eğitimi Düzenle",
-        "nameRequired": "Eğitim Adı *",
-        "namePlaceholder": "İSG Temel Eğitimi"
-      },
-      "controlForm": {
-        "newTitle": "Yeni Periyodik Kontrol Ekle",
-        "editTitle": "Periyodik Kontrolü Düzenle",
-        "nameRequired": "Kontrol Adı *",
-        "namePlaceholder": "Elektrik İç Tesisat Kontrolü"
-      },
-      "meetingForm": {
-        "newTitle": "Yeni İSG Kurul Toplantısı",
-        "editTitle": "Toplantıyı Düzenle",
-        "dateRequired": "Toplantı Tarihi *",
-        "number": "Toplantı No",
-        "attendeesPlaceholder": "İSG Uzmanı, İşveren Vekili, Çalışan Temsilcisi...",
-        "agendaPlaceholder": "1. Risk analizi sonuçlarının değerlendirilmesi\n2. Eğitim planı...",
-        "addDecision": "+ Karar Ekle",
-        "decisionText": "Karar metni",
-        "nextDate": "Sonraki Toplantı Tarihi"
-      },
-      "location": "위치"
+      "history": "이력",
+      "ohs_file": "OHS 파일",
+      "organization": "조직",
+      "people": "팀",
+      "personnel": "인사",
+      "risk": "위험 및 현장",
+      "structure": "시설",
+      "tracking": "추적"
     },
     "personnel": {
-      "title": "Personel Yönetimi",
-      "description": "{companyName} için personel kayıtlarını yönetin.",
-      "sourceLocal": "Yerel",
-      "loading": "Personel verileri yükleniyor...",
-      "summary": {
-        "total": "Toplam Personel",
-        "active": "Aktif",
-        "departments": "Bölüm",
-        "special": "Özel İzleme"
-      },
-      "tabs": {
-        "list": "Personel Listesi",
-        "import": "İçe Aktarma",
-        "special": "Özel İzleme",
-        "health": "Sağlık Gözetimi"
-      },
-      "empty": {
-        "title": "Henüz personel kaydı bulunmuyor",
-        "description": "CSV şablonunu indirip İçe Aktarma sekmesinden yükleyin."
-      },
-      "list": {
-        "count": "{count} personel kaydı",
-        "sort": "Sırala"
-      },
-      "actions": {
-        "templateDownload": "Şablonu İndir",
-        "goImport": "İçe Aktarmaya Git",
-        "deleting": "Siliniyor...",
-        "deleteSelected": "Seçilenleri Sil ({count})",
-        "export": "Dışa Aktar",
-        "newImport": "Yeni İçe Aktarma",
-        "import": "İçe Aktar",
-        "uploading": "Yükleniyor...",
-        "profile": "Özlük",
-        "special": "Özel",
-        "delete": "Sil",
-        "remove": "Kaldır",
-        "saving": "Kaydediliyor...",
-        "close": "Kapat",
-        "save": "Kaydet",
-        "cancel": "Vazgeç"
-      },
-      "import": {
-        "chooseFile": "Lütfen bir CSV dosyası seçin.",
-        "noValidRecords": "Dosyada geçerli kayıt bulunamadı.",
-        "successSupabase": "{count} personel kaydı başarıyla içe aktarıldı. (Supabase) · Toplam: {total}",
-        "successLocal": "{count} personel kaydı başarıyla içe aktarıldı. (Yerel) · Toplam: {total}",
-        "readError": "Dosya okunurken hata oluştu.",
-        "templateTitle": "CSV Şablonunu İndirin",
-        "templateDesc": "Aşağıdaki şablonu indirip personel bilgilerini doldurun.",
-        "uploadTitle": "CSV Dosyasını Yükleyin",
-        "uploadDesc": "Doldurduğunuz CSV dosyasını seçin ve içe aktarın."
-      },
-      "table": {
-        "employeeCode": "Sicil",
-        "fullName": "Ad Soyad",
-        "identity": "TC Kimlik",
-        "department": "Bölüm",
-        "position": "Pozisyon",
-        "location": "Lokasyon",
-        "status": "Durum",
-        "employment": "İstihdam",
-        "actions": "İşlem",
-        "phone": "Telefon",
-        "email": "E-posta",
-        "hireDate": "İşe Başlama",
-        "bloodType": "Kan Grubu",
-        "emergency": "Acil Durum",
-        "profilePage": "Özlük Sayfası",
-        "positionMissing": "Pozisyon belirtilmemiş",
-        "noDepartment": "Bölüm yok"
-      },
-      "statuses": {
-        "active": "Aktif",
-        "on_leave": "İzinli",
-        "suspended": "Askıya Alınmış",
-        "terminated": "İşten Ayrılmış"
-      },
-      "employmentTypes": {
-        "full_time": "Tam Zamanlı",
-        "part_time": "Yarı Zamanlı",
-        "temporary": "Geçici",
-        "intern": "Stajyer",
-        "subcontractor": "Taşeron"
-      },
-      "sort": {
-        "employeeCode": "Sicil",
-        "fullName": "Ad Soyad",
-        "department": "Bölüm",
-        "positionTitle": "Pozisyon",
-        "location": "Lokasyon",
-        "employmentStatus": "Durum",
-        "employmentType": "İstihdam",
-        "ascTitle": "Artan (A→Z)",
-        "descTitle": "Azalan (Z→A)",
-        "ascAria": "Artan sıralama",
-        "descAria": "Azalan sıralama",
-        "columnAria": "{label} sütununa göre sırala"
-      },
-      "special": {
-        "title": "Özel İzleme Kategorileri",
-        "description": "Hassas gruplar ve özel izleme gerektiren çalışanlar.",
-        "sensitiveData": "Hassas Veri",
-        "accessControlled": "Erişim yetki kontrolüne tabidir",
-        "showEmployees": "▼ Çalışanları göster",
-        "hideList": "▲ Listeyi gizle",
-        "emptyCategory": "Bu kategoride kayıtlı çalışan bulunmuyor.",
-        "assignmentTitle": "Özel İzleme Ataması",
-        "assignmentDescription": "için özel izleme kategorisi seçin.",
-        "categories": {
-          "pregnant": {
-            "label": "Gebe Çalışan",
-            "desc": "Gebe veya emziren çalışanlar için özel koruma gereklidir."
-          },
-          "disabled": {
-            "label": "Engelli Çalışan",
-            "desc": "Engel durumuna uygun iş düzenlemesi sağlanmalıdır."
-          },
-          "foreign_national": {
-            "label": "Yabancı Uyruklu",
-            "desc": "Dil, kültürel uyum ve çalışma izni takibi gerektirir."
-          },
-          "young_worker": {
-            "label": "Genç Çalışan (18 yaş altı)",
-            "desc": "Yasal sınırlamalar ve ek koruma tedbirleri uygulanmalıdır."
-          },
-          "night_shift": {
-            "label": "Gece Vardiyası Çalışanı",
-            "desc": "Gece çalışmasına bağlı sağlık riskleri ve periyodik kontrol."
-          },
-          "chronic_condition": {
-            "label": "Kronik Hastalık",
-            "desc": "Sürekli sağlık gözetimi ve iş uyumu değerlendirmesi gerektirir."
-          },
-          "nursing_mother": {
-            "label": "Emziren Anne",
-            "desc": "Emzirme döneminde özel çalışma koşulları sağlanmalıdır."
-          },
-          "temporary_restriction": {
-            "label": "Geçici Kısıtlama",
-            "desc": "Geçici sağlık durumu nedeniyle iş kısıtlaması uygulanmaktadır."
-          }
-        }
-      },
-      "health": {
-        "title": "Sağlık Gözetimi",
-        "description": "İşe giriş, periyodik, işten ayrılma ve özel muayeneler.",
-        "newExam": "Yeni Muayene",
-        "empty": "Henüz sağlık muayenesi kaydı yok.",
-        "overdue": "Gecikmiş!",
-        "exam": "Muayene",
-        "next": "Sonraki",
-        "report": "Rapor",
-        "restriction": "Kısıtlama",
-        "recommendation": "Öneri",
-        "formTitle": "Yeni Sağlık Muayenesi Ekle",
-        "personnelRequired": "Personel *",
-        "examType": "Muayene Türü",
-        "examDateRequired": "Muayene Tarihi *",
-        "nextExam": "Sonraki Muayene",
-        "result": "Sonuç",
-        "physicianName": "Hekim Adı",
-        "institution": "Kurum",
-        "reportNo": "Rapor No",
-        "restrictions": "Kısıtlamalar",
-        "restrictionsPlaceholder": "Yüksekte çalışamaz, ağır kaldıramaz...",
-        "recommendedActions": "Öneriler",
-        "recommendedActionsPlaceholder": "6 ay sonra kontrol muayenesi...",
-        "examTypes": {
-          "ise_giris": "İşe Giriş",
-          "periyodik": "Periyodik",
-          "isten_ayrilma": "İşten Ayrılma",
-          "ozel": "Özel"
+      "csv": {
+        "example": {
+          "address": "이스탄불, 카디쾨이",
+          "department": "생산",
+          "firstName": "홍길동",
+          "lastName": "김",
+          "location": "본공장",
+          "positionTitle": "작업자"
         },
-        "results": {
-          "uygun": "Uygun",
-          "sartli_uygun": "Şartlı Uygun",
-          "uygun_degil": "Uygun Değil",
-          "izleme": "İzleme"
-        }
+        "exportFileSuffix": "직원_목록",
+        "headers": {
+          "address": "주소",
+          "birthDate": "생년월일",
+          "bloodType": "혈액형",
+          "department": "부서",
+          "educationLevel": "학력",
+          "email": "이메일",
+          "emergencyContact": "비상연락처",
+          "emergencyPhone": "비상연락처 전화번호",
+          "employeeCode": "사원번호",
+          "employmentStatus": "재직상태",
+          "employmentType": "고용형태",
+          "firstName": "이름",
+          "gender": "성별",
+          "hireDate": "입사일",
+          "identity": "주민등록번호",
+          "lastName": "성",
+          "location": "근무지",
+          "maritalStatus": "혼인상태",
+          "nationality": "국적",
+          "notes": "비고",
+          "phone": "전화번호",
+          "positionTitle": "직책/직위",
+          "shiftType": "근무형태"
+        },
+        "templateFileSuffix": "직원_템플릿"
       }
     },
-    "history": {
-      "title": "Geçmiş ve Denetim İzi",
-      "description": "Firma üzerindeki işlemler ve değişiklik geçmişi otomatik olarak toplanır.",
-      "noWorkspace": "Firma çalışma alanı seçilmedi.",
-      "loading": "Geçmiş yükleniyor...",
-      "empty": "Henüz bir geçmiş kaydı yok. Firma üzerinde değişiklik yaptıkça burada listelenecektir.",
-      "dbConnectionError": "Veritabanı bağlantısı kurulamadı.",
-      "systemActor": "Sistem işlemi",
-      "change": "Değişiklik",
-      "actions": {
-        "workspaceCreated": "Çalışma alanı oluşturuldu",
-        "workspaceArchived": "Çalışma alanı arşivlendi",
-        "workspaceRestored": "Çalışma alanı geri yüklendi",
-        "expertAssigned": "Uzman atandı",
-        "expertAssignmentUpdated": "Uzman ataması güncellendi",
-        "expertAssignmentDeleted": "Uzman ataması silindi",
-        "riskAssessmentCreated": "Risk analizi oluşturuldu",
-        "riskAssessmentUpdated": "Risk analizi güncellendi",
-        "riskAssessmentDeleted": "Risk analizi silindi",
-        "documentCreated": "Döküman oluşturuldu",
-        "documentUpdated": "Döküman güncellendi",
-        "documentDeleted": "Döküman silindi",
-        "trainingAdded": "Eğitim eklendi",
-        "trainingUpdated": "Eğitim güncellendi",
-        "incidentCreated": "Olay kaydı oluşturuldu",
-        "incidentUpdated": "Olay kaydı güncellendi"
+    "legacyTabs": {
+      "organization": {
+        "actions": {
+          "sendInvite": "초대 보내기",
+          "soon": "출시 예정"
+        },
+        "cards": {
+          "invitations": {
+            "description": "발송되고 대기 중인 전문가 초대입니다.",
+            "title": "초대"
+          },
+          "members": {
+            "description": "회사에 접근할 수 있는 사용자와 그들의 역할입니다.",
+            "title": "구성원"
+          },
+          "permissions": {
+            "description": "모듈 수준 접근 및 권한 제어입니다.",
+            "title": "권한"
+          },
+          "requests": {
+            "description": "회사 가입 요청 및 승인 절차입니다.",
+            "title": "요청"
+          }
+        },
+        "description": "회사 조직 구조, 구성원 및 접근 관리입니다.",
+        "share": {
+          "description": "회사 데이터에 대한 공유 및 접근 제어입니다.",
+          "note": "공유 및 접근 관리 모듈은 개발 중입니다. 회사 데이터에 대한 세분화된 접근 제어가 곧 활성화됩니다.",
+          "title": "공유 및 접근"
+        },
+        "title": "조직"
       },
-      "entities": {
-        "riskAssessments": "Risk Analizi",
-        "editorDocuments": "Döküman",
-        "incidents": "Olay",
-        "companyTrainings": "Eğitim",
-        "committeeMeetings": "Komite Toplantısı",
-        "periodicControls": "Periyodik Kontrol",
-        "tasks": "Görev",
-        "workspace": "Çalışma Alanı",
-        "companyIdentity": "Firma Kimliği"
+      "people": {
+        "activeProfessionals": "활성 전문가",
+        "description": "산업보건 전문가, 근로자 대표, 지원 직원입니다.",
+        "employeeRepresentatives": "근로자 대표",
+        "employerName": "사업주명",
+        "employerRepresentative": "사업주 대표",
+        "supportStaff": "지원 직원",
+        "title": "팀 및 대표 구조"
       }
-    },
-    "workspaceShell": {
-      "eyebrow": "Workspace",
-      "title": "Loading workspace",
-      "description": "Company data is being prepared in your browser. Please wait…"
-    },
-    "companyAccessRoles": {
-      "owner": "Owner",
-      "admin": "Administrator",
-      "manager": "Manager",
-      "editor": "Editor",
-      "viewer": "Viewer"
-    },
-    "workspaceMemberRoles": {
-      "owner": "Owner",
-      "admin": "Administrator",
-      "member": "Member",
-      "viewer": "Viewer",
-      "guest": "Guest"
-    },
-    "people": {
-      "inviteMember": {
-        "inviteSendFailed": "Could not send invitation.",
-        "panelTitle": "Invite user",
-        "panelDescription": "Invite a new member by email — when they accept, they are added to this company workspace.",
-        "openButton": "Invite",
-        "expandedTitle": "Invite new member",
-        "expandedSubtitle": "The invitation link is sent by email.",
-        "close": "Close",
-        "resultDelivered": "Invitation sent to {email}.",
-        "resultUndelivered": "Invitation created (email could not be delivered — link can be copied).",
-        "linkLabel": "Link:",
-        "newInvite": "New invitation",
-        "emailLabel": "Email",
-        "emailPlaceholder": "name@company.com",
-        "roleLabel": "Role",
-        "noteOptional": "Note (optional)",
-        "notePlaceholder": "Short note to the invitee",
-        "cancel": "Cancel",
-        "send": "Send invitation",
-        "sending": "Sending…"
-      },
-      "certBadge": {
-        "expired": "Expired",
-        "daysLeft": "{days} days left",
-        "valid": "Valid"
-      },
-      "memberForm": {
-        "fullNameLabel": "Full name *",
-        "fullNamePlaceholder": "Full name",
-        "titleLabel": "Title / role",
-        "titlePlaceholder": "OHS specialist",
-        "categoryLabel": "Category",
-        "selectCategory": "Select",
-        "phoneLabel": "Phone",
-        "phonePlaceholder": "+1 555 000 0000",
-        "emailLabel": "Email",
-        "emailPlaceholder": "name@company.com",
-        "certNumberLabel": "Certificate / document no.",
-        "certNumberPlaceholder": "OHS-2024-001",
-        "certExpiryLabel": "Certificate expiry",
-        "notesLabel": "Notes",
-        "notesPlaceholder": "Additional information…",
-        "activeMember": "Active member"
-      },
-      "memberCard": {
-        "editTitle": "Edit",
-        "deleteTitle": "Delete",
-        "deleteConfirm": "Delete",
-        "cancel": "Cancel",
-        "inactive": "Inactive"
-      },
-      "errors": {
-        "fullNameRequired": "Full name is required.",
-        "orgMissing": "Organization information could not be loaded.",
-        "connectionError": "Connection error."
-      },
-      "confirmDeleteCategory": "Are you sure you want to delete the \"{name}\" category?",
-      "confirmDeleteCategoryWithMembers": "Are you sure you want to delete the \"{name}\" category?\n\n{count} member(s) in this category will appear as uncategorized.",
-      "alertDeleteFailed": "Could not delete: {message}",
-      "header": {
-        "title": "Team management",
-        "total": "Total:",
-        "active": "Active:",
-        "certExpired": "{count} certificate(s) expired",
-        "certExpiring": "{count} certificate(s) expiring soon",
-        "addFromPersonnel": "Add from personnel",
-        "addMember": "Add member"
-      },
-      "categoriesNav": {
-        "title": "Categories",
-        "all": "All",
-        "addCategory": "Add category",
-        "deleteCategoryTitle": "Delete category",
-        "deleteCategoryAria": "Delete category {name}"
-      },
-      "emptyTeam": {
-        "title": "No team members yet",
-        "description": "Add members to build your OHS team.",
-        "cta": "Add first member"
-      },
-      "uncategorized": "Uncategorized",
-      "addMemberToCategory": "Add member",
-      "modals": {
-        "addMemberTitle": "Add team member",
-        "editMemberTitle": "Edit member",
-        "bulkAddTitle": "Add team members from personnel",
-        "addCategoryTitle": "New category",
-        "cancel": "Cancel",
-        "save": "Save",
-        "saving": "Saving…",
-        "update": "Update",
-        "create": "Create",
-        "adding": "Adding…",
-        "addPeople": "Add {count} people"
-      },
-      "personnelQuickFill": {
-        "label": "Fill from personnel",
-        "placeholder": "Select personnel (auto-fills fields)"
-      },
-      "bulkAdd": {
-        "description": "Select people from company personnel to add as team members. People already on the team are marked.",
-        "selectAll": "Select all",
-        "clearSelection": "Clear selection",
-        "selected": "{count} selected",
-        "noTitle": "No title specified",
-        "alreadyOnTeam": "On team"
-      },
-      "categoryModal": {
-        "nameLabel": "Category name *",
-        "namePlaceholder": "e.g. Fire response team",
-        "colorLabel": "Color",
-        "iconLabel": "Icon (emoji)",
-        "iconPlaceholder": "👤",
-        "previewFallback": "Category name"
-      },
-      "defaultCategories": {
-        "riskTeam": "Risk assessment team",
-        "oshExpert": "OHS specialist",
-        "workplaceDoctor": "Workplace physician",
-        "emergencyLead": "Emergency team lead"
-      },
-      "membersList": {
-        "title": "Company members and access roles",
-        "description": "Members who accepted invitations and their access levels. Five-tier model: Owner / Administrator / Manager / Editor / Viewer.",
-        "loading": "Loading members…",
-        "dbConnectionError": "Database connection could not be established.",
-        "empty": "No members yet. You can send email invitations using the form above.",
-        "userFallback": "User",
-        "youBadge": "YOU",
-        "statusActive": "Active",
-        "saving": "Saving…",
-        "roleChangeHint": "Administrator or owner role is required to change roles."
-      }
-    },
-    "organization": {
-      "stats": {
-        "activeMembers": "Active members",
-        "activeMembersSub": "With access to this company",
-        "pendingInvites": "Pending invitations",
-        "pendingInvitesSub": "Awaiting acceptance",
-        "templates": "Permission templates",
-        "templatesSub": "Defined roles"
-      },
-      "sections": {
-        "activeMembers": "Active members",
-        "sendInvite": "Send invitation",
-        "activeMembersEmpty": "No active members yet. Send invitations to build your team.",
-        "pendingInvites": "Pending invitations",
-        "pendingInvitesEmpty": "No pending invitations.",
-        "templates": "Access templates",
-        "templatesLoading": "Loading templates…"
-      },
-      "memberRow": {
-        "unknownUser": "Unknown user",
-        "noEmail": "No email",
-        "joined": "Joined:",
-        "lastActive": "Last active:",
-        "permissionsCount": "{count} permission(s)",
-        "edit": "Edit",
-        "cancel": "Cancel",
-        "remove": "Remove",
-        "removeTitle": "Remove access",
-        "roleLabel": "Role:",
-        "save": "Save",
-        "saving": "Saving…"
-      },
-      "invitationRow": {
-        "sent": "Sent:",
-        "expired": "Expired",
-        "daysLeft": "{days} days left",
-        "cancel": "Cancel"
-      }
-    },
-    "inviteProfessional": {
-      "status": {
-        "pending": "Pending",
-        "accepted": "Accepted",
-        "rejected": "Rejected",
-        "cancelled": "Cancelled"
-      },
-      "title": "Invite professional",
-      "subtitle": "Send an invitation with access permissions",
-      "section1": "1. Person to invite",
-      "pickFromTeam": "Pick from team",
-      "manualEntry": "— Manual entry —",
-      "fullName": "Full name",
-      "fullNamePlaceholder": "Full name (optional)",
-      "emailRequired": "Email *",
-      "emailPlaceholder": "name@domain.com",
-      "section2": "2. Choose a role template",
-      "section3": "3. Permissions",
-      "permissionsSelected": "{granted} / {total} permissions selected",
-      "toggleAllOn": "Select all",
-      "toggleAllOff": "Clear all",
-      "sensitiveTag": "sensitive",
-      "section4": "4. Additional options",
-      "validity": "Validity period",
-      "expiryDays": "{days} days",
-      "messageLabel": "Invitation message (optional)",
-      "messagePlaceholder": "A message to include with the invitation…",
-      "emailRequiredError": "Email address is required.",
-      "connectionError": "Connection error.",
-      "sentInvitations": "Sent invitations",
-      "expiredSuffix": " · Expired",
-      "cancel": "Cancel",
-      "send": "Send invitation",
-      "sending": "Sending…"
     }
   },
   "consent": {
@@ -3611,20 +2997,20 @@
     },
     "archivedSection": {
       "badge": "{count}개 보관된 기록",
-      "description": "보관된 회사는 활성 한도에 포함되지 않으며, 위험 및 문서 이력이 유지됩니다.",
+      "description": "보관된 회사는 활성 제한에 포함되지 않으며, 위험 및 문서 이력은 유지됩니다.",
       "title": "보관된 회사"
     },
     "badges": {
       "activeCompaniesMax": "{count} / {max} 활성 회사",
-      "activeCompaniesUnlimited": "{count}개 활성 회사",
+      "activeCompaniesUnlimited": "활성 회사 {count}개",
       "activeStaffMax": "{count} / {max} 활성 직원",
-      "activeStaffUnlimited": "{count}명 활성 직원"
+      "activeStaffUnlimited": "{count} 활성 직원"
     },
     "companyCard": {
       "archive": "보관",
       "archiving": "보관 중…",
-      "assignedProfessionals": "{count}명 할당된 전문가",
-      "assignments": "할당",
+      "assignedProfessionals": "{count}명 배정된 전문가",
+      "assignments": "배정",
       "contracts": "계약",
       "documentsCount": "{count}개 문서",
       "documentsLink": "문서",
@@ -3636,7 +3022,7 @@
       "workspace": "회사 워크스페이스"
     },
     "emptyActive": {
-      "cta": "첫 번째 회사 추가",
+      "cta": "첫 회사 추가",
       "description": "OSGB 패널에 연결된 고객사가 여기에 표시됩니다.",
       "title": "활성 회사 없음"
     },
@@ -3650,61 +3036,61 @@
       "shortName": "새 회사"
     },
     "focus": {
-      "p1": "이 영역은 OSGB 소유자 및 관리자 전용입니다. 회사, 할당, 계약 및 문서 추적을 한 곳에서 관리합니다.",
-      "p2": "할당된 직원은 일상 업무에 이 패널을 사용하지 않으며, 자신의 계정을 통해 할당된 회사 워크스페이스 데이터에 액세스합니다.",
-      "sidebarBody": "{firms}개 활성 회사, {professionals}명 할당된 전문가, {overdue}개 주의 필요 항목이 여기서 조정됩니다.",
-      "sidebarEyebrow": "관리 포커스",
+      "p1": "이 영역은 OSGB 소유자 및 관리자 전용입니다. 회사, 배정, 계약, 문서 추적을 한 곳에서 관리합니다.",
+      "p2": "배정된 직원은 일상 업무에 이 패널을 사용하지 않으며, 자신의 계정을 통해 배정된 회사 워크스페이스 데이터에 접근합니다.",
+      "sidebarBody": "활성 회사 {firms}개, 배정된 전문가 {professionals}명, 주의가 필요한 항목 {overdue}개가 여기서 조율됩니다.",
+      "sidebarEyebrow": "관리 집중",
       "title": "OSGB 중심 화면"
     },
     "header": {
-      "description": "고객사, 회사별 워크스페이스 및 할당된 인력 흐름을 관리하세요.",
+      "description": "고객사, 회사별 워크스페이스, 배정된 인력 흐름을 관리하세요.",
       "eyebrow": "OSGB 회사 관리",
       "title": "회사 및 작업장"
     },
     "limitBanner": "활성 회사 한도에 도달했습니다. 회사를 보관하거나 플랜을 업그레이드하여 더 추가하세요.",
     "loading": {
-      "description": "고객사, 할당 및 문서 흐름을 로딩 중입니다.",
+      "description": "고객사, 배정, 문서 흐름을 로딩 중입니다.",
       "eyebrow": "OSGB 회사",
       "title": "포트폴리오 준비 중"
     },
     "nova": {
       "bullet1": "회사별 업무량 분배를 확인하세요.",
       "bullet2": "지연된 작업 및 문서를 필터링하세요.",
-      "bullet3": "인력 할당 공백을 파악하세요.",
+      "bullet3": "인력 배정 공백을 파악하세요.",
       "bullet4": "계약 및 보고서 갱신 위험을 우선순위화하세요.",
       "openTasks": "OSGB 작업 열기",
-      "reviewOverdue": "지연된 작업 검토",
+      "reviewOverdue": "지연 업무 검토",
       "seeAssignmentGaps": "배정 공백 확인",
-      "subtitle": "직원 및 회사 성과를 모니터링하는 관리 어시스턴트",
-      "title": "Nova OSGB 관리자"
+      "subtitle": "관리 어시스턴트; 직원 및 회사 성과를 모니터링합니다.",
+      "title": "Nova OSGB 매니저"
     },
     "quickLinks": {
       "docCenter": "문서 허브로 이동",
       "inviteStaff": "직원 초대",
-      "manageAssignments": "배정 관리",
+      "manageAssignments": "업무 할당 관리",
       "openContracts": "계약 열기"
     },
     "stats": {
       "activeFirms": {
-        "hint": "OSGB 패널에서 추적되는 활성 고객사",
+        "hint": "OSGB 패널에서 추적되는 활성 고객사입니다.",
         "label": "활성 회사"
       },
       "assignedProfessionals": {
-        "hint": "전문가, 의사, DSP의 회사별 총 배정 수",
+        "hint": "회사에 배정된 전문가, 의사, DSP의 총 할당 수입니다.",
         "label": "배정된 전문가"
       },
       "overdueWork": {
-        "hint": "배정 및 CAPA 플로우에서 확인할 미해결 항목",
-        "label": "지연된 작업"
+        "hint": "할당 및 CAPA 플로우에서 확인할 미해결 항목입니다.",
+        "label": "지연 업무"
       },
       "totalEmployees": {
-        "hint": "계획 수립을 위한 회사 기록의 총 직원 수",
+        "hint": "계획 수립을 위한 회사 기록의 총 직원 수입니다.",
         "label": "총 직원 수"
       }
     },
     "topActions": {
       "addCompany": "회사 추가",
-      "openAssignments": "배정 열기",
+      "openAssignments": "할당 열기",
       "personnelInvite": "직원 및 초대"
     }
   },
@@ -6055,7 +5441,7 @@
     },
     "level": {
       "controlled": "통제됨",
-      "critical": "위험",
+      "critical": "심각",
       "high": "높음",
       "incomplete": "미평가",
       "medium": "보통"

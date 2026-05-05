@@ -190,6 +190,87 @@
       "ohs_file": "OHS file",
       "organization": "Organization",
       "history": "History"
+    },
+    "legacyTabs": {
+      "people": {
+        "title": "Team and representation structure",
+        "description": "OHS professionals, employee representatives, and support staff.",
+        "activeProfessionals": "Active professionals",
+        "employeeRepresentatives": "Employee representatives",
+        "supportStaff": "Support staff",
+        "employerName": "Employer name",
+        "employerRepresentative": "Employer representative"
+      },
+      "organization": {
+        "title": "Organization",
+        "description": "Company organization structure, membership, and access management.",
+        "cards": {
+          "members": {
+            "title": "Members",
+            "description": "Users who can access the company and their roles."
+          },
+          "permissions": {
+            "title": "Permissions",
+            "description": "Module-level access and authorization controls."
+          },
+          "invitations": {
+            "title": "Invitations",
+            "description": "Sent and pending professional invitations."
+          },
+          "requests": {
+            "title": "Requests",
+            "description": "Company join requests and approval flow."
+          }
+        },
+        "actions": {
+          "soon": "Coming soon",
+          "sendInvite": "Send invite"
+        },
+        "share": {
+          "title": "Sharing and access",
+          "description": "Sharing and access controls over company data.",
+          "note": "The sharing and access management module is under development. Granular access control over company data will be activated soon."
+        }
+      }
+    },
+    "personnel": {
+      "csv": {
+        "headers": {
+          "employeeCode": "Employee code",
+          "identity": "National ID",
+          "firstName": "First name",
+          "lastName": "Last name",
+          "birthDate": "Birth date",
+          "gender": "Gender",
+          "nationality": "Nationality",
+          "bloodType": "Blood type",
+          "maritalStatus": "Marital status",
+          "phone": "Phone",
+          "email": "Email",
+          "emergencyContact": "Emergency contact person",
+          "emergencyPhone": "Emergency contact phone",
+          "address": "Address",
+          "department": "Department",
+          "positionTitle": "Position / title",
+          "location": "Location",
+          "hireDate": "Hire date",
+          "employmentStatus": "Employment status",
+          "employmentType": "Employment type",
+          "shiftType": "Shift type",
+          "educationLevel": "Education level",
+          "notes": "Notes"
+        },
+        "example": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "address": "Istanbul, Kadikoy",
+          "department": "Production",
+          "positionTitle": "Operator",
+          "location": "Main plant"
+        },
+        "templateFileSuffix": "personnel_template",
+        "exportFileSuffix": "personnel_list"
+      }
     }
   },
   "osgbFirms": {

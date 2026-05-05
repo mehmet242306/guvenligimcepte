@@ -468,12 +468,12 @@
     "confirmArchive": {
       "confirm": "Confirmer",
       "hint": "Elle quittera la liste active.",
-      "title": "Archiver \"{name}\" ?"
+      "title": "Archiver « {name} » ?"
     },
     "confirmDelete": {
       "confirm": "Supprimer",
       "instruction": "Tapez ce mot pour confirmer :",
-      "title": "Supprimer \"{name}\" ?"
+      "title": "Supprimer « {name} » ?"
     },
     "confirmPermanentDelete": {
       "placeholder": "Tapez SUPPRIMER",
@@ -512,8 +512,8 @@
       "initialTitleWorksite": "Aucun dossier de chantier pour le moment",
       "newCompany": "Nouvelle entreprise",
       "noMatchCompany": "Aucune entreprise correspondante",
-      "noMatchDescription": "Aucun enregistrement ne correspond à vos filtres.",
-      "noMatchWorksite": "Aucun site de travail correspondant",
+      "noMatchDescription": "Aucun dossier ne correspond à vos filtres.",
+      "noMatchWorksite": "Aucun chantier correspondant",
       "sampleData": "Données d'exemple"
     },
     "entity": {
@@ -535,7 +535,7 @@
       "sector": "Secteur",
       "sort": "Trier"
     },
-    "limitReachedBanner": "Vous avez atteint la limite d'entreprises / espaces de travail actifs. Archivez une entreprise ou mettez à niveau votre plan avant d'en ajouter ou d'en restaurer une.",
+    "limitReachedBanner": "Vous avez atteint la limite d'entreprises / espaces de travail actifs. Archivez une entreprise ou améliorez votre forfait avant d'en ajouter ou d'en restaurer une.",
     "links": {
       "riskAnalysis": "Analyse des risques",
       "workspace": "Espace de travail"
@@ -563,12 +563,12 @@
     "stats": {
       "avgMaturity": "Maturité moy.",
       "criticalCompanies": "Entreprises critiques",
-      "criticalWorksites": "Sites critiques",
+      "criticalWorksites": "Sites de travail critiques",
       "employees": "Employés",
       "openActions": "Actions ouvertes",
       "overdueTasks": "Tâches en retard",
       "totalCompanies": "Total entreprises",
-      "totalWorksites": "Total sites"
+      "totalWorksites": "Total sites de travail"
     },
     "storage": {
       "local": "Local",
@@ -581,8 +581,8 @@
     },
     "title": {
       "multi": "Mes entreprises / organisations",
-      "osgb": "Entreprises et sites",
-      "single": "Site et contenu opérationnel"
+      "osgb": "Entreprises et sites de travail",
+      "single": "Contenu du site de travail et opérationnel"
     },
     "usage": {
       "activeOfMax": "{current} / {max} créneaux d'entreprise active utilisés",
@@ -590,7 +590,7 @@
     }
   },
   "companyWorkspace": {
-    "backLink": "Sites",
+    "backLink": "Sites de travail",
     "docTitle": "{name} — Espace de travail · RiskNova",
     "docTitleFallback": "Espace de travail · RiskNova",
     "invite": "Inviter",
@@ -632,700 +632,86 @@
       "structure": "Locaux",
       "tracking": "Suivi"
     },
-    "structure": {
-      "summaryLocation": "Site",
-      "summaryDepartment": "Service",
-      "summaryEmployee": "Effectifs",
-      "locationsTitle": "Sites",
-      "locationsSubtitle": "Sites physiques de l’entreprise",
-      "departmentsTitle": "Services",
-      "departmentsSubtitle": "Unités organisationnelles",
-      "locationPlaceholder": "Saisir le nom du site",
-      "departmentPlaceholder": "Saisir le nom du service",
-      "addLocation": "Ajouter un site",
-      "addDepartment": "Ajouter un service"
-    },
-    "risk": {
-      "pageTitle": "Gestion du risque et du terrain",
-      "pageSubtitle": "Classification des risques, historique d’analyses et suivi des actions.",
-      "tabMap": "Carte des risques",
-      "tabAnalyses": "Analyses ({count})",
-      "newAnalysis": "Nouvelle analyse",
-      "metricTotalFindings": "Constats totaux",
-      "metricCritical": "Critique",
-      "metricHigh": "Élevé",
-      "metricAnalysisCount": "Analyses",
-      "badgeCritical": "Critique : {count}",
-      "badgeHigh": "Élevé : {count}",
-      "badgeMedium": "Moyen : {count}",
-      "badgeLow": "Faible : {count}",
-      "noFindingsCategory": "Aucun constat pour l’instant",
-      "addCategoryTitle": "Ajouter une catégorie",
-      "addCategoryHint": "Définir une catégorie de risque personnalisée",
-      "categoryRisksTitle": "Risques — {label}",
-      "findingsCountLabel": "{count} constats",
-      "noFindingsInCategory": "Aucun constat dans cette catégorie pour l’instant.",
-      "analysisPrefix": "Analyse :",
-      "edit": "Modifier",
-      "cancel": "Annuler",
-      "save": "Enregistrer",
-      "saving": "Enregistrement…",
-      "discard": "Abandonner",
-      "recommendation": "Recommandation",
-      "action": "Action",
-      "notes": "Notes",
-      "status": "Statut",
-      "note": "Note",
-      "notePlaceholder": "Travaux réalisés, observations…",
-      "emptyAnalysesTitle": "Aucune analyse de risque pour l’instant",
-      "emptyAnalysesDescription": "Lancez la première analyse pour cette entreprise depuis la page Analyse des risques.",
-      "findingsInRow": "{count} constats",
-      "archiveTitle": "Archiver",
-      "editTitle": "Modifier",
-      "deleteTitle": "Supprimer",
-      "confirmDelete": "Supprimer ?",
-      "yes": "Oui",
-      "no": "Non",
-      "exportPdfTitle": "Télécharger le PDF",
-      "exportWordTitle": "Télécharger Word",
-      "exportExcelTitle": "Télécharger Excel",
-      "analysisStatus": {
-        "completed": "Terminé",
-        "archived": "Archivé",
-        "draft": "Brouillon"
-      },
-      "trackingStatus": {
-        "open": "Ouvert",
-        "in_progress": "En cours",
-        "resolved": "Clôturé",
-        "archived": "Archivé"
-      },
-      "severity": {
-        "critical": "Critique",
-        "high": "Élevé",
-        "medium": "Moyen",
-        "low": "Faible"
-      },
-      "method": {
-        "r_skor": "R-SCORE 2D",
-        "fine_kinney": "Fine-Kinney",
-        "l_matrix": "L-Matrix",
-        "fmea": "FMEA",
-        "hazop": "HAZOP"
-      },
-      "shareTitle": "Partage du rapport",
-      "shareDescription": "Toute personne disposant du lien peut consulter ce rapport.",
-      "shareEnable": "Activer le lien de partage",
-      "shareActive": "Partage activé",
-      "shareCopyTitle": "Copier le lien",
-      "shareCopied": "Copié",
-      "shareWhatsappTitle": "Partager via WhatsApp",
-      "shareButtonTitle": "Partager",
-      "shareWhatsappBody": "RiskNova — {title}\n{url}",
-      "participantsHeading": "Participants",
-      "analysisNoteHeading": "Note d’analyse",
-      "emptyAnalysisRows": "Aucune ligne dans cette analyse pour l’instant.",
-      "rowFindingCount": "({count} constats)",
-      "recommendationInline": "Recommandation :",
-      "actionInline": "Action :",
-      "qrAlt": "Code QR",
-      "qrCaption": "Partager par QR",
-      "categories": {
-        "fiziksel": {
-          "label": "Physique",
-          "examples": "Bruit, vibrations, éclairage, température"
-        },
-        "kimyasal": {
-          "label": "Chimique",
-          "examples": "Gaz, poussières, vapeurs, produits chimiques"
-        },
-        "biyolojik": {
-          "label": "Biologique",
-          "examples": "Bactéries, virus, moisissures, agents biologiques"
-        },
-        "ergonomik": {
-          "label": "Ergonomique",
-          "examples": "Mauvaise posture, charges lourdes, gestes répétitifs"
-        },
-        "psikososyal": {
-          "label": "Psychosocial",
-          "examples": "Stress, harcèlement, charge de travail, horaires"
-        },
-        "mekanik": {
-          "label": "Mécanique",
-          "examples": "Machines, équipements, chutes, écrasements"
-        },
-        "elektrik": {
-          "label": "Électrique",
-          "examples": "Choc électrique, court-circuit, mise à la terre"
-        },
-        "yangin": {
-          "label": "Incendie / explosion",
-          "examples": "Matières inflammables, atmosphère explosive, GPL"
-        },
-        "trafik": {
-          "label": "Circulation interne",
-          "examples": "Véhicules, chariots élévateurs, conflits piétons–véhicules"
-        },
-        "cevre": {
-          "label": "Environnement",
-          "examples": "Déchets, émissions, nuisances sonores"
-        }
-      }
-    },
-    "tracking": {
-      "sectionActions": "Actions ouvertes",
-      "sectionTrainings": "Formations",
-      "sectionControls": "Contrôle périodique",
-      "sectionCommittee": "Comité SST",
-      "hazardUnknown": "Non déterminé",
-      "actionsTitle": "Actions ouvertes",
-      "actionsDesc": "Actions ouvertes issues des constats de risque, du CAPA et des tâches SST.",
-      "noActions": "Aucune action ouverte.",
-      "badgeTotal": "Total : {count}",
-      "sourceRisk": "Risque",
-      "sourceDof": "CAPA",
-      "sourceTask": "Tâche",
-      "statusButton": "Statut",
-      "trainingsTitle": "Suivi des formations",
-      "trainingsDesc": "Plans de formation et registres de l’entreprise.",
-      "controlsTitle": "Contrôles périodiques",
-      "controlsDesc": "Contrôles et examens périodiques imposés par la réglementation.",
-      "committeeTitle": "Réunions du comité SST",
-      "committeeDesc": "Classe de danger : {hazardClass} — tous les {months} mois",
-      "newTraining": "Nouvelle formation",
-      "noTrainings": "Aucun enregistrement de formation.",
-      "newControl": "Nouveau contrôle",
-      "noControls": "Aucun contrôle périodique enregistré.",
-      "newMeeting": "Nouvelle réunion",
-      "noMeetings": "Aucune réunion du comité SST enregistrée.",
-      "status": {
-        "planned": "Planifié",
-        "completed": "Terminé",
-        "cancelled": "Annulé",
-        "overdue": "En retard"
-      },
-      "trainingTypes": {
-        "zorunlu": "Obligatoire",
-        "yenileme": "Renouvellement",
-        "istege_bagli": "Optionnel"
-      },
-      "hours": "{count} h",
-      "edit": "Modifier",
-      "delete": "Supprimer",
-      "results": {
-        "uygun": "Apte",
-        "sartli_uygun": "Apte sous conditions",
-        "uygun_degil": "Inapte"
-      },
-      "controlTypes": {
-        "elektrik": "Électricité",
-        "asansor": "Ascenseur",
-        "yangin": "Incendie",
-        "basinc": "Appareil à pression",
-        "vinc": "Grue",
-        "kompressor": "Compresseur",
-        "forklift": "Chariot élévateur",
-        "diger": "Autre"
-      },
-      "overdue": "En retard !",
-      "last": "Dernier",
-      "next": "Suivant",
-      "meetingNumber": "Réunion n°{number}",
-      "agenda": "Ordre du jour",
-      "attendees": "Participants",
-      "decisions": "Décisions",
-      "responsible": "Responsable",
-      "deadline": "Échéance",
-      "nextMeeting": "Prochaine réunion",
-      "save": "Enregistrer",
-      "saving": "Enregistrement…",
-      "cancel": "Annuler",
-      "type": "Type",
-      "trainer": "Formateur",
-      "date": "Date",
-      "durationHours": "Durée (heures)",
-      "statusLabel": "Statut",
-      "note": "Note",
-      "inspector": "Inspecteur",
-      "inspectionDate": "Date de contrôle",
-      "nextControl": "Prochain contrôle",
-      "result": "Résultat",
-      "reportReference": "Référence du rapport",
-      "trainingForm": {
-        "newTitle": "Ajouter une formation",
-        "editTitle": "Modifier la formation",
-        "nameRequired": "Intitulé de la formation *",
-        "namePlaceholder": "Formation SST de base"
-      },
-      "controlForm": {
-        "newTitle": "Ajouter un contrôle périodique",
-        "editTitle": "Modifier le contrôle périodique",
-        "nameRequired": "Intitulé du contrôle *",
-        "namePlaceholder": "Contrôle des installations électriques"
-      },
-      "meetingForm": {
-        "newTitle": "Nouvelle réunion du comité SST",
-        "editTitle": "Modifier la réunion",
-        "dateRequired": "Date de la réunion *",
-        "number": "N° de réunion",
-        "attendeesPlaceholder": "Conseiller SST, représentant de l’employeur, représentant du personnel…",
-        "agendaPlaceholder": "1. Bilan des analyses de risques\n2. Plan de formation…",
-        "addDecision": "+ Ajouter une décision",
-        "decisionText": "Texte de la décision",
-        "nextDate": "Date de la prochaine réunion"
-      },
-      "location": "Emplacement"
-    },
     "personnel": {
-      "title": "Gestion du personnel",
-      "description": "Gérer les dossiers du personnel pour {companyName}.",
-      "sourceLocal": "Local",
-      "loading": "Chargement des données du personnel…",
-      "summary": {
-        "total": "Personnel total",
-        "active": "Actif",
-        "departments": "Départements",
-        "special": "Suivi spécial"
-      },
-      "tabs": {
-        "list": "Liste du personnel",
-        "import": "Import",
-        "special": "Suivi spécial",
-        "health": "Surveillance médicale"
-      },
-      "empty": {
-        "title": "Aucun dossier du personnel pour l’instant",
-        "description": "Téléchargez le modèle CSV et importez-le depuis l’onglet Import."
-      },
-      "list": {
-        "count": "{count} dossiers du personnel",
-        "sort": "Trier"
-      },
-      "actions": {
-        "templateDownload": "Télécharger le modèle",
-        "goImport": "Aller à l’import",
-        "deleting": "Suppression…",
-        "deleteSelected": "Supprimer la sélection ({count})",
-        "export": "Exporter",
-        "newImport": "Nouvel import",
-        "import": "Importer",
-        "uploading": "Téléversement…",
-        "profile": "Profil",
-        "special": "Spécial",
-        "delete": "Supprimer",
-        "remove": "Retirer",
-        "saving": "Enregistrement…",
-        "close": "Fermer",
-        "save": "Enregistrer",
-        "cancel": "Annuler"
-      },
-      "import": {
-        "chooseFile": "Veuillez sélectionner un fichier CSV.",
-        "noValidRecords": "Aucun enregistrement valide n’a été trouvé dans le fichier.",
-        "successSupabase": "{count} dossiers du personnel importés avec succès. (Supabase) · Total : {total}",
-        "successLocal": "{count} dossiers du personnel importés avec succès. (Local) · Total : {total}",
-        "readError": "Une erreur s’est produite lors de la lecture du fichier.",
-        "templateTitle": "Télécharger le modèle CSV",
-        "templateDesc": "Téléchargez le modèle ci-dessous et complétez les informations du personnel.",
-        "uploadTitle": "Téléverser le fichier CSV",
-        "uploadDesc": "Sélectionnez le fichier CSV complété et lancez l’import."
-      },
-      "table": {
-        "employeeCode": "Matricule",
-        "fullName": "Nom complet",
-        "identity": "N° d’identité",
-        "department": "Service",
-        "position": "Poste",
-        "location": "Site",
-        "status": "Statut",
-        "employment": "Contrat",
-        "actions": "Actions",
-        "phone": "Téléphone",
-        "email": "E-mail",
-        "hireDate": "Date d’embauche",
-        "bloodType": "Groupe sanguin",
-        "emergency": "Urgence",
-        "profilePage": "Dossier du personnel",
-        "positionMissing": "Poste non renseigné",
-        "noDepartment": "Aucun service"
-      },
-      "statuses": {
-        "active": "Actif",
-        "on_leave": "Absent",
-        "suspended": "Suspendu",
-        "terminated": "Sorti"
-      },
-      "employmentTypes": {
-        "full_time": "Temps plein",
-        "part_time": "Temps partiel",
-        "temporary": "Temporaire",
-        "intern": "Stagiaire",
-        "subcontractor": "Sous-traitant"
-      },
-      "sort": {
-        "employeeCode": "Matricule",
-        "fullName": "Nom",
-        "department": "Service",
-        "positionTitle": "Poste",
-        "location": "Site",
-        "employmentStatus": "Statut",
-        "employmentType": "Contrat",
-        "ascTitle": "Croissant (A→Z)",
-        "descTitle": "Décroissant (Z→A)",
-        "ascAria": "Tri croissant",
-        "descAria": "Tri décroissant",
-        "columnAria": "Trier par colonne « {label} »"
-      },
-      "special": {
-        "title": "Catégories de suivi spécial",
-        "description": "Groupes sensibles et salariés nécessitant un suivi spécial.",
-        "sensitiveData": "Données sensibles",
-        "accessControlled": "Soumis au contrôle des droits d’accès",
-        "showEmployees": "▼ Afficher les salariés",
-        "hideList": "▲ Masquer la liste",
-        "emptyCategory": "Aucun salarié n’est enregistré dans cette catégorie.",
-        "assignmentTitle": "Affectation de suivi spécial",
-        "assignmentDescription": "sélectionnez une catégorie de suivi spécial.",
-        "categories": {
-          "pregnant": {
-            "label": "Salariée enceinte",
-            "desc": "Les travailleuses enceintes ou allaitantes bénéficient d’une protection renforcée."
-          },
-          "disabled": {
-            "label": "Travailleur en situation de handicap",
-            "desc": "Des aménagements de poste adaptés au handicap doivent être prévus."
-          },
-          "foreign_national": {
-            "label": "Travailleur étranger",
-            "desc": "Suivi linguistique, intégration et titres de séjour / travail."
-          },
-          "young_worker": {
-            "label": "Jeune travailleur (moins de 18 ans)",
-            "desc": "Restrictions légales et mesures de protection supplémentaires."
-          },
-          "night_shift": {
-            "label": "Travail de nuit",
-            "desc": "Risques pour la santé et examens liés au travail posté."
-          },
-          "chronic_condition": {
-            "label": "Affection chronique",
-            "desc": "Surveillance médicale renouvelée et aptitude au poste."
-          },
-          "nursing_mother": {
-            "label": "Allaitement",
-            "desc": "Conditions de travail adaptées pendant la période d’allaitement."
-          },
-          "temporary_restriction": {
-            "label": "Restriction temporaire",
-            "desc": "Restriction d’activité pour raison de santé temporaire."
-          }
-        }
-      },
-      "health": {
-        "title": "Surveillance médicale",
-        "description": "Examens d’embauche, périodiques, de sortie et spéciaux.",
-        "newExam": "Nouvel examen",
-        "empty": "Aucun examen médical enregistré.",
-        "overdue": "En retard !",
-        "exam": "Examen",
-        "next": "Suivant",
-        "report": "Rapport",
-        "restriction": "Restriction",
-        "recommendation": "Recommandation",
-        "formTitle": "Nouvel examen de santé au travail",
-        "personnelRequired": "Personnel *",
-        "examType": "Type d’examen",
-        "examDateRequired": "Date de l’examen *",
-        "nextExam": "Prochain examen",
-        "result": "Résultat",
-        "physicianName": "Médecin",
-        "institution": "Organisme",
-        "reportNo": "N° de rapport",
-        "restrictions": "Restrictions",
-        "restrictionsPlaceholder": "Pas de travail en hauteur, pas de port de charges lourdes…",
-        "recommendedActions": "Actions recommandées",
-        "recommendedActionsPlaceholder": "Contrôle de suivi dans 6 mois…",
-        "examTypes": {
-          "ise_giris": "Visite d’embauche",
-          "periyodik": "Périodique",
-          "isten_ayrilma": "Visite de reprise / fin de contrat",
-          "ozel": "Spécifique"
+      "csv": {
+        "example": {
+          "address": "Istanbul, Kadikoy",
+          "department": "Production",
+          "firstName": "John",
+          "lastName": "Doe",
+          "location": "Usine principale",
+          "positionTitle": "Opérateur"
         },
-        "results": {
-          "uygun": "Apte",
-          "sartli_uygun": "Apte sous conditions",
-          "uygun_degil": "Inapte",
-          "izleme": "Surveillance"
-        }
+        "exportFileSuffix": "liste_personnel",
+        "headers": {
+          "address": "Adresse",
+          "birthDate": "Date de naissance",
+          "bloodType": "Groupe sanguin",
+          "department": "Département",
+          "educationLevel": "Niveau d'éducation",
+          "email": "E-mail",
+          "emergencyContact": "Personne à contacter en urgence",
+          "emergencyPhone": "Téléphone de contact d'urgence",
+          "employeeCode": "Code employé",
+          "employmentStatus": "Statut d'emploi",
+          "employmentType": "Type d'emploi",
+          "firstName": "Prénom",
+          "gender": "Sexe",
+          "hireDate": "Date d'embauche",
+          "identity": "Pièce d'identité nationale",
+          "lastName": "Nom de famille",
+          "location": "Localisation",
+          "maritalStatus": "Statut matrimonial",
+          "nationality": "Nationalité",
+          "notes": "Notes",
+          "phone": "Téléphone",
+          "positionTitle": "Poste / titre",
+          "shiftType": "Type d'équipe"
+        },
+        "templateFileSuffix": "modele_personnel"
       }
     },
-    "history": {
-      "title": "Historique et piste d’audit",
-      "description": "Les actions et changements sur l’entreprise sont collectés automatiquement.",
-      "noWorkspace": "Aucun espace de travail d’entreprise sélectionné.",
-      "loading": "Chargement de l’historique…",
-      "empty": "Aucun historique pour le moment. Les changements effectués sur l’entreprise seront listés ici.",
-      "dbConnectionError": "Connexion à la base de données impossible.",
-      "systemActor": "Action système",
-      "change": "Changement",
-      "actions": {
-        "workspaceCreated": "Espace de travail créé",
-        "workspaceArchived": "Espace de travail archivé",
-        "workspaceRestored": "Espace de travail restauré",
-        "expertAssigned": "Expert affecté",
-        "expertAssignmentUpdated": "Affectation de l’expert mise à jour",
-        "expertAssignmentDeleted": "Affectation de l’expert supprimée",
-        "riskAssessmentCreated": "Évaluation des risques créée",
-        "riskAssessmentUpdated": "Évaluation des risques mise à jour",
-        "riskAssessmentDeleted": "Évaluation des risques supprimée",
-        "documentCreated": "Document créé",
-        "documentUpdated": "Document mis à jour",
-        "documentDeleted": "Document supprimé",
-        "trainingAdded": "Formation ajoutée",
-        "trainingUpdated": "Formation mise à jour",
-        "incidentCreated": "Fiche incident créée",
-        "incidentUpdated": "Fiche incident mise à jour"
+    "legacyTabs": {
+      "organization": {
+        "actions": {
+          "sendInvite": "Envoyer une invitation",
+          "soon": "Bientôt disponible"
+        },
+        "cards": {
+          "invitations": {
+            "description": "Invitations professionnelles envoyées et en attente.",
+            "title": "Invitations"
+          },
+          "members": {
+            "description": "Utilisateurs pouvant accéder à l'entreprise et leurs rôles.",
+            "title": "Membres"
+          },
+          "permissions": {
+            "description": "Contrôles d'accès et d'autorisation au niveau des modules.",
+            "title": "Permissions"
+          },
+          "requests": {
+            "description": "Demandes d'adhésion à l'entreprise et flux d'approbation.",
+            "title": "Demandes"
+          }
+        },
+        "description": "Structure organisationnelle de l'entreprise, adhésion et gestion des accès.",
+        "share": {
+          "description": "Contrôles de partage et d'accès aux données de l'entreprise.",
+          "note": "Le module de partage et de gestion des accès est en développement. Le contrôle d'accès granulaire aux données de l'entreprise sera bientôt activé.",
+          "title": "Partage et accès"
+        },
+        "title": "Organisation"
       },
-      "entities": {
-        "riskAssessments": "Évaluation des risques",
-        "editorDocuments": "Document",
-        "incidents": "Incident",
-        "companyTrainings": "Formation",
-        "committeeMeetings": "Réunion du comité",
-        "periodicControls": "Contrôle périodique",
-        "tasks": "Tâche",
-        "workspace": "Espace de travail",
-        "companyIdentity": "Identité de l’entreprise"
+      "people": {
+        "activeProfessionals": "Professionnels actifs",
+        "description": "Professionnels SST, représentants du personnel et personnel de soutien.",
+        "employeeRepresentatives": "Représentants du personnel",
+        "employerName": "Nom de l'employeur",
+        "employerRepresentative": "Représentant de l'employeur",
+        "supportStaff": "Personnel de soutien",
+        "title": "Structure d'équipe et de représentation"
       }
-    },
-    "workspaceShell": {
-      "eyebrow": "Workspace",
-      "title": "Loading workspace",
-      "description": "Company data is being prepared in your browser. Please wait…"
-    },
-    "companyAccessRoles": {
-      "owner": "Owner",
-      "admin": "Administrator",
-      "manager": "Manager",
-      "editor": "Editor",
-      "viewer": "Viewer"
-    },
-    "workspaceMemberRoles": {
-      "owner": "Owner",
-      "admin": "Administrator",
-      "member": "Member",
-      "viewer": "Viewer",
-      "guest": "Guest"
-    },
-    "people": {
-      "inviteMember": {
-        "inviteSendFailed": "Could not send invitation.",
-        "panelTitle": "Invite user",
-        "panelDescription": "Invite a new member by email — when they accept, they are added to this company workspace.",
-        "openButton": "Invite",
-        "expandedTitle": "Invite new member",
-        "expandedSubtitle": "The invitation link is sent by email.",
-        "close": "Close",
-        "resultDelivered": "Invitation sent to {email}.",
-        "resultUndelivered": "Invitation created (email could not be delivered — link can be copied).",
-        "linkLabel": "Link:",
-        "newInvite": "New invitation",
-        "emailLabel": "Email",
-        "emailPlaceholder": "name@company.com",
-        "roleLabel": "Role",
-        "noteOptional": "Note (optional)",
-        "notePlaceholder": "Short note to the invitee",
-        "cancel": "Cancel",
-        "send": "Send invitation",
-        "sending": "Sending…"
-      },
-      "certBadge": {
-        "expired": "Expired",
-        "daysLeft": "{days} days left",
-        "valid": "Valid"
-      },
-      "memberForm": {
-        "fullNameLabel": "Full name *",
-        "fullNamePlaceholder": "Full name",
-        "titleLabel": "Title / role",
-        "titlePlaceholder": "OHS specialist",
-        "categoryLabel": "Category",
-        "selectCategory": "Select",
-        "phoneLabel": "Phone",
-        "phonePlaceholder": "+1 555 000 0000",
-        "emailLabel": "Email",
-        "emailPlaceholder": "name@company.com",
-        "certNumberLabel": "Certificate / document no.",
-        "certNumberPlaceholder": "OHS-2024-001",
-        "certExpiryLabel": "Certificate expiry",
-        "notesLabel": "Notes",
-        "notesPlaceholder": "Additional information…",
-        "activeMember": "Active member"
-      },
-      "memberCard": {
-        "editTitle": "Edit",
-        "deleteTitle": "Delete",
-        "deleteConfirm": "Delete",
-        "cancel": "Cancel",
-        "inactive": "Inactive"
-      },
-      "errors": {
-        "fullNameRequired": "Full name is required.",
-        "orgMissing": "Organization information could not be loaded.",
-        "connectionError": "Connection error."
-      },
-      "confirmDeleteCategory": "Are you sure you want to delete the \"{name}\" category?",
-      "confirmDeleteCategoryWithMembers": "Are you sure you want to delete the \"{name}\" category?\n\n{count} member(s) in this category will appear as uncategorized.",
-      "alertDeleteFailed": "Could not delete: {message}",
-      "header": {
-        "title": "Team management",
-        "total": "Total:",
-        "active": "Active:",
-        "certExpired": "{count} certificate(s) expired",
-        "certExpiring": "{count} certificate(s) expiring soon",
-        "addFromPersonnel": "Add from personnel",
-        "addMember": "Add member"
-      },
-      "categoriesNav": {
-        "title": "Categories",
-        "all": "All",
-        "addCategory": "Add category",
-        "deleteCategoryTitle": "Delete category",
-        "deleteCategoryAria": "Delete category {name}"
-      },
-      "emptyTeam": {
-        "title": "No team members yet",
-        "description": "Add members to build your OHS team.",
-        "cta": "Add first member"
-      },
-      "uncategorized": "Uncategorized",
-      "addMemberToCategory": "Add member",
-      "modals": {
-        "addMemberTitle": "Add team member",
-        "editMemberTitle": "Edit member",
-        "bulkAddTitle": "Add team members from personnel",
-        "addCategoryTitle": "New category",
-        "cancel": "Cancel",
-        "save": "Save",
-        "saving": "Saving…",
-        "update": "Update",
-        "create": "Create",
-        "adding": "Adding…",
-        "addPeople": "Add {count} people"
-      },
-      "personnelQuickFill": {
-        "label": "Fill from personnel",
-        "placeholder": "Select personnel (auto-fills fields)"
-      },
-      "bulkAdd": {
-        "description": "Select people from company personnel to add as team members. People already on the team are marked.",
-        "selectAll": "Select all",
-        "clearSelection": "Clear selection",
-        "selected": "{count} selected",
-        "noTitle": "No title specified",
-        "alreadyOnTeam": "On team"
-      },
-      "categoryModal": {
-        "nameLabel": "Category name *",
-        "namePlaceholder": "e.g. Fire response team",
-        "colorLabel": "Color",
-        "iconLabel": "Icon (emoji)",
-        "iconPlaceholder": "👤",
-        "previewFallback": "Category name"
-      },
-      "defaultCategories": {
-        "riskTeam": "Risk assessment team",
-        "oshExpert": "OHS specialist",
-        "workplaceDoctor": "Workplace physician",
-        "emergencyLead": "Emergency team lead"
-      },
-      "membersList": {
-        "title": "Company members and access roles",
-        "description": "Members who accepted invitations and their access levels. Five-tier model: Owner / Administrator / Manager / Editor / Viewer.",
-        "loading": "Loading members…",
-        "dbConnectionError": "Database connection could not be established.",
-        "empty": "No members yet. You can send email invitations using the form above.",
-        "userFallback": "User",
-        "youBadge": "YOU",
-        "statusActive": "Active",
-        "saving": "Saving…",
-        "roleChangeHint": "Administrator or owner role is required to change roles."
-      }
-    },
-    "organization": {
-      "stats": {
-        "activeMembers": "Active members",
-        "activeMembersSub": "With access to this company",
-        "pendingInvites": "Pending invitations",
-        "pendingInvitesSub": "Awaiting acceptance",
-        "templates": "Permission templates",
-        "templatesSub": "Defined roles"
-      },
-      "sections": {
-        "activeMembers": "Active members",
-        "sendInvite": "Send invitation",
-        "activeMembersEmpty": "No active members yet. Send invitations to build your team.",
-        "pendingInvites": "Pending invitations",
-        "pendingInvitesEmpty": "No pending invitations.",
-        "templates": "Access templates",
-        "templatesLoading": "Loading templates…"
-      },
-      "memberRow": {
-        "unknownUser": "Unknown user",
-        "noEmail": "No email",
-        "joined": "Joined:",
-        "lastActive": "Last active:",
-        "permissionsCount": "{count} permission(s)",
-        "edit": "Edit",
-        "cancel": "Cancel",
-        "remove": "Remove",
-        "removeTitle": "Remove access",
-        "roleLabel": "Role:",
-        "save": "Save",
-        "saving": "Saving…"
-      },
-      "invitationRow": {
-        "sent": "Sent:",
-        "expired": "Expired",
-        "daysLeft": "{days} days left",
-        "cancel": "Cancel"
-      }
-    },
-    "inviteProfessional": {
-      "status": {
-        "pending": "Pending",
-        "accepted": "Accepted",
-        "rejected": "Rejected",
-        "cancelled": "Cancelled"
-      },
-      "title": "Invite professional",
-      "subtitle": "Send an invitation with access permissions",
-      "section1": "1. Person to invite",
-      "pickFromTeam": "Pick from team",
-      "manualEntry": "— Manual entry —",
-      "fullName": "Full name",
-      "fullNamePlaceholder": "Full name (optional)",
-      "emailRequired": "Email *",
-      "emailPlaceholder": "name@domain.com",
-      "section2": "2. Choose a role template",
-      "section3": "3. Permissions",
-      "permissionsSelected": "{granted} / {total} permissions selected",
-      "toggleAllOn": "Select all",
-      "toggleAllOff": "Clear all",
-      "sensitiveTag": "sensitive",
-      "section4": "4. Additional options",
-      "validity": "Validity period",
-      "expiryDays": "{days} days",
-      "messageLabel": "Invitation message (optional)",
-      "messagePlaceholder": "A message to include with the invitation…",
-      "emailRequiredError": "Email address is required.",
-      "connectionError": "Connection error.",
-      "sentInvitations": "Sent invitations",
-      "expiredSuffix": " · Expired",
-      "cancel": "Cancel",
-      "send": "Send invitation",
-      "sending": "Sending…"
     }
   },
   "consent": {
@@ -3616,7 +3002,7 @@
     },
     "badges": {
       "activeCompaniesMax": "{count} / {max} entreprises actives",
-      "activeCompaniesUnlimited": "{count} entreprises actives",
+      "activeCompaniesUnlimited": "Entreprises actives : {count}",
       "activeStaffMax": "{count} / {max} personnel actif",
       "activeStaffUnlimited": "{count} personnel actif"
     },
@@ -3637,7 +3023,7 @@
     },
     "emptyActive": {
       "cta": "Ajouter la première entreprise",
-      "description": "Les entreprises clientes liées au panneau OSGB seront listées ici.",
+      "description": "Les entreprises clientes liées au panel OSGB seront listées ici.",
       "title": "Aucune entreprise active"
     },
     "emptyArchived": {
@@ -3650,39 +3036,39 @@
       "shortName": "Nouvelle entreprise"
     },
     "focus": {
-      "p1": "Cette zone est réservée aux propriétaires et administrateurs OSGB. Les entreprises, affectations, contrats et suivi de documents sont gérés en un seul endroit.",
-      "p2": "Le personnel affecté n'utilise pas ce panneau pour son flux quotidien ; il accède aux données de l'espace de travail de l'entreprise affectée via son propre compte.",
-      "sidebarBody": "{firms} entreprises actives, {professionals} professionnels affectés, et {overdue} éléments nécessitant une attention sont coordonnés ici.",
+      "p1": "Cette zone est réservée aux propriétaires et administrateurs OSGB. Les entreprises, affectations, contrats et suivi documentaire sont gérés en un seul endroit.",
+      "p2": "Le personnel assigné n'utilise pas ce panel pour son flux quotidien ; il accède aux données de l'espace de travail de l'entreprise assignée via son propre compte.",
+      "sidebarBody": "{firms} entreprises actives, {professionals} professionnels assignés, et {overdue} éléments nécessitant une attention sont coordonnés ici.",
       "sidebarEyebrow": "Focus de gestion",
       "title": "Interface centrée OSGB"
     },
     "header": {
-      "description": "Gérez vos entreprises clientes, les espaces de travail par entreprise, et les flux de personnel qui leur sont affectés.",
+      "description": "Gérez vos entreprises clientes, les espaces de travail par entreprise, et les flux de personnel qui leur sont assignés.",
       "eyebrow": "Gestion des entreprises OSGB",
       "title": "Entreprises et sites de travail"
     },
     "limitBanner": "Limite d'entreprises actives atteinte. Archivez une entreprise ou améliorez votre plan pour en ajouter plus.",
     "loading": {
-      "description": "Nous chargeons les entreprises clientes, affectations et flux de documents.",
+      "description": "Nous chargeons les entreprises clientes, affectations et flux documentaires.",
       "eyebrow": "Entreprises OSGB",
       "title": "Préparation de votre portefeuille"
     },
     "nova": {
       "bullet1": "Voir la répartition de la charge de travail par entreprise.",
       "bullet2": "Filtrer les tâches et documents en retard.",
-      "bullet3": "Identifier les lacunes d'affectation du personnel.",
+      "bullet3": "Repérer les lacunes d'affectation du personnel.",
       "bullet4": "Prioriser les risques de renouvellement de contrats et rapports.",
       "openTasks": "Tâches OSGB ouvertes",
       "reviewOverdue": "Réviser le travail en retard",
       "seeAssignmentGaps": "Voir les lacunes d'affectation",
-      "subtitle": "Assistant de gestion ; surveille les performances du personnel et de l'entreprise.",
+      "subtitle": "Assistant de gestion ; surveille les performances du personnel et des entreprises.",
       "title": "Gestionnaire Nova OSGB"
     },
     "quickLinks": {
-      "docCenter": "Aller au centre de documents",
+      "docCenter": "Accéder au centre de documents",
       "inviteStaff": "Inviter du personnel",
       "manageAssignments": "Gérer les affectations",
-      "openContracts": "Contrats ouverts"
+      "openContracts": "Ouvrir les contrats"
     },
     "stats": {
       "activeFirms": {
@@ -6057,7 +5443,7 @@
       "controlled": "Contrôlé",
       "critical": "Critique",
       "high": "Élevé",
-      "incomplete": "Sous-évaluée",
+      "incomplete": "Sous-évalué",
       "medium": "Moyen"
     }
   },

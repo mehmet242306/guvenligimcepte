@@ -1126,16 +1126,17 @@ function mapCategoryToKey(category: string): string {
 
 /* ── PEOPLE ── */
 export function PeopleTab({ company, upd }: { company: CompanyRecord; upd: (p: Partial<CompanyRecord>) => void }) {
+  const t = useTranslations("companyWorkspace.legacyTabs.people");
   return (
-    <Sec title="Ekip ve Temsil Yapısı" desc="İSG profesyonelleri, çalışan temsilcileri ve destek personeli.">
+    <Sec title={t("title")} desc={t("description")}>
       <div className="grid gap-4 sm:grid-cols-3">
-        <div><label className="text-xs font-medium text-muted-foreground">Aktif Profesyonel</label><Input type="number" value={company.activeProfessionals} onChange={(e) => upd({ activeProfessionals: Number(e.target.value) || 0 })} className="mt-1" /></div>
-        <div><label className="text-xs font-medium text-muted-foreground">Çalışan Temsilcisi</label><Input type="number" value={company.employeeRepresentativeCount} onChange={(e) => upd({ employeeRepresentativeCount: Number(e.target.value) || 0 })} className="mt-1" /></div>
-        <div><label className="text-xs font-medium text-muted-foreground">Destek Personeli</label><Input type="number" value={company.supportStaffCount} onChange={(e) => upd({ supportStaffCount: Number(e.target.value) || 0 })} className="mt-1" /></div>
+        <div><label className="text-xs font-medium text-muted-foreground">{t("activeProfessionals")}</label><Input type="number" value={company.activeProfessionals} onChange={(e) => upd({ activeProfessionals: Number(e.target.value) || 0 })} className="mt-1" /></div>
+        <div><label className="text-xs font-medium text-muted-foreground">{t("employeeRepresentatives")}</label><Input type="number" value={company.employeeRepresentativeCount} onChange={(e) => upd({ employeeRepresentativeCount: Number(e.target.value) || 0 })} className="mt-1" /></div>
+        <div><label className="text-xs font-medium text-muted-foreground">{t("supportStaff")}</label><Input type="number" value={company.supportStaffCount} onChange={(e) => upd({ supportStaffCount: Number(e.target.value) || 0 })} className="mt-1" /></div>
       </div>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        <div><label className="text-xs font-medium text-muted-foreground">İşveren Adı</label><Input value={company.employerName} onChange={(e) => upd({ employerName: e.target.value })} className="mt-1" /></div>
-        <div><label className="text-xs font-medium text-muted-foreground">İşveren Vekili</label><Input value={company.employerRepresentative} onChange={(e) => upd({ employerRepresentative: e.target.value })} className="mt-1" /></div>
+        <div><label className="text-xs font-medium text-muted-foreground">{t("employerName")}</label><Input value={company.employerName} onChange={(e) => upd({ employerName: e.target.value })} className="mt-1" /></div>
+        <div><label className="text-xs font-medium text-muted-foreground">{t("employerRepresentative")}</label><Input value={company.employerRepresentative} onChange={(e) => upd({ employerRepresentative: e.target.value })} className="mt-1" /></div>
       </div>
     </Sec>
   );
@@ -1736,29 +1737,31 @@ function CommitteeMeetingForm({ companyId, nextNumber, periodMonths, editing, on
 
 /* ── ORGANIZATION (members/permissions/invitations/requests) ── */
 export function OrganizationTab({ setInviteOpen }: { company: CompanyRecord; setInviteOpen: (v: boolean) => void }) {
+  const t = useTranslations("companyWorkspace.legacyTabs.organization");
+  const cards = [
+    { id: "members", icon: "👥", isInvite: false },
+    { id: "permissions", icon: "🔒", isInvite: false },
+    { id: "invitations", icon: "📨", isInvite: true },
+    { id: "requests", icon: "📋", isInvite: false },
+  ] as const;
   return (
     <div className="space-y-6">
-      <Sec title="Organizasyon" desc="Firma organizasyon yapısı, üyelik ve erişim yönetimi.">
+      <Sec title={t("title")} desc={t("description")}>
         <div className="grid gap-4 sm:grid-cols-2">
-          {[
-            { title: "Üyeler", desc: "Firmaya erişimi olan kullanıcılar ve rolleri.", icon: "👥", action: "Yakında" },
-            { title: "İzinler", desc: "Modül bazlı erişim ve yetki kontrolü.", icon: "🔒", action: "Yakında" },
-            { title: "Davetler", desc: "Gönderilen ve bekleyen profesyonel davetleri.", icon: "📨", action: "Davet Gönder" },
-            { title: "Talepler", desc: "Firmaya katılma talepleri ve onay süreci.", icon: "📋", action: "Yakında" },
-          ].map((item) => (
-            <div key={item.title} className="rounded-lg border border-border bg-secondary/20 p-4">
+          {cards.map((item) => (
+            <div key={item.id} className="rounded-lg border border-border bg-secondary/20 p-4">
               <div className="flex items-start gap-3">
                 <span className="text-xl">{item.icon}</span>
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
-                  <p className="mt-1 text-xs text-muted-foreground leading-5">{item.desc}</p>
+                  <h3 className="text-sm font-semibold text-foreground">{t(`cards.${item.id}.title`)}</h3>
+                  <p className="mt-1 text-xs text-muted-foreground leading-5">{t(`cards.${item.id}.description`)}</p>
                   <button
                     type="button"
-                    onClick={item.title === "Davetler" ? () => setInviteOpen(true) : undefined}
-                    disabled={item.title !== "Davetler"}
+                    onClick={item.isInvite ? () => setInviteOpen(true) : undefined}
+                    disabled={!item.isInvite}
                     className="mt-2 text-xs font-medium text-primary hover:underline disabled:text-muted-foreground disabled:no-underline"
                   >
-                    {item.action}
+                    {item.isInvite ? t("actions.sendInvite") : t("actions.soon")}
                   </button>
                 </div>
               </div>
@@ -1766,9 +1769,9 @@ export function OrganizationTab({ setInviteOpen }: { company: CompanyRecord; set
           ))}
         </div>
       </Sec>
-      <Sec title="Paylaşım ve Erişim" desc="Firma verileri üzerindeki paylaşım ve erişim kontrolleri.">
+      <Sec title={t("share.title")} desc={t("share.description")}>
         <div className="rounded-lg border border-border bg-secondary/30 p-4">
-          <p className="text-sm text-muted-foreground leading-6">Paylaşım ve erişim yönetimi modülü geliştirme aşamasındadır. Firma verileri üzerinde granular erişim kontrolü yakında aktif olacaktır.</p>
+          <p className="text-sm text-muted-foreground leading-6">{t("share.note")}</p>
         </div>
       </Sec>
     </div>

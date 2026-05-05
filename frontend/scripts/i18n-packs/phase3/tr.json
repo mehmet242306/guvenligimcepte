@@ -190,6 +190,87 @@
       "ohs_file": "İSG Dosyası",
       "organization": "Organizasyon",
       "history": "Geçmiş"
+    },
+    "legacyTabs": {
+      "people": {
+        "title": "Ekip ve temsil yapısı",
+        "description": "İSG profesyonelleri, çalışan temsilcileri ve destek personeli.",
+        "activeProfessionals": "Aktif profesyonel",
+        "employeeRepresentatives": "Çalışan temsilcisi",
+        "supportStaff": "Destek personeli",
+        "employerName": "İşveren adı",
+        "employerRepresentative": "İşveren vekili"
+      },
+      "organization": {
+        "title": "Organizasyon",
+        "description": "Firma organizasyon yapısı, üyelik ve erişim yönetimi.",
+        "cards": {
+          "members": {
+            "title": "Üyeler",
+            "description": "Firmaya erişimi olan kullanıcılar ve rolleri."
+          },
+          "permissions": {
+            "title": "İzinler",
+            "description": "Modül bazlı erişim ve yetki kontrolü."
+          },
+          "invitations": {
+            "title": "Davetler",
+            "description": "Gönderilen ve bekleyen profesyonel davetleri."
+          },
+          "requests": {
+            "title": "Talepler",
+            "description": "Firmaya katılma talepleri ve onay süreci."
+          }
+        },
+        "actions": {
+          "soon": "Yakında",
+          "sendInvite": "Davet gönder"
+        },
+        "share": {
+          "title": "Paylaşım ve erişim",
+          "description": "Firma verileri üzerindeki paylaşım ve erişim kontrolleri.",
+          "note": "Paylaşım ve erişim yönetimi modülü geliştirme aşamasındadır. Firma verileri üzerinde ayrıntılı erişim kontrolü yakında aktif olacaktır."
+        }
+      }
+    },
+    "personnel": {
+      "csv": {
+        "headers": {
+          "employeeCode": "Sicil kodu",
+          "identity": "TC kimlik no",
+          "firstName": "Ad",
+          "lastName": "Soyad",
+          "birthDate": "Doğum tarihi",
+          "gender": "Cinsiyet",
+          "nationality": "Uyruk",
+          "bloodType": "Kan grubu",
+          "maritalStatus": "Medeni durum",
+          "phone": "Telefon",
+          "email": "E-posta",
+          "emergencyContact": "Acil durum kişisi",
+          "emergencyPhone": "Acil durum telefonu",
+          "address": "Adres",
+          "department": "Bölüm",
+          "positionTitle": "Pozisyon / unvan",
+          "location": "Lokasyon",
+          "hireDate": "İşe başlama tarihi",
+          "employmentStatus": "İstihdam durumu",
+          "employmentType": "İstihdam türü",
+          "shiftType": "Vardiya türü",
+          "educationLevel": "Eğitim düzeyi",
+          "notes": "Notlar"
+        },
+        "example": {
+          "firstName": "Ahmet",
+          "lastName": "Yılmaz",
+          "address": "İstanbul, Kadıköy",
+          "department": "Üretim",
+          "positionTitle": "Operatör",
+          "location": "Ana fabrika"
+        },
+        "templateFileSuffix": "personel_sablonu",
+        "exportFileSuffix": "personel_listesi"
+      }
     }
   },
   "osgbFirms": {

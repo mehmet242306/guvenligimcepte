@@ -50,21 +50,12 @@ const CATS: SMCat[] = [
   { key: "temporary_restriction", bv: "neutral" },
 ];
 
-/* ── Labels ── */
-const STATUS_LABELS: Record<string, string> = { active: "Aktif", on_leave: "İzinli", suspended: "Askıya Alınmış", terminated: "İşten Ayrılmış" };
-const TYPE_LABELS: Record<string, string> = { full_time: "Tam Zamanlı", part_time: "Yarı Zamanlı", temporary: "Geçici", intern: "Stajyer", subcontractor: "Taşeron" };
-const GENDER_LABELS: Record<string, string> = { male: "Erkek", female: "Kadın", other: "Diğer" };
-void GENDER_LABELS;
-
 /* ── CSV ── */
-const HDRS = ["Sicil Kodu","TC Kimlik No","Ad","Soyad","Doğum Tarihi","Cinsiyet","Uyruk","Kan Grubu","Medeni Durum","Telefon","E-posta","Acil Durum Kişisi","Acil Durum Telefonu","Adres","Bölüm","Pozisyon / Unvan","Lokasyon","İşe Başlama Tarihi","İstihdam Durumu","İstihdam Türü","Vardiya Türü","Eğitim Düzeyi","Notlar"];
-const EX = ["1001","12345678901","Ahmet","Yılmaz","1990-05-15","male","TR","A+","married","05551234567","ahmet@firma.com","Ayşe Yılmaz","05559876543","İstanbul, Kadıköy","Üretim","Operatör","Ana Fabrika","2023-01-15","active","full_time","day","high_school",""];
-
-function mkCSV(): string { return "\uFEFF" + HDRS.join(";") + "\n" + EX.join(";") + "\n"; }
+function mkCSV(headers: string[], example: string[]): string { return "\uFEFF" + headers.join(";") + "\n" + example.join(";") + "\n"; }
 function dlCSV(content: string, filename: string): void { const blob = new Blob([content], { type: "text/csv;charset=utf-8;" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
-function exportPersonnelCSV(records: PersonnelRecord[], companyName: string): void {
+function exportPersonnelCSV(records: PersonnelRecord[], companyName: string, headers: string[], filenameSuffix: string): void {
   const rows = records.map((p) => [p.employeeCode,p.tcIdentityNumber,p.firstName,p.lastName,p.birthDate,p.gender,p.nationality,p.bloodType,p.maritalStatus,p.phone,p.email,p.emergencyContactName,p.emergencyContactPhone,p.address,p.department,p.positionTitle,p.location,p.hireDate,p.employmentStatus,p.employmentType,p.shiftType,p.educationLevel,p.notes].map((v) => `"${(v ?? "").replace(/"/g, '""')}"`).join(";"));
-  dlCSV("\uFEFF" + HDRS.join(";") + "\n" + rows.join("\n") + "\n", `${companyName.replace(/\s+/g, "_")}_personel_listesi.csv`);
+  dlCSV("\uFEFF" + headers.join(";") + "\n" + rows.join("\n") + "\n", `${companyName.replace(/\s+/g, "_")}_${filenameSuffix}.csv`);
 }
 function detDel(header: string): string { const s = (header.match(/;/g) || []).length; const c = (header.match(/,/g) || []).length; const t = (header.match(/\t/g) || []).length; return s >= c && s >= t ? ";" : c >= t ? "," : "\t"; }
 function pLine(line: string, delimiter: string): string[] { return line.split(delimiter).map((col) => col.trim().replace(/^"|"$/g, "")); }
@@ -211,17 +202,17 @@ type SortKey =
   | "employmentType";
 type SortDir = "asc" | "desc";
 
-const SORT_LABELS: Record<SortKey, string> = {
-  employeeCode: "Sicil",
-  fullName: "Ad Soyad",
-  department: "Bölüm",
-  positionTitle: "Pozisyon",
-  location: "Lokasyon",
-  employmentStatus: "Durum",
-  employmentType: "İstihdam",
-};
+const SORT_KEYS: SortKey[] = [
+  "employeeCode",
+  "fullName",
+  "department",
+  "positionTitle",
+  "location",
+  "employmentStatus",
+  "employmentType",
+];
 
-function sortValueFor(p: PersonnelRecord, key: SortKey): string {
+function sortValueFor(p: PersonnelRecord, key: SortKey, t: ReturnType<typeof useTranslations>): string {
   switch (key) {
     case "employeeCode":
       return p.employeeCode || "";
@@ -234,9 +225,9 @@ function sortValueFor(p: PersonnelRecord, key: SortKey): string {
     case "location":
       return p.location || "";
     case "employmentStatus":
-      return STATUS_LABELS[p.employmentStatus] || p.employmentStatus || "";
+      return t(`statuses.${p.employmentStatus}`) || p.employmentStatus || "";
     case "employmentType":
-      return TYPE_LABELS[p.employmentType] || p.employmentType || "";
+      return t(`employmentTypes.${p.employmentType}`) || p.employmentType || "";
   }
 }
 
@@ -244,13 +235,13 @@ function sortValueFor(p: PersonnelRecord, key: SortKey): string {
 // Sicil gibi numerik alanlar için {numeric: true} kullanıyoruz ki "9" < "10" olsun.
 
 
-function sortPersonnel(rows: PersonnelRecord[], key: SortKey, dir: SortDir, locale: string): PersonnelRecord[] {
+function sortPersonnel(rows: PersonnelRecord[], key: SortKey, dir: SortDir, locale: string, t: ReturnType<typeof useTranslations>): PersonnelRecord[] {
   const collator = new Intl.Collator(locale, { numeric: true, sensitivity: "base" });
   const mul = dir === "asc" ? 1 : -1;
   const out = [...rows];
   out.sort((a, b) => {
-    const av = sortValueFor(a, key);
-    const bv = sortValueFor(b, key);
+    const av = sortValueFor(a, key, t);
+    const bv = sortValueFor(b, key, t);
     // Boş değerler her zaman sona.
     if (!av && !bv) return 0;
     if (!av) return 1;
@@ -327,7 +318,7 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
   void locs;
   const activeCount = useMemo(() => ppl.filter((p) => p.employmentStatus === "active").length, [ppl]);
 
-  const sortedPpl = useMemo(() => sortPersonnel(ppl, sortKey, sortDir, locale), [ppl, sortKey, sortDir, locale]);
+  const sortedPpl = useMemo(() => sortPersonnel(ppl, sortKey, sortDir, locale, t), [ppl, sortKey, sortDir, locale, t]);
 
   const onSortClick = useCallback(
     (key: SortKey) => {
@@ -341,7 +332,63 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
     [sortKey],
   );
 
-  const dl = useCallback(() => { dlCSV(mkCSV(), `${companyName.replace(/\s+/g, "_")}_personel_sablonu.csv`); }, [companyName]);
+  const csvHeaders = useMemo(
+    () => [
+      t("csv.headers.employeeCode"),
+      t("csv.headers.identity"),
+      t("csv.headers.firstName"),
+      t("csv.headers.lastName"),
+      t("csv.headers.birthDate"),
+      t("csv.headers.gender"),
+      t("csv.headers.nationality"),
+      t("csv.headers.bloodType"),
+      t("csv.headers.maritalStatus"),
+      t("csv.headers.phone"),
+      t("csv.headers.email"),
+      t("csv.headers.emergencyContact"),
+      t("csv.headers.emergencyPhone"),
+      t("csv.headers.address"),
+      t("csv.headers.department"),
+      t("csv.headers.positionTitle"),
+      t("csv.headers.location"),
+      t("csv.headers.hireDate"),
+      t("csv.headers.employmentStatus"),
+      t("csv.headers.employmentType"),
+      t("csv.headers.shiftType"),
+      t("csv.headers.educationLevel"),
+      t("csv.headers.notes"),
+    ],
+    [t],
+  );
+  const csvExample = useMemo(
+    () => [
+      "1001",
+      "12345678901",
+      t("csv.example.firstName"),
+      t("csv.example.lastName"),
+      "1990-05-15",
+      "male",
+      "TR",
+      "A+",
+      "married",
+      "05551234567",
+      "ahmet@example.com",
+      `${t("csv.example.firstName")} ${t("csv.example.lastName")}`,
+      "05559876543",
+      t("csv.example.address"),
+      t("csv.example.department"),
+      t("csv.example.positionTitle"),
+      t("csv.example.location"),
+      "2023-01-15",
+      "active",
+      "full_time",
+      "day",
+      "high_school",
+      "",
+    ],
+    [t],
+  );
+  const dl = useCallback(() => { dlCSV(mkCSV(csvHeaders, csvExample), `${companyName.replace(/\s+/g, "_")}_${t("csv.templateFileSuffix")}.csv`); }, [companyName, csvHeaders, csvExample, t]);
 
   const doImp = useCallback(async () => {
     if (!impFile) { setImpMsg(t("import.chooseFile")); setImpOk(false); return; }
@@ -385,7 +432,7 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
     await removeSpecialPolicyFromSupabase(policyId); const sbPolicies = await fetchSpecialPoliciesFromSupabase(companyId); if (sbPolicies) setPolicies(sbPolicies);
   }, [companyId]);
 
-  const doExport = useCallback(() => { exportPersonnelCSV(ppl, companyName); }, [ppl, companyName]);
+  const doExport = useCallback(() => { exportPersonnelCSV(ppl, companyName, csvHeaders, t("csv.exportFileSuffix")); }, [ppl, companyName, csvHeaders, t]);
 
   if (!mounted) return (
     <div className="flex items-center justify-center py-12">
@@ -463,7 +510,7 @@ export function PersonnelManagementPanel({ companyId, companyName, departments, 
                       onChange={(e) => { setSortKey(e.target.value as SortKey); }}
                       className="rounded-lg border border-border bg-card px-2 py-1 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                     >
-                      {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
+                      {SORT_KEYS.map((k) => (
                         <option key={k} value={k}>{t(`sort.${k}`)}</option>
                       ))}
                     </select>
