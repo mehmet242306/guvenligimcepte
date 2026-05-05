@@ -143,6 +143,7 @@ type WidgetHistorySession = {
 
 const PANEL_EDGE_GAP = 12;
 const WIDGET_HISTORY_STORAGE_KEY = "risknova:nova-widget-history";
+const ACTIVE_WIDGET_SESSION_STORAGE_KEY = "risknova:nova-widget-active-session-id";
 const MAX_WIDGET_HISTORY_SESSIONS = 20;
 const MAX_WIDGET_HISTORY_MESSAGES = 80;
 
@@ -279,6 +280,20 @@ function writeLocalWidgetHistory(sessions: WidgetHistorySession[]) {
   }
 }
 
+function readActiveWidgetSessionId() {
+  if (typeof window === "undefined") return "";
+  return window.localStorage.getItem(ACTIVE_WIDGET_SESSION_STORAGE_KEY) || "";
+}
+
+function writeActiveWidgetSessionId(sessionId: string) {
+  if (typeof window === "undefined") return;
+  if (sessionId) {
+    window.localStorage.setItem(ACTIVE_WIDGET_SESSION_STORAGE_KEY, sessionId);
+    return;
+  }
+  window.localStorage.removeItem(ACTIVE_WIDGET_SESSION_STORAGE_KEY);
+}
+
 function mergeHistorySessionMessages(
   first: WidgetHistoryMessage[],
   second: WidgetHistoryMessage[],
@@ -374,6 +389,7 @@ function rememberLocalWidgetHistory(sessionId: string, queryText: string, aiResp
     ...otherSessions,
   ];
   writeLocalWidgetHistory(next);
+  writeActiveWidgetSessionId(sessionId);
 }
 
 export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: boolean }) {
@@ -608,6 +624,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     setSessionId(null);
     widgetHistorySessionIdRef.current = "";
     proactiveLoadedRef.current = false;
+    writeActiveWidgetSessionId("");
   }
 
   // Fetch organization_id for authenticated users
@@ -661,6 +678,27 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       ]);
     }
   }, [messages.length, open, welcomeActions, welcomeText]);
+
+  useEffect(() => {
+    if (messages.length > 0) return;
+    const activeSessionId = readActiveWidgetSessionId();
+    if (!isUuid(activeSessionId)) return;
+
+    const session = readLocalWidgetHistory().find((item) => item.id === activeSessionId);
+    if (!session) return;
+
+    widgetHistorySessionIdRef.current = session.id;
+    setSessionId(session.id);
+    setMessages(
+      session.messages.map((message) => ({
+        id: crypto.randomUUID(),
+        role: message.role,
+        text: message.text,
+        timestamp: new Date(message.createdAt),
+      })),
+    );
+    proactiveLoadedRef.current = true;
+  }, [messages.length]);
 
   useEffect(() => {
     if (!open || !isAuthenticated || !organizationId || proactiveLoadedRef.current) return;
@@ -978,6 +1016,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   function restoreHistorySession(session: WidgetHistorySession) {
     widgetHistorySessionIdRef.current = session.id;
     setSessionId(isUuid(session.id) ? session.id : null);
+    writeActiveWidgetSessionId(session.id);
     setMessages((prev) => [
       ...prev.filter((message) => message.id !== "welcome"),
       ...session.messages.map((message) => ({
@@ -1354,6 +1393,11 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       // Preserve session
       if (data?.session_id && !sessionId) {
         setSessionId(data.session_id);
+      }
+      if (data?.session_id) {
+        writeActiveWidgetSessionId(data.session_id);
+      } else {
+        writeActiveWidgetSessionId(activeHistorySessionId);
       }
 
       const botMessage = buildBotMessageFromAgentResponse(data);
