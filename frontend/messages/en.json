@@ -4945,6 +4945,8 @@
         "downloadPdf": "Download PDF",
         "exportingPdf": "Preparing PDF...",
         "downloadPdfTitle": "Periodic control register",
+        "reportDate": "Report date",
+        "qrHint": "QR code points to",
         "openTracking": "Open tracking tab",
         "addFromTemplate": "Add from regulation catalog",
         "pickTemplatePlaceholder": "Choose equipment / installation",
@@ -4960,7 +4962,8 @@
         "orgNotFound": "Organization not found",
         "saveFailed": "Save failed",
         "needTitle": "Enter a title before sending to tracking",
-        "pushFailed": "Could not create tracking record"
+        "pushFailed": "Could not create tracking record",
+        "pdfFailed": "Could not generate PDF"
       },
       "loading": "Loading register...",
       "empty": "No rows yet. Choose sector and workplace type, then load suggestions or add manually.",

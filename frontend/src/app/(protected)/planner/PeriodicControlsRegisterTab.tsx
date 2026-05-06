@@ -258,6 +258,7 @@ export default function PeriodicControlsRegisterTab() {
     setError(null);
     try {
       const { jsPDF } = await import("jspdf");
+      const QRCode = (await import("qrcode")).default;
       const doc = new jsPDF({ unit: "pt", format: "a4" });
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
@@ -266,16 +267,82 @@ export default function PeriodicControlsRegisterTab() {
       let y = margin;
 
       const safe = (v?: string | null) => (v && v.trim() ? v.trim() : "—");
+      const companyName = selectedCompany?.name ?? "—";
+      const companyLogoUrl = selectedCompany?.logo_url?.trim() ?? "";
+      const reportDate = new Date().toLocaleDateString(locale === "tr" ? "tr-TR" : "en-US");
+      const shareUrl =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/planner?companyId=${encodeURIComponent(companyId)}&tab=periodicControls`
+          : `https://getrisknova.com/planner?companyId=${encodeURIComponent(companyId)}&tab=periodicControls`;
+      const qrDataUrl = await QRCode.toDataURL(shareUrl, { margin: 1, width: 132 });
+      let logoDataUrl: string | null = null;
+      let logoPlacement: { x: number; y: number; w: number; h: number } | null = null;
+      if (companyLogoUrl && typeof window !== "undefined") {
+        try {
+          const logoResp = await fetch(companyLogoUrl);
+          if (logoResp.ok) {
+            const logoBlob = await logoResp.blob();
+            logoDataUrl = await new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(String(reader.result ?? ""));
+              reader.onerror = reject;
+              reader.readAsDataURL(logoBlob);
+            });
+            if (logoDataUrl) {
+              const resolvedLogoDataUrl = logoDataUrl;
+              const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+                const image = new Image();
+                image.onload = () => resolve(image);
+                image.onerror = reject;
+                image.src = resolvedLogoDataUrl;
+              });
+              const boxW = 38;
+              const boxH = 38;
+              const scale = Math.min(boxW / img.width, boxH / img.height);
+              const drawW = Math.max(1, Math.round(img.width * scale));
+              const drawH = Math.max(1, Math.round(img.height * scale));
+              logoPlacement = {
+                x: margin + 12 + (boxW - drawW) / 2,
+                y: y - 6 + (boxH - drawH) / 2,
+                w: drawW,
+                h: drawH,
+              };
+            }
+          }
+        } catch {
+          logoDataUrl = null;
+          logoPlacement = null;
+        }
+      }
 
-      doc.setFontSize(14);
-      doc.text(t("actions.downloadPdfTitle"), margin, y);
-      y += 20;
+      doc.setFillColor(16, 24, 40);
+      doc.rect(margin, y - 12, contentWidth, 62, "F");
+      doc.setTextColor(255, 255, 255);
+      if (logoDataUrl && logoPlacement) {
+        doc.setFillColor(255, 255, 255);
+        doc.roundedRect(margin + 10, y - 8, 42, 42, 6, 6, "F");
+        doc.addImage(logoDataUrl, "PNG", logoPlacement.x, logoPlacement.y, logoPlacement.w, logoPlacement.h);
+      }
+      doc.setFontSize(11);
+      doc.text("RiskNova", margin + (logoDataUrl ? 56 : 12), y + 8);
+      doc.setFontSize(15);
+      doc.text(t("actions.downloadPdfTitle"), margin + (logoDataUrl ? 56 : 12), y + 28);
       doc.setFontSize(10);
-      doc.text(`${t("fields.company")}: ${selectedCompany?.name ?? "—"}`, margin, y);
+      doc.text(`${t("fields.company")}: ${companyName}`, margin + (logoDataUrl ? 56 : 12), y + 44);
+      doc.addImage(qrDataUrl, "PNG", pageWidth - margin - 54, y - 8, 42, 42);
+      y += 66;
+
+      doc.setTextColor(45, 55, 72);
+      doc.setFontSize(10);
+      doc.text(`${t("fields.company")}: ${companyName}`, margin, y);
       y += 14;
       doc.text(`${t("fields.ownership")}: ${t(`ownership.${ownership}`)}`, margin, y);
       y += 14;
       doc.text(`${t("fields.sector")}: ${sectorOptions[sector]?.label ?? sector}`, margin, y);
+      y += 14;
+      doc.text(`${t("actions.reportDate")}: ${reportDate}`, margin, y);
+      y += 14;
+      doc.text(`${t("actions.qrHint")}: ${shareUrl}`, margin, y, { maxWidth: contentWidth });
       y += 18;
 
       for (let i = 0; i < rows.length; i += 1) {
@@ -300,6 +367,7 @@ export default function PeriodicControlsRegisterTab() {
         if (y + blockHeight > pageHeight - margin) {
           doc.addPage();
           y = margin;
+          doc.setTextColor(45, 55, 72);
         }
         doc.setFontSize(10);
         doc.text(lines, margin, y);
@@ -310,7 +378,7 @@ export default function PeriodicControlsRegisterTab() {
       doc.save(`periodic-control-register-${datePart}.pdf`);
     } catch (err) {
       console.warn("[PeriodicControlsRegisterTab] downloadPdf", err);
-      setError(err instanceof Error ? err.message : t("errors.pushFailed"));
+      setError(err instanceof Error ? err.message : t("errors.pdfFailed"));
     } finally {
       setExportingPdf(false);
     }
@@ -485,12 +553,13 @@ export default function PeriodicControlsRegisterTab() {
                         <Button
                           type="button"
                           size="sm"
-                          variant="ghost"
-                          className="h-8 w-8 shrink-0 p-0"
+                          variant="outline"
+                          className="h-8 shrink-0 border-red-300/70 px-2 text-red-700 hover:border-red-400 hover:bg-red-50 hover:text-red-800 dark:border-red-900/50 dark:text-red-300 dark:hover:bg-red-900/20"
                           onClick={() => removeRow(row.id)}
                           aria-label={t("actions.deleteRow")}
                         >
-                          <Trash2 className="size-4" />
+                          <Trash2 className="mr-1 size-3.5" />
+                          {t("actions.deleteRow")}
                         </Button>
                       </div>
                     </div>

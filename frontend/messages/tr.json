@@ -4945,6 +4945,8 @@
         "downloadPdf": "PDF indir",
         "exportingPdf": "PDF hazırlanıyor...",
         "downloadPdfTitle": "Periyodik kontrol envanteri",
+        "reportDate": "Rapor tarihi",
+        "qrHint": "QR kod bu adrese yönlendirir",
         "openTracking": "Takip sekmesini aç",
         "addFromTemplate": "Mevzuat kataloğundan ekle",
         "pickTemplatePlaceholder": "Ekipman / tesisat seçin",
@@ -4960,7 +4962,8 @@
         "orgNotFound": "Organizasyon bulunamadı",
         "saveFailed": "Kayıt başarısız",
         "needTitle": "Takibe göndermeden önce başlık girin",
-        "pushFailed": "Takip kaydı oluşturulamadı"
+        "pushFailed": "Takip kaydı oluşturulamadı",
+        "pdfFailed": "PDF oluşturulamadı"
       },
       "loading": "Kayıt yükleniyor...",
       "empty": "Henüz satır yok. Sektör ve işyeri türünü seçip önerilen listeyi yükleyin veya manuel ekleyin.",
