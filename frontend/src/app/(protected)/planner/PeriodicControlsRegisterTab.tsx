@@ -259,7 +259,8 @@ export default function PeriodicControlsRegisterTab() {
     try {
       const { jsPDF } = await import("jspdf");
       const QRCode = (await import("qrcode")).default;
-      const doc = new jsPDF({ unit: "pt", format: "a4" });
+      const { default: autoTable } = await import("jspdf-autotable");
+      const doc = new jsPDF({ unit: "pt", format: "a4", orientation: "landscape" });
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 36;
@@ -269,18 +270,7 @@ export default function PeriodicControlsRegisterTab() {
       const normalizeForPdf = (value?: string | null) =>
         (value ?? "—")
           .trim()
-          .replace(/İ/g, "I")
-          .replace(/ı/g, "i")
-          .replace(/Ş/g, "S")
-          .replace(/ş/g, "s")
-          .replace(/Ğ/g, "G")
-          .replace(/ğ/g, "g")
-          .replace(/Ü/g, "U")
-          .replace(/ü/g, "u")
-          .replace(/Ö/g, "O")
-          .replace(/ö/g, "o")
-          .replace(/Ç/g, "C")
-          .replace(/ç/g, "c")
+          .normalize("NFC")
           .replace(/\s+/g, " ");
       const safe = (v?: string | null) => {
         const normalized = normalizeForPdf(v);
@@ -366,34 +356,65 @@ export default function PeriodicControlsRegisterTab() {
       doc.setDrawColor(226, 232, 240);
       doc.line(margin, y - 8, pageWidth - margin, y - 8);
 
-      for (let i = 0; i < rows.length; i += 1) {
-        const row = rows[i];
-        const statusLabel = (row.status ?? "planned") === "completed" ? t("table.statusCompleted") : t("table.statusPlanned");
-        const lines = doc.splitTextToSize(
-          [
-            `${i + 1}. ${safe(row.title)}`,
-            `${safe(t("table.status"))}: ${safe(statusLabel)}`,
-            `${safe(t("table.plannedDate"))}: ${safe(row.plannedDate)}`,
-            `${safe(t("table.doneDate"))}: ${safe(row.doneDate)}`,
-            `${safe(t("table.doneNote"))}: ${safe(row.doneNote)}`,
-            `${safe(t("table.regulation"))}: ${safe(row.regulation)}`,
-            `${safe(t("table.period"))}: ${safe(row.periodLabel)}`,
-            `${safe(t("table.tableRef"))}: ${safe(row.tableRef)}`,
-            `${safe(t("table.source"))}: ${safe(row.source === "template" ? t("source.template") : t("source.manual"))}`,
-          ].join("\n"),
-          contentWidth,
-        ) as string[];
-
-        const blockHeight = lines.length * 12 + 8;
-        if (y + blockHeight > pageHeight - margin) {
-          doc.addPage();
-          y = margin;
-          doc.setTextColor(45, 55, 72);
-        }
-        doc.setFontSize(10);
-        doc.text(lines, margin, y);
-        y += blockHeight;
-      }
+      autoTable(doc, {
+        startY: y + 2,
+        margin: { left: margin, right: margin },
+        head: [[
+          "#",
+          safe(t("table.title")),
+          safe(t("table.status")),
+          safe(t("table.plannedDate")),
+          safe(t("table.doneDate")),
+          safe(t("table.doneNote")),
+          safe(t("table.regulation")),
+          safe(t("table.period")),
+          safe(t("table.source")),
+        ]],
+        body: rows.map((row, idx) => {
+          const statusLabel = (row.status ?? "planned") === "completed" ? t("table.statusCompleted") : t("table.statusPlanned");
+          return [
+            String(idx + 1),
+            safe(row.title),
+            safe(statusLabel),
+            safe(row.plannedDate),
+            safe(row.doneDate),
+            safe(row.doneNote),
+            safe(row.regulation),
+            safe(row.periodLabel),
+            safe(row.source === "template" ? t("source.template") : t("source.manual")),
+          ];
+        }),
+        theme: "grid",
+        styles: {
+          fontSize: 8.5,
+          cellPadding: 5,
+          lineColor: [226, 232, 240],
+          lineWidth: 0.7,
+          textColor: [30, 41, 59],
+          overflow: "linebreak",
+          valign: "middle",
+        },
+        headStyles: {
+          fillColor: [15, 23, 42],
+          textColor: [255, 255, 255],
+          fontStyle: "bold",
+          halign: "left",
+        },
+        alternateRowStyles: {
+          fillColor: [248, 250, 252],
+        },
+        columnStyles: {
+          0: { cellWidth: 26, halign: "center" },
+          1: { cellWidth: 180 },
+          2: { cellWidth: 72 },
+          3: { cellWidth: 72 },
+          4: { cellWidth: 72 },
+          5: { cellWidth: 120 },
+          6: { cellWidth: 200 },
+          7: { cellWidth: 85 },
+          8: { cellWidth: 66 },
+        },
+      });
 
       const datePart = new Date().toISOString().slice(0, 10);
       doc.save(`periodic-control-register-${datePart}.pdf`);
