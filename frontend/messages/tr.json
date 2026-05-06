@@ -190,7 +190,50 @@
     "pwaEyebrow": "Mobil ve masaüstü erişim",
     "pwaTitle": "RiskNova'yı ana ekrana ekle",
     "pwaBody": "Android, iPhone/iPad ve Windows'ta RiskNova'yı uygulama gibi açın. Gizli modda kurulum görünmez; normal tarayıcı penceresinde deneyin.",
-    "pwaCta": "Kurulum adımlarını aç"
+    "pwaCta": "Kurulum adımlarını aç",
+    "featureStatus": {
+      "title": "Nova Özellik Durumu",
+      "description": "Canlı, beta ve kapalı modülleri tek yerden takip edin.",
+      "goToModule": "Modüle git",
+      "filters": {
+        "all": "Tümü",
+        "active": "Aktif",
+        "beta": "Beta",
+        "disabled": "Devre dışı"
+      },
+      "items": {
+        "annualEval": {
+          "name": "Yıllık Değerlendirme Raporu",
+          "note": "AI özet + dışa aktarma iyileştirmeleri sürüyor."
+        },
+        "periodicPdf": {
+          "name": "Periyodik Kontrol PDF",
+          "note": "Kurumsal antet, QR ve tablo çıktısı aktif."
+        },
+        "selfHealing": {
+          "name": "Self-Healing Operasyonları",
+          "note": "Otomasyon aktif, trend kartı güçlendiriliyor."
+        },
+        "novaWorkflows": {
+          "name": "Nova Aksiyon İş Akışları",
+          "note": "Yönlendirme ve aksiyon onayı canlıda."
+        },
+        "featureFlags": {
+          "name": "Özellik Bayrak Yönetimi",
+          "note": "Panel bazlı aç/kapa yönetimi planlandı."
+        }
+      }
+    },
+    "serviceHealth": {
+      "title": "Servis Durumu",
+      "description": "Son 24 saatte self-healing akışlarının sağlık özeti.",
+      "successRate": "Başarı oranı",
+      "status": {
+        "good": "İyi",
+        "watch": "İzleniyor",
+        "issue": "Sorun var"
+      }
+    }
   },
   "osgb": {
     "chrome": {

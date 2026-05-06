@@ -263,7 +263,38 @@ export function SelfHealingTab() {
     const ratio24h = total24h > 0 ? Math.round((success24h / total24h) * 100) : 100;
     const ratio7d = total7d > 0 ? Math.round((success7d / total7d) * 100) : 100;
 
-    return { success24h, failure24h, success7d, failure7d, ratio24h, ratio7d };
+    const daily = Array.from({ length: 7 }, (_, idx) => {
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+      start.setDate(start.getDate() - (6 - idx));
+      const end = new Date(start);
+      end.setDate(end.getDate() + 1);
+      let success = 0;
+      let failure = 0;
+      const inRange = (value: string) => {
+        const ts = new Date(value).getTime();
+        return ts >= start.getTime() && ts < end.getTime();
+      };
+
+      for (const row of queueRows) {
+        if (!inRange(row.scheduled_at)) continue;
+        if (isSuccessStatus(row.status)) success += 1;
+        if (isFailureStatus(row.status)) failure += 1;
+      }
+      for (const row of novaOutboxRows) {
+        if (!inRange(row.created_at)) continue;
+        if (isSuccessStatus(row.status)) success += 1;
+        if (isFailureStatus(row.status)) failure += 1;
+      }
+
+      return {
+        label: new Intl.DateTimeFormat("tr-TR", { weekday: "short" }).format(start),
+        success,
+        failure,
+      };
+    });
+
+    return { success24h, failure24h, success7d, failure7d, ratio24h, ratio7d, daily };
   }, [novaOutboxRows, queueRows]);
 
   const latestNovaOutboxEvents = useMemo(() => {
@@ -497,6 +528,25 @@ export function SelfHealingTab() {
             <div className="mt-1 text-sm font-semibold text-foreground">
               {operationTrend.success7d} / {operationTrend.failure7d}
             </div>
+          </div>
+        </div>
+        <div className="mt-4 rounded-xl border border-border bg-background px-3 py-3">
+          <div className="mb-2 text-[11px] text-muted-foreground">7 gunluk mini trend (basari/hata)</div>
+          <div className="grid grid-cols-7 gap-2">
+            {operationTrend.daily.map((day) => {
+              const maxValue = Math.max(1, ...operationTrend.daily.map((d) => d.success + d.failure));
+              const successHeight = Math.max(2, Math.round(((day.success || 0) / maxValue) * 48));
+              const failureHeight = Math.max(2, Math.round(((day.failure || 0) / maxValue) * 48));
+              return (
+                <div key={day.label} className="flex flex-col items-center gap-1">
+                  <div className="flex h-14 items-end gap-1">
+                    <div className="w-2 rounded-sm bg-emerald-500/80" style={{ height: `${successHeight}px` }} />
+                    <div className="w-2 rounded-sm bg-rose-500/80" style={{ height: `${failureHeight}px` }} />
+                  </div>
+                  <div className="text-[10px] text-muted-foreground">{day.label}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

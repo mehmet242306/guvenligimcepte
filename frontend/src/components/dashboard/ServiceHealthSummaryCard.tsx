@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 type HealthStatus = "good" | "watch" | "issue";
 
 export function ServiceHealthSummaryCard() {
+  const t = useTranslations("dashboard.serviceHealth");
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<HealthStatus>("good");
   const [successRate, setSuccessRate] = useState<number>(100);
@@ -51,10 +53,10 @@ export function ServiceHealthSummaryCard() {
   }, []);
 
   const statusLabel = useMemo(() => {
-    if (status === "issue") return "Sorun var";
-    if (status === "watch") return "Izleniyor";
-    return "Iyi";
-  }, [status]);
+    if (status === "issue") return t("status.issue");
+    if (status === "watch") return t("status.watch");
+    return t("status.good");
+  }, [status, t]);
 
   const badgeCls = status === "issue"
     ? "bg-rose-500/15 text-rose-700 dark:text-rose-300"
@@ -65,14 +67,12 @@ export function ServiceHealthSummaryCard() {
   return (
     <div className="surface-card">
       <div className="flex items-center justify-between gap-2">
-        <h2 className="text-base font-semibold text-foreground">Servis Durumu</h2>
+        <h2 className="text-base font-semibold text-foreground">{t("title")}</h2>
         <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${badgeCls}`}>{statusLabel}</span>
       </div>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Son 24 saatte self-healing akislarinin saglik ozeti.
-      </p>
+      <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
       <div className="mt-3 rounded-xl border border-border bg-background px-3 py-2.5">
-        <div className="text-[11px] text-muted-foreground">Basari orani</div>
+        <div className="text-[11px] text-muted-foreground">{t("successRate")}</div>
         <div className="mt-1 text-2xl font-semibold text-foreground">
           {loading ? "..." : `%${successRate}`}
         </div>

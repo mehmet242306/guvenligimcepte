@@ -190,7 +190,50 @@
     "pwaEyebrow": "Mobile and desktop access",
     "pwaTitle": "Add RiskNova to your home screen",
     "pwaBody": "Open RiskNova like an app on Android, iPhone/iPad and Windows. Install prompts may not appear in private browsing; use a normal browser window.",
-    "pwaCta": "Open setup steps"
+    "pwaCta": "Open setup steps",
+    "featureStatus": {
+      "title": "Nova Feature Status",
+      "description": "Track live, beta and disabled modules from one place.",
+      "goToModule": "Go to module",
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "beta": "Beta",
+        "disabled": "Disabled"
+      },
+      "items": {
+        "annualEval": {
+          "name": "Annual Evaluation Report",
+          "note": "AI summary and export improvements are in progress."
+        },
+        "periodicPdf": {
+          "name": "Periodic Control PDF",
+          "note": "Branded header, QR and table output are active."
+        },
+        "selfHealing": {
+          "name": "Self-Healing Operations",
+          "note": "Automation is active; trend card is being improved."
+        },
+        "novaWorkflows": {
+          "name": "Nova Action Workflows",
+          "note": "Navigation and action approval are live."
+        },
+        "featureFlags": {
+          "name": "Feature Flag Management",
+          "note": "Panel-based toggle management is planned."
+        }
+      }
+    },
+    "serviceHealth": {
+      "title": "Service Health",
+      "description": "Health summary of self-healing flows over the last 24 hours.",
+      "successRate": "Success rate",
+      "status": {
+        "good": "Good",
+        "watch": "Monitoring",
+        "issue": "Issue"
+      }
+    }
   },
   "osgb": {
     "chrome": {

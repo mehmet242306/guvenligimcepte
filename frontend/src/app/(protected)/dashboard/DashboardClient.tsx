@@ -63,14 +63,6 @@ type NovaFeatureItem = {
   href?: string;
 };
 
-const NOVA_FEATURES: NovaFeatureItem[] = [
-  { key: 'annual_eval', name: 'Yıllık Değerlendirme Raporu', status: 'beta', note: 'AI özet + dışa aktarma iyileştirmeleri sürüyor.', href: '/reports' },
-  { key: 'periodic_pdf', name: 'Periyodik Kontrol PDF', status: 'active', note: 'Kurumsal antet, QR ve tablo çıktısı aktif.', href: '/planner' },
-  { key: 'self_healing', name: 'Self-Healing Operasyonları', status: 'beta', note: 'Otomasyon aktif, trend kartı güçlendiriliyor.', href: '/settings?tab=self_healing' },
-  { key: 'nova_workflows', name: 'Nova Aksiyon İş Akışları', status: 'active', note: 'Yönlendirme ve aksiyon onayı canlıda.', href: '/dashboard' },
-  { key: 'feature_flags', name: 'Özellik Bayrak Yönetimi', status: 'disabled', note: 'Panel bazlı aç/kapa yönetimi planlandı.' },
-];
-
 export function DashboardClient() {
   const router = useRouter();
   const t = useTranslations('dashboard');
@@ -78,6 +70,7 @@ export function DashboardClient() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [featureFilter, setFeatureFilter] = useState<'all' | NovaFeatureStatus>('all');
+  const [dynamicFeatures, setDynamicFeatures] = useState<NovaFeatureItem[]>([]);
 
   // Dashboard açılışında yaklaşan ajanda görevleri için bildirim tarama
   // (günde bir kez, duplike önlemi var)
@@ -123,6 +116,7 @@ export function DashboardClient() {
         { count: taskCount },
         { count: librarySourcedSurveyCount },
         { count: librarySourcedExamCount },
+        { data: featureFlags },
       ] = await Promise.all([
         supabase.from('risk_assessments').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
         supabase.from('risk_assessments').select('id').eq('organization_id', orgId).gte('highest_item_score', 15),
@@ -148,6 +142,10 @@ export function DashboardClient() {
           .eq('organization_id', orgId)
           .eq('type', 'exam')
           .contains('settings', { source_library: { provider: 'isg-library' } }),
+        supabase
+          .from('nova_feature_flags')
+          .select('feature_key,display_name,description,is_enabled,rollout_percentage')
+          .limit(100),
       ]);
 
       const docs = documents || [];
@@ -168,6 +166,23 @@ export function DashboardClient() {
         recentDocs: docs.slice(0, 5),
         isDemoAccount,
       });
+      const mappedFeatures = (featureFlags ?? []).map((row: {
+        feature_key: string;
+        display_name: string;
+        description: string | null;
+        is_enabled: boolean;
+        rollout_percentage: number;
+      }) => ({
+        key: row.feature_key,
+        name: row.display_name,
+        status: (!row.is_enabled
+          ? 'disabled'
+          : row.rollout_percentage >= 100
+            ? 'active'
+            : 'beta') as NovaFeatureStatus,
+        note: row.description ?? '',
+      }));
+      setDynamicFeatures(mappedFeatures);
       setLoading(false);
     }
 
@@ -208,9 +223,17 @@ export function DashboardClient() {
   }
 
   const s = stats;
+  const fallbackFeatures: NovaFeatureItem[] = [
+    { key: 'annual_eval', name: t('featureStatus.items.annualEval.name'), status: 'beta', note: t('featureStatus.items.annualEval.note'), href: '/reports' },
+    { key: 'periodic_pdf', name: t('featureStatus.items.periodicPdf.name'), status: 'active', note: t('featureStatus.items.periodicPdf.note'), href: '/planner' },
+    { key: 'self_healing', name: t('featureStatus.items.selfHealing.name'), status: 'beta', note: t('featureStatus.items.selfHealing.note'), href: '/settings?tab=self_healing' },
+    { key: 'nova_workflows', name: t('featureStatus.items.novaWorkflows.name'), status: 'active', note: t('featureStatus.items.novaWorkflows.note'), href: '/dashboard' },
+    { key: 'feature_flags', name: t('featureStatus.items.featureFlags.name'), status: 'disabled', note: t('featureStatus.items.featureFlags.note') },
+  ];
+  const featureItems = dynamicFeatures.length > 0 ? dynamicFeatures : fallbackFeatures;
   const filteredFeatures = featureFilter === 'all'
-    ? NOVA_FEATURES
-    : NOVA_FEATURES.filter((feature) => feature.status === featureFilter);
+    ? featureItems
+    : featureItems.filter((feature) => feature.status === featureFilter);
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? t('greetingMorning') : hour < 18 ? t('greetingAfternoon') : t('greetingEvening');
@@ -630,16 +653,16 @@ export function DashboardClient() {
 
           <div className="surface-card">
             <div className="mb-3">
-              <h2 className="text-base font-semibold text-foreground">Nova Özellik Durumu</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Canlı, beta ve kapalı modülleri tek yerden takip edin.</p>
+              <h2 className="text-base font-semibold text-foreground">{t('featureStatus.title')}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{t('featureStatus.description')}</p>
             </div>
 
             <div className="mb-3 flex flex-wrap gap-2">
               {([
-                ['all', 'Tümü'],
-                ['active', 'Aktif'],
+                ['all', t('featureStatus.filters.all')],
+                ['active', t('featureStatus.filters.active')],
                 ['beta', 'Beta'],
-                ['disabled', 'Devre dışı'],
+                ['disabled', t('featureStatus.filters.disabled')],
               ] as const).map(([value, label]) => (
                 <button
                   key={value}
@@ -668,10 +691,10 @@ export function DashboardClient() {
 
                 const badgeLabel =
                   feature.status === 'active'
-                    ? 'Aktif'
+                    ? t('featureStatus.filters.active')
                     : feature.status === 'beta'
-                      ? 'Beta'
-                      : 'Devre dışı';
+                      ? t('featureStatus.filters.beta')
+                      : t('featureStatus.filters.disabled');
 
                 return (
                   <div
@@ -688,7 +711,7 @@ export function DashboardClient() {
                             onClick={() => router.push(feature.href as string)}
                             className="mt-1 text-xs font-semibold text-[var(--primary)] hover:underline"
                           >
-                            Modüle git
+                            {t('featureStatus.goToModule')}
                           </button>
                         ) : null}
                       </div>
