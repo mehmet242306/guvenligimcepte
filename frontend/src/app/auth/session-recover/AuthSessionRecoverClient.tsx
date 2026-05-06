@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Session, SupabaseClient, User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
 import {
@@ -112,6 +113,78 @@ function shouldForcePasswordSetup(user: {
   return hasOAuthProvider && !hasEmailProvider && !explicitlySkipped;
 }
 
+/**
+ * PKCE: mobilde cookie/localStorage gecikmesi veya detectSessionInUrl ile yarış;
+ * kisa bekleme + getSession + tekrarli exchange.
+ */
+async function resolveOAuthSessionAfterRedirect(
+  supabase: SupabaseClient,
+  authCode: string,
+  isCancelled: () => boolean,
+): Promise<{ session: Session; user: User } | { errorMessage?: string }> {
+  await new Promise((r) => setTimeout(r, 120));
+  if (isCancelled()) return {};
+
+  const { data: early } = await supabase.auth.getSession();
+  if (
+    early.session?.access_token &&
+    early.session?.refresh_token &&
+    early.session.user
+  ) {
+    return { session: early.session, user: early.session.user };
+  }
+
+  const delays = [0, 220, 450, 800];
+  let lastErrorMessage: string | undefined;
+
+  for (const ms of delays) {
+    if (ms > 0) {
+      await new Promise((r) => setTimeout(r, ms));
+    }
+    if (isCancelled()) return {};
+
+    const { data: peek } = await supabase.auth.getSession();
+    if (
+      peek.session?.access_token &&
+      peek.session?.refresh_token &&
+      peek.session.user
+    ) {
+      return { session: peek.session, user: peek.session.user };
+    }
+
+    const { data, error } = await supabase.auth.exchangeCodeForSession(authCode);
+    lastErrorMessage = error?.message;
+
+    if (
+      !error &&
+      data.session?.access_token &&
+      data.session?.refresh_token &&
+      data.user
+    ) {
+      return { session: data.session, user: data.user };
+    }
+
+    const msg = (error?.message ?? "").toLowerCase();
+    if (msg.includes("already been used") || msg.includes("invalid_grant")) {
+      const { data: existing } = await supabase.auth.getSession();
+      if (
+        existing.session?.access_token &&
+        existing.session?.refresh_token &&
+        existing.session.user
+      ) {
+        return { session: existing.session, user: existing.session.user };
+      }
+      break;
+    }
+  }
+
+  if (lastErrorMessage) {
+    console.warn("[session-recover] exchangeCodeForSession (after retries):", lastErrorMessage);
+  }
+
+  return { errorMessage: lastErrorMessage };
+}
+
 export function AuthSessionRecoverClient({
   code,
   nextPath,
@@ -182,29 +255,20 @@ export function AuthSessionRecoverClient({
       }
 
       const trimmedCode = code.trim();
-      const exchangeResult = await supabase.auth.exchangeCodeForSession(trimmedCode);
-      let data = exchangeResult.data;
-      let error = exchangeResult.error;
+      const resolved = await resolveOAuthSessionAfterRedirect(supabase, trimmedCode, () => cancelled);
 
       if (cancelled) return;
 
-      /** OAuth kodu tek kullanimlik; ikinci exchange yapma. Oturum zaten yazildiysa getSession yeter */
-      if (error || !data.session?.access_token || !data.session.refresh_token) {
-        const { data: existing } = await supabase.auth.getSession();
-        if (existing.session?.access_token && existing.session.refresh_token) {
-          data = { session: existing.session, user: existing.session.user };
-          error = null;
-        }
-      }
-
-      if (error || !data.session?.access_token || !data.session.refresh_token) {
-        console.warn("[session-recover] exchangeCodeForSession:", error?.message);
+      if (!("session" in resolved && resolved.session?.access_token && resolved.session.refresh_token)) {
+        const errMsg = "errorMessage" in resolved ? resolved.errorMessage : undefined;
         setMessage("Google oturumu tamamlanamadi. Login sayfasina donuluyor...");
         window.setTimeout(() => {
-          redirectToLoginWithError(error?.message ?? "");
+          redirectToLoginWithError(errMsg ?? "");
         }, 400);
         return;
       }
+
+      const data = { session: resolved.session, user: resolved.user };
 
       const { error: cookieSessionError } = await supabase.auth.setSession({
         access_token: data.session.access_token,

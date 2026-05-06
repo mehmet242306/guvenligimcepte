@@ -5,6 +5,7 @@ import {
   type User,
 } from "@supabase/supabase-js";
 import type { NextRequest } from "next/server";
+import { supabaseAuthCookieOptions } from "@/lib/supabase/supabase-auth-cookie-options";
 
 function getSupabasePublishableKey() {
   return (
@@ -31,6 +32,7 @@ function createCookieClient(request: NextRequest): SupabaseClient | null {
   if (!url || !publishableKey) return null;
 
   return createServerClient(url, publishableKey, {
+    cookieOptions: supabaseAuthCookieOptions,
     cookies: {
       getAll() {
         return request.cookies.getAll();

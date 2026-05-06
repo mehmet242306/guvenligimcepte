@@ -1,5 +1,6 @@
 ﻿import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { supabaseAuthCookieOptions } from "@/lib/supabase/supabase-auth-cookie-options";
 
 function getRequiredEnv(name: string) {
   const value = process.env[name];
@@ -32,6 +33,7 @@ export async function createClient() {
   const supabasePublishableKey = getSupabasePublishableKey();
 
   return createServerClient(supabaseUrl, supabasePublishableKey, {
+    cookieOptions: supabaseAuthCookieOptions,
     cookies: {
       getAll() {
         return cookieStore.getAll();

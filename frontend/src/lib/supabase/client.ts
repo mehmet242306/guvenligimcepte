@@ -1,6 +1,7 @@
 ﻿import { createBrowserClient } from "@supabase/ssr";
 import { processLock } from "@supabase/auth-js";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { supabaseAuthCookieOptions } from "@/lib/supabase/supabase-auth-cookie-options";
 
 // Singleton: birden fazla GoTrue örneği "Failed to fetch" hatasına yol açar
 // (navigator.locks üzerinde yarışan _useSession çağrıları birbirini abort eder).
@@ -34,6 +35,7 @@ export function createClient() {
   // aynı anda refresh olursa biri tamamlar, diğeri retry'da yakalar —
   // veri kaybı yok, sadece hafif fazladan call).
   browserClient = createBrowserClient(supabaseUrl, supabasePublishableKey, {
+    cookieOptions: supabaseAuthCookieOptions,
     auth: {
       lock: processLock,
       flowType: "pkce",

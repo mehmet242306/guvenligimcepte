@@ -135,10 +135,11 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
       console.info("[social-login] redirectTo:", callbackUrl.toString(), "mode:", mode);
     }
 
-    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+    const { data: oauthData, error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
         redirectTo: callbackUrl.toString(),
+        skipBrowserRedirect: true,
         queryParams:
           provider === "google"
             ? { access_type: "offline", prompt: "consent" }
@@ -157,6 +158,15 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
       setLoading(null);
       return;
     }
+
+    const authorizeUrl = oauthData?.url;
+    if (!authorizeUrl?.trim()) {
+      setError(ts("oauthGenericError"));
+      setLoading(null);
+      return;
+    }
+
+    window.location.replace(authorizeUrl);
   }
 
   const brandName = (process.env.NEXT_PUBLIC_BRAND_NAME || "RiskNova").trim() || "RiskNova";

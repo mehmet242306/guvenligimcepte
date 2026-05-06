@@ -43,6 +43,7 @@ import { createServerClient } from "@supabase/ssr";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { supabaseAuthCookieOptions } from "@/lib/supabase/supabase-auth-cookie-options";
 
 // ============================================================================
 // Sabitler
@@ -230,6 +231,7 @@ function createCookieClient(req: NextRequest): SupabaseClient | null {
   if (!url || !publishableKey) return null;
 
   return createServerClient(url, publishableKey, {
+    cookieOptions: supabaseAuthCookieOptions,
     cookies: {
       getAll() {
         return req.cookies.getAll();
