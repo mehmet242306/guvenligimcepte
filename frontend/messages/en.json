@@ -6580,6 +6580,43 @@
       }
     }
   },
+  "liveScan": {
+    "title": "Live field scan",
+    "subtitle": "Camera capture feeds the same AI as mobile. When you stop the session, every detection is merged into Risk Analysis for this company (no separate risk list here).",
+    "cameraIdle": "Start a session to open the camera. Frames are analyzed about every 3 seconds while scanning.",
+    "defaultLocationName": "Web live field scan",
+    "controls": {
+      "heading": "Session",
+      "company": "Company workspace",
+      "companyPlaceholder": "Select a company",
+      "method": "Risk method",
+      "start": "Start scanning",
+      "stop": "Stop",
+      "allowCamera": "Test camera"
+    },
+    "hud": {
+      "frame": "Frame #{n}",
+      "analyzing": "Analyzing…",
+      "waiting": "Next frame soon",
+      "risksQueued": "{count} finding(s) queued for Risk Analysis"
+    },
+    "transfer": {
+      "title": "Session complete — findings are in Risk Analysis",
+      "body": "{count} AI finding(s) were saved and copied into a risk assessment record. Open Risk Analysis to review, score, and export — the same module as manual analyses.",
+      "openAnalysis": "Open in Risk Analysis",
+      "openAnalysisFallback": "Open Risk Analysis (select the latest “Automatic: …” assessment if needed)"
+    },
+    "hintViewer": "Colleagues with access can follow the stream from Digital Twin while a session is active.",
+    "linkDigitalTwin": "Open Digital Twin (live viewer)",
+    "disclaimer": "Video is not recorded end-to-end: only still frames are sent for analysis. Detections appear only under Risk Analysis after the session ends. Ensure workers’ consent and site photography rules are respected.",
+    "errors": {
+      "noMediaApi": "This browser does not support camera access.",
+      "cameraDenied": "Camera permission was denied.",
+      "cameraFailed": "Camera could not be started.",
+      "pickCompany": "Select a company workspace first.",
+      "auth": "Session expired or not authorized. Sign in again."
+    }
+  },
   "fieldInspection": {
     "workspaceFallback": "Active workspace",
     "header": {

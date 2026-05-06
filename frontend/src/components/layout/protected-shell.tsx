@@ -61,6 +61,7 @@ type NavItem = { href: string; key: string; adminOnly?: boolean };
 const secondaryNav: NavItem[] = [
   { href: "/training", key: "nav.trainingHub" },
   { href: "/score-history", key: "nav.scoreHistory" },
+  { href: "/live-scan", key: "nav.liveScan" },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
   { href: "/digital-twin", key: "nav.digitalTwin", adminOnly: true },
@@ -86,6 +87,7 @@ const osgbPrimaryNav = [
 
 const osgbSecondaryNav = [
   { href: "/training", key: "nav.trainingHub" },
+  { href: "/live-scan", key: "nav.liveScan" },
   { href: "/osgb/contracts", key: "nav.osgbContracts" },
   // Raporlar: Firma workspace → İSG Dosyası sekmesine taşındı.
   { href: "/cozumler/osgb", key: "nav.osgbOffersCapacity" },
@@ -105,6 +107,7 @@ const platformAdminPrimaryNav = [
 const platformAdminSecondaryNav = [
   { href: "/training", key: "nav.trainingHub" },
   { href: "/score-history", key: "nav.scoreHistory" },
+  { href: "/live-scan", key: "nav.liveScan" },
   { href: "/planner", key: "nav.planner" },
   { href: "/settings", key: "nav.settings" },
   { href: "/platform-admin/demo-requests", key: "nav.demoRequestsNav" },

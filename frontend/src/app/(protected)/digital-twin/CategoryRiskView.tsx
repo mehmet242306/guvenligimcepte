@@ -1,30 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { createClient as supabase } from "@/lib/supabase/client";
+import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
 
 /**
- * CategoryRiskView — Kategorilere ayrılmış risk listesi
- *
- * Tüm scan_detections'ları kategorilerine göre ayırır ve gösterir.
- * Yangın, Elektrik, KKD, Düşme, Kimyasal, Mekanik, vs.
+ * Özet: scan_detections kategori dağılımı (salt okunur).
+ * Bulgu metni ve skorlama yalnızca Risk Analizi modülünde — çift liste yok.
  */
-
-type Detection = {
-  id: string;
-  session_id: string;
-  risk_name: string;
-  risk_level: string;
-  risk_category: string;
-  confidence: number;
-  description: string;
-  recommended_action: string;
-  screenshot_url: string;
-  created_at: string;
-  gps_lat?: number;
-  gps_lng?: number;
-  transferred_to_assessment?: string;
-};
 
 type CategoryMeta = {
   key: string;
@@ -48,211 +32,128 @@ const CATEGORIES: CategoryMeta[] = [
   { key: "diger", label: "Diğer", icon: "📍", color: "#6B7280", bg: "#6B728022" },
 ];
 
-const LEVEL_COLORS: Record<string, string> = {
-  critical: "#A855F7",
-  high: "#EF4444",
-  medium: "#F59E0B",
-  low: "#10B981",
-};
-
 export default function CategoryRiskView() {
-  const [detections, setDetections] = useState<Detection[]>([]);
+  const [categoryStats, setCategoryStats] = useState<Record<string, { count: number; critical: number; high: number }>>(
+    {},
+  );
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [activeLevel, setActiveLevel] = useState<string | null>(null);
+  const [riskAnalysisHref, setRiskAnalysisHref] = useState("/risk-analysis");
+
+  useEffect(() => {
+    void getActiveWorkspace().then((w) => {
+      if (w?.id) {
+        setRiskAnalysisHref(`/risk-analysis?companyId=${encodeURIComponent(w.id)}`);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     (async () => {
       const sb = supabase();
-      if (!sb) return;
+      if (!sb) {
+        setLoading(false);
+        return;
+      }
 
       const { data } = await sb
         .from("scan_detections")
-        .select("*")
+        .select("risk_category, risk_level")
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(2000);
 
-      setDetections(data || []);
+      const rows = data ?? [];
+      setTotal(rows.length);
+      const stats: Record<string, { count: number; critical: number; high: number }> = {};
+      for (const d of rows) {
+        const cat = (d.risk_category as string) || "diger";
+        if (!stats[cat]) stats[cat] = { count: 0, critical: 0, high: 0 };
+        stats[cat].count++;
+        if (d.risk_level === "critical") stats[cat].critical++;
+        else if (d.risk_level === "high") stats[cat].high++;
+      }
+      setCategoryStats(stats);
       setLoading(false);
     })();
   }, []);
 
-  // Kategori bazlı gruplama + sayım
-  const categoryStats = useMemo(() => {
-    const stats: Record<string, { count: number; critical: number; high: number }> = {};
-    for (const d of detections) {
-      const cat = d.risk_category || "diger";
-      if (!stats[cat]) stats[cat] = { count: 0, critical: 0, high: 0 };
-      stats[cat].count++;
-      if (d.risk_level === "critical") stats[cat].critical++;
-      else if (d.risk_level === "high") stats[cat].high++;
-    }
-    return stats;
-  }, [detections]);
-
-  const filtered = useMemo(() => {
-    let list = detections;
-    if (activeCategory) list = list.filter((d) => (d.risk_category || "diger") === activeCategory);
-    if (activeLevel) list = list.filter((d) => d.risk_level === activeLevel);
-    return list;
-  }, [detections, activeCategory, activeLevel]);
+  const catCount = useMemo(() => Object.keys(categoryStats).length, [categoryStats]);
 
   if (loading) {
     return (
       <div className="rounded-xl border border-border bg-card p-6 text-center">
         <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        <p className="text-xs text-muted-foreground mt-3">Kategoriler yükleniyor...</p>
+        <p className="mt-3 text-xs text-muted-foreground">Özet yükleniyor…</p>
       </div>
     );
   }
 
-  if (detections.length === 0) {
+  if (total === 0) {
     return (
-      <div className="rounded-xl border border-border bg-card p-8 text-center">
-        <div className="text-4xl mb-3">📂</div>
-        <h3 className="text-sm font-bold text-foreground mb-1">Henüz kategorize edilmiş risk yok</h3>
-        <p className="text-[11px] text-muted-foreground">
-          Saha taraması yapılınca riskler otomatik kategorilere ayrılır.
+      <div className="rounded-xl border border-border bg-card p-6">
+        <h3 className="text-sm font-bold text-foreground">Saha taraması özeti</h3>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Henüz kayıtlı tespit yok. Canlı tarama bittiğinde bulgular otomatik olarak Risk Analizi kaydına aktarılır.
         </p>
+        <Link
+          href="/live-scan"
+          className="mt-3 inline-block text-xs font-semibold text-primary underline-offset-4 hover:underline"
+        >
+          Canlı saha taraması →
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div>
-        <h3 className="text-base font-bold text-foreground">🎯 Kategorilere Göre Riskler</h3>
-        <p className="text-[11px] text-muted-foreground mt-1">
-          Toplam {detections.length} risk · {Object.keys(categoryStats).length} kategori
-        </p>
+    <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h3 className="text-base font-bold text-foreground">Saha taraması — kategori özeti</h3>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Toplam {total} ham tespit kaydı · {catCount} kategori. Detaylı bulgu listesi ve skorlama yalnızca Risk
+            Analizi ekranındadır (çift liste yok).
+          </p>
+        </div>
+        <Link
+          href={riskAnalysisHref}
+          className="shrink-0 rounded-xl border border-border bg-primary/10 px-4 py-2 text-xs font-semibold text-primary hover:bg-primary/15"
+        >
+          Risk Analizi →
+        </Link>
       </div>
 
-      {/* Category Grid */}
       <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {CATEGORIES.map((cat) => {
           const stat = categoryStats[cat.key];
           if (!stat) return null;
-          const isActive = activeCategory === cat.key;
           return (
-            <button
+            <div
               key={cat.key}
-              type="button"
-              onClick={() => setActiveCategory(isActive ? null : cat.key)}
-              className={`relative rounded-xl border p-3 text-left transition-all ${
-                isActive
-                  ? "border-primary bg-primary/10 shadow-md"
-                  : "border-border bg-card hover:border-primary/40"
-              }`}
+              className="relative rounded-xl border border-border bg-secondary/20 p-3 text-left"
             >
               <div className="flex items-center gap-2">
                 <div
-                  className="h-9 w-9 rounded-lg flex items-center justify-center text-lg"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-lg"
                   style={{ backgroundColor: cat.bg }}
                 >
                   {cat.icon}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-bold text-foreground truncate">{cat.label}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[11px] font-bold text-foreground">{cat.label}</p>
                   <p className="text-[9px] text-muted-foreground">
-                    {stat.count} risk
-                    {stat.critical > 0 && (
-                      <span className="text-red-500 font-bold"> · {stat.critical} kritik</span>
-                    )}
+                    {stat.count} kayıt
+                    {stat.critical > 0 ? <span className="font-bold text-red-500"> · {stat.critical} kritik</span> : null}
                   </p>
                 </div>
               </div>
-              {stat.critical > 0 && (
-                <div className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-              )}
-            </button>
+              {stat.critical > 0 ? (
+                <div className="absolute right-2 top-2 h-2 w-2 animate-pulse rounded-full bg-red-500" />
+              ) : null}
+            </div>
           );
         })}
       </div>
-
-      {/* Level filter */}
-      <div className="flex items-center gap-2">
-        <span className="text-[10px] text-muted-foreground">Seviye:</span>
-        <div className="flex gap-1">
-          {["critical", "high", "medium", "low"].map((lvl) => (
-            <button
-              key={lvl}
-              type="button"
-              onClick={() => setActiveLevel(activeLevel === lvl ? null : lvl)}
-              className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-colors ${
-                activeLevel === lvl ? "text-white" : "text-muted-foreground border border-border"
-              }`}
-              style={{
-                backgroundColor: activeLevel === lvl ? LEVEL_COLORS[lvl] : "transparent",
-              }}
-            >
-              {lvl === "critical" ? "Kritik" : lvl === "high" ? "Yüksek" : lvl === "medium" ? "Orta" : "Düşük"}
-            </button>
-          ))}
-          {(activeCategory || activeLevel) && (
-            <button
-              type="button"
-              onClick={() => {
-                setActiveCategory(null);
-                setActiveLevel(null);
-              }}
-              className="px-2.5 py-1 rounded-md text-[10px] text-muted-foreground hover:text-foreground"
-            >
-              ✕ Temizle
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Filtered detections list */}
-      {(activeCategory || activeLevel) && (
-        <div className="space-y-2">
-          <p className="text-[10px] text-muted-foreground">
-            {filtered.length} sonuç gösteriliyor
-          </p>
-          <div className="grid gap-2 max-h-[600px] overflow-y-auto">
-            {filtered.map((d) => (
-              <div
-                key={d.id}
-                className="flex items-start gap-3 rounded-xl border border-border bg-card p-3 hover:border-primary/40 transition-colors"
-              >
-                <div
-                  className="w-1 rounded-full self-stretch"
-                  style={{ backgroundColor: LEVEL_COLORS[d.risk_level] }}
-                />
-                {d.screenshot_url && (
-                  <img
-                    src={d.screenshot_url}
-                    alt="Risk"
-                    className="h-16 w-16 rounded-lg object-cover flex-shrink-0"
-                  />
-                )}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <h4 className="text-xs font-bold text-foreground">{d.risk_name}</h4>
-                    <span
-                      className="text-[9px] font-bold px-2 py-0.5 rounded"
-                      style={{
-                        backgroundColor: LEVEL_COLORS[d.risk_level] + "22",
-                        color: LEVEL_COLORS[d.risk_level],
-                      }}
-                    >
-                      {d.risk_level === "critical" ? "KRİTİK" : d.risk_level === "high" ? "YÜKSEK" : d.risk_level === "medium" ? "ORTA" : "DÜŞÜK"}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-muted-foreground line-clamp-2 mt-1">{d.description}</p>
-                  <div className="flex items-center gap-3 mt-2 text-[9px] text-muted-foreground">
-                    <span>%{d.confidence} güven</span>
-                    <span>{new Date(d.created_at).toLocaleDateString("tr-TR")}</span>
-                    {d.gps_lat != null && <span>📍 GPS</span>}
-                    {d.transferred_to_assessment && <span className="text-green-500">✓ Analize aktarıldı</span>}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

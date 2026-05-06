@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Play, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { Play, ScanLine, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusAlert } from "@/components/ui/status-alert";
 import { getActiveWorkspace, type WorkspaceRow } from "@/lib/supabase/workspace-api";
@@ -32,6 +34,7 @@ function mapWorkspace(row: WorkspaceRow | null, fallbackName: string): Workspace
 
 export function FieldInspectionClient() {
   const t = useTranslations("fieldInspection");
+  const tNav = useTranslations("nav");
   const [workspace, setWorkspace] = useState<WorkspaceContext>({
     name: t("workspaceFallback"),
     countryCode: "TR",
@@ -180,6 +183,16 @@ export function FieldInspectionClient() {
               <Sparkles className="mr-1.5 h-4 w-4" />
               {t("actions.checklistWithNova")}
             </Button>
+            <Link
+              href="/live-scan"
+              className={cn(
+                "inline-flex h-12 w-full min-[480px]:w-auto items-center justify-center gap-2 rounded-2xl border border-border bg-card px-6 text-base font-medium text-primary shadow-[var(--shadow-soft)] transition-colors hover:bg-secondary",
+                "focus-visible:shadow-[0_0_0_4px_var(--ring)]",
+              )}
+            >
+              <ScanLine className="h-4 w-4" />
+              {tNav("liveScan")}
+            </Link>
           </>
         }
       />

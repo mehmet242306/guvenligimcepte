@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { LiveScanClient } from "./LiveScanClient";
 
 export default function LiveScanPage() {
-  redirect("/score-history");
+  return <LiveScanClient />;
 }

@@ -6580,6 +6580,43 @@
       }
     }
   },
+  "liveScan": {
+    "title": "Canlı saha taraması",
+    "subtitle": "Kamera görüntüsü mobil ile aynı AI boru hattına gider. Oturumu durdurduğunuzda tüm tespitler bu firma için Risk Analizi modülünde tek kayıtta birleşir; ayrı bir risk listesi yoktur.",
+    "cameraIdle": "Oturumu başlatın; tarama sırasında yaklaşık 3 saniyede bir kare analiz edilir.",
+    "defaultLocationName": "Web canlı saha taraması",
+    "controls": {
+      "heading": "Oturum",
+      "company": "Firma çalışma alanı",
+      "companyPlaceholder": "Firma seçin",
+      "method": "Risk yöntemi",
+      "start": "Taramayı başlat",
+      "stop": "Durdur",
+      "allowCamera": "Kamerayı dene"
+    },
+    "hud": {
+      "frame": "Kare #{n}",
+      "analyzing": "Analiz ediliyor…",
+      "waiting": "Sonraki kare",
+      "risksQueued": "{count} tespit Risk Analizi’ne işlenecek"
+    },
+    "transfer": {
+      "title": "Oturum tamam — bulgular Risk Analizi’nde",
+      "body": "{count} yapay zekâ tespiti kaydedildi ve bir risk değerlendirme kaydına aktarıldı. İnceleme, skorlama ve dışa aktarma için Risk Analizi sayfasını açın; manuel analizlerle aynı modüldür.",
+      "openAnalysis": "Risk Analizi’nde aç",
+      "openAnalysisFallback": "Risk Analizi’ne git (gerekirse son “Otomatik: …” kaydını seçin)"
+    },
+    "hintViewer": "Oturum aktifken yetkili ekip Dijital İkiz ekranından yayını izleyebilir.",
+    "linkDigitalTwin": "Dijital İkiz (canlı izleyici)",
+    "disclaimer": "Sürekli video kaydı yok: yalnızca analiz için kareler gönderilir. Tespitler oturum bitince yalnızca Risk Analizi altında görünür. Çalışan rızası ve saha fotoğraf kurallarına uyun.",
+    "errors": {
+      "noMediaApi": "Bu tarayıcı kamera erişimini desteklemiyor.",
+      "cameraDenied": "Kamera izni reddedildi.",
+      "cameraFailed": "Kamera başlatılamadı.",
+      "pickCompany": "Önce firma çalışma alanı seçin.",
+      "auth": "Oturum süresi doldu veya yetki yok. Tekrar giriş yapın."
+    }
+  },
   "fieldInspection": {
     "workspaceFallback": "Aktif çalışma alanı",
     "header": {
