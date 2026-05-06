@@ -1,13 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requirePermission } from "@/lib/supabase/api-auth";
 import { createServiceClient } from "@/lib/security/server";
+import { isSelfHealingCronAuthorized } from "@/lib/security/self-healing-cron-auth";
 import { runSelfHealingHealthChecks } from "@/lib/self-healing/health";
-
-function isCronAuthorized(request: NextRequest) {
-  const configuredSecret = process.env.SELF_HEALING_CRON_SECRET?.trim();
-  if (!configuredSecret) return false;
-  return request.headers.get("x-self-healing-key")?.trim() === configuredSecret;
-}
 
 export async function GET() {
   const supabase = createServiceClient();
@@ -51,15 +46,16 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   let createdBy: string | null = null;
+  const cronOk = isSelfHealingCronAuthorized(request);
 
-  if (!isCronAuthorized(request)) {
+  if (!cronOk) {
     const auth = await requirePermission(request, "self_healing.manage");
     if (!auth.ok) return auth.response;
     createdBy = auth.userId;
   }
 
   const result = await runSelfHealingHealthChecks({
-    mode: isCronAuthorized(request) ? "scheduled" : "manual",
+    mode: cronOk ? "scheduled" : "manual",
     createdBy,
   });
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requirePermission } from "@/lib/supabase/api-auth";
 import { createServiceClient, parseJsonBody } from "@/lib/security/server";
+import { isSelfHealingCronAuthorized } from "@/lib/security/self-healing-cron-auth";
 
 const bodySchema = z.object({
   environment: z.enum(["development", "staging", "production"]).default("production"),
@@ -15,14 +16,8 @@ const bodySchema = z.object({
   details: z.record(z.string(), z.any()).optional().default({}),
 });
 
-function isCronAuthorized(request: NextRequest) {
-  const configuredSecret = process.env.SELF_HEALING_CRON_SECRET?.trim();
-  if (!configuredSecret) return false;
-  return request.headers.get("x-self-healing-key")?.trim() === configuredSecret;
-}
-
 export async function POST(request: NextRequest) {
-  if (!isCronAuthorized(request)) {
+  if (!isSelfHealingCronAuthorized(request)) {
     const auth = await requirePermission(request, "self_healing.manage");
     if (!auth.ok) return auth.response;
   }

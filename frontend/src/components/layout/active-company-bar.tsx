@@ -161,7 +161,7 @@ export function ActiveCompanyBar() {
 
           {/* Sağ tarafta firma detayı linki */}
           <Link
-            href={`/companies/${profile.slug ?? profile.workspaceId}`}
+            href={`/companies/${profile.workspaceId}`}
             className={cn(
               "ml-auto inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground",
             )}
