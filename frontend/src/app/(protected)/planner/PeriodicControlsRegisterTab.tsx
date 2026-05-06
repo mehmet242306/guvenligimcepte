@@ -35,6 +35,42 @@ type RegisterRow = {
   doneNote?: string;
 };
 
+let pdfUnicodeFontPromise: Promise<void> | null = null;
+
+function toBase64(bytes: Uint8Array): string {
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+  return btoa(binary);
+}
+
+async function ensurePdfUnicodeFont(doc: InstanceType<typeof import("jspdf").jsPDF>): Promise<void> {
+  if (!pdfUnicodeFontPromise) {
+    pdfUnicodeFontPromise = (async () => {
+      const [regularResp, boldResp] = await Promise.all([
+        fetch("https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts@main/hinted/ttf/NotoSans/NotoSans-Regular.ttf"),
+        fetch("https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts@main/hinted/ttf/NotoSans/NotoSans-Bold.ttf"),
+      ]);
+      if (!regularResp.ok || !boldResp.ok) {
+        throw new Error("Unicode font yüklenemedi");
+      }
+      const [regularBuf, boldBuf] = await Promise.all([regularResp.arrayBuffer(), boldResp.arrayBuffer()]);
+      const regularB64 = toBase64(new Uint8Array(regularBuf));
+      const boldB64 = toBase64(new Uint8Array(boldBuf));
+
+      doc.addFileToVFS("NotoSans-Regular.ttf", regularB64);
+      doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
+      doc.addFileToVFS("NotoSans-Bold.ttf", boldB64);
+      doc.addFont("NotoSans-Bold.ttf", "NotoSans", "bold");
+    })();
+  }
+
+  await pdfUnicodeFontPromise;
+}
+
 function newRowId(): string {
   return typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2);
 }
@@ -261,6 +297,8 @@ export default function PeriodicControlsRegisterTab() {
       const QRCode = (await import("qrcode")).default;
       const { default: autoTable } = await import("jspdf-autotable");
       const doc = new jsPDF({ unit: "pt", format: "a4", orientation: "landscape" });
+      await ensurePdfUnicodeFont(doc);
+      doc.setFont("NotoSans", "normal");
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 36;
@@ -334,8 +372,10 @@ export default function PeriodicControlsRegisterTab() {
       }
       doc.setFontSize(11);
       doc.text("RiskNova", margin + (logoDataUrl ? 56 : 12), y + 8);
+      doc.setFont("NotoSans", "bold");
       doc.setFontSize(15);
       doc.text(safe(t("actions.downloadPdfTitle")), margin + (logoDataUrl ? 56 : 12), y + 28);
+      doc.setFont("NotoSans", "normal");
       doc.setFontSize(10);
       doc.text(`${safe(t("fields.company"))}: ${safe(companyName)}`, margin + (logoDataUrl ? 56 : 12), y + 44);
       doc.addImage(qrDataUrl, "PNG", pageWidth - margin - 54, y - 8, 42, 42);
@@ -386,6 +426,7 @@ export default function PeriodicControlsRegisterTab() {
         }),
         theme: "grid",
         styles: {
+          font: "NotoSans",
           fontSize: 8.5,
           cellPadding: 5,
           lineColor: [226, 232, 240],
