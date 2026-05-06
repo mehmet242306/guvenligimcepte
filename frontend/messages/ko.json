@@ -4715,7 +4715,10 @@
         "pickTemplatePlaceholder": "Choose equipment / installation",
         "addSelectedTemplate": "Add",
         "toTracking": "Add to tracking",
-        "deleteRow": "Remove row"
+        "deleteRow": "Remove row",
+        "downloadPdf": "Download PDF",
+        "exportingPdf": "Preparing PDF...",
+        "downloadPdfTitle": "Periodic control register"
       },
       "errors": {
         "noSupabase": "No Supabase connection",

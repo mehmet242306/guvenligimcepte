@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { ClipboardCheck, Loader2, Plus, Save, Trash2 } from "lucide-react";
+import { ClipboardCheck, FileDown, Loader2, Plus, Save, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -90,6 +90,7 @@ export default function PeriodicControlsRegisterTab() {
   const [error, setError] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState(false);
   const [templatePick, setTemplatePick] = useState<string>("");
+  const [exportingPdf, setExportingPdf] = useState(false);
 
   const sectorOptions = useMemo(
     () =>
@@ -251,6 +252,70 @@ export default function PeriodicControlsRegisterTab() {
     }
   }
 
+  async function downloadPdf() {
+    if (!rows.length) return;
+    setExportingPdf(true);
+    setError(null);
+    try {
+      const { jsPDF } = await import("jspdf");
+      const doc = new jsPDF({ unit: "pt", format: "a4" });
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 36;
+      const contentWidth = pageWidth - margin * 2;
+      let y = margin;
+
+      const safe = (v?: string | null) => (v && v.trim() ? v.trim() : "—");
+
+      doc.setFontSize(14);
+      doc.text(t("actions.downloadPdfTitle"), margin, y);
+      y += 20;
+      doc.setFontSize(10);
+      doc.text(`${t("fields.company")}: ${selectedCompany?.name ?? "—"}`, margin, y);
+      y += 14;
+      doc.text(`${t("fields.ownership")}: ${t(`ownership.${ownership}`)}`, margin, y);
+      y += 14;
+      doc.text(`${t("fields.sector")}: ${sectorOptions[sector]?.label ?? sector}`, margin, y);
+      y += 18;
+
+      for (let i = 0; i < rows.length; i += 1) {
+        const row = rows[i];
+        const statusLabel = (row.status ?? "planned") === "completed" ? t("table.statusCompleted") : t("table.statusPlanned");
+        const lines = doc.splitTextToSize(
+          [
+            `${i + 1}. ${safe(row.title)}`,
+            `${t("table.status")}: ${statusLabel}`,
+            `${t("table.plannedDate")}: ${safe(row.plannedDate)}`,
+            `${t("table.doneDate")}: ${safe(row.doneDate)}`,
+            `${t("table.doneNote")}: ${safe(row.doneNote)}`,
+            `${t("table.regulation")}: ${safe(row.regulation)}`,
+            `${t("table.period")}: ${safe(row.periodLabel)}`,
+            `${t("table.tableRef")}: ${safe(row.tableRef)}`,
+            `${t("table.source")}: ${row.source === "template" ? t("source.template") : t("source.manual")}`,
+          ].join("\n"),
+          contentWidth,
+        ) as string[];
+
+        const blockHeight = lines.length * 12 + 8;
+        if (y + blockHeight > pageHeight - margin) {
+          doc.addPage();
+          y = margin;
+        }
+        doc.setFontSize(10);
+        doc.text(lines, margin, y);
+        y += blockHeight;
+      }
+
+      const datePart = new Date().toISOString().slice(0, 10);
+      doc.save(`periodic-control-register-${datePart}.pdf`);
+    } catch (err) {
+      console.warn("[PeriodicControlsRegisterTab] downloadPdf", err);
+      setError(err instanceof Error ? err.message : t("errors.pushFailed"));
+    } finally {
+      setExportingPdf(false);
+    }
+  }
+
   const selectedCompany = companies.find((c) => c.id === companyId);
 
   return (
@@ -340,6 +405,19 @@ export default function PeriodicControlsRegisterTab() {
                 </>
               )}
             </Button>
+            <Button type="button" variant="outline" onClick={() => void downloadPdf()} disabled={exportingPdf || rows.length === 0}>
+              {exportingPdf ? (
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  {t("actions.exportingPdf")}
+                </>
+              ) : (
+                <>
+                  <FileDown className="mr-2 size-4" />
+                  {t("actions.downloadPdf")}
+                </>
+              )}
+            </Button>
             <Link
               href={companyId ? `/companies/${companyId}?tab=tracking` : "/companies"}
               className={cn(
@@ -384,38 +462,45 @@ export default function PeriodicControlsRegisterTab() {
             </div>
           ) : null}
 
-          <div className="overflow-x-auto rounded-lg border">
-            <table className="w-full min-w-[880px] text-sm">
-              <thead className="bg-muted/50 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                <tr>
-                  <th className="px-3 py-2">#</th>
-                  <th className="px-3 py-2">{t("table.title")}</th>
-                  <th className="px-3 py-2">{t("table.status")}</th>
-                  <th className="px-3 py-2">{t("table.plannedDate")}</th>
-                  <th className="px-3 py-2">{t("table.doneDate")}</th>
-                  <th className="px-3 py-2">{t("table.doneNote")}</th>
-                  <th className="px-3 py-2">{t("table.regulation")}</th>
-                  <th className="px-3 py-2">{t("table.period")}</th>
-                  <th className="px-3 py-2">{t("table.tableRef")}</th>
-                  <th className="px-3 py-2">{t("table.source")}</th>
-                  <th className="px-3 py-2 w-40">{t("table.actions")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.length === 0 ? (
-                  <tr>
-                    <td colSpan={11} className="px-3 py-10 text-center text-muted-foreground">
-                      {t("empty")}
-                    </td>
-                  </tr>
-                ) : (
-                  rows.map((row, idx) => (
-                    <tr key={row.id} className={cn("border-t", (row.status ?? "planned") === "completed" ? "bg-emerald-50/40 dark:bg-emerald-950/10" : "bg-amber-50/30 dark:bg-amber-950/10")}>
-                      <td className="px-3 py-2 align-top text-muted-foreground">{idx + 1}</td>
-                      <td className="px-3 py-2 align-top">
-                        <Input value={row.title} onChange={(e) => updateRow(row.id, { title: e.target.value })} className="min-w-[200px]" />
-                      </td>
-                      <td className="px-3 py-2 align-top">
+          <div className="rounded-lg border p-3">
+            {rows.length === 0 ? (
+              <div className="py-10 text-center text-muted-foreground">{t("empty")}</div>
+            ) : (
+              <div className="space-y-3">
+                {rows.map((row, idx) => (
+                  <div key={row.id} className={cn("rounded-lg border p-3", (row.status ?? "planned") === "completed" ? "border-emerald-300/60 bg-emerald-50/40 dark:bg-emerald-950/10" : "border-amber-300/50 bg-amber-50/30 dark:bg-amber-950/10")}>
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <span className="text-xs font-semibold text-muted-foreground">#{idx + 1}</span>
+                      <div className="flex flex-wrap gap-1">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="h-8"
+                          disabled={pushingId === row.id}
+                          onClick={() => void pushRowToTracking(row)}
+                        >
+                          {pushingId === row.id ? <Loader2 className="size-3.5 animate-spin" /> : t("actions.toTracking")}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 shrink-0 p-0"
+                          onClick={() => removeRow(row.id)}
+                          aria-label={t("actions.deleteRow")}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+                      <div>
+                        <label className="mb-1 block text-[11px] font-medium text-muted-foreground">{t("table.title")}</label>
+                        <Input value={row.title} onChange={(e) => updateRow(row.id, { title: e.target.value })} />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] font-medium text-muted-foreground">{t("table.status")}</label>
                         <select
                           value={row.status ?? "planned"}
                           onChange={(e) => {
@@ -426,75 +511,59 @@ export default function PeriodicControlsRegisterTab() {
                               doneDate: status === "planned" ? "" : row.doneDate ?? "",
                             });
                           }}
-                          className="h-9 min-w-[120px] rounded-xl border border-border bg-input px-2 text-xs text-foreground"
+                          className="h-10 w-full rounded-xl border border-border bg-input px-3 text-sm text-foreground"
                         >
                           <option value="planned">{t("table.statusPlanned")}</option>
                           <option value="completed">{t("table.statusCompleted")}</option>
                         </select>
-                      </td>
-                      <td className="px-3 py-2 align-top">
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] font-medium text-muted-foreground">{t("table.plannedDate")}</label>
                         <Input
                           type="date"
                           value={row.plannedDate ?? ""}
                           onChange={(e) => updateRow(row.id, { plannedDate: e.target.value })}
                           disabled={(row.status ?? "planned") === "completed"}
                         />
-                      </td>
-                      <td className="px-3 py-2 align-top">
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] font-medium text-muted-foreground">{t("table.doneDate")}</label>
                         <Input
                           type="date"
                           value={row.doneDate ?? ""}
                           onChange={(e) => updateRow(row.id, { doneDate: e.target.value, status: "completed" })}
                           disabled={(row.status ?? "planned") !== "completed"}
                         />
-                      </td>
-                      <td className="px-3 py-2 align-top">
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] font-medium text-muted-foreground">{t("table.doneNote")}</label>
                         <Input
                           value={row.doneNote ?? ""}
                           onChange={(e) => updateRow(row.id, { doneNote: e.target.value })}
                           placeholder={t("table.doneNotePlaceholder")}
-                          className="min-w-[180px]"
                         />
-                      </td>
-                      <td className="px-3 py-2 align-top">
-                        <Input value={row.regulation} onChange={(e) => updateRow(row.id, { regulation: e.target.value })} className="min-w-[220px]" />
-                      </td>
-                      <td className="px-3 py-2 align-top">
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] font-medium text-muted-foreground">{t("table.regulation")}</label>
+                        <Input value={row.regulation} onChange={(e) => updateRow(row.id, { regulation: e.target.value })} />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] font-medium text-muted-foreground">{t("table.period")}</label>
                         <Input value={row.periodLabel} onChange={(e) => updateRow(row.id, { periodLabel: e.target.value })} />
-                      </td>
-                      <td className="px-3 py-2 align-top text-xs text-muted-foreground">{row.tableRef}</td>
-                      <td className="px-3 py-2 align-top text-xs">
-                        {row.source === "template" ? t("source.template") : t("source.manual")}
-                      </td>
-                      <td className="px-3 py-2 align-top">
-                        <div className="flex flex-wrap gap-1">
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            className="h-8"
-                            disabled={pushingId === row.id}
-                            onClick={() => void pushRowToTracking(row)}
-                          >
-                            {pushingId === row.id ? <Loader2 className="size-3.5 animate-spin" /> : t("actions.toTracking")}
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 w-8 shrink-0 p-0"
-                            onClick={() => removeRow(row.id)}
-                            aria-label={t("actions.deleteRow")}
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] font-medium text-muted-foreground">{t("table.tableRef")}</label>
+                        <Input value={row.tableRef} onChange={(e) => updateRow(row.id, { tableRef: e.target.value })} />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] font-medium text-muted-foreground">{t("table.source")}</label>
+                        <Input value={row.source === "template" ? t("source.template") : t("source.manual")} disabled />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <p className="text-xs text-muted-foreground">{t("disclaimer", { company: selectedCompany?.name ?? "—" })}</p>
