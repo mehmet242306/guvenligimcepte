@@ -1418,26 +1418,41 @@ export function TrackingTab({ company }: { company: CompanyRecord }) {
               ) : (
                 <div className="space-y-2">
                   {controls.map((c) => {
-                    const isOverdue = c.nextInspectionDate && c.nextInspectionDate < today;
-                    const isSoon = c.nextInspectionDate && !isOverdue && c.nextInspectionDate <= soonThreshold;
+                    const isCompleted = c.status === "completed";
+                    const isOverdue =
+                      c.status === "overdue" ||
+                      (!isCompleted && Boolean(c.nextInspectionDate && c.nextInspectionDate < today));
+                    const isSoon = Boolean(c.nextInspectionDate && !isOverdue && c.nextInspectionDate <= soonThreshold);
+                    const statusCls = isCompleted
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : isOverdue
+                        ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                        : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
+                    const statusLabel = isCompleted
+                      ? tt("status.completed")
+                      : isOverdue
+                        ? tt("status.overdue")
+                        : tt("status.planned");
                     const resCls = c.result === "uygun" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                       : c.result === "uygun_degil" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                       : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
                     const resLabel = c.result === "uygun" ? tt("results.uygun") : c.result === "uygun_degil" ? tt("results.uygun_degil") : tt("results.sartli_uygun");
                     return (
-                      <div key={c.id} className={`flex items-center justify-between rounded-lg border p-3 ${isOverdue ? "border-red-400/40 bg-red-50/5 dark:bg-red-950/10" : isSoon ? "border-amber-400/30 bg-amber-50/5 dark:bg-amber-950/10" : "border-border bg-secondary/20"}`}>
+                      <div key={c.id} className={`flex items-center justify-between rounded-lg border p-3 ${isCompleted ? "border-green-400/30 bg-green-50/10 dark:bg-green-950/10" : isOverdue ? "border-red-400/40 bg-red-50/5 dark:bg-red-950/10" : isSoon ? "border-amber-400/30 bg-amber-50/5 dark:bg-amber-950/10" : "border-blue-300/30 bg-blue-50/10 dark:border-blue-900/40 dark:bg-blue-950/10"}`}>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-sm font-medium text-foreground">{c.title}</span>
+                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${statusCls}`}>{statusLabel}</span>
                             <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${resCls}`}>{resLabel}</span>
                             <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{tt(`controlTypes.${c.controlType}`) ?? c.controlType}</span>
                             {isOverdue && <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">{tt("overdue")}</span>}
                           </div>
                           <div className="mt-0.5 flex items-center gap-3 text-[11px] text-muted-foreground">
-                            {c.inspectionDate && <span>{tt("last")}: {fmtDate(c.inspectionDate)}</span>}
+                            {c.inspectionDate && <span>{tt("inspectionDate")}: {fmtDate(c.inspectionDate)}</span>}
                             {c.nextInspectionDate && <span className={isOverdue ? "text-red-500 font-medium" : ""}>{tt("next")}: {fmtDate(c.nextInspectionDate)}</span>}
                             {c.inspectorName && <span>{c.inspectorName}</span>}
                           </div>
+                          {c.notes && <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">{tt("note")}: {c.notes}</p>}
                         </div>
                         <div className="flex items-center gap-1">
                           <button type="button" onClick={() => { setEditingControl(c); setShowControlForm(true); }} className="rounded-lg p-1 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" title={tt("edit")}>
@@ -1616,13 +1631,17 @@ function PeriodicControlForm({ companyId, editing, onSaved, onCancel }: { compan
   const [result, setResult] = useState<string>(editing?.result ?? "uygun");
   const [reportReference, setReportReference] = useState(editing?.reportReference ?? "");
   const [notes, setNotes] = useState(editing?.notes ?? "");
-  const [status, setStatus] = useState<string>(editing?.status ?? "completed");
+  const [status, setStatus] = useState<string>(editing?.status ?? "planned");
   const [saving, setSaving] = useState(false);
 
   async function handleSubmit() {
     if (!title.trim()) return;
     setSaving(true);
-    const payload = { title: title.trim(), controlType, inspectorName, inspectionDate, nextInspectionDate, result, reportReference, notes, status };
+    const resolvedInspectionDate =
+      status === "completed"
+        ? (inspectionDate || new Date().toISOString().split("T")[0])
+        : inspectionDate;
+    const payload = { title: title.trim(), controlType, inspectorName, inspectionDate: resolvedInspectionDate, nextInspectionDate, result, reportReference, notes, status };
     if (editing) {
       await updatePeriodicControl(editing.id, payload);
     } else {
