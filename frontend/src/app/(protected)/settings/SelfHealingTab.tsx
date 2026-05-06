@@ -218,6 +218,54 @@ export function SelfHealingTab() {
     [novaOutboxFilter, novaOutboxRows],
   );
 
+  const operationTrend = useMemo(() => {
+    const now = Date.now();
+    const dayAgo = now - 24 * 60 * 60 * 1000;
+    const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const isSuccessStatus = (status: string) =>
+      status === "completed" || status === "succeeded" || status === "healthy";
+    const isFailureStatus = (status: string) =>
+      status === "failed" || status === "dead_letter" || status === "down";
+
+    let success24h = 0;
+    let failure24h = 0;
+    let success7d = 0;
+    let failure7d = 0;
+
+    for (const row of queueRows) {
+      const ts = new Date(row.scheduled_at).getTime();
+      if (!Number.isFinite(ts)) continue;
+      if (ts >= weekAgo) {
+        if (isSuccessStatus(row.status)) success7d += 1;
+        if (isFailureStatus(row.status)) failure7d += 1;
+      }
+      if (ts >= dayAgo) {
+        if (isSuccessStatus(row.status)) success24h += 1;
+        if (isFailureStatus(row.status)) failure24h += 1;
+      }
+    }
+
+    for (const row of novaOutboxRows) {
+      const ts = new Date(row.created_at).getTime();
+      if (!Number.isFinite(ts)) continue;
+      if (ts >= weekAgo) {
+        if (isSuccessStatus(row.status)) success7d += 1;
+        if (isFailureStatus(row.status)) failure7d += 1;
+      }
+      if (ts >= dayAgo) {
+        if (isSuccessStatus(row.status)) success24h += 1;
+        if (isFailureStatus(row.status)) failure24h += 1;
+      }
+    }
+
+    const total24h = success24h + failure24h;
+    const total7d = success7d + failure7d;
+    const ratio24h = total24h > 0 ? Math.round((success24h / total24h) * 100) : 100;
+    const ratio7d = total7d > 0 ? Math.round((success7d / total7d) * 100) : 100;
+
+    return { success24h, failure24h, success7d, failure7d, ratio24h, ratio7d };
+  }, [novaOutboxRows, queueRows]);
+
   const latestNovaOutboxEvents = useMemo(() => {
     const map = new Map<string, NovaOutboxEventRow>();
     for (const row of novaOutboxEvents) {
@@ -423,6 +471,35 @@ export function SelfHealingTab() {
           </div>
         )}
       </div>
+
+      <section className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+        <h4 className="text-sm font-semibold text-foreground">Operasyon Basari Trendi</h4>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Son 24 saat ve 7 gun icin self-healing akislarinin basari / hata dagilimi.
+        </p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-xl border border-border bg-background px-3 py-2.5">
+            <div className="text-[11px] text-muted-foreground">24s basari orani</div>
+            <div className="mt-1 text-xl font-semibold text-foreground">%{operationTrend.ratio24h}</div>
+          </div>
+          <div className="rounded-xl border border-border bg-background px-3 py-2.5">
+            <div className="text-[11px] text-muted-foreground">24s basarili / hatali</div>
+            <div className="mt-1 text-sm font-semibold text-foreground">
+              {operationTrend.success24h} / {operationTrend.failure24h}
+            </div>
+          </div>
+          <div className="rounded-xl border border-border bg-background px-3 py-2.5">
+            <div className="text-[11px] text-muted-foreground">7g basari orani</div>
+            <div className="mt-1 text-xl font-semibold text-foreground">%{operationTrend.ratio7d}</div>
+          </div>
+          <div className="rounded-xl border border-border bg-background px-3 py-2.5">
+            <div className="text-[11px] text-muted-foreground">7g basarili / hatali</div>
+            <div className="mt-1 text-sm font-semibold text-foreground">
+              {operationTrend.success7d} / {operationTrend.failure7d}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div className="grid gap-4 xl:grid-cols-2">
         <section className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">

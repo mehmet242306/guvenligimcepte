@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { loadCompanyDirectory } from "@/lib/company-directory";
+import { PERIODIC_PDF_TEMPLATE, normalizePdfText, scaleColumnWidths } from "@/lib/pdf/periodic-register-template";
 import {
   getSuggestedTemplateIds,
   PERIODIC_CONTROL_TEMPLATE_BY_ID,
@@ -296,22 +297,21 @@ export default function PeriodicControlsRegisterTab() {
       const { jsPDF } = await import("jspdf");
       const QRCode = (await import("qrcode")).default;
       const { default: autoTable } = await import("jspdf-autotable");
-      const doc = new jsPDF({ unit: "pt", format: "a4", orientation: "landscape" });
+      const doc = new jsPDF({
+        unit: PERIODIC_PDF_TEMPLATE.page.unit,
+        format: PERIODIC_PDF_TEMPLATE.page.format,
+        orientation: PERIODIC_PDF_TEMPLATE.page.orientation,
+      });
       await ensurePdfUnicodeFont(doc);
       doc.setFont("NotoSans", "normal");
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
-      const margin = 36;
+      const margin = PERIODIC_PDF_TEMPLATE.page.margin;
       const contentWidth = pageWidth - margin * 2;
       let y = margin;
 
-      const normalizeForPdf = (value?: string | null) =>
-        (value ?? "—")
-          .trim()
-          .normalize("NFC")
-          .replace(/\s+/g, " ");
       const safe = (v?: string | null) => {
-        const normalized = normalizeForPdf(v);
+        const normalized = normalizePdfText(v);
         return normalized.length > 0 ? normalized : "—";
       };
       const companyName = selectedCompany?.name ?? "—";
@@ -321,7 +321,10 @@ export default function PeriodicControlsRegisterTab() {
         typeof window !== "undefined"
           ? `${window.location.origin}/planner?companyId=${encodeURIComponent(companyId)}&tab=periodicControls`
           : `https://getrisknova.com/planner?companyId=${encodeURIComponent(companyId)}&tab=periodicControls`;
-      const qrDataUrl = await QRCode.toDataURL(shareUrl, { margin: 1, width: 132 });
+      const qrDataUrl = await QRCode.toDataURL(shareUrl, {
+        margin: PERIODIC_PDF_TEMPLATE.qr.margin,
+        width: PERIODIC_PDF_TEMPLATE.qr.width,
+      });
       let logoDataUrl: string | null = null;
       let logoPlacement: { x: number; y: number; w: number; h: number } | null = null;
       if (companyLogoUrl && typeof window !== "undefined") {
@@ -343,14 +346,14 @@ export default function PeriodicControlsRegisterTab() {
                 image.onerror = reject;
                 image.src = resolvedLogoDataUrl;
               });
-              const boxW = 38;
-              const boxH = 38;
+              const boxW = PERIODIC_PDF_TEMPLATE.logo.imageBox;
+              const boxH = PERIODIC_PDF_TEMPLATE.logo.imageBox;
               const scale = Math.min(boxW / img.width, boxH / img.height);
               const drawW = Math.max(1, Math.round(img.width * scale));
               const drawH = Math.max(1, Math.round(img.height * scale));
               logoPlacement = {
-                x: margin + 12 + (boxW - drawW) / 2,
-                y: y - 6 + (boxH - drawH) / 2,
+                x: margin + PERIODIC_PDF_TEMPLATE.logo.imageXOffset + (boxW - drawW) / 2,
+                y: y + PERIODIC_PDF_TEMPLATE.logo.imageYOffset + (boxH - drawH) / 2,
                 w: drawW,
                 h: drawH,
               };
@@ -362,12 +365,20 @@ export default function PeriodicControlsRegisterTab() {
         }
       }
 
-      doc.setFillColor(16, 24, 40);
-      doc.rect(margin, y - 12, contentWidth, 62, "F");
-      doc.setTextColor(255, 255, 255);
+      doc.setFillColor(...PERIODIC_PDF_TEMPLATE.header.bgColor);
+      doc.rect(margin, y - 12, contentWidth, PERIODIC_PDF_TEMPLATE.header.height, "F");
+      doc.setTextColor(...PERIODIC_PDF_TEMPLATE.header.textColor);
       if (logoDataUrl && logoPlacement) {
         doc.setFillColor(255, 255, 255);
-        doc.roundedRect(margin + 10, y - 8, 42, 42, 6, 6, "F");
+        doc.roundedRect(
+          margin + PERIODIC_PDF_TEMPLATE.logo.boxXOffset,
+          y + PERIODIC_PDF_TEMPLATE.logo.boxYOffset,
+          PERIODIC_PDF_TEMPLATE.logo.boxSize,
+          PERIODIC_PDF_TEMPLATE.logo.boxSize,
+          PERIODIC_PDF_TEMPLATE.logo.radius,
+          PERIODIC_PDF_TEMPLATE.logo.radius,
+          "F",
+        );
         doc.addImage(logoDataUrl, "PNG", logoPlacement.x, logoPlacement.y, logoPlacement.w, logoPlacement.h);
       }
       doc.setFontSize(11);
@@ -378,10 +389,17 @@ export default function PeriodicControlsRegisterTab() {
       doc.setFont("NotoSans", "normal");
       doc.setFontSize(10);
       doc.text(`${safe(t("fields.company"))}: ${safe(companyName)}`, margin + (logoDataUrl ? 56 : 12), y + 44);
-      doc.addImage(qrDataUrl, "PNG", pageWidth - margin - 54, y - 8, 42, 42);
+      doc.addImage(
+        qrDataUrl,
+        "PNG",
+        pageWidth - margin - PERIODIC_PDF_TEMPLATE.qr.xFromRight,
+        y + PERIODIC_PDF_TEMPLATE.qr.yOffset,
+        PERIODIC_PDF_TEMPLATE.qr.renderSize,
+        PERIODIC_PDF_TEMPLATE.qr.renderSize,
+      );
       y += 66;
 
-      doc.setTextColor(45, 55, 72);
+      doc.setTextColor(...PERIODIC_PDF_TEMPLATE.body.textColor);
       doc.setFontSize(10);
       doc.text(`${safe(t("fields.company"))}: ${safe(companyName)}`, margin, y);
       y += 14;
@@ -393,13 +411,10 @@ export default function PeriodicControlsRegisterTab() {
       y += 14;
       doc.text(`${safe(t("actions.qrHint"))}.`, margin, y);
       y += 18;
-      doc.setDrawColor(226, 232, 240);
+      doc.setDrawColor(...PERIODIC_PDF_TEMPLATE.body.dividerColor);
       doc.line(margin, y - 8, pageWidth - margin, y - 8);
 
-      const baseColumnWidths = [24, 150, 60, 58, 58, 90, 170, 75, 50];
-      const totalBaseWidth = baseColumnWidths.reduce((acc, w) => acc + w, 0);
-      const widthScale = Math.min(1, contentWidth / totalBaseWidth);
-      const scaledColumnWidths = baseColumnWidths.map((w) => Math.floor(w * widthScale));
+      const scaledColumnWidths = scaleColumnWidths(contentWidth);
 
       autoTable(doc, {
         startY: y + 2,
@@ -432,22 +447,22 @@ export default function PeriodicControlsRegisterTab() {
         theme: "grid",
         styles: {
           font: "NotoSans",
-          fontSize: 8,
-          cellPadding: 4,
-          lineColor: [226, 232, 240],
-          lineWidth: 0.7,
-          textColor: [30, 41, 59],
+          fontSize: PERIODIC_PDF_TEMPLATE.table.fontSize,
+          cellPadding: PERIODIC_PDF_TEMPLATE.table.cellPadding,
+          lineColor: PERIODIC_PDF_TEMPLATE.table.lineColor,
+          lineWidth: PERIODIC_PDF_TEMPLATE.table.lineWidth,
+          textColor: PERIODIC_PDF_TEMPLATE.table.textColor,
           overflow: "linebreak",
           valign: "middle",
         },
         headStyles: {
-          fillColor: [15, 23, 42],
-          textColor: [255, 255, 255],
+          fillColor: PERIODIC_PDF_TEMPLATE.table.headFillColor,
+          textColor: PERIODIC_PDF_TEMPLATE.table.headTextColor,
           fontStyle: "bold",
           halign: "left",
         },
         alternateRowStyles: {
-          fillColor: [248, 250, 252],
+          fillColor: PERIODIC_PDF_TEMPLATE.table.alternateFillColor,
         },
         tableWidth: "wrap",
         columnStyles: {

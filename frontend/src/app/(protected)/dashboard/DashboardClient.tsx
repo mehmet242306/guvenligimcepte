@@ -33,6 +33,7 @@ import { createClient } from '@/lib/supabase/client';
 import { PremiumIconBadge, type PremiumIconTone } from '@/components/ui/premium-icon-badge';
 import { DashboardTrackingSummary } from '@/components/dashboard/DashboardTrackingSummary';
 import { OhsFileWidget } from '@/components/dashboard/OhsFileWidget';
+import { ServiceHealthSummaryCard } from '@/components/dashboard/ServiceHealthSummaryCard';
 import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
@@ -52,12 +53,31 @@ interface DashboardStats {
   isDemoAccount: boolean;
 }
 
+type NovaFeatureStatus = 'active' | 'beta' | 'disabled';
+
+type NovaFeatureItem = {
+  key: string;
+  name: string;
+  status: NovaFeatureStatus;
+  note: string;
+  href?: string;
+};
+
+const NOVA_FEATURES: NovaFeatureItem[] = [
+  { key: 'annual_eval', name: 'Yıllık Değerlendirme Raporu', status: 'beta', note: 'AI özet + dışa aktarma iyileştirmeleri sürüyor.', href: '/reports' },
+  { key: 'periodic_pdf', name: 'Periyodik Kontrol PDF', status: 'active', note: 'Kurumsal antet, QR ve tablo çıktısı aktif.', href: '/planner' },
+  { key: 'self_healing', name: 'Self-Healing Operasyonları', status: 'beta', note: 'Otomasyon aktif, trend kartı güçlendiriliyor.', href: '/settings?tab=self_healing' },
+  { key: 'nova_workflows', name: 'Nova Aksiyon İş Akışları', status: 'active', note: 'Yönlendirme ve aksiyon onayı canlıda.', href: '/dashboard' },
+  { key: 'feature_flags', name: 'Özellik Bayrak Yönetimi', status: 'disabled', note: 'Panel bazlı aç/kapa yönetimi planlandı.' },
+];
+
 export function DashboardClient() {
   const router = useRouter();
   const t = useTranslations('dashboard');
   const locale = useLocale();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [featureFilter, setFeatureFilter] = useState<'all' | NovaFeatureStatus>('all');
 
   // Dashboard açılışında yaklaşan ajanda görevleri için bildirim tarama
   // (günde bir kez, duplike önlemi var)
@@ -188,6 +208,9 @@ export function DashboardClient() {
   }
 
   const s = stats;
+  const filteredFeatures = featureFilter === 'all'
+    ? NOVA_FEATURES
+    : NOVA_FEATURES.filter((feature) => feature.status === featureFilter);
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? t('greetingMorning') : hour < 18 ? t('greetingAfternoon') : t('greetingEvening');
@@ -604,6 +627,82 @@ export function DashboardClient() {
               {s.taskCount > 0 ? t('todayTasksPending', { count: s.taskCount }) : t('todayTasksDone')}
             </p>
           </div>
+
+          <div className="surface-card">
+            <div className="mb-3">
+              <h2 className="text-base font-semibold text-foreground">Nova Özellik Durumu</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Canlı, beta ve kapalı modülleri tek yerden takip edin.</p>
+            </div>
+
+            <div className="mb-3 flex flex-wrap gap-2">
+              {([
+                ['all', 'Tümü'],
+                ['active', 'Aktif'],
+                ['beta', 'Beta'],
+                ['disabled', 'Devre dışı'],
+              ] as const).map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setFeatureFilter(value)}
+                  className={cn(
+                    "rounded-full border px-3 py-1 text-xs font-semibold transition-colors",
+                    featureFilter === value
+                      ? "border-[var(--gold)] bg-[var(--gold)]/15 text-[var(--primary)]"
+                      : "border-border bg-background text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className="space-y-2">
+              {filteredFeatures.map((feature) => {
+                const badgeCls =
+                  feature.status === 'active'
+                    ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300'
+                    : feature.status === 'beta'
+                      ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300'
+                      : 'bg-zinc-500/15 text-zinc-700 dark:text-zinc-300';
+
+                const badgeLabel =
+                  feature.status === 'active'
+                    ? 'Aktif'
+                    : feature.status === 'beta'
+                      ? 'Beta'
+                      : 'Devre dışı';
+
+                return (
+                  <div
+                    key={feature.key}
+                    className="rounded-xl border border-border/70 bg-background/60 px-3 py-2.5"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-foreground">{feature.name}</p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">{feature.note}</p>
+                        {feature.href ? (
+                          <button
+                            type="button"
+                            onClick={() => router.push(feature.href as string)}
+                            className="mt-1 text-xs font-semibold text-[var(--primary)] hover:underline"
+                          >
+                            Modüle git
+                          </button>
+                        ) : null}
+                      </div>
+                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.16em] ${badgeCls}`}>
+                        {badgeLabel}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <ServiceHealthSummaryCard />
         </div>
       </div>
     </div>
