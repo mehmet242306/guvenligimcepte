@@ -427,8 +427,8 @@ export default function PeriodicControlsRegisterTab() {
         theme: "grid",
         styles: {
           font: "NotoSans",
-          fontSize: 8.5,
-          cellPadding: 5,
+          fontSize: 8,
+          cellPadding: 4,
           lineColor: [226, 232, 240],
           lineWidth: 0.7,
           textColor: [30, 41, 59],
@@ -444,16 +444,17 @@ export default function PeriodicControlsRegisterTab() {
         alternateRowStyles: {
           fillColor: [248, 250, 252],
         },
+        tableWidth: contentWidth,
         columnStyles: {
-          0: { cellWidth: 26, halign: "center" },
-          1: { cellWidth: 180 },
-          2: { cellWidth: 72 },
-          3: { cellWidth: 72 },
-          4: { cellWidth: 72 },
-          5: { cellWidth: 120 },
-          6: { cellWidth: 200 },
-          7: { cellWidth: 85 },
-          8: { cellWidth: 66 },
+          0: { cellWidth: 24, halign: "center" },
+          1: { cellWidth: 150 },
+          2: { cellWidth: 60 },
+          3: { cellWidth: 58 },
+          4: { cellWidth: 58 },
+          5: { cellWidth: 90 },
+          6: { cellWidth: 170 },
+          7: { cellWidth: 75 },
+          8: { cellWidth: 50 },
         },
       });
 
