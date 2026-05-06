@@ -4737,7 +4737,14 @@
         "period": "Typical period",
         "tableRef": "Table",
         "source": "Source",
-        "actions": "Actions"
+        "actions": "Actions",
+        "status": "Status",
+        "statusPlanned": "Planned",
+        "statusCompleted": "Completed",
+        "plannedDate": "Planned date",
+        "doneDate": "Completion date",
+        "doneNote": "Completion note",
+        "doneNotePlaceholder": "What was done (optional)"
       },
       "source": {
         "template": "Catalog",

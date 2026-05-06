@@ -4965,6 +4965,13 @@
       "savedHint": "Register stored per company. Use “Add to tracking” to create entries under Company → Tracking.",
       "table": {
         "title": "Control subject",
+        "status": "Status",
+        "statusPlanned": "Planned",
+        "statusCompleted": "Completed",
+        "plannedDate": "Planned date",
+        "doneDate": "Completion date",
+        "doneNote": "Completion note",
+        "doneNotePlaceholder": "What was done (optional)",
         "regulation": "Legal / standard basis",
         "period": "Typical period",
         "tableRef": "Table",

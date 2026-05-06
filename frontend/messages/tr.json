@@ -4965,6 +4965,13 @@
       "savedHint": "Kayıt firmaya özel saklanır. Firma → Takip için “Takibe aktar” kullanın.",
       "table": {
         "title": "Kontrol konusu",
+        "status": "Durum",
+        "statusPlanned": "Planlandı",
+        "statusCompleted": "Tamamlandı",
+        "plannedDate": "Planlanan tarih",
+        "doneDate": "Yapıldı tarihi",
+        "doneNote": "Yapım notu",
+        "doneNotePlaceholder": "Yapılan işlem özeti (opsiyonel)",
         "regulation": "Mevzuat / standart",
         "period": "Tipik süre",
         "tableRef": "Tablo",

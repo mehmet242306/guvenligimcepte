@@ -29,6 +29,10 @@ type RegisterRow = {
   tableRef: string;
   source: "template" | "manual";
   controlType: string;
+  status?: "planned" | "completed";
+  plannedDate?: string;
+  doneDate?: string;
+  doneNote?: string;
 };
 
 function newRowId(): string {
@@ -45,6 +49,10 @@ function emptyManualRow(): RegisterRow {
     tableRef: "—",
     source: "manual",
     controlType: "diger",
+    status: "planned",
+    plannedDate: "",
+    doneDate: "",
+    doneNote: "",
   };
 }
 
@@ -60,6 +68,10 @@ function rowFromTemplate(templateId: string, locale: string): RegisterRow {
     tableRef: def.tableRef,
     source: "template",
     controlType: def.controlType,
+    status: "planned",
+    plannedDate: "",
+    doneDate: "",
+    doneNote: "",
   };
 }
 
@@ -209,19 +221,27 @@ export default function PeriodicControlsRegisterTab() {
     setPushingId(row.id);
     setError(null);
     try {
-      const notes = [row.regulation ? `${t("fields.regulation")}: ${row.regulation}` : "", row.periodLabel ? `${t("fields.period")}: ${row.periodLabel}` : ""]
+      const rowStatus = row.status ?? "planned";
+      const notes = [
+        row.regulation ? `${t("fields.regulation")}: ${row.regulation}` : "",
+        row.periodLabel ? `${t("fields.period")}: ${row.periodLabel}` : "",
+        row.doneNote?.trim() ? `${t("table.doneNote")}: ${row.doneNote.trim()}` : "",
+      ]
         .filter(Boolean)
         .join("\n");
       const id = await createPeriodicControl(companyId, {
         title: row.title.trim(),
         controlType: row.controlType || "diger",
         inspectorName: "",
-        inspectionDate: "",
-        nextInspectionDate: "",
+        inspectionDate:
+          rowStatus === "completed"
+            ? (row.doneDate?.trim() || new Date().toISOString().split("T")[0])
+            : "",
+        nextInspectionDate: rowStatus === "planned" ? (row.plannedDate?.trim() || "") : "",
         result: "uygun",
         reportReference: row.tableRef && row.tableRef !== "—" ? `${t("fields.tableRef")} ${row.tableRef}` : "",
         notes,
-        status: "planned",
+        status: rowStatus,
       });
       if (!id) throw new Error(t("errors.pushFailed"));
     } catch (err) {
@@ -370,6 +390,10 @@ export default function PeriodicControlsRegisterTab() {
                 <tr>
                   <th className="px-3 py-2">#</th>
                   <th className="px-3 py-2">{t("table.title")}</th>
+                  <th className="px-3 py-2">{t("table.status")}</th>
+                  <th className="px-3 py-2">{t("table.plannedDate")}</th>
+                  <th className="px-3 py-2">{t("table.doneDate")}</th>
+                  <th className="px-3 py-2">{t("table.doneNote")}</th>
                   <th className="px-3 py-2">{t("table.regulation")}</th>
                   <th className="px-3 py-2">{t("table.period")}</th>
                   <th className="px-3 py-2">{t("table.tableRef")}</th>
@@ -380,16 +404,57 @@ export default function PeriodicControlsRegisterTab() {
               <tbody>
                 {rows.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-3 py-10 text-center text-muted-foreground">
+                    <td colSpan={11} className="px-3 py-10 text-center text-muted-foreground">
                       {t("empty")}
                     </td>
                   </tr>
                 ) : (
                   rows.map((row, idx) => (
-                    <tr key={row.id} className="border-t">
+                    <tr key={row.id} className={cn("border-t", (row.status ?? "planned") === "completed" ? "bg-emerald-50/40 dark:bg-emerald-950/10" : "bg-amber-50/30 dark:bg-amber-950/10")}>
                       <td className="px-3 py-2 align-top text-muted-foreground">{idx + 1}</td>
                       <td className="px-3 py-2 align-top">
                         <Input value={row.title} onChange={(e) => updateRow(row.id, { title: e.target.value })} className="min-w-[200px]" />
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <select
+                          value={row.status ?? "planned"}
+                          onChange={(e) => {
+                            const status = e.target.value as "planned" | "completed";
+                            updateRow(row.id, {
+                              status,
+                              plannedDate: status === "completed" ? "" : row.plannedDate ?? "",
+                              doneDate: status === "planned" ? "" : row.doneDate ?? "",
+                            });
+                          }}
+                          className="h-9 min-w-[120px] rounded-xl border border-border bg-input px-2 text-xs text-foreground"
+                        >
+                          <option value="planned">{t("table.statusPlanned")}</option>
+                          <option value="completed">{t("table.statusCompleted")}</option>
+                        </select>
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <Input
+                          type="date"
+                          value={row.plannedDate ?? ""}
+                          onChange={(e) => updateRow(row.id, { plannedDate: e.target.value })}
+                          disabled={(row.status ?? "planned") === "completed"}
+                        />
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <Input
+                          type="date"
+                          value={row.doneDate ?? ""}
+                          onChange={(e) => updateRow(row.id, { doneDate: e.target.value, status: "completed" })}
+                          disabled={(row.status ?? "planned") !== "completed"}
+                        />
+                      </td>
+                      <td className="px-3 py-2 align-top">
+                        <Input
+                          value={row.doneNote ?? ""}
+                          onChange={(e) => updateRow(row.id, { doneNote: e.target.value })}
+                          placeholder={t("table.doneNotePlaceholder")}
+                          className="min-w-[180px]"
+                        />
                       </td>
                       <td className="px-3 py-2 align-top">
                         <Input value={row.regulation} onChange={(e) => updateRow(row.id, { regulation: e.target.value })} className="min-w-[220px]" />
