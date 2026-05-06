@@ -15,6 +15,7 @@ import { ActiveInspectionTab } from "./_components/tabs/ActiveInspectionTab";
 import { FindingsTab } from "./_components/tabs/FindingsTab";
 import { NovaTab } from "./_components/tabs/NovaTab";
 import { ClosureTab } from "./_components/tabs/ClosureTab";
+import { useLiveFieldScanAccess } from "@/lib/hooks/use-live-field-scan-access";
 import { useInspectionSession } from "./_hooks/useInspectionSession";
 import { formatRunStartIssue } from "./_lib/formatRunStartIssue";
 import type { SurfaceCategoryId } from "./_lib/constants";
@@ -35,6 +36,7 @@ function mapWorkspace(row: WorkspaceRow | null, fallbackName: string): Workspace
 export function FieldInspectionClient() {
   const t = useTranslations("fieldInspection");
   const tNav = useTranslations("nav");
+  const canLiveFieldScan = useLiveFieldScanAccess();
   const [workspace, setWorkspace] = useState<WorkspaceContext>({
     name: t("workspaceFallback"),
     countryCode: "TR",
@@ -183,16 +185,18 @@ export function FieldInspectionClient() {
               <Sparkles className="mr-1.5 h-4 w-4" />
               {t("actions.checklistWithNova")}
             </Button>
-            <Link
-              href="/live-scan"
-              className={cn(
-                "inline-flex h-12 w-full min-[480px]:w-auto items-center justify-center gap-2 rounded-2xl border border-border bg-card px-6 text-base font-medium text-primary shadow-[var(--shadow-soft)] transition-colors hover:bg-secondary",
-                "focus-visible:shadow-[0_0_0_4px_var(--ring)]",
-              )}
-            >
-              <ScanLine className="h-4 w-4" />
-              {tNav("liveScan")}
-            </Link>
+            {canLiveFieldScan ? (
+              <Link
+                href="/live-scan"
+                className={cn(
+                  "inline-flex h-12 w-full min-[480px]:w-auto items-center justify-center gap-2 rounded-2xl border border-border bg-card px-6 text-base font-medium text-primary shadow-[var(--shadow-soft)] transition-colors hover:bg-secondary",
+                  "focus-visible:shadow-[0_0_0_4px_var(--ring)]",
+                )}
+              >
+                <ScanLine className="h-4 w-4" />
+                {tNav("liveScan")}
+              </Link>
+            ) : null}
           </>
         }
       />

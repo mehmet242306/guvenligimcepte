@@ -6581,6 +6581,10 @@
     }
   },
   "liveScan": {
+    "access": {
+      "title": "Erişim kısıtlı",
+      "body": "Canlı saha taraması geliştirme aşamasında olduğu için şu anda yalnızca platform yöneticilerine açıktır. Yaygınlaştırma tamamlandığında daha geniş kullanıma açılacaktır."
+    },
     "title": "Canlı saha taraması",
     "subtitle": "Kamera görüntüsü mobil ile aynı AI boru hattına gider. Oturumu durdurduğunuzda tüm tespitler bu firma için Risk Analizi modülünde tek kayıtta birleşir; ayrı bir risk listesi yoktur.",
     "cameraIdle": "Oturumu başlatın; tarama sırasında yaklaşık 3 saniyede bir kare analiz edilir.",

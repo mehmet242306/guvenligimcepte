@@ -8,6 +8,10 @@ function isLocalHost(hostname: string) {
   return hostname === "localhost" || hostname === "127.0.0.1";
 }
 
+function normalizeHost(host: string) {
+  return host.replace(/^www\./i, "").toLowerCase();
+}
+
 function resolveConfiguredOrigin() {
   const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
   if (!configured) return null;
@@ -36,7 +40,9 @@ export function AuthCodeRescue() {
 
     const targetOrigin = isLocalHost(hostname)
       ? (resolveConfiguredOrigin() ?? FALLBACK_PRODUCTION_ORIGIN)
-      : origin;
+      : normalizeHost(hostname) === "getrisknova.com"
+        ? FALLBACK_PRODUCTION_ORIGIN
+        : origin;
 
     const targetUrl = new URL("/auth/session-recover", targetOrigin);
     params.forEach((value, key) => {

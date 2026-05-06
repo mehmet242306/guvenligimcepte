@@ -6581,6 +6581,10 @@
     }
   },
   "liveScan": {
+    "access": {
+      "title": "Access restricted",
+      "body": "Live field scan is available only to platform administrators while this feature is in development. It will open more widely when the rollout is complete."
+    },
     "title": "Live field scan",
     "subtitle": "Camera capture feeds the same AI as mobile. When you stop the session, every detection is merged into Risk Analysis for this company (no separate risk list here).",
     "cameraIdle": "Start a session to open the camera. Frames are analyzed about every 3 seconds while scanning.",

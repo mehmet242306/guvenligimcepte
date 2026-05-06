@@ -63,11 +63,9 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // www → apex (OAuth /auth/* haric: PKCE verifier kayitli origin ile ayni kalmali)
-  if (
-    request.nextUrl.hostname.toLowerCase() === `www.${CANONICAL_HOST}` &&
-    !pathname.startsWith("/auth")
-  ) {
+  // www → apex (tum yollar, /auth dahil). Callback www'de kalinca PKCE code_verifier
+  // apex localStorage'da kalir → exchangeCodeForSession "code verifier" hatasi verir.
+  if (request.nextUrl.hostname.toLowerCase() === `www.${CANONICAL_HOST}`) {
     const url = request.nextUrl.clone();
     url.hostname = CANONICAL_HOST;
     return NextResponse.redirect(url, 308);

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient as supabase } from "@/lib/supabase/client";
 import { useIsAdmin } from "@/lib/hooks/use-is-admin";
+import { useLiveFieldScanAccess } from "@/lib/hooks/use-live-field-scan-access";
 
 /**
  * CompanyScanData — Firma detay sayfası için canlı saha taraması + risk analizi özeti
@@ -36,6 +37,7 @@ type RiskAssessment = {
 
 export default function CompanyScanData({ companyId }: { companyId: string }) {
   const isAdmin = useIsAdmin();
+  const canLiveFieldScan = useLiveFieldScanAccess();
   const [scans, setScans] = useState<ScanSession[]>([]);
   const [assessments, setAssessments] = useState<RiskAssessment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -144,9 +146,11 @@ export default function CompanyScanData({ companyId }: { companyId: string }) {
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-xs font-bold text-foreground">📹 Son Canlı Taramalar</h4>
             <div className="flex gap-2">
-              <Link href="/live-scan" className="text-[10px] text-primary hover:underline">
-                Canlı tarama →
-              </Link>
+              {canLiveFieldScan ? (
+                <Link href="/live-scan" className="text-[10px] text-primary hover:underline">
+                  Canlı tarama →
+                </Link>
+              ) : null}
               <Link href="/digital-twin" className="text-[10px] text-muted-foreground hover:underline">
                 İzleme →
               </Link>

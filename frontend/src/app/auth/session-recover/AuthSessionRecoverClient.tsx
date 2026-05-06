@@ -135,6 +135,16 @@ export function AuthSessionRecoverClient({
     let cancelled = false;
 
     async function recoverSession() {
+      if (typeof window !== "undefined") {
+        const h = window.location.hostname.toLowerCase();
+        if (h === "www.getrisknova.com") {
+          const u = new URL(window.location.href);
+          u.hostname = "getrisknova.com";
+          window.location.replace(u.toString());
+          return;
+        }
+      }
+
       const supabase = createClient();
       const next = safeNextPath(nextPath);
 

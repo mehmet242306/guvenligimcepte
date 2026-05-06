@@ -1,5 +1,5 @@
-import { LiveScanClient } from "./LiveScanClient";
+import { LiveScanAccessGate } from "./LiveScanAccessGate";
 
 export default function LiveScanPage() {
-  return <LiveScanClient />;
+  return <LiveScanAccessGate />;
 }

@@ -1,6 +1,20 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+const CANONICAL_PRODUCTION_HOST = "getrisknova.com";
+
+function oauthRecoverOrigin(requestUrl: string) {
+  const u = new URL(requestUrl);
+  const host = u.hostname.toLowerCase();
+  if (host === `www.${CANONICAL_PRODUCTION_HOST}` || host === CANONICAL_PRODUCTION_HOST) {
+    u.protocol = "https:";
+    u.hostname = CANONICAL_PRODUCTION_HOST;
+    u.port = "";
+    return u.origin;
+  }
+  return u.origin;
+}
+
 function getSafeNextPath(value: string | null | undefined) {
   if (!value) return null;
 
@@ -27,7 +41,8 @@ function redirectAndClearOauthNext(url: string) {
  * handled in the browser at /auth/session-recover, where the verifier exists.
  */
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
+  const origin = oauthRecoverOrigin(request.url);
   const code = searchParams.get("code");
   const cookieStore = await cookies();
   const next =

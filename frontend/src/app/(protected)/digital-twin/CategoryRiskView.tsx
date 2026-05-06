@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { createClient as supabase } from "@/lib/supabase/client";
 import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
+import { useLiveFieldScanAccess } from "@/lib/hooks/use-live-field-scan-access";
 
 /**
  * Özet: scan_detections kategori dağılımı (salt okunur).
@@ -33,6 +34,7 @@ const CATEGORIES: CategoryMeta[] = [
 ];
 
 export default function CategoryRiskView() {
+  const canLiveFieldScan = useLiveFieldScanAccess();
   const [categoryStats, setCategoryStats] = useState<Record<string, { count: number; critical: number; high: number }>>(
     {},
   );
@@ -95,12 +97,14 @@ export default function CategoryRiskView() {
         <p className="mt-2 text-xs text-muted-foreground">
           Henüz kayıtlı tespit yok. Canlı tarama bittiğinde bulgular otomatik olarak Risk Analizi kaydına aktarılır.
         </p>
-        <Link
-          href="/live-scan"
-          className="mt-3 inline-block text-xs font-semibold text-primary underline-offset-4 hover:underline"
-        >
-          Canlı saha taraması →
-        </Link>
+        {canLiveFieldScan ? (
+          <Link
+            href="/live-scan"
+            className="mt-3 inline-block text-xs font-semibold text-primary underline-offset-4 hover:underline"
+          >
+            Canlı saha taraması →
+          </Link>
+        ) : null}
       </div>
     );
   }

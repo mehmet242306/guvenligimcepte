@@ -9,6 +9,8 @@ function normalizeHost(host: string) {
   return host.replace(/^www\./i, "").toLowerCase();
 }
 
+const PRODUCTION_CANONICAL_ORIGIN = "https://getrisknova.com";
+
 /**
  * OAuth PKCE code_verifier tarayicida origin bazli saklanir.
  * Sayfa www ile acilip redirect NEXT_PUBLIC_APP_URL (apex) ise kod okunamaz → mobilde "Google girisi tamamlanamadi".
@@ -22,7 +24,11 @@ function resolveOAuthOrigin() {
     if (configured && !configured.endsWith(".vercel.app")) {
       const configuredHost = new URL(configured).hostname;
       if (normalizeHost(hostname) === normalizeHost(configuredHost)) {
-        return origin;
+        // Tek kanonik koken: www/apex ayrimi redirectTo'da olmasin (PKCE + Google redirect).
+        if (normalizeHost(hostname) === "getrisknova.com") {
+          return PRODUCTION_CANONICAL_ORIGIN;
+        }
+        return new URL(configured).origin;
       }
     }
   } catch {
