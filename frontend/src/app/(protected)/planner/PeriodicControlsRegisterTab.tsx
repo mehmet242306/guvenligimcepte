@@ -396,6 +396,11 @@ export default function PeriodicControlsRegisterTab() {
       doc.setDrawColor(226, 232, 240);
       doc.line(margin, y - 8, pageWidth - margin, y - 8);
 
+      const baseColumnWidths = [24, 150, 60, 58, 58, 90, 170, 75, 50];
+      const totalBaseWidth = baseColumnWidths.reduce((acc, w) => acc + w, 0);
+      const widthScale = Math.min(1, contentWidth / totalBaseWidth);
+      const scaledColumnWidths = baseColumnWidths.map((w) => Math.floor(w * widthScale));
+
       autoTable(doc, {
         startY: y + 2,
         margin: { left: margin, right: margin },
@@ -444,17 +449,17 @@ export default function PeriodicControlsRegisterTab() {
         alternateRowStyles: {
           fillColor: [248, 250, 252],
         },
-        tableWidth: contentWidth,
+        tableWidth: "wrap",
         columnStyles: {
-          0: { cellWidth: 24, halign: "center" },
-          1: { cellWidth: 150 },
-          2: { cellWidth: 60 },
-          3: { cellWidth: 58 },
-          4: { cellWidth: 58 },
-          5: { cellWidth: 90 },
-          6: { cellWidth: 170 },
-          7: { cellWidth: 75 },
-          8: { cellWidth: 50 },
+          0: { cellWidth: scaledColumnWidths[0], halign: "center" },
+          1: { cellWidth: scaledColumnWidths[1] },
+          2: { cellWidth: scaledColumnWidths[2] },
+          3: { cellWidth: scaledColumnWidths[3] },
+          4: { cellWidth: scaledColumnWidths[4] },
+          5: { cellWidth: scaledColumnWidths[5] },
+          6: { cellWidth: scaledColumnWidths[6] },
+          7: { cellWidth: scaledColumnWidths[7] },
+          8: { cellWidth: scaledColumnWidths[8] },
         },
       });
 
