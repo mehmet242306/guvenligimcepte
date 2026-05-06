@@ -266,7 +266,26 @@ export default function PeriodicControlsRegisterTab() {
       const contentWidth = pageWidth - margin * 2;
       let y = margin;
 
-      const safe = (v?: string | null) => (v && v.trim() ? v.trim() : "—");
+      const normalizeForPdf = (value?: string | null) =>
+        (value ?? "—")
+          .trim()
+          .replace(/İ/g, "I")
+          .replace(/ı/g, "i")
+          .replace(/Ş/g, "S")
+          .replace(/ş/g, "s")
+          .replace(/Ğ/g, "G")
+          .replace(/ğ/g, "g")
+          .replace(/Ü/g, "U")
+          .replace(/ü/g, "u")
+          .replace(/Ö/g, "O")
+          .replace(/ö/g, "o")
+          .replace(/Ç/g, "C")
+          .replace(/ç/g, "c")
+          .replace(/\s+/g, " ");
+      const safe = (v?: string | null) => {
+        const normalized = normalizeForPdf(v);
+        return normalized.length > 0 ? normalized : "—";
+      };
       const companyName = selectedCompany?.name ?? "—";
       const companyLogoUrl = selectedCompany?.logo_url?.trim() ?? "";
       const reportDate = new Date().toLocaleDateString(locale === "tr" ? "tr-TR" : "en-US");
@@ -326,24 +345,26 @@ export default function PeriodicControlsRegisterTab() {
       doc.setFontSize(11);
       doc.text("RiskNova", margin + (logoDataUrl ? 56 : 12), y + 8);
       doc.setFontSize(15);
-      doc.text(t("actions.downloadPdfTitle"), margin + (logoDataUrl ? 56 : 12), y + 28);
+      doc.text(safe(t("actions.downloadPdfTitle")), margin + (logoDataUrl ? 56 : 12), y + 28);
       doc.setFontSize(10);
-      doc.text(`${t("fields.company")}: ${companyName}`, margin + (logoDataUrl ? 56 : 12), y + 44);
+      doc.text(`${safe(t("fields.company"))}: ${safe(companyName)}`, margin + (logoDataUrl ? 56 : 12), y + 44);
       doc.addImage(qrDataUrl, "PNG", pageWidth - margin - 54, y - 8, 42, 42);
       y += 66;
 
       doc.setTextColor(45, 55, 72);
       doc.setFontSize(10);
-      doc.text(`${t("fields.company")}: ${companyName}`, margin, y);
+      doc.text(`${safe(t("fields.company"))}: ${safe(companyName)}`, margin, y);
       y += 14;
-      doc.text(`${t("fields.ownership")}: ${t(`ownership.${ownership}`)}`, margin, y);
+      doc.text(`${safe(t("fields.ownership"))}: ${safe(t(`ownership.${ownership}`))}`, margin, y);
       y += 14;
-      doc.text(`${t("fields.sector")}: ${sectorOptions[sector]?.label ?? sector}`, margin, y);
+      doc.text(`${safe(t("fields.sector"))}: ${safe(sectorOptions[sector]?.label ?? sector)}`, margin, y);
       y += 14;
-      doc.text(`${t("actions.reportDate")}: ${reportDate}`, margin, y);
+      doc.text(`${safe(t("actions.reportDate"))}: ${safe(reportDate)}`, margin, y);
       y += 14;
-      doc.text(`${t("actions.qrHint")}: ${shareUrl}`, margin, y, { maxWidth: contentWidth });
+      doc.text(`${safe(t("actions.qrHint"))}.`, margin, y);
       y += 18;
+      doc.setDrawColor(226, 232, 240);
+      doc.line(margin, y - 8, pageWidth - margin, y - 8);
 
       for (let i = 0; i < rows.length; i += 1) {
         const row = rows[i];
@@ -351,14 +372,14 @@ export default function PeriodicControlsRegisterTab() {
         const lines = doc.splitTextToSize(
           [
             `${i + 1}. ${safe(row.title)}`,
-            `${t("table.status")}: ${statusLabel}`,
-            `${t("table.plannedDate")}: ${safe(row.plannedDate)}`,
-            `${t("table.doneDate")}: ${safe(row.doneDate)}`,
-            `${t("table.doneNote")}: ${safe(row.doneNote)}`,
-            `${t("table.regulation")}: ${safe(row.regulation)}`,
-            `${t("table.period")}: ${safe(row.periodLabel)}`,
-            `${t("table.tableRef")}: ${safe(row.tableRef)}`,
-            `${t("table.source")}: ${row.source === "template" ? t("source.template") : t("source.manual")}`,
+            `${safe(t("table.status"))}: ${safe(statusLabel)}`,
+            `${safe(t("table.plannedDate"))}: ${safe(row.plannedDate)}`,
+            `${safe(t("table.doneDate"))}: ${safe(row.doneDate)}`,
+            `${safe(t("table.doneNote"))}: ${safe(row.doneNote)}`,
+            `${safe(t("table.regulation"))}: ${safe(row.regulation)}`,
+            `${safe(t("table.period"))}: ${safe(row.periodLabel)}`,
+            `${safe(t("table.tableRef"))}: ${safe(row.tableRef)}`,
+            `${safe(t("table.source"))}: ${safe(row.source === "template" ? t("source.template") : t("source.manual"))}`,
           ].join("\n"),
           contentWidth,
         ) as string[];
