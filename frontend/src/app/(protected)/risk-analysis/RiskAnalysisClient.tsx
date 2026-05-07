@@ -815,33 +815,37 @@ export function RiskAnalysisClient() {
 
   useEffect(() => {
     let cancelled = false;
-    const fallback = loadCompanyDirectory();
-    setCompanies(fallback);
-    // Sadece henuz secim yapilmamissa default ata
-    setSelectedCompanyId((prev) => prev || fallback[0]?.id || "");
 
     void (async () => {
+      const activeWs = await getActiveWorkspace();
+      if (cancelled) return;
+
+      const fallback = loadCompanyDirectory();
+      const fallbackScoped = activeWs?.id ? fallback.filter((c) => c.id === activeWs.id) : [];
+      setCompanies(fallbackScoped);
+      setSelectedCompanyId(activeWs?.id ?? fallbackScoped[0]?.id ?? "");
+
       const sb = await fetchCompaniesFromSupabase();
       if (cancelled || !sb || sb.length === 0) return;
-      setCompanies(sb);
       saveCompanyDirectory(sb);
 
       const urlCompanyId = searchParams.get("companyId");
-      if (urlCompanyId && sb.some((c) => c.id === urlCompanyId)) {
-        setSelectedCompanyId(urlCompanyId);
-        return;
-      }
+      const scoped = activeWs?.id ? sb.filter((c) => c.id === activeWs.id) : [];
+      setCompanies(scoped);
 
-      const activeWs = await getActiveWorkspace();
-      if (cancelled) return;
-      if (activeWs?.id && sb.some((c) => c.id === activeWs.id)) {
+      if (activeWs?.id) {
         setSelectedCompanyId(activeWs.id);
         return;
       }
 
+      if (urlCompanyId && scoped.some((c) => c.id === urlCompanyId)) {
+        setSelectedCompanyId(urlCompanyId);
+        return;
+      }
+
       setSelectedCompanyId((prev) => {
-        if (prev && sb.find((c) => c.id === prev)) return prev;
-        return sb[0]?.id ?? "";
+        if (prev && scoped.find((c) => c.id === prev)) return prev;
+        return scoped[0]?.id ?? "";
       });
     })();
 
@@ -854,8 +858,10 @@ export function RiskAnalysisClient() {
       void (async () => {
         const ws = await getActiveWorkspace();
         if (!ws?.id) return;
-        const list = companiesRef.current;
-        if (list.some((c) => c.id === ws.id)) {
+        const sb = await fetchCompaniesFromSupabase();
+        const scoped = (sb ?? companiesRef.current).filter((c) => c.id === ws.id);
+        if (scoped.length > 0) {
+          setCompanies(scoped);
           setSelectedCompanyId(ws.id);
         }
       })();
@@ -865,7 +871,8 @@ export function RiskAnalysisClient() {
     return () => window.removeEventListener("risknova:active-workspace-changed", onActiveWorkspaceChanged);
   }, [setSelectedCompanyId]);
 
-  // URL'den gelen companyId parametresi — firma sayfasından yönlendirme
+  // URL'den gelen companyId parametresi — aktif workspace disindaki firma
+  // secimlerine izin verilmez; bu sayfa aktif workspace baglaminda calisir.
   useEffect(() => {
     const urlCompanyId = searchParams.get("companyId");
     if (urlCompanyId && companies.length > 0) {
@@ -2245,17 +2252,10 @@ JSON formatında döndür:
         <div className="surface-card rounded-[1.75rem] border border-border p-4 shadow-[var(--shadow-card)] sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex-1">
-              <label className="mb-2 block text-sm font-semibold text-foreground">{trRiskScoring("wizard.list.companyLabel")}</label>
-              <select
-                value={selectedCompanyId}
-                onChange={(e) => setSelectedCompanyId(e.target.value)}
-                className={selectCls + " w-full"}
-              >
-                <option value="">{trRiskScoring("wizard.list.companyPlaceholder")}</option>
-                {companies.map((c) => (
-                  <option key={c.id} value={c.id}>{formatCompanySelectLabel(c)}</option>
-                ))}
-              </select>
+              <p className="mb-2 block text-sm font-semibold text-foreground">{trRiskScoring("wizard.list.companyLabel")}</p>
+              <div className="rounded-2xl border border-primary/15 bg-white px-4 py-3 text-sm font-semibold text-foreground shadow-[0_8px_20px_rgba(15,23,42,0.05)] dark:border-border dark:bg-[var(--navy-mid)] dark:text-white">
+                {selectedCompany ? formatCompanySelectLabel(selectedCompany) : trRiskScoring("wizard.list.companyPlaceholder")}
+              </div>
               <p className="mt-2 text-xs text-muted-foreground">
                 {trRiskScoring("wizard.list.workspaceSyncHint")}
               </p>
@@ -2415,13 +2415,10 @@ JSON formatında döndür:
 
           <div className="space-y-5">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step1.company")} <span className="text-red-500">*</span></label>
-              <select value={selectedCompanyId} onChange={(e) => { setSelectedCompanyId(e.target.value); setSelectedLocation(""); setSelectedDepartment(""); setSetupMessage(""); setSetupMessageType(""); }} className={selectCls + (!selectedCompanyId ? " !border-amber-400/60 !shadow-[0_0_0_3px_rgba(245,158,11,0.15)]" : "")}>
-                <option value="">{trRiskScoring("wizard.step1.companyPlaceholder")}</option>
-                {companies.map((c) => (
-                  <option key={c.id} value={c.id}>{formatCompanySelectLabel(c)}</option>
-                ))}
-              </select>
+              <p className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step1.company")} <span className="text-red-500">*</span></p>
+              <div className={`rounded-2xl border border-primary/15 bg-white px-4 py-3 text-sm font-semibold text-foreground shadow-[0_8px_20px_rgba(15,23,42,0.05)] dark:border-border dark:bg-[var(--navy-mid)] dark:text-white${!selectedCompanyId ? " !border-amber-400/60 !shadow-[0_0_0_3px_rgba(245,158,11,0.15)]" : ""}`}>
+                {selectedCompany ? formatCompanySelectLabel(selectedCompany) : trRiskScoring("wizard.step1.companyPlaceholder")}
+              </div>
               {!selectedCompanyId && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">{trRiskScoring("wizard.step1.companyRequired")}</p>}
             </div>
 
