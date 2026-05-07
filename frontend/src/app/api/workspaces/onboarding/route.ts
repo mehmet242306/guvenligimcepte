@@ -1339,6 +1339,35 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Duzenlenecek calisma alani bulunamadi." }, { status: 404 });
     }
   } else {
+    const existingWorkspaceLookup = await supabase
+      .from("nova_workspaces")
+      .select(
+        "id, organization_id, country_code, name, default_language, timezone, is_active, created_at, updated_at",
+      )
+      .eq("organization_id", organization.id)
+      .eq("country_code", body.countryCode)
+      .maybeSingle();
+
+    if (existingWorkspaceLookup.error && isMissingRelationError(existingWorkspaceLookup.error.message)) {
+      return buildLocalFallbackResponse(
+        "Workspace tablolari bu veritabaninda henuz kurulu degil. Secimin bu cihazda yerel baglam olarak kaydedildi.",
+      );
+    }
+
+    if (existingWorkspaceLookup.error) {
+      return NextResponse.json({ error: existingWorkspaceLookup.error.message }, { status: 500 });
+    }
+
+    if (existingWorkspaceLookup.data) {
+      return NextResponse.json(
+        {
+          error:
+            "Bu ulke icin zaten bir calisma alani var. Sol listeden mevcut calisma alanini secip duzenleyin.",
+        },
+        { status: 409 },
+      );
+    }
+
     const { data: insertedWorkspace, error: workspaceInsertError } = await supabase
       .from("nova_workspaces")
       .insert({

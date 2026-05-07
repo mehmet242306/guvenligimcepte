@@ -493,7 +493,15 @@ export function WorkspaceOnboardingClient({
 
   const memberships = payload?.memberships ?? [];
   const workspaceLimit = accountUsage?.maxActiveWorkspaces ?? null;
-  const canCreateWorkspace = workspaceLimit === null || memberships.length < workspaceLimit;
+  const ownedCountryCodes = useMemo(
+    () => new Set(memberships.map((membership) => membership.workspace.country_code)),
+    [memberships],
+  );
+  const hasAvailableCountry = (payload?.countries ?? []).some(
+    (country) => !ownedCountryCodes.has(country.code),
+  );
+  const canCreateWorkspace =
+    (workspaceLimit === null || memberships.length < workspaceLimit) && hasAvailableCountry;
   const selectedMembership =
     memberships.find((membership) => membership.workspace.id === selectedWorkspaceId) ?? null;
   const selectedCountry =
@@ -559,7 +567,12 @@ export function WorkspaceOnboardingClient({
       return;
     }
 
+    const availableCountries = payload.countries.filter(
+      (item) => !ownedCountryCodes.has(item.code),
+    );
     const nextCountryCode =
+      availableCountries.find((item) => item.code === payload.recommendedCountryCode)?.code ??
+      availableCountries[0]?.code ??
       payload.countries.find((item) => item.code === payload.recommendedCountryCode)?.code ??
       payload.countries[0]?.code ??
       "TR";
@@ -590,7 +603,7 @@ export function WorkspaceOnboardingClient({
     );
     setCompanyNameDirty(false);
     setCompanyShortNameDirty(false);
-  }, [payload, selectedMembership]);
+  }, [ownedCountryCodes, payload, selectedMembership]);
 
   useEffect(() => {
     if (!payload || !selectedCountry || selectedMembership) return;
@@ -1234,7 +1247,11 @@ export function WorkspaceOnboardingClient({
                         onChange={(event) => setCountryCode(event.target.value)}
                       >
                         {(payload.countries ?? []).map((option) => (
-                          <option key={option.code} value={option.code}>
+                          <option
+                            key={option.code}
+                            value={option.code}
+                            disabled={!selectedMembership && ownedCountryCodes.has(option.code)}
+                          >
                             {option.name} ({option.code})
                           </option>
                         ))}
