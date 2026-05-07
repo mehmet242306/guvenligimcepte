@@ -117,13 +117,18 @@ function shouldForcePasswordSetup(user: {
  * PKCE: mobilde cookie/localStorage gecikmesi veya detectSessionInUrl ile yarış;
  * kisa bekleme + getSession + tekrarli exchange.
  */
+type OAuthPkceResolveResult =
+  | { status: "success"; session: Session; user: User }
+  | { status: "failure"; message?: string }
+  | { status: "aborted" };
+
 async function resolveOAuthSessionAfterRedirect(
   supabase: SupabaseClient,
   authCode: string,
   isCancelled: () => boolean,
-): Promise<{ session: Session; user: User } | { errorMessage?: string }> {
+): Promise<OAuthPkceResolveResult> {
   await new Promise((r) => setTimeout(r, 120));
-  if (isCancelled()) return {};
+  if (isCancelled()) return { status: "aborted" };
 
   const { data: early } = await supabase.auth.getSession();
   if (
@@ -131,7 +136,7 @@ async function resolveOAuthSessionAfterRedirect(
     early.session?.refresh_token &&
     early.session.user
   ) {
-    return { session: early.session, user: early.session.user };
+    return { status: "success", session: early.session, user: early.session.user };
   }
 
   const delays = [0, 220, 450, 800];
@@ -141,7 +146,7 @@ async function resolveOAuthSessionAfterRedirect(
     if (ms > 0) {
       await new Promise((r) => setTimeout(r, ms));
     }
-    if (isCancelled()) return {};
+    if (isCancelled()) return { status: "aborted" };
 
     const { data: peek } = await supabase.auth.getSession();
     if (
@@ -149,7 +154,7 @@ async function resolveOAuthSessionAfterRedirect(
       peek.session?.refresh_token &&
       peek.session.user
     ) {
-      return { session: peek.session, user: peek.session.user };
+      return { status: "success", session: peek.session, user: peek.session.user };
     }
 
     const { data, error } = await supabase.auth.exchangeCodeForSession(authCode);
@@ -161,7 +166,7 @@ async function resolveOAuthSessionAfterRedirect(
       data.session?.refresh_token &&
       data.user
     ) {
-      return { session: data.session, user: data.user };
+      return { status: "success", session: data.session, user: data.user };
     }
 
     const msg = (error?.message ?? "").toLowerCase();
@@ -172,7 +177,7 @@ async function resolveOAuthSessionAfterRedirect(
         existing.session?.refresh_token &&
         existing.session.user
       ) {
-        return { session: existing.session, user: existing.session.user };
+        return { status: "success", session: existing.session, user: existing.session.user };
       }
       break;
     }
@@ -182,7 +187,7 @@ async function resolveOAuthSessionAfterRedirect(
     console.warn("[session-recover] exchangeCodeForSession (after retries):", lastErrorMessage);
   }
 
-  return { errorMessage: lastErrorMessage };
+  return { status: "failure", message: lastErrorMessage };
 }
 
 export function AuthSessionRecoverClient({
@@ -258,12 +263,11 @@ export function AuthSessionRecoverClient({
       const resolved = await resolveOAuthSessionAfterRedirect(supabase, trimmedCode, () => cancelled);
 
       if (cancelled) return;
-
-      if (!("session" in resolved && resolved.session?.access_token && resolved.session.refresh_token)) {
-        const errMsg = "errorMessage" in resolved ? resolved.errorMessage : undefined;
+      if (resolved.status === "aborted") return;
+      if (resolved.status === "failure") {
         setMessage("Google oturumu tamamlanamadi. Login sayfasina donuluyor...");
         window.setTimeout(() => {
-          redirectToLoginWithError(errMsg ?? "");
+          redirectToLoginWithError(resolved.message ?? "");
         }, 400);
         return;
       }
