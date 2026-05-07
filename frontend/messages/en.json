@@ -927,7 +927,7 @@
         }
       },
       "countryHints": {
-        "TR": "Türkiye legislation with Turkish defaults.",
+        "TR": "Turkey legislation with Turkish defaults.",
         "AZ": "Azerbaijan region with Azerbaijani defaults.",
         "US": "US operations with English defaults.",
         "GB": "UK operations with English defaults.",
@@ -1936,7 +1936,7 @@
     }
   },
   "lang": {
-    "tr": "Türkçe",
+    "tr": "Turkish",
     "en": "English",
     "ar": "العربية",
     "ru": "Русский",
@@ -1961,7 +1961,7 @@
     "loading": "Loading workspaces..."
   },
   "country": {
-    "TR": "Türkiye",
+    "TR": "Turkey",
     "US": "United States",
     "GB": "United Kingdom",
     "DE": "Germany",

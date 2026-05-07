@@ -85,15 +85,15 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
 
   if (!visible) return null;
 
-  const title = surface === "public" ? "RiskNova'yı uygulama gibi kur" : "RiskNova uygulamasını kur";
+  const title = surface === "public" ? "Install RiskNova like an app" : "Install the RiskNova app";
   const description =
     surface === "public"
-      ? "iOS, Android ve Windows'ta ayrı pencereyle hızlı aç."
-      : "Saha, doküman ve Nova akışlarına ana ekrandan dön.";
-  const button = surface === "public" ? "Cihaza kur" : "Kur";
-  const iosHint = "iPhone/iPad için Paylaş menüsünden Ana Ekrana Ekle seçeneğini kullan.";
+      ? "Launch quickly in a dedicated window on iOS, Android, and Windows."
+      : "Return to field, document, and Nova workflows from your home screen.";
+  const button = surface === "public" ? "Install on device" : "Install";
+  const iosHint = "On iPhone/iPad, use Share menu > Add to Home Screen.";
   const manualHint =
-    "Kurulum butonu görünmüyorsa normal tarayıcı penceresinde üç nokta menüsünden Uygulamayı yükle veya Ana ekrana ekle seçeneğini kullanın.";
+    "If the install button is not visible, use a normal browser window and open the three-dot menu to select Install app or Add to Home screen.";
   const showGuideLink = showIosHint || showManualHint;
 
   async function install() {
@@ -126,7 +126,7 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
           : "border-border bg-card p-3 text-foreground",
         className,
       )}
-      aria-label="RiskNova uygulama kurulumu"
+      aria-label="RiskNova app installation"
     >
       <div className="flex items-start gap-3">
         <div
@@ -172,7 +172,7 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
               )}
             >
               {showIosHint ? <ExternalLink className="h-4 w-4" /> : <Download className="h-4 w-4" />}
-              {showIosHint ? "iOS adımlarını aç" : "Ana ekrana ekle"}
+              {showIosHint ? "Open iOS steps" : "Add to home screen"}
             </a>
           ) : null}
         </div>
@@ -183,7 +183,7 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
             "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors",
             surface === "public" ? "text-white/70 hover:bg-white/10 hover:text-white" : "text-muted-foreground hover:bg-muted",
           )}
-          aria-label="Kurulum hatırlatıcısını kapat"
+          aria-label="Close installation reminder"
         >
           <X className="h-4 w-4" />
         </button>

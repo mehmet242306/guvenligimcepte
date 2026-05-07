@@ -51,59 +51,59 @@ export default async function PlatformAdminDemoRequestsPage({
             className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-3 w-3" />
-            Platform yönetimine dön
+            Back to platform admin
           </Link>
           <h1 className="flex items-center gap-2 text-2xl font-bold text-foreground">
             <Sparkles className="h-6 w-6 text-[var(--gold)]" />
-            Demo talepleri
+            Demo requests
           </h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
-            Landing sayfasındaki &quot;Demo Talep Et&quot; formundan gelen kayıtlar. Talebi inceledikten sonra{" "}
+            Records submitted from the landing page &quot;Request Demo&quot; form. After reviewing a request, use{" "}
             <Link href="/platform-admin/demo-builder" className="font-medium text-primary underline underline-offset-4">
-              Demo oluşturucu
+              Demo Builder
             </Link>{" "}
-            ile aynı e-posta adresine hesap açın: giriş bilgisi ve geçici şifre,{" "}
-            <strong>RESEND_API_KEY</strong> tanımlıysa otomatik e-postayla gider; aksi halde oluşturucu ekranındaki
-            önizlemeyi manuel iletin.
+            to create an account for the same email address: login details and temporary password are emailed
+            automatically if <strong>RESEND_API_KEY</strong> is configured; otherwise share the preview manually from
+            the builder screen.
           </p>
         </div>
         <Link
           href="/platform-admin/demo-builder"
           className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:brightness-110"
         >
-          Demo oluşturucuya git
+          Go to Demo Builder
         </Link>
       </div>
 
       {error ? (
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-200">
-          Talepler yüklenemedi: {error.message}
+          Requests could not be loaded: {error.message}
         </div>
       ) : null}
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiBox label="Toplam (demo)" value={totalCount ?? 0} />
-        <KpiBox label="Yeni" value={newCount ?? 0} tone="amber" />
-        <KpiBox label="İletişime geçildi" value={contactedCount ?? 0} tone="sky" />
-        <KpiBox label="Dönüşen" value={convertedCount ?? 0} tone="emerald" />
+        <KpiBox label="Total (demo)" value={totalCount ?? 0} />
+        <KpiBox label="New" value={newCount ?? 0} tone="amber" />
+        <KpiBox label="Contacted" value={contactedCount ?? 0} tone="sky" />
+        <KpiBox label="Converted" value={convertedCount ?? 0} tone="emerald" />
       </div>
 
       <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-card p-3">
-        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Durum:</span>
+        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Status:</span>
         {[
-          { v: "all", l: "Hepsi" },
-          { v: "new", l: "Yeni" },
-          { v: "contacted", l: "İletişim" },
-          { v: "qualified", l: "Nitelikli" },
-          { v: "converted", l: "Dönüşen" },
-          { v: "rejected", l: "Reddedildi" },
+          { v: "all", l: "All" },
+          { v: "new", l: "New" },
+          { v: "contacted", l: "Contacted" },
+          { v: "qualified", l: "Qualified" },
+          { v: "converted", l: "Converted" },
+          { v: "rejected", l: "Rejected" },
         ].map((f) => (
           <FilterLink key={f.v} current={statusFilter} value={f.v} label={f.l} />
         ))}
         <span className="ml-2 text-xs text-muted-foreground">
-          Tüm kurumsal talepler için{" "}
+          For all enterprise requests see{" "}
           <Link href="/platform-admin/leads" className="text-primary underline underline-offset-2">
-            Teklif talepleri
+            Quote requests
           </Link>
         </span>
       </div>
@@ -111,9 +111,9 @@ export default async function PlatformAdminDemoRequestsPage({
       {leads.length === 0 ? (
         <div className="flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-muted/10 p-8 text-center">
           <Inbox className="h-8 w-8 text-muted-foreground" />
-          <p className="text-sm font-medium text-foreground">Henüz demo talebi yok.</p>
+          <p className="text-sm font-medium text-foreground">No demo requests yet.</p>
           <p className="text-xs text-muted-foreground">
-            Public demo formu kapalıysa yeni kayıt düşmez. Mevcut akış: talep → demo oluşturucu → e-posta (Resend).
+            No new records will arrive while the public demo form is disabled. Current flow: request → demo builder → email (Resend).
           </p>
         </div>
       ) : (

@@ -18,11 +18,11 @@ interface QuestionDraft {
 }
 
 const questionTypeLabels: Record<QuestionType, string> = {
-  multiple_choice: "Çoktan Seçmeli",
-  open_ended: "Açık Uçlu",
-  scale: "Ölçek (1-5)",
-  yes_no: "Evet / Hayır",
-  multi_select: "Çoklu Seçim",
+  multiple_choice: "Multiple Choice",
+  open_ended: "Open-ended",
+  scale: "Scale (1-5)",
+  yes_no: "Yes / No",
+  multi_select: "Multi Select",
 };
 
 function genId() {
@@ -112,7 +112,7 @@ export function TrainingNewClient() {
       }
       setStep(2);
       if (!title.trim()) {
-        setTitle("AI Destekli Egitim Sinavi");
+        setTitle("AI-Assisted Training Exam");
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -138,7 +138,7 @@ export function TrainingNewClient() {
     if (ws && ws.length > 0) {
       const list = (ws as Record<string, unknown>[]).map(w => ({
         id: w.id as string,
-        name: (w.display_name || "Firma") as string,
+        name: (w.display_name || "Company") as string,
       }));
       setCompanies(list);
     }
@@ -334,16 +334,16 @@ export function TrainingNewClient() {
             Geri
           </button>
           <h1 className="text-2xl font-bold text-[var(--foreground)]">
-            Yeni {type === "exam" ? "Sınav" : "Anket"} Oluştur
+            Create New {type === "exam" ? "Exam" : "Survey"}
           </h1>
         </div>
 
         {/* Steps indicator */}
         <div className="mb-8 flex items-center gap-2">
           {[
-            { n: 1, label: "Genel Bilgiler" },
-            { n: 2, label: "AI Soru Ayarları" },
-            { n: 3, label: "Sorular" },
+            { n: 1, label: "General Information" },
+            { n: 2, label: "AI Question Settings" },
+            { n: 3, label: "Questions" },
           ].map((s, i) => (
             <div key={s.n} className="flex items-center gap-2">
               {i > 0 && <div className="h-px w-6 bg-[var(--border)]" />}
@@ -377,7 +377,7 @@ export function TrainingNewClient() {
           <div className="space-y-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
             {/* Type selection */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Tür</label>
+              <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Type</label>
               <div className="flex gap-3">
                 {(["survey", "exam"] as const).map(t => (
                   <button
@@ -402,8 +402,8 @@ export function TrainingNewClient() {
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
                       )}
                     </div>
-                    <div className="font-medium text-[var(--foreground)]">{t === "exam" ? "Sınav" : "Anket"}</div>
-                    <div className="text-xs text-[var(--muted-foreground)]">{t === "exam" ? "Bilgi ve yetkinlik ölçümü" : "Görüş ve geri bildirim toplama"}</div>
+                    <div className="font-medium text-[var(--foreground)]">{t === "exam" ? "Exam" : "Survey"}</div>
+                    <div className="text-xs text-[var(--muted-foreground)]">{t === "exam" ? "Measure knowledge and competency" : "Collect opinions and feedback"}</div>
                   </button>
                 ))}
               </div>
@@ -411,23 +411,23 @@ export function TrainingNewClient() {
 
             {/* Title */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Başlık *</label>
+              <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Title *</label>
               <input
                 type="text"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                placeholder={type === "exam" ? "ör: İSG Temel Eğitim Sınavı" : "ör: Çalışan Memnuniyet Anketi"}
+                placeholder={type === "exam" ? "e.g. OHS Basic Training Exam" : "e.g. Employee Satisfaction Survey"}
                 className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30"
               />
             </div>
 
             {/* Description */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Açıklama</label>
+              <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Description</label>
               <textarea
                 value={description}
                 onChange={e => setDescription(e.target.value)}
-                placeholder="Konu ve içerik hakkında kısa açıklama..."
+                placeholder="Short description about topic and content..."
                 rows={3}
                 className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30 resize-none"
               />
@@ -436,10 +436,10 @@ export function TrainingNewClient() {
             {/* Company — multi-select dropdown */}
             <div>
               <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
-                Firma * {selectedCompanyIds.size > 0 && <span className="text-xs text-[var(--gold)]">({selectedCompanyIds.size} seçili)</span>}
+                Company * {selectedCompanyIds.size > 0 && <span className="text-xs text-[var(--gold)]">({selectedCompanyIds.size} selected)</span>}
               </label>
               {companies.length === 0 ? (
-                <p className="text-sm text-[var(--muted-foreground)]">Yükleniyor...</p>
+                <p className="text-sm text-[var(--muted-foreground)]">Loading...</p>
               ) : (
                 <div className="relative">
                   {/* Selected chips + trigger */}
@@ -452,7 +452,7 @@ export function TrainingNewClient() {
                   >
                     <div className="flex flex-1 flex-wrap gap-1.5 min-h-[24px]">
                       {selectedCompanyIds.size === 0 ? (
-                        <span className="text-[var(--muted-foreground)]">Firma seçin...</span>
+                        <span className="text-[var(--muted-foreground)]">Select company...</span>
                       ) : (
                         Array.from(selectedCompanyIds).map(id => {
                           const c = companies.find(x => x.id === id);
@@ -485,7 +485,7 @@ export function TrainingNewClient() {
                             type="text"
                             value={companySearch}
                             onChange={e => setCompanySearch(e.target.value)}
-                            placeholder="Firma ara..."
+                            placeholder="Search company..."
                             className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--gold)]/30"
                             autoFocus
                           />
@@ -494,7 +494,7 @@ export function TrainingNewClient() {
                       {/* Options */}
                       <div className="max-h-48 overflow-y-auto p-1">
                         {filteredCompanies.length === 0 ? (
-                          <p className="py-3 text-center text-xs text-[var(--muted-foreground)]">Sonuç yok</p>
+                          <p className="py-3 text-center text-xs text-[var(--muted-foreground)]">No results</p>
                         ) : (
                           filteredCompanies.map(c => (
                             <label
@@ -522,7 +522,7 @@ export function TrainingNewClient() {
                           type="button"
                           onClick={() => setSelectedCompanyIds(new Set(companies.map(c => c.id)))}
                           className="text-xs text-[var(--gold)] hover:underline"
-                        >Tümünü Seç</button>
+                        >Select All</button>
                         <button
                           type="button"
                           onClick={() => setCompanyDropdownOpen(false)}
@@ -538,20 +538,20 @@ export function TrainingNewClient() {
             {/* Exam-specific settings */}
             {type === "exam" && (
               <div className="space-y-4 rounded-xl border border-blue-200 bg-blue-50/50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
-                <h3 className="text-sm font-semibold text-blue-700 dark:text-blue-400">Sınav Ayarları</h3>
+                <h3 className="text-sm font-semibold text-blue-700 dark:text-blue-400">Exam Settings</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="mb-1 block text-xs text-[var(--muted-foreground)]">Geçme Puanı (%)</label>
+                    <label className="mb-1 block text-xs text-[var(--muted-foreground)]">Passing Score (%)</label>
                     <input type="number" value={passScore} onChange={e => setPassScore(Number(e.target.value))} min={0} max={100} className="w-full rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--foreground)]" />
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs text-[var(--muted-foreground)]">Süre Sınırı (dk)</label>
+                    <label className="mb-1 block text-xs text-[var(--muted-foreground)]">Time Limit (min)</label>
                     <input type="number" value={timeLimit} onChange={e => setTimeLimit(Number(e.target.value))} min={1} className="w-full rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--foreground)]" />
                   </div>
                 </div>
                 <label className="flex items-center gap-2 text-sm text-[var(--foreground)]">
                   <input type="checkbox" checked={shuffleQuestions} onChange={e => setShuffleQuestions(e.target.checked)} className="rounded border-[var(--border)]" />
-                  Soruları karıştır
+                  Shuffle questions
                 </label>
                 <label className="flex items-start gap-2 text-sm text-[var(--foreground)]">
                   <input
@@ -563,7 +563,7 @@ export function TrainingNewClient() {
                   <span>
                     <span className="font-semibold">🏆 Otomatik Sertifika</span>
                     <span className="ml-1 text-xs text-[var(--muted-foreground)]">
-                      (geçme puanını aşan her katılımcıya otomatik sertifika verilir)
+                      (a certificate is issued automatically to each participant who passes the score threshold)
                     </span>
                   </span>
                 </label>
@@ -575,7 +575,7 @@ export function TrainingNewClient() {
               disabled={!canGoStep2}
               className="w-full rounded-xl bg-[var(--gold)] py-3 text-sm font-semibold text-white shadow transition-colors hover:brightness-110 disabled:opacity-50"
             >
-              Devam — Soru Ayarları
+              Continue — Question Settings
             </button>
           </div>
         )}
@@ -588,20 +588,20 @@ export function TrainingNewClient() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"/></svg>
               </div>
               <div>
-                <h3 className="font-semibold text-[var(--foreground)]">AI ile Soru Oluşturma</h3>
-                <p className="text-xs text-[var(--muted-foreground)]">Yapay zeka konuya uygun sorular oluşturacak, sonra düzenleyebilirsiniz</p>
+                <h3 className="font-semibold text-[var(--foreground)]">AI Question Generation</h3>
+                <p className="text-xs text-[var(--muted-foreground)]">AI will create topic-appropriate questions, then you can edit them</p>
               </div>
             </div>
 
             {/* Topic */}
             <div>
-              <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Soru Konusu / İçerik *</label>
+              <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Question Topic / Content *</label>
               <textarea
                 value={aiTopic}
                 onChange={e => setAiTopic(e.target.value)}
                 placeholder={type === "exam"
-                  ? "ör: 6331 sayılı İSG Kanunu, temel İSG kavramları, risk değerlendirmesi, kişisel koruyucu donanım (KKD), acil durum prosedürleri"
-                  : "ör: Çalışan memnuniyeti, iş güvenliği kültürü, eğitim ihtiyaçları"}
+                  ? "e.g. Law 6331 OHS Act, core OHS concepts, risk assessment, personal protective equipment (PPE), emergency procedures"
+                  : "e.g. Employee satisfaction, safety culture, training needs"}
                 rows={3}
                 className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30 resize-none"
               />
@@ -610,7 +610,7 @@ export function TrainingNewClient() {
             {/* Question count & option count */}
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Soru Sayısı</label>
+                <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Question Count</label>
                 <div className="flex items-center gap-2">
                   {[5, 10, 15, 20, 30].map(n => (
                     <button
@@ -630,7 +630,7 @@ export function TrainingNewClient() {
 
               {type === "exam" && (
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Şık Sayısı</label>
+                  <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">Option Count</label>
                   <div className="flex items-center gap-2">
                     {[2, 3, 4, 5, 6].map(n => (
                       <button
@@ -652,17 +652,17 @@ export function TrainingNewClient() {
 
             {/* Summary */}
             <div className="rounded-xl bg-[var(--background)] p-4">
-              <h4 className="text-sm font-medium text-[var(--foreground)]">Özet</h4>
+              <h4 className="text-sm font-medium text-[var(--foreground)]">Summary</h4>
               <div className="mt-2 flex flex-wrap gap-3 text-xs text-[var(--muted-foreground)]">
                 <span className="rounded-full bg-[var(--card)] px-3 py-1 border border-[var(--border)]">
-                  {type === "exam" ? "Sınav" : "Anket"}
+                  {type === "exam" ? "Exam" : "Survey"}
                 </span>
                 <span className="rounded-full bg-[var(--card)] px-3 py-1 border border-[var(--border)]">
                   {questionCount} soru
                 </span>
                 {type === "exam" && (
                   <span className="rounded-full bg-[var(--card)] px-3 py-1 border border-[var(--border)]">
-                    {optionCount} şık
+                    {optionCount} options
                   </span>
                 )}
                 {Array.from(selectedCompanyIds).map(id => {
@@ -686,7 +686,7 @@ export function TrainingNewClient() {
                 disabled={aiGenerating || !aiTopic.trim()}
                 className="flex-[2] rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 py-3 text-sm font-semibold text-white shadow transition-all hover:brightness-110 disabled:opacity-50"
               >
-                {aiGenerating ? <ButtonLoader label="AI sorulari olusturuluyor..." /> : "AI ile Soruları Oluştur"}
+                {aiGenerating ? <ButtonLoader label="AI questions are being generated..." /> : "Generate Questions with AI"}
               </button>
             </div>
 
@@ -696,7 +696,7 @@ export function TrainingNewClient() {
                 onClick={() => { setStep(3); }}
                 className="text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] underline"
               >
-                veya soruları kendiniz ekleyin
+                or add questions manually
               </button>
             </div>
           </div>
@@ -710,14 +710,14 @@ export function TrainingNewClient() {
               <div className="flex items-center justify-between rounded-xl bg-emerald-50 p-3 border border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800">
                 <div className="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  <span className="font-medium">{questions.length} soru oluşturuldu</span>
-                  <span className="text-xs opacity-75">— düzenleyebilir, ekleyebilir veya silebilirsiniz</span>
+                  <span className="font-medium">{questions.length} questions generated</span>
+                  <span className="text-xs opacity-75">— you can edit, add, or delete them</span>
                 </div>
                 <button
                   onClick={() => setStep(2)}
                   className="text-xs font-medium text-emerald-600 hover:underline dark:text-emerald-400"
                 >
-                  Tekrar Oluştur
+                  Regenerate
                 </button>
               </div>
             )}
@@ -743,7 +743,7 @@ export function TrainingNewClient() {
                   type="text"
                   value={q.questionText}
                   onChange={e => updateQuestion(q.id, { questionText: e.target.value })}
-                  placeholder="Soruyu yazın..."
+                  placeholder="Write the question..."
                   className="mb-3 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm font-medium text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30"
                 />
 
@@ -775,7 +775,7 @@ export function TrainingNewClient() {
                           type="text"
                           value={opt.label}
                           onChange={e => updateOption(q.id, oi, { label: e.target.value })}
-                          placeholder={`Seçenek ${opt.value}`}
+                          placeholder={`Option ${opt.value}`}
                           className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--gold)]/30"
                         />
                         {type === "exam" && (
@@ -793,7 +793,7 @@ export function TrainingNewClient() {
                                 : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
                             }`}
                           >
-                            {opt.isCorrect ? "Doğru" : "Yanlış"}
+                            {opt.isCorrect ? "Correct" : "Incorrect"}
                           </button>
                         )}
                         {q.options.length > 2 && (
@@ -803,14 +803,14 @@ export function TrainingNewClient() {
                         )}
                       </div>
                     ))}
-                    <button onClick={() => addOption(q.id)} className="text-xs text-[var(--gold)] hover:underline">+ Seçenek Ekle</button>
+                    <button onClick={() => addOption(q.id)} className="text-xs text-[var(--gold)] hover:underline">+ Add Option</button>
                   </div>
                 )}
 
                 {q.questionType === "yes_no" && (
                   <div className="flex gap-2">
                     <div className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-center text-sm text-[var(--muted-foreground)]">Evet</div>
-                    <div className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-center text-sm text-[var(--muted-foreground)]">Hayır</div>
+                    <div className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-center text-sm text-[var(--muted-foreground)]">No</div>
                   </div>
                 )}
 
@@ -824,7 +824,7 @@ export function TrainingNewClient() {
 
                 {q.questionType === "open_ended" && (
                   <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--background)] px-3 py-4 text-center text-xs text-[var(--muted-foreground)]">
-                    Açık uçlu metin alanı
+                    Open-ended text input
                   </div>
                 )}
               </div>
@@ -836,7 +836,7 @@ export function TrainingNewClient() {
               className="w-full rounded-2xl border-2 border-dashed border-[var(--border)] bg-[var(--card)] py-6 text-sm font-medium text-[var(--muted-foreground)] transition-colors hover:border-[var(--gold)]/30 hover:text-[var(--gold)]"
             >
               <svg className="mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Manuel Soru Ekle
+              Add Manual Question
             </button>
 
             {/* Save */}

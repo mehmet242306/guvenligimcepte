@@ -1582,7 +1582,50 @@
     "trackPriorityCompanies": "優先対応待ちの会社",
     "trackSubtitle": "{companyCount}社を監視中、{totalActionable}件のフォローアップ待ちアクション。全社の概要です。",
     "trackTitle": "追跡サマリー",
-    "workloadFollowups": "{count}件"
+    "workloadFollowups": "{count}件",
+    "featureStatus": {
+      "title": "Nova Feature Status",
+      "description": "Track live, beta and disabled modules from one place.",
+      "goToModule": "Go to module",
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "beta": "Beta",
+        "disabled": "Disabled"
+      },
+      "items": {
+        "annualEval": {
+          "name": "Annual Evaluation Report",
+          "note": "AI summary and export improvements are in progress."
+        },
+        "periodicPdf": {
+          "name": "Periodic Control PDF",
+          "note": "Branded header, QR and table output are active."
+        },
+        "selfHealing": {
+          "name": "Self-Healing Operations",
+          "note": "Automation is active; trend card is being improved."
+        },
+        "novaWorkflows": {
+          "name": "Nova Action Workflows",
+          "note": "Navigation and action approval are live."
+        },
+        "featureFlags": {
+          "name": "Feature Flag Management",
+          "note": "Panel-based toggle management is planned."
+        }
+      }
+    },
+    "serviceHealth": {
+      "title": "Service Health",
+      "description": "Health summary of self-healing flows over the last 24 hours.",
+      "successRate": "Success rate",
+      "status": {
+        "good": "Good",
+        "watch": "Monitoring",
+        "issue": "Issue"
+      }
+    }
   },
   "dataRights": {
     "adminNotes": "管理者メモ",
@@ -4718,7 +4761,9 @@
         "deleteRow": "Remove row",
         "downloadPdf": "Download PDF",
         "exportingPdf": "Preparing PDF...",
-        "downloadPdfTitle": "Periodic control register"
+        "downloadPdfTitle": "Periodic control register",
+        "reportDate": "Report date",
+        "qrHint": "QR code points to"
       },
       "errors": {
         "noSupabase": "No Supabase connection",
@@ -4728,7 +4773,8 @@
         "orgNotFound": "Organization not found",
         "saveFailed": "Save failed",
         "needTitle": "Enter a title before sending to tracking",
-        "pushFailed": "Could not create tracking record"
+        "pushFailed": "Could not create tracking record",
+        "pdfFailed": "Could not generate PDF"
       },
       "loading": "Loading register...",
       "empty": "No rows yet. Choose sector and workplace type, then load suggestions or add manually.",
@@ -7033,6 +7079,47 @@
       "unassigned": "未割当",
       "completion": "{percent}% 完了",
       "detail": "詳細"
+    }
+  },
+  "liveScan": {
+    "access": {
+      "title": "Access restricted",
+      "body": "Live field scan is available only to platform administrators while this feature is in development. It will open more widely when the rollout is complete."
+    },
+    "title": "Live field scan",
+    "subtitle": "Camera capture feeds the same AI as mobile. When you stop the session, every detection is merged into Risk Analysis for this company (no separate risk list here).",
+    "cameraIdle": "Start a session to open the camera. Frames are analyzed about every 3 seconds while scanning.",
+    "defaultLocationName": "Web live field scan",
+    "controls": {
+      "heading": "Session",
+      "company": "Company workspace",
+      "companyPlaceholder": "Select a company",
+      "method": "Risk method",
+      "start": "Start scanning",
+      "stop": "Stop",
+      "allowCamera": "Test camera"
+    },
+    "hud": {
+      "frame": "Frame #{n}",
+      "analyzing": "Analyzing…",
+      "waiting": "Next frame soon",
+      "risksQueued": "{count} finding(s) queued for Risk Analysis"
+    },
+    "transfer": {
+      "title": "Session complete — findings are in Risk Analysis",
+      "body": "{count} AI finding(s) were saved and copied into a risk assessment record. Open Risk Analysis to review, score, and export — the same module as manual analyses.",
+      "openAnalysis": "Open in Risk Analysis",
+      "openAnalysisFallback": "Open Risk Analysis (select the latest “Automatic: …” assessment if needed)"
+    },
+    "hintViewer": "Colleagues with access can follow the stream from Digital Twin while a session is active.",
+    "linkDigitalTwin": "Open Digital Twin (live viewer)",
+    "disclaimer": "Video is not recorded end-to-end: only still frames are sent for analysis. Detections appear only under Risk Analysis after the session ends. Ensure workers’ consent and site photography rules are respected.",
+    "errors": {
+      "noMediaApi": "This browser does not support camera access.",
+      "cameraDenied": "Camera permission was denied.",
+      "cameraFailed": "Camera could not be started.",
+      "pickCompany": "Select a company workspace first.",
+      "auth": "Session expired or not authorized. Sign in again."
     }
   }
 }

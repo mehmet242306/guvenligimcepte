@@ -142,7 +142,7 @@ export function TrainingDetailClient() {
 
   function shareWhatsApp(token: SurveyTokenRecord) {
     const link = getSurveyLink(token.token);
-    const text = `Merhaba ${token.personName}, "${survey?.title}" ${survey?.type === "exam" ? "sınavına" : "anketine"} katılmanız beklenmektedir. Lütfen aşağıdaki linke tıklayın:\n${link}`;
+    const text = `Hello ${token.personName}, you are invited to participate in "${survey?.title}" ${survey?.type === "exam" ? "exam" : "survey"}. Please click the link below:\n${link}`;
     window.open(`https://wa.me/${token.personPhone || ""}?text=${encodeURIComponent(text)}`, "_blank");
   }
 
@@ -177,7 +177,7 @@ export function TrainingDetailClient() {
     }
 
     setIssuingCerts(false);
-    alert(`${completedTokens.length} kişi için sertifika oluşturuldu!`);
+    alert(`Certificates created for ${completedTokens.length} participant(s)!`);
   }
 
   const statusColors: Record<string, string> = {
@@ -205,15 +205,15 @@ export function TrainingDetailClient() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--background)] p-4">
         <div className="max-w-md rounded-2xl border border-[var(--border)] bg-[var(--card)] p-8 text-center shadow-sm">
-          <p className="text-lg font-semibold text-[var(--foreground)]">Anket veya sınav bulunamadı</p>
+          <p className="text-lg font-semibold text-[var(--foreground)]">Survey or exam not found</p>
           <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-            Bu kayda erişim yetkiniz olmayabilir veya bağlantı eski olabilir.
+            You may not have access to this record, or the link may be outdated.
           </p>
           <Link
             href="/training"
             className="mt-6 inline-flex h-11 items-center justify-center rounded-xl bg-[var(--gold)] px-5 text-sm font-semibold text-white hover:brightness-110"
           >
-            Eğitime dön
+            Back to Training
           </Link>
         </div>
       </div>
@@ -237,7 +237,7 @@ export function TrainingDetailClient() {
           className="mb-4 inline-flex items-center gap-1 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
-          Geri
+          Back
         </button>
 
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -245,23 +245,23 @@ export function TrainingDetailClient() {
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold text-[var(--foreground)]">{survey.title}</h1>
               <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[survey.status]}`}>
-                {survey.status === "draft" ? "Taslak" : survey.status === "active" ? "Aktif" : survey.status === "closed" ? "Kapalı" : "Arşiv"}
+                {survey.status === "draft" ? "Draft" : survey.status === "active" ? "Active" : survey.status === "closed" ? "Closed" : "Archived"}
               </span>
               <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
                 survey.type === "exam" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" : "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
               }`}>
-                {survey.type === "exam" ? "Sınav" : "Anket"}
+                {survey.type === "exam" ? "Exam" : "Survey"}
               </span>
               {sourceLibrary?.content_id ? (
                 <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                  ISG Kutuphanesinden aktarildi
+                  Imported from OHS Library
                 </span>
               ) : null}
             </div>
             {survey.description && <p className="mt-1 text-sm text-[var(--muted-foreground)]">{survey.description}</p>}
             {sourceLibrary?.content_id ? (
               <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                Kaynak: {sourceLibrary.category ?? "-"} / {sourceLibrary.subcategory ?? "-"} ({sourceLibrary.content_id})
+                Source: {sourceLibrary.category ?? "-"} / {sourceLibrary.subcategory ?? "-"} ({sourceLibrary.content_id})
               </p>
             ) : null}
           </div>
@@ -272,7 +272,7 @@ export function TrainingDetailClient() {
                 disabled={statusUpdating}
                 className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
               >
-                {statusUpdating ? <ButtonLoader label="Yayinlaniyor..." /> : "Yayınla"}
+                {statusUpdating ? <ButtonLoader label="Publishing..." /> : "Publish"}
               </button>
             )}
             {survey.status === "active" && (
@@ -281,7 +281,7 @@ export function TrainingDetailClient() {
                 disabled={statusUpdating}
                 className="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
               >
-                {statusUpdating ? <ButtonLoader label="Kapatiliyor..." /> : "Kapat"}
+                {statusUpdating ? <ButtonLoader label="Closing..." /> : "Close"}
               </button>
             )}
           </div>
@@ -297,7 +297,7 @@ export function TrainingDetailClient() {
                 tab === t ? "bg-[var(--gold)] text-white shadow" : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               }`}
             >
-              {t === "overview" ? "Genel" : t === "tokens" ? `Katılımcılar (${tokens.length})` : t === "results" ? "Sonuçlar" : "Sertifikalar"}
+              {t === "overview" ? "Overview" : t === "tokens" ? `Participants (${tokens.length})` : t === "results" ? "Results" : "Certificates"}
             </button>
           ))}
         </div>
@@ -309,29 +309,29 @@ export function TrainingDetailClient() {
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
                 <div className="text-2xl font-bold text-[var(--foreground)]">{questions.length}</div>
-                <div className="text-xs text-[var(--muted-foreground)]">Soru</div>
+                <div className="text-xs text-[var(--muted-foreground)]">Questions</div>
               </div>
               <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
                 <div className="text-2xl font-bold text-[var(--foreground)]">{tokens.length}</div>
-                <div className="text-xs text-[var(--muted-foreground)]">Katılımcı</div>
+                <div className="text-xs text-[var(--muted-foreground)]">Participants</div>
               </div>
               <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
                 <div className="text-2xl font-bold text-emerald-600">{tokens.filter(t => t.status === "completed").length}</div>
-                <div className="text-xs text-[var(--muted-foreground)]">Tamamlayan</div>
+                <div className="text-xs text-[var(--muted-foreground)]">Completed</div>
               </div>
               <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
                 <div className="text-2xl font-bold text-amber-600">
                   {results?.averageScore != null ? `%${results.averageScore}` : "-"}
                 </div>
-                <div className="text-xs text-[var(--muted-foreground)]">{survey.type === "exam" ? "Ort. Puan" : "Tamamlanma"}</div>
+                <div className="text-xs text-[var(--muted-foreground)]">{survey.type === "exam" ? "Avg. Score" : "Completion"}</div>
               </div>
             </div>
 
             {/* Questions list */}
             <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
-              <h3 className="mb-4 font-semibold text-[var(--foreground)]">Sorular ({questions.length})</h3>
+              <h3 className="mb-4 font-semibold text-[var(--foreground)]">Questions ({questions.length})</h3>
               {questions.length === 0 ? (
-                <p className="text-sm text-[var(--muted-foreground)]">Henüz soru eklenmemiş</p>
+                <p className="text-sm text-[var(--muted-foreground)]">No questions added yet</p>
               ) : (
                 <div className="space-y-3">
                   {questions.map((q, i) => (
@@ -343,12 +343,12 @@ export function TrainingDetailClient() {
                         <p className="text-sm font-medium text-[var(--foreground)]">{q.questionText}</p>
                         <div className="mt-1 flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
                           <span className="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-700">
-                            {q.questionType === "multiple_choice" ? "Çoktan Seçmeli" :
-                             q.questionType === "open_ended" ? "Açık Uçlu" :
-                             q.questionType === "scale" ? "Ölçek" :
-                             q.questionType === "yes_no" ? "Evet/Hayır" : "Çoklu Seçim"}
+                            {q.questionType === "multiple_choice" ? "Multiple Choice" :
+                             q.questionType === "open_ended" ? "Open-ended" :
+                             q.questionType === "scale" ? "Scale" :
+                             q.questionType === "yes_no" ? "Yes/No" : "Multi Select"}
                           </span>
-                          {survey.type === "exam" && <span>{q.points} puan</span>}
+                          {survey.type === "exam" && <span>{q.points} points</span>}
                         </div>
                         {q.options && q.options.length > 0 && (
                           <div className="mt-2 flex flex-wrap gap-1.5">
@@ -362,7 +362,7 @@ export function TrainingDetailClient() {
                                 }`}
                               >
                                 {opt.value}) {opt.label}
-                                {opt.isCorrect && " (Doğru)"}
+                                {opt.isCorrect && " (Correct)"}
                               </span>
                             ))}
                           </div>
@@ -385,18 +385,18 @@ export function TrainingDetailClient() {
                 className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-4 py-2.5 text-sm font-semibold text-white shadow hover:brightness-110"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Katılımcı Ekle
+                Add Participant
               </button>
             </div>
 
             {tokens.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] py-12 text-center">
-                <p className="text-[var(--muted-foreground)]">Henüz katılımcı eklenmemiş</p>
+                <p className="text-[var(--muted-foreground)]">No participants added yet</p>
                 <button
                   onClick={() => setShowTokenModal(true)}
                   className="mt-3 text-sm font-medium text-[var(--gold)] hover:underline"
                 >
-                  Katılımcı ekle
+                  Add participant
                 </button>
               </div>
             ) : (
@@ -416,7 +416,7 @@ export function TrainingDetailClient() {
                           token.status === "started" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" :
                           "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
                         }`}>
-                          {token.status === "completed" ? "Tamamladı" : token.status === "started" ? "Başladı" : "Bekliyor"}
+                          {token.status === "completed" ? "Completed" : token.status === "started" ? "Started" : "Pending"}
                         </span>
                         {token.personEmail && <span>{token.personEmail}</span>}
                       </div>
@@ -426,7 +426,7 @@ export function TrainingDetailClient() {
                         onClick={() => copyLink(token.token)}
                         className="rounded-lg px-3 py-1.5 text-xs font-medium text-[var(--gold)] hover:bg-[var(--gold)]/10"
                       >
-                        {copied === token.token ? "Kopyalandı!" : "Link Kopyala"}
+                        {copied === token.token ? "Copied!" : "Copy Link"}
                       </button>
                       {token.personPhone && (
                         <button
@@ -447,7 +447,7 @@ export function TrainingDetailClient() {
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
                 <div className="w-full max-w-lg rounded-2xl bg-[var(--card)] p-6 shadow-2xl max-h-[80vh] overflow-y-auto">
                   <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-[var(--foreground)]">Katılımcı Ekle</h3>
+                    <h3 className="text-lg font-semibold text-[var(--foreground)]">Add Participant</h3>
                     <button onClick={() => setShowTokenModal(false)} className="text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
@@ -456,7 +456,7 @@ export function TrainingDetailClient() {
                   {/* Personnel list */}
                   {personnel.length > 0 && (
                     <div className="mb-4">
-                      <h4 className="mb-2 text-sm font-medium text-[var(--foreground)]">Personel Listesinden Seç</h4>
+                      <h4 className="mb-2 text-sm font-medium text-[var(--foreground)]">Select from Personnel List</h4>
                       <div className="max-h-48 space-y-1 overflow-y-auto rounded-xl border border-[var(--border)] p-2">
                         {personnel.map(p => {
                           const alreadyHasToken = tokens.some(t => t.personnelId === p.id);
@@ -479,7 +479,7 @@ export function TrainingDetailClient() {
                                 className="rounded"
                               />
                               <span className="text-[var(--foreground)]">{p.firstName} {p.lastName}</span>
-                              {alreadyHasToken && <span className="text-xs text-[var(--muted-foreground)]">(zaten eklendi)</span>}
+                              {alreadyHasToken && <span className="text-xs text-[var(--muted-foreground)]">(already added)</span>}
                             </label>
                           );
                         })}
@@ -489,20 +489,20 @@ export function TrainingDetailClient() {
 
                   {/* Manual entry */}
                   <div className="mb-4">
-                    <h4 className="mb-2 text-sm font-medium text-[var(--foreground)]">Manuel Ekle</h4>
+                    <h4 className="mb-2 text-sm font-medium text-[var(--foreground)]">Add Manually</h4>
                     <div className="space-y-2">
                       <input
                         type="text"
                         value={manualName}
                         onChange={e => setManualName(e.target.value)}
-                        placeholder="Ad Soyad"
+                        placeholder="Full name"
                         className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg,#f8f9fa)] px-3 py-2 text-sm"
                       />
                       <input
                         type="email"
                         value={manualEmail}
                         onChange={e => setManualEmail(e.target.value)}
-                        placeholder="E-posta (opsiyonel)"
+                        placeholder="Email (optional)"
                         className="w-full rounded-lg border border-[var(--border)] bg-[var(--page-bg,#f8f9fa)] px-3 py-2 text-sm"
                       />
                     </div>
@@ -513,14 +513,14 @@ export function TrainingDetailClient() {
                       onClick={() => setShowTokenModal(false)}
                       className="flex-1 rounded-xl border border-[var(--border)] py-2.5 text-sm font-medium text-[var(--foreground)]"
                     >
-                      İptal
+                      Cancel
                     </button>
                     <button
                       onClick={handleCreateTokens}
                       disabled={selectedPersonnel.size === 0 && !manualName.trim()}
                       className="flex-1 rounded-xl bg-[var(--gold)] py-2.5 text-sm font-semibold text-white disabled:opacity-50"
                     >
-                      Link Oluştur ({selectedPersonnel.size + (manualName.trim() ? 1 : 0)} kişi)
+                      Create Link ({selectedPersonnel.size + (manualName.trim() ? 1 : 0)} people)
                     </button>
                   </div>
                 </div>
@@ -534,7 +534,7 @@ export function TrainingDetailClient() {
           <div className="space-y-4">
             {!results || results.totalParticipants === 0 ? (
               <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] py-12 text-center">
-                <p className="text-[var(--muted-foreground)]">Henüz sonuç yok</p>
+                <p className="text-[var(--muted-foreground)]">No results yet</p>
               </div>
             ) : (
               <>
@@ -542,21 +542,21 @@ export function TrainingDetailClient() {
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                   <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
                     <div className="text-2xl font-bold">{results.completedCount}/{results.totalParticipants}</div>
-                    <div className="text-xs text-[var(--muted-foreground)]">Tamamlayan</div>
+                    <div className="text-xs text-[var(--muted-foreground)]">Completed</div>
                   </div>
                   {survey.type === "exam" && (
                     <>
                       <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
                         <div className="text-2xl font-bold text-[var(--gold)]">%{results.averageScore ?? 0}</div>
-                        <div className="text-xs text-[var(--muted-foreground)]">Ortalama Puan</div>
+                        <div className="text-xs text-[var(--muted-foreground)]">Average Score</div>
                       </div>
                       <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
                         <div className="text-2xl font-bold text-emerald-600">{results.passCount}</div>
-                        <div className="text-xs text-[var(--muted-foreground)]">Başarılı</div>
+                        <div className="text-xs text-[var(--muted-foreground)]">Passed</div>
                       </div>
                       <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-center">
                         <div className="text-2xl font-bold text-red-600">{results.failCount}</div>
-                        <div className="text-xs text-[var(--muted-foreground)]">Başarısız</div>
+                        <div className="text-xs text-[var(--muted-foreground)]">Failed</div>
                       </div>
                     </>
                   )}
@@ -564,7 +564,7 @@ export function TrainingDetailClient() {
 
                 {/* Question stats */}
                 <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
-                  <h3 className="mb-4 font-semibold text-[var(--foreground)]">Soru Bazlı Analiz</h3>
+                  <h3 className="mb-4 font-semibold text-[var(--foreground)]">Question-Based Analysis</h3>
                   <div className="space-y-4">
                     {results.questionStats.map((qs, i) => (
                       <div key={qs.questionId} className="rounded-xl bg-[var(--page-bg,#f8f9fa)] p-4">
@@ -576,7 +576,7 @@ export function TrainingDetailClient() {
                             <p className="text-sm font-medium text-[var(--foreground)]">{qs.questionText}</p>
                             {qs.correctRate != null && (
                               <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                                Doğru yanıt oranı: <span className="font-semibold text-emerald-600">%{qs.correctRate}</span>
+                                Correct answer rate: <span className="font-semibold text-emerald-600">%{qs.correctRate}</span>
                               </p>
                             )}
                           </div>
@@ -617,30 +617,30 @@ export function TrainingDetailClient() {
             {survey.type === "exam" ? (
               <>
                 <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6">
-                  <h3 className="mb-2 font-semibold text-[var(--foreground)]">Sertifika Üretimi</h3>
+                  <h3 className="mb-2 font-semibold text-[var(--foreground)]">Certificate Generation</h3>
                   <p className="mb-4 text-sm text-[var(--muted-foreground)]">
-                    Sınavı tamamlayan katılımcılar için otomatik sertifika oluşturun.
+                    Generate certificates automatically for participants who completed the exam.
                     {certTemplates.length > 0
-                      ? ` ${certTemplates.length} şablon mevcut.`
-                      : " Henüz şablon yok, önce Sertifikalar sayfasından şablon ekleyin."}
+                      ? ` ${certTemplates.length} templates available.`
+                      : " No templates yet, add one first on the Certificates page."}
                   </p>
                   <div className="flex items-center gap-3">
                     <span className="text-sm text-[var(--foreground)]">
-                      Tamamlayan: <strong>{tokens.filter(t => t.status === "completed").length}</strong> kişi
+                      Completed: <strong>{tokens.filter(t => t.status === "completed").length}</strong> people
                     </span>
                     <button
                       onClick={handleIssueCertificates}
                       disabled={issuingCerts || tokens.filter(t => t.status === "completed").length === 0 || certTemplates.length === 0}
                       className="rounded-xl bg-[var(--gold)] px-5 py-2.5 text-sm font-semibold text-white shadow disabled:opacity-50"
                     >
-                      {issuingCerts ? <ButtonLoader label="Sertifikalar olusturuluyor..." /> : "Sertifika Oluştur"}
+                      {issuingCerts ? <ButtonLoader label="Generating certificates..." /> : "Generate Certificate"}
                     </button>
                   </div>
                 </div>
               </>
             ) : (
               <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] py-12 text-center">
-                <p className="text-[var(--muted-foreground)]">Sertifika üretimi sadece sınavlar için kullanılabilir</p>
+                <p className="text-[var(--muted-foreground)]">Certificate generation is only available for exams</p>
               </div>
             )}
           </div>

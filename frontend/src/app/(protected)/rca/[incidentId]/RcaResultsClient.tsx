@@ -62,13 +62,13 @@ function RcaSectionHeader({
 function formatRelative(date: Date): string {
   const diffMs = Date.now() - date.getTime();
   const sec = Math.max(0, Math.round(diffMs / 1000));
-  if (sec < 5) return "az önce";
-  if (sec < 60) return `${sec} sn önce`;
+  if (sec < 5) return "just now";
+  if (sec < 60) return `${sec}s ago`;
   const min = Math.round(sec / 60);
-  if (min < 60) return `${min} dk önce`;
+  if (min < 60) return `${min}m ago`;
   const hr = Math.round(min / 60);
-  if (hr < 24) return `${hr} sa önce`;
-  return date.toLocaleString("tr-TR");
+  if (hr < 24) return `${hr}h ago`;
+  return date.toLocaleString("en-US");
 }
 
 /**
@@ -97,7 +97,7 @@ function PersistenceBadge({
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-muted/50 px-2.5 py-1 text-xs text-muted-foreground">
         <Loader2 className="size-3 animate-spin" />
-        Önceki kayıt yükleniyor…
+        Loading previous snapshot…
       </span>
     );
   }
@@ -109,7 +109,7 @@ function PersistenceBadge({
         className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-2.5 py-1 text-xs text-amber-700 hover:bg-amber-500/25 dark:text-amber-300"
       >
         <CloudOff className="size-3" />
-        Yükleme hatası — tıkla, şimdi kaydet
+        Load failed — click to save now
       </button>
     );
   }
@@ -118,7 +118,7 @@ function PersistenceBadge({
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 px-2.5 py-1 text-xs text-blue-700 dark:text-blue-300">
         <Loader2 className="size-3 animate-spin" />
-        Kaydediliyor…
+        Saving…
       </span>
     );
   }
@@ -130,7 +130,7 @@ function PersistenceBadge({
         className="inline-flex items-center gap-1.5 rounded-full bg-red-500/15 px-2.5 py-1 text-xs text-red-700 hover:bg-red-500/25 dark:text-red-300"
       >
         <CloudOff className="size-3" />
-        Kayıt başarısız — tekrar dene
+        Save failed — retry
       </button>
     );
   }
@@ -140,10 +140,10 @@ function PersistenceBadge({
       <button
         onClick={onManualSave}
         className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs text-emerald-700 hover:bg-emerald-500/25 dark:text-emerald-300"
-        title="Şimdi yeniden kaydet"
+        title="Save again now"
       >
         <CheckCircle2 className="size-3" />
-        Kaydedildi · {formatRelative(lastSavedAt)}
+        Saved · {formatRelative(lastSavedAt)}
       </button>
     );
   }
@@ -155,7 +155,7 @@ function PersistenceBadge({
       className="inline-flex items-center gap-1.5 rounded-full bg-muted/50 px-2.5 py-1 text-xs text-muted-foreground hover:bg-muted"
     >
       <UploadCloud className="size-3" />
-      Henüz kaydedilmedi — tıkla, kaydet
+      Not saved yet — click to save
     </button>
   );
 }
@@ -239,7 +239,7 @@ export function RcaResultsClient({
         } else {
           const created = await createAnalysis({
             incidentId,
-            incidentTitle: incidentTitle || `Olay ${incidentId}`,
+          incidentTitle: incidentTitle || `Incident ${incidentId}`,
             method: "r2d_rca",
             data: payload,
           });
@@ -278,8 +278,8 @@ export function RcaResultsClient({
         }),
       });
       if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: "Bilinmeyen hata" }));
-        throw new Error(err.error || "AI hatası");
+        const err = await res.json().catch(() => ({ error: "Unknown error" }));
+        throw new Error(err.error || "AI error");
       }
       const data = await res.json();
       if (data?.narrative) {
@@ -288,7 +288,7 @@ export function RcaResultsClient({
         await saveSnapshot(t0, t1, data.narrative);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "AI hatası");
+      setError(e instanceof Error ? e.message : "AI error");
     } finally {
       setNarrativeLoading(false);
     }
@@ -310,8 +310,8 @@ export function RcaResultsClient({
         }),
       });
       if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: "Bilinmeyen hata" }));
-        throw new Error(err.error || "AI hatası");
+        const err = await res.json().catch(() => ({ error: "Unknown error" }));
+        throw new Error(err.error || "AI error");
       }
       const data = await res.json();
       const nextT0 = Array.isArray(data?.t0) && data.t0.length === 9 ? data.t0 : t0;
@@ -323,7 +323,7 @@ export function RcaResultsClient({
       // Anlamlı olay: AI skor üretildi → otomatik kaydet
       await saveSnapshot(nextT0, nextT1, nextNarrative);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "AI hatası");
+      setError(e instanceof Error ? e.message : "AI error");
     } finally {
       setAiScoreLoading(false);
     }
@@ -341,12 +341,12 @@ export function RcaResultsClient({
   return (
     <div className="page-stack">
       <PageHeader
-        title="R₂D-RCA Sonuç Analizi"
-        description="9 boyutlu (C1-C9) kompozit risk metriğine göre kök neden analizi"
+        title="R₂D-RCA Results Analysis"
+        description="Root-cause analysis based on the 9-dimension (C1-C9) composite risk metric"
         meta={
           <div className="flex flex-wrap items-center gap-3 text-sm">
             <Link href={`/incidents/${incidentId}`} className="text-muted-foreground hover:text-foreground">
-              <ArrowLeft className="mr-1 inline size-4" /> Olay Detayına Dön
+              <ArrowLeft className="mr-1 inline size-4" /> Back to Incident Details
             </Link>
             <PersistenceBadge
               loadStatus={loadStatus}
@@ -359,7 +359,7 @@ export function RcaResultsClient({
         actions={
           <Button onClick={generateScores} disabled={aiScoreLoading} variant="accent">
             {aiScoreLoading ? <Loader2 className="mr-1 size-4 animate-spin" /> : <Sparkles className="mr-1 size-4" />}
-            {aiScoreLoading ? "AI skorluyor..." : "AI ile Yeniden Skorla"}
+            {aiScoreLoading ? "AI is scoring..." : "Re-score with AI"}
           </Button>
         }
       />
@@ -377,8 +377,8 @@ export function RcaResultsClient({
       <section aria-labelledby="rca-section-visual" className="space-y-3">
         <RcaSectionHeader
           id="rca-section-visual"
-          title="Görsel özet"
-          subtitle="Risk şiddeti · sapma dağılımı · t₀↔t₁ profili · priority katkı"
+          title="Visual summary"
+          subtitle="Risk severity · deviation distribution · t₀↔t₁ profile · priority contribution"
         />
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <RCAGauge score={result.rRcaScore} />
@@ -394,8 +394,8 @@ export function RcaResultsClient({
       <section aria-labelledby="rca-section-summary" className="space-y-3">
         <RcaSectionHeader
           id="rca-section-summary"
-          title="Üst düzey özet"
-          subtitle="Skor, sapma, teorem durumu — tek bakışta"
+          title="High-level summary"
+          subtitle="Score, deviation, theorem status — at a glance"
         />
         <RCAMetricCards result={result} />
         <RCARootCauseChain categorized={result.categorized} />
@@ -408,8 +408,8 @@ export function RcaResultsClient({
       <section aria-labelledby="rca-section-severity" className="space-y-3">
         <RcaSectionHeader
           id="rca-section-severity"
-          title="Durum ve delta profili"
-          subtitle="Override durumu · bozulan/stabil sayısı · 9-eksenli Δ̂ profili"
+          title="Status and delta profile"
+          subtitle="Override status · degraded/stable counts · 9-axis Δ̂ profile"
         />
         <div className="grid gap-3 md:grid-cols-2">
           <RCAStatusCards
@@ -428,8 +428,8 @@ export function RcaResultsClient({
       <section aria-labelledby="rca-section-dimensions" className="space-y-3">
         <RcaSectionHeader
           id="rca-section-dimensions"
-          title="Boyut detayı"
-          subtitle="Isı haritası (t₀→t₁→Δ) · delta polar dağılımı"
+          title="Dimension detail"
+          subtitle="Heatmap (t₀→t₁→Δ) · delta polar distribution"
         />
         <RCAHeatmap t0={t0} t1={t1} deltaHat={result.deltaHat} />
         <RCAPolarChart priorityRanking={result.priorityRanking} />
@@ -441,8 +441,8 @@ export function RcaResultsClient({
       <section aria-labelledby="rca-section-flow" className="space-y-3">
         <RcaSectionHeader
           id="rca-section-flow"
-          title="Olay akışı"
-          subtitle="Waterfall katkı analizi · zaman çizgisi"
+          title="Incident flow"
+          subtitle="Waterfall contribution analysis · timeline"
         />
         <div className="grid gap-3 lg:grid-cols-2">
           <RCAWaterfallChart priorityRanking={result.priorityRanking} rRcaScore={result.rRcaScore} />
@@ -456,17 +456,17 @@ export function RcaResultsClient({
       <section aria-labelledby="rca-section-ai" className="space-y-3">
         <RcaSectionHeader
           id="rca-section-ai"
-          title="AI değerlendirmesi"
-          subtitle="Claude · teknik analiz · yasal süreç · önlem planı"
+          title="AI assessment"
+          subtitle="Claude · technical analysis · legal process · prevention plan"
         />
         <RCAAINarrative
           narrative={narrative}
           calculationMode={result.calculationMode}
           loading={narrativeLoading}
           onTechnicalAnalysis={() => void fetchNarrative()}
-          onLegalProcess={() => alert("6331 Sayılı Kanun referans çıktısı yakında.")}
-          onPreventionPlan={() => alert("Önlem planı detay çıktısı yakında.")}
-          onExportPdf={() => alert("PDF rapor yakında (r2d-rca-pdf-template ile).")}
+          onLegalProcess={() => alert("Law 6331 reference output coming soon.")}
+          onPreventionPlan={() => alert("Prevention plan detailed output coming soon.")}
+          onExportPdf={() => alert("PDF report coming soon (with r2d-rca-pdf-template).")}
         />
       </section>
     </div>

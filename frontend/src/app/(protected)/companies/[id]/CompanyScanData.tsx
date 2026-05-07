@@ -7,11 +7,11 @@ import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 import { useLiveFieldScanAccess } from "@/lib/hooks/use-live-field-scan-access";
 
 /**
- * CompanyScanData — Firma detay sayfası için canlı saha taraması + risk analizi özeti
+ * CompanyScanData — live field scan + risk analysis summary.
  *
- * Bu firma için yapılan:
- * - scan_sessions (canlı taramalar)
- * - risk_assessments (otomatik + manuel; bulgu detayı tek yerde)
+ * For this company:
+ * - scan_sessions (live scans)
+ * - risk_assessments (automatic + manual; details stay in one place)
  */
 
 type ScanSession = {
@@ -69,7 +69,7 @@ export default function CompanyScanData({ companyId }: { companyId: string }) {
     })();
   }, [companyId]);
 
-  // Dijital İkiz verileri şu an sadece admin'e açık (geliştirme aşaması)
+  // Digital Twin data is currently admin-only (in development)
   if (isAdmin !== true) return null;
 
   if (loading) {
@@ -98,12 +98,12 @@ export default function CompanyScanData({ companyId }: { companyId: string }) {
               <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
             </span>
             <div className="flex-1">
-              <p className="text-xs font-bold text-red-400">🔴 CANLI TARAMA DEVAM EDİYOR</p>
+              <p className="text-xs font-bold text-red-400">🔴 LIVE SCAN IN PROGRESS</p>
               <p className="text-[11px] text-slate-400 mt-0.5">
-                {activeScan.location_name} · {activeScan.total_frames_analyzed || 0} kare · {activeScan.total_risks_found || 0} risk
+                {activeScan.location_name} · {activeScan.total_frames_analyzed || 0} frames · {activeScan.total_risks_found || 0} risks
               </p>
             </div>
-            <span className="text-[10px] text-slate-500">İzle →</span>
+            <span className="text-[10px] text-slate-500">Watch →</span>
           </div>
         </Link>
       )}
@@ -111,31 +111,31 @@ export default function CompanyScanData({ companyId }: { companyId: string }) {
       {/* Stats grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         <div className="rounded-xl border border-border bg-card p-3 text-center">
-          <p className="text-[9px] text-muted-foreground uppercase font-medium">Canlı Tarama</p>
+          <p className="text-[9px] text-muted-foreground uppercase font-medium">Live Scans</p>
           <p className="text-2xl font-bold text-foreground mt-1">{scans.length}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-3 text-center">
-          <p className="text-[9px] text-muted-foreground uppercase font-medium">Risk Analizi</p>
+          <p className="text-[9px] text-muted-foreground uppercase font-medium">Risk Analysis</p>
           <p className="text-2xl font-bold text-foreground mt-1">{assessments.length}</p>
         </div>
         <Link
           href={`/risk-analysis?companyId=${encodeURIComponent(companyId)}`}
           className="rounded-xl border border-border bg-card p-3 text-center transition-colors hover:border-primary/40"
         >
-          <p className="text-[9px] font-medium uppercase text-muted-foreground">Toplam Risk (analiz)</p>
+          <p className="text-[9px] font-medium uppercase text-muted-foreground">Total Risk (analysis)</p>
           <p className="mt-1 text-2xl font-bold text-amber-500">{totalRisks}</p>
-          <p className="mt-1 text-[9px] text-primary">Risk Analizi →</p>
+          <p className="mt-1 text-[9px] text-primary">Risk Analysis →</p>
         </Link>
         <div className="rounded-xl border border-border bg-card p-3 text-center">
-          <p className="text-[9px] text-muted-foreground uppercase font-medium">Analiz Kare</p>
+          <p className="text-[9px] text-muted-foreground uppercase font-medium">Analyzed Frames</p>
           <p className="text-2xl font-bold text-foreground mt-1">{totalFrames}</p>
         </div>
       </div>
 
       <p className="text-[11px] text-muted-foreground">
-        Saha taraması bulgularının tam listesi ve skorlama tek yerde:{" "}
+        The complete live-scan findings list and scoring are in one place:{" "}
         <Link href={`/risk-analysis?companyId=${encodeURIComponent(companyId)}`} className="font-medium text-primary hover:underline">
-          Risk Analizi
+          Risk Analysis
         </Link>
         .
       </p>
@@ -144,15 +144,15 @@ export default function CompanyScanData({ companyId }: { companyId: string }) {
       {scans.length > 0 && (
         <div className="rounded-xl border border-border bg-card p-4">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-xs font-bold text-foreground">📹 Son Canlı Taramalar</h4>
+            <h4 className="text-xs font-bold text-foreground">📹 Recent Live Scans</h4>
             <div className="flex gap-2">
               {canLiveFieldScan ? (
                 <Link href="/live-scan" className="text-[10px] text-primary hover:underline">
-                  Canlı tarama →
+                  Live scan →
                 </Link>
               ) : null}
               <Link href="/digital-twin" className="text-[10px] text-muted-foreground hover:underline">
-                İzleme →
+                Watch →
               </Link>
             </div>
           </div>
@@ -165,15 +165,15 @@ export default function CompanyScanData({ companyId }: { companyId: string }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[11px] font-bold text-foreground truncate">
-                      {s.location_name || "Saha Taraması"}
+                      {s.location_name || "Field Scan"}
                     </p>
                     <p className="text-[9px] text-muted-foreground">
-                      {s.total_frames_analyzed || 0} kare · {s.total_risks_found || 0} risk
+                      {s.total_frames_analyzed || 0} frames · {s.total_risks_found || 0} risks
                     </p>
                   </div>
                 </div>
                 <span className="text-[9px] text-muted-foreground">
-                  {new Date(s.created_at).toLocaleDateString("tr-TR")}
+                  {new Date(s.created_at).toLocaleDateString("en-US")}
                 </span>
               </div>
             ))}
@@ -185,12 +185,12 @@ export default function CompanyScanData({ companyId }: { companyId: string }) {
       {assessments.length > 0 && (
         <div className="rounded-xl border border-border bg-card p-4">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-xs font-bold text-foreground">📋 Risk Analizleri</h4>
+            <h4 className="text-xs font-bold text-foreground">📋 Risk Analyses</h4>
             <Link
               href={`/risk-analysis?companyId=${encodeURIComponent(companyId)}`}
               className="text-[10px] text-primary hover:underline"
             >
-              Tümünü gör →
+              View all →
             </Link>
           </div>
           <div className="space-y-2">
@@ -204,16 +204,16 @@ export default function CompanyScanData({ companyId }: { companyId: string }) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[11px] font-bold text-foreground truncate">
-                        {a.title || "Risk Analizi"}
+                        {a.title || "Risk Analysis"}
                       </p>
                       <p className="text-[9px] text-muted-foreground">
-                        {a.method?.toUpperCase()} · {a.item_count || 0} bulgu
-                        {isAuto && <span className="text-green-500"> · Otomatik</span>}
+                        {a.method?.toUpperCase()} · {a.item_count || 0} findings
+                        {isAuto && <span className="text-green-500"> · Automatic</span>}
                       </p>
                     </div>
                   </div>
                   <span className="text-[9px] text-muted-foreground">
-                    {new Date(a.created_at).toLocaleDateString("tr-TR")}
+                    {new Date(a.created_at).toLocaleDateString("en-US")}
                   </span>
                 </div>
               );

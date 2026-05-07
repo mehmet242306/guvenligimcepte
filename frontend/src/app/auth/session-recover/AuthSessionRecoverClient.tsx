@@ -11,15 +11,15 @@ import {
 
 function toLoginError(message: string | undefined): string {
   if (!message?.trim()) {
-    return "Google girisi tamamlanamadi. Lutfen tekrar deneyin.";
+    return "Google sign-in could not be completed. Please try again.";
   }
   const m = message.trim().slice(0, 240).replace(/\s+/g, " ");
   const lower = m.toLowerCase();
   if (lower.includes("code verifier") || lower.includes("pkce")) {
-    return "Baglanti anahtari bulunamadi (sayfa yenilendi veya www / adres uyumsuz). Google ile tekrar deneyin; mumkunse tek bir adres kullanin.";
+    return "Connection key was not found (page refreshed or www/address mismatch). Try Google sign-in again and use a single domain if possible.";
   }
   if (lower.includes("invalid_grant") || lower.includes("already been used")) {
-    return "Giris baglantisi kullanildi veya suresi doldu. Giris sayfasindan tekrar deneyin.";
+    return "Sign-in link was already used or expired. Please retry from the login page.";
   }
   return m;
 }
@@ -370,7 +370,7 @@ export function AuthSessionRecoverClient({
       }
 
       if (intent === "register") {
-        setMessage("Hesap kurulumu tamamlanıyor...");
+        setMessage("Account setup is being completed...");
         const displayName =
           String(
             data.session.user.user_metadata?.full_name ??

@@ -71,7 +71,7 @@ const defaultSettings: Settings = {
 
 function isWeekend(y: number, m: number, d: number) { const w = new Date(y, m - 1, d).getDay(); return w === 0 || w === 6; }
 function ds(y: number, m: number, d: number) { return `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`; }
-function fmtTL(n: number) { return n.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function fmtTL(n: number) { return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
 function calcGovPayment(hours: number, coef: number, indicator: number, stampRate: number) {
   const hourlyRate = indicator * coef;
@@ -447,7 +447,7 @@ export default function TimesheetClient() {
       </div>
 
       {/* ═══════════════════════════════════════════
-          TAB: Puantaj Grid
+          TAB: Timesheet Grid
       ═══════════════════════════════════════════ */}
       {tab === "grid" && (
         <>
@@ -575,13 +575,13 @@ export default function TimesheetClient() {
             <div className="rounded-[1.25rem] border border-border bg-card p-5 shadow-[var(--shadow-soft)] space-y-3">
               <h3 className="text-sm font-semibold text-foreground">{t("payroll.calculationTitle")}</h3>
               <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-sm sm:grid-cols-4">
-                <div><span className="text-muted-foreground">Gösterge:</span> <span className="font-medium text-foreground">{settings.base_indicator}</span></div>
-                <div><span className="text-muted-foreground">Katsayı:</span> <span className="font-medium text-foreground">{settings.salary_coefficient}</span></div>
-                <div><span className="text-muted-foreground">Saatlik Ücret:</span> <span className="font-medium text-foreground">₺{fmtTL(govPay.hourlyRate)}</span></div>
-                <div><span className="text-muted-foreground">Toplam Saat:</span> <span className="font-medium text-foreground">{grandTotal}</span></div>
-                <div><span className="text-muted-foreground">Brüt Tutar:</span> <span className="font-bold text-foreground">₺{fmtTL(govPay.gross)}</span></div>
-                <div><span className="text-muted-foreground">Damga V. (%{(settings.stamp_tax_rate * 100).toFixed(3)}):</span> <span className="font-medium text-red-600">-₺{fmtTL(govPay.stampTax)}</span></div>
-                <div className="col-span-2"><span className="text-muted-foreground">Net Ödenen:</span> <span className="font-bold text-[#0b5fc1] text-base">₺{fmtTL(govPay.net)}</span></div>
+                <div><span className="text-muted-foreground">Indicator:</span> <span className="font-medium text-foreground">{settings.base_indicator}</span></div>
+                <div><span className="text-muted-foreground">Coefficient:</span> <span className="font-medium text-foreground">{settings.salary_coefficient}</span></div>
+                <div><span className="text-muted-foreground">Hourly Rate:</span> <span className="font-medium text-foreground">₺{fmtTL(govPay.hourlyRate)}</span></div>
+                <div><span className="text-muted-foreground">Total Hours:</span> <span className="font-medium text-foreground">{grandTotal}</span></div>
+                <div><span className="text-muted-foreground">Gross Amount:</span> <span className="font-bold text-foreground">₺{fmtTL(govPay.gross)}</span></div>
+                <div><span className="text-muted-foreground">Stamp Tax (%{(settings.stamp_tax_rate * 100).toFixed(3)}):</span> <span className="font-medium text-red-600">-₺{fmtTL(govPay.stampTax)}</span></div>
+                <div className="col-span-2"><span className="text-muted-foreground">Net Paid:</span> <span className="font-bold text-[#0b5fc1] text-base">₺{fmtTL(govPay.net)}</span></div>
               </div>
             </div>
           )}
@@ -589,7 +589,7 @@ export default function TimesheetClient() {
       )}
 
       {/* ═══════════════════════════════════════════
-          TAB: Arşiv
+          TAB: Archive
       ═══════════════════════════════════════════ */}
       {tab === "archive" && (
         <div className="space-y-4">
@@ -655,7 +655,7 @@ export default function TimesheetClient() {
       )}
 
       {/* ═══════════════════════════════════════════
-          TAB: Ayarlar
+          TAB: Settings
       ═══════════════════════════════════════════ */}
       {tab === "settings" && (
         <div className="max-w-2xl space-y-5">
