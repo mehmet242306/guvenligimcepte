@@ -2629,6 +2629,8 @@
     },
     "company": {
       "anonymousCompany": "Empresa sin nombre",
+      "manageCompanies": "Manage companies",
+      "openWorkspace": "Go to workspace",
       "selectCompany": "Seleccionar empresa",
       "workingCompany": "Empresa de trabajo:",
       "workingCompanyMenu": "Empresa de trabajo"
@@ -5969,7 +5971,8 @@
         "statusArchived": "Archivado",
         "statusCompleted": "Completado",
         "statusDraft": "Borrador",
-        "title": "Gestión de análisis de riesgo"
+        "title": "Gestión de análisis de riesgo",
+        "workspaceSyncHint": "This list defaults to the workspace you selected in the header. Change the workspace there, or pick another company here if you manage several."
       },
       "messages": {
         "analysisComplete": "¡Análisis completado!",

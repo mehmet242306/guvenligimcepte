@@ -27,6 +27,7 @@ import {
 import { usePersistedState, clearPersistedStates } from "@/lib/use-persisted-state";
 import { fetchCompaniesFromSupabase } from "@/lib/supabase/company-api";
 import { createClient } from "@/lib/supabase/client";
+import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
 import {
   calculateR2D,
   calculateFK,
@@ -808,6 +809,8 @@ export function RiskAnalysisClient() {
   const [method, setMethod] = usePersistedState<AnalysisMethod>("risk:method", "r_skor");
 
   const [companies, setCompanies] = useState<CompanyRecord[]>([]);
+  const companiesRef = useRef<CompanyRecord[]>([]);
+  companiesRef.current = companies;
   const [selectedCompanyId, setSelectedCompanyId] = usePersistedState("risk:companyId", "");
 
   useEffect(() => {
@@ -817,21 +820,50 @@ export function RiskAnalysisClient() {
     // Sadece henuz secim yapilmamissa default ata
     setSelectedCompanyId((prev) => prev || fallback[0]?.id || "");
 
-    fetchCompaniesFromSupabase().then((sb) => {
-      if (cancelled) return;
-      if (sb && sb.length > 0) {
-        setCompanies(sb);
-        saveCompanyDirectory(sb);
-        // Sadece mevcut secim listede yoksa degistir
-        setSelectedCompanyId((prev) => {
-          if (prev && sb.find((c) => c.id === prev)) return prev;
-          return sb[0]?.id ?? "";
-        });
+    void (async () => {
+      const sb = await fetchCompaniesFromSupabase();
+      if (cancelled || !sb || sb.length === 0) return;
+      setCompanies(sb);
+      saveCompanyDirectory(sb);
+
+      const urlCompanyId = searchParams.get("companyId");
+      if (urlCompanyId && sb.some((c) => c.id === urlCompanyId)) {
+        setSelectedCompanyId(urlCompanyId);
+        return;
       }
-    });
+
+      const activeWs = await getActiveWorkspace();
+      if (cancelled) return;
+      if (activeWs?.id && sb.some((c) => c.id === activeWs.id)) {
+        setSelectedCompanyId(activeWs.id);
+        return;
+      }
+
+      setSelectedCompanyId((prev) => {
+        if (prev && sb.find((c) => c.id === prev)) return prev;
+        return sb[0]?.id ?? "";
+      });
+    })();
+
     return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    function onActiveWorkspaceChanged() {
+      void (async () => {
+        const ws = await getActiveWorkspace();
+        if (!ws?.id) return;
+        const list = companiesRef.current;
+        if (list.some((c) => c.id === ws.id)) {
+          setSelectedCompanyId(ws.id);
+        }
+      })();
+    }
+
+    window.addEventListener("risknova:active-workspace-changed", onActiveWorkspaceChanged);
+    return () => window.removeEventListener("risknova:active-workspace-changed", onActiveWorkspaceChanged);
+  }, [setSelectedCompanyId]);
 
   // URL'den gelen companyId parametresi — firma sayfasından yönlendirme
   useEffect(() => {
@@ -1070,6 +1102,33 @@ export function RiskAnalysisClient() {
 
   /* ── Derived ── */
   const selectedCompany = useMemo(() => companies.find((c) => c.id === selectedCompanyId) ?? null, [companies, selectedCompanyId]);
+
+  const companyNameDupCounts = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const c of companies) {
+      const key = (c.name ?? "").trim() || (c.shortName ?? "").trim() || c.id;
+      m.set(key, (m.get(key) ?? 0) + 1);
+    }
+    return m;
+  }, [companies]);
+
+  const formatCompanySelectLabel = useCallback(
+    (c: CompanyRecord) => {
+      const name = (c.name ?? "").trim() || (c.shortName ?? "").trim() || "—";
+      const key = (c.name ?? "").trim() || (c.shortName ?? "").trim() || c.id;
+      if ((companyNameDupCounts.get(key) ?? 0) > 1) {
+        const hint =
+          (c.shortName ?? "").trim() &&
+          (c.shortName ?? "").trim() !== (c.name ?? "").trim()
+            ? (c.shortName ?? "").trim()
+            : c.id.slice(0, 8);
+        return `${name} · ${hint}`;
+      }
+      return name;
+    },
+    [companyNameDupCounts],
+  );
+
   const validParticipants = useMemo(() => participants.filter((p) => p.fullName.trim() && p.roleCode.trim()), [participants]);
   const lineMap = useMemo(() => new Map(lines.map((l) => [l.id, l])), [lines]);
   const totalImageCount = useMemo(() => lines.reduce((s, l) => s + l.images.length, 0), [lines]);
@@ -2194,9 +2253,12 @@ JSON formatında döndür:
               >
                 <option value="">{trRiskScoring("wizard.list.companyPlaceholder")}</option>
                 {companies.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id}>{formatCompanySelectLabel(c)}</option>
                 ))}
               </select>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {trRiskScoring("wizard.list.workspaceSyncHint")}
+              </p>
             </div>
             <Button
               type="button"
@@ -2356,7 +2418,9 @@ JSON formatında döndür:
               <label className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step1.company")} <span className="text-red-500">*</span></label>
               <select value={selectedCompanyId} onChange={(e) => { setSelectedCompanyId(e.target.value); setSelectedLocation(""); setSelectedDepartment(""); setSetupMessage(""); setSetupMessageType(""); }} className={selectCls + (!selectedCompanyId ? " !border-amber-400/60 !shadow-[0_0_0_3px_rgba(245,158,11,0.15)]" : "")}>
                 <option value="">{trRiskScoring("wizard.step1.companyPlaceholder")}</option>
-                {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                {companies.map((c) => (
+                  <option key={c.id} value={c.id}>{formatCompanySelectLabel(c)}</option>
+                ))}
               </select>
               {!selectedCompanyId && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">{trRiskScoring("wizard.step1.companyRequired")}</p>}
             </div>

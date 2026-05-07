@@ -2629,6 +2629,8 @@
     },
     "company": {
       "anonymousCompany": "Adsız şirkət",
+      "manageCompanies": "Manage companies",
+      "openWorkspace": "Go to workspace",
       "selectCompany": "Şirkət seç",
       "workingCompany": "İşləyən şirkət:",
       "workingCompanyMenu": "İşləyən şirkət"
@@ -5969,7 +5971,8 @@
         "statusArchived": "Arxivləşdirilmiş",
         "statusCompleted": "Tamamlanmış",
         "statusDraft": "Qaralama",
-        "title": "Risk analizi idarəetməsi"
+        "title": "Risk analizi idarəetməsi",
+        "workspaceSyncHint": "This list defaults to the workspace you selected in the header. Change the workspace there, or pick another company here if you manage several."
       },
       "messages": {
         "analysisComplete": "Analiz tamamlandı!",

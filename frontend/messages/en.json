@@ -4360,7 +4360,8 @@
         "statusDraft": "Draft",
         "findingsCount": "{count} findings",
         "confirmDelete": "Are you sure?",
-        "deleteAnalysis": "Delete"
+        "deleteAnalysis": "Delete",
+        "workspaceSyncHint": "This list defaults to the workspace you selected in the header. Change the workspace there, or pick another company here if you manage several."
       },
       "header": {
         "wizardTitle": "Visual risk analysis",

@@ -2629,6 +2629,8 @@
     },
     "company": {
       "anonymousCompany": "شركة غير مسماة",
+      "manageCompanies": "Manage companies",
+      "openWorkspace": "Go to workspace",
       "selectCompany": "اختر الشركة",
       "workingCompany": "الشركة العاملة:",
       "workingCompanyMenu": "الشركة العاملة"
@@ -5969,7 +5971,8 @@
         "statusArchived": "مؤرشف",
         "statusCompleted": "مكتمل",
         "statusDraft": "مسودة",
-        "title": "إدارة تحليل المخاطر"
+        "title": "إدارة تحليل المخاطر",
+        "workspaceSyncHint": "This list defaults to the workspace you selected in the header. Change the workspace there, or pick another company here if you manage several."
       },
       "messages": {
         "analysisComplete": "اكتمل التحليل!",

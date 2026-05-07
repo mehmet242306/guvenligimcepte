@@ -4360,7 +4360,8 @@
         "statusDraft": "Taslak",
         "findingsCount": "{count} tespit",
         "confirmDelete": "Emin misin?",
-        "deleteAnalysis": "Sil"
+        "deleteAnalysis": "Sil",
+        "workspaceSyncHint": "Liste, üstteki çalışma alanı seçiminizle aynı firmayı otomatik seçer. Ortamı oradan değiştirebilir veya birden fazla firmanız varsa buradan başka bir firma seçebilirsiniz."
       },
       "header": {
         "wizardTitle": "Görsel Tabanlı Risk Analizi",

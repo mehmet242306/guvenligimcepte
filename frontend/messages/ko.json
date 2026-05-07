@@ -2629,6 +2629,8 @@
     },
     "company": {
       "anonymousCompany": "이름 없는 회사",
+      "manageCompanies": "Manage companies",
+      "openWorkspace": "Go to workspace",
       "selectCompany": "회사 선택",
       "workingCompany": "작업 회사:",
       "workingCompanyMenu": "작업 회사"
@@ -5969,7 +5971,8 @@
         "statusArchived": "보관됨",
         "statusCompleted": "완료됨",
         "statusDraft": "임시저장",
-        "title": "위험 분석 관리"
+        "title": "위험 분석 관리",
+        "workspaceSyncHint": "This list defaults to the workspace you selected in the header. Change the workspace there, or pick another company here if you manage several."
       },
       "messages": {
         "analysisComplete": "분석 완료!",

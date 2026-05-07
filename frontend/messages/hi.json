@@ -2629,6 +2629,8 @@
     },
     "company": {
       "anonymousCompany": "अनाम कंपनी",
+      "manageCompanies": "Manage companies",
+      "openWorkspace": "Go to workspace",
       "selectCompany": "कंपनी चुनें",
       "workingCompany": "कार्यरत कंपनी:",
       "workingCompanyMenu": "कार्यरत कंपनी"
@@ -5969,7 +5971,8 @@
         "statusArchived": "संग्रहीत",
         "statusCompleted": "पूर्ण",
         "statusDraft": "मसौदा",
-        "title": "जोखिम विश्लेषण प्रबंधन"
+        "title": "जोखिम विश्लेषण प्रबंधन",
+        "workspaceSyncHint": "This list defaults to the workspace you selected in the header. Change the workspace there, or pick another company here if you manage several."
       },
       "messages": {
         "analysisComplete": "विश्लेषण पूर्ण!",
