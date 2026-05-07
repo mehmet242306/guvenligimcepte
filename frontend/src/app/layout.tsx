@@ -48,10 +48,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/logo/risknova-favicon-64.svg", type: "image/svg+xml" },
-      { url: "/logo/risknova-mail-symbol.png", sizes: "1000x1000", type: "image/png" },
+      { url: "/logo/risknova-app-icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/logo/risknova-app-icon-512.png", sizes: "512x512", type: "image/png" },
     ],
-    apple: [{ url: "/logo/risknova-mail-symbol.png", sizes: "1000x1000", type: "image/png" }],
+    apple: [{ url: "/logo/risknova-app-icon-512.png", sizes: "512x512", type: "image/png" }],
   },
   other: {
     "mobile-web-app-capable": "yes",
