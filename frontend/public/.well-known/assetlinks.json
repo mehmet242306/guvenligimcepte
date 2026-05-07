@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.risknova.mobile",
+    "sha256_cert_fingerprints": ["FC:14:51:1B:9C:EA:3F:D6:4F:47:89:F9:50:F2:28:5F:3C:A7:8F:2F:CC:D1:68:1A:49:B1:38:53:E5:E5:64:5D"]
+  }
+}]
