@@ -48,6 +48,7 @@ import {
   type CompanyLibraryItemRecord,
   type LibraryContentRecord,
 } from "@/lib/supabase/isg-library-api";
+import { fetchCompaniesFromSupabase } from "@/lib/supabase/company-api";
 import type { DocumentRecord } from "@/lib/supabase/document-api";
 import { cn } from "@/lib/utils";
 
@@ -65,6 +66,7 @@ type SortKey = "newest" | "oldest" | "az" | "za";
 
 type CompanyOption = {
   id: string;
+  legacyCompanyId?: string;
   name: string;
   sector: string;
   hazardClass: string;
@@ -882,22 +884,30 @@ export function IsgLibraryClient() {
         return;
       }
 
-      const [rolesResponse, workspaceResponse, libraryResponse, documentsResponse, surveysResponse, myDecksResponse, orgDecksResponse] = await Promise.all([
+      const [rolesResponse, companyRows, libraryResponse, documentsResponse, surveysResponse, myDecksResponse, orgDecksResponse] = await Promise.all([
         supabase.from("user_roles").select("roles(code)").eq("user_profile_id", profile.id),
         supabase
           .from("company_workspaces")
           .select(`
-            display_name,
+            id,
             company_identity_id,
+            display_name,
             company_identities!inner(
               id,
               official_name,
               sector,
               hazard_class,
-              city
+              city,
+              is_active,
+              is_archived,
+              deleted_at
             )
           `)
           .eq("organization_id", profile.organization_id)
+          .eq("is_archived", false)
+          .eq("company_identities.is_active", true)
+          .eq("company_identities.is_archived", false)
+          .is("company_identities.deleted_at", null)
           .order("display_name", { ascending: true }),
         fetchLibraryContents(),
         fetchDocuments(profile.organization_id),
@@ -914,9 +924,10 @@ export function IsgLibraryClient() {
         return rolesValue?.code ? [rolesValue.code] : [];
       });
 
-      const accessibleCompanies = ((workspaceResponse.data ?? []) as Array<{
+      const accessibleCompanies = ((companyRows.data ?? []) as Array<{
+        id: string;
         display_name: string | null;
-        company_identity_id: string;
+        company_identity_id: string | null;
         company_identities:
           | {
               id: string;
@@ -939,17 +950,47 @@ export function IsgLibraryClient() {
 
         if (!identity) return [];
 
+        const nameFromWorkspace = row.display_name?.trim();
+        const isPlaceholderName = nameFromWorkspace
+          ? /^yeni firma\s*\/\s*kurum$/i.test(nameFromWorkspace)
+          : false;
+        const preferredName =
+          !isPlaceholderName && nameFromWorkspace
+            ? nameFromWorkspace
+            : identity.official_name || nameFromWorkspace || t("company.anonymousCompany");
+
         return [{
-          id: identity.id ?? row.company_identity_id,
-          name: identity.official_name || row.display_name || t("company.anonymousCompany"),
+          id: row.id,
+          legacyCompanyId: row.company_identity_id ?? undefined,
+          name: preferredName,
           sector: identity.sector || "",
           hazardClass: identity.hazard_class || "",
           city: identity.city || "",
         }];
       });
 
-      const companyIds = accessibleCompanies.map((item) => item.id);
+      const fallbackCompanies = await fetchCompaniesFromSupabase();
+      const normalizedCompanies =
+        accessibleCompanies.length > 0
+          ? accessibleCompanies
+          : (fallbackCompanies ?? []).map((company) => ({
+              id: company.id,
+              legacyCompanyId: undefined,
+              name: company.shortName?.trim() || company.name || t("company.anonymousCompany"),
+              sector: company.sector || "",
+              hazardClass: company.hazardClass || "",
+              city: company.city || "",
+            }));
+
+      const companyIds = normalizedCompanies.flatMap((item) =>
+        item.legacyCompanyId ? [item.id, item.legacyCompanyId] : [item.id],
+      );
       const savedRows = await fetchCompanyLibraryItems(companyIds);
+      const normalizedSavedRows = savedRows.map((row) => {
+        const match = normalizedCompanies.find((company) => company.legacyCompanyId === row.company_id);
+        if (!match) return row;
+        return { ...row, company_id: match.id };
+      });
       const legacyCatalogItems: UnifiedLibraryItem[] = [
         ...DOCUMENT_GROUPS.flatMap((group) => {
           const matchingDocs = documentsResponse.filter((doc) => doc.group_key === group.key);
@@ -1035,11 +1076,11 @@ export function IsgLibraryClient() {
           fullName: profile.full_name || user.email || t("user.defaultDisplayName"),
           canManageCatalog: roleCodes.some((code) => MANAGE_ROLE_CODES.has(code)),
         });
-        setCompanies(accessibleCompanies);
+        setCompanies(normalizedCompanies);
         setContents(libraryResponse);
         setDocuments(documentsResponse);
         setLegacyItems(legacyCatalogItems);
-        setSavedItems(savedRows);
+        setSavedItems(normalizedSavedRows);
         setLoading(false);
       }
     }
@@ -1898,6 +1939,24 @@ export function IsgLibraryClient() {
                     </div>
                   </div>
                 ) : null}
+              </div>
+              <div className="mt-2 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    router.push(creationCompanyId ? `/workspace/${creationCompanyId}` : "/workspace/onboarding")
+                  }
+                  className="inline-flex h-8 items-center rounded-xl border border-border/80 bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
+                >
+                  {t("company.openWorkspace")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/companies")}
+                  className="inline-flex h-8 items-center rounded-xl border border-border/80 bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
+                >
+                  {t("company.manageCompanies")}
+                </button>
               </div>
             </div>
 

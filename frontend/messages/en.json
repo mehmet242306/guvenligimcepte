@@ -1479,7 +1479,9 @@
       "workingCompany": "Working company:",
       "workingCompanyMenu": "Working company",
       "selectCompany": "Select company",
-      "anonymousCompany": "Unnamed company"
+      "anonymousCompany": "Unnamed company",
+      "openWorkspace": "Go to workspace",
+      "manageCompanies": "Manage companies"
     },
     "savedToggle": "Saved to my companies",
     "filters": {

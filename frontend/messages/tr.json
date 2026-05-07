@@ -1479,7 +1479,9 @@
       "workingCompany": "Çalışılan firma:",
       "workingCompanyMenu": "Çalışılan Firma",
       "selectCompany": "Firma seçin",
-      "anonymousCompany": "İsimsiz Firma"
+      "anonymousCompany": "İsimsiz Firma",
+      "openWorkspace": "Çalışma alanına git",
+      "manageCompanies": "Firmaları yönet"
     },
     "savedToggle": "Firmama Kaydedilenler",
     "filters": {

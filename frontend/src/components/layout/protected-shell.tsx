@@ -837,9 +837,35 @@ export function ProtectedShell({
 
       if (cancelled) return;
 
-      if (activeWorkspace?.id) {
+      const activeWorkspaceId = activeWorkspace?.id ?? null;
+      const activeWorkspaceStillReachable = activeWorkspaceId
+        ? memberships.some((membership) => membership.workspace.id === activeWorkspaceId)
+        : false;
+
+      if (activeWorkspaceId && (memberships.length === 0 || activeWorkspaceStillReachable)) {
         setHasActiveWorkspace(true);
         setWorkspaceReady(true);
+        return;
+      }
+
+      // Active workspace may become stale (archived/deleted or membership removed).
+      // In that case, automatically recover to the first reachable workspace.
+      if (activeWorkspaceId && !activeWorkspaceStillReachable && memberships.length > 0) {
+        const fallbackMembership = memberships[0];
+        setLocalWorkspaceContext({
+          id: fallbackMembership.workspace.id,
+          organizationId: fallbackMembership.workspace.organization_id,
+          countryCode: fallbackMembership.workspace.country_code,
+          name: fallbackMembership.workspace.name,
+          defaultLanguage: fallbackMembership.workspace.default_language,
+          timezone: fallbackMembership.workspace.timezone,
+          roleKey: fallbackMembership.role_key,
+          certificationId: fallbackMembership.certification_id ?? null,
+          isPrimary: fallbackMembership.is_primary,
+        });
+        setHasActiveWorkspace(true);
+        setWorkspaceReady(true);
+        void setActiveWorkspace(fallbackMembership.workspace.id);
         return;
       }
 
