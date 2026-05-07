@@ -12,6 +12,7 @@ const PUBLIC_PATHS = [
   "/reset-password",
   "/pricing",
   "/privacy",
+  "/delete-account",
   "/terms",
   "/refund-policy",
   // PWA: SW/manifest must be same-origin 200 — redirects break registration (SecurityError).

@@ -26,6 +26,10 @@ export async function PublicLegalFooter() {
           <Link href="/cookie-policy" className="font-medium text-foreground underline-offset-4 hover:underline">
             {t("footerCookie")}
           </Link>
+          {" · "}
+          <Link href="/delete-account" className="font-medium text-foreground underline-offset-4 hover:underline">
+            Hesap silme
+          </Link>
           .
         </p>
       </div>

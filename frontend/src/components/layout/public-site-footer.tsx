@@ -24,6 +24,9 @@ export async function PublicLegalBar() {
           <Link href="/refund-policy" className="text-muted-foreground underline-offset-4 hover:underline">
             {t("footerRefund")}
           </Link>
+          <Link href="/delete-account" className="text-muted-foreground underline-offset-4 hover:underline">
+            Hesap silme
+          </Link>
         </nav>
         <p className="text-xs text-muted-foreground">© 2026 RiskNova</p>
       </div>
@@ -56,6 +59,7 @@ export async function PublicSiteFooter() {
         { label: t("footerTerms"), href: "/terms" },
         { label: t("footerCookie"), href: "/cookie-policy" },
         { label: t("footerRefund"), href: "/refund-policy" },
+        { label: "Hesap silme", href: "/delete-account" },
       ],
     },
     {
@@ -124,6 +128,9 @@ export async function PublicSiteFooter() {
               </Link>
               <Link href="/refund-policy" className={linkClass}>
                 {t("footerRefund")}
+              </Link>
+              <Link href="/delete-account" className={linkClass}>
+                Hesap silme
               </Link>
             </nav>
           </div>
