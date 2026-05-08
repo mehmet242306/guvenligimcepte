@@ -1016,8 +1016,8 @@ export function ProtectedShell({
           className="relative z-10"
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
-          <div className="mx-auto flex w-full max-w-[1480px] items-center justify-between gap-x-2 px-3 py-1.5 sm:gap-x-3 sm:px-5 xl:px-8 2xl:px-10 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:justify-normal">
-            <div className="min-w-0">
+          <div className="mx-auto flex w-full max-w-[1480px] items-center justify-between gap-x-2 px-3 py-1.5 sm:gap-x-3 sm:px-5 xl:px-8 2xl:px-10 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:justify-normal">
+            <div className="min-w-0 justify-self-start">
               <Brand href={homeHref} inverted compact className="gap-2" />
             </div>
 
@@ -1064,7 +1064,7 @@ export function ProtectedShell({
               </div>
             </nav>
 
-            <div className="flex min-w-0 shrink-0 items-center justify-end gap-0.5 sm:gap-1.5">
+            <div className="flex min-w-0 shrink-0 items-center justify-end gap-0.5 justify-self-end sm:gap-1.5">
               <LanguageSelector variant="dark" />
               {showNotificationBell ? <NotificationBell /> : null}
               <ThemeToggle />

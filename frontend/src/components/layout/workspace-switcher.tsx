@@ -33,11 +33,15 @@ type WorkspaceSwitcherProps = {
   menuAlign?: "left" | "right";
 };
 
+type SwitcherMembership = WorkspaceMembership & {
+  companyLabel?: string | null;
+};
+
 function mergeByWorkspaceId(
-  primary: WorkspaceMembership[],
-  secondary: WorkspaceMembership[],
-): WorkspaceMembership[] {
-  const byId = new Map<string, WorkspaceMembership>();
+  primary: SwitcherMembership[],
+  secondary: SwitcherMembership[],
+): SwitcherMembership[] {
+  const byId = new Map<string, SwitcherMembership>();
   for (const item of [...primary, ...secondary]) {
     const id = item.workspace?.id;
     if (!id) continue;
@@ -46,7 +50,7 @@ function mergeByWorkspaceId(
   return Array.from(byId.values());
 }
 
-async function fetchOnboardingMemberships(): Promise<WorkspaceMembership[]> {
+async function fetchOnboardingMemberships(): Promise<SwitcherMembership[]> {
   try {
     const headers: HeadersInit = {};
     const supabase = createClient();
@@ -73,6 +77,10 @@ async function fetchOnboardingMemberships(): Promise<WorkspaceMembership[]> {
             roleKey?: string;
             certificationId?: string | null;
             isPrimary?: boolean;
+            companyProfile?: {
+              shortName?: string | null;
+              name?: string | null;
+            } | null;
             workspace?: WorkspaceRow | WorkspaceRow[] | null;
           }>;
         })
@@ -92,9 +100,10 @@ async function fetchOnboardingMemberships(): Promise<WorkspaceMembership[]> {
           certification_id: row.certificationId ?? null,
           is_primary: row.isPrimary ?? false,
           joined_at: now,
-        } satisfies WorkspaceMembership;
+          companyLabel: row.companyProfile?.shortName ?? row.companyProfile?.name ?? null,
+        } satisfies SwitcherMembership;
       })
-      .filter((row): row is WorkspaceMembership => !!row);
+      .filter((row): row is SwitcherMembership => !!row);
   } catch {
     return [];
   }
@@ -113,7 +122,7 @@ export function WorkspaceSwitcher({
   const [loading, setLoading] = useState(true);
   const [switching, setSwitching] = useState(false);
   const [active, setActive] = useState<WorkspaceRow | null>(null);
-  const [memberships, setMemberships] = useState<WorkspaceMembership[]>([]);
+  const [memberships, setMemberships] = useState<SwitcherMembership[]>([]);
   const [error, setError] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -125,9 +134,15 @@ export function WorkspaceSwitcher({
       fetchOnboardingMemberships(),
       getActiveWorkspace(),
     ]);
+    const listWithFallbackLabels: SwitcherMembership[] = list.map((row) => ({
+      ...row,
+      companyLabel: row.workspace.name,
+    }));
     const merged = mergeByWorkspaceId(onboardingList, list);
-    const ordered = [...merged].sort((a, b) =>
-      a.workspace.name.localeCompare(b.workspace.name, "tr", { sensitivity: "base" }),
+    const ordered = [...mergeByWorkspaceId(merged, listWithFallbackLabels)].sort((a, b) =>
+      (a.companyLabel ?? a.workspace.name).localeCompare((b.companyLabel ?? b.workspace.name), "tr", {
+        sensitivity: "base",
+      }),
     );
     setMemberships(ordered);
     setActive(current);
@@ -297,8 +312,10 @@ export function WorkspaceSwitcher({
                 {t("noWorkspace")}
               </div>
             ) : (
-              memberships.map(({ workspace, is_primary }) => {
+              memberships.map(({ workspace, is_primary, companyLabel }) => {
                 const isActiveRow = workspace.id === active?.id;
+                const visibleName = companyLabel?.trim() || workspace.name;
+                const showWorkspaceSubtitle = visibleName !== workspace.name;
                 return (
                   <button
                     key={workspace.id}
@@ -319,7 +336,7 @@ export function WorkspaceSwitcher({
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <p className="truncate text-sm font-semibold">{workspace.name}</p>
+                        <p className="truncate text-sm font-semibold">{visibleName}</p>
                         {isActiveRow ? (
                           <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
                             {t("active")}
@@ -327,6 +344,7 @@ export function WorkspaceSwitcher({
                         ) : null}
                       </div>
                       <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
+                        {showWorkspaceSubtitle ? `Calisma alani: ${workspace.name} · ` : ""}
                         {countryName(workspace.country_code)}
                         {is_primary ? " · varsayilan" : ""}
                       </p>

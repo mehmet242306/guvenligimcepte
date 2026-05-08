@@ -101,7 +101,7 @@ export function ActiveCompanyBar() {
       style={{ borderColor: "var(--border)", background: "var(--card)" }}
     >
       <div className="mx-auto w-full min-w-0 max-w-[1480px] px-3 sm:px-6 xl:px-8 2xl:px-10">
-        <div className="no-scrollbar flex min-w-0 flex-nowrap items-center gap-x-2 gap-y-0 overflow-x-auto py-2.5 text-[13px] sm:gap-x-3">
+        <div className="no-scrollbar relative flex min-w-0 flex-nowrap items-center gap-x-2 gap-y-0 overflow-visible py-2.5 text-[13px] sm:gap-x-3">
           <div className="flex min-w-0 flex-1 items-center gap-x-2 overflow-visible sm:gap-x-3 md:gap-x-4">
             {/* Logo + firma adı = çalışma alanı seçici (tek isim, ayrı dropdown yok) */}
             <WorkspaceSwitcher
