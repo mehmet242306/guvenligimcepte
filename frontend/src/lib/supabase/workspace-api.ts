@@ -282,6 +282,24 @@ export async function setActiveWorkspace(workspaceId: string): Promise<boolean> 
     return local?.workspace.id === workspaceId;
   }
 
+  try {
+    const response = await fetch("/api/workspaces/switch", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ workspaceId }),
+    });
+
+    if (response.ok) {
+      if (isBrowser()) {
+        window.dispatchEvent(new CustomEvent("risknova:active-workspace-changed"));
+      }
+      return true;
+    }
+  } catch {
+    // API fallback below
+  }
+
   const supabase = createClient();
   if (!supabase) return false;
 
