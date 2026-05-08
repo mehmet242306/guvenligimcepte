@@ -26,7 +26,6 @@ import {
 } from "@/lib/supabase/workspace-api";
 import { filterNavItemsForJurisdiction } from "@/lib/workspace/jurisdiction";
 import {
-  hasManagedOsgbAccount,
   resolveClientAccountSurface,
   type AccountContextPayload,
 } from "@/lib/account/account-api";
@@ -314,19 +313,19 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 /* ------------------------------------------------------------------ */
 function ThemeToggle() {
   const { t } = useI18n();
-  const [dark, setDark] = useState(false);
-  const mountedRef = useRef(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const stored = localStorage.getItem("risknova-theme");
+    return (
+      stored === "dark" ||
+      (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
+  });
 
   useEffect(() => {
-    const stored = localStorage.getItem("risknova-theme");
-    const isDark =
-      stored === "dark" ||
-      (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    setDark(isDark);
-    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
-    document.documentElement.classList.toggle("dark", isDark);
-    mountedRef.current = true;
-  }, []);
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
 
   function toggle() {
     const root = document.documentElement;
@@ -371,7 +370,17 @@ function NotificationBell() {
     setUnreadCount(data.filter((n) => !n.is_read).length);
   }, []);
 
-  useEffect(() => { void loadNotifications(); }, [loadNotifications]);
+  useEffect(() => {
+    let cancelled = false;
+    void listMyNotifications(10).then((data) => {
+      if (cancelled) return;
+      setNotifications(data);
+      setUnreadCount(data.filter((n) => !n.is_read).length);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Periodically refresh (every 30s)
   useEffect(() => {
