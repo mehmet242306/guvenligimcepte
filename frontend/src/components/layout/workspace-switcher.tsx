@@ -34,7 +34,7 @@ type WorkspaceSwitcherProps = {
 };
 
 type SwitcherMembership = WorkspaceMembership & {
-  companyLabel?: string | null;
+  companyLabel: string | null;
 };
 
 function mergeByWorkspaceId(
@@ -138,7 +138,7 @@ export function WorkspaceSwitcher({
       ...row,
       companyLabel: row.workspace.name,
     }));
-    const merged = mergeByWorkspaceId(onboardingList, list);
+    const merged = mergeByWorkspaceId(onboardingList, listWithFallbackLabels);
     const ordered = [...mergeByWorkspaceId(merged, listWithFallbackLabels)].sort((a, b) =>
       (a.companyLabel ?? a.workspace.name).localeCompare((b.companyLabel ?? b.workspace.name), "tr", {
         sensitivity: "base",
