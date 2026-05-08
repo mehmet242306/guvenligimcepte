@@ -53,7 +53,10 @@ export function WorkspaceSwitcher({
     setLoading(true);
     setError(null);
     const [list, current] = await Promise.all([listMyWorkspaces(), getActiveWorkspace()]);
-    setMemberships(list);
+    const ordered = [...list].sort((a, b) =>
+      a.workspace.name.localeCompare(b.workspace.name, "tr", { sensitivity: "base" }),
+    );
+    setMemberships(ordered);
     setActive(current);
     setLoading(false);
   }, []);
@@ -116,7 +119,9 @@ export function WorkspaceSwitcher({
   const activeLabel = active ? active.name : t("noWorkspace");
   const activeCountry = active?.country_code ?? "--";
 
-  if (!loading && memberships.length === 0) {
+  // Özel tetikleyici (firma şeridi): üyelik listesi boş olsa da kontrol görünsün;
+  // aksi halde kullanıcı çalışma alanı seçemez ve şerit eksik kalır.
+  if (!renderTrigger && !loading && memberships.length === 0) {
     return null;
   }
 
@@ -212,6 +217,10 @@ export function WorkspaceSwitcher({
             {loading ? (
               <div className="px-5 py-8 text-center text-sm text-muted-foreground">
                 {t("loading")}
+              </div>
+            ) : memberships.length === 0 ? (
+              <div className="px-5 py-6 text-center text-sm text-muted-foreground">
+                {t("noWorkspace")}
               </div>
             ) : (
               memberships.map(({ workspace, is_primary }) => {

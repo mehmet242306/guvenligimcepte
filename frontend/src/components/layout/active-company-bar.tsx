@@ -55,7 +55,6 @@ export function ActiveCompanyBar() {
 
     async function load() {
       const seq = ++loadSeq;
-      setLoaded(false);
       const ws = await getActiveWorkspace();
       if (canceled || seq !== loadSeq) return;
       if (!ws?.id) {
@@ -65,7 +64,9 @@ export function ActiveCompanyBar() {
         return;
       }
       setWorkspaceRow(ws);
-      setProfile(null);
+      // Önceki firmaya ait rozetleri göstermemek için yalnızca workspace değişince sıfırla;
+      // loaded=false yapmıyoruz — şerit workspace değişiminde kaybolup yanıp sönmesin.
+      setProfile((prev) => (prev?.workspaceId === ws.id ? prev : null));
       const p = await fetchCompanyProfile(ws.id);
       if (canceled || seq !== loadSeq) return;
       setProfile(p);
