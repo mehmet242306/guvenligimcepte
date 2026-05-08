@@ -27,7 +27,7 @@ export function CertificatesClient() {
   const searchParams = useSearchParams();
   const companyIdParam = searchParams.get("companyId") ?? "";
   const fromLibrary = searchParams.get("library") === "1";
-  const librarySection = searchParams.get("librarySection") ?? "education";
+  const librarySection = searchParams.get("librarySection") ?? "documentation";
   const [tab, setTab] = useState<Tab>("templates");
   const [certificates, setCertificates] = useState<CertificateRecord[]>([]);
   const [loading, setLoading] = useState(true);

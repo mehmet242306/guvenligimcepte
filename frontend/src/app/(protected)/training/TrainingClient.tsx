@@ -41,7 +41,9 @@ export function TrainingClient() {
   const locale = useLocale();
   const initialCompanyId = searchParams.get("companyId") ?? undefined;
   const fromLibrary = searchParams.get("library") === "1";
-  const librarySection = searchParams.get("librarySection") ?? "education";
+  // After the ISG Library redesign, "education" is no longer a library category;
+  // default the back-link to "documentation" so users land somewhere useful.
+  const librarySection = searchParams.get("librarySection") ?? "documentation";
   const [surveys, setSurveys] = useState<SurveyRecord[]>([]);
   const [libraryItems, setLibraryItems] = useState<LibraryContentRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -170,9 +172,11 @@ export function TrainingClient() {
     return buildTrainingHref("/training/new", params);
   };
 
+  // İSG Library no longer carries education/assessment categories; those flows
+  // live entirely inside `/training`. Only keep a back-link to documentation.
   const libraryBackHref = buildTrainingHref("/isg-library", { view: "browse", section: librarySection });
-  const libraryEducationHref = buildTrainingHref("/isg-library", { category: "education" });
-  const libraryAssessmentHref = buildTrainingHref("/isg-library", { category: "assessment" });
+  const libraryEducationHref = "/training";
+  const libraryAssessmentHref = "/training";
   const embeddedLibraryItems = libraryItems
     .filter((item) => normalizeLibraryCategory(item.category) === libraryTab)
     .slice(0, 6);

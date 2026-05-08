@@ -34,7 +34,7 @@ export function SlideLibraryClient() {
   const searchParams = useSearchParams();
   const companyIdParam = searchParams.get("companyId") ?? "";
   const fromLibrary = searchParams.get("library") === "1";
-  const librarySection = searchParams.get("librarySection") ?? "education";
+  const librarySection = searchParams.get("librarySection") ?? "documentation";
   const [tab, setTab] = useState<TabKey>("my");
   const [myDecks, setMyDecks] = useState<SlideDeck[]>([]);
   const [orgDecks, setOrgDecks] = useState<SlideDeck[]>([]);

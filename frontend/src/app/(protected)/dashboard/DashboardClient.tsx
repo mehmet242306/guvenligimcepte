@@ -483,7 +483,7 @@ export function DashboardClient() {
               <QuickAction icon={FileText} label={t('quickLibrary')} href="/isg-library?section=documentation" tone="cobalt" />
               <QuickAction icon={AlertTriangle} label={t('quickIncident')} href="/incidents" tone="amber" />
               <QuickAction icon={Calendar} label={t('quickPlanner')} href="/planner" tone="emerald" />
-              <QuickAction icon={GraduationCap} label={t('quickEducation')} href="/isg-library?section=education" tone="teal" />
+              <QuickAction icon={GraduationCap} label={t('quickEducation')} href="/training" tone="teal" />
               <QuickAction icon={BarChart3} label={t('quickReports')} href="/reports" tone="indigo" />
               <QuickAction icon={Building2} label={t('quickCompanies')} href="/companies" tone="orange" />
               <QuickAction icon={ClipboardCheck} label={t('quickFieldAudit')} href="/score-history" tone="plum" />
@@ -613,21 +613,21 @@ export function DashboardClient() {
                 icon={GraduationCap}
                 label={t('moduleTraining')}
                 desc={t('moduleTrainingDesc')}
-                href="/isg-library?section=education"
+                href="/training"
                 tone="teal"
               />
               <ModuleLink
                 icon={PenTool}
                 label={t('moduleAssessment')}
                 desc={t('moduleAssessmentDesc')}
-                href="/isg-library?section=assessment"
+                href="/training"
                 tone="indigo"
               />
               <ModuleLink
                 icon={Download}
                 label={t('moduleLegal')}
                 desc={t('moduleLegalDesc')}
-                href="/isg-library?section=legal"
+                href="/settings?tab=mevzuat"
                 tone="gold"
               />
             </div>

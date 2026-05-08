@@ -1,33 +1,50 @@
 "use client";
 
+/**
+ * ISG Library — operational template hub.
+ *
+ * Re-architected to behave less like a document repository and more like a
+ * starter / template / institutional-memory surface that:
+ *  - never shows an empty screen (starter cards seeded per category)
+ *  - drops categories that already have their own modules (Eğitim, Sınav&Anket,
+ *    Form&Checklist, Mevzuat) and redirects legacy URLs to those modules
+ *  - lets users create their own main categories (Hastane Operasyonları,
+ *    Kimyasal Güvenlik, Yaşlı Bakım Merkezi …) saved in localStorage
+ *  - wires AI-draft starters into the document editor's existing Nova flow
+ *    (`/documents/new?ai=1&aiPrompt=…`) so the AI assistant can pick them up
+ *  - keeps the existing premium look (gold rim, soft shadows, rounded shells)
+ */
+
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { JSONContent } from "@tiptap/react";
 import {
+  ArrowUpRight,
+  Boxes,
+  Briefcase,
   Building2,
   Check,
   ChevronDown,
   ClipboardCheck,
   Download,
   Eye,
-  FileBadge,
-  FileCheck2,
-  FilePenLine,
   FileText,
+  FilePenLine,
   Filter,
-  GraduationCap,
   LayoutGrid,
-  Link2,
-  Scale,
-  ScrollText,
-  Search,
-  Siren,
-  Trash2,
-  Video,
-  X,
   Plus,
+  Search,
+  ScrollText,
+  ShieldAlert,
+  Siren,
+  Sparkles,
+  Trash2,
+  Upload,
+  Users,
+  Workflow,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -37,9 +54,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DOCUMENT_GROUPS, getGroupByKey } from "@/lib/document-groups";
 import { getTemplate } from "@/lib/document-templates-p1";
 import { createClient } from "@/lib/supabase/client";
-import { deleteDocument, fetchDocuments } from "@/lib/supabase/document-api";
-import { deleteDeck, fetchOrgDecks, fetchMyDecks } from "@/lib/supabase/slide-deck-api";
-import { deleteSurvey, fetchSurveys } from "@/lib/supabase/survey-api";
+import { deleteDocument, fetchDocuments, type DocumentRecord } from "@/lib/supabase/document-api";
 import {
   assignLibraryContentToCompany,
   fetchCompanyLibraryItems,
@@ -49,18 +64,60 @@ import {
   type LibraryContentRecord,
 } from "@/lib/supabase/isg-library-api";
 import { fetchCompaniesFromSupabase } from "@/lib/supabase/company-api";
-import type { DocumentRecord } from "@/lib/supabase/document-api";
 import { cn } from "@/lib/utils";
+import {
+  ALL_CATEGORY_LABEL,
+  BUILTIN_CATEGORIES,
+  CATEGORY_TONE_CLASSES,
+  CUSTOM_CATEGORY_STORAGE_KEY,
+  LEGACY_SECTION_REDIRECTS,
+  STARTER_TEMPLATES,
+  librarySlugify,
+  pickLocalized,
+  type BuiltinCategoryKey,
+  type CategoryIconKey,
+  type CategoryKey,
+  type CustomCategoryRecord,
+  type LibraryCategoryDefinition,
+  type StarterAction,
+} from "./library-config";
 
-type CategoryKey =
-  | "all"
-  | "documentation"
-  | "education"
-  | "assessment"
-  | "forms"
-  | "emergency"
-  | "instructions"
-  | "legal";
+const CATEGORY_ICONS: Record<CategoryIconKey, LucideIcon> = {
+  FileText,
+  Siren,
+  ScrollText,
+  Briefcase,
+  Workflow,
+  ShieldAlert,
+  ClipboardCheck,
+  Boxes,
+  Sparkles,
+  Users,
+};
+
+const ISG_LIBRARY_DATE_LOCALE: Record<string, string> = {
+  tr: "tr-TR",
+  en: "en-US",
+  ar: "ar-SA",
+  ru: "ru-RU",
+  de: "de-DE",
+  fr: "fr-FR",
+  es: "es-ES",
+  zh: "zh-CN",
+  ja: "ja-JP",
+  ko: "ko-KR",
+  hi: "hi-IN",
+  az: "az-AZ",
+  id: "id-ID",
+};
+
+const MANAGE_ROLE_CODES = new Set([
+  "super_admin",
+  "platform_admin",
+  "organization_admin",
+  "osgb_manager",
+  "ohs_specialist",
+]);
 
 type SortKey = "newest" | "oldest" | "az" | "za";
 
@@ -80,24 +137,41 @@ type UserContext = {
   canManageCatalog: boolean;
 };
 
-type UnifiedLibraryItem = {
+type ItemFlags = {
+  ai?: boolean;
+  corporate?: boolean;
+  user?: boolean;
+  operation?: boolean;
+  risk?: boolean;
+  audit?: boolean;
+  process?: boolean;
+};
+
+type LibraryItem = {
   id: string;
+  category: CategoryKey;
+  customCategoryId?: string;
   title: string;
   description: string;
-  category: Exclude<CategoryKey, "all">;
-  subcategory: string;
   contentType: string;
-  tags: string[];
-  sector: string[];
+  sectorTags: string[];
+  flags: ItemFlags;
+  usageCount: number;
+  source: "starter" | "catalog" | "document";
   createdAt: string;
-  viewHref: string | null;
-  downloadHref: string | null;
-  libraryContentId: string | null;
-  sourceKind: "catalog" | "template" | "survey" | "deck" | "document";
-  sourceId: string | null;
-  sourceOwnerId: string | null;
+  /** Single primary action (open / use). */
+  primaryAction: StarterAction | { kind: "open"; href: string };
+  /** Optional secondary action — usually a download. */
+  downloadHref?: string | null;
+  /** For catalog items, this is the row id used by `assign-to-company`. */
+  libraryContentId?: string | null;
+  /** For editor-saved documents, this is the document id. */
+  documentId?: string | null;
+  ownerId?: string | null;
+  /** When set, the card shows the source's underlying TipTap template id. */
   templateId?: string | null;
-  usageCount?: number;
+  /** When set, indicates a document group (used for downloads / preview). */
+  groupKey?: string | null;
 };
 
 type PreviewState = {
@@ -106,2365 +180,49 @@ type PreviewState = {
   content: JSONContent | null;
 } | null;
 
-type CategoryDefinition = {
-  key: CategoryKey;
-  label: string;
-  icon: LucideIcon;
-  subcategories: string[];
+type AiPromptDraft = {
+  category: CategoryKey;
+  prompt: string;
+  title: string;
 };
 
-type CustomSubcategoryMap = Partial<Record<Exclude<CategoryKey, "all">, string[]>>;
+type DeleteMode = "starter-hide" | "company" | "document";
 
-type DeleteMode = "source" | "company" | "template";
+const STARTER_HIDE_STORAGE_KEY = "risknova:isg-library:hidden-starters:v1";
 
-type CategoryTone = {
-  tabActive: string;
-  tabIdle: string;
-  sidebarActive: string;
-  sidebarIdle: string;
-  sidebarBadge: string;
-  panel: string;
-  card: string;
-  cardAccent: string;
-  metaBadge: string;
-  countBadge: string;
-  viewButton: string;
-  downloadButton: string;
-  editButton: string;
-  assignButton: string;
-};
-
-const CATEGORY_TONES: Record<CategoryKey, CategoryTone> = {
-  all: {
-    tabActive: "border-slate-300 bg-gradient-to-br from-slate-100 via-white to-amber-100 text-slate-950 shadow-[0_18px_45px_rgba(15,23,42,0.14)] dark:border-slate-500/35 dark:from-slate-800 dark:via-slate-900 dark:to-amber-950/50 dark:text-white",
-    tabIdle: "border-slate-200 bg-white/80 text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-slate-400/35 dark:hover:bg-white/10 dark:hover:text-white",
-    sidebarActive: "border-slate-300 bg-gradient-to-r from-slate-100 to-amber-100 text-slate-950 shadow-[0_16px_34px_rgba(15,23,42,0.12)] dark:border-slate-500/35 dark:from-slate-800 dark:to-amber-950/55 dark:text-white",
-    sidebarIdle: "border-slate-200 bg-white/80 text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10",
-    sidebarBadge: "border-slate-200 bg-white text-slate-700 dark:border-white/10 dark:bg-white/10 dark:text-slate-200",
-    panel: "border-slate-200 bg-gradient-to-br from-white via-slate-50 to-amber-50/40 dark:border-white/10 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950",
-    card: "border-slate-200 bg-gradient-to-br from-white via-slate-50 to-amber-50/40 hover:border-slate-300 dark:border-white/10 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:hover:border-slate-400/30",
-    cardAccent: "bg-slate-400 dark:bg-slate-300",
-    metaBadge: "border-slate-200 bg-slate-50 text-slate-700 dark:border-white/10 dark:bg-white/10 dark:text-slate-200",
-    countBadge: "border-slate-200 bg-slate-50 text-slate-700 dark:border-white/10 dark:bg-white/10 dark:text-slate-200",
-    viewButton: "border-sky-200 bg-sky-50 text-sky-800 hover:border-sky-300 hover:bg-sky-100 dark:border-sky-400/20 dark:bg-sky-400/10 dark:text-sky-200 dark:hover:bg-sky-400/15",
-    downloadButton: "border-emerald-200 bg-emerald-50 text-emerald-800 hover:border-emerald-300 hover:bg-emerald-100 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200 dark:hover:bg-emerald-400/15",
-    editButton: "border-amber-200 bg-amber-50 text-amber-800 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-200 dark:hover:bg-amber-400/15",
-    assignButton: "bg-gradient-to-r from-slate-800 to-amber-700 text-white hover:brightness-110 dark:from-amber-500 dark:to-orange-500 dark:text-slate-950",
-  },
-  documentation: {
-    tabActive: "border-amber-300 bg-gradient-to-br from-amber-200 via-yellow-300 to-orange-300 text-slate-950 shadow-[0_18px_45px_rgba(217,119,6,0.24)] dark:border-amber-300/60 dark:from-amber-500 dark:via-yellow-500 dark:to-orange-500 dark:text-slate-950",
-    tabIdle: "border-amber-200/70 bg-amber-50/80 text-amber-800 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-200 dark:hover:bg-amber-400/15",
-    sidebarActive: "border-amber-300 bg-gradient-to-r from-amber-200 via-yellow-200 to-orange-200 text-amber-950 shadow-[0_16px_34px_rgba(217,119,6,0.18)] dark:border-amber-300/40 dark:from-amber-500/25 dark:via-yellow-500/20 dark:to-orange-500/20 dark:text-amber-100",
-    sidebarIdle: "border-amber-200/70 bg-amber-50/80 text-amber-900 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-400/15 dark:bg-amber-400/10 dark:text-amber-100 dark:hover:bg-amber-400/15",
-    sidebarBadge: "border-amber-200 bg-amber-100 text-amber-800 dark:border-amber-400/20 dark:bg-amber-400/15 dark:text-amber-100",
-    panel: "border-amber-200/80 bg-gradient-to-br from-white via-amber-50/60 to-orange-50/40 dark:border-amber-400/15 dark:from-slate-950 dark:via-amber-950/20 dark:to-slate-950",
-    card: "border-amber-200/80 bg-gradient-to-br from-white via-amber-50/55 to-orange-50/40 hover:border-amber-300 dark:border-amber-400/15 dark:from-slate-950 dark:via-amber-950/20 dark:to-slate-950 dark:hover:border-amber-400/30",
-    cardAccent: "bg-gradient-to-b from-amber-400 to-orange-400",
-    metaBadge: "border-amber-200 bg-amber-100/80 text-amber-800 dark:border-amber-400/20 dark:bg-amber-400/15 dark:text-amber-100",
-    countBadge: "border-amber-200 bg-amber-100 text-amber-900 dark:border-amber-400/20 dark:bg-amber-400/15 dark:text-amber-100",
-    viewButton: "border-sky-200 bg-sky-50 text-sky-800 hover:border-sky-300 hover:bg-sky-100 dark:border-sky-400/20 dark:bg-sky-400/10 dark:text-sky-200 dark:hover:bg-sky-400/15",
-    downloadButton: "border-emerald-200 bg-emerald-50 text-emerald-800 hover:border-emerald-300 hover:bg-emerald-100 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200 dark:hover:bg-emerald-400/15",
-    editButton: "border-amber-300 bg-amber-100 text-amber-900 hover:border-amber-400 hover:bg-amber-200 dark:border-amber-400/25 dark:bg-amber-400/15 dark:text-amber-100 dark:hover:bg-amber-400/20",
-    assignButton: "bg-gradient-to-r from-amber-600 to-orange-500 text-white hover:brightness-110 dark:from-amber-400 dark:to-orange-400 dark:text-slate-950",
-  },
-  education: {
-    tabActive: "border-sky-300 bg-gradient-to-br from-sky-200 via-cyan-200 to-blue-300 text-slate-950 shadow-[0_18px_45px_rgba(14,165,233,0.22)] dark:border-sky-300/50 dark:from-sky-500 dark:via-cyan-500 dark:to-blue-500 dark:text-slate-950",
-    tabIdle: "border-sky-200/70 bg-sky-50/80 text-sky-800 hover:border-sky-300 hover:bg-sky-100 dark:border-sky-400/20 dark:bg-sky-400/10 dark:text-sky-200 dark:hover:bg-sky-400/15",
-    sidebarActive: "border-sky-300 bg-gradient-to-r from-sky-200 to-blue-200 text-sky-950 shadow-[0_16px_34px_rgba(14,165,233,0.16)] dark:border-sky-300/35 dark:from-sky-500/25 dark:to-blue-500/20 dark:text-sky-100",
-    sidebarIdle: "border-sky-200/70 bg-sky-50/80 text-sky-900 hover:border-sky-300 hover:bg-sky-100 dark:border-sky-400/15 dark:bg-sky-400/10 dark:text-sky-100 dark:hover:bg-sky-400/15",
-    sidebarBadge: "border-sky-200 bg-sky-100 text-sky-800 dark:border-sky-400/20 dark:bg-sky-400/15 dark:text-sky-100",
-    panel: "border-sky-200/80 bg-gradient-to-br from-white via-sky-50/60 to-blue-50/40 dark:border-sky-400/15 dark:from-slate-950 dark:via-sky-950/20 dark:to-slate-950",
-    card: "border-sky-200/80 bg-gradient-to-br from-white via-sky-50/55 to-blue-50/40 hover:border-sky-300 dark:border-sky-400/15 dark:from-slate-950 dark:via-sky-950/20 dark:to-slate-950 dark:hover:border-sky-400/30",
-    cardAccent: "bg-gradient-to-b from-sky-400 to-blue-500",
-    metaBadge: "border-sky-200 bg-sky-100/80 text-sky-800 dark:border-sky-400/20 dark:bg-sky-400/15 dark:text-sky-100",
-    countBadge: "border-sky-200 bg-sky-100 text-sky-900 dark:border-sky-400/20 dark:bg-sky-400/15 dark:text-sky-100",
-    viewButton: "border-sky-200 bg-sky-50 text-sky-800 hover:border-sky-300 hover:bg-sky-100 dark:border-sky-400/20 dark:bg-sky-400/10 dark:text-sky-200 dark:hover:bg-sky-400/15",
-    downloadButton: "border-cyan-200 bg-cyan-50 text-cyan-800 hover:border-cyan-300 hover:bg-cyan-100 dark:border-cyan-400/20 dark:bg-cyan-400/10 dark:text-cyan-200 dark:hover:bg-cyan-400/15",
-    editButton: "border-blue-200 bg-blue-50 text-blue-800 hover:border-blue-300 hover:bg-blue-100 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-200 dark:hover:bg-blue-400/15",
-    assignButton: "bg-gradient-to-r from-sky-600 to-blue-600 text-white hover:brightness-110 dark:from-sky-400 dark:to-blue-400 dark:text-slate-950",
-  },
-  assessment: {
-    tabActive: "border-violet-300 bg-gradient-to-br from-violet-200 via-fuchsia-200 to-purple-300 text-slate-950 shadow-[0_18px_45px_rgba(124,58,237,0.22)] dark:border-violet-300/50 dark:from-violet-500 dark:via-fuchsia-500 dark:to-purple-500 dark:text-white",
-    tabIdle: "border-violet-200/70 bg-violet-50/80 text-violet-800 hover:border-violet-300 hover:bg-violet-100 dark:border-violet-400/20 dark:bg-violet-400/10 dark:text-violet-200 dark:hover:bg-violet-400/15",
-    sidebarActive: "border-violet-300 bg-gradient-to-r from-violet-200 to-fuchsia-200 text-violet-950 shadow-[0_16px_34px_rgba(124,58,237,0.16)] dark:border-violet-300/35 dark:from-violet-500/25 dark:to-fuchsia-500/20 dark:text-violet-100",
-    sidebarIdle: "border-violet-200/70 bg-violet-50/80 text-violet-900 hover:border-violet-300 hover:bg-violet-100 dark:border-violet-400/15 dark:bg-violet-400/10 dark:text-violet-100 dark:hover:bg-violet-400/15",
-    sidebarBadge: "border-violet-200 bg-violet-100 text-violet-800 dark:border-violet-400/20 dark:bg-violet-400/15 dark:text-violet-100",
-    panel: "border-violet-200/80 bg-gradient-to-br from-white via-violet-50/60 to-fuchsia-50/40 dark:border-violet-400/15 dark:from-slate-950 dark:via-violet-950/20 dark:to-slate-950",
-    card: "border-violet-200/80 bg-gradient-to-br from-white via-violet-50/55 to-fuchsia-50/40 hover:border-violet-300 dark:border-violet-400/15 dark:from-slate-950 dark:via-violet-950/20 dark:to-slate-950 dark:hover:border-violet-400/30",
-    cardAccent: "bg-gradient-to-b from-violet-400 to-fuchsia-500",
-    metaBadge: "border-violet-200 bg-violet-100/80 text-violet-800 dark:border-violet-400/20 dark:bg-violet-400/15 dark:text-violet-100",
-    countBadge: "border-violet-200 bg-violet-100 text-violet-900 dark:border-violet-400/20 dark:bg-violet-400/15 dark:text-violet-100",
-    viewButton: "border-violet-200 bg-violet-50 text-violet-800 hover:border-violet-300 hover:bg-violet-100 dark:border-violet-400/20 dark:bg-violet-400/10 dark:text-violet-200 dark:hover:bg-violet-400/15",
-    downloadButton: "border-fuchsia-200 bg-fuchsia-50 text-fuchsia-800 hover:border-fuchsia-300 hover:bg-fuchsia-100 dark:border-fuchsia-400/20 dark:bg-fuchsia-400/10 dark:text-fuchsia-200 dark:hover:bg-fuchsia-400/15",
-    editButton: "border-purple-200 bg-purple-50 text-purple-800 hover:border-purple-300 hover:bg-purple-100 dark:border-purple-400/20 dark:bg-purple-400/10 dark:text-purple-200 dark:hover:bg-purple-400/15",
-    assignButton: "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:brightness-110 dark:from-violet-400 dark:to-fuchsia-400 dark:text-white",
-  },
-  forms: {
-    tabActive: "border-emerald-300 bg-gradient-to-br from-emerald-200 via-teal-200 to-green-300 text-slate-950 shadow-[0_18px_45px_rgba(16,185,129,0.22)] dark:border-emerald-300/50 dark:from-emerald-500 dark:via-teal-500 dark:to-green-500 dark:text-slate-950",
-    tabIdle: "border-emerald-200/70 bg-emerald-50/80 text-emerald-800 hover:border-emerald-300 hover:bg-emerald-100 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200 dark:hover:bg-emerald-400/15",
-    sidebarActive: "border-emerald-300 bg-gradient-to-r from-emerald-200 to-teal-200 text-emerald-950 shadow-[0_16px_34px_rgba(16,185,129,0.16)] dark:border-emerald-300/35 dark:from-emerald-500/25 dark:to-teal-500/20 dark:text-emerald-100",
-    sidebarIdle: "border-emerald-200/70 bg-emerald-50/80 text-emerald-900 hover:border-emerald-300 hover:bg-emerald-100 dark:border-emerald-400/15 dark:bg-emerald-400/10 dark:text-emerald-100 dark:hover:bg-emerald-400/15",
-    sidebarBadge: "border-emerald-200 bg-emerald-100 text-emerald-800 dark:border-emerald-400/20 dark:bg-emerald-400/15 dark:text-emerald-100",
-    panel: "border-emerald-200/80 bg-gradient-to-br from-white via-emerald-50/60 to-teal-50/40 dark:border-emerald-400/15 dark:from-slate-950 dark:via-emerald-950/20 dark:to-slate-950",
-    card: "border-emerald-200/80 bg-gradient-to-br from-white via-emerald-50/55 to-teal-50/40 hover:border-emerald-300 dark:border-emerald-400/15 dark:from-slate-950 dark:via-emerald-950/20 dark:to-slate-950 dark:hover:border-emerald-400/30",
-    cardAccent: "bg-gradient-to-b from-emerald-400 to-teal-500",
-    metaBadge: "border-emerald-200 bg-emerald-100/80 text-emerald-800 dark:border-emerald-400/20 dark:bg-emerald-400/15 dark:text-emerald-100",
-    countBadge: "border-emerald-200 bg-emerald-100 text-emerald-900 dark:border-emerald-400/20 dark:bg-emerald-400/15 dark:text-emerald-100",
-    viewButton: "border-emerald-200 bg-emerald-50 text-emerald-800 hover:border-emerald-300 hover:bg-emerald-100 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200 dark:hover:bg-emerald-400/15",
-    downloadButton: "border-teal-200 bg-teal-50 text-teal-800 hover:border-teal-300 hover:bg-teal-100 dark:border-teal-400/20 dark:bg-teal-400/10 dark:text-teal-200 dark:hover:bg-teal-400/15",
-    editButton: "border-lime-200 bg-lime-50 text-lime-800 hover:border-lime-300 hover:bg-lime-100 dark:border-lime-400/20 dark:bg-lime-400/10 dark:text-lime-200 dark:hover:bg-lime-400/15",
-    assignButton: "bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:brightness-110 dark:from-emerald-400 dark:to-teal-400 dark:text-slate-950",
-  },
-  emergency: {
-    tabActive: "border-rose-300 bg-gradient-to-br from-rose-200 via-orange-200 to-red-300 text-slate-950 shadow-[0_18px_45px_rgba(225,29,72,0.22)] dark:border-rose-300/50 dark:from-rose-500 dark:via-orange-500 dark:to-red-500 dark:text-white",
-    tabIdle: "border-rose-200/70 bg-rose-50/80 text-rose-800 hover:border-rose-300 hover:bg-rose-100 dark:border-rose-400/20 dark:bg-rose-400/10 dark:text-rose-200 dark:hover:bg-rose-400/15",
-    sidebarActive: "border-rose-300 bg-gradient-to-r from-rose-200 to-orange-200 text-rose-950 shadow-[0_16px_34px_rgba(225,29,72,0.16)] dark:border-rose-300/35 dark:from-rose-500/25 dark:to-orange-500/20 dark:text-rose-100",
-    sidebarIdle: "border-rose-200/70 bg-rose-50/80 text-rose-900 hover:border-rose-300 hover:bg-rose-100 dark:border-rose-400/15 dark:bg-rose-400/10 dark:text-rose-100 dark:hover:bg-rose-400/15",
-    sidebarBadge: "border-rose-200 bg-rose-100 text-rose-800 dark:border-rose-400/20 dark:bg-rose-400/15 dark:text-rose-100",
-    panel: "border-rose-200/80 bg-gradient-to-br from-white via-rose-50/60 to-orange-50/40 dark:border-rose-400/15 dark:from-slate-950 dark:via-rose-950/20 dark:to-slate-950",
-    card: "border-rose-200/80 bg-gradient-to-br from-white via-rose-50/55 to-orange-50/40 hover:border-rose-300 dark:border-rose-400/15 dark:from-slate-950 dark:via-rose-950/20 dark:to-slate-950 dark:hover:border-rose-400/30",
-    cardAccent: "bg-gradient-to-b from-rose-400 to-red-500",
-    metaBadge: "border-rose-200 bg-rose-100/80 text-rose-800 dark:border-rose-400/20 dark:bg-rose-400/15 dark:text-rose-100",
-    countBadge: "border-rose-200 bg-rose-100 text-rose-900 dark:border-rose-400/20 dark:bg-rose-400/15 dark:text-rose-100",
-    viewButton: "border-rose-200 bg-rose-50 text-rose-800 hover:border-rose-300 hover:bg-rose-100 dark:border-rose-400/20 dark:bg-rose-400/10 dark:text-rose-200 dark:hover:bg-rose-400/15",
-    downloadButton: "border-orange-200 bg-orange-50 text-orange-800 hover:border-orange-300 hover:bg-orange-100 dark:border-orange-400/20 dark:bg-orange-400/10 dark:text-orange-200 dark:hover:bg-orange-400/15",
-    editButton: "border-red-200 bg-red-50 text-red-800 hover:border-red-300 hover:bg-red-100 dark:border-red-400/20 dark:bg-red-400/10 dark:text-red-200 dark:hover:bg-red-400/15",
-    assignButton: "bg-gradient-to-r from-rose-600 to-red-600 text-white hover:brightness-110 dark:from-rose-400 dark:to-red-400 dark:text-white",
-  },
-  instructions: {
-    tabActive: "border-indigo-300 bg-gradient-to-br from-indigo-200 via-blue-200 to-slate-300 text-slate-950 shadow-[0_18px_45px_rgba(79,70,229,0.2)] dark:border-indigo-300/50 dark:from-indigo-500 dark:via-blue-500 dark:to-slate-500 dark:text-white",
-    tabIdle: "border-indigo-200/70 bg-indigo-50/80 text-indigo-800 hover:border-indigo-300 hover:bg-indigo-100 dark:border-indigo-400/20 dark:bg-indigo-400/10 dark:text-indigo-200 dark:hover:bg-indigo-400/15",
-    sidebarActive: "border-indigo-300 bg-gradient-to-r from-indigo-200 to-blue-200 text-indigo-950 shadow-[0_16px_34px_rgba(79,70,229,0.16)] dark:border-indigo-300/35 dark:from-indigo-500/25 dark:to-blue-500/20 dark:text-indigo-100",
-    sidebarIdle: "border-indigo-200/70 bg-indigo-50/80 text-indigo-900 hover:border-indigo-300 hover:bg-indigo-100 dark:border-indigo-400/15 dark:bg-indigo-400/10 dark:text-indigo-100 dark:hover:bg-indigo-400/15",
-    sidebarBadge: "border-indigo-200 bg-indigo-100 text-indigo-800 dark:border-indigo-400/20 dark:bg-indigo-400/15 dark:text-indigo-100",
-    panel: "border-indigo-200/80 bg-gradient-to-br from-white via-indigo-50/60 to-blue-50/40 dark:border-indigo-400/15 dark:from-slate-950 dark:via-indigo-950/20 dark:to-slate-950",
-    card: "border-indigo-200/80 bg-gradient-to-br from-white via-indigo-50/55 to-blue-50/40 hover:border-indigo-300 dark:border-indigo-400/15 dark:from-slate-950 dark:via-indigo-950/20 dark:to-slate-950 dark:hover:border-indigo-400/30",
-    cardAccent: "bg-gradient-to-b from-indigo-400 to-blue-500",
-    metaBadge: "border-indigo-200 bg-indigo-100/80 text-indigo-800 dark:border-indigo-400/20 dark:bg-indigo-400/15 dark:text-indigo-100",
-    countBadge: "border-indigo-200 bg-indigo-100 text-indigo-900 dark:border-indigo-400/20 dark:bg-indigo-400/15 dark:text-indigo-100",
-    viewButton: "border-indigo-200 bg-indigo-50 text-indigo-800 hover:border-indigo-300 hover:bg-indigo-100 dark:border-indigo-400/20 dark:bg-indigo-400/10 dark:text-indigo-200 dark:hover:bg-indigo-400/15",
-    downloadButton: "border-blue-200 bg-blue-50 text-blue-800 hover:border-blue-300 hover:bg-blue-100 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-200 dark:hover:bg-blue-400/15",
-    editButton: "border-slate-200 bg-slate-50 text-slate-800 hover:border-slate-300 hover:bg-slate-100 dark:border-slate-400/20 dark:bg-slate-400/10 dark:text-slate-200 dark:hover:bg-slate-400/15",
-    assignButton: "bg-gradient-to-r from-indigo-600 to-blue-600 text-white hover:brightness-110 dark:from-indigo-400 dark:to-blue-400 dark:text-white",
-  },
-  legal: {
-    tabActive: "border-teal-300 bg-gradient-to-br from-teal-200 via-cyan-200 to-slate-200 text-slate-950 shadow-[0_18px_45px_rgba(20,184,166,0.2)] dark:border-teal-300/50 dark:from-teal-500 dark:via-cyan-500 dark:to-slate-500 dark:text-slate-950",
-    tabIdle: "border-teal-200/70 bg-teal-50/80 text-teal-800 hover:border-teal-300 hover:bg-teal-100 dark:border-teal-400/20 dark:bg-teal-400/10 dark:text-teal-200 dark:hover:bg-teal-400/15",
-    sidebarActive: "border-teal-300 bg-gradient-to-r from-teal-200 to-cyan-200 text-teal-950 shadow-[0_16px_34px_rgba(20,184,166,0.16)] dark:border-teal-300/35 dark:from-teal-500/25 dark:to-cyan-500/20 dark:text-teal-100",
-    sidebarIdle: "border-teal-200/70 bg-teal-50/80 text-teal-900 hover:border-teal-300 hover:bg-teal-100 dark:border-teal-400/15 dark:bg-teal-400/10 dark:text-teal-100 dark:hover:bg-teal-400/15",
-    sidebarBadge: "border-teal-200 bg-teal-100 text-teal-800 dark:border-teal-400/20 dark:bg-teal-400/15 dark:text-teal-100",
-    panel: "border-teal-200/80 bg-gradient-to-br from-white via-teal-50/60 to-cyan-50/40 dark:border-teal-400/15 dark:from-slate-950 dark:via-teal-950/20 dark:to-slate-950",
-    card: "border-teal-200/80 bg-gradient-to-br from-white via-teal-50/55 to-cyan-50/40 hover:border-teal-300 dark:border-teal-400/15 dark:from-slate-950 dark:via-teal-950/20 dark:to-slate-950 dark:hover:border-teal-400/30",
-    cardAccent: "bg-gradient-to-b from-teal-400 to-cyan-500",
-    metaBadge: "border-teal-200 bg-teal-100/80 text-teal-800 dark:border-teal-400/20 dark:bg-teal-400/15 dark:text-teal-100",
-    countBadge: "border-teal-200 bg-teal-100 text-teal-900 dark:border-teal-400/20 dark:bg-teal-400/15 dark:text-teal-100",
-    viewButton: "border-teal-200 bg-teal-50 text-teal-800 hover:border-teal-300 hover:bg-teal-100 dark:border-teal-400/20 dark:bg-teal-400/10 dark:text-teal-200 dark:hover:bg-teal-400/15",
-    downloadButton: "border-cyan-200 bg-cyan-50 text-cyan-800 hover:border-cyan-300 hover:bg-cyan-100 dark:border-cyan-400/20 dark:bg-cyan-400/10 dark:text-cyan-200 dark:hover:bg-cyan-400/15",
-    editButton: "border-slate-200 bg-slate-50 text-slate-800 hover:border-slate-300 hover:bg-slate-100 dark:border-slate-400/20 dark:bg-slate-400/10 dark:text-slate-200 dark:hover:bg-slate-400/15",
-    assignButton: "bg-gradient-to-r from-teal-600 to-cyan-600 text-white hover:brightness-110 dark:from-teal-400 dark:to-cyan-400 dark:text-slate-950",
-  },
-};
-
-const MANAGE_ROLE_CODES = new Set([
-  "super_admin",
-  "platform_admin",
-  "organization_admin",
-  "osgb_manager",
-  "ohs_specialist",
-]);
-
-const ISG_LIBRARY_DATE_LOCALE: Record<string, string> = {
-  tr: "tr-TR",
-  en: "en-US",
-  ar: "ar-SA",
-  ru: "ru-RU",
-  de: "de-DE",
-  fr: "fr-FR",
-  es: "es-ES",
-  zh: "zh-CN",
-  ja: "ja-JP",
-  ko: "ko-KR",
-  hi: "hi-IN",
-  az: "az-AZ",
-  id: "id-ID",
-};
-
-const LEGACY_CATEGORY_SLUG_MAP: Record<string, CategoryKey> = {
-  tumu: "all",
-  dokumantasyon: "documentation",
-  egitim: "education",
-  "sinav-ve-anket": "assessment",
-  "sinav-anket": "assessment",
-  "form-ve-checklist": "forms",
-  formlar: "forms",
-  "acil-durum": "emergency",
-  talimatlar: "instructions",
-  "mevzuat-ve-rehberler": "legal",
-  "mevzuat-rehberler": "legal",
-};
-
-const ALL_CATEGORY_KEYS: CategoryKey[] = [
-  "all",
-  "documentation",
-  "education",
-  "assessment",
-  "forms",
-  "emergency",
-  "instructions",
-  "legal",
+const SECTOR_DEFAULTS: { tr: string; en: string }[] = [
+  { tr: "Genel", en: "General" },
+  { tr: "İmalat", en: "Manufacturing" },
+  { tr: "İnşaat", en: "Construction" },
+  { tr: "Sağlık", en: "Healthcare" },
+  { tr: "Hastane", en: "Hospital" },
+  { tr: "Atölye", en: "Workshop" },
+  { tr: "Saha", en: "Field" },
 ];
 
-/** Legacy URL slugs (Turkish UI era) → index into current locale `subcategories.*` arrays. */
-const LEGACY_SUBCATEGORY_SLUGS: Partial<Record<Exclude<CategoryKey, "all">, readonly string[]>> = {
-  education: ["temel-isg-egitimi", "mesleki-egitim", "acil-durum-egitimi", "yenileme-egitimleri"],
-  assessment: ["sinavlar", "anketler", "degerlendirme-formlari", "olcme-ve-izleme"],
-  forms: ["gunluk-kontroller", "periyodik-kontroller", "denetim-formlari"],
-  emergency: ["acil-durum-planlari", "tahliye", "yangin", "tatbikat", "toplanma-alanlari"],
-  instructions: ["makine-talimatlari", "is-akisi-talimatlari", "kkd-talimatlari", "saha-uygulamalari"],
-};
-
-type SubcategoryLists = {
-  education: string[];
-  assessment: string[];
-  forms: string[];
-  emergency: string[];
-  instructions: string[];
-};
-
-function resolveDocumentationGroupKeyFromSlug(normalizedSlug: string): string {
-  for (const group of DOCUMENT_GROUPS) {
-    if (slugify(group.key) === normalizedSlug || slugify(group.title) === normalizedSlug) {
-      return group.key;
-    }
-  }
-  return "";
-}
-
-function parseSubcategoryFromUrl(
-  value: string | null,
-  category: CategoryKey,
-  lists: SubcategoryLists,
-): string {
-  if (!value || category === "all") return "";
-  const normalized = slugify(value);
-  if (category === "documentation") {
-    return resolveDocumentationGroupKeyFromSlug(normalized);
-  }
-  const list =
-    category === "education"
-      ? lists.education
-      : category === "assessment"
-        ? lists.assessment
-        : category === "forms"
-          ? lists.forms
-          : category === "emergency"
-            ? lists.emergency
-            : category === "instructions"
-              ? lists.instructions
-              : [];
-  const direct = list.find((item) => slugify(item) === normalized);
-  if (direct) return direct;
-  const legacy = LEGACY_SUBCATEGORY_SLUGS[category];
-  if (!legacy?.length) return "";
-  const index = legacy.indexOf(normalized);
-  return index >= 0 ? (list[index] ?? "") : "";
-}
-
-type IsgLibraryTranslator = ReturnType<typeof useTranslations<"isgLibrary">>;
-
-function slugify(value: string) {
-  return value
-    .toLocaleLowerCase("tr-TR")
-    .replace(/ğ/g, "g")
-    .replace(/ü/g, "u")
-    .replace(/ş/g, "s")
-    .replace(/ı/g, "i")
-    .replace(/ö/g, "o")
-    .replace(/ç/g, "c")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-function parseCategory(value: string | null): CategoryKey {
-  if (!value) return "all";
-  const normalized = slugify(value);
-  if ((ALL_CATEGORY_KEYS as string[]).includes(normalized)) {
-    return normalized as CategoryKey;
-  }
-  return LEGACY_CATEGORY_SLUG_MAP[normalized] ?? "all";
-}
-
-function normalizeCategory(value: string | null | undefined): Exclude<CategoryKey, "all"> | null {
-  if (!value) return null;
-  const normalized = slugify(value);
-
-  switch (normalized) {
-    case "documentation":
-    case "dokumantasyon":
-      return "documentation";
-    case "education":
-    case "egitim":
-      return "education";
-    case "assessment":
-    case "sinav-ve-anket":
-    case "sinav-anket":
-      return "assessment";
-    case "forms":
-    case "form-ve-checklist":
-    case "formlar":
-      return "forms";
-    case "emergency":
-    case "acil-durum":
-      return "emergency";
-    case "instructions":
-    case "talimatlar":
-      return "instructions";
-    case "legal":
-    case "mevzuat-ve-rehberler":
-    case "mevzuat-rehberler":
-      return "legal";
-    default:
-      return null;
-  }
-}
-
-function parseSort(value: string | null): SortKey {
+function getSortKey(value: string | null): SortKey {
   if (value === "oldest" || value === "az" || value === "za") return value;
   return "newest";
 }
 
-function getCategoryTone(category: CategoryKey | Exclude<CategoryKey, "all">) {
-  return CATEGORY_TONES[category] ?? CATEGORY_TONES.all;
-}
-
-function getDocumentLibraryCategory(doc: DocumentRecord): Exclude<CategoryKey, "all"> {
-  const rawSection =
-    typeof doc.variables_data?.__library_section === "string" ? doc.variables_data.__library_section : "";
-  const parsedSection = parseCategory(rawSection);
-  if (parsedSection !== "all") return parsedSection;
-  return "documentation";
-}
-
-function getContentTypeMeta(type: string | null, t: IsgLibraryTranslator) {
-  const normalized = (type ?? "").toLowerCase();
-
-  if (normalized.includes("video")) return { label: t("contentTypes.video"), icon: Video };
-  if (normalized.includes("link")) return { label: t("contentTypes.link"), icon: Link2 };
-  if (normalized.includes("doc")) return { label: t("contentTypes.docx"), icon: FileBadge };
-  return { label: (type ?? t("contentTypes.pdf")).toUpperCase(), icon: FileText };
-}
-
-function buildAddContentHref(category: CategoryKey) {
-  switch (category) {
-    case "education":
-      return "/training/slides?ai=1";
-    case "assessment":
-      return "/training/new";
-    case "legal":
-      return "/settings?tab=mevzuat";
-    default:
-      return "/documents/new";
+function readJsonFromStorage<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
   }
 }
 
-function buildDocumentEditorHref(
-  category: CategoryKey,
-  subcategory: string,
-  definitions: CategoryDefinition[],
-  t: IsgLibraryTranslator,
-  options?: {
-    mode?: "new" | "custom";
-    companyId?: string;
-    templateId?: string;
-    title?: string;
-  },
-) {
-  const params = new URLSearchParams();
-  const matchingGroup = DOCUMENT_GROUPS.find(
-    (group) => group.key === subcategory || group.title === subcategory,
-  );
-  const mode = options?.mode ?? "new";
-
-  if (matchingGroup) {
-    params.set("group", matchingGroup.key);
+function writeJsonToStorage(key: string, value: unknown) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* ignore quota / disabled storage */
   }
-
-  if (options?.companyId) {
-    params.set("companyId", options.companyId);
-  }
-
-  if (options?.templateId) {
-    params.set("templateId", options.templateId);
-  }
-
-  params.set("mode", mode);
-  params.set("library", "1");
-  params.set("librarySection", category === "all" ? "documentation" : category);
-
-  const baseTitle =
-    options?.title ||
-    subcategory ||
-    definitions.find((item) => item.key === category)?.label ||
-    t("legacy.newDocument");
-  const titleForParams = mode === "custom" ? `${baseTitle}${t("legacy.draftSuffix")}` : baseTitle;
-  params.set("title", titleForParams);
-
-  return `/documents/new?${params.toString()}`;
-}
-
-function getSubcategoryBadgeMeta(category: CategoryKey, t: IsgLibraryTranslator) {
-  switch (category) {
-    case "documentation":
-      return {
-        label: t("badges.file"),
-        className: "border-sky-200 bg-sky-50 text-sky-700",
-      };
-    case "education":
-      return {
-        label: t("badges.training"),
-        className: "border-emerald-200 bg-emerald-50 text-emerald-700",
-      };
-    case "assessment":
-      return {
-        label: t("badges.flow"),
-        className: "border-violet-200 bg-violet-50 text-violet-700",
-      };
-    case "forms":
-      return {
-        label: t("badges.form"),
-        className: "border-amber-200 bg-amber-50 text-amber-700",
-      };
-    case "emergency":
-      return {
-        label: t("badges.plan"),
-        className: "border-red-200 bg-red-50 text-red-700",
-      };
-    case "instructions":
-      return {
-        label: t("badges.instruction"),
-        className: "border-teal-200 bg-teal-50 text-teal-700",
-      };
-    case "legal":
-      return {
-        label: t("badges.legal"),
-        className: "border-indigo-200 bg-indigo-50 text-indigo-700",
-      };
-    default:
-      return {
-        label: t("badges.category"),
-        className: "border-slate-200 bg-slate-50 text-slate-700",
-      };
-  }
-}
-
-function formatDate(value: string, dateLocale: string) {
-  return new Date(value).toLocaleDateString(dateLocale, {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-function LibraryGridSkeleton() {
-  return (
-    <div className="space-y-6">
-      <Skeleton className="h-52 rounded-[2rem]" />
-      <div className="flex gap-3 overflow-x-auto pb-1">
-        {Array.from({ length: 7 }).map((_, index) => (
-          <Skeleton key={index} className="h-11 min-w-32 rounded-full" />
-        ))}
-      </div>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <Card key={index} className="overflow-hidden border-border/70 bg-card/90">
-            <CardHeader className="space-y-4">
-              <Skeleton className="h-7 w-24 rounded-full" />
-              <Skeleton className="h-7 w-3/4" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Skeleton className="h-6 w-20 rounded-full" />
-                <Skeleton className="h-6 w-24 rounded-full" />
-              </div>
-              <Skeleton className="h-11 w-full rounded-2xl" />
-              <Skeleton className="h-11 w-full rounded-2xl" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function EmptyState(props: {
-  title: string;
-  description: string;
-  canManageCatalog: boolean;
-  addHref: string;
-  addContentLabel: string;
-}) {
-  return (
-    <section className="rounded-[2rem] border border-dashed border-[var(--gold)]/30 bg-card/95 px-6 py-12 text-center shadow-[var(--shadow-card)]">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[1.5rem] border border-[var(--gold)]/25 bg-[var(--gold)]/10 text-[var(--gold)]">
-        <LayoutGrid size={28} />
-      </div>
-      <h2 className="mt-5 text-2xl font-semibold text-foreground">{props.title}</h2>
-      <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-        {props.description}
-      </p>
-      {props.canManageCatalog ? (
-        <div className="mt-6">
-          <Link
-            href={props.addHref}
-            className="inline-flex h-11 items-center justify-center rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-white transition hover:brightness-110"
-          >
-            {props.addContentLabel}
-          </Link>
-        </div>
-      ) : null}
-    </section>
-  );
-}
-
-function AddContentCard(props: {
-  href: string;
-  title: string;
-  description: string;
-  disabled: boolean;
-  onDisabledClick: () => void;
-}) {
-  return (
-    <Link
-      href={props.disabled ? "#" : props.href}
-      onClick={(event) => {
-        if (!props.disabled) return;
-        event.preventDefault();
-        props.onDisabledClick();
-      }}
-      className={cn(
-        "group flex min-h-[280px] flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-[var(--gold)]/55 bg-gradient-to-br from-white via-amber-50/55 to-yellow-50/75 p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--gold)] hover:shadow-[0_22px_55px_rgba(184,134,11,0.18)] dark:border-[#6f5320] dark:from-slate-950 dark:via-amber-950/20 dark:to-slate-950",
-        props.disabled ? "cursor-not-allowed opacity-60 hover:translate-y-0 hover:shadow-sm" : "",
-      )}
-    >
-      <span className="flex h-20 w-20 items-center justify-center rounded-[1.5rem] border border-[var(--gold)]/45 bg-[var(--gold)]/15 text-[var(--gold)] transition group-hover:scale-105">
-        <Plus size={44} strokeWidth={2.4} />
-      </span>
-      <h3 className="mt-5 text-xl font-semibold text-foreground">{props.title}</h3>
-      <p className="mt-2 max-w-[18rem] text-sm leading-6 text-muted-foreground">{props.description}</p>
-    </Link>
-  );
-}
-
-export function IsgLibraryClient() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const t = useTranslations("isgLibrary");
-  const locale = useLocale();
-  const dateLocaleTag = ISG_LIBRARY_DATE_LOCALE[locale] ?? "en-US";
-
-  const initialCategory = parseCategory(searchParams.get("category") ?? searchParams.get("section"));
-
-  const subcategoryLists = useMemo<SubcategoryLists>(
-    () => ({
-      education: (t.raw("subcategories.education") as string[]) ?? [],
-      assessment: (t.raw("subcategories.assessment") as string[]) ?? [],
-      forms: (t.raw("subcategories.forms") as string[]) ?? [],
-      emergency: (t.raw("subcategories.emergency") as string[]) ?? [],
-      instructions: (t.raw("subcategories.instructions") as string[]) ?? [],
-    }),
-    [t],
-  );
-
-  const categoryDefinitions = useMemo<CategoryDefinition[]>(
-    () => [
-      { key: "all", label: t("categories.all"), icon: LayoutGrid, subcategories: [] },
-      {
-        key: "documentation",
-        label: t("categories.documentation"),
-        icon: FileText,
-        subcategories: DOCUMENT_GROUPS.map((group) => group.key),
-      },
-      {
-        key: "education",
-        label: t("categories.education"),
-        icon: GraduationCap,
-        subcategories: subcategoryLists.education,
-      },
-      {
-        key: "assessment",
-        label: t("categories.assessment"),
-        icon: ClipboardCheck,
-        subcategories: subcategoryLists.assessment,
-      },
-      {
-        key: "forms",
-        label: t("categories.forms"),
-        icon: FileCheck2,
-        subcategories: subcategoryLists.forms,
-      },
-      {
-        key: "emergency",
-        label: t("categories.emergency"),
-        icon: Siren,
-        subcategories: subcategoryLists.emergency,
-      },
-      {
-        key: "instructions",
-        label: t("categories.instructions"),
-        icon: ScrollText,
-        subcategories: subcategoryLists.instructions,
-      },
-      {
-        key: "legal",
-        label: t("categories.legal"),
-        icon: Scale,
-        subcategories: [],
-      },
-    ],
-    [t, subcategoryLists],
-  );
-
-  const [category, setCategory] = useState<CategoryKey>(initialCategory);
-  const [subcategory, setSubcategory] = useState(() =>
-    parseSubcategoryFromUrl(searchParams.get("subcategory"), initialCategory, subcategoryLists),
-  );
-  const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
-  const [typeFilter, setTypeFilter] = useState(() => searchParams.get("type") ?? "all");
-  const [sectorFilter, setSectorFilter] = useState(() => searchParams.get("sector") ?? "all");
-  const [sortBy, setSortBy] = useState<SortKey>(() => parseSort(searchParams.get("sort")));
-  const [savedOnly, setSavedOnly] = useState(() => searchParams.get("saved") === "1");
-
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
-
-  const [userContext, setUserContext] = useState<UserContext>({
-    authUserId: null,
-    profileId: null,
-    fullName: t("user.defaultDisplayName"),
-    canManageCatalog: false,
-  });
-  const [companies, setCompanies] = useState<CompanyOption[]>([]);
-  const [contents, setContents] = useState<LibraryContentRecord[]>([]);
-  const [documents, setDocuments] = useState<DocumentRecord[]>([]);
-  const [legacyItems, setLegacyItems] = useState<UnifiedLibraryItem[]>([]);
-  const [savedItems, setSavedItems] = useState<CompanyLibraryItemRecord[]>([]);
-  const [deletedTemplateIds, setDeletedTemplateIds] = useState<string[]>([]);
-
-  const [assignModalOpen, setAssignModalOpen] = useState(false);
-  const [assigning, setAssigning] = useState(false);
-  const [assignContent, setAssignContent] = useState<LibraryContentRecord | null>(null);
-  const [assignCompanyId, setAssignCompanyId] = useState("");
-  const [assignMessage, setAssignMessage] = useState<string | null>(null);
-  const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
-  const [importingDocument, setImportingDocument] = useState(false);
-  const [creationCompanyId, setCreationCompanyId] = useState("");
-  const [companyMenuOpen, setCompanyMenuOpen] = useState(false);
-  const [previewLoading, setPreviewLoading] = useState(false);
-  const [previewState, setPreviewState] = useState<PreviewState>(null);
-  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState("");
-  const [customSubcategories, setCustomSubcategories] = useState<CustomSubcategoryMap>({});
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const companyMenuRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const params = new URLSearchParams();
-
-    if (category !== "all") params.set("category", category);
-    if (subcategory) params.set("subcategory", slugify(subcategory));
-    if (query.trim()) params.set("q", query.trim());
-    if (typeFilter !== "all") params.set("type", typeFilter);
-    if (sectorFilter !== "all") params.set("sector", sectorFilter);
-    if (sortBy !== "newest") params.set("sort", sortBy);
-    if (savedOnly) params.set("saved", "1");
-
-    const nextUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
-    router.replace(nextUrl);
-  }, [category, pathname, query, router, savedOnly, sectorFilter, sortBy, subcategory, typeFilter]);
-
-  useEffect(() => {
-    if (!companies.length) return;
-    setCreationCompanyId((current) =>
-      current && companies.some((company) => company.id === current) ? current : companies[0]?.id ?? "",
-    );
-  }, [companies]);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (!companyMenuRef.current?.contains(event.target as Node)) {
-        setCompanyMenuOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem("risknova:isg-library-custom-subcategories");
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as CustomSubcategoryMap;
-      setCustomSubcategories(parsed);
-    } catch {
-      // Ignore malformed local storage entries.
-    }
-  }, []);
-
-  useEffect(() => {
-    window.localStorage.setItem(
-      "risknova:isg-library-custom-subcategories",
-      JSON.stringify(customSubcategories),
-    );
-  }, [customSubcategories]);
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem("risknova:isg-library-deleted-templates");
-      if (!raw) return;
-      const parsed = JSON.parse(raw);
-      setDeletedTemplateIds(
-        Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [],
-      );
-    } catch {
-      // Ignore malformed local storage entries.
-    }
-  }, []);
-
-  useEffect(() => {
-    window.localStorage.setItem("risknova:isg-library-deleted-templates", JSON.stringify(deletedTemplateIds));
-  }, [deletedTemplateIds]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadPage() {
-      setLoading(true);
-      setErrorMessage(null);
-
-      const assessmentSubs = (t.raw("subcategories.assessment") as string[]) ?? [];
-      const educationSubs = (t.raw("subcategories.education") as string[]) ?? [];
-
-      const supabase = createClient();
-      if (!supabase) {
-        if (!cancelled) {
-          setErrorMessage(t("errors.supabaseConnect"));
-          setLoading(false);
-        }
-        return;
-      }
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        if (!cancelled) {
-          setErrorMessage(t("errors.sessionNotFound"));
-          setLoading(false);
-        }
-        return;
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from("user_profiles")
-        .select("id, organization_id, full_name")
-        .eq("auth_user_id", user.id)
-        .maybeSingle();
-
-      if (profileError || !profile?.organization_id) {
-        if (!cancelled) {
-          setErrorMessage(t("errors.profileLoadFailed"));
-          setLoading(false);
-        }
-        return;
-      }
-
-      const [rolesResponse, companyRows, libraryResponse, documentsResponse, surveysResponse, myDecksResponse, orgDecksResponse] = await Promise.all([
-        supabase.from("user_roles").select("roles(code)").eq("user_profile_id", profile.id),
-        supabase
-          .from("company_workspaces")
-          .select(`
-            id,
-            company_identity_id,
-            display_name,
-            company_identities!inner(
-              id,
-              official_name,
-              sector,
-              hazard_class,
-              city,
-              is_active,
-              is_archived,
-              deleted_at
-            )
-          `)
-          .eq("organization_id", profile.organization_id)
-          .eq("is_archived", false)
-          .eq("company_identities.is_active", true)
-          .eq("company_identities.is_archived", false)
-          .is("company_identities.deleted_at", null)
-          .order("display_name", { ascending: true }),
-        fetchLibraryContents(),
-        fetchDocuments(profile.organization_id),
-        fetchSurveys(profile.organization_id),
-        fetchMyDecks(),
-        fetchOrgDecks(),
-      ]);
-
-      const roleCodes = (rolesResponse.data ?? []).flatMap((item) => {
-        const rolesValue = (item as { roles?: { code?: string } | Array<{ code?: string }> }).roles;
-        if (Array.isArray(rolesValue)) {
-          return rolesValue.map((role) => role.code ?? "").filter(Boolean);
-        }
-        return rolesValue?.code ? [rolesValue.code] : [];
-      });
-
-      const accessibleCompanies = ((companyRows.data ?? []) as Array<{
-        id: string;
-        display_name: string | null;
-        company_identity_id: string | null;
-        company_identities:
-          | {
-              id: string;
-              official_name: string | null;
-              sector: string | null;
-              hazard_class: string | null;
-              city: string | null;
-            }
-          | Array<{
-              id: string;
-              official_name: string | null;
-              sector: string | null;
-              hazard_class: string | null;
-              city: string | null;
-            }>;
-      }>).flatMap((row) => {
-        const identity = Array.isArray(row.company_identities)
-          ? row.company_identities[0]
-          : row.company_identities;
-
-        if (!identity) return [];
-
-        const nameFromWorkspace = row.display_name?.trim();
-        const isPlaceholderName = nameFromWorkspace
-          ? /^yeni firma\s*\/\s*kurum$/i.test(nameFromWorkspace)
-          : false;
-        const preferredName =
-          !isPlaceholderName && nameFromWorkspace
-            ? nameFromWorkspace
-            : identity.official_name || nameFromWorkspace || t("company.anonymousCompany");
-
-        return [{
-          id: row.id,
-          legacyCompanyId: row.company_identity_id ?? undefined,
-          name: preferredName,
-          sector: identity.sector || "",
-          hazardClass: identity.hazard_class || "",
-          city: identity.city || "",
-        }];
-      });
-
-      const fallbackCompanies = await fetchCompaniesFromSupabase();
-      const normalizedCompanies =
-        accessibleCompanies.length > 0
-          ? accessibleCompanies
-          : (fallbackCompanies ?? []).map((company) => ({
-              id: company.id,
-              legacyCompanyId: undefined,
-              name: company.shortName?.trim() || company.name || t("company.anonymousCompany"),
-              sector: company.sector || "",
-              hazardClass: company.hazardClass || "",
-              city: company.city || "",
-            }));
-
-      const companyIds = normalizedCompanies.flatMap((item) =>
-        item.legacyCompanyId ? [item.id, item.legacyCompanyId] : [item.id],
-      );
-      const savedRows = await fetchCompanyLibraryItems(companyIds);
-      const normalizedSavedRows = savedRows.map((row) => {
-        const match = normalizedCompanies.find((company) => company.legacyCompanyId === row.company_id);
-        if (!match) return row;
-        return { ...row, company_id: match.id };
-      });
-      const legacyCatalogItems: UnifiedLibraryItem[] = [
-        ...DOCUMENT_GROUPS.flatMap((group) => {
-          const matchingDocs = documentsResponse.filter((doc) => doc.group_key === group.key);
-
-          return group.items.map((groupItem, index) => ({
-            id: `template-${group.key}-${groupItem.id}`,
-            title: groupItem.title,
-            description: t("templateDescription", {
-              group: t(`documentCatalog.groups.${group.key}.title`),
-              item: t(`documentCatalog.groups.${group.key}.items.${groupItem.id}`),
-            }),
-            category: "documentation" as const,
-            subcategory: group.key,
-            contentType: t("types.template"),
-            tags: [
-              t("legacy.fileNumber", { n: DOCUMENT_GROUPS.findIndex((entry) => entry.key === group.key) + 1 }),
-              groupItem.isP1 ? "P1" : t("legacy.readyStatus"),
-              groupItem.isP2 ? "P2" : t("types.template"),
-            ],
-            sector: [],
-            createdAt: matchingDocs[index]?.updated_at ?? new Date().toISOString(),
-            viewHref: `/documents?group=${group.key}`,
-            downloadHref: null,
-            libraryContentId: null,
-            sourceKind: "template" as const,
-            sourceId: null,
-            sourceOwnerId: null,
-            templateId: groupItem.id,
-          }));
-        }),
-        ...surveysResponse.map((survey) => ({
-          id: `survey-${survey.id}`,
-          title: survey.title,
-          description:
-            survey.description ||
-            t("legacy.surveyFlowSubtitle", {
-              type: survey.type === "exam" ? t("types.exam") : t("types.survey"),
-            }),
-          category: "assessment" as const,
-          subcategory:
-            survey.type === "exam"
-              ? (assessmentSubs[0] ?? t("types.exam"))
-              : (assessmentSubs[1] ?? t("types.survey")),
-          contentType: survey.type === "exam" ? t("types.exam") : t("types.survey"),
-          tags: [
-            survey.status,
-            survey.type === "exam" ? t("surveyTags.measurement") : t("surveyTags.feedback"),
-          ],
-          sector: [],
-          createdAt: survey.updatedAt,
-          viewHref: `/training/${survey.id}`,
-          downloadHref: null,
-          libraryContentId: null,
-          sourceKind: "survey" as const,
-          sourceId: survey.id,
-          sourceOwnerId: survey.createdBy,
-          templateId: null,
-        })),
-        ...[...myDecksResponse, ...orgDecksResponse].map((deck) => ({
-          id: `deck-${deck.id}`,
-          title: deck.title,
-          description: deck.description || t("legacy.deckDefaultDescription"),
-          category: "education" as const,
-          subcategory: educationSubs[1] ?? educationSubs[0] ?? "",
-          contentType: t("types.presentation"),
-          tags: [...(deck.tags ?? [])].slice(0, 3),
-          sector: [],
-          createdAt: deck.updated_at,
-          viewHref: `/training/slides/${deck.id}`,
-          downloadHref: null,
-          libraryContentId: null,
-          sourceKind: "deck" as const,
-          sourceId: deck.id,
-          sourceOwnerId: deck.created_by,
-          templateId: null,
-        })),
-      ];
-
-      if (!cancelled) {
-        setUserContext({
-          authUserId: user.id,
-          profileId: profile.id,
-          fullName: profile.full_name || user.email || t("user.defaultDisplayName"),
-          canManageCatalog: roleCodes.some((code) => MANAGE_ROLE_CODES.has(code)),
-        });
-        setCompanies(normalizedCompanies);
-        setContents(libraryResponse);
-        setDocuments(documentsResponse);
-        setLegacyItems(legacyCatalogItems);
-        setSavedItems(normalizedSavedRows);
-        setLoading(false);
-      }
-    }
-
-    void loadPage();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [t, locale]);
-
-  useEffect(() => {
-    if (!statusMessage) return undefined;
-    const timeout = window.setTimeout(() => setStatusMessage(null), 3200);
-    return () => window.clearTimeout(timeout);
-  }, [statusMessage]);
-
-  const savedContentIds = useMemo(
-    () => new Set(savedItems.map((item) => item.content_id)),
-    [savedItems],
-  );
-
-  const allItems = useMemo<UnifiedLibraryItem[]>(() => {
-    const catalogItems = contents.map((item) => ({
-      id: item.id,
-      title: item.title,
-      description: item.description || t("catalog.noDescriptionShort"),
-      category: normalizeCategory(item.category) ?? "documentation",
-      subcategory: item.subcategory,
-      contentType: item.content_type || "PDF",
-      tags: item.tags ?? [],
-      sector: item.sector ?? [],
-      createdAt: item.created_at,
-      viewHref: item.file_url,
-      downloadHref: item.file_url,
-      libraryContentId: item.id,
-      sourceKind: "catalog" as const,
-      sourceId: item.id,
-      sourceOwnerId: null,
-      templateId: null,
-    }));
-
-    const documentItems = documents.map((doc) => {
-      const docCategory = getDocumentLibraryCategory(doc);
-      const group = getGroupByKey(doc.group_key);
-      const variables = doc.variables_data ?? {};
-      const companyName =
-        typeof variables.official_name === "string"
-          ? variables.official_name
-          : typeof variables.company_name === "string"
-            ? variables.company_name
-            : "";
-
-      return {
-        id: `document-${doc.id}`,
-        title: doc.title,
-        description: companyName
-          ? t("documentCard.descriptionWithCompany", { company: companyName })
-          : t("documentCard.description"),
-        category: docCategory,
-        subcategory: doc.group_key || group?.key || t("types.doc"),
-        contentType: t("types.doc"),
-        tags: [
-          t(`documentCard.status.${doc.status}` as never),
-          t("documentCard.version", { version: doc.version }),
-        ],
-        sector: [],
-        createdAt: doc.updated_at,
-        viewHref: `/documents/${doc.id}?library=1&librarySection=${docCategory}`,
-        downloadHref: null,
-        libraryContentId: null,
-        sourceKind: "document" as const,
-        sourceId: doc.id,
-        sourceOwnerId: doc.created_by ?? null,
-        templateId: doc.template_id,
-      };
-    });
-
-    const deletedTemplates = new Set(deletedTemplateIds);
-    return [
-      ...catalogItems,
-      ...documentItems,
-      ...legacyItems.filter((item) => item.sourceKind !== "template" || !deletedTemplates.has(item.id)),
-    ];
-  }, [contents, deletedTemplateIds, documents, legacyItems, t]);
-
-  const savedCompaniesByContent = useMemo(() => {
-    const map = new Map<string, string[]>();
-
-    for (const item of savedItems) {
-      const current = map.get(item.content_id) ?? [];
-      current.push(item.company_id);
-      map.set(item.content_id, current);
-    }
-
-    return map;
-  }, [savedItems]);
-
-  const templateUsageCounts = useMemo(() => {
-    const map = new Map<string, number>();
-
-    for (const doc of documents) {
-      const key = doc.template_id || `${doc.group_key}::${doc.title}`;
-      map.set(key, (map.get(key) ?? 0) + 1);
-    }
-
-    return map;
-  }, [documents]);
-
-  const typeOptions = useMemo(() => {
-    return Array.from(
-      new Set(
-        allItems
-          .map((item) => item.contentType?.trim())
-          .filter((item): item is string => Boolean(item)),
-      ),
-    ).sort((left, right) => left.localeCompare(right, locale));
-  }, [allItems, locale]);
-
-  const sectorOptions = useMemo(() => {
-    return Array.from(
-      new Set(allItems.flatMap((item) => item.sector ?? []).filter(Boolean)),
-    ).sort((left, right) => left.localeCompare(right, locale));
-  }, [allItems, locale]);
-
-  const filteredContents = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase(dateLocaleTag);
-
-    const nextItems = allItems.filter((item) => {
-      const itemSubcategorySlug = slugify(item.subcategory);
-      const matchesCategory = category === "all" ? true : item.category === category;
-      const matchesSubcategory = subcategory ? itemSubcategorySlug === slugify(subcategory) : true;
-      const matchesSaved = savedOnly ? Boolean(item.libraryContentId && savedContentIds.has(item.libraryContentId)) : true;
-      const matchesType =
-        typeFilter === "all"
-          ? true
-          : item.contentType.toLocaleLowerCase(dateLocaleTag) === typeFilter.toLocaleLowerCase(dateLocaleTag);
-      const matchesSector = sectorFilter === "all" ? true : item.sector.includes(sectorFilter);
-      const docSearchExtras: string[] = [];
-      if (item.sourceKind === "template" && getGroupByKey(item.subcategory)) {
-        docSearchExtras.push(
-          t(`documentCatalog.groups.${item.subcategory}.title`),
-          item.templateId ? t(`documentCatalog.groups.${item.subcategory}.items.${item.templateId}`) : "",
-        );
-      }
-      const haystack = [
-        item.title,
-        item.category,
-        item.subcategory,
-        item.description,
-        ...item.tags,
-        ...docSearchExtras,
-      ]
-        .join(" ")
-        .toLocaleLowerCase(dateLocaleTag);
-      const matchesQuery = normalizedQuery ? haystack.includes(normalizedQuery) : true;
-
-      return matchesCategory && matchesSubcategory && matchesSaved && matchesType && matchesSector && matchesQuery;
-    });
-
-    return [...nextItems].sort((left, right) => {
-      switch (sortBy) {
-        case "oldest":
-          return new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime();
-        case "az":
-          return left.title.localeCompare(right.title, locale);
-        case "za":
-          return right.title.localeCompare(left.title, locale);
-        case "newest":
-        default:
-          return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
-      }
-    });
-  }, [
-    allItems,
-    category,
-    dateLocaleTag,
-    locale,
-    query,
-    savedContentIds,
-    savedOnly,
-    sectorFilter,
-    sortBy,
-    subcategory,
-    t,
-    typeFilter,
-  ]);
-
-  const hydratedContents = useMemo(
-    () =>
-      filteredContents.map((item) => {
-        if (item.sourceKind !== "template") return item;
-
-        const usageCount =
-          templateUsageCounts.get(item.templateId ?? "") ??
-          templateUsageCounts.get(
-            `${DOCUMENT_GROUPS.find((group) => group.key === item.subcategory || group.title === item.subcategory)?.key ?? ""}::${item.title}`,
-          ) ??
-          0;
-
-        return {
-          ...item,
-          usageCount,
-        };
-      }),
-    [filteredContents, templateUsageCounts],
-  );
-
-  const activeCategoryMeta =
-    categoryDefinitions.find((item) => item.key === category) ?? categoryDefinitions[0]!;
-  const activeTone = getCategoryTone(category);
-  const selectedCreationCompany = companies.find((company) => company.id === creationCompanyId) ?? null;
-  const newContentCategory = category === "all" ? "documentation" : category;
-  const newContentHref = buildDocumentEditorHref(newContentCategory, subcategory, categoryDefinitions, t, {
-    companyId: creationCompanyId,
-    mode: "custom",
-  });
-  const subcategoryOptions = useMemo(() => {
-    if (category === "all") return [];
-    const baseOptions = categoryDefinitions.find((item) => item.key === category)?.subcategories ?? [];
-    const customOptions = customSubcategories[category] ?? [];
-    return [...baseOptions, ...customOptions];
-  }, [category, categoryDefinitions, customSubcategories]);
-
-  function handleCategoryChange(nextCategory: CategoryKey) {
-    setCategory(nextCategory);
-
-    if (nextCategory === "all") {
-      setSubcategory("");
-      return;
-    }
-
-    const baseOptions = categoryDefinitions.find((item) => item.key === nextCategory)?.subcategories ?? [];
-    const nextOptions = [...baseOptions, ...(customSubcategories[nextCategory] ?? [])];
-    setSubcategory((current) => (current && nextOptions.includes(current) ? current : ""));
-  }
-
-  function handleCreateSubcategory() {
-    if (category === "all") {
-      setErrorMessage(t("errorsInline.categoryFirst"));
-      return;
-    }
-
-    const trimmedName = newCategoryName.trim();
-    if (!trimmedName) {
-      setErrorMessage(t("errorsInline.categoryNameEmpty"));
-      return;
-    }
-
-    const exists = subcategoryOptions.some((item) => slugify(item) === slugify(trimmedName));
-    if (exists) {
-      setErrorMessage(t("errorsInline.categoryExists"));
-      return;
-    }
-
-    setCustomSubcategories((current) => ({
-      ...current,
-      [category]: [...(current[category] ?? []), trimmedName],
-    }));
-    setSubcategory(trimmedName);
-    setNewCategoryName("");
-    setCategoryModalOpen(false);
-    setErrorMessage(null);
-    setStatusMessage(t("errorsInline.subcategoryCreated", { name: trimmedName }));
-  }
-
-  function openAssignModal(content: LibraryContentRecord) {
-    const alreadyAssigned = new Set(savedCompaniesByContent.get(content.id) ?? []);
-    const firstAvailable = companies.find((company) => !alreadyAssigned.has(company.id))?.id ?? companies[0]?.id ?? "";
-
-    setAssignContent(content);
-    setAssignCompanyId(firstAvailable);
-    setAssignMessage(null);
-    setAssignModalOpen(true);
-  }
-
-  async function handlePreview(item: UnifiedLibraryItem) {
-    if (item.sourceKind !== "template" || !item.templateId) {
-      if (item.viewHref) {
-        window.open(item.viewHref, item.viewHref.startsWith("/") ? "_self" : "_blank", "noreferrer");
-      }
-      return;
-    }
-
-    setPreviewLoading(true);
-    const templateDisplayTitle =
-      item.templateId && getGroupByKey(item.subcategory)
-        ? t(`documentCatalog.groups.${item.subcategory}.items.${item.templateId}`)
-        : item.title;
-
-    setPreviewState({
-      title: templateDisplayTitle,
-      description: item.description,
-      content: null,
-    });
-
-    try {
-      const template = await getTemplate(item.templateId, locale);
-      setPreviewState({
-        title: template?.title ?? templateDisplayTitle,
-        description: template?.description ?? item.description,
-        content:
-          template?.content ??
-          ({
-            type: "doc",
-            content: [
-              { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: templateDisplayTitle }] },
-              { type: "paragraph", content: [{ type: "text", text: item.description }] },
-            ],
-          } as JSONContent),
-      });
-    } catch {
-      setErrorMessage(t("errorsInline.previewTemplateFailed"));
-      setPreviewState(null);
-    } finally {
-      setPreviewLoading(false);
-    }
-  }
-
-  async function handleDownload(item: UnifiedLibraryItem) {
-    if (item.sourceKind !== "template" || !item.templateId) {
-      if (item.downloadHref) {
-        window.open(item.downloadHref, item.downloadHref.startsWith("/") ? "_self" : "_blank", "noreferrer");
-      }
-      return;
-    }
-
-    try {
-      const template = await getTemplate(item.templateId, locale);
-      const downloadTitle =
-        item.templateId && getGroupByKey(item.subcategory)
-          ? t(`documentCatalog.groups.${item.subcategory}.items.${item.templateId}`)
-          : item.title;
-      const content =
-        template?.content ??
-        ({
-          type: "doc",
-          content: [
-            { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: downloadTitle }] },
-            { type: "paragraph", content: [{ type: "text", text: item.description }] },
-          ],
-        } as JSONContent);
-
-      const html = `<!doctype html>
-<html lang="${locale}">
-  <head>
-    <meta charset="utf-8" />
-    <title>${escapeHtml(template?.title ?? downloadTitle)}</title>
-    <style>
-      body { font-family: Inter, Arial, sans-serif; margin: 40px; color: #0f172a; line-height: 1.6; }
-      h1,h2,h3 { color: #102033; }
-      table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-      th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; vertical-align: top; }
-      ul, ol { padding-left: 24px; }
-      hr { border: none; border-top: 1px solid #cbd5e1; margin: 20px 0; }
-    </style>
-  </head>
-  <body>
-    ${renderJsonNodeToHtml(content)}
-  </body>
-</html>`;
-
-      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${slugify(template?.title ?? downloadTitle) || t("download.filenameFallback")}.html`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    } catch {
-      setErrorMessage(t("errorsInline.downloadHtmlFailed"));
-    }
-  }
-
-  function handleEdit(item: UnifiedLibraryItem) {
-    if (item.sourceKind === "document" && item.viewHref) {
-      router.push(item.viewHref);
-      return;
-    }
-
-    if (!creationCompanyId) {
-      setErrorMessage(t("errorsInline.selectCompanyEditor"));
-      return;
-    }
-
-    if (item.sourceKind !== "template") {
-      setErrorMessage(t("errorsInline.editOnlyTemplates"));
-      return;
-    }
-
-    router.push(
-      buildDocumentEditorHref(item.category, item.subcategory, categoryDefinitions, t, {
-        companyId: creationCompanyId,
-        templateId: item.templateId ?? undefined,
-        title: item.title,
-      }),
-    );
-  }
-
-  async function processImportedFile(file: File) {
-    if (!selectedCreationCompany) {
-      setErrorMessage(t("errorsInline.companyRequiredImport"));
-      return;
-    }
-
-    setImportingDocument(true);
-    setErrorMessage(null);
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("documentTitle", subcategory || activeCategoryMeta.label || t("legacy.newDocument"));
-
-      const matchingGroup = DOCUMENT_GROUPS.find(
-        (group) => group.key === subcategory || group.title === subcategory,
-      );
-      if (matchingGroup) {
-        formData.append("groupKey", matchingGroup.key);
-      }
-      formData.append("companyName", selectedCreationCompany.name);
-      formData.append("sector", selectedCreationCompany.sector);
-      formData.append("hazardClass", selectedCreationCompany.hazardClass);
-
-      const res = await fetch("/api/document-import", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        setErrorMessage(t("errorsInline.importUploadError"));
-        return;
-      }
-
-      const data = await res.json();
-      sessionStorage.setItem("importedContent", data.content);
-
-      const params = new URLSearchParams();
-      if (matchingGroup) {
-        params.set("group", matchingGroup.key);
-      }
-      params.set("companyId", selectedCreationCompany.id);
-      params.set("title", subcategory || activeCategoryMeta.label || t("legacy.newDocument"));
-      params.set("mode", "import");
-      params.set("library", "1");
-      params.set("librarySection", category === "all" ? "documentation" : category);
-
-      router.push(`/documents/new?${params.toString()}`);
-    } catch {
-      setErrorMessage(t("errorsInline.importConnection"));
-    } finally {
-      setImportingDocument(false);
-    }
-  }
-
-  function handleFileSelected(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (file) {
-      void processImportedFile(file);
-    }
-    event.target.value = "";
-  }
-
-  async function handleAssignSubmit() {
-    if (!assignContent || !assignCompanyId) {
-      setAssignMessage(t("errorsInline.assignSelectCompany"));
-      return;
-    }
-
-    setAssigning(true);
-    setAssignMessage(null);
-
-    const savedRow = await assignLibraryContentToCompany({
-      companyId: assignCompanyId,
-      contentId: assignContent.id,
-      addedBy: userContext.profileId,
-    });
-
-    if (!savedRow) {
-      setAssigning(false);
-      setAssignMessage(t("errorsInline.assignRecordFailed"));
-      return;
-    }
-
-    setSavedItems((current) => {
-      const withoutDuplicate = current.filter(
-        (item) => !(item.company_id === savedRow.company_id && item.content_id === savedRow.content_id),
-      );
-      return [savedRow, ...withoutDuplicate];
-    });
-    setStatusMessage(t("status.contentSavedToCompany", { title: assignContent.title }));
-    setAssigning(false);
-    setAssignModalOpen(false);
-  }
-
-  async function handleDeleteItem(item: UnifiedLibraryItem, mode: DeleteMode) {
-    const title = item.sourceKind === "template" ? localizedTemplateCardTitle(item) : item.title;
-    const confirmMessage =
-      mode === "company"
-        ? t("delete.confirmCompany", { title })
-        : t("delete.confirmSource", { title });
-
-    if (!window.confirm(confirmMessage)) {
-      return;
-    }
-
-    setDeletingItemId(item.id);
-    setErrorMessage(null);
-
-    try {
-      if (mode === "company") {
-        if (!creationCompanyId || !item.libraryContentId) {
-          setErrorMessage(t("errorsInline.removeFromCompanyFailed"));
-          return;
-        }
-
-        const ok = await removeLibraryContentFromCompany({
-          companyId: creationCompanyId,
-          contentId: item.libraryContentId,
-        });
-
-        if (!ok) {
-          setErrorMessage(t("errorsInline.removeFromCompanyFailed"));
-          return;
-        }
-
-        setSavedItems((current) =>
-          current.filter(
-            (savedItem) =>
-              !(savedItem.company_id === creationCompanyId && savedItem.content_id === item.libraryContentId),
-          ),
-        );
-        setStatusMessage(t("status.contentRemovedFromCompany", { title }));
-        return;
-      }
-
-      if (mode === "template") {
-        setDeletedTemplateIds((current) => (current.includes(item.id) ? current : [...current, item.id]));
-        setStatusMessage(t("status.contentDeleted", { title }));
-        return;
-      }
-
-      const ok =
-        item.sourceKind === "survey" && item.sourceId
-          ? await deleteSurvey(item.sourceId)
-          : item.sourceKind === "deck" && item.sourceId
-            ? await deleteDeck(item.sourceId)
-            : item.sourceKind === "document" && item.sourceId
-              ? await deleteDocument(item.sourceId)
-              : false;
-
-      if (!ok) {
-        setErrorMessage(t("errorsInline.deleteFailed"));
-        return;
-      }
-
-      if (item.sourceKind === "document" && item.sourceId) {
-        setDocuments((current) => current.filter((entry) => entry.id !== item.sourceId));
-      } else {
-        setLegacyItems((current) => current.filter((entry) => entry.id !== item.id));
-      }
-      setStatusMessage(t("status.contentDeleted", { title }));
-    } finally {
-      setDeletingItemId(null);
-    }
-  }
-
-  function localizedDocumentGroupTitle(groupKey: string) {
-    return getGroupByKey(groupKey) ? t(`documentCatalog.groups.${groupKey}.title`) : groupKey;
-  }
-
-  function localizedTemplateCardTitle(item: UnifiedLibraryItem) {
-    if (item.sourceKind !== "template" || !item.templateId || !getGroupByKey(item.subcategory)) {
-      return item.title;
-    }
-    return t(`documentCatalog.groups.${item.subcategory}.items.${item.templateId}`);
-  }
-
-  function localizedListSubcategoryLabel(item: UnifiedLibraryItem) {
-    if (item.category === "documentation" && getGroupByKey(item.subcategory)) {
-      return localizedDocumentGroupTitle(item.subcategory);
-    }
-    return item.subcategory;
-  }
-
-  if (loading) {
-    return <LibraryGridSkeleton />;
-  }
-
-  const emptyTitle =
-    category === "all" ? t("empty.titleAll") : t("empty.titleCategory", { category: activeCategoryMeta.label });
-
-  const emptyDescription = savedOnly ? t("empty.descSavedOnly") : t("empty.descDefault");
-
-  const contentCards = hydratedContents.map((item) => {
-    const typeMeta = getContentTypeMeta(item.contentType, t);
-    const itemTone = getCategoryTone(item.category);
-    const TypeIcon = typeMeta.icon;
-    const assignedCompanyIds = item.libraryContentId
-      ? (savedCompaniesByContent.get(item.libraryContentId) ?? [])
-      : [];
-    const availableCompanies = companies.filter((company) => !assignedCompanyIds.includes(company.id));
-    const isFullyAssigned = companies.length > 0 && availableCompanies.length === 0;
-    const canAssign = Boolean(item.libraryContentId);
-    const deleteMode: DeleteMode | null =
-      item.sourceKind === "template"
-        ? "template"
-        : (item.sourceKind === "survey" || item.sourceKind === "deck" || item.sourceKind === "document") &&
-            (item.sourceOwnerId === userContext.authUserId || userContext.canManageCatalog)
-          ? "source"
-          : item.libraryContentId && creationCompanyId && assignedCompanyIds.includes(creationCompanyId)
-            ? "company"
-            : null;
-    const isDeleting = deletingItemId === item.id;
-    const sourceBadge =
-      item.sourceKind === "template"
-        ? t("source.template")
-        : item.sourceKind === "survey"
-          ? t("source.surveyFlow")
-          : item.sourceKind === "deck"
-            ? t("source.presentation")
-            : item.sourceKind === "document"
-              ? t("source.document")
-              : t("source.catalog");
-
-    return (
-      <Card
-        key={item.id}
-        className={cn(
-          "group relative overflow-hidden border shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_55px_rgba(15,23,42,0.12)] dark:hover:shadow-[0_22px_55px_rgba(0,0,0,0.35)]",
-          itemTone.card,
-        )}
-      >
-        <span className={cn("absolute inset-y-0 left-0 w-1.5", itemTone.cardAccent)} />
-        <span className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/55 blur-2xl transition-opacity group-hover:opacity-80 dark:bg-white/5" />
-        {deleteMode ? (
-          <button
-            type="button"
-            onClick={() => void handleDeleteItem(item, deleteMode)}
-            disabled={isDeleting}
-            title={deleteMode === "company" ? t("buttons.removeFromCompany") : t("buttons.delete")}
-            aria-label={deleteMode === "company" ? t("buttons.removeFromCompany") : t("buttons.delete")}
-            className="absolute right-4 top-4 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-700 opacity-95 shadow-sm transition hover:border-rose-300 hover:bg-rose-100 hover:text-rose-800 disabled:cursor-wait disabled:opacity-60 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200 dark:hover:bg-rose-400/15"
-          >
-            <Trash2 size={15} />
-          </button>
-        ) : null}
-        <CardHeader className="relative space-y-4">
-          <div className={cn("flex items-center justify-between gap-3", deleteMode ? "pr-10" : "")}>
-            <span className={cn("inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold", itemTone.metaBadge)}>
-              <TypeIcon size={14} />
-              {typeMeta.label}
-            </span>
-            {item.sourceKind === "template" ? (
-              <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold", itemTone.countBadge)}>
-                {t("card.usageCount", { count: item.usageCount ?? 0 })}
-              </span>
-            ) : assignedCompanyIds.length > 0 ? (
-              <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold", itemTone.countBadge)}>
-                {t("card.companiesCount", { count: assignedCompanyIds.length })}
-              </span>
-            ) : (
-              <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold", itemTone.metaBadge)}>
-                {sourceBadge}
-              </span>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <CardTitle className="text-xl leading-snug">
-              {item.sourceKind === "template" ? localizedTemplateCardTitle(item) : item.title}
-            </CardTitle>
-            <p className="line-clamp-2 min-h-11 text-sm leading-6 text-muted-foreground">
-              {item.description || t("catalog.noDescriptionShort")}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold", itemTone.metaBadge)}>
-              {categoryDefinitions.find((entry) => entry.key === item.category)?.label ?? item.category}
-            </span>
-            <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold", itemTone.metaBadge)}>
-              {localizedListSubcategoryLabel(item)}
-            </span>
-            {item.tags.slice(0, 2).map((tag) => (
-              <Badge key={tag} variant="accent">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        </CardHeader>
-
-        <CardContent className="relative space-y-3">
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => void handlePreview(item)}
-              className={cn(
-                "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-2xl border text-sm font-semibold transition",
-                item.viewHref || item.sourceKind === "template"
-                  ? itemTone.viewButton
-                  : "pointer-events-none border-border/60 bg-muted/40 text-muted-foreground",
-              )}
-              disabled={!item.viewHref && item.sourceKind !== "template"}
-            >
-              <Eye size={16} />
-              {t("buttons.view")}
-            </button>
-            <button
-              type="button"
-              onClick={() => void handleDownload(item)}
-              className={cn(
-                "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-2xl border text-sm font-semibold transition",
-                item.downloadHref || item.sourceKind === "template"
-                  ? itemTone.downloadButton
-                  : "pointer-events-none border-border/60 bg-muted/40 text-muted-foreground",
-              )}
-              disabled={!item.downloadHref && item.sourceKind !== "template"}
-            >
-              <Download size={16} />
-              {t("buttons.download")}
-            </button>
-            <button
-              type="button"
-              onClick={() => handleEdit(item)}
-              className={cn(
-                "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-2xl border text-sm font-semibold transition",
-                (item.sourceKind === "template" && creationCompanyId) || item.sourceKind === "document"
-                  ? itemTone.editButton
-                  : "pointer-events-none border-border/60 bg-muted/40 text-muted-foreground",
-              )}
-              disabled={item.sourceKind !== "document" && (item.sourceKind !== "template" || !creationCompanyId)}
-            >
-              <FilePenLine size={16} />
-              {t("buttons.edit")}
-            </button>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => canAssign ? openAssignModal({
-              id: item.libraryContentId!,
-              title: item.title,
-              description: item.description,
-              category: item.category,
-              subcategory: item.subcategory,
-              content_type: item.contentType,
-              file_url: item.viewHref,
-              tags: item.tags,
-              sector: item.sector,
-              created_at: item.createdAt,
-            }) : undefined}
-            disabled={companies.length === 0 || isFullyAssigned || !canAssign}
-            className={cn(
-              "inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl text-sm font-semibold transition",
-              companies.length === 0 || isFullyAssigned || !canAssign
-                ? "cursor-not-allowed bg-muted text-muted-foreground"
-                : itemTone.assignButton,
-            )}
-          >
-            {isFullyAssigned ? <Check size={16} /> : <Building2 size={16} />}
-            {isFullyAssigned
-              ? t("buttons.savedToAllCompanies")
-              : canAssign
-                ? t("buttons.assignToCompany")
-                : t("buttons.assignCatalogPending")}
-          </button>
-
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              {item.sourceKind === "template"
-                ? t("footer.convertedToDocument", { count: item.usageCount ?? 0 })
-                : item.sector.slice(0, 2).join(", ") || t("footer.generalUse")}
-            </span>
-            <span>{formatDate(item.createdAt, dateLocaleTag)}</span>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  });
-
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow={t("header.eyebrow")}
-        title={t("header.title")}
-        description={t("header.description")}
-        className="relative overflow-visible border-border bg-card dark:text-slate-100"
-        meta={
-          <>
-            <span className="inline-flex items-center rounded-full border border-[var(--gold)]/25 bg-[var(--gold)]/10 px-3 py-1 text-xs font-semibold text-[var(--primary)] dark:text-[#f3c978]">
-              {userContext.fullName}
-            </span>
-            <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">
-              {t("header.contentCount", { count: allItems.length })}
-            </span>
-            <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">
-              {t("header.savedToCompanies", { count: savedContentIds.size })}
-            </span>
-          </>
-        }
-        actions={
-          <>
-            <div className="min-w-[260px]" ref={companyMenuRef}>
-              <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]/90">
-                {t("company.workingCompanyMenu")}
-              </span>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setCompanyMenuOpen((current) => !current)}
-                  className="flex h-12 w-full items-center justify-between rounded-2xl border border-[var(--gold)]/25 bg-background/85 px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/45 dark:border-white/10 dark:bg-white/5 dark:text-white"
-                >
-                  <span className="flex min-w-0 items-center gap-3">
-                    <Building2 size={16} className="shrink-0 text-[var(--gold)]/90" />
-                    <span className="truncate text-left">
-                      {selectedCreationCompany?.name || t("company.selectCompany")}
-                    </span>
-                  </span>
-                  <ChevronDown
-                    size={16}
-                    className={cn(
-                      "shrink-0 text-[var(--gold)]/90 transition-transform",
-                      companyMenuOpen ? "rotate-180" : "",
-                    )}
-                  />
-                </button>
-
-                {companyMenuOpen ? (
-                  <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50 w-full overflow-hidden rounded-2xl border border-[var(--gold)]/25 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.22)] dark:border-white/10 dark:bg-slate-900">
-                    <div className="max-h-72 overflow-y-auto p-2">
-                      {companies.map((company) => {
-                        const isSelected = company.id === creationCompanyId;
-
-                        return (
-                          <button
-                            key={company.id}
-                            type="button"
-                            onClick={() => {
-                              setCreationCompanyId(company.id);
-                              setCompanyMenuOpen(false);
-                            }}
-                            className={cn(
-                              "flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm transition",
-                              isSelected
-                                ? "bg-[var(--primary)] text-white"
-                                : "text-slate-700 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-white/10",
-                            )}
-                          >
-                            <span className="pr-3 leading-6">{company.name}</span>
-                            {isSelected ? <Check size={15} className="shrink-0" /> : null}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-              <div className="mt-2 flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    router.push(creationCompanyId ? `/workspace/${creationCompanyId}` : "/workspace/onboarding")
-                  }
-                  className="inline-flex h-8 items-center rounded-xl border border-border/80 bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
-                >
-                  {t("company.openWorkspace")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push("/companies")}
-                  className="inline-flex h-8 items-center rounded-xl border border-border/80 bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
-                >
-                  {t("company.manageCompanies")}
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setSavedOnly((current) => !current)}
-              className={cn(
-                "inline-flex h-11 items-center rounded-2xl border px-4 text-sm font-semibold transition",
-                savedOnly
-                  ? "border-[var(--gold)]/35 bg-[var(--gold)]/15 text-[var(--primary)]"
-                  : "border-border bg-background/85 text-muted-foreground hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white",
-              )}
-            >
-              {t("savedToggle")}
-            </button>
-          </>
-        }
-      />
-
-      <section className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-card/95 p-4 shadow-[var(--shadow-card)] dark:border-white/10 dark:bg-[rgba(15,23,42,0.82)] sm:p-6">
-        <div className="pointer-events-none absolute -right-16 -top-14 h-40 w-40 rounded-[2rem] border border-[var(--gold)]/10 bg-[radial-gradient(circle,rgba(184,134,11,0.08),transparent_70%)]" />
-        <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 translate-x-[-20%] translate-y-[35%] rotate-12 rounded-[1.5rem] border border-slate-200/60 bg-white/30 dark:border-white/10 dark:bg-white/5" />
-
-        <div className="no-scrollbar flex flex-nowrap items-stretch gap-2 overflow-x-auto pb-2 sm:gap-2.5">
-          {categoryDefinitions.map((item) => {
-            const Icon = item.icon;
-            const isActive = item.key === category;
-            const tone = getCategoryTone(item.key);
-            return (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => handleCategoryChange(item.key)}
-                className={cn(
-                  "inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-[1rem] border px-3 py-2.5 text-[13px] font-semibold transition-all duration-200 sm:min-h-12 sm:gap-2 sm:px-4 sm:py-3 sm:text-[14px]",
-                  isActive ? tone.tabActive : tone.tabIdle,
-                )}
-              >
-                <Icon size={16} className="shrink-0" />
-                <span className="whitespace-nowrap">{item.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1.35fr)_180px_180px_160px]">
-          <label className="relative">
-            <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={t("filters.searchPlaceholder")}
-              className="h-12 w-full rounded-2xl border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
-            />
-          </label>
-
-          <label className="relative">
-            <Filter size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <select
-              value={typeFilter}
-              onChange={(event) => setTypeFilter(event.target.value)}
-              className="h-12 w-full rounded-2xl border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
-            >
-              <option value="all">{t("filters.typeOption")}</option>
-              {typeOptions.map((item) => (
-                <option key={item} value={item}>
-                  {item.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="relative">
-            <Building2 size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <select
-              value={sectorFilter}
-              onChange={(event) => setSectorFilter(event.target.value)}
-              className="h-12 w-full rounded-2xl border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
-            >
-              <option value="all">{t("filters.sectorOption")}</option>
-              {sectorOptions.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="relative">
-            <Filter size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <select
-              value={sortBy}
-              onChange={(event) => setSortBy(parseSort(event.target.value))}
-              className="h-12 w-full rounded-2xl border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
-            >
-              <option value="newest">{t("filters.sortOption")}</option>
-              <option value="newest">{t("filters.sortNewestShort")}</option>
-              <option value="oldest">{t("filters.sortOldestShort")}</option>
-              <option value="az">{t("filters.sortAz")}</option>
-              <option value="za">{t("filters.sortZa")}</option>
-            </select>
-          </label>
-        </div>
-
-        {category !== "all" ? (
-          <div className="mt-4 grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
-            <div className={cn("rounded-[1.5rem] border p-3 shadow-sm", activeTone.panel)}>
-              <div className="mb-3 flex items-center gap-2 px-2">
-                <Filter size={16} className="text-[var(--gold)]" />
-                <span className="text-sm font-semibold text-foreground">{t("sidebar.subcategoriesTitle")}</span>
-              </div>
-
-              <div className="space-y-2">
-                <button
-                  type="button"
-                  onClick={() => setSubcategory("")}
-                  className={cn(
-                    "flex w-full items-center justify-between rounded-2xl border border-transparent px-4 py-3 text-left text-sm transition",
-                    !subcategory ? activeTone.sidebarActive : activeTone.sidebarIdle,
-                  )}
-                >
-                  <span className="font-medium">{t("sidebar.allSubcategories")}</span>
-                  <span
-                    className={cn(
-                      "rounded-full border px-2 py-0.5 text-[11px] font-semibold",
-                      !subcategory ? "border-white/25 bg-white/20 text-current" : activeTone.sidebarBadge,
-                    )}
-                  >
-                    {t("sidebar.all")}
-                  </span>
-                </button>
-
-                {subcategoryOptions.map((item) => {
-                  const badgeMeta = getSubcategoryBadgeMeta(category, t);
-
-                  return (
-                    <button
-                      key={item}
-                      type="button"
-                      onClick={() => setSubcategory(item)}
-                      className={cn(
-                        "flex w-full items-center justify-between rounded-2xl border border-transparent px-4 py-3 text-left text-sm transition",
-                        subcategory === item ? activeTone.sidebarActive : activeTone.sidebarIdle,
-                      )}
-                    >
-                      <span className="pr-3 font-medium leading-6">
-                        {category === "documentation" && getGroupByKey(item)
-                          ? t(`documentCatalog.groups.${item}.title`)
-                          : item}
-                      </span>
-                      <span
-                        className={cn(
-                          "rounded-full border px-2 py-0.5 text-[11px] font-semibold",
-                          subcategory === item ? "border-white/25 bg-white/20 text-current" : activeTone.sidebarBadge,
-                        )}
-                      >
-                        {badgeMeta.label}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="mt-4 border-t border-[#e3c58f] pt-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNewCategoryName("");
-                    setCategoryModalOpen(true);
-                  }}
-                  className={cn("inline-flex h-11 w-full items-center justify-center rounded-2xl border px-4 text-sm font-semibold transition", activeTone.editButton)}
-                >
-                  {t("sidebar.addCategory")}
-                </button>
-              </div>
-            </div>
-
-            <div className={cn("rounded-[1.5rem] border p-4 shadow-sm", activeTone.panel)}>
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]">
-                    {activeCategoryMeta.label}
-                  </p>
-                  <h2 className="mt-2 text-lg font-semibold text-foreground">
-                    {subcategory
-                      ? category === "documentation" && getGroupByKey(subcategory)
-                        ? t(`documentCatalog.groups.${subcategory}.title`)
-                        : subcategory
-                      : t("sidebar.allSubcategories")}
-                  </h2>
-                </div>
-                <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold", activeTone.countBadge)}>
-                  {t("sidebar.resultsCount", { count: filteredContents.length })}
-                </span>
-              </div>
-
-              {filteredContents.length === 0 ? (
-                <div className="flex min-h-[260px] flex-col items-center justify-center rounded-[1.25rem] border border-dashed border-[#e3c58f] bg-white/45 px-6 py-10 text-center dark:border-[#6f5320] dark:bg-white/5">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] border border-[#e3c58f] bg-white/80 text-[#b8860b] dark:border-[#6f5320] dark:bg-white/10 dark:text-[#f0c36b]">
-                    <LayoutGrid size={24} />
-                  </div>
-                  <h3 className="mt-4 text-lg font-semibold text-[#1f2f46] dark:text-white">
-                    {t("emptySubcategory.title")}
-                  </h3>
-                  <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-                    {t("emptySubcategory.body")}
-                  </p>
-                  <p className="mt-4 text-xs text-muted-foreground">
-                    {t("emptySubcategory.footerNote")}
-                  </p>
-                  {category === "education" ? (
-                    <div className="mt-6 grid w-full max-w-3xl gap-3 sm:grid-cols-2">
-                      <Link
-                        href="/training/slides?ai=1"
-                        className="inline-flex h-11 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 px-5 text-sm font-semibold text-white transition hover:brightness-110"
-                      >
-                        {t("cta.aiTrainingPrepare")}
-                      </Link>
-                      <Link
-                        href="/training/slides"
-                        className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--gold)]/35 bg-white/80 px-5 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--gold)]/45 hover:bg-[var(--gold)]/10 dark:bg-white/10 dark:text-[#f0c36b]"
-                      >
-                        {t("cta.openSlideLibrary")}
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNewCategoryName("");
-                          setCategoryModalOpen(true);
-                        }}
-                        className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--card)] px-5 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--accent)]"
-                      >
-                        {t("cta.addCategory")}
-                      </button>
-                    </div>
-                  ) : category === "assessment" ? (
-                    <div className="mt-6 grid w-full max-w-3xl gap-3 sm:grid-cols-2">
-                      <Link
-                        href="/training/new?prefillType=exam"
-                        className="inline-flex h-11 items-center justify-center rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-white transition hover:brightness-110"
-                      >
-                        {t("cta.newExamCreate")}
-                      </Link>
-                      <Link
-                        href="/training/new?prefillType=survey"
-                        className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--gold)]/35 bg-white/80 px-5 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--gold)]/45 hover:bg-[var(--gold)]/10 dark:bg-white/10 dark:text-[#f0c36b]"
-                      >
-                        {t("cta.newSurveyCreate")}
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNewCategoryName("");
-                          setCategoryModalOpen(true);
-                        }}
-                        className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--card)] px-5 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--accent)]"
-                      >
-                        {t("cta.addCategory")}
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                      <Link
-                        href={
-                          creationCompanyId
-                            ? buildDocumentEditorHref(category, subcategory, categoryDefinitions, t, {
-                                companyId: creationCompanyId,
-                              })
-                            : "#"
-                        }
-                        onClick={(event) => {
-                          if (!creationCompanyId) {
-                            event.preventDefault();
-                            setErrorMessage(t("errorsInline.companyRequiredImport"));
-                          }
-                        }}
-                        className={cn(
-                          "inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold transition",
-                          creationCompanyId
-                            ? "bg-[var(--primary)] text-white hover:brightness-110"
-                            : "cursor-not-allowed bg-slate-300 text-white dark:bg-slate-700 dark:text-slate-300",
-                        )}
-                      >
-                        {t("cta.createInEditor")}
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={importingDocument || !creationCompanyId}
-                        className={cn(
-                          "inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--gold)]/30 bg-white/80 px-5 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--gold)]/45 hover:bg-[var(--gold)]/10 dark:bg-white/10 dark:text-[#f0c36b] dark:hover:bg-white/15",
-                          importingDocument || !creationCompanyId ? "cursor-not-allowed opacity-60" : "",
-                        )}
-                      >
-                        {importingDocument ? t("cta.importingFile") : t("cta.uploadFromDevice")}
-                      </button>
-                    </div>
-                  )}
-                  <p className="mt-3 text-xs text-muted-foreground">
-                    {t("cta.uploadFooterNote")}
-                  </p>
-                  <div className="mt-6 w-full max-w-sm">
-                    <AddContentCard
-                      href={newContentHref}
-                      title={t("addCard.title")}
-                      description={t("addCard.description")}
-                      disabled={!creationCompanyId}
-                      onDisabledClick={() => setErrorMessage(t("errorsInline.companyRequiredImport"))}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="mt-5 grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
-                  {contentCards}
-                  <AddContentCard
-                    href={newContentHref}
-                    title={t("addCard.title")}
-                    description={t("addCard.description")}
-                    disabled={!creationCompanyId}
-                    onDisabledClick={() => setErrorMessage(t("errorsInline.companyRequiredImport"))}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        ) : null}
-      </section>
-
-      {statusMessage ? (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
-          {statusMessage}
-        </div>
-      ) : null}
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.md,.jpg,.jpeg,.png,.webp"
-        className="hidden"
-        onChange={handleFileSelected}
-      />
-
-      {errorMessage ? (
-        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-          {errorMessage}
-        </div>
-      ) : null}
-
-      {category === "all" ? (
-        filteredContents.length === 0 ? (
-          <EmptyState
-            title={emptyTitle}
-            description={emptyDescription}
-            canManageCatalog={userContext.canManageCatalog}
-            addHref={buildAddContentHref(category)}
-            addContentLabel={t("emptyState.addContent")}
-          />
-        ) : (
-          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {contentCards}
-            <AddContentCard
-              href={newContentHref}
-              title={t("addCard.title")}
-              description={t("addCard.description")}
-              disabled={!creationCompanyId}
-              onDisabledClick={() => setErrorMessage(t("errorsInline.companyRequiredImport"))}
-            />
-          </section>
-        )
-      ) : null}
-
-      {assignModalOpen && assignContent ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-[2rem] border border-border bg-card p-6 shadow-[var(--shadow-elevated)]">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-semibold text-foreground">{t("assignModal.title")}</h2>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {t("assignModal.description", { title: assignContent.title })}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setAssignModalOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <div className="mt-6 space-y-4">
-              <label className="space-y-2">
-                <span className="text-sm font-medium text-foreground">{t("assignModal.company")}</span>
-                <select
-                  value={assignCompanyId}
-                  onChange={(event) => setAssignCompanyId(event.target.value)}
-                  className="h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
-                >
-                  <option value="">{t("assignModal.companyPlaceholder")}</option>
-                  {companies.map((company) => {
-                    const alreadyAssigned = (savedCompaniesByContent.get(assignContent.id) ?? []).includes(company.id);
-                    return (
-                      <option key={company.id} value={company.id} disabled={alreadyAssigned}>
-                        {company.name}
-                        {alreadyAssigned ? t("assignModal.optionAlreadySaved") : ""}
-                      </option>
-                    );
-                  })}
-                </select>
-              </label>
-
-              {assignMessage ? (
-                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-                  {assignMessage}
-                </div>
-              ) : null}
-
-              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                <button
-                  type="button"
-                  onClick={() => setAssignModalOpen(false)}
-                  className="inline-flex h-11 items-center justify-center rounded-2xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition hover:border-[var(--gold)]/35"
-                >
-                  {t("assignModal.cancel")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => void handleAssignSubmit()}
-                  disabled={assigning || !assignCompanyId}
-                  className={cn(
-                    "inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold text-white transition",
-                    assigning || !assignCompanyId
-                      ? "cursor-not-allowed bg-slate-300"
-                      : "bg-[var(--primary)] hover:brightness-110",
-                  )}
-                >
-                  {assigning ? t("assignModal.saving") : t("assignModal.saveToCompany")}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      <TemplatePreview
-        open={Boolean(previewState)}
-        title={previewState?.title ?? ""}
-        description={previewState?.description ?? ""}
-        content={previewState?.content ?? null}
-        loading={previewLoading}
-        onClose={() => {
-          setPreviewLoading(false);
-          setPreviewState(null);
-        }}
-      />
-
-      {categoryModalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-[2rem] border border-border bg-card p-6 shadow-[var(--shadow-elevated)]">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-semibold text-foreground">{t("categoryModal.titleNew")}</h2>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {t("categoryModal.descriptionUnderCategory", { category: activeCategoryMeta.label })}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setCategoryModalOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <div className="mt-6 space-y-4">
-              <label className="space-y-2">
-                <span className="text-sm font-medium text-foreground">{t("categoryModal.nameLabel")}</span>
-                <input
-                  value={newCategoryName}
-                  onChange={(event) => setNewCategoryName(event.target.value)}
-                  placeholder={t("categoryModal.namePlaceholder")}
-                  className="h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
-                />
-              </label>
-
-              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                <button
-                  type="button"
-                  onClick={() => setCategoryModalOpen(false)}
-                  className="inline-flex h-11 items-center justify-center rounded-2xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition hover:border-[var(--gold)]/35"
-                >
-                  {t("categoryModal.cancel")}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCreateSubcategory}
-                  className="inline-flex h-11 items-center justify-center rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-white transition hover:brightness-110"
-                >
-                  {t("categoryModal.save")}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-    </div>
-  );
 }
 
 function escapeHtml(value: string) {
@@ -2478,20 +236,16 @@ function escapeHtml(value: string) {
 
 function renderInlineContent(content?: JSONContent["content"]): string {
   if (!content?.length) return "";
-
   return content
     .map((node) => {
       if (node.type !== "text") return "";
-
       let html = escapeHtml(node.text ?? "");
       const marks = node.marks ?? [];
-
       for (const mark of marks) {
         if (mark.type === "bold") html = `<strong>${html}</strong>`;
         if (mark.type === "italic") html = `<em>${html}</em>`;
         if (mark.type === "underline") html = `<u>${html}</u>`;
       }
-
       return html;
     })
     .join("");
@@ -2531,22 +285,1865 @@ function renderJsonNodeToHtml(node: JSONContent): string {
   }
 }
 
-function TemplatePreview(props: {
-  open: boolean;
+function categoryFromUrl(value: string | null): CategoryKey {
+  if (!value) return "all";
+  if (value === "all") return "all";
+  if (value.startsWith("custom:")) return value as CategoryKey;
+  const slug = librarySlugify(value);
+  const builtin = BUILTIN_CATEGORIES.find((c) => c.key === slug || librarySlugify(c.key) === slug);
+  if (builtin) return builtin.key as CategoryKey;
+  const legacy = LEGACY_SECTION_REDIRECTS[slug];
+  if (legacy?.category) return legacy.category;
+  return "all";
+}
+
+function categoryToUrl(category: CategoryKey): string {
+  if (category === "all") return "";
+  return category;
+}
+
+/** True when the saved DB category string maps onto our new schema. */
+function inferLibraryCategory(rawCategory: string | null | undefined): BuiltinCategoryKey {
+  if (!rawCategory) return "documentation";
+  const slug = librarySlugify(rawCategory);
+  const direct = BUILTIN_CATEGORIES.find((c) => c.key === slug);
+  if (direct) return direct.key as BuiltinCategoryKey;
+  const legacy = LEGACY_SECTION_REDIRECTS[slug];
+  if (legacy?.category) return legacy.category;
+  return "documentation";
+}
+
+function pickT(translator: (key: string) => string, key: string, fallback: string) {
+  // next-intl throws on missing keys when configured strictly — cheap try/catch.
+  try {
+    const value = translator(key);
+    return value && value !== key ? value : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Skeleton shown during loading
+// ---------------------------------------------------------------------------
+function LibraryGridSkeleton() {
+  return (
+    <div className="space-y-6">
+      <Skeleton className="h-44 rounded-[2rem]" />
+      <div className="flex gap-3 overflow-x-auto pb-1">
+        {Array.from({ length: 7 }).map((_, index) => (
+          <Skeleton key={index} className="h-11 min-w-32 rounded-full" />
+        ))}
+      </div>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, index) => (
+          <Card key={index} className="overflow-hidden border-border/70 bg-card/90">
+            <CardHeader className="space-y-4">
+              <Skeleton className="h-7 w-24 rounded-full" />
+              <Skeleton className="h-7 w-3/4" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex gap-2">
+                <Skeleton className="h-6 w-20 rounded-full" />
+                <Skeleton className="h-6 w-24 rounded-full" />
+              </div>
+              <Skeleton className="h-11 w-full rounded-2xl" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
+export function IsgLibraryClient() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const t = useTranslations("isgLibrary");
+  const locale = useLocale();
+  const isTr = locale.startsWith("tr");
+  const dateLocaleTag = ISG_LIBRARY_DATE_LOCALE[locale] ?? "en-US";
+
+  // ---------- Legacy URL handling: redirect education / assessment / legal ----------
+  const handledLegacyRedirect = useRef(false);
+  useEffect(() => {
+    if (handledLegacyRedirect.current) return;
+    const sectionRaw = searchParams.get("section") ?? searchParams.get("category");
+    if (!sectionRaw) return;
+    const slug = librarySlugify(sectionRaw);
+    const legacy = LEGACY_SECTION_REDIRECTS[slug];
+    if (legacy?.module) {
+      handledLegacyRedirect.current = true;
+      router.replace(legacy.module);
+    }
+  }, [router, searchParams]);
+
+  // ---------- Custom main categories (localStorage) ----------
+  const [customCategories, setCustomCategories] = useState<CustomCategoryRecord[]>([]);
+  useEffect(() => {
+    setCustomCategories(readJsonFromStorage<CustomCategoryRecord[]>(CUSTOM_CATEGORY_STORAGE_KEY, []));
+  }, []);
+  useEffect(() => {
+    writeJsonToStorage(CUSTOM_CATEGORY_STORAGE_KEY, customCategories);
+  }, [customCategories]);
+
+  // ---------- Hidden starter ids (so users can dismiss seeded cards) ----------
+  const [hiddenStarterIds, setHiddenStarterIds] = useState<string[]>([]);
+  useEffect(() => {
+    setHiddenStarterIds(readJsonFromStorage<string[]>(STARTER_HIDE_STORAGE_KEY, []));
+  }, []);
+  useEffect(() => {
+    writeJsonToStorage(STARTER_HIDE_STORAGE_KEY, hiddenStarterIds);
+  }, [hiddenStarterIds]);
+
+  // ---------- Filter state ----------
+  const [category, setCategory] = useState<CategoryKey>(() =>
+    categoryFromUrl(searchParams.get("category") ?? searchParams.get("section")),
+  );
+  const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
+  const [sectorFilter, setSectorFilter] = useState(() => searchParams.get("sector") ?? "all");
+  const [sortBy, setSortBy] = useState<SortKey>(() => getSortKey(searchParams.get("sort")));
+  const [savedOnly, setSavedOnly] = useState(() => searchParams.get("saved") === "1");
+
+  // ---------- Data ----------
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const [userContext, setUserContext] = useState<UserContext>({
+    authUserId: null,
+    profileId: null,
+    fullName: pickT(t, "user.defaultDisplayName", isTr ? "RiskNova Kullanıcısı" : "RiskNova user"),
+    canManageCatalog: false,
+  });
+  const [companies, setCompanies] = useState<CompanyOption[]>([]);
+  const [creationCompanyId, setCreationCompanyId] = useState("");
+  const [companyMenuOpen, setCompanyMenuOpen] = useState(false);
+  const [contents, setContents] = useState<LibraryContentRecord[]>([]);
+  const [documents, setDocuments] = useState<DocumentRecord[]>([]);
+  const [savedItems, setSavedItems] = useState<CompanyLibraryItemRecord[]>([]);
+
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
+  const [assigning, setAssigning] = useState(false);
+  const [assignContent, setAssignContent] = useState<LibraryContentRecord | null>(null);
+  const [assignCompanyId, setAssignCompanyId] = useState("");
+  const [assignMessage, setAssignMessage] = useState<string | null>(null);
+
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewState, setPreviewState] = useState<PreviewState>(null);
+
+  const [aiDraft, setAiDraft] = useState<AiPromptDraft | null>(null);
+  const [aiDraftSubmitting, setAiDraftSubmitting] = useState(false);
+
+  const [createCategoryOpen, setCreateCategoryOpen] = useState(false);
+  const [newCategoryLabel, setNewCategoryLabel] = useState("");
+  const [newCategoryDescription, setNewCategoryDescription] = useState("");
+
+  const [importingDocument, setImportingDocument] = useState(false);
+  const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const companyMenuRef = useRef<HTMLDivElement | null>(null);
+
+  // ---------- Build category list (built-in + custom) ----------
+  const categoryDefinitions = useMemo<LibraryCategoryDefinition[]>(() => {
+    const base = BUILTIN_CATEGORIES.map((category) => ({
+      ...category,
+      label: { ...category.label },
+    }));
+    const customs: LibraryCategoryDefinition[] = customCategories.map((custom) => ({
+      key: `custom:${custom.id}` as CategoryKey,
+      iconKey: "Users",
+      tone: "sky" as const,
+      label: { tr: custom.label, en: custom.label },
+      description: {
+        tr: custom.description ?? "Özel kategori — kendi başlangıç şablonlarınızı buraya kaydedin.",
+        en: custom.description ?? "Custom category — save your own starter templates here.",
+      },
+    }));
+    return [...base, ...customs];
+  }, [customCategories]);
+
+  // ---------- URL sync ----------
+  useEffect(() => {
+    const params = new URLSearchParams();
+    const cat = categoryToUrl(category);
+    if (cat) params.set("category", cat);
+    if (query.trim()) params.set("q", query.trim());
+    if (sectorFilter !== "all") params.set("sector", sectorFilter);
+    if (sortBy !== "newest") params.set("sort", sortBy);
+    if (savedOnly) params.set("saved", "1");
+    const url = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+    router.replace(url);
+  }, [category, pathname, query, router, savedOnly, sectorFilter, sortBy]);
+
+  // ---------- Status auto-hide ----------
+  useEffect(() => {
+    if (!statusMessage) return undefined;
+    const handle = window.setTimeout(() => setStatusMessage(null), 3200);
+    return () => window.clearTimeout(handle);
+  }, [statusMessage]);
+
+  // ---------- Click-away for company menu ----------
+  useEffect(() => {
+    function onMouseDown(event: MouseEvent) {
+      if (!companyMenuRef.current?.contains(event.target as Node)) {
+        setCompanyMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, []);
+
+  // ---------- Initial data load ----------
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      setLoading(true);
+      setErrorMessage(null);
+
+      const supabase = createClient();
+      if (!supabase) {
+        if (!cancelled) {
+          setErrorMessage(pickT(t, "errors.supabaseConnect", isTr ? "Supabase bağlantısı kurulamadı." : "Supabase connection failed."));
+          setLoading(false);
+        }
+        return;
+      }
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        if (!cancelled) {
+          setErrorMessage(pickT(t, "errors.sessionNotFound", isTr ? "Oturum bulunamadı." : "Session not found."));
+          setLoading(false);
+        }
+        return;
+      }
+
+      const { data: profile, error: profileError } = await supabase
+        .from("user_profiles")
+        .select("id, organization_id, full_name")
+        .eq("auth_user_id", user.id)
+        .maybeSingle();
+
+      if (profileError || !profile?.organization_id) {
+        if (!cancelled) {
+          setErrorMessage(pickT(t, "errors.profileLoadFailed", isTr ? "Profil yüklenemedi." : "Profile load failed."));
+          setLoading(false);
+        }
+        return;
+      }
+
+      const [rolesResponse, companyRows, libraryResponse, documentsResponse] = await Promise.all([
+        supabase.from("user_roles").select("roles(code)").eq("user_profile_id", profile.id),
+        supabase
+          .from("company_workspaces")
+          .select(
+            `
+            id,
+            company_identity_id,
+            display_name,
+            company_identities!inner(
+              id,
+              official_name,
+              sector,
+              hazard_class,
+              city,
+              is_active,
+              is_archived,
+              deleted_at
+            )
+          `,
+          )
+          .eq("organization_id", profile.organization_id)
+          .eq("is_archived", false)
+          .eq("company_identities.is_active", true)
+          .eq("company_identities.is_archived", false)
+          .is("company_identities.deleted_at", null)
+          .order("display_name", { ascending: true }),
+        fetchLibraryContents(),
+        fetchDocuments(profile.organization_id),
+      ]);
+
+      const roleCodes = (rolesResponse.data ?? []).flatMap((row) => {
+        const rolesValue = (row as { roles?: { code?: string } | Array<{ code?: string }> }).roles;
+        if (Array.isArray(rolesValue)) {
+          return rolesValue.map((role) => role.code ?? "").filter(Boolean);
+        }
+        return rolesValue?.code ? [rolesValue.code] : [];
+      });
+
+      const accessible = ((companyRows.data ?? []) as Array<{
+        id: string;
+        display_name: string | null;
+        company_identity_id: string | null;
+        company_identities:
+          | { id: string; official_name: string | null; sector: string | null; hazard_class: string | null; city: string | null }
+          | Array<{ id: string; official_name: string | null; sector: string | null; hazard_class: string | null; city: string | null }>;
+      }>).flatMap((row) => {
+        const identity = Array.isArray(row.company_identities) ? row.company_identities[0] : row.company_identities;
+        if (!identity) return [];
+        const display = row.display_name?.trim();
+        const isPlaceholder = display ? /^yeni firma\s*\/\s*kurum$/i.test(display) : false;
+        const name =
+          !isPlaceholder && display
+            ? display
+            : identity.official_name ||
+              display ||
+              pickT(t, "company.anonymousCompany", isTr ? "İsimsiz Firma" : "Unnamed company");
+        return [{
+          id: row.id,
+          legacyCompanyId: row.company_identity_id ?? undefined,
+          name,
+          sector: identity.sector || "",
+          hazardClass: identity.hazard_class || "",
+          city: identity.city || "",
+        }];
+      });
+
+      const fallback = await fetchCompaniesFromSupabase();
+      const normalizedCompanies =
+        accessible.length > 0
+          ? accessible
+          : (fallback ?? []).map((company) => ({
+              id: company.id,
+              legacyCompanyId: undefined,
+              name:
+                company.shortName?.trim() ||
+                company.name ||
+                pickT(t, "company.anonymousCompany", isTr ? "İsimsiz Firma" : "Unnamed company"),
+              sector: company.sector || "",
+              hazardClass: company.hazardClass || "",
+              city: company.city || "",
+            }));
+
+      const companyIds = normalizedCompanies.flatMap((item) =>
+        item.legacyCompanyId ? [item.id, item.legacyCompanyId] : [item.id],
+      );
+      const savedRowsRaw = await fetchCompanyLibraryItems(companyIds);
+      const savedRows = savedRowsRaw.map((row) => {
+        const match = normalizedCompanies.find((company) => company.legacyCompanyId === row.company_id);
+        return match ? { ...row, company_id: match.id } : row;
+      });
+
+      if (!cancelled) {
+        setUserContext({
+          authUserId: user.id,
+          profileId: profile.id,
+          fullName:
+            profile.full_name ||
+            user.email ||
+            pickT(t, "user.defaultDisplayName", isTr ? "RiskNova Kullanıcısı" : "RiskNova user"),
+          canManageCatalog: roleCodes.some((code) => MANAGE_ROLE_CODES.has(code)),
+        });
+        setCompanies(normalizedCompanies);
+        setContents(libraryResponse);
+        setDocuments(documentsResponse);
+        setSavedItems(savedRows);
+        setLoading(false);
+      }
+    }
+
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [isTr, t]);
+
+  // ---------- Default creation company ----------
+  useEffect(() => {
+    if (!companies.length) return;
+    setCreationCompanyId((current) =>
+      current && companies.some((company) => company.id === current) ? current : companies[0]?.id ?? "",
+    );
+  }, [companies]);
+
+  // ---------- Saved-content lookups ----------
+  const savedContentIds = useMemo(() => new Set(savedItems.map((item) => item.content_id)), [savedItems]);
+  const savedCompaniesByContent = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const item of savedItems) {
+      const list = map.get(item.content_id) ?? [];
+      list.push(item.company_id);
+      map.set(item.content_id, list);
+    }
+    return map;
+  }, [savedItems]);
+
+  // ---------- Build unified items list ----------
+  const allItems = useMemo<LibraryItem[]>(() => {
+    const items: LibraryItem[] = [];
+
+    // Catalog items from `library_contents`
+    for (const row of contents) {
+      const cat = inferLibraryCategory(row.category);
+      items.push({
+        id: `catalog-${row.id}`,
+        category: cat,
+        title: row.title,
+        description: row.description ?? "",
+        contentType: row.content_type ?? "PDF",
+        sectorTags: row.sector ?? [],
+        flags: { corporate: true },
+        usageCount: 0,
+        source: "catalog",
+        createdAt: row.created_at,
+        primaryAction: row.file_url ? { kind: "open", href: row.file_url } : { kind: "ai", prompt: { tr: row.title, en: row.title } },
+        downloadHref: row.file_url ?? null,
+        libraryContentId: row.id,
+        templateId: null,
+        groupKey: null,
+      });
+    }
+
+    // Editor-saved documents
+    for (const doc of documents) {
+      const variables = doc.variables_data ?? {};
+      const company =
+        typeof variables.official_name === "string"
+          ? variables.official_name
+          : typeof variables.company_name === "string"
+            ? variables.company_name
+            : "";
+      const rawSection = typeof variables.__library_section === "string" ? variables.__library_section : "";
+      const cat = inferLibraryCategory(rawSection || "documentation");
+      items.push({
+        id: `document-${doc.id}`,
+        category: cat,
+        title: doc.title,
+        description: company
+          ? isTr
+            ? `${company} için kaydedildi`
+            : `Saved for ${company}`
+          : isTr
+            ? "Kaydedilmiş editör dokümanı"
+            : "Saved editor document",
+        contentType: isTr ? "Doküman" : "Doc",
+        sectorTags: [],
+        flags: {
+          user: doc.created_by === userContext.authUserId,
+          corporate: doc.created_by !== userContext.authUserId,
+        },
+        usageCount: 0,
+        source: "document",
+        createdAt: doc.updated_at,
+        primaryAction: { kind: "open", href: `/documents/${doc.id}?library=1&librarySection=${cat}` },
+        downloadHref: null,
+        documentId: doc.id,
+        ownerId: doc.created_by,
+        templateId: doc.template_id,
+        groupKey: doc.group_key,
+      });
+    }
+
+    // Starter / seeded templates
+    const hidden = new Set(hiddenStarterIds);
+    for (const starter of STARTER_TEMPLATES) {
+      if (hidden.has(starter.id)) continue;
+      items.push({
+        id: starter.id,
+        category: starter.category,
+        title: pickLocalized(starter.title, locale),
+        description: pickLocalized(starter.description, locale),
+        contentType:
+          starter.action.kind === "ai"
+            ? isTr
+              ? "AI Taslak"
+              : "AI draft"
+            : starter.action.kind === "template"
+              ? isTr
+                ? "Şablon"
+                : "Template"
+              : starter.action.kind === "module"
+                ? isTr
+                  ? "Modül"
+                  : "Module"
+                : isTr
+                  ? "Akış"
+                  : "Flow",
+        sectorTags: starter.sectorTags ?? [],
+        flags: starter.flags ?? {},
+        usageCount: 0,
+        source: "starter",
+        createdAt: "2026-05-01T00:00:00Z",
+        primaryAction: starter.action,
+        downloadHref: null,
+        templateId: starter.action.kind === "template" ? starter.action.templateId : null,
+        groupKey:
+          starter.action.kind === "template"
+            ? starter.action.groupKey ?? null
+            : starter.action.kind === "group"
+              ? starter.action.groupKey
+              : null,
+      });
+    }
+
+    // Template-usage counts derived from existing documents
+    const usage = new Map<string, number>();
+    for (const doc of documents) {
+      const key = doc.template_id || `${doc.group_key}::${doc.title}`;
+      usage.set(key, (usage.get(key) ?? 0) + 1);
+    }
+    return items.map((item) => {
+      if (item.source !== "starter") return item;
+      const key = item.templateId || `${item.groupKey ?? ""}::${item.title}`;
+      return { ...item, usageCount: usage.get(key) ?? 0 };
+    });
+  }, [contents, documents, hiddenStarterIds, isTr, locale, userContext.authUserId]);
+
+  // ---------- Sector options ----------
+  const sectorOptions = useMemo(() => {
+    const sectors = new Set<string>();
+    for (const item of allItems) {
+      for (const sector of item.sectorTags) {
+        if (sector) sectors.add(sector);
+      }
+    }
+    if (sectors.size === 0) {
+      for (const fallback of SECTOR_DEFAULTS) sectors.add(isTr ? fallback.tr : fallback.en);
+    }
+    return Array.from(sectors).sort((a, b) => a.localeCompare(b, locale));
+  }, [allItems, isTr, locale]);
+
+  // ---------- Counts per category ----------
+  const categoryCounts = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const item of allItems) map.set(item.category, (map.get(item.category) ?? 0) + 1);
+    return map;
+  }, [allItems]);
+
+  // ---------- Filtered list ----------
+  const filteredItems = useMemo(() => {
+    const normalizedQuery = query.trim().toLocaleLowerCase(dateLocaleTag);
+    const result = allItems.filter((item) => {
+      if (category !== "all" && item.category !== category) return false;
+      if (savedOnly && !(item.libraryContentId && savedContentIds.has(item.libraryContentId))) return false;
+      if (sectorFilter !== "all" && !item.sectorTags.includes(sectorFilter)) return false;
+      if (!normalizedQuery) return true;
+      const haystack = [item.title, item.description, ...item.sectorTags, item.contentType]
+        .join(" ")
+        .toLocaleLowerCase(dateLocaleTag);
+      return haystack.includes(normalizedQuery);
+    });
+    return result.sort((left, right) => {
+      switch (sortBy) {
+        case "oldest":
+          return new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime();
+        case "az":
+          return left.title.localeCompare(right.title, locale);
+        case "za":
+          return right.title.localeCompare(left.title, locale);
+        case "newest":
+        default:
+          return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+      }
+    });
+  }, [allItems, category, dateLocaleTag, locale, query, savedContentIds, savedOnly, sectorFilter, sortBy]);
+
+  const activeCategoryDef =
+    categoryDefinitions.find((entry) => entry.key === category) ?? null;
+  const activeTone = activeCategoryDef ? CATEGORY_TONE_CLASSES[activeCategoryDef.tone] : null;
+  const selectedCompany = companies.find((company) => company.id === creationCompanyId) ?? null;
+
+  // ---------- Action handlers ----------
+  const handleAction = useCallback(
+    (item: LibraryItem) => {
+      const action = item.primaryAction;
+      if (action.kind === "open") {
+        if (action.href.startsWith("http")) {
+          window.open(action.href, "_blank", "noreferrer");
+          return;
+        }
+        router.push(action.href);
+        return;
+      }
+      if (action.kind === "module") {
+        router.push(action.href);
+        return;
+      }
+      if (action.kind === "template" || action.kind === "group") {
+        if (!creationCompanyId) {
+          setErrorMessage(
+            pickT(
+              t,
+              "errorsInline.companyRequiredImport",
+              isTr ? "Lütfen önce içerik oluşturulacak firmayı seçin." : "Select the working company first.",
+            ),
+          );
+          return;
+        }
+        const groupKey = action.kind === "template" ? action.groupKey : action.groupKey;
+        const params = new URLSearchParams();
+        if (groupKey) params.set("group", groupKey);
+        if (action.kind === "template") params.set("templateId", action.templateId);
+        params.set("companyId", creationCompanyId);
+        params.set("mode", "new");
+        params.set("library", "1");
+        params.set("librarySection", item.category === "all" ? "documentation" : item.category);
+        params.set("title", item.title);
+        router.push(`/documents/new?${params.toString()}`);
+        return;
+      }
+      if (action.kind === "ai") {
+        setAiDraft({
+          category: item.category,
+          prompt: pickLocalized(action.prompt, locale),
+          title: item.title,
+        });
+      }
+    },
+    [creationCompanyId, isTr, locale, router, t],
+  );
+
+  const submitAiDraft = useCallback(async () => {
+    if (!aiDraft) return;
+    if (!creationCompanyId) {
+      setErrorMessage(
+        pickT(
+          t,
+          "errorsInline.companyRequiredImport",
+          isTr ? "Lütfen önce içerik oluşturulacak firmayı seçin." : "Select the working company first.",
+        ),
+      );
+      return;
+    }
+    setAiDraftSubmitting(true);
+    try {
+      // Hand off to Nova-aware document editor. The editor reads sessionStorage
+      // for the prompt so we don't blow the URL up with a large payload.
+      sessionStorage.setItem(
+        "risknova:isg-library:aiDraft",
+        JSON.stringify({ prompt: aiDraft.prompt, category: aiDraft.category }),
+      );
+      const params = new URLSearchParams();
+      params.set("companyId", creationCompanyId);
+      params.set("mode", "ai");
+      params.set("library", "1");
+      params.set("librarySection", aiDraft.category === "all" ? "documentation" : aiDraft.category);
+      params.set("title", aiDraft.title);
+      params.set("ai", "1");
+      router.push(`/documents/new?${params.toString()}`);
+    } finally {
+      setAiDraftSubmitting(false);
+    }
+  }, [aiDraft, creationCompanyId, isTr, router, t]);
+
+  const handlePreview = useCallback(
+    async (item: LibraryItem) => {
+      if (!item.templateId) {
+        const action = item.primaryAction;
+        if (action.kind === "open") {
+          window.open(action.href, action.href.startsWith("/") ? "_self" : "_blank", "noreferrer");
+        }
+        return;
+      }
+      setPreviewLoading(true);
+      setPreviewState({ title: item.title, description: item.description, content: null });
+      try {
+        const template = await getTemplate(item.templateId, locale);
+        setPreviewState({
+          title: template?.title ?? item.title,
+          description: template?.description ?? item.description,
+          content:
+            template?.content ??
+            ({
+              type: "doc",
+              content: [
+                { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: item.title }] },
+                { type: "paragraph", content: [{ type: "text", text: item.description }] },
+              ],
+            } as JSONContent),
+        });
+      } catch {
+        setErrorMessage(
+          pickT(
+            t,
+            "errorsInline.previewTemplateFailed",
+            isTr ? "Şablon önizlemesi yüklenemedi. Lütfen tekrar deneyin." : "Template preview failed. Please try again.",
+          ),
+        );
+        setPreviewState(null);
+      } finally {
+        setPreviewLoading(false);
+      }
+    },
+    [isTr, locale, t],
+  );
+
+  const handleDownload = useCallback(
+    async (item: LibraryItem) => {
+      if (item.downloadHref) {
+        window.open(item.downloadHref, item.downloadHref.startsWith("/") ? "_self" : "_blank", "noreferrer");
+        return;
+      }
+      if (!item.templateId) {
+        setErrorMessage(
+          pickT(
+            t,
+            "errorsInline.downloadFailed",
+            isTr ? "İndirme başarısız. Lütfen tekrar deneyin." : "Download failed. Please try again.",
+          ),
+        );
+        return;
+      }
+      try {
+        const template = await getTemplate(item.templateId, locale);
+        const content =
+          template?.content ??
+          ({
+            type: "doc",
+            content: [
+              { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: item.title }] },
+              { type: "paragraph", content: [{ type: "text", text: item.description }] },
+            ],
+          } as JSONContent);
+        const html = `<!doctype html>
+<html lang="${locale}">
+  <head>
+    <meta charset="utf-8" />
+    <title>${escapeHtml(template?.title ?? item.title)}</title>
+    <style>
+      body { font-family: Inter, Arial, sans-serif; margin: 40px; color: #0f172a; line-height: 1.6; }
+      h1,h2,h3 { color: #102033; }
+      table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+      th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; vertical-align: top; }
+      ul, ol { padding-left: 24px; }
+      hr { border: none; border-top: 1px solid #cbd5e1; margin: 20px 0; }
+    </style>
+  </head>
+  <body>
+    ${renderJsonNodeToHtml(content)}
+  </body>
+</html>`;
+        const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${librarySlugify(template?.title ?? item.title) || "dokuman"}.html`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      } catch {
+        setErrorMessage(
+          pickT(
+            t,
+            "errorsInline.downloadHtmlFailed",
+            isTr ? "İndirme dosyası oluşturulamadı." : "Could not build the download file.",
+          ),
+        );
+      }
+    },
+    [isTr, locale, t],
+  );
+
+  const openAssignModal = useCallback(
+    (item: LibraryItem) => {
+      if (!item.libraryContentId) {
+        setErrorMessage(
+          pickT(
+            t,
+            "errorsInline.editNeedsTemplate",
+            isTr
+              ? "Bu içerik henüz katalog kaydı oluşturulmadan firmaya bağlanamaz."
+              : "This item must be saved to the catalog before being assigned.",
+          ),
+        );
+        return;
+      }
+      const already = new Set(savedCompaniesByContent.get(item.libraryContentId) ?? []);
+      const available = companies.find((company) => !already.has(company.id))?.id ?? companies[0]?.id ?? "";
+      setAssignContent({
+        id: item.libraryContentId,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        subcategory: "",
+        content_type: item.contentType,
+        file_url: item.downloadHref ?? null,
+        tags: [],
+        sector: item.sectorTags,
+        created_at: item.createdAt,
+      });
+      setAssignCompanyId(available);
+      setAssignMessage(null);
+      setAssignModalOpen(true);
+    },
+    [companies, isTr, savedCompaniesByContent, t],
+  );
+
+  const handleAssignSubmit = useCallback(async () => {
+    if (!assignContent || !assignCompanyId) {
+      setAssignMessage(
+        pickT(t, "errorsInline.assignSelectCompany", isTr ? "Önce bir firma seçin." : "Select a company first."),
+      );
+      return;
+    }
+    setAssigning(true);
+    setAssignMessage(null);
+    const saved = await assignLibraryContentToCompany({
+      companyId: assignCompanyId,
+      contentId: assignContent.id,
+      addedBy: userContext.profileId,
+    });
+    if (!saved) {
+      setAssigning(false);
+      setAssignMessage(
+        pickT(t, "errorsInline.assignRecordFailed", isTr ? "Kayıt oluşturulamadı." : "Could not create the record."),
+      );
+      return;
+    }
+    setSavedItems((current) => {
+      const without = current.filter(
+        (item) => !(item.company_id === saved.company_id && item.content_id === saved.content_id),
+      );
+      return [saved, ...without];
+    });
+    setStatusMessage(
+      isTr ? `${assignContent.title} seçilen firmaya kaydedildi.` : `${assignContent.title} saved to the selected company.`,
+    );
+    setAssigning(false);
+    setAssignModalOpen(false);
+  }, [assignCompanyId, assignContent, isTr, t, userContext.profileId]);
+
+  const handleDelete = useCallback(
+    async (item: LibraryItem, mode: DeleteMode) => {
+      if (mode === "starter-hide") {
+        if (!window.confirm(isTr ? `"${item.title}" başlangıç şablonu listeden gizlensin mi?` : `Hide starter "${item.title}" from the list?`)) return;
+        setHiddenStarterIds((current) => (current.includes(item.id) ? current : [...current, item.id]));
+        setStatusMessage(
+          isTr ? `${item.title} listeden gizlendi.` : `${item.title} hidden from the list.`,
+        );
+        return;
+      }
+      if (mode === "company") {
+        if (!creationCompanyId || !item.libraryContentId) return;
+        if (!window.confirm(isTr ? `"${item.title}" seçili firma kütüphanesinden kaldırılsın mı?` : `Remove "${item.title}" from the selected company library?`)) return;
+        setDeletingItemId(item.id);
+        const ok = await removeLibraryContentFromCompany({
+          companyId: creationCompanyId,
+          contentId: item.libraryContentId,
+        });
+        setDeletingItemId(null);
+        if (!ok) {
+          setErrorMessage(isTr ? "İçerik firmadan kaldırılamadı." : "Could not remove from the company.");
+          return;
+        }
+        setSavedItems((current) =>
+          current.filter(
+            (saved) => !(saved.company_id === creationCompanyId && saved.content_id === item.libraryContentId),
+          ),
+        );
+        setStatusMessage(isTr ? `${item.title} firmadan kaldırıldı.` : `${item.title} removed from the company.`);
+        return;
+      }
+      if (mode === "document" && item.documentId) {
+        if (!window.confirm(isTr ? `"${item.title}" kalıcı olarak silinsin mi?` : `Delete "${item.title}" permanently?`)) return;
+        setDeletingItemId(item.id);
+        const ok = await deleteDocument(item.documentId);
+        setDeletingItemId(null);
+        if (!ok) {
+          setErrorMessage(isTr ? "İçerik silinemedi." : "Could not delete the item.");
+          return;
+        }
+        setDocuments((current) => current.filter((doc) => doc.id !== item.documentId));
+        setStatusMessage(isTr ? `${item.title} silindi.` : `${item.title} deleted.`);
+      }
+    },
+    [creationCompanyId, isTr],
+  );
+
+  // ---------- Custom category creation ----------
+  const handleCreateCustomCategory = useCallback(() => {
+    const trimmed = newCategoryLabel.trim();
+    if (!trimmed) {
+      setErrorMessage(isTr ? "Kategori adı boş bırakılamaz." : "Category name cannot be empty.");
+      return;
+    }
+    const id = librarySlugify(trimmed) || `c${Date.now().toString(36)}`;
+    if (categoryDefinitions.some((entry) => entry.key === `custom:${id}` || librarySlugify(pickLocalized(entry.label, locale)) === id)) {
+      setErrorMessage(isTr ? "Bu kategori zaten mevcut." : "This category already exists.");
+      return;
+    }
+    const record: CustomCategoryRecord = {
+      id,
+      label: trimmed,
+      description: newCategoryDescription.trim() || undefined,
+      createdAt: new Date().toISOString(),
+    };
+    setCustomCategories((current) => [...current, record]);
+    setCategory(`custom:${id}`);
+    setStatusMessage(isTr ? `"${trimmed}" kategorisi oluşturuldu.` : `Created category "${trimmed}".`);
+    setCreateCategoryOpen(false);
+    setNewCategoryLabel("");
+    setNewCategoryDescription("");
+  }, [categoryDefinitions, isTr, locale, newCategoryDescription, newCategoryLabel]);
+
+  const handleRemoveCustomCategory = useCallback(
+    (key: CategoryKey) => {
+      if (!key.startsWith("custom:")) return;
+      const id = key.slice("custom:".length);
+      const target = customCategories.find((entry) => entry.id === id);
+      if (!target) return;
+      if (
+        !window.confirm(
+          isTr ? `"${target.label}" kategorisi silinsin mi? İçindeki içerikler diğer kategorilere taşınmaz.` : `Delete category "${target.label}"?`,
+        )
+      ) {
+        return;
+      }
+      setCustomCategories((current) => current.filter((entry) => entry.id !== id));
+      setCategory("all");
+    },
+    [customCategories, isTr],
+  );
+
+  // ---------- File upload (used by inline "Cihazdan yükle" CTA) ----------
+  const handleFileSelected = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      event.target.value = "";
+      if (!file) return;
+      if (!selectedCompany) {
+        setErrorMessage(isTr ? "Lütfen önce içerik oluşturulacak firmayı seçin." : "Select the working company first.");
+        return;
+      }
+      setImportingDocument(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("documentTitle", file.name.replace(/\.[^.]+$/, "") || (isTr ? "Yeni Doküman" : "New document"));
+        formData.append("companyName", selectedCompany.name);
+        formData.append("sector", selectedCompany.sector);
+        formData.append("hazardClass", selectedCompany.hazardClass);
+        const res = await fetch("/api/document-import", { method: "POST", body: formData });
+        if (!res.ok) {
+          setErrorMessage(isTr ? "Dosya yüklenirken bir hata oluştu." : "Upload failed.");
+          return;
+        }
+        const data = await res.json();
+        sessionStorage.setItem("importedContent", data.content);
+        const params = new URLSearchParams();
+        params.set("companyId", selectedCompany.id);
+        params.set("title", file.name.replace(/\.[^.]+$/, ""));
+        params.set("mode", "import");
+        params.set("library", "1");
+        params.set("librarySection", category === "all" ? "documentation" : category);
+        router.push(`/documents/new?${params.toString()}`);
+      } catch {
+        setErrorMessage(isTr ? "Dosya yüklenemedi. Bağlantınızı kontrol edin." : "Upload failed. Check your connection.");
+      } finally {
+        setImportingDocument(false);
+      }
+    },
+    [category, isTr, router, selectedCompany],
+  );
+
+  if (loading) {
+    return <LibraryGridSkeleton />;
+  }
+
+  // ---------- Render helpers ----------
+  function renderFlagBadges(flags: ItemFlags) {
+    const list: { label: string; tone: string; icon: LucideIcon }[] = [];
+    if (flags.ai) {
+      list.push({
+        label: isTr ? "AI" : "AI",
+        tone: "border-fuchsia-200 bg-fuchsia-100 text-fuchsia-800 dark:border-fuchsia-400/25 dark:bg-fuchsia-400/15 dark:text-fuchsia-100",
+        icon: Sparkles,
+      });
+    }
+    if (flags.corporate) {
+      list.push({
+        label: isTr ? "Kurumsal" : "Corporate",
+        tone: "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-400/25 dark:bg-amber-400/15 dark:text-amber-100",
+        icon: Briefcase,
+      });
+    }
+    if (flags.user) {
+      list.push({
+        label: isTr ? "Sizin" : "Yours",
+        tone: "border-sky-200 bg-sky-50 text-sky-800 dark:border-sky-400/25 dark:bg-sky-400/15 dark:text-sky-100",
+        icon: Users,
+      });
+    }
+    if (flags.operation) {
+      list.push({
+        label: isTr ? "Operasyon" : "Operation",
+        tone: "border-teal-200 bg-teal-50 text-teal-800 dark:border-teal-400/25 dark:bg-teal-400/15 dark:text-teal-100",
+        icon: Workflow,
+      });
+    }
+    if (flags.risk) {
+      list.push({
+        label: isTr ? "Risk" : "Risk",
+        tone: "border-red-200 bg-red-50 text-red-800 dark:border-red-400/25 dark:bg-red-400/15 dark:text-red-100",
+        icon: ShieldAlert,
+      });
+    }
+    if (flags.audit) {
+      list.push({
+        label: isTr ? "Denetim" : "Audit",
+        tone: "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-400/25 dark:bg-emerald-400/15 dark:text-emerald-100",
+        icon: ClipboardCheck,
+      });
+    }
+    if (flags.process) {
+      list.push({
+        label: isTr ? "Paket" : "Pack",
+        tone: "border-violet-200 bg-violet-50 text-violet-800 dark:border-violet-400/25 dark:bg-violet-400/15 dark:text-violet-100",
+        icon: Boxes,
+      });
+    }
+    if (!list.length) return null;
+    return (
+      <div className="flex flex-wrap gap-1.5">
+        {list.map((badge) => {
+          const Icon = badge.icon;
+          return (
+            <span
+              key={badge.label}
+              className={cn(
+                "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold",
+                badge.tone,
+              )}
+            >
+              <Icon size={11} />
+              {badge.label}
+            </span>
+          );
+        })}
+      </div>
+    );
+  }
+
+  function renderItemCard(item: LibraryItem) {
+    const def = categoryDefinitions.find((entry) => entry.key === item.category);
+    const tone = def ? CATEGORY_TONE_CLASSES[def.tone] : CATEGORY_TONE_CLASSES.slate;
+    const assignedCompanyIds = item.libraryContentId
+      ? (savedCompaniesByContent.get(item.libraryContentId) ?? [])
+      : [];
+    const isFullyAssigned = companies.length > 0 && companies.every((company) => assignedCompanyIds.includes(company.id));
+    const canAssign = Boolean(item.libraryContentId);
+    const deleteMode: DeleteMode | null =
+      item.source === "starter"
+        ? "starter-hide"
+        : item.source === "document" && (item.ownerId === userContext.authUserId || userContext.canManageCatalog)
+          ? "document"
+          : item.libraryContentId && creationCompanyId && assignedCompanyIds.includes(creationCompanyId)
+            ? "company"
+            : null;
+    const isDeleting = deletingItemId === item.id;
+    const primaryLabel =
+      item.primaryAction.kind === "ai"
+        ? isTr
+          ? "AI ile Taslak Üret"
+          : "Generate with AI"
+        : item.primaryAction.kind === "module"
+          ? isTr
+            ? "Modüle Git"
+            : "Open module"
+          : item.primaryAction.kind === "open"
+            ? isTr
+              ? "Aç"
+              : "Open"
+            : isTr
+              ? "Şablonu Kullan"
+              : "Use template";
+    const primaryIcon =
+      item.primaryAction.kind === "ai"
+        ? Sparkles
+        : item.primaryAction.kind === "module"
+          ? ArrowUpRight
+          : item.primaryAction.kind === "open"
+            ? Eye
+            : FilePenLine;
+    const PrimaryIcon = primaryIcon;
+
+    return (
+      <Card
+        key={item.id}
+        className={cn(
+          "group relative overflow-hidden border bg-card/95 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_55px_rgba(15,23,42,0.10)]",
+          tone.panelBorder,
+        )}
+      >
+        <span className={cn("absolute inset-y-0 left-0 w-1.5", tone.accent)} />
+        <span className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/55 blur-2xl transition-opacity group-hover:opacity-80 dark:bg-white/5" />
+
+        {deleteMode ? (
+          <button
+            type="button"
+            onClick={() => void handleDelete(item, deleteMode)}
+            disabled={isDeleting}
+            title={
+              deleteMode === "company"
+                ? isTr
+                  ? "Firmadan kaldır"
+                  : "Remove from company"
+                : deleteMode === "starter-hide"
+                  ? isTr
+                    ? "Listeden gizle"
+                    : "Hide from list"
+                  : isTr
+                    ? "Sil"
+                    : "Delete"
+            }
+            aria-label={isTr ? "Sil" : "Delete"}
+            className="absolute right-4 top-4 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-700 opacity-95 shadow-sm transition hover:border-rose-300 hover:bg-rose-100 disabled:cursor-wait disabled:opacity-60 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200 dark:hover:bg-rose-400/15"
+          >
+            <Trash2 size={15} />
+          </button>
+        ) : null}
+
+        <CardHeader className="relative space-y-3 pr-12">
+          <div className="flex items-center gap-2">
+            <span
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold",
+                tone.badgeBg,
+              )}
+            >
+              {def ? pickLocalized(def.label, locale) : pickT(t, "categories.all", isTr ? "Tümü" : "All")}
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/70 px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+              {item.contentType}
+            </span>
+            {item.usageCount > 0 ? (
+              <span className="inline-flex items-center rounded-full border border-border/70 bg-background/70 px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+                {isTr ? `${item.usageCount} kullanım` : `${item.usageCount} uses`}
+              </span>
+            ) : null}
+          </div>
+
+          <div className="space-y-1.5">
+            <CardTitle className="text-lg leading-snug">{item.title}</CardTitle>
+            <p className="line-clamp-2 min-h-[2.75rem] text-sm leading-6 text-muted-foreground">
+              {item.description || (isTr ? "Bu içerik için kısa açıklama henüz eklenmedi." : "No short description yet.")}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {renderFlagBadges(item.flags)}
+            {item.sectorTags.slice(0, 2).map((sector) => (
+              <Badge key={sector} variant="accent">
+                {sector}
+              </Badge>
+            ))}
+          </div>
+        </CardHeader>
+
+        <CardContent className="relative space-y-3">
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => handleAction(item)}
+              className={cn(
+                "inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-semibold transition",
+                "bg-[var(--primary)] text-white hover:brightness-110",
+              )}
+            >
+              <PrimaryIcon size={15} />
+              {primaryLabel}
+            </button>
+
+            {item.templateId ? (
+              <button
+                type="button"
+                onClick={() => void handlePreview(item)}
+                title={isTr ? "Önizle" : "Preview"}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-background text-muted-foreground transition hover:border-[var(--gold)]/30 hover:text-foreground"
+              >
+                <Eye size={15} />
+              </button>
+            ) : null}
+
+            {item.templateId || item.downloadHref ? (
+              <button
+                type="button"
+                onClick={() => void handleDownload(item)}
+                title={isTr ? "İndir" : "Download"}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-background text-muted-foreground transition hover:border-[var(--gold)]/30 hover:text-foreground"
+              >
+                <Download size={15} />
+              </button>
+            ) : null}
+          </div>
+
+          {canAssign ? (
+            <button
+              type="button"
+              onClick={() => openAssignModal(item)}
+              disabled={companies.length === 0 || isFullyAssigned}
+              className={cn(
+                "inline-flex h-10 w-full items-center justify-center gap-2 rounded-2xl border text-sm font-semibold transition",
+                companies.length === 0 || isFullyAssigned
+                  ? "cursor-not-allowed border-border/60 bg-muted/40 text-muted-foreground"
+                  : "border-[var(--gold)]/35 bg-[var(--gold)]/10 text-[var(--primary)] hover:bg-[var(--gold)]/15 dark:text-[#f3c978]",
+              )}
+            >
+              {isFullyAssigned ? <Check size={15} /> : <Building2 size={15} />}
+              {isFullyAssigned
+                ? isTr
+                  ? "Tüm firmalara kaydedildi"
+                  : "Saved to all companies"
+                : isTr
+                  ? "Firmaya Ata"
+                  : "Assign to company"}
+            </button>
+          ) : null}
+
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>
+              {item.source === "starter"
+                ? isTr
+                  ? "Başlangıç şablonu"
+                  : "Starter template"
+                : item.source === "document"
+                  ? isTr
+                    ? "Editör dokümanı"
+                    : "Editor document"
+                  : isTr
+                    ? "Katalog"
+                    : "Catalog"}
+            </span>
+            <span>
+              {new Date(item.createdAt).toLocaleDateString(dateLocaleTag, {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  function renderAddCard() {
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          if (!creationCompanyId) {
+            setErrorMessage(isTr ? "Lütfen önce içerik oluşturulacak firmayı seçin." : "Select the working company first.");
+            return;
+          }
+          setAiDraft({
+            category: category === "all" ? "documentation" : category,
+            prompt: isTr
+              ? "Aşağıdaki bağlam için bir İSG içeriği taslağı oluştur."
+              : "Draft an OHS content piece for the context below.",
+            title: isTr ? "Yeni Taslak" : "New draft",
+          });
+        }}
+        className={cn(
+          "group flex min-h-[260px] flex-col items-center justify-center rounded-[1.25rem] border border-dashed p-6 text-center transition",
+          "border-[var(--gold)]/40 bg-gradient-to-br from-white via-amber-50/55 to-yellow-50/60 hover:-translate-y-0.5 hover:border-[var(--gold)] hover:shadow-[0_22px_55px_rgba(184,134,11,0.18)] dark:border-[#6f5320] dark:from-slate-950 dark:via-amber-950/15 dark:to-slate-950",
+        )}
+      >
+        <span className="flex h-16 w-16 items-center justify-center rounded-[1.25rem] border border-[var(--gold)]/45 bg-[var(--gold)]/15 text-[var(--gold)] transition group-hover:scale-105">
+          <Sparkles size={28} strokeWidth={2.4} />
+        </span>
+        <h3 className="mt-4 text-lg font-semibold text-foreground">
+          {isTr ? "AI ile Yeni Taslak" : "New AI Draft"}
+        </h3>
+        <p className="mt-1.5 max-w-[18rem] text-sm leading-6 text-muted-foreground">
+          {isTr
+            ? "Sektör, departman veya operasyonu yazın; Nova size özel taslak çıkarır."
+            : "Describe the sector, department or operation; Nova drafts it for you."}
+        </p>
+      </button>
+    );
+  }
+
+  // ---------- Layout ----------
+  const visibleCategoryDefs = categoryDefinitions;
+
+  const headerEyebrow = pickT(t, "header.eyebrow", isTr ? "İSG Kütüphanesi" : "ISG Library");
+  const headerTitle = isTr ? "İSG Kütüphanesi" : "ISG Library";
+  const headerDescription = isTr
+    ? "Kurumsal hafıza, operasyon şablonları ve AI destekli başlangıç içerikleri tek bir merkezde. Doküman, talimat, denetim akışı ve süreç paketlerinizi buradan başlatın."
+    : "Institutional memory, operation templates and AI-assisted starter content in one place. Kick off documents, instructions, audit flows and process packs from here.";
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow={headerEyebrow}
+        title={headerTitle}
+        description={headerDescription}
+        className="relative overflow-visible border-border bg-card dark:text-slate-100"
+        meta={
+          <>
+            <span className="inline-flex items-center rounded-full border border-[var(--gold)]/25 bg-[var(--gold)]/10 px-3 py-1 text-xs font-semibold text-[var(--primary)] dark:text-[#f3c978]">
+              {userContext.fullName}
+            </span>
+            <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">
+              {isTr ? `${allItems.length} içerik` : `${allItems.length} items`}
+            </span>
+            <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">
+              {isTr ? `${customCategories.length} özel kategori` : `${customCategories.length} custom categories`}
+            </span>
+          </>
+        }
+        actions={
+          <>
+            <div className="min-w-[260px]" ref={companyMenuRef}>
+              <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]/90">
+                {isTr ? "Çalışılan Firma" : "Working company"}
+              </span>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setCompanyMenuOpen((current) => !current)}
+                  className="flex h-12 w-full items-center justify-between rounded-2xl border border-[var(--gold)]/25 bg-background/85 px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/45 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                >
+                  <span className="flex min-w-0 items-center gap-3">
+                    <Building2 size={16} className="shrink-0 text-[var(--gold)]/90" />
+                    <span className="truncate text-left">{selectedCompany?.name || (isTr ? "Firma seçin" : "Select company")}</span>
+                  </span>
+                  <ChevronDown
+                    size={16}
+                    className={cn("shrink-0 text-[var(--gold)]/90 transition-transform", companyMenuOpen ? "rotate-180" : "")}
+                  />
+                </button>
+                {companyMenuOpen ? (
+                  <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50 w-full overflow-hidden rounded-2xl border border-[var(--gold)]/25 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.22)] dark:border-white/10 dark:bg-slate-900">
+                    <div className="max-h-72 overflow-y-auto p-2">
+                      {companies.map((company) => {
+                        const isSelected = company.id === creationCompanyId;
+                        return (
+                          <button
+                            key={company.id}
+                            type="button"
+                            onClick={() => {
+                              setCreationCompanyId(company.id);
+                              setCompanyMenuOpen(false);
+                            }}
+                            className={cn(
+                              "flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm transition",
+                              isSelected
+                                ? "bg-[var(--primary)] text-white"
+                                : "text-slate-700 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-white/10",
+                            )}
+                          >
+                            <span className="pr-3 leading-6">{company.name}</span>
+                            {isSelected ? <Check size={15} className="shrink-0" /> : null}
+                          </button>
+                        );
+                      })}
+                      {companies.length === 0 ? (
+                        <div className="px-3 py-3 text-sm text-muted-foreground">
+                          {isTr ? "Aktif firma bulunamadı" : "No active company"}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+              <div className="mt-2 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => router.push(creationCompanyId ? `/workspace/${creationCompanyId}` : "/workspace/onboarding")}
+                  className="inline-flex h-8 items-center rounded-xl border border-border/80 bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
+                >
+                  {isTr ? "Çalışma alanına git" : "Open workspace"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/companies")}
+                  className="inline-flex h-8 items-center rounded-xl border border-border/80 bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
+                >
+                  {isTr ? "Firmaları yönet" : "Manage companies"}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setSavedOnly((current) => !current)}
+              className={cn(
+                "inline-flex h-11 items-center rounded-2xl border px-4 text-sm font-semibold transition",
+                savedOnly
+                  ? "border-[var(--gold)]/35 bg-[var(--gold)]/15 text-[var(--primary)]"
+                  : "border-border bg-background/85 text-muted-foreground hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white",
+              )}
+            >
+              {isTr ? "Firmama kaydedilenler" : "Saved to my companies"}
+            </button>
+          </>
+        }
+      />
+
+      {/* ---- Category strip ---- */}
+      <section className="relative overflow-hidden rounded-[1.75rem] border border-border/70 bg-card/95 p-3 shadow-[var(--shadow-card)] dark:border-white/10 dark:bg-[rgba(15,23,42,0.82)] sm:p-4">
+        <div className="no-scrollbar flex flex-nowrap items-stretch gap-2 overflow-x-auto pb-1">
+          {/* "All" chip */}
+          <button
+            type="button"
+            onClick={() => setCategory("all")}
+            className={cn(
+              "inline-flex shrink-0 items-center justify-center gap-2 rounded-[1rem] border px-3.5 py-2.5 text-[13px] font-semibold transition-all duration-200",
+              category === "all" ? CATEGORY_TONE_CLASSES.slate.chipActive : CATEGORY_TONE_CLASSES.slate.chipIdle,
+            )}
+          >
+            <LayoutGrid size={15} />
+            <span className="whitespace-nowrap">{pickLocalized(ALL_CATEGORY_LABEL, locale)}</span>
+            <span className="ml-1 rounded-full border border-current/30 bg-white/35 px-1.5 py-0 text-[10px] font-bold text-current/85 dark:bg-white/10">
+              {allItems.length}
+            </span>
+          </button>
+
+          {visibleCategoryDefs.map((definition) => {
+            const Icon = CATEGORY_ICONS[definition.iconKey];
+            const tone = CATEGORY_TONE_CLASSES[definition.tone];
+            const isActive = definition.key === category;
+            const count = categoryCounts.get(definition.key) ?? 0;
+            return (
+              <button
+                key={definition.key}
+                type="button"
+                onClick={() => setCategory(definition.key)}
+                className={cn(
+                  "inline-flex shrink-0 items-center justify-center gap-2 rounded-[1rem] border px-3.5 py-2.5 text-[13px] font-semibold transition-all duration-200",
+                  isActive ? tone.chipActive : tone.chipIdle,
+                )}
+              >
+                <Icon size={15} />
+                <span className="whitespace-nowrap">{pickLocalized(definition.label, locale)}</span>
+                <span className="ml-1 rounded-full border border-current/30 bg-white/35 px-1.5 py-0 text-[10px] font-bold text-current/85 dark:bg-white/10">
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+
+          {/* Add-category chip */}
+          <button
+            type="button"
+            onClick={() => {
+              setNewCategoryLabel("");
+              setNewCategoryDescription("");
+              setCreateCategoryOpen(true);
+            }}
+            className="inline-flex shrink-0 items-center gap-2 rounded-[1rem] border border-dashed border-[var(--gold)]/45 bg-[var(--gold)]/8 px-3.5 py-2.5 text-[13px] font-semibold text-[var(--primary)] transition hover:bg-[var(--gold)]/15 dark:text-[#f3c978]"
+          >
+            <Plus size={15} />
+            {isTr ? "Kategori Ekle" : "Add category"}
+          </button>
+        </div>
+      </section>
+
+      {/* ---- Filter bar ---- */}
+      <section className="relative grid gap-3 rounded-[1.5rem] border border-border/70 bg-card/95 p-3 shadow-[var(--shadow-card)] dark:border-white/10 dark:bg-[rgba(15,23,42,0.82)] sm:p-4 xl:grid-cols-[minmax(0,1.6fr)_180px_180px]">
+        <label className="relative">
+          <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={isTr ? "Başlık, açıklama veya etiket ara…" : "Search title, description, tags…"}
+            className="h-12 w-full rounded-2xl border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
+          />
+        </label>
+
+        <label className="relative">
+          <Filter size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <select
+            value={sectorFilter}
+            onChange={(event) => setSectorFilter(event.target.value)}
+            className="h-12 w-full appearance-none rounded-2xl border border-border bg-background pl-11 pr-9 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
+          >
+            <option value="all">{isTr ? "Tüm sektörler" : "All sectors"}</option>
+            {sectorOptions.map((sector) => (
+              <option key={sector} value={sector}>
+                {sector}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="relative">
+          <Filter size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <select
+            value={sortBy}
+            onChange={(event) => setSortBy(getSortKey(event.target.value))}
+            className="h-12 w-full appearance-none rounded-2xl border border-border bg-background pl-11 pr-9 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
+          >
+            <option value="newest">{isTr ? "En yeni" : "Newest"}</option>
+            <option value="oldest">{isTr ? "En eski" : "Oldest"}</option>
+            <option value="az">A → Z</option>
+            <option value="za">Z → A</option>
+          </select>
+        </label>
+      </section>
+
+      {/* ---- Active category header ---- */}
+      {activeCategoryDef ? (
+        <section
+          className={cn(
+            "relative flex flex-col gap-3 overflow-hidden rounded-[1.5rem] border bg-card/95 p-4 shadow-[var(--shadow-card)] dark:border-white/10 dark:bg-[rgba(15,23,42,0.82)] sm:flex-row sm:items-center sm:justify-between sm:p-5",
+            activeTone?.panelBorder,
+          )}
+        >
+          <div className="flex items-start gap-4">
+            <span className={cn("flex h-12 w-12 items-center justify-center rounded-2xl border border-current/30 bg-current/10")}> 
+              {(() => {
+                const Icon = CATEGORY_ICONS[activeCategoryDef.iconKey];
+                return <Icon size={20} />;
+              })()}
+            </span>
+            <div className="min-w-0">
+              <h2 className="text-lg font-semibold text-foreground">{pickLocalized(activeCategoryDef.label, locale)}</h2>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">{pickLocalized(activeCategoryDef.description, locale)}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {category.startsWith("custom:") ? (
+              <button
+                type="button"
+                onClick={() => handleRemoveCustomCategory(category)}
+                className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-200"
+              >
+                <Trash2 size={14} />
+                {isTr ? "Kategoriyi Sil" : "Delete category"}
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={!creationCompanyId || importingDocument}
+              className={cn(
+                "inline-flex h-9 items-center gap-1.5 rounded-xl border border-[var(--gold)]/30 bg-background px-3 text-xs font-semibold text-foreground transition",
+                creationCompanyId && !importingDocument ? "hover:bg-[var(--gold)]/10" : "cursor-not-allowed opacity-60",
+              )}
+            >
+              <Upload size={14} />
+              {importingDocument ? (isTr ? "Yükleniyor…" : "Uploading…") : isTr ? "Dosya yükle" : "Upload file"}
+            </button>
+          </div>
+        </section>
+      ) : null}
+
+      {/* ---- Status / error banners ---- */}
+      {statusMessage ? (
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-400/25 dark:bg-emerald-400/10 dark:text-emerald-100">
+          {statusMessage}
+        </div>
+      ) : null}
+      {errorMessage ? (
+        <div className="flex items-start justify-between gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-400/25 dark:bg-rose-400/10 dark:text-rose-100">
+          <span>{errorMessage}</span>
+          <button type="button" onClick={() => setErrorMessage(null)} aria-label="dismiss">
+            <X size={14} />
+          </button>
+        </div>
+      ) : null}
+
+      {/* ---- Grid ---- */}
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        {renderAddCard()}
+        {filteredItems.map((item) => renderItemCard(item))}
+        {filteredItems.length === 0 ? (
+          <div className="md:col-span-2 xl:col-span-3 2xl:col-span-4">
+            <div className="flex flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-border bg-card/80 px-6 py-12 text-center shadow-[var(--shadow-card)]">
+              <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] border border-[var(--gold)]/30 bg-[var(--gold)]/10 text-[var(--gold)]">
+                <LayoutGrid size={22} />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-foreground">
+                {isTr ? "Bu görünümde içerik yok" : "Nothing here yet"}
+              </h3>
+              <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
+                {isTr
+                  ? "Kategori değiştirmeyi, filtreyi temizlemeyi veya AI ile yeni bir taslak oluşturmayı deneyin."
+                  : "Try a different category, clear filters, or generate a draft with AI."}
+              </p>
+            </div>
+          </div>
+        ) : null}
+      </section>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.md,.jpg,.jpeg,.png,.webp"
+        className="hidden"
+        onChange={(event) => void handleFileSelected(event)}
+      />
+
+      {/* ---- Assign-to-company modal ---- */}
+      {assignModalOpen && assignContent ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-[2rem] border border-border bg-card p-6 shadow-[var(--shadow-elevated)]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-foreground">
+                  {isTr ? "Firmaya Ata" : "Assign to company"}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {isTr
+                    ? `"${assignContent.title}" içeriğini seçtiğiniz firmaya kaydedin.`
+                    : `Save "${assignContent.title}" to the selected company.`}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAssignModalOpen(false)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              <label className="space-y-2 block">
+                <span className="text-sm font-medium text-foreground">
+                  {isTr ? "Firma" : "Company"}
+                </span>
+                <select
+                  value={assignCompanyId}
+                  onChange={(event) => setAssignCompanyId(event.target.value)}
+                  className="h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
+                >
+                  <option value="">{isTr ? "Firma seçin" : "Select company"}</option>
+                  {companies.map((company) => {
+                    const already = (savedCompaniesByContent.get(assignContent.id) ?? []).includes(company.id);
+                    return (
+                      <option key={company.id} value={company.id} disabled={already}>
+                        {company.name}
+                        {already ? (isTr ? " (zaten kayıtlı)" : " (already saved)") : ""}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
+
+              {assignMessage ? (
+                <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+                  {assignMessage}
+                </div>
+              ) : null}
+
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={() => setAssignModalOpen(false)}
+                  className="inline-flex h-11 items-center justify-center rounded-2xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition hover:border-[var(--gold)]/35"
+                >
+                  {isTr ? "Vazgeç" : "Cancel"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleAssignSubmit()}
+                  disabled={assigning || !assignCompanyId}
+                  className={cn(
+                    "inline-flex h-11 items-center justify-center rounded-2xl px-5 text-sm font-semibold text-white transition",
+                    assigning || !assignCompanyId
+                      ? "cursor-not-allowed bg-slate-300"
+                      : "bg-[var(--primary)] hover:brightness-110",
+                  )}
+                >
+                  {assigning ? (isTr ? "Kaydediliyor…" : "Saving…") : isTr ? "Firmaya Kaydet" : "Save to company"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/* ---- AI prompt modal ---- */}
+      {aiDraft ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-xl rounded-[2rem] border border-border bg-card p-6 shadow-[var(--shadow-elevated)]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="inline-flex items-center gap-1 rounded-full border border-fuchsia-200 bg-fuchsia-50 px-2.5 py-0.5 text-[11px] font-semibold text-fuchsia-700 dark:border-fuchsia-400/25 dark:bg-fuchsia-400/10 dark:text-fuchsia-100">
+                  <Sparkles size={12} /> {isTr ? "AI Taslak" : "AI draft"}
+                </p>
+                <h2 className="mt-2 text-xl font-semibold text-foreground">
+                  {isTr ? "Nova ile Taslak Üret" : "Draft with Nova"}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {isTr
+                    ? "İhtiyacınızı netleştirin. Editörde Nova bu girdiyi kullanarak ilk taslağınızı, mevzuat bağlantılarını ve risk önerilerini üretir."
+                    : "Refine the brief. Nova will use it in the editor to draft content, legal links and risk suggestions."}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAiDraft(null)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              <label className="space-y-2 block">
+                <span className="text-sm font-medium text-foreground">{isTr ? "Başlık" : "Title"}</span>
+                <input
+                  value={aiDraft.title}
+                  onChange={(event) => setAiDraft({ ...aiDraft, title: event.target.value })}
+                  className="h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
+                />
+              </label>
+              <label className="space-y-2 block">
+                <span className="text-sm font-medium text-foreground">{isTr ? "Brief / İstek" : "Brief / request"}</span>
+                <textarea
+                  rows={6}
+                  value={aiDraft.prompt}
+                  onChange={(event) => setAiDraft({ ...aiDraft, prompt: event.target.value })}
+                  className="w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
+                />
+              </label>
+
+              <div className="rounded-2xl border border-fuchsia-200 bg-fuchsia-50/50 p-3 text-xs leading-5 text-fuchsia-900 dark:border-fuchsia-400/25 dark:bg-fuchsia-400/8 dark:text-fuchsia-100">
+                <strong>{isTr ? "İpucu:" : "Tip:"} </strong>
+                {isTr
+                  ? "Sektörü, departmanı ve birkaç tehlikeyi yazarsanız Nova daha hedefli bir taslak çıkarır."
+                  : "Naming the sector, department and a few hazards lets Nova produce a sharper draft."}
+              </div>
+
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={() => setAiDraft(null)}
+                  className="inline-flex h-11 items-center justify-center rounded-2xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition hover:border-[var(--gold)]/35"
+                >
+                  {isTr ? "Vazgeç" : "Cancel"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void submitAiDraft()}
+                  disabled={aiDraftSubmitting || !aiDraft.prompt.trim()}
+                  className={cn(
+                    "inline-flex h-11 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold text-white transition",
+                    aiDraftSubmitting || !aiDraft.prompt.trim()
+                      ? "cursor-not-allowed bg-slate-300"
+                      : "bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:brightness-110",
+                  )}
+                >
+                  <Sparkles size={15} />
+                  {aiDraftSubmitting ? (isTr ? "Hazırlanıyor…" : "Preparing…") : isTr ? "Editörde Üret" : "Generate in editor"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/* ---- Custom category modal ---- */}
+      {createCategoryOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-[2rem] border border-border bg-card p-6 shadow-[var(--shadow-elevated)]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-foreground">
+                  {isTr ? "Yeni Ana Kategori" : "New main category"}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {isTr
+                    ? "Sektörünüze veya operasyonunuza özel kütüphane oluşturun. Örnek: Hastane Operasyonları, Kimyasal Güvenlik, Yaşlı Bakım Merkezi."
+                    : "Create a category that matches your sector or operation. Example: Hospital Ops, Chemical Safety, Elderly Care."}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCreateCategoryOpen(false)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              <label className="space-y-2 block">
+                <span className="text-sm font-medium text-foreground">{isTr ? "Kategori Adı" : "Category name"}</span>
+                <input
+                  value={newCategoryLabel}
+                  onChange={(event) => setNewCategoryLabel(event.target.value)}
+                  placeholder={isTr ? "Örn. Hastane Operasyonları" : "e.g. Hospital Ops"}
+                  className="h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
+                />
+              </label>
+              <label className="space-y-2 block">
+                <span className="text-sm font-medium text-foreground">
+                  {isTr ? "Kısa Açıklama (opsiyonel)" : "Short description (optional)"}
+                </span>
+                <textarea
+                  rows={3}
+                  value={newCategoryDescription}
+                  onChange={(event) => setNewCategoryDescription(event.target.value)}
+                  placeholder={
+                    isTr
+                      ? "Bu kategoride hangi tür şablonları toplayacaksınız?"
+                      : "What kind of templates will live here?"
+                  }
+                  className="w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
+                />
+              </label>
+
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={() => setCreateCategoryOpen(false)}
+                  className="inline-flex h-11 items-center justify-center rounded-2xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition hover:border-[var(--gold)]/35"
+                >
+                  {isTr ? "Vazgeç" : "Cancel"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCreateCustomCategory}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-white transition hover:brightness-110"
+                >
+                  <Plus size={15} />
+                  {isTr ? "Kategoriyi Oluştur" : "Create category"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/* ---- Template preview modal ---- */}
+      {previewState ? (
+        <TemplatePreviewModal
+          title={previewState.title}
+          description={previewState.description}
+          content={previewState.content}
+          loading={previewLoading}
+          isTr={isTr}
+          onClose={() => {
+            setPreviewLoading(false);
+            setPreviewState(null);
+          }}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Template preview modal
+// ---------------------------------------------------------------------------
+function TemplatePreviewModal(props: {
   title: string;
   description: string;
   content: JSONContent | null;
   loading: boolean;
+  isTr: boolean;
   onClose: () => void;
 }) {
-  const t = useTranslations("isgLibrary.preview");
-  const hasRenderableContent = Boolean(props.content?.content?.length);
-  const previewHtml = useMemo(
-    () => (props.content ? renderJsonNodeToHtml(props.content) : ""),
-    [props.content],
-  );
-
-  if (!props.open) return null;
+  const previewHtml = useMemo(() => (props.content ? renderJsonNodeToHtml(props.content) : ""), [props.content]);
+  const hasContent = Boolean(props.content?.content?.length);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
@@ -2554,7 +2151,7 @@ function TemplatePreview(props: {
         <div className="flex items-start justify-between gap-4 border-b border-border px-6 py-5">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]/90">
-              {t("eyebrow")}
+              {props.isTr ? "Şablon Önizleme" : "Template preview"}
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-foreground">{props.title}</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{props.description}</p>
@@ -2578,18 +2175,33 @@ function TemplatePreview(props: {
             </div>
           ) : (
             <div className="a4-page mx-auto min-h-0 max-w-4xl rounded-[1.5rem] border border-border bg-white px-8 py-8 text-slate-900 shadow-sm dark:border-white/10 dark:bg-slate-950/70 dark:text-slate-100">
-              {hasRenderableContent ? (
-                <div
-                  className="tiptap min-h-[720px]"
-                  dangerouslySetInnerHTML={{ __html: previewHtml }}
-                />
+              {hasContent ? (
+                <div className="tiptap min-h-[600px]" dangerouslySetInnerHTML={{ __html: previewHtml }} />
               ) : (
                 <div className="flex min-h-[240px] items-center justify-center rounded-[1.25rem] border border-dashed border-border/70 bg-background/50 px-6 text-center text-sm text-muted-foreground">
-                  {t("loadError")}
+                  {props.isTr
+                    ? "Önizleme içeriği yüklenemedi. Bu şablonu yine de indirip düzenleyebilirsiniz."
+                    : "Preview content failed. You can still download and edit this template."}
                 </div>
               )}
             </div>
           )}
+        </div>
+
+        <div className="flex justify-end gap-3 border-t border-border bg-card px-6 py-4">
+          <Link
+            href="/documents/new"
+            className="inline-flex h-10 items-center justify-center rounded-2xl border border-border bg-background px-4 text-sm font-semibold text-foreground transition hover:border-[var(--gold)]/35"
+          >
+            {props.isTr ? "Editörde Aç" : "Open in editor"}
+          </Link>
+          <button
+            type="button"
+            onClick={props.onClose}
+            className="inline-flex h-10 items-center justify-center rounded-2xl bg-[var(--primary)] px-4 text-sm font-semibold text-white transition hover:brightness-110"
+          >
+            {props.isTr ? "Kapat" : "Close"}
+          </button>
         </div>
       </div>
     </div>

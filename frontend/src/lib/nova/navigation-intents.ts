@@ -127,12 +127,20 @@ const navigationTargets: NovaNavigationTarget[] = [
     matches: (text) => /(olay|ramak kala|is kazasi|kaza|incident|near miss|aksiyon)/.test(text),
   },
   {
+    destination: "settings_legal",
+    url: "/settings?tab=mevzuat",
+    label: "Mevzuat ve Rehberler",
+    reason: "Mevzuat, kanun, yonetmelik ve rehber icerikleri Ayarlar > Mevzuat sekmesinde yonetilir.",
+    priority: 60,
+    matches: (text) => /(mevzuat|kanun|yonetmelik|teblig|legal|regulation)/.test(text),
+  },
+  {
     destination: "isg_library",
     url: "/isg-library",
     label: "ISG Kutuphanesi",
-    reason: "Mevzuat, rehber ve kutuphane icerikleri ISG Kutuphanesi alaninda bulunur.",
+    reason: "Sablonlar, taslaklar ve operasyon paketleri ISG Kutuphanesi alaninda bulunur.",
     priority: 50,
-    matches: (text) => /(isg kutuphanesi|kutuphane|mevzuat|kanun|yonetmelik|library|legal)/.test(text),
+    matches: (text) => /(isg kutuphanesi|kutuphane|sablon|library|template|operasyon paketi)/.test(text),
   },
   {
     destination: "reports",
