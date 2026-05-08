@@ -10,6 +10,7 @@ import {
   type WorkspaceMembership,
   type WorkspaceRow,
 } from "@/lib/supabase/workspace-api";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 export type WorkspaceSwitcherVariant = "desktop" | "mobile";
@@ -47,9 +48,20 @@ function mergeByWorkspaceId(
 
 async function fetchOnboardingMemberships(): Promise<WorkspaceMembership[]> {
   try {
+    const headers: HeadersInit = {};
+    const supabase = createClient();
+    if (supabase) {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token?.trim();
+      if (token) headers.Authorization = `Bearer ${token}`;
+    }
+
     const response = await fetch("/api/workspaces/onboarding", {
       method: "GET",
       credentials: "include",
+      headers,
       cache: "no-store",
     });
     if (!response.ok) return [];
