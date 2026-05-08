@@ -492,6 +492,46 @@ export default function DigitalTwinPage() {
                           ) : (
                             <p className="mt-3 text-xs text-emerald-600 dark:text-emerald-400 font-medium">Temiz — risk tespit edilmedi</p>
                           )}
+
+                          {selectedPoint.semanticClasses.length > 0 ? (
+                            <div className="mt-3 rounded-lg border border-border bg-secondary/10 p-3">
+                              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                                AI sahne etiketleri
+                              </p>
+                              <div className="mt-2 flex flex-wrap gap-1.5">
+                                {selectedPoint.semanticClasses
+                                  .slice(0, 8)
+                                  .map((item, idx) => (
+                                    <span
+                                      key={`semantic-${idx}`}
+                                      className="rounded-full border border-border bg-card px-2 py-0.5 text-[10px] text-foreground"
+                                    >
+                                      {String(item.label ?? item.class ?? item.name ?? "etiket")}
+                                    </span>
+                                  ))}
+                              </div>
+                            </div>
+                          ) : null}
+
+                          {selectedPoint.objectDetections.length > 0 ? (
+                            <div className="mt-3 rounded-lg border border-border bg-secondary/10 p-3">
+                              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                                Nesne tespitleri
+                              </p>
+                              <div className="mt-2 flex flex-wrap gap-1.5">
+                                {selectedPoint.objectDetections
+                                  .slice(0, 8)
+                                  .map((item, idx) => (
+                                    <span
+                                      key={`object-${idx}`}
+                                      className="rounded-full border border-border bg-card px-2 py-0.5 text-[10px] text-foreground"
+                                    >
+                                      {String(item.label ?? item.class ?? item.name ?? "nesne")}
+                                    </span>
+                                  ))}
+                              </div>
+                            </div>
+                          ) : null}
                         </div>
                       ) : (
                         <div className="rounded-xl border border-dashed border-border bg-card p-6 text-center">

@@ -59,6 +59,9 @@ export type TwinPoint = {
   imageUrl: string | null;
   depthEstimate: number | null;
   risksAtPoint: Array<{ risk_name: string; risk_level: string }>;
+  semanticClasses: Array<Record<string, unknown>>;
+  objectDetections: Array<Record<string, unknown>>;
+  spatialInference: Record<string, unknown>;
   capturedAt: string;
 };
 
@@ -228,6 +231,9 @@ export async function listTwinPoints(sessionId: string): Promise<TwinPoint[]> {
     imageUrl: r.image_url,
     depthEstimate: r.depth_estimate,
     risksAtPoint: (r.risks_at_point ?? []) as TwinPoint["risksAtPoint"],
+    semanticClasses: (r.semantic_classes ?? []) as TwinPoint["semanticClasses"],
+    objectDetections: (r.object_detections ?? []) as TwinPoint["objectDetections"],
+    spatialInference: (r.spatial_inference ?? {}) as TwinPoint["spatialInference"],
     capturedAt: r.captured_at,
   }));
 }

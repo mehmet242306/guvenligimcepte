@@ -12,6 +12,7 @@ const ALLOWED_ORIGINS = (Deno.env.get('APP_ORIGIN') ?? '')
 
 const LOCAL_DEV_ORIGIN_PATTERN = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i
 const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514'
+const OPENAI_MODEL = 'gpt-4.1'
 
 function buildCorsHeaders(req: Request) {
   const requestOrigin = req.headers.get('origin') ?? ''
@@ -71,6 +72,8 @@ const requestSchema = z.object({
   language: z.string().trim().min(2).max(10).default('tr'),
   company_workspace_id: z.string().uuid().optional(),
   source: z.string().trim().min(1).max(50).default('mobile_live_scan'),
+  object_detection_provider: z.enum(['openai', 'anthropic']).default('openai'),
+  scene_design_provider: z.enum(['anthropic', 'openai']).default('anthropic'),
   voice_note_text: z.string().trim().max(2000).optional(),
   manual_annotations: z.array(
     z.object({
@@ -110,6 +113,7 @@ function buildPrompt(params: {
   source: string
   voiceNoteText?: string
   manualAnnotations?: Array<{ x: number; y: number; note?: string }>
+  openAiObjects?: Record<string, unknown>
 }) {
   const methodPrompt = METHOD_PROMPTS[params.riskMethod] ?? METHOD_PROMPTS.r2d
   const languageInstruction = LANGUAGE_INSTRUCTIONS[params.language] ?? LANGUAGE_INSTRUCTIONS.tr
@@ -120,6 +124,10 @@ function buildPrompt(params: {
 
   const manualContext = params.manualAnnotations?.length
     ? `Kullanici tarafindan isaretlenen manuel odak noktalarini onceliklendir: ${params.manualAnnotations.map((item, index) => `#${index + 1} x=${item.x}, y=${item.y}${item.note ? `, not=${item.note}` : ''}`).join(' | ')}.`
+    : ''
+
+  const objectContext = params.openAiObjects
+    ? `OpenAI nesne/segmentasyon sonucu (destekleyici baglam): ${JSON.stringify(params.openAiObjects)}`
     : ''
 
   return `Sen RiskNova Nova Vision'sin. Bir saha taramasi gorselini profesyonel ISG uzmani gibi incele.
@@ -135,6 +143,7 @@ ${languageInstruction}
 Kaynak: ${params.source}
 ${voiceContext}
 ${manualContext}
+${objectContext}
 
 Kurallar:
 - Sadece gorselde gercekten gozlemledigini yaz.
@@ -182,6 +191,84 @@ Beklenen format:
 }`
 }
 
+function normalizeObjectLayer(parsed: Record<string, unknown>) {
+  return {
+    semantic_classes: Array.isArray(parsed.semantic_classes) ? parsed.semantic_classes : [],
+    object_detections: Array.isArray(parsed.object_detections) ? parsed.object_detections : [],
+    spatial_inference:
+      parsed.spatial_inference && typeof parsed.spatial_inference === 'object'
+        ? parsed.spatial_inference
+        : {},
+  }
+}
+
+async function runOpenAiObjectDetection(args: {
+  imageBase64: string
+  language: string
+}) {
+  const openAiKey = Deno.env.get('OPENAI_API_KEY') ?? ''
+  if (!openAiKey) {
+    return {
+      parsed: normalizeObjectLayer({}),
+      usage: null as Record<string, unknown> | null,
+      model: OPENAI_MODEL,
+      skipped: true,
+    }
+  }
+
+  const response = await fetch('https://api.openai.com/v1/responses', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${openAiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: OPENAI_MODEL,
+      temperature: 0.1,
+      input: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'input_text',
+              text:
+                `Analyze this industrial field image for digital twin context. Return strictly JSON with:
+{
+  "semantic_classes": [{"label":"wall|floor|ceiling|industrial_equipment|office_furniture|human|vehicle|other","confidence":0-100}],
+  "object_detections": [{"label":"string","confidence":0-100,"bbox":{"x":0-1,"y":0-1,"w":0-1,"h":0-1}}],
+  "spatial_inference": {"wall_continuity":"short text","occlusion_inference":"short text","floor_plane":"short text","room_layout":"short text"}
+}
+Language for text snippets: ${args.language}.`,
+            },
+            {
+              type: 'input_image',
+              image_url: `data:image/jpeg;base64,${args.imageBase64}`,
+            },
+          ],
+        },
+      ],
+    }),
+  })
+
+  if (!response.ok) {
+    const text = await response.text()
+    throw new Error(`openai_object_detection_failed:${response.status}:${text.slice(0, 200)}`)
+  }
+
+  const payload = await response.json()
+  const outputText =
+    payload?.output_text ??
+    payload?.output?.[0]?.content?.find((item: any) => item?.type === 'output_text')?.text ??
+    '{}'
+
+  return {
+    parsed: normalizeObjectLayer(parseLooseJsonObject(outputText)),
+    usage: payload?.usage ?? null,
+    model: payload?.model ?? OPENAI_MODEL,
+    skipped: false,
+  }
+}
+
 function normalizeResult(parsed: Record<string, unknown>) {
   const risks = Array.isArray(parsed.risks) ? parsed.risks : []
   const routingTargets = Array.isArray(parsed.routing_targets) ? parsed.routing_targets : []
@@ -211,6 +298,24 @@ function parseJsonResponse(text: string) {
       }
     }
     return normalizeResult({})
+  }
+}
+
+function parseLooseJsonObject(text: string): Record<string, unknown> {
+  try {
+    const parsed = JSON.parse(text)
+    return parsed && typeof parsed === 'object' ? parsed as Record<string, unknown> : {}
+  } catch {
+    const match = text.match(/\{[\s\S]*\}/)
+    if (match) {
+      try {
+        const parsed = JSON.parse(match[0])
+        return parsed && typeof parsed === 'object' ? parsed as Record<string, unknown> : {}
+      } catch {
+        return {}
+      }
+    }
+    return {}
   }
 }
 
@@ -280,6 +385,18 @@ serve(async (req) => {
       apiKey: Deno.env.get('ANTHROPIC_API_KEY') ?? '',
     })
 
+    const openAiObjectResult = await executeWithResilience<any>({
+      serviceKey: 'openai_vision_objects',
+      displayName: 'OpenAI Vision Objects',
+      serviceType: 'ai',
+      operationName: 'object_detection',
+      fallbackMessage: 'OpenAI nesne tespiti gecici olarak kullanilamiyor.',
+      operation: async () => runOpenAiObjectDetection({
+        imageBase64: body.image_base64,
+        language: body.language,
+      }),
+    })
+
     const analysisResult = await executeWithResilience<any>({
       serviceKey: 'anthropic_vision_mobile',
       displayName: 'Anthropic Vision Mobile',
@@ -311,6 +428,7 @@ serve(async (req) => {
                     source: body.source,
                     voiceNoteText: body.voice_note_text,
                     manualAnnotations: body.manual_annotations,
+                    openAiObjects: openAiObjectResult.ok ? openAiObjectResult.data?.parsed : undefined,
                   }),
                 },
               ],
@@ -337,6 +455,9 @@ serve(async (req) => {
     }
 
     const parsed = analysisResult.data.parsed
+    const openAiLayer = openAiObjectResult.ok
+      ? normalizeObjectLayer(openAiObjectResult.data?.parsed ?? {})
+      : normalizeObjectLayer({})
     const risks = Array.isArray(parsed.risks)
       ? parsed.risks.map((risk: any, index: number) => ({
           ...risk,
@@ -359,12 +480,37 @@ serve(async (req) => {
       },
     })
 
+    if (openAiObjectResult.ok && !openAiObjectResult.data?.skipped) {
+      await logEdgeAiUsage({
+        userId: user.id,
+        organizationId,
+        model: openAiObjectResult.data?.model ?? OPENAI_MODEL,
+        endpoint: '/functions/v1/nova-vision-scan',
+        promptTokens: Number((openAiObjectResult.data?.usage as any)?.input_tokens ?? 0),
+        completionTokens: Number((openAiObjectResult.data?.usage as any)?.output_tokens ?? 0),
+        success: true,
+        metadata: {
+          source: body.source,
+          stage: 'object_detection',
+          provider: body.object_detection_provider,
+        },
+      })
+    }
+
     return new Response(
       JSON.stringify({
         ...parsed,
         risks,
         organization_id: organizationId,
         company_workspace_id: body.company_workspace_id ?? profile?.company_workspace_id ?? null,
+        semantic_classes: openAiLayer.semantic_classes,
+        object_detections: openAiLayer.object_detections,
+        spatial_inference: openAiLayer.spatial_inference,
+        providers: {
+          object_detection: body.object_detection_provider,
+          scene_design: body.scene_design_provider,
+          risk_analysis: 'anthropic',
+        },
         degraded: analysisResult.degraded,
       }),
       {

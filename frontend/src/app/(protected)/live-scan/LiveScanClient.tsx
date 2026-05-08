@@ -82,6 +82,48 @@ function enrichRisks(risks: Array<Record<string, unknown>>, frameNumber: number)
   }));
 }
 
+function asRecordArray(input: unknown): Array<Record<string, unknown>> {
+  if (!Array.isArray(input)) return [];
+  return input.filter((item): item is Record<string, unknown> => !!item && typeof item === "object");
+}
+
+function extractTwinSemanticPayload(fullResult: Record<string, unknown>): {
+  semanticClasses: Array<Record<string, unknown>>;
+  objectDetections: Array<Record<string, unknown>>;
+  spatialInference: Record<string, unknown>;
+} {
+  const semanticCandidates = [
+    fullResult.semantic_classes,
+    fullResult.semantic_labels,
+    fullResult.scene_classes,
+    fullResult.scene_segments,
+    fullResult.material_segments,
+  ];
+  const objectCandidates = [
+    fullResult.object_detections,
+    fullResult.objects,
+    fullResult.detected_objects,
+    fullResult.instance_detections,
+  ];
+  const spatialInference = {
+    occlusion_inference: fullResult.occlusion_inference ?? null,
+    wall_continuity: fullResult.wall_continuity ?? null,
+    floor_plane: fullResult.floor_plane ?? null,
+    room_layout: fullResult.room_layout ?? null,
+  } as Record<string, unknown>;
+
+  const semanticClasses =
+    semanticCandidates.map((candidate) => asRecordArray(candidate)).find((arr) => arr.length > 0) ?? [];
+  const objectDetections =
+    objectCandidates.map((candidate) => asRecordArray(candidate)).find((arr) => arr.length > 0) ?? [];
+
+  return {
+    semanticClasses,
+    objectDetections,
+    spatialInference,
+  };
+}
+
 export function LiveScanClient() {
   const t = useTranslations("liveScan");
   const locale = useLocale();
@@ -320,6 +362,7 @@ export function LiveScanClient() {
         pointIndex: frameNumber,
         imageUrl: screenshotUrl,
         risksAtPoint: rawRisks,
+        ...extractTwinSemanticPayload(fullResult),
         gpsLat: gps?.lat,
         gpsLng: gps?.lng,
         gpsAccuracy: gps?.accuracy ?? null,
@@ -354,6 +397,8 @@ export function LiveScanClient() {
         language: lang,
         companyWorkspaceId: companyId,
         source: "web_live_scan",
+        objectDetectionProvider: "openai",
+        sceneDesignProvider: "anthropic",
       });
 
       const rawRisks = Array.isArray(result.risks) ? (result.risks as Array<Record<string, unknown>>) : [];

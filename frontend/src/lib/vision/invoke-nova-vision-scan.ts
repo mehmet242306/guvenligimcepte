@@ -14,6 +14,8 @@ export async function invokeNovaVisionScan(args: {
   language: string;
   companyWorkspaceId: string;
   source?: string;
+  objectDetectionProvider?: "openai" | "anthropic";
+  sceneDesignProvider?: "anthropic" | "openai";
 }): Promise<NovaVisionScanResult> {
   const supabase = createClient();
   if (!supabase) {
@@ -27,6 +29,8 @@ export async function invokeNovaVisionScan(args: {
       language: args.language,
       company_workspace_id: args.companyWorkspaceId,
       source: args.source ?? "web_live_scan",
+      object_detection_provider: args.objectDetectionProvider ?? "openai",
+      scene_design_provider: args.sceneDesignProvider ?? "anthropic",
     },
   });
 

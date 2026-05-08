@@ -360,6 +360,9 @@ export async function saveScanTwinPoint(args: {
   pointIndex: number;
   imageUrl: string | null;
   risksAtPoint: unknown[];
+  semanticClasses?: unknown[];
+  objectDetections?: unknown[];
+  spatialInference?: Record<string, unknown> | null;
   gpsLat?: number | null;
   gpsLng?: number | null;
   gpsAccuracy?: number | null;
@@ -379,6 +382,9 @@ export async function saveScanTwinPoint(args: {
     compass_heading: args.compassHeading ?? null,
     image_url: args.imageUrl,
     risks_at_point: args.risksAtPoint,
+    semantic_classes: args.semanticClasses ?? [],
+    object_detections: args.objectDetections ?? [],
+    spatial_inference: args.spatialInference ?? {},
     captured_at: new Date().toISOString(),
   });
 
