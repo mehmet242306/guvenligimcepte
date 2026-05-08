@@ -13,6 +13,7 @@ import { ConsentGate } from "@/components/compliance/ConsentGate";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/lib/hooks/use-is-admin";
+import { useDigitalTwinAccess } from "@/lib/hooks/use-digital-twin-access";
 import { useLiveFieldScanAccess } from "@/lib/hooks/use-live-field-scan-access";
 import { createClient } from "@/lib/supabase/client";
 import { quickSignOut } from "@/lib/auth/quick-sign-out";
@@ -56,14 +57,22 @@ const primaryNav = [
 ];
 
 /* Second bar: other modules */
-type NavItem = { href: string; key: string; adminOnly?: boolean; liveScanRestricted?: boolean };
+type NavItem = {
+  href: string;
+  key: string;
+  adminOnly?: boolean;
+  digitalTwinRestricted?: boolean;
+  liveScanRestricted?: boolean;
+};
 
 function navItemVisible(
   item: NavItem,
   isAdmin: boolean | null,
+  digitalTwinAccess: boolean | null,
   liveFieldScanAccess: boolean | null,
 ): boolean {
   if (item.adminOnly && isAdmin !== true) return false;
+  if (item.digitalTwinRestricted && digitalTwinAccess !== true) return false;
   if (item.liveScanRestricted && liveFieldScanAccess !== true) return false;
   return true;
 }
@@ -74,7 +83,7 @@ const secondaryNav: NavItem[] = [
   { href: "/live-scan", key: "nav.liveScan", liveScanRestricted: true },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
-  { href: "/digital-twin", key: "nav.digitalTwin" },
+  { href: "/digital-twin", key: "nav.digitalTwin", digitalTwinRestricted: true },
   // Raporlar: Artık firma workspace'i içindeki "İSG Dosyası" sekmesine taşındı.
   // { href: "/reports", key: "nav.reports" },
   // Paketler: üst menüden kaldırıldı — dashboard’daki “Paket ve kapasite” kartından erişim.
@@ -119,6 +128,7 @@ const platformAdminSecondaryNav = [
   { href: "/score-history", key: "nav.scoreHistory" },
   { href: "/live-scan", key: "nav.liveScan", liveScanRestricted: true },
   { href: "/planner", key: "nav.planner" },
+  { href: "/digital-twin", key: "nav.digitalTwin", digitalTwinRestricted: true },
   { href: "/settings", key: "nav.settings" },
   { href: "/platform-admin/demo-requests", key: "nav.demoRequestsNav" },
   { href: "/platform-admin/demo-builder", key: "nav.demoBuilderNav" },
@@ -560,6 +570,7 @@ export function ProtectedShell({
   const resolveNavLabel = (item: { key?: string; label?: string }) =>
     item.key ? t(item.key) : item.label ?? "";
   const isAdmin = useIsAdmin(initialIsAdmin);
+  const digitalTwinAccess = useDigitalTwinAccess(initialIsAdmin);
   const liveFieldScanAccess = useLiveFieldScanAccess(initialIsAdmin);
   const [accountContext, setAccountContext] = useState<ShellAccountContext | null>(
     initialAccountContext,
@@ -634,11 +645,17 @@ export function ProtectedShell({
       ? osgbPrimaryNav
       : visibleStandardPrimaryNav;
   const baseSecondaryNav = isPlatformAdminShell
-    ? platformAdminSecondaryNav.filter((i) => navItemVisible(i, isAdmin, liveFieldScanAccess))
+    ? platformAdminSecondaryNav.filter((i) =>
+        navItemVisible(i, isAdmin, digitalTwinAccess, liveFieldScanAccess),
+      )
     : isOsgbShell
-      ? osgbSecondaryNav.filter((i) => navItemVisible(i, isAdmin, liveFieldScanAccess))
+      ? osgbSecondaryNav.filter((i) =>
+          navItemVisible(i, isAdmin, digitalTwinAccess, liveFieldScanAccess),
+        )
       : [
-          ...secondaryNav.filter((i) => navItemVisible(i, isAdmin, liveFieldScanAccess)),
+          ...secondaryNav.filter((i) =>
+            navItemVisible(i, isAdmin, digitalTwinAccess, liveFieldScanAccess),
+          ),
           ...(accountContext?.accountType === "individual" &&
           (accountContext.membershipRole === "owner" || accountContext.membershipRole === "admin")
             ? [{ href: "/account/osgb-affiliations" as const, key: "nav.osgbAffiliations" as const }]

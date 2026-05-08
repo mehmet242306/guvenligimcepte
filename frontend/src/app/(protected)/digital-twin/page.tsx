@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useDigitalTwinAccess } from "@/lib/hooks/use-digital-twin-access";
 import { fetchRiskAssessmentIdForScanSession } from "@/lib/supabase/web-scan-sync";
 
 // 3D viewer is client-only (Three.js requires DOM)
@@ -70,6 +71,8 @@ type ViewMode = "map" | "cloud" | "3d" | "timeline";
 /* ================================================================== */
 
 export default function DigitalTwinPage() {
+  const digitalTwinAccess = useDigitalTwinAccess();
+
   // Data states
   const [sessions, setSessions] = useState<ScanSession[]>([]);
   const [models, setModels] = useState<TwinModel[]>([]);
@@ -88,6 +91,12 @@ export default function DigitalTwinPage() {
 
   // Initial load
   useEffect(() => {
+    if (digitalTwinAccess !== true) {
+      if (digitalTwinAccess === false) setLoading(false);
+      return;
+    }
+
+    setLoading(true);
     (async () => {
       const [s, m] = await Promise.all([listScanSessions(), listTwinModels()]);
       setSessions(s);
@@ -97,7 +106,7 @@ export default function DigitalTwinPage() {
       setAggStats(agg);
       setLoading(false);
     })();
-  }, []);
+  }, [digitalTwinAccess]);
 
   // Load session detail
   useEffect(() => {
@@ -163,6 +172,37 @@ export default function DigitalTwinPage() {
       ny: 5 + ((maxLat - p.gpsLat) / rangeLat) * 90,
     }));
   }, [points]);
+
+  if (digitalTwinAccess === null) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center p-6">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (digitalTwinAccess === false) {
+    return (
+      <div className="flex min-h-[55vh] items-center justify-center p-6">
+        <div className="max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-[var(--shadow-soft)]">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
+            <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.5 10.5V7a4.5 4.5 0 0 0-9 0v3.5m-.75 0h10.5A1.75 1.75 0 0 1 19 12.25v6A1.75 1.75 0 0 1 17.25 20H6.75A1.75 1.75 0 0 1 5 18.25v-6a1.75 1.75 0 0 1 1.75-1.75Z"
+              />
+            </svg>
+          </div>
+          <h1 className="mt-5 text-xl font-semibold text-foreground">Erisim Kisitli</h1>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            Dijital Ikiz modulu su anda test asamasinda. Yalnizca sistem yoneticileri ve
+            yetkilendirilen test hesabi erisebilir.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto">

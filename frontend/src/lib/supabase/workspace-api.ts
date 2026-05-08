@@ -31,6 +31,79 @@ function isBrowser() {
   return typeof window !== "undefined";
 }
 
+function mergeMemberships(primary: WorkspaceMembership[], secondary: WorkspaceMembership[]): WorkspaceMembership[] {
+  const byWorkspaceId = new Map<string, WorkspaceMembership>();
+
+  for (const item of [...primary, ...secondary]) {
+    const id = item.workspace?.id;
+    if (!id) continue;
+    if (!byWorkspaceId.has(id)) byWorkspaceId.set(id, item);
+  }
+
+  return Array.from(byWorkspaceId.values());
+}
+
+async function listOnboardingMemberships(): Promise<WorkspaceMembership[]> {
+  if (!isBrowser()) return [];
+
+  try {
+    const response = await fetch("/api/workspaces/onboarding", {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+    });
+    if (!response.ok) return [];
+
+    const raw = await response.text();
+    const json = raw.trim()
+      ? (JSON.parse(raw) as {
+          memberships?: Array<{
+            roleKey?: string;
+            certificationId?: string | null;
+            isPrimary?: boolean;
+            joinedAt?: string;
+            workspace?: {
+              id: string;
+              organization_id: string;
+              country_code: string;
+              name: string;
+              default_language: string;
+              timezone: string;
+              is_active?: boolean;
+              created_at?: string;
+              updated_at?: string;
+            };
+          }>;
+        })
+      : null;
+
+    const memberships = json?.memberships ?? [];
+    const now = new Date().toISOString();
+
+    return memberships
+      .filter((row): row is typeof row & { workspace: NonNullable<typeof row.workspace> } => !!row.workspace?.id)
+      .map((row) => ({
+        workspace: {
+          id: row.workspace.id,
+          organization_id: row.workspace.organization_id,
+          country_code: row.workspace.country_code,
+          name: row.workspace.name,
+          default_language: row.workspace.default_language,
+          timezone: row.workspace.timezone,
+          is_active: row.workspace.is_active ?? true,
+          created_at: row.workspace.created_at ?? now,
+          updated_at: row.workspace.updated_at ?? now,
+        },
+        role_key: row.roleKey ?? "member",
+        certification_id: row.certificationId ?? null,
+        is_primary: row.isPrimary ?? false,
+        joined_at: row.joinedAt ?? now,
+      }));
+  } catch {
+    return [];
+  }
+}
+
 function readLocalWorkspaceContext(): LocalWorkspaceContext | null {
   if (!isBrowser()) return null;
 
@@ -122,12 +195,9 @@ export async function listMyWorkspaces(): Promise<WorkspaceMembership[]> {
     .order("is_primary", { ascending: false })
     .order("joined_at", { ascending: true });
 
-  if (error || !data) {
-    const local = readLocalWorkspaceContext();
-    return local ? [local.membership] : [];
-  }
-
-  return data
+  const dbMemberships = error || !data
+    ? []
+    : data
     .filter((row): row is typeof row & { workspace: WorkspaceRow } => !!row.workspace)
     .map((row) => ({
       workspace: row.workspace as WorkspaceRow,
@@ -136,6 +206,15 @@ export async function listMyWorkspaces(): Promise<WorkspaceMembership[]> {
       is_primary: row.is_primary,
       joined_at: row.joined_at,
     }));
+
+  // Onboarding endpoint'i bazı geçiş dönemlerinde (eski/hibrit membership kayıtları)
+  // DB sorgusundan daha kapsamlı workspace listesi döndürebiliyor.
+  const onboardingMemberships = await listOnboardingMemberships();
+  const local = readLocalWorkspaceContext();
+  const localMemberships = local ? [local.membership] : [];
+
+  const merged = mergeMemberships(dbMemberships, onboardingMemberships);
+  return mergeMemberships(merged, localMemberships);
 }
 
 /**
