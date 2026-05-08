@@ -1,12 +1,11 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Brand } from "./brand";
 import { LanguageSelector } from "./language-selector";
-import { WorkspaceSwitcher } from "./workspace-switcher";
 import { ActiveCompanyBar } from "./active-company-bar";
 import { ActiveCompanyNavLink } from "./active-company-nav-link";
 import { ChatWidget } from "@/components/chat/ChatWidget";
@@ -570,8 +569,6 @@ export function ProtectedShell({
   const [hasActiveWorkspace, setHasActiveWorkspace] = useState(initialHasActiveWorkspace);
   /** Aktif workspace country_code — TR dışındaki bölgelerde Türkiye’ye özel menüler filtrelenir. */
   const [workspaceCountryCode, setWorkspaceCountryCode] = useState<string | null>(null);
-  /** Tailwind `md` (768px) alti: tek sutun mobil nav; workspace switcher asagida gosterilir */
-  const [isNarrowViewport, setIsNarrowViewport] = useState(false);
   const isFullscreenWorkspaceOnboarding = pathname.startsWith("/workspace/onboarding");
   const pathnameRef = useRef(pathname);
   useEffect(() => {
@@ -604,14 +601,6 @@ export function ProtectedShell({
       window.removeEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
     };
   }, [authReady, accountContext?.organizationId, hasActiveWorkspace]);
-
-  useLayoutEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const sync = () => setIsNarrowViewport(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
 
   const accountSurface = resolveClientAccountSurface(accountContext);
   const isPlatformAdminShell =
@@ -1057,14 +1046,14 @@ export function ProtectedShell({
             </div>
             </div>
 
-            {/* Satir 2: birincil menu — tam genislik, satir kirar; kaydirma yok */}
+            {/* Satir 2: birincil menu — tek satir, satir kirilmaz */}
             <nav className="hidden w-full min-w-0 border-t border-white/10 pt-2 lg:block lg:border-t-0 lg:pt-0">
-              <div className="flex w-full flex-wrap items-center justify-center gap-x-0.5 gap-y-1.5 sm:gap-x-1">
+              <div className="no-scrollbar flex w-full flex-nowrap items-center justify-center gap-x-0.5 overflow-x-auto sm:gap-x-1">
                 {primaryNavForUi.map((item) => {
                   const act = isActive(pathname, item.href);
                   const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
                   const classes = cn(
-                    "relative inline-flex h-10 max-w-full items-center rounded-2xl px-2 text-[12px] font-bold tracking-[-0.012em] transition-all duration-200 sm:h-11 sm:px-2.5 sm:text-[13px] xl:px-3 xl:text-[14px] 2xl:px-3.5 2xl:text-[15px]",
+                    "relative inline-flex h-10 max-w-full shrink-0 items-center rounded-2xl px-2 text-[12px] font-bold tracking-[-0.012em] transition-all duration-200 sm:h-11 sm:px-2.5 sm:text-[13px] xl:px-3 xl:text-[14px] 2xl:px-3 2xl:text-[14px]",
                     locked
                       ? "cursor-not-allowed border border-white/8 bg-white/5 text-[var(--header-muted)] opacity-55"
                       : act
@@ -1105,27 +1094,15 @@ export function ProtectedShell({
 
         {/* ── Secondary navigation bar (centered, sticky with header) ── */}
         {/* Gold ayraç — 1 ile 2 arası (üst üste, boşluksuz) */}
-        <div className="hidden md:block relative z-0" style={{ background: "var(--secondary-nav-bg-solid)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
-          <div className="mx-auto grid min-h-12 w-full max-w-[1480px] grid-cols-[minmax(260px,1fr)_auto_minmax(260px,1fr)] items-center gap-x-3 gap-y-2 px-4 py-2 sm:px-6 xl:grid-cols-[minmax(280px,1fr)_auto_minmax(280px,1fr)] xl:gap-4 xl:px-8 2xl:px-10">
-            <div />
-            <div className="min-w-0 max-w-full justify-self-center">
-              <div className="flex max-w-full flex-wrap items-center justify-center gap-x-1 gap-y-1.5">
-                {/* Firma linki — secondary nav'ın ilk item'ı. Aktif workspace'in
-                    /companies/[slug|id] detay sayfasına götürür (10 sekmeli). */}
-                <SecondaryNavLinksDesktop
-                  items={secondaryNavForUi}
-                  pathname={pathname}
-                  disableWorkspaceModules={disableWorkspaceModules}
-                  resolveNavLabel={resolveNavLabel}
-                  showWorkspaceSwitcher={showWorkspaceSwitcher}
-                />
-              </div>
-            </div>
-            <div className="flex items-center justify-end">
-              {showWorkspaceSwitcher && !isNarrowViewport ? (
-                <WorkspaceSwitcher variant="desktop" />
-              ) : null}
-            </div>
+        <div className="relative z-0 hidden md:block" style={{ background: "var(--secondary-nav-bg-solid)", borderBottom: "1px solid var(--secondary-nav-border)" }}>
+          <div className="no-scrollbar mx-auto flex min-h-12 w-full max-w-[1480px] flex-nowrap items-center justify-center gap-x-0.5 overflow-x-auto px-4 py-2 sm:px-6 sm:gap-x-1 xl:px-8 2xl:px-10">
+            <SecondaryNavLinksDesktop
+              items={secondaryNavForUi}
+              pathname={pathname}
+              disableWorkspaceModules={disableWorkspaceModules}
+              resolveNavLabel={resolveNavLabel}
+              showWorkspaceSwitcher={showWorkspaceSwitcher}
+            />
           </div>
         </div>
       </div>
@@ -1134,7 +1111,7 @@ export function ProtectedShell({
       <div className="border-b md:hidden" style={{ borderColor: "var(--border)", background: "var(--card)" }}>
         <div className="mx-auto w-full max-w-[1480px]">
           <div className="border-b border-border/70 px-2">
-            <div className="no-scrollbar flex max-w-full flex-nowrap justify-start gap-x-0.5 gap-y-1 overflow-x-auto py-1.5 sm:flex-wrap sm:justify-center">
+            <div className="no-scrollbar flex max-w-full flex-nowrap justify-start gap-x-0.5 overflow-x-auto py-1.5 sm:justify-center">
               {primaryNavForUi.map((item) => {
               const act = isActive(pathname, item.href);
               const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
@@ -1177,7 +1154,7 @@ export function ProtectedShell({
           </div>
 
           <div className="px-2">
-            <div className="no-scrollbar flex max-w-full flex-nowrap justify-start gap-x-0.5 gap-y-1 overflow-x-auto py-1.5 sm:flex-wrap sm:justify-center">
+            <div className="no-scrollbar flex max-w-full flex-nowrap justify-start gap-x-0.5 overflow-x-auto py-1.5 sm:justify-center">
               <SecondaryNavLinksMobile
                 items={secondaryNavForUi}
                 pathname={pathname}
@@ -1187,15 +1164,6 @@ export function ProtectedShell({
               />
             </div>
           </div>
-
-          {showWorkspaceSwitcher && isNarrowViewport ? (
-            <div className="border-t border-border/70 bg-muted/20 px-2 py-2">
-              <p className="mb-1.5 px-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-                {t("nav.workspace")}
-              </p>
-              <WorkspaceSwitcher variant="mobile" />
-            </div>
-          ) : null}
         </div>
       </div>
 

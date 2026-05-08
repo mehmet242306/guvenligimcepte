@@ -1980,7 +1980,7 @@ export function IsgLibraryClient() {
         <div className="pointer-events-none absolute -right-16 -top-14 h-40 w-40 rounded-[2rem] border border-[var(--gold)]/10 bg-[radial-gradient(circle,rgba(184,134,11,0.08),transparent_70%)]" />
         <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 translate-x-[-20%] translate-y-[35%] rotate-12 rounded-[1.5rem] border border-slate-200/60 bg-white/30 dark:border-white/10 dark:bg-white/5" />
 
-        <div className="grid grid-cols-2 gap-3 pb-2 md:grid-cols-3 xl:grid-cols-7">
+        <div className="no-scrollbar flex flex-nowrap items-stretch gap-2 overflow-x-auto pb-2 sm:gap-2.5">
           {categoryDefinitions.map((item) => {
             const Icon = item.icon;
             const isActive = item.key === category;
@@ -1991,12 +1991,12 @@ export function IsgLibraryClient() {
                 type="button"
                 onClick={() => handleCategoryChange(item.key)}
                 className={cn(
-                  "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-[1rem] border px-4 py-3 text-[14px] font-semibold transition-all duration-200 sm:px-5",
+                  "inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-[1rem] border px-3 py-2.5 text-[13px] font-semibold transition-all duration-200 sm:min-h-12 sm:gap-2 sm:px-4 sm:py-3 sm:text-[14px]",
                   isActive ? tone.tabActive : tone.tabIdle,
                 )}
               >
-                <Icon size={16} />
-                {item.label}
+                <Icon size={16} className="shrink-0" />
+                <span className="whitespace-nowrap">{item.label}</span>
               </button>
             );
           })}
