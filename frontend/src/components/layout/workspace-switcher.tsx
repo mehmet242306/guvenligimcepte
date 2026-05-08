@@ -189,8 +189,10 @@ export function WorkspaceSwitcher({
 
     setOpen(false);
     setSwitching(false);
+    setActive(
+      memberships.find((membership) => membership.workspace.id === workspaceId)?.workspace ?? null,
+    );
     router.refresh();
-    await load();
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("risknova:active-workspace-changed"));
     }
@@ -219,10 +221,10 @@ export function WorkspaceSwitcher({
   const dropdownClass = cn(
     "absolute top-full z-50 mt-3 overflow-hidden rounded-[1.6rem] border border-border bg-card shadow-[0_24px_60px_rgba(15,23,42,0.25)]",
     variant === "mobile"
-      ? "left-0 right-0 w-auto max-w-[min(100vw-1rem,360px)]"
+      ? "left-0 right-0 w-auto max-w-[min(100vw-1rem,380px)]"
       : alignLeft
-        ? "left-0 w-[min(calc(100vw-1.5rem),320px)] sm:w-[320px]"
-        : "right-0 w-[320px]",
+        ? "left-0 w-[min(calc(100vw-1.5rem),460px)]"
+        : "right-0 w-[min(calc(100vw-1.5rem),460px)]",
   );
 
   const defaultButton = (
@@ -336,14 +338,14 @@ export function WorkspaceSwitcher({
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <p className="truncate text-sm font-semibold">{visibleName}</p>
+                        <p className="line-clamp-2 break-words text-sm font-semibold leading-5">{visibleName}</p>
                         {isActiveRow ? (
                           <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
                             {t("active")}
                           </span>
                         ) : null}
                       </div>
-                      <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
+                      <p className="mt-1 break-words text-[11px] leading-5 text-muted-foreground">
                         {showWorkspaceSubtitle ? `Calisma alani: ${workspace.name} · ` : ""}
                         {countryName(workspace.country_code)}
                         {is_primary ? " · varsayilan" : ""}
