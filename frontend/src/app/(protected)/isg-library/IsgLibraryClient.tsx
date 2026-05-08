@@ -1685,8 +1685,8 @@ export function IsgLibraryClient() {
       />
 
       {/* ---- Category strip ---- */}
-      <section className="relative overflow-hidden rounded-[1.75rem] border border-border/70 bg-card/95 p-3 shadow-[var(--shadow-card)] dark:border-white/10 dark:bg-[rgba(15,23,42,0.82)] sm:p-4">
-        <div className="no-scrollbar flex flex-nowrap items-stretch gap-2 overflow-x-auto pb-1">
+      <section className="relative rounded-[1.75rem] border border-border/70 bg-card/95 p-3 shadow-[var(--shadow-card)] dark:border-white/10 dark:bg-[rgba(15,23,42,0.82)] sm:p-4">
+        <div className="flex flex-wrap items-center gap-2">
           {/* "All" chip */}
           <button
             type="button"
