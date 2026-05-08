@@ -247,6 +247,7 @@ export function WorkspaceSwitcher({
         "relative min-w-0",
         variant === "mobile" ? "w-full" : "",
         isCustomTrigger ? "shrink-0" : "",
+        open ? "z-[70]" : "",
       )}
     >
       {renderTrigger ? (
