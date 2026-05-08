@@ -75,7 +75,7 @@ const secondaryNav: NavItem[] = [
   { href: "/live-scan", key: "nav.liveScan", liveScanRestricted: true },
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
-  { href: "/digital-twin", key: "nav.digitalTwin", adminOnly: true },
+  { href: "/digital-twin", key: "nav.digitalTwin" },
   // Raporlar: Artık firma workspace'i içindeki "İSG Dosyası" sekmesine taşındı.
   // { href: "/reports", key: "nav.reports" },
   // Paketler: üst menüden kaldırıldı — dashboard’daki “Paket ve kapasite” kartından erişim.

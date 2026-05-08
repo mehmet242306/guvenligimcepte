@@ -32,7 +32,6 @@ import {
   type TwinModel,
   type SessionStats,
 } from "@/lib/supabase/digital-twin-api";
-import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 
 /* ================================================================== */
 /* Constants                                                           */
@@ -71,8 +70,6 @@ type ViewMode = "map" | "cloud" | "3d" | "timeline";
 /* ================================================================== */
 
 export default function DigitalTwinPage() {
-  const isAdmin = useIsAdmin();
-
   // Data states
   const [sessions, setSessions] = useState<ScanSession[]>([]);
   const [models, setModels] = useState<TwinModel[]>([]);
@@ -166,28 +163,6 @@ export default function DigitalTwinPage() {
       ny: 5 + ((maxLat - p.gpsLat) / rangeLat) * 90,
     }));
   }, [points]);
-
-  // Admin gating — Dijital İkiz sadece admin erişimine açık (geliştirme aşamasında)
-  if (isAdmin === null) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center p-8">
-        <div className="text-sm text-muted-foreground">Yetki kontrol ediliyor...</div>
-      </div>
-    );
-  }
-  if (isAdmin === false) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center p-8">
-        <div className="max-w-md rounded-2xl border border-border bg-card p-8 text-center">
-          <div className="mb-3 text-5xl">🔒</div>
-          <h1 className="mb-2 text-xl font-bold text-foreground">Erişim Kısıtlı</h1>
-          <p className="text-sm text-muted-foreground">
-            Dijital İkiz modülü şu anda geliştirme aşamasında olup yalnızca sistem yöneticisine açıktır.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto">
