@@ -999,61 +999,18 @@ export function ProtectedShell({
           className="relative z-10"
           style={{ background: "var(--header-bg-solid)", borderBottom: "1px solid var(--header-border)" }}
         >
-          <div className="mx-auto flex w-full max-w-[1480px] flex-col gap-2 px-3 py-2 sm:px-5 xl:px-8 2xl:px-10">
-            {/* Satir 1: marka + aksiyonlar (dar ekranda tek satir; lg+ ust bant) */}
-            <div className="flex min-h-[64px] items-center justify-between gap-3 sm:min-h-[68px] lg:min-h-[56px]">
+          <div className="mx-auto flex w-full max-w-[1480px] items-center justify-between gap-x-2 px-3 py-1.5 sm:gap-x-3 sm:px-5 xl:px-8 2xl:px-10 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:justify-normal">
             <div className="min-w-0">
-              <div className="xl:hidden">
-                <Brand href={homeHref} inverted compact />
-              </div>
-              <div className="hidden xl:block">
-                <Brand href={homeHref} inverted />
-              </div>
+              <Brand href={homeHref} inverted compact className="gap-2" />
             </div>
 
-            {/* Mobil / tablet: birincil menu asagidaki blokta; burada sadece aksiyonlar */}
-            <div className="flex min-w-0 shrink-0 items-center justify-end gap-0.5 sm:gap-1.5">
-              <LanguageSelector variant="dark" />
-              {showNotificationBell ? <NotificationBell /> : null}
-              <ThemeToggle />
-              <Link
-                href="/profile"
-                className="inline-flex h-9 w-9 items-center justify-center gap-2 rounded-xl text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white sm:h-11 sm:w-auto sm:px-3"
-                aria-label={t("common.profile")}
-                title={t("common.profile")}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21a8 8 0 0 0-16 0" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span className="hidden 2xl:inline">{t("common.profile")}</span>
-              </Link>
-              {isAdmin === true ? (
-                <Link
-                  href="/platform-admin"
-                  className="inline-flex h-9 w-9 items-center justify-center gap-2 rounded-xl text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white sm:h-11 sm:w-auto sm:px-3"
-                  aria-label={t("nav.platformAdminHome")}
-                  title={t("nav.platformAdminHome")}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
-                    <path d="M9.5 12.5l1.8 1.8 3.2-4.3" />
-                  </svg>
-                  <span className="hidden 2xl:inline">{t("header.platformAdminShort")}</span>
-                </Link>
-              ) : null}
-              <HeaderSignOutButton />
-            </div>
-            </div>
-
-            {/* Satir 2: birincil menu — tek satir, satir kirilmaz */}
-            <nav className="hidden w-full min-w-0 border-t border-white/10 pt-2 lg:block lg:border-t-0 lg:pt-0">
-              <div className="no-scrollbar flex w-full flex-nowrap items-center justify-center gap-x-0.5 overflow-x-auto sm:gap-x-1">
+            <nav className="hidden min-w-0 justify-self-center lg:block">
+              <div className="no-scrollbar flex max-w-full flex-nowrap items-center justify-center gap-x-0.5 overflow-x-auto sm:gap-x-1">
                 {primaryNavForUi.map((item) => {
                   const act = isActive(pathname, item.href);
                   const locked = disableWorkspaceModules && isWorkspaceLockedHref(item.href);
                   const classes = cn(
-                    "relative inline-flex h-10 max-w-full shrink-0 items-center rounded-2xl px-2 text-[12px] font-bold tracking-[-0.012em] transition-all duration-200 sm:h-11 sm:px-2.5 sm:text-[13px] xl:px-3 xl:text-[14px] 2xl:px-3 2xl:text-[14px]",
+                    "relative inline-flex h-9 max-w-full shrink-0 items-center rounded-2xl px-2 text-[11px] font-bold tracking-[-0.012em] transition-all duration-200 sm:h-10 sm:px-2.5 sm:text-[12px] xl:px-3 xl:text-[13px] 2xl:text-[14px]",
                     locked
                       ? "cursor-not-allowed border border-white/8 bg-white/5 text-[var(--header-muted)] opacity-55"
                       : act
@@ -1089,6 +1046,39 @@ export function ProtectedShell({
                 })}
               </div>
             </nav>
+
+            <div className="flex min-w-0 shrink-0 items-center justify-end gap-0.5 sm:gap-1.5">
+              <LanguageSelector variant="dark" />
+              {showNotificationBell ? <NotificationBell /> : null}
+              <ThemeToggle />
+              <Link
+                href="/profile"
+                className="inline-flex h-9 w-9 items-center justify-center gap-2 rounded-xl text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white sm:h-11 sm:w-auto sm:px-3"
+                aria-label={t("common.profile")}
+                title={t("common.profile")}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21a8 8 0 0 0-16 0" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span className="hidden 2xl:inline">{t("common.profile")}</span>
+              </Link>
+              {isAdmin === true ? (
+                <Link
+                  href="/platform-admin"
+                  className="inline-flex h-9 w-9 items-center justify-center gap-2 rounded-xl text-[14px] font-bold text-[var(--gold-light)] transition-all duration-200 hover:bg-[var(--gold-glow)] hover:text-white sm:h-11 sm:w-auto sm:px-3"
+                  aria-label={t("nav.platformAdminHome")}
+                  title={t("nav.platformAdminHome")}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
+                    <path d="M9.5 12.5l1.8 1.8 3.2-4.3" />
+                  </svg>
+                  <span className="hidden 2xl:inline">{t("header.platformAdminShort")}</span>
+                </Link>
+              ) : null}
+              <HeaderSignOutButton />
+            </div>
           </div>
         </header>
 

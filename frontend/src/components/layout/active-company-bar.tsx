@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Building2, ChevronRight, Shield, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Building2, ChevronDown, ChevronRight, Shield, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
@@ -18,8 +19,8 @@ import { WorkspaceSwitcher } from "./workspace-switcher";
 // Aktif Firma Şeridi — global header'ın hemen altında tüm sayfalarda görünür
 // =============================================================================
 // Kullanıcının bir firma workspace seçili olduğunda kompakt bir bilgi bandı
-// çizer: logo + isim + tehlike sınıfı + sektör + personel + konum, tümü
-// sola sığdırılmış. Sağda "Firma Detayı" linki ile /companies/[id]'ye yönlendirir.
+// çizer: solda logo + isim tek tıkta çalışma alanı menüsü; meta rozetleri ve
+// personel; sağda "Firma Detayı" ile /companies/[id].
 // Workspace yoksa sessizce hiçbir şey render etmez (null).
 // =============================================================================
 
@@ -43,6 +44,7 @@ function companyTypeLabel(raw: string | null, translate: (key: string) => string
 
 export function ActiveCompanyBar() {
   const { t } = useI18n();
+  const tWorkspace = useTranslations("workspace");
   const [profile, setProfile] = useState<CompanyProfile | null>(null);
   const [workspaceRow, setWorkspaceRow] = useState<WorkspaceRow | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -100,32 +102,51 @@ export function ActiveCompanyBar() {
       <div className="mx-auto w-full min-w-0 max-w-[1480px] px-3 sm:px-6 xl:px-8 2xl:px-10">
         <div className="no-scrollbar flex min-w-0 flex-nowrap items-center gap-x-2 gap-y-0 overflow-x-auto py-2.5 text-[13px] sm:gap-x-3">
           <div className="flex min-w-0 flex-1 items-center gap-x-2 overflow-hidden sm:gap-x-3 md:gap-x-4">
-            {/* Logo / avatar */}
-            {profile?.logoUrl ? (
-              <Image
-                src={profile.logoUrl}
-                alt=""
-                width={28}
-                height={28}
-                className="h-7 w-7 shrink-0 rounded-md border border-border object-cover"
-              />
-            ) : (
-              <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-[var(--gold)]/15 text-[var(--gold)]">
-                <Building2 className="h-4 w-4" />
-              </span>
-            )}
-
-            {/* İsim + kod */}
-            <div className="flex min-w-0 items-center gap-2">
-              <span className="truncate font-semibold text-foreground" title={displayName}>
-                {displayName}
-              </span>
-              {profile?.companyCode ? (
-                <Badge variant="neutral" className="hidden shrink-0 font-mono text-[10px] sm:inline-flex">
-                  {profile.companyCode}
-                </Badge>
-              ) : null}
-            </div>
+            {/* Logo + firma adı = çalışma alanı seçici (tek isim, ayrı dropdown yok) */}
+            <WorkspaceSwitcher
+              menuAlign="left"
+              renderTrigger={({ open, toggle, activeCountry, loading }) => (
+                <button
+                  type="button"
+                  onClick={toggle}
+                  aria-haspopup="listbox"
+                  aria-expanded={open}
+                  disabled={loading && !displayName}
+                  className={cn(
+                    "flex min-w-0 max-w-[min(100%,36rem)] shrink-0 items-center gap-2 rounded-lg border border-transparent px-1 py-0.5 text-left transition hover:border-border hover:bg-muted/45",
+                    open && "border-border bg-muted/35",
+                  )}
+                  title={`${tWorkspace("switcher")} — ${displayName}`}
+                >
+                  {profile?.logoUrl ? (
+                    <Image
+                      src={profile.logoUrl}
+                      alt=""
+                      width={28}
+                      height={28}
+                      className="h-7 w-7 shrink-0 rounded-md border border-border object-cover"
+                    />
+                  ) : (
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-[var(--gold)]/15 text-[var(--gold)]">
+                      <Building2 className="h-4 w-4" />
+                    </span>
+                  )}
+                  <span className="hidden shrink-0 rounded-full border border-border/80 bg-background/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:inline-flex">
+                    {activeCountry}
+                  </span>
+                  <span className="min-w-0 truncate font-semibold text-foreground">{displayName}</span>
+                  {profile?.companyCode ? (
+                    <Badge variant="neutral" className="hidden shrink-0 font-mono text-[10px] sm:inline-flex">
+                      {profile.companyCode}
+                    </Badge>
+                  ) : null}
+                  <ChevronDown
+                    className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")}
+                    aria-hidden
+                  />
+                </button>
+              )}
+            />
 
             <span className="hidden shrink-0 text-border xl:inline">|</span>
 
@@ -180,8 +201,6 @@ export function ActiveCompanyBar() {
               </div>
             ) : null}
           </div>
-
-          <WorkspaceSwitcher variant="bar" />
 
           <Link
             href={`/companies/${workspaceId}`}

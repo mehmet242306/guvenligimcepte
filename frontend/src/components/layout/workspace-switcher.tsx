@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -12,13 +12,31 @@ import {
 } from "@/lib/supabase/workspace-api";
 import { cn } from "@/lib/utils";
 
-export type WorkspaceSwitcherVariant = "desktop" | "mobile" | "bar";
+export type WorkspaceSwitcherVariant = "desktop" | "mobile";
+
+export type WorkspaceSwitcherTriggerContext = {
+  open: boolean;
+  loading: boolean;
+  switching: boolean;
+  active: WorkspaceRow | null;
+  activeLabel: string;
+  activeCountry: string;
+  toggle: () => void;
+};
+
+type WorkspaceSwitcherProps = {
+  variant?: WorkspaceSwitcherVariant;
+  /** Özel tetikleyici (ör. firma şeridinde logo + isim). Panel ortaktır. */
+  renderTrigger?: (ctx: WorkspaceSwitcherTriggerContext) => ReactNode;
+  /** Açılır listenin hizası (`renderTrigger` ile genelde `left`). */
+  menuAlign?: "left" | "right";
+};
 
 export function WorkspaceSwitcher({
   variant = "desktop",
-}: {
-  variant?: WorkspaceSwitcherVariant;
-}) {
+  renderTrigger,
+  menuAlign = "right",
+}: WorkspaceSwitcherProps) {
   const router = useRouter();
   const t = useTranslations("workspace");
   const tCountry = useTranslations("country");
@@ -54,6 +72,14 @@ export function WorkspaceSwitcher({
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+
+  const toggle = useCallback(() => {
+    setOpen((prev) => {
+      const next = !prev;
+      if (next) void load();
+      return next;
+    });
+  }, [load]);
 
   async function handleSwitch(workspaceId: string) {
     if (switching || workspaceId === active?.id) {
@@ -94,7 +120,59 @@ export function WorkspaceSwitcher({
     return null;
   }
 
-  const isBar = variant === "bar";
+  const alignLeft = menuAlign === "left";
+  const isCustomTrigger = Boolean(renderTrigger);
+
+  const dropdownClass = cn(
+    "absolute top-full z-50 mt-3 overflow-hidden rounded-[1.6rem] border border-border bg-card shadow-[0_24px_60px_rgba(15,23,42,0.25)]",
+    variant === "mobile"
+      ? "left-0 right-0 w-auto max-w-[min(100vw-1rem,360px)]"
+      : alignLeft
+        ? "left-0 w-[min(calc(100vw-1.5rem),320px)] sm:w-[320px]"
+        : "right-0 w-[320px]",
+  );
+
+  const defaultButton = (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-haspopup="listbox"
+      aria-expanded={open}
+      className={cn(
+        "group inline-flex h-12 items-center justify-between rounded-2xl border border-[rgba(231,205,163,0.28)] bg-[linear-gradient(180deg,rgba(231,205,163,0.18)_0%,rgba(231,205,163,0.08)_100%)] px-3.5 text-left text-[var(--gold-light)] shadow-[0_16px_32px_rgba(0,0,0,0.18)] transition-all duration-200 hover:border-[rgba(231,205,163,0.5)] hover:bg-[linear-gradient(180deg,rgba(231,205,163,0.24)_0%,rgba(231,205,163,0.12)_100%)] hover:text-white",
+        variant === "mobile" ? "w-full min-w-0" : "w-[248px]",
+      )}
+      title={`${t("switcher")}${active ? ` - ${activeLabel}` : ""}`}
+    >
+      <div className="min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="rounded-full border border-white/10 bg-white/8 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--gold-light)]">
+            {activeCountry}
+          </span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--header-muted)]">
+            {t("switcher")}
+          </span>
+        </div>
+        <p className="mt-1 truncate text-sm font-bold">{activeLabel}</p>
+      </div>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        aria-hidden
+      >
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </button>
+  );
 
   return (
     <div
@@ -102,88 +180,25 @@ export function WorkspaceSwitcher({
       className={cn(
         "relative min-w-0",
         variant === "mobile" ? "w-full" : "",
-        isBar ? "shrink-0" : "",
+        isCustomTrigger ? "shrink-0" : "",
       )}
     >
-      <button
-        type="button"
-        onClick={() => {
-          setOpen((current) => !current);
-          if (!open) void load();
-        }}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        className={cn(
-          "group inline-flex items-center justify-between text-left transition-all duration-200",
-          isBar
-            ? "h-9 w-[min(100%,220px)] rounded-xl border border-border bg-muted/35 px-2.5 text-foreground shadow-sm hover:border-[var(--gold)]/35 hover:bg-muted/50 sm:h-10 sm:w-[min(100%,248px)] sm:px-3"
-            : "h-12 rounded-2xl border border-[rgba(231,205,163,0.28)] bg-[linear-gradient(180deg,rgba(231,205,163,0.18)_0%,rgba(231,205,163,0.08)_100%)] px-3.5 text-[var(--gold-light)] shadow-[0_16px_32px_rgba(0,0,0,0.18)] hover:border-[rgba(231,205,163,0.5)] hover:bg-[linear-gradient(180deg,rgba(231,205,163,0.24)_0%,rgba(231,205,163,0.12)_100%)] hover:text-white",
-          variant === "mobile" ? "w-full min-w-0" : "",
-          !isBar && variant !== "mobile" ? "w-[248px]" : "",
-        )}
-        title={`${t("switcher")}${active ? ` - ${activeLabel}` : ""}`}
-      >
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span
-              className={cn(
-                "rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em]",
-                isBar
-                  ? "border-border/80 bg-background/80 text-muted-foreground"
-                  : "border-white/10 bg-white/8 text-[var(--gold-light)]",
-              )}
-            >
-              {activeCountry}
-            </span>
-            <span
-              className={cn(
-                "text-[10px] font-bold uppercase tracking-[0.18em]",
-                isBar ? "text-muted-foreground" : "text-[var(--header-muted)]",
-              )}
-            >
-              {t("switcher")}
-            </span>
-          </div>
-          <p
-            className={cn(
-              "truncate font-bold",
-              isBar ? "mt-0.5 text-[13px] text-foreground sm:text-sm" : "mt-1 text-sm",
-            )}
-          >
-            {activeLabel}
-          </p>
-        </div>
-
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.25"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-          aria-hidden
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
+      {renderTrigger ? (
+        renderTrigger({
+          open,
+          loading,
+          switching,
+          active,
+          activeLabel,
+          activeCountry,
+          toggle,
+        })
+      ) : (
+        defaultButton
+      )}
 
       {open ? (
-        <div
-          role="listbox"
-          aria-label={t("switcher")}
-          className={cn(
-            "absolute top-full z-50 mt-3 overflow-hidden rounded-[1.6rem] border border-border bg-card shadow-[0_24px_60px_rgba(15,23,42,0.25)]",
-            variant === "mobile"
-              ? "left-0 right-0 w-auto max-w-[min(100vw-1rem,360px)]"
-              : isBar
-                ? "right-0 w-[min(calc(100vw-1.5rem),320px)] sm:w-[320px]"
-                : "right-0 w-[320px]",
-          )}
-        >
+        <div role="listbox" aria-label={t("switcher")} className={dropdownClass}>
           <div className="border-b border-border px-5 py-4">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
               {t("switcher")}
