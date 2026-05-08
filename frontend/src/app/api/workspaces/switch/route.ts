@@ -43,10 +43,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Bu calisma alanina erisim yetkin yok." }, { status: 403 });
   }
 
-  if (workspace.organization_id !== auth.organizationId) {
-    return NextResponse.json({ error: "Farkli organizasyon calisma alani secilemez." }, { status: 403 });
-  }
-
   const updateResult = await supabase
     .from("user_profiles")
     .update({ active_workspace_id: workspaceId })
