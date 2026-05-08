@@ -32,6 +32,62 @@ type WorkspaceSwitcherProps = {
   menuAlign?: "left" | "right";
 };
 
+function mergeByWorkspaceId(
+  primary: WorkspaceMembership[],
+  secondary: WorkspaceMembership[],
+): WorkspaceMembership[] {
+  const byId = new Map<string, WorkspaceMembership>();
+  for (const item of [...primary, ...secondary]) {
+    const id = item.workspace?.id;
+    if (!id) continue;
+    if (!byId.has(id)) byId.set(id, item);
+  }
+  return Array.from(byId.values());
+}
+
+async function fetchOnboardingMemberships(): Promise<WorkspaceMembership[]> {
+  try {
+    const response = await fetch("/api/workspaces/onboarding", {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+    });
+    if (!response.ok) return [];
+
+    const raw = await response.text();
+    const json = raw.trim()
+      ? (JSON.parse(raw) as {
+          memberships?: Array<{
+            roleKey?: string;
+            certificationId?: string | null;
+            isPrimary?: boolean;
+            workspace?: WorkspaceRow | WorkspaceRow[] | null;
+          }>;
+        })
+      : null;
+
+    const rows = json?.memberships ?? [];
+    const now = new Date().toISOString();
+
+    return rows
+      .map((row) => {
+        const rawWorkspace = row.workspace;
+        const workspace = Array.isArray(rawWorkspace) ? rawWorkspace[0] : rawWorkspace;
+        if (!workspace?.id) return null;
+        return {
+          workspace,
+          role_key: row.roleKey ?? "member",
+          certification_id: row.certificationId ?? null,
+          is_primary: row.isPrimary ?? false,
+          joined_at: now,
+        } satisfies WorkspaceMembership;
+      })
+      .filter((row): row is WorkspaceMembership => !!row);
+  } catch {
+    return [];
+  }
+}
+
 export function WorkspaceSwitcher({
   variant = "desktop",
   renderTrigger,
@@ -52,8 +108,13 @@ export function WorkspaceSwitcher({
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const [list, current] = await Promise.all([listMyWorkspaces(), getActiveWorkspace()]);
-    const ordered = [...list].sort((a, b) =>
+    const [list, onboardingList, current] = await Promise.all([
+      listMyWorkspaces(),
+      fetchOnboardingMemberships(),
+      getActiveWorkspace(),
+    ]);
+    const merged = mergeByWorkspaceId(onboardingList, list);
+    const ordered = [...merged].sort((a, b) =>
       a.workspace.name.localeCompare(b.workspace.name, "tr", { sensitivity: "base" }),
     );
     setMemberships(ordered);
