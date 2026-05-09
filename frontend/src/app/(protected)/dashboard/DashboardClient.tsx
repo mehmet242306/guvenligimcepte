@@ -140,16 +140,25 @@ export function DashboardClient() {
         .eq('organization_id', scopedOrgId)
         .in('id', memberWsIds)
         .eq('is_archived', false);
-      scopedWsList = (wsRows ?? []).filter((row: {
+      type IdentityRow = {
+        official_name: string | null;
+        is_active: boolean | null;
+        is_archived: boolean | null;
+        deleted_at: string | null;
+      };
+      type WsRow = {
+        id: string;
         display_name: string | null;
-        company_identities: { official_name: string | null; is_active: boolean; is_archived: boolean; deleted_at: string | null } | null;
-      }) => {
-        const ident = row.company_identities;
+        company_identities: IdentityRow | IdentityRow[] | null;
+      };
+      scopedWsList = ((wsRows ?? []) as unknown as WsRow[]).filter((row) => {
+        const raw = row.company_identities;
+        const ident: IdentityRow | null = Array.isArray(raw) ? (raw[0] ?? null) : raw;
         if (!ident) return false;
-        if (ident.is_archived || ident.deleted_at || !ident.is_active) return false;
+        if (ident.is_archived || ident.deleted_at || ident.is_active === false) return false;
         const name = (row.display_name ?? '').trim() || (ident.official_name ?? '').trim();
         return name.length > 0;
-      }).map((row: { id: string }) => ({ id: row.id }));
+      }).map((row) => ({ id: row.id }));
     }
     const scopedWsIds = scopedWsList.map((r) => r.id);
     const hasScope = scopedWsIds.length > 0;
