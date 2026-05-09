@@ -1454,10 +1454,26 @@ export function RiskAnalysisClient() {
   async function analyzeImageWithAI(imageFile: File, imageId: string): Promise<AiImageAnalysisResult> {
     try {
       const { base64, mimeType } = await fileToBase64(imageFile);
+      // Firma sektör bağlamı — AI sektörel checklist için kullanır.
+      const companyContext = selectedCompany
+        ? {
+            name: selectedCompany.name || undefined,
+            sector: selectedCompany.sector || undefined,
+            kind: selectedCompany.kind || undefined,
+            hazardClass: selectedCompany.hazardClass || undefined,
+            address: [selectedCompany.address, selectedCompany.city].filter(Boolean).join(" ") || undefined,
+          }
+        : undefined;
       const res = await fetch("/api/analyze-risk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageBase64: base64, mimeType, method, language: locale ?? "tr" }),
+        body: JSON.stringify({
+          imageBase64: base64,
+          mimeType,
+          method,
+          language: locale ?? "tr",
+          companyContext,
+        }),
       });
 
       const emptyMeta: ImageMeta = { imageId, faces: [], positiveObservations: [], photoQuality: { level: "good", note: "" }, areaSummary: "", personCount: 0, imageRelevance: "relevant", imageDescription: "" };

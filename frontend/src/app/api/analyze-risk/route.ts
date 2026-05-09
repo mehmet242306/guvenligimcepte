@@ -50,6 +50,20 @@ const analyzeRiskSchema = z.object({
     .default("r_skor"),
   /** UI locale (e.g. next-intl) — steers output language for narrative fields */
   language: z.string().min(2).max(12).optional().default("tr"),
+  /**
+   * Firma bağlamı — AI'nın sektörel bakış açısı için. Hepsi opsiyonel:
+   * görselden çıkarılamayan ipucu sağlar. Verilmezse model yalnızca
+   * görsele dayanır.
+   */
+  companyContext: z
+    .object({
+      name: z.string().max(250).optional(),
+      sector: z.string().max(250).optional(),
+      kind: z.string().max(120).optional(),
+      hazardClass: z.string().max(60).optional(),
+      address: z.string().max(500).optional(),
+    })
+    .optional(),
 });
 
 /* ================================================================== */
@@ -597,6 +611,97 @@ H) HASSAS GRUPLAR & 3. KİŞİLER (görsel ipucu varsa)
        severity gerekçesinde ve recommendedActions'ta açıkça belirt.
 
 ═══════════════════════════════════════════════════
+SEKTÖREL BAKIŞ AÇISI (HER SEKTÖRÜN ÖNCELİKLİ RİSKLERİ FARKLIDIR)
+═══════════════════════════════════════════════════
+
+İyi bir İSG uzmanı her sektöre AYNI gözle bakmaz. Önce sektörü tespit eder
+(görselin sceneCategory + workActivity + companyContext ipuçlarından),
+sonra o sektörün ÖNCELİKLİ risk kataloğunu mental checklist olarak kullanır.
+
+Aşağıdaki sektörel öncelik haritasını uygula:
+
+1) İNŞAAT / ŞANTİYE (yapı işleri, kalıp, beton, çatı, cephe, kazı)
+   ÖLÜMCÜL ÖNCELİK: yüksekten düşme, göçük, vinç-yük çarpması, elektrik.
+   Ekstra tarama: korkuluk varlığı, yaşam hattı, iskele etiketi, kazı
+   tahkimatı, vinç plan/operatör, geçici elektrik tesisatı, düşen cisim,
+   alt işveren koordinasyonu, kenar boşlukları, asansör/şaft boşlukları.
+   "Baret takılı mı?" tek başına yetmez — TOPLU KORUMA + çalışma yöntemi
+   + geçici yapı güvenliği önceliklidir.
+
+2) FABRİKA / SANAYİ (üretim, montaj, makine başında çalışma, bakım)
+   ÖLÜMCÜL ÖNCELİK: makine sıkışma/ezilme, enerji çarpması, basınç patlaması.
+   Ekstra tarama: koruyucu varlığı (sökülmüş mü?), acil stop erişimi,
+   kilitleme-etiketleme (LOTO), döner aksam/pres/konveyör, bakım sırasında
+   enerji kesimi, basınçlı kap periyodik kontrolü, forklift/yaya ayrımı,
+   sıcak yüzey, kimyasal-toz-gürültü maruziyeti.
+   Soru: "Makine çalışırken çalışanın eli/kolu/kıyafeti tehlikeli bölgeye
+   girebilir mi?"
+
+3) SAĞLIK / BAKIM / SOSYAL HİZMET (hastane, huzurevi, engelli bakım, kreş,
+   rehabilitasyon)
+   ÖLÜMCÜL ÖNCELİK: biyolojik bulaş, hasta/engelli düşmesi, tahliyede yetersizlik.
+   Ekstra tarama: kayma-düşme (yaşlı/engelli için kritik), hasta transfer
+   ekipmanı (lift/rampa), kesici-delici atık kutusu, enfeksiyon kontrolü,
+   ilaç ve temizlik kimyasalı güvenliği, şiddet riski, vardiya yorgunluğu,
+   asansör/engelli platformu, banyo-WC tutamak, mutfak-çamaşırhane-kazan dairesi.
+   ZORUNLU SORU: "Bu risk, kendi başına hareket edemeyen bir hizmet alan
+   için daha ağır sonuç doğurur mu?" → Evet ise severity OTOMATİK ARTAR.
+
+4) MADEN / YERALTI ÇALIŞMASI
+   ÖLÜMCÜL ÖNCELİK: göçük, gaz patlaması, su baskını, oksijen yetersizliği.
+   Ekstra tarama: tahkimat sistemi, havalandırma, gaz ölçümü
+   (CH4/CO/O2), patlayıcı kullanım izni, kaçış yolu, yeraltı haberleşme,
+   kişisel takip, toz maruziyeti, vardiya düzeni.
+   Senaryo: bireysel kazadan çok TOPLU CAN KAYBI senaryolarına odaklan.
+
+5) DEPO / LOJİSTİK / FORKLİFTLİ ÇALIŞMA
+   ÖLÜMCÜL ÖNCELİK: forklift-yaya çarpışması, raf devrilmesi, yükten ezilme.
+   Ekstra tarama: yaya-forklift yolu ayrımı, bariyer/uyarı/hız limiti, raf
+   sabitleme, kapasite etiketi, istif yüksekliği, palet sağlamlığı, geri
+   manevra alanı, yükleme rampası, akü şarj alanı, dar koridor, acil çıkış
+   açıklığı.
+   Tek soru ile özetle: "İnsan, yük ve araç trafiği aynı alanda
+   KONTROLSÜZ çakışıyor mu?"
+
+6) TARIM / HAYVANCILIK / AÇIK ALAN
+   ÖLÜMCÜL ÖNCELİK: traktör devrilmesi, pestisit zehirlenmesi, hayvan kaynaklı
+   yaralanma/zoonoz.
+   Ekstra tarama: tarım makineleri döner aksam, kimyasal ilaçlama KKD'si,
+   güneş/sıcak/soğuk maruziyeti, açık arazide yalnız çalışma, su kanalı,
+   elektrikli sulama, mevsimlik işçi barınma-hijyen koşulları.
+
+7) OFİS / İDARİ HİZMET
+   ÖLÜMCÜL ÖNCELİK: yangın tahliye yetersizliği, elektrik. Çoğunluk uzun
+   vadeli sağlık etkileri (ergonomi) ve psikososyal.
+   Ekstra tarama: ekran ergonomisi, masa-sandalye uyumu, kablo karmaşası,
+   aşırı yüklü priz, söndürücü erişimi, acil çıkış açıklığı, arşiv
+   yükü/dolap devrilmesi, iş yükü/mobbing/iletişim.
+   "Burada makine yok = risk yok" YANLIŞ — uzun vadeli sağlık ve acil
+   durum güvenliği üzerinden değerlendir.
+
+8) KAMU BİNASI / SOSYAL HİZMET BİNASI (okul, cami, AVM, otel, restoran,
+   spor salonu, kütüphane)
+   ÖLÜMCÜL ÖNCELİK: yangın+tahliye (özellikle hareket kısıtlı bireylerde),
+   bina yapısal sorunları, elektrik.
+   Ekstra tarama: tavan/duvar/zemin bozulmaları, nem-küf-su sızıntısı,
+   yangın algılama/söndürme, acil çıkış, engelli erişimi, rampa/asansör,
+   kalorifer kazanı, jeneratör, mutfak-çamaşırhane.
+   ANA SORU: "Bu bina her yaş ve yetenek düzeyindeki kişi için güvenli
+   ve erişilebilir mi?"
+
+SEKTÖR BELİRSİZSE: Görselin sceneCategory + workActivity + işteki ekipman
+ipuçlarından çıkarmaya çalış. companyContext.sector verilmişse KESİN ipucu
+olarak kullan ama görselle çelişiyorsa görsele güven (ör. ofis sektörü
+yazılı ama görsel açık şantiye → şantiye kuralları geçerlidir).
+
+5 SORU FİLTRESİ — her sektörde mutlaka kendine sor:
+  i) Bu sektörün ÖLÜMCÜL riski nedir, görselde işaret var mı?
+  ii) Bu işte EN SIK kaza nerede olur, görselde benzer durum var mı?
+  iii) Bu işte EN AĞIR sonuç hangi olaydan doğar, görselde tetikleyici var mı?
+  iv) Bu sektörde çalışanın HANGI ALIŞKANLIĞI risk yaratır, görselde örneği var mı?
+  v) Mevzuat dışında SEKTÖR PRATİĞİ ne diyor — görsele göre uygun mu?
+
+═══════════════════════════════════════════════════
 ÖNLEM HİYERARŞİSİ (TAVSİYE YAZARKEN UYGULA)
 ═══════════════════════════════════════════════════
 Her tespit için "recommendedActions" yazarken sırayla düşün ve mümkün olan en
@@ -948,7 +1053,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { imageBase64, mimeType, method, language: outputLocale } = parsedBody.data;
+    const { imageBase64, mimeType, method, language: outputLocale, companyContext } = parsedBody.data;
 
     if (!imageBase64 || !mimeType) {
       return NextResponse.json({ error: "imageBase64 ve mimeType gerekli" }, { status: 400 });
@@ -997,7 +1102,30 @@ export async function POST(request: NextRequest) {
 
     // Claude'a verilecek ek kontekst (varsa); yoksa boş string → eski davranış
     const visionContextBlock = visionDetection ? visionToPromptContext(visionDetection) : "";
-    const augmentedUserPrompt = `${visionContextBlock}\n\n${buildUserPrompt(method, outputLocale)}`;
+
+    // Firma sektör bağlamı — sektörel checklist için ipucu. Görselle çelişirse
+    // model görsele güvenmeli (system prompt bunu söylüyor).
+    const companyCtxBlock = (() => {
+      if (!companyContext) return "";
+      const lines: string[] = [];
+      if (companyContext.sector) lines.push(`- Sektör: ${companyContext.sector}`);
+      if (companyContext.kind) lines.push(`- Faaliyet türü: ${companyContext.kind}`);
+      if (companyContext.hazardClass) lines.push(`- Tehlike sınıfı: ${companyContext.hazardClass}`);
+      if (companyContext.name) lines.push(`- Firma: ${companyContext.name}`);
+      if (companyContext.address) lines.push(`- Konum: ${companyContext.address}`);
+      if (lines.length === 0) return "";
+      return [
+        "## FİRMA / SEKTÖR BAĞLAMI (görsele ek ipucu)",
+        ...lines,
+        "",
+        "Bu bağlamı sektörel öncelik haritasıyla eşleştir; görselle çelişirse",
+        "görsele güven. Sektörün ölümcül risklerini tarama listesine ekle.",
+      ].join("\n");
+    })();
+
+    const augmentedUserPrompt = [visionContextBlock, companyCtxBlock, buildUserPrompt(method, outputLocale)]
+      .filter(Boolean)
+      .join("\n\n");
 
     // ═══════════════════════════════════════════════════════════════════
     // STAGE 2 — Anthropic Claude Sonnet 4: RİSK AKIL YÜRÜTMESİ
