@@ -1009,6 +1009,13 @@
         "fieldShort": "Field · {count}",
         "inspectionShort": "Inspection · {count}"
       },
+      "dof": {
+        "createButton": "Create CAPA",
+        "creating": "Creating…",
+        "createdTitle": "CAPA created",
+        "createError": "Could not create CAPA. Please try again.",
+        "openLink": "Open CAPA"
+      },
       "filters": {
         "title": "Filters",
         "type": "Analysis type",

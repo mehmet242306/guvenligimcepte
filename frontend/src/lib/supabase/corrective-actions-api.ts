@@ -1,8 +1,15 @@
 import { createClient } from "./client";
+import { resolveOrganizationId } from "./incident-api";
 
 export type CorrectiveActionStatus = "tracking" | "in_progress" | "on_hold" | "completed" | "overdue";
 export type CorrectiveActionPriority = "Düşük" | "Orta" | "Yüksek" | "Kritik";
 export type CorrectiveActionUpdateType = "comment" | "progress" | "status_change" | "file_upload";
+
+/**
+ * Ishikawa kategorileri — corrective_actions.category sütununda kullanılan
+ * sabit küme. DB'de check constraint var: ('insan','makine','metot','malzeme','olcum','cevre').
+ */
+export type IshikawaCategory = "insan" | "makine" | "metot" | "malzeme" | "olcum" | "cevre";
 
 export type CorrectiveActionRecord = {
   id: string;
@@ -170,6 +177,119 @@ export async function updateCorrectiveAction(id: string, patch: Partial<Correcti
     return false;
   }
   return true;
+}
+
+/* ================================================================== */
+/* CREATE FROM RISK FINDING                                             */
+/* ================================================================== */
+
+/** Risk kategorisi (fiziksel, kimyasal, vs.) → Ishikawa kategorisi map'i. */
+function mapRiskCategoryToIshikawa(riskCategory: string | null | undefined): IshikawaCategory {
+  const k = (riskCategory ?? "").toLowerCase().trim();
+  if (k === "mekanik" || k === "elektrik") return "makine";
+  if (k === "kimyasal" || k === "biyolojik") return "malzeme";
+  if (k === "ergonomik" || k === "psikososyal") return "insan";
+  if (k === "cevre" || k === "yangin" || k === "trafik") return "cevre";
+  // fiziksel + bilinmeyen → metot (süreç/prosedür eksikliği genel kategorisi)
+  return "metot";
+}
+
+/** Severity → DÖF priority map'i. */
+function mapSeverityToPriority(severity: string | null | undefined): CorrectiveActionPriority {
+  const s = (severity ?? "").toLowerCase();
+  if (s === "critical") return "Kritik";
+  if (s === "high") return "Yüksek";
+  if (s === "medium") return "Orta";
+  return "Düşük";
+}
+
+/** Severity → default termin gün sayısı (ne kadar acil). */
+function defaultDeadlineDaysFromSeverity(severity: string | null | undefined): number {
+  const s = (severity ?? "").toLowerCase();
+  if (s === "critical") return 3;
+  if (s === "high") return 7;
+  if (s === "medium") return 21;
+  return 60;
+}
+
+export type CreateFromFindingInput = {
+  companyWorkspaceId: string;
+  findingId: string;
+  assessmentId: string;
+  findingTitle: string;
+  /** Risk kategorisi (fiziksel/kimyasal/vs.) — Ishikawa'ya çevrilir. */
+  riskCategoryKey: string;
+  severity: string;
+  /** AI'in önerisi (varsa) — yoksa generic bir metin üretilir. */
+  recommendation?: string | null;
+  actionText?: string | null;
+  /** Analizin kaynağı — metadata'ya yazılır (ileride filtreleme için). */
+  sourceType?: "risk" | "field" | "inspection";
+};
+
+/**
+ * Bir risk findings'ten direkt DÖF (corrective_action) oluşturur.
+ * - incident_id null bırakılır (finding bağlamı metadata'ya yazılır)
+ * - code generator trigger'ı tarafından otomatik atanır (DÖF-YYYY-NNN)
+ * - termin tarihi severity'ye göre default'lanır (override edilebilir)
+ */
+export async function createCorrectiveActionFromFinding(
+  input: CreateFromFindingInput,
+): Promise<CorrectiveActionRecord | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+
+  const auth = await resolveOrganizationId();
+  if (!auth) {
+    console.warn("[corrective-actions] createFromFinding: auth failed");
+    return null;
+  }
+
+  const ishikawa = mapRiskCategoryToIshikawa(input.riskCategoryKey);
+  const priority = mapSeverityToPriority(input.severity);
+  const deadlineDays = defaultDeadlineDaysFromSeverity(input.severity);
+  const deadline = new Date(Date.now() + deadlineDays * 86400000)
+    .toISOString()
+    .split("T")[0];
+
+  const correctiveActionText =
+    input.actionText?.trim() ||
+    input.recommendation?.trim() ||
+    `${input.findingTitle} bulgusu için kök neden analizi ve düzeltici aksiyon planı oluşturulması gerekmektedir.`;
+
+  const { data, error } = await supabase
+    .from("corrective_actions")
+    .insert({
+      organization_id: auth.orgId,
+      company_workspace_id: input.companyWorkspaceId,
+      incident_id: null,
+      title: input.findingTitle,
+      root_cause: input.recommendation?.trim() || `${input.findingTitle} bulgusunun kök nedeni`,
+      category: ishikawa,
+      corrective_action: correctiveActionText,
+      preventive_action: null,
+      deadline,
+      status: "tracking",
+      priority,
+      ai_generated: false,
+      metadata: {
+        source: "risk_finding",
+        finding_id: input.findingId,
+        assessment_id: input.assessmentId,
+        risk_category_key: input.riskCategoryKey,
+        analysis_source_type: input.sourceType ?? "risk",
+      },
+      created_by: auth.userId,
+    })
+    .select("*, incidents(incident_code), company_workspaces(display_name)")
+    .single();
+
+  if (error || !data) {
+    console.warn("createCorrectiveActionFromFinding:", error?.message);
+    return null;
+  }
+
+  return mapCorrectiveActionRow(data);
 }
 
 export async function addCorrectiveActionUpdate(input: {

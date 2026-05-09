@@ -3280,6 +3280,13 @@
         "fieldShort": "Saha · {count}",
         "inspectionShort": "Denetim · {count}"
       },
+      "dof": {
+        "createButton": "DÖF Oluştur",
+        "creating": "Oluşturuluyor…",
+        "createdTitle": "DÖF oluşturuldu",
+        "createError": "DÖF oluşturulamadı. Lütfen tekrar deneyin.",
+        "openLink": "DÖF'ü aç"
+      },
       "filters": {
         "title": "Filtreler",
         "type": "Analiz tipi",

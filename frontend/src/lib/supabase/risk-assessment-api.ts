@@ -18,6 +18,23 @@ import { resolveOrganizationId } from "./incident-api";
  */
 export type RiskAssessmentSourceType = "risk" | "field" | "inspection";
 
+/**
+ * Faz 2 ile DB'ye eklenen birinci sınıf analiz tipi kolonu.
+ * UI'da SourceType ile aynı bilgiyi taşır ama DB'de canonical ad budur.
+ */
+export type RiskAnalysisTypeColumn = "RISK_ANALYSIS" | "FIELD_ANALYSIS" | "INSPECTION";
+
+/**
+ * Faz 2 ile eklenen kaynak yöntem kolonu — riskin hangi giriş yöntemi
+ * üzerinden tespit edildiğini gösterir.
+ */
+export type RiskSourceMethod =
+  | "image_upload"
+  | "file_upload"
+  | "mobile_camera"
+  | "manual_entry"
+  | "ai_detection";
+
 export type SavedAssessment = {
   id: string;
   title: string;
@@ -35,16 +52,23 @@ export type SavedAssessment = {
   createdAt: string;
   updatedAt: string;
   sourceType: RiskAssessmentSourceType;
+  analysisType: RiskAnalysisTypeColumn | null;
+  sourceMethod: RiskSourceMethod | null;
   metadata: Record<string, unknown> | null;
 };
 
 /**
- * Analiz metadata'sından kaynak tipini türetir.
- * DB schema değişmeden mevcut bilgileri (metadata.source) kullanarak ayrım yapar.
+ * UI'da kullanılan SourceType ile DB kolonu arasında dönüşüm.
+ * Önce yeni `analysis_type` kolonuna bak, yoksa metadata.source'a düş.
  */
-function deriveSourceTypeFromMetadata(
+function deriveSourceType(
+  analysisType: RiskAnalysisTypeColumn | null | undefined,
   metadata: Record<string, unknown> | null | undefined,
 ): RiskAssessmentSourceType {
+  if (analysisType === "FIELD_ANALYSIS") return "field";
+  if (analysisType === "INSPECTION") return "inspection";
+  if (analysisType === "RISK_ANALYSIS") return "risk";
+  // Geriye dönük uyumluluk: yeni kolon henüz dolmamış kayıtlar için
   if (!metadata) return "risk";
   const source = typeof metadata.source === "string" ? metadata.source : null;
   if (source === "auto_from_scan" || source === "field" || source === "live_scan") return "field";
@@ -146,7 +170,7 @@ export async function listRiskAssessments(companyWorkspaceId?: string): Promise<
 
   let query = supabase
     .from("risk_assessments")
-    .select("id, title, status, method, assessment_date, workplace_name, department_name, location_text, analysis_note, company_workspace_id, participants, item_count, overall_risk_level, created_at, updated_at, metadata")
+    .select("id, title, status, method, assessment_date, workplace_name, department_name, location_text, analysis_note, company_workspace_id, participants, item_count, overall_risk_level, created_at, updated_at, metadata, analysis_type, source_method")
     .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
@@ -159,6 +183,8 @@ export async function listRiskAssessments(companyWorkspaceId?: string): Promise<
 
   return (data ?? []).map((r) => {
     const metadata = (r.metadata ?? null) as Record<string, unknown> | null;
+    const analysisType = (r.analysis_type ?? null) as RiskAnalysisTypeColumn | null;
+    const sourceMethod = (r.source_method ?? null) as RiskSourceMethod | null;
     return {
       id: r.id,
       title: r.title,
@@ -175,7 +201,9 @@ export async function listRiskAssessments(companyWorkspaceId?: string): Promise<
       overallRiskLevel: r.overall_risk_level,
       createdAt: r.created_at,
       updatedAt: r.updated_at,
-      sourceType: deriveSourceTypeFromMetadata(metadata),
+      sourceType: deriveSourceType(analysisType, metadata),
+      analysisType,
+      sourceMethod,
       metadata,
     };
   });
@@ -273,6 +301,12 @@ export async function loadRiskAssessment(assessmentId: string): Promise<FullAsse
   }));
 
   const assessmentMetadata = (assessment.metadata ?? null) as Record<string, unknown> | null;
+  const assessmentAnalysisType = ((assessment as Record<string, unknown>).analysis_type ?? null) as
+    | RiskAnalysisTypeColumn
+    | null;
+  const assessmentSourceMethod = ((assessment as Record<string, unknown>).source_method ?? null) as
+    | RiskSourceMethod
+    | null;
 
   return {
     id: assessment.id,
@@ -290,7 +324,9 @@ export async function loadRiskAssessment(assessmentId: string): Promise<FullAsse
     overallRiskLevel: assessment.overall_risk_level,
     createdAt: assessment.created_at,
     updatedAt: assessment.updated_at,
-    sourceType: deriveSourceTypeFromMetadata(assessmentMetadata),
+    sourceType: deriveSourceType(assessmentAnalysisType, assessmentMetadata),
+    analysisType: assessmentAnalysisType,
+    sourceMethod: assessmentSourceMethod,
     metadata: assessmentMetadata,
     rows,
   };
@@ -351,6 +387,14 @@ export type SaveRiskAnalysisInput = {
   totalFindings: number;
   criticalCount: number;
   highestRiskLevel: string;
+  /**
+   * Faz 2: analiz tipini ve kaynak yöntemini opsiyonel olarak override etmek
+   * için. Verilmezse: analysisType='RISK_ANALYSIS', sourceMethod='image_upload'
+   * default'larıyla kaydedilir (çünkü bu API klasik görsel-yükleme akışından
+   * çağrılıyor).
+   */
+  analysisType?: RiskAnalysisTypeColumn;
+  sourceMethod?: RiskSourceMethod;
 };
 
 export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<string | null> {
@@ -394,6 +438,11 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
         item_count: input.totalFindings,
         overall_risk_level: input.highestRiskLevel || null,
         status: "completed",
+        // Faz 2: yeni first-class kolonlar. Klasik görsel-yükleme akışı
+        // için RISK_ANALYSIS + image_upload default; saha taraması ayrı
+        // trigger üzerinden FIELD_ANALYSIS + mobile_camera yazıyor.
+        analysis_type: input.analysisType ?? "RISK_ANALYSIS",
+        source_method: input.sourceMethod ?? "image_upload",
       })
       .select("id")
       .single();
@@ -690,7 +739,7 @@ export async function listFindingsByCategory(
   // 1. Get assessment IDs for this company
   const { data: assessments } = await supabase
     .from("risk_assessments")
-    .select("id, title, metadata")
+    .select("id, title, metadata, analysis_type")
     .eq("company_workspace_id", companyWorkspaceId);
 
   if (!assessments || assessments.length === 0) return [];
@@ -700,7 +749,10 @@ export async function listFindingsByCategory(
   const sourceMap = new Map<string, RiskAssessmentSourceType>(
     assessments.map((a) => [
       a.id,
-      deriveSourceTypeFromMetadata((a.metadata ?? null) as Record<string, unknown> | null),
+      deriveSourceType(
+        (a.analysis_type ?? null) as RiskAnalysisTypeColumn | null,
+        (a.metadata ?? null) as Record<string, unknown> | null,
+      ),
     ]),
   );
 

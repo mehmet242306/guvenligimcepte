@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { CompanyRecord } from "@/lib/company-directory";
 import { listRiskAssessments, deleteRiskAssessment, loadRiskAssessment, listFindingsByCategory, updateFindingStatus, archiveRiskAssessment, toggleRiskSharing, type SavedAssessment, type FullAssessment, type FindingWithContext, type RiskAssessmentSourceType } from "@/lib/supabase/risk-assessment-api";
+import { createCorrectiveActionFromFinding, type CorrectiveActionRecord } from "@/lib/supabase/corrective-actions-api";
 import QRCode from "qrcode";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -594,6 +595,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                         editStatus={editStatus}
                         editNotes={editNotes}
                         savingFinding={savingFinding}
+                        companyWorkspaceId={company.id}
                         onStartEdit={(f) => { setEditingFinding(f.id); setEditStatus(f.trackingStatus); setEditNotes(f.trackingNotes); }}
                         onCancelEdit={() => setEditingFinding(null)}
                         onChangeStatus={setEditStatus}
@@ -784,6 +786,7 @@ type RiskCategoryMetaRow = (typeof RISK_CATEGORY_META)[number];
 function CategoryDetailPanel({
   categoryKey, category, findings, loading,
   editingFinding, editStatus, editNotes, savingFinding,
+  companyWorkspaceId,
   onStartEdit, onCancelEdit, onChangeStatus, onChangeNotes, onSave, onClose,
 }: {
   categoryKey: string;
@@ -794,6 +797,7 @@ function CategoryDetailPanel({
   editStatus: "open" | "in_progress" | "resolved" | "archived";
   editNotes: string;
   savingFinding: boolean;
+  companyWorkspaceId: string;
   onStartEdit: (f: FindingWithContext) => void;
   onCancelEdit: () => void;
   onChangeStatus: (s: "open" | "in_progress" | "resolved" | "archived") => void;
@@ -802,6 +806,32 @@ function CategoryDetailPanel({
   onClose: () => void;
 }) {
   const t = useTranslations("companyWorkspace.risk");
+  // DÖF oluşturma state'i: findingId -> { code, id } veya "loading"/"error"
+  const [dofState, setDofState] = useState<Record<string, { status: "idle" | "loading" | "created" | "error"; record?: CorrectiveActionRecord; error?: string }>>({});
+
+  async function handleCreateDof(f: FindingWithContext) {
+    setDofState((prev) => ({ ...prev, [f.id]: { status: "loading" } }));
+    try {
+      const record = await createCorrectiveActionFromFinding({
+        companyWorkspaceId,
+        findingId: f.id,
+        assessmentId: f.assessmentId,
+        findingTitle: f.title,
+        riskCategoryKey: categoryKey,
+        severity: f.severity,
+        recommendation: f.recommendation,
+        actionText: f.actionText,
+        sourceType: f.sourceType,
+      });
+      if (record) {
+        setDofState((prev) => ({ ...prev, [f.id]: { status: "created", record } }));
+      } else {
+        setDofState((prev) => ({ ...prev, [f.id]: { status: "error", error: t("dof.createError") } }));
+      }
+    } catch (err) {
+      setDofState((prev) => ({ ...prev, [f.id]: { status: "error", error: err instanceof Error ? err.message : String(err) } }));
+    }
+  }
   const trackingRows = [
     { value: "open" as const, label: t("trackingStatus.open"), cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
     { value: "in_progress" as const, label: t("trackingStatus.in_progress"), cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
@@ -848,6 +878,7 @@ function CategoryDetailPanel({
             const trk = trackingRows.find((row) => row.value === f.trackingStatus) ?? trackingRows[0];
             const src = sourceRow(f.sourceType);
             const isEditing = editingFinding === f.id;
+            const dof = dofState[f.id];
 
             return (
               <div key={f.id} className="rounded-lg border border-border bg-secondary/20 p-4">
@@ -861,14 +892,52 @@ function CategoryDetailPanel({
                     </div>
                     <p className="mt-0.5 text-[11px] text-muted-foreground">{t("analysisPrefix")} {f.assessmentTitle}</p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => isEditing ? onCancelEdit() : onStartEdit(f)}
-                    className="shrink-0 rounded-lg px-2.5 py-1 text-[11px] font-medium text-primary hover:bg-primary/10 transition-colors"
-                  >
-                    {isEditing ? t("cancel") : t("edit")}
-                  </button>
+                  <div className="flex items-center gap-1 shrink-0">
+                    {/* Faz 2: DÖF Oluştur — finding'ten direkt corrective_action açar */}
+                    {dof?.status !== "created" && (
+                      <button
+                        type="button"
+                        onClick={() => handleCreateDof(f)}
+                        disabled={dof?.status === "loading"}
+                        className="rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700 hover:bg-amber-100 disabled:opacity-60 dark:border-amber-700/40 dark:bg-amber-900/20 dark:text-amber-300 dark:hover:bg-amber-900/30 transition-colors"
+                      >
+                        {dof?.status === "loading" ? t("dof.creating") : t("dof.createButton")}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => isEditing ? onCancelEdit() : onStartEdit(f)}
+                      className="rounded-lg px-2.5 py-1 text-[11px] font-medium text-primary hover:bg-primary/10 transition-colors"
+                    >
+                      {isEditing ? t("cancel") : t("edit")}
+                    </button>
+                  </div>
                 </div>
+
+                {/* DÖF oluşturma sonuç paneli */}
+                {dof?.status === "created" && dof.record && (
+                  <div className="mt-2 flex flex-wrap items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-[11px] dark:border-emerald-700/40 dark:bg-emerald-900/20">
+                    <span className="font-semibold text-emerald-700 dark:text-emerald-300">
+                      {t("dof.createdTitle")}
+                    </span>
+                    {dof.record.code && (
+                      <span className="rounded-full bg-white/70 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200">
+                        {dof.record.code}
+                      </span>
+                    )}
+                    <Link
+                      href={`/corrective-actions/${dof.record.id}`}
+                      className="ml-auto rounded-md border border-emerald-400/60 bg-white/60 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 hover:bg-white dark:bg-emerald-950/40 dark:text-emerald-200 dark:hover:bg-emerald-950/60 transition-colors"
+                    >
+                      {t("dof.openLink")}
+                    </Link>
+                  </div>
+                )}
+                {dof?.status === "error" && (
+                  <div className="mt-2 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-[11px] text-red-700 dark:border-red-700/40 dark:bg-red-900/20 dark:text-red-300">
+                    {dof.error}
+                  </div>
+                )}
 
                 {f.recommendation && (
                   <div className="mt-2 rounded-lg bg-amber-50/50 p-2.5 dark:bg-amber-900/10">
