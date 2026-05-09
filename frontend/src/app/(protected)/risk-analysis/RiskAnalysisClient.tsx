@@ -241,6 +241,9 @@ const PARTICIPANT_ROLE_CODES = [
   "knowledgeable_employee",
 ] as const;
 
+const LEGACY_TR_ANALYSIS_TITLE = "Saha Risk Analizi";
+const LEGACY_TR_ANALYSIS_NOTE = "Her satır bir risk konusu veya uygunsuzluk grubunu temsil eder. Aynı satıra bir veya birden fazla fotoğraf eklenebilir.";
+
 /** Firma ekip kategorisinden ISG rol kodu tahmin et */
 function guessRoleFromCategory(categoryName: string | null): string {
   if (!categoryName) return "";
@@ -818,6 +821,28 @@ function pickCompanyForWorkspace(
   return list[0]?.id ?? "";
 }
 
+function formatCompanyKind(kind: string | null | undefined, locale: Locale): string {
+  const value = (kind ?? "").trim();
+  if (!value) return "-";
+  if (locale === "tr") return value;
+
+  const normalized = value
+    .toLocaleLowerCase("tr-TR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ");
+
+  const labels: Record<string, string> = {
+    "ozel sektor": "Private sector",
+    "özel sektor": "Private sector",
+    "özel sektör": "Private sector",
+    kamu: "Public sector",
+    "kamu kurumu": "Public institution",
+  };
+
+  return labels[normalized] ?? value;
+}
+
 /* ================================================================== */
 /* Main Component                                                      */
 /* ================================================================== */
@@ -826,6 +851,13 @@ export function RiskAnalysisClient() {
   const searchParams = useSearchParams();
   const { locale } = useI18n();
   const trRiskScoring = useTranslations("riskScoring");
+  const isEnglish = locale === "en";
+  const noLocationCopy = isEnglish ? "No locations are defined for this company." : "Bu firmada tanımlı lokasyon bulunmuyor.";
+  const noDepartmentCopy = isEnglish ? "No departments are defined for this company." : "Bu firmada tanımlı bölüm bulunmuyor.";
+  const structureLinkCopy = isEnglish ? "Add one from the structure tab" : "Yerleşke sekmesinden ekleyin";
+  const workspaceCompanyHintCopy = isEnglish
+    ? "Linked to the active workspace. To analyze another company, switch workspace from the top right."
+    : "Aktif çalışma alanına bağlı. Başka bir firmayı analiz etmek için sağ üstten çalışma alanını değiştir.";
 
   const stepLabels = useMemo(
     () => [
@@ -841,6 +873,16 @@ export function RiskAnalysisClient() {
   const [analysisTitle, setAnalysisTitle] = usePersistedState("risk:title", trRiskScoring("ui.page.analysisTitlePlaceholder"));
   const [analysisNote, setAnalysisNote] = usePersistedState("risk:note", trRiskScoring("ui.page.analysisNotePlaceholder"));
   const [method, setMethod] = usePersistedState<AnalysisMethod>("risk:method", "r_skor");
+
+  useEffect(() => {
+    if (!isEnglish) return;
+    if (analysisTitle === LEGACY_TR_ANALYSIS_TITLE) {
+      setAnalysisTitle(trRiskScoring("ui.page.analysisTitlePlaceholder"));
+    }
+    if (analysisNote === LEGACY_TR_ANALYSIS_NOTE) {
+      setAnalysisNote(trRiskScoring("ui.page.analysisNotePlaceholder"));
+    }
+  }, [analysisNote, analysisTitle, isEnglish, setAnalysisNote, setAnalysisTitle, trRiskScoring]);
 
   const [companies, setCompanies] = useState<CompanyRecord[]>([]);
   const companiesRef = useRef<CompanyRecord[]>([]);
@@ -2515,6 +2557,9 @@ JSON formatında döndür:
               <div className={`rounded-2xl border border-primary/15 bg-white px-4 py-3 text-sm font-semibold text-foreground shadow-[0_8px_20px_rgba(15,23,42,0.05)] dark:border-border dark:bg-[var(--navy-mid)] dark:text-white${!selectedCompanyId ? " !border-amber-400/60 !shadow-[0_0_0_3px_rgba(245,158,11,0.15)]" : ""}`}>
                 {selectedCompany ? formatCompanySelectLabel(selectedCompany) : trRiskScoring("wizard.step1.companyPlaceholder")}
               </div>
+              <p className="text-[11px] text-muted-foreground">
+                {workspaceCompanyHintCopy}
+              </p>
               {!selectedCompanyId && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">{trRiskScoring("wizard.step1.companyRequired")}</p>}
             </div>
 
@@ -2596,9 +2641,9 @@ JSON formatında döndür:
                 </select>
                 {selectedCompanyId && availableLocations.length === 0 ? (
                   <p className="text-xs font-medium text-amber-600 dark:text-amber-400">
-                    Bu firmada tanımlı lokasyon bulunmuyor.{" "}
+                    {noLocationCopy}{" "}
                     <Link href={`/companies/${selectedCompanyId}?tab=structure`} className="underline underline-offset-2">
-                      Yerleşke sekmesinden ekleyin
+                      {structureLinkCopy}
                     </Link>
                     .
                   </p>
@@ -2614,9 +2659,9 @@ JSON formatında döndür:
                 </select>
                 {selectedCompanyId && availableDepartments.length === 0 ? (
                   <p className="text-xs font-medium text-amber-600 dark:text-amber-400">
-                    Bu firmada tanımlı bölüm bulunmuyor.{" "}
+                    {noDepartmentCopy}{" "}
                     <Link href={`/companies/${selectedCompanyId}?tab=structure`} className="underline underline-offset-2">
-                      Yerleşke sekmesinden ekleyin
+                      {structureLinkCopy}
                     </Link>
                     .
                   </p>
@@ -2635,7 +2680,7 @@ JSON formatında döndür:
           {selectedCompany && (
             <div className="mt-5 rounded-2xl border border-border bg-card px-4 py-3">
               <p className="text-xs font-semibold text-muted-foreground">{selectedCompany.name}</p>
-              <p className="text-xs text-muted-foreground">{trRiskScoring("wizard.step1.companyCardType")} {selectedCompany.kind || "-"} · {trRiskScoring("wizard.step1.companyCardAddress")} {selectedCompany.address || "-"}</p>
+              <p className="text-xs text-muted-foreground">{trRiskScoring("wizard.step1.companyCardType")} {formatCompanyKind(selectedCompany.kind, locale as Locale)} · {trRiskScoring("wizard.step1.companyCardAddress")} {selectedCompany.address || "-"}</p>
             </div>
           )}
 
