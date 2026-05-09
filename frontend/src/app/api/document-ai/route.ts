@@ -11,7 +11,7 @@ import {
   resolveAiDailyLimit,
 } from "@/lib/security/server";
 import { executeWithResilience } from "@/lib/self-healing/resilience";
-import { getAnthropicKey } from "@/lib/ai/provider-keys";
+import { getAnthropicKey, getAnthropicModel } from "@/lib/ai/provider-keys";
 
 let anthropicClient: Anthropic | null = null;
 
@@ -306,6 +306,15 @@ export async function POST(request: NextRequest) {
   const auth = await requireAuth(request);
   if (!auth.ok) return auth.response;
 
+  // Hoisted so the outer catch block can still report against the same model
+  // identifier and return the local scaffold when an unexpected error blows up
+  // the main flow before we get to the resilience layer.
+  const aiModel = getAnthropicModel();
+  let localFallbackContent = "";
+  let documentTitleForLog = "";
+  let groupKeyForLog = "";
+  let companyNameForLog = "";
+
   try {
     const plan = await resolveAiDailyLimit(auth.userId);
     const rateLimitResponse = await enforceRateLimit(request, {
@@ -352,12 +361,15 @@ export async function POST(request: NextRequest) {
     if (groupKey) contextInfo += `DOKUMAN KATEGORISI: ${groupKey}\n`;
 
     const userMessage = `${contextInfo}\n\nKULLANICI ISTEGI:\n${prompt}`;
-    const localFallbackContent = buildLocalDocumentScaffold({
+    localFallbackContent = buildLocalDocumentScaffold({
       documentTitle,
       groupKey,
       companyName,
       companyData,
     });
+    documentTitleForLog = documentTitle;
+    groupKeyForLog = groupKey;
+    companyNameForLog = companyName;
     const client = getAnthropicClient();
 
     if (!client) {
@@ -400,7 +412,7 @@ export async function POST(request: NextRequest) {
       },
       operation: () =>
         client.messages.create({
-          model: "claude-sonnet-4-20250514",
+          model: aiModel,
           max_tokens: 4096,
           system: SYSTEM_PROMPT,
           messages: [
@@ -416,7 +428,7 @@ export async function POST(request: NextRequest) {
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
-        model: "claude-sonnet-4-20250514",
+        model: aiModel,
         endpoint: "/api/document-ai",
         success: false,
         metadata: {
@@ -447,7 +459,7 @@ export async function POST(request: NextRequest) {
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
-        model: "claude-sonnet-4-20250514",
+        model: aiModel,
         endpoint: "/api/document-ai",
         promptTokens: response.usage.input_tokens,
         completionTokens: response.usage.output_tokens,
@@ -489,7 +501,7 @@ export async function POST(request: NextRequest) {
     await logAiUsage({
       userId: auth.userId,
       organizationId: auth.organizationId,
-      model: "claude-sonnet-4-20250514",
+      model: aiModel,
       endpoint: "/api/document-ai",
       promptTokens: response.usage.input_tokens,
       completionTokens: response.usage.output_tokens,
@@ -518,7 +530,7 @@ export async function POST(request: NextRequest) {
     await logAiUsage({
       userId: auth.userId,
       organizationId: auth.organizationId,
-      model: "claude-sonnet-4-20250514",
+      model: aiModel,
       endpoint: "/api/document-ai",
       success: false,
       metadata: { error: message.slice(0, 300) },
@@ -529,7 +541,12 @@ export async function POST(request: NextRequest) {
       endpoint: "/api/document-ai",
       message,
       stackTrace: error instanceof Error ? error.stack : null,
-      context: { feature: "document_generation" },
+      context: {
+        feature: "document_generation",
+        documentTitle: documentTitleForLog,
+        groupKey: groupKeyForLog,
+        companyName: companyNameForLog,
+      },
       userId: auth.userId,
       organizationId: auth.organizationId,
     });
@@ -539,6 +556,33 @@ export async function POST(request: NextRequest) {
       organizationId: auth.organizationId,
       details: { message: message.slice(0, 300) },
     });
-    return NextResponse.json({ error: message }, { status: 500 });
+
+    // Even when the main flow throws unexpectedly we still want the editor to
+    // get something usable. Returning a 200 with the local scaffold (when we
+    // already prepared one) keeps the AI panel from showing only a generic
+    // "service unavailable" — the user gets a draft to edit and the real
+    // diagnostic message in `error` for transparency.
+    if (localFallbackContent) {
+      return NextResponse.json({
+        message: `AI dokuman servisi beklenmedik bir hata verdi: ${message.slice(0, 200)}. Yerel taslak hazirlandi; duzenleyerek devam edebilirsiniz.`,
+        error: message,
+        content: localFallbackContent,
+        degraded: true,
+        queuedTaskId: null,
+        fallback: {
+          type: "local_scaffold",
+          label: "Yerel taslagi editora ekle",
+        },
+        fallbackSource: "local_scaffold_catch",
+      });
+    }
+
+    return NextResponse.json(
+      {
+        error: message,
+        message: `AI dokuman servisi beklenmedik bir hata verdi: ${message.slice(0, 200)}`,
+      },
+      { status: 500 },
+    );
   }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Editor } from '@tiptap/react';
 import { useLocale, useTranslations } from 'next-intl';
 import {
@@ -41,6 +41,15 @@ interface AIAssistantPanelProps {
   groupKey: string;
   companyName: string;
   companyData?: CompanyDataForAI;
+  /**
+   * Optional prompt the parent wants the assistant to run automatically as
+   * soon as the editor is ready — used for the "AI Taslak" hand-off from the
+   * ISG Library so users land in the editor with content already streaming
+   * instead of an empty screen + extra click.
+   */
+  autoRunPrompt?: string | null;
+  /** Called once the auto prompt has been consumed so the parent can clear it. */
+  onAutoPromptConsumed?: () => void;
 }
 
 type DocumentAiResponse = {
@@ -55,7 +64,40 @@ type DocumentAiResponse = {
     type?: string;
     label?: string;
   };
+  fallbackSource?: string;
 };
+
+/**
+ * Reads a Response body as JSON when the server actually answered with JSON,
+ * otherwise returns the text + status so the panel can surface a real
+ * diagnostic instead of an empty {}. This is what was causing the
+ * "Hata: AI şu anda yanıt veremiyor" generic message — when Next.js / a
+ * proxy returned an HTML error page, the previous JSON-only parse ate the
+ * payload and we lost all signal.
+ */
+async function readDocumentAiPayload(response: Response): Promise<{
+  data: DocumentAiResponse;
+  rawText: string;
+  status: number;
+}> {
+  const status = response.status;
+  let rawText = '';
+  try {
+    rawText = await response.text();
+  } catch {
+    return { data: {}, rawText: '', status };
+  }
+
+  if (!rawText) {
+    return { data: {}, rawText: '', status };
+  }
+
+  try {
+    return { data: JSON.parse(rawText) as DocumentAiResponse, rawText, status };
+  } catch {
+    return { data: {}, rawText, status };
+  }
+}
 
 const QUICK_KEYS = ['fullDoc', 'intro', 'legal', 'regs'] as const;
 const QUICK_ICONS: Record<(typeof QUICK_KEYS)[number], LucideIcon> = {
@@ -133,8 +175,10 @@ function extractAiMessage(data: DocumentAiResponse, fallbackMessage: string) {
   return data.message || data.error || fallbackMessage;
 }
 
-async function readDocumentAiResponse(response: Response) {
-  return (await response.json().catch(() => ({}))) as DocumentAiResponse;
+function snippetFromText(text: string, max = 240) {
+  const trimmed = text.trim();
+  if (trimmed.length <= max) return trimmed;
+  return `${trimmed.slice(0, max)}…`;
 }
 
 export function AIAssistantPanel({
@@ -143,6 +187,8 @@ export function AIAssistantPanel({
   groupKey,
   companyName,
   companyData,
+  autoRunPrompt,
+  onAutoPromptConsumed,
 }: AIAssistantPanelProps) {
   const locale = useLocale();
   const t = useTranslations('documentEditor.ai');
@@ -159,6 +205,7 @@ export function AIAssistantPanel({
   const [savedSelection, setSavedSelection] = useState<{ text: string; from: number; to: number } | null>(null);
   const [showImproveDialog, setShowImproveDialog] = useState(false);
   const [customImprovePrompt, setCustomImprovePrompt] = useState('');
+  const [diagnostics, setDiagnostics] = useState<{ status: number; bodySnippet: string } | null>(null);
 
   const captureSelection = useCallback(() => {
     if (!editor) return null;
@@ -226,14 +273,7 @@ export function AIAssistantPanel({
     setDegraded(false);
     setQueueTaskId(null);
     setInserted(false);
-  }, []);
-
-  const applyAiError = useCallback((data: DocumentAiResponse, fallbackMessage: string) => {
-    const content = extractContent(data);
-    setDegraded(Boolean(data.degraded));
-    setQueueTaskId(typeof data.queuedTaskId === 'string' ? data.queuedTaskId : null);
-    setResult(content || extractAiMessage(data, fallbackMessage));
-    return content;
+    setDiagnostics(null);
   }, []);
 
   const applyClientFallback = useCallback(
@@ -267,9 +307,11 @@ export function AIAssistantPanel({
         signal,
       });
 
+      const payload = await readDocumentAiPayload(response);
+
       return {
         response,
-        data: await readDocumentAiResponse(response),
+        ...payload,
       };
     },
     [companyData, companyName, documentTitle, groupKey],
@@ -284,40 +326,62 @@ export function AIAssistantPanel({
     const timeout = window.setTimeout(() => controller.abort(), 75000);
 
     try {
-      const { response: res, data } = await requestDocumentAi(prompt, controller.signal);
+      const { response: res, data, rawText, status } = await requestDocumentAi(prompt, controller.signal);
 
-      if (!res.ok) {
-        if (res.status === 402) {
-          setDegraded(false);
-          setQueueTaskId(null);
-          const quotaMsg =
-            typeof data.message === "string"
-              ? data.message
-              : typeof data.error === "string"
-                ? data.error
-                : terr('quotaDefault');
-          setResult(quotaMsg);
-          return;
-        }
-        const fallbackContent = applyAiError(
-          data,
-          terr('serviceUnavailable'),
-        );
-        if (autoInsert && fallbackContent) {
-          insertToEditor(fallbackContent);
-        }
+      if (status === 402) {
+        setDegraded(false);
+        setQueueTaskId(null);
+        const quotaMsg =
+          typeof data.message === 'string'
+            ? data.message
+            : typeof data.error === 'string'
+              ? data.error
+              : terr('quotaDefault');
+        setResult(quotaMsg);
         return;
       }
 
-      const content = extractContent(data);
+      const serverContent = extractContent(data);
+
+      // Even non-200 responses can carry useful payload (e.g. our route
+      // returns 200-with-degraded scaffold but middlewares may serve 503/HTML).
+      // Capture the raw status + body snippet so the user / dev can see what
+      // really happened instead of a generic "AI is not responding" message.
+      if (!res.ok || !serverContent) {
+        const message = extractAiMessage(
+          data,
+          rawText && !data.error && !data.message
+            ? snippetFromText(rawText, 200)
+            : terr('serviceUnavailable'),
+        );
+
+        setDiagnostics({
+          status,
+          bodySnippet: rawText ? snippetFromText(rawText, 600) : '(empty body)',
+        });
+
+        if (serverContent) {
+          // Server gave us a real fallback (e.g. local scaffold) — use it.
+          setDegraded(Boolean(data.degraded) || true);
+          setQueueTaskId(typeof data.queuedTaskId === 'string' ? data.queuedTaskId : null);
+          setResult(`${message}\n\n${serverContent}`);
+          if (autoInsert) insertToEditor(serverContent);
+          return;
+        }
+
+        // No usable content from the server — fall back to a fully client-side
+        // scaffold so the user always lands on a working draft. This is the
+        // critical fix for the "AI editörde içerik üretmiyor" complaint where
+        // a non-JSON 5xx left the editor empty.
+        applyClientFallback(message, autoInsert);
+        return;
+      }
+
       setDegraded(Boolean(data.degraded));
       setQueueTaskId(typeof data.queuedTaskId === 'string' ? data.queuedTaskId : null);
-      setResult(content);
-      if (autoInsert && content) {
-        insertToEditor(content);
-      }
-      if (!content) {
-        applyClientFallback(terr('emptyResponseWithFallback'), autoInsert);
+      setResult(serverContent);
+      if (autoInsert) {
+        insertToEditor(serverContent);
       }
     } catch (error) {
       const isAbort = error instanceof DOMException && error.name === 'AbortError';
@@ -343,36 +407,45 @@ export function AIAssistantPanel({
     const fullPrompt = `${improvePrompt}\n\n${t('improveTextBlockLabel')}\n"${savedSelection.text}"`;
 
     try {
-      const { response: res, data } = await requestDocumentAi(fullPrompt, controller.signal);
+      const { response: res, data, rawText, status } = await requestDocumentAi(fullPrompt, controller.signal);
 
-      if (!res.ok) {
-        if (res.status === 402) {
-          setDegraded(false);
-          setQueueTaskId(null);
-          setResult(
-            typeof data.message === "string"
-              ? data.message
-              : typeof data.error === "string"
-                ? data.error
-                : terr('quotaShort'),
-          );
-          return;
-        }
-        applyAiError(data, terr('serviceUnavailableImprove'));
+      if (status === 402) {
+        setDegraded(false);
+        setQueueTaskId(null);
+        setResult(
+          typeof data.message === 'string'
+            ? data.message
+            : typeof data.error === 'string'
+              ? data.error
+              : terr('quotaShort'),
+        );
         return;
       }
 
       const content = extractContent(data);
+
+      if (!res.ok || !content) {
+        const message = extractAiMessage(
+          data,
+          rawText && !data.error && !data.message
+            ? snippetFromText(rawText, 200)
+            : terr('serviceUnavailableImprove'),
+        );
+        setDiagnostics({
+          status,
+          bodySnippet: rawText ? snippetFromText(rawText, 600) : '(empty body)',
+        });
+        setDegraded(Boolean(data.degraded) || true);
+        setQueueTaskId(typeof data.queuedTaskId === 'string' ? data.queuedTaskId : null);
+        setResult(message);
+        return;
+      }
+
       setDegraded(Boolean(data.degraded));
       setQueueTaskId(typeof data.queuedTaskId === 'string' ? data.queuedTaskId : null);
       setResult(content);
-
-      if (content) {
-        replaceSelection(content, savedSelection.from, savedSelection.to);
-        setInserted(true);
-      } else {
-        setResult(terr('emptyResponseImprove'));
-      }
+      replaceSelection(content, savedSelection.from, savedSelection.to);
+      setInserted(true);
     } catch (error) {
       const isAbort = error instanceof DOMException && error.name === 'AbortError';
       setResult(
@@ -390,6 +463,28 @@ export function AIAssistantPanel({
     void generateContent(customPrompt.trim(), true);
     setCustomPrompt('');
   };
+
+  // Auto-run a prompt handed to us by the parent (e.g. ISG Library "AI Taslak"
+  // flow that pushes /documents/new?ai=1). We gate on:
+  //   - editor mounted (so insertion lands in the right ProseMirror instance)
+  //   - prompt non-empty and meets server min length
+  //   - not currently running
+  // and we run at most once per autoRunPrompt value via a ref.
+  const lastAutoPromptRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!editor) return;
+    if (loading) return;
+    const trimmed = (autoRunPrompt ?? '').trim();
+    if (!trimmed) return;
+    if (trimmed.length < 10) return; // server schema requires min 10 chars
+    if (lastAutoPromptRef.current === trimmed) return;
+    lastAutoPromptRef.current = trimmed;
+    void generateContent(trimmed, true);
+    onAutoPromptConsumed?.();
+    // We intentionally don't depend on generateContent (recreated each render);
+    // gating via lastAutoPromptRef keeps the effect single-shot.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRunPrompt, editor]);
 
   return (
     <div className="flex h-full flex-col bg-[var(--card)] text-[var(--text-primary)]">
@@ -542,6 +637,17 @@ export function AIAssistantPanel({
                 {t('degradedNotice')}
                 {queueTaskId ? ` ${t('degradedQueue', { taskId: queueTaskId })}` : ` ${t('degradedQueueHint')}`}
               </div>
+            ) : null}
+
+            {diagnostics ? (
+              <details className="mt-2 rounded-lg border border-border/60 bg-background/50 px-3 py-1.5 text-[10px] text-[var(--text-secondary)]">
+                <summary className="cursor-pointer select-none font-medium">
+                  {`Teknik detay (HTTP ${diagnostics.status})`}
+                </summary>
+                <pre className="mt-1.5 max-h-32 overflow-auto whitespace-pre-wrap break-all font-mono text-[10px] leading-snug">
+                  {diagnostics.bodySnippet}
+                </pre>
+              </details>
             ) : null}
 
             {!inserted ? (

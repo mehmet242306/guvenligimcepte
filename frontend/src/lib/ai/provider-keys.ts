@@ -12,6 +12,12 @@ const ANTHROPIC_KEY_NAMES = [
   "CLAUDE_API_KEY",
 ] as const;
 
+// Stable Anthropic model used by document/AI flows. Kept here so a single env
+// override (ANTHROPIC_MODEL) can hot-swap the model when Anthropic deprecates a
+// dated alias — without redeploying every route. Default is the latest GA
+// Sonnet 4 build that the platform was qualified against.
+const DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514" as const;
+
 function readFirstEnv(names: readonly string[]) {
   for (const name of names) {
     const value = process.env[name]?.trim();
@@ -27,6 +33,15 @@ export function getOpenAIKey() {
 
 export function getAnthropicKey() {
   return readFirstEnv(ANTHROPIC_KEY_NAMES);
+}
+
+/**
+ * Returns the Anthropic model identifier to use. Reads ANTHROPIC_MODEL when
+ * present (so ops can swap a deprecated dated alias without code changes) and
+ * falls back to the platform default otherwise.
+ */
+export function getAnthropicModel() {
+  return process.env.ANTHROPIC_MODEL?.trim() || DEFAULT_ANTHROPIC_MODEL;
 }
 
 export function getConfiguredAiProviderNames() {

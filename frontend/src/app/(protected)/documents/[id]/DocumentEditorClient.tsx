@@ -91,6 +91,11 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
   const qDownload = searchParams.get('download') || '';
   const fromLibrary = searchParams.get('library') === '1';
   const librarySection = searchParams.get('librarySection') || 'documentation';
+  // When the ISG Library AI flow hands the user off to /documents/new?ai=1 it
+  // stashes the prompt in sessionStorage (URL would be too noisy for a long
+  // free-text request). The editor reads it once below and forwards it to the
+  // AI assistant panel so generation kicks off automatically.
+  const fromAiLibrary = searchParams.get('ai') === '1';
   const resolvedTemplateId = qTemplateId || resolveTemplateIdFromQuery(qGroup, qTitle);
 
   // State
@@ -112,6 +117,28 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
       setShowSidebar(true);
     }
   }, []);
+  const [autoAiPrompt, setAutoAiPrompt] = useState<string | null>(null);
+  useEffect(() => {
+    if (!fromAiLibrary) return;
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = sessionStorage.getItem('risknova:isg-library:aiDraft');
+      if (!raw) return;
+      sessionStorage.removeItem('risknova:isg-library:aiDraft');
+      const parsed = JSON.parse(raw) as { prompt?: string };
+      const prompt = typeof parsed?.prompt === 'string' ? parsed.prompt.trim() : '';
+      if (prompt) setAutoAiPrompt(prompt);
+    } catch {
+      // Stored value was malformed — ignore and let the user type a prompt.
+    }
+  }, [fromAiLibrary]);
+
+  // On hand-off from the library AI flow, force the assistant panel open so
+  // the user immediately sees the generation progress and resulting draft.
+  useEffect(() => {
+    if (autoAiPrompt) setShowSidebar(true);
+  }, [autoAiPrompt]);
+
   const [, setVersions] = useState<DocumentVersionRecord[]>([]);
   const [orgId, setOrgId] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -759,6 +786,8 @@ ${content}
                   groupKey={groupKey}
                   companyName={companyData.official_name || ''}
                   companyData={companyData}
+                  autoRunPrompt={autoAiPrompt}
+                  onAutoPromptConsumed={() => setAutoAiPrompt(null)}
                 />
               </div>
             </aside>
