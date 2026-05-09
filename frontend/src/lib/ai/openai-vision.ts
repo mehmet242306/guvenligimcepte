@@ -63,6 +63,23 @@ export type DetectedHazardObject = {
   severity: "critical" | "high" | "medium" | "low";
 };
 
+// Profesyonel saha denetimi için ek ortam boyutları (Claude'a ground truth
+// olarak verilecek). Hepsi opsiyonel — model emin değilse "unclear" döner.
+export type EnvironmentDetection = {
+  floorCondition: "dry_clean" | "wet" | "oily" | "cluttered" | "damaged" | "unclear";
+  lightingLevel: "good" | "moderate" | "poor" | "unclear";
+  housekeeping: "tidy" | "moderate" | "messy" | "unclear"; // 5S düzen
+  ventilationContext: "outdoor" | "indoor_open" | "indoor_closed" | "confined" | "unclear";
+  egressVisibility: "clear" | "obstructed" | "no_signage" | "not_applicable" | "unclear";
+  fireExtinguisherVisible: "yes_accessible" | "yes_obstructed" | "no" | "unclear";
+  height: "ground_level" | "above_2m" | "above_5m" | "unclear"; // yüksekte çalışma ipucu
+  energizedEquipmentVisible: boolean; // pano, motor, kablo açıkta görünüyor mu
+  chemicalContainersVisible: boolean; // varil, bidon, etiketsiz şişe vs.
+  sensitiveGroupsPresent: Array<
+    "elderly" | "child" | "wheelchair" | "patient" | "pregnant" | "visitor" | "none"
+  >;
+};
+
 export type VisionDetection = {
   imageType: "real_photo" | "illustration" | "ai_generated" | "3d_render" | "screenshot" | "unknown";
   sceneCategory: string; // "fabrika atölyesi", "şantiye", "ofis", "depo", "laboratuvar", vs.
@@ -70,6 +87,7 @@ export type VisionDetection = {
   personCount: number;
   people: DetectedPerson[];
   hazardObjects: DetectedHazardObject[];
+  environment: EnvironmentDetection; // YENİ: profesyonel saha boyutları
   environmentalNotes: string[]; // ortam gözlemleri: "aydınlatma yeterli", "zemin ıslak", "alan dağınık", vs.
   overallDescription: string; // 2-3 cümle Türkçe özet
   visionModel: string;
@@ -94,6 +112,17 @@ Görevin:
    - fallProtection: yüksekte çalışıyorsa ve emniyet kemeri varsa "present" (yükseklik yoksa "unclear")
 3) Görünür tehlike objeleri: devrilmeye hazır yığın, açık elektrik, yağ/sıvı lekesi, dağınık kablo, paslı/hasarlı ekipman, korkuluksuz yükseklik, yanıcı madde yakınında kıvılcım kaynağı, vs.
 4) Görsel türü (gerçek foto / çizim / AI üretimi).
+5) ORTAM/ÇEVRE BOYUTLARI (profesyonel saha denetimi için):
+   - floorCondition: zemin durumu — kuru/temiz, ıslak, yağlı, dağınık, hasarlı (kırık fayans/çukur/kot farkı)
+   - lightingLevel: aydınlatma seviyesi — iyi, orta, zayıf
+   - housekeeping: 5S düzen — düzenli, orta, dağınık (gözle görülür yığın/atık/kablo)
+   - ventilationContext: ortam türü — açık alan, iç mekan açık, iç mekan kapalı, kapalı/dar hacim
+   - egressVisibility: tahliye yolu — açık ve işaretli, engellenmiş, işaret yok, görselde geçerli değil
+   - fireExtinguisherVisible: söndürücü — var ve erişilebilir, var ama engelli, yok, belirsiz
+   - height: yükseklik ipucu — yer seviyesi, 2m üstü, 5m üstü, belirsiz
+   - energizedEquipmentVisible: pano/motor/kablo gibi enerjili ekipman görünüyor mu (true/false)
+   - chemicalContainersVisible: varil/bidon/etiketsiz şişe gibi kimyasal kap görünüyor mu (true/false)
+   - sensitiveGroupsPresent: hassas grup ipuçları — yaşlı, çocuk, tekerlekli sandalyeli, hasta, hamile, ziyaretçi (görünüyorsa listele; yoksa ["none"])
 
 **MUTLAK KURALLAR:**
 - "present" dediysen o KKD gerçekten GÖRÜNÜYOR olmalı. Varsayıma dayanma.
@@ -139,6 +168,18 @@ const DETECTION_USER_PROMPT = `Bu görseli analiz et ve aşağıdaki JSON şemas
       "severity": "critical|high|medium|low"
     }
   ],
+  "environment": {
+    "floorCondition": "dry_clean|wet|oily|cluttered|damaged|unclear",
+    "lightingLevel": "good|moderate|poor|unclear",
+    "housekeeping": "tidy|moderate|messy|unclear",
+    "ventilationContext": "outdoor|indoor_open|indoor_closed|confined|unclear",
+    "egressVisibility": "clear|obstructed|no_signage|not_applicable|unclear",
+    "fireExtinguisherVisible": "yes_accessible|yes_obstructed|no|unclear",
+    "height": "ground_level|above_2m|above_5m|unclear",
+    "energizedEquipmentVisible": false,
+    "chemicalContainersVisible": false,
+    "sensitiveGroupsPresent": ["none"]
+  },
   "environmentalNotes": ["Kısa gözlem 1", "Kısa gözlem 2"],
   "overallDescription": "2-3 cümle Türkçe genel özet"
 }
@@ -199,6 +240,22 @@ export async function detectSafetyObjects(
     const parsed = JSON.parse(content) as Partial<VisionDetection>;
     const duration = Date.now() - t0;
 
+    const env = (parsed.environment ?? {}) as Partial<EnvironmentDetection>;
+    const normalizedEnv: EnvironmentDetection = {
+      floorCondition: env.floorCondition ?? "unclear",
+      lightingLevel: env.lightingLevel ?? "unclear",
+      housekeeping: env.housekeeping ?? "unclear",
+      ventilationContext: env.ventilationContext ?? "unclear",
+      egressVisibility: env.egressVisibility ?? "unclear",
+      fireExtinguisherVisible: env.fireExtinguisherVisible ?? "unclear",
+      height: env.height ?? "unclear",
+      energizedEquipmentVisible: env.energizedEquipmentVisible === true,
+      chemicalContainersVisible: env.chemicalContainersVisible === true,
+      sensitiveGroupsPresent: Array.isArray(env.sensitiveGroupsPresent) && env.sensitiveGroupsPresent.length > 0
+        ? env.sensitiveGroupsPresent
+        : ["none"],
+    };
+
     return {
       imageType: parsed.imageType ?? "unknown",
       sceneCategory: parsed.sceneCategory ?? "",
@@ -206,6 +263,7 @@ export async function detectSafetyObjects(
       personCount: typeof parsed.personCount === "number" ? parsed.personCount : (parsed.people?.length ?? 0),
       people: Array.isArray(parsed.people) ? parsed.people : [],
       hazardObjects: Array.isArray(parsed.hazardObjects) ? parsed.hazardObjects : [],
+      environment: normalizedEnv,
       environmentalNotes: Array.isArray(parsed.environmentalNotes) ? parsed.environmentalNotes : [],
       overallDescription: parsed.overallDescription ?? "",
       visionModel: "gpt-4o",
@@ -285,6 +343,79 @@ export function visionToPromptContext(detection: VisionDetection): string {
     }
   }
 
+  // Profesyonel saha boyutları — Claude'un sistematik 24-boyut taramasına yardım
+  const env = detection.environment;
+  if (env) {
+    lines.push("\nORTAM/ÇEVRE BOYUTLARI (saha denetimi):");
+    const fcLabels: Record<string, string> = {
+      dry_clean: "kuru ve temiz",
+      wet: "ISLAK — kayma riski",
+      oily: "YAĞLI — kayma riski",
+      cluttered: "DAĞINIK — takılma/düşme riski",
+      damaged: "HASARLI (kırık/çukur/kot farkı) — düşme riski",
+      unclear: "belirsiz",
+    };
+    const llLabels: Record<string, string> = {
+      good: "iyi",
+      moderate: "orta",
+      poor: "ZAYIF — iş güvenliği için yetersiz olabilir",
+      unclear: "belirsiz",
+    };
+    const hkLabels: Record<string, string> = {
+      tidy: "düzenli",
+      moderate: "orta",
+      messy: "DAĞINIK — 5S eksikliği",
+      unclear: "belirsiz",
+    };
+    const vcLabels: Record<string, string> = {
+      outdoor: "açık alan",
+      indoor_open: "iç mekan (havadar)",
+      indoor_closed: "İÇ MEKAN (kapalı) — havalandırma kontrolü gerekli",
+      confined: "DAR/KAPALI HACİM — özel önlemler gerekli",
+      unclear: "belirsiz",
+    };
+    const egLabels: Record<string, string> = {
+      clear: "açık ve işaretli",
+      obstructed: "ENGELLENMİŞ — tahliye riski",
+      no_signage: "İŞARET YOK — tahliye yönlendirmesi eksik",
+      not_applicable: "görselde değerlendirilemez",
+      unclear: "belirsiz",
+    };
+    const feLabels: Record<string, string> = {
+      yes_accessible: "var ve erişilebilir",
+      yes_obstructed: "VAR ama önü engelli",
+      no: "GÖRÜNMÜYOR (yangın yükü varsa risk)",
+      unclear: "belirsiz",
+    };
+    const htLabels: Record<string, string> = {
+      ground_level: "yer seviyesi",
+      above_2m: "2 METRE ÜSTÜ — yüksekte çalışma kuralları geçerli",
+      above_5m: "5 METRE ÜSTÜ — kritik yüksekte çalışma",
+      unclear: "belirsiz",
+    };
+    lines.push(`  • Zemin: ${fcLabels[env.floorCondition] ?? env.floorCondition}`);
+    lines.push(`  • Aydınlatma: ${llLabels[env.lightingLevel] ?? env.lightingLevel}`);
+    lines.push(`  • Düzen (5S): ${hkLabels[env.housekeeping] ?? env.housekeeping}`);
+    lines.push(`  • Ortam türü: ${vcLabels[env.ventilationContext] ?? env.ventilationContext}`);
+    lines.push(`  • Tahliye yolu: ${egLabels[env.egressVisibility] ?? env.egressVisibility}`);
+    lines.push(`  • Yangın söndürücü: ${feLabels[env.fireExtinguisherVisible] ?? env.fireExtinguisherVisible}`);
+    lines.push(`  • Yükseklik: ${htLabels[env.height] ?? env.height}`);
+    if (env.energizedEquipmentVisible) lines.push(`  • UYARI: enerjili ekipman (pano/motor/kablo) görünüyor`);
+    if (env.chemicalContainersVisible) lines.push(`  • UYARI: kimyasal kap (varil/bidon/şişe) görünüyor`);
+    const sensitive = env.sensitiveGroupsPresent.filter((g) => g !== "none");
+    if (sensitive.length > 0) {
+      const sgLabels: Record<string, string> = {
+        elderly: "yaşlı",
+        child: "çocuk",
+        wheelchair: "tekerlekli sandalyeli",
+        patient: "hasta",
+        pregnant: "hamile",
+        visitor: "ziyaretçi",
+      };
+      lines.push(`  • HASSAS GRUP TESPİT EDİLDİ: ${sensitive.map((g) => sgLabels[g] ?? g).join(", ")} — şiddet/maruziyet otomatik artar`);
+    }
+  }
+
   if (detection.overallDescription) {
     lines.push(`\nGenel özet: ${detection.overallDescription}`);
   }
@@ -293,6 +424,9 @@ export function visionToPromptContext(detection: VisionDetection): string {
   lines.push("ÖNEMLİ: Ön tespitte 'TAKIYOR' olarak işaretli KKD'leri 'eksik' olarak yazmak YASAK.");
   lines.push("Ön tespitte 'EKSİK' olanlar gerçek risk adayıdır — kontrol et ve metoda göre skorla.");
   lines.push("Ön tespitte 'BELİRSİZ' olanlar için 'risk' yazma (yeterli kanıt yok).");
+  lines.push("Ortam boyutlarındaki UYARI etiketli durumları 24-boyut zihin haritasına göre");
+  lines.push("ilgili kategorilerde DEĞERLENDİR (zemin → Fiziksel/Düzen, tahliye → Acil Durum,");
+  lines.push("hassas grup → severity gerekçesinde belirt, vb.).");
 
   return lines.join("\n");
 }
