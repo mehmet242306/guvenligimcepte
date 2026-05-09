@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -78,137 +78,185 @@ export function DashboardClient() {
     void import("@/lib/supabase/ajanda-sync").then((m) => m.scanUpcomingAjandaTasks({ daysAhead: 7 }));
   }, []);
 
-  useEffect(() => {
-    async function load() {
-      const supabase = createClient();
-      if (!supabase) {
-        setLoading(false);
-        return;
-      }
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('id, organization_id, full_name')
-        .eq('auth_user_id', user.id)
-        .single();
-
-      if (!profile?.organization_id) {
-        setLoading(false);
-        return;
-      }
-
-      const orgId = profile.organization_id;
-
-      // Kullanıcının gerçekten üye olduğu firmaları (company_memberships)
-      // önceden çek; companyCount'u tüm org yerine sadece bu üyeliklerle
-      // filtreleriz. Aksi halde aynı org içindeki diğer ekiplerin firmaları
-      // da sayılıyor ve dashboard'da yanlış rakam gözüküyordu.
-      const { data: memberships } = await supabase
-        .from('company_memberships')
-        .select('company_workspace_id')
-        .eq('user_id', user.id)
-        .eq('status', 'active');
-      const memberWsIds = (memberships ?? [])
-        .map((m: { company_workspace_id: string | null }) => m.company_workspace_id)
-        .filter((v: string | null): v is string => typeof v === 'string' && v.length > 0);
-
-      const companyCountQuery = memberWsIds.length > 0
-        ? supabase
-            .from('company_workspaces')
-            .select('*', { count: 'exact', head: true })
-            .eq('organization_id', orgId)
-            .in('id', memberWsIds)
-        : Promise.resolve({ count: 0 } as { count: number });
-
-      const [
-        { count: riskCount },
-        { data: highRisks },
-        { data: documents },
-        { count: incidentCount },
-        { count: companyCount },
-        { count: taskCount },
-        { count: librarySourcedSurveyCount },
-        { count: librarySourcedExamCount },
-        { data: featureFlags },
-      ] = await Promise.all([
-        supabase.from('risk_assessments').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
-        supabase.from('risk_assessments').select('id').eq('organization_id', orgId).gte('highest_item_score', 15),
-        supabase
-          .from('editor_documents')
-          .select('id, title, status, updated_at')
-          .eq('organization_id', orgId)
-          .neq('status', 'arsiv')
-          .order('updated_at', { ascending: false })
-          .limit(5),
-        supabase.from('incidents').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
-        companyCountQuery,
-        supabase.from('isg_tasks').select('*', { count: 'exact', head: true }).eq('organization_id', orgId).in('status', ['planned', 'overdue']),
-        supabase
-          .from('surveys')
-          .select('id', { count: 'exact', head: true })
-          .eq('organization_id', orgId)
-          .eq('type', 'survey')
-          .contains('settings', { source_library: { provider: 'isg-library' } }),
-        supabase
-          .from('surveys')
-          .select('id', { count: 'exact', head: true })
-          .eq('organization_id', orgId)
-          .eq('type', 'exam')
-          .contains('settings', { source_library: { provider: 'isg-library' } }),
-        supabase
-          .from('nova_feature_flags')
-          .select('feature_key,display_name,description,is_enabled,rollout_percentage')
-          .limit(100),
-      ]);
-
-      const docs = documents || [];
-      const isDemoAccount =
-        user.user_metadata?.demo_mode === true || user.app_metadata?.demo_mode === true;
-      setStats({
-        riskCount: riskCount || 0,
-        highRiskCount: highRisks?.length || 0,
-        documentCount: docs.length,
-        readyDocCount: docs.filter((d) => d.status === 'hazir').length,
-        draftDocCount: docs.filter((d) => d.status === 'taslak').length,
-        incidentCount: incidentCount || 0,
-        companyCount: companyCount || 0,
-        taskCount: taskCount || 0,
-        librarySourcedSurveyCount: librarySourcedSurveyCount || 0,
-        librarySourcedExamCount: librarySourcedExamCount || 0,
-        userName: profile.full_name || user.email || '',
-        recentDocs: docs.slice(0, 5),
-        isDemoAccount,
-      });
-      const mappedFeatures = (featureFlags ?? []).map((row: {
-        feature_key: string;
-        display_name: string;
-        description: string | null;
-        is_enabled: boolean;
-        rollout_percentage: number;
-      }) => ({
-        key: row.feature_key,
-        name: row.display_name,
-        status: (!row.is_enabled
-          ? 'disabled'
-          : row.rollout_percentage >= 100
-            ? 'active'
-            : 'beta') as NovaFeatureStatus,
-        note: row.description ?? '',
-      }));
-      setDynamicFeatures(mappedFeatures);
+  // Dashboard'u aktif çalışma alanı + üye olunan firmalar bazlı yükle.
+  // Workspace değiştiğinde de aynı load yeniden çalıştırılır (event listener).
+  const load = useCallback(async () => {
+    const supabase = createClient();
+    if (!supabase) {
       setLoading(false);
+      return;
     }
 
-    void load();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('id, organization_id, full_name')
+      .eq('auth_user_id', user.id)
+      .single();
+
+    if (!profile?.organization_id) {
+      setLoading(false);
+      return;
+    }
+
+    // Aktif çalışma alanının organization_id'sini çöz; yoksa profile'ın
+    // org'una düş. Bu sayede workspace switch'te dashboard yeniden filtrelenir.
+    let scopedOrgId: string = profile.organization_id;
+    try {
+      const { getActiveWorkspace } = await import('@/lib/supabase/workspace-api');
+      const activeWs = await getActiveWorkspace();
+      if (activeWs?.organization_id) scopedOrgId = activeWs.organization_id;
+    } catch {
+      /* fallback: profile.organization_id */
+    }
+
+    // Kullanıcının üye olduğu firmaları çek.
+    const { data: memberships } = await supabase
+      .from('company_memberships')
+      .select('company_workspace_id')
+      .eq('user_id', user.id)
+      .eq('status', 'active');
+    const memberWsIds = (memberships ?? [])
+      .map((m: { company_workspace_id: string | null }) => m.company_workspace_id)
+      .filter((v: string | null): v is string => typeof v === 'string' && v.length > 0);
+
+    // Bu üyelikleri aktif tenant'a daralt + boş "draft" workspace'leri ele.
+    // Boş tanımı: display_name boş VEYA company_identities.official_name boş.
+    let scopedWsList: Array<{ id: string }> = [];
+    if (memberWsIds.length > 0) {
+      const { data: wsRows } = await supabase
+        .from('company_workspaces')
+        .select(`
+          id, display_name,
+          company_identities!inner(official_name, is_active, is_archived, deleted_at)
+        `)
+        .eq('organization_id', scopedOrgId)
+        .in('id', memberWsIds)
+        .eq('is_archived', false);
+      scopedWsList = (wsRows ?? []).filter((row: {
+        display_name: string | null;
+        company_identities: { official_name: string | null; is_active: boolean; is_archived: boolean; deleted_at: string | null } | null;
+      }) => {
+        const ident = row.company_identities;
+        if (!ident) return false;
+        if (ident.is_archived || ident.deleted_at || !ident.is_active) return false;
+        const name = (row.display_name ?? '').trim() || (ident.official_name ?? '').trim();
+        return name.length > 0;
+      }).map((row: { id: string }) => ({ id: row.id }));
+    }
+    const scopedWsIds = scopedWsList.map((r) => r.id);
+    const hasScope = scopedWsIds.length > 0;
+
+    // Tüm sayaçlar artık scopedWsIds ile filtrelenir; üyelik yoksa hepsi 0.
+    const emptyCount = Promise.resolve({ count: 0 } as { count: number });
+    const emptyData = Promise.resolve({ data: [] as Array<{ id: string }> });
+    const emptyDocs = Promise.resolve({ data: [] as Array<{ id: string; title: string; status: string; updated_at: string }> });
+
+    const [
+      { count: riskCount },
+      { data: highRisks },
+      { data: documents },
+      { count: incidentCount },
+      { count: taskCount },
+      { count: librarySourcedSurveyCount },
+      { count: librarySourcedExamCount },
+      { data: featureFlags },
+    ] = await Promise.all([
+      hasScope
+        ? supabase.from('risk_assessments').select('*', { count: 'exact', head: true }).in('company_workspace_id', scopedWsIds)
+        : emptyCount,
+      hasScope
+        ? supabase.from('risk_assessments').select('id').in('company_workspace_id', scopedWsIds).gte('highest_item_score', 15)
+        : emptyData,
+      hasScope
+        ? supabase
+            .from('editor_documents')
+            .select('id, title, status, updated_at')
+            .in('company_workspace_id', scopedWsIds)
+            .neq('status', 'arsiv')
+            .order('updated_at', { ascending: false })
+            .limit(5)
+        : emptyDocs,
+      hasScope
+        ? supabase.from('incidents').select('*', { count: 'exact', head: true }).in('company_workspace_id', scopedWsIds)
+        : emptyCount,
+      hasScope
+        ? supabase.from('isg_tasks').select('*', { count: 'exact', head: true }).in('company_workspace_id', scopedWsIds).in('status', ['planned', 'overdue'])
+        : emptyCount,
+      // surveys/exams: kütüphane-kaynaklı + kullanıcı bazlı (created_by)
+      supabase
+        .from('surveys')
+        .select('id', { count: 'exact', head: true })
+        .eq('created_by', user.id)
+        .eq('type', 'survey')
+        .contains('settings', { source_library: { provider: 'isg-library' } }),
+      supabase
+        .from('surveys')
+        .select('id', { count: 'exact', head: true })
+        .eq('created_by', user.id)
+        .eq('type', 'exam')
+        .contains('settings', { source_library: { provider: 'isg-library' } }),
+      supabase
+        .from('nova_feature_flags')
+        .select('feature_key,display_name,description,is_enabled,rollout_percentage')
+        .limit(100),
+    ]);
+
+    const docs = documents || [];
+    const isDemoAccount =
+      user.user_metadata?.demo_mode === true || user.app_metadata?.demo_mode === true;
+    setStats({
+      riskCount: riskCount || 0,
+      highRiskCount: highRisks?.length || 0,
+      documentCount: docs.length,
+      readyDocCount: docs.filter((d) => d.status === 'hazir').length,
+      draftDocCount: docs.filter((d) => d.status === 'taslak').length,
+      incidentCount: incidentCount || 0,
+      companyCount: scopedWsIds.length,
+      taskCount: taskCount || 0,
+      librarySourcedSurveyCount: librarySourcedSurveyCount || 0,
+      librarySourcedExamCount: librarySourcedExamCount || 0,
+      userName: profile.full_name || user.email || '',
+      recentDocs: docs.slice(0, 5),
+      isDemoAccount,
+    });
+    const mappedFeatures = (featureFlags ?? []).map((row: {
+      feature_key: string;
+      display_name: string;
+      description: string | null;
+      is_enabled: boolean;
+      rollout_percentage: number;
+    }) => ({
+      key: row.feature_key,
+      name: row.display_name,
+      status: (!row.is_enabled
+        ? 'disabled'
+        : row.rollout_percentage >= 100
+          ? 'active'
+          : 'beta') as NovaFeatureStatus,
+      note: row.description ?? '',
+    }));
+    setDynamicFeatures(mappedFeatures);
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  // Çalışma alanı değişince dashboard'u yeniden yükle.
+  useEffect(() => {
+    function onWorkspaceChanged() { void load(); }
+    window.addEventListener('risknova:active-workspace-changed', onWorkspaceChanged);
+    return () => window.removeEventListener('risknova:active-workspace-changed', onWorkspaceChanged);
+  }, [load]);
 
   if (loading) {
     return (
