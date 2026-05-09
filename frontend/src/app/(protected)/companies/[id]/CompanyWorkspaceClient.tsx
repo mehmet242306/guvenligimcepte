@@ -194,6 +194,55 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
     };
   }, [company?.name]);
 
+  // Tersi senkronizasyon: kullanıcı üstten başka bir çalışma alanına
+  // geçerse, bu firma sayfasından da yeni workspace'in karşılık geldiği
+  // firmaya navigate et. Tek kaynak (active workspace) tüm site için
+  // tutarlı kalsın.
+  useEffect(() => {
+    if (!company?.name) return;
+
+    function onWorkspaceChanged() {
+      void (async () => {
+        try {
+          const { getActiveWorkspace } = await import("@/lib/supabase/workspace-api");
+          const next = await getActiveWorkspace();
+          if (!next?.name || !company) return;
+
+          const norm = (s: string | null | undefined) => (s ?? "").toLowerCase().trim();
+          const cur = norm(company.name);
+          const nxt = norm(next.name);
+          if (cur === nxt) return;
+          if (cur && nxt && (cur.includes(nxt) || nxt.includes(cur))) return;
+
+          // Mevcut firma yeni workspace ile uyumsuz: kullanıcının üye
+          // olduğu firmalardan ad/kod eşleşeni bul ve oraya yönlen.
+          const { fetchMyCompaniesFromSupabase } = await import("@/lib/supabase/company-api");
+          const list = (await fetchMyCompaniesFromSupabase({
+            scopedOrganizationId: next.organization_id ?? null,
+          })) ?? [];
+          if (list.length === 0) return;
+
+          const exact = list.find((c) => norm(c.name) === nxt);
+          const partial = !exact
+            ? list.find((c) => norm(c.name).includes(nxt) || nxt.includes(norm(c.name)))
+            : null;
+          const target = exact ?? partial ?? list[0];
+          if (!target || target.id === company.id) return;
+
+          const dest = target.slug ? `/workspace/${target.slug}` : `/companies/${target.id}`;
+          router.replace(dest);
+        } catch {
+          /* sessizce devam */
+        }
+      })();
+    }
+
+    window.addEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
+    return () => {
+      window.removeEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
+    };
+  }, [company, router]);
+
   const upd = useCallback((patch: Partial<CompanyRecord>) => { setCompany((p) => (p ? { ...p, ...patch } : p)); }, []);
 
   const save = useCallback(async () => {
