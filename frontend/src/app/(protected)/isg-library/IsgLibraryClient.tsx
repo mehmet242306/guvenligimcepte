@@ -26,7 +26,6 @@ import {
   Briefcase,
   Building2,
   Check,
-  ChevronDown,
   ClipboardCheck,
   Download,
   Eye,
@@ -64,6 +63,7 @@ import {
   type LibraryContentRecord,
 } from "@/lib/supabase/isg-library-api";
 import { fetchCompaniesFromSupabase } from "@/lib/supabase/company-api";
+import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
 import { cn } from "@/lib/utils";
 import {
   ALL_CATEGORY_LABEL,
@@ -423,8 +423,10 @@ export function IsgLibraryClient() {
     canManageCatalog: false,
   });
   const [companies, setCompanies] = useState<CompanyOption[]>([]);
+  // Active workspace ID — sourced from the global workspace switcher (header bar).
+  // The page no longer offers its own company selector; we follow the active
+  // workspace so users only manage that choice in one place.
   const [creationCompanyId, setCreationCompanyId] = useState("");
-  const [companyMenuOpen, setCompanyMenuOpen] = useState(false);
   const [contents, setContents] = useState<LibraryContentRecord[]>([]);
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [savedItems, setSavedItems] = useState<CompanyLibraryItemRecord[]>([]);
@@ -449,7 +451,6 @@ export function IsgLibraryClient() {
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const companyMenuRef = useRef<HTMLDivElement | null>(null);
 
   // ---------- Build category list (built-in + custom) ----------
   const categoryDefinitions = useMemo<LibraryCategoryDefinition[]>(() => {
@@ -489,17 +490,6 @@ export function IsgLibraryClient() {
     const handle = window.setTimeout(() => setStatusMessage(null), 3200);
     return () => window.clearTimeout(handle);
   }, [statusMessage]);
-
-  // ---------- Click-away for company menu ----------
-  useEffect(() => {
-    function onMouseDown(event: MouseEvent) {
-      if (!companyMenuRef.current?.contains(event.target as Node)) {
-        setCompanyMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", onMouseDown);
-    return () => document.removeEventListener("mousedown", onMouseDown);
-  }, []);
 
   // ---------- Initial data load ----------
   useEffect(() => {
@@ -659,12 +649,39 @@ export function IsgLibraryClient() {
     };
   }, [isTr, t]);
 
-  // ---------- Default creation company ----------
+  // ---------- Sync with the global active workspace ----------
+  // The global header (ActiveCompanyBar) already exposes the working company.
+  // We mirror it here so card actions, uploads and AI drafts target the same
+  // workspace, eliminating the duplicate picker the user had to manage.
   useEffect(() => {
-    if (!companies.length) return;
-    setCreationCompanyId((current) =>
-      current && companies.some((company) => company.id === current) ? current : companies[0]?.id ?? "",
-    );
+    let cancelled = false;
+
+    async function syncActiveWorkspace() {
+      const ws = await getActiveWorkspace();
+      if (cancelled) return;
+      if (ws?.id) {
+        setCreationCompanyId(ws.id);
+        return;
+      }
+      // No active workspace yet — fall back to the first accessible company so
+      // the page is still usable for users who haven't run the switcher.
+      setCreationCompanyId((current) =>
+        current && companies.some((company) => company.id === current)
+          ? current
+          : companies[0]?.id ?? "",
+      );
+    }
+
+    void syncActiveWorkspace();
+
+    function onWorkspaceChanged() {
+      void syncActiveWorkspace();
+    }
+    window.addEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
+    };
   }, [companies]);
 
   // ---------- Saved-content lookups ----------
@@ -1587,6 +1604,14 @@ export function IsgLibraryClient() {
             <span className="inline-flex items-center rounded-full border border-[var(--gold)]/25 bg-[var(--gold)]/10 px-3 py-1 text-xs font-semibold text-[var(--primary)] dark:text-[#f3c978]">
               {userContext.fullName}
             </span>
+            {selectedCompany ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--gold)]/25 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">
+                <Building2 size={12} className="shrink-0 text-[var(--gold)]/90" />
+                <span className="truncate max-w-[18rem]" title={selectedCompany.name}>
+                  {selectedCompany.name}
+                </span>
+              </span>
+            ) : null}
             <span className="inline-flex items-center rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground">
               {isTr ? `${allItems.length} içerik` : `${allItems.length} items`}
             </span>
@@ -1597,77 +1622,12 @@ export function IsgLibraryClient() {
         }
         actions={
           <>
-            <div className="min-w-[260px]" ref={companyMenuRef}>
-              <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]/90">
-                {isTr ? "Çalışılan Firma" : "Working company"}
-              </span>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setCompanyMenuOpen((current) => !current)}
-                  className="flex h-12 w-full items-center justify-between rounded-2xl border border-[var(--gold)]/25 bg-background/85 px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/45 dark:border-white/10 dark:bg-white/5 dark:text-white"
-                >
-                  <span className="flex min-w-0 items-center gap-3">
-                    <Building2 size={16} className="shrink-0 text-[var(--gold)]/90" />
-                    <span className="truncate text-left">{selectedCompany?.name || (isTr ? "Firma seçin" : "Select company")}</span>
-                  </span>
-                  <ChevronDown
-                    size={16}
-                    className={cn("shrink-0 text-[var(--gold)]/90 transition-transform", companyMenuOpen ? "rotate-180" : "")}
-                  />
-                </button>
-                {companyMenuOpen ? (
-                  <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50 w-full overflow-hidden rounded-2xl border border-[var(--gold)]/25 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.22)] dark:border-white/10 dark:bg-slate-900">
-                    <div className="max-h-72 overflow-y-auto p-2">
-                      {companies.map((company) => {
-                        const isSelected = company.id === creationCompanyId;
-                        return (
-                          <button
-                            key={company.id}
-                            type="button"
-                            onClick={() => {
-                              setCreationCompanyId(company.id);
-                              setCompanyMenuOpen(false);
-                            }}
-                            className={cn(
-                              "flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm transition",
-                              isSelected
-                                ? "bg-[var(--primary)] text-white"
-                                : "text-slate-700 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-white/10",
-                            )}
-                          >
-                            <span className="pr-3 leading-6">{company.name}</span>
-                            {isSelected ? <Check size={15} className="shrink-0" /> : null}
-                          </button>
-                        );
-                      })}
-                      {companies.length === 0 ? (
-                        <div className="px-3 py-3 text-sm text-muted-foreground">
-                          {isTr ? "Aktif firma bulunamadı" : "No active company"}
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-              <div className="mt-2 flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => router.push(creationCompanyId ? `/workspace/${creationCompanyId}` : "/workspace/onboarding")}
-                  className="inline-flex h-8 items-center rounded-xl border border-border/80 bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
-                >
-                  {isTr ? "Çalışma alanına git" : "Open workspace"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push("/companies")}
-                  className="inline-flex h-8 items-center rounded-xl border border-border/80 bg-background px-3 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
-                >
-                  {isTr ? "Firmaları yönet" : "Manage companies"}
-                </button>
-              </div>
-            </div>
-
+            {/*
+              The active company is already controlled by the global header bar
+              (ActiveCompanyBar / WorkspaceSwitcher) at the top of every page.
+              We removed the duplicate picker here so users have a single source
+              of truth for "which company am I working on?".
+            */}
             <button
               type="button"
               onClick={() => setSavedOnly((current) => !current)}
@@ -1679,6 +1639,13 @@ export function IsgLibraryClient() {
               )}
             >
               {isTr ? "Firmama kaydedilenler" : "Saved to my companies"}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/companies")}
+              className="inline-flex h-11 items-center rounded-2xl border border-border bg-background/85 px-4 text-sm font-semibold text-muted-foreground transition hover:text-foreground dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:text-white"
+            >
+              {isTr ? "Firmaları yönet" : "Manage companies"}
             </button>
           </>
         }
