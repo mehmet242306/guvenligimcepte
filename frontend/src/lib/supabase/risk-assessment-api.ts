@@ -268,6 +268,83 @@ async function uploadWithRetry(
   return { error: lastError };
 }
 
+export type RiskImageUploadResult = {
+  storagePath: string;
+  fileName: string;
+  contentType: string;
+  originalSize: number;
+  uploadedSize: number;
+  durationMs: number;
+};
+
+/**
+ * Risk analizi sihirbazında görsel seçilir seçilmez arka planda upload eder.
+ * Kaydetme anında bu path tekrar kullanılır; böylece "Kaydet" DB insert ağırlıklı kalır.
+ */
+export async function uploadRiskAnalysisImageForDraft(file: File): Promise<RiskImageUploadResult> {
+  const supabase = createClient();
+  if (!supabase) throw new Error("Supabase istemcisi başlatılamadı (oturum süresi dolmuş olabilir)");
+
+  const auth = await resolveOrganizationId();
+  if (!auth) {
+    throw new Error("Oturum doğrulanamadı — sayfayı yenileyip tekrar giriş yapın");
+  }
+
+  if (!file.type.startsWith("image/")) {
+    throw new Error(`${file.name} geçerli bir görsel dosyası değil.`);
+  }
+  if (file.size > MAX_RISK_IMAGE_BYTES) {
+    throw new Error(`${file.name} 10 MB sınırını aşıyor. Lütfen daha küçük bir görsel yükleyin.`);
+  }
+
+  const startedAt = performance.now();
+  const compressed = await compressImageForUpload(file);
+  const buffer = await fileToArrayBuffer(compressed);
+  const safeName = compressed.name.replace(/[^\w.\-]+/g, "_");
+  const storagePath = `${auth.orgId}/drafts/${auth.userId}/${crypto.randomUUID()}_${safeName}`;
+
+  console.info("[risk-upload] background:start", {
+    file: file.name,
+    originalKb: Math.round(file.size / 1024),
+    uploadKb: Math.round(compressed.size / 1024),
+  });
+
+  const result = await uploadWithRetry(
+    supabase,
+    "risk-images",
+    storagePath,
+    buffer,
+    compressed.type || file.type,
+  );
+
+  const durationMs = Math.round(performance.now() - startedAt);
+  if (result.error) {
+    console.warn("[risk-upload] background:error", {
+      file: file.name,
+      uploadKb: Math.round(compressed.size / 1024),
+      durationMs,
+      message: result.error.message,
+      statusCode: result.error.statusCode,
+    });
+    throw new Error(result.error.message);
+  }
+
+  console.info("[risk-upload] background:success", {
+    file: file.name,
+    uploadKb: Math.round(compressed.size / 1024),
+    durationMs,
+  });
+
+  return {
+    storagePath,
+    fileName: compressed.name,
+    contentType: compressed.type || file.type,
+    originalSize: file.size,
+    uploadedSize: compressed.size,
+    durationMs,
+  };
+}
+
 const MAX_RISK_IMAGE_BYTES = 10 * 1024 * 1024;
 
 function validateRiskAnalysisInput(input: SaveRiskAnalysisInput): string | null {
@@ -471,7 +548,7 @@ export type SaveRiskAnalysisInput = {
   rows: {
     title: string;
     description: string;
-    images: { file: File; findingIds: string[] }[];
+    images: { file: File; findingIds: string[]; storagePath?: string; uploadedFileName?: string }[];
     findings: {
       id: string;
       imageId: string; // local image reference
@@ -616,15 +693,15 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
     const rowDbIds: string[] = input.rows.map(() => crypto.randomUUID());
     const imageDbIds: string[][] = input.rows.map((row) => row.images.map(() => crypto.randomUUID()));
 
-    // Local (client-side) image id → DB image id, used by findings to wire
+    // Local finding id → DB image id, used by findings to wire
     // up image_id without an intermediate round-trip.
-    const localToDbImageId = new Map<string, string>();
+    const findingToDbImageId = new Map<string, string>();
     for (let ri = 0; ri < input.rows.length; ri++) {
       const row = input.rows[ri];
       for (let ii = 0; ii < row.images.length; ii++) {
         const dbImageId = imageDbIds[ri][ii];
         for (const fId of row.images[ii].findingIds) {
-          localToDbImageId.set(fId, dbImageId);
+          findingToDbImageId.set(fId, dbImageId);
         }
       }
     }
@@ -651,6 +728,8 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
       rowDbId: string;
       file: File;
       storagePath: string;
+      uploadedFileName?: string;
+      alreadyUploaded: boolean;
     };
     const uploadDescriptors: UploadDescriptor[] = [];
     for (let ri = 0; ri < input.rows.length; ri++) {
@@ -663,17 +742,26 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
           dbImageId: imageDbIds[ri][ii],
           rowDbId: rowDbIds[ri],
           file: img.file,
-          storagePath: `${auth.orgId}/${assessmentId}/${rowDbIds[ri]}/${crypto.randomUUID()}_${img.file.name}`,
+          storagePath: img.storagePath ?? `${auth.orgId}/${assessmentId}/${rowDbIds[ri]}/${crypto.randomUUID()}_${img.file.name}`,
+          uploadedFileName: img.uploadedFileName,
+          alreadyUploaded: Boolean(img.storagePath),
         });
       }
     }
 
-    if (uploadDescriptors.length > 0) {
+    const pendingUploadDescriptors = uploadDescriptors.filter((d) => !d.alreadyUploaded);
+    const preuploadedPaths = uploadDescriptors.filter((d) => d.alreadyUploaded).map((d) => d.storagePath);
+
+    if (preuploadedPaths.length > 0) {
+      console.log(`[save] ${preuploadedPaths.length} görsel daha önce arka planda yüklendi; storage upload atlandı`);
+    }
+
+    if (pendingUploadDescriptors.length > 0) {
       // 1) Önce TÜM görselleri client-side compress et (paralel — CPU-bound,
       //    Supabase'i etkilemez).
-      console.log(`[save] ${uploadDescriptors.length} görsel sıkıştırılıyor...`);
+      console.log(`[save] ${pendingUploadDescriptors.length} görsel sıkıştırılıyor...`);
       const compressedFiles = await Promise.all(
-        uploadDescriptors.map(async (d) => {
+        pendingUploadDescriptors.map(async (d) => {
           const compressed = await compressImageForUpload(d.file);
           if (compressed.size < d.file.size) {
             console.log(
@@ -691,12 +779,12 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
       //    budget'ini birden tüketip "connection timed out" hatasına yol
       //    açıyordu. Sequential + 3 retry + exponential backoff ile bu
       //    sorun ortadan kalkıyor.
-      for (let idx = 0; idx < uploadDescriptors.length; idx++) {
-        const desc = uploadDescriptors[idx];
+      for (let idx = 0; idx < pendingUploadDescriptors.length; idx++) {
+        const desc = pendingUploadDescriptors[idx];
         const file = compressedFiles[idx];
         const buffer = buffers[idx];
 
-        console.log(`[save] upload ${idx + 1}/${uploadDescriptors.length}: ${file.name} (${(file.size / 1024).toFixed(0)}KB)`);
+        console.log(`[save] upload ${idx + 1}/${pendingUploadDescriptors.length}: ${file.name} (${(file.size / 1024).toFixed(0)}KB)`);
 
         const result = await uploadWithRetry(
           supabase,
@@ -718,7 +806,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
         uploadedPaths.push(desc.storagePath);
       }
 
-      console.log(`[save] ✓ ${uploadDescriptors.length} görsel başarıyla yüklendi`);
+      console.log(`[save] ✓ ${pendingUploadDescriptors.length} görsel başarıyla yüklendi`);
     }
 
     // 5. Batch insert image rows (1 round-trip).
@@ -730,7 +818,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
       row_id: d.rowDbId,
       organization_id: auth.orgId,
       storage_path: d.storagePath,
-      file_name: d.file.name,
+      file_name: d.uploadedFileName ?? d.file.name,
       sort_order: d.ii + 1,
     }));
 
@@ -745,7 +833,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
       const row = input.rows[ri];
       const rowDbId = rowDbIds[ri];
       row.findings.forEach((f, fi) => {
-        const dbImageId = localToDbImageId.get(f.imageId);
+        const dbImageId = findingToDbImageId.get(f.id);
         if (!dbImageId) {
           throw new Error(`Tespit icin gorsel baglantisi bulunamadi: ${f.title}`);
         }

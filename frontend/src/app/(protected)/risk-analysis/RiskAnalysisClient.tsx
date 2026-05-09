@@ -90,8 +90,10 @@ import {
   listRiskAssessments,
   loadRiskAssessment,
   deleteRiskAssessment,
+  uploadRiskAnalysisImageForDraft,
   type SavedAssessment,
   type SaveRiskAnalysisInput,
+  type RiskImageUploadResult,
 } from "@/lib/supabase/risk-assessment-api";
 import { createNotification } from "@/lib/supabase/notification-api";
 
@@ -106,6 +108,17 @@ type UploadedImage = {
   id: string;
   file: File;
   previewUrl: string;
+  storagePath?: string;
+  uploadedFileName?: string;
+};
+
+type BackgroundUploadState = {
+  status: "queued" | "uploading" | "uploaded" | "error";
+  message: string;
+  storagePath?: string;
+  uploadedFileName?: string;
+  durationMs?: number;
+  uploadedSize?: number;
 };
 
 type RiskLine = {
@@ -347,6 +360,14 @@ function severityLabel(severity: DetectionSeverity, tr: (key: string) => string)
 
 function participantRoleLabel(roleCode: string, tr: (key: string) => string) {
   return tr(`participants.roles.${roleCode}`);
+}
+
+function backgroundUploadBadge(state: BackgroundUploadState | undefined) {
+  if (!state) return { text: "Yükleme hazırlanıyor", className: "bg-slate-100 text-slate-600" };
+  if (state.status === "uploaded") return { text: "✓ Yüklendi", className: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" };
+  if (state.status === "uploading") return { text: "⟳ Yükleniyor", className: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300" };
+  if (state.status === "error") return { text: "Tekrar denenecek", className: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300" };
+  return { text: "Kuyrukta", className: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300" };
 }
 
 function intlLocaleTag(locale: Locale): string {
@@ -1028,6 +1049,8 @@ export function RiskAnalysisClient() {
                 id: localImgId,
                 file,
                 previewUrl: URL.createObjectURL(blob),
+                storagePath: img.storagePath,
+                uploadedFileName: img.fileName,
               });
             } catch {
               // Signed URL süresi dolmuşsa veya hata varsa placeholder
@@ -1035,6 +1058,8 @@ export function RiskAnalysisClient() {
                 id: localImgId,
                 file: new File([], img.fileName, { type: "image/jpeg" }),
                 previewUrl: "",
+                storagePath: img.storagePath,
+                uploadedFileName: img.fileName,
               });
             }
           }
@@ -1162,6 +1187,8 @@ export function RiskAnalysisClient() {
     [trRiskScoring],
   );
   const [lines, setLines] = useState<RiskLine[]>([defaultFirstLine]);
+  const [backgroundUploads, setBackgroundUploads] = useState<Record<string, BackgroundUploadState>>({});
+  const backgroundUploadPromisesRef = useRef<Partial<Record<string, Promise<RiskImageUploadResult | null>>>>({});
 
   /* ── Results state ── */
   const [results, setResults] = useState<LineResult[]>([]);
@@ -1188,6 +1215,84 @@ export function RiskAnalysisClient() {
   const [currentAssessmentId, setCurrentAssessmentId] = useState<string | null>(null);
   const [loadingAnalyses, setLoadingAnalyses] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const allImages = lines.flatMap((line) => line.images);
+    const liveIds = new Set(allImages.map((img) => img.id));
+
+    setBackgroundUploads((prev) => {
+      const next: Record<string, BackgroundUploadState> = {};
+      for (const img of allImages) {
+        const existing = prev[img.id];
+        if (img.storagePath) {
+          next[img.id] = {
+            status: "uploaded",
+            message: "Yüklendi",
+            storagePath: img.storagePath,
+            uploadedFileName: img.uploadedFileName ?? img.file.name,
+            durationMs: existing?.durationMs,
+            uploadedSize: existing?.uploadedSize,
+          };
+        } else if (existing) {
+          next[img.id] = existing;
+        } else {
+          next[img.id] = { status: "queued", message: "Yükleme kuyruğunda" };
+        }
+      }
+      return next;
+    });
+
+    for (const id of Object.keys(backgroundUploadPromisesRef.current)) {
+      if (!liveIds.has(id)) {
+        delete backgroundUploadPromisesRef.current[id];
+      }
+    }
+
+    for (const img of allImages) {
+      if (img.storagePath || backgroundUploadPromisesRef.current[img.id]) continue;
+      setBackgroundUploads((prev) => ({
+        ...prev,
+        [img.id]: { status: "uploading", message: "Arka planda yükleniyor" },
+      }));
+
+      backgroundUploadPromisesRef.current[img.id] = uploadRiskAnalysisImageForDraft(img.file)
+        .then((result) => {
+          setLines((prev) => prev.map((line) => ({
+            ...line,
+            images: line.images.map((image) => image.id === img.id
+              ? {
+                  ...image,
+                  storagePath: result.storagePath,
+                  uploadedFileName: result.fileName,
+                }
+              : image),
+          })));
+          setBackgroundUploads((prev) => ({
+            ...prev,
+            [img.id]: {
+              status: "uploaded",
+              message: "Yüklendi",
+              storagePath: result.storagePath,
+              uploadedFileName: result.fileName,
+              durationMs: result.durationMs,
+              uploadedSize: result.uploadedSize,
+            },
+          }));
+          return result;
+        })
+        .catch((err) => {
+          const message = err instanceof Error ? err.message : String(err);
+          setBackgroundUploads((prev) => ({
+            ...prev,
+            [img.id]: {
+              status: "error",
+              message: `Arka plan yükleme başarısız: ${message}`,
+            },
+          }));
+          return null;
+        });
+    }
+  }, [lines]);
 
   // Firma seçildiğinde analizleri yükle
   useEffect(() => {
@@ -2299,6 +2404,23 @@ JSON formatında döndür:
     setSaveTone("danger");
 
     try {
+      const currentImageIds = lines.flatMap((line) => line.images.map((img) => img.id));
+      const pendingBackgroundUploads = currentImageIds
+        .map((id) => backgroundUploadPromisesRef.current[id])
+        .filter((p): p is Promise<RiskImageUploadResult | null> => Boolean(p));
+
+      if (pendingBackgroundUploads.length > 0) {
+        setSaveMessage("Görsel yüklemeleri tamamlanıyor...");
+        const settled = await Promise.allSettled(pendingBackgroundUploads);
+        const uploadedCount = settled.filter((item) => item.status === "fulfilled" && item.value?.storagePath).length;
+        console.info("[risk-upload] save:background-summary", {
+          total: pendingBackgroundUploads.length,
+          uploaded: uploadedCount,
+          fallbackToSaveUpload: pendingBackgroundUploads.length - uploadedCount,
+        });
+      }
+      setSaveMessage("");
+
       const input: SaveRiskAnalysisInput = {
         title: analysisTitle,
         analysisNote,
@@ -2318,6 +2440,8 @@ JSON formatında döndür:
           const imageEntries = (sourceLine?.images ?? []).map((img) => ({
             file: img.file,
             findingIds: result.findings.filter((f) => f.imageId === img.id).map((f) => f.id),
+            storagePath: img.storagePath,
+            uploadedFileName: img.uploadedFileName,
           }));
 
           return {
@@ -3108,18 +3232,27 @@ JSON formatında döndür:
 
                 {line.images.length > 0 && (
                   <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                    {line.images.map((img) => (
-                      <div key={img.id} className="overflow-hidden rounded-xl border border-border bg-card">
-                        <div className="aspect-[4/3] bg-slate-100 dark:bg-slate-800">
-                          { }
-                          <img src={img.previewUrl} alt={img.file.name} className="h-full w-full object-cover" />
+                    {line.images.map((img) => {
+                      const uploadState = backgroundUploads[img.id];
+                      const badge = backgroundUploadBadge(uploadState);
+                      return (
+                        <div key={img.id} className="overflow-hidden rounded-xl border border-border bg-card">
+                          <div className="aspect-[4/3] bg-slate-100 dark:bg-slate-800">
+                            { }
+                            <img src={img.previewUrl} alt={img.file.name} className="h-full w-full object-cover" />
+                          </div>
+                          <div className="space-y-2 p-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="truncate text-xs text-muted-foreground">{img.file.name}</p>
+                              <Button type="button" variant="ghost" onClick={() => removeImage(line.id, img.id)} className="h-6 px-2 text-xs">{trRiskScoring("wizard.common.delete")}</Button>
+                            </div>
+                            <span className={`inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${badge.className}`} title={uploadState?.message}>
+                              {badge.text}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between p-2">
-                          <p className="truncate text-xs text-muted-foreground">{img.file.name}</p>
-                          <Button type="button" variant="ghost" onClick={() => removeImage(line.id, img.id)} className="h-6 px-2 text-xs">{trRiskScoring("wizard.common.delete")}</Button>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -3296,6 +3429,8 @@ JSON formatında döndür:
                         {images.map((img, ii) => {
                           const imgFindings = result.findings.filter((f) => f.imageId === img.id);
                           const active = selectedImage?.id === img.id;
+                          const uploadState = backgroundUploads[img.id];
+                          const badge = backgroundUploadBadge(uploadState);
                           return (
                             <button
                               key={img.id}
@@ -3313,6 +3448,9 @@ JSON formatında döndür:
                               <div className="p-3">
                                 <p className="eyebrow">{trRiskScoring("wizard.step4.visualN", { n: ii + 1 })}</p>
                                 <p className="mt-1 truncate text-sm font-medium text-foreground">{img.file.name}</p>
+                                <span className={`mt-2 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${badge.className}`} title={uploadState?.message}>
+                                  {badge.text}
+                                </span>
                                 {noRiskImages.has(img.id) ? (
                                   <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400 font-medium">{trRiskScoring("wizard.step4.cleanNoRisk")}</p>
                                 ) : (
