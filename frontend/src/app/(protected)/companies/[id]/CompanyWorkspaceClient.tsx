@@ -153,6 +153,47 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
     }
   }, [company?.slug]);
 
+  // Aktif çalışma alanı senkronizasyonu: kullanıcı bir firma sayfasına
+  // girdiğinde üstteki workspace selector'ı bu firmanın eşleştiği nova
+  // workspace'e otomatik geçir. Bu sayede Risk Analizi, Saha Analizi,
+  // Ajanda gibi aktif workspace'e bağlı tüm ekranlar aynı bağlamı görür.
+  useEffect(() => {
+    if (!company?.name) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { listMyWorkspaces, getActiveWorkspace, setActiveWorkspace } =
+          await import("@/lib/supabase/workspace-api");
+        const [memberships, current] = await Promise.all([
+          listMyWorkspaces(),
+          getActiveWorkspace(),
+        ]);
+        if (cancelled) return;
+        const norm = (s: string | null | undefined) => (s ?? "").toLowerCase().trim();
+        const target = company.name;
+        const tNorm = norm(target);
+
+        const exact = memberships.find((m) => norm(m.workspace.name) === tNorm);
+        const partial = !exact
+          ? memberships.find(
+              (m) =>
+                norm(m.workspace.name).includes(tNorm) ||
+                tNorm.includes(norm(m.workspace.name)),
+            )
+          : null;
+        const match = exact ?? partial;
+        if (!match) return;
+        if (current?.id === match.workspace.id) return;
+        await setActiveWorkspace(match.workspace.id);
+      } catch {
+        /* sessizce devam — workspace API erişilemiyorsa aktif WS dokunulmaz */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [company?.name]);
+
   const upd = useCallback((patch: Partial<CompanyRecord>) => { setCompany((p) => (p ? { ...p, ...patch } : p)); }, []);
 
   const save = useCallback(async () => {
