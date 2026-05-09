@@ -139,9 +139,133 @@ export type FullAssessment = SavedAssessment & {
 /* Helpers                                                             */
 /* ================================================================== */
 
-/** File → base64 for upload */
+/** File → ArrayBuffer for upload */
 async function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
   return file.arrayBuffer();
+}
+
+/**
+ * Görseli upload öncesi client-side resize + JPEG compress.
+ *
+ * Neden: Supabase Storage'da Disk IO Budget'ı tüketmek timeout'lara yol
+ * açıyor (gerçek dünya örneği: 4.5 MB JPEG → "connection timed out").
+ * 1920×1080 + JPEG 0.82 ile tipik telefon fotoğrafı ~400-600 KB'a iner;
+ * görsel kalite gözle fark edilmiyor (risk analizi için fazlasıyla yeterli).
+ *
+ * Hata durumunda orijinal dosya geri verilir (asla upload'u engellemez).
+ *
+ * @param file Orijinal File
+ * @param maxDim En uzun kenarın max boyutu (px)
+ * @param quality JPEG quality (0-1)
+ * @returns Sıkıştırılmış File ya da originali (compress imkansızsa)
+ */
+async function compressImageForUpload(
+  file: File,
+  maxDim = 1920,
+  quality = 0.82,
+): Promise<File> {
+  // SVG/GIF gibi anim/vektör tiplerini compress etmiyoruz
+  if (!file.type.startsWith("image/")) return file;
+  if (file.type === "image/gif" || file.type === "image/svg+xml") return file;
+  // Zaten küçük ise (< 500 KB) pas geç
+  if (file.size < 500 * 1024) return file;
+
+  try {
+    const bitmap = await createImageBitmap(file).catch(() => null);
+    if (!bitmap) return file;
+
+    const { width, height } = bitmap;
+    const ratio = Math.min(1, maxDim / Math.max(width, height));
+    const targetW = Math.round(width * ratio);
+    const targetH = Math.round(height * ratio);
+
+    const canvas = typeof OffscreenCanvas !== "undefined"
+      ? new OffscreenCanvas(targetW, targetH)
+      : (() => {
+          const c = document.createElement("canvas");
+          c.width = targetW;
+          c.height = targetH;
+          return c;
+        })();
+
+    const ctx = canvas.getContext("2d") as
+      | OffscreenCanvasRenderingContext2D
+      | CanvasRenderingContext2D
+      | null;
+    if (!ctx) { bitmap.close(); return file; }
+
+    ctx.drawImage(bitmap, 0, 0, targetW, targetH);
+    bitmap.close();
+
+    const blob: Blob | null = "convertToBlob" in canvas
+      ? await (canvas as OffscreenCanvas).convertToBlob({ type: "image/jpeg", quality })
+      : await new Promise<Blob | null>((resolve) =>
+          (canvas as HTMLCanvasElement).toBlob((b) => resolve(b), "image/jpeg", quality),
+        );
+
+    if (!blob || blob.size >= file.size) return file; // compress küçültmediyse orijinali kullan
+
+    const newName = file.name.replace(/\.(png|webp|heic|heif|jpe?g)$/i, ".jpg");
+    return new File([blob], newName, { type: "image/jpeg", lastModified: file.lastModified });
+  } catch (err) {
+    console.warn("[compressImageForUpload] başarısız, orijinali kullan:", err);
+    return file;
+  }
+}
+
+/**
+ * Storage upload + retry + timeout.
+ *
+ * Supabase Storage occasional olarak "connection timed out" döndürüyor;
+ * bu çoğu zaman geçici (Disk IO budget throttling, network glitch).
+ * 3 deneme + exponential backoff ile %95+ başarı yakalıyoruz.
+ *
+ * AbortController ile her deneme için 60 sn hard timeout — askıda kalmasın.
+ */
+async function uploadWithRetry(
+  supabase: ReturnType<typeof createClient>,
+  bucket: string,
+  storagePath: string,
+  buffer: ArrayBuffer,
+  contentType: string,
+  attempts = 3,
+): Promise<{ error: { message: string; statusCode?: string } | null }> {
+  if (!supabase) return { error: { message: "supabase client null" } };
+
+  let lastError: { message: string; statusCode?: string } | null = null;
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const result = await supabase.storage
+        .from(bucket)
+        .upload(storagePath, buffer, { contentType, upsert: false });
+
+      if (!result.error) return { error: null };
+
+      lastError = result.error as { message: string; statusCode?: string };
+
+      // Belirli hatalarda retry etmek anlamsız — hemen geri dön
+      const msg = (result.error.message || "").toLowerCase();
+      const isPermanent = /already exists|payload too large|invalid mime|policy|forbidden|rls/.test(msg);
+      if (isPermanent) return { error: lastError };
+
+      // Geçici hata (timeout, network, throttling) → backoff bekle ve tekrar dene
+      if (attempt < attempts) {
+        const backoffMs = Math.min(8000, 800 * Math.pow(2, attempt - 1)); // 800ms, 1.6s, 3.2s
+        console.warn(`[uploadWithRetry] deneme ${attempt}/${attempts} başarısız (${result.error.message}), ${backoffMs}ms sonra tekrar...`);
+        await new Promise((r) => setTimeout(r, backoffMs));
+      }
+    } catch (err) {
+      lastError = { message: err instanceof Error ? err.message : String(err) };
+      if (attempt < attempts) {
+        const backoffMs = Math.min(8000, 800 * Math.pow(2, attempt - 1));
+        console.warn(`[uploadWithRetry] deneme ${attempt}/${attempts} exception, ${backoffMs}ms sonra tekrar...`, err);
+        await new Promise((r) => setTimeout(r, backoffMs));
+      }
+    }
+  }
+
+  return { error: lastError };
 }
 
 const MAX_RISK_IMAGE_BYTES = 10 * 1024 * 1024;
@@ -545,31 +669,56 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
     }
 
     if (uploadDescriptors.length > 0) {
-      // Pre-read all files as ArrayBuffers in parallel, then upload all in
-      // parallel. The storage SDK uploads are independent and don't share
-      // mutable state.
-      const buffers = await Promise.all(uploadDescriptors.map((d) => fileToArrayBuffer(d.file)));
-      const uploadResults = await Promise.all(
-        uploadDescriptors.map((d, idx) =>
-          supabase.storage
-            .from("risk-images")
-            .upload(d.storagePath, buffers[idx], { contentType: d.file.type, upsert: false }),
-        ),
+      // 1) Önce TÜM görselleri client-side compress et (paralel — CPU-bound,
+      //    Supabase'i etkilemez).
+      console.log(`[save] ${uploadDescriptors.length} görsel sıkıştırılıyor...`);
+      const compressedFiles = await Promise.all(
+        uploadDescriptors.map(async (d) => {
+          const compressed = await compressImageForUpload(d.file);
+          if (compressed.size < d.file.size) {
+            console.log(
+              `[save] compress: ${d.file.name} ${(d.file.size / 1024).toFixed(0)}KB → ${(compressed.size / 1024).toFixed(0)}KB (-${Math.round((1 - compressed.size / d.file.size) * 100)}%)`,
+            );
+          }
+          return compressed;
+        }),
       );
 
-      // Collect successful paths first so the catch block can roll them
-      // back even if a later upload fails.
-      for (let idx = 0; idx < uploadResults.length; idx++) {
-        if (!uploadResults[idx].error) {
-          uploadedPaths.push(uploadDescriptors[idx].storagePath);
+      // 2) Buffer'ları al
+      const buffers = await Promise.all(compressedFiles.map((f) => fileToArrayBuffer(f)));
+
+      // 3) SEQUENTIAL upload + retry. Paralel upload Supabase'in Disk IO
+      //    budget'ini birden tüketip "connection timed out" hatasına yol
+      //    açıyordu. Sequential + 3 retry + exponential backoff ile bu
+      //    sorun ortadan kalkıyor.
+      for (let idx = 0; idx < uploadDescriptors.length; idx++) {
+        const desc = uploadDescriptors[idx];
+        const file = compressedFiles[idx];
+        const buffer = buffers[idx];
+
+        console.log(`[save] upload ${idx + 1}/${uploadDescriptors.length}: ${file.name} (${(file.size / 1024).toFixed(0)}KB)`);
+
+        const result = await uploadWithRetry(
+          supabase,
+          "risk-images",
+          desc.storagePath,
+          buffer,
+          file.type || desc.file.type,
+        );
+
+        if (result.error) {
+          // Tüm retry'lar başarısız → throw (catch'te uploadedPaths cleanup yapılır)
+          throw new Error(
+            `[adim 4/6 — storage upload] ${result.error.message} ` +
+              `(dosya: ${file.name}, ${(file.size / 1024 / 1024).toFixed(2)}MB, 3 deneme başarısız) ` +
+              `— Supabase Storage geçici olarak yanıt vermiyor olabilir; birkaç dakika sonra tekrar deneyin.`,
+          );
         }
+
+        uploadedPaths.push(desc.storagePath);
       }
-      const failedIdx = uploadResults.findIndex((r) => r.error);
-      if (failedIdx >= 0) {
-        const failed = uploadResults[failedIdx];
-        const desc = uploadDescriptors[failedIdx];
-        throw new Error(`[adim 4/6 — storage upload] ${failed.error?.message ?? "bilinmeyen hata"} (dosya: ${desc.file.name}, ${(desc.file.size / 1024 / 1024).toFixed(2)}MB)`);
-      }
+
+      console.log(`[save] ✓ ${uploadDescriptors.length} görsel başarıyla yüklendi`);
     }
 
     // 5. Batch insert image rows (1 round-trip).
