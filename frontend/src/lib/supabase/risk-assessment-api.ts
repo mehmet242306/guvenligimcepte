@@ -419,33 +419,65 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
   const uploadedPaths: string[] = [];
 
   try {
-    // 1. Create assessment (1 round-trip)
-    const { data: assessment, error: aErr } = await supabase
+    // 1. Create assessment (1 round-trip).
+    //
+    // Faz 2 migration (20260509120000) henüz prod'a uygulanmamış olabilir;
+    // o durumda PostgREST schema cache'inde analysis_type / source_method /
+    // media_url kolonları yoktur (PGRST204). Bu senaryoda eski schema ile
+    // sessizce devam ediyoruz — migration uygulanınca otomatik olarak yeni
+    // payload kullanılır.
+    const baseAssessmentPayload = {
+      organization_id: auth.orgId,
+      created_by_user_id: auth.userId,
+      title: input.title,
+      analysis_note: input.analysisNote,
+      method: input.method,
+      method_version: `${input.method}-v1`,
+      company_workspace_id: input.companyWorkspaceId,
+      assessment_date: new Date().toISOString().split("T")[0],
+      workplace_name: input.location || null,
+      department_name: input.department || null,
+      location_text: input.location || null,
+      participants: input.participants,
+      item_count: input.totalFindings,
+      overall_risk_level: input.highestRiskLevel || null,
+      status: "completed",
+    } as const;
+
+    const fullAssessmentPayload = {
+      ...baseAssessmentPayload,
+      // Faz 2: yeni first-class kolonlar (görsel-yükleme akışı için
+      // RISK_ANALYSIS + image_upload default).
+      analysis_type: input.analysisType ?? "RISK_ANALYSIS",
+      source_method: input.sourceMethod ?? "image_upload",
+    };
+
+    let assessmentInsert = await supabase
       .from("risk_assessments")
-      .insert({
-        organization_id: auth.orgId,
-        created_by_user_id: auth.userId,
-        title: input.title,
-        analysis_note: input.analysisNote,
-        method: input.method,
-        method_version: `${input.method}-v1`,
-        company_workspace_id: input.companyWorkspaceId,
-        assessment_date: new Date().toISOString().split("T")[0],
-        workplace_name: input.location || null,
-        department_name: input.department || null,
-        location_text: input.location || null,
-        participants: input.participants,
-        item_count: input.totalFindings,
-        overall_risk_level: input.highestRiskLevel || null,
-        status: "completed",
-        // Faz 2: yeni first-class kolonlar. Klasik görsel-yükleme akışı
-        // için RISK_ANALYSIS + image_upload default; saha taraması ayrı
-        // trigger üzerinden FIELD_ANALYSIS + mobile_camera yazıyor.
-        analysis_type: input.analysisType ?? "RISK_ANALYSIS",
-        source_method: input.sourceMethod ?? "image_upload",
-      })
+      .insert(fullAssessmentPayload)
       .select("id")
       .single();
+
+    // PGRST204 = "Could not find the 'X' column" → faz 2 migration eksik.
+    // Sessizce eski schema ile retry et; başka kod yolu yenisini bekliyorsa
+    // metadata.source ile geriye uyumlu çalışıyor.
+    const isMissingFaz2Column =
+      assessmentInsert.error &&
+      ((assessmentInsert.error as { code?: string }).code === "PGRST204") &&
+      /analysis_type|source_method/i.test(assessmentInsert.error.message);
+
+    if (isMissingFaz2Column) {
+      console.warn(
+        "[risk-assessment-api] Faz 2 kolonları (analysis_type/source_method) DB'de yok — eski schema ile retry. Lütfen migration 20260509120000_risk_analysis_type_source_method.sql'i uygulayın.",
+      );
+      assessmentInsert = await supabase
+        .from("risk_assessments")
+        .insert(baseAssessmentPayload)
+        .select("id")
+        .single();
+    }
+
+    const { data: assessment, error: aErr } = assessmentInsert;
 
     if (aErr || !assessment) {
       throw new Error(`[adim 1/6 — risk_assessments insert] ${aErr?.message ?? "kayit olusturulamadi"} (code: ${(aErr as { code?: string } | null)?.code ?? "n/a"})`);
