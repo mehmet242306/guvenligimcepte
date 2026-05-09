@@ -165,7 +165,11 @@ export async function detectSafetyObjects(
     const response = await client.chat.completions.create({
       model: "gpt-4o",
       temperature: 0,
-      max_tokens: 2500,
+      // 2500 yetersizdi: çok kişili / çok tehlikeli sahnelerde JSON kesilip
+      // parse edilemiyordu → vision stage null dönüyordu → Claude tek başına
+      // kalıyordu (gözden kaçma artıyordu). 5000 = güvenli üst sınır,
+      // gpt-4o için latency artışı ihmal edilebilir.
+      max_tokens: 5000,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: DETECTION_SYSTEM_PROMPT },

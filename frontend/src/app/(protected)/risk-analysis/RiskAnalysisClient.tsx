@@ -1667,22 +1667,29 @@ export function RiskAnalysisClient() {
         successfulImages++;
 
         if (aiFindings.length > 0) {
-          // Confidence filtresi: 0.70 altini ele (eskiden 0.85 idi — cok katiydi
-          // ve AI'nin doner doner sadece tek tespiti gostermemize sebep oluyordu).
-          // 0.70 = "orta+" (prompt 0.60 altini zaten yazma diyor).
+          // Confidence filtresi: prompt'un kendi eşiği "< 0.60 yazma".
+          // 0.70 client-side eşik, prompt eşiğinin üstündeydi → ortalı (0.60-0.70)
+          // tespitleri kullanıcıya bile göstermeden eliyordu. Şikayet:
+          // "bazı şeyler gözden kaçıyor". 0.60 = prompt ile tutarlı; UI zaten
+          // confidence tier rozetiyle "orta/yüksek" ayrımı yapıyor, kullanıcı
+          // güveni düşük olanı görüp ele alabilir.
           const validFindings = aiFindings.filter((f) => {
             const conf = f.confidence ?? 0;
-            if (conf < 0.70) {
+            if (conf < 0.60) {
               console.log(`[${img.id}] Dusuk guvenli tespit elendi: ${f.title} (conf=${conf})`);
               return false;
             }
             return true;
           });
 
-          // Confidence tier etiketle (UI rozetleri icin)
+          // Confidence tier etiketle (UI rozetleri icin).
+          // Eşik düşüşüyle birlikte (0.60+) tier sınırlarını da gerçekçi yap:
+          //   high   ≥ 0.85 (kesin)
+          //   medium ≥ 0.70 (yüksek güven)
+          //   low    ≥ 0.60 (kullanıcı doğrulasın)
           const taggedFindings = validFindings.map((f) => {
             const conf = f.confidence ?? 0;
-            const tier: "high" | "medium" | "low" = conf >= 0.90 ? "high" : conf >= 0.80 ? "medium" : "low";
+            const tier: "high" | "medium" | "low" = conf >= 0.85 ? "high" : conf >= 0.70 ? "medium" : "low";
             return { ...f, confidenceTier: tier };
           });
 

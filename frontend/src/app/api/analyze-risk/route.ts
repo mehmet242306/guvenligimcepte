@@ -889,10 +889,11 @@ export async function POST(request: NextRequest) {
       operation: () =>
         client.messages.create({
           model: "claude-sonnet-4-20250514",
-          // 4096 bazı metodlarda (FMEA/HAZOP/BowTie çoklu risk + legalReferences)
-          // kesiliyordu → malformed JSON → 500. 6000 daha güvenli, Claude Sonnet 4
-          // için hala hızlı (~20-30 saniye).
-          max_tokens: 6000,
+          // 6000 bazı çoklu-risk sahnelerinde dar geliyordu (FMEA/HAZOP +
+          // her risk için 9 R-SKOR parametresi + 2-3 mevzuat referansı +
+          // 3+ cümle öneri). 8000 = güvenli üst sınır; latency etkisi azdır
+          // (~25-35 sn) ve "gözden kaçma" şikayetini ciddi azaltır.
+          max_tokens: 8000,
           temperature: 0,
           system: buildSystemPrompt(method, outputLocale),
           messages: [
