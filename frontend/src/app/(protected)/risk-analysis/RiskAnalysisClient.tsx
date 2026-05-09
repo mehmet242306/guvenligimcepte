@@ -26,7 +26,7 @@ import {
 } from "@/lib/company-directory";
 import { usePersistedState, clearPersistedStates } from "@/lib/use-persisted-state";
 import { fetchMyCompaniesFromSupabase } from "@/lib/supabase/company-api";
-import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
+import { getActiveWorkspace, type WorkspaceRow } from "@/lib/supabase/workspace-api";
 import { createClient } from "@/lib/supabase/client";
 import {
   calculateR2D,
@@ -765,6 +765,59 @@ function MatrixPanel({
 }
 
 /* ================================================================== */
+/* Helpers                                                              */
+/* ================================================================== */
+
+/**
+ * Aktif çalışma alanına en uygun firmayı seçer:
+ *   1) Firma adı, workspace adı ile birebir eşleşiyorsa onu seç.
+ *   2) Workspace adı (veya temel parça) firma adının içinde geçiyorsa onu seç.
+ *   3) Workspace ülke kodu firma adında geçiyorsa onu seç (örn. "Deutschland", "France").
+ *   4) Hiçbiri eşleşmezse listenin ilk firmasını döndür.
+ *
+ * Boş liste için "" döner. Bu fonksiyon sayesinde çalışma alanı
+ * (DE/FR/UK/TR vs.) değiştiğinde Risk Analizi otomatik olarak doğru
+ * firmaya geçiş yapar.
+ */
+function pickCompanyForWorkspace(
+  ws: WorkspaceRow | null | undefined,
+  list: CompanyRecord[],
+): string {
+  if (!list || list.length === 0) return "";
+  if (!ws) return list[0]?.id ?? "";
+
+  const normalize = (s: string | null | undefined) =>
+    (s ?? "").toLowerCase().trim();
+  const wsName = normalize(ws.name);
+  const wsCountry = normalize(ws.country_code);
+  const countryAliases: Record<string, string[]> = {
+    de: ["deutschland", "germany", "almanya"],
+    fr: ["france", "fransa"],
+    uk: ["united kingdom", "britain", "ingiltere"],
+    gb: ["united kingdom", "britain", "ingiltere"],
+    us: ["united states", "usa", "amerika"],
+    tr: ["türkiye", "turkiye", "turkey"],
+  };
+
+  const exact = list.find((c) => normalize(c.name) === wsName);
+  if (exact) return exact.id;
+
+  if (wsName.length > 2) {
+    const partial = list.find((c) => normalize(c.name).includes(wsName));
+    if (partial) return partial.id;
+  }
+
+  const aliases = countryAliases[wsCountry] ?? [wsCountry];
+  for (const alias of aliases) {
+    if (!alias) continue;
+    const hit = list.find((c) => normalize(c.name).includes(alias));
+    if (hit) return hit.id;
+  }
+
+  return list[0]?.id ?? "";
+}
+
+/* ================================================================== */
 /* Main Component                                                      */
 /* ================================================================== */
 
@@ -823,7 +876,11 @@ export function RiskAnalysisClient() {
         return;
       }
 
+      // Aktif çalışma alanına en uygun firmayı seç (isim/ülke eşleşmesi
+      // → bulamazsa önceki seçim → o da yoksa ilk firma).
       setSelectedCompanyId((prev) => {
+        const matched = pickCompanyForWorkspace(activeWs, sb);
+        if (matched) return matched;
         if (prev && sb.find((c) => c.id === prev)) return prev;
         return sb[0]?.id ?? "";
       });
@@ -836,7 +893,9 @@ export function RiskAnalysisClient() {
   useEffect(() => {
     function onActiveWorkspaceChanged() {
       // Çalışma alanı değişince firma listesini aktif workspace'in
-      // organization_id'siyle yeniden scoplayıp yeniden çek.
+      // organization_id'siyle yeniden scoplayıp yeniden çek. ÖNEMLİ:
+      // önceki seçimi KORUMA — kullanıcı workspace değiştirdiyse context
+      // tamamen değişmiştir; aktif workspace'e en uygun firmayı seç.
       void (async () => {
         const activeWs = await getActiveWorkspace();
         const sb = await fetchMyCompaniesFromSupabase({
@@ -844,10 +903,7 @@ export function RiskAnalysisClient() {
         });
         const list = sb ?? companiesRef.current;
         setCompanies(list);
-        setSelectedCompanyId((prev) => {
-          if (prev && list.find((c) => c.id === prev)) return prev;
-          return list[0]?.id ?? "";
-        });
+        setSelectedCompanyId(pickCompanyForWorkspace(activeWs, list));
       })();
     }
 
