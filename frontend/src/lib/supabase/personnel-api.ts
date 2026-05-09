@@ -449,6 +449,52 @@ export async function fetchWorkspacePersonnelStats(
 }
 
 /**
+ * Personel kayıtlarından distinct lokasyon ve bölüm adlarını döndürür.
+ *
+ * Bu, Risk Analizi gibi dropdown'lar için "kullanılan" gerçek değerleri
+ * sunar — `company_workspaces.metadata.locations` boş olsa bile personel
+ * import edildiğinde ilgili alanlar canlı şekilde gözükür.
+ */
+export async function fetchWorkspaceLocationsAndDepartments(
+  companyWorkspaceId: string,
+): Promise<{ locations: string[]; departments: string[] } | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+  try {
+    const ids = await resolveIds(companyWorkspaceId);
+    if (!ids) return null;
+
+    const { data, error } = await supabase
+      .from("personnel")
+      .select("department, location")
+      .eq("company_identity_id", ids.identityId)
+      .eq("is_active", true);
+
+    if (error) {
+      console.warn("[personnel-api] fetchWorkspaceLocationsAndDepartments error:", error.message);
+      return null;
+    }
+
+    const rows = (data ?? []) as Array<{ department: string | null; location: string | null }>;
+    const deps = new Set<string>();
+    const locs = new Set<string>();
+    for (const row of rows) {
+      const d = (row.department ?? "").trim();
+      const l = (row.location ?? "").trim();
+      if (d) deps.add(d);
+      if (l) locs.add(l);
+    }
+    return {
+      locations: Array.from(locs).sort((a, b) => a.localeCompare(b)),
+      departments: Array.from(deps).sort((a, b) => a.localeCompare(b)),
+    };
+  } catch (err) {
+    console.warn("[personnel-api] fetchWorkspaceLocationsAndDepartments exception:", err);
+    return null;
+  }
+}
+
+/**
  * Update the company_workspaces metadata with the current employee count.
  * This keeps the company hero section in sync with actual personnel data.
  */

@@ -26,6 +26,7 @@ import {
 } from "@/lib/company-directory";
 import { usePersistedState, clearPersistedStates } from "@/lib/use-persisted-state";
 import { fetchMyCompaniesFromSupabase } from "@/lib/supabase/company-api";
+import { fetchWorkspaceLocationsAndDepartments } from "@/lib/supabase/personnel-api";
 import { getActiveWorkspace, type WorkspaceRow } from "@/lib/supabase/workspace-api";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -1082,6 +1083,27 @@ export function RiskAnalysisClient() {
   const [selectedLocation, setSelectedLocation] = usePersistedState("risk:location", "");
   const [selectedDepartment, setSelectedDepartment] = usePersistedState("risk:department", "");
 
+  // Personel kayıtlarından türetilen canlı lokasyon/bölüm listeleri.
+  // company_workspaces.metadata.locations boş olsa da personel import
+  // edildiğinde Risk Analizi dropdown'larında bu değerler görünür.
+  const [personnelLocations, setPersonnelLocations] = useState<string[]>([]);
+  const [personnelDepartments, setPersonnelDepartments] = useState<string[]>([]);
+  useEffect(() => {
+    if (!selectedCompanyId) {
+      setPersonnelLocations([]);
+      setPersonnelDepartments([]);
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      const res = await fetchWorkspaceLocationsAndDepartments(selectedCompanyId);
+      if (cancelled || !res) return;
+      setPersonnelLocations(res.locations);
+      setPersonnelDepartments(res.departments);
+    })();
+    return () => { cancelled = true; };
+  }, [selectedCompanyId]);
+
   const [participants, setParticipants] = usePersistedState<Participant[]>("risk:participants", [createParticipant()]);
   const [setupMessage, setSetupMessage] = useState("");
   const [setupMessageType, setSetupMessageType] = useState<"success" | "error" | "">("");
@@ -1149,6 +1171,40 @@ export function RiskAnalysisClient() {
 
   /* ── Derived ── */
   const selectedCompany = useMemo(() => companies.find((c) => c.id === selectedCompanyId) ?? null, [companies, selectedCompanyId]);
+
+  // Dropdown listesi: metadata'daki kayıtlı liste + personel kayıtlarından
+  // türetilen distinct değerlerin birleşimi (case-insensitive dedupe).
+  // Bu sayede kullanıcı Yerleşke tab'ında manuel girmemiş olsa bile,
+  // personel CSV import edildiyse Risk Analizi'nde seçim yapabilir.
+  const availableLocations = useMemo(() => {
+    const all = [...(selectedCompany?.locations ?? []), ...personnelLocations]
+      .map((s) => (s ?? "").trim())
+      .filter(Boolean);
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const v of all) {
+      const key = v.toLocaleLowerCase("tr-TR");
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(v);
+    }
+    return out.sort((a, b) => a.localeCompare(b, "tr-TR"));
+  }, [selectedCompany?.locations, personnelLocations]);
+
+  const availableDepartments = useMemo(() => {
+    const all = [...(selectedCompany?.departments ?? []), ...personnelDepartments]
+      .map((s) => (s ?? "").trim())
+      .filter(Boolean);
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const v of all) {
+      const key = v.toLocaleLowerCase("tr-TR");
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(v);
+    }
+    return out.sort((a, b) => a.localeCompare(b, "tr-TR"));
+  }, [selectedCompany?.departments, personnelDepartments]);
 
   const companyNameDupCounts = useMemo(() => {
     const m = new Map<string, number>();
@@ -2536,17 +2592,37 @@ JSON formatında döndür:
                 <label className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step1.location")} <span className="text-red-500">*</span></label>
                 <select value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)} className={selectCls + (selectedCompanyId && !selectedLocation ? " !border-amber-400/60 !shadow-[0_0_0_3px_rgba(245,158,11,0.15)]" : "")}>
                   <option value="">{trRiskScoring("wizard.step1.locationPlaceholder")}</option>
-                  {(selectedCompany?.locations ?? []).map((loc) => <option key={loc} value={loc}>{loc}</option>)}
+                  {availableLocations.map((loc) => <option key={loc} value={loc}>{loc}</option>)}
                 </select>
-                {selectedCompanyId && !selectedLocation && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">{trRiskScoring("wizard.step1.locationRequired")}</p>}
+                {selectedCompanyId && availableLocations.length === 0 ? (
+                  <p className="text-xs font-medium text-amber-600 dark:text-amber-400">
+                    Bu firmada tanımlı lokasyon bulunmuyor.{" "}
+                    <Link href={`/companies/${selectedCompanyId}?tab=structure`} className="underline underline-offset-2">
+                      Yerleşke sekmesinden ekleyin
+                    </Link>
+                    .
+                  </p>
+                ) : (
+                  selectedCompanyId && !selectedLocation && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">{trRiskScoring("wizard.step1.locationRequired")}</p>
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-foreground">{trRiskScoring("wizard.step1.department")} <span className="text-red-500">*</span></label>
                 <select value={selectedDepartment} onChange={(e) => setSelectedDepartment(e.target.value)} className={selectCls + (selectedCompanyId && !selectedDepartment ? " !border-amber-400/60 !shadow-[0_0_0_3px_rgba(245,158,11,0.15)]" : "")}>
                   <option value="">{trRiskScoring("wizard.step1.departmentPlaceholder")}</option>
-                  {(selectedCompany?.departments ?? []).map((d) => <option key={d} value={d}>{d}</option>)}
+                  {availableDepartments.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
-                {selectedCompanyId && !selectedDepartment && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">{trRiskScoring("wizard.step1.departmentRequired")}</p>}
+                {selectedCompanyId && availableDepartments.length === 0 ? (
+                  <p className="text-xs font-medium text-amber-600 dark:text-amber-400">
+                    Bu firmada tanımlı bölüm bulunmuyor.{" "}
+                    <Link href={`/companies/${selectedCompanyId}?tab=structure`} className="underline underline-offset-2">
+                      Yerleşke sekmesinden ekleyin
+                    </Link>
+                    .
+                  </p>
+                ) : (
+                  selectedCompanyId && !selectedDepartment && <p className="text-xs font-medium text-amber-600 dark:text-amber-400">{trRiskScoring("wizard.step1.departmentRequired")}</p>
+                )}
               </div>
             </div>
           </div>
