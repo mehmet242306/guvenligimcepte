@@ -1913,39 +1913,105 @@ JSON formatında döndür:
   }
 
   /* ── Export ── */
-  /** Blob URL'i base64 data URL'e cevir — annotation overlay + yuz blur */
-  async function blobUrlToDataUrl(blobUrl: string, imageFindings?: VisualFinding[]): Promise<string> {
-    try {
-      const res = await fetch(blobUrl);
-      const blob = await res.blob();
+  /** Blob URL'i base64 data URL'e cevir — annotation overlay + yuz blur.
+   *  Birden çok yükleme stratejisi denenir; biri başarılı olursa annotated
+   *  data URL döner. Hepsi başarısız olursa boş string döner.
+   */
+  async function blobUrlToDataUrl(srcUrl: string, imageFindings?: VisualFinding[]): Promise<string> {
+    if (!srcUrl) return "";
 
+    const renderFromImg = (img: HTMLImageElement): string => {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        if (!canvas.width || !canvas.height) return "";
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return "";
+        ctx.drawImage(img, 0, 0);
+        if (imageFindings && imageFindings.length > 0) {
+          drawAnnotationsOnCanvas(ctx, canvas.width, canvas.height, imageFindings);
+        }
+        return canvas.toDataURL("image/jpeg", 0.9);
+      } catch (err) {
+        console.warn("[blobUrlToDataUrl] canvas render hata:", err);
+        return "";
+      }
+    };
+
+    const loadImage = (url: string): Promise<HTMLImageElement | null> => {
       return new Promise((resolve) => {
         const img = new Image();
-        img.onload = async () => {
-          const canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) { resolve(""); return; }
-          ctx.drawImage(img, 0, 0);
-
-          // Yüz tespiti ve bulanıklaştırma
-          try {
-            await blurFacesOnCanvas(canvas, ctx);
-          } catch { /* yüz tespiti başarısızsa orijinal devam */ }
-
-          // Annotation overlay: pin, box, polygon çiz
-          if (imageFindings && imageFindings.length > 0) {
-            drawAnnotationsOnCanvas(ctx, canvas.width, canvas.height, imageFindings);
-          }
-
-          resolve(canvas.toDataURL("image/jpeg", 0.90));
-          URL.revokeObjectURL(img.src);
+        img.crossOrigin = "anonymous";
+        const onSettle = () => {
+          img.onload = null;
+          img.onerror = null;
         };
-        img.onerror = () => resolve("");
-        img.src = URL.createObjectURL(blob);
+        img.onload = () => { onSettle(); resolve(img); };
+        img.onerror = () => { onSettle(); resolve(null); };
+        img.src = url;
       });
-    } catch { return ""; }
+    };
+
+    // Strateji 1: doğrudan src URL'den (blob: veya http(s):) yükle
+    let img = await loadImage(srcUrl);
+
+    // Strateji 2: fetch + objectURL (bazı blob URL'leri hâlâ valid'se ama
+    // CORS sorunu varsa bu yol işe yarar)
+    if (!img) {
+      try {
+        const res = await fetch(srcUrl);
+        if (res.ok) {
+          const blob = await res.blob();
+          const objectUrl = URL.createObjectURL(blob);
+          img = await loadImage(objectUrl);
+          if (img) {
+            const result = renderFromImg(img);
+            URL.revokeObjectURL(objectUrl);
+            // Yüz blur fallback için yeniden çiz (renderFromImg blur yapmıyor)
+            try {
+              const canvas = document.createElement("canvas");
+              canvas.width = img.naturalWidth;
+              canvas.height = img.naturalHeight;
+              const ctx = canvas.getContext("2d");
+              if (ctx) {
+                ctx.drawImage(img, 0, 0);
+                try { await blurFacesOnCanvas(canvas, ctx); } catch { /* ignore */ }
+                if (imageFindings && imageFindings.length > 0) {
+                  drawAnnotationsOnCanvas(ctx, canvas.width, canvas.height, imageFindings);
+                }
+                return canvas.toDataURL("image/jpeg", 0.9);
+              }
+            } catch { /* fallback to result */ }
+            return result;
+          }
+        }
+      } catch (err) {
+        console.warn("[blobUrlToDataUrl] fetch fallback hata:", err);
+      }
+    }
+
+    if (!img) {
+      console.warn("[blobUrlToDataUrl] Görsel yüklenemedi:", srcUrl.slice(0, 80));
+      return "";
+    }
+
+    // Yüz blur + annotation overlay
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return renderFromImg(img);
+      ctx.drawImage(img, 0, 0);
+      try { await blurFacesOnCanvas(canvas, ctx); } catch { /* ignore */ }
+      if (imageFindings && imageFindings.length > 0) {
+        drawAnnotationsOnCanvas(ctx, canvas.width, canvas.height, imageFindings);
+      }
+      return canvas.toDataURL("image/jpeg", 0.9);
+    } catch {
+      return renderFromImg(img);
+    }
   }
 
   /** Canvas uzerine annotation cizimleri (pin, box, polygon) */

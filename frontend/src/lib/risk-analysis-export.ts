@@ -257,96 +257,160 @@ function generateHTML(data: RiskAnalysisExportData): string {
     // Gorsele atanamamis tespitler (eger varsa)
     const orphanFindings = group.findings.filter((f) => !group.images.some((img) => img.imageId === f.imageId));
 
-    // Ozet tablo (tum tespitler)
+    // Ozet tablo (tum tespitler) — yan yana layoutta görsel + tablo eşleşmesi
+    // için her satır pin etiketini (R1, R2, ...) gösteriyoruz.
     const allFindingsInRow = group.findings;
     const summaryRows = allFindingsInRow.map((f) => {
       globalIdx++;
+      // Her görsel içindeki finding'in sırasına göre pin etiketi (R1, R2…)
+      const imgFindings = group.findings.filter((ff) => ff.imageId === f.imageId);
+      const pinIdx = imgFindings.findIndex((ff) => ff === f);
+      const pinLabel = pinIdx >= 0 ? `R${pinIdx + 1}` : "";
       return `
         <tr style="background:${globalIdx % 2 === 0 ? "#fff" : "#f9fafb"};">
-          <td style="text-align:center;width:30px;">${globalIdx}</td>
-          <td>${f.title}</td>
-          <td>${f.category}</td>
-          <td style="color:${severityColor(f.severity)};font-weight:600;">${f.scoreLabel}</td>
-          <td style="text-align:center;font-weight:600;">${scoreDisplay(f)}</td>
-          <td style="text-align:center;">${f.correctiveActionRequired ? "✓" : "-"}</td>
+          <td style="text-align:center;width:24px;font-weight:700;color:#DC2626;font-size:10px;">${pinLabel}</td>
+          <td style="text-align:center;width:24px;color:#666;">${globalIdx}</td>
+          <td style="font-size:9px;line-height:1.35;">${f.title}</td>
+          <td style="font-size:9px;">${f.category}</td>
+          <td style="color:${severityColor(f.severity)};font-weight:600;font-size:9px;">${f.scoreLabel}</td>
+          <td style="text-align:center;font-weight:600;font-size:9px;">${scoreDisplay(f)}</td>
+          <td style="text-align:center;font-size:9px;">${f.correctiveActionRequired ? "✓" : "-"}</td>
         </tr>`;
     }).join("");
 
     const summaryTable = allFindingsInRow.length > 0 ? `
-      <table>
-        <tr class="hdr"><th>#</th><th>Tespit</th><th>Kategori</th><th>Risk Sınıfı</th><th>Skor</th><th>DÖF</th></tr>
+      <table style="margin-top:0;">
+        <tr class="hdr">
+          <th style="width:24px;">Pin</th>
+          <th style="width:24px;">#</th>
+          <th>Tespit</th>
+          <th>Kategori</th>
+          <th>Risk</th>
+          <th>Skor</th>
+          <th>DÖF</th>
+        </tr>
         ${summaryRows}
       </table>
     ` : "";
 
-    // ── Gorsel bazli detay kartlari ──
+    // ── Yeni layout: her görsel için "Görsel + Özet Tablo" YAN YANA ──
+    // Sol: annotated görsel (R1, R2 pin'leri ile), Sağ: o görsele ait özet
+    // tablosu (pin etiketi + tespit + skor). Tespit kartları ALTINDA full-width.
     const imageDetailSections = imageGroups.map(({ img, imgIdx, findings }) => {
-      if (findings.length === 0 && !img.dataUrl && img.imageRelevance === "relevant") return "";
-
       const isIrrelevant = img.imageRelevance === "not_real_photo" || img.imageRelevance === "irrelevant";
 
-      // Analiz yapilamayan gorseller icin ozel aciklama
-      const relevanceNote = isIrrelevant
-        ? `<div style="margin:6px 0;padding:8px 10px;background:#FEF3C7;border:1px solid #F59E0B;border-radius:6px;font-size:10px;color:#92400E;">
-            <strong>Analiz Yapılamadı:</strong> ${img.imageRelevance === "not_real_photo" ? "Bu görsel gerçek bir fotoğraf değil (çizim/illüstrasyon/dijital üretim)." : "Bu görsel risk analizi kapsamında değerlendirilmedi."}
-            ${img.imageDescription ? `<br/>Tespit: ${img.imageDescription}` : ""}
+      // Bu görsele özel mini özet tablosu — pin etiketi (R1, R2…) ile eşleşir
+      const perImageSummaryRows = findings.map((f, fi) => `
+        <tr style="background:${fi % 2 === 0 ? "#fff" : "#f9fafb"};">
+          <td style="text-align:center;width:28px;font-weight:700;color:#DC2626;font-size:10px;border:1px solid #dee2e6;padding:4px;">R${fi + 1}</td>
+          <td style="font-size:9px;line-height:1.4;border:1px solid #dee2e6;padding:4px 6px;">${f.title}</td>
+          <td style="font-size:9px;text-align:center;color:${severityColor(f.severity)};font-weight:700;border:1px solid #dee2e6;padding:4px;white-space:nowrap;">${f.scoreLabel}</td>
+          <td style="font-size:9px;text-align:center;font-weight:700;border:1px solid #dee2e6;padding:4px;">${scoreDisplay(f)}</td>
+          <td style="text-align:center;font-size:9px;border:1px solid #dee2e6;padding:4px;">${f.correctiveActionRequired ? '<span style="color:#DC2626;font-weight:700;">DÖF</span>' : "-"}</td>
+        </tr>`).join("");
+
+      const perImageSummaryTable = findings.length > 0 ? `
+        <table style="width:100%;border-collapse:collapse;margin:0;font-size:9px;">
+          <tr style="background:#B8860B;color:#fff;">
+            <th style="border:1px solid #996F09;padding:5px 4px;font-size:9px;width:28px;">Pin</th>
+            <th style="border:1px solid #996F09;padding:5px 4px;font-size:9px;text-align:left;">Tespit</th>
+            <th style="border:1px solid #996F09;padding:5px 4px;font-size:9px;width:60px;">Risk</th>
+            <th style="border:1px solid #996F09;padding:5px 4px;font-size:9px;width:42px;">Skor</th>
+            <th style="border:1px solid #996F09;padding:5px 4px;font-size:9px;width:42px;">DÖF</th>
+          </tr>
+          ${perImageSummaryRows}
+        </table>` : `
+        <p style="margin:0;font-size:10px;color:#666;font-style:italic;">Bu görsel için tespit bulunmadı.</p>`;
+
+      // Görsel mevcut mu?
+      const hasImage = !!img.dataUrl && img.dataUrl.length > 100;
+
+      const irrelevantNote = isIrrelevant
+        ? `<div style="margin-top:6px;padding:6px 8px;background:#FEF3C7;border:1px solid #F59E0B;border-radius:4px;font-size:9px;color:#92400E;">
+            <strong>Analiz Yapılamadı:</strong> ${img.imageRelevance === "not_real_photo" ? "Bu görsel gerçek bir fotoğraf değil." : "Risk analizi kapsamında değerlendirilmedi."}
           </div>`
         : "";
 
-      // Olumlu tespitler
       const positiveNote = !isIrrelevant && (img.positiveObservations ?? []).length > 0
-        ? `<div style="margin:6px 0;padding:8px 10px;background:#D1FAE5;border:1px solid #10B981;border-radius:6px;font-size:10px;color:#065F46;">
+        ? `<div style="margin-top:6px;padding:6px 8px;background:#ECFDF5;border:1px solid #10B981;border-radius:4px;font-size:9px;color:#065F46;">
             <strong>Olumlu Tespitler:</strong>
             ${(img.positiveObservations ?? []).map(o => `<br/>✓ ${o}`).join("")}
           </div>`
         : "";
 
-      // Alan ozeti
       const summaryNote = !isIrrelevant && img.areaSummary
-        ? `<p style="margin:4px 0 0;font-size:10px;color:#555;font-style:italic;">${img.areaSummary}</p>`
+        ? `<p style="margin:4px 0 0;font-size:9px;color:#555;font-style:italic;line-height:1.4;">${img.areaSummary}</p>`
         : "";
 
-      // Gorsel kalite uyarisi
       const qualityNote = img.photoQuality && img.photoQuality !== "good"
-        ? `<span style="margin-left:8px;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;${img.photoQuality === "poor" ? "background:#FEE2E2;color:#DC2626;" : "background:#FEF3C7;color:#D97706;"}">${img.photoQuality === "poor" ? "Düşük Kalite" : "Orta Kalite"}</span>`
+        ? `<span style="margin-left:6px;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:600;${img.photoQuality === "poor" ? "background:#FEE2E2;color:#DC2626;" : "background:#FEF3C7;color:#D97706;"}">${img.photoQuality === "poor" ? "Düşük Kalite" : "Orta Kalite"}</span>`
         : "";
 
-      const imgBlock = `
-        <div style="margin:12px 0 6px;padding:8px 12px;background:#f0f4f8;border-radius:8px;border:1px solid #d1d5db;">
-          <div style="display:flex;gap:12px;align-items:flex-start;">
-            <img src="${img.dataUrl}" style="width:220px;height:auto;max-height:165px;object-fit:contain;border:1px solid #dee2e6;border-radius:4px;background:#fff;" />
-            <div style="flex:1;">
-              <p style="margin:0;font-weight:700;font-size:12px;color:#1a1a2e;">Görsel ${imgIdx + 1}: ${img.fileName}${qualityNote}</p>
-              <p style="margin:3px 0 0;font-size:10px;color:#666;">${isIrrelevant ? "Analiz yapılamadı" : `${findings.length} tespit`}</p>
-              ${summaryNote}
-            </div>
-          </div>
-          ${relevanceNote}
-          ${positiveNote}
+      // YAN YANA TABLE LAYOUT — print/HTML her ikisinde de güvenli (flex print
+      // motorunda bazen sorunlu olduğu için <table> tercih edildi).
+      const sideBySideBlock = `
+        <div style="margin:8px 0;page-break-inside:avoid;">
+          <table style="width:100%;border-collapse:collapse;margin:0;border:1px solid #d1d5db;background:#f8fafc;">
+            <tr>
+              <td style="width:42%;vertical-align:top;padding:8px;border-right:1px solid #d1d5db;background:#fff;">
+                ${hasImage
+                  ? `<img src="${img.dataUrl}" style="width:100%;max-width:340px;height:auto;max-height:260px;object-fit:contain;border:1px solid #dee2e6;border-radius:4px;display:block;background:#fff;" />`
+                  : `<div style="width:100%;min-height:180px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;border:1px dashed #d1d5db;border-radius:4px;color:#9ca3af;font-size:11px;text-align:center;padding:20px;">Görsel önizleme yüklenemedi<br/><span style="font-size:9px;">${img.fileName}</span></div>`}
+                <p style="margin:6px 0 0;font-size:10px;font-weight:700;color:#1a1a2e;">Görsel ${imgIdx + 1}${qualityNote}</p>
+                <p style="margin:2px 0 0;font-size:9px;color:#666;word-break:break-all;">${img.fileName}</p>
+                <p style="margin:2px 0 0;font-size:9px;color:${isIrrelevant ? "#92400E" : "#666"};">
+                  ${isIrrelevant ? "Analiz yapılamadı" : `${findings.length} tespit · pin'ler R1–R${findings.length} ile etiketlenmiştir`}
+                </p>
+                ${summaryNote}
+                ${irrelevantNote}
+                ${positiveNote}
+              </td>
+              <td style="vertical-align:top;padding:8px;background:#fff;">
+                <p style="margin:0 0 6px;font-size:10px;font-weight:700;color:#B8860B;text-transform:uppercase;letter-spacing:0.04em;">Görsel ${imgIdx + 1} Tespitleri</p>
+                ${perImageSummaryTable}
+              </td>
+            </tr>
+          </table>
         </div>`;
 
+      // Detaylı tespit kartları — yan yana bloğun ALTINDA full-width
       const findingCardsForImg = findings.map((f) => buildFindingCardHTML(f)).join("");
 
-      return imgBlock + findingCardsForImg;
+      return sideBySideBlock + findingCardsForImg;
     }).join("");
 
     // Sahipsiz tespitler (gorsele atanamamis)
-    const orphanSection = orphanFindings.length > 0 ? orphanFindings.map((f) => buildFindingCardHTML(f)).join("") : "";
+    const orphanSection = orphanFindings.length > 0
+      ? `<div style="margin:8px 0;padding:8px 10px;background:#FFFBEB;border:1px solid #F59E0B;border-radius:6px;">
+          <p style="margin:0 0 6px;font-size:10px;font-weight:700;color:#92400E;">Görsele bağlanamamış tespitler</p>
+          ${orphanFindings.map((f) => buildFindingCardHTML(f)).join("")}
+        </div>`
+      : "";
 
-    // Detayli tespit kartlari — artik gorsel bazli gruplama icinde
-    const findingCards = imageDetailSections + orphanSection;
+    // Toplam özet tablo (tüm görsellerin tespitleri) — opsiyonel; satır
+    // başında genel görünüm sağlar. globalIdx için summaryRows hâlâ ihtiyaç
+    // duyuyor; o yüzden summaryTable'ı SATIR HEADER'ından hemen sonra kısa
+    // halde gösterelim — ama yan yana detaylar daha okunaklı olduğundan
+    // bunu collapse edebilirsek daha iyi (PDF'te collapse yok, sadece komp.)
+    const summarySection = group.images.length > 1 && allFindingsInRow.length > 1
+      ? `<div style="margin:6px 0 4px;">
+          <p style="margin:0 0 4px;font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.04em;">Satır Genel Özet (${allFindingsInRow.length} tespit)</p>
+          ${summaryTable}
+        </div>`
+      : "";
 
     return `
       <div style="margin-top:${gi === 0 ? "0" : "8"}px;page-break-before:${gi === 0 ? "auto" : "always"};">
-        <div style="background:#FDF8EE;border:2px solid #B8860B;border-radius:8px;padding:10px 14px;margin-bottom:4px;">
+        <div style="background:#FDF8EE;border:2px solid #B8860B;border-radius:8px;padding:10px 14px;margin-bottom:6px;">
           <h3 style="margin:0;font-size:14px;color:#B8860B;text-transform:uppercase;letter-spacing:0.03em;">
             SATIR ${gi + 1}: ${group.rowTitle}
           </h3>
           <p style="margin:2px 0 0;font-size:10px;color:#666;">${group.findings.length} tespit · ${group.images.length} görsel</p>
         </div>
-        ${summaryTable}
-        <div style="margin-top:10px;">
-          ${findingCards}
+        ${summarySection}
+        <div>
+          ${imageDetailSections}
+          ${orphanSection}
         </div>
       </div>
     `;
@@ -568,48 +632,125 @@ export async function exportRiskAnalysisWord(data: RiskAnalysisExportData) {
       spacing: { after: 150 },
     }));
 
-    // Görseller (thumbnail olarak embed)
+    // ── Yeni layout: her görsel için "Görsel + Özet" YAN YANA ──
+    // Word'de 2-cell'li bir Table: sol cell'de annotated ImageRun + caption,
+    // sağ cell'de o görsele ait tespitler (R1, R2... pin etiketleriyle).
     for (const img of group.images) {
+      const imgFindings = group.findings.filter((f) => f.imageId === img.imageId);
       const parsed = parseDataUrl(img.dataUrl);
+
+      // Sol cell içeriği: görsel + caption
+      const leftCellChildren: Paragraph[] = [];
       if (parsed) {
         try {
-          children.push(new Paragraph({
-            children: [
-              new ImageRun({
-                type: parsed.ext,
-                data: parsed.buffer,
-                transformation: { width: 220, height: 165 },
-              }),
-            ],
+          leftCellChildren.push(new Paragraph({
+            children: [new ImageRun({
+              type: parsed.ext,
+              data: parsed.buffer,
+              transformation: { width: 260, height: 195 },
+            })],
             spacing: { after: 40 },
           }));
-          children.push(new Paragraph({
-            children: [new TextRun({ text: `${img.fileName} (${img.findingCount} tespit)`, size: 14, font: "Segoe UI", color: "999999", italics: true })],
-            spacing: { after: 100 },
+        } catch {
+          leftCellChildren.push(new Paragraph({
+            children: [new TextRun({ text: "[Görsel yüklenemedi]", size: 16, font: "Segoe UI", color: "999999", italics: true })],
           }));
-        } catch { /* gorsel eklenemezse devam */ }
+        }
+      } else {
+        leftCellChildren.push(new Paragraph({
+          children: [new TextRun({ text: "[Görsel önizleme mevcut değil]", size: 16, font: "Segoe UI", color: "999999", italics: true })],
+        }));
       }
+      leftCellChildren.push(new Paragraph({
+        children: [new TextRun({ text: img.fileName, bold: true, size: 14, font: "Segoe UI", color: DARK_HEX })],
+        spacing: { after: 20 },
+      }));
+      leftCellChildren.push(new Paragraph({
+        children: [new TextRun({
+          text: imgFindings.length > 0
+            ? `${imgFindings.length} tespit · pin'ler R1–R${imgFindings.length}`
+            : "Tespit bulunamadı",
+          size: 14, font: "Segoe UI", color: "666666",
+        })],
+      }));
+      if (img.areaSummary) {
+        leftCellChildren.push(new Paragraph({
+          children: [new TextRun({ text: img.areaSummary, size: 14, font: "Segoe UI", color: "555555", italics: true })],
+          spacing: { before: 40 },
+        }));
+      }
+
+      // Sağ cell içeriği: tespit özet listesi (R1: title | risk | skor)
+      const rightCellChildren: Paragraph[] = [];
+      rightCellChildren.push(new Paragraph({
+        children: [new TextRun({ text: "TESPİTLER", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
+        spacing: { after: 60 },
+      }));
+      if (imgFindings.length > 0) {
+        imgFindings.forEach((f, fi) => {
+          globalIdx++;
+          rightCellChildren.push(new Paragraph({
+            children: [
+              new TextRun({ text: `R${fi + 1}  `, bold: true, size: 16, font: "Segoe UI", color: "DC2626" }),
+              new TextRun({ text: f.title, bold: true, size: 16, font: "Segoe UI", color: DARK_HEX }),
+            ],
+            spacing: { before: 40, after: 10 },
+          }));
+          rightCellChildren.push(new Paragraph({
+            children: [
+              new TextRun({ text: `${f.category}  ·  `, size: 14, font: "Segoe UI", color: "666666" }),
+              new TextRun({ text: `${f.scoreLabel} (${scoreDisplay(f)})`, bold: true, size: 14, font: "Segoe UI", color: sevColorHex(f.severity) }),
+              ...(f.correctiveActionRequired
+                ? [new TextRun({ text: "  ·  DÖF", bold: true, size: 14, font: "Segoe UI", color: "DC2626" })]
+                : []),
+            ],
+            spacing: { after: 30 },
+          }));
+        });
+      } else {
+        rightCellChildren.push(new Paragraph({
+          children: [new TextRun({ text: "Bu görsel için tespit bulunmadı.", size: 14, font: "Segoe UI", color: "999999", italics: true })],
+        }));
+      }
+
+      const sideBySideTable = new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [new TableRow({
+          children: [
+            new TableCell({
+              width: { size: 42, type: WidthType.PERCENTAGE },
+              children: leftCellChildren,
+              margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            }),
+            new TableCell({
+              width: { size: 58, type: WidthType.PERCENTAGE },
+              children: rightCellChildren,
+              margins: { top: 100, bottom: 100, left: 100, right: 100 },
+            }),
+          ],
+        })],
+      });
+      children.push(sideBySideTable);
+      children.push(new Paragraph({ spacing: { after: 100 } }));
     }
 
-    // Özet tablosu
-    if (group.findings.length > 0) {
-      const sRows = [
-        new TableRow({ children: [goldHeaderCell("#"), goldHeaderCell("Tespit"), goldHeaderCell("Kategori"), goldHeaderCell("Risk Sınıfı"), goldHeaderCell("Skor"), goldHeaderCell("DÖF")] }),
-        ...group.findings.map((f) => {
-          globalIdx++;
-          return new TableRow({
-            children: [
-              dataCell(String(globalIdx)),
-              dataCell(f.title),
-              dataCell(f.category),
-              dataCell(f.scoreLabel, { bold: true, color: sevColorHex(f.severity) }),
-              dataCell(scoreDisplay(f), { bold: true }),
-              dataCell(f.correctiveActionRequired ? "Evet" : "-", { bold: f.correctiveActionRequired, color: f.correctiveActionRequired ? "DC2626" : undefined }),
-            ],
-          });
-        }),
-      ];
-      children.push(new Table({ rows: sRows, width: { size: 100, type: WidthType.PERCENTAGE } }));
+    // Görsele bağlanamamış tespitler için özet
+    const orphanFindings = group.findings.filter((f) => !group.images.some((img) => img.imageId === f.imageId));
+    if (orphanFindings.length > 0) {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: "Görsele bağlanamamış tespitler", bold: true, size: 18, font: "Segoe UI", color: "92400E" })],
+        spacing: { before: 100, after: 60 },
+      }));
+      for (const f of orphanFindings) {
+        globalIdx++;
+        children.push(new Paragraph({
+          children: [
+            new TextRun({ text: f.title, bold: true, size: 16, font: "Segoe UI", color: DARK_HEX }),
+            new TextRun({ text: ` — ${f.scoreLabel} (${scoreDisplay(f)})`, bold: true, size: 14, font: "Segoe UI", color: sevColorHex(f.severity) }),
+          ],
+          spacing: { after: 40 },
+        }));
+      }
     }
 
     // Detaylı tespit kartları
