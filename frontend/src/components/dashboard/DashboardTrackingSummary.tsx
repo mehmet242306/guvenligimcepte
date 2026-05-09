@@ -134,8 +134,8 @@ export function DashboardTrackingSummary() {
   return (
     <div className="surface-card relative overflow-hidden">
       <div className="pointer-events-none absolute right-[-7rem] top-[-8rem] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(200,155,91,0.16),transparent_68%)] blur-xl" />
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div>
+      <div className="mb-4 flex items-start gap-3">
+        <div className="min-w-0 flex-1">
           <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
             <ActivitySquare size={16} className="text-[var(--gold)]" />
             {t('trackTitle')}
@@ -144,13 +144,6 @@ export function DashboardTrackingSummary() {
             {t('trackSubtitle', { companyCount: data.companyCount, totalActionable })}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => router.push('/companies')}
-          className="hidden items-center gap-1 rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--primary)] transition-colors hover:bg-[var(--gold)]/8 sm:inline-flex"
-        >
-          {t('trackCompaniesCta')} <ChevronRight size={12} />
-        </button>
       </div>
 
       <div className="relative grid gap-3 sm:grid-cols-2 lg:grid-cols-5">

@@ -118,9 +118,13 @@ export async function getTrackingSummary(companyWorkspaceId: string): Promise<Tr
 }
 
 /**
- * Tum organizasyondaki firmalar icin tek cagride takip rollup'i.
- * Dashboard widget'i icin — company_workspaces'dan org ID'yi cozup her alt tabloyu
- * bu firmalar'a gore filtreler, sonuclari agrege eder. RLS zaten org izolasyonunu saglar.
+ * Aktif **çalışma alanı** (nova_workspaces) bağlamında firma takip rollup'i.
+ *
+ * Önemli: Önceki sürüm `resolveOrganizationId()` (JWT app_metadata) ile
+ * filtreliyordu. Bu, JWT'deki org sabit kaldığı için kullanıcı çalışma
+ * alanı değiştirse bile başka tenant'lardaki firmaları sızdırıyordu.
+ * Yeni sürüm: önce aktif workspace'in `organization_id`'sini çözer,
+ * varsa onu, yoksa JWT org'unu fallback olarak kullanır.
  */
 export async function getOrganizationTrackingSummary(): Promise<OrganizationTrackingSummary> {
   const empty: OrganizationTrackingSummary = {
@@ -136,13 +140,28 @@ export async function getOrganizationTrackingSummary(): Promise<OrganizationTrac
   const supabase = createClient();
   if (!supabase) return empty;
 
-  const auth = await resolveOrganizationId();
-  if (!auth) return empty;
+  // 1) Aktif çalışma alanının organization_id'sini çöz.
+  let scopedOrgId: string | null = null;
+  try {
+    const { getActiveWorkspace } = await import("@/lib/supabase/workspace-api");
+    const activeWs = await getActiveWorkspace();
+    if (activeWs?.organization_id) scopedOrgId = activeWs.organization_id;
+  } catch {
+    // workspace-api yoksa fallback'e düşeceğiz
+  }
+
+  // 2) Fallback: JWT app_metadata.org (eski davranış — yalnızca aktif workspace
+  //    çözülemediğinde devreye girer).
+  if (!scopedOrgId) {
+    const auth = await resolveOrganizationId();
+    if (!auth) return empty;
+    scopedOrgId = auth.orgId;
+  }
 
   const { data: workspaces, error: wsErr } = await supabase
     .from("company_workspaces")
     .select("id, display_name, company_identity_id")
-    .eq("organization_id", auth.orgId)
+    .eq("organization_id", scopedOrgId)
     .is("deleted_at", null);
 
   if (wsErr) {
