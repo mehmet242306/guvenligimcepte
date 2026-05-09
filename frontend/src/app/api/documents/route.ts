@@ -4,11 +4,29 @@ import { isCompatError } from "@/lib/osgb/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import { createServiceClient, parseJsonBody } from "@/lib/security/server";
 
+// Free-form documents created from the ISG Library "AI draft" flow or any
+// other ad-hoc entry point don't always carry a document group (the URL would
+// have ?group= for template-based flows but stays empty for free AI prompts).
+// Treat groupKey as optional and fall back to a generic bucket so saves don't
+// 400 with "Gecersiz istek verisi" — group is a categorisation aid, not a
+// hard data integrity requirement.
+const FALLBACK_GROUP_KEY = "diger-kayitlar";
+
 const createDocumentSchema = z.object({
   companyWorkspaceId: z.string().uuid().nullable().optional(),
   templateId: z.string().uuid().nullable().optional(),
-  groupKey: z.string().trim().min(1).max(160),
-  title: z.string().trim().min(1).max(250),
+  groupKey: z
+    .string()
+    .trim()
+    .max(160)
+    .optional()
+    .transform((value) => (value && value.length > 0 ? value : FALLBACK_GROUP_KEY)),
+  title: z
+    .string()
+    .trim()
+    .max(250)
+    .optional()
+    .transform((value) => (value && value.length > 0 ? value : "Yeni Dokuman")),
   contentJson: z.record(z.string(), z.unknown()),
   variablesData: z.record(z.string(), z.unknown()).optional().default({}),
   status: z

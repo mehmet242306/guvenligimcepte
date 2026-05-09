@@ -50,7 +50,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DOCUMENT_GROUPS, getGroupByKey } from "@/lib/document-groups";
 import { getTemplate } from "@/lib/document-templates-p1";
 import { createClient } from "@/lib/supabase/client";
 import { deleteDocument, fetchDocuments, type DocumentRecord } from "@/lib/supabase/document-api";
@@ -72,15 +71,20 @@ import {
   BUILTIN_CATEGORIES,
   CATEGORY_TONE_CLASSES,
   CUSTOM_CATEGORY_STORAGE_KEY,
+  CUSTOM_SUBCATEGORY_STORAGE_KEY,
+  HIDDEN_CATEGORY_STORAGE_KEY,
+  HIDDEN_SUBCATEGORY_STORAGE_KEY,
   LEGACY_SECTION_REDIRECTS,
   STARTER_TEMPLATES,
   getSubcategoriesForCategory,
+  isBuiltinSubcategory,
   librarySlugify,
   pickLocalized,
   type BuiltinCategoryKey,
   type CategoryIconKey,
   type CategoryKey,
   type CustomCategoryRecord,
+  type CustomSubcategoryRecord,
   type LibraryCategoryDefinition,
   type StarterAction,
 } from "./library-config";
@@ -412,6 +416,40 @@ export function IsgLibraryClient() {
     writeJsonToStorage(STARTER_HIDE_STORAGE_KEY, hiddenStarterIds);
   }, [hiddenStarterIds]);
 
+  // ---------- Custom (user-created) subcategories ----------
+  const [customSubcategories, setCustomSubcategories] = useState<CustomSubcategoryRecord[]>([]);
+  useEffect(() => {
+    setCustomSubcategories(
+      readJsonFromStorage<CustomSubcategoryRecord[]>(CUSTOM_SUBCATEGORY_STORAGE_KEY, []),
+    );
+  }, []);
+  useEffect(() => {
+    writeJsonToStorage(CUSTOM_SUBCATEGORY_STORAGE_KEY, customSubcategories);
+  }, [customSubcategories]);
+
+  // ---------- Hidden built-in subcategories (`<categoryKey>::<subKey>`) ----------
+  const [hiddenSubcategoryKeys, setHiddenSubcategoryKeys] = useState<string[]>([]);
+  useEffect(() => {
+    setHiddenSubcategoryKeys(readJsonFromStorage<string[]>(HIDDEN_SUBCATEGORY_STORAGE_KEY, []));
+  }, []);
+  useEffect(() => {
+    writeJsonToStorage(HIDDEN_SUBCATEGORY_STORAGE_KEY, hiddenSubcategoryKeys);
+  }, [hiddenSubcategoryKeys]);
+
+  // ---------- Hidden built-in main categories ----------
+  const [hiddenCategoryKeys, setHiddenCategoryKeys] = useState<string[]>([]);
+  useEffect(() => {
+    setHiddenCategoryKeys(readJsonFromStorage<string[]>(HIDDEN_CATEGORY_STORAGE_KEY, []));
+  }, []);
+  useEffect(() => {
+    writeJsonToStorage(HIDDEN_CATEGORY_STORAGE_KEY, hiddenCategoryKeys);
+  }, [hiddenCategoryKeys]);
+
+  // ---------- "Add subcategory" modal state ----------
+  const [createSubcategoryOpen, setCreateSubcategoryOpen] = useState(false);
+  const [newSubcategoryLabel, setNewSubcategoryLabel] = useState("");
+  const [newSubcategoryDescription, setNewSubcategoryDescription] = useState("");
+
   // ---------- Filter state ----------
   const [category, setCategory] = useState<CategoryKey>(() =>
     categoryFromUrl(searchParams.get("category") ?? searchParams.get("section")),
@@ -472,10 +510,13 @@ export function IsgLibraryClient() {
 
   // ---------- Build category list (built-in + custom) ----------
   const categoryDefinitions = useMemo<LibraryCategoryDefinition[]>(() => {
-    const base = BUILTIN_CATEGORIES.map((category) => ({
-      ...category,
-      label: { ...category.label },
-    }));
+    const hiddenSet = new Set(hiddenCategoryKeys);
+    const base = BUILTIN_CATEGORIES
+      .filter((entry) => !hiddenSet.has(entry.key as string))
+      .map((category) => ({
+        ...category,
+        label: { ...category.label },
+      }));
     const customs: LibraryCategoryDefinition[] = customCategories.map((custom) => ({
       key: `custom:${custom.id}` as CategoryKey,
       iconKey: "Users",
@@ -487,12 +528,18 @@ export function IsgLibraryClient() {
       },
     }));
     return [...base, ...customs];
-  }, [customCategories]);
+  }, [customCategories, hiddenCategoryKeys]);
 
   // ---------- Subcategories of the active category ----------
   const activeSubcategories = useMemo(
-    () => getSubcategoriesForCategory(category, categoryDefinitions),
-    [category, categoryDefinitions],
+    () =>
+      getSubcategoriesForCategory(
+        category,
+        categoryDefinitions,
+        customSubcategories,
+        hiddenSubcategoryKeys,
+      ),
+    [category, categoryDefinitions, customSubcategories, hiddenSubcategoryKeys],
   );
 
   // When the user switches main category, drop any stale subcategory selection.
@@ -1306,9 +1353,155 @@ export function IsgLibraryClient() {
         return;
       }
       setCustomCategories((current) => current.filter((entry) => entry.id !== id));
+      // Also drop any custom subcategories the user added under this parent so
+      // they don't linger in storage as orphans.
+      setCustomSubcategories((current) =>
+        current.filter((entry) => entry.parentCategoryKey !== key),
+      );
+      setHiddenSubcategoryKeys((current) =>
+        current.filter((entry) => !entry.startsWith(`${key}::`)),
+      );
       setCategory("all");
     },
     [customCategories, isTr],
+  );
+
+  /**
+   * Hide a built-in main category (the user can't truly delete it because the
+   * config ships with the app). The category disappears from the chip strip
+   * but the underlying templates aren't lost — they're just out of view until
+   * the user clears local storage.
+   */
+  const handleHideBuiltinCategory = useCallback(
+    (key: CategoryKey) => {
+      if (typeof key !== "string") return;
+      if (key === "all" || key.startsWith("custom:")) return;
+      const def = BUILTIN_CATEGORIES.find((entry) => entry.key === key);
+      const label = def ? pickLocalized(def.label, locale) : (key as string);
+      if (
+        !window.confirm(
+          isTr
+            ? `"${label}" kategorisini bu cihazda gizlemek istiyor musunuz? Şablon ve içerikler korunur, kategoriyi tekrar göstermek için sıfırlama gerekir.`
+            : `Hide "${label}" on this device? Templates remain, you'll need to reset to show it again.`,
+        )
+      ) {
+        return;
+      }
+      setHiddenCategoryKeys((current) =>
+        current.includes(key as string) ? current : [...current, key as string],
+      );
+      setCategory("all");
+    },
+    [isTr, locale],
+  );
+
+  /** Show every previously hidden built-in category (chip strip + sidebars). */
+  const handleResetHiddenBuiltins = useCallback(() => {
+    if (
+      !window.confirm(
+        isTr
+          ? "Gizlenen yerleşik kategori ve alt başlıkların tümü tekrar gösterilsin mi?"
+          : "Show every previously hidden built-in category and subcategory?",
+      )
+    ) {
+      return;
+    }
+    setHiddenCategoryKeys([]);
+    setHiddenSubcategoryKeys([]);
+  }, [isTr]);
+
+  /**
+   * Add a user-defined subcategory under the active main category. Slugs are
+   * unique within the parent only, so two parents can both have a
+   * "calisan-talimatlari" entry.
+   */
+  const handleCreateSubcategory = useCallback(() => {
+    const trimmedLabel = newSubcategoryLabel.trim();
+    if (!trimmedLabel) {
+      setErrorMessage(isTr ? "Alt başlık adı boş olamaz." : "Subcategory name can't be empty.");
+      return;
+    }
+    if (category === "all") {
+      setErrorMessage(
+        isTr
+          ? "Önce bir ana kategori seçin, ardından alt başlık ekleyin."
+          : "Pick a main category first, then add a subcategory under it.",
+      );
+      return;
+    }
+    const parentKey = category as string;
+    const slug = librarySlugify(trimmedLabel) || `alt-${Date.now()}`;
+    const collision =
+      customSubcategories.some(
+        (entry) => entry.parentCategoryKey === parentKey && entry.id === slug,
+      ) || activeSubcategories.some((entry) => entry.key === slug);
+    const finalSlug = collision ? `${slug}-${Date.now().toString().slice(-4)}` : slug;
+    const record: CustomSubcategoryRecord = {
+      parentCategoryKey: parentKey,
+      id: finalSlug,
+      label: trimmedLabel,
+      description: newSubcategoryDescription.trim() || undefined,
+      createdAt: new Date().toISOString(),
+    };
+    setCustomSubcategories((current) => [...current, record]);
+    // Auto-select the newly-created subcategory so the user immediately sees
+    // their new (empty) section instead of staying on "All subcategories".
+    setSubcategory(finalSlug);
+    setCreateSubcategoryOpen(false);
+    setNewSubcategoryLabel("");
+    setNewSubcategoryDescription("");
+  }, [
+    activeSubcategories,
+    category,
+    customSubcategories,
+    isTr,
+    newSubcategoryDescription,
+    newSubcategoryLabel,
+  ]);
+
+  /**
+   * Remove a subcategory. User-created entries are deleted from storage;
+   * built-in entries are added to the hidden set (the catalog ships with the
+   * app, so we can only hide them locally).
+   */
+  const handleRemoveSubcategory = useCallback(
+    (subKey: string) => {
+      if (category === "all") return;
+      const parentKey = category as string;
+      const isBuiltin = isBuiltinSubcategory(category, subKey);
+      const target = activeSubcategories.find((entry) => entry.key === subKey);
+      const label = target ? pickLocalized(target.label, locale) : subKey;
+      if (
+        !window.confirm(
+          isBuiltin
+            ? isTr
+              ? `"${label}" alt başlığı bu cihazda gizlensin mi? Yerleşik şablonlar korunur, sıfırlama ile geri açabilirsiniz.`
+              : `Hide subcategory "${label}" on this device? Built-in templates remain, you can reset to show it again.`
+            : isTr
+              ? `"${label}" alt başlığı silinsin mi? Bu kullanıcı tarafından eklenmişti.`
+              : `Delete subcategory "${label}"? This was user-added.`,
+        )
+      ) {
+        return;
+      }
+      if (isBuiltin) {
+        const composite = `${parentKey}::${subKey}`;
+        setHiddenSubcategoryKeys((current) =>
+          current.includes(composite) ? current : [...current, composite],
+        );
+      } else {
+        setCustomSubcategories((current) =>
+          current.filter(
+            (entry) => !(entry.parentCategoryKey === parentKey && entry.id === subKey),
+          ),
+        );
+      }
+      // Drop the selection so we don't end up showing an empty filter result.
+      if (subcategory === subKey) {
+        setSubcategory(ALL_SUBCATEGORIES_KEY);
+      }
+    },
+    [activeSubcategories, category, isTr, locale, subcategory],
   );
 
   // ---------- File upload (used by inline "Cihazdan yükle" CTA) ----------
@@ -1863,7 +2056,7 @@ export function IsgLibraryClient() {
               <p className="mt-1 text-sm leading-6 text-muted-foreground">{pickLocalized(activeCategoryDef.description, locale)}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {category.startsWith("custom:") ? (
               <button
                 type="button"
@@ -1872,6 +2065,32 @@ export function IsgLibraryClient() {
               >
                 <Trash2 size={14} />
                 {isTr ? "Kategoriyi Sil" : "Delete category"}
+              </button>
+            ) : category !== "all" ? (
+              <button
+                type="button"
+                onClick={() => handleHideBuiltinCategory(category)}
+                className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-border bg-background px-3 text-xs font-semibold text-muted-foreground transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 dark:hover:border-rose-400/25 dark:hover:bg-rose-400/10 dark:hover:text-rose-200"
+                title={
+                  isTr
+                    ? "Bu yerleşik kategoriyi bu cihazda gizler. Şablonlar korunur."
+                    : "Hides this built-in category on this device. Templates remain."
+                }
+              >
+                <Trash2 size={14} />
+                {isTr ? "Gizle" : "Hide"}
+              </button>
+            ) : null}
+            {hiddenCategoryKeys.length + hiddenSubcategoryKeys.length > 0 ? (
+              <button
+                type="button"
+                onClick={handleResetHiddenBuiltins}
+                className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-border bg-background px-3 text-xs font-semibold text-muted-foreground transition hover:bg-muted/40"
+                title={isTr ? "Gizlenen yerleşik öğeleri tekrar göster" : "Show hidden built-ins again"}
+              >
+                {isTr
+                  ? `Gizlenen ${hiddenCategoryKeys.length + hiddenSubcategoryKeys.length} öğeyi göster`
+                  : `Show ${hiddenCategoryKeys.length + hiddenSubcategoryKeys.length} hidden`}
               </button>
             ) : null}
             <button
@@ -1949,23 +2168,65 @@ export function IsgLibraryClient() {
                 const isActive = sub.key === subcategory;
                 const count = subcategoryCounts.get(sub.key) ?? 0;
                 return (
-                  <button
+                  <div
                     key={sub.key}
-                    type="button"
-                    onClick={() => setSubcategory(sub.key)}
-                    title={sub.description ? pickLocalized(sub.description, locale) : undefined}
                     className={cn(
-                      "inline-flex shrink-0 items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left text-[13px] font-semibold transition lg:w-full",
-                      isActive ? activeTone?.chipActive : activeTone?.chipIdle,
+                      "group/sub relative flex shrink-0 items-stretch lg:w-full",
                     )}
                   >
-                    <span className="min-w-0 flex-1 truncate">{pickLocalized(sub.label, locale)}</span>
-                    <span className="rounded-full border border-current/30 bg-white/35 px-1.5 py-0 text-[10px] font-bold text-current/85 dark:bg-white/10">
-                      {count}
-                    </span>
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => setSubcategory(sub.key)}
+                      title={sub.description ? pickLocalized(sub.description, locale) : undefined}
+                      className={cn(
+                        "inline-flex flex-1 items-center justify-between gap-2 rounded-xl border px-3 py-2 pr-9 text-left text-[13px] font-semibold transition",
+                        isActive ? activeTone?.chipActive : activeTone?.chipIdle,
+                      )}
+                    >
+                      <span className="min-w-0 flex-1 truncate">{pickLocalized(sub.label, locale)}</span>
+                      <span className="rounded-full border border-current/30 bg-white/35 px-1.5 py-0 text-[10px] font-bold text-current/85 dark:bg-white/10">
+                        {count}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleRemoveSubcategory(sub.key);
+                      }}
+                      title={
+                        isBuiltinSubcategory(category, sub.key)
+                          ? isTr
+                            ? "Bu alt başlığı bu cihazda gizle"
+                            : "Hide this subcategory on this device"
+                          : isTr
+                            ? "Alt başlığı sil"
+                            : "Delete subcategory"
+                      }
+                      aria-label={isTr ? "Alt başlığı sil/gizle" : "Remove subcategory"}
+                      className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-transparent text-muted-foreground/70 opacity-0 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 focus:opacity-100 group-hover/sub:opacity-100 dark:hover:border-rose-400/30 dark:hover:bg-rose-400/10 dark:hover:text-rose-200"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
                 );
               })}
+
+              {/* "Add subcategory" button — only when a real category is active */}
+              <button
+                type="button"
+                onClick={() => {
+                  setNewSubcategoryLabel("");
+                  setNewSubcategoryDescription("");
+                  setCreateSubcategoryOpen(true);
+                }}
+                className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl border border-dashed border-[var(--gold)]/40 bg-[var(--gold)]/5 px-3 py-2 text-[13px] font-semibold text-[var(--gold)] transition hover:border-[var(--gold)]/70 hover:bg-[var(--gold)]/10 lg:w-full"
+              >
+                <Plus size={14} />
+                <span className="whitespace-nowrap">
+                  {isTr ? "Alt başlık ekle" : "Add subcategory"}
+                </span>
+              </button>
             </div>
 
             {/* Active subcategory description (desktop only) */}
@@ -2263,6 +2524,82 @@ export function IsgLibraryClient() {
                 >
                   <Plus size={15} />
                   {isTr ? "Kategoriyi Oluştur" : "Create category"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/* ---- Custom subcategory modal (under the active main category) ---- */}
+      {createSubcategoryOpen && activeCategoryDef ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-[2rem] border border-border bg-card p-6 shadow-[var(--shadow-elevated)]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-foreground">
+                  {isTr ? "Yeni Alt Başlık" : "New subcategory"}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {isTr
+                    ? `"${pickLocalized(activeCategoryDef.label, locale)}" altına yeni bir alt başlık ekleyin. Örnek: "Kimyasal Talimatları", "Yangın Ekibi Belgeleri".`
+                    : `Add a new subcategory under "${pickLocalized(activeCategoryDef.label, locale)}". Example: "Chemical Instructions", "Fire Team Documents".`}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCreateSubcategoryOpen(false)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition hover:text-foreground"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              <label className="space-y-2 block">
+                <span className="text-sm font-medium text-foreground">
+                  {isTr ? "Alt Başlık Adı" : "Subcategory name"}
+                </span>
+                <input
+                  value={newSubcategoryLabel}
+                  onChange={(event) => setNewSubcategoryLabel(event.target.value)}
+                  placeholder={isTr ? "Örn. Kimyasal Talimatları" : "e.g. Chemical Instructions"}
+                  className="h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
+                  autoFocus
+                />
+              </label>
+              <label className="space-y-2 block">
+                <span className="text-sm font-medium text-foreground">
+                  {isTr ? "Kısa Açıklama (opsiyonel)" : "Short description (optional)"}
+                </span>
+                <textarea
+                  rows={3}
+                  value={newSubcategoryDescription}
+                  onChange={(event) => setNewSubcategoryDescription(event.target.value)}
+                  placeholder={
+                    isTr
+                      ? "Bu alt başlıkta ne tür şablonlar yer alacak?"
+                      : "What kind of templates will live here?"
+                  }
+                  className="w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-[var(--gold)]/40"
+                />
+              </label>
+
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={() => setCreateSubcategoryOpen(false)}
+                  className="inline-flex h-11 items-center justify-center rounded-2xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition hover:border-[var(--gold)]/35"
+                >
+                  {isTr ? "Vazgeç" : "Cancel"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCreateSubcategory}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-[var(--primary)] px-5 text-sm font-semibold text-white transition hover:brightness-110"
+                >
+                  <Plus size={15} />
+                  {isTr ? "Alt Başlığı Oluştur" : "Create subcategory"}
                 </button>
               </div>
             </div>

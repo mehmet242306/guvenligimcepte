@@ -1692,7 +1692,33 @@ export type CustomCategoryRecord = {
   createdAt: string;
 };
 
+/**
+ * User-created subcategory inside a parent category. Persisted in local
+ * storage keyed by parent category id (built-in `key` or `custom:<id>`). Slug
+ * is unique within the parent only.
+ */
+export type CustomSubcategoryRecord = {
+  /** Parent category key — e.g. "instructions" or "custom:hastane-operasyonlari". */
+  parentCategoryKey: string;
+  /** Slug-form id, unique within the parent (e.g. `kimyasal-talimatlari`). */
+  id: string;
+  label: string;
+  description?: string;
+  createdAt: string;
+};
+
 export const CUSTOM_CATEGORY_STORAGE_KEY = "risknova:isg-library:custom-main-categories:v1";
+export const CUSTOM_SUBCATEGORY_STORAGE_KEY = "risknova:isg-library:custom-subcategories:v1";
+
+/**
+ * Local-only "hide list" for built-in subcategories. We can't delete the
+ * built-in catalog (it ships with the app) but the user can hide entries they
+ * don't want to see. Stored as `<parentCategoryKey>::<subcategoryKey>` strings.
+ */
+export const HIDDEN_SUBCATEGORY_STORAGE_KEY = "risknova:isg-library:hidden-subcategories:v1";
+
+/** Same idea but for built-in main categories the user wants to dismiss. */
+export const HIDDEN_CATEGORY_STORAGE_KEY = "risknova:isg-library:hidden-categories:v1";
 
 export function pickLocalized(text: LocalizedText | undefined, locale: string): string {
   if (!text) return "";
@@ -1704,15 +1730,44 @@ export function pickLocalized(text: LocalizedText | undefined, locale: string): 
  * Returns the subcategory list for a category, or [] when the category has no
  * subcategories or is the synthetic "all"/"custom:*" key. Use this from the UI
  * to decide whether to render the left subcategory rail.
+ *
+ * Combines:
+ *  1. built-in subcategories from `BUILTIN_CATEGORIES`
+ *  2. user-added custom subcategories under this category
+ *  3. minus any built-in or custom subcategories the user has hidden
  */
 export function getSubcategoriesForCategory(
   categoryKey: CategoryKey,
   customCategoryDefinitions: LibraryCategoryDefinition[] = [],
+  customSubcategories: CustomSubcategoryRecord[] = [],
+  hiddenSubcategoryKeys: string[] = [],
 ): LibrarySubcategoryDefinition[] {
   if (categoryKey === "all") return [];
   const all = [...BUILTIN_CATEGORIES, ...customCategoryDefinitions];
   const def = all.find((entry) => entry.key === categoryKey);
-  return def?.subcategories ?? [];
+  const builtIns = def?.subcategories ?? [];
+  const customs: LibrarySubcategoryDefinition[] = customSubcategories
+    .filter((entry) => entry.parentCategoryKey === categoryKey)
+    .map((entry) => ({
+      key: entry.id,
+      label: { tr: entry.label, en: entry.label },
+      description: entry.description
+        ? { tr: entry.description, en: entry.description }
+        : undefined,
+    }));
+  const merged = [...builtIns, ...customs];
+  if (hiddenSubcategoryKeys.length === 0) return merged;
+  const hidden = new Set(hiddenSubcategoryKeys);
+  return merged.filter((entry) => !hidden.has(`${categoryKey}::${entry.key}`));
+}
+
+/** True for any built-in subcategory belonging to a built-in category. */
+export function isBuiltinSubcategory(
+  categoryKey: CategoryKey,
+  subcategoryKey: string,
+): boolean {
+  const def = BUILTIN_CATEGORIES.find((entry) => entry.key === categoryKey);
+  return Boolean(def?.subcategories?.some((entry) => entry.key === subcategoryKey));
 }
 
 export type CategoryIconMap = Record<CategoryIconKey, LucideIcon>;

@@ -91,6 +91,10 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
   const qDownload = searchParams.get('download') || '';
   const fromLibrary = searchParams.get('library') === '1';
   const librarySection = searchParams.get('librarySection') || 'documentation';
+  // Optional subcategory hand-off from the ISG Library left rail. We persist
+  // this under variables_data.__library_subcategory so the document re-appears
+  // under the same subgroup chip after save.
+  const librarySubcategory = searchParams.get('librarySubcategory') || '';
   // When the ISG Library AI flow hands the user off to /documents/new?ai=1 it
   // stashes the prompt in sessionStorage (URL would be too noisy for a long
   // free-text request). The editor reads it once below and forwards it to the
@@ -392,6 +396,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
             ...companyData,
             __company_identity_id: qCompanyId || null,
             __library_section: fromLibrary ? librarySection : null,
+            __library_subcategory: fromLibrary && librarySubcategory ? librarySubcategory : null,
             __custom_scope: isPrivateCustomDocument ? "private" : "workspace",
             __custom_entry: isPrivateCustomDocument,
           },
@@ -425,7 +430,7 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
     } finally {
       setSaving(false);
     }
-  }, [orgId, editor, doc, title, status, groupKey, userId, companyData, qCompanyId, fromLibrary, librarySection, workspaceId, qMode, getSaveLocationLabel, t]);
+  }, [orgId, editor, doc, title, status, groupKey, userId, companyData, qCompanyId, fromLibrary, librarySection, librarySubcategory, workspaceId, qMode, getSaveLocationLabel, t]);
 
   const consumeExportQuota = useCallback(async (): Promise<boolean> => {
     const result = await consumeExportQuotaClient();
