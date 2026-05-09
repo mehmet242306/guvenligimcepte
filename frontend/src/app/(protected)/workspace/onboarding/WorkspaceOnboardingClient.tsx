@@ -68,8 +68,6 @@ type WorkspaceCompanyProfile = {
   employerName: string;
   employerRepresentative: string;
   notes: string;
-  locations: string[];
-  departments: string[];
 };
 
 type ExistingMembership = {
@@ -294,24 +292,7 @@ function createEmptyCompanyProfile(workspaceName = ""): WorkspaceCompanyProfile 
     employerName: "",
     employerRepresentative: "",
     notes: "",
-    locations: [],
-    departments: [],
   };
-}
-
-function normalizeStringListText(value: string) {
-  return Array.from(
-    new Set(
-      value
-        .split(/\r?\n/)
-        .map((item) => item.trim())
-        .filter(Boolean),
-    ),
-  );
-}
-
-function listToTextarea(value: string[]) {
-  return value.join("\n");
 }
 
 function formatPlanLabel(planCode: string | null | undefined, t: ReturnType<typeof useTranslations>) {
@@ -810,8 +791,6 @@ export function WorkspaceOnboardingClient({
             companyProfile.companyWorkspaceId ?? selectedMembership?.companyWorkspaceId ?? null,
           companyProfile: {
             ...companyProfile,
-            locations: Array.from(new Set(companyProfile.locations.map((item) => item.trim()).filter(Boolean))),
-            departments: Array.from(new Set(companyProfile.departments.map((item) => item.trim()).filter(Boolean))),
           },
           makePrimary: true,
         }),
@@ -1515,42 +1494,6 @@ export function WorkspaceOnboardingClient({
                         updateCompanyProfile({ employerRepresentative: event.target.value })
                       }
                     />
-                  </div>
-
-                  <div className="mt-4 grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground" htmlFor="locations">
-                        {t("company.locations")}
-                      </label>
-                      <Textarea
-                        id="locations"
-                        rows={6}
-                        value={listToTextarea(companyProfile.locations)}
-                        onChange={(event) =>
-                          updateCompanyProfile({
-                            locations: normalizeStringListText(event.target.value),
-                          })
-                        }
-                        placeholder={t("company.locationsPlaceholder")}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground" htmlFor="departments">
-                        {t("company.departments")}
-                      </label>
-                      <Textarea
-                        id="departments"
-                        rows={6}
-                        value={listToTextarea(companyProfile.departments)}
-                        onChange={(event) =>
-                          updateCompanyProfile({
-                            departments: normalizeStringListText(event.target.value),
-                          })
-                        }
-                        placeholder={t("company.departmentsPlaceholder")}
-                      />
-                    </div>
                   </div>
 
                   <div className="mt-4 space-y-2">
