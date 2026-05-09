@@ -82,3 +82,14 @@ frontend/.codex-tsc-check.txt
 
 .vercel
 .env*.local
+
+# Play Store / mobile build artifacts
+# Contains signing keystores, upload certs and large APK/AAB binaries that
+# should never be committed. Screenshots and promo assets are also kept out
+# (re-export from design source instead of versioning binaries).
+play-store-assets/
+*.keystore
+*.jks
+*.aab
+*.apk
+
