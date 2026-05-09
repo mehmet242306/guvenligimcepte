@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   useCallback,
@@ -849,6 +849,7 @@ function formatCompanyKind(kind: string | null | undefined, locale: Locale): str
 
 export function RiskAnalysisClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const { locale } = useI18n();
   const trRiskScoring = useTranslations("riskScoring");
   const isEnglish = locale === "en";
@@ -2239,16 +2240,58 @@ JSON formatında döndür:
 
   /* ── Kaydet ── */
   async function handleSaveAnalysis() {
-    if (results.length === 0) return;
-    if (!selectedCompanyId) {
+    // Defansif: URL'de ?companyId varsa, state'teki localStorage cache'i
+    // yerine URL'i öncelikle kullan. Bu "yanlış firmaya kayıt" hatasını
+    // (kullanıcı yeni firma sayfasından geldi ama localStorage hâlâ eski
+    // firmayı gösteriyor) tek başına çözer.
+    const urlCompanyId = searchParams.get("companyId");
+    let effectiveCompanyId = selectedCompanyId;
+    if (urlCompanyId && urlCompanyId !== selectedCompanyId) {
+      const matched = companies.find((c) => c.id === urlCompanyId);
+      if (matched) {
+        console.warn("[save] localStorage'daki companyId URL ile uyuşmuyor, URL kazanır:", {
+          localStorage: selectedCompanyId,
+          url: urlCompanyId,
+          matched: matched.name,
+        });
+        effectiveCompanyId = urlCompanyId;
+        setSelectedCompanyId(urlCompanyId);
+      }
+    }
+
+    // Bütün adımlar console'a tam izlenebilir şekilde basılır. Kullanıcı
+    // F12 → Console ile her şeyi görebilir; biz de teşhis koyabiliriz.
+    console.log("[save] ===== KAYIT BAŞLIYOR =====");
+    console.log("[save] effectiveCompanyId:", effectiveCompanyId);
+    console.log("[save] selectedCompanyId (state):", selectedCompanyId);
+    console.log("[save] urlCompanyId:", urlCompanyId);
+    console.log("[save] currentAssessmentId:", currentAssessmentId);
+    console.log("[save] results.length:", results.length);
+    console.log("[save] selectedLocation:", selectedLocation);
+    console.log("[save] selectedDepartment:", selectedDepartment);
+    console.log("[save] validParticipants.length:", validParticipants.length);
+    console.log("[save] toplam görsel sayısı:", lines.flatMap((l) => l.images).length);
+
+    if (results.length === 0) {
+      console.warn("[save] HATA: results boş, butonun disabled olması gerekiyordu");
+      window.alert("Kayıt yapılamıyor: Önce AI analizi tamamlayın.");
+      return;
+    }
+    if (!effectiveCompanyId) {
+      const msg = trRiskScoring("wizard.save.noCompany");
+      console.warn("[save] HATA: effectiveCompanyId boş");
       setSaveTone("danger");
-      setSaveMessage(trRiskScoring("wizard.save.noCompany"));
+      setSaveMessage(msg);
+      window.alert(`Kayıt başarısız: ${msg}\n\nFirma seçimi yapılmadan kayıt mümkün değil.`);
       return;
     }
     const oversizedImage = lines.flatMap((line) => line.images).find((img) => img.file.size > 10 * 1024 * 1024);
     if (oversizedImage) {
+      const msg = trRiskScoring("wizard.save.oversized", { fileName: oversizedImage.file.name });
+      console.warn("[save] HATA: 10MB üstü görsel:", oversizedImage.file.name, oversizedImage.file.size);
       setSaveTone("danger");
-      setSaveMessage(trRiskScoring("wizard.save.oversized", { fileName: oversizedImage.file.name }));
+      setSaveMessage(msg);
+      window.alert(`Kayıt başarısız: ${msg}`);
       return;
     }
     setIsSaving(true);
@@ -2260,7 +2303,7 @@ JSON formatında döndür:
         title: analysisTitle,
         analysisNote,
         method,
-        companyWorkspaceId: selectedCompanyId || null,
+        companyWorkspaceId: effectiveCompanyId || null,
         location: selectedLocation,
         department: selectedDepartment,
         participants: validParticipants.map((p) => ({
@@ -2326,10 +2369,20 @@ JSON formatında döndür:
         }), method) : "low",
       };
 
+      console.log("[save] payload hazır, supabase'e gönderiliyor...", {
+        rows: input.rows.length,
+        toplamGörsel: input.rows.reduce((s, r) => s + r.images.length, 0),
+        toplamTespit: input.rows.reduce((s, r) => s + r.findings.length, 0),
+      });
+
       const isUpdate = Boolean(currentAssessmentId);
+      const t0 = performance.now();
       const assessmentId = currentAssessmentId
         ? await replaceRiskAnalysis(currentAssessmentId, input)
         : await saveRiskAnalysis(input);
+      const dt = (performance.now() - t0).toFixed(0);
+      console.log(`[save] supabase yanıtladı (${dt}ms), assessmentId:`, assessmentId);
+
       if (assessmentId) {
         setCurrentAssessmentId(assessmentId);
         setSaveTone("success");
@@ -2343,42 +2396,58 @@ JSON formatında döndür:
           }),
           type: "risk_analysis",
           level: input.criticalCount > 0 ? "warning" : "info",
-          link: `/companies/${selectedCompanyId}?tab=risk`,
+          link: `/companies/${effectiveCompanyId}?tab=risk`,
         });
 
-        // Firma sayfası "Risk ve Saha" sekmesinin canlı refresh tetikleyicisi:
-        // WorkspaceTabs.tsx bu event'i dinleyip listeyi+kategori istatistiklerini
-        // tazeler. Bu sayede "kayıt yaptım ama firma sayfasında görünmüyor"
-        // problemi çözülür (manuel sayfa refresh gerektirmez).
+        // Firma sayfası "Risk ve Saha" sekmesinin canlı refresh tetikleyicisi.
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("risknova:risk-analysis-saved", {
-            detail: { companyWorkspaceId: selectedCompanyId, assessmentId },
+            detail: { companyWorkspaceId: effectiveCompanyId, assessmentId },
           }));
         }
 
-        // Refresh list
-        const list = await listRiskAssessments(selectedCompanyId);
+        // Refresh list (in-place liste de güncellensin)
+        const list = await listRiskAssessments(effectiveCompanyId);
         setSavedAnalyses(list);
+
+        console.log("[save] ✅ BAŞARILI — 1.5 sn sonra firma sayfasına yönlendiriliyor", {
+          companyWorkspaceId: effectiveCompanyId,
+          assessmentId,
+        });
+
+        // Otomatik yönlendirme: kullanıcıyı doğrudan firma sayfasının
+        // "Risk ve Saha" sekmesine götür ki kaydının orada kategorize
+        // edildiğini ANINDA görsün. "Kaydedilmiyor" şikayetinin asıl
+        // çözümü bu — kullanıcı sonucu görene kadar wizard'da kalıyordu.
+        window.setTimeout(() => {
+          if (typeof window !== "undefined") {
+            router.push(`/companies/${effectiveCompanyId}?tab=risk`);
+          }
+        }, 1500);
       } else {
+        // Bu noktaya artık düşmemeli (saveRiskAnalysis throw ediyor) ama
+        // savunma amaçlı tutuyoruz.
+        const msg = trRiskScoring("wizard.save.error");
         setSaveTone("danger");
-        setSaveMessage(trRiskScoring("wizard.save.error"));
+        setSaveMessage(msg);
+        window.alert(`Kayıt başarısız: ${msg}\n\nDB'den boş ID döndü; lütfen tekrar deneyin veya konsoldaki hatayı paylaşın.`);
       }
     } catch (err) {
-      console.error("[save] error:", err);
-      // Stack trace de log'a — debug için faydalı
+      console.error("[save] ❌ HATA:", err);
       if (err instanceof Error && err.stack) console.error("[save] stack:", err.stack);
       setSaveTone("danger");
-      // Gerçek hatayı UI'da göster — sadece "Kayıt hatası oluştu" diyen
-      // genel mesaj kullanıcının yardım istemesini imkansız kılıyordu.
       const rawMsg = err instanceof Error ? err.message : String(err);
       const friendly = trRiskScoring("wizard.save.error");
-      setSaveMessage(rawMsg && rawMsg !== "[object Object]" ? `${friendly}: ${rawMsg}` : friendly);
+      const fullMsg = rawMsg && rawMsg !== "[object Object]" ? `${friendly}: ${rawMsg}` : friendly;
+      setSaveMessage(fullMsg);
+
+      // Banner kaçırılmasın diye native alert + clipboard. Bu, "kaydet'e
+      // bastım hiçbir şey olmadı" şikayetinin son çıkış noktası — kullanıcı
+      // hatayı kesinlikle görür.
+      try { await navigator.clipboard?.writeText(fullMsg); } catch { /* clipboard izni yoksa sessizce geç */ }
+      window.alert(`KAYIT BAŞARISIZ\n\n${fullMsg}\n\n(Hata mesajı panonuza kopyalandı.)`);
     } finally {
       setIsSaving(false);
-      // Hata mesajları PERSISTENT (kullanıcı tam metni okuyup kopyalayabilsin).
-      // Sadece success mesajı 4 sn sonra kaybolsun.
-      // saveTone'u burada okuyamıyoruz (state batch yüzünden); useEffect ile
-      // dış tarafta yapacağız → bkz. saveMessage useEffect.
     }
   }
 
