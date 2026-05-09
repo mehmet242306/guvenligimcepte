@@ -140,29 +140,56 @@ export async function getOrganizationTrackingSummary(): Promise<OrganizationTrac
   const supabase = createClient();
   if (!supabase) return empty;
 
-  // 1) Aktif çalışma alanının organization_id'sini çöz.
-  let scopedOrgId: string | null = null;
+  const auth = await resolveOrganizationId();
+  if (!auth) return empty;
+
+  // 1) Aktif çalışma alanının organization_id'sini çöz (nova_workspaces).
+  //    Kullanıcı çalışma alanı değiştirdiğinde bu değer değişir; JWT'deki
+  //    org sabit kalsa da burada doğru tenant'ı yakalarız.
+  let scopedOrgId: string = auth.orgId;
   try {
     const { getActiveWorkspace } = await import("@/lib/supabase/workspace-api");
     const activeWs = await getActiveWorkspace();
     if (activeWs?.organization_id) scopedOrgId = activeWs.organization_id;
   } catch {
-    // workspace-api yoksa fallback'e düşeceğiz
+    // workspace-api yoksa JWT org'una düşeceğiz
   }
 
-  // 2) Fallback: JWT app_metadata.org (eski davranış — yalnızca aktif workspace
-  //    çözülemediğinde devreye girer).
-  if (!scopedOrgId) {
-    const auth = await resolveOrganizationId();
-    if (!auth) return empty;
-    scopedOrgId = auth.orgId;
+  // 2) Kullanıcının gerçekten üye olduğu firmaları company_memberships'tan
+  //    çek. Aynı org içinde olsa bile kullanıcının görmemesi gereken
+  //    firmaları (örn. başka bir ekibin müşterisi) listeden düşürür.
+  let memberWorkspaceIds: string[] | null = null;
+  const { data: memberships, error: mErr } = await supabase
+    .from("company_memberships")
+    .select("company_workspace_id, status")
+    .eq("user_id", auth.userId)
+    .eq("status", "active");
+
+  if (!mErr && memberships) {
+    memberWorkspaceIds = memberships
+      .map((m) => m.company_workspace_id as string | null)
+      .filter((v): v is string => typeof v === "string" && v.length > 0);
   }
 
-  const { data: workspaces, error: wsErr } = await supabase
+  // 3) company_workspaces query: aktif tenant + (varsa) üyelik scope'u.
+  let wsQuery = supabase
     .from("company_workspaces")
     .select("id, display_name, company_identity_id")
     .eq("organization_id", scopedOrgId)
     .is("deleted_at", null);
+
+  // Üyelik bilgisi başarıyla çekildiyse, sadece üye olunan firmaları getir.
+  // Hiç üyelik yoksa boş listeyi tercih et (org admin değilse cross-team
+  // firmaları görmesin). Bu daha güvenli default.
+  if (memberWorkspaceIds !== null) {
+    if (memberWorkspaceIds.length === 0) {
+      // Kullanıcının hiç firma üyeliği yok → boş summary döndür
+      return { ...empty };
+    }
+    wsQuery = wsQuery.in("id", memberWorkspaceIds);
+  }
+
+  const { data: workspaces, error: wsErr } = await wsQuery;
 
   if (wsErr) {
     console.warn("[tracking-api] getOrganizationTrackingSummary workspaces:", wsErr.message);
