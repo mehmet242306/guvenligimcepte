@@ -3272,6 +3272,27 @@
       "saving": "Kaydediliyor…",
       "save": "Kaydet",
       "discard": "Vazgeç",
+      "source": {
+        "risk": "Risk Analizi",
+        "field": "Saha Analizi",
+        "inspection": "Denetim",
+        "riskShort": "Risk · {count}",
+        "fieldShort": "Saha · {count}",
+        "inspectionShort": "Denetim · {count}"
+      },
+      "filters": {
+        "title": "Filtreler",
+        "type": "Analiz tipi",
+        "category": "Kategori",
+        "severity": "Şiddet",
+        "allTypes": "Tüm tipler",
+        "allCategories": "Tüm kategoriler",
+        "allSeverities": "Tüm şiddetler",
+        "reset": "Sıfırla",
+        "showing": "{count}/{total} analiz",
+        "noMatchTitle": "Filtreyle eşleşen analiz yok",
+        "noMatchDesc": "Filtreleri değiştirin veya sıfırlayın."
+      },
       "shareWhatsappBody": "{title}\n{url}",
       "exportPdfTitle": "PDF indir",
       "exportWordTitle": "Word indir",

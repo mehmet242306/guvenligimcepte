@@ -10,6 +10,14 @@ import { resolveOrganizationId } from "./incident-api";
 /* Types                                                               */
 /* ================================================================== */
 
+/**
+ * Analizin nereden geldiğini belirtir.
+ * - "field"      → Mobil/canlı saha taraması (auto_create trigger ile üretilen).
+ * - "inspection" → Denetim akışı (inspections modülü).
+ * - "risk"       → Klasik Risk Analizi (kullanıcının manuel görsel/dosya yüklemesi).
+ */
+export type RiskAssessmentSourceType = "risk" | "field" | "inspection";
+
 export type SavedAssessment = {
   id: string;
   title: string;
@@ -26,7 +34,23 @@ export type SavedAssessment = {
   overallRiskLevel: string | null;
   createdAt: string;
   updatedAt: string;
+  sourceType: RiskAssessmentSourceType;
+  metadata: Record<string, unknown> | null;
 };
+
+/**
+ * Analiz metadata'sından kaynak tipini türetir.
+ * DB schema değişmeden mevcut bilgileri (metadata.source) kullanarak ayrım yapar.
+ */
+function deriveSourceTypeFromMetadata(
+  metadata: Record<string, unknown> | null | undefined,
+): RiskAssessmentSourceType {
+  if (!metadata) return "risk";
+  const source = typeof metadata.source === "string" ? metadata.source : null;
+  if (source === "auto_from_scan" || source === "field" || source === "live_scan") return "field";
+  if (source === "inspection" || source === "inspection_finding") return "inspection";
+  return "risk";
+}
 
 export type SavedRow = {
   id: string;
@@ -122,7 +146,7 @@ export async function listRiskAssessments(companyWorkspaceId?: string): Promise<
 
   let query = supabase
     .from("risk_assessments")
-    .select("id, title, status, method, assessment_date, workplace_name, department_name, location_text, analysis_note, company_workspace_id, participants, item_count, overall_risk_level, created_at, updated_at")
+    .select("id, title, status, method, assessment_date, workplace_name, department_name, location_text, analysis_note, company_workspace_id, participants, item_count, overall_risk_level, created_at, updated_at, metadata")
     .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
@@ -133,23 +157,28 @@ export async function listRiskAssessments(companyWorkspaceId?: string): Promise<
   const { data, error } = await query;
   if (error) { console.warn("[risk-assessment-api] listRiskAssessments error:", error.message); return []; }
 
-  return (data ?? []).map((r) => ({
-    id: r.id,
-    title: r.title,
-    status: r.status,
-    method: r.method,
-    assessmentDate: r.assessment_date,
-    workplaceName: r.workplace_name ?? "",
-    departmentName: r.department_name ?? "",
-    locationText: r.location_text ?? "",
-    analysisNote: r.analysis_note ?? "",
-    companyWorkspaceId: r.company_workspace_id,
-    participants: r.participants ?? [],
-    itemCount: r.item_count ?? 0,
-    overallRiskLevel: r.overall_risk_level,
-    createdAt: r.created_at,
-    updatedAt: r.updated_at,
-  }));
+  return (data ?? []).map((r) => {
+    const metadata = (r.metadata ?? null) as Record<string, unknown> | null;
+    return {
+      id: r.id,
+      title: r.title,
+      status: r.status,
+      method: r.method,
+      assessmentDate: r.assessment_date,
+      workplaceName: r.workplace_name ?? "",
+      departmentName: r.department_name ?? "",
+      locationText: r.location_text ?? "",
+      analysisNote: r.analysis_note ?? "",
+      companyWorkspaceId: r.company_workspace_id,
+      participants: r.participants ?? [],
+      itemCount: r.item_count ?? 0,
+      overallRiskLevel: r.overall_risk_level,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+      sourceType: deriveSourceTypeFromMetadata(metadata),
+      metadata,
+    };
+  });
 }
 
 /* ================================================================== */
@@ -243,6 +272,8 @@ export async function loadRiskAssessment(assessmentId: string): Promise<FullAsse
     })),
   }));
 
+  const assessmentMetadata = (assessment.metadata ?? null) as Record<string, unknown> | null;
+
   return {
     id: assessment.id,
     title: assessment.title,
@@ -259,6 +290,8 @@ export async function loadRiskAssessment(assessmentId: string): Promise<FullAsse
     overallRiskLevel: assessment.overall_risk_level,
     createdAt: assessment.created_at,
     updatedAt: assessment.updated_at,
+    sourceType: deriveSourceTypeFromMetadata(assessmentMetadata),
+    metadata: assessmentMetadata,
     rows,
   };
 }
@@ -640,6 +673,7 @@ export type FindingWithContext = SavedFinding & {
   trackingStatus: "open" | "in_progress" | "resolved" | "archived";
   trackingNotes: string;
   statusUpdatedAt: string | null;
+  sourceType: RiskAssessmentSourceType;
 };
 
 /**
@@ -656,13 +690,19 @@ export async function listFindingsByCategory(
   // 1. Get assessment IDs for this company
   const { data: assessments } = await supabase
     .from("risk_assessments")
-    .select("id, title")
+    .select("id, title, metadata")
     .eq("company_workspace_id", companyWorkspaceId);
 
   if (!assessments || assessments.length === 0) return [];
 
   const assessmentIds = assessments.map((a) => a.id);
   const titleMap = new Map(assessments.map((a) => [a.id, a.title]));
+  const sourceMap = new Map<string, RiskAssessmentSourceType>(
+    assessments.map((a) => [
+      a.id,
+      deriveSourceTypeFromMetadata((a.metadata ?? null) as Record<string, unknown> | null),
+    ]),
+  );
 
   // 2. Get all findings for these assessments
   const { data: findings, error } = await supabase
@@ -722,6 +762,7 @@ export async function listFindingsByCategory(
       trackingStatus: f.tracking_status ?? "open",
       trackingNotes: f.tracking_notes ?? "",
       statusUpdatedAt: f.status_updated_at ?? null,
+      sourceType: sourceMap.get(f.assessment_id) ?? "risk",
     }));
 }
 

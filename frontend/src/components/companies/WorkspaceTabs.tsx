@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
@@ -9,7 +9,7 @@ import { PremiumIconBadge } from "@/components/ui/premium-icon-badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { CompanyRecord } from "@/lib/company-directory";
-import { listRiskAssessments, deleteRiskAssessment, loadRiskAssessment, listFindingsByCategory, updateFindingStatus, archiveRiskAssessment, toggleRiskSharing, type SavedAssessment, type FullAssessment, type FindingWithContext } from "@/lib/supabase/risk-assessment-api";
+import { listRiskAssessments, deleteRiskAssessment, loadRiskAssessment, listFindingsByCategory, updateFindingStatus, archiveRiskAssessment, toggleRiskSharing, type SavedAssessment, type FullAssessment, type FindingWithContext, type RiskAssessmentSourceType } from "@/lib/supabase/risk-assessment-api";
 import QRCode from "qrcode";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -191,7 +191,28 @@ const RISK_CATEGORY_META = [
   { key: "cevre", icon: "🌿", lucideIcon: Leaf, tone: "success" as PremiumIconTone, color: "#059669" },
 ] as const;
 
-type CategoryStats = { key: string; total: number; critical: number; high: number; medium: number; low: number };
+type CategoryStats = {
+  key: string;
+  total: number;
+  critical: number;
+  high: number;
+  medium: number;
+  low: number;
+  /** Bu kategorideki bulguların kaynak modüle göre dağılımı. */
+  sourceCounts: Record<RiskAssessmentSourceType, number>;
+};
+
+function emptyCategoryStats(key: string): CategoryStats {
+  return {
+    key,
+    total: 0,
+    critical: 0,
+    high: 0,
+    medium: 0,
+    low: 0,
+    sourceCounts: { risk: 0, field: 0, inspection: 0 },
+  };
+}
 
 export function RiskTab({ company }: { company: CompanyRecord }) {
   const t = useTranslations("companyWorkspace.risk");
@@ -218,8 +239,14 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
   const [editNotes, setEditNotes] = useState("");
   const [savingFinding, setSavingFinding] = useState(false);
 
+  // Analiz listesi filtreleri
+  const [analysisFilterType, setAnalysisFilterType] = useState<"all" | RiskAssessmentSourceType>("all");
+  const [analysisFilterCategory, setAnalysisFilterCategory] = useState<string>("all");
+  const [analysisFilterSeverity, setAnalysisFilterSeverity] = useState<"all" | "critical" | "high" | "medium" | "low">("all");
+  // analysisId -> {categories: Set<key>, severities: Set<sev>} eşlemesi (filtre için)
+  const [analysisIndex, setAnalysisIndex] = useState<Record<string, { categories: Set<string>; severities: Set<string> }>>({});
+
   // Auto-scroll refs
-  const catDetailRef = useRef<HTMLDivElement>(null);
   const analysisDetailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -231,39 +258,51 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
       if (supabase) {
         const assessmentIds = list.map((a) => a.id);
         if (assessmentIds.length > 0) {
+          // Findings'leri çek (assessment_id ile birlikte) ki kaynak modüle göre dağıtabilelim
           const { data: findings } = await supabase
             .from("risk_assessment_findings")
-            .select("category, category_key, severity")
+            .select("assessment_id, category, category_key, severity")
             .in("assessment_id", assessmentIds)
             .is("deleted_at", null);
 
           if (findings) {
+            // assessmentId -> sourceType eşlemesi (listRiskAssessments tarafından türetilmişti)
+            const sourceMap = new Map<string, RiskAssessmentSourceType>(
+              list.map((a) => [a.id, a.sourceType]),
+            );
+
             const stats: Record<string, CategoryStats> = {};
-            for (const cat of RISK_CATEGORY_META) stats[cat.key] = { key: cat.key, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
+            for (const cat of RISK_CATEGORY_META) stats[cat.key] = emptyCategoryStats(cat.key);
+
+            // Analizlerin filtre indeksini de aynı geçişte kuruyoruz
+            const idx: Record<string, { categories: Set<string>; severities: Set<string> }> = {};
 
             for (const f of findings) {
               const catKey = (f as Record<string, string>).category_key || mapCategoryToKey(f.category);
-              if (!stats[catKey]) stats[catKey] = { key: catKey, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
+              if (!stats[catKey]) stats[catKey] = emptyCategoryStats(catKey);
               stats[catKey].total++;
               if (f.severity === "critical") stats[catKey].critical++;
               else if (f.severity === "high") stats[catKey].high++;
               else if (f.severity === "medium") stats[catKey].medium++;
               else stats[catKey].low++;
+
+              const src = sourceMap.get(f.assessment_id) ?? "risk";
+              stats[catKey].sourceCounts[src] = (stats[catKey].sourceCounts[src] ?? 0) + 1;
+
+              if (!idx[f.assessment_id]) {
+                idx[f.assessment_id] = { categories: new Set(), severities: new Set() };
+              }
+              idx[f.assessment_id].categories.add(catKey);
+              if (f.severity) idx[f.assessment_id].severities.add(f.severity);
             }
             setCatStats(Object.values(stats));
+            setAnalysisIndex(idx);
           }
         }
       }
       setLoading(false);
     })();
   }, [company.id]);
-
-  // Auto-scroll: kategori detay
-  useEffect(() => {
-    if (selectedCategory && catDetailRef.current) {
-      setTimeout(() => catDetailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    }
-  }, [selectedCategory, catDetailLoading]);
 
   // Auto-scroll: analiz detay
   useEffect(() => {
@@ -317,19 +356,24 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
         const remainingIds = remaining.map((a) => a.id);
         const { data: updatedFindings } = await supabase
           .from("risk_assessment_findings")
-          .select("category, severity")
+          .select("assessment_id, category, severity")
           .in("assessment_id", remainingIds);
         if (updatedFindings) {
+          const sourceMap = new Map<string, RiskAssessmentSourceType>(
+            remaining.map((a) => [a.id, a.sourceType]),
+          );
           const stats: Record<string, CategoryStats> = {};
-          for (const cat of RISK_CATEGORY_META) stats[cat.key] = { key: cat.key, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
+          for (const cat of RISK_CATEGORY_META) stats[cat.key] = emptyCategoryStats(cat.key);
           for (const f of updatedFindings) {
             const catKey = mapCategoryToKey(f.category);
-            if (!stats[catKey]) stats[catKey] = { key: catKey, total: 0, critical: 0, high: 0, medium: 0, low: 0 };
+            if (!stats[catKey]) stats[catKey] = emptyCategoryStats(catKey);
             stats[catKey].total++;
             if (f.severity === "critical") stats[catKey].critical++;
             else if (f.severity === "high") stats[catKey].high++;
             else if (f.severity === "medium") stats[catKey].medium++;
             else stats[catKey].low++;
+            const src = sourceMap.get(f.assessment_id) ?? "risk";
+            stats[catKey].sourceCounts[src] = (stats[catKey].sourceCounts[src] ?? 0) + 1;
           }
           setCatStats(Object.values(stats));
         }
@@ -351,6 +395,34 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
   function fmtDate(d: string) {
     return fmtDateLocale(d, locale);
   }
+  function sourceLabel(src: RiskAssessmentSourceType): string {
+    if (src === "field") return t("source.field");
+    if (src === "inspection") return t("source.inspection");
+    return t("source.risk");
+  }
+  function sourceBadgeClass(src: RiskAssessmentSourceType): string {
+    if (src === "field") return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300";
+    if (src === "inspection") return "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300";
+    return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+  }
+
+  // Filtre uygulanmış analiz listesi — Analizler sekmesinin üst kısmındaki seçicilere göre
+  const filteredAnalyses = useMemo(() => {
+    return analyses.filter((a) => {
+      if (analysisFilterType !== "all" && a.sourceType !== analysisFilterType) return false;
+      const idx = analysisIndex[a.id];
+      if (analysisFilterCategory !== "all") {
+        if (!idx || !idx.categories.has(analysisFilterCategory)) return false;
+      }
+      if (analysisFilterSeverity !== "all") {
+        if (!idx || !idx.severities.has(analysisFilterSeverity)) return false;
+      }
+      return true;
+    });
+  }, [analyses, analysisIndex, analysisFilterType, analysisFilterCategory, analysisFilterSeverity]);
+
+  const hasActiveAnalysisFilter = analysisFilterType !== "all" || analysisFilterCategory !== "all" || analysisFilterSeverity !== "all";
+
   function methodLabel(m: string) {
     switch (m) {
       case "r_skor": return t("method.r_skor");
@@ -427,7 +499,12 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
         <div className="flex justify-center py-12"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>
       ) : activeSection === "overview" ? (
         <>
-          {/* Risk Haritası — Premium kategori kartları */}
+          {/*
+            Risk Haritası — Premium kategori kartları
+            Accordion mantığı: seçilen kartın hemen ALTINDA (col-span-full ile)
+            detay paneli aynı grid içinde inline açılır. Böylece kullanıcı
+            bağlamından kopmaz, sayfa altına scroll edilmez.
+          */}
           <div className="grid gap-4 sm:grid-cols-2">
             {RISK_CATEGORY_META.map((cat) => {
               const stat = catStats.find((s) => s.key === cat.key);
@@ -435,49 +512,98 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
               const hasCritical = (stat?.critical ?? 0) > 0;
               const hasHigh = (stat?.high ?? 0) > 0;
               const isSelected = selectedCategory === cat.key;
+              const riskCount = stat?.sourceCounts.risk ?? 0;
+              const fieldCount = stat?.sourceCounts.field ?? 0;
+              const inspectionCount = stat?.sourceCounts.inspection ?? 0;
 
               return (
-                <button
-                  key={cat.key}
-                  type="button"
-                  onClick={() => openCategoryDetail(cat.key)}
-                  className={`rounded-[1.7rem] border p-5 text-left transition-all hover:-translate-y-0.5 ${
-                    isSelected ? "border-primary ring-2 ring-primary/20 bg-card shadow-[var(--shadow-elevated)]"
-                    : hasCritical ? "border-red-400/40 bg-gradient-to-br from-red-500/5 to-transparent shadow-[var(--shadow-card)] hover:border-red-400/60 dark:from-red-500/8"
-                    : hasHigh ? "border-orange-400/30 bg-gradient-to-br from-orange-500/5 to-transparent shadow-[var(--shadow-card)] hover:border-orange-400/50 dark:from-orange-500/8"
-                    : total > 0 ? "border-border/80 bg-card shadow-[var(--shadow-card)] hover:border-[var(--gold)]/30"
-                    : "border-border/50 bg-card shadow-sm hover:border-border hover:shadow-[var(--shadow-card)]"
-                  }`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3.5">
-                      <PremiumIconBadge icon={cat.lucideIcon} tone={cat.tone} size="md" />
-                      <div>
-                        <h4 className="text-base font-semibold text-foreground">{riskCategoryText(cat.key, "label")}</h4>
-                        <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">{riskCategoryText(cat.key, "examples")}</p>
+                <Fragment key={cat.key}>
+                  <button
+                    type="button"
+                    onClick={() => openCategoryDetail(cat.key)}
+                    aria-expanded={isSelected}
+                    className={`rounded-[1.7rem] border p-5 text-left transition-all hover:-translate-y-0.5 ${
+                      isSelected ? "border-primary ring-2 ring-primary/20 bg-card shadow-[var(--shadow-elevated)]"
+                      : hasCritical ? "border-red-400/40 bg-gradient-to-br from-red-500/5 to-transparent shadow-[var(--shadow-card)] hover:border-red-400/60 dark:from-red-500/8"
+                      : hasHigh ? "border-orange-400/30 bg-gradient-to-br from-orange-500/5 to-transparent shadow-[var(--shadow-card)] hover:border-orange-400/50 dark:from-orange-500/8"
+                      : total > 0 ? "border-border/80 bg-card shadow-[var(--shadow-card)] hover:border-[var(--gold)]/30"
+                      : "border-border/50 bg-card shadow-sm hover:border-border hover:shadow-[var(--shadow-card)]"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3.5">
+                        <PremiumIconBadge icon={cat.lucideIcon} tone={cat.tone} size="md" />
+                        <div>
+                          <h4 className="text-base font-semibold text-foreground">{riskCategoryText(cat.key, "label")}</h4>
+                          <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">{riskCategoryText(cat.key, "examples")}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {total > 0 && (
+                          <span className="rounded-full px-2.5 py-1 text-xs font-bold" style={{ backgroundColor: cat.color + "18", color: cat.color }}>
+                            {total}
+                          </span>
+                        )}
+                        <svg className={`h-4 w-4 text-muted-foreground transition-transform ${isSelected ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {total > 0 && (
-                        <span className="rounded-full px-2.5 py-1 text-xs font-bold" style={{ backgroundColor: cat.color + "18", color: cat.color }}>
-                          {total}
-                        </span>
-                      )}
-                      <svg className={`h-4 w-4 text-muted-foreground transition-transform ${isSelected ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                    </div>
-                  </div>
-                  {total > 0 && (
-                    <div className="mt-3.5 flex flex-wrap gap-2">
-                      {(stat?.critical ?? 0) > 0 && <span className="rounded-full bg-red-100 px-2.5 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">{t("badgeCritical", { count: stat!.critical })}</span>}
-                      {(stat?.high ?? 0) > 0 && <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-[10px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">{t("badgeHigh", { count: stat!.high })}</span>}
-                      {(stat?.medium ?? 0) > 0 && <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">{t("badgeMedium", { count: stat!.medium })}</span>}
-                      {(stat?.low ?? 0) > 0 && <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">{t("badgeLow", { count: stat!.low })}</span>}
+                    {total > 0 && (
+                      <div className="mt-3.5 flex flex-wrap gap-2">
+                        {(stat?.critical ?? 0) > 0 && <span className="rounded-full bg-red-100 px-2.5 py-0.5 text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">{t("badgeCritical", { count: stat!.critical })}</span>}
+                        {(stat?.high ?? 0) > 0 && <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-[10px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">{t("badgeHigh", { count: stat!.high })}</span>}
+                        {(stat?.medium ?? 0) > 0 && <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">{t("badgeMedium", { count: stat!.medium })}</span>}
+                        {(stat?.low ?? 0) > 0 && <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">{t("badgeLow", { count: stat!.low })}</span>}
+                      </div>
+                    )}
+                    {/* Kaynak modülüne göre kırılım — hangi tespit nereden geldi */}
+                    {total > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5 text-[10px] font-semibold">
+                        {riskCount > 0 && (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-blue-700 dark:border-blue-800/40 dark:bg-blue-900/20 dark:text-blue-300">
+                            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                            {t("source.riskShort", { count: riskCount })}
+                          </span>
+                        )}
+                        {fieldCount > 0 && (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-emerald-700 dark:border-emerald-800/40 dark:bg-emerald-900/20 dark:text-emerald-300">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                            {t("source.fieldShort", { count: fieldCount })}
+                          </span>
+                        )}
+                        {inspectionCount > 0 && (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-violet-700 dark:border-violet-800/40 dark:bg-violet-900/20 dark:text-violet-300">
+                            <span className="h-1.5 w-1.5 rounded-full bg-violet-500" />
+                            {t("source.inspectionShort", { count: inspectionCount })}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {total === 0 && (
+                      <p className="mt-3 text-xs text-muted-foreground/50">{t("noFindingsCategory")}</p>
+                    )}
+                  </button>
+                  {/* Inline accordion: detay paneli kartın hemen altında full-width */}
+                  {isSelected && (
+                    <div className="sm:col-span-2">
+                      <CategoryDetailPanel
+                        categoryKey={cat.key}
+                        category={cat}
+                        findings={categoryFindings}
+                        loading={catDetailLoading}
+                        editingFinding={editingFinding}
+                        editStatus={editStatus}
+                        editNotes={editNotes}
+                        savingFinding={savingFinding}
+                        onStartEdit={(f) => { setEditingFinding(f.id); setEditStatus(f.trackingStatus); setEditNotes(f.trackingNotes); }}
+                        onCancelEdit={() => setEditingFinding(null)}
+                        onChangeStatus={setEditStatus}
+                        onChangeNotes={setEditNotes}
+                        onSave={saveFindingStatus}
+                        onClose={() => setSelectedCategory(null)}
+                      />
                     </div>
                   )}
-                  {total === 0 && (
-                    <p className="mt-3 text-xs text-muted-foreground/50">{t("noFindingsCategory")}</p>
-                  )}
-                </button>
+                </Fragment>
               );
             })}
             {/* + Yeni Kategori Ekle */}
@@ -494,31 +620,66 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
               </div>
             </button>
           </div>
-
-          {/* Kategori Detay Paneli */}
-          {selectedCategory && (
-            <div ref={catDetailRef}>
-              <CategoryDetailPanel
-                categoryKey={selectedCategory}
-                category={RISK_CATEGORY_META.find((c) => c.key === selectedCategory)!}
-                findings={categoryFindings}
-                loading={catDetailLoading}
-                editingFinding={editingFinding}
-                editStatus={editStatus}
-                editNotes={editNotes}
-                savingFinding={savingFinding}
-                onStartEdit={(f) => { setEditingFinding(f.id); setEditStatus(f.trackingStatus); setEditNotes(f.trackingNotes); }}
-                onCancelEdit={() => setEditingFinding(null)}
-                onChangeStatus={setEditStatus}
-                onChangeNotes={setEditNotes}
-                onSave={saveFindingStatus}
-                onClose={() => setSelectedCategory(null)}
-              />
-            </div>
-          )}
         </>
       ) : (
         <>
+          {/* Filtre çubuğu — analiz tipi, kategori, şiddet */}
+          {analyses.length > 0 && (
+            <div className="rounded-[1.25rem] border border-border/70 bg-card/70 p-3 shadow-sm">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t("filters.title")}
+                </span>
+                <select
+                  value={analysisFilterType}
+                  onChange={(e) => setAnalysisFilterType(e.target.value as "all" | RiskAssessmentSourceType)}
+                  className="rounded-lg border border-border/70 bg-background px-2.5 py-1.5 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  aria-label={t("filters.type")}
+                >
+                  <option value="all">{t("filters.allTypes")}</option>
+                  <option value="risk">{t("source.risk")}</option>
+                  <option value="field">{t("source.field")}</option>
+                  <option value="inspection">{t("source.inspection")}</option>
+                </select>
+                <select
+                  value={analysisFilterCategory}
+                  onChange={(e) => setAnalysisFilterCategory(e.target.value)}
+                  className="rounded-lg border border-border/70 bg-background px-2.5 py-1.5 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  aria-label={t("filters.category")}
+                >
+                  <option value="all">{t("filters.allCategories")}</option>
+                  {RISK_CATEGORY_META.map((cat) => (
+                    <option key={cat.key} value={cat.key}>{riskCategoryText(cat.key, "label")}</option>
+                  ))}
+                </select>
+                <select
+                  value={analysisFilterSeverity}
+                  onChange={(e) => setAnalysisFilterSeverity(e.target.value as "all" | "critical" | "high" | "medium" | "low")}
+                  className="rounded-lg border border-border/70 bg-background px-2.5 py-1.5 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  aria-label={t("filters.severity")}
+                >
+                  <option value="all">{t("filters.allSeverities")}</option>
+                  <option value="critical">{t("severity.critical")}</option>
+                  <option value="high">{t("severity.high")}</option>
+                  <option value="medium">{t("severity.medium")}</option>
+                  <option value="low">{t("severity.low")}</option>
+                </select>
+                {hasActiveAnalysisFilter && (
+                  <button
+                    type="button"
+                    onClick={() => { setAnalysisFilterType("all"); setAnalysisFilterCategory("all"); setAnalysisFilterSeverity("all"); }}
+                    className="rounded-lg border border-border/60 bg-secondary/40 px-2.5 py-1.5 text-[11px] font-semibold text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                  >
+                    {t("filters.reset")}
+                  </button>
+                )}
+                <span className="ml-auto text-[11px] text-muted-foreground">
+                  {t("filters.showing", { count: filteredAnalyses.length, total: analyses.length })}
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Analizler listesi — premium kartlar */}
           <div className="space-y-3">
             {analyses.length === 0 ? (
@@ -529,7 +690,12 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                   <p className="mt-1 text-xs text-muted-foreground">{t("emptyAnalysesDescription")}</p>
                 </div>
               </div>
-            ) : analyses.map((a) => {
+            ) : filteredAnalyses.length === 0 ? (
+              <div className="flex flex-col items-center gap-2 rounded-[1.7rem] border-2 border-dashed border-border/50 bg-card/50 p-8 text-center">
+                <p className="text-sm font-semibold text-foreground">{t("filters.noMatchTitle")}</p>
+                <p className="text-xs text-muted-foreground">{t("filters.noMatchDesc")}</p>
+              </div>
+            ) : filteredAnalyses.map((a) => {
               const sb = statusBadge(a.status);
               const isSelected = expandedAnalysisId === a.id;
               return (
@@ -549,6 +715,7 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             <h4 className="text-base font-semibold text-foreground">{a.title}</h4>
+                            <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${sourceBadgeClass(a.sourceType)}`}>{sourceLabel(a.sourceType)}</span>
                             <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${sb.cls}`}>{sb.label}</span>
                             <span className="rounded-full border border-border/60 bg-secondary/50 px-2.5 py-0.5 text-[10px] font-semibold text-muted-foreground">{methodLabel(a.method)}</span>
                           </div>
@@ -647,6 +814,11 @@ function CategoryDetailPanel({
     if (s === "medium") return { label: t("severity.medium"), cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" };
     return { label: t("severity.low"), cls: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" };
   }
+  function sourceRow(src: RiskAssessmentSourceType) {
+    if (src === "field") return { label: t("source.field"), cls: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300" };
+    if (src === "inspection") return { label: t("source.inspection"), cls: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300" };
+    return { label: t("source.risk"), cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" };
+  }
   const catLabel = (t as (path: string) => string)(`categories.${categoryKey}.label`);
 
   return (
@@ -674,6 +846,7 @@ function CategoryDetailPanel({
           {findings.map((f) => {
             const sev = severityRow(f.severity);
             const trk = trackingRows.find((row) => row.value === f.trackingStatus) ?? trackingRows[0];
+            const src = sourceRow(f.sourceType);
             const isEditing = editingFinding === f.id;
 
             return (
@@ -684,6 +857,7 @@ function CategoryDetailPanel({
                       <h4 className="text-sm font-semibold text-foreground">{f.title}</h4>
                       <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${sev.cls}`}>{sev.label}</span>
                       <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${trk.cls}`}>{trk.label}</span>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${src.cls}`}>{src.label}</span>
                     </div>
                     <p className="mt-0.5 text-[11px] text-muted-foreground">{t("analysisPrefix")} {f.assessmentTitle}</p>
                   </div>
@@ -1003,7 +1177,7 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
             {shareToken && qrDataUrl && (
               <div className="flex flex-col items-center gap-2">
                 <div className="rounded-xl border border-border bg-white p-2 shadow-sm">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  { }
                   <img src={qrDataUrl} alt={t("qrAlt")} width={120} height={120} />
                 </div>
                 <p className="text-[10px] text-muted-foreground">{t("qrCaption")}</p>
@@ -1053,7 +1227,7 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
                 {row.images.map((img) => (
                   <div key={img.id} className="shrink-0">
                     {img.signedUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
+                       
                       <Image
                         src={img.signedUrl}
                         alt={img.fileName}
