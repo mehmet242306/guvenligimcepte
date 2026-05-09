@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useLocale } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -89,6 +90,8 @@ interface DocRecord {
 }
 
 export function PersonnelProfileClient() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const params = useParams();
   const router = useRouter();
   const personnelId = params.id as string;
@@ -313,7 +316,7 @@ export function PersonnelProfileClient() {
       <div className="w-full px-4 py-8">
         <button onClick={() => router.back()} className="mb-4 inline-flex items-center gap-1 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
-          Geri
+          {isTr ? "Geri" : "Back"}
         </button>
 
         {/* Profile header */}

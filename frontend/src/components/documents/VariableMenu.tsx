@@ -5,6 +5,7 @@ import {
   Building2, Users, Calendar, ShieldAlert, UserCog,
   Search, ChevronDown, ChevronRight, Copy, Check,
 } from 'lucide-react';
+import { useLocale } from 'next-intl';
 import type { LucideIcon } from 'lucide-react';
 import { DOCUMENT_VARIABLES, VARIABLE_GROUPS, type DocumentVariable } from '@/lib/document-variables';
 
@@ -21,6 +22,8 @@ interface VariableMenuProps {
 }
 
 export function VariableMenu({ onInsert }: VariableMenuProps) {
+  const locale = useLocale();
+  const isTr = locale === 'tr';
   const [search, setSearch] = useState('');
   const [expandedGroup, setExpandedGroup] = useState<string | null>('firma');
   const [copied, setCopied] = useState<string | null>(null);
@@ -42,10 +45,12 @@ export function VariableMenu({ onInsert }: VariableMenuProps) {
   return (
     <div className="w-full">
       <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">
-        Değişkenler
+        {isTr ? 'Değişkenler' : 'Variables'}
       </h3>
       <p className="text-xs text-[var(--text-secondary)] mb-3">
-        Tıklayarak editöre ekleyin. Firma verilerinden otomatik doldurulur.
+        {isTr
+          ? 'Tıklayarak editöre ekleyin. Firma verilerinden otomatik doldurulur.'
+          : 'Click to insert into the editor. Values are filled automatically from company data.'}
       </p>
 
       {/* Search */}
@@ -55,7 +60,7 @@ export function VariableMenu({ onInsert }: VariableMenuProps) {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Değişken ara..."
+          placeholder={isTr ? 'Değişken ara...' : 'Search variables...'}
           className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-[var(--card-border)] bg-[var(--bg-primary)] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--gold)]"
         />
       </div>
@@ -67,7 +72,9 @@ export function VariableMenu({ onInsert }: VariableMenuProps) {
             <VariableItem key={v.key} variable={v} onInsert={handleInsert} isCopied={copied === v.key} />
           ))}
           {filtered.length === 0 && (
-            <p className="text-xs text-[var(--text-secondary)] py-2 text-center">Sonuç bulunamadı</p>
+            <p className="text-xs text-[var(--text-secondary)] py-2 text-center">
+              {isTr ? 'Sonuç bulunamadı' : 'No results found'}
+            </p>
           )}
         </div>
       ) : (

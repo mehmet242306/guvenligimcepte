@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   fetchMyDecks,
@@ -30,6 +31,8 @@ const CATEGORIES: Record<string, { label: string; color: string; emoji: string }
 };
 
 export function SlideLibraryClient() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const router = useRouter();
   const searchParams = useSearchParams();
   const companyIdParam = searchParams.get("companyId") ?? "";
@@ -225,14 +228,14 @@ export function SlideLibraryClient() {
               className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm font-semibold text-[var(--foreground)] shadow-sm transition-colors hover:bg-[var(--accent)] disabled:opacity-50"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              {importing ? "Yükleniyor..." : "PPTX Yükle"}
+              {importing ? (isTr ? "Yukleniyor..." : "Uploading...") : (isTr ? "PPTX Yukle" : "Upload PPTX")}
             </button>
             <button
               onClick={() => setShowAI(true)}
               className="inline-flex items-center gap-2 rounded-xl border border-purple-400/40 bg-gradient-to-r from-purple-500/10 to-pink-500/10 px-4 py-2.5 text-sm font-semibold text-purple-600 dark:text-purple-400 shadow-sm transition-colors hover:bg-purple-500/20"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-              AI ile Oluştur
+              {isTr ? "AI ile Olustur" : "Create with AI"}
             </button>
             <button
               onClick={() => setShowCreate(true)}
@@ -315,7 +318,7 @@ export function SlideLibraryClient() {
             {tab === "my" && (
               <div className="mt-4 flex gap-2">
                 <button onClick={() => setShowAI(true)} className="inline-flex items-center gap-2 rounded-xl border border-purple-400/40 bg-purple-500/10 px-5 py-2.5 text-sm font-semibold text-purple-600 dark:text-purple-400 hover:bg-purple-500/20">
-                  ✨ AI ile Oluştur
+                  {isTr ? "AI ile Olustur" : "Create with AI"}
                 </button>
                 <button onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-5 py-2.5 text-sm font-semibold text-white hover:brightness-110">
                   + Boş Deck
@@ -342,7 +345,7 @@ export function SlideLibraryClient() {
                     }}
                   >
                     {d.cover_image_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
+                       
                       <Image
                         src={d.cover_image_url}
                         alt={d.title}
@@ -397,7 +400,7 @@ export function SlideLibraryClient() {
                             href={`/training/slides/${d.id}/edit`}
                             className="flex-1 rounded-lg bg-[var(--gold)] px-3 py-1.5 text-xs font-semibold text-white text-center hover:brightness-110"
                           >
-                            Düzenle
+                            {isTr ? "Duzenle" : "Edit"}
                           </Link>
                           <Link
                             href={`/training/slides/${d.id}/present`}
@@ -431,7 +434,7 @@ export function SlideLibraryClient() {
             <h2 className="mb-4 text-xl font-bold text-[var(--foreground)]">Yeni Slayt Deck</h2>
             <div className="space-y-3">
               <div>
-                <label className="mb-1 block text-xs font-semibold text-[var(--muted-foreground)]">Başlık *</label>
+                <label className="mb-1 block text-xs font-semibold text-[var(--muted-foreground)]">{isTr ? "Baslik *" : "Title *"}</label>
                 <input
                   type="text"
                   value={form.title}
@@ -441,7 +444,7 @@ export function SlideLibraryClient() {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-semibold text-[var(--muted-foreground)]">Açıklama</label>
+                <label className="mb-1 block text-xs font-semibold text-[var(--muted-foreground)]">{isTr ? "Aciklama" : "Description"}</label>
                 <textarea
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -483,14 +486,14 @@ export function SlideLibraryClient() {
             </div>
             <div className="mt-6 flex gap-2">
               <button onClick={() => setShowCreate(false)} className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-semibold text-[var(--foreground)]">
-                İptal
+                {isTr ? "Iptal" : "Cancel"}
               </button>
               <button
                 onClick={handleCreate}
                 disabled={creating || !form.title.trim()}
                 className="flex-1 rounded-lg bg-[var(--gold)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
               >
-                {creating ? "Oluşturuluyor..." : "Oluştur"}
+                {creating ? (isTr ? "Olusturuluyor..." : "Creating...") : (isTr ? "Olustur" : "Create")}
               </button>
             </div>
           </div>
@@ -501,7 +504,7 @@ export function SlideLibraryClient() {
       {showAI && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowAI(false)}>
           <div className="w-full max-w-md rounded-2xl bg-[var(--card)] p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <h2 className="mb-1 text-xl font-bold text-[var(--foreground)]">✨ AI ile Slayt Oluştur</h2>
+            <h2 className="mb-1 text-xl font-bold text-[var(--foreground)]">{isTr ? "AI ile Slayt Olustur" : "Create slides with AI"}</h2>
             <p className="mb-4 text-xs text-[var(--muted-foreground)]">
               Konuyu ve slayt sayısını belirt, Nova AI profesyonel İSG eğitim slaytları oluştursun
             </p>
@@ -547,14 +550,14 @@ export function SlideLibraryClient() {
             </div>
             <div className="mt-6 flex gap-2">
               <button onClick={() => setShowAI(false)} disabled={aiGenerating} className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-semibold text-[var(--foreground)]">
-                İptal
+                {isTr ? "Iptal" : "Cancel"}
               </button>
               <button
                 onClick={handleAIGenerate}
                 disabled={aiGenerating || !aiTopic.trim()}
                 className="flex-1 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
               >
-                {aiGenerating ? <ButtonLoader label="AI egitim olusturuluyor..." /> : "✨ Oluştur"}
+                {aiGenerating ? <ButtonLoader label={isTr ? "AI egitim olusturuluyor..." : "AI training is being created..."} /> : (isTr ? "Olustur" : "Create")}
               </button>
             </div>
           </div>

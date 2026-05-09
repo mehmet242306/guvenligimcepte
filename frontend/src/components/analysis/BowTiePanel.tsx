@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useMemo } from "react";
+import { useLocale } from "next-intl";
 import {
   Target,
   Sparkles,
@@ -11,7 +12,6 @@ import {
   Trash2,
   ShieldCheck,
   ShieldAlert,
-  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,8 +23,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ZoomableContainer } from "@/components/ui/zoomable-container";
-import { exportPanelPdf } from "@/lib/export-panel-pdf";
 import type { BowTieData } from "@/lib/analysis/types";
 import { renderBowTieSvg } from "@/lib/bowtie-pdf-template";
 
@@ -46,7 +44,6 @@ interface BowTiePanelProps {
 const SVG_W = 1200;
 const SVG_H = 500;
 const CENTER_X = SVG_W / 2;
-const CENTER_Y = SVG_H / 2;
 const TOP_EVENT_W = 160;
 const TOP_EVENT_H = 50;
 
@@ -92,7 +89,7 @@ function wrapText(text: string, maxChars = 18): string[] {
 /*  SVG Diagram renderer                                               */
 /* ------------------------------------------------------------------ */
 
-function BowTieSvg({ data }: { data: BowTieData }) {
+function _BowTieSvg({ data }: { data: BowTieData }) {
   const threats = data.threats;
   const consequences = data.consequences;
   const preventive = data.preventiveBarriers;
@@ -474,6 +471,8 @@ export function BowTiePanel({
   onSave,
   onAiRequest,
 }: BowTiePanelProps) {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const diagramRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<BowTieData>(
     initialData ?? defaultData(),
@@ -809,7 +808,7 @@ export function BowTiePanel({
             </CardTitle>
             <Button variant="outline" size="sm" onClick={addThreat}>
               <Plus className="h-3.5 w-3.5" />
-              Tehdit Ekle
+              {isTr ? "Tehdit Ekle" : "Add threat"}
             </Button>
           </div>
         </CardHeader>
@@ -870,7 +869,7 @@ export function BowTiePanel({
                     onClick={() => addThreatCause(threat.id)}
                     className="self-start text-xs text-primary hover:underline"
                   >
-                    + Neden Ekle
+                    {isTr ? "+ Neden Ekle" : "+ Add cause"}
                   </button>
                 </div>
               </div>
@@ -894,7 +893,7 @@ export function BowTiePanel({
             </CardTitle>
             <Button variant="outline" size="sm" onClick={addConsequence}>
               <Plus className="h-3.5 w-3.5" />
-              Sonuc Ekle
+              {isTr ? "Sonuc Ekle" : "Add consequence"}
             </Button>
           </div>
         </CardHeader>
@@ -955,7 +954,7 @@ export function BowTiePanel({
                     onClick={() => addConsequenceEffect(cons.id)}
                     className="self-start text-xs text-primary hover:underline"
                   >
-                    + Etki Ekle
+                    {isTr ? "+ Etki Ekle" : "+ Add effect"}
                   </button>
                 </div>
               </div>
@@ -987,7 +986,7 @@ export function BowTiePanel({
               disabled={data.threats.length === 0}
             >
               <Plus className="h-3.5 w-3.5" />
-              Bariyer Ekle
+              {isTr ? "Bariyer Ekle" : "Add barrier"}
             </Button>
           </div>
         </CardHeader>
@@ -1084,7 +1083,7 @@ export function BowTiePanel({
               disabled={data.consequences.length === 0}
             >
               <Plus className="h-3.5 w-3.5" />
-              Bariyer Ekle
+              {isTr ? "Bariyer Ekle" : "Add barrier"}
             </Button>
           </div>
         </CardHeader>
@@ -1205,7 +1204,7 @@ export function BowTiePanel({
           ) : (
             <Save className="h-4 w-4" />
           )}
-          Kaydet
+          {isTr ? "Kaydet" : "Save"}
         </Button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
+import { useLocale } from "next-intl";
 import {
   Link,
   Sparkles,
@@ -10,13 +11,11 @@ import {
   AlertTriangle,
   Trash2,
   ChevronRight,
-  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { exportPanelPdf } from "@/lib/export-panel-pdf";
 import type { ScatData } from "@/lib/analysis/types";
 
 /* ------------------------------------------------------------------ */
@@ -106,6 +105,8 @@ export function ScatPanel({
   onSave,
   onAiRequest,
 }: ScatPanelProps) {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const panelRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<ScatData>(
     initialData ?? getDefaultData(),
@@ -242,7 +243,7 @@ export function ScatPanel({
           className="self-start text-muted-foreground"
         >
           <Plus className="h-4 w-4" />
-          Ekle
+          {isTr ? "Ekle" : "Add"}
         </Button>
       </div>
     );
@@ -376,7 +377,7 @@ export function ScatPanel({
           ) : (
             <Save className="h-4 w-4" />
           )}
-          Kaydet
+          {isTr ? "Kaydet" : "Save"}
         </Button>
       </div>
     </div>

@@ -517,9 +517,9 @@ type PdfStrings = {
 };
 
 function buildWorkPlanHtml({
-  companyName,
-  year,
-  revNo,
+  companyName: _companyName,
+  year: _year,
+  revNo: _revNo,
   sections,
   signers,
   monthShort,

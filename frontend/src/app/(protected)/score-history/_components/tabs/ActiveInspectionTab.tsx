@@ -25,7 +25,7 @@ export function ActiveInspectionTab({ state, actions, onOpenFindings }: Props) {
   const { activeTemplate, activeRun, answers, savingAnswer } = state;
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
-  const questions = activeTemplate?.questions ?? [];
+  const questions = useMemo(() => activeTemplate?.questions ?? [], [activeTemplate?.questions]);
   const grouped = useMemo(() => {
     const map: Record<string, typeof questions> = {};
     for (const q of questions) {

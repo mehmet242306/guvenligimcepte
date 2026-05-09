@@ -374,7 +374,7 @@ type TrainingPdfStrings = {
   categoryLabels: Record<TrainingRow["category"], string>;
 };
 
-function buildTrainingHtml({ htmlLang, companyName, year, trainings, signers, pdf }: { htmlLang: string; companyName: string; year: number; trainings: TrainingRow[]; signers: { employer: string; physician: string; safetyExpert: string }; pdf: TrainingPdfStrings }): string {
+function buildTrainingHtml({ htmlLang, companyName: _companyName, year: _year, trainings, signers, pdf }: { htmlLang: string; companyName: string; year: number; trainings: TrainingRow[]; signers: { employer: string; physician: string; safetyExpert: string }; pdf: TrainingPdfStrings }): string {
   const rowsByCat = (["genel", "saglik", "teknik"] as const).map((cat) => {
     const catRows = trainings.filter((t) => t.category === cat);
     const meta = CATEGORY_STYLE[cat];

@@ -452,11 +452,6 @@ function sevBgHex(s: string): string {
   return s === "critical" ? "FEE2E2" : s === "high" ? "FEF2F2" : s === "medium" ? "FFF7ED" : s === "low" ? "FFFBEB" : "ECFDF5";
 }
 
-function noBorder() {
-  const none = { style: BorderStyle.NONE, size: 0, color: "FFFFFF" };
-  return { top: none, bottom: none, left: none, right: none };
-}
-
 function thinBorder() {
   const b = { style: BorderStyle.SINGLE, size: 1, color: "DEE2E6" };
   return { top: b, bottom: b, left: b, right: b };

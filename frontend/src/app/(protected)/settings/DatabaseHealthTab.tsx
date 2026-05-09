@@ -63,7 +63,7 @@ export function DatabaseHealthTab() {
 
   useEffect(() => {
     // Initial database health fetch intentionally runs once on mount.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     void load();
   }, []);
 

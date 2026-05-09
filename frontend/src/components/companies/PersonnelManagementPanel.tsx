@@ -819,7 +819,7 @@ function HealthExamForm({ personnel, companyId, onSaved, onCancel }: {
   const [reportNumber, setReportNumber] = useState("");
   const [restrictions, setRestrictions] = useState("");
   const [recommendedActions, setRecommendedActions] = useState("");
-  const [notes, setNotes] = useState("");
+  const [notes] = useState("");
   const [saving, setSaving] = useState(false);
 
   async function handleSubmit() {

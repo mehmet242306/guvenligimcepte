@@ -19,7 +19,6 @@ import {
   Header,
   Footer,
   PageNumber,
-  NumberFormat,
   ShadingType,
   convertInchesToTwip,
   LevelFormat,
@@ -251,12 +250,6 @@ function tableNodeToDocx(
         if (cellNode.content) {
           for (const cellChild of cellNode.content) {
             const runs = inlineToRuns(cellChild, companyData, FONT_SIZES.body);
-            if (isHeader) {
-              // Make header text bold
-              for (const run of runs) {
-                // We re-create with bold
-              }
-            }
             cellParagraphs.push(
               new Paragraph({
                 children: isHeader

@@ -67,7 +67,7 @@ export function ResetPasswordSessionClient({ code }: { code?: string | null }) {
     return () => {
       cancelled = true;
     };
-  }, [code]);
+  }, [code, t]);
 
   if (!ready) {
     return (

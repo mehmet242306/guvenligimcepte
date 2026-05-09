@@ -1,6 +1,6 @@
 # Faz 0 — i18n envanter raporu
 
-Oluşturulma: 2026-05-07T11:36:02.825Z
+Oluşturulma: 2026-05-09T07:55:55.595Z
 
 ## Yöntem
 
@@ -12,34 +12,34 @@ Oluşturulma: 2026-05-07T11:36:02.825Z
 
 | Kovası | Dosya sayısı | Şüpheli string | Türkçe karakter içeren satır (toplam) |
 |--------|-------------:|---------------:|---------------------------------------:|
-| app/(public) | 23 | 515 | 6 |
-| app/(protected) | 115 | 7181 | 855 |
-| app/other | 77 | 948 | 159 |
-| components | 108 | 3172 | 268 |
-| lib | 116 | 3157 | 1330 |
+| app/(public) | 24 | 538 | 12 |
+| app/(protected) | 116 | 7864 | 1068 |
+| app/other | 78 | 954 | 159 |
+| components | 108 | 3180 | 259 |
+| lib | 117 | 3160 | 1330 |
 | src/other | 1 | 1 | 0 |
 
-**Şüpheli string içeren dosya sayısı**: 440
+**Şüpheli string içeren dosya sayısı**: 444
 
 ## Locale dosyaları (`messages/*.json`)
 
-**en.json string yaprağı sayısı**: 5059
+**en.json string yaprağı sayısı**: 5062
 
 | Locale | Dosya boyutu (bayt) | Yaprak sayısı | en ile karşılaştırılabilir yaprak | Eksik anahtar (en’e göre) | Aynı değer (karşılaştırılabilir içinde) | % aynı (en) | Not |
 |--------|--------------------:|--------------:|----------------------------------:|---------------------------:|----------------------------------------:|-------------:|-----|
-| ar | 375731 | 5059 | 5059 | 0 | 1033 | 20.4% |  |
-| az | 326671 | 5059 | 5059 | 0 | 1100 | 21.7% |  |
-| de | 326272 | 5059 | 5059 | 0 | 1125 | 22.2% |  |
-| en | 302218 | 5059 | — | — | — | 100 | source locale |
-| es | 326932 | 5059 | 5059 | 0 | 1135 | 22.4% |  |
-| fr | 334378 | 5059 | 5059 | 0 | 1189 | 23.5% |  |
-| hi | 481919 | 5059 | 5059 | 0 | 1064 | 21% |  |
-| id | 310881 | 5059 | 5059 | 0 | 1166 | 23% |  |
-| ja | 341312 | 5059 | 5059 | 0 | 1066 | 21.1% |  |
-| ko | 318377 | 5059 | 5059 | 0 | 1072 | 21.2% |  |
-| ru | 430100 | 5059 | 5059 | 0 | 1057 | 20.9% |  |
-| tr | 315857 | 5059 | 5059 | 0 | 194 | 3.8% | primary translated locale (expect low % match to en) |
-| zh | 289725 | 5059 | 5059 | 0 | 1043 | 20.6% |  |
+| ar | 375994 | 5062 | 5062 | 0 | 1035 | 20.4% |  |
+| az | 326934 | 5062 | 5062 | 0 | 1102 | 21.8% |  |
+| de | 326535 | 5062 | 5062 | 0 | 1127 | 22.3% |  |
+| en | 302476 | 5062 | — | — | — | 100 | source locale |
+| es | 327195 | 5062 | 5062 | 0 | 1136 | 22.4% |  |
+| fr | 334641 | 5062 | 5062 | 0 | 1190 | 23.5% |  |
+| hi | 482182 | 5062 | 5062 | 0 | 1066 | 21.1% |  |
+| id | 311144 | 5062 | 5062 | 0 | 1167 | 23.1% |  |
+| ja | 341575 | 5062 | 5062 | 0 | 1068 | 21.1% |  |
+| ko | 318640 | 5062 | 5062 | 0 | 1074 | 21.2% |  |
+| ru | 430363 | 5062 | 5062 | 0 | 1059 | 20.9% |  |
+| tr | 316152 | 5062 | 5062 | 0 | 192 | 3.8% | primary translated locale (expect low % match to en) |
+| zh | 289988 | 5062 | 5062 | 0 | 1045 | 20.6% |  |
 
 ### Yorum
 
@@ -50,10 +50,11 @@ Oluşturulma: 2026-05-07T11:36:02.825Z
 
 | Şüpheli str. | TR satır* | Dosya |
 |-------------:|----------:|-------|
+| 588 | 266 | `src/app/(protected)/isg-library/library-config.ts` |
 | 461 | 80 | `src/lib/turkey-locations.ts` |
 | 423 | 24 | `src/components/companies/WorkspaceTabs.tsx` |
-| 367 | 50 | `src/app/(protected)/risk-analysis/RiskAnalysisClient.tsx` |
-| 291 | 6 | `src/app/(protected)/isg-library/IsgLibraryClient.tsx` |
+| 402 | 113 | `src/app/(protected)/isg-library/IsgLibraryClient.tsx` |
+| 369 | 50 | `src/app/(protected)/risk-analysis/RiskAnalysisClient.tsx` |
 | 235 | 1 | `src/app/(protected)/osgb/documents/page.tsx` |
 | 217 | 1 | `src/lib/platform-admin/demo-localization.ts` |
 | 210 | 0 | `src/app/(protected)/platform-admin/page.tsx` |
@@ -66,17 +67,17 @@ Oluşturulma: 2026-05-07T11:36:02.825Z
 | 173 | 2 | `src/lib/mailer.ts` |
 | 172 | 58 | `src/app/(protected)/training/slides/[id]/edit/SlideEditorClient.tsx` |
 | 160 | 13 | `src/components/companies/TeamManagementTab.tsx` |
-| 152 | 6 | `src/app/(protected)/timesheet/TimesheetClient.tsx` |
-| 152 | 46 | `src/app/(protected)/training/new/TrainingNewClient.tsx` |
+| 152 | 0 | `src/app/(protected)/timesheet/TimesheetClient.tsx` |
+| 151 | 19 | `src/app/(protected)/digital-twin/page.tsx` |
+| 149 | 0 | `src/app/(protected)/training/new/TrainingNewClient.tsx` |
 | 146 | 15 | `src/app/(protected)/incidents/new/NewIncidentWizard.tsx` |
-| 142 | 21 | `src/app/(protected)/digital-twin/page.tsx` |
 | 142 | 0 | `src/app/(protected)/settings/KvkkCenterTab.tsx` |
-| 140 | 37 | `src/app/(protected)/training/[id]/TrainingDetailClient.tsx` |
-| 137 | 0 | `src/app/(protected)/dashboard/DashboardClient.tsx` |
+| 134 | 0 | `src/app/(protected)/dashboard/DashboardClient.tsx` |
 | 133 | 6 | `src/app/(protected)/settings/AdminAITab.tsx` |
 | 131 | 0 | `src/app/(protected)/settings/AIUsageTab.tsx` |
+| 131 | 1 | `src/app/(protected)/settings/page.tsx` |
+| 131 | 0 | `src/app/(protected)/training/[id]/TrainingDetailClient.tsx` |
 | 131 | 101 | `src/lib/chat-knowledge.ts` |
-| 130 | 1 | `src/app/(protected)/settings/page.tsx` |
 | 128 | 46 | `src/app/(protected)/documents/DocumentsClient.tsx` |
 | 121 | 34 | `src/app/(protected)/personnel/[id]/PersonnelProfileClient.tsx` |
 | 115 | 4 | `src/app/api/analyze-risk/route.ts` |
@@ -86,7 +87,7 @@ Oluşturulma: 2026-05-07T11:36:02.825Z
 | 110 | 54 | `src/lib/planner/periodic-control-templates.ts` |
 | 109 | 36 | `src/app/(protected)/training/slides/SlideLibraryClient.tsx` |
 | 108 | 4 | `src/app/(protected)/companies/CompaniesListClient.tsx` |
-| 106 | 0 | `src/app/api/document-ai/route.ts` |
+| 107 | 0 | `src/app/api/document-ai/route.ts` |
 | 106 | 111 | `src/lib/scat-pdf-template.ts` |
 | 100 | 0 | `src/app/(protected)/settings/KvkkDataRightsPanel.tsx` |
 | 98 | 2 | `src/app/api/nova/chat/route.ts` |
@@ -94,21 +95,21 @@ Oluşturulma: 2026-05-07T11:36:02.825Z
 | 97 | 4 | `src/lib/r2d-rca-pdf-template.ts` |
 | 91 | 29 | `src/app/(protected)/training/certificates/CertificatesClient.tsx` |
 | 91 | 50 | `src/components/companies/CompanySharedOpsPanel.tsx` |
-| 89 | 4 | `src/components/layout/protected-shell.tsx` |
 | 87 | 53 | `src/app/(protected)/corrective-actions/[id]/CorrectiveActionDetailClient.tsx` |
 | 86 | 0 | `src/app/(protected)/workspace/onboarding/WorkspaceOnboardingClient.tsx` |
 | 86 | 4 | `src/components/analysis/BowTiePanel.tsx` |
 | 85 | 0 | `src/app/(public)/page.tsx` |
 | 81 | 7 | `src/app/(protected)/incidents/[id]/dof/DofClient.tsx` |
+| 81 | 2 | `src/components/layout/protected-shell.tsx` |
 | 81 | 62 | `src/lib/risk-analysis-export.ts` |
 | 80 | 0 | `src/app/(protected)/settings/UserManagementTab.tsx` |
 | 80 | 13 | `src/lib/risk-scoring.ts` |
 | 73 | 6 | `src/app/(protected)/training/TrainingClient.tsx` |
 | 73 | 0 | `src/components/companies/InviteProfessionalModal.tsx` |
+| 72 | 0 | `src/app/api/workspaces/onboarding/route.ts` |
 | 71 | 1 | `src/app/(protected)/osgb/firms/OsgbFirmsClient.tsx` |
 | 71 | 1 | `src/app/(protected)/platform-admin/demo-builder/DemoBuilderClient.tsx` |
 | 70 | 6 | `src/app/(protected)/training/slides/[id]/present/PresenterClient.tsx` |
-| 69 | 0 | `src/app/api/workspaces/onboarding/route.ts` |
 | 68 | 0 | `src/app/(public)/survey/[token]/SurveyFillClient.tsx` |
 | 68 | 5 | `src/components/analysis/R2dRcaPanel.tsx` |
 | 67 | 0 | `src/app/(public)/pricing/PricingPlansClient.tsx` |
@@ -124,8 +125,9 @@ Oluşturulma: 2026-05-07T11:36:02.825Z
 | 57 | 0 | `src/app/(protected)/platform-admin/legal-corpus/LegalCorpusAdminClient.tsx` |
 | 56 | 0 | `src/app/(protected)/osgb/page.tsx` |
 | 56 | 0 | `src/app/(protected)/settings/TenantLegalLibraryPanel.tsx` |
-| 55 | 9 | `src/app/(protected)/companies/[id]/CompanyScanData.tsx` |
+| 55 | 0 | `src/app/(protected)/companies/[id]/CompanyScanData.tsx` |
 | 55 | 0 | `src/app/(public)/certificate/verify/[id]/CertificateVerifyClient.tsx` |
+| 55 | 0 | `src/components/documents/AIAssistantPanel.tsx` |
 | 54 | 10 | `src/app/(protected)/documents/[id]/DocumentEditorClient.tsx` |
 | 54 | 1 | `src/app/(protected)/planner/PeriodicControlsRegisterTab.tsx` |
 | 54 | 0 | `src/app/(protected)/platform-admin/demo-builder/DemoGroupsClient.tsx` |
@@ -137,8 +139,6 @@ Oluşturulma: 2026-05-07T11:36:02.825Z
 | 52 | 1 | `src/app/(protected)/osgb/personnel/page.tsx` |
 | 52 | 54 | `src/lib/company-directory.ts` |
 | 51 | 11 | `src/app/(protected)/digital-twin/LiveStreamViewer.tsx` |
-| 50 | 38 | `src/app/(protected)/rca/[incidentId]/RcaResultsClient.tsx` |
-| 50 | 0 | `src/components/documents/AIAssistantPanel.tsx` |
 | 49 | 0 | `src/app/(protected)/profile/ProfileDataRightsPanel.tsx` |
 | 49 | 0 | `src/app/(protected)/score-history/_components/tabs/ActiveInspectionTab.tsx` |
 | 49 | 0 | `src/app/(protected)/score-history/_lib/constants.ts` |
@@ -149,6 +149,7 @@ Oluşturulma: 2026-05-07T11:36:02.825Z
 | 47 | 0 | `src/app/(protected)/settings/SecurityEventsTab.tsx` |
 | 45 | 3 | `src/app/(protected)/companies/[id]/CompanyWorkspaceClient.tsx` |
 | 45 | 0 | `src/app/(protected)/platform-admin/leads/_components/LeadsTable.tsx` |
+| 45 | 8 | `src/app/(protected)/rca/[incidentId]/RcaResultsClient.tsx` |
 | 45 | 36 | `src/app/api/ai/analysis/route.ts` |
 | 45 | 70 | `src/lib/ai/openai-vision.ts` |
 | 45 | 28 | `src/lib/document-variables.ts` |
@@ -169,9 +170,8 @@ Oluşturulma: 2026-05-07T11:36:02.825Z
 | 37 | 0 | `src/components/analysis/RcaIntroPanel.tsx` |
 | 37 | 0 | `src/components/layout/language-selector.tsx` |
 | 36 | 0 | `src/app/(protected)/incidents/IncidentsListClient.tsx` |
-| 36 | 0 | `src/app/(protected)/settings/RoleManagementTab.tsx` |
 
-*… ve 320 dosya daha (tam liste için script çıktısını genişletin).*
+*… ve 324 dosya daha (tam liste için script çıktısını genişletin).*
 
 \* *Türkçe satır*: heuristic; string içinde veya yorumda Türkçe geçebilir.*
 

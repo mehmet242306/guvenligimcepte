@@ -664,7 +664,7 @@ export function TeamManagementTab({
     setLoading(false);
   }, [companyId, orgId, t]);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   useEffect(() => { void loadData(); }, [loadData]);
 
   // Firma personelini yukle (ekip uyesi olarak eklemek icin)

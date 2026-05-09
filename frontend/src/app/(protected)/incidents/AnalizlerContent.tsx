@@ -122,7 +122,7 @@ export function AnalizlerContent() {
     setSelectedMethod(method);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   async function handleSave(method: AnalysisMethod, data: any) {
     if (activeAnalysis) {
       await updateAnalysis(activeAnalysis.id, data);
@@ -153,7 +153,7 @@ export function AnalizlerContent() {
     if (ok) setAnalyses((prev) => prev.filter((a) => a.id !== id));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   async function handleAiRequest(method: AnalysisMethod, context?: any) {
     setBusy(true);
     setError(null);
@@ -369,7 +369,7 @@ export function AnalizlerContent() {
     </div>
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   function renderMethodPanel(method: AnalysisMethod) {
     const data = activeAnalysis?.data ?? null;
     switch (method) {

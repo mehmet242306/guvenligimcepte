@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocale } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -23,6 +24,8 @@ interface PersonnelItem {
 }
 
 export function CertificatesClient() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const router = useRouter();
   const searchParams = useSearchParams();
   const companyIdParam = searchParams.get("companyId") ?? "";
@@ -203,7 +206,7 @@ export function CertificatesClient() {
           className="mb-4 inline-flex items-center gap-1 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
-          Geri
+          {isTr ? "Geri" : "Back"}
         </button>
 
         <div className="mb-6 flex items-center justify-between">
@@ -213,7 +216,7 @@ export function CertificatesClient() {
             className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-4 py-2.5 text-sm font-semibold text-white shadow hover:brightness-110"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Toplu Sertifika Oluştur
+            {isTr ? "Toplu Sertifika Olustur" : "Create bulk certificates"}
           </button>
         </div>
 
@@ -273,7 +276,7 @@ export function CertificatesClient() {
                           }}
                           className="rounded-lg px-3 py-1.5 text-xs font-medium text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
                         >
-                          Bu Şablonla Oluştur
+                          {isTr ? "Bu Sablonla Olustur" : "Create with this template"}
                         </button>
                       </div>
                       {showPreview === idx && (
@@ -309,7 +312,7 @@ export function CertificatesClient() {
                     <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent)] text-[var(--muted-foreground)]">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </div>
-                    <div className="font-medium text-[var(--foreground)]">Özel Şablon Oluştur</div>
+                    <div className="font-medium text-[var(--foreground)]">{isTr ? "Ozel Sablon Olustur" : "Create custom template"}</div>
                     <p className="mt-1 text-xs text-[var(--muted-foreground)]">
                       Doküman merkezinde kendi sertifika şablonunuzu tasarlayın
                     </p>
@@ -334,7 +337,7 @@ export function CertificatesClient() {
                       onClick={() => setShowIssueModal(true)}
                       className="mt-4 rounded-xl bg-[var(--gold)] px-5 py-2.5 text-sm font-semibold text-white shadow hover:brightness-110"
                     >
-                      Toplu Sertifika Oluştur
+                      {isTr ? "Toplu Sertifika Olustur" : "Create bulk certificates"}
                     </button>
                   </div>
                 ) : (
@@ -383,7 +386,7 @@ export function CertificatesClient() {
             <div className="w-full max-w-2xl rounded-2xl bg-[var(--card)] shadow-2xl max-h-[85vh] flex flex-col">
               {/* Modal header */}
               <div className="flex items-center justify-between border-b border-[var(--border)] p-5">
-                <h3 className="text-lg font-semibold text-[var(--foreground)]">Toplu Sertifika Oluştur</h3>
+                <h3 className="text-lg font-semibold text-[var(--foreground)]">{isTr ? "Toplu Sertifika Olustur" : "Create bulk certificates"}</h3>
                 <button onClick={() => setShowIssueModal(false)} className="rounded-lg p-1 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
@@ -455,7 +458,9 @@ export function CertificatesClient() {
                       onClick={toggleAll}
                       className="text-xs font-medium text-[var(--gold)] hover:underline"
                     >
-                      {selectedPersonnel.size === filteredPersonnel.length && filteredPersonnel.length > 0 ? "Hiçbirini Seçme" : "Tümünü Seç"}
+                      {selectedPersonnel.size === filteredPersonnel.length && filteredPersonnel.length > 0
+                        ? (isTr ? "Hicbirini Secme" : "Clear selection")
+                        : (isTr ? "Tumunu Sec" : "Select all")}
                     </button>
                   </div>
 
@@ -513,14 +518,16 @@ export function CertificatesClient() {
                   onClick={() => setShowIssueModal(false)}
                   className="flex-1 rounded-xl border border-[var(--border)] py-2.5 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--accent)]"
                 >
-                  İptal
+                  {isTr ? "Iptal" : "Cancel"}
                 </button>
                 <button
                   onClick={handleBulkIssue}
                   disabled={issuing || selectedPersonnel.size === 0 || !trainingName.trim()}
                   className="flex-1 rounded-xl bg-[var(--gold)] py-2.5 text-sm font-semibold text-white shadow disabled:opacity-50 hover:brightness-110"
                 >
-                  {issuing ? `Oluşturuluyor... (${selectedPersonnel.size})` : `${selectedPersonnel.size} Kişi İçin Oluştur`}
+                  {issuing
+                    ? isTr ? `Olusturuluyor... (${selectedPersonnel.size})` : `Creating... (${selectedPersonnel.size})`
+                    : isTr ? `${selectedPersonnel.size} Kisi Icin Olustur` : `Create for ${selectedPersonnel.size} people`}
                 </button>
               </div>
             </div>

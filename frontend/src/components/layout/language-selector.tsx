@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useI18n, type Locale } from "@/lib/i18n";
-import { useIsAdmin } from "@/lib/hooks/use-is-admin";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -161,17 +160,6 @@ interface Language {
 const languages: Language[] = [
   { code: "tr", label: "T\u00fcrk\u00e7e" },
   { code: "en", label: "English" },
-  { code: "ar", label: "\u0627\u0644\u0639\u0631\u0628\u064A\u0629" },
-  { code: "ru", label: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439" },
-  { code: "de", label: "Deutsch" },
-  { code: "fr", label: "Fran\u00e7ais" },
-  { code: "es", label: "Espa\u00f1ol" },
-  { code: "zh", label: "\u4E2D\u6587" },
-  { code: "ja", label: "\u65E5\u672C\u8A9E" },
-  { code: "ko", label: "\uD55C\uAD6D\uC5B4" },
-  { code: "az", label: "Az\u0259rbaycan Dili" },
-  { code: "id", label: "Bahasa Indonesia" },
-  { code: "hi", label: "\u0939\u093F\u0928\u094D\u0926\u0940" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -182,21 +170,13 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; right: number }>({ top: 0, right: 0 });
   const { locale, setLocale, t } = useI18n();
-  const isAdmin = useIsAdmin();
   const triggerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const visibleLanguages = isAdmin ? languages : languages.filter((l) => l.code === "tr");
+  const visibleLanguages = languages;
   const current = visibleLanguages.find((l) => l.code === locale) || visibleLanguages[0];
   const FlagIcon = flagComponents[current.code] || FlagTR;
-
-  useEffect(() => {
-    // Non-admin users should only use Turkish in production UI.
-    if (!isAdmin && locale !== "tr") {
-      setLocale("tr");
-    }
-  }, [isAdmin, locale, setLocale]);
 
   const updateMenuPosition = useCallback(() => {
     const btn = buttonRef.current;

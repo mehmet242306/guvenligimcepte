@@ -239,7 +239,7 @@ export interface RootCauseAnalysis {
   updatedAt: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export function mapRcaRow(row: any): RootCauseAnalysis {
   return {
     id: row.id,

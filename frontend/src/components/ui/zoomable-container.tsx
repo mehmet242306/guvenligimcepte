@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState, type ReactNode, type WheelEvent, type MouseEvent } from "react";
 import { ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
+import { useLocale } from "next-intl";
 
 interface ZoomableContainerProps {
   children: ReactNode;
@@ -16,6 +17,8 @@ export function ZoomableContainer({
   minScale = 0.2,
   maxScale = 3,
 }: ZoomableContainerProps) {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const [scale, setScale] = useState(0.85);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   // `dragging` must be state (not ref) because it's read during render to
@@ -66,7 +69,7 @@ export function ZoomableContainer({
           type="button"
           onClick={() => setScale((s) => clampScale(s + 0.15))}
           className="inline-flex size-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          title="Yakınlaştır"
+          title={isTr ? "Yakınlaştır" : "Zoom in"}
         >
           <ZoomIn className="size-3.5" />
         </button>
@@ -74,7 +77,7 @@ export function ZoomableContainer({
           type="button"
           onClick={() => setScale((s) => clampScale(s - 0.15))}
           className="inline-flex size-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          title="Uzaklaştır"
+          title={isTr ? "Uzaklaştır" : "Zoom out"}
         >
           <ZoomOut className="size-3.5" />
         </button>
@@ -82,7 +85,7 @@ export function ZoomableContainer({
           type="button"
           onClick={handleFit}
           className="inline-flex size-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          title="Sığdır"
+          title={isTr ? "Sığdır" : "Fit"}
         >
           <Maximize2 className="size-3.5" />
         </button>

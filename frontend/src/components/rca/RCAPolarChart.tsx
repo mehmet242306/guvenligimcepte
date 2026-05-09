@@ -61,7 +61,7 @@ export function RCAPolarChart({ priorityRanking }: RCAPolarChartProps) {
       },
     };
     return { data: dataInner, options: optionsInner };
-  }, [dim, priorityRanking, tr]);
+  }, [dim, priorityRanking]);
 
   return (
     <Card aria-label={tr("polar.ariaLabel")}>

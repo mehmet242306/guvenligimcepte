@@ -1,5 +1,8 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, AlertCircle, Circle, Cpu, CheckCircle2 } from "lucide-react";
+import { useLocale } from "next-intl";
 
 export interface TimelineEvent {
   timestamp: string;
@@ -21,16 +24,20 @@ const SEVERITY_META: Record<TimelineEvent["severity"], { color: string; bg: stri
 };
 
 export function RCATimeline({ events }: RCATimelineProps) {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const sorted = [...events].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 
   return (
-    <Card aria-label="Olay zaman çizgisi">
+    <Card aria-label={isTr ? "Olay zaman çizgisi" : "Incident timeline"}>
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm">Olay Zaman Çizgisi</CardTitle>
+        <CardTitle className="text-sm">{isTr ? "Olay Zaman Çizgisi" : "Incident Timeline"}</CardTitle>
       </CardHeader>
       <CardContent>
         {sorted.length === 0 ? (
-          <div className="py-6 text-center text-xs text-muted-foreground">Henüz olay kaydı yok</div>
+          <div className="py-6 text-center text-xs text-muted-foreground">
+            {isTr ? "Henüz olay kaydı yok" : "No incident events yet"}
+          </div>
         ) : (
           <div className="relative pl-8">
             {/* Dikey çizgi */}

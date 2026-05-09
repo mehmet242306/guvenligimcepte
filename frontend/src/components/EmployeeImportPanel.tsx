@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
+import { useLocale } from "next-intl";
 
 type ImportedEmployee = {
   sourceRow: number;
@@ -22,6 +23,57 @@ type ImportResponse = {
 };
 
 export default function EmployeeImportPanel({ companyName }: { companyName: string }) {
+  const locale = useLocale();
+  const isTr = locale === "tr";
+  const copy = isTr
+    ? {
+        selectFile: "Lütfen bir Excel veya CSV dosyası seçin.",
+        importFailed: "İçe aktarma başarısız oldu.",
+        connectionFailed: "Sunucuya bağlanırken hata oluştu.",
+        title: "Excel / CSV Personel İçe Aktarma",
+        description: `${companyName} için personel listesini Excel veya CSV olarak yükleyebilirsin. Bu aşamada yüklenen veri önizleme olarak gösterilir; kalıcı kayıt daha sonra eklenecek.`,
+        loading: "Yükleniyor...",
+        import: "İçe Aktar",
+        expectedColumns: "Beklenen kolonlar",
+        columns: "Ad Soyad, Görev, Birim, İşe Giriş, Vardiya, Özel Politika Durumu, Not",
+        file: "Dosya",
+        importedRows: "Aktarılan Satır",
+        specialPolicyRequired: "Özel Politika Gerektiren",
+        row: "Satır",
+        fullName: "Ad Soyad",
+        titleColumn: "Görev",
+        unit: "Birim",
+        startDate: "İşe Giriş",
+        shift: "Vardiya",
+        specialPolicy: "Özel Politika",
+        note: "Not",
+        yes: "Evet",
+        no: "Hayır",
+      }
+    : {
+        selectFile: "Please select an Excel or CSV file.",
+        importFailed: "Import failed.",
+        connectionFailed: "Could not connect to the server.",
+        title: "Excel / CSV Personnel Import",
+        description: `Upload the personnel list for ${companyName} as an Excel or CSV file. Imported data is shown as a preview at this stage; permanent records will be added later.`,
+        loading: "Uploading...",
+        import: "Import",
+        expectedColumns: "Expected columns",
+        columns: "Full Name, Role, Unit, Start Date, Shift, Special Policy Status, Notes",
+        file: "File",
+        importedRows: "Imported Rows",
+        specialPolicyRequired: "Requiring Special Policy",
+        row: "Row",
+        fullName: "Full Name",
+        titleColumn: "Role",
+        unit: "Unit",
+        startDate: "Start Date",
+        shift: "Shift",
+        specialPolicy: "Special Policy",
+        note: "Notes",
+        yes: "Yes",
+        no: "No",
+      };
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<ImportResponse | null>(null);
@@ -29,7 +81,7 @@ export default function EmployeeImportPanel({ companyName }: { companyName: stri
 
   async function handleImport() {
     if (!file) {
-      setError("Lütfen bir Excel veya CSV dosyası seçin.");
+      setError(copy.selectFile);
       return;
     }
 
@@ -49,12 +101,12 @@ export default function EmployeeImportPanel({ companyName }: { companyName: stri
       const result = await res.json();
 
       if (!res.ok) {
-        setError(result.error || "İçe aktarma başarısız oldu.");
+        setError(result.error || copy.importFailed);
       } else {
         setData(result);
       }
     } catch {
-      setError("Sunucuya bağlanırken hata oluştu.");
+      setError(copy.connectionFailed);
     } finally {
       setLoading(false);
     }
@@ -71,12 +123,11 @@ export default function EmployeeImportPanel({ companyName }: { companyName: stri
       }}
     >
       <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 8 }}>
-        Excel / CSV Personel İçe Aktarma
+        {copy.title}
       </div>
 
       <div style={{ opacity: 0.8, lineHeight: 1.7, marginBottom: 14 }}>
-        {companyName} için personel listesini Excel veya CSV olarak yükleyebilirsin.
-        Bu aşamada yüklenen veri önizleme olarak gösterilir; kalıcı kayıt daha sonra eklenecek.
+        {copy.description}
       </div>
 
       <div
@@ -111,7 +162,7 @@ export default function EmployeeImportPanel({ companyName }: { companyName: stri
             cursor: "pointer",
           }}
         >
-          {loading ? "Yükleniyor..." : "İçe Aktar"}
+          {loading ? copy.loading : copy.import}
         </button>
       </div>
 
@@ -124,9 +175,9 @@ export default function EmployeeImportPanel({ companyName }: { companyName: stri
           background: "#fcfcfc",
         }}
       >
-        <div style={{ fontWeight: 700, marginBottom: 6 }}>Beklenen kolonlar</div>
+        <div style={{ fontWeight: 700, marginBottom: 6 }}>{copy.expectedColumns}</div>
         <div style={{ opacity: 0.75, lineHeight: 1.8 }}>
-          Ad Soyad, Görev, Birim, İşe Giriş, Vardiya, Özel Politika Durumu, Not
+          {copy.columns}
         </div>
       </div>
 
@@ -157,17 +208,17 @@ export default function EmployeeImportPanel({ companyName }: { companyName: stri
             }}
           >
             <div style={{ border: "1px solid #eee", borderRadius: 12, padding: 12 }}>
-              <div style={{ opacity: 0.7, marginBottom: 4 }}>Dosya</div>
+              <div style={{ opacity: 0.7, marginBottom: 4 }}>{copy.file}</div>
               <div style={{ fontWeight: 800 }}>{data.fileName}</div>
             </div>
 
             <div style={{ border: "1px solid #eee", borderRadius: 12, padding: 12 }}>
-              <div style={{ opacity: 0.7, marginBottom: 4 }}>Aktarılan Satır</div>
+              <div style={{ opacity: 0.7, marginBottom: 4 }}>{copy.importedRows}</div>
               <div style={{ fontWeight: 800 }}>{data.totalRows}</div>
             </div>
 
             <div style={{ border: "1px solid #eee", borderRadius: 12, padding: 12 }}>
-              <div style={{ opacity: 0.7, marginBottom: 4 }}>Özel Politika Gerektiren</div>
+              <div style={{ opacity: 0.7, marginBottom: 4 }}>{copy.specialPolicyRequired}</div>
               <div style={{ fontWeight: 800 }}>{data.specialPolicyCount}</div>
             </div>
           </div>
@@ -176,14 +227,14 @@ export default function EmployeeImportPanel({ companyName }: { companyName: stri
             <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 900 }}>
               <thead>
                 <tr style={{ textAlign: "left", borderBottom: "1px solid #eee" }}>
-                  <th style={{ padding: "10px 8px" }}>Satır</th>
-                  <th style={{ padding: "10px 8px" }}>Ad Soyad</th>
-                  <th style={{ padding: "10px 8px" }}>Görev</th>
-                  <th style={{ padding: "10px 8px" }}>Birim</th>
-                  <th style={{ padding: "10px 8px" }}>İşe Giriş</th>
-                  <th style={{ padding: "10px 8px" }}>Vardiya</th>
-                  <th style={{ padding: "10px 8px" }}>Özel Politika</th>
-                  <th style={{ padding: "10px 8px" }}>Not</th>
+                  <th style={{ padding: "10px 8px" }}>{copy.row}</th>
+                  <th style={{ padding: "10px 8px" }}>{copy.fullName}</th>
+                  <th style={{ padding: "10px 8px" }}>{copy.titleColumn}</th>
+                  <th style={{ padding: "10px 8px" }}>{copy.unit}</th>
+                  <th style={{ padding: "10px 8px" }}>{copy.startDate}</th>
+                  <th style={{ padding: "10px 8px" }}>{copy.shift}</th>
+                  <th style={{ padding: "10px 8px" }}>{copy.specialPolicy}</th>
+                  <th style={{ padding: "10px 8px" }}>{copy.note}</th>
                 </tr>
               </thead>
               <tbody>
@@ -195,7 +246,7 @@ export default function EmployeeImportPanel({ companyName }: { companyName: stri
                     <td style={{ padding: "10px 8px" }}>{row.unit}</td>
                     <td style={{ padding: "10px 8px" }}>{row.startDate}</td>
                     <td style={{ padding: "10px 8px" }}>{row.shift}</td>
-                    <td style={{ padding: "10px 8px" }}>{row.specialPolicy ? "Evet" : "Hayır"}</td>
+                    <td style={{ padding: "10px 8px" }}>{row.specialPolicy ? copy.yes : copy.no}</td>
                     <td style={{ padding: "10px 8px" }}>{row.note}</td>
                   </tr>
                 ))}

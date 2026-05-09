@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useLocale } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   ArrowLeft, Download,
@@ -58,6 +59,8 @@ interface CompanyOption {
 }
 
 export function DocumentsClient() {
+  const locale = useLocale();
+  const isTr = locale === 'tr';
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
@@ -352,7 +355,7 @@ export function DocumentsClient() {
                 className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent)]"
               >
                 <ArrowLeft size={16} />
-                Geri Dön
+                {isTr ? 'Geri Don' : 'Back'}
               </button>
             ) : null}
             <button
@@ -441,9 +444,9 @@ export function DocumentsClient() {
           {/* Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
             <StatCard label="Toplam Belge" value={stats.total} icon={FileText} color="text-blue-500" />
-            <StatCard label="Hazır" value={stats.hazir} icon={CheckCircle2} color="text-green-500" />
+            <StatCard label={isTr ? 'Hazir' : 'Ready'} value={stats.hazir} icon={CheckCircle2} color="text-green-500" />
             <StatCard label="Taslak" value={stats.taslak} icon={FileEdit} color="text-yellow-500" />
-            <StatCard label="Oluşturulmamış" value={stats.eksik} icon={AlertCircle} color="text-gray-400" />
+            <StatCard label={isTr ? 'Olusturulmamis' : 'Not created'} value={stats.eksik} icon={AlertCircle} color="text-gray-400" />
           </div>
 
           {/* Search */}
@@ -517,9 +520,9 @@ export function DocumentsClient() {
                                   <p className="mt-1 text-xs text-[var(--text-secondary)]">
                                     {doc
                                       ? isPrivateCustomDocument
-                                        ? 'Bu kart size özel. Düzenleme ve indirme hazır.'
-                                        : 'Kayıt mevcut, düzenleme ve indirme hazır.'
-                                      : 'Henüz oluşturulmamış şablon kartı.'}
+                                        ? (isTr ? 'Bu kart size ozel. Duzenleme ve indirme hazir.' : 'This card is private to you. Editing and download are ready.')
+                                        : (isTr ? 'Kayit mevcut, duzenleme ve indirme hazir.' : 'Record exists. Editing and download are ready.')
+                                      : (isTr ? 'Henuz olusturulmamis sablon karti.' : 'Template card has not been created yet.')}
                                   </p>
                                 </div>
                               </div>
@@ -530,9 +533,15 @@ export function DocumentsClient() {
 
                             <div className="mt-4 grid grid-cols-2 gap-2">
                               <div className="rounded-xl border border-[var(--gold)]/15 bg-[var(--gold)]/5 px-3 py-2">
-                                <p className="text-[11px] uppercase tracking-[0.14em] text-[var(--text-secondary)]">Durum</p>
+                                <p className="text-[11px] uppercase tracking-[0.14em] text-[var(--text-secondary)]">{isTr ? 'Durum' : 'Status'}</p>
                                 <p className="mt-1 text-sm font-semibold text-[var(--text-primary)]">
-                                  {doc ? (doc.status === 'hazir' ? 'Hazır' : doc.status === 'taslak' ? 'Taslak' : 'İşlemde') : 'Oluşturulmadı'}
+                                  {doc
+                                    ? (doc.status === 'hazir'
+                                        ? (isTr ? 'Hazir' : 'Ready')
+                                        : doc.status === 'taslak'
+                                          ? (isTr ? 'Taslak' : 'Draft')
+                                          : (isTr ? 'Islemde' : 'In progress'))
+                                    : (isTr ? 'Olusturulmadi' : 'Not created')}
                                 </p>
                               </div>
                               <div className="rounded-xl border border-[var(--gold)]/15 bg-[var(--gold)]/5 px-3 py-2">
@@ -555,13 +564,13 @@ export function DocumentsClient() {
                               </span>
                             ) : doc ? (
                               <div className="mt-4 flex flex-wrap items-center gap-2">
-                                <button onClick={() => handleOpenDocument(doc)} className="rounded-lg bg-[var(--gold)] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[var(--gold-hover)]">Düzenle</button>
+                                <button onClick={() => handleOpenDocument(doc)} className="rounded-lg bg-[var(--gold)] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[var(--gold-hover)]">{isTr ? 'Duzenle' : 'Edit'}</button>
                                 <button
                                   onClick={() => handleQuickDownload(doc)}
                                   className="inline-flex items-center gap-1 rounded-lg border border-[var(--gold)]/25 px-3 py-2 text-xs font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--gold)]/10"
                                 >
                                   <Download size={12} />
-                                  İndir
+                                  {isTr ? 'Indir' : 'Download'}
                                 </button>
                               </div>
                             ) : (
@@ -574,7 +583,7 @@ export function DocumentsClient() {
                                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--gold)]/20 hover:border-[var(--gold)]/40'
                                   }`}
                                 >
-                                  {item.isP1 ? 'Şablondan Oluştur' : 'Oluştur'}
+                                  {item.isP1 ? (isTr ? 'Sablondan Olustur' : 'Create from template') : (isTr ? 'Olustur' : 'Create')}
                                 </button>
 
                                 {/* Dropdown: Import / Camera */}

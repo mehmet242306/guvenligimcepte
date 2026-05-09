@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { createSurvey, saveQuestions, type QuestionOption } from "@/lib/supabase/survey-api";
@@ -30,6 +31,8 @@ function genId() {
 }
 
 export function TrainingNewClient() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const router = useRouter();
   const searchParams = useSearchParams();
   const aiConsumedTrainingQuotaRef = useRef(false);
@@ -331,7 +334,7 @@ export function TrainingNewClient() {
             className="mb-4 inline-flex items-center gap-1 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
-            Geri
+            {isTr ? "Geri" : "Back"}
           </button>
           <h1 className="text-2xl font-bold text-[var(--foreground)]">
             Create New {type === "exam" ? "Exam" : "Survey"}
@@ -506,7 +509,11 @@ export function TrainingNewClient() {
                                 checked={selectedCompanyIds.has(c.id)}
                                 onChange={e => {
                                   const next = new Set(selectedCompanyIds);
-                                  e.target.checked ? next.add(c.id) : next.delete(c.id);
+                                  if (e.target.checked) {
+                                    next.add(c.id);
+                                  } else {
+                                    next.delete(c.id);
+                                  }
                                   setSelectedCompanyIds(next);
                                 }}
                                 className="rounded border-[var(--border)]"
@@ -527,7 +534,7 @@ export function TrainingNewClient() {
                           type="button"
                           onClick={() => setCompanyDropdownOpen(false)}
                           className="rounded-lg bg-[var(--gold)] px-3 py-1 text-xs font-medium text-white"
-                        >Tamam</button>
+                        >{isTr ? "Tamam" : "Done"}</button>
                       </div>
                     </div>
                   )}
@@ -679,7 +686,7 @@ export function TrainingNewClient() {
                 onClick={() => setStep(1)}
                 className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--card)] py-3 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--accent)]"
               >
-                Geri
+                {isTr ? "Geri" : "Back"}
               </button>
               <button
                 onClick={generateWithAI}
@@ -854,7 +861,7 @@ export function TrainingNewClient() {
                 onClick={() => setStep(2)}
                 className="flex-1 min-h-[44px] rounded-xl border border-[var(--border)] bg-[var(--card)] py-3 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--accent)]"
               >
-                Geri
+                {isTr ? "Geri" : "Back"}
               </button>
               <button
                 type="button"
@@ -862,7 +869,11 @@ export function TrainingNewClient() {
                 disabled={saving || !title.trim() || questions.length === 0}
                 className="flex-[2] min-h-[44px] rounded-xl bg-[var(--gold)] py-3 text-sm font-semibold text-white shadow hover:brightness-110 disabled:opacity-50"
               >
-                {saving ? <ButtonLoader label="Kaydediliyor..." /> : `Kaydet (${questions.length} soru)`}
+                {saving
+                  ? <ButtonLoader label={isTr ? "Kaydediliyor..." : "Saving..."} />
+                  : isTr
+                    ? `Kaydet (${questions.length} soru)`
+                    : `Save (${questions.length} questions)`}
               </button>
             </div>
           </div>

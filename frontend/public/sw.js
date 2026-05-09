@@ -1,6 +1,6 @@
 const CACHE_VERSION = "risknova-pwa-v1";
 
-self.addEventListener("install", (event) => {
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 

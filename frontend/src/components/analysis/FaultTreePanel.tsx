@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useMemo } from "react";
+import { useLocale } from "next-intl";
 import {
   Network,
   Sparkles,
@@ -9,7 +10,6 @@ import {
   Loader2,
   AlertTriangle,
   Trash2,
-  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +22,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ZoomableContainer } from "@/components/ui/zoomable-container";
-import { exportPanelPdf } from "@/lib/export-panel-pdf";
 import type { FaultTreeData, FaultTreeNode } from "@/lib/analysis/types";
 
 /* ------------------------------------------------------------------ */
@@ -297,6 +296,8 @@ export function FaultTreePanel({
   onSave,
   onAiRequest,
 }: FaultTreePanelProps) {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const diagramRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<FaultTreeData>(
     initialData ?? defaultData(),
@@ -704,7 +705,7 @@ export function FaultTreePanel({
 
         <Button variant="outline" size="md" onClick={addNode}>
           <Plus className="h-4 w-4" />
-          Dugum Ekle
+          {isTr ? "Dugum Ekle" : "Add node"}
         </Button>
 
         <div className="flex-1" />
@@ -722,7 +723,7 @@ export function FaultTreePanel({
           ) : (
             <Save className="h-4 w-4" />
           )}
-          Kaydet
+          {isTr ? "Kaydet" : "Save"}
         </Button>
       </div>
     </div>

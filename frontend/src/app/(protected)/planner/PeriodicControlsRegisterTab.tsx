@@ -305,7 +305,6 @@ export default function PeriodicControlsRegisterTab() {
       await ensurePdfUnicodeFont(doc);
       doc.setFont("NotoSans", "normal");
       const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
       const margin = PERIODIC_PDF_TEMPLATE.page.margin;
       const contentWidth = pageWidth - margin * 2;
       let y = margin;

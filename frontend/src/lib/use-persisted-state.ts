@@ -83,7 +83,7 @@ export function usePersistedState<T>(
     setStateRaw(stored);
     setHydrated(true);
     // initialValue eklemiyoruz deps'e çünkü değişmesi yeniden yükleme tetiklemesin
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [fullKey]);
 
   // State değişince localStorage'a yaz (sadece hydration sonrası, race önlemek için)

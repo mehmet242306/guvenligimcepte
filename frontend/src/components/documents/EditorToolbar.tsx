@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useState, useRef, useCallback } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import type { Editor } from '@tiptap/react';
 import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
   Heading1, Heading2, Heading3,
   List, ListOrdered, Quote,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  Table as TableIcon, Highlighter, Palette,
+  Table as TableIcon, Highlighter,
   Undo, Redo, Minus, Printer, Type,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -213,7 +213,9 @@ function FontSizeSelect({ editor }: { editor: Editor }) {
 /* Main Toolbar                                                  */
 /* ══════════════════════════════════════════════════════════════ */
 export function EditorToolbar({ editor }: EditorToolbarProps) {
+  const locale = useLocale();
   const tt = useTranslations('documentEditor.toolbar');
+  const isTr = locale === 'tr';
   const s = 15;
 
   return (
@@ -234,13 +236,13 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       <Divider />
 
       {/* Headings */}
-      <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} active={editor.isActive('heading', { level: 1 })} title="Başlık 1">
+      <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} active={editor.isActive('heading', { level: 1 })} title={isTr ? 'Baslik 1' : 'Heading 1'}>
         <Heading1 size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title="Başlık 2">
+      <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title={isTr ? 'Baslik 2' : 'Heading 2'}>
         <Heading2 size={s} />
       </Btn>
-      <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })} title="Başlık 3">
+      <Btn onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })} title={isTr ? 'Baslik 3' : 'Heading 3'}>
         <Heading3 size={s} />
       </Btn>
 
@@ -317,7 +319,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
 
       {/* Insert */}
       <TablePicker editor={editor} />
-      <Btn onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Yatay Çizgi">
+      <Btn onClick={() => editor.chain().focus().setHorizontalRule().run()} title={isTr ? 'Yatay cizgi' : 'Horizontal rule'}>
         <Minus size={s} />
       </Btn>
 

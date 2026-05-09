@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
@@ -28,6 +29,18 @@ const quickActions = [
 ];
 
 /* ── Markdown-lite renderer ── */
+const quickActionsEn = [
+  { label: "Company risk summary", prompt: "Summarize the overall company risk status on the platform. Which companies require attention?" },
+  { label: "Regulation update", prompt: "What are the important recent changes in Turkish OHS regulations? Are there updates I should watch?" },
+  { label: "Training plan suggestion", prompt: "Prepare an annual OHS training plan for employees. Include mandatory trainings and durations." },
+  { label: "Inspection preparation", prompt: "Create a checklist of actions needed to prepare for a Ministry of Labor inspection." },
+  { label: "Emergency plan", prompt: "Design a general workplace emergency action plan including earthquake, fire, and natural disaster scenarios." },
+  { label: "CAPA process", prompt: "Explain the Corrective and Preventive Action process step by step. How is root cause analysis performed?" },
+];
+
+const capabilityLabels = ["Platform Verileri", "Mevzuat Bilgisi", "ISG Uzmanligi", "Surekli Ogrenme", "Geri Bildirim", "Kalici Hafiza"];
+const capabilityLabelsEn = ["Platform data", "Regulation knowledge", "OHS expertise", "Continuous learning", "Feedback", "Persistent memory"];
+
 function renderMarkdown(text: string) {
   const lines = text.split("\n");
   const elements: ReactNode[] = [];
@@ -113,6 +126,8 @@ type NovaEvalRunRow = {
 };
 
 export function AdminAITab() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -420,7 +435,7 @@ export function AdminAITab() {
             onClick={() => setShowLearnPanel(!showLearnPanel)}
             className="h-7 px-2 text-xs"
           >
-            {showLearnPanel ? "Kapat" : "Ogret"}
+            {showLearnPanel ? (isTr ? "Kapat" : "Close") : (isTr ? "Ogret" : "Teach")}
           </Button>
           <Button type="button" variant="ghost" onClick={clearHistory} className="h-7 px-2 text-xs">Temizle</Button>
         </div>
@@ -552,7 +567,7 @@ export function AdminAITab() {
                           });
                         }}
                       >
-                        Kaydet
+                        {isTr ? "Kaydet" : "Save"}
                       </Button>
                     </div>
                   </div>
@@ -628,7 +643,7 @@ export function AdminAITab() {
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {quickActions.map((qa) => (
+              {(isTr ? quickActions : quickActionsEn).map((qa) => (
                 <button
                   key={qa.label}
                   type="button"
@@ -642,7 +657,7 @@ export function AdminAITab() {
 
             {/* Erişim bilgisi */}
             <div className="mt-6 flex flex-wrap justify-center gap-2">
-              {["Platform Verileri", "Mevzuat Bilgisi", "ISG Uzmanligi", "Surekli Ogrenme", "Geri Bildirim", "Kalici Hafiza"].map((cap) => (
+              {(isTr ? capabilityLabels : capabilityLabelsEn).map((cap) => (
                 <span key={cap} className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-400">
                   {cap}
                 </span>

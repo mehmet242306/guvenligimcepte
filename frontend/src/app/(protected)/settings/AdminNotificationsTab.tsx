@@ -54,7 +54,7 @@ export function AdminNotificationsTab() {
   useEffect(() => {
     const supabase = createClient();
     // Initial notification fetch intentionally runs once before realtime subscription.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     void load();
 
     if (!supabase) return;

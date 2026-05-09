@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { X, Link2, Copy, Check, QrCode, Share2, MessageCircle, Smartphone, ExternalLink } from 'lucide-react';
+import { X, Link2, Copy, Check, Share2, MessageCircle, Smartphone, ExternalLink } from 'lucide-react';
 import QRCode from 'qrcode';
 import { toggleDocumentSharing } from '@/lib/supabase/document-api';
 

@@ -900,6 +900,9 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   useEffect(() => {
     if (!open || activeTab !== "history") return;
     void refreshHistory();
+    // refreshHistory intentionally reads the current auth/user state when the
+    // history tab opens; including it would retrigger on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, activeTab, isAuthenticated]);
 
   useEffect(() => {
@@ -2113,7 +2116,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
               <div className="mb-2 rounded-xl border border-border bg-muted/30 p-2">
                 <div className="flex items-start gap-2">
                   {imagePreviewUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
+                     
                     <img
                       src={imagePreviewUrl}
                       alt={imageAnalysis.fileName}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import {
   fetchDeckById,
   fetchSlides,
@@ -40,7 +40,26 @@ const THEMES: Record<string, { bg: string; text: string; accent: string; fontSta
 };
 
 export function SlideEditorClient({ deckId }: { deckId: string }) {
-  const router = useRouter();
+  const locale = useLocale();
+  const isTr = locale === "tr";
+  const layoutLabel = useCallback((layout: SlideLayout) => {
+    if (isTr) return LAYOUTS.find((item) => item.key === layout)?.label ?? layout;
+    const labels: Record<SlideLayout, string> = {
+      cover: "Cover",
+      title_content: "Title + content",
+      bullet_list: "Bullet list",
+      two_column: "2 columns",
+      image_text: "Image + text",
+      image_full: "Full image",
+      quote: "Quote",
+      section_header: "Section header",
+      table: "Table",
+      title: "Title",
+      video: "Video",
+      summary: "Summary",
+    };
+    return labels[layout];
+  }, [isTr]);
   const [deck, setDeck] = useState<SlideDeck | null>(null);
   const [slides, setSlides] = useState<Slide[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -79,24 +98,24 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
 
   async function addSlide(layout: SlideLayout = "title_content") {
     const defaultContent: SlideContent = layout === "cover"
-      ? { title: "Kapak Başlığı", subtitle: "Alt başlık" }
+      ? { title: isTr ? "Kapak Basligi" : "Cover title", subtitle: isTr ? "Alt baslik" : "Subtitle" }
       : layout === "section_header"
-      ? { title: "Yeni Bölüm" }
+      ? { title: isTr ? "Yeni Bolum" : "New section" }
       : layout === "bullet_list"
-      ? { title: "Madde Listesi", bullets: ["Birinci madde", "İkinci madde", "Üçüncü madde"] }
+      ? { title: isTr ? "Madde Listesi" : "Bullet list", bullets: isTr ? ["Birinci madde", "Ikinci madde", "Ucuncu madde"] : ["First item", "Second item", "Third item"] }
       : layout === "two_column"
-      ? { title: "İki Kolon Başlığı", left: { title: "Sol", body: "Sol içerik" }, right: { title: "Sağ", body: "Sağ içerik" } }
+      ? { title: isTr ? "Iki Kolon Basligi" : "Two-column title", left: { title: isTr ? "Sol" : "Left", body: isTr ? "Sol icerik" : "Left content" }, right: { title: isTr ? "Sag" : "Right", body: isTr ? "Sag icerik" : "Right content" } }
       : layout === "quote"
-      ? { body: "Alıntı metni buraya...", caption: "— Yazar" }
+      ? { body: isTr ? "Alinti metni buraya..." : "Quote text here...", caption: isTr ? "- Yazar" : "- Author" }
       : layout === "summary"
-      ? { title: "Özet", bullets: ["Ana nokta 1", "Ana nokta 2", "Ana nokta 3"] }
+      ? { title: isTr ? "Ozet" : "Summary", bullets: isTr ? ["Ana nokta 1", "Ana nokta 2", "Ana nokta 3"] : ["Key point 1", "Key point 2", "Key point 3"] }
       : layout === "video"
       ? { title: "Video", video_url: "" }
       : layout === "image_full"
       ? { image_url: "", caption: "" }
       : layout === "image_text"
-      ? { title: "Başlık", body: "Metin içeriği", image_url: "" }
-      : { title: "Yeni Slayt", body: "İçerik buraya yazın..." };
+      ? { title: isTr ? "Baslik" : "Title", body: isTr ? "Metin icerigi" : "Text content", image_url: "" }
+      : { title: isTr ? "Yeni Slayt" : "New slide", body: isTr ? "Icerik buraya yazin..." : "Write content here..." };
 
     const newSlide = await createSlide(deckId, { layout, content: defaultContent });
     if (newSlide) {
@@ -107,7 +126,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
   }
 
   async function removeSlide(id: string) {
-    if (!confirm("Bu slaytı silmek istediğinize emin misiniz?")) return;
+    if (!confirm(isTr ? "Bu slayti silmek istediginize emin misiniz?" : "Are you sure you want to delete this slide?")) return;
     const ok = await deleteSlide(id);
     if (ok) {
       const updated = await fetchSlides(deckId);
@@ -226,7 +245,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-sm text-[var(--muted-foreground)]">Yükleniyor...</div>
+        <div className="text-sm text-[var(--muted-foreground)]">{isTr ? "Yukleniyor..." : "Loading..."}</div>
       </div>
     );
   }
@@ -341,7 +360,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
               className="w-full rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 py-2 text-xs font-bold text-white hover:brightness-110 shadow flex items-center justify-center gap-1.5"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
-              AI ile Slayt Ekle
+              {isTr ? "AI ile Slayt Ekle" : "Add slide with AI"}
             </button>
             <div className="relative">
               <button
@@ -366,7 +385,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
                         className="flex w-full items-center gap-2 px-3 py-2 text-left text-xs text-[var(--foreground)] hover:bg-[var(--accent)]"
                       >
                         <span className="text-base">{l.icon}</span>
-                        <span>{l.label}</span>
+                        <span>{layoutLabel(l.key)}</span>
                       </button>
                     ))}
                   </div>
@@ -391,7 +410,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
                     <div className="truncate font-semibold text-[var(--foreground)]">
                       {s.content.title || `Slayt ${i + 1}`}
                     </div>
-                    <div className="text-[10px] text-[var(--muted-foreground)]">{LAYOUTS.find((l) => l.key === s.layout)?.label}</div>
+                    <div className="text-[10px] text-[var(--muted-foreground)]">{layoutLabel(s.layout)}</div>
                   </div>
                 </div>
                 <div className="absolute top-1 right-1 hidden gap-0.5 group-hover:flex">
@@ -429,6 +448,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
                 <SlideCanvas
                   slide={active}
                   theme={theme}
+                  isTr={isTr}
                   onChange={updateActiveContent}
                   onPickMedia={(field) => {
                     const accept = field === "video_url" ? "video" : "image";
@@ -442,7 +462,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
             <div className="rounded-xl border-2 border-dashed border-[var(--border)] p-16 text-center text-[var(--muted-foreground)]">
               <p className="mb-4">Henüz slayt yok</p>
               <button onClick={() => addSlide("cover")} className="rounded-lg bg-[var(--gold)] px-4 py-2 text-sm font-semibold text-white">
-                İlk Slaytı Ekle
+                {isTr ? "Ilk Slayti Ekle" : "Add first slide"}
               </button>
             </div>
           )}
@@ -460,7 +480,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
             >
               <div className="mb-1 flex items-center gap-2">
                 <span className="text-2xl">✨</span>
-                <h2 className="text-xl font-bold text-[var(--foreground)]">AI ile Slayt Oluştur</h2>
+                <h2 className="text-xl font-bold text-[var(--foreground)]">{isTr ? "AI ile Slayt Olustur" : "Create slide with AI"}</h2>
               </div>
               <p className="mb-4 text-xs text-[var(--muted-foreground)]">
                 Nova AI mevcut deck'inin başlığını ve slaytlarını bağlam olarak kullanıp yeni bir slayt hazırlar
@@ -476,7 +496,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
                     onChange={(e) => setAiPrompt(e.target.value)}
                     rows={4}
                     autoFocus
-                    placeholder="Örn: Yangın söndürücü türleri ve doğru kullanım tekniği. ABC tozlu, CO2, köpük ve su esaslı söndürücülerin farkları."
+                    placeholder={isTr ? "Orn: Yangin sondurucu turleri ve dogru kullanim teknigi. ABC tozlu, CO2, kopuk ve su esasli sonduruculerin farklari." : "Example: Fire extinguisher types and correct use. Differences between ABC powder, CO2, foam, and water-based extinguishers."}
                     className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--foreground)]"
                   />
                 </div>
@@ -493,7 +513,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
                     <option value="">🤖 Otomatik seç</option>
                     {LAYOUTS.map((l) => (
                       <option key={l.key} value={l.key}>
-                        {l.icon} {l.label}
+                        {l.icon} {layoutLabel(l.key)}
                       </option>
                     ))}
                   </select>
@@ -501,7 +521,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
 
                 {active && (
                   <div className="rounded-lg border border-[var(--border)] bg-[var(--muted)]/20 p-3 text-[11px] text-[var(--muted-foreground)]">
-                    💡 Yeni slayt <b>{activeId ? `"${active.content?.title || `Slayt ${slides.findIndex(s => s.id === activeId) + 1}`}"` : "son slaytın"}</b> ardına eklenecek
+                    {isTr ? "Yeni slayt" : "The new slide"} <b>{activeId ? `"${active.content?.title || `${isTr ? "Slayt" : "Slide"} ${slides.findIndex(s => s.id === activeId) + 1}`}"` : (isTr ? "son slaytin" : "the last slide")}</b> {isTr ? "ardina eklenecek" : "will be added after this"}
                   </div>
                 )}
 
@@ -518,14 +538,14 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
                   disabled={aiLoading}
                   className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-semibold text-[var(--foreground)]"
                 >
-                  İptal
+                  {isTr ? "Iptal" : "Cancel"}
                 </button>
                 <button
                   onClick={handleAIGenerate}
                   disabled={aiLoading || !aiPrompt.trim()}
                   className="flex-1 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2 text-sm font-bold text-white disabled:opacity-50 shadow"
                 >
-                  {aiLoading ? "Üretiliyor..." : "✨ Oluştur"}
+                  {aiLoading ? (isTr ? "Uretiliyor..." : "Generating...") : (isTr ? "Olustur" : "Create")}
                 </button>
               </div>
             </div>
@@ -563,7 +583,7 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
                 }`}
               >
                 <div className="text-lg">{l.icon}</div>
-                <div className="text-[10px] font-semibold text-[var(--foreground)]">{l.label}</div>
+                <div className="text-[10px] font-semibold text-[var(--foreground)]">{layoutLabel(l.key)}</div>
               </button>
             ))}
           </div>
@@ -593,11 +613,13 @@ export function SlideEditorClient({ deckId }: { deckId: string }) {
 function SlideCanvas({
   slide,
   theme,
+  isTr,
   onChange,
   onPickMedia,
 }: {
   slide: Slide;
   theme: { bg: string; text: string; accent: string; fontStack: string };
+  isTr: boolean;
   onChange: (patch: Partial<SlideContent>) => void;
   onPickMedia: (field: "image_url" | "video_url" | "background_image_url") => void;
 }) {
@@ -612,7 +634,7 @@ function SlideCanvas({
           <textarea
             value={c.title || ""}
             onChange={(e) => onChange({ title: e.target.value })}
-            placeholder="Kapak Başlığı"
+            placeholder={isTr ? "Kapak Basligi" : "Cover title"}
             rows={2}
             className={`${baseInput} text-center text-4xl md:text-5xl font-extrabold leading-tight break-words`}
             style={{ color: theme.accent, wordBreak: "break-word" }}
@@ -620,7 +642,7 @@ function SlideCanvas({
           <textarea
             value={c.subtitle || ""}
             onChange={(e) => onChange({ subtitle: e.target.value })}
-            placeholder="Alt başlık"
+            placeholder={isTr ? "Alt baslik" : "Subtitle"}
             rows={2}
             className={`${baseInput} mt-4 text-center text-lg md:text-xl opacity-80 leading-snug`}
           />
@@ -635,7 +657,7 @@ function SlideCanvas({
             <input
               value={c.title || ""}
               onChange={(e) => onChange({ title: e.target.value })}
-              placeholder="Bölüm Başlığı"
+              placeholder={isTr ? "Bolum Basligi" : "Section title"}
               className={`${baseInput} text-center text-4xl font-bold`}
             />
           </div>
@@ -648,7 +670,7 @@ function SlideCanvas({
           <input
             value={c.title || ""}
             onChange={(e) => onChange({ title: e.target.value })}
-            placeholder="Başlık"
+            placeholder={isTr ? "Baslik" : "Title"}
             className={`${baseInput} text-3xl font-bold`}
             style={{ color: theme.accent }}
           />
@@ -656,7 +678,7 @@ function SlideCanvas({
           <textarea
             value={c.body || ""}
             onChange={(e) => onChange({ body: e.target.value })}
-            placeholder="İçerik metni..."
+            placeholder={isTr ? "Icerik metni..." : "Content text..."}
             rows={10}
             className={`${baseInput} text-lg leading-relaxed`}
           />
@@ -669,7 +691,7 @@ function SlideCanvas({
           <input
             value={c.title || ""}
             onChange={(e) => onChange({ title: e.target.value })}
-            placeholder="Başlık"
+            placeholder={isTr ? "Baslik" : "Title"}
             className={`${baseInput} text-3xl font-bold`}
             style={{ color: theme.accent }}
           />
@@ -693,7 +715,7 @@ function SlideCanvas({
                     onChange({ bullets: next });
                   }}
                   className="text-xs opacity-40 hover:opacity-100"
-                  title="Sil"
+                  title={isTr ? "Sil" : "Delete"}
                 >
                   ×
                 </button>
@@ -703,7 +725,7 @@ function SlideCanvas({
               onClick={() => onChange({ bullets: [...(c.bullets || []), "Yeni madde"] })}
               className="mt-3 rounded-lg border border-dashed border-current px-4 py-2 text-sm opacity-60 hover:opacity-100"
             >
-              + Madde Ekle
+              {isTr ? "+ Madde Ekle" : "+ Add item"}
             </button>
           </div>
         </div>
@@ -715,7 +737,7 @@ function SlideCanvas({
           <input
             value={c.title || ""}
             onChange={(e) => onChange({ title: e.target.value })}
-            placeholder="Başlık"
+            placeholder={isTr ? "Baslik" : "Title"}
             className={`${baseInput} text-3xl font-bold`}
             style={{ color: theme.accent }}
           />
@@ -725,13 +747,13 @@ function SlideCanvas({
               <input
                 value={c.left?.title || ""}
                 onChange={(e) => onChange({ left: { ...(c.left || {}), title: e.target.value } })}
-                placeholder="Sol başlık"
+                placeholder={isTr ? "Sol baslik" : "Left title"}
                 className={`${baseInput} text-xl font-semibold`}
               />
               <textarea
                 value={c.left?.body || ""}
                 onChange={(e) => onChange({ left: { ...(c.left || {}), body: e.target.value } })}
-                placeholder="Sol içerik"
+                placeholder={isTr ? "Sol icerik" : "Left content"}
                 rows={8}
                 className={`${baseInput} text-base`}
               />
@@ -740,13 +762,13 @@ function SlideCanvas({
               <input
                 value={c.right?.title || ""}
                 onChange={(e) => onChange({ right: { ...(c.right || {}), title: e.target.value } })}
-                placeholder="Sağ başlık"
+                placeholder={isTr ? "Sag baslik" : "Right title"}
                 className={`${baseInput} text-xl font-semibold`}
               />
               <textarea
                 value={c.right?.body || ""}
                 onChange={(e) => onChange({ right: { ...(c.right || {}), body: e.target.value } })}
-                placeholder="Sağ içerik"
+                placeholder={isTr ? "Sag icerik" : "Right content"}
                 rows={8}
                 className={`${baseInput} text-base`}
               />
@@ -761,7 +783,7 @@ function SlideCanvas({
           <input
             value={c.title || ""}
             onChange={(e) => onChange({ title: e.target.value })}
-            placeholder="Başlık"
+            placeholder={isTr ? "Baslik" : "Title"}
             className={`${baseInput} text-3xl font-bold`}
             style={{ color: theme.accent }}
           />
@@ -774,7 +796,7 @@ function SlideCanvas({
             >
               {c.image_url ? (
                 <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  { }
                   <img src={c.image_url} alt="" className="max-h-full max-w-full rounded" />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-colors">
                     <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-semibold">🖼️ Değiştir</span>
@@ -808,7 +830,7 @@ function SlideCanvas({
           >
             {c.image_url ? (
               <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+                { }
                 <img src={c.image_url} alt="" className="max-h-full max-w-full object-contain" />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-colors">
                   <span className="opacity-0 group-hover:opacity-100 text-white text-base font-semibold">🖼️ Görseli Değiştir</span>
@@ -825,7 +847,7 @@ function SlideCanvas({
             <input
               value={c.caption || ""}
               onChange={(e) => onChange({ caption: e.target.value })}
-              placeholder="Açıklama (opsiyonel)"
+              placeholder={isTr ? "Aciklama (opsiyonel)" : "Description (optional)"}
               className={`${baseInput} text-sm`}
             />
           </div>
@@ -840,14 +862,14 @@ function SlideCanvas({
             <textarea
               value={c.body || ""}
               onChange={(e) => onChange({ body: e.target.value })}
-              placeholder="Alıntı metni..."
+              placeholder={isTr ? "Alinti metni..." : "Quote text..."}
               rows={4}
               className={`${baseInput} text-center text-2xl italic`}
             />
             <input
               value={c.caption || ""}
               onChange={(e) => onChange({ caption: e.target.value })}
-              placeholder="— Yazar"
+              placeholder={isTr ? "- Yazar" : "- Author"}
               className={`${baseInput} mt-4 text-center text-lg opacity-70`}
               style={{ color: theme.accent }}
             />
@@ -861,7 +883,7 @@ function SlideCanvas({
           <input
             value={c.title || ""}
             onChange={(e) => onChange({ title: e.target.value })}
-            placeholder="Başlık"
+            placeholder={isTr ? "Baslik" : "Title"}
             className={`${baseInput} text-3xl font-bold`}
             style={{ color: theme.accent }}
           />
@@ -898,9 +920,9 @@ function SlideCanvas({
       return (
         <div className="h-full w-full p-12">
           <input
-            value={c.title || "Özet"}
+            value={c.title || (isTr ? "Ozet" : "Summary")}
             onChange={(e) => onChange({ title: e.target.value })}
-            placeholder="Özet"
+            placeholder={isTr ? "Ozet" : "Summary"}
             className={`${baseInput} text-3xl font-bold`}
             style={{ color: theme.accent }}
           />
@@ -926,7 +948,7 @@ function SlideCanvas({
               onClick={() => onChange({ bullets: [...(c.bullets || []), "Yeni madde"] })}
               className="w-full rounded-lg border border-dashed border-current px-4 py-2 text-sm opacity-60 hover:opacity-100"
             >
-              + Madde Ekle
+              {isTr ? "+ Madde Ekle" : "+ Add item"}
             </button>
           </div>
         </div>

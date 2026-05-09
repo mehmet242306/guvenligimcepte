@@ -45,7 +45,7 @@ export async function createAnalysis(params: {
   incidentId?: string | null;
   incidentTitle: string;
   method: AnalysisMethod;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   data: any;
   isFreeMode?: boolean;
 }): Promise<RootCauseAnalysis | null> {
@@ -75,7 +75,7 @@ export async function createAnalysis(params: {
 
 export async function updateAnalysis(
   id: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   newData: any,
 ): Promise<boolean> {
   const supabase = createClient();
@@ -136,9 +136,9 @@ export async function requestAiAnalysis(params: {
   incidentDescription?: string;
   /** BCP 47 tag or primary subtag — steers R₂D-RCA prompt language (en / tr / ru). */
   locale?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   context?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
 }): Promise<any> {
   const res = await fetch("/api/ai/analysis", {
     method: "POST",

@@ -190,7 +190,7 @@ export function MediaPickerModal({ open, onClose, onSelect, accept = "image" }: 
                       className="group relative aspect-square overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--background)] hover:border-[var(--gold)]"
                     >
                       {a.asset_type === "image" ? (
-                        // eslint-disable-next-line @next/next/no-img-element
+                         
                         <img src={a.public_url} alt={a.file_name} className="h-full w-full object-cover" />
                       ) : a.asset_type === "video" ? (
                         <div className="flex h-full w-full items-center justify-center bg-black/50 text-3xl">🎥</div>

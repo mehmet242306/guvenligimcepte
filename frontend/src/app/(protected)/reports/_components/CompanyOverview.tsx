@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useLocale } from "next-intl";
 import { AlertTriangle, Bell, CheckCircle2, Gauge, TrendingUp } from "lucide-react";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 import { registerRcaChartDependencies } from "@/components/rca/chart-register";
@@ -272,6 +273,8 @@ function ChartCard({
   subtitle: string;
   children: React.ReactNode;
 }) {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   return (
     <div className="rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-card)]">
       <div className="mb-3">
@@ -279,7 +282,7 @@ function ChartCard({
         <p className="text-xs text-muted-foreground">{subtitle}</p>
       </div>
       <div className="h-64">
-        {children || <div className="flex h-full items-center justify-center gap-2 text-sm text-muted-foreground"><CheckCircle2 className="h-4 w-4" /><span>Yükleniyor...</span></div>}
+        {children || <div className="flex h-full items-center justify-center gap-2 text-sm text-muted-foreground"><CheckCircle2 className="h-4 w-4" /><span>{isTr ? "Yukleniyor..." : "Loading..."}</span></div>}
       </div>
     </div>
   );

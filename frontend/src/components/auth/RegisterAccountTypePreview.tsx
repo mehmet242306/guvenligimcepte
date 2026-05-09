@@ -68,20 +68,8 @@ type Choice<T extends string> = {
 
 const countryDefaultLanguage: Record<string, Locale> = {
   TR: "tr",
-  AZ: "az",
   US: "en",
   GB: "en",
-  DE: "de",
-  FR: "fr",
-  ES: "es",
-  RU: "ru",
-  SA: "ar",
-  AE: "ar",
-  CN: "zh",
-  JP: "ja",
-  KR: "ko",
-  IN: "hi",
-  ID: "id",
 };
 
 const stepOrder: WizardStep[] = ["account", "country", "language", "role"];
@@ -150,14 +138,17 @@ export function RegisterAccountTypePreview({
 
   const stepIndex = stepOrder.indexOf(step);
   const selectedAccount = accountChoices.find((item) => item.value === accountType) ?? null;
-  const selectedCountry =
-    countryCode && WIZARD_COUNTRY_CODES.includes(countryCode as WizardCountryCode)
-      ? {
-          value: countryCode as WizardCountryCode,
-          title: tCountry(countryCode as WizardCountryCode),
-          description: t(`countryHints.${countryCode}` as Parameters<typeof t>[0]),
-        }
-      : null;
+  const selectedCountry = useMemo(
+    () =>
+      countryCode && WIZARD_COUNTRY_CODES.includes(countryCode as WizardCountryCode)
+        ? {
+            value: countryCode as WizardCountryCode,
+            title: tCountry(countryCode as WizardCountryCode),
+            description: t(`countryHints.${countryCode}` as Parameters<typeof t>[0]),
+          }
+        : null,
+    [countryCode, t, tCountry],
+  );
   const selectedLanguage = languageCode ? tLang(languageCode) : null;
   const selectedRole = roleChoices.find((item) => item.value === roleKey) ?? null;
 

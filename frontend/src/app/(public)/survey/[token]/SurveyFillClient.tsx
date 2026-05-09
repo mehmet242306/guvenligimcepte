@@ -65,6 +65,8 @@ export function SurveyFillClient() {
     }
     const interval = setInterval(() => setTimeLeft(prev => (prev !== null ? prev - 1 : null)), 1000);
     return () => clearInterval(interval);
+    // Timer expiry intentionally calls the latest in-scope submit handler.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, phase]);
 
   function shuffleArray<T>(arr: T[]): T[] {

@@ -1,6 +1,6 @@
 import { createClient } from "./client";
 import { resolveOrganizationId } from "./incident-api";
-import type { ChecklistQuestionRecord, TemplateWithQuestions } from "./checklist-api";
+import type { TemplateWithQuestions } from "./checklist-api";
 
 // =============================================================================
 // Saha Denetimi — Denetim oturumu (run) + cevaplar + Nova önerileri

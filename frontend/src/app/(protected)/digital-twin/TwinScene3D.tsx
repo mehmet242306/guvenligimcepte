@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Grid, Html, Line, Text } from "@react-three/drei";
+import { OrbitControls, Grid, Html, Line } from "@react-three/drei";
 import { useMemo, useRef, useState, useEffect } from "react";
 import { Mesh, Vector3 } from "three";
 import type { TwinPoint } from "@/lib/supabase/digital-twin-api";

@@ -25,7 +25,6 @@ type Feedback =
 
 export function ReportsClient() {
   const [workspace, setWorkspace] = useState<WorkspaceRow | null>(null);
-  const [orgId, setOrgId] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [profile, setProfile] = useState<CompanyProfile | null>(null);
   const [categories, setCategories] = useState<CompanyFileCategory[]>([]);
@@ -59,7 +58,6 @@ export function ReportsClient() {
       resolvedOrg = (profile?.organization_id as string | null) ?? null;
       setUserName((profile?.full_name as string | null) ?? user.email ?? null);
     }
-    setOrgId(resolvedOrg);
 
     if (!resolvedOrg) {
       setCategories([]);

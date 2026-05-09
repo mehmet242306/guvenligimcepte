@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import {
   fetchDeckById,
   fetchSlides,
@@ -21,6 +22,8 @@ const THEMES: Record<string, { bg: string; text: string; accent: string; fontSta
 
 export function PresenterClient({ deckId }: { deckId: string }) {
   const router = useRouter();
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const [deck, setDeck] = useState<SlideDeck | null>(null);
   const [slides, setSlides] = useState<Slide[]>([]);
   const [idx, setIdx] = useState(0);
@@ -148,7 +151,7 @@ export function PresenterClient({ deckId }: { deckId: string }) {
   if (!deck || slides.length === 0) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black text-white">
-        <div>Yükleniyor...</div>
+        <div>{isTr ? "Yükleniyor..." : "Loading..."}</div>
       </div>
     );
   }
@@ -164,7 +167,7 @@ export function PresenterClient({ deckId }: { deckId: string }) {
           onClick={() => router.push(`/training/slides/${deckId}/edit`)}
           className="rounded-lg bg-white/10 px-3 py-1.5 text-xs backdrop-blur hover:bg-white/20"
         >
-          ← Çıkış (Esc)
+          ← {isTr ? "Çıkış" : "Exit"} (Esc)
         </button>
         <div className="text-xs opacity-70">
           {idx + 1} / {slides.length} • {deck.title}
@@ -173,7 +176,7 @@ export function PresenterClient({ deckId }: { deckId: string }) {
           onClick={() => setShowNotes((x) => !x)}
           className="rounded-lg bg-white/10 px-3 py-1.5 text-xs backdrop-blur hover:bg-white/20"
         >
-          {showNotes ? "Notları Gizle" : "Notlar (N)"}
+          {showNotes ? (isTr ? "Notları Gizle" : "Hide Notes") : isTr ? "Notlar (N)" : "Notes (N)"}
         </button>
       </div>
 
@@ -198,7 +201,9 @@ export function PresenterClient({ deckId }: { deckId: string }) {
       {/* Speaker notes overlay */}
       {showNotes && active.speaker_notes && (
         <div className="border-t border-white/10 bg-black p-4 text-sm text-white max-h-40 overflow-y-auto">
-          <div className="text-xs font-bold uppercase opacity-60 mb-2">Konuşmacı Notları</div>
+          <div className="text-xs font-bold uppercase opacity-60 mb-2">
+            {isTr ? "Konuşmacı Notları" : "Speaker Notes"}
+          </div>
           <div className="whitespace-pre-wrap">{active.speaker_notes}</div>
         </div>
       )}
@@ -304,7 +309,7 @@ function SlideRenderer({
           <div className="my-5 h-0.5 w-20" style={{ background: theme.accent }} />
           <div className="grid grid-cols-2 gap-8">
             {c.image_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
+               
               <img src={c.image_url} alt="" className="max-h-96 w-full rounded-lg object-contain" />
             ) : (
               <div className="h-64 rounded-lg border-2 border-dashed border-current/30" />
@@ -318,7 +323,7 @@ function SlideRenderer({
       return (
         <div className="relative h-full w-full">
           {c.image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
+             
             <img src={c.image_url} alt="" className="h-full w-full object-contain" />
           ) : (
             <div className="flex h-full items-center justify-center opacity-40">Görsel</div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { useLocale } from "next-intl";
 import { createClient as supabase } from "@/lib/supabase/client";
 
 /**
@@ -36,6 +37,29 @@ type LiveFrame = {
 };
 
 export default function LiveStreamViewer() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
+  const copy = {
+    loading: isTr ? "Aktif oturumlar yukleniyor..." : "Loading active sessions...",
+    title: isTr ? "CANLI Saha Taramalari" : "LIVE site scans",
+    noActive: isTr ? "Su an aktif tarama yok" : "No active scans right now",
+    activeCount: (count: number) => isTr ? `${count} aktif tarama` : `${count} active scan${count === 1 ? "" : "s"}`,
+    defaultSessionName: isTr ? "Saha Taramasi" : "Site scan",
+    frames: isTr ? "kare" : "frames",
+    risk: isTr ? "risk" : "risk",
+    clickToWatch: isTr ? "Izlemek icin tikla" : "Click to watch",
+    close: isTr ? "Kapat" : "Close",
+    waiting: isTr ? "Yayin bekleniyor..." : "Waiting for stream...",
+    waitingHint: isTr
+      ? "Mobil cihazdan frame gelmesi icin tarama yapiliyor olmasi gerekir"
+      : "A scan must be running on the mobile device before frames appear",
+    frame: isTr ? "Kare" : "Frame",
+    received: isTr ? "alindi" : "received",
+    live: isTr ? "canli" : "live",
+    emptyHint: isTr
+      ? "Mobil uygulamadan bir tarama baslatildiginda burada canli olarak izleyebilirsiniz."
+      : "Start a scan from the mobile app to watch it live here.",
+  };
   const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
   const [selectedSession, setSelectedSession] = useState<ActiveSession | null>(null);
   const [currentFrame, setCurrentFrame] = useState<LiveFrame | null>(null);
@@ -90,7 +114,7 @@ export default function LiveStreamViewer() {
     return () => {
       sb.removeChannel(channel);
     };
-  }, []);
+  }, [selectedSession?.id]);
 
   // Seçilen oturuma stream bağlantısı
   useEffect(() => {
@@ -129,7 +153,7 @@ export default function LiveStreamViewer() {
           table: "scan_detections",
           filter: `session_id=eq.${selectedSession.id}`,
         },
-        (payload) => {
+        () => {
           // Trigger re-fetch of session stats
           setSelectedSession((prev) =>
             prev ? { ...prev, total_risks_found: (prev.total_risks_found || 0) + 1 } : prev
@@ -147,7 +171,7 @@ export default function LiveStreamViewer() {
   if (loading) {
     return (
       <div className="rounded-xl border border-border bg-card p-6 text-center">
-        <p className="text-xs text-muted-foreground">Aktif oturumlar yükleniyor...</p>
+        <p className="text-xs text-muted-foreground">{copy.loading}</p>
       </div>
     );
   }
@@ -161,12 +185,12 @@ export default function LiveStreamViewer() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
             </span>
-            CANLI Saha Taramaları
+            {copy.title}
           </h3>
           <p className="text-[10px] text-muted-foreground mt-1">
             {activeSessions.length === 0
-              ? "Şu an aktif tarama yok"
-              : `${activeSessions.length} aktif tarama`}
+              ? copy.noActive
+              : copy.activeCount(activeSessions.length)}
           </p>
         </div>
       </div>
@@ -190,14 +214,14 @@ export default function LiveStreamViewer() {
               </div>
 
               <p className="text-sm font-bold text-white mb-1 pr-12">
-                {s.location_name || "Saha Taraması"}
+                {s.location_name || copy.defaultSessionName}
               </p>
               <div className="flex items-center gap-3 text-[10px] text-slate-400">
-                <span>📷 {s.total_frames_analyzed || 0} kare</span>
-                <span>⚠️ {s.total_risks_found || 0} risk</span>
+                <span>{s.total_frames_analyzed || 0} {copy.frames}</span>
+                <span>{s.total_risks_found || 0} {copy.risk}</span>
               </div>
               <p className="text-[9px] text-slate-500 mt-2">
-                İzlemek için tıkla →
+                {copy.clickToWatch}
               </p>
             </button>
           ))}
@@ -222,7 +246,7 @@ export default function LiveStreamViewer() {
               onClick={() => setSelectedSession(null)}
               className="text-xs text-slate-400 hover:text-white"
             >
-              ✕ Kapat
+              {copy.close}
             </button>
           </div>
 
@@ -239,9 +263,9 @@ export default function LiveStreamViewer() {
                 <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 mb-3">
                   <div className="animate-pulse h-12 w-12 rounded-full bg-red-500/20" />
                 </div>
-                <p className="text-xs text-slate-400">Yayın bekleniyor...</p>
+                <p className="text-xs text-slate-400">{copy.waiting}</p>
                 <p className="text-[10px] text-slate-600 mt-1">
-                  Mobil cihazdan frame gelmesi için tarama yapılıyor olması gerekir
+                  {copy.waitingHint}
                 </p>
               </div>
             )}
@@ -251,7 +275,7 @@ export default function LiveStreamViewer() {
               <>
                 {/* Top-left: frame info */}
                 <div className="absolute top-3 left-3 rounded-lg bg-black/70 backdrop-blur px-3 py-1.5 text-[10px] text-white border border-red-500/30">
-                  Kare #{currentFrame.frame_number} · {frameCount} alındı
+                  {copy.frame} #{currentFrame.frame_number} - {frameCount} {copy.received}
                 </div>
 
                 {/* Top-right: risk count */}
@@ -282,13 +306,13 @@ export default function LiveStreamViewer() {
           <div className="flex items-center justify-between p-3 bg-slate-900 border-t border-slate-800">
             <div className="flex items-center gap-4 text-[10px]">
               <span className="text-slate-400">
-                📷 <span className="text-white font-bold">{selectedSession.total_frames_analyzed || 0}</span> kare
+                <span className="text-white font-bold">{selectedSession.total_frames_analyzed || 0}</span> {copy.frames}
               </span>
               <span className="text-slate-400">
-                ⚠️ <span className="text-red-400 font-bold">{selectedSession.total_risks_found || 0}</span> risk
+                <span className="text-red-400 font-bold">{selectedSession.total_risks_found || 0}</span> {copy.risk}
               </span>
               <span className="text-slate-400">
-                📡 <span className="text-green-400 font-bold">{frameCount}</span> canlı
+                <span className="text-green-400 font-bold">{frameCount}</span> {copy.live}
               </span>
             </div>
           </div>
@@ -297,9 +321,9 @@ export default function LiveStreamViewer() {
 
       {activeSessions.length === 0 && (
         <div className="rounded-xl border border-border bg-card p-8 text-center">
-          <p className="text-sm text-muted-foreground">📭 Şu an aktif tarama yok</p>
+          <p className="text-sm text-muted-foreground">{copy.noActive}</p>
           <p className="text-[10px] text-muted-foreground mt-2">
-            Mobil uygulamadan bir tarama başlatıldığında burada canlı olarak izleyebilirsiniz.
+            {copy.emptyHint}
           </p>
         </div>
       )}

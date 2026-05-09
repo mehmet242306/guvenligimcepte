@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useLocale } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import {
   filterNovaOutboxRows,
@@ -107,6 +108,8 @@ function formatDateTime(value: string | null) {
 }
 
 export function SelfHealingTab() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const [loading, setLoading] = useState(true);
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -905,7 +908,9 @@ export function SelfHealingTab() {
                         disabled={busyAction !== null}
                         className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 disabled:opacity-60 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200"
                       >
-                        {busyAction === `restore:${row.id}:live` ? "Geri yukleniyor..." : "Yedegi geri yukle"}
+                        {busyAction === `restore:${row.id}:live`
+                          ? (isTr ? "Geri yukleniyor..." : "Restoring...")
+                          : (isTr ? "Yedegi geri yukle" : "Restore backup")}
                       </button>
                     </div>
                   )}

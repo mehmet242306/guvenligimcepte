@@ -79,7 +79,7 @@ const ACCOUNT_OPTIONS: Array<{
   },
 ];
 
-const LOCALE_LABELS: Record<Locale, string> = {
+const LOCALE_LABELS: Record<string, string> = {
   tr: "Turkce",
   en: "English",
   ar: "Arabic",

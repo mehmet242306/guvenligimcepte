@@ -69,17 +69,6 @@ type DisableAccessResult = {
 const LOCALE_LABELS: Record<Locale, string> = {
   tr: "Turkce",
   en: "English",
-  ar: "Arabic",
-  ru: "Russian",
-  de: "Deutsch",
-  fr: "Francais",
-  es: "Espanol",
-  zh: "Chinese",
-  ja: "Japanese",
-  ko: "Korean",
-  hi: "Hindi",
-  az: "Azerbaycanca",
-  id: "Bahasa Indonesia",
 };
 
 function accountTypeLabel(value: AccountType) {

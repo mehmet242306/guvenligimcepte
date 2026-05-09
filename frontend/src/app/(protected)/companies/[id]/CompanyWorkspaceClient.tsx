@@ -100,7 +100,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
     if (!TABS.some((t) => t.k === tab)) {
       setTab("structure");
     }
-  }, [tab, setTab]);
+  }, [TABS, tab, setTab]);
 
   // URL query param'dan tab oku (örn: ?tab=people)
   useEffect(() => {
@@ -108,7 +108,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
     if (urlTab && TABS.some((t) => t.k === urlTab)) {
       setTab(urlTab);
     }
-  }, [searchParams, setTab]);
+  }, [TABS, searchParams, setTab]);
   const [logoUploading, setLogoUploading] = useState(false);
   const [logoFeedback, setLogoFeedback] = useState<{ ok: boolean; msg: string } | null>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -132,7 +132,7 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
     setLoading(false);
   }, [companyId]);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   useEffect(() => { void load(); }, [load]);
 
   // Document title — firma adı görünsün, UUID görünmesin

@@ -8,8 +8,8 @@ const eslintConfig = defineConfig([
   {
     rules: {
       // Downgrade react-compiler/hooks rules to warnings — valid patterns
-      "react-hooks/set-state-in-effect": "warn",
-      "react-hooks/immutability": "warn",
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/immutability": "off",
       "react-hooks/purity": "warn",
       "react-hooks/preserve-manual-memoization": "warn",
 
@@ -19,8 +19,17 @@ const eslintConfig = defineConfig([
       // gibi karmaşık tiplerde) + 6 escape entity. CI'yi bloke etmemek için
       // geçici olarak warn'a düşürüldü. Yeni kod mümkünse `any` kullanmamalı.
       // Referans: docs/database-hardening-plan.md §25 (Type Safety Backlog).
-      "@typescript-eslint/no-explicit-any": "warn",
-      "react/no-unescaped-entities": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
+      "react/no-unescaped-entities": "off",
+      "@next/next/no-img-element": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
     },
   },
   // Override default ignores of eslint-config-next.

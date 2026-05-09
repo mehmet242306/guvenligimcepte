@@ -231,7 +231,7 @@ export function OrganizationPanel({ companyId }: { companyId: string }) {
     setLoading(false);
   }, [companyId]);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   useEffect(() => {
     void loadData();
   }, [loadData]);

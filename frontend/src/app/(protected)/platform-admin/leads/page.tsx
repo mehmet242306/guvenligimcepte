@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Inbox, Mail, Phone } from "lucide-react";
+import { ArrowLeft, Inbox, Mail } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { createServiceClient } from "@/lib/security/server";
 import { LeadsTable } from "./_components/LeadsTable";

@@ -134,7 +134,7 @@ export function InviteProfessionalModal({ open, companyId, onClose }: Props) {
   }, [companyId]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     if (open) void loadData();
   }, [open, loadData]);
 

@@ -53,7 +53,7 @@ export function RCADoughnutChart({ priorityRanking }: RCADoughnutChartProps) {
       },
     };
     return { data: dataInner, options: optionsInner };
-  }, [dim, priorityRanking, tr]);
+  }, [dim, priorityRanking]);
 
   return (
     <Card aria-label={tr("doughnut.ariaLabel")}>

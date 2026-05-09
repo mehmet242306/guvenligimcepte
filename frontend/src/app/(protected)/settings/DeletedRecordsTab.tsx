@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useDeferredValue, useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 type DeletedRecordRow = {
@@ -26,6 +27,8 @@ function toDisplayName(value: string) {
 }
 
 export function DeletedRecordsTab() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const [rows, setRows] = useState<DeletedRecordRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [restoringId, setRestoringId] = useState<string | null>(null);
@@ -137,7 +140,7 @@ export function DeletedRecordsTab() {
           </div>
         ) : rows.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border px-4 py-10 text-center text-sm text-muted-foreground">
-            Geri yuklenebilir silinmis kayit bulunmadi.
+            {isTr ? "Geri yuklenebilir silinmis kayit bulunmadi." : "No restorable deleted records found."}
           </div>
         ) : (
           rows.map((row) => (
@@ -167,7 +170,7 @@ export function DeletedRecordsTab() {
                   disabled={restoringId === row.record_id}
                   className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {restoringId === row.record_id ? "Geri Yukleniyor..." : "Geri Yukle"}
+                  {restoringId === row.record_id ? (isTr ? "Geri Yukleniyor..." : "Restoring...") : (isTr ? "Geri Yukle" : "Restore")}
                 </button>
               </div>
             </article>

@@ -978,7 +978,7 @@ export async function POST(request: NextRequest) {
     // Claude bazen token limitinde kesildiğinde yarım JSON dönüyor → JSON.parse
     // throw eder ve 500'e düşerdi. Şimdi graceful: parse fail olursa
     // empty-but-valid response üret, client boş findings'le devam eder.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     let parsed: Record<string, any>;
     try {
       parsed = JSON.parse(jsonStr);
@@ -1028,7 +1028,7 @@ export async function POST(request: NextRequest) {
     console.log("Olumlu tespitler:", parsed.positiveObservations?.length || 0);
     console.log("----------------------------------------");
     if (parsed.risks && parsed.risks.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       parsed.risks.forEach((risk: any, idx: number) => {
         console.log(`${idx + 1}. ${risk.title}`);
         console.log(`   Confidence: ${risk.confidence} | Category: ${risk.category} | Severity: ${risk.severity}`);
@@ -1038,7 +1038,7 @@ export async function POST(request: NextRequest) {
     }
     if (parsed.positiveObservations?.length > 0) {
       console.log("--- Olumlu Tespitler ---");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       parsed.positiveObservations.forEach((obs: any) => {
         console.log(`  + ${obs}`);
       });

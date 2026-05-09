@@ -223,7 +223,6 @@ export function NewIncidentWizard() {
   function addCause(cat: Cat) { setIshikawa((prev) => prev ? { ...prev, categories: { ...prev.categories, [cat]: [...prev.categories[cat], ""] } } : { analysis_summary: "", primary_root_cause: "", severity_assessment: "Orta", categories: { insan: cat === "insan" ? [""] : [], makine: cat === "makine" ? [""] : [], metot: cat === "metot" ? [""] : [], malzeme: cat === "malzeme" ? [""] : [], olcum: cat === "olcum" ? [""] : [], cevre: cat === "cevre" ? [""] : [] } }); }
   function updateCause(cat: Cat, index: number, value: string) { if (!ishikawa) return; const next = [...ishikawa.categories[cat]]; next[index] = value; setIshikawa({ ...ishikawa, categories: { ...ishikawa.categories, [cat]: next } }); }
   function removeCause(cat: Cat, index: number) { if (!ishikawa) return; setIshikawa({ ...ishikawa, categories: { ...ishikawa.categories, [cat]: ishikawa.categories[cat].filter((_, i) => i !== index) } }); }
-  function updateSuggestion(index: number, field: keyof CorrectiveActionAiSuggestion, value: string | number) { setSuggestions((prev) => prev.map((item, i) => i === index ? { ...item, [field]: value } : item)); }
   function addManualSuggestion() { setSuggestions((prev) => [...prev, emptySuggestion()]); }
   function removeSuggestion(index: number) { setSuggestions((prev) => prev.filter((_, i) => i !== index)); }
   /** PDF için ortak meta üretici — tüm yöntemler aynı header/footer'ı kullanır */

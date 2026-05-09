@@ -1,4 +1,4 @@
-import { defaultLocale, type Locale } from "@/i18n/routing";
+import { defaultLocale } from "@/i18n/routing";
 
 type AccountType = "individual" | "osgb" | "enterprise";
 
@@ -25,7 +25,7 @@ type DemoLocalePack = {
   };
 };
 
-const DEMO_LOCALE_PACKS: Record<Locale, DemoLocalePack> = {
+const DEMO_LOCALE_PACKS: Record<string, DemoLocalePack> = {
   tr: {
     demoPrefix: "Demo",
     accountTypeLabels: {
@@ -496,16 +496,16 @@ const DEMO_LOCALE_PACKS: Record<Locale, DemoLocalePack> = {
   },
 };
 
-export function getDemoLocalePack(locale: Locale) {
+export function getDemoLocalePack(locale: string) {
   return DEMO_LOCALE_PACKS[locale] ?? DEMO_LOCALE_PACKS[defaultLocale];
 }
 
-export function getLocalizedAccountTypeLabel(locale: Locale, accountType: AccountType) {
+export function getLocalizedAccountTypeLabel(locale: string, accountType: AccountType) {
   return getDemoLocalePack(locale).accountTypeLabels[accountType];
 }
 
 export function buildLocalizedOrganizationName(
-  locale: Locale,
+  locale: string,
   accountType: AccountType,
   displayName: string,
 ) {
@@ -514,7 +514,7 @@ export function buildLocalizedOrganizationName(
 }
 
 export function buildLocalizedCompanyName(
-  locale: Locale,
+  locale: string,
   accountType: AccountType,
   inputName: string | undefined,
   displayName: string,
@@ -524,7 +524,7 @@ export function buildLocalizedCompanyName(
 }
 
 export function buildLocalizedDemoDocument(
-  locale: Locale,
+  locale: string,
   accountType: AccountType,
   companyName: string,
 ) {
@@ -557,7 +557,7 @@ export function buildLocalizedDemoDocument(
   };
 }
 
-export function buildLocalizedDemoTask(locale: Locale, companyName: string) {
+export function buildLocalizedDemoTask(locale: string, companyName: string) {
   const pack = getDemoLocalePack(locale);
   return {
     title: `${companyName} ${pack.taskTitleSuffix}`.slice(0, 180),
@@ -565,11 +565,11 @@ export function buildLocalizedDemoTask(locale: Locale, companyName: string) {
   };
 }
 
-export function getLocalizedWorkspaceNote(locale: Locale) {
+export function getLocalizedWorkspaceNote(locale: string) {
   return getDemoLocalePack(locale).workspaceNote;
 }
 
-export function getLocalizedDemoMailCopy(locale: Locale) {
+export function getLocalizedDemoMailCopy(locale: string) {
   return getDemoLocalePack(locale).mail;
 }
 
@@ -585,12 +585,12 @@ function localizedGroupKey(accountType: AccountType) {
   return "risk-degerlendirme";
 }
 
-function pickLocalized(locale: Locale, values: Partial<Record<Locale, string>>, fallback: string) {
+function pickLocalized(locale: string, values: Partial<Record<string, string>>, fallback: string) {
   return values[locale] ?? fallback;
 }
 
 export function buildLocalizedNovaStarterPrompts(
-  locale: Locale,
+  locale: string,
   accountType: AccountType,
   companyName: string,
 ): DemoStarterPrompt[] {
@@ -836,7 +836,7 @@ export function buildLocalizedNovaStarterPrompts(
 }
 
 export function buildLocalizedWelcomeDocument(
-  locale: Locale,
+  locale: string,
   accountType: AccountType,
   organizationName: string,
   companyName: string,
@@ -921,7 +921,7 @@ export function buildLocalizedWelcomeDocument(
   };
 }
 
-export function buildLocalizedTrainingSeed(locale: Locale, companyName: string) {
+export function buildLocalizedTrainingSeed(locale: string, companyName: string) {
   return {
     title: pickLocalized(
       locale,
@@ -966,7 +966,7 @@ export function buildLocalizedTrainingSeed(locale: Locale, companyName: string) 
 }
 
 export function buildLocalizedStarterNotification(
-  locale: Locale,
+  locale: string,
   companyName: string,
   firstPrompt: DemoStarterPrompt | null,
 ) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
+import { useLocale } from "next-intl";
 import {
   Building2,
   Sparkles,
@@ -13,7 +14,6 @@ import {
   ShieldAlert,
   Settings2,
   Lightbulb,
-  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +26,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { exportPanelPdf } from "@/lib/export-panel-pdf";
 import type { MortData } from "@/lib/analysis/types";
 import { renderEtbTraceSvg, renderMortTreeSvg } from "@/lib/mort-pdf-template";
 
@@ -210,6 +209,8 @@ export function MortPanel({
   onSave,
   onAiRequest,
 }: MortPanelProps) {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const panelRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<MortData>(
     initialData ?? defaultData(),
@@ -664,7 +665,15 @@ export function MortPanel({
                   )
                 }
                 placeholder={section.placeholder}
-                addLabel={section.addLabel}
+                addLabel={
+                  isTr
+                    ? section.addLabel
+                    : section.key === "supervisoryControl"
+                      ? "Add deficiency"
+                      : section.key === "managementSystem"
+                        ? "Add issue"
+                        : "Add lesson"
+                }
               />
             )}
           </CardContent>
@@ -710,7 +719,7 @@ export function MortPanel({
           ) : (
             <Save className="h-4 w-4" />
           )}
-          Kaydet
+          {isTr ? "Kaydet" : "Save"}
         </Button>
       </div>
     </div>

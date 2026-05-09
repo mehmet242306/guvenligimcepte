@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { useLocale } from "next-intl";
 import { useDigitalTwinAccess } from "@/lib/hooks/use-digital-twin-access";
 import { fetchRiskAssessmentIdForScanSession } from "@/lib/supabase/web-scan-sync";
 
@@ -71,6 +71,8 @@ type ViewMode = "map" | "cloud" | "3d" | "timeline";
 /* ================================================================== */
 
 export default function DigitalTwinPage() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const digitalTwinAccess = useDigitalTwinAccess();
 
   // Data states
@@ -139,7 +141,7 @@ export default function DigitalTwinPage() {
 
   // Helpers
   function fmtDate(d: string) {
-    try { return new Date(d).toLocaleDateString("tr-TR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }); }
+    try { return new Date(d).toLocaleDateString(isTr ? "tr-TR" : "en-US", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }); }
     catch { return d; }
   }
   function fmtDuration(seconds: number) {
@@ -300,9 +302,9 @@ export default function DigitalTwinPage() {
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-foreground truncate">{s.locationName || "Adsiz Tarama"}</p>
+                        <p className="text-sm font-medium text-foreground truncate">{s.locationName || (isTr ? "Adsiz Tarama" : "Untitled scan")}</p>
                         <Badge variant={s.status === "completed" ? "success" : s.status === "active" ? "warning" : "neutral"} className="text-[9px]">
-                          {s.status === "completed" ? "Tamam" : s.status === "active" ? "Aktif" : "Durakladi"}
+                          {s.status === "completed" ? (isTr ? "Tamam" : "Complete") : s.status === "active" ? (isTr ? "Aktif" : "Active") : (isTr ? "Durakladi" : "Paused")}
                         </Badge>
                       </div>
                       <div className="mt-1.5 flex items-center gap-3 text-[11px] text-muted-foreground">
@@ -325,10 +327,10 @@ export default function DigitalTwinPage() {
                     <div key={m.id} className="rounded-xl border border-border p-3">
                       <p className="text-sm font-medium text-foreground">{m.modelName}</p>
                       <div className="mt-1 flex items-center gap-3 text-[11px] text-muted-foreground">
-                        <span>{m.totalPoints} nokta</span>
-                        <span>{m.totalRisks} risk</span>
+                        <span>{m.totalPoints} {isTr ? "nokta" : "points"}</span>
+                        <span>{m.totalRisks} {isTr ? "risk" : "risks"}</span>
                         <Badge variant={m.status === "ready" ? "success" : m.status === "processing" ? "warning" : "danger"} className="text-[9px]">
-                          {m.status === "ready" ? "Hazir" : m.status === "processing" ? "Isleniyor" : "Hata"}
+                          {m.status === "ready" ? (isTr ? "Hazir" : "Ready") : m.status === "processing" ? (isTr ? "Isleniyor" : "Processing") : (isTr ? "Hata" : "Error")}
                         </Badge>
                       </div>
                     </div>
@@ -480,7 +482,7 @@ export default function DigitalTwinPage() {
                             {selectedPoint.compassHeading != null && ` · Yon: ${Math.round(selectedPoint.compassHeading)}°`}
                           </p>
                           {selectedPoint.imageUrl && (
-                            // eslint-disable-next-line @next/next/no-img-element
+                             
                             <Image
                               src={selectedPoint.imageUrl}
                               alt=""
@@ -496,8 +498,8 @@ export default function DigitalTwinPage() {
                                 AI tespitleri
                               </p>
                               <p className="text-xs text-foreground leading-relaxed">
-                                Bu noktada <strong>{selectedPoint.risksAtPoint.length}</strong> tespit kaydı var. Başlık,
-                                açıklama ve skorlama tek ekranda:{" "}
+                                {isTr ? "Bu noktada" : "This point has"} <strong>{selectedPoint.risksAtPoint.length}</strong>{" "}
+                                {isTr ? "tespit kaydi var. Baslik, aciklama ve skorlama tek ekranda:" : "detection records. Title, description, and scoring are available in one screen:"}{" "}
                                 <Link href={riskAnalysisHrefForSession()} className="font-semibold text-primary underline-offset-2 hover:underline">
                                   Risk Analizi
                                 </Link>

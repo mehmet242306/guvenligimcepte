@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,22 +19,24 @@ type AffiliationRow = {
   professional: { id: string; name: string } | null;
 };
 
-function statusLabel(s: string) {
+function statusLabel(s: string, isTr: boolean) {
   switch (s) {
     case "invited":
-      return "Bekliyor";
+      return isTr ? "Bekliyor" : "Pending";
     case "active":
-      return "Aktif";
+      return isTr ? "Aktif" : "Active";
     case "suspended":
-      return "Askida";
+      return isTr ? "Askida" : "Suspended";
     case "ended":
-      return "Kapandi";
+      return isTr ? "Kapandi" : "Ended";
     default:
       return s;
   }
 }
 
 export default function OsgbManagedProfessionalsClient() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const [rows, setRows] = useState<AffiliationRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
@@ -185,7 +188,7 @@ export default function OsgbManagedProfessionalsClient() {
                     <div className="min-w-0">
                       <p className="truncate font-semibold text-foreground">{name}</p>
                       <p className="text-xs text-muted-foreground">
-                        Durum: {statusLabel(row.status)} · {new Date(row.invited_at).toLocaleString("tr-TR")}
+                        {isTr ? "Durum" : "Status"}: {statusLabel(row.status, isTr)} - {new Date(row.invited_at).toLocaleString(isTr ? "tr-TR" : "en-US")}
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -230,7 +233,7 @@ export default function OsgbManagedProfessionalsClient() {
                             disabled={busy}
                             onClick={() => void patchAction(row.id, "resume")}
                           >
-                            Devam ettir
+                            {isTr ? "Devam ettir" : "Resume"}
                           </Button>
                           <Button
                             type="button"

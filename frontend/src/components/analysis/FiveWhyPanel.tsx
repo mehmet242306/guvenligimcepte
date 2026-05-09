@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
+import { useLocale } from "next-intl";
 import {
   HelpCircle,
   Sparkles,
@@ -10,13 +11,11 @@ import {
   AlertTriangle,
   CheckCircle2,
   Trash2,
-  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { exportPanelPdf } from "@/lib/export-panel-pdf";
 import type { FiveWhyData } from "@/lib/analysis/types";
 
 /* ------------------------------------------------------------------ */
@@ -58,6 +57,8 @@ export function FiveWhyPanel({
   onSave,
   onAiRequest,
 }: FiveWhyPanelProps) {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const panelRef = useRef<HTMLDivElement>(null);
   const [whys, setWhys] = useState<{ question: string; answer: string }[]>(
     initialData?.whys?.length ? initialData.whys : [DEFAULT_WHY()],
@@ -292,7 +293,7 @@ export function FiveWhyPanel({
         {canAddMore && (
           <Button variant="outline" size="md" onClick={addManualWhy}>
             <Plus className="h-4 w-4" />
-            Manuel Soru Ekle
+            {isTr ? "Manuel Soru Ekle" : "Add manual question"}
           </Button>
         )}
 
@@ -313,7 +314,7 @@ export function FiveWhyPanel({
           ) : (
             <Save className="h-4 w-4" />
           )}
-          Kaydet
+          {isTr ? "Kaydet" : "Save"}
         </Button>
       </div>
     </div>

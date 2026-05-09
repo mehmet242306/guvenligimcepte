@@ -75,7 +75,7 @@ export function CompanyInfoBanner({ profile, loading }: Props) {
       <div className="relative flex flex-wrap items-start justify-between gap-4 border-b border-border bg-[linear-gradient(135deg,rgba(217,162,27,0.08),transparent)] p-5">
         <div className="flex items-start gap-4">
           {profile.logoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
+             
             <img
               src={profile.logoUrl}
               alt={profile.workspaceName}

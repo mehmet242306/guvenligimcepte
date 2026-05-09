@@ -472,7 +472,11 @@ export function TrainingDetailClient() {
                                 checked={selectedPersonnel.has(p.id)}
                                 onChange={e => {
                                   const next = new Set(selectedPersonnel);
-                                  e.target.checked ? next.add(p.id) : next.delete(p.id);
+                                  if (e.target.checked) {
+                                    next.add(p.id);
+                                  } else {
+                                    next.delete(p.id);
+                                  }
                                   setSelectedPersonnel(next);
                                 }}
                                 disabled={alreadyHasToken}

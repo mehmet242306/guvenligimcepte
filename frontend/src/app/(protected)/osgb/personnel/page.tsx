@@ -101,7 +101,6 @@ export default async function OsgbPersonnelPage({
   }
 
   const profileIds = (profileRows ?? []).map((row) => row.id);
-  const authUserIds = (profileRows ?? []).map((row) => row.auth_user_id).filter(Boolean);
 
   const [
     { data: membershipRows, error: membershipError },

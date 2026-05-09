@@ -145,7 +145,7 @@ export function AIUsageTab() {
 
   useEffect(() => {
     // Period changes intentionally trigger a fresh client-side load.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     void load();
   }, [load]);
 

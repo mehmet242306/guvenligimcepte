@@ -124,17 +124,6 @@ const ROLE_LABELS: Record<(typeof ROLE_OPTIONS)[number], string> = {
 const LANGUAGE_LABELS: Record<Locale, string> = {
   tr: "Turkce",
   en: "English",
-  ar: "Arabic",
-  ru: "Russian",
-  de: "Deutsch",
-  fr: "Francais",
-  es: "Espanol",
-  zh: "Chinese",
-  ja: "Japanese",
-  ko: "Korean",
-  hi: "Hindi",
-  az: "Azerbaycanca",
-  id: "Bahasa Indonesia",
 };
 
 const fallbackCertifications = [

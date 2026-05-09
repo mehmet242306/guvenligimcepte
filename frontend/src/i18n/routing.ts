@@ -12,17 +12,6 @@
 export const locales = [
   "tr",
   "en",
-  "ar",
-  "ru",
-  "de",
-  "fr",
-  "es",
-  "zh",
-  "ja",
-  "ko",
-  "hi",
-  "az",
-  "id",
 ] as const;
 
 export type Locale = (typeof locales)[number];

@@ -226,7 +226,7 @@ const MATRIX_COLORS: string[][] = [
 export function calculateMatrix(values: MatrixValues): MatrixResult {
   const score = values.likelihood * values.severity;
   const cellColor = MATRIX_COLORS[values.likelihood - 1]?.[values.severity - 1] ?? "#64748B";
-  const { riskClass, labelKey, actionKey, label, action, color } = classifyMatrix(score);
+  const { riskClass, labelKey, actionKey, label, action } = classifyMatrix(score);
   return { score, riskClass, labelKey, actionKey, label, action, color: cellColor, cellColor, ...values };
 }
 

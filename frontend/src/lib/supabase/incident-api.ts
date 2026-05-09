@@ -190,7 +190,7 @@ export type IshikawaVersion = {
 /*  Row mappers                                                        */
 /* ------------------------------------------------------------------ */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 function mapIncidentRow(row: any): IncidentRecord {
   return {
     id: row.id,
@@ -263,7 +263,7 @@ function mapIncidentRow(row: any): IncidentRecord {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 function mapDofRow(row: any): DofRecord {
   return {
     id: row.id,
@@ -284,7 +284,7 @@ function mapDofRow(row: any): DofRecord {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 function mapIshikawaRow(row: any): IshikawaRecord {
   return {
     id: row.id,
@@ -305,7 +305,7 @@ function mapIshikawaRow(row: any): IshikawaRecord {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 function mapIshikawaVersionRow(row: any): IshikawaVersion {
   return {
     id: row.id,
@@ -330,7 +330,7 @@ function mapIshikawaVersionRow(row: any): IshikawaVersion {
 /* ------------------------------------------------------------------ */
 
 function toSnake(record: Partial<IncidentRecord>) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const out: Record<string, any> = {};
   const map: Record<string, string> = {
     organizationId: "organization_id",
@@ -649,7 +649,7 @@ export async function updateDof(id: string, record: Partial<DofRecord>): Promise
   const supabase = createClient();
   if (!supabase) return false;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const update: Record<string, any> = {};
   if (record.rootCause !== undefined) update.root_cause = record.rootCause;
   if (record.rootCauseAnalysis !== undefined) update.root_cause_analysis = record.rootCauseAnalysis;
@@ -746,7 +746,7 @@ export async function updateIshikawa(id: string, record: Partial<IshikawaRecord>
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const update: Record<string, any> = {};
   if (record.problemStatement !== undefined) update.problem_statement = record.problemStatement;
   if (record.manCauses !== undefined) update.man_causes = record.manCauses;
@@ -803,9 +803,9 @@ export async function fetchAllIshikawaByOrg(): Promise<(IshikawaRecord & { incid
   if (error) { console.warn("fetchAllIshikawaByOrg error:", error); return []; }
   return (data ?? []).map((row) => ({
     ...mapIshikawaRow(row),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     incidentCode: (row as any).incidents?.incident_code,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     incidentTitle: (row as any).incidents?.description,
   }));
 }
@@ -824,7 +824,7 @@ export async function fetchIncidentPersonnel(incidentId: string): Promise<Incide
     .eq("incident_id", incidentId);
 
   if (error) { console.warn("fetchIncidentPersonnel:", error.message); return []; }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   return (data ?? []).map((r: any) => ({
     id: r.id,
     incidentId: r.incident_id,

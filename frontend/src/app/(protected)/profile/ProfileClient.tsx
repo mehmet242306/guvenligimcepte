@@ -5,7 +5,7 @@ import Image from "next/image";
 // qrcode runtime'da yüklenir — sadece MFA enrollment akışında lazım,
 // /profile sayfası açıldığında initial bundle'a girmesin.
 import { useLocale, useTranslations } from "next-intl";
-import { useI18n, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
+import { useI18n, SUPPORTED_LOCALES } from "@/lib/i18n";
 import {
   AlertTriangle,
   ClipboardCheck,
@@ -170,7 +170,7 @@ function Toggle({
   );
 }
 
-const LOCALE_FLAGS: Record<Locale, string> = {
+const LOCALE_FLAGS: Record<string, string> = {
   tr: "🇹🇷",
   en: "🇬🇧",
   ar: "🇸🇦",
@@ -291,6 +291,9 @@ export default function ProfileClient() {
     // Apply saved theme on mount
     const saved = localStorage.getItem("risknova-theme") as "light" | "dark" | "system" | null;
     if (saved) applyTheme(saved);
+    // Initial profile load only; loadProfile is declared below and closes over
+    // stable mount-time helpers.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

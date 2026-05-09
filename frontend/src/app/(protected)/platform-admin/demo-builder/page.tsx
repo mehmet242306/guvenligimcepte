@@ -5,7 +5,7 @@ import { createServiceClient } from "@/lib/security/server";
 import { type AccountType } from "@/lib/account/account-routing";
 import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
 import { DemoBuilderClient } from "./DemoBuilderClient";
-import { DemoGroupsClient, type DemoAccountCard, type DemoGroups } from "./DemoGroupsClient";
+import { DemoGroupsClient, type DemoGroups } from "./DemoGroupsClient";
 
 type DemoOrganizationRow = {
   id: string;

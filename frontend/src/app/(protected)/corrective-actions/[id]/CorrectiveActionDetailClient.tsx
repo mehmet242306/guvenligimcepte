@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { useParams } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Download, MessageSquarePlus, Paperclip, Save, UploadCloud } from "lucide-react";
 import { IshikawaFishboneDiagram } from "@/components/incidents/IshikawaFishboneDiagram";
@@ -70,6 +71,8 @@ const DEFAULT_CHECKLIST: ChecklistItem[] = [
 ];
 
 export function CorrectiveActionDetailClient() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const params = useParams();
   const id = params.id as string;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -297,7 +300,7 @@ export function CorrectiveActionDetailClient() {
   }
 
   if (loading) {
-    return <div className="page-stack"><p className="text-sm text-muted-foreground">Yükleniyor...</p></div>;
+    return <div className="page-stack"><p className="text-sm text-muted-foreground">{isTr ? "Yukleniyor..." : "Loading..."}</p></div>;
   }
 
   if (!item) {
@@ -379,7 +382,7 @@ export function CorrectiveActionDetailClient() {
                 </div>
                 <div className="flex justify-end">
                   <Button onClick={() => void saveMainFields()} disabled={saving}>
-                    <Save className="mr-1 size-4" /> Kaydet
+                    <Save className="mr-1 size-4" /> {isTr ? "Kaydet" : "Save"}
                   </Button>
                 </div>
               </CardContent>
@@ -500,7 +503,7 @@ export function CorrectiveActionDetailClient() {
               />
               <div className="flex justify-end">
                 <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-                  <UploadCloud className="mr-1 size-4" /> {uploading ? "Yükleniyor..." : "Dosya Yükle"}
+                  <UploadCloud className="mr-1 size-4" /> {uploading ? (isTr ? "Yukleniyor..." : "Uploading...") : (isTr ? "Dosya Yukle" : "Upload file")}
                 </Button>
               </div>
               {attachments.length === 0 ? (
@@ -523,7 +526,7 @@ export function CorrectiveActionDetailClient() {
                         </p>
                       </div>
                       <span className="inline-flex items-center gap-1 text-xs font-medium text-primary">
-                        <Paperclip className="size-3.5" /> Aç
+                        <Paperclip className="size-3.5" /> {isTr ? "Ac" : "Open"}
                       </span>
                     </a>
                   ))}
@@ -547,7 +550,7 @@ export function CorrectiveActionDetailClient() {
               />
               <div className="flex justify-end">
                 <Button onClick={() => void addNote()} disabled={saving || !note.trim()}>
-                  Not Ekle
+                  {isTr ? "Not Ekle" : "Add note"}
                 </Button>
               </div>
             </CardContent>

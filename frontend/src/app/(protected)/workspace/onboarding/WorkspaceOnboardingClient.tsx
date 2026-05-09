@@ -489,9 +489,9 @@ export function WorkspaceOnboardingClient({
     return () => {
       cancelled = true;
     };
-  }, [initialMessage, router]);
+  }, [initialMessage, router, t]);
 
-  const memberships = payload?.memberships ?? [];
+  const memberships = useMemo(() => payload?.memberships ?? [], [payload?.memberships]);
   const workspaceLimit = accountUsage?.maxActiveWorkspaces ?? null;
   const ownedCountryCodes = useMemo(
     () => new Set(memberships.map((membership) => membership.workspace.country_code)),

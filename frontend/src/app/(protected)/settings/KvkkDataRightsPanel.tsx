@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useLocale } from "next-intl";
 import {
   downloadDataExport,
   listDataExportsForAdmin,
@@ -67,6 +68,8 @@ function formatExportStatus(status: DataExportRow["status"]) {
 }
 
 export function KvkkDataRightsPanel() {
+  const locale = useLocale();
+  const isTr = locale === "tr";
   const [loading, setLoading] = useState(true);
   const [working, setWorking] = useState(false);
   const [requests, setRequests] = useState<DataDeletionRequestRow[]>([]);
@@ -500,7 +503,7 @@ export function KvkkDataRightsPanel() {
                         disabled={working}
                         className="rounded-xl border border-border bg-background px-3 py-2 text-xs font-medium text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
                       >
-                        Kaydet
+                        {isTr ? "Kaydet" : "Save"}
                       </button>
                     </div>
                   </div>

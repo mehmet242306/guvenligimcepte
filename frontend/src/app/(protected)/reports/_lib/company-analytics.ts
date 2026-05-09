@@ -19,13 +19,6 @@ function findCategory(
   return categories.find((c) => c.id === id)?.items ?? [];
 }
 
-function daysBetween(iso: string | null | undefined): number | null {
-  if (!iso) return null;
-  const t = new Date(iso).getTime();
-  if (Number.isNaN(t)) return null;
-  return Math.floor((Date.now() - t) / 86400_000);
-}
-
 function startOfWeek(d: Date): Date {
   const r = new Date(d);
   r.setHours(0, 0, 0, 0);
