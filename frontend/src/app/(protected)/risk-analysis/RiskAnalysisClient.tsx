@@ -2355,7 +2355,11 @@ JSON formatında döndür:
     } catch (err) {
       console.warn("[save] error:", err);
       setSaveTone("danger");
-      setSaveMessage(trRiskScoring("wizard.save.error"));
+      // Gerçek hatayı UI'da göster — sadece "Kayıt hatası oluştu" diyen
+      // genel mesaj kullanıcının yardım istemesini imkansız kılıyordu.
+      const rawMsg = err instanceof Error ? err.message : String(err);
+      const friendly = trRiskScoring("wizard.save.error");
+      setSaveMessage(rawMsg && rawMsg !== "[object Object]" ? `${friendly}: ${rawMsg}` : friendly);
     } finally {
       setIsSaving(false);
       setTimeout(() => setSaveMessage(""), 4000);

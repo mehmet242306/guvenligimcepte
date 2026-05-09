@@ -399,21 +399,21 @@ export type SaveRiskAnalysisInput = {
 
 export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<string | null> {
   const supabase = createClient();
-  if (!supabase) return null;
+  if (!supabase) throw new Error("Supabase istemcisi başlatılamadı (oturum süresi dolmuş olabilir)");
 
   if (!input.companyWorkspaceId) {
-    console.warn("[risk-assessment-api] saveRiskAnalysis: companyWorkspaceId is required");
-    return null;
+    throw new Error("Firma seçilmemiş — kayıt için bir firma seçin");
   }
 
   const validationError = validateRiskAnalysisInput(input);
   if (validationError) {
-    console.warn("[risk-assessment-api] saveRiskAnalysis validation failed:", validationError);
-    return null;
+    throw new Error(`Doğrulama hatası: ${validationError}`);
   }
 
   const auth = await resolveOrganizationId();
-  if (!auth) { console.warn("[risk-assessment-api] saveRiskAnalysis: auth failed"); return null; }
+  if (!auth) {
+    throw new Error("Oturum doğrulanamadı — sayfayı yenileyip tekrar giriş yapın");
+  }
 
   let createdAssessmentId: string | null = null;
   const uploadedPaths: string[] = [];
@@ -621,7 +621,10 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
       // CASCADE on FK takes care of rows/images/findings DB rows.
       await supabase.from("risk_assessments").delete().eq("id", createdAssessmentId);
     }
-    return null;
+    // Hata mesajını yukarı bırak — UI'da görünür hale gelmesi için. Eski
+    // null davranışı, gerçek nedeni gizliyordu (PDF sonrası File neutered,
+    // CORS, RLS, vb. olası senaryoları debug etmek imkansız hale geliyordu).
+    throw err instanceof Error ? err : new Error(String(err));
   }
 }
 
