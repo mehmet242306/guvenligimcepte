@@ -447,7 +447,9 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
       .select("id")
       .single();
 
-    if (aErr || !assessment) { console.warn("[risk-assessment-api] create assessment failed:", aErr?.message); return null; }
+    if (aErr || !assessment) {
+      throw new Error(`[adim 1/6 — risk_assessments insert] ${aErr?.message ?? "kayit olusturulamadi"} (code: ${(aErr as { code?: string } | null)?.code ?? "n/a"})`);
+    }
     const assessmentId = assessment.id;
     createdAssessmentId = assessmentId;
 
@@ -482,7 +484,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
     }));
     if (rowsToInsert.length > 0) {
       const { error: rErr } = await supabase.from("risk_assessment_rows").insert(rowsToInsert);
-      if (rErr) throw new Error(`Risk satirlari kaydedilemedi: ${rErr.message}`);
+      if (rErr) throw new Error(`[adim 3/6 — risk_assessment_rows insert] ${rErr.message} (code: ${(rErr as { code?: string }).code ?? "n/a"})`);
     }
 
     // 4. Upload all images in parallel + collect storage paths
@@ -530,8 +532,12 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
           uploadedPaths.push(uploadDescriptors[idx].storagePath);
         }
       }
-      const failed = uploadResults.find((r) => r.error);
-      if (failed?.error) throw new Error(`Gorsel yuklenemedi: ${failed.error.message}`);
+      const failedIdx = uploadResults.findIndex((r) => r.error);
+      if (failedIdx >= 0) {
+        const failed = uploadResults[failedIdx];
+        const desc = uploadDescriptors[failedIdx];
+        throw new Error(`[adim 4/6 — storage upload] ${failed.error?.message ?? "bilinmeyen hata"} (dosya: ${desc.file.name}, ${(desc.file.size / 1024 / 1024).toFixed(2)}MB)`);
+      }
     }
 
     // 5. Batch insert image rows (1 round-trip).
@@ -549,7 +555,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
 
     if (imagesToInsert.length > 0) {
       const { error: imgErr } = await supabase.from("risk_assessment_images").insert(imagesToInsert);
-      if (imgErr) throw new Error(`Gorsel kayitlari olusturulamadi: ${imgErr.message}`);
+      if (imgErr) throw new Error(`[adim 5/6 — risk_assessment_images insert] ${imgErr.message} (code: ${(imgErr as { code?: string }).code ?? "n/a"})`);
     }
 
     // 6. Batch insert findings across all rows (1 round-trip)
@@ -608,7 +614,7 @@ export async function saveRiskAnalysis(input: SaveRiskAnalysisInput): Promise<st
       const { error: fErr } = await supabase
         .from("risk_assessment_findings")
         .insert(findingsToInsert);
-      if (fErr) throw new Error(`Tespitler kaydedilemedi: ${fErr.message}`);
+      if (fErr) throw new Error(`[adim 6/6 — risk_assessment_findings insert] ${fErr.message} (code: ${(fErr as { code?: string }).code ?? "n/a"}, ${findingsToInsert.length} tespit)`);
     }
 
     return assessmentId;

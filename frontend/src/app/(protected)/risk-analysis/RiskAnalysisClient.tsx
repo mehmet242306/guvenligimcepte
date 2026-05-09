@@ -2353,7 +2353,9 @@ JSON formatında döndür:
         setSaveMessage(trRiskScoring("wizard.save.error"));
       }
     } catch (err) {
-      console.warn("[save] error:", err);
+      console.error("[save] error:", err);
+      // Stack trace de log'a — debug için faydalı
+      if (err instanceof Error && err.stack) console.error("[save] stack:", err.stack);
       setSaveTone("danger");
       // Gerçek hatayı UI'da göster — sadece "Kayıt hatası oluştu" diyen
       // genel mesaj kullanıcının yardım istemesini imkansız kılıyordu.
@@ -2362,9 +2364,21 @@ JSON formatında döndür:
       setSaveMessage(rawMsg && rawMsg !== "[object Object]" ? `${friendly}: ${rawMsg}` : friendly);
     } finally {
       setIsSaving(false);
-      setTimeout(() => setSaveMessage(""), 4000);
+      // Hata mesajları PERSISTENT (kullanıcı tam metni okuyup kopyalayabilsin).
+      // Sadece success mesajı 4 sn sonra kaybolsun.
+      // saveTone'u burada okuyamıyoruz (state batch yüzünden); useEffect ile
+      // dış tarafta yapacağız → bkz. saveMessage useEffect.
     }
   }
+
+  /* Save mesajı auto-dismiss: sadece başarı durumunda 5 sn sonra temizle.
+     Hata mesajı kullanıcı el ile kapatana kadar kalsın. */
+  useEffect(() => {
+    if (!saveMessage) return;
+    if (saveTone !== "success") return;
+    const t = window.setTimeout(() => setSaveMessage(""), 5000);
+    return () => window.clearTimeout(t);
+  }, [saveMessage, saveTone]);
 
   /* ── Kayıtlı analizi sil ── */
   async function handleDeleteAnalysis(assessmentId: string) {
@@ -3066,8 +3080,32 @@ JSON formatında döndür:
           {/* Kayit mesaji + firma sayfasina yönlendirme */}
           {saveMessage && (
             <StatusAlert tone={saveTone === "success" ? "success" : "danger"} className="mt-2">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <span>{saveMessage}</span>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <span className="break-words">{saveMessage}</span>
+                {saveTone === "danger" ? (
+                  <div className="flex shrink-0 items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard?.writeText(saveMessage).catch(() => undefined);
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-red-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-red-700 shadow-sm transition hover:bg-red-50 dark:border-red-700 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900"
+                      title="Hata mesajını panoya kopyala"
+                    >
+                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                      Kopyala
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSaveMessage("")}
+                      className="inline-flex items-center justify-center rounded-lg border border-red-300 bg-white px-2 py-1 text-[11px] font-semibold text-red-700 shadow-sm transition hover:bg-red-50 dark:border-red-700 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900"
+                      title="Kapat"
+                      aria-label="Kapat"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : null}
                 {saveTone === "success" && selectedCompanyId ? (
                   <Link
                     href={`/companies/${selectedCompanyId}?tab=risk`}
