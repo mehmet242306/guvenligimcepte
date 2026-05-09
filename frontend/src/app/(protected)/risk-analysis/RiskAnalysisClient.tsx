@@ -1569,37 +1569,37 @@ export function RiskAnalysisClient() {
         successfulImages++;
 
         if (aiFindings.length > 0) {
-          // Confidence filtresi: 0.85 altini ele (v1.7 — siki esik)
+          // Confidence filtresi: 0.70 altini ele (eskiden 0.85 idi — cok katiydi
+          // ve AI'nin doner doner sadece tek tespiti gostermemize sebep oluyordu).
+          // 0.70 = "orta+" (prompt 0.60 altini zaten yazma diyor).
           const validFindings = aiFindings.filter((f) => {
             const conf = f.confidence ?? 0;
-            if (conf < 0.85) {
+            if (conf < 0.70) {
               console.log(`[${img.id}] Dusuk guvenli tespit elendi: ${f.title} (conf=${conf})`);
               return false;
             }
             return true;
           });
 
-          // Confidence tier etiketle
+          // Confidence tier etiketle (UI rozetleri icin)
           const taggedFindings = validFindings.map((f) => {
             const conf = f.confidence ?? 0;
-            const tier: "high" | "medium" | "low" = conf >= 0.95 ? "high" : conf >= 0.90 ? "medium" : "low";
+            const tier: "high" | "medium" | "low" = conf >= 0.90 ? "high" : conf >= 0.80 ? "medium" : "low";
             return { ...f, confidenceTier: tier };
           });
 
-          // Mukerrer risk filtrele — exact match + fuzzy similarity
+          // Mukerrer risk filtrele:
+          //  - Aynı GÖRSEL içinde: birebir baslık + kategori kopyasini ele.
+          //  - Farklı görsellerden gelenleri ELEMEYELIM — her görsel ayri kanit;
+          //    saha denetiminde "hangi kapida hangi risk" kayitli kalmali.
+          //  - Eski sürümdeki agresif fuzzy similarity (0.5) ayni kategoride
+          //    iki ayri kisi/lokasyon icin ayni tip riski (örn iki farkli
+          //    calisanin kaski yok) kaybediyordu.
+          const seenInImage = new Set<string>();
           const unique = taggedFindings.filter((newF) => {
-            const newTitle = newF.title.toLowerCase();
-            const newCat = newF.category.toLowerCase();
-            if (allFindings.some((f) => f.title.toLowerCase() === newTitle && f.category.toLowerCase() === newCat)) return false;
-            const newWords = new Set(newTitle.split(/\s+/).filter(w => w.length > 2));
-            for (const existing of allFindings) {
-              if (existing.category.toLowerCase() !== newCat) continue;
-              const existWords = new Set(existing.title.toLowerCase().split(/\s+/).filter(w => w.length > 2));
-              if (existWords.size === 0 || newWords.size === 0) continue;
-              const overlap = [...newWords].filter(w => existWords.has(w)).length;
-              const similarity = overlap / Math.min(newWords.size, existWords.size);
-              if (similarity >= 0.5) return false;
-            }
+            const sig = `${newF.category.toLowerCase()}|${newF.title.toLowerCase()}`;
+            if (seenInImage.has(sig)) return false;
+            seenInImage.add(sig);
             return true;
           });
           allFindings.push(...unique);

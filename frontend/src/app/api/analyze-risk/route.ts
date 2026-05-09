@@ -489,6 +489,12 @@ MUTLAK KURALLAR
 12. Y\u00D6NTEM PARAMETRELER\u0130 SADECE GER\u00C7EKTEN TESP\u0130T ED\u0130LEN R\u0130SKLER \u0130\u00C7\u0130N DOLDURULUR.
 13. \u00DC\u00C7L\u00DC DO\u011ERULAMA KURALI: Her risk i\u00E7in (a) G\u00F6rselde fiziksel olarak g\u00F6r\u00FCyor muyum? (b) Bir uzmana g\u00F6sterdi\u011Fimde "evet, burada" diyebilir mi? (c) Mahkemede savunabilir miyim?
 14. KURAL #0'I HATIRLA: En \u00FCstteki KURAL #0 bu 13 madde kadar g\u00FC\u00E7l\u00FCd\u00FCr. Her tespitten \u00F6nce KURAL #0'\u0131 kontrol et.
+15. \u00C7OKLU R\u0130SK ZORUNLULU\u011EU: Bir g\u00F6rselde birden fazla farkl\u0131 risk varsa HER B\u0130R\u0130N\u0130 ayr\u0131 bir tespit olarak yaz. "En \u00F6nemlisini" se\u00E7ip tek ba\u015F\u0131na yazmak YASAK \u2014 saha denetiminde her risk kendi DOF/aksiyonunu hak eder.
+    \u00D6rnekler:
+    - Ayn\u0131 g\u00F6rselde 3 farkl\u0131 ki\u015Fi var ve farkl\u0131 KKD eksiklikleri varsa \u2192 3 ayr\u0131 tespit.
+    - Ayn\u0131 g\u00F6rselde "zemin kaygan" + "acil \u00E7\u0131k\u0131\u015F engelli" + "elektrik panosu a\u00E7\u0131k" varsa \u2192 3 ayr\u0131 tespit.
+    - Her tespitin pinX/pinY KEND\u0130 konumunu g\u00F6stermeli, ayn\u0131 noktay\u0131 paylasmamali.
+    - Yine de g\u00F6rselde GER\u00C7EKTEN tek risk varsa zorla bo\u015Fa doldurma — risks: [1 tespit] hala me\u015Fru.
 
 C\u0130DD\u0130YET SEV\u0130YES\u0130 BEL\u0130RLEME:
 - critical: \u00D6l\u00FCm/kal\u0131c\u0131 sakatlık riski, acil hayati tehlike
