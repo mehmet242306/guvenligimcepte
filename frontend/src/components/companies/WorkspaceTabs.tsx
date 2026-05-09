@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
@@ -250,60 +250,98 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
   // Auto-scroll refs
   const analysisDetailRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    (async () => {
-      const [list] = await Promise.all([listRiskAssessments(company.id)]);
-      setAnalyses(list);
+  /**
+   * Analizleri + kategori istatistiklerini yükle.
+   * Hem mount'ta hem de "risknova:risk-analysis-saved/deleted" event'lerinde
+   * yeniden çağrılır. Stale-while-revalidate: state'i hemen güncelle, 
+   * findings'leri arka planda boş gelirse stats'i sıfırla.
+   */
+  const reloadAnalyses = useCallback(async () => {
+    const list = await listRiskAssessments(company.id);
+    setAnalyses(list);
 
-      const supabase = createClient();
-      if (supabase) {
-        const assessmentIds = list.map((a) => a.id);
-        if (assessmentIds.length > 0) {
-          // Findings'leri çek (assessment_id ile birlikte) ki kaynak modüle göre dağıtabilelim
-          const { data: findings } = await supabase
-            .from("risk_assessment_findings")
-            .select("assessment_id, category, category_key, severity")
-            .in("assessment_id", assessmentIds)
-            .is("deleted_at", null);
-
-          if (findings) {
-            // assessmentId -> sourceType eşlemesi (listRiskAssessments tarafından türetilmişti)
-            const sourceMap = new Map<string, RiskAssessmentSourceType>(
-              list.map((a) => [a.id, a.sourceType]),
-            );
-
-            const stats: Record<string, CategoryStats> = {};
-            for (const cat of RISK_CATEGORY_META) stats[cat.key] = emptyCategoryStats(cat.key);
-
-            // Analizlerin filtre indeksini de aynı geçişte kuruyoruz
-            const idx: Record<string, { categories: Set<string>; severities: Set<string> }> = {};
-
-            for (const f of findings) {
-              const catKey = (f as Record<string, string>).category_key || mapCategoryToKey(f.category);
-              if (!stats[catKey]) stats[catKey] = emptyCategoryStats(catKey);
-              stats[catKey].total++;
-              if (f.severity === "critical") stats[catKey].critical++;
-              else if (f.severity === "high") stats[catKey].high++;
-              else if (f.severity === "medium") stats[catKey].medium++;
-              else stats[catKey].low++;
-
-              const src = sourceMap.get(f.assessment_id) ?? "risk";
-              stats[catKey].sourceCounts[src] = (stats[catKey].sourceCounts[src] ?? 0) + 1;
-
-              if (!idx[f.assessment_id]) {
-                idx[f.assessment_id] = { categories: new Set(), severities: new Set() };
-              }
-              idx[f.assessment_id].categories.add(catKey);
-              if (f.severity) idx[f.assessment_id].severities.add(f.severity);
-            }
-            setCatStats(Object.values(stats));
-            setAnalysisIndex(idx);
-          }
-        }
-      }
+    if (list.length === 0) {
+      setCatStats([]);
+      setAnalysisIndex({});
       setLoading(false);
-    })();
+      return;
+    }
+
+    const supabase = createClient();
+    if (!supabase) { setLoading(false); return; }
+
+    const assessmentIds = list.map((a) => a.id);
+    const { data: findings } = await supabase
+      .from("risk_assessment_findings")
+      .select("assessment_id, category, category_key, severity")
+      .in("assessment_id", assessmentIds)
+      .is("deleted_at", null);
+
+    if (findings) {
+      const sourceMap = new Map<string, RiskAssessmentSourceType>(
+        list.map((a) => [a.id, a.sourceType]),
+      );
+
+      const stats: Record<string, CategoryStats> = {};
+      for (const cat of RISK_CATEGORY_META) stats[cat.key] = emptyCategoryStats(cat.key);
+
+      const idx: Record<string, { categories: Set<string>; severities: Set<string> }> = {};
+
+      for (const f of findings) {
+        const catKey = (f as Record<string, string>).category_key || mapCategoryToKey(f.category);
+        if (!stats[catKey]) stats[catKey] = emptyCategoryStats(catKey);
+        stats[catKey].total++;
+        if (f.severity === "critical") stats[catKey].critical++;
+        else if (f.severity === "high") stats[catKey].high++;
+        else if (f.severity === "medium") stats[catKey].medium++;
+        else stats[catKey].low++;
+
+        const src = sourceMap.get(f.assessment_id) ?? "risk";
+        stats[catKey].sourceCounts[src] = (stats[catKey].sourceCounts[src] ?? 0) + 1;
+
+        if (!idx[f.assessment_id]) {
+          idx[f.assessment_id] = { categories: new Set(), severities: new Set() };
+        }
+        idx[f.assessment_id].categories.add(catKey);
+        if (f.severity) idx[f.assessment_id].severities.add(f.severity);
+      }
+      setCatStats(Object.values(stats));
+      setAnalysisIndex(idx);
+    }
+    setLoading(false);
   }, [company.id]);
+
+  // İlk yükleme + company değişince
+  useEffect(() => {
+    void reloadAnalyses();
+  }, [reloadAnalyses]);
+
+  // Kayıt/silme/güncelleme sonrası otomatik refresh:
+  // - RiskAnalysisClient bir analizi kaydedince
+  //   `window.dispatchEvent(new CustomEvent("risknova:risk-analysis-saved",
+  //     { detail: { companyWorkspaceId } }))` çağırır.
+  // - Burada dinleyip ilgili firma için listeyi tazeliyoruz.
+  // - Window focus aldığında da güvenlik amacıyla refresh.
+  useEffect(() => {
+    function handleSaved(e: Event) {
+      const detail = (e as CustomEvent<{ companyWorkspaceId?: string }>).detail;
+      // companyWorkspaceId verilmemişse veya bu firma için ise refresh
+      if (!detail?.companyWorkspaceId || detail.companyWorkspaceId === company.id) {
+        void reloadAnalyses();
+      }
+    }
+    function handleFocus() {
+      void reloadAnalyses();
+    }
+    window.addEventListener("risknova:risk-analysis-saved", handleSaved);
+    window.addEventListener("risknova:risk-analysis-deleted", handleSaved);
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("risknova:risk-analysis-saved", handleSaved);
+      window.removeEventListener("risknova:risk-analysis-deleted", handleSaved);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [company.id, reloadAnalyses]);
 
   // Auto-scroll: analiz detay
   useEffect(() => {

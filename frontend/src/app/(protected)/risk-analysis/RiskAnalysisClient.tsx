@@ -2345,6 +2345,17 @@ JSON formatında döndür:
           level: input.criticalCount > 0 ? "warning" : "info",
           link: `/companies/${selectedCompanyId}?tab=risk`,
         });
+
+        // Firma sayfası "Risk ve Saha" sekmesinin canlı refresh tetikleyicisi:
+        // WorkspaceTabs.tsx bu event'i dinleyip listeyi+kategori istatistiklerini
+        // tazeler. Bu sayede "kayıt yaptım ama firma sayfasında görünmüyor"
+        // problemi çözülür (manuel sayfa refresh gerektirmez).
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("risknova:risk-analysis-saved", {
+            detail: { companyWorkspaceId: selectedCompanyId, assessmentId },
+          }));
+        }
+
         // Refresh list
         const list = await listRiskAssessments(selectedCompanyId);
         setSavedAnalyses(list);
@@ -2386,6 +2397,12 @@ JSON formatında döndür:
     if (ok) {
       setSavedAnalyses((prev) => prev.filter((a) => a.id !== assessmentId));
       if (currentAssessmentId === assessmentId) setCurrentAssessmentId(null);
+      // Firma sayfasını da haberdar et
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("risknova:risk-analysis-deleted", {
+          detail: { companyWorkspaceId: selectedCompanyId, assessmentId },
+        }));
+      }
     }
   }
 
