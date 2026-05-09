@@ -107,6 +107,27 @@ export function DashboardClient() {
 
       const orgId = profile.organization_id;
 
+      // Kullanıcının gerçekten üye olduğu firmaları (company_memberships)
+      // önceden çek; companyCount'u tüm org yerine sadece bu üyeliklerle
+      // filtreleriz. Aksi halde aynı org içindeki diğer ekiplerin firmaları
+      // da sayılıyor ve dashboard'da yanlış rakam gözüküyordu.
+      const { data: memberships } = await supabase
+        .from('company_memberships')
+        .select('company_workspace_id')
+        .eq('user_id', user.id)
+        .eq('status', 'active');
+      const memberWsIds = (memberships ?? [])
+        .map((m: { company_workspace_id: string | null }) => m.company_workspace_id)
+        .filter((v: string | null): v is string => typeof v === 'string' && v.length > 0);
+
+      const companyCountQuery = memberWsIds.length > 0
+        ? supabase
+            .from('company_workspaces')
+            .select('*', { count: 'exact', head: true })
+            .eq('organization_id', orgId)
+            .in('id', memberWsIds)
+        : Promise.resolve({ count: 0 } as { count: number });
+
       const [
         { count: riskCount },
         { data: highRisks },
@@ -128,7 +149,7 @@ export function DashboardClient() {
           .order('updated_at', { ascending: false })
           .limit(5),
         supabase.from('incidents').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
-        supabase.from('company_workspaces').select('*', { count: 'exact', head: true }).eq('organization_id', orgId),
+        companyCountQuery,
         supabase.from('isg_tasks').select('*', { count: 'exact', head: true }).eq('organization_id', orgId).in('status', ['planned', 'overdue']),
         supabase
           .from('surveys')
@@ -574,12 +595,6 @@ export function DashboardClient() {
               <p className="text-4xl font-semibold tracking-tight text-[var(--primary)]">{s.companyCount}</p>
               <p className="mt-2 text-sm text-muted-foreground">{t('companySummaryCountLabel')}</p>
             </div>
-            <button
-              onClick={() => router.push('/companies')}
-              className="mt-4 inline-flex w-full items-center justify-center gap-1 rounded-2xl border border-border/80 bg-background/85 px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:border-[var(--gold)]/30 hover:bg-[var(--gold)]/8"
-            >
-              {t('companyManageCta')} <ChevronRight size={14} />
-            </button>
           </div>
 
           <div className="surface-card">
