@@ -25,7 +25,8 @@ import {
   type CompanyRecord,
 } from "@/lib/company-directory";
 import { usePersistedState, clearPersistedStates } from "@/lib/use-persisted-state";
-import { fetchCompaniesFromSupabase } from "@/lib/supabase/company-api";
+import { fetchMyCompaniesFromSupabase } from "@/lib/supabase/company-api";
+import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
 import { createClient } from "@/lib/supabase/client";
 import {
   calculateR2D,
@@ -796,18 +797,23 @@ export function RiskAnalysisClient() {
     let cancelled = false;
 
     void (async () => {
-      // ÖNEMLİ: getActiveWorkspace() nova_workspaces.id döndürür ve bu
-      // company_workspaces.id ile aynı şey DEĞİLDİR. Eski sürüm
-      // `c.id === activeWs.id` ile filtre yapıyor ve listeyi tamamen
-      // boşaltıp `selectedCompanyId`'yi anlamsız bir UUID'ye atıyordu.
-      // Bu hem firmaların seçilememesine hem de save sırasında FK ihlaline
-      // sebep oluyordu. RLS zaten doğru tenant'ın firmalarını döndürür;
-      // dropdown listesini olduğu gibi göstermek doğru olan.
+      // Firma listesi şu iki kuralla scoplanır:
+      //  (1) Kullanıcının `company_memberships`'tan gerçekten üye olduğu
+      //      firmalar (cross-team sızıntıyı engeller).
+      //  (2) Aktif çalışma alanının (nova_workspaces) organization_id'si
+      //      (DE/UK/FR/TR vb. ayrımı için defansif filtre).
+      //
+      // NOT: getActiveWorkspace() `nova_workspaces.id` döndürür; bu
+      // `company_workspaces.id` ile aynı şey DEĞİLDİR. O yüzden id ile
+      // değil, organization_id ile filtreleriz.
       const fallback = loadCompanyDirectory();
       setCompanies(fallback);
 
-      const sb = await fetchCompaniesFromSupabase();
-      if (cancelled || !sb || sb.length === 0) return;
+      const activeWs = await getActiveWorkspace();
+      const sb = await fetchMyCompaniesFromSupabase({
+        scopedOrganizationId: activeWs?.organization_id ?? null,
+      });
+      if (cancelled || !sb) return;
       saveCompanyDirectory(sb);
       setCompanies(sb);
 
@@ -829,18 +835,19 @@ export function RiskAnalysisClient() {
 
   useEffect(() => {
     function onActiveWorkspaceChanged() {
-      // Çalışma alanı değişince firma listesini yeniden çek; ilk firmayı
-      // seçili yap (kullanıcı dropdown'dan değiştirebilir).
+      // Çalışma alanı değişince firma listesini aktif workspace'in
+      // organization_id'siyle yeniden scoplayıp yeniden çek.
       void (async () => {
-        const sb = await fetchCompaniesFromSupabase();
+        const activeWs = await getActiveWorkspace();
+        const sb = await fetchMyCompaniesFromSupabase({
+          scopedOrganizationId: activeWs?.organization_id ?? null,
+        });
         const list = sb ?? companiesRef.current;
-        if (list.length > 0) {
-          setCompanies(list);
-          setSelectedCompanyId((prev) => {
-            if (prev && list.find((c) => c.id === prev)) return prev;
-            return list[0]?.id ?? "";
-          });
-        }
+        setCompanies(list);
+        setSelectedCompanyId((prev) => {
+          if (prev && list.find((c) => c.id === prev)) return prev;
+          return list[0]?.id ?? "";
+        });
       })();
     }
 

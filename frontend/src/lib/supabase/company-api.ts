@@ -161,6 +161,79 @@ function companyToMetadata(c: CompanyRecord): Record<string, unknown> {
 /* ------------------------------------------------------------------ */
 
 /**
+ * Fetch yalnızca aktif kullanıcının `company_memberships` üzerinden
+ * gerçekten üye olduğu firmaları döndürür.
+ *
+ * Neden: `fetchCompaniesFromSupabase` RLS'ye güveniyor ve aynı org
+ * içindeki TÜM firmaları döndürüyor. Pratikte bir org'a (örn. demo
+ * tenant) farklı ekiplerin firmaları yapışmış olabilir. Risk Analizi
+ * gibi context'lerde kullanıcı sadece kendi firmasını görmeli.
+ *
+ * Aktif çalışma alanı (nova_workspaces) `organization_id`'si verilirse
+ * ek bir defansif filtre olarak da uygulanır.
+ */
+export async function fetchMyCompaniesFromSupabase(opts?: {
+  scopedOrganizationId?: string | null;
+}): Promise<CompanyRecord[] | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data: memberships, error: mErr } = await supabase
+      .from("company_memberships")
+      .select("company_workspace_id")
+      .eq("user_id", user.id)
+      .eq("status", "active");
+
+    if (mErr) {
+      console.warn("[company-api] fetchMyCompanies memberships error:", mErr.message);
+      return null;
+    }
+
+    const wsIds = (memberships ?? [])
+      .map((m) => m.company_workspace_id as string | null)
+      .filter((v): v is string => typeof v === "string" && v.length > 0);
+
+    if (wsIds.length === 0) return [];
+
+    let query = supabase
+      .from("company_workspaces")
+      .select(`
+        id, company_identity_id, display_name, notes, is_archived, metadata, logo_url, slug,
+        company_identities!inner (
+          id, company_code, official_name, sector, nace_code, hazard_class,
+          address, city, district, is_active, is_archived, archived_at,
+          delete_requested_at, deleted_at
+        )
+      `)
+      .in("id", wsIds)
+      .eq("is_archived", false)
+      .eq("company_identities.is_active", true)
+      .eq("company_identities.is_archived", false)
+      .is("company_identities.deleted_at", null);
+
+    if (opts?.scopedOrganizationId) {
+      query = query.eq("organization_id", opts.scopedOrganizationId);
+    }
+
+    const { data, error } = await query;
+    if (error) {
+      console.warn("[company-api] fetchMyCompanies error:", error.message);
+      return null;
+    }
+    if (!data || !Array.isArray(data)) return null;
+
+    return (data as unknown as JoinedRow[]).map(dbToCompanyRecord);
+  } catch (err) {
+    console.warn("[company-api] fetchMyCompanies exception:", err);
+    return null;
+  }
+}
+
+/**
  * Fetch active companies from Supabase.
  * Returns null if Supabase is unavailable.
  */
