@@ -500,6 +500,38 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
         <div className="flex justify-center py-12"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>
       ) : activeSection === "overview" ? (
         <>
+          {/* Boş state info banner — bu firmada henüz analiz yoksa */}
+          {totalFindings === 0 && analyses.length === 0 ? (
+            <div className="flex flex-col gap-3 rounded-[1.7rem] border-2 border-dashed border-amber-300/60 bg-gradient-to-br from-amber-50 to-transparent p-5 dark:border-amber-500/30 dark:from-amber-500/8 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-3">
+                <PremiumIconBadge icon={ClipboardList} tone="gold" size="md" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    Bu firmada henüz analiz yok
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Risk Analizi (görsel yükleme) veya Saha Analizi (mobil kamera) ile başlat — tespit edilen riskler otomatik olarak aşağıdaki kategori havuzuna düşer.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href={`/risk-analysis?companyId=${company.id}`}
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--gold)] px-4 py-2 text-xs font-bold text-white shadow-md transition hover:brightness-110"
+                >
+                  <Plus size={14} strokeWidth={2.5} />
+                  Risk Analizi başlat
+                </Link>
+                <Link
+                  href={`/live-scan?companyId=${company.id}`}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2 text-xs font-bold text-foreground shadow-sm transition hover:border-[var(--gold)]/40"
+                >
+                  Saha Analizi
+                </Link>
+              </div>
+            </div>
+          ) : null}
+
           {/*
             Risk Haritası — Premium kategori kartları
             Accordion mantığı: seçilen kartın hemen ALTINDA (col-span-full ile)

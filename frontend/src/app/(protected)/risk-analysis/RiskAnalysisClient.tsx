@@ -27,7 +27,6 @@ import {
 import { usePersistedState, clearPersistedStates } from "@/lib/use-persisted-state";
 import { fetchCompaniesFromSupabase } from "@/lib/supabase/company-api";
 import { createClient } from "@/lib/supabase/client";
-import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
 import {
   calculateR2D,
   calculateFK,
@@ -44,13 +43,6 @@ import {
   FK_LIKELIHOOD,
   FK_SEVERITY,
   FK_EXPOSURE,
-  FMEA_SEVERITY_OPTIONS,
-  FMEA_OCCURRENCE_OPTIONS,
-  FMEA_DETECTION_OPTIONS,
-  HAZOP_GUIDE_WORDS,
-  HAZOP_PARAMETERS,
-  LOPA_INIT_FREQ_OPTIONS,
-  LOPA_PFD_OPTIONS,
   matrixLikelihoodDescriptionKey,
   matrixSeverityDescriptionKey,
   r2dParamDescriptionKey,
@@ -74,10 +66,8 @@ import {
   type ChecklistItem,
   type JSAValues,
   type JSAResult,
-  type JSAStep,
   type LOPAValues,
   type LOPAResult,
-  type LOPALayer,
   METHOD_CATALOG,
 } from "@/lib/risk-scoring";
 import { MethodIcon } from "@/components/risk-analysis/MethodIcon";
@@ -358,22 +348,11 @@ function intlLocaleTag(locale: Locale): string {
   const map: Partial<Record<Locale, string>> = {
     tr: "tr-TR",
     en: "en-US",
-    ar: "ar-SA",
-    ru: "ru-RU",
-    de: "de-DE",
-    fr: "fr-FR",
-    es: "es-ES",
-    zh: "zh-CN",
-    ja: "ja-JP",
-    ko: "ko-KR",
-    hi: "hi-IN",
-    az: "az-AZ",
-    id: "id-ID",
   };
   return map[locale] ?? "en-US";
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 function _severityBadge(severity: DetectionSeverity) {
   switch (severity) {
     case "low": return "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300";
@@ -560,7 +539,7 @@ function renderAnnotation(annotation: FindingAnnotation, active: boolean, onClic
 /* Score Display Panels                                                */
 /* ================================================================== */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 function R2DPanel({
   finding,
   onUpdate,
@@ -645,7 +624,7 @@ function R2DPanel({
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 function FKPanel({
   finding,
   onUpdate,
@@ -705,7 +684,7 @@ function FKPanel({
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 function MatrixPanel({
   finding,
   onUpdate,
@@ -817,35 +796,30 @@ export function RiskAnalysisClient() {
     let cancelled = false;
 
     void (async () => {
-      const activeWs = await getActiveWorkspace();
-      if (cancelled) return;
-
+      // ÖNEMLİ: getActiveWorkspace() nova_workspaces.id döndürür ve bu
+      // company_workspaces.id ile aynı şey DEĞİLDİR. Eski sürüm
+      // `c.id === activeWs.id` ile filtre yapıyor ve listeyi tamamen
+      // boşaltıp `selectedCompanyId`'yi anlamsız bir UUID'ye atıyordu.
+      // Bu hem firmaların seçilememesine hem de save sırasında FK ihlaline
+      // sebep oluyordu. RLS zaten doğru tenant'ın firmalarını döndürür;
+      // dropdown listesini olduğu gibi göstermek doğru olan.
       const fallback = loadCompanyDirectory();
-      const fallbackScoped = activeWs?.id ? fallback.filter((c) => c.id === activeWs.id) : [];
-      setCompanies(fallbackScoped);
-      setSelectedCompanyId(activeWs?.id ?? fallbackScoped[0]?.id ?? "");
+      setCompanies(fallback);
 
       const sb = await fetchCompaniesFromSupabase();
       if (cancelled || !sb || sb.length === 0) return;
       saveCompanyDirectory(sb);
+      setCompanies(sb);
 
       const urlCompanyId = searchParams.get("companyId");
-      const scoped = activeWs?.id ? sb.filter((c) => c.id === activeWs.id) : [];
-      setCompanies(scoped);
-
-      if (activeWs?.id) {
-        setSelectedCompanyId(activeWs.id);
-        return;
-      }
-
-      if (urlCompanyId && scoped.some((c) => c.id === urlCompanyId)) {
+      if (urlCompanyId && sb.some((c) => c.id === urlCompanyId)) {
         setSelectedCompanyId(urlCompanyId);
         return;
       }
 
       setSelectedCompanyId((prev) => {
-        if (prev && scoped.find((c) => c.id === prev)) return prev;
-        return scoped[0]?.id ?? "";
+        if (prev && sb.find((c) => c.id === prev)) return prev;
+        return sb[0]?.id ?? "";
       });
     })();
 
@@ -855,14 +829,17 @@ export function RiskAnalysisClient() {
 
   useEffect(() => {
     function onActiveWorkspaceChanged() {
+      // Çalışma alanı değişince firma listesini yeniden çek; ilk firmayı
+      // seçili yap (kullanıcı dropdown'dan değiştirebilir).
       void (async () => {
-        const ws = await getActiveWorkspace();
-        if (!ws?.id) return;
         const sb = await fetchCompaniesFromSupabase();
-        const scoped = (sb ?? companiesRef.current).filter((c) => c.id === ws.id);
-        if (scoped.length > 0) {
-          setCompanies(scoped);
-          setSelectedCompanyId(ws.id);
+        const list = sb ?? companiesRef.current;
+        if (list.length > 0) {
+          setCompanies(list);
+          setSelectedCompanyId((prev) => {
+            if (prev && list.find((c) => c.id === prev)) return prev;
+            return list[0]?.id ?? "";
+          });
         }
       })();
     }
@@ -1105,7 +1082,7 @@ export function RiskAnalysisClient() {
   const [pendingPinSeverity, setPendingPinSeverity] = useState<DetectionSeverity>("medium");
 
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
-  const _cameraInputRefs = useRef<Record<string, HTMLInputElement | null>>({}); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const _cameraInputRefs = useRef<Record<string, HTMLInputElement | null>>({});  
 
   /* ── Derived ── */
   const selectedCompany = useMemo(() => companies.find((c) => c.id === selectedCompanyId) ?? null, [companies, selectedCompanyId]);
@@ -1220,7 +1197,7 @@ export function RiskAnalysisClient() {
   }
 
   /* ── Finding update (for score panel changes) ── */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   const updateFinding = useCallback((rowId: string, updatedFinding: VisualFinding) => {
     setResults((prev) => prev.map((r) => r.rowId === rowId ? { ...r, findings: r.findings.map((f) => f.id === updatedFinding.id ? updatedFinding : f) } : r));
   }, []);
@@ -1332,7 +1309,7 @@ export function RiskAnalysisClient() {
         return { findings: [], meta: emptyMeta, error: message, stage };
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const data = await res.json() as Record<string, any>;
 
       const meta: ImageMeta = {
@@ -1859,7 +1836,7 @@ JSON formatında döndür:
     // FaceDetector API (Chrome 70+, Edge, Opera)
     if ("FaceDetector" in window) {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         const detector = new (window as any).FaceDetector({ fastMode: true, maxDetectedFaces: 20 });
         const faces = await detector.detect(canvas);
         for (const face of faces) {
@@ -2757,7 +2734,7 @@ JSON formatında döndür:
                     {line.images.map((img) => (
                       <div key={img.id} className="overflow-hidden rounded-xl border border-border bg-card">
                         <div className="aspect-[4/3] bg-slate-100 dark:bg-slate-800">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          { }
                           <img src={img.previewUrl} alt={img.file.name} className="h-full w-full object-cover" />
                         </div>
                         <div className="flex items-center justify-between p-2">
@@ -2809,9 +2786,24 @@ JSON formatında döndür:
             </div>
           </div>
 
-          {/* Kayit mesaji */}
+          {/* Kayit mesaji + firma sayfasina yönlendirme */}
           {saveMessage && (
-            <StatusAlert tone={saveTone === "success" ? "success" : "danger"} className="mt-2">{saveMessage}</StatusAlert>
+            <StatusAlert tone={saveTone === "success" ? "success" : "danger"} className="mt-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span>{saveMessage}</span>
+                {saveTone === "success" && selectedCompanyId ? (
+                  <Link
+                    href={`/companies/${selectedCompanyId}?tab=risk`}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+                  >
+                    {selectedCompany?.name
+                      ? `${selectedCompany.name} → Risk ve Saha`
+                      : "Firma sayfasında görüntüle"}
+                    <span aria-hidden>→</span>
+                  </Link>
+                ) : null}
+              </div>
+            </StatusAlert>
           )}
           {exportQuotaMessage ? (
             <StatusAlert tone="danger" className="mt-2">{exportQuotaMessage}</StatusAlert>
@@ -2914,7 +2906,7 @@ JSON formatında döndür:
                               className={`overflow-hidden rounded-2xl border text-left transition-colors ${active ? "border-primary shadow-[var(--shadow-soft)]" : "border-border hover:border-primary/40"}`}
                             >
                               <div className="aspect-[4/3] bg-slate-100 dark:bg-slate-800">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                { }
                                 <img src={img.previewUrl} alt={img.file.name} className="h-full w-full object-cover" />
                               </div>
                               <div className="p-3">
@@ -2937,7 +2929,7 @@ JSON formatında döndür:
                             className="relative aspect-[4/3]"
                             onClick={(e) => handleImageClick(e, result.rowId, selectedImage.id)}
                           >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            { }
                             <img src={selectedImage.previewUrl} alt={selectedImage.file.name} className="h-full w-full object-cover pointer-events-none" />
                             <div className={`absolute inset-0 ${pinMode === result.rowId ? "pointer-events-none" : ""}`}>
                               {visibleFindings.map((f) =>
