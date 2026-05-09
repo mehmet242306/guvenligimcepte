@@ -627,7 +627,7 @@ export function DashboardClient() {
                 icon={Download}
                 label={t('moduleLegal')}
                 desc={t('moduleLegalDesc')}
-                href="/settings?tab=mevzuat"
+                href="/isg-library?category=documentation"
                 tone="gold"
               />
             </div>

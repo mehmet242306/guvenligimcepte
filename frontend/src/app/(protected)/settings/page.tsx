@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import {
   AlertTriangle,
@@ -318,12 +318,26 @@ function GeneralTab() {
 }
 
 export default function SettingsPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = usePersistedState<TabKey>("settings:tab", "admin_dashboard");
   const [tabQuery, setTabQuery] = useState("");
   const [activeWorkspace, setActiveWorkspace] = useState<WorkspaceRow | null>(null);
   const deferredTabQuery = useDeferredValue(tabQuery);
   const isAdmin = useIsAdmin();
+
+  // Settings is now an admin-only console: regular users have their personal
+  // preferences (theme, language, notifications) under the Profile area, and
+  // the upper nav no longer surfaces /settings to them. We still allow direct
+  // links from platform-admin pages to land here, but a normal user landing on
+  // a deep link bounces back to the dashboard rather than seeing an empty hub.
+  // `useIsAdmin()` returns null while the lookup is in flight; we wait for a
+  // definitive `false` before redirecting to avoid a flash for actual admins.
+  useEffect(() => {
+    if (isAdmin === false) {
+      router.replace("/dashboard");
+    }
+  }, [isAdmin, router]);
   const canViewAdminDashboard = usePermission("admin.dashboard.view");
   const canViewErrorLogs = usePermission("admin.error_logs.view");
   const canManageUsers = usePermission("admin.users.manage");
@@ -456,6 +470,18 @@ export default function SettingsPage() {
     startTransition(() => {
       setActiveTab(nextTab);
     });
+  }
+
+  // Don't paint the admin console for non-admins (or while we don't yet know).
+  // The redirect effect above kicks them back to /dashboard once isAdmin
+  // resolves to false; this just prevents a flicker of admin chrome in the
+  // meantime.
+  if (isAdmin !== true) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-[var(--shadow-soft)]">
+        Yonlendiriliyor...
+      </div>
+    );
   }
 
   if (!activeTabDef) {

@@ -87,7 +87,10 @@ const secondaryNav: NavItem[] = [
   // Raporlar: Artık firma workspace'i içindeki "İSG Dosyası" sekmesine taşındı.
   // { href: "/reports", key: "nav.reports" },
   // Paketler: üst menüden kaldırıldı — dashboard’daki “Paket ve kapasite” kartından erişim.
-  { href: "/settings", key: "nav.settings" },
+  // Ayarlar: Sistem yönetimi tabları platform-admin altında ayrıca erişilebilir
+  // (`platformAdminSecondaryNav`). Normal kullanıcı için kullanıcı tercihleri
+  // zaten Profil/Hesap akışından yönetildiği için /settings linki burada
+  // anlamsız hub'a dönüşüyordu — kaldırıldı.
 ];
 
 const osgbPrimaryNav = [
@@ -110,7 +113,7 @@ const osgbSecondaryNav = [
   { href: "/osgb/contracts", key: "nav.osgbContracts" },
   // Raporlar: Firma workspace → İSG Dosyası sekmesine taşındı.
   { href: "/cozumler/osgb", key: "nav.osgbOffersCapacity" },
-  { href: "/settings", key: "nav.settings" },
+  // Ayarlar: Bkz. `secondaryNav` notu — OSGB kullanıcısı için de gizlendi.
 ];
 
 const platformAdminPrimaryNav = [

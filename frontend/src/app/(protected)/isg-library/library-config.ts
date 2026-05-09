@@ -1786,16 +1786,24 @@ export type LucideIconRefs = {
   Users: typeof Users;
 };
 
-/** Maps removed/legacy URL section values to where the user should actually go. */
+/**
+ * Maps removed/legacy URL section values to where the user should actually go.
+ *
+ * Notes on "legal/mevzuat-*": these used to point at `/settings?tab=mevzuat`
+ * (admin-only mevzuat senkronizasyon paneli). Normal users have no business
+ * landing on the admin console, so we now redirect those legacy URLs to the
+ * Documentation category in the library — the closest user-facing equivalent.
+ * Admin users already reach mevzuat via `/platform-admin` quick links.
+ */
 export const LEGACY_SECTION_REDIRECTS: Record<string, { module?: string; category?: BuiltinCategoryKey }> = {
   education: { module: "/training" },
   egitim: { module: "/training" },
   assessment: { module: "/training" },
   "sinav-ve-anket": { module: "/training" },
   "sinav-anket": { module: "/training" },
-  legal: { module: "/settings?tab=mevzuat" },
-  "mevzuat-ve-rehberler": { module: "/settings?tab=mevzuat" },
-  "mevzuat-rehberler": { module: "/settings?tab=mevzuat" },
+  legal: { category: "documentation" },
+  "mevzuat-ve-rehberler": { category: "documentation" },
+  "mevzuat-rehberler": { category: "documentation" },
   forms: { category: "audit-flows" },
   "form-ve-checklist": { category: "audit-flows" },
   formlar: { category: "audit-flows" },
