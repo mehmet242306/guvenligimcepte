@@ -67,11 +67,14 @@ import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
 import { cn } from "@/lib/utils";
 import {
   ALL_CATEGORY_LABEL,
+  ALL_SUBCATEGORIES_KEY,
+  ALL_SUBCATEGORIES_LABEL,
   BUILTIN_CATEGORIES,
   CATEGORY_TONE_CLASSES,
   CUSTOM_CATEGORY_STORAGE_KEY,
   LEGACY_SECTION_REDIRECTS,
   STARTER_TEMPLATES,
+  getSubcategoriesForCategory,
   librarySlugify,
   pickLocalized,
   type BuiltinCategoryKey,
@@ -150,6 +153,13 @@ type ItemFlags = {
 type LibraryItem = {
   id: string;
   category: CategoryKey;
+  /**
+   * Subcategory slug under the parent category. `null` means "not anchored to
+   * a specific subcategory" — these cards still show in the "All
+   * subcategories" view but are filtered out when the user picks a specific
+   * subcategory chip.
+   */
+  subcategoryKey?: string | null;
   customCategoryId?: string;
   title: string;
   description: string;
@@ -406,6 +416,14 @@ export function IsgLibraryClient() {
   const [category, setCategory] = useState<CategoryKey>(() =>
     categoryFromUrl(searchParams.get("category") ?? searchParams.get("section")),
   );
+  // Active subcategory inside the selected main category. `ALL_SUBCATEGORIES_KEY`
+  // means "show everything under the main category" and is the default whenever
+  // the user lands on a category for the first time. We rebind the slug to one
+  // of the category's actual subcategories on category change so a stale slug
+  // from URL doesn't leak across categories.
+  const [subcategory, setSubcategory] = useState<string>(
+    () => searchParams.get("sub") ?? ALL_SUBCATEGORIES_KEY,
+  );
   const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const [sectorFilter, setSectorFilter] = useState(() => searchParams.get("sector") ?? "all");
   const [sortBy, setSortBy] = useState<SortKey>(() => getSortKey(searchParams.get("sort")));
@@ -471,18 +489,34 @@ export function IsgLibraryClient() {
     return [...base, ...customs];
   }, [customCategories]);
 
+  // ---------- Subcategories of the active category ----------
+  const activeSubcategories = useMemo(
+    () => getSubcategoriesForCategory(category, categoryDefinitions),
+    [category, categoryDefinitions],
+  );
+
+  // When the user switches main category, drop any stale subcategory selection.
+  // We don't reset to "all" if the URL already pointed at a valid subcategory
+  // for this category (deep-link case handled implicitly by initial state).
+  useEffect(() => {
+    if (subcategory === ALL_SUBCATEGORIES_KEY) return;
+    if (activeSubcategories.some((entry) => entry.key === subcategory)) return;
+    setSubcategory(ALL_SUBCATEGORIES_KEY);
+  }, [activeSubcategories, subcategory]);
+
   // ---------- URL sync ----------
   useEffect(() => {
     const params = new URLSearchParams();
     const cat = categoryToUrl(category);
     if (cat) params.set("category", cat);
+    if (subcategory && subcategory !== ALL_SUBCATEGORIES_KEY) params.set("sub", subcategory);
     if (query.trim()) params.set("q", query.trim());
     if (sectorFilter !== "all") params.set("sector", sectorFilter);
     if (sortBy !== "newest") params.set("sort", sortBy);
     if (savedOnly) params.set("saved", "1");
     const url = params.toString() ? `${pathname}?${params.toString()}` : pathname;
     router.replace(url);
-  }, [category, pathname, query, router, savedOnly, sectorFilter, sortBy]);
+  }, [category, pathname, query, router, savedOnly, sectorFilter, sortBy, subcategory]);
 
   // ---------- Status auto-hide ----------
   useEffect(() => {
@@ -706,6 +740,10 @@ export function IsgLibraryClient() {
       items.push({
         id: `catalog-${row.id}`,
         category: cat,
+        // Catalog rows aren't anchored to a subcategory yet; the DB schema
+        // doesn't carry that field. They surface in the "All subcategories"
+        // view and stay hidden when a specific subcategory is selected.
+        subcategoryKey: null,
         title: row.title,
         description: row.description ?? "",
         contentType: row.content_type ?? "PDF",
@@ -733,9 +771,15 @@ export function IsgLibraryClient() {
             : "";
       const rawSection = typeof variables.__library_section === "string" ? variables.__library_section : "";
       const cat = inferLibraryCategory(rawSection || "documentation");
+      const rawSub = typeof variables.__library_subcategory === "string" ? variables.__library_subcategory : null;
       items.push({
         id: `document-${doc.id}`,
         category: cat,
+        // Surface the subcategory the user picked when they originally created
+        // the document (we stash it in variables_data on save). Older docs that
+        // pre-date subcategories simply don't have this field and stay in the
+        // "All subcategories" bucket.
+        subcategoryKey: rawSub,
         title: doc.title,
         description: company
           ? isTr
@@ -769,6 +813,7 @@ export function IsgLibraryClient() {
       items.push({
         id: starter.id,
         category: starter.category,
+        subcategoryKey: starter.subcategoryKey ?? null,
         title: pickLocalized(starter.title, locale),
         description: pickLocalized(starter.description, locale),
         contentType:
@@ -843,6 +888,17 @@ export function IsgLibraryClient() {
     const normalizedQuery = query.trim().toLocaleLowerCase(dateLocaleTag);
     const result = allItems.filter((item) => {
       if (category !== "all" && item.category !== category) return false;
+      // Subcategory filter only applies inside a real (non-"all") main
+      // category. Items that aren't anchored to a subcategory (legacy catalog
+      // rows, untagged user docs) are hidden when a specific subcategory is
+      // selected — they only appear in the "All subcategories" view.
+      if (
+        category !== "all" &&
+        subcategory !== ALL_SUBCATEGORIES_KEY &&
+        item.subcategoryKey !== subcategory
+      ) {
+        return false;
+      }
       if (savedOnly && !(item.libraryContentId && savedContentIds.has(item.libraryContentId))) return false;
       if (sectorFilter !== "all" && !item.sectorTags.includes(sectorFilter)) return false;
       if (!normalizedQuery) return true;
@@ -864,7 +920,26 @@ export function IsgLibraryClient() {
           return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
       }
     });
-  }, [allItems, category, dateLocaleTag, locale, query, savedContentIds, savedOnly, sectorFilter, sortBy]);
+  }, [allItems, category, dateLocaleTag, locale, query, savedContentIds, savedOnly, sectorFilter, sortBy, subcategory]);
+
+  // ---------- Counts per subcategory of the active category ----------
+  const subcategoryCounts = useMemo(() => {
+    const map = new Map<string, number>();
+    if (category === "all") return map;
+    for (const item of allItems) {
+      if (item.category !== category) continue;
+      if (!item.subcategoryKey) continue;
+      map.set(item.subcategoryKey, (map.get(item.subcategoryKey) ?? 0) + 1);
+    }
+    return map;
+  }, [allItems, category]);
+
+  // Total card count for the "All subcategories" pill — equals every item in
+  // the active category regardless of subcategory tag.
+  const activeCategoryItemCount = useMemo(() => {
+    if (category === "all") return allItems.length;
+    return allItems.filter((item) => item.category === category).length;
+  }, [allItems, category]);
 
   const activeCategoryDef =
     categoryDefinitions.find((entry) => entry.key === category) ?? null;
@@ -906,6 +981,11 @@ export function IsgLibraryClient() {
         params.set("mode", "new");
         params.set("library", "1");
         params.set("librarySection", item.category === "all" ? "documentation" : item.category);
+        // Carry the subcategory so the editor can persist it on save and the
+        // resulting document re-appears under the same subcategory.
+        if (item.subcategoryKey) {
+          params.set("librarySubcategory", item.subcategoryKey);
+        }
         params.set("title", item.title);
         router.push(`/documents/new?${params.toString()}`);
         return;
@@ -939,20 +1019,27 @@ export function IsgLibraryClient() {
       // for the prompt so we don't blow the URL up with a large payload.
       sessionStorage.setItem(
         "risknova:isg-library:aiDraft",
-        JSON.stringify({ prompt: aiDraft.prompt, category: aiDraft.category }),
+        JSON.stringify({
+          prompt: aiDraft.prompt,
+          category: aiDraft.category,
+          subcategory: subcategory !== ALL_SUBCATEGORIES_KEY ? subcategory : null,
+        }),
       );
       const params = new URLSearchParams();
       params.set("companyId", creationCompanyId);
       params.set("mode", "ai");
       params.set("library", "1");
       params.set("librarySection", aiDraft.category === "all" ? "documentation" : aiDraft.category);
+      if (subcategory && subcategory !== ALL_SUBCATEGORIES_KEY) {
+        params.set("librarySubcategory", subcategory);
+      }
       params.set("title", aiDraft.title);
       params.set("ai", "1");
       router.push(`/documents/new?${params.toString()}`);
     } finally {
       setAiDraftSubmitting(false);
     }
-  }, [aiDraft, creationCompanyId, isTr, router, t]);
+  }, [aiDraft, creationCompanyId, isTr, router, subcategory, t]);
 
   const handlePreview = useCallback(
     async (item: LibraryItem) => {
@@ -1255,6 +1342,9 @@ export function IsgLibraryClient() {
         params.set("mode", "import");
         params.set("library", "1");
         params.set("librarySection", category === "all" ? "documentation" : category);
+        if (subcategory && subcategory !== ALL_SUBCATEGORIES_KEY) {
+          params.set("librarySubcategory", subcategory);
+        }
         router.push(`/documents/new?${params.toString()}`);
       } catch {
         setErrorMessage(isTr ? "Dosya yüklenemedi. Bağlantınızı kontrol edin." : "Upload failed. Check your connection.");
@@ -1262,7 +1352,7 @@ export function IsgLibraryClient() {
         setImportingDocument(false);
       }
     },
-    [category, isTr, router, selectedCompany],
+    [category, isTr, router, selectedCompany, subcategory],
   );
 
   if (loading) {
@@ -1815,28 +1905,128 @@ export function IsgLibraryClient() {
         </div>
       ) : null}
 
-      {/* ---- Grid ---- */}
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {renderAddCard()}
-        {filteredItems.map((item) => renderItemCard(item))}
-        {filteredItems.length === 0 ? (
-          <div className="md:col-span-2 xl:col-span-3 2xl:col-span-4">
-            <div className="flex flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-border bg-card/80 px-6 py-12 text-center shadow-[var(--shadow-card)]">
-              <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] border border-[var(--gold)]/30 bg-[var(--gold)]/10 text-[var(--gold)]">
-                <LayoutGrid size={22} />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-foreground">
-                {isTr ? "Bu görünümde içerik yok" : "Nothing here yet"}
-              </h3>
-              <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-                {isTr
-                  ? "Kategori değiştirmeyi, filtreyi temizlemeyi veya AI ile yeni bir taslak oluşturmayı deneyin."
-                  : "Try a different category, clear filters, or generate a draft with AI."}
-              </p>
+      {/* ---- Subcategory rail + content grid ---- */}
+      {activeCategoryDef && activeSubcategories.length > 0 ? (
+        <section className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
+          {/* Subcategory list — sticky on desktop, horizontal scroll chip strip on mobile */}
+          <aside
+            className={cn(
+              "rounded-[1.5rem] border bg-card/95 p-3 shadow-[var(--shadow-card)] dark:border-white/10 dark:bg-[rgba(15,23,42,0.82)] lg:sticky lg:top-4 lg:self-start lg:p-4",
+              activeTone?.panelBorder,
+            )}
+          >
+            <div className="mb-2 hidden items-center gap-2 px-1 lg:flex">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                {isTr ? "Alt başlıklar" : "Subcategories"}
+              </span>
+              <span className="ml-auto text-[10px] font-semibold text-muted-foreground/80">
+                {activeSubcategories.length}
+              </span>
             </div>
+
+            {/* Mobile: horizontal scroll chip strip; Desktop: vertical button list */}
+            <div className="no-scrollbar -mx-1 flex flex-row items-stretch gap-1.5 overflow-x-auto px-1 pb-1 lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0 lg:pb-0">
+              <button
+                type="button"
+                onClick={() => setSubcategory(ALL_SUBCATEGORIES_KEY)}
+                className={cn(
+                  "inline-flex shrink-0 items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left text-[13px] font-semibold transition lg:w-full",
+                  subcategory === ALL_SUBCATEGORIES_KEY
+                    ? activeTone?.chipActive
+                    : activeTone?.chipIdle,
+                )}
+              >
+                <span className="flex items-center gap-2">
+                  <LayoutGrid size={14} />
+                  <span className="whitespace-nowrap">{pickLocalized(ALL_SUBCATEGORIES_LABEL, locale)}</span>
+                </span>
+                <span className="rounded-full border border-current/30 bg-white/35 px-1.5 py-0 text-[10px] font-bold text-current/85 dark:bg-white/10">
+                  {activeCategoryItemCount}
+                </span>
+              </button>
+
+              {activeSubcategories.map((sub) => {
+                const isActive = sub.key === subcategory;
+                const count = subcategoryCounts.get(sub.key) ?? 0;
+                return (
+                  <button
+                    key={sub.key}
+                    type="button"
+                    onClick={() => setSubcategory(sub.key)}
+                    title={sub.description ? pickLocalized(sub.description, locale) : undefined}
+                    className={cn(
+                      "inline-flex shrink-0 items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left text-[13px] font-semibold transition lg:w-full",
+                      isActive ? activeTone?.chipActive : activeTone?.chipIdle,
+                    )}
+                  >
+                    <span className="min-w-0 flex-1 truncate">{pickLocalized(sub.label, locale)}</span>
+                    <span className="rounded-full border border-current/30 bg-white/35 px-1.5 py-0 text-[10px] font-bold text-current/85 dark:bg-white/10">
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active subcategory description (desktop only) */}
+            {subcategory !== ALL_SUBCATEGORIES_KEY ? (
+              <p className="mt-3 hidden text-[11px] leading-5 text-muted-foreground lg:block">
+                {(() => {
+                  const sub = activeSubcategories.find((s) => s.key === subcategory);
+                  return sub?.description ? pickLocalized(sub.description, locale) : "";
+                })()}
+              </p>
+            ) : null}
+          </aside>
+
+          {/* Card grid */}
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {renderAddCard()}
+            {filteredItems.map((item) => renderItemCard(item))}
+            {filteredItems.length === 0 ? (
+              <div className="md:col-span-2 xl:col-span-3">
+                <div className="flex flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-border bg-card/80 px-6 py-12 text-center shadow-[var(--shadow-card)]">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] border border-[var(--gold)]/30 bg-[var(--gold)]/10 text-[var(--gold)]">
+                    <LayoutGrid size={22} />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-foreground">
+                    {isTr ? "Bu görünümde içerik yok" : "Nothing here yet"}
+                  </h3>
+                  <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
+                    {isTr
+                      ? "Alt başlığı değiştirmeyi, filtreyi temizlemeyi veya AI ile yeni bir taslak oluşturmayı deneyin."
+                      : "Try a different subcategory, clear filters, or generate a draft with AI."}
+                  </p>
+                </div>
+              </div>
+            ) : null}
           </div>
-        ) : null}
-      </section>
+        </section>
+      ) : (
+        // No subcategories on this category — fall back to a single-column grid
+        // (e.g. "all", "user-templates", or custom user-created categories).
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {renderAddCard()}
+          {filteredItems.map((item) => renderItemCard(item))}
+          {filteredItems.length === 0 ? (
+            <div className="md:col-span-2 xl:col-span-3 2xl:col-span-4">
+              <div className="flex flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-border bg-card/80 px-6 py-12 text-center shadow-[var(--shadow-card)]">
+                <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] border border-[var(--gold)]/30 bg-[var(--gold)]/10 text-[var(--gold)]">
+                  <LayoutGrid size={22} />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-foreground">
+                  {isTr ? "Bu görünümde içerik yok" : "Nothing here yet"}
+                </h3>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
+                  {isTr
+                    ? "Kategori değiştirmeyi, filtreyi temizlemeyi veya AI ile yeni bir taslak oluşturmayı deneyin."
+                    : "Try a different category, clear filters, or generate a draft with AI."}
+                </p>
+              </div>
+            </div>
+          ) : null}
+        </section>
+      )}
 
       <input
         ref={fileInputRef}
