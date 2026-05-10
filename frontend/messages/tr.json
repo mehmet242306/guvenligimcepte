@@ -73,26 +73,6 @@
     "authLoading": "Güvenli oturum doğrulanıyor…",
     "workspaceLoading": "Çalışma alanı bağlamı hazırlanıyor…"
   },
-  "platformFeedback": {
-    "buttonAria": "Ürün geri bildirimi gönder",
-    "buttonTitle": "Geri bildirim",
-    "panelTitle": "Geri bildirim gönder",
-    "panelSubtitle": "Mesajınız platform ekibine iletilir. Yaşadığınız sorunu veya geliştirmek istediğiniz noktayı yazın.",
-    "categoryLabel": "Konu",
-    "categoryBug": "Hata / sorun",
-    "categoryIdea": "Özellik önerisi",
-    "categoryUsability": "Kullanılabilirlik",
-    "categoryOther": "Diğer",
-    "messageLabel": "Mesaj",
-    "messagePlaceholder": "Sorunu veya önerinizi açıklayın…",
-    "pageContextLabel": "Sayfa",
-    "submit": "Gönder",
-    "submitting": "Gönderiliyor…",
-    "success": "Teşekkürler — geri bildiriminiz kaydedildi.",
-    "error": "Geri bildirim gönderilemedi. Lütfen tekrar deneyin.",
-    "close": "Kapat",
-    "minLengthHint": "En az 10 karakter yazın."
-  },
   "brand": {
     "tagline": "AI destekli İSG platformu"
   },
@@ -625,7 +605,6 @@
     "osgbOffersCapacity": "Teklif ve kapasite",
     "platformAdminHome": "Platform yönetimi",
     "demoRequestsNav": "Demo talepleri",
-    "userFeedbackNav": "Kullanıcı geri bildirimi",
     "demoBuilderNav": "Demo oluşturucu",
     "dofRegister": "DÖF'ler",
     "incidentsPage": "Olaylar",
@@ -2054,25 +2033,6 @@
       "errorNotesSave": "Not kaydedilemedi",
       "errorStatusUpdate": "Güncellenemedi",
       "sourceUnknown": "Bilinmiyor"
-    },
-    "userFeedback": {
-      "backLink": "Platform yönetimine dön",
-      "title": "Kullanıcı geri bildirimi",
-      "description": "Uygulama üst çubuğundaki geri bildirim düğmesinden giriş yapmış kullanıcıların gönderdiği mesajlar. Hata, fikir ve kullanılabilirlik notlarını buradan takip edin.",
-      "loadError": "Geri bildirimler yüklenemedi: {message}",
-      "emptyTitle": "Henüz geri bildirim yok",
-      "emptyDescription": "Kullanıcılar üründen geri bildirim gönderdiğinde kayıtlar burada listelenir.",
-      "colDate": "Tarih",
-      "colCategory": "Konu",
-      "colUser": "Kullanıcı",
-      "colOrg": "Kuruluş",
-      "colPage": "Sayfa",
-      "colMessage": "Mesaj",
-      "localeLabel": "Dil",
-      "category_bug": "Hata / sorun",
-      "category_idea": "Özellik önerisi",
-      "category_usability": "Kullanılabilirlik",
-      "category_other": "Diğer"
     },
     "legalCorpus": {
       "title": "Ülkeye göre mevzuat korpus",

@@ -3504,8 +3504,7 @@
     "training": "교육",
     "trainingHub": "교육, 설문조사 및 시험",
     "workplace": "작업장",
-    "workspace": "워크스페이스",
-    "userFeedbackNav": "User feedback"
+    "workspace": "워크스페이스"
   },
   "ohsFile": {
     "alreadyRunning": "현재 아카이브를 준비 중입니다. 완료될 때까지 기다려 주세요.",
@@ -4913,25 +4912,6 @@
       "tableHeading": "문서 (이름순)",
       "title": "국가별 법률 말뭉치",
       "yes": "예"
-    },
-    "userFeedback": {
-      "backLink": "Back to platform admin",
-      "title": "User feedback",
-      "description": "Messages sent by signed-in users via the feedback button in the app header. Use this list to track bugs, ideas and usability notes.",
-      "loadError": "Could not load feedback: {message}",
-      "emptyTitle": "No feedback yet",
-      "emptyDescription": "When users submit feedback from the product, entries will appear here.",
-      "colDate": "Date",
-      "colCategory": "Category",
-      "colUser": "User",
-      "colOrg": "Organization",
-      "colPage": "Page",
-      "colMessage": "Message",
-      "localeLabel": "Locale",
-      "category_bug": "Bug or error",
-      "category_idea": "Feature idea",
-      "category_usability": "Usability",
-      "category_other": "Other"
     }
   },
   "pricing": {
@@ -7172,25 +7152,5 @@
       "pickCompany": "Select a company workspace first.",
       "auth": "Session expired or not authorized. Sign in again."
     }
-  },
-  "platformFeedback": {
-    "buttonAria": "Send product feedback",
-    "buttonTitle": "Feedback",
-    "panelTitle": "Send feedback",
-    "panelSubtitle": "Your message is sent to the platform team. Describe what went wrong or what you would like improved.",
-    "categoryLabel": "Category",
-    "categoryBug": "Bug or error",
-    "categoryIdea": "Feature idea",
-    "categoryUsability": "Usability",
-    "categoryOther": "Other",
-    "messageLabel": "Message",
-    "messagePlaceholder": "Describe the issue or suggestion…",
-    "pageContextLabel": "Page",
-    "submit": "Submit",
-    "submitting": "Sending…",
-    "success": "Thank you — your feedback was recorded.",
-    "error": "Could not send feedback. Please try again.",
-    "close": "Close",
-    "minLengthHint": "Enter at least 10 characters."
   }
 }
