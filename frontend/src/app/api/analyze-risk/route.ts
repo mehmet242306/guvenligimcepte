@@ -28,9 +28,11 @@ function getAnthropicClient(): Anthropic | null {
   return anthropicClient;
 }
 
-export const maxDuration = 90; // Anthropic-only visual risk analysis
+// Vision + uzun İSG prompt cevapları sıklıkla 40–70 sn sürebilir; iki deneme + marj için yüksek tutulur.
+// Vercel: Pro/Enterprise dashboard üzerinde fonksiyon süresi limiti bu değere uygun olmalıdır.
+export const maxDuration = 150;
 
-const PROMPT_VERSION = "v2.3-fast-vision-haiku-default";
+const PROMPT_VERSION = "v2.4-resilience-timeout-vision";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
@@ -1608,13 +1610,9 @@ export async function POST(request: NextRequest) {
     // Aynı görsel Claude'a da verilir. Risk listesi, skorlar ve öneriler
     // Claude'un doğrudan görsel incelemesiyle üretilir; OpenAI sadece yardımcı
     // gözlem bağlamıdır.
-    // Vercel function maxDuration = 90s. Anthropic call için worst-case toplam
-    // süreyi bütçenin altında tutmalıyız, yoksa Vercel proxy 504 HTML döner ve
-    // client tarafında JSON parse fail olup "AI analizi tamamlanamadı" jenerik
-    // mesajı görünür. Bu yüzden:
-    //   - per-attempt timeout: 35s (Anthropic genelde 15–25s'de tamamlar)
-    //   - 2 attempt (toplam: 35 + 1.5 + 35 = ~71.5s) → 90s sınırının altında
-    //   - max_tokens: 4096 — çoklu risk + mevzuat için yeterli; süreyi kısaltır
+    // İç zamanlayıcı (executeWithResilience) Anthropic çağrısını keser — çok kısa
+    // değerler üretimde sürekli timeout hatası üretir (vision + uzun JSON).
+    // İki deneme: worst-case ~65s + 2.5s + ~65s ≈ 133s → route maxDuration ile uyumlu.
     const resilientResponse = await executeWithResilience({
       serviceKey: "anthropic.risk_analysis",
       displayName: "Anthropic API",
@@ -1623,8 +1621,8 @@ export async function POST(request: NextRequest) {
       endpoint: request.nextUrl.pathname,
       userId: auth.userId,
       organizationId: auth.organizationId,
-      timeoutMs: 28_000,
-      retryDelaysMs: [1200, 2000],
+      timeoutMs: 65_000,
+      retryDelaysMs: [2500, 2500],
       fallbackMessage:
         "AI gorsel analizi gecici olarak kullanilamiyor (zaman asimi). Lutfen yeniden baslatin veya manuel risk girisiyle devam edin.",
       operation: () =>
