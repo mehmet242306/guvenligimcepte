@@ -262,7 +262,7 @@ KONUM VE Y\u00D6N:
 - Bir nesne D\u0130K duruyorsa "yatay" deme, YATAY yat\u0131yorsa "dik" deme.
 - T\u00FCpler/silindirler: Dik mi duruyor, yatay m\u0131 yat\u0131yor? Hangisini G\u00D6R\u00DCYORSAN onu yaz.
 - "Yere devrilmi\u015F" sadece NET olarak devrilmi\u015F g\u00F6r\u00FCn\u00FCyorsa yaz. Dik duran t\u00FCpe "devrilmi\u015F" DEME.
-- Sabitlenmi\u015F mi? Zincir, kemer, aparat G\u00D6R\u00DCYORSAN sabitlenmi\u015F de. G\u00F6rm\u00FCyorsan "sabitlenmemi\u015F" de.
+- Sabitlenmi\u015F mi? Zincir, kemer, aparat G\u00D6R\u00DCYORSAN sabitlenmi\u015F de. G\u00F6rm\u00FCyorsan "sabitlenme kan\u0131t\u0131 g\u00F6r\u00FCnm\u00FCyor / do\u011Frulanmal\u0131" de.
 
 DURUM VE M\u0130KTAR:
 - Ka\u00E7 tane var? Sayabiliyorsan say (\u00F6r: "3 adet LPG t\u00FCp\u00FC"). Sayam\u0131yorsan "birden fazla" de.
@@ -275,6 +275,57 @@ MESAFE VE ALAN:
 - Alan b\u00FCy\u00FCkl\u00FC\u011F\u00FCn\u00FC abartma \u2014 g\u00F6rseldeki oranlardan tahmin et.
 
 ALTIN KURAL: G\u00D6RD\u00DC\u011E\u00DCnden fazlas\u0131n\u0131 S\u00D6YLEME. Yanl\u0131\u015F fiziksel tan\u0131mlama, hi\u00E7 tan\u0131mlama yapmamaktan DAHA K\u00D6T\u00DC.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+GENEL R\u0130SK TET\u0130KLEY\u0130C\u0130S\u0130 \u2014 G\u00D6R\u00DCLEN TEHL\u0130KE KAYNA\u011EINI BO\u015E GE\u00C7ME
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
+Bir g\u00F6rselde a\u015Fa\u011F\u0131daki tehlike kaynaklar\u0131ndan biri A\u00C7IK\u00C7A g\u00F6r\u00FCl\u00FCyorsa
+"belirgin risk yok" deme ve risks: [] d\u00F6nme. En az\u0131ndan g\u00F6r\u00FCnen unsura ba\u011Fl\u0131
+bir "kontrol/do\u011Frulama gerektiren risk" veya "kabul edilebilir risk" tespiti yaz:
+
+- Bas\u0131n\u00E7l\u0131 kap, LPG/gaz t\u00FCp\u00FC, kompres\u00F6r, tank, manifold, reg\u00FClat\u00F6r.
+- Elektrik panosu, a\u00E7\u0131kta/da\u011F\u0131n\u0131k kablo, uzatma, priz \u00E7oklay\u0131c\u0131, \u0131slak alanda elektrik.
+- Ge\u00E7i\u015F yolunda malzeme, ortam da\u011F\u0131n\u0131kl\u0131\u011F\u0131, tak\u0131lma/d\u00FC\u015Fme olu\u015Fturabilecek kablo veya ekipman.
+- Acil \u00E7\u0131k\u0131\u015F, yang\u0131n s\u00F6nd\u00FCr\u00FCc\u00FC, yang\u0131n dolab\u0131, y\u00F6nlendirme levhas\u0131 veya tahliye yolu.
+- Kimyasal kap, etiketsiz bidon/\u015Fi\u015Fe, s\u0131v\u0131 d\u00F6k\u00FClme, yan\u0131c\u0131 malzeme depolama.
+- Raf, istif, devrilme riski olan malzeme, a\u011F\u0131r y\u00FCk, d\u00FCzensiz depolama.
+- Makine, hareketli par\u00E7a, koruyucu kapak, kesici/delici el aleti, forklift/transpalet.
+- Merdiven, iskele, platform, y\u00FCkseklik kenar\u0131, korkuluk/ya\u015Fam hatt\u0131 gerektiren alan.
+- Kaygan/k\u0131r\u0131k/bozuk zemin, kot fark\u0131, \u00E7ukur, e\u015Fik, su/ya\u011F/kimyasal izi.
+- KKD gerektiren aktif i\u015F veya sahadaki ki\u015Fi: ba\u015F, g\u00F6z, el, ayak, solunum, i\u015Fitme korumas\u0131.
+
+Bu kural "her foto\u011Frafta risk uydur" anlam\u0131na gelmez. Anlam\u0131 \u015Fudur:
+G\u00F6r\u00FClen tehlike kayna\u011F\u0131 varsa onu yok sayma. Emin olmad\u0131\u011F\u0131n ayr\u0131nt\u0131y\u0131
+kesin iddia etme; "do\u011Frulanmal\u0131", "g\u00F6rselde kan\u0131t net de\u011Fil"
+gibi \u015Feffaf ifadelerle d\u00FC\u015F\u00FCk g\u00FCvenli tespit olu\u015Ftur.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+KR\u0130T\u0130K TET\u0130KLEY\u0130C\u0130 \u2014 LPG / GAZ T\u00DCP\u00DC / BASIN\u00C7LI KAP
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
+G\u00F6rselde LPG t\u00FCp\u00FC, gaz silindiri, bas\u0131n\u00E7l\u0131 kap, manifold, hortum,
+reg\u00FClat\u00F6r, vana veya t\u00FCp depolama alan\u0131 g\u00F6r\u00FCl\u00FCyorsa risks: [] D\u00D6NME.
+Bas\u0131n\u00E7l\u0131 gaz ekipman\u0131 kendi ba\u015F\u0131na kritik kontrol s\u0131n\u0131f\u0131d\u0131r.
+
+Bu durumda g\u00F6r\u00FCnen kan\u0131ta g\u00F6re en az 1 tespit \u00FCret:
+- Kapal\u0131/dar i\u00E7 mekanda birden fazla t\u00FCp veya manifold varsa yang\u0131n/patlama,
+  havaland\u0131rma ve gaz birikimi riskini de\u011Ferlendir.
+- Zincir, kelep\u00E7e, duvar aparatı veya sabitleme kan\u0131t\u0131 g\u00F6r\u00FCnm\u00FCyorsa
+  "t\u00FCp sabitlemesi/ devrilme kontrol\u00FC do\u011Frulanmal\u0131" diye yaz. Kesin
+  sabitlenmemi\u015F deme; ama kontrol ihtiyac\u0131n\u0131 atlama.
+- Hortum, vana, reg\u00FClat\u00F6r veya manifold ba\u011Flant\u0131s\u0131 g\u00F6r\u00FCl\u00FCyorsa
+  s\u0131zd\u0131rmazl\u0131k, hortum kondisyonu, mekanik hasar ve darbe korumas\u0131 kontrol\u00FCn\u00FC yaz.
+  Ka\u00E7ak var demek i\u00E7in net fiziksel kan\u0131t gerekir; kan\u0131t yoksa "ka\u00E7ak riski
+  do\u011Frulamas\u0131" olarak ifade et.
+- Etiket, periyodik kontrol tarihi, manometre veya emniyet ventili okunmuyorsa
+  "periyodik kontrol/etiket g\u00F6r\u00FCn\u00FCrl\u00FC\u011F\u00FC do\u011Frulanmal\u0131" tespitini ekle.
+- Yak\u0131nda yan\u0131c\u0131 madde, \u0131s\u0131 kayna\u011F\u0131, elektrik ekipman\u0131 veya uygunsuz depolama
+  g\u00F6r\u00FCl\u00FCyorsa riski orta/y\u00FCksek seviyeye \u00E7\u0131kar.
+
+Bu kural hal\u00FCsinasyon izni de\u011Fildir. G\u00F6r\u00FCnmeyen ka\u00E7ak, patlama, yang\u0131n veya
+hasar uydurma. Ancak gaz t\u00FCp\u00FC/bas\u0131n\u00E7l\u0131 kap g\u00F6r\u00FCl\u00FCyorsa "belirgin risk yok"
+demeden \u00F6nce yukar\u0131daki kontrol ba\u015Fl\u0131klar\u0131n\u0131 ayr\u0131 ayr\u0131 de\u011Ferlendir.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 EK\u0130PMAN VE C\u0130HAZ TANIMLAMA \u2014 KR\u0130T\u0130K
@@ -503,11 +554,11 @@ MUTLAK KURALLAR
 3. G\u00F6rselde insan YOKSA \u2192 KKD riski YAZMA, davran\u0131\u015F riski YAZMA.
 4. G\u00F6rselde y\u00FCkseklik YOKSA \u2192 "y\u00FCksekte \u00E7al\u0131\u015Fma" YAZMA.
 5. G\u00F6rselde makine YOKSA \u2192 makine riski YAZMA.
-6. Emin OLMADIGIN hi\u00E7bir tespiti YAZMA \u2014 yanl\u0131\u015F pozitif, hi\u00E7 yazmamaktan k\u00F6t\u00FCd\u00FCr.
+6. Emin OLMADIGIN ayr\u0131nt\u0131y\u0131 KES\u0130N D\u0130LLE YAZMA. Ancak g\u00F6rselde tehlike kayna\u011F\u0131 a\u00E7\u0131k\u00E7a varsa tamamen silme; "do\u011Frulanmal\u0131" veya "kabul edilebilir risk" olarak d\u00FC\u015F\u00FCk g\u00FCvenle yaz.
 7. Ayn\u0131 riski farkl\u0131 kelimelerle tekrarlama \u2014 her tespit benzersiz olmal\u0131.
 8. Her tespitin g\u00F6rseldeki konumunu (pinX, pinY) do\u011Fru ver \u2014 riskin oldu\u011Fu yere i\u015Faret et.
-9. BO\u015E L\u0130STE GE\u00C7ERL\u0130 VE BEKLENEN B\u0130R \u00C7IKTIDIR. G\u00F6rselde somut risk yoksa "risks": [] d\u00F6n.
-10. "B\u0130R \u015EEY BULMALIYIM" D\u00DCRT\u00DCS\u00DCNE D\u0130REN\u00C7 G\u00D6STER.
+9. BO\u015E L\u0130STE SADECE g\u00F6rselde yukar\u0131daki tehlike tetikleyicilerinden hi\u00E7biri yoksa ge\u00E7erlidir. Tehlike kayna\u011F\u0131 g\u00F6r\u00FCl\u00FCyorsa "risks": [] d\u00F6nme.
+10. "B\u0130R \u015EEY BULMALIYIM" D\u00DCRT\u00DCS\u00DCNE D\u0130REN\u00C7 G\u00D6STER; fakat g\u00F6r\u00FClen tehlike kayna\u011F\u0131n\u0131 yok sayma.
 11. OLUMLU TESP\u0130T DE B\u0130R BA\u015EARID\u0131R.
 12. Y\u00D6NTEM PARAMETRELER\u0130 SADECE GER\u00C7EKTEN TESP\u0130T ED\u0130LEN R\u0130SKLER \u0130\u00C7\u0130N DOLDURULUR.
 13. \u00DC\u00C7L\u00DC DO\u011ERULAMA KURALI: Her risk i\u00E7in (a) G\u00F6rselde fiziksel olarak g\u00F6r\u00FCyor muyum? (b) Bir uzmana g\u00F6sterdi\u011Fimde "evet, burada" diyebilir mi? (c) Mahkemede savunabilir miyim?
@@ -583,7 +634,9 @@ D) MAKİNE, EKİPMAN VE TESİSAT
        kapasite etiketi, periyodik kontrol, yük altında insan, yaya/araç
        yolu ayrımı.
    14) Basınçlı kap: kazan/kompresör/tüp — emniyet ventili, manometre,
-       korozyon, kaçak, uygunsuz alan.
+       korozyon, kaçak, uygunsuz alan. LPG/gaz tüpü görülüyorsa risks: []
+       dönme; sabitleme, havalandırma, vana/hortum/regülatör, yangın yükü
+       ve periyodik kontrol/etiket görünürlüğünü ayrı ayrı değerlendir.
    15) Elektrik tesisatı: aşırı yüklü priz, uzatma kablosu yığını, yalıtkan
        paspas yokluğu, açıkta kalmış pano.
 
