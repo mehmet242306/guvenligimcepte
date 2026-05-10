@@ -53,6 +53,31 @@ function isDemoEscapeApi(pathname: string) {
 
 const CANONICAL_HOST = "getrisknova.com";
 const LEGACY_HOSTS = new Set(["getrisknova.vercel.app"]);
+const MIDDLEWARE_AUTH_TIMEOUT_MS = 2500;
+
+async function withMiddlewareTimeout<T>(
+  promise: Promise<T>,
+  label: string,
+  timeoutMs = MIDDLEWARE_AUTH_TIMEOUT_MS,
+): Promise<T | null> {
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<null>((resolve) => {
+    timeoutHandle = setTimeout(() => {
+      console.warn(`[middleware] ${label} timed out after ${timeoutMs}ms; continuing request`);
+      resolve(null);
+    }, timeoutMs);
+  });
+
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[middleware] ${label} failed; continuing request: ${message}`);
+    return null;
+  } finally {
+    if (timeoutHandle) clearTimeout(timeoutHandle);
+  }
+}
 
 export async function updateSession(request: NextRequest) {
   if (LEGACY_HOSTS.has(request.nextUrl.hostname)) {
@@ -134,9 +159,18 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
+  const userResponse = await withMiddlewareTimeout(
+    supabase.auth.getUser(),
+    "supabase.auth.getUser",
+  );
+
+  if (!userResponse) {
+    return supabaseResponse;
+  }
+
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = userResponse;
 
   const providers = Array.isArray(user?.app_metadata?.providers)
     ? (user.app_metadata.providers as unknown[]).map((provider) => String(provider))
@@ -214,10 +248,19 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && (!isPublic || isRouteAuthApiEndpoint)) {
-    const [{ data: assuranceData, error: assuranceError }, { data: factorData, error: factorError }] = await Promise.all([
-      supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
-      supabase.auth.mfa.listFactors(),
-    ]);
+    const mfaResponse = await withMiddlewareTimeout(
+      Promise.all([
+        supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
+        supabase.auth.mfa.listFactors(),
+      ]),
+      "supabase.auth.mfa",
+    );
+
+    if (!mfaResponse) {
+      return supabaseResponse;
+    }
+
+    const [{ data: assuranceData, error: assuranceError }, { data: factorData, error: factorError }] = mfaResponse;
     const verifiedFactors = [
       ...(factorData?.totp ?? []),
       ...(factorData?.phone ?? []),
