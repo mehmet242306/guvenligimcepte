@@ -1513,12 +1513,12 @@ export function RiskAnalysisClient() {
 
   /* ── Analyze ── */
   /** G?rsel dosyayi base64'e cevir */
-  /** G?rseli max 1600px'e kucultup base64'e cevir (API limitleri icin) */
+  /** Görseli max 1280px'e küçültüp JPEG'e çevirir (yük boyutu + API süresi için) */
   async function fileToBase64(file: File): Promise<{ base64: string; mimeType: string }> {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
-        const MAX = 1600;
+        const MAX = 1280;
         let w = img.width;
         let h = img.height;
         if (w > MAX || h > MAX) {
@@ -1532,7 +1532,7 @@ export function RiskAnalysisClient() {
         const ctx = canvas.getContext("2d");
         if (!ctx) { reject(new Error(trRiskScoring("defaults.canvasNoContext"))); return; }
         ctx.drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
         const base64 = dataUrl.split(",")[1];
         resolve({ base64, mimeType: "image/jpeg" });
         URL.revokeObjectURL(img.src);

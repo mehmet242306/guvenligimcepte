@@ -13,7 +13,7 @@ import {
   buildManualFallbackResponse,
   executeWithResilience,
 } from "@/lib/self-healing/resilience";
-import { getAnthropicKey } from "@/lib/ai/provider-keys";
+import { getAnthropicKey, getRiskAnalysisVisionModel } from "@/lib/ai/provider-keys";
 import {
   analyzeRiskSystemLanguageSuffix,
   analyzeRiskUserLanguageSuffix,
@@ -30,7 +30,7 @@ function getAnthropicClient(): Anthropic | null {
 
 export const maxDuration = 90; // Anthropic-only visual risk analysis
 
-const PROMPT_VERSION = "v2.2-method-align-no-empty-workplace";
+const PROMPT_VERSION = "v2.3-fast-vision-haiku-default";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
@@ -1516,12 +1516,13 @@ function normalizeAnalyzeRiskPayload(raw: unknown): unknown {
 
 export async function POST(request: NextRequest) {
   // GÜVENLİK: requireAuth + günlük rate limit + risk_analysis kotası.
-  // Hız odaklı varsayılan: Claude Sonnet 4 doğrudan görselden risk tespit eder.
+  // Hız odaklı varsayılan: Claude 3.5 Haiku vision (RISK_ANALYSIS_ANTHROPIC_MODEL ile değiştirilebilir).
   // OpenAI yardımcı gözlem aşaması sadece RISK_ANALYSIS_OPENAI_HELPER=true ise çalışır.
   const auth = await requireAuth(request);
   if (!auth.ok) return auth.response;
 
   try {
+    const visionModel = getRiskAnalysisVisionModel();
     const plan = await resolveAiDailyLimit(auth.userId);
     const rateLimitResponse = await enforceRateLimit(request, {
       userId: auth.userId,
@@ -1613,7 +1614,7 @@ export async function POST(request: NextRequest) {
     // mesajı görünür. Bu yüzden:
     //   - per-attempt timeout: 35s (Anthropic genelde 15–25s'de tamamlar)
     //   - 2 attempt (toplam: 35 + 1.5 + 35 = ~71.5s) → 90s sınırının altında
-    //   - max_tokens: 5000 (8000'den indirildi; çıktı süresini ~%30 azaltır)
+    //   - max_tokens: 4096 — çoklu risk + mevzuat için yeterli; süreyi kısaltır
     const resilientResponse = await executeWithResilience({
       serviceKey: "anthropic.risk_analysis",
       displayName: "Anthropic API",
@@ -1622,17 +1623,15 @@ export async function POST(request: NextRequest) {
       endpoint: request.nextUrl.pathname,
       userId: auth.userId,
       organizationId: auth.organizationId,
-      timeoutMs: 35_000,
-      retryDelaysMs: [1500, 2500],
+      timeoutMs: 28_000,
+      retryDelaysMs: [1200, 2000],
       fallbackMessage:
         "AI gorsel analizi gecici olarak kullanilamiyor (zaman asimi). Lutfen yeniden baslatin veya manuel risk girisiyle devam edin.",
       operation: () =>
         client.messages.create({
-          model: "claude-sonnet-4-20250514",
-          // İSG uzmanı modu: çoklu-risk sahneleri için yeterli pay; ama Vercel
-          // 90s function bütçesi içinde kalmak için 8000'den 5000'e düşürüldü.
-          // 5000 token Türkçe ~3500 kelime — 6-8 risk için yeterli kapasite.
-          max_tokens: 5000,
+          model: visionModel,
+          // Haiku varsayılan (hız); RISK_ANALYSIS_ANTHROPIC_MODEL ile Sonnet seçilebilir.
+          max_tokens: 4096,
           temperature: 0.2,
           system: buildSystemPrompt(method, outputLocale),
           messages: [
@@ -1661,7 +1660,7 @@ export async function POST(request: NextRequest) {
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
-        model: "claude-sonnet-4-20250514",
+        model: visionModel,
         endpoint: "/api/analyze-risk",
         success: false,
         metadata: {
@@ -1690,7 +1689,7 @@ export async function POST(request: NextRequest) {
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
-        model: "claude-sonnet-4-20250514",
+        model: visionModel,
         endpoint: "/api/analyze-risk",
         promptTokens: response.usage?.input_tokens ?? 0,
         completionTokens: response.usage?.output_tokens ?? 0,
@@ -1911,7 +1910,7 @@ export async function POST(request: NextRequest) {
     await logAiUsage({
       userId: auth.userId,
       organizationId: auth.organizationId,
-      model: "claude-sonnet-4-20250514",
+      model: visionModel,
       endpoint: "/api/analyze-risk",
       promptTokens: response.usage?.input_tokens ?? 0,
       completionTokens: response.usage?.output_tokens ?? 0,
@@ -1925,6 +1924,7 @@ export async function POST(request: NextRequest) {
       success: true,
       metadata: {
         method,
+        visionModel,
         durationMs: duration,
         personCount: parsed.personCount ?? 0,
         riskCount: Array.isArray(parsed.risks) ? parsed.risks.length : 0,
@@ -1945,6 +1945,7 @@ export async function POST(request: NextRequest) {
       imageRelevance: parsed.imageRelevance ?? "relevant",
       imageDescription: parsed.imageDescription ?? "",
       method,
+      visionModel,
       promptVersion: PROMPT_VERSION,
       degraded: resilientResponse.degraded,
       durationMs: duration,
@@ -1960,7 +1961,7 @@ export async function POST(request: NextRequest) {
     await logAiUsage({
       userId: auth.userId,
       organizationId: auth.organizationId,
-      model: "claude-sonnet-4-20250514",
+      model: getRiskAnalysisVisionModel(),
       endpoint: "/api/analyze-risk",
       success: false,
       metadata: { error: message.slice(0, 300) },
