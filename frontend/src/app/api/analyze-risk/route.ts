@@ -350,10 +350,9 @@ export async function POST(request: NextRequest) {
     // Bir Anthropic çağrısı çoğu zaman 40–120 sn sürer. İki kez 65 sn denemek hem UX kötü
     // hem de ikinci denemede yine kesilebiliyor. Tek deneme + uzun süre (SDK zaten 10 dk).
     // retryDelaysMs uzunluğu 1 = tek deneme (executeWithResilience döngüsü).
-    const operationTimeoutMs =
-      mode === "fast"
-        ? Math.min(getRiskAnalysisOperationTimeoutMs(), 120_000)
-        : getRiskAnalysisOperationTimeoutMs();
+    // Fast mod da tam görsel+JSON üretir; 120 sn tavanı sık sık Anthropic'ı kesiyordu
+    // (kullanıcıda "zaman aşımı" + ön envanter). Standart ile aynı üst süre.
+    const operationTimeoutMs = getRiskAnalysisOperationTimeoutMs();
     const resilientResponse = await executeWithResilience({
       serviceKey: mode === "fast" ? "anthropic.risk_analysis.fast_v3" : "anthropic.risk_analysis.fast_v2",
       displayName: "Anthropic API",
