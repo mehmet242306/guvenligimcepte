@@ -30,7 +30,7 @@ function getAnthropicClient(): Anthropic | null {
 
 export const maxDuration = 90; // Anthropic-only visual risk analysis
 
-const PROMPT_VERSION = "v2.1-timeout-hardened";
+const PROMPT_VERSION = "v2.2-method-align-no-empty-workplace";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
