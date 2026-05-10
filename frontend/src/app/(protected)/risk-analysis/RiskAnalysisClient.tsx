@@ -975,6 +975,15 @@ export function RiskAnalysisClient() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /** ?companyId= ile gelen veya client navigasyonla değişen URL parametresi */
+  useEffect(() => {
+    const urlCompanyId = searchParams.get("companyId");
+    if (!urlCompanyId || companies.length === 0) return;
+    if (companies.some((c) => c.id === urlCompanyId)) {
+      setSelectedCompanyId(urlCompanyId);
+    }
+  }, [searchParams, companies, setSelectedCompanyId]);
+
   useEffect(() => {
     function onActiveWorkspaceChanged() {
       // Çalışma alanı değişince firma listesini aktif workspace'in
