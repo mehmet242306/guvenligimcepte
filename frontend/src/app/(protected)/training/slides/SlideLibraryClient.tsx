@@ -14,6 +14,10 @@ import {
   cloneDeckFromTemplate,
   type SlideDeck,
 } from "@/lib/supabase/slide-deck-api";
+import {
+  importIsgExampleSlideDeck,
+  ISG_EXAMPLE_SLIDE_DECKS,
+} from "@/lib/training/isg-example-slide-templates";
 import { ButtonLoader } from "@/components/ui/button-loader";
 
 type TabKey = "my" | "organization" | "templates" | "ai_create";
@@ -63,6 +67,9 @@ export function SlideLibraryClient() {
   const [aiCategory, setAiCategory] = useState("genel");
   const [aiGenerating, setAiGenerating] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
+
+  const [exampleDeckLoadingId, setExampleDeckLoadingId] = useState<string | null>(null);
+  const [exampleDeckError, setExampleDeckError] = useState<string | null>(null);
 
   const loadAll = useCallback(async () => {
     setLoading(true);
@@ -173,7 +180,31 @@ export function SlideLibraryClient() {
   async function handleCloneTemplate(template: SlideDeck) {
     const newId = await cloneDeckFromTemplate(template.id, template.title);
     if (newId) {
-      router.push(`/training/slides/${newId}/edit`);
+      const qs = companyIdParam ? `?companyId=${encodeURIComponent(companyIdParam)}` : "";
+      router.push(`/training/slides/${newId}/edit${qs}`);
+    }
+  }
+
+  async function handleImportExampleDeck(exampleId: string) {
+    const def = ISG_EXAMPLE_SLIDE_DECKS.find((d) => d.id === exampleId);
+    if (!def) return;
+    setExampleDeckLoadingId(exampleId);
+    setExampleDeckError(null);
+    try {
+      const newId = await importIsgExampleSlideDeck(def);
+      if (!newId) {
+        setExampleDeckError(
+          isTr
+            ? "Örnek sunum eklenemedi. Oturum veya organizasyon bağlantınızı kontrol edin."
+            : "Could not add the sample deck. Check session and organization."
+        );
+        return;
+      }
+      await loadAll();
+      const qs = companyIdParam ? `?companyId=${encodeURIComponent(companyIdParam)}` : "";
+      router.push(`/training/slides/${newId}/edit${qs}`);
+    } finally {
+      setExampleDeckLoadingId(null);
     }
   }
 
@@ -246,6 +277,69 @@ export function SlideLibraryClient() {
             </button>
           </div>
         </div>
+
+        {/* Örnek İSG sunumları (platform — kullanıcıya kopyalanır) */}
+        <section className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-600 dark:text-teal-400">
+            {isTr ? "Hızlı başlangıç" : "Quick start"}
+          </p>
+          <h2 className="mt-1 text-base font-semibold text-[var(--foreground)]">
+            {isTr ? "Örnek İSG eğitim sunumları" : "Sample OHS slide decks"}
+          </h2>
+          <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+            {isTr
+              ? "Hazır slayt içeriğini organizasyonunuza özel taslak olarak ekleyin; düzenleyip sunabilirsiniz. AI kotasından düşmez."
+              : "Add ready-made slides as your own draft deck; edit and present. Does not consume AI slide quota."}
+          </p>
+          {exampleDeckError ? (
+            <div
+              role="alert"
+              className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100"
+            >
+              {exampleDeckError}
+            </div>
+          ) : null}
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {ISG_EXAMPLE_SLIDE_DECKS.map((ex) => {
+              const cat = CATEGORIES[ex.deck.category];
+              return (
+                <article
+                  key={ex.id}
+                  className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--background)] p-4"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-2xl">{cat?.emoji ?? "📊"}</span>
+                    <span className="rounded-full bg-teal-600/15 px-2 py-0.5 text-[10px] font-bold uppercase text-teal-800 dark:text-teal-200">
+                      {isTr ? "Örnek" : "Sample"}
+                    </span>
+                  </div>
+                  <h3 className="mt-2 text-sm font-semibold text-[var(--foreground)]">{ex.deck.title}</h3>
+                  <p className="mt-1 line-clamp-3 text-xs text-[var(--muted-foreground)]">{ex.deck.description}</p>
+                  <p className="mt-2 text-xs text-[var(--muted-foreground)]">
+                    {ex.slides.length} {isTr ? "slayt" : "slides"}
+                    {ex.deck.estimated_duration_minutes != null
+                      ? ` · ~${ex.deck.estimated_duration_minutes} ${isTr ? "dk" : "min"}`
+                      : ""}
+                  </p>
+                  <button
+                    type="button"
+                    disabled={exampleDeckLoadingId !== null}
+                    onClick={() => void handleImportExampleDeck(ex.id)}
+                    className="mt-3 rounded-lg bg-teal-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {exampleDeckLoadingId === ex.id
+                      ? isTr
+                        ? "Ekleniyor…"
+                        : "Adding…"
+                      : isTr
+                        ? "Benim kütüphaneme ekle"
+                        : "Add to my library"}
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+        </section>
 
         {/* Tabs — mobilde tek sütun; geniş ekranda yan yana */}
         <div className="mb-4 grid grid-cols-1 gap-1 rounded-xl border border-[var(--border)] bg-[var(--card)] p-1 shadow-sm sm:grid-cols-3">
