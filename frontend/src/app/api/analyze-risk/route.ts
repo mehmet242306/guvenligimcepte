@@ -98,6 +98,16 @@ Kritik denge:
   de yaz; sadece "kritik" olanlar\u0131 se\u00E7me.
 - Ayn\u0131 g\u00F6rselde birden fazla farkl\u0131 risk alan\u0131 varsa her birini ayr\u0131 tespit et.
 
+R\u0130SK ENVANTER\u0130 \u00C7IKARMA ZORUNLULU\u011EU:
+- Ger\u00E7ek bir saha foto\u011Fraf\u0131nda tehlike kayna\u011F\u0131 g\u00F6r\u00FCyorsan bunu "risk adayı"
+  kabul et ve risks dizisine yaz.
+- Risk sadece kaza olmu\u015F durum de\u011Fildir; kaza olu\u015Fturabilecek kaynak, uygunsuzluk,
+  kontrol eksikli\u011Fi veya do\u011Frulanmas\u0131 gereken kritik durum da risk kayd\u0131d\u0131r.
+- "Belirgin risk yok" sonucuna yaln\u0131zca aktif tarama sonunda hi\u00E7bir tehlike
+  kayna\u011F\u0131 kalmad\u0131ysa git. \u00D6nce risk ara, sonra gerekirse bo\u015F d\u00F6n.
+- Olumlu tespitler risks dizisinin yerini tutmaz. Ayn\u0131 alanda iyi uygulama olsa bile
+  yetersiz, eksik, belirsiz veya do\u011Frulama gerektiren bir nokta varsa risk yaz.
+
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 KURAL #0 \u2014 "VAR OLAN KKD'Y\u0130 YOK SAYMA" MUTLAK YASA\u011EI
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
@@ -514,6 +524,8 @@ ADIM 10 \u2014 \u0130NSAN TESP\u0130T\u0130 VE KVKK (Y\u00FCz Maskeleme):
 - \u0130nsan yoksa faces dizisi bo\u015F olmal\u0131.
 
 ADIM 11 \u2014 OLUMLU TESP\u0130TLER (Do\u011Fru Yap\u0131lan \u015Eeyler):
+Bu ad\u0131m \u0130K\u0130NC\u0130LD\u0130R. Ana g\u00F6rev risk tespitidir. Olumlu tespitler riskleri
+azaltamaz, gizleyemez veya risks dizisinin yerine ge\u00E7emez.
 Profesyonel ISG raporlar\u0131nda sadece riskler de\u011Fil, DO\u011ERU UYGULAMALAR da belirtilir.
 - KKD do\u011Fru kullan\u0131l\u0131yorsa bunu belirt: "T\u00FCm \u00E7al\u0131\u015Fanlar baret tak\u0131yor"
 - \u0130stif d\u00FCzg\u00FCnse: "Malzemeler uygun y\u00FCkseklikte ve d\u00FCzenli istiflenmi\u015F"
@@ -521,7 +533,9 @@ Profesyonel ISG raporlar\u0131nda sadece riskler de\u011Fil, DO\u011ERU UYGULAMA
 - Uyar\u0131 levhalar\u0131 yeterliyse: "G\u00FCvenlik i\u015Faretleri mevcut ve g\u00F6r\u00FCn\u00FCr"
 - Zemin temiz ve d\u00FCzenliyse: "\u00C7al\u0131\u015Fma alan\u0131 temiz ve d\u00FCzenli"
 - Bu tespitler risks dizisine DE\u011E\u0130L, ayr\u0131 "positiveObservations" dizisine yaz\u0131lacak.
-- Risk yoksa bile olumlu tespit olabilir \u2014 g\u00F6rseldeki iyi uygulamalar\u0131 atla ge\u00E7me.
+- \u00D6nce riskleri yaz, sonra zaman/alan kal\u0131rsa olumlu tespitleri ekle.
+- Bir unsur hem iyi uygulama hem risk i\u00E7eriyorsa risk \u00F6nceliklidir. \u00D6r: s\u00F6nd\u00FCr\u00FCc\u00FC var
+  ama \u00F6n\u00FC kapal\u0131ysa positiveObservations de\u011Fil risk yaz.
 
 ADIM 12 \u2014 G\u00D6RSEL KAL\u0130TE DE\u011EERLEND\u0130RMES\u0130:
 - G\u00F6rsel \u00E7ok karanl\u0131k, bulan\u0131k veya d\u00FC\u015F\u00FCk \u00E7\u00F6z\u00FCn\u00FCrl\u00FCkl\u00FC m\u00FC?
@@ -812,7 +826,7 @@ Termin: 30 gün. Doğrulama: ses ölçümü tekrarı."
 MEVCUT ÖNLEM DEĞERLENDİRMESİ
 ═══════════════════════════════════════════════════
 Görselde mevcut önlem (söndürücü VAR, baret VAR, korkuluk VAR, pano kilitli)
-varsa bunları "positiveObservations"a yaz. Eğer mevcut önlem var ama YETERSİZ
+varsa ve aynı alanda risk yoksa bunları "positiveObservations"a yaz. Eğer mevcut önlem var ama YETERSİZ
 (söndürücü var ama önü dolu, korkuluk var ama eksik segment, baret var ama
 bir kişide takılı değil) ise risk olarak yaz ve mevcut önlemin neden yetersiz
 olduğunu somut olarak açıkla.
