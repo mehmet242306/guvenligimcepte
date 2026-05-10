@@ -63,10 +63,17 @@ export function extractAnthropicStyleError(err: unknown): {
   if (nested && typeof nested === "object") {
     const ne = nested as Record<string, unknown>;
     if (typeof ne.type === "string") type = ne.type;
+    const inner = ne.error;
+    if (inner && typeof inner === "object") {
+      const ie = inner as Record<string, unknown>;
+      if (typeof ie.type === "string") type = ie.type;
+    }
   }
   if (!type && typeof e.type === "string") type = e.type as string;
+  const rawMessage = msg || JSON.stringify(err).slice(0, 400);
+  if ((!type || type === "error") && /not_found_error/i.test(rawMessage)) type = "not_found_error";
   return {
-    message: (msg || JSON.stringify(err).slice(0, 400)).slice(0, 800),
+    message: rawMessage.slice(0, 800),
     status,
     type,
   };
@@ -74,12 +81,30 @@ export function extractAnthropicStyleError(err: unknown): {
 
 function classifyRootCause(input: {
   providerMessage: string;
+  providerErrorType?: string;
+  providerStatus?: number;
   durationMs: number;
   routeMaxDurationSec: number;
   anthropicSdkTimeoutMs: number;
 }): { likelyCauseTr: string; checklistTr: string[] } {
   const m = input.providerMessage.toLowerCase();
   const dur = input.durationMs;
+
+  if (
+    input.providerErrorType === "not_found_error" ||
+    /not_found_error/.test(m) ||
+    (input.providerStatus === 404 && /model:/i.test(m))
+  ) {
+    return {
+      likelyCauseTr:
+        "İstenen Claude model kimliği Anthropic API'de bulunmuyor veya emekli (404 not_found_error). Kod veya ortam değişkenindeki model adı güncellenmeli.",
+      checklistTr: [
+        "Vercel → ilgili Project → Settings → Environment Variables: `RISK_ANALYSIS_ANTHROPIC_MODEL` değerini güncel bir vision modele ayarlayın (ör. `claude-haiku-4-5-20251001` veya `claude-haiku-4-5`).",
+        "Model listesi ve emeklilikler: https://docs.anthropic.com/en/docs/about-claude/models",
+        "Üretim logları: Vercel → aynı Project → Logs → arama kutusuna `analyze-risk` veya `/api/analyze-risk` yazın (ortam: Production).",
+      ],
+    };
+  }
 
   if (/429|rate_limit|too many requests/.test(m)) {
     return {
@@ -160,6 +185,8 @@ export function buildAnalyzeRiskDiagnostics(input: {
 
   const { likelyCauseTr, checklistTr } = classifyRootCause({
     providerMessage: prov.message,
+    providerErrorType: prov.type,
+    providerStatus: prov.status,
     durationMs,
     routeMaxDurationSec,
     anthropicSdkTimeoutMs,
@@ -185,7 +212,6 @@ export function buildAnalyzeRiskDiagnostics(input: {
   };
 }
 
-/** UI / panoya kopyalanabilir düz metin */
 /** API'den gelen `diagnostics` gövdesini güvenli şekilde parse eder */
 export function parseAnalyzeRiskDiagnosticsFromApi(input: unknown): AnalyzeRiskDiagnostics | undefined {
   if (input == null || typeof input !== "object") return undefined;
@@ -199,6 +225,7 @@ export function parseAnalyzeRiskDiagnosticsFromApi(input: unknown): AnalyzeRiskD
   return input as AnalyzeRiskDiagnostics;
 }
 
+/** UI / panoya kopyalanabilir düz metin */
 export function formatDiagnosticsPlainTr(d: AnalyzeRiskDiagnostics): string {
   const lines = [
     "--- RiskNova AI görsel analiz teşhisi ---",

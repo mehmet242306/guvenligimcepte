@@ -44,8 +44,8 @@ export function getAnthropicModel() {
   return process.env.ANTHROPIC_MODEL?.trim() || DEFAULT_ANTHROPIC_MODEL;
 }
 
-/** Risk analizi görsel endpoint'i için model — varsayılan Haiku (hızlı vision). Sonnet için ortamda `RISK_ANALYSIS_ANTHROPIC_MODEL=claude-sonnet-4-20250514` kullanın. */
-const DEFAULT_RISK_VISION_MODEL = "claude-3-5-haiku-20241022" as const;
+/** Risk analizi görsel endpoint'i için model — varsayılan Haiku 4.5 (vision). Eski snapshot'lar (ör. claude-3-5-haiku-20241022) API'de 404 verebilir. */
+const DEFAULT_RISK_VISION_MODEL = "claude-haiku-4-5-20251001" as const;
 
 export function getRiskAnalysisVisionModel(): string {
   const explicit = process.env.RISK_ANALYSIS_ANTHROPIC_MODEL?.trim();

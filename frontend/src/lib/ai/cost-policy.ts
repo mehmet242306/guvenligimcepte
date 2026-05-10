@@ -26,7 +26,7 @@ export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/analyze-risk",
     purposeTr: "Gorsel risk analizi (Anthropic Claude dogrudan gorsel degerlendirmesi)",
-    models: "claude-3-5-haiku-20241022 veya RISK_ANALYSIS_ANTHROPIC_MODEL",
+    models: "claude-haiku-4-5-20251001 (varsayılan) veya RISK_ANALYSIS_ANTHROPIC_MODEL",
     maxOutputTokens: 6000,
     inputLimitsTr:
       "Base64 görsel şema üst sınırı ~20M karakter; MIME: jpeg, png, gif, webp",
