@@ -100,6 +100,18 @@ type RecoveryNudgeMailParams = {
   daysInactive: number;
 };
 
+type SupportRequestMailParams = {
+  to: string;
+  requesterName: string;
+  requesterEmail: string;
+  topic: string;
+  accountEmail?: string | null;
+  companyName?: string | null;
+  message: string;
+  locale?: Locale;
+  pageUrl?: string | null;
+};
+
 export type OsgbPersonnelInvitePreview = {
   loginEmail: string;
   temporaryPassword?: string | null;
@@ -139,6 +151,10 @@ export type DemoAccountProvisionDeliveryResult =
       reason: string;
       preview: DemoAccountProvisionPreview;
     };
+
+export type SupportRequestDeliveryResult =
+  | { delivered: true; mode: "resend" }
+  | { delivered: false; mode: "preview"; reason: string };
 
 const BRAND_NAME = "RiskNova";
 const BRAND_TAGLINE = "AI destekli ISG platformu";
@@ -1336,4 +1352,70 @@ export async function sendRecoveryNudgeEmail({
       `Destek: ${BRAND_SUPPORT_EMAIL}`,
     html,
   });
+}
+
+export async function sendSupportRequestEmail({
+  to,
+  requesterName,
+  requesterEmail,
+  topic,
+  accountEmail,
+  companyName,
+  message,
+  locale = defaultLocale,
+  pageUrl,
+}: SupportRequestMailParams): Promise<SupportRequestDeliveryResult> {
+  if (!resend) {
+    return {
+      delivered: false,
+      mode: "preview",
+      reason: "RESEND_API_KEY tanimli degil.",
+    };
+  }
+
+  const isTr = locale === "tr";
+  const rows = [
+    { label: isTr ? "Ad soyad" : "Name", value: requesterName, emphasize: true },
+    { label: isTr ? "E-posta" : "Email", value: requesterEmail, emphasize: true },
+    { label: isTr ? "Konu" : "Topic", value: topic },
+    accountEmail ? { label: isTr ? "Hesap e-postasi" : "Account email", value: accountEmail } : null,
+    companyName ? { label: isTr ? "Firma / calisma alani" : "Company / workspace", value: companyName } : null,
+    pageUrl ? { label: "URL", value: pageUrl } : null,
+  ].filter(Boolean) as Array<{ label: string; value: string; emphasize?: boolean }>;
+
+  const html = renderEmailShell({
+    eyebrow: isTr ? "Destek talebi" : "Support request",
+    title: isTr ? "Yeni RiskNova destek talebi" : "New RiskNova support request",
+    lead: isTr
+      ? "Public destek sayfasindan yeni bir talep geldi. Yaniti dogrudan kullanicinin e-posta adresine verebilirsiniz."
+      : "A new request arrived from the public support page. You can reply directly to the requester email.",
+    sections:
+      renderCredentialCard(rows) +
+      renderInfoCard(isTr ? "Mesaj" : "Message", `<div style="white-space:pre-wrap;">${escapeHtml(message)}</div>`, "navy"),
+    closing: isTr
+      ? "Bu bildirim Resend uzerinden RiskNova destek kutusuna iletildi."
+      : "This notification was delivered to the RiskNova support inbox via Resend.",
+  });
+
+  await resend.emails.send({
+    from: resolveFromEmail(),
+    replyTo: requesterEmail,
+    to,
+    subject: `[RiskNova Support] ${topic} - ${requesterName}`,
+    text: [
+      `Name: ${requesterName}`,
+      `Email: ${requesterEmail}`,
+      `Topic: ${topic}`,
+      accountEmail ? `Account email: ${accountEmail}` : null,
+      companyName ? `Company/workspace: ${companyName}` : null,
+      pageUrl ? `URL: ${pageUrl}` : null,
+      "",
+      message,
+    ]
+      .filter((line): line is string => line != null)
+      .join("\n"),
+    html,
+  });
+
+  return { delivered: true, mode: "resend" };
 }

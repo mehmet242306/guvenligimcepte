@@ -4438,7 +4438,9 @@
         "analysisPartial": "AI analizi kısmen tamamlandı. {successful}/{total} görsel işlendi; {errors} görselde hata var.",
         "analysisSummary": "AI analizi tamamlandı. {risks} risk, {positive} olumlu tespit.",
         "genericAiError": "OpenAI veya Anthropic aşamasında hata oluştu.",
-        "imageBatchLimitNotice": "Tek seferde en fazla {max} görsel eklenebilir. {added} görsel eklendi."
+        "imageBatchLimitNotice": "Tek seferde en fazla {max} görsel eklenebilir. {added} görsel eklendi.",
+        "imageTotalCapReached": "Bu analizde en fazla {max} görsel yükleyebilirsiniz. Yeni görsel için önce mevcut görsellerden silin.",
+        "imageUploadTrimmedNotice": "Bu analizde en fazla {max} görsel olabilir; seçiminiz kısaltıldı. {added} görsel eklendi."
       },
       "save": {
         "noCompany": "Firma seçilmeden analiz kaydedilemez.",
@@ -7165,6 +7167,62 @@
       "unassigned": "Atanmadı",
       "completion": "{percent}% tamamlandı",
       "detail": "Detay"
+    }
+  },
+  "support": {
+    "meta": {
+      "title": "RiskNova Destek",
+      "description": "RiskNova web ve mobil uygulamaları için destek alın."
+    },
+    "eyebrow": "RiskNova Destek",
+    "title": "Size yardımcı olmak için buradayız",
+    "description": "Hesap erişimi, mobil uygulama kurulumu, saha akışları, faturalama ve gizlilik talepleri için bu sayfadan bize ulaşabilirsiniz.",
+    "formTitle": "Destek talebi oluştur",
+    "formDescription": "Formu doldurduğunuzda talebiniz Resend üzerinden RiskNova destek e-posta kutusuna iletilir.",
+    "directTitle": "Doğrudan e-posta",
+    "directDescription": "İsterseniz hesabınızın e-posta adresini ve kısa açıklamayı ekleyerek bize doğrudan yazabilirsiniz.",
+    "linksTitle": "Yardımcı bağlantılar",
+    "linksLead": "Daha fazla bilgi için inceleyebilirsiniz:",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Kullanım Şartları",
+    "deleteAccount": "Hesap ve Veri Silme Talebi",
+    "topics": {
+      "account": {
+        "title": "Hesap ve giriş desteği",
+        "description": "Giriş, kayıt, şifre sıfırlama, Google ile giriş ve çalışma alanı erişimi için destek alın."
+      },
+      "mobile": {
+        "title": "Mobil uygulama desteği",
+        "description": "Kamera izinleri, bildirimler, saha taramaları veya risk analizi sorunlarını bildirin."
+      },
+      "billing": {
+        "title": "Faturalama ve abonelikler",
+        "description": "Planlar, faturalar, ödeme durumu, iptal veya iade talepleri hakkında bize yazın."
+      },
+      "privacy": {
+        "title": "Veri ve gizlilik talepleri",
+        "description": "Gizlilik, hesap silme, dışa aktarılan veriler veya onay ayarları için destek isteyin."
+      }
+    },
+    "form": {
+      "name": "Ad soyad",
+      "email": "E-posta",
+      "topic": "Konu",
+      "topicPlaceholder": "Konu seçin",
+      "accountEmail": "Hesap e-postası (opsiyonel)",
+      "companyName": "Firma / çalışma alanı (opsiyonel)",
+      "message": "Mesajınız",
+      "submit": "Destek talebini gönder",
+      "sending": "Gönderiliyor...",
+      "success": "Talebiniz alındı. Destek ekibi e-posta ile dönüş yapacak.",
+      "genericError": "Talep gönderilemedi. Lütfen daha sonra tekrar deneyin veya e-posta ile yazın.",
+      "topics": {
+        "account": "Hesap ve giriş",
+        "mobile": "Mobil uygulama",
+        "billing": "Faturalama",
+        "privacy": "Gizlilik / veri",
+        "other": "Diğer"
+      }
     }
   }
 }

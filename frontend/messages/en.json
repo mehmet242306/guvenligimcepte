@@ -4438,7 +4438,9 @@
         "analysisPartial": "AI analysis partially completed. {successful}/{total} images processed; errors on {errors} image(s).",
         "analysisSummary": "AI analysis finished. {risks} risk(s), {positive} positive observation(s).",
         "genericAiError": "An error occurred at the OpenAI or Anthropic stage.",
-        "imageBatchLimitNotice": "You can add at most {max} images per selection. {added} image(s) added."
+        "imageBatchLimitNotice": "You can add at most {max} images per selection. {added} image(s) added.",
+        "imageTotalCapReached": "This analysis allows at most {max} images. Remove some before adding more.",
+        "imageUploadTrimmedNotice": "This analysis allows at most {max} images; your selection was shortened. {added} image(s) added."
       },
       "save": {
         "noCompany": "Cannot save without selecting a company.",
@@ -7165,6 +7167,62 @@
       "employeeRepresentative": "Employee representative",
       "viewer": "Viewer",
       "admin": "Admin"
+    }
+  },
+  "support": {
+    "meta": {
+      "title": "RiskNova Support",
+      "description": "Get support for RiskNova web and mobile applications."
+    },
+    "eyebrow": "RiskNova Support",
+    "title": "We are here to help",
+    "description": "Contact us for account access, mobile app setup, field workflows, billing questions, and privacy requests.",
+    "formTitle": "Create a support request",
+    "formDescription": "When you submit the form, your request is delivered to the RiskNova support inbox via Resend.",
+    "directTitle": "Direct email",
+    "directDescription": "You can also email us directly with your account email and a short description of the issue.",
+    "linksTitle": "Helpful links",
+    "linksLead": "For more information, review our",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "deleteAccount": "Account and Data Deletion Request",
+    "topics": {
+      "account": {
+        "title": "Account and sign-in help",
+        "description": "Get help with login, registration, password reset, Google sign-in, and workspace access."
+      },
+      "mobile": {
+        "title": "Mobile app support",
+        "description": "Report issues with camera permissions, notifications, field scans, or risk analysis."
+      },
+      "billing": {
+        "title": "Billing and subscriptions",
+        "description": "Ask about plans, invoices, payment status, cancellation, or refund requests."
+      },
+      "privacy": {
+        "title": "Data and privacy requests",
+        "description": "Request help with privacy, account deletion, exported data, or consent settings."
+      }
+    },
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "topic": "Topic",
+      "topicPlaceholder": "Select a topic",
+      "accountEmail": "Account email (optional)",
+      "companyName": "Company / workspace (optional)",
+      "message": "Message",
+      "submit": "Send support request",
+      "sending": "Sending...",
+      "success": "Your request was received. The support team will reply by email.",
+      "genericError": "The request could not be sent. Please try again later or email us directly.",
+      "topics": {
+        "account": "Account and sign-in",
+        "mobile": "Mobile app",
+        "billing": "Billing",
+        "privacy": "Privacy / data",
+        "other": "Other"
+      }
     }
   }
 }
