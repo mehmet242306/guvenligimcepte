@@ -501,6 +501,45 @@ function computeAllScores(finding: VisualFinding): VisualFinding {
   };
 }
 
+function clampPercentValue(value: unknown, fallback: number, min = 0, max = 100): number {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, n));
+}
+
+function createSquareAnnotationFromRisk(risk: Record<string, any>, label: string): { box: BoxAnnotation; pin: PinAnnotation } {
+  const pinX = clampPercentValue(risk.pinX, 50);
+  const pinY = clampPercentValue(risk.pinY, 50);
+  const rawBoxX = clampPercentValue(risk.boxX, pinX - 12);
+  const rawBoxY = clampPercentValue(risk.boxY, pinY - 12);
+  const rawBoxW = clampPercentValue(risk.boxW, 24, 8, 60);
+  const rawBoxH = clampPercentValue(risk.boxH, rawBoxW, 8, 60);
+  const side = Math.min(60, Math.max(10, rawBoxW, rawBoxH));
+  const centerX = clampPercentValue(rawBoxX + rawBoxW / 2, pinX);
+  const centerY = clampPercentValue(rawBoxY + rawBoxH / 2, pinY);
+  const boxX = clampPercentValue(centerX - side / 2, Math.max(0, pinX - side / 2), 0, 100 - side);
+  const boxY = clampPercentValue(centerY - side / 2, Math.max(0, pinY - side / 2), 0, 100 - side);
+
+  return {
+    box: {
+      id: crypto.randomUUID(),
+      kind: "box",
+      label,
+      x: boxX,
+      y: boxY,
+      width: side,
+      height: side,
+    },
+    pin: {
+      id: crypto.randomUUID(),
+      kind: "pin",
+      label,
+      x: boxX + side / 2,
+      y: boxY + side / 2,
+    },
+  };
+}
+
 function createAiUnavailableFindingBase(
   imageId: string,
   patch: {
@@ -591,7 +630,9 @@ function createAiUnavailableFindings(imageId: string, reason: string): VisualFin
       severity: "medium",
       confidence: 0.62,
       recommendation: `${reason} Bu fotograf icin calisma alani, zemin/gecis, elektrik, yangin, acil durum ve ekipman basliklari sahada kontrol edilmelidir. Tespitler sorumlu kisi, termin ve kanit fotografi ile tamamlanmalidir.`,
-      annotations: [{ id: crypto.randomUUID(), kind: "pin", label: "R1", x: 50, y: 50 }],
+      annotations: [
+        createSquareAnnotationFromRisk({ pinX: 50, pinY: 50, boxX: 38, boxY: 38, boxW: 24, boxH: 24 }, "R1").box,
+      ],
     }),
     createAiUnavailableFindingBase(imageId, {
       title: "Elektrik, yangin ve acil durum kontrolu",
@@ -600,7 +641,9 @@ function createAiUnavailableFindings(imageId: string, reason: string): VisualFin
       confidence: 0.58,
       recommendation:
         "Gorsel analizi tamamlanamadigi icin elektrik beslemesi, priz/kablo durumu, yanici malzeme yakinligi, yangin sondurucu erisimi ve acil mudahale plani sahada dogrulanmalidir. Uygunsuzluk varsa alan guvenli hale getirilmeden calisma surdurulmemelidir.",
-      annotations: [{ id: crypto.randomUUID(), kind: "pin", label: "R2", x: 50, y: 50 }],
+      annotations: [
+        createSquareAnnotationFromRisk({ pinX: 50, pinY: 50, boxX: 38, boxY: 38, boxW: 24, boxH: 24 }, "R2").box,
+      ],
     }),
   ];
 }
@@ -1809,15 +1852,8 @@ export function RiskAnalysisClient() {
       const risks = Array.isArray(data.risks) ? data.risks : [];
 
       const findings = risks.map((risk, idx) => {
-        const annotations: FindingAnnotation[] = [
-          { id: crypto.randomUUID(), kind: "pin" as const, label: `R${idx + 1}`, x: risk.pinX, y: risk.pinY },
-        ];
-        if (risk.boxX != null && risk.boxY != null && risk.boxW != null && risk.boxH != null) {
-          annotations.push({
-            id: crypto.randomUUID(), kind: "box" as const,
-            label: risk.category, x: risk.boxX, y: risk.boxY, width: risk.boxW, height: risk.boxH,
-          });
-        }
+        const squareAnnotation = createSquareAnnotationFromRisk(risk, `R${idx + 1}`);
+        const annotations: FindingAnnotation[] = [squareAnnotation.box];
 
         // AI'dan gelen C1-C9 parametrelerini kullan, yoksa fallback profil
         const aiR2D = risk.r2dParams;

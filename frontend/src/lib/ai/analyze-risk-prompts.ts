@@ -4,7 +4,7 @@
 } from "@/lib/ai/output-language";
 
 /** `/api/analyze-risk` ile senkron tutun (cache/observability). */
-export const RISK_ANALYSIS_PROMPT_VERSION = "v2.6-prompts-module-method-block-in-user";
+export const RISK_ANALYSIS_PROMPT_VERSION = "v2.7-square-annotation-general-scene";
 
 export type RiskAnalysisMethod =
   | "r_skor"
@@ -248,7 +248,9 @@ Her gerçek görselde şu başlıkları sırayla tara ve görünür unsur varsa 
 ÇIKTI DAVRANIŞI:
 - Görselde birden fazla risk varsa hepsini ayrı ayrı yaz. Tek riskle yetinme.
 - Her risk için title, category, severity, confidence, recommendation, correctiveActionRequired, pinX, pinY, boxX, boxY, boxW, boxH üret.
+- Riskleri yalnız tek nesneye kilitleme; görselin genel saha durumunu değerlendir. Örneğin açık kanal + kablo + bariyer eksikliği birlikte risk oluşturuyorsa bunları saha düzeni/erişim/elektrik bağlamıyla yaz.
 - Risk konumlarını yaklaşık ver; mükemmel koordinat bekleme.
+- Anotasyon KARE olmalıdır: boxW ve boxH eşit değer olmalı. Kare, riskin görünür kaynağını veya riskli alan grubunu içine almalı; yalnız pin vermek yeterli değildir.
 - positiveObservations ikincildir. Risk varsa önce risks dizisini doldur. positiveObservations boş kalabilir.
 - imageRelevance gerçek fotoğrafsa "relevant" olmalıdır.
 - Sadece tamamen ilgisiz, gerçek saha/işyeri/tehlike içermeyen görselde risks boş olabilir.
@@ -308,8 +310,8 @@ JSON format\u0131:
       "pinY": 30,
       "boxX": 40,
       "boxY": 20,
-      "boxW": 20,
-      "boxH": 30,
+      "boxW": 24,
+      "boxH": 24,
       ${mp.jsonExample}${r2dFallback},
       "legalReferences": [
         {
@@ -329,6 +331,7 @@ export function buildFastSystemPrompt(locale: string): string {
 GOREV:
 - Gercek saha, isyeri, depo, atelye, santiye, teknik alan veya ofis fotografinda risks dizisini bos birakma.
 - Sadece gorunen veya makul saha kontrolu gerektiren riskleri yaz.
+- Riskleri gorselin genel saha durumu uzerinden degerlendir: acik kanal, kablo, bariyer, zemin, pano, ekipman ve erisim iliskisini birlikte yorumla.
 - Emin olmadigin ayrintiyi kesin iddia etme; "sahada dogrulanmali" dili kullan.
 - Sadece gecerli JSON dondur. Markdown, aciklama, kod blogu yok.
 
@@ -340,6 +343,7 @@ HER RISK ICIN:
 title, category, severity(low|medium|high|critical), confidence(0-1),
 recommendation, correctiveActionRequired, pinX, pinY, boxX, boxY, boxW, boxH,
 r2dParams(c1..c9), fkParams, matrixParams, legalReferences alanlarini doldur.
+Anotasyon kare olmali: boxW ve boxH ayni sayi olmali; kare riskli bolgeyi icine almali.
 
 Turkiye ISG mevzuatini kisa ve gercek referanslarla yaz.` + analyzeRiskSystemLanguageSuffix(locale);
 }
@@ -370,8 +374,8 @@ JSON:
       "pinY": 50,
       "boxX": 40,
       "boxY": 40,
-      "boxW": 20,
-      "boxH": 20,
+      "boxW": 24,
+      "boxH": 24,
       "r2dParams": {"c1":0.5,"c2":0.2,"c3":0.2,"c4":0.1,"c5":0.2,"c6":0.3,"c7":0.2,"c8":0.1,"c9":0.3},
       "fkParams": {"likelihood":3,"severity":7,"exposure":3},
       "matrixParams": {"likelihood":3,"severity":3},

@@ -53,6 +53,38 @@ function getRiskAnalysisOperationTimeoutMs(): number {
 const ACCEPTABLE_RISK_CONFIDENCE_MAX = 0.40; // 0.59 → 0.40: daha az risk "kabul edilebilir"e düşer
 const ACTIONABLE_RISK_CONFIDENCE_MIN = 0.55; // 0.70 → 0.55: daha geniş "aksiyon gerekli" aralığı
 
+function clampPercent(value: unknown, fallback: number, min = 0, max = 100): number {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, n));
+}
+
+function normalizeSquareAnnotation(risk: Record<string, any>, index: number): Record<string, any> {
+  const pinX = clampPercent(risk.pinX, 50);
+  const pinY = clampPercent(risk.pinY, 50);
+  const rawBoxX = clampPercent(risk.boxX, pinX - 12);
+  const rawBoxY = clampPercent(risk.boxY, pinY - 12);
+  const rawBoxW = clampPercent(risk.boxW, 24, 8, 60);
+  const rawBoxH = clampPercent(risk.boxH, rawBoxW, 8, 60);
+  const side = Math.min(60, Math.max(10, rawBoxW, rawBoxH));
+  const centerX = clampPercent(rawBoxX + rawBoxW / 2, pinX);
+  const centerY = clampPercent(rawBoxY + rawBoxH / 2, pinY);
+  const boxX = clampPercent(centerX - side / 2, Math.max(0, pinX - side / 2), 0, 100 - side);
+  const boxY = clampPercent(centerY - side / 2, Math.max(0, pinY - side / 2), 0, 100 - side);
+
+  return {
+    ...risk,
+    pinX: clampPercent(risk.pinX, boxX + side / 2),
+    pinY: clampPercent(risk.pinY, boxY + side / 2),
+    boxX,
+    boxY,
+    boxW: side,
+    boxH: side,
+    annotationShape: "square",
+    annotationLabel: risk.annotationLabel ?? `R${index + 1}`,
+  };
+}
+
 const analyzeRiskSchema = z.object({
   imageBase64: z.string().min(100).max(20_000_000),
   mimeType: z.enum(["image/jpeg", "image/png", "image/gif", "image/webp"]),
@@ -411,50 +443,17 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const contextSummary = [
-        companyContext?.sector ? `Sektor: ${companyContext.sector}` : null,
-        companyContext?.kind ? `Faaliyet turu: ${companyContext.kind}` : null,
-        companyContext?.hazardClass ? `Tehlike sinifi: ${companyContext.hazardClass}` : null,
-      ]
-        .filter(Boolean)
-        .join(" | ");
-      const timeoutFallbackParsed = {
-        imageDescription:
-          "AI gorsel analizi zaman asimina ugradigi icin gorsel aciklamasi otomatik uretilemedi.",
-        areaSummary:
-          contextSummary ||
-          "AI zaman asimi nedeniyle saha ozeti otomatik uretilemedi; on risk envanteri manuel dogrulama gerektirir.",
-        photoQuality: {
-          level: "moderate",
-          note: "AI zaman asimi nedeniyle on risk envanteri manuel dogrulama gerektirir.",
+      return NextResponse.json(
+        {
+          error: resilientResponse.fallbackMessage,
+          degraded: true,
+          retryable: true,
+          stage: "anthropic_timeout",
+          queueTaskId: resilientResponse.queuedTaskId ?? null,
+          durationMs: duration,
         },
-      };
-
-      return NextResponse.json({
-        risks: buildFallbackRisksForEmptyFieldReview(timeoutFallbackParsed),
-        faces: [],
-        positiveObservations: [],
-        photoQuality: timeoutFallbackParsed.photoQuality,
-        areaSummary: timeoutFallbackParsed.areaSummary,
-        personCount: 0,
-        imageRelevance: "relevant",
-        imageDescription: timeoutFallbackParsed.imageDescription,
-        method,
-        mode,
-        visionModel,
-        promptVersion: RISK_ANALYSIS_PROMPT_VERSION,
-        degraded: true,
-        durationMs: duration,
-        tokensInput: 0,
-        tokensOutput: 0,
-        visionStage: null,
-        visionStageStatus,
-        queueTaskId: resilientResponse.queuedTaskId ?? null,
-        fallback: {
-          type: "ai_timeout_degraded",
-          label: "On risk envanteri manuel dogrulama gerektirir",
-        },
-      });
+        { status: 504 },
+      );
     }
 
     const response = resilientResponse.data;
@@ -601,7 +600,8 @@ export async function POST(request: NextRequest) {
     let acceptableRiskCount = 0;
     let triggerSafeguardCount = 0;
 
-    parsed.risks = normalizedRawRisks.map((risk: Record<string, any>) => {
+    parsed.risks = normalizedRawRisks.map((rawRisk: Record<string, any>, index: number) => {
+      const risk = normalizeSquareAnnotation(rawRisk, index);
       const rawConfidence = Number(risk.confidence ?? 0);
 
       // SAFEGUARD #1: Tetikleyici kategori riskleri "kabul edilebilir"e düşmez.
