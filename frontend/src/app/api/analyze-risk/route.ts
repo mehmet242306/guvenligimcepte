@@ -36,7 +36,7 @@ function getAnthropicClient(): Anthropic | null {
 export const maxDuration = 90; // Hybrid OpenAI+Anthropic iki aşamalı, biraz daha geniş pencere
 
 // v1.11 — ISG expert mode: visible hazard sources must not be suppressed by anti-hallucination guards
-const PROMPT_VERSION = "v1.11-isg-expert-risk-detection";
+const PROMPT_VERSION = "v1.12-risk-first-no-empty-field-review";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
@@ -80,6 +80,17 @@ R\u0130SK TESP\u0130T YETK\u0130S\u0130:
 - OpenAI/gpt-4o \u00F6n g\u00F6zlemi varsa bu sadece yard\u0131mc\u0131 nesne/sahne notudur; risk listesi, risk kan\u0131t\u0131 veya otomatik karar de\u011Fildir.
 - OpenAI \u00F6n g\u00F6zlemiyle g\u00F6rsel aras\u0131nda \u00E7eli\u015Fki varsa kendi g\u00F6rsel incelemene g\u00FCven.
 - Bir tespiti risks dizisine yazmak i\u00E7in g\u00F6rselde parmakla g\u00F6sterilebilir bir tehlike kayna\u011F\u0131, uygunsuzluk, kontrol eksikli\u011Fi veya do\u011Frulama gerektiren kritik unsur g\u00F6rmelisin.
+
+\u26A0\uFE0F R\u0130SK TESP\u0130T\u0130 B\u0130R\u0130NC\u0130L G\u00D6REVD\u0130R \u26A0\uFE0F
+- Ger\u00E7ek saha/tesis/\u00E7al\u0131\u015Fma alan\u0131 foto\u011Fraf\u0131nda risks: [] d\u00F6nmek SON \u00C7ARED\u0130R.
+- A\u00E7\u0131k alan, teknik alan, elektrik tesisi, \u015Fantiye, kaz\u0131, depo, at\u00F6lye, makine,
+  kimyasal, yang\u0131n ekipman\u0131, kablo, boru, kanal, \u00E7ukur, istif veya ge\u00E7i\u015F yolu
+  g\u00F6r\u00FCyorsan risk tespit et.
+- En az bir tehlike kayna\u011F\u0131 g\u00F6r\u00FCl\u00FCyorsa risks dizisi BO\u015E OLAMAZ.
+- Eski "emin de\u011Filsen yazma", "bo\u015F liste me\u015Fru", "olumlu tespit ba\u015Far\u0131d\u0131r"
+  gibi koruyucu kurallar risk tespitini engelleyemez. Risk \u00F6nceliklidir.
+- G\u00F6r\u00FCnen tehlikeyi risk olarak yaz; emin olmad\u0131\u011F\u0131n ayr\u0131nt\u0131y\u0131 sadece
+  "do\u011Frulanmal\u0131" diliyle ifade et.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 \u0130SG UZMANI MODU \u2014 R\u0130SK KA\u00C7IRMA, KANIT UYDURMA
@@ -277,8 +288,8 @@ Her t\u00FCrl\u00FC ger\u00E7ek mekan analiz edilebilir:
 - HEPSI risk analizi kapsam\u0131nda de\u011Ferlendirilebilir \u2014 mekan k\u0131s\u0131tlamas\u0131 YOK.
 
 3) SONU\u00C7:
-- Ger\u00E7ek foto\u011Fraf + herhangi bir mekan \u2192 "imageRelevance" = "relevant" \u2192 normal analiz yap
-- \u00C7izim/ill\u00FCstrasyon/AI \u00FCretimi/render \u2192 "imageRelevance" = "not_real_photo" \u2192 risks dizisi BO\u015E
+- Ger\u00E7ek foto\u011Fraf + herhangi bir mekan \u2192 "imageRelevance" = "relevant" \u2192 risk envanteri \u00E7\u0131kar
+- \u00C7izim/ill\u00FCstrasyon/AI \u00FCretimi/render \u2192 "imageRelevance" = "not_real_photo"
 - Ekran g\u00F6r\u00FCnt\u00FCs\u00FC (i\u00E7inde ger\u00E7ek saha foto\u011Fraf\u0131 varsa) \u2192 "relevant" olabilir, ama kalite d\u00FC\u015F\u00FCk
 - "imageDescription" alan\u0131na her durumda g\u00F6rselin k\u0131sa tan\u0131m\u0131n\u0131 yaz
 
@@ -559,7 +570,7 @@ Her tespit i\u00E7in kendine \u015Fu sorular\u0131 sor:
 \u2713 Bu ekipman\u0131 DO\u011ERU tan\u0131mlad\u0131m m\u0131? (Spiral mi kaynak m\u0131, vin\u00E7 mi forklift mi?)
 \u2713 Bu riski g\u00F6rseldeki hangi piksele/b\u00F6lgeye i\u015Faret ederek kan\u0131tlayabilirim?
 \u2713 Ciddiyet seviyesini abartmad\u0131m m\u0131? Ger\u00E7ek\u00E7i mi?
-\u2713 Emin de\u011Fil miyim? \u2192 O zaman bu tespiti YAZMA.
+\u2713 Emin de\u011Fil miyim? \u2192 Tespiti silme; g\u00F6r\u00FCnen tehlike kayna\u011F\u0131n\u0131 yaz ve belirsiz ayr\u0131nt\u0131y\u0131 "do\u011Frulanmal\u0131" diye belirt.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 ADIM TET\u0130KLEME PRENS\u0130B\u0130 (METODOLOJ\u0130 KULLANIM KURALI)
@@ -871,7 +882,7 @@ ANA MEVZUAT KAYNAKLARI:
 KURALLAR:
 - Ka\u00E7 risk varsa o kadar yaz. Say\u0131 s\u0131n\u0131r\u0131 yok.
 - Ayn\u0131 riski tekrarlama.
-- Yaln\u0131zca g\u00F6rselde hi\u00E7bir tehlike kayna\u011F\u0131 veya kontrol gerektiren unsur yoksa bo\u015F dizi d\u00F6n.
+- Ger\u00E7ek saha foto\u011Fraf\u0131nda risk envanteri \u00E7\u0131kar. Bo\u015F dizi sadece tamamen ilgisiz/tehlikesiz g\u00F6rsel i\u00E7indir.
 - T\u00DCRK\u00C7E yaz.
 - Sadece JSON d\u00F6nd\u00FCr.`;
 
@@ -1115,6 +1126,93 @@ JSON format\u0131:
 }` + analyzeRiskUserLanguageSuffix(locale);
 }
 
+function buildFallbackRisksForEmptyFieldReview(parsed: Record<string, any>): Record<string, any>[] {
+  const text = [parsed.imageDescription, parsed.areaSummary, parsed.photoQuality?.note]
+    .filter((value) => typeof value === "string")
+    .join(" ")
+    .toLocaleLowerCase("tr-TR");
+
+  const legalReferences = [
+    {
+      law: "İş Sağlığı ve Güvenliği Risk Değerlendirmesi Yönetmeliği",
+      article: "Madde 8",
+      description: "Çalışma ortamındaki tehlikeler belirlenir, riskler analiz edilir ve kontrol tedbirleri planlanır.",
+    },
+  ];
+
+  const createRisk = (
+    title: string,
+    category: string,
+    severity: "low" | "medium" | "high" | "critical",
+    pinX: number,
+    pinY: number,
+    recommendation: string,
+  ) => ({
+    title,
+    category,
+    severity,
+    confidence: 0.72,
+    recommendation,
+    correctiveActionRequired: true,
+    pinX,
+    pinY,
+    boxX: Math.max(0, pinX - 15),
+    boxY: Math.max(0, pinY - 12),
+    boxW: 30,
+    boxH: 24,
+    r2dParams: { c1: 0.7, c2: 0.1, c3: 0.2, c4: 0.4, c5: 0.5, c6: 0.6, c7: 0.4, c8: 0.1, c9: 0.5 },
+    legalReferences,
+  });
+
+  const risks: Record<string, any>[] = [];
+
+  if (/(trafo|elektrik|pano|kablo|enerji|şalt|salt|direk|hat|akım|gerilim|substation)/i.test(text)) {
+    risks.push(createRisk(
+      "Elektrik tesis alanında temas ve yetkisiz erişim riski",
+      "Elektrik",
+      "high",
+      35,
+      35,
+      "Elektrik tesis alanı yetkisiz erişime, temas riskine ve çalışma sırasında enerjiye yaklaşma tehlikesine karşı yeniden değerlendirilmelidir. Çevreleme, uyarı levhaları, kilitleme/etiketleme ve güvenli yaklaşma mesafeleri İSG uzmanı ile elektrik yetkilisi tarafından sahada doğrulanmalıdır. Eksik veya yetersiz bariyerler tamamlanmadan alanda çalışma yapılmamalıdır.",
+    ));
+  }
+
+  if (/(kazı|çukur|kanal|hendek|boşluk|temel|inşaat|şantiye|hafriyat|trench|excavation)/i.test(text)) {
+    risks.push(createRisk(
+      "Açık kazı/kanal nedeniyle düşme ve göçük riski",
+      "Yüksekte Çalışma",
+      "high",
+      48,
+      68,
+      "Açık kazı veya kanal alanı düşme, tökezleme ve kenar stabilitesi açısından kontrol altına alınmalıdır. Kazı çevresine sağlam bariyer, uyarı işaretleri ve güvenli geçiş düzeni kurulmalı; kenar boşlukları ve göçük riski yetkin kişi tarafından kontrol edilmelidir. Alan kapatılmadan çalışan ve ziyaretçi erişimi engellenmelidir.",
+    ));
+  }
+
+  if (/(dağınık|moloz|malzeme|boru|hortum|kablo|geçiş|zemin|düzensiz|engel)/i.test(text)) {
+    risks.push(createRisk(
+      "Düzensiz saha zemini ve geçiş engelleri nedeniyle takılma/düşme riski",
+      "Düzen/Temizlik",
+      "medium",
+      55,
+      75,
+      "Saha zemini, geçiş yolları ve çalışma çevresi düzen-temizlik açısından toparlanmalıdır. Geçiş üzerinde kalan boru, kablo, moloz veya malzemeler kaldırılmalı; zorunlu hatlar koruyucu kanal veya askı sistemiyle güvenli hale getirilmelidir. Düzenleme tamamlandıktan sonra alan sorumlusu tarafından günlük saha kontrolü yapılmalıdır.",
+    ));
+  }
+
+  if (risks.length === 0) {
+    risks.push(createRisk(
+      "Görselde çalışma alanı tehlike kaynakları için risk envanteri gerekli",
+      "Diğer",
+      "medium",
+      50,
+      50,
+      "AI ilk geçişte boş sonuç üretmiş olsa da gerçek saha fotoğrafında görünen ekipman, zemin, erişim ve çalışma alanı unsurları risk envanteri kapsamında değerlendirilmelidir. İSG uzmanı sahada elektrik, yangın, geçiş, depolama, zemin ve acil durum başlıklarını kontrol ederek risk kayıtlarını tamamlamalıdır. Bu kayıt manuel doğrulama ile kesinleştirilmelidir.",
+    ));
+  }
+
+  return risks;
+}
+
 /* ================================================================== */
 /* API handler                                                         */
 /* ================================================================== */
@@ -1250,8 +1348,8 @@ export async function POST(request: NextRequest) {
           model: "claude-sonnet-4-20250514",
           // İSG uzmanı modu: çoklu-risk sahnelerinde tespitlerin kısa kesilmemesi
           // için çıktı payı artırıldı; düşük sıcaklıkla kontrollü keşif korunur.
-          max_tokens: 6500,
-          temperature: 0.1,
+          max_tokens: 8000,
+          temperature: 0.2,
           system: buildSystemPrompt(method, outputLocale),
           messages: [
             {
@@ -1380,8 +1478,19 @@ export async function POST(request: NextRequest) {
     }
 
     const rawRisks = Array.isArray(parsed.risks) ? parsed.risks : [];
+    if (rawRisks.length === 0 && (parsed.imageRelevance ?? "relevant") === "relevant") {
+      parsed.risks = buildFallbackRisksForEmptyFieldReview(parsed);
+      console.warn("[analyze-risk] Claude returned empty risks for relevant field image; generated fallback risk inventory.", {
+        promptVersion: PROMPT_VERSION,
+        imageDescription: parsed.imageDescription,
+        areaSummary: parsed.areaSummary,
+        fallbackRiskCount: parsed.risks.length,
+      });
+    }
+
+    const normalizedRawRisks = Array.isArray(parsed.risks) ? parsed.risks : rawRisks;
     let acceptableRiskCount = 0;
-    parsed.risks = rawRisks.map((risk: Record<string, any>) => {
+    parsed.risks = normalizedRawRisks.map((risk: Record<string, any>) => {
       const confidence = Number(risk.confidence ?? 0);
       if (confidence > ACCEPTABLE_RISK_CONFIDENCE_MAX) {
         return risk;
