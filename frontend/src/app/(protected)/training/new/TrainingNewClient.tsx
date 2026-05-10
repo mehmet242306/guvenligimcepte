@@ -48,6 +48,8 @@ export function TrainingNewClient() {
   const [timeLimit, setTimeLimit] = useState(30);
   const [shuffleQuestions, setShuffleQuestions] = useState(false);
   const [autoIssueCertificate, setAutoIssueCertificate] = useState(true);
+  /** Sınavları şablon havuzunda tut (katılımcı eklenmez; yayına alınca kalkar) */
+  const [saveAsExamTemplate, setSaveAsExamTemplate] = useState(true);
   const [selectedCompanyIds, setSelectedCompanyIds] = useState<Set<string>>(new Set());
   const [companies, setCompanies] = useState<{ id: string; name: string }[]>([]);
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
@@ -87,6 +89,7 @@ export function TrainingNewClient() {
 
     if (prefillType === "survey" || prefillType === "exam") {
       setType(prefillType);
+      setSaveAsExamTemplate(prefillType === "exam");
     }
     if (prefillTitle) {
       setTitle(prefillTitle);
@@ -280,6 +283,7 @@ export function TrainingNewClient() {
       description: description.trim(),
       type,
       status: "draft",
+      isTemplate: type === "exam" ? saveAsExamTemplate : false,
       passScore: type === "exam" ? passScore : null,
       timeLimitMinutes: type === "exam" ? timeLimit : null,
       shuffleQuestions: type === "exam" ? shuffleQuestions : false,
@@ -385,7 +389,10 @@ export function TrainingNewClient() {
                 {(["survey", "exam"] as const).map(t => (
                   <button
                     key={t}
-                    onClick={() => setType(t)}
+                    onClick={() => {
+                      setType(t);
+                      setSaveAsExamTemplate(t === "exam");
+                    }}
                     className={`flex-1 rounded-xl border-2 p-4 text-center transition-colors ${
                       type === t
                         ? t === "exam"
@@ -411,6 +418,27 @@ export function TrainingNewClient() {
                 ))}
               </div>
             </div>
+
+            {type === "exam" && (
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--background)] p-4">
+                <input
+                  type="checkbox"
+                  checked={saveAsExamTemplate}
+                  onChange={(e) => setSaveAsExamTemplate(e.target.checked)}
+                  className="mt-1 rounded border-[var(--border)]"
+                />
+                <div>
+                  <span className="text-sm font-medium text-[var(--foreground)]">
+                    {isTr ? "Şablon olarak kaydet" : "Save as template"}
+                  </span>
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                    {isTr
+                      ? "Sınav /training listesinde şablon olarak kalır; katılımcı linki eklemezsiniz. Dağıtmak için detayda «Yayına al» veya şablon işaretini kaldırın."
+                      : "Stays in your training list as a reusable exam template without participant links. Publish from detail or clear this to distribute."}
+                  </p>
+                </div>
+              </label>
+            )}
 
             {/* Title */}
             <div>

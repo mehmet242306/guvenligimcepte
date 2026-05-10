@@ -2509,7 +2509,7 @@
   },
   "trainingHubPage": {
     "title": "Eğitim",
-    "description": "Slayt kütüphanesi, anket ve sınav akışları; kişiye özel link ve sonuç analizi bu modülde.",
+    "description": "Slayt kütüphanesi, anket ve sınav akışları; kişiye özel link ve sonuç analizi bu modülde. Yeni anket ve sınavlar yayına alınana kadar taslak kalır. Sınavlar bu listede şablon olarak saklanabilir.",
     "actions": {
       "aiTraining": "AI Destekli Eğitim Hazırla",
       "slideLibrary": "Slayt Kütüphanem",
@@ -2537,7 +2537,11 @@
     },
     "filters": {
       "searchPlaceholder": "Anket veya sınav ara...",
-      "allStatuses": "Tümü"
+      "allStatuses": "Tümü",
+      "examTemplatesOnly": "Şablon sınavlar"
+    },
+    "badge": {
+      "template": "Şablon"
     },
     "status": {
       "draft": "Taslak",
@@ -2562,6 +2566,13 @@
       "authRequired": "Giriş gerekli.",
       "organizationMissing": "Organizasyon bağlantısı bulunamadı. Profil veya üyelik ayarlarınızı kontrol edin."
     }
+  },
+  "trainingDetailPage": {
+    "templateBadge": "Şablon",
+    "templateBanner": "Bu sınav şablon olarak saklanıyor. Katılımcı linki eklemek için şablon işaretini kaldırın veya yayına alın.",
+    "clearTemplate": "Şablonu kaldır (davet için)",
+    "tokensLockedHint": "Şablon sınavlarda katılımcı linki oluşturulamaz. Şablonu kaldırın veya sınavı yayına alın.",
+    "publishClearsTemplate": "Yayına almak şablon işaretini de kaldırır; ardından katılımcı ekleyebilirsiniz."
   },
   "certificateVerify": {
     "loading": "Doğrulanıyor…",

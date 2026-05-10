@@ -13,6 +13,8 @@ export interface SurveyRecord {
   description: string;
   type: 'survey' | 'exam';
   status: 'draft' | 'active' | 'closed' | 'archived';
+  /** Şablon sınav: katılımcı linki önerilmez; yayına alınırken otomatik kalkar */
+  isTemplate: boolean;
   settings: Record<string, unknown>;
   passScore: number | null;
   timeLimitMinutes: number | null;
@@ -75,6 +77,7 @@ type SurveyRow = {
   description: string | null;
   type: string;
   status: string;
+  is_template?: boolean;
   settings: Record<string, unknown>;
   pass_score: number | null;
   time_limit_minutes: number | null;
@@ -132,6 +135,7 @@ function dbToSurvey(r: SurveyRow): SurveyRecord {
     description: r.description || '',
     type: r.type as SurveyRecord['type'],
     status: r.status as SurveyRecord['status'],
+    isTemplate: Boolean(r.is_template),
     settings: r.settings || {},
     passScore: r.pass_score,
     timeLimitMinutes: r.time_limit_minutes,
@@ -218,6 +222,7 @@ export async function createSurvey(survey: Partial<SurveyRecord>): Promise<Surve
     description: survey.description || null,
     type: survey.type,
     status: survey.status || 'draft',
+    is_template: survey.isTemplate ?? false,
     settings: survey.settings || {},
     pass_score: survey.passScore ?? null,
     time_limit_minutes: survey.timeLimitMinutes ?? null,
@@ -249,6 +254,7 @@ export async function updateSurvey(id: string, updates: Partial<SurveyRecord>): 
   if (updates.timeLimitMinutes !== undefined) row.time_limit_minutes = updates.timeLimitMinutes;
   if (updates.shuffleQuestions !== undefined) row.shuffle_questions = updates.shuffleQuestions;
   if (updates.settings !== undefined) row.settings = updates.settings;
+  if (updates.isTemplate !== undefined) row.is_template = updates.isTemplate;
   const { error } = await supabase.from('surveys').update(row).eq('id', id);
   if (error) { console.error('updateSurvey error:', error); return false; }
   return true;
@@ -316,6 +322,9 @@ export async function createTokens(
 ): Promise<SurveyTokenRecord[]> {
   const supabase = createClient();
   if (!supabase) return [];
+
+  const surveyRow = await fetchSurveyById(surveyId);
+  if (!surveyRow || surveyRow.isTemplate) return [];
 
   const rows = people.map(p => ({
     survey_id: surveyId,

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import {
   fetchSurveyById,
@@ -28,6 +29,7 @@ type Tab = "overview" | "tokens" | "results" | "certificates";
 export function TrainingDetailClient() {
   const params = useParams();
   const router = useRouter();
+  const tDetail = useTranslations("trainingDetailPage");
   const surveyId = params.id as string;
 
   const [survey, setSurvey] = useState<SurveyRecord | null>(null);
@@ -101,8 +103,21 @@ export function TrainingDetailClient() {
   async function handleStatusChange(status: string) {
     if (!survey) return;
     setStatusUpdating(true);
-    await updateSurvey(survey.id, { status: status as SurveyRecord["status"] });
-    setSurvey({ ...survey, status: status as SurveyRecord["status"] });
+    const nextStatus = status as SurveyRecord["status"];
+    const updates: Partial<SurveyRecord> = { status: nextStatus };
+    if (nextStatus === "active" && survey.isTemplate) {
+      updates.isTemplate = false;
+    }
+    await updateSurvey(survey.id, updates);
+    setSurvey({ ...survey, ...updates });
+    setStatusUpdating(false);
+  }
+
+  async function handleClearTemplate() {
+    if (!survey) return;
+    setStatusUpdating(true);
+    await updateSurvey(survey.id, { isTemplate: false });
+    setSurvey({ ...survey, isTemplate: false });
     setStatusUpdating(false);
   }
 
@@ -119,6 +134,7 @@ export function TrainingDetailClient() {
     }
 
     if (people.length === 0) return;
+    if (survey.isTemplate) return;
     const newTokens = await createTokens(survey.id, people);
     setTokens(prev => [...newTokens, ...prev]);
     setShowTokenModal(false);
@@ -252,6 +268,11 @@ export function TrainingDetailClient() {
               }`}>
                 {survey.type === "exam" ? "Exam" : "Survey"}
               </span>
+              {survey.isTemplate ? (
+                <span className="rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-800 dark:bg-slate-700 dark:text-slate-100">
+                  {tDetail("templateBadge")}
+                </span>
+              ) : null}
               {sourceLibrary?.content_id ? (
                 <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
                   Imported from OHS Library
@@ -265,9 +286,20 @@ export function TrainingDetailClient() {
               </p>
             ) : null}
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            {survey.status === "draft" && survey.isTemplate && (
+              <button
+                type="button"
+                onClick={() => void handleClearTemplate()}
+                disabled={statusUpdating}
+                className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--accent)] disabled:opacity-60"
+              >
+                {statusUpdating ? <ButtonLoader label="…" /> : tDetail("clearTemplate")}
+              </button>
+            )}
             {survey.status === "draft" && (
               <button
+                type="button"
                 onClick={() => handleStatusChange("active")}
                 disabled={statusUpdating}
                 className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
@@ -277,6 +309,7 @@ export function TrainingDetailClient() {
             )}
             {survey.status === "active" && (
               <button
+                type="button"
                 onClick={() => handleStatusChange("closed")}
                 disabled={statusUpdating}
                 className="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
@@ -286,6 +319,13 @@ export function TrainingDetailClient() {
             )}
           </div>
         </div>
+
+        {survey.isTemplate ? (
+          <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900 dark:border-blue-900/40 dark:bg-blue-950/40 dark:text-blue-100">
+            <p>{tDetail("templateBanner")}</p>
+            <p className="mt-2 text-xs opacity-90">{tDetail("publishClearsTemplate")}</p>
+          </div>
+        ) : null}
 
         {/* Tab bar */}
         <div className="mb-6 flex gap-1 rounded-xl bg-[var(--card)] p-1 border border-[var(--border)]">
@@ -379,10 +419,17 @@ export function TrainingDetailClient() {
         {/* Tokens tab */}
         {tab === "tokens" && (
           <div className="space-y-4">
+            {survey.isTemplate ? (
+              <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100">
+                {tDetail("tokensLockedHint")}
+              </p>
+            ) : null}
             <div className="flex justify-end">
               <button
+                type="button"
+                disabled={survey.isTemplate}
                 onClick={() => setShowTokenModal(true)}
-                className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-4 py-2.5 text-sm font-semibold text-white shadow hover:brightness-110"
+                className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold)] px-4 py-2.5 text-sm font-semibold text-white shadow hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Add Participant

@@ -2509,7 +2509,7 @@
   },
   "trainingHubPage": {
     "title": "Training",
-    "description": "Slide library, survey and exam flows, personal links, and result analytics live in this module.",
+    "description": "Slide library, survey and exam flows, personal links, and result analytics live in this module. New surveys and exams are saved as drafts until you publish. Exams can be kept as reusable templates in this list.",
     "actions": {
       "aiTraining": "Create training with AI",
       "slideLibrary": "My slide library",
@@ -2537,7 +2537,11 @@
     },
     "filters": {
       "searchPlaceholder": "Search surveys or exams...",
-      "allStatuses": "All"
+      "allStatuses": "All",
+      "examTemplatesOnly": "Exam templates"
+    },
+    "badge": {
+      "template": "Template"
     },
     "status": {
       "draft": "Draft",
@@ -2562,6 +2566,13 @@
       "authRequired": "Sign-in required.",
       "organizationMissing": "Organization connection was not found. Check your profile or membership settings."
     }
+  },
+  "trainingDetailPage": {
+    "templateBadge": "Template",
+    "templateBanner": "This exam is stored as a template. Participant links are disabled until you remove the template flag or publish.",
+    "clearTemplate": "Remove template (ready to invite)",
+    "tokensLockedHint": "Participant links are not available for templates. Remove the template or publish the exam.",
+    "publishClearsTemplate": "Publishing also clears the template so participants can be invited."
   },
   "certificateVerify": {
     "loading": "Verifying…",

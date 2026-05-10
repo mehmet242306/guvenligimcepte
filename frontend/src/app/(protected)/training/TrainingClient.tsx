@@ -10,6 +10,7 @@ import { fetchLibraryContents, type LibraryContentRecord } from "@/lib/supabase/
 
 type TabType = "all" | "survey" | "exam";
 type StatusFilter = "all" | "draft" | "active" | "closed";
+type TemplateScopeFilter = "all" | "exam_templates_only";
 type LibraryTab = "education" | "assessment";
 
 function normalizeLibraryCategory(category: string | null | undefined): LibraryTab | null {
@@ -75,6 +76,7 @@ export function TrainingClient() {
     router.replace(q ? `/training?${q}` : "/training", { scroll: false });
   }
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [templateScopeFilter, setTemplateScopeFilter] = useState<TemplateScopeFilter>("all");
   const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
   const [libraryTab, setLibraryTab] = useState<LibraryTab>("education");
 
@@ -120,6 +122,7 @@ export function TrainingClient() {
   const filtered = surveys.filter(s => {
     if (tab !== "all" && s.type !== tab) return false;
     if (statusFilter !== "all" && s.status !== statusFilter) return false;
+    if (templateScopeFilter === "exam_templates_only" && (s.type !== "exam" || !s.isTemplate)) return false;
     if (search && !s.title.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
@@ -128,6 +131,7 @@ export function TrainingClient() {
     all: surveys.length,
     survey: surveys.filter(s => s.type === "survey").length,
     exam: surveys.filter(s => s.type === "exam").length,
+    examTemplates: surveys.filter(s => s.type === "exam" && s.isTemplate).length,
   };
 
   const statusColors: Record<string, string> = {
@@ -355,10 +359,11 @@ export function TrainingClient() {
               className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] py-2.5 pl-10 pr-4 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/30"
             />
           </div>
-          <div className="flex gap-1.5">
+          <div className="flex flex-wrap gap-1.5">
             {(["all", "draft", "active", "closed"] as StatusFilter[]).map(s => (
               <button
                 key={s}
+                type="button"
                 onClick={() => setStatusFilter(s)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                   statusFilter === s
@@ -369,6 +374,20 @@ export function TrainingClient() {
                 {s === "all" ? t("filters.allStatuses") : statusLabels[s]}
               </button>
             ))}
+            <button
+              type="button"
+              onClick={() =>
+                setTemplateScopeFilter((prev) => (prev === "exam_templates_only" ? "all" : "exam_templates_only"))
+              }
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                templateScopeFilter === "exam_templates_only"
+                  ? "bg-blue-600/15 text-blue-700 ring-1 ring-blue-600/30 dark:text-blue-300"
+                  : "text-[var(--muted-foreground)] hover:bg-[var(--accent)]"
+              }`}
+            >
+              {t("filters.examTemplatesOnly")}
+              <span className="ml-1 opacity-75">({counts.examTemplates})</span>
+            </button>
           </div>
         </div>
 
@@ -433,6 +452,11 @@ export function TrainingClient() {
                     }`}>
                       {s.type === "exam" ? t("types.exam") : t("types.survey")}
                     </span>
+                    {s.isTemplate ? (
+                      <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-800 dark:bg-slate-700 dark:text-slate-100">
+                        {t("badge.template")}
+                      </span>
+                    ) : null}
                   </div>
                   {s.description && (
                     <p className="mt-0.5 text-sm text-[var(--muted-foreground)] truncate">{s.description}</p>
