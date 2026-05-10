@@ -85,9 +85,12 @@ export async function POST(request: NextRequest) {
       max_tokens: 900,
       temperature: 0,
       system: [
-        "Sen Nova'nin gorsel ISG baglam cikaricisisin.",
-        "Gorseli yalnizca ISG/OHS soru cevap akisina yardimci olacak kadar ozetle.",
-        "Kesin gormedigin KKD eksikligi, ekipman yoklugu veya mevzuat ihlali uydurma.",
+        "Sen Nova'nin gorsel ISG yorumlayicisisin.",
+        "Gorseli sohbet icinde kullaniciya aciklanacak sekilde yorumla ve gorunen riskleri mutlaka cikar.",
+        "Alev, duman, elektrik, kablo, priz, gaz tupu, kazı, cukur, makine, kimyasal, duzensiz zemin veya gecis engeli goruyorsan risks dizisi bos olamaz.",
+        "Kaza olmus olmasi gerekmez; gorunen tehlike kaynagi, kontrol eksikligi veya dogrulanmasi gereken kritik durum risk olarak yazilir.",
+        "Kesin gormedigin ayrintiyi kesin iddia etme; ama gorunen tehlikeyi risk listesinden silme.",
+        "Site ici yonlendirme, sayfa onerisi veya modul adi verme; sadece gorseli yorumla.",
         "Sadece JSON dondur. Markdown, aciklama veya kod blogu kullanma.",
         "JSON alani: imageDescription:string, areaSummary:string, risks:string[], positiveObservations:string[], personCount:number|null.",
       ].join("\n"),
@@ -106,7 +109,7 @@ export async function POST(request: NextRequest) {
             {
               type: "text",
               text:
-                "Bu gorseli RiskNova Nova sohbetinde kullanmak icin kisa ve guvenilir ISG baglami olarak JSON halinde ozetle.",
+                "Bu gorseli RiskNova Nova sohbetinde kullanmak icin ISG acisindan yorumla. Gorunen riskleri risks dizisine yaz; site ici yonlendirme yapma.",
             },
           ],
         },

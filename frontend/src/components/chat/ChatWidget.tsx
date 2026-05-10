@@ -1300,6 +1300,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     const text = input.trim();
     const composedPrompt = buildNovaPromptWithImage(text, imageAnalysis);
     if (!composedPrompt || typing || imageUploading || voiceTranscribing) return;
+    const hasAttachedImage = Boolean(imageAnalysis);
     const activeHistorySessionId = getWidgetHistorySessionId(sessionId);
     const visiblePrompt =
       text ||
@@ -1323,7 +1324,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     if (!isAuthenticated) {
       const delay = 320 + Math.random() * 220;
       setTimeout(() => {
-        const greeting = resolveNovaGreetingIntent(composedPrompt);
+        const greeting = hasAttachedImage ? null : resolveNovaGreetingIntent(composedPrompt);
         if (greeting) {
           const botMsg: Message = {
             id: crypto.randomUUID(),
@@ -1337,7 +1338,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           return;
         }
 
-        const overview = resolveNovaSiteMapOverviewIntent(composedPrompt);
+        const overview = hasAttachedImage ? null : resolveNovaSiteMapOverviewIntent(composedPrompt);
         if (overview) {
           const botMsg: Message = {
             id: crypto.randomUUID(),
@@ -1351,7 +1352,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           return;
         }
 
-        const publicNav = resolveNovaPublicSiteNavigationIntent(composedPrompt);
+        const publicNav = hasAttachedImage ? null : resolveNovaPublicSiteNavigationIntent(composedPrompt);
         if (publicNav) {
           const botMessage = buildBotMessageFromAgentResponse({
             type: "message",
@@ -1393,7 +1394,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
-    const greetingFallback = resolveNovaGreetingIntent(composedPrompt);
+    const greetingFallback = hasAttachedImage ? null : resolveNovaGreetingIntent(composedPrompt);
     if (greetingFallback) {
       const botMsg: Message = {
         id: crypto.randomUUID(),
@@ -1408,7 +1409,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
-    const navigationFallback = resolveNovaNavigationIntent(composedPrompt);
+    const navigationFallback = hasAttachedImage ? null : resolveNovaNavigationIntent(composedPrompt);
     if (navigationFallback) {
       const botMessage = buildBotMessageFromAgentResponse({
         type: "message",
@@ -1462,14 +1463,23 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         writeActiveWidgetSessionId(activeHistorySessionId);
       }
 
-      const botMessage = buildBotMessageFromAgentResponse(data);
+      const botMessage = buildBotMessageFromAgentResponse(
+        hasAttachedImage
+          ? {
+              ...data,
+              navigation: null,
+              tool_preview: data.tool_preview?.toolName === "navigate_to_page" ? null : data.tool_preview,
+              follow_up_actions: [],
+            }
+          : data,
+      );
       rememberLocalWidgetHistory(data?.session_id ?? activeHistorySessionId, visiblePrompt, botMessage.text);
       setMessages((prev) => [...prev, botMessage]);
       if (imageAnalysis) {
         clearAttachedImage();
       }
     } catch (err: unknown) {
-      const navigationFallback = resolveNovaNavigationIntent(composedPrompt);
+      const navigationFallback = hasAttachedImage ? null : resolveNovaNavigationIntent(composedPrompt);
       if (navigationFallback) {
         const botMessage = buildBotMessageFromAgentResponse({
           type: "message",

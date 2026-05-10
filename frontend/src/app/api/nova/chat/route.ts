@@ -42,6 +42,10 @@ function normalizeNovaIntentText(message: string) {
     .replace(/\p{Diacritic}/gu, "");
 }
 
+function isNovaImageContextMessage(message: string) {
+  return /\[Nova Gorsel Mesaji\]|\[Gorsel Baglami\]|Kullanici bir gorsel paylasti/i.test(message);
+}
+
 function isOperationalCommandQuery(message: string) {
   const normalized = normalizeNovaIntentText(message);
   return /(olustur|planla|ekle|kaydet|ac|git|yonlendir|create|plan|open|navigate|schedule|start|baslat|uygula)/.test(
@@ -994,14 +998,15 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient();
     const internalServiceSecret =
       process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null;
-    const navigationIntent = resolveNovaNavigationIntent(payload.message);
+    const hasImageContext = isNovaImageContextMessage(payload.message);
+    const navigationIntent = hasImageContext ? null : resolveNovaNavigationIntent(payload.message);
     const greetingIntent = resolveNovaGreetingIntent(payload.message);
     const auditSimulationIntent = resolveNovaAuditSimulationIntent(payload.message);
-    const guidanceIntent = resolveNovaGuidanceIntent(payload.message);
-    const productHelpIntent = resolveNovaProductHelpIntent(payload.message);
+    const guidanceIntent = hasImageContext ? null : resolveNovaGuidanceIntent(payload.message);
+    const productHelpIntent = hasImageContext ? null : resolveNovaProductHelpIntent(payload.message);
     const professionalPerspective = resolveNovaProfessionalPerspective(payload.message);
-    const operationalKickoffIntent = resolveNovaOperationalKickoffIntent(payload.message);
-    const createRecordIntent = resolveNovaCreateRecordIntent(payload.message);
+    const operationalKickoffIntent = hasImageContext ? null : resolveNovaOperationalKickoffIntent(payload.message);
+    const createRecordIntent = hasImageContext ? null : resolveNovaCreateRecordIntent(payload.message);
 
     let authContext =
       payload.access_token
@@ -1330,6 +1335,14 @@ export async function POST(request: NextRequest) {
     const bypassNovaLimitsForAdmin = accountContext.isPlatformAdmin === true;
     const contextualHistory = [...payload.history];
 
+    if (hasImageContext) {
+      contextualHistory.unshift({
+        role: "assistant",
+        content:
+          "Image message constraint: The user shared an image. Do not navigate, do not call or suggest navigate_to_page, do not return a navigation object, and do not route the user to Reports, Agenda, Documents, Risk Analysis, or any module. Answer in chat by interpreting the image, explaining visible OHS risks, likely consequences, and practical controls. You may mention that records can later be created manually, but no page routing.",
+      });
+    }
+
     contextualHistory.unshift({
       role: "assistant",
       content:
@@ -1545,6 +1558,13 @@ export async function POST(request: NextRequest) {
           company_workspace_id: effectiveCompanyWorkspaceId,
         },
       });
+      if (hasImageContext) {
+        normalized.navigation = null;
+        if (normalized.tool_preview?.toolName === "navigate_to_page") {
+          normalized.tool_preview = null;
+        }
+        normalized.follow_up_actions = [];
+      }
       return NextResponse.json(normalized, { status: response.status });
     } catch {
       return NextResponse.json(

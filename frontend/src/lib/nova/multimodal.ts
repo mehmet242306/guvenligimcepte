@@ -165,7 +165,17 @@ export function buildNovaPromptWithImage(
     return basePrompt;
   }
 
-  const parts = [basePrompt, "", "[Gorsel Baglami]"];
+  const parts = [
+    basePrompt,
+    "",
+    "[Nova Gorsel Mesaji]",
+    "Kullanici bir gorsel paylasti. Bu mesajda site ici yonlendirme, Sayfaya Git karti, navigasyon araci veya modul acma onerisi uretme.",
+    "Gorevin gorseli yorumlamak, kullaniciyi bilgilendirmek ve varsa ISG risklerini/olasi aksiyonlari sohbet icinde aciklamaktir.",
+    "Raporlar, ajanda, dokuman veya risk analizi gibi kelimeler gorsel baglaminda gecse bile bunlari navigasyon niyeti sayma.",
+    "[/Nova Gorsel Mesaji]",
+    "",
+    "[Gorsel Baglami]",
+  ];
   parts.push(`Dosya: ${image.fileName}`);
 
   if (image.imageDescription) {
