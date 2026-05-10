@@ -50,7 +50,7 @@ import {
   type R2DValues,
 } from "@/lib/risk-scoring";
 import { cn } from "@/lib/utils";
-import { MAX_IMAGES_PER_UPLOAD_BATCH } from "@/lib/risk-analysis/upload-limits";
+import { MAX_IMAGES_PER_UPLOAD_BATCH, MAX_RISK_ANALYSIS_IMAGES_TOTAL } from "@/lib/risk-analysis/upload-limits";
 import {
   formatDiagnosticsPlainTr,
   parseAnalyzeRiskDiagnosticsFromApi,
@@ -565,22 +565,39 @@ export function RiskAnalysisWorkbenchClient() {
   const addFiles = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const raw = Array.from(event.target.files ?? []).filter((file) => file.type.startsWith("image/"));
     if (raw.length === 0) return;
-    const truncated = raw.length > MAX_IMAGES_PER_UPLOAD_BATCH;
-    const files = truncated ? raw.slice(0, MAX_IMAGES_PER_UPLOAD_BATCH) : raw;
-    const nextImages = files.map<AnalysisImage>((file) => ({
-      id: randomId(),
-      file,
-      previewUrl: URL.createObjectURL(file),
-      status: "queued",
-      message: `${file.name} (${formatBytes(file.size)})`,
-      findings: [],
-    }));
-    setImages((current) => [...current, ...nextImages]);
-    setNotice({
-      tone: truncated ? "warning" : "info",
-      text: truncated
-        ? `Tek seferde en fazla ${MAX_IMAGES_PER_UPLOAD_BATCH} görsel eklenebilir; ${files.length} görsel eklendi.`
-        : `${files.length} görsel eklendi.`,
+
+    setImages((current) => {
+      const remaining = MAX_RISK_ANALYSIS_IMAGES_TOTAL - current.length;
+      if (remaining <= 0) {
+        queueMicrotask(() =>
+          setNotice({
+            tone: "warning",
+            text: `Bu analizde en fazla ${MAX_RISK_ANALYSIS_IMAGES_TOTAL} görsel yükleyebilirsiniz. Yeni eklemek için önce görsel silin.`,
+          }),
+        );
+        return current;
+      }
+      const maxTake = Math.min(raw.length, remaining, MAX_IMAGES_PER_UPLOAD_BATCH);
+      const files = raw.slice(0, maxTake);
+      const nextImages = files.map<AnalysisImage>((file) => ({
+        id: randomId(),
+        file,
+        previewUrl: URL.createObjectURL(file),
+        status: "queued",
+        message: `${file.name} (${formatBytes(file.size)})`,
+        findings: [],
+      }));
+      queueMicrotask(() => {
+        if (files.length < raw.length) {
+          setNotice({
+            tone: "warning",
+            text: `Bu oturumda en fazla ${MAX_RISK_ANALYSIS_IMAGES_TOTAL} görsel olabilir. ${files.length} görsel eklendi.`,
+          });
+        } else {
+          setNotice({ tone: "info", text: `${files.length} görsel eklendi.` });
+        }
+      });
+      return [...current, ...nextImages];
     });
     event.target.value = "";
   }, []);
@@ -971,11 +988,25 @@ export function RiskAnalysisWorkbenchClient() {
 
           <section className="rounded-lg border border-border bg-card p-4 shadow-[var(--shadow-card)]">
             <h2 className="text-base font-semibold text-foreground">Görseller</h2>
-            <label className="mt-4 flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-primary/40 bg-primary/5 px-4 py-8 text-center transition hover:bg-primary/10">
+            <label
+              className={cn(
+                "mt-4 flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-primary/40 bg-primary/5 px-4 py-8 text-center transition hover:bg-primary/10",
+                images.length >= MAX_RISK_ANALYSIS_IMAGES_TOTAL ? "cursor-not-allowed opacity-50" : "cursor-pointer",
+              )}
+            >
               <UploadCloud className="h-8 w-8 text-primary" />
               <span className="text-sm font-semibold text-foreground">Görsel seç</span>
-              <span className="text-xs text-muted-foreground">JPG, PNG veya WEBP</span>
-              <input className="sr-only" type="file" accept="image/*" multiple onChange={addFiles} />
+              <span className="text-xs text-muted-foreground">
+                JPG, PNG veya WEBP · en fazla {MAX_RISK_ANALYSIS_IMAGES_TOTAL} görsel
+              </span>
+              <input
+                className="sr-only"
+                type="file"
+                accept="image/*"
+                multiple
+                disabled={images.length >= MAX_RISK_ANALYSIS_IMAGES_TOTAL}
+                onChange={addFiles}
+              />
             </label>
           </section>
 

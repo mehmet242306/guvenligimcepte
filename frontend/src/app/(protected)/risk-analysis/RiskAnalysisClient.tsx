@@ -84,7 +84,7 @@ import type {
   RiskAnalysisExportData,
 } from "@/lib/risk-analysis-export";
 import { consumeExportQuotaClient } from "@/lib/billing/export-quota-client";
-import { MAX_IMAGES_PER_UPLOAD_BATCH } from "@/lib/risk-analysis/upload-limits";
+import { MAX_IMAGES_PER_UPLOAD_BATCH, MAX_RISK_ANALYSIS_IMAGES_TOTAL } from "@/lib/risk-analysis/upload-limits";
 import {
   formatDiagnosticsPlainTr,
   parseAnalyzeRiskDiagnosticsFromApi,
@@ -1611,18 +1611,37 @@ export function RiskAnalysisClient() {
     if (!fileList || fileList.length === 0) return;
     const all = Array.from(fileList).filter((f) => f.type.startsWith("image/"));
     if (all.length === 0) return;
-    const truncated = all.length > MAX_IMAGES_PER_UPLOAD_BATCH;
-    const chosen = truncated ? all.slice(0, MAX_IMAGES_PER_UPLOAD_BATCH) : all;
-    const imgs = chosen.map((f) => ({ id: crypto.randomUUID(), file: f, previewUrl: URL.createObjectURL(f) }));
-    setLines((prev) => prev.map((l) => (l.id === lid ? { ...l, images: [...l.images, ...imgs] } : l)));
+
+    setLines((prev) => {
+      const currentTotal = prev.reduce((s, l) => s + l.images.length, 0);
+      const remainingBefore = MAX_RISK_ANALYSIS_IMAGES_TOTAL - currentTotal;
+      if (remainingBefore <= 0) {
+        queueMicrotask(() => {
+          setSetupMessage(trRiskScoring("wizard.messages.imageTotalCapReached", { max: MAX_RISK_ANALYSIS_IMAGES_TOTAL }));
+          setSetupMessageType("warning");
+        });
+        return prev;
+      }
+      const maxNew = Math.min(all.length, remainingBefore, MAX_IMAGES_PER_UPLOAD_BATCH);
+      const chosen = all.slice(0, maxNew);
+      const imgs = chosen.map((f) => ({ id: crypto.randomUUID(), file: f, previewUrl: URL.createObjectURL(f) }));
+      queueMicrotask(() => {
+        if (chosen.length < all.length) {
+          setSetupMessage(
+            trRiskScoring("wizard.messages.imageUploadTrimmedNotice", {
+              max: MAX_RISK_ANALYSIS_IMAGES_TOTAL,
+              added: chosen.length,
+            }),
+          );
+          setSetupMessageType("warning");
+        } else {
+          setSetupMessage("");
+          setSetupMessageType("");
+        }
+      });
+      return prev.map((l) => (l.id === lid ? { ...l, images: [...l.images, ...imgs] } : l));
+    });
     setResults([]);
-    if (truncated) {
-      setSetupMessage(trRiskScoring("wizard.messages.imageBatchLimitNotice", { max: MAX_IMAGES_PER_UPLOAD_BATCH, added: chosen.length }));
-      setSetupMessageType("warning");
-    } else {
-      setSetupMessage("");
-      setSetupMessageType("");
-    }
   }
   function removeImage(lid: string, imgId: string) {
     setLines((prev) => prev.map((l) => {
@@ -1641,28 +1660,48 @@ export function RiskAnalysisClient() {
     if (!fileList || fileList.length === 0) return;
     const raw = Array.from(fileList).filter((f) => f.type.startsWith("image/"));
     if (raw.length === 0) return;
-    const truncated = raw.length > MAX_IMAGES_PER_UPLOAD_BATCH;
-    const imageFiles = truncated ? raw.slice(0, MAX_IMAGES_PER_UPLOAD_BATCH) : raw;
 
-    const newLines: RiskLine[] = imageFiles.map((file, idx) => {
-      const cleanName = file.name.replace(/\.[^.]+$/, "").replace(/[_-]/g, " ").replace(/\s+/g, " ").trim();
-      return {
-        id: crypto.randomUUID(),
-        title: cleanName || `Alan ${idx + 1}`,
-        description: "",
-        images: [{ id: crypto.randomUUID(), file, previewUrl: URL.createObjectURL(file) }],
-      };
+    setLines((prev) => {
+      const currentTotal = prev.reduce((s, l) => s + l.images.length, 0);
+      const remainingBefore = MAX_RISK_ANALYSIS_IMAGES_TOTAL - currentTotal;
+      if (remainingBefore <= 0) {
+        queueMicrotask(() => {
+          setSetupMessage(trRiskScoring("wizard.messages.imageTotalCapReached", { max: MAX_RISK_ANALYSIS_IMAGES_TOTAL }));
+          setSetupMessageType("warning");
+        });
+        return prev;
+      }
+      const canTake = Math.min(raw.length, remainingBefore, MAX_IMAGES_PER_UPLOAD_BATCH);
+      const imageFiles = raw.slice(0, canTake);
+
+      const newLines: RiskLine[] = imageFiles.map((file, idx) => {
+        const cleanName = file.name.replace(/\.[^.]+$/, "").replace(/[_-]/g, " ").replace(/\s+/g, " ").trim();
+        return {
+          id: crypto.randomUUID(),
+          title: cleanName || `Alan ${idx + 1}`,
+          description: "",
+          images: [{ id: crypto.randomUUID(), file, previewUrl: URL.createObjectURL(file) }],
+        };
+      });
+
+      queueMicrotask(() => {
+        if (imageFiles.length < raw.length) {
+          setSetupMessage(
+            trRiskScoring("wizard.messages.imageUploadTrimmedNotice", {
+              max: MAX_RISK_ANALYSIS_IMAGES_TOTAL,
+              added: imageFiles.length,
+            }),
+          );
+          setSetupMessageType("warning");
+        } else {
+          setSetupMessage("");
+          setSetupMessageType("");
+        }
+      });
+
+      return [...newLines, ...prev];
     });
-
-    setLines((prev) => [...newLines, ...prev]);
     setResults([]);
-    if (truncated) {
-      setSetupMessage(trRiskScoring("wizard.messages.imageBatchLimitNotice", { max: MAX_IMAGES_PER_UPLOAD_BATCH, added: imageFiles.length }));
-      setSetupMessageType("warning");
-    } else {
-      setSetupMessage("");
-      setSetupMessageType("");
-    }
   }
   function removeLine(lid: string) {
     setLines((prev) => { const t = prev.find((l) => l.id === lid); t?.images.forEach((i) => URL.revokeObjectURL(i.previewUrl)); return prev.filter((l) => l.id !== lid); });
@@ -3464,7 +3503,9 @@ JSON formatında döndür:
             </div>
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
               <p className="eyebrow">{trRiskScoring("wizard.step3.summaryImages")}</p>
-              <p className="mt-1 text-lg font-bold text-foreground">{totalImageCount}</p>
+              <p className="mt-1 text-lg font-bold text-foreground">
+                {totalImageCount}/{MAX_RISK_ANALYSIS_IMAGES_TOTAL}
+              </p>
             </div>
           </div>
 
@@ -3523,8 +3564,9 @@ JSON formatında döndür:
               </button>
               <button
                 type="button"
+                disabled={totalImageCount >= MAX_RISK_ANALYSIS_IMAGES_TOTAL}
                 onClick={() => bulkFileInputRef.current?.click()}
-                className="group flex items-center justify-center gap-3 rounded-2xl border border-emerald-300 bg-emerald-50/50 px-4 py-4 text-sm font-semibold text-emerald-700 shadow-[var(--shadow-soft)] transition-all hover:border-emerald-400 hover:shadow-[0_8px_24px_rgba(16,185,129,0.15)] dark:border-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400"
+                className="group flex items-center justify-center gap-3 rounded-2xl border border-emerald-300 bg-emerald-50/50 px-4 py-4 text-sm font-semibold text-emerald-700 shadow-[var(--shadow-soft)] transition-all hover:border-emerald-400 hover:shadow-[0_8px_24px_rgba(16,185,129,0.15)] disabled:cursor-not-allowed disabled:opacity-50 dark:border-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 transition-colors group-hover:bg-emerald-200 dark:bg-emerald-900/50 dark:text-emerald-400">
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -3582,7 +3624,12 @@ JSON formatında döndür:
 
                 {/* G?rsel ekleme butonu */}
                 <div className="mt-4">
-                  <Button type="button" onClick={() => fileInputRefs.current[line.id]?.click()} className="h-10 rounded-xl px-5 text-sm font-semibold shadow-sm">
+                  <Button
+                    type="button"
+                    disabled={totalImageCount >= MAX_RISK_ANALYSIS_IMAGES_TOTAL}
+                    onClick={() => fileInputRefs.current[line.id]?.click()}
+                    className="h-10 rounded-xl px-5 text-sm font-semibold shadow-sm disabled:opacity-50"
+                  >
                     <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                     {trRiskScoring("wizard.step3.addImage")}
                   </Button>

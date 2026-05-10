@@ -90,6 +90,10 @@ export const wizardEn = {
     genericAiError: "An error occurred at the OpenAI or Anthropic stage.",
     imageBatchLimitNotice:
       "You can add at most {max} images per selection. {added} image(s) added.",
+    imageTotalCapReached:
+      "This analysis allows at most {max} images. Remove some before adding more.",
+    imageUploadTrimmedNotice:
+      "This analysis allows at most {max} images; your selection was shortened. {added} image(s) added.",
   },
   save: {
     noCompany: "Cannot save without selecting a company.",
@@ -312,6 +316,10 @@ export const wizardTr = {
     analysisSummary: "AI analizi tamamlandı. {risks} risk, {positive} olumlu tespit.",
     genericAiError: "OpenAI veya Anthropic aşamasında hata oluştu.",
     imageBatchLimitNotice: "Tek seferde en fazla {max} görsel eklenebilir. {added} görsel eklendi.",
+    imageTotalCapReached:
+      "Bu analizde en fazla {max} görsel yükleyebilirsiniz. Yeni görsel için önce mevcut görsellerden silin.",
+    imageUploadTrimmedNotice:
+      "Bu analizde en fazla {max} görsel olabilir; seçiminiz kısaltıldı. {added} görsel eklendi.",
   },
   save: {
     noCompany: "Firma seçilmeden analiz kaydedilemez.",
