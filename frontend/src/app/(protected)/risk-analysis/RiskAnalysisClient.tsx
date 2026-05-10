@@ -85,6 +85,11 @@ import type {
 } from "@/lib/risk-analysis-export";
 import { consumeExportQuotaClient } from "@/lib/billing/export-quota-client";
 import {
+  formatDiagnosticsPlainTr,
+  parseAnalyzeRiskDiagnosticsFromApi,
+  type AnalyzeRiskDiagnostics,
+} from "@/lib/ai/analyze-risk-diagnostics";
+import {
   saveRiskAnalysis,
   replaceRiskAnalysis,
   listRiskAssessments,
@@ -188,6 +193,8 @@ type ImageMeta = {
   personCount: number;
   imageRelevance: "relevant" | "irrelevant" | "not_real_photo";
   imageDescription: string;
+  /** Sunucu teşhisi — kök neden / kontrol listesi (API `diagnostics`) */
+  aiDiagnostics?: AnalyzeRiskDiagnostics;
 };
 
 type VisualFinding = {
@@ -1807,6 +1814,8 @@ export function RiskAnalysisClient() {
           res.status === 503 ||
           res.status === 504;
 
+        const errDiag = parseAnalyzeRiskDiagnosticsFromApi(errBody?.diagnostics);
+
         if (canContinueWithFallback) {
           return {
             findings: createAiUnavailableFindings(imageId, message),
@@ -1814,16 +1823,24 @@ export function RiskAnalysisClient() {
               ...emptyMeta,
               areaSummary: "AI yaniti alinamadigi icin on risk envanteri uretildi; saha dogrulamasi gerekir.",
               imageDescription: imageFile.name,
+              ...(errDiag ? { aiDiagnostics: errDiag } : {}),
             },
             stage,
           };
         }
 
-        return { findings: [], meta: emptyMeta, error: message, stage };
+        return {
+          findings: [],
+          meta: errDiag ? { ...emptyMeta, aiDiagnostics: errDiag } : emptyMeta,
+          error: message,
+          stage,
+        };
       }
 
        
       const data = await res.json() as Record<string, any>;
+
+      const okDiag = parseAnalyzeRiskDiagnosticsFromApi(data.diagnostics);
 
       const meta: ImageMeta = {
         imageId,
@@ -1839,6 +1856,7 @@ export function RiskAnalysisClient() {
               ? "irrelevant"
               : "relevant",
         imageDescription: data.imageDescription ?? "",
+        ...(okDiag ? { aiDiagnostics: okDiag } : {}),
       };
 
       // Uygunsuz gorsel — risk analizi yapilamaz
@@ -3846,6 +3864,35 @@ JSON formatında döndür:
                               <div className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs ${m.photoQuality.level === "poor" ? "border-red-300 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300" : "border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300"}`}>
                                 <span className="text-sm">{m.photoQuality.level === "poor" ? "⚠️" : "📷"}</span>
                                 <span>{trRiskScoring("wizard.step4.photoQuality")} {m.photoQuality.level === "poor" ? trRiskScoring("wizard.step4.photoQualityLow") : trRiskScoring("wizard.step4.photoQualityMedium")}{m.photoQuality.note ? ` — ${m.photoQuality.note}` : ""}</span>
+                              </div>
+                            )}
+                            {/* Sunucu teşhisi — zaman aşımı / API / yük boyutu vb. */}
+                            {m.aiDiagnostics && !m.aiDiagnostics.ok && (
+                              <div className="rounded-xl border border-amber-400 bg-amber-50 px-3 py-3 dark:border-amber-700 dark:bg-amber-950">
+                                <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-amber-900 dark:text-amber-200">
+                                  Teknik teşhis — sorunun kaynağı
+                                </p>
+                                <p className="text-sm font-medium text-amber-950 dark:text-amber-100">{m.aiDiagnostics.likelyCauseTr}</p>
+                                <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-amber-900/90 dark:text-amber-100/90">
+                                  {m.aiDiagnostics.checklistTr.map((c, i) => (
+                                    <li key={i}>{c}</li>
+                                  ))}
+                                </ul>
+                                <details className="mt-2 text-[11px] text-muted-foreground">
+                                  <summary className="cursor-pointer select-none font-medium text-foreground">Ayrıntılar ve panoya kopyala</summary>
+                                  <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap rounded bg-muted/80 p-2 font-mono text-[10px] text-foreground">
+                                    {formatDiagnosticsPlainTr(m.aiDiagnostics)}
+                                  </pre>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="mt-2"
+                                    onClick={() => void navigator.clipboard.writeText(formatDiagnosticsPlainTr(m.aiDiagnostics!))}
+                                  >
+                                    Panoya kopyala
+                                  </Button>
+                                </details>
                               </div>
                             )}
                             {/* Alan özeti */}

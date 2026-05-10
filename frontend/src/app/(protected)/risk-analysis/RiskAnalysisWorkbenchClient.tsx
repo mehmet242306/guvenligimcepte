@@ -50,6 +50,11 @@ import {
   type R2DValues,
 } from "@/lib/risk-scoring";
 import { cn } from "@/lib/utils";
+import {
+  formatDiagnosticsPlainTr,
+  parseAnalyzeRiskDiagnosticsFromApi,
+  type AnalyzeRiskDiagnostics,
+} from "@/lib/ai/analyze-risk-diagnostics";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix";
 type Severity = "low" | "medium" | "high" | "critical";
@@ -95,6 +100,7 @@ type AnalysisImage = {
   areaSummary?: string;
   imageDescription?: string;
   degraded?: boolean;
+  aiDiagnostics?: AnalyzeRiskDiagnostics;
 };
 
 type ApiRisk = Record<string, unknown> & {
@@ -123,6 +129,7 @@ type ApiResponse = {
   areaSummary?: string;
   degraded?: boolean;
   error?: string;
+  diagnostics?: unknown;
 };
 
 const METHOD_OPTIONS: Array<{ value: AnalysisMethod; label: string }> = [
@@ -589,7 +596,7 @@ export function RiskAnalysisWorkbenchClient() {
 
   const analyzeOneImage = useCallback(
     async (image: AnalysisImage) => {
-      updateImage(image.id, { status: "compressing", message: "Görsel hazırlanıyor..." });
+      updateImage(image.id, { status: "compressing", message: "Görsel hazırlanıyor...", aiDiagnostics: undefined });
       const payload = await fileToAnalysisPayload(image.file);
       if (cancelledRef.current) throw new DOMException("İptal edildi", "AbortError");
 
@@ -624,6 +631,7 @@ export function RiskAnalysisWorkbenchClient() {
         const json = (response.ok ? await response.json() : await readJsonOrText(response)) as ApiResponse;
         if (!response.ok) {
           const message = typeof json.error === "string" ? json.error : `AI servisi HTTP ${response.status} döndürdü.`;
+          const aiDiagnostics = parseAnalyzeRiskDiagnosticsFromApi(json.diagnostics);
           return {
             status: "fallback" as const,
             message,
@@ -631,8 +639,11 @@ export function RiskAnalysisWorkbenchClient() {
             areaSummary: "AI yanıtı alınamadığı için ön risk envanteri üretildi.",
             imageDescription: image.file.name,
             degraded: true,
+            ...(aiDiagnostics ? { aiDiagnostics } : {}),
           };
         }
+
+        const okDiag = parseAnalyzeRiskDiagnosticsFromApi(json.diagnostics);
 
         if (json.imageRelevance && json.imageRelevance !== "relevant") {
           return {
@@ -642,6 +653,7 @@ export function RiskAnalysisWorkbenchClient() {
             areaSummary: json.areaSummary ?? "",
             imageDescription: json.imageDescription ?? image.file.name,
             degraded: Boolean(json.degraded),
+            ...(okDiag ? { aiDiagnostics: okDiag } : {}),
           };
         }
 
@@ -655,6 +667,7 @@ export function RiskAnalysisWorkbenchClient() {
             areaSummary: json.areaSummary ?? "Ön risk envanteri manuel doğrulama gerektirir.",
             imageDescription: json.imageDescription ?? image.file.name,
             degraded: true,
+            ...(okDiag ? { aiDiagnostics: okDiag } : {}),
           };
         }
 
@@ -665,6 +678,7 @@ export function RiskAnalysisWorkbenchClient() {
           areaSummary: json.areaSummary ?? "",
           imageDescription: json.imageDescription ?? image.file.name,
           degraded: Boolean(json.degraded),
+          ...(okDiag ? { aiDiagnostics: okDiag } : {}),
         };
       } catch (error) {
         const isAbort = error instanceof DOMException && error.name === "AbortError";
@@ -1057,6 +1071,34 @@ export function RiskAnalysisWorkbenchClient() {
                         }),
                       )}
                     </div>
+                    {image.aiDiagnostics && !image.aiDiagnostics.ok ? (
+                      <div className="rounded-lg border border-amber-400 bg-amber-50 p-3 text-xs dark:border-amber-700 dark:bg-amber-950">
+                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-amber-900 dark:text-amber-200">
+                          Teknik teşhis — sorunun kaynağı
+                        </p>
+                        <p className="font-medium text-amber-950 dark:text-amber-100">{image.aiDiagnostics.likelyCauseTr}</p>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-amber-900/90 dark:text-amber-100/90">
+                          {image.aiDiagnostics.checklistTr.map((c, i) => (
+                            <li key={i}>{c}</li>
+                          ))}
+                        </ul>
+                        <details className="mt-2 text-[11px] text-muted-foreground">
+                          <summary className="cursor-pointer select-none font-medium text-foreground">Ayrıntılar</summary>
+                          <pre className="mt-2 max-h-36 overflow-auto whitespace-pre-wrap rounded bg-muted/80 p-2 font-mono text-[10px] text-foreground">
+                            {formatDiagnosticsPlainTr(image.aiDiagnostics)}
+                          </pre>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={() => void navigator.clipboard.writeText(formatDiagnosticsPlainTr(image.aiDiagnostics!))}
+                          >
+                            Panoya kopyala
+                          </Button>
+                        </details>
+                      </div>
+                    ) : null}
                     {image.areaSummary ? (
                       <p className="rounded-lg border border-border bg-secondary/40 p-3 text-xs leading-5 text-muted-foreground">
                         {image.areaSummary}

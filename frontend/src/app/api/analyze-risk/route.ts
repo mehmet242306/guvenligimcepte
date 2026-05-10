@@ -12,6 +12,7 @@ import {
   buildUserPrompt,
   RISK_ANALYSIS_PROMPT_VERSION,
 } from "@/lib/ai/analyze-risk-prompts";
+import { buildAnalyzeRiskDiagnostics } from "@/lib/ai/analyze-risk-diagnostics";
 
 let anthropicClient: Anthropic | null = null;
 
@@ -259,10 +260,20 @@ export async function POST(request: NextRequest) {
     const rawBody = await request.json().catch(() => null);
     const parsedBody = analyzeRiskSchema.safeParse(normalizeAnalyzeRiskPayload(rawBody));
     if (!parsedBody.success) {
+      const diagnostics = buildAnalyzeRiskDiagnostics({
+        ok: false,
+        stage: "request_validation_failed",
+        startTime: Date.now(),
+        visionModel: getRiskAnalysisVisionModel(),
+        mimeType: "unknown",
+        imageBase64Length: 0,
+        httpStatus: 400,
+      });
       return NextResponse.json(
         {
           error: "Gecersiz gorsel verisi.",
           details: z.treeifyError(parsedBody.error),
+          diagnostics,
         },
         { status: 400 },
       );
@@ -271,12 +282,33 @@ export async function POST(request: NextRequest) {
     const { imageBase64, mimeType, method, mode, language: outputLocale, companyContext } = parsedBody.data;
 
     if (!imageBase64 || !mimeType) {
-      return NextResponse.json({ error: "imageBase64 ve mimeType gerekli" }, { status: 400 });
+      const diagnostics = buildAnalyzeRiskDiagnostics({
+        ok: false,
+        stage: "missing_image_fields",
+        startTime: Date.now(),
+        visionModel,
+        mimeType: mimeType || "unknown",
+        imageBase64Length: imageBase64?.length ?? 0,
+        httpStatus: 400,
+      });
+      return NextResponse.json({ error: "imageBase64 ve mimeType gerekli", diagnostics }, { status: 400 });
     }
 
     const client = getAnthropicClient();
     if (!client) {
-      return NextResponse.json({ error: "ANTHROPIC_API_KEY tan\u0131ml\u0131 de\u011Fil" }, { status: 500 });
+      const diagnostics = buildAnalyzeRiskDiagnostics({
+        ok: false,
+        stage: "missing_anthropic_api_key",
+        startTime: Date.now(),
+        visionModel,
+        mimeType,
+        imageBase64Length: imageBase64.length,
+        httpStatus: 500,
+      });
+      return NextResponse.json(
+        { error: "ANTHROPIC_API_KEY tan\u0131ml\u0131 de\u011Fil", diagnostics },
+        { status: 500 },
+      );
     }
 
     const startTime = Date.now();
@@ -345,6 +377,16 @@ export async function POST(request: NextRequest) {
       const errMsg = err instanceof Error ? err.message : String(err);
       const isTransientAiFailure =
         /timeout|timed out|overloaded|temporar|socket|network|connection|503|529/i.test(errMsg);
+      const diagnostics = buildAnalyzeRiskDiagnostics({
+        ok: false,
+        stage: isTransientAiFailure ? "anthropic_timeout" : "anthropic_api_error",
+        startTime,
+        visionModel,
+        mimeType,
+        imageBase64Length: imageBase64.length,
+        err,
+        httpStatus: isTransientAiFailure ? 504 : 502,
+      });
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
@@ -357,6 +399,7 @@ export async function POST(request: NextRequest) {
           fallback: true,
           fallbackReason: errMsg.slice(0, 300),
           directAnthropic: true,
+          diagnosticsStage: diagnostics.stage,
         },
       });
 
@@ -367,6 +410,7 @@ export async function POST(request: NextRequest) {
             degraded: true,
             retryable: true,
             stage: "anthropic_reasoning",
+            diagnostics,
           },
           { status: 502 },
         );
@@ -379,6 +423,7 @@ export async function POST(request: NextRequest) {
           retryable: true,
           stage: "anthropic_timeout",
           durationMs: duration,
+          diagnostics,
         },
         { status: 504 },
       );
@@ -412,7 +457,16 @@ export async function POST(request: NextRequest) {
         userId: auth.userId,
         organizationId: auth.organizationId,
       });
-      return NextResponse.json({ error: "AI yan\u0131t vermedi" }, { status: 500 });
+      const diagnostics = buildAnalyzeRiskDiagnostics({
+        ok: false,
+        stage: "anthropic_empty_response",
+        startTime,
+        visionModel,
+        mimeType,
+        imageBase64Length: imageBase64.length,
+        httpStatus: 500,
+      });
+      return NextResponse.json({ error: "AI yan\u0131t vermedi", diagnostics }, { status: 500 });
     }
 
     let jsonStr = textBlock.text.trim();
@@ -450,11 +504,21 @@ export async function POST(request: NextRequest) {
         userId: auth.userId,
         organizationId: auth.organizationId,
       });
+      const diagnostics = buildAnalyzeRiskDiagnostics({
+        ok: false,
+        stage: "anthropic_json_parse_failed",
+        startTime,
+        visionModel,
+        mimeType,
+        imageBase64Length: imageBase64.length,
+        httpStatus: 502,
+      });
       return NextResponse.json(
         {
           error: "Anthropic risk yorumu islenemedi. Lutfen analizi yeniden baslatin.",
           stage: "anthropic_reasoning",
           retryable: true,
+          diagnostics,
         },
         { status: 502 },
       );
@@ -636,6 +700,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    const successDiagnostics = buildAnalyzeRiskDiagnostics({
+      ok: true,
+      stage: "completed",
+      startTime,
+      visionModel,
+      mimeType,
+      imageBase64Length: imageBase64.length,
+      httpStatus: 200,
+    });
+
     return NextResponse.json({
       risks: parsed.risks ?? [],
       faces: parsed.faces ?? [],
@@ -654,6 +728,7 @@ export async function POST(request: NextRequest) {
       tokensOutput: response.usage?.output_tokens ?? 0,
       visionStage: null,
       visionStageStatus,
+      diagnostics: successDiagnostics,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Bilinmeyen hata";
@@ -685,6 +760,19 @@ export async function POST(request: NextRequest) {
         message: message.slice(0, 300),
       },
     });
-    return NextResponse.json({ error: message, detail: stack?.slice(0, 500) }, { status: 500 });
+    const diagnostics = buildAnalyzeRiskDiagnostics({
+      ok: false,
+      stage: "unhandled_server_exception",
+      startTime: Date.now(),
+      visionModel: getRiskAnalysisVisionModel(),
+      mimeType: "unknown",
+      imageBase64Length: 0,
+      err: error,
+      httpStatus: 500,
+    });
+    return NextResponse.json(
+      { error: message, detail: stack?.slice(0, 500), diagnostics },
+      { status: 500 },
+    );
   }
 }
