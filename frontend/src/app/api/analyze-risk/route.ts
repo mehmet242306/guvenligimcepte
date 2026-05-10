@@ -36,8 +36,8 @@ function getAnthropicClient(): Anthropic | null {
 
 export const maxDuration = 90; // Hybrid OpenAI+Anthropic iki aşamalı, biraz daha geniş pencere
 
-// v1.9 — Hybrid pipeline: OpenAI gpt-4o vision (object detection) ► Claude Sonnet 4 (risk reasoning)
-const PROMPT_VERSION = "v1.9-hybrid";
+// v1.10 — Hybrid pipeline: OpenAI gpt-4o neutral observation ► Claude Sonnet 4 direct image risk detection
+const PROMPT_VERSION = "v1.10-anthropic-risk-detection";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
@@ -74,6 +74,12 @@ const analyzeRiskSchema = z.object({
 /* ================================================================== */
 
 const BASE_PROMPT = `\u26A0\uFE0F EN Y\u00DCKSEK \u00D6NCEL\u0130K \u2014 BU KURALLAR D\u0130\u011EER HER\u015EEYDEN \u00D6NCE GEL\u0130R \u26A0\uFE0F
+
+R\u0130SK TESP\u0130T YETK\u0130S\u0130:
+- Nihai risk tespitini SEN (Claude/Anthropic) do\u011Frudan sana verilen g\u00F6rsel \u00FCzerinden yapacaks\u0131n.
+- OpenAI/gpt-4o \u00F6n g\u00F6zlemi varsa bu sadece yard\u0131mc\u0131 nesne/sahne notudur; risk listesi, risk kan\u0131t\u0131 veya otomatik karar de\u011Fildir.
+- OpenAI \u00F6n g\u00F6zlemiyle g\u00F6rsel aras\u0131nda \u00E7eli\u015Fki varsa kendi g\u00F6rsel incelemene g\u00FCven.
+- Bir tespiti risks dizisine yazmak i\u00E7in g\u00F6rselde parmakla g\u00F6sterilebilir somut kan\u0131t\u0131 SEN do\u011Frulamal\u0131s\u0131n.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 KURAL #0 \u2014 "VAR OLAN KKD'Y\u0130 YOK SAYMA" MUTLAK YASA\u011EI
@@ -1074,12 +1080,12 @@ export async function POST(request: NextRequest) {
     const startTime = Date.now();
 
     // ═══════════════════════════════════════════════════════════════════
-    // STAGE 1 — OpenAI gpt-4o Vision: TARAFSIZ OBJE TESPİTİ
+    // STAGE 1 — OpenAI gpt-4o Vision: TARAFSIZ SAHNE / NESNE GÖZLEMİ
     // ═══════════════════════════════════════════════════════════════════
-    // Görsel KKD/tehlike detection'ını OpenAI'a yaptırıyoruz çünkü spatial
-    // reasoning + bounding box stability Claude'dan daha iyi. OpenAI
-    // ground truth olarak Claude'a enjekte edilecek → "kaynakçının maskesi
-    // takılı olduğu halde 'maske eksik' halüsinasyonu" riski düşer.
+    // OpenAI bu akışta risk kararı vermez; yalnızca nötr sahne/nesne gözlemi
+    // üretir. Nihai risk tespitini Anthropic, aynı görsele doğrudan bakarak
+    // yapar. OpenAI notları sadece KKD/konum gibi halüsinasyonları azaltan
+    // yardımcı bağlamdır.
     //
     // OPENAI_API_KEY yoksa veya çağrı fail ederse null döner ve hibrit
     // mode'dan tek-model mode'a graceful fallback olur.
@@ -1104,7 +1110,8 @@ export async function POST(request: NextRequest) {
       }).catch(() => undefined);
     }
 
-    // Claude'a verilecek ek kontekst (varsa); yoksa boş string → eski davranış
+    // Claude'a verilecek yardımcı kontekst (varsa); yoksa boş string → eski davranış.
+    // Bu blok risk listesi değildir; Claude nihai kararı doğrudan görselden verir.
     const visionContextBlock = visionDetection ? visionToPromptContext(visionDetection) : "";
 
     // Firma sektör bağlamı — sektörel checklist için ipucu. Görselle çelişirse
@@ -1132,10 +1139,11 @@ export async function POST(request: NextRequest) {
       .join("\n\n");
 
     // ═══════════════════════════════════════════════════════════════════
-    // STAGE 2 — Anthropic Claude Sonnet 4: RİSK AKIL YÜRÜTMESİ
+    // STAGE 2 — Anthropic Claude Sonnet 4: DOĞRUDAN GÖRSEL ÜZERİNDEN RİSK TESPİTİ
     // ═══════════════════════════════════════════════════════════════════
-    // Vision stage'in ground truth'uyla, seçilen metoda (r_skor, fmea,
-    // bow_tie, vb.) göre parametrik risk analizi.
+    // Aynı görsel Claude'a da verilir. Risk listesi, skorlar ve öneriler
+    // Claude'un doğrudan görsel incelemesiyle üretilir; OpenAI sadece yardımcı
+    // gözlem bağlamıdır.
     const resilientResponse = await executeWithResilience({
       serviceKey: "anthropic.risk_analysis",
       displayName: "Anthropic API",

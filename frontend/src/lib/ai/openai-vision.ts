@@ -1,5 +1,5 @@
 /**
- * OpenAI gpt-4o Vision — Object Detection Stage
+ * OpenAI gpt-4o Vision — Neutral Observation Stage
  * ----------------------------------------------
  * Hybrid AI pipeline'ın 1. aşaması. Bir İSG saha fotoğrafında:
  *   - Kaç kişi var, pozisyonları (bounding box)
@@ -9,9 +9,9 @@
  *   - Görselin sahicilik durumu (gerçek fotoğraf vs çizim/AI üretimi)
  *
  * strict JSON mode ile deterministik structured output döndürüyor.
- * Bu tespitler sonra Claude Sonnet 4'e ground truth olarak enjekte edilir —
- * Claude'un KKD halüsinasyonu yapmasını önler ("maske eksik" derken aslında
- * maske takılı).
+ * Bu gözlemler sonra Claude Sonnet 4'e yardımcı bağlam olarak verilir.
+ * Nihai risk tespiti ve risk listesi Claude'un doğrudan görsel incelemesiyle
+ * üretilir; OpenAI çıktısı risk kanıtı veya ground truth değildir.
  */
 import OpenAI from "openai";
 import { getOpenAIKey } from "@/lib/ai/provider-keys";
@@ -63,7 +63,7 @@ export type DetectedHazardObject = {
   severity: "critical" | "high" | "medium" | "low";
 };
 
-// Profesyonel saha denetimi için ek ortam boyutları (Claude'a ground truth
+// Profesyonel saha denetimi için ek ortam boyutları (Claude'a yardımcı gözlem
 // olarak verilecek). Hepsi opsiyonel — model emin değilse "unclear" döner.
 export type EnvironmentDetection = {
   floorCondition: "dry_clean" | "wet" | "oily" | "cluttered" | "damaged" | "unclear";
@@ -282,13 +282,14 @@ export async function detectSafetyObjects(
 
 /**
  * Vision detection sonucunu Claude prompt'u için kısa, structured metne çevir.
- * Claude bu metni "ground truth" olarak okuyacak.
+ * Bu metin yalnızca yardımcı ön gözlemdir; risk kararını Claude görselden verir.
  */
 export function visionToPromptContext(detection: VisionDetection): string {
   const lines: string[] = [];
-  lines.push("═══ ÖN TESPİT (OpenAI gpt-4o Vision) ═══");
-  lines.push("Bu, görseldeki objelerin TARAFSIZ tespitidir. Risk yorumunu sen yapacaksın");
-  lines.push("ama ne görüp ne görmediğin konusunda bu tespitleri referans al.\n");
+  lines.push("═══ YARDIMCI ÖN GÖZLEM (OpenAI gpt-4o Vision) ═══");
+  lines.push("Bu blok yalnızca görseldeki nesne/sahne için yardımcı ve tarafsız ön gözlemdir.");
+  lines.push("Risk tespitini, risk listesini ve skorları SEN doğrudan aynı görsele bakarak üreteceksin.");
+  lines.push("Bu bloktaki hiçbir ifade tek başına risk kanıtı veya otomatik karar değildir.\n");
 
   lines.push(`Görsel türü: ${detection.imageType}`);
   lines.push(`Ortam: ${detection.sceneCategory || "belirsiz"}`);
@@ -330,9 +331,9 @@ export function visionToPromptContext(detection: VisionDetection): string {
   }
 
   if (detection.hazardObjects.length > 0) {
-    lines.push("\nGörünür tehlike objeleri:");
+    lines.push("\nYardımcı nesne/ortam aday notları (risk kararı değildir):");
     for (const h of detection.hazardObjects) {
-      lines.push(`  • [${h.severity}] ${h.label}: ${h.description}`);
+      lines.push(`  • ${h.label}: ${h.description}`);
     }
   }
 
@@ -420,13 +421,13 @@ export function visionToPromptContext(detection: VisionDetection): string {
     lines.push(`\nGenel özet: ${detection.overallDescription}`);
   }
 
-  lines.push("\n═══ ÖN TESPİT SONU ═══\n");
-  lines.push("ÖNEMLİ: Ön tespitte 'TAKIYOR' olarak işaretli KKD'leri 'eksik' olarak yazmak YASAK.");
-  lines.push("Ön tespitte 'EKSİK' olanlar gerçek risk adayıdır — kontrol et ve metoda göre skorla.");
-  lines.push("Ön tespitte 'BELİRSİZ' olanlar için 'risk' yazma (yeterli kanıt yok).");
-  lines.push("Ortam boyutlarındaki UYARI etiketli durumları 24-boyut zihin haritasına göre");
-  lines.push("ilgili kategorilerde DEĞERLENDİR (zemin → Fiziksel/Düzen, tahliye → Acil Durum,");
-  lines.push("hassas grup → severity gerekçesinde belirt, vb.).");
+  lines.push("\n═══ YARDIMCI ÖN GÖZLEM SONU ═══\n");
+  lines.push("ÖNEMLİ: OpenAI ön gözlemiyle doğrudan gördüğün görsel çelişirse, kendi görsel incelemene güven.");
+  lines.push("Ön gözlemde 'TAKIYOR' olarak işaretli KKD'leri tekrar kontrol etmeden 'eksik' yazma.");
+  lines.push("Ön gözlemde 'EKSİK' olanlar bile otomatik risk değildir; görselde somut kanıt ve iş bağlamıyla SEN doğrula.");
+  lines.push("Ön gözlemde 'BELİRSİZ' olanlar için yalnızca kendi görsel incelemen yeterli kanıt veriyorsa risk yaz.");
+  lines.push("Ortam boyutlarındaki UYARI etiketli durumları 24-boyut zihin haritasına göre değerlendir,");
+  lines.push("ama risks dizisine yalnızca doğrudan görselde doğruladığın tespitleri ekle.");
 
   return lines.join("\n");
 }
