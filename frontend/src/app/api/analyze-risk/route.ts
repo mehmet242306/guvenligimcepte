@@ -41,7 +41,8 @@ const PROMPT_VERSION = "v1.9-hybrid";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
-const MIN_RISK_CONFIDENCE = 0.70;
+const ACCEPTABLE_RISK_CONFIDENCE_MAX = 0.59;
+const ACTIONABLE_RISK_CONFIDENCE_MIN = 0.70;
 
 const analyzeRiskSchema = z.object({
   imageBase64: z.string().min(100).max(20_000_000),
@@ -525,7 +526,8 @@ Ciddiyet seviyesini ABARTMA \u2014 ger\u00E7ek\u00E7i ol.
 - Somut aksiyon plan\u0131 ver.
 
 CONFIDENCE (G\u00DCVEN SKORU) REHBER\u0130:
-0.90-1.00: KES\u0130N | 0.75-0.89: Y\u00DCKSEK | 0.70-0.74: ORTA | 0.00-0.69: YAZMA
+0.90-1.00: KES\u0130N | 0.75-0.89: Y\u00DCKSEK | 0.70-0.74: ORTA | 0.60-0.69: DO\u011ERULAMA \u00D6NER\u0130L\u0130R | 0.00-0.59: KABUL ED\u0130LEB\u0130L\u0130R R\u0130SK
+0.00-0.59 aral\u0131\u011F\u0131n\u0131 silme. Bunlar\u0131 "Kabul edilebilir risk" olarak yaz; severity="low", correctiveActionRequired=false olsun.
 
 ═══════════════════════════════════════════════════
 PROFESYONEL SAHA DENETİMİ ZİHİN HARİTASI (20+ YIL DENEYİMLİ İSG UZMANI GİBİ DÜŞÜN)
@@ -1281,9 +1283,28 @@ export async function POST(request: NextRequest) {
     }
 
     const rawRisks = Array.isArray(parsed.risks) ? parsed.risks : [];
-    const filteredRisks = rawRisks.filter((risk: { confidence?: unknown }) => Number(risk.confidence ?? 0) >= MIN_RISK_CONFIDENCE);
-    const filteredLowConfidenceCount = rawRisks.length - filteredRisks.length;
-    parsed.risks = filteredRisks;
+    let acceptableRiskCount = 0;
+    parsed.risks = rawRisks.map((risk: Record<string, any>) => {
+      const confidence = Number(risk.confidence ?? 0);
+      if (confidence > ACCEPTABLE_RISK_CONFIDENCE_MAX) {
+        return risk;
+      }
+
+      acceptableRiskCount += 1;
+      return {
+        ...risk,
+        title: typeof risk.title === "string" && risk.title.toLocaleLowerCase("tr-TR").includes("kabul edilebilir")
+          ? risk.title
+          : `Kabul edilebilir risk: ${risk.title || "Saha gözlemi"}`,
+        category: "Kabul edilebilir risk",
+        severity: "low",
+        correctiveActionRequired: false,
+        recommendation:
+          typeof risk.recommendation === "string" && risk.recommendation.trim()
+            ? risk.recommendation
+            : "Mevcut durumda acil düzeltici faaliyet gerektiren belirgin bir uygunsuzluk görülmedi. Alan rutin saha kontrollerinde izlenmeli ve koşullar değişirse yeniden değerlendirilmelidir. Kabul edilebilir seviyede tutulması için düzen ve temizlik korunmalıdır.",
+      };
+    });
 
     // Debug log
     console.log("\\n========================================");
@@ -1295,7 +1316,7 @@ export async function POST(request: NextRequest) {
     console.log("Person Count:", parsed.personCount);
     console.log("Photo Quality:", parsed.photoQuality?.level);
     console.log("Toplam tespit:", parsed.risks?.length || 0);
-    console.log("Eşik altı filtrelenen:", filteredLowConfidenceCount, `(min confidence: ${MIN_RISK_CONFIDENCE})`);
+    console.log("Kabul edilebilir risk:", acceptableRiskCount, `(confidence <= ${ACCEPTABLE_RISK_CONFIDENCE_MAX})`);
     console.log("Olumlu tespitler:", parsed.positiveObservations?.length || 0);
     console.log("----------------------------------------");
     if (parsed.risks && parsed.risks.length > 0) {
@@ -1337,8 +1358,9 @@ export async function POST(request: NextRequest) {
         durationMs: duration,
         personCount: parsed.personCount ?? 0,
         riskCount: Array.isArray(parsed.risks) ? parsed.risks.length : 0,
-        filteredLowConfidenceCount,
-        minRiskConfidence: MIN_RISK_CONFIDENCE,
+        acceptableRiskCount,
+        acceptableRiskConfidenceMax: ACCEPTABLE_RISK_CONFIDENCE_MAX,
+        actionableRiskConfidenceMin: ACTIONABLE_RISK_CONFIDENCE_MIN,
         hybridVision: visionDetection ? "openai_gpt4o" : "none",
         visionDurationMs: visionDetection?.visionDurationMs ?? 0,
         visionTokensInput: visionDetection?.visionTokens.input ?? 0,

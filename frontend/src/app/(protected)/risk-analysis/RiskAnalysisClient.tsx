@@ -201,7 +201,7 @@ type VisualFinding = {
   annotations: FindingAnnotation[];
   isManual: boolean;
   legalReferences: LegalReference[];
-  confidenceTier?: "high" | "medium" | "low";
+  confidenceTier?: "high" | "medium" | "low" | "acceptable";
   /** Scoring */
   r2dValues: R2DValues;
   r2dResult: R2DResult | null;
@@ -1789,30 +1789,19 @@ export function RiskAnalysisClient() {
         successfulImages++;
 
         if (aiFindings.length > 0) {
-          // Confidence filtresi: prompt'un kendi eşiği "< 0.60 yazma".
-          // 0.70 client-side eşik, prompt eşiğinin üstündeydi → ortalı (0.60-0.70)
-          // tespitleri kullanıcıya bile göstermeden eliyordu. Şikayet:
-          // "bazı şeyler gözden kaçıyor". 0.60 = prompt ile tutarlı; UI zaten
-          // confidence tier rozetiyle "orta/yüksek" ayrımı yapıyor, kullanıcı
-          // güveni düşük olanı görüp ele alabilir.
-          const validFindings = aiFindings.filter((f) => {
-            const conf = f.confidence ?? 0;
-            if (conf < 0.60) {
-              console.log(`[${img.id}] Dusuk guvenli tespit elendi: ${f.title} (conf=${conf})`);
-              return false;
-            }
-            return true;
-          });
-
           // Confidence tier etiketle (UI rozetleri icin).
-          // Eşik düşüşüyle birlikte (0.60+) tier sınırlarını da gerçekçi yap:
-          //   high   ≥ 0.85 (kesin)
-          //   medium ≥ 0.70 (yüksek güven)
-          //   low    ≥ 0.60 (kullanıcı doğrulasın)
-          const taggedFindings = validFindings.map((f) => {
+          // 0.00-0.59 artik silinmiyor; "Kabul edilebilir risk" olarak
+          // gorunur ve DÖF adayi yapilmaz.
+          const taggedFindings = aiFindings.map((f) => {
             const conf = f.confidence ?? 0;
-            const tier: "high" | "medium" | "low" = conf >= 0.85 ? "high" : conf >= 0.70 ? "medium" : "low";
-            return { ...f, confidenceTier: tier };
+            const tier: "high" | "medium" | "low" | "acceptable" =
+              conf >= 0.85 ? "high" : conf >= 0.70 ? "medium" : conf >= 0.60 ? "low" : "acceptable";
+            return {
+              ...f,
+              confidenceTier: tier,
+              severity: tier === "acceptable" ? "low" : f.severity,
+              correctiveActionRequired: tier === "acceptable" ? false : f.correctiveActionRequired,
+            };
           });
 
           // Mukerrer risk filtrele:
@@ -3630,6 +3619,7 @@ JSON formatında döndür:
                                     {!finding.isManual && finding.confidenceTier === "high" && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">{trRiskScoring("wizard.step4.confidenceHigh")}</span>}
                                     {!finding.isManual && finding.confidenceTier === "medium" && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">{trRiskScoring("wizard.step4.confidenceMedium")}</span>}
                                     {!finding.isManual && finding.confidenceTier === "low" && <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-semibold text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">{trRiskScoring("wizard.step4.confidenceLow")}</span>}
+                                    {!finding.isManual && finding.confidenceTier === "acceptable" && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300">Kabul edilebilir risk</span>}
                                   </div>
                                   <h4 className="mt-1 text-base font-semibold text-foreground">{finding.title}</h4>
                                   <p className="mt-1 text-sm text-muted-foreground">{finding.category}</p>
