@@ -143,6 +143,45 @@ type WidgetHistorySession = {
   messages: WidgetHistoryMessage[];
 };
 
+function buildNovaImageReply(image: NovaImageAnalysis, userText: string): string {
+  const lines: string[] = [];
+  lines.push(`Görseli inceledim: ${image.imageDescription || image.fileName}`);
+
+  if (image.areaSummary) {
+    lines.push("");
+    lines.push(image.areaSummary);
+  }
+
+  if (image.notableRisks.length > 0) {
+    lines.push("");
+    lines.push("Öne çıkan İSG riskleri:");
+    image.notableRisks.forEach((risk, index) => {
+      lines.push(`${index + 1}. ${risk}`);
+    });
+  } else {
+    lines.push("");
+    lines.push("Bu görselde risk envanteri açısından ayrıca saha kontrolü gerekir. Görünen ekipman, zemin, erişim, elektrik/yangın ve düzen-temizlik başlıkları İSG uzmanı tarafından doğrulanmalıdır.");
+  }
+
+  if (image.positiveObservations.length > 0) {
+    lines.push("");
+    lines.push("Olumlu görünen noktalar:");
+    image.positiveObservations.forEach((item) => {
+      lines.push(`- ${item}`);
+    });
+  }
+
+  lines.push("");
+  lines.push("Önerim: tehlike kaynağını izole edin, erişimi kontrol altına alın, uygun uyarı/etiketleme yapın ve yetkin İSG uzmanı saha doğrulamasıyla kayıt altına alın.");
+
+  if (userText.trim()) {
+    lines.push("");
+    lines.push(`Notunu da dikkate aldım: "${userText.trim()}"`);
+  }
+
+  return lines.join("\n");
+}
+
 const PANEL_EDGE_GAP = 12;
 const WIDGET_HISTORY_STORAGE_KEY = "risknova:nova-widget-history";
 const ACTIVE_WIDGET_SESSION_STORAGE_KEY = "risknova:nova-widget-active-session-id";
@@ -1319,6 +1358,25 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     setInput("");
     setTyping(true);
     setComposerError(null);
+
+    if (hasAttachedImage && imageAnalysis) {
+      const botText = buildNovaImageReply(imageAnalysis, text);
+      const botMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "bot",
+        text: botText,
+        timestamp: new Date(),
+        confidence: imageAnalysis.notableRisks.length > 0 ? "high" : "medium",
+        sourceStatus: "partial",
+      };
+      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text);
+      window.setTimeout(() => {
+        setMessages((prev) => [...prev, botMsg]);
+        clearAttachedImage();
+        setTyping(false);
+      }, 260);
+      return;
+    }
 
     // Public kullanıcılar: site ajanı (statik yönlendirme + harita), tam Nova için giriş gerekir
     if (!isAuthenticated) {
