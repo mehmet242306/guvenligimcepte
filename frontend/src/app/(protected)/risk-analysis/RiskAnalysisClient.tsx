@@ -465,6 +465,25 @@ function getActiveRiskClass(finding: VisualFinding, method: AnalysisMethod): str
   return classMap[method] ?? "follow_up";
 }
 
+/**
+ * Risk listesi sıralama sırası: en kritik üstte, "kabul edilebilir" en altta.
+ * AI'nın çıkış sırası kullanıcı için anlamlı değil; saha denetiminde
+ * önce dikkat çekmesi gereken bulgular gözüne çarpmalı.
+ */
+function getFindingSortRank(finding: VisualFinding, method: AnalysisMethod): number {
+  // Kabul edilebilir (confidence < 0.60) her zaman en sona
+  if (finding.confidenceTier === "acceptable") return 100;
+  const rc = getActiveRiskClass(finding, method);
+  switch (rc) {
+    case "critical": return 0;
+    case "high": return 1;
+    case "medium": return 2;
+    case "low": return 3;
+    case "follow_up": return 4;
+    default: return 5;
+  }
+}
+
 function computeAllScores(finding: VisualFinding): VisualFinding {
   return {
     ...finding,
@@ -1391,6 +1410,14 @@ export function RiskAnalysisClient() {
     return rc === "critical" || rc === "high";
   }).length, [allFindings, method]);
   const dofCandidateCount = useMemo(() => allFindings.filter((f) => f.correctiveActionRequired).length, [allFindings]);
+  const acceptableCount = useMemo(
+    () => allFindings.filter((f) => !f.isManual && f.confidenceTier === "acceptable").length,
+    [allFindings],
+  );
+  const criticalUrgentCount = useMemo(
+    () => allFindings.filter((f) => getActiveRiskClass(f, method) === "critical").length,
+    [allFindings, method],
+  );
   const avgScore = useMemo(() => {
     if (allFindings.length === 0) return 0;
     const sum = allFindings.reduce((s, f) => s + getActiveScore(f, method).score, 0);
@@ -3255,15 +3282,37 @@ JSON formatında döndür:
       {/* ═══════════════ STEP 4: SONUÇLAR ═══════════════ */}
       {step === 4 && (
         <div className="space-y-6">
-          {/* Ozet bandi */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {/* Ozet bandi — 6 kart: Toplam | Acil | Kritik+Yuksek | Kabul Edilebilir | DOF | Ort.Skor + Rapor (ayri satir) */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
               <p className="eyebrow">{trRiskScoring("wizard.step4.totalFindings")}</p>
               <p className="mt-1 text-2xl font-bold text-foreground">{totalDetectionCount}</p>
             </div>
+            <div
+              className={`rounded-2xl border px-4 py-3 text-center transition-colors ${
+                criticalUrgentCount > 0
+                  ? "border-red-300 bg-red-50 dark:border-red-700 dark:bg-red-950/40"
+                  : "border-border bg-card"
+              }`}
+              title={criticalUrgentCount > 0 ? "Kritik seviyede risk(ler) tespit edildi — acil müdahale gerekli" : "Acil müdahale gerektiren risk yok"}
+            >
+              <p className={`eyebrow ${criticalUrgentCount > 0 ? "text-red-700 dark:text-red-300" : ""}`}>
+                {criticalUrgentCount > 0 ? "🚨 ACİL MÜDAHALE" : "Acil Müdahale"}
+              </p>
+              <p className={`mt-1 text-2xl font-bold ${criticalUrgentCount > 0 ? "text-red-700 dark:text-red-300 animate-pulse" : "text-foreground/40"}`}>
+                {criticalUrgentCount}
+              </p>
+            </div>
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
               <p className="eyebrow">{trRiskScoring("wizard.step4.criticalHigh")}</p>
               <p className="mt-1 text-2xl font-bold text-red-600 dark:text-red-400">{criticalHighCount}</p>
+            </div>
+            <div
+              className="rounded-2xl border border-emerald-200 bg-emerald-50/50 px-4 py-3 text-center dark:border-emerald-800 dark:bg-emerald-950/30"
+              title="AI güveni 0.60 altında — düzeltici aksiyon gerektirmeyen, izlenmesi yeterli risk gözlemleri"
+            >
+              <p className="eyebrow text-emerald-700 dark:text-emerald-300">✓ Kabul Edilebilir</p>
+              <p className="mt-1 text-2xl font-bold text-emerald-700 dark:text-emerald-300">{acceptableCount}</p>
             </div>
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
               <p className="eyebrow">{trRiskScoring("wizard.step4.capaCandidate")}</p>
@@ -3275,12 +3324,12 @@ JSON formatında döndür:
                 {totalDetectionCount === 0 ? "-" : method === "r_skor" ? (avgScore * 100).toFixed(0) : Math.round(avgScore)}
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center sm:col-span-2 lg:col-span-1">
-              <p className="eyebrow">{trRiskScoring("wizard.common.report")}</p>
-              <div className="mt-1 flex flex-wrap justify-center gap-1.5">
-                <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[4.5rem] rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" onClick={() => void exportRiskReport("pdf")} disabled={results.length === 0}>PDF</Button>
-                <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[4.5rem] rounded-xl px-3 text-xs font-bold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20" onClick={() => void exportRiskReport("word")} disabled={results.length === 0}>Word</Button>
-                <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[4.5rem] rounded-xl px-3 text-xs font-bold text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" onClick={() => void exportRiskReport("excel")} disabled={results.length === 0}>Excel</Button>
+            <div className="col-span-2 rounded-2xl border border-border bg-card px-4 py-3 text-center sm:col-span-3 lg:col-span-6">
+              <p className="eyebrow mb-1.5">{trRiskScoring("wizard.common.report")}</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[5rem] rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" onClick={() => void exportRiskReport("pdf")} disabled={results.length === 0}>PDF</Button>
+                <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[5rem] rounded-xl px-3 text-xs font-bold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20" onClick={() => void exportRiskReport("word")} disabled={results.length === 0}>Word</Button>
+                <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[5rem] rounded-xl px-3 text-xs font-bold text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" onClick={() => void exportRiskReport("excel")} disabled={results.length === 0}>Excel</Button>
               </div>
             </div>
           </div>
@@ -3593,9 +3642,20 @@ JSON formatında döndür:
                           </div>
                         </div>
                       ) : (
-                        visibleFindings.map((finding, fi) => {
+                        // Sıralama: critical → high → medium → low → follow_up → kabul edilebilir
+                        // Aynı seviyedekiler skora göre yüksekten düşüğe.
+                        [...visibleFindings]
+                          .sort((a, b) => {
+                            const ra = getFindingSortRank(a, method);
+                            const rb = getFindingSortRank(b, method);
+                            if (ra !== rb) return ra - rb;
+                            return getActiveScore(b, method).score - getActiveScore(a, method).score;
+                          })
+                          .map((finding, fi) => {
                           const active = selectedFindingId === finding.id;
                           const sc = getActiveScore(finding, method, trRiskScoring);
+                          const rc = getActiveRiskClass(finding, method);
+                          const isCritical = rc === "critical" && finding.confidenceTier !== "acceptable";
 
                           return (
                             <button
@@ -3606,15 +3666,22 @@ JSON formatında döndür:
                                 setSelectedImageByRow((prev) => ({ ...prev, [result.rowId]: finding.imageId }));
                               }}
                               className={`w-full rounded-2xl border p-4 text-left transition-colors ${
-                                active
+                                isCritical
+                                  ? "border-red-300 bg-red-50/40 ring-2 ring-red-300/40 dark:border-red-700 dark:bg-red-950/30 dark:ring-red-700/40"
+                                  : active
                                   ? "border-[var(--accent)]/30 bg-card shadow-[0_0_0_1px_var(--accent-light),0_18px_36px_rgba(15,23,42,0.12)]"
                                   : "border-border bg-muted/50 hover:border-primary/40 hover:bg-card"
                               }`}
                             >
                               <div className="flex items-start justify-between gap-2">
                                 <div className="min-w-0">
-                                  <div className="flex items-center gap-2">
+                                  <div className="flex flex-wrap items-center gap-2">
                                     <p className="eyebrow">{trRiskScoring("wizard.common.risk")} {fi + 1}</p>
+                                    {isCritical && (
+                                      <span className="inline-flex items-center gap-1 rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm animate-pulse">
+                                        🚨 Acil Müdahale
+                                      </span>
+                                    )}
                                     {finding.isManual && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-900 dark:text-amber-300">{trRiskScoring("wizard.step4.addedLater")}</span>}
                                     {!finding.isManual && finding.confidenceTier === "high" && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">{trRiskScoring("wizard.step4.confidenceHigh")}</span>}
                                     {!finding.isManual && finding.confidenceTier === "medium" && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">{trRiskScoring("wizard.step4.confidenceMedium")}</span>}
