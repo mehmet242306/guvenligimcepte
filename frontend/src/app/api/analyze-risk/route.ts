@@ -40,8 +40,11 @@ const PROMPT_VERSION = "v1.12-risk-first-no-empty-field-review";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
-const ACCEPTABLE_RISK_CONFIDENCE_MAX = 0.59;
-const ACTIONABLE_RISK_CONFIDENCE_MIN = 0.70;
+// Daha agresif tespit için threshold'lar gevşetildi (kullanıcı geri bildirimi:
+// AI gerçek tehlikeleri "düşük confidence" diye susturmuştu).
+// Halüsinasyon değil, eksik tespit asıl sorundur.
+const ACCEPTABLE_RISK_CONFIDENCE_MAX = 0.40; // 0.59 → 0.40: daha az risk "kabul edilebilir"e düşer
+const ACTIONABLE_RISK_CONFIDENCE_MIN = 0.55; // 0.70 → 0.55: daha geniş "aksiyon gerekli" aralığı
 const ENABLE_OPENAI_HELPER = process.env.RISK_ANALYSIS_OPENAI_HELPER === "true";
 
 const analyzeRiskSchema = z.object({
@@ -74,6 +77,76 @@ const analyzeRiskSchema = z.object({
 /* ================================================================== */
 
 const BASE_PROMPT = `\u26A0\uFE0F EN Y\u00DCKSEK \u00D6NCEL\u0130K \u2014 BU KURALLAR D\u0130\u011EER HER\u015EEYDEN \u00D6NCE GEL\u0130R \u26A0\uFE0F
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+KURAL ALPHA \u2014 BO\u015E L\u0130STE YASAKTIR (GER\u00C7EK SAHA FOTO\u011ERAFINDA)
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
+E\u011Fer g\u00F6rsel ger\u00E7ek bir saha/i\u015Fyeri/teknik alan/tesisat foto\u011Fraf\u0131ysa
+risks: [] D\u00D6NMEK YASAKTIR. BU BIR HATA DE\u011E\u0130L SUSTURMA AKT\u0130D\u0130R.
+
+\u0130ST\u0130SNA SADECE \u015EUNLARDIR (b\u00FCt\u00FCn ge\u00E7erli olmayan istisnalar):
+1) G\u00F6rsel \u00E7izim/render/AI \u00FCretimi/karikat\u00FCr/ekran g\u00F6r\u00FCnt\u00FCs\u00FCd\u00FCr
+   \u2192 imageRelevance="not_real_photo", risks: [] me\u015Fru
+2) G\u00F6rsel tamamen alakas\u0131z bir konudur (evcil hayvan portresi, manzara,
+   sokak fotosu, yemek tabağı, vb.) \u2192 imageRelevance="not_workplace",
+   risks: [] me\u015Fru
+
+DI\u015EINDA HER\u015EEY \u0130\u00C7\u0130N MİNİMUM 1 R\u0130SK YAZACAKSIN:
+- Mutfak, depo, ofis, fabrika, atölye, şantiye, hastane, okul, AVM,
+  mağaza, restoran, otopark, yol, park, tesisat odası, elektrik panosu,
+  trafo, şalt, kazan dairesi, çamaşırhane, banyo, koridor, merdiven,
+  açık alan tesis... HEPSI risks dizisi DOLU olacak.
+
+E\u011Fer hi\u00E7bir somut tehlike kayna\u011F\u0131 g\u00F6rm\u00FCyorsan bile minimum şu
+generic risk yaz\u0131labilir:
+{
+  "title": "Genel saha kontrol\u00FC ve periyodik denetim do\u011Frulanmal\u0131",
+  "category": "Düzen/Temizlik",
+  "severity": "low",
+  "confidence": 0.65,
+  "description": "Görselde aktif denetim gerektiren spesifik bir
+                  uygunsuzluk g\u00F6r\u00FClmedi; ancak alan periyodik İSG
+                  saha denetimi kapsam\u0131nda d\u00FCzenli kontrol edilmelidir."
+}
+
+risks: [] g\u00F6r\u00FCld\u00FC\u011F\u00FCnde sistem otomatik fallback ekleyecek; ama bu sahaya
+gidip "bo\u015F d\u00F6nd\u00FCm" demektir \u2014 PROFESYONEL DE\u011E\u0130LD\u0130R.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+KURAL BETA \u2014 HAL\u00DCS\u0130NASYON YASA\u011EININ DAR TANIMI
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
+"Halüsinasyon görmedi\u011Fini iddia etmek"tir \u2014 bunun DAR bir tan\u0131m\u0131 vard\u0131r.
+
+HAL\u00DCS\u0130NASYON SAYILAN \u015EEYLER (BUNLARI YAZMA):
+\u2717 "Patlama olmu\u015F" / "yang\u0131n \u00E7\u0131km\u0131\u015F" / "i\u015F\u00E7i ya\u011Fland\u0131" \u2014 olay anlatma
+\u2717 "Marka X kompres\u00F6r 1985 model" \u2014 belirli isim/marka/y\u0131l uydurma
+\u2717 "Sa\u00E7akta 3 cm \u00E7atlak var" \u2014 sayma uydurma (g\u00F6rmediysen)
+\u2717 "T\u00FCp i\u00E7inde 12 kg propan" \u2014 i\u00E7erik miktar\u0131 uydurma
+
+HAL\u00DCS\u0130NASYON SAYILMAYAN \u015EEYLER (BUNLARI YAZ):
+\u2713 G\u00F6r\u00FCnen bir tehlike kayna\u011F\u0131 (LPG t\u00FCp\u00FC, alev, a\u00E7\u0131k pano, da\u011F\u0131n\u0131k kablo)
+\u2713 G\u00F6r\u00FCnmeyen kontrol kan\u0131t\u0131 (yang\u0131n s\u00F6nd\u00FCr\u00FCc\u00FC, levha, \u00E7it, sabitleme,
+   topraklama, dedekt\u00F6r) \u2192 "kontrol/do\u011Frulama gerektirir" diye yaz
+\u2713 Standartlara uygunluk ş\u00FCphesi (mesafe, korkuluk, etiket)
+\u2713 \u00C7evre faktörleri (kapal\u0131 alan, dar mekan, \u0131slak zemin, kar\u0131\u015F\u0131k istif)
+
+\u00D6RNEK 1 \u2014 Yanan elektrik prizi g\u00F6r\u00FCyorsan:
+\u2713 DO\u011ERU: "Elektrik prizinde aktif yang\u0131n - kontrols\u00FCz yan\u0131c\u0131 ortam riski"
+\u2713 DO\u011ERU: "Yang\u0131n s\u00F6nd\u00FCr\u00FCc\u00FC g\u00F6r\u00FCnm\u00FCyor - m\u00FCdahale yetersizli\u011Fi"
+\u2717 YANLI\u015E (ka\u00E7\u0131rma): "Risk g\u00F6r\u00FClmedi"
+\u2717 YANLI\u015E (uydurma): "Yang\u0131n 5 dakika \u00F6nce ba\u015Flad\u0131"
+
+\u00D6RNEK 2 \u2014 LPG t\u00FCp\u00FC kabinde g\u00F6r\u00FCyorsan:
+\u2713 DO\u011ERU: "Kapal\u0131 kabinde \u00E7oklu LPG t\u00FCp\u00FC - patlay\u0131c\u0131 atmosfer riski"
+\u2713 DO\u011ERU: "T\u00FCp sabitleme aparat\u0131 g\u00F6r\u00FCnm\u00FCyor - devrilme riski"
+\u2717 YANLI\u015E (ka\u00E7\u0131rma): "Risk g\u00F6r\u00FClmedi"
+\u2717 YANLI\u015E (uydurma): "T\u00FCpten gaz s\u0131z\u0131yor"
+
+ALTIN KURAL: G\u00F6rmedi\u011Fini KES\u0130N D\u0130LLE yazma; ama g\u00F6rd\u00FC\u011F\u00FCn\u00FC SUSTURMA.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 
 R\u0130SK TESP\u0130T YETK\u0130S\u0130:
 - Nihai risk tespitini SEN (Claude/Anthropic) do\u011Frudan sana verilen g\u00F6rsel \u00FCzerinden yapacaks\u0131n.
@@ -770,8 +843,10 @@ Ciddiyet seviyesini ABARTMA \u2014 ger\u00E7ek\u00E7i ol.
 - Somut aksiyon plan\u0131 ver.
 
 CONFIDENCE (G\u00DCVEN SKORU) REHBER\u0130:
-0.90-1.00: KES\u0130N | 0.75-0.89: Y\u00DCKSEK | 0.70-0.74: ORTA | 0.60-0.69: DO\u011ERULAMA \u00D6NER\u0130L\u0130R | 0.00-0.59: KABUL ED\u0130LEB\u0130L\u0130R R\u0130SK
-0.00-0.59 aral\u0131\u011F\u0131n\u0131 silme. Bunlar\u0131 "Kabul edilebilir risk" olarak yaz; severity="low", correctiveActionRequired=false olsun.
+0.90-1.00: KES\u0130N | 0.70-0.89: Y\u00DCKSEK | 0.55-0.69: ORTA | 0.40-0.54: DO\u011ERULAMA \u00D6NER\u0130L\u0130R | 0.00-0.39: KABUL ED\u0130LEB\u0130L\u0130R R\u0130SK
+"Kabul edilebilir risk" tier'\u0131 SADECE gerçekten d\u00FC\u015F\u00FCk g\u00FCven (< 0.40) i\u00E7indir.
+G\u00F6rd\u00FC\u011F\u00FCn somut tehlike kayna\u011F\u0131 i\u00E7in ASLA 0.40 alt\u0131 verme \u2014 g\u00F6rd\u00FC\u011F\u00FCn \u015Fey
+0.55+ confidence ile yaz\u0131l\u0131r. D\u00FC\u015F\u00FCk confidence kullanmak susturma demektir.
 
 ═══════════════════════════════════════════════════
 PROFESYONEL SAHA DENETİMİ ZİHİN HARİTASI (20+ YIL DENEYİMLİ İSG UZMANI GİBİ DÜŞÜN)
@@ -1724,6 +1799,53 @@ export async function POST(request: NextRequest) {
 
     if (triggerSafeguardCount > 0) {
       console.log(`[analyze-risk] safeguard: ${triggerSafeguardCount} kritik tetikleyici risk confidence floor 0.75'e yükseltildi`);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // ZERO-RISK FALLBACK GUARD
+    // ═══════════════════════════════════════════════════════════════════
+    // AI gerçek bir saha fotoğrafı için bile risks: [] dönerse (kullanıcı
+    // raporu: yangın + LPG tüpleri net görünüyor ama AI "tespit yok"
+    // dönüyordu), otomatik fallback risk enjekte ederiz.
+    //
+    // Bu yalnızca "imageRelevance=relevant" olan ve risks dizisi tamamen
+    // boş olan durumlarda devreye girer. AI'nın "ev/sokak/manzara" gibi
+    // not_workplace olarak işaretlediği görsellerde fallback YOK.
+    //
+    // Fallback mesajı kullanıcıya açıkça "AI bu görselde belirgin risk
+    // tespit edemedi — manuel kontrol önerilir" diyor; sahte risk üretmiyor,
+    // sadece kullanıcıyı boş ekrana karşı uyarıyor.
+    const aiReportedZeroRisks = Array.isArray(parsed.risks) && parsed.risks.length === 0;
+    const isRelevantPhoto = parsed.imageRelevance === "relevant" || !parsed.imageRelevance;
+
+    if (aiReportedZeroRisks && isRelevantPhoto) {
+      console.warn(
+        "[analyze-risk] ZERO-RISK FALLBACK: AI gerçek saha fotoğrafı için boş risk listesi döndü, generic fallback enjekte ediliyor",
+      );
+      parsed.risks = [
+        {
+          title: "AI bu görselde otomatik tespit yapamadı — manuel kontrol önerilir",
+          category: "Diğer",
+          severity: "medium",
+          confidence: 0.55,
+          description:
+            "Otomatik analiz bu görselde spesifik bir risk envanteri çıkaramadı. Bu, görselin riskli olmadığı anlamına GELMEZ — analiz güvenilirliği düşüktür ve mutlaka deneyimli bir İSG uzmanı tarafından manuel olarak değerlendirilmelidir. Görselde gözle görülen tehlike kaynakları varsa (LPG/gaz tüpü, yangın, açık elektrik tesisi, makine, kimyasal, vb.) lütfen manuel olarak risk kartı ekleyin.",
+          recommendation:
+            "1) Bu görseldeki nesneleri ve durumu kendiniz inceleyin. 2) Gözle gördüğünüz her tehlike için 'Risk İşareti Ekle' butonunu kullanın. 3) Şüpheliyseniz daha net bir görsel ile yeniden analiz başlatın. Sorumlu: İSG Uzmanı. Termin: Aynı gün.",
+          recommendedActions: [
+            "Görseli manuel inceleyin ve tehlikeleri risk kartı olarak ekleyin",
+            "Gerekirse daha kaliteli/yakın bir fotoğraf ile analizi yenileyin",
+            "Fotoğraf gerçekten belirsizse saha denetimini fiziksel olarak gerçekleştirin",
+          ],
+          legalReferences: [
+            "6331 sayılı İş Sağlığı ve Güvenliği Kanunu Madde 10 — Risk değerlendirmesi",
+          ],
+          pinX: 50,
+          pinY: 50,
+          correctiveActionRequired: true,
+          confidenceTier: "low",
+        },
+      ];
     }
 
     // Debug log

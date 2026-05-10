@@ -1818,12 +1818,16 @@ export function RiskAnalysisClient() {
 
         if (aiFindings.length > 0) {
           // Confidence tier etiketle (UI rozetleri icin).
-          // 0.00-0.59 artik silinmiyor; "Kabul edilebilir risk" olarak
-          // gorunur ve DÖF adayi yapilmaz.
+          // Threshold'lar gevşetildi (kullanıcı: AI tehlikeleri "düşük confidence"
+          // diye susturuyordu). Yeni sınırlar:
+          //   high     >= 0.75
+          //   medium   >= 0.55
+          //   low      >= 0.40
+          //   acceptable < 0.40 (gerçek belirsizlik)
           const taggedFindings = aiFindings.map((f) => {
             const conf = f.confidence ?? 0;
             const tier: "high" | "medium" | "low" | "acceptable" =
-              conf >= 0.85 ? "high" : conf >= 0.70 ? "medium" : conf >= 0.60 ? "low" : "acceptable";
+              conf >= 0.75 ? "high" : conf >= 0.55 ? "medium" : conf >= 0.40 ? "low" : "acceptable";
             return {
               ...f,
               confidenceTier: tier,
