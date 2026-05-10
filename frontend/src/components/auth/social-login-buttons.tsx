@@ -103,7 +103,7 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
     setLoading(provider);
     setError("");
 
-    const callbackUrl = new URL("/auth/callback", resolveOAuthOrigin());
+    const callbackUrl = new URL("/auth/session-recover", resolveOAuthOrigin());
 
     if (mode === "login" && nextPath?.startsWith("/")) {
       const secure = window.location.protocol === "https:" ? "; Secure" : "";
