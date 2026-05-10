@@ -35,6 +35,7 @@ import {
   markNotificationAsRead,
   type NotificationRow,
 } from "@/lib/supabase/notification-api";
+import { PlatformFeedbackButton } from "@/components/feedback/platform-feedback-button";
 
 type ProtectedShellProps = {
   children: ReactNode;
@@ -134,6 +135,7 @@ const platformAdminSecondaryNav = [
   { href: "/digital-twin", key: "nav.digitalTwin", digitalTwinRestricted: true },
   { href: "/settings", key: "nav.settings" },
   { href: "/platform-admin/demo-requests", key: "nav.demoRequestsNav" },
+  { href: "/platform-admin/user-feedback", key: "nav.userFeedbackNav" },
   { href: "/platform-admin/demo-builder", key: "nav.demoBuilderNav" },
   { href: "/platform-admin/legal-corpus", key: "nav.legalCorpus" },
 ];
@@ -1069,6 +1071,7 @@ export function ProtectedShell({
 
             <div className="flex min-w-0 shrink-0 items-center justify-end gap-0.5 justify-self-end sm:gap-1.5">
               <LanguageSelector variant="dark" />
+              <PlatformFeedbackButton organizationId={accountContext?.organizationId ?? null} />
               {showNotificationBell ? <NotificationBell /> : null}
               <ThemeToggle />
               <Link

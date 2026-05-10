@@ -134,9 +134,14 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
+  // Edge middleware süresi kısıtlı (Vercel: MIDDLEWARE_INVOCATION_TIMEOUT). `getUser()`
+  // her istekte Auth sunucusuna gider ve MFA ile birlikte zincir uzayınca 504 görülür.
+  // Çerezdeki oturumu `getSession()` ile okumak yeterli; MFA sayfa/API katmanında zaten
+  // doğrulanıyor (ProtectedShell, login actions, /auth/mfa-challenge).
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
   const providers = Array.isArray(user?.app_metadata?.providers)
     ? (user.app_metadata.providers as unknown[]).map((provider) => String(provider))
@@ -211,41 +216,6 @@ export async function updateSession(request: NextRequest) {
     url.pathname = "/reset-password";
     url.searchParams.set("required", "1");
     return NextResponse.redirect(url);
-  }
-
-  if (user && (!isPublic || isRouteAuthApiEndpoint)) {
-    const [{ data: assuranceData, error: assuranceError }, { data: factorData, error: factorError }] = await Promise.all([
-      supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
-      supabase.auth.mfa.listFactors(),
-    ]);
-    const verifiedFactors = [
-      ...(factorData?.totp ?? []),
-      ...(factorData?.phone ?? []),
-      ...(factorData?.webauthn ?? []),
-    ].filter((factor) => factor.status === "verified");
-    const hasVerifiedMfaFactor = verifiedFactors.length > 0;
-    const mustCompleteMfa =
-      hasVerifiedMfaFactor || assuranceData?.nextLevel === "aal2";
-    const cannotConfirmAal = !!assuranceError && !!factorError;
-
-    if ((mustCompleteMfa && assuranceData?.currentLevel !== "aal2") || (hasVerifiedMfaFactor && cannotConfirmAal)) {
-      if (pathname.startsWith("/api")) {
-        return NextResponse.json(
-          {
-            error: "MFA verification required.",
-            code: "MFA_REQUIRED",
-          },
-          { status: 403 },
-        );
-      }
-
-      const url = request.nextUrl.clone();
-      const next = `${pathname}${request.nextUrl.search}`;
-      url.pathname = "/auth/mfa-challenge";
-      url.search = "";
-      url.searchParams.set("next", next);
-      return NextResponse.redirect(url);
-    }
   }
 
   return supabaseResponse;

@@ -8,6 +8,7 @@ import {
   ClipboardList,
   FileText,
   Inbox,
+  MessageSquare,
   Scale,
   ShieldCheck,
   Users,
@@ -133,6 +134,7 @@ export default async function PlatformAdminPage() {
     individualCount,
     osgbCount,
     enterpriseLeadCount,
+    userFeedbackCount,
     legalOfficialDocCount,
     workspaceCount,
     riskAssessmentCount,
@@ -163,6 +165,9 @@ export default async function PlatformAdminPage() {
     ),
     safeCount(
       service.from("enterprise_leads").select("id", { count: "exact", head: true }),
+    ),
+    safeCount(
+      service.from("platform_user_feedback").select("id", { count: "exact", head: true }),
     ),
     safeCount(
       service
@@ -309,6 +314,17 @@ export default async function PlatformAdminPage() {
       value: `${enterpriseLeadCount}`,
       helper: "toplam talep",
       icon: Inbox,
+    },
+    {
+      title: "Kullanici geri bildirimi",
+      description:
+        "Uygulama ust menusundeki geri bildirim dugmesinden gelen mesajlar; hata, fikir ve kullanilabilirlik notlari.",
+      href: "/platform-admin/user-feedback",
+      cta: "Geri bildirimleri ac",
+      eyebrow: "Urun",
+      value: `${userFeedbackCount}`,
+      helper: "toplam kayit",
+      icon: MessageSquare,
     },
     {
       title: "Mevzuat korpus (ulkeler)",

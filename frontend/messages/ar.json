@@ -3504,7 +3504,8 @@
     "training": "التدريب",
     "trainingHub": "التدريب والاستطلاعات والامتحانات",
     "workplace": "مكان العمل",
-    "workspace": "مساحة العمل"
+    "workspace": "مساحة العمل",
+    "userFeedbackNav": "User feedback"
   },
   "ohsFile": {
     "alreadyRunning": "يتم حالياً تحضير أرشيف؛ يرجى انتظار انتهائه.",
@@ -4912,6 +4913,25 @@
       "tableHeading": "الوثائق (ترتيب الاسم)",
       "title": "المجموعة القانونية حسب البلد",
       "yes": "نعم"
+    },
+    "userFeedback": {
+      "backLink": "Back to platform admin",
+      "title": "User feedback",
+      "description": "Messages sent by signed-in users via the feedback button in the app header. Use this list to track bugs, ideas and usability notes.",
+      "loadError": "Could not load feedback: {message}",
+      "emptyTitle": "No feedback yet",
+      "emptyDescription": "When users submit feedback from the product, entries will appear here.",
+      "colDate": "Date",
+      "colCategory": "Category",
+      "colUser": "User",
+      "colOrg": "Organization",
+      "colPage": "Page",
+      "colMessage": "Message",
+      "localeLabel": "Locale",
+      "category_bug": "Bug or error",
+      "category_idea": "Feature idea",
+      "category_usability": "Usability",
+      "category_other": "Other"
     }
   },
   "pricing": {
@@ -7152,5 +7172,25 @@
       "pickCompany": "Select a company workspace first.",
       "auth": "Session expired or not authorized. Sign in again."
     }
+  },
+  "platformFeedback": {
+    "buttonAria": "Send product feedback",
+    "buttonTitle": "Feedback",
+    "panelTitle": "Send feedback",
+    "panelSubtitle": "Your message is sent to the platform team. Describe what went wrong or what you would like improved.",
+    "categoryLabel": "Category",
+    "categoryBug": "Bug or error",
+    "categoryIdea": "Feature idea",
+    "categoryUsability": "Usability",
+    "categoryOther": "Other",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Describe the issue or suggestion…",
+    "pageContextLabel": "Page",
+    "submit": "Submit",
+    "submitting": "Sending…",
+    "success": "Thank you — your feedback was recorded.",
+    "error": "Could not send feedback. Please try again.",
+    "close": "Close",
+    "minLengthHint": "Enter at least 10 characters."
   }
 }
