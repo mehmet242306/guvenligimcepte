@@ -2567,9 +2567,9 @@
       "organizationMissing": "Organization connection was not found. Check your profile or membership settings."
     },
     "examples": {
-      "eyebrow": "Quick start",
-      "title": "Sample OHS survey and exam templates",
-      "description": "Add these ready-made drafts to your organization, then tune questions and pass marks for your workplace. Does not consume assessment quota.",
+      "eyebrow": "Surveys & exams",
+      "title": "Sample survey and exam templates",
+      "description": "These are questionnaires and tests—not slide decks. Pick a company workspace, then add a draft and edit questions. Does not consume assessment quota.",
       "companyLabel": "Company workspace",
       "noCompany": "At least one company workspace is required to add a template. Ask your admin to create one or pick a company via \"Create new\".",
       "questionCount": "{count} questions",
@@ -2579,6 +2579,29 @@
       "addCopy": "Add as draft",
       "adding": "Adding…",
       "importFailed": "Could not add the template. Check your connection and try again."
+    },
+    "slideExamples": {
+      "eyebrow": "Training slide decks",
+      "title": "Sample OHS slide templates",
+      "description": "These are presentation decks (slides)—what many teams mean by “training template”. Add to your slide library in one click, then edit or present. No company workspace required.",
+      "badge": "Slides",
+      "slideCount": "{count} slides",
+      "durationHint": "~{minutes} min",
+      "addCopy": "Add slide template",
+      "adding": "Adding…",
+      "importFailed": "Could not add the slide deck. Check your connection and try again.",
+      "openSlideLibrary": "Open slide library",
+      "categories": {
+        "genel": "General OHS",
+        "kkd": "PPE",
+        "yangin": "Fire safety",
+        "ilkyardim": "First aid",
+        "ergonomi": "Ergonomics",
+        "elektrik": "Electrical",
+        "kimyasal": "Chemical",
+        "makine": "Machinery",
+        "yuksekte_calisma": "Work at height"
+      }
     }
   },
   "trainingDetailPage": {

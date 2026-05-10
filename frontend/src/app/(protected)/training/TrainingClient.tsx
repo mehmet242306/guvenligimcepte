@@ -16,6 +16,10 @@ import {
   exampleTemplateQuestionsForSave,
   ISG_EXAMPLE_SURVEY_TEMPLATES,
 } from "@/lib/training/isg-example-survey-templates";
+import {
+  importIsgExampleSlideDeck,
+  ISG_EXAMPLE_SLIDE_DECKS,
+} from "@/lib/training/isg-example-slide-templates";
 
 type TabType = "all" | "survey" | "exam";
 type StatusFilter = "all" | "draft" | "active" | "closed";
@@ -94,6 +98,8 @@ export function TrainingClient() {
   const [exampleCompanyId, setExampleCompanyId] = useState("");
   const [exampleImportError, setExampleImportError] = useState<string | null>(null);
   const [importingExampleId, setImportingExampleId] = useState<string | null>(null);
+  const [slideExampleError, setSlideExampleError] = useState<string | null>(null);
+  const [importingSlideExampleId, setImportingSlideExampleId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadSurveys() {
@@ -175,6 +181,7 @@ export function TrainingClient() {
 
     setImportingExampleId(templateId);
     setExampleImportError(null);
+    setSlideExampleError(null);
     try {
       const survey = await createSurvey({
         organizationId: sessionOrgId,
@@ -203,6 +210,37 @@ export function TrainingClient() {
       router.push(buildTrainingHref(`/training/${survey.id}`, undefined, companyId));
     } finally {
       setImportingExampleId(null);
+    }
+  }
+
+  function slideExampleCategoryLabel(category: string): string {
+    if (category === "genel") return t("slideExamples.categories.genel");
+    if (category === "kkd") return t("slideExamples.categories.kkd");
+    if (category === "yangin") return t("slideExamples.categories.yangin");
+    if (category === "ilkyardim") return t("slideExamples.categories.ilkyardim");
+    if (category === "ergonomi") return t("slideExamples.categories.ergonomi");
+    if (category === "elektrik") return t("slideExamples.categories.elektrik");
+    if (category === "kimyasal") return t("slideExamples.categories.kimyasal");
+    if (category === "makine") return t("slideExamples.categories.makine");
+    if (category === "yuksekte_calisma") return t("slideExamples.categories.yuksekte_calisma");
+    return category;
+  }
+
+  async function importSlideExampleDeck(exampleId: string) {
+    const def = ISG_EXAMPLE_SLIDE_DECKS.find((x) => x.id === exampleId);
+    if (!def) return;
+    setImportingSlideExampleId(exampleId);
+    setSlideExampleError(null);
+    setExampleImportError(null);
+    try {
+      const deckId = await importIsgExampleSlideDeck(def);
+      if (!deckId) {
+        setSlideExampleError(t("slideExamples.importFailed"));
+        return;
+      }
+      router.push(buildTrainingHref(`/training/slides/${deckId}/edit`));
+    } finally {
+      setImportingSlideExampleId(null);
     }
   }
 
@@ -418,6 +456,65 @@ export function TrainingClient() {
               ))}
             </div>
           )}
+        </section>
+
+        <section className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
+          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-600 dark:text-teal-400">
+                {t("slideExamples.eyebrow")}
+              </p>
+              <h2 className="mt-1 text-base font-semibold text-[var(--foreground)]">{t("slideExamples.title")}</h2>
+              <p className="mt-1 text-sm text-[var(--muted-foreground)]">{t("slideExamples.description")}</p>
+            </div>
+            <Link
+              href={buildTrainingHref("/training/slides")}
+              className="shrink-0 rounded-xl border border-teal-600/40 bg-teal-600/10 px-3 py-2 text-center text-xs font-semibold text-teal-800 transition-colors hover:bg-teal-600/15 dark:text-teal-200"
+            >
+              {t("slideExamples.openSlideLibrary")}
+            </Link>
+          </div>
+          {slideExampleError ? (
+            <div
+              role="alert"
+              className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100"
+            >
+              {slideExampleError}
+            </div>
+          ) : null}
+          <div className="grid gap-3 md:grid-cols-3">
+            {ISG_EXAMPLE_SLIDE_DECKS.map((ex) => (
+              <article
+                key={ex.id}
+                className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--background)] p-4"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-teal-600/15 px-2 py-0.5 text-[10px] font-bold uppercase text-teal-800 dark:text-teal-200">
+                    {t("slideExamples.badge")}
+                  </span>
+                  <span className="rounded-full border border-[var(--border)] px-2 py-0.5 text-[10px] font-medium text-[var(--muted-foreground)]">
+                    {slideExampleCategoryLabel(ex.deck.category)}
+                  </span>
+                </div>
+                <h3 className="mt-2 text-sm font-semibold text-[var(--foreground)]">{ex.deck.title}</h3>
+                <p className="mt-1 line-clamp-3 text-xs text-[var(--muted-foreground)]">{ex.deck.description}</p>
+                <p className="mt-2 text-xs text-[var(--muted-foreground)]">
+                  {t("slideExamples.slideCount", { count: ex.slides.length })}
+                  {ex.deck.estimated_duration_minutes != null
+                    ? ` · ${t("slideExamples.durationHint", { minutes: ex.deck.estimated_duration_minutes })}`
+                    : ""}
+                </p>
+                <button
+                  type="button"
+                  disabled={importingSlideExampleId !== null}
+                  onClick={() => void importSlideExampleDeck(ex.id)}
+                  className="mt-3 rounded-lg bg-teal-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {importingSlideExampleId === ex.id ? t("slideExamples.adding") : t("slideExamples.addCopy")}
+                </button>
+              </article>
+            ))}
+          </div>
         </section>
 
         <section className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">

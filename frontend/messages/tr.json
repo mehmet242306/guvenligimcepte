@@ -2567,9 +2567,9 @@
       "organizationMissing": "Organizasyon bağlantısı bulunamadı. Profil veya üyelik ayarlarınızı kontrol edin."
     },
     "examples": {
-      "eyebrow": "Hızlı başlangıç",
-      "title": "Örnek İSG anket ve sınav şablonları",
-      "description": "Aşağıdaki hazır içerikleri organizasyonunuza taslak olarak ekleyebilir, soruları ve geçme notunu işyerinize göre düzenleyebilirsiniz. Kotadan düşmez.",
+      "eyebrow": "Anket ve sınav",
+      "title": "Örnek anket ve sınav şablonları",
+      "description": "Bunlar sunum (slayt) değil; çoktan seçmeli anket ve sınav taslaklarıdır. Şirket çalışma alanı seçip ekleyin, soruları düzenleyin. Kotadan düşmez.",
       "companyLabel": "Şirket çalışma alanı",
       "noCompany": "Şablon eklemek için en az bir şirket çalışma alanı gerekir. Yöneticinizden workspace oluşturulmasını isteyin veya \"Yeni Oluştur\" üzerinden şirket seçin.",
       "questionCount": "{count} soru",
@@ -2579,6 +2579,29 @@
       "addCopy": "Taslak olarak ekle",
       "adding": "Ekleniyor…",
       "importFailed": "Şablon eklenemedi. Bağlantınızı kontrol edip tekrar deneyin."
+    },
+    "slideExamples": {
+      "eyebrow": "Eğitim şablonu (slayt)",
+      "title": "Örnek eğitim slayt şablonları",
+      "description": "Sunum dosyasıdır: slayt kütüphanenize tek tıkla eklenir, düzenleyip sunarsınız. Anket/sınav içeriği değildir. Şirket seçimi gerekmez.",
+      "badge": "Slayt sunumu",
+      "slideCount": "{count} slayt",
+      "durationHint": "~{minutes} dk",
+      "addCopy": "Şablonu ekle",
+      "adding": "Ekleniyor…",
+      "importFailed": "Slayt şablonu eklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
+      "openSlideLibrary": "Slayt kütüphanesine git",
+      "categories": {
+        "genel": "Genel İSG",
+        "kkd": "KKD",
+        "yangin": "Yangın",
+        "ilkyardim": "İlk yardım",
+        "ergonomi": "Ergonomi",
+        "elektrik": "Elektrik",
+        "kimyasal": "Kimyasal",
+        "makine": "Makine",
+        "yuksekte_calisma": "Yüksekte çalışma"
+      }
     }
   },
   "trainingDetailPage": {

@@ -420,6 +420,29 @@
       "addCopy": "Add as draft",
       "adding": "Adding…",
       "importFailed": "Could not add the template. Check your connection and try again."
+    },
+    "slideExamples": {
+      "eyebrow": "Training slide decks",
+      "title": "Sample OHS slide templates",
+      "description": "These are presentation decks (slides)—what many teams mean by “training template”. Add to your slide library in one click, then edit or present. No company workspace required.",
+      "badge": "Slides",
+      "slideCount": "{count} slides",
+      "durationHint": "~{minutes} min",
+      "addCopy": "Add slide template",
+      "adding": "Adding…",
+      "importFailed": "Could not add the slide deck. Check your connection and try again.",
+      "openSlideLibrary": "Open slide library",
+      "categories": {
+        "genel": "General OHS",
+        "kkd": "PPE",
+        "yangin": "Fire safety",
+        "ilkyardim": "First aid",
+        "ergonomi": "Ergonomics",
+        "elektrik": "Electrical",
+        "kimyasal": "Chemical",
+        "makine": "Machinery",
+        "yuksekte_calisma": "Work at height"
+      }
     }
   },
   "certificateVerify": {
