@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 const RiskAnalysisClientNoSSR = dynamic(
-  () => import("./RiskAnalysisClient").then((mod) => mod.RiskAnalysisClient),
+  () => import("./RiskAnalysisWorkbenchClient").then((mod) => mod.RiskAnalysisWorkbenchClient),
   { ssr: false },
 );
 

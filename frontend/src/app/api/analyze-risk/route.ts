@@ -12,6 +12,8 @@ import {
 import { executeWithResilience } from "@/lib/self-healing/resilience";
 import { getAnthropicKey, getRiskAnalysisVisionModel } from "@/lib/ai/provider-keys";
 import {
+  buildFastSystemPrompt,
+  buildFastUserPrompt,
   buildSystemPrompt,
   buildUserPrompt,
   RISK_ANALYSIS_PROMPT_VERSION,
@@ -58,6 +60,7 @@ const analyzeRiskSchema = z.object({
     .enum(["r_skor", "fine_kinney", "l_matrix", "fmea", "hazop", "bow_tie", "fta", "checklist", "jsa", "lopa"])
     .optional()
     .default("r_skor"),
+  mode: z.enum(["standard", "fast"]).optional().default("standard"),
   /** UI locale (e.g. next-intl) — steers output language for narrative fields */
   language: z.string().min(2).max(12).optional().default("tr"),
   /**
@@ -263,7 +266,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { imageBase64, mimeType, method, language: outputLocale, companyContext } = parsedBody.data;
+    const { imageBase64, mimeType, method, mode, language: outputLocale, companyContext } = parsedBody.data;
 
     if (!imageBase64 || !mimeType) {
       return NextResponse.json({ error: "imageBase64 ve mimeType gerekli" }, { status: 400 });
@@ -313,7 +316,10 @@ export async function POST(request: NextRequest) {
       ].join("\n");
     })();
 
-    const augmentedUserPrompt = [companyCtxBlock, buildUserPrompt(method, outputLocale)]
+    const augmentedUserPrompt = [
+      companyCtxBlock,
+      mode === "fast" ? buildFastUserPrompt(method, outputLocale) : buildUserPrompt(method, outputLocale),
+    ]
       .filter(Boolean)
       .join("\n\n");
 
@@ -326,9 +332,12 @@ export async function POST(request: NextRequest) {
     // Bir Anthropic çağrısı çoğu zaman 40–120 sn sürer. İki kez 65 sn denemek hem UX kötü
     // hem de ikinci denemede yine kesilebiliyor. Tek deneme + uzun süre (SDK zaten 10 dk).
     // retryDelaysMs uzunluğu 1 = tek deneme (executeWithResilience döngüsü).
-    const operationTimeoutMs = getRiskAnalysisOperationTimeoutMs();
+    const operationTimeoutMs =
+      mode === "fast"
+        ? Math.min(getRiskAnalysisOperationTimeoutMs(), 120_000)
+        : getRiskAnalysisOperationTimeoutMs();
     const resilientResponse = await executeWithResilience({
-      serviceKey: "anthropic.risk_analysis.fast_v2",
+      serviceKey: mode === "fast" ? "anthropic.risk_analysis.fast_v3" : "anthropic.risk_analysis.fast_v2",
       displayName: "Anthropic API",
       serviceType: "external_api",
       operationName: "risk_image_analysis",
@@ -345,9 +354,9 @@ export async function POST(request: NextRequest) {
         client.messages.create({
           model: visionModel,
           // Haiku varsayılan (hız); RISK_ANALYSIS_ANTHROPIC_MODEL ile Sonnet seçilebilir.
-          max_tokens: 2400,
+          max_tokens: mode === "fast" ? 1400 : 2400,
           temperature: 0.2,
-          system: buildSystemPrompt(method, outputLocale),
+          system: mode === "fast" ? buildFastSystemPrompt(outputLocale) : buildSystemPrompt(method, outputLocale),
           messages: [
             {
               role: "user",
@@ -382,6 +391,7 @@ export async function POST(request: NextRequest) {
         success: false,
         metadata: {
           method,
+          mode,
           fallback: true,
           fallbackReason: resilientResponse.error.slice(0, 300),
           queueTaskId: resilientResponse.queuedTaskId ?? null,
@@ -430,6 +440,7 @@ export async function POST(request: NextRequest) {
         imageRelevance: "relevant",
         imageDescription: timeoutFallbackParsed.imageDescription,
         method,
+        mode,
         visionModel,
         promptVersion: RISK_ANALYSIS_PROMPT_VERSION,
         degraded: true,

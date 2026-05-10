@@ -323,6 +323,66 @@ JSON format\u0131:
 }` + analyzeRiskUserLanguageSuffix(locale);
 }
 
+export function buildFastSystemPrompt(locale: string): string {
+  return `Sen A sinifi ISG uzmani gibi calisan bir gorsel risk analiz motorusun.
+
+GOREV:
+- Gercek saha, isyeri, depo, atelye, santiye, teknik alan veya ofis fotografinda risks dizisini bos birakma.
+- Sadece gorunen veya makul saha kontrolu gerektiren riskleri yaz.
+- Emin olmadigin ayrintiyi kesin iddia etme; "sahada dogrulanmali" dili kullan.
+- Sadece gecerli JSON dondur. Markdown, aciklama, kod blogu yok.
+
+ZORUNLU TARAMA:
+elektrik/kablo/pano, yangin/yanici/gaz, zemin-gecis-duzen, yukseklik-bosluk-kazi,
+makine/ekipman, kimyasal-basincli kap, depolama-istif, KKD/davranis, acil durum/levha.
+
+HER RISK ICIN:
+title, category, severity(low|medium|high|critical), confidence(0-1),
+recommendation, correctiveActionRequired, pinX, pinY, boxX, boxY, boxW, boxH,
+r2dParams(c1..c9), fkParams, matrixParams, legalReferences alanlarini doldur.
+
+Turkiye ISG mevzuatini kisa ve gercek referanslarla yaz.` + analyzeRiskSystemLanguageSuffix(locale);
+}
+
+export function buildFastUserPrompt(method: RiskAnalysisMethod, locale: string): string {
+  return `Gorseli hizli modda analiz et. En fazla 4 somut risk yaz; gercek isyeri/saha fotografiysa en az 1 risk zorunlu.
+
+Secilen yontem: ${method}
+
+JSON:
+{
+  "imageRelevance": "relevant | not_real_photo | not_workplace",
+  "imageDescription": "kisa gorsel tanimi",
+  "photoQuality": { "level": "good|moderate|poor", "note": "kisa not" },
+  "areaSummary": "kisa saha ozeti",
+  "personCount": 0,
+  "faces": [],
+  "positiveObservations": [],
+  "risks": [
+    {
+      "title": "somut risk",
+      "category": "kategori",
+      "severity": "medium",
+      "confidence": 0.78,
+      "recommendation": "Somut duzeltici onlem. Sorumlu ve kontrol beklentisi. Sahada dogrulama notu.",
+      "correctiveActionRequired": true,
+      "pinX": 50,
+      "pinY": 50,
+      "boxX": 40,
+      "boxY": 40,
+      "boxW": 20,
+      "boxH": 20,
+      "r2dParams": {"c1":0.5,"c2":0.2,"c3":0.2,"c4":0.1,"c5":0.2,"c6":0.3,"c7":0.2,"c8":0.1,"c9":0.3},
+      "fkParams": {"likelihood":3,"severity":7,"exposure":3},
+      "matrixParams": {"likelihood":3,"severity":3},
+      "legalReferences": [
+        {"law":"6331 sayili Is Sagligi ve Guvenligi Kanunu","article":"Madde 4","description":"Isveren riskleri onlemek ve gerekli tedbirleri almakla yukumludur."}
+      ]
+    }
+  ]
+}` + analyzeRiskUserLanguageSuffix(locale);
+}
+
 /** Anthropic’a giden tam metinler (debug / şeffaflık sayfası). */
 export function getRiskAnalysisPromptBundle(method: RiskAnalysisMethod, locale: string) {
   return {

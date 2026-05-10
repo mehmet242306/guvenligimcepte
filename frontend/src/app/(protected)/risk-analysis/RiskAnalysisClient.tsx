@@ -501,9 +501,109 @@ function computeAllScores(finding: VisualFinding): VisualFinding {
   };
 }
 
-/* Mock fallback kaldırıldı — yalnızca gerçek AI analizi kullanılıyor */
+function createAiUnavailableFindingBase(
+  imageId: string,
+  patch: {
+    title: string;
+    category: string;
+    severity: DetectionSeverity;
+    confidence: number;
+    recommendation: string;
+    annotations: FindingAnnotation[];
+  },
+): VisualFinding {
+  const defaultValues = {
+    fmea: { severity: 6, occurrence: 6, detection: 5 } as FMEAValues,
+    hazop: { severity: 3, likelihood: 3, detectability: 3, guideWord: "Kontrol", parameter: "Saha", deviation: "" } as HAZOPValues,
+    bowTie: { threatProbability: 3, consequenceSeverity: 3, preventionBarriers: 1, mitigationBarriers: 1 } as BowTieValues,
+    fta: { components: [{ name: "Saha kontrol eksigi", failureRate: 0.3 }], gateType: "OR" as const, systemCriticality: 3 },
+    checklist: {
+      items: [{ id: crypto.randomUUID(), text: "Saha kontrolu tamamlanmali", status: "kismi" as const, weight: 2 }],
+      category: patch.category,
+    } as ChecklistValues,
+    jsa: {
+      jobTitle: "",
+      steps: [{
+        id: crypto.randomUUID(),
+        stepDescription: "Saha goruntusunu dogrula",
+        hazard: patch.title,
+        severity: 3,
+        likelihood: 3,
+        controlEffectiveness: 3,
+        controlMeasures: patch.recommendation,
+      }],
+    } as JSAValues,
+    lopa: { initiatingEventFreq: 0.1, consequenceSeverity: 3, layers: [{ id: crypto.randomUUID(), name: "Manuel dogrulama", pfd: 0.1 }] } as LOPAValues,
+  };
 
-/* Mock fallback functions removed — only real AI analysis is used */
+  return computeAllScores({
+    id: crypto.randomUUID(),
+    imageId,
+    title: patch.title,
+    category: patch.category,
+    confidence: patch.confidence,
+    severity: patch.severity,
+    recommendation: patch.recommendation,
+    correctiveActionRequired: true,
+    annotations: patch.annotations,
+    isManual: false,
+    legalReferences: [
+      {
+        law: "6331 sayili Is Sagligi ve Guvenligi Kanunu",
+        article: "Madde 4",
+        description: "Isveren, calisanlarin isle ilgili saglik ve guvenligini saglamakla yukumludur.",
+      },
+      {
+        law: "Is Sagligi ve Guvenligi Risk Degerlendirmesi Yonetmeligi",
+        article: "Madde 8",
+        description: "Tehlikeler belirlenir, riskler analiz edilir ve kontrol tedbirleri planlanir.",
+      },
+    ],
+    confidenceTier: "medium",
+    r2dValues: { c1: 0.46, c2: 0.2, c3: 0.35, c4: 0.35, c5: 0.55, c6: 0.55, c7: 0.35, c8: 0.15, c9: 0.35 },
+    fkValues: { likelihood: 3, severity: 15, exposure: 6 },
+    matrixValues: { likelihood: 3, severity: 4 },
+    fmeaValues: defaultValues.fmea,
+    hazopValues: defaultValues.hazop,
+    bowTieValues: defaultValues.bowTie,
+    ftaValues: defaultValues.fta,
+    checklistValues: defaultValues.checklist,
+    jsaValues: defaultValues.jsa,
+    lopaValues: defaultValues.lopa,
+    r2dResult: null,
+    fkResult: null,
+    matrixResult: null,
+    fmeaResult: null,
+    hazopResult: null,
+    bowTieResult: null,
+    ftaResult: null,
+    checklistResult: null,
+    jsaResult: null,
+    lopaResult: null,
+  });
+}
+
+function createAiUnavailableFindings(imageId: string, reason: string): VisualFinding[] {
+  return [
+    createAiUnavailableFindingBase(imageId, {
+      title: "AI yaniti alinamadi: saha risk envanteri manuel dogrulama gerektiriyor",
+      category: "Diger",
+      severity: "medium",
+      confidence: 0.62,
+      recommendation: `${reason} Bu fotograf icin calisma alani, zemin/gecis, elektrik, yangin, acil durum ve ekipman basliklari sahada kontrol edilmelidir. Tespitler sorumlu kisi, termin ve kanit fotografi ile tamamlanmalidir.`,
+      annotations: [{ id: crypto.randomUUID(), kind: "pin", label: "R1", x: 50, y: 50 }],
+    }),
+    createAiUnavailableFindingBase(imageId, {
+      title: "Elektrik, yangin ve acil durum kontrolu",
+      category: "Yangin",
+      severity: "high",
+      confidence: 0.58,
+      recommendation:
+        "Gorsel analizi tamamlanamadigi icin elektrik beslemesi, priz/kablo durumu, yanici malzeme yakinligi, yangin sondurucu erisimi ve acil mudahale plani sahada dogrulanmalidir. Uygunsuzluk varsa alan guvenli hale getirilmeden calisma surdurulmemelidir.",
+      annotations: [{ id: crypto.randomUUID(), kind: "pin", label: "R2", x: 50, y: 50 }],
+    }),
+  ];
+}
 
 /* ================================================================== */
 /* Annotation render                                                   */
@@ -1614,6 +1714,7 @@ export function RiskAnalysisClient() {
           imageBase64: base64,
           mimeType,
           method,
+          mode: "fast",
           language: locale ?? "tr",
           companyContext,
         }),
@@ -1659,6 +1760,25 @@ export function RiskAnalysisClient() {
         }
 
         const stage = typeof errBody?.stage === "string" ? errBody.stage : `http_${res.status}`;
+        const canContinueWithFallback =
+          errBody?.degraded === true ||
+          errBody?.retryable === true ||
+          res.status === 502 ||
+          res.status === 503 ||
+          res.status === 504;
+
+        if (canContinueWithFallback) {
+          return {
+            findings: createAiUnavailableFindings(imageId, message),
+            meta: {
+              ...emptyMeta,
+              areaSummary: "AI yaniti alinamadigi icin on risk envanteri uretildi; saha dogrulamasi gerekir.",
+              imageDescription: imageFile.name,
+            },
+            stage,
+          };
+        }
+
         return { findings: [], meta: emptyMeta, error: message, stage };
       }
 
