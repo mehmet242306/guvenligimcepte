@@ -15,7 +15,6 @@ import {
 } from "@/lib/self-healing/resilience";
 import {
   detectSafetyObjects,
-  isOpenAIVisionConfigured,
   visionToPromptContext,
   type VisionDetection,
 } from "@/lib/ai/openai-vision";
@@ -43,6 +42,7 @@ type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" |
 
 const ACCEPTABLE_RISK_CONFIDENCE_MAX = 0.59;
 const ACTIONABLE_RISK_CONFIDENCE_MIN = 0.70;
+const ENABLE_OPENAI_HELPER = process.env.RISK_ANALYSIS_OPENAI_HELPER === "true";
 
 const analyzeRiskSchema = z.object({
   imageBase64: z.string().min(100).max(20_000_000),
@@ -1031,9 +1031,8 @@ JSON format\u0131:
 
 export async function POST(request: NextRequest) {
   // GÜVENLİK: requireAuth + günlük rate limit + risk_analysis kotası.
-  // Hibrit pipeline: (1) OpenAI gpt-4o — KKD/sahne/hazard tespiti (lib/ai/openai-vision),
-  // (2) Claude Sonnet 4 — R-SKOR / FMEA vb. yönteme göre risk akıl yürütmesi.
-  // OPENAI_API_KEY yoksa 1. aşama atlanır; sadece Claude devam eder.
+  // Hız odaklı varsayılan: Claude Sonnet 4 doğrudan görselden risk tespit eder.
+  // OpenAI yardımcı gözlem aşaması sadece RISK_ANALYSIS_OPENAI_HELPER=true ise çalışır.
   const auth = await requireAuth(request);
   if (!auth.ok) return auth.response;
 
@@ -1080,34 +1079,36 @@ export async function POST(request: NextRequest) {
     const startTime = Date.now();
 
     // ═══════════════════════════════════════════════════════════════════
-    // STAGE 1 — OpenAI gpt-4o Vision: TARAFSIZ SAHNE / NESNE GÖZLEMİ
+    // OPTIONAL STAGE 1 — OpenAI gpt-4o Vision: TARAFSIZ SAHNE / NESNE GÖZLEMİ
     // ═══════════════════════════════════════════════════════════════════
     // OpenAI bu akışta risk kararı vermez; yalnızca nötr sahne/nesne gözlemi
     // üretir. Nihai risk tespitini Anthropic, aynı görsele doğrudan bakarak
     // yapar. OpenAI notları sadece KKD/konum gibi halüsinasyonları azaltan
     // yardımcı bağlamdır.
     //
-    // OPENAI_API_KEY yoksa veya çağrı fail ederse null döner ve hibrit
-    // mode'dan tek-model mode'a graceful fallback olur.
+    // Analiz süresini kısaltmak için varsayılan kapalıdır. Gerektiğinde
+    // RISK_ANALYSIS_OPENAI_HELPER=true ile tekrar yardımcı gözlem moduna alınır.
     let visionDetection: VisionDetection | null = null;
-    let visionStageStatus: "openai_gpt4o" | "skipped_missing_key" | "failed_fallback" = "openai_gpt4o";
-    try {
-      visionDetection = await detectSafetyObjects(imageBase64, mimeType);
-    } catch (visionErr) {
-      // Sessizce düş — Claude tek başına yine de çalışır
-      console.warn("[analyze-risk] vision stage failed:", visionErr);
-    }
+    let visionStageStatus: "openai_gpt4o" | "skipped_speed_mode" | "failed_fallback" = "skipped_speed_mode";
+    if (ENABLE_OPENAI_HELPER) {
+      visionStageStatus = "openai_gpt4o";
+      try {
+        visionDetection = await detectSafetyObjects(imageBase64, mimeType);
+      } catch (visionErr) {
+        console.warn("[analyze-risk] vision stage failed:", visionErr);
+      }
 
-    if (!visionDetection) {
-      visionStageStatus = isOpenAIVisionConfigured() ? "failed_fallback" : "skipped_missing_key";
-      await logAiUsage({
-        userId: auth.userId,
-        organizationId: auth.organizationId,
-        model: "gpt-4o",
-        endpoint: "/api/analyze-risk:vision",
-        success: false,
-        metadata: { method, reason: visionStageStatus },
-      }).catch(() => undefined);
+      if (!visionDetection) {
+        visionStageStatus = "failed_fallback";
+        await logAiUsage({
+          userId: auth.userId,
+          organizationId: auth.organizationId,
+          model: "gpt-4o",
+          endpoint: "/api/analyze-risk:vision",
+          success: false,
+          metadata: { method, reason: visionStageStatus },
+        }).catch(() => undefined);
+      }
     }
 
     // Claude'a verilecek yardımcı kontekst (varsa); yoksa boş string → eski davranış.
@@ -1157,11 +1158,10 @@ export async function POST(request: NextRequest) {
       operation: () =>
         client.messages.create({
           model: "claude-sonnet-4-20250514",
-          // 6000 bazı çoklu-risk sahnelerinde dar geliyordu (FMEA/HAZOP +
-          // her risk için 9 R-SKOR parametresi + 2-3 mevzuat referansı +
-          // 3+ cümle öneri). 8000 = güvenli üst sınır; latency etkisi azdır
-          // (~25-35 sn) ve "gözden kaçma" şikayetini ciddi azaltır.
-          max_tokens: 8000,
+          // Hız modu: nihai risk dedektörü Claude, OpenAI yardımcı aşaması
+          // varsayılan kapalı. Çıktı üst sınırını da kısa tutarak latency'yi
+          // belirgin azaltıyoruz; çoklu-risk sahnelerinde hâlâ yeterli pay var.
+          max_tokens: 5000,
           temperature: 0,
           system: buildSystemPrompt(method, outputLocale),
           messages: [
@@ -1406,7 +1406,7 @@ export async function POST(request: NextRequest) {
       imageDescription: parsed.imageDescription ?? "",
       method,
       promptVersion: PROMPT_VERSION,
-      degraded: resilientResponse.degraded || !visionDetection,
+      degraded: resilientResponse.degraded || (ENABLE_OPENAI_HELPER && !visionDetection),
       durationMs: duration,
       tokensInput: response.usage?.input_tokens ?? 0,
       tokensOutput: response.usage?.output_tokens ?? 0,

@@ -3129,6 +3129,14 @@ JSON formatında döndür:
             <p className="mt-2 text-sm leading-7 text-muted-foreground">{trRiskScoring("wizard.step3.subtitle")}</p>
           </div>
 
+          <div className="mb-5 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
+            <p className="font-semibold">Daha yüksek hassasiyet için satır başlığı ve açıklamasını doldurun.</p>
+            <p className="mt-1">
+              Fotoğraftaki alanı, işi ve beklediğiniz kontrol noktasını kısaca yazmanız AI analizini hızlandırır ve isabeti artırır.
+              AI çıktıları hata içerebilir; tespitler kayda alınmadan önce yetkin bir İSG uzmanı tarafından kontrol edilmelidir.
+            </p>
+          </div>
+
           {/* Ozet bandi */}
           <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
