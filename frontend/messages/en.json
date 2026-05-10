@@ -2565,6 +2565,20 @@
       "noSession": "No session found. Refresh the page.",
       "authRequired": "Sign-in required.",
       "organizationMissing": "Organization connection was not found. Check your profile or membership settings."
+    },
+    "examples": {
+      "eyebrow": "Quick start",
+      "title": "Sample OHS survey and exam templates",
+      "description": "Add these ready-made drafts to your organization, then tune questions and pass marks for your workplace. Does not consume assessment quota.",
+      "companyLabel": "Company workspace",
+      "noCompany": "At least one company workspace is required to add a template. Ask your admin to create one or pick a company via \"Create new\".",
+      "questionCount": "{count} questions",
+      "typeExam": "Exam",
+      "typeSurvey": "Survey",
+      "templateBadge": "Exam template",
+      "addCopy": "Add as draft",
+      "adding": "Adding…",
+      "importFailed": "Could not add the template. Check your connection and try again."
     }
   },
   "trainingDetailPage": {

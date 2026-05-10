@@ -378,7 +378,8 @@
     },
     "filters": {
       "searchPlaceholder": "Buscar encuesta o examen...",
-      "allStatuses": "Todos"
+      "allStatuses": "Todos",
+      "examTemplatesOnly": "Exam templates"
     },
     "status": {
       "draft": "Borrador",
@@ -402,6 +403,23 @@
       "noSession": "No se encontró sesión. Actualiza la página.",
       "authRequired": "Inicio de sesión requerido.",
       "organizationMissing": "No se encontró conexión de organización. Revisa tu perfil o membresía."
+    },
+    "badge": {
+      "template": "Template"
+    },
+    "examples": {
+      "eyebrow": "Quick start",
+      "title": "Sample OHS survey and exam templates",
+      "description": "Add these ready-made drafts to your organization, then tune questions and pass marks for your workplace. Does not consume assessment quota.",
+      "companyLabel": "Company workspace",
+      "noCompany": "At least one company workspace is required to add a template. Ask your admin to create one or pick a company via \"Create new\".",
+      "questionCount": "{count} questions",
+      "typeExam": "Exam",
+      "typeSurvey": "Survey",
+      "templateBadge": "Exam template",
+      "addCopy": "Add as draft",
+      "adding": "Adding…",
+      "importFailed": "Could not add the template. Check your connection and try again."
     }
   },
   "certificateVerify": {
@@ -6024,7 +6042,10 @@
         "analyzingImageProgress": "Analizando imagen {current}/{total}: {fileName}",
         "analyzingRowImage": "Analizando imagen: Fila {row}, {fileName}…",
         "genericAiError": "Ocurrió un error en la etapa de OpenAI o Anthropic.",
-        "needImageToAnalyze": "Agregue al menos una imagen para iniciar el análisis."
+        "needImageToAnalyze": "Agregue al menos una imagen para iniciar el análisis.",
+        "imageBatchLimitNotice": "You can add at most {max} images per selection. {added} image(s) added.",
+        "imageTotalCapReached": "This analysis allows at most {max} images. Remove some before adding more.",
+        "imageUploadTrimmedNotice": "This analysis allows at most {max} images; your selection was shortened. {added} image(s) added."
       },
       "methodCard": {
         "params": "{count} parámetros",
@@ -6167,7 +6188,8 @@
         "location": "Seleccione una ubicación de trabajo.",
         "participants": "Ingrese al menos el nombre y rol de una persona responsable.",
         "step2Participants": "Ingrese al menos el nombre y rol de una persona responsable.",
-        "step3Images": "Agregue al menos una imagen."
+        "step3Images": "Agregue al menos una imagen.",
+        "step3RowMeta": "For every row that contains images, row title and description are required."
       }
     }
   },
@@ -7163,6 +7185,69 @@
       "cameraFailed": "Camera could not be started.",
       "pickCompany": "Select a company workspace first.",
       "auth": "Session expired or not authorized. Sign in again."
+    }
+  },
+  "trainingDetailPage": {
+    "templateBadge": "Template",
+    "templateBanner": "This exam is stored as a template. Participant links are disabled until you remove the template flag or publish.",
+    "clearTemplate": "Remove template (ready to invite)",
+    "tokensLockedHint": "Participant links are not available for templates. Remove the template or publish the exam.",
+    "publishClearsTemplate": "Publishing also clears the template so participants can be invited."
+  },
+  "support": {
+    "meta": {
+      "title": "RiskNova Support",
+      "description": "Get support for RiskNova web and mobile applications."
+    },
+    "eyebrow": "RiskNova Support",
+    "title": "We are here to help",
+    "description": "Contact us for account access, mobile app setup, field workflows, billing questions, and privacy requests.",
+    "formTitle": "Create a support request",
+    "formDescription": "When you submit the form, your request is delivered to the RiskNova support inbox via Resend.",
+    "directTitle": "Direct email",
+    "directDescription": "You can also email us directly with your account email and a short description of the issue.",
+    "linksTitle": "Helpful links",
+    "linksLead": "For more information, review our",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "deleteAccount": "Account and Data Deletion Request",
+    "topics": {
+      "account": {
+        "title": "Account and sign-in help",
+        "description": "Get help with login, registration, password reset, Google sign-in, and workspace access."
+      },
+      "mobile": {
+        "title": "Mobile app support",
+        "description": "Report issues with camera permissions, notifications, field scans, or risk analysis."
+      },
+      "billing": {
+        "title": "Billing and subscriptions",
+        "description": "Ask about plans, invoices, payment status, cancellation, or refund requests."
+      },
+      "privacy": {
+        "title": "Data and privacy requests",
+        "description": "Request help with privacy, account deletion, exported data, or consent settings."
+      }
+    },
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "topic": "Topic",
+      "topicPlaceholder": "Select a topic",
+      "accountEmail": "Account email (optional)",
+      "companyName": "Company / workspace (optional)",
+      "message": "Message",
+      "submit": "Send support request",
+      "sending": "Sending...",
+      "success": "Your request was received. The support team will reply by email.",
+      "genericError": "The request could not be sent. Please try again later or email us directly.",
+      "topics": {
+        "account": "Account and sign-in",
+        "mobile": "Mobile app",
+        "billing": "Billing",
+        "privacy": "Privacy / data",
+        "other": "Other"
+      }
     }
   }
 }

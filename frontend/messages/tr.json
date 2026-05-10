@@ -2565,6 +2565,20 @@
       "noSession": "Oturum bulunamadı. Sayfayı yenileyin.",
       "authRequired": "Giriş gerekli.",
       "organizationMissing": "Organizasyon bağlantısı bulunamadı. Profil veya üyelik ayarlarınızı kontrol edin."
+    },
+    "examples": {
+      "eyebrow": "Hızlı başlangıç",
+      "title": "Örnek İSG anket ve sınav şablonları",
+      "description": "Aşağıdaki hazır içerikleri organizasyonunuza taslak olarak ekleyebilir, soruları ve geçme notunu işyerinize göre düzenleyebilirsiniz. Kotadan düşmez.",
+      "companyLabel": "Şirket çalışma alanı",
+      "noCompany": "Şablon eklemek için en az bir şirket çalışma alanı gerekir. Yöneticinizden workspace oluşturulmasını isteyin veya \"Yeni Oluştur\" üzerinden şirket seçin.",
+      "questionCount": "{count} soru",
+      "typeExam": "Sınav",
+      "typeSurvey": "Anket",
+      "templateBadge": "Şablon sınav",
+      "addCopy": "Taslak olarak ekle",
+      "adding": "Ekleniyor…",
+      "importFailed": "Şablon eklenemedi. Bağlantınızı kontrol edip tekrar deneyin."
     }
   },
   "trainingDetailPage": {

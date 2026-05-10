@@ -228,18 +228,11 @@ export async function createSurvey(survey: Partial<SurveyRecord>): Promise<Surve
     time_limit_minutes: survey.timeLimitMinutes ?? null,
     shuffle_questions: survey.shuffleQuestions ?? false,
   };
-  const { error: insertError } = await supabase.from('surveys').insert(row);
-  if (insertError) { console.error('createSurvey error:', insertError.message, insertError.code); return null; }
-  // Fetch the newly created survey
-  const { data, error: fetchError } = await supabase
-    .from('surveys')
-    .select('*')
-    .eq('organization_id', survey.organizationId)
-    .eq('title', survey.title!)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
-  if (fetchError || !data) { console.error('createSurvey fetch error:', fetchError?.message); return null; }
+  const { data, error: insertError } = await supabase.from('surveys').insert(row).select('*').single();
+  if (insertError || !data) {
+    console.error('createSurvey error:', insertError?.message, insertError?.code);
+    return null;
+  }
   return dbToSurvey(data as SurveyRow);
 }
 
