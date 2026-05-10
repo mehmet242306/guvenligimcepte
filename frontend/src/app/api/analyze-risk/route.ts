@@ -21,16 +21,16 @@ import {
 
 let anthropicClient: Anthropic | null = null;
 
-/** Route süre tavanı (sn). Planınız daha düşükse Vercel üst sınırı uygular. */
-const RISK_ANALYZE_ROUTE_MAX_DURATION_SEC = 300;
-export const maxDuration = RISK_ANALYZE_ROUTE_MAX_DURATION_SEC;
+// Next.js 16: segment config yalnızca doğrudan sayı literal ile export edilebilir
+// (sabit referansı kullanmak "Invalid segment configuration" ile build'i düşürür).
+export const maxDuration = 300;
 
 function getAnthropicClient(): Anthropic | null {
   const apiKey = getAnthropicKey();
   if (!apiKey) return null;
   anthropicClient ??= new Anthropic({
     apiKey,
-    timeout: Math.min(600_000, RISK_ANALYZE_ROUTE_MAX_DURATION_SEC * 1000 - 8_000),
+    timeout: Math.min(600_000, maxDuration * 1000 - 8_000),
     maxRetries: 1,
   });
   return anthropicClient;
