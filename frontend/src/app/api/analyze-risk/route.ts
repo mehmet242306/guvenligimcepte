@@ -41,6 +41,8 @@ const PROMPT_VERSION = "v1.9-hybrid";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
+const MIN_RISK_CONFIDENCE = 0.70;
+
 const analyzeRiskSchema = z.object({
   imageBase64: z.string().min(100).max(20_000_000),
   mimeType: z.enum(["image/jpeg", "image/png", "image/gif", "image/webp"]),
@@ -523,7 +525,7 @@ Ciddiyet seviyesini ABARTMA \u2014 ger\u00E7ek\u00E7i ol.
 - Somut aksiyon plan\u0131 ver.
 
 CONFIDENCE (G\u00DCVEN SKORU) REHBER\u0130:
-0.90-1.00: KES\u0130N | 0.75-0.89: Y\u00DCKSEK | 0.60-0.74: ORTA | 0.00-0.59: YAZMA
+0.90-1.00: KES\u0130N | 0.75-0.89: Y\u00DCKSEK | 0.70-0.74: ORTA | 0.00-0.69: YAZMA
 
 ═══════════════════════════════════════════════════
 PROFESYONEL SAHA DENETİMİ ZİHİN HARİTASI (20+ YIL DENEYİMLİ İSG UZMANI GİBİ DÜŞÜN)
@@ -1278,6 +1280,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const rawRisks = Array.isArray(parsed.risks) ? parsed.risks : [];
+    const filteredRisks = rawRisks.filter((risk: { confidence?: unknown }) => Number(risk.confidence ?? 0) >= MIN_RISK_CONFIDENCE);
+    const filteredLowConfidenceCount = rawRisks.length - filteredRisks.length;
+    parsed.risks = filteredRisks;
+
     // Debug log
     console.log("\\n========================================");
     console.log("\uD83D\uDDBC\uFE0F  YEN\u0130 G\u00D6RSEL ANAL\u0130Z\u0130 (v1.8)");
@@ -1288,6 +1295,7 @@ export async function POST(request: NextRequest) {
     console.log("Person Count:", parsed.personCount);
     console.log("Photo Quality:", parsed.photoQuality?.level);
     console.log("Toplam tespit:", parsed.risks?.length || 0);
+    console.log("Eşik altı filtrelenen:", filteredLowConfidenceCount, `(min confidence: ${MIN_RISK_CONFIDENCE})`);
     console.log("Olumlu tespitler:", parsed.positiveObservations?.length || 0);
     console.log("----------------------------------------");
     if (parsed.risks && parsed.risks.length > 0) {
@@ -1329,6 +1337,8 @@ export async function POST(request: NextRequest) {
         durationMs: duration,
         personCount: parsed.personCount ?? 0,
         riskCount: Array.isArray(parsed.risks) ? parsed.risks.length : 0,
+        filteredLowConfidenceCount,
+        minRiskConfidence: MIN_RISK_CONFIDENCE,
         hybridVision: visionDetection ? "openai_gpt4o" : "none",
         visionDurationMs: visionDetection?.visionDurationMs ?? 0,
         visionTokensInput: visionDetection?.visionTokens.input ?? 0,
