@@ -19,11 +19,6 @@ import {
   buildUserPrompt,
   RISK_ANALYSIS_PROMPT_VERSION,
 } from "@/lib/ai/analyze-risk-prompts";
-import {
-  detectSafetyObjects,
-  visionToPromptContext,
-  type VisionDetection,
-} from "@/lib/ai/openai-vision";
 
 let anthropicClient: Anthropic | null = null;
 
@@ -288,21 +283,19 @@ export async function POST(request: NextRequest) {
     const startTime = Date.now();
 
     // ═══════════════════════════════════════════════════════════════════
-    // STAGE 1 — OpenAI gpt-4o Vision: GÖRSELİ OKUR / SAHNE NESNELERİNİ ÇIKARIR
+    // OPTIONAL STAGE 1 — OpenAI gpt-4o Vision: TARAFSIZ SAHNE / NESNE GÖZLEMİ
     // ═══════════════════════════════════════════════════════════════════
-    // Kullanıcı geri bildirimi: Anthropic vision tek başına hem yavaşladı hem de
-    // bariz riskleri kaçırdı. Hibrit akışta OpenAI görsel tanıma yapar, Anthropic
-    // ise bu structured gözlemi İSG uzmanı gibi yorumlayıp nihai JSON'u üretir.
-    let visionDetection: VisionDetection | null = null;
-    let visionStageStatus:
-      | "openai_gpt4o"
-      | "openai_failed_anthropic_vision_fallback" = "openai_failed_anthropic_vision_fallback";
+    // OpenAI bu akışta risk kararı vermez; yalnızca nötr sahne/nesne gözlemi
+    // üretir. Nihai risk tespitini Anthropic, aynı görsele doğrudan bakarak
+    // yapar. OpenAI notları sadece KKD/konum gibi halüsinasyonları azaltan
+    // yardımcı bağlamdır.
+    //
+    // Analiz süresini kısaltmak için varsayılan kapalıdır. Gerektiğinde
+    // RISK_ANALYSIS_OPENAI_HELPER=true ile tekrar yardımcı gözlem moduna alınır.
+    const visionStageStatus = "anthropic_only";
 
-    visionDetection = await detectSafetyObjects(imageBase64, mimeType);
-    if (visionDetection) {
-      visionStageStatus = "openai_gpt4o";
-    }
-
+    // Claude'a verilecek yardımcı kontekst (varsa); yoksa boş string → eski davranış.
+    // Bu blok risk listesi değildir; Claude nihai kararı doğrudan görselden verir.
     // Firma sektör bağlamı — sektörel checklist için ipucu. Görselle çelişirse
     // model görsele güvenmeli (system prompt bunu söylüyor).
     const companyCtxBlock = (() => {
@@ -323,54 +316,20 @@ export async function POST(request: NextRequest) {
       ].join("\n");
     })();
 
-    const visionCtxBlock = visionDetection
-      ? [
-          visionToPromptContext(visionDetection),
-          "",
-          "## HİBRİT ANALİZ TALİMATI",
-          "OpenAI bu fotoğraftaki sahne, nesne, kişi, ortam ve olası tehlike kaynaklarını çıkardı.",
-          "Sen yetkin bir İSG uzmanı gibi bu gözlemi yorumla ve nihai risk JSON'unu üret.",
-          "OpenAI gözleminde hazardObjects, çevresel notlar, elektrik/yangın/gaz/kazı/düzensizlik/KKD/erişim ipuçları varsa risks dizisi boş kalmamalıdır.",
-          "Belirsizliği düşük risk diye susturma; sahada uzman kontrolü gerektiren durumu en az kabul edilebilir risk olarak kaydet.",
-        ].join("\n")
-      : "";
-
-    const augmentedUserPrompt = [visionCtxBlock, companyCtxBlock, buildUserPrompt(method, outputLocale)]
+    const augmentedUserPrompt = [companyCtxBlock, buildUserPrompt(method, outputLocale)]
       .filter(Boolean)
       .join("\n\n");
 
     // ═══════════════════════════════════════════════════════════════════
-    // STAGE 2 — Anthropic: OPENAI GÖZLEMİ ÜZERİNDEN İSG YORUMU / JSON ÇIKTI
+    // STAGE 2 — Anthropic Claude Sonnet 4: DOĞRUDAN GÖRSEL ÜZERİNDEN RİSK TESPİTİ
     // ═══════════════════════════════════════════════════════════════════
-    // OpenAI başarılıysa Claude'a görsel tekrar gönderilmez; bu hem süreyi kısaltır
-    // hem de Anthropic vision timeout riskini azaltır. OpenAI başarısızsa eski
-    // Anthropic vision yolu fallback olarak kalır.
+    // Aynı görsel Claude'a da verilir. Risk listesi, skorlar ve öneriler
+    // Claude'un doğrudan görsel incelemesiyle üretilir; OpenAI sadece yardımcı
+    // gözlem bağlamıdır.
     // Bir Anthropic çağrısı çoğu zaman 40–120 sn sürer. İki kez 65 sn denemek hem UX kötü
     // hem de ikinci denemede yine kesilebiliyor. Tek deneme + uzun süre (SDK zaten 10 dk).
     // retryDelaysMs uzunluğu 1 = tek deneme (executeWithResilience döngüsü).
     const operationTimeoutMs = getRiskAnalysisOperationTimeoutMs();
-    const anthropicUserContent = visionDetection
-      ? [
-          {
-            type: "text" as const,
-            text: augmentedUserPrompt,
-          },
-        ]
-      : [
-          {
-            type: "image" as const,
-            source: {
-              type: "base64" as const,
-              media_type: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
-              data: imageBase64,
-            },
-          },
-          {
-            type: "text" as const,
-            text: augmentedUserPrompt,
-          },
-        ];
-
     const resilientResponse = await executeWithResilience({
       serviceKey: "anthropic.risk_analysis",
       displayName: "Anthropic API",
@@ -393,7 +352,20 @@ export async function POST(request: NextRequest) {
           messages: [
             {
               role: "user",
-              content: anthropicUserContent,
+              content: [
+                {
+                  type: "image",
+                  source: {
+                    type: "base64",
+                    media_type: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
+                    data: imageBase64,
+                  },
+                },
+                {
+                  type: "text",
+                  text: augmentedUserPrompt,
+                },
+              ],
             },
           ],
         }),
@@ -409,7 +381,6 @@ export async function POST(request: NextRequest) {
         metadata: {
           method,
           fallback: true,
-          visionStageStatus,
           queueTaskId: resilientResponse.queuedTaskId ?? null,
         },
       });
@@ -675,31 +646,9 @@ export async function POST(request: NextRequest) {
         acceptableRiskCount,
         acceptableRiskConfidenceMax: ACCEPTABLE_RISK_CONFIDENCE_MAX,
         actionableRiskConfidenceMin: ACTIONABLE_RISK_CONFIDENCE_MIN,
-        visionProvider: visionStageStatus,
-        openAiVisionModel: visionDetection?.visionModel ?? null,
-        openAiVisionDurationMs: visionDetection?.visionDurationMs ?? null,
-        openAiHazardObjectCount: visionDetection?.hazardObjects.length ?? 0,
+        visionProvider: "anthropic_only",
       },
     });
-
-    if (visionDetection) {
-      await logAiUsage({
-        userId: auth.userId,
-        organizationId: auth.organizationId,
-        model: visionDetection.visionModel,
-        endpoint: "/api/analyze-risk:openai-vision",
-        promptTokens: visionDetection.visionTokens.input,
-        completionTokens: visionDetection.visionTokens.output,
-        success: true,
-        metadata: {
-          method,
-          durationMs: visionDetection.visionDurationMs,
-          hazardObjectCount: visionDetection.hazardObjects.length,
-          personCount: visionDetection.personCount,
-          sceneCategory: visionDetection.sceneCategory,
-        },
-      });
-    }
 
     return NextResponse.json({
       risks: parsed.risks ?? [],
@@ -713,21 +662,11 @@ export async function POST(request: NextRequest) {
       method,
       visionModel,
       promptVersion: RISK_ANALYSIS_PROMPT_VERSION,
-      degraded: resilientResponse.degraded || !visionDetection,
+      degraded: resilientResponse.degraded,
       durationMs: duration,
       tokensInput: response.usage?.input_tokens ?? 0,
       tokensOutput: response.usage?.output_tokens ?? 0,
-      visionStage: visionDetection
-        ? {
-            model: visionDetection.visionModel,
-            durationMs: visionDetection.visionDurationMs,
-            tokensInput: visionDetection.visionTokens.input,
-            tokensOutput: visionDetection.visionTokens.output,
-            hazardObjectCount: visionDetection.hazardObjects.length,
-            personCount: visionDetection.personCount,
-            sceneCategory: visionDetection.sceneCategory,
-          }
-        : null,
+      visionStage: null,
       visionStageStatus,
     });
   } catch (error: unknown) {
