@@ -9,53 +9,6 @@ import {
   PRIVILEGED_ACCOUNT_LOGIN_BLOCKED_CODE,
 } from "@/lib/account/account-routing";
 
-const AUTH_STEP_TIMEOUT_MS = 8000;
-const OAUTH_RECOVERY_TIMEOUT_MS = 24000;
-
-function withClientTimeout<T>(
-  promise: Promise<T>,
-  label: string,
-  timeoutMs = AUTH_STEP_TIMEOUT_MS,
-): Promise<T> {
-  let timeoutId: number | undefined;
-  const timeout = new Promise<never>((_, reject) => {
-    timeoutId = window.setTimeout(
-      () => reject(new Error(`timeout_${label}`)),
-      timeoutMs,
-    );
-  });
-
-  return Promise.race([promise, timeout]).finally(() => {
-    if (timeoutId !== undefined) {
-      window.clearTimeout(timeoutId);
-    }
-  });
-}
-
-async function fetchWithClientTimeout(
-  input: RequestInfo | URL,
-  init: RequestInit,
-  label: string,
-  timeoutMs = AUTH_STEP_TIMEOUT_MS,
-) {
-  const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    return await fetch(input, {
-      ...init,
-      signal: controller.signal,
-    });
-  } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") {
-      throw new Error(`timeout_${label}`);
-    }
-    throw error;
-  } finally {
-    window.clearTimeout(timeoutId);
-  }
-}
-
 function toLoginError(message: string | undefined): string {
   if (!message?.trim()) {
     return "Google sign-in could not be completed. Please try again.";
@@ -67,9 +20,6 @@ function toLoginError(message: string | undefined): string {
   }
   if (lower.includes("invalid_grant") || lower.includes("already been used")) {
     return "Sign-in link was already used or expired. Please retry from the login page.";
-  }
-  if (lower.startsWith("timeout_")) {
-    return "Google sign-in took too long. Please try again.";
   }
   return m;
 }
@@ -125,18 +75,14 @@ async function readJsonSafely<T>(response: Response): Promise<T | null> {
 
 async function resolvePostAuthRedirect(next: string, accessToken: string) {
   try {
-    const response = await fetchWithClientTimeout(
-      "/api/account/context?lite=1",
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        cache: "no-store",
+    const response = await fetch("/api/account/context?lite=1", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
-      "post_auth_context",
-    );
+      cache: "no-store",
+    });
     const json = await readJsonSafely<AccountContextResponse>(response);
 
     if (response.ok && json?.context) {
@@ -184,10 +130,7 @@ async function resolveOAuthSessionAfterRedirect(
   await new Promise((r) => setTimeout(r, 120));
   if (isCancelled()) return { status: "aborted" };
 
-  const { data: early } = await withClientTimeout(
-    supabase.auth.getSession(),
-    "oauth_get_session_early",
-  );
+  const { data: early } = await supabase.auth.getSession();
   if (
     early.session?.access_token &&
     early.session?.refresh_token &&
@@ -205,10 +148,7 @@ async function resolveOAuthSessionAfterRedirect(
     }
     if (isCancelled()) return { status: "aborted" };
 
-    const { data: peek } = await withClientTimeout(
-      supabase.auth.getSession(),
-      "oauth_get_session_peek",
-    );
+    const { data: peek } = await supabase.auth.getSession();
     if (
       peek.session?.access_token &&
       peek.session?.refresh_token &&
@@ -217,10 +157,7 @@ async function resolveOAuthSessionAfterRedirect(
       return { status: "success", session: peek.session, user: peek.session.user };
     }
 
-    const { data, error } = await withClientTimeout(
-      supabase.auth.exchangeCodeForSession(authCode),
-      "oauth_exchange_code",
-    );
+    const { data, error } = await supabase.auth.exchangeCodeForSession(authCode);
     lastErrorMessage = error?.message;
 
     if (
@@ -234,10 +171,7 @@ async function resolveOAuthSessionAfterRedirect(
 
     const msg = (error?.message ?? "").toLowerCase();
     if (msg.includes("already been used") || msg.includes("invalid_grant")) {
-      const { data: existing } = await withClientTimeout(
-        supabase.auth.getSession(),
-        "oauth_get_existing_session",
-      );
+      const { data: existing } = await supabase.auth.getSession();
       if (
         existing.session?.access_token &&
         existing.session?.refresh_token &&
@@ -326,11 +260,7 @@ export function AuthSessionRecoverClient({
       }
 
       const trimmedCode = code.trim();
-      const resolved = await withClientTimeout(
-        resolveOAuthSessionAfterRedirect(supabase, trimmedCode, () => cancelled),
-        "oauth_session_recover",
-        OAUTH_RECOVERY_TIMEOUT_MS,
-      );
+      const resolved = await resolveOAuthSessionAfterRedirect(supabase, trimmedCode, () => cancelled);
 
       if (cancelled) return;
       if (resolved.status === "aborted") return;
@@ -344,13 +274,10 @@ export function AuthSessionRecoverClient({
 
       const data = { session: resolved.session, user: resolved.user };
 
-      const { error: cookieSessionError } = await withClientTimeout(
-        supabase.auth.setSession({
-          access_token: data.session.access_token,
-          refresh_token: data.session.refresh_token,
-        }),
-        "oauth_set_session",
-      );
+      const { error: cookieSessionError } = await supabase.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+      });
 
       if (cancelled) return;
 
@@ -364,23 +291,16 @@ export function AuthSessionRecoverClient({
       }
 
       if (intent !== "register") {
-        const { data: gateSession } = await withClientTimeout(
-          supabase.auth.getSession(),
-          "oauth_gate_session",
-        );
+        const { data: gateSession } = await supabase.auth.getSession();
         const gateToken =
           gateSession.session?.access_token ?? data.session.access_token;
         if (gateToken) {
-          const gateResponse = await fetchWithClientTimeout(
-            "/api/account/context?lite=1",
-            {
-              method: "GET",
-              credentials: "include",
-              headers: { Authorization: `Bearer ${gateToken}` },
-              cache: "no-store",
-            },
-            "oauth_gate_context",
-          );
+          const gateResponse = await fetch("/api/account/context?lite=1", {
+            method: "GET",
+            credentials: "include",
+            headers: { Authorization: `Bearer ${gateToken}` },
+            cache: "no-store",
+          });
           const gateJson = await readJsonSafely<{
             context?: {
               accountType?: "individual" | "osgb" | "enterprise" | null;
@@ -409,17 +329,13 @@ export function AuthSessionRecoverClient({
         });
         if (demo.status === "expired") {
           try {
-            const releaseRes = await fetchWithClientTimeout(
-              "/api/account/release-demo-after-oauth",
-              {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                  Authorization: `Bearer ${data.session.access_token}`,
-                },
+            const releaseRes = await fetch("/api/account/release-demo-after-oauth", {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                Authorization: `Bearer ${data.session.access_token}`,
               },
-              "oauth_release_demo",
-            );
+            });
             if (!releaseRes.ok && releaseRes.status !== 403) {
               console.warn("[session-recover] release-demo-after-oauth:", releaseRes.status);
             }
@@ -429,10 +345,7 @@ export function AuthSessionRecoverClient({
         }
       }
 
-      const { error: syncRefreshError } = await withClientTimeout(
-        supabase.auth.refreshSession(),
-        "oauth_refresh_session",
-      );
+      const { error: syncRefreshError } = await supabase.auth.refreshSession();
       if (syncRefreshError) {
         console.warn("[session-recover] refreshSession:", syncRefreshError.message);
       }
@@ -440,15 +353,12 @@ export function AuthSessionRecoverClient({
       if (shouldForcePasswordSetup(data.session.user)) {
         if (data.session.user.user_metadata?.must_set_password !== true) {
           try {
-            await withClientTimeout(
-              supabase.auth.updateUser({
-                data: {
-                  ...data.session.user.user_metadata,
-                  must_set_password: true,
-                },
-              }),
-              "oauth_update_user",
-            );
+            await supabase.auth.updateUser({
+              data: {
+                ...data.session.user.user_metadata,
+                must_set_password: true,
+              },
+            });
           } catch (metadataError) {
             console.warn("[session-recover] must_set_password metadata update failed:", metadataError);
           }
@@ -469,41 +379,31 @@ export function AuthSessionRecoverClient({
               "",
           ).trim() || undefined;
 
-        const { data: refreshed } = await withClientTimeout(
-          supabase.auth.getSession(),
-          "oauth_register_session",
-        );
+        const { data: refreshed } = await supabase.auth.getSession();
         const bearerToken = refreshed.session?.access_token ?? data.session.access_token;
 
         try {
-          const response = await fetchWithClientTimeout(
-            "/api/account/onboarding",
-            {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${bearerToken}`,
-              },
-              body: JSON.stringify({
-                accountType: accountType === "individual" ? "individual" : "individual",
-                displayName,
-                countryCode: countryCode || undefined,
-                languageCode: languageCode || undefined,
-                roleKey: roleKey || undefined,
-              }),
+          const response = await fetch("/api/account/onboarding", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${bearerToken}`,
             },
-            "oauth_account_onboarding",
-          );
+            body: JSON.stringify({
+              accountType: accountType === "individual" ? "individual" : "individual",
+              displayName,
+              countryCode: countryCode || undefined,
+              languageCode: languageCode || undefined,
+              roleKey: roleKey || undefined,
+            }),
+          });
           const json = await readJsonSafely<{ ok?: boolean; redirectPath?: string; error?: string }>(
             response,
           );
 
           if (response.ok && json?.ok) {
-            const { error: refreshError } = await withClientTimeout(
-              supabase.auth.refreshSession(),
-              "oauth_refresh_after_onboarding",
-            );
+            const { error: refreshError } = await supabase.auth.refreshSession();
             if (refreshError) {
               console.warn("[session-recover] refreshSession after onboarding:", refreshError.message);
             }
@@ -516,10 +416,7 @@ export function AuthSessionRecoverClient({
           console.warn("[session-recover] account onboarding request failed:", onboardingError);
         }
 
-        const { error: refreshFallbackError } = await withClientTimeout(
-          supabase.auth.refreshSession(),
-          "oauth_refresh_fallback",
-        );
+        const { error: refreshFallbackError } = await supabase.auth.refreshSession();
         if (refreshFallbackError) {
           console.warn("[session-recover] refreshSession (fallback):", refreshFallbackError.message);
         }
@@ -528,24 +425,13 @@ export function AuthSessionRecoverClient({
       }
 
       setMessage("Hesap baglami kontrol ediliyor...");
-      const { data: postRefresh } = await withClientTimeout(
-        supabase.auth.getSession(),
-        "oauth_post_refresh_session",
-      );
+      const { data: postRefresh } = await supabase.auth.getSession();
       const accessToken = postRefresh.session?.access_token ?? data.session.access_token;
       const redirectPath = await resolvePostAuthRedirect(next, accessToken);
       window.location.replace(redirectPath);
     }
 
-    void recoverSession().catch((error) => {
-      if (cancelled) return;
-      const message = error instanceof Error ? error.message : String(error);
-      console.warn("[session-recover] unrecovered OAuth flow error:", message);
-      setMessage("Google oturumu tamamlanamadi. Login sayfasina donuluyor...");
-      window.setTimeout(() => {
-        redirectToLoginWithError(message);
-      }, 500);
-    });
+    void recoverSession();
 
     return () => {
       cancelled = true;
