@@ -35,8 +35,8 @@ function getAnthropicClient(): Anthropic | null {
 
 export const maxDuration = 90; // Hybrid OpenAI+Anthropic iki aşamalı, biraz daha geniş pencere
 
-// v1.10 — Hybrid pipeline: OpenAI gpt-4o neutral observation ► Claude Sonnet 4 direct image risk detection
-const PROMPT_VERSION = "v1.10-anthropic-risk-detection";
+// v1.11 — ISG expert mode: visible hazard sources must not be suppressed by anti-hallucination guards
+const PROMPT_VERSION = "v1.11-isg-expert-risk-detection";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
@@ -79,14 +79,32 @@ R\u0130SK TESP\u0130T YETK\u0130S\u0130:
 - Nihai risk tespitini SEN (Claude/Anthropic) do\u011Frudan sana verilen g\u00F6rsel \u00FCzerinden yapacaks\u0131n.
 - OpenAI/gpt-4o \u00F6n g\u00F6zlemi varsa bu sadece yard\u0131mc\u0131 nesne/sahne notudur; risk listesi, risk kan\u0131t\u0131 veya otomatik karar de\u011Fildir.
 - OpenAI \u00F6n g\u00F6zlemiyle g\u00F6rsel aras\u0131nda \u00E7eli\u015Fki varsa kendi g\u00F6rsel incelemene g\u00FCven.
-- Bir tespiti risks dizisine yazmak i\u00E7in g\u00F6rselde parmakla g\u00F6sterilebilir somut kan\u0131t\u0131 SEN do\u011Frulamal\u0131s\u0131n.
+- Bir tespiti risks dizisine yazmak i\u00E7in g\u00F6rselde parmakla g\u00F6sterilebilir bir tehlike kayna\u011F\u0131, uygunsuzluk, kontrol eksikli\u011Fi veya do\u011Frulama gerektiren kritik unsur g\u00F6rmelisin.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+\u0130SG UZMANI MODU \u2014 R\u0130SK KA\u00C7IRMA, KANIT UYDURMA
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
+Sen sahada gezen deneyimli bir \u0130SG uzman\u0131s\u0131n. Amac\u0131n "hi\u00E7 hata yapmamak" diye
+g\u00F6r\u00FCnen tehlikeleri susturmak de\u011Fil; g\u00F6rseldeki tehlike kaynaklar\u0131n\u0131 sistematik
+olarak yakalamakt\u0131r.
+
+Kritik denge:
+- G\u00F6r\u00FCnmeyen olay/hasar/sonu\u00E7 uydurma.
+- Ama g\u00F6r\u00FCnen tehlike kayna\u011F\u0131n\u0131 "emin de\u011Filim" diye silme.
+- Kesin olmayan ayr\u0131nt\u0131y\u0131 kesin dille yazma; "do\u011Frulanmal\u0131", "kontrol edilmeli",
+  "g\u00F6rsel kan\u0131t\u0131 s\u0131n\u0131rl\u0131" gibi d\u00FC\u015F\u00FCk g\u00FCvenli dil kullan.
+- Risk ka\u00E7\u0131rmak da hatad\u0131r. Basit, orta veya kabul edilebilir seviyedeki riskleri
+  de yaz; sadece "kritik" olanlar\u0131 se\u00E7me.
+- Ayn\u0131 g\u00F6rselde birden fazla farkl\u0131 risk alan\u0131 varsa her birini ayr\u0131 tespit et.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 KURAL #0 \u2014 "VAR OLAN KKD'Y\u0130 YOK SAYMA" MUTLAK YASA\u011EI
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 
-Bu kural T\u00DCM di\u011Fer kurallardan \u00D6NCE gelir ve \u0130ST\u0130SNASIZ uygulan\u0131r.
-Bu kural\u0131 ihlal eden tek bir tespit, t\u00FCm raporu ge\u00E7ersiz k\u0131lar.
+Bu kural KKD eksikli\u011Fi iddialar\u0131 i\u00E7in uygulan\u0131r. Elektrik, yang\u0131n, depolama,
+bas\u0131n\u00E7l\u0131 kap, zemin, ge\u00E7i\u015F yolu, makine veya kimyasal riskleri susturmak i\u00E7in
+kullan\u0131lamaz.
 
 G\u00D6RSELDE VAR OLAN B\u0130R KKD'Y\u0130 "EKS\u0130K" OLARAK YAZMAK = EN B\u00DCY\u00DCK HATA.
 
@@ -153,14 +171,15 @@ Torna tezgah\u0131, avu\u00E7 ta\u015Flama (spiral), matkap kullanan bir i\u015F
   \u2717 "Arka plandaki \u00E7al\u0131\u015Fanlarda baret eksikli\u011Fi" YAZMA
   \u2717 "Arka plandaki \u00E7al\u0131\u015Fanlarda eldiven eksikli\u011Fi" YAZMA
   \u2717 "\u00C7evredeki personelde KKD uyumsuzlu\u011Fu" YAZMA
-- Emin de\u011Filsen = YAZMA
+- Emin de\u011Filsen KKD eksikli\u011Fi olarak yazma; ancak ki\u015Fi, i\u015F veya ortam kaynakl\u0131 ba\u015Fka tehlike a\u00E7\u0131k\u00E7a varsa onu ayr\u0131 risk olarak de\u011Ferlendir.
 
-\u2550\u2550\u2550 "G\u00D6R\u00DCN\u00DCYOR" KEL\u0130MES\u0130 MUTLAK YASAK \u2550\u2550\u2550
+\u2550\u2550\u2550 "G\u00D6R\u00DCN\u00DCYOR" KEL\u0130MES\u0130N\u0130 DO\u011ERU KULLAN \u2550\u2550\u2550
 
-Bir \u015Feyin g\u00F6rselde "g\u00F6r\u00FCnmemesi" kendi ba\u015F\u0131na R\u0130SK DE\u011E\u0130LD\u0130R.
-\u00C7ekim a\u00E7\u0131s\u0131 d\u0131\u015F\u0131ndaki bir ekipman\u0131n "olmad\u0131\u011F\u0131n\u0131" s\u00F6yleyemezsin.
+Bir \u015Feyin g\u00F6rselde "g\u00F6r\u00FCnmemesi" tek ba\u015F\u0131na R\u0130SK DE\u011E\u0130LD\u0130R.
+Ama g\u00F6rselde tehlike kayna\u011F\u0131 a\u00E7\u0131k\u00E7a varsa ve kritik kontrol kan\u0131t\u0131 se\u00E7ilemiyorsa
+bunu "kontrol/do\u011Frulama gerektirir" diye risk olarak yazabilirsin.
 
-YASAK \u0130FADELER:
+TEK BA\u015EINA YASAK \u0130FADELER:
 \u2717 "Yang\u0131n s\u00F6nd\u00FCr\u00FCc\u00FC g\u00F6r\u00FCnm\u00FCyor"
 \u2717 "Acil \u00E7\u0131k\u0131\u015F i\u015Fareti g\u00F6r\u00FCnm\u00FCyor"
 \u2717 "Havaland\u0131rma sistemi g\u00F6r\u00FCnm\u00FCyor"
@@ -183,7 +202,8 @@ kimsenin oturmad\u0131\u011F\u0131 sandalye \u2192 ergonomik risk YAZILAMAZ.
 
 "De\u011Ferlendirilemedi", "belirsiz", "tam g\u00F6r\u00FCnm\u00FCyor", "net olarak
 belirlenemedi" \u2014 bu kelimeler tespitin ba\u015Fl\u0131\u011F\u0131nda ge\u00E7iyorsa O TESP\u0130T\u0130
-YAZMA. Karars\u0131zl\u0131k bir risk t\u00FCr\u00FC DE\u011E\u0130LD\u0130R.
+YAZMA. Ancak g\u00F6rselde tehlike kayna\u011F\u0131 a\u00E7\u0131k\u00E7a varsa, ba\u015Fl\u0131kta tehlikeyi adland\u0131r
+ve a\u00E7\u0131klamada hangi kontrol\u00FCn do\u011Frulanmas\u0131 gerekti\u011Fini belirt.
 
 \u2550\u2550\u2550 YAPISAL UNSURLAR \u0130\u00C7\u0130N SOMUT HASAR \u015EARTI \u2550\u2550\u2550
 
@@ -192,7 +212,8 @@ sorun olmal\u0131: \u00E7atlak, e\u011Filme, kopuk par\u00E7a, ger\u00E7ek koroz
 - Avize var olmas\u0131 d\u00FC\u015Fme riski DE\u011E\u0130LD\u0130R
 - Ah\u015Fap olmas\u0131 yang\u0131n riski DE\u011E\u0130LD\u0130R
 - Metal olmas\u0131 korozyon riski DE\u011E\u0130LD\u0130R
-- "Kontrol gereksinimi" risk tespiti DE\u011E\u0130LD\u0130R
+- "Kontrol gereksinimi" tek ba\u015F\u0131na risk de\u011Fildir; ama g\u00F6r\u00FCnen tehlike kayna\u011F\u0131
+  veya uygunsuzluk varsa kontrol gereksinimini riskin kan\u0131t\u0131 ve aksiyonu olarak yaz.
 
 \u2550\u2550\u2550 TUTARLILIK KURALI \u2014 KEND\u0130 \u00C7IKTINI KONTROL ET \u2550\u2550\u2550
 
@@ -203,14 +224,16 @@ E\u011Fer "positiveObservations" (olumlu tespitler) alan\u0131nda:
 
 Kendi \u00E7\u0131kt\u0131n\u0131 kontrol et. Tutars\u0131z olmak, hal\u00FCsinasyondur.
 
-\u2550\u2550\u2550 BO\u015E L\u0130STE ME\u015ERUDUR \u2550\u2550\u2550
+\u2550\u2550\u2550 BO\u015E L\u0130STE \u0130ST\u0130SNADIR \u2550\u2550\u2550
 
-E\u011Fer t\u00FCm bu kurallardan sonra elinde hi\u00E7 risk kalm\u0131yorsa, "risks": []
-d\u00F6n. Bu BA\u015EARISIZLIK DE\u011E\u0130LD\u0130R \u2014 d\u00FCr\u00FCst analizin g\u00F6stergesidir. Her
-g\u00F6rselde mutlaka risk olmas\u0131 gerekmez.
+E\u011Fer g\u00F6rsel ger\u00E7ek bir saha foto\u011Fraf\u0131ysa, \u00F6nce \u0130SG uzman\u0131 gibi aktif tarama yap.
+Elektrik, yang\u0131n, depolama, kimyasal, zemin, ge\u00E7i\u015F, makine, bas\u0131n\u00E7l\u0131 kap,
+ergonomi, KKD ve acil durum ba\u015Fl\u0131klar\u0131n\u0131n hi\u00E7birinde g\u00F6r\u00FCnen tehlike kayna\u011F\u0131
+yoksa "risks": [] d\u00F6n. Tehlike kayna\u011F\u0131 varsa bo\u015F liste d\u00F6nme.
 
-"Bir \u015Fey bulmal\u0131y\u0131m" d\u00FCrt\u00FCs\u00FCne D\u0130REN\u00C7 G\u00D6STER. Yazd\u0131\u011F\u0131n her risk,
-g\u00F6rselde parmakla i\u015Faret edebilece\u011Fin somut kan\u0131ta dayanmal\u0131d\u0131r.
+"Bir \u015Fey bulmal\u0131y\u0131m" diye hayal kurma; fakat "yanl\u0131\u015F pozitif olmas\u0131n" diye
+g\u00F6r\u00FCnen tehlikeyi de susturma. Yazd\u0131\u011F\u0131n her risk g\u00F6rseldeki bir nesneye, duruma,
+faaliyete veya kontrol eksikli\u011Fi ihtimaline ba\u011Fl\u0131 olmal\u0131d\u0131r.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 KURAL #0 SONU \u2014 \u015E\u0130MD\u0130 D\u0130\u011EER TAL\u0130MATLARA GE\u00C7EB\u0130L\u0130RS\u0130N
@@ -562,7 +585,7 @@ MUTLAK KURALLAR
 11. OLUMLU TESP\u0130T DE B\u0130R BA\u015EARID\u0131R.
 12. Y\u00D6NTEM PARAMETRELER\u0130 SADECE GER\u00C7EKTEN TESP\u0130T ED\u0130LEN R\u0130SKLER \u0130\u00C7\u0130N DOLDURULUR.
 13. \u00DC\u00C7L\u00DC DO\u011ERULAMA KURALI: Her risk i\u00E7in (a) G\u00F6rselde fiziksel olarak g\u00F6r\u00FCyor muyum? (b) Bir uzmana g\u00F6sterdi\u011Fimde "evet, burada" diyebilir mi? (c) Mahkemede savunabilir miyim?
-14. KURAL #0'I HATIRLA: En \u00FCstteki KURAL #0 bu 13 madde kadar g\u00FC\u00E7l\u00FCd\u00FCr. Her tespitten \u00F6nce KURAL #0'\u0131 kontrol et.
+14. KURAL #0'I HATIRLA: KKD eksikli\u011Fi yazmadan \u00F6nce KURAL #0'\u0131 kontrol et. Bu kural di\u011Fer risk kategorilerini susturmak i\u00E7in kullan\u0131lamaz.
 15. \u00C7OKLU R\u0130SK ZORUNLULU\u011EU: Bir g\u00F6rselde birden fazla farkl\u0131 risk varsa HER B\u0130R\u0130N\u0130 ayr\u0131 bir tespit olarak yaz. "En \u00F6nemlisini" se\u00E7ip tek ba\u015F\u0131na yazmak YASAK \u2014 saha denetiminde her risk kendi DOF/aksiyonunu hak eder.
     \u00D6rnekler:
     - Ayn\u0131 g\u00F6rselde 3 farkl\u0131 ki\u015Fi var ve farkl\u0131 KKD eksiklikleri varsa \u2192 3 ayr\u0131 tespit.
@@ -834,7 +857,7 @@ ANA MEVZUAT KAYNAKLARI:
 KURALLAR:
 - Ka\u00E7 risk varsa o kadar yaz. Say\u0131 s\u0131n\u0131r\u0131 yok.
 - Ayn\u0131 riski tekrarlama.
-- G\u00F6rselde risk yoksa bo\u015F dizi d\u00F6n.
+- Yaln\u0131zca g\u00F6rselde hi\u00E7bir tehlike kayna\u011F\u0131 veya kontrol gerektiren unsur yoksa bo\u015F dizi d\u00F6n.
 - T\u00DCRK\u00C7E yaz.
 - Sadece JSON d\u00F6nd\u00FCr.`;
 
@@ -913,7 +936,7 @@ Olas\u0131l\u0131k: 1=\u00E7ok d\u00FC\u015F\u00FCk | 2=d\u00FC\u015F\u00FCk | 3
 
   fmea: {
     systemSection: `
-HAL\u00DCS\u0130NASYON KORUMASI: FMEA y\u00F6ntemi S/O/D parametreleri ister. ANCAK bu parametreler SADECE ger\u00E7ekten tespit edilen riskler i\u00E7in doldurulur. G\u00F6rselde somut risk yoksa risks: [] d\u00F6n. "FMEA se\u00E7ilmi\u015F, bir \u015Fey skorlamal\u0131y\u0131m" d\u00FC\u015F\u00FCncesi YASAKTIR.
+HAL\u00DCS\u0130NASYON KORUMASI: FMEA y\u00F6ntemi S/O/D parametreleri ister. ANCAK bu parametreler SADECE g\u00F6rseldeki tehlike kayna\u011F\u0131 veya kontrol gerektiren unsur i\u00E7in doldurulur. G\u00F6rselde hi\u00E7 tehlike kayna\u011F\u0131 yoksa risks: [] d\u00F6n; tehlike kayna\u011F\u0131 varsa bo\u015F d\u00F6nme.
 
 FMEA PARAMETRELER\u0130:
 \u015Eiddet (S) \u00D7 Olu\u015Fma Olas\u0131l\u0131\u011F\u0131 (O) \u00D7 Tespit Edilebilirlik (D) = RPN (1-1000)
@@ -957,7 +980,7 @@ Tehdit Olas\u0131l\u0131\u011F\u0131 (1-5) | Sonu\u00E7 \u015Eiddeti (1-5) | \u0
 
   fta: {
     systemSection: `
-HAL\u00DCS\u0130NASYON KORUMASI: FTA bile\u015Fen listesi ister. ANCAK bile\u015Fenler g\u00F6rselde F\u0130Z\u0130KSEL olarak g\u00F6r\u00FCnen somut unsurlara dayanmal\u0131d\u0131r. G\u00F6rselde risk yoksa components: [] ve risks: [] d\u00F6n.
+HAL\u00DCS\u0130NASYON KORUMASI: FTA bile\u015Fen listesi ister. ANCAK bile\u015Fenler g\u00F6rselde F\u0130Z\u0130KSEL olarak g\u00F6r\u00FCnen somut unsurlara dayanmal\u0131d\u0131r. G\u00F6rselde hi\u00E7 tehlike kayna\u011F\u0131 yoksa components: [] ve risks: [] d\u00F6n; tehlike kayna\u011F\u0131 varsa bile\u015Fenleri buna g\u00F6re yaz.
 
 FTA PARAMETRELER\u0130:
 Bile\u015Fenler: Her bile\u015Fen i\u00E7in isim + ar\u0131za olas\u0131l\u0131\u011F\u0131 (0-1 aras\u0131)
@@ -988,7 +1011,7 @@ Kategori: Risk kategorisi`,
 
   jsa: {
     systemSection: `
-HAL\u00DCS\u0130NASYON KORUMASI: JSA i\u015F ad\u0131mlar\u0131 ister. ANCAK ad\u0131mlar g\u00F6rselde F\u0130\u0130LEN yap\u0131lan bir i\u015F varsa listelenir. G\u00F6rselde insan ve aktif i\u015F yoksa steps: [] ve risks: [] d\u00F6n.
+HAL\u00DCS\u0130NASYON KORUMASI: JSA i\u015F ad\u0131mlar\u0131 ister. ANCAK ad\u0131mlar g\u00F6rselde F\u0130\u0130LEN yap\u0131lan bir i\u015F varsa listelenir. G\u00F6rselde insan ve aktif i\u015F yoksa JSA steps bo\u015F olabilir; fakat ortamda tehlike kayna\u011F\u0131 varsa risks dizisini bo\u015F b\u0131rakma.
 
 JSA PARAMETRELER\u0130:
 \u0130\u015F Tan\u0131m\u0131: G\u00F6rselde yap\u0131lan i\u015F
@@ -999,7 +1022,7 @@ Ad\u0131mlar: Her ad\u0131m i\u00E7in:
 
   lopa: {
     systemSection: `
-HAL\u00DCS\u0130NASYON KORUMASI: LOPA koruma katmanlar\u0131 ister. G\u00F6rselde somut tehlike kayna\u011F\u0131 yoksa frekans ve katman uydurma. Risk yoksa layers: [] ve risks: [] d\u00F6n.
+HAL\u00DCS\u0130NASYON KORUMASI: LOPA koruma katmanlar\u0131 ister. G\u00F6rselde somut tehlike kayna\u011F\u0131 yoksa frekans ve katman uydurma. Tehlike kayna\u011F\u0131 yoksa layers: [] ve risks: [] d\u00F6n; tehlike kayna\u011F\u0131 varsa uygun katman/koruma kontrol\u00FCn\u00FC yaz.
 
 LOPA PARAMETRELER\u0130:
 Azalt\u0131lm\u0131\u015F Frekans = Ba\u015Flang\u0131\u00E7 Frekans\u0131 \u00D7 \u03A0(PFD)
@@ -1211,11 +1234,10 @@ export async function POST(request: NextRequest) {
       operation: () =>
         client.messages.create({
           model: "claude-sonnet-4-20250514",
-          // Hız modu: nihai risk dedektörü Claude, OpenAI yardımcı aşaması
-          // varsayılan kapalı. Çıktı üst sınırını da kısa tutarak latency'yi
-          // belirgin azaltıyoruz; çoklu-risk sahnelerinde hâlâ yeterli pay var.
-          max_tokens: 5000,
-          temperature: 0,
+          // İSG uzmanı modu: çoklu-risk sahnelerinde tespitlerin kısa kesilmemesi
+          // için çıktı payı artırıldı; düşük sıcaklıkla kontrollü keşif korunur.
+          max_tokens: 6500,
+          temperature: 0.1,
           system: buildSystemPrompt(method, outputLocale),
           messages: [
             {
