@@ -20,6 +20,18 @@ const PUBLIC_PATHS = [
   "/manifest.webmanifest",
 ];
 
+const COOKIE_AGNOSTIC_PUBLIC_PATHS = new Set([
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/pricing",
+  "/privacy",
+  "/delete-account",
+  "/terms",
+  "/refund-policy",
+]);
+
 // Cron / webhook endpoint'leri — kendi header-based auth'larını yapıyorlar
 // (örn. x-self-healing-key). Middleware bunları auth gating'den muaf tutmalı,
 // yoksa cron user'ı olmadığı için /login'e redirect yiyor ve 307 dönüyor.
@@ -98,6 +110,12 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/session-recover";
     return NextResponse.redirect(url, 307);
+  }
+
+  if (COOKIE_AGNOSTIC_PUBLIC_PATHS.has(pathname) && !hasOAuthCode) {
+    return NextResponse.next({
+      request,
+    });
   }
 
   if (isPublic && !hasAuthCookie && !hasOAuthCode) {
