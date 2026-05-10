@@ -601,9 +601,6 @@ export function RiskAnalysisWorkbenchClient() {
       updateImage(image.id, { status: "analyzing", message: "AI riskleri çıkarıyor..." });
       const controller = new AbortController();
       abortRef.current = controller;
-      // Sunucu: maxDuration 180s, işlem ~getRiskAnalysisOperationTimeoutMs() (varsayılan 160s).
-      // İstemci daha erken keserse sunucu yanıt verse bile ağda "abort" görülür.
-      const timeout = window.setTimeout(() => controller.abort(), 185_000);
 
       try {
         const response = await fetch("/api/analyze-risk", {
@@ -690,7 +687,6 @@ export function RiskAnalysisWorkbenchClient() {
           degraded: true,
         };
       } finally {
-        window.clearTimeout(timeout);
         if (abortRef.current === controller) abortRef.current = null;
       }
     },

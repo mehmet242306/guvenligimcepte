@@ -37,7 +37,8 @@ type ResilienceExecutionOptions<T> = {
   organizationId?: string | null;
   userId?: string | null;
   companyWorkspaceId?: string | null;
-  timeoutMs?: number;
+  /** İşlem süresi üst sınırı (ms). `null` = sarmalayıcı zaman aşımı yok (yalnızca host/SDK limitleri). */
+  timeoutMs?: number | null;
   retryDelaysMs?: number[];
   openAfterFailures?: number;
   cooldownSeconds?: number;
@@ -249,7 +250,8 @@ function isCircuitOpen(state: CircuitStateRow | null) {
 export async function executeWithResilience<T>(
   options: ResilienceExecutionOptions<T>,
 ): Promise<ResilienceResult<T>> {
-  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const timeoutMs =
+    options.timeoutMs === null ? null : (options.timeoutMs ?? DEFAULT_TIMEOUT_MS);
   const retryDelaysMs = options.retryDelaysMs ?? DEFAULT_RETRY_DELAYS;
   const openAfterFailures = options.openAfterFailures ?? DEFAULT_OPEN_AFTER_FAILURES;
   const cooldownSeconds = options.cooldownSeconds ?? DEFAULT_COOLDOWN_SECONDS;
@@ -303,7 +305,10 @@ export async function executeWithResilience<T>(
 
   for (let attempt = 0; attempt < retryDelaysMs.length; attempt += 1) {
     try {
-      const data = await withTimeout(options.operation(), timeoutMs);
+      const data =
+        timeoutMs === null
+          ? await options.operation()
+          : await withTimeout(options.operation(), timeoutMs);
       await recordServiceSuccess(options.serviceKey, options.displayName, options.serviceType);
       return {
         ok: true,

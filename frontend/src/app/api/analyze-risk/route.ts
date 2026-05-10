@@ -21,30 +21,34 @@ import {
 
 let anthropicClient: Anthropic | null = null;
 
+/** Route süre tavanı (sn). Planınız daha düşükse Vercel üst sınırı uygular. */
+const RISK_ANALYZE_ROUTE_MAX_DURATION_SEC = 300;
+export const maxDuration = RISK_ANALYZE_ROUTE_MAX_DURATION_SEC;
+
 function getAnthropicClient(): Anthropic | null {
   const apiKey = getAnthropicKey();
   if (!apiKey) return null;
   anthropicClient ??= new Anthropic({
     apiKey,
-    // Varsayılan 10 dk; resilience ile uyumlu üst sınır (LLM bekleme süresi).
-    timeout: 170_000,
+    timeout: Math.min(600_000, RISK_ANALYZE_ROUTE_MAX_DURATION_SEC * 1000 - 8_000),
     maxRetries: 1,
   });
   return anthropicClient;
 }
 
-// Görsel + JSON çıktısı üretimde 60–120 sn sürebilir; iç zamanlayıcı (resilience) bundan kısa olmamalı.
-// Vercel Project Settings → Functions → Max Duration bu değere yakın olmalı (ör. 180 sn).
-export const maxDuration = 180;
-
-/** Tek Anthropic çağrısı için üst süre (ms). SDK varsayılanı 10 dk; darboğaz bizim wrap. Ortamdan sıkılabilir. */
-function getRiskAnalysisOperationTimeoutMs(): number {
+/**
+ * İsteğe bağlı üst süre (ms): `RISK_ANALYSIS_OPERATION_TIMEOUT_MS`.
+ * Tanımsız = sarmalayıcı yok (yalnızca Anthropic SDK + Vercel function süresi).
+ * `0` veya boş string = açıkça sınırsız.
+ */
+function getRiskAnalysisOperationTimeoutMs(): number | null {
   const raw = process.env.RISK_ANALYSIS_OPERATION_TIMEOUT_MS?.trim();
+  if (raw === "0" || raw === "") return null;
   if (raw && /^\d+$/.test(raw)) {
     const n = Number(raw);
-    if (n >= 30_000 && n <= 170_000) return n;
+    if (n >= 30_000 && n <= 900_000) return n;
   }
-  return 160_000;
+  return null;
 }
 
 // Daha agresif tespit için threshold'lar gevşetildi (kullanıcı geri bildirimi:
@@ -350,8 +354,6 @@ export async function POST(request: NextRequest) {
     // Bir Anthropic çağrısı çoğu zaman 40–120 sn sürer. İki kez 65 sn denemek hem UX kötü
     // hem de ikinci denemede yine kesilebiliyor. Tek deneme + uzun süre (SDK zaten 10 dk).
     // retryDelaysMs uzunluğu 1 = tek deneme (executeWithResilience döngüsü).
-    // Fast mod da tam görsel+JSON üretir; 120 sn tavanı sık sık Anthropic'ı kesiyordu
-    // (kullanıcıda "zaman aşımı" + ön envanter). Standart ile aynı üst süre.
     const operationTimeoutMs = getRiskAnalysisOperationTimeoutMs();
     const resilientResponse = await executeWithResilience({
       serviceKey: mode === "fast" ? "anthropic.risk_analysis.fast_v3" : "anthropic.risk_analysis.fast_v2",
