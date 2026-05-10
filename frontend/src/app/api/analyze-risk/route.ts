@@ -2,14 +2,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
-import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { requireAuth } from "@/lib/supabase/api-auth";
-import {
-  enforceRateLimit,
-  logSecurityEvent,
-  resolveAiDailyLimit,
-} from "@/lib/security/server";
-import { executeWithResilience } from "@/lib/self-healing/resilience";
+import { logSecurityEvent } from "@/lib/security/server";
 import { getAnthropicKey, getRiskAnalysisVisionModel } from "@/lib/ai/provider-keys";
 import {
   buildFastSystemPrompt,
@@ -21,8 +15,7 @@ import {
 
 let anthropicClient: Anthropic | null = null;
 
-// Next.js 16: segment config yalnızca doğrudan sayı literal ile export edilebilir
-// (sabit referansı kullanmak "Invalid segment configuration" ile build'i düşürür).
+// Next.js 16: literal gerekir. Gerçek üst sınır Vercel plan + Projedeki Function Max Duration.
 export const maxDuration = 300;
 
 function getAnthropicClient(): Anthropic | null {
@@ -30,25 +23,11 @@ function getAnthropicClient(): Anthropic | null {
   if (!apiKey) return null;
   anthropicClient ??= new Anthropic({
     apiKey,
-    timeout: Math.min(600_000, maxDuration * 1000 - 8_000),
-    maxRetries: 1,
+    // SDK tek sınır: route maxDuration’a yakın (iç wrap/retry yok).
+    timeout: Math.min(600_000, maxDuration * 1000 - 5_000),
+    maxRetries: 0,
   });
   return anthropicClient;
-}
-
-/**
- * İsteğe bağlı üst süre (ms): `RISK_ANALYSIS_OPERATION_TIMEOUT_MS`.
- * Tanımsız = sarmalayıcı yok (yalnızca Anthropic SDK + Vercel function süresi).
- * `0` veya boş string = açıkça sınırsız.
- */
-function getRiskAnalysisOperationTimeoutMs(): number | null {
-  const raw = process.env.RISK_ANALYSIS_OPERATION_TIMEOUT_MS?.trim();
-  if (raw === "0" || raw === "") return null;
-  if (raw && /^\d+$/.test(raw)) {
-    const n = Number(raw);
-    if (n >= 30_000 && n <= 900_000) return n;
-  }
-  return null;
 }
 
 // Daha agresif tespit için threshold'lar gevşetildi (kullanıcı geri bildirimi:
@@ -90,7 +69,7 @@ function normalizeSquareAnnotation(risk: Record<string, any>, index: number): Re
 }
 
 const analyzeRiskSchema = z.object({
-  imageBase64: z.string().min(100).max(20_000_000),
+  imageBase64: z.string().min(100).max(45_000_000),
   mimeType: z.enum(["image/jpeg", "image/png", "image/gif", "image/webp"]),
   method: z
     .enum(["r_skor", "fine_kinney", "l_matrix", "fmea", "hazop", "bow_tie", "fta", "checklist", "jsa", "lopa"])
@@ -269,26 +248,13 @@ function normalizeAnalyzeRiskPayload(raw: unknown): unknown {
 /* ================================================================== */
 
 export async function POST(request: NextRequest) {
-  // GÜVENLİK: requireAuth + günlük rate limit + risk_analysis kotası.
-  // Hız odaklı varsayılan: Claude 3.5 Haiku vision (RISK_ANALYSIS_ANTHROPIC_MODEL ile değiştirilebilir).
-  // Risk görsel analizi yalnız Anthropic üzerinden çalışır; OpenAI kredisi/API anahtarı gerektirmez.
+  // Kimlik doğrulama zorunlu. Günlük kota / rate limit bu endpoint'te kapatıldı
+  // (yalnızca görsel risk AI — iç zaman aşımı ve retry katmanı da kaldırıldı).
   const auth = await requireAuth(request);
   if (!auth.ok) return auth.response;
 
   try {
     const visionModel = getRiskAnalysisVisionModel();
-    const plan = await resolveAiDailyLimit(auth.userId);
-    const rateLimitResponse = await enforceRateLimit(request, {
-      userId: auth.userId,
-      organizationId: auth.organizationId,
-      endpoint: "/api/analyze-risk",
-      scope: "ai",
-      limit: plan.dailyLimit,
-      windowSeconds: 24 * 60 * 60,
-      planKey: plan.planKey,
-      metadata: { feature: "analyze_risk" },
-    });
-    if (rateLimitResponse) return rateLimitResponse;
 
     const rawBody = await request.json().catch(() => null);
     const parsedBody = analyzeRiskSchema.safeParse(normalizeAnalyzeRiskPayload(rawBody));
@@ -307,9 +273,6 @@ export async function POST(request: NextRequest) {
     if (!imageBase64 || !mimeType) {
       return NextResponse.json({ error: "imageBase64 ve mimeType gerekli" }, { status: 400 });
     }
-
-    const entitlementResponse = await consumeEntitlement(auth, "risk_analysis");
-    if (entitlementResponse) return entitlementResponse;
 
     const client = getAnthropicClient();
     if (!client) {
@@ -347,61 +310,41 @@ export async function POST(request: NextRequest) {
       .filter(Boolean)
       .join("\n\n");
 
-    // ═══════════════════════════════════════════════════════════════════
-    // STAGE — Anthropic Claude Vision: DOĞRUDAN GÖRSEL ÜZERİNDEN RİSK TESPİTİ
-    // ═══════════════════════════════════════════════════════════════════
-    // Risk listesi, skorlar ve öneriler Claude'un doğrudan görsel incelemesiyle üretilir.
-    // Bir Anthropic çağrısı çoğu zaman 40–120 sn sürer. İki kez 65 sn denemek hem UX kötü
-    // hem de ikinci denemede yine kesilebiliyor. Tek deneme + uzun süre (SDK zaten 10 dk).
-    // retryDelaysMs uzunluğu 1 = tek deneme (executeWithResilience döngüsü).
-    const operationTimeoutMs = getRiskAnalysisOperationTimeoutMs();
-    const resilientResponse = await executeWithResilience({
-      serviceKey: mode === "fast" ? "anthropic.risk_analysis.fast_v3" : "anthropic.risk_analysis.fast_v2",
-      displayName: "Anthropic API",
-      serviceType: "external_api",
-      operationName: "risk_image_analysis",
-      endpoint: request.nextUrl.pathname,
-      userId: auth.userId,
-      organizationId: auth.organizationId,
-      timeoutMs: operationTimeoutMs,
-      retryDelaysMs: [4000],
-      openAfterFailures: 8,
-      cooldownSeconds: 60,
-      fallbackMessage:
-        "AI gorsel analizi gecici olarak kullanilamiyor (zaman asimi). Lutfen yeniden baslatin veya manuel risk girisiyle devam edin.",
-      operation: () =>
-        client.messages.create({
-          model: visionModel,
-          // Haiku varsayılan (hız); RISK_ANALYSIS_ANTHROPIC_MODEL ile Sonnet seçilebilir.
-          max_tokens: mode === "fast" ? 1400 : 2400,
-          temperature: 0.2,
-          system: mode === "fast" ? buildFastSystemPrompt(outputLocale) : buildSystemPrompt(method, outputLocale),
-          messages: [
-            {
-              role: "user",
-              content: [
-                {
-                  type: "image",
-                  source: {
-                    type: "base64",
-                    media_type: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
-                    data: imageBase64,
-                  },
-                },
-                {
-                  type: "text",
-                  text: augmentedUserPrompt,
-                },
-              ],
-            },
-          ],
-        }),
-    });
+    const fallbackUserMessage =
+      "AI gorsel analizi gecici olarak kullanilamiyor (zaman asimi). Lutfen yeniden baslatin veya manuel risk girisiyle devam edin.";
 
-    if (!resilientResponse.ok) {
+    let response: Awaited<ReturnType<Anthropic["messages"]["create"]>>;
+    try {
+      response = await client.messages.create({
+        model: visionModel,
+        max_tokens: 8192,
+        temperature: 0.2,
+        system: mode === "fast" ? buildFastSystemPrompt(outputLocale) : buildSystemPrompt(method, outputLocale),
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "image",
+                source: {
+                  type: "base64",
+                  media_type: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
+                  data: imageBase64,
+                },
+              },
+              {
+                type: "text",
+                text: augmentedUserPrompt,
+              },
+            ],
+          },
+        ],
+      });
+    } catch (err) {
       const duration = Date.now() - startTime;
+      const errMsg = err instanceof Error ? err.message : String(err);
       const isTransientAiFailure =
-        /timeout|timed out|overloaded|temporar|socket|network|connection|503|529/i.test(resilientResponse.error);
+        /timeout|timed out|overloaded|temporar|socket|network|connection|503|529/i.test(errMsg);
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
@@ -412,19 +355,18 @@ export async function POST(request: NextRequest) {
           method,
           mode,
           fallback: true,
-          fallbackReason: resilientResponse.error.slice(0, 300),
-          queueTaskId: resilientResponse.queuedTaskId ?? null,
+          fallbackReason: errMsg.slice(0, 300),
+          directAnthropic: true,
         },
       });
 
       if (!isTransientAiFailure) {
         return NextResponse.json(
           {
-            error: resilientResponse.fallbackMessage,
+            error: fallbackUserMessage,
             degraded: true,
             retryable: true,
             stage: "anthropic_reasoning",
-            queueTaskId: resilientResponse.queuedTaskId ?? null,
           },
           { status: 502 },
         );
@@ -432,18 +374,15 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json(
         {
-          error: resilientResponse.fallbackMessage,
+          error: fallbackUserMessage,
           degraded: true,
           retryable: true,
           stage: "anthropic_timeout",
-          queueTaskId: resilientResponse.queuedTaskId ?? null,
           durationMs: duration,
         },
         { status: 504 },
       );
     }
-
-    const response = resilientResponse.data;
 
     const textBlock = response.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") {
@@ -709,7 +648,7 @@ export async function POST(request: NextRequest) {
       method,
       visionModel,
       promptVersion: RISK_ANALYSIS_PROMPT_VERSION,
-      degraded: resilientResponse.degraded,
+      degraded: false,
       durationMs: duration,
       tokensInput: response.usage?.input_tokens ?? 0,
       tokensOutput: response.usage?.output_tokens ?? 0,

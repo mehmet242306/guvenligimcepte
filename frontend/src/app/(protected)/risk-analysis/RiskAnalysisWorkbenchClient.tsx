@@ -400,33 +400,28 @@ function imageStatusLabel(status: ImageStatus) {
   }
 }
 
-async function fileToAnalysisPayload(file: File): Promise<{ base64: string; mimeType: "image/jpeg" }> {
-  const objectUrl = URL.createObjectURL(file);
-  try {
-    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error("Görsel okunamadı"));
-      img.src = objectUrl;
-    });
-
-    const max = 900;
-    const ratio = Math.min(1, max / Math.max(image.width, image.height));
-    const width = Math.max(1, Math.round(image.width * ratio));
-    const height = Math.max(1, Math.round(image.height * ratio));
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("Canvas başlatılamadı");
-    ctx.drawImage(image, 0, 0, width, height);
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
-    const base64 = dataUrl.split(",")[1] ?? "";
-    if (!base64) throw new Error("Görsel sıkıştırılamadı");
-    return { base64, mimeType: "image/jpeg" };
-  } finally {
-    URL.revokeObjectURL(objectUrl);
-  }
+async function fileToAnalysisPayload(
+  file: File,
+): Promise<{ base64: string; mimeType: "image/jpeg" | "image/png" | "image/webp" | "image/gif" }> {
+  const mimeType: "image/jpeg" | "image/png" | "image/webp" | "image/gif" =
+    file.type === "image/png" || file.type === "image/webp" || file.type === "image/gif"
+      ? file.type
+      : "image/jpeg";
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      const match = /^data:[^;]+;base64,(.+)$/i.exec(dataUrl);
+      const base64 = match?.[1]?.replace(/\s/g, "") ?? "";
+      if (!base64) {
+        reject(new Error("Görsel okunamadı"));
+        return;
+      }
+      resolve({ base64, mimeType });
+    };
+    reader.onerror = () => reject(reader.error ?? new Error("Görsel okunamadı"));
+    reader.readAsDataURL(file);
+  });
 }
 
 async function readJsonOrText(response: Response): Promise<Record<string, unknown>> {

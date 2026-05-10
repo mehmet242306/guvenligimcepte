@@ -1665,32 +1665,29 @@ export function RiskAnalysisClient() {
 
   /* ── Analyze ── */
   /** G?rsel dosyayi base64'e cevir */
-  /** Görseli max 1280px'e küçültüp JPEG'e çevirir (yük boyutu + API süresi için) */
+  /** Orijinal görseli base64 olarak gönderir (API tarafında ek sıkıştırma yok). */
   async function fileToBase64(file: File): Promise<{ base64: string; mimeType: string }> {
+    const mimeType =
+      file.type === "image/jpeg" ||
+      file.type === "image/png" ||
+      file.type === "image/webp" ||
+      file.type === "image/gif"
+        ? file.type
+        : "image/jpeg";
     return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        const MAX = 960;
-        let w = img.width;
-        let h = img.height;
-        if (w > MAX || h > MAX) {
-          const ratio = Math.min(MAX / w, MAX / h);
-          w = Math.round(w * ratio);
-          h = Math.round(h * ratio);
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result as string;
+        const match = /^data:[^;]+;base64,(.+)$/i.exec(dataUrl);
+        const raw = match?.[1]?.replace(/\s/g, "") ?? "";
+        if (!raw) {
+          reject(new Error("Görsel base64 okunamadı"));
+          return;
         }
-        const canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) { reject(new Error(trRiskScoring("defaults.canvasNoContext"))); return; }
-        ctx.drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.74);
-        const base64 = dataUrl.split(",")[1];
-        resolve({ base64, mimeType: "image/jpeg" });
-        URL.revokeObjectURL(img.src);
+        resolve({ base64: raw, mimeType });
       };
-      img.onerror = reject;
-      img.src = URL.createObjectURL(file);
+      reader.onerror = () => reject(reader.error ?? new Error("Dosya okunamadı"));
+      reader.readAsDataURL(file);
     });
   }
 
