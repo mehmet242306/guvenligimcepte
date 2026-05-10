@@ -91,6 +91,7 @@ import {
   loadRiskAssessment,
   deleteRiskAssessment,
   uploadRiskAnalysisImageForDraft,
+  toggleRiskSharing,
   type SavedAssessment,
   type SaveRiskAnalysisInput,
   type RiskImageUploadResult,
@@ -2242,6 +2243,25 @@ JSON formatında döndür:
   }
 
   async function buildExportData(): Promise<RiskAnalysisExportData> {
+    let shareUrl = "";
+    let shareQrDataUrl = "";
+    if (currentAssessmentId && typeof window !== "undefined") {
+      const share = await toggleRiskSharing(currentAssessmentId, true);
+      if (share.ok && share.shareToken) {
+        shareUrl = `${window.location.origin}/share/risk/${share.shareToken}`;
+        try {
+          const QRCode = (await import("qrcode")).default;
+          shareQrDataUrl = await QRCode.toDataURL(shareUrl, {
+            width: 140,
+            margin: 1,
+            color: { dark: "#0F172A", light: "#FFFFFF" },
+          });
+        } catch (err) {
+          console.warn("[risk-analysis] QR kod üretilemedi:", err);
+        }
+      }
+    }
+
     const findings: ExportFinding[] = allFindings.map((f) => {
       const sc = getActiveScore(f, method);
       const rc = getActiveRiskClass(f, method);
@@ -2333,6 +2353,8 @@ JSON formatında döndür:
       criticalCount: criticalHighCount,
       dofCandidateCount,
       date: new Date().toLocaleDateString(intlLocaleTag(locale as Locale)),
+      shareUrl: shareUrl || undefined,
+      shareQrDataUrl: shareQrDataUrl || undefined,
     };
   }
 
@@ -3290,6 +3312,13 @@ JSON formatında döndür:
       {/* ═══════════════ STEP 4: SONUÇLAR ═══════════════ */}
       {step === 4 && (
         <div className="space-y-6">
+          <div className="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
+            <p className="font-semibold">AI hata yapabilir, çıktılar yetkin İSG uzmanı tarafından kontrol edilmelidir.</p>
+            <p className="mt-1">
+              PDF ve Word raporlarında QR kod bulunur; kayıtlı analizlerde bu kod dijital raporu açarak üçüncü taraf kontrolünü kolaylaştırır.
+            </p>
+          </div>
+
           {/* Ozet bandi — 6 kart: Toplam | Acil | Kritik+Yuksek | Kabul Edilebilir | DOF | Ort.Skor + Rapor (ayri satir) */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
