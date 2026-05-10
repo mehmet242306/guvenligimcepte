@@ -53,6 +53,47 @@ function isDemoEscapeApi(pathname: string) {
 
 const CANONICAL_HOST = "getrisknova.com";
 const LEGACY_HOSTS = new Set(["getrisknova.vercel.app"]);
+const MIDDLEWARE_AUTH_TIMEOUT_MS = 2500;
+
+const COOKIE_AGNOSTIC_PUBLIC_PATHS = new Set([
+  "/",
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/pricing",
+  "/privacy",
+  "/privacy-policy",
+  "/cookie-policy",
+  "/delete-account",
+  "/terms",
+  "/terms-and-conditions",
+  "/refund-policy",
+]);
+
+async function withMiddlewareTimeout<T>(
+  promise: Promise<T>,
+  label: string,
+  timeoutMs = MIDDLEWARE_AUTH_TIMEOUT_MS,
+): Promise<T | null> {
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<null>((resolve) => {
+    timeoutHandle = setTimeout(() => {
+      console.warn(`[middleware] ${label} timed out after ${timeoutMs}ms`);
+      resolve(null);
+    }, timeoutMs);
+  });
+
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[middleware] ${label} failed: ${message}`);
+    return null;
+  } finally {
+    if (timeoutHandle) clearTimeout(timeoutHandle);
+  }
+}
 
 export async function updateSession(request: NextRequest) {
   if (LEGACY_HOSTS.has(request.nextUrl.hostname)) {
@@ -100,6 +141,12 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url, 307);
   }
 
+  if (COOKIE_AGNOSTIC_PUBLIC_PATHS.has(pathname) && !hasOAuthCode) {
+    return NextResponse.next({
+      request,
+    });
+  }
+
   if (isPublic && !hasAuthCookie && !hasOAuthCode) {
     return NextResponse.next({
       request,
@@ -110,9 +157,32 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!supabaseUrl || !supabasePublishableKey) {
+    console.warn("[middleware] Supabase public env vars are missing");
+
+    if (isPublic) {
+      return supabaseResponse;
+    }
+
+    if (pathname.startsWith("/api")) {
+      return NextResponse.json(
+        { error: "Authentication service unavailable.", code: "AUTH_CONFIG_MISSING" },
+        { status: 503 },
+      );
+    }
+
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("error", "Authentication service unavailable.");
+    return NextResponse.redirect(url);
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    supabaseUrl,
+    supabasePublishableKey,
     {
       cookieOptions: supabaseAuthCookieOptions,
       cookies: {
@@ -134,9 +204,32 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
+  const userResponse = await withMiddlewareTimeout(
+    supabase.auth.getUser(),
+    "supabase.auth.getUser",
+  );
+
+  if (!userResponse) {
+    if (isPublic) {
+      return supabaseResponse;
+    }
+
+    if (pathname.startsWith("/api")) {
+      return NextResponse.json(
+        { error: "Authentication service timed out.", code: "AUTH_TIMEOUT" },
+        { status: 503 },
+      );
+    }
+
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("error", "Authentication service timed out. Please try again.");
+    return NextResponse.redirect(url);
+  }
+
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = userResponse;
 
   const providers = Array.isArray(user?.app_metadata?.providers)
     ? (user.app_metadata.providers as unknown[]).map((provider) => String(provider))
@@ -214,10 +307,19 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && (!isPublic || isRouteAuthApiEndpoint)) {
-    const [{ data: assuranceData, error: assuranceError }, { data: factorData, error: factorError }] = await Promise.all([
-      supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
-      supabase.auth.mfa.listFactors(),
-    ]);
+    const mfaResponse = await withMiddlewareTimeout(
+      Promise.all([
+        supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
+        supabase.auth.mfa.listFactors(),
+      ]),
+      "supabase.auth.mfa",
+    );
+
+    if (!mfaResponse) {
+      return supabaseResponse;
+    }
+
+    const [{ data: assuranceData, error: assuranceError }, { data: factorData, error: factorError }] = mfaResponse;
     const verifiedFactors = [
       ...(factorData?.totp ?? []),
       ...(factorData?.phone ?? []),
