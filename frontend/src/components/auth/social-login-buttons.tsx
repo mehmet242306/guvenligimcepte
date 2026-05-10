@@ -140,11 +140,9 @@ export function SocialLoginButtons({ mode = "login", nextPath }: SocialLoginProp
       options: {
         redirectTo: callbackUrl.toString(),
         skipBrowserRedirect: true,
-        // consent: her oturumda tam izin ekranı — Google tarafında daha yavaş / daha sık hata.
-        // select_account: hesap seçimi; offline refresh için access_type yeterli (ilk onayda consent alınır).
         queryParams:
           provider === "google"
-            ? { access_type: "offline", prompt: "select_account" }
+            ? { access_type: "offline", prompt: "consent" }
             : undefined,
       },
     });
