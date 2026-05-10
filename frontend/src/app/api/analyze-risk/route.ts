@@ -24,15 +24,30 @@ let anthropicClient: Anthropic | null = null;
 function getAnthropicClient(): Anthropic | null {
   const apiKey = getAnthropicKey();
   if (!apiKey) return null;
-  anthropicClient ??= new Anthropic({ apiKey });
+  anthropicClient ??= new Anthropic({
+    apiKey,
+    // Varsayılan 10 dk; resilience ile uyumlu üst sınır (LLM bekleme süresi).
+    timeout: 170_000,
+    maxRetries: 1,
+  });
   return anthropicClient;
 }
 
-// Vision + uzun İSG prompt cevapları sıklıkla 40–70 sn sürebilir; iki deneme + marj için yüksek tutulur.
-// Vercel: Pro/Enterprise dashboard üzerinde fonksiyon süresi limiti bu değere uygun olmalıdır.
-export const maxDuration = 150;
+// Görsel + JSON çıktısı üretimde 60–120 sn sürebilir; iç zamanlayıcı (resilience) bundan kısa olmamalı.
+// Vercel Project Settings → Functions → Max Duration bu değere yakın olmalı (ör. 180 sn).
+export const maxDuration = 180;
 
-const PROMPT_VERSION = "v2.4-resilience-timeout-vision";
+const PROMPT_VERSION = "v2.5-single-long-timeout-compact-legal";
+
+/** Tek Anthropic çağrısı için üst süre (ms). SDK varsayılanı 10 dk; darboğaz bizim wrap. Ortamdan sıkılabilir. */
+function getRiskAnalysisOperationTimeoutMs(): number {
+  const raw = process.env.RISK_ANALYSIS_OPERATION_TIMEOUT_MS?.trim();
+  if (raw && /^\d+$/.test(raw)) {
+    const n = Number(raw);
+    if (n >= 30_000 && n <= 170_000) return n;
+  }
+  return 135_000;
+}
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
@@ -1057,31 +1072,12 @@ olduğunu somut olarak açıkla.
 - Ciddiyet: low | medium | high | critical
 - Konum: Riskin görseldeki konumu (pinX, pinY yüzde 0-100)`;
 
+/** Kısa tutulur (token/süre); uzun kanun listesi modelin bağlamını şişiriyordu ve yanıtı geciktiriyordu. */
 const LEGAL_PROMPT = `
-MEVZUAT REFERANSLARI:
-HER TESP\u0130T \u0130\u00C7\u0130N en az 1, tercihen 2-3 mevzuat referans\u0131 ver. Referanslar GER\u00C7EK ve DO\u011ERU olmal\u0131.
-
-ANA MEVZUAT KAYNAKLARI:
-1. 6331 say\u0131l\u0131 \u0130\u015F Sa\u011Fl\u0131\u011F\u0131 ve G\u00FCvenli\u011Fi Kanunu (Madde 4-5-10-13-16-17-30)
-2. \u0130\u015F Ekipmanlar\u0131n\u0131n Kullan\u0131m\u0131nda Sa\u011Fl\u0131k ve G\u00FCvenlik \u015Eartlar\u0131 Y\u00F6netmeli\u011Fi
-3. Ki\u015Fisel Koruyucu Donan\u0131mlar\u0131n \u0130\u015Fyerlerinde Kullan\u0131lmas\u0131 Hakk\u0131nda Y\u00F6netmelik
-4. \u0130\u015Fyeri Bina ve Eklentilerinde Al\u0131nacak Sa\u011Fl\u0131k ve G\u00FCvenlik \u00D6nlemlerine \u0130li\u015Fkin Y\u00F6netmelik
-5. Binalar\u0131n Yang\u0131ndan Korunmas\u0131 Hakk\u0131nda Y\u00F6netmelik (2007/12937)
-6. Elektrik \u0130\u00E7 Tesisleri Y\u00F6netmeli\u011Fi
-7. Kimyasal Maddelerle \u00C7al\u0131\u015Fmalarda Sa\u011Fl\u0131k ve G\u00FCvenlik \u00D6nlemleri Hakk\u0131nda Y\u00F6netmelik
-8. Yap\u0131 \u0130\u015Flerinde \u0130\u015F Sa\u011Fl\u0131\u011F\u0131 ve G\u00FCvenli\u011Fi Y\u00F6netmeli\u011Fi
-9. Makine Emniyeti Y\u00F6netmeli\u011Fi (2006/42/AT)
-10. \u0130\u015F Sa\u011Fl\u0131\u011F\u0131 ve G\u00FCvenli\u011Fi Risk De\u011Ferlendirmesi Y\u00F6netmeli\u011Fi
-11. Elle Ta\u015F\u0131ma \u0130\u015Fleri Y\u00F6netmeli\u011Fi
-12. Sa\u011Fl\u0131k ve G\u00FCvenlik \u0130\u015Faretleri Y\u00F6netmeli\u011Fi
-13. \u0130\u015Fyerlerinde Acil Durumlar Hakk\u0131nda Y\u00F6netmelik
-
-KURALLAR:
-- Ka\u00E7 risk varsa o kadar yaz. Say\u0131 s\u0131n\u0131r\u0131 yok.
-- Ayn\u0131 riski tekrarlama.
-- Ger\u00E7ek saha foto\u011Fraf\u0131nda risk envanteri \u00E7\u0131kar. Bo\u015F dizi sadece tamamen ilgisiz/tehlikesiz g\u00F6rsel i\u00E7indir.
-- T\u00DCRK\u00C7E yaz.
-- Sadece JSON d\u00F6nd\u00FCr.`;
+MEVZUAT:
+Her risk i\u00E7in en az 1, tercihen 2 ger\u00E7ek T\u00FCrkiye \u0130SG referans\u0131 (madde/f\u0131kra ile).
+Uygun oldu\u011Fundan emin ol: 6331 say\u0131l\u0131 Kanun; \u0130\u015F Sa\u011Fl\u0131\u011F\u0131 ve G\u00FCvenli\u011Fi Risk De\u011Ferlendirmesi Y\u00F6netmeli\u011Fi; \u0130\u015F Ekipmanlar\u0131/KKD/Yang\u0131n (2007/12937)/Elektrik \u0130\u00E7 Tesisleri/Makine Emniyeti/yap\u0131 \u0130\u015Fleri/kimyasal/el ile ta\u015F\u0131ma/\u0130\u015Faretler/acil durum y\u00F6netmelikleri \u2014 sahaya ve risk t\u00FCr\u00FCne g\u00F6re se\u00E7.
+Tekrar etme; T\u00DCRK\u00C7E; sadece JSON.`;
 
 /* ================================================================== */
 /* Method-specific prompt sections                                     */
@@ -1610,9 +1606,10 @@ export async function POST(request: NextRequest) {
     // Aynı görsel Claude'a da verilir. Risk listesi, skorlar ve öneriler
     // Claude'un doğrudan görsel incelemesiyle üretilir; OpenAI sadece yardımcı
     // gözlem bağlamıdır.
-    // İç zamanlayıcı (executeWithResilience) Anthropic çağrısını keser — çok kısa
-    // değerler üretimde sürekli timeout hatası üretir (vision + uzun JSON).
-    // İki deneme: worst-case ~65s + 2.5s + ~65s ≈ 133s → route maxDuration ile uyumlu.
+    // Bir Anthropic çağrısı çoğu zaman 40–120 sn sürer. İki kez 65 sn denemek hem UX kötü
+    // hem de ikinci denemede yine kesilebiliyor. Tek deneme + uzun süre (SDK zaten 10 dk).
+    // retryDelaysMs uzunluğu 1 = tek deneme (executeWithResilience döngüsü).
+    const operationTimeoutMs = getRiskAnalysisOperationTimeoutMs();
     const resilientResponse = await executeWithResilience({
       serviceKey: "anthropic.risk_analysis",
       displayName: "Anthropic API",
@@ -1621,15 +1618,15 @@ export async function POST(request: NextRequest) {
       endpoint: request.nextUrl.pathname,
       userId: auth.userId,
       organizationId: auth.organizationId,
-      timeoutMs: 65_000,
-      retryDelaysMs: [2500, 2500],
+      timeoutMs: operationTimeoutMs,
+      retryDelaysMs: [4000],
       fallbackMessage:
         "AI gorsel analizi gecici olarak kullanilamiyor (zaman asimi). Lutfen yeniden baslatin veya manuel risk girisiyle devam edin.",
       operation: () =>
         client.messages.create({
           model: visionModel,
           // Haiku varsayılan (hız); RISK_ANALYSIS_ANTHROPIC_MODEL ile Sonnet seçilebilir.
-          max_tokens: 4096,
+          max_tokens: 3072,
           temperature: 0.2,
           system: buildSystemPrompt(method, outputLocale),
           messages: [
