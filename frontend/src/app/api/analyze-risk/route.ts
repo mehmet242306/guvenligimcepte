@@ -348,28 +348,167 @@ gibi \u015Feffaf ifadelerle d\u00FC\u015F\u00FCk g\u00FCvenli tespit olu\u015Ftu
 KR\u0130T\u0130K TET\u0130KLEY\u0130C\u0130 \u2014 LPG / GAZ T\u00DCP\u00DC / BASIN\u00C7LI KAP
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 
-G\u00F6rselde LPG t\u00FCp\u00FC, gaz silindiri, bas\u0131n\u00E7l\u0131 kap, manifold, hortum,
-reg\u00FClat\u00F6r, vana veya t\u00FCp depolama alan\u0131 g\u00F6r\u00FCl\u00FCyorsa risks: [] D\u00D6NME.
-Bas\u0131n\u00E7l\u0131 gaz ekipman\u0131 kendi ba\u015F\u0131na kritik kontrol s\u0131n\u0131f\u0131d\u0131r.
+⚠️ HARD ENFORCEMENT — BOŞ LİSTE DÖNDÜRMEK YASAKTIR ⚠️
 
-Bu durumda g\u00F6r\u00FCnen kan\u0131ta g\u00F6re en az 1 tespit \u00FCret:
-- Kapal\u0131/dar i\u00E7 mekanda birden fazla t\u00FCp veya manifold varsa yang\u0131n/patlama,
-  havaland\u0131rma ve gaz birikimi riskini de\u011Ferlendir.
-- Zincir, kelep\u00E7e, duvar aparatı veya sabitleme kan\u0131t\u0131 g\u00F6r\u00FCnm\u00FCyorsa
-  "t\u00FCp sabitlemesi/ devrilme kontrol\u00FC do\u011Frulanmal\u0131" diye yaz. Kesin
-  sabitlenmemi\u015F deme; ama kontrol ihtiyac\u0131n\u0131 atlama.
-- Hortum, vana, reg\u00FClat\u00F6r veya manifold ba\u011Flant\u0131s\u0131 g\u00F6r\u00FCl\u00FCyorsa
-  s\u0131zd\u0131rmazl\u0131k, hortum kondisyonu, mekanik hasar ve darbe korumas\u0131 kontrol\u00FCn\u00FC yaz.
-  Ka\u00E7ak var demek i\u00E7in net fiziksel kan\u0131t gerekir; kan\u0131t yoksa "ka\u00E7ak riski
-  do\u011Frulamas\u0131" olarak ifade et.
-- Etiket, periyodik kontrol tarihi, manometre veya emniyet ventili okunmuyorsa
-  "periyodik kontrol/etiket g\u00F6r\u00FCn\u00FCrl\u00FC\u011F\u00FC do\u011Frulanmal\u0131" tespitini ekle.
-- Yak\u0131nda yan\u0131c\u0131 madde, \u0131s\u0131 kayna\u011F\u0131, elektrik ekipman\u0131 veya uygunsuz depolama
-  g\u00F6r\u00FCl\u00FCyorsa riski orta/y\u00FCksek seviyeye \u00E7\u0131kar.
+Görselde LPG tüpü, propan/bütan/oksijen/asetilen silindiri, gaz silindiri,
+basınçlı kap, manifold, hortum, regülatör, vana, gaz dağıtım panosu veya
+tüp depolama alanı görülüyorsa AŞAĞIDAKİ KURAL MUTLAKTIR:
 
-Bu kural hal\u00FCsinasyon izni de\u011Fildir. G\u00F6r\u00FCnmeyen ka\u00E7ak, patlama, yang\u0131n veya
-hasar uydurma. Ancak gaz t\u00FCp\u00FC/bas\u0131n\u00E7l\u0131 kap g\u00F6r\u00FCl\u00FCyorsa "belirgin risk yok"
-demeden \u00F6nce yukar\u0131daki kontrol ba\u015Fl\u0131klar\u0131n\u0131 ayr\u0131 ayr\u0131 de\u011Ferlendir.
+1) risks: [] DÖNEMEZSİN. Bu fiziksel olarak yasaktır.
+2) MUTLAKA EN AZ 3 ayrı risk tespiti yazacaksın.
+3) Tüm risklerin confidence değeri >= 0.75 olacak.
+4) "Kabul edilebilir risk" (< 0.60) kategorisine DÜŞÜRMEYECEKSİN.
+   Basınçlı gaz tesisi her saha denetiminde aktif kontrol gerektirir;
+   düşük confidence ile silinmesi sorumluluk kaçırmaktır.
+
+ZORUNLU TESPİT BAŞLIKLARI (en az 3'ünü işle, hepsi tetikleniyorsa hepsini):
+
+[1] HAVALANDIRMA & GAZ BİRİKİMİ (severity: critical/high)
+    - Tüpler kapalı/dar mekânda mı? (duvar/çatı/küçük kabin görünüyor mu)
+    - Mekanik havalandırma veya gaz dedektörü kanıtı yok mu?
+    - LPG havadan ağırdır → zemin seviyesinde birikip patlayıcı atmosfer
+      (UEL/LEL aşımı) oluşturur. Kapalı alanda çoklu tüp = kritik patlama riski.
+    - Mevzuat: 2007/12937 Yangın Yönetmeliği Bölüm 6, ATEX 99/92/EC.
+
+[2] SABİTLEME / DEVRİLME (severity: high)
+    - Zincir, kemer, duvar aparatı veya kelepçe ile sabitleme KANITI yoksa
+      "tüp sabitlemesi doğrulanmalı — devrilme + vana hasar riski" yaz.
+    - Tüp devrilirse vana/regülatör kırılabilir → kontrolsüz gaz tahliyesi.
+
+[3] HORTUM & BAĞLANTI BÜTÜNLÜĞÜ (severity: high)
+    - Hortum açıkta mı, sürtünme/darbe koruması yok mu?
+    - Vana/regülatör mekanik koruma altında mı?
+    - Hortum yaşı belirsizse "periyodik hortum değişimi doğrulanmalı" yaz.
+
+[4] YANGIN YÜKÜ & ATEŞ KAYNAĞI YAKINLIĞI (severity: critical/high)
+    - 5 m içinde ateş kaynağı (kazan, brülör, motor, ark üreten elektrik
+      ekipmanı) görülüyor mu?
+    - "Sigara içilmez/Ateş yakılmaz" levhası görünür mü?
+    - ABC tipi min 6 kg yangın söndürücü erişilebilir mi?
+
+[5] PERİYODİK KONTROL & ETİKET (severity: medium/high)
+    - Tüp gövdesinde periyodik kontrol tarihi okunuyor mu?
+    - Manometre/emniyet ventili görünür mü?
+    - "Basınçlı kap" uyarı levhası var mı?
+
+[6] KORUYUCU BARİYER & YETKİSİZ ERİŞİM (severity: medium)
+    - Tüp depolama alanı çit/kafes ile koruma altında mı?
+    - Yetkisiz erişim engelli mi?
+
+ÖRNEK ÇIKTI (3 LPG tüpü kapalı bir kabinde görülüyorsa):
+- Risk 1: "Kapalı kabinde çoklu LPG tüpü — patlayıcı atmosfer riski"
+  (severity: critical, confidence: 0.90)
+- Risk 2: "Tüp sabitleme aparatı görünmüyor — devrilme/vana hasarı riski"
+  (severity: high, confidence: 0.78)
+- Risk 3: "Yangın söndürücü ve gaz dedektörü kanıtı yok"
+  (severity: high, confidence: 0.82)
+- Risk 4 (varsa): "Periyodik kontrol etiketi okunmuyor"
+  (severity: medium, confidence: 0.72)
+
+UYARI: Halüsinasyon değil. Patlama olmuş, kaçak gördüm DEME. Ama VAR olan
+tehlike kaynağını (kapalı mekân + çoklu tüp + sabitleme görünmemesi +
+havalandırma kanıtı yok) RİSK olarak yazacaksın. "Görmediğim için yazmayayım"
+YASAK — görünmeyen kontrol kanıtı (sabitleme, dedektör, levha) = risk.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+KRİTİK TETİKLEYİCİ — TRAFO / ŞALT SAHASI / YÜKSEK GERİLİM ⚠️ HARD ENFORCEMENT
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
+Görselde transformatör, şalt sahası, kesici, ayırıcı, bara, porselen
+izolatör, yüksek gerilim direği/hattı, OG (orta gerilim) / AG (alçak gerilim)
+dağıtım panosu, beton köşk, açık şalt alanı, "Tehlike Yüksek Gerilim" levhalı
+tesis veya enerji altındaki dağınık kablo bölmesi görülüyorsa AŞAĞIDAKİ
+KURAL MUTLAKTIR:
+
+⚠️ MUTLAK ZORUNLULUK — BOŞ LİSTE YASAK ⚠️
+- Yüksek gerilim ekipmanı gördüğünde risks: [] DÖNEMEZSİN.
+- MUTLAKA EN AZ 3 farklı risk tespiti yazacaksın.
+- Tüm risklerin confidence değeri >= 0.75 olacak.
+- "Kabul edilebilir risk" kategorisine DÜŞÜRMEYECEKSİN — elektrik
+  çarpması ve ark patlaması ölümcüldür, hafife alınamaz.
+
+ZORUNLU TESPİT BAŞLIKLARI (en az 3'ünü işle):
+
+[1] FİZİKSEL BARİYER & YETKİSİZ ERİŞİM (severity: critical)
+    - Şalt sahasının çevresi çit/duvar/kafes ile evrilmiş mi?
+    - "ÖLÜM TEHLİKESİ — YÜKSEK GERİLİM" + kuru kafa/yıldırım levhası
+      her cepheden okunabilir mi?
+    - Çit yoksa yetkisiz kişi/çocuk/hayvan erişimi → ölümcül elektrik
+      çarpması veya gerilim altındaki kısma dokunma.
+    - Mevzuat: Elektrik Kuvvetli Akım Tesisleri Yönetmeliği Madde 16,
+      31/05/2018 tarih 2018/11823.
+
+[2] ARK PATLAMASI & GÜVENLİ MESAFE (severity: critical)
+    - Bina/yapı şalt sahasına ne kadar yakın? (Asgari güvenli mesafe
+      1 kV başına ~10 cm + minimum 1 m).
+    - Açıkta enerjili kısımlar (bara, ayırıcı bıçakları, baralar arası)
+      görülüyor mu?
+    - Kısa devre anında ark patlaması (4000+ °C plazma) üretebilir →
+      termal yanık + akustik travma + retina hasarı.
+
+[3] KABLO DÜZENİ & TESİSAT BÜTÜNLÜĞÜ (severity: high)
+    - Kablolar yerde dağınık mı, kablo tavası/kanalı içinde mi?
+    - Gözle görünür izolasyon hasarı, çekme noktasında zedelenme,
+      ekleme noktası açıkta mı?
+    - Su/nem temas riski var mı (yağmur, çim/toprak zemin, su birikintisi)?
+    - Açıkta kablo + nem = elektrik kaçağı + temasta ölüm.
+
+[4] TOPRAKLAMA & PARATONER (severity: high)
+    - Topraklama şeridi/levhası görünür mü?
+    - Paratoner sistemi yapı yüksekliğinde mi?
+    - "Topraklama rezistansı periyodik ölçüm raporu doğrulanmalı" yaz.
+
+[5] UYARI LEVHASI & KİLİTLEME (severity: high)
+    - "ÖLÜM TEHLİKESİ" levhası her cepheden görünüyor mu?
+    - Giriş kapısı kilitli ve sadece yetkili anahtarı ile açılabilir mi?
+    - Kilitleme-Etiketleme (LOTO) prosedürü kanıtı var mı?
+
+[6] TESİSAT YAŞLANMASI & BAKIM İPUÇLARI (severity: medium/high)
+    - İzolatörler kirli, çatlak, yaşlanmış mı?
+    - Pas, transformatör yağı sızıntısı, yanık izi görünüyor mu?
+    - Bina/şalt çevresinde kuru çalı/ot/yanıcı malzeme var mı (yangın yükü)?
+
+[7] ACİL MÜDAHALE & KİŞİSEL GÜVENLİK (severity: high)
+    - Yalıtkan paspas, izoleli eldiven dolabı, can simidi/can ipi var mı?
+    - CO₂ veya kuru kimyevi yangın söndürücü erişilebilir mi?
+    - Acil müdahale telefonu/butonu görünür mü?
+
+ÖRNEK ÇIKTI (çitsiz açık şalt sahası + dağınık kablo + bina yakın):
+- Risk 1: "Çitsiz/açık yüksek gerilim tesisi — yetkisiz erişim, ölümcül
+  elektrik çarpması riski" (severity: critical, confidence: 0.92)
+- Risk 2: "Bina ile şalt sahası arası güvenli mesafe şüpheli — ark
+  patlaması + termal yanık riski" (severity: critical, confidence: 0.80)
+- Risk 3: "Kablolar zeminde dağınık — izolasyon hasarı + elektrik
+  kaçağı + takılma riski" (severity: high, confidence: 0.85)
+- Risk 4 (varsa): "Tehlike Yüksek Gerilim uyarı levhası görünmüyor"
+  (severity: high, confidence: 0.78)
+
+UYARI: Görünmeyen kontrol kanıtı (çit, levha, topraklama, kilitleme)
+RİSK olarak yazılır. Elektrik tesisinde "görünmüyor diye yazmayayım"
+YASAK — bu sahadaki en kritik finding'lerden biridir.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+GENEL TETİKLEYİCİ KATEGORİLER — CONFIDENCE FLOOR KURALI
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
+Aşağıdaki 8 kategori "tetikleyici tehlike sınıfları"dır. Görselde
+HERHANGİ BİRİ açıkça görülüyorsa o kategorideki tüm risk tespitlerinin
+confidence değeri >= 0.70 olacak (kabul edilebilir kategorisine düşmeyecek):
+
+  i)   Basınçlı kap / LPG / gaz tüpü / kompresor / asetilen
+  ii)  Yüksek gerilim / trafo / şalt / OG/AG panosu açık
+  iii) Yüksekte çalışma alanı (>2m kenar, çatı, iskele, açık şaft)
+  iv)  Açıkta dönen makine / kesici disk / pres / konveyör
+  v)   Etiketsiz kimyasal kabı / yanıcı sıvı / asit/baz açık kabı
+  vi)  Kapalı alan / tank içi / kuyu / silo girişi
+  vii) Forklift + yaya aynı koridorda (kontrolsüz trafik)
+  viii) Yangın çıkış kapısı kilitli/engelli / söndürücü erişilemez
+
+Bu kategorilerden biri görülüyor + ilgili kontrol kanıtı YOK = otomatik
+high/critical severity, confidence >= 0.75. "Kabul edilebilir" tier'ına
+asla bu kategorideki tespit düşmeyecek.
+
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 EK\u0130PMAN VE C\u0130HAZ TANIMLAMA \u2014 KR\u0130T\u0130K
@@ -1489,10 +1628,81 @@ export async function POST(request: NextRequest) {
     }
 
     const normalizedRawRisks = Array.isArray(parsed.risks) ? parsed.risks : rawRisks;
+
+    /**
+     * Kritik tetikleyici kategori detektörü.
+     *
+     * Prompt'taki "GENEL TETİKLEYİCİ KATEGORİLER" listesine paralel
+     * server-side guard. Bu kategorilerden birine ait riskler asla
+     * "kabul edilebilir" tier'ına düşmez — confidence < 0.70 ise
+     * floor 0.75'e yükseltilir, severity en az "high" olur.
+     *
+     * Sebep: Saha denetiminde LPG, yüksek gerilim, açık makine vb.
+     * "kabul edilebilir" değildir — kontrol kanıtı yoksa otomatik aktif risk.
+     */
+    function isCriticalTriggerCategory(risk: Record<string, any>): boolean {
+      const haystack = [
+        String(risk.title ?? ""),
+        String(risk.category ?? ""),
+        String(risk.description ?? ""),
+        String(risk.recommendation ?? ""),
+      ]
+        .join(" ")
+        .toLocaleLowerCase("tr-TR");
+
+      const triggers = [
+        // i) Basınçlı kap / LPG / gaz tüpü
+        "lpg", "propan", "bütan", "butan", "asetilen", "oksijen tüp",
+        "gaz tüp", "tüp gaz", "basınçlı kap", "manifold", "regülatör",
+        "kompresör", "kompresor",
+        // ii) Yüksek gerilim / trafo / şalt
+        "trafo", "transformatör", "şalt", "salt sahas", "yüksek gerilim",
+        "ölüm tehlikesi", "olum tehlikesi", "ark patlama",
+        "elektrik kuvvetli akım", "og pano", "ag pano", "izolatör",
+        // iii) Yüksekte çalışma
+        "yüksekte çalışma", "yuksekte calisma", "iskele", "yaşam hatt",
+        "korkuluk eksik", "kenardan düşme", "kenardan dusme",
+        // iv) Açıkta dönen makine / kesici
+        "koruyucu kapak", "koruma kapağı", "döner aksam", "doner aksam",
+        "pres sıkışma", "konveyör", "kesici disk",
+        // v) Etiketsiz kimyasal / yanıcı sıvı
+        "etiketsiz kimyasal", "yanıcı sıvı", "yanici sivi", "asit kabı", "baz kabı",
+        // vi) Kapalı alan
+        "kapalı alan", "kapali alan", "tank içi", "kuyu girişi", "silo girişi",
+        // vii) Forklift + yaya
+        "forklift", "yaya forklift", "trafik ayrımı yok",
+        // viii) Yangın çıkış / söndürücü
+        "acil çıkış kilitli", "acil cikis kilitli", "söndürücü erişilemez",
+        "yangın yolu engelli", "yangin yolu engelli",
+      ];
+
+      return triggers.some((t) => haystack.includes(t));
+    }
+
     let acceptableRiskCount = 0;
+    let triggerSafeguardCount = 0;
+
     parsed.risks = normalizedRawRisks.map((risk: Record<string, any>) => {
-      const confidence = Number(risk.confidence ?? 0);
-      if (confidence > ACCEPTABLE_RISK_CONFIDENCE_MAX) {
+      const rawConfidence = Number(risk.confidence ?? 0);
+
+      // SAFEGUARD #1: Tetikleyici kategori riskleri "kabul edilebilir"e düşmez.
+      // Confidence floor 0.75, severity en az "high".
+      if (isCriticalTriggerCategory(risk)) {
+        if (rawConfidence < 0.70) {
+          triggerSafeguardCount += 1;
+          const promotedSeverity = (risk.severity === "low" || !risk.severity) ? "high" : risk.severity;
+          return {
+            ...risk,
+            confidence: 0.75,
+            severity: promotedSeverity,
+            correctiveActionRequired: true,
+          };
+        }
+        return risk;
+      }
+
+      // SAFEGUARD #2: Standart kabul edilebilir risk yeniden etiketleme.
+      if (rawConfidence > ACCEPTABLE_RISK_CONFIDENCE_MAX) {
         return risk;
       }
 
@@ -1511,6 +1721,10 @@ export async function POST(request: NextRequest) {
             : "Mevcut durumda acil düzeltici faaliyet gerektiren belirgin bir uygunsuzluk görülmedi. Alan rutin saha kontrollerinde izlenmeli ve koşullar değişirse yeniden değerlendirilmelidir. Kabul edilebilir seviyede tutulması için düzen ve temizlik korunmalıdır.",
       };
     });
+
+    if (triggerSafeguardCount > 0) {
+      console.log(`[analyze-risk] safeguard: ${triggerSafeguardCount} kritik tetikleyici risk confidence floor 0.75'e yükseltildi`);
+    }
 
     // Debug log
     console.log("\\n========================================");
