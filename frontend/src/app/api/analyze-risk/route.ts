@@ -267,7 +267,7 @@ function normalizeAnalyzeRiskPayload(raw: unknown): unknown {
 export async function POST(request: NextRequest) {
   // GÜVENLİK: requireAuth + günlük rate limit + risk_analysis kotası.
   // Hız odaklı varsayılan: Claude 3.5 Haiku vision (RISK_ANALYSIS_ANTHROPIC_MODEL ile değiştirilebilir).
-  // OpenAI yardımcı gözlem aşaması sadece RISK_ANALYSIS_OPENAI_HELPER=true ise çalışır.
+  // Risk görsel analizi yalnız Anthropic üzerinden çalışır; OpenAI kredisi/API anahtarı gerektirmez.
   const auth = await requireAuth(request);
   if (!auth.ok) return auth.response;
 
@@ -314,20 +314,8 @@ export async function POST(request: NextRequest) {
 
     const startTime = Date.now();
 
-    // ═══════════════════════════════════════════════════════════════════
-    // OPTIONAL STAGE 1 — OpenAI gpt-4o Vision: TARAFSIZ SAHNE / NESNE GÖZLEMİ
-    // ═══════════════════════════════════════════════════════════════════
-    // OpenAI bu akışta risk kararı vermez; yalnızca nötr sahne/nesne gözlemi
-    // üretir. Nihai risk tespitini Anthropic, aynı görsele doğrudan bakarak
-    // yapar. OpenAI notları sadece KKD/konum gibi halüsinasyonları azaltan
-    // yardımcı bağlamdır.
-    //
-    // Analiz süresini kısaltmak için varsayılan kapalıdır. Gerektiğinde
-    // RISK_ANALYSIS_OPENAI_HELPER=true ile tekrar yardımcı gözlem moduna alınır.
     const visionStageStatus = "anthropic_only";
 
-    // Claude'a verilecek yardımcı kontekst (varsa); yoksa boş string → eski davranış.
-    // Bu blok risk listesi değildir; Claude nihai kararı doğrudan görselden verir.
     // Firma sektör bağlamı — sektörel checklist için ipucu. Görselle çelişirse
     // model görsele güvenmeli (system prompt bunu söylüyor).
     const companyCtxBlock = (() => {
@@ -356,11 +344,9 @@ export async function POST(request: NextRequest) {
       .join("\n\n");
 
     // ═══════════════════════════════════════════════════════════════════
-    // STAGE 2 — Anthropic Claude Sonnet 4: DOĞRUDAN GÖRSEL ÜZERİNDEN RİSK TESPİTİ
+    // STAGE — Anthropic Claude Vision: DOĞRUDAN GÖRSEL ÜZERİNDEN RİSK TESPİTİ
     // ═══════════════════════════════════════════════════════════════════
-    // Aynı görsel Claude'a da verilir. Risk listesi, skorlar ve öneriler
-    // Claude'un doğrudan görsel incelemesiyle üretilir; OpenAI sadece yardımcı
-    // gözlem bağlamıdır.
+    // Risk listesi, skorlar ve öneriler Claude'un doğrudan görsel incelemesiyle üretilir.
     // Bir Anthropic çağrısı çoğu zaman 40–120 sn sürer. İki kez 65 sn denemek hem UX kötü
     // hem de ikinci denemede yine kesilebiliyor. Tek deneme + uzun süre (SDK zaten 10 dk).
     // retryDelaysMs uzunluğu 1 = tek deneme (executeWithResilience döngüsü).

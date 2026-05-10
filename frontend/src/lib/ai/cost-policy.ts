@@ -25,8 +25,8 @@ export type AiCostPolicyRow = {
 export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/analyze-risk",
-    purposeTr: "Görsel risk analizi (OpenAI sahne/KKD tespiti → Claude yöntem çıktısı)",
-    models: "gpt-4o + claude-sonnet-4-20250514",
+    purposeTr: "Gorsel risk analizi (Anthropic Claude dogrudan gorsel degerlendirmesi)",
+    models: "claude-3-5-haiku-20241022 veya RISK_ANALYSIS_ANTHROPIC_MODEL",
     maxOutputTokens: 6000,
     inputLimitsTr:
       "Base64 görsel şema üst sınırı ~20M karakter; MIME: jpeg, png, gif, webp",
