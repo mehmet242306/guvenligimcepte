@@ -30,7 +30,7 @@ function getAnthropicClient(): Anthropic | null {
 
 export const maxDuration = 90; // Anthropic-only visual risk analysis
 
-const PROMPT_VERSION = "v2.0-anthropic-risk-first-rewrite";
+const PROMPT_VERSION = "v2.1-timeout-hardened";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
@@ -1156,7 +1156,7 @@ Olas\u0131l\u0131k: 1=\u00E7ok d\u00FC\u015F\u00FCk | 2=d\u00FC\u015F\u00FCk | 3
 
   fmea: {
     systemSection: `
-HAL\u00DCS\u0130NASYON KORUMASI: FMEA y\u00F6ntemi S/O/D parametreleri ister. ANCAK bu parametreler SADECE g\u00F6rseldeki tehlike kayna\u011F\u0131 veya kontrol gerektiren unsur i\u00E7in doldurulur. G\u00F6rselde hi\u00E7 tehlike kayna\u011F\u0131 yoksa risks: [] d\u00F6n; tehlike kayna\u011F\u0131 varsa bo\u015F d\u00F6nme.
+HAL\u00DCS\u0130NASYON KORUMASI: FMEA S/O/D parametreleri g\u00F6rseldeki somut tehlike i\u00E7in doldurulur. \u0130\u015Fyeri/saha foto\u011Fraf\u0131nda en az bir ortam/tesisat riski yaz; risks dizisini bo\u015F b\u0131rakma (ANA KURAL).
 
 FMEA PARAMETRELER\u0130:
 \u015Eiddet (S) \u00D7 Olu\u015Fma Olas\u0131l\u0131\u011F\u0131 (O) \u00D7 Tespit Edilebilirlik (D) = RPN (1-1000)
@@ -1169,7 +1169,7 @@ Tespit (1-10): 1=kesin tespit | 5=orta tespit | 8=\u00E7ok d\u00FC\u015F\u00FCk 
 
   hazop: {
     systemSection: `
-HAL\u00DCS\u0130NASYON KORUMASI: HAZOP guide words SADECE s\u00FCre\u00E7 parametreleri g\u00F6rselde VARSA uygulan\u0131r. End\u00FCstriyel s\u00FCre\u00E7/boru hatt\u0131/reakt\u00F6r/tank yokken HAZOP uygulamak YASAKTIR.
+HAL\u00DCS\u0130NASYON KORUMASI: Boru hatt\u0131/reakt\u00F6r/tank yoksa end\u00FCstriyel proses yerine tesisat (\u00F6rn. bas\u0131n\u00E7, elektrik beslemesi, s\u0131cakl\u0131k y\u00FCk\u00FC, ge\u00E7i\u015F/\u00FCcretli maruziyet) \u00FCzerinden HAZOP benzeri sapma yaz veya risks dizisinde genel saha riskleri olu\u015Ftur; risks: [] kullanma (\u0130\u015Fyeri g\u00F6rseli ise ANA KURAL).
 
 HAZOP PARAMETRELER\u0130:
 Risk = \u015Eiddet \u00D7 Olas\u0131l\u0131k \u00D7 (6 - Tespit Edilebilirlik)
@@ -1200,7 +1200,7 @@ Tehdit Olas\u0131l\u0131\u011F\u0131 (1-5) | Sonu\u00E7 \u015Eiddeti (1-5) | \u0
 
   fta: {
     systemSection: `
-HAL\u00DCS\u0130NASYON KORUMASI: FTA bile\u015Fen listesi ister. ANCAK bile\u015Fenler g\u00F6rselde F\u0130Z\u0130KSEL olarak g\u00F6r\u00FCnen somut unsurlara dayanmal\u0131d\u0131r. G\u00F6rselde hi\u00E7 tehlike kayna\u011F\u0131 yoksa components: [] ve risks: [] d\u00F6n; tehlike kayna\u011F\u0131 varsa bile\u015Fenleri buna g\u00F6re yaz.
+HAL\u00DCS\u0130NASYON KORUMASI: FTA bile\u015Fenleri g\u00F6r\u00FCnen somut unsurlara dayanmal\u0131. \u0130\u015Fyeri/saha foto\u011Fraf\u0131nda risks dizisini bo\u015F b\u0131rakma; g\u00F6r\u00FCnen tehlike kaynaklar\u0131 i\u00E7in bile\u015Fen yaz (ANA KURAL).
 
 FTA PARAMETRELER\u0130:
 Bile\u015Fenler: Her bile\u015Fen i\u00E7in isim + ar\u0131za olas\u0131l\u0131\u011F\u0131 (0-1 aras\u0131)
@@ -1231,7 +1231,7 @@ Kategori: Risk kategorisi`,
 
   jsa: {
     systemSection: `
-HAL\u00DCS\u0130NASYON KORUMASI: JSA i\u015F ad\u0131mlar\u0131 ister. ANCAK ad\u0131mlar g\u00F6rselde F\u0130\u0130LEN yap\u0131lan bir i\u015F varsa listelenir. G\u00F6rselde insan ve aktif i\u015F yoksa JSA steps bo\u015F olabilir; fakat ortamda tehlike kayna\u011F\u0131 varsa risks dizisini bo\u015F b\u0131rakma.
+HAL\u00DCS\u0130NASYON KORUMASI: JSA ad\u0131mlar\u0131 aktif i\u015F varsa detayland\u0131r. Aktif i\u015F yoksa ortam bak\u0131m\u0131/denetim/g\u00FCvenlik turu gibi makul varsay\u0131mla en az bir ad\u0131m yaz veya risks ile sahayi \u00E7evresel risklerle doldur; \u0130\u015Fyeri g\u00F6rselinde risks: [] yok (ANA KURAL).
 
 JSA PARAMETRELER\u0130:
 \u0130\u015F Tan\u0131m\u0131: G\u00F6rselde yap\u0131lan i\u015F
@@ -1242,7 +1242,7 @@ Ad\u0131mlar: Her ad\u0131m i\u00E7in:
 
   lopa: {
     systemSection: `
-HAL\u00DCS\u0130NASYON KORUMASI: LOPA koruma katmanlar\u0131 ister. G\u00F6rselde somut tehlike kayna\u011F\u0131 yoksa frekans ve katman uydurma. Tehlike kayna\u011F\u0131 yoksa layers: [] ve risks: [] d\u00F6n; tehlike kayna\u011F\u0131 varsa uygun katman/koruma kontrol\u00FCn\u00FC yaz.
+HAL\u00DCS\u0130NASYON KORUMASI: LOPA katmanlar\u0131 g\u00F6rseldeki somut tehlikelere ba\u011Fla. \u0130\u015Fyeri/saha foto\u011Fraf\u0131nda risks dizisini bo\u015F b\u0131rakma; en az bir ortam riski ve buna uygun koruma katman\u0131 yaz (ANA KURAL).
 
 LOPA PARAMETRELER\u0130:
 Azalt\u0131lm\u0131\u015F Frekans = Ba\u015Flang\u0131\u00E7 Frekans\u0131 \u00D7 \u03A0(PFD)
@@ -1267,6 +1267,14 @@ ANA KURAL:
 - Risk tespit etmek birincil görevdir. Olumlu gözlem, çekingenlik veya yanlış pozitif korkusu risk tespitinin önüne geçemez.
 - Görünür tehlike kaynağını risk olarak yaz. Emin olmadığın ayrıntıyı kesin iddia etme; "doğrulanmalı", "kontrol edilmeli", "görsel kanıtı sınırlı" diliyle yaz.
 - Kaza olmuş olması gerekmez. Kaza potansiyeli, kontrol eksikliği, uygunsuzluk, doğrulama gerektiren kritik durum ve maruziyet ihtimali de risk kaydıdır.
+
+YÖNTEM BÖLÜMÜ İLE ÇELİŞME (FMEA, HAZOP, FTA, LOPA, JSA, BOW-TIE, CHECKLIST, vb.):
+Aşağıdaki metinlerde "risks: []", "bileşen yok", "süreç yok" gibi ifadeler geçse bile
+bunlar ANA KURALI İPTAL EDEMEZ. Görsel gerçek bir işyeri, saha, depo, atölye,
+şantiye, ofis, hastane, teknik/mekanik alan ise risks dizisini BOŞ BIRAKMAK YASAKTIR.
+Endüstriyel süreç veya özel yöntem alanı görselde net değilse: ortam/zemin/elektrik/
+yangın/depolama/KKD/acil durum risklerini normal risk satırları olarak yaz; yönteme
+özgü alanları (ör. hazopParams) makul ve sahaya uyumlu şekilde doldur veya N/A açıkla.
 
 ZORUNLU RİSK TARAMASI:
 Her gerçek görselde şu başlıkları sırayla tara ve görünür unsur varsa risk yaz:
@@ -1305,13 +1313,14 @@ function buildUserPrompt(method: AnalysisMethod, locale: string): string {
 
   return `Bu görseli İSG uzmanı gibi incele ve risk envanteri çıkar.
 Gerçek saha/tesis/işyeri/teknik alan görselinde risks dizisini boş bırakma.
+Gerçek işyeri fotoğrafında imageRelevance mutlaka "relevant" olmalı (aksi sadece tamamen ilgisiz konu veya gerçek fotoğraf olmayan görsel için).
 Gördüğün her tehlike kaynağını, uygunsuzluğu, kontrol eksikliğini veya doğrulanması gereken kritik durumu ayrı risk olarak yaz.
 Emin olmadığın ayrıntıyı kesin iddia etme; ama görünen tehlike kaynağını silme.
 Her tespit için belirtilen yöntem parametrelerini görselden doğrudan analiz ederek ver.
 
 JSON format\u0131:
 {
-  "imageRelevance": "relevant|not_real_photo",
+  "imageRelevance": "relevant | not_real_photo | not_workplace",
   "imageDescription": "G\u00F6rselin k\u0131sa tan\u0131m\u0131",
   "photoQuality": {
     "level": "good|moderate|poor",
@@ -1465,6 +1474,43 @@ function buildFallbackRisksForEmptyFieldReview(parsed: Record<string, any>): Rec
 }
 
 /* ================================================================== */
+/* Request normalization                                               */
+/* ================================================================== */
+
+/** Veri URL önekini kaldırır, MIME eşlemesi yapar — istemci yanlışlıkla data:image ile gönderirse şema doğrulaması geçer. */
+function normalizeAnalyzeRiskPayload(raw: unknown): unknown {
+  if (!raw || typeof raw !== "object") return raw;
+  const o = { ...(raw as Record<string, unknown>) };
+  if (typeof o.imageBase64 === "string") {
+    let b64 = o.imageBase64.trim();
+    const dataUrlMatch = b64.match(/^data:([^;]+);base64,(.+)$/i);
+    if (dataUrlMatch?.[2]) {
+      const declaredMime = dataUrlMatch[1]?.trim().toLowerCase();
+      b64 = dataUrlMatch[2].replace(/\s/g, "");
+      if (o.mimeType == null && declaredMime) {
+        const normalizedMime = declaredMime === "image/jpg" ? "image/jpeg" : declaredMime;
+        if (
+          normalizedMime === "image/jpeg" ||
+          normalizedMime === "image/png" ||
+          normalizedMime === "image/gif" ||
+          normalizedMime === "image/webp"
+        ) {
+          o.mimeType = normalizedMime;
+        }
+      }
+    } else {
+      b64 = b64.replace(/\s/g, "");
+    }
+    o.imageBase64 = b64;
+  }
+  if (typeof o.mimeType === "string") {
+    const m = o.mimeType.trim().toLowerCase();
+    o.mimeType = m === "image/jpg" ? "image/jpeg" : m;
+  }
+  return o;
+}
+
+/* ================================================================== */
 /* API handler                                                         */
 /* ================================================================== */
 
@@ -1490,7 +1536,7 @@ export async function POST(request: NextRequest) {
     if (rateLimitResponse) return rateLimitResponse;
 
     const rawBody = await request.json().catch(() => null);
-    const parsedBody = analyzeRiskSchema.safeParse(rawBody);
+    const parsedBody = analyzeRiskSchema.safeParse(normalizeAnalyzeRiskPayload(rawBody));
     if (!parsedBody.success) {
       return NextResponse.json(
         {
@@ -1561,6 +1607,13 @@ export async function POST(request: NextRequest) {
     // Aynı görsel Claude'a da verilir. Risk listesi, skorlar ve öneriler
     // Claude'un doğrudan görsel incelemesiyle üretilir; OpenAI sadece yardımcı
     // gözlem bağlamıdır.
+    // Vercel function maxDuration = 90s. Anthropic call için worst-case toplam
+    // süreyi bütçenin altında tutmalıyız, yoksa Vercel proxy 504 HTML döner ve
+    // client tarafında JSON parse fail olup "AI analizi tamamlanamadı" jenerik
+    // mesajı görünür. Bu yüzden:
+    //   - per-attempt timeout: 35s (Anthropic genelde 15–25s'de tamamlar)
+    //   - 2 attempt (toplam: 35 + 1.5 + 35 = ~71.5s) → 90s sınırının altında
+    //   - max_tokens: 5000 (8000'den indirildi; çıktı süresini ~%30 azaltır)
     const resilientResponse = await executeWithResilience({
       serviceKey: "anthropic.risk_analysis",
       displayName: "Anthropic API",
@@ -1569,14 +1622,17 @@ export async function POST(request: NextRequest) {
       endpoint: request.nextUrl.pathname,
       userId: auth.userId,
       organizationId: auth.organizationId,
+      timeoutMs: 35_000,
+      retryDelaysMs: [1500, 2500],
       fallbackMessage:
-        "AI gorsel analizi gecici olarak kullanilamiyor. Manuel risk girisiyle devam edebilirsiniz.",
+        "AI gorsel analizi gecici olarak kullanilamiyor (zaman asimi). Lutfen yeniden baslatin veya manuel risk girisiyle devam edin.",
       operation: () =>
         client.messages.create({
           model: "claude-sonnet-4-20250514",
-          // İSG uzmanı modu: çoklu-risk sahnelerinde tespitlerin kısa kesilmemesi
-          // için çıktı payı artırıldı; düşük sıcaklıkla kontrollü keşif korunur.
-          max_tokens: 8000,
+          // İSG uzmanı modu: çoklu-risk sahneleri için yeterli pay; ama Vercel
+          // 90s function bütçesi içinde kalmak için 8000'den 5000'e düşürüldü.
+          // 5000 token Türkçe ~3500 kelime — 6-8 risk için yeterli kapasite.
+          max_tokens: 5000,
           temperature: 0.2,
           system: buildSystemPrompt(method, outputLocale),
           messages: [

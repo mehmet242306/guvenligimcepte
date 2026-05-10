@@ -1613,10 +1613,43 @@ export function RiskAnalysisClient() {
       const emptyMeta: ImageMeta = { imageId, faces: [], positiveObservations: [], photoQuality: { level: "good", note: "" }, areaSummary: "", personCount: 0, imageRelevance: "relevant", imageDescription: "" };
 
       if (!res.ok) {
-        const errBody = await res.json().catch(() => ({}));
-        console.error("AI analiz hatası:", res.status, errBody);
-        const message = typeof errBody?.error === "string" ? errBody.error : trRiskScoring("defaults.aiRequestFailed");
-        const stage = typeof errBody?.stage === "string" ? errBody.stage : "unknown";
+        // Önce JSON parse'ı dene; başarısızsa raw text'e düş.
+        // Vercel function timeout durumunda body HTML olur, JSON.parse fail eder
+        // ve bu durumda kullanıcı sadece "AI analizi tamamlanamadı" görüyordu.
+        // Artık HTTP status + bağlamla daha bilgilendirici mesaj gösterilir.
+        let errBody: Record<string, any> = {};
+        let rawText = "";
+        // Body'yi sadece bir kez okuyabiliyoruz; önce text al, sonra JSON parse dene.
+        try {
+          rawText = await res.text();
+        } catch {
+          rawText = "";
+        }
+        if (rawText) {
+          try {
+            errBody = JSON.parse(rawText);
+          } catch {
+            errBody = {};
+          }
+        }
+        console.error("AI analiz hatası:", res.status, errBody, rawText.slice(0, 200));
+
+        let message: string;
+        if (typeof errBody?.error === "string" && errBody.error.length > 0) {
+          message = errBody.error;
+        } else if (res.status === 504 || res.status === 502) {
+          message = `AI servisi zaman aşımına uğradı (HTTP ${res.status}). Görsel boyutunu küçültüp yeniden deneyin veya birkaç saniye sonra tekrar başlatın.`;
+        } else if (res.status === 503) {
+          message = "AI servisi geçici olarak meşgul (HTTP 503). Lütfen 30 saniye sonra tekrar deneyin.";
+        } else if (res.status === 429) {
+          message = "Çok fazla istek (HTTP 429). Lütfen bir dakika bekleyip tekrar deneyin.";
+        } else if (res.status >= 500) {
+          message = `Sunucu hatası (HTTP ${res.status}). ${rawText ? rawText.slice(0, 120) : trRiskScoring("defaults.aiRequestFailed")}`;
+        } else {
+          message = `${trRiskScoring("defaults.aiRequestFailed")} (HTTP ${res.status})`;
+        }
+
+        const stage = typeof errBody?.stage === "string" ? errBody.stage : `http_${res.status}`;
         return { findings: [], meta: emptyMeta, error: message, stage };
       }
 
@@ -1630,7 +1663,12 @@ export function RiskAnalysisClient() {
         photoQuality: data.photoQuality ?? { level: "good", note: "" },
         areaSummary: data.areaSummary ?? "",
         personCount: data.personCount ?? 0,
-        imageRelevance: data.imageRelevance === "irrelevant" ? "irrelevant" : data.imageRelevance === "not_real_photo" ? "not_real_photo" : "relevant",
+        imageRelevance:
+          data.imageRelevance === "not_real_photo"
+            ? "not_real_photo"
+            : data.imageRelevance === "irrelevant" || data.imageRelevance === "not_workplace"
+              ? "irrelevant"
+              : "relevant",
         imageDescription: data.imageDescription ?? "",
       };
 
