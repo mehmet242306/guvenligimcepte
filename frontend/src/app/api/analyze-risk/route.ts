@@ -86,24 +86,12 @@ risks: [] D\u00D6NMEK YASAKTIR. BU BIR HATA DE\u011E\u0130L SUSTURMA AKT\u0130D\
    risks: [] me\u015Fru
 
 DI\u015EINDA HER\u015EEY \u0130\u00C7\u0130N MİNİMUM 1 R\u0130SK YAZACAKSIN:
-- Mutfak, depo, ofis, fabrika, atölye, şantiye, hastane, okul, AVM,
-  mağaza, restoran, otopark, yol, park, tesisat odası, elektrik panosu,
-  trafo, şalt, kazan dairesi, çamaşırhane, banyo, koridor, merdiven,
-  açık alan tesis... HEPSI risks dizisi DOLU olacak.
+Mutfak, depo, ofis, fabrika, at\u00F6lye, \u015Fantiye, hastane, okul, AVM,
+ma\u011Faza, restoran, otopark, yol, park, tesisat odas\u0131, elektrik panosu,
+trafo, \u015Falt, kazan dairesi, \u00E7ama\u015F\u0131rhane, banyo, koridor, merdiven,
+a\u00E7\u0131k alan tesis \u2014 HEPSI risks dizisi DOLU olacak.
 
-E\u011Fer hi\u00E7bir somut tehlike kayna\u011F\u0131 g\u00F6rm\u00FCyorsan bile minimum şu
-generic risk yaz\u0131labilir:
-{
-  "title": "Genel saha kontrol\u00FC ve periyodik denetim do\u011Frulanmal\u0131",
-  "category": "Düzen/Temizlik",
-  "severity": "low",
-  "confidence": 0.65,
-  "description": "Görselde aktif denetim gerektiren spesifik bir
-                  uygunsuzluk g\u00F6r\u00FClmedi; ancak alan periyodik İSG
-                  saha denetimi kapsam\u0131nda d\u00FCzenli kontrol edilmelidir."
-}
-
-risks: [] g\u00F6r\u00FCld\u00FC\u011F\u00FCnde sistem otomatik fallback ekleyecek; ama bu sahaya
+risks: [] g\u00F6rd\u00FC\u011F\u00FCnde sistem otomatik fallback ekleyecek; ama bu sahaya
 gidip "bo\u015F d\u00F6nd\u00FCm" demektir \u2014 PROFESYONEL DE\u011E\u0130LD\u0130R.
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
@@ -1438,6 +1426,30 @@ function buildFallbackRisksForEmptyFieldReview(parsed: Record<string, any>): Rec
     ));
   }
 
+  // LPG / gaz tüpü / basınçlı kap için zorunlu fallback
+  if (/(lpg|propan|bütan|butan|asetilen|gaz tüp|tüp gaz|silindir|basınçlı kap|manifold|regülatör|kompres[oö]r)/i.test(text)) {
+    risks.push(createRisk(
+      "Basınçlı gaz / LPG tüpü kontrol kanıtı yetersiz — patlayıcı atmosfer ve devrilme riski",
+      "Basınçlı Kap",
+      "high",
+      50,
+      55,
+      "Görselde basınçlı kap / LPG tüpü görülmektedir. Tüplerin sabitleme aparatı, periyodik kontrol etiketi, manometre, emniyet ventili, hortum kondisyonu, mekanik darbe koruması ve havalandırma yeterliliği yetkili tarafından doğrulanmalıdır. 5 metre içinde ateş kaynağı ve yanıcı malzeme bulundurulmamalı; ABC tipi min 6 kg yangın söndürücü erişilebilir olmalıdır. Kapalı alanlarda gaz dedektörü zorunludur. Sorumlu: İSG Uzmanı + Bakım Şefi. Termin: 7 gün. Mevzuat: 2007/12937 Yangın Yönetmeliği, ATEX 99/92/EC.",
+    ));
+  }
+
+  // Yangın / alev / sıcak iş için zorunlu fallback
+  if (/(yangın|alev|ateş|duman|yanıcı|tutuşma|yanma|sıcak iş|kor|isı|fire|flame|smoke)/i.test(text)) {
+    risks.push(createRisk(
+      "Aktif yangın/alev veya yanıcı ortam riski — acil müdahale ve önleme gerekli",
+      "Yangın",
+      "critical",
+      50,
+      50,
+      "Görselde yangın, alev veya yüksek tutuşma riski içeren bir durum tespit edilmiştir. ÖNCELİK 1: Alan derhal tahliye edilmeli ve elektrik beslemesi kesilmelidir. ÖNCELİK 2: ABC tipi yangın söndürücü ile müdahale; başarısız olunursa itfaiyeye haber. ÖNCELİK 3: Olayın kök sebebi (elektrik kısa devre, statik kıvılcım, yanıcı malzeme yakınlığı) belirlenmeli ve aynı koşullar tekrarlanmamalıdır. Sorumlu: Acil Durum Sorumlusu + İSG Uzmanı. Termin: ANINDA. Mevzuat: 2007/12937 Yangın Yönetmeliği, 6331 sy. Madde 11-12.",
+    ));
+  }
+
   if (risks.length === 0) {
     risks.push(createRisk(
       "Görselde çalışma alanı tehlike kaynakları için risk envanteri gerekli",
@@ -1803,52 +1815,10 @@ export async function POST(request: NextRequest) {
       console.log(`[analyze-risk] safeguard: ${triggerSafeguardCount} kritik tetikleyici risk confidence floor 0.75'e yükseltildi`);
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // ZERO-RISK FALLBACK GUARD
-    // ═══════════════════════════════════════════════════════════════════
-    // AI gerçek bir saha fotoğrafı için bile risks: [] dönerse (kullanıcı
-    // raporu: yangın + LPG tüpleri net görünüyor ama AI "tespit yok"
-    // dönüyordu), otomatik fallback risk enjekte ederiz.
-    //
-    // Bu yalnızca "imageRelevance=relevant" olan ve risks dizisi tamamen
-    // boş olan durumlarda devreye girer. AI'nın "ev/sokak/manzara" gibi
-    // not_workplace olarak işaretlediği görsellerde fallback YOK.
-    //
-    // Fallback mesajı kullanıcıya açıkça "AI bu görselde belirgin risk
-    // tespit edemedi — manuel kontrol önerilir" diyor; sahte risk üretmiyor,
-    // sadece kullanıcıyı boş ekrana karşı uyarıyor.
-    const aiReportedZeroRisks = Array.isArray(parsed.risks) && parsed.risks.length === 0;
-    const isRelevantPhoto = parsed.imageRelevance === "relevant" || !parsed.imageRelevance;
-
-    if (aiReportedZeroRisks && isRelevantPhoto) {
-      console.warn(
-        "[analyze-risk] ZERO-RISK FALLBACK: AI gerçek saha fotoğrafı için boş risk listesi döndü, generic fallback enjekte ediliyor",
-      );
-      parsed.risks = [
-        {
-          title: "AI bu görselde otomatik tespit yapamadı — manuel kontrol önerilir",
-          category: "Diğer",
-          severity: "medium",
-          confidence: 0.55,
-          description:
-            "Otomatik analiz bu görselde spesifik bir risk envanteri çıkaramadı. Bu, görselin riskli olmadığı anlamına GELMEZ — analiz güvenilirliği düşüktür ve mutlaka deneyimli bir İSG uzmanı tarafından manuel olarak değerlendirilmelidir. Görselde gözle görülen tehlike kaynakları varsa (LPG/gaz tüpü, yangın, açık elektrik tesisi, makine, kimyasal, vb.) lütfen manuel olarak risk kartı ekleyin.",
-          recommendation:
-            "1) Bu görseldeki nesneleri ve durumu kendiniz inceleyin. 2) Gözle gördüğünüz her tehlike için 'Risk İşareti Ekle' butonunu kullanın. 3) Şüpheliyseniz daha net bir görsel ile yeniden analiz başlatın. Sorumlu: İSG Uzmanı. Termin: Aynı gün.",
-          recommendedActions: [
-            "Görseli manuel inceleyin ve tehlikeleri risk kartı olarak ekleyin",
-            "Gerekirse daha kaliteli/yakın bir fotoğraf ile analizi yenileyin",
-            "Fotoğraf gerçekten belirsizse saha denetimini fiziksel olarak gerçekleştirin",
-          ],
-          legalReferences: [
-            "6331 sayılı İş Sağlığı ve Güvenliği Kanunu Madde 10 — Risk değerlendirmesi",
-          ],
-          pinX: 50,
-          pinY: 50,
-          correctiveActionRequired: true,
-          confidenceTier: "low",
-        },
-      ];
-    }
+    // Not: Boş risks: [] durumu için zaten yukarıda
+    // buildFallbackRisksForEmptyFieldReview() çağrılıyor (satır ~1686).
+    // Burada ek fallback guard'a gerek yok — çift fallback parse karışıklığı
+    // yaratıyordu (kullanıcı raporu: "AI analizi tamamlanamadı").
 
     // Debug log
     console.log("\\n========================================");
