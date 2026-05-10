@@ -2569,9 +2569,10 @@
     "examples": {
       "eyebrow": "Surveys & exams",
       "title": "Sample survey and exam templates",
-      "description": "These are questionnaires and tests—not slide decks. Pick a company workspace, then add a draft and edit questions. Does not consume assessment quota.",
+      "description": "Multiple-choice surveys and exams—not slides. Templates are saved under your currently selected workspace (URL/context). Does not consume assessment quota.",
       "companyLabel": "Company workspace",
       "noCompany": "At least one company workspace is required to add a template. Ask your admin to create one or pick a company via \"Create new\".",
+      "noWorkspaceSelected": "Select a workspace first (company in the app bar or open Training with ?companyId=…). Survey/exam templates attach to that workspace.",
       "questionCount": "{count} questions",
       "typeExam": "Exam",
       "typeSurvey": "Survey",
@@ -2583,7 +2584,7 @@
     "slideExamples": {
       "eyebrow": "Training slide decks",
       "title": "Sample OHS slide templates",
-      "description": "These are presentation decks (slides)—what many teams mean by “training template”. Add to your slide library in one click, then edit or present. No company workspace required.",
+      "description": "Presentation decks (slides). Add to your library in one click, then edit or present. Shown when “Training contents” is selected above.",
       "badge": "Slides",
       "slideCount": "{count} slides",
       "durationHint": "~{minutes} min",

@@ -419,7 +419,8 @@
       "templateBadge": "Exam template",
       "addCopy": "Add as draft",
       "adding": "Adding…",
-      "importFailed": "Could not add the template. Check your connection and try again."
+      "importFailed": "Could not add the template. Check your connection and try again.",
+      "noWorkspaceSelected": "Select a workspace first (company in the app bar or open Training with ?companyId=…). Survey/exam templates attach to that workspace."
     },
     "slideExamples": {
       "eyebrow": "Training slide decks",

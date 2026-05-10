@@ -2569,9 +2569,10 @@
     "examples": {
       "eyebrow": "Anket ve sınav",
       "title": "Örnek anket ve sınav şablonları",
-      "description": "Bunlar sunum (slayt) değil; çoktan seçmeli anket ve sınav taslaklarıdır. Şirket çalışma alanı seçip ekleyin, soruları düzenleyin. Kotadan düşmez.",
+      "description": "Bunlar sunum (slayt) değil; çoktan seçmeli anket ve sınav taslaklarıdır. Seçili çalışma alanına kaydedilir; soruları düzenleyin. Kotadan düşmez.",
       "companyLabel": "Şirket çalışma alanı",
       "noCompany": "Şablon eklemek için en az bir şirket çalışma alanı gerekir. Yöneticinizden workspace oluşturulmasını isteyin veya \"Yeni Oluştur\" üzerinden şirket seçin.",
+      "noWorkspaceSelected": "Önce çalışma alanı seçin (üst çubuktaki firma veya adres çubuğunda ?companyId=…). Anket/sınav şablonları bu alana eklenir.",
       "questionCount": "{count} soru",
       "typeExam": "Sınav",
       "typeSurvey": "Anket",
@@ -2583,7 +2584,7 @@
     "slideExamples": {
       "eyebrow": "Eğitim şablonu (slayt)",
       "title": "Örnek eğitim slayt şablonları",
-      "description": "Sunum dosyasıdır: slayt kütüphanenize tek tıkla eklenir, düzenleyip sunarsınız. Anket/sınav içeriği değildir. Şirket seçimi gerekmez.",
+      "description": "Sunum dosyasıdır; slayt kütüphanenize tek tıkla eklenir. Yukarıda «Eğitim içerikleri» sekmesindeyken gösterilir.",
       "badge": "Slayt sunumu",
       "slideCount": "{count} slayt",
       "durationHint": "~{minutes} dk",

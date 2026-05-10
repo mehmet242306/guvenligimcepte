@@ -94,8 +94,6 @@ export function TrainingClient() {
   const [libraryTab, setLibraryTab] = useState<LibraryTab>("education");
   const [sessionOrgId, setSessionOrgId] = useState<string | null>(null);
   const [sessionUserId, setSessionUserId] = useState<string | null>(null);
-  const [workspaces, setWorkspaces] = useState<{ id: string; name: string }[]>([]);
-  const [exampleCompanyId, setExampleCompanyId] = useState("");
   const [exampleImportError, setExampleImportError] = useState<string | null>(null);
   const [importingExampleId, setImportingExampleId] = useState<string | null>(null);
   const [slideExampleError, setSlideExampleError] = useState<string | null>(null);
@@ -108,7 +106,6 @@ export function TrainingClient() {
       setListError(null);
       setSessionOrgId(null);
       setSessionUserId(null);
-      setWorkspaces([]);
       const supabase = createClient();
       if (!supabase) {
         setListError(t("errors.noSession"));
@@ -133,26 +130,6 @@ export function TrainingClient() {
       setSessionOrgId(profile.organization_id);
       setSessionUserId(user.id);
 
-      const { data: wsRows } = await supabase
-        .from("company_workspaces")
-        .select("id, display_name")
-        .eq("is_archived", false)
-        .order("display_name");
-      const wsList =
-        wsRows && wsRows.length > 0
-          ? (wsRows as { id: string; display_name: string | null }[]).map(w => ({
-              id: w.id,
-              name: w.display_name?.trim() || "Workspace",
-            }))
-          : [];
-      setWorkspaces(wsList);
-      setExampleCompanyId(prev => {
-        const ids = new Set(wsList.map(w => w.id));
-        if (prev && ids.has(prev)) return prev;
-        if (initialCompanyId && ids.has(initialCompanyId)) return initialCompanyId;
-        return wsList[0]?.id ?? "";
-      });
-
       const [surveysData, libraryData] = await Promise.all([
         fetchSurveys(profile.organization_id, initialCompanyId),
         fetchLibraryContents(),
@@ -171,9 +148,9 @@ export function TrainingClient() {
       setExampleImportError(t("errors.authRequired"));
       return;
     }
-    const companyId = exampleCompanyId || initialCompanyId || "";
-    if (!companyId) {
-      setExampleImportError(t("examples.noCompany"));
+    const companyId = initialCompanyId ?? "";
+    if (!companyId.trim()) {
+      setExampleImportError(t("examples.noWorkspaceSelected"));
       return;
     }
     const def = ISG_EXAMPLE_SURVEY_TEMPLATES.find(x => x.id === templateId);
@@ -458,141 +435,135 @@ export function TrainingClient() {
           )}
         </section>
 
-        <section className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
-          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-600 dark:text-teal-400">
-                {t("slideExamples.eyebrow")}
-              </p>
-              <h2 className="mt-1 text-base font-semibold text-[var(--foreground)]">{t("slideExamples.title")}</h2>
-              <p className="mt-1 text-sm text-[var(--muted-foreground)]">{t("slideExamples.description")}</p>
-            </div>
-            <Link
-              href={buildTrainingHref("/training/slides")}
-              className="shrink-0 rounded-xl border border-teal-600/40 bg-teal-600/10 px-3 py-2 text-center text-xs font-semibold text-teal-800 transition-colors hover:bg-teal-600/15 dark:text-teal-200"
-            >
-              {t("slideExamples.openSlideLibrary")}
-            </Link>
-          </div>
-          {slideExampleError ? (
-            <div
-              role="alert"
-              className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100"
-            >
-              {slideExampleError}
-            </div>
-          ) : null}
-          <div className="grid gap-3 md:grid-cols-3">
-            {ISG_EXAMPLE_SLIDE_DECKS.map((ex) => (
-              <article
-                key={ex.id}
-                className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--background)] p-4"
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-teal-600/15 px-2 py-0.5 text-[10px] font-bold uppercase text-teal-800 dark:text-teal-200">
-                    {t("slideExamples.badge")}
-                  </span>
-                  <span className="rounded-full border border-[var(--border)] px-2 py-0.5 text-[10px] font-medium text-[var(--muted-foreground)]">
-                    {slideExampleCategoryLabel(ex.deck.category)}
-                  </span>
-                </div>
-                <h3 className="mt-2 text-sm font-semibold text-[var(--foreground)]">{ex.deck.title}</h3>
-                <p className="mt-1 line-clamp-3 text-xs text-[var(--muted-foreground)]">{ex.deck.description}</p>
-                <p className="mt-2 text-xs text-[var(--muted-foreground)]">
-                  {t("slideExamples.slideCount", { count: ex.slides.length })}
-                  {ex.deck.estimated_duration_minutes != null
-                    ? ` · ${t("slideExamples.durationHint", { minutes: ex.deck.estimated_duration_minutes })}`
-                    : ""}
+        {libraryTab === "education" ? (
+          <section className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-600 dark:text-teal-400">
+                  {t("slideExamples.eyebrow")}
                 </p>
-                <button
-                  type="button"
-                  disabled={importingSlideExampleId !== null}
-                  onClick={() => void importSlideExampleDeck(ex.id)}
-                  className="mt-3 rounded-lg bg-teal-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {importingSlideExampleId === ex.id ? t("slideExamples.adding") : t("slideExamples.addCopy")}
-                </button>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
-          <div className="mb-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-600 dark:text-emerald-400">
-              {t("examples.eyebrow")}
-            </p>
-            <h2 className="mt-1 text-base font-semibold text-[var(--foreground)]">{t("examples.title")}</h2>
-            <p className="mt-1 text-sm text-[var(--muted-foreground)]">{t("examples.description")}</p>
-          </div>
-
-          {workspaces.length > 0 ? (
-            <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <label className="flex flex-col gap-1 text-sm sm:min-w-[220px]">
-                <span className="font-medium text-[var(--foreground)]">{t("examples.companyLabel")}</span>
-                <select
-                  value={exampleCompanyId}
-                  onChange={e => setExampleCompanyId(e.target.value)}
-                  className="rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
-                >
-                  {workspaces.map(w => (
-                    <option key={w.id} value={w.id}>
-                      {w.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-          ) : null}
-
-          {exampleImportError ? (
-            <div
-              role="alert"
-              className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100"
-            >
-              {exampleImportError}
-            </div>
-          ) : null}
-
-          <div className="grid gap-3 md:grid-cols-2">
-            {ISG_EXAMPLE_SURVEY_TEMPLATES.map(def => (
-              <article
-                key={def.id}
-                className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--background)] p-4"
+                <h2 className="mt-1 text-base font-semibold text-[var(--foreground)]">{t("slideExamples.title")}</h2>
+                <p className="mt-1 text-sm text-[var(--muted-foreground)]">{t("slideExamples.description")}</p>
+              </div>
+              <Link
+                href={buildTrainingHref("/training/slides")}
+                className="shrink-0 rounded-xl border border-teal-600/40 bg-teal-600/10 px-3 py-2 text-center text-xs font-semibold text-teal-800 transition-colors hover:bg-teal-600/15 dark:text-teal-200"
               >
-                <div className="flex flex-wrap items-center gap-2">
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                      def.survey.type === "exam"
-                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200"
-                        : "bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200"
-                    }`}
-                  >
-                    {def.survey.type === "exam" ? t("examples.typeExam") : t("examples.typeSurvey")}
-                  </span>
-                  {def.survey.type === "exam" && def.survey.isTemplate ? (
-                    <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-800 dark:bg-slate-700 dark:text-slate-100">
-                      {t("examples.templateBadge")}
+                {t("slideExamples.openSlideLibrary")}
+              </Link>
+            </div>
+            {slideExampleError ? (
+              <div
+                role="alert"
+                className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100"
+              >
+                {slideExampleError}
+              </div>
+            ) : null}
+            <div className="grid gap-3 md:grid-cols-3">
+              {ISG_EXAMPLE_SLIDE_DECKS.map((ex) => (
+                <article
+                  key={ex.id}
+                  className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--background)] p-4"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-teal-600/15 px-2 py-0.5 text-[10px] font-bold uppercase text-teal-800 dark:text-teal-200">
+                      {t("slideExamples.badge")}
                     </span>
-                  ) : null}
-                </div>
-                <h3 className="mt-2 text-sm font-semibold text-[var(--foreground)]">{def.survey.title}</h3>
-                <p className="mt-1 line-clamp-3 text-xs text-[var(--muted-foreground)]">{def.survey.description}</p>
-                <p className="mt-2 text-xs text-[var(--muted-foreground)]">
-                  {t("examples.questionCount", { count: def.questions.length })}
-                </p>
-                <button
-                  type="button"
-                  disabled={Boolean(importingExampleId) || workspaces.length === 0}
-                  onClick={() => void importExampleTemplate(def.id)}
-                  className="mt-3 inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    <span className="rounded-full border border-[var(--border)] px-2 py-0.5 text-[10px] font-medium text-[var(--muted-foreground)]">
+                      {slideExampleCategoryLabel(ex.deck.category)}
+                    </span>
+                  </div>
+                  <h3 className="mt-2 text-sm font-semibold text-[var(--foreground)]">{ex.deck.title}</h3>
+                  <p className="mt-1 line-clamp-3 text-xs text-[var(--muted-foreground)]">{ex.deck.description}</p>
+                  <p className="mt-2 text-xs text-[var(--muted-foreground)]">
+                    {t("slideExamples.slideCount", { count: ex.slides.length })}
+                    {ex.deck.estimated_duration_minutes != null
+                      ? ` · ${t("slideExamples.durationHint", { minutes: ex.deck.estimated_duration_minutes })}`
+                      : ""}
+                  </p>
+                  <button
+                    type="button"
+                    disabled={importingSlideExampleId !== null}
+                    onClick={() => void importSlideExampleDeck(ex.id)}
+                    className="mt-3 rounded-lg bg-teal-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {importingSlideExampleId === ex.id ? t("slideExamples.adding") : t("slideExamples.addCopy")}
+                  </button>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {libraryTab === "assessment" ? (
+          <section className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
+            <div className="mb-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-600 dark:text-emerald-400">
+                {t("examples.eyebrow")}
+              </p>
+              <h2 className="mt-1 text-base font-semibold text-[var(--foreground)]">{t("examples.title")}</h2>
+              <p className="mt-1 text-sm text-[var(--muted-foreground)]">{t("examples.description")}</p>
+            </div>
+
+            {!initialCompanyId?.trim() ? (
+              <div
+                role="status"
+                className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100"
+              >
+                {t("examples.noWorkspaceSelected")}
+              </div>
+            ) : null}
+
+            {exampleImportError ? (
+              <div
+                role="alert"
+                className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100"
+              >
+                {exampleImportError}
+              </div>
+            ) : null}
+
+            <div className="grid gap-3 md:grid-cols-2">
+              {ISG_EXAMPLE_SURVEY_TEMPLATES.map(def => (
+                <article
+                  key={def.id}
+                  className="flex flex-col rounded-xl border border-[var(--border)] bg-[var(--background)] p-4"
                 >
-                  {importingExampleId === def.id ? t("examples.adding") : t("examples.addCopy")}
-                </button>
-              </article>
-            ))}
-          </div>
-        </section>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        def.survey.type === "exam"
+                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200"
+                          : "bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200"
+                      }`}
+                    >
+                      {def.survey.type === "exam" ? t("examples.typeExam") : t("examples.typeSurvey")}
+                    </span>
+                    {def.survey.type === "exam" && def.survey.isTemplate ? (
+                      <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-800 dark:bg-slate-700 dark:text-slate-100">
+                        {t("examples.templateBadge")}
+                      </span>
+                    ) : null}
+                  </div>
+                  <h3 className="mt-2 text-sm font-semibold text-[var(--foreground)]">{def.survey.title}</h3>
+                  <p className="mt-1 line-clamp-3 text-xs text-[var(--muted-foreground)]">{def.survey.description}</p>
+                  <p className="mt-2 text-xs text-[var(--muted-foreground)]">
+                    {t("examples.questionCount", { count: def.questions.length })}
+                  </p>
+                  <button
+                    type="button"
+                    disabled={Boolean(importingExampleId) || !initialCompanyId?.trim()}
+                    onClick={() => void importExampleTemplate(def.id)}
+                    className="mt-3 inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {importingExampleId === def.id ? t("examples.adding") : t("examples.addCopy")}
+                  </button>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {/* Tabs */}
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-1 rounded-xl bg-[var(--card)] p-1 shadow-sm border border-[var(--border)]">
