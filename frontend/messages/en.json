@@ -1128,6 +1128,18 @@
           "Full incident and training allowances in tier",
           "Exports for the heaviest reporting cycles"
         ]
+      },
+      "basic": {
+        "name": "Basic",
+        "whoFor": "For solo users and small teams that need a light monthly quota.",
+        "description": "A low-cost entry plan between Free and Starter with small recurring quotas for Nova, documents, risk analysis and exports.",
+        "upgradeHint": "Upgrade to Starter when you need predictable monthly quotas.",
+        "features": [
+          "Everything in Free",
+          "50 Nova messages",
+          "5 risk analyses and 5 field inspections",
+          "5 document generations and 5 exports"
+        ]
       }
     }
   },
@@ -4412,7 +4424,8 @@
         "participants": "Enter at least one responsible person’s name and role.",
         "firmLocationDept": "Select company, location, and department.",
         "step2Participants": "Enter at least one responsible person’s name and role.",
-        "step3Images": "Add at least one image."
+        "step3Images": "Add at least one image.",
+        "step3RowMeta": "For every row that contains images, row title and description are required."
       },
       "messages": {
         "needImageToAnalyze": "Add at least one image to start analysis.",
@@ -4424,7 +4437,8 @@
         "analysisFailedDetail": "AI analysis failed. {detail}",
         "analysisPartial": "AI analysis partially completed. {successful}/{total} images processed; errors on {errors} image(s).",
         "analysisSummary": "AI analysis finished. {risks} risk(s), {positive} positive observation(s).",
-        "genericAiError": "An error occurred at the OpenAI or Anthropic stage."
+        "genericAiError": "An error occurred at the OpenAI or Anthropic stage.",
+        "imageBatchLimitNotice": "You can add at most {max} images per selection. {added} image(s) added."
       },
       "save": {
         "noCompany": "Cannot save without selecting a company.",

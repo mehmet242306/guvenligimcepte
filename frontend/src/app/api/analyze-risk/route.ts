@@ -93,6 +93,13 @@ const analyzeRiskSchema = z.object({
       address: z.string().max(500).optional(),
     })
     .optional(),
+  /** Risk satırı — kullanıcı başlık/açıklama (sihirbaz); AI değerlendirmesinde bağlam olarak kullanılır */
+  rowContext: z
+    .object({
+      title: z.string().min(1).max(400),
+      description: z.string().min(1).max(4000),
+    })
+    .optional(),
 });
 
 
@@ -241,6 +248,13 @@ function normalizeAnalyzeRiskPayload(raw: unknown): unknown {
     const m = o.mimeType.trim().toLowerCase();
     o.mimeType = m === "image/jpg" ? "image/jpeg" : m;
   }
+  const rc = o.rowContext;
+  if (rc && typeof rc === "object") {
+    const r = rc as Record<string, unknown>;
+    if (typeof r.title === "string") r.title = r.title.trim();
+    if (typeof r.description === "string") r.description = r.description.trim();
+    o.rowContext = r;
+  }
   return o;
 }
 
@@ -279,7 +293,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { imageBase64, mimeType, method, mode, language: outputLocale, companyContext } = parsedBody.data;
+    const { imageBase64, mimeType, method, mode, language: outputLocale, companyContext, rowContext } = parsedBody.data;
 
     if (!imageBase64 || !mimeType) {
       const diagnostics = buildAnalyzeRiskDiagnostics({
@@ -335,8 +349,21 @@ export async function POST(request: NextRequest) {
       ].join("\n");
     })();
 
+    const rowCtxBlock = (() => {
+      if (!rowContext?.title?.trim() || !rowContext?.description?.trim()) return "";
+      return [
+        "## RİSK SATIRI BAĞLAMI (kullanıcı tanımlı — değerlendirmede dikkate al)",
+        `- Satır başlığı: ${rowContext.title.trim()}`,
+        `- Açıklama: ${rowContext.description.trim()}`,
+        "",
+        "Bu başlık ve açıklama sahada hangi konunun fotoğraflandığını anlatır. Görselle çelişirse",
+        "her iki kaynağı birlikte değerlendir; çelişkiyi areaSummary veya önerilerde kısaca belirt.",
+      ].join("\n");
+    })();
+
     const augmentedUserPrompt = [
       companyCtxBlock,
+      rowCtxBlock,
       mode === "fast" ? buildFastUserPrompt(method, outputLocale) : buildUserPrompt(method, outputLocale),
     ]
       .filter(Boolean)

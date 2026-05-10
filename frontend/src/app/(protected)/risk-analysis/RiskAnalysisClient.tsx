@@ -84,6 +84,7 @@ import type {
   RiskAnalysisExportData,
 } from "@/lib/risk-analysis-export";
 import { consumeExportQuotaClient } from "@/lib/billing/export-quota-client";
+import { MAX_IMAGES_PER_UPLOAD_BATCH } from "@/lib/risk-analysis/upload-limits";
 import {
   formatDiagnosticsPlainTr,
   parseAnalyzeRiskDiagnosticsFromApi,
@@ -1353,7 +1354,7 @@ export function RiskAnalysisClient() {
 
   const [participants, setParticipants] = usePersistedState<Participant[]>("risk:participants", [createParticipant()]);
   const [setupMessage, setSetupMessage] = useState("");
-  const [setupMessageType, setSetupMessageType] = useState<"success" | "error" | "">("");
+  const [setupMessageType, setSetupMessageType] = useState<"success" | "error" | "warning" | "">("");
 
   /* ── Lines state ── */
   const defaultFirstLine = useMemo(
@@ -1608,9 +1609,20 @@ export function RiskAnalysisClient() {
   }
   function appendFiles(lid: string, fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
-    const imgs = Array.from(fileList).filter((f) => f.type.startsWith("image/")).map((f) => ({ id: crypto.randomUUID(), file: f, previewUrl: URL.createObjectURL(f) }));
-    setLines((prev) => prev.map((l) => l.id === lid ? { ...l, images: [...l.images, ...imgs] } : l));
+    const all = Array.from(fileList).filter((f) => f.type.startsWith("image/"));
+    if (all.length === 0) return;
+    const truncated = all.length > MAX_IMAGES_PER_UPLOAD_BATCH;
+    const chosen = truncated ? all.slice(0, MAX_IMAGES_PER_UPLOAD_BATCH) : all;
+    const imgs = chosen.map((f) => ({ id: crypto.randomUUID(), file: f, previewUrl: URL.createObjectURL(f) }));
+    setLines((prev) => prev.map((l) => (l.id === lid ? { ...l, images: [...l.images, ...imgs] } : l)));
     setResults([]);
+    if (truncated) {
+      setSetupMessage(trRiskScoring("wizard.messages.imageBatchLimitNotice", { max: MAX_IMAGES_PER_UPLOAD_BATCH, added: chosen.length }));
+      setSetupMessageType("warning");
+    } else {
+      setSetupMessage("");
+      setSetupMessageType("");
+    }
   }
   function removeImage(lid: string, imgId: string) {
     setLines((prev) => prev.map((l) => {
@@ -1627,8 +1639,10 @@ export function RiskAnalysisClient() {
   const bulkFileInputRef = useRef<HTMLInputElement | null>(null);
   function bulkUploadToSeparateLines(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
-    const imageFiles = Array.from(fileList).filter((f) => f.type.startsWith("image/"));
-    if (imageFiles.length === 0) return;
+    const raw = Array.from(fileList).filter((f) => f.type.startsWith("image/"));
+    if (raw.length === 0) return;
+    const truncated = raw.length > MAX_IMAGES_PER_UPLOAD_BATCH;
+    const imageFiles = truncated ? raw.slice(0, MAX_IMAGES_PER_UPLOAD_BATCH) : raw;
 
     const newLines: RiskLine[] = imageFiles.map((file, idx) => {
       const cleanName = file.name.replace(/\.[^.]+$/, "").replace(/[_-]/g, " ").replace(/\s+/g, " ").trim();
@@ -1642,6 +1656,13 @@ export function RiskAnalysisClient() {
 
     setLines((prev) => [...newLines, ...prev]);
     setResults([]);
+    if (truncated) {
+      setSetupMessage(trRiskScoring("wizard.messages.imageBatchLimitNotice", { max: MAX_IMAGES_PER_UPLOAD_BATCH, added: imageFiles.length }));
+      setSetupMessageType("warning");
+    } else {
+      setSetupMessage("");
+      setSetupMessageType("");
+    }
   }
   function removeLine(lid: string) {
     setLines((prev) => { const t = prev.find((l) => l.id === lid); t?.images.forEach((i) => URL.revokeObjectURL(i.previewUrl)); return prev.filter((l) => l.id !== lid); });
@@ -1741,7 +1762,11 @@ export function RiskAnalysisClient() {
   }
 
   /** Nova AI Vision ile tek gorsel analiz et */
-  async function analyzeImageWithAI(imageFile: File, imageId: string): Promise<AiImageAnalysisResult> {
+  async function analyzeImageWithAI(
+    imageFile: File,
+    imageId: string,
+    rowContext: { title: string; description: string },
+  ): Promise<AiImageAnalysisResult> {
     try {
       const { base64, mimeType } = await fileToBase64(imageFile);
       // Firma sektör bağlamı — AI sektörel checklist için kullanır.
@@ -1764,6 +1789,10 @@ export function RiskAnalysisClient() {
           mode: "fast",
           language: locale ?? "tr",
           companyContext,
+          rowContext: {
+            title: rowContext.title.trim(),
+            description: rowContext.description.trim(),
+          },
         }),
       });
 
@@ -1983,10 +2012,20 @@ export function RiskAnalysisClient() {
     }
   }
 
+  function validateRowTitlesAndDescriptions(): string | null {
+    const invalid = lines.some(
+      (l) => l.images.length > 0 && (!l.title.trim() || !l.description.trim()),
+    );
+    if (invalid) return trRiskScoring("wizard.validate.step3RowMeta");
+    return null;
+  }
+
   async function handleAnalyze(): Promise<boolean> {
     const err = validateSetup();
     if (err) { setSetupMessage(err); setSetupMessageType("error"); return false; }
     if (totalImageCount === 0) { setSetupMessage(trRiskScoring("wizard.messages.needImageToAnalyze")); setSetupMessageType("error"); return false; }
+    const rowErr = validateRowTitlesAndDescriptions();
+    if (rowErr) { setSetupMessage(rowErr); setSetupMessageType("error"); return false; }
 
     setIsAnalyzing(true);
     setAnalysisProgress(0);
@@ -2023,7 +2062,10 @@ export function RiskAnalysisClient() {
         setSetupMessage(trRiskScoring("wizard.messages.analyzingRowImage", { row: li + 1, fileName: img.file.name }));
         setSetupMessageType("success");
 
-        const analysis = await analyzeImageWithAI(img.file, img.id);
+        const analysis = await analyzeImageWithAI(img.file, img.id, {
+          title: line.title,
+          description: line.description,
+        });
         const { findings: aiFindings, meta } = analysis;
         newImageMeta[img.id] = meta;
 
@@ -2912,14 +2954,25 @@ JSON formatında döndür:
   function canGoNext(): boolean {
     if (step === 1) return !!selectedCompanyId && !!selectedLocation && !!selectedDepartment;
     if (step === 2) return validParticipants.length > 0;
-    if (step === 3) return totalImageCount > 0;
+    if (step === 3) {
+      if (totalImageCount === 0) return false;
+      return lines.every((l) => l.images.length === 0 || (Boolean(l.title.trim()) && Boolean(l.description.trim())));
+    }
     return false;
   }
 
   function goNext() {
     if (step === 1 && !canGoNext()) { setSetupMessage(trRiskScoring("wizard.validate.firmLocationDept")); setSetupMessageType("error"); return; }
     if (step === 2 && !canGoNext()) { setSetupMessage(trRiskScoring("wizard.validate.step2Participants")); setSetupMessageType("error"); return; }
-    if (step === 3 && !canGoNext()) { setSetupMessage(trRiskScoring("wizard.validate.step3Images")); setSetupMessageType("error"); return; }
+    if (step === 3 && !canGoNext()) {
+      if (totalImageCount === 0) {
+        setSetupMessage(trRiskScoring("wizard.validate.step3Images"));
+      } else {
+        setSetupMessage(trRiskScoring("wizard.validate.step3RowMeta"));
+      }
+      setSetupMessageType("error");
+      return;
+    }
     setSetupMessage(""); setSetupMessageType("");
     if (step < 4) setStep((step + 1) as 1 | 2 | 3 | 4);
   }
@@ -3263,7 +3316,14 @@ JSON formatında döndür:
 
           <div className="mt-4"><Link href="/companies"><Button type="button" variant="outline" className="h-10 rounded-xl px-5 text-sm font-semibold">{trRiskScoring("wizard.step1.editCompanyStructure")}</Button></Link></div>
 
-          {setupMessage && <StatusAlert tone={setupMessageType === "success" ? "success" : "danger"} className="mt-5">{setupMessage}</StatusAlert>}
+          {setupMessage && (
+            <StatusAlert
+              tone={setupMessageType === "success" ? "success" : setupMessageType === "warning" ? "warning" : "danger"}
+              className="mt-5"
+            >
+              {setupMessage}
+            </StatusAlert>
+          )}
         </div>
       )}
 
@@ -3361,7 +3421,14 @@ JSON formatında döndür:
             ))}
           </div>
 
-          {setupMessage && <StatusAlert tone={setupMessageType === "success" ? "success" : "danger"} className="mt-5">{setupMessage}</StatusAlert>}
+          {setupMessage && (
+            <StatusAlert
+              tone={setupMessageType === "success" ? "success" : setupMessageType === "warning" ? "warning" : "danger"}
+              className="mt-5"
+            >
+              {setupMessage}
+            </StatusAlert>
+          )}
         </div>
       )}
 
@@ -3467,7 +3534,11 @@ JSON formatında döndür:
             </div>
           </div>
 
-          {setupMessage && <StatusAlert tone={setupMessageType === "success" ? "success" : "danger"}>{setupMessage}</StatusAlert>}
+          {setupMessage && (
+            <StatusAlert tone={setupMessageType === "success" ? "success" : setupMessageType === "warning" ? "warning" : "danger"}>
+              {setupMessage}
+            </StatusAlert>
+          )}
 
           <div className="space-y-5">
             {lines.map((line, idx) => (
@@ -3481,10 +3552,29 @@ JSON formatında döndür:
                 </div>
 
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                  <Input label={trRiskScoring("wizard.step3.rowTitle")} value={line.title} onChange={(e) => updateLine(line.id, "title", e.target.value)} placeholder={trRiskScoring("wizard.step3.rowTitlePlaceholder")} />
+                  <Input
+                    id={`line-title-${line.id}`}
+                    label={`${trRiskScoring("wizard.step3.rowTitle")} *`}
+                    value={line.title}
+                    onChange={(e) => updateLine(line.id, "title", e.target.value)}
+                    placeholder={trRiskScoring("wizard.step3.rowTitlePlaceholder")}
+                    required
+                    aria-required
+                  />
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-foreground">{trRiskScoring("wizard.common.description")}</label>
-                    <input type="text" value={line.description} onChange={(e) => updateLine(line.id, "description", e.target.value)} placeholder={trRiskScoring("ui.page.describeRiskGroup")} className="h-12 rounded-2xl border border-border bg-card px-4 text-sm text-foreground" />
+                    <label className="text-sm font-medium text-foreground" htmlFor={`line-desc-${line.id}`}>
+                      {trRiskScoring("wizard.common.description")} *
+                    </label>
+                    <input
+                      id={`line-desc-${line.id}`}
+                      type="text"
+                      value={line.description}
+                      onChange={(e) => updateLine(line.id, "description", e.target.value)}
+                      placeholder={trRiskScoring("ui.page.describeRiskGroup")}
+                      className="h-12 rounded-2xl border border-border bg-card px-4 text-sm text-foreground"
+                      required
+                      aria-required
+                    />
                   </div>
                 </div>
 

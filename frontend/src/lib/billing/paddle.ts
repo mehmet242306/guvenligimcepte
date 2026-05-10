@@ -19,6 +19,10 @@ const PADDLE_PRICE_ENV: Record<BillingPlanKey, Record<BillingCycle, string>> = {
     monthly: "",
     yearly: "",
   },
+  basic: {
+    monthly: "PADDLE_PRICE_BASIC_MONTHLY",
+    yearly: "PADDLE_PRICE_BASIC_YEARLY",
+  },
   starter: {
     monthly: "PADDLE_PRICE_STARTER_MONTHLY",
     yearly: "PADDLE_PRICE_STARTER_YEARLY",

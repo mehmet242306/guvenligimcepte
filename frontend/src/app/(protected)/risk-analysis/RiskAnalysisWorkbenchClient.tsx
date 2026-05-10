@@ -50,6 +50,7 @@ import {
   type R2DValues,
 } from "@/lib/risk-scoring";
 import { cn } from "@/lib/utils";
+import { MAX_IMAGES_PER_UPLOAD_BATCH } from "@/lib/risk-analysis/upload-limits";
 import {
   formatDiagnosticsPlainTr,
   parseAnalyzeRiskDiagnosticsFromApi,
@@ -562,8 +563,10 @@ export function RiskAnalysisWorkbenchClient() {
   }, []);
 
   const addFiles = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files ?? []).filter((file) => file.type.startsWith("image/"));
-    if (files.length === 0) return;
+    const raw = Array.from(event.target.files ?? []).filter((file) => file.type.startsWith("image/"));
+    if (raw.length === 0) return;
+    const truncated = raw.length > MAX_IMAGES_PER_UPLOAD_BATCH;
+    const files = truncated ? raw.slice(0, MAX_IMAGES_PER_UPLOAD_BATCH) : raw;
     const nextImages = files.map<AnalysisImage>((file) => ({
       id: randomId(),
       file,
@@ -573,7 +576,12 @@ export function RiskAnalysisWorkbenchClient() {
       findings: [],
     }));
     setImages((current) => [...current, ...nextImages]);
-    setNotice({ tone: "info", text: `${files.length} görsel eklendi.` });
+    setNotice({
+      tone: truncated ? "warning" : "info",
+      text: truncated
+        ? `Tek seferde en fazla ${MAX_IMAGES_PER_UPLOAD_BATCH} görsel eklenebilir; ${files.length} görsel eklendi.`
+        : `${files.length} görsel eklendi.`,
+    });
     event.target.value = "";
   }, []);
 

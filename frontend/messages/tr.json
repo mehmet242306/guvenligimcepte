@@ -1128,6 +1128,18 @@
           "Bu kademede tam olay ve eğitim kotası",
           "En yoğun raporlama döngüleri için dışa aktarım"
         ]
+      },
+      "basic": {
+        "name": "Basic",
+        "whoFor": "Serbest çalışanlar ve ürünü düzenli denemek isteyen küçük ekipler.",
+        "description": "Free planın üstünde, Starter öncesi düşük bütçeli giriş paketi. Nova, belge, risk analizi ve export için küçük ama düzenli kota verir.",
+        "upgradeHint": "Daha düzenli risk analizi ve belge üretimi için Starter paketine geçin.",
+        "features": [
+          "Free paketindeki her şey",
+          "50 Nova mesajı",
+          "5 risk analizi ve 5 saha denetimi",
+          "5 belge üretimi ve 5 export"
+        ]
       }
     }
   },
@@ -4412,7 +4424,8 @@
         "participants": "En az bir görevli kişi adı ve rolü girilmelidir.",
         "firmLocationDept": "Firma, lokasyon ve bölüm seçmelisin.",
         "step2Participants": "En az bir görevli adı ve rolü girilmelidir.",
-        "step3Images": "En az bir görsel eklemelisin."
+        "step3Images": "En az bir görsel eklemelisin.",
+        "step3RowMeta": "Görsel içeren her satır için satır başlığı ve açıklama zorunludur (boş bırakılamaz)."
       },
       "messages": {
         "needImageToAnalyze": "Analiz başlatmak için en az bir görsel eklemelisin.",
@@ -4424,7 +4437,8 @@
         "analysisFailedDetail": "AI analizi tamamlanamadı. {detail}",
         "analysisPartial": "AI analizi kısmen tamamlandı. {successful}/{total} görsel işlendi; {errors} görselde hata var.",
         "analysisSummary": "AI analizi tamamlandı. {risks} risk, {positive} olumlu tespit.",
-        "genericAiError": "OpenAI veya Anthropic aşamasında hata oluştu."
+        "genericAiError": "OpenAI veya Anthropic aşamasında hata oluştu.",
+        "imageBatchLimitNotice": "Tek seferde en fazla {max} görsel eklenebilir. {added} görsel eklendi."
       },
       "save": {
         "noCompany": "Firma seçilmeden analiz kaydedilemez.",

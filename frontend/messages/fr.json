@@ -5029,6 +5029,18 @@
           "Training slides where included in quota",
           "Exports scaled for individuals"
         ]
+      },
+      "basic": {
+        "name": "Basic",
+        "whoFor": "For solo users and small teams that need a light monthly quota.",
+        "description": "A low-cost entry plan between Free and Starter with small recurring quotas for Nova, documents, risk analysis and exports.",
+        "upgradeHint": "Upgrade to Starter when you need predictable monthly quotas.",
+        "features": [
+          "Everything in Free",
+          "50 Nova messages",
+          "5 risk analyses and 5 field inspections",
+          "5 document generations and 5 exports"
+        ]
       }
     },
     "priceFreeNote": "Gratuit pour commencer",

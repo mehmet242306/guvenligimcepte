@@ -71,6 +71,8 @@ export const wizardEn = {
     firmLocationDept: "Select company, location, and department.",
     step2Participants: "Enter at least one responsible person’s name and role.",
     step3Images: "Add at least one image.",
+    step3RowMeta:
+      "For every row that contains images, row title and description are required.",
   },
   messages: {
     needImageToAnalyze: "Add at least one image to start analysis.",
@@ -86,6 +88,8 @@ export const wizardEn = {
     analysisSummary:
       "AI analysis finished. {risks} risk(s), {positive} positive observation(s).",
     genericAiError: "An error occurred at the OpenAI or Anthropic stage.",
+    imageBatchLimitNotice:
+      "You can add at most {max} images per selection. {added} image(s) added.",
   },
   save: {
     noCompany: "Cannot save without selecting a company.",
@@ -292,6 +296,8 @@ export const wizardTr = {
     firmLocationDept: "Firma, lokasyon ve bölüm seçmelisin.",
     step2Participants: "En az bir görevli adı ve rolü girilmelidir.",
     step3Images: "En az bir görsel eklemelisin.",
+    step3RowMeta:
+      "Görsel içeren her satır için satır başlığı ve açıklama zorunludur (boş bırakılamaz).",
   },
   messages: {
     needImageToAnalyze: "Analiz başlatmak için en az bir görsel eklemelisin.",
@@ -305,6 +311,7 @@ export const wizardTr = {
       "AI analizi kısmen tamamlandı. {successful}/{total} görsel işlendi; {errors} görselde hata var.",
     analysisSummary: "AI analizi tamamlandı. {risks} risk, {positive} olumlu tespit.",
     genericAiError: "OpenAI veya Anthropic aşamasında hata oluştu.",
+    imageBatchLimitNotice: "Tek seferde en fazla {max} görsel eklenebilir. {added} görsel eklendi.",
   },
   save: {
     noCompany: "Firma seçilmeden analiz kaydedilemez.",

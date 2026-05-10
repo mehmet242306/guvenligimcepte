@@ -18,6 +18,7 @@ import { requireAuth } from "@/lib/supabase/api-auth";
 
 const checkoutSchema = z.object({
   planKey: z.enum([
+    "basic",
     "starter",
     "plus",
     "professional",

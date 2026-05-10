@@ -2,6 +2,7 @@ export type BillingCycle = "monthly" | "yearly";
 
 export type BillingPlanKey =
   | "free"
+  | "basic"
   | "starter"
   | "plus"
   | "professional"
@@ -45,6 +46,7 @@ export const BILLING_ACTION_LABELS = BILLING_ACTION_LABEL_EN;
 
 export const PLAN_KEY_DISPLAY_EN: Record<BillingPlanKey, string> = {
   free: "Free",
+  basic: "Basic",
   starter: "Starter",
   plus: "Plus",
   professional: "Professional 99",
@@ -65,6 +67,20 @@ export const INDIVIDUAL_BILLING_PLAN_DEFS: BillingPlanDefinition[] = [
       incident_analysis: 0,
       training_slide: 0,
       export: 1,
+    },
+  },
+  {
+    key: "basic",
+    priceUsd: 15,
+    limits: {
+      nova_message: 50,
+      ai_analysis: 20,
+      document_generation: 5,
+      risk_analysis: 5,
+      field_inspection: 5,
+      incident_analysis: 1,
+      training_slide: 0,
+      export: 5,
     },
   },
   {
