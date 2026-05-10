@@ -13,11 +13,6 @@ import {
   buildManualFallbackResponse,
   executeWithResilience,
 } from "@/lib/self-healing/resilience";
-import {
-  detectSafetyObjects,
-  visionToPromptContext,
-  type VisionDetection,
-} from "@/lib/ai/openai-vision";
 import { getAnthropicKey } from "@/lib/ai/provider-keys";
 import {
   analyzeRiskSystemLanguageSuffix,
@@ -33,10 +28,9 @@ function getAnthropicClient(): Anthropic | null {
   return anthropicClient;
 }
 
-export const maxDuration = 90; // Hybrid OpenAI+Anthropic iki aşamalı, biraz daha geniş pencere
+export const maxDuration = 90; // Anthropic-only visual risk analysis
 
-// v1.11 — ISG expert mode: visible hazard sources must not be suppressed by anti-hallucination guards
-const PROMPT_VERSION = "v1.12-risk-first-no-empty-field-review";
+const PROMPT_VERSION = "v2.0-anthropic-risk-first-rewrite";
 
 type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" | "bow_tie" | "fta" | "checklist" | "jsa" | "lopa";
 
@@ -45,7 +39,6 @@ type AnalysisMethod = "r_skor" | "fine_kinney" | "l_matrix" | "fmea" | "hazop" |
 // Halüsinasyon değil, eksik tespit asıl sorundur.
 const ACCEPTABLE_RISK_CONFIDENCE_MAX = 0.40; // 0.59 → 0.40: daha az risk "kabul edilebilir"e düşer
 const ACTIONABLE_RISK_CONFIDENCE_MIN = 0.55; // 0.70 → 0.55: daha geniş "aksiyon gerekli" aralığı
-const ENABLE_OPENAI_HELPER = process.env.RISK_ANALYSIS_OPENAI_HELPER === "true";
 
 const analyzeRiskSchema = z.object({
   imageBase64: z.string().min(100).max(20_000_000),
@@ -76,7 +69,7 @@ const analyzeRiskSchema = z.object({
 /* Base prompt — common to all methods                                 */
 /* ================================================================== */
 
-const BASE_PROMPT = `\u26A0\uFE0F EN Y\u00DCKSEK \u00D6NCEL\u0130K \u2014 BU KURALLAR D\u0130\u011EER HER\u015EEYDEN \u00D6NCE GEL\u0130R \u26A0\uFE0F
+const _BASE_PROMPT = `\u26A0\uFE0F EN Y\u00DCKSEK \u00D6NCEL\u0130K \u2014 BU KURALLAR D\u0130\u011EER HER\u015EEYDEN \u00D6NCE GEL\u0130R \u26A0\uFE0F
 
 \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 KURAL ALPHA \u2014 BO\u015E L\u0130STE YASAKTIR (GER\u00C7EK SAHA FOTO\u011ERAFINDA)
@@ -1278,11 +1271,40 @@ Koruma Katmanlar\u0131: Her katman i\u00E7in isim + PFD de\u011Feri
 /* Build full prompts per method                                       */
 /* ================================================================== */
 
+const ANTHROPIC_RISK_FIRST_SYSTEM_PROMPT = `
+Sen deneyimli bir A sınıfı İSG uzmanısın. Görevin görseldeki riskleri tespit etmek, risk envanteri çıkarmak ve her görünür tehlike kaynağını kayıt altına almaktır.
+
+ANA KURAL:
+- Görsel gerçek bir saha, tesis, işyeri, teknik alan, depo, atölye, şantiye, açık alan, elektrik alanı, yangın/kimyasal/makine/depolama/zemin/geçiş durumu içeriyorsa "risks" dizisi boş olamaz.
+- Risk tespit etmek birincil görevdir. Olumlu gözlem, çekingenlik veya yanlış pozitif korkusu risk tespitinin önüne geçemez.
+- Görünür tehlike kaynağını risk olarak yaz. Emin olmadığın ayrıntıyı kesin iddia etme; "doğrulanmalı", "kontrol edilmeli", "görsel kanıtı sınırlı" diliyle yaz.
+- Kaza olmuş olması gerekmez. Kaza potansiyeli, kontrol eksikliği, uygunsuzluk, doğrulama gerektiren kritik durum ve maruziyet ihtimali de risk kaydıdır.
+
+ZORUNLU RİSK TARAMASI:
+Her gerçek görselde şu başlıkları sırayla tara ve görünür unsur varsa risk yaz:
+1. Elektrik: pano, kablo, priz, çoklayıcı, trafo, enerji hattı, açık/dağınık bağlantı, ıslak alanda elektrik, yetkisiz erişim.
+2. Yangın/patlama: alev, duman, yanıcı madde, aşırı yüklenmiş priz, gaz tüpü, LPG, basınçlı kap, sıcak iş, söndürücü erişimi.
+3. Kazı/boşluk/yükseklik: açık kanal, çukur, hendek, şaft, platform, merdiven, korkuluk/bariyer ihtiyacı.
+4. Zemin/geçiş/düzen: moloz, kablo, hortum, boru, düzensiz istif, takılma/düşme engeli, kaygan/kırık zemin.
+5. Makine/ekipman: hareketli parça, koruyucu eksikliği, bakım alanı, forklift/transpalet, kesici/delici ekipman.
+6. Kimyasal/biyolojik: bidon, varil, etiketsiz kap, döküntü, yanıcı/aşındırıcı/toksik madde, atık.
+7. Depolama/istif: devrilme, raf/istif düzensizliği, ağır malzeme, uyumsuz malzeme.
+8. İnsan/KKD/davranış: kişi varsa yaptığı işe göre baş, göz, el, ayak, solunum, işitme ve düşüş korumasını değerlendir.
+9. Acil durum: kaçış yolu, yönlendirme, yangın dolabı/söndürücü, erişim engeli, uyarı levhası ihtiyacı.
+
+ÇIKTI DAVRANIŞI:
+- Görselde birden fazla risk varsa hepsini ayrı ayrı yaz. Tek riskle yetinme.
+- Her risk için title, category, severity, confidence, recommendation, correctiveActionRequired, pinX, pinY, boxX, boxY, boxW, boxH üret.
+- Risk konumlarını yaklaşık ver; mükemmel koordinat bekleme.
+- positiveObservations ikincildir. Risk varsa önce risks dizisini doldur. positiveObservations boş kalabilir.
+- imageRelevance gerçek fotoğrafsa "relevant" olmalıdır.
+- Sadece tamamen ilgisiz, gerçek saha/işyeri/tehlike içermeyen görselde risks boş olabilir.
+- Türkçe yaz. Sadece geçerli JSON döndür.
+`;
+
 function buildSystemPrompt(method: AnalysisMethod, locale: string): string {
   return (
-    BASE_PROMPT +
-    "\n" +
-    METHOD_PROMPTS[method].systemSection +
+    ANTHROPIC_RISK_FIRST_SYSTEM_PROMPT +
     "\n" +
     LEGAL_PROMPT +
     analyzeRiskSystemLanguageSuffix(locale)
@@ -1293,8 +1315,11 @@ function buildUserPrompt(method: AnalysisMethod, locale: string): string {
   const mp = METHOD_PROMPTS[method];
   const r2dFallback = method !== "r_skor" ? `,\n      "r2dParams": {"c1":0.5,"c2":0.3,"c3":0.3,"c4":0.1,"c5":0.2,"c6":0.3,"c7":0.2,"c8":0.1,"c9":0.2}` : "";
 
-  return `Bu g\u00F6rselde ne g\u00F6r\u00FCyorsan sadece onu analiz et. G\u00F6rselde olmayan riskleri uydurma.
-Her tespit i\u00E7in belirtilen y\u00F6ntem parametrelerini g\u00F6rselden do\u011Frudan analiz ederek ver.
+  return `Bu görseli İSG uzmanı gibi incele ve risk envanteri çıkar.
+Gerçek saha/tesis/işyeri/teknik alan görselinde risks dizisini boş bırakma.
+Gördüğün her tehlike kaynağını, uygunsuzluğu, kontrol eksikliğini veya doğrulanması gereken kritik durumu ayrı risk olarak yaz.
+Emin olmadığın ayrıntıyı kesin iddia etme; ama görünen tehlike kaynağını silme.
+Her tespit için belirtilen yöntem parametrelerini görselden doğrudan analiz ederek ver.
 
 JSON format\u0131:
 {
@@ -1490,33 +1515,10 @@ export async function POST(request: NextRequest) {
     //
     // Analiz süresini kısaltmak için varsayılan kapalıdır. Gerektiğinde
     // RISK_ANALYSIS_OPENAI_HELPER=true ile tekrar yardımcı gözlem moduna alınır.
-    let visionDetection: VisionDetection | null = null;
-    let visionStageStatus: "openai_gpt4o" | "skipped_speed_mode" | "failed_fallback" = "skipped_speed_mode";
-    if (ENABLE_OPENAI_HELPER) {
-      visionStageStatus = "openai_gpt4o";
-      try {
-        visionDetection = await detectSafetyObjects(imageBase64, mimeType);
-      } catch (visionErr) {
-        console.warn("[analyze-risk] vision stage failed:", visionErr);
-      }
-
-      if (!visionDetection) {
-        visionStageStatus = "failed_fallback";
-        await logAiUsage({
-          userId: auth.userId,
-          organizationId: auth.organizationId,
-          model: "gpt-4o",
-          endpoint: "/api/analyze-risk:vision",
-          success: false,
-          metadata: { method, reason: visionStageStatus },
-        }).catch(() => undefined);
-      }
-    }
+    const visionStageStatus = "anthropic_only";
 
     // Claude'a verilecek yardımcı kontekst (varsa); yoksa boş string → eski davranış.
     // Bu blok risk listesi değildir; Claude nihai kararı doğrudan görselden verir.
-    const visionContextBlock = visionDetection ? visionToPromptContext(visionDetection) : "";
-
     // Firma sektör bağlamı — sektörel checklist için ipucu. Görselle çelişirse
     // model görsele güvenmeli (system prompt bunu söylüyor).
     const companyCtxBlock = (() => {
@@ -1537,7 +1539,7 @@ export async function POST(request: NextRequest) {
       ].join("\n");
     })();
 
-    const augmentedUserPrompt = [visionContextBlock, companyCtxBlock, buildUserPrompt(method, outputLocale)]
+    const augmentedUserPrompt = [companyCtxBlock, buildUserPrompt(method, outputLocale)]
       .filter(Boolean)
       .join("\n\n");
 
@@ -1903,31 +1905,9 @@ export async function POST(request: NextRequest) {
         acceptableRiskCount,
         acceptableRiskConfidenceMax: ACCEPTABLE_RISK_CONFIDENCE_MAX,
         actionableRiskConfidenceMin: ACTIONABLE_RISK_CONFIDENCE_MIN,
-        hybridVision: visionDetection ? "openai_gpt4o" : "none",
-        visionDurationMs: visionDetection?.visionDurationMs ?? 0,
-        visionTokensInput: visionDetection?.visionTokens.input ?? 0,
-        visionTokensOutput: visionDetection?.visionTokens.output ?? 0,
+        visionProvider: "anthropic_only",
       },
     });
-
-    // Vision stage'i ayrı bir usage event olarak da logla (maliyet takibi)
-    if (visionDetection) {
-      await logAiUsage({
-        userId: auth.userId,
-        organizationId: auth.organizationId,
-        model: visionDetection.visionModel,
-        endpoint: "/api/analyze-risk:vision",
-        promptTokens: visionDetection.visionTokens.input,
-        completionTokens: visionDetection.visionTokens.output,
-        success: true,
-        metadata: {
-          method,
-          personCount: visionDetection.personCount,
-          hazardCount: visionDetection.hazardObjects.length,
-          imageType: visionDetection.imageType,
-        },
-      });
-    }
 
     return NextResponse.json({
       risks: parsed.risks ?? [],
@@ -1940,22 +1920,11 @@ export async function POST(request: NextRequest) {
       imageDescription: parsed.imageDescription ?? "",
       method,
       promptVersion: PROMPT_VERSION,
-      degraded: resilientResponse.degraded || (ENABLE_OPENAI_HELPER && !visionDetection),
+      degraded: resilientResponse.degraded,
       durationMs: duration,
       tokensInput: response.usage?.input_tokens ?? 0,
       tokensOutput: response.usage?.output_tokens ?? 0,
-      // Hybrid pipeline meta — client gösterebilir ya da debug için kullanabilir
-      visionStage: visionDetection
-        ? {
-            model: visionDetection.visionModel,
-            durationMs: visionDetection.visionDurationMs,
-            personCount: visionDetection.personCount,
-            hazardCount: visionDetection.hazardObjects.length,
-            imageType: visionDetection.imageType,
-            sceneCategory: visionDetection.sceneCategory,
-            workActivity: visionDetection.workActivity,
-          }
-        : null,
+      visionStage: null,
       visionStageStatus,
     });
   } catch (error: unknown) {
