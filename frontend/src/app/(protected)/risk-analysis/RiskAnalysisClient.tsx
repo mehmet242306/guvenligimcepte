@@ -1527,7 +1527,7 @@ export function RiskAnalysisClient() {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
-        const MAX = 1280;
+        const MAX = 960;
         let w = img.width;
         let h = img.height;
         if (w > MAX || h > MAX) {
@@ -1541,7 +1541,7 @@ export function RiskAnalysisClient() {
         const ctx = canvas.getContext("2d");
         if (!ctx) { reject(new Error(trRiskScoring("defaults.canvasNoContext"))); return; }
         ctx.drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.74);
         const base64 = dataUrl.split(",")[1];
         resolve({ base64, mimeType: "image/jpeg" });
         URL.revokeObjectURL(img.src);

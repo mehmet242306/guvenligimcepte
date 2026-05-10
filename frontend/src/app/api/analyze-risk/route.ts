@@ -9,10 +9,7 @@ import {
   logSecurityEvent,
   resolveAiDailyLimit,
 } from "@/lib/security/server";
-import {
-  buildManualFallbackResponse,
-  executeWithResilience,
-} from "@/lib/self-healing/resilience";
+import { executeWithResilience } from "@/lib/self-healing/resilience";
 import { getAnthropicKey, getRiskAnalysisVisionModel } from "@/lib/ai/provider-keys";
 import {
   buildSystemPrompt,
@@ -45,7 +42,7 @@ function getRiskAnalysisOperationTimeoutMs(): number {
     const n = Number(raw);
     if (n >= 30_000 && n <= 170_000) return n;
   }
-  return 135_000;
+  return 160_000;
 }
 
 // Daha agresif tespit için threshold'lar gevşetildi (kullanıcı geri bildirimi:
@@ -331,7 +328,7 @@ export async function POST(request: NextRequest) {
     // retryDelaysMs uzunluğu 1 = tek deneme (executeWithResilience döngüsü).
     const operationTimeoutMs = getRiskAnalysisOperationTimeoutMs();
     const resilientResponse = await executeWithResilience({
-      serviceKey: "anthropic.risk_analysis",
+      serviceKey: "anthropic.risk_analysis.fast_v2",
       displayName: "Anthropic API",
       serviceType: "external_api",
       operationName: "risk_image_analysis",
@@ -340,13 +337,15 @@ export async function POST(request: NextRequest) {
       organizationId: auth.organizationId,
       timeoutMs: operationTimeoutMs,
       retryDelaysMs: [4000],
+      openAfterFailures: 8,
+      cooldownSeconds: 60,
       fallbackMessage:
         "AI gorsel analizi gecici olarak kullanilamiyor (zaman asimi). Lutfen yeniden baslatin veya manuel risk girisiyle devam edin.",
       operation: () =>
         client.messages.create({
           model: visionModel,
           // Haiku varsayılan (hız); RISK_ANALYSIS_ANTHROPIC_MODEL ile Sonnet seçilebilir.
-          max_tokens: 3072,
+          max_tokens: 2400,
           temperature: 0.2,
           system: buildSystemPrompt(method, outputLocale),
           messages: [
@@ -372,6 +371,9 @@ export async function POST(request: NextRequest) {
     });
 
     if (!resilientResponse.ok) {
+      const duration = Date.now() - startTime;
+      const isTransientAiFailure =
+        /timeout|timed out|overloaded|temporar|socket|network|connection|503|529/i.test(resilientResponse.error);
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
@@ -381,18 +383,65 @@ export async function POST(request: NextRequest) {
         metadata: {
           method,
           fallback: true,
+          fallbackReason: resilientResponse.error.slice(0, 300),
           queueTaskId: resilientResponse.queuedTaskId ?? null,
         },
       });
-      return buildManualFallbackResponse({
-        message: resilientResponse.fallbackMessage,
-        queueTaskId: resilientResponse.queuedTaskId,
-        manualActionLabel: "Manuel risk girisiyle devam et",
-        extra: {
-          imageRelevance: "relevant",
-          risks: [],
-          positiveObservations: [],
-          areaSummary: "",
+
+      if (!isTransientAiFailure) {
+        return NextResponse.json(
+          {
+            error: resilientResponse.fallbackMessage,
+            degraded: true,
+            retryable: true,
+            stage: "anthropic_reasoning",
+            queueTaskId: resilientResponse.queuedTaskId ?? null,
+          },
+          { status: 502 },
+        );
+      }
+
+      const contextSummary = [
+        companyContext?.sector ? `Sektor: ${companyContext.sector}` : null,
+        companyContext?.kind ? `Faaliyet turu: ${companyContext.kind}` : null,
+        companyContext?.hazardClass ? `Tehlike sinifi: ${companyContext.hazardClass}` : null,
+      ]
+        .filter(Boolean)
+        .join(" | ");
+      const timeoutFallbackParsed = {
+        imageDescription:
+          "AI gorsel analizi zaman asimina ugradigi icin gorsel aciklamasi otomatik uretilemedi.",
+        areaSummary:
+          contextSummary ||
+          "AI zaman asimi nedeniyle saha ozeti otomatik uretilemedi; on risk envanteri manuel dogrulama gerektirir.",
+        photoQuality: {
+          level: "moderate",
+          note: "AI zaman asimi nedeniyle on risk envanteri manuel dogrulama gerektirir.",
+        },
+      };
+
+      return NextResponse.json({
+        risks: buildFallbackRisksForEmptyFieldReview(timeoutFallbackParsed),
+        faces: [],
+        positiveObservations: [],
+        photoQuality: timeoutFallbackParsed.photoQuality,
+        areaSummary: timeoutFallbackParsed.areaSummary,
+        personCount: 0,
+        imageRelevance: "relevant",
+        imageDescription: timeoutFallbackParsed.imageDescription,
+        method,
+        visionModel,
+        promptVersion: RISK_ANALYSIS_PROMPT_VERSION,
+        degraded: true,
+        durationMs: duration,
+        tokensInput: 0,
+        tokensOutput: 0,
+        visionStage: null,
+        visionStageStatus,
+        queueTaskId: resilientResponse.queuedTaskId ?? null,
+        fallback: {
+          type: "ai_timeout_degraded",
+          label: "On risk envanteri manuel dogrulama gerektirir",
         },
       });
     }
