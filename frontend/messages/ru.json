@@ -4961,7 +4961,11 @@
       "ai_analysis": "ИИ анализы",
       "document_generation": "Генерация документов",
       "nova_message": "Сообщения Nova",
-      "risk_analysis": "Анализы рисков"
+      "risk_analysis": "Анализы рисков",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "billingPeriodAria": "Период оплаты",
     "currentPlan": "Текущий план",

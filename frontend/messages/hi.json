@@ -4961,7 +4961,11 @@
       "ai_analysis": "AI विश्लेषण",
       "document_generation": "दस्तावेज़ निर्माण",
       "nova_message": "Nova संदेश",
-      "risk_analysis": "जोखिम विश्लेषण"
+      "risk_analysis": "जोखिम विश्लेषण",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "billingPeriodAria": "बिलिंग अवधि",
     "currentPlan": "वर्तमान योजना",

@@ -23,6 +23,10 @@ const keyLimitRows = [
   "ai_analysis",
   "document_generation",
   "risk_analysis",
+  "field_inspection",
+  "incident_analysis",
+  "training_slide",
+  "export",
 ] as const;
 
 type PlanCopy = {

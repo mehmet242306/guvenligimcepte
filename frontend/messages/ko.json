@@ -4961,7 +4961,11 @@
       "ai_analysis": "AI 분석",
       "document_generation": "문서 생성",
       "nova_message": "Nova 메시지",
-      "risk_analysis": "위험 분석"
+      "risk_analysis": "위험 분석",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "billingPeriodAria": "청구 주기",
     "currentPlan": "현재 플랜",

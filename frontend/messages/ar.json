@@ -4961,7 +4961,11 @@
       "ai_analysis": "تحليلات الذكاء الاصطناعي",
       "document_generation": "إنشاء الوثائق",
       "nova_message": "رسائل Nova",
-      "risk_analysis": "تحليلات المخاطر"
+      "risk_analysis": "تحليلات المخاطر",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "billingPeriodAria": "فترة الفوترة",
     "currentPlan": "الخطة الحالية",

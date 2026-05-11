@@ -4961,7 +4961,11 @@
       "ai_analysis": "Análisis de IA",
       "document_generation": "Generación de documentos",
       "nova_message": "Mensajes de Nova",
-      "risk_analysis": "Análisis de riesgo"
+      "risk_analysis": "Análisis de riesgo",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "billingPeriodAria": "Período de facturación",
     "currentPlan": "Plan actual",

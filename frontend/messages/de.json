@@ -4961,7 +4961,11 @@
       "ai_analysis": "KI-Analysen",
       "document_generation": "Dokumentenerstellung",
       "nova_message": "Nova-Nachrichten",
-      "risk_analysis": "Risikoanalysen"
+      "risk_analysis": "Risikoanalysen",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "billingPeriodAria": "Abrechnungszeitraum",
     "currentPlan": "Aktueller Plan",

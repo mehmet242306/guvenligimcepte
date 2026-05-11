@@ -4961,7 +4961,11 @@
       "ai_analysis": "Analisis AI",
       "document_generation": "Pembuatan dokumen",
       "nova_message": "Pesan Nova",
-      "risk_analysis": "Analisis risiko"
+      "risk_analysis": "Analisis risiko",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "billingPeriodAria": "Periode penagihan",
     "currentPlan": "Paket saat ini",

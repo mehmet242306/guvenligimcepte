@@ -1034,7 +1034,11 @@
       "nova_message": "Nova mesajları",
       "ai_analysis": "Yapay zekâ analizleri",
       "document_generation": "Belge üretimi",
-      "risk_analysis": "Risk analizleri"
+      "risk_analysis": "Risk analizleri",
+      "field_inspection": "Saha denetimi",
+      "incident_analysis": "Olay / kök neden",
+      "training_slide": "Eğitim slaytı",
+      "export": "Export"
     },
     "footerLimitsTitle": "Limitler sunucuda uygulanır",
     "footerLimitsBody": "Nova, analiz ve üretim hakları yalnızca arayüzde değil; API katmanında da tüketilir.",
@@ -1067,40 +1071,40 @@
       "starter": {
         "name": "Starter",
         "whoFor": "Serbest çalışan uzmanlar ve orta düzey aylık iş yükü.",
-        "description": "Nova, analiz ve belgeler için daha yüksek kota; haftalık rutinlerin aksamadan işlemesi için.",
+        "description": "100 Nova, 40 AI analiz, 8 belge, 10 risk analizi, 10 saha denetimi, 2 olay analizi ve 10 export ile haftalık rutinler için dengeli başlangıç.",
         "upgradeHint": "Olay kök neden analizi ve eğitim çıktıları işinize girdiğinde Plus’a yükseltin.",
         "features": [
-          "Daha yüksek Nova ve analiz kotası",
-          "Aylık daha fazla belge üretimi",
-          "Olay analizi kotası",
-          "Kota dahilinde eğitim slaytları",
-          "Bireysel kullanıma uygun dışa aktarım"
+          "100 Nova mesajı ve 40 AI analiz",
+          "8 belge üretimi",
+          "10 risk analizi ve 10 saha denetimi",
+          "2 olay / kök neden analizi",
+          "10 export"
         ]
       },
       "plus": {
         "name": "Plus",
         "whoFor": "Ay içinde birden fazla müşteriyle çalışan aktif danışmanlar.",
-        "description": "Sohbet, analiz, risk modellemesi ve saha verisi için dengeli kapasite.",
+        "description": "240 Nova, 80 AI analiz, 15 belge, 20 risk analizi, 20 saha denetimi, 6 olay analizi, 1 eğitim slaytı ve 20 export ile aktif danışman temposu.",
         "upgradeHint": "Denetim ve raporlama hacmi arttığında Professional’a geçin.",
         "features": [
-          "Temel işlemlerde yükseltilmiş üst sınırlar",
-          "Daha fazla olay ve eğitim çıktısı",
-          "Yoğun haftalar için saha denetimi payı",
-          "Tekrarlayan paketler için belge çıktısı",
-          "Çok müşterili çalışmaya uygun dışa aktarım"
+          "240 Nova mesajı ve 80 AI analiz",
+          "15 belge üretimi",
+          "20 risk analizi ve 20 saha denetimi",
+          "6 olay / kök neden analizi ve 1 eğitim slaytı",
+          "20 export"
         ]
       },
       "professional": {
         "name": "Professional 99",
         "whoFor": "Haftalık kullanımı yoğun tam zamanlı İSG uzmanları.",
-        "description": "Üst Professional kademelerinden önce bireysel kullanım için güçlü tavan.",
+        "description": "400 Nova, 120 AI analiz, 20 belge, 35 risk analizi, 35 saha denetimi, 10 olay analizi, 2 eğitim slaytı ve 35 export ile güçlü bireysel tavan.",
         "upgradeHint": "Ölçekte en dengeli değer için Professional 149’a çıkın.",
         "features": [
-          "Yüksek Nova ve yapay zekâ analiz limitleri",
-          "Güçlü belge üretim temposu",
-          "Geniş risk ve saha denetimi kapasitesi",
-          "Kota dahilinde olay programı desteği",
-          "Yoğun raporlama için dışa aktarım"
+          "400 Nova mesajı ve 120 AI analiz",
+          "20 belge üretimi",
+          "35 risk analizi ve 35 saha denetimi",
+          "10 olay / kök neden analizi ve 2 eğitim slaytı",
+          "35 export"
         ]
       },
       "professional_149": {
@@ -1132,13 +1136,14 @@
       "basic": {
         "name": "Basic",
         "whoFor": "Serbest çalışanlar ve ürünü düzenli denemek isteyen küçük ekipler.",
-        "description": "Free planın üstünde, Starter öncesi düşük bütçeli giriş paketi. Nova, belge, risk analizi ve export için küçük ama düzenli kota verir.",
+        "description": "40 Nova, 15 AI analiz, 3 belge, 4 risk analizi, 4 saha denetimi, 1 olay analizi ve 4 export ile düşük bütçeli giriş paketi.",
         "upgradeHint": "Daha düzenli risk analizi ve belge üretimi için Starter paketine geçin.",
         "features": [
           "Free paketindeki her şey",
-          "50 Nova mesajı",
-          "5 risk analizi ve 5 saha denetimi",
-          "5 belge üretimi ve 5 export"
+          "40 Nova mesajı ve 15 AI analiz",
+          "3 belge üretimi",
+          "4 risk analizi ve 4 saha denetimi",
+          "1 olay / kök neden analizi ve 4 export"
         ]
       }
     }

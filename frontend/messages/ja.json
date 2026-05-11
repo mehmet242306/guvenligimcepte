@@ -4961,7 +4961,11 @@
       "ai_analysis": "AI分析",
       "document_generation": "文書生成",
       "nova_message": "Novaメッセージ",
-      "risk_analysis": "リスク分析"
+      "risk_analysis": "リスク分析",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "billingPeriodAria": "請求期間",
     "currentPlan": "現在のプラン",

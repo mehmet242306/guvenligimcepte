@@ -1034,7 +1034,11 @@
       "nova_message": "Nova messages",
       "ai_analysis": "AI analyses",
       "document_generation": "Document generation",
-      "risk_analysis": "Risk analyses"
+      "risk_analysis": "Risk analyses",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "footerLimitsTitle": "Enforced on the server",
     "footerLimitsBody": "Nova, analysis and generation allowances are consumed at the API layer — not only on screen.",
@@ -1067,40 +1071,40 @@
       "starter": {
         "name": "Starter",
         "whoFor": "Freelance specialists and steady but modest monthly workloads.",
-        "description": "Higher quotas for Nova, analyses and documents so weekly routines run without friction.",
+        "description": "Balanced starter capacity: 100 Nova, 40 AI analyses, 8 documents, 10 risk analyses, 10 field inspections, 2 incident analyses and 10 exports.",
         "upgradeHint": "Choose Plus when incident analysis and training outputs become part of your workflow.",
         "features": [
-          "Stronger Nova and analysis quotas",
-          "More monthly document generation",
-          "Incident analysis allowance",
-          "Training slides where included in quota",
-          "Exports scaled for individuals"
+          "100 Nova messages and 40 AI analyses",
+          "8 document generations",
+          "10 risk analyses and 10 field inspections",
+          "2 incident / root cause analyses",
+          "10 exports"
         ]
       },
       "plus": {
         "name": "Plus",
         "whoFor": "Active consultants managing several clients each month.",
-        "description": "Balanced capacity across chat, analyses, risk modelling and field data.",
+        "description": "Consultant-ready capacity: 240 Nova, 80 AI analyses, 15 documents, 20 risk analyses, 20 field inspections, 6 incident analyses, 1 training slide and 20 exports.",
         "upgradeHint": "Move to Professional when you need deeper inspection and reporting throughput.",
         "features": [
-          "Higher caps across all core actions",
-          "More incident and training outputs",
-          "Field inspection headroom for busy weeks",
-          "Document throughput for recurring packs",
-          "Exports suited to multi-client work"
+          "240 Nova messages and 80 AI analyses",
+          "15 document generations",
+          "20 risk analyses and 20 field inspections",
+          "6 incident / root cause analyses and 1 training slide",
+          "20 exports"
         ]
       },
       "professional": {
         "name": "Professional 99",
         "whoFor": "Full-time OHS experts with dense weekly usage.",
-        "description": "Enterprise-grade individual ceiling before the top Professional tiers.",
+        "description": "Strong individual ceiling: 400 Nova, 120 AI analyses, 20 documents, 35 risk analyses, 35 field inspections, 10 incident analyses, 2 training slides and 35 exports.",
         "upgradeHint": "Step up to Professional 149 for the best value at scale.",
         "features": [
-          "High Nova and AI analysis limits",
-          "Strong document generation cadence",
-          "Broad risk and field inspection capacity",
-          "Incident programme support within quota",
-          "Exports for intensive reporting"
+          "400 Nova messages and 120 AI analyses",
+          "20 document generations",
+          "35 risk analyses and 35 field inspections",
+          "10 incident / root cause analyses and 2 training slides",
+          "35 exports"
         ]
       },
       "professional_149": {
@@ -1132,13 +1136,14 @@
       "basic": {
         "name": "Basic",
         "whoFor": "For solo users and small teams that need a light monthly quota.",
-        "description": "A low-cost entry plan between Free and Starter with small recurring quotas for Nova, documents, risk analysis and exports.",
+        "description": "Low-cost entry plan with 40 Nova, 15 AI analyses, 3 documents, 4 risk analyses, 4 field inspections, 1 incident analysis and 4 exports.",
         "upgradeHint": "Upgrade to Starter when you need predictable monthly quotas.",
         "features": [
           "Everything in Free",
-          "50 Nova messages",
-          "5 risk analyses and 5 field inspections",
-          "5 document generations and 5 exports"
+          "40 Nova messages and 15 AI analyses",
+          "3 document generations",
+          "4 risk analyses and 4 field inspections",
+          "1 incident / root cause analysis and 4 exports"
         ]
       }
     }

@@ -4961,7 +4961,11 @@
       "ai_analysis": "AI təhlilləri",
       "document_generation": "Sənəd yaradılması",
       "nova_message": "Nova mesajları",
-      "risk_analysis": "Risk təhlilləri"
+      "risk_analysis": "Risk təhlilləri",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "billingPeriodAria": "Ödəniş dövrü",
     "currentPlan": "Cari plan",

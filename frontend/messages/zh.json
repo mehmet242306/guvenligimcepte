@@ -4961,7 +4961,11 @@
       "ai_analysis": "AI分析",
       "document_generation": "文档生成",
       "nova_message": "Nova消息",
-      "risk_analysis": "风险分析"
+      "risk_analysis": "风险分析",
+      "field_inspection": "Field inspections",
+      "incident_analysis": "Incident / root cause",
+      "training_slide": "Training slides",
+      "export": "Exports"
     },
     "billingPeriodAria": "计费周期",
     "currentPlan": "当前计划",
