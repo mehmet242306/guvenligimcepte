@@ -3,13 +3,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import {
-  validateToken,
-  submitResponses,
-  type SurveyRecord,
-  type SurveyQuestionRecord,
-  type SurveyTokenRecord,
-} from "@/lib/supabase/survey-api";
+import type {
+  SurveyQuestionRecord,
+  SurveyRecord,
+  SurveyTokenRecord,
+} from "@/lib/supabase/survey-mappers";
 
 type Phase = "loading" | "verify" | "fill" | "completed" | "expired" | "error";
 
@@ -33,7 +31,29 @@ export function SurveyFillClient() {
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
   const load = useCallback(async () => {
-    const result = await validateToken(token);
+    let result: {
+      valid: boolean;
+      tokenRecord?: SurveyTokenRecord | null;
+      survey?: SurveyRecord;
+      questions?: SurveyQuestionRecord[];
+    } | null = null;
+
+    try {
+      const res = await fetch("/api/survey/public/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      if (!res.ok) {
+        setPhase("error");
+        return;
+      }
+      result = await res.json();
+    } catch {
+      setPhase("error");
+      return;
+    }
+
     if (!result || !result.valid) {
       if (result?.tokenRecord?.status === "completed") {
         setTokenRecord(result.tokenRecord);
@@ -112,7 +132,19 @@ export function SurveyFillClient() {
       };
     });
 
-    const saved = await submitResponses(survey.id, tokenRecord.id, responseData);
+    let saved = false;
+    try {
+      const res = await fetch("/api/survey/public/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, answers: responseData }),
+      });
+      const data = (await res.json().catch(() => null)) as { ok?: boolean } | null;
+      saved = res.ok && Boolean(data?.ok);
+    } catch {
+      saved = false;
+    }
+
     if (!saved) {
       setSubmitError(t("submitError"));
       setSubmitting(false);

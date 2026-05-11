@@ -613,8 +613,6 @@ export async function exportRiskAnalysisWord(data: RiskAnalysisExportData) {
   }
 
   // ── Satır bazlı bölümler ──
-  let globalIdx = 0;
-
   for (let gi = 0; gi < rows.length; gi++) {
     const group = rows[gi];
 
@@ -688,7 +686,6 @@ export async function exportRiskAnalysisWord(data: RiskAnalysisExportData) {
       }));
       if (imgFindings.length > 0) {
         imgFindings.forEach((f, fi) => {
-          globalIdx++;
           rightCellChildren.push(new Paragraph({
             children: [
               new TextRun({ text: `R${fi + 1}  `, bold: true, size: 16, font: "Segoe UI", color: "DC2626" }),
@@ -742,7 +739,6 @@ export async function exportRiskAnalysisWord(data: RiskAnalysisExportData) {
         spacing: { before: 100, after: 60 },
       }));
       for (const f of orphanFindings) {
-        globalIdx++;
         children.push(new Paragraph({
           children: [
             new TextRun({ text: f.title, bold: true, size: 16, font: "Segoe UI", color: DARK_HEX }),

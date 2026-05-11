@@ -7,16 +7,10 @@
 --   * survey_tokens INSERT                              -> org members only
 --   * survey_responses SELECT (PII: names/emails/phones via tokens) -> org members only
 --
--- Left intentionally permissive (TODO: route through API + service role):
---   * survey_tokens SELECT/UPDATE             public token-link flow needs anon access
---   * survey_responses INSERT                 anonymous submitters via token
---   * surveys SELECT / survey_questions SELECT  reachable during token validation
---
--- The remaining permissive policies still expose token enumeration and a
--- surveys-by-status leak. The clean fix is to move the public survey-taking
--- flow into a dedicated API route that validates the token server-side with
--- the service-role client (see frontend/src/lib/supabase/survey-api.ts
--- validateToken/submitResponses). Tracked in technical-debt backlog.
+-- Sonraki adım (tamamlandı — bkz. 20260511203000_survey_public_flow_rls_lockdown.sql):
+-- Public anket akışı Next.js `/api/survey/public/session` + `/api/survey/public/submit`
+-- üzerinden service role ile çalışır; ardından bu tablolarda geniş anon/JWT INSERT
+-- ve token enumerasyonuna izin veren politikalar kaldırıldı.
 
 BEGIN;
 
