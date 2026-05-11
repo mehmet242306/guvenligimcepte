@@ -84,9 +84,9 @@ const secondaryNav: NavItem[] = [
   { href: "/planner", key: "nav.planner" },
   // { href: "/timesheet", key: "nav.timesheet" }, // Planner içindeki Puantaj sekmesinde
   { href: "/digital-twin", key: "nav.digitalTwin", digitalTwinRestricted: true },
+  { href: "/pricing", key: "nav.pricing" },
   // Raporlar: Artık firma workspace'i içindeki "İSG Dosyası" sekmesine taşındı.
   // { href: "/reports", key: "nav.reports" },
-  // Paketler: üst menüden kaldırıldı — dashboard’daki “Paket ve kapasite” kartından erişim.
   // Ayarlar: Sistem yönetimi tabları platform-admin altında ayrıca erişilebilir
   // (`platformAdminSecondaryNav`). Normal kullanıcı için kullanıcı tercihleri
   // zaten Profil/Hesap akışından yönetildiği için /settings linki burada
