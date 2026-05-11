@@ -4,13 +4,11 @@ import { getTranslations } from "next-intl/server";
 import { PublicHeader } from "@/components/layout/public-header";
 import { PublicSiteFooter } from "@/components/layout/public-site-footer";
 import { PublicChatWidget } from "@/components/chat/PublicChatWidget";
-import { DemoRequestTrigger } from "@/components/public/DemoRequestDialog";
 import { LandingHeroAtmosphere } from "@/components/public/landing-hero-atmosphere";
 import { LandingCtaAtmosphere } from "@/components/public/landing-cta-atmosphere";
 import { LandingRevealProvider } from "@/components/public/landing-reveal-provider";
 import { PwaInstallPrompt } from "@/components/pwa/pwa-install-prompt";
 import { SiteVisitCounter } from "@/components/public/site-visit-counter";
-import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import {
   BrainCircuit,
@@ -69,7 +67,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function LandingPage() {
   const t = await getTranslations("landing");
   const tc = await getTranslations("common");
-  const showPublicDemoCta = isPublicDemoFeatureEnabled();
 
   const stats = [
     { value: t("statsValueUsers"), label: t("statsUsers") },
@@ -146,24 +143,6 @@ export default async function LandingPage() {
                     />
                   </svg>
                 </Link>
-                {showPublicDemoCta ? (
-                  <DemoRequestTrigger
-                    className={
-                      secondaryLinkClass +
-                      " border-[var(--gold)]/40 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20"
-                    }
-                  >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-1">
-                      <path
-                        d="M8 1l2 4 4.5.7L11 9l1 4.5L8 11.5 4 13.5l1-4.5L1.5 5.7 6 5z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    {t("ctaDemo")}
-                  </DemoRequestTrigger>
-                ) : null}
                 <Link href="/login" className={secondaryLinkClass}>
                   {tc("platformLogin")}
                 </Link>
@@ -427,24 +406,6 @@ export default async function LandingPage() {
                     />
                   </svg>
                 </Link>
-                {showPublicDemoCta ? (
-                  <DemoRequestTrigger
-                    className={
-                      secondaryLinkClass +
-                      " border-[var(--gold)]/40 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20"
-                    }
-                  >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-1">
-                      <path
-                        d="M8 1l2 4 4.5.7L11 9l1 4.5L8 11.5 4 13.5l1-4.5L1.5 5.7 6 5z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    {t("ctaDemo")}
-                  </DemoRequestTrigger>
-                ) : null}
                 <Link href="/login" className={secondaryLinkClass}>
                   {tc("login")}
                 </Link>

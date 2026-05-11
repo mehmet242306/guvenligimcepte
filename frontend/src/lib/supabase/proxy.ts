@@ -1,7 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { getDemoAccessState } from "@/lib/platform-admin/demo-access";
-import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 import { supabaseAuthCookieOptions } from "@/lib/supabase/supabase-auth-cookie-options";
 
 const PUBLIC_PATHS = [
@@ -39,17 +37,6 @@ const ROUTE_AUTH_API_PATHS = [
 
 function isAccountOsgbAffiliationsApi(pathname: string) {
   return pathname === "/api/account/osgb-affiliations" || pathname.startsWith("/api/account/osgb-affiliations/");
-}
-
-/** Demo blokliyken bile tamamlanmasi gereken hesap / OAuth kurtarma API'leri */
-function isDemoEscapeApi(pathname: string) {
-  return (
-    pathname === "/api/account/context" ||
-    pathname === "/api/account/onboarding" ||
-    pathname === "/api/account/release-demo-after-oauth" ||
-    pathname === "/api/workspaces/onboarding" ||
-    pathname.startsWith("/api/workspaces/onboarding/")
-  );
 }
 
 const CANONICAL_HOST = "getrisknova.com";
@@ -240,57 +227,14 @@ export async function updateSession(request: NextRequest) {
   const mustSetPassword = user?.user_metadata?.must_set_password === true;
   const mustChangePassword =
     user?.user_metadata?.must_change_password === true && !hasOAuthProvider;
-  const demoAccess = getDemoAccessState({
-    userMetadata: user?.user_metadata,
-    appMetadata: user?.app_metadata,
-  });
   const canBypassForcedReset =
     pathname.startsWith("/auth") ||
     pathname.startsWith("/api") ||
     pathname === "/reset-password";
-  const canBypassDemoGuard =
-    pathname === "/login" ||
-    pathname === "/register" ||
-    pathname === "/reset-password" ||
-    pathname.startsWith("/auth") ||
-    isDemoEscapeApi(pathname);
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
-
-  if (user && demoAccess.isBlocked && !canBypassDemoGuard) {
-    const demoPublic = isPublicDemoFeatureEnabled();
-    const errorMessage =
-      demoAccess.status === "disabled"
-        ? demoPublic
-          ? "Demo erisimi admin tarafindan engellendi."
-          : "Demo erisimin kapatildi. Gecici demo artik sunulmuyor; kalici hesap icin kayit olun veya destek ile iletisime gecin."
-        : demoPublic
-          ? "Demo erisim suresi doldu. Lutfen yeni demo erisimi isteyin."
-          : "Demo suresi sona erdi. Gecici demo artik sunulmuyor; kalici hesap icin kayit olun veya giris yapin.";
-
-    if (pathname.startsWith("/api")) {
-      return NextResponse.json(
-        {
-          error: errorMessage,
-          code: "DEMO_ACCESS_BLOCKED",
-        },
-        { status: 423 },
-      );
-    }
-
-    // Süresi dolmuş demo kullanıcısını /login'e atıp hata toast'ı göstermek
-    // yerine /register'a yönlendir — teşekkür + CTA banner'ı ile kayıt akışına
-    // dönüştür. /register canBypassDemoGuard'a eklendi, yoksa loop olurdu.
-    const url = request.nextUrl.clone();
-    url.pathname = "/register";
-    url.searchParams.set(
-      "fromDemo",
-      demoAccess.status === "disabled" ? "demo-disabled" : "demo-expired",
-    );
     return NextResponse.redirect(url);
   }
 

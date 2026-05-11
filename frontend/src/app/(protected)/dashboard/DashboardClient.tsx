@@ -287,7 +287,7 @@ export function DashboardClient() {
   }
 
   // Guard: stats may be null when session/profile couldn't be loaded
-  // (e.g. demo-expired user briefly landing here before DemoSessionGuard
+  // (e.g. an expired session briefly landing here before auth redirects
   // kicks in). Return empty shell; the guard will redirect shortly.
   if (!stats) {
     return (

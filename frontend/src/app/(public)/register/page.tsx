@@ -4,12 +4,7 @@ import { AuthShell } from "@/components/layout/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SocialLoginButtons } from "@/components/auth/social-login-buttons";
-import { DemoSessionCleaner } from "@/components/auth/DemoSessionCleaner";
-import { DemoExpiredModal } from "@/components/auth/DemoExpiredModal";
 import { RegisterAccountTypePreview } from "@/components/auth/RegisterAccountTypePreview";
-import { StatusAlert } from "@/components/ui/status-alert";
-import { DEMO_ACCESS_WINDOW_HOURS } from "@/lib/platform-admin/demo-access";
-import { isPublicDemoFeatureEnabled } from "@/lib/feature-flags";
 import { signup } from "./actions";
 
 export default async function RegisterPage({
@@ -18,24 +13,18 @@ export default async function RegisterPage({
   searchParams: Promise<{
     error?: string;
     checkEmail?: string;
-    fromDemo?: string;
     commercial?: string;
   }>;
 }) {
   const params = await searchParams;
   const error = params?.error;
   const checkEmail = params?.checkEmail === "1";
-  const fromDemo = params?.fromDemo;
-  const demoExpired = fromDemo === "demo-expired" || fromDemo === "1";
-  const demoDisabled = fromDemo === "demo-disabled";
   const commercialParam = params?.commercial?.toLowerCase();
   const initialCommercial =
     commercialParam === "osgb" || commercialParam === "enterprise"
       ? commercialParam
       : undefined;
 
-  const demoPublicEnabled = isPublicDemoFeatureEnabled();
-  const legacyDemoLanding = demoExpired || demoDisabled;
   const t = await getTranslations("auth.registerPage");
 
   return (
@@ -69,60 +58,6 @@ export default async function RegisterPage({
         </p>
       }
     >
-      {legacyDemoLanding ? (
-        <>
-          <DemoSessionCleaner />
-          {demoPublicEnabled ? (
-            <>
-              <DemoExpiredModal status={demoDisabled ? "disabled" : "expired"} />
-              {demoExpired ? (
-                <StatusAlert tone="warning">
-                  <span className="font-semibold text-foreground">{t("demoExpiredTitle")}</span>{" "}
-                  {t("demoExpiredBody", { hours: DEMO_ACCESS_WINDOW_HOURS })}
-                </StatusAlert>
-              ) : (
-                <StatusAlert tone="warning">
-                  <span className="font-semibold text-foreground">{t("demoDisabledTitle")}</span>{" "}
-                  {t("demoDisabledBody", { hours: DEMO_ACCESS_WINDOW_HOURS })}
-                </StatusAlert>
-              )}
-            </>
-          ) : demoExpired ? (
-            <StatusAlert tone="warning">
-              <span className="font-semibold text-foreground">{t("demoLegacyExpiredLead")}</span>{" "}
-              {t("demoLegacyExpiredRest")}{" "}
-              <Link href="/login" className="font-medium text-primary underline underline-offset-4">
-                {t("demoLegacyExpiredLogin")}
-              </Link>
-              . {t("demoLegacyExpiredSupport")}{" "}
-              <a
-                href="mailto:support@getrisknova.com"
-                className="font-medium text-primary underline underline-offset-4"
-              >
-                support@getrisknova.com
-              </a>
-              .
-            </StatusAlert>
-          ) : (
-            <StatusAlert tone="warning">
-              <span className="font-semibold text-foreground">{t("demoLegacyDisabledLead")}</span>{" "}
-              {t("demoLegacyDisabledRest")}{" "}
-              <Link href="/login" className="font-medium text-primary underline underline-offset-4">
-                {t("demoLegacyDisabledLogin")}
-              </Link>
-              . {t("demoLegacyDisabledHelp")}{" "}
-              <a
-                href="mailto:support@getrisknova.com"
-                className="font-medium text-primary underline underline-offset-4"
-              >
-                support@getrisknova.com
-              </a>
-              .
-            </StatusAlert>
-          )}
-        </>
-      ) : null}
-
       {error ? (
         <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
           {error}

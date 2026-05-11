@@ -3,12 +3,17 @@
 import { useEffect, useState, useCallback } from "react";
 import { useLocale } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
+import { Plus, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type Tab = "info" | "training" | "accidents" | "nearMiss" | "health" | "ppe" | "documents";
+type AddKind = "training" | "accidents" | "nearMiss" | "health" | "ppe" | "documents";
 
 interface PersonnelInfo {
   id: string;
+  organizationId: string;
+  companyIdentityId: string;
+  companyWorkspaceId: string | null;
   employeeCode: string;
   tcIdentityNumber: string;
   firstName: string;
@@ -104,6 +109,9 @@ export function PersonnelProfileClient() {
   const [healthExams, setHealthExams] = useState<HealthExamRecord[]>([]);
   const [ppeRecords, setPpeRecords] = useState<PPERecord[]>([]);
   const [documents, setDocuments] = useState<DocRecord[]>([]);
+  const [addKind, setAddKind] = useState<AddKind | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -116,6 +124,9 @@ export function PersonnelProfileClient() {
       const p = pData as Record<string, unknown>;
       setPerson({
         id: p.id as string,
+        organizationId: (p.organization_id || "") as string,
+        companyIdentityId: (p.company_identity_id || "") as string,
+        companyWorkspaceId: (p.company_workspace_id || null) as string | null,
         employeeCode: (p.employee_code || "") as string,
         tcIdentityNumber: (p.tc_identity_number || "") as string,
         firstName: (p.first_name || "") as string,
@@ -275,6 +286,117 @@ export function PersonnelProfileClient() {
 
   function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString("tr-TR") : "—"; }
 
+  function openAdd(kind: AddKind) {
+    setFormError(null);
+    setAddKind(kind);
+  }
+
+  async function handleAddSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!person || !addKind) return;
+
+    const supabase = createClient();
+    if (!supabase) {
+      setFormError("Baglanti hazir degil.");
+      return;
+    }
+
+    const data = new FormData(event.currentTarget);
+    const value = (name: string) => String(data.get(name) ?? "").trim();
+    const nullable = (name: string) => value(name) || null;
+    const basePayload = {
+      personnel_id: person.id,
+      organization_id: person.organizationId,
+      company_identity_id: person.companyIdentityId,
+      company_workspace_id: person.companyWorkspaceId,
+    };
+
+    let table = "";
+    let payload: Record<string, unknown> = {};
+
+    if (addKind === "training") {
+      table = "personnel_trainings";
+      payload = {
+        ...basePayload,
+        training_name: value("trainingName"),
+        training_date: nullable("trainingDate"),
+        duration: nullable("duration"),
+        trainer_name: nullable("trainer"),
+        status: value("status") || "completed",
+        certificate_no: nullable("certificateNo"),
+        notes: nullable("notes"),
+      };
+    } else if (addKind === "accidents" || addKind === "nearMiss") {
+      table = "incidents";
+      payload = {
+        organization_id: person.organizationId,
+        company_workspace_id: person.companyWorkspaceId,
+        personnel_id: person.id,
+        incident_type: addKind === "accidents" ? "work_accident" : "near_miss",
+        status: value("status") || "reported",
+        severity_level: value("severity") || "medium",
+        incident_date: nullable("incidentDate"),
+        incident_time: nullable("incidentTime"),
+        incident_location: nullable("incidentLocation"),
+        incident_department: person.department || null,
+        description: value("description"),
+        injury_type: nullable("injuryType"),
+        injury_body_part: nullable("injuryBodyPart"),
+        injury_cause_event: nullable("injuryCauseEvent"),
+        days_lost: value("daysLost") ? Number(value("daysLost")) : 0,
+      };
+    } else if (addKind === "health") {
+      table = "personnel_health_exams";
+      payload = {
+        ...basePayload,
+        exam_type: value("examType") || "periyodik",
+        exam_date: nullable("examDate"),
+        next_exam_date: nullable("nextExamDate"),
+        result: value("result") || "uygun",
+        physician_name: nullable("doctor"),
+        physician_institution: nullable("institution"),
+        report_number: nullable("reportNumber"),
+        restrictions: nullable("restrictions"),
+        recommended_actions: nullable("recommendedActions"),
+        notes: nullable("notes"),
+      };
+    } else if (addKind === "ppe") {
+      table = "personnel_ppe_records";
+      payload = {
+        ...basePayload,
+        ppe_name: value("ppeName"),
+        issue_date: nullable("issueDate"),
+        expiry_date: nullable("expiryDate"),
+        status: value("status") || "active",
+        size: nullable("size"),
+        notes: nullable("notes"),
+      };
+    } else {
+      table = "personnel_documents";
+      payload = {
+        ...basePayload,
+        document_name: value("documentName"),
+        document_type: nullable("documentType"),
+        file_url: nullable("fileUrl"),
+        expiry_date: nullable("expiryDate"),
+        notes: nullable("notes"),
+      };
+    }
+
+    setSaving(true);
+    setFormError(null);
+    const { error } = await supabase.from(table).insert(payload);
+    setSaving(false);
+
+    if (error) {
+      setFormError(error.message || "Kayit eklenemedi.");
+      return;
+    }
+
+    setAddKind(null);
+    await loadData();
+  }
+
   const accidentCount = incidents.filter(i => i.incidentType === "work_accident").length;
   const nearMissCount = incidents.filter(i => i.incidentType === "near_miss").length;
 
@@ -310,6 +432,15 @@ export function PersonnelProfileClient() {
   const statusColor = person.employmentStatus === "active"
     ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
     : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
+
+  const addButtonLabels: Record<AddKind, string> = {
+    training: "Egitim ekle",
+    accidents: "Is kazasi ekle",
+    nearMiss: "Ramak kala ekle",
+    health: "Saglik kaydi ekle",
+    ppe: "KKD zimmeti ekle",
+    documents: "Belge ekle",
+  };
 
   return (
     <div className="min-h-screen bg-[var(--page-bg,#f8f9fa)]">
@@ -448,7 +579,8 @@ export function PersonnelProfileClient() {
         {/* ══════ Training tab ══════ */}
         {tab === "training" && (
           <div className="space-y-3">
-            {trainings.length === 0 ? <EmptyTab message="Eğitim kaydı yok" /> : trainings.map(t => (
+            <TabActions label={addButtonLabels.training} onClick={() => openAdd("training")} />
+            {trainings.length === 0 ? <EmptyTab message="Eğitim kaydı yok" actionLabel={addButtonLabels.training} onAction={() => openAdd("training")} /> : trainings.map(t => (
               <div key={t.id} className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
                 <div className="flex items-start justify-between">
                   <div>
@@ -471,7 +603,8 @@ export function PersonnelProfileClient() {
         {/* ══════ Accidents tab ══════ */}
         {tab === "accidents" && (
           <div className="space-y-3">
-            {accidentCount === 0 ? <EmptyTab message="İş kazası kaydı yok" /> :
+            <TabActions label={addButtonLabels.accidents} onClick={() => openAdd("accidents")} />
+            {accidentCount === 0 ? <EmptyTab message="İş kazası kaydı yok" actionLabel={addButtonLabels.accidents} onAction={() => openAdd("accidents")} /> :
               incidents.filter(i => i.incidentType === "work_accident").map(inc => <IncidentCard key={inc.id} incident={inc} />)}
           </div>
         )}
@@ -479,7 +612,8 @@ export function PersonnelProfileClient() {
         {/* ══════ Near miss tab ══════ */}
         {tab === "nearMiss" && (
           <div className="space-y-3">
-            {nearMissCount === 0 ? <EmptyTab message="Ramak kala kaydı yok" /> :
+            <TabActions label={addButtonLabels.nearMiss} onClick={() => openAdd("nearMiss")} />
+            {nearMissCount === 0 ? <EmptyTab message="Ramak kala kaydı yok" actionLabel={addButtonLabels.nearMiss} onAction={() => openAdd("nearMiss")} /> :
               incidents.filter(i => i.incidentType === "near_miss").map(inc => <IncidentCard key={inc.id} incident={inc} />)}
           </div>
         )}
@@ -487,7 +621,8 @@ export function PersonnelProfileClient() {
         {/* ══════ Health tab ══════ */}
         {tab === "health" && (
           <div className="space-y-3">
-            {healthExams.length === 0 ? <EmptyTab message="Sağlık muayene kaydı yok" /> : healthExams.map(h => (
+            <TabActions label={addButtonLabels.health} onClick={() => openAdd("health")} />
+            {healthExams.length === 0 ? <EmptyTab message="Sağlık muayene kaydı yok" actionLabel={addButtonLabels.health} onAction={() => openAdd("health")} /> : healthExams.map(h => (
               <div key={h.id} className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
                 <div className="flex items-start justify-between">
                   <div>
@@ -499,11 +634,11 @@ export function PersonnelProfileClient() {
                     {h.notes && <p className="mt-1 text-xs text-[var(--muted-foreground)]">{h.notes}</p>}
                   </div>
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                    h.result === "fit" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" :
-                    h.result === "unfit" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
+                    h.result === "fit" || h.result === "uygun" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" :
+                    h.result === "unfit" || h.result === "uygun_degil" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
                     "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                   }`}>
-                    {h.result === "fit" ? "Uygun" : h.result === "unfit" ? "Uygun Değil" : h.result || "—"}
+                    {h.result === "fit" || h.result === "uygun" ? "Uygun" : h.result === "unfit" || h.result === "uygun_degil" ? "Uygun Değil" : h.result || "—"}
                   </span>
                 </div>
                 {h.nextExamDate && (
@@ -517,7 +652,8 @@ export function PersonnelProfileClient() {
         {/* ══════ PPE tab ══════ */}
         {tab === "ppe" && (
           <div className="space-y-3">
-            {ppeRecords.length === 0 ? <EmptyTab message="KKD zimmet kaydı yok" /> : ppeRecords.map(p => (
+            <TabActions label={addButtonLabels.ppe} onClick={() => openAdd("ppe")} />
+            {ppeRecords.length === 0 ? <EmptyTab message="KKD zimmet kaydı yok" actionLabel={addButtonLabels.ppe} onAction={() => openAdd("ppe")} /> : ppeRecords.map(p => (
               <div key={p.id} className="flex items-center gap-4 rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -541,7 +677,8 @@ export function PersonnelProfileClient() {
         {/* ══════ Documents tab ══════ */}
         {tab === "documents" && (
           <div className="space-y-3">
-            {documents.length === 0 ? <EmptyTab message="Belge kaydı yok" /> : documents.map(d => (
+            <TabActions label={addButtonLabels.documents} onClick={() => openAdd("documents")} />
+            {documents.length === 0 ? <EmptyTab message="Belge kaydı yok" actionLabel={addButtonLabels.documents} onAction={() => openAdd("documents")} /> : documents.map(d => (
               <div key={d.id} className="flex items-center gap-4 rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -559,6 +696,15 @@ export function PersonnelProfileClient() {
           </div>
         )}
       </div>
+      {addKind ? (
+        <AddPersonnelRecordModal
+          kind={addKind}
+          saving={saving}
+          error={formError}
+          onClose={() => setAddKind(null)}
+          onSubmit={handleAddSubmit}
+        />
+      ) : null}
     </div>
   );
 }
@@ -574,10 +720,329 @@ function InfoItem({ label, value, span }: { label: string; value: string; span?:
   );
 }
 
-function EmptyTab({ message }: { message: string }) {
+function TabActions({ label, onClick }: { label: string; onClick: () => void }) {
   return (
-    <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] py-12 text-center">
+    <div className="flex justify-end">
+      <button
+        type="button"
+        onClick={onClick}
+        className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--gold)] px-4 text-sm font-semibold text-white shadow-sm transition hover:brightness-105"
+      >
+        <Plus className="h-4 w-4" />
+        {label}
+      </button>
+    </div>
+  );
+}
+
+function EmptyTab({
+  message,
+  actionLabel,
+  onAction,
+}: {
+  message: string;
+  actionLabel?: string;
+  onAction?: () => void;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] py-12 text-center">
       <p className="text-[var(--muted-foreground)]">{message}</p>
+      {actionLabel && onAction ? (
+        <button
+          type="button"
+          onClick={onAction}
+          className="inline-flex h-10 items-center gap-2 rounded-xl border border-[var(--gold)]/35 bg-[var(--gold)]/10 px-4 text-sm font-semibold text-[var(--gold)] transition hover:bg-[var(--gold)]/15"
+        >
+          <Plus className="h-4 w-4" />
+          {actionLabel}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function AddPersonnelRecordModal({
+  kind,
+  saving,
+  error,
+  onClose,
+  onSubmit,
+}: {
+  kind: AddKind;
+  saving: boolean;
+  error: string | null;
+  onClose: () => void;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+}) {
+  const titleByKind: Record<AddKind, string> = {
+    training: "Egitim kaydi ekle",
+    accidents: "Is kazasi kaydi ekle",
+    nearMiss: "Ramak kala kaydi ekle",
+    health: "Saglik muayene kaydi ekle",
+    ppe: "KKD zimmeti ekle",
+    documents: "Belge kaydi ekle",
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 p-4" onMouseDown={onClose}>
+      <form
+        onSubmit={onSubmit}
+        onMouseDown={(event) => event.stopPropagation()}
+        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-2xl"
+      >
+        <div className="mb-5 flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-semibold text-[var(--foreground)]">{titleByKind[kind]}</h2>
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+              Bu kayit personelin ozluk dosyasina baglanir.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-[var(--muted-foreground)] transition hover:bg-muted hover:text-[var(--foreground)]"
+            aria-label="Kapat"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          {kind === "training" ? (
+            <>
+              <FormField name="trainingName" label="Egitim adi" required placeholder="Orn. Temel ISG egitimi" />
+              <FormField name="trainingDate" label="Egitim tarihi" type="date" />
+              <FormField name="duration" label="Sure" placeholder="Orn. 2 saat" />
+              <FormField name="trainer" label="Egitmen" />
+              <SelectField
+                name="status"
+                label="Durum"
+                defaultValue="completed"
+                options={[
+                  ["completed", "Tamamlandi"],
+                  ["planned", "Planlandi"],
+                  ["cancelled", "Iptal"],
+                ]}
+              />
+              <FormField name="certificateNo" label="Sertifika no" />
+            </>
+          ) : null}
+
+          {kind === "accidents" || kind === "nearMiss" ? (
+            <>
+              <FormField name="incidentDate" label="Olay tarihi" type="date" />
+              <FormField name="incidentTime" label="Saat" type="time" />
+              <FormField name="incidentLocation" label="Lokasyon" />
+              <SelectField
+                name="severity"
+                label="Seviye"
+                defaultValue="medium"
+                options={[
+                  ["low", "Dusuk"],
+                  ["medium", "Orta"],
+                  ["high", "Yuksek"],
+                  ["critical", "Kritik"],
+                ]}
+              />
+              <SelectField
+                name="status"
+                label="Durum"
+                defaultValue="reported"
+                options={[
+                  ["draft", "Taslak"],
+                  ["reported", "Bildirildi"],
+                  ["investigating", "Inceleniyor"],
+                  ["dof_open", "DOF acik"],
+                  ["closed", "Kapali"],
+                ]}
+              />
+              {kind === "accidents" ? (
+                <>
+                  <FormField name="injuryType" label="Yaralanma tipi" />
+                  <FormField name="injuryBodyPart" label="Yaralanan bolge" />
+                  <FormField name="injuryCauseEvent" label="Neden / olay" />
+                  <FormField name="daysLost" label="Kayip gun" type="number" />
+                </>
+              ) : null}
+              <div className="sm:col-span-2">
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
+                  Aciklama
+                </label>
+                <textarea
+                  name="description"
+                  required
+                  rows={3}
+                  className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm outline-none transition focus:border-[var(--gold)]/60"
+                />
+              </div>
+            </>
+          ) : null}
+
+          {kind === "health" ? (
+            <>
+              <SelectField
+                name="examType"
+                label="Muayene tipi"
+                defaultValue="periyodik"
+                options={[
+                  ["ise_giris", "Ise giris"],
+                  ["periyodik", "Periyodik"],
+                  ["isten_ayrilma", "Isten ayrilma"],
+                  ["ozel", "Ozel"],
+                ]}
+              />
+              <FormField name="examDate" label="Muayene tarihi" type="date" />
+              <FormField name="nextExamDate" label="Sonraki muayene" type="date" />
+              <SelectField
+                name="result"
+                label="Sonuc"
+                defaultValue="uygun"
+                options={[
+                  ["uygun", "Uygun"],
+                  ["sartli_uygun", "Sartli uygun"],
+                  ["uygun_degil", "Uygun degil"],
+                  ["izleme", "Izleme"],
+                ]}
+              />
+              <FormField name="doctor" label="Hekim" />
+              <FormField name="institution" label="Kurum" />
+              <FormField name="reportNumber" label="Rapor no" />
+              <FormField name="restrictions" label="Kisitlar" />
+              <FormField name="recommendedActions" label="Onerilen aksiyonlar" className="sm:col-span-2" />
+            </>
+          ) : null}
+
+          {kind === "ppe" ? (
+            <>
+              <FormField name="ppeName" label="KKD adi" required placeholder="Orn. Baret, eldiven, koruyucu gozluk" />
+              <FormField name="issueDate" label="Teslim tarihi" type="date" />
+              <FormField name="expiryDate" label="Son kullanma" type="date" />
+              <FormField name="size" label="Beden / olcu" />
+              <SelectField
+                name="status"
+                label="Durum"
+                defaultValue="active"
+                options={[
+                  ["active", "Aktif"],
+                  ["returned", "Iade"],
+                  ["lost", "Kayip"],
+                  ["expired", "Suresi doldu"],
+                ]}
+              />
+            </>
+          ) : null}
+
+          {kind === "documents" ? (
+            <>
+              <FormField name="documentName" label="Belge adi" required placeholder="Orn. Kimlik fotokopisi" />
+              <FormField name="documentType" label="Belge tipi" placeholder="Orn. sozlesme, sertifika, rapor" />
+              <FormField name="expiryDate" label="Gecerlilik tarihi" type="date" />
+              <FormField name="fileUrl" label="Dosya linki" type="url" className="sm:col-span-2" />
+            </>
+          ) : null}
+
+          {kind !== "accidents" && kind !== "nearMiss" ? (
+            <div className="sm:col-span-2">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
+                Not
+              </label>
+              <textarea
+                name="notes"
+                rows={3}
+                className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm outline-none transition focus:border-[var(--gold)]/60"
+              />
+            </div>
+          ) : null}
+        </div>
+
+        {error ? (
+          <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </div>
+        ) : null}
+
+        <div className="mt-5 flex justify-end gap-2 border-t border-[var(--border)] pt-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-10 items-center justify-center rounded-xl border border-[var(--border)] px-4 text-sm font-semibold text-[var(--foreground)] transition hover:bg-muted"
+          >
+            Vazgec
+          </button>
+          <button
+            type="submit"
+            disabled={saving}
+            className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--gold)] px-4 text-sm font-semibold text-white shadow-sm transition hover:brightness-105 disabled:opacity-60"
+          >
+            <Plus className="h-4 w-4" />
+            {saving ? "Kaydediliyor..." : "Kaydet"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function FormField({
+  name,
+  label,
+  type = "text",
+  required,
+  placeholder,
+  className,
+}: {
+  name: string;
+  label: string;
+  type?: string;
+  required?: boolean;
+  placeholder?: string;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <label htmlFor={name} className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
+        {label}
+      </label>
+      <input
+        id={name}
+        name={name}
+        type={type}
+        required={required}
+        placeholder={placeholder}
+        className="h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 text-sm outline-none transition focus:border-[var(--gold)]/60"
+      />
+    </div>
+  );
+}
+
+function SelectField({
+  name,
+  label,
+  options,
+  defaultValue,
+}: {
+  name: string;
+  label: string;
+  options: Array<[string, string]>;
+  defaultValue?: string;
+}) {
+  return (
+    <div>
+      <label htmlFor={name} className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
+        {label}
+      </label>
+      <select
+        id={name}
+        name={name}
+        defaultValue={defaultValue}
+        className="h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 text-sm outline-none transition focus:border-[var(--gold)]/60"
+      >
+        {options.map(([value, label]) => (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

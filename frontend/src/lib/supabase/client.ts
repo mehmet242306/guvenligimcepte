@@ -24,8 +24,8 @@ export function createClient() {
   // processLock (in-memory Promise chain). Bu 3 pozitif sonuç doğuruyor:
   //  1. React Strict Mode'da effect çift fire edince orphan-lock "5000ms
   //     içinde bırakılmadı" uyarıları artık oluşmuyor.
-  //  2. protected-shell + workspace-api + DemoSessionGuard + useIsAdmin
-  //     + DemoSessionCleaner — hepsi getUser/getSession çağırıyordu, lock
+  //  2. protected-shell + workspace-api + useIsAdmin
+  //     — hepsi getUser/getSession çağırıyordu, lock
   //     contention'ı sebebiyle "Lock broken by steal" AbortError'larla
   //     birbirini patlatıyorlardı. Process lock bu component'leri aynı
   //     promise zincirinde sıraya koyup tek tek serve ediyor.

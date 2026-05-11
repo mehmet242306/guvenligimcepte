@@ -8,7 +8,6 @@ import { updateSession } from "@/lib/supabase/proxy";
 //
 // updateSession'ın işlevleri:
 // - Supabase session cookie'sini yeniler (token expiry önlemi)
-// - Demo erişimi sona erenleri /register?fromDemo=... sayfasına yönlendirir
 // - must_change_password=true olanları /reset-password'a zorlar
 // - Auth olmayanları /login'e yönlendirir (public yollar hariç)
 export async function middleware(request: NextRequest) {

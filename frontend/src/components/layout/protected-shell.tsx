@@ -133,8 +133,6 @@ const platformAdminSecondaryNav = [
   { href: "/planner", key: "nav.planner" },
   { href: "/digital-twin", key: "nav.digitalTwin", digitalTwinRestricted: true },
   { href: "/settings", key: "nav.settings" },
-  { href: "/platform-admin/demo-requests", key: "nav.demoRequestsNav" },
-  { href: "/platform-admin/demo-builder", key: "nav.demoBuilderNav" },
   { href: "/platform-admin/legal-corpus", key: "nav.legalCorpus" },
 ];
 
