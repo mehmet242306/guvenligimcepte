@@ -506,15 +506,6 @@ export function TrainingClient() {
               <p className="mt-1 text-sm text-[var(--muted-foreground)]">{t("examples.description")}</p>
             </div>
 
-            {!initialCompanyId?.trim() ? (
-              <div
-                role="status"
-                className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100"
-              >
-                {t("examples.noWorkspaceSelected")}
-              </div>
-            ) : null}
-
             {exampleImportError ? (
               <div
                 role="alert"
