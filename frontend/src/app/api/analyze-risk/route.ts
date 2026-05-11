@@ -3,8 +3,9 @@ import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
-import { logSecurityEvent } from "@/lib/security/server";
+import { enforceRateLimit, logSecurityEvent, resolveAiDailyLimit } from "@/lib/security/server";
 import { getAnthropicKey, getRiskAnalysisVisionModel } from "@/lib/ai/provider-keys";
+import { consumeEntitlement } from "@/lib/billing/entitlements";
 import {
   buildFastSystemPrompt,
   buildFastUserPrompt,
@@ -263,12 +264,28 @@ function normalizeAnalyzeRiskPayload(raw: unknown): unknown {
 /* ================================================================== */
 
 export async function POST(request: NextRequest) {
-  // Kimlik doğrulama zorunlu. Günlük kota / rate limit bu endpoint'te kapatıldı
-  // (yalnızca görsel risk AI — iç zaman aşımı ve retry katmanı da kaldırıldı).
+  // Kimlik doğrulama zorunlu. Görsel risk AI, aylık risk_analysis kotasını
+  // ve plan bazlı günlük AI rate limitini server tarafında tüketir.
   const auth = await requireAuth(request);
   if (!auth.ok) return auth.response;
 
   try {
+    const plan = await resolveAiDailyLimit(auth.userId);
+    const rateLimitResponse = await enforceRateLimit(request, {
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      endpoint: "/api/analyze-risk",
+      scope: "ai",
+      limit: plan.dailyLimit,
+      windowSeconds: 24 * 60 * 60,
+      planKey: plan.planKey,
+      metadata: { feature: "image_risk_analysis" },
+    });
+    if (rateLimitResponse) return rateLimitResponse;
+
+    const entitlementResponse = await consumeEntitlement(auth, "risk_analysis");
+    if (entitlementResponse) return entitlementResponse;
+
     const visionModel = getRiskAnalysisVisionModel();
 
     const rawBody = await request.json().catch(() => null);
