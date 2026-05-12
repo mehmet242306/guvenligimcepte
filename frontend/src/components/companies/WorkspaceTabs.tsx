@@ -12,6 +12,7 @@ import type { CompanyRecord } from "@/lib/company-directory";
 import { listRiskAssessments, deleteRiskAssessment, loadRiskAssessment, listFindingsByCategory, updateFindingStatus, archiveRiskAssessment, toggleRiskSharing, type SavedAssessment, type FullAssessment, type FindingWithContext, type RiskAssessmentSourceType } from "@/lib/supabase/risk-assessment-api";
 import { createCorrectiveActionFromFinding, type CorrectiveActionRecord } from "@/lib/supabase/corrective-actions-api";
 import QRCode from "qrcode";
+import { downloadServerExport } from "@/lib/billing/server-export-client";
 import { createClient } from "@/lib/supabase/client";
 import {
   getTrackingSummary, listTrainings, createTraining, updateTraining, deleteTraining,
@@ -1166,7 +1167,6 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
   async function handleExport(format: "pdf" | "word" | "excel") {
     setExporting(format);
     try {
-      const { exportRiskAnalysisPDF, exportRiskAnalysisWord, exportRiskAnalysisExcel } = await import("@/lib/risk-analysis-export");
       const allFindings = analysis.rows.flatMap((r) => r.findings);
 
       // Görselleri signed URL'den base64'e çevir
@@ -1235,9 +1235,16 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
         shareQrDataUrl: qrDataUrl || undefined,
         shareUrl: shareUrl || undefined,
       };
-      if (format === "pdf") exportRiskAnalysisPDF(exportData);
-      else if (format === "word") await exportRiskAnalysisWord(exportData);
-      else await exportRiskAnalysisExcel(exportData);
+      const result = await downloadServerExport({
+        url: "/api/risk-analysis/export",
+        payload: { format, data: exportData },
+        fallbackFileName: `Risk-Analizi-${exportData.companyName || "Rapor"}-${exportData.date}.${
+          format === "word" ? "docx" : format === "excel" ? "xlsx" : "pdf"
+        }`,
+      });
+      if (!result.ok) {
+        console.warn("Export failed:", result.message);
+      }
     } catch (err) {
       console.warn("Export failed:", err);
     } finally {

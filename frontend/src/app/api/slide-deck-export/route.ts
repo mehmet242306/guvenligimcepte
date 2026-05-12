@@ -214,6 +214,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: any) {
     console.error("slide-deck-export error:", err);
-    return NextResponse.json({ error: err?.message || "Export hatası" }, { status: 500 });
+    return NextResponse.json({ error: "Export hatası" }, { status: 500 });
   }
 }

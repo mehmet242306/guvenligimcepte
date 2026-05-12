@@ -37,8 +37,9 @@ export async function GET(req: NextRequest, context: RouteContext) {
     .maybeSingle();
 
   if (error) {
+    console.error("[ohs-archive] job lookup failed:", error.message);
     return NextResponse.json(
-      { error: "lookup_failed", detail: error.message },
+      { error: "lookup_failed" },
       { status: 500 },
     );
   }
@@ -72,8 +73,11 @@ export async function GET(req: NextRequest, context: RouteContext) {
     .createSignedUrl(job.storage_path, 60 * 10); // 10 minutes
 
   if (signErr || !signed?.signedUrl) {
+    if (signErr) {
+      console.error("[ohs-archive] signed URL failed:", signErr.message);
+    }
     return NextResponse.json(
-      { error: "signed_url_failed", detail: signErr?.message },
+      { error: "signed_url_failed" },
       { status: 500 },
     );
   }

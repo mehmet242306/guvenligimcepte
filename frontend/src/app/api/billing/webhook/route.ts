@@ -58,6 +58,36 @@ function getPriceId(data: Record<string, unknown>) {
   );
 }
 
+function sanitizePaddleWebhookPayload(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizePaddleWebhookPayload(item));
+  }
+
+  if (!value || typeof value !== "object") {
+    return value;
+  }
+
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).map(([key, item]) => {
+      const normalized = key.toLowerCase();
+      if (
+        normalized.includes("email") ||
+        normalized.includes("name") ||
+        normalized.includes("phone") ||
+        normalized.includes("address") ||
+        normalized.includes("tax") ||
+        normalized.includes("ip") ||
+        normalized.includes("payment_method") ||
+        normalized.includes("card")
+      ) {
+        return [key, "[redacted]"];
+      }
+
+      return [key, sanitizePaddleWebhookPayload(item)];
+    }),
+  );
+}
+
 function mapPaddleStatus(status: string | undefined, eventType: string) {
   const normalized = String(status ?? "").toLowerCase();
 
@@ -105,30 +135,47 @@ async function resolvePlanId({
   planKey?: string;
   priceId?: string | null;
 }) {
-  if (planKey) {
-    const { data } = await service
-      .from("subscription_plans")
-      .select("id")
-      .eq("plan_key", planKey)
-      .maybeSingle();
-    if (data?.id) return data.id as string;
-  }
-
   if (priceId) {
-    const planKeyFromEnv = getPlanKeyByPaddlePriceId(priceId);
+    const trimmedPriceId = priceId.trim();
+    const planKeyFromEnv = getPlanKeyByPaddlePriceId(trimmedPriceId);
     if (planKeyFromEnv) {
       const { data } = await service
         .from("subscription_plans")
-        .select("id")
+        .select("id, plan_key")
         .eq("plan_key", planKeyFromEnv)
         .maybeSingle();
-      if (data?.id) return data.id as string;
+      if (data?.id) {
+        if (planKey && data.plan_key !== planKey) {
+          console.warn("[billing.webhook] custom plan_key ignored; price_id wins", {
+            planKey,
+            resolvedPlanKey: data.plan_key,
+          });
+        }
+        return data.id as string;
+      }
     }
 
     const { data } = await service
       .from("subscription_plans")
+      .select("id, plan_key")
+      .or(`paddle_price_id_monthly.eq.${trimmedPriceId},paddle_price_id_yearly.eq.${trimmedPriceId}`)
+      .maybeSingle();
+    if (data?.id) {
+      if (planKey && data.plan_key !== planKey) {
+        console.warn("[billing.webhook] custom plan_key ignored; database price_id wins", {
+          planKey,
+          resolvedPlanKey: data.plan_key,
+        });
+      }
+      return data.id as string;
+    }
+  }
+
+  if (planKey && !priceId) {
+    const { data } = await service
+      .from("subscription_plans")
       .select("id")
-      .or(`paddle_price_id_monthly.eq.${priceId},paddle_price_id_yearly.eq.${priceId}`)
+      .eq("plan_key", planKey)
       .maybeSingle();
     if (data?.id) return data.id as string;
   }
@@ -142,16 +189,6 @@ async function upsertSubscription(
 ): Promise<SubscriptionPersistResult> {
   const service = createServiceClient();
   const customData = getCustomData(data);
-  const userId = customData.user_id;
-  const organizationId = customData.organization_id;
-
-  if (!userId || !organizationId) {
-    console.warn("[billing.webhook] skip: missing custom_data user_id or organization_id", {
-      eventType,
-    });
-    return { ok: true, skipped: true };
-  }
-
   const subscriptionId =
     String(data.subscription_id ?? "").trim() ||
     (eventType.startsWith("subscription.") ? String(data.id ?? "").trim() : "");
@@ -160,11 +197,46 @@ async function upsertSubscription(
     String(data.transaction_id ?? "").trim() ||
     (eventType.startsWith("transaction.") ? String(data.id ?? "").trim() : null);
   const priceId = getPriceId(data);
-  const planId = await resolvePlanId({
-    service,
-    planKey: customData.plan_key,
-    priceId,
-  });
+
+  const existingBySubscription = subscriptionId
+    ? await service
+        .from("user_subscriptions")
+        .select(
+          "id, user_id, organization_id, plan_id, billing_cycle, paddle_customer_id, paddle_price_id",
+        )
+        .eq("paddle_subscription_id", subscriptionId)
+        .maybeSingle()
+    : null;
+
+  if (existingBySubscription?.error) {
+    console.error(
+      "[billing.webhook] subscription lookup failed:",
+      existingBySubscription.error.message,
+    );
+    return { ok: false };
+  }
+
+  const userId =
+    customData.user_id || String(existingBySubscription?.data?.user_id ?? "").trim();
+  const organizationId =
+    customData.organization_id ||
+    String(existingBySubscription?.data?.organization_id ?? "").trim();
+
+  if (!userId || !organizationId) {
+    console.warn("[billing.webhook] skip: missing subscription owner context", {
+      eventType,
+      hasSubscriptionId: Boolean(subscriptionId),
+      hasCustomData: Boolean(customData.user_id || customData.organization_id),
+    });
+    return { ok: true, skipped: true };
+  }
+
+  const planId =
+    (await resolvePlanId({
+      service,
+      planKey: customData.plan_key,
+      priceId,
+    })) || String(existingBySubscription?.data?.plan_id ?? "").trim();
 
   if (!planId) {
     console.warn("[billing.webhook] plan_id unresolved", {
@@ -186,6 +258,7 @@ async function upsertSubscription(
       ? customData.billing_cycle
       : getBillingCycleByPaddlePriceId(priceId) ??
         (await resolveBillingCycleFromDb(service, priceId)) ??
+        (existingBySubscription?.data?.billing_cycle === "yearly" ? "yearly" : null) ??
         "monthly";
 
   const status = mapPaddleStatus(String(data.status ?? ""), eventType);
@@ -198,16 +271,13 @@ async function upsertSubscription(
       ? String(data.canceled_at ?? data.updated_at ?? new Date().toISOString())
       : null;
 
-  const existing = subscriptionId
-    ? await service
-        .from("user_subscriptions")
-        .select("id")
-        .eq("paddle_subscription_id", subscriptionId)
-        .maybeSingle()
+  const existing = existingBySubscription?.data?.id
+    ? { data: { id: existingBySubscription.data.id } }
     : await service
         .from("user_subscriptions")
         .select("id")
         .eq("user_id", userId)
+        .eq("organization_id", organizationId)
         .eq("status", "active")
         .order("created_at", { ascending: false })
         .limit(1)
@@ -221,10 +291,12 @@ async function upsertSubscription(
     billing_cycle: billingCycleResolved,
     next_billing_date: nextBillingDate,
     cancelled_at: cancelledAt,
-    paddle_customer_id: customerId,
+    paddle_customer_id:
+      customerId || String(existingBySubscription?.data?.paddle_customer_id ?? "").trim() || null,
     paddle_subscription_id: subscriptionId || null,
     paddle_transaction_id: transactionId,
-    paddle_price_id: priceId,
+    paddle_price_id:
+      priceId || String(existingBySubscription?.data?.paddle_price_id ?? "").trim() || null,
     provider: "paddle",
     provider_status: String(data.status ?? status),
     updated_at: new Date().toISOString(),
@@ -300,14 +372,15 @@ export async function POST(request: NextRequest) {
       event_id: eventId,
       event_type: eventType,
       occurred_at: event.occurred_at ?? null,
-      payload: event,
+      payload: sanitizePaddleWebhookPayload(event),
     });
 
   const duplicateEvent =
     Boolean(inserted.error) && inserted.error!.message.toLowerCase().includes("duplicate");
 
   if (inserted.error && !duplicateEvent) {
-    return NextResponse.json({ error: inserted.error.message }, { status: 500 });
+    console.error("[billing.webhook] event insert failed:", inserted.error.message);
+    return NextResponse.json({ error: "webhook_event_persist_failed" }, { status: 500 });
   }
 
   const subscriptionEventTypes = [

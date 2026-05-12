@@ -83,7 +83,7 @@ import type {
   ExportImage,
   RiskAnalysisExportData,
 } from "@/lib/risk-analysis-export";
-import { consumeExportQuotaClient } from "@/lib/billing/export-quota-client";
+import { downloadServerExport } from "@/lib/billing/server-export-client";
 import { MAX_IMAGES_PER_UPLOAD_BATCH, MAX_RISK_ANALYSIS_IMAGES_TOTAL } from "@/lib/risk-analysis/upload-limits";
 import {
   formatDiagnosticsPlainTr,
@@ -2663,25 +2663,18 @@ JSON formatında döndür:
 
   async function exportRiskReport(format: "pdf" | "word" | "excel") {
     setExportQuotaMessage(null);
-    const quota = await consumeExportQuotaClient();
-    if (!quota.ok) {
-      setExportQuotaMessage(quota.message);
-      window.setTimeout(() => setExportQuotaMessage(null), 9000);
-      return;
-    }
     const d = await buildExportData();
-    if (format === "pdf") {
-      const { exportRiskAnalysisPDF } = await import("@/lib/risk-analysis-export");
-      await exportRiskAnalysisPDF(d);
-      return;
+    const result = await downloadServerExport({
+      url: "/api/risk-analysis/export",
+      payload: { format, data: d },
+      fallbackFileName: `Risk-Analizi-${d.companyName || "Rapor"}-${d.date}.${
+        format === "word" ? "docx" : format === "excel" ? "xlsx" : "pdf"
+      }`,
+    });
+    if (!result.ok) {
+      setExportQuotaMessage(result.message);
+      window.setTimeout(() => setExportQuotaMessage(null), 9000);
     }
-    if (format === "word") {
-      const { exportRiskAnalysisWord } = await import("@/lib/risk-analysis-export");
-      await exportRiskAnalysisWord(d);
-      return;
-    }
-    const { exportRiskAnalysisExcel } = await import("@/lib/risk-analysis-export");
-    await exportRiskAnalysisExcel(d);
   }
 
   /* ── Kaydet ── */

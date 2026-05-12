@@ -47,8 +47,9 @@ export async function POST(req: NextRequest) {
   try {
     body = bodySchema.parse(await req.json());
   } catch (err) {
+    console.warn("[ohs-archive] invalid create body:", err instanceof Error ? err.message : err);
     return NextResponse.json(
-      { error: "invalid_body", detail: err instanceof Error ? err.message : String(err) },
+      { error: "invalid_body" },
       { status: 400 },
     );
   }
@@ -66,8 +67,9 @@ export async function POST(req: NextRequest) {
     .maybeSingle();
 
   if (cwErr) {
+    console.error("[ohs-archive] company lookup failed:", cwErr.message);
     return NextResponse.json(
-      { error: "company_lookup_failed", detail: cwErr.message },
+      { error: "company_lookup_failed" },
       { status: 500 },
     );
   }
@@ -92,8 +94,11 @@ export async function POST(req: NextRequest) {
       : await presetQuery.eq("is_default", true).limit(1);
 
     if (presetErr || !presets || presets.length === 0) {
+      if (presetErr) {
+        console.error("[ohs-archive] scope preset lookup failed:", presetErr.message);
+      }
       return NextResponse.json(
-        { error: "scope_preset_not_found", detail: presetErr?.message },
+        { error: "scope_preset_not_found" },
         { status: 400 },
       );
     }
@@ -118,8 +123,11 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (insertErr || !inserted) {
+    if (insertErr) {
+      console.error("[ohs-archive] job create failed:", insertErr.message);
+    }
     return NextResponse.json(
-      { error: "job_create_failed", detail: insertErr?.message },
+      { error: "job_create_failed" },
       { status: 500 },
     );
   }

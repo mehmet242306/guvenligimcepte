@@ -45,10 +45,14 @@ function getCheckoutErrorMessage(error: unknown) {
   const lowerMessage = message.toLowerCase();
 
   if (lowerMessage.includes("permitted") || lowerMessage.includes("permission")) {
-    return "Paddle API key bu odeme istegine izin vermiyor. Vercel'deki PADDLE_API_KEY ayni Paddle sandbox hesabindan olmali ve Transactions Write, Customers Read/Write, Prices Read yetkilerine sahip olmali.";
+    return "Odeme saglayicisi bu istege izin vermedi. Lutfen daha sonra tekrar deneyin veya destek ile iletisime gecin.";
   }
 
-  return message;
+  if (lowerMessage.includes("paddle") || lowerMessage.includes("api_key")) {
+    return "Odeme oturumu olusturulamadi. Lutfen daha sonra tekrar deneyin.";
+  }
+
+  return "Odeme oturumu olusturulamadi. Lutfen daha sonra tekrar deneyin.";
 }
 
 export async function POST(request: NextRequest) {
@@ -125,6 +129,5 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     ok: true,
     checkoutUrl: checkout.checkoutUrl,
-    transactionId: checkout.transactionId,
   });
 }

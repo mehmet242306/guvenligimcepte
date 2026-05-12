@@ -18,13 +18,18 @@ export async function GET(request: NextRequest) {
     `,
     )
     .eq("user_id", auth.userId)
+    .eq("organization_id", auth.organizationId)
     .in("status", ["active", "trialing"])
     .order("updated_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[billing.status] subscription lookup failed:", error.message);
+    return NextResponse.json(
+      { error: "Abonelik durumu okunamadi." },
+      { status: 500 },
+    );
   }
 
   const plan = data?.plan as

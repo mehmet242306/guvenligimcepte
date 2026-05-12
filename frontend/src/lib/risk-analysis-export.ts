@@ -230,7 +230,7 @@ function buildFindingCardHTML(f: ExportFinding): string {
     </div>`;
 }
 
-function generateHTML(data: RiskAnalysisExportData): string {
+function _generateHTML(data: RiskAnalysisExportData): string {
   const now = data.date || new Date().toLocaleDateString("tr-TR");
   const rows = groupByRow(data);
 
@@ -493,12 +493,8 @@ function generateHTML(data: RiskAnalysisExportData): string {
 /* PDF Export                                                          */
 /* ================================================================== */
 
-export function exportRiskAnalysisPDF(data: RiskAnalysisExportData) {
-  const html = generateHTML(data);
-  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const w = window.open(url, "_blank");
-  if (w) w.onload = () => w.print();
+export function exportRiskAnalysisPDF(_data: RiskAnalysisExportData): never {
+  throw new Error("Risk analysis PDF exports must be generated through /api/risk-analysis/export.");
 }
 
 /* ================================================================== */
@@ -551,7 +547,7 @@ function parseDataUrl(dataUrl: string): { buffer: Uint8Array; ext: "jpg" | "png"
   } catch { return null; }
 }
 
-export async function exportRiskAnalysisWord(data: RiskAnalysisExportData) {
+export async function generateRiskAnalysisWordBlob(data: RiskAnalysisExportData): Promise<Blob> {
   const now = data.date || new Date().toLocaleDateString("tr-TR");
   const rows = groupByRow(data);
   const children: (Paragraph | Table)[] = [];
@@ -871,7 +867,6 @@ export async function exportRiskAnalysisWord(data: RiskAnalysisExportData) {
     alignment: AlignmentType.CENTER,
   }));
 
-  // ── Oluştur ve indir ──
   const doc = new Document({
     creator: "RiskNova İSG Platformu",
     title: `${data.analysisTitle} - Risk Analizi Raporu`,
@@ -879,9 +874,12 @@ export async function exportRiskAnalysisWord(data: RiskAnalysisExportData) {
     sections: [{ children }],
   });
 
-  Packer.toBlob(doc).then((blob) => {
-    downloadBlob(blob, `Risk-Analizi-${data.companyName || "Rapor"}-${data.date || new Date().toISOString().split("T")[0]}.docx`);
-  });
+  return Packer.toBlob(doc);
+}
+
+export async function exportRiskAnalysisWord(data: RiskAnalysisExportData) {
+  const blob = await generateRiskAnalysisWordBlob(data);
+  downloadBlob(blob, `Risk-Analizi-${data.companyName || "Rapor"}-${data.date || new Date().toISOString().split("T")[0]}.docx`);
 }
 
 /* ================================================================== */
@@ -889,7 +887,7 @@ export async function exportRiskAnalysisWord(data: RiskAnalysisExportData) {
 /* ================================================================== */
 
 
-export async function exportRiskAnalysisExcel(data: RiskAnalysisExportData) {
+export async function generateRiskAnalysisExcelBlob(data: RiskAnalysisExportData): Promise<Blob> {
   const wb = new ExcelJS.Workbook();
   wb.creator = "RiskNova İSG Platformu";
   wb.created = new Date();
@@ -1089,6 +1087,10 @@ export async function exportRiskAnalysisExcel(data: RiskAnalysisExportData) {
   ws.views = [{ state: "frozen", xSplit: 0, ySplit: 4 }];
 
   const buffer = await wb.xlsx.writeBuffer();
-  const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  return new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+}
+
+export async function exportRiskAnalysisExcel(data: RiskAnalysisExportData) {
+  const blob = await generateRiskAnalysisExcelBlob(data);
   downloadBlob(blob, `Risk-Analizi-${data.companyName || "Rapor"}-${data.date || new Date().toISOString().split("T")[0]}.xlsx`);
 }

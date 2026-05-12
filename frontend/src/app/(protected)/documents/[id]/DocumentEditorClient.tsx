@@ -37,7 +37,7 @@ import { ShareModal } from '@/components/documents/ShareModal';
 import { SignatureModal } from '@/components/documents/SignatureModal';
 import QRCode from 'qrcode';
 import type { JSONContent } from '@tiptap/react';
-import { consumeExportQuotaClient } from '@/lib/billing/export-quota-client';
+import { downloadServerExport } from '@/lib/billing/server-export-client';
 
 function normalizeDocumentLookup(value: string) {
   return value
@@ -432,90 +432,57 @@ export function DocumentEditorClient({ paramsPromise }: Props) {
     }
   }, [orgId, editor, doc, title, status, groupKey, userId, companyData, qCompanyId, fromLibrary, librarySection, librarySubcategory, workspaceId, qMode, getSaveLocationLabel, t]);
 
-  const consumeExportQuota = useCallback(async (): Promise<boolean> => {
-    const result = await consumeExportQuotaClient();
-    if (!result.ok) {
-      setExportNotice(result.message);
-      window.setTimeout(() => setExportNotice(null), 10000);
-      return false;
-    }
-    return true;
-  }, []);
-
   // Export
   const handleExport = useCallback(async () => {
     if (!editor) return;
-    const ok = await consumeExportQuota();
-    if (!ok) return;
     setExporting(true);
     try {
-      const { generateDocxFromTipTap } = await import('@/lib/document-generator');
-      await generateDocxFromTipTap({
-        title,
-        json: editor.getJSON(),
-        companyData,
-        companyName: companyData.official_name,
+      const result = await downloadServerExport({
+        url: '/api/documents/docx-export',
+        payload: {
+          title,
+          json: editor.getJSON(),
+          companyData,
+          companyName: companyData.official_name,
+        },
+        fallbackFileName: `${title || 'dokuman'}.docx`,
       });
+      if (!result.ok) {
+        setExportNotice(result.message);
+        window.setTimeout(() => setExportNotice(null), 10000);
+      }
     } catch (err) {
       console.error('Export error:', err);
     } finally {
       setExporting(false);
     }
-  }, [editor, title, companyData, consumeExportQuota]);
+  }, [editor, title, companyData]);
 
-  // PDF Export (browser print)
+  // PDF Export
   const handlePdfExport = useCallback(async () => {
     if (!editor) return;
-    const ok = await consumeExportQuota();
-    if (!ok) return;
-    const content = editor.getHTML();
-    const companyName = companyData.official_name || '';
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
-
-    const pdfDate = new Date().toLocaleDateString(locale);
-    const pdfQrCaption = t('pdf.verificationCaption');
-
-    printWindow.document.write(`<!DOCTYPE html>
-<html><head><title>${title}</title>
-<style>
-  @page { margin: 2cm; size: A4; }
-  body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #0F172A; margin: 0; padding: 0; }
-  h1 { font-size: 18pt; color: #D4A017; margin-bottom: 4pt; }
-  h2 { font-size: 14pt; color: #0F172A; margin-top: 16pt; border-bottom: 1px solid #E2E8F0; padding-bottom: 4pt; }
-  h3 { font-size: 12pt; color: #0F172A; margin-top: 12pt; }
-  table { width: 100%; border-collapse: collapse; margin: 8pt 0; font-size: 10pt; }
-  th, td { border: 1px solid #CBD5E1; padding: 6px 8px; text-align: left; }
-  th { background: #F1F5F9; font-weight: bold; }
-  ul, ol { margin: 4pt 0; padding-left: 20pt; }
-  blockquote { border-left: 3px solid #D4A017; padding-left: 12px; color: #64748B; font-style: italic; }
-  hr { border: none; border-top: 1px solid #E2E8F0; margin: 12pt 0; }
-  .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D4A017; padding-bottom: 8pt; margin-bottom: 16pt; }
-  .header-brand { color: #D4A017; font-weight: bold; font-size: 10pt; }
-  .header-company { color: #64748B; font-size: 9pt; }
-  .footer { margin-top: 24pt; border-top: 1px solid #E2E8F0; padding-top: 8pt; font-size: 8pt; color: #94A3B8; display: flex; justify-content: space-between; align-items: flex-end; }
-  .qr-section { text-align: right; }
-  .qr-section img { width: 60px; height: 60px; }
-  .qr-section p { font-size: 6pt; color: #94A3B8; margin: 2pt 0 0; }
-  @media print { .no-print { display: none; } }
-</style></head><body>
-<div class="header">
-  <span class="header-brand">RiskNova</span>
-  <span class="header-company">${companyName}</span>
-</div>
-<h1>${title}</h1>
-${content}
-<div class="footer">
-  <div>
-    <span>${title}</span><br/>
-    <span>${pdfDate}</span>
-  </div>
-  ${qrDataUrl ? `<div class="qr-section"><img src="${qrDataUrl}" alt=""/><p>${pdfQrCaption}</p></div>` : ''}
-</div>
-<script>setTimeout(()=>window.print(),500)<\/script>
-</body></html>`);
-    printWindow.document.close();
-  }, [editor, title, companyData, consumeExportQuota, locale, t, qrDataUrl]);
+    setExporting(true);
+    try {
+      const result = await downloadServerExport({
+        url: '/api/documents/pdf-export',
+        payload: {
+          title,
+          json: editor.getJSON(),
+          companyData,
+          companyName: companyData.official_name,
+        },
+        fallbackFileName: `${title || 'dokuman'}.pdf`,
+      });
+      if (!result.ok) {
+        setExportNotice(result.message);
+        window.setTimeout(() => setExportNotice(null), 10000);
+      }
+    } catch (err) {
+      console.error('PDF export error:', err);
+    } finally {
+      setExporting(false);
+    }
+  }, [editor, title, companyData]);
 
   useEffect(() => {
     if (!qDownload || !editor || loading || autoDownloadTriggeredRef.current) return;
@@ -523,7 +490,7 @@ ${content}
 
     const runDownload = async () => {
       if (qDownload === 'pdf') {
-        handlePdfExport();
+        await handlePdfExport();
       } else {
         await handleExport();
       }

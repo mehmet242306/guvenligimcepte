@@ -54,8 +54,9 @@ export async function GET(req: NextRequest, context: RouteContext) {
     .maybeSingle();
 
   if (error) {
+    console.error("[ohs-archive] status lookup failed:", error.message);
     return NextResponse.json(
-      { error: "lookup_failed", detail: error.message },
+      { error: "lookup_failed" },
       { status: 500 },
     );
   }

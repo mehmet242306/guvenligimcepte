@@ -489,7 +489,7 @@ function tiptapJsonToDocx(
 /* Professional DOCX Generator (from TipTap JSON)                      */
 /* ------------------------------------------------------------------ */
 
-export async function generateDocxFromTipTap(opts: DocxExportOptions): Promise<void> {
+export async function generateDocxFromTipTapBlob(opts: DocxExportOptions): Promise<Blob> {
   const { title, json, companyData, companyName } = opts;
   const resolvedTitle = resolveVarsInText(title, companyData);
   const displayCompany = companyName || companyData?.official_name || "";
@@ -673,7 +673,13 @@ export async function generateDocxFromTipTap(opts: DocxExportOptions): Promise<v
     ],
   });
 
-  const blob = await Packer.toBlob(document);
+  return Packer.toBlob(document);
+}
+
+export async function generateDocxFromTipTap(opts: DocxExportOptions): Promise<void> {
+  const { title, companyData } = opts;
+  const resolvedTitle = resolveVarsInText(title, companyData);
+  const blob = await generateDocxFromTipTapBlob(opts);
   const fileName = resolvedTitle
     .replace(/[^a-zA-Z0-9\u00C0-\u024F\u0400-\u04FF\u0600-\u06FF\u4E00-\u9FFF\u3040-\u30FF\s_-]/g, "")
     .replace(/\s+/g, "_");
