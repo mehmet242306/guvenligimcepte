@@ -7279,5 +7279,30 @@
         "other": "Other"
       }
     }
+  },
+  "deleteAccountPage": {
+    "meta": {
+      "title": "Account and Data Deletion Request",
+      "description": "Steps for requesting deletion of your RiskNova account and related personal data.",
+      "ogTitle": "RiskNova Account and Data Deletion Request"
+    },
+    "eyebrow": "RiskNova data rights",
+    "title": "Account and Data Deletion Request",
+    "intro": "RiskNova users can request deletion of their account and related personal data from inside the application. After a request is created, the deletion process is handled according to administrative review and retention policies.",
+    "stepsTitle": "Request deletion in the app",
+    "steps": [
+      "Sign in with your RiskNova account.",
+      "Go to the Privacy and Consents tab on the Profile page.",
+      "Enter your request reason in the Delete My Data section.",
+      "Submit your request with the create deletion request button."
+    ],
+    "ctaProfile": "Go to profile",
+    "retainedTitle": "Deleted and retained data",
+    "retainedBody": "A deletion request is evaluated for profile information, application records, uploaded files, and account-related transaction data. Data that must be retained for legal obligations, security logs, billing, or dispute resolution may be kept for a limited period under applicable regulations and retention policies.",
+    "contactLead": "If you cannot access your account or need help with a deletion request, contact us at",
+    "contactTrail": ".",
+    "privacyLead": "For more information about our privacy practices, review the",
+    "privacyPolicy": "Privacy Policy",
+    "privacyTrail": "."
   }
 }

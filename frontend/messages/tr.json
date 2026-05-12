@@ -7280,5 +7280,30 @@
         "other": "Diğer"
       }
     }
+  },
+  "deleteAccountPage": {
+    "meta": {
+      "title": "Hesap ve Veri Silme Talebi",
+      "description": "RiskNova hesabınızın ve ilişkili kişisel verilerinizin silinmesini talep etme adımları.",
+      "ogTitle": "RiskNova Hesap ve Veri Silme Talebi"
+    },
+    "eyebrow": "RiskNova veri hakları",
+    "title": "Hesap ve Veri Silme Talebi",
+    "intro": "RiskNova kullanıcıları, hesaplarının ve ilişkili kişisel verilerinin silinmesini uygulama içinden talep edebilir. Talep oluşturulduktan sonra silme süreci idari inceleme ve saklama politikalarına göre yürütülür.",
+    "stepsTitle": "Uygulama içinden silme talebi",
+    "steps": [
+      "RiskNova hesabınızla oturum açın.",
+      "Profil sayfasındaki Gizlilik ve Onaylar sekmesine gidin.",
+      "Verilerimi Sil bölümünde talep nedeninizi yazın.",
+      "Silme talebi oluştur düğmesiyle talebinizi gönderin."
+    ],
+    "ctaProfile": "Profil sayfasına git",
+    "retainedTitle": "Silinen ve saklanan veriler",
+    "retainedBody": "Silme talebi; profil bilgileri, uygulama kayıtları, yüklenen dosyalar ve hesaba bağlı işlem verileri açısından değerlendirilir. Yasal yükümlülükler, güvenlik günlükleri, faturalama veya uyuşmazlık çözümü için saklanması gereken veriler, ilgili mevzuat ve saklama politikaları kapsamında sınırlı süreyle tutulabilir.",
+    "contactLead": "Hesabınıza erişemiyorsanız veya silme talebi konusunda yardıma ihtiyacınız varsa şu adrese yazın:",
+    "contactTrail": ".",
+    "privacyLead": "Gizlilik uygulamalarımız hakkında daha fazla bilgi için inceleyin:",
+    "privacyPolicy": "Gizlilik Politikası",
+    "privacyTrail": "."
   }
 }
