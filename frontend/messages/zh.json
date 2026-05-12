@@ -340,6 +340,8 @@
       "divider": "或继续使用邮箱",
       "googleContinue": "使用Google继续访问{brand}",
       "googleSignUp": "使用Google注册{brand}",
+      "appleContinue": "Continue to {brand} with Apple",
+      "appleSignUp": "Sign up for {brand} with Apple",
       "oauthGenericError": "登录过程中出现问题，请重试。",
       "oauthRedirectHint": "Google登录需要Supabase重定向URL：请在身份验证URL配置下添加https://getrisknova.com/auth/callback（以及您的环境URL）。",
       "supabaseError": "无法连接到身份验证服务。"

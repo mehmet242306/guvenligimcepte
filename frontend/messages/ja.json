@@ -340,6 +340,8 @@
       "divider": "またはメールで続行",
       "googleContinue": "Googleで{brand}に続行",
       "googleSignUp": "Googleで{brand}にサインアップ",
+      "appleContinue": "Continue to {brand} with Apple",
+      "appleSignUp": "Sign up for {brand} with Apple",
       "oauthGenericError": "サインイン中に問題が発生しました。もう一度お試しください。",
       "oauthRedirectHint": "GoogleサインインにはSupabaseリダイレクトURLが必要です：認証URL設定でhttps://getrisknova.com/auth/callback（および環境URL）を追加してください。",
       "supabaseError": "認証サービスに接続できませんでした。"

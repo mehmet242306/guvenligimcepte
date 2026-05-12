@@ -340,6 +340,8 @@
       "divider": "atau lanjutkan dengan email",
       "googleContinue": "Lanjutkan ke {brand} dengan Google",
       "googleSignUp": "Daftar untuk {brand} dengan Google",
+      "appleContinue": "Continue to {brand} with Apple",
+      "appleSignUp": "Sign up for {brand} with Apple",
       "oauthGenericError": "Terjadi kesalahan saat masuk. Silakan coba lagi.",
       "oauthRedirectHint": "Masuk Google memerlukan URL redirect Supabase: tambahkan https://getrisknova.com/auth/callback (dan URL lingkungan Anda) di bawah konfigurasi URL Autentikasi.",
       "supabaseError": "Tidak dapat terhubung ke layanan autentikasi."

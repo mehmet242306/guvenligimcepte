@@ -340,6 +340,8 @@
       "divider": "və ya e-poçt ilə davam edin",
       "googleContinue": "{brand} ilə Google vasitəsilə davam edin",
       "googleSignUp": "{brand} üçün Google ilə qeydiyyatdan keçin",
+      "appleContinue": "Continue to {brand} with Apple",
+      "appleSignUp": "Sign up for {brand} with Apple",
       "oauthGenericError": "Daxil olarkən xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.",
       "oauthRedirectHint": "Google girişi üçün Supabase yönləndirmə URL-i lazımdır: Authentication URL konfiqurasiyası altında https://getrisknova.com/auth/callback (və sizin mühit URL-lərinizi) əlavə edin.",
       "supabaseError": "Autentifikasiya xidmətlərinə qoşulmaq mümkün olmadı."

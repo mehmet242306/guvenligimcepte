@@ -879,6 +879,8 @@
       "oauthGenericError": "Something went wrong during sign-in. Please try again.",
       "googleContinue": "Continue to {brand} with Google",
       "googleSignUp": "Sign up for {brand} with Google",
+      "appleContinue": "Continue to {brand} with Apple",
+      "appleSignUp": "Sign up for {brand} with Apple",
       "divider": "or continue with email"
     },
     "registerWizard": {

@@ -340,6 +340,8 @@
       "divider": "या ईमेल के साथ जारी रखें",
       "googleContinue": "Google के साथ {brand} में जारी रखें",
       "googleSignUp": "Google के साथ {brand} के लिए साइन अप करें",
+      "appleContinue": "Continue to {brand} with Apple",
+      "appleSignUp": "Sign up for {brand} with Apple",
       "oauthGenericError": "साइन-इन के दौरान कुछ गलत हुआ। कृपया पुनः प्रयास करें।",
       "oauthRedirectHint": "Google साइन-इन को Supabase रीडायरेक्ट URL की आवश्यकता है: Authentication URL कॉन्फ़िगरेशन के तहत https://getrisknova.com/auth/callback (और आपके एनवायरनमेंट URLs) जोड़ें।",
       "supabaseError": "प्रमाणीकरण सेवाओं से कनेक्ट नहीं हो सका।"

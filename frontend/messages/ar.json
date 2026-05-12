@@ -340,6 +340,8 @@
       "divider": "أو المتابعة بالبريد الإلكتروني",
       "googleContinue": "المتابعة إلى {brand} باستخدام Google",
       "googleSignUp": "التسجيل في {brand} باستخدام Google",
+      "appleContinue": "Continue to {brand} with Apple",
+      "appleSignUp": "Sign up for {brand} with Apple",
       "oauthGenericError": "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.",
       "oauthRedirectHint": "تسجيل الدخول بـ Google يحتاج رابط إعادة التوجيه Supabase: أضف https://getrisknova.com/auth/callback (وروابط بيئتك) تحت إعدادات رابط المصادقة.",
       "supabaseError": "تعذر الاتصال بخدمات المصادقة."

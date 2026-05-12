@@ -340,6 +340,8 @@
       "divider": "ou continuer avec l'email",
       "googleContinue": "Continuer vers {brand} avec Google",
       "googleSignUp": "S'inscrire à {brand} avec Google",
+      "appleContinue": "Continue to {brand} with Apple",
+      "appleSignUp": "Sign up for {brand} with Apple",
       "oauthGenericError": "Une erreur s'est produite lors de la connexion. Veuillez réessayer.",
       "oauthRedirectHint": "La connexion Google nécessite l'URL de redirection Supabase : ajoutez https://getrisknova.com/auth/callback (et vos URLs d'environnement) sous la configuration URL d'authentification.",
       "supabaseError": "Impossible de se connecter aux services d'authentification."

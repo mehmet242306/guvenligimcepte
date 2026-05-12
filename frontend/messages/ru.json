@@ -340,6 +340,8 @@
       "divider": "или продолжить с email",
       "googleContinue": "Войти в {brand} через Google",
       "googleSignUp": "Зарегистрироваться в {brand} через Google",
+      "appleContinue": "Continue to {brand} with Apple",
+      "appleSignUp": "Sign up for {brand} with Apple",
       "oauthGenericError": "Что-то пошло не так при входе. Попробуйте еще раз.",
       "oauthRedirectHint": "Для входа через Google требуется URL перенаправления Supabase: добавьте https://getrisknova.com/auth/callback (и URL вашей среды) в конфигурацию URL аутентификации.",
       "supabaseError": "Не удалось подключиться к службам аутентификации."

@@ -879,6 +879,8 @@
       "oauthGenericError": "Giriş sırasında bir hata oluştu. Lütfen tekrar deneyin.",
       "googleContinue": "Google ile {brand} üzerinde devam et",
       "googleSignUp": "Google ile {brand} için kayıt ol",
+      "appleContinue": "Apple ile {brand} üzerinde devam et",
+      "appleSignUp": "Apple ile {brand} için kayıt ol",
       "divider": "veya e-posta ile devam edin"
     },
     "registerWizard": {
