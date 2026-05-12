@@ -5091,6 +5091,8 @@
     },
     "priceFreeNote": "Gratuit pour commencer",
     "priceMonthlyNote": "Facturation mensuelle — mise à niveau quand vous en avez besoin",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Turkish Lira amounts are approximate (reference rate); checkout is in US dollars.",
     "priceSuffixMonth": "/ mois",
     "priceSuffixYear": "/ an",
     "priceYearlyNote": "Environ {monthly}/mois équivalent — 2 mois inclus",

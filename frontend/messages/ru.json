@@ -5091,6 +5091,8 @@
     },
     "priceFreeNote": "Бесплатно для начала",
     "priceMonthlyNote": "Ежемесячная оплата — обновляйтесь когда потребуется",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Turkish Lira amounts are approximate (reference rate); checkout is in US dollars.",
     "priceSuffixMonth": "/ мес",
     "priceSuffixYear": "/ год",
     "priceYearlyNote": "Примерно {monthly}/мес — включено 2 месяца",

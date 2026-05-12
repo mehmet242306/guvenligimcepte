@@ -5091,6 +5091,8 @@
     },
     "priceFreeNote": "Gratis untuk memulai",
     "priceMonthlyNote": "Penagihan bulanan — upgrade kapan saja Anda butuhkan",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Turkish Lira amounts are approximate (reference rate); checkout is in US dollars.",
     "priceSuffixMonth": "/ bln",
     "priceSuffixYear": "/ thn",
     "priceYearlyNote": "Sekitar {monthly}/bln setara — 2 bulan termasuk",

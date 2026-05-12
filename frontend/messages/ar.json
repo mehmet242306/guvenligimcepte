@@ -5091,6 +5091,8 @@
     },
     "priceFreeNote": "مجاني للبدء",
     "priceMonthlyNote": "الفوترة الشهرية — ترقية متى احتجت",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Turkish Lira amounts are approximate (reference rate); checkout is in US dollars.",
     "priceSuffixMonth": "/ شهر",
     "priceSuffixYear": "/ سنة",
     "priceYearlyNote": "حوالي {monthly}/شهر مكافئ — شهرين مشمولين",

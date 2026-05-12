@@ -192,3 +192,15 @@ export const INDIVIDUAL_BILLING_PLANS: PublicBillingPlan[] = INDIVIDUAL_BILLING_
 export function formatLimitNumber(value: number, locale: string) {
   return new Intl.NumberFormat(locale).format(value);
 }
+
+/**
+ * USD→TRY hint for marketing/pricing UI only. Set `NEXT_PUBLIC_PRICING_USD_TRY_RATE` in production;
+ * use `0` to hide TRY hints. When unset, a conservative default is used.
+ */
+export function getPricingUsdTryRate(): number | null {
+  const raw = process.env.NEXT_PUBLIC_PRICING_USD_TRY_RATE;
+  if (raw === undefined || raw === "") return 40;
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return n;
+}

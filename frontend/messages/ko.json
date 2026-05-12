@@ -5091,6 +5091,8 @@
     },
     "priceFreeNote": "무료로 시작",
     "priceMonthlyNote": "월간 결제 — 필요할 때 언제든 업그레이드",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Turkish Lira amounts are approximate (reference rate); checkout is in US dollars.",
     "priceSuffixMonth": "/ 월",
     "priceSuffixYear": "/ 년",
     "priceYearlyNote": "월 {monthly}원 상당 — 2개월 포함",

@@ -1021,6 +1021,8 @@
     "priceFreeNote": "Free to start",
     "priceYearlyNote": "About {monthly}/mo equivalent — 2 months included",
     "priceMonthlyNote": "Monthly billing — upgrade whenever you need",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Turkish Lira amounts are approximate (reference rate); checkout is in US dollars.",
     "freeStart": "Start free",
     "currentPlan": "Current plan",
     "selectPlan": "Choose plan",

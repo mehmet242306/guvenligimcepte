@@ -5091,6 +5091,8 @@
     },
     "priceFreeNote": "Kostenlos starten",
     "priceMonthlyNote": "Monatliche Abrechnung — jederzeit upgraden",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Turkish Lira amounts are approximate (reference rate); checkout is in US dollars.",
     "priceSuffixMonth": "/ Monat",
     "priceSuffixYear": "/ Jahr",
     "priceYearlyNote": "Etwa {monthly}/Monat entsprechend — 2 Monate inklusive",

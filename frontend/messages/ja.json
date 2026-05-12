@@ -5091,6 +5091,8 @@
     },
     "priceFreeNote": "無料で開始",
     "priceMonthlyNote": "月次請求 — 必要な時にアップグレード",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Turkish Lira amounts are approximate (reference rate); checkout is in US dollars.",
     "priceSuffixMonth": "/ 月",
     "priceSuffixYear": "/ 年",
     "priceYearlyNote": "月額約{monthly}円相当 — 2ヶ月分含む",

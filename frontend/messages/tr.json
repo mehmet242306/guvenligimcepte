@@ -1021,6 +1021,8 @@
     "priceFreeNote": "Ücretsiz başlangıç",
     "priceYearlyNote": "Ayda yaklaşık {monthly} ABD doları karşılığı — 2 ay avantaj",
     "priceMonthlyNote": "Aylık ödeme; istediğiniz zaman yükseltin",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Türk lirası tutarları yaklaşıktır (gösterim kuru); ödeme ABD doları üzerinden tahsil edilir.",
     "freeStart": "Ücretsiz başlayın",
     "currentPlan": "Mevcut plan",
     "selectPlan": "Paketi seçin",

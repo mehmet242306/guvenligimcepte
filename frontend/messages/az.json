@@ -5091,6 +5091,8 @@
     },
     "priceFreeNote": "Başlamaq üçün pulsuz",
     "priceMonthlyNote": "Aylıq ödəniş — lazım olduqda yüksəldin",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Turkish Lira amounts are approximate (reference rate); checkout is in US dollars.",
     "priceSuffixMonth": "/ ay",
     "priceSuffixYear": "/ il",
     "priceYearlyNote": "{monthly}/ay ekvivalenti təxminən — 2 ay daxildir",

@@ -13,10 +13,18 @@ import {
 import { PricingCheckoutButton } from "@/components/billing/PricingCheckoutButton";
 import {
   formatLimitNumber,
+  getPricingUsdTryRate,
   INDIVIDUAL_BILLING_PLAN_DEFS,
   type BillingCycle,
   type BillingPlanDefinition,
 } from "@/lib/billing/plans";
+
+const tryCurrencyFormatter = new Intl.NumberFormat("tr-TR", {
+  style: "currency",
+  currency: "TRY",
+  maximumFractionDigits: 0,
+  minimumFractionDigits: 0,
+});
 
 const keyLimitRows = [
   "nova_message",
@@ -43,11 +51,22 @@ function getDisplayPrice(
   locale: string,
   t: ReturnType<typeof useTranslations<"pricing">>,
 ) {
+  const usdTry = getPricingUsdTryRate();
+  const tryHint =
+    usdTry != null && monthlyPrice > 0
+      ? t("tryApproxHint", {
+          amount: tryCurrencyFormatter.format(
+            Math.round((cycle === "yearly" ? monthlyPrice * 10 : monthlyPrice) * usdTry),
+          ),
+        })
+      : undefined;
+
   if (monthlyPrice === 0) {
     return {
       main: "$0",
       suffix: t("priceSuffixMonth"),
       note: t("priceFreeNote"),
+      tryHint,
     };
   }
 
@@ -61,6 +80,7 @@ function getDisplayPrice(
       note: t("priceYearlyNote", {
         monthly: `$${Math.round(monthlyEquivalent).toLocaleString(locale)}`,
       }),
+      tryHint,
     };
   }
 
@@ -68,6 +88,7 @@ function getDisplayPrice(
     main: `$${monthlyPrice.toLocaleString(locale)}`,
     suffix: t("priceSuffixMonth"),
     note: t("priceMonthlyNote"),
+    tryHint,
   };
 }
 
@@ -191,6 +212,9 @@ function IndividualPlanCard({
           </span>
           <span className="pb-1 text-sm text-muted-foreground">{price.suffix}</span>
         </div>
+        {price.tryHint ? (
+          <p className="mt-1 text-sm font-medium tabular-nums text-muted-foreground">{price.tryHint}</p>
+        ) : null}
         <p className="mt-2 text-xs font-medium text-amber-700 dark:text-amber-200">{price.note}</p>
         <p className="mt-4 min-h-12 text-sm leading-6 text-muted-foreground">{copy.description}</p>
       </div>
@@ -265,6 +289,7 @@ function IndividualPlanCard({
 
 export function PricingPlansClient() {
   const t = useTranslations("pricing");
+  const showTryDisclaimer = getPricingUsdTryRate() != null;
   const [activePlanKey, setActivePlanKey] = useState<string | null>(null);
   const [activeBillingCycle, setActiveBillingCycle] = useState<BillingCycle | null>(null);
 
@@ -313,6 +338,9 @@ export function PricingPlansClient() {
       <div className="mb-7 rounded-lg border border-amber-300/35 bg-card p-5 shadow-[var(--shadow-soft)]">
         <h2 className="text-xl font-semibold tracking-tight text-foreground">{t("introTitle")}</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{t("introBody")}</p>
+        {showTryDisclaimer ? (
+          <p className="mt-2 max-w-3xl text-xs leading-5 text-muted-foreground">{t("tryChargeDisclaimer")}</p>
+        ) : null}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

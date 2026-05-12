@@ -5091,6 +5091,8 @@
     },
     "priceFreeNote": "शुरू करने के लिए निःशुल्क",
     "priceMonthlyNote": "मासिक बिलिंग — जब भी आवश्यकता हो अपग्रेड करें",
+    "tryApproxHint": "≈ {amount}",
+    "tryChargeDisclaimer": "Turkish Lira amounts are approximate (reference rate); checkout is in US dollars.",
     "priceSuffixMonth": "/ माह",
     "priceSuffixYear": "/ वर्ष",
     "priceYearlyNote": "लगभग {monthly}/माह के बराबर — 2 महीने शामिल",
