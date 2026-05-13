@@ -1725,7 +1725,11 @@
         "incident_analysis": "Incident / root cause analyses",
         "training_slide": "Training slides",
         "export": "Exports"
-      }
+      },
+      "lockedTitle": "Not included in this plan",
+      "lockedSubtitle": "These AI capabilities are closed for your current package. Upgrade to unlock them.",
+      "lockedBadge": "No quota",
+      "noRights": "Closed"
     }
   },
   "dataRights": {

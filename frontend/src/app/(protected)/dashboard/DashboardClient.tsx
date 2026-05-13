@@ -861,9 +861,19 @@ function UsageQuotaCard({
       })
     : null;
   const items = overview?.items ?? [];
-  const primaryItems = items.filter((item) =>
-    ['nova_message', 'ai_analysis', 'document_generation', 'risk_analysis', 'field_inspection'].includes(item.action),
-  );
+  const visibleActions = [
+    'nova_message',
+    'ai_analysis',
+    'document_generation',
+    'risk_analysis',
+    'field_inspection',
+    'incident_analysis',
+    'training_slide',
+    'export',
+  ];
+  const visibleItems = items.filter((item) => visibleActions.includes(item.action));
+  const primaryItems = visibleItems.filter((item) => item.limit > 0 || item.unlimited);
+  const lockedItems = visibleItems.filter((item) => !item.unlimited && item.limit <= 0);
   const lowestRemaining = primaryItems
     .filter((item) => !item.unlimited && item.limit > 0)
     .sort((a, b) => a.remaining - b.remaining)[0];
@@ -954,6 +964,39 @@ function UsageQuotaCard({
               );
             })}
           </div>
+
+          {lockedItems.length > 0 ? (
+            <div className="mt-4 rounded-[1.5rem] border border-red-500/30 bg-red-500/8 p-3 shadow-[0_0_0_4px_rgba(239,68,68,0.05)] dark:bg-red-500/10">
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-bold text-red-700 dark:text-red-200">{t('usage.lockedTitle')}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-red-700/75 dark:text-red-200/75">
+                    {t('usage.lockedSubtitle')}
+                  </p>
+                </div>
+                <span className="shrink-0 rounded-full border border-red-500/25 bg-red-500/12 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-red-700 dark:text-red-200">
+                  {t('usage.lockedBadge')}
+                </span>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {lockedItems.map((item) => (
+                  <div
+                    key={item.action}
+                    className="rounded-2xl border border-red-500/20 bg-background/70 px-3 py-2.5 shadow-[inset_0_0_0_1px_rgba(239,68,68,0.04)]"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="min-w-0 truncate text-sm font-semibold text-foreground">
+                        {t(`usage.actions.${item.action}`)}
+                      </span>
+                      <span className="shrink-0 rounded-full bg-red-500/12 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-red-700 dark:text-red-200">
+                        {t('usage.noRights')}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </>
       ) : (
         <div className="rounded-[1.5rem] border border-dashed border-border bg-background/55 px-4 py-8 text-center text-sm text-muted-foreground">

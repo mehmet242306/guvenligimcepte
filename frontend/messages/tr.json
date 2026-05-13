@@ -256,7 +256,11 @@
         "incident_analysis": "Olay / kök neden analizleri",
         "training_slide": "Eğitim slaytları",
         "export": "Dışa aktarımlar"
-      }
+      },
+      "lockedTitle": "Bu pakette kullan?lamaz",
+      "lockedSubtitle": "Bu AI yetenekleri mevcut paketinizde kapal?d?r. A?mak i?in paketinizi y?kseltebilirsiniz.",
+      "lockedBadge": "Hak yok",
+      "noRights": "Kapal?"
     }
   },
   "osgb": {
