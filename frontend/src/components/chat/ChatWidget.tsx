@@ -1723,7 +1723,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           onPointerMove={dragLauncher}
           onPointerUp={stopLauncherDrag}
           onPointerCancel={stopLauncherDrag}
-          className={`group fixed z-50 inline-flex h-12 w-[3.25rem] touch-none cursor-move items-center justify-center rounded-[1.2rem] border border-amber-200/40 bg-[linear-gradient(145deg,#9E6A12_0%,#C8941F_38%,#E8B84A_100%)] text-white shadow-[0_10px_28px_rgba(142,99,18,0.35)] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(142,99,18,0.42)] sm:h-[3.25rem] sm:w-[3.5rem] ${launcherPosition ? "" : "bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] right-3 sm:bottom-7 sm:right-7"}`}
+          className={`group fixed z-50 inline-flex h-12 w-[3.25rem] touch-none cursor-move items-center justify-center overflow-visible rounded-[1.2rem] border border-amber-200/45 bg-transparent text-white shadow-[0_10px_28px_rgba(142,99,18,0.38)] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_38px_rgba(142,99,18,0.48)] sm:h-[3.25rem] sm:w-[3.5rem] ${launcherPosition ? "" : "bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] right-3 sm:bottom-7 sm:right-7"}`}
           style={
             launcherPosition
               ? {
@@ -1735,8 +1735,40 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           aria-label={ui.widget.openAriaLabel}
           title="Nova'yi tasimak icin surukleyin, acmak icin tiklayin"
         >
-          <span className="pointer-events-none absolute inset-[1px] rounded-[1.05rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_45%)] opacity-90 sm:rounded-[1.15rem]" />
-          <MessageCircle className="relative z-10 size-5 -translate-y-[1px] transition-transform duration-200 group-hover:scale-105" />
+          {/* Dış hale — yumuşak nefes (pulse) */}
+          <span
+            className="pointer-events-none absolute -inset-10 z-0 rounded-full bg-[radial-gradient(circle,rgba(252,220,140,0.55)_0%,rgba(232,184,74,0.22)_38%,rgba(188,132,20,0.08)_55%,transparent_72%)] blur-2xl opacity-90 animate-pulse [animation-duration:2.2s]"
+            aria-hidden
+          />
+          {/* Dönen ışık hüzmesi — conic (yavaş spin) */}
+          <span
+            className="pointer-events-none absolute -inset-6 z-0 rounded-full bg-[conic-gradient(from_0deg,rgba(255,255,255,0)_0deg,rgba(255,236,180,0.85)_52deg,rgba(255,255,255,0)_104deg,rgba(214,161,26,0.55)_198deg,rgba(255,255,255,0)_268deg,rgba(250,215,120,0.82)_322deg,rgba(255,255,255,0)_360deg)] opacity-85 blur-[11px] animate-spin [animation-duration:6.8s]"
+            aria-hidden
+          />
+          {/* İkinci hüzme — ters yön, daha yumuşak */}
+          <span
+            className="pointer-events-none absolute -inset-5 z-0 rounded-full bg-[conic-gradient(from_210deg,rgba(255,255,255,0)_0deg,rgba(255,248,220,0.55)_72deg,rgba(255,255,255,0)_155deg,rgba(243,191,56,0.4)_240deg,rgba(255,255,255,0)_360deg)] opacity-60 blur-md animate-spin [animation-duration:10.5s] [animation-direction:reverse]"
+            aria-hidden
+          />
+          {/* İnce ping halkası */}
+          <span
+            className="pointer-events-none absolute -inset-2 z-0 rounded-[1.35rem] border border-amber-100/40 opacity-75 animate-ping [animation-duration:2.6s]"
+            style={{ boxShadow: "0 0 22px rgba(243,191,56,0.32)" }}
+            aria-hidden
+          />
+          <span
+            className="pointer-events-none absolute -inset-3 z-0 rounded-[1.45rem] border border-amber-200/25 opacity-50 animate-ping [animation-duration:3.4s]"
+            style={{ animationDelay: "0.6s" }}
+            aria-hidden
+          />
+          {/* Altın gövde */}
+          <span className="pointer-events-none absolute inset-0 z-[1] rounded-[1.2rem] bg-[linear-gradient(145deg,#9E6A12_0%,#C8941F_38%,#E8B84A_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.22)] sm:rounded-[1.25rem]" />
+          <span className="pointer-events-none absolute inset-[1px] z-[2] rounded-[1.05rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0)_46%,rgba(0,0,0,0.06)_100%)] opacity-95 sm:rounded-[1.15rem]" />
+          <span
+            className="pointer-events-none absolute bottom-[0.26rem] right-[0.36rem] z-[2] h-3 w-3 rotate-45 rounded-[0.22rem] border-r border-b border-amber-100/55 bg-[linear-gradient(135deg,#C78B11_0%,#E8B84A_60%,#F4C33F_100%)] shadow-[0_8px_16px_rgba(188,132,20,0.28)]"
+            aria-hidden
+          />
+          <MessageCircle className="relative z-10 size-5 -translate-y-[1px] transition-transform duration-200 group-hover:scale-110" />
         </button>
       )}
 
