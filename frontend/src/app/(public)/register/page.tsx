@@ -64,66 +64,67 @@ export default async function RegisterPage({
         </div>
       ) : null}
 
-      {checkEmail ? (
-        <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-          {t("checkEmailBanner")}
-        </div>
-      ) : null}
+      <RegisterAccountTypePreview
+        initialCommercial={initialCommercial}
+        emailConfirmationPending={checkEmail}
+      >
+        {checkEmail ? null : (
+          <>
+            <SocialLoginButtons mode="register" />
 
-      <RegisterAccountTypePreview initialCommercial={initialCommercial}>
-        <SocialLoginButtons mode="register" />
+            <form id="register-individual-form" className="space-y-5">
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                label={t("emailLabel")}
+                placeholder={t("emailPlaceholder")}
+                hint={t("emailHint")}
+              />
 
-        <form id="register-individual-form" className="space-y-5">
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-            label={t("emailLabel")}
-            placeholder={t("emailPlaceholder")}
-            hint={t("emailHint")}
-          />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                minLength={8}
+                autoComplete="new-password"
+                label={t("passwordLabel")}
+                placeholder={t("passwordPlaceholder")}
+                hint={t("passwordHint")}
+              />
 
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            required
-            minLength={8}
-            autoComplete="new-password"
-            label={t("passwordLabel")}
-            placeholder={t("passwordPlaceholder")}
-            hint={t("passwordHint")}
-          />
+              <label className="flex gap-3 rounded-2xl border border-slate-200 bg-white/80 p-4 text-sm leading-6 text-slate-600">
+                <input
+                  type="checkbox"
+                  name="legalAccepted"
+                  required
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
+                />
+                <span>
+                  <a className="font-semibold text-slate-900 underline underline-offset-4" href="/terms">
+                    {t("legalCheckboxTerms")}
+                  </a>
+                  {t("legalCheckboxAfterTerms")}
+                  <a className="font-semibold text-slate-900 underline underline-offset-4" href="/privacy">
+                    {t("legalCheckboxPrivacy")}
+                  </a>
+                  {t("legalCheckboxAfterPrivacy")}
+                  <a className="font-semibold text-slate-900 underline underline-offset-4" href="/cookie-policy">
+                    {t("legalCheckboxCookie")}
+                  </a>
+                  {t("legalCheckboxAfterCookie")}
+                </span>
+              </label>
 
-          <label className="flex gap-3 rounded-2xl border border-slate-200 bg-white/80 p-4 text-sm leading-6 text-slate-600">
-            <input
-              type="checkbox"
-              name="legalAccepted"
-              required
-              className="mt-1 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
-            />
-            <span>
-              <a className="font-semibold text-slate-900 underline underline-offset-4" href="/terms">
-                {t("legalCheckboxTerms")}
-              </a>
-              {t("legalCheckboxAfterTerms")}
-              <a className="font-semibold text-slate-900 underline underline-offset-4" href="/privacy">
-                {t("legalCheckboxPrivacy")}
-              </a>
-              {t("legalCheckboxAfterPrivacy")}
-              <a className="font-semibold text-slate-900 underline underline-offset-4" href="/cookie-policy">
-                {t("legalCheckboxCookie")}
-              </a>
-              {t("legalCheckboxAfterCookie")}
-            </span>
-          </label>
-
-          <Button type="submit" formAction={signup} className="w-full" size="lg">
-            {t("submitButton")}
-          </Button>
-        </form>
+              <Button type="submit" formAction={signup} className="w-full" size="lg">
+                {t("submitButton")}
+              </Button>
+            </form>
+          </>
+        )}
       </RegisterAccountTypePreview>
     </AuthShell>
   );

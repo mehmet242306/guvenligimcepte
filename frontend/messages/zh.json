@@ -182,6 +182,11 @@
     "registerName": "全名",
     "registerPage": {
       "checkEmailBanner": "注册已开始。如需确认，请检查您的收件箱。",
+      "checkEmailTitle": "还差一步 — 请确认您的邮箱",
+      "checkEmailBody": "我们已向您注册时使用的地址发送了安全确认链接。打开一次即可激活 RiskNova 账户，然后即可登录。出于安全原因，链接会在一段时间后失效。",
+      "checkEmailSpamTip": "若几分钟内仍未收到，请检查垃圾邮件或促销邮件文件夹。只需确认一次 — 请勿使用同一邮箱重复注册。",
+      "checkEmailGoLogin": "前往登录",
+      "checkEmailBackHome": "返回首页",
       "demoDisabledBody": "可能已被管理员终止（演示账户通常限制为{hours}小时）。请在下方创建账户以继续使用。",
       "demoDisabledTitle": "您的演示访问权限已被禁用。",
       "demoExpiredBody": "RiskNova演示访问权限限制为{hours}小时；到期后会话将关闭。请在下方创建免费账户或使用Google继续以转换为永久账户。",

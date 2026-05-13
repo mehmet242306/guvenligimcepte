@@ -182,6 +182,11 @@
     "registerName": "Nama Lengkap",
     "registerPage": {
       "checkEmailBanner": "Pendaftaran dimulai. Periksa kotak masuk Anda jika konfirmasi diperlukan.",
+      "checkEmailTitle": "Hampir selesai — konfirmasi email Anda",
+      "checkEmailBody": "Kami mengirim tautan aman ke alamat yang Anda gunakan. Buka sekali untuk mengaktifkan akun RiskNova Anda; setelah itu Anda dapat masuk. Tautan kedaluwarsa setelah beberapa waktu demi keamanan.",
+      "checkEmailSpamTip": "Jika tidak ada dalam beberapa menit, periksa Spam atau Promosi. Anda hanya perlu mengonfirmasi sekali — jangan mendaftar lagi dengan email yang sama.",
+      "checkEmailGoLogin": "Ke halaman masuk",
+      "checkEmailBackHome": "Kembali ke beranda",
       "demoDisabledBody": "Mungkin telah diakhiri oleh administrator (akun demo biasanya dibatasi hingga {hours} jam). Buat akun di bawah untuk penggunaan berkelanjutan.",
       "demoDisabledTitle": "Akses demo Anda telah dinonaktifkan.",
       "demoExpiredBody": "Akses demo RiskNova dibatasi hingga {hours} jam; ketika berakhir sesi akan ditutup. Buat akun gratis di bawah atau lanjutkan dengan Google untuk beralih ke akun permanen.",

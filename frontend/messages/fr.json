@@ -182,6 +182,11 @@
     "registerName": "Nom complet",
     "registerPage": {
       "checkEmailBanner": "Inscription initiée. Vérifiez votre boîte de réception si une confirmation est requise.",
+      "checkEmailTitle": "Presque terminé — confirmez votre e-mail",
+      "checkEmailBody": "Nous avons envoyé un lien sécurisé à l’adresse utilisée. Ouvrez-le une fois pour activer votre compte RiskNova, puis connectez-vous. Pour des raisons de sécurité, le lien expire après un certain temps.",
+      "checkEmailSpamTip": "Si rien n’arrive en quelques minutes, vérifiez Courrier indésirable ou Promotions. Une seule confirmation suffit — ne vous inscrivez pas à nouveau avec le même e-mail.",
+      "checkEmailGoLogin": "Aller à la connexion",
+      "checkEmailBackHome": "Retour à l’accueil",
       "demoDisabledBody": "Il se peut qu'il ait été fermé par un administrateur (les comptes de démonstration sont généralement limités à {hours} heures). Créez un compte ci-dessous pour une utilisation continue.",
       "demoDisabledTitle": "Votre accès de démonstration a été désactivé.",
       "demoExpiredBody": "L'accès de démonstration RiskNova est limité à {hours} heures ; lorsqu'il expire, la session se ferme. Créez un compte gratuit ci-dessous ou continuez avec Google pour passer à un compte permanent.",

@@ -182,6 +182,11 @@
     "registerName": "Tam Ad",
     "registerPage": {
       "checkEmailBanner": "Qeydiyyat başladı. Təsdiqləmə tələb olunarsa, gələn qutunuzu yoxlayın.",
+      "checkEmailTitle": "Son addım — e-poçtunuzu təsdiqləyin",
+      "checkEmailBody": "Qeydiyyatda istifadə etdiyiniz ünvana təhlükəsiz təsdiq bağlantısı göndərdik. RiskNova hesabınızı aktivləşdirmək üçün bağlantıya bir dəfə klikləyin; sonra daxil ola bilərsiniz. Təhlükəsizlik üçün bağlantının müddəti məhduddur.",
+      "checkEmailSpamTip": "Bir-iki dəqiqə ərzində gəlmirsə, Spam və ya Promosyonlar qovluğuna baxın. Təsdiq yalnız bir dəfə lazımdır — eyni e-poçt ilə təkrar qeydiyyatdan keçməyin.",
+      "checkEmailGoLogin": "Daxil olmağa keç",
+      "checkEmailBackHome": "Ana səhifə",
       "demoDisabledBody": "Administrator tərəfindən dayandırılmış ola bilər (demo hesablar adətən {hours} saatla məhdudlaşdırılır). Davamlı istifadə üçün aşağıda hesab yaradın.",
       "demoDisabledTitle": "Demo girişiniz deaktiv edildi.",
       "demoExpiredBody": "RiskNova demo girişi {hours} saatla məhdudlaşdırılır; müddəti bitdikdə sesiya bağlanır. Aşağıda pulsuz hesab yaradın və ya daimi hesaba keçmək üçün Google ilə davam edin.",

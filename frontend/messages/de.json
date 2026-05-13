@@ -182,6 +182,11 @@
     "registerName": "Vollständiger Name",
     "registerPage": {
       "checkEmailBanner": "Registrierung gestartet. Prüfen Sie Ihren Posteingang, falls eine Bestätigung erforderlich ist.",
+      "checkEmailTitle": "Fast geschafft — E-Mail bestätigen",
+      "checkEmailBody": "Wir haben einen sicheren Link an die von Ihnen verwendete Adresse gesendet. Öffnen Sie ihn einmal, um Ihr RiskNova-Konto zu aktivieren; danach können Sie sich anmelden. Aus Sicherheitsgründen laufen Links nach einer Weile ab.",
+      "checkEmailSpamTip": "Wenn innerhalb weniger Minuten nichts ankommt, prüfen Sie Spam oder Werbung. Sie müssen nur einmal bestätigen — registrieren Sie sich nicht erneut mit derselben E-Mail.",
+      "checkEmailGoLogin": "Zur Anmeldung",
+      "checkEmailBackHome": "Zur Startseite",
       "demoDisabledBody": "Es wurde möglicherweise von einem Administrator beendet (Demo-Konten sind normalerweise auf {hours} Stunden begrenzt). Erstellen Sie unten ein Konto für die weitere Nutzung.",
       "demoDisabledTitle": "Ihr Demo-Zugang wurde deaktiviert.",
       "demoExpiredBody": "RiskNova Demo-Zugang ist auf {hours} Stunden begrenzt; nach Ablauf wird die Sitzung geschlossen. Erstellen Sie unten ein kostenloses Konto oder fahren Sie mit Google fort, um zu einem dauerhaften Konto zu wechseln.",

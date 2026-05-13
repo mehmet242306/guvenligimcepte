@@ -182,6 +182,11 @@
     "registerName": "Nombre completo",
     "registerPage": {
       "checkEmailBanner": "Registro iniciado. Revisa tu bandeja de entrada si se requiere confirmación.",
+      "checkEmailTitle": "Casi listo — confirma tu correo",
+      "checkEmailBody": "Enviamos un enlace seguro a la dirección que usaste. Ábrelo una vez para activar tu cuenta de RiskNova; después podrás iniciar sesión. Por seguridad, los enlaces caducan al cabo de un tiempo.",
+      "checkEmailSpamTip": "Si no llega en un par de minutos, revisa Spam o Promociones. Solo necesitas confirmar una vez — no vuelvas a registrarte con el mismo correo.",
+      "checkEmailGoLogin": "Ir a iniciar sesión",
+      "checkEmailBackHome": "Volver al inicio",
       "demoDisabledBody": "Es posible que haya sido finalizado por un administrador (las cuentas demo generalmente están limitadas a {hours} horas). Crea una cuenta a continuación para uso continuo.",
       "demoDisabledTitle": "Tu acceso demo fue deshabilitado.",
       "demoExpiredBody": "El acceso demo de RiskNova está limitado a {hours} horas; cuando expira, la sesión se cierra. Crea una cuenta gratuita a continuación o continúa con Google para cambiar a una cuenta permanente.",

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -57,6 +58,8 @@ type RoleKey = (typeof ROLE_KEYS)[number];
 type RegisterAccountTypePreviewProps = {
   children: ReactNode;
   initialCommercial?: CommercialInterestType;
+  /** After signup without session (email confirmation required). Hides wizard + form to avoid a second registration. */
+  emailConfirmationPending?: boolean;
 };
 
 type Choice<T extends string> = {
@@ -85,14 +88,16 @@ function choiceButtonClass(active: boolean) {
 export function RegisterAccountTypePreview({
   children,
   initialCommercial,
+  emailConfirmationPending = false,
 }: RegisterAccountTypePreviewProps) {
   const t = useTranslations("auth.registerWizard");
   const tCountry = useTranslations("country");
   const tLang = useTranslations("lang");
+  const tPage = useTranslations("auth.registerPage");
 
   const [step, setStep] = useState<WizardStep>("account");
   const [mounted, setMounted] = useState(false);
-  const [wizardOpen, setWizardOpen] = useState(true);
+  const [wizardOpen, setWizardOpen] = useState(() => !emailConfirmationPending);
   const [completed, setCompleted] = useState(false);
   const [accountType, setAccountType] = useState<AccountType | null>(null);
   const [countryCode, setCountryCode] = useState<string | null>(null);
@@ -166,6 +171,15 @@ export function RegisterAccountTypePreview({
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!emailConfirmationPending) return;
+    try {
+      window.localStorage.removeItem("risknova-register-context");
+    } catch {
+      /* ignore */
+    }
+  }, [emailConfirmationPending]);
 
   useEffect(() => {
     if (!initialCommercial || appliedCommercialRef.current) return;
@@ -355,6 +369,26 @@ export function RegisterAccountTypePreview({
   const stepEyebrow = t(`steps.${step}.eyebrow` as Parameters<typeof t>[0]);
   const stepTitle = t(`steps.${step}.title` as Parameters<typeof t>[0]);
   const stepDescription = t(`steps.${step}.description` as Parameters<typeof t>[0]);
+
+  if (emailConfirmationPending) {
+    return (
+      <div className="space-y-4 rounded-2xl border border-emerald-200/90 bg-emerald-50 px-5 py-6 text-sm leading-6 text-slate-800 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-slate-100">
+        <h2 className="text-lg font-semibold tracking-tight text-emerald-950 dark:text-emerald-50">
+          {tPage("checkEmailTitle")}
+        </h2>
+        <p className="text-pretty text-slate-700 dark:text-slate-200">{tPage("checkEmailBody")}</p>
+        <p className="text-pretty text-slate-600 dark:text-slate-300">{tPage("checkEmailSpamTip")}</p>
+        <div className="flex flex-col gap-2 border-t border-emerald-200/70 pt-4 dark:border-emerald-800/60 sm:flex-row sm:flex-wrap">
+          <Button asChild variant="default" className="w-full sm:w-auto">
+            <Link href="/login">{tPage("checkEmailGoLogin")}</Link>
+          </Button>
+          <Button asChild variant="outline" className="w-full sm:w-auto">
+            <Link href="/">{tPage("checkEmailBackHome")}</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const wizardModal =
     mounted && wizardOpen
