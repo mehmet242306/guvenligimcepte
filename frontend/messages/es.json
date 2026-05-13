@@ -7010,7 +7010,8 @@
       "workspaceSaveFailed": "No se pudo completar el registro del espacio.",
       "activateFailed": "No se pudo activar el espacio seleccionado.",
       "dataTitle": "No se pudieron leer los datos del espacio",
-      "dataDescription": "No se pudo preparar esta pantalla porque falta el perfil o el contexto del espacio."
+      "dataDescription": "No se pudo preparar esta pantalla porque falta el perfil o el contexto del espacio.",
+      "displayNameRequired": "Enter an account display name to continue."
     },
     "messages": {
       "workspaceLimitReached": "Ha alcanzado el límite de espacios de su plan. Use un espacio existente o mejore el plan antes de crear uno nuevo.",

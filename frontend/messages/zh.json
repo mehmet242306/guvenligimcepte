@@ -7010,7 +7010,8 @@
       "workspaceSaveFailed": "无法完成工作区档案。",
       "activateFailed": "无法激活所选工作区。",
       "dataTitle": "无法读取工作区数据",
-      "dataDescription": "由于缺少个人资料或工作区上下文，无法准备此界面。"
+      "dataDescription": "由于缺少个人资料或工作区上下文，无法准备此界面。",
+      "displayNameRequired": "Enter an account display name to continue."
     },
     "messages": {
       "workspaceLimitReached": "您已达到套餐中的工作区上限。创建新的之前请使用现有工作区或升级套餐。",

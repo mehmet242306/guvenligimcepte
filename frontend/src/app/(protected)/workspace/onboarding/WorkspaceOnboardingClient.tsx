@@ -361,6 +361,7 @@ export function WorkspaceOnboardingClient({
   );
   const [accountType, setAccountType] = useState<"individual" | "osgb" | "enterprise">("individual");
   const [accountName, setAccountName] = useState("");
+  const [accountNameError, setAccountNameError] = useState("");
   const [enterpriseForm, setEnterpriseForm] = useState({
     companyName: "",
     contactName: "",
@@ -681,8 +682,20 @@ export function WorkspaceOnboardingClient({
 
   async function handleAccountSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const trimmedAccountName = accountName.trim();
+
+    if (trimmedAccountName.length < 2) {
+      setAccountNameError(t("errors.displayNameRequired"));
+      setMessage({
+        tone: "danger",
+        text: t("errors.displayNameRequired"),
+      });
+      return;
+    }
+
     setAccountSubmitting(true);
     setMessage(null);
+    setAccountNameError("");
 
     try {
       const response = await fetch("/api/account/onboarding", {
@@ -691,7 +704,7 @@ export function WorkspaceOnboardingClient({
         headers: await buildAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({
           accountType,
-          displayName: accountName || undefined,
+          displayName: trimmedAccountName,
           companyName: enterpriseForm.companyName || undefined,
           contactName: enterpriseForm.contactName || undefined,
           email: enterpriseForm.email || undefined,
@@ -981,8 +994,13 @@ export function WorkspaceOnboardingClient({
               <Input
                 label={t("account.displayName")}
                 value={accountName}
-                onChange={(event) => setAccountName(event.target.value)}
+                onChange={(event) => {
+                  setAccountName(event.target.value);
+                  if (accountNameError) setAccountNameError("");
+                }}
                 placeholder={t("account.displayNamePlaceholder")}
+                error={accountNameError}
+                required
               />
 
               {accountType === "enterprise" ? (

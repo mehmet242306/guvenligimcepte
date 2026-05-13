@@ -7010,7 +7010,8 @@
       "workspaceSaveFailed": "İş mühiti qeydi tamamlana bilmədi.",
       "activateFailed": "Seçilmiş iş mühiti aktivləşdirilə bilmədi.",
       "dataTitle": "İş mühiti məlumatı oxuna bilmədi",
-      "dataDescription": "Profil və ya iş mühiti konteksti olmadığı üçün bu ekran hazırlana bilmədi."
+      "dataDescription": "Profil və ya iş mühiti konteksti olmadığı üçün bu ekran hazırlana bilmədi.",
+      "displayNameRequired": "Enter an account display name to continue."
     },
     "messages": {
       "workspaceLimitReached": "Planınızdakı iş mühiti limitinə çatdınız. Yenisini yaratmazdan əvvəl mövcud mühitlərdən birini istifadə edin və ya planı yüksəldin.",

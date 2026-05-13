@@ -7010,7 +7010,8 @@
       "workspaceSaveFailed": "ワークスペースの登録を完了できませんでした。",
       "activateFailed": "選択したワークスペースを有効化できませんでした。",
       "dataTitle": "ワークスペースデータを読み取れませんでした",
-      "dataDescription": "プロフィールまたはワークスペースのコンテキストがないため、この画面を準備できませんでした。"
+      "dataDescription": "プロフィールまたはワークスペースのコンテキストがないため、この画面を準備できませんでした。",
+      "displayNameRequired": "Enter an account display name to continue."
     },
     "messages": {
       "workspaceLimitReached": "プランのワークスペース上限に達しました。新規作成前に既存のワークスペースを使うか、プランをアップグレードしてください。",

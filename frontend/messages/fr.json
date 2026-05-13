@@ -7010,7 +7010,8 @@
       "workspaceSaveFailed": "L’enregistrement de l’espace n’a pas pu être terminé.",
       "activateFailed": "L’espace sélectionné n’a pas pu être activé.",
       "dataTitle": "Impossible de lire les données de l’espace",
-      "dataDescription": "Cet écran n’a pas pu être préparé car le profil ou le contexte d’espace est manquant."
+      "dataDescription": "Cet écran n’a pas pu être préparé car le profil ou le contexte d’espace est manquant.",
+      "displayNameRequired": "Enter an account display name to continue."
     },
     "messages": {
       "workspaceLimitReached": "Vous avez atteint la limite d’espaces de votre forfait. Utilisez un espace existant ou passez à un forfait supérieur avant d’en créer un nouveau.",

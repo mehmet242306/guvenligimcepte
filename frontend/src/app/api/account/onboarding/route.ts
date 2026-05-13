@@ -14,7 +14,7 @@ import { resolveAppOriginFromRequest } from "@/lib/server/app-origin";
 
 const onboardingSchema = z.object({
   accountType: z.enum(["individual", "osgb", "enterprise"]),
-  displayName: z.string().trim().min(2).max(120).optional(),
+  displayName: z.string().trim().min(2).max(120),
   companyName: z.string().trim().min(2).max(180).optional(),
   contactName: z.string().trim().min(2).max(120).optional(),
   email: z.string().trim().email().optional(),
@@ -48,6 +48,101 @@ function buildPlanCode(accountType: AccountType) {
   if (accountType === "osgb") return "osgb_starter";
   if (accountType === "enterprise") return "enterprise";
   return "individual_free";
+}
+
+async function ensureDefaultIndividualWorkspace({
+  service,
+  organizationId,
+  userId,
+  profileId,
+  organizationName,
+}: {
+  service: ReturnType<typeof createServiceClient>;
+  organizationId: string;
+  userId: string;
+  profileId: string | null | undefined;
+  organizationName: string;
+}) {
+  const workspaceName = `${organizationName} Calisma Alani`.slice(0, 120);
+
+  const existingWorkspaceResult = await service
+    .from("nova_workspaces")
+    .select("id")
+    .eq("organization_id", organizationId)
+    .eq("country_code", "TR")
+    .maybeSingle();
+
+  if (existingWorkspaceResult.error) {
+    if (isSchemaCompatError(existingWorkspaceResult.error.message)) return;
+    throw new Error(`Varsayilan calisma alani okunamadi: ${existingWorkspaceResult.error.message}`);
+  }
+
+  let workspaceId = existingWorkspaceResult.data?.id ?? null;
+
+  if (!workspaceId) {
+    const { data: workspace, error: workspaceError } = await service
+      .from("nova_workspaces")
+      .insert({
+        organization_id: organizationId,
+        country_code: "TR",
+        name: workspaceName,
+        default_language: "tr",
+        timezone: "Europe/Istanbul",
+      })
+      .select("id")
+      .single();
+
+    if (workspaceError) {
+      if (isSchemaCompatError(workspaceError.message)) return;
+      throw new Error(`Varsayilan calisma alani olusturulamadi: ${workspaceError.message}`);
+    }
+
+    workspaceId = workspace?.id ?? null;
+  }
+
+  if (!workspaceId) return;
+
+  const { error: unsetPrimaryError } = await service
+    .from("nova_workspace_members")
+    .update({ is_primary: false })
+    .eq("user_id", userId);
+
+  if (unsetPrimaryError && !isSchemaCompatError(unsetPrimaryError.message)) {
+    throw new Error(`Calisma alani onceligi guncellenemedi: ${unsetPrimaryError.message}`);
+  }
+
+  const { error: membershipError } = await service
+    .from("nova_workspace_members")
+    .upsert(
+      {
+        workspace_id: workspaceId,
+        user_id: userId,
+        role_key: "safety_professional",
+        certification_id: null,
+        is_primary: true,
+      },
+      { onConflict: "workspace_id,user_id" },
+    );
+
+  if (membershipError) {
+    if (isSchemaCompatError(membershipError.message)) return;
+    throw new Error(`Calisma alani uyeligi olusturulamadi: ${membershipError.message}`);
+  }
+
+  if (profileId) {
+    const { error: activeWorkspaceError } = await service
+      .from("user_profiles")
+      .update({ active_workspace_id: workspaceId })
+      .eq("id", profileId);
+
+    if (
+      activeWorkspaceError &&
+      !String(activeWorkspaceError.message ?? "").includes("active_workspace_id") &&
+      !isSchemaCompatError(activeWorkspaceError.message)
+    ) {
+      throw new Error(`Aktif calisma alani guncellenemedi: ${activeWorkspaceError.message}`);
+    }
+  }
 }
 
 function isSchemaCompatError(message: string | undefined | null) {
@@ -356,6 +451,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (body.accountType === "individual") {
+      try {
+        await ensureDefaultIndividualWorkspace({
+          service,
+          organizationId,
+          userId: user.id,
+          profileId: profile?.id,
+          organizationName,
+        });
+      } catch (workspaceError) {
+        return NextResponse.json(
+          {
+            error:
+              workspaceError instanceof Error
+                ? workspaceError.message
+                : "Varsayilan calisma alani olusturulamadi.",
+          },
+          { status: 500 },
+        );
+      }
+    }
+
     const { data: existingSubscription, error: existingSubscriptionError } =
       await service
         .from("organization_subscriptions")
@@ -396,7 +513,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       ok: true,
       context: refreshedContext,
-      redirectPath: resolvePostLoginPath(refreshedContext),
+      redirectPath:
+        body.accountType === "individual"
+          ? "/dashboard"
+          : resolvePostLoginPath(refreshedContext),
       planProvisioningDeferred: planUnavailable,
     });
   } catch (error) {

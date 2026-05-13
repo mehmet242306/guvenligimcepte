@@ -7103,6 +7103,7 @@
       "schemaMissing": "The new database fields required for account setup are not ready yet. Please try again after the migration is complete.",
       "accountContextFailed": "Account context could not be read.",
       "workspaceDataFailed": "Workspace data could not be retrieved.",
+      "displayNameRequired": "Enter an account display name to continue.",
       "accountTypeUnavailable": "Account type selection cannot be completed right now.",
       "accountTypeFailed": "Account type selection could not be completed.",
       "workspaceSaveUnavailable": "Workspace record cannot be completed right now.",

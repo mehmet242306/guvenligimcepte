@@ -7010,7 +7010,8 @@
       "workspaceSaveFailed": "تعذر إكمال سجل مساحة العمل.",
       "activateFailed": "تعذر تفعيل مساحة العمل المحددة.",
       "dataTitle": "تعذر قراءة بيانات مساحة العمل",
-      "dataDescription": "تعذر تحضير هذه الشاشة لأن الملف الشخصي أو سياق مساحة العمل مفقود."
+      "dataDescription": "تعذر تحضير هذه الشاشة لأن الملف الشخصي أو سياق مساحة العمل مفقود.",
+      "displayNameRequired": "Enter an account display name to continue."
     },
     "messages": {
       "workspaceLimitReached": "بلغت حد مساحات العمل في خطتك. استخدم مساحة قائمة أو قم بالترقية قبل إنشاء مساحة جديدة.",

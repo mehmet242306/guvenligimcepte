@@ -7053,6 +7053,7 @@
       "schemaMissing": "Hesap kurulumu için gereken yeni veritabanı alanları henüz hazır değil. Lütfen migration tamamlandığında tekrar deneyin.",
       "accountContextFailed": "Hesap bağlamı okunamadı.",
       "workspaceDataFailed": "Çalışma alanı verisi alınamadı.",
+      "displayNameRequired": "Devam etmek için hesap görünen adını yazmalısınız.",
       "accountTypeUnavailable": "Hesap tipi seçimi şu anda tamamlanamıyor.",
       "accountTypeFailed": "Hesap tipi seçimi tamamlanamadı.",
       "workspaceSaveUnavailable": "Çalışma alanı kaydı şu anda tamamlanamıyor.",

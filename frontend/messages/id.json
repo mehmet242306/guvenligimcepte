@@ -7010,7 +7010,8 @@
       "workspaceSaveFailed": "Catatan ruang kerja tidak dapat diselesaikan.",
       "activateFailed": "Ruang kerja yang dipilih tidak dapat diaktifkan.",
       "dataTitle": "Data ruang kerja tidak dapat dibaca",
-      "dataDescription": "Layar ini tidak dapat disiapkan karena profil atau konteks ruang kerja hilang."
+      "dataDescription": "Layar ini tidak dapat disiapkan karena profil atau konteks ruang kerja hilang.",
+      "displayNameRequired": "Enter an account display name to continue."
     },
     "messages": {
       "workspaceLimitReached": "Anda mencapai batas ruang kerja pada paket. Gunakan ruang yang ada atau tingkatkan paket sebelum membuat yang baru.",

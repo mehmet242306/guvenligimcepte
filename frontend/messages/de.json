@@ -7010,7 +7010,8 @@
       "workspaceSaveFailed": "Arbeitsbereichsdatensatz konnte nicht gespeichert werden.",
       "activateFailed": "Der ausgewählte Arbeitsbereich konnte nicht aktiviert werden.",
       "dataTitle": "Arbeitsbereichsdaten konnten nicht gelesen werden",
-      "dataDescription": "Dieser Bildschirm konnte nicht geladen werden, weil Profil oder Arbeitsbereichskontext fehlt."
+      "dataDescription": "Dieser Bildschirm konnte nicht geladen werden, weil Profil oder Arbeitsbereichskontext fehlt.",
+      "displayNameRequired": "Enter an account display name to continue."
     },
     "messages": {
       "workspaceLimitReached": "Sie haben das Arbeitsbereichslimit Ihres Tarifs erreicht. Nutzen Sie einen vorhandenen Arbeitsbereich oder upgraden Sie, bevor Sie einen neuen anlegen.",
