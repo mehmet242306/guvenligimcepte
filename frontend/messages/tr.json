@@ -257,10 +257,10 @@
         "training_slide": "Eğitim slaytları",
         "export": "Dışa aktarımlar"
       },
-      "lockedTitle": "Bu pakette kullan?lamaz",
-      "lockedSubtitle": "Bu AI yetenekleri mevcut paketinizde kapal?d?r. A?mak i?in paketinizi y?kseltebilirsiniz.",
+      "lockedTitle": "Bu pakette kullanılamaz",
+      "lockedSubtitle": "Bu AI yetenekleri mevcut paketinizde kapalıdır. Açmak için paketinizi yükseltebilirsiniz.",
       "lockedBadge": "Hak yok",
-      "noRights": "Kapal?"
+      "noRights": "Kapalı"
     }
   },
   "osgb": {
