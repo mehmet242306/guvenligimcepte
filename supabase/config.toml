@@ -225,7 +225,7 @@ otp_expiry = 3600
 # Signup confirmation (local Supabase). For hosted projects, copy this HTML into
 # Dashboard → Authentication → Email Templates → "Confirm signup".
 [auth.email.template.confirmation]
-subject = "RiskNova: confirm your email to finish signing up"
+subject = "RiskNova e-posta onayi"
 content_path = "./templates/confirmation.html"
 
 # Uncomment to customize email template
