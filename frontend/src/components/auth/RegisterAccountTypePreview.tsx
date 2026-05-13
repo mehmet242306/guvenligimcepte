@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -379,11 +378,21 @@ export function RegisterAccountTypePreview({
         <p className="text-pretty text-slate-700 dark:text-slate-200">{tPage("checkEmailBody")}</p>
         <p className="text-pretty text-slate-600 dark:text-slate-300">{tPage("checkEmailSpamTip")}</p>
         <div className="flex flex-col gap-2 border-t border-emerald-200/70 pt-4 dark:border-emerald-800/60 sm:flex-row sm:flex-wrap">
-          <Button asChild variant="default" className="w-full sm:w-auto">
-            <Link href="/login">{tPage("checkEmailGoLogin")}</Link>
+          <Button
+            type="button"
+            variant="primary"
+            className="w-full sm:w-auto"
+            onClick={() => window.location.assign("/login")}
+          >
+            {tPage("checkEmailGoLogin")}
           </Button>
-          <Button asChild variant="outline" className="w-full sm:w-auto">
-            <Link href="/">{tPage("checkEmailBackHome")}</Link>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full sm:w-auto"
+            onClick={() => window.location.assign("/")}
+          >
+            {tPage("checkEmailBackHome")}
           </Button>
         </div>
       </div>
