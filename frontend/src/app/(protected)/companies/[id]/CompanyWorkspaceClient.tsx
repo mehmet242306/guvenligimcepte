@@ -63,12 +63,75 @@ function resizeImageFile(file: File, maxPx: number, quality: number): Promise<Fi
 
 const AK = "risknova_archived_companies";
 const DK = "risknova_deleted_companies";
+const WORKSPACE_ONBOARDING_ROLE_KEYS = new Set([
+  "safety_professional",
+  "occupational_physician",
+  "industrial_hygienist",
+  "safety_officer",
+  "auditor",
+  "workspace_admin",
+  "viewer",
+]);
+
 function ldAr(): CompanyRecord[] { if (typeof window === "undefined") return []; try { return JSON.parse(localStorage.getItem(AK) || "[]"); } catch { return []; } }
 function svAr(l: CompanyRecord[]) { localStorage.setItem(AK, JSON.stringify(l)); }
 function ldDl(): CompanyRecord[] { if (typeof window === "undefined") return []; try { return JSON.parse(localStorage.getItem(DK) || "[]"); } catch { return []; } }
 function svDl(l: CompanyRecord[]) { localStorage.setItem(DK, JSON.stringify(l)); }
 
 function hbv(h: string): "danger" | "warning" | "success" | "neutral" { if (h === "\u00C7ok Tehlikeli") return "danger"; if (h === "Tehlikeli") return "warning"; if (h === "Az Tehlikeli") return "success"; return "neutral"; }
+
+function workspaceToCompanyRecord(workspace: {
+  id: string;
+  name: string;
+  country_code?: string | null;
+}): CompanyRecord {
+  return {
+    id: workspace.id,
+    name: workspace.name,
+    shortName: workspace.name,
+    kind: "Ozel Sektor",
+    companyType: "bagimsiz",
+    address: "",
+    city: workspace.country_code === "TR" ? "" : workspace.country_code ?? "",
+    district: "",
+    sector: "",
+    naceCode: "",
+    hazardClass: "",
+    taxNumber: "",
+    taxOffice: "",
+    sgkWorkplaceNumber: "",
+    fax: "",
+    employerTitle: "",
+    employeeCount: 0,
+    shiftModel: "",
+    phone: "",
+    email: "",
+    contactPerson: "",
+    employerName: "",
+    employerRepresentative: "",
+    notes: "",
+    activeProfessionals: 0,
+    employeeRepresentativeCount: 0,
+    supportStaffCount: 0,
+    openActions: 0,
+    overdueActions: 0,
+    openRiskAssessments: 0,
+    documentCount: 0,
+    completionRate: 0,
+    maturityScore: 0,
+    openRiskScore: 0,
+    last30DayImprovement: 0,
+    completedTrainingCount: 0,
+    expiringTrainingCount: 0,
+    periodicControlCount: 0,
+    overduePeriodicControlCount: 0,
+    lastAnalysisDate: "",
+    lastInspectionDate: "",
+    lastDrillDate: "",
+    locations: [],
+    departments: [],
+  };
+}
 
 export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
   const router = useRouter();
@@ -128,9 +191,76 @@ export function CompanyWorkspaceClient({ companyId }: { companyId: string }) {
         found = { ...found, ...scores };
       } catch { /* skor hesaplanamazsa mevcut değerlerle devam */ }
       setCompany(found);
+      setLoading(false);
+      return;
+    }
+
+    // Yeni çalışma alanı modelinde seçili `nova_workspaces` kaydı aynı zamanda
+    // firma bağlamıdır. Eski `company_workspaces` satırı henüz oluşmamışsa
+    // kullanıcıya "Firma bulunamadı" göstermek yerine workspace'i firma olarak
+    // göster ve arka planda kalıcı company workspace kaydını oluştur.
+    try {
+      const { listMyWorkspaces, getActiveWorkspace } = await import("@/lib/supabase/workspace-api");
+      const [memberships, activeWorkspace] = await Promise.all([
+        listMyWorkspaces(),
+        getActiveWorkspace(),
+      ]);
+      const matchedMembership =
+        memberships.find((item) => item.workspace.id === companyId) ??
+        (activeWorkspace?.id === companyId
+          ? memberships.find((item) => item.workspace.id === activeWorkspace.id)
+          : undefined);
+
+      if (matchedMembership?.workspace) {
+        const fallbackCompany = workspaceToCompanyRecord(matchedMembership.workspace);
+        const roleKey = WORKSPACE_ONBOARDING_ROLE_KEYS.has(matchedMembership.role_key)
+          ? matchedMembership.role_key
+          : "workspace_admin";
+        setCompany(fallbackCompany);
+        setLoading(false);
+
+        const response = await fetch("/api/workspaces/onboarding", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            workspaceId: matchedMembership.workspace.id,
+            countryCode: matchedMembership.workspace.country_code ?? "TR",
+            roleKey,
+            defaultLanguage:
+              matchedMembership.workspace.default_language === "en" ? "en" : "tr",
+            workspaceName: matchedMembership.workspace.name,
+            makePrimary: true,
+            companyProfile: {
+              name: matchedMembership.workspace.name,
+              shortName: matchedMembership.workspace.name,
+              kind: "Ozel Sektor",
+              companyType: "bagimsiz",
+            },
+          }),
+        });
+
+        const payload = (await response.json().catch(() => null)) as
+          | { companyWorkspaceId?: string | null }
+          | null;
+
+        if (response.ok && payload?.companyWorkspaceId) {
+          const refreshed = await fetchCompaniesFromSupabase();
+          const created = refreshed?.find((item) => item.id === payload.companyWorkspaceId);
+          if (created) {
+            setCompany(created);
+          }
+          if (payload.companyWorkspaceId !== companyId) {
+            router.replace(`/companies/${payload.companyWorkspaceId}${window.location.search}`);
+          }
+        }
+        return;
+      }
+    } catch {
+      /* fallback yoksa normal not-found akışına düş */
     }
     setLoading(false);
-  }, [companyId]);
+  }, [companyId, router]);
 
    
   useEffect(() => { void load(); }, [load]);
