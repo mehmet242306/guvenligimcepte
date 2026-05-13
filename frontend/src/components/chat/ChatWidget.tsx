@@ -513,6 +513,13 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   const speechInterimTranscriptRef = useRef("");
   const widgetHistorySessionIdRef = useRef("");
   const supabase = createClient();
+
+  useEffect(() => {
+    if (!isAuthenticated && activeTab === "history") {
+      setActiveTab("chat");
+    }
+  }, [isAuthenticated, activeTab]);
+
   const currentQueryString = searchParams.toString();
   const currentPage = `${pathname}${currentQueryString ? `?${currentQueryString}` : ""}`;
   const companyWorkspaceId = useMemo(() => {
@@ -1844,7 +1851,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col bg-background">
-          {activeTab === "chat" ? (
+          {!(activeTab === "history" && isAuthenticated) ? (
             <>
             <div className="shrink-0 px-3 pt-3">
               <div className="rounded-2xl border border-border/90 bg-card px-3.5 py-2.5 shadow-[var(--shadow-soft)]">
@@ -2310,32 +2317,34 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           )}
 
           <nav
-            className="grid shrink-0 grid-cols-3 gap-0.5 border-t border-border bg-card px-1 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-6px_24px_rgba(15,23,42,0.05)] dark:shadow-[0_-6px_24px_rgba(0,0,0,0.25)]"
+            className={`grid shrink-0 gap-0.5 border-t border-border bg-card px-1 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-6px_24px_rgba(15,23,42,0.05)] dark:shadow-[0_-6px_24px_rgba(0,0,0,0.25)] ${isAuthenticated ? "grid-cols-3" : "grid-cols-2"}`}
             aria-label="Nova"
           >
             <button
               type="button"
               onClick={() => setActiveTab("chat")}
               className={`flex flex-col items-center gap-0.5 rounded-xl py-2 text-[10px] font-semibold transition-colors ${
-                activeTab === "chat" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                activeTab === "chat" || !isAuthenticated ? "text-primary" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <MessageCircle className={`size-[1.35rem] stroke-[1.75] ${activeTab === "chat" ? "text-primary" : ""}`} />
+              <MessageCircle className={`size-[1.35rem] stroke-[1.75] ${activeTab === "chat" || !isAuthenticated ? "text-primary" : ""}`} />
               {ui.widget.navChat}
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab("history");
-                void refreshHistory();
-              }}
-              className={`flex flex-col items-center gap-0.5 rounded-xl py-2 text-[10px] font-semibold transition-colors ${
-                activeTab === "history" ? "text-primary" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <History className={`size-[1.35rem] stroke-[1.75] ${activeTab === "history" ? "text-primary" : ""}`} />
-              {ui.widget.navHistory}
-            </button>
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("history");
+                  void refreshHistory();
+                }}
+                className={`flex flex-col items-center gap-0.5 rounded-xl py-2 text-[10px] font-semibold transition-colors ${
+                  activeTab === "history" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <History className={`size-[1.35rem] stroke-[1.75] ${activeTab === "history" ? "text-primary" : ""}`} />
+                {ui.widget.navHistory}
+              </button>
+            ) : null}
             <button
               type="button"
               onClick={() => {
