@@ -233,6 +233,30 @@
         "watch": "İzleniyor",
         "issue": "Sorun var"
       }
+    },
+    "usage": {
+      "title": "AI kullanım hakları",
+      "subtitle": "Bu ay Nova ve AI modüllerinde kalan paket haklarınızı takip edin.",
+      "plansCta": "Paketler",
+      "planLabel": "Aktif paket",
+      "planFallback": "Paket",
+      "periodLabel": "Dönem",
+      "currentPeriod": "Bu ay",
+      "remainingOf": "{remaining}/{limit} kaldı",
+      "unlimited": "Sınırsız",
+      "used": "{used} kullanıldı",
+      "empty": "Kullanım hakları şu anda okunamadı. Birazdan tekrar deneyin.",
+      "lowestRemaining": "{label} hakkınızda {remaining} kullanım kaldı.",
+      "actions": {
+        "nova_message": "Nova mesajları",
+        "ai_analysis": "AI analizleri",
+        "document_generation": "Doküman üretimi",
+        "risk_analysis": "Risk analizleri",
+        "field_inspection": "Saha denetimleri",
+        "incident_analysis": "Olay / kök neden analizleri",
+        "training_slide": "Eğitim slaytları",
+        "export": "Dışa aktarımlar"
+      }
     }
   },
   "osgb": {

@@ -63,6 +63,30 @@ type NovaFeatureItem = {
   href?: string;
 };
 
+type AiUsageItem = {
+  action: string;
+  label: string;
+  used: number;
+  limit: number;
+  remaining: number;
+  unlimited: boolean;
+  percentUsed: number;
+};
+
+type AiUsageOverview = {
+  plan: {
+    key: string | null;
+    name: string | null;
+    status: string | null;
+    billingCycle: string | null;
+  };
+  period: {
+    month: string;
+  };
+  estimatedCostUsd: number;
+  items: AiUsageItem[];
+};
+
 export function DashboardClient() {
   const router = useRouter();
   const t = useTranslations('dashboard');
@@ -71,6 +95,7 @@ export function DashboardClient() {
   const [loading, setLoading] = useState(true);
   const [featureFilter, setFeatureFilter] = useState<'all' | NovaFeatureStatus>('all');
   const [dynamicFeatures, setDynamicFeatures] = useState<NovaFeatureItem[]>([]);
+  const [usageOverview, setUsageOverview] = useState<AiUsageOverview | null>(null);
 
   // Dashboard açılışında yaklaşan ajanda görevleri için bildirim tarama
   // (günde bir kez, duplike önlemi var)
@@ -218,6 +243,16 @@ export function DashboardClient() {
         .limit(100),
     ]);
 
+    let nextUsageOverview: AiUsageOverview | null = null;
+    try {
+      const usageResponse = await fetch('/api/account/ai-usage', { cache: 'no-store' });
+      if (usageResponse.ok) {
+        nextUsageOverview = (await usageResponse.json()) as AiUsageOverview;
+      }
+    } catch {
+      nextUsageOverview = null;
+    }
+
     const docs = documents || [];
     const isDemoAccount =
       user.user_metadata?.demo_mode === true || user.app_metadata?.demo_mode === true;
@@ -236,6 +271,7 @@ export function DashboardClient() {
       recentDocs: docs.slice(0, 5),
       isDemoAccount,
     });
+    setUsageOverview(nextUsageOverview);
     const mappedFeatures = (featureFlags ?? []).map((row: {
       feature_key: string;
       display_name: string;
@@ -643,6 +679,8 @@ export function DashboardClient() {
         </div>
 
         <div className="min-w-0 space-y-4">
+          <UsageQuotaCard overview={usageOverview} locale={locale} t={t} onOpenPlans={() => router.push('/pricing')} />
+
           <div className="surface-card">
             <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
               <Building2 size={16} className="text-[var(--gold)]" />
@@ -800,6 +838,128 @@ export function DashboardClient() {
           <ServiceHealthSummaryCard />
         </div>
       </div>
+    </div>
+  );
+}
+
+function UsageQuotaCard({
+  overview,
+  locale,
+  t,
+  onOpenPlans,
+}: {
+  overview: AiUsageOverview | null;
+  locale: string;
+  t: ReturnType<typeof useTranslations>;
+  onOpenPlans: () => void;
+}) {
+  const numberFormatter = new Intl.NumberFormat(locale);
+  const periodLabel = overview?.period.month
+    ? new Date(`${overview.period.month}T00:00:00Z`).toLocaleDateString(locale, {
+        month: 'long',
+        year: 'numeric',
+      })
+    : null;
+  const items = overview?.items ?? [];
+  const primaryItems = items.filter((item) =>
+    ['nova_message', 'ai_analysis', 'document_generation', 'risk_analysis', 'field_inspection'].includes(item.action),
+  );
+  const lowestRemaining = primaryItems
+    .filter((item) => !item.unlimited && item.limit > 0)
+    .sort((a, b) => a.remaining - b.remaining)[0];
+
+  return (
+    <div className="surface-card overflow-hidden bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(245,250,255,0.76))] dark:bg-[linear-gradient(145deg,rgba(17,26,43,0.98),rgba(12,31,44,0.72))]">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
+            <Sparkles size={16} className="text-[var(--gold)]" />
+            {t('usage.title')}
+          </h2>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t('usage.subtitle')}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onOpenPlans}
+          className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border/80 bg-background/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--primary)] transition-colors hover:bg-[var(--gold)]/8"
+        >
+          {t('usage.plansCta')}
+          <ChevronRight size={12} />
+        </button>
+      </div>
+
+      {overview ? (
+        <>
+          <div className="mb-4 grid gap-2 sm:grid-cols-2">
+            <div className="rounded-2xl border border-border/70 bg-background/58 px-4 py-3">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                {t('usage.planLabel')}
+              </p>
+              <p className="mt-1 truncate text-sm font-semibold text-foreground">
+                {overview.plan.name ?? t('usage.planFallback')}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border/70 bg-background/58 px-4 py-3">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                {t('usage.periodLabel')}
+              </p>
+              <p className="mt-1 truncate text-sm font-semibold text-foreground">
+                {periodLabel ?? t('usage.currentPeriod')}
+              </p>
+            </div>
+          </div>
+
+          {lowestRemaining ? (
+            <div className="mb-4 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
+              {t('usage.lowestRemaining', {
+                label: t(`usage.actions.${lowestRemaining.action}`),
+                remaining: numberFormatter.format(lowestRemaining.remaining),
+              })}
+            </div>
+          ) : null}
+
+          <div className="space-y-3">
+            {primaryItems.map((item) => {
+              const actionLabel = t(`usage.actions.${item.action}`);
+              return (
+                <div key={item.action} className="rounded-2xl border border-border/70 bg-background/62 px-4 py-3">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="min-w-0 truncate text-sm font-semibold text-foreground">{actionLabel}</span>
+                    <span className="shrink-0 text-xs font-semibold tabular-nums text-muted-foreground">
+                      {item.unlimited
+                        ? t('usage.unlimited')
+                        : t('usage.remainingOf', {
+                            remaining: numberFormatter.format(item.remaining),
+                            limit: numberFormatter.format(item.limit),
+                          })}
+                    </span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-muted">
+                    <div
+                      className={cn(
+                        'h-full rounded-full transition-[width]',
+                        item.percentUsed >= 90
+                          ? 'bg-red-500'
+                          : item.percentUsed >= 70
+                            ? 'bg-amber-500'
+                            : 'bg-emerald-500',
+                      )}
+                      style={{ width: `${item.percentUsed}%` }}
+                    />
+                  </div>
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    {t('usage.used', { used: numberFormatter.format(item.used) })}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      ) : (
+        <div className="rounded-[1.5rem] border border-dashed border-border bg-background/55 px-4 py-8 text-center text-sm text-muted-foreground">
+          {t('usage.empty')}
+        </div>
+      )}
     </div>
   );
 }

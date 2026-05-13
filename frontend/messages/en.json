@@ -233,6 +233,30 @@
         "watch": "Monitoring",
         "issue": "Issue"
       }
+    },
+    "usage": {
+      "title": "AI usage rights",
+      "subtitle": "Track your remaining monthly quota for Nova and AI modules.",
+      "plansCta": "Plans",
+      "planLabel": "Active plan",
+      "planFallback": "Plan",
+      "periodLabel": "Period",
+      "currentPeriod": "This month",
+      "remainingOf": "{remaining}/{limit} left",
+      "unlimited": "Unlimited",
+      "used": "{used} used",
+      "empty": "Usage rights could not be loaded right now. Please try again shortly.",
+      "lowestRemaining": "{label} has {remaining} uses left.",
+      "actions": {
+        "nova_message": "Nova messages",
+        "ai_analysis": "AI analyses",
+        "document_generation": "Document generation",
+        "risk_analysis": "Risk analyses",
+        "field_inspection": "Field inspections",
+        "incident_analysis": "Incident / root cause analyses",
+        "training_slide": "Training slides",
+        "export": "Exports"
+      }
     }
   },
   "osgb": {
