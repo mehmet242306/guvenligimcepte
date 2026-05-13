@@ -28,6 +28,8 @@ Asagidakiler kod incelemesi ile teyit edildi; canli webhook / Vercel erisimi ger
 - [x] Supabase migration `20260428043000_billing_entitlements_and_paddle.sql` calistirildi.
 - [x] Paddle product olusturuldu: `RiskNova Pro`.
 - [x] Paddle product ID Supabase planlarina baglandi: `pro_01kqc6a17etkase2yfw3b4x8m3`.
+- [ ] Basic icin monthly price kaydi olusturuldu.
+- [ ] Basic icin yearly price kaydi olusturuldu.
 - [x] Starter, Plus, Professional 99, Professional 149, Professional 199 icin monthly price kayitlari olusturuldu.
 - [x] Starter, Plus, Professional 99, Professional 149, Professional 199 icin yearly price kayitlari olusturuldu.
 - [x] Paddle price ID'leri Supabase `subscription_plans` tablosuna islendi.
@@ -46,15 +48,17 @@ Asagidakiler kod incelemesi ile teyit edildi; canli webhook / Vercel erisimi ger
 ### 1.1 Self-Service Bireysel Paketler
 
 - [x] Free plan checkout'a baglanmayacak.
+- [x] Basic Free ile Starter arasinda dusuk butceli bireysel paket olacak.
 - [x] Starter bireysel giris paketi olarak kalacak.
 - [x] Plus Starter ile Professional arasinda gecis paketi olacak.
 - [x] Professional 99 ana profesyonel giris paketi olacak.
 - [x] Professional 149 onerilen / populer paket olacak.
 - [x] Professional 199 yogun bireysel kullanim paketi olacak.
-- [ ] Pricing ekraninda Free, Starter, Plus, Professional 99, Professional 149, Professional 199 dogru sirada gorunecek.
+- [ ] Pricing ekraninda Free, Basic, Starter, Plus, Professional 99, Professional 149, Professional 199 dogru sirada gorunecek.
 - [ ] Pricing ekraninda monthly / yearly secimi test edilecek.
 - [ ] Yearly secimde fiyatlar 10 aylik bedel olarak gosterilecek:
   - Starter: `$290/year`
+  - Basic: `$150/year`
   - Plus: `$590/year`
   - Professional 99: `$990/year`
   - Professional 149: `$1490/year`
@@ -84,6 +88,8 @@ Supabase'e islenen sandbox price ID'leri:
 
 | Plan | Cycle | Price | Paddle Price ID |
 | --- | --- | ---: | --- |
+| Basic | Monthly | `$15` | `TODO: PADDLE_PRICE_BASIC_MONTHLY` |
+| Basic | Yearly | `$150` | `TODO: PADDLE_PRICE_BASIC_YEARLY` |
 | Starter | Monthly | `$29` | `pri_01kqc6e2nf2yy078vmfyeqtqdv` |
 | Starter | Yearly | `$290` | `pri_01kqc6gsggq92y3m2sxgr7t6qg` |
 | Plus | Monthly | `$59` | `pri_01kqc6x2n6asgyh9k6w8pp9hgz` |
@@ -126,6 +132,8 @@ PADDLE_API_KEY=...
 NEXT_PUBLIC_PADDLE_CLIENT_TOKEN=...
 PADDLE_WEBHOOK_SECRET=...
 
+PADDLE_PRICE_BASIC_MONTHLY=TODO
+PADDLE_PRICE_BASIC_YEARLY=TODO
 PADDLE_PRICE_STARTER_MONTHLY=pri_01kqc6e2nf2yy078vmfyeqtqdv
 PADDLE_PRICE_STARTER_YEARLY=pri_01kqc6gsggq92y3m2sxgr7t6qg
 PADDLE_PRICE_PLUS_MONTHLY=pri_01kqc6x2n6asgyh9k6w8pp9hgz
@@ -138,12 +146,43 @@ PADDLE_PRICE_PROFESSIONAL_199_MONTHLY=pri_01kqc7ahbpdfbfg7c6rg5xr6t7
 PADDLE_PRICE_PROFESSIONAL_199_YEARLY=pri_01kqc7cfyvx2e3w0ydx2tbf58p
 ```
 
+Basic paketi sonradan eklendigi icin Paddle'da iki yeni price olusturulup asagidaki
+degerler Vercel Production env'e eklenmeli:
+
+```env
+PADDLE_PRICE_BASIC_MONTHLY=<Paddle Basic Monthly price id>
+PADDLE_PRICE_BASIC_YEARLY=<Paddle Basic Yearly price id>
+```
+
+Paddle price ayarlari:
+
+- Product: `RiskNova Pro` (`pro_01kqc6a17etkase2yfw3b4x8m3`)
+- Basic Monthly: `$15`, recurring every `1 month`, quantity `1..1`
+- Basic Yearly: `$150`, recurring every `1 year`, quantity `1..1`
+- Currency: `USD`
+- Tax mode: account default
+- Trial: none
+- Custom data: `plan_key=basic`, `billing_cycle=monthly|yearly`, `app=risknova`
+
+Supabase price ID guncelleme sablonu:
+
+```sql
+update public.subscription_plans
+   set paddle_product_id = 'pro_01kqc6a17etkase2yfw3b4x8m3',
+       paddle_price_id_monthly = '<PADDLE_PRICE_BASIC_MONTHLY>',
+       paddle_price_id_yearly = '<PADDLE_PRICE_BASIC_YEARLY>',
+       updated_at = now()
+ where plan_key = 'basic';
+```
+
 Checklist:
 
 - [ ] `PADDLE_ENV` production env'e eklendi.
 - [ ] `PADDLE_API_KEY` production env'e eklendi.
 - [ ] `NEXT_PUBLIC_PADDLE_CLIENT_TOKEN` production env'e eklendi.
 - [ ] `PADDLE_WEBHOOK_SECRET` production env'e eklendi.
+- [ ] `PADDLE_PRICE_BASIC_MONTHLY` production env'e eklendi.
+- [ ] `PADDLE_PRICE_BASIC_YEARLY` production env'e eklendi.
 - [ ] Tum `PADDLE_PRICE_*` degiskenleri production env'e eklendi.
 - [ ] Gerekirse preview env'e de ayni sandbox degerleri eklendi.
 - [ ] Env ekleme sonrasi production redeploy yapildi.
@@ -226,6 +265,7 @@ order by sort_order;
 Beklenen:
 
 - [ ] `free` gorunur, price `0`.
+- [ ] `basic` gorunur, price `15`, Paddle monthly/yearly dolu.
 - [ ] `starter` gorunur, price `29`, Paddle monthly/yearly dolu.
 - [ ] `professional` gorunur, price `99`, Paddle monthly/yearly dolu.
 - [ ] `professional_149` gorunur, price `149`, Paddle monthly/yearly dolu.
@@ -318,6 +358,8 @@ Her testte:
 
 Test matrisi:
 
+- [ ] Basic Monthly checkout testi.
+- [ ] Basic Yearly checkout testi.
 - [ ] Starter Monthly checkout testi.
 - [ ] Starter Yearly checkout testi.
 - [ ] Professional 99 Monthly checkout testi.
@@ -430,6 +472,8 @@ Bu noktadan sonra adim adim ilerleme sirasi:
 - [ ] Webhook secret'i Vercel'e ekle.
 - [ ] Production redeploy yap.
 - [ ] `/pricing` sayfasini production'da ac.
+- [ ] Basic Monthly sandbox checkout testi yap.
+- [ ] Basic Yearly sandbox checkout testi yap.
 - [ ] Starter Monthly sandbox checkout testi yap.
 - [ ] Webhook eventinin Supabase'e dustugunu kontrol et.
 - [ ] Kullanici aboneliginin aktif oldugunu kontrol et.
