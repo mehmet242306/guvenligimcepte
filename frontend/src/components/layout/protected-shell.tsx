@@ -2,14 +2,13 @@
 
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Brand } from "./brand";
 import { LanguageSelector } from "./language-selector";
 import { ActiveCompanyBar } from "./active-company-bar";
 import { ActiveCompanyNavLink } from "./active-company-nav-link";
-import { ChatWidget } from "@/components/chat/ChatWidget";
-import { ConsentGate } from "@/components/compliance/ConsentGate";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/lib/hooks/use-is-admin";
@@ -35,6 +34,16 @@ import {
   markNotificationAsRead,
   type NotificationRow,
 } from "@/lib/supabase/notification-api";
+
+const ConsentGateLazy = dynamic(
+  () => import("@/components/compliance/ConsentGate").then((m) => m.ConsentGate),
+  { ssr: false, loading: () => null },
+);
+
+const ChatWidgetLazy = dynamic(
+  () => import("@/components/chat/ChatWidget").then((m) => m.ChatWidget),
+  { ssr: false, loading: () => null },
+);
 
 type ProtectedShellProps = {
   children: ReactNode;
@@ -318,6 +327,19 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
   });
 }
 
+function syncNativeThemeChrome(isDark: boolean) {
+  if (typeof document === "undefined") return;
+  const root = document.documentElement;
+  root.style.colorScheme = isDark ? "dark" : "light";
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute("name", "theme-color");
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute("content", isDark ? "#09111F" : "#F5F2EC");
+}
+
 /* ------------------------------------------------------------------ */
 /* Theme toggle                                                        */
 /* ------------------------------------------------------------------ */
@@ -335,7 +357,32 @@ function ThemeToggle() {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
     document.documentElement.classList.toggle("dark", dark);
+    syncNativeThemeChrome(dark);
   }, [dark]);
+
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key !== "risknova-theme" || e.storageArea !== localStorage) return;
+      const v = e.newValue;
+      if (v === "dark") setDark(true);
+      else if (v === "light") setDark(false);
+      else
+        setDark(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    function onOsChange() {
+      const stored = localStorage.getItem("risknova-theme");
+      if (stored === "dark" || stored === "light") return;
+      setDark(mq.matches);
+    }
+    mq.addEventListener("change", onOsChange);
+    return () => mq.removeEventListener("change", onOsChange);
+  }, []);
 
   function toggle() {
     const root = document.documentElement;
@@ -344,6 +391,7 @@ function ThemeToggle() {
     root.setAttribute("data-theme", next ? "dark" : "light");
     root.classList.toggle("dark", next);
     localStorage.setItem("risknova-theme", next ? "dark" : "light");
+    syncNativeThemeChrome(next);
     setDark(next);
   }
 
@@ -1003,7 +1051,7 @@ export function ProtectedShell({
         <main className="mx-auto w-full max-w-[1680px] px-4 py-5 sm:px-6 lg:px-10 xl:px-12 2xl:px-16">
           {children}
         </main>
-        <ConsentGate />
+        <ConsentGateLazy />
       </div>
     );
   }
@@ -1184,8 +1232,8 @@ export function ProtectedShell({
       </main>
 
       {/* ── Chat Widget ── */}
-      <ConsentGate />
-      {showChatWidget ? <ChatWidget isAuthenticated /> : null}
+      <ConsentGateLazy />
+      {showChatWidget ? <ChatWidgetLazy isAuthenticated /> : null}
     </div>
   );
 }

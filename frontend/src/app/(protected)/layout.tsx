@@ -15,9 +15,11 @@ export default async function ProtectedLayout({
   children: ReactNode;
 }) {
   const supabase = await createClient();
+  /** Middleware oturumu doğruladı; SSR bootstrap için `getSession()` yeterli (`getUser()` ek Auth API gideri). */
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
   // Middleware (proxy.ts) zaten auth gating yapıyor; user null ise oraya
   // güvenip render et — client-side ProtectedShell de fallback redirect yapar.

@@ -6,8 +6,6 @@ import {
   resolvePostLoginPath,
 } from "@/lib/account/account-routing";
 
-export const dynamic = "force-dynamic";
-
 /**
  * Tum /platform-admin/* rotalari: oturum + platform admin rolu zorunlu.
  * Alt sayfalarda tekrarlanan kontroller kaldirildi (tek kaynak).
@@ -23,8 +21,9 @@ export default async function PlatformAdminLayout({
   }
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
   if (!user) {
     redirect(`/login?next=${encodeURIComponent("/platform-admin")}`);

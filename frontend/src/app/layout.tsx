@@ -26,8 +26,7 @@ const playfair = Playfair_Display({
 const siteUrl =
   process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/+$/, "") || "https://www.getrisknova.com";
 
-/** Locale `risknova-locale` çerezinden gelir; önbellekte eski dil kalmaması için dinamik. */
-export const dynamic = "force-dynamic";
+/** Locale `next-intl` + `cookies()` ile belirlenir; `force-dynamic` tüm ağacı her navigasyonda gereksiz yere tazeliyordu. */
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -64,7 +63,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0f172a",
+  /** İlk boya öncesi script `theme-color` günceller; açık modda adres çubuğu uyumu için açık arka plan. */
+  themeColor: "#F5F2EC",
   colorScheme: "light dark",
 };
 
@@ -77,22 +77,36 @@ const themeScript = `
   try {
     var t = localStorage.getItem('risknova-theme');
     var root = document.documentElement;
+    function apply(isDark) {
+      root.style.colorScheme = isDark ? 'dark' : 'light';
+      var tc = document.querySelector('meta[name="theme-color"]');
+      if (!tc) {
+        tc = document.createElement('meta');
+        tc.setAttribute('name', 'theme-color');
+        document.head.appendChild(tc);
+      }
+      tc.setAttribute('content', isDark ? '#09111F' : '#F5F2EC');
+    }
     if (t === 'dark') {
       root.setAttribute('data-theme', 'dark');
       root.classList.add('dark');
+      apply(true);
       return;
     }
     if (t === 'light') {
       root.setAttribute('data-theme', 'light');
       root.classList.remove('dark');
+      apply(false);
       return;
     }
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       root.setAttribute('data-theme', 'dark');
       root.classList.add('dark');
+      apply(true);
     } else {
       root.setAttribute('data-theme', 'light');
       root.classList.remove('dark');
+      apply(false);
     }
   } catch(e) {}
 })();

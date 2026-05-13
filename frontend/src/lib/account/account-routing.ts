@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createServiceClient } from "@/lib/security/server";
 import {
   normalizeManagedAccountType,
@@ -345,7 +346,7 @@ async function resolveAllowedAccountTypesForUser(
   });
 }
 
-export async function getAccountContextForUser(
+export const getAccountContextForUser = cache(async function getAccountContextForUser(
   userId: string,
 ): Promise<AccountContext> {
   const service = createServiceClient();
@@ -430,7 +431,7 @@ export async function getAccountContextForUser(
     osgbUmbrellas,
     managedProfessionals,
   };
-}
+});
 
 async function resolveOsgbAffiliationSummaries(
   service: ReturnType<typeof createServiceClient>,

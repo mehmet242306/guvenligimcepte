@@ -52,6 +52,16 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
+    /**
+     * Next 15+ defaults `staleTimes.dynamic` to 0: every client navigation refetches
+     * dynamic RSC (root locale/messages + protected layout account context). Short
+     * reuse window makes in-app transitions feel much faster while data stays fresh.
+     * (120s balances snappy nav vs. stale shell metadata after rare org/plan changes.)
+     */
+    staleTimes: {
+      dynamic: 120,
+      static: 600,
+    },
     optimizePackageImports: [
       "lucide-react",
       "@tiptap/react",

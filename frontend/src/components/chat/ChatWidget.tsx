@@ -55,11 +55,12 @@ import {
   ImagePlus,
   Mic,
   Square,
-  Sparkles,
   Bot,
   User,
   Copy,
   Check,
+  History,
+  LifeBuoy,
 } from "lucide-react";
 
 type NovaSource = {
@@ -1722,7 +1723,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           onPointerMove={dragLauncher}
           onPointerUp={stopLauncherDrag}
           onPointerCancel={stopLauncherDrag}
-          className={`group fixed z-50 inline-flex h-12 w-[3.25rem] touch-none cursor-move items-center justify-center rounded-[1.15rem] border border-amber-200/45 bg-[linear-gradient(135deg,#B87910_0%,#D39B17_46%,#F4C33F_100%)] text-white shadow-[0_12px_26px_rgba(188,132,20,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-[0_18px_36px_rgba(188,132,20,0.35)] sm:h-[3.25rem] sm:w-[3.5rem] sm:rounded-[1.3rem] ${launcherPosition ? "" : "bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] right-3 sm:bottom-7 sm:right-7"}`}
+          className={`group fixed z-50 inline-flex h-12 w-[3.25rem] touch-none cursor-move items-center justify-center rounded-[1.2rem] border border-amber-200/40 bg-[linear-gradient(145deg,#9E6A12_0%,#C8941F_38%,#E8B84A_100%)] text-white shadow-[0_10px_28px_rgba(142,99,18,0.35)] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(142,99,18,0.42)] sm:h-[3.25rem] sm:w-[3.5rem] ${launcherPosition ? "" : "bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] right-3 sm:bottom-7 sm:right-7"}`}
           style={
             launcherPosition
               ? {
@@ -1734,34 +1735,8 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           aria-label={ui.widget.openAriaLabel}
           title="Nova'yi tasimak icin surukleyin, acmak icin tiklayin"
         >
-          <span
-            className="pointer-events-none absolute -inset-6 rounded-full bg-[conic-gradient(from_0deg,rgba(255,255,255,0)_0deg,rgba(250,215,120,0.78)_68deg,rgba(255,255,255,0)_126deg,rgba(214,161,26,0.5)_212deg,rgba(255,255,255,0)_286deg,rgba(250,215,120,0.76)_360deg)] opacity-80 blur-[13px] animate-spin [animation-duration:6.8s]"
-          />
-          <span
-            className="pointer-events-none absolute -inset-5 rounded-full bg-[radial-gradient(circle,rgba(247,203,86,0.52)_0%,rgba(221,166,33,0.28)_30%,rgba(188,132,20,0.12)_54%,rgba(188,132,20,0)_78%)] blur-2xl"
-            style={{ animation: "pulse 2.1s ease-in-out infinite" }}
-          />
-          <span
-            className="pointer-events-none absolute -inset-4 rounded-full border border-amber-100/45 opacity-80 animate-ping [animation-duration:2.9s]"
-            style={{ boxShadow: "0 0 26px rgba(243,191,56,0.28)" }}
-          />
-          <span
-            className="pointer-events-none absolute -inset-2 rounded-full border border-amber-50/60 opacity-80 animate-ping [animation-duration:2.2s]"
-            style={{ animationDelay: "0.7s" }}
-          />
-          <span
-            className="pointer-events-none absolute -inset-4 rounded-full border border-amber-200/35 opacity-70"
-            style={{ animation: "pulse 3.8s ease-in-out infinite" }}
-          />
-          <span
-            className="pointer-events-none absolute -inset-2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.36)_0%,rgba(255,255,255,0.08)_42%,rgba(255,255,255,0)_68%)] blur-xl"
-            style={{ animation: "pulse 1.8s ease-in-out infinite" }}
-          />
-          <span className="pointer-events-none absolute inset-[2px] rounded-[1.05rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.02)_38%,rgba(0,0,0,0.05)_100%)] sm:rounded-[1.2rem]" />
-          <span
-            className="pointer-events-none absolute bottom-[0.26rem] right-[0.36rem] h-3 w-3 rotate-45 rounded-[0.24rem] border-r border-b border-amber-200/45 bg-[linear-gradient(135deg,#C78B11_0%,#E1AB24_55%,#F4C33F_100%)] shadow-[0_8px_16px_rgba(188,132,20,0.16)]"
-          />
-          <MessageCircle className="relative z-10 size-5 -translate-y-[1px] transition-transform duration-300 group-hover:scale-110" />
+          <span className="pointer-events-none absolute inset-[1px] rounded-[1.05rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_45%)] opacity-90 sm:rounded-[1.15rem]" />
+          <MessageCircle className="relative z-10 size-5 -translate-y-[1px] transition-transform duration-200 group-hover:scale-105" />
         </button>
       )}
 
@@ -1769,9 +1744,9 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       {open && (
         <div
           ref={panelRef}
-          className={`fixed z-50 flex w-[min(calc(100vw-1.5rem),340px)] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-[0_22px_56px_rgba(0,0,0,0.24)] ${panelPosition ? "" : "bottom-[calc(env(safe-area-inset-bottom)+0.85rem)] right-3 sm:bottom-6 sm:right-6"}`}
+          className={`fixed z-50 flex w-[min(calc(100vw-1.25rem),360px)] max-w-[calc(100vw-1.25rem)] flex-col overflow-hidden rounded-[1.35rem] border border-border/80 bg-card shadow-[0_8px_40px_rgba(15,23,42,0.14),0_2px_14px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_48px_rgba(0,0,0,0.45)] ${panelPosition ? "" : "bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] right-3 sm:bottom-6 sm:right-6"}`}
           style={{
-            height: "min(520px, calc(100dvh - 3.25rem))",
+            height: "min(560px, calc(100dvh - 3rem))",
             ...(panelPosition
               ? {
                   left: panelPosition.left,
@@ -1780,81 +1755,79 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
               : null),
           }}
         >
-          {/* Header */}
+          {/* Header — Nova palette (navy → warm surface), not flat blue */}
           <div
-            className="flex touch-none select-none items-center justify-between border-b border-border bg-[var(--header-bg-solid)] px-3 py-2.5"
+            className="relative shrink-0 overflow-hidden bg-[linear-gradient(168deg,#0B1324_0%,#152a46_46%,#1c3554_72%,var(--background)_100%)] px-4 pb-4 pt-3.5 text-white shadow-[inset_0_-1px_0_rgba(255,255,255,0.06)]"
             onPointerDown={startPanelDrag}
             onPointerMove={dragPanel}
             onPointerUp={stopPanelDrag}
             onPointerCancel={stopPanelDrag}
             title="Nova penceresini tasimak icin surukleyin"
           >
-            <div className="flex min-w-0 cursor-move items-center gap-2.5">
-              <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#B8860B_0%,#D4A017_100%)]">
-                <Sparkles className="size-3.5 text-white" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-white">{assistantName}</p>
-                <p className="truncate text-[11px] text-white/50">{assistantSubtitle}</p>
+            <div
+              className="pointer-events-none absolute inset-0 opacity-90"
+              style={{
+                background:
+                  "radial-gradient(ellipse 120% 70% at 50% -35%, rgba(212,160,23,0.22), transparent 52%)",
+              }}
+            />
+            <div className="relative flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1 cursor-move">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/45">RiskNova</p>
+                <h2 className="mt-1.5 text-[1.35rem] font-bold leading-tight tracking-tight text-white">
+                  {ui.widget.heroGreeting}{" "}
+                  <span className="inline-block" aria-hidden>
+                    👋
+                  </span>
+                </h2>
+                <p className="mt-1 text-[13px] font-medium leading-snug text-white/78">{ui.widget.heroPrompt}</p>
+                <p className="mt-2 truncate text-[11px] text-white/40">
+                  {assistantName} · {assistantSubtitle}
+                </p>
+              </div>
+              <div className="flex shrink-0 items-center gap-0.5">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label={ui.widget.minimizeAriaLabel}
+                  title={ui.widget.minimizeAriaLabel}
+                  className="inline-flex size-8 items-center justify-center rounded-xl text-white/55 transition-colors hover:bg-white/10 hover:text-white"
+                >
+                  <Minus className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    resetWidgetConversation();
+                  }}
+                  aria-label={ui.widget.closeAriaLabel}
+                  title={ui.widget.closeAriaLabel}
+                  className="inline-flex size-8 items-center justify-center rounded-xl text-white/55 transition-colors hover:bg-white/10 hover:text-white"
+                >
+                  <X className="size-4" />
+                </button>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label={ui.widget.minimizeAriaLabel}
-                title={ui.widget.minimizeAriaLabel}
-                className="inline-flex size-7 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white"
-              >
-                <Minus className="size-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setOpen(false);
-                  resetWidgetConversation();
-                }}
-                aria-label={ui.widget.closeAriaLabel}
-                title={ui.widget.closeAriaLabel}
-                className="inline-flex size-7 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white"
-              >
-                <X className="size-3.5" />
-              </button>
-            </div>
           </div>
 
-          <div className="grid grid-cols-2 border-b border-border bg-card p-1">
-            <button
-              type="button"
-              onClick={() => setActiveTab("chat")}
-              className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition-colors ${
-                activeTab === "chat"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              }`}
-            >
-              Sohbet
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab("history");
-                void refreshHistory();
-              }}
-              className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition-colors ${
-                activeTab === "history"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              }`}
-            >
-              Gecmis
-            </button>
-          </div>
-
-          {/* Messages */}
+          <div className="flex min-h-0 flex-1 flex-col bg-background">
           {activeTab === "chat" ? (
             <>
-          <div className="flex-1 space-y-3 overflow-y-auto px-3 py-3">
+            <div className="shrink-0 px-3 pt-3">
+              <div className="rounded-2xl border border-border/90 bg-card px-3.5 py-2.5 shadow-[var(--shadow-soft)]">
+                <div className="flex items-start gap-2.5">
+                  <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                    <Check className="size-4 stroke-[2.5]" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-semibold leading-snug text-foreground">{ui.widget.statusTitle}</p>
+                    <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">{ui.widget.statusHint}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-2">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                 {/* Avatar */}
@@ -1915,7 +1888,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                         <span
                           className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                             msg.sourceStatus === "verified"
-                              ? "bg-blue-500/15 text-blue-700"
+                              ? "bg-primary/15 text-primary dark:bg-primary/20 dark:text-[var(--gold-light)]"
                               : msg.sourceStatus === "partial"
                                 ? "bg-zinc-500/15 text-zinc-700"
                                 : "bg-rose-500/15 text-rose-700"
@@ -2138,7 +2111,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           </div>
 
           {/* Input */}
-          <div className="border-t border-border bg-card p-2.5">
+          <div className="shrink-0 border-t border-border/80 bg-card px-3 py-2.5 shadow-[0_-4px_18px_rgba(15,23,42,0.04)] dark:shadow-[0_-4px_18px_rgba(0,0,0,0.2)]">
             <input
               ref={imageInputRef}
               type="file"
@@ -2240,7 +2213,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           </div>
             </>
           ) : (
-            <div className="flex-1 overflow-y-auto px-3 py-3">
+            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-3 py-3">
               <div className="mb-3 flex items-center justify-between gap-2">
                 <div>
                   <p className="text-sm font-semibold text-foreground">Gecmis oturumlar</p>
@@ -2276,7 +2249,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                       key={`${session.source}-${session.id}`}
                       type="button"
                       onClick={() => restoreHistorySession(session)}
-                      className="w-full rounded-xl border border-border bg-card p-3 text-left transition-colors hover:border-primary/40 hover:bg-primary/5"
+                      className="w-full rounded-2xl border border-border/90 bg-card p-3 text-left shadow-[var(--shadow-soft)] transition-colors hover:border-primary/40 hover:bg-primary/5"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <p className="line-clamp-2 text-xs font-semibold leading-5 text-foreground">
@@ -2303,6 +2276,47 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
               )}
             </div>
           )}
+
+          <nav
+            className="grid shrink-0 grid-cols-3 gap-0.5 border-t border-border bg-card px-1 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-6px_24px_rgba(15,23,42,0.05)] dark:shadow-[0_-6px_24px_rgba(0,0,0,0.25)]"
+            aria-label="Nova"
+          >
+            <button
+              type="button"
+              onClick={() => setActiveTab("chat")}
+              className={`flex flex-col items-center gap-0.5 rounded-xl py-2 text-[10px] font-semibold transition-colors ${
+                activeTab === "chat" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <MessageCircle className={`size-[1.35rem] stroke-[1.75] ${activeTab === "chat" ? "text-primary" : ""}`} />
+              {ui.widget.navChat}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab("history");
+                void refreshHistory();
+              }}
+              className={`flex flex-col items-center gap-0.5 rounded-xl py-2 text-[10px] font-semibold transition-colors ${
+                activeTab === "history" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <History className={`size-[1.35rem] stroke-[1.75] ${activeTab === "history" ? "text-primary" : ""}`} />
+              {ui.widget.navHistory}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                router.push("/support");
+              }}
+              className="flex flex-col items-center gap-0.5 rounded-xl py-2 text-[10px] font-semibold text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <LifeBuoy className="size-[1.35rem] stroke-[1.75]" />
+              {ui.widget.navHelp}
+            </button>
+          </nav>
+          </div>
         </div>
       )}
     </>

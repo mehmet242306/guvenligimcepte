@@ -44,6 +44,13 @@ type NovaUiCopy = {
     publicPlaceholder: string;
     copy: string;
     copied: string;
+    heroGreeting: string;
+    heroPrompt: string;
+    statusTitle: string;
+    statusHint: string;
+    navChat: string;
+    navHistory: string;
+    navHelp: string;
   };
 };
 
@@ -91,6 +98,13 @@ const trCopy: NovaUiCopy = {
     publicPlaceholder: "Gercek Nova ajani icin giris yapin...",
     copy: "Kopyala",
     copied: "Kopyalandi",
+    heroGreeting: "Merhaba",
+    heroPrompt: "Size nasıl yardımcı olabilirim?",
+    statusTitle: "Durum: Nova hazır",
+    statusHint: "İSG sorularınızı yanıtlayabilir, modüllere yönlendirebilirim.",
+    navChat: "Sohbet",
+    navHistory: "Geçmiş",
+    navHelp: "Yardım",
   },
 };
 
@@ -138,6 +152,13 @@ const enCopy: NovaUiCopy = {
     publicPlaceholder: "Sign in to access the real Nova agent...",
     copy: "Copy",
     copied: "Copied",
+    heroGreeting: "Hi there",
+    heroPrompt: "How can we help?",
+    statusTitle: "Status: Nova is ready",
+    statusHint: "Ask OHS questions, get routed to the right modules.",
+    navChat: "Chat",
+    navHistory: "History",
+    navHelp: "Help",
   },
 };
 
