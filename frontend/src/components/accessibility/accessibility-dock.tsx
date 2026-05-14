@@ -3,20 +3,43 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
-import { Accessibility, Minus, Plus, RotateCcw, Type, X } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import {
+  BookOpen,
+  CirclePause,
+  Contrast,
+  Crosshair,
+  Droplets,
+  Heading2,
+  Layers,
+  LayoutGrid,
+  Link2,
+  Maximize2,
+  Minus,
+  MousePointer2,
+  Plus,
+  RotateCcw,
+  Rows3,
+  ScanEye,
+  SlidersHorizontal,
+  Sparkles,
+  Type,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAccessibility } from "@/components/accessibility/accessibility-context";
 import type { AccessibilityProfileId, ContrastMode } from "@/lib/accessibility/preferences";
+import { UniversalAccessMark } from "@/components/accessibility/universal-access-mark";
 
-/** Odak — kurumsal teal / slate dil; Nova altın launcher’dan ayrışır */
+/** Yuvarlak FAB — Nova’dan ayrışan teal / slate; viewport’a sabit (body portal) */
 const fabShell =
-  "relative inline-flex h-[3.45rem] w-[3.45rem] shrink-0 items-center justify-center overflow-hidden rounded-[1.2rem] border border-teal-400/35 text-teal-100 shadow-[0_14px_42px_rgba(6,78,59,0.38),inset_0_1px_0_rgba(255,255,255,0.12)] transition duration-200 ease-out hover:border-teal-300/55 hover:text-white hover:shadow-[0_18px_48px_rgba(13,148,136,0.35),inset_0_1px_0_rgba(255,255,255,0.18)] active:scale-[0.97] dark:border-teal-500/30 dark:shadow-[0_14px_42px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.08)]";
+  "relative inline-flex h-[3.5rem] w-[3.5rem] shrink-0 items-center justify-center overflow-hidden rounded-full border border-teal-300/40 text-teal-50 shadow-[0_14px_42px_rgba(6,78,59,0.38),inset_0_1px_0_rgba(255,255,255,0.14)] transition duration-200 ease-out hover:border-teal-200/55 hover:text-white hover:shadow-[0_18px_48px_rgba(13,148,136,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] active:scale-[0.97] dark:border-teal-500/35 dark:shadow-[0_14px_42px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.08)]";
 
 const fabGradient =
-  "pointer-events-none absolute inset-0 bg-[linear-gradient(155deg,#042f2e_0%,#115e59_42%,#134e4a_100%)] dark:bg-[linear-gradient(155deg,#020617_0%,#0f3d3a_45%,#042f2e_100%)]";
+  "pointer-events-none absolute inset-0 rounded-full bg-[linear-gradient(155deg,#042f2e_0%,#115e59_42%,#134e4a_100%)] dark:bg-[linear-gradient(155deg,#020617_0%,#0f3d3a_45%,#042f2e_100%)]";
 
 const fabGlass =
-  "pointer-events-none absolute inset-[1px] rounded-[1.05rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,transparent_42%,rgba(0,0,0,0.08)_100%)] opacity-90";
+  "pointer-events-none absolute inset-[1px] rounded-full bg-[linear-gradient(180deg,rgba(255,255,255,0.16)_0%,transparent_42%,rgba(0,0,0,0.08)_100%)] opacity-90";
 
 const fabFocus =
   "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-teal-300/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -32,8 +55,14 @@ const sectionLabelAccent = "h-1 w-5 shrink-0 rounded-full bg-gradient-to-r from-
 const sectionLabelText =
   "text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground";
 
+const sectionIconWrap =
+  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-teal-600/22 bg-teal-600/10 text-teal-800 shadow-sm dark:border-teal-400/28 dark:bg-teal-400/12 dark:text-teal-100";
+
 const toggleRow =
   "flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-gradient-to-b from-card to-muted/25 px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] dark:from-card/90 dark:to-muted/15 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]";
+
+const toggleRowIconWrap =
+  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border/75 bg-muted/45 text-muted-foreground shadow-inner dark:border-border/60 dark:bg-muted/25 dark:text-muted-foreground";
 
 const pillIdle =
   "border-border/80 bg-muted/40 text-muted-foreground shadow-sm hover:border-teal-500/30 hover:bg-muted/70 hover:text-foreground dark:hover:border-teal-400/25";
@@ -49,7 +78,7 @@ const widePillBtn =
 
 const contrastPill = (active: boolean) =>
   cn(
-    "flex min-h-[2.75rem] items-center justify-center rounded-full border px-2 py-2 text-center text-[10px] font-bold uppercase leading-tight tracking-wide transition duration-150",
+    "flex min-h-[2.75rem] items-center justify-center gap-1.5 rounded-full border px-2 py-2 text-center text-[10px] font-bold uppercase leading-tight tracking-wide transition duration-150",
     active ? pillOn : cn(pillIdle, "text-foreground"),
   );
 
@@ -62,9 +91,14 @@ function listFocusableInPanel(panel: HTMLElement | null): HTMLElement[] {
   ).filter((n) => !n.hasAttribute("disabled") && n.tabIndex !== -1);
 }
 
-function A11ySectionLabel({ children }: { children: React.ReactNode }) {
+function A11ySectionLabel({ children, icon: Icon }: { children: React.ReactNode; icon?: LucideIcon }) {
   return (
     <div className={sectionLabelWrap}>
+      {Icon ? (
+        <span className={sectionIconWrap}>
+          <Icon className="h-3.5 w-3.5" strokeWidth={2.2} aria-hidden />
+        </span>
+      ) : null}
       <span className={sectionLabelAccent} aria-hidden />
       <p className={sectionLabelText}>{children}</p>
     </div>
@@ -78,6 +112,7 @@ function ToggleRowI18n({
   onLabel,
   offLabel,
   disabled,
+  icon: Icon,
 }: {
   label: string;
   pressed: boolean;
@@ -85,10 +120,18 @@ function ToggleRowI18n({
   onLabel: string;
   offLabel: string;
   disabled?: boolean;
+  icon?: LucideIcon;
 }) {
   return (
     <div className={toggleRow}>
-      <span className="min-w-0 flex-1 text-sm font-medium leading-snug text-foreground">{label}</span>
+      <div className="flex min-w-0 flex-1 items-center gap-2.5">
+        {Icon ? (
+          <span className={toggleRowIconWrap}>
+            <Icon className="h-4 w-4" strokeWidth={2} aria-hidden />
+          </span>
+        ) : null}
+        <span className="min-w-0 flex-1 text-sm font-medium leading-snug text-foreground">{label}</span>
+      </div>
       <button
         type="button"
         aria-pressed={pressed}
@@ -133,6 +176,17 @@ function ProfileChip({
             ),
       )}
     >
+      <span
+        className={cn(
+          "absolute left-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-full border shadow-inner",
+          active
+            ? "border-teal-600/40 bg-teal-600/15 text-teal-800 dark:border-teal-400/45 dark:bg-teal-400/12 dark:text-teal-100"
+            : "border-border/70 bg-muted/50 text-muted-foreground",
+        )}
+        aria-hidden
+      >
+        {active ? <Sparkles className="h-3.5 w-3.5" strokeWidth={2.2} /> : <Layers className="h-3.5 w-3.5" strokeWidth={2.2} />}
+      </span>
       {active ? (
         <span
           className="absolute right-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-full border border-teal-600/40 bg-teal-600/12 py-1 pl-1.5 pr-2 dark:border-teal-400/45 dark:bg-teal-400/12"
@@ -141,9 +195,9 @@ function ProfileChip({
           <span className="h-2 w-2 shrink-0 rounded-full bg-teal-500 shadow-[0_0_10px_rgba(34,211,238,0.75)] dark:bg-teal-300" />
         </span>
       ) : null}
-      <p className="pr-14 text-sm font-semibold text-foreground">{title}</p>
+      <p className="pl-11 pr-12 text-sm font-semibold text-foreground">{title}</p>
       {description ? (
-        <p className="mt-1 text-xs leading-relaxed text-muted-foreground group-hover:text-foreground/80">{description}</p>
+        <p className="mt-1 pl-11 text-xs leading-relaxed text-muted-foreground group-hover:text-foreground/80">{description}</p>
       ) : null}
     </button>
   );
@@ -186,6 +240,12 @@ export function AccessibilityDock() {
   const t = useTranslations("accessibility");
   const { preferences, setProfile, patchPreferences, resetPreferences, bumpFontScale, bumpLineHeight, bumpLetterSpacing } =
     useAccessibility();
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const resetTypography = useCallback(() => {
     patchPreferences({
@@ -244,14 +304,13 @@ export function AccessibilityDock() {
     { id: "lowVision", title: t("profileLowVision"), desc: t("profileLowVisionDesc") },
   ];
 
-  return (
+  const fabPortal = mounted ? (
     <>
       {preferences.readingMask ? <ReadingMaskLayer /> : null}
       {preferences.readingGuide ? <ReadingGuideLayer /> : null}
-
       <div
         className={cn(
-          "pointer-events-auto fixed z-[92] flex flex-col items-center",
+          "pointer-events-auto fixed z-[100] flex flex-col items-center",
           "right-[max(0.65rem,env(safe-area-inset-right,0px))] sm:right-5",
           "top-1/2 -translate-y-1/2",
         )}
@@ -270,290 +329,312 @@ export function AccessibilityDock() {
           <span className={fabGlass} aria-hidden />
           <span className="relative z-[1] flex items-center justify-center">
             {open ? (
-              <X className="h-6 w-6 shrink-0" strokeWidth={2.25} aria-hidden />
+              <X className="h-6 w-6 shrink-0 text-slate-50" strokeWidth={2.25} aria-hidden />
             ) : (
-              <Accessibility className="h-7 w-7 shrink-0" strokeWidth={2.35} aria-hidden />
+              <UniversalAccessMark className="h-[1.72rem] w-[1.72rem]" variant="onDark" />
             )}
           </span>
         </button>
       </div>
+    </>
+  ) : null;
 
-      {open && typeof document !== "undefined"
-        ? createPortal(
-            <>
-              <div
-                tabIndex={0}
-                className="fixed left-0 top-0 h-px w-px overflow-hidden opacity-0"
-                aria-hidden
-                onFocus={(e) => {
-                  const panel = panelRef.current;
-                  const list = listFocusableInPanel(panel);
-                  if (!list.length) return;
-                  const from = e.relatedTarget as Node | null;
-                  if (from && panel?.contains(from)) list[list.length - 1].focus();
-                  else list[0].focus();
-                }}
-              />
-              <div
-                className="fixed inset-0 z-[94] cursor-default bg-slate-950/45 backdrop-blur-[2px] dark:bg-black/60"
-                role="presentation"
-                tabIndex={-1}
-                aria-hidden
-                onClick={(e) => {
-                  if (e.target === e.currentTarget) close();
-                }}
-              />
-              <div
-                ref={panelRef}
-                id="risknova-a11y-panel"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby={titleId}
-                className={cn(
-                  "fixed inset-y-0 right-0 z-[96] rounded-l-[1.35rem] max-sm:rounded-none",
-                  panelShell,
-                )}
+  const dialogPortal =
+    open && mounted ? (
+      <>
+        <div
+          tabIndex={0}
+          className="fixed left-0 top-0 h-px w-px overflow-hidden opacity-0"
+          aria-hidden
+          onFocus={(e) => {
+            const panel = panelRef.current;
+            const list = listFocusableInPanel(panel);
+            if (!list.length) return;
+            const from = e.relatedTarget as Node | null;
+            if (from && panel?.contains(from)) list[list.length - 1].focus();
+            else list[0].focus();
+          }}
+        />
+        <div
+          className="fixed inset-0 z-[104] cursor-default bg-slate-950/45 backdrop-blur-[2px] dark:bg-black/60"
+          role="presentation"
+          tabIndex={-1}
+          aria-hidden
+          onClick={(e) => {
+            if (e.target === e.currentTarget) close();
+          }}
+        />
+        <div
+          ref={panelRef}
+          id="risknova-a11y-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          className={cn("fixed inset-y-0 right-0 z-[106] rounded-l-[1.35rem] max-sm:rounded-none", panelShell)}
+        >
+          <div className={panelHeader}>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-teal-500/35 bg-gradient-to-br from-teal-600/18 to-cyan-500/12 text-teal-900 shadow-inner dark:border-teal-400/40 dark:from-teal-400/14 dark:to-teal-950/25 dark:text-teal-50">
+                    <UniversalAccessMark className="h-8 w-8" variant="onLight" />
+                  </span>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-teal-700/90 dark:text-teal-300/90">
+                      {t("brandEyebrow")}
+                    </p>
+                    <h2 id={titleId} className="text-base font-semibold leading-tight tracking-tight text-foreground">
+                      {t("panelTitle")}
+                    </h2>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{t("panelIntro")}</p>
+              </div>
+              <button
+                type="button"
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-transparent text-muted-foreground transition hover:border-border hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-teal-400/40"
+                aria-label={t("close")}
+                onClick={close}
               >
-                <div className={panelHeader}>
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-teal-500/30 bg-gradient-to-br from-teal-600/15 to-cyan-500/10 text-teal-800 shadow-inner dark:border-teal-400/35 dark:from-teal-400/12 dark:to-teal-950/30 dark:text-teal-100">
-                          <Accessibility className="h-6 w-6" strokeWidth={2.35} aria-hidden />
-                        </span>
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-teal-700/90 dark:text-teal-300/90">
-                            {t("brandEyebrow")}
-                          </p>
-                          <h2 id={titleId} className="text-base font-semibold leading-tight tracking-tight text-foreground">
-                            {t("panelTitle")}
-                          </h2>
-                        </div>
-                      </div>
-                      <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{t("panelIntro")}</p>
-                    </div>
+                <X className="h-5 w-5" aria-hidden />
+              </button>
+            </div>
+          </div>
+
+          <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain px-4 py-4">
+            <div>
+              <A11ySectionLabel icon={LayoutGrid}>{t("profilesTitle")}</A11ySectionLabel>
+              <div className="grid gap-2.5 sm:grid-cols-2">
+                {profiles.map((p) => (
+                  <ProfileChip
+                    key={p.id}
+                    title={p.title}
+                    description={p.desc}
+                    active={preferences.profile === p.id}
+                    onSelect={() => setProfile(p.id)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <A11ySectionLabel icon={SlidersHorizontal}>{t("sectionVisual")}</A11ySectionLabel>
+              <div className="rounded-2xl border border-border/70 bg-gradient-to-b from-card to-muted/15 p-3.5 shadow-sm dark:to-muted/10">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="flex items-center gap-2 text-sm font-medium text-foreground">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full border border-teal-600/20 bg-teal-600/10 text-teal-700 dark:border-teal-400/25 dark:bg-teal-400/12 dark:text-teal-200">
+                      <Type className="h-4 w-4" strokeWidth={2.1} aria-hidden />
+                    </span>
+                    {t("fontSize")}
+                  </span>
+                  <div className="flex shrink-0 items-center gap-1.5">
                     <button
                       type="button"
-                      className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-transparent text-muted-foreground transition hover:border-border hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-teal-400/40"
-                      aria-label={t("close")}
-                      onClick={close}
+                      className={microRoundBtn}
+                      aria-label={t("fontDecrease")}
+                      onClick={() => bumpFontScale(-0.05)}
                     >
-                      <X className="h-5 w-5" aria-hidden />
+                      <Minus className="h-4 w-4" aria-hidden />
+                    </button>
+                    <span className="inline-flex min-w-[3.25rem] items-center justify-center rounded-full border border-teal-600/25 bg-teal-600/8 px-2 py-1 text-center font-mono text-xs font-bold tabular-nums text-teal-950 shadow-inner dark:border-teal-400/30 dark:bg-teal-400/10 dark:text-teal-50">
+                      {Math.round(preferences.fontScale * 100)}%
+                    </span>
+                    <button
+                      type="button"
+                      className={microRoundBtn}
+                      aria-label={t("fontIncrease")}
+                      onClick={() => bumpFontScale(0.05)}
+                    >
+                      <Plus className="h-4 w-4" aria-hidden />
                     </button>
                   </div>
                 </div>
-
-                <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain px-4 py-4">
-                  <div>
-                    <A11ySectionLabel>{t("profilesTitle")}</A11ySectionLabel>
-                    <div className="grid gap-2.5 sm:grid-cols-2">
-                      {profiles.map((p) => (
-                        <ProfileChip
-                          key={p.id}
-                          title={p.title}
-                          description={p.desc}
-                          active={preferences.profile === p.id}
-                          onSelect={() => setProfile(p.id)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <A11ySectionLabel>{t("sectionVisual")}</A11ySectionLabel>
-                    <div className="rounded-2xl border border-border/70 bg-gradient-to-b from-card to-muted/15 p-3.5 shadow-sm dark:to-muted/10">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                          <Type className="h-4 w-4 shrink-0 text-teal-600 dark:text-teal-300" aria-hidden />
-                          {t("fontSize")}
-                        </span>
-                        <div className="flex shrink-0 items-center gap-1.5">
-                          <button
-                            type="button"
-                            className={microRoundBtn}
-                            aria-label={t("fontDecrease")}
-                            onClick={() => bumpFontScale(-0.05)}
-                          >
-                            <Minus className="h-4 w-4" aria-hidden />
-                          </button>
-                          <span className="min-w-[3.25rem] rounded-full border border-border/70 bg-background/90 px-2 py-1 text-center font-mono text-xs font-bold tabular-nums text-foreground shadow-inner">
-                            {Math.round(preferences.fontScale * 100)}%
-                          </span>
-                          <button
-                            type="button"
-                            className={microRoundBtn}
-                            aria-label={t("fontIncrease")}
-                            onClick={() => bumpFontScale(0.05)}
-                          >
-                            <Plus className="h-4 w-4" aria-hidden />
-                          </button>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        className={cn("mt-3 w-full", widePillBtn)}
-                        onClick={resetTypography}
-                      >
-                        {t("fontReset")}
-                      </button>
-                    </div>
-                    <div className="flex gap-2">
-                      <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLineHeight("down")}>
-                        {t("lineTighten")}
-                      </button>
-                      <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLineHeight("up")}>
-                        {t("lineLoosen")}
-                      </button>
-                    </div>
-                    <div className="flex gap-2">
-                      <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLetterSpacing("down")}>
-                        {t("letterNarrower")}
-                      </button>
-                      <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLetterSpacing("up")}>
-                        {t("letterWider")}
-                      </button>
-                    </div>
-                    <p className="pl-7 text-xs font-semibold text-foreground">{t("contrast")}</p>
-                    <div className="grid grid-cols-2 gap-2.5">
-                      {contrastModes.map((m) => (
-                        <button
-                          key={m.id}
-                          type="button"
-                          className={contrastPill(preferences.contrastMode === m.id)}
-                          aria-pressed={preferences.contrastMode === m.id}
-                          onClick={() => patchPreferences({ profile: "none", contrastMode: m.id })}
-                        >
-                          {m.label}
-                        </button>
-                      ))}
-                    </div>
-                    <ToggleRowI18n
-                      label={t("reduceSaturation")}
-                      pressed={preferences.reduceSaturation}
-                      onToggle={() => patchPreferences({ profile: "none", reduceSaturation: !preferences.reduceSaturation })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                    <ToggleRowI18n
-                      label={t("grayscale")}
-                      pressed={preferences.grayscale}
-                      onToggle={() => patchPreferences({ profile: "none", grayscale: !preferences.grayscale })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                  </div>
-
-                  <div className="space-y-2.5">
-                    <A11ySectionLabel>{t("sectionReading")}</A11ySectionLabel>
-                    <ToggleRowI18n
-                      label={t("dyslexiaFont")}
-                      pressed={preferences.dyslexiaFriendly}
-                      onToggle={() => patchPreferences({ profile: "none", dyslexiaFriendly: !preferences.dyslexiaFriendly })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                    <ToggleRowI18n
-                      label={t("emphasizeLinks")}
-                      pressed={preferences.emphasizeLinks}
-                      onToggle={() => patchPreferences({ profile: "none", emphasizeLinks: !preferences.emphasizeLinks })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                    <ToggleRowI18n
-                      label={t("emphasizeHeadings")}
-                      pressed={preferences.emphasizeHeadings}
-                      onToggle={() => patchPreferences({ profile: "none", emphasizeHeadings: !preferences.emphasizeHeadings })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                    <ToggleRowI18n
-                      label={t("readingMask")}
-                      pressed={preferences.readingMask}
-                      onToggle={() => patchPreferences({ profile: "none", readingMask: !preferences.readingMask })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                    <ToggleRowI18n
-                      label={t("readingGuide")}
-                      pressed={preferences.readingGuide}
-                      onToggle={() => patchPreferences({ profile: "none", readingGuide: !preferences.readingGuide })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                    <ToggleRowI18n
-                      label={t("focusAssist")}
-                      pressed={preferences.focusAssist}
-                      onToggle={() => patchPreferences({ profile: "none", focusAssist: !preferences.focusAssist })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                  </div>
-
-                  <div className="space-y-2.5">
-                    <A11ySectionLabel>{t("sectionInteraction")}</A11ySectionLabel>
-                    <ToggleRowI18n
-                      label={t("reduceMotion")}
-                      pressed={preferences.reduceMotion}
-                      onToggle={() => patchPreferences({ profile: "none", reduceMotion: !preferences.reduceMotion })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                    <ToggleRowI18n
-                      label={t("largeCursor")}
-                      pressed={preferences.largeCursor}
-                      onToggle={() => patchPreferences({ profile: "none", largeCursor: !preferences.largeCursor })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                    <ToggleRowI18n
-                      label={t("strongFocus")}
-                      pressed={preferences.strongFocusRing}
-                      onToggle={() => patchPreferences({ profile: "none", strongFocusRing: !preferences.strongFocusRing })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                    <ToggleRowI18n
-                      label={t("largerTargets")}
-                      pressed={preferences.largerClickTargets}
-                      onToggle={() => patchPreferences({ profile: "none", largerClickTargets: !preferences.largerClickTargets })}
-                      onLabel={t("on")}
-                      offLabel={t("off")}
-                    />
-                  </div>
-                </div>
-
-                <div className="border-t border-border/80 bg-muted/10 px-4 py-4 dark:bg-muted/5">
-                  <button
-                    type="button"
-                    className={cn(
-                      "flex w-full items-center justify-center gap-2 rounded-full border border-border/80 py-3 text-sm font-semibold text-foreground shadow-sm transition",
-                      "hover:border-teal-600/35 hover:bg-gradient-to-b hover:from-muted/50 hover:to-muted/30 hover:shadow-md",
-                      "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-teal-400/40",
-                    )}
-                    onClick={() => resetPreferences()}
-                  >
-                    <RotateCcw className="h-4 w-4 shrink-0 text-teal-700 dark:text-teal-300" aria-hidden />
-                    {t("reset")}
-                  </button>
-                </div>
+                <button type="button" className={cn("mt-3 w-full", widePillBtn)} onClick={resetTypography}>
+                  {t("fontReset")}
+                </button>
               </div>
-              <div
-                tabIndex={0}
-                className="fixed left-0 top-0 h-px w-px overflow-hidden opacity-0"
-                aria-hidden
-                onFocus={(e) => {
-                  const panel = panelRef.current;
-                  const list = listFocusableInPanel(panel);
-                  if (!list.length) return;
-                  const from = e.relatedTarget as Node | null;
-                  if (from && panel?.contains(from)) list[0].focus();
-                  else list[list.length - 1].focus();
-                }}
+              <div className="flex gap-2">
+                <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLineHeight("down")}>
+                  {t("lineTighten")}
+                </button>
+                <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLineHeight("up")}>
+                  {t("lineLoosen")}
+                </button>
+              </div>
+              <div className="flex gap-2">
+                <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLetterSpacing("down")}>
+                  {t("letterNarrower")}
+                </button>
+                <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLetterSpacing("up")}>
+                  {t("letterWider")}
+                </button>
+              </div>
+              <div className="flex items-center gap-2 pl-1">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border/80 bg-muted/40 text-muted-foreground">
+                  <Contrast className="h-4 w-4" strokeWidth={2} aria-hidden />
+                </span>
+                <p className="text-xs font-semibold text-foreground">{t("contrast")}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2.5">
+                {contrastModes.map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    className={contrastPill(preferences.contrastMode === m.id)}
+                    aria-pressed={preferences.contrastMode === m.id}
+                    onClick={() => patchPreferences({ profile: "none", contrastMode: m.id })}
+                  >
+                    {preferences.contrastMode === m.id ? (
+                      <Contrast className="h-3 w-3 shrink-0 opacity-80" strokeWidth={2.5} aria-hidden />
+                    ) : null}
+                    <span className="min-w-0 flex-1">{m.label}</span>
+                  </button>
+                ))}
+              </div>
+              <ToggleRowI18n
+                icon={Droplets}
+                label={t("reduceSaturation")}
+                pressed={preferences.reduceSaturation}
+                onToggle={() => patchPreferences({ profile: "none", reduceSaturation: !preferences.reduceSaturation })}
+                onLabel={t("on")}
+                offLabel={t("off")}
               />
-            </>,
-            document.body,
-          )
-        : null}
+              <ToggleRowI18n
+                icon={Contrast}
+                label={t("grayscale")}
+                pressed={preferences.grayscale}
+                onToggle={() => patchPreferences({ profile: "none", grayscale: !preferences.grayscale })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+            </div>
+
+            <div className="space-y-2.5">
+              <A11ySectionLabel icon={BookOpen}>{t("sectionReading")}</A11ySectionLabel>
+              <ToggleRowI18n
+                icon={Type}
+                label={t("dyslexiaFont")}
+                pressed={preferences.dyslexiaFriendly}
+                onToggle={() => patchPreferences({ profile: "none", dyslexiaFriendly: !preferences.dyslexiaFriendly })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+              <ToggleRowI18n
+                icon={Link2}
+                label={t("emphasizeLinks")}
+                pressed={preferences.emphasizeLinks}
+                onToggle={() => patchPreferences({ profile: "none", emphasizeLinks: !preferences.emphasizeLinks })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+              <ToggleRowI18n
+                icon={Heading2}
+                label={t("emphasizeHeadings")}
+                pressed={preferences.emphasizeHeadings}
+                onToggle={() => patchPreferences({ profile: "none", emphasizeHeadings: !preferences.emphasizeHeadings })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+              <ToggleRowI18n
+                icon={ScanEye}
+                label={t("readingMask")}
+                pressed={preferences.readingMask}
+                onToggle={() => patchPreferences({ profile: "none", readingMask: !preferences.readingMask })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+              <ToggleRowI18n
+                icon={Rows3}
+                label={t("readingGuide")}
+                pressed={preferences.readingGuide}
+                onToggle={() => patchPreferences({ profile: "none", readingGuide: !preferences.readingGuide })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+              <ToggleRowI18n
+                icon={Crosshair}
+                label={t("focusAssist")}
+                pressed={preferences.focusAssist}
+                onToggle={() => patchPreferences({ profile: "none", focusAssist: !preferences.focusAssist })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+            </div>
+
+            <div className="space-y-2.5">
+              <A11ySectionLabel icon={MousePointer2}>{t("sectionInteraction")}</A11ySectionLabel>
+              <ToggleRowI18n
+                icon={CirclePause}
+                label={t("reduceMotion")}
+                pressed={preferences.reduceMotion}
+                onToggle={() => patchPreferences({ profile: "none", reduceMotion: !preferences.reduceMotion })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+              <ToggleRowI18n
+                icon={MousePointer2}
+                label={t("largeCursor")}
+                pressed={preferences.largeCursor}
+                onToggle={() => patchPreferences({ profile: "none", largeCursor: !preferences.largeCursor })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+              <ToggleRowI18n
+                icon={Crosshair}
+                label={t("strongFocus")}
+                pressed={preferences.strongFocusRing}
+                onToggle={() => patchPreferences({ profile: "none", strongFocusRing: !preferences.strongFocusRing })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+              <ToggleRowI18n
+                icon={Maximize2}
+                label={t("largerTargets")}
+                pressed={preferences.largerClickTargets}
+                onToggle={() => patchPreferences({ profile: "none", largerClickTargets: !preferences.largerClickTargets })}
+                onLabel={t("on")}
+                offLabel={t("off")}
+              />
+            </div>
+          </div>
+
+          <div className="border-t border-border/80 bg-muted/10 px-4 py-4 dark:bg-muted/5">
+            <button
+              type="button"
+              className={cn(
+                "flex w-full items-center justify-center gap-2 rounded-full border border-border/80 py-3 text-sm font-semibold text-foreground shadow-sm transition",
+                "hover:border-teal-600/35 hover:bg-gradient-to-b hover:from-muted/50 hover:to-muted/30 hover:shadow-md",
+                "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-teal-400/40",
+              )}
+              onClick={() => resetPreferences()}
+            >
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-teal-600/25 bg-teal-600/10 text-teal-800 dark:border-teal-400/30 dark:bg-teal-400/12 dark:text-teal-100">
+                <RotateCcw className="h-4 w-4 shrink-0" aria-hidden />
+              </span>
+              {t("reset")}
+            </button>
+          </div>
+        </div>
+        <div
+          tabIndex={0}
+          className="fixed left-0 top-0 h-px w-px overflow-hidden opacity-0"
+          aria-hidden
+          onFocus={(e) => {
+            const panel = panelRef.current;
+            const list = listFocusableInPanel(panel);
+            if (!list.length) return;
+            const from = e.relatedTarget as Node | null;
+            if (from && panel?.contains(from)) list[0].focus();
+            else list[list.length - 1].focus();
+          }}
+        />
+      </>
+    ) : null;
+
+  return (
+    <>
+      {mounted ? createPortal(fabPortal, document.body) : null}
+      {mounted && open ? createPortal(dialogPortal, document.body) : null}
     </>
   );
 }
