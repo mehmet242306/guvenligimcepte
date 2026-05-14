@@ -2155,7 +2155,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           {/* Input */}
           <div className="shrink-0 border-t border-border/80 bg-card px-3.5 py-3 shadow-[0_-4px_18px_rgba(15,23,42,0.04)] dark:shadow-[0_-4px_18px_rgba(0,0,0,0.2)]">
             <p
-              className="mb-2.5 border-l-2 border-amber-500/45 pl-2.5 text-[11px] leading-snug text-muted-foreground sm:text-xs"
+              className="mb-1.5 border-l border-amber-500/40 pl-2 text-[10px] leading-tight text-muted-foreground/85"
               role="note"
             >
               {ui.widget.aiDisclaimer}
