@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { TriangleAlert, Link2, ShieldAlert, ListChecks } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
@@ -18,8 +19,9 @@ type Props = {
 
 export function FindingsTab({ state, actions }: Props) {
   const t = useTranslations("fieldInspection");
-  const { activeTemplate, answers } = state;
+  const { activeTemplate, answers, capaStartingQuestionId } = state;
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
+  const [dofFeedback, setDofFeedback] = useState<"none" | "no_workspace" | "failed" | "ok">("none");
 
   const responseLabels = useMemo(
     () =>
@@ -53,6 +55,10 @@ export function FindingsTab({ state, actions }: Props) {
 
   const selected = findings.find(({ q }) => q.id === selectedQuestionId) ?? findings[0];
   const selectedStatus = selected?.a?.responseStatus;
+
+  useEffect(() => {
+    setDofFeedback("none");
+  }, [selected?.q.id]);
 
   return (
     <div className="mt-4 space-y-4">
@@ -116,6 +122,21 @@ export function FindingsTab({ state, actions }: Props) {
                 <h4 className="text-base font-semibold text-foreground">{t("findings.novaSuggestionsTitle")}</h4>
               </div>
               <p className="mb-4 text-xs text-muted-foreground">{t("findings.novaSuggestionsBody")}</p>
+              {dofFeedback !== "none" ? (
+                <p
+                  className={
+                    dofFeedback === "ok"
+                      ? "mb-3 rounded-xl border border-emerald-200 bg-emerald-50/80 px-3 py-2 text-xs text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-950/30 dark:text-emerald-100"
+                      : "mb-3 rounded-xl border border-amber-200 bg-amber-50/80 px-3 py-2 text-xs text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/30 dark:text-amber-100"
+                  }
+                >
+                  {dofFeedback === "ok"
+                    ? t("findings.dofStartSuccess")
+                    : dofFeedback === "no_workspace"
+                      ? t("findings.dofStartNoWorkspace")
+                      : t("findings.dofStartFailed")}
+                </p>
+              ) : null}
               <div className="grid gap-2 sm:grid-cols-2">
                 <Button
                   variant="outline"
@@ -133,13 +154,34 @@ export function FindingsTab({ state, actions }: Props) {
                   <Link2 className="mr-2 h-4 w-4" />
                   {t("findings.linkOpenAction")}
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => actions.recordDecisionFor(selected.q.id, "started_dof")}
-                >
-                  {t("findings.startCapa")}
-                </Button>
+                {selected.a?.decision === "started_dof" && selected.a.decisionTargetId ? (
+                  <div className="sm:col-span-2 flex flex-col gap-2 rounded-xl border border-emerald-200/80 bg-emerald-50/50 p-3 dark:border-emerald-500/25 dark:bg-emerald-950/20">
+                    <p className="text-xs font-medium text-emerald-900 dark:text-emerald-100">
+                      {t("findings.dofLinkedHint")}
+                    </p>
+                    <Link
+                      href={`/corrective-actions/${selected.a.decisionTargetId}`}
+                      className="inline-flex w-fit items-center text-sm font-semibold text-[var(--gold)] underline-offset-4 hover:underline"
+                    >
+                      {t("findings.dofOpenDetail")}
+                    </Link>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={capaStartingQuestionId === selected.q.id}
+                    onClick={async () => {
+                      setDofFeedback("none");
+                      const res = await actions.startCapaFromInspectionFinding(selected.q.id);
+                      setDofFeedback(res === "ok" ? "ok" : res === "no_workspace" ? "no_workspace" : "failed");
+                    }}
+                  >
+                    {capaStartingQuestionId === selected.q.id
+                      ? t("findings.dofStarting")
+                      : t("findings.startCapa")}
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   size="sm"

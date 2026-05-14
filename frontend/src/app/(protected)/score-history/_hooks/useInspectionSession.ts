@@ -25,6 +25,9 @@ import {
   type ResponseStatus,
   type DecisionTargetTable,
 } from "@/lib/supabase/inspection-api";
+import { createCorrectiveActionFromInspectionAnswer } from "@/lib/supabase/corrective-actions-api";
+import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
+import { resolveCompanyWorkspaceIdFromActiveWorkspaceId } from "@/lib/workspace-incident-site";
 
 export type SessionState = {
   templates: ChecklistTemplateRecord[];
@@ -34,6 +37,8 @@ export type SessionState = {
   loadingTemplates: boolean;
   loadingActive: boolean;
   savingAnswer: boolean;
+  /** Findings sekmesinde DÖF oluşturma isteği sürerken soru id (UI kilidi) */
+  capaStartingQuestionId: string | null;
   /** Denetim başlatılamadığında (ör. kota) — UI `fieldInspection.errors.*` ile çevrilir */
   startRunIssue: RunStartIssue | null;
 };
@@ -67,6 +72,8 @@ export type SessionActions = {
     decision: SuggestionDecision,
     target?: { table: DecisionTargetTable; id: string },
   ) => Promise<boolean>;
+  /** Tespit için gerçek DÖF (corrective_actions) kaydı açar ve cevap satırına bağlar */
+  startCapaFromInspectionFinding: (questionId: string) => Promise<"ok" | "no_workspace" | "failed">;
   completeRun: () => Promise<boolean>;
   abandonRun: () => Promise<boolean>;
 };
@@ -79,6 +86,7 @@ export function useInspectionSession(): [SessionState, SessionActions] {
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [loadingActive, setLoadingActive] = useState(false);
   const [savingAnswer, setSavingAnswer] = useState(false);
+  const [capaStartingQuestionId, setCapaStartingQuestionId] = useState<string | null>(null);
   const [startRunIssue, setStartRunIssue] = useState<RunStartIssue | null>(null);
 
   const mountedRef = useRef(true);
@@ -266,6 +274,74 @@ export function useInspectionSession(): [SessionState, SessionActions] {
     [answers],
   );
 
+  const startCapaFromInspectionFinding = useCallback<SessionActions["startCapaFromInspectionFinding"]>(
+    async (questionId) => {
+      if (!activeRun || !activeTemplate) return "failed";
+      const answer = answers[questionId];
+      const q = activeTemplate.questions.find((x) => x.id === questionId);
+      if (!answer?.id || !q) return "failed";
+      if (answer.decision === "started_dof" && answer.decisionTargetId) return "ok";
+
+      const status = answer.responseStatus;
+      if (status !== "uygunsuz" && status !== "kritik") return "failed";
+
+      setCapaStartingQuestionId(questionId);
+      try {
+        let companyWorkspaceId = activeRun.companyWorkspaceId;
+        if (!companyWorkspaceId) {
+          const nw = await getActiveWorkspace();
+          if (nw?.id) {
+            const mapped = await resolveCompanyWorkspaceIdFromActiveWorkspaceId(nw.id);
+            companyWorkspaceId = mapped?.companyWorkspaceId ?? null;
+          }
+        }
+        if (!companyWorkspaceId) {
+          return "no_workspace";
+        }
+
+        const created = await createCorrectiveActionFromInspectionAnswer({
+          companyWorkspaceId,
+          inspectionRunId: activeRun.id,
+          inspectionRunCode: activeRun.code,
+          inspectionAnswerId: answer.id,
+          questionId: q.id,
+          questionText: q.text,
+          questionCategory: q.category,
+          responseStatus: status,
+          note: answer.note,
+          actionTitle: answer.actionTitle,
+          actionDeadline: answer.actionDeadline,
+        });
+
+        if (!created) return "failed";
+
+        const ok = await apiRecordDecision(answer.id, "started_dof", {
+          table: "corrective_actions",
+          id: created.id,
+        });
+        if (!ok) return "failed";
+
+        if (mountedRef.current) {
+          setAnswers((current) => ({
+            ...current,
+            [questionId]: {
+              ...current[questionId],
+              decision: "started_dof",
+              decisionTargetTable: "corrective_actions",
+              decisionTargetId: created.id,
+              decisionAt: new Date().toISOString(),
+              suggestionReviewed: true,
+            },
+          }));
+        }
+        return "ok";
+      } finally {
+        if (mountedRef.current) setCapaStartingQuestionId(null);
+      }
+    },
+    [activeRun, activeTemplate, answers],
+  );
+
   const completeRun = useCallback<SessionActions["completeRun"]>(async () => {
     if (!activeRun) return false;
     const ok = await apiCompleteRun(activeRun.id);
@@ -297,9 +373,20 @@ export function useInspectionSession(): [SessionState, SessionActions] {
       loadingTemplates,
       loadingActive,
       savingAnswer,
+      capaStartingQuestionId,
       startRunIssue,
     }),
-    [templates, activeTemplate, activeRun, answers, loadingTemplates, loadingActive, savingAnswer, startRunIssue],
+    [
+      templates,
+      activeTemplate,
+      activeRun,
+      answers,
+      loadingTemplates,
+      loadingActive,
+      savingAnswer,
+      capaStartingQuestionId,
+      startRunIssue,
+    ],
   );
 
   const actions = useMemo<SessionActions>(
@@ -309,10 +396,20 @@ export function useInspectionSession(): [SessionState, SessionActions] {
       startRun,
       saveAnswer,
       recordDecisionFor,
+      startCapaFromInspectionFinding,
       completeRun,
       abandonRun,
     }),
-    [refreshTemplates, selectTemplate, startRun, saveAnswer, recordDecisionFor, completeRun, abandonRun],
+    [
+      refreshTemplates,
+      selectTemplate,
+      startRun,
+      saveAnswer,
+      recordDecisionFor,
+      startCapaFromInspectionFinding,
+      completeRun,
+      abandonRun,
+    ],
   );
 
   return [state, actions];

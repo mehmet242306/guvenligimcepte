@@ -292,6 +292,118 @@ export async function createCorrectiveActionFromFinding(
   return mapCorrectiveActionRow(data);
 }
 
+function mapInspectionCategoryToIshikawa(category: string | null | undefined): IshikawaCategory {
+  const k = (category ?? "").toLowerCase();
+  if (
+    k.includes("elektrik") ||
+    k.includes("makine") ||
+    k.includes("ekipman") ||
+    k.includes("trafik")
+  ) {
+    return "makine";
+  }
+  if (k.includes("kimyasal") || k.includes("biyolojik")) return "malzeme";
+  if (k.includes("ergonom") || k.includes("kkd") || k.includes("kişisel") || k.includes("insan")) return "insan";
+  if (k.includes("yangın") || k.includes("cevre") || k.includes("çevre") || k.includes("acil")) return "cevre";
+  if (k.includes("ölçüm")) return "olcum";
+  return "metot";
+}
+
+function mapInspectionResponseToPriority(status: "uygunsuz" | "kritik"): CorrectiveActionPriority {
+  return status === "kritik" ? "Kritik" : "Yüksek";
+}
+
+function inspectionDefaultDeadline(
+  status: "uygunsuz" | "kritik",
+  actionDeadline: string | null | undefined,
+): string {
+  const trimmed = actionDeadline?.trim();
+  if (trimmed) return trimmed;
+  const days = status === "kritik" ? 7 : 21;
+  return new Date(Date.now() + days * 86400000).toISOString().split("T")[0];
+}
+
+export type CreateFromInspectionAnswerInput = {
+  companyWorkspaceId: string;
+  inspectionRunId: string;
+  inspectionRunCode: string | null;
+  inspectionAnswerId: string;
+  questionId: string;
+  questionText: string;
+  questionCategory: string | null | undefined;
+  responseStatus: "uygunsuz" | "kritik";
+  note: string | null | undefined;
+  actionTitle: string | null | undefined;
+  actionDeadline: string | null | undefined;
+};
+
+/**
+ * Saha denetimi (inspection) tespitinden DÖF (corrective_action) oluşturur.
+ * Olay kaynaklı DÖF'lerden ayrıştırmak için metadata.source = "field_inspection" kullanılır.
+ */
+export async function createCorrectiveActionFromInspectionAnswer(
+  input: CreateFromInspectionAnswerInput,
+): Promise<CorrectiveActionRecord | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+
+  const auth = await resolveOrganizationId();
+  if (!auth) {
+    console.warn("[corrective-actions] createFromInspectionAnswer: auth failed");
+    return null;
+  }
+
+  const ishikawa = mapInspectionCategoryToIshikawa(input.questionCategory);
+  const priority = mapInspectionResponseToPriority(input.responseStatus);
+  const deadline = inspectionDefaultDeadline(input.responseStatus, input.actionDeadline);
+
+  const titleBase = input.questionText.trim() || "Saha denetimi tespiti";
+  const title = titleBase.length > 200 ? `${titleBase.slice(0, 197)}…` : titleBase;
+
+  const rootCause =
+    input.note?.trim() ||
+    `"${titleBase.slice(0, 120)}${titleBase.length > 120 ? "…" : ""}" maddesi için saha gözlemi.`;
+
+  const correctiveActionText =
+    input.actionTitle?.trim() ||
+    "Saha denetimi tespitine yönelik düzeltici faaliyet planlanacak ve uygulanacak.";
+
+  const { data, error } = await supabase
+    .from("corrective_actions")
+    .insert({
+      organization_id: auth.orgId,
+      company_workspace_id: input.companyWorkspaceId,
+      incident_id: null,
+      title,
+      root_cause: rootCause,
+      category: ishikawa,
+      corrective_action: correctiveActionText,
+      preventive_action: null,
+      deadline,
+      status: "tracking",
+      priority,
+      ai_generated: false,
+      metadata: {
+        source: "field_inspection",
+        inspection_run_id: input.inspectionRunId,
+        inspection_run_code: input.inspectionRunCode,
+        inspection_answer_id: input.inspectionAnswerId,
+        question_id: input.questionId,
+        response_status: input.responseStatus,
+      },
+      created_by: auth.userId,
+    })
+    .select("*, incidents(incident_code), company_workspaces(display_name)")
+    .single();
+
+  if (error || !data) {
+    console.warn("createCorrectiveActionFromInspectionAnswer:", error?.message);
+    return null;
+  }
+
+  return mapCorrectiveActionRow(data);
+}
+
 export async function addCorrectiveActionUpdate(input: {
   correctiveActionId: string;
   organizationId: string;

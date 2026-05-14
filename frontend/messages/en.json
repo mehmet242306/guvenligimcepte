@@ -6835,7 +6835,8 @@
       "uygun": "Conform",
       "uygunsuz": "Non-conformity",
       "kritik": "Critical",
-      "na": "N/A",
+      "na": "Not applicable",
+      "naHint": "Not applicable: use only when this checklist item truly does not apply at this visit. A short justification is required.",
       "awaiting": "Awaiting answer"
     },
     "sources": {
@@ -6908,7 +6909,7 @@
       "criticalBadge": "Critical: photo + action required",
       "placeholderFieldNote": "Field note",
       "placeholderSuggestedAction": "Suggested action",
-      "naReasonPlaceholder": "N/A justification (required)"
+      "naReasonPlaceholder": "Brief justification — why this item is not applicable (required)"
     },
     "findings": {
       "introTitle": "Review screen:",
@@ -6929,6 +6930,12 @@
       "newRiskDraft": "New risk draft",
       "ignore": "Ignore",
       "reviewOnly": "Mark reviewed only",
+      "dofStartSuccess": "A CAPA record was created and linked to this finding.",
+      "dofStartNoWorkspace": "No company workspace could be resolved for CAPA. Check your active workspace / company mapping, then try again.",
+      "dofStartFailed": "CAPA could not be created. Check permissions and try again.",
+      "dofStarting": "Creating…",
+      "dofLinkedHint": "A CAPA is already linked to this finding.",
+      "dofOpenDetail": "Open CAPA details",
       "emptyTitle": "No findings yet",
       "emptyBody": "Non-conform or critical answers during the active review appear here as findings."
     },
@@ -6985,7 +6992,7 @@
       "statUygun": "Conform",
       "statUygunsuz": "Non-conform",
       "statKritik": "Critical",
-      "statNa": "N/A",
+      "statNa": "Not applicable",
       "gapsTitle": "{count} gaps found",
       "gapsNone": "All required fields complete",
       "complete": "Complete inspection",
@@ -7071,6 +7078,10 @@
     "card": {
       "codeFallback": "CAPA",
       "sourceLabel": "Source:",
+      "sourceKindIncident": "Incident {code}",
+      "sourceKindFieldInspection": "Field inspection finding",
+      "sourceKindRiskFinding": "Risk analysis finding",
+      "sourceKindOther": "Standalone record",
       "standalone": "Standalone record",
       "noCompany": "No company specified",
       "deadline": "Due date",

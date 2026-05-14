@@ -294,6 +294,7 @@ function QuestionCard({
             );
           })}
         </div>
+        <p className="text-[11px] leading-relaxed text-muted-foreground sm:text-xs">{t("response.naHint")}</p>
 
         {needsDetail ? (
           <div className="mt-3 space-y-3 rounded-2xl border border-border bg-muted/20 p-4">

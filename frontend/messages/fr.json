@@ -6787,7 +6787,8 @@
       "uygun": "Conform",
       "uygunsuz": "Non-conformity",
       "kritik": "Critical",
-      "na": "N/A",
+      "na": "Not applicable",
+      "naHint": "Not applicable: use only when this checklist item truly does not apply at this visit. A short justification is required.",
       "awaiting": "Awaiting answer"
     },
     "sources": {
@@ -6879,6 +6880,12 @@
       "newRiskDraft": "New risk draft",
       "ignore": "Ignore",
       "reviewOnly": "Mark reviewed only",
+      "dofStartSuccess": "A CAPA record was created and linked to this finding.",
+      "dofStartNoWorkspace": "No company workspace could be resolved for CAPA. Check your active workspace / company mapping, then try again.",
+      "dofStartFailed": "CAPA could not be created. Check permissions and try again.",
+      "dofStarting": "Creating…",
+      "dofLinkedHint": "A CAPA is already linked to this finding.",
+      "dofOpenDetail": "Open CAPA details",
       "emptyTitle": "No findings yet",
       "emptyBody": "Non-conform or critical answers during the active review appear here as findings.",
       "introTitle": "Review screen:",
@@ -7219,6 +7226,10 @@
     "card": {
       "codeFallback": "CAPA",
       "sourceLabel": "Source :",
+      "sourceKindIncident": "Incident {code}",
+      "sourceKindFieldInspection": "Field inspection finding",
+      "sourceKindRiskFinding": "Risk analysis finding",
+      "sourceKindOther": "Standalone record",
       "standalone": "Enregistrement autonome",
       "noCompany": "Entreprise non indiquée",
       "deadline": "Échéance",

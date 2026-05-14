@@ -177,7 +177,15 @@ export function CorrectiveActionsClient() {
                     <p className="mt-1 text-base font-semibold text-foreground">{item.title}</p>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {t("card.sourceLabel")}{" "}
-                      {item.incidentCode ?? t("card.standalone")} · {item.companyName ?? t("card.noCompany")}
+                      {item.incidentCode
+                        ? t("card.sourceKindIncident", { code: item.incidentCode })
+                        : item.metadata?.source === "field_inspection"
+                          ? t("card.sourceKindFieldInspection")
+                          : item.metadata?.source === "risk_finding"
+                            ? t("card.sourceKindRiskFinding")
+                            : t("card.sourceKindOther")}
+                      {" · "}
+                      {item.companyName ?? t("card.noCompany")}
                     </p>
                   </div>
                   <div className="text-right">

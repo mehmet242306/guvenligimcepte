@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatusAlert } from "@/components/ui/status-alert";
 import { getActiveWorkspace, type WorkspaceRow } from "@/lib/supabase/workspace-api";
+import { resolveCompanyWorkspaceIdFromActiveWorkspaceId } from "@/lib/workspace-incident-site";
 import { CategoryTabs } from "./_components/CategoryTabs";
 import { ChecklistsTab } from "./_components/tabs/ChecklistsTab";
 import { ActiveInspectionTab } from "./_components/tabs/ActiveInspectionTab";
@@ -23,13 +24,16 @@ import type { SurfaceCategoryId } from "./_lib/constants";
 type WorkspaceContext = {
   name: string;
   countryCode: string;
+  /** Aktif Nova workspace — firma `company_workspaces` eşlemesi için */
+  novaWorkspaceId: string | null;
 };
 
 function mapWorkspace(row: WorkspaceRow | null, fallbackName: string): WorkspaceContext {
-  if (!row) return { name: fallbackName, countryCode: "TR" };
+  if (!row) return { name: fallbackName, countryCode: "TR", novaWorkspaceId: null };
   return {
     name: row.name,
     countryCode: row.country_code.toUpperCase(),
+    novaWorkspaceId: row.id,
   };
 }
 
@@ -40,6 +44,7 @@ export function FieldInspectionClient() {
   const [workspace, setWorkspace] = useState<WorkspaceContext>({
     name: t("workspaceFallback"),
     countryCode: "TR",
+    novaWorkspaceId: null,
   });
   const [activeCategory, setActiveCategory] = useState<SurfaceCategoryId>("checklists");
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
@@ -86,9 +91,15 @@ export function FieldInspectionClient() {
       setFeedback({ tone: "warning", message: t("feedback.selectChecklistFirst") });
       return;
     }
+    let companyWorkspaceId: string | null = null;
+    if (workspace.novaWorkspaceId) {
+      const mapped = await resolveCompanyWorkspaceIdFromActiveWorkspaceId(workspace.novaWorkspaceId);
+      companyWorkspaceId = mapped?.companyWorkspaceId ?? null;
+    }
     const run = await actions.startRun({
       mode,
       siteLabel: (state.activeTemplate.metadata as { siteLabel?: string })?.siteLabel ?? undefined,
+      companyWorkspaceId,
     });
     if (run) {
       setFeedback({

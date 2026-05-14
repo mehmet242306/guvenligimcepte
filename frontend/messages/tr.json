@@ -6835,7 +6835,8 @@
       "uygun": "Uygun",
       "uygunsuz": "Uygunsuz",
       "kritik": "Kritik",
-      "na": "N/A",
+      "na": "Uygulanamaz",
+      "naHint": "Uygulanamaz: Madde bu ziyaret için gerçekten geçerli değilse seçin. Kısa gerekçe yazılması zorunludur.",
       "awaiting": "Cevap bekliyor"
     },
     "sources": {
@@ -6908,7 +6909,7 @@
       "criticalBadge": "Kritik: fotoğraf + aksiyon zorunlu",
       "placeholderFieldNote": "Saha notu",
       "placeholderSuggestedAction": "Önerilen aksiyon",
-      "naReasonPlaceholder": "N/A gerekçesi (zorunlu)"
+      "naReasonPlaceholder": "Bu madde bu denetim için neden geçerli değil? (kısa açıklama, zorunlu)"
     },
     "findings": {
       "introTitle": "Değerlendirme ekranı:",
@@ -6929,6 +6930,12 @@
       "newRiskDraft": "Yeni risk taslağı",
       "ignore": "Yok say",
       "reviewOnly": "Sadece incele",
+      "dofStartSuccess": "DÖF kaydı oluşturuldu ve bu tespitle ilişkilendirildi.",
+      "dofStartNoWorkspace": "DÖF için firma çalışma alanı çözümlenemedi. Aktif çalışma alanı / firma eşlemesini kontrol edip yeniden deneyin.",
+      "dofStartFailed": "DÖF oluşturulamadı. Yetkilerinizi kontrol edip tekrar deneyin.",
+      "dofStarting": "Oluşturuluyor…",
+      "dofLinkedHint": "Bu tespit için zaten bir DÖF bağlı.",
+      "dofOpenDetail": "DÖF detayını aç",
       "emptyTitle": "Henüz tespit yok",
       "emptyBody": "Aktif inceleme sırasında uygunsuz veya kritik cevaplar burada tespit olarak görünür."
     },
@@ -6985,7 +6992,7 @@
       "statUygun": "Uygun",
       "statUygunsuz": "Uygunsuz",
       "statKritik": "Kritik",
-      "statNa": "N/A",
+      "statNa": "Uygulanamaz",
       "gapsTitle": "{count} eksik alan tespit edildi",
       "gapsNone": "Tüm zorunlu alanlar tamam",
       "complete": "Denetimi tamamla",
@@ -7267,6 +7274,10 @@
     "card": {
       "codeFallback": "DÖF",
       "sourceLabel": "Kaynak:",
+      "sourceKindIncident": "Olay {code}",
+      "sourceKindFieldInspection": "Saha denetimi tespiti",
+      "sourceKindRiskFinding": "Risk analizi bulgusu",
+      "sourceKindOther": "Bağımsız kayıt",
       "standalone": "Bağımsız kayıt",
       "noCompany": "Firma belirtilmedi",
       "deadline": "Termin",
