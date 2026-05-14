@@ -740,6 +740,110 @@ body,
   animation-delay: 0.52s;
 }
 
+.landing-hero-enter--d3a {
+  animation-delay: 0.46s;
+}
+
+/* Hero — native iOS App Store CTA (animated ring) */
+@keyframes landing-app-store-orbit {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.landing-app-store-cta-shell {
+  position: relative;
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 1.35rem;
+  overflow: hidden;
+  box-shadow:
+    0 0 36px rgba(56, 189, 248, 0.22),
+    0 0 72px rgba(251, 191, 36, 0.08),
+    0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.landing-app-store-cta-spin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 220%;
+  height: 220%;
+  transform: translate(-50%, -50%);
+  background: conic-gradient(
+    from 0deg,
+    rgba(148, 163, 184, 0.95),
+    rgba(56, 189, 248, 1),
+    rgba(129, 140, 248, 1),
+    rgba(251, 191, 36, 0.98),
+    rgba(244, 114, 182, 0.8),
+    rgba(148, 163, 184, 0.95)
+  );
+  animation: landing-app-store-orbit 4.5s linear infinite;
+  pointer-events: none;
+}
+
+.landing-app-store-cta-link {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 3.5rem;
+  padding: 0.95rem 1.85rem;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, #111827 0%, #020617 55%, #020617 100%);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #fff;
+  text-decoration: none;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
+}
+
+.landing-app-store-cta-link:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  filter: brightness(1.08);
+}
+
+.landing-app-store-cta-link:focus-visible {
+  outline: 2px solid rgba(251, 191, 36, 0.85);
+  outline-offset: 3px;
+}
+
+@media (min-width: 640px) {
+  .landing-app-store-cta-link {
+    min-height: 4rem;
+    padding: 1.05rem 2.15rem;
+    font-size: 1.0625rem;
+  }
+
+  .landing-app-store-cta-shell {
+    border-radius: 1.45rem;
+  }
+
+  .landing-app-store-cta-link {
+    border-radius: 1.28rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-app-store-cta-spin {
+    animation: none;
+    opacity: 0.55;
+  }
+
+  .landing-app-store-cta-link:hover {
+    transform: none;
+  }
+}
+
 @media (max-width: 640px) {
   .landing-isg-shield-anchor {
     top: 2%;

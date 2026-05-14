@@ -131,32 +131,40 @@ export default async function LandingPage() {
                 {t("heroSubtitle")}
               </p>
 
-              <div className="landing-hero-enter landing-hero-enter--d3 mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
-                <Link href="/register" className={primaryLinkClass + " hover-glow"}>
-                  {tc("freeStart")}
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="ml-1">
-                    <path
-                      d="M6 3l5 5-5 5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </Link>
-                <Link href="/login" className={secondaryLinkClass}>
-                  {tc("platformLogin")}
-                </Link>
-                <a
-                  href={RISKNOVA_IOS_APP_STORE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={secondaryLinkClass + " hover-glow"}
-                  aria-label={t("appStoreAria")}
-                >
-                  <Apple className="h-5 w-5 shrink-0" aria-hidden />
-                  {t("appStoreLabel")}
-                </a>
+              <div className="landing-hero-enter landing-hero-enter--d3 mt-10 flex w-full max-w-2xl flex-col items-center gap-5">
+                <div className="flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+                  <Link href="/register" className={primaryLinkClass + " hover-glow"}>
+                    {tc("freeStart")}
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="ml-1">
+                      <path
+                        d="M6 3l5 5-5 5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Link>
+                  <Link href="/login" className={secondaryLinkClass}>
+                    {tc("platformLogin")}
+                  </Link>
+                </div>
+
+                <div className="landing-hero-enter landing-hero-enter--d3a flex flex-col items-center">
+                  <div className="landing-app-store-cta-shell">
+                    <div className="landing-app-store-cta-spin" aria-hidden />
+                    <a
+                      href={RISKNOVA_IOS_APP_STORE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="landing-app-store-cta-link"
+                      aria-label={t("appStoreAria")}
+                    >
+                      <Apple className="h-7 w-7 shrink-0 sm:h-8 sm:w-8" aria-hidden />
+                      {t("appStoreLabel")}
+                    </a>
+                  </div>
+                </div>
               </div>
               <p className="landing-hero-enter landing-hero-enter--d4 mt-4 max-w-md text-center text-xs leading-relaxed text-slate-400">
                 {t("appStoreHint")}
