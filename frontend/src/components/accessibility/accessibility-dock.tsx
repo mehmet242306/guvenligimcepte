@@ -329,9 +329,9 @@ export function AccessibilityDock() {
           <span className={fabGlass} aria-hidden />
           <span className="relative z-[1] flex items-center justify-center">
             {open ? (
-              <X className="h-6 w-6 shrink-0 text-slate-50" strokeWidth={2.25} aria-hidden />
+              <X className="h-7 w-7 shrink-0 text-slate-50" strokeWidth={2.35} aria-hidden />
             ) : (
-              <UniversalAccessMark className="h-[1.72rem] w-[1.72rem]" variant="onDark" />
+              <UniversalAccessMark className="h-[2.62rem] w-[2.62rem]" variant="onDark" />
             )}
           </span>
         </button>
