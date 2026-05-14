@@ -61,15 +61,15 @@ export function ActiveCompanyNavLink({ label, locked }: Props) {
         aria-disabled="true"
         title={locked ? t("header.lockedModuleTooltip") : t("common.loading")}
       >
-        <Building2 className="h-3.5 w-3.5" />
+        <Building2 className="h-3.5 w-3.5" aria-hidden />
         {resolvedLabel}
       </span>
     );
   }
 
   return (
-    <Link href={href} className={classes} title={ws?.name ?? t("nav.firmaWorkspace")}>
-      <Building2 className="h-3.5 w-3.5" />
+    <Link href={href} className={classes} title={ws?.name ?? t("nav.firmaWorkspace")} aria-current={active ? "page" : undefined}>
+      <Building2 className="h-3.5 w-3.5" aria-hidden />
       {resolvedLabel}
       {active && (
         <span className="absolute inset-x-1.5 bottom-0 h-0.5 rounded-full bg-[var(--secondary-nav-active)]" />

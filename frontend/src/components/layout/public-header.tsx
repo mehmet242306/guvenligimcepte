@@ -101,7 +101,7 @@ export function PublicHeader() {
               aria-label={mobileOpen ? t("common.closeMenu") : t("common.openMenu")}
               onClick={() => setMobileOpen((v) => !v)}
             >
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileOpen ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
             </button>
 
             {authenticated ? (

@@ -117,6 +117,7 @@ export function ActiveCompanyBar() {
                     "flex min-w-0 max-w-[min(100%,36rem)] shrink-0 items-center gap-2 rounded-lg border border-transparent px-1 py-0.5 text-left transition hover:border-border hover:bg-muted/45",
                     open && "border-border bg-muted/35",
                   )}
+                  aria-label={tWorkspace("openSwitcherAria", { name: displayName })}
                   title={`${tWorkspace("switcher")} — ${displayName}`}
                 >
                   {profile?.logoUrl ? (
@@ -129,7 +130,7 @@ export function ActiveCompanyBar() {
                     />
                   ) : (
                     <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-[var(--gold)]/15 text-[var(--gold)]">
-                      <Building2 className="h-4 w-4" />
+                      <Building2 className="h-4 w-4" aria-hidden />
                     </span>
                   )}
                   <span className="hidden shrink-0 rounded-full border border-border/80 bg-background/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:inline-flex">
@@ -155,7 +156,7 @@ export function ActiveCompanyBar() {
             <div className="hidden min-w-0 flex-1 items-center gap-1.5 overflow-hidden lg:flex">
               {profile?.hazardClass ? (
                 <Badge variant={hazardTone(profile.hazardClass)} className="hidden shrink-0 gap-1 md:inline-flex">
-                  <Shield className="h-3 w-3" />
+                  <Shield className="h-3 w-3" aria-hidden />
                   {profile.hazardClass}
                 </Badge>
               ) : null}
@@ -185,7 +186,7 @@ export function ActiveCompanyBar() {
                   className="inline-flex items-center gap-1 whitespace-nowrap"
                   title={t("activeCompanyBar.personnelCountTitle")}
                 >
-                  <Users className="h-3.5 w-3.5" />
+                  <Users className="h-3.5 w-3.5" aria-hidden />
                   <span className="font-medium text-foreground">{profile.personnelActive}</span>
                   <span className="opacity-70">/ {profile.personnelTotal}</span>
                 </span>
@@ -209,9 +210,10 @@ export function ActiveCompanyBar() {
               "inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground",
             )}
             title={t("activeCompanyBar.detailLinkTitle")}
+            aria-label={t("activeCompanyBar.detailLinkTitle")}
           >
             <span className="hidden sm:inline">{t("activeCompanyBar.detailLink")}</span>
-            <ChevronRight className="h-3.5 w-3.5" />
+            <ChevronRight className="h-3.5 w-3.5" aria-hidden />
           </Link>
         </div>
       </div>

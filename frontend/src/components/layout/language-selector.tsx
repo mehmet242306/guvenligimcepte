@@ -245,7 +245,7 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
             <Flag />
             <span>{lang.label}</span>
             {isActive && (
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto text-primary" aria-hidden>
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             )}
@@ -271,7 +271,7 @@ export function LanguageSelector({ variant = "light" }: { variant?: "light" | "d
       >
         <FlagIcon />
         <span className="hidden sm:inline">{current.code.toUpperCase()}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={cn("transition-transform", open && "rotate-180")}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={cn("transition-transform", open && "rotate-180")} aria-hidden>
           <polyline points="6 9 12 15 18 9" />
         </svg>
       </button>

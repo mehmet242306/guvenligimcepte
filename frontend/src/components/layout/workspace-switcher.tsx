@@ -237,6 +237,7 @@ export function WorkspaceSwitcher({
         "group inline-flex h-12 items-center justify-between rounded-2xl border border-[rgba(231,205,163,0.28)] bg-[linear-gradient(180deg,rgba(231,205,163,0.18)_0%,rgba(231,205,163,0.08)_100%)] px-3.5 text-left text-[var(--gold-light)] shadow-[0_16px_32px_rgba(0,0,0,0.18)] transition-all duration-200 hover:border-[rgba(231,205,163,0.5)] hover:bg-[linear-gradient(180deg,rgba(231,205,163,0.24)_0%,rgba(231,205,163,0.12)_100%)] hover:text-white",
         variant === "mobile" ? "w-full min-w-0" : "w-[248px]",
       )}
+      aria-label={t("openSwitcherAria", { name: activeLabel })}
       title={`${t("switcher")}${active ? ` - ${activeLabel}` : ""}`}
     >
       <div className="min-w-0">

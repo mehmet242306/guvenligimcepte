@@ -403,9 +403,9 @@ function ThemeToggle() {
       className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white sm:h-11 sm:w-11"
     >
       {dark ? (
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       ) : (
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       )}
     </button>
   );
@@ -482,7 +482,7 @@ function NotificationBell() {
         className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl text-[var(--nav-icon-color)] transition-all duration-200 hover:bg-white/10 hover:text-white sm:h-11 sm:w-11"
         aria-label={t("header.notificationsAria")}
       >
-        <svg className="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+        <svg className="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6} aria-hidden>
           <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
         </svg>
         {unreadCount > 0 && (
@@ -521,7 +521,7 @@ function NotificationBell() {
                       className="block"
                     >
                       <div className="flex items-start gap-2.5">
-                        <div className={`mt-1 h-2 w-2 shrink-0 rounded-full ${levelColor(n.level)}`} />
+                        <div className={`mt-1 h-2 w-2 shrink-0 rounded-full ${levelColor(n.level)}`} aria-hidden />
                         <div className="min-w-0 flex-1">
                           <p className="text-xs font-semibold text-foreground">{n.title}</p>
                           <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2">{n.message}</p>
@@ -533,8 +533,12 @@ function NotificationBell() {
                       </div>
                     </Link>
                   ) : (
-                    <div className="flex items-start gap-2.5" onClick={() => void markAsRead(n.id)} role="button" tabIndex={0}>
-                      <div className={`mt-1 h-2 w-2 shrink-0 rounded-full ${levelColor(n.level)}`} />
+                    <button
+                      type="button"
+                      className="flex w-full items-start gap-2.5 rounded-none px-4 py-3 text-left transition-colors hover:bg-muted/40"
+                      onClick={() => void markAsRead(n.id)}
+                    >
+                      <div className={`mt-1 h-2 w-2 shrink-0 rounded-full ${levelColor(n.level)}`} aria-hidden />
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-semibold text-foreground">{n.title}</p>
                         <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2">{n.message}</p>
@@ -543,7 +547,7 @@ function NotificationBell() {
                           <span>{formatRelativePast(n.created_at, locale)}</span>
                         </div>
                       </div>
-                    </div>
+                    </button>
                   )}
                 </div>
               ))
@@ -594,6 +598,7 @@ function HeaderSignOutButton() {
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
+        aria-hidden
       >
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
         <polyline points="16 17 21 12 16 7" />
@@ -1123,7 +1128,7 @@ export function ProtectedShell({
                 aria-label={t("common.profile")}
                 title={t("common.profile")}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M20 21a8 8 0 0 0-16 0" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>
@@ -1136,7 +1141,7 @@ export function ProtectedShell({
                   aria-label={t("nav.platformAdminHome")}
                   title={t("nav.platformAdminHome")}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
                     <path d="M9.5 12.5l1.8 1.8 3.2-4.3" />
                   </svg>
