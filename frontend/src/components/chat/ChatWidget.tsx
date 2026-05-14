@@ -1826,7 +1826,17 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                   </span>
                 </h2>
                 <p className="mt-1 text-[14px] font-medium leading-snug text-white/78 sm:text-[15px]">{ui.widget.heroPrompt}</p>
-                <p className="mt-2 truncate text-[11px] text-white/40">
+                <p
+                  className="mt-1.5 inline-flex max-w-full items-center gap-1.5 rounded-full border border-emerald-400/35 bg-emerald-950/35 px-2.5 py-0.5 text-[11px] font-medium leading-none text-emerald-50/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                  title={ui.widget.statusHint}
+                >
+                  <span
+                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_0_2px_rgba(16,185,129,0.35)]"
+                    aria-hidden
+                  />
+                  <span className="truncate">{ui.widget.statusTitle}</span>
+                </p>
+                <p className="mt-1.5 truncate text-[11px] text-white/40">
                   {assistantName} · {assistantSubtitle}
                 </p>
               </div>
@@ -1859,19 +1869,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           <div className="flex min-h-0 flex-1 flex-col bg-background">
           {!(activeTab === "history" && isAuthenticated) ? (
             <>
-            <div className="shrink-0 px-3.5 pt-3">
-              <div className="rounded-2xl border border-border/90 bg-card px-4 py-3 shadow-[var(--shadow-soft)]">
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
-                    <Check className="size-[18px] stroke-[2.5]" />
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold leading-snug text-foreground sm:text-[15px]">{ui.widget.statusTitle}</p>
-                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">{ui.widget.statusHint}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
           <div className="min-h-0 flex-1 space-y-3.5 overflow-y-auto px-3.5 py-3">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
