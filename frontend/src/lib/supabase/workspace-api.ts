@@ -104,7 +104,7 @@ async function listOnboardingMemberships(): Promise<WorkspaceMembership[]> {
   }
 }
 
-function readLocalWorkspaceContext(): LocalWorkspaceContext | null {
+export function readLocalWorkspaceContext(): LocalWorkspaceContext | null {
   if (!isBrowser()) return null;
 
   try {

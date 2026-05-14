@@ -2088,7 +2088,22 @@
         "narrative": "Описание инцидента",
         "narrativePlaceholder": "Опишите инцидент подробно (минимум 50 символов)…",
         "time": "Время инцидента",
-        "witnesses": "Свидетели"
+        "witnesses": "Свидетели",
+        "workspaceLoading": "Loading your active workspace…",
+        "workspaceContextLabel": "Workplace for this record",
+        "workspaceContextSub": "Incidents are tied to the workspace selected in the header. The company dropdown has been removed to avoid mixing data between accounts.",
+        "workspaceRequired": "A valid active workspace is required before continuing.",
+        "workspaceMissing": "No active workspace was found. Select a workspace in the header or complete onboarding.",
+        "workspaceNotAllowed": "Your active workspace is not in your accessible workspace list. Pick another workspace from the header or re-open onboarding.",
+        "workspaceResolveFailed": "We could not resolve a company record for this workspace. Try completing workspace onboarding again.",
+        "workspaceOnboardingLink": "Open workspace onboarding",
+        "unit": "Unit",
+        "unitPlaceholder": "Select unit…",
+        "locationSelect": "Location",
+        "locationFree": "Location / site (free text)",
+        "locationFreePlaceholder": "Describe the site or area if you have not defined structured locations yet…",
+        "taxonomyHint": "Add units and locations under your workspace company profile to enable dropdowns here.",
+        "spatialRequired": "Select the required unit and/or location, or describe the site in the text field when lists are empty."
       },
       "basicDescription": "Введите компанию, описание инцидента, свидетелей и детали первой помощи.",
       "basicTitle": "Основная информация",
@@ -5120,7 +5135,8 @@
           "Everything in Free",
           "50 Nova messages",
           "5 risk analyses and 5 field inspections",
-          "5 document generations and 5 exports"
+          "5 document generations and 5 exports",
+          "1 incident / root cause analysis and 4 exports"
         ]
       }
     },

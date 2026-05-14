@@ -24,6 +24,10 @@ export type IncidentRecord = {
   incidentTime: string | null;
   incidentLocation: string | null;
   incidentDepartment: string | null;
+  /** When set on insert, links to public.locations */
+  locationId?: string | null;
+  /** When set on insert, links to public.departments (organizational unit / birim) */
+  departmentId?: string | null;
   incidentEnvironment: string | null;
   shiftStartTime: string | null;
   shiftEndTime: string | null;
@@ -205,6 +209,8 @@ function mapIncidentRow(row: any): IncidentRecord {
     incidentTime: row.incident_time,
     incidentLocation: row.incident_location,
     incidentDepartment: row.incident_department,
+    locationId: row.location_id ?? null,
+    departmentId: row.department_id ?? null,
     incidentEnvironment: row.incident_environment,
     shiftStartTime: row.shift_start_time,
     shiftEndTime: row.shift_end_time,
@@ -342,6 +348,8 @@ function toSnake(record: Partial<IncidentRecord>) {
     incidentTime: "incident_time",
     incidentLocation: "incident_location",
     incidentDepartment: "incident_department",
+    locationId: "location_id",
+    departmentId: "department_id",
     incidentEnvironment: "incident_environment",
     shiftStartTime: "shift_start_time",
     shiftEndTime: "shift_end_time",

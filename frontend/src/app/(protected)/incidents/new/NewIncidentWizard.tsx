@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHeader } from "@/components/ui/page-header";
 import { clearPersistedStates, usePersistedState } from "@/lib/use-persisted-state";
-import { loadCompanyDirectory } from "@/lib/company-directory";
 import { calculateBusinessDayDeadline, type CorrectiveActionAiSuggestion, type IshikawaAiResponse } from "@/lib/incidents/ai";
 import { requestCorrectiveActions, requestIshikawaAnalysis } from "@/lib/incidents/ai-client";
 import { addWitness, createDof, createIncident, createIshikawa, saveIncidentPersonnel, type IncidentRecord, type IncidentType } from "@/lib/supabase/incident-api";
@@ -45,10 +44,25 @@ import { shareOrDownloadPdf } from "@/lib/pdf-generator";
 import type { PdfReportMeta } from "@/lib/pdf-shared-template";
 import { createClient } from "@/lib/supabase/client";
 import { buildR2dRcaPdfI18n } from "@/lib/r2d-rca-pdf-i18n";
+import {
+  getActiveWorkspace,
+  listMyWorkspaces,
+  readLocalWorkspaceContext,
+} from "@/lib/supabase/workspace-api";
+import {
+  fetchWorkspaceUnitAndLocationOptions,
+  labelFromSitePickId,
+  resolveCompanyWorkspaceIdFromActiveWorkspaceId,
+  type SitePickOption,
+} from "@/lib/workspace-incident-site";
 
 const METHOD_ICON_MAP: Record<string, typeof GitBranch> = {
   GitBranch, HelpCircle, Network, Link: LinkIcon, Target, Building2, Activity,
 };
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
 
 type Step = "type" | "basic" | "ishikawa" | "dof" | "review";
 type Cat = "insan" | "makine" | "metot" | "malzeme" | "olcum" | "cevre";
@@ -99,8 +113,9 @@ export function NewIncidentWizard() {
   const [companyId, setCompanyId] = usePersistedState<string | null>("incident:v2:company", null);
   const [incidentDate, setIncidentDate] = usePersistedState("incident:v2:date", "");
   const [incidentTime, setIncidentTime] = usePersistedState("incident:v2:time", "");
-  const [location, setLocation] = usePersistedState("incident:v2:location", "");
-  const [department, setDepartment] = usePersistedState("incident:v2:department", "");
+  const [locationFreeText, setLocationFreeText] = usePersistedState("incident:v2:location", "");
+  const [unitPick, setUnitPick] = usePersistedState("incident:v2:unitPick", "");
+  const [locPick, setLocPick] = usePersistedState("incident:v2:locPick", "");
   const [affectedPersons, setAffectedPersons] = usePersistedState<PickedPerson[]>("incident:v2:affectedPersons", []);
   const [narrative, setNarrative] = usePersistedState("incident:v2:narrative", "");
   const [firstAidProvided, setFirstAidProvided] = usePersistedState("incident:v2:firstAidProvided", false);
@@ -129,6 +144,12 @@ export function NewIncidentWizard() {
   const [sgkAjandaBusy, setSgkAjandaBusy] = useState(false);
   const [sgkAjandaStatus, setSgkAjandaStatus] = useState<"idle" | "success" | "error">("idle");
   const [sgkAjandaError, setSgkAjandaError] = useState<string | null>(null);
+  const [workspaceGate, setWorkspaceGate] = useState<"loading" | "ready" | "error">("loading");
+  const [workspaceGateMessage, setWorkspaceGateMessage] = useState<string | null>(null);
+  const [displayCompanyLabel, setDisplayCompanyLabel] = useState("");
+  const [sectorForAi, setSectorForAi] = useState("");
+  const [unitOptions, setUnitOptions] = useState<SitePickOption[]>([]);
+  const [locOptions, setLocOptions] = useState<SitePickOption[]>([]);
 
   const t = useTranslations("incidents");
   const tw = useTranslations("incidents.wizard");
@@ -213,9 +234,113 @@ export function NewIncidentWizard() {
     return () => { cancelled = true; };
   }, [tw]);
 
-  const companies = useMemo(() => loadCompanyDirectory(), []);
-  const selectedCompany = companies.find((item) => item.id === companyId) ?? null;
-  const steps: Step[] = useMemo(() => (incidentType === "other" ? ["type", "basic", "review"] : ["type", "basic", "ishikawa", "dof", "review"]), [incidentType]);
+  const needUnitOptions = unitOptions.length > 0;
+  const needLocOptions = locOptions.length > 0;
+
+  const locationSummary = useMemo(() => {
+    const unitName =
+      unitOptions.find((o) => o.id === unitPick)?.name ??
+      (unitPick ? labelFromSitePickId(unitPick) : "") ??
+      "";
+    const locName =
+      locOptions.find((o) => o.id === locPick)?.name ??
+      (locPick ? labelFromSitePickId(locPick) : "") ??
+      "";
+    const joined = [unitName, locName].filter(Boolean).join(" · ");
+    if (joined) return joined;
+    return locationFreeText.trim();
+  }, [unitOptions, locOptions, unitPick, locPick, locationFreeText]);
+
+  const spatialOk = useMemo(() => {
+    if (needLocOptions || needUnitOptions) {
+      return (needLocOptions ? !!locPick : true) && (needUnitOptions ? !!unitPick : true);
+    }
+    return locationFreeText.trim().length > 0;
+  }, [needLocOptions, needUnitOptions, locPick, unitPick, locationFreeText]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function bootstrapWorkspace() {
+      setWorkspaceGate("loading");
+      setWorkspaceGateMessage(null);
+      try {
+        const [memberships, activeWs] = await Promise.all([listMyWorkspaces(), getActiveWorkspace()]);
+        if (cancelled) return;
+        const local = readLocalWorkspaceContext();
+        const candidate = activeWs ?? local?.workspace ?? null;
+        if (!candidate?.id) {
+          setWorkspaceGate("error");
+          setWorkspaceGateMessage(tw("basic.workspaceMissing"));
+          setCompanyId(null);
+          return;
+        }
+        if (memberships.length > 0 && !memberships.some((m) => m.workspace.id === candidate.id)) {
+          setWorkspaceGate("error");
+          setWorkspaceGateMessage(tw("basic.workspaceNotAllowed"));
+          setCompanyId(null);
+          return;
+        }
+        const resolved = await resolveCompanyWorkspaceIdFromActiveWorkspaceId(candidate.id);
+        if (cancelled) return;
+        if (!resolved) {
+          setWorkspaceGate("error");
+          setWorkspaceGateMessage(tw("basic.workspaceResolveFailed"));
+          setCompanyId(null);
+          return;
+        }
+        setCompanyId(resolved.companyWorkspaceId);
+        setDisplayCompanyLabel(resolved.displayLabel);
+        setSectorForAi(resolved.sector);
+        const opts = await fetchWorkspaceUnitAndLocationOptions(resolved.companyWorkspaceId);
+        if (cancelled) return;
+        setUnitOptions(opts.units);
+        setLocOptions(opts.locations);
+        setWorkspaceGate("ready");
+      } catch {
+        if (!cancelled) {
+          setWorkspaceGate("error");
+          setWorkspaceGateMessage(tw("basic.workspaceResolveFailed"));
+          setCompanyId(null);
+        }
+      }
+    }
+
+    void bootstrapWorkspace();
+    return () => {
+      cancelled = true;
+    };
+  }, [setCompanyId, tw]);
+
+  useEffect(() => {
+    function onWorkspaceChanged() {
+      void (async () => {
+        const activeWs = await getActiveWorkspace();
+        const local = readLocalWorkspaceContext();
+        const candidate = activeWs ?? local?.workspace ?? null;
+        if (!candidate?.id) return;
+        const resolved = await resolveCompanyWorkspaceIdFromActiveWorkspaceId(candidate.id);
+        if (!resolved) return;
+        setCompanyId(resolved.companyWorkspaceId);
+        setDisplayCompanyLabel(resolved.displayLabel);
+        setSectorForAi(resolved.sector);
+        const opts = await fetchWorkspaceUnitAndLocationOptions(resolved.companyWorkspaceId);
+        setUnitOptions(opts.units);
+        setLocOptions(opts.locations);
+        setUnitPick("");
+        setLocPick("");
+        setWorkspaceGate("ready");
+      })();
+    }
+    window.addEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
+    return () => window.removeEventListener("risknova:active-workspace-changed", onWorkspaceChanged);
+  }, [setCompanyId, setLocPick, setUnitPick]);
+
+  const steps: Step[] = useMemo(
+    () => (incidentType === "other" ? ["type", "basic", "review"] : ["type", "basic", "ishikawa", "dof", "review"]),
+    [incidentType],
+  );
+
   const currentStep = steps[Math.min(stepIndex, steps.length - 1)] ?? "type";
   const requiredAi = incidentType === "work_accident" || incidentType === "occupational_disease";
 
@@ -228,12 +353,12 @@ export function NewIncidentWizard() {
   /** PDF için ortak meta üretici — tüm yöntemler aynı header/footer'ı kullanır */
   function buildPdfMeta(): Omit<PdfReportMeta, "reportTitle" | "reportSubtitle"> {
     const incidentTypeLabel = typeOptions.find((item) => item.value === incidentType)?.label;
-    const locationDept = [location, department].filter(Boolean).join(" · ");
+    const locationDept = locationSummary;
     const shareUrl = typeof window !== "undefined"
       ? `${window.location.origin}/incidents${savedIncident ? `/${savedIncident.id}` : "/new"}`
       : "";
     return {
-      companyName: selectedCompany?.name ?? null,
+      companyName: displayCompanyLabel || null,
       location: locationDept || null,
       incidentTitle: narrative || null,
       incidentDate: incidentDate || null,
@@ -405,7 +530,7 @@ export function NewIncidentWizard() {
     if (!incidentType || incidentType === "other" || !companyId) return;
     setBusy(true); setError(null);
     try {
-      const result = await requestIshikawaAnalysis({ incidentType, companyWorkspaceId: companyId, companySector: selectedCompany?.sector ?? "", location, narrative, affectedCount: affectedPersons.length, witnesses: witnessPersons.map((w) => w.fullName).filter(Boolean).join("; ") });
+      const result = await requestIshikawaAnalysis({ incidentType, companyWorkspaceId: companyId, companySector: sectorForAi, location: locationSummary, narrative, affectedCount: affectedPersons.length, witnesses: witnessPersons.map((w) => w.fullName).filter(Boolean).join("; ") });
       setIshikawa(result);
     } catch (e) {
       setError(e instanceof Error ? e.message : tw("alerts.aiBusy"));
@@ -495,11 +620,11 @@ export function NewIncidentWizard() {
   }
 
   const basicErrors = showErrors && currentStep === "basic" ? {
-    company: !companyId,
+    workspace: workspaceGate !== "ready" || !companyId,
+    spatial: !spatialOk,
     date: !incidentDate,
-    location: !location.trim(),
     narrative: narrative.trim().length < 50,
-  } : { company: false, date: false, location: false, narrative: false };
+  } : { workspace: false, spatial: false, date: false, narrative: false };
 
   const hasAnalysisData = useMemo(() => {
     switch (analysisMethod) {
@@ -516,18 +641,39 @@ export function NewIncidentWizard() {
 
   const canNext = useMemo(() => {
     if (currentStep === "type") return !!incidentType;
-    if (currentStep === "basic") return !!companyId && !!incidentDate && !!location.trim() && narrative.trim().length >= 50;
+    if (currentStep === "basic") return workspaceGate === "ready" && !!companyId && !!incidentDate && spatialOk && narrative.trim().length >= 50;
     if (currentStep === "ishikawa") return requiredAi ? hasAnalysisData : true;
     if (currentStep === "dof") return requiredAi ? suggestions.length > 0 : true;
     return true;
-  }, [currentStep, incidentType, companyId, incidentDate, location, narrative, requiredAi, hasAnalysisData, suggestions.length]);
+  }, [currentStep, incidentType, companyId, workspaceGate, incidentDate, spatialOk, narrative, requiredAi, hasAnalysisData, suggestions.length]);
 
   async function handleSave() {
     if (!incidentType || !companyId) return;
     setBusy(true); setError(null);
     try {
       const sgkDeadline = incidentType === "work_accident" && incidentDate ? dateInput(calculateBusinessDayDeadline(new Date(`${incidentDate}T12:00:00`), 3)) : null;
-      const incident = await createIncident({ incidentType, companyWorkspaceId: companyId, incidentDate: incidentDate || null, incidentTime: incidentTime || null, incidentLocation: location || null, incidentDepartment: department || null, description: narrative || null, narrative: narrative || null, accidentCauseDescription: ishikawa?.primary_root_cause || null, dofRequired: suggestions.length > 0, ishikawaRequired: !!ishikawa, ishikawaData: ishikawa as unknown as Record<string, unknown> | null, firstAidProvided, firstAidNotes: firstAidNotes || null, sgkNotificationDeadline: sgkDeadline, status: "reported" });
+      const locUuid = locPick && isUuid(locPick) ? locPick : null;
+      const deptUuid = unitPick && isUuid(unitPick) ? unitPick : null;
+      const incident = await createIncident({
+        incidentType,
+        companyWorkspaceId: companyId,
+        incidentDate: incidentDate || null,
+        incidentTime: incidentTime || null,
+        incidentLocation: locationSummary || null,
+        incidentDepartment: null,
+        locationId: locUuid,
+        departmentId: deptUuid,
+        description: narrative || null,
+        narrative: narrative || null,
+        accidentCauseDescription: ishikawa?.primary_root_cause || null,
+        dofRequired: suggestions.length > 0,
+        ishikawaRequired: !!ishikawa,
+        ishikawaData: ishikawa as unknown as Record<string, unknown> | null,
+        firstAidProvided,
+        firstAidNotes: firstAidNotes || null,
+        sgkNotificationDeadline: sgkDeadline,
+        status: "reported",
+      });
       // createIncident artık throw ediyor (CreateIncidentError) — buraya gelirsek incident garantili
       if (!incident) throw new Error(tw("alerts.unexpectedNoIncident"));
       if (affectedPersons.length > 0) {
@@ -537,7 +683,7 @@ export function NewIncidentWizard() {
             personnelId: person.id ?? null,
             personnelName: person.fullName,
             personnelTc: null,
-            personnelDepartment: person.department || department || null,
+            personnelDepartment: person.department || null,
             personnelPosition: person.positionTitle || null,
             outcome: incidentType === "near_miss" ? "unknown" : "injured",
             injuryType: null, injuryBodyPart: null, injuryCauseEvent: null, injuryCauseTool: null,
@@ -602,7 +748,7 @@ export function NewIncidentWizard() {
         startDate: savedIncident.sgkNotificationDeadline,
         category: "YASAL_YUKUMLULUK",
         companyWorkspaceId: savedIncident.companyWorkspaceId ?? companyId,
-        location: location || null,
+        location: locationSummary || null,
         reminderDays: 1,
         refType: "incident_sgk",
         refId: savedIncident.id,
@@ -645,57 +791,166 @@ export function NewIncidentWizard() {
       )}
 
       {currentStep === "basic" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{tw("basicTitle")}</CardTitle>
-            <CardDescription>{tw("basicDescription")}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className={`mb-1 block text-sm font-medium ${basicErrors.company ? "text-red-500" : "text-foreground"}`}>{tw("basic.company")}</label>
-                <select value={companyId ?? ""} onChange={(event) => setCompanyId(event.target.value || null)} className={`h-11 w-full rounded-xl border bg-input px-3 text-sm text-foreground ${basicErrors.company ? "border-red-500" : "border-border"}`}>
-                  <option value="">{tw("basic.companyPlaceholder")}</option>
-                  {companies.map((company) => <option key={company.id} value={company.id}>{company.name}</option>)}
-                </select>
-                {basicErrors.company && <p className="mt-1 text-xs text-red-500">{tw("basic.companyRequired")}</p>}
-              </div>
-              <div>
-                <Input label={tw("basic.location")} value={location} onChange={(event) => setLocation(event.target.value)} placeholder={tw("basic.locationPlaceholder")} className={basicErrors.location ? "!border-red-500" : ""} />
-                {basicErrors.location && <p className="mt-1 text-xs text-red-500">{tw("basic.locationRequired")}</p>}
-              </div>
-              <div>
-                <Input label={tw("basic.date")} type="date" value={incidentDate} onChange={(event) => setIncidentDate(event.target.value)} className={basicErrors.date ? "!border-red-500" : ""} />
-                {basicErrors.date && <p className="mt-1 text-xs text-red-500">{tw("basic.dateRequired")}</p>}
-              </div>
-              <Input label={tw("basic.time")} type="time" value={incidentTime} onChange={(event) => setIncidentTime(event.target.value)} />
+        <>
+          {workspaceGate === "error" && workspaceGateMessage ? (
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-100">
+              <p>{workspaceGateMessage}</p>
+              <p className="mt-2">
+                <Link href="/workspace/onboarding" className="font-semibold underline underline-offset-4">
+                  {tw("basic.workspaceOnboardingLink")}
+                </Link>
+              </p>
             </div>
-            <Input label={tw("basic.department")} value={department} onChange={(event) => setDepartment(event.target.value)} />
-            <PersonnelPicker
-              companyId={companyId}
-              selected={affectedPersons}
-              onChange={setAffectedPersons}
-              mode="affected"
-              label={tw("basic.affected")}
-            />
-            <Textarea label={tw("basic.narrative")} value={narrative} onChange={(event) => setNarrative(event.target.value)} placeholder={tw("basic.narrativePlaceholder")} rows={10} className={`min-h-[220px] ${basicErrors.narrative ? "!border-red-500" : ""}`} />
-            <p className={`text-xs ${basicErrors.narrative ? "text-red-500 font-medium" : "text-muted-foreground"}`}>{tw("nav.minChars", { count: narrative.trim().length })}</p>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <input id="first-aid" type="checkbox" checked={firstAidProvided} onChange={(event) => setFirstAidProvided(event.target.checked)} className="size-4 rounded" />
-                <label htmlFor="first-aid" className="text-sm font-medium text-foreground">{tw("basic.firstAidQuestion")}</label>
+          ) : null}
+          <Card>
+            <CardHeader>
+              <CardTitle>{tw("basicTitle")}</CardTitle>
+              <CardDescription>{tw("basicDescription")}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {workspaceGate === "loading" ? (
+                <p className="text-sm text-muted-foreground">{tw("basic.workspaceLoading")}</p>
+              ) : null}
+              {workspaceGate === "ready" && displayCompanyLabel ? (
+                <div
+                  className={`rounded-2xl border px-4 py-3 text-sm leading-6 ${
+                    basicErrors.workspace ? "border-red-500 bg-red-50 text-red-800" : "border-border bg-muted/40 text-muted-foreground"
+                  }`}
+                >
+                  <p className="text-xs font-semibold uppercase tracking-wide text-foreground/80">
+                    {tw("basic.workspaceContextLabel")}
+                  </p>
+                  <p className="mt-1 font-semibold text-foreground">{displayCompanyLabel}</p>
+                  <p className="mt-1 text-xs">{tw("basic.workspaceContextSub")}</p>
+                </div>
+              ) : null}
+              {basicErrors.workspace ? (
+                <p className="text-xs text-red-500">{tw("basic.workspaceRequired")}</p>
+              ) : null}
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {needUnitOptions ? (
+                  <div>
+                    <label
+                      className={`mb-1 block text-sm font-medium ${basicErrors.spatial && !unitPick ? "text-red-500" : "text-foreground"}`}
+                    >
+                      {tw("basic.unit")}
+                    </label>
+                    <select
+                      value={unitPick}
+                      onChange={(event) => setUnitPick(event.target.value)}
+                      className={`h-11 w-full rounded-xl border bg-input px-3 text-sm text-foreground ${basicErrors.spatial && !unitPick ? "border-red-500" : "border-border"}`}
+                    >
+                      <option value="">{tw("basic.unitPlaceholder")}</option>
+                      {unitOptions.map((row) => (
+                        <option key={row.id} value={row.id}>
+                          {row.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : null}
+                {needLocOptions ? (
+                  <div>
+                    <label
+                      className={`mb-1 block text-sm font-medium ${basicErrors.spatial && !locPick ? "text-red-500" : "text-foreground"}`}
+                    >
+                      {tw("basic.locationSelect")}
+                    </label>
+                    <select
+                      value={locPick}
+                      onChange={(event) => setLocPick(event.target.value)}
+                      className={`h-11 w-full rounded-xl border bg-input px-3 text-sm text-foreground ${basicErrors.spatial && !locPick ? "border-red-500" : "border-border"}`}
+                    >
+                      <option value="">{tw("basic.locationPlaceholder")}</option>
+                      {locOptions.map((row) => (
+                        <option key={row.id} value={row.id}>
+                          {row.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : null}
+                {!needUnitOptions && !needLocOptions ? (
+                  <div className="sm:col-span-2">
+                    <Input
+                      label={tw("basic.locationFree")}
+                      value={locationFreeText}
+                      onChange={(event) => setLocationFreeText(event.target.value)}
+                      placeholder={tw("basic.locationFreePlaceholder")}
+                      className={basicErrors.spatial ? "!border-red-500" : ""}
+                    />
+                    <p className="mt-1 text-xs text-muted-foreground">{tw("basic.taxonomyHint")}</p>
+                  </div>
+                ) : null}
+                <div>
+                  <Input
+                    label={tw("basic.date")}
+                    type="date"
+                    value={incidentDate}
+                    onChange={(event) => setIncidentDate(event.target.value)}
+                    className={basicErrors.date ? "!border-red-500" : ""}
+                  />
+                  {basicErrors.date ? <p className="mt-1 text-xs text-red-500">{tw("basic.dateRequired")}</p> : null}
+                </div>
+                <Input
+                  label={tw("basic.time")}
+                  type="time"
+                  value={incidentTime}
+                  onChange={(event) => setIncidentTime(event.target.value)}
+                />
               </div>
-              {firstAidProvided && <Textarea label={tw("basic.firstAidNotes")} value={firstAidNotes} onChange={(event) => setFirstAidNotes(event.target.value)} />}
-            </div>
-            <PersonnelPicker
-              companyId={companyId}
-              selected={witnessPersons}
-              onChange={setWitnessPersons}
-              mode="witness"
-              label={tw("basic.witnesses")}
-            />
-          </CardContent>
-        </Card>
+              {basicErrors.spatial ? <p className="text-xs text-red-500">{tw("basic.spatialRequired")}</p> : null}
+
+              <PersonnelPicker
+                companyId={workspaceGate === "ready" ? companyId : null}
+                selected={affectedPersons}
+                onChange={setAffectedPersons}
+                mode="affected"
+                label={tw("basic.affected")}
+              />
+              <Textarea
+                label={tw("basic.narrative")}
+                value={narrative}
+                onChange={(event) => setNarrative(event.target.value)}
+                placeholder={tw("basic.narrativePlaceholder")}
+                rows={10}
+                className={`min-h-[220px] ${basicErrors.narrative ? "!border-red-500" : ""}`}
+              />
+              <p className={`text-xs ${basicErrors.narrative ? "text-red-500 font-medium" : "text-muted-foreground"}`}>
+                {tw("nav.minChars", { count: narrative.trim().length })}
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <input
+                    id="first-aid"
+                    type="checkbox"
+                    checked={firstAidProvided}
+                    onChange={(event) => setFirstAidProvided(event.target.checked)}
+                    className="size-4 rounded"
+                  />
+                  <label htmlFor="first-aid" className="text-sm font-medium text-foreground">
+                    {tw("basic.firstAidQuestion")}
+                  </label>
+                </div>
+                {firstAidProvided ? (
+                  <Textarea
+                    label={tw("basic.firstAidNotes")}
+                    value={firstAidNotes}
+                    onChange={(event) => setFirstAidNotes(event.target.value)}
+                  />
+                ) : null}
+              </div>
+              <PersonnelPicker
+                companyId={workspaceGate === "ready" ? companyId : null}
+                selected={witnessPersons}
+                onChange={setWitnessPersons}
+                mode="witness"
+                label={tw("basic.witnesses")}
+              />
+            </CardContent>
+          </Card>
+        </>
       )}
 
       {currentStep === "ishikawa" && (
@@ -1080,11 +1335,11 @@ export function NewIncidentWizard() {
                       (suggestions as DofFormData[]).map((s) => ({
                         ...s,
                         formuTarihi: s.formuTarihi ?? incidentDate,
-                        formuYeri: s.formuYeri ?? location,
+                        formuYeri: s.formuYeri ?? locationSummary,
                         formuTanimi: s.formuTanimi ?? narrative.slice(0, 500),
-                        formuDolduran: s.formuDolduran ?? { adSoyad: "", tc: "", firma: selectedCompany?.name ?? "", imza: "" },
+                        formuDolduran: s.formuDolduran ?? { adSoyad: "", tc: "", firma: displayCompanyLabel ?? "", imza: "" },
                       })),
-                      tw("dof.pdfFileStem", { company: selectedCompany?.name ?? incidentTitleForAnalysis }),
+                      tw("dof.pdfFileStem", { company: displayCompanyLabel || incidentTitleForAnalysis }),
                     )}
                   >
                     <Download className="mr-1 size-4" /> {tw("dof.downloadAll")}
@@ -1120,9 +1375,9 @@ export function NewIncidentWizard() {
                     data={{
                       ...item,
                       formuTarihi: item.formuTarihi ?? incidentDate,
-                      formuYeri: item.formuYeri ?? location,
+                      formuYeri: item.formuYeri ?? locationSummary,
                       formuTanimi: item.formuTanimi ?? narrative.slice(0, 500),
-                      formuDolduran: item.formuDolduran ?? { adSoyad: "", tc: "", firma: selectedCompany?.name ?? "", imza: "" },
+                      formuDolduran: item.formuDolduran ?? { adSoyad: "", tc: "", firma: displayCompanyLabel ?? "", imza: "" },
                     }}
                     onChange={(patch) => {
                       // Tüm patch alanlarını tek tek güncelle (mevcut updateSuggestion sadece tek key kabul ediyor)
@@ -1151,7 +1406,7 @@ export function NewIncidentWizard() {
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <div className="rounded-xl border border-border bg-muted/40 p-4"><p className="text-xs text-muted-foreground">{tw("review.fieldType")}</p><p className="mt-1 font-semibold text-foreground">{typeOptions.find((item) => item.value === incidentType)?.label ?? "-"}</p></div>
-              <div className="rounded-xl border border-border bg-muted/40 p-4"><p className="text-xs text-muted-foreground">{tw("review.fieldCompany")}</p><p className="mt-1 font-semibold text-foreground">{selectedCompany?.name ?? "-"}</p></div>
+              <div className="rounded-xl border border-border bg-muted/40 p-4"><p className="text-xs text-muted-foreground">{tw("review.fieldCompany")}</p><p className="mt-1 font-semibold text-foreground">{displayCompanyLabel || "—"}</p></div>
               <div className="rounded-xl border border-border bg-muted/40 p-4"><p className="text-xs text-muted-foreground">{tw("review.fieldRootCauses")}</p><p className="mt-1 font-semibold text-foreground">{ishikawa ? Object.values(ishikawa.categories).reduce((sum, list) => sum + list.length, 0) : 0}</p></div>
               <div className="rounded-xl border border-border bg-muted/40 p-4"><p className="text-xs text-muted-foreground">{tw("review.fieldCapa")}</p><p className="mt-1 font-semibold text-foreground">{suggestions.length}</p></div>
             </div>
