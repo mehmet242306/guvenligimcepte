@@ -633,8 +633,9 @@ export function AccessibilityDock() {
 
   return (
     <>
-      {mounted ? createPortal(fabPortal, document.body) : null}
-      {mounted && open ? createPortal(dialogPortal, document.body) : null}
+      {/* `body` üzerinde `filter` (gri ton / doygunluk) varken fixed elemanlar viewport yerine tüm sayfaya göre konumlanır; `html` altına taşıyoruz. */}
+      {mounted ? createPortal(fabPortal, document.documentElement) : null}
+      {mounted && open ? createPortal(dialogPortal, document.documentElement) : null}
     </>
   );
 }

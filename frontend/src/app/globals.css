@@ -1244,6 +1244,11 @@ html[data-a11y-contrast="lightBoost"]:not(.dark) {
   --border: #64748b;
 }
 
+/*
+ * `body` üzerinde `filter` (gri ton / doygunluk) varken, `body` içindeki `position: fixed`
+ * öğeleri viewport yerine tüm sayfa yüksekliğine göre konumlanır. Nova ve erişilebilirlik
+ * yüzen katmanı `document.documentElement` altına portallanır (body dışı), böylece sabit kalır.
+ */
 html[data-a11y-grayscale="true"][data-a11y-reduce-saturation="true"] body {
   filter: grayscale(1) saturate(0.45);
 }

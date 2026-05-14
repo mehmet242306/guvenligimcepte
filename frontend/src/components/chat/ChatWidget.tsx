@@ -7,6 +7,7 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { createPortal } from "react-dom";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useI18n } from "@/lib/i18n";
@@ -499,6 +500,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   const launcherRef = useRef<HTMLButtonElement>(null);
   const launcherDragRef = useRef<PanelDragState | null>(null);
   const launcherMovedRef = useRef(false);
+  const [portalMounted, setPortalMounted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -519,6 +521,10 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       setActiveTab("chat");
     }
   }, [isAuthenticated, activeTab]);
+
+  useEffect(() => {
+    setPortalMounted(true);
+  }, []);
 
   const currentQueryString = searchParams.toString();
   const currentPage = `${pathname}${currentQueryString ? `?${currentQueryString}` : ""}`;
@@ -1711,7 +1717,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     }
   }
 
-  return (
+  const novaFloatingUi = (
     <>
       {/* Floating Button */}
       {!open && (
@@ -2362,4 +2368,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       )}
     </>
   );
+
+  return portalMounted ? createPortal(novaFloatingUi, document.documentElement) : null;
 }
