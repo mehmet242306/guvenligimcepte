@@ -2369,5 +2369,5 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     </>
   );
 
-  return portalMounted ? createPortal(novaFloatingUi, document.documentElement) : null;
+  return portalMounted ? createPortal(novaFloatingUi, document.body) : null;
 }

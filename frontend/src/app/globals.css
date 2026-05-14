@@ -1245,17 +1245,17 @@ html[data-a11y-contrast="lightBoost"]:not(.dark) {
 }
 
 /*
- * `body` üzerinde `filter` (gri ton / doygunluk) varken, `body` içindeki `position: fixed`
- * öğeleri viewport yerine tüm sayfa yüksekliğine göre konumlanır. Nova ve erişilebilirlik
- * yüzen katmanı `document.documentElement` altına portallanır (body dışı), böylece sabit kalır.
+ * Gri ton / doygunluk: `filter` yalnızca #risknova-app-root üzerinde (layout.tsx).
+ * `body` üzerinde filter olursa tüm `body` torunlarındaki `position: fixed` viewport yerine
+ * sayfa yüksekliğine göre hizalanır; Nova / erişilebilirlik portalları bu div’in dışında kalır.
  */
-html[data-a11y-grayscale="true"][data-a11y-reduce-saturation="true"] body {
+html[data-a11y-grayscale="true"][data-a11y-reduce-saturation="true"] #risknova-app-root {
   filter: grayscale(1) saturate(0.45);
 }
-html[data-a11y-grayscale="true"]:not([data-a11y-reduce-saturation="true"]) body {
+html[data-a11y-grayscale="true"]:not([data-a11y-reduce-saturation="true"]) #risknova-app-root {
   filter: grayscale(1);
 }
-html[data-a11y-reduce-saturation="true"]:not([data-a11y-grayscale="true"]) body {
+html[data-a11y-reduce-saturation="true"]:not([data-a11y-grayscale="true"]) #risknova-app-root {
   filter: saturate(0.55);
 }
 

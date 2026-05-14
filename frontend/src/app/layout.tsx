@@ -127,13 +127,19 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="min-h-screen bg-background text-foreground antialiased">
-        <Providers locale={locale} messages={messages}>
-          <PwaRuntime />
-          <AuthCodeRescue />
-          <PwaAppInstallPrompt />
-          {children}
-        </Providers>
+      <body className="antialiased">
+        {/*
+          Gri ton / doygunluk `filter` burada değil #risknova-app-root üzerinde uygulanır; böylece
+          `body` containing block olmaz ve `position: fixed` yüzen arayüzler viewport’a sabit kalır.
+        */}
+        <div id="risknova-app-root" className="min-h-[100dvh] min-h-screen w-full bg-background text-foreground">
+          <Providers locale={locale} messages={messages}>
+            <PwaRuntime />
+            <AuthCodeRescue />
+            <PwaAppInstallPrompt />
+            {children}
+          </Providers>
+        </div>
       </body>
     </html>
   );
