@@ -48,6 +48,8 @@ type NovaUiCopy = {
     heroPrompt: string;
     statusTitle: string;
     statusHint: string;
+    /** Kısa hukuki/ürün uyarısı — sohbet panelinde gösterilir */
+    aiDisclaimer: string;
     navChat: string;
     navHistory: string;
     navHelp: string;
@@ -102,6 +104,8 @@ const trCopy: NovaUiCopy = {
     heroPrompt: "Size nasıl yardımcı olabilirim?",
     statusTitle: "Durum: Nova hazır",
     statusHint: "İSG sorularınızı yanıtlayabilir, modüllere yönlendirebilirim.",
+    aiDisclaimer:
+      "Yapay zeka hatalı veya eksik bilgi üretebilir. Kritik İSG kararlarını yalnızca Nova'ya dayandırmayın; resmi kaynakları ve uzman görüşünü doğrulayın.",
     navChat: "Sohbet",
     navHistory: "Geçmiş",
     navHelp: "Yardım",
@@ -156,6 +160,8 @@ const enCopy: NovaUiCopy = {
     heroPrompt: "How can we help?",
     statusTitle: "Status: Nova is ready",
     statusHint: "Ask OHS questions, get routed to the right modules.",
+    aiDisclaimer:
+      "AI may produce incorrect or incomplete information. Do not rely solely on Nova for critical OHS decisions; verify official sources and expert judgment.",
     navChat: "Chat",
     navHistory: "History",
     navHelp: "Help",

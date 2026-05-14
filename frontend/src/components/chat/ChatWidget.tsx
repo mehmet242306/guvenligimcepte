@@ -1789,9 +1789,9 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       {open && (
         <div
           ref={panelRef}
-          className={`fixed z-50 flex w-[min(calc(100vw-1.25rem),360px)] max-w-[calc(100vw-1.25rem)] flex-col overflow-hidden rounded-[1.35rem] border border-border/80 bg-card shadow-[0_8px_40px_rgba(15,23,42,0.14),0_2px_14px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_48px_rgba(0,0,0,0.45)] ${panelPosition ? "" : "bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] right-3 sm:bottom-6 sm:right-6"}`}
+          className={`fixed z-50 flex w-[min(calc(100vw-1rem),440px)] max-w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-[1.35rem] border border-border/80 bg-card shadow-[0_8px_40px_rgba(15,23,42,0.14),0_2px_14px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_48px_rgba(0,0,0,0.45)] ${panelPosition ? "" : "bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] right-3 sm:bottom-6 sm:right-6"}`}
           style={{
-            height: "min(560px, calc(100dvh - 3rem))",
+            height: "min(640px, calc(100dvh - 2rem))",
             ...(panelPosition
               ? {
                   left: panelPosition.left,
@@ -1825,7 +1825,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                     👋
                   </span>
                 </h2>
-                <p className="mt-1 text-[13px] font-medium leading-snug text-white/78">{ui.widget.heroPrompt}</p>
+                <p className="mt-1 text-[14px] font-medium leading-snug text-white/78 sm:text-[15px]">{ui.widget.heroPrompt}</p>
                 <p className="mt-2 truncate text-[11px] text-white/40">
                   {assistantName} · {assistantSubtitle}
                 </p>
@@ -1859,34 +1859,34 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           <div className="flex min-h-0 flex-1 flex-col bg-background">
           {!(activeTab === "history" && isAuthenticated) ? (
             <>
-            <div className="shrink-0 px-3 pt-3">
-              <div className="rounded-2xl border border-border/90 bg-card px-3.5 py-2.5 shadow-[var(--shadow-soft)]">
-                <div className="flex items-start gap-2.5">
-                  <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
-                    <Check className="size-4 stroke-[2.5]" />
+            <div className="shrink-0 px-3.5 pt-3">
+              <div className="rounded-2xl border border-border/90 bg-card px-4 py-3 shadow-[var(--shadow-soft)]">
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                    <Check className="size-[18px] stroke-[2.5]" />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-[13px] font-semibold leading-snug text-foreground">{ui.widget.statusTitle}</p>
-                    <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">{ui.widget.statusHint}</p>
+                    <p className="text-sm font-semibold leading-snug text-foreground sm:text-[15px]">{ui.widget.statusTitle}</p>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">{ui.widget.statusHint}</p>
                   </div>
                 </div>
               </div>
             </div>
-          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-3 py-2">
+          <div className="min-h-0 flex-1 space-y-3.5 overflow-y-auto px-3.5 py-3">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                 {/* Avatar */}
-                <span className={`mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg ${
+                <span className={`mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-lg ${
                   msg.role === "bot"
                     ? "bg-[var(--gold-glow)] text-[var(--gold)]"
                     : "bg-primary/10 text-primary"
                 }`}>
-                  {msg.role === "bot" ? <Bot className="size-4" /> : <User className="size-4" />}
+                  {msg.role === "bot" ? <Bot className="size-[18px]" /> : <User className="size-[18px]" />}
                 </span>
 
-                <div className={`max-w-[85%] space-y-2 ${msg.role === "user" ? "text-right" : ""}`}>
+                <div className={`max-w-[min(92%,28rem)] space-y-2 ${msg.role === "user" ? "text-right" : ""}`}>
                   {/* Text */}
-                  <div className={`rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                  <div className={`rounded-2xl px-4 py-3 text-[15px] leading-relaxed sm:text-base ${
                     msg.role === "user"
                       ? "bg-primary text-primary-foreground rounded-tr-sm"
                       : msg.isError
@@ -2139,8 +2139,8 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
             {/* Typing indicator */}
             {typing && (
               <div className="flex gap-2.5">
-                <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-[var(--gold-glow)] text-[var(--gold)]">
-                  <Bot className="size-4" />
+                <span className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-[var(--gold-glow)] text-[var(--gold)]">
+                  <Bot className="size-[18px]" />
                 </span>
                 <div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-3">
                   <div className="flex gap-1">
@@ -2156,7 +2156,13 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           </div>
 
           {/* Input */}
-          <div className="shrink-0 border-t border-border/80 bg-card px-3 py-2.5 shadow-[0_-4px_18px_rgba(15,23,42,0.04)] dark:shadow-[0_-4px_18px_rgba(0,0,0,0.2)]">
+          <div className="shrink-0 border-t border-border/80 bg-card px-3.5 py-3 shadow-[0_-4px_18px_rgba(15,23,42,0.04)] dark:shadow-[0_-4px_18px_rgba(0,0,0,0.2)]">
+            <p
+              className="mb-2.5 border-l-2 border-amber-500/45 pl-2.5 text-[11px] leading-snug text-muted-foreground sm:text-xs"
+              role="note"
+            >
+              {ui.widget.aiDisclaimer}
+            </p>
             <input
               ref={imageInputRef}
               type="file"
@@ -2248,11 +2254,11 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                     ? ui.widget.authenticatedPlaceholder
                     : ui.widget.publicPlaceholder
                 }
-                className="h-9 flex-1 rounded-xl border border-border bg-input px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                className="min-h-11 h-11 flex-1 rounded-xl border border-border bg-input px-3.5 text-[15px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none sm:text-base"
               />
               <button type="submit" disabled={(!input.trim() && !imageAnalysis) || typing || imageUploading || voiceTranscribing}
-                className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#B8860B_0%,#D4A017_100%)] text-white transition-all hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100">
-                <Send className="size-4" />
+                className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#B8860B_0%,#D4A017_100%)] text-white transition-all hover:brightness-110 disabled:opacity-40 disabled:hover:brightness-100">
+                <Send className="size-[18px]" />
               </button>
             </form>
           </div>
