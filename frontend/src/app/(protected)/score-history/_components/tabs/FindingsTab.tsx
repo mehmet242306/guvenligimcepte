@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { TriangleAlert, Link2, ShieldAlert, ListChecks } from "lucide-react";
+import { TriangleAlert, Link2, ShieldAlert, ListChecks, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,17 @@ import { cn } from "@/lib/utils";
 import { SubcategorySidebar, type SidebarItem } from "../SubcategorySidebar";
 import type { SessionState, SessionActions } from "../../_hooks/useInspectionSession";
 import { RESPONSE_COPY } from "../../_lib/constants";
-import type { ResponseStatus } from "@/lib/supabase/inspection-api";
+import type { InspectionAnswerRecord, ResponseStatus } from "@/lib/supabase/inspection-api";
+import { createClient } from "@/lib/supabase/client";
+import { getActiveWorkspace } from "@/lib/supabase/workspace-api";
+import { resolveCompanyWorkspaceIdFromActiveWorkspaceId } from "@/lib/workspace-incident-site";
+import {
+  inspectionDecisionHref,
+  listOpenActionsForInspectionLink,
+  listRiskAssessmentsForInspectionLink,
+  type InspectionActionPickRow,
+  type InspectionRiskPickRow,
+} from "@/lib/supabase/inspection-finding-link-options";
 
 type Props = {
   state: SessionState;
@@ -19,9 +29,60 @@ type Props = {
 
 export function FindingsTab({ state, actions }: Props) {
   const t = useTranslations("fieldInspection");
-  const { activeTemplate, answers, capaStartingQuestionId } = state;
+  const { activeTemplate, answers, capaStartingQuestionId, activeRun } = state;
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
   const [dofFeedback, setDofFeedback] = useState<"none" | "no_workspace" | "failed" | "ok">("none");
+  const [picker, setPicker] = useState<null | "risk" | "action">(null);
+  const [pickerRowsRisk, setPickerRowsRisk] = useState<InspectionRiskPickRow[]>([]);
+  const [pickerRowsAction, setPickerRowsAction] = useState<InspectionActionPickRow[]>([]);
+  const [pickerLoading, setPickerLoading] = useState(false);
+  const [pickerError, setPickerError] = useState(false);
+
+  const getCompanyWorkspaceIdForPicker = useCallback(async (): Promise<string | null> => {
+    if (activeRun?.companyWorkspaceId) return activeRun.companyWorkspaceId;
+    const nw = await getActiveWorkspace();
+    if (!nw?.id) return null;
+    const mapped = await resolveCompanyWorkspaceIdFromActiveWorkspaceId(nw.id);
+    return mapped?.companyWorkspaceId ?? null;
+  }, [activeRun?.companyWorkspaceId]);
+
+  const openRiskPicker = useCallback(async () => {
+    setPickerError(false);
+    setPickerLoading(true);
+    setPicker("risk");
+    const ws = await getCompanyWorkspaceIdForPicker();
+    if (!ws) {
+      setPickerRowsRisk([]);
+      setPickerError(true);
+      setPickerLoading(false);
+      return;
+    }
+    const rows = await listRiskAssessmentsForInspectionLink(ws);
+    setPickerRowsRisk(rows);
+    setPickerLoading(false);
+  }, [getCompanyWorkspaceIdForPicker]);
+
+  const openActionPicker = useCallback(async () => {
+    setPickerError(false);
+    setPickerLoading(true);
+    setPicker("action");
+    const ws = await getCompanyWorkspaceIdForPicker();
+    if (!ws) {
+      setPickerRowsAction([]);
+      setPickerError(true);
+      setPickerLoading(false);
+      return;
+    }
+    const rows = await listOpenActionsForInspectionLink(ws);
+    setPickerRowsAction(rows);
+    setPickerLoading(false);
+  }, [getCompanyWorkspaceIdForPicker]);
+
+  const closePicker = useCallback(() => {
+    setPicker(null);
+    setPickerLoading(false);
+    setPickerError(false);
+  }, []);
 
   const responseLabels = useMemo(
     () =>
@@ -60,8 +121,99 @@ export function FindingsTab({ state, actions }: Props) {
     setDofFeedback("none");
   }, [selected?.q.id]);
 
+  useEffect(() => {
+    if (selected?.a?.decision === "started_dof" && selected.a.decisionTargetId) {
+      setDofFeedback("none");
+    }
+  }, [selected?.a?.decision, selected?.a?.decisionTargetId]);
+
   return (
     <div className="mt-4 space-y-4">
+      {picker ? (
+        <div
+          className="fixed inset-0 z-[80] flex items-end justify-center bg-black/40 p-4 sm:items-center"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="inspection-link-picker-title"
+        >
+          <div className="max-h-[min(80vh,560px)] w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
+            <div className="flex items-center justify-between border-b border-border px-4 py-3">
+              <h2 id="inspection-link-picker-title" className="text-sm font-semibold text-foreground">
+                {picker === "risk" ? t("findings.linkPickRiskTitle") : t("findings.linkPickActionTitle")}
+              </h2>
+              <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={closePicker}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="max-h-[min(60vh,480px)] overflow-auto p-3">
+              {pickerLoading ? (
+                <p className="px-2 py-8 text-center text-sm text-muted-foreground">{t("findings.linkPickLoading")}</p>
+              ) : pickerError ? (
+                <p className="px-2 py-6 text-center text-sm text-amber-800 dark:text-amber-200">
+                  {t("findings.linkPickNoWorkspace")}
+                </p>
+              ) : picker === "risk" ? (
+                pickerRowsRisk.length === 0 ? (
+                  <p className="px-2 py-8 text-center text-sm text-muted-foreground">{t("findings.linkPickEmptyRisk")}</p>
+                ) : (
+                  <ul className="space-y-1">
+                    {pickerRowsRisk.map((row) => (
+                      <li key={row.id}>
+                        <button
+                          type="button"
+                          className="w-full rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-left text-sm transition hover:bg-muted/60"
+                          onClick={async () => {
+                            if (!selected) return;
+                            await actions.recordDecisionFor(selected.q.id, "linked_risk", {
+                              table: row.targetTable,
+                              id: row.id,
+                            });
+                            closePicker();
+                          }}
+                        >
+                          <span className="font-medium text-foreground">{row.title}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )
+              ) : pickerRowsAction.length === 0 ? (
+                <p className="px-2 py-8 text-center text-sm text-muted-foreground">{t("findings.linkPickEmptyAction")}</p>
+              ) : (
+                <ul className="space-y-1">
+                  {pickerRowsAction.map((row) => (
+                    <li key={`${row.targetTable}-${row.id}`}>
+                      <button
+                        type="button"
+                        className="w-full rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-left text-sm transition hover:bg-muted/60"
+                        onClick={async () => {
+                          if (!selected) return;
+                          await actions.recordDecisionFor(selected.q.id, "linked_action", {
+                            table: row.targetTable,
+                            id: row.id,
+                          });
+                          closePicker();
+                        }}
+                      >
+                        <span className="font-medium text-foreground">{row.title}</span>
+                        {row.subtitle ? (
+                          <span className="mt-0.5 block text-xs text-muted-foreground">{row.subtitle}</span>
+                        ) : null}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className="border-t border-border px-4 py-2">
+              <Button type="button" variant="outline" size="sm" className="w-full" onClick={closePicker}>
+                {t("findings.linkPickClose")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {findings.length > 0 ? (
         <div className="rounded-xl border border-rose-200/70 bg-gradient-to-r from-rose-50/90 to-amber-50/40 px-4 py-3 text-sm leading-relaxed text-foreground shadow-sm dark:border-rose-400/20 dark:from-rose-950/40 dark:to-amber-950/20 dark:text-rose-50/95">
           <p>
@@ -141,7 +293,11 @@ export function FindingsTab({ state, actions }: Props) {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => actions.recordDecisionFor(selected.q.id, "linked_risk")}
+                  disabled={
+                    Boolean(selected.a?.decision === "linked_risk" && selected.a.decisionTargetId) ||
+                    capaStartingQuestionId === selected.q.id
+                  }
+                  onClick={() => void openRiskPicker()}
                 >
                   <Link2 className="mr-2 h-4 w-4" />
                   {t("findings.linkExistingRisk")}
@@ -149,11 +305,19 @@ export function FindingsTab({ state, actions }: Props) {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => actions.recordDecisionFor(selected.q.id, "linked_action")}
+                  disabled={
+                    Boolean(selected.a?.decision === "linked_action" && selected.a.decisionTargetId) ||
+                    capaStartingQuestionId === selected.q.id
+                  }
+                  onClick={() => void openActionPicker()}
                 >
                   <Link2 className="mr-2 h-4 w-4" />
                   {t("findings.linkOpenAction")}
                 </Button>
+                {(selected.a?.decision === "linked_risk" || selected.a?.decision === "linked_action") &&
+                selected.a.decisionTargetId ? (
+                  <InspectionLinkedBanner answer={selected.a} />
+                ) : null}
                 {selected.a?.decision === "started_dof" && selected.a.decisionTargetId ? (
                   <div className="sm:col-span-2 flex flex-col gap-2 rounded-xl border border-emerald-200/80 bg-emerald-50/50 p-3 dark:border-emerald-500/25 dark:bg-emerald-950/20">
                     <p className="text-xs font-medium text-emerald-900 dark:text-emerald-100">
@@ -207,6 +371,62 @@ export function FindingsTab({ state, actions }: Props) {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function InspectionLinkedBanner({ answer }: { answer: InspectionAnswerRecord }) {
+  const t = useTranslations("fieldInspection");
+  const [findingAssessmentId, setFindingAssessmentId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (answer.decisionTargetTable !== "risk_assessment_findings" || !answer.decisionTargetId) {
+      setFindingAssessmentId(null);
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      const sb = createClient();
+      if (!sb) return;
+      const { data } = await sb
+        .from("risk_assessment_findings")
+        .select("assessment_id")
+        .eq("id", answer.decisionTargetId)
+        .maybeSingle();
+      if (!cancelled && data?.assessment_id) setFindingAssessmentId(String(data.assessment_id));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [answer.decisionTargetTable, answer.decisionTargetId]);
+
+  const href =
+    answer.decisionTargetTable && answer.decisionTargetId
+      ? inspectionDecisionHref(
+          answer.decisionTargetTable,
+          answer.decisionTargetId,
+          findingAssessmentId,
+        )
+      : null;
+
+  const isRisk = answer.decision === "linked_risk";
+  const hint = isRisk ? t("findings.linkedRiskHint") : t("findings.linkedActionHint");
+  const linkLabel = isRisk ? t("findings.openRiskAnalysis") : t("findings.openLinkedTarget");
+
+  return (
+    <div className="sm:col-span-2 flex flex-col gap-2 rounded-xl border border-sky-200/80 bg-sky-50/50 p-3 dark:border-sky-500/25 dark:bg-sky-950/20">
+      <p className="text-xs font-medium text-sky-900 dark:text-sky-100">{hint}</p>
+      <p className="text-xs text-muted-foreground">{t("findings.linkedTrackHint")}</p>
+      {href ? (
+        <Link
+          href={href}
+          className="inline-flex w-fit items-center text-sm font-semibold text-[var(--gold)] underline-offset-4 hover:underline"
+        >
+          {linkLabel}
+        </Link>
+      ) : (
+        <p className="text-xs text-muted-foreground">{t("findings.linkedTargetResolving")}</p>
+      )}
     </div>
   );
 }
