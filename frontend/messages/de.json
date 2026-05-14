@@ -7436,6 +7436,7 @@
     "off": "Off",
     "backdropLabel": "Close accessibility panel",
     "profileNoneDesc": "No quick profile applied. Use manual settings below.",
-    "fontReset": "Reset text size & spacing"
+    "fontReset": "Reset text size & spacing",
+    "brandEyebrow": "RiskNova"
   }
 }

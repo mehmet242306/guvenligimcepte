@@ -3,11 +3,55 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
-import { Accessibility, Minus, Plus, RotateCcw, Sparkles, Type, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Accessibility, Minus, Plus, RotateCcw, Type, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAccessibility } from "@/components/accessibility/accessibility-context";
 import type { AccessibilityProfileId, ContrastMode } from "@/lib/accessibility/preferences";
+
+/** Odak — kurumsal teal / slate dil; Nova altın launcher’dan ayrışır */
+const fabShell =
+  "relative inline-flex h-[3.45rem] w-[3.45rem] shrink-0 items-center justify-center overflow-hidden rounded-[1.2rem] border border-teal-400/35 text-teal-100 shadow-[0_14px_42px_rgba(6,78,59,0.38),inset_0_1px_0_rgba(255,255,255,0.12)] transition duration-200 ease-out hover:border-teal-300/55 hover:text-white hover:shadow-[0_18px_48px_rgba(13,148,136,0.35),inset_0_1px_0_rgba(255,255,255,0.18)] active:scale-[0.97] dark:border-teal-500/30 dark:shadow-[0_14px_42px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.08)]";
+
+const fabGradient =
+  "pointer-events-none absolute inset-0 bg-[linear-gradient(155deg,#042f2e_0%,#115e59_42%,#134e4a_100%)] dark:bg-[linear-gradient(155deg,#020617_0%,#0f3d3a_45%,#042f2e_100%)]";
+
+const fabGlass =
+  "pointer-events-none absolute inset-[1px] rounded-[1.05rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,transparent_42%,rgba(0,0,0,0.08)_100%)] opacity-90";
+
+const fabFocus =
+  "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-teal-300/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+
+const panelShell =
+  "flex max-h-[min(92dvh,840px)] w-full max-w-md flex-col overflow-hidden border-l border-teal-900/10 bg-card shadow-[0_0_0_1px_rgba(15,118,110,0.06),0_28px_80px_rgba(15,23,42,0.18)] dark:border-teal-400/10 dark:shadow-[0_0_0_1px_rgba(45,212,191,0.08),0_32px_90px_rgba(0,0,0,0.55)]";
+
+const panelHeader =
+  "relative border-b border-border/80 bg-[linear-gradient(180deg,rgba(45,212,191,0.07)_0%,transparent_55%)] px-4 pb-4 pt-4 dark:bg-[linear-gradient(180deg,rgba(45,212,191,0.1)_0%,transparent_50%)]";
+
+const sectionLabelWrap = "mb-2.5 flex items-center gap-2.5";
+const sectionLabelAccent = "h-1 w-5 shrink-0 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 shadow-[0_0_12px_rgba(45,212,191,0.35)]";
+const sectionLabelText =
+  "text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground";
+
+const toggleRow =
+  "flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-gradient-to-b from-card to-muted/25 px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] dark:from-card/90 dark:to-muted/15 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]";
+
+const pillIdle =
+  "border-border/80 bg-muted/40 text-muted-foreground shadow-sm hover:border-teal-500/30 hover:bg-muted/70 hover:text-foreground dark:hover:border-teal-400/25";
+
+const pillOn =
+  "border-teal-600/50 bg-gradient-to-b from-teal-600/18 to-teal-700/10 text-teal-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_1px_0_rgba(0,0,0,0.04)] dark:border-teal-400/45 dark:from-teal-400/15 dark:to-teal-950/20 dark:text-teal-50";
+
+const microRoundBtn =
+  "inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-gradient-to-b from-background to-muted/30 text-foreground shadow-sm transition hover:border-teal-500/35 hover:from-muted/40 hover:to-muted/60 hover:shadow active:scale-[0.96] dark:border-border/60 dark:from-muted/20 dark:to-muted/5";
+
+const widePillBtn =
+  "rounded-full border border-border/80 bg-gradient-to-b from-muted/30 to-muted/15 py-2.5 text-[11px] font-semibold leading-snug text-foreground shadow-sm transition hover:border-teal-500/30 hover:from-muted/45 hover:to-muted/25 hover:shadow dark:from-muted/15 dark:to-muted/5";
+
+const contrastPill = (active: boolean) =>
+  cn(
+    "flex min-h-[2.75rem] items-center justify-center rounded-full border px-2 py-2 text-center text-[10px] font-bold uppercase leading-tight tracking-wide transition duration-150",
+    active ? pillOn : cn(pillIdle, "text-foreground"),
+  );
 
 function listFocusableInPanel(panel: HTMLElement | null): HTMLElement[] {
   if (!panel) return [];
@@ -16,6 +60,15 @@ function listFocusableInPanel(panel: HTMLElement | null): HTMLElement[] {
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     ),
   ).filter((n) => !n.hasAttribute("disabled") && n.tabIndex !== -1);
+}
+
+function A11ySectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className={sectionLabelWrap}>
+      <span className={sectionLabelAccent} aria-hidden />
+      <p className={sectionLabelText}>{children}</p>
+    </div>
+  );
 }
 
 function ToggleRowI18n({
@@ -34,19 +87,21 @@ function ToggleRowI18n({
   disabled?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-xl border border-border/80 bg-card/60 px-3 py-2.5">
-      <span className="text-sm font-medium text-foreground">{label}</span>
-      <Button
+    <div className={toggleRow}>
+      <span className="min-w-0 flex-1 text-sm font-medium leading-snug text-foreground">{label}</span>
+      <button
         type="button"
-        variant={pressed ? "accent" : "outline"}
-        size="sm"
-        className="min-h-10 min-w-[4.5rem] shrink-0 px-3"
         aria-pressed={pressed}
         disabled={disabled}
         onClick={onToggle}
+        className={cn(
+          "inline-flex min-h-10 min-w-[4.5rem] shrink-0 items-center justify-center rounded-full border px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] transition duration-150",
+          pressed ? pillOn : pillIdle,
+          "disabled:pointer-events-none disabled:opacity-50",
+        )}
       >
         {pressed ? onLabel : offLabel}
-      </Button>
+      </button>
     </div>
   );
 }
@@ -68,15 +123,27 @@ function ProfileChip({
       onClick={onSelect}
       aria-pressed={active}
       className={cn(
-        "w-full rounded-2xl border px-3 py-2.5 text-left transition focus-visible:shadow-[0_0_0_4px_var(--ring)]",
+        "group relative w-full overflow-hidden rounded-2xl border px-3.5 py-3 text-left transition duration-200",
+        "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-teal-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-card",
         active
-          ? "border-[var(--gold)] bg-[var(--gold)]/10 shadow-[var(--shadow-soft)]"
-          : "border-border bg-muted/30 hover:border-[var(--gold)]/50 hover:bg-muted/50",
+          ? "border-teal-600/45 bg-gradient-to-br from-teal-600/12 via-card to-card shadow-[0_10px_28px_rgba(15,118,110,0.12),inset_0_1px_0_rgba(255,255,255,0.5)] dark:border-teal-400/40 dark:from-teal-400/14 dark:via-card dark:to-card dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+          : cn(
+              "border-border/80 bg-gradient-to-b from-card to-muted/20 shadow-sm",
+              "hover:border-teal-500/28 hover:shadow-md dark:hover:border-teal-400/22",
+            ),
       )}
     >
-      <p className="text-sm font-semibold text-foreground">{title}</p>
+      {active ? (
+        <span
+          className="absolute right-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-full border border-teal-600/40 bg-teal-600/12 py-1 pl-1.5 pr-2 dark:border-teal-400/45 dark:bg-teal-400/12"
+          aria-hidden
+        >
+          <span className="h-2 w-2 shrink-0 rounded-full bg-teal-500 shadow-[0_0_10px_rgba(34,211,238,0.75)] dark:bg-teal-300" />
+        </span>
+      ) : null}
+      <p className="pr-14 text-sm font-semibold text-foreground">{title}</p>
       {description ? (
-        <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{description}</p>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground group-hover:text-foreground/80">{description}</p>
       ) : null}
     </button>
   );
@@ -109,8 +176,8 @@ function ReadingGuideLayer() {
   }, []);
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 z-[85]" style={{ top: y - 3 }} aria-hidden>
-      <div className="mx-auto h-1.5 w-[min(92vw,720px)] rounded-full bg-[var(--gold)]/90 shadow-[0_0_24px_rgba(200,155,91,0.55)]" />
+    <div className="pointer-events-none fixed inset-x-0 z-[85]" style={{ top: y - 4 }} aria-hidden>
+      <div className="mx-auto h-2 w-[min(92vw,720px)] rounded-full bg-gradient-to-r from-teal-600 via-teal-400 to-cyan-400 opacity-95 shadow-[0_0_28px_rgba(20,184,166,0.55)]" />
     </div>
   );
 }
@@ -184,27 +251,31 @@ export function AccessibilityDock() {
 
       <div
         className={cn(
-          "fixed z-[90] flex flex-col items-end gap-2",
-          "bottom-[max(1rem,env(safe-area-inset-bottom,0px))] right-[max(1rem,env(safe-area-inset-right,0px))]",
-          "max-[640px]:bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))]",
+          "pointer-events-auto fixed z-[92] flex flex-col items-center",
+          "right-[max(0.65rem,env(safe-area-inset-right,0px))] sm:right-5",
+          "top-1/2 -translate-y-1/2",
         )}
       >
-        <Button
+        <button
           type="button"
-          variant="accent"
-          size="lg"
-          className={cn(
-            "h-14 w-14 rounded-2xl border border-amber-400/40 p-0 shadow-[var(--shadow-elevated)]",
-            "focus-visible:shadow-[0_0_0_4px_var(--ring)]",
-          )}
+          className={cn(fabShell, fabFocus)}
           aria-expanded={open}
           aria-controls="risknova-a11y-panel"
           aria-haspopup="dialog"
           aria-label={open ? t("fabCloseLabel") : t("fabLabel")}
+          title={open ? t("fabCloseLabel") : t("fabLabel")}
           onClick={() => setOpen((v) => !v)}
         >
-          {open ? <X className="h-6 w-6" aria-hidden /> : <Accessibility className="h-6 w-6" aria-hidden />}
-        </Button>
+          <span className={fabGradient} aria-hidden />
+          <span className={fabGlass} aria-hidden />
+          <span className="relative z-[1] flex items-center justify-center">
+            {open ? (
+              <X className="h-6 w-6 shrink-0" strokeWidth={2.25} aria-hidden />
+            ) : (
+              <Accessibility className="h-7 w-7 shrink-0" strokeWidth={2.35} aria-hidden />
+            )}
+          </span>
+        </button>
       </div>
 
       {open && typeof document !== "undefined"
@@ -224,7 +295,7 @@ export function AccessibilityDock() {
                 }}
               />
               <div
-                className="fixed inset-0 z-[94] cursor-default bg-slate-950/40 backdrop-blur-[1px] dark:bg-black/55"
+                className="fixed inset-0 z-[94] cursor-default bg-slate-950/45 backdrop-blur-[2px] dark:bg-black/60"
                 role="presentation"
                 tabIndex={-1}
                 aria-hidden
@@ -239,40 +310,43 @@ export function AccessibilityDock() {
                 aria-modal="true"
                 aria-labelledby={titleId}
                 className={cn(
-                  "fixed z-[96] flex max-h-[min(92dvh,820px)] w-full max-w-md flex-col border-l border-border bg-card shadow-[var(--shadow-elevated)]",
-                  "inset-y-0 right-0 rounded-l-[1.25rem] max-sm:rounded-none",
+                  "fixed inset-y-0 right-0 z-[96] rounded-l-[1.35rem] max-sm:rounded-none",
+                  panelShell,
                 )}
               >
-                <div className="flex items-start justify-between gap-3 border-b border-border px-4 py-4">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--gold)]/15 text-[var(--gold)]">
-                        <Sparkles className="h-4 w-4" aria-hidden />
-                      </span>
-                      <h2 id={titleId} className="text-base font-semibold leading-tight text-foreground">
-                        {t("panelTitle")}
-                      </h2>
+                <div className={panelHeader}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-3">
+                        <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-teal-500/30 bg-gradient-to-br from-teal-600/15 to-cyan-500/10 text-teal-800 shadow-inner dark:border-teal-400/35 dark:from-teal-400/12 dark:to-teal-950/30 dark:text-teal-100">
+                          <Accessibility className="h-6 w-6" strokeWidth={2.35} aria-hidden />
+                        </span>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-teal-700/90 dark:text-teal-300/90">
+                            {t("brandEyebrow")}
+                          </p>
+                          <h2 id={titleId} className="text-base font-semibold leading-tight tracking-tight text-foreground">
+                            {t("panelTitle")}
+                          </h2>
+                        </div>
+                      </div>
+                      <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{t("panelIntro")}</p>
                     </div>
-                    <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t("panelIntro")}</p>
+                    <button
+                      type="button"
+                      className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-transparent text-muted-foreground transition hover:border-border hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-teal-400/40"
+                      aria-label={t("close")}
+                      onClick={close}
+                    >
+                      <X className="h-5 w-5" aria-hidden />
+                    </button>
                   </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-9 w-9 shrink-0 p-0"
-                    aria-label={t("close")}
-                    onClick={close}
-                  >
-                    <X className="h-5 w-5" aria-hidden />
-                  </Button>
                 </div>
 
-                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4">
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      {t("profilesTitle")}
-                    </p>
-                    <div className="grid gap-2 sm:grid-cols-2">
+                <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain px-4 py-4">
+                  <div>
+                    <A11ySectionLabel>{t("profilesTitle")}</A11ySectionLabel>
+                    <div className="grid gap-2.5 sm:grid-cols-2">
                       {profiles.map((p) => (
                         <ProfileChip
                           key={p.id}
@@ -285,76 +359,72 @@ export function AccessibilityDock() {
                     </div>
                   </div>
 
-                  <div className="mt-6 space-y-3">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      {t("sectionVisual")}
-                    </p>
-                    <div className="flex flex-col gap-2 rounded-xl border border-border/80 bg-muted/20 px-3 py-2">
+                  <div className="space-y-3">
+                    <A11ySectionLabel>{t("sectionVisual")}</A11ySectionLabel>
+                    <div className="rounded-2xl border border-border/70 bg-gradient-to-b from-card to-muted/15 p-3.5 shadow-sm dark:to-muted/10">
                       <div className="flex items-center justify-between gap-2">
                         <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                          <Type className="h-4 w-4 shrink-0 text-[var(--gold)]" aria-hidden />
+                          <Type className="h-4 w-4 shrink-0 text-teal-600 dark:text-teal-300" aria-hidden />
                           {t("fontSize")}
                         </span>
-                        <div className="flex shrink-0 items-center gap-1">
-                          <Button
+                        <div className="flex shrink-0 items-center gap-1.5">
+                          <button
                             type="button"
-                            variant="outline"
-                            size="sm"
-                            className="h-9 w-9 p-0"
+                            className={microRoundBtn}
                             aria-label={t("fontDecrease")}
                             onClick={() => bumpFontScale(-0.05)}
                           >
                             <Minus className="h-4 w-4" aria-hidden />
-                          </Button>
-                          <span className="min-w-[3rem] text-center text-xs font-semibold text-foreground">
+                          </button>
+                          <span className="min-w-[3.25rem] rounded-full border border-border/70 bg-background/90 px-2 py-1 text-center font-mono text-xs font-bold tabular-nums text-foreground shadow-inner">
                             {Math.round(preferences.fontScale * 100)}%
                           </span>
-                          <Button
+                          <button
                             type="button"
-                            variant="outline"
-                            size="sm"
-                            className="h-9 w-9 p-0"
+                            className={microRoundBtn}
                             aria-label={t("fontIncrease")}
                             onClick={() => bumpFontScale(0.05)}
                           >
                             <Plus className="h-4 w-4" aria-hidden />
-                          </Button>
+                          </button>
                         </div>
                       </div>
-                      <Button type="button" variant="outline" size="sm" className="w-full text-xs font-semibold" onClick={resetTypography}>
+                      <button
+                        type="button"
+                        className={cn("mt-3 w-full", widePillBtn)}
+                        onClick={resetTypography}
+                      >
                         {t("fontReset")}
-                      </Button>
+                      </button>
                     </div>
                     <div className="flex gap-2">
-                      <Button type="button" variant="outline" size="sm" className="flex-1" onClick={() => bumpLineHeight("down")}>
+                      <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLineHeight("down")}>
                         {t("lineTighten")}
-                      </Button>
-                      <Button type="button" variant="outline" size="sm" className="flex-1" onClick={() => bumpLineHeight("up")}>
+                      </button>
+                      <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLineHeight("up")}>
                         {t("lineLoosen")}
-                      </Button>
+                      </button>
                     </div>
                     <div className="flex gap-2">
-                      <Button type="button" variant="outline" size="sm" className="flex-1" onClick={() => bumpLetterSpacing("down")}>
+                      <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLetterSpacing("down")}>
                         {t("letterNarrower")}
-                      </Button>
-                      <Button type="button" variant="outline" size="sm" className="flex-1" onClick={() => bumpLetterSpacing("up")}>
+                      </button>
+                      <button type="button" className={cn("flex-1", widePillBtn)} onClick={() => bumpLetterSpacing("up")}>
                         {t("letterWider")}
-                      </Button>
+                      </button>
                     </div>
-                    <p className="text-xs font-medium text-foreground">{t("contrast")}</p>
-                    <div className="grid grid-cols-2 gap-2">
+                    <p className="pl-7 text-xs font-semibold text-foreground">{t("contrast")}</p>
+                    <div className="grid grid-cols-2 gap-2.5">
                       {contrastModes.map((m) => (
-                        <Button
+                        <button
                           key={m.id}
                           type="button"
-                          size="sm"
-                          variant={preferences.contrastMode === m.id ? "accent" : "outline"}
-                          className="h-auto min-h-10 whitespace-normal px-2 py-2 text-center text-[11px] font-semibold leading-snug"
+                          className={contrastPill(preferences.contrastMode === m.id)}
                           aria-pressed={preferences.contrastMode === m.id}
                           onClick={() => patchPreferences({ profile: "none", contrastMode: m.id })}
                         >
                           {m.label}
-                        </Button>
+                        </button>
                       ))}
                     </div>
                     <ToggleRowI18n
@@ -373,10 +443,8 @@ export function AccessibilityDock() {
                     />
                   </div>
 
-                  <div className="mt-6 space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      {t("sectionReading")}
-                    </p>
+                  <div className="space-y-2.5">
+                    <A11ySectionLabel>{t("sectionReading")}</A11ySectionLabel>
                     <ToggleRowI18n
                       label={t("dyslexiaFont")}
                       pressed={preferences.dyslexiaFriendly}
@@ -421,10 +489,8 @@ export function AccessibilityDock() {
                     />
                   </div>
 
-                  <div className="mt-6 space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      {t("sectionInteraction")}
-                    </p>
+                  <div className="space-y-2.5">
+                    <A11ySectionLabel>{t("sectionInteraction")}</A11ySectionLabel>
                     <ToggleRowI18n
                       label={t("reduceMotion")}
                       pressed={preferences.reduceMotion}
@@ -456,11 +522,19 @@ export function AccessibilityDock() {
                   </div>
                 </div>
 
-                <div className="border-t border-border p-4">
-                  <Button type="button" variant="outline" className="w-full gap-2" onClick={() => resetPreferences()}>
-                    <RotateCcw className="h-4 w-4" aria-hidden />
+                <div className="border-t border-border/80 bg-muted/10 px-4 py-4 dark:bg-muted/5">
+                  <button
+                    type="button"
+                    className={cn(
+                      "flex w-full items-center justify-center gap-2 rounded-full border border-border/80 py-3 text-sm font-semibold text-foreground shadow-sm transition",
+                      "hover:border-teal-600/35 hover:bg-gradient-to-b hover:from-muted/50 hover:to-muted/30 hover:shadow-md",
+                      "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-teal-400/40",
+                    )}
+                    onClick={() => resetPreferences()}
+                  >
+                    <RotateCcw className="h-4 w-4 shrink-0 text-teal-700 dark:text-teal-300" aria-hidden />
                     {t("reset")}
-                  </Button>
+                  </button>
                 </div>
               </div>
               <div
