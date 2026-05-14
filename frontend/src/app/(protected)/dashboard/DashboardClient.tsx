@@ -305,15 +305,15 @@ export function DashboardClient() {
 
   if (loading) {
     return (
-      <div className="space-y-5">
+      <div className="mx-auto w-full max-w-[1280px] space-y-5">
         <div className="animate-pulse space-y-4">
           <div className="h-36 rounded-[2rem] bg-black/5 dark:bg-white/5" />
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="h-32 rounded-[1.75rem] bg-black/5 dark:bg-white/5" />
             ))}
           </div>
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.95fr)]">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,22rem)]">
             <div className="h-96 rounded-[2rem] bg-black/5 dark:bg-white/5" />
             <div className="h-96 rounded-[2rem] bg-black/5 dark:bg-white/5" />
           </div>
@@ -363,15 +363,15 @@ export function DashboardClient() {
         : 'text-blue-700 dark:text-blue-300';
 
   return (
-    <div className="relative isolate space-y-6 pb-4">
-      <div className="pointer-events-none absolute -left-20 top-8 -z-10 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(200,155,91,0.22),transparent_66%)] blur-2xl" />
-      <div className="pointer-events-none absolute right-0 top-32 -z-10 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(14,165,233,0.12),transparent_68%)] blur-2xl dark:bg-[radial-gradient(circle,rgba(56,189,248,0.12),transparent_68%)]" />
+    <div className="relative isolate mx-auto w-full max-w-[1280px] space-y-5 overflow-x-hidden pb-6">
+      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-64 w-[min(100vw,56rem)] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(200,155,91,0.14),transparent_70%)] blur-2xl" />
+      <div className="pointer-events-none absolute right-0 top-40 -z-10 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(14,165,233,0.08),transparent_68%)] blur-2xl dark:bg-[radial-gradient(circle,rgba(56,189,248,0.1),transparent_68%)]" />
 
-      <section className="relative overflow-hidden rounded-[2.2rem] border border-white/70 bg-[linear-gradient(135deg,rgba(255,255,255,0.98),rgba(255,248,236,0.94)_44%,rgba(239,231,219,0.92))] p-5 shadow-[var(--shadow-elevated)] dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(17,26,43,0.98),rgba(9,17,31,0.98)_54%,rgba(35,27,16,0.9))] sm:p-7 xl:p-8">
-        <div className="pointer-events-none absolute right-[-8rem] top-[-12rem] h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(200,155,91,0.28),transparent_64%)] blur-xl" />
-        <div className="pointer-events-none absolute bottom-[-10rem] left-[28%] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_66%)] blur-xl" />
+      <section className="relative overflow-hidden rounded-[2rem] border border-white/70 bg-[linear-gradient(135deg,rgba(255,255,255,0.98),rgba(255,248,236,0.94)_44%,rgba(239,231,219,0.92))] p-5 shadow-[var(--shadow-elevated)] dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(17,26,43,0.98),rgba(9,17,31,0.98)_54%,rgba(35,27,16,0.9))] sm:p-6 lg:p-7">
+        <div className="pointer-events-none absolute right-[-6rem] top-[-10rem] h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(200,155,91,0.22),transparent_64%)] blur-xl" />
+        <div className="pointer-events-none absolute bottom-[-8rem] left-[20%] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.1),transparent_66%)] blur-xl" />
 
-        <div className="relative grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.65fr)] xl:items-end">
+        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(260px,300px)] lg:items-start">
           <div>
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-2 rounded-full border border-[var(--gold)]/30 bg-[var(--gold)]/12 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-[var(--primary)]">
@@ -407,7 +407,7 @@ export function DashboardClient() {
             </div>
           </div>
 
-          <div className="rounded-[1.8rem] border border-white/70 bg-white/62 p-4 shadow-[0_24px_70px_rgba(16,24,40,0.10)] backdrop-blur dark:border-white/10 dark:bg-white/[0.045]">
+          <div className="rounded-[1.5rem] border border-white/70 bg-white/62 p-4 shadow-[0_20px_50px_rgba(16,24,40,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/[0.045] lg:rounded-[1.65rem]">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
@@ -438,9 +438,10 @@ export function DashboardClient() {
         </div>
       </section>
 
+      <div className="grid gap-4 lg:grid-cols-2">
       <section
         className={cn(
-          "relative overflow-hidden rounded-[2rem] border-2 px-5 py-5 shadow-xl sm:px-8 sm:py-7",
+          "relative flex h-full min-h-0 flex-col overflow-hidden rounded-[1.75rem] border-2 px-5 py-5 shadow-lg sm:px-6 sm:py-6",
           s.isDemoAccount
             ? "border-amber-400/55 bg-gradient-to-br from-amber-50 via-white to-amber-100/95 shadow-[0_24px_60px_-18px_rgba(245,158,11,0.35)] dark:border-amber-500/45 dark:from-amber-950/55 dark:via-amber-950/35 dark:to-amber-950/50 dark:shadow-[0_28px_70px_-20px_rgba(251,191,36,0.18)]"
             : "border-[var(--gold)]/55 bg-[linear-gradient(145deg,rgba(255,252,240,1)_0%,rgba(255,255,255,0.99)_42%,rgba(254,229,170,0.55)_100%)] shadow-[0_26px_64px_-16px_rgba(180,130,20,0.32),inset_0_1px_0_rgba(255,255,255,0.95)] dark:border-amber-500/45 dark:bg-[linear-gradient(145deg,rgba(42,32,12,0.98)_0%,rgba(15,23,42,0.92)_45%,rgba(88,48,10,0.45)_100%)] dark:shadow-[0_32px_80px_-22px_rgba(251,191,36,0.14)]",
@@ -484,7 +485,7 @@ export function DashboardClient() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden rounded-[2rem] border border-teal-500/25 bg-[linear-gradient(135deg,rgba(240,253,250,0.96),rgba(255,255,255,0.98)_48%,rgba(204,251,241,0.72))] px-5 py-5 shadow-[0_24px_60px_-18px_rgba(13,148,136,0.28)] dark:border-teal-400/20 dark:bg-[linear-gradient(135deg,rgba(17,94,89,0.28),rgba(15,23,42,0.96)_52%,rgba(20,83,78,0.34))] sm:px-8 sm:py-7">
+      <section className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-[1.75rem] border border-teal-500/25 bg-[linear-gradient(135deg,rgba(240,253,250,0.96),rgba(255,255,255,0.98)_48%,rgba(204,251,241,0.72))] px-5 py-5 shadow-[0_20px_50px_-14px_rgba(13,148,136,0.24)] dark:border-teal-400/20 dark:bg-[linear-gradient(135deg,rgba(17,94,89,0.28),rgba(15,23,42,0.96)_52%,rgba(20,83,78,0.34))] sm:px-6 sm:py-6">
         <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-teal-400/24 blur-3xl" aria-hidden />
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 gap-4">
@@ -512,8 +513,9 @@ export function DashboardClient() {
           </Link>
         </div>
       </section>
+      </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <StatCard
           icon={ShieldAlert}
           label={t('statRisk')}
@@ -577,7 +579,7 @@ export function DashboardClient() {
 
       <OhsFileWidget />
 
-      <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(min(100%,340px),0.95fr)]">
+      <div className="grid min-w-0 gap-6 lg:grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(300px,23rem)] xl:items-start">
         <div className="min-w-0 space-y-4">
           <div className="surface-card">
             <div className="mb-4 flex items-center justify-between gap-3">
@@ -592,7 +594,7 @@ export function DashboardClient() {
                 {t('quickFlowsBadge')}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <QuickAction icon={ShieldAlert} label={t('quickRisk')} href="/risk-analysis" tone="risk" />
               <QuickAction icon={FileText} label={t('quickLibrary')} href="/isg-library?section=documentation" tone="cobalt" />
               <QuickAction icon={AlertTriangle} label={t('quickIncident')} href="/incidents" tone="amber" />
@@ -675,72 +677,6 @@ export function DashboardClient() {
                 })}
               </div>
             )}
-          </div>
-        </div>
-
-        <div className="min-w-0 space-y-4">
-          <UsageQuotaCard overview={usageOverview} locale={locale} t={t} onOpenPlans={() => router.push('/pricing')} />
-
-          <div className="surface-card">
-            <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
-              <Building2 size={16} className="text-[var(--gold)]" />
-              {t('companySummaryTitle')}
-            </h2>
-            <div className="rounded-[1.5rem] border border-[var(--gold)]/20 bg-[linear-gradient(135deg,rgba(200,155,91,0.12),rgba(255,255,255,0.55))] px-5 py-6 text-center dark:bg-[linear-gradient(135deg,rgba(213,177,122,0.12),rgba(17,26,43,0.45))]">
-              <p className="text-4xl font-semibold tracking-tight text-[var(--primary)]">{s.companyCount}</p>
-              <p className="mt-2 text-sm text-muted-foreground">{t('companySummaryCountLabel')}</p>
-            </div>
-          </div>
-
-          <div className="surface-card">
-            <div className="mb-4">
-              <h2 className="text-base font-semibold text-foreground">{t('modulesTitle')}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">{t('modulesSubtitle')}</p>
-            </div>
-            <div className="space-y-2">
-              <ModuleLink
-                icon={ShieldAlert}
-                label={t('moduleRisk')}
-                desc={t('moduleRiskDesc', { count: s.riskCount })}
-                href="/risk-analysis"
-                tone="risk"
-              />
-              <ModuleLink
-                icon={FileText}
-                label={t('moduleLibrary')}
-                desc={t('moduleLibraryDesc')}
-                href="/isg-library?section=documentation"
-                tone="cobalt"
-              />
-              <ModuleLink
-                icon={Siren}
-                label={t('moduleEmergency')}
-                desc={t('moduleEmergencyDesc')}
-                href="/isg-library?section=emergency"
-                tone="amber"
-              />
-              <ModuleLink
-                icon={GraduationCap}
-                label={t('moduleTraining')}
-                desc={t('moduleTrainingDesc')}
-                href="/training"
-                tone="teal"
-              />
-              <ModuleLink
-                icon={PenTool}
-                label={t('moduleAssessment')}
-                desc={t('moduleAssessmentDesc')}
-                href="/training"
-                tone="indigo"
-              />
-              <ModuleLink
-                icon={Download}
-                label={t('moduleLegal')}
-                desc={t('moduleLegalDesc')}
-                href="/isg-library?category=documentation"
-                tone="gold"
-              />
-            </div>
           </div>
 
           <div className="surface-card bg-[linear-gradient(135deg,rgba(200,155,91,0.14),rgba(255,252,247,0.92))] dark:bg-[linear-gradient(135deg,rgba(213,177,122,0.12),rgba(17,26,43,0.95))]">
@@ -836,6 +772,72 @@ export function DashboardClient() {
           </div>
 
           <ServiceHealthSummaryCard />
+        </div>
+
+        <div className="min-w-0 space-y-4">
+          <UsageQuotaCard overview={usageOverview} locale={locale} t={t} onOpenPlans={() => router.push('/pricing')} />
+
+          <div className="surface-card">
+            <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
+              <Building2 size={16} className="text-[var(--gold)]" />
+              {t('companySummaryTitle')}
+            </h2>
+            <div className="rounded-[1.5rem] border border-[var(--gold)]/20 bg-[linear-gradient(135deg,rgba(200,155,91,0.12),rgba(255,255,255,0.55))] px-5 py-6 text-center dark:bg-[linear-gradient(135deg,rgba(213,177,122,0.12),rgba(17,26,43,0.45))]">
+              <p className="text-4xl font-semibold tracking-tight text-[var(--primary)]">{s.companyCount}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{t('companySummaryCountLabel')}</p>
+            </div>
+          </div>
+
+          <div className="surface-card">
+            <div className="mb-4">
+              <h2 className="text-base font-semibold text-foreground">{t('modulesTitle')}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{t('modulesSubtitle')}</p>
+            </div>
+            <div className="space-y-2">
+              <ModuleLink
+                icon={ShieldAlert}
+                label={t('moduleRisk')}
+                desc={t('moduleRiskDesc', { count: s.riskCount })}
+                href="/risk-analysis"
+                tone="risk"
+              />
+              <ModuleLink
+                icon={FileText}
+                label={t('moduleLibrary')}
+                desc={t('moduleLibraryDesc')}
+                href="/isg-library?section=documentation"
+                tone="cobalt"
+              />
+              <ModuleLink
+                icon={Siren}
+                label={t('moduleEmergency')}
+                desc={t('moduleEmergencyDesc')}
+                href="/isg-library?section=emergency"
+                tone="amber"
+              />
+              <ModuleLink
+                icon={GraduationCap}
+                label={t('moduleTraining')}
+                desc={t('moduleTrainingDesc')}
+                href="/training"
+                tone="teal"
+              />
+              <ModuleLink
+                icon={PenTool}
+                label={t('moduleAssessment')}
+                desc={t('moduleAssessmentDesc')}
+                href="/training"
+                tone="indigo"
+              />
+              <ModuleLink
+                icon={Download}
+                label={t('moduleLegal')}
+                desc={t('moduleLegalDesc')}
+                href="/isg-library?category=documentation"
+                tone="gold"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -101,7 +101,7 @@ export function DashboardTrackingSummary() {
     return (
       <div className="surface-card overflow-hidden">
         <div className="mb-4 h-5 w-40 animate-pulse rounded-full bg-black/5 dark:bg-white/5" />
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="h-24 animate-pulse rounded-[1.25rem] bg-black/5 dark:bg-white/5" />
           ))}
@@ -146,7 +146,7 @@ export function DashboardTrackingSummary() {
         </div>
       </div>
 
-      <div className="relative grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="relative grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {metrics.map((m) => {
           const value = data[m.key];
           const warn = m.warnWhenPositive && value > 0;
