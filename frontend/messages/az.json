@@ -3344,7 +3344,10 @@
     "whyEyebrow": "NIYƏ RiskNova",
     "whyTitle1": "Etimat Yaradan",
     "whyTitle2": "Premium",
-    "whyTitle3": "Təcrübə"
+    "whyTitle3": "Təcrübə",
+    "appStoreAria": "Download RiskNova on the App Store",
+    "appStoreLabel": "Download on the App Store",
+    "appStoreHint": "Native app for iPhone and iPad."
   },
   "lang": {
     "ar": "العربية",
@@ -5394,49 +5397,50 @@
     "yes": "Bəli"
   },
   "pwaInstallPage": {
+    "metaTitle": "RiskNova tətbiqi",
+    "metaDescription": "iPhone və iPad: RiskNova-nı App Store-dan yükləyin. Android və Windows: Chrome və ya Edge ilə saytı PWA kimi quraşdırın — yeniləmələr avtomatik gəlir.",
+    "eyebrow": "App Store və veb quraşdırma",
+    "heroTitle": "RiskNova telefon, planşet və masaüstündə",
+    "heroBody": "iPhone və iPad üçün native iOS tətbiqindən istifadə edin. Android və Windows-da Chrome və ya Edge tətbiqi quraşdırma təklif etdikdə getrisknova.com əlavə edin.",
+    "ctaRegister": "Pulsuz başla",
+    "ctaLogin": "Platformaya daxil ol",
+    "updatesTitle": "Yeniləmələr avtomatik gəlir",
+    "updatesBody": "RiskNova veb tətbiqi yeniləndikdə PWA da yeni versiyanı alır; mağaza yeniləməsini gözləməsiz.",
     "cards": {
       "android": {
-        "step1": "getrisknova.com-u açın",
-        "step2": "Tətbiqi quraşdır düyməsinə toxunun",
-        "step3": "RiskNova ikonasından daxil olun",
-        "text": "RiskNova-nı Chrome və ya Edge-də açın; quraşdırma təklifi görsəniz, Tətbiqi quraşdır seçin.",
-        "title": "Android"
+        "title": "Android",
+        "text": "RiskNova-nı Chrome və ya Edge-də açın; quraşdırma təklifi görünsə, Tətbiqi quraşdır seçin.",
+        "step1": "getrisknova.com ünvanını aç",
+        "step2": "Tətbiqi quraşdır düyməsinə bas",
+        "step3": "RiskNova ikonundan daxil ol"
       },
       "ios": {
-        "step1": "Saytı Safari-də açın",
-        "step2": "Paylaş ikonasına toxunun",
-        "step3": "Ana Ekrana Əlavə Et seçin",
-        "text": "Safari-də açın; RiskNova ikonasını yaratmaq üçün Paylaş → Ana Ekrana Əlavə Et istifadə edin.",
-        "title": "iPhone və iPad"
+        "title": "iPhone və iPad",
+        "text": "Yoxlamalar, risk təhlili və Nova üçün native RiskNova tətbiqini App Store-dan əldə edin.",
+        "step1": "App Store-u açın (və ya aşağıdakı düyməyə toxunun)",
+        "step2": "RiskNova axtarın və ya App Store keçidimizdən istifadə edin",
+        "step3": "Yükləyə toxunun, sonra platforma hesabınızla daxil olun",
+        "cta": "App Store-da bax"
       },
       "windows": {
-        "step1": "Edge və ya Chrome-da açın",
-        "step2": "Tətbiq quraşdırma ikonasına klikləyin",
-        "step3": "RiskNova-nı Başlanğıc menyusundan açın",
-        "text": "RiskNova-nı öz masaüstü pəncərəsində açmaq üçün Chrome və ya Edge ünvan çubuğundakı quraşdırma ikonasından istifadə edin.",
-        "title": "Windows"
+        "title": "Windows",
+        "text": "Chrome və ya Edge ünvan sətirindəki quraşdırma ikonu ilə ayrıca masaüstü pəncərəsində açın.",
+        "step1": "Edge və ya Chrome ilə aç",
+        "step2": "Tətbiqi yüklə ikonuna bas",
+        "step3": "Başlat menyusundan RiskNova-nı aç"
       }
-    },
-    "ctaLogin": "Platforma daxil olun",
-    "ctaRegister": "Pulsuz başlayın",
-    "eyebrow": "Tətbiq mağazası tələb olunmur",
-    "heroBody": "RiskNova-nı iOS, Android və Windows-da ana ekranınıza və ya masaüstünüzə əlavə edin. Sayt yeniləmələri quraşdırılmış təcrübənizə avtomatik olaraq çatdırılır.",
-    "heroTitle": "RiskNova-nı mobil və masaüstündə tətbiq kimi istifadə edin",
-    "metaDescription": "RiskNova-nı tətbiq mağazası olmadan iOS, Android və Windows-da PWA olaraq quraşdırın.",
-    "metaTitle": "RiskNova tətbiqi",
-    "updatesBody": "RiskNova veb tətbiqi yenilənəndə, PWA-nız yeni versiyanı götürür—mağaza yeniləmələrini gözləmirsiniz.",
-    "updatesTitle": "Yeniləmələr avtomatik gəlir"
+    }
   },
   "pwaPrompt": {
+    "publicTitle": "RiskNova-nı tətbiq kimi quraşdır",
+    "publicDescription": "Android və Windows-da Chrome və Edge quraşdırma təklifi göstərəndə bu saytı tətbiq kimi quraşdıra bilər.",
+    "publicButton": "Cihaza quraşdır",
+    "appTitle": "RiskNova tətbiqini quraşdır",
+    "appDescription": "Saha, sənəd və Nova axınlarına ana ekrandan qayıt.",
     "appButton": "Quraşdır",
-    "appDescription": "Ana ekranınızdan sahə işlərinə, sənədlərə və Nova-ya qayıdın.",
-    "appTitle": "RiskNova tətbiqini quraşdırın",
-    "asideAria": "RiskNova tətbiqi quraşdırılması",
-    "dismissAria": "Quraşdırma xatırlatmasını rədd et",
-    "iosHint": "iPhone/iPad-də Paylaş → Ana Ekrana Əlavə Et istifadə edin.",
-    "publicButton": "Tətbiqi quraşdır",
-    "publicDescription": "iOS, Android və Windows-da ayrı pəncərədə tez açın.",
-    "publicTitle": "RiskNova-nı tətbiq kimi quraşdırın"
+    "iosHint": "iPhone və iPad üçün RiskNova-nı App Store-dan yükləyin.",
+    "asideAria": "RiskNova tətbiq quraşdırması",
+    "dismissAria": "Quraşdırma xatırladıcısını bağla"
   },
   "reports": {
     "companyFile": {

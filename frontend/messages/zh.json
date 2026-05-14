@@ -3344,7 +3344,10 @@
     "whyEyebrow": "为什么选择RiskNova",
     "whyTitle1": "值得信赖",
     "whyTitle2": "高端",
-    "whyTitle3": "体验"
+    "whyTitle3": "体验",
+    "appStoreAria": "Download RiskNova on the App Store",
+    "appStoreLabel": "Download on the App Store",
+    "appStoreHint": "Native app for iPhone and iPad."
   },
   "lang": {
     "ar": "العربية",
@@ -5394,49 +5397,50 @@
     "yes": "是"
   },
   "pwaInstallPage": {
+    "metaTitle": "RiskNova 应用",
+    "metaDescription": "iPhone 与 iPad：从 App Store 下载 RiskNova。Android 与 Windows：在 Chrome 或 Edge 中将站点安装为 PWA，更新会自动送达。",
+    "eyebrow": "App Store 与网页安装",
+    "heroTitle": "RiskNova 在手机、平板和电脑上",
+    "heroBody": "在 iPhone 与 iPad 上使用原生 iOS 应用。在 Android 与 Windows 上，当 Chrome 或 Edge 提供安装应用时，可安装 getrisknova.com。",
+    "ctaRegister": "免费开始",
+    "ctaLogin": "登录平台",
+    "updatesTitle": "更新自动送达",
+    "updatesBody": "RiskNova 网页应用更新后，您的 PWA 会获得新版本，无需等待商店更新。",
     "cards": {
       "android": {
+        "title": "Android",
+        "text": "在 Chrome 或 Edge 中打开 RiskNova；若出现安装提示，请选择安装应用。",
         "step1": "打开 getrisknova.com",
         "step2": "点击安装应用",
-        "step3": "从 RiskNova 图标登录",
-        "text": "在 Chrome 或 Edge 中打开 RiskNova；如果看到安装提示，选择安装应用。",
-        "title": "Android"
+        "step3": "从 RiskNova 图标登录"
       },
       "ios": {
-        "step1": "在 Safari 中打开网站",
-        "step2": "点击分享图标",
-        "step3": "选择添加到主屏幕",
-        "text": "在 Safari 中打开；使用分享 → 添加到主屏幕来创建 RiskNova 图标。",
-        "title": "iPhone 和 iPad"
+        "title": "iPhone 与 iPad",
+        "text": "从 App Store 获取 RiskNova 原生应用，便于现场审核、风险分析与 Nova。",
+        "step1": "打开 App Store（或点击下方按钮）",
+        "step2": "搜索 RiskNova 或使用我们的 App Store 链接",
+        "step3": "轻点获取，然后使用平台账号登录",
+        "cta": "在 App Store 查看"
       },
       "windows": {
-        "step1": "在 Edge 或 Chrome 中打开",
+        "title": "Windows",
+        "text": "使用 Chrome 或 Edge 地址栏中的安装图标，在独立桌面窗口中打开。",
+        "step1": "用 Edge 或 Chrome 打开",
         "step2": "点击安装应用图标",
-        "step3": "从开始菜单打开 RiskNova",
-        "text": "使用 Chrome 或 Edge 地址栏中的安装图标在独立桌面窗口中打开 RiskNova。",
-        "title": "Windows"
+        "step3": "从开始菜单打开 RiskNova"
       }
-    },
-    "ctaLogin": "登录平台",
-    "ctaRegister": "免费开始",
-    "eyebrow": "无需应用商店",
-    "heroBody": "在 iOS、Android 和 Windows 上将 RiskNova 添加到主屏幕或桌面。网站更新会自动推送到您安装的应用体验中。",
-    "heroTitle": "像应用一样在移动设备和桌面上使用 RiskNova",
-    "metaDescription": "无需应用商店即可在 iOS、Android 和 Windows 上安装 RiskNova 作为 PWA。",
-    "metaTitle": "RiskNova 应用",
-    "updatesBody": "当 RiskNova 网络应用更新时，您的 PWA 会获取新版本——无需等待商店更新。",
-    "updatesTitle": "更新自动到达"
+    }
   },
   "pwaPrompt": {
-    "appButton": "安装",
-    "appDescription": "从主屏幕快速返回现场工作、文档和 Nova。",
-    "appTitle": "安装 RiskNova 应用",
-    "asideAria": "RiskNova 应用安装",
-    "dismissAria": "关闭安装提醒",
-    "iosHint": "在 iPhone/iPad 上，使用分享 → 添加到主屏幕。",
+    "publicTitle": "像应用一样安装 RiskNova",
+    "publicDescription": "Android 与 Windows 上的 Chrome 和 Edge 在安装提示出现时可安装本站。",
     "publicButton": "安装应用",
-    "publicDescription": "在iOS、Android和Windows上快速在单独窗口中打开。",
-    "publicTitle": "像应用一样安装RiskNova"
+    "appTitle": "安装 RiskNova 应用",
+    "appDescription": "从主屏幕返回现场、文档与 Nova 流程。",
+    "appButton": "安装",
+    "iosHint": "在 iPhone 与 iPad 上，请从 App Store 下载 RiskNova。",
+    "asideAria": "RiskNova 应用安装",
+    "dismissAria": "关闭安装提醒"
   },
   "reports": {
     "companyFile": {

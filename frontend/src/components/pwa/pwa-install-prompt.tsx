@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Download, ExternalLink, MonitorDown, Smartphone, X } from "lucide-react";
+import { Download, MonitorDown, Smartphone, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type BeforeInstallPromptEvent = Event & {
@@ -25,13 +25,6 @@ function isStandaloneDisplay() {
   );
 }
 
-function isIosDevice() {
-  if (typeof window === "undefined") return false;
-  const platform = window.navigator.platform.toLowerCase();
-  const userAgent = window.navigator.userAgent.toLowerCase();
-  return /iphone|ipad|ipod/.test(userAgent) || (platform === "macintel" && navigator.maxTouchPoints > 1);
-}
-
 function isRecentlyDismissed() {
   try {
     const dismissedAt = Number(localStorage.getItem(DISMISSED_KEY) ?? 0);
@@ -44,18 +37,11 @@ function isRecentlyDismissed() {
 
 export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) {
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
-  const [showIosHint, setShowIosHint] = useState(false);
   const [visible, setVisible] = useState(false);
   const [showManualHint, setShowManualHint] = useState(false);
 
   useEffect(() => {
     if (isStandaloneDisplay() || isRecentlyDismissed()) return;
-
-    if (isIosDevice()) {
-      setShowIosHint(true);
-      setVisible(true);
-      return;
-    }
 
     if (surface === "public") {
       setShowManualHint(true);
@@ -88,13 +74,12 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
   const title = surface === "public" ? "Install RiskNova like an app" : "Install the RiskNova app";
   const description =
     surface === "public"
-      ? "Launch quickly in a dedicated window on iOS, Android, and Windows."
+      ? "Chrome and Edge on Android and Windows can install this site as an app when they show an install prompt."
       : "Return to field, document, and Nova workflows from your home screen.";
   const button = surface === "public" ? "Install on device" : "Install";
-  const iosHint = "On iPhone/iPad, use Share menu > Add to Home Screen.";
   const manualHint =
     "If the install button is not visible, use a normal browser window and open the three-dot menu to select Install app or Add to Home screen.";
-  const showGuideLink = showIosHint || showManualHint;
+  const showGuideLink = showManualHint;
 
   async function install() {
     if (!installEvent) return;
@@ -145,7 +130,7 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
               surface === "public" ? "text-slate-300" : "text-muted-foreground",
             )}
           >
-            {showIosHint && !installEvent ? iosHint : showManualHint ? manualHint : description}
+            {showManualHint ? manualHint : description}
           </p>
           {installEvent ? (
             <button
@@ -171,8 +156,8 @@ export function PwaInstallPrompt({ surface, className }: PwaInstallPromptProps) 
                   : "bg-primary text-primary-foreground hover:bg-primary/90",
               )}
             >
-              {showIosHint ? <ExternalLink className="h-4 w-4" /> : <Download className="h-4 w-4" />}
-              {showIosHint ? "Open iOS steps" : "Add to home screen"}
+              <Download className="h-4 w-4" />
+              Add to home screen
             </a>
           ) : null}
         </div>

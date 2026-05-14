@@ -3344,7 +3344,10 @@
     "whyEyebrow": "MENGAPA RISKNOVA",
     "whyTitle1": "Menginspirasi",
     "whyTitle2": "Premium",
-    "whyTitle3": "Kepercayaan"
+    "whyTitle3": "Kepercayaan",
+    "appStoreAria": "Download RiskNova on the App Store",
+    "appStoreLabel": "Download on the App Store",
+    "appStoreHint": "Native app for iPhone and iPad."
   },
   "lang": {
     "ar": "العربية",
@@ -5394,49 +5397,50 @@
     "yes": "Ya"
   },
   "pwaInstallPage": {
+    "metaTitle": "Aplikasi RiskNova",
+    "metaDescription": "iPhone dan iPad: unduh RiskNova di App Store. Android dan Windows: pasang situs sebagai PWA dari Chrome atau Edge — pembaruan tiba otomatis.",
+    "eyebrow": "App Store & pemasangan web",
+    "heroTitle": "RiskNova di ponsel, tablet, dan desktop",
+    "heroBody": "Gunakan aplikasi iOS asli di iPhone dan iPad. Di Android dan Windows, tambahkan getrisknova.com saat Chrome atau Edge menawarkan Pasang aplikasi.",
+    "ctaRegister": "Mulai gratis",
+    "ctaLogin": "Masuk ke platform",
+    "updatesTitle": "Pembaruan datang otomatis",
+    "updatesBody": "Saat aplikasi web RiskNova diperbarui, PWA Anda mendapat versi baru—tanpa menunggu pembaruan toko.",
     "cards": {
       "android": {
+        "title": "Android",
+        "text": "Buka RiskNova di Chrome atau Edge; jika ada prompt, pilih Pasang aplikasi.",
         "step1": "Buka getrisknova.com",
-        "step2": "Ketuk Instal aplikasi",
-        "step3": "Masuk dari ikon RiskNova",
-        "text": "Buka RiskNova di Chrome atau Edge; jika Anda melihat prompt install, pilih Install app.",
-        "title": "Android"
+        "step2": "Ketuk Pasang aplikasi",
+        "step3": "Masuk dari ikon RiskNova"
       },
       "ios": {
-        "step1": "Buka situs di Safari",
-        "step2": "Ketuk ikon Share",
-        "step3": "Pilih Add to Home Screen",
-        "text": "Buka di Safari; gunakan Share → Add to Home Screen untuk membuat ikon RiskNova.",
-        "title": "iPhone & iPad"
+        "title": "iPhone & iPad",
+        "text": "Dapatkan aplikasi asli RiskNova di App Store untuk audit, analisis risiko, dan Nova di lapangan.",
+        "step1": "Buka App Store (atau ketuk tombol di bawah)",
+        "step2": "Cari RiskNova atau gunakan tautan App Store kami",
+        "step3": "Ketuk Dapatkan, lalu masuk dengan akun platform Anda",
+        "cta": "Lihat di App Store"
       },
       "windows": {
+        "title": "Windows",
+        "text": "Gunakan ikon pasang di bilah alamat Chrome atau Edge untuk jendela desktop sendiri.",
         "step1": "Buka di Edge atau Chrome",
-        "step2": "Klik ikon install-app",
-        "step3": "Buka RiskNova dari menu Start",
-        "text": "Gunakan ikon install di address bar Chrome atau Edge untuk membuka RiskNova di jendela desktop tersendiri.",
-        "title": "Windows"
+        "step2": "Klik ikon pasang aplikasi",
+        "step3": "Buka RiskNova dari menu Mulai"
       }
-    },
-    "ctaLogin": "Masuk ke platform",
-    "ctaRegister": "Mulai gratis",
-    "eyebrow": "Tidak perlu app store",
-    "heroBody": "Tambahkan RiskNova ke home screen atau desktop Anda di iOS, Android, dan Windows. Update situs otomatis tersedia di pengalaman terinstall Anda.",
-    "heroTitle": "Gunakan RiskNova seperti aplikasi di mobile dan desktop",
-    "metaDescription": "Install RiskNova sebagai PWA di iOS, Android, dan Windows tanpa app store.",
-    "metaTitle": "Aplikasi RiskNova",
-    "updatesBody": "Ketika web app RiskNova diupdate, PWA Anda mendapat versi baru—Anda tidak perlu menunggu update store.",
-    "updatesTitle": "Update tiba otomatis"
+    }
   },
   "pwaPrompt": {
-    "appButton": "Install",
-    "appDescription": "Kembali ke field work, dokumen, dan Nova dari home screen Anda.",
-    "appTitle": "Install aplikasi RiskNova",
-    "asideAria": "Instalasi aplikasi RiskNova",
-    "dismissAria": "Tutup pengingat install",
-    "iosHint": "Di iPhone/iPad, gunakan Share → Add to Home Screen.",
-    "publicButton": "Instal aplikasi",
-    "publicDescription": "Buka dengan cepat di jendela terpisah di iOS, Android, dan Windows.",
-    "publicTitle": "Instal RiskNova seperti aplikasi"
+    "publicTitle": "Pasang RiskNova seperti aplikasi",
+    "publicDescription": "Chrome dan Edge di Android dan Windows dapat memasang situs ini saat browser menampilkan undangan pemasangan.",
+    "publicButton": "Pasang aplikasi",
+    "appTitle": "Pasang aplikasi RiskNova",
+    "appDescription": "Kembali ke lapangan, dokumen, dan Nova dari layar beranda.",
+    "appButton": "Pasang",
+    "iosHint": "Di iPhone dan iPad, unduh RiskNova di App Store.",
+    "asideAria": "Pemasangan aplikasi RiskNova",
+    "dismissAria": "Tutup pengingat pemasangan"
   },
   "reports": {
     "companyFile": {

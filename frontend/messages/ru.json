@@ -3344,7 +3344,10 @@
     "whyEyebrow": "ПОЧЕМУ RiskNova",
     "whyTitle1": "Внушающий",
     "whyTitle2": "Премиум",
-    "whyTitle3": "Доверие"
+    "whyTitle3": "Доверие",
+    "appStoreAria": "Download RiskNova on the App Store",
+    "appStoreLabel": "Download on the App Store",
+    "appStoreHint": "Native app for iPhone and iPad."
   },
   "lang": {
     "ar": "العربية",
@@ -5394,49 +5397,50 @@
     "yes": "Да"
   },
   "pwaInstallPage": {
+    "metaTitle": "Приложение RiskNova",
+    "metaDescription": "iPhone и iPad: скачайте RiskNova из App Store. Android и Windows: установите сайт как PWA в Chrome или Edge — обновления приходят автоматически.",
+    "eyebrow": "App Store и веб-установка",
+    "heroTitle": "RiskNova на телефоне, планшете и компьютере",
+    "heroBody": "Используйте нативное приложение для iOS на iPhone и iPad. На Android и Windows добавьте getrisknova.com, когда Chrome или Edge предложат «Установить приложение».",
+    "ctaRegister": "Начать бесплатно",
+    "ctaLogin": "Войти на платформу",
+    "updatesTitle": "Обновления приходят автоматически",
+    "updatesBody": "Когда веб-приложение RiskNova обновляется, PWA получает новую версию без ожидания обновления из магазина.",
     "cards": {
       "android": {
-        "step1": "Открыть getrisknova.com",
+        "title": "Android",
+        "text": "Откройте RiskNova в Chrome или Edge; при запросе выберите Установить приложение.",
+        "step1": "Откройте getrisknova.com",
         "step2": "Нажмите Установить приложение",
-        "step3": "Войдите через иконку RiskNova",
-        "text": "Откройте RiskNova в Chrome или Edge; если появится запрос на установку, выберите Установить приложение.",
-        "title": "Android"
+        "step3": "Войдите через значок RiskNova"
       },
       "ios": {
-        "step1": "Откройте сайт в Safari",
-        "step2": "Нажмите иконку Поделиться",
-        "step3": "Выберите Добавить на экран «Домой»",
-        "text": "Откройте в Safari; используйте Поделиться → Добавить на экран «Домой» для создания иконки RiskNova.",
-        "title": "iPhone и iPad"
+        "title": "iPhone и iPad",
+        "text": "Скачайте нативное приложение RiskNova из App Store для аудитов, анализа рисков и Nova в поле.",
+        "step1": "Откройте App Store (или нажмите кнопку ниже)",
+        "step2": "Найдите RiskNova или перейдите по нашей ссылке App Store",
+        "step3": "Нажмите Загрузить и войдите в аккаунт платформы",
+        "cta": "Открыть в App Store"
       },
       "windows": {
+        "title": "Windows",
+        "text": "Используйте значок установки в адресной строке Chrome или Edge для отдельного окна.",
         "step1": "Откройте в Edge или Chrome",
-        "step2": "Нажмите иконку установки приложения",
-        "step3": "Откройте RiskNova из меню Пуск",
-        "text": "Используйте иконку установки в адресной строке Chrome или Edge, чтобы открыть RiskNova в отдельном окне рабочего стола.",
-        "title": "Windows"
+        "step2": "Нажмите значок установки приложения",
+        "step3": "Запустите RiskNova из меню Пуск"
       }
-    },
-    "ctaLogin": "Войти в платформу",
-    "ctaRegister": "Начать бесплатно",
-    "eyebrow": "Магазин приложений не требуется",
-    "heroBody": "Добавьте RiskNova на домашний экран или рабочий стол на iOS, Android и Windows. Обновления сайта автоматически применяются к установленной версии.",
-    "heroTitle": "Используйте RiskNova как приложение на мобильных устройствах и компьютере",
-    "metaDescription": "Установите RiskNova как PWA на iOS, Android и Windows без магазина приложений.",
-    "metaTitle": "Приложение RiskNova",
-    "updatesBody": "Когда веб-приложение RiskNova обновляется, ваше PWA получает новую версию — вам не нужно ждать обновлений из магазина.",
-    "updatesTitle": "Обновления приходят автоматически"
+    }
   },
   "pwaPrompt": {
-    "appButton": "Установить",
-    "appDescription": "Быстро возвращайтесь к полевым работам, документам и Nova с домашнего экрана.",
-    "appTitle": "Установить приложение RiskNova",
-    "asideAria": "Установка приложения RiskNova",
-    "dismissAria": "Отклонить напоминание об установке",
-    "iosHint": "На iPhone/iPad используйте Поделиться → Добавить на экран «Домой».",
+    "publicTitle": "Установите RiskNova как приложение",
+    "publicDescription": "Chrome и Edge на Android и Windows могут установить этот сайт, когда браузер покажет запрос на установку.",
     "publicButton": "Установить приложение",
-    "publicDescription": "Быстро открывать в отдельном окне на iOS, Android и Windows.",
-    "publicTitle": "Установить RiskNova как приложение"
+    "appTitle": "Установить приложение RiskNova",
+    "appDescription": "Возвращайтесь к полю, документам и Nova с главного экрана.",
+    "appButton": "Установить",
+    "iosHint": "На iPhone и iPad скачайте RiskNova из App Store.",
+    "asideAria": "Установка приложения RiskNova",
+    "dismissAria": "Закрыть напоминание об установке"
   },
   "reports": {
     "companyFile": {

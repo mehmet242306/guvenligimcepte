@@ -3344,7 +3344,10 @@
     "whyEyebrow": "لماذا RiskNova",
     "whyTitle1": "موثوق",
     "whyTitle2": "مميز",
-    "whyTitle3": "التجربة"
+    "whyTitle3": "التجربة",
+    "appStoreAria": "Download RiskNova on the App Store",
+    "appStoreLabel": "Download on the App Store",
+    "appStoreHint": "Native app for iPhone and iPad."
   },
   "lang": {
     "ar": "العربية",
@@ -5394,49 +5397,50 @@
     "yes": "نعم"
   },
   "pwaInstallPage": {
+    "metaTitle": "تطبيق RiskNova",
+    "metaDescription": "iPhone وiPad: نزّل RiskNova من App Store. Android وWindows: ثبّت الموقع كـ PWA من Chrome أو Edge — التحديثات تصل تلقائيًا.",
+    "eyebrow": "App Store والتثبيت من الويب",
+    "heroTitle": "RiskNova على الهاتف والجهاز اللوحي وسطح المكتب",
+    "heroBody": "استخدم تطبيق iOS الأصلي على iPhone وiPad. على Android وWindows، أضف getrisknova.com عندما يعرض Chrome أو Edge خيار تثبيت التطبيق.",
+    "ctaRegister": "ابدأ مجانًا",
+    "ctaLogin": "تسجيل الدخول إلى المنصة",
+    "updatesTitle": "التحديثات تصل تلقائيًا",
+    "updatesBody": "عند تحديث تطبيق RiskNova على الويب، يتلقى تطبيقك التقدّمي الإصدار الجديد دون انتظار تحديث المتجر.",
     "cards": {
       "android": {
+        "title": "Android",
+        "text": "افتح RiskNova في Chrome أو Edge؛ إذا ظهرت رسالة التثبيت، اختر تثبيت التطبيق.",
         "step1": "افتح getrisknova.com",
-        "step2": "اضغط على تثبيت التطبيق",
-        "step3": "تسجيل الدخول من أيقونة RiskNova",
-        "text": "افتح RiskNova في Chrome أو Edge؛ إذا ظهرت مطالبة التثبيت، اختر تثبيت التطبيق.",
-        "title": "Android"
+        "step2": "اضغط تثبيت التطبيق",
+        "step3": "سجّل الدخول من أيقونة RiskNova"
       },
       "ios": {
-        "step1": "افتح الموقع في Safari",
-        "step2": "اضغط على أيقونة المشاركة",
-        "step3": "اختر إضافة إلى الشاشة الرئيسية",
-        "text": "افتح في Safari؛ استخدم مشاركة ← إضافة إلى الشاشة الرئيسية لإنشاء أيقونة RiskNova.",
-        "title": "iPhone و iPad"
+        "title": "iPhone وiPad",
+        "text": "احصل على تطبيق RiskNova الأصلي من App Store للتدقيق وتحليل المخاطر وNova في الميدان.",
+        "step1": "افتح App Store (أو اضغط الزر أدناه)",
+        "step2": "ابحث عن RiskNova أو استخدم رابط App Store",
+        "step3": "اضغط الحصول ثم سجّل الدخول بحسابك",
+        "cta": "عرض في App Store"
       },
       "windows": {
+        "title": "Windows",
+        "text": "استخدم أيقونة التثبيت في شريط عنوان Chrome أو Edge لفتح نافذة مستقلة.",
         "step1": "افتح في Edge أو Chrome",
-        "step2": "انقر على أيقونة تثبيت التطبيق",
-        "step3": "افتح RiskNova من قائمة ابدأ",
-        "text": "استخدم أيقونة التثبيت في شريط عنوان Chrome أو Edge لفتح RiskNova في نافذة سطح مكتب منفصلة.",
-        "title": "Windows"
+        "step2": "اضغط أيقونة تثبيت التطبيق",
+        "step3": "افتح RiskNova من قائمة ابدأ"
       }
-    },
-    "ctaLogin": "تسجيل الدخول إلى المنصة",
-    "ctaRegister": "ابدأ مجاناً",
-    "eyebrow": "لا حاجة لمتجر التطبيقات",
-    "heroBody": "أضف RiskNova إلى شاشتك الرئيسية أو سطح المكتب على iOS و Android و Windows. تحديثات الموقع تصل إلى تجربتك المثبتة تلقائياً.",
-    "heroTitle": "استخدم RiskNova كتطبيق على الهاتف المحمول وسطح المكتب",
-    "metaDescription": "ثبت RiskNova كـ PWA على iOS و Android و Windows بدون متجر تطبيقات.",
-    "metaTitle": "تطبيق RiskNova",
-    "updatesBody": "عندما يتم تحديث تطبيق RiskNova الويب، يحصل PWA الخاص بك على النسخة الجديدة—لا تنتظر تحديثات المتجر.",
-    "updatesTitle": "التحديثات تصل تلقائياً"
+    }
   },
   "pwaPrompt": {
-    "appButton": "تثبيت",
-    "appDescription": "ارجع إلى العمل الميداني والمستندات و Nova من شاشتك الرئيسية.",
-    "appTitle": "ثبت تطبيق RiskNova",
-    "asideAria": "تثبيت تطبيق RiskNova",
-    "dismissAria": "إغلاق تذكير التثبيت",
-    "iosHint": "على iPhone/iPad، استخدم مشاركة ← إضافة إلى الشاشة الرئيسية.",
+    "publicTitle": "ثبّت RiskNova كتطبيق",
+    "publicDescription": "يمكن لـ Chrome وEdge على Android وWindows تثبيت هذا الموقع عند ظهور مطالبة التثبيت.",
     "publicButton": "تثبيت التطبيق",
-    "publicDescription": "افتح بسرعة في نافذة منفصلة على iOS وAndroid وWindows.",
-    "publicTitle": "تثبيت RiskNova كتطبيق"
+    "appTitle": "ثبّت تطبيق RiskNova",
+    "appDescription": "ارجع إلى الميدان والمستندات وNova من الشاشة الرئيسية.",
+    "appButton": "تثبيت",
+    "iosHint": "على iPhone وiPad، نزّل RiskNova من App Store.",
+    "asideAria": "تثبيت تطبيق RiskNova",
+    "dismissAria": "إغلاق تذكير التثبيت"
   },
   "reports": {
     "companyFile": {

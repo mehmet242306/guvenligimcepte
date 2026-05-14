@@ -36,6 +36,7 @@ import { OhsFileWidget } from '@/components/dashboard/OhsFileWidget';
 import { ServiceHealthSummaryCard } from '@/components/dashboard/ServiceHealthSummaryCard';
 import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
+import { RISKNOVA_IOS_APP_STORE_URL } from '@/lib/app-store';
 
 interface DashboardStats {
   riskCount: number;
@@ -504,13 +505,15 @@ export function DashboardClient() {
               </p>
             </div>
           </div>
-          <Link
-            href="/uygulama"
+          <a
+            href={RISKNOVA_IOS_APP_STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-teal-600 px-6 py-3.5 text-sm font-bold text-white shadow-[0_14px_36px_rgba(13,148,136,0.35)] transition hover:bg-teal-500"
           >
             {t('pwaCta')}
             <ArrowUpRight className="h-4 w-4" aria-hidden />
-          </Link>
+          </a>
         </div>
       </section>
       </div>

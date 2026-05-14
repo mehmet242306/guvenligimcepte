@@ -15,11 +15,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "RiskNova app",
       metaDescription:
-        "Install RiskNova as a PWA on iOS, Android, and Windows without an app store.",
-      eyebrow: "No app store required",
-      heroTitle: "Use RiskNova like an app on mobile and desktop",
+        "iPhone and iPad: download RiskNova from the App Store. Android and Windows: install the site as a PWA from Chrome or Edge—updates roll out automatically.",
+      eyebrow: "App Store & web install",
+      heroTitle: "RiskNova on your phone, tablet, and desktop",
       heroBody:
-        "Add RiskNova to your home screen or desktop on iOS, Android, and Windows. Updates to the site roll out to your installed experience automatically.",
+        "Use the native iOS app on iPhone and iPad. On Android and Windows, add getrisknova.com to your home screen or desktop when Chrome or Edge offers Install app.",
       ctaRegister: "Start free",
       ctaLogin: "Sign in to platform",
       updatesTitle: "Updates arrive automatically",
@@ -35,10 +35,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone & iPad",
-          text: "Open in Safari; use Share → Add to Home Screen to create the RiskNova icon.",
-          step1: "Open the site in Safari",
-          step2: "Tap the Share icon",
-          step3: "Choose Add to Home Screen",
+          text: "Get the native RiskNova app from the App Store for field audits, risk analysis, and Nova on the go.",
+          step1: "Open the App Store (or tap the button below)",
+          step2: "Search for RiskNova or use our App Store link",
+          step3: "Tap Get, then sign in with your platform account",
+          cta: "View on the App Store",
         },
         windows: {
           title: "Windows",
@@ -51,12 +52,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "Install RiskNova like an app",
-      publicDescription: "Open quickly in a separate window on iOS, Android, and Windows.",
+      publicDescription:
+        "Chrome and Edge on Android and Windows can install this site when your browser shows an install prompt.",
       publicButton: "Install app",
       appTitle: "Install the RiskNova app",
       appDescription: "Jump back to field work, documents, and Nova from your home screen.",
       appButton: "Install",
-      iosHint: "On iPhone/iPad, use Share → Add to Home Screen.",
+      iosHint: "On iPhone and iPad, download RiskNova from the App Store.",
       asideAria: "RiskNova app installation",
       dismissAria: "Dismiss install reminder",
     },
@@ -65,11 +67,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "RiskNova Uygulaması",
       metaDescription:
-        "RiskNova'yı iOS, Android ve Windows cihazlarınıza mağaza gerektirmeden PWA olarak kurun.",
-      eyebrow: "Store gerektirmeyen uygulama",
-      heroTitle: "RiskNova'yı mobil ve masaüstünde uygulama gibi kullanın",
+        "iPhone ve iPad: RiskNova'yı App Store'dan indirin. Android ve Windows: Chrome veya Edge ile siteyi PWA olarak kurun; güncellemeler otomatik gelir.",
+      eyebrow: "App Store ve web kurulumu",
+      heroTitle: "RiskNova telefon, tablet ve masaüstünde",
       heroBody:
-        "iOS, Android ve Windows cihazlarda RiskNova'yı ana ekrana veya masaüstüne ekleyin. Siteye gelen güncellemeler uygulama deneyimine de otomatik yansır.",
+        "iPhone ve iPad için yerel uygulamayı App Store'dan kullanın. Android ve Windows'ta Chrome veya Edge Cihaza kur / Uygulamayı yükle teklif ettiğinde getrisknova.com'u kurabilirsiniz.",
       ctaRegister: "Ücretsiz başla",
       ctaLogin: "Platforma giriş yap",
       updatesTitle: "Güncellemeler otomatik gelir",
@@ -85,10 +87,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone ve iPad",
-          text: "Safari ile açın; Paylaş menüsünden Ana Ekrana Ekle seçeneğini kullanarak RiskNova ikonunu oluşturun.",
-          step1: "Safari'de siteyi aç",
-          step2: "Paylaş ikonuna dokun",
-          step3: "Ana Ekrana Ekle seçeneğini seç",
+          text: "Saha denetimi, risk analizi ve Nova için yerel RiskNova uygulamasını App Store'dan indirin.",
+          step1: "App Store'u açın (veya aşağıdaki düğmeye dokunun)",
+          step2: "RiskNova araması yapın veya App Store bağlantımızı kullanın",
+          step3: "İndir'e dokunun, ardından platform hesabınızla giriş yapın",
+          cta: "App Store'da görüntüle",
         },
         windows: {
           title: "Windows",
@@ -101,12 +104,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "RiskNova'yı uygulama gibi kur",
-      publicDescription: "iOS, Android ve Windows'ta ayrı pencereyle hızlı aç.",
+      publicDescription:
+        "Android ve Windows'ta Chrome ve Edge, kurulum bildirimi gösterdiğinde bu siteyi uygulama olarak yükleyebilir.",
       publicButton: "Cihaza kur",
       appTitle: "RiskNova uygulamasını kur",
       appDescription: "Saha, doküman ve Nova akışlarına ana ekrandan dön.",
       appButton: "Kur",
-      iosHint: "iPhone/iPad için Paylaş menüsünden Ana Ekrana Ekle seçeneğini kullan.",
+      iosHint: "iPhone ve iPad'de RiskNova'yı App Store'dan indirin.",
       asideAria: "RiskNova uygulama kurulumu",
       dismissAria: "Kurulum hatırlatıcısını kapat",
     },
@@ -115,11 +119,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "RiskNova App",
       metaDescription:
-        "Installieren Sie RiskNova als PWA auf iOS, Android und Windows – ohne App Store.",
-      eyebrow: "Kein App Store nötig",
-      heroTitle: "Nutzen Sie RiskNova wie eine App auf Mobilgerät und Desktop",
+        "iPhone und iPad: RiskNova im App Store laden. Android und Windows: RiskNova als PWA in Chrome oder Edge installieren – Updates kommen automatisch.",
+      eyebrow: "App Store & Web-Installation",
+      heroTitle: "RiskNova auf Smartphone, Tablet und Desktop",
       heroBody:
-        "Fügen Sie RiskNova auf iOS, Android und Windows zum Startbildschirm oder Desktop hinzu. Website-Updates gelangen automatisch in Ihre installierte App.",
+        "Nutzen Sie die native iOS-App auf iPhone und iPad. Unter Android und Windows installieren Sie getrisknova.com, wenn Chrome oder Edge „App installieren“ anbietet.",
       ctaRegister: "Kostenlos starten",
       ctaLogin: "Bei der Plattform anmelden",
       updatesTitle: "Updates kommen automatisch",
@@ -135,10 +139,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone & iPad",
-          text: "In Safari öffnen; über Teilen → Zum Home-Bildschirm das RiskNova-Symbol anlegen.",
-          step1: "Website in Safari öffnen",
-          step2: "Teilen-Symbol tippen",
-          step3: "„Zum Home-Bildschirm“ wählen",
+          text: "Laden Sie die native RiskNova-App aus dem App Store für Audits, Risikoanalyse und Nova unterwegs.",
+          step1: "App Store öffnen (oder unten tippen)",
+          step2: "Nach „RiskNova“ suchen oder unseren App-Store-Link nutzen",
+          step3: "Laden tippen und sich mit Ihrem Plattformkonto anmelden",
+          cta: "Im App Store ansehen",
         },
         windows: {
           title: "Windows",
@@ -151,12 +156,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "RiskNova wie eine App installieren",
-      publicDescription: "Schnell in eigenem Fenster auf iOS, Android und Windows.",
+      publicDescription:
+        "Chrome und Edge unter Android und Windows können diese Website installieren, wenn ein Installationshinweis erscheint.",
       publicButton: "App installieren",
       appTitle: "RiskNova-App installieren",
       appDescription: "Zurück zu Feld, Dokumenten und Nova über den Startbildschirm.",
       appButton: "Installieren",
-      iosHint: "Auf iPhone/iPad: Teilen → Zum Home-Bildschirm.",
+      iosHint: "Auf iPhone und iPad: RiskNova im App Store laden.",
       asideAria: "RiskNova App-Installation",
       dismissAria: "Installationshinweis schließen",
     },
@@ -165,11 +171,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "Application RiskNova",
       metaDescription:
-        "Installez RiskNova en PWA sur iOS, Android et Windows sans passer par un store.",
-      eyebrow: "Sans store d’applications",
-      heroTitle: "Utilisez RiskNova comme une application sur mobile et bureau",
+        "iPhone et iPad : téléchargez RiskNova sur l’App Store. Android et Windows : installez le site en PWA depuis Chrome ou Edge — les mises à jour arrivent automatiquement.",
+      eyebrow: "App Store et installation web",
+      heroTitle: "RiskNova sur téléphone, tablette et ordinateur",
       heroBody:
-        "Ajoutez RiskNova à l’écran d’accueil ou au bureau sur iOS, Android et Windows. Les mises à jour du site se reflètent automatiquement dans l’app installée.",
+        "Utilisez l’app iOS native sur iPhone et iPad. Sur Android et Windows, ajoutez getrisknova.com lorsque Chrome ou Edge propose Installer l’application.",
       ctaRegister: "Commencer gratuitement",
       ctaLogin: "Connexion à la plateforme",
       updatesTitle: "Les mises à jour arrivent automatiquement",
@@ -185,10 +191,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone et iPad",
-          text: "Ouvrez dans Safari ; via Partager → Sur l’écran d’accueil, créez l’icône RiskNova.",
-          step1: "Ouvrir le site dans Safari",
-          step2: "Appuyer sur Partager",
-          step3: "Choisir Sur l’écran d’accueil",
+          text: "Téléchargez l’app native RiskNova sur l’App Store pour les audits, l’analyse des risques et Nova en déplacement.",
+          step1: "Ouvrir l’App Store (ou appuyer sur le bouton ci-dessous)",
+          step2: "Rechercher RiskNova ou utiliser notre lien App Store",
+          step3: "Appuyer sur Obtenir, puis se connecter avec votre compte",
+          cta: "Voir sur l’App Store",
         },
         windows: {
           title: "Windows",
@@ -201,12 +208,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "Installer RiskNova comme une app",
-      publicDescription: "Ouverture rapide dans une fenêtre séparée sur iOS, Android et Windows.",
+      publicDescription:
+        "Chrome et Edge sur Android et Windows peuvent installer ce site lorsqu’une invite d’installation apparaît.",
       publicButton: "Installer l’app",
       appTitle: "Installer l’application RiskNova",
       appDescription: "Retour terrain, documents et Nova depuis l’écran d’accueil.",
       appButton: "Installer",
-      iosHint: "Sur iPhone/iPad : Partager → Sur l’écran d’accueil.",
+      iosHint: "Sur iPhone et iPad, téléchargez RiskNova sur l’App Store.",
       asideAria: "Installation de l’app RiskNova",
       dismissAria: "Fermer le rappel d’installation",
     },
@@ -215,11 +223,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "App RiskNova",
       metaDescription:
-        "Instala RiskNova como PWA en iOS, Android y Windows sin tienda de aplicaciones.",
-      eyebrow: "Sin tienda de apps",
-      heroTitle: "Usa RiskNova como una app en móvil y escritorio",
+        "iPhone e iPad: descarga RiskNova en el App Store. Android y Windows: instala el sitio como PWA desde Chrome o Edge; las actualizaciones llegan solas.",
+      eyebrow: "App Store e instalación web",
+      heroTitle: "RiskNova en móvil, tablet y escritorio",
       heroBody:
-        "Añade RiskNova a la pantalla de inicio o al escritorio en iOS, Android y Windows. Las actualizaciones web llegan automáticamente a tu experiencia instalada.",
+        "Usa la app nativa de iOS en iPhone e iPad. En Android y Windows, añade getrisknova.com cuando Chrome o Edge ofrezcan Instalar aplicación.",
       ctaRegister: "Empezar gratis",
       ctaLogin: "Iniciar sesión en la plataforma",
       updatesTitle: "Las actualizaciones llegan solas",
@@ -235,10 +243,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone e iPad",
-          text: "Abre en Safari; con Compartir → Añadir a pantalla de inicio creas el icono.",
-          step1: "Abre el sitio en Safari",
-          step2: "Toca Compartir",
-          step3: "Elige Añadir a pantalla de inicio",
+          text: "Obtén la app nativa RiskNova en el App Store para auditorías, análisis de riesgos y Nova en el campo.",
+          step1: "Abre el App Store (o pulsa el botón de abajo)",
+          step2: "Busca RiskNova o usa nuestro enlace del App Store",
+          step3: "Pulsa Obtener e inicia sesión con tu cuenta",
+          cta: "Ver en el App Store",
         },
         windows: {
           title: "Windows",
@@ -251,12 +260,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "Instala RiskNova como una app",
-      publicDescription: "Abre rápido en ventana aparte en iOS, Android y Windows.",
+      publicDescription:
+        "Chrome y Edge en Android y Windows pueden instalar este sitio cuando el navegador muestre la invitación de instalación.",
       publicButton: "Instalar app",
       appTitle: "Instalar la app RiskNova",
       appDescription: "Vuelve a campo, documentos y Nova desde el inicio.",
       appButton: "Instalar",
-      iosHint: "En iPhone/iPad: Compartir → Añadir a pantalla de inicio.",
+      iosHint: "En iPhone e iPad, descarga RiskNova en el App Store.",
       asideAria: "Instalación de la app RiskNova",
       dismissAria: "Cerrar recordatorio de instalación",
     },
@@ -265,11 +275,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "Приложение RiskNova",
       metaDescription:
-        "Установите RiskNova как PWA на iOS, Android и Windows без магазина приложений.",
-      eyebrow: "Без магазина приложений",
-      heroTitle: "Используйте RiskNova как приложение на телефоне и компьютере",
+        "iPhone и iPad: скачайте RiskNova из App Store. Android и Windows: установите сайт как PWA в Chrome или Edge — обновления приходят автоматически.",
+      eyebrow: "App Store и веб-установка",
+      heroTitle: "RiskNova на телефоне, планшете и компьютере",
       heroBody:
-        "Добавьте RiskNova на главный экран или рабочий стол на iOS, Android и Windows. Обновления сайта автоматически попадают в установленное приложение.",
+        "Используйте нативное приложение для iOS на iPhone и iPad. На Android и Windows добавьте getrisknova.com, когда Chrome или Edge предложат «Установить приложение».",
       ctaRegister: "Начать бесплатно",
       ctaLogin: "Войти на платформу",
       updatesTitle: "Обновления приходят автоматически",
@@ -285,10 +295,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone и iPad",
-          text: "Откройте в Safari; через Поделиться → На экран «Домой» создайте значок.",
-          step1: "Откройте сайт в Safari",
-          step2: "Нажмите Поделиться",
-          step3: "Выберите На экран «Домой»",
+          text: "Скачайте нативное приложение RiskNova из App Store для аудитов, анализа рисков и Nova в поле.",
+          step1: "Откройте App Store (или нажмите кнопку ниже)",
+          step2: "Найдите RiskNova или перейдите по нашей ссылке App Store",
+          step3: "Нажмите Загрузить и войдите в аккаунт платформы",
+          cta: "Открыть в App Store",
         },
         windows: {
           title: "Windows",
@@ -301,12 +312,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "Установите RiskNova как приложение",
-      publicDescription: "Быстрый запуск в отдельном окне на iOS, Android и Windows.",
+      publicDescription:
+        "Chrome и Edge на Android и Windows могут установить этот сайт, когда браузер покажет запрос на установку.",
       publicButton: "Установить приложение",
       appTitle: "Установить приложение RiskNova",
       appDescription: "Возвращайтесь к полю, документам и Nova с главного экрана.",
       appButton: "Установить",
-      iosHint: "На iPhone/iPad: Поделиться → На экран «Домой».",
+      iosHint: "На iPhone и iPad скачайте RiskNova из App Store.",
       asideAria: "Установка приложения RiskNova",
       dismissAria: "Закрыть напоминание об установке",
     },
@@ -315,11 +327,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "تطبيق RiskNova",
       metaDescription:
-        "ثبّت RiskNova كتطبيق ويب تقدّمي (PWA) على iOS وAndroid وWindows دون متجر تطبيقات.",
-      eyebrow: "دون الحاجة إلى متجر",
-      heroTitle: "استخدم RiskNova كتطبيق على الجوال وسطح المكتب",
+        "iPhone وiPad: نزّل RiskNova من App Store. Android وWindows: ثبّت الموقع كـ PWA من Chrome أو Edge — التحديثات تصل تلقائيًا.",
+      eyebrow: "App Store والتثبيت من الويب",
+      heroTitle: "RiskNova على الهاتف والجهاز اللوحي وسطح المكتب",
       heroBody:
-        "أضف RiskNova إلى الشاشة الرئيسية أو سطح المكتب على iOS وAndroid وWindows. تصل تحديثات الموقع تلقائيًا إلى التجربة المثبتة.",
+        "استخدم تطبيق iOS الأصلي على iPhone وiPad. على Android وWindows، أضف getrisknova.com عندما يعرض Chrome أو Edge خيار تثبيت التطبيق.",
       ctaRegister: "ابدأ مجانًا",
       ctaLogin: "تسجيل الدخول إلى المنصة",
       updatesTitle: "التحديثات تصل تلقائيًا",
@@ -335,10 +347,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone وiPad",
-          text: "افتح في Safari؛ عبر مشاركة → إضافة إلى الشاشة الرئيسية أنشئ الأيقونة.",
-          step1: "افتح الموقع في Safari",
-          step2: "اضغط مشاركة",
-          step3: "اختر إضافة إلى الشاشة الرئيسية",
+          text: "احصل على تطبيق RiskNova الأصلي من App Store للتدقيق وتحليل المخاطر وNova في الميدان.",
+          step1: "افتح App Store (أو اضغط الزر أدناه)",
+          step2: "ابحث عن RiskNova أو استخدم رابط App Store",
+          step3: "اضغط الحصول ثم سجّل الدخول بحسابك",
+          cta: "عرض في App Store",
         },
         windows: {
           title: "Windows",
@@ -351,12 +364,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "ثبّت RiskNova كتطبيق",
-      publicDescription: "افتح بسرعة في نافذة منفصلة على iOS وAndroid وWindows.",
+      publicDescription:
+        "يمكن لـ Chrome وEdge على Android وWindows تثبيت هذا الموقع عند ظهور مطالبة التثبيت.",
       publicButton: "تثبيت التطبيق",
       appTitle: "ثبّت تطبيق RiskNova",
       appDescription: "ارجع إلى الميدان والمستندات وNova من الشاشة الرئيسية.",
       appButton: "تثبيت",
-      iosHint: "على iPhone/iPad: مشاركة → إضافة إلى الشاشة الرئيسية.",
+      iosHint: "على iPhone وiPad، نزّل RiskNova من App Store.",
       asideAria: "تثبيت تطبيق RiskNova",
       dismissAria: "إغلاق تذكير التثبيت",
     },
@@ -364,11 +378,12 @@ const PACK = {
   zh: {
     pwaInstallPage: {
       metaTitle: "RiskNova 应用",
-      metaDescription: "在 iOS、Android 和 Windows 上将 RiskNova 安装为 PWA，无需应用商店。",
-      eyebrow: "无需应用商店",
-      heroTitle: "在移动端和桌面端像应用一样使用 RiskNova",
+      metaDescription:
+        "iPhone 与 iPad：从 App Store 下载 RiskNova。Android 与 Windows：在 Chrome 或 Edge 中将站点安装为 PWA，更新会自动送达。",
+      eyebrow: "App Store 与网页安装",
+      heroTitle: "RiskNova 在手机、平板和电脑上",
       heroBody:
-        "在 iOS、Android 和 Windows 上将 RiskNova 添加到主屏幕或桌面。网站更新会自动同步到已安装的体验。",
+        "在 iPhone 与 iPad 上使用原生 iOS 应用。在 Android 与 Windows 上，当 Chrome 或 Edge 提供安装应用时，可安装 getrisknova.com。",
       ctaRegister: "免费开始",
       ctaLogin: "登录平台",
       updatesTitle: "更新自动送达",
@@ -383,10 +398,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone 与 iPad",
-          text: "在 Safari 中打开；通过共享 → 添加到主屏幕创建图标。",
-          step1: "在 Safari 中打开网站",
-          step2: "轻点共享图标",
-          step3: "选择添加到主屏幕",
+          text: "从 App Store 获取 RiskNova 原生应用，便于现场审核、风险分析与 Nova。",
+          step1: "打开 App Store（或点击下方按钮）",
+          step2: "搜索 RiskNova 或使用我们的 App Store 链接",
+          step3: "轻点获取，然后使用平台账号登录",
+          cta: "在 App Store 查看",
         },
         windows: {
           title: "Windows",
@@ -399,12 +415,12 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "像应用一样安装 RiskNova",
-      publicDescription: "在 iOS、Android 和 Windows 上快速以独立窗口打开。",
+      publicDescription: "Android 与 Windows 上的 Chrome 和 Edge 在安装提示出现时可安装本站。",
       publicButton: "安装应用",
       appTitle: "安装 RiskNova 应用",
       appDescription: "从主屏幕返回现场、文档与 Nova 流程。",
       appButton: "安装",
-      iosHint: "在 iPhone/iPad 上：共享 → 添加到主屏幕。",
+      iosHint: "在 iPhone 与 iPad 上，请从 App Store 下载 RiskNova。",
       asideAria: "RiskNova 应用安装",
       dismissAria: "关闭安装提醒",
     },
@@ -413,11 +429,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "RiskNova アプリ",
       metaDescription:
-        "RiskNova を iOS・Android・Windows でストアなしの PWA としてインストール。",
-      eyebrow: "ストア不要",
-      heroTitle: "モバイルとデスクトップでアプリのように RiskNova を使う",
+        "iPhone と iPad: App Store から RiskNova をダウンロード。Android と Windows: Chrome または Edge からサイトを PWA としてインストール。更新は自動で届きます。",
+      eyebrow: "App Store とウェブインストール",
+      heroTitle: "スマートフォン、タブレット、デスクトップで RiskNova",
       heroBody:
-        "iOS・Android・Windows でホーム画面やデスクトップに追加。サイトの更新はインストールした体験にも自動で反映されます。",
+        "iPhone と iPad ではネイティブの iOS アプリを。Android と Windows では、Chrome または Edge がアプリのインストールを案内したときに getrisknova.com を追加できます。",
       ctaRegister: "無料で始める",
       ctaLogin: "プラットフォームにログイン",
       updatesTitle: "更新は自動で届く",
@@ -433,10 +449,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone と iPad",
-          text: "Safari で開き、共有 → ホーム画面に追加でアイコンを作成します。",
-          step1: "Safari でサイトを開く",
-          step2: "共有アイコンをタップ",
-          step3: "ホーム画面に追加を選択",
+          text: "監査、リスク分析、Nova のために App Store からネイティブの RiskNova アプリを入手。",
+          step1: "App Store を開く（または下のボタンをタップ）",
+          step2: "RiskNova を検索するか App Store のリンクを使う",
+          step3: "入手をタップし、プラットフォームのアカウントでログイン",
+          cta: "App Store で見る",
         },
         windows: {
           title: "Windows",
@@ -449,12 +466,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "RiskNova をアプリのようにインストール",
-      publicDescription: "iOS・Android・Windows で別ウィンドウからすばやく開けます。",
+      publicDescription:
+        "Android と Windows の Chrome と Edge は、インストールの案内が表示されたときにこのサイトをインストールできます。",
       publicButton: "アプリをインストール",
       appTitle: "RiskNova アプリをインストール",
       appDescription: "ホーム画面から現場・ドキュメント・Nova に戻れます。",
       appButton: "インストール",
-      iosHint: "iPhone/iPad：共有 → ホーム画面に追加。",
+      iosHint: "iPhone と iPad では App Store から RiskNova をダウンロードしてください。",
       asideAria: "RiskNova アプリのインストール",
       dismissAria: "インストールのリマインダーを閉じる",
     },
@@ -463,11 +481,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "RiskNova 앱",
       metaDescription:
-        "iOS, Android, Windows에서 앱 스토어 없이 RiskNova를 PWA로 설치하세요.",
-      eyebrow: "스토어 불필요",
-      heroTitle: "모바일과 데스크톱에서 앱처럼 RiskNova 사용",
+        "iPhone 및 iPad: App Store에서 RiskNova를 다운로드하세요. Android 및 Windows: Chrome 또는 Edge에서 사이트를 PWA로 설치하면 업데이트가 자동으로 적용됩니다.",
+      eyebrow: "App Store 및 웹 설치",
+      heroTitle: "휴대폰, 태블릿, 데스크톱에서 RiskNova",
       heroBody:
-        "iOS, Android, Windows에서 홈 화면이나 데스크톱에 추가하세요. 웹 업데이트가 설치된 환경에도 자동으로 반영됩니다.",
+        "iPhone과 iPad에서는 네이티브 iOS 앱을 사용하세요. Android와 Windows에서는 Chrome 또는 Edge가 앱 설치를 제안할 때 getrisknova.com을 추가할 수 있습니다.",
       ctaRegister: "무료로 시작",
       ctaLogin: "플랫폼 로그인",
       updatesTitle: "업데이트가 자동으로 적용됩니다",
@@ -483,10 +501,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone 및 iPad",
-          text: "Safari에서 열고 공유 → 홈 화면에 추가로 아이콘을 만드세요.",
-          step1: "Safari에서 사이트 열기",
-          step2: "공유 아이콘 탭",
-          step3: "홈 화면에 추가 선택",
+          text: "현장 감사, 위험 분석, Nova를 위해 App Store에서 RiskNova 네이티브 앱을 받으세요.",
+          step1: "App Store 열기(또는 아래 버튼 탭)",
+          step2: "RiskNova를 검색하거나 App Store 링크 사용",
+          step3: "받기를 누른 뒤 플랫폼 계정으로 로그인",
+          cta: "App Store에서 보기",
         },
         windows: {
           title: "Windows",
@@ -499,12 +518,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "RiskNova를 앱처럼 설치",
-      publicDescription: "iOS, Android, Windows에서 별도 창으로 빠르게 엽니다.",
+      publicDescription:
+        "Android와 Windows의 Chrome과 Edge는 설치 안내가 표시되면 이 사이트를 앱으로 설치할 수 있습니다.",
       publicButton: "앱 설치",
       appTitle: "RiskNova 앱 설치",
       appDescription: "홈 화면에서 현장, 문서, Nova로 돌아가세요.",
       appButton: "설치",
-      iosHint: "iPhone/iPad: 공유 → 홈 화면에 추가.",
+      iosHint: "iPhone과 iPad에서는 App Store에서 RiskNova를 다운로드하세요.",
       asideAria: "RiskNova 앱 설치",
       dismissAria: "설치 알림 닫기",
     },
@@ -513,11 +533,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "RiskNova ऐप",
       metaDescription:
-        "iOS, Android और Windows पर बिना ऐप स्टोर के RiskNova को PWA के रूप में इंस्टॉल करें।",
-      eyebrow: "ऐप स्टोर की ज़रूरत नहीं",
-      heroTitle: "मोबाइल और डेस्कटॉप पर RiskNova को ऐप की तरह उपयोग करें",
+        "iPhone और iPad: App Store से RiskNova डाउनलोड करें। Android और Windows: Chrome या Edge से साइट को PWA के रूप में इंस्टॉल करें—अपडेट अपने आप आते हैं।",
+      eyebrow: "App Store और वेब इंस्टॉल",
+      heroTitle: "RiskNova फ़ोन, टैबलेट और डेस्कटॉप पर",
       heroBody:
-        "iOS, Android और Windows पर RiskNova को होम स्क्रीन या डेस्कटॉप पर जोड़ें। साइट अपडेट स्वचालित रूप से इंस्टॉल अनुभव में आ जाते हैं।",
+        "iPhone और iPad पर नेटिव iOS ऐप का उपयोग करें। Android और Windows पर जब Chrome या Edge ऐप इंस्टॉल करने की पेशकश करे तो getrisknova.com जोड़ें।",
       ctaRegister: "मुफ़्त में शुरू करें",
       ctaLogin: "प्लेटफ़ॉर्म पर साइन इन करें",
       updatesTitle: "अपडेट अपने आप आते हैं",
@@ -533,10 +553,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone और iPad",
-          text: "Safari में खोलें; शेयर → होम स्क्रीन पर जोड़ें से आइकन बनाएं।",
-          step1: "Safari में साइट खोलें",
-          step2: "शेयर आइकन टैप करें",
-          step3: "होम स्क्रीन पर जोड़ें चुनें",
+          text: "ऑडिट, जोखिम विश्लेषण और Nova के लिए App Store से नेटिव RiskNova ऐप लें।",
+          step1: "App Store खोलें (या नीचे बटन टैप करें)",
+          step2: "RiskNova खोजें या हमारा App Store लिंक उपयोग करें",
+          step3: "प्राप्त करें पर टैप करें, फिर अपने खाते से साइन इन करें",
+          cta: "App Store पर देखें",
         },
         windows: {
           title: "Windows",
@@ -549,12 +570,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "RiskNova को ऐप की तरह इंस्टॉल करें",
-      publicDescription: "iOS, Android और Windows पर अलग विंडो में तेज़ी से खोलें।",
+      publicDescription:
+        "Android और Windows पर Chrome और Edge इंस्टॉल संकेत दिखने पर इस साइट को ऐप के रूप में इंस्टॉल कर सकते हैं।",
       publicButton: "ऐप इंस्टॉल करें",
       appTitle: "RiskNova ऐप इंस्टॉल करें",
       appDescription: "होम स्क्रीन से फ़ील्ड, दस्तावेज़ और Nova पर लौटें।",
       appButton: "इंस्टॉल करें",
-      iosHint: "iPhone/iPad: शेयर → होम स크्रीन पर जोड़ें।",
+      iosHint: "iPhone और iPad पर App Store से RiskNova डाउनलोड करें।",
       asideAria: "RiskNova ऐप इंस्टॉलेशन",
       dismissAria: "इंस्टॉल रिमाइंडर बंद करें",
     },
@@ -563,11 +585,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "RiskNova tətbiqi",
       metaDescription:
-        "RiskNova-nı iOS, Android və Windows-da mağaza olmadan PWA kimi quraşdırın.",
-      eyebrow: "Mağaza tələb olunmur",
-      heroTitle: "RiskNova-nı mobil və masaüstündə tətbiq kimi istifadə edin",
+        "iPhone və iPad: RiskNova-nı App Store-dan yükləyin. Android və Windows: Chrome və ya Edge ilə saytı PWA kimi quraşdırın — yeniləmələr avtomatik gəlir.",
+      eyebrow: "App Store və veb quraşdırma",
+      heroTitle: "RiskNova telefon, planşet və masaüstündə",
       heroBody:
-        "iOS, Android və Windows-da RiskNova-nı ana ekran və ya masaüstünə əlavə edin. Sayt yeniləmələri quraşdırılmış təcrübəyə avtomatik ötürülür.",
+        "iPhone və iPad üçün native iOS tətbiqindən istifadə edin. Android və Windows-da Chrome və ya Edge tətbiqi quraşdırma təklif etdikdə getrisknova.com əlavə edin.",
       ctaRegister: "Pulsuz başla",
       ctaLogin: "Platformaya daxil ol",
       updatesTitle: "Yeniləmələr avtomatik gəlir",
@@ -583,10 +605,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone və iPad",
-          text: "Safari ilə açın; Paylaş menyusundan Ana ekrana əlavə et ilə ikon yaradın.",
-          step1: "Safari-də saytı aç",
-          step2: "Paylaş ikonuna toxun",
-          step3: "Ana ekrana əlavə et seç",
+          text: "Yoxlamalar, risk təhlili və Nova üçün native RiskNova tətbiqini App Store-dan əldə edin.",
+          step1: "App Store-u açın (və ya aşağıdakı düyməyə toxunun)",
+          step2: "RiskNova axtarın və ya App Store keçidimizdən istifadə edin",
+          step3: "Yükləyə toxunun, sonra platforma hesabınızla daxil olun",
+          cta: "App Store-da bax",
         },
         windows: {
           title: "Windows",
@@ -599,12 +622,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "RiskNova-nı tətbiq kimi quraşdır",
-      publicDescription: "iOS, Android və Windows-da ayrıca pəncərədə tez aç.",
+      publicDescription:
+        "Android və Windows-da Chrome və Edge quraşdırma təklifi göstərəndə bu saytı tətbiq kimi quraşdıra bilər.",
       publicButton: "Cihaza quraşdır",
       appTitle: "RiskNova tətbiqini quraşdır",
       appDescription: "Saha, sənəd və Nova axınlarına ana ekrandan qayıt.",
       appButton: "Quraşdır",
-      iosHint: "iPhone/iPad üçün Paylaşdan Ana ekrana əlavə et istifadə et.",
+      iosHint: "iPhone və iPad üçün RiskNova-nı App Store-dan yükləyin.",
       asideAria: "RiskNova tətbiq quraşdırması",
       dismissAria: "Quraşdırma xatırladıcısını bağla",
     },
@@ -613,11 +637,11 @@ const PACK = {
     pwaInstallPage: {
       metaTitle: "Aplikasi RiskNova",
       metaDescription:
-        "Pasang RiskNova sebagai PWA di iOS, Android, dan Windows tanpa toko aplikasi.",
-      eyebrow: "Tanpa toko aplikasi",
-      heroTitle: "Gunakan RiskNova seperti aplikasi di mobile dan desktop",
+        "iPhone dan iPad: unduh RiskNova di App Store. Android dan Windows: pasang situs sebagai PWA dari Chrome atau Edge — pembaruan tiba otomatis.",
+      eyebrow: "App Store & pemasangan web",
+      heroTitle: "RiskNova di ponsel, tablet, dan desktop",
       heroBody:
-        "Tambahkan RiskNova ke layar beranda atau desktop di iOS, Android, dan Windows. Pembaruan situs otomatis sampai ke pengalaman yang terpasang.",
+        "Gunakan aplikasi iOS asli di iPhone dan iPad. Di Android dan Windows, tambahkan getrisknova.com saat Chrome atau Edge menawarkan Pasang aplikasi.",
       ctaRegister: "Mulai gratis",
       ctaLogin: "Masuk ke platform",
       updatesTitle: "Pembaruan datang otomatis",
@@ -633,10 +657,11 @@ const PACK = {
         },
         ios: {
           title: "iPhone & iPad",
-          text: "Buka di Safari; lewat Bagikan → Tambahkan ke Layar Utama buat ikon.",
-          step1: "Buka situs di Safari",
-          step2: "Ketuk ikon Bagikan",
-          step3: "Pilih Tambahkan ke Layar Utama",
+          text: "Dapatkan aplikasi asli RiskNova di App Store untuk audit, analisis risiko, dan Nova di lapangan.",
+          step1: "Buka App Store (atau ketuk tombol di bawah)",
+          step2: "Cari RiskNova atau gunakan tautan App Store kami",
+          step3: "Ketuk Dapatkan, lalu masuk dengan akun platform Anda",
+          cta: "Lihat di App Store",
         },
         windows: {
           title: "Windows",
@@ -649,12 +674,13 @@ const PACK = {
     },
     pwaPrompt: {
       publicTitle: "Pasang RiskNova seperti aplikasi",
-      publicDescription: "Buka cepat di jendela terpisah di iOS, Android, dan Windows.",
+      publicDescription:
+        "Chrome dan Edge di Android dan Windows dapat memasang situs ini saat browser menampilkan undangan pemasangan.",
       publicButton: "Pasang aplikasi",
       appTitle: "Pasang aplikasi RiskNova",
       appDescription: "Kembali ke lapangan, dokumen, dan Nova dari layar beranda.",
       appButton: "Pasang",
-      iosHint: "Di iPhone/iPad: Bagikan → Tambahkan ke Layar Utama.",
+      iosHint: "Di iPhone dan iPad, unduh RiskNova di App Store.",
       asideAria: "Pemasangan aplikasi RiskNova",
       dismissAria: "Tutup pengingat pemasangan",
     },
@@ -691,3 +717,4 @@ for (const locale of locales) {
 }
 
 console.log("merged pwaInstallPage + pwaPrompt:", locales.join(", "));
+

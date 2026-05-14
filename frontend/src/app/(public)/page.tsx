@@ -7,7 +7,7 @@ import { PublicChatWidget } from "@/components/chat/PublicChatWidget";
 import { LandingHeroAtmosphere } from "@/components/public/landing-hero-atmosphere";
 import { LandingCtaAtmosphere } from "@/components/public/landing-cta-atmosphere";
 import { LandingRevealProvider } from "@/components/public/landing-reveal-provider";
-import { PwaInstallPrompt } from "@/components/pwa/pwa-install-prompt";
+import { RISKNOVA_IOS_APP_STORE_URL } from "@/lib/app-store";
 import { SiteVisitCounter } from "@/components/public/site-visit-counter";
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import {
@@ -21,6 +21,7 @@ import {
   FileInput,
   Cpu,
   ClipboardCheck,
+  Apple,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -146,10 +147,20 @@ export default async function LandingPage() {
                 <Link href="/login" className={secondaryLinkClass}>
                   {tc("platformLogin")}
                 </Link>
+                <a
+                  href={RISKNOVA_IOS_APP_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={secondaryLinkClass + " hover-glow"}
+                  aria-label={t("appStoreAria")}
+                >
+                  <Apple className="h-5 w-5 shrink-0" aria-hidden />
+                  {t("appStoreLabel")}
+                </a>
               </div>
-              <div className="landing-hero-enter landing-hero-enter--d4 mt-5 w-full max-w-md">
-                <PwaInstallPrompt surface="public" />
-              </div>
+              <p className="landing-hero-enter landing-hero-enter--d4 mt-4 max-w-md text-center text-xs leading-relaxed text-slate-400">
+                {t("appStoreHint")}
+              </p>
 
               <div className="landing-hero-enter landing-hero-enter--d4 mt-16 grid w-full max-w-4xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md md:grid-cols-5">
                 <SiteVisitCounter />

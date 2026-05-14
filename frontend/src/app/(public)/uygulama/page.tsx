@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { MonitorDown, Share2, Smartphone, Wifi } from "lucide-react";
+import { Apple, MonitorDown, Smartphone, Wifi } from "lucide-react";
 import { PublicHeader } from "@/components/layout/public-header";
 import { PublicSiteFooter } from "@/components/layout/public-site-footer";
 import { PwaInstallPrompt } from "@/components/pwa/pwa-install-prompt";
+import { RISKNOVA_IOS_APP_STORE_URL } from "@/lib/app-store";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("pwaInstallPage");
@@ -21,7 +22,7 @@ type CardPlatform = (typeof CARD_PLATFORMS)[number];
 
 const CARD_ICONS: Record<CardPlatform, typeof Smartphone> = {
   android: Smartphone,
-  ios: Share2,
+  ios: Apple,
   windows: MonitorDown,
 };
 
@@ -103,6 +104,16 @@ export default async function PwaInstallPage() {
                       </li>
                     ))}
                   </ol>
+                  {platform === "ios" ? (
+                    <a
+                      href={RISKNOVA_IOS_APP_STORE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-sm font-bold text-background transition-opacity hover:opacity-90"
+                    >
+                      {t(`cards.${platform}.cta`)}
+                    </a>
+                  ) : null}
                 </article>
               );
             })}

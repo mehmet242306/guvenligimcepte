@@ -3344,7 +3344,10 @@
     "whyEyebrow": "RiskNova를 선택하는 이유",
     "whyTitle1": "신뢰할 수 있는",
     "whyTitle2": "프리미엄",
-    "whyTitle3": "경험"
+    "whyTitle3": "경험",
+    "appStoreAria": "Download RiskNova on the App Store",
+    "appStoreLabel": "Download on the App Store",
+    "appStoreHint": "Native app for iPhone and iPad."
   },
   "lang": {
     "ar": "العربية",
@@ -5394,49 +5397,50 @@
     "yes": "예"
   },
   "pwaInstallPage": {
+    "metaTitle": "RiskNova 앱",
+    "metaDescription": "iPhone 및 iPad: App Store에서 RiskNova를 다운로드하세요. Android 및 Windows: Chrome 또는 Edge에서 사이트를 PWA로 설치하면 업데이트가 자동으로 적용됩니다.",
+    "eyebrow": "App Store 및 웹 설치",
+    "heroTitle": "휴대폰, 태블릿, 데스크톱에서 RiskNova",
+    "heroBody": "iPhone과 iPad에서는 네이티브 iOS 앱을 사용하세요. Android와 Windows에서는 Chrome 또는 Edge가 앱 설치를 제안할 때 getrisknova.com을 추가할 수 있습니다.",
+    "ctaRegister": "무료로 시작",
+    "ctaLogin": "플랫폼 로그인",
+    "updatesTitle": "업데이트가 자동으로 적용됩니다",
+    "updatesBody": "RiskNova 웹 앱이 업데이트되면 PWA도 새 버전을 받습니다. 스토어 업데이트를 기다릴 필요가 없습니다.",
     "cards": {
       "android": {
+        "title": "Android",
+        "text": "Chrome 또는 Edge에서 RiskNova를 열고, 설치 안내가 나오면 앱 설치를 선택하세요.",
         "step1": "getrisknova.com 열기",
-        "step2": "앱 설치 탭하기",
-        "step3": "RiskNova 아이콘에서 로그인",
-        "text": "Chrome 또는 Edge에서 RiskNova를 열고, 설치 안내가 나타나면 앱 설치를 선택하세요.",
-        "title": "Android"
+        "step2": "앱 설치 탭",
+        "step3": "RiskNova 아이콘에서 로그인"
       },
       "ios": {
-        "step1": "Safari에서 사이트 열기",
-        "step2": "공유 아이콘 탭",
-        "step3": "홈 화면에 추가 선택",
-        "text": "Safari에서 열고 공유 → 홈 화면에 추가를 사용하여 RiskNova 아이콘을 생성하세요.",
-        "title": "iPhone 및 iPad"
+        "title": "iPhone 및 iPad",
+        "text": "현장 감사, 위험 분석, Nova를 위해 App Store에서 RiskNova 네이티브 앱을 받으세요.",
+        "step1": "App Store 열기(또는 아래 버튼 탭)",
+        "step2": "RiskNova를 검색하거나 App Store 링크 사용",
+        "step3": "받기를 누른 뒤 플랫폼 계정으로 로그인",
+        "cta": "App Store에서 보기"
       },
       "windows": {
-        "step1": "Edge 또는 Chrome에서 열기",
+        "title": "Windows",
+        "text": "Chrome 또는 Edge 주소창의 설치 아이콘으로 독립 창에서 엽니다.",
+        "step1": "Edge 또는 Chrome으로 열기",
         "step2": "앱 설치 아이콘 클릭",
-        "step3": "시작 메뉴에서 RiskNova 열기",
-        "text": "Chrome 또는 Edge 주소창의 설치 아이콘을 사용하여 RiskNova를 독립 데스크톱 창에서 여세요.",
-        "title": "Windows"
+        "step3": "시작 메뉴에서 RiskNova 열기"
       }
-    },
-    "ctaLogin": "플랫폼 로그인",
-    "ctaRegister": "무료 시작",
-    "eyebrow": "앱 스토어 불필요",
-    "heroBody": "iOS, Android, Windows에서 RiskNova를 홈 화면이나 데스크톱에 추가하세요. 사이트 업데이트가 설치된 환경에 자동으로 적용됩니다.",
-    "heroTitle": "모바일과 데스크톱에서 RiskNova를 앱처럼 사용",
-    "metaDescription": "앱 스토어 없이 iOS, Android, Windows에서 RiskNova를 PWA로 설치하세요.",
-    "metaTitle": "RiskNova 앱",
-    "updatesBody": "RiskNova 웹앱이 업데이트되면 PWA가 새 버전을 자동으로 받아옵니다. 스토어 업데이트를 기다릴 필요가 없습니다.",
-    "updatesTitle": "업데이트 자동 적용"
+    }
   },
   "pwaPrompt": {
-    "appButton": "설치",
-    "appDescription": "홈 화면에서 현장 작업, 문서, Nova로 바로 이동하세요.",
-    "appTitle": "RiskNova 앱 설치",
-    "asideAria": "RiskNova 앱 설치",
-    "dismissAria": "설치 알림 닫기",
-    "iosHint": "iPhone/iPad에서는 공유 → 홈 화면에 추가를 사용하세요.",
+    "publicTitle": "RiskNova를 앱처럼 설치",
+    "publicDescription": "Android와 Windows의 Chrome과 Edge는 설치 안내가 표시되면 이 사이트를 앱으로 설치할 수 있습니다.",
     "publicButton": "앱 설치",
-    "publicDescription": "iOS, Android, Windows에서 별도 창으로 빠르게 열기",
-    "publicTitle": "RiskNova를 앱처럼 설치"
+    "appTitle": "RiskNova 앱 설치",
+    "appDescription": "홈 화면에서 현장, 문서, Nova로 돌아가세요.",
+    "appButton": "설치",
+    "iosHint": "iPhone과 iPad에서는 App Store에서 RiskNova를 다운로드하세요.",
+    "asideAria": "RiskNova 앱 설치",
+    "dismissAria": "설치 알림 닫기"
   },
   "reports": {
     "companyFile": {
