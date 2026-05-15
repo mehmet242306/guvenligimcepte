@@ -752,12 +752,29 @@ function DocRow({
   const metadata = doc.catalog_metadata ?? {};
   const sourceType = typeof metadata.source_type === "string" ? metadata.source_type : "";
   const pdfUrl = typeof metadata.pdf_url === "string" ? metadata.pdf_url : "";
+  const lastStatus = typeof metadata.last_status === "string" ? metadata.last_status : "";
   const isManualPdf = sourceType === "manual_pdf_upload" || Boolean(pdfUrl);
   const canSync = Boolean(doc.source_url?.includes("MevzuatNo="));
   const cannotSync = Boolean(syncResult && !syncResult.success) || (!canSync && !isManualPdf) || (isManualPdf && !hasSynced);
   const rowTone = hasSynced && !cannotSync ? "success" : cannotSync ? "error" : "pending";
   const statusLabel =
     rowTone === "success" ? "Senkronize edildi" : rowTone === "error" ? "Senkronize edilemiyor" : "Beklemede";
+  const sourceLabel = isManualPdf ? "PDF" : canSync ? "Mevzuat.gov.tr" : "Kaynak yok";
+  const syncDetail =
+    rowTone === "success"
+      ? `${doc.chunk_count.toLocaleString("tr-TR")} chunk hazır${doc.last_synced_at ? ` · Son işlem: ${new Date(doc.last_synced_at).toLocaleString("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}` : ""}`
+      : rowTone === "error"
+        ? syncResult?.message ||
+          (isManualPdf && !hasSynced
+            ? "PDF yüklendi ancak metin/chunk çıkarılamadı; taranmış veya okunamayan PDF olabilir."
+            : "MevzuatNo içeren kaynak bağlantısı yok; bağlantı ekleyin veya PDF yükleyin.")
+        : "Henüz chunk oluşmadı; bağlantıdan çekin veya PDF yükleyin.";
+  const lastStatusLabel =
+    lastStatus === "manual_pdf_indexed"
+      ? "PDF metni indekslendi"
+      : lastStatus === "manual_pdf_uploaded_without_text"
+        ? "PDF yüklendi, metin çıkarılamadı"
+        : "";
   const syncButtonLabel = syncing
     ? "…"
     : canSync
@@ -869,6 +886,36 @@ function DocRow({
                 )}
               >
                 {statusLabel}
+              </p>
+              <div className="flex flex-wrap gap-2 pt-1 text-[11px]">
+                <span
+                  className={cn(
+                    "rounded-full border px-2 py-0.5",
+                    rowTone === "success" && "border-emerald-500/35 bg-emerald-500/10 text-emerald-700",
+                    rowTone === "error" && "border-red-500/35 bg-red-500/10 text-red-600",
+                    rowTone === "pending" && "border-border bg-muted/30 text-muted-foreground",
+                  )}
+                >
+                  Chunk: {doc.chunk_count.toLocaleString("tr-TR")}
+                </span>
+                <span className="rounded-full border border-border bg-muted/30 px-2 py-0.5 text-muted-foreground">
+                  Kaynak: {sourceLabel}
+                </span>
+                {lastStatusLabel && (
+                  <span className="rounded-full border border-border bg-muted/30 px-2 py-0.5 text-muted-foreground">
+                    {lastStatusLabel}
+                  </span>
+                )}
+              </div>
+              <p
+                className={cn(
+                  "text-[11px]",
+                  rowTone === "success" && "text-emerald-600",
+                  rowTone === "error" && "text-red-500",
+                  rowTone === "pending" && "text-muted-foreground",
+                )}
+              >
+                {syncDetail}
               </p>
             </>
           )}
