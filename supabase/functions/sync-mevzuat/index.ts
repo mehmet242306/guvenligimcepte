@@ -288,10 +288,43 @@ async function syncOneDocument(
   };
 }
 
+async function requireSuperAdminCaller(req: Request): Promise<
+  | { ok: true }
+  | { ok: false; response: Response }
+> {
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return { ok: false, response: jsonResp({ error: 'Yetkisiz' }, 401) };
+  }
+
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+  const userClient = createClient(supabaseUrl, anonKey, {
+    global: { headers: { Authorization: authHeader } },
+  });
+  const { data: { user }, error } = await userClient.auth.getUser();
+  if (error || !user) {
+    return { ok: false, response: jsonResp({ error: 'Yetkisiz' }, 401) };
+  }
+
+  const service = createClient(supabaseUrl, serviceKey);
+  const { data: isSuper, error: rpcError } = await service.rpc('is_super_admin', { uid: user.id });
+  if (rpcError || !isSuper) {
+    return { ok: false, response: jsonResp({ error: 'Super admin gerekli' }, 403) };
+  }
+
+  return { ok: true };
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   
   try {
+    const authCheck = await requireSuperAdminCaller(req);
+    if (!authCheck.ok) return authCheck.response;
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);

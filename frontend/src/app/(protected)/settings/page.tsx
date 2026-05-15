@@ -27,6 +27,7 @@ import {
 import { PremiumIconBadge, type PremiumIconTone } from "@/components/ui/premium-icon-badge";
 import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/lib/hooks/use-is-admin";
+import { useIsSuperAdmin } from "@/lib/hooks/use-is-super-admin";
 import { usePermission } from "@/lib/hooks/use-permission";
 import { usePersistedState } from "@/lib/use-persisted-state";
 import { getActiveWorkspace, type WorkspaceRow } from "@/lib/supabase/workspace-api";
@@ -74,6 +75,7 @@ type TabDef = {
   icon: LucideIcon;
   tone: PremiumIconTone;
   adminOnly?: boolean;
+  superAdminOnly?: boolean;
   permission?: string;
   quick?: boolean;
 };
@@ -139,11 +141,12 @@ const allTabs: TabDef[] = [
   },
   {
     key: "mevzuat",
-    label: "Mevzuat Senkronizasyonu",
-    description: "Mevzuat akisi, kaynaklar ve guncel veri senkronu.",
+    label: "Mevzuat Katalogu",
+    description: "Resmi mevzuat katalogu: ekleme, baglanti, tur ve senkron (super admin).",
     section: "operasyon",
     icon: FileText,
     tone: "teal",
+    superAdminOnly: true,
   },
   {
     key: "admin_documents",
@@ -325,6 +328,7 @@ export default function SettingsPage() {
   const [activeWorkspace, setActiveWorkspace] = useState<WorkspaceRow | null>(null);
   const deferredTabQuery = useDeferredValue(tabQuery);
   const isAdmin = useIsAdmin();
+  const isSuperAdmin = useIsSuperAdmin();
 
   // Settings is now an admin-only console: regular users have their personal
   // preferences (theme, language, notifications) under the Profile area, and
@@ -382,11 +386,12 @@ export default function SettingsPage() {
   const visibleTabs = useMemo(
     () =>
       allTabs.filter((tab) => {
+        if (tab.superAdminOnly) return isSuperAdmin === true;
         if (tab.adminOnly) return isAdmin === true;
         if (tab.permission) return permissionState[tab.permission] === true;
         return true;
       }),
-    [isAdmin, permissionState],
+    [isAdmin, isSuperAdmin, permissionState],
   );
 
   const filteredTabs = useMemo(() => {
@@ -746,7 +751,7 @@ export default function SettingsPage() {
               <AdminOverviewTab onNavigate={(tab) => handleTabChange(tab)} />
             )}
             {activeTab === "general" && <GeneralTab />}
-            {activeTab === "mevzuat" && <MevzuatSyncTab />}
+            {activeTab === "mevzuat" && isSuperAdmin === true && <MevzuatSyncTab />}
             {activeTab === "error_logs" && canViewErrorLogs === true && <ErrorLogsTab />}
             {activeTab === "users" && canManageUsers === true && (
               <UserManagementTab onNavigateRoleManagement={() => handleTabChange("role_management")} />
