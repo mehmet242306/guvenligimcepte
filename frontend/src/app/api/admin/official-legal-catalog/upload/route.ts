@@ -28,38 +28,67 @@ function getAnthropicClient() {
 
 async function extractPdfText(file: File) {
   const client = getAnthropicClient();
-  if (!client) return null;
-
   const buffer = await file.arrayBuffer();
-  const base64 = Buffer.from(buffer).toString("base64");
-  const response = await client.messages.create({
-    model: process.env.ANTHROPIC_MODEL?.trim() || "claude-sonnet-4-6",
-    max_tokens: 8192,
-    temperature: 0,
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "document",
-            source: {
-              type: "base64",
-              media_type: "application/pdf",
-              data: base64,
-            },
-          },
-          {
-            type: "text",
-            text:
-              "Bu PDF mevzuat/kilavuz kaynagi olarak yuklenecek. Metni madde basliklari, tablo satirlari ve alt basliklari koruyarak duz metin/Markdown biciminde cikar. Yorum ekleme.",
-          },
-        ],
-      },
-    ],
-  });
+  const fallbackText = extractLoosePdfText(buffer);
+  if (!client) {
+    return {
+      text: fallbackText,
+      method: fallbackText ? "loose_pdf_text" : null,
+      error: "Anthropic API anahtari bulunamadigi icin PDF metin cikarimi yapilamadi.",
+    };
+  }
 
-  const text = response.content.find((block) => block.type === "text")?.text?.trim();
-  return text && text.length > 80 ? text.slice(0, 120_000) : null;
+  const base64 = Buffer.from(buffer).toString("base64");
+  try {
+    const response = await client.messages.create({
+      model: process.env.ANTHROPIC_MODEL?.trim() || "claude-sonnet-4-6",
+      max_tokens: 8192,
+      temperature: 0,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "document",
+              source: {
+                type: "base64",
+                media_type: "application/pdf",
+                data: base64,
+              },
+            },
+            {
+              type: "text",
+              text:
+                "Bu PDF mevzuat/kilavuz kaynagi olarak yuklenecek. Metni madde basliklari, tablo satirlari ve alt basliklari koruyarak duz metin/Markdown biciminde cikar. Yorum ekleme.",
+            },
+          ],
+        },
+      ],
+    });
+
+    const text = response.content.find((block) => block.type === "text")?.text?.trim();
+    return {
+      text: text && text.length > 80 ? text.slice(0, 120_000) : fallbackText,
+      method: text && text.length > 80 ? "anthropic_pdf" : fallbackText ? "loose_pdf_text" : null,
+      error: text && text.length > 80 ? null : "PDF metni AI tarafinda cikarilamadi.",
+    };
+  } catch (error) {
+    return {
+      text: fallbackText,
+      method: fallbackText ? "loose_pdf_text" : null,
+      error: error instanceof Error ? error.message : "PDF metni cikarilamadi.",
+    };
+  }
+}
+
+function extractLoosePdfText(buffer: ArrayBuffer) {
+  const raw = new TextDecoder("latin1", { fatal: false }).decode(new Uint8Array(buffer));
+  const parts = Array.from(raw.matchAll(/\(([^()\r\n]{3,500})\)\s*Tj/g), (match) => match[1])
+    .concat(Array.from(raw.matchAll(/\(([^()\r\n]{3,500})\)\s*TJ/g), (match) => match[1]))
+    .map((part) => part.replace(/\\([()\\])/g, "$1").trim())
+    .filter((part) => /[A-Za-zÇĞİÖŞÜçğıöşü0-9]/.test(part));
+  const text = parts.join(" ").replace(/\s+/g, " ").trim();
+  return text.length > 80 ? text.slice(0, 120_000) : null;
 }
 
 function chunkText(text: string, size = 10_000) {
@@ -118,7 +147,8 @@ export async function POST(request: NextRequest) {
 
     const { data: publicUrlData } = service.storage.from("slide-media").getPublicUrl(storagePath);
     const pdfUrl = publicUrlData.publicUrl;
-    const extractedText = await extractPdfText(file);
+    const extraction = await extractPdfText(file);
+    const extractedText = extraction.text;
     const sourceHash = `official-pdf:${parsed.data.doc_number}:${storagePath}`;
     const baseMetadata = {
       source_type: "manual_pdf_upload",
@@ -126,6 +156,8 @@ export async function POST(request: NextRequest) {
       official_url: parsed.data.source_url || null,
       uploaded_by: auth.userId,
       last_status: extractedText ? "manual_pdf_indexed" : "manual_pdf_uploaded_without_text",
+      extraction_method: extraction.method,
+      extraction_error: extractedText ? null : extraction.error,
     };
 
     const documentQuery = parsed.data.document_id

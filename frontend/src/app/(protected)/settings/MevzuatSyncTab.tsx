@@ -49,6 +49,33 @@ const CATALOG_SECTIONS: Array<{ key: OfficialLegalDocType; title: string; descri
   { key: "announcement", title: "Diğer içerikler", description: "Tablolar, duyurular ve tamamlayıcı kaynaklar" },
 ];
 
+async function readFunctionError(error: unknown) {
+  let message = error instanceof Error ? error.message : "Senkron işlemi başarısız oldu";
+  const context = error && typeof error === "object" && "context" in error ? error.context : null;
+  const body = context && typeof context === "object" && "body" in context ? context.body : null;
+
+  if (body) {
+    try {
+      const text = await new Response(body as BodyInit).text();
+      if (text.trim()) {
+        try {
+          const parsed = JSON.parse(text) as { error?: string; message?: string };
+          message = parsed.error || parsed.message || message;
+        } catch {
+          message = text.trim().slice(0, 300);
+        }
+      }
+    } catch {
+      /* keep original message */
+    }
+  }
+
+  if (message.includes("Unexpected token") || message.includes("not valid JSON")) {
+    return "Senkron servisi JSON olmayan bir hata döndürdü. Büyük olasılıkla kaynak sayfa okunamadı veya edge function tarafında geçici hata oluştu.";
+  }
+  return message;
+}
+
 export function MevzuatSyncTab() {
   const isSuperAdmin = useIsSuperAdmin();
   const [docs, setDocs] = useState<LegalDoc[]>([]);
@@ -120,16 +147,7 @@ export function MevzuatSyncTab() {
       });
 
       if (error) {
-        let msg = error.message || "Hata";
-        try {
-          if (error.context?.body) {
-            const text = await new Response(error.context.body).text();
-            const parsed = JSON.parse(text);
-            msg = parsed.error || msg;
-          }
-        } catch {
-          /* ignore */
-        }
+        const msg = await readFunctionError(error);
         setSyncProgress({ id: docId, progress: 100, label: `Başarısız: ${msg}` });
         setSyncResult({ id: docId, success: false, message: msg });
         return;
@@ -185,8 +203,9 @@ export function MevzuatSyncTab() {
       });
 
       if (error) {
-        setSyncProgress({ id: "critical-laws", progress: 100, label: `Başarısız: ${error.message}` });
-        setSyncResult({ id: "critical-laws", success: false, message: error.message });
+        const message = await readFunctionError(error);
+        setSyncProgress({ id: "critical-laws", progress: 100, label: `Başarısız: ${message}` });
+        setSyncResult({ id: "critical-laws", success: false, message });
         return;
       }
       if (data?.error) {
@@ -753,12 +772,20 @@ function DocRow({
   const sourceType = typeof metadata.source_type === "string" ? metadata.source_type : "";
   const pdfUrl = typeof metadata.pdf_url === "string" ? metadata.pdf_url : "";
   const lastStatus = typeof metadata.last_status === "string" ? metadata.last_status : "";
+  const extractionError = typeof metadata.extraction_error === "string" ? metadata.extraction_error : "";
+  const extractionMethod = typeof metadata.extraction_method === "string" ? metadata.extraction_method : "";
   const isManualPdf = sourceType === "manual_pdf_upload" || Boolean(pdfUrl);
   const canSync = Boolean(doc.source_url?.includes("MevzuatNo="));
   const cannotSync = Boolean(syncResult && !syncResult.success) || (!canSync && !isManualPdf) || (isManualPdf && !hasSynced);
   const rowTone = hasSynced && !cannotSync ? "success" : cannotSync ? "error" : "pending";
   const statusLabel =
-    rowTone === "success" ? "Senkronize edildi" : rowTone === "error" ? "Senkronize edilemiyor" : "Beklemede";
+    rowTone === "success"
+      ? "Senkronize edildi"
+      : isManualPdf && !hasSynced
+        ? "PDF yüklü ama boş"
+        : rowTone === "error"
+          ? "Senkronize edilemiyor"
+          : "Beklemede";
   const sourceLabel = isManualPdf ? "PDF" : canSync ? "Mevzuat.gov.tr" : "Kaynak yok";
   const syncDetail =
     rowTone === "success"
@@ -766,7 +793,8 @@ function DocRow({
       : rowTone === "error"
         ? syncResult?.message ||
           (isManualPdf && !hasSynced
-            ? "PDF yüklendi ancak metin/chunk çıkarılamadı; taranmış veya okunamayan PDF olabilir."
+            ? extractionError ||
+              "PDF sisteme yüklenmiş ama metin/chunk çıkarılamamış. Bu genelde taranmış resim PDF, korumalı PDF veya metni seçilemeyen PDF olduğunda olur; aynı satırdaki yükleme ikonundan metni seçilebilir PDF ile tekrar yükleyin."
             : "MevzuatNo içeren kaynak bağlantısı yok; bağlantı ekleyin veya PDF yükleyin.")
         : "Henüz chunk oluşmadı; bağlantıdan çekin veya PDF yükleyin.";
   const lastStatusLabel =
@@ -777,12 +805,14 @@ function DocRow({
         : "";
   const syncButtonLabel = syncing
     ? "…"
-    : canSync
-      ? hasSynced
-        ? "Tekrar senkron"
-        : "Bağlantıdan çek"
+      : canSync
+        ? hasSynced
+          ? "Tekrar senkron"
+          : "Bağlantıdan çek"
       : isManualPdf
-        ? "PDF yüklendi"
+        ? hasSynced
+          ? "PDF indeksli"
+          : "PDF boş"
         : "Bağlantı gerekli";
 
   async function saveLink() {
@@ -906,6 +936,11 @@ function DocRow({
                     {lastStatusLabel}
                   </span>
                 )}
+                {extractionMethod && (
+                  <span className="rounded-full border border-border bg-muted/30 px-2 py-0.5 text-muted-foreground">
+                    Çıkarım: {extractionMethod === "anthropic_pdf" ? "AI PDF" : "Basit PDF metni"}
+                  </span>
+                )}
               </div>
               <p
                 className={cn(
@@ -962,6 +997,14 @@ function DocRow({
           </Button>
         </div>
       </div>
+
+      {isManualPdf && !hasSynced && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-3 text-xs text-red-600">
+          PDF dosyası bağlı görünüyor ama arama için kullanılacak metin oluşmamış.
+          {extractionError ? ` Sebep: ${extractionError}` : " PDF taranmış/resim tabanlı olabilir veya metin çıkarma servisi dosyayı okuyamamış olabilir."}
+          {" "}Aynı satırdaki yükleme ikonuyla metni seçilebilir PDF dosyasını tekrar yükleyin.
+        </div>
+      )}
 
       {showPdfUpload && (
         <div className="rounded-lg border border-dashed border-border bg-muted/20 p-3">
