@@ -83,6 +83,7 @@
     "next-intl": "^4.9.1",
     "openai": "^6.34.0",
     "papaparse": "^5.5.3",
+    "pdf-parse": "^1.1.1",
     "pptxgenjs": "^4.0.1",
     "qrcode": "^1.5.4",
     "react": "19.2.3",

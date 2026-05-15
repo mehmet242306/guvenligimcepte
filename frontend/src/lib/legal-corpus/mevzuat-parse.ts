@@ -158,6 +158,11 @@ export function parseArticlesFromHtml(html: string, docTitle: string): ParsedArt
   return articles;
 }
 
+/** Düz metin / pdf-parse çıktısından madde ayırma */
+export function parseArticlesFromPlainText(text: string, docTitle: string): ParsedArticle[] {
+  return parseArticlesFromHtml(text, docTitle);
+}
+
 export function chunkPlainText(text: string, size = 10_000): string[] {
   const chunks: string[] = [];
   for (let i = 0; i < text.length; i += size) {

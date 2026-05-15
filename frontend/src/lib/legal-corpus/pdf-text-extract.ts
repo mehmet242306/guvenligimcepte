@@ -20,22 +20,27 @@ export function extractLoosePdfText(buffer: ArrayBuffer): string | null {
   return text.length > 80 ? text.slice(0, 120_000) : null;
 }
 
-export async function extractPdfTextFromBuffer(buffer: ArrayBuffer): Promise<{
+async function extractPdfWithPdfParse(buffer: ArrayBuffer): Promise<string | null> {
+  try {
+    const pdfParse = (await import("pdf-parse")).default as (
+      data: Buffer,
+    ) => Promise<{ text: string; numpages: number }>;
+    const result = await pdfParse(Buffer.from(buffer));
+    const text = result.text?.replace(/\r\n/g, "\n").trim() ?? "";
+    return text.length > 80 ? text.slice(0, 120_000) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function extractPdfWithAnthropic(buffer: ArrayBuffer): Promise<{
   text: string | null;
   method: string | null;
   error: string | null;
 }> {
   const client = getAnthropicClient();
-  const fallbackText = extractLoosePdfText(buffer);
-
   if (!client) {
-    return {
-      text: fallbackText,
-      method: fallbackText ? "loose_pdf_text" : null,
-      error: fallbackText
-        ? null
-        : "ANTHROPIC_API_KEY tanımlı değil; taranmış PDF’ler için Vercel ortam değişkenine Anthropic anahtarı ekleyin.",
-    };
+    return { text: null, method: null, error: null };
   }
 
   const base64 = Buffer.from(buffer).toString("base64");
@@ -69,25 +74,51 @@ export async function extractPdfTextFromBuffer(buffer: ArrayBuffer): Promise<{
     if (text && text.length > 80) {
       return { text: text.slice(0, 120_000), method: "anthropic_pdf", error: null };
     }
-    return {
-      text: fallbackText,
-      method: fallbackText ? "loose_pdf_text" : null,
-      error: "PDF metni AI ile çıkarılamadı; dosya taranmış/resim tabanlı olabilir.",
-    };
+    return { text: null, method: null, error: null };
   } catch (error) {
     return {
-      text: fallbackText,
-      method: fallbackText ? "loose_pdf_text" : null,
-      error: error instanceof Error ? error.message : "PDF metni çıkarılamadı.",
+      text: null,
+      method: null,
+      error: error instanceof Error ? error.message : "Anthropic PDF okuma hatası",
     };
   }
+}
+
+export async function extractPdfTextFromBuffer(buffer: ArrayBuffer): Promise<{
+  text: string | null;
+  method: string | null;
+  error: string | null;
+}> {
+  const parsed = await extractPdfWithPdfParse(buffer);
+  if (parsed) {
+    return { text: parsed, method: "pdf_parse", error: null };
+  }
+
+  const loose = extractLoosePdfText(buffer);
+  if (loose) {
+    return { text: loose, method: "loose_pdf_text", error: null };
+  }
+
+  const anthropic = await extractPdfWithAnthropic(buffer);
+  if (anthropic.text) {
+    return anthropic;
+  }
+
+  return {
+    text: null,
+    method: null,
+    error:
+      anthropic.error ??
+      "PDF metni okunamadı. Word (.docx) olarak yüklemeyi deneyin veya taranmış PDF için ANTHROPIC_API_KEY tanımlayın.",
+  };
 }
 
 export async function extractPdfTextFromUrl(pdfUrl: string) {
   const response = await fetch(pdfUrl, {
     headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; RiskNova/1.0)",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
       Accept: "application/pdf,*/*",
+      "Accept-Language": "tr-TR,tr;q=0.9",
     },
     signal: AbortSignal.timeout(60_000),
   });
@@ -96,7 +127,7 @@ export async function extractPdfTextFromUrl(pdfUrl: string) {
     return {
       text: null,
       method: null,
-      error: `PDF indirilemedi (HTTP ${response.status})`,
+      error: `PDF indirilemedi (HTTP ${response.status}). Dosyayı bilgisayarınızdan PDF/Word olarak yükleyin.`,
     };
   }
 

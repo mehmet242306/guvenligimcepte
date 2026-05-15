@@ -30,7 +30,7 @@ interface LegalDoc {
 }
 
 type FilterType = "all" | OfficialLegalDocType;
-type AddMode = "url" | "pdf";
+type AddMode = "url" | "file";
 type SyncResult = { id: string; success: boolean; message: string };
 type SyncProgress = { id: string; progress: number; label: string };
 
@@ -103,7 +103,7 @@ export function MevzuatSyncTab() {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [addMode, setAddMode] = useState<AddMode>("url");
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [newDoc, setNewDoc] = useState({
     title: "",
     doc_number: "",
@@ -277,9 +277,9 @@ export function MevzuatSyncTab() {
     setFormError(null);
     try {
       let res: Response;
-      if (addMode === "pdf") {
-        if (!pdfFile) {
-          setFormError("PDF dosyası seçmelisiniz.");
+      if (addMode === "file") {
+        if (!uploadFile) {
+          setFormError("PDF veya Word dosyası seçmelisiniz.");
           return;
         }
         const formData = new FormData();
@@ -287,7 +287,7 @@ export function MevzuatSyncTab() {
         formData.append("doc_number", newDoc.doc_number);
         formData.append("doc_type", newDoc.doc_type);
         formData.append("source_url", newDoc.source_url.trim());
-        formData.append("file", pdfFile);
+        formData.append("file", uploadFile);
         res = await fetch("/api/admin/official-legal-catalog/upload", {
           method: "POST",
           body: formData,
@@ -311,7 +311,7 @@ export function MevzuatSyncTab() {
       }
       setShowAddForm(false);
       setNewDoc({ title: "", doc_number: "", doc_type: "regulation", source_url: "" });
-      setPdfFile(null);
+      setUploadFile(null);
       await loadDocs();
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Kayıt eklenemedi");
@@ -334,14 +334,14 @@ export function MevzuatSyncTab() {
     await loadDocs();
   }
 
-  async function uploadPdfForDocument(doc: LegalDoc, file: File) {
+  async function uploadFileForDocument(doc: LegalDoc, file: File) {
     setSyncing(doc.id);
     setSyncResult(null);
-    setSyncProgress({ id: doc.id, progress: 10, label: "PDF yükleniyor" });
+    setSyncProgress({ id: doc.id, progress: 10, label: "Dosya yükleniyor" });
     const progressTimer = window.setInterval(() => {
       setSyncProgress((current) => {
         if (!current || current.id !== doc.id || current.progress >= 88) return current;
-        const label = current.progress < 45 ? "PDF storage alanına alınıyor" : "PDF metni çıkarılıp chunk oluşturuluyor";
+        const label = current.progress < 45 ? "Dosya kaydediliyor" : "Metin çıkarılıp chunk oluşturuluyor";
         return { ...current, progress: Math.min(current.progress + 6, 88), label };
       });
     }, 1000);
@@ -360,7 +360,7 @@ export function MevzuatSyncTab() {
       });
       const { data } = await parseApiResponse(res);
       if (!res.ok) {
-        const message = String(data.error ?? "PDF yüklenemedi");
+        const message = String(data.error ?? "Dosya yüklenemedi");
         setSyncProgress({ id: doc.id, progress: 100, label: `Başarısız: ${message}` });
         setSyncResult({ id: doc.id, success: false, message });
         return;
@@ -372,9 +372,9 @@ export function MevzuatSyncTab() {
       const extractionError = data.extraction_error ? String(data.extraction_error) : "";
       const message =
         chunkCount > 0
-          ? `PDF yüklendi ve ${chunkCount} chunk oluşturuldu`
-          : [extractionError || "PDF yüklendi ancak metin çıkarılamadı.", hints].filter(Boolean).join(" ");
-      setSyncProgress({ id: doc.id, progress: 100, label: chunkCount > 0 ? "PDF indekslendi" : "PDF yüklendi, metin çıkarılamadı" });
+          ? `Dosya yüklendi ve ${chunkCount} chunk oluşturuldu`
+          : [extractionError || "Dosya yüklendi ancak metin çıkarılamadı.", hints].filter(Boolean).join(" ");
+      setSyncProgress({ id: doc.id, progress: 100, label: chunkCount > 0 ? "İndekslendi" : "Metin çıkarılamadı" });
       setSyncResult({ id: doc.id, success: chunkCount > 0, message });
       await loadDocs();
     } catch (err) {
@@ -430,9 +430,10 @@ export function MevzuatSyncTab() {
     <div className="space-y-6">
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="pt-4 text-sm text-muted-foreground">
-          Resmi mevzuat kataloğunu türüne göre düzenleyin: kanunlar, yönetmelikler, genelgeler ve diğer kaynaklar
-          ayrı bölümlerde görünür. Mevzuat.gov.tr bağlantısı olan kayıtları bağlantıdan çekebilir, PDF kaynaklarını
-          manuel yükleyip arama belleğine ekleyebilirsiniz.
+          Resmi mevzuat kataloğunu türüne göre düzenleyin. En güvenilir yol: mevzuat.gov.tr’den indirdiğiniz{" "}
+          <strong className="text-foreground">PDF veya Word (.docx)</strong> dosyasını yüklemek. “Bağlantıdan çek”
+          otomatik dener; site bazen bot koruması veya sıkıştırılmış sayfa nedeniyle başarısız olabilir — bu sizin
+          dosyanızın boş olduğu anlamına gelmez.
         </CardContent>
       </Card>
 
@@ -505,14 +506,14 @@ export function MevzuatSyncTab() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setAddMode("pdf")}
+                  onClick={() => setAddMode("file")}
                   className={cn(
                     "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition",
-                    addMode === "pdf" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground",
+                    addMode === "file" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground",
                   )}
                 >
                   <Upload className="h-3.5 w-3.5" />
-                  PDF yükle
+                  PDF / Word yükle
                 </button>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -546,29 +547,32 @@ export function MevzuatSyncTab() {
                   </select>
                 </label>
                 <Input
-                  label={addMode === "pdf" ? "Resmi kaynak bağlantısı (opsiyonel)" : "Kaynak bağlantısı (mevzuat.gov.tr)"}
-                  hint={addMode === "pdf" ? "PDF için varsa resmi sayfa bağlantısı" : "MevzuatNo içeren tam URL"}
+                  label={addMode === "file" ? "Resmi kaynak bağlantısı (opsiyonel)" : "Kaynak bağlantısı (mevzuat.gov.tr)"}
+                  hint={addMode === "file" ? "Varsa mevzuat.gov.tr sayfa bağlantısı" : "MevzuatNo içeren tam URL"}
                   value={newDoc.source_url}
                   onChange={(e) => setNewDoc((p) => ({ ...p, source_url: e.target.value }))}
                   placeholder="https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=..."
                 />
-                {addMode === "pdf" && (
+                {addMode === "file" && (
                   <label className="flex flex-col gap-2 text-sm sm:col-span-2">
-                    <span className="font-medium text-foreground">PDF dosyası</span>
+                    <span className="font-medium text-foreground">PDF veya Word dosyası</span>
                     <input
                       type="file"
-                      accept="application/pdf"
+                      accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                       required
-                      onChange={(e) => setPdfFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)}
                       className="rounded-lg border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1 file:text-xs file:font-medium file:text-primary"
                     />
-                    {pdfFile && <span className="text-xs text-muted-foreground">{pdfFile.name}</span>}
+                    {uploadFile && <span className="text-xs text-muted-foreground">{uploadFile.name}</span>}
+                    <span className="text-[11px] text-muted-foreground">
+                      Word (.docx) veya PDF yükleyin. Mevzuat.gov.tr otomatik çekimi her zaman çalışmayabilir; dosya yükleme en güvenilir yoldur.
+                    </span>
                   </label>
                 )}
               </div>
               {formError && <p className="text-xs text-red-500">{formError}</p>}
               <Button type="submit" size="sm" disabled={saving}>
-                {saving ? "Kaydediliyor…" : addMode === "pdf" ? "PDF ile kataloğa ekle" : "Bağlantı kaydı ekle"}
+                {saving ? "Kaydediliyor…" : addMode === "file" ? "Dosya ile kataloğa ekle" : "Bağlantı kaydı ekle"}
               </Button>
             </form>
           </CardContent>
@@ -619,7 +623,7 @@ export function MevzuatSyncTab() {
               syncResult={syncResult}
               syncProgress={syncProgress}
               onSync={syncSingle}
-              onUploadPdf={uploadPdfForDocument}
+              onUploadFile={uploadFileForDocument}
               onUpdate={updateDocument}
               onDelete={deleteDocument}
             />
@@ -691,7 +695,7 @@ function CatalogTypeSection({
   syncResult,
   syncProgress,
   onSync,
-  onUploadPdf,
+  onUploadFile,
   onUpdate,
   onDelete,
 }: {
@@ -702,7 +706,7 @@ function CatalogTypeSection({
   syncResult: SyncResult | null;
   syncProgress: SyncProgress | null;
   onSync: (id: string) => void;
-  onUploadPdf: (doc: LegalDoc, file: File) => Promise<void>;
+  onUploadFile: (doc: LegalDoc, file: File) => Promise<void>;
   onUpdate: (
     id: string,
     patch: Partial<Pick<LegalDoc, "title" | "doc_number" | "doc_type" | "source_url">>,
@@ -735,7 +739,7 @@ function CatalogTypeSection({
             syncResult={syncResult?.id === doc.id ? syncResult : null}
             syncProgress={syncProgress?.id === doc.id ? syncProgress : null}
             onSync={() => onSync(doc.id)}
-            onUploadPdf={(file) => onUploadPdf(doc, file)}
+            onUploadFile={(file) => onUploadFile(doc, file)}
             onUpdate={onUpdate}
             onDelete={() => onDelete(doc.id, doc.title)}
           />
@@ -751,7 +755,7 @@ function DocRow({
   syncResult,
   syncProgress,
   onSync,
-  onUploadPdf,
+  onUploadFile,
   onUpdate,
   onDelete,
 }: {
@@ -760,7 +764,7 @@ function DocRow({
   syncResult: SyncResult | null;
   syncProgress: SyncProgress | null;
   onSync: () => void;
-  onUploadPdf: (file: File) => Promise<void>;
+  onUploadFile: (file: File) => Promise<void>;
   onUpdate: (
     id: string,
     patch: Partial<Pick<LegalDoc, "title" | "doc_number" | "doc_type" | "source_url">>,
@@ -787,34 +791,47 @@ function DocRow({
   const lastStatus = typeof metadata.last_status === "string" ? metadata.last_status : "";
   const extractionError = typeof metadata.extraction_error === "string" ? metadata.extraction_error : "";
   const extractionMethod = typeof metadata.extraction_method === "string" ? metadata.extraction_method : "";
-  const isManualPdf = sourceType === "manual_pdf_upload" || Boolean(pdfUrl);
+  const fileKind = typeof metadata.file_kind === "string" ? metadata.file_kind : "";
+  const isManualFile =
+    sourceType === "manual_pdf_upload" ||
+    sourceType === "manual_docx_upload" ||
+    sourceType === "manual_file_upload" ||
+    Boolean(pdfUrl) ||
+    fileKind === "docx" ||
+    fileKind === "pdf";
   const canSync = Boolean(doc.source_url?.includes("MevzuatNo="));
-  const cannotSync = Boolean(syncResult && !syncResult.success) || (!canSync && !isManualPdf) || (isManualPdf && !hasSynced);
+  const cannotSync = Boolean(syncResult && !syncResult.success) || (!canSync && !isManualFile) || (isManualFile && !hasSynced);
   const rowTone = hasSynced && !cannotSync ? "success" : cannotSync ? "error" : "pending";
   const statusLabel =
     rowTone === "success"
       ? "Senkronize edildi"
-      : isManualPdf && !hasSynced
-        ? "PDF yüklü ama boş"
+      : isManualFile && !hasSynced
+        ? "Dosya yüklü ama metin yok"
         : rowTone === "error"
           ? "Senkronize edilemiyor"
           : "Beklemede";
-  const sourceLabel = isManualPdf ? "PDF" : canSync ? "Mevzuat.gov.tr" : "Kaynak yok";
+  const sourceLabel = isManualFile
+    ? fileKind === "docx"
+      ? "Word"
+      : "PDF/Dosya"
+    : canSync
+      ? "Mevzuat.gov.tr"
+      : "Kaynak yok";
   const syncDetail =
     rowTone === "success"
       ? `${doc.chunk_count.toLocaleString("tr-TR")} chunk hazır${doc.last_synced_at ? ` · Son işlem: ${new Date(doc.last_synced_at).toLocaleString("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}` : ""}`
       : rowTone === "error"
         ? syncResult?.message ||
-          (isManualPdf && !hasSynced
+          (isManualFile && !hasSynced
             ? extractionError ||
-              "PDF sisteme yüklenmiş ama metin/chunk çıkarılamamış. Bu genelde taranmış resim PDF, korumalı PDF veya metni seçilemeyen PDF olduğunda olur; aynı satırdaki yükleme ikonundan metni seçilebilir PDF ile tekrar yükleyin."
-            : "MevzuatNo içeren kaynak bağlantısı yok; bağlantı ekleyin veya PDF yükleyin.")
-        : "Henüz chunk oluşmadı; bağlantıdan çekin veya PDF yükleyin.";
+              "Dosya yüklendi ama metin çıkarılamadı. Word (.docx) veya metin katmanlı PDF ile tekrar yükleyin."
+            : "MevzuatNo bağlantısı yok; bağlantı ekleyin veya PDF/Word yükleyin.")
+        : "Henüz chunk yok; bağlantıdan çekin veya PDF/Word yükleyin (en kolay yol).";
   const lastStatusLabel =
-    lastStatus === "manual_pdf_indexed"
-      ? "PDF metni indekslendi"
-      : lastStatus === "manual_pdf_uploaded_without_text"
-        ? "PDF yüklendi, metin çıkarılamadı"
+    lastStatus === "manual_file_indexed" || lastStatus === "manual_pdf_indexed"
+      ? "Dosya metni indekslendi"
+      : lastStatus === "manual_file_uploaded_without_text" || lastStatus === "manual_pdf_uploaded_without_text"
+        ? "Dosya yüklendi, metin çıkarılamadı"
         : "";
   const syncButtonLabel = syncing
     ? "…"
@@ -822,10 +839,10 @@ function DocRow({
         ? hasSynced
           ? "Tekrar senkron"
           : "Bağlantıdan çek"
-      : isManualPdf
+      : isManualFile
         ? hasSynced
-          ? "PDF indeksli"
-          : "PDF boş"
+          ? "İndekslendi"
+          : "Metin yok"
         : "Bağlantı gerekli";
 
   async function saveLink() {
@@ -854,13 +871,13 @@ function DocRow({
     }
   }
 
-  async function submitPdfUpload() {
+  async function submitFileUpload() {
     if (!pdfDraft) {
-      setRowError("PDF dosyası seçmelisiniz.");
+      setRowError("PDF veya Word dosyası seçmelisiniz.");
       return;
     }
     setRowError(null);
-    await onUploadPdf(pdfDraft);
+    await onUploadFile(pdfDraft);
     setPdfDraft(null);
     setShowPdfUpload(false);
   }
@@ -917,8 +934,8 @@ function DocRow({
               <p className="text-sm font-medium text-foreground">{doc.title}</p>
               <p className="text-[11px] text-muted-foreground">No: {doc.doc_number}</p>
               <p className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-                {isManualPdf ? <FileText className="h-3 w-3" /> : <Link2 className="h-3 w-3" />}
-                {isManualPdf ? "PDF kaynağı" : canSync ? "Mevzuat.gov bağlantısı" : "Bağlantı gerekli"}
+                {isManualFile ? <FileText className="h-3 w-3" /> : <Link2 className="h-3 w-3" />}
+                {isManualFile ? `${sourceLabel} kaynağı` : canSync ? "Mevzuat.gov bağlantısı" : "Bağlantı gerekli"}
               </p>
               <p
                 className={cn(
@@ -977,7 +994,7 @@ function DocRow({
             </p>
           )}
 
-          {!canSync && !editingLink && !isManualPdf && (
+          {!canSync && !editingLink && !isManualFile && (
             <p className="text-[11px] text-red-500">
               MevzuatNo bulunamadı; önce mevzuat.gov.tr bağlantısını ekleyin veya düzenleyin.
             </p>
@@ -1011,11 +1028,11 @@ function DocRow({
         </div>
       </div>
 
-      {isManualPdf && !hasSynced && (
+      {isManualFile && !hasSynced && (
         <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-3 text-xs text-red-600">
-          PDF dosyası bağlı görünüyor ama arama için kullanılacak metin oluşmamış.
-          {extractionError ? ` Sebep: ${extractionError}` : " PDF taranmış/resim tabanlı olabilir veya metin çıkarma servisi dosyayı okuyamamış olabilir."}
-          {" "}Aynı satırdaki yükleme ikonuyla metni seçilebilir PDF dosyasını tekrar yükleyin.
+          Dosya yüklendi ama arama için metin/chunk oluşmadı.
+          {extractionError ? ` Sebep: ${extractionError}` : " Word (.docx) veya metin katmanlı PDF deneyin."}
+          {" "}Aynı satırdaki yükleme ikonuyla dosyayı tekrar yükleyin.
         </div>
       )}
 
@@ -1025,13 +1042,13 @@ function DocRow({
             <FileText className="h-4 w-4 text-muted-foreground" />
             <input
               type="file"
-              accept="application/pdf"
+              accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               disabled={syncing}
               onChange={(e) => setPdfDraft(e.target.files?.[0] ?? null)}
               className="min-w-[220px] flex-1 text-xs file:mr-3 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1 file:text-xs file:font-medium file:text-primary"
             />
-            <Button size="sm" disabled={syncing || !pdfDraft} onClick={() => void submitPdfUpload()}>
-              {syncing ? "Yükleniyor…" : "PDF ile güncelle"}
+            <Button size="sm" disabled={syncing || !pdfDraft} onClick={() => void submitFileUpload()}>
+              {syncing ? "Yükleniyor…" : "Dosya ile güncelle"}
             </Button>
             <Button
               size="sm"
@@ -1046,7 +1063,7 @@ function DocRow({
             </Button>
           </div>
           <p className="mt-2 text-[11px] text-muted-foreground">
-            Bu PDF mevcut kayda bağlanır; metin çıkarılabilirse eski chunk içerikleri yenilenir.
+            PDF veya Word dosyası mevcut kayda bağlanır; metin çıkarılırsa chunk’lar yenilenir.
           </p>
         </div>
       )}

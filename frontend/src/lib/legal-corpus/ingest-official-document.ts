@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   chunkPlainText,
   parseArticlesFromHtml,
+  parseArticlesFromPlainText,
   resolveMevzuatFetchUrls,
   type ParsedArticle,
 } from "@/lib/legal-corpus/mevzuat-parse";
@@ -253,14 +254,17 @@ export async function ingestOfficialDocumentFromPdfText(
   extractedText: string,
   meta: Record<string, unknown>,
 ) {
-  const parts = chunkPlainText(extractedText);
-  const articles: ParsedArticle[] = parts.map((content, index) => ({
-    article_number: `Bölüm ${index + 1}`,
-    article_title: index === 0 ? doc.title : `${doc.title} (${index + 1})`,
-    content,
-    article_type: "normal",
-    is_repealed: false,
-  }));
+  let articles = parseArticlesFromPlainText(extractedText, doc.title);
+  if (articles.length === 1 && articles[0].article_number === "Giriş") {
+    const parts = chunkPlainText(extractedText);
+    articles = parts.map((content, index) => ({
+      article_number: `Bölüm ${index + 1}`,
+      article_title: index === 0 ? doc.title : `${doc.title} (${index + 1})`,
+      content,
+      article_type: "normal",
+      is_repealed: false,
+    }));
+  }
 
   const versionId = await ensureVersion(service, doc, extractedText, doc.source_url ?? null);
   await service.from("legal_chunks").delete().eq("document_id", doc.id);

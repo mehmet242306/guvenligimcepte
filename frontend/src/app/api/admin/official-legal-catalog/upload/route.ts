@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import {
+  detectLegalUploadKind,
+  extractLegalDocumentText,
+} from "@/lib/legal-corpus/document-text-extract";
 import { OFFICIAL_LEGAL_DOC_TYPES } from "@/lib/legal-corpus/doc-types";
 import { ingestOfficialDocumentFromPdfText } from "@/lib/legal-corpus/ingest-official-document";
-import { extractPdfTextFromBuffer } from "@/lib/legal-corpus/pdf-text-extract";
 import { requireSuperAdmin } from "@/lib/supabase/api-auth";
 import { createServiceClient, sanitizePlainText, validateUploadedFile } from "@/lib/security/server";
 
@@ -44,13 +47,24 @@ export async function POST(request: NextRequest) {
     }
 
     if (!file) {
-      return NextResponse.json({ error: "PDF dosyası gerekli." }, { status: 400 });
+      return NextResponse.json({ error: "PDF veya Word (.docx) dosyası gerekli." }, { status: 400 });
+    }
+
+    const kind = detectLegalUploadKind(file);
+    if (!kind) {
+      return NextResponse.json(
+        { error: "Yalnızca PDF (.pdf) veya Word (.docx) desteklenir." },
+        { status: 400 },
+      );
     }
 
     const fileError = await validateUploadedFile(file, {
-      allowedMimeTypes: ["application/pdf"],
-      maxBytes: 20 * 1024 * 1024,
-      allowedExtensions: [".pdf"],
+      allowedMimeTypes: [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ],
+      maxBytes: 25 * 1024 * 1024,
+      allowedExtensions: [".pdf", ".docx"],
     });
     if (fileError) {
       return NextResponse.json({ error: fileError }, { status: 400 });
@@ -62,29 +76,31 @@ export async function POST(request: NextRequest) {
     const fileBuffer = await file.arrayBuffer();
 
     const { error: uploadError } = await service.storage.from("slide-media").upload(storagePath, fileBuffer, {
-      contentType: file.type,
+      contentType: file.type || (kind === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
       upsert: false,
     });
     if (uploadError) {
       return NextResponse.json(
         {
-          error: `PDF depolamaya yüklenemedi: ${uploadError.message}. Supabase Storage'da slide-media bucket'ının tanımlı olduğundan emin olun.`,
+          error: `Dosya depolamaya yüklenemedi: ${uploadError.message}`,
         },
         { status: 500 },
       );
     }
 
     const { data: publicUrlData } = service.storage.from("slide-media").getPublicUrl(storagePath);
-    const pdfUrl = publicUrlData.publicUrl;
-    const extraction = await extractPdfTextFromBuffer(fileBuffer);
+    const fileUrl = publicUrlData.publicUrl;
+    const extraction = await extractLegalDocumentText(fileBuffer, kind);
     const extractedText = extraction.text;
-    const sourceHash = `official-pdf:${parsed.data.doc_number}:${storagePath}`;
+    const sourceHash = `official-${kind}:${parsed.data.doc_number}:${storagePath}`;
     const baseMetadata = {
-      source_type: "manual_pdf_upload",
-      pdf_url: pdfUrl,
+      source_type: kind === "docx" ? "manual_docx_upload" : "manual_pdf_upload",
+      file_kind: kind,
+      pdf_url: kind === "pdf" ? fileUrl : null,
+      docx_url: kind === "docx" ? fileUrl : null,
       official_url: parsed.data.source_url || null,
       uploaded_by: auth.userId,
-      last_status: extractedText ? "manual_pdf_indexed" : "manual_pdf_uploaded_without_text",
+      last_status: extractedText ? "manual_file_indexed" : "manual_file_uploaded_without_text",
       extraction_method: extraction.method,
       extraction_error: extractedText ? null : extraction.error,
     };
@@ -96,7 +112,7 @@ export async function POST(request: NextRequest) {
             title: parsed.data.title.trim(),
             doc_number: parsed.data.doc_number.trim(),
             doc_type: parsed.data.doc_type,
-            source_url: parsed.data.source_url || pdfUrl,
+            source_url: parsed.data.source_url || fileUrl,
             full_text: extractedText,
             source_hash: sourceHash,
             catalog_metadata: baseMetadata,
@@ -111,7 +127,7 @@ export async function POST(request: NextRequest) {
             title: parsed.data.title.trim(),
             doc_number: parsed.data.doc_number.trim(),
             doc_type: parsed.data.doc_type,
-            source_url: parsed.data.source_url || pdfUrl,
+            source_url: parsed.data.source_url || fileUrl,
             jurisdiction_code: "TR",
             corpus_scope: "official",
             is_active: true,
@@ -137,13 +153,14 @@ export async function POST(request: NextRequest) {
           doc_number: parsed.data.doc_number,
           title: parsed.data.title,
           doc_type: parsed.data.doc_type,
-          source_url: parsed.data.source_url || pdfUrl,
+          source_url: parsed.data.source_url || fileUrl,
           catalog_metadata: baseMetadata,
         },
         extractedText,
         {
-          source: "manual_pdf_upload",
-          pdf_url: pdfUrl,
+          source: kind === "docx" ? "manual_docx_upload" : "manual_pdf_upload",
+          file_kind: kind,
+          file_url: fileUrl,
           official_url: parsed.data.source_url || null,
           corpus_scope: "official",
           jurisdiction_code: "TR",
@@ -156,7 +173,7 @@ export async function POST(request: NextRequest) {
       {
         document: {
           ...document,
-          source_url: parsed.data.source_url || pdfUrl,
+          source_url: parsed.data.source_url || fileUrl,
           chunk_count: chunkCount,
         },
         extraction_error: extractedText ? null : extraction.error,
@@ -164,8 +181,9 @@ export async function POST(request: NextRequest) {
           ? []
           : [
               extraction.error ?? "Metin çıkarılamadı.",
-              "Taranmış PDF ise Vercel ortamında ANTHROPIC_API_KEY tanımlayın.",
-              "Alternatif: mevzuat.gov.tr’den metin seçilebilir PDF indirip tekrar yükleyin.",
+              kind === "docx"
+                ? "Word dosyasının .docx (Office 2007+) olduğundan emin olun."
+                : "PDF yerine aynı metni .docx olarak kaydedip yüklemeyi deneyin.",
             ],
       },
       { status: 201 },
