@@ -25,8 +25,8 @@ export type AiCostPolicyRow = {
 export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/analyze-risk",
-    purposeTr: "Gorsel risk analizi (Anthropic Claude dogrudan gorsel degerlendirmesi)",
-    models: "claude-haiku-4-5-20251001 (varsayılan) veya RISK_ANALYSIS_ANTHROPIC_MODEL",
+    purposeTr: "Gorsel risk tespiti (Opus destekli derin saha tehlike yakalama)",
+    models: "claude-opus-4-7 (varsayilan) veya RISK_ANALYSIS_ANTHROPIC_MODEL",
     maxOutputTokens: 6000,
     inputLimitsTr:
       "Base64 görsel şema üst sınırı ~20M karakter; MIME: jpeg, png, gif, webp",
@@ -36,7 +36,7 @@ export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/ai/analysis",
     purposeTr: "Olay / kök neden (Ishikawa, 5N, FTA, …)",
-    models: "claude-sonnet-4-20250514",
+    models: "claude-sonnet-4-6",
     maxOutputTokens: 2000,
     inputLimitsTr: "Başlık ≤400 karakter; açıklama ≤16000; bağlam JSON ≤80KB serileştirilmiş",
     billingAction: "incident_analysis",
@@ -45,7 +45,7 @@ export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/ai/ishikawa",
     purposeTr: "Ishikawa (6M) JSON çıktısı",
-    models: "claude-sonnet-4-20250514",
+    models: "claude-sonnet-4-6",
     maxOutputTokens: 2000,
     inputLimitsTr: "Olay metni şema: narrative ≤8000 vb. (incidents/ai)",
     billingAction: "incident_analysis",
@@ -54,7 +54,7 @@ export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/ai/generate-corrective-actions",
     purposeTr: "DÖF önerileri",
-    models: "claude-sonnet-4-20250514",
+    models: "claude-sonnet-4-6",
     maxOutputTokens: 2000,
     inputLimitsTr: "Kök neden listesi şema ile sınırlı (≤48 madde)",
     billingAction: "incident_analysis",
@@ -63,7 +63,7 @@ export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/document-ai",
     purposeTr: "ISG doküman taslağı",
-    models: "claude-sonnet-4-20250514",
+    models: "claude-sonnet-4-6",
     maxOutputTokens: 4096,
     inputLimitsTr: "Kullanıcı promptu ≤8000 karakter",
     billingAction: "document_generation",
@@ -72,7 +72,7 @@ export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/training-ai",
     purposeTr: "Eğitim içeriği",
-    models: "claude-sonnet-4-20250514",
+    models: "claude-sonnet-4-6",
     maxOutputTokens: 4096,
     inputLimitsTr: "İstek gövdesi route şeması ile",
     billingAction: "training_slide",
@@ -81,7 +81,7 @@ export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/training-slides-ai",
     purposeTr: "Çoklu eğitim slaytı",
-    models: "claude-sonnet-4-20250514",
+    models: "claude-sonnet-4-6",
     maxOutputTokens: 8192,
     inputLimitsTr: "İstek gövdesi route şeması ile",
     billingAction: "training_slide",
@@ -90,7 +90,7 @@ export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/slide-single-ai",
     purposeTr: "Tek slayt üretimi",
-    models: "claude-sonnet-4-20250514",
+    models: "claude-sonnet-4-6",
     maxOutputTokens: 2048,
     inputLimitsTr: "İstek gövdesi route şeması ile",
     billingAction: "training_slide",
@@ -99,7 +99,7 @@ export const AI_COST_POLICY_ROWS: readonly AiCostPolicyRow[] = [
   {
     endpoint: "/api/admin-ai",
     purposeTr: "Platform süper admin asistanı",
-    models: "claude-sonnet-4-20250514",
+    models: "claude-sonnet-4-6",
     maxOutputTokens: 4096,
     inputLimitsTr: "Mesaj + opsiyonel görsel; günlük AI rate limit",
     billingAction: null,

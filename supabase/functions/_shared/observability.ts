@@ -29,6 +29,8 @@ const MODEL_PRICING_PER_MILLION: Record<
   { input: number; output: number; cachedInput?: number }
 > = {
   "claude-sonnet-4-20250514": { input: 3, output: 15, cachedInput: 0.3 },
+  "claude-sonnet-4-6": { input: 3, output: 15, cachedInput: 0.3 },
+  "claude-opus-4-7": { input: 5, output: 25, cachedInput: 0.5 },
   "claude-haiku-4-5-20251001": { input: 1, output: 5, cachedInput: 0.1 },
   "claude-3-5-haiku-latest": { input: 0.8, output: 4, cachedInput: 0.08 },
   "claude-3-5-sonnet-latest": { input: 3, output: 15, cachedInput: 0.3 },
@@ -61,7 +63,7 @@ function estimateAiCostUsd({
 }) {
   const pricing =
     MODEL_PRICING_PER_MILLION[model.trim().toLowerCase()] ??
-    MODEL_PRICING_PER_MILLION["claude-sonnet-4-20250514"];
+    MODEL_PRICING_PER_MILLION["claude-sonnet-4-6"];
 
   const uncachedPromptTokens = Math.max(0, promptTokens - cachedTokens);
   const inputCost = (uncachedPromptTokens / 1_000_000) * pricing.input;

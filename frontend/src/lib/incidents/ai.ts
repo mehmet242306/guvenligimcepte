@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const INCIDENT_AI_MODEL = "claude-sonnet-4-20250514";
+export const INCIDENT_AI_MODEL = "claude-sonnet-4-6";
 export const INCIDENT_AI_MAX_TOKENS = 2000;
 
 export const ishikawaCategorySchema = z.object({

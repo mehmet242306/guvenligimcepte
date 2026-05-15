@@ -111,7 +111,7 @@ ${type === "exam" ? `SIK SAYISI: ${optionCount}` : ""}
 Sadece JSON dizisi dondur.`;
 
   const message = await anthropicClient.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 4096,
     messages: [{ role: "user", content: prompt }],
   });
@@ -155,7 +155,7 @@ async function processDocumentGeneration(task: TaskQueueRow) {
   if (groupKey) contextInfo += `DOKUMAN KATEGORISI: ${groupKey}\n`;
 
   const response = await anthropicClient.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 4096,
     messages: [{ role: "user", content: `${contextInfo}\n\nISTEK:\n${prompt}` }],
   });

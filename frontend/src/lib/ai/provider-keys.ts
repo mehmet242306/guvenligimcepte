@@ -14,9 +14,8 @@ const ANTHROPIC_KEY_NAMES = [
 
 // Stable Anthropic model used by document/AI flows. Kept here so a single env
 // override (ANTHROPIC_MODEL) can hot-swap the model when Anthropic deprecates a
-// dated alias — without redeploying every route. Default is the latest GA
-// Sonnet 4 build that the platform was qualified against.
-const DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-20250514" as const;
+// dated alias without redeploying every route.
+const DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-6" as const;
 
 function readFirstEnv(names: readonly string[]) {
   for (const name of names) {
@@ -44,8 +43,8 @@ export function getAnthropicModel() {
   return process.env.ANTHROPIC_MODEL?.trim() || DEFAULT_ANTHROPIC_MODEL;
 }
 
-/** Risk analizi görsel endpoint'i için model — varsayılan Haiku 4.5 (vision). Eski snapshot'lar (ör. claude-3-5-haiku-20241022) API'de 404 verebilir. */
-const DEFAULT_RISK_VISION_MODEL = "claude-haiku-4-5-20251001" as const;
+/** Risk analizi gorsel endpoint'i icin model. Kritik tespit katmani Opus kullanir. */
+const DEFAULT_RISK_VISION_MODEL = "claude-opus-4-7" as const;
 
 export function getRiskAnalysisVisionModel(): string {
   const explicit = process.env.RISK_ANALYSIS_ANTHROPIC_MODEL?.trim();

@@ -106,7 +106,7 @@ async function checkAnthropic() {
 
   const { latencyMs } = await measure(async () => {
     await anthropicClient.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 8,
       messages: [{ role: "user", content: "Saglik kontrolu: sadece ok yaz." }],
     });

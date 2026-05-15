@@ -15,7 +15,7 @@ const NOVA_IMAGE_CONTEXT_MODEL =
   process.env.NOVA_IMAGE_CONTEXT_MODEL ||
   process.env.NOVA_READ_MODEL ||
   process.env.ANTHROPIC_MODEL ||
-  "claude-sonnet-4-20250514";
+  "claude-sonnet-4-6";
 
 const imageContextSchema = z.object({
   imageBase64: z.string().min(100).max(20_000_000),

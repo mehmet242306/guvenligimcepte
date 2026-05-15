@@ -114,7 +114,7 @@ Sadece JSON dizisi dondur.`;
       },
       operation: () =>
         client.messages.create({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-6",
           max_tokens: 4096,
           messages: [{ role: "user", content: prompt }],
         }),
@@ -124,7 +124,7 @@ Sadece JSON dizisi dondur.`;
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         endpoint: "/api/training-ai",
         success: false,
         metadata: {
@@ -150,7 +150,7 @@ Sadece JSON dizisi dondur.`;
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         endpoint: "/api/training-ai",
         promptTokens: message.usage.input_tokens,
         completionTokens: message.usage.output_tokens,
@@ -183,7 +183,7 @@ Sadece JSON dizisi dondur.`;
     await logAiUsage({
       userId: auth.userId,
       organizationId: auth.organizationId,
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       endpoint: "/api/training-ai",
       promptTokens: message.usage.input_tokens,
       completionTokens: message.usage.output_tokens,
@@ -207,7 +207,7 @@ Sadece JSON dizisi dondur.`;
     await logAiUsage({
       userId: auth.userId,
       organizationId: auth.organizationId,
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       endpoint: "/api/training-ai",
       success: false,
       metadata: {

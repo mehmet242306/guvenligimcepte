@@ -11,7 +11,7 @@ const ALLOWED_ORIGINS = (Deno.env.get('APP_ORIGIN') ?? '')
   .filter(Boolean)
 
 const LOCAL_DEV_ORIGIN_PATTERN = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i
-const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514'
+const ANTHROPIC_MODEL = 'claude-opus-4-7'
 const OPENAI_MODEL = 'gpt-4.1'
 
 function buildCorsHeaders(req: Request) {

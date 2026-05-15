@@ -308,7 +308,7 @@ export async function POST(request: NextRequest) {
     ];
 
     const response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 4096,
       system: systemWithContext,
       messages,
@@ -320,7 +320,7 @@ export async function POST(request: NextRequest) {
       await logAiUsage({
         userId: auth.userId,
         organizationId: auth.organizationId,
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         endpoint: "/api/admin-ai",
         promptTokens: response.usage.input_tokens,
         completionTokens: response.usage.output_tokens,
@@ -356,7 +356,7 @@ export async function POST(request: NextRequest) {
     await logAiUsage({
       userId: auth.userId,
       organizationId: auth.organizationId,
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       endpoint: "/api/admin-ai",
       promptTokens: tokens.inputTokens,
       completionTokens: tokens.outputTokens,
@@ -380,7 +380,7 @@ export async function POST(request: NextRequest) {
     await logAiUsage({
       userId: auth.userId,
       organizationId: auth.organizationId,
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       endpoint: "/api/admin-ai",
       success: false,
       metadata: { error: msg.slice(0, 300) },

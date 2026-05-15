@@ -16,7 +16,7 @@ const bodySchema = z.object({
   locale: z.enum(["tr", "en"]).optional().default("tr"),
 });
 
-const MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514";
+const MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
 
 export async function POST(request: NextRequest) {
   const auth = await requireAuth(request);

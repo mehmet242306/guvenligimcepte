@@ -3,8 +3,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
-import { enforceRateLimit, logSecurityEvent, resolveAiDailyLimit } from "@/lib/security/server";
-import { getAnthropicKey, getRiskAnalysisVisionModel } from "@/lib/ai/provider-keys";
+import { createServiceClient, enforceRateLimit, logSecurityEvent, resolveAiDailyLimit } from "@/lib/security/server";
+import { getAnthropicKey, getAnthropicModel, getRiskAnalysisVisionModel } from "@/lib/ai/provider-keys";
 import { consumeEntitlement } from "@/lib/billing/entitlements";
 import {
   buildFastSystemPrompt,
@@ -16,6 +16,8 @@ import {
 import { buildAnalyzeRiskDiagnostics } from "@/lib/ai/analyze-risk-diagnostics";
 
 let anthropicClient: Anthropic | null = null;
+const EMBEDDING_MODEL = "text-embedding-3-small";
+const EMBEDDING_DIMENSIONS = 1536;
 
 // Next.js 16: literal gerekir. Gerçek üst sınır Vercel plan + Projedeki Function Max Duration.
 export const maxDuration = 300;
@@ -67,6 +69,385 @@ function normalizeSquareAnnotation(risk: Record<string, any>, index: number): Re
     boxH: side,
     annotationShape: "square",
     annotationLabel: risk.annotationLabel ?? `R${index + 1}`,
+  };
+}
+
+async function generateMemoryEmbedding(text: string): Promise<number[] | null> {
+  const apiKey = process.env.OPENAI_API_KEY?.trim();
+  if (!apiKey || !text.trim()) return null;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/embeddings", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: EMBEDDING_MODEL,
+        input: text.slice(0, 8000),
+        dimensions: EMBEDDING_DIMENSIONS,
+      }),
+    });
+
+    if (!response.ok) {
+      console.warn("[analyze-risk] memory embedding failed:", response.status, await response.text().catch(() => ""));
+      return null;
+    }
+
+    const payload = await response.json();
+    const embedding = payload?.data?.[0]?.embedding;
+    return Array.isArray(embedding) ? embedding : null;
+  } catch (error) {
+    console.warn("[analyze-risk] memory embedding error:", error instanceof Error ? error.message : String(error));
+    return null;
+  }
+}
+
+function buildRiskMemoryQueryText(input: {
+  method: string;
+  outputLocale: string;
+  companyContext?: {
+    name?: string;
+    sector?: string;
+    kind?: string;
+    hazardClass?: string;
+    address?: string;
+  };
+  rowContext?: {
+    title?: string;
+    description?: string;
+  };
+}) {
+  const company = input.companyContext;
+  const row = input.rowContext;
+  return [
+    `method:${input.method}`,
+    `language:${input.outputLocale}`,
+    company?.sector ? `sector:${company.sector}` : "",
+    company?.kind ? `activity:${company.kind}` : "",
+    company?.hazardClass ? `hazard_class:${company.hazardClass}` : "",
+    row?.title ? `risk_title:${row.title}` : "",
+    row?.description ? `risk_description:${row.description}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+async function buildRiskMemoryContext(params: {
+  organizationId: string;
+  method: string;
+  outputLocale: string;
+  companyContext?: {
+    name?: string;
+    sector?: string;
+    kind?: string;
+    hazardClass?: string;
+    address?: string;
+  };
+  rowContext?: {
+    title?: string;
+    description?: string;
+  };
+}) {
+  const embedding = await generateMemoryEmbedding(buildRiskMemoryQueryText(params));
+  if (!embedding) return { context: "", memoryIds: [] as string[] };
+
+  try {
+    const supabase = createServiceClient();
+    const { data, error } = await supabase.rpc("search_nova_risk_memory", {
+      query_embedding: embedding,
+      org_id: params.organizationId,
+      workspace_id: null,
+      method_filter: params.method,
+      similarity_threshold: 0.78,
+      max_results: 4,
+    });
+
+    if (error || !Array.isArray(data) || data.length === 0) {
+      if (error) console.warn("[analyze-risk] risk memory search failed:", error.message);
+      return { context: "", memoryIds: [] as string[] };
+    }
+
+    const memoryIds = data.map((item: any) => item.id).filter(Boolean);
+    try {
+      await supabase.rpc("touch_nova_risk_memory", { p_memory_ids: memoryIds });
+    } catch {
+      // Non-critical analytics update.
+    }
+
+    const context = [
+      "## RİSKNOVA KURUMSAL RİSK HAFIZASI (onaylı/yüksek güvenli benzer örnekler)",
+      "Bu kayıtlar sadece tutarlılık ipucudur. Görselde olmayan riski ekleme; ancak aynı örüntü görünüyorsa adlandırma, ciddiyet ve aksiyon dilini tutarlı kullan.",
+      ...data.map((item: any, index: number) => [
+        `### Benzer örnek ${index + 1} (${Math.round(Number(item.similarity ?? 0) * 100)}% benzerlik, ${item.memory_status})`,
+        `Saha özeti: ${String(item.scene_summary ?? "").slice(0, 500)}`,
+        `Risk imzası: ${String(item.risk_signature ?? "").slice(0, 700)}`,
+        `Örnek riskler: ${JSON.stringify(item.risks ?? []).slice(0, 1800)}`,
+      ].join("\n")),
+    ].join("\n\n");
+
+    return { context, memoryIds };
+  } catch (error) {
+    console.warn("[analyze-risk] risk memory context error:", error instanceof Error ? error.message : String(error));
+    return { context: "", memoryIds: [] as string[] };
+  }
+}
+
+async function buildRiskMemoryContextFromText(params: {
+  organizationId: string;
+  method: string;
+  text: string;
+  similarityThreshold?: number;
+}) {
+  const embedding = await generateMemoryEmbedding(params.text);
+  if (!embedding) return { context: "", memoryIds: [] as string[] };
+
+  try {
+    const supabase = createServiceClient();
+    const { data, error } = await supabase.rpc("search_nova_risk_memory", {
+      query_embedding: embedding,
+      org_id: params.organizationId,
+      workspace_id: null,
+      method_filter: params.method,
+      similarity_threshold: params.similarityThreshold ?? 0.78,
+      max_results: 4,
+    });
+
+    if (error || !Array.isArray(data) || data.length === 0) {
+      if (error) console.warn("[analyze-risk] risk memory text search failed:", error.message);
+      return { context: "", memoryIds: [] as string[] };
+    }
+
+    const memoryIds = data.map((item: any) => item.id).filter(Boolean);
+    try {
+      await supabase.rpc("touch_nova_risk_memory", { p_memory_ids: memoryIds });
+    } catch {
+      // Non-critical analytics update.
+    }
+
+    return {
+      memoryIds,
+      context: [
+        "## BENZER ONAYLI RİSK HAFIZASI",
+        "Bu örnekleri risk adlandırması, ciddiyet tutarlılığı, aksiyon dili ve mevzuat referansı için kullan. Görsel tespit listesini genişletme veya silme.",
+        ...data.map((item: any, index: number) => [
+          `### Örnek ${index + 1} (${Math.round(Number(item.similarity ?? 0) * 100)}% benzerlik, ${item.memory_status})`,
+          `Saha özeti: ${String(item.scene_summary ?? "").slice(0, 500)}`,
+          `Risk imzası: ${String(item.risk_signature ?? "").slice(0, 700)}`,
+          `Riskler: ${JSON.stringify(item.risks ?? []).slice(0, 1600)}`,
+        ].join("\n")),
+      ].join("\n\n"),
+    };
+  } catch (error) {
+    console.warn("[analyze-risk] risk memory text context error:", error instanceof Error ? error.message : String(error));
+    return { context: "", memoryIds: [] as string[] };
+  }
+}
+
+function buildRiskMemorySignature(risks: Record<string, any>[]) {
+  return risks
+    .map((risk) => [
+      risk.title,
+      risk.category,
+      risk.severity,
+      typeof risk.recommendation === "string" ? risk.recommendation.slice(0, 240) : "",
+    ].filter(Boolean).join(" | "))
+    .join("\n");
+}
+
+async function storeRiskMemory(params: {
+  userId: string;
+  organizationId: string;
+  method: string;
+  outputLocale: string;
+  sourceModel: string;
+  interpretationModel: string;
+  parsed: Record<string, any>;
+}) {
+  const risks = Array.isArray(params.parsed.risks) ? params.parsed.risks : [];
+  if (risks.length === 0) return;
+
+  const avgConfidence =
+    risks.reduce((sum, risk) => sum + Math.max(0, Math.min(1, Number(risk.confidence ?? 0))), 0) / risks.length;
+  if (avgConfidence < 0.68) return;
+
+  const sceneSummary = String(params.parsed.areaSummary || params.parsed.imageDescription || "").slice(0, 2000);
+  const riskSignature = buildRiskMemorySignature(risks).slice(0, 4000);
+  const embeddingText = [
+    `method:${params.method}`,
+    `language:${params.outputLocale}`,
+    sceneSummary,
+    riskSignature,
+  ].join("\n");
+  const embedding = await generateMemoryEmbedding(embeddingText);
+  if (!embedding) return;
+
+  try {
+    const supabase = createServiceClient();
+    const legalReferences = risks.flatMap((risk) => Array.isArray(risk.legalReferences) ? risk.legalReferences : []);
+    await supabase.from("nova_risk_memory").insert({
+      user_id: params.userId,
+      organization_id: params.organizationId,
+      source_endpoint: "/api/analyze-risk",
+      source_model: params.sourceModel,
+      interpretation_model: params.interpretationModel,
+      method: params.method,
+      language: params.outputLocale,
+      memory_status: avgConfidence >= 0.82 ? "auto_captured" : "auto_captured",
+      confidence_score: Number(avgConfidence.toFixed(3)),
+      scene_summary: sceneSummary || "Gorsel risk analizi",
+      risk_signature: riskSignature,
+      risks: risks.map((risk) => ({
+        title: risk.title,
+        category: risk.category,
+        severity: risk.severity,
+        confidence: risk.confidence,
+        recommendation: risk.recommendation,
+        legalReferences: risk.legalReferences ?? [],
+      })),
+      legal_references: legalReferences,
+      metadata: {
+        imageRelevance: params.parsed.imageRelevance ?? null,
+        personCount: params.parsed.personCount ?? null,
+        promptVersion: RISK_ANALYSIS_PROMPT_VERSION,
+      },
+      embedding,
+    });
+  } catch (error) {
+    console.warn("[analyze-risk] risk memory store failed:", error instanceof Error ? error.message : String(error));
+  }
+}
+
+function parseLooseJsonObject(text: string): Record<string, any> {
+  const cleaned = text.trim().replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
+  try {
+    const parsed = JSON.parse(cleaned);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (!match) return {};
+    try {
+      const parsed = JSON.parse(match[0]);
+      return parsed && typeof parsed === "object" ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+}
+
+async function enrichRiskInterpretationWithSonnet({
+  client,
+  model,
+  risks,
+  method,
+  outputLocale,
+  areaSummary,
+  imageDescription,
+  memoryContext,
+}: {
+  client: Anthropic;
+  model: string;
+  risks: Record<string, any>[];
+  method: string;
+  outputLocale: string;
+  areaSummary?: string;
+  imageDescription?: string;
+  memoryContext?: string;
+}): Promise<{
+  risks: Record<string, any>[];
+  areaSummary?: string;
+  usage?: Anthropic.Messages.Usage;
+}> {
+  if (risks.length === 0) return { risks };
+
+  const compactRisks = risks.map((risk, index) => ({
+    index,
+    title: risk.title,
+    category: risk.category,
+    severity: risk.severity,
+    confidence: risk.confidence,
+    correctiveActionRequired: risk.correctiveActionRequired,
+    r2dParams: risk.r2dParams,
+    fkParams: risk.fkParams,
+    matrixParams: risk.matrixParams,
+    fmeaParams: risk.fmeaParams,
+    hazopParams: risk.hazopParams,
+    bowTieParams: risk.bowTieParams,
+    ftaParams: risk.ftaParams,
+    checklistParams: risk.checklistParams,
+    jsaParams: risk.jsaParams,
+    lopaParams: risk.lopaParams,
+  }));
+
+  const response = await client.messages.create({
+    model,
+    max_tokens: 4096,
+    temperature: 0.2,
+    system:
+      "Sen RiskNova'nin ISG yorumlama katmanisin. Opus tarafindan tespit edilen gorsel riskleri DEGISTIRMEDEN, her risk icin uygulanabilir aksiyon, mevzuat referansi ve rapor dili uret. Yeni risk ekleme, risk silme, koordinat/annotation bilgisi uretme. Sadece gecerli JSON dondur.",
+    messages: [
+      {
+        role: "user",
+        content: [
+          "Gorsel tespit modeli riskleri buldu. Sen sadece yorumla.",
+          `Dil/locale: ${outputLocale}`,
+          `Analiz yontemi: ${method}`,
+          areaSummary ? `Opus saha ozeti: ${areaSummary}` : "",
+          imageDescription ? `Opus gorsel tanimi: ${imageDescription}` : "",
+          memoryContext ?? "",
+          "",
+          "Riskler:",
+          JSON.stringify(compactRisks),
+          "",
+          "Beklenen JSON:",
+          `{
+  "areaSummary": "2-3 cumlelik profesyonel saha yorumu",
+  "risks": [
+    {
+      "index": 0,
+      "recommendation": "En az 3 cumle: acil onlem, kalici kontrol, sorumlu/termin/dogrulama.",
+      "legalReferences": [
+        {"law":"gercek mevzuat adi","article":"madde/fikra","description":"kisa uygunluk aciklamasi"}
+      ]
+    }
+  ]
+}`,
+        ]
+          .filter(Boolean)
+          .join("\n"),
+      },
+    ],
+  });
+
+  const text = response.content.find((block) => block.type === "text")?.text ?? "{}";
+  const parsed = parseLooseJsonObject(text);
+  const interpretations = Array.isArray(parsed.risks) ? parsed.risks : [];
+  const byIndex = new Map<number, Record<string, any>>();
+  for (const item of interpretations) {
+    const index = Number(item?.index);
+    if (Number.isInteger(index)) byIndex.set(index, item);
+  }
+
+  return {
+    areaSummary: typeof parsed.areaSummary === "string" && parsed.areaSummary.trim()
+      ? parsed.areaSummary.trim()
+      : undefined,
+    risks: risks.map((risk, index) => {
+      const enriched = byIndex.get(index);
+      if (!enriched) return risk;
+      return {
+        ...risk,
+        recommendation:
+          typeof enriched.recommendation === "string" && enriched.recommendation.trim()
+            ? enriched.recommendation.trim()
+            : risk.recommendation,
+        legalReferences: Array.isArray(enriched.legalReferences) && enriched.legalReferences.length > 0
+          ? enriched.legalReferences
+          : risk.legalReferences,
+      };
+    }),
+    usage: response.usage,
   };
 }
 
@@ -378,9 +759,18 @@ export async function POST(request: NextRequest) {
       ].join("\n");
     })();
 
+    const riskMemory = await buildRiskMemoryContext({
+      organizationId: auth.organizationId,
+      method,
+      outputLocale,
+      companyContext,
+      rowContext,
+    });
+
     const augmentedUserPrompt = [
       companyCtxBlock,
       rowCtxBlock,
+      riskMemory.context,
       mode === "fast" ? buildFastUserPrompt(method, outputLocale) : buildUserPrompt(method, outputLocale),
     ]
       .filter(Boolean)
@@ -679,6 +1069,82 @@ export async function POST(request: NextRequest) {
       console.log(`[analyze-risk] safeguard: ${triggerSafeguardCount} kritik tetikleyici risk confidence floor 0.75'e yükseltildi`);
     }
 
+    const interpretationModel = getAnthropicModel();
+    let interpretationStageStatus: "completed" | "skipped" | "failed" = "skipped";
+    let interpretationMemoryMatchCount = 0;
+    if (Array.isArray(parsed.risks) && parsed.risks.length > 0) {
+      try {
+        const interpretationMemory = await buildRiskMemoryContextFromText({
+          organizationId: auth.organizationId,
+          method,
+          text: [
+            parsed.areaSummary,
+            parsed.imageDescription,
+            buildRiskMemorySignature(parsed.risks),
+          ].filter(Boolean).join("\n"),
+          similarityThreshold: 0.76,
+        });
+        interpretationMemoryMatchCount = interpretationMemory.memoryIds.length;
+
+        const interpretation = await enrichRiskInterpretationWithSonnet({
+          client,
+          model: interpretationModel,
+          risks: parsed.risks,
+          method,
+          outputLocale,
+          areaSummary: parsed.areaSummary,
+          imageDescription: parsed.imageDescription,
+          memoryContext: interpretationMemory.context,
+        });
+        parsed.risks = interpretation.risks;
+        if (interpretation.areaSummary) parsed.areaSummary = interpretation.areaSummary;
+        interpretationStageStatus = "completed";
+
+        await logAiUsage({
+          userId: auth.userId,
+          organizationId: auth.organizationId,
+          model: interpretationModel,
+          endpoint: "/api/analyze-risk:interpretation",
+          promptTokens: interpretation.usage?.input_tokens ?? 0,
+          completionTokens: interpretation.usage?.output_tokens ?? 0,
+          cachedTokens: Number(
+            (
+              interpretation.usage as {
+                cache_read_input_tokens?: number;
+              } | undefined
+            )?.cache_read_input_tokens ?? 0,
+          ),
+          success: true,
+          metadata: {
+            method,
+            sourceModel: visionModel,
+            riskCount: parsed.risks.length,
+            memoryMatches: interpretationMemoryMatchCount,
+          },
+        });
+      } catch (interpretationError) {
+        interpretationStageStatus = "failed";
+        console.warn(
+          "[analyze-risk] Sonnet interpretation failed; keeping Opus detection output:",
+          interpretationError instanceof Error ? interpretationError.message : String(interpretationError),
+        );
+        await logAiUsage({
+          userId: auth.userId,
+          organizationId: auth.organizationId,
+          model: interpretationModel,
+          endpoint: "/api/analyze-risk:interpretation",
+          success: false,
+          metadata: {
+            method,
+            sourceModel: visionModel,
+            error: interpretationError instanceof Error
+              ? interpretationError.message.slice(0, 300)
+              : String(interpretationError).slice(0, 300),
+          },
+        });
+      }
+    }
+
     // Not: Boş risks: [] durumu için zaten yukarıda
     // buildFallbackRisksForEmptyFieldReview() çağrılıyor (satır ~1686).
     // Burada ek fallback guard'a gerek yok — çift fallback parse karışıklığı
@@ -741,7 +1207,21 @@ export async function POST(request: NextRequest) {
         acceptableRiskConfidenceMax: ACCEPTABLE_RISK_CONFIDENCE_MAX,
         actionableRiskConfidenceMin: ACTIONABLE_RISK_CONFIDENCE_MIN,
         visionProvider: "anthropic_only",
+        interpretationModel,
+        interpretationStageStatus,
+        memoryMatches: riskMemory.memoryIds.length,
+        interpretationMemoryMatches: interpretationMemoryMatchCount,
       },
+    });
+
+    void storeRiskMemory({
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      method,
+      outputLocale,
+      sourceModel: visionModel,
+      interpretationModel,
+      parsed,
     });
 
     const successDiagnostics = buildAnalyzeRiskDiagnostics({
@@ -772,6 +1252,8 @@ export async function POST(request: NextRequest) {
       tokensOutput: response.usage?.output_tokens ?? 0,
       visionStage: null,
       visionStageStatus,
+      interpretationModel,
+      interpretationStageStatus,
       diagnostics: successDiagnostics,
     });
   } catch (error: unknown) {

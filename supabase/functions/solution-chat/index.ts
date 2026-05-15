@@ -95,7 +95,7 @@ async function jsonErrorResponse(req: Request, options: {
   )
 }
 
-const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514'
+const ANTHROPIC_MODEL = 'claude-sonnet-4-6'
 const EMBEDDING_MODEL = 'text-embedding-3-small'
 const EMBEDDING_DIMENSIONS = 1536
 

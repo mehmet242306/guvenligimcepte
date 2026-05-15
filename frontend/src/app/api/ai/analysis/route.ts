@@ -17,7 +17,7 @@ import {
 } from "@/lib/prompts/r2d-rca-incident-ai-locale";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const MODEL = "claude-sonnet-4-20250514";
+const MODEL = "claude-sonnet-4-6";
 const MAX_TOKENS = 2000;
 
 export const maxDuration = 60;

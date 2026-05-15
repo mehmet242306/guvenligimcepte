@@ -70,7 +70,7 @@ async function extractKnowledge(content: string, sourceType: string, sourceRef: 
   keyPoints: string[];
 }> {
   const response = await ai.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 2048,
     system: "Sen bir bilgi cikarma uzmanisin. Verilen icerigi analiz edip yapilandirilmis bilgi olarak ozetle. Turkce yaz.",
     messages: [{
@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
       const base64 = Buffer.from(buffer).toString("base64");
 
       const pdfResponse = await ai.messages.create({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: 8192,
         messages: [{
           role: "user",

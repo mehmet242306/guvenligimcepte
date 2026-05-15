@@ -5,7 +5,7 @@ describe("getNovaUsageAnalytics", () => {
   it("builds task and tool aggregates from metadata", () => {
     const analytics = getNovaUsageAnalytics([
       {
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         endpoint: "/functions/v1/solution-chat",
         cost_usd: 0.12,
         prompt_tokens: 1000,
@@ -19,7 +19,7 @@ describe("getNovaUsageAnalytics", () => {
         },
       },
       {
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         endpoint: "/functions/v1/solution-chat",
         cost_usd: 0.2,
         prompt_tokens: 1400,

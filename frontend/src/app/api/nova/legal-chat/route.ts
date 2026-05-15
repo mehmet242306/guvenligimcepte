@@ -13,7 +13,7 @@ export const maxDuration = 60;
 const NOVA_READ_MODEL =
   process.env.NOVA_READ_MODEL ||
   process.env.ANTHROPIC_MODEL ||
-  "claude-sonnet-4-20250514";
+  "claude-sonnet-4-6";
 
 function buildReadOnlyNovaSystemPrompt(language?: string | null) {
   const isEnglish = String(language || "").toLowerCase().startsWith("en");
