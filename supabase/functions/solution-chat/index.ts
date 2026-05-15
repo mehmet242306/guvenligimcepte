@@ -1,9 +1,14 @@
 // ============================================================================
-// Nova Edge Function — solution-chat v13
+// Nova Edge Function — solution-chat v13.2
 // Dosya: 06-nova-edge-function.ts
 // Hedef: supabase/functions/solution-chat/index.ts
 // Sürüm: 1.2 (FINAL - Claude + OpenAI embeddings)
 // Tarih: 09 Nisan 2026
+// ----------------------------------------------------------------------------
+// v13.1: Legal hybrid RAG — daha iyi TR sorgu normalizasyonu, kanun no fallback,
+//        RRF lexical agirligi, yeniden siralama ve recall (limit/threshold).
+// v13.2: Production RAG kalitesi — min-max skor kalibrasyonu + standart RRF (k=60),
+//        MMR ile parca cesitliligi, kontrollu TR/EN sorgu genisletme (query expansion).
 // ============================================================================
 //
 // MIMARI:
@@ -183,6 +188,8 @@ interface LegalEvidenceHit {
   title: string | null
   content: string
   relevance_score: number
+  /** Min–max normalized within one retrieval list (lexical or dense), for calibrated hybrid fusion */
+  retrieval_norm?: number
   source_type: string
   binding_level: string
   official_citation: string
@@ -965,6 +972,14 @@ function normalizeTurkishAscii(value: string): string {
 }
 
 function parseLawNumberFromQuery(query: string): string | null {
+  const nolu = query.match(/\b(\d{3,5})\s*nolu\b/i)
+  if (nolu?.[1]) return nolu[1]
+
+  const noPrefix = query.match(
+    /\b(?:no|nr\.?|numara|numarasi|numarası|number)\s*[:#]?\s*(\d{3,5})\b/i,
+  )
+  if (noPrefix?.[1]) return noPrefix[1]
+
   const match = query.match(/\b(\d{3,5})\s*(?:sayili|sayılı)?\s*(?:kanun|kanunu|kanunun|law)?\b/i)
   if (match?.[1]) return match[1]
 
@@ -1009,14 +1024,157 @@ function resolveAsOfDate(value?: string | null): string {
   return new Date().toISOString().slice(0, 10)
 }
 
+/** Min–max normalize retrieval scores within each list (hybrid RAG score calibration). */
+function annotateMinMaxNorm(hits: LegalEvidenceHit[]): LegalEvidenceHit[] {
+  if (hits.length === 0) return hits
+  const scores = hits.map((h) => Number(h.relevance_score ?? 0))
+  const lo = Math.min(...scores)
+  const hi = Math.max(...scores)
+  const span = hi - lo || 1e-9
+  return hits.map((h) => ({
+    ...h,
+    retrieval_norm: (Number(h.relevance_score ?? 0) - lo) / span,
+  }))
+}
+
+/** Controlled query expansion (pseudo-Reformulation / synonym channel) — ISG-specific, low noise. */
+const LEGAL_QUERY_SYNONYMS: Record<string, string[]> = {
+  isg: ['isguvenligi', 'iscisagligi', 'issagligi'],
+  isguvenligi: ['isg', 'iscisagligi', 'issagligi'],
+  iscisagligi: ['isg', 'isguvenligi', 'issagligi'],
+  issagligi: ['isg', 'isguvenligi', 'iscisagligi'],
+  isyerihekim: ['isyerihekimi', 'hekim'],
+  isyerihekimi: ['isyerihekim', 'hekim'],
+  denetim: ['teftis', 'kontrol'],
+  yonetmelik: ['mevzuat', 'regulation'],
+  kanun: ['mevzuat', 'regulation'],
+  egitim: ['egitimleri', 'calisanegitimi'],
+  risk: ['riskdegerlendirme', 'riskanalizi'],
+  tehlike: ['tehlikesinifi', 'sinif'],
+}
+
+function expandLegalQueryTerms(terms: string[]): string[] {
+  if (!terms.length) return terms
+  const seen = new Set<string>()
+  const out: string[] = []
+  const add = (raw: string) => {
+    const k = normalizeTurkishAscii(raw).replace(/[^a-z0-9]+/gi, '')
+    if (k.length < 2 || seen.has(k)) return
+    seen.add(k)
+    out.push(k)
+  }
+  for (const t of terms) {
+    add(t)
+    const k = normalizeTurkishAscii(t).replace(/[^a-z0-9]+/gi, '')
+    for (const alt of LEGAL_QUERY_SYNONYMS[k] || []) add(alt)
+  }
+  return out.slice(0, 22)
+}
+
+function bigramSet(text: string): Set<string> {
+  const t = normalizeTurkishAscii(text)
+    .replace(/\s+/g, ' ')
+    .replace(/[^a-z0-9 ]+/gi, '')
+    .replace(/\s+/g, '')
+  const set = new Set<string>()
+  for (let i = 0; i < t.length - 1; i++) set.add(t.slice(i, i + 2))
+  return set
+}
+
+/** Cheap lexical similarity for MMR diversity (Carbonell & Goldstein). */
+function jaccardBigrams(a: string, b: string): number {
+  const A = bigramSet(a.slice(0, 520))
+  const B = bigramSet(b.slice(0, 520))
+  if (A.size === 0 && B.size === 0) return 0
+  let inter = 0
+  for (const x of A) if (B.has(x)) inter++
+  const union = A.size + B.size - inter
+  return union ? inter / union : 0
+}
+
+/**
+ * MMR re-ranking: reduce near-duplicate chunks / same-document redundancy in the evidence set.
+ * lambda↑ → relevance priority; lambda↓ → diversity priority.
+ */
+function mmrDiversifyLegalHits(hits: LegalEvidenceHit[], take: number, lambda: number): LegalEvidenceHit[] {
+  if (hits.length <= take) return hits.map((h) => ({ ...h }))
+  const candidates = hits.map((h) => ({ ...h }))
+  const selected: LegalEvidenceHit[] = []
+  const rel = (h: LegalEvidenceHit) => Number(h.rerank_score ?? h.rank_fusion_score ?? 0)
+
+  while (selected.length < take && candidates.length > 0) {
+    let bestI = 0
+    let bestMmr = -Infinity
+    for (let i = 0; i < candidates.length; i++) {
+      const h = candidates[i]
+      let maxSim = 0
+      for (const s of selected) {
+        let sim = jaccardBigrams(h.content, s.content)
+        if (h.document_id && s.document_id && h.document_id === s.document_id) {
+          sim = Math.max(sim, 0.34)
+        }
+        maxSim = Math.max(maxSim, sim)
+      }
+      const mmrScore = lambda * rel(h) - (1 - lambda) * maxSim
+      if (mmrScore > bestMmr) {
+        bestMmr = mmrScore
+        bestI = i
+      }
+    }
+    selected.push(candidates.splice(bestI, 1)[0]!)
+  }
+  return selected
+}
+
+/** Tokens for legal_chunks FTS (simple config); ASCII-fold + law numbers + stopword trim. */
 function normalizeSearchTerms(query: string): string[] {
-  const stopWords = new Set(['bir', 'bu', 'ile', 'var', 'olan', 'gibi', 'daha', 'icin', 'olarak', 'nasil', 'kac', 'hangi', 'nedir', 'neler'])
-  return (query || '')
-    .toLowerCase()
-    .replace(/[.,;:!?()]/g, ' ')
+  const stopWords = new Set([
+    'bir', 'bu', 'su', 've', 'veya', 'ile', 'var', 'olan', 'gibi', 'daha', 'icin', 'olarak', 'nasil', 'kac',
+    'hangi', 'nedir', 'neler', 'ise', 'ya', 'da', 'de', 'ki', 'her', 'cok', 'az', 'en', 'gore', 'uygun',
+    'ilgili', 'konuda', 'hakkinda', 'aciklama', 'lutfen', 'bana', 'bize', 'sizce', 'boyle', 'sunu',
+    'the', 'and', 'for', 'are', 'what', 'which', 'how', 'when', 'with', 'from', 'this', 'that', 'have',
+    'has', 'can', 'will', 'would', 'should', 'could', 'law', 'regulation', 'article', 'section',
+  ])
+
+  const raw = (query || '').trim()
+  if (!raw) return []
+
+  const ascii = normalizeTurkishAscii(raw)
+  const lawNums = new Set<string>()
+  for (const m of ascii.matchAll(/\b\d{3,5}\b/g)) {
+    lawNums.add(m[0])
+  }
+
+  const sanitize = (t: string) => normalizeTurkishAscii(t).replace(/[^a-z0-9]+/gi, '')
+  const cleaned = ascii.replace(/[.,;:!?()[\]{}'"`«»]/g, ' ')
+  const rawTokens = cleaned
     .split(/\s+/)
-    .filter((w: string) => w.length > 2 && !stopWords.has(w))
-    .slice(0, 15)
+    .map((w) => sanitize(w))
+    .filter(Boolean)
+
+  const terms: string[] = []
+  const seen = new Set<string>()
+  const push = (t: string) => {
+    if (!t || seen.has(t)) return
+    seen.add(t)
+    terms.push(t)
+  }
+
+  for (const n of lawNums) push(n)
+  for (const w of rawTokens) {
+    if (w.length < 2) continue
+    if (w.length === 2 && !/^\d/.test(w)) continue
+    if (stopWords.has(w)) continue
+    push(w)
+  }
+
+  if (terms.length > 0) return expandLegalQueryTerms(terms.slice(0, 20))
+
+  const fallback = rawTokens.filter((w) => w.length >= 2).slice(0, 14)
+  for (const w of fallback) push(w)
+  if (terms.length > 0) return expandLegalQueryTerms(terms.slice(0, 20))
+
+  return []
 }
 
 function buildEvidenceKey(hit: LegalEvidenceHit): string {
@@ -1025,12 +1183,19 @@ function buildEvidenceKey(hit: LegalEvidenceHit): string {
 
 function reciprocalRankFusion(resultSets: LegalEvidenceHit[][]): LegalEvidenceHit[] {
   const scores = new Map<string, LegalEvidenceHit>()
+  // Standard RRF (Cormack et al.; common in Elasticsearch/OpenSearch): sum_i w_i / (k + rank_i), rank starts at 1.
+  const RRF_K = 60
+  const listWeights = [1.25, 1.0]
 
   resultSets.forEach((set, setIndex) => {
+    const w = listWeights[setIndex] ?? 1
     set.forEach((hit, index) => {
+      const rank = index + 1
       const key = buildEvidenceKey(hit)
       const current = scores.get(key)
-      const contribution = 1 / (60 + index + 1 + setIndex)
+      const norm = Math.max(0, Math.min(1, Number(hit.retrieval_norm ?? 0.5)))
+      const calibrated = 0.35 + 0.65 * norm
+      const contribution = (w * calibrated) / (RRF_K + rank)
       if (!current) {
         scores.set(key, {
           ...hit,
@@ -1041,6 +1206,7 @@ function reciprocalRankFusion(resultSets: LegalEvidenceHit[][]): LegalEvidenceHi
 
       current.rank_fusion_score = Number(current.rank_fusion_score || 0) + contribution
       current.relevance_score = Math.max(current.relevance_score || 0, hit.relevance_score || 0)
+      current.retrieval_norm = Math.max(Number(current.retrieval_norm ?? 0), Number(hit.retrieval_norm ?? 0))
       current.match_type = current.match_type === 'exact' ? 'exact' : hit.match_type
     })
   })
@@ -1058,17 +1224,23 @@ function rerankLegalHits(query: string, hits: LegalEvidenceHit[]): LegalEvidence
       let score = Number(hit.rank_fusion_score || 0)
 
       if (hit.match_type === 'exact') score += 10
-      if (hit.match_type === 'dense') score += 1.2
-      if (lawNumber && hit.doc_number === lawNumber) score += 3
-      if (articleRef && normalizeTurkishAscii(hit.article || '').includes(normalizeTurkishAscii(articleRef))) score += 4
+      if (hit.match_type === 'lexical') score += 0.75
+      if (hit.match_type === 'dense') score += 1.35
+      if (lawNumber && hit.doc_number === lawNumber) score += 3.4
+      const artNorm = normalizeTurkishAscii(hit.article || '')
+      const titleNorm = normalizeTurkishAscii(hit.title || '')
+      if (articleRef && artNorm.includes(normalizeTurkishAscii(articleRef))) score += 4.5
+      if (articleRef && titleNorm.includes(normalizeTurkishAscii(articleRef))) score += 1.1
 
-      const haystack = normalizeTurkishAscii(`${hit.law} ${hit.title || ''} ${hit.content.slice(0, 600)}`)
+      const haystack = normalizeTurkishAscii(`${hit.law} ${hit.title || ''} ${hit.content.slice(0, 900)}`)
       const queryTerms = normalizedQuery.split(/\s+/).filter((token) => token.length > 2)
+      let overlap = 0
       for (const term of queryTerms) {
-        if (haystack.includes(term)) score += 0.15
+        if (haystack.includes(term)) overlap += 1
       }
+      score += Math.min(2.8, overlap * 0.32)
 
-      return { ...hit, rerank_score: score + Math.max(0, 0.001 * (50 - index)) }
+      return { ...hit, rerank_score: score + Math.max(0, 0.0012 * (64 - index)) }
     })
     .sort((a, b) => Number(b.rerank_score || 0) - Number(a.rerank_score || 0))
 }
@@ -1449,11 +1621,15 @@ async function buildDeterministicLegalAnswer(
     }
   }
 
-  const searchTerms = normalizeSearchTerms(query)
+  let searchTerms = expandLegalQueryTerms(normalizeSearchTerms(query))
+  if (searchTerms.length === 0) {
+    const lawOnly = parseLawNumberFromQuery(query)
+    if (lawOnly) searchTerms = expandLegalQueryTerms([lawOnly])
+  }
   const { data: lexicalRows, error: lexicalError } = await context.supabase.rpc('search_legal_chunks_v3', {
     search_terms: searchTerms,
     as_of_date: context.session.as_of_date,
-    result_limit: 15,
+    result_limit: 24,
     jurisdiction_code: context.session.jurisdiction_code,
     workspace_id: context.session.workspace_id ?? null,
   })
@@ -1487,8 +1663,8 @@ async function buildDeterministicLegalAnswer(
     const { data: denseRows, error: denseError } = await context.supabase.rpc('search_legal_chunks_dense_v1', {
       query_embedding: queryEmbedding,
       as_of_date: context.session.as_of_date,
-      match_threshold: 0.6,
-      result_limit: 15,
+      match_threshold: 0.57,
+      result_limit: 24,
       jurisdiction_code: context.session.jurisdiction_code,
       workspace_id: context.session.workspace_id ?? null,
     })
@@ -1518,7 +1694,14 @@ async function buildDeterministicLegalAnswer(
     }
   }
 
-  const reranked = rerankLegalHits(query, reciprocalRankFusion([lexicalHits, denseHits])).slice(0, 8)
+  const lexicalNorm = annotateMinMaxNorm(lexicalHits)
+  const denseNorm = annotateMinMaxNorm(denseHits)
+  const fusedPool = reciprocalRankFusion([lexicalNorm, denseNorm])
+    .sort((a, b) => Number(b.rank_fusion_score || 0) - Number(a.rank_fusion_score || 0))
+    .slice(0, 28)
+
+  const rerankedScored = rerankLegalHits(query, fusedPool)
+  const reranked = mmrDiversifyLegalHits(rerankedScored, 10, 0.72)
   if (reranked.length === 0) {
     const fallback = await buildModelBackedLegalGuidanceAnswer({
       anthropic,
@@ -1535,8 +1718,8 @@ async function buildDeterministicLegalAnswer(
         as_of_date: context.session.as_of_date,
         jurisdiction_code: context.session.jurisdiction_code,
         exact: [],
-        sparse: lexicalHits.slice(0, 15),
-        dense: denseHits.slice(0, 15),
+        sparse: lexicalHits.slice(0, 24),
+        dense: denseHits.slice(0, 24),
         reranked: [],
       },
     }
@@ -1569,8 +1752,8 @@ async function buildDeterministicLegalAnswer(
       as_of_date: context.session.as_of_date,
       jurisdiction_code: context.session.jurisdiction_code,
       exact: [],
-      sparse: lexicalHits.slice(0, 15),
-      dense: denseHits.slice(0, 15),
+      sparse: lexicalHits.slice(0, 24),
+      dense: denseHits.slice(0, 24),
       reranked,
     },
   }
@@ -1578,16 +1761,25 @@ async function buildDeterministicLegalAnswer(
 
 async function executeSearchLegislation(input: any, context: ToolContext): Promise<ToolResult> {
   try {
-    const searchTerms = normalizeSearchTerms(input.query || '')
+    let searchTerms = expandLegalQueryTerms(normalizeSearchTerms(input.query || ''))
+    if (searchTerms.length === 0) {
+      const lawOnly = parseLawNumberFromQuery(input.query || '')
+      if (lawOnly) searchTerms = expandLegalQueryTerms([lawOnly])
+    }
 
     if (searchTerms.length === 0) {
       return { success: false, error: 'Arama terimi bulunamadi' }
     }
 
+    const toolLimit =
+      typeof input.max_results === 'number' && input.max_results > 0
+        ? Math.min(24, input.max_results)
+        : 10
+
     const { data, error } = await context.supabase.rpc('search_legal_chunks_v3', {
       search_terms: searchTerms,
       as_of_date: context.session.as_of_date,
-      result_limit: input.max_results || 5,
+      result_limit: toolLimit,
       jurisdiction_code: context.session.jurisdiction_code,
       workspace_id: context.session.workspace_id ?? null,
     })
@@ -1597,7 +1789,7 @@ async function executeSearchLegislation(input: any, context: ToolContext): Promi
       // Fallback: fulltext search
       const { data: ftData } = await context.supabase.rpc('search_legal_fulltext', {
         search_query: input.query,
-        result_limit: input.max_results || 5
+        result_limit: toolLimit
       })
       if (ftData && ftData.length > 0) {
         return {
