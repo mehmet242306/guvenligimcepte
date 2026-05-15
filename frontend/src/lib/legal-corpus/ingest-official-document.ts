@@ -59,6 +59,11 @@ function ragFieldsForDocument(doc: DocRow) {
   };
 }
 
+function ragFieldsForChunks(doc: DocRow) {
+  const { scope_reason: _scopeReason, ...chunkFields } = ragFieldsForDocument(doc);
+  return chunkFields;
+}
+
 async function ensureVersion(
   service: SupabaseClient,
   doc: DocRow,
@@ -119,7 +124,7 @@ async function persistArticles(
 ) {
   await service.from("legal_chunks").delete().eq("document_id", doc.id);
 
-  const ragFields = ragFieldsForDocument(doc);
+  const ragFields = ragFieldsForChunks(doc);
 
   const chunks = articles.map((article, index) => ({
     document_id: doc.id,
@@ -303,7 +308,7 @@ export async function ingestOfficialDocumentFromPdfText(
   const versionId = await ensureVersion(service, doc, extractedText, doc.source_url ?? null);
   await service.from("legal_chunks").delete().eq("document_id", doc.id);
 
-  const ragFields = ragFieldsForDocument(doc);
+  const ragFields = ragFieldsForChunks(doc);
 
   const chunks = articles.map((article, index) => ({
     document_id: doc.id,
