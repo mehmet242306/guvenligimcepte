@@ -253,6 +253,68 @@ export function MevzuatSyncTab() {
     }
   }
 
+  async function applyCoreIsgScopes() {
+    setSyncing("core-isg-scopes");
+    setSyncResult(null);
+    setSyncProgress({ id: "core-isg-scopes", progress: 15, label: "Scope önizlemesi hazırlanıyor" });
+    try {
+      const previewRes = await fetch("/api/admin/official-legal-catalog/apply-core-isg-scopes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dry_run: true }),
+      });
+      const { data: previewData } = await parseApiResponse(previewRes);
+      if (!previewRes.ok) {
+        throw new Error(String(previewData.error ?? "Önizleme başarısız"));
+      }
+
+      const matched = (previewData.results as Array<{ law_no: string; title: string; rag_status: string }> ?? [])
+        .map((row) => `${row.law_no} — ${row.rag_status}`)
+        .join("\n");
+
+      const confirmed = window.confirm(
+        [
+          `${previewData.total_rules} kanun kuralı işlenecek (önizleme).`,
+          "Kayıtlar silinmez; yalnızca çekirdek İSG RAG retrieval alanları güncellenir.",
+          "",
+          matched,
+          "",
+          "Uygulamak istiyor musunuz?",
+        ].join("\n"),
+      );
+      if (!confirmed) {
+        setSyncResult({ id: "core-isg-scopes", success: true, message: "İşlem iptal edildi (önizleme)" });
+        setSyncProgress({ id: "core-isg-scopes", progress: 100, label: "İptal edildi" });
+        return;
+      }
+
+      setSyncProgress({ id: "core-isg-scopes", progress: 55, label: "Scope kuralları uygulanıyor" });
+      const applyRes = await fetch("/api/admin/official-legal-catalog/apply-core-isg-scopes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dry_run: false }),
+      });
+      const { data: applyData } = await parseApiResponse(applyRes);
+      if (!applyRes.ok) {
+        throw new Error(String(applyData.error ?? "Scope uygulanamadı"));
+      }
+
+      setSyncProgress({ id: "core-isg-scopes", progress: 100, label: "Scope uygulandı" });
+      setSyncResult({
+        id: "core-isg-scopes",
+        success: true,
+        message: `${applyData.document_rows_updated ?? 0} belge, ${applyData.chunk_rows_updated ?? 0} chunk güncellendi`,
+      });
+      await loadDocs();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Bilinmeyen hata";
+      setSyncResult({ id: "core-isg-scopes", success: false, message });
+      setSyncProgress({ id: "core-isg-scopes", progress: 100, label: `Başarısız: ${message}` });
+    } finally {
+      setSyncing(null);
+    }
+  }
+
   async function testConnection() {
     setTestResult(null);
     try {
@@ -501,6 +563,14 @@ export function MevzuatSyncTab() {
         >
           {syncing === "critical-laws" ? "Senkronize…" : "6331 / 4857 / 5510"}
         </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={syncing === "core-isg-scopes"}
+          onClick={() => void applyCoreIsgScopes()}
+        >
+          {syncing === "core-isg-scopes" ? "Scope uygulanıyor…" : "Çekirdek İSG kanun scope"}
+        </Button>
         <Button size="sm" variant="outline" onClick={() => void testConnection()}>
           Bağlantı testi
         </Button>
@@ -517,12 +587,24 @@ export function MevzuatSyncTab() {
             {syncResult.message}
           </span>
         )}
+        {syncResult?.id === "core-isg-scopes" && (
+          <span className={cn("text-xs", syncResult.success ? "text-emerald-500" : "text-red-500")}>
+            {syncResult.message}
+          </span>
+        )}
       </div>
       {syncProgress?.id === "critical-laws" && (
         <SyncProgressBar
           progress={syncProgress.progress}
           label={syncProgress.label}
           tone={syncResult?.id === "critical-laws" && !syncResult.success ? "error" : "default"}
+        />
+      )}
+      {syncProgress?.id === "core-isg-scopes" && (
+        <SyncProgressBar
+          progress={syncProgress.progress}
+          label={syncProgress.label}
+          tone={syncResult?.id === "core-isg-scopes" && !syncResult.success ? "error" : "default"}
         />
       )}
 

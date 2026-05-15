@@ -7,6 +7,7 @@ import {
   type ParsedArticle,
 } from "@/lib/legal-corpus/mevzuat-parse";
 import { extractPdfTextFromUrl } from "@/lib/legal-corpus/pdf-text-extract";
+import { classifyLawForRag } from "@/lib/rag/legal/applyCoreIsgLawScopes";
 
 export type IngestResult =
   | {
@@ -28,6 +29,35 @@ type DocRow = {
   source_hash?: string | null;
   catalog_metadata?: Record<string, unknown> | null;
 };
+
+function ragFieldsForDocument(doc: DocRow) {
+  if (doc.doc_type !== "law") {
+    return {
+      core_isg_enabled: true,
+      excluded_from_default_retrieval: false,
+      rag_status: "active" as const,
+      retrieval_scopes: ["core_isg"],
+      disable_reason: null as string | null,
+      scope_reason: null as string | null,
+    };
+  }
+
+  const classification = classifyLawForRag(doc.doc_number);
+  return {
+    core_isg_enabled: classification.coreIsgEnabled,
+    excluded_from_default_retrieval: classification.excludedFromDefaultRetrieval,
+    rag_status: classification.ragStatus,
+    retrieval_scopes: classification.retrievalScopes,
+    disable_reason:
+      classification.ragStatus === "disabled_for_core_isg_rag"
+        ? (classification.reason ?? null)
+        : null,
+    scope_reason:
+      classification.ragStatus === "legal_procedure_only"
+        ? (classification.reason ?? null)
+        : null,
+  };
+}
 
 async function ensureVersion(
   service: SupabaseClient,
@@ -89,6 +119,8 @@ async function persistArticles(
 ) {
   await service.from("legal_chunks").delete().eq("document_id", doc.id);
 
+  const ragFields = ragFieldsForDocument(doc);
+
   const chunks = articles.map((article, index) => ({
     document_id: doc.id,
     version_id: versionId,
@@ -99,6 +131,7 @@ async function persistArticles(
     article_type: article.article_type,
     is_repealed: article.is_repealed,
     content_tokens: Math.ceil(article.content.length / 4),
+    ...ragFields,
   }));
 
   const { error: insertError } = await service.from("legal_chunks").insert(chunks);
@@ -110,6 +143,7 @@ async function persistArticles(
       last_synced_at: new Date().toISOString(),
       full_text: fullText,
       source_url: officialUrl ?? doc.source_url,
+      ...ragFields,
       catalog_metadata: {
         ...((doc.catalog_metadata as Record<string, unknown> | null) ?? {}),
         last_status: "synced",
@@ -269,6 +303,8 @@ export async function ingestOfficialDocumentFromPdfText(
   const versionId = await ensureVersion(service, doc, extractedText, doc.source_url ?? null);
   await service.from("legal_chunks").delete().eq("document_id", doc.id);
 
+  const ragFields = ragFieldsForDocument(doc);
+
   const chunks = articles.map((article, index) => ({
     document_id: doc.id,
     version_id: versionId,
@@ -280,6 +316,7 @@ export async function ingestOfficialDocumentFromPdfText(
     is_repealed: false,
     content_tokens: Math.ceil(article.content.length / 4),
     metadata: meta,
+    ...ragFields,
   }));
 
   const { error } = await service.from("legal_chunks").insert(chunks);
@@ -290,6 +327,7 @@ export async function ingestOfficialDocumentFromPdfText(
     .update({
       last_synced_at: new Date().toISOString(),
       full_text: extractedText,
+      ...ragFields,
       catalog_metadata: {
         ...((doc.catalog_metadata as Record<string, unknown> | null) ?? {}),
         ...meta,

@@ -1595,12 +1595,37 @@ async function buildModelBackedLegalGuidanceAnswer(params: {
   }
 }
 
+function detectRagRetrievalMode(userQuery: string): 'core_isg' | 'legal_procedure' {
+  const q = userQuery.toLocaleLowerCase('tr-TR')
+  const legalProcedureKeywords = [
+    'dava',
+    'tazminat',
+    'ceza',
+    'soruşturma',
+    'kovuşturma',
+    'savcılık',
+    'mahkeme',
+    'bilirkişi',
+    'arabuluculuk',
+    'kusur',
+    'taksir',
+    'bilinçli taksir',
+    'ifade',
+    'delil',
+    'iş kazası sonrası',
+    'ölümlü iş kazası',
+    'yaralanmalı iş kazası',
+  ]
+  return legalProcedureKeywords.some((keyword) => q.includes(keyword)) ? 'legal_procedure' : 'core_isg'
+}
+
 async function buildDeterministicLegalAnswer(
   query: string,
   context: ToolContext,
   openai: OpenAI,
   anthropic: Anthropic,
 ): Promise<{ answer: string; confidence: number; sources: any[]; retrievalMode: string; trace: Record<string, unknown> }> {
+  const retrievalMode = detectRagRetrievalMode(query)
   const exactHits = await exactLegalCitationLookup(query, context, 5)
   if (exactHits.length > 0) {
     const composed = composeDeterministicLegalAnswer({
@@ -1613,6 +1638,7 @@ async function buildDeterministicLegalAnswer(
       trace: {
         as_of_date: context.session.as_of_date,
         jurisdiction_code: context.session.jurisdiction_code,
+        retrieval_mode: retrievalMode,
         exact: exactHits,
         sparse: [],
         dense: [],
@@ -1632,6 +1658,7 @@ async function buildDeterministicLegalAnswer(
     result_limit: 24,
     jurisdiction_code: context.session.jurisdiction_code,
     workspace_id: context.session.workspace_id ?? null,
+    retrieval_mode: retrievalMode,
   })
   if (lexicalError) {
     console.error('[buildDeterministicLegalAnswer] lexical retrieval failed:', lexicalError.message)
@@ -1667,6 +1694,7 @@ async function buildDeterministicLegalAnswer(
       result_limit: 24,
       jurisdiction_code: context.session.jurisdiction_code,
       workspace_id: context.session.workspace_id ?? null,
+      retrieval_mode: retrievalMode,
     })
 
     if (denseError) {
@@ -1717,6 +1745,7 @@ async function buildDeterministicLegalAnswer(
       trace: {
         as_of_date: context.session.as_of_date,
         jurisdiction_code: context.session.jurisdiction_code,
+        retrieval_mode: retrievalMode,
         exact: [],
         sparse: lexicalHits.slice(0, 24),
         dense: denseHits.slice(0, 24),
@@ -1751,6 +1780,7 @@ async function buildDeterministicLegalAnswer(
     trace: {
       as_of_date: context.session.as_of_date,
       jurisdiction_code: context.session.jurisdiction_code,
+      retrieval_mode: retrievalMode,
       exact: [],
       sparse: lexicalHits.slice(0, 24),
       dense: denseHits.slice(0, 24),
@@ -1776,12 +1806,14 @@ async function executeSearchLegislation(input: any, context: ToolContext): Promi
         ? Math.min(24, input.max_results)
         : 10
 
+    const retrievalMode = detectRagRetrievalMode(input.query || '')
     const { data, error } = await context.supabase.rpc('search_legal_chunks_v3', {
       search_terms: searchTerms,
       as_of_date: context.session.as_of_date,
       result_limit: toolLimit,
       jurisdiction_code: context.session.jurisdiction_code,
       workspace_id: context.session.workspace_id ?? null,
+      retrieval_mode: retrievalMode,
     })
 
     if (error) {
