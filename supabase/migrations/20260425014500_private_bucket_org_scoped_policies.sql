@@ -18,6 +18,10 @@ BEGIN;
 DROP POLICY IF EXISTS "Users can view risk images"   ON storage.objects;
 DROP POLICY IF EXISTS "Users can upload risk images" ON storage.objects;
 DROP POLICY IF EXISTS "Users can delete risk images" ON storage.objects;
+DROP POLICY IF EXISTS risk_images_read_own_org ON storage.objects;
+DROP POLICY IF EXISTS risk_images_insert_own_org ON storage.objects;
+DROP POLICY IF EXISTS risk_images_update_own_org ON storage.objects;
+DROP POLICY IF EXISTS risk_images_delete_own_org ON storage.objects;
 
 CREATE POLICY risk_images_read_own_org
   ON storage.objects FOR SELECT TO authenticated
@@ -56,6 +60,10 @@ CREATE POLICY risk_images_delete_own_org
 -- ============================================================
 DROP POLICY IF EXISTS "Authenticated users can read BIM models"   ON storage.objects;
 DROP POLICY IF EXISTS "Authenticated users can upload BIM models" ON storage.objects;
+DROP POLICY IF EXISTS bim_models_read_own_org ON storage.objects;
+DROP POLICY IF EXISTS bim_models_insert_own_org ON storage.objects;
+DROP POLICY IF EXISTS bim_models_update_own_org ON storage.objects;
+DROP POLICY IF EXISTS bim_models_delete_own_org ON storage.objects;
 
 CREATE POLICY bim_models_read_own_org
   ON storage.objects FOR SELECT TO authenticated

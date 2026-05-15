@@ -108,6 +108,48 @@ export function MevzuatSyncTab() {
     }
   }
 
+  async function syncCriticalLaws() {
+    setSyncing("critical-laws");
+    setSyncResult(null);
+    try {
+      const supabase = createClient();
+      if (!supabase) return;
+
+      const { data, error } = await supabase.functions.invoke("sync-mevzuat", {
+        body: { action: "sync_by_doc_numbers", doc_numbers: ["6331", "4857", "5510"] },
+      });
+
+      if (error) {
+        setSyncResult({ id: "critical-laws", success: false, message: error.message });
+        return;
+      }
+
+      if (data?.error) {
+        setSyncResult({ id: "critical-laws", success: false, message: data.error });
+        return;
+      }
+
+      const failed = (data?.results ?? []).filter((r: { success?: boolean }) => !r.success);
+      setSyncResult({
+        id: "critical-laws",
+        success: failed.length === 0,
+        message:
+          failed.length === 0
+            ? `${data.synced} kanun senkronize (${data.results?.map((r: { doc_number: string; articles_added?: number }) => `${r.doc_number}: ${r.articles_added ?? 0} madde`).join(", ")})`
+            : `Kısmi başarı: ${data.synced} ok, ${data.failed} hata`,
+      });
+      await loadDocs();
+    } catch (err) {
+      setSyncResult({
+        id: "critical-laws",
+        success: false,
+        message: err instanceof Error ? err.message : "Bilinmeyen hata",
+      });
+    } finally {
+      setSyncing(null);
+    }
+  }
+
   async function testConnection() {
     setTestResult(null);
     try {
@@ -166,6 +208,14 @@ export function MevzuatSyncTab() {
 
       {/* Actions */}
       <div className="flex items-center gap-3">
+        <Button
+          onClick={syncCriticalLaws}
+          variant="default"
+          size="sm"
+          disabled={syncing === "critical-laws"}
+        >
+          {syncing === "critical-laws" ? "Senkronize ediliyor…" : "6331 / 4857 / 5510 Senkronize Et"}
+        </Button>
         <Button onClick={testConnection} variant="outline" size="sm">
           Baglanti Testi
         </Button>

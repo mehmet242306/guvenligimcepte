@@ -27,7 +27,7 @@ create index if not exists idx_nova_feature_flags_feature_scope
 drop trigger if exists trg_nova_feature_flags_updated_at on public.nova_feature_flags;
 create trigger trg_nova_feature_flags_updated_at
 before update on public.nova_feature_flags
-for each row execute function public.set_updated_at();
+for each row execute function public.touch_updated_at();
 
 alter table public.nova_feature_flags enable row level security;
 

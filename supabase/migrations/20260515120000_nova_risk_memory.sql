@@ -46,11 +46,13 @@ create policy nova_risk_memory_admin_read
 on public.nova_risk_memory
 for select
 using (
-  organization_id in (
-    select up.organization_id
-    from public.user_profiles up
-    where up.auth_user_id = auth.uid()
-      and up.role in ('admin', 'owner', 'super_admin')
+  public.is_platform_admin(auth.uid())
+  or organization_id in (
+    select om.organization_id
+    from public.organization_memberships om
+    where om.user_id = auth.uid()
+      and om.status = 'active'
+      and om.role in ('admin', 'owner')
   )
 );
 

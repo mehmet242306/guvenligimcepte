@@ -76,6 +76,23 @@ values
     E'# Pazarlama Iletisimi Izni\n\nRiskNova size urun duyurulari, egitim icerikleri, kampanya ve bulten iletileri gonderebilir.\n\nBu izin zorunlu degildir. Hesap guvenligi, sifre sifirlama, davet, odeme, abonelik, yasal bildirim ve hizmetin calismasi icin gereken transactional e-postalar bu pazarlama izninden ayridir ve hizmet kapsaminda gonderilebilir.\n\nPazarlama izninizi istediginiz zaman geri alabilirsiniz.'
   );
 
+-- Unique index is on (org, consent_type, scope_context, title); drop stale title variants first.
+delete from public.consent_documents d
+using tmp_legal_consent_texts t
+where d.organization_id is null
+  and d.consent_type = t.consent_type
+  and d.scope_context = t.scope_context
+  and d.title <> t.title
+  and exists (
+    select 1
+    from public.consent_documents d2
+    where d2.organization_id is null
+      and d2.consent_type = t.consent_type
+      and d2.scope_context = t.scope_context
+      and d2.title = t.title
+      and d2.id <> d.id
+  );
+
 insert into public.consent_documents (
   organization_id,
   consent_type,
@@ -88,15 +105,21 @@ insert into public.consent_documents (
 )
 select
   null,
-  consent_type,
-  title,
-  description,
-  scope_context,
-  is_required,
+  t.consent_type,
+  t.title,
+  t.description,
+  t.scope_context,
+  t.is_required,
   true,
-  display_order
-from tmp_legal_consent_texts
-on conflict do nothing;
+  t.display_order
+from tmp_legal_consent_texts t
+where not exists (
+  select 1
+  from public.consent_documents d
+  where d.organization_id is null
+    and d.consent_type = t.consent_type
+    and d.scope_context = t.scope_context
+);
 
 update public.consent_documents d
 set

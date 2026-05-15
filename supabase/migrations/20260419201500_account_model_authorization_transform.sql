@@ -129,6 +129,7 @@ select
   end
 from public.user_profiles up
 where up.auth_user_id is not null
+  and exists (select 1 from auth.users u where u.id = up.auth_user_id)
 on conflict (organization_id, user_id) do nothing;
 
 create table if not exists public.platform_admins (
@@ -188,6 +189,7 @@ select
   up.auth_user_id
 from public.user_profiles up
 where up.auth_user_id is not null
+  and exists (select 1 from auth.users u where u.id = up.auth_user_id)
   and (
     coalesce(up.is_super_admin, false) = true
     or exists (

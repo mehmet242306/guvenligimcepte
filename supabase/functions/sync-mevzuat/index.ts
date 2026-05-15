@@ -65,11 +65,49 @@ async function ensureLegalDocumentVersion(supabase: ReturnType<typeof createClie
   return data.id as string;
 }
 
-function getMevzuatHtmlUrl(docType: string, mevzuatNo: string): string {
-  if (docType === 'regulation') {
-    return `https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=${mevzuatNo}&MevzuatTur=7&MevzuatTertip=5`;
+function getMevzuatHtmlUrl(
+  docType: string,
+  mevzuatNo: string,
+  opts?: { mevzuatTur?: number; mevzuatTertip?: number },
+): string {
+  const tertip = opts?.mevzuatTertip ?? 5;
+  let tur = opts?.mevzuatTur;
+  if (tur == null) {
+    if (docType === 'regulation') tur = 7;
+    else if (docType === 'communique') tur = 9;
+    else tur = 1;
   }
-  return `https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=${mevzuatNo}&MevzuatTur=1&MevzuatTertip=5`;
+  return `https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=${mevzuatNo}&MevzuatTur=${tur}&MevzuatTertip=${tertip}`;
+}
+
+/** Prefer curated HTML canonical_url (incl. MevzuatTertip=3); fall back to default builder. */
+function resolveMevzuatFetchUrl(doc: {
+  doc_type: string;
+  doc_number?: string | null;
+  source_url?: string | null;
+  catalog_metadata?: Record<string, unknown> | null;
+}): string {
+  const sourceUrl = doc.source_url?.trim();
+  if (
+    sourceUrl &&
+    /mevzuat\.gov\.tr/i.test(sourceUrl) &&
+    /MevzuatNo=/i.test(sourceUrl)
+  ) {
+    return sourceUrl;
+  }
+  const meta = doc.catalog_metadata ?? {};
+  const mevzuatNo =
+    (typeof meta.mevzuat_no === 'string' && meta.mevzuat_no) ||
+    (sourceUrl && /MevzuatNo=(\d+)/i.exec(sourceUrl)?.[1]) ||
+    (/^\d+$/.test(doc.doc_number ?? '') ? doc.doc_number : '') ||
+    '';
+  if (!mevzuatNo) {
+    throw new Error('MevzuatNo bulunamadi; once mevzuat.gov.tr uzerinden cozumleyin.');
+  }
+  return getMevzuatHtmlUrl(doc.doc_type, mevzuatNo, {
+    mevzuatTur: typeof meta.mevzuat_tur === 'number' ? meta.mevzuat_tur : undefined,
+    mevzuatTertip: typeof meta.mevzuat_tertip === 'number' ? meta.mevzuat_tertip : undefined,
+  });
 }
 
 function parseArticlesFromHtml(html: string, docTitle: string): Array<{
@@ -141,6 +179,115 @@ function parseArticlesFromHtml(html: string, docTitle: string): Array<{
   return articles;
 }
 
+type SyncDocRow = {
+  id: string;
+  doc_number?: string | null;
+  title: string;
+  doc_type: string;
+  effective_date?: string | null;
+  official_gazette_date?: string | null;
+  source_hash?: string | null;
+  source_url?: string | null;
+  catalog_metadata?: Record<string, unknown> | null;
+};
+
+async function syncOneDocument(
+  supabase: ReturnType<typeof createClient>,
+  doc: SyncDocRow,
+): Promise<{ ok: true; articles_added: number; article_types: Record<string, number> } | { ok: false; error: string; status?: number; url?: string }> {
+  let htmlUrl: string;
+  try {
+    htmlUrl = resolveMevzuatFetchUrl(doc);
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+
+  console.log('Fetching:', htmlUrl);
+
+  const response = await resilientFetch(
+    htmlUrl,
+    {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html',
+        'Accept-Language': 'tr-TR,tr;q=0.9',
+      },
+    },
+    {
+      serviceKey: 'external.mevzuat_gov_tr',
+      displayName: 'Mevzuat GOV',
+      operationName: 'sync_mevzuat_fetch_document',
+      fallbackMessage: 'Mevzuat servisi gecici olarak yanit vermiyor.',
+    },
+  );
+
+  if (!response.ok) {
+    return {
+      ok: false,
+      error: response.fallbackMessage ?? 'Fetch failed',
+      status: 503,
+      url: htmlUrl,
+    };
+  }
+
+  const htmlContent = await response.data.text();
+  if (htmlContent.length < 500) {
+    return { ok: false, error: 'Icerik cok kisa' };
+  }
+
+  const articles = parseArticlesFromHtml(htmlContent, doc.title);
+  if (articles.length === 0) {
+    return { ok: false, error: 'Madde bulunamadi' };
+  }
+
+  const versionId = await ensureLegalDocumentVersion(supabase, {
+    id: doc.id,
+    doc_number: doc.doc_number,
+    title: doc.title,
+    effective_date: doc.effective_date,
+    official_gazette_date: doc.official_gazette_date,
+    source_hash: doc.source_hash,
+    full_text: htmlContent,
+    source_url: doc.source_url,
+  });
+
+  await supabase.from('legal_chunks').delete().eq('document_id', doc.id);
+
+  const chunks = articles.map((article, index) => ({
+    document_id: doc.id,
+    version_id: versionId,
+    chunk_index: index,
+    article_number: article.article_number,
+    article_title: article.article_title,
+    content: article.content,
+    article_type: article.article_type,
+    is_repealed: article.is_repealed,
+    content_tokens: Math.ceil(article.content.length / 4),
+  }));
+
+  const { error: insertError } = await supabase.from('legal_chunks').insert(chunks);
+  if (insertError) {
+    return { ok: false, error: insertError.message };
+  }
+
+  await supabase
+    .from('legal_documents')
+    .update({ last_synced_at: new Date().toISOString() })
+    .eq('id', doc.id);
+
+  return {
+    ok: true,
+    articles_added: articles.length,
+    article_types: {
+      normal: articles.filter((a) => a.article_type === 'normal').length,
+      gecici: articles.filter((a) => a.article_type === 'gecici').length,
+      ek: articles.filter((a) => a.article_type === 'ek').length,
+      mukerrer: articles.filter((a) => a.article_type === 'mukerrer').length,
+      mulga: articles.filter((a) => a.is_repealed).length,
+    },
+  };
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   
@@ -149,7 +296,11 @@ Deno.serve(async (req: Request) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
     const body = await req.json();
-    const { action, document_id } = body;
+    const { action, document_id, doc_numbers } = body as {
+      action?: string;
+      document_id?: string;
+      doc_numbers?: string[];
+    };
     
     console.log('Action:', action, 'DocId:', document_id);
     
@@ -180,99 +331,102 @@ Deno.serve(async (req: Request) => {
         .select('*')
         .eq('id', document_id)
         .single();
-      
+
       if (docError || !doc) {
         console.error('Doc not found:', docError?.message);
         return jsonResp({ error: 'Mevzuat bulunamadi' }, 404);
       }
-      
-      let mevzuatNo = doc.doc_number;
-      if (doc.source_url) {
-        const match = doc.source_url.match(/mevzuatNo=(\d+)/i);
-        if (match) mevzuatNo = match[1];
-      }
-      
-      const htmlUrl = getMevzuatHtmlUrl(doc.doc_type, mevzuatNo);
-      console.log('Fetching:', htmlUrl);
-      
-      const response = await resilientFetch(
-        htmlUrl,
-        {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'text/html',
-            'Accept-Language': 'tr-TR,tr;q=0.9',
-          },
-        },
-        {
-          serviceKey: 'external.mevzuat_gov_tr',
-          displayName: 'Mevzuat GOV',
-          operationName: 'sync_mevzuat_fetch_document',
-          fallbackMessage: 'Mevzuat servisi gecici olarak yanit vermiyor.',
-        },
-      );
-      
-      if (!response.ok) {
+
+      const result = await syncOneDocument(supabase, doc as SyncDocRow);
+      if (!result.ok) {
         return jsonResp(
-          {
-            error: response.fallbackMessage,
-            details: response.error,
-            degraded: true,
-            url: htmlUrl,
-          },
-          503,
+          { error: result.error, url: result.url, degraded: result.status === 503 },
+          result.status ?? 400,
         );
       }
-      
-      const htmlContent = await response.data.text();
-      if (htmlContent.length < 500) return jsonResp({ error: 'Icerik cok kisa', length: htmlContent.length }, 400);
-      
-      const articles = parseArticlesFromHtml(htmlContent, doc.title);
-      if (articles.length === 0) return jsonResp({ error: 'Madde bulunamadi', htmlLength: htmlContent.length }, 400);
 
-      const versionId = await ensureLegalDocumentVersion(supabase, {
-        id: doc.id,
-        doc_number: doc.doc_number,
-        title: doc.title,
-        effective_date: doc.effective_date,
-        official_gazette_date: doc.official_gazette_date,
-        source_hash: doc.source_hash,
-        full_text: htmlContent,
-        source_url: doc.source_url,
-      });
-      
-      await supabase.from('legal_chunks').delete().eq('document_id', document_id);
-      
-      const chunks = articles.map((article, index) => ({
-        document_id, version_id: versionId, chunk_index: index,
-        article_number: article.article_number, article_title: article.article_title,
-        content: article.content, article_type: article.article_type,
-        is_repealed: article.is_repealed, content_tokens: Math.ceil(article.content.length / 4),
-      }));
-      
-      const { error: insertError } = await supabase.from('legal_chunks').insert(chunks);
-      if (insertError) {
-        console.error('Insert error:', insertError.message);
-        return jsonResp({ error: 'Chunk ekleme hatasi', details: insertError.message }, 500);
-      }
-      
-      await supabase.from('legal_documents').update({ last_synced_at: new Date().toISOString() }).eq('id', document_id);
-      
       return jsonResp({
-        success: true, document: doc.title, articles_added: articles.length,
-        article_types: {
-          normal: articles.filter(a => a.article_type === 'normal').length,
-          gecici: articles.filter(a => a.article_type === 'gecici').length,
-          ek: articles.filter(a => a.article_type === 'ek').length,
-          mukerrer: articles.filter(a => a.article_type === 'mukerrer').length,
-          mulga: articles.filter(a => a.is_repealed).length,
-        }
+        success: true,
+        document: doc.title,
+        articles_added: result.articles_added,
+        article_types: result.article_types,
       });
-      
+    } else if (action === 'sync_by_doc_numbers' && Array.isArray(doc_numbers) && doc_numbers.length > 0) {
+      const numbers = doc_numbers.map((n) => String(n).trim()).filter(Boolean);
+      const { data: docs, error: docsErr } = await supabase
+        .from('legal_documents')
+        .select('id, doc_number, title, doc_type')
+        .eq('doc_type', 'law')
+        .in('doc_number', numbers);
+
+      if (docsErr) {
+        return jsonResp({ error: docsErr.message }, 500);
+      }
+
+      const found = new Map((docs ?? []).map((d) => [d.doc_number, d]));
+      const results: Array<Record<string, unknown>> = [];
+
+      for (const num of numbers) {
+        const doc = found.get(num);
+        if (!doc) {
+          results.push({ doc_number: num, success: false, error: 'Belge bulunamadi' });
+          continue;
+        }
+
+        try {
+          const { data: fullDoc, error: docError } = await supabase
+            .from('legal_documents')
+            .select('*')
+            .eq('id', doc.id)
+            .single();
+
+          if (docError || !fullDoc) {
+            results.push({ doc_number: num, success: false, error: 'Mevzuat bulunamadi' });
+            continue;
+          }
+
+          const result = await syncOneDocument(supabase, fullDoc as SyncDocRow);
+          if (!result.ok) {
+            results.push({
+              doc_number: num,
+              title: fullDoc.title,
+              success: false,
+              error: result.error,
+              url: result.url,
+            });
+            continue;
+          }
+
+          results.push({
+            doc_number: num,
+            title: fullDoc.title,
+            success: true,
+            articles_added: result.articles_added,
+          });
+
+          await new Promise((r) => setTimeout(r, 1500));
+        } catch (err) {
+          results.push({
+            doc_number: num,
+            success: false,
+            error: err instanceof Error ? err.message : String(err),
+          });
+        }
+      }
+
+      return jsonResp({
+        success: results.every((r) => r.success),
+        synced: results.filter((r) => r.success).length,
+        failed: results.filter((r) => !r.success).length,
+        results,
+      });
     } else if (action === 'test') {
       return jsonResp({ status: 'ok', timestamp: new Date().toISOString(), message: 'Edge Function calisiyor!' });
     } else {
-      return jsonResp({ error: 'Gecersiz action', valid_actions: ['sync_single', 'list', 'test'] }, 400);
+      return jsonResp({
+        error: 'Gecersiz action',
+        valid_actions: ['sync_single', 'sync_by_doc_numbers', 'list', 'test'],
+      }, 400);
     }
   } catch (error) {
     console.error('Caught error:', error.message, error.stack);

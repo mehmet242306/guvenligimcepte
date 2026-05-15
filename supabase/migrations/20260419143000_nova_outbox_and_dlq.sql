@@ -47,4 +47,4 @@ with check (auth.role() = 'service_role');
 drop trigger if exists trg_nova_outbox_updated_at on public.nova_outbox;
 create trigger trg_nova_outbox_updated_at
 before update on public.nova_outbox
-for each row execute function public.set_updated_at();
+for each row execute function public.touch_updated_at();

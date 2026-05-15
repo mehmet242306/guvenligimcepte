@@ -26,6 +26,7 @@ alter table public.subscription_plans
     plan_key in (
       'free',
       'starter',
+      'plus',
       'professional',
       'professional_149',
       'professional_199',
