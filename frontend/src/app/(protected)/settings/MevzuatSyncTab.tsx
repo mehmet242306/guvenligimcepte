@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ExternalLink, Pencil, Plus, Trash2, X } from "lucide-react";
+import { ExternalLink, FileText, Link2, Pencil, Plus, Trash2, Upload, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,13 +26,25 @@ interface LegalDoc {
   last_synced_at: string | null;
   chunk_count: number;
   is_active?: boolean;
+  catalog_metadata?: Record<string, unknown> | null;
 }
 
 type FilterType = "all" | OfficialLegalDocType;
+type AddMode = "url" | "pdf";
 
 const FILTER_OPTIONS: { key: FilterType; label: string }[] = [
   { key: "all", label: "Tümü" },
   ...OFFICIAL_LEGAL_DOC_TYPES.map((t) => ({ key: t, label: DOC_TYPE_LABELS[t] })),
+];
+
+const CATALOG_SECTIONS: Array<{ key: OfficialLegalDocType; title: string; description: string }> = [
+  { key: "law", title: "Kanunlar", description: "6331, 4857, 5510 gibi temel kanun kaynakları" },
+  { key: "regulation", title: "Yönetmelikler", description: "İSG uygulama ve usul yönetmelikleri" },
+  { key: "circular", title: "Genelgeler", description: "Bakanlık genelgeleri ve uygulama duyuruları" },
+  { key: "communique", title: "Tebliğler", description: "Resmi tebliğ ve teknik ekler" },
+  { key: "guide", title: "Rehberler / Kılavuzlar", description: "Bakanlık, İSGGM ve sektör rehberleri" },
+  { key: "standard", title: "Standartlar", description: "Ulusal ve uluslararası standart referansları" },
+  { key: "announcement", title: "Diğer içerikler", description: "Tablolar, duyurular ve tamamlayıcı kaynaklar" },
 ];
 
 export function MevzuatSyncTab() {
@@ -47,6 +59,8 @@ export function MevzuatSyncTab() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [addMode, setAddMode] = useState<AddMode>("url");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [newDoc, setNewDoc] = useState({
     title: "",
     doc_number: "",
@@ -195,16 +209,34 @@ export function MevzuatSyncTab() {
     setSaving(true);
     setFormError(null);
     try {
-      const res = await fetch("/api/admin/official-legal-catalog", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: newDoc.title,
-          doc_number: newDoc.doc_number,
-          doc_type: newDoc.doc_type,
-          source_url: newDoc.source_url.trim() || null,
-        }),
-      });
+      let res: Response;
+      if (addMode === "pdf") {
+        if (!pdfFile) {
+          setFormError("PDF dosyası seçmelisiniz.");
+          return;
+        }
+        const formData = new FormData();
+        formData.append("title", newDoc.title);
+        formData.append("doc_number", newDoc.doc_number);
+        formData.append("doc_type", newDoc.doc_type);
+        formData.append("source_url", newDoc.source_url.trim());
+        formData.append("file", pdfFile);
+        res = await fetch("/api/admin/official-legal-catalog/upload", {
+          method: "POST",
+          body: formData,
+        });
+      } else {
+        res = await fetch("/api/admin/official-legal-catalog", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: newDoc.title,
+            doc_number: newDoc.doc_number,
+            doc_type: newDoc.doc_type,
+            source_url: newDoc.source_url.trim() || null,
+          }),
+        });
+      }
       const data = await res.json();
       if (!res.ok) {
         setFormError(data.error ?? "Kayıt eklenemedi");
@@ -212,6 +244,7 @@ export function MevzuatSyncTab() {
       }
       setShowAddForm(false);
       setNewDoc({ title: "", doc_number: "", doc_type: "regulation", source_url: "" });
+      setPdfFile(null);
       await loadDocs();
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Kayıt eklenemedi");
@@ -247,12 +280,16 @@ export function MevzuatSyncTab() {
     await loadDocs();
   }
 
-  const grouped = useMemo(() => {
-    const synced = docs.filter((d) => d.chunk_count > 0);
-    const unsynced = docs.filter((d) => d.chunk_count === 0);
-    return { synced, unsynced };
-  }, [docs]);
-
+  const sectionedDocs = useMemo(
+    () =>
+      CATALOG_SECTIONS.map((section) => ({
+        ...section,
+        docs: docs.filter((doc) => doc.doc_type === section.key),
+      })).filter((section) => (filter === "all" ? section.docs.length > 0 : section.key === filter)),
+    [docs, filter],
+  );
+  const syncedCount = docs.filter((d) => d.chunk_count > 0).length;
+  const pendingCount = docs.filter((d) => d.chunk_count === 0).length;
   const totalChunks = docs.reduce((sum, d) => sum + d.chunk_count, 0);
 
   if (isSuperAdmin === null) {
@@ -273,15 +310,16 @@ export function MevzuatSyncTab() {
     <div className="space-y-6">
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="pt-4 text-sm text-muted-foreground">
-          Resmi mevzuat kataloğunu buradan yönetirsiniz: tür (kanun, yönetmelik, tebliğ…), mevzuat.gov.tr
-          bağlantısı, ekleme ve silme. Senkronizasyon madde/chunk içeriğini mevzuat.gov.tr üzerinden çeker.
+          Resmi mevzuat kataloğunu türüne göre düzenleyin: kanunlar, yönetmelikler, genelgeler ve diğer kaynaklar
+          ayrı bölümlerde görünür. Mevzuat.gov.tr bağlantısı olan kayıtları bağlantıdan çekebilir, PDF kaynaklarını
+          manuel yükleyip arama belleğine ekleyebilirsiniz.
         </CardContent>
       </Card>
 
       <div className="grid gap-3 sm:grid-cols-4">
         <StatCard value={docs.length} label="Katalog kaydı" />
-        <StatCard value={grouped.synced.length} label="Senkronize" valueClass="text-emerald-500" />
-        <StatCard value={grouped.unsynced.length} label="Bekleyen" valueClass="text-amber-500" />
+        <StatCard value={syncedCount} label="İndeksli kaynak" valueClass="text-emerald-500" />
+        <StatCard value={pendingCount} label="İşlem bekleyen" valueClass="text-amber-500" />
         <StatCard value={totalChunks.toLocaleString("tr-TR")} label="Toplam chunk" valueClass="text-primary" />
       </div>
 
@@ -326,6 +364,30 @@ export function MevzuatSyncTab() {
                   <X className="h-4 w-4 text-muted-foreground" />
                 </button>
               </div>
+              <div className="inline-flex rounded-lg border border-border bg-muted/30 p-1">
+                <button
+                  type="button"
+                  onClick={() => setAddMode("url")}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition",
+                    addMode === "url" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground",
+                  )}
+                >
+                  <Link2 className="h-3.5 w-3.5" />
+                  Bağlantıdan ekle
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAddMode("pdf")}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition",
+                    addMode === "pdf" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground",
+                  )}
+                >
+                  <Upload className="h-3.5 w-3.5" />
+                  PDF yükle
+                </button>
+              </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <Input
                   label="Başlık"
@@ -357,16 +419,29 @@ export function MevzuatSyncTab() {
                   </select>
                 </label>
                 <Input
-                  label="Kaynak bağlantısı (mevzuat.gov.tr)"
-                  hint="MevzuatNo içeren tam URL"
+                  label={addMode === "pdf" ? "Resmi kaynak bağlantısı (opsiyonel)" : "Kaynak bağlantısı (mevzuat.gov.tr)"}
+                  hint={addMode === "pdf" ? "PDF için varsa resmi sayfa bağlantısı" : "MevzuatNo içeren tam URL"}
                   value={newDoc.source_url}
                   onChange={(e) => setNewDoc((p) => ({ ...p, source_url: e.target.value }))}
                   placeholder="https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=..."
                 />
+                {addMode === "pdf" && (
+                  <label className="flex flex-col gap-2 text-sm sm:col-span-2">
+                    <span className="font-medium text-foreground">PDF dosyası</span>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      required
+                      onChange={(e) => setPdfFile(e.target.files?.[0] ?? null)}
+                      className="rounded-lg border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1 file:text-xs file:font-medium file:text-primary"
+                    />
+                    {pdfFile && <span className="text-xs text-muted-foreground">{pdfFile.name}</span>}
+                  </label>
+                )}
               </div>
               {formError && <p className="text-xs text-red-500">{formError}</p>}
               <Button type="submit" size="sm" disabled={saving}>
-                {saving ? "Kaydediliyor…" : "Kataloğa ekle"}
+                {saving ? "Kaydediliyor…" : addMode === "pdf" ? "PDF ile kataloğa ekle" : "Bağlantı kaydı ekle"}
               </Button>
             </form>
           </CardContent>
@@ -406,27 +481,28 @@ export function MevzuatSyncTab() {
           ))}
         </div>
       ) : (
-        <DocSection
-          title={`Senkronize (${grouped.synced.length})`}
-          docs={grouped.synced}
-          syncing={syncing}
-          syncResult={syncResult}
-          onSync={syncSingle}
-          onUpdate={updateDocument}
-          onDelete={deleteDocument}
-        />
-      )}
-
-      {!loading && grouped.unsynced.length > 0 && (
-        <DocSection
-          title={`Bekleyen / bağlantı eksik (${grouped.unsynced.length})`}
-          docs={grouped.unsynced}
-          syncing={syncing}
-          syncResult={syncResult}
-          onSync={syncSingle}
-          onUpdate={updateDocument}
-          onDelete={deleteDocument}
-        />
+        <div className="space-y-5">
+          {sectionedDocs.map((section) => (
+            <CatalogTypeSection
+              key={section.key}
+              title={section.title}
+              description={section.description}
+              docs={section.docs}
+              syncing={syncing}
+              syncResult={syncResult}
+              onSync={syncSingle}
+              onUpdate={updateDocument}
+              onDelete={deleteDocument}
+            />
+          ))}
+          {docs.length === 0 && (
+            <Card>
+              <CardContent className="pt-6 text-sm text-muted-foreground">
+                Bu filtrede katalog kaydı bulunamadı. Yeni bağlantı veya PDF ekleyerek başlayabilirsiniz.
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )}
     </div>
   );
@@ -451,8 +527,9 @@ function StatCard({
   );
 }
 
-function DocSection({
+function CatalogTypeSection({
   title,
+  description,
   docs,
   syncing,
   syncResult,
@@ -461,6 +538,7 @@ function DocSection({
   onDelete,
 }: {
   title: string;
+  description: string;
   docs: LegalDoc[];
   syncing: string | null;
   syncResult: { id: string; success: boolean; message: string } | null;
@@ -472,21 +550,35 @@ function DocSection({
   onDelete: (id: string, title: string) => Promise<void>;
 }) {
   if (docs.length === 0) return null;
+  const synced = docs.filter((doc) => doc.chunk_count > 0).length;
+  const needsSource = docs.filter((doc) => !doc.source_url).length;
 
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-      {docs.map((doc) => (
-        <DocRow
-          key={doc.id}
-          doc={doc}
-          syncing={syncing === doc.id}
-          syncResult={syncResult?.id === doc.id ? syncResult : null}
-          onSync={() => onSync(doc.id)}
-          onUpdate={onUpdate}
-          onDelete={() => onDelete(doc.id, doc.title)}
-        />
-      ))}
+      <div className="flex flex-wrap items-end justify-between gap-2 border-b border-border pb-2">
+        <div>
+          <h3 className="text-base font-semibold text-foreground">{title}</h3>
+          <p className="text-xs text-muted-foreground">{description}</p>
+        </div>
+        <div className="flex flex-wrap gap-2 text-[11px] text-muted-foreground">
+          <span>{docs.length} kayıt</span>
+          <span>{synced} indeksli</span>
+          {needsSource > 0 && <span className="text-amber-500">{needsSource} bağlantısız</span>}
+        </div>
+      </div>
+      <div className="space-y-2">
+        {docs.map((doc) => (
+          <DocRow
+            key={doc.id}
+            doc={doc}
+            syncing={syncing === doc.id}
+            syncResult={syncResult?.id === doc.id ? syncResult : null}
+            onSync={() => onSync(doc.id)}
+            onUpdate={onUpdate}
+            onDelete={() => onDelete(doc.id, doc.title)}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -521,7 +613,20 @@ function DocRow({
   const [rowSaving, setRowSaving] = useState(false);
 
   const hasSynced = doc.chunk_count > 0;
+  const metadata = doc.catalog_metadata ?? {};
+  const sourceType = typeof metadata.source_type === "string" ? metadata.source_type : "";
+  const pdfUrl = typeof metadata.pdf_url === "string" ? metadata.pdf_url : "";
+  const isManualPdf = sourceType === "manual_pdf_upload" || Boolean(pdfUrl);
   const canSync = Boolean(doc.source_url?.includes("MevzuatNo="));
+  const syncButtonLabel = syncing
+    ? "…"
+    : canSync
+      ? hasSynced
+        ? "Tekrar senkron"
+        : "Bağlantıdan çek"
+      : isManualPdf
+        ? "PDF yüklendi"
+        : "Bağlantı gerekli";
 
   async function saveLink() {
     setRowSaving(true);
@@ -593,6 +698,10 @@ function DocRow({
             <>
               <p className="text-sm font-medium text-foreground">{doc.title}</p>
               <p className="text-[11px] text-muted-foreground">No: {doc.doc_number}</p>
+              <p className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                {isManualPdf ? <FileText className="h-3 w-3" /> : <Link2 className="h-3 w-3" />}
+                {isManualPdf ? "PDF kaynağı" : canSync ? "Mevzuat.gov bağlantısı" : "Bağlantı gerekli"}
+              </p>
             </>
           )}
 
@@ -605,7 +714,7 @@ function DocRow({
             </p>
           )}
 
-          {!canSync && !editingLink && (
+          {!canSync && !editingLink && !isManualPdf && (
             <p className="text-[11px] text-red-500">
               MevzuatNo bulunamadı; önce mevzuat.gov.tr bağlantısını ekleyin veya düzenleyin.
             </p>
@@ -626,7 +735,7 @@ function DocRow({
             <Trash2 className="h-4 w-4" />
           </Button>
           <Button onClick={onSync} disabled={syncing || !canSync} size="sm" variant={hasSynced ? "outline" : "primary"}>
-            {syncing ? "…" : hasSynced ? "Tekrar senkron" : "Senkronize et"}
+            {syncButtonLabel}
           </Button>
         </div>
       </div>
@@ -666,6 +775,17 @@ function DocRow({
               <ExternalLink className="h-3 w-3 shrink-0" />
               <span className="truncate">{doc.source_url}</span>
             </a>
+            {pdfUrl && pdfUrl !== doc.source_url && (
+              <a
+                href={pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+              >
+                <FileText className="h-3 w-3" />
+                PDF
+              </a>
+            )}
             <Button size="sm" variant="ghost" onClick={() => setEditingLink(true)}>
               Düzenle
             </Button>
@@ -689,4 +809,3 @@ function DocRow({
     </div>
   );
 }
-
