@@ -12,12 +12,21 @@ import { createServiceClient, sanitizePlainText, validateUploadedFile } from "@/
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
+const MAX_MANUAL_TEXT_CHARS = 2_000_000;
+
 const uploadSchema = z.object({
   document_id: z.string().uuid().optional().nullable(),
   title: z.string().min(3).max(500),
   doc_number: z.string().min(2).max(120),
   doc_type: z.enum(OFFICIAL_LEGAL_DOC_TYPES),
-  manual_text: z.string().max(500_000).optional().nullable(),
+  manual_text: z
+    .string()
+    .max(
+      MAX_MANUAL_TEXT_CHARS,
+      `Manuel metin çok uzun. En fazla ${MAX_MANUAL_TEXT_CHARS.toLocaleString("tr-TR")} karakter eklenebilir.`,
+    )
+    .optional()
+    .nullable(),
   source_url: z
     .union([z.string().url().max(2000), z.literal("")])
     .optional()
@@ -42,8 +51,13 @@ export async function POST(request: NextRequest) {
     });
 
     if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      const error =
+        firstIssue?.path?.[0] === "manual_text"
+          ? firstIssue.message
+          : firstIssue?.message || "Geçersiz katalog bilgisi.";
       return NextResponse.json(
-        { error: "Geçersiz katalog bilgisi.", details: z.treeifyError(parsed.error) },
+        { error, details: z.treeifyError(parsed.error) },
         { status: 400 },
       );
     }
@@ -103,7 +117,7 @@ export async function POST(request: NextRequest) {
       extraction = await extractLegalDocumentText(fileBuffer, kind);
     } else {
       extraction = {
-        text: manualText && manualText.length > 80 ? manualText.slice(0, 500_000) : null,
+        text: manualText && manualText.length > 80 ? manualText.slice(0, MAX_MANUAL_TEXT_CHARS) : null,
         method: "manual_text",
         error: manualText && manualText.length <= 80 ? "Manuel metin çok kısa; en az 80 karakter olmalı." : null,
       };
