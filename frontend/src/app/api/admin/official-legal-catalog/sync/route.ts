@@ -47,6 +47,18 @@ export async function POST(request: NextRequest) {
   });
 
   if (!result.ok) {
+    await service
+      .from("legal_documents")
+      .update({
+        catalog_metadata: {
+          ...((doc.catalog_metadata as Record<string, unknown> | null) ?? {}),
+          last_status: "sync_failed",
+          last_error: result.error,
+          last_hints: result.hints ?? [],
+        },
+      })
+      .eq("id", doc.id);
+
     return NextResponse.json(
       { error: result.error, hints: result.hints ?? [] },
       { status: 422 },

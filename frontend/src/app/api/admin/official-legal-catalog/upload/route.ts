@@ -17,6 +17,7 @@ const uploadSchema = z.object({
   title: z.string().min(3).max(500),
   doc_number: z.string().min(2).max(120),
   doc_type: z.enum(OFFICIAL_LEGAL_DOC_TYPES),
+  manual_text: z.string().max(500_000).optional().nullable(),
   source_url: z
     .union([z.string().url().max(2000), z.literal("")])
     .optional()
@@ -36,6 +37,7 @@ export async function POST(request: NextRequest) {
       title: sanitizePlainText(String(formData.get("title") || ""), 500),
       doc_number: sanitizePlainText(String(formData.get("doc_number") || ""), 120),
       doc_type: sanitizePlainText(String(formData.get("doc_type") || ""), 40),
+      manual_text: String(formData.get("manual_text") || "").trim() || null,
       source_url: sanitizePlainText(String(formData.get("source_url") || ""), 2000) || null,
     });
 
@@ -46,55 +48,71 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!file) {
-      return NextResponse.json({ error: "PDF veya Word (.docx) dosyası gerekli." }, { status: 400 });
+    const manualText = parsed.success ? parsed.data.manual_text?.trim() || null : null;
+
+    if (!file && !manualText) {
+      return NextResponse.json({ error: "PDF/Word dosyası veya manuel metin gerekli." }, { status: 400 });
     }
 
-    const kind = detectLegalUploadKind(file);
-    if (!kind) {
+    const kind = file ? detectLegalUploadKind(file) : "text";
+    if (!kind || (kind !== "text" && !file)) {
       return NextResponse.json(
-        { error: "Yalnızca PDF (.pdf) veya Word (.docx) desteklenir." },
+        { error: "Yalnızca PDF (.pdf), Word (.docx) veya manuel metin desteklenir." },
         { status: 400 },
       );
     }
 
-    const fileError = await validateUploadedFile(file, {
-      allowedMimeTypes: [
-        "application/pdf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ],
-      maxBytes: 25 * 1024 * 1024,
-      allowedExtensions: [".pdf", ".docx"],
-    });
-    if (fileError) {
-      return NextResponse.json({ error: fileError }, { status: 400 });
+    if (file) {
+      const fileError = await validateUploadedFile(file, {
+        allowedMimeTypes: [
+          "application/pdf",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ],
+        maxBytes: 25 * 1024 * 1024,
+        allowedExtensions: [".pdf", ".docx"],
+      });
+      if (fileError) {
+        return NextResponse.json({ error: fileError }, { status: 400 });
+      }
     }
 
     const service = createServiceClient();
-    const safeName = file.name.replace(/[^a-z0-9.\-_]/gi, "_");
-    const storagePath = `official-legal-catalog/${Date.now()}_${safeName}`;
-    const fileBuffer = await file.arrayBuffer();
+    let fileUrl: string | null = null;
+    let extraction: { text: string | null; method: string | null; error: string | null };
 
-    const { error: uploadError } = await service.storage.from("slide-media").upload(storagePath, fileBuffer, {
-      contentType: file.type || (kind === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
-      upsert: false,
-    });
-    if (uploadError) {
-      return NextResponse.json(
-        {
-          error: `Dosya depolamaya yüklenemedi: ${uploadError.message}`,
-        },
-        { status: 500 },
-      );
+    if (file && kind !== "text") {
+      const safeName = file.name.replace(/[^a-z0-9.\-_]/gi, "_");
+      const storagePath = `official-legal-catalog/${Date.now()}_${safeName}`;
+      const fileBuffer = await file.arrayBuffer();
+
+      const { error: uploadError } = await service.storage.from("slide-media").upload(storagePath, fileBuffer, {
+        contentType: file.type || (kind === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
+        upsert: false,
+      });
+      if (uploadError) {
+        return NextResponse.json(
+          {
+            error: `Dosya depolamaya yüklenemedi: ${uploadError.message}`,
+          },
+          { status: 500 },
+        );
+      }
+
+      const { data: publicUrlData } = service.storage.from("slide-media").getPublicUrl(storagePath);
+      fileUrl = publicUrlData.publicUrl;
+      extraction = await extractLegalDocumentText(fileBuffer, kind);
+    } else {
+      extraction = {
+        text: manualText && manualText.length > 80 ? manualText.slice(0, 500_000) : null,
+        method: "manual_text",
+        error: manualText && manualText.length <= 80 ? "Manuel metin çok kısa; en az 80 karakter olmalı." : null,
+      };
     }
 
-    const { data: publicUrlData } = service.storage.from("slide-media").getPublicUrl(storagePath);
-    const fileUrl = publicUrlData.publicUrl;
-    const extraction = await extractLegalDocumentText(fileBuffer, kind);
     const extractedText = extraction.text;
-    const sourceHash = `official-${kind}:${parsed.data.doc_number}:${storagePath}`;
+    const sourceHash = `official-${kind}:${parsed.data.doc_number}:${Date.now()}`;
     const baseMetadata = {
-      source_type: kind === "docx" ? "manual_docx_upload" : "manual_pdf_upload",
+      source_type: kind === "text" ? "manual_text_upload" : kind === "docx" ? "manual_docx_upload" : "manual_pdf_upload",
       file_kind: kind,
       pdf_url: kind === "pdf" ? fileUrl : null,
       docx_url: kind === "docx" ? fileUrl : null,
@@ -158,7 +176,7 @@ export async function POST(request: NextRequest) {
         },
         extractedText,
         {
-          source: kind === "docx" ? "manual_docx_upload" : "manual_pdf_upload",
+          source: kind === "text" ? "manual_text_upload" : kind === "docx" ? "manual_docx_upload" : "manual_pdf_upload",
           file_kind: kind,
           file_url: fileUrl,
           official_url: parsed.data.source_url || null,

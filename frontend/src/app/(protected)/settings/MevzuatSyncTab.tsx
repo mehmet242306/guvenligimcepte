@@ -387,6 +387,50 @@ export function MevzuatSyncTab() {
     }
   }
 
+  async function uploadTextForDocument(doc: LegalDoc, text: string) {
+    setSyncing(doc.id);
+    setSyncResult(null);
+    setSyncProgress({ id: doc.id, progress: 20, label: "Manuel metin hazırlanıyor" });
+    try {
+      const formData = new FormData();
+      formData.append("document_id", doc.id);
+      formData.append("title", doc.title);
+      formData.append("doc_number", doc.doc_number);
+      formData.append("doc_type", doc.doc_type);
+      formData.append("source_url", doc.source_url ?? "");
+      formData.append("manual_text", text);
+
+      setSyncProgress({ id: doc.id, progress: 55, label: "Metin chunklara ayrılıyor" });
+      const res = await fetch("/api/admin/official-legal-catalog/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const { data } = await parseApiResponse(res);
+      if (!res.ok) {
+        const message = String(data.error ?? "Manuel metin kaydedilemedi");
+        setSyncProgress({ id: doc.id, progress: 100, label: `Başarısız: ${message}` });
+        setSyncResult({ id: doc.id, success: false, message });
+        return;
+      }
+
+      const docPayload = data.document as { chunk_count?: number } | undefined;
+      const chunkCount = docPayload?.chunk_count ?? 0;
+      setSyncProgress({ id: doc.id, progress: 100, label: chunkCount > 0 ? "Metin indekslendi" : "Metin çok kısa" });
+      setSyncResult({
+        id: doc.id,
+        success: chunkCount > 0,
+        message: chunkCount > 0 ? `${chunkCount} chunk manuel metinden oluşturuldu` : "Metin alındı ama chunk oluşmadı.",
+      });
+      await loadDocs();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Manuel metin kaydedilemedi";
+      setSyncProgress({ id: doc.id, progress: 100, label: `Başarısız: ${message}` });
+      setSyncResult({ id: doc.id, success: false, message });
+    } finally {
+      setSyncing(null);
+    }
+  }
+
   async function deleteDocument(id: string, title: string) {
     if (!window.confirm(`"${title}" katalogdan silinsin mi? İlişkili chunk'lar da kaldırılır.`)) {
       return;
@@ -624,6 +668,7 @@ export function MevzuatSyncTab() {
               syncProgress={syncProgress}
               onSync={syncSingle}
               onUploadFile={uploadFileForDocument}
+              onUploadText={uploadTextForDocument}
               onUpdate={updateDocument}
               onDelete={deleteDocument}
             />
@@ -696,6 +741,7 @@ function CatalogTypeSection({
   syncProgress,
   onSync,
   onUploadFile,
+  onUploadText,
   onUpdate,
   onDelete,
 }: {
@@ -707,6 +753,7 @@ function CatalogTypeSection({
   syncProgress: SyncProgress | null;
   onSync: (id: string) => void;
   onUploadFile: (doc: LegalDoc, file: File) => Promise<void>;
+  onUploadText: (doc: LegalDoc, text: string) => Promise<void>;
   onUpdate: (
     id: string,
     patch: Partial<Pick<LegalDoc, "title" | "doc_number" | "doc_type" | "source_url">>,
@@ -740,6 +787,7 @@ function CatalogTypeSection({
             syncProgress={syncProgress?.id === doc.id ? syncProgress : null}
             onSync={() => onSync(doc.id)}
             onUploadFile={(file) => onUploadFile(doc, file)}
+            onUploadText={(text) => onUploadText(doc, text)}
             onUpdate={onUpdate}
             onDelete={() => onDelete(doc.id, doc.title)}
           />
@@ -756,6 +804,7 @@ function DocRow({
   syncProgress,
   onSync,
   onUploadFile,
+  onUploadText,
   onUpdate,
   onDelete,
 }: {
@@ -765,6 +814,7 @@ function DocRow({
   syncProgress: SyncProgress | null;
   onSync: () => void;
   onUploadFile: (file: File) => Promise<void>;
+  onUploadText: (text: string) => Promise<void>;
   onUpdate: (
     id: string,
     patch: Partial<Pick<LegalDoc, "title" | "doc_number" | "doc_type" | "source_url">>,
@@ -783,18 +833,25 @@ function DocRow({
   const [rowSaving, setRowSaving] = useState(false);
   const [showPdfUpload, setShowPdfUpload] = useState(false);
   const [pdfDraft, setPdfDraft] = useState<File | null>(null);
+  const [textDraft, setTextDraft] = useState("");
 
   const hasSynced = doc.chunk_count > 0;
   const metadata = doc.catalog_metadata ?? {};
   const sourceType = typeof metadata.source_type === "string" ? metadata.source_type : "";
   const pdfUrl = typeof metadata.pdf_url === "string" ? metadata.pdf_url : "";
   const lastStatus = typeof metadata.last_status === "string" ? metadata.last_status : "";
-  const extractionError = typeof metadata.extraction_error === "string" ? metadata.extraction_error : "";
+  const extractionError =
+    typeof metadata.extraction_error === "string"
+      ? metadata.extraction_error
+      : typeof metadata.last_error === "string"
+        ? metadata.last_error
+        : "";
   const extractionMethod = typeof metadata.extraction_method === "string" ? metadata.extraction_method : "";
   const fileKind = typeof metadata.file_kind === "string" ? metadata.file_kind : "";
   const isManualFile =
     sourceType === "manual_pdf_upload" ||
     sourceType === "manual_docx_upload" ||
+    sourceType === "manual_text_upload" ||
     sourceType === "manual_file_upload" ||
     Boolean(pdfUrl) ||
     fileKind === "docx" ||
@@ -811,7 +868,9 @@ function DocRow({
           ? "Senkronize edilemiyor"
           : "Beklemede";
   const sourceLabel = isManualFile
-    ? fileKind === "docx"
+    ? fileKind === "text"
+      ? "Manuel metin"
+      : fileKind === "docx"
       ? "Word"
       : "PDF/Dosya"
     : canSync
@@ -879,6 +938,17 @@ function DocRow({
     setRowError(null);
     await onUploadFile(pdfDraft);
     setPdfDraft(null);
+    setShowPdfUpload(false);
+  }
+
+  async function submitTextUpload() {
+    if (textDraft.trim().length < 80) {
+      setRowError("Manuel metin en az 80 karakter olmalı.");
+      return;
+    }
+    setRowError(null);
+    await onUploadText(textDraft.trim());
+    setTextDraft("");
     setShowPdfUpload(false);
   }
 
@@ -968,7 +1038,14 @@ function DocRow({
                 )}
                 {extractionMethod && (
                   <span className="rounded-full border border-border bg-muted/30 px-2 py-0.5 text-muted-foreground">
-                    Çıkarım: {extractionMethod === "anthropic_pdf" ? "AI PDF" : "Basit PDF metni"}
+                    Çıkarım:{" "}
+                    {extractionMethod === "manual_text"
+                      ? "Manuel metin"
+                      : extractionMethod === "docx_xml"
+                        ? "Word XML"
+                        : extractionMethod === "anthropic_pdf"
+                          ? "AI PDF"
+                          : "PDF metni"}
                   </span>
                 )}
               </div>
@@ -1065,6 +1142,26 @@ function DocRow({
           <p className="mt-2 text-[11px] text-muted-foreground">
             PDF veya Word dosyası mevcut kayda bağlanır; metin çıkarılırsa chunk’lar yenilenir.
           </p>
+          <div className="mt-3 space-y-2 border-t border-border/60 pt-3">
+            <label className="flex flex-col gap-1 text-xs">
+              <span className="font-medium text-foreground">Dosya okunmazsa metni buraya yapıştır</span>
+              <textarea
+                value={textDraft}
+                disabled={syncing}
+                onChange={(e) => setTextDraft(e.target.value)}
+                placeholder="Kanun/yönetmelik metnini buraya yapıştırın. Sistem bunu doğrudan chunk'lara ayırır."
+                className="min-h-32 rounded-lg border border-border bg-background px-3 py-2 text-xs outline-none focus:border-primary"
+              />
+            </label>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button size="sm" variant="outline" disabled={syncing || textDraft.trim().length < 80} onClick={() => void submitTextUpload()}>
+                Metinle indeksle
+              </Button>
+              <span className="text-[11px] text-muted-foreground">
+                En garantili RAG yolu budur; dosya parser veya mevzuat.gov.tr beklemez.
+              </span>
+            </div>
+          </div>
         </div>
       )}
 

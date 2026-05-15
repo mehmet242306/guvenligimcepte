@@ -45,30 +45,35 @@ async function extractPdfWithAnthropic(buffer: ArrayBuffer): Promise<{
 
   const base64 = Buffer.from(buffer).toString("base64");
   try {
-    const response = await client.messages.create({
-      model: getAnthropicModel(),
-      max_tokens: 8192,
-      temperature: 0,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "document",
-              source: {
-                type: "base64",
-                media_type: "application/pdf",
-                data: base64,
+    const response = await Promise.race([
+      client.messages.create({
+        model: getAnthropicModel(),
+        max_tokens: 8192,
+        temperature: 0,
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "document",
+                source: {
+                  type: "base64",
+                  media_type: "application/pdf",
+                  data: base64,
+                },
               },
-            },
-            {
-              type: "text",
-              text: "Bu PDF mevzuat metnidir. Madde başlıkları ve numaralarını koruyarak düz metin çıkar. Yorum ekleme.",
-            },
-          ],
-        },
-      ],
-    });
+              {
+                type: "text",
+                text: "Bu PDF mevzuat metnidir. Madde başlıkları ve numaralarını koruyarak düz metin çıkar. Yorum ekleme.",
+              },
+            ],
+          },
+        ],
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("AI PDF okuma 25 saniye içinde tamamlanmadı.")), 25_000),
+      ),
+    ]);
 
     const text = response.content.find((block) => block.type === "text")?.text?.trim();
     if (text && text.length > 80) {
