@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
 const uploadSchema = z.object({
+  document_id: z.string().uuid().optional().nullable(),
   title: z.string().min(3).max(500),
   doc_number: z.string().min(2).max(120),
   doc_type: z.enum(OFFICIAL_LEGAL_DOC_TYPES),
@@ -78,6 +79,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     const parsed = uploadSchema.safeParse({
+      document_id: sanitizePlainText(String(formData.get("document_id") || ""), 80) || null,
       title: sanitizePlainText(String(formData.get("title") || ""), 500),
       doc_number: sanitizePlainText(String(formData.get("doc_number") || ""), 120),
       doc_type: sanitizePlainText(String(formData.get("doc_type") || ""), 40),
@@ -118,34 +120,54 @@ export async function POST(request: NextRequest) {
     const pdfUrl = publicUrlData.publicUrl;
     const extractedText = await extractPdfText(file);
     const sourceHash = `official-pdf:${parsed.data.doc_number}:${storagePath}`;
+    const baseMetadata = {
+      source_type: "manual_pdf_upload",
+      pdf_url: pdfUrl,
+      official_url: parsed.data.source_url || null,
+      uploaded_by: auth.userId,
+      last_status: extractedText ? "manual_pdf_indexed" : "manual_pdf_uploaded_without_text",
+    };
 
-    const { data: document, error: docError } = await service
-      .from("legal_documents")
-      .insert({
-        title: parsed.data.title.trim(),
-        doc_number: parsed.data.doc_number.trim(),
-        doc_type: parsed.data.doc_type,
-        source_url: parsed.data.source_url || pdfUrl,
-        jurisdiction_code: "TR",
-        corpus_scope: "official",
-        is_active: true,
-        full_text: extractedText,
-        source_hash: sourceHash,
-        catalog_metadata: {
-          source_type: "manual_pdf_upload",
-          pdf_url: pdfUrl,
-          official_url: parsed.data.source_url || null,
-          uploaded_by: auth.userId,
-          last_status: extractedText ? "manual_pdf_indexed" : "manual_pdf_uploaded_without_text",
-        },
-      })
-      .select("id, title, doc_type, doc_number, source_url, last_synced_at, jurisdiction_code, catalog_metadata, is_active")
-      .single();
+    const documentQuery = parsed.data.document_id
+      ? service
+          .from("legal_documents")
+          .update({
+            title: parsed.data.title.trim(),
+            doc_number: parsed.data.doc_number.trim(),
+            doc_type: parsed.data.doc_type,
+            source_url: parsed.data.source_url || pdfUrl,
+            full_text: extractedText,
+            source_hash: sourceHash,
+            catalog_metadata: baseMetadata,
+          })
+          .eq("id", parsed.data.document_id)
+          .eq("corpus_scope", "official")
+          .select("id, title, doc_type, doc_number, source_url, last_synced_at, jurisdiction_code, catalog_metadata, is_active")
+          .single()
+      : service
+          .from("legal_documents")
+          .insert({
+            title: parsed.data.title.trim(),
+            doc_number: parsed.data.doc_number.trim(),
+            doc_type: parsed.data.doc_type,
+            source_url: parsed.data.source_url || pdfUrl,
+            jurisdiction_code: "TR",
+            corpus_scope: "official",
+            is_active: true,
+            full_text: extractedText,
+            source_hash: sourceHash,
+            catalog_metadata: baseMetadata,
+          })
+          .select("id, title, doc_type, doc_number, source_url, last_synced_at, jurisdiction_code, catalog_metadata, is_active")
+          .single();
+
+    const { data: document, error: docError } = await documentQuery;
 
     if (docError) {
-      return NextResponse.json({ error: `Katalog kaydi olusturulamadi: ${docError.message}` }, { status: 500 });
+      return NextResponse.json({ error: `Katalog kaydi kaydedilemedi: ${docError.message}` }, { status: 500 });
     }
 
+    let chunkCount = 0;
     if (extractedText) {
       const effectiveFrom = new Date().toISOString().slice(0, 10);
       const { data: version, error: versionError } = await service
@@ -168,6 +190,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: `Belge surumu olusturulamadi: ${versionError.message}` }, { status: 500 });
       }
 
+      await service.from("legal_chunks").delete().eq("document_id", document.id);
+
       const chunks = chunkText(extractedText).map((content, index) => ({
         document_id: document.id,
         version_id: version.id,
@@ -187,6 +211,7 @@ export async function POST(request: NextRequest) {
       if (chunkError) {
         return NextResponse.json({ error: `PDF metni chunklara ayrilamadi: ${chunkError.message}` }, { status: 500 });
       }
+      chunkCount = chunks.length;
 
       await service
         .from("legal_documents")
@@ -194,10 +219,7 @@ export async function POST(request: NextRequest) {
           last_synced_at: new Date().toISOString(),
           catalog_metadata: {
             ...((document.catalog_metadata as Record<string, unknown> | null) ?? {}),
-            source_type: "manual_pdf_upload",
-            pdf_url: pdfUrl,
-            official_url: parsed.data.source_url || null,
-            uploaded_by: auth.userId,
+            ...baseMetadata,
             last_status: "manual_pdf_indexed",
             chunk_count: chunks.length,
           },
@@ -209,7 +231,7 @@ export async function POST(request: NextRequest) {
       document: {
         ...document,
         source_url: parsed.data.source_url || pdfUrl,
-        chunk_count: extractedText ? chunkText(extractedText).length : 0,
+        chunk_count: chunkCount,
       },
     }, { status: 201 });
   } catch (error) {

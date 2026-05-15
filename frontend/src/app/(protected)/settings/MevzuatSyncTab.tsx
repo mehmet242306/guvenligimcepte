@@ -31,6 +31,8 @@ interface LegalDoc {
 
 type FilterType = "all" | OfficialLegalDocType;
 type AddMode = "url" | "pdf";
+type SyncResult = { id: string; success: boolean; message: string };
+type SyncProgress = { id: string; progress: number; label: string };
 
 const FILTER_OPTIONS: { key: FilterType; label: string }[] = [
   { key: "all", label: "Tümü" },
@@ -54,7 +56,8 @@ export function MevzuatSyncTab() {
   const [filter, setFilter] = useState<FilterType>("all");
   const [search, setSearch] = useState("");
   const [syncing, setSyncing] = useState<string | null>(null);
-  const [syncResult, setSyncResult] = useState<{ id: string; success: boolean; message: string } | null>(null);
+  const [syncResult, setSyncResult] = useState<SyncResult | null>(null);
+  const [syncProgress, setSyncProgress] = useState<SyncProgress | null>(null);
   const [testResult, setTestResult] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -100,9 +103,17 @@ export function MevzuatSyncTab() {
   async function syncSingle(docId: string) {
     setSyncing(docId);
     setSyncResult(null);
+    setSyncProgress({ id: docId, progress: 12, label: "Senkron isteği hazırlanıyor" });
+    const progressTimer = window.setInterval(() => {
+      setSyncProgress((current) => {
+        if (!current || current.id !== docId || current.progress >= 88) return current;
+        return { ...current, progress: Math.min(current.progress + 8, 88), label: "Mevzuat kaynağı işleniyor" };
+      });
+    }, 900);
     try {
       const supabase = createClient();
       if (!supabase) return;
+      setSyncProgress({ id: docId, progress: 25, label: "Supabase fonksiyonu çağrılıyor" });
 
       const { data, error } = await supabase.functions.invoke("sync-mevzuat", {
         body: { action: "sync_single", document_id: docId },
@@ -119,15 +130,18 @@ export function MevzuatSyncTab() {
         } catch {
           /* ignore */
         }
+        setSyncProgress({ id: docId, progress: 100, label: `Başarısız: ${msg}` });
         setSyncResult({ id: docId, success: false, message: msg });
         return;
       }
 
       if (data?.error) {
+        setSyncProgress({ id: docId, progress: 100, label: `Başarısız: ${data.error}` });
         setSyncResult({ id: docId, success: false, message: data.error });
         return;
       }
 
+      setSyncProgress({ id: docId, progress: 100, label: "Senkron tamamlandı" });
       setSyncResult({
         id: docId,
         success: true,
@@ -140,7 +154,13 @@ export function MevzuatSyncTab() {
         success: false,
         message: err instanceof Error ? err.message : "Bilinmeyen hata",
       });
+      setSyncProgress({
+        id: docId,
+        progress: 100,
+        label: `Başarısız: ${err instanceof Error ? err.message : "Bilinmeyen hata"}`,
+      });
     } finally {
+      window.clearInterval(progressTimer);
       setSyncing(null);
     }
   }
@@ -148,19 +168,29 @@ export function MevzuatSyncTab() {
   async function syncCriticalLaws() {
     setSyncing("critical-laws");
     setSyncResult(null);
+    setSyncProgress({ id: "critical-laws", progress: 10, label: "Temel kanunlar hazırlanıyor" });
+    const progressTimer = window.setInterval(() => {
+      setSyncProgress((current) => {
+        if (!current || current.id !== "critical-laws" || current.progress >= 88) return current;
+        return { ...current, progress: Math.min(current.progress + 7, 88), label: "6331 / 4857 / 5510 işleniyor" };
+      });
+    }, 900);
     try {
       const supabase = createClient();
       if (!supabase) return;
+      setSyncProgress({ id: "critical-laws", progress: 25, label: "Senkron fonksiyonu çağrılıyor" });
 
       const { data, error } = await supabase.functions.invoke("sync-mevzuat", {
         body: { action: "sync_by_doc_numbers", doc_numbers: ["6331", "4857", "5510"] },
       });
 
       if (error) {
+        setSyncProgress({ id: "critical-laws", progress: 100, label: `Başarısız: ${error.message}` });
         setSyncResult({ id: "critical-laws", success: false, message: error.message });
         return;
       }
       if (data?.error) {
+        setSyncProgress({ id: "critical-laws", progress: 100, label: `Başarısız: ${data.error}` });
         setSyncResult({ id: "critical-laws", success: false, message: data.error });
         return;
       }
@@ -174,14 +204,22 @@ export function MevzuatSyncTab() {
             ? `${data.synced} kanun senkronize`
             : `Kısmi: ${data.synced} ok, ${data.failed} hata`,
       });
+      setSyncProgress({
+        id: "critical-laws",
+        progress: 100,
+        label: failed.length === 0 ? "Temel kanunlar senkronize edildi" : "Kısmi tamamlandı; hata detayını kontrol edin",
+      });
       await loadDocs();
     } catch (err) {
+      const message = err instanceof Error ? err.message : "Bilinmeyen hata";
       setSyncResult({
         id: "critical-laws",
         success: false,
-        message: err instanceof Error ? err.message : "Bilinmeyen hata",
+        message,
       });
+      setSyncProgress({ id: "critical-laws", progress: 100, label: `Başarısız: ${message}` });
     } finally {
+      window.clearInterval(progressTimer);
       setSyncing(null);
     }
   }
@@ -265,6 +303,56 @@ export function MevzuatSyncTab() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error ?? "Güncellenemedi");
     await loadDocs();
+  }
+
+  async function uploadPdfForDocument(doc: LegalDoc, file: File) {
+    setSyncing(doc.id);
+    setSyncResult(null);
+    setSyncProgress({ id: doc.id, progress: 10, label: "PDF yükleniyor" });
+    const progressTimer = window.setInterval(() => {
+      setSyncProgress((current) => {
+        if (!current || current.id !== doc.id || current.progress >= 88) return current;
+        const label = current.progress < 45 ? "PDF storage alanına alınıyor" : "PDF metni çıkarılıp chunk oluşturuluyor";
+        return { ...current, progress: Math.min(current.progress + 6, 88), label };
+      });
+    }, 1000);
+    try {
+      const formData = new FormData();
+      formData.append("document_id", doc.id);
+      formData.append("title", doc.title);
+      formData.append("doc_number", doc.doc_number);
+      formData.append("doc_type", doc.doc_type);
+      formData.append("source_url", doc.source_url ?? "");
+      formData.append("file", file);
+
+      const res = await fetch("/api/admin/official-legal-catalog/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        const message = data.error ?? "PDF yüklenemedi";
+        setSyncProgress({ id: doc.id, progress: 100, label: `Başarısız: ${message}` });
+        setSyncResult({ id: doc.id, success: false, message });
+        return;
+      }
+
+      const chunkCount = data.document?.chunk_count ?? 0;
+      const message =
+        chunkCount > 0
+          ? `PDF yüklendi ve ${chunkCount} chunk oluşturuldu`
+          : "PDF yüklendi ancak metin çıkarılamadı; dosya okunabilir PDF olmayabilir";
+      setSyncProgress({ id: doc.id, progress: 100, label: chunkCount > 0 ? "PDF indekslendi" : "PDF yüklendi, metin çıkarılamadı" });
+      setSyncResult({ id: doc.id, success: chunkCount > 0, message });
+      await loadDocs();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "PDF yüklenemedi";
+      setSyncProgress({ id: doc.id, progress: 100, label: `Başarısız: ${message}` });
+      setSyncResult({ id: doc.id, success: false, message });
+    } finally {
+      window.clearInterval(progressTimer);
+      setSyncing(null);
+    }
   }
 
   async function deleteDocument(id: string, title: string) {
@@ -353,6 +441,13 @@ export function MevzuatSyncTab() {
           </span>
         )}
       </div>
+      {syncProgress?.id === "critical-laws" && (
+        <SyncProgressBar
+          progress={syncProgress.progress}
+          label={syncProgress.label}
+          tone={syncResult?.id === "critical-laws" && !syncResult.success ? "error" : "default"}
+        />
+      )}
 
       {showAddForm && (
         <Card>
@@ -490,7 +585,9 @@ export function MevzuatSyncTab() {
               docs={section.docs}
               syncing={syncing}
               syncResult={syncResult}
+              syncProgress={syncProgress}
               onSync={syncSingle}
+              onUploadPdf={uploadPdfForDocument}
               onUpdate={updateDocument}
               onDelete={deleteDocument}
             />
@@ -527,13 +624,42 @@ function StatCard({
   );
 }
 
+function SyncProgressBar({
+  progress,
+  label,
+  tone = "default",
+}: {
+  progress: number;
+  label: string;
+  tone?: "default" | "success" | "error";
+}) {
+  const barClass =
+    tone === "error" ? "bg-red-500" : tone === "success" ? "bg-emerald-500" : "bg-primary";
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between gap-3 text-[11px] text-muted-foreground">
+        <span className={cn(tone === "error" && "text-red-500", tone === "success" && "text-emerald-500")}>
+          {label}
+        </span>
+        <span>{Math.round(progress)}%</span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+        <div className={cn("h-full rounded-full transition-all duration-500", barClass)} style={{ width: `${progress}%` }} />
+      </div>
+    </div>
+  );
+}
+
 function CatalogTypeSection({
   title,
   description,
   docs,
   syncing,
   syncResult,
+  syncProgress,
   onSync,
+  onUploadPdf,
   onUpdate,
   onDelete,
 }: {
@@ -541,8 +667,10 @@ function CatalogTypeSection({
   description: string;
   docs: LegalDoc[];
   syncing: string | null;
-  syncResult: { id: string; success: boolean; message: string } | null;
+  syncResult: SyncResult | null;
+  syncProgress: SyncProgress | null;
   onSync: (id: string) => void;
+  onUploadPdf: (doc: LegalDoc, file: File) => Promise<void>;
   onUpdate: (
     id: string,
     patch: Partial<Pick<LegalDoc, "title" | "doc_number" | "doc_type" | "source_url">>,
@@ -573,7 +701,9 @@ function CatalogTypeSection({
             doc={doc}
             syncing={syncing === doc.id}
             syncResult={syncResult?.id === doc.id ? syncResult : null}
+            syncProgress={syncProgress?.id === doc.id ? syncProgress : null}
             onSync={() => onSync(doc.id)}
+            onUploadPdf={(file) => onUploadPdf(doc, file)}
             onUpdate={onUpdate}
             onDelete={() => onDelete(doc.id, doc.title)}
           />
@@ -587,14 +717,18 @@ function DocRow({
   doc,
   syncing,
   syncResult,
+  syncProgress,
   onSync,
+  onUploadPdf,
   onUpdate,
   onDelete,
 }: {
   doc: LegalDoc;
   syncing: boolean;
-  syncResult: { success: boolean; message: string } | null;
+  syncResult: SyncResult | null;
+  syncProgress: SyncProgress | null;
   onSync: () => void;
+  onUploadPdf: (file: File) => Promise<void>;
   onUpdate: (
     id: string,
     patch: Partial<Pick<LegalDoc, "title" | "doc_number" | "doc_type" | "source_url">>,
@@ -611,6 +745,8 @@ function DocRow({
   });
   const [rowError, setRowError] = useState<string | null>(null);
   const [rowSaving, setRowSaving] = useState(false);
+  const [showPdfUpload, setShowPdfUpload] = useState(false);
+  const [pdfDraft, setPdfDraft] = useState<File | null>(null);
 
   const hasSynced = doc.chunk_count > 0;
   const metadata = doc.catalog_metadata ?? {};
@@ -652,6 +788,17 @@ function DocRow({
     } finally {
       setRowSaving(false);
     }
+  }
+
+  async function submitPdfUpload() {
+    if (!pdfDraft) {
+      setRowError("PDF dosyası seçmelisiniz.");
+      return;
+    }
+    setRowError(null);
+    await onUploadPdf(pdfDraft);
+    setPdfDraft(null);
+    setShowPdfUpload(false);
   }
 
   return (
@@ -728,6 +875,14 @@ function DocRow({
           <Button
             size="sm"
             variant="ghost"
+            onClick={() => setShowPdfUpload((v) => !v)}
+            title="Bu mevzuata PDF yükle"
+          >
+            <Upload className="h-4 w-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
             className="text-red-500 hover:text-red-600"
             onClick={() => void onDelete()}
             title="Katalogdan sil"
@@ -739,6 +894,46 @@ function DocRow({
           </Button>
         </div>
       </div>
+
+      {showPdfUpload && (
+        <div className="rounded-lg border border-dashed border-border bg-muted/20 p-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <FileText className="h-4 w-4 text-muted-foreground" />
+            <input
+              type="file"
+              accept="application/pdf"
+              disabled={syncing}
+              onChange={(e) => setPdfDraft(e.target.files?.[0] ?? null)}
+              className="min-w-[220px] flex-1 text-xs file:mr-3 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1 file:text-xs file:font-medium file:text-primary"
+            />
+            <Button size="sm" disabled={syncing || !pdfDraft} onClick={() => void submitPdfUpload()}>
+              {syncing ? "Yükleniyor…" : "PDF ile güncelle"}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={syncing}
+              onClick={() => {
+                setPdfDraft(null);
+                setShowPdfUpload(false);
+              }}
+            >
+              İptal
+            </Button>
+          </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            Bu PDF mevcut kayda bağlanır; metin çıkarılabilirse eski chunk içerikleri yenilenir.
+          </p>
+        </div>
+      )}
+
+      {syncProgress && (
+        <SyncProgressBar
+          progress={syncProgress.progress}
+          label={syncProgress.label}
+          tone={syncResult ? (syncResult.success ? "success" : "error") : "default"}
+        />
+      )}
 
       <div className="flex flex-wrap items-center gap-2 border-t border-border/60 pt-2">
         <span className="text-[11px] font-medium text-muted-foreground">Bağlantı:</span>
