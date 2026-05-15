@@ -226,7 +226,7 @@ otp_expiry = 3600
 # Dashboard → Authentication → Email Templates → "Confirm signup".
 [auth.email.template.confirmation]
 subject = "RiskNova e-posta onayi"
-content_path = "./templates/confirmation.html"
+content_path = "./supabase/templates/confirmation.html"
 
 # Uncomment to customize email template
 # [auth.email.template.invite]
