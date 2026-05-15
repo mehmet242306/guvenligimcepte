@@ -754,6 +754,10 @@ function DocRow({
   const pdfUrl = typeof metadata.pdf_url === "string" ? metadata.pdf_url : "";
   const isManualPdf = sourceType === "manual_pdf_upload" || Boolean(pdfUrl);
   const canSync = Boolean(doc.source_url?.includes("MevzuatNo="));
+  const cannotSync = Boolean(syncResult && !syncResult.success) || (!canSync && !isManualPdf) || (isManualPdf && !hasSynced);
+  const rowTone = hasSynced && !cannotSync ? "success" : cannotSync ? "error" : "pending";
+  const statusLabel =
+    rowTone === "success" ? "Senkronize edildi" : rowTone === "error" ? "Senkronize edilemiyor" : "Beklemede";
   const syncButtonLabel = syncing
     ? "…"
     : canSync
@@ -802,7 +806,14 @@ function DocRow({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card px-4 py-3 space-y-2">
+    <div
+      className={cn(
+        "space-y-2 rounded-xl border px-4 py-3 transition-colors",
+        rowTone === "success" && "border-emerald-500/35 bg-emerald-500/5",
+        rowTone === "error" && "border-red-500/40 bg-red-500/5",
+        rowTone === "pending" && "border-border bg-card",
+      )}
+    >
       <div className="flex flex-wrap items-start gap-3">
         <Badge variant={doc.doc_type === "law" ? "accent" : "default"} className="shrink-0">
           {docTypeLabel(doc.doc_type)}
@@ -848,6 +859,16 @@ function DocRow({
               <p className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
                 {isManualPdf ? <FileText className="h-3 w-3" /> : <Link2 className="h-3 w-3" />}
                 {isManualPdf ? "PDF kaynağı" : canSync ? "Mevzuat.gov bağlantısı" : "Bağlantı gerekli"}
+              </p>
+              <p
+                className={cn(
+                  "text-[11px] font-medium",
+                  rowTone === "success" && "text-emerald-600",
+                  rowTone === "error" && "text-red-500",
+                  rowTone === "pending" && "text-muted-foreground",
+                )}
+              >
+                {statusLabel}
               </p>
             </>
           )}
