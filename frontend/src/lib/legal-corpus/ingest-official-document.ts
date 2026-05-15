@@ -293,11 +293,18 @@ export async function ingestOfficialDocumentFromPdfText(
       catalog_metadata: {
         ...((doc.catalog_metadata as Record<string, unknown> | null) ?? {}),
         ...meta,
-        last_status: "manual_pdf_indexed",
+        last_status: getManualIndexedStatus(meta),
         chunk_count: chunks.length,
       },
     })
     .eq("id", doc.id);
 
   return chunks.length;
+}
+
+function getManualIndexedStatus(meta: Record<string, unknown>) {
+  if (meta.source === "manual_text_upload" || meta.file_kind === "text") return "manual_text_indexed";
+  if (meta.source === "manual_docx_upload" || meta.file_kind === "docx") return "manual_docx_indexed";
+  if (meta.source === "manual_pdf_upload" || meta.file_kind === "pdf") return "manual_pdf_indexed";
+  return "manual_file_indexed";
 }

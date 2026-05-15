@@ -887,10 +887,26 @@ function DocRow({
             : "MevzuatNo bağlantısı yok; bağlantı ekleyin veya PDF/Word yükleyin.")
         : "Henüz chunk yok; bağlantıdan çekin veya PDF/Word yükleyin (en kolay yol).";
   const lastStatusLabel =
-    lastStatus === "manual_file_indexed" || lastStatus === "manual_pdf_indexed"
-      ? "Dosya metni indekslendi"
-      : lastStatus === "manual_file_uploaded_without_text" || lastStatus === "manual_pdf_uploaded_without_text"
-        ? "Dosya yüklendi, metin çıkarılamadı"
+    lastStatus === "manual_text_indexed"
+      ? "Manuel metin indekslendi"
+      : lastStatus === "manual_docx_indexed"
+        ? "Word metni indekslendi"
+        : lastStatus === "manual_pdf_indexed"
+          ? "PDF metni indekslendi"
+          : lastStatus === "manual_file_indexed"
+            ? "Dosya metni indekslendi"
+            : lastStatus === "manual_text_too_short"
+              ? "Manuel metin çok kısa"
+              : lastStatus === "manual_docx_uploaded_without_text"
+                ? "Word yüklendi, metin çıkarılamadı"
+                : lastStatus === "manual_pdf_uploaded_without_text"
+                  ? "PDF yüklendi, metin çıkarılamadı"
+                  : lastStatus === "manual_file_uploaded_without_text"
+                    ? "Dosya yüklendi, metin çıkarılamadı"
+                    : lastStatus === "sync_failed"
+                      ? "Bağlantı senkronu başarısız"
+                      : lastStatus === "synced"
+                        ? "Bağlantıdan senkronize"
         : "";
   const syncButtonLabel = syncing
     ? "…"

@@ -118,7 +118,17 @@ export async function POST(request: NextRequest) {
       docx_url: kind === "docx" ? fileUrl : null,
       official_url: parsed.data.source_url || null,
       uploaded_by: auth.userId,
-      last_status: extractedText ? "manual_file_indexed" : "manual_file_uploaded_without_text",
+      last_status: extractedText
+        ? kind === "text"
+          ? "manual_text_indexed"
+          : kind === "docx"
+            ? "manual_docx_indexed"
+            : "manual_pdf_indexed"
+        : kind === "text"
+          ? "manual_text_too_short"
+          : kind === "docx"
+            ? "manual_docx_uploaded_without_text"
+            : "manual_pdf_uploaded_without_text",
       extraction_method: extraction.method,
       extraction_error: extractedText ? null : extraction.error,
     };
