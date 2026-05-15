@@ -49,6 +49,19 @@ const CATALOG_SECTIONS: Array<{ key: OfficialLegalDocType; title: string; descri
   { key: "announcement", title: "Diğer içerikler", description: "Tablolar, duyurular ve tamamlayıcı kaynaklar" },
 ];
 
+async function parseApiResponse(res: Response) {
+  const text = await res.text();
+  if (!text.trim()) return { data: {} as Record<string, unknown>, raw: text };
+  try {
+    return { data: JSON.parse(text) as Record<string, unknown>, raw: text };
+  } catch {
+    return {
+      data: { error: text.trim().slice(0, 400) } as Record<string, unknown>,
+      raw: text,
+    };
+  }
+}
+
 async function readFunctionError(error: unknown) {
   let message = error instanceof Error ? error.message : "Senkron işlemi başarısız oldu";
   const context = error && typeof error === "object" && "context" in error ? error.context : null;
@@ -134,36 +147,33 @@ export function MevzuatSyncTab() {
     const progressTimer = window.setInterval(() => {
       setSyncProgress((current) => {
         if (!current || current.id !== docId || current.progress >= 88) return current;
-        return { ...current, progress: Math.min(current.progress + 8, 88), label: "Mevzuat kaynağı işleniyor" };
+        return { ...current, progress: Math.min(current.progress + 6, 88), label: "HTML/PDF kaynağı işleniyor" };
       });
-    }, 900);
+    }, 1200);
     try {
-      const supabase = createClient();
-      if (!supabase) return;
-      setSyncProgress({ id: docId, progress: 25, label: "Supabase fonksiyonu çağrılıyor" });
+      setSyncProgress({ id: docId, progress: 30, label: "mevzuat.gov.tr deneniyor (HTML → PDF)" });
 
-      const { data, error } = await supabase.functions.invoke("sync-mevzuat", {
-        body: { action: "sync_single", document_id: docId },
+      const res = await fetch("/api/admin/official-legal-catalog/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ document_id: docId }),
       });
+      const { data } = await parseApiResponse(res);
 
-      if (error) {
-        const msg = await readFunctionError(error);
-        setSyncProgress({ id: docId, progress: 100, label: `Başarısız: ${msg}` });
+      if (!res.ok) {
+        const hints = Array.isArray(data.hints) ? (data.hints as string[]).join(" ") : "";
+        const msg = [String(data.error ?? "Senkron başarısız"), hints].filter(Boolean).join(" — ");
+        setSyncProgress({ id: docId, progress: 100, label: `Başarısız` });
         setSyncResult({ id: docId, success: false, message: msg });
         return;
       }
 
-      if (data?.error) {
-        setSyncProgress({ id: docId, progress: 100, label: `Başarısız: ${data.error}` });
-        setSyncResult({ id: docId, success: false, message: data.error });
-        return;
-      }
-
+      const source = data.source === "pdf" ? "PDF" : "HTML";
       setSyncProgress({ id: docId, progress: 100, label: "Senkron tamamlandı" });
       setSyncResult({
         id: docId,
         success: true,
-        message: `${data.articles_added ?? 0} madde eklendi`,
+        message: `${data.articles_added ?? 0} chunk (${source})`,
       });
       await loadDocs();
     } catch (err) {
@@ -348,19 +358,22 @@ export function MevzuatSyncTab() {
         method: "POST",
         body: formData,
       });
-      const data = await res.json();
+      const { data } = await parseApiResponse(res);
       if (!res.ok) {
-        const message = data.error ?? "PDF yüklenemedi";
+        const message = String(data.error ?? "PDF yüklenemedi");
         setSyncProgress({ id: doc.id, progress: 100, label: `Başarısız: ${message}` });
         setSyncResult({ id: doc.id, success: false, message });
         return;
       }
 
-      const chunkCount = data.document?.chunk_count ?? 0;
+      const docPayload = data.document as { chunk_count?: number } | undefined;
+      const chunkCount = docPayload?.chunk_count ?? 0;
+      const hints = Array.isArray(data.hints) ? (data.hints as string[]).join(" ") : "";
+      const extractionError = data.extraction_error ? String(data.extraction_error) : "";
       const message =
         chunkCount > 0
           ? `PDF yüklendi ve ${chunkCount} chunk oluşturuldu`
-          : "PDF yüklendi ancak metin çıkarılamadı; dosya okunabilir PDF olmayabilir";
+          : [extractionError || "PDF yüklendi ancak metin çıkarılamadı.", hints].filter(Boolean).join(" ");
       setSyncProgress({ id: doc.id, progress: 100, label: chunkCount > 0 ? "PDF indekslendi" : "PDF yüklendi, metin çıkarılamadı" });
       setSyncResult({ id: doc.id, success: chunkCount > 0, message });
       await loadDocs();
