@@ -225,7 +225,7 @@ export function groupSolutionQueriesIntoSessions(
     const last = gapSessions[gapSessions.length - 1];
     const canAppend =
       last &&
-      isWidgetSurface(metadata) &&
+      shouldGroupOrphanTurn(metadata) &&
       createdAtMs - new Date(last.updatedAt).getTime() <= WIDGET_SESSION_INACTIVITY_MS;
 
     if (canAppend) {
