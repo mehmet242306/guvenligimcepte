@@ -205,6 +205,26 @@ function parseNovaNaturalDateFromText(text: string, reference = new Date()): str
   return null
 }
 
+function normalizeNovaTrainingDate(date: string, asOfDate: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return date
+
+  const reference = new Date(`${asOfDate}T12:00:00`)
+  const parsed = new Date(`${date}T12:00:00`)
+  if (Number.isNaN(reference.getTime()) || Number.isNaN(parsed.getTime())) return date
+
+  if (parsed >= reference) return date
+
+  const [, month, day] = date.split('-')
+  let year = reference.getFullYear()
+  let candidate = `${year}-${month}-${day}`
+  if (new Date(`${candidate}T12:00:00`) < reference) {
+    year += 1
+    candidate = `${year}-${month}-${day}`
+  }
+
+  return candidate
+}
+
 function extractNovaTrainingTitleFromText(text: string): string | null {
   const cleaned = text
     .replace(/["“](.+?)["”]/, '$1')
@@ -4127,17 +4147,16 @@ async function executeConfirmPendingAction(input: any, context: ToolContext): Pr
         anyActionRun.result_snapshot && typeof anyActionRun.result_snapshot === 'object'
           ? anyActionRun.result_snapshot
           : {}
-      const currentKey = currentSnapshot.execution_key ?? null
       const currentState = currentSnapshot.execution_state ?? null
 
-      if (currentKey === executionKey && anyActionRun.executed_at) {
+      if (anyActionRun.executed_at) {
         return {
           success: true,
           data: buildActionReplayPayload(anyActionRun, context),
         }
       }
 
-      if (currentKey === executionKey && (currentState === 'queued' || currentState === 'processing')) {
+      if (currentState === 'queued' || currentState === 'processing' || !anyActionRun.executed_at) {
         await updateActionRunStatus(anyActionRun.id, {
           result_snapshot: {
             ...(currentSnapshot || {}),
@@ -4386,6 +4405,8 @@ async function executeCreateTrainingPlan(input: any, context: ToolContext): Prom
           : 'Egitim tarihi gerekli (ornek: 2026-06-15 veya "15 Haziran").',
       }
     }
+
+    trainingDate = normalizeNovaTrainingDate(trainingDate, context.session.as_of_date)
 
     const workspaceId = await getActiveWorkspaceId(
       context,

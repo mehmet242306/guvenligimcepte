@@ -47,7 +47,11 @@ import type {
   NovaSafetyBlock,
   NovaAgentToolPreview,
 } from "@/lib/nova/agent";
-import { shouldShowNovaConfirmationChoices } from "@/lib/nova/confirmation";
+import {
+  messageIndicatesSettledAction,
+  messageRequestsConfirmation,
+  shouldShowNovaConfirmationChoices,
+} from "@/lib/nova/confirmation";
 import {
   getNovaProactiveBrief,
   markNovaWorkflowStep,
@@ -1686,15 +1690,54 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     }
   }
 
+  function findLatestPendingActionHint(): NovaActionHint | null {
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      const hint = messages[index]?.actionHint;
+      if (hint?.action_run_id && hint.execution_status === "pending_confirmation") {
+        return hint;
+      }
+    }
+    return null;
+  }
+
+  function clearPendingConfirmationMessages(actionRunId?: string | null) {
+    setMessages((prev) =>
+      prev.map((msg) => {
+        const shouldClear =
+          (actionRunId && msg.actionHint?.action_run_id === actionRunId) ||
+          msg.actionHint?.execution_status === "pending_confirmation" ||
+          (msg.role === "bot" && messageRequestsConfirmation(msg.text));
+
+        if (!shouldClear) return msg;
+
+        return {
+          ...msg,
+          actionHint: null,
+          toolPreview: msg.toolPreview
+            ? { ...msg.toolPreview, requiresConfirmation: false }
+            : null,
+        };
+      }),
+    );
+  }
+
   async function handleQuickConfirmation(
     actionHint: NovaActionHint | null | undefined,
     decision: "confirm" | "cancel",
   ) {
-    if (actionHint?.action_run_id) {
-      await handlePendingAction(actionHint, decision);
+    const targetHint =
+      actionHint?.action_run_id && actionHint.execution_status === "pending_confirmation"
+        ? actionHint
+        : findLatestPendingActionHint();
+
+    if (targetHint?.action_run_id) {
+      await handlePendingAction(targetHint, decision);
       return;
     }
-    const reply = decision === "confirm" ? ui.widget.yesReply : ui.widget.noReply;
+
+    if (decision === "cancel") return;
+
+    const reply = ui.widget.yesReply;
     await handleSend(reply);
   }
 
@@ -1730,21 +1773,24 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         throw { context: new Response(JSON.stringify(data), { status: response.status }) };
       }
 
-      setMessages((prev) => [
-        ...prev.map((msg) =>
-          msg.actionHint?.action_run_id === actionRunId
-            ? { ...msg, actionHint: null }
-            : msg,
-        ),
-        buildBotMessageFromAgentResponse(data),
-      ]);
+      clearPendingConfirmationMessages(actionRunId);
 
       const executionStatus =
         data.action_hint && typeof data.action_hint === "object"
           ? data.action_hint.execution_status
           : null;
 
-      if (decision === "confirm" && (executionStatus === "queued" || executionStatus === "processing")) {
+      const settled =
+        executionStatus === "completed" ||
+        messageIndicatesSettledAction(data.answer || "");
+
+      setMessages((prev) => [...prev, buildBotMessageFromAgentResponse(data)]);
+
+      if (
+        decision === "confirm" &&
+        !settled &&
+        (executionStatus === "queued" || executionStatus === "processing")
+      ) {
         void pollActionRunUntilSettled(actionRunId);
       }
     } catch (err: unknown) {
@@ -1789,7 +1835,18 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         continue;
       }
 
-      setMessages((prev) => [...prev, buildBotMessageFromAgentResponse(data)]);
+      clearPendingConfirmationMessages(actionRunId);
+      setMessages((prev) => {
+        const withoutQueued = prev.filter(
+          (msg) =>
+            !(
+              msg.actionHint?.action_run_id === actionRunId &&
+              messageIndicatesSettledAction(msg.text) === false &&
+              (msg.text.includes("kuyruga") || msg.text.includes("kuyruğa"))
+            ),
+        );
+        return [...withoutQueued, buildBotMessageFromAgentResponse(data)];
+      });
       return;
     }
   }

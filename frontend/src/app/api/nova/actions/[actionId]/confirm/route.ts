@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { requirePermission } from "@/lib/supabase/api-auth";
 import { enforceRateLimit, parseJsonBody } from "@/lib/security/server";
 import {
-  buildActionStateResponse,
   buildReplayResponse,
+  confirmNovaActionRunSynchronously,
   loadNovaActionRunForUser,
   novaActionConfirmSchema,
-  queueNovaActionExecution,
 } from "@/lib/nova/action-endpoint";
 import { assertNovaFeatureEnabled } from "@/lib/nova/governance";
 
@@ -55,19 +54,7 @@ export async function POST(
       return NextResponse.json(buildReplayResponse(actionRun), { status: 200 });
     }
 
-    if (actionRun.status === "confirmed") {
-      return NextResponse.json(buildActionStateResponse(actionRun), { status: 202 });
-    }
-
-    const asyncGuard = await assertNovaFeatureEnabled({
-      featureKey: "nova.agent.async_execution",
-      userId: auth.userId,
-      organizationId: auth.organizationId,
-      fallbackMessage: "Nova arka plan isleyicisi bu tenant icin su anda kapali.",
-    });
-    if (asyncGuard) return asyncGuard;
-
-    const queued = await queueNovaActionExecution({
+    const result = await confirmNovaActionRunSynchronously({
       actionRun,
       userId: auth.userId,
       organizationId: auth.organizationId,
@@ -75,7 +62,7 @@ export async function POST(
       idempotencyKey: parsed.data.idempotency_key,
     });
 
-    return NextResponse.json(queued, { status: 202 });
+    return NextResponse.json(result.response, { status: result.httpStatus });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Bilinmeyen hata";
     return NextResponse.json({ message }, { status: 500 });

@@ -214,7 +214,14 @@ export function buildReplayResponse(actionRun: NovaStoredActionRun): NovaAgentRe
       summary:
         typeof snapshot.summary === "string" ? snapshot.summary : actionRun.action_summary,
       idempotent_replay: true,
-      execution_status: actionRun.status,
+      execution_status:
+        actionRun.status === "completed"
+          ? "completed"
+          : actionRun.status === "cancelled"
+            ? "cancelled"
+            : actionRun.status === "failed"
+              ? "failed"
+              : "completed",
       queue_task_id:
         typeof snapshot.queue_task_id === "string" ? snapshot.queue_task_id : null,
     },
@@ -521,5 +528,78 @@ export async function invokeNovaActionExecutor(params: {
   return {
     status: response.status,
     payload: normalizeNovaAgentResponse(parsed),
+  };
+}
+
+export async function confirmNovaActionRunSynchronously(params: {
+  actionRun: NovaStoredActionRun;
+  userId: string;
+  organizationId: string;
+  contextSurface: "widget";
+  idempotencyKey: string;
+}) {
+  if (
+    params.actionRun.status === "completed" ||
+    params.actionRun.status === "cancelled" ||
+    params.actionRun.status === "failed"
+  ) {
+    return {
+      response: buildReplayResponse(params.actionRun),
+      httpStatus: 200,
+    };
+  }
+
+  const snapshot =
+    params.actionRun.result_snapshot && typeof params.actionRun.result_snapshot === "object"
+      ? params.actionRun.result_snapshot
+      : {};
+  const storedExecutionKey =
+    typeof snapshot.execution_key === "string" ? snapshot.execution_key : null;
+  const effectiveIdempotencyKey = storedExecutionKey ?? params.idempotencyKey;
+
+  const executionContext = await resolveNovaExecutionContext(params.userId);
+  const execution = await invokeNovaActionExecutor({
+    actionRun: params.actionRun,
+    userId: params.userId,
+    organizationId: params.organizationId,
+    workspaceId: executionContext.workspaceId,
+    jurisdictionCode: executionContext.jurisdictionCode,
+    accessToken: executionContext.accessToken,
+    internalServiceSecret: executionContext.internalServiceSecret,
+    confirmationAction: "confirm",
+    contextSurface: params.contextSurface,
+    idempotencyKey: effectiveIdempotencyKey,
+  });
+
+  const reloaded = await loadNovaActionRunForUser(
+    params.actionRun.id,
+    params.userId,
+    params.organizationId,
+  );
+
+  if (reloaded?.status === "completed") {
+    return {
+      response: buildReplayResponse(reloaded),
+      httpStatus: 200,
+    };
+  }
+
+  if (execution.status >= 400) {
+    return {
+      response: execution.payload,
+      httpStatus: execution.status,
+    };
+  }
+
+  if (reloaded) {
+    return {
+      response: buildActionStateResponse(reloaded),
+      httpStatus: execution.status === 202 ? 202 : 200,
+    };
+  }
+
+  return {
+    response: execution.payload,
+    httpStatus: execution.status === 202 ? 202 : 200,
   };
 }
