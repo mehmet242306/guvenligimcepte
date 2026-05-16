@@ -1304,7 +1304,21 @@ function hasExplicitLegalAnchor(query: string): boolean {
 function shouldUseDeterministicLegalMode(query: string): boolean {
   return detectNovaIntentAdvanced(query) === 'regulation' &&
     !isOperationalCommandQuery(query) &&
-    hasExplicitLegalAnchor(query)
+    !isOffTopicNonLegalQuery(query)
+}
+
+function isOffTopicNonLegalQuery(query: string): boolean {
+  const normalized = normalizeTurkishAscii(query)
+  if (/(hava durumu|yemek tarifi|futbol mac|film oner|oyun oner|kripto|bitcoin|flort|iliski tavsiye)/i.test(normalized)) {
+    return true
+  }
+  if (/(mevzuat|yonetmelik|kanun|madde|6331|4857|5510|isg|is guvenligi|yukumluluk|risk degerlendirme)/i.test(normalized)) {
+    return false
+  }
+  if (/(is kazasi|ramak kala|kkd|ergonomi|acil durum|isyeri hekimi)/i.test(normalized)) {
+    return false
+  }
+  return normalized.trim().length < 16
 }
 
 function summarizeLegalContentExtractively(content: string, maxLength = 260): string {
@@ -1462,8 +1476,8 @@ function composeDeterministicLegalAnswer(params: {
       hasExact
         ? 'Bu cevap, mevzuat indeksindeki eslesen kanun/madde kayitlarindan dogrudan derlendi.'
         : hasDense
-          ? 'Bu cevap, yururluk tarihi filtreli hibrit retrieval ve deterministik siralama ile secilen mevzuat parcalarindan derlendi.'
-          : 'Bu cevap, indeksteki en yakin mevzuat parcalarindan derlendi; tarih, istisna veya kapsam kritikse soruyu yururluk tarihiyle netlestirin.',
+          ? 'Sorunuzdaki ifade metinde birebir gecmese bile, hibrit retrieval ile secilen parcalarla mevzuata baglanabilir. Bu bolum yorumlayici baglanti icerebilir; baglayici ifade icin madde metnine bakin.'
+          : 'Bu cevap, indeksteki en yakin mevzuat parcalarindan derlendi. Dogrudan madde atfi yoksa ifadeyi dikkatli yorumlayin; tarih ve kapsam icin yururluk tarihiyle netlestirin.',
       hasTenantPrivate
         ? 'Bu cevapta tenant-private belgeler de kullanildi. Bu alintilari resmi mevzuatin yerine gecen dayanak olarak degil, kurumunuza ozel tamamlayici kaynak olarak degerlendirin.'
         : '',
@@ -1626,6 +1640,20 @@ async function buildDeterministicLegalAnswer(
   anthropic: Anthropic,
 ): Promise<{ answer: string; confidence: number; sources: any[]; retrievalMode: string; trace: Record<string, unknown> }> {
   const retrievalMode = detectRagRetrievalMode(query)
+
+  if (isOffTopicNonLegalQuery(query)) {
+    const isEnglish = context.session.answer_language === 'en'
+    return {
+      answer: isEnglish
+        ? 'This question does not appear to be about occupational health and safety legislation. Please ask an OHS or legal-compliance question.'
+        : 'Bu soru, is sagligi ve guvenligi mevzuati ile dogrudan ilgili gorunmuyor. Mevzuat veya ISG kapsaminda yeniden sorabilirsiniz.',
+      confidence: 0.12,
+      sources: [],
+      retrievalMode: 'off_topic',
+      trace: { retrieval_mode: 'off_topic', exact: [], sparse: [], dense: [], reranked: [] },
+    }
+  }
+
   const exactHits = await exactLegalCitationLookup(query, context, 5)
   if (exactHits.length > 0) {
     const composed = composeDeterministicLegalAnswer({
@@ -1658,6 +1686,7 @@ async function buildDeterministicLegalAnswer(
     result_limit: 24,
     jurisdiction_code: context.session.jurisdiction_code,
     workspace_id: context.session.workspace_id ?? null,
+    organization_id: context.user.organization_id ?? null,
     retrieval_mode: retrievalMode,
   })
   if (lexicalError) {
@@ -1690,10 +1719,11 @@ async function buildDeterministicLegalAnswer(
     const { data: denseRows, error: denseError } = await context.supabase.rpc('search_legal_chunks_dense_v1', {
       query_embedding: queryEmbedding,
       as_of_date: context.session.as_of_date,
-      match_threshold: 0.57,
+      match_threshold: 0.52,
       result_limit: 24,
       jurisdiction_code: context.session.jurisdiction_code,
       workspace_id: context.session.workspace_id ?? null,
+      organization_id: context.user.organization_id ?? null,
       retrieval_mode: retrievalMode,
     })
 
@@ -1807,16 +1837,95 @@ async function executeSearchLegislation(input: any, context: ToolContext): Promi
         : 10
 
     const retrievalMode = detectRagRetrievalMode(input.query || '')
-    const { data, error } = await context.supabase.rpc('search_legal_chunks_v3', {
+
+    if (isOffTopicNonLegalQuery(input.query || '')) {
+      return {
+        success: true,
+        data: {
+          count: 0,
+          off_topic: true,
+          message: context.session.language === 'en'
+            ? 'This question is outside OHS legislation scope.'
+            : 'Bu soru ISG mevzuati kapsami disinda.',
+        },
+      }
+    }
+
+    const { data: lexicalRows, error } = await context.supabase.rpc('search_legal_chunks_v3', {
       search_terms: searchTerms,
       as_of_date: context.session.as_of_date,
       result_limit: toolLimit,
       jurisdiction_code: context.session.jurisdiction_code,
       workspace_id: context.session.workspace_id ?? null,
+      organization_id: context.user.organization_id ?? null,
       retrieval_mode: retrievalMode,
     })
 
-    if (error) {
+    let denseRows: any[] = []
+    const openaiKey = Deno.env.get('OPENAI_API_KEY')
+    const openaiClient = openaiKey ? new OpenAI({ apiKey: openaiKey }) : null
+    const queryEmbedding = openaiClient
+      ? await generateEmbedding(input.query || '', openaiClient)
+      : null
+    if (queryEmbedding) {
+      const { data: denseData } = await context.supabase.rpc('search_legal_chunks_dense_v1', {
+        query_embedding: queryEmbedding,
+        as_of_date: context.session.as_of_date,
+        match_threshold: 0.52,
+        result_limit: toolLimit,
+        jurisdiction_code: context.session.jurisdiction_code,
+        workspace_id: context.session.workspace_id ?? null,
+        organization_id: context.user.organization_id ?? null,
+        retrieval_mode: retrievalMode,
+      })
+      denseRows = denseData || []
+    }
+
+    const lexicalHits: LegalEvidenceHit[] = (lexicalRows || []).map((chunk: any) => {
+      const metadata = applyEvidenceContext(
+        inferLegislationMetadata(chunk.doc_title || 'Mevzuat', chunk.article_number),
+        chunk,
+      )
+      return {
+        chunk_id: chunk.chunk_id || null,
+        document_id: chunk.document_id || null,
+        version_id: chunk.version_id || null,
+        law: chunk.doc_title || 'Mevzuat',
+        article: chunk.article_number || null,
+        title: chunk.article_title || null,
+        content: chunk.content || '',
+        relevance_score: Number(chunk.rank || 0),
+        doc_number: chunk.doc_number || null,
+        match_type: 'lexical',
+        ...metadata,
+      }
+    })
+
+    const denseHits: LegalEvidenceHit[] = denseRows.map((chunk: any) => {
+      const metadata = applyEvidenceContext(
+        inferLegislationMetadata(chunk.doc_title || 'Mevzuat', chunk.article_number),
+        chunk,
+      )
+      return {
+        chunk_id: chunk.chunk_id || null,
+        document_id: chunk.document_id || null,
+        version_id: chunk.version_id || null,
+        law: chunk.doc_title || 'Mevzuat',
+        article: chunk.article_number || null,
+        title: chunk.article_title || null,
+        content: chunk.content || '',
+        relevance_score: Number(chunk.similarity || 0),
+        doc_number: chunk.doc_number || null,
+        match_type: 'dense',
+        ...metadata,
+      }
+    })
+
+    const fused = reciprocalRankFusion([annotateMinMaxNorm(lexicalHits), annotateMinMaxNorm(denseHits)])
+      .sort((a, b) => Number(b.rank_fusion_score || 0) - Number(a.rank_fusion_score || 0))
+      .slice(0, toolLimit)
+
+    if (error && fused.length === 0) {
       console.error('search_legal_chunks_v3 error:', error.message)
       // Fallback: fulltext search
       const { data: ftData } = await context.supabase.rpc('search_legal_fulltext', {
@@ -1856,30 +1965,25 @@ async function executeSearchLegislation(input: any, context: ToolContext): Promi
     return {
       success: true,
       data: {
-        count: data?.length || 0,
-        results: (data || []).map((chunk: any) => {
-          const metadata = applyEvidenceContext(
-            inferLegislationMetadata(chunk.doc_title || 'Mevzuat', chunk.article_number),
-            chunk,
-          )
-          return {
-            law: chunk.doc_title || 'Mevzuat',
-            doc_number: chunk.doc_number || null,
-            article: chunk.article_number,
-            title: chunk.article_title,
-            content: (chunk.content || '').substring(0, 500),
-            relevance_score: chunk.rank || 0,
-            corpus_scope: metadata.corpus_scope,
-            jurisdiction_code: metadata.jurisdiction_code,
-            official_citation: metadata.official_citation,
-            binding_level: metadata.binding_level,
-            source_type: metadata.source_type,
-          }
-        }),
+        count: fused.length,
+        results: fused.map((chunk) => ({
+          law: chunk.law,
+          doc_number: chunk.doc_number || null,
+          article: chunk.article,
+          title: chunk.title,
+          content: (chunk.content || '').substring(0, 500),
+          relevance_score: chunk.rank_fusion_score || chunk.relevance_score || 0,
+          corpus_scope: chunk.corpus_scope,
+          jurisdiction_code: chunk.jurisdiction_code,
+          official_citation: chunk.official_citation,
+          binding_level: chunk.binding_level,
+          source_type: chunk.source_type,
+          match_type: chunk.match_type,
+        })),
         interpretation_guidance: context.session.language === 'en'
-          ? 'Use these results by clearly separating source-backed statements, Nova interpretation, and operational next step.'
-          : 'Bu sonuclari kullanirken kaynaga dayali bilgi, Nova yorumu ve operasyonel sonraki adimi acikca ayir.',
-      }
+          ? 'If the exact statutory phrase is missing, you may interpretively link the question to the closest indexed passages. Say clearly when the question is outside legislation scope.'
+          : 'Metinde birebir ifade yoksa soruyu en yakin mevzuat parcalarina yorumlayarak baglayabilirsiniz. Soru mevzuat disindaysa bunu acikca belirtin.',
+      },
     }
   } catch (err: any) {
     console.error('executeSearchLegislation error:', err)

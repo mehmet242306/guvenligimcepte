@@ -8,6 +8,7 @@ import {
 } from "@/lib/legal-corpus/mevzuat-parse";
 import { extractPdfTextFromUrl } from "@/lib/legal-corpus/pdf-text-extract";
 import { classifyLawForRag } from "@/lib/rag/legal/applyCoreIsgLawScopes";
+import { embedLegalChunksForDocument } from "@/lib/rag/legal/embeddings";
 
 export type IngestResult =
   | {
@@ -158,7 +159,16 @@ async function persistArticles(
     })
     .eq("id", doc.id);
 
+  await embedChunksSafe(service, doc.id);
   return chunks.length;
+}
+
+async function embedChunksSafe(service: SupabaseClient, documentId: string) {
+  try {
+    await embedLegalChunksForDocument(service, documentId, { onlyMissing: true });
+  } catch {
+    /* optional; admin backfill can retry */
+  }
 }
 
 async function fetchHtml(url: string): Promise<string | null> {
@@ -342,6 +352,7 @@ export async function ingestOfficialDocumentFromPdfText(
     })
     .eq("id", doc.id);
 
+  await embedChunksSafe(service, doc.id);
   return chunks.length;
 }
 

@@ -1,46 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { normalizeNovaAgentResponse, novaChatRequestSchema } from "@/lib/nova/agent";
 import { assertNovaFeatureEnabled } from "@/lib/nova/governance";
+import { answerWithLegalRag } from "@/lib/rag/legal/answer-with-rag";
 import { enforceRateLimit, parseJsonBody, resolveAiDailyLimit } from "@/lib/security/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
+import { createServiceClient } from "@/lib/security/server";
 import { getAccountContextForUser } from "@/lib/account/account-routing";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
-const NOVA_READ_MODEL =
-  process.env.NOVA_READ_MODEL ||
-  process.env.ANTHROPIC_MODEL ||
-  "claude-sonnet-4-6";
-
-function buildReadOnlyNovaSystemPrompt(language?: string | null) {
-  const isEnglish = String(language || "").toLowerCase().startsWith("en");
-
-  if (isEnglish) {
-    return [
-      "You are Nova, RiskNova's OHS assistant.",
-      "Answer normal user questions directly. Do not respond with permission errors for general OHS, regulation, risk, field inspection, document, or image-context questions.",
-      "You may explain Turkish OHS practice from general professional knowledge. If an exact legal citation is needed but not available in the prompt, say the official citation should be checked, then continue with useful guidance.",
-      "Do not invent law article numbers, official dates, or direct quotations.",
-      "Do not access or summarize private tenant records in this read-only route. If the user asks for private company data or record creation, explain what you can answer generally and what needs authorization.",
-      "If the prompt includes [Gorsel Baglami], use that image context as visual evidence and give OHS observations, risks, and next steps.",
-      "Keep answers practical, concise, and in the user's language.",
-    ].join("\n");
-  }
-
-  return [
-    "Sen Nova'sin, RiskNova'nin ISG asistanisin.",
-    "Normal kullanici sorularina dogrudan cevap ver. Genel ISG, mevzuat, risk, saha denetimi, dokuman veya gorsel baglami sorularinda yetki hatasi cevabi verme.",
-    "Turkiye ISG uygulamalarini genel uzmanlik bilgisiyle aciklayabilirsin. Kesin resmi atif gerekiyorsa ve prompt icinde yoksa resmi kaynaktan kontrol edilmesi gerektigini belirt, sonra kullanisli rehberlige devam et.",
-    "Kanun maddesi, resmi tarih veya dogrudan alinti uydurma.",
-    "Bu read-only hatta tenant'a ozel gizli kayitlari okuma veya ozetleme. Kullanici firma verisi ya da kayit olusturma isterse genel bilgi ver ve bunun yetkili ajan akisi gerektirdigini belirt.",
-    "Prompt icinde [Gorsel Baglami] varsa bunu gorsel kanit olarak kullan; ISG gozlemleri, riskler ve sonraki adimlari yaz.",
-    "Cevabi kullanicinin dilinde, pratik, net ve uygulanabilir ver.",
-  ].join("\n");
-}
-
+/**
+ * Nova read gateway — resmi mevzuat indeksinden hibrit RAG + yorumlayıcı cevap.
+ */
 export async function POST(request: NextRequest) {
   const parsed = await parseJsonBody(request, novaChatRequestSchema);
   if (!parsed.ok) return parsed.response;
@@ -48,9 +21,11 @@ export async function POST(request: NextRequest) {
   const payload = parsed.data;
   const auth = await requireAuth(request);
   if (!auth.ok) return auth.response;
+
   const accountContext = await getAccountContextForUser(auth.userId);
   const bypassNovaLimitsForAdmin = accountContext.isPlatformAdmin === true;
   const plan = await resolveAiDailyLimit(auth.userId);
+
   if (!bypassNovaLimitsForAdmin) {
     const rateLimitResponse = await enforceRateLimit(request, {
       userId: auth.userId,
@@ -60,9 +35,10 @@ export async function POST(request: NextRequest) {
       limit: plan.dailyLimit,
       windowSeconds: 24 * 60 * 60,
       planKey: plan.planKey,
-      metadata: { feature: "nova_legal_chat" },
+      metadata: { feature: "nova_legal_chat_rag" },
     });
     if (rateLimitResponse) return rateLimitResponse;
+
     const entitlementResponse = await consumeEntitlement(auth, "nova_message");
     if (entitlementResponse) return entitlementResponse;
   }
@@ -71,77 +47,59 @@ export async function POST(request: NextRequest) {
     featureKey: "nova.agent.chat",
     userId: auth.userId,
     organizationId: auth.organizationId,
-    workspaceId: null,
-    fallbackMessage:
-      "Nova bu hesap icin su anda kapali. Lutfen daha sonra tekrar deneyin.",
+    workspaceId: payload.company_workspace_id ?? null,
+    fallbackMessage: "Nova bu hesap icin su anda kapali. Lutfen daha sonra tekrar deneyin.",
   });
-  if (rolloutResponse) {
-    return rolloutResponse;
-  }
+  if (rolloutResponse) return rolloutResponse;
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json(
-      { message: "ANTHROPIC_API_KEY tanimli degil." },
-      { status: 500 },
-    );
-  }
-
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const service = createServiceClient();
 
   try {
-    const response = await anthropic.messages.create({
-      model: NOVA_READ_MODEL,
-      max_tokens: 1200,
-      temperature: 0.2,
-      system: buildReadOnlyNovaSystemPrompt(payload.language),
-      messages: [
-        ...payload.history.slice(-8).map((item) => ({
-          role: item.role,
-          content: item.content,
-        })),
-        {
-          role: "user",
-          content: payload.message,
-        },
-      ],
+    const rag = await answerWithLegalRag({
+      service,
+      query: payload.message,
+      language: payload.language,
+      jurisdictionCode: payload.jurisdiction_code ?? "TR",
+      workspaceId: payload.company_workspace_id ?? null,
+      organizationId: auth.organizationId,
+      polish: payload.answer_mode === "polish",
     });
-
-    const answer =
-      response.content.find((block) => block.type === "text")?.text?.trim() ||
-      "Nova su anda yanit uretmedi. Lutfen sorunuzu biraz daha acik yazar misiniz?";
 
     await logAiUsage({
       userId: auth.userId,
       organizationId: auth.organizationId,
-      model: NOVA_READ_MODEL,
+      model: "legal-rag-hybrid",
       endpoint: "/api/nova/legal-chat",
-      promptTokens: response.usage?.input_tokens ?? 0,
-      completionTokens: response.usage?.output_tokens ?? 0,
+      promptTokens: 0,
+      completionTokens: 0,
       success: true,
       metadata: {
-        gateway_mode: "read",
+        gateway_mode: "read_rag",
+        retrieval_mode: rag.retrievalMode,
+        confidence: rag.confidence,
+        source_count: rag.sources.length,
         context_surface: payload.context_surface,
-        current_page: payload.current_page ?? null,
-        company_workspace_id: null,
+        company_workspace_id: payload.company_workspace_id ?? null,
       },
     });
 
     return NextResponse.json(
       normalizeNovaAgentResponse({
         type: "message",
-        answer,
-        sources: [],
+        answer: rag.answer,
+        sources: rag.sources,
         session_id: payload.session_id ?? null,
         as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
-        answer_mode: "extractive",
+        answer_mode: payload.answer_mode ?? "extractive",
         jurisdiction_code: payload.jurisdiction_code ?? "TR",
         cached: false,
         telemetry: {
-          gateway_mode: "read",
+          gateway_mode: "read_rag",
+          retrieval_mode: rag.retrievalMode,
+          confidence: rag.confidence,
           context_surface: payload.context_surface,
           current_page: payload.current_page ?? null,
-          company_workspace_id: null,
-          model: NOVA_READ_MODEL,
+          company_workspace_id: payload.company_workspace_id ?? null,
         },
       }),
     );
@@ -157,10 +115,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      {
-        message:
-          "Nova su anda yanit uretirken hata aldi. Lutfen bir kez daha deneyin.",
-      },
+      { message: "Nova su anda yanit uretirken hata aldi. Lutfen bir kez daha deneyin." },
       { status: 500 },
     );
   }
