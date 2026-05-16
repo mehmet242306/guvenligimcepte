@@ -51,9 +51,14 @@ function isCompatSchemaError(message: string | undefined | null): boolean {
   );
 }
 
-function hasOrganizationWideNovaAccess(account: AccountContextResponse | null): boolean {
+/** Yalnizca OSGB yoneticisi veya kurumsal owner/admin tum firmalari gorebilir. */
+export function hasOrganizationWideNovaAccess(account: AccountContextResponse | null): boolean {
   const context = account?.context;
   if (!context?.organizationId || !context.accountType) {
+    return false;
+  }
+
+  if (context.isPlatformAdmin) {
     return false;
   }
 
@@ -61,7 +66,11 @@ function hasOrganizationWideNovaAccess(account: AccountContextResponse | null): 
     return hasManagedOsgbAccount(context);
   }
 
-  return true;
+  if (context.accountType === "enterprise") {
+    return context.membershipRole === "owner" || context.membershipRole === "admin";
+  }
+
+  return false;
 }
 
 async function fetchActiveOrganizationWorkspaceIds(
@@ -192,6 +201,12 @@ export async function getNovaProactiveBrief(locale: string = "tr"): Promise<Nova
 
   if (!user) return null;
 
+  const { data: userProfile } = await supabase
+    .from("user_profiles")
+    .select("id")
+    .eq("auth_user_id", user.id)
+    .maybeSingle();
+
   const account = await fetchAccountContext();
   const organizationId = account?.context.organizationId ?? null;
   const organizationWideAccess = hasOrganizationWideNovaAccess(account);
@@ -216,6 +231,7 @@ export async function getNovaProactiveBrief(locale: string = "tr"): Promise<Nova
   let workflowRunsQuery = supabase
     .from("nova_workflow_runs")
     .select("id, title, summary, status, current_step, total_steps, company_workspace_id")
+    .eq("user_id", user.id)
     .eq("status", "active")
     .order("updated_at", { ascending: false })
     .limit(3);
@@ -242,6 +258,11 @@ export async function getNovaProactiveBrief(locale: string = "tr"): Promise<Nova
 
   if (!organizationWideAccess) {
     dueTasksQuery = dueTasksQuery.in("company_workspace_id", accessibleWorkspaceIds);
+    if (userProfile?.id) {
+      dueTasksQuery = dueTasksQuery.or(
+        `assigned_to.eq.${userProfile.id},created_by.eq.${userProfile.id},assigned_to.is.null`,
+      );
+    }
   }
 
   let dueTrainingsQuery = supabase
@@ -293,6 +314,7 @@ export async function getNovaProactiveBrief(locale: string = "tr"): Promise<Nova
   let signalsQuery = supabase
     .from("nova_learning_signals")
     .select("signal_label, outcome, signal_key, created_at, company_workspace_id")
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(6);
 

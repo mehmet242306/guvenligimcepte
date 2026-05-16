@@ -189,8 +189,20 @@ function buildNovaImageReply(image: NovaImageAnalysis, userText: string): string
 }
 
 const PANEL_EDGE_GAP = 12;
-const WIDGET_HISTORY_STORAGE_KEY = "risknova:nova-widget-history";
-const ACTIVE_WIDGET_SESSION_STORAGE_KEY = "risknova:nova-widget-active-session-id";
+const WIDGET_HISTORY_STORAGE_PREFIX = "risknova:nova-widget-history";
+const ACTIVE_WIDGET_SESSION_STORAGE_PREFIX = "risknova:nova-widget-active-session-id";
+
+function widgetHistoryStorageKey(authUserId: string | null | undefined) {
+  return authUserId
+    ? `${WIDGET_HISTORY_STORAGE_PREFIX}:${authUserId}`
+    : WIDGET_HISTORY_STORAGE_PREFIX;
+}
+
+function activeWidgetSessionStorageKey(authUserId: string | null | undefined) {
+  return authUserId
+    ? `${ACTIVE_WIDGET_SESSION_STORAGE_PREFIX}:${authUserId}`
+    : ACTIVE_WIDGET_SESSION_STORAGE_PREFIX;
+}
 const MAX_WIDGET_HISTORY_SESSIONS = 20;
 const MAX_WIDGET_HISTORY_MESSAGES = 80;
 
@@ -281,11 +293,11 @@ function normalizeHistorySession(raw: Partial<WidgetHistorySession>): WidgetHist
   };
 }
 
-function readLocalWidgetHistory(): WidgetHistorySession[] {
+function readLocalWidgetHistory(authUserId?: string | null): WidgetHistorySession[] {
   if (typeof window === "undefined") return [];
 
   try {
-    const raw = window.localStorage.getItem(WIDGET_HISTORY_STORAGE_KEY);
+    const raw = window.localStorage.getItem(widgetHistoryStorageKey(authUserId));
     if (!raw) return [];
     const parsed = JSON.parse(raw) as Array<Partial<WidgetHistoryItem & WidgetHistorySession>>;
     if (!Array.isArray(parsed)) return [];
@@ -315,11 +327,11 @@ function readLocalWidgetHistory(): WidgetHistorySession[] {
   }
 }
 
-function writeLocalWidgetHistory(sessions: WidgetHistorySession[]) {
+function writeLocalWidgetHistory(sessions: WidgetHistorySession[], authUserId?: string | null) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(
-      WIDGET_HISTORY_STORAGE_KEY,
+      widgetHistoryStorageKey(authUserId),
       JSON.stringify(sessions.slice(0, MAX_WIDGET_HISTORY_SESSIONS)),
     );
   } catch {
@@ -327,18 +339,19 @@ function writeLocalWidgetHistory(sessions: WidgetHistorySession[]) {
   }
 }
 
-function readActiveWidgetSessionId() {
+function readActiveWidgetSessionId(authUserId?: string | null) {
   if (typeof window === "undefined") return "";
-  return window.localStorage.getItem(ACTIVE_WIDGET_SESSION_STORAGE_KEY) || "";
+  return window.localStorage.getItem(activeWidgetSessionStorageKey(authUserId)) || "";
 }
 
-function writeActiveWidgetSessionId(sessionId: string) {
+function writeActiveWidgetSessionId(sessionId: string, authUserId?: string | null) {
   if (typeof window === "undefined") return;
+  const storageKey = activeWidgetSessionStorageKey(authUserId);
   if (sessionId) {
-    window.localStorage.setItem(ACTIVE_WIDGET_SESSION_STORAGE_KEY, sessionId);
+    window.localStorage.setItem(storageKey, sessionId);
     return;
   }
-  window.localStorage.removeItem(ACTIVE_WIDGET_SESSION_STORAGE_KEY);
+  window.localStorage.removeItem(storageKey);
 }
 
 function resolveActionableSuggestionsFromMessage(text: string): WidgetAction[] {
@@ -424,13 +437,18 @@ function mergeHistorySessions(
     .slice(0, MAX_WIDGET_HISTORY_SESSIONS);
 }
 
-function rememberLocalWidgetHistory(sessionId: string, queryText: string, aiResponse: string) {
+function rememberLocalWidgetHistory(
+  sessionId: string,
+  queryText: string,
+  aiResponse: string,
+  authUserId?: string | null,
+) {
   const cleanQuery = queryText.trim();
   const cleanAnswer = aiResponse.trim();
   if (!cleanQuery || !cleanAnswer) return;
 
   const now = new Date().toISOString();
-  const sessions = readLocalWidgetHistory();
+  const sessions = readLocalWidgetHistory(authUserId);
   const existing = sessions.find((session) => session.id === sessionId);
   const otherSessions = sessions.filter((session) => session.id !== sessionId);
   const messages = existing?.messages ?? [];
@@ -467,8 +485,8 @@ function rememberLocalWidgetHistory(sessionId: string, queryText: string, aiResp
     },
     ...otherSessions,
   ];
-  writeLocalWidgetHistory(next);
-  writeActiveWidgetSessionId(sessionId);
+  writeLocalWidgetHistory(next, authUserId);
+  writeActiveWidgetSessionId(sessionId, authUserId);
 }
 
 export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: boolean }) {
@@ -518,6 +536,8 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   const speechTranscriptRef = useRef("");
   const speechInterimTranscriptRef = useRef("");
   const widgetHistorySessionIdRef = useRef("");
+  const previousAuthUserIdRef = useRef<string | null>(null);
+  const [authUserId, setAuthUserId] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -725,20 +745,30 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     return widgetHistorySessionIdRef.current;
   }
 
-  function resetWidgetConversation() {
+  function resetWidgetConversation(nextAuthUserId?: string | null) {
     setMessages([]);
     setSessionId(null);
     widgetHistorySessionIdRef.current = "";
     proactiveLoadedRef.current = false;
-    writeActiveWidgetSessionId("");
+    writeActiveWidgetSessionId("", nextAuthUserId ?? authUserId);
   }
 
   // Fetch organization_id for authenticated users
   useEffect(() => {
-    if (!isAuthenticated || !supabase) return;
+    if (!isAuthenticated || !supabase) {
+      setAuthUserId(null);
+      setOrganizationId(null);
+      return;
+    }
 
     async function fetchAccountScope() {
       try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        const nextUserId = user?.id ?? null;
+        setAuthUserId(nextUserId);
+
         const response = await fetchAccountContext();
         if (!response?.context) return;
         setOrganizationId(response.context.organizationId ?? null);
@@ -751,6 +781,23 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
     void fetchAccountScope();
   }, [isAuthenticated, supabase]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      previousAuthUserIdRef.current = null;
+      return;
+    }
+
+    if (
+      previousAuthUserIdRef.current &&
+      authUserId &&
+      previousAuthUserIdRef.current !== authUserId
+    ) {
+      resetWidgetConversation(authUserId);
+    }
+
+    previousAuthUserIdRef.current = authUserId;
+  }, [authUserId, isAuthenticated]);
 
   // Welcome message on first open
   useEffect(() => {
@@ -787,10 +834,12 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
   useEffect(() => {
     if (messages.length > 0) return;
-    const activeSessionId = readActiveWidgetSessionId();
+    if (!authUserId) return;
+
+    const activeSessionId = readActiveWidgetSessionId(authUserId);
     if (!isUuid(activeSessionId)) return;
 
-    const session = readLocalWidgetHistory().find((item) => item.id === activeSessionId);
+    const session = readLocalWidgetHistory(authUserId).find((item) => item.id === activeSessionId);
     if (!session) return;
 
     widgetHistorySessionIdRef.current = session.id;
@@ -804,10 +853,10 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       })),
     );
     proactiveLoadedRef.current = true;
-  }, [messages.length]);
+  }, [authUserId, messages.length]);
 
   useEffect(() => {
-    if (!open || !isAuthenticated || !organizationId || proactiveLoadedRef.current) return;
+    if (!open || !isAuthenticated || !organizationId || !authUserId || proactiveLoadedRef.current) return;
     if (messages.length !== 1 || messages[0]?.id !== "welcome") return;
 
     proactiveLoadedRef.current = true;
@@ -851,7 +900,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     return () => {
       cancelled = true;
     };
-  }, [open, isAuthenticated, organizationId, locale, messages]);
+  }, [authUserId, open, isAuthenticated, organizationId, locale, messages]);
 
   // Scroll to bottom
   useEffect(() => {
@@ -865,7 +914,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
   async function refreshHistory() {
     setHistoryLoading(true);
-    const localSessions = readLocalWidgetHistory();
+    const localSessions = readLocalWidgetHistory(authUserId);
 
     try {
       if (!isAuthenticated || !supabase) {
@@ -1135,7 +1184,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   function restoreHistorySession(session: WidgetHistorySession) {
     widgetHistorySessionIdRef.current = session.id;
     setSessionId(isUuid(session.id) ? session.id : null);
-    writeActiveWidgetSessionId(session.id);
+    writeActiveWidgetSessionId(session.id, authUserId);
     setMessages((prev) => [
       ...prev.filter((message) => message.id !== "welcome"),
       ...session.messages.map((message) => ({
@@ -1387,7 +1436,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         confidence: imageAnalysis.notableRisks.length > 0 ? "high" : "medium",
         sourceStatus: "partial",
       };
-      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text);
+      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text, authUserId);
       window.setTimeout(() => {
         setMessages((prev) => [...prev, botMsg]);
         clearAttachedImage();
@@ -1479,7 +1528,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         suggestions: authenticatedWelcomeActions.slice(0, 4),
         timestamp: new Date(),
       };
-      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text);
+      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text, authUserId);
       setMessages((prev) => [...prev, botMsg]);
       setTyping(false);
       return;
@@ -1497,7 +1546,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         navigation: navigationFallback.navigation,
         telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
       });
-      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text);
+      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text, authUserId);
       setMessages((prev) => [...prev, botMessage]);
       setTyping(false);
       return;
@@ -1537,9 +1586,9 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         setSessionId(data.session_id);
       }
       if (data?.session_id) {
-        writeActiveWidgetSessionId(data.session_id);
+        writeActiveWidgetSessionId(data.session_id, authUserId);
       } else {
-        writeActiveWidgetSessionId(activeHistorySessionId);
+        writeActiveWidgetSessionId(activeHistorySessionId, authUserId);
       }
 
       const botMessage = buildBotMessageFromAgentResponse(
@@ -1552,7 +1601,12 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
             }
           : data,
       );
-      rememberLocalWidgetHistory(data?.session_id ?? activeHistorySessionId, visiblePrompt, botMessage.text);
+      rememberLocalWidgetHistory(
+        data?.session_id ?? activeHistorySessionId,
+        visiblePrompt,
+        botMessage.text,
+        authUserId,
+      );
       setMessages((prev) => [...prev, botMessage]);
       if (imageAnalysis) {
         clearAttachedImage();
@@ -1567,7 +1621,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           navigation: navigationFallback.navigation,
           telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
         });
-        rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text);
+        rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text, authUserId);
         setMessages((prev) => [...prev, botMessage]);
         return;
       }
