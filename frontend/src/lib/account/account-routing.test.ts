@@ -4,6 +4,7 @@ import {
   isPrivilegedAccountSelfServiceLoginBlocked,
   resolveAccountSurface,
   resolvePostLoginPath,
+  shouldBypassNovaBillingLimits,
   type AccountContext,
 } from "./account-routing";
 
@@ -117,6 +118,27 @@ describe("resolvePostLoginPath", () => {
         }),
       ),
     ).toBe("/enterprise");
+  });
+});
+
+describe("shouldBypassNovaBillingLimits", () => {
+  it("exempts platform admins and organization owners", () => {
+    expect(shouldBypassNovaBillingLimits(makeContext({ isPlatformAdmin: true }))).toBe(true);
+    expect(
+      shouldBypassNovaBillingLimits(
+        makeContext({ isPlatformAdmin: false, membershipRole: "owner" }),
+      ),
+    ).toBe(true);
+    expect(
+      shouldBypassNovaBillingLimits(
+        makeContext({ isPlatformAdmin: false, membershipRole: "admin" }),
+      ),
+    ).toBe(true);
+    expect(
+      shouldBypassNovaBillingLimits(
+        makeContext({ isPlatformAdmin: false, membershipRole: "staff" }),
+      ),
+    ).toBe(false);
   });
 });
 

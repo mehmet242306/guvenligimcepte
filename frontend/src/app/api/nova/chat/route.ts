@@ -5,6 +5,7 @@ import { requireAuth, requirePermission } from "@/lib/supabase/api-auth";
 import {
   getAccountContextForUser,
   hasOsgbManagementAccess,
+  shouldBypassNovaBillingLimits,
 } from "@/lib/account/account-routing";
 import { enforceRateLimit, parseJsonBody, resolveAiDailyLimit } from "@/lib/security/server";
 import { createServiceClient } from "@/lib/security/server";
@@ -1349,7 +1350,7 @@ export async function POST(request: NextRequest) {
     }
 
     const accountContext = await getAccountContextForUser(authContext.userId);
-    const bypassNovaLimitsForAdmin = accountContext.isPlatformAdmin === true;
+    const bypassNovaLimitsForAdmin = shouldBypassNovaBillingLimits(accountContext);
     const contextualHistory = [...payload.history];
 
     if (hasImageContext) {

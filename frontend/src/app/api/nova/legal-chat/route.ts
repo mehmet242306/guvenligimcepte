@@ -7,7 +7,7 @@ import { answerWithLegalRag } from "@/lib/rag/legal/answer-with-rag";
 import { enforceRateLimit, parseJsonBody, resolveAiDailyLimit } from "@/lib/security/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import { createServiceClient } from "@/lib/security/server";
-import { getAccountContextForUser } from "@/lib/account/account-routing";
+import { getAccountContextForUser, shouldBypassNovaBillingLimits } from "@/lib/account/account-routing";
 
 export const maxDuration = 120;
 
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
   if (!auth.ok) return auth.response;
 
   const accountContext = await getAccountContextForUser(auth.userId);
-  const bypassNovaLimitsForAdmin = accountContext.isPlatformAdmin === true;
+  const bypassNovaLimitsForAdmin = shouldBypassNovaBillingLimits(accountContext);
   const plan = await resolveAiDailyLimit(auth.userId);
 
   if (!bypassNovaLimitsForAdmin) {

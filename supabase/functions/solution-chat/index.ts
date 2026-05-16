@@ -5951,6 +5951,29 @@ async function saveSolutionQueryRecord(params: {
 // SUBSCRIPTION
 // ============================================================================
 
+async function isNovaBillingExempt(
+  userId: string,
+  supabase: SupabaseClient,
+): Promise<boolean> {
+  const { data: platformAdmin, error: platformError } = await supabase.rpc('is_platform_admin', {
+    uid: userId,
+  })
+
+  if (!platformError && platformAdmin === true) {
+    return true
+  }
+
+  const { data: superAdmin, error: superError } = await supabase.rpc('is_super_admin', {
+    uid: userId,
+  })
+
+  if (!superError && superAdmin === true) {
+    return true
+  }
+
+  return false
+}
+
 async function checkSubscriptionLimit(
   userId: string,
   action: 'message' | 'analysis' | 'document',
@@ -6186,8 +6209,10 @@ serve(async (req) => {
       })
     }
 
-    // Subscription kontrolü
-    const subCheck = await checkSubscriptionLimit(user.id, 'message', body.organization_id, supabase)
+    const billingExempt = await isNovaBillingExempt(user.id, supabase)
+    const subCheck = billingExempt
+      ? { allowed: true, plan_key: 'admin_exempt', subscription_id: '' }
+      : await checkSubscriptionLimit(user.id, 'message', body.organization_id, supabase)
 
     if (!subCheck.allowed) {
       return await jsonErrorResponse(req, {
@@ -6203,59 +6228,50 @@ serve(async (req) => {
       })
     }
 
-    if (!subCheck.allowed) {
-      return new Response(
-        JSON.stringify({
-          error: 'subscription_limit',
-          message: subCheck.message || 'Aylık mesaj limitiniz doldu',
-          plan_key: subCheck.plan_key
-        }),
-        { status: 429, headers: { ...buildCorsHeaders(req), 'Content-Type': 'application/json' } }
-      )
-    }
-
-    const { data: aiDailyLimitData, error: aiDailyLimitError } = await supabase.rpc('resolve_ai_daily_limit', {
-      p_user_id: user.id,
-    })
-
-    const aiDailyLimitRow = Array.isArray(aiDailyLimitData) ? aiDailyLimitData[0] : aiDailyLimitData
-    const aiDailyLimit = Number(aiDailyLimitRow?.daily_limit ?? 25)
-    const aiPlanKey = String(aiDailyLimitRow?.plan_key ?? subCheck.plan_key ?? 'free')
-
-    if (aiDailyLimitError) {
-      console.error('[solution-chat] resolve_ai_daily_limit failed:', aiDailyLimitError)
-    }
-
-    const { data: aiRateData, error: aiRateError } = await supabase.rpc('consume_rate_limit', {
-      p_user_id: user.id,
-      p_endpoint: '/functions/v1/solution-chat',
-      p_scope: 'ai',
-      p_limit_count: aiDailyLimit,
-      p_window_seconds: 86400,
-      p_plan_key: aiPlanKey,
-      p_organization_id: body.organization_id ?? null,
-      p_ip_address: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null,
-      p_user_agent: req.headers.get('user-agent') ?? null,
-      p_metadata: { source: 'solution-chat' },
-    })
-
-    if (aiRateError) {
-      console.error('[solution-chat] consume_rate_limit failed:', aiRateError)
-    }
-
-    const aiRateRow = Array.isArray(aiRateData) ? aiRateData[0] : aiRateData
-    if (aiRateRow && aiRateRow.allowed !== true) {
-      return await jsonErrorResponse(req, {
-        status: 429,
-        error: 'rate_limit_exceeded',
-        message: 'Gunluk AI limitiniz doldu. Lutfen daha sonra tekrar deneyin.',
-        details: {
-          remaining: Number(aiRateRow.remaining ?? 0),
-          reset_at: aiRateRow.reset_at ?? null,
-        },
-        userId: user.id,
-        organizationId: body.organization_id ?? null,
+    if (!billingExempt) {
+      const { data: aiDailyLimitData, error: aiDailyLimitError } = await supabase.rpc('resolve_ai_daily_limit', {
+        p_user_id: user.id,
       })
+
+      const aiDailyLimitRow = Array.isArray(aiDailyLimitData) ? aiDailyLimitData[0] : aiDailyLimitData
+      const aiDailyLimit = Number(aiDailyLimitRow?.daily_limit ?? 25)
+      const aiPlanKey = String(aiDailyLimitRow?.plan_key ?? subCheck.plan_key ?? 'free')
+
+      if (aiDailyLimitError) {
+        console.error('[solution-chat] resolve_ai_daily_limit failed:', aiDailyLimitError)
+      }
+
+      const { data: aiRateData, error: aiRateError } = await supabase.rpc('consume_rate_limit', {
+        p_user_id: user.id,
+        p_endpoint: '/functions/v1/solution-chat',
+        p_scope: 'ai',
+        p_limit_count: aiDailyLimit,
+        p_window_seconds: 86400,
+        p_plan_key: aiPlanKey,
+        p_organization_id: body.organization_id ?? null,
+        p_ip_address: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null,
+        p_user_agent: req.headers.get('user-agent') ?? null,
+        p_metadata: { source: 'solution-chat' },
+      })
+
+      if (aiRateError) {
+        console.error('[solution-chat] consume_rate_limit failed:', aiRateError)
+      }
+
+      const aiRateRow = Array.isArray(aiRateData) ? aiRateData[0] : aiRateData
+      if (aiRateRow && aiRateRow.allowed !== true) {
+        return await jsonErrorResponse(req, {
+          status: 429,
+          error: 'rate_limit_exceeded',
+          message: 'Gunluk AI limitiniz doldu. Lutfen daha sonra tekrar deneyin.',
+          details: {
+            remaining: Number(aiRateRow.remaining ?? 0),
+            reset_at: aiRateRow.reset_at ?? null,
+          },
+          userId: user.id,
+          organizationId: body.organization_id ?? null,
+        })
+      }
     }
 
     if (aiRateRow && aiRateRow.allowed !== true) {

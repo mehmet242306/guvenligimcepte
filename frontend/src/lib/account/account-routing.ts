@@ -276,6 +276,25 @@ async function resolveWorkspaceAccessState(
   };
 }
 
+async function resolveSuperAdminStatus(
+  service: ReturnType<typeof createServiceClient>,
+  userId: string,
+): Promise<boolean> {
+  const { data: legacySuperAdmin, error: legacySuperAdminError } = await service.rpc(
+    "is_super_admin",
+    { uid: userId },
+  );
+
+  if (legacySuperAdminError) {
+    if (isMissingRelationError(legacySuperAdminError.message)) {
+      return false;
+    }
+    throw new Error(legacySuperAdminError.message);
+  }
+
+  return legacySuperAdmin === true;
+}
+
 async function resolvePlatformAdminStatus(
   userId: string,
 ): Promise<boolean> {
@@ -286,7 +305,8 @@ async function resolvePlatformAdminStatus(
   });
 
   if (!rpcError) {
-    return rpcData === true;
+    if (rpcData === true) return true;
+    return resolveSuperAdminStatus(service, userId);
   }
 
   if (!isMissingRelationError(rpcError.message)) {
@@ -301,26 +321,23 @@ async function resolvePlatformAdminStatus(
     .maybeSingle();
 
   if (!platformAdminTableError) {
-    return !!platformAdminRow;
+    if (platformAdminRow) return true;
+    return resolveSuperAdminStatus(service, userId);
   }
 
   if (!isMissingRelationError(platformAdminTableError.message)) {
     throw new Error(platformAdminTableError.message);
   }
 
-  const { data: legacySuperAdmin, error: legacySuperAdminError } = await service.rpc(
-    "is_super_admin",
-    { uid: userId },
-  );
+  return resolveSuperAdminStatus(service, userId);
+}
 
-  if (legacySuperAdminError) {
-    if (isMissingRelationError(legacySuperAdminError.message)) {
-      return false;
-    }
-    throw new Error(legacySuperAdminError.message);
-  }
-
-  return legacySuperAdmin === true;
+/** Nova mesaj kotasi ve gunluk AI limiti icin muafiyet. */
+export function shouldBypassNovaBillingLimits(
+  context: Pick<AccountContext, "isPlatformAdmin" | "membershipRole">,
+): boolean {
+  if (context.isPlatformAdmin) return true;
+  return context.membershipRole === "owner" || context.membershipRole === "admin";
 }
 
 async function resolveAllowedAccountTypesForUser(
