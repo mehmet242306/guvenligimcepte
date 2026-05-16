@@ -216,12 +216,20 @@ async function readNovaRuntimeErrorContext(error?: unknown): Promise<NovaRuntime
   try {
     const payload = await response.clone().json();
     if (payload && typeof payload === "object") {
+      const safetyBlock =
+        payload.safety_block && typeof payload.safety_block === "object"
+          ? (payload.safety_block as { message?: string; title?: string })
+          : null;
       result.message =
         typeof payload.message === "string"
           ? payload.message
-          : typeof payload.error === "string"
-            ? payload.error
-            : null;
+          : typeof payload.answer === "string"
+            ? payload.answer
+            : typeof safetyBlock?.message === "string"
+              ? safetyBlock.message
+              : typeof payload.error === "string"
+                ? payload.error
+                : null;
       result.error = typeof payload.error === "string" ? payload.error : null;
     }
   } catch {
@@ -251,5 +259,9 @@ export async function resolveNovaRuntimeErrorMessage(locale?: string | null, err
     return fallback;
   }
 
-  return context.status && context.status < 500 ? context.message : fallback;
+  if (context.status && context.status >= 500) {
+    return context.message.length > 240 ? fallback : context.message;
+  }
+
+  return context.message;
 }

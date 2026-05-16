@@ -151,10 +151,77 @@ interface ChatRequest {
   history?: Array<{ role: 'user' | 'assistant', content: string }>
 }
 
+const TR_MONTH_LOOKUP: Record<string, number> = {
+  ocak: 1,
+  subat: 2,
+  mart: 3,
+  nisan: 4,
+  mayis: 5,
+  haziran: 6,
+  temmuz: 7,
+  agustos: 8,
+  eylul: 9,
+  ekim: 10,
+  kasim: 11,
+  aralik: 12,
+}
+
+function parseNovaNaturalDateFromText(text: string, reference = new Date()): string | null {
+  const normalized = text
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/\p{Diacritic}/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  const iso = normalized.match(/\b(\d{4}-\d{2}-\d{2})\b/)
+  if (iso?.[1]) return iso[1]
+
+  const dmy = normalized.match(/\b(\d{1,2})[./-](\d{1,2})[./-](\d{4})\b/)
+  if (dmy) {
+    const dd = dmy[1].padStart(2, '0')
+    const mm = dmy[2].padStart(2, '0')
+    return `${dmy[3]}-${mm}-${dd}`
+  }
+
+  for (const [name, month] of Object.entries(TR_MONTH_LOOKUP)) {
+    const match = normalized.match(new RegExp(`\\b(\\d{1,2})\\s*${name}(?:\\s*(\\d{4}))?\\b`))
+    if (!match) continue
+
+    let year = match[2] ? Number(match[2]) : reference.getFullYear()
+    const day = match[1].padStart(2, '0')
+    const monthPart = String(month).padStart(2, '0')
+    let candidate = `${year}-${monthPart}-${day}`
+    const candidateDate = new Date(`${candidate}T12:00:00`)
+
+    if (!match[2] && !Number.isNaN(candidateDate.getTime()) && candidateDate < reference) {
+      year += 1
+      candidate = `${year}-${monthPart}-${day}`
+    }
+
+    return candidate
+  }
+
+  return null
+}
+
+function extractNovaTrainingTitleFromText(text: string): string | null {
+  const cleaned = text
+    .replace(/["“](.+?)["”]/, '$1')
+    .replace(/\b\d{1,2}\s+[a-z]+\s*(?:\d{4})?\b/gi, '')
+    .replace(/\b(planla|olustur|ekle|kaydet|egitim|training|icin|a|e)\b/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  if (cleaned.length < 4) return null
+  return cleaned.slice(0, 140)
+}
+
 interface ToolContext {
   user: { id: string; organization_id: string; role: string; preferred_language: string }
   subscription: { plan_key: string; allowed_tools: string[]; subscription_id: string }
   supabase: SupabaseClient
+  latestUserMessage?: string | null
   session: {
     id: string
     language: 'tr' | 'en'
@@ -4269,15 +4336,25 @@ async function executeCompleteWorkflowStep(input: any, context: ToolContext): Pr
 
 async function executeCreateTrainingPlan(input: any, context: ToolContext): Promise<ToolResult> {
   try {
-    const title = String(input.title || '').trim()
-    const trainingDate = String(input.training_date || '').trim()
+    const sourceText = String(context.latestUserMessage || '').trim()
+    const title =
+      String(input.title || '').trim() ||
+      (sourceText ? extractNovaTrainingTitleFromText(sourceText) : '') ||
+      'Is guvenligi egitimi'
+    let trainingDate = String(input.training_date || '').trim()
 
-    if (!title) {
-      return { success: false, error: 'Egitim basligi gerekli' }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(trainingDate) && sourceText) {
+      const parsedDate = parseNovaNaturalDateFromText(sourceText, new Date(`${context.session.as_of_date}T12:00:00`))
+      if (parsedDate) trainingDate = parsedDate
     }
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(trainingDate)) {
-      return { success: false, error: 'Egitim tarihi YYYY-MM-DD formatinda olmali' }
+      return {
+        success: false,
+        error: context.session.language === 'en'
+          ? 'Training date is required (for example 2026-06-15 or "15 June").'
+          : 'Egitim tarihi gerekli (ornek: 2026-06-15 veya "15 Haziran").',
+      }
     }
 
     const workspaceId = await getActiveWorkspaceId(
@@ -6351,6 +6428,7 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
         subscription_id: subCheck.subscription_id || ''
       },
       supabase: supabase,
+      latestUserMessage: userMessage,
       session: {
         id: sessionId,
         language: operationalLanguage,

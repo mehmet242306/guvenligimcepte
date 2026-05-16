@@ -25,6 +25,7 @@ import {
   resolveNovaGuidanceIntent,
   resolveNovaProductHelpIntent,
 } from "@/lib/nova/site-map";
+import { extractNovaTrainingTitle, parseNovaNaturalDate } from "@/lib/nova/natural-date";
 import { shouldBypassNovaStaticRedirects } from "@/lib/nova/request-mode";
 
 function isCompatError(message: string | undefined | null) {
@@ -153,6 +154,8 @@ function resolveNovaCreateRecordIntent(message: string): NovaCreateRecordIntent 
     deadlineDate = toIso(d);
   } else if (/(bugun|today)/i.test(message)) {
     deadlineDate = toIso(today);
+  } else {
+    deadlineDate = parseNovaNaturalDate(message, today);
   }
 
   if (/(gorev olustur|gorev ac|task create|create task|yeni gorev)/.test(normalized)) {
@@ -162,7 +165,13 @@ function resolveNovaCreateRecordIntent(message: string): NovaCreateRecordIntent 
     return { kind: "corrective_action", title: extractTitle() || "Nova DOF kaydi", assigneeText, priority, deadlineDate };
   }
   if (/(egitim olustur|egitim planla|training create|yeni egitim|egitim ekle)/.test(normalized)) {
-    return { kind: "training", title: extractTitle() || "Nova egitimi", assigneeText, priority, deadlineDate };
+    return {
+      kind: "training",
+      title: extractTitle() || extractNovaTrainingTitle(message) || "Is guvenligi egitimi",
+      assigneeText,
+      priority,
+      deadlineDate,
+    };
   }
 
   return null;
@@ -1013,7 +1022,8 @@ export async function POST(request: NextRequest) {
       hasImageContext || bypassStaticRedirects
         ? null
         : resolveNovaOperationalKickoffIntent(payload.message);
-    const createRecordIntent = hasImageContext ? null : resolveNovaCreateRecordIntent(payload.message);
+    const createRecordIntent =
+      hasImageContext || bypassStaticRedirects ? null : resolveNovaCreateRecordIntent(payload.message);
 
     let authContext =
       payload.access_token
