@@ -274,6 +274,36 @@ const ISG_TASK_CATEGORY_EGITIM = '9b722ae5-0a72-48c8-9d1f-836e1a114b8a'
 const ISG_TASK_CATEGORY_PERIYODIK_KONTROL = '5656072d-c601-453d-a3c6-fa40e5a624e6'
 const ISG_TASK_CATEGORY_ISG_KURUL = '7e4dda4c-d0c0-4e61-adce-eba783e43085'
 
+const DEFAULT_ISG_CATEGORY_FALLBACKS: Record<string, string> = {
+  'Eğitim': ISG_TASK_CATEGORY_EGITIM,
+  Egitim: ISG_TASK_CATEGORY_EGITIM,
+  'Periyodik Kontrol': ISG_TASK_CATEGORY_PERIYODIK_KONTROL,
+  'İSG Kurul Toplantısı': ISG_TASK_CATEGORY_ISG_KURUL,
+  'ISG Kurul Toplantisi': ISG_TASK_CATEGORY_ISG_KURUL,
+}
+
+async function resolveDefaultIsgCategoryId(
+  supabase: any,
+  categoryName: string,
+): Promise<string | null> {
+  const names = [categoryName]
+  if (categoryName === 'Eğitim') names.push('Egitim')
+
+  for (const name of names) {
+    const { data } = await supabase
+      .from('isg_task_categories')
+      .select('id')
+      .eq('is_default', true)
+      .ilike('name', name)
+      .limit(1)
+      .maybeSingle()
+
+    if (data?.id) return data.id as string
+  }
+
+  return DEFAULT_ISG_CATEGORY_FALLBACKS[categoryName] ?? null
+}
+
 const ACTION_LABELS: Record<string, { tr: string; en: string }> = {
   create_training_plan: { tr: 'egitim plani', en: 'training plan' },
   create_planner_task: { tr: 'planner gorevi', en: 'planner task' },
@@ -4441,6 +4471,8 @@ async function executeCreateTrainingPlan(input: any, context: ToolContext): Prom
       notes || null,
     ].filter(Boolean)
 
+    const egitimCategoryId = await resolveDefaultIsgCategoryId(context.supabase, 'Eğitim')
+
     const { data: taskRow, error: taskError } = await context.supabase
       .from('isg_tasks')
       .insert({
@@ -4448,7 +4480,7 @@ async function executeCreateTrainingPlan(input: any, context: ToolContext): Prom
         company_workspace_id: workspaceId,
         title: `Egitim: ${title}`,
         description: taskDescriptionParts.join(' | '),
-        category_id: ISG_TASK_CATEGORY_EGITIM,
+        category_id: egitimCategoryId,
         start_date: trainingDate,
         end_date: trainingDate,
         status: 'planned',
@@ -4460,14 +4492,23 @@ async function executeCreateTrainingPlan(input: any, context: ToolContext): Prom
 
     if (taskError) {
       console.error('[create_training_plan] isg_tasks insert failed:', taskError)
+      return {
+        success: false,
+        error: context.session.language === 'en'
+          ? 'Training was saved but could not be added to the planner calendar.'
+          : 'Egitim kaydedildi ancak ajandaya eklenemedi.',
+      }
     }
 
+    const plannerMonth = trainingDate.slice(0, 7)
     const navigation = {
       action: 'navigate',
-      url: `/companies/${workspaceId}?tab=tracking`,
-      label: 'Egitim plani olusturuldu',
-      reason: 'Olusan egitim planini takip ekraninda gorebilirsiniz.',
-      destination: 'company_tracking',
+      url: `/planner?month=${plannerMonth}&highlight=${trainingDate}`,
+      label: context.session.language === 'en' ? 'Training added to planner' : 'Egitim ajandaya eklendi',
+      reason: context.session.language === 'en'
+        ? 'Open the planner calendar to review the scheduled training.'
+        : 'Planlanan egitimi ajanda takviminde gorebilirsiniz.',
+      destination: 'planner',
       auto_navigate: false,
     }
 
@@ -4488,7 +4529,7 @@ async function executeCreateTrainingPlan(input: any, context: ToolContext): Prom
           ? 'Open the company tracking tab and verify schedule details.'
           : 'Takip sekmesini acip plan detaylarini kontrol et.',
         actionKind: 'navigate',
-        targetUrl: `/companies/${workspaceId}?tab=tracking`,
+        targetUrl: `/planner?month=${plannerMonth}&highlight=${trainingDate}`,
         initialStatus: 'pending',
       },
       {
@@ -5687,6 +5728,7 @@ function extractPendingActionHint(messages: any[]): Record<string, unknown> | nu
             action_summary: parsedContent.data.action_summary ?? null,
             summary: parsedContent.data.summary ?? null,
             confirmation_prompt: parsedContent.data.confirmation_prompt ?? null,
+            execution_status: 'pending_confirmation',
           }
         }
       } catch (_err) {

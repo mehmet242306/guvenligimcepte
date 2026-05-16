@@ -47,6 +47,7 @@ import type {
   NovaSafetyBlock,
   NovaAgentToolPreview,
 } from "@/lib/nova/agent";
+import { shouldShowNovaConfirmationChoices } from "@/lib/nova/confirmation";
 import {
   getNovaProactiveBrief,
   markNovaWorkflowStep,
@@ -1405,8 +1406,8 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       .toString()
       .padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
 
-  async function handleSend() {
-    const text = input.trim();
+  async function handleSend(overrideText?: string) {
+    const text = (overrideText ?? input).trim();
     const composedPrompt = buildNovaPromptWithImage(text, imageAnalysis);
     if (!composedPrompt || typing || imageUploading || voiceTranscribing) return;
     const hasAttachedImage = Boolean(imageAnalysis);
@@ -1425,7 +1426,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     };
 
     setMessages((prev) => [...prev, userMsg]);
-    setInput("");
+    if (!overrideText) setInput("");
     setTyping(true);
     setComposerError(null);
 
@@ -1683,6 +1684,18 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       setInput(action.prompt);
       setTimeout(() => inputRef.current?.focus(), 50);
     }
+  }
+
+  async function handleQuickConfirmation(
+    actionHint: NovaActionHint | null | undefined,
+    decision: "confirm" | "cancel",
+  ) {
+    if (actionHint?.action_run_id) {
+      await handlePendingAction(actionHint, decision);
+      return;
+    }
+    const reply = decision === "confirm" ? ui.widget.yesReply : ui.widget.noReply;
+    await handleSend(reply);
   }
 
   async function handlePendingAction(actionHint: NovaActionHint, decision: "confirm" | "cancel") {
@@ -2063,28 +2076,29 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                       </div>
                       <div className="mt-1 text-xs font-medium text-foreground">{msg.toolPreview.title}</div>
                       <div className="mt-1 text-[11px] leading-5 text-muted-foreground">{msg.toolPreview.summary}</div>
-                      {msg.actionHint?.action_run_id && msg.toolPreview.requiresConfirmation ? (
-                        <div className="mt-2 flex gap-2">
-                          <button
-                            type="button"
-                            disabled={actionInFlightId === msg.actionHint.action_run_id}
-                            onClick={() => handlePendingAction(msg.actionHint as NovaActionHint, "confirm")}
-                            className="flex-1 rounded-md bg-primary px-3 py-1.5 text-[11px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                          >
-                            {actionInFlightId === msg.actionHint.action_run_id
-                              ? ui.widget.actionRunning
-                              : ui.widget.approveAction}
-                          </button>
-                          <button
-                            type="button"
-                            disabled={actionInFlightId === msg.actionHint.action_run_id}
-                            onClick={() => handlePendingAction(msg.actionHint as NovaActionHint, "cancel")}
-                            className="flex-1 rounded-md border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-60"
-                          >
-                            {ui.widget.cancelAction}
-                          </button>
-                        </div>
-                      ) : null}
+                    </div>
+                  )}
+
+                  {msg.role === "bot" && shouldShowNovaConfirmationChoices(msg.text, msg.actionHint) && (
+                    <div className="mt-2 flex gap-2">
+                      <button
+                        type="button"
+                        disabled={Boolean(msg.actionHint?.action_run_id && actionInFlightId === msg.actionHint.action_run_id)}
+                        onClick={() => void handleQuickConfirmation(msg.actionHint, "confirm")}
+                        className="flex-1 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {msg.actionHint?.action_run_id && actionInFlightId === msg.actionHint.action_run_id
+                          ? ui.widget.actionRunning
+                          : ui.widget.yesReply}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={Boolean(msg.actionHint?.action_run_id && actionInFlightId === msg.actionHint.action_run_id)}
+                        onClick={() => void handleQuickConfirmation(msg.actionHint, "cancel")}
+                        className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {ui.widget.noReply}
+                      </button>
                     </div>
                   )}
 

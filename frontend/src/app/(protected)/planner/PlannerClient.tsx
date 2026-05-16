@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Wrench, GraduationCap, Building2, ClipboardCheck, Scale, MapPin, Stethoscope, CalendarDays, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { getCalendarMonthNamesLong, getCalendarWeekdayLabels } from "@/lib/calendar-locale-labels";
@@ -465,13 +466,24 @@ export type PlannerCoreProps = {
   showHeader?: boolean;
 };
 
+function normalizePlannerTaskDate(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const trimmed = value.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+  const parsed = new Date(trimmed);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed.toISOString().slice(0, 10);
+}
+
 export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
   const t = useTranslations("planner.core");
   const locale = useLocale();
+  const searchParams = useSearchParams();
   const today = new Date();
   const [view, setView] = useState<CalendarView>("month");
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
+  const [highlightDate, setHighlightDate] = useState<string | null>(null);
   const [tasks, setTasks] = useState<IsgTask[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [companies, setCompanies] = useState<CompanyWorkspace[]>([]);
@@ -547,6 +559,30 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
   }, [fixedCompanyId]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  useEffect(() => {
+    const monthParam = searchParams.get("month");
+    const highlightParam = searchParams.get("highlight");
+    const normalizedHighlight = normalizePlannerTaskDate(highlightParam);
+
+    if (monthParam && /^\d{4}-\d{2}$/.test(monthParam)) {
+      const [y, m] = monthParam.split("-").map(Number);
+      if (y >= 1970 && m >= 1 && m <= 12) {
+        setYear(y);
+        setMonth(m - 1);
+      }
+    } else if (normalizedHighlight) {
+      const [y, m] = normalizedHighlight.split("-").map(Number);
+      setYear(y);
+      setMonth(m - 1);
+    }
+
+    if (normalizedHighlight) {
+      setHighlightDate(normalizedHighlight);
+      const timer = window.setTimeout(() => setHighlightDate(null), 8000);
+      return () => window.clearTimeout(timer);
+    }
+  }, [searchParams]);
 
   // ─── Save task ─────────────────────────────────────────────────────────
 
@@ -737,7 +773,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
   }
 
   function tasksForDate(dateStr: string) {
-    return filteredTasks.filter((t) => t.start_date === dateStr);
+    return filteredTasks.filter((task) => normalizePlannerTaskDate(task.start_date) === dateStr);
   }
 
   function buildCalendarDays() {
@@ -999,6 +1035,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
             {buildCalendarDays().map(({ date, day, isCurrentMonth }, idx) => {
               const dayTasks = tasksForDate(date);
               const isToday = date === todayStr;
+              const isHighlighted = highlightDate === date;
               return (
                 <div
                   key={date}
@@ -1006,6 +1043,7 @@ export function PlannerCore({ fixedCompanyId, showHeader }: PlannerCoreProps) {
                     "min-h-[100px] cursor-pointer border-b border-r border-border p-1.5 transition hover:bg-secondary/30",
                     idx % 7 === 6 ? "border-r-0" : "",
                     !isCurrentMonth ? "opacity-40" : "",
+                    isHighlighted ? "bg-primary/10 ring-1 ring-inset ring-primary/40" : "",
                   ].join(" ")}
                   onClick={() => { setModalDate(date); setModalTask(null); }}
                 >

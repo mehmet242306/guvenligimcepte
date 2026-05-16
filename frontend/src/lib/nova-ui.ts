@@ -37,6 +37,8 @@ type NovaUiCopy = {
     continueInWorkspace: string;
     approveAction: string;
     cancelAction: string;
+    yesReply: string;
+    noReply: string;
     actionRunning: string;
     actionDone: string;
     currentPageLabel: string;
@@ -93,6 +95,8 @@ const trCopy: NovaUiCopy = {
     continueInWorkspace: "Ilgili ekranda devam et",
     approveAction: "Onayla",
     cancelAction: "Iptal Et",
+    yesReply: "Evet",
+    noReply: "Hayır",
     actionRunning: "Isleniyor...",
     actionDone: "Tamamlandi",
     currentPageLabel: "Su an",
@@ -148,6 +152,8 @@ const enCopy: NovaUiCopy = {
     continueInWorkspace: "Continue on the relevant screen",
     approveAction: "Approve",
     cancelAction: "Cancel",
+    yesReply: "Yes",
+    noReply: "No",
     actionRunning: "Processing...",
     actionDone: "Completed",
     currentPageLabel: "Current page",
