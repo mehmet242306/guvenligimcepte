@@ -6274,18 +6274,6 @@ serve(async (req) => {
       }
     }
 
-    if (aiRateRow && aiRateRow.allowed !== true) {
-      return new Response(
-        JSON.stringify({
-          error: 'rate_limit_exceeded',
-          message: 'Gunluk AI limitiniz doldu. Lutfen daha sonra tekrar deneyin.',
-          remaining: Number(aiRateRow.remaining ?? 0),
-          reset_at: aiRateRow.reset_at ?? null,
-        }),
-        { status: 429, headers: { ...buildCorsHeaders(req), 'Content-Type': 'application/json' } }
-      )
-    }
-
     const { data: subData } = await supabase
       .from('user_subscriptions')
       .select('*, subscription_plans(*)')
