@@ -28,7 +28,7 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "any",
       },
       {
-        src: "/logo/risknova-app-icon-512.png",
+        src: "/logo/risknova-app-icon-maskable-512.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
