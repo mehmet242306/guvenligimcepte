@@ -762,11 +762,13 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
+    const client = supabase;
+
     async function fetchAccountScope() {
       try {
         const {
           data: { user },
-        } = await supabase.auth.getUser();
+        } = await client.auth.getUser();
         const nextUserId = user?.id ?? null;
         setAuthUserId(nextUserId);
 
