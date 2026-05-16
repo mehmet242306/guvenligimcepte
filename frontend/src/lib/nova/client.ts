@@ -1,6 +1,7 @@
 import type { NovaAgentResponse } from "@/lib/nova/agent";
 
-const NOVA_REQUEST_TIMEOUT_MS = 45_000;
+const NOVA_CHAT_TIMEOUT_MS = 45_000;
+const NOVA_LEGAL_TIMEOUT_MS = 90_000;
 const FALLBACK_STATUSES = new Set([404, 405, 408, 429, 500, 502, 503, 504]);
 
 type NovaRequestPayload = Record<string, unknown>;
@@ -13,8 +14,10 @@ function shouldFallbackFromEndpoint(endpoint: string, status?: number) {
 }
 
 async function postJsonWithTimeout(endpoint: string, payload: NovaRequestPayload) {
+  const timeoutMs =
+    endpoint === "/api/nova/legal-chat" ? NOVA_LEGAL_TIMEOUT_MS : NOVA_CHAT_TIMEOUT_MS;
   const controller = new AbortController();
-  const timer = window.setTimeout(() => controller.abort(), NOVA_REQUEST_TIMEOUT_MS);
+  const timer = window.setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(endpoint, {

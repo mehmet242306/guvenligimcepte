@@ -67,7 +67,7 @@ export async function answerWithLegalRag(params: {
       max_tokens: 1400,
       temperature: 0.15,
       system:
-        "Metni okunaklı hale getir. Yeni kanun/madde uydurma. [CIT-n] atıflarını koru. Kaynağa dayalı bulgu ile Nova yorumu bölümlerini ayır. Zayıf eşleşmede yorumun yorumlayıcı olduğunu belirt.",
+        "Metni okunakli duz Turkce paragraflar halinde yaz. Markdown, yildiz, kalin yazi veya madde isareti kullanma. Yeni kanun/madde uydurma. [CIT-n] atiflarini koru. Kaynaga dayali bulgu ile Nova yorumu bolumlerini ayir. Zayif eslesmede yorumun yorumlayici oldugunu belirt.",
       messages: [
         {
           role: "user",

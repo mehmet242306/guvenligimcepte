@@ -4,6 +4,8 @@ import {
   resolveNovaApiEndpoint,
   resolveNovaRequestMode,
   shouldBypassNovaStaticRedirects,
+  shouldPreferNovaLegalRagOverNavigation,
+  shouldUseNovaLegalRag,
 } from "./request-mode";
 import { resolveNovaProductHelpIntent } from "./site-map";
 
@@ -15,8 +17,29 @@ describe("resolveNovaRequestMode", () => {
 });
 
 describe("resolveNovaApiEndpoint", () => {
-  it("always routes through /api/nova/chat", () => {
+  it("routes regulation questions to legal RAG", () => {
+    expect(resolveNovaApiEndpoint("Yangin merdiveni en az kac cm genislikte olmali")).toBe(
+      "/api/nova/legal-chat",
+    );
     expect(resolveNovaApiEndpoint("egitim planla")).toBe("/api/nova/chat");
+  });
+});
+
+describe("shouldUseNovaLegalRag", () => {
+  it("detects technical ISG questions", () => {
+    expect(shouldUseNovaLegalRag("Yangin mermotion en az kac cm genislikte olmali")).toBe(true);
+    expect(shouldUseNovaLegalRag("merhaba")).toBe(false);
+  });
+});
+
+describe("shouldPreferNovaLegalRagOverNavigation", () => {
+  it("keeps explicit navigation requests on chat path", () => {
+    expect(
+      shouldPreferNovaLegalRagOverNavigation("plannera git ve egitim planla"),
+    ).toBe(false);
+    expect(
+      shouldPreferNovaLegalRagOverNavigation("is kazasi tazminat sureci nasil isler"),
+    ).toBe(true);
   });
 });
 

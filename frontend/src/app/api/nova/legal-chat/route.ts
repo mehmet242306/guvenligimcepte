@@ -3,6 +3,7 @@ import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { normalizeNovaAgentResponse, novaChatRequestSchema } from "@/lib/nova/agent";
 import { assertNovaFeatureEnabled } from "@/lib/nova/governance";
+import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import { answerWithLegalRag } from "@/lib/rag/legal/answer-with-rag";
 import { enforceRateLimit, parseJsonBody, resolveAiDailyLimit } from "@/lib/security/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
@@ -86,7 +87,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       normalizeNovaAgentResponse({
         type: "message",
-        answer: rag.answer,
+        answer: formatNovaDisplayText(rag.answer),
         sources: rag.sources,
         session_id: payload.session_id ?? null,
         as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),

@@ -25,7 +25,13 @@ import {
 } from "@/lib/nova/browser-speech";
 import { getNovaUiCopy, resolveNovaRuntimeErrorMessage } from "@/lib/nova-ui";
 import { postNovaAgentRequest } from "@/lib/nova/client";
-import { resolveNovaApiEndpoint, resolveNovaRequestMode } from "@/lib/nova/request-mode";
+import { formatNovaDisplayText } from "@/lib/nova/format-answer";
+import {
+  resolveNovaApiEndpoint,
+  resolveNovaRequestMode,
+  shouldPreferNovaLegalRagOverNavigation,
+} from "@/lib/nova/request-mode";
+import { streamTextReveal } from "@/lib/nova/stream-text";
 import {
   resolveNovaGreetingIntent,
   resolveNovaNavigationIntent,
@@ -502,6 +508,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   const [accountSurface, setAccountSurface] = useState<"platform-admin" | "osgb-manager" | "standard">("standard");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [composerError, setComposerError] = useState<string | null>(null);
+  const [composerDragOver, setComposerDragOver] = useState(false);
   const [imageAnalysis, setImageAnalysis] = useState<NovaImageAnalysis | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [imageUploading, setImageUploading] = useState(false);
@@ -663,8 +670,27 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     );
   }
 
+  async function appendStreamingBotMessage(botMessage: Message) {
+    const fullText = botMessage.text;
+    const streamingMessage = { ...botMessage, text: "" };
+    setMessages((prev) => [...prev, streamingMessage]);
+    setTyping(false);
+    await streamTextReveal(fullText, (visible) => {
+      setMessages((prev) =>
+        prev.map((message) =>
+          message.id === streamingMessage.id ? { ...message, text: visible } : message,
+        ),
+      );
+    });
+    setMessages((prev) =>
+      prev.map((message) =>
+        message.id === streamingMessage.id ? { ...message, text: fullText } : message,
+      ),
+    );
+  }
+
   function buildBotMessageFromAgentResponse(data: NovaAgentResponse): Message {
-    const answer = data?.answer || ui.widget.unavailable;
+    const answer = formatNovaDisplayText(data?.answer || ui.widget.unavailable);
     const rawSources = data?.sources || [];
     const navigation: NovaNavigation | null = (data?.navigation as NovaNavigation | null) || null;
     const workflow: NovaWorkflowSummary | null = (data?.workflow as NovaWorkflowSummary | null) || null;
@@ -1531,7 +1557,9 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
-    const navigationFallback = hasAttachedImage ? null : resolveNovaNavigationIntent(composedPrompt);
+    const preferRagOverNavigation = shouldPreferNovaLegalRagOverNavigation(composedPrompt);
+    const navigationFallback =
+      hasAttachedImage || preferRagOverNavigation ? null : resolveNovaNavigationIntent(composedPrompt);
     if (navigationFallback) {
       const botMessage = buildBotMessageFromAgentResponse({
         type: "message",
@@ -1541,12 +1569,12 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
       });
       rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text, authUserId);
-      setMessages((prev) => [...prev, botMessage]);
-      setTyping(false);
+      await appendStreamingBotMessage(botMessage);
       return;
     }
 
-    const productHelpFallback = hasAttachedImage ? null : resolveNovaProductHelpIntent(composedPrompt);
+    const productHelpFallback =
+      hasAttachedImage || preferRagOverNavigation ? null : resolveNovaProductHelpIntent(composedPrompt);
     if (productHelpFallback) {
       const botMessage = buildBotMessageFromAgentResponse({
         type: "message",
@@ -1556,8 +1584,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         telemetry: { client_fallback: true, reason: "nova_product_help_intent" },
       });
       rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text, authUserId);
-      setMessages((prev) => [...prev, botMessage]);
-      setTyping(false);
+      await appendStreamingBotMessage(botMessage);
       return;
     }
 
@@ -1616,12 +1643,15 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         botMessage.text,
         authUserId,
       );
-      setMessages((prev) => [...prev, botMessage]);
+      await appendStreamingBotMessage(botMessage);
       if (imageAnalysis) {
         clearAttachedImage();
       }
     } catch (err: unknown) {
-      const navigationFallback = hasAttachedImage ? null : resolveNovaNavigationIntent(composedPrompt);
+      const navigationFallback =
+        hasAttachedImage || shouldPreferNovaLegalRagOverNavigation(composedPrompt)
+          ? null
+          : resolveNovaNavigationIntent(composedPrompt);
       if (navigationFallback) {
         const botMessage = buildBotMessageFromAgentResponse({
           type: "message",
@@ -1631,7 +1661,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
         });
         rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text, authUserId);
-        setMessages((prev) => [...prev, botMessage]);
+        await appendStreamingBotMessage(botMessage);
         return;
       }
 
@@ -2192,7 +2222,35 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
               </div>
             ) : null}
 
-            <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSend();
+              }}
+              onDragOver={(event) => {
+                if (!isAuthenticated) return;
+                event.preventDefault();
+                setComposerDragOver(true);
+              }}
+              onDragLeave={(event) => {
+                event.preventDefault();
+                setComposerDragOver(false);
+              }}
+              onDrop={(event) => {
+                if (!isAuthenticated) return;
+                event.preventDefault();
+                setComposerDragOver(false);
+                const file = event.dataTransfer.files?.[0] ?? null;
+                if (file && file.type.startsWith("image/")) {
+                  void handleImageSelected(file);
+                } else if (file) {
+                  setComposerError("Yalnizca gorsel dosyalari (JPEG, PNG, GIF, WebP) surukleyebilirsiniz.");
+                }
+              }}
+              className={`flex items-center gap-2 rounded-xl transition-colors ${
+                composerDragOver ? "ring-2 ring-primary/40 bg-primary/5" : ""
+              }`}
+            >
               <input
                 ref={inputRef}
                 type="text"

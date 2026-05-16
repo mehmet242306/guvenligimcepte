@@ -7,9 +7,30 @@ export function normalizeNovaRequestText(message: string) {
 
 export function isNovaRegulationQuery(message: string) {
   const normalized = normalizeNovaRequestText(message);
-  return /(mevzuat|yonetmelik|kanun|madde|regulation|law|article|legal|gesetz|verordnung|ley|leyes|loi|reglement|reglamento|normativa|isg uzmani|is guvenligi uzmani|isyeri hekimi|diger saglik personeli|dsp|tehlike sinifi|cok tehlikeli|az tehlikeli|tehlikeli sinif|calisan sayisi|personel sayisi|kac kisi|kac personel|ayda kac saat|bildirim suresi|zorunlu mu|gerekli mi|yasal|yukumluluk|sorumluluk)/.test(
+  return /(mevzuat|yonetmelik|kanun|madde|regulation|law|article|legal|gesetz|verordnung|ley|leyes|loi|reglement|reglamento|normativa|isg uzmani|is guvenligi uzmani|isyeri hekimi|diger saglik personeli|dsp|tehlike sinifi|cok tehlikeli|az tehlikeli|tehlikeli sinif|calisan sayisi|personel sayisi|kac kisi|kac personel|ayda kac saat|bildirim suresi|zorunlu mu|gerekli mi|yasal|yukumluluk|sorumluluk|yangin|merdiven|tahliye|cikis|genislik|yukseklik|iskazasi|is kazasi|ramak kala|tazminat|ihbar)/.test(
     normalized,
   );
+}
+
+/** Mevzuat / teknik ISG sorulari RAG ile yanitlanir; acik sayfa yonlendirme istegi haric. */
+export function shouldUseNovaLegalRag(message: string): boolean {
+  if (isNovaRegulationQuery(message)) return true;
+  const normalized = normalizeNovaRequestText(message);
+  if (normalized.length < 8) return false;
+  return /(en az|en fazla|minimum|maksimum|kac\s*(cm|mm|metre)|genislik|yukseklik|olcu|boyut|cap|mesafe|sorumluluk|yukumluluk|ne zaman|kim yapar|nasil yapilir|zorunlu mu|gerekli mi|ceza|tazminat|bildirim|ihbar|kkd|yangin|mermotion|tahliye)/.test(
+    normalized,
+  );
+}
+
+export function isExplicitNovaNavigationRequest(message: string): boolean {
+  const normalized = normalizeNovaRequestText(message);
+  return /(sayfaya git|modulune git|ekranina git|yonlendir|plannera git|ajandaya git|egitim modulune git|ac\s+(sayfa|modul|ekran)|open\s+(page|module))/.test(
+    normalized,
+  );
+}
+
+export function shouldPreferNovaLegalRagOverNavigation(message: string): boolean {
+  return shouldUseNovaLegalRag(message) && !isExplicitNovaNavigationRequest(message);
 }
 
 /** Widget Nova: operasyon yurutmez; statik yonlendirme + mevzuat okuma. */
@@ -22,8 +43,8 @@ export function resolveNovaRequestMode(_message: string): "read" | "agent" {
   return "read";
 }
 
-export function resolveNovaApiEndpoint(_message: string) {
-  return "/api/nova/chat";
+export function resolveNovaApiEndpoint(message: string) {
+  return shouldUseNovaLegalRag(message) ? "/api/nova/legal-chat" : "/api/nova/chat";
 }
 
 // Geriye uyumluluk — testler ve importlar icin tutuluyor.

@@ -26,7 +26,14 @@ import {
   resolveNovaGuidanceIntent,
   resolveNovaProductHelpIntent,
 } from "@/lib/nova/site-map";
-import { shouldBypassNovaStaticRedirects } from "@/lib/nova/request-mode";
+import { formatNovaDisplayText } from "@/lib/nova/format-answer";
+import {
+  shouldBypassNovaStaticRedirects,
+  shouldPreferNovaLegalRagOverNavigation,
+  shouldUseNovaLegalRag,
+} from "@/lib/nova/request-mode";
+import { answerWithLegalRag } from "@/lib/rag/legal/answer-with-rag";
+import { logErrorEvent } from "@/lib/admin-observability/server";
 
 function isCompatError(message: string | undefined | null) {
   const normalized = String(message ?? "").toLowerCase();
@@ -579,13 +586,18 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null;
     const hasImageContext = isNovaImageContextMessage(payload.message);
     const bypassStaticRedirects = shouldBypassNovaStaticRedirects(payload.message);
+    const skipNavigationForRag = shouldPreferNovaLegalRagOverNavigation(payload.message);
     const navigationIntent =
-      hasImageContext || bypassStaticRedirects ? null : resolveNovaNavigationIntent(payload.message);
+      hasImageContext || bypassStaticRedirects || skipNavigationForRag
+        ? null
+        : resolveNovaNavigationIntent(payload.message);
     const greetingIntent = resolveNovaGreetingIntent(payload.message);
     const auditSimulationIntent = resolveNovaAuditSimulationIntent(payload.message);
     const guidanceIntent = hasImageContext ? null : resolveNovaGuidanceIntent(payload.message);
     const productHelpIntent =
-      hasImageContext || bypassStaticRedirects ? null : resolveNovaProductHelpIntent(payload.message);
+      hasImageContext || bypassStaticRedirects || skipNavigationForRag
+        ? null
+        : resolveNovaProductHelpIntent(payload.message);
     const professionalPerspective = resolveNovaProfessionalPerspective(payload.message);
 
     let authContext =
@@ -982,6 +994,52 @@ export async function POST(request: NextRequest) {
         if (entitlementResponse) {
           return entitlementResponse;
         }
+      }
+    }
+
+    if (!hasImageContext && shouldUseNovaLegalRag(payload.message)) {
+      try {
+        const service = createServiceClient();
+        const rag = await answerWithLegalRag({
+          service,
+          query: payload.message,
+          language: payload.language,
+          jurisdictionCode: payload.jurisdiction_code ?? authContext.jurisdictionCode ?? "TR",
+          workspaceId: effectiveCompanyWorkspaceId ?? null,
+          organizationId: authContext.organizationId,
+          polish: payload.answer_mode === "polish",
+        });
+
+        return NextResponse.json(
+          normalizeNovaAgentResponse({
+            type: "message",
+            answer: formatNovaDisplayText(rag.answer),
+            sources: rag.sources,
+            session_id: payload.session_id ?? null,
+            as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
+            answer_mode: payload.answer_mode,
+            jurisdiction_code: payload.jurisdiction_code ?? authContext.jurisdictionCode ?? "TR",
+            cached: false,
+            telemetry: {
+              gateway_mode: "read_rag_inline",
+              retrieval_mode: rag.retrievalMode,
+              confidence: rag.confidence,
+              context_surface: payload.context_surface,
+              current_page: payload.current_page ?? null,
+              company_workspace_id: effectiveCompanyWorkspaceId,
+            },
+          }),
+        );
+      } catch (ragError) {
+        const message = ragError instanceof Error ? ragError.message : "Bilinmeyen RAG hatasi";
+        await logErrorEvent({
+          level: "warn",
+          source: "nova-chat",
+          endpoint: "/api/nova/chat",
+          message,
+          userId: authContext.userId,
+          organizationId: authContext.organizationId,
+        });
       }
     }
 
