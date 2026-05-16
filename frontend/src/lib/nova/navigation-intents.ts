@@ -1,4 +1,5 @@
 import type { NovaAgentNavigation } from "@/lib/nova/agent";
+import { shouldSkipNovaNavigationForContentTask } from "@/lib/nova/behavior-prompt";
 
 export type NovaNavigationIntent = {
   answer: string;
@@ -59,7 +60,10 @@ function isOperationalModuleLookup(normalized: string) {
   return mentionsModule && mentionsAction;
 }
 
-function shouldResolveNavigation(normalized: string) {
+function shouldResolveNavigation(message: string, normalized: string) {
+  if (shouldSkipNovaNavigationForContentTask(message)) {
+    return false;
+  }
   return (
     navigationVerbPattern.test(normalized) ||
     isDocumentLookup(normalized) ||
@@ -191,7 +195,7 @@ export function resolveNovaGreetingIntent(message: string): string | null {
 export function resolveNovaNavigationIntent(message: string): NovaNavigationIntent | null {
   const normalized = normalizeNovaNavigationText(message);
 
-  if (!shouldResolveNavigation(normalized)) {
+  if (!shouldResolveNavigation(message, normalized)) {
     return null;
   }
 

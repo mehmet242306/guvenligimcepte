@@ -67,7 +67,7 @@ export async function answerWithLegalRag(params: {
       max_tokens: 1400,
       temperature: 0.15,
       system:
-        "Metni okunakli duz Turkce paragraflar halinde yaz. Yildiz ve kalin yazi kullanma. Karsilastirmali bilgiler icin markdown tablo (| sutun |) kullanabilirsin. Yeni kanun/madde uydurma. [CIT-n] atiflarini koru. Kaynaga dayali bulgu ile Nova yorumu bolumlerini ayir. Zayif eslesmede yorumun yorumlayici oldugunu belirt.",
+        "Metni okunakli duz Turkce paragraflar halinde yaz. Yildiz ve kalin yazi kullanma. Karsilastirmali bilgiler icin markdown tablo (| sutun |) kullanabilirsin. Alakasiz kaynaklari dogrulanmis gibi sunma; zayif eslesmede bunu acikca yaz. Yeni kanun/madde/ceza uydurma. [CIT-n] atiflarini koru. Kaynaga dayali bulgu ile Nova yorumu bolumlerini ayir. Uretim/yazim isteklerinde once metni ver, sadece modul yonlendirme yapma.",
       messages: [
         {
           role: "user",

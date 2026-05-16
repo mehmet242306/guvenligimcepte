@@ -1,3 +1,4 @@
+import { shouldSkipNovaNavigationForContentTask } from "@/lib/nova/behavior-prompt";
 import type { NovaNavigationIntent } from "@/lib/nova/navigation-intents";
 import { normalizeNovaNavigationText } from "@/lib/nova/navigation-intents";
 
@@ -383,6 +384,10 @@ export function resolveNovaAuditSimulationIntent(message: string): NovaAuditSimu
 
 /** Sunucu `/api/nova/chat` ile aynı mantık — navigation NovaAgentNavigation ile uyumlu */
 export function resolveNovaProductHelpIntent(message: string): NovaProductHelpIntent | null {
+  if (shouldSkipNovaNavigationForContentTask(message)) {
+    return null;
+  }
+
   const normalized = normalizeNovaNavigationText(message);
 
   if (/(nasil kayit|register|uye ol|uye olmak|kayit olmak|hesap ac)/.test(normalized)) {

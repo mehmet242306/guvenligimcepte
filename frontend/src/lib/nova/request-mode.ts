@@ -33,6 +33,8 @@ export function shouldPreferNovaLegalRagOverNavigation(message: string): boolean
   return shouldUseNovaLegalRag(message) && !isExplicitNovaNavigationRequest(message);
 }
 
+export { shouldSkipNovaNavigationForContentTask } from "@/lib/nova/behavior-prompt";
+
 /** Widget Nova: operasyon yurutmez; statik yonlendirme + mevzuat okuma. */
 export function shouldBypassNovaStaticRedirects(_message: string) {
   return false;

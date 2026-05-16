@@ -25,11 +25,13 @@ import {
 } from "@/lib/nova/browser-speech";
 import { getNovaUiCopy, resolveNovaRuntimeErrorMessage } from "@/lib/nova-ui";
 import { postNovaAgentRequest } from "@/lib/nova/client";
+import { buildUnsafeNovaRefusal } from "@/lib/nova/behavior-prompt";
 import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import {
   resolveNovaApiEndpoint,
   resolveNovaRequestMode,
   shouldPreferNovaLegalRagOverNavigation,
+  shouldSkipNovaNavigationForContentTask,
 } from "@/lib/nova/request-mode";
 import { streamTextReveal } from "@/lib/nova/stream-text";
 import {
@@ -655,14 +657,28 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       article_title: s.article_title || s.title || "",
     }));
 
-    const sourceStatus: Message["sourceStatus"] =
-      normalizedSources.length > 0
-        ? "verified"
-        : data?.safety_block
-          ? "none"
-          : "partial";
-    const confidence: Message["confidence"] =
-      sourceStatus === "verified" ? "high" : sourceStatus === "partial" ? "medium" : "low";
+    const telemetry =
+      data?.telemetry && typeof data.telemetry === "object"
+        ? (data.telemetry as Record<string, unknown>)
+        : null;
+    const ragConfidence =
+      typeof telemetry?.confidence === "number" ? telemetry.confidence : null;
+    const isSafetyRefusal =
+      Boolean(data?.safety_block) ||
+      /yardimci olamam|buna yardimci olamam/i.test(answer);
+
+    let sourceStatus: Message["sourceStatus"] | undefined;
+    let confidence: Message["confidence"] | undefined;
+
+    if (normalizedSources.length > 0 && !isSafetyRefusal) {
+      if (ragConfidence != null && ragConfidence < 0.68) {
+        sourceStatus = "partial";
+        confidence = "medium";
+      } else {
+        sourceStatus = "verified";
+        confidence = "high";
+      }
+    }
     const actionSuggestions = resolveActionableSuggestionsFromMessage(answer);
     const fallbackSuggestions =
       navigation == null && answer.length < 220
@@ -1478,6 +1494,22 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
+    const unsafeRefusal = buildUnsafeNovaRefusal(composedPrompt);
+    if (unsafeRefusal) {
+      const botMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "bot",
+        text: formatNovaDisplayText(unsafeRefusal),
+        timestamp: new Date(),
+      };
+      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text, authUserId);
+      setMessages((prev) => [...prev, botMsg]);
+      setTyping(false);
+      return;
+    }
+
+    const skipNavigationForContent = shouldSkipNovaNavigationForContentTask(composedPrompt);
+
     const greetingFallback = hasAttachedImage ? null : resolveNovaGreetingIntent(composedPrompt);
     if (greetingFallback) {
       const botMsg: Message = {
@@ -1495,7 +1527,9 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
     const preferRagOverNavigation = shouldPreferNovaLegalRagOverNavigation(composedPrompt);
     const navigationFallback =
-      hasAttachedImage || preferRagOverNavigation ? null : resolveNovaNavigationIntent(composedPrompt);
+      hasAttachedImage || preferRagOverNavigation || skipNavigationForContent
+        ? null
+        : resolveNovaNavigationIntent(composedPrompt);
     if (navigationFallback) {
       const botMessage = buildBotMessageFromAgentResponse({
         type: "message",
@@ -1510,7 +1544,9 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     }
 
     const productHelpFallback =
-      hasAttachedImage || preferRagOverNavigation ? null : resolveNovaProductHelpIntent(composedPrompt);
+      hasAttachedImage || preferRagOverNavigation || skipNavigationForContent
+        ? null
+        : resolveNovaProductHelpIntent(composedPrompt);
     if (productHelpFallback) {
       const botMessage = buildBotMessageFromAgentResponse({
         type: "message",
@@ -1580,7 +1616,9 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       }
     } catch (err: unknown) {
       const navigationFallback =
-        hasAttachedImage || shouldPreferNovaLegalRagOverNavigation(composedPrompt)
+        hasAttachedImage ||
+        shouldPreferNovaLegalRagOverNavigation(composedPrompt) ||
+        shouldSkipNovaNavigationForContentTask(composedPrompt)
           ? null
           : resolveNovaNavigationIntent(composedPrompt);
       if (navigationFallback) {

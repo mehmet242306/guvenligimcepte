@@ -26,10 +26,16 @@ import {
   resolveNovaGuidanceIntent,
   resolveNovaProductHelpIntent,
 } from "@/lib/nova/site-map";
+import {
+  buildUnsafeNovaRefusal,
+  extractNovaFormatInstruction,
+  getNovaGatewayBehaviorMessages,
+} from "@/lib/nova/behavior-prompt";
 import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import {
   shouldBypassNovaStaticRedirects,
   shouldPreferNovaLegalRagOverNavigation,
+  shouldSkipNovaNavigationForContentTask,
   shouldUseNovaLegalRag,
 } from "@/lib/nova/request-mode";
 import { answerWithLegalRag } from "@/lib/rag/legal/answer-with-rag";
@@ -581,21 +587,41 @@ export async function POST(request: NextRequest) {
     if (!parsed.ok) return parsed.response;
 
     const payload = parsed.data;
+    const unsafeRefusal = buildUnsafeNovaRefusal(payload.message);
+    if (unsafeRefusal) {
+      return NextResponse.json(
+        normalizeNovaAgentResponse({
+          type: "message",
+          answer: formatNovaDisplayText(unsafeRefusal),
+          session_id: payload.session_id ?? null,
+          as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
+          answer_mode: payload.answer_mode,
+          jurisdiction_code: payload.jurisdiction_code ?? "TR",
+          sources: [],
+          telemetry: { gateway_mode: "safety_refusal", context_surface: payload.context_surface },
+        }),
+      );
+    }
+
     const supabase = await createClient();
     const internalServiceSecret =
       process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null;
     const hasImageContext = isNovaImageContextMessage(payload.message);
     const bypassStaticRedirects = shouldBypassNovaStaticRedirects(payload.message);
     const skipNavigationForRag = shouldPreferNovaLegalRagOverNavigation(payload.message);
+    const skipNavigationForContent = shouldSkipNovaNavigationForContentTask(payload.message);
     const navigationIntent =
-      hasImageContext || bypassStaticRedirects || skipNavigationForRag
+      hasImageContext || bypassStaticRedirects || skipNavigationForRag || skipNavigationForContent
         ? null
         : resolveNovaNavigationIntent(payload.message);
     const greetingIntent = resolveNovaGreetingIntent(payload.message);
     const auditSimulationIntent = resolveNovaAuditSimulationIntent(payload.message);
     const guidanceIntent = hasImageContext ? null : resolveNovaGuidanceIntent(payload.message);
     const productHelpIntent =
-      hasImageContext || bypassStaticRedirects || skipNavigationForRag
+      hasImageContext ||
+      bypassStaticRedirects ||
+      skipNavigationForRag ||
+      skipNavigationForContent
         ? null
         : resolveNovaProductHelpIntent(payload.message);
     const professionalPerspective = resolveNovaProfessionalPerspective(payload.message);
@@ -837,41 +863,17 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    contextualHistory.unshift({
-      role: "assistant",
-      content:
-        "Nova role constraint: Nova is the RiskNova site agent inside the floating chat widget. Do not present a separate Nova workspace or Nova center. For document needs, do not generate full documents inside chat; route the user to ISG Kutuphanesi Dokumantasyon or Dokuman Editoru and explain the next click briefly.",
-    });
+    for (const behaviorMessage of getNovaGatewayBehaviorMessages()) {
+      contextualHistory.unshift(behaviorMessage);
+    }
 
-    contextualHistory.unshift({
-      role: "assistant",
-      content:
-        "Expert role constraint: Act as a senior ISG specialist and occupational physician copilot for Turkiye. Prioritize Turkish OHS legislation (Kanun, Yonetmelik, Teblig) and operational compliance workflows in RiskNova. Give concrete, implementation-ready guidance (who does what, when, with what record). Ask a short clarifying question if workplace risk class, employee count, sector, or event details are missing and they change legal obligations.",
-    });
-
-    contextualHistory.unshift({
-      role: "assistant",
-      content:
-        "Answer quality constraint: Never invent law articles, deadlines, thresholds, or sanctions. If evidence is incomplete or a source cannot be verified, explicitly say uncertainty, provide the safest conservative path, and recommend checking the official text or an ISG professional. Keep answers concise but practical: summary, legal basis (if available), required actions, and immediate next step in RiskNova.",
-    });
-
-    contextualHistory.unshift({
-      role: "assistant",
-      content:
-        "Navigation guidance constraint: Keep users oriented in-site. If user is unsure, present 3-5 likely modules with one-line purpose and recommend the best next page. Prefer explicit in-product routing over generic advice. You may propose short path hints like: Header > Module, then first action.",
-    });
-
-    contextualHistory.unshift({
-      role: "assistant",
-      content:
-        "Response format constraint: For substantial answers, structure in this order: 1) Kisa Yanit, 2) Yasal Dayanak/Kaynak, 3) Uygulanacak Adimlar, 4) RiskNova Icinde Sonraki Tik. If sources are missing, explicitly state verification status and avoid precise legal claims.",
-    });
-
-    contextualHistory.unshift({
-      role: "assistant",
-      content:
-        "Proactive copilot constraint: If the user asks broadly (for example: ne yapmaliyim, nereden baslayayim, oncelik ne), provide top 3 priority actions with rationale and route each action to the most relevant RiskNova module.",
-    });
+    const formatInstruction = extractNovaFormatInstruction(payload.message);
+    if (formatInstruction) {
+      contextualHistory.unshift({
+        role: "assistant",
+        content: `Kullanici format talimati: ${formatInstruction}`,
+      });
+    }
 
     if (professionalPerspective) {
       const perspectiveNote =
