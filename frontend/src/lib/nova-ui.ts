@@ -55,6 +55,8 @@ type NovaUiCopy = {
     navChat: string;
     navHistory: string;
     navHelp: string;
+    newChat: string;
+    newChatAriaLabel: string;
   };
 };
 
@@ -81,7 +83,7 @@ const trCopy: NovaUiCopy = {
     subtitle: "AI ISG Asistani",
     openAriaLabel: "Nova asistanini ac",
     minimizeAriaLabel: "Kucult",
-    closeAriaLabel: "Kapat ve konusmayi sifirla",
+    closeAriaLabel: "Kapat",
     sourceCount: (count) => `${count} mevzuat kaynagi`,
     navigationTitle: "Sayfa Yonlendirme",
     gotoPage: "Sayfaya Git",
@@ -112,6 +114,8 @@ const trCopy: NovaUiCopy = {
     navChat: "Sohbet",
     navHistory: "Geçmiş",
     navHelp: "Yardım",
+    newChat: "Yeni sohbet",
+    newChatAriaLabel: "Yeni sohbet baslat",
   },
 };
 
@@ -138,7 +142,7 @@ const enCopy: NovaUiCopy = {
     subtitle: "AI OHS Assistant",
     openAriaLabel: "Open Nova assistant",
     minimizeAriaLabel: "Minimize",
-    closeAriaLabel: "Close and reset conversation",
+    closeAriaLabel: "Close",
     sourceCount: (count) => `${count} legislation sources`,
     navigationTitle: "Page Routing",
     gotoPage: "Open Page",
@@ -169,6 +173,8 @@ const enCopy: NovaUiCopy = {
     navChat: "Chat",
     navHistory: "History",
     navHelp: "Help",
+    newChat: "New chat",
+    newChatAriaLabel: "Start a new chat",
   },
 };
 

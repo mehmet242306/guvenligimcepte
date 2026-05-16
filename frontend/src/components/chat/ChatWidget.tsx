@@ -33,6 +33,15 @@ import {
 } from "@/lib/nova/request-mode";
 import { streamTextReveal } from "@/lib/nova/stream-text";
 import {
+  consolidateEphemeralDuplicateSessions,
+  groupSolutionQueriesIntoSessions,
+  mergeHistorySessionMessages,
+  mergeHistorySessions,
+  resolveWidgetHistorySessionId,
+  type WidgetHistoryMessage,
+  type WidgetHistorySession,
+} from "@/lib/nova/widget-history";
+import {
   resolveNovaGreetingIntent,
   resolveNovaNavigationIntent,
 } from "@/lib/nova/navigation-intents";
@@ -70,6 +79,7 @@ import {
   Check,
   History,
   LifeBuoy,
+  MessageSquarePlus,
 } from "lucide-react";
 
 type NovaSource = {
@@ -135,22 +145,6 @@ type WidgetHistoryItem = {
   aiResponse: string;
   createdAt: string;
   source: "local" | "server";
-};
-
-type WidgetHistoryMessage = {
-  id: string;
-  role: "user" | "bot";
-  text: string;
-  createdAt: string;
-};
-
-type WidgetHistorySession = {
-  id: string;
-  title: string;
-  createdAt: string;
-  updatedAt: string;
-  source: "local" | "server";
-  messages: WidgetHistoryMessage[];
 };
 
 function buildNovaImageReply(image: NovaImageAnalysis, userText: string): string {
@@ -306,7 +300,7 @@ function readLocalWidgetHistory(authUserId?: string | null): WidgetHistorySessio
     const parsed = JSON.parse(raw) as Array<Partial<WidgetHistoryItem & WidgetHistorySession>>;
     if (!Array.isArray(parsed)) return [];
 
-    return parsed
+    const sessions = parsed
       .map((item) => {
         if (Array.isArray(item.messages)) {
           return normalizeHistorySession({ ...item, source: "local" });
@@ -326,6 +320,13 @@ function readLocalWidgetHistory(authUserId?: string | null): WidgetHistorySessio
       })
       .filter((item): item is WidgetHistorySession => item !== null)
       .slice(0, MAX_WIDGET_HISTORY_SESSIONS);
+
+    const consolidated = consolidateEphemeralDuplicateSessions(sessions);
+    if (consolidated.length !== sessions.length) {
+      writeLocalWidgetHistory(consolidated, authUserId);
+    }
+
+    return consolidated;
   } catch {
     return [];
   }
@@ -388,57 +389,6 @@ function resolveActionableSuggestionsFromMessage(text: string): WidgetAction[] {
   }
 
   return suggestions.slice(0, 3);
-}
-
-function mergeHistorySessionMessages(
-  first: WidgetHistoryMessage[],
-  second: WidgetHistoryMessage[],
-) {
-  const seen = new Set<string>();
-  return [...first, ...second]
-    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-    .filter((message) => {
-      const key = `${message.role}\n${message.text}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .slice(-MAX_WIDGET_HISTORY_MESSAGES);
-}
-
-function mergeHistorySessions(
-  localSessions: WidgetHistorySession[],
-  serverSessions: WidgetHistorySession[],
-) {
-  const byId = new Map<string, WidgetHistorySession>();
-
-  for (const session of [...localSessions, ...serverSessions]) {
-    const existing = byId.get(session.id);
-    if (!existing) {
-      byId.set(session.id, session);
-      continue;
-    }
-
-    const messages = mergeHistorySessionMessages(existing.messages, session.messages);
-    byId.set(session.id, {
-      ...existing,
-      source: existing.source === "server" || session.source === "server" ? "server" : "local",
-      title: existing.title || session.title,
-      createdAt:
-        new Date(existing.createdAt).getTime() <= new Date(session.createdAt).getTime()
-          ? existing.createdAt
-          : session.createdAt,
-      updatedAt:
-        new Date(existing.updatedAt).getTime() >= new Date(session.updatedAt).getTime()
-          ? existing.updatedAt
-          : session.updatedAt,
-      messages,
-    });
-  }
-
-  return Array.from(byId.values())
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-    .slice(0, MAX_WIDGET_HISTORY_SESSIONS);
 }
 
 function rememberLocalWidgetHistory(
@@ -755,25 +705,41 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   }
 
   function getWidgetHistorySessionId(preferredSessionId?: string | null) {
-    if (isUuid(preferredSessionId)) {
-      widgetHistorySessionIdRef.current = preferredSessionId;
-      return preferredSessionId;
-    }
-
-    if (!isUuid(widgetHistorySessionIdRef.current)) {
-      widgetHistorySessionIdRef.current = crypto.randomUUID();
-    }
-
-    return widgetHistorySessionIdRef.current;
+    const resolved = resolveWidgetHistorySessionId({
+      preferredSessionId,
+      activeStoredSessionId: readActiveWidgetSessionId(authUserId),
+      currentRefSessionId: widgetHistorySessionIdRef.current,
+      isUuid,
+    });
+    widgetHistorySessionIdRef.current = resolved;
+    return resolved;
   }
 
-  const resetWidgetConversation = useCallback((nextAuthUserId?: string | null) => {
-    setMessages([]);
-    setSessionId(null);
-    widgetHistorySessionIdRef.current = "";
-    proactiveLoadedRef.current = false;
-    writeActiveWidgetSessionId("", nextAuthUserId ?? authUserId);
-  }, [authUserId]);
+  const resetWidgetConversation = useCallback(
+    (nextAuthUserId?: string | null) => {
+      setMessages([]);
+      setSessionId(null);
+      widgetHistorySessionIdRef.current = "";
+      proactiveLoadedRef.current = false;
+      writeActiveWidgetSessionId("", nextAuthUserId ?? authUserId);
+    },
+    [authUserId],
+  );
+
+  const startNewWidgetConversation = useCallback(() => {
+    resetWidgetConversation();
+    setActiveTab("chat");
+    setMessages([
+      {
+        id: "welcome",
+        role: "bot",
+        text: welcomeText,
+        suggestions: welcomeActions,
+        timestamp: new Date(),
+      },
+    ]);
+    setTimeout(() => inputRef.current?.focus(), 120);
+  }, [resetWidgetConversation, welcomeActions, welcomeText]);
 
   // Fetch organization_id for authenticated users
   useEffect(() => {
@@ -842,7 +808,43 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   }, [imagePreviewUrl]);
 
   useEffect(() => {
-    if (open && messages.length === 0) {
+    if (!open) return;
+
+    if (!isAuthenticated || !authUserId) {
+      if (messages.length === 0) {
+        setMessages([
+          {
+            id: "welcome",
+            role: "bot",
+            text: welcomeText,
+            suggestions: welcomeActions,
+            timestamp: new Date(),
+          },
+        ]);
+      }
+      return;
+    }
+
+    const activeSessionId = readActiveWidgetSessionId(authUserId);
+    if (isUuid(activeSessionId)) {
+      const session = readLocalWidgetHistory(authUserId).find((item) => item.id === activeSessionId);
+      if (session && session.messages.length > 0) {
+        widgetHistorySessionIdRef.current = session.id;
+        setSessionId(session.id);
+        setMessages(
+          session.messages.map((message) => ({
+            id: crypto.randomUUID(),
+            role: message.role,
+            text: message.text,
+            timestamp: new Date(message.createdAt),
+          })),
+        );
+        proactiveLoadedRef.current = true;
+        return;
+      }
+    }
+
+    if (messages.length === 0) {
       setMessages([
         {
           id: "welcome",
@@ -853,30 +855,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         },
       ]);
     }
-  }, [messages.length, open, welcomeActions, welcomeText]);
-
-  useEffect(() => {
-    if (messages.length > 0) return;
-    if (!authUserId) return;
-
-    const activeSessionId = readActiveWidgetSessionId(authUserId);
-    if (!isUuid(activeSessionId)) return;
-
-    const session = readLocalWidgetHistory(authUserId).find((item) => item.id === activeSessionId);
-    if (!session) return;
-
-    widgetHistorySessionIdRef.current = session.id;
-    setSessionId(session.id);
-    setMessages(
-      session.messages.map((message) => ({
-        id: crypto.randomUUID(),
-        role: message.role,
-        text: message.text,
-        timestamp: new Date(message.createdAt),
-      })),
-    );
-    proactiveLoadedRef.current = true;
-  }, [authUserId, messages.length]);
+  }, [authUserId, isAuthenticated, messages.length, open, welcomeActions, welcomeText]);
 
   useEffect(() => {
     if (!open || !isAuthenticated || !organizationId || !authUserId || proactiveLoadedRef.current) return;
@@ -961,66 +940,24 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         .order("created_at", { ascending: false })
         .limit(60);
 
-      const serverSessionMap = new Map<string, WidgetHistorySession>();
+      const serverSessions = Array.isArray(data)
+        ? groupSolutionQueriesIntoSessions(
+            data.map((item) => ({
+              id: String(item.id),
+              query_text: item.query_text,
+              ai_response: item.ai_response,
+              created_at: item.created_at,
+              response_metadata:
+                item.response_metadata && typeof item.response_metadata === "object"
+                  ? (item.response_metadata as Record<string, unknown>)
+                  : null,
+            })),
+          )
+        : [];
 
-      if (Array.isArray(data)) {
-        for (const item of data) {
-          const queryText = String(item.query_text || "").trim();
-          const aiResponse = String(item.ai_response || "").trim();
-          if (!queryText || !aiResponse) continue;
-
-          const metadata =
-            item.response_metadata && typeof item.response_metadata === "object"
-              ? (item.response_metadata as Record<string, unknown>)
-              : {};
-          const metadataSessionId =
-            typeof metadata.session_id === "string" && metadata.session_id.trim()
-              ? metadata.session_id.trim()
-              : null;
-          const sessionKey = metadataSessionId || `server-${item.id}`;
-          const createdAt = String(item.created_at || new Date().toISOString());
-          const existing = serverSessionMap.get(sessionKey);
-          const nextMessages: WidgetHistoryMessage[] = [
-            ...(existing?.messages ?? []),
-            {
-              id: `server-${item.id}-user`,
-              role: "user",
-              text: queryText,
-              createdAt,
-            },
-            {
-              id: `server-${item.id}-bot`,
-              role: "bot",
-              text: aiResponse,
-              createdAt,
-            },
-          ];
-
-          serverSessionMap.set(sessionKey, {
-            id: sessionKey,
-            title: existing?.title || queryText,
-            createdAt:
-              existing && new Date(existing.createdAt).getTime() <= new Date(createdAt).getTime()
-                ? existing.createdAt
-                : createdAt,
-            updatedAt:
-              existing && new Date(existing.updatedAt).getTime() >= new Date(createdAt).getTime()
-                ? existing.updatedAt
-                : createdAt,
-            source: "server",
-            messages: nextMessages,
-          });
-        }
-      }
-
-      const serverSessions = Array.from(serverSessionMap.values()).map((session) => ({
-        ...session,
-        messages: session.messages.sort(
-          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        ),
-      }));
-
-      setHistorySessions(mergeHistorySessions(localSessions, serverSessions));
+      setHistorySessions(
+        mergeHistorySessions(localSessions, serverSessions, MAX_WIDGET_HISTORY_SESSIONS),
+      );
     } finally {
       setHistoryLoading(false);
     }
@@ -1618,14 +1555,14 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       );
 
       // Preserve session
-      if (data?.session_id && !sessionId) {
-        setSessionId(data.session_id);
-      }
+      const resolvedSessionId = data?.session_id ?? activeHistorySessionId;
+      widgetHistorySessionIdRef.current = resolvedSessionId;
       if (data?.session_id) {
-        writeActiveWidgetSessionId(data.session_id, authUserId);
-      } else {
-        writeActiveWidgetSessionId(activeHistorySessionId, authUserId);
+        setSessionId(data.session_id);
+      } else if (!sessionId) {
+        setSessionId(activeHistorySessionId);
       }
+      writeActiveWidgetSessionId(resolvedSessionId, authUserId);
 
       const botMessage = buildBotMessageFromAgentResponse(
         hasAttachedImage
@@ -1637,12 +1574,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
             }
           : data,
       );
-      rememberLocalWidgetHistory(
-        data?.session_id ?? activeHistorySessionId,
-        visiblePrompt,
-        botMessage.text,
-        authUserId,
-      );
+      rememberLocalWidgetHistory(resolvedSessionId, visiblePrompt, botMessage.text, authUserId);
       await appendStreamingBotMessage(botMessage);
       if (imageAnalysis) {
         clearAttachedImage();
@@ -1854,12 +1786,20 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                 >
                   <Minus className="size-4" />
                 </button>
+                {isAuthenticated ? (
+                  <button
+                    type="button"
+                    onClick={startNewWidgetConversation}
+                    aria-label={ui.widget.newChatAriaLabel}
+                    title={ui.widget.newChat}
+                    className="inline-flex size-8 items-center justify-center rounded-xl text-white/55 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    <MessageSquarePlus className="size-4" />
+                  </button>
+                ) : null}
                 <button
                   type="button"
-                  onClick={() => {
-                    setOpen(false);
-                    resetWidgetConversation();
-                  }}
+                  onClick={() => setOpen(false)}
                   aria-label={ui.widget.closeAriaLabel}
                   title={ui.widget.closeAriaLabel}
                   className="inline-flex size-8 items-center justify-center rounded-xl text-white/55 transition-colors hover:bg-white/10 hover:text-white"
