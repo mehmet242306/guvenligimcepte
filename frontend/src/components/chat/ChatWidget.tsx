@@ -35,12 +35,11 @@ import { streamTextReveal } from "@/lib/nova/stream-text";
 import {
   consolidateEphemeralDuplicateSessions,
   groupSolutionQueriesIntoSessions,
-  mergeHistorySessionMessages,
   mergeHistorySessions,
   resolveWidgetHistorySessionId,
-  type WidgetHistoryMessage,
   type WidgetHistorySession,
 } from "@/lib/nova/widget-history";
+import { NovaMessageContent } from "@/components/chat/NovaMessageContent";
 import {
   resolveNovaGreetingIntent,
   resolveNovaNavigationIntent,
@@ -1836,19 +1835,10 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                           : "rounded-tl-sm border border-red-500/20 bg-red-500/10 text-red-400"
                         : "bg-muted text-foreground rounded-tl-sm"
                   }`}>
-                    {msg.text.split("\n").map((line, i) => (
-                      <span key={i}>
-                        {line.startsWith("**") && line.endsWith("**")
-                          ? <strong>{line.slice(2, -2)}</strong>
-                          : line.startsWith("* ")
-                            ? <span className="block pl-2">{line}</span>
-                            : line.startsWith("- ")
-                              ? <span className="block pl-2">{line}</span>
-                              : line
-                        }
-                        {i < msg.text.split("\n").length - 1 && <br />}
-                      </span>
-                    ))}
+                    <NovaMessageContent
+                      text={msg.text}
+                      variant={msg.role === "user" ? "user" : "bot"}
+                    />
                   </div>
 
                   {msg.role === "bot" && (msg.confidence || msg.sourceStatus) && (
