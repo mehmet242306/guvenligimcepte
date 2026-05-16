@@ -325,6 +325,35 @@ export function MevzuatSyncTab() {
     }
   }
 
+  async function embedMissingChunks() {
+    setSyncing("embed-chunks");
+    setSyncResult(null);
+    setSyncProgress({ id: "embed-chunks", progress: 20, label: "Eksik embedding'ler taranıyor" });
+    try {
+      const res = await fetch("/api/admin/legal-rag/embed-chunks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ limit: 500 }),
+      });
+      const { data } = await parseApiResponse(res);
+      if (!res.ok) {
+        throw new Error(String(data.error ?? "Embedding üretilemedi"));
+      }
+      setSyncProgress({ id: "embed-chunks", progress: 100, label: "Embedding tamamlandı" });
+      setSyncResult({
+        id: "embed-chunks",
+        success: true,
+        message: `${data.updated ?? 0} chunk güncellendi, ${data.failed ?? 0} hata (${data.scanned ?? 0} tarandı)`,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Bilinmeyen hata";
+      setSyncResult({ id: "embed-chunks", success: false, message });
+      setSyncProgress({ id: "embed-chunks", progress: 100, label: `Başarısız: ${message}` });
+    } finally {
+      setSyncing(null);
+    }
+  }
+
   async function testConnection() {
     setTestResult(null);
     try {
@@ -581,6 +610,15 @@ export function MevzuatSyncTab() {
         >
           {syncing === "core-isg-scopes" ? "Scope uygulanıyor…" : "Çekirdek İSG kanun scope"}
         </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={syncing === "embed-chunks"}
+          onClick={() => void embedMissingChunks()}
+          title="Dense RAG için OpenAI embedding üretir (mevcut chunk'lar)"
+        >
+          {syncing === "embed-chunks" ? "Embedding…" : "Embedding üret"}
+        </Button>
         <Button size="sm" variant="outline" onClick={() => void testConnection()}>
           Bağlantı testi
         </Button>
@@ -602,6 +640,11 @@ export function MevzuatSyncTab() {
             {syncResult.message}
           </span>
         )}
+        {syncResult?.id === "embed-chunks" && (
+          <span className={cn("text-xs", syncResult.success ? "text-emerald-500" : "text-red-500")}>
+            {syncResult.message}
+          </span>
+        )}
       </div>
       {syncProgress?.id === "critical-laws" && (
         <SyncProgressBar
@@ -615,6 +658,13 @@ export function MevzuatSyncTab() {
           progress={syncProgress.progress}
           label={syncProgress.label}
           tone={syncResult?.id === "core-isg-scopes" && !syncResult.success ? "error" : "default"}
+        />
+      )}
+      {syncProgress?.id === "embed-chunks" && (
+        <SyncProgressBar
+          progress={syncProgress.progress}
+          label={syncProgress.label}
+          tone={syncResult?.id === "embed-chunks" && !syncResult.success ? "error" : "default"}
         />
       )}
 
