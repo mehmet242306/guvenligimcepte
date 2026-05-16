@@ -34,6 +34,6 @@ export function isNovaOperationalCommandQuery(message: string) {
   );
 }
 
-export function isNovaAgentControlQuery(message: string) {
+export function isNovaAgentControlQuery(_message: string) {
   return false;
 }
