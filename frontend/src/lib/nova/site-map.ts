@@ -1,6 +1,5 @@
 import type { NovaNavigationIntent } from "@/lib/nova/navigation-intents";
 import { normalizeNovaNavigationText } from "@/lib/nova/navigation-intents";
-import { shouldBypassNovaStaticRedirects } from "@/lib/nova/request-mode";
 
 /**
  * Nova “site ajanı” için RiskNova URL rehberi (kamuya açık + sık kullanılan uygulama rotaları).
@@ -417,25 +416,19 @@ export function resolveNovaProductHelpIntent(message: string): NovaProductHelpIn
   }
 
   if (/(sinav|anket|egitim|training|question bank|soru bankasi)/.test(normalized)) {
-    if (shouldBypassNovaStaticRedirects(message)) {
-      return null;
-    }
-    const isDiscoveryOnly =
-      /(nerede|nerde|nasil|where|how|hangi sayfa|hangi alan|ne ise yarar|modul|sayfa)/.test(
-        normalized,
-      ) && !/(olustur|planla|hazirla|ekle|baslat)/.test(normalized);
-    if (!isDiscoveryOnly) {
-      return null;
-    }
+    const usePlanner = /(planla|ajanda|planner|takvim|gorev|tarih)/.test(normalized);
     return {
-      answer:
-        "Sınav, anket ve eğitim içerikleri giriş sonrası Eğitim modülünde yönetilir.",
+      answer: usePlanner
+        ? "Eğitim ve görev planlamasını Ajanda üzerinden yapabilirsiniz. İlgili sayfaya yönlendiriyorum."
+        : "Sınav, anket ve eğitim içeriklerini Eğitim modülünde yönetebilirsiniz. İlgili sayfaya yönlendiriyorum.",
       navigation: {
         action: "navigate",
-        url: "/training",
-        label: "Eğitim",
-        reason: "Eğitim ve sınav modülü (oturum gerekir)",
-        destination: "product_training",
+        url: usePlanner ? "/planner" : "/training",
+        label: usePlanner ? "Ajanda" : "Eğitim",
+        reason: usePlanner
+          ? "Takvim ve görev planlama"
+          : "Eğitim, sınav ve anket modülü",
+        destination: usePlanner ? "product_planner" : "product_training",
         auto_navigate: false,
       },
     };

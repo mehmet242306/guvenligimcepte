@@ -1019,12 +1019,8 @@ export async function POST(request: NextRequest) {
     const productHelpIntent =
       hasImageContext || bypassStaticRedirects ? null : resolveNovaProductHelpIntent(payload.message);
     const professionalPerspective = resolveNovaProfessionalPerspective(payload.message);
-    const operationalKickoffIntent =
-      hasImageContext || bypassStaticRedirects
-        ? null
-        : resolveNovaOperationalKickoffIntent(payload.message);
-    const createRecordIntent =
-      hasImageContext || bypassStaticRedirects ? null : resolveNovaCreateRecordIntent(payload.message);
+    const operationalKickoffIntent = null;
+    const createRecordIntent = null;
 
     let authContext =
       payload.access_token
@@ -1033,7 +1029,7 @@ export async function POST(request: NextRequest) {
     const requestedCompanyWorkspaceId =
       payload.company_workspace_id ??
       extractWorkspaceIdFromCurrentPage(payload.current_page);
-    let effectiveRequestMode: "read" | "agent" = payload.mode ?? "agent";
+    let effectiveRequestMode: "read" | "agent" = payload.mode ?? "read";
     let effectiveCompanyWorkspaceId = requestedCompanyWorkspaceId;
     let usedReadOnlyLegalFallback = false;
 

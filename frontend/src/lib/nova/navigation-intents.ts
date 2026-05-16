@@ -49,11 +49,13 @@ function isDocumentLookup(normalized: string) {
 /** DÖF/olay/risk gibi modül adı + oluştur/nasıl/nerede birlikte — "döf oluşturmam gerekiyor" gibi */
 function isOperationalModuleLookup(normalized: string) {
   const mentionsModule =
-    /(dof|duzeltici|onleyici|corrective|preventive|ramak kala|olay|incident|risk analizi|risk assessment)/.test(
+    /(dof|duzeltici|onleyici|corrective|preventive|ramak kala|olay|incident|risk analizi|risk assessment|egitim|training|sinav|anket|ajanda|planner|takvim|gorev)/.test(
       normalized,
     );
   const mentionsAction =
-    /(olustur|yeni|ekle|basla|ac|git|nerede|nerde|nasil|gerek|lazim|istiyorum)/.test(normalized);
+    /(olustur|planla|yeni|ekle|basla|ac|git|nerede|nerde|nasil|gerek|lazim|istiyorum|kaydet|hazirla)/.test(
+      normalized,
+    );
   return mentionsModule && mentionsAction;
 }
 

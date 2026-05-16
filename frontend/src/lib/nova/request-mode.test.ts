@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
-
 import {
-  isNovaAgentControlQuery,
-  isNovaOperationalCommandQuery,
+  isNovaRegulationQuery,
   resolveNovaApiEndpoint,
   resolveNovaRequestMode,
   shouldBypassNovaStaticRedirects,
@@ -10,48 +8,42 @@ import {
 import { resolveNovaProductHelpIntent } from "./site-map";
 
 describe("resolveNovaRequestMode", () => {
-  it("routes operational commands to agent mode", () => {
-    expect(resolveNovaRequestMode("25 Haziran'a egitim planla")).toBe("agent");
-    expect(resolveNovaApiEndpoint("25 Haziran'a egitim planla")).toBe("/api/nova/chat");
+  it("always uses read mode for widget gateway", () => {
+    expect(resolveNovaRequestMode("25 Haziran'a egitim planla")).toBe("read");
+    expect(resolveNovaRequestMode("6331 sayili kanunda risk degerlendirmesi")).toBe("read");
   });
+});
 
-  it("routes confirmation and workflow follow-ups to agent mode", () => {
-    expect(resolveNovaRequestMode("onayliyorum")).toBe("agent");
-    expect(resolveNovaRequestMode("iptal et")).toBe("agent");
-    expect(resolveNovaRequestMode("sirada ne var")).toBe("agent");
-    expect(resolveNovaRequestMode("evet")).toBe("agent");
-    expect(resolveNovaApiEndpoint("evet")).toBe("/api/nova/chat");
-  });
-
-  it("keeps pure regulation questions on legal-chat", () => {
-    expect(resolveNovaRequestMode("6331 sayili kanunda risk degerlendirmesi ne zaman yenilenir?")).toBe(
-      "read",
-    );
-    expect(
-      resolveNovaApiEndpoint("6331 sayili kanunda risk degerlendirmesi ne zaman yenilenir?"),
-    ).toBe("/api/nova/legal-chat");
+describe("resolveNovaApiEndpoint", () => {
+  it("always routes through /api/nova/chat", () => {
+    expect(resolveNovaApiEndpoint("egitim planla")).toBe("/api/nova/chat");
   });
 });
 
 describe("shouldBypassNovaStaticRedirects", () => {
-  it("bypasses static redirects for operational training requests", () => {
-    expect(shouldBypassNovaStaticRedirects("15 Haziran'a is guvenligi egitimi planla")).toBe(true);
-    expect(resolveNovaProductHelpIntent("15 Haziran'a is guvenligi egitimi planla")).toBeNull();
-  });
-
-  it("allows discovery-only training help", () => {
-    expect(shouldBypassNovaStaticRedirects("egitim modulu nerede")).toBe(false);
-    expect(resolveNovaProductHelpIntent("egitim modulu nerede")?.navigation?.url).toBe("/training");
+  it("never bypasses static redirects", () => {
+    expect(shouldBypassNovaStaticRedirects("15 Haziran'a is guvenligi egitimi planla")).toBe(
+      false,
+    );
   });
 });
 
-describe("isNovaAgentControlQuery", () => {
-  it("does not treat long regulation questions as control queries", () => {
-    expect(
-      isNovaAgentControlQuery(
-        "6331 sayili kanunda is guvenligi uzmani icin bildirim suresi ve calisan sayisi esikleri nelerdir?",
-      ),
-    ).toBe(false);
-    expect(isNovaOperationalCommandQuery("risk analizi olustur ve 6331 madde 10")).toBe(true);
+describe("isNovaRegulationQuery", () => {
+  it("detects regulation questions", () => {
+    expect(isNovaRegulationQuery("6331 sayili kanunda risk degerlendirmesi ne zaman yenilenir?")).toBe(
+      true,
+    );
+  });
+});
+
+describe("resolveNovaProductHelpIntent with navigation-only Nova", () => {
+  it("redirects training plan requests to planner", () => {
+    const intent = resolveNovaProductHelpIntent("15 Haziran'a is guvenligi egitimi planla");
+    expect(intent?.navigation?.url).toBe("/planner");
+  });
+
+  it("redirects generic training discovery to training module", () => {
+    const intent = resolveNovaProductHelpIntent("egitim modulu nerede");
+    expect(intent?.navigation?.url).toBe("/training");
   });
 });

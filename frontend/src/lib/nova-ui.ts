@@ -69,7 +69,7 @@ const trCopy: NovaUiCopy = {
   },
   widget: {
     welcomeAuthenticated:
-      "Merhaba! Ben Nova. Mevzuati yorumlayabilir, sizi dogru modullere goturebilir, egitim veya gorev planlayabilir, olay taslagi baslatabilir ve dokuman gerekiyorsa ilgili ekrana yonlendirebilirim.",
+      "Merhaba! Ben Nova. ISG mevzuati sorularinizi yanitlayabilir ve sizi RiskNova'daki dogru modul veya sayfaya yonlendirebilirim.",
     welcomePublic:
       "Merhaba! Gercek Nova ajanina erismek icin giris yapmaniz gerekir. Isterseniz hemen oturum acin veya hesap olusturun.",
     publicLocked:
@@ -126,7 +126,7 @@ const enCopy: NovaUiCopy = {
   },
   widget: {
     welcomeAuthenticated:
-      "Hello! I'm Nova. I can interpret regulations, route you to the right modules, plan trainings or tasks, start incident drafts, and send you to the right screen when a document is needed.",
+      "Hello! I'm Nova. I can answer OHS regulation questions and route you to the right RiskNova module or page.",
     welcomePublic:
       "Hello! You need to sign in to access the real Nova agent. You can sign in now or create an account.",
     publicLocked:

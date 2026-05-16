@@ -25,16 +25,13 @@ import {
 } from "@/lib/nova/browser-speech";
 import { getNovaUiCopy, resolveNovaRuntimeErrorMessage } from "@/lib/nova-ui";
 import { postNovaAgentRequest } from "@/lib/nova/client";
-import {
-  resolveNovaApiEndpoint,
-  resolveNovaRequestMode,
-  shouldBypassNovaStaticRedirects,
-} from "@/lib/nova/request-mode";
+import { resolveNovaApiEndpoint, resolveNovaRequestMode } from "@/lib/nova/request-mode";
 import {
   resolveNovaGreetingIntent,
   resolveNovaNavigationIntent,
 } from "@/lib/nova/navigation-intents";
 import {
+  resolveNovaProductHelpIntent,
   resolveNovaPublicSiteNavigationIntent,
   resolveNovaSiteMapOverviewIntent,
 } from "@/lib/nova/site-map";
@@ -47,11 +44,6 @@ import type {
   NovaSafetyBlock,
   NovaAgentToolPreview,
 } from "@/lib/nova/agent";
-import {
-  messageIndicatesSettledAction,
-  messageRequestsConfirmation,
-  shouldShowNovaConfirmationChoices,
-} from "@/lib/nova/confirmation";
 import {
   getNovaProactiveBrief,
   markNovaWorkflowStep,
@@ -505,7 +497,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [typing, setTyping] = useState(false);
-  const [actionInFlightId, setActionInFlightId] = useState<string | null>(null);
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [accountType, setAccountType] = useState<"individual" | "osgb" | "enterprise" | null>(null);
   const [accountSurface, setAccountSurface] = useState<"platform-admin" | "osgb-manager" | "standard">("standard");
@@ -533,7 +524,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   const inputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const proactiveLoadedRef = useRef(false);
-  const actionPollCancelledRef = useRef(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const recordingStreamRef = useRef<MediaStream | null>(null);
   const recordingChunksRef = useRef<Blob[]>([]);
@@ -810,7 +800,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   // Welcome message on first open
   useEffect(() => {
     return () => {
-      actionPollCancelledRef.current = true;
       if (recordingTimerRef.current) {
         window.clearInterval(recordingTimerRef.current);
       }
@@ -1542,10 +1531,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
-    const navigationFallback =
-      hasAttachedImage || shouldBypassNovaStaticRedirects(composedPrompt)
-        ? null
-        : resolveNovaNavigationIntent(composedPrompt);
+    const navigationFallback = hasAttachedImage ? null : resolveNovaNavigationIntent(composedPrompt);
     if (navigationFallback) {
       const botMessage = buildBotMessageFromAgentResponse({
         type: "message",
@@ -1560,7 +1546,22 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
-    // Authenticated users: Nova edge function
+    const productHelpFallback = hasAttachedImage ? null : resolveNovaProductHelpIntent(composedPrompt);
+    if (productHelpFallback) {
+      const botMessage = buildBotMessageFromAgentResponse({
+        type: "message",
+        answer: productHelpFallback.answer,
+        sources: [],
+        navigation: productHelpFallback.navigation ?? null,
+        telemetry: { client_fallback: true, reason: "nova_product_help_intent" },
+      });
+      rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text, authUserId);
+      setMessages((prev) => [...prev, botMessage]);
+      setTyping(false);
+      return;
+    }
+
+    // Authenticated users: Nova gateway (navigation + mevzuat; agent araclari kapali)
     try {
       const {
         data: { session },
@@ -1687,167 +1688,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     if (action.kind === "prompt" && action.prompt) {
       setInput(action.prompt);
       setTimeout(() => inputRef.current?.focus(), 50);
-    }
-  }
-
-  function findLatestPendingActionHint(): NovaActionHint | null {
-    for (let index = messages.length - 1; index >= 0; index -= 1) {
-      const hint = messages[index]?.actionHint;
-      if (hint?.action_run_id && hint.execution_status === "pending_confirmation") {
-        return hint;
-      }
-    }
-    return null;
-  }
-
-  function clearPendingConfirmationMessages(actionRunId?: string | null) {
-    setMessages((prev) =>
-      prev.map((msg) => {
-        const shouldClear =
-          (actionRunId && msg.actionHint?.action_run_id === actionRunId) ||
-          msg.actionHint?.execution_status === "pending_confirmation" ||
-          (msg.role === "bot" && messageRequestsConfirmation(msg.text));
-
-        if (!shouldClear) return msg;
-
-        return {
-          ...msg,
-          actionHint: null,
-          toolPreview: msg.toolPreview
-            ? { ...msg.toolPreview, requiresConfirmation: false }
-            : null,
-        };
-      }),
-    );
-  }
-
-  async function handleQuickConfirmation(
-    actionHint: NovaActionHint | null | undefined,
-    decision: "confirm" | "cancel",
-  ) {
-    const targetHint =
-      actionHint?.action_run_id && actionHint.execution_status === "pending_confirmation"
-        ? actionHint
-        : findLatestPendingActionHint();
-
-    if (targetHint?.action_run_id) {
-      await handlePendingAction(targetHint, decision);
-      return;
-    }
-
-    if (decision === "cancel") return;
-
-    const reply = ui.widget.yesReply;
-    await handleSend(reply);
-  }
-
-  async function handlePendingAction(actionHint: NovaActionHint, decision: "confirm" | "cancel") {
-    const actionRunId = actionHint.action_run_id;
-    if (!actionRunId) return;
-
-    setActionInFlightId(actionRunId);
-    try {
-      const response = await fetch(`/api/nova/actions/${actionRunId}/${decision}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-          decision === "confirm"
-            ? {
-                idempotency_key: crypto.randomUUID(),
-                context_surface: "widget",
-              }
-            : {
-                context_surface: "widget",
-              },
-        ),
-      });
-
-      const data: NovaAgentResponse = await response.json().catch(() => ({
-        type: "safety_block",
-        answer: ui.widget.unavailable,
-      }));
-
-      if (!response.ok) {
-        throw { context: new Response(JSON.stringify(data), { status: response.status }) };
-      }
-
-      clearPendingConfirmationMessages(actionRunId);
-
-      const executionStatus =
-        data.action_hint && typeof data.action_hint === "object"
-          ? data.action_hint.execution_status
-          : null;
-
-      const settled =
-        executionStatus === "completed" ||
-        messageIndicatesSettledAction(data.answer || "");
-
-      setMessages((prev) => [...prev, buildBotMessageFromAgentResponse(data)]);
-
-      if (
-        decision === "confirm" &&
-        !settled &&
-        (executionStatus === "queued" || executionStatus === "processing")
-      ) {
-        void pollActionRunUntilSettled(actionRunId);
-      }
-    } catch (err: unknown) {
-      const errorText = await resolveNovaRuntimeErrorMessage(locale, err);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: "bot",
-          text: errorText,
-          timestamp: new Date(),
-          isError: true,
-        },
-      ]);
-    } finally {
-      setActionInFlightId(null);
-    }
-  }
-
-  async function pollActionRunUntilSettled(actionRunId: string) {
-    for (let attempt = 0; attempt < 12; attempt += 1) {
-      if (actionPollCancelledRef.current) return;
-
-      await new Promise((resolve) => window.setTimeout(resolve, 2500));
-
-      const response = await fetch(`/api/nova/actions/${actionRunId}`, { cache: "no-store" });
-      const data: NovaAgentResponse = await response.json().catch(() => ({
-        type: "message",
-        answer: ui.widget.unavailable,
-      }));
-
-      if (!response.ok) {
-        return;
-      }
-
-      const executionStatus =
-        data.action_hint && typeof data.action_hint === "object"
-          ? data.action_hint.execution_status
-          : null;
-
-      if (executionStatus === "queued" || executionStatus === "processing") {
-        continue;
-      }
-
-      clearPendingConfirmationMessages(actionRunId);
-      setMessages((prev) => {
-        const withoutQueued = prev.filter(
-          (msg) =>
-            !(
-              msg.actionHint?.action_run_id === actionRunId &&
-              messageIndicatesSettledAction(msg.text) === false &&
-              (msg.text.includes("kuyruga") || msg.text.includes("kuyruğa"))
-            ),
-        );
-        return [...withoutQueued, buildBotMessageFromAgentResponse(data)];
-      });
-      return;
     }
   }
 
@@ -2133,29 +1973,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                       </div>
                       <div className="mt-1 text-xs font-medium text-foreground">{msg.toolPreview.title}</div>
                       <div className="mt-1 text-[11px] leading-5 text-muted-foreground">{msg.toolPreview.summary}</div>
-                    </div>
-                  )}
-
-                  {msg.role === "bot" && shouldShowNovaConfirmationChoices(msg.text, msg.actionHint) && (
-                    <div className="mt-2 flex gap-2">
-                      <button
-                        type="button"
-                        disabled={Boolean(msg.actionHint?.action_run_id && actionInFlightId === msg.actionHint.action_run_id)}
-                        onClick={() => void handleQuickConfirmation(msg.actionHint, "confirm")}
-                        className="flex-1 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {msg.actionHint?.action_run_id && actionInFlightId === msg.actionHint.action_run_id
-                          ? ui.widget.actionRunning
-                          : ui.widget.yesReply}
-                      </button>
-                      <button
-                        type="button"
-                        disabled={Boolean(msg.actionHint?.action_run_id && actionInFlightId === msg.actionHint.action_run_id)}
-                        onClick={() => void handleQuickConfirmation(msg.actionHint, "cancel")}
-                        className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {ui.widget.noReply}
-                      </button>
                     </div>
                   )}
 

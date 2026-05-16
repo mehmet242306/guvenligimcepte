@@ -35,9 +35,9 @@ describe("resolveNovaProductHelpIntent", () => {
     expect(r?.navigation?.url).toBe("/register");
   });
 
-  it("does not redirect operational training commands", () => {
-    expect(resolveNovaProductHelpIntent("sinav olustur")).toBeNull();
-    expect(resolveNovaProductHelpIntent("egitim planla")).toBeNull();
+  it("redirects operational training commands to the right module", () => {
+    expect(resolveNovaProductHelpIntent("sinav olustur")?.navigation?.url).toBe("/training");
+    expect(resolveNovaProductHelpIntent("egitim planla")?.navigation?.url).toBe("/planner");
   });
 
   it("redirects discovery questions about training module", () => {
