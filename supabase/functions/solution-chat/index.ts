@@ -230,7 +230,7 @@ const PHASE1_DRAFT_TOOLS = [
   'create_document_draft',
 ]
 
-const PHASE1_BLOCKED_TOOLS = [
+const PHASE2_AGENT_CONTROL_TOOLS = [
   'confirm_pending_action',
   'cancel_pending_action',
   'complete_workflow_step',
@@ -5344,10 +5344,10 @@ async function executeTool(toolName: string, input: any, context: ToolContext): 
 
   try {
     const isReadMode = context.session.mode === 'read'
-    const isBlockedInPhaseOne = PHASE1_BLOCKED_TOOLS.includes(toolName)
+    const isAgentControlTool = PHASE2_AGENT_CONTROL_TOOLS.includes(toolName)
     const isDraftTool = PHASE1_DRAFT_TOOLS.includes(toolName)
 
-    if (isBlockedInPhaseOne || (isReadMode && isDraftTool)) {
+    if (isReadMode && (isDraftTool || isAgentControlTool)) {
       result = {
         success: false,
         error: context.session.language === 'en'
@@ -6326,7 +6326,7 @@ Bu referansı kullanabilirsin ama mutlaka güncel tool sonuçlarıyla doğrula.`
 
     const phaseTools = requestMode === 'read'
       ? PHASE1_READ_ONLY_TOOLS
-      : [...PHASE1_READ_ONLY_TOOLS, ...PHASE1_DRAFT_TOOLS]
+      : [...PHASE1_READ_ONLY_TOOLS, ...PHASE1_DRAFT_TOOLS, ...PHASE2_AGENT_CONTROL_TOOLS]
     const availableTools = NOVA_TOOLS.filter(tool =>
       phaseTools.includes(tool.name) ||
       allowedTools.includes(tool.name) ||
