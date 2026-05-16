@@ -24,7 +24,11 @@ import {
 } from "@/lib/nova/browser-speech";
 import { getNovaUiCopy, resolveNovaRuntimeErrorMessage } from "@/lib/nova-ui";
 import { postNovaAgentRequest } from "@/lib/nova/client";
-import { resolveNovaApiEndpoint, resolveNovaRequestMode } from "@/lib/nova/request-mode";
+import {
+  resolveNovaApiEndpoint,
+  resolveNovaRequestMode,
+  shouldBypassNovaStaticRedirects,
+} from "@/lib/nova/request-mode";
 import {
   resolveNovaGreetingIntent,
   resolveNovaNavigationIntent,
@@ -1481,7 +1485,10 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
-    const navigationFallback = hasAttachedImage ? null : resolveNovaNavigationIntent(composedPrompt);
+    const navigationFallback =
+      hasAttachedImage || shouldBypassNovaStaticRedirects(composedPrompt)
+        ? null
+        : resolveNovaNavigationIntent(composedPrompt);
     if (navigationFallback) {
       const botMessage = buildBotMessageFromAgentResponse({
         type: "message",

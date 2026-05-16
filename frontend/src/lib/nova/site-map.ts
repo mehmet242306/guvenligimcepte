@@ -1,5 +1,6 @@
 import type { NovaNavigationIntent } from "@/lib/nova/navigation-intents";
 import { normalizeNovaNavigationText } from "@/lib/nova/navigation-intents";
+import { shouldBypassNovaStaticRedirects } from "@/lib/nova/request-mode";
 
 /**
  * Nova “site ajanı” için RiskNova URL rehberi (kamuya açık + sık kullanılan uygulama rotaları).
@@ -416,6 +417,16 @@ export function resolveNovaProductHelpIntent(message: string): NovaProductHelpIn
   }
 
   if (/(sinav|anket|egitim|training|question bank|soru bankasi)/.test(normalized)) {
+    if (shouldBypassNovaStaticRedirects(message)) {
+      return null;
+    }
+    const isDiscoveryOnly =
+      /(nerede|nerde|nasil|where|how|hangi sayfa|hangi alan|ne ise yarar|modul|sayfa)/.test(
+        normalized,
+      ) && !/(olustur|planla|hazirla|ekle|baslat)/.test(normalized);
+    if (!isDiscoveryOnly) {
+      return null;
+    }
     return {
       answer:
         "Sınav, anket ve eğitim içerikleri giriş sonrası Eğitim modülünde yönetilir.",

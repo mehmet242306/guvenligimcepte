@@ -7,12 +7,23 @@ export function normalizeNovaRequestText(message: string) {
 
 export function isNovaOperationalCommandQuery(message: string) {
   const normalized = normalizeNovaRequestText(message);
-  return /(olustur|planla|ekle|kaydet|ac|git|yonlendir|create|plan|open|navigate|schedule|start|baslat|uygula)/.test(
+  return /\b(olustur|planla|ekle|kaydet|ac|git|yonlendir|create|plan|open|navigate|schedule|start|baslat|uygula)\b/.test(
     normalized,
   );
 }
 
 /** Onay, iptal, workflow takibi ve proaktif operasyon sorulari agent endpoint'e gider. */
+/** Operasyon / onay / taslak isteklerinde statik sayfa yonlendirmesini atla. */
+export function shouldBypassNovaStaticRedirects(message: string) {
+  const normalized = normalizeNovaRequestText(message);
+  if (isNovaOperationalCommandQuery(message) || isNovaAgentControlQuery(message)) {
+    return true;
+  }
+  return /(olustur|planla|hazirla|ekle|baslat|yap|tanimla|duzenle|onayla|iptal|sinav olustur|anket olustur)/.test(
+    normalized,
+  );
+}
+
 export function isNovaAgentControlQuery(message: string) {
   const normalized = normalizeNovaRequestText(message);
   const trimmed = message.trim();

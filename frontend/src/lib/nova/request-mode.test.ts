@@ -5,7 +5,9 @@ import {
   isNovaOperationalCommandQuery,
   resolveNovaApiEndpoint,
   resolveNovaRequestMode,
+  shouldBypassNovaStaticRedirects,
 } from "./request-mode";
+import { resolveNovaProductHelpIntent } from "./site-map";
 
 describe("resolveNovaRequestMode", () => {
   it("routes operational commands to agent mode", () => {
@@ -28,6 +30,18 @@ describe("resolveNovaRequestMode", () => {
     expect(
       resolveNovaApiEndpoint("6331 sayili kanunda risk degerlendirmesi ne zaman yenilenir?"),
     ).toBe("/api/nova/legal-chat");
+  });
+});
+
+describe("shouldBypassNovaStaticRedirects", () => {
+  it("bypasses static redirects for operational training requests", () => {
+    expect(shouldBypassNovaStaticRedirects("15 Haziran'a is guvenligi egitimi planla")).toBe(true);
+    expect(resolveNovaProductHelpIntent("15 Haziran'a is guvenligi egitimi planla")).toBeNull();
+  });
+
+  it("allows discovery-only training help", () => {
+    expect(shouldBypassNovaStaticRedirects("egitim modulu nerede")).toBe(false);
+    expect(resolveNovaProductHelpIntent("egitim modulu nerede")?.navigation?.url).toBe("/training");
   });
 });
 

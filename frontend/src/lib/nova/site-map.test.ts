@@ -34,4 +34,14 @@ describe("resolveNovaProductHelpIntent", () => {
     const r = resolveNovaProductHelpIntent("nasıl kayıt olurum");
     expect(r?.navigation?.url).toBe("/register");
   });
+
+  it("does not redirect operational training commands", () => {
+    expect(resolveNovaProductHelpIntent("sinav olustur")).toBeNull();
+    expect(resolveNovaProductHelpIntent("egitim planla")).toBeNull();
+  });
+
+  it("redirects discovery questions about training module", () => {
+    const r = resolveNovaProductHelpIntent("egitim modulu nerede");
+    expect(r?.navigation?.url).toBe("/training");
+  });
 });

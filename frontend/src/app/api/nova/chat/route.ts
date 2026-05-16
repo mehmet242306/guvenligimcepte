@@ -25,6 +25,7 @@ import {
   resolveNovaGuidanceIntent,
   resolveNovaProductHelpIntent,
 } from "@/lib/nova/site-map";
+import { shouldBypassNovaStaticRedirects } from "@/lib/nova/request-mode";
 
 function isCompatError(message: string | undefined | null) {
   const normalized = String(message ?? "").toLowerCase();
@@ -48,7 +49,7 @@ function isNovaImageContextMessage(message: string) {
 
 function isOperationalCommandQuery(message: string) {
   const normalized = normalizeNovaIntentText(message);
-  return /(olustur|planla|ekle|kaydet|ac|git|yonlendir|create|plan|open|navigate|schedule|start|baslat|uygula)/.test(
+  return /\b(olustur|planla|ekle|kaydet|ac|git|yonlendir|create|plan|open|navigate|schedule|start|baslat|uygula)\b/.test(
     normalized,
   );
 }
@@ -999,13 +1000,19 @@ export async function POST(request: NextRequest) {
     const internalServiceSecret =
       process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null;
     const hasImageContext = isNovaImageContextMessage(payload.message);
-    const navigationIntent = hasImageContext ? null : resolveNovaNavigationIntent(payload.message);
+    const bypassStaticRedirects = shouldBypassNovaStaticRedirects(payload.message);
+    const navigationIntent =
+      hasImageContext || bypassStaticRedirects ? null : resolveNovaNavigationIntent(payload.message);
     const greetingIntent = resolveNovaGreetingIntent(payload.message);
     const auditSimulationIntent = resolveNovaAuditSimulationIntent(payload.message);
     const guidanceIntent = hasImageContext ? null : resolveNovaGuidanceIntent(payload.message);
-    const productHelpIntent = hasImageContext ? null : resolveNovaProductHelpIntent(payload.message);
+    const productHelpIntent =
+      hasImageContext || bypassStaticRedirects ? null : resolveNovaProductHelpIntent(payload.message);
     const professionalPerspective = resolveNovaProfessionalPerspective(payload.message);
-    const operationalKickoffIntent = hasImageContext ? null : resolveNovaOperationalKickoffIntent(payload.message);
+    const operationalKickoffIntent =
+      hasImageContext || bypassStaticRedirects
+        ? null
+        : resolveNovaOperationalKickoffIntent(payload.message);
     const createRecordIntent = hasImageContext ? null : resolveNovaCreateRecordIntent(payload.message);
 
     let authContext =
