@@ -225,10 +225,7 @@ export async function ingestOfficialDocumentFromMevzuat(
       source = "pdf";
       fullText = pdf.text;
       officialUrl = pdfUrl;
-      articles = parseArticlesFromHtml(
-        `<pre>${pdf.text.replace(/</g, "&lt;")}</pre>`,
-        doc.title,
-      );
+      articles = parseArticlesFromPlainText(pdf.text, doc.title);
       if (articles.length === 1 && articles[0].article_number === "Giriş") {
         const parts = chunkPlainText(pdf.text);
         articles = parts.map((content, index) => ({
@@ -248,9 +245,12 @@ export async function ingestOfficialDocumentFromMevzuat(
           catalog_metadata: {
             ...((doc.catalog_metadata as Record<string, unknown> | null) ?? {}),
             pdf_url: pdfUrl,
+            ...(mevzuatNo ? { mevzuat_no: mevzuatNo } : {}),
             last_status: "synced",
             last_sync_source: "mevzuat_pdf",
             extraction_method: pdf.method,
+            last_web_sync_error: null,
+            last_error: null,
           },
         })
         .eq("id", doc.id);

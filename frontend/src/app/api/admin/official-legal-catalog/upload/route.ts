@@ -6,6 +6,7 @@ import {
 } from "@/lib/legal-corpus/document-text-extract";
 import { OFFICIAL_LEGAL_DOC_TYPES } from "@/lib/legal-corpus/doc-types";
 import { ingestOfficialDocumentFromPdfText } from "@/lib/legal-corpus/ingest-official-document";
+import { extractMevzuatNo } from "@/lib/legal-corpus/mevzuat-parse";
 import { requireSuperAdmin } from "@/lib/supabase/api-auth";
 import { createServiceClient, sanitizePlainText, validateUploadedFile } from "@/lib/security/server";
 
@@ -125,12 +126,27 @@ export async function POST(request: NextRequest) {
 
     const extractedText = extraction.text;
     const sourceHash = `official-${kind}:${parsed.data.doc_number}:${Date.now()}`;
+    const mevzuatNo = extractMevzuatNo(parsed.data.source_url, parsed.data.doc_number);
+
+    let existingMeta: Record<string, unknown> = {};
+    if (parsed.data.document_id) {
+      const { data: existingDoc } = await service
+        .from("legal_documents")
+        .select("catalog_metadata")
+        .eq("id", parsed.data.document_id)
+        .eq("corpus_scope", "official")
+        .maybeSingle();
+      existingMeta = (existingDoc?.catalog_metadata as Record<string, unknown> | null) ?? {};
+    }
+
     const baseMetadata = {
+      ...existingMeta,
       source_type: kind === "text" ? "manual_text_upload" : kind === "docx" ? "manual_docx_upload" : "manual_pdf_upload",
       file_kind: kind,
-      pdf_url: kind === "pdf" ? fileUrl : null,
-      docx_url: kind === "docx" ? fileUrl : null,
-      official_url: parsed.data.source_url || null,
+      pdf_url: kind === "pdf" ? fileUrl : existingMeta.pdf_url ?? null,
+      docx_url: kind === "docx" ? fileUrl : existingMeta.docx_url ?? null,
+      official_url: parsed.data.source_url || existingMeta.official_url || null,
+      ...(mevzuatNo ? { mevzuat_no: mevzuatNo } : {}),
       uploaded_by: auth.userId,
       last_status: extractedText
         ? kind === "text"
@@ -145,6 +161,8 @@ export async function POST(request: NextRequest) {
             : "manual_pdf_uploaded_without_text",
       extraction_method: extraction.method,
       extraction_error: extractedText ? null : extraction.error,
+      last_web_sync_error: null,
+      last_error: null,
     };
 
     const documentQuery = parsed.data.document_id

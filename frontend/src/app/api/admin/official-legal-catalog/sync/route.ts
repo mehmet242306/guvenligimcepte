@@ -47,20 +47,51 @@ export async function POST(request: NextRequest) {
   });
 
   if (!result.ok) {
+    const existingMeta = (doc.catalog_metadata as Record<string, unknown> | null) ?? {};
+    const sourceType = typeof existingMeta.source_type === "string" ? existingMeta.source_type : "";
+    const lastStatus = typeof existingMeta.last_status === "string" ? existingMeta.last_status : "";
+    const isManualIndexed =
+      sourceType.startsWith("manual_") ||
+      lastStatus === "manual_text_indexed" ||
+      lastStatus === "manual_docx_indexed" ||
+      lastStatus === "manual_pdf_indexed" ||
+      lastStatus === "manual_file_indexed";
+
+    const { count: chunkCount } = await service
+      .from("legal_chunks")
+      .select("id", { count: "exact", head: true })
+      .eq("document_id", doc.id);
+
+    const preserveManualIndex = isManualIndexed && (chunkCount ?? 0) > 0;
+
     await service
       .from("legal_documents")
       .update({
         catalog_metadata: {
-          ...((doc.catalog_metadata as Record<string, unknown> | null) ?? {}),
-          last_status: "sync_failed",
-          last_error: result.error,
-          last_hints: result.hints ?? [],
+          ...existingMeta,
+          ...(preserveManualIndex
+            ? {
+                last_status: lastStatus || "manual_text_indexed",
+                last_web_sync_failed_at: new Date().toISOString(),
+                last_web_sync_error: result.error,
+                last_hints: result.hints ?? [],
+              }
+            : {
+                last_status: "sync_failed",
+                last_error: result.error,
+                last_hints: result.hints ?? [],
+              }),
         },
       })
       .eq("id", doc.id);
 
     return NextResponse.json(
-      { error: result.error, hints: result.hints ?? [] },
+      {
+        error: result.error,
+        hints: result.hints ?? [],
+        preserved_manual_index: preserveManualIndex,
+        chunk_count: chunkCount ?? 0,
+      },
       { status: 422 },
     );
   }

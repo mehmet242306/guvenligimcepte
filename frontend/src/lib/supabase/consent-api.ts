@@ -83,6 +83,47 @@ export type DataProcessingInventoryRow = {
   updated_at: string;
 };
 
+export async function fetchPublishedConsentVersion(versionId: string): Promise<{
+  version_id: string;
+  version: string;
+  title: string;
+  consent_type: ConsentType;
+  content_markdown: string;
+} | null> {
+  const supabase = createClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from("consent_document_versions")
+    .select(
+      "id, version, content_markdown, consent_documents!inner(title, consent_type, is_active, organization_id)",
+    )
+    .eq("id", versionId)
+    .eq("is_published", true)
+    .single();
+
+  if (error || !data) {
+    logKvkkApiError("[consent-api] fetchPublishedConsentVersion:", error);
+    return null;
+  }
+
+  const joined = data.consent_documents as
+    | { title: string; consent_type: ConsentType; is_active: boolean }
+    | { title: string; consent_type: ConsentType; is_active: boolean }[]
+    | null;
+  const document = Array.isArray(joined) ? joined[0] : joined;
+
+  if (!document?.is_active) return null;
+
+  return {
+    version_id: data.id as string,
+    version: data.version as string,
+    title: document.title,
+    consent_type: document.consent_type,
+    content_markdown: data.content_markdown as string,
+  };
+}
+
 export async function listActiveConsentRequirements(
   scopeContext: ConsentScopeContext = "platform",
   companyWorkspaceId?: string | null,

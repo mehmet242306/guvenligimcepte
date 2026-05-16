@@ -162,9 +162,19 @@ export function MevzuatSyncTab() {
 
       if (!res.ok) {
         const hints = Array.isArray(data.hints) ? (data.hints as string[]).join(" ") : "";
-        const msg = [String(data.error ?? "Senkron başarısız"), hints].filter(Boolean).join(" — ");
-        setSyncProgress({ id: docId, progress: 100, label: `Başarısız` });
+        const preserved = Boolean(data.preserved_manual_index);
+        const chunkCount = typeof data.chunk_count === "number" ? data.chunk_count : 0;
+        const baseMsg = String(data.error ?? "Senkron başarısız");
+        const msg = preserved
+          ? `${baseMsg} — Manuel indeks korundu (${chunkCount} chunk).`
+          : [baseMsg, hints].filter(Boolean).join(" — ");
+        setSyncProgress({
+          id: docId,
+          progress: 100,
+          label: preserved ? "Bağlantı başarısız; manuel indeks korundu" : "Başarısız",
+        });
         setSyncResult({ id: docId, success: false, message: msg });
+        await loadDocs();
         return;
       }
 
@@ -794,15 +804,27 @@ function SyncProgressBar({
 }: {
   progress: number;
   label: string;
-  tone?: "default" | "success" | "error";
+  tone?: "default" | "success" | "error" | "warning";
 }) {
   const barClass =
-    tone === "error" ? "bg-red-500" : tone === "success" ? "bg-emerald-500" : "bg-primary";
+    tone === "error"
+      ? "bg-red-500"
+      : tone === "success"
+        ? "bg-emerald-500"
+        : tone === "warning"
+          ? "bg-amber-500"
+          : "bg-primary";
 
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between gap-3 text-[11px] text-muted-foreground">
-        <span className={cn(tone === "error" && "text-red-500", tone === "success" && "text-emerald-500")}>
+        <span
+          className={cn(
+            tone === "error" && "text-red-500",
+            tone === "success" && "text-emerald-500",
+            tone === "warning" && "text-amber-600",
+          )}
+        >
           {label}
         </span>
         <span>{Math.round(progress)}%</span>
@@ -935,15 +957,30 @@ function DocRow({
     sourceType === "manual_docx_upload" ||
     sourceType === "manual_text_upload" ||
     sourceType === "manual_file_upload" ||
-    Boolean(pdfUrl) ||
     fileKind === "docx" ||
-    fileKind === "pdf";
+    fileKind === "pdf" ||
+    fileKind === "text";
+  const isManualIndexed =
+    hasSynced &&
+    (lastStatus === "manual_text_indexed" ||
+      lastStatus === "manual_docx_indexed" ||
+      lastStatus === "manual_pdf_indexed" ||
+      lastStatus === "manual_file_indexed" ||
+      sourceType.startsWith("manual_"));
   const canSync = Boolean(doc.source_url?.includes("MevzuatNo="));
-  const cannotSync = Boolean(syncResult && !syncResult.success) || (!canSync && !isManualFile) || (isManualFile && !hasSynced);
-  const rowTone = hasSynced && !cannotSync ? "success" : cannotSync ? "error" : "pending";
+  const webSyncFailed = Boolean(syncResult && !syncResult.success);
+  const cannotSync = !hasSynced && ((!canSync && !isManualFile) || (isManualFile && !hasSynced));
+  const rowTone =
+    hasSynced && (isManualIndexed || !webSyncFailed)
+      ? "success"
+      : cannotSync || webSyncFailed
+        ? "error"
+        : "pending";
   const statusLabel =
     rowTone === "success"
-      ? "Senkronize edildi"
+      ? isManualIndexed
+        ? "Manuel kaynak indekslendi"
+        : "Senkronize edildi"
       : isManualFile && !hasSynced
         ? "Dosya yüklü ama metin yok"
         : rowTone === "error"
@@ -960,12 +997,22 @@ function DocRow({
       : "Kaynak yok";
   const syncDetail =
     rowTone === "success"
-      ? `${doc.chunk_count.toLocaleString("tr-TR")} chunk hazır${doc.last_synced_at ? ` · Son işlem: ${new Date(doc.last_synced_at).toLocaleString("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}` : ""}`
+      ? [
+          `${doc.chunk_count.toLocaleString("tr-TR")} chunk hazır`,
+          doc.last_synced_at
+            ? `Son işlem: ${new Date(doc.last_synced_at).toLocaleString("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`
+            : null,
+          webSyncFailed && isManualIndexed
+            ? `Bağlantıdan çekme başarısız (manuel metin korunuyor): ${syncResult?.message ?? extractionError}`
+            : null,
+        ]
+          .filter(Boolean)
+          .join(" · ")
       : rowTone === "error"
         ? syncResult?.message ||
+          extractionError ||
           (isManualFile && !hasSynced
-            ? extractionError ||
-              "Dosya yüklendi ama metin çıkarılamadı. Word (.docx) veya metin katmanlı PDF ile tekrar yükleyin."
+            ? "Dosya yüklendi ama metin çıkarılamadı. Word (.docx) veya metin katmanlı PDF ile tekrar yükleyin."
             : "MevzuatNo bağlantısı yok; bağlantı ekleyin veya PDF/Word yükleyin.")
         : "Henüz chunk yok; bağlantıdan çekin veya PDF/Word yükleyin (en kolay yol).";
   const lastStatusLabel =
@@ -992,15 +1039,17 @@ function DocRow({
         : "";
   const syncButtonLabel = syncing
     ? "…"
+    : isManualIndexed
+      ? "Bağlantıdan yenile"
       : canSync
         ? hasSynced
           ? "Tekrar senkron"
           : "Bağlantıdan çek"
-      : isManualFile
-        ? hasSynced
-          ? "İndekslendi"
-          : "Metin yok"
-        : "Bağlantı gerekli";
+        : isManualFile
+          ? hasSynced
+            ? "İndekslendi"
+            : "Metin yok"
+          : "Bağlantı gerekli";
 
   async function saveLink() {
     setRowSaving(true);
@@ -1197,7 +1246,17 @@ function DocRow({
           >
             <Trash2 className="h-4 w-4" />
           </Button>
-          <Button onClick={onSync} disabled={syncing || !canSync} size="sm" variant={hasSynced ? "outline" : "primary"}>
+          <Button
+            onClick={onSync}
+            disabled={syncing || (!canSync && !isManualIndexed)}
+            size="sm"
+            variant={hasSynced ? "outline" : "primary"}
+            title={
+              isManualIndexed
+                ? "Manuel metin korunur; başarısız olursa mevcut chunk'lar silinmez."
+                : undefined
+            }
+          >
             {syncButtonLabel}
           </Button>
         </div>
@@ -1267,8 +1326,22 @@ function DocRow({
         <SyncProgressBar
           progress={syncProgress.progress}
           label={syncProgress.label}
-          tone={syncResult ? (syncResult.success ? "success" : "error") : "default"}
+          tone={
+            syncResult
+              ? syncResult.success
+                ? "success"
+                : isManualIndexed && hasSynced
+                  ? "warning"
+                  : "error"
+              : "default"
+          }
         />
+      )}
+
+      {webSyncFailed && isManualIndexed && (
+        <p className="text-xs text-amber-600">
+          Bağlantıdan otomatik çekme başarısız; {doc.chunk_count} chunk manuel kaynaktan kullanılmaya devam ediyor.
+        </p>
       )}
 
       <div className="flex flex-wrap items-center gap-2 border-t border-border/60 pt-2">
@@ -1332,7 +1405,16 @@ function DocRow({
       </div>
 
       {syncResult && (
-        <p className={cn("text-xs", syncResult.success ? "text-emerald-500" : "text-red-500")}>
+        <p
+          className={cn(
+            "text-xs",
+            syncResult.success
+              ? "text-emerald-500"
+              : isManualIndexed && hasSynced
+                ? "text-amber-600"
+                : "text-red-500",
+          )}
+        >
           {syncResult.message}
         </p>
       )}
