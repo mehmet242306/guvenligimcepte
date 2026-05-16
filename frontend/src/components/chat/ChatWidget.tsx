@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -745,13 +746,13 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     return widgetHistorySessionIdRef.current;
   }
 
-  function resetWidgetConversation(nextAuthUserId?: string | null) {
+  const resetWidgetConversation = useCallback((nextAuthUserId?: string | null) => {
     setMessages([]);
     setSessionId(null);
     widgetHistorySessionIdRef.current = "";
     proactiveLoadedRef.current = false;
     writeActiveWidgetSessionId("", nextAuthUserId ?? authUserId);
-  }
+  }, [authUserId]);
 
   // Fetch organization_id for authenticated users
   useEffect(() => {
@@ -797,7 +798,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     }
 
     previousAuthUserIdRef.current = authUserId;
-  }, [authUserId, isAuthenticated]);
+  }, [authUserId, isAuthenticated, resetWidgetConversation]);
 
   // Welcome message on first open
   useEffect(() => {

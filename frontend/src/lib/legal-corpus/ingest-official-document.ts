@@ -205,7 +205,6 @@ export async function ingestOfficialDocumentFromMevzuat(
   const hints: string[] = [];
   let articles: ParsedArticle[] = [];
   let fullText: string | null = null;
-  let source: "html" | "pdf" = "html";
   let officialUrl = htmlUrl ?? doc.source_url ?? null;
 
   if (htmlUrl) {
@@ -232,7 +231,6 @@ export async function ingestOfficialDocumentFromMevzuat(
   if (pdfUrl) {
     const pdf = await extractPdfTextFromUrl(pdfUrl);
     if (pdf.text && pdf.text.length > 80) {
-      source = "pdf";
       fullText = pdf.text;
       officialUrl = pdfUrl;
       articles = parseArticlesFromPlainText(pdf.text, doc.title);

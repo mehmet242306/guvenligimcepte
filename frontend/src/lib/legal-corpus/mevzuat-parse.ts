@@ -77,7 +77,7 @@ export function resolveMevzuatFetchUrls(doc: {
 export function parseArticlesFromHtml(html: string, docTitle: string): ParsedArticle[] {
   const articles: ParsedArticle[] = [];
 
-  let cleanText = html
+  const cleanText = html
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
     .replace(/<br\s*\/?>/gi, "\n")
