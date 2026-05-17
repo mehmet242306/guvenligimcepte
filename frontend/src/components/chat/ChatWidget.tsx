@@ -383,7 +383,7 @@ function resolveActionableSuggestionsFromMessage(text: string): WidgetAction[] {
     add("Egitim", "/training", "E");
   }
   if (/(dokuman|prosedur|talimat|form|mevzuat)/.test(normalized)) {
-    add("ISG Kutuphanesi", "/isg-library?section=documentation", "K");
+    add("İSG Kütüphanesi", "/isg-library?section=documentation", "K");
   }
   if (/(gorev|takvim|plan|ajanda)/.test(normalized)) {
     add("Ajanda", "/planner", "A");
@@ -566,7 +566,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         { label: "OSGB Panel", path: managerHref, icon: "N" },
         { label: "Gorevler", path: tasksHref, icon: "G" },
         { label: "Atamalar", path: assignmentsHref, icon: "A" },
-        { label: "Dokumanlar", path: documentsHref, icon: "D" },
+        { label: "Dokümanlar", path: documentsHref, icon: "D" },
       ];
     }
 
@@ -577,7 +577,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
       return [
         { label: "Kurumsal Panel", path: enterpriseHref, icon: "N" },
-        { label: "Dokumanlar", path: "/isg-library?section=documentation", icon: "D" },
+        { label: "Dokümanlar", path: "/isg-library?section=documentation", icon: "D" },
         { label: "Raporlar", path: "/reports", icon: "R" },
         { label: "Firmalar", path: "/companies", icon: "F" },
       ];
@@ -668,7 +668,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     const isSafetyRefusal =
       Boolean(data?.safety_block) ||
       gatewayMode === "safety_refusal" ||
-      /yardimci olamam|buna yardimci olamam/i.test(answer);
+      /yardımcı olamam|buna yardımcı olamam/i.test(answer);
 
     let sourceStatus: Message["sourceStatus"] | undefined;
     let confidence: Message["confidence"] | undefined;

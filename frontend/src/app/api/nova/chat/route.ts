@@ -870,7 +870,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    for (const behaviorMessage of getNovaGatewayBehaviorMessages()) {
+    for (const behaviorMessage of getNovaGatewayBehaviorMessages(payload.language)) {
       contextualHistory.unshift(behaviorMessage);
     }
 

@@ -75,16 +75,16 @@ const navigationTargets: NovaNavigationTarget[] = [
   {
     destination: "documents",
     url: "/documents",
-    label: "Dokumanlar",
-    reason: "Kayitli veya size ait editor belgelerini goruntulemek icin Dokumanlar alani kullanilir.",
+    label: "Dokümanlar",
+    reason: "Kayıtlı veya size ait editör belgelerini görüntülemek için Dokümanlar alanı kullanılır.",
     priority: 120,
     matches: (text) => personalDocumentPattern.test(text),
   },
   {
     destination: "isg_library_documents",
     url: "/isg-library?section=documentation",
-    label: "ISG Kutuphanesi Dokumanlari",
-    reason: "Hazir ISG dokumanlari, sablonlar, prosedurler ve formlar ISG Kutuphanesi icindeki Dokumantasyon bolumunde bulunur.",
+    label: "İSG Kütüphanesi Dokümanları",
+    reason: "Hazır İSG dokümanları, şablonlar, prosedürler ve formlar İSG Kütüphanesi içindeki Dokümantasyon bölümünde bulunur.",
     priority: 110,
     matches: (text) =>
       /(isg kutuphan|kutuphan|dokumantasyon)/.test(text) ||
@@ -93,8 +93,8 @@ const navigationTargets: NovaNavigationTarget[] = [
   {
     destination: "document_editor",
     url: "/documents/new",
-    label: "Dokuman Editoru",
-    reason: "Sifirdan yeni dokuman veya taslak hazirlamak icin Dokuman Editoru kullanilir.",
+    label: "Doküman Editörü",
+    reason: "Sıfırdan yeni doküman veya taslak hazırlamak için Doküman Editörü kullanılır.",
     priority: 130,
     matches: (text) =>
       /(dokuman|belge|form|prosedur|talimat)/.test(text) &&
@@ -104,7 +104,7 @@ const navigationTargets: NovaNavigationTarget[] = [
     destination: "planner",
     url: "/planner",
     label: "Ajanda",
-    reason: "Gorev, egitim, yillik calisma plani ve takip isleri Ajanda alaninda yonetilir.",
+    reason: "Görev, eğitim, yıllık çalışma planı ve takip işleri Ajanda alanında yönetilir.",
     priority: 50,
     matches: (text) => /(ajanda|planlayici|planner|takvim|gorev|egitim plani|yillik calisma)/.test(text),
   },

@@ -2,9 +2,14 @@ import { describe, expect, it } from "vitest";
 import { formatNovaDisplayText } from "./format-answer";
 
 describe("formatNovaDisplayText", () => {
+  it("preserves Turkish characters", () => {
+    const input = "Kısa yanıt: Yönetim kurulu özeti — iş sağlığı ve güvenliği (İSG).";
+    expect(formatNovaDisplayText(input)).toBe(input);
+  });
+
   it("removes markdown emphasis", () => {
-    expect(formatNovaDisplayText("**Kisa yanit:** Yangin cikisi en az 120 cm.")).toBe(
-      "Kisa yanit: Yangin cikisi en az 120 cm.",
+    expect(formatNovaDisplayText("**Kısa yanıt:** Yangın çıkışı en az 120 cm.")).toBe(
+      "Kısa yanıt: Yangın çıkışı en az 120 cm.",
     );
   });
 

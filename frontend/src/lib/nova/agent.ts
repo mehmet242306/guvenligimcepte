@@ -292,9 +292,9 @@ export function normalizeNovaAgentResponse(raw: Record<string, unknown>): NovaAg
     navigation = {
       action: "navigate",
       url: "/isg-library?section=documentation",
-      label: "ISG Kutuphanesi Dokumanlari",
+      label: "İSG Kütüphanesi Dokümanları",
       reason:
-        "Dokuman ihtiyaci icin hazir sablonlar ve editor akislarina ISG Kutuphanesi Dokumantasyon bolumunden ulasilir.",
+        "Doküman ihtiyacı için hazır şablonlar ve editör akışlarına İSG Kütüphanesi Dokümantasyon bölümünden ulaşılır.",
       destination: "isg_library_documents",
       auto_navigate: false,
     };
