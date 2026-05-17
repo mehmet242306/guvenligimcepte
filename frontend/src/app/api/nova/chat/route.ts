@@ -42,6 +42,7 @@ import {
   shouldSkipNovaNavigationForContentTask,
   shouldUseNovaLegalRag,
 } from "@/lib/nova/request-mode";
+import { formatNovaLegalRagPayload } from "@/lib/nova/nova-rag-service";
 import { persistNovaTurnLearning } from "@/lib/nova/turn-learning";
 import { answerWithLegalRag } from "@/lib/rag/legal/answer-with-rag";
 import { logErrorEvent } from "@/lib/admin-observability/server";
@@ -1010,7 +1011,7 @@ export async function POST(request: NextRequest) {
     if (!hasImageContext && shouldUseNovaLegalRag(payload.message)) {
       try {
         const service = createServiceClient();
-        const rag = await answerWithLegalRag({
+        const rawRag = await answerWithLegalRag({
           service,
           query: payload.message,
           language: payload.language,
@@ -1019,6 +1020,7 @@ export async function POST(request: NextRequest) {
           organizationId: authContext.organizationId,
           polish: payload.answer_mode === "polish",
         });
+        const rag = formatNovaLegalRagPayload(payload.message, rawRag);
 
         void persistNovaTurnLearning(service, {
           userId: authContext.userId,

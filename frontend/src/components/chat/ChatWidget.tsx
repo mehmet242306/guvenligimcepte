@@ -35,6 +35,11 @@ import {
   shouldPreferNovaLegalRagOverNavigation,
   shouldSkipNovaNavigationForContentTask,
 } from "@/lib/nova/request-mode";
+import {
+  isForbiddenUserNavigationCopy,
+  sanitizeNovaNavigationForUser,
+  stripForbiddenNavigationFromAnswer,
+} from "@/lib/nova/nova-navigation-policy";
 import { recordNovaTurnLearningClient } from "@/lib/nova/turn-learning";
 import { streamTextReveal } from "@/lib/nova/stream-text";
 import {
@@ -648,9 +653,23 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   }
 
   function buildBotMessageFromAgentResponse(data: NovaAgentResponse): Message {
-    const answer = formatNovaDisplayText(data?.answer || ui.widget.unavailable);
+    const telemetryEarly =
+      data?.telemetry && typeof data.telemetry === "object"
+        ? (data.telemetry as Record<string, unknown>)
+        : null;
+    const gatewayModeEarly =
+      typeof telemetryEarly?.gateway_mode === "string" ? telemetryEarly.gateway_mode : "";
+    const isLegalRagGateway =
+      gatewayModeEarly === "read_rag" || gatewayModeEarly === "read_rag_inline";
+
+    let answer = formatNovaDisplayText(data?.answer || ui.widget.unavailable);
+    if (isForbiddenUserNavigationCopy(answer)) {
+      answer = stripForbiddenNavigationFromAnswer(answer);
+    }
     const rawSources = data?.sources || [];
-    const navigation: NovaNavigation | null = (data?.navigation as NovaNavigation | null) || null;
+    const navigation: NovaNavigation | null = isLegalRagGateway
+      ? null
+      : sanitizeNovaNavigationForUser((data?.navigation as NovaNavigation | null) || null);
     const workflow: NovaWorkflowSummary | null = (data?.workflow as NovaWorkflowSummary | null) || null;
     const followUpActions: NovaFollowUpAction[] = Array.isArray(data?.follow_up_actions)
       ? (data.follow_up_actions as NovaFollowUpAction[])
@@ -713,12 +732,12 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       sources: normalizedSources.length > 0 ? normalizedSources : undefined,
       navigation,
       workflow,
-      followUpActions,
+      followUpActions: isLegalRagGateway ? [] : followUpActions,
       actionHint:
         data.action_hint && typeof data.action_hint === "object"
           ? (data.action_hint as NovaActionHint)
           : null,
-      toolPreview: data.tool_preview || null,
+      toolPreview: isLegalRagGateway ? null : data.tool_preview || null,
       draft: data.draft || null,
       safetyBlock: data.safety_block || null,
       confidence,

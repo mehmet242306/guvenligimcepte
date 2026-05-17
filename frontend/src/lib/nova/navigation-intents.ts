@@ -1,5 +1,11 @@
 import type { NovaAgentNavigation } from "@/lib/nova/agent";
 import { shouldSkipNovaNavigationForContentTask } from "@/lib/nova/behavior-prompt";
+import {
+  isForbiddenUserNavigationCopy,
+  isNovaRagServiceRequest,
+  sanitizeNovaNavigationForUser,
+  stripForbiddenNavigationFromAnswer,
+} from "@/lib/nova/nova-navigation-policy";
 
 export type NovaNavigationIntent = {
   answer: string;
@@ -133,14 +139,6 @@ const navigationTargets: NovaNavigationTarget[] = [
     matches: (text) => /(olay|ramak kala|is kazasi|kaza|incident|near miss|aksiyon)/.test(text),
   },
   {
-    destination: "settings_legal",
-    url: "/settings?tab=mevzuat",
-    label: "Mevzuat ve Rehberler",
-    reason: "Mevzuat, kanun, yonetmelik ve rehber icerikleri Ayarlar > Mevzuat sekmesinde yonetilir.",
-    priority: 60,
-    matches: (text) => /(mevzuat|kanun|yonetmelik|teblig|legal|regulation)/.test(text),
-  },
-  {
     destination: "isg_library",
     url: "/isg-library",
     label: "ISG Kutuphanesi",
@@ -189,11 +187,15 @@ export function resolveNovaGreetingIntent(message: string): string | null {
     return null;
   }
 
-  return "Merhaba, ben Nova. RiskNova icinde ISG sorularinizi yanitlayabilir, mevzuat ve dokuman kutuphanesine yonlendirebilir, risk analizi, ajanda, DOF, aksiyon ve rapor ekranlarinda size rehberlik edebilirim.";
+  return "Merhaba, ben Nova. RiskNova içinde İSG sorularınızı yanıtlayabilir, mevzuat kontrolünü sohbet içinde yapabilir, risk analizi, ajanda, DÖF, aksiyon ve rapor ekranlarında size rehberlik edebilirim.";
 }
 
 export function resolveNovaNavigationIntent(message: string): NovaNavigationIntent | null {
   const normalized = normalizeNovaNavigationText(message);
+
+  if (isNovaRagServiceRequest(message)) {
+    return null;
+  }
 
   if (!shouldResolveNavigation(message, normalized)) {
     return null;
@@ -201,21 +203,37 @@ export function resolveNovaNavigationIntent(message: string): NovaNavigationInte
 
   const target = navigationTargets
     .filter((item) => item.matches(normalized))
+    .filter((item) => !/(mevzuat|kanun|yonetmelik|teblig|legal|regulation)\b/.test(item.destination))
     .sort((a, b) => b.priority - a.priority)[0];
 
   if (!target) {
     return null;
   }
 
+  const navigation: NovaAgentNavigation = {
+    action: "navigate",
+    url: target.url,
+    label: target.label,
+    reason: target.reason,
+    destination: target.destination,
+    auto_navigate: false,
+  };
+
+  const safeNavigation = sanitizeNovaNavigationForUser(navigation);
+  if (!safeNavigation) {
+    return null;
+  }
+
+  const answer = stripForbiddenNavigationFromAnswer(
+    `${target.label} alanına yönlendiriyorum. ${target.reason} Aşağıdaki "Sayfaya Git" butonuyla doğrudan açabilirsiniz.`,
+  );
+
+  if (isForbiddenUserNavigationCopy(answer)) {
+    return null;
+  }
+
   return {
-    answer: `${target.label} alanina yonlendiriyorum. ${target.reason} Asagidaki "Sayfaya Git" butonuyla dogrudan acabilirsiniz.`,
-    navigation: {
-      action: "navigate",
-      url: target.url,
-      label: target.label,
-      reason: target.reason,
-      destination: target.destination,
-      auto_navigate: false,
-    },
+    answer,
+    navigation: safeNavigation,
   };
 }

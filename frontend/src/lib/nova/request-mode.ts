@@ -4,7 +4,10 @@ import {
   isNovaHardGateTask,
 } from "@/lib/nova/behavior-prompt";
 import { isNovaConceptualRiskQuery, isNovaMethodAdvisorTask } from "@/lib/nova/risk-method-advisor";
+import { isNovaRagServiceRequest } from "@/lib/nova/nova-navigation-policy";
 import { normalizeNovaRequestText } from "@/lib/nova/text-normalization";
+
+export { isNovaRagServiceRequest, isNovaIncidentRagAnalysisRequest } from "@/lib/nova/nova-navigation-policy";
 
 export { normalizeNovaRequestText } from "@/lib/nova/text-normalization";
 export { shouldSkipNovaNavigationForContentTask } from "@/lib/nova/behavior-prompt";
@@ -43,6 +46,8 @@ export function shouldUseNovaLegalRag(message: string): boolean {
   if (detectUnsafeNovaIntent(message) || isNovaHardGateTask(message)) {
     return false;
   }
+
+  if (isNovaRagServiceRequest(message)) return true;
 
   if (isNovaRegulationQuery(message)) return true;
 

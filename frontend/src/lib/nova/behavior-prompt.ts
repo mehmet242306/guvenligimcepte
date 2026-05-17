@@ -1,10 +1,15 @@
 import { normalizeNovaRequestText } from "@/lib/nova/text-normalization";
 import { NOVA_METHODS_EXPERTISE_PROMPT_TR } from "@/lib/nova/risknova-methods-expertise";
 import {
+  isForbiddenUserNavigationCopy,
+  stripForbiddenNavigationFromAnswer,
+} from "@/lib/nova/nova-navigation-policy";
+import {
   buildRiskMethodAdvisorResponse,
   isNovaMethodAdvisorTask,
   NOVA_METHOD_ADVISOR_PROMPT_TR,
 } from "@/lib/nova/risk-method-advisor";
+import { isNovaRagServiceRequest } from "@/lib/nova/nova-navigation-policy";
 
 export { isNovaMethodsExpertiseTask, buildNovaMethodsExpertiseResponse } from "@/lib/nova/risknova-methods-expertise";
 export {
@@ -441,6 +446,25 @@ export function validateNovaResponse({
           undefined,
       };
     }
+  }
+
+  if (isNovaRagServiceRequest(prompt) && isForbiddenUserNavigationCopy(response)) {
+    return {
+      valid: false,
+      reason: "RAG service response must not redirect to admin legislation UI.",
+      replacement: stripForbiddenNavigationFromAnswer(response) || undefined,
+    };
+  }
+
+  if (isForbiddenUserNavigationCopy(response) && !isExplicitNovaNavigationOnlyRequest(prompt)) {
+    return {
+      valid: false,
+      reason: "User-facing response must not suggest admin-only legislation navigation.",
+      replacement:
+        buildRiskMethodAdvisorResponse(prompt) ??
+        buildNovaContentFallbackResponse(prompt) ??
+        "Mevzuat kontrolü chat içinde yapılır; admin ayarlarına yönlendirme yapılmaz.",
+    };
   }
 
   if (/\b(?:sadece\s*)?(?:3|uc)\s*madde\w*\b/.test(normalizedPrompt)) {

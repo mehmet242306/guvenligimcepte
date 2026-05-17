@@ -1,5 +1,16 @@
+import { normalizeNovaRequestText } from "@/lib/nova/text-normalization";
 import type { LegalQueryIntent } from "./relevance";
 import type { LegalEvidenceHit } from "./retrieve-hybrid";
+
+function filterDirectlyRelevantHits(query: string, hits: LegalEvidenceHit[]): LegalEvidenceHit[] {
+  const q = normalizeNovaRequestText(query);
+  return hits.filter((hit) => {
+    const law = normalizeNovaRequestText(`${hit.law} ${hit.title ?? ""}`);
+    const isCivilCriminal = /(borclar kanunu|tbk|turk ceza|tck|6102 sayili|6098 sayili)/.test(law);
+    if (!isCivilCriminal) return true;
+    return /(tazminat|ceza|sozlesme|ihbar)/.test(q);
+  });
+}
 
 function summarizeSnippet(content: string, maxLength = 280): string {
   const normalized = content.replace(/\s+/g, " ").trim();
@@ -23,7 +34,7 @@ export function composeLegalRagAnswer(params: {
   retrievalMode: string;
 } {
   const isEnglish = String(params.language ?? "").toLowerCase().startsWith("en");
-  const topHits = params.hits.slice(0, 4);
+  const topHits = filterDirectlyRelevantHits(params.query, params.hits).slice(0, 4);
 
   if (params.intent === "off_topic") {
     return {
@@ -47,8 +58,8 @@ export function composeLegalRagAnswer(params: {
             ]
           : [
               "## Sonuç",
-              "Mevzuat indeksinde bu soruya yakın bir eşleşme bulamadım.",
-              "Soru yine de İSG ile ilgili olabilir; kanun numarası, madde veya yükümlülük anahtar kelimesi (risk değerlendirmesi, eğitim, KKD) ile yeniden sorun.",
+              "Bu olay için doğrudan doğrulanmış mevzuat kaynağı bulamadım.",
+              "Aşağıdaki değerlendirme genel İSG/risk yönetimi tavsiyesidir. Madde numarası, yaptırım veya kesin yükümlülük uydurulmaz.",
             ]
         ).join("\n"),
         confidence: 0.22,
@@ -75,7 +86,7 @@ export function composeLegalRagAnswer(params: {
 
   const hasExact = topHits.some((h) => h.match_type === "exact");
   const hasDense = topHits.some((h) => h.match_type === "dense");
-  const confidence = hasExact ? 0.9 : params.strongRetrieval ? 0.78 : 0.62;
+  const confidence = hasExact ? 0.9 : params.strongRetrieval ? 0.78 : 0.55;
 
   const interpretationTr = params.interpretive
     ? params.strongRetrieval
@@ -118,19 +129,24 @@ export function composeLegalRagAnswer(params: {
     };
   }
 
+  const findingHeader = params.strongRetrieval
+    ? "## Kaynağa dayalı bulgu"
+    : "## İndeks eşleşmesi (sınırlı — doğrudan atıf için metni doğrulayın)";
+
   return {
     answer: [
-      "## Kaynağa dayalı bulgu",
+      findingHeader,
       ...evidenceLines,
       "",
       "## Nova yorumu",
       interpretationTr,
       "",
-      "## Önerilen sonraki adım",
-      "Alıntılanan madde metnini açın; işyeriniz için kapsam, istisna ve yürürlük tarihini doğrulayın.",
+      params.strongRetrieval
+        ? "Kaynaklar chat içinde özetlenmiştir; admin mevzuat yönetim sayfasına yönlendirme yapılmaz."
+        : "Doğrudan ilgili kaynak zayıf; bağlayıcı sonuç çıkarmayın. Gerekirse İSG uzmanı veya resmi metinle doğrulayın.",
     ].join("\n"),
     confidence,
-    sources,
+    sources: params.strongRetrieval ? sources : [],
     retrievalMode: hasExact ? "rag_exact" : hasDense ? "rag_hybrid" : "rag_lexical",
   };
 }

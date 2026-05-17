@@ -11,6 +11,7 @@ import { requireAuth } from "@/lib/supabase/api-auth";
 import { createServiceClient } from "@/lib/security/server";
 import { getAccountContextForUser, shouldBypassNovaBillingLimits } from "@/lib/account/account-routing";
 import { persistNovaTurnLearning } from "@/lib/nova/turn-learning";
+import { formatNovaLegalRagPayload } from "@/lib/nova/nova-rag-service";
 import { resolveNovaHardGateGatewayMode } from "@/lib/nova/request-mode";
 
 export const maxDuration = 120;
@@ -95,7 +96,7 @@ export async function POST(request: NextRequest) {
   const service = createServiceClient();
 
   try {
-    const rag = await answerWithLegalRag({
+    const rawRag = await answerWithLegalRag({
       service,
       query: payload.message,
       language: payload.language,
@@ -104,6 +105,7 @@ export async function POST(request: NextRequest) {
       organizationId: auth.organizationId,
       polish: payload.answer_mode === "polish",
     });
+    const rag = formatNovaLegalRagPayload(payload.message, rawRag);
 
     await logAiUsage({
       userId: auth.userId,
