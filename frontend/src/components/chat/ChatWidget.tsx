@@ -26,6 +26,7 @@ import {
 import { getNovaUiCopy, resolveNovaRuntimeErrorMessage } from "@/lib/nova-ui";
 import { postNovaAgentRequest } from "@/lib/nova/client";
 import { buildNovaHardGateResponse } from "@/lib/nova/behavior-prompt";
+import { shouldSuppressNovaActionCards } from "@/lib/nova/nova-action-cards";
 import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import {
   resolveNovaApiEndpoint,
@@ -652,13 +653,17 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     );
   }
 
-  function buildBotMessageFromAgentResponse(data: NovaAgentResponse): Message {
+  function buildBotMessageFromAgentResponse(
+    data: NovaAgentResponse,
+    userMessage?: string,
+  ): Message {
     const telemetryEarly =
       data?.telemetry && typeof data.telemetry === "object"
         ? (data.telemetry as Record<string, unknown>)
         : null;
     const gatewayModeEarly =
       typeof telemetryEarly?.gateway_mode === "string" ? telemetryEarly.gateway_mode : "";
+    const suppressActionCards = shouldSuppressNovaActionCards(gatewayModeEarly, userMessage);
     const isLegalRagGateway =
       gatewayModeEarly === "read_rag" || gatewayModeEarly === "read_rag_inline";
 
@@ -667,9 +672,10 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       answer = stripForbiddenNavigationFromAnswer(answer);
     }
     const rawSources = data?.sources || [];
-    const navigation: NovaNavigation | null = isLegalRagGateway
-      ? null
-      : sanitizeNovaNavigationForUser((data?.navigation as NovaNavigation | null) || null);
+    const navigation: NovaNavigation | null =
+      isLegalRagGateway || suppressActionCards
+        ? null
+        : sanitizeNovaNavigationForUser((data?.navigation as NovaNavigation | null) || null);
     const workflow: NovaWorkflowSummary | null = (data?.workflow as NovaWorkflowSummary | null) || null;
     const followUpActions: NovaFollowUpAction[] = Array.isArray(data?.follow_up_actions)
       ? (data.follow_up_actions as NovaFollowUpAction[])
@@ -717,11 +723,13 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       sourceStatus = "verified";
       confidence = "high";
     }
-    const actionSuggestions = resolveActionableSuggestionsFromMessage(answer);
+    const actionSuggestions = suppressActionCards
+      ? []
+      : resolveActionableSuggestionsFromMessage(answer);
     const fallbackSuggestions =
-      navigation == null && answer.length < 220
-        ? authenticatedWelcomeActions.slice(0, 3)
-        : [];
+      suppressActionCards || navigation != null || answer.length >= 220
+        ? []
+        : authenticatedWelcomeActions.slice(0, 3);
     const mergedSuggestions =
       actionSuggestions.length > 0 ? actionSuggestions : fallbackSuggestions;
 
@@ -732,17 +740,22 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       sources: normalizedSources.length > 0 ? normalizedSources : undefined,
       navigation,
       workflow,
-      followUpActions: isLegalRagGateway ? [] : followUpActions,
+      followUpActions:
+        isLegalRagGateway || suppressActionCards ? [] : followUpActions,
       actionHint:
-        data.action_hint && typeof data.action_hint === "object"
-          ? (data.action_hint as NovaActionHint)
-          : null,
-      toolPreview: isLegalRagGateway ? null : data.tool_preview || null,
+        suppressActionCards || !(data.action_hint && typeof data.action_hint === "object")
+          ? null
+          : (data.action_hint as NovaActionHint),
+      toolPreview:
+        isLegalRagGateway || suppressActionCards ? null : data.tool_preview || null,
       draft: data.draft || null,
       safetyBlock: data.safety_block || null,
       confidence,
       sourceStatus,
-      suggestions: mergedSuggestions.length > 0 ? mergedSuggestions : undefined,
+      suggestions:
+        suppressActionCards || mergedSuggestions.length === 0
+          ? undefined
+          : mergedSuggestions,
       timestamp: new Date(),
     };
   }
@@ -1626,13 +1639,16 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         ? null
         : resolveNovaNavigationIntent(composedPrompt);
     if (navigationFallback) {
-      const botMessage = buildBotMessageFromAgentResponse({
-        type: "message",
-        answer: navigationFallback.answer,
-        sources: [],
-        navigation: navigationFallback.navigation,
-        telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
-      });
+      const botMessage = buildBotMessageFromAgentResponse(
+        {
+          type: "message",
+          answer: navigationFallback.answer,
+          sources: [],
+          navigation: navigationFallback.navigation,
+          telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
+        },
+        composedPrompt,
+      );
       rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text, authUserId);
       await appendStreamingBotMessage(botMessage);
       return;
@@ -1643,13 +1659,16 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         ? null
         : resolveNovaProductHelpIntent(composedPrompt);
     if (productHelpFallback) {
-      const botMessage = buildBotMessageFromAgentResponse({
-        type: "message",
-        answer: productHelpFallback.answer,
-        sources: [],
-        navigation: productHelpFallback.navigation ?? null,
-        telemetry: { client_fallback: true, reason: "nova_product_help_intent" },
-      });
+      const botMessage = buildBotMessageFromAgentResponse(
+        {
+          type: "message",
+          answer: productHelpFallback.answer,
+          sources: [],
+          navigation: productHelpFallback.navigation ?? null,
+          telemetry: { client_fallback: true, reason: "nova_product_help_intent" },
+        },
+        composedPrompt,
+      );
       rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text, authUserId);
       await appendStreamingBotMessage(botMessage);
       return;
@@ -1703,6 +1722,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
               follow_up_actions: [],
             }
           : data,
+        composedPrompt,
       );
       rememberLocalWidgetHistory(resolvedSessionId, visiblePrompt, botMessage.text, authUserId);
       await appendStreamingBotMessage(botMessage);
@@ -1726,13 +1746,16 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
           ? null
           : resolveNovaNavigationIntent(composedPrompt);
       if (navigationFallback) {
-        const botMessage = buildBotMessageFromAgentResponse({
-          type: "message",
-          answer: navigationFallback.answer,
-          sources: [],
-          navigation: navigationFallback.navigation,
-          telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
-        });
+        const botMessage = buildBotMessageFromAgentResponse(
+          {
+            type: "message",
+            answer: navigationFallback.answer,
+            sources: [],
+            navigation: navigationFallback.navigation,
+            telemetry: { client_fallback: true, reason: "nova_navigation_intent" },
+          },
+          composedPrompt,
+        );
         rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMessage.text, authUserId);
         await appendStreamingBotMessage(botMessage);
         return;

@@ -1,5 +1,8 @@
 import type { NovaAgentNavigation } from "@/lib/nova/agent";
-import { shouldSkipNovaNavigationForContentTask } from "@/lib/nova/behavior-prompt";
+import {
+  isNovaHardGateTask,
+  shouldSkipNovaNavigationForContentTask,
+} from "@/lib/nova/behavior-prompt";
 import {
   isForbiddenUserNavigationCopy,
   isNovaRagServiceRequest,
@@ -44,7 +47,16 @@ const personalDocumentPattern =
 const shortDocumentLookupPattern =
   /^(dokuman\s*lar|dokuman|belge\s*ler|belge|prosedur|prosedurler|form|formlar|talimat|talimatlar|sablon|sablonlar|dokumantasyon)$/;
 
-function isDocumentLookup(normalized: string) {
+/** “Rapora ne yazayım” danışmanlığı — Dokümanlar/Raporlar modül yönlendirmesi değil. */
+function isAdvisoryReportWritingRequest(normalized: string) {
+  return /(?:rapora\s*ne\s*yaz\w*|rapora\s*nasil\s*yaz\w*|rapora\s*yaz\w*|yazmamam\w*\s*gerek|kesinlikle\s*ne\s*yaz\w*|ne\s*yazmamam\w*|raporlama\s*danis|etik\s*rapor)/.test(
+    normalized,
+  );
+}
+
+function isDocumentLookup(normalized: string, message: string) {
+  if (shouldSkipNovaNavigationForContentTask(message)) return false;
+  if (isAdvisoryReportWritingRequest(normalized)) return false;
   return (
     documentIntentPattern.test(normalized) &&
     (documentWorkPattern.test(normalized) ||
@@ -72,7 +84,7 @@ function shouldResolveNavigation(message: string, normalized: string) {
   }
   return (
     navigationVerbPattern.test(normalized) ||
-    isDocumentLookup(normalized) ||
+    isDocumentLookup(normalized, message) ||
     isOperationalModuleLookup(normalized)
   );
 }
@@ -152,7 +164,9 @@ const navigationTargets: NovaNavigationTarget[] = [
     label: "Raporlar",
     reason: "Raporlama ve cikti alma islemleri Raporlar alaninda toplanir.",
     priority: 115,
-    matches: (text) => /(rapor|raporlar|report|reports|cikti|ozet)/.test(text),
+    matches: (text) =>
+      /(rapor|raporlar|report|reports|cikti|ozet)/.test(text) &&
+      !isAdvisoryReportWritingRequest(text),
   },
   {
     destination: "settings",
@@ -193,7 +207,7 @@ export function resolveNovaGreetingIntent(message: string): string | null {
 export function resolveNovaNavigationIntent(message: string): NovaNavigationIntent | null {
   const normalized = normalizeNovaNavigationText(message);
 
-  if (isNovaRagServiceRequest(message)) {
+  if (isNovaRagServiceRequest(message) || isNovaHardGateTask(message)) {
     return null;
   }
 

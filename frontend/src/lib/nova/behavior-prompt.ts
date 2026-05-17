@@ -86,7 +86,21 @@ const UNSAFE_INTENT_PATTERNS: Array<{
     alternativeTr: "Yasal uyum, denetim hazırlığı ve güvenli senaryo çalışması için meşru çerçeve önerebilirim.",
   },
   {
-    pattern: /(raporu\s*daha\s*guvenilir\s*goster|guvenilir\s*goster)/,
+    pattern:
+      /(kaynak.*gercek.*(zorunda\s*degil|degil)|gercek\s*olmak\s*zorunda\s*degil|kaynak\s*gercek\s*degil|guvenilir\s*dursun|kaynakli\s*gibi\s*gorunen|sahte\s*ama\s*profesyonel|olmayan\s*kaynak|uydurma\s*kaynak)/,
+    reasonTr: "Sahte veya doğrulanmamış kaynak eklemek yanıltıcıdır ve rapor güvenilirliğini zedeler.",
+    alternativeTr:
+      "Rapordaki iddiaları gerçek mevzuat, resmi kaynak, saha kaydı veya ölçülebilir veriyle desteklemeye yardımcı olabilirim.",
+  },
+  {
+    pattern:
+      /(raporda\s*dusuk\s*goster|25.*12\s*goster|kabul\s*edilebilir.*kritik|celiskili\s*risk\s*sinif|hem\s*kritik\s*yaz)/,
+    reasonTr: "Risk kaydını gerçeğe aykırı göstermek veya çelişkili sınıflandırma yapmak etik ve hukuki açıdan kabul edilemez.",
+    alternativeTr:
+      "Doğru skor, gerekçe ve önlem planı ile şeffaf kayıt oluşturmanıza yardımcı olabilirim.",
+  },
+  {
+    pattern: /(raporu\s*daha\s*guvenilir\s*goster)/,
     reasonTr:
       "Raporu olduğundan farklı göstermek veya kanıtsız biçimde güvenilir göstermek için yönlendirme yapılamaz.",
     alternativeTr: "Kaynaksız iddiaları işaretleyip doğrulanabilir kanıtlarla destekleme planı çıkarabilirim.",
@@ -119,7 +133,7 @@ const CONTENT_GENERATION_PATTERN =
   /\b(e\s*-?\s*posta|eposta|email|mail\s*olarak|yeniden\s*yaz|tekrar\s*yaz|yonetim\s*kurulu|yonetici\s*ozeti|musteri\s*kizgin|musteri\s*raporu\s*reddetti|nasil\s*cevap|nasil\s*yanit|ne\s*cevap\s*ver|ne\s*yanit\s*ver|cevap\s*taslagi|yanit\s*taslagi|ozet\s*yaz|ozetle|rapor\s*ozeti|profesyonel\s*yaz|profesyonel\s*hale\s*getir|ikna\s*edici|kisa\s*ve\s*ikna\s*edici|taslak\s*yaz|sablon|metni\s*duzenle|duzelt\s*yaz|formatla|sadece\s*\d+\s*madde\w*|(?:^|\s)(?:3|uc)\s*madde\w*|kisa\s*cevap|tablo\s*yap|basit\s*anlat|12\s*yasindaki|cocuk\s*gibi\s*anlat|ceo.*ton|isg\s*uzmanina.*ceo|belirsizligi.*profesyonel|denetim\s*raporu\s*diliyle|saha\s*calisanina|tek\s*cumle|iki\s*ton|savunulabilir|net\s*ama\s*suclayici)\b/;
 
 const ADVISORY_CHAT_PATTERN =
-  /\b(ne\s*yapmaliyim|nasil\s*ilerlemeliyim|ilk\s*adim|risk\s*skor.*yuksek|sistem.*yuksek\s*gosteriyor|kritik\s*risk.*iflas|skor\s*yanlis\s*olabilir\s*mi|verilen\s*skor\s*yanlis|rapor.*sacma|bu\s*kadar\s*detaya\s*gerek\s*yok|raporun\s*neden\s*gerekli|yonetici.*detay)\b/;
+  /\b(ne\s*yapmaliyim|nasil\s*ilerlemeliyim|ilk\s*adim|risk\s*skor.*yuksek|sistem.*yuksek\s*gosteriyor|kritik\s*risk.*iflas|skor\s*yanlis\s*olabilir\s*mi|verilen\s*skor\s*yanlis|rapor.*sacma|bu\s*kadar\s*detaya\s*gerek\s*yok|raporun\s*neden\s*gerekli|yonetici.*detay|hangi\s*yontem\w*\s*kullan\w*|hangi\s*yontemi\s*kullan\w*|rapora\s*ne\s*yaz\w*|rapora\s*nasil\s*yaz\w*|yazmamam\w*\s*gerek|kesinlikle\s*ne\s*yaz\w*|ne\s*yazmamam\w*|genel\s*risk\s*danis|kaynak\s*kullanmadan|celiskiyi\s*yorumla|rapora\s*nasil\s*yazilir|yasal\s*yukumluluk\s*agir|butce\s*ayir\w*|calisanlar\s*korkuyor|ramak\s*kala\s*yasan\w*|yonetim\s*butce)/;
 
 const KNOWLEDGE_GUIDANCE_PATTERN =
   /\b(risk\s*matris|5\s*x\s*5|5x5|puan.*25|25.*puan|onemsiz.*aciklama|aciklama.*onemsiz|50000|50\s*000|200\s*000|80\s*000|maliyet.*mantikli|beklenen\s*kayip|normalize|1\s*-\s*25|siniflara\s*ayir)\b/;
@@ -391,7 +405,41 @@ export function buildNovaContentFallbackResponse(message: string): string | null
     ].join("\n");
   }
 
+  if (
+    /(?:hangi\s*yontem\w*\s*kullan\w*|rapora\s*ne\s*yaz\w*|yazmamam\w*\s*gerek|yasal\s*yukumluluk\s*agir|butce\s*ayir\w*|ramak\s*kala)/.test(
+      normalized,
+    )
+  ) {
+    return buildNovaComplexRiskAdvisoryResponse();
+  }
+
   return null;
+}
+
+function buildNovaComplexRiskAdvisoryResponse(): string {
+  return [
+    "Kısa yanıt: Salt matris puanına güvenmeyin; tekrarlayan ramak kala ve ağır yasal yükümlülük için R2D-RCA + çok boyutlu önceliklendirme (R-Skor 2D) gerekir. Raporu etik ve savunulabilir yazın; bütçe baskısı kayıt manipülasyonu gerekçesi olamaz.",
+    "",
+    "## Hangi yöntemi kullanmalıyım?",
+    "- Başlangıç kaydı: 5x5 L Matrisi (risk orta görünse bile).",
+    "- Aynı skor + yasal/maruziyet/çalışan psikolojisi farkı: R-Skor 2D.",
+    "- Aynı olay iki kez ramak kala: R2D-RCA kök neden analizi (5 Neden, Ishikawa, etkinlik kontrolü).",
+    "",
+    "## Rapora ne yazmalısınız?",
+    "- Olay özeti, mevcut kontroller, yasal yükümlülük, maruziyet ve çalışan endişesi.",
+    "- Tekrarlayan ramak kala → önceki önlemlerin etkisiz kaldığı.",
+    "- Önerilen R-Skor 2D / R2D-RCA gerekçesi ve acil/DFA aksiyonları (sorumlu, termin).",
+    "- Yönetime: asgari kaynak ihtiyacı ve yasal risk (ceza, durdurma, itibar).",
+    "",
+    "## Kesinlikle yazmayın",
+    "- “Risk düşük, takip yeterli” (çelişkili; ramak kala ve yasal yük varsa).",
+    "- “Çalışanlar abartıyor” veya kişiyi suçlayan ifadeler.",
+    "- Bütçe yok diye önlemi erteledik (yasal zorunluluk varsa geçersiz).",
+    "- Sahte/kaynak göstermeden “mevzuata uygun” iddiası.",
+    "- Skoru veya sınıfı yönetim baskısıyla düşük gösterme.",
+    "",
+    "Modül yönlendirmesi yapılmaz; kayıtları RiskNova’da ilgili olay/risk kaydı üzerinden ilerleyebilirsiniz.",
+  ].join("\n");
 }
 
 export function buildNovaHardGateResponse(message: string): string | null {
