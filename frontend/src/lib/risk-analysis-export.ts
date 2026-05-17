@@ -1,12 +1,18 @@
 /**
  * Risk Analizi Export: PDF, Word, Excel
- * Profesyonel ISG rapor formatı — SATIR BAZLI GRUPLAMA
+ * Profesyonel ISG rapor formatı — GÖRSEL BAZLI BÖLÜMLER
  *
- * Her satır (risk alanı) kendi görselleri ve tespitleriyle birlikte
- * gruplanmış şekilde export edilir.
+ * Her görsel kendi anotasyonlu görseli ve risk tablosuyla birlikte export edilir.
  */
 
 import ExcelJS from "exceljs";
+import {
+  exportTotalFindings,
+  findingActionText,
+  findingLegalText,
+  findingPinLabel,
+  resolveExportImageSections,
+} from "@/lib/risk-analysis/field-export-sections";
 import {
   Document,
   Packer,
@@ -28,6 +34,8 @@ import {
 /* Types                                                               */
 /* ================================================================== */
 
+export type ImageAnalysisStatus = "success" | "failed" | "pending" | "manual_required";
+
 export type ExportImage = {
   imageId: string;
   rowTitle: string;
@@ -40,11 +48,28 @@ export type ExportImage = {
   areaSummary?: string;
   positiveObservations?: string[];
   photoQuality?: "good" | "moderate" | "poor";
+  analysisStatus?: ImageAnalysisStatus;
+  analysisError?: string;
+};
+
+export type ExportImageSection = {
+  imageIndex: number;
+  imageId: string;
+  fileName: string;
+  rowTitle: string;
+  areaLocation: string;
+  analysisStatus: ImageAnalysisStatus;
+  analysisStatusLabel: string;
+  analysisError?: string;
+  findingCount: number;
+  dataUrl?: string;
+  findings: ExportFinding[];
 };
 
 export type ExportFinding = {
   rowTitle: string;
   imageId: string;
+  riskCode?: string;
   title: string;
   category: string;
   severity: string;
@@ -70,6 +95,14 @@ export type ExportFinding = {
   jsaDetails?: { jobTitle: string; stepCount: number; highRiskStepCount: number; maxStepScore: number; avgStepScore: number };
   lopaDetails?: { initiatingEventFreq: number; mitigatedFreq: number; riskReductionFactor: number; layerCount: number; meetsTarget: boolean };
   legalReferences?: { law: string; article: string; description: string }[];
+  legalContext?: string;
+  actionTr?: string;
+  scoreDetail?: string;
+  correctiveAction?: string;
+  preventiveAction?: string;
+  responsible?: string;
+  deadline?: string;
+  residualRiskNote?: string;
 };
 
 export type ExportParticipant = {
@@ -95,9 +128,13 @@ export type RiskAnalysisExportData = {
   participants: ExportParticipant[];
   findings: ExportFinding[];
   images: ExportImage[];
+  imageSections?: ExportImageSection[];
   totalFindings: number;
+  realTotalFindings?: number;
   criticalCount: number;
   dofCandidateCount: number;
+  failedImageCount?: number;
+  pendingImageCount?: number;
   date: string;
   shareQrDataUrl?: string;
   shareUrl?: string;
@@ -130,6 +167,7 @@ function scoreDisplay(f: ExportFinding): string {
 }
 
 function methodScoreDetail(f: ExportFinding): string {
+  if (f.scoreDetail?.trim()) return f.scoreDetail.trim();
   if (f.fmeaDetails) return `S(${f.fmeaDetails.severity}) x O(${f.fmeaDetails.occurrence}) x D(${f.fmeaDetails.detection}) = RPN ${f.fmeaDetails.rpn}`;
   if (f.hazopDetails) return `S(${f.hazopDetails.severity}) x L(${f.hazopDetails.likelihood}) x (6-D)(${6 - f.hazopDetails.detectability}) | ${f.hazopDetails.guideWord}`;
   if (f.bowTieDetails) return `Ham: ${f.bowTieDetails.rawRisk} → Artık: ${f.bowTieDetails.residualRisk.toFixed(1)} | Ö:${f.bowTieDetails.preventionBarriers} A:${f.bowTieDetails.mitigationBarriers}`;
@@ -190,12 +228,14 @@ function groupByRow(data: RiskAnalysisExportData): RowGroup[] {
 /* HTML Generator — SATIR BAZLI (Professional ISG Report)              */
 /* ================================================================== */
 
-function buildFindingCardHTML(f: ExportFinding): string {
+function buildFindingCardHTML(f: ExportFinding, pinLabel?: string): string {
+  const code = pinLabel || f.riskCode || "";
+  const legal = findingLegalText(f);
   return `
     <div style="margin:10px 0;border:1px solid #dee2e6;border-radius:8px;overflow:hidden;page-break-inside:avoid;">
       <div style="background:${severityBg(f.severity)};padding:8px 12px;border-bottom:1px solid #dee2e6;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-weight:700;font-size:13px;color:#1a1a2e;">${f.title}</span>
+          <span style="font-weight:700;font-size:13px;color:#1a1a2e;">${code ? `${code}: ` : ""}${f.title}</span>
           <span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:9px;font-weight:700;color:#fff;background:${severityColor(f.severity)};">
             ${f.scoreLabel} — ${scoreDisplay(f)}
           </span>
@@ -209,23 +249,17 @@ function buildFindingCardHTML(f: ExportFinding): string {
         </div>
         <div style="margin-bottom:6px;">
           <p style="margin:0 0 2px 0;font-size:9px;font-weight:600;color:#B8860B;text-transform:uppercase;letter-spacing:0.05em;">Alınması Gereken Önlem</p>
-          <p style="margin:0;font-size:11px;line-height:1.5;">${f.action}</p>
+          <p style="margin:0;font-size:11px;line-height:1.5;">${findingActionText(f)}</p>
         </div>
         ${methodScoreDetail(f) ? `
         <div style="margin-bottom:6px;">
           <p style="margin:0 0 2px 0;font-size:9px;font-weight:600;color:#B8860B;text-transform:uppercase;letter-spacing:0.05em;">Skorlama Detayı (${f.methodLabel})</p>
           <p style="margin:0;font-size:10px;line-height:1.4;color:#333;font-family:monospace;">${methodScoreDetail(f)}</p>
         </div>` : ""}
-        ${(f.legalReferences ?? []).length > 0 ? `
-          <div>
-            <p style="margin:0 0 3px 0;font-size:9px;font-weight:600;color:#B8860B;text-transform:uppercase;letter-spacing:0.05em;">Mevzuat Dayanağı</p>
-            ${(f.legalReferences ?? []).map((r) => `
-              <p style="margin:2px 0;font-size:10px;line-height:1.4;">
-                <strong>§ ${r.law}</strong>${r.article ? ` — ${r.article}` : ""}${r.description ? `<br/><span style="color:#666;margin-left:12px;">${r.description}</span>` : ""}
-              </p>
-            `).join("")}
-          </div>
-        ` : ""}
+        <div>
+          <p style="margin:0 0 3px 0;font-size:9px;font-weight:600;color:#B8860B;text-transform:uppercase;letter-spacing:0.05em;">Mevzuat / RAG Bağlamı</p>
+          <p style="margin:2px 0;font-size:10px;line-height:1.4;">${legal}</p>
+        </div>
       </div>
     </div>`;
 }
@@ -547,9 +581,62 @@ function parseDataUrl(dataUrl: string): { buffer: Uint8Array; ext: "jpg" | "png"
   } catch { return null; }
 }
 
+function appendWordFindingDetail(children: (Paragraph | Table)[], f: ExportFinding, pin: string) {
+  children.push(new Paragraph({ spacing: { before: 200 } }));
+  children.push(new Paragraph({
+    children: [
+      new TextRun({ text: `${pin} — ${f.title}`, bold: true, size: 22, font: "Segoe UI", color: DARK_HEX }),
+      new TextRun({ text: ` · ${methodScoreDetail(f) || `${f.scoreLabel} (${scoreDisplay(f)})`}`, bold: true, size: 18, font: "Segoe UI", color: sevColorHex(f.severity) }),
+    ],
+    shading: { type: ShadingType.SOLID, color: sevBgHex(f.severity) },
+    spacing: { after: 40 },
+  }));
+  children.push(new Paragraph({
+    children: [
+      new TextRun({ text: f.category, size: 18, font: "Segoe UI", color: "666666" }),
+      ...(f.correctiveActionRequired ? [new TextRun({ text: " · DÖF Adayı", bold: true, size: 18, font: "Segoe UI", color: "DC2626" })] : []),
+    ],
+    spacing: { after: 60 },
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "Tespit ve Değerlendirme", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
+    spacing: { after: 20 },
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: f.recommendation || "Detaylı değerlendirme yapılmalıdır.", size: 20, font: "Segoe UI", color: DARK_HEX })],
+    spacing: { after: 60 },
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "Alınması Gereken Önlem", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
+    spacing: { after: 20 },
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: findingActionText(f), size: 20, font: "Segoe UI", color: DARK_HEX })],
+    spacing: { after: 60 },
+  }));
+  const mDetail = methodScoreDetail(f);
+  if (mDetail) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: `Skorlama (${f.methodLabel})`, bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
+      spacing: { after: 20 },
+    }));
+    children.push(new Paragraph({
+      children: [new TextRun({ text: mDetail, size: 18, font: "Consolas", color: DARK_HEX })],
+      spacing: { after: 60 },
+    }));
+  }
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "Mevzuat / RAG Bağlamı", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
+    spacing: { after: 20 },
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: findingLegalText(f), size: 18, font: "Segoe UI", color: DARK_HEX })],
+    spacing: { after: 40 },
+  }));
+}
+
 export async function generateRiskAnalysisWordBlob(data: RiskAnalysisExportData): Promise<Blob> {
   const now = data.date || new Date().toLocaleDateString("tr-TR");
-  const rows = groupByRow(data);
   const children: (Paragraph | Table)[] = [];
 
   // ── Başlık ──
@@ -580,12 +667,18 @@ export async function generateRiskAnalysisWordBlob(data: RiskAnalysisExportData)
     spacing: { after: 200 },
   }));
 
+  const sections = resolveExportImageSections(data);
+  const totalReal = exportTotalFindings(data);
+
   // ── İstatistikler ──
   children.push(new Paragraph({
     children: [
-      new TextRun({ text: `Toplam: ${data.totalFindings} tespit`, bold: true, size: 20, font: "Segoe UI", color: GOLD_HEX }),
+      new TextRun({ text: `Toplam gerçek bulgu: ${totalReal}`, bold: true, size: 20, font: "Segoe UI", color: GOLD_HEX }),
       new TextRun({ text: ` · Yüksek/Kritik: ${data.criticalCount}`, size: 20, font: "Segoe UI", color: "DC2626" }),
       new TextRun({ text: ` · DÖF Adayı: ${data.dofCandidateCount}`, size: 20, font: "Segoe UI", color: GOLD_HEX }),
+      ...(data.failedImageCount
+        ? [new TextRun({ text: ` · Analiz başarısız görsel: ${data.failedImageCount}`, size: 20, font: "Segoe UI", color: "D97706" })]
+        : []),
       new TextRun({ text: ` · Ekip: ${data.participants.length} kişi`, size: 20, font: "Segoe UI", color: GOLD_HEX }),
     ],
     spacing: { after: 300 },
@@ -608,30 +701,47 @@ export async function generateRiskAnalysisWordBlob(data: RiskAnalysisExportData)
     children.push(new Table({ rows: pRows, width: { size: 100, type: WidthType.PERCENTAGE } }));
   }
 
-  // ── Satır bazlı bölümler ──
-  for (let gi = 0; gi < rows.length; gi++) {
-    const group = rows[gi];
-
-    // Satır başlığı
-    if (gi > 0) children.push(new Paragraph({ children: [new PageBreak()] }));
+  // ── Görsel bazlı bölümler ──
+  for (const sec of sections) {
+    if (sec.imageIndex > 1) {
+      children.push(new Paragraph({ children: [new PageBreak()] }));
+    }
 
     children.push(new Paragraph({
-      children: [new TextRun({ text: `SATIR ${gi + 1}: ${group.rowTitle}`, bold: true, size: 26, font: "Segoe UI", color: GOLD_HEX })],
+      children: [new TextRun({ text: `Görsel ${sec.imageIndex}: ${sec.fileName}`, bold: true, size: 26, font: "Segoe UI", color: GOLD_HEX })],
       heading: HeadingLevel.HEADING_1,
-      spacing: { before: 300, after: 60 },
+      spacing: { before: 300, after: 40 },
     }));
-
     children.push(new Paragraph({
-      children: [new TextRun({ text: `${group.findings.length} tespit · ${group.images.length} görsel`, size: 18, font: "Segoe UI", color: "666666" })],
-      spacing: { after: 150 },
+      children: [new TextRun({ text: `Alan: ${sec.areaLocation} · Satır: ${sec.rowTitle}`, size: 18, font: "Segoe UI", color: "666666" })],
+      spacing: { after: 20 },
     }));
+    children.push(new Paragraph({
+      children: [
+        new TextRun({
+          text: `Görsel analiz durumu: ${sec.analysisStatusLabel}`,
+          size: 18,
+          font: "Segoe UI",
+          color: sec.analysisStatus === "success" ? "059669" : "D97706",
+        }),
+        new TextRun({
+          text: ` · Tespit: ${sec.analysisStatus === "success" ? sec.findingCount : 0}`,
+          size: 18,
+          font: "Segoe UI",
+          color: "666666",
+        }),
+      ],
+      spacing: { after: sec.analysisError ? 20 : 80 },
+    }));
+    if (sec.analysisError) {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: sec.analysisError, size: 16, font: "Segoe UI", color: "92400E", italics: true })],
+        spacing: { after: 80 },
+      }));
+    }
 
-    // ── Yeni layout: her görsel için "Görsel + Özet" YAN YANA ──
-    // Word'de 2-cell'li bir Table: sol cell'de annotated ImageRun + caption,
-    // sağ cell'de o görsele ait tespitler (R1, R2... pin etiketleriyle).
-    for (const img of group.images) {
-      const imgFindings = group.findings.filter((f) => f.imageId === img.imageId);
-      const parsed = parseDataUrl(img.dataUrl);
+    const imgFindings = sec.findings;
+    const parsed = sec.dataUrl ? parseDataUrl(sec.dataUrl) : null;
 
       // Sol cell içeriği: görsel + caption
       const leftCellChildren: Paragraph[] = [];
@@ -656,20 +766,25 @@ export async function generateRiskAnalysisWordBlob(data: RiskAnalysisExportData)
         }));
       }
       leftCellChildren.push(new Paragraph({
-        children: [new TextRun({ text: img.fileName, bold: true, size: 14, font: "Segoe UI", color: DARK_HEX })],
+        children: [new TextRun({ text: sec.fileName, bold: true, size: 14, font: "Segoe UI", color: DARK_HEX })],
         spacing: { after: 20 },
       }));
       leftCellChildren.push(new Paragraph({
         children: [new TextRun({
-          text: imgFindings.length > 0
-            ? `${imgFindings.length} tespit · pin'ler R1–R${imgFindings.length}`
-            : "Tespit bulunamadı",
-          size: 14, font: "Segoe UI", color: "666666",
+          text:
+            sec.analysisStatus !== "success"
+              ? sec.analysisStatusLabel
+              : imgFindings.length > 0
+                ? `${imgFindings.length} tespit`
+                : "Tespit bulunamadı",
+          size: 14,
+          font: "Segoe UI",
+          color: "666666",
         })],
       }));
-      if (img.areaSummary) {
+      if (sec.areaLocation) {
         leftCellChildren.push(new Paragraph({
-          children: [new TextRun({ text: img.areaSummary, size: 14, font: "Segoe UI", color: "555555", italics: true })],
+          children: [new TextRun({ text: sec.areaLocation, size: 14, font: "Segoe UI", color: "555555", italics: true })],
           spacing: { before: 40 },
         }));
       }
@@ -682,9 +797,10 @@ export async function generateRiskAnalysisWordBlob(data: RiskAnalysisExportData)
       }));
       if (imgFindings.length > 0) {
         imgFindings.forEach((f, fi) => {
+          const pin = findingPinLabel(f, fi);
           rightCellChildren.push(new Paragraph({
             children: [
-              new TextRun({ text: `R${fi + 1}  `, bold: true, size: 16, font: "Segoe UI", color: "DC2626" }),
+              new TextRun({ text: `${pin}  `, bold: true, size: 16, font: "Segoe UI", color: "DC2626" }),
               new TextRun({ text: f.title, bold: true, size: 16, font: "Segoe UI", color: DARK_HEX }),
             ],
             spacing: { before: 40, after: 10 },
@@ -692,7 +808,7 @@ export async function generateRiskAnalysisWordBlob(data: RiskAnalysisExportData)
           rightCellChildren.push(new Paragraph({
             children: [
               new TextRun({ text: `${f.category}  ·  `, size: 14, font: "Segoe UI", color: "666666" }),
-              new TextRun({ text: `${f.scoreLabel} (${scoreDisplay(f)})`, bold: true, size: 14, font: "Segoe UI", color: sevColorHex(f.severity) }),
+              new TextRun({ text: methodScoreDetail(f) || `${f.scoreLabel} (${scoreDisplay(f)})`, bold: true, size: 14, font: "Segoe UI", color: sevColorHex(f.severity) }),
               ...(f.correctiveActionRequired
                 ? [new TextRun({ text: "  ·  DÖF", bold: true, size: 14, font: "Segoe UI", color: "DC2626" })]
                 : []),
@@ -723,101 +839,12 @@ export async function generateRiskAnalysisWordBlob(data: RiskAnalysisExportData)
           ],
         })],
       });
-      children.push(sideBySideTable);
-      children.push(new Paragraph({ spacing: { after: 100 } }));
-    }
+    children.push(sideBySideTable);
+    children.push(new Paragraph({ spacing: { after: 100 } }));
 
-    // Görsele bağlanamamış tespitler için özet
-    const orphanFindings = group.findings.filter((f) => !group.images.some((img) => img.imageId === f.imageId));
-    if (orphanFindings.length > 0) {
-      children.push(new Paragraph({
-        children: [new TextRun({ text: "Görsele bağlanamamış tespitler", bold: true, size: 18, font: "Segoe UI", color: "92400E" })],
-        spacing: { before: 100, after: 60 },
-      }));
-      for (const f of orphanFindings) {
-        children.push(new Paragraph({
-          children: [
-            new TextRun({ text: f.title, bold: true, size: 16, font: "Segoe UI", color: DARK_HEX }),
-            new TextRun({ text: ` — ${f.scoreLabel} (${scoreDisplay(f)})`, bold: true, size: 14, font: "Segoe UI", color: sevColorHex(f.severity) }),
-          ],
-          spacing: { after: 40 },
-        }));
-      }
-    }
-
-    // Detaylı tespit kartları
-    for (const f of group.findings) {
-      children.push(new Paragraph({ spacing: { before: 200 } }));
-
-      // Tespit başlığı
-      children.push(new Paragraph({
-        children: [
-          new TextRun({ text: f.title, bold: true, size: 22, font: "Segoe UI", color: DARK_HEX }),
-          new TextRun({ text: ` — ${f.scoreLabel} (${scoreDisplay(f)})`, bold: true, size: 20, font: "Segoe UI", color: sevColorHex(f.severity) }),
-        ],
-        shading: { type: ShadingType.SOLID, color: sevBgHex(f.severity) },
-        spacing: { after: 40 },
-      }));
-
-      children.push(new Paragraph({
-        children: [
-          new TextRun({ text: f.category, size: 18, font: "Segoe UI", color: "666666" }),
-          ...(f.correctiveActionRequired ? [new TextRun({ text: " · DÖF Adayı", bold: true, size: 18, font: "Segoe UI", color: "DC2626" })] : []),
-        ],
-        spacing: { after: 80 },
-      }));
-
-      // Tespit ve Değerlendirme
-      children.push(new Paragraph({
-        children: [new TextRun({ text: "Tespit ve Değerlendirme", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
-        spacing: { after: 20 },
-      }));
-      children.push(new Paragraph({
-        children: [new TextRun({ text: f.recommendation || "Detaylı değerlendirme yapılmalıdır.", size: 20, font: "Segoe UI", color: DARK_HEX })],
-        spacing: { after: 80 },
-      }));
-
-      // Alınması Gereken Önlem
-      children.push(new Paragraph({
-        children: [new TextRun({ text: "Alınması Gereken Önlem", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
-        spacing: { after: 20 },
-      }));
-      children.push(new Paragraph({
-        children: [new TextRun({ text: f.action || "-", size: 20, font: "Segoe UI", color: DARK_HEX })],
-        spacing: { after: 80 },
-      }));
-
-      // Skorlama detayı
-      const mDetail = methodScoreDetail(f);
-      if (mDetail) {
-        children.push(new Paragraph({
-          children: [new TextRun({ text: `Skorlama Detayı (${f.methodLabel})`, bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
-          spacing: { after: 20 },
-        }));
-        children.push(new Paragraph({
-          children: [new TextRun({ text: mDetail, size: 18, font: "Consolas", color: DARK_HEX })],
-          spacing: { after: 80 },
-        }));
-      }
-
-      // Mevzuat
-      if ((f.legalReferences ?? []).length > 0) {
-        children.push(new Paragraph({
-          children: [new TextRun({ text: "Mevzuat Dayanağı", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
-          spacing: { after: 20 },
-        }));
-        for (const ref of f.legalReferences ?? []) {
-          children.push(new Paragraph({
-            children: [
-              new TextRun({ text: `§ ${ref.law}`, bold: true, size: 18, font: "Segoe UI", color: DARK_HEX }),
-              ...(ref.article ? [new TextRun({ text: ` — ${ref.article}`, size: 18, font: "Segoe UI", color: DARK_HEX })] : []),
-              ...(ref.description ? [new TextRun({ text: `\n${ref.description}`, size: 16, font: "Segoe UI", color: "666666" })] : []),
-            ],
-            spacing: { after: 40 },
-          }));
-        }
-      }
-    }
+    imgFindings.forEach((f, fi) => {
+      appendWordFindingDetail(children, f, findingPinLabel(f, fi));
+    });
   }
 
   // ── QR Kod (varsa) ──
@@ -908,171 +935,131 @@ export async function generateRiskAnalysisExcelBlob(data: RiskAnalysisExportData
 
   // Kolon genislikleri
   ws.columns = [
-    { width: 5 },   // A: #
+    { width: 10 },  // A: Risk ID
     { width: 30 },  // B: Tespit
     { width: 14 },  // C: Kategori
-    { width: 10 },  // D: Risk Sinifi
+    { width: 10 },  // D: Risk Sınıfı
     { width: 8 },   // E: Skor
-    { width: 6 },   // F: DÖF
-    { width: 35 },  // G: Tespit Detayi
-    { width: 30 },  // H: Mevzuat Dayanagi
-    { width: 25 },  // I: Alinacak Onlem
+    { width: 24 },  // F: Skor Detayı
+    { width: 6 },   // G: DÖF
+    { width: 35 },  // H: Tespit Detayı
+    { width: 30 },  // I: Mevzuat
+    { width: 25 },  // J: Önlem
   ];
 
   // Baslik
   const titleRow = ws.addRow(["RİSK ANALİZİ RAPORU"]);
-  ws.mergeCells("A1:I1");
+  ws.mergeCells("A1:J1");
   titleRow.font = { bold: true, size: 16, color: { argb: GOLD } };
   titleRow.height = 28;
 
   // Firma bilgileri
   const infoRow = ws.addRow([`${data.companyName} · ${data.location || "-"} · ${data.department || "-"} · ${data.methodLabel} · ${data.date}`]);
-  ws.mergeCells("A2:I2");
+  ws.mergeCells("A2:J2");
   infoRow.font = { size: 10, color: { argb: "666666" } };
 
   // Istatistik satiri
-  const statRow = ws.addRow([`Toplam: ${data.totalFindings} tespit · Yüksek/Kritik: ${data.criticalCount} · DÖF Adayı: ${data.dofCandidateCount} · Ekip: ${data.participants.length} kişi`]);
-  ws.mergeCells("A3:I3");
+  const sections = resolveExportImageSections(data);
+  const totalReal = exportTotalFindings(data);
+  const statRow = ws.addRow([
+    `Toplam gerçek bulgu: ${totalReal} · Yüksek/Kritik: ${data.criticalCount} · DÖF: ${data.dofCandidateCount}${data.failedImageCount ? ` · Başarısız görsel: ${data.failedImageCount}` : ""} · Ekip: ${data.participants.length}`,
+  ]);
+  ws.mergeCells("A3:J3");
   statRow.font = { size: 10, bold: true, color: { argb: GOLD } };
 
   ws.addRow([]); // Bos satir
 
-  // ── Satir bazli gruplama ──
-  const rows = groupByRow(data);
+  const headers = ["Risk ID", "Tespit", "Kategori", "Risk Sınıfı", "Skor", "Skor Detayı", "DÖF", "Tespit Detayı", "Mevzuat / RAG", "Alınacak Önlem"];
   let globalIdx = 0;
 
-  for (let gi = 0; gi < rows.length; gi++) {
-    const group = rows[gi];
-
-    // ── Satir baslik satiri (altin renk, merge) ──
-    const sectionRow = ws.addRow([`SATIR ${gi + 1}: ${group.rowTitle}  —  ${group.findings.length} tespit · ${group.images.length} görsel`]);
+  for (const sec of sections) {
+    const sectionRow = ws.addRow([
+      `Görsel ${sec.imageIndex}: ${sec.fileName} — ${sec.areaLocation} — ${sec.analysisStatusLabel} — ${sec.analysisStatus === "success" ? `${sec.findingCount} risk` : "risk üretilmedi"}`,
+    ]);
     const sn = sectionRow.number;
-    ws.mergeCells(`A${sn}:I${sn}`);
-    sectionRow.height = 24;
+    ws.mergeCells(`A${sn}:J${sn}`);
+    sectionRow.height = 22;
     sectionRow.font = { bold: true, size: 11, color: { argb: GOLD } };
     sectionRow.fill = { type: "pattern", pattern: "solid", fgColor: { argb: GOLD_BG } };
-    sectionRow.border = {
-      top: { style: "medium", color: { argb: GOLD } },
-      bottom: { style: "medium", color: { argb: GOLD } },
-    };
 
-    // ── Görseller embed (başlık altında, yan yana) ──
-    if (group.images.length > 0) {
-      const imgRow = ws.addRow([]);
-      const imgRowHeight = 120;
-      imgRow.height = imgRowHeight;
-
-      for (let ii = 0; ii < group.images.length; ii++) {
-        const img = group.images[ii];
-        try {
-          const base64Data = img.dataUrl.split(",")[1];
-          if (base64Data) {
-            const ext = img.dataUrl.includes("image/png") ? "png" : "jpeg";
-            const imageId = wb.addImage({ base64: base64Data, extension: ext });
-            const colStart = ii * 3; // Her gorsel 3 kolon genisliginde
-            if (colStart < 9) { // Max 3 gorsel yan yana (9 kolon)
-              ws.addImage(imageId, {
-                tl: { col: colStart, row: imgRow.number - 1 },
-                ext: { width: 200, height: 130 },
-              });
-            }
-          }
-        } catch { /* gorsel eklenemezse devam */ }
-      }
-
-      // Gorsel dosya adlari
-      const nameRow = ws.addRow([]);
-      for (let ii = 0; ii < Math.min(group.images.length, 3); ii++) {
-        const img = group.images[ii];
-        const colIdx = ii * 3 + 1; // 1-indexed
-        if (colIdx <= 9) {
-          nameRow.getCell(colIdx).value = `${img.fileName} (${img.findingCount} tespit)`;
-          nameRow.getCell(colIdx).font = { size: 8, italic: true, color: { argb: "999999" } };
+    if (sec.dataUrl) {
+      try {
+        const base64Data = sec.dataUrl.split(",")[1];
+        if (base64Data) {
+          const ext = sec.dataUrl.includes("image/png") ? "png" : "jpeg";
+          const imageId = wb.addImage({ base64: base64Data, extension: ext });
+          const imgRow = ws.addRow([]);
+          imgRow.height = 120;
+          ws.addImage(imageId, {
+            tl: { col: 0, row: imgRow.number - 1 },
+            ext: { width: 280, height: 150 },
+          });
         }
+      } catch {
+        /* görsel eklenemezse devam */
       }
     }
 
-    // ── Tablo basligi (her grup icin) ──
-    const headers = ["#", "Tespit", "Kategori", "Risk Sınıfı", "Skor", "Skor Detayı", "DÖF", "Tespit Detayı ve Çözüm Önerisi", "Mevzuat Dayanağı", "Alınacak Önlem"];
+    if (sec.analysisStatus !== "success" || sec.findings.length === 0) {
+      const noteRow = ws.addRow([sec.analysisError || "Bu görsel için otomatik risk kaydı üretilmedi."]);
+      ws.mergeCells(`A${noteRow.number}:J${noteRow.number}`);
+      noteRow.font = { italic: true, size: 10, color: { argb: "92400E" } };
+      ws.addRow([]);
+      continue;
+    }
+
     const hRow = ws.addRow(headers);
     hRow.height = 20;
     hRow.eachCell((cell) => {
       cell.font = { bold: true, color: { argb: WHITE }, size: 9 };
       cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: GOLD } };
       cell.alignment = { wrapText: true, vertical: "middle" };
-      cell.border = { bottom: { style: "medium", color: { argb: "996F09" } } };
     });
 
-    // ── Tespit satirlari ──
-    group.findings.forEach((f, fi) => {
+    sec.findings.forEach((f, fi) => {
       globalIdx++;
-      const mevzuat = (f.legalReferences ?? []).map((r) => `${r.law}${r.article ? ` — ${r.article}` : ""}${r.description ? `: ${r.description}` : ""}`).join("\n");
-
       const mDetail = methodScoreDetail(f);
+      const mevzuat = findingLegalText(f);
       const row = ws.addRow([
-        globalIdx,
+        findingPinLabel(f, fi),
         f.title,
         f.category,
         f.scoreLabel,
         f.score < 2 ? Number((f.score * 100).toFixed(0)) : Math.round(f.score),
         mDetail || "-",
         f.correctiveActionRequired ? "Evet" : "-",
-        f.recommendation || "Detaylı değerlendirme yapılmalıdır.",
-        mevzuat || "-",
-        f.action || "-",
+        f.recommendation || "-",
+        mevzuat,
+        findingActionText(f),
       ]);
 
       row.alignment = { wrapText: true, vertical: "top" };
-      const COL_WIDTHS = [5, 30, 14, 10, 8, 22, 6, 35, 30, 25];
-      row.height = calcRowHeight([
-        String(globalIdx),
-        f.title,
-        f.category,
-        f.scoreLabel,
-        String(f.score),
-        mDetail || "-",
-        f.correctiveActionRequired ? "Evet" : "-",
-        f.recommendation || "",
-        mevzuat || "-",
-        f.action || "-",
-      ], COL_WIDTHS);
+      const COL_WIDTHS = [10, 30, 14, 10, 8, 24, 6, 35, 30, 25];
+      row.height = calcRowHeight(
+        [findingPinLabel(f, fi), f.title, f.category, f.scoreLabel, String(f.score), mDetail || "-", f.correctiveActionRequired ? "Evet" : "-", f.recommendation || "", mevzuat, findingActionText(f)],
+        COL_WIDTHS,
+      );
 
-      // Risk sinifina gore renk
       const rColor = riskColor(f.severity);
       row.getCell(4).font = { bold: true, color: { argb: rColor }, size: 9 };
-      row.getCell(5).font = { bold: true, size: 9 };
-      row.getCell(6).font = { size: 8, color: { argb: "555555" } };
-
       if (f.correctiveActionRequired) {
         row.getCell(7).font = { bold: true, color: { argb: RED }, size: 9 };
       }
-
-      // Zebra renk
       if (fi % 2 === 1) {
         row.eachCell((cell) => {
           cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: LIGHT } };
         });
       }
-
-      // Border
-      row.eachCell((cell) => {
-        cell.border = {
-          bottom: { style: "thin", color: { argb: "E5E7EB" } },
-        };
-      });
     });
 
-    // Gruplar arasi bos satir
-    if (gi < rows.length - 1) {
-      ws.addRow([]);
-    }
+    ws.addRow([]);
   }
 
   // ── Ekip bilgileri (alt kisim) ──
   if (data.participants.length > 0) {
     ws.addRow([]);
     const ekipTitle = ws.addRow(["ANALİZ EKİBİ"]);
-    ws.mergeCells(`A${ekipTitle.number}:I${ekipTitle.number}`);
+    ws.mergeCells(`A${ekipTitle.number}:J${ekipTitle.number}`);
     ekipTitle.font = { bold: true, size: 11, color: { argb: GOLD } };
 
     const ekipHdr = ws.addRow(["", "Ad Soyad", "Görev / Rol", "Unvan", "", "", "Belge No"]);

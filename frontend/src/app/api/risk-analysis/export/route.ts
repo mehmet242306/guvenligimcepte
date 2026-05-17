@@ -21,133 +21,9 @@ async function blobToUint8Array(blob: Blob) {
   return new Uint8Array(await blob.arrayBuffer());
 }
 
-function asText(value: unknown, fallback = "-") {
-  if (value === null || value === undefined) return fallback;
-  const text = String(value).trim();
-  return text || fallback;
-}
-
-function asArray(value: unknown): Record<string, unknown>[] {
-  return Array.isArray(value) ? value.filter((item): item is Record<string, unknown> => !!item && typeof item === "object") : [];
-}
-
 async function generateRiskAnalysisPdfBytes(data: unknown) {
-  const { jsPDF } = await import("jspdf");
-  const doc = new jsPDF({ unit: "mm", format: "a4" });
-  const report = (data && typeof data === "object" ? data : {}) as Record<string, unknown>;
-  const findings = asArray(report.findings);
-  const participants = asArray(report.participants);
-  const images = asArray(report.images);
-  const margin = 14;
-  const width = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  let y = margin;
-
-  const ensureSpace = (height = 12) => {
-    if (y + height <= pageHeight - margin) return;
-    doc.addPage();
-    y = margin;
-  };
-  const line = (text: string, size = 10, style: "normal" | "bold" = "normal", color: [number, number, number] = [15, 23, 42]) => {
-    doc.setFont("helvetica", style);
-    doc.setFontSize(size);
-    doc.setTextColor(...color);
-    const wrapped = doc.splitTextToSize(text, width - margin * 2) as string[];
-    ensureSpace(wrapped.length * (size * 0.42) + 3);
-    doc.text(wrapped, margin, y);
-    y += wrapped.length * (size * 0.42) + 3;
-  };
-  const label = (name: string, value: unknown) => line(`${name}: ${asText(value)}`, 9);
-  const section = (title: string) => {
-    ensureSpace(12);
-    y += y === margin ? 0 : 3;
-    doc.setDrawColor(212, 160, 23);
-    doc.line(margin, y, width - margin, y);
-    y += 6;
-    line(title, 12, "bold", [15, 23, 42]);
-  };
-
-  line(asText(report.analysisTitle, "Risk Analizi Raporu"), 18, "bold", [15, 23, 42]);
-  line("RiskNova", 10, "bold", [212, 160, 23]);
-  label("Firma", report.companyName);
-  label("Tarih", report.date);
-  label("Yontem", report.methodLabel);
-  label("Lokasyon", report.location);
-  label("Bolum", report.department);
-  label("Toplam bulgu", report.totalFindings);
-  label("Kritik/yuksek bulgu", report.criticalCount);
-
-  if (participants.length > 0) {
-    section("Ekip");
-    participants.forEach((participant, index) => {
-      line(
-        `${index + 1}. ${asText(participant.fullName)} - ${asText(participant.role)}${
-          participant.title ? ` / ${asText(participant.title)}` : ""
-        }`,
-        9,
-      );
-    });
-  }
-
-  section("Bulgular");
-  if (findings.length === 0) {
-    line("Kayitli bulgu bulunmuyor.", 10);
-  }
-  findings.forEach((finding, index) => {
-    ensureSpace(34);
-    line(`${index + 1}. ${asText(finding.title, "Bulgu")}`, 12, "bold");
-    label("Kategori", finding.category);
-    label("Risk sinifi", finding.riskClass ?? finding.severity);
-    label("Skor", finding.scoreLabel ?? finding.score);
-    if (finding.recommendation) line(`Oneri: ${asText(finding.recommendation)}`, 9);
-    if (finding.action) line(`Aksiyon: ${asText(finding.action)}`, 9);
-    if (Array.isArray(finding.legalReferences) && finding.legalReferences.length > 0) {
-      line(
-        `Mevzuat: ${finding.legalReferences
-          .map((ref) => {
-            const item = ref as Record<string, unknown>;
-            return [item.law, item.article, item.description].map((part) => asText(part, "")).filter(Boolean).join(" - ");
-          })
-          .filter(Boolean)
-          .join("; ")}`,
-        8,
-      );
-    }
-  });
-
-  if (images.length > 0) {
-    section("Gorseller");
-    for (const [index, image] of images.entries()) {
-      const dataUrl = asText(image.dataUrl, "");
-      if (!dataUrl.startsWith("data:image/")) continue;
-      try {
-        ensureSpace(60);
-        line(`${index + 1}. ${asText(image.fileName ?? image.name, "Gorsel")}`, 9, "bold");
-        const format = dataUrl.includes("image/png") ? "PNG" : "JPEG";
-        doc.addImage(dataUrl, format, margin, y, 58, 44, undefined, "FAST");
-        y += 50;
-      } catch (error) {
-        console.warn("[risk-analysis.export] image skipped:", error);
-      }
-    }
-  }
-
-  if (report.shareUrl || report.shareQrDataUrl) {
-    section("Dogrulama");
-    if (report.shareUrl) line(`Paylasim baglantisi: ${asText(report.shareUrl)}`, 8);
-    const qr = asText(report.shareQrDataUrl, "");
-    if (qr.startsWith("data:image/")) {
-      try {
-        ensureSpace(36);
-        doc.addImage(qr, "PNG", margin, y, 28, 28, undefined, "FAST");
-        y += 32;
-      } catch (error) {
-        console.warn("[risk-analysis.export] qr skipped:", error);
-      }
-    }
-  }
-
-  return new Uint8Array(doc.output("arraybuffer"));
+  const { generateFieldRiskAnalysisPdfBytes } = await import("@/lib/risk-analysis/pdf-field-report");
+  return generateFieldRiskAnalysisPdfBytes(data as import("@/lib/risk-analysis-export").RiskAnalysisExportData);
 }
 
 export async function POST(request: NextRequest) {
@@ -168,7 +44,8 @@ export async function POST(request: NextRequest) {
       const fileName = `Risk-Analizi-${safeFilePart(exportData.companyName)}-${safeFilePart(
         exportData.date || new Date().toISOString().split("T")[0],
       )}.pdf`;
-      return new NextResponse(await generateRiskAnalysisPdfBytes(parsed.data.data), {
+      const pdfBytes = await generateRiskAnalysisPdfBytes(parsed.data.data);
+      return new NextResponse(Buffer.from(pdfBytes), {
         headers: {
           "Content-Type": "application/pdf",
           "Content-Disposition": `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`,

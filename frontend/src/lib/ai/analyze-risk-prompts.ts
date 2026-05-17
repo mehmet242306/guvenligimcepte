@@ -283,6 +283,7 @@ Her tespit için belirtilen yöntem parametrelerini görselden doğrudan analiz 
 
 JSON format\u0131:
 {
+  "analysis_status": "success",
   "imageRelevance": "relevant | not_real_photo | not_workplace",
   "imageDescription": "G\u00F6rselin k\u0131sa tan\u0131m\u0131",
   "photoQuality": {
@@ -355,6 +356,7 @@ Secilen yontem: ${method}
 
 JSON:
 {
+  "analysis_status": "success",
   "imageRelevance": "relevant | not_real_photo | not_workplace",
   "imageDescription": "kisa gorsel tanimi",
   "photoQuality": { "level": "good|moderate|poor", "note": "kisa not" },

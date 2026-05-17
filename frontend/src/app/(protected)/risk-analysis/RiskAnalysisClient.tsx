@@ -81,8 +81,20 @@ import type { Locale } from "@/i18n/routing";
 import type {
   ExportFinding,
   ExportImage,
+  ExportImageSection,
+  ImageAnalysisStatus,
   RiskAnalysisExportData,
 } from "@/lib/risk-analysis-export";
+import {
+  annotationColorForRiskClass,
+  filterRealFindings,
+  formatActionTurkish,
+  formatFineKinneyBlock,
+  formatLegalContextForRisk,
+  formatMatrixBlock,
+  imageAnalysisStatusLabel,
+  isSyntheticOrFailedFinding,
+} from "@/lib/risk-analysis/finding-quality";
 import { downloadServerExport } from "@/lib/billing/server-export-client";
 import { MAX_IMAGES_PER_UPLOAD_BATCH, MAX_RISK_ANALYSIS_IMAGES_TOTAL } from "@/lib/risk-analysis/upload-limits";
 import {
@@ -194,6 +206,9 @@ type ImageMeta = {
   personCount: number;
   imageRelevance: "relevant" | "irrelevant" | "not_real_photo";
   imageDescription: string;
+  analysisStatus?: ImageAnalysisStatus;
+  analysisError?: string;
+  retryAttempts?: number;
   /** Sunucu teşhisi — kök neden / kontrol listesi (API `diagnostics`) */
   aiDiagnostics?: AnalyzeRiskDiagnostics;
 };
@@ -201,6 +216,8 @@ type ImageMeta = {
 type VisualFinding = {
   id: string;
   imageId: string;
+  /** Görsel-risk kodu: G1-R1 */
+  riskCode?: string;
   title: string;
   category: string;
   confidence: number;
@@ -210,6 +227,7 @@ type VisualFinding = {
   annotations: FindingAnnotation[];
   isManual: boolean;
   legalReferences: LegalReference[];
+  legalContextSummary?: string;
   confidenceTier?: "high" | "medium" | "low" | "acceptable";
   /** Scoring */
   r2dValues: R2DValues;
@@ -548,112 +566,40 @@ function createSquareAnnotationFromRisk(risk: Record<string, any>, label: string
   };
 }
 
-function createAiUnavailableFindingBase(
-  imageId: string,
-  patch: {
-    title: string;
-    category: string;
-    severity: DetectionSeverity;
-    confidence: number;
-    recommendation: string;
-    annotations: FindingAnnotation[];
-  },
-): VisualFinding {
-  const defaultValues = {
-    fmea: { severity: 6, occurrence: 6, detection: 5 } as FMEAValues,
-    hazop: { severity: 3, likelihood: 3, detectability: 3, guideWord: "Kontrol", parameter: "Saha", deviation: "" } as HAZOPValues,
-    bowTie: { threatProbability: 3, consequenceSeverity: 3, preventionBarriers: 1, mitigationBarriers: 1 } as BowTieValues,
-    fta: { components: [{ name: "Saha kontrol eksigi", failureRate: 0.3 }], gateType: "OR" as const, systemCriticality: 3 },
-    checklist: {
-      items: [{ id: crypto.randomUUID(), text: "Saha kontrolu tamamlanmali", status: "kismi" as const, weight: 2 }],
-      category: patch.category,
-    } as ChecklistValues,
-    jsa: {
-      jobTitle: "",
-      steps: [{
-        id: crypto.randomUUID(),
-        stepDescription: "Saha goruntusunu dogrula",
-        hazard: patch.title,
-        severity: 3,
-        likelihood: 3,
-        controlEffectiveness: 3,
-        controlMeasures: patch.recommendation,
-      }],
-    } as JSAValues,
-    lopa: { initiatingEventFreq: 0.1, consequenceSeverity: 3, layers: [{ id: crypto.randomUUID(), name: "Manuel dogrulama", pfd: 0.1 }] } as LOPAValues,
-  };
+function tagFindingsForImageIndex(aiFindings: VisualFinding[], imageGlobalIndex: number): VisualFinding[] {
+  const tagged = aiFindings.map((f, riskIdx) => {
+    const conf = f.confidence ?? 0;
+    const tier: "high" | "medium" | "low" | "acceptable" =
+      conf >= 0.75 ? "high" : conf >= 0.55 ? "medium" : conf >= 0.40 ? "low" : "acceptable";
+    const riskCode = `G${imageGlobalIndex}-R${riskIdx + 1}`;
+    return {
+      ...f,
+      riskCode,
+      annotations: f.annotations.map((a) => ({ ...a, label: riskCode })),
+      confidenceTier: tier,
+      severity: tier === "acceptable" ? "low" : f.severity,
+      correctiveActionRequired: tier === "acceptable" ? false : f.correctiveActionRequired,
+    };
+  }).filter((f) => !isSyntheticOrFailedFinding(f));
 
-  return computeAllScores({
-    id: crypto.randomUUID(),
-    imageId,
-    title: patch.title,
-    category: patch.category,
-    confidence: patch.confidence,
-    severity: patch.severity,
-    recommendation: patch.recommendation,
-    correctiveActionRequired: true,
-    annotations: patch.annotations,
-    isManual: false,
-    legalReferences: [
-      {
-        law: "6331 sayili Is Sagligi ve Guvenligi Kanunu",
-        article: "Madde 4",
-        description: "Isveren, calisanlarin isle ilgili saglik ve guvenligini saglamakla yukumludur.",
-      },
-      {
-        law: "Is Sagligi ve Guvenligi Risk Degerlendirmesi Yonetmeligi",
-        article: "Madde 8",
-        description: "Tehlikeler belirlenir, riskler analiz edilir ve kontrol tedbirleri planlanir.",
-      },
-    ],
-    confidenceTier: "medium",
-    r2dValues: { c1: 0.46, c2: 0.2, c3: 0.35, c4: 0.35, c5: 0.55, c6: 0.55, c7: 0.35, c8: 0.15, c9: 0.35 },
-    fkValues: { likelihood: 3, severity: 15, exposure: 6 },
-    matrixValues: { likelihood: 3, severity: 4 },
-    fmeaValues: defaultValues.fmea,
-    hazopValues: defaultValues.hazop,
-    bowTieValues: defaultValues.bowTie,
-    ftaValues: defaultValues.fta,
-    checklistValues: defaultValues.checklist,
-    jsaValues: defaultValues.jsa,
-    lopaValues: defaultValues.lopa,
-    r2dResult: null,
-    fkResult: null,
-    matrixResult: null,
-    fmeaResult: null,
-    hazopResult: null,
-    bowTieResult: null,
-    ftaResult: null,
-    checklistResult: null,
-    jsaResult: null,
-    lopaResult: null,
+  const seenInImage = new Set<string>();
+  return tagged.filter((newF) => {
+    const sig = `${newF.category.toLowerCase()}|${newF.title.toLowerCase()}`;
+    if (seenInImage.has(sig)) return false;
+    seenInImage.add(sig);
+    return true;
   });
 }
 
-function createAiUnavailableFindings(imageId: string, reason: string): VisualFinding[] {
-  return [
-    createAiUnavailableFindingBase(imageId, {
-      title: "AI yaniti alinamadi: saha risk envanteri manuel dogrulama gerektiriyor",
-      category: "Diger",
-      severity: "medium",
-      confidence: 0.62,
-      recommendation: `${reason} Bu fotograf icin calisma alani, zemin/gecis, elektrik, yangin, acil durum ve ekipman basliklari sahada kontrol edilmelidir. Tespitler sorumlu kisi, termin ve kanit fotografi ile tamamlanmalidir.`,
-      annotations: [
-        createSquareAnnotationFromRisk({ pinX: 50, pinY: 50, boxX: 38, boxY: 38, boxW: 24, boxH: 24 }, "R1").box,
-      ],
-    }),
-    createAiUnavailableFindingBase(imageId, {
-      title: "Elektrik, yangin ve acil durum kontrolu",
-      category: "Yangin",
-      severity: "high",
-      confidence: 0.58,
-      recommendation:
-        "Gorsel analizi tamamlanamadigi icin elektrik beslemesi, priz/kablo durumu, yanici malzeme yakinligi, yangin sondurucu erisimi ve acil mudahale plani sahada dogrulanmalidir. Uygunsuzluk varsa alan guvenli hale getirilmeden calisma surdurulmemelidir.",
-      annotations: [
-        createSquareAnnotationFromRisk({ pinX: 50, pinY: 50, boxX: 38, boxY: 38, boxW: 24, boxH: 24 }, "R2").box,
-      ],
-    }),
-  ];
+function computeGlobalImageIndex(allLines: RiskLine[], imageId: string): number {
+  let idx = 0;
+  for (const line of allLines) {
+    for (const img of line.images) {
+      idx += 1;
+      if (img.id === imageId) return idx;
+    }
+  }
+  return idx || 1;
 }
 
 /* ================================================================== */
@@ -664,7 +610,13 @@ function annotationStyle(style: CSSProperties, active: boolean): CSSProperties {
   return { ...style, zIndex: active ? 20 : 10 };
 }
 
-function renderAnnotation(annotation: FindingAnnotation, active: boolean, onClick: () => void) {
+function renderAnnotation(
+  annotation: FindingAnnotation,
+  active: boolean,
+  onClick: () => void,
+  riskClass?: string,
+) {
+  const colors = annotationColorForRiskClass(riskClass ?? "medium");
   if (annotation.kind === "pin") {
     return (
       <button
@@ -673,11 +625,13 @@ function renderAnnotation(annotation: FindingAnnotation, active: boolean, onClic
         onClick={onClick}
         title={annotation.label}
         className={`absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 text-xs font-bold shadow-lg transition-transform hover:scale-105 ${
-          active
-            ? "border-red-700 bg-red-600 text-white dark:border-red-400 dark:bg-red-500"
-            : "border-white bg-slate-900/90 text-white dark:border-slate-300 dark:bg-slate-800"
+          active ? "text-white" : "border-white text-white"
         }`}
-        style={annotationStyle({ left: `${annotation.x}%`, top: `${annotation.y}%` }, active)}
+        style={{
+          ...annotationStyle({ left: `${annotation.x}%`, top: `${annotation.y}%` }, active),
+          backgroundColor: colors.labelBg,
+          borderColor: active ? "#fff" : colors.stroke,
+        }}
       >
         {annotation.label}
       </button>
@@ -691,14 +645,25 @@ function renderAnnotation(annotation: FindingAnnotation, active: boolean, onClic
         type="button"
         onClick={onClick}
         title={annotation.label}
-        className={`absolute rounded-md border-2 ${
-          active
-            ? "border-red-600 bg-red-500/10 shadow-[0_0_0_2px_rgba(220,38,38,0.18)] dark:border-red-400 dark:bg-red-400/10"
-            : "border-cyan-400 bg-cyan-400/10 dark:border-cyan-300 dark:bg-cyan-300/10"
-        }`}
-        style={annotationStyle({ left: `${annotation.x}%`, top: `${annotation.y}%`, width: `${annotation.width}%`, height: `${annotation.height}%` }, active)}
+        className="absolute rounded-md border-2"
+        style={{
+          ...annotationStyle(
+            {
+              left: `${annotation.x}%`,
+              top: `${annotation.y}%`,
+              width: `${annotation.width}%`,
+              height: `${annotation.height}%`,
+              borderColor: colors.stroke,
+              backgroundColor: colors.fill,
+            },
+            active,
+          ),
+        }}
       >
-        <span className={`absolute -top-7 left-0 rounded-md px-2 py-1 text-[10px] font-semibold ${active ? "bg-red-600 text-white" : "bg-cyan-500 text-white"}`}>
+        <span
+          className="absolute -top-7 left-0 rounded-md px-2 py-1 text-[10px] font-semibold text-white"
+          style={{ backgroundColor: colors.labelBg }}
+        >
           {annotation.label}
         </span>
       </button>
@@ -1377,6 +1342,7 @@ export function RiskAnalysisClient() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [imageMetaMap, setImageMetaMap] = useState<Record<string, ImageMeta>>({});
   const [noRiskImages, setNoRiskImages] = useState<Set<string>>(new Set());
+  const [retryingImageId, setRetryingImageId] = useState<string | null>(null);
 
   /* ── Wizard step ── */
   const [step, setStep] = usePersistedState<1 | 2 | 3 | 4>("risk:step", 1);
@@ -1565,25 +1531,33 @@ export function RiskAnalysisClient() {
   const totalImageCount = useMemo(() => lines.reduce((s, l) => s + l.images.length, 0), [lines]);
 
   const allFindings = useMemo(() => results.flatMap((r) => r.findings), [results]);
-  const totalDetectionCount = allFindings.length;
-  const criticalHighCount = useMemo(() => allFindings.filter((f) => {
-    const rc = getActiveRiskClass(f, method);
-    return rc === "critical" || rc === "high";
-  }).length, [allFindings, method]);
-  const dofCandidateCount = useMemo(() => allFindings.filter((f) => f.correctiveActionRequired).length, [allFindings]);
+  const realFindings = useMemo(() => filterRealFindings(allFindings), [allFindings]);
+  const totalDetectionCount = realFindings.length;
+  const criticalHighCount = useMemo(
+    () =>
+      realFindings.filter((f) => {
+        const rc = getActiveRiskClass(f, method);
+        return rc === "critical" || rc === "high";
+      }).length,
+    [realFindings, method],
+  );
+  const dofCandidateCount = useMemo(
+    () => realFindings.filter((f) => f.correctiveActionRequired).length,
+    [realFindings],
+  );
   const acceptableCount = useMemo(
-    () => allFindings.filter((f) => !f.isManual && f.confidenceTier === "acceptable").length,
-    [allFindings],
+    () => realFindings.filter((f) => !f.isManual && f.confidenceTier === "acceptable").length,
+    [realFindings],
   );
   const criticalUrgentCount = useMemo(
-    () => allFindings.filter((f) => getActiveRiskClass(f, method) === "critical").length,
-    [allFindings, method],
+    () => realFindings.filter((f) => getActiveRiskClass(f, method) === "critical").length,
+    [realFindings, method],
   );
   const avgScore = useMemo(() => {
-    if (allFindings.length === 0) return 0;
-    const sum = allFindings.reduce((s, f) => s + getActiveScore(f, method).score, 0);
-    return sum / allFindings.length;
-  }, [allFindings, method]);
+    if (realFindings.length === 0) return 0;
+    const sum = realFindings.reduce((s, f) => s + getActiveScore(f, method).score, 0);
+    return sum / realFindings.length;
+  }, [realFindings, method]);
 
   /* ── Validation ── */
   function validateSetup(): string | null {
@@ -1886,13 +1860,16 @@ export function RiskAnalysisClient() {
 
         if (canContinueWithFallback) {
           return {
-            findings: createAiUnavailableFindings(imageId, message),
+            findings: [],
             meta: {
               ...emptyMeta,
-              areaSummary: "AI yaniti alinamadigi icin on risk envanteri uretildi; saha dogrulamasi gerekir.",
+              analysisStatus: "failed",
+              analysisError: message,
+              areaSummary: "",
               imageDescription: imageFile.name,
               ...(errDiag ? { aiDiagnostics: errDiag } : {}),
             },
+            error: message,
             stage,
           };
         }
@@ -1910,6 +1887,26 @@ export function RiskAnalysisClient() {
 
       const okDiag = parseAnalyzeRiskDiagnosticsFromApi(data.diagnostics);
 
+      const apiStatus = typeof data.analysis_status === "string" ? data.analysis_status : "success";
+      if (apiStatus === "failed" || apiStatus === "error") {
+        const failMsg =
+          typeof data.analysis_error === "string"
+            ? data.analysis_error
+            : "Görsel analizi tamamlanamadı.";
+        return {
+          findings: [],
+          meta: {
+            ...emptyMeta,
+            analysisStatus: "failed",
+            analysisError: failMsg,
+            imageDescription: imageFile.name,
+            ...(okDiag ? { aiDiagnostics: okDiag } : {}),
+          },
+          error: failMsg,
+          stage: "api_failed",
+        };
+      }
+
       const meta: ImageMeta = {
         imageId,
         faces: Array.isArray(data.faces) ? data.faces.map((f: FaceRegion) => ({ faceX: f.faceX ?? 0, faceY: f.faceY ?? 0, faceW: f.faceW ?? 5, faceH: f.faceH ?? 6 })) : [],
@@ -1924,6 +1921,7 @@ export function RiskAnalysisClient() {
               ? "irrelevant"
               : "relevant",
         imageDescription: data.imageDescription ?? "",
+        analysisStatus: "success",
         ...(okDiag ? { aiDiagnostics: okDiag } : {}),
       };
 
@@ -2011,6 +2009,8 @@ export function RiskAnalysisClient() {
           correctiveActionRequired: risk.correctiveActionRequired,
           isManual: false,
           legalReferences: risk.legalReferences ?? [],
+          legalContextSummary:
+            typeof risk.legalContextSummary === "string" ? risk.legalContextSummary : undefined,
           annotations,
           r2dValues,
           fkValues,
@@ -2041,13 +2041,29 @@ export function RiskAnalysisClient() {
           scored.correctiveActionRequired = false;
         }
         return scored;
-      });
+      }).filter((f) => !isSyntheticOrFailedFinding(f));
 
       return { findings, meta };
     } catch (err) {
       console.error("AI analiz exception:", err);
       const message = err instanceof Error ? err.message : "AI analizi sirasinda beklenmeyen hata olustu.";
-      return { findings: [], meta: { imageId, faces: [], positiveObservations: [], photoQuality: { level: "good" as const, note: "" }, areaSummary: "", personCount: 0, imageRelevance: "relevant" as const, imageDescription: "" }, error: message, stage: "client" };
+      return {
+        findings: [],
+        meta: {
+          imageId,
+          faces: [],
+          positiveObservations: [],
+          photoQuality: { level: "good" as const, note: "" },
+          areaSummary: "",
+          personCount: 0,
+          imageRelevance: "relevant" as const,
+          imageDescription: "",
+          analysisStatus: "failed",
+          analysisError: message,
+        },
+        error: message,
+        stage: "client",
+      };
     }
   }
 
@@ -2106,7 +2122,12 @@ export function RiskAnalysisClient() {
           description: line.description,
         });
         const { findings: aiFindings, meta } = analysis;
-        newImageMeta[img.id] = meta;
+        const imageGlobalIndex = processedImages;
+        newImageMeta[img.id] = {
+          ...meta,
+          analysisStatus: analysis.error ? "failed" : meta.analysisStatus ?? "success",
+          analysisError: analysis.error ?? meta.analysisError,
+        };
 
         if (analysis.error) {
           analysisErrors.push(`${img.file.name}: ${analysis.error}`);
@@ -2116,39 +2137,7 @@ export function RiskAnalysisClient() {
         successfulImages++;
 
         if (aiFindings.length > 0) {
-          // Confidence tier etiketle (UI rozetleri icin).
-          // Threshold'lar gevşetildi (kullanıcı: AI tehlikeleri "düşük confidence"
-          // diye susturuyordu). Yeni sınırlar:
-          //   high     >= 0.75
-          //   medium   >= 0.55
-          //   low      >= 0.40
-          //   acceptable < 0.40 (gerçek belirsizlik)
-          const taggedFindings = aiFindings.map((f) => {
-            const conf = f.confidence ?? 0;
-            const tier: "high" | "medium" | "low" | "acceptable" =
-              conf >= 0.75 ? "high" : conf >= 0.55 ? "medium" : conf >= 0.40 ? "low" : "acceptable";
-            return {
-              ...f,
-              confidenceTier: tier,
-              severity: tier === "acceptable" ? "low" : f.severity,
-              correctiveActionRequired: tier === "acceptable" ? false : f.correctiveActionRequired,
-            };
-          });
-
-          // Mukerrer risk filtrele:
-          //  - Aynı GÖRSEL içinde: birebir baslık + kategori kopyasini ele.
-          //  - Farklı görsellerden gelenleri ELEMEYELIM — her görsel ayri kanit;
-          //    saha denetiminde "hangi kapida hangi risk" kayitli kalmali.
-          //  - Eski sürümdeki agresif fuzzy similarity (0.5) ayni kategoride
-          //    iki ayri kisi/lokasyon icin ayni tip riski (örn iki farkli
-          //    calisanin kaski yok) kaybediyordu.
-          const seenInImage = new Set<string>();
-          const unique = taggedFindings.filter((newF) => {
-            const sig = `${newF.category.toLowerCase()}|${newF.title.toLowerCase()}`;
-            if (seenInImage.has(sig)) return false;
-            seenInImage.add(sig);
-            return true;
-          });
+          const unique = tagFindingsForImageIndex(aiFindings, imageGlobalIndex);
           allFindings.push(...unique);
 
           // Tum tespitler confidence filtresiyle elendiyse
@@ -2188,7 +2177,7 @@ export function RiskAnalysisClient() {
     setNoRiskImages(newNoRiskImages);
     setSelectedImageByRow(newSelectedImages);
     setSelectedFindingByRow(newSelectedFindings);
-    const totalFound = newResults.reduce((s, r) => s + r.findings.length, 0);
+    const totalFound = newResults.reduce((s, r) => s + filterRealFindings(r.findings).length, 0);
     const totalPositive = Object.values(newImageMeta).reduce((s, m) => s + m.positiveObservations.length, 0);
     if (successfulImages === 0) {
       setAnalysisMessage(trRiskScoring("wizard.messages.analysisFailed"));
@@ -2217,6 +2206,72 @@ export function RiskAnalysisClient() {
   async function runAnalyzeAndShowResults() {
     const ok = await handleAnalyze();
     if (ok) setStep(4);
+  }
+
+  async function retryFailedImage(rowId: string, imageId: string) {
+    const line = lines.find((l) => l.id === rowId);
+    const img = line?.images.find((i) => i.id === imageId);
+    if (!line || !img) return;
+
+    setRetryingImageId(imageId);
+    const globalIdx = computeGlobalImageIndex(lines, imageId);
+    const prevAttempts = imageMetaMap[imageId]?.retryAttempts ?? 0;
+
+    try {
+      const analysis = await analyzeImageWithAI(img.file, img.id, {
+        title: line.title,
+        description: line.description,
+      });
+
+      const nextStatus: ImageAnalysisStatus = analysis.error
+        ? prevAttempts + 1 >= 1
+          ? "manual_required"
+          : "failed"
+        : "success";
+
+      setImageMetaMap((prev) => ({
+        ...prev,
+        [imageId]: {
+          ...analysis.meta,
+          analysisStatus: nextStatus,
+          analysisError: analysis.error,
+          retryAttempts: prevAttempts + 1,
+        },
+      }));
+
+      if (analysis.error) {
+        setSetupMessage(`${img.file.name}: ${analysis.error}`);
+        setSetupMessageType("error");
+        return;
+      }
+
+      const unique = tagFindingsForImageIndex(analysis.findings, globalIdx);
+      setResults((prev) =>
+        prev.map((r) => {
+          if (r.rowId !== rowId) return r;
+          const kept = r.findings.filter((f) => f.imageId !== imageId || f.isManual);
+          return { ...r, findings: [...kept, ...unique] };
+        }),
+      );
+      setNoRiskImages((prev) => {
+        const next = new Set(prev);
+        if (unique.length === 0) next.add(imageId);
+        else next.delete(imageId);
+        return next;
+      });
+      if (unique[0]) {
+        setSelectedImageByRow((prev) => ({ ...prev, [rowId]: imageId }));
+        setSelectedFindingByRow((prev) => ({ ...prev, [rowId]: unique[0].id }));
+      }
+      setSetupMessage(
+        unique.length > 0
+          ? `${img.file.name}: ${unique.length} risk yeniden analiz edildi.`
+          : `${img.file.name}: risk tespit edilmedi; manuel giriş yapabilirsiniz.`,
+      );
+      setSetupMessageType(unique.length > 0 ? "success" : "warning");
+    } finally {
+      setRetryingImageId(null);
+    }
   }
 
   /* ── Manual pin ── */
@@ -2443,63 +2498,63 @@ JSON formatında döndür:
   /** Canvas uzerine annotation cizimleri (pin, box, polygon) */
   function drawAnnotationsOnCanvas(ctx: CanvasRenderingContext2D, w: number, h: number, findings: VisualFinding[]) {
     const scale = Math.max(1, Math.min(w, h) / 800); // olceklendirme
+    const real = filterRealFindings(findings);
 
-    findings.forEach((f, fi) => {
+    real.forEach((f, fi) => {
+      const colors = annotationColorForRiskClass(getActiveRiskClass(f, method));
       f.annotations.forEach((a) => {
+        const label = a.label || f.riskCode || `R${fi + 1}`;
         if (a.kind === "pin") {
-          // Kirmizi daire + beyaz etiket
           const px = (a.x / 100) * w;
           const py = (a.y / 100) * h;
           const r = 14 * scale;
           ctx.beginPath();
           ctx.arc(px, py, r, 0, Math.PI * 2);
-          ctx.fillStyle = "#DC2626";
+          ctx.fillStyle = colors.labelBg;
           ctx.fill();
           ctx.strokeStyle = "#fff";
           ctx.lineWidth = 2 * scale;
           ctx.stroke();
-          // Etiket
           ctx.fillStyle = "#fff";
           ctx.font = `bold ${Math.round(10 * scale)}px Arial`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillText(a.label || `R${fi + 1}`, px, py);
+          ctx.fillText(label, px, py);
         }
 
         if (a.kind === "box") {
-          // Cyan dikdortgen
           const bx = (a.x / 100) * w;
           const by = (a.y / 100) * h;
           const bw = ((a.width ?? 10) / 100) * w;
           const bh = ((a.height ?? 10) / 100) * h;
-          ctx.strokeStyle = "#06B6D4";
+          ctx.strokeStyle = colors.stroke;
           ctx.lineWidth = 2.5 * scale;
           ctx.strokeRect(bx, by, bw, bh);
-          // Etiket kutusu
-          if (a.label) {
+          ctx.fillStyle = colors.fill;
+          ctx.fillRect(bx, by, bw, bh);
+          if (label) {
             const fontSize = Math.round(10 * scale);
             ctx.font = `bold ${fontSize}px Arial`;
-            const tw = ctx.measureText(a.label).width + 8 * scale;
-            ctx.fillStyle = "#06B6D4";
+            const tw = ctx.measureText(label).width + 8 * scale;
+            ctx.fillStyle = colors.labelBg;
             ctx.fillRect(bx, by - fontSize - 6 * scale, tw, fontSize + 4 * scale);
             ctx.fillStyle = "#fff";
             ctx.textAlign = "left";
             ctx.textBaseline = "top";
-            ctx.fillText(a.label, bx + 4 * scale, by - fontSize - 4 * scale);
+            ctx.fillText(label, bx + 4 * scale, by - fontSize - 4 * scale);
           }
         }
 
         if (a.kind === "polygon" && a.points && a.points.length >= 3) {
-          // Cyan polygon
           ctx.beginPath();
           ctx.moveTo((a.points[0].x / 100) * w, (a.points[0].y / 100) * h);
           for (let i = 1; i < a.points.length; i++) {
             ctx.lineTo((a.points[i].x / 100) * w, (a.points[i].y / 100) * h);
           }
           ctx.closePath();
-          ctx.fillStyle = "rgba(6, 182, 212, 0.15)";
+          ctx.fillStyle = colors.fill;
           ctx.fill();
-          ctx.strokeStyle = "#06B6D4";
+          ctx.strokeStyle = colors.stroke;
           ctx.lineWidth = 2 * scale;
           ctx.stroke();
         }
@@ -2565,12 +2620,30 @@ JSON formatında döndür:
       }
     }
 
-    const findings: ExportFinding[] = allFindings.map((f) => {
+    const mapFindingToExport = (f: VisualFinding, rowTitle: string): ExportFinding => {
       const sc = getActiveScore(f, method);
       const rc = getActiveRiskClass(f, method);
+      const scoreDetail =
+        method === "fine_kinney" && f.fkResult
+          ? formatFineKinneyBlock({
+              likelihood: f.fkValues.likelihood,
+              exposure: f.fkValues.exposure,
+              severity: f.fkValues.severity,
+              score: sc.score,
+              riskClass: rc,
+            })
+          : method === "l_matrix" && f.matrixResult
+            ? formatMatrixBlock({
+                likelihood: f.matrixValues.likelihood,
+                severity: f.matrixValues.severity,
+                score: sc.score,
+                riskClass: rc,
+              })
+            : undefined;
       return {
-        rowTitle: results.find((r) => r.findings.some((ff) => ff.id === f.id))?.rowTitle ?? "",
+        rowTitle,
         imageId: f.imageId,
+        riskCode: f.riskCode,
         title: f.title,
         category: f.category,
         severity: f.severity,
@@ -2579,53 +2652,164 @@ JSON formatında döndür:
         scoreLabel: sc.label,
         riskClass: rc,
         action: sc.action,
+        actionTr: formatActionTurkish(sc.action, rc),
         recommendation: f.recommendation,
         confidence: f.confidence,
         isManual: f.isManual,
         correctiveActionRequired: f.correctiveActionRequired,
         method: method,
         methodLabel: methodLabel(method, trRiskScoring),
-        paramDetails: f.r2dResult ? R2D_PARAMS.map((p) => ({
-          code: p.code,
-          label: p.exportLabel,
-          value: f.r2dValues[p.key] ?? 0,
-          contribution: f.r2dResult!.paramContributions.find((c) => c.code === p.code)?.contribution ?? 0,
-        })) : undefined,
-        fkDetails: f.fkResult ? { likelihood: f.fkValues.likelihood, severity: f.fkValues.severity, exposure: f.fkValues.exposure } : undefined,
-        matrixDetails: f.matrixResult ? { likelihood: f.matrixValues.likelihood, severity: f.matrixValues.severity } : undefined,
-        fmeaDetails: f.fmeaResult ? { severity: f.fmeaValues.severity, occurrence: f.fmeaValues.occurrence, detection: f.fmeaValues.detection, rpn: f.fmeaResult.rpn } : undefined,
-        hazopDetails: f.hazopResult ? { severity: f.hazopValues.severity, likelihood: f.hazopValues.likelihood, detectability: f.hazopValues.detectability, guideWord: f.hazopValues.guideWord, parameter: f.hazopValues.parameter, deviation: f.hazopValues.deviation } : undefined,
-        bowTieDetails: f.bowTieResult ? { threatProbability: f.bowTieValues.threatProbability, consequenceSeverity: f.bowTieValues.consequenceSeverity, preventionBarriers: f.bowTieValues.preventionBarriers, mitigationBarriers: f.bowTieValues.mitigationBarriers, rawRisk: f.bowTieResult.rawRisk, residualRisk: f.bowTieResult.residualRisk } : undefined,
-        ftaDetails: f.ftaResult ? { componentCount: f.ftaResult.componentCount, gateType: f.ftaResult.gateType, systemProbability: f.ftaResult.systemProbability, systemCriticality: f.ftaResult.systemCriticality } : undefined,
-        checklistDetails: f.checklistResult ? { compliancePercent: f.checklistResult.compliancePercent, totalItems: f.checklistResult.totalItems, compliantCount: f.checklistResult.compliantCount, nonCompliantCount: f.checklistResult.nonCompliantCount } : undefined,
-        jsaDetails: f.jsaResult ? { jobTitle: f.jsaValues.jobTitle, stepCount: f.jsaValues.steps.length, highRiskStepCount: f.jsaResult.highRiskStepCount, maxStepScore: f.jsaResult.maxStepScore, avgStepScore: f.jsaResult.avgStepScore } : undefined,
-        lopaDetails: f.lopaResult ? { initiatingEventFreq: f.lopaResult.initiatingEventFreq, mitigatedFreq: f.lopaResult.mitigatedFreq, riskReductionFactor: f.lopaResult.riskReductionFactor, layerCount: f.lopaResult.layerCount, meetsTarget: f.lopaResult.meetsTarget } : undefined,
+        scoreDetail,
+        paramDetails: f.r2dResult
+          ? R2D_PARAMS.map((p) => ({
+              code: p.code,
+              label: p.exportLabel,
+              value: f.r2dValues[p.key] ?? 0,
+              contribution: f.r2dResult!.paramContributions.find((c) => c.code === p.code)?.contribution ?? 0,
+            }))
+          : undefined,
+        fkDetails: f.fkResult
+          ? { likelihood: f.fkValues.likelihood, severity: f.fkValues.severity, exposure: f.fkValues.exposure }
+          : undefined,
+        matrixDetails: f.matrixResult
+          ? { likelihood: f.matrixValues.likelihood, severity: f.matrixValues.severity }
+          : undefined,
+        fmeaDetails: f.fmeaResult
+          ? {
+              severity: f.fmeaValues.severity,
+              occurrence: f.fmeaValues.occurrence,
+              detection: f.fmeaValues.detection,
+              rpn: f.fmeaResult.rpn,
+            }
+          : undefined,
+        hazopDetails: f.hazopResult
+          ? {
+              severity: f.hazopValues.severity,
+              likelihood: f.hazopValues.likelihood,
+              detectability: f.hazopValues.detectability,
+              guideWord: f.hazopValues.guideWord,
+              parameter: f.hazopValues.parameter,
+              deviation: f.hazopValues.deviation,
+            }
+          : undefined,
+        bowTieDetails: f.bowTieResult
+          ? {
+              threatProbability: f.bowTieValues.threatProbability,
+              consequenceSeverity: f.bowTieValues.consequenceSeverity,
+              preventionBarriers: f.bowTieValues.preventionBarriers,
+              mitigationBarriers: f.bowTieValues.mitigationBarriers,
+              rawRisk: f.bowTieResult.rawRisk,
+              residualRisk: f.bowTieResult.residualRisk,
+            }
+          : undefined,
+        ftaDetails: f.ftaResult
+          ? {
+              componentCount: f.ftaResult.componentCount,
+              gateType: f.ftaResult.gateType,
+              systemProbability: f.ftaResult.systemProbability,
+              systemCriticality: f.ftaResult.systemCriticality,
+            }
+          : undefined,
+        checklistDetails: f.checklistResult
+          ? {
+              compliancePercent: f.checklistResult.compliancePercent,
+              totalItems: f.checklistResult.totalItems,
+              compliantCount: f.checklistResult.compliantCount,
+              nonCompliantCount: f.checklistResult.nonCompliantCount,
+            }
+          : undefined,
+        jsaDetails: f.jsaResult
+          ? {
+              jobTitle: f.jsaValues.jobTitle,
+              stepCount: f.jsaValues.steps.length,
+              highRiskStepCount: f.jsaResult.highRiskStepCount,
+              maxStepScore: f.jsaResult.maxStepScore,
+              avgStepScore: f.jsaResult.avgStepScore,
+            }
+          : undefined,
+        lopaDetails: f.lopaResult
+          ? {
+              initiatingEventFreq: f.lopaResult.initiatingEventFreq,
+              mitigatedFreq: f.lopaResult.mitigatedFreq,
+              riskReductionFactor: f.lopaResult.riskReductionFactor,
+              layerCount: f.lopaResult.layerCount,
+              meetsTarget: f.lopaResult.meetsTarget,
+            }
+          : undefined,
         legalReferences: f.legalReferences.length > 0 ? f.legalReferences : undefined,
+        legalContext: f.legalContextSummary || formatLegalContextForRisk(f.category, f.legalReferences),
+        correctiveAction: f.recommendation?.slice(0, 400),
+        preventiveAction: sc.action ? formatActionTurkish(sc.action, rc) : undefined,
+        responsible: "İSG uzmanı / alan sorumlusu (atanacak)",
+        deadline: f.correctiveActionRequired ? "7 gün içinde" : "30 gün içinde",
+        residualRiskNote:
+          rc === "low" || rc === "follow_up"
+            ? "Önlemler sonrası izleme düzeyinde artık risk"
+            : "Önlemler uygulandıktan sonra yeniden değerlendirme gerekir",
       };
-    });
+    };
 
-    // G?rsel datalarini topla (blob URL -> base64 + annotation overlay)
+    const findings: ExportFinding[] = realFindings.map((f) =>
+      mapFindingToExport(f, results.find((r) => r.findings.some((ff) => ff.id === f.id))?.rowTitle ?? ""),
+    );
+
     const images: ExportImage[] = [];
+    const imageSections: ExportImageSection[] = [];
+    let globalImageIndex = 0;
+    let failedImageCount = 0;
+    let pendingImageCount = 0;
+
     for (const result of results) {
       const sourceLine = lineMap.get(result.rowId);
       if (!sourceLine) continue;
       for (const img of sourceLine.images) {
-        const imgFindings = result.findings.filter((f) => f.imageId === img.id);
+        globalImageIndex += 1;
         const meta = imageMetaMap[img.id];
-        const dataUrl = await blobUrlToDataUrl(img.previewUrl, imgFindings);
+        const status: ImageAnalysisStatus =
+          meta?.analysisStatus ?? (meta?.analysisError ? "failed" : "success");
+        if (status === "failed") failedImageCount += 1;
+        if (status === "pending" || status === "manual_required") pendingImageCount += 1;
+
+        const imgFindings = filterRealFindings(result.findings.filter((f) => f.imageId === img.id));
+        const exportFindings = imgFindings.map((f) => mapFindingToExport(f, result.rowTitle));
+        const dataUrl =
+          status === "success" && imgFindings.length > 0
+            ? await blobUrlToDataUrl(img.previewUrl, imgFindings)
+            : await blobUrlToDataUrl(img.previewUrl, imgFindings);
+
+        const areaLocation =
+          meta?.areaSummary?.trim() ||
+          sourceLine.description?.trim() ||
+          result.rowTitle;
+
+        imageSections.push({
+          imageIndex: globalImageIndex,
+          imageId: img.id,
+          fileName: img.file.name,
+          rowTitle: result.rowTitle,
+          areaLocation,
+          analysisStatus: status,
+          analysisStatusLabel: imageAnalysisStatusLabel(status),
+          analysisError: meta?.analysisError,
+          findingCount: exportFindings.length,
+          dataUrl: dataUrl || undefined,
+          findings: exportFindings,
+        });
+
         if (dataUrl) {
           images.push({
             imageId: img.id,
             rowTitle: result.rowTitle,
             dataUrl,
             fileName: img.file.name,
-            findingCount: imgFindings.length,
-            // Yeni meta alanlar
+            findingCount: exportFindings.length,
             imageRelevance: meta?.imageRelevance ?? "relevant",
             imageDescription: meta?.imageDescription ?? "",
             areaSummary: meta?.areaSummary ?? "",
             positiveObservations: meta?.positiveObservations ?? [],
             photoQuality: meta?.photoQuality?.level ?? "good",
+            analysisStatus: status,
+            analysisError: meta?.analysisError,
           });
         }
       }
@@ -2652,9 +2836,13 @@ JSON formatında döndür:
       })),
       findings,
       images,
+      imageSections,
       totalFindings: totalDetectionCount,
+      realTotalFindings: totalDetectionCount,
       criticalCount: criticalHighCount,
       dofCandidateCount,
+      failedImageCount: failedImageCount || undefined,
+      pendingImageCount: pendingImageCount || undefined,
       date: new Date().toLocaleDateString(intlLocaleTag(locale as Locale)),
       shareUrl: shareUrl || undefined,
       shareQrDataUrl: shareQrDataUrl || undefined,
@@ -3854,7 +4042,11 @@ JSON formatında döndür:
                     <div className="space-y-4">
                       <div className="grid gap-3 sm:grid-cols-3">
                         {images.map((img, ii) => {
-                          const imgFindings = result.findings.filter((f) => f.imageId === img.id);
+                          const imgFindings = filterRealFindings(
+                            result.findings.filter((f) => f.imageId === img.id),
+                          );
+                          const imgMeta = imageMetaMap[img.id];
+                          const analysisFailed = imgMeta?.analysisStatus === "failed";
                           const active = selectedImage?.id === img.id;
                           const uploadState = backgroundUploads[img.id];
                           const badge = backgroundUploadBadge(uploadState);
@@ -3878,7 +4070,41 @@ JSON formatında döndür:
                                 <span className={`mt-2 inline-flex max-w-full items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${badge.className}`} title={uploadState?.message}>
                                   {badge.text}
                                 </span>
-                                {noRiskImages.has(img.id) ? (
+                                {analysisFailed ? (
+                                  <div className="mt-2 space-y-2">
+                                    <p className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                                      Görsel analiz durumu: başarısız — yeniden deneme veya manuel doğrulama gerekli
+                                    </p>
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-8 rounded-lg text-xs"
+                                      disabled={retryingImageId === img.id || isAnalyzing}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        void retryFailedImage(result.rowId, img.id);
+                                      }}
+                                    >
+                                      {retryingImageId === img.id ? "Yeniden deneniyor…" : "Yeniden analiz et"}
+                                    </Button>
+                                    {imgMeta?.analysisStatus === "manual_required" && (
+                                      <Button
+                                        type="button"
+                                        variant="accent"
+                                        size="sm"
+                                        className="h-8 rounded-lg text-xs"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setSelectedImageByRow((prev) => ({ ...prev, [result.rowId]: img.id }));
+                                          setPinMode(result.rowId);
+                                        }}
+                                      >
+                                        Manuel risk girişi
+                                      </Button>
+                                    )}
+                                  </div>
+                                ) : noRiskImages.has(img.id) ? (
                                   <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400 font-medium">{trRiskScoring("wizard.step4.cleanNoRisk")}</p>
                                 ) : (
                                   <p className="mt-1 text-xs text-muted-foreground">{trRiskScoring("wizard.step4.riskCount", { count: imgFindings.length })}</p>
@@ -3900,7 +4126,12 @@ JSON formatında döndür:
                             <div className={`absolute inset-0 ${pinMode === result.rowId ? "pointer-events-none" : ""}`}>
                               {visibleFindings.map((f) =>
                                 f.annotations.map((a) =>
-                                  renderAnnotation(a, selectedFindingId === f.id, () => setSelectedFindingByRow((prev) => ({ ...prev, [result.rowId]: f.id })))
+                                  renderAnnotation(
+                                    a,
+                                    selectedFindingId === f.id,
+                                    () => setSelectedFindingByRow((prev) => ({ ...prev, [result.rowId]: f.id })),
+                                    getActiveRiskClass(f, method),
+                                  )
                                 )
                               )}
                             </div>

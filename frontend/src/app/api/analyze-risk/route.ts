@@ -14,6 +14,8 @@ import {
   RISK_ANALYSIS_PROMPT_VERSION,
 } from "@/lib/ai/analyze-risk-prompts";
 import { buildAnalyzeRiskDiagnostics } from "@/lib/ai/analyze-risk-diagnostics";
+import { enrichRisksWithLegalRag } from "@/lib/risk-analysis/legal-rag-for-risk";
+import { validateVisionResponse } from "@/lib/risk-analysis/vision-response-schema";
 
 let anthropicClient: Anthropic | null = null;
 const EMBEDDING_MODEL = "text-embedding-3-small";
@@ -958,18 +960,47 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const rawRisks = Array.isArray(parsed.risks) ? parsed.risks : [];
-    if (rawRisks.length === 0 && (parsed.imageRelevance ?? "relevant") === "relevant") {
-      parsed.risks = buildFallbackRisksForEmptyFieldReview(parsed);
-      console.warn("[analyze-risk] Claude returned empty risks for relevant field image; generated fallback risk inventory.", {
-        promptVersion: RISK_ANALYSIS_PROMPT_VERSION,
-        imageDescription: parsed.imageDescription,
-        areaSummary: parsed.areaSummary,
-        fallbackRiskCount: parsed.risks.length,
-      });
+    const visionValidation = validateVisionResponse(parsed);
+    if (!visionValidation.ok) {
+      const relevance = parsed.imageRelevance ?? "relevant";
+      const isFieldImage =
+        relevance === "relevant" || relevance === "irrelevant" || relevance === "not_workplace";
+      if (isFieldImage) {
+        console.warn("[analyze-risk] Vision validation failed:", visionValidation.error, {
+          invalidRiskCount: visionValidation.invalidRiskCount,
+        });
+        const failDiagnostics = buildAnalyzeRiskDiagnostics({
+          ok: false,
+          stage: "vision_validation_failed",
+          startTime,
+          visionModel,
+          mimeType,
+          imageBase64Length: imageBase64.length,
+          httpStatus: 200,
+        });
+        return NextResponse.json({
+          analysis_status: "failed",
+          analysis_error: visionValidation.error ?? "Görsel analizi tamamlanamadı.",
+          risks: [],
+          faces: parsed.faces ?? [],
+          positiveObservations: parsed.positiveObservations ?? [],
+          photoQuality: parsed.photoQuality ?? { level: "good", note: "" },
+          areaSummary: parsed.areaSummary ?? "",
+          personCount: parsed.personCount ?? 0,
+          imageRelevance: relevance,
+          imageDescription: parsed.imageDescription ?? "",
+          method,
+          visionModel,
+          promptVersion: RISK_ANALYSIS_PROMPT_VERSION,
+          degraded: false,
+          retryable: true,
+          diagnostics: failDiagnostics,
+        });
+      }
     }
+    parsed = visionValidation.parsed;
 
-    const normalizedRawRisks = Array.isArray(parsed.risks) ? parsed.risks : rawRisks;
+    const normalizedRawRisks = Array.isArray(parsed.risks) ? parsed.risks : [];
 
     /**
      * Kritik tetikleyici kategori detektörü.
@@ -1145,10 +1176,19 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Not: Boş risks: [] durumu için zaten yukarıda
-    // buildFallbackRisksForEmptyFieldReview() çağrılıyor (satır ~1686).
-    // Burada ek fallback guard'a gerek yok — çift fallback parse karışıklığı
-    // yaratıyordu (kullanıcı raporu: "AI analizi tamamlanamadı").
+    try {
+      const ragService = createServiceClient();
+      parsed.risks = await enrichRisksWithLegalRag(
+        ragService,
+        Array.isArray(parsed.risks) ? parsed.risks : [],
+        auth.organizationId,
+      );
+    } catch (ragError) {
+      console.warn(
+        "[analyze-risk] legal RAG enrichment skipped:",
+        ragError instanceof Error ? ragError.message : String(ragError),
+      );
+    }
 
     // Debug log
     console.log("\\n========================================");
@@ -1235,6 +1275,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
+      analysis_status: "success",
       risks: parsed.risks ?? [],
       faces: parsed.faces ?? [],
       positiveObservations: parsed.positiveObservations ?? [],
