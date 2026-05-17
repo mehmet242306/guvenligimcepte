@@ -6,7 +6,6 @@ import {
 } from "./behavior-prompt";
 import { resolveNovaNavigationIntent } from "./navigation-intents";
 import { shouldSuppressNovaActionCards } from "./nova-action-cards";
-import { resolveNovaRoute } from "./request-mode";
 import {
   isAdminOnlyNavigationUrl,
   isForbiddenUserNavigationCopy,

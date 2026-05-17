@@ -4,6 +4,11 @@ import {
   shouldSkipNovaNavigationForContentTask,
 } from "@/lib/nova/behavior-prompt";
 import {
+  hasExplicitNavigationVerb,
+  isNovaExplicitReportsNavigationRequest,
+  isNovaReportContentAdvisoryTask,
+} from "@/lib/nova/nova-report-intent";
+import {
   isForbiddenUserNavigationCopy,
   isNovaRagServiceRequest,
   sanitizeNovaNavigationForUser,
@@ -21,7 +26,7 @@ type NovaNavigationTarget = {
   label: string;
   reason: string;
   priority: number;
-  matches: (normalized: string) => boolean;
+  matches: (normalized: string, message?: string) => boolean;
 };
 
 export function normalizeNovaNavigationText(message: string) {
@@ -38,8 +43,9 @@ export function normalizeNovaNavigationText(message: string) {
 const navigationVerbPattern =
   /(ac|git|gotur|goster|listele|yonlendir|nerede|nerde|neresi|nerededir|hangi alan|hangi sayfa|alana|sayfaya|nereye|bul|ulas|erisim|open|navigate|go to|show)/;
 
+/** “rapor” tek başına navigation değildir — ayrı explicit reports akışı. */
 const documentIntentPattern =
-  /(dokuman\s*lar|dokuman|belge\s*ler|belge|form|prosedur|talimat|sablon|template|rapor|sunum|dokumantasyon)/;
+  /(dokuman\s*lar|dokuman|belge\s*ler|belge|form|prosedur|talimat|sablon|template|sunum|dokumantasyon)/;
 const documentWorkPattern =
   /(hazirla|olustur|uret|yaz|taslak|gerek|gerekiyor|lazim|ihtiyac|hazirlayabilecegim|hazirlayacagim)/;
 const personalDocumentPattern =
@@ -47,16 +53,9 @@ const personalDocumentPattern =
 const shortDocumentLookupPattern =
   /^(dokuman\s*lar|dokuman|belge\s*ler|belge|prosedur|prosedurler|form|formlar|talimat|talimatlar|sablon|sablonlar|dokumantasyon)$/;
 
-/** “Rapora ne yazayım” danışmanlığı — Dokümanlar/Raporlar modül yönlendirmesi değil. */
-function isAdvisoryReportWritingRequest(normalized: string) {
-  return /(?:rapora\s*ne\s*yaz\w*|rapora\s*nasil\s*yaz\w*|rapora\s*yaz\w*|yazmamam\w*\s*gerek|kesinlikle\s*ne\s*yaz\w*|ne\s*yazmamam\w*|raporlama\s*danis|etik\s*rapor)/.test(
-    normalized,
-  );
-}
-
 function isDocumentLookup(normalized: string, message: string) {
   if (shouldSkipNovaNavigationForContentTask(message)) return false;
-  if (isAdvisoryReportWritingRequest(normalized)) return false;
+  if (isNovaReportContentAdvisoryTask(message)) return false;
   return (
     documentIntentPattern.test(normalized) &&
     (documentWorkPattern.test(normalized) ||
@@ -79,14 +78,19 @@ function isOperationalModuleLookup(normalized: string) {
 }
 
 function shouldResolveNavigation(message: string, normalized: string) {
-  if (shouldSkipNovaNavigationForContentTask(message)) {
+  if (shouldSkipNovaNavigationForContentTask(message) || isNovaReportContentAdvisoryTask(message)) {
     return false;
   }
-  return (
-    navigationVerbPattern.test(normalized) ||
-    isDocumentLookup(normalized, message) ||
-    isOperationalModuleLookup(normalized)
-  );
+
+  if (isNovaExplicitReportsNavigationRequest(message)) {
+    return true;
+  }
+
+  if (isDocumentLookup(normalized, message) || isOperationalModuleLookup(normalized)) {
+    return true;
+  }
+
+  return hasExplicitNavigationVerb(message) || navigationVerbPattern.test(normalized);
 }
 
 const navigationTargets: NovaNavigationTarget[] = [
@@ -164,9 +168,7 @@ const navigationTargets: NovaNavigationTarget[] = [
     label: "Raporlar",
     reason: "Raporlama ve cikti alma islemleri Raporlar alaninda toplanir.",
     priority: 115,
-    matches: (text) =>
-      /(rapor|raporlar|report|reports|cikti|ozet)/.test(text) &&
-      !isAdvisoryReportWritingRequest(text),
+    matches: (text, message) => isNovaExplicitReportsNavigationRequest(message ?? text),
   },
   {
     destination: "settings",
@@ -216,7 +218,7 @@ export function resolveNovaNavigationIntent(message: string): NovaNavigationInte
   }
 
   const target = navigationTargets
-    .filter((item) => item.matches(normalized))
+    .filter((item) => item.matches(normalized, message))
     .filter((item) => !/(mevzuat|kanun|yonetmelik|teblig|legal|regulation)\b/.test(item.destination))
     .sort((a, b) => b.priority - a.priority)[0];
 

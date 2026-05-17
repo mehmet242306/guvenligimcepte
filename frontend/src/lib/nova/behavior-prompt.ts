@@ -10,6 +10,10 @@ import {
   NOVA_METHOD_ADVISOR_PROMPT_TR,
 } from "@/lib/nova/risk-method-advisor";
 import { isNovaRagServiceRequest } from "@/lib/nova/nova-navigation-policy";
+import {
+  FORBIDDEN_REPORTS_NAVIGATION_COPY_PATTERN,
+  isNovaReportContentAdvisoryTask,
+} from "@/lib/nova/nova-report-intent";
 
 export { isNovaMethodsExpertiseTask, buildNovaMethodsExpertiseResponse } from "@/lib/nova/risknova-methods-expertise";
 export {
@@ -130,10 +134,10 @@ const UNSAFE_INTENT_PATTERNS: Array<{
 ];
 
 const CONTENT_GENERATION_PATTERN =
-  /\b(e\s*-?\s*posta|eposta|email|mail\s*olarak|yeniden\s*yaz|tekrar\s*yaz|yonetim\s*kurulu|yonetici\s*ozeti|musteri\s*kizgin|musteri\s*raporu\s*reddetti|nasil\s*cevap|nasil\s*yanit|ne\s*cevap\s*ver|ne\s*yanit\s*ver|cevap\s*taslagi|yanit\s*taslagi|ozet\s*yaz|ozetle|rapor\s*ozeti|profesyonel\s*yaz|profesyonel\s*hale\s*getir|ikna\s*edici|kisa\s*ve\s*ikna\s*edici|taslak\s*yaz|sablon|metni\s*duzenle|duzelt\s*yaz|formatla|sadece\s*\d+\s*madde\w*|(?:^|\s)(?:3|uc)\s*madde\w*|kisa\s*cevap|tablo\s*yap|basit\s*anlat|12\s*yasindaki|cocuk\s*gibi\s*anlat|ceo.*ton|isg\s*uzmanina.*ceo|belirsizligi.*profesyonel|denetim\s*raporu\s*diliyle|saha\s*calisanina|tek\s*cumle|iki\s*ton|savunulabilir|net\s*ama\s*suclayici)\b/;
+  /\b(e\s*-?\s*posta|eposta|email|mail\s*olarak|yeniden\s*yaz|tekrar\s*yaz|yonetim\s*kurulu|yonetici\s*ozeti|musteri\s*kizgin|musteri\s*raporu\s*reddetti|nasil\s*cevap|nasil\s*yanit|ne\s*cevap\s*ver|ne\s*yanit\s*ver|cevap\s*taslagi|yanit\s*taslagi|ozet\s*yaz|ozetle|rapor\s*ozeti|profesyonel\s*yaz|profesyonel\s*hale\s*getir|ikna\s*edici|kisa\s*ve\s*ikna\s*edici|taslak\s*yaz|sablon|metni\s*duzenle|duzelt\s*yaz|formatla|sadece\s*\d+\s*madde\w*|(?:^|\s)(?:3|uc)\s*madde\w*|kisa\s*cevap|tablo\s*yap|basit\s*anlat|12\s*yasindaki|cocuk\s*gibi\s*anlat|ceo.*ton|isg\s*uzmanina.*ceo|belirsizligi.*profesyonel|denetim\s*raporu\s*diliyle|profesyonel\s*rapor\s*dili|rapor\s*diliyle|rapor\s*metni\s*yaz|raporu\s*kisa|raporu\s*ikna|raporu\s*savunulabilir|saha\s*calisanina|tek\s*cumle|iki\s*ton|savunulabilir|net\s*ama\s*suclayici)/;
 
 const ADVISORY_CHAT_PATTERN =
-  /\b(ne\s*yapmaliyim|nasil\s*ilerlemeliyim|ilk\s*adim|risk\s*skor.*yuksek|sistem.*yuksek\s*gosteriyor|kritik\s*risk.*iflas|skor\s*yanlis\s*olabilir\s*mi|verilen\s*skor\s*yanlis|rapor.*sacma|bu\s*kadar\s*detaya\s*gerek\s*yok|raporun\s*neden\s*gerekli|yonetici.*detay|hangi\s*yontem\w*\s*kullan\w*|hangi\s*yontemi\s*kullan\w*|rapora\s*ne\s*yaz\w*|rapora\s*nasil\s*yaz\w*|yazmamam\w*\s*gerek|kesinlikle\s*ne\s*yaz\w*|ne\s*yazmamam\w*|genel\s*risk\s*danis|kaynak\s*kullanmadan|celiskiyi\s*yorumla|rapora\s*nasil\s*yazilir|yasal\s*yukumluluk\s*agir|butce\s*ayir\w*|calisanlar\s*korkuyor|ramak\s*kala\s*yasan\w*|yonetim\s*butce)/;
+  /\b(ne\s*yapmaliyim|nasil\s*ilerlemeliyim|ilk\s*adim|risk\s*skor.*yuksek|sistem.*yuksek\s*gosteriyor|kritik\s*risk.*iflas|skor\s*yanlis\s*olabilir\s*mi|verilen\s*skor\s*yanlis|rapor.*sacma|bu\s*kadar\s*detaya\s*gerek\s*yok|raporun\s*neden\s*gerekli|yonetici.*detay|hangi\s*yontem\w*\s*kullan\w*|hangi\s*yontemi\s*kullan\w*|rapora\s*ne\s*yaz\w*|rapora\s*nasil\s*yaz\w*|raporda\s*nasil\s*yaz\w*|raporda\s*ne\s*yazma\w*|yazmamam\w*\s*gerek|kesinlikle\s*ne\s*yaz\w*|ne\s*yazmamam\w*|genel\s*risk\s*danis|kaynak\s*kullanmadan|celiskiyi\s*yorumla|rapora\s*nasil\s*yazilir|rapora\s*nasil\s*ifade|yasal\s*yukumluluk\s*agir|butce\s*ayir\w*|calisanlar\s*korkuyor|ramak\s*kala\s*yasan\w*|yonetim\s*butce)/;
 
 const KNOWLEDGE_GUIDANCE_PATTERN =
   /\b(risk\s*matris|5\s*x\s*5|5x5|puan.*25|25.*puan|onemsiz.*aciklama|aciklama.*onemsiz|50000|50\s*000|200\s*000|80\s*000|maliyet.*mantikli|beklenen\s*kayip|normalize|1\s*-\s*25|siniflara\s*ayir)\b/;
@@ -186,11 +190,15 @@ export function shouldBlockNovaForSafety(message: string) {
 }
 
 export function isNovaContentGenerationTask(message: string) {
-  return CONTENT_GENERATION_PATTERN.test(normalizeNovaRequestText(message));
+  const normalized = normalizeNovaRequestText(message);
+  return (
+    CONTENT_GENERATION_PATTERN.test(normalized) || isNovaReportContentAdvisoryTask(message)
+  );
 }
 
 export function isNovaAdvisoryChatTask(message: string) {
-  return ADVISORY_CHAT_PATTERN.test(normalizeNovaRequestText(message));
+  const normalized = normalizeNovaRequestText(message);
+  return ADVISORY_CHAT_PATTERN.test(normalized) || isNovaReportContentAdvisoryTask(message);
 }
 
 export function isNovaKnowledgeGuidanceTask(message: string) {
@@ -406,14 +414,47 @@ export function buildNovaContentFallbackResponse(message: string): string | null
   }
 
   if (
-    /(?:hangi\s*yontem\w*\s*kullan\w*|rapora\s*ne\s*yaz\w*|yazmamam\w*\s*gerek|yasal\s*yukumluluk\s*agir|butce\s*ayir\w*|ramak\s*kala)/.test(
+    /(?:kritik\s*ama\s*kabul|kabul\s*edilebilir.*kritik|acil\s*aksiyon\s*gerektirmiyor|profesyonel\s*rapor\s*diliyle\s*nasil)/.test(
+      normalized,
+    )
+  ) {
+    return buildNovaContradictoryReportLanguageResponse();
+  }
+
+  if (
+    /(?:hangi\s*yontem\w*\s*kullan\w*|rapora\s*ne\s*yaz\w*|raporda\s*ne\s*yazma\w*|yazmamam\w*\s*gerek|yasal\s*yukumluluk\s*agir|butce\s*ayir\w*|ramak\s*kala)/.test(
       normalized,
     )
   ) {
     return buildNovaComplexRiskAdvisoryResponse();
   }
 
+  if (isNovaReportContentAdvisoryTask(message)) {
+    return buildNovaGenericReportWritingAdvisoryResponse();
+  }
+
   return null;
+}
+
+function buildNovaContradictoryReportLanguageResponse(): string {
+  return [
+    "Bunu bu şekilde yazmanızı önermem. \"Kritik\", \"kabul edilebilir\" ve \"acil aksiyon gerektirmiyor\" ifadeleri aynı risk kaydı içinde çelişir. Kritik risk normalde öncelikli aksiyon, sorumlu kişi, termin ve etkinlik kontrolü gerektirir.",
+    "",
+    "Daha doğru rapor dili şöyle olabilir:",
+    "\"Risk kritik seviyededir. Mevcut kontrollerin yeterliliği doğrulanana kadar geçici kontrol önlemleri uygulanmalı, kalıcı iyileştirme için sorumlu kişi ve termin atanmalıdır. Önlem sonrası artık risk yeniden hesaplanmalı ve etkinlik kontrolü yapılmalıdır.\"",
+    "",
+    "Modül yönlendirmesi yapılmaz; metni doğrudan risk/olay kaydınıza uyarlayabilirsiniz.",
+  ].join("\n");
+}
+
+function buildNovaGenericReportWritingAdvisoryResponse(): string {
+  return [
+    "Kısa yanıt: Rapor metni ve rapor dili soruları chat içinde yanıtlanır; Raporlar modülüne otomatik yönlendirme yapılmaz.",
+    "",
+    "Paylaştığınız bağlamı (risk seviyesi, kanıt, yasal yükümlülük, önlemler) netleştirirseniz rapora yazılacak ve yazılmayacak ifadeleri madde madde önerebilirim.",
+    "",
+    "Genel ilke: skor, sınıf, önlem, sorumlu ve termin birbiriyle çelişmemeli; yönetim baskısı veya estetik kaygı kayıt manipülasyonu gerekçesi olamaz.",
+  ].join("\n");
 }
 
 function buildNovaComplexRiskAdvisoryResponse(): string {
@@ -474,6 +515,22 @@ export function validateNovaResponse({
   }
 
   const hardGateTask = isNovaHardGateTask(prompt);
+  const reportContentAdvisory = isNovaReportContentAdvisoryTask(prompt);
+
+  if (reportContentAdvisory || hardGateTask) {
+    const looksLikeReportsNavigation =
+      FORBIDDEN_REPORTS_NAVIGATION_COPY_PATTERN.test(response) ||
+      (NAVIGATION_ONLY_RESPONSE_PATTERN.test(normalizedResponse) && reportContentAdvisory);
+
+    if (looksLikeReportsNavigation) {
+      return {
+        valid: false,
+        reason: "Report writing/advisory request incorrectly routed to Reports navigation.",
+        replacement:
+          buildNovaContentFallbackResponse(prompt) ?? buildNovaGenericReportWritingAdvisoryResponse(),
+      };
+    }
+  }
 
   if (hardGateTask) {
     const looksLikeNavigationOnly =

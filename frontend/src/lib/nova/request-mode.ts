@@ -5,6 +5,10 @@ import {
 } from "@/lib/nova/behavior-prompt";
 import { isNovaConceptualRiskQuery, isNovaMethodAdvisorTask } from "@/lib/nova/risk-method-advisor";
 import { isNovaRagServiceRequest } from "@/lib/nova/nova-navigation-policy";
+import {
+  isNovaExplicitReportsNavigationRequest,
+  isNovaReportContentAdvisoryTask,
+} from "@/lib/nova/nova-report-intent";
 import { normalizeNovaRequestText } from "@/lib/nova/text-normalization";
 
 export { isNovaRagServiceRequest, isNovaIncidentRagAnalysisRequest } from "@/lib/nova/nova-navigation-policy";
@@ -62,9 +66,15 @@ export function shouldUseNovaLegalRag(message: string): boolean {
 }
 
 export function isExplicitNovaNavigationRequest(message: string): boolean {
+  if (isNovaReportContentAdvisoryTask(message)) {
+    return false;
+  }
+
   const normalized = normalizeNovaRequestText(message);
-  return /(sayfaya git|modulune git|ekranina git|yonlendir|plannera git|ajandaya git|egitim modulune git|ac\s+(sayfa|modul|ekran)|open\s+(page|module))/.test(
-    normalized,
+  return (
+    /(sayfaya git|modulune git|ekranina git|yonlendir|plannera git|ajandaya git|egitim modulune git|ac\s+(sayfa|modul|ekran)|open\s+(page|module))/.test(
+      normalized,
+    ) || isNovaExplicitReportsNavigationRequest(message)
   );
 }
 
