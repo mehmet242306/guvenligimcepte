@@ -1,4 +1,11 @@
 import { normalizeNovaRequestText } from "@/lib/nova/text-normalization";
+import {
+  buildNovaMethodsExpertiseResponse,
+  isNovaMethodsExpertiseTask,
+  NOVA_METHODS_EXPERTISE_PROMPT_TR,
+} from "@/lib/nova/risknova-methods-expertise";
+
+export { isNovaMethodsExpertiseTask, buildNovaMethodsExpertiseResponse } from "@/lib/nova/risknova-methods-expertise";
 
 export const NOVA_RISK_MATRIX_THRESHOLDS = {
   low: { min: 1, max: 4, label: "Düşük" },
@@ -129,7 +136,8 @@ export function isNovaBehaviorPromptTask(message: string) {
   return (
     isNovaContentGenerationTask(message) ||
     isNovaAdvisoryChatTask(message) ||
-    isNovaKnowledgeGuidanceTask(message)
+    isNovaKnowledgeGuidanceTask(message) ||
+    isNovaMethodsExpertiseTask(message)
   );
 }
 
@@ -296,7 +304,11 @@ export function buildNovaContentFallbackResponse(message: string): string | null
 }
 
 export function buildNovaHardGateResponse(message: string): string | null {
-  return buildUnsafeNovaRefusal(message) ?? buildNovaContentFallbackResponse(message);
+  return (
+    buildUnsafeNovaRefusal(message) ??
+    buildNovaMethodsExpertiseResponse(message) ??
+    buildNovaContentFallbackResponse(message)
+  );
 }
 
 export function validateNovaResponse({
@@ -331,7 +343,10 @@ export function validateNovaResponse({
       return {
         valid: false,
         reason: "Behavior/content request incorrectly routed to navigation or legal RAG.",
-        replacement: buildNovaContentFallbackResponse(prompt) ?? undefined,
+        replacement:
+          buildNovaMethodsExpertiseResponse(prompt) ??
+          buildNovaContentFallbackResponse(prompt) ??
+          undefined,
       };
     }
   }
@@ -376,7 +391,9 @@ Güvenlik: zararlı istekte RAG/navigation yok; kaynak rozeti yok.
 
 Üretim: e-posta, özet, yeniden yazım → önce metin; Sayfaya Git ana cevap olmasın.
 
-Kaynak: Güven yüksek yalnızca doğrudan ilgili legal RAG kaynakta.`;
+Kaynak: Güven yüksek yalnızca doğrudan ilgili legal RAG kaynakta.
+
+${NOVA_METHODS_EXPERTISE_PROMPT_TR}`;
 
 export const NOVA_BEHAVIOR_GATEWAY_PROMPT_EN = `Nova behavior layer (v2) — required:
 
