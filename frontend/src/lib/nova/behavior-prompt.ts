@@ -1,11 +1,17 @@
 import { normalizeNovaRequestText } from "@/lib/nova/text-normalization";
+import { NOVA_METHODS_EXPERTISE_PROMPT_TR } from "@/lib/nova/risknova-methods-expertise";
 import {
-  buildNovaMethodsExpertiseResponse,
-  isNovaMethodsExpertiseTask,
-  NOVA_METHODS_EXPERTISE_PROMPT_TR,
-} from "@/lib/nova/risknova-methods-expertise";
+  buildRiskMethodAdvisorResponse,
+  isNovaMethodAdvisorTask,
+  NOVA_METHOD_ADVISOR_PROMPT_TR,
+} from "@/lib/nova/risk-method-advisor";
 
 export { isNovaMethodsExpertiseTask, buildNovaMethodsExpertiseResponse } from "@/lib/nova/risknova-methods-expertise";
+export {
+  isNovaConceptualRiskQuery,
+  isNovaMethodAdvisorTask,
+  buildRiskMethodAdvisorResponse,
+} from "@/lib/nova/risk-method-advisor";
 
 export const NOVA_RISK_MATRIX_THRESHOLDS = {
   low: { min: 1, max: 4, label: "Düşük" },
@@ -40,6 +46,41 @@ const UNSAFE_INTENT_PATTERNS: Array<{
       "Doğru olasılık/siddet değerleri, önlemler ve artık risk hesabı ile kaydı düzeltmeye yardımcı olabilirim.",
   },
   {
+    pattern:
+      /(risk\s*skoru?.*(25|gercek).*(12|rapor)|raporda\s*12.*(25|gercek)|skoru.*gosterirsek|skor.*dusuk\s*goster)/,
+    reasonTr:
+      "Gerçek risk skorunu olduğundan düşük göstermek yanıltıcıdır ve çalışan güvenliği, denetim izlenebilirliği ve hukuki sorumluluk açısından ciddi risk doğurur.",
+    alternativeTr:
+      "Riskin neden kritik çıktığını, hangi önlemlerle artık riskin düşürülebileceğini ve yönetim için sakin ama şeffaf bir aksiyon planını hazırlayabilirim.",
+  },
+  {
+    pattern: /(kritik\s*risk).*(orta\s*goster|yumusat)|paniklemesin.*risk|riski\s*yumusat/,
+    reasonTr: "Kritik riski olduğundan düşük göstermek veya yumuşatmak yanıltıcı kayıt oluşturur.",
+    alternativeTr:
+      "Şeffaf risk iletişimi, öncelikli önlemler ve yönetim için doğrulanabilir aksiyon planı hazırlayabilirim.",
+  },
+  {
+    pattern: /(eski\s*tarihli\s*kayit|tarihli\s*kayit\s*olustur|geriye\s*donuk\s*kayit)/,
+    reasonTr: "Eski tarihli veya geriye dönük uydurma kayıt oluşturmak denetim güvenilirliğini zedeler.",
+    alternativeTr: "Mevcut tarih ve kanıtlarla doğru kayıt, revizyon gerekçesi ve eksik kapatma planı önerebilirim.",
+  },
+  {
+    pattern: /(denetimden\s*once|denetimde|denetim\s*oncesi).*(gizle|sakla|temizle)/,
+    reasonTr: "Denetimde kayıt gizlemek veya uygunsuzlukları saklamak yasadışı ve etik dışıdır.",
+    alternativeTr: "Denetime hazırlık, eksik kapatma ve şeffaf düzeltici faaliyet planı hazırlayabilirim.",
+  },
+  {
+    pattern: /(olmayan\s*olcum|olcum\s*sonucu.*(ekle|yaz)|uydurma\s*olcum|sahte\s*tutanak)/,
+    reasonTr: "Olmayan ölçüm veya sahte tutanak eklemek yanıltıcıdır ve rapor güvenilirliğini zedeler.",
+    alternativeTr: "Gerçek ölçüm, saha kaydı veya eksik veri için veri toplama planı önerebilirim.",
+  },
+  {
+    pattern:
+      /((simulasyon|test\s*icin|sadece\s*test).*(mevzuat.*as|yasalar.*as|denetimden\s*kac)|mevzuat.*as.*(simulasyon|test))/,
+    reasonTr: "Test veya simülasyon gerekçesiyle zararlı veya yasadışı yönlendirme yapılamaz.",
+    alternativeTr: "Yasal uyum, denetim hazırlığı ve güvenli senaryo çalışması için meşru çerçeve önerebilirim.",
+  },
+  {
     pattern: /(raporu\s*daha\s*guvenilir\s*goster|guvenilir\s*goster)/,
     reasonTr:
       "Raporu olduğundan farklı göstermek veya kanıtsız biçimde güvenilir göstermek için yönlendirme yapılamaz.",
@@ -70,10 +111,10 @@ const UNSAFE_INTENT_PATTERNS: Array<{
 ];
 
 const CONTENT_GENERATION_PATTERN =
-  /\b(e\s*-?\s*posta|eposta|email|mail\s*olarak|yeniden\s*yaz|tekrar\s*yaz|yonetim\s*kurulu|yonetici\s*ozeti|musteri\s*kizgin|nasil\s*cevap|nasil\s*yanit|ne\s*cevap\s*ver|ne\s*yanit\s*ver|cevap\s*taslagi|yanit\s*taslagi|ozet\s*yaz|ozetle|rapor\s*ozeti|profesyonel\s*yaz|profesyonel\s*hale\s*getir|ikna\s*edici|kisa\s*ve\s*ikna\s*edici|taslak\s*yaz|sablon|metni\s*duzenle|duzelt\s*yaz|formatla|sadece\s*\d+\s*madde\w*|(?:^|\s)(?:3|uc)\s*madde\w*|kisa\s*cevap|tablo\s*yap|basit\s*anlat|12\s*yasindaki|cocuk\s*gibi\s*anlat)\b/;
+  /\b(e\s*-?\s*posta|eposta|email|mail\s*olarak|yeniden\s*yaz|tekrar\s*yaz|yonetim\s*kurulu|yonetici\s*ozeti|musteri\s*kizgin|musteri\s*raporu\s*reddetti|nasil\s*cevap|nasil\s*yanit|ne\s*cevap\s*ver|ne\s*yanit\s*ver|cevap\s*taslagi|yanit\s*taslagi|ozet\s*yaz|ozetle|rapor\s*ozeti|profesyonel\s*yaz|profesyonel\s*hale\s*getir|ikna\s*edici|kisa\s*ve\s*ikna\s*edici|taslak\s*yaz|sablon|metni\s*duzenle|duzelt\s*yaz|formatla|sadece\s*\d+\s*madde\w*|(?:^|\s)(?:3|uc)\s*madde\w*|kisa\s*cevap|tablo\s*yap|basit\s*anlat|12\s*yasindaki|cocuk\s*gibi\s*anlat|ceo.*ton|isg\s*uzmanina.*ceo|belirsizligi.*profesyonel|denetim\s*raporu\s*diliyle|saha\s*calisanina|tek\s*cumle|iki\s*ton|savunulabilir|net\s*ama\s*suclayici)\b/;
 
 const ADVISORY_CHAT_PATTERN =
-  /\b(ne\s*yapmaliyim|nasil\s*ilerlemeliyim|ilk\s*adim|risk\s*skor.*yuksek|sistem.*yuksek\s*gosteriyor|kritik\s*risk.*iflas|skor\s*yanlis\s*olabilir\s*mi|verilen\s*skor\s*yanlis|rapor.*sacma)\b/;
+  /\b(ne\s*yapmaliyim|nasil\s*ilerlemeliyim|ilk\s*adim|risk\s*skor.*yuksek|sistem.*yuksek\s*gosteriyor|kritik\s*risk.*iflas|skor\s*yanlis\s*olabilir\s*mi|verilen\s*skor\s*yanlis|rapor.*sacma|bu\s*kadar\s*detaya\s*gerek\s*yok|raporun\s*neden\s*gerekli|yonetici.*detay)\b/;
 
 const KNOWLEDGE_GUIDANCE_PATTERN =
   /\b(risk\s*matris|5\s*x\s*5|5x5|puan.*25|25.*puan|onemsiz.*aciklama|aciklama.*onemsiz|50000|50\s*000|200\s*000|80\s*000|maliyet.*mantikli|beklenen\s*kayip|normalize|1\s*-\s*25|siniflara\s*ayir)\b/;
@@ -86,6 +127,11 @@ const NAVIGATION_ONLY_RESPONSE_PATTERN =
 
 const RAG_HALLUCINATION_RESPONSE_PATTERN =
   /(kaynaga\s*dayali\s*bulgu|guven\s*yuksek|kaynak\s*dogrulanmis|cit-\d+)/;
+
+const IRRELEVANT_LEGAL_CITATION_PATTERN =
+  /(turk\s*borclar\s*kanunu|tbk\s*m\.|tck\s*m\.|6102\s*sayili|6098\s*sayili|omur\s*boyu\s*gelir)/;
+
+const RAG_EMPTY_INDEX_PATTERN = /mevzuat\s*indeksinde\s*eslesme\s*bulamadim/;
 
 export function buildTurkishSafetyRefusal(reason: string, alternative: string) {
   return [
@@ -136,9 +182,12 @@ export function isNovaBehaviorPromptTask(message: string) {
   return (
     isNovaContentGenerationTask(message) ||
     isNovaAdvisoryChatTask(message) ||
-    isNovaKnowledgeGuidanceTask(message) ||
-    isNovaMethodsExpertiseTask(message)
+    isNovaKnowledgeGuidanceTask(message)
   );
+}
+
+export function isNovaHardGateTask(message: string) {
+  return isNovaBehaviorPromptTask(message) || isNovaMethodAdvisorTask(message);
 }
 
 export function isExplicitNovaNavigationOnlyRequest(message: string) {
@@ -147,7 +196,7 @@ export function isExplicitNovaNavigationOnlyRequest(message: string) {
 }
 
 export function shouldSkipNovaNavigationForContentTask(message: string) {
-  return isNovaBehaviorPromptTask(message) && !isExplicitNovaNavigationOnlyRequest(message);
+  return isNovaHardGateTask(message) && !isExplicitNovaNavigationOnlyRequest(message);
 }
 
 function buildNovaKnowledgeFallbackResponse(message: string): string | null {
@@ -157,7 +206,9 @@ function buildNovaKnowledgeFallbackResponse(message: string): string | null {
     return [
       "Kısa yanıt: Risk değerlendirmesi yapmak zorunludur; 5x5 risk matrisi ise kullanılabilecek yöntemlerden biridir.",
       "",
-      "5x5 örnek matris (L matrisi):",
+      "Risk skoru (L matrisi): Olasılık × Şiddet",
+      "",
+      "5x5 örnek matris (RiskNova varsayılan eşikleri):",
       "| Renk | Puan | Seviye | Aksiyon |",
       "|------|------|--------|---------|",
       "| Yeşil | 1-4 | Düşük | Kayıt al, rutin takip |",
@@ -165,15 +216,17 @@ function buildNovaKnowledgeFallbackResponse(message: string): string | null {
       "| Turuncu | 10-14 | Yüksek | Acil önlem, sorumlu ata |",
       "| Kırmızı | 15-25 | Kritik | Faaliyeti durdur, üst yönetim bilgilendir |",
       "",
-      "Yöntem seçimi işyerinin niteliği, risk türü ve kurum politikasına göre belirlenir; matris tek başına mevzuat zorunluluğu değildir.",
+      "Yöntem seçimi işyerinin niteliği, risk türü, veri kalitesi ve kurum politikasına göre belirlenir. Matris tek başına mevzuat zorunluluğu değildir; eşikler kuruma göre özelleştirilebilir.",
     ].join("\n");
   }
 
   if (/\b(25.*onemsiz|onemsiz.*25|puan.*25)\b/.test(normalized)) {
     return [
-      "Kısa yanıt: Ne puana ne açıklama metnine körü körüne güvenmeyin; kaydı birlikte doğrulayın.",
+      "Kısa yanıt: 25 puan normalde kritik risk demektir; “önemsiz” açıklamasıyla açık çelişki vardır. Ancak sadece puana da körü körüne güvenilmemelidir.",
       "",
-      "25 puan normalde kritik seviyedir ve önemsiz açıklamasıyla çelişir. Ancak puanın kendisi de yanlış girilmiş olabilir. Olasılık, şiddet, kullanılan yöntem, mevcut önlemler ve açıklama alanını kontrol edin; hata varsa revizyon gerekçesiyle düzeltin ve uzman onayı alın.",
+      "Kontrol edin: olasılık, şiddet, yöntem, brüt/artık risk ayrımı, tarih, değerlendirici ve açıklama. Puan da açıklama da hatalı girilmiş olabilir.",
+      "",
+      "Kayıt doğrulanmalı, gerekçeli revizyon yapılmalı ve gerekiyorsa kritik risk aksiyon planı başlatılmalıdır.",
     ].join("\n");
   }
 
@@ -185,9 +238,12 @@ function buildNovaKnowledgeFallbackResponse(message: string): string | null {
       "- Risk azalımı: 200.000 - 80.000 = 120.000 TL/yıl",
       "- Önlem maliyeti: 50.000 TL",
       "- İlk yıl net fayda: 120.000 - 50.000 = 70.000 TL",
-      "- Geri ödeme süresi: yaklaşık 5 ay",
+      "- Geri ödeme süresi: 50.000 / 120.000 ≈ 5 ay",
       "",
-      "Not: Önlem maliyeti tek seferlik mi yıllık mı belirtilmedi; bakım, eğitim ve denetim maliyetleri sonucu değiştirebilir.",
+      "Notlar:",
+      "- Önlem maliyeti tek seferlik mi yıllık mı belirtilmedi; bakım ve sürdürme maliyeti sonucu değiştirir.",
+      "- Yasal/etik zorunluluk varsa karar yalnızca finansal analizle verilmemelidir.",
+      "- İnsan hayatı riski sadece maliyet-fayda ile reddedilemez.",
     ].join("\n");
   }
 
@@ -235,7 +291,11 @@ export function buildNovaContentFallbackResponse(message: string): string | null
     ].join("\n");
   }
 
-  if (/\b(musteri\s*kizgin|rapor.*sacma|nasil\s*cevap|nasil\s*yanit|ne\s*cevap\s*ver|ne\s*yanit\s*ver)\b/.test(normalized)) {
+  if (
+    /\b(musteri\s*kizgin|musteri\s*raporu\s*reddetti|rapor.*sacma|nasil\s*cevap|nasil\s*yanit|ne\s*cevap\s*ver|ne\s*yanit\s*ver|net\s*ama\s*suclayici)\b/.test(
+      normalized,
+    )
+  ) {
     return [
       "Şöyle sakin ve profesyonel cevap verebilirsiniz:",
       "",
@@ -300,13 +360,39 @@ export function buildNovaContentFallbackResponse(message: string): string | null
     return "Kısa yanıt: Önce doğrudan ve uygulanabilir cevap verilir; yalnızca sayfa yönlendirmesi yapılmaz.";
   }
 
+  if (/\b(isg\s*uzmanina.*ceo|ceo.*isg\s*uzman|iki\s*ton|ayri\s*ton)\b/.test(normalized)) {
+    return [
+      "İSG uzmanına (teknik ton):",
+      "Tespit edilen riskler için olasılık, şiddet, maruziyet ve mevcut kontroller doğrulanmalıdır. Kritik risklerde düzeltici faaliyet, sorumlu ve termin tanımlanmalı; önlem sonrası artık risk yeniden hesaplanmalıdır.",
+      "",
+      "CEO’ya (yönetim tonu):",
+      "Öncelikli riskler sağlık ve iş sürekliliği açısından yönetim gündemine alınmalıdır. Kritik bulgular için net sorumlu, termin ve kaynak tahsisi önerilir; RiskNova kayıtları denetim ve karar izlenebilirliği sağlar.",
+    ].join("\n");
+  }
+
+  if (/\b(belirsizligi.*profesyonel|belirsizlik.*nasil\s*yaz)\b/.test(normalized)) {
+    return [
+      "Profesyonel belirsizlik ifadesi örneği:",
+      "",
+      "“Bu risk için olasılık ve şiddet değerleri mevcut saha verisiyle desteklenmiştir; maruziyet süresi ve önlem etkinliği doğrulandıkça artık risk yeniden değerlendirilecektir. Kritik sınıf sınırında kalan kayıtlar bir sonraki denetim turunda gözden geçirilecektir.”",
+    ].join("\n");
+  }
+
+  if (/\b(bu\s*kadar\s*detaya\s*gerek\s*yok|raporun\s*neden\s*gerekli|yonetici.*detay)\b/.test(normalized)) {
+    return [
+      "Yöneticiye iletebileceğiniz kısa çerçeve:",
+      "",
+      "Risk raporu detay içerir çünkü yalnızca skor değil; kanıt, sorumlu, termin ve önlem sonrası doğrulama zinciri gereklidir. Bu yapı hem çalışan güvenliği hem de denetimde savunulabilirlik sağlar. Özet sunumda kritik riskler, maliyet-etki ve acil aksiyonlar öne çıkarılabilir; detay arşivde tutulur.",
+    ].join("\n");
+  }
+
   return null;
 }
 
 export function buildNovaHardGateResponse(message: string): string | null {
   return (
     buildUnsafeNovaRefusal(message) ??
-    buildNovaMethodsExpertiseResponse(message) ??
+    buildRiskMethodAdvisorResponse(message) ??
     buildNovaContentFallbackResponse(message)
   );
 }
@@ -334,17 +420,23 @@ export function validateNovaResponse({
     }
   }
 
-  if (isNovaBehaviorPromptTask(prompt)) {
+  const hardGateTask = isNovaHardGateTask(prompt);
+
+  if (hardGateTask) {
     const looksLikeNavigationOnly =
       NAVIGATION_ONLY_RESPONSE_PATTERN.test(normalizedResponse) && normalizedResponse.length < 900;
-    const looksLikeIrrelevantRag = RAG_HALLUCINATION_RESPONSE_PATTERN.test(normalizedResponse);
+    const looksLikeIrrelevantRag =
+      RAG_HALLUCINATION_RESPONSE_PATTERN.test(normalizedResponse) ||
+      IRRELEVANT_LEGAL_CITATION_PATTERN.test(normalizedResponse);
+    const looksLikeEmptyRag =
+      RAG_EMPTY_INDEX_PATTERN.test(normalizedResponse) && normalizedResponse.length < 500;
 
-    if (looksLikeNavigationOnly || looksLikeIrrelevantRag) {
+    if (looksLikeNavigationOnly || looksLikeIrrelevantRag || looksLikeEmptyRag) {
       return {
         valid: false,
-        reason: "Behavior/content request incorrectly routed to navigation or legal RAG.",
+        reason: "Hard-gate request incorrectly routed to navigation or legal RAG.",
         replacement:
-          buildNovaMethodsExpertiseResponse(prompt) ??
+          buildRiskMethodAdvisorResponse(prompt) ??
           buildNovaContentFallbackResponse(prompt) ??
           undefined,
       };
@@ -379,19 +471,21 @@ export function extractNovaFormatInstruction(message: string): string | null {
   return matched.length > 0 ? matched.join(" ") : null;
 }
 
-export const NOVA_BEHAVIOR_GATEWAY_PROMPT_TR = `Nova davranış düzeltme katmanı (v2) — zorunlu:
+export const NOVA_BEHAVIOR_GATEWAY_PROMPT_TR = `Nova Risk Intelligence (v3) — zorunlu:
 
-Öncelik: (1) Güvenlik (2) Format talimatı (3) Niyet (4) Kaynak (5) Chat cevabı (6) Modül yönlendirmesi.
+Öncelik: (1) Güvenlik (2) Format (3) Niyet (4) Kaynak (5) Chat cevabı (6) Modül yönlendirmesi.
 
-Route sırası: normalize → safety → content-generation/advisory → vision → legal RAG → navigation → general chat.
+Route: normalize → safety → content/advisory → method advisor → vision → legal RAG → navigation → general chat.
 
-Korunan: Risk Skoru = Olasılık x Şiddet. 5x5 eşik: 1-4, 5-9, 10-14, 15-25. Matris tek zorunlu yöntem değildir.
+Korunan: Risk Skoru = Olasılık × Şiddet. Eşikler: 1-4, 5-9, 10-14, 15-25. Risk değerlendirmesi zorunlu; matris tek zorunlu yöntem değil.
 
-Güvenlik: zararlı istekte RAG/navigation yok; kaynak rozeti yok.
+Güvenlik: RAG/navigation/rozet yok.
 
-Üretim: e-posta, özet, yeniden yazım → önce metin; Sayfaya Git ana cevap olmasın.
+Üretim: e-posta, özet, müşteri cevabı → önce chat metni; Sayfaya Git ana cevap olmasın.
 
-Kaynak: Güven yüksek yalnızca doğrudan ilgili legal RAG kaynakta.
+Kaynak rozeti: yalnızca gerçek legal RAG + ilgili kaynak + confidence≥0.68.
+
+${NOVA_METHOD_ADVISOR_PROMPT_TR}
 
 ${NOVA_METHODS_EXPERTISE_PROMPT_TR}`;
 

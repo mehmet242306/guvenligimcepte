@@ -11,6 +11,7 @@ import { requireAuth } from "@/lib/supabase/api-auth";
 import { createServiceClient } from "@/lib/security/server";
 import { getAccountContextForUser, shouldBypassNovaBillingLimits } from "@/lib/account/account-routing";
 import { persistNovaTurnLearning } from "@/lib/nova/turn-learning";
+import { resolveNovaHardGateGatewayMode } from "@/lib/nova/request-mode";
 
 export const maxDuration = 120;
 
@@ -24,7 +25,6 @@ export async function POST(request: NextRequest) {
   const payload = parsed.data;
   const hardGateAnswer = buildNovaHardGateResponse(payload.message);
   if (hardGateAnswer) {
-    const isSafety = Boolean(buildUnsafeNovaRefusal(payload.message));
     return NextResponse.json(
       normalizeNovaAgentResponse({
         type: "message",
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         jurisdiction_code: payload.jurisdiction_code ?? "TR",
         sources: [],
         telemetry: {
-          gateway_mode: isSafety ? "safety_refusal" : "behavior_prompt",
+          gateway_mode: resolveNovaHardGateGatewayMode(payload.message),
           context_surface: payload.context_surface,
           legal_rag_bypassed: true,
         },

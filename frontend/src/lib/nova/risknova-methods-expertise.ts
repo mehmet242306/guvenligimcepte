@@ -42,7 +42,13 @@ export function isNovaRSkor2DExpertiseQuery(message: string): boolean {
 export function isNovaR2dRcaExpertiseQuery(message: string): boolean {
   const n = normalizeNovaRequestText(message);
   if (R2D_RCA_PATTERN.test(n)) return true;
-  return INCIDENT_RCA_CONTEXT_PATTERN.test(n) && /\b(neden|tekrar|analiz|rca|kok|dof)\b/.test(n);
+  if (/\b(olustur|planla|git\b|ac\s|nerede|nerde|nasil\s*acar|modulune)\b/.test(n)) {
+    return false;
+  }
+  return (
+    INCIDENT_RCA_CONTEXT_PATTERN.test(n) &&
+    /\b(neden|tekrar|analiz|rca|kok|etkinlik|kapandi|etkisiz)\b/.test(n)
+  );
 }
 
 export function isNovaMethodSelectionQuery(message: string): boolean {

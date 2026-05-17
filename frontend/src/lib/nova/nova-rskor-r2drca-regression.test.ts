@@ -10,7 +10,7 @@ describe("R-Skor 2D / R2D-RCA expertise routing", () => {
   it("routes methods expertise to behavior_prompt, not legal RAG", () => {
     const prompt = "L matrisi bu risk için yeterli mi, yoksa daha gelişmiş yöntem mi kullanmalıyım?";
     expect(isNovaMethodsExpertiseTask(prompt)).toBe(true);
-    expect(resolveNovaRoute(prompt)).toBe("behavior_prompt");
+    expect(resolveNovaRoute(prompt)).toBe("method_advisor");
     expect(shouldUseNovaLegalRag(prompt)).toBe(false);
   });
 });

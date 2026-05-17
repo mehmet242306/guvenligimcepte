@@ -29,6 +29,7 @@ import { buildNovaHardGateResponse } from "@/lib/nova/behavior-prompt";
 import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import {
   resolveNovaApiEndpoint,
+  resolveNovaHardGateGatewayMode,
   resolveNovaRequestMode,
   resolveNovaRoute,
   shouldPreferNovaLegalRagOverNavigation,
@@ -675,6 +676,14 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       Boolean(data?.safety_block) ||
       gatewayMode === "safety_refusal" ||
       /yardımcı olamam|buna yardımcı olamam/i.test(answer);
+    const suppressSourceBadge =
+      isSafetyRefusal ||
+      gatewayMode === "behavior_prompt" ||
+      gatewayMode === "method_advisor" ||
+      gatewayMode === "behavior_validator_fallback" ||
+      gatewayMode === "navigation_fallback" ||
+      gatewayMode === "product_help_fallback" ||
+      gatewayMode === "guidance_fallback";
 
     let sourceStatus: Message["sourceStatus"] | undefined;
     let confidence: Message["confidence"] | undefined;
@@ -682,7 +691,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     if (
       isLegalRagAnswer &&
       normalizedSources.length > 0 &&
-      !isSafetyRefusal &&
+      !suppressSourceBadge &&
       ragConfidence != null &&
       ragConfidence >= 0.68
     ) {
@@ -1554,10 +1563,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text, authUserId);
       await appendStreamingBotMessage(botMsg);
       scheduleClientLearning(visiblePrompt, botMsg.text, {
-        gatewayMode:
-          resolveNovaRoute(composedPrompt, { hasAttachedImage }) === "safety_refusal"
-            ? "safety_refusal"
-            : "behavior_prompt",
+        gatewayMode: resolveNovaHardGateGatewayMode(composedPrompt),
       });
       return;
     }
@@ -1980,10 +1986,10 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                           }`}
                         >
                           {msg.confidence === "high"
-                            ? "Guven: Yuksek"
+                            ? "Güven: Yüksek"
                             : msg.confidence === "medium"
-                              ? "Guven: Orta"
-                              : "Guven: Dusuk"}
+                              ? "Güven: Orta"
+                              : "Güven: Düşük"}
                         </span>
                       ) : null}
                       {msg.sourceStatus ? (
@@ -1997,9 +2003,9 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                           }`}
                         >
                           {msg.sourceStatus === "verified"
-                            ? "Kaynak: Dogrulanmis"
+                            ? "Kaynak: Doğrulanmış"
                             : msg.sourceStatus === "partial"
-                              ? "Kaynak: Kismi"
+                              ? "Kaynak: Kısmi"
                               : "Kaynak: Yok"}
                         </span>
                       ) : null}

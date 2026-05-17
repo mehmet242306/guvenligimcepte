@@ -36,6 +36,7 @@ import {
 } from "@/lib/nova/behavior-prompt";
 import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import {
+  resolveNovaHardGateGatewayMode,
   shouldBypassNovaStaticRedirects,
   shouldPreferNovaLegalRagOverNavigation,
   shouldSkipNovaNavigationForContentTask,
@@ -593,7 +594,6 @@ export async function POST(request: NextRequest) {
     const payload = parsed.data;
     const hardGateAnswer = buildNovaHardGateResponse(payload.message);
     if (hardGateAnswer) {
-      const isSafety = Boolean(buildUnsafeNovaRefusal(payload.message));
       return NextResponse.json(
         normalizeNovaAgentResponse({
           type: "message",
@@ -604,7 +604,7 @@ export async function POST(request: NextRequest) {
           jurisdiction_code: payload.jurisdiction_code ?? "TR",
           sources: [],
           telemetry: {
-            gateway_mode: isSafety ? "safety_refusal" : "behavior_prompt",
+            gateway_mode: resolveNovaHardGateGatewayMode(payload.message),
             context_surface: payload.context_surface,
           },
         }),

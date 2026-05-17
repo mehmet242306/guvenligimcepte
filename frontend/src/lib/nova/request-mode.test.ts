@@ -24,6 +24,13 @@ describe("resolveNovaRoute", () => {
     expect(resolveNovaRoute("Yangin mermotion en az kac cm")).toBe("legal_rag");
     expect(resolveNovaRoute("plannera git", { hasAttachedImage: true })).toBe("vision");
   });
+
+  it("routes conceptual method questions to method_advisor, not legal RAG", () => {
+    const prompt =
+      "Bir yöntemin mevzuatta açıkça yazmaması o yöntemin geçersiz olduğu anlamına gelir mi?";
+    expect(resolveNovaRoute(prompt)).toBe("method_advisor");
+    expect(shouldUseNovaLegalRag(prompt)).toBe(false);
+  });
 });
 
 describe("resolveNovaApiEndpoint", () => {
