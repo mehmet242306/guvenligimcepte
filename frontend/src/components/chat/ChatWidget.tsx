@@ -1869,24 +1869,14 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
               }}
             />
             <div className="relative flex items-start justify-between gap-3">
-              <div className="min-w-0 flex-1 cursor-move">
+              <div className={`min-w-0 flex-1 cursor-move ${isAuthenticated ? "pr-[3.25rem]" : ""}`}>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/45">RiskNova</p>
-                <div className="mt-1.5 flex items-center justify-between gap-2">
-                  <h2 className="min-w-0 flex-1 text-[1.35rem] font-bold leading-tight tracking-tight text-white">
-                    {ui.widget.heroGreeting}{" "}
-                    <span className="inline-block" aria-hidden>
-                      👋
-                    </span>
-                  </h2>
-                  {isAuthenticated ? (
-                    <NovaMessageQuotaRing
-                      quota={messageQuota}
-                      loading={messageQuotaLoading}
-                      locale={locale}
-                      className="shrink-0 -mr-0.5"
-                    />
-                  ) : null}
-                </div>
+                <h2 className="mt-1.5 text-[1.35rem] font-bold leading-tight tracking-tight text-white">
+                  {ui.widget.heroGreeting}{" "}
+                  <span className="inline-block" aria-hidden>
+                    👋
+                  </span>
+                </h2>
                 <p className="mt-1 text-[14px] font-medium leading-snug text-white/78 sm:text-[15px]">{ui.widget.heroPrompt}</p>
                 <p
                   className="mt-1.5 inline-flex max-w-full items-center gap-1.5 rounded-full border border-emerald-400/35 bg-emerald-950/35 px-2.5 py-0.5 text-[11px] font-medium leading-none text-emerald-50/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
@@ -1902,7 +1892,16 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
                   {assistantName} · {assistantSubtitle}
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-0.5">
+              {isAuthenticated ? (
+                <NovaMessageQuotaRing
+                  quota={messageQuota}
+                  loading={messageQuotaLoading}
+                  locale={locale}
+                  compact
+                  className="pointer-events-none absolute right-[4.35rem] top-[2.35rem] z-[1] shrink-0"
+                />
+              ) : null}
+              <div className="relative z-[2] flex shrink-0 items-center gap-0.5">
                 <button
                   type="button"
                   onClick={() => setOpen(false)}

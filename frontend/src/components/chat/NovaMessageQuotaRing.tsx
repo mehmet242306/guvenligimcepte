@@ -16,6 +16,8 @@ type NovaMessageQuotaRingProps = {
   loading?: boolean;
   locale?: string | null;
   className?: string;
+  /** Header icin kucuk yerlesim — ekstra satir yuksekligi olusturmaz */
+  compact?: boolean;
 };
 
 export function NovaMessageQuotaRing({
@@ -23,6 +25,7 @@ export function NovaMessageQuotaRing({
   loading = false,
   locale,
   className = "",
+  compact = false,
 }: NovaMessageQuotaRingProps) {
   const language = getNovaUiLanguage(locale);
   const isTr = language === "tr";
@@ -94,9 +97,18 @@ export function NovaMessageQuotaRing({
       ? "Mesaj kotası yükleniyor"
       : "Loading message quota";
 
+  const ringSize = compact ? 40 : 52;
+  const centerTextClass = compact
+    ? quota?.unlimited
+      ? "text-base"
+      : "text-[13px]"
+    : quota?.unlimited
+      ? "text-lg"
+      : "text-[15px]";
+
   return (
     <div
-      className={`flex flex-col items-center ${className}`}
+      className={`flex flex-col items-center leading-none ${className}`}
       title={title}
       aria-label={
         quota && !quota.unlimited
@@ -108,8 +120,13 @@ export function NovaMessageQuotaRing({
       }
       role="status"
     >
-      <div className="relative size-[52px]">
-        <svg viewBox="0 0 36 36" className="size-[52px] -rotate-90" aria-hidden>
+      <div className="relative" style={{ width: ringSize, height: ringSize }}>
+        <svg
+          viewBox="0 0 36 36"
+          className="-rotate-90"
+          style={{ width: ringSize, height: ringSize }}
+          aria-hidden
+        >
           <circle
             cx="18"
             cy="18"
@@ -133,12 +150,18 @@ export function NovaMessageQuotaRing({
           />
         </svg>
         <div
-          className={`absolute inset-0 flex items-center justify-center text-center font-bold tabular-nums leading-none text-white ${quota?.unlimited ? "text-lg" : "text-[15px]"}`}
+          className={`absolute inset-0 flex items-center justify-center text-center font-bold tabular-nums leading-none text-white ${centerTextClass}`}
         >
           {centerLabel}
         </div>
       </div>
-      <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/50">
+      <span
+        className={
+          compact
+            ? "mt-0.5 text-[8px] font-semibold uppercase tracking-[0.12em] text-white/45"
+            : "mt-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/50"
+        }
+      >
         {copy.kalan}
       </span>
     </div>
