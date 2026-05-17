@@ -67,11 +67,11 @@ function isDocumentLookup(normalized: string, message: string) {
 /** DÖF/olay/risk gibi modül adı + oluştur/nasıl/nerede birlikte — "döf oluşturmam gerekiyor" gibi */
 function isOperationalModuleLookup(normalized: string) {
   const mentionsModule =
-    /(dof|duzeltici|onleyici|corrective|preventive|ramak kala|olay|incident|risk analizi|risk assessment|egitim|training|sinav|anket|ajanda|planner|takvim|gorev)/.test(
+    /(dof|duzeltici|onleyici|corrective|preventive|ramak kala|olay\s*kaydi|olay|incident|risk analizi|risk assessment|egitim|training|sinav|anket|ajanda|planner|takvim|gorev)/.test(
       normalized,
     );
   const mentionsAction =
-    /(olustur|planla|yeni|ekle|basla|ac|git|nerede|nerde|nasil|gerek|lazim|istiyorum|kaydet|hazirla)/.test(
+    /(olustur|olusturmak|planla|yeni|ekle|basla|ac|git|nerede|nerde|nasil|gerek|lazim|istiyorum|kaydet|hazirla|modul)/.test(
       normalized,
     );
   return mentionsModule && mentionsAction;
@@ -136,7 +136,9 @@ const navigationTargets: NovaNavigationTarget[] = [
     label: "Risk Analizi",
     reason: "Risk analizi kayitlari ve yeni analiz akislari Risk Analizi alaninda baslatilir.",
     priority: 50,
-    matches: (text) => /(risk analizi|analiz|risk degerlendirme|risk assessment)/.test(text),
+    matches: (text, message) =>
+      /(risk analizi|analiz|risk degerlendirme|risk assessment)/.test(text) &&
+      (!message || !isNovaReportContentAdvisoryTask(message)),
   },
   {
     destination: "corrective_actions",

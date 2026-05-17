@@ -26,7 +26,10 @@ import {
 import { getNovaUiCopy, resolveNovaRuntimeErrorMessage } from "@/lib/nova-ui";
 import { postNovaAgentRequest } from "@/lib/nova/client";
 import { buildNovaHardGateResponse } from "@/lib/nova/behavior-prompt";
-import { shouldSuppressNovaActionCards } from "@/lib/nova/nova-action-cards";
+import {
+  shouldStripNavigationFromResponse,
+  shouldSuppressNovaSuggestionChips,
+} from "@/lib/nova/nova-action-cards";
 import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import {
   resolveNovaApiEndpoint,
@@ -371,7 +374,11 @@ function writeActiveWidgetSessionId(sessionId: string, authUserId?: string | nul
   window.localStorage.removeItem(storageKey);
 }
 
-function resolveActionableSuggestionsFromMessage(text: string): WidgetAction[] {
+function resolveActionableSuggestionsFromMessage(text: string, userMessage?: string): WidgetAction[] {
+  if (userMessage && shouldSuppressNovaSuggestionChips(undefined, userMessage)) {
+    return [];
+  }
+
   const normalized = text.toLowerCase();
   const suggestions: WidgetAction[] = [];
 
@@ -663,7 +670,8 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         : null;
     const gatewayModeEarly =
       typeof telemetryEarly?.gateway_mode === "string" ? telemetryEarly.gateway_mode : "";
-    const suppressActionCards = shouldSuppressNovaActionCards(gatewayModeEarly, userMessage);
+    const stripNavigation = shouldStripNavigationFromResponse(gatewayModeEarly, userMessage);
+    const suppressSuggestionChips = shouldSuppressNovaSuggestionChips(gatewayModeEarly, userMessage);
     const isLegalRagGateway =
       gatewayModeEarly === "read_rag" || gatewayModeEarly === "read_rag_inline";
 
@@ -673,7 +681,7 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
     }
     const rawSources = data?.sources || [];
     const navigation: NovaNavigation | null =
-      isLegalRagGateway || suppressActionCards
+      isLegalRagGateway || stripNavigation
         ? null
         : sanitizeNovaNavigationForUser((data?.navigation as NovaNavigation | null) || null);
     const workflow: NovaWorkflowSummary | null = (data?.workflow as NovaWorkflowSummary | null) || null;
@@ -723,11 +731,11 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       sourceStatus = "verified";
       confidence = "high";
     }
-    const actionSuggestions = suppressActionCards
+    const actionSuggestions = suppressSuggestionChips
       ? []
-      : resolveActionableSuggestionsFromMessage(answer);
+      : resolveActionableSuggestionsFromMessage(answer, userMessage);
     const fallbackSuggestions =
-      suppressActionCards || navigation != null || answer.length >= 220
+      suppressSuggestionChips || navigation != null || answer.length >= 220
         ? []
         : authenticatedWelcomeActions.slice(0, 3);
     const mergedSuggestions =
@@ -741,19 +749,19 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       navigation,
       workflow,
       followUpActions:
-        isLegalRagGateway || suppressActionCards ? [] : followUpActions,
+        isLegalRagGateway || suppressSuggestionChips ? [] : followUpActions,
       actionHint:
-        suppressActionCards || !(data.action_hint && typeof data.action_hint === "object")
+        suppressSuggestionChips || !(data.action_hint && typeof data.action_hint === "object")
           ? null
           : (data.action_hint as NovaActionHint),
       toolPreview:
-        isLegalRagGateway || suppressActionCards ? null : data.tool_preview || null,
+        isLegalRagGateway || suppressSuggestionChips ? null : data.tool_preview || null,
       draft: data.draft || null,
       safetyBlock: data.safety_block || null,
       confidence,
       sourceStatus,
       suggestions:
-        suppressActionCards || mergedSuggestions.length === 0
+        suppressSuggestionChips || mergedSuggestions.length === 0
           ? undefined
           : mergedSuggestions,
       timestamp: new Date(),

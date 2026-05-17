@@ -11,9 +11,13 @@ import {
 } from "@/lib/nova/risk-method-advisor";
 import { isNovaRagServiceRequest } from "@/lib/nova/nova-navigation-policy";
 import {
+  appendOptionalReportsHandoff,
+  FORBIDDEN_NAVIGATION_CARD_COPY_PATTERN,
   FORBIDDEN_REPORTS_NAVIGATION_COPY_PATTERN,
   isNovaReportContentAdvisoryTask,
+  USER_NO_NAVIGATION_PATTERN,
 } from "@/lib/nova/nova-report-intent";
+import { userRequestedNoNavigationThisTurn } from "@/lib/nova/nova-action-cards";
 
 export { isNovaMethodsExpertiseTask, buildNovaMethodsExpertiseResponse } from "@/lib/nova/risknova-methods-expertise";
 export {
@@ -77,6 +81,12 @@ const UNSAFE_INTENT_PATTERNS: Array<{
     pattern: /(denetimden\s*once|denetimde|denetim\s*oncesi).*(gizle|sakla|temizle)/,
     reasonTr: "Denetimde kayıt gizlemek veya uygunsuzlukları saklamak yasadışı ve etik dışıdır.",
     alternativeTr: "Denetime hazırlık, eksik kapatma ve şeffaf düzeltici faaliyet planı hazırlayabilirim.",
+  },
+  {
+    pattern: /(denetci\s*gormeden|denetceden\s*once|denetim\s*oncesi).*(gizle|sakla|olumsuz\s*ifade)/,
+    reasonTr: "Denetim öncesi olumsuz bulguları gizlemek yanıltıcı kayıt ve etik dışı uygulamadır.",
+    alternativeTr:
+      "Bulguları şeffaf kaydedip öncelik, sorumlu, termin ve önlem etkinliği ile savunulabilir bir aksiyon planı hazırlayabilirim.",
   },
   {
     pattern: /(olmayan\s*olcum|olcum\s*sonucu.*(ekle|yaz)|uydurma\s*olcum|sahte\s*tutanak)/,
@@ -156,6 +166,23 @@ const IRRELEVANT_LEGAL_CITATION_PATTERN =
 
 const RAG_EMPTY_INDEX_PATTERN = /mevzuat\s*indeksinde\s*eslesme\s*bulamadim/;
 
+/** Önceki turdaki safety bağlamını sıfırla — yalnızca mevcut mesajın niyetine bak. */
+const SAFETY_CONTEXT_RESET_PATTERN =
+  /(?:onceki\s*(?:mesaj|istek|konu|sahte|manipulasyon).*bagimsiz|bagimsiz\s*olarak|bu\s*mesajda\s*sadece|onceki\s*sahte\s*kaynak)/;
+
+function normalizedForSafetyScan(message: string): string {
+  const normalized = normalizeNovaRequestText(message);
+  if (!SAFETY_CONTEXT_RESET_PATTERN.test(normalized)) {
+    return normalized;
+  }
+
+  return normalized
+    .replace(/onceki\s*sahte\s*kaynak\s*veya\s*manipulasyon\s*isteklerinden\s*bagimsiz\s*olarak/gi, "")
+    .replace(/onceki\s*(?:sahte\s*kaynak|manipulasyon)[^.]*?(?=bagimsiz|cevap\s*ver|orta\s*seviye)/gi, "")
+    .replace(/\bsahte\s*kaynak\b/gi, "kaynak")
+    .replace(/\bmanipulasyon\b/gi, "degerlendirme");
+}
+
 export function buildTurkishSafetyRefusal(reason: string, alternative: string) {
   return [
     "Kısa yanıt: Buna yardımcı olamam.",
@@ -170,7 +197,7 @@ export function buildTurkishSafetyRefusal(reason: string, alternative: string) {
 }
 
 export function detectUnsafeNovaIntent(message: string) {
-  const normalized = normalizeNovaRequestText(message);
+  const normalized = normalizedForSafetyScan(message);
   for (const item of UNSAFE_INTENT_PATTERNS) {
     if (item.pattern.test(normalized)) {
       return item;
@@ -375,7 +402,15 @@ export function buildNovaContentFallbackResponse(message: string): string | null
     ].join("\n");
   }
 
-  if (/\b(sadece\s*\d+\s*madde\w*|(?:3|uc)\s*madde\w*)\b/.test(normalized)) {
+  if (
+    /(?:once|oncelikle).*(?:3|uc)\s*cumle\w*.*yonetici|yonetici\s*notu.*(?:3|uc)\s*cumle|rapora\s*yazilacak\s*(?:3|uc)\s*cumle/.test(
+      normalized,
+    )
+  ) {
+    return appendOptionalReportsHandoff(buildNovaThreeSentenceExecutiveNoteResponse(), message);
+  }
+
+  if (/\b(sadece\s*\d+\s*madde\w*|(?:3|uc)\s*madde\w*)\b/.test(normalized) && !/yonetici\s*notu|rapora\s*yaz/.test(normalized)) {
     return [
       "1. Risk seviyesi yüksekse önce tehlikenin kaynağını ve mevcut önlemleri kontrol edin.",
       "2. Sorumlu kişi, termin ve düzeltici faaliyet belirleyin.",
@@ -414,6 +449,23 @@ export function buildNovaContentFallbackResponse(message: string): string | null
   }
 
   if (
+    /(?:kritik\s*seviyede.*izlenebilir|gecici\s*onlem.*izlenebilir|ifade\s*dogru\s*mu|celiski\s*varsa)/.test(
+      normalized,
+    ) &&
+    /rapor/.test(normalized)
+  ) {
+    return appendOptionalReportsHandoff(buildNovaCriticalTemporaryControlsReportResponse(), message);
+  }
+
+  if (
+    /(?:orta\s*seviye|calisan.*endise|endise\s*bildirdi).*(?:nasil\s*degerlendirmeliyim|genel\s*risk)|genel\s*risk\s*danis|kaynak\s*kullanma.*genel/.test(
+      normalized,
+    )
+  ) {
+    return buildNovaEmployeeConcernRiskAdvisoryResponse();
+  }
+
+  if (
     /(?:kritik\s*ama\s*kabul|kabul\s*edilebilir.*kritik|acil\s*aksiyon\s*gerektirmiyor|profesyonel\s*rapor\s*diliyle\s*nasil)/.test(
       normalized,
     )
@@ -430,10 +482,39 @@ export function buildNovaContentFallbackResponse(message: string): string | null
   }
 
   if (isNovaReportContentAdvisoryTask(message)) {
-    return buildNovaGenericReportWritingAdvisoryResponse();
+    return appendOptionalReportsHandoff(buildNovaGenericReportWritingAdvisoryResponse(), message);
   }
 
   return null;
+}
+
+function buildNovaCriticalTemporaryControlsReportResponse(): string {
+  return [
+    "Bu ifade kısmen kullanılabilir ancak dikkatli yazılmalıdır. \"Kritik seviyede\" ifadesi öncelikli aksiyon gerektirdiği için, \"sadece izlenebilir\" gibi pasif bir ifade tek başına yeterli değildir. Geçici önlemler varsa bunların kalıcı önlem yerine geçmediği, sorumlu kişi ve terminle aksiyon planı başlatıldığı belirtilmelidir.",
+    "",
+    "Daha doğru rapor cümlesi:",
+    "\"Risk kritik seviyededir. Mevcut geçici kontroller kısa süreli risk azaltımı sağlamaktadır; ancak kalıcı kontrol önlemleri için sorumlu kişi, termin ve etkinlik kontrolü belirlenmelidir. Önlem sonrası artık risk yeniden hesaplanacaktır.\"",
+  ].join("\n");
+}
+
+function buildNovaThreeSentenceExecutiveNoteResponse(): string {
+  return [
+    "Bu risk, mevcut geçici önlemlerle izlenebilir durumda olsa da kritik seviye nedeniyle öncelikli yönetim takibi gerektirir.",
+    "Kalıcı kontrol önlemleri için sorumlu kişi, termin ve kaynak ihtiyacı belirlenmelidir.",
+    "Önlem sonrası artık risk yeniden hesaplanarak yönetim kuruluna kapanış kanıtıyla raporlanmalıdır.",
+  ].join("\n");
+}
+
+function buildNovaEmployeeConcernRiskAdvisoryResponse(): string {
+  return [
+    "Orta skor tek başına yeterli değildir. Çalışan endişesi erken uyarı sinyali olabilir.",
+    "",
+    "Önerilen adımlar:",
+    "1. Sahada gözlem yapın; maruziyet, kontrol eksikliği ve tekrarlayan şikâyetleri doğrulayın.",
+    "2. Olasılık/şiddet parametrelerini ve mevcut önlemlerin etkinliğini yeniden kontrol edin.",
+    "3. Gerekirse R-Skor 2D ile maruziyet, çalışan algısı, kontrol seviyesi ve yasal yükümlülük boyutlarını birlikte değerlendirin.",
+    "4. Kritik veya yüksek öncelik çıkarsa sorumlu, termin ve önlem sonrası artık risk hesabı tanımlayın.",
+  ].join("\n");
 }
 
 function buildNovaContradictoryReportLanguageResponse(): string {
@@ -517,9 +598,20 @@ export function validateNovaResponse({
   const hardGateTask = isNovaHardGateTask(prompt);
   const reportContentAdvisory = isNovaReportContentAdvisoryTask(prompt);
 
+  if (userRequestedNoNavigationThisTurn(prompt) || USER_NO_NAVIGATION_PATTERN.test(normalizedPrompt)) {
+    if (FORBIDDEN_NAVIGATION_CARD_COPY_PATTERN.test(response)) {
+      return {
+        valid: false,
+        reason: "User opted out of navigation cards for this turn.",
+        replacement: buildNovaContentFallbackResponse(prompt) ?? stripForbiddenNavigationFromAnswer(response),
+      };
+    }
+  }
+
   if (reportContentAdvisory || hardGateTask) {
     const looksLikeReportsNavigation =
       FORBIDDEN_REPORTS_NAVIGATION_COPY_PATTERN.test(response) ||
+      FORBIDDEN_NAVIGATION_CARD_COPY_PATTERN.test(response) ||
       (NAVIGATION_ONLY_RESPONSE_PATTERN.test(normalizedResponse) && reportContentAdvisory);
 
     if (looksLikeReportsNavigation) {
