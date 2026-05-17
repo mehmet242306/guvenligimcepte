@@ -41,6 +41,7 @@ import {
   shouldSkipNovaNavigationForContentTask,
   shouldUseNovaLegalRag,
 } from "@/lib/nova/request-mode";
+import { persistNovaTurnLearning } from "@/lib/nova/turn-learning";
 import { answerWithLegalRag } from "@/lib/rag/legal/answer-with-rag";
 import { logErrorEvent } from "@/lib/admin-observability/server";
 
@@ -1019,6 +1020,19 @@ export async function POST(request: NextRequest) {
           polish: payload.answer_mode === "polish",
         });
 
+        void persistNovaTurnLearning(service, {
+          userId: authContext.userId,
+          organizationId: authContext.organizationId,
+          companyWorkspaceId: effectiveCompanyWorkspaceId ?? null,
+          question: payload.message,
+          answer: rag.answer,
+          sources: rag.sources,
+          sessionId: payload.session_id ?? null,
+          gatewayMode: "read_rag_inline",
+          contextSurface: payload.context_surface,
+          language: payload.language,
+        });
+
         return NextResponse.json(
           normalizeNovaAgentResponse({
             type: "message",
@@ -1140,6 +1154,26 @@ export async function POST(request: NextRequest) {
           };
         }
       }
+
+      const gatewayMode =
+        normalized.telemetry &&
+        typeof normalized.telemetry === "object" &&
+        typeof (normalized.telemetry as Record<string, unknown>).gateway_mode === "string"
+          ? String((normalized.telemetry as Record<string, unknown>).gateway_mode)
+          : effectiveRequestMode;
+
+      void persistNovaTurnLearning(createServiceClient(), {
+        userId: authContext.userId,
+        organizationId: authContext.organizationId,
+        companyWorkspaceId: effectiveCompanyWorkspaceId ?? null,
+        question: payload.message,
+        answer: normalized.answer,
+        sources: normalized.sources,
+        sessionId: payload.session_id ?? null,
+        gatewayMode,
+        contextSurface: payload.context_surface,
+        language: payload.language,
+      });
 
       return NextResponse.json(normalized, { status: response.status });
     } catch {

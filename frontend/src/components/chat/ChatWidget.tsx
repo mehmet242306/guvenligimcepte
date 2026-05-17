@@ -30,9 +30,11 @@ import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import {
   resolveNovaApiEndpoint,
   resolveNovaRequestMode,
+  resolveNovaRoute,
   shouldPreferNovaLegalRagOverNavigation,
   shouldSkipNovaNavigationForContentTask,
 } from "@/lib/nova/request-mode";
+import { recordNovaTurnLearningClient } from "@/lib/nova/turn-learning";
 import { streamTextReveal } from "@/lib/nova/stream-text";
 import {
   consolidateEphemeralDuplicateSessions,
@@ -42,6 +44,8 @@ import {
   type WidgetHistorySession,
 } from "@/lib/nova/widget-history";
 import { NovaMessageContent } from "@/components/chat/NovaMessageContent";
+import { NovaMessageQuotaRing } from "@/components/chat/NovaMessageQuotaRing";
+import { fetchNovaMessageQuota, type NovaMessageQuota } from "@/lib/nova/message-quota";
 import {
   resolveNovaGreetingIntent,
   resolveNovaNavigationIntent,
@@ -492,6 +496,8 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
   const widgetHistorySessionIdRef = useRef("");
   const previousAuthUserIdRef = useRef<string | null>(null);
   const [authUserId, setAuthUserId] = useState<string | null>(null);
+  const [messageQuota, setMessageQuota] = useState<NovaMessageQuota | null>(null);
+  const [messageQuotaLoading, setMessageQuotaLoading] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
@@ -790,6 +796,49 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
 
     void fetchAccountScope();
   }, [isAuthenticated, supabase]);
+
+  const refreshMessageQuota = useCallback(async () => {
+    if (!isAuthenticated) {
+      setMessageQuota(null);
+      return;
+    }
+    setMessageQuotaLoading(true);
+    try {
+      const quota = await fetchNovaMessageQuota();
+      setMessageQuota(quota);
+    } finally {
+      setMessageQuotaLoading(false);
+    }
+  }, [isAuthenticated]);
+
+  const scheduleClientLearning = useCallback(
+    (
+      question: string,
+      answer: string,
+      options?: { gatewayMode?: string | null; sources?: unknown[] },
+    ) => {
+      if (!isAuthenticated) return;
+      recordNovaTurnLearningClient({
+        question,
+        answer,
+        sources: options?.sources,
+        session_id: sessionId ?? widgetHistorySessionIdRef.current ?? null,
+        gateway_mode: options?.gatewayMode ?? null,
+        context_surface: "widget",
+        language: locale,
+        company_workspace_id: companyWorkspaceId,
+      });
+    },
+    [isAuthenticated, sessionId, locale, companyWorkspaceId],
+  );
+
+  useEffect(() => {
+    if (!open || !isAuthenticated) {
+      if (!isAuthenticated) setMessageQuota(null);
+      return;
+    }
+    void refreshMessageQuota();
+  }, [open, isAuthenticated, refreshMessageQuota]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -1504,6 +1553,28 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       };
       rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text, authUserId);
       await appendStreamingBotMessage(botMsg);
+      scheduleClientLearning(visiblePrompt, botMsg.text, {
+        gatewayMode:
+          resolveNovaRoute(composedPrompt, { hasAttachedImage }) === "safety_refusal"
+            ? "safety_refusal"
+            : "behavior_prompt",
+      });
+      return;
+    }
+
+    if (messageQuota && !messageQuota.unlimited && messageQuota.remaining <= 0) {
+      const quotaMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "bot",
+        text:
+          locale.startsWith("tr")
+            ? "Bu ayki Nova mesaj kotanız doldu. Kotanızı yükseltmek veya yenilenmesini beklemek için Ayarlar > Kullanım bölümüne bakabilirsiniz."
+            : "Your monthly Nova message quota is used up. Check Settings > Usage to upgrade or wait for renewal.",
+        timestamp: new Date(),
+        isError: true,
+      };
+      setMessages((prev) => [...prev, quotaMsg]);
+      setTyping(false);
       return;
     }
 
@@ -1610,6 +1681,15 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       );
       rememberLocalWidgetHistory(resolvedSessionId, visiblePrompt, botMessage.text, authUserId);
       await appendStreamingBotMessage(botMessage);
+      const telemetry =
+        data?.telemetry && typeof data.telemetry === "object"
+          ? (data.telemetry as Record<string, unknown>)
+          : null;
+      scheduleClientLearning(visiblePrompt, botMessage.text, {
+        gatewayMode: typeof telemetry?.gateway_mode === "string" ? telemetry.gateway_mode : null,
+        sources: data?.sources,
+      });
+      void refreshMessageQuota();
       if (imageAnalysis) {
         clearAttachedImage();
       }
@@ -1791,12 +1871,22 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
             <div className="relative flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1 cursor-move">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/45">RiskNova</p>
-                <h2 className="mt-1.5 text-[1.35rem] font-bold leading-tight tracking-tight text-white">
-                  {ui.widget.heroGreeting}{" "}
-                  <span className="inline-block" aria-hidden>
-                    👋
-                  </span>
-                </h2>
+                <div className="mt-1.5 flex items-center justify-between gap-2">
+                  <h2 className="min-w-0 flex-1 text-[1.35rem] font-bold leading-tight tracking-tight text-white">
+                    {ui.widget.heroGreeting}{" "}
+                    <span className="inline-block" aria-hidden>
+                      👋
+                    </span>
+                  </h2>
+                  {isAuthenticated ? (
+                    <NovaMessageQuotaRing
+                      quota={messageQuota}
+                      loading={messageQuotaLoading}
+                      locale={locale}
+                      className="shrink-0 -mr-0.5"
+                    />
+                  ) : null}
+                </div>
                 <p className="mt-1 text-[14px] font-medium leading-snug text-white/78 sm:text-[15px]">{ui.widget.heroPrompt}</p>
                 <p
                   className="mt-1.5 inline-flex max-w-full items-center gap-1.5 rounded-full border border-emerald-400/35 bg-emerald-950/35 px-2.5 py-0.5 text-[11px] font-medium leading-none text-emerald-50/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"

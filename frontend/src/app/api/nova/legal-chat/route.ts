@@ -10,6 +10,7 @@ import { enforceRateLimit, parseJsonBody, resolveAiDailyLimit } from "@/lib/secu
 import { requireAuth } from "@/lib/supabase/api-auth";
 import { createServiceClient } from "@/lib/security/server";
 import { getAccountContextForUser, shouldBypassNovaBillingLimits } from "@/lib/account/account-routing";
+import { persistNovaTurnLearning } from "@/lib/nova/turn-learning";
 
 export const maxDuration = 120;
 
@@ -120,6 +121,19 @@ export async function POST(request: NextRequest) {
         context_surface: payload.context_surface,
         company_workspace_id: payload.company_workspace_id ?? null,
       },
+    });
+
+    void persistNovaTurnLearning(service, {
+      userId: auth.userId,
+      organizationId: auth.organizationId,
+      companyWorkspaceId: payload.company_workspace_id ?? null,
+      question: payload.message,
+      answer: rag.answer,
+      sources: rag.sources,
+      sessionId: payload.session_id ?? null,
+      gatewayMode: "read_rag",
+      contextSurface: payload.context_surface,
+      language: payload.language,
     });
 
     return NextResponse.json(
