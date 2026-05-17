@@ -27,9 +27,12 @@ import {
   resolveNovaProductHelpIntent,
 } from "@/lib/nova/site-map";
 import {
+  buildNovaContentFallbackResponse,
+  buildNovaHardGateResponse,
   buildUnsafeNovaRefusal,
   extractNovaFormatInstruction,
   getNovaGatewayBehaviorMessages,
+  validateNovaResponse,
 } from "@/lib/nova/behavior-prompt";
 import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import {
@@ -587,18 +590,22 @@ export async function POST(request: NextRequest) {
     if (!parsed.ok) return parsed.response;
 
     const payload = parsed.data;
-    const unsafeRefusal = buildUnsafeNovaRefusal(payload.message);
-    if (unsafeRefusal) {
+    const hardGateAnswer = buildNovaHardGateResponse(payload.message);
+    if (hardGateAnswer) {
+      const isSafety = Boolean(buildUnsafeNovaRefusal(payload.message));
       return NextResponse.json(
         normalizeNovaAgentResponse({
           type: "message",
-          answer: formatNovaDisplayText(unsafeRefusal),
+          answer: formatNovaDisplayText(hardGateAnswer),
           session_id: payload.session_id ?? null,
           as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
           answer_mode: payload.answer_mode,
           jurisdiction_code: payload.jurisdiction_code ?? "TR",
           sources: [],
-          telemetry: { gateway_mode: "safety_refusal", context_surface: payload.context_surface },
+          telemetry: {
+            gateway_mode: isSafety ? "safety_refusal" : "behavior_prompt",
+            context_surface: payload.context_surface,
+          },
         }),
       );
     }
@@ -1107,6 +1114,33 @@ export async function POST(request: NextRequest) {
         }
         normalized.follow_up_actions = [];
       }
+
+      const validation = validateNovaResponse({
+        prompt: payload.message,
+        response: normalized.answer,
+      });
+      if (!validation.valid) {
+        const replacement =
+          validation.replacement ?? buildNovaContentFallbackResponse(payload.message);
+        if (replacement) {
+          normalized.answer = formatNovaDisplayText(replacement);
+          normalized.sources = [];
+          normalized.navigation = null;
+          normalized.follow_up_actions = [];
+          normalized.tool_preview = null;
+          normalized.action_hint = null;
+          normalized.draft = null;
+          normalized.telemetry = {
+            ...(normalized.telemetry && typeof normalized.telemetry === "object"
+              ? normalized.telemetry
+              : {}),
+            gateway_mode: "behavior_validator_fallback",
+            validator_reason: validation.reason,
+            context_surface: payload.context_surface,
+          };
+        }
+      }
+
       return NextResponse.json(normalized, { status: response.status });
     } catch {
       return NextResponse.json(

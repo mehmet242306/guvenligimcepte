@@ -3,7 +3,7 @@ import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { consumeEntitlement } from "@/lib/billing/entitlements";
 import { normalizeNovaAgentResponse, novaChatRequestSchema } from "@/lib/nova/agent";
 import { assertNovaFeatureEnabled } from "@/lib/nova/governance";
-import { buildUnsafeNovaRefusal } from "@/lib/nova/behavior-prompt";
+import { buildNovaHardGateResponse, buildUnsafeNovaRefusal } from "@/lib/nova/behavior-prompt";
 import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import { answerWithLegalRag } from "@/lib/rag/legal/answer-with-rag";
 import { enforceRateLimit, parseJsonBody, resolveAiDailyLimit } from "@/lib/security/server";
@@ -21,6 +21,27 @@ export async function POST(request: NextRequest) {
   if (!parsed.ok) return parsed.response;
 
   const payload = parsed.data;
+  const hardGateAnswer = buildNovaHardGateResponse(payload.message);
+  if (hardGateAnswer) {
+    const isSafety = Boolean(buildUnsafeNovaRefusal(payload.message));
+    return NextResponse.json(
+      normalizeNovaAgentResponse({
+        type: "message",
+        answer: formatNovaDisplayText(hardGateAnswer),
+        session_id: payload.session_id ?? null,
+        as_of_date: payload.as_of_date ?? new Date().toISOString().slice(0, 10),
+        answer_mode: payload.answer_mode ?? "extractive",
+        jurisdiction_code: payload.jurisdiction_code ?? "TR",
+        sources: [],
+        telemetry: {
+          gateway_mode: isSafety ? "safety_refusal" : "behavior_prompt",
+          context_surface: payload.context_surface,
+          legal_rag_bypassed: true,
+        },
+      }),
+    );
+  }
+
   const unsafeRefusal = buildUnsafeNovaRefusal(payload.message);
   if (unsafeRefusal) {
     return NextResponse.json(

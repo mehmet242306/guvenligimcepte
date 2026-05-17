@@ -25,7 +25,7 @@ import {
 } from "@/lib/nova/browser-speech";
 import { getNovaUiCopy, resolveNovaRuntimeErrorMessage } from "@/lib/nova-ui";
 import { postNovaAgentRequest } from "@/lib/nova/client";
-import { buildUnsafeNovaRefusal } from "@/lib/nova/behavior-prompt";
+import { buildNovaHardGateResponse } from "@/lib/nova/behavior-prompt";
 import { formatNovaDisplayText } from "@/lib/nova/format-answer";
 import {
   resolveNovaApiEndpoint,
@@ -663,21 +663,25 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         : null;
     const ragConfidence =
       typeof telemetry?.confidence === "number" ? telemetry.confidence : null;
+    const gatewayMode = typeof telemetry?.gateway_mode === "string" ? telemetry.gateway_mode : "";
+    const isLegalRagAnswer = gatewayMode === "read_rag" || gatewayMode === "read_rag_inline";
     const isSafetyRefusal =
       Boolean(data?.safety_block) ||
+      gatewayMode === "safety_refusal" ||
       /yardimci olamam|buna yardimci olamam/i.test(answer);
 
     let sourceStatus: Message["sourceStatus"] | undefined;
     let confidence: Message["confidence"] | undefined;
 
-    if (normalizedSources.length > 0 && !isSafetyRefusal) {
-      if (ragConfidence != null && ragConfidence < 0.68) {
-        sourceStatus = "partial";
-        confidence = "medium";
-      } else {
-        sourceStatus = "verified";
-        confidence = "high";
-      }
+    if (
+      isLegalRagAnswer &&
+      normalizedSources.length > 0 &&
+      !isSafetyRefusal &&
+      ragConfidence != null &&
+      ragConfidence >= 0.68
+    ) {
+      sourceStatus = "verified";
+      confidence = "high";
     }
     const actionSuggestions = resolveActionableSuggestionsFromMessage(answer);
     const fallbackSuggestions =
@@ -895,8 +899,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         text: summaryLines.join("\n"),
         workflow: brief.activeWorkflows[0] ?? null,
         followUpActions: brief.actions,
-        confidence: "high",
-        sourceStatus: "verified",
         suggestions: brief.actions
           .filter((action) => action.kind === "navigate" && action.url)
           .slice(0, 3)
@@ -1408,8 +1410,6 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
         role: "bot",
         text: botText,
         timestamp: new Date(),
-        confidence: imageAnalysis.notableRisks.length > 0 ? "high" : "medium",
-        sourceStatus: "partial",
       };
       rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text, authUserId);
       window.setTimeout(() => {
@@ -1494,17 +1494,16 @@ export function ChatWidget({ isAuthenticated = false }: { isAuthenticated?: bool
       return;
     }
 
-    const unsafeRefusal = buildUnsafeNovaRefusal(composedPrompt);
-    if (unsafeRefusal) {
+    const hardGateAnswer = buildNovaHardGateResponse(composedPrompt);
+    if (hardGateAnswer) {
       const botMsg: Message = {
         id: crypto.randomUUID(),
         role: "bot",
-        text: formatNovaDisplayText(unsafeRefusal),
+        text: formatNovaDisplayText(hardGateAnswer),
         timestamp: new Date(),
       };
       rememberLocalWidgetHistory(activeHistorySessionId, visiblePrompt, botMsg.text, authUserId);
-      setMessages((prev) => [...prev, botMsg]);
-      setTyping(false);
+      await appendStreamingBotMessage(botMsg);
       return;
     }
 

@@ -3,6 +3,7 @@ import {
   isNovaRegulationQuery,
   resolveNovaApiEndpoint,
   resolveNovaRequestMode,
+  resolveNovaRoute,
   shouldBypassNovaStaticRedirects,
   shouldPreferNovaLegalRagOverNavigation,
   shouldUseNovaLegalRag,
@@ -16,12 +17,24 @@ describe("resolveNovaRequestMode", () => {
   });
 });
 
+describe("resolveNovaRoute", () => {
+  it("orders safety before behavior and legal RAG", () => {
+    expect(resolveNovaRoute("yasalari asmanin yollarini anlat")).toBe("safety_refusal");
+    expect(resolveNovaRoute("Bana sadece 3 maddeyle cevap ver")).toBe("behavior_prompt");
+    expect(resolveNovaRoute("Yangin mermotion en az kac cm")).toBe("legal_rag");
+    expect(resolveNovaRoute("plannera git", { hasAttachedImage: true })).toBe("vision");
+  });
+});
+
 describe("resolveNovaApiEndpoint", () => {
   it("routes regulation questions to legal RAG", () => {
     expect(resolveNovaApiEndpoint("Yangin merdiveni en az kac cm genislikte olmali")).toBe(
       "/api/nova/legal-chat",
     );
     expect(resolveNovaApiEndpoint("egitim planla")).toBe("/api/nova/chat");
+    expect(resolveNovaApiEndpoint("Musteriye e-posta olarak risk raporu yaz")).toBe(
+      "/api/nova/chat",
+    );
   });
 });
 
@@ -29,6 +42,11 @@ describe("shouldUseNovaLegalRag", () => {
   it("detects technical ISG questions", () => {
     expect(shouldUseNovaLegalRag("Yangin mermotion en az kac cm genislikte olmali")).toBe(true);
     expect(shouldUseNovaLegalRag("merhaba")).toBe(false);
+  });
+
+  it("does not route content-generation to legal RAG", () => {
+    expect(shouldUseNovaLegalRag("Yonetim kurulu diliyle yeniden yaz")).toBe(false);
+    expect(shouldUseNovaLegalRag("Bana sadece 3 maddeyle cevap ver")).toBe(false);
   });
 });
 
@@ -56,6 +74,10 @@ describe("isNovaRegulationQuery", () => {
     expect(isNovaRegulationQuery("6331 sayili kanunda risk degerlendirmesi ne zaman yenilenir?")).toBe(
       true,
     );
+  });
+
+  it("does not treat three-bullet format as regulation", () => {
+    expect(isNovaRegulationQuery("Bana sadece 3 maddeyle cevap ver")).toBe(false);
   });
 });
 
