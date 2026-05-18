@@ -104,13 +104,39 @@ export function validateVisionResponse(parsed: Record<string, any>): VisionValid
 
   const requiresRisks = relevance === "relevant" || relevance === "irrelevant";
 
+  const pre =
+    parsed.preAnalysis && typeof parsed.preAnalysis === "object"
+      ? (parsed.preAnalysis as Record<string, unknown>)
+      : {};
+  const sceneType = String(pre.scene_type ?? parsed.scene_type ?? "").trim();
+  const constructionSignals =
+    sceneType === "construction_site" ||
+    pre.contains_work_at_height === true ||
+    pre.contains_scaffold_or_platform === true ||
+    pre.contains_open_edge === true ||
+    pre.contains_workers === true;
+
   if (requiresRisks && validRisks.length === 0) {
+    const message = constructionSignals
+      ? "İnşaat/yüksekte çalışma sahası görselinde risk kaydı zorunludur; analiz başarısız sayılmalıdır."
+      : "Geçerli risk kaydı üretilemedi; manuel doğrulama veya yeniden analiz gerekli.";
     return {
       ok: false,
-      parsed,
-      error: "Geçerli risk kaydı üretilemedi; manuel doğrulama veya yeniden analiz gerekli.",
+      parsed: {
+        ...parsed,
+        analysis_status: "failed",
+        image_analysis_status: "failed",
+        risk_count: null,
+        zero_risk_allowed: false,
+        analysis_error: message,
+      },
+      error: message,
       invalidRiskCount,
     };
+  }
+
+  if (constructionSignals && parsed.zero_risk_allowed === true) {
+    parsed.zero_risk_allowed = false;
   }
 
   return { ok: true, parsed, invalidRiskCount };

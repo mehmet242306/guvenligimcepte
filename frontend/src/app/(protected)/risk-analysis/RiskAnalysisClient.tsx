@@ -3008,9 +3008,15 @@ JSON formatında döndür:
     let pendingImageCount = 0;
     let partialImageCount = 0;
 
-    for (const result of results) {
-      const sourceLine = lineMap.get(result.rowId);
-      if (!sourceLine) continue;
+    const resultsByRowId = new Map(results.map((r) => [r.rowId, r]));
+    const validLines = lines.filter((l) => l.images.length > 0);
+
+    for (const sourceLine of validLines) {
+      const result = resultsByRowId.get(sourceLine.id);
+      const rowTitle =
+        sourceLine.title.trim() ||
+        result?.rowTitle ||
+        trRiskScoring("wizard.step3.rowN", { n: globalImageIndex + 1 });
       for (const img of sourceLine.images) {
         globalImageIndex += 1;
         const meta = imageMetaMap[img.id];
@@ -3020,24 +3026,23 @@ JSON formatında döndür:
         if (status === "partial") partialImageCount += 1;
         if (status === "pending") pendingImageCount += 1;
 
-        const imgFindings = filterRealFindings(result.findings.filter((f) => f.imageId === img.id));
-        const exportFindings = imgFindings.map((f) => mapFindingToExport(f, result.rowTitle));
-        const dataUrl =
-          status === "success" && imgFindings.length > 0
-            ? await blobUrlToDataUrl(img.previewUrl, imgFindings)
-            : await blobUrlToDataUrl(img.previewUrl, imgFindings);
+        const imgFindings = filterRealFindings(
+          (result?.findings ?? []).filter((f) => f.imageId === img.id),
+        );
+        const exportFindings = imgFindings.map((f) => mapFindingToExport(f, rowTitle));
+        const dataUrl = await blobUrlToDataUrl(img.previewUrl, imgFindings);
 
         const areaLocation =
           meta?.areaSummary?.trim() ||
           sourceLine.description?.trim() ||
-          result.rowTitle;
+          rowTitle;
 
         const failed = status === "failed" || status === "manual_required";
         imageSections.push({
           imageIndex: globalImageIndex,
           imageId: img.id,
           fileName: img.file.name,
-          rowTitle: result.rowTitle,
+          rowTitle,
           areaLocation,
           analysisStatus: status,
           analysisStatusLabel: imageAnalysisStatusLabel(status),
@@ -3070,7 +3075,7 @@ JSON formatında döndür:
         if (dataUrl) {
           images.push({
             imageId: img.id,
-            rowTitle: result.rowTitle,
+            rowTitle,
             dataUrl,
             fileName: img.file.name,
             findingCount: exportFindings.length,

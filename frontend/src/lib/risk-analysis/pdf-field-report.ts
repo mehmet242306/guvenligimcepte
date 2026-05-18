@@ -19,6 +19,11 @@ import {
   formatMatrixBlock,
   riskClassLabelTr,
 } from "@/lib/risk-analysis/finding-quality";
+import {
+  measureWrappedTextHeight,
+  syncYAfterTable,
+  writeParagraph,
+} from "@/lib/risk-analysis/pdf-layout-helpers";
 
 let notoSansFontPromise: Promise<{ regular: string; bold: string } | null> | null = null;
 
@@ -105,12 +110,7 @@ function truncate(text: string, max: number): string {
   return `${t.slice(0, max - 1)}…`;
 }
 
-type PdfTable = { lastAutoTable?: { finalY: number } };
 type TableCell = string | number | boolean | null | undefined;
-
-function tableY(doc: InstanceType<typeof import("jspdf").jsPDF>, fallback: number): number {
-  return (doc as PdfTable).lastAutoTable?.finalY ?? fallback;
-}
 
 function sceneTypeLabel(value: unknown): string {
   switch (String(value || "")) {
@@ -191,19 +191,26 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   let y = margin;
 
   const alertBox = (text: string) => {
-    const wrapped = doc.splitTextToSize(text, width - margin * 2 - 8) as string[];
-    const h = wrapped.length * 4.2 + 8;
+    const innerWidth = width - margin * 2 - 8;
+    const wrapped = doc.splitTextToSize(text, innerWidth) as string[];
+    const h = wrapped.length * 4.2 + 10;
     ensureSpace(h);
+    const boxTop = y;
     doc.setFillColor(254, 226, 226);
     doc.setDrawColor(185, 28, 28);
-    doc.roundedRect(margin, y, width - margin * 2, h, 2, 2, "FD");
-    doc.setFont(fontFamily, "bold");
-    doc.setFontSize(9);
-    doc.setTextColor(127, 29, 29);
-    doc.text(wrapped, margin + 4, y + 6);
-    y += h + 4;
-    doc.setTextColor(15, 23, 42);
-    doc.setFont(fontFamily, "normal");
+    doc.roundedRect(margin, boxTop, width - margin * 2, h, 2, 2, "FD");
+    y = writeParagraph(doc, {
+      text,
+      x: margin + 4,
+      y: boxTop + 5,
+      maxWidth: innerWidth,
+      fontFamily,
+      fontSize: 9,
+      style: "bold",
+      color: [127, 29, 29],
+      lineHeightFactor: 1.15,
+    });
+    y += 4;
   };
 
   const addPageHeaderFooter = () => {
@@ -225,13 +232,24 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   };
 
   const line = (text: string, size = 10, style: "normal" | "bold" = "normal", color: [number, number, number] = [15, 23, 42]) => {
-    doc.setFont(fontFamily, style);
-    doc.setFontSize(size);
-    doc.setTextColor(...color);
-    const wrapped = doc.splitTextToSize(text, width - margin * 2) as string[];
-    ensureSpace(wrapped.length * (size * 0.42) + 3);
-    doc.text(wrapped, margin, y);
-    y += wrapped.length * (size * 0.42) + 3;
+    const blockH = measureWrappedTextHeight(doc, text, width - margin * 2, size);
+    ensureSpace(blockH + 2);
+    y = writeParagraph(doc, {
+      text,
+      x: margin,
+      y,
+      maxWidth: width - margin * 2,
+      fontFamily,
+      fontSize: size,
+      style,
+      color,
+    });
+  };
+
+  const subsection = (text: string) => {
+    ensureSpace(10);
+    y += 2;
+    line(text, 10, "bold");
   };
 
   const section = (title: string) => {
@@ -277,7 +295,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       alternateRowStyles: { fillColor: [248, 250, 252] },
       columnStyles: options.columnStyles,
     });
-    y = tableY(doc, y + 20) + 6;
+    y = syncYAfterTable(doc, y);
   };
 
   const addKeyValueTable = (
@@ -303,7 +321,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         2: { cellWidth: options.labelWidth ?? 38, fillColor: options.headerColor ?? [241, 245, 249], fontStyle: "bold" },
       },
     });
-    y = tableY(doc, y + 16) + 6;
+    y = syncYAfterTable(doc, y);
   };
 
   const addNumberedListTable = (title: string, rows: string[], limit = 12) => {
@@ -460,7 +478,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     styles: { font: fontFamily, fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
     headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: "bold" },
   });
-  y = tableY(doc, y + 35);
+  y = syncYAfterTable(doc, y);
   y += 6;
 
   section("5. Metodoloji ve Fine-Kinney");
@@ -529,8 +547,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         }
       },
     });
-    y = tableY(doc, y + 40);
-    y += 6;
+    y = syncYAfterTable(doc, y);
     addPageHeaderFooter();
   } else if (incomplete) {
     line("Konsolide tablo üretilemedi: bir veya daha fazla görsel analiz edilemedi. Başarısız analiz 0 risk sayılmaz.", 9);
@@ -538,13 +555,24 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     line("Başarıyla analiz edilen görsellerde kayıtlı risk bulgusu yok (saha güvenli görünüm).", 9);
   }
 
-  section("7. Görsel Bazlı Analiz");
+  if (sections.length === 0) {
+    section("7. Görsel Bazlı Analiz");
+    line("Bu rapora aktarılmış görsel bulunamadı. Analiz tamamlanmadan export alındıysa görselleri yükleyip analizi yeniden çalıştırın.", 9);
+  }
+
+  let firstVisualSection = true;
   for (const sec of sections) {
-    doc.addPage();
-    y = margin + 6;
-    addPageHeaderFooter();
+    if (firstVisualSection) {
+      section("7. Görsel Bazlı Analiz");
+      firstVisualSection = false;
+    } else {
+      doc.addPage();
+      y = margin + 6;
+      addPageHeaderFooter();
+    }
 
     const gCode = `G${sec.imageIndex}`;
+    const excluded = sec.scopeDecision === "exclude" || sec.isgKapsamindaMi === false || sec.sceneType === "non_workplace";
     line(`${gCode} — ${displayFileName(sec.fileName, sec.imageIndex)}`, 11, "bold");
     addKeyValueTable(
       [
@@ -573,6 +601,12 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       } catch (e) {
         console.warn("[pdf-field-report] image skip", e);
       }
+    }
+
+    if (excluded) {
+      alertBox("Bu görsel İSG risk analizi kapsamı dışında değerlendirildi; Fine-Kinney risk tablosu oluşturulmaz.");
+      line(`Gerekçe: ${asText(sec.scopeReason)}`, 8);
+      continue;
     }
 
     const secFailed =
@@ -644,11 +678,11 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         }
       },
     });
-    y = tableY(doc, y + 20);
-    y += 4;
+    y = syncYAfterTable(doc, y);
 
     for (const f of sec.findings) {
-      section(`${f.riskCode ?? "R?"} — Risk Detay Fişi`);
+      ensureSpace(24);
+      subsection(`${f.riskCode ?? "R?"} — Risk Detay Fişi`);
       addKeyValueTable(
         [
           ["Risk başlığı", f.title, "Kategori", f.category],
