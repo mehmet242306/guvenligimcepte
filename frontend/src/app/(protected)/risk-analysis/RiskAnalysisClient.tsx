@@ -104,7 +104,6 @@ import {
   looksLikeConstructionContext,
 } from "@/lib/risk-analysis/construction-site-checklist";
 import type { SceneType } from "@/lib/risk-analysis-export";
-import { isReportIncomplete } from "@/lib/risk-analysis/field-report-validity";
 import { downloadServerExport } from "@/lib/billing/server-export-client";
 import { MAX_IMAGES_PER_UPLOAD_BATCH, MAX_RISK_ANALYSIS_IMAGES_TOTAL } from "@/lib/risk-analysis/upload-limits";
 import {
@@ -3517,6 +3516,11 @@ JSON formatında döndür:
     return "bg-green-600/80 text-white";
   }
 
+  const reportQuickLinkClass =
+    "inline-flex h-7 items-center rounded-lg border border-border bg-background px-2.5 text-xs font-semibold text-foreground shadow-sm transition hover:border-primary/40 hover:bg-primary/5";
+  const reportPrimaryLinkClass =
+    "inline-flex h-9 min-h-[44px] items-center rounded-xl border border-emerald-300 bg-emerald-50 px-3 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300 dark:hover:bg-emerald-900/30";
+
   /* ════════════════════════════════════════════════════════════════ */
   /* LIST MODE — Firma seçimi + analiz geçmişi                      */
   /* ════════════════════════════════════════════════════════════════ */
@@ -3614,6 +3618,9 @@ JSON formatında döndür:
                           </div>
                         ) : (
                           <>
+                            <Link href={`/reports/${a.id}/interactive`} className={reportQuickLinkClass}>Rapor</Link>
+                            <Link href={`/reports/${a.id}/print`} className={reportQuickLinkClass}>Print</Link>
+                            <Link href={`/api/risk-analysis/export/${a.id}`} className={reportQuickLinkClass}>PDF</Link>
                             <Button type="button" variant="ghost" className="h-7 px-2 text-xs text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={() => setDeleteConfirmId(a.id)}>{trRiskScoring("wizard.list.deleteAnalysis")}</Button>
                           </>
                         )}
@@ -4215,6 +4222,13 @@ JSON formatında döndür:
                 <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[5rem] rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" onClick={() => void exportRiskReport("pdf")} disabled={results.length === 0}>PDF</Button>
                 <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[5rem] rounded-xl px-3 text-xs font-bold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20" onClick={() => void exportRiskReport("word")} disabled={results.length === 0}>Word</Button>
                 <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[5rem] rounded-xl px-3 text-xs font-bold text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" onClick={() => void exportRiskReport("excel")} disabled={results.length === 0}>Excel</Button>
+                {currentAssessmentId ? (
+                  <>
+                    <Link href={`/reports/${currentAssessmentId}/interactive`} className={reportPrimaryLinkClass}>Etkileşimli rapor</Link>
+                    <Link href={`/reports/${currentAssessmentId}/print`} className={reportPrimaryLinkClass}>Print görünüm</Link>
+                    <Link href={`/api/risk-analysis/export/${currentAssessmentId}`} className={reportPrimaryLinkClass}>Kayıtlı PDF</Link>
+                  </>
+                ) : null}
               </div>
             </div>
           </div>
@@ -4248,16 +4262,27 @@ JSON formatında döndür:
                     </button>
                   </div>
                 ) : null}
-                {saveTone === "success" && selectedCompanyId ? (
-                  <Link
-                    href={`/companies/${selectedCompanyId}?tab=risk`}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-700"
-                  >
-                    {selectedCompany?.name
-                      ? `${selectedCompany.name} → Risk ve Saha`
-                      : "Firma sayfasında görüntüle"}
-                    <span aria-hidden>→</span>
-                  </Link>
+                {saveTone === "success" ? (
+                  <div className="flex shrink-0 flex-wrap items-center gap-2">
+                    {currentAssessmentId ? (
+                      <>
+                        <Link href={`/reports/${currentAssessmentId}/interactive`} className={reportQuickLinkClass}>Etkileşimli rapor</Link>
+                        <Link href={`/reports/${currentAssessmentId}/print`} className={reportQuickLinkClass}>Print</Link>
+                        <Link href={`/api/risk-analysis/export/${currentAssessmentId}`} className={reportQuickLinkClass}>PDF</Link>
+                      </>
+                    ) : null}
+                    {selectedCompanyId ? (
+                      <Link
+                        href={`/companies/${selectedCompanyId}?tab=risk`}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+                      >
+                        {selectedCompany?.name
+                          ? `${selectedCompany.name} → Risk ve Saha`
+                          : "Firma sayfasında görüntüle"}
+                        <span aria-hidden>→</span>
+                      </Link>
+                    ) : null}
+                  </div>
                 ) : null}
               </div>
             </StatusAlert>
