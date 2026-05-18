@@ -598,38 +598,140 @@ export function exportRiskAnalysisPDF(_data: RiskAnalysisExportData): never {
 }
 
 /* ================================================================== */
-/* Word Export — docx kütüphanesi ile gerçek DOCX                      */
+/* Word Export — docx kütüphanesi ile premium profesyonel rapor        */
 /* ================================================================== */
 
-const GOLD_HEX = "B8860B";
-const DARK_HEX = "1A1A2E";
+// Premium renk paleti (PDF ile uyumlu)
+const NAVY_HEX = "0F172A";
+const NAVY_MID_HEX = "1E293B";
+const GOLD_HEX = "B48E26";
+const GOLD_PALE_HEX = "FDF8EA";
+const TEAL_DARK_HEX = "0F766E";
+const SLATE_50_HEX = "F8FAFC";
+const SLATE_100_HEX = "F1F5F9";
+const SLATE_200_HEX = "E2E8F0";
+const SLATE_400_HEX = "94A3B8";
+const SLATE_500_HEX = "64748B";
+const DARK_HEX = "0F172A";
 
 function sevColorHex(s: string): string {
-  return s === "critical" ? "7F1D1D" : s === "high" ? "DC2626" : s === "medium" ? "F97316" : s === "low" ? "F59E0B" : "10B981";
+  return s === "critical" ? "991B1B" : s === "high" ? "DC4E0A" : s === "medium" ? "B47804" : s === "low" ? "15803D" : "64748B";
 }
 
 function sevBgHex(s: string): string {
-  return s === "critical" ? "FEE2E2" : s === "high" ? "FEF2F2" : s === "medium" ? "FFF7ED" : s === "low" ? "FFFBEB" : "ECFDF5";
+  return s === "critical" ? "FEE2E2" : s === "high" ? "FED7AA" : s === "medium" ? "FEF3C7" : s === "low" ? "DCFCE7" : "F1F5F9";
+}
+
+function sevLabelTr(s: string): string {
+  return s === "critical" ? "KRİTİK" : s === "high" ? "YÜKSEK" : s === "medium" ? "ORTA" : s === "low" ? "DÜŞÜK" : "İZLEME";
 }
 
 function thinBorder() {
-  const b = { style: BorderStyle.SINGLE, size: 1, color: "DEE2E6" };
+  const b = { style: BorderStyle.SINGLE, size: 2, color: SLATE_200_HEX };
   return { top: b, bottom: b, left: b, right: b };
+}
+
+function noBorder() {
+  const b = { style: BorderStyle.NONE, size: 0, color: "FFFFFF" };
+  return { top: b, bottom: b, left: b, right: b };
+}
+
+/** Bölüm başlığı şeridi — sol altın çubuk + navy başlık */
+function sectionBanner(text: string): Table {
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [new TableRow({
+      children: [
+        new TableCell({
+          width: { size: 3, type: WidthType.PERCENTAGE },
+          children: [new Paragraph({ children: [new TextRun({ text: " ", size: 1 })] })],
+          shading: { type: ShadingType.SOLID, color: GOLD_HEX },
+          borders: noBorder(),
+        }),
+        new TableCell({
+          width: { size: 97, type: WidthType.PERCENTAGE },
+          children: [new Paragraph({
+            children: [new TextRun({ text: text.toLocaleUpperCase("tr-TR"), bold: true, size: 22, font: "Segoe UI", color: "FFFFFF" })],
+            spacing: { before: 80, after: 80 },
+          })],
+          shading: { type: ShadingType.SOLID, color: NAVY_HEX },
+          margins: { left: 200, right: 100, top: 60, bottom: 60 },
+          borders: noBorder(),
+        }),
+      ],
+    })],
+  });
+}
+
+/** Etiket hücresi (altın açık arkaplan) */
+function labelCell(text: string, widthPct = 18): TableCell {
+  return new TableCell({
+    width: { size: widthPct, type: WidthType.PERCENTAGE },
+    children: [new Paragraph({
+      children: [new TextRun({ text, bold: true, size: 17, font: "Segoe UI", color: NAVY_HEX })],
+      spacing: { after: 20 },
+    })],
+    shading: { type: ShadingType.SOLID, color: GOLD_PALE_HEX },
+    borders: thinBorder(),
+    margins: { top: 60, bottom: 60, left: 100, right: 100 },
+  });
+}
+
+/** Değer hücresi */
+function valueCell(text: string, widthPct = 32): TableCell {
+  return new TableCell({
+    width: { size: widthPct, type: WidthType.PERCENTAGE },
+    children: [new Paragraph({
+      children: [new TextRun({ text: text || "-", size: 17, font: "Segoe UI", color: DARK_HEX })],
+      spacing: { after: 20 },
+    })],
+    borders: thinBorder(),
+    margins: { top: 60, bottom: 60, left: 100, right: 100 },
+  });
+}
+
+/** İstatistik kartı hücresi (renkli başlık + büyük rakam) */
+function statCardCell(label: string, value: string | number, accentHex: string): TableCell {
+  return new TableCell({
+    width: { size: 25, type: WidthType.PERCENTAGE },
+    children: [
+      new Paragraph({
+        children: [new TextRun({ text: String(value), bold: true, size: 36, font: "Segoe UI", color: accentHex })],
+        alignment: AlignmentType.CENTER,
+        spacing: { before: 100, after: 40 },
+      }),
+      new Paragraph({
+        children: [new TextRun({ text: label.toLocaleUpperCase("tr-TR"), bold: true, size: 16, font: "Segoe UI", color: SLATE_500_HEX })],
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 80 },
+      }),
+    ],
+    shading: { type: ShadingType.SOLID, color: SLATE_50_HEX },
+    borders: {
+      top: { style: BorderStyle.SINGLE, size: 4, color: accentHex },
+      bottom: { style: BorderStyle.SINGLE, size: 4, color: accentHex },
+      left: { style: BorderStyle.SINGLE, size: 12, color: accentHex },
+      right: { style: BorderStyle.SINGLE, size: 4, color: accentHex },
+    },
+    margins: { top: 60, bottom: 60, left: 100, right: 100 },
+  });
 }
 
 function goldHeaderCell(text: string): TableCell {
   return new TableCell({
     children: [new Paragraph({ children: [new TextRun({ text, bold: true, size: 18, font: "Segoe UI", color: "FFFFFF" })], alignment: AlignmentType.LEFT })],
-    shading: { type: ShadingType.SOLID, color: GOLD_HEX },
+    shading: { type: ShadingType.SOLID, color: NAVY_MID_HEX },
     borders: thinBorder(),
+    margins: { top: 60, bottom: 60, left: 100, right: 100 },
   });
 }
 
 function dataCell(text: string, opts?: { bold?: boolean; color?: string; bg?: string }): TableCell {
   return new TableCell({
-    children: [new Paragraph({ children: [new TextRun({ text: text || "-", bold: opts?.bold, size: 18, font: "Segoe UI", color: opts?.color || DARK_HEX })], spacing: { after: 40 } })],
+    children: [new Paragraph({ children: [new TextRun({ text: text || "-", bold: opts?.bold, size: 17, font: "Segoe UI", color: opts?.color || DARK_HEX })], spacing: { after: 20 } })],
     shading: opts?.bg ? { type: ShadingType.SOLID, color: opts.bg } : undefined,
     borders: thinBorder(),
+    margins: { top: 60, bottom: 60, left: 100, right: 100 },
   });
 }
 
@@ -648,314 +750,491 @@ function parseDataUrl(dataUrl: string): { buffer: Uint8Array; ext: "jpg" | "png"
 }
 
 function appendWordFindingDetail(children: (Paragraph | Table)[], f: ExportFinding, pin: string) {
-  children.push(new Paragraph({ spacing: { before: 200 } }));
-  children.push(new Paragraph({
-    children: [
-      new TextRun({ text: `${pin} — ${f.title}`, bold: true, size: 22, font: "Segoe UI", color: DARK_HEX }),
-      new TextRun({ text: ` · ${methodScoreDetail(f) || `${f.scoreLabel} (${scoreDisplay(f)})`}`, bold: true, size: 18, font: "Segoe UI", color: sevColorHex(f.severity) }),
-    ],
-    shading: { type: ShadingType.SOLID, color: sevBgHex(f.severity) },
-    spacing: { after: 40 },
+  const sevColor = sevColorHex(f.severity);
+  const sevLabel = sevLabelTr(f.severity);
+
+  // Risk başlık şeridi: renkli sol çubuk + kod + başlık + sınıf rozeti
+  children.push(new Paragraph({ spacing: { before: 120 } }));
+  children.push(new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [new TableRow({
+      children: [
+        new TableCell({
+          width: { size: 2, type: WidthType.PERCENTAGE },
+          children: [new Paragraph({ children: [new TextRun({ text: " ", size: 1 })] })],
+          shading: { type: ShadingType.SOLID, color: sevColor },
+          borders: noBorder(),
+        }),
+        new TableCell({
+          width: { size: 78, type: WidthType.PERCENTAGE },
+          children: [new Paragraph({
+            children: [
+              new TextRun({ text: `${pin}  `, bold: true, size: 22, font: "Segoe UI", color: sevColor }),
+              new TextRun({ text: f.title, bold: true, size: 22, font: "Segoe UI", color: NAVY_HEX }),
+            ],
+            spacing: { before: 60, after: 30 },
+          }), new Paragraph({
+            children: [new TextRun({ text: f.category || "-", size: 16, font: "Segoe UI", color: SLATE_500_HEX, italics: true })],
+            spacing: { after: 60 },
+          })],
+          shading: { type: ShadingType.SOLID, color: SLATE_50_HEX },
+          borders: noBorder(),
+          margins: { top: 40, bottom: 40, left: 200, right: 100 },
+        }),
+        new TableCell({
+          width: { size: 20, type: WidthType.PERCENTAGE },
+          children: [new Paragraph({
+            children: [new TextRun({ text: sevLabel, bold: true, size: 20, font: "Segoe UI", color: "FFFFFF" })],
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 120, after: 120 },
+          })],
+          shading: { type: ShadingType.SOLID, color: sevColor },
+          borders: noBorder(),
+        }),
+      ],
+    })],
   }));
-  children.push(new Paragraph({
-    children: [
-      new TextRun({ text: f.category, size: 18, font: "Segoe UI", color: "666666" }),
-      ...(f.correctiveActionRequired ? [new TextRun({ text: " · DÖF Adayı", bold: true, size: 18, font: "Segoe UI", color: "DC2626" })] : []),
-    ],
-    spacing: { after: 60 },
-  }));
-  children.push(new Paragraph({
-    children: [new TextRun({ text: "Tespit ve Değerlendirme", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
-    spacing: { after: 20 },
-  }));
-  children.push(new Paragraph({
-    children: [new TextRun({ text: f.recommendation || "Detaylı değerlendirme yapılmalıdır.", size: 20, font: "Segoe UI", color: DARK_HEX })],
-    spacing: { after: 60 },
-  }));
-  children.push(new Paragraph({
-    children: [new TextRun({ text: "Alınması Gereken Önlem", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
-    spacing: { after: 20 },
-  }));
-  children.push(new Paragraph({
-    children: [new TextRun({ text: findingActionText(f), size: 20, font: "Segoe UI", color: DARK_HEX })],
-    spacing: { after: 60 },
-  }));
+
+  // Detay 2-sütun key-value tablosu (label | value)
   const mDetail = methodScoreDetail(f);
-  if (mDetail) {
-    children.push(new Paragraph({
-      children: [new TextRun({ text: `Skorlama (${f.methodLabel})`, bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
-      spacing: { after: 20 },
-    }));
-    children.push(new Paragraph({
-      children: [new TextRun({ text: mDetail, size: 18, font: "Consolas", color: DARK_HEX })],
-      spacing: { after: 60 },
-    }));
-  }
-  children.push(new Paragraph({
-    children: [new TextRun({ text: "Mevzuat / RAG Bağlamı", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
-    spacing: { after: 20 },
+  const kvRows: { label: string; value: string }[] = [
+    { label: "Sınıf / Skor", value: `${sevLabel} / ${scoreDisplay(f)}` },
+    { label: "Yöntem", value: f.methodLabel },
+    { label: "Tespit ve Değerlendirme", value: f.recommendation || "Detaylı değerlendirme yapılmalıdır." },
+    { label: "Alınacak Önlem", value: findingActionText(f) },
+  ];
+  if (mDetail) kvRows.push({ label: "Skor Detayı", value: mDetail });
+  kvRows.push({ label: "Mevzuat Bağlamı", value: findingLegalText(f) });
+  if (f.correctiveActionRequired) kvRows.push({ label: "Durum", value: "DÖF Adayı — Düzeltici Faaliyet Gerekli" });
+
+  children.push(new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: kvRows.map((kv) => new TableRow({
+      children: [labelCell(kv.label, 22), valueCell(kv.value, 78)],
+    })),
   }));
-  children.push(new Paragraph({
-    children: [new TextRun({ text: findingLegalText(f), size: 18, font: "Segoe UI", color: DARK_HEX })],
-    spacing: { after: 40 },
-  }));
+  children.push(new Paragraph({ spacing: { after: 100 } }));
 }
 
 export async function generateRiskAnalysisWordBlob(data: RiskAnalysisExportData): Promise<Blob> {
   const now = data.date || new Date().toLocaleDateString("tr-TR");
   const children: (Paragraph | Table)[] = [];
 
-  // ── Başlık ──
-  children.push(new Paragraph({
-    children: [new TextRun({ text: "RİSK ANALİZİ RAPORU", bold: true, size: 36, font: "Segoe UI", color: GOLD_HEX })],
-    heading: HeadingLevel.TITLE,
-    spacing: { after: 80 },
-  }));
+  /* ================================================================ */
+  /*  KAPAK / BAŞLIK                                                  */
+  /* ================================================================ */
 
+  // Marka
   children.push(new Paragraph({
-    children: [new TextRun({ text: data.companyName, bold: true, size: 22, font: "Segoe UI", color: DARK_HEX })],
+    children: [new TextRun({ text: "RISKNOVA", bold: true, size: 18, font: "Segoe UI", color: GOLD_HEX })],
     spacing: { after: 40 },
   }));
-
-  const metaParts = [data.companyKind, data.companySector, data.companyHazardClass].filter(Boolean).join(" · ");
-  if (metaParts) {
-    children.push(new Paragraph({
-      children: [new TextRun({ text: metaParts, size: 18, font: "Segoe UI", color: "666666" })],
-      spacing: { after: 40 },
-    }));
-  }
-
   children.push(new Paragraph({
-    children: [
-      new TextRun({ text: `${data.methodLabel} · Tarih: ${now}`, size: 18, font: "Segoe UI", color: "666666" }),
-      new TextRun({ text: ` · Lokasyon: ${data.location || "-"} · Bölüm: ${data.department || "-"}`, size: 18, font: "Segoe UI", color: "666666" }),
-    ],
+    children: [new TextRun({ text: "Profesyonel İSG Risk Değerlendirme Platformu", size: 14, font: "Segoe UI", color: SLATE_500_HEX, italics: true })],
+    spacing: { after: 240 },
+  }));
+
+  // Ana başlık
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "RİSK DEĞERLENDİRME RAPORU", bold: true, size: 44, font: "Segoe UI", color: NAVY_HEX })],
+    heading: HeadingLevel.TITLE,
+    spacing: { after: 60 },
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: "Saha Risk Analizi | Denetim ve Aksiyon Takip Dokümanı", size: 18, font: "Segoe UI", color: SLATE_500_HEX })],
+    spacing: { after: 100 },
+  }));
+
+  // Altın çizgi
+  children.push(new Paragraph({
+    children: [new TextRun({ text: " ", size: 1 })],
+    border: { bottom: { style: BorderStyle.SINGLE, size: 18, color: GOLD_HEX, space: 1 } },
     spacing: { after: 200 },
   }));
+
+  // Firma bilgileri tablosu
+  children.push(new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [
+      new TableRow({ children: [
+        labelCell("Firma"), valueCell(data.companyName),
+        labelCell("Tarih"), valueCell(now),
+      ]}),
+      new TableRow({ children: [
+        labelCell("Lokasyon"), valueCell([data.location, data.department].filter(Boolean).join(" / ")),
+        labelCell("Yöntem"), valueCell(data.methodLabel),
+      ]}),
+      new TableRow({ children: [
+        labelCell("Sektör"), valueCell(data.companySector || "-"),
+        labelCell("Tehlike sınıfı"), valueCell(data.companyHazardClass || "-"),
+      ]}),
+      new TableRow({ children: [
+        labelCell("Adres"), valueCell(data.companyAddress || "-"),
+        labelCell("Rapor türü"), valueCell("Fotoğraf destekli saha risk değerlendirmesi"),
+      ]}),
+    ],
+  }));
+  children.push(new Paragraph({ spacing: { after: 240 } }));
 
   const sections = resolveExportImageSections(data);
   const totalReal = exportTotalFindings(data);
 
-  // ── İstatistikler ──
-  children.push(new Paragraph({
-    children: [
-      new TextRun({ text: `Toplam gerçek bulgu: ${totalReal}`, bold: true, size: 20, font: "Segoe UI", color: GOLD_HEX }),
-      new TextRun({ text: ` · Yüksek/Kritik: ${data.criticalCount}`, size: 20, font: "Segoe UI", color: "DC2626" }),
-      new TextRun({ text: ` · DÖF Adayı: ${data.dofCandidateCount}`, size: 20, font: "Segoe UI", color: GOLD_HEX }),
-      ...(data.failedImageCount
-        ? [new TextRun({ text: ` · Analiz başarısız görsel: ${data.failedImageCount}`, size: 20, font: "Segoe UI", color: "D97706" })]
-        : []),
-      new TextRun({ text: ` · Ekip: ${data.participants.length} kişi`, size: 20, font: "Segoe UI", color: GOLD_HEX }),
-    ],
-    spacing: { after: 300 },
+  /* ================================================================ */
+  /*  GENEL DURUM ÖZETİ                                               */
+  /* ================================================================ */
+
+  // Risk sınıfı sayımları
+  const counts = {
+    critical: data.findings.filter((f) => f.riskClass === "critical").length,
+    high: data.findings.filter((f) => f.riskClass === "high").length,
+    medium: data.findings.filter((f) => f.riskClass === "medium").length,
+    low: data.findings.filter((f) => f.riskClass === "low" || f.riskClass === "follow_up").length,
+  };
+
+  children.push(sectionBanner("Genel Durum Özeti"));
+  children.push(new Paragraph({ spacing: { after: 80 } }));
+
+  // 4 istatistik kartı tablosu
+  children.push(new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [new TableRow({
+      children: [
+        statCardCell("Kritik", counts.critical, "DC2626"),
+        statCardCell("Yüksek", counts.high, "F97316"),
+        statCardCell("Orta", counts.medium, "EAB308"),
+        statCardCell("Düşük / İzleme", counts.low, "22C55E"),
+      ],
+    })],
   }));
+  children.push(new Paragraph({ spacing: { after: 120 } }));
 
-  // ── Katılımcılar ──
+  // Özet bilgi tablosu
+  children.push(new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [
+      new TableRow({ children: [
+        labelCell("Toplam görsel"), valueCell(String(sections.length)),
+        labelCell("Toplam risk bulgusu"), valueCell(String(totalReal)),
+      ]}),
+      new TableRow({ children: [
+        labelCell("Başarılı analiz"), valueCell(String(sections.filter((s) => s.analysisStatus === "success").length)),
+        labelCell("Manuel doğrulama"), valueCell(String(data.failedImageCount ?? 0)),
+      ]}),
+      new TableRow({ children: [
+        labelCell("DÖF adayı"), valueCell(String(data.dofCandidateCount)),
+        labelCell("Yüksek/Kritik"), valueCell(String(counts.critical + counts.high)),
+      ]}),
+    ],
+  }));
+  children.push(new Paragraph({ spacing: { after: 240 } }));
+
+  /* ================================================================ */
+  /*  HAZIRLAYAN / ANALİZ EKİBİ                                       */
+  /* ================================================================ */
   if (data.participants.length > 0) {
-    children.push(new Paragraph({
-      children: [new TextRun({ text: "ANALİZ EKİBİ", bold: true, size: 24, font: "Segoe UI", color: GOLD_HEX })],
-      heading: HeadingLevel.HEADING_2,
-      spacing: { before: 200, after: 100 },
-    }));
+    children.push(sectionBanner("Hazırlayan / Analiz Ekibi"));
+    children.push(new Paragraph({ spacing: { after: 80 } }));
 
-    const pRows = [
-      new TableRow({ children: [goldHeaderCell("#"), goldHeaderCell("Ad Soyad"), goldHeaderCell("Görev / Rol"), goldHeaderCell("Unvan"), goldHeaderCell("Belge No")] }),
-      ...data.participants.map((p, i) => new TableRow({
-        children: [dataCell(String(i + 1)), dataCell(p.fullName), dataCell(p.role), dataCell(p.title), dataCell(p.certificateNo)],
-      })),
-    ];
-    children.push(new Table({ rows: pRows, width: { size: 100, type: WidthType.PERCENTAGE } }));
+    children.push(new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        new TableRow({ children: [
+          goldHeaderCell("No"),
+          goldHeaderCell("Ad Soyad"),
+          goldHeaderCell("Görev / Rol"),
+          goldHeaderCell("Unvan"),
+          goldHeaderCell("Sertifika No"),
+        ]}),
+        ...data.participants.map((p, i) => new TableRow({
+          children: [
+            dataCell(String(i + 1)),
+            dataCell(p.fullName, { bold: true }),
+            dataCell(p.role),
+            dataCell(p.title),
+            dataCell(p.certificateNo),
+          ],
+        })),
+      ],
+    }));
+    children.push(new Paragraph({ spacing: { after: 240 } }));
   }
 
-  // ── Görsel bazlı bölümler ──
-  for (const sec of sections) {
-    if (sec.imageIndex > 1) {
+  /* ================================================================ */
+  /*  METODOLOJİ                                                       */
+  /* ================================================================ */
+  children.push(sectionBanner("Metodoloji"));
+  children.push(new Paragraph({ spacing: { after: 80 } }));
+  children.push(new Paragraph({
+    children: [new TextRun({
+      text: data.method === "fine_kinney"
+        ? "Bu değerlendirme Fine-Kinney metodolojisi (Risk = Olasılık × Maruziyet/Frekans × Şiddet) ile yapılmıştır. Her bulgu için P, F ve S parametreleri saha gözlemleri ve uzman değerlendirmesine dayanır."
+        : `Bu değerlendirme ${data.methodLabel} metodolojisi ile yapılmıştır.`,
+      size: 18,
+      font: "Segoe UI",
+      color: DARK_HEX,
+    })],
+    spacing: { after: 200 },
+  }));
+
+  // Sayfa atlaması — görsel analizi yeni sayfada başlasın
+  children.push(new Paragraph({ children: [new PageBreak()] }));
+
+  /* ================================================================ */
+  /*  GÖRSEL BAZLI ANALİZ                                              */
+  /* ================================================================ */
+  children.push(sectionBanner("Görsel Bazlı Analiz"));
+  children.push(new Paragraph({ spacing: { after: 120 } }));
+
+  for (let idx = 0; idx < sections.length; idx++) {
+    const sec = sections[idx];
+    if (idx > 0) {
       children.push(new Paragraph({ children: [new PageBreak()] }));
     }
 
-    children.push(new Paragraph({
-      children: [new TextRun({ text: `Görsel ${sec.imageIndex}: ${sec.fileName}`, bold: true, size: 26, font: "Segoe UI", color: GOLD_HEX })],
-      heading: HeadingLevel.HEADING_1,
-      spacing: { before: 300, after: 40 },
+    // Görsel başlık şeridi: kod chip + dosya adı + durum badge
+    const statusColor = sec.analysisStatus === "success" ? "059669" : "D97706";
+    children.push(new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 8, type: WidthType.PERCENTAGE },
+            children: [new Paragraph({
+              children: [new TextRun({ text: `G${sec.imageIndex}`, bold: true, size: 22, font: "Segoe UI", color: "FFFFFF" })],
+              alignment: AlignmentType.CENTER,
+            })],
+            shading: { type: ShadingType.SOLID, color: NAVY_HEX },
+            borders: noBorder(),
+            margins: { top: 100, bottom: 100, left: 40, right: 40 },
+          }),
+          new TableCell({
+            width: { size: 70, type: WidthType.PERCENTAGE },
+            children: [new Paragraph({
+              children: [new TextRun({ text: sec.fileName, bold: true, size: 20, font: "Segoe UI", color: NAVY_HEX })],
+              spacing: { before: 60, after: 60 },
+            })],
+            shading: { type: ShadingType.SOLID, color: SLATE_100_HEX },
+            borders: noBorder(),
+            margins: { top: 60, bottom: 60, left: 200, right: 100 },
+          }),
+          new TableCell({
+            width: { size: 22, type: WidthType.PERCENTAGE },
+            children: [new Paragraph({
+              children: [new TextRun({ text: sec.analysisStatusLabel, bold: true, size: 16, font: "Segoe UI", color: "FFFFFF" })],
+              alignment: AlignmentType.CENTER,
+            })],
+            shading: { type: ShadingType.SOLID, color: statusColor },
+            borders: noBorder(),
+            margins: { top: 100, bottom: 100, left: 60, right: 60 },
+          }),
+        ],
+      })],
     }));
-    children.push(new Paragraph({
-      children: [new TextRun({ text: `Alan: ${sec.areaLocation} · Satır: ${sec.rowTitle}`, size: 18, font: "Segoe UI", color: "666666" })],
-      spacing: { after: 20 },
+    children.push(new Paragraph({ spacing: { after: 80 } }));
+
+    // Side-by-side: SOL fotoğraf, SAĞ meta tablo
+    const parsed = sec.dataUrl ? parseDataUrl(sec.dataUrl) : null;
+    const leftCellChildren: Paragraph[] = [];
+
+    if (parsed) {
+      try {
+        leftCellChildren.push(new Paragraph({
+          children: [new ImageRun({
+            type: parsed.ext,
+            data: parsed.buffer,
+            transformation: { width: 220, height: 165 },
+          })],
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 60 },
+        }));
+      } catch {
+        leftCellChildren.push(new Paragraph({
+          children: [new TextRun({ text: "[Görsel yüklenemedi]", size: 16, font: "Segoe UI", color: SLATE_400_HEX, italics: true })],
+          alignment: AlignmentType.CENTER,
+        }));
+      }
+    } else {
+      leftCellChildren.push(new Paragraph({
+        children: [new TextRun({ text: "[Görsel önizleme mevcut değil]", size: 16, font: "Segoe UI", color: SLATE_400_HEX, italics: true })],
+        alignment: AlignmentType.CENTER,
+      }));
+    }
+
+    // Meta key-value: SAĞ
+    const metaRows: { label: string; value: string }[] = [
+      { label: "Saha tanımı", value: sec.areaLocation || sec.rowTitle || "-" },
+      { label: "Sahne tipi", value: sec.sceneType || "-" },
+      { label: "Risk sayısı", value: String(sec.findings.length) },
+      { label: "Analiz durumu", value: sec.analysisStatusLabel },
+      { label: "Kapsam", value: sec.scopeReason || "Analize dahil" },
+    ];
+
+    const rightCellChildren: (Paragraph | Table)[] = [
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: metaRows.map((kv) => new TableRow({
+          children: [labelCell(kv.label, 40), valueCell(kv.value, 60)],
+        })),
+      }),
+    ];
+
+    children.push(new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 40, type: WidthType.PERCENTAGE },
+            children: leftCellChildren,
+            margins: { top: 120, bottom: 120, left: 120, right: 120 },
+            shading: { type: ShadingType.SOLID, color: SLATE_50_HEX },
+            borders: { top: { style: BorderStyle.SINGLE, size: 2, color: SLATE_200_HEX }, bottom: { style: BorderStyle.SINGLE, size: 2, color: SLATE_200_HEX }, left: { style: BorderStyle.SINGLE, size: 2, color: SLATE_200_HEX }, right: { style: BorderStyle.SINGLE, size: 2, color: SLATE_200_HEX } },
+          }),
+          new TableCell({
+            width: { size: 60, type: WidthType.PERCENTAGE },
+            children: rightCellChildren,
+            margins: { top: 40, bottom: 40, left: 40, right: 40 },
+            borders: noBorder(),
+          }),
+        ],
+      })],
     }));
-    children.push(new Paragraph({
-      children: [
-        new TextRun({
-          text: `Görsel analiz durumu: ${sec.analysisStatusLabel}`,
-          size: 18,
-          font: "Segoe UI",
-          color: sec.analysisStatus === "success" ? "059669" : "D97706",
-        }),
-        new TextRun({
-          text: ` · Tespit: ${sec.analysisStatus === "success" ? sec.findingCount : 0}`,
-          size: 18,
-          font: "Segoe UI",
-          color: "666666",
-        }),
-      ],
-      spacing: { after: sec.analysisError ? 20 : 80 },
-    }));
+    children.push(new Paragraph({ spacing: { after: 120 } }));
+
     if (sec.analysisError) {
       children.push(new Paragraph({
-        children: [new TextRun({ text: sec.analysisError, size: 16, font: "Segoe UI", color: "92400E", italics: true })],
-        spacing: { after: 80 },
-      }));
-    }
-
-    const imgFindings = sec.findings;
-    const parsed = sec.dataUrl ? parseDataUrl(sec.dataUrl) : null;
-
-      // Sol cell içeriği: görsel + caption
-      const leftCellChildren: Paragraph[] = [];
-      if (parsed) {
-        try {
-          leftCellChildren.push(new Paragraph({
-            children: [new ImageRun({
-              type: parsed.ext,
-              data: parsed.buffer,
-              transformation: { width: 260, height: 195 },
-            })],
-            spacing: { after: 40 },
-          }));
-        } catch {
-          leftCellChildren.push(new Paragraph({
-            children: [new TextRun({ text: "[Görsel yüklenemedi]", size: 16, font: "Segoe UI", color: "999999", italics: true })],
-          }));
-        }
-      } else {
-        leftCellChildren.push(new Paragraph({
-          children: [new TextRun({ text: "[Görsel önizleme mevcut değil]", size: 16, font: "Segoe UI", color: "999999", italics: true })],
-        }));
-      }
-      leftCellChildren.push(new Paragraph({
-        children: [new TextRun({ text: sec.fileName, bold: true, size: 14, font: "Segoe UI", color: DARK_HEX })],
-        spacing: { after: 20 },
-      }));
-      leftCellChildren.push(new Paragraph({
-        children: [new TextRun({
-          text:
-            sec.analysisStatus !== "success"
-              ? sec.analysisStatusLabel
-              : imgFindings.length > 0
-                ? `${imgFindings.length} tespit`
-                : "Tespit bulunamadı",
-          size: 14,
-          font: "Segoe UI",
-          color: "666666",
-        })],
-      }));
-      if (sec.areaLocation) {
-        leftCellChildren.push(new Paragraph({
-          children: [new TextRun({ text: sec.areaLocation, size: 14, font: "Segoe UI", color: "555555", italics: true })],
-          spacing: { before: 40 },
-        }));
-      }
-
-      // Sağ cell içeriği: tespit özet listesi (R1: title | risk | skor)
-      const rightCellChildren: Paragraph[] = [];
-      rightCellChildren.push(new Paragraph({
-        children: [new TextRun({ text: "TESPİTLER", bold: true, size: 16, font: "Segoe UI", color: GOLD_HEX, allCaps: true })],
-        spacing: { after: 60 },
-      }));
-      if (imgFindings.length > 0) {
-        imgFindings.forEach((f, fi) => {
-          const pin = findingPinLabel(f, fi);
-          rightCellChildren.push(new Paragraph({
-            children: [
-              new TextRun({ text: `${pin}  `, bold: true, size: 16, font: "Segoe UI", color: "DC2626" }),
-              new TextRun({ text: f.title, bold: true, size: 16, font: "Segoe UI", color: DARK_HEX }),
-            ],
-            spacing: { before: 40, after: 10 },
-          }));
-          rightCellChildren.push(new Paragraph({
-            children: [
-              new TextRun({ text: `${f.category}  ·  `, size: 14, font: "Segoe UI", color: "666666" }),
-              new TextRun({ text: methodScoreDetail(f) || `${f.scoreLabel} (${scoreDisplay(f)})`, bold: true, size: 14, font: "Segoe UI", color: sevColorHex(f.severity) }),
-              ...(f.correctiveActionRequired
-                ? [new TextRun({ text: "  ·  DÖF", bold: true, size: 14, font: "Segoe UI", color: "DC2626" })]
-                : []),
-            ],
-            spacing: { after: 30 },
-          }));
-        });
-      } else {
-        rightCellChildren.push(new Paragraph({
-          children: [new TextRun({ text: "Bu görsel için tespit bulunmadı.", size: 14, font: "Segoe UI", color: "999999", italics: true })],
-        }));
-      }
-
-      const sideBySideTable = new Table({
-        width: { size: 100, type: WidthType.PERCENTAGE },
-        rows: [new TableRow({
-          children: [
-            new TableCell({
-              width: { size: 42, type: WidthType.PERCENTAGE },
-              children: leftCellChildren,
-              margins: { top: 100, bottom: 100, left: 100, right: 100 },
-            }),
-            new TableCell({
-              width: { size: 58, type: WidthType.PERCENTAGE },
-              children: rightCellChildren,
-              margins: { top: 100, bottom: 100, left: 100, right: 100 },
-            }),
-          ],
-        })],
-      });
-    children.push(sideBySideTable);
-    children.push(new Paragraph({ spacing: { after: 100 } }));
-
-    imgFindings.forEach((f, fi) => {
-      appendWordFindingDetail(children, f, findingPinLabel(f, fi));
-    });
-  }
-
-  // ── QR Kod (varsa) ──
-  if (data.shareQrDataUrl) {
-    const qrParsed = parseDataUrl(data.shareQrDataUrl);
-    children.push(new Paragraph({ spacing: { before: 400 } }));
-    children.push(new Paragraph({
-      children: [
-        new TextRun({ text: "Dijital Rapor Erişimi", bold: true, size: 20, font: "Segoe UI", color: DARK_HEX }),
-      ],
-    }));
-    children.push(new Paragraph({
-      children: [
-        new TextRun({ text: "Bu QR kodu tarayarak raporun dijital versiyonuna ulaşabilirsiniz.", size: 18, font: "Segoe UI", color: "666666" }),
-      ],
-      spacing: { after: 100 },
-    }));
-    if (qrParsed) {
-      children.push(new Paragraph({
         children: [
-          new ImageRun({ data: qrParsed.buffer, transformation: { width: 120, height: 120 }, type: qrParsed.ext }),
+          new TextRun({ text: "⚠ Analiz Hatası: ", bold: true, size: 16, font: "Segoe UI", color: "92400E" }),
+          new TextRun({ text: sec.analysisError, size: 16, font: "Segoe UI", color: "92400E", italics: true }),
         ],
-      }));
-    }
-    if (data.shareUrl) {
-      children.push(new Paragraph({
-        children: [
-          new TextRun({ text: data.shareUrl, size: 16, font: "Segoe UI", color: GOLD_HEX }),
-        ],
+        shading: { type: ShadingType.SOLID, color: "FEF3C7" },
         spacing: { after: 100 },
       }));
     }
+
+    // Tespit edilen riskler başlığı
+    if (sec.findings.length > 0) {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: "TESPİT EDİLEN RİSKLER", bold: true, size: 18, font: "Segoe UI", color: GOLD_HEX })],
+        spacing: { before: 120, after: 80 },
+        border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: GOLD_HEX, space: 1 } },
+      }));
+
+      sec.findings.forEach((f, fi) => {
+        appendWordFindingDetail(children, f, findingPinLabel(f, fi));
+      });
+    } else {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: "Bu görsel için risk tespiti bulunmamaktadır.", size: 16, font: "Segoe UI", color: SLATE_500_HEX, italics: true })],
+        spacing: { after: 120 },
+      }));
+    }
+  }
+
+  /* ================================================================ */
+  /*  ONAY VE İMZA                                                     */
+  /* ================================================================ */
+  children.push(new Paragraph({ children: [new PageBreak()] }));
+  children.push(sectionBanner("Onay ve İmza"));
+  children.push(new Paragraph({ spacing: { after: 80 } }));
+
+  children.push(new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [
+      new TableRow({ children: [
+        goldHeaderCell("Rol"),
+        goldHeaderCell("Ad Soyad"),
+        goldHeaderCell("Unvan"),
+        goldHeaderCell("Tarih"),
+        goldHeaderCell("İmza"),
+      ]}),
+      new TableRow({ children: [
+        dataCell("Hazırlayan", { bold: true }),
+        dataCell(data.participants[0]?.fullName || ""),
+        dataCell(data.participants[0]?.title || data.participants[0]?.role || ""),
+        dataCell(now),
+        dataCell(""),
+      ]}),
+      new TableRow({ children: [
+        dataCell("Kontrol eden", { bold: true }),
+        dataCell(""), dataCell(""), dataCell(""), dataCell(""),
+      ]}),
+      new TableRow({ children: [
+        dataCell("İşveren / Vekili", { bold: true }),
+        dataCell(""), dataCell(""), dataCell(""), dataCell(""),
+      ]}),
+    ],
+  }));
+  children.push(new Paragraph({ spacing: { after: 240 } }));
+
+  // ── QR Kod (varsa) — dijital doğrulama ──
+  if (data.shareQrDataUrl) {
+    const qrParsed = parseDataUrl(data.shareQrDataUrl);
+    children.push(sectionBanner("Dijital Doğrulama"));
+    children.push(new Paragraph({ spacing: { after: 80 } }));
+
+    const qrChildren: Paragraph[] = [];
+    if (qrParsed) {
+      qrChildren.push(new Paragraph({
+        children: [new ImageRun({ data: qrParsed.buffer, transformation: { width: 110, height: 110 }, type: qrParsed.ext })],
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 40 },
+      }));
+    }
+    qrChildren.push(new Paragraph({
+      children: [new TextRun({ text: "QR doğrulama", bold: true, size: 16, font: "Segoe UI", color: NAVY_HEX })],
+      alignment: AlignmentType.CENTER,
+    }));
+
+    children.push(new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 30, type: WidthType.PERCENTAGE },
+            children: qrChildren,
+            shading: { type: ShadingType.SOLID, color: SLATE_50_HEX },
+            borders: thinBorder(),
+            margins: { top: 120, bottom: 120, left: 120, right: 120 },
+          }),
+          new TableCell({
+            width: { size: 70, type: WidthType.PERCENTAGE },
+            children: [
+              new Paragraph({
+                children: [new TextRun({ text: "Rapor Doğrulama Bilgisi", bold: true, size: 18, font: "Segoe UI", color: NAVY_HEX })],
+                spacing: { after: 60 },
+              }),
+              new Paragraph({
+                children: [new TextRun({ text: "QR kodu taratarak raporun dijital versiyonuna ulaşabilir, rapor kimlik özetini doğrulayabilirsiniz.", size: 16, font: "Segoe UI", color: SLATE_500_HEX })],
+                spacing: { after: 60 },
+              }),
+              ...(data.shareUrl ? [new Paragraph({
+                children: [new TextRun({ text: data.shareUrl, size: 14, font: "Segoe UI", color: GOLD_HEX, italics: true })],
+              })] : []),
+            ],
+            borders: thinBorder(),
+            margins: { top: 120, bottom: 120, left: 200, right: 120 },
+          }),
+        ],
+      })],
+    }));
   }
 
   // ── Footer ──
-  children.push(new Paragraph({ spacing: { before: 400 } }));
+  children.push(new Paragraph({ spacing: { before: 240 } }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: " ", size: 1 })],
+    border: { bottom: { style: BorderStyle.SINGLE, size: 12, color: GOLD_HEX, space: 1 } },
+    spacing: { after: 80 },
+  }));
   children.push(new Paragraph({
     children: [
-      new TextRun({ text: `Bu rapor RiskNova İSG Platformu tarafından ${now} tarihinde oluşturulmuştur.`, size: 16, font: "Segoe UI", color: "999999", italics: true }),
+      new TextRun({ text: `Bu rapor RiskNova İSG Platformu tarafından ${now} tarihinde oluşturulmuştur.`, size: 14, font: "Segoe UI", color: SLATE_500_HEX, italics: true }),
     ],
     alignment: AlignmentType.CENTER,
   }));
   children.push(new Paragraph({
     children: [
-      new TextRun({ text: `Rapor içeriği ${data.methodLabel} yöntemi ile değerlendirilmiştir.`, size: 16, font: "Segoe UI", color: "999999", italics: true }),
+      new TextRun({ text: `${data.methodLabel} yöntemi ile değerlendirilmiş — Basılı kopya saha doğrulaması ve yetkili imzalarla geçerlidir.`, size: 14, font: "Segoe UI", color: SLATE_500_HEX, italics: true }),
     ],
     alignment: AlignmentType.CENTER,
   }));
