@@ -903,19 +903,34 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       );
     }
 
-    // Görsel (çerçeveli)
+    // Görsel — kalan alana göre adaptif boyutlandırma (boşluk bırakmaz)
     const dataUrl = sec.dataUrl ?? "";
     if (dataUrl.startsWith("data:image/")) {
       try {
         const format = dataUrl.includes("image/png") ? "PNG" : "JPEG";
         const imgW = contentW;
-        const imgH = imgW * 0.5;
-        ensureSpace(imgH + 6);
+        const idealH = 65;          // ideal yükseklik (öncekinden ~30% daha küçük)
+        const minH = 36;            // minimum kabul edilebilir yükseklik
+
+        const availableH = pageHeight - 14 - y - 3;
+
+        let imgH: number;
+        if (availableH >= idealH) {
+          imgH = idealH;
+        } else if (availableH >= minH) {
+          // Kalan alana sığdır — boşluk bırakmasın
+          imgH = availableH;
+        } else {
+          // Çok az yer var, yeni sayfaya geç
+          ensureSpace(idealH + 4);
+          imgH = idealH;
+        }
+
         doc.setDrawColor(...C.slate200);
         doc.setLineWidth(0.3);
         doc.roundedRect(margin - 0.5, y - 0.5, imgW + 1, imgH + 1, 1, 1, "S");
         doc.addImage(dataUrl, format, margin, y, imgW, imgH, undefined, "FAST");
-        y += imgH + 4;
+        y += imgH + 3;
       } catch (e) {
         console.warn("[pdf-field-report] image skip", e);
       }
