@@ -1,5 +1,6 @@
 /**
  * Saha risk analizi — denetime uygun PDF (tablolar, UTF-8 Türkçe, Fine-Kinney).
+ * Premium profesyonel tasarım v2.
  */
 
 import type { ExportFinding, RiskAnalysisExportData } from "@/lib/risk-analysis-export";
@@ -25,6 +26,32 @@ import {
   writeParagraph,
 } from "@/lib/risk-analysis/pdf-layout-helpers";
 
+/* ------------------------------------------------------------------ */
+/*  Premium renk paleti                                                */
+/* ------------------------------------------------------------------ */
+const C = {
+  navy: [15, 23, 42] as [number, number, number],
+  navyMid: [30, 41, 59] as [number, number, number],
+  gold: [180, 142, 38] as [number, number, number],
+  goldLight: [212, 175, 55] as [number, number, number],
+  goldPale: [253, 248, 234] as [number, number, number],
+  teal: [13, 148, 136] as [number, number, number],
+  tealDark: [15, 118, 110] as [number, number, number],
+  red: [185, 28, 28] as [number, number, number],
+  redLight: [254, 226, 226] as [number, number, number],
+  orange: [180, 83, 9] as [number, number, number],
+  slate50: [248, 250, 252] as [number, number, number],
+  slate100: [241, 245, 249] as [number, number, number],
+  slate200: [226, 232, 240] as [number, number, number],
+  slate400: [148, 163, 184] as [number, number, number],
+  slate500: [100, 116, 139] as [number, number, number],
+  white: [255, 255, 255] as [number, number, number],
+  text: [15, 23, 42] as [number, number, number],
+};
+
+/* ------------------------------------------------------------------ */
+/*  Font loading                                                       */
+/* ------------------------------------------------------------------ */
 let notoSansFontPromise: Promise<{ regular: string; bold: string } | null> | null = null;
 
 async function fetchFontAsBase64(url: string): Promise<string> {
@@ -57,6 +84,9 @@ async function ensurePdfUnicodeFont(doc: InstanceType<typeof import("jspdf").jsP
   return true;
 }
 
+/* ------------------------------------------------------------------ */
+/*  Yardımcılar                                                        */
+/* ------------------------------------------------------------------ */
 function asText(value: unknown, fallback = "-"): string {
   if (value === null || value === undefined) return fallback;
   const text = String(value).trim();
@@ -66,16 +96,32 @@ function asText(value: unknown, fallback = "-"): string {
 function riskClassFill(riskClass: string): [number, number, number] {
   switch (riskClass) {
     case "critical":
-      return [127, 29, 29];
+      return [153, 27, 27];
     case "high":
-      return [234, 88, 12];
+      return [220, 78, 10];
     case "medium":
-      return [202, 138, 4];
+      return [180, 120, 4];
     case "low":
     case "follow_up":
-      return [22, 163, 74];
+      return [21, 128, 61];
     default:
       return [100, 116, 139];
+  }
+}
+
+function riskClassAccent(riskClass: string): [number, number, number] {
+  switch (riskClass) {
+    case "critical":
+      return [220, 38, 38];
+    case "high":
+      return [249, 115, 22];
+    case "medium":
+      return [234, 179, 8];
+    case "low":
+    case "follow_up":
+      return [34, 197, 94];
+    default:
+      return [148, 163, 184];
   }
 }
 
@@ -173,6 +219,9 @@ function displayFileName(value: unknown, index?: number): string {
   return truncate(fileName, 54);
 }
 
+/* ================================================================== */
+/*  Ana PDF oluşturucu                                                 */
+/* ================================================================== */
 export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExportData): Promise<Uint8Array> {
   const { jsPDF } = await import("jspdf");
   const autoTable = (await import("jspdf-autotable")).default;
@@ -181,64 +230,86 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
   const fontFamily = (await ensurePdfUnicodeFont(doc)) ? "NotoSans" : "helvetica";
   doc.setFont(fontFamily, "normal");
-  const margin = 14;
+  const margin = 15;
   const width = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
+  const contentW = width - margin * 2;
   const reportDate = asText(data.date, new Date().toLocaleDateString("tr-TR"));
   const baseTitle = asText(data.analysisTitle, "Saha Risk Analizi Raporu");
   const incomplete = data.reportIncomplete ?? isReportIncomplete(data);
   const reportTitle = reportTitleWithValidity(baseTitle, incomplete);
   let y = margin;
+  let totalPages = 0;
 
+  /* ---------- Uyarı kutusu ---------- */
   const alertBox = (text: string) => {
-    const innerWidth = width - margin * 2 - 8;
+    const innerWidth = contentW - 12;
     const wrapped = doc.splitTextToSize(text, innerWidth) as string[];
-    const h = wrapped.length * 4.2 + 10;
+    const h = wrapped.length * 4.5 + 12;
     ensureSpace(h);
     const boxTop = y;
-    doc.setFillColor(254, 226, 226);
-    doc.setDrawColor(185, 28, 28);
-    doc.roundedRect(margin, boxTop, width - margin * 2, h, 2, 2, "FD");
+    doc.setFillColor(...C.redLight);
+    doc.setDrawColor(...C.red);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(margin, boxTop, contentW, h, 2, 2, "FD");
+    doc.setFillColor(...C.red);
+    doc.rect(margin, boxTop, 3, h, "F");
     y = writeParagraph(doc, {
       text,
-      x: margin + 4,
-      y: boxTop + 5,
+      x: margin + 7,
+      y: boxTop + 6,
       maxWidth: innerWidth,
       fontFamily,
       fontSize: 9,
       style: "bold",
-      color: [127, 29, 29],
-      lineHeightFactor: 1.15,
+      color: C.red,
+      lineHeightFactor: 1.2,
     });
-    y += 4;
+    y += 5;
   };
 
+  /* ---------- Sayfa üstbilgi / altbilgi ---------- */
   const addPageHeaderFooter = () => {
     const page = doc.getCurrentPageInfo().pageNumber;
+    doc.setFont(fontFamily, "bold");
+    doc.setFontSize(7);
+    doc.setTextColor(...C.gold);
+    doc.text("RISKNOVA", margin, 8);
     doc.setFont(fontFamily, "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(100, 116, 139);
-    doc.text(reportTitle, margin, 10);
-    doc.text(reportDate, width - margin, 10, { align: "right" });
-    doc.text(`Sayfa ${page}`, width / 2, pageHeight - 8, { align: "center" });
-    doc.setTextColor(15, 23, 42);
+    doc.setFontSize(7);
+    doc.setTextColor(...C.slate500);
+    doc.text(truncate(reportTitle, 70), margin + 22, 8);
+    doc.text(reportDate, width - margin, 8, { align: "right" });
+    doc.setDrawColor(...C.gold);
+    doc.setLineWidth(0.4);
+    doc.line(margin, 10, width - margin, 10);
+    doc.setLineWidth(0.1);
+    doc.setDrawColor(...C.slate200);
+    doc.line(margin, pageHeight - 12, width - margin, pageHeight - 12);
+    doc.setFont(fontFamily, "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(...C.slate400);
+    doc.text(`Sayfa ${page}`, width / 2, pageHeight - 7, { align: "center" });
+    doc.setTextColor(...C.text);
   };
 
-  const ensureSpace = (height = 12) => {
-    if (y + height <= pageHeight - margin - 10) return;
+  /* ---------- Sayfa alanı kontrolü ---------- */
+  const ensureSpace = (height = 14) => {
+    if (y + height <= pageHeight - 18) return;
     doc.addPage();
-    y = margin + 6;
+    y = 16;
     addPageHeaderFooter();
   };
 
-  const line = (text: string, size = 10, style: "normal" | "bold" = "normal", color: [number, number, number] = [15, 23, 42]) => {
-    const blockH = measureWrappedTextHeight(doc, text, width - margin * 2, size);
-    ensureSpace(blockH + 2);
+  /* ---------- Metin yardımcıları ---------- */
+  const line = (text: string, size = 10, style: "normal" | "bold" = "normal", color: [number, number, number] = C.text) => {
+    const blockH = measureWrappedTextHeight(doc, text, contentW, size);
+    ensureSpace(blockH + 3);
     y = writeParagraph(doc, {
       text,
       x: margin,
       y,
-      maxWidth: width - margin * 2,
+      maxWidth: contentW,
       fontFamily,
       fontSize: size,
       style,
@@ -247,20 +318,39 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   };
 
   const subsection = (text: string) => {
-    ensureSpace(10);
-    y += 2;
-    line(text, 10, "bold");
+    ensureSpace(12);
+    y += 3;
+    doc.setFillColor(...C.gold);
+    doc.circle(margin + 1.5, y - 1, 1, "F");
+    y = writeParagraph(doc, {
+      text,
+      x: margin + 5,
+      y: y - 2.5,
+      maxWidth: contentW - 5,
+      fontFamily,
+      fontSize: 11,
+      style: "bold",
+      color: C.navy,
+    });
+    y += 1;
   };
 
+  /* ---------- Bölüm başlığı (altın çubuk) ---------- */
   const section = (title: string) => {
-    ensureSpace(14);
-    y += y === margin ? 0 : 4;
-    doc.setDrawColor(212, 160, 23);
-    doc.line(margin, y, width - margin, y);
-    y += 6;
-    line(title, 12, "bold");
+    ensureSpace(18);
+    y += y <= 20 ? 0 : 6;
+    doc.setFillColor(...C.gold);
+    doc.rect(margin, y, 2.5, 9, "F");
+    doc.setFont(fontFamily, "bold");
+    doc.setFontSize(13);
+    doc.setTextColor(...C.navy);
+    doc.text(title.toLocaleUpperCase("tr-TR"), margin + 6, y + 6.5);
+    y += 13;
+    doc.setTextColor(...C.text);
+    doc.setFont(fontFamily, "normal");
   };
 
+  /* ---------- Tablolar ---------- */
   const addSimpleTable = (
     head: string[],
     body: TableCell[][],
@@ -271,7 +361,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       minCellHeight?: number;
     } = {},
   ) => {
-    ensureSpace(18);
+    ensureSpace(20);
     autoTable(doc, {
       startY: y,
       margin: { left: margin, right: margin },
@@ -279,20 +369,21 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       body: body.map((row) => row.map((cell) => asText(cell))),
       styles: {
         font: fontFamily,
-        fontSize: options.fontSize ?? 8,
-        cellPadding: 2,
+        fontSize: options.fontSize ?? 8.5,
+        cellPadding: 3,
         overflow: "linebreak",
-        valign: "top",
+        valign: "middle",
         minCellHeight: options.minCellHeight,
-        lineColor: [226, 232, 240],
-        lineWidth: 0.1,
+        lineColor: C.slate200,
+        lineWidth: 0.15,
       },
       headStyles: {
-        fillColor: options.headerColor ?? [30, 41, 59],
+        fillColor: options.headerColor ?? C.navyMid,
         textColor: 255,
         fontStyle: "bold",
+        cellPadding: 3.5,
       },
-      alternateRowStyles: { fillColor: [248, 250, 252] },
+      alternateRowStyles: { fillColor: C.slate50 },
       columnStyles: options.columnStyles,
     });
     y = syncYAfterTable(doc, y);
@@ -302,23 +393,23 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     rows: TableCell[][],
     options: { labelWidth?: number; fontSize?: number; headerColor?: [number, number, number] } = {},
   ) => {
-    ensureSpace(16);
+    ensureSpace(18);
     autoTable(doc, {
       startY: y,
       margin: { left: margin, right: margin },
       body: rows.map((row) => row.map((cell) => asText(cell))),
       styles: {
         font: fontFamily,
-        fontSize: options.fontSize ?? 8,
-        cellPadding: 2,
+        fontSize: options.fontSize ?? 8.5,
+        cellPadding: 3,
         overflow: "linebreak",
         valign: "top",
-        lineColor: [226, 232, 240],
-        lineWidth: 0.1,
+        lineColor: C.slate200,
+        lineWidth: 0.15,
       },
       columnStyles: {
-        0: { cellWidth: options.labelWidth ?? 38, fillColor: options.headerColor ?? [241, 245, 249], fontStyle: "bold" },
-        2: { cellWidth: options.labelWidth ?? 38, fillColor: options.headerColor ?? [241, 245, 249], fontStyle: "bold" },
+        0: { cellWidth: options.labelWidth ?? 38, fillColor: options.headerColor ?? C.goldPale, fontStyle: "bold", textColor: C.navy },
+        2: { cellWidth: options.labelWidth ?? 38, fillColor: options.headerColor ?? C.goldPale, fontStyle: "bold", textColor: C.navy },
       },
     });
     y = syncYAfterTable(doc, y);
@@ -327,13 +418,16 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   const addNumberedListTable = (title: string, rows: string[], limit = 12) => {
     if (rows.length === 0) return;
     addSimpleTable([title], rows.slice(0, limit).map((item, index) => [`${index + 1}. ${truncate(item, 180)}`]), {
-      fontSize: 8,
-      headerColor: [15, 118, 110],
+      fontSize: 8.5,
+      headerColor: C.tealDark,
     });
   };
 
+  /* ================================================================ */
+  /*  Veri hazırlığı                                                   */
+  /* ================================================================ */
   const consolidated = buildFieldReportConsolidatedJson(data);
-  const sections = resolveExportImageSections(data);
+  const sections_data = resolveExportImageSections(data);
   const verificationPayload =
     data.shareUrl ||
     JSON.stringify({
@@ -351,34 +445,83 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     (await QRCode.toDataURL(verificationPayload, {
       errorCorrectionLevel: "M",
       margin: 1,
-      width: 220,
+      width: 260,
     }).catch((error) => {
       console.warn("[pdf-field-report] qr generate skip", error);
       return "";
     }));
 
-  // Kapak
-  doc.setFillColor(15, 23, 42);
-  doc.rect(0, 0, width, 38, "F");
+  /* ================================================================ */
+  /*  KAPAK SAYFASI                                                    */
+  /* ================================================================ */
+
+  // Üst koyu bant (60mm)
+  doc.setFillColor(...C.navy);
+  doc.rect(0, 0, width, 60, "F");
+
+  // Altın çizgi
+  doc.setFillColor(...C.gold);
+  doc.rect(0, 60, width, 2.5, "F");
+
+  // Marka ve başlık
   doc.setFont(fontFamily, "bold");
-  doc.setFontSize(18);
-  doc.setTextColor(255, 255, 255);
-  doc.text("Risk Değerlendirme Raporu", margin, 18);
+  doc.setFontSize(10);
+  doc.setTextColor(...C.gold);
+  doc.text("RISKNOVA", margin, 14);
+
+  doc.setFont(fontFamily, "normal");
+  doc.setFontSize(8);
+  doc.setTextColor(...C.slate400);
+  doc.text("Profesyonel İSG Risk Değerlendirme Platformu", margin, 20);
+
+  doc.setFont(fontFamily, "bold");
+  doc.setFontSize(22);
+  doc.setTextColor(...C.white);
+  doc.text("Risk Değerlendirme", margin, 34);
+  doc.text("Raporu", margin, 43);
+
+  doc.setFont(fontFamily, "normal");
   doc.setFontSize(9);
-  doc.text("RiskNova | Saha Risk Analizi | Denetim ve aksiyon takip dokümanı", margin, 28);
+  doc.setTextColor(180, 195, 220);
+  doc.text("Saha Risk Analizi | Denetim ve Aksiyon Takip Dokümanı", margin, 52);
+
+  // QR kod (sağ üst, altın çerçeveli)
   if (verificationQrDataUrl.startsWith("data:image/")) {
     try {
-      doc.addImage(verificationQrDataUrl, "PNG", width - margin - 27, 7, 24, 24, undefined, "FAST");
+      const qrSize = 26;
+      const qrX = width - margin - qrSize - 2;
+      const qrY = 9;
+      doc.setFillColor(...C.gold);
+      doc.roundedRect(qrX - 1.5, qrY - 1.5, qrSize + 3, qrSize + 3, 1.5, 1.5, "F");
+      doc.setFillColor(...C.white);
+      doc.roundedRect(qrX - 0.5, qrY - 0.5, qrSize + 1, qrSize + 1, 1, 1, "F");
+      doc.addImage(verificationQrDataUrl, "PNG", qrX, qrY, qrSize, qrSize, undefined, "FAST");
       doc.setFont(fontFamily, "normal");
       doc.setFontSize(6);
-      doc.text("QR doğrulama", width - margin - 15, 35, { align: "center" });
+      doc.setTextColor(180, 195, 220);
+      doc.text("QR Doğrulama", qrX + qrSize / 2, qrY + qrSize + 5, { align: "center" });
     } catch (e) {
       console.warn("[pdf-field-report] cover qr skip", e);
     }
   }
-  doc.setTextColor(15, 23, 42);
-  y = 48;
-  line(reportTitle, 16, "bold");
+
+  // Kapak bilgi alanı
+  y = 70;
+  doc.setTextColor(...C.text);
+
+  // Rapor başlığı
+  const titleLines = doc.splitTextToSize(reportTitle, contentW) as string[];
+  doc.setFont(fontFamily, "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(...C.navy);
+  for (const tl of titleLines) {
+    doc.text(tl, margin, y);
+    y += 6;
+  }
+  y += 3;
+  doc.setTextColor(...C.text);
+
+  // Firma ve rapor bilgileri tablosu
   addKeyValueTable(
     [
       ["Firma", data.companyName, "Tarih", reportDate],
@@ -389,33 +532,50 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     ],
     { fontSize: 9 },
   );
+
+  // Teslim özeti
   addSimpleTable(
     ["Teslim Özeti", "Açıklama"],
     [
       ["Kapsam", "Yüklenen saha görselleri üzerinden İSG risklerinin tespiti, önceliklendirilmesi ve aksiyon planına dönüştürülmesi."],
-      ["Yöntem", data.method === "fine_kinney" ? "Fine-Kinney P x F x S risk skorlama yaklaşımı." : asText(data.methodLabel)],
+      ["Yöntem", data.method === "fine_kinney" ? "Fine-Kinney P × F × S risk skorlama yaklaşımı." : asText(data.methodLabel)],
       ["Sınır", "Bu rapor fotoğraf ve kullanıcı girdilerine dayanır; belge, eğitim, izin, ekipman sertifikası ve saha ölçümü gerektiren hususlar ayrıca doğrulanmalıdır."],
     ],
-    { fontSize: 8, headerColor: [15, 118, 110], columnStyles: { 0: { cellWidth: 34 } } },
+    { fontSize: 8.5, headerColor: C.tealDark, columnStyles: { 0: { cellWidth: 34 } } },
   );
-  if (incomplete) {
-    alertBox(
-      consolidated.rapor_durumu.uyari || FAILED_ANALYSIS_WARNING,
-    );
-  }
-  addPageHeaderFooter();
 
+  // Eksik rapor uyarısı
+  if (incomplete) {
+    alertBox(consolidated.rapor_durumu.uyari || FAILED_ANALYSIS_WARNING);
+  }
+
+  // Kapak altbilgisi
+  doc.setDrawColor(...C.gold);
+  doc.setLineWidth(0.3);
+  doc.line(margin, pageHeight - 18, width - margin, pageHeight - 18);
+  doc.setFont(fontFamily, "normal");
+  doc.setFontSize(7);
+  doc.setTextColor(...C.slate400);
+  doc.text("Bu rapor RiskNova platformu tarafından üretilmiştir.", margin, pageHeight - 13);
+  doc.text("Sayfa 1", width - margin, pageHeight - 13, { align: "right" });
+
+  /* ================================================================ */
+  /*  BÖLÜM 1 — Amaç, Kapsam ve Rapor Esası                          */
+  /* ================================================================ */
   doc.addPage();
-  y = margin + 6;
+  y = 16;
   addPageHeaderFooter();
 
   section("1. Amaç, Kapsam ve Rapor Esası");
   addKeyValueTable([
-    ["Amaç", "Sahada gözlenen İSG tehlikelerini karar verilebilir risk kayıtlarına dönüştürmek.", "Kapsam", `${sections.length} görsel, ${data.realTotalFindings ?? data.totalFindings} risk bulgusu`],
+    ["Amaç", "Sahada gözlenen İSG tehlikelerini karar verilebilir risk kayıtlarına dönüştürmek.", "Kapsam", `${sections_data.length} görsel, ${data.realTotalFindings ?? data.totalFindings} risk bulgusu`],
     ["Dayanak", "Yüklenen fotoğraflar, kullanıcı satır açıklamaları ve seçilen risk metodolojisi.", "Kısıt", "Tek fotoğraf frekans, eğitim, sertifika, izin ve ölçüm kayıtlarını tek başına kanıtlamaz."],
     ["Çıktı", "Konsolide risk kayıt tablosu, görsel bazlı analiz, öncelikli aksiyon listesi ve doğrulama kontrol listesi.", "QR", data.shareUrl ? "Dijital rapor bağlantısı içerir." : "Rapor kimlik özetini içerir."],
   ]);
 
+  /* ================================================================ */
+  /*  BÖLÜM 2 — Rapor Geçerlilik Durumu                               */
+  /* ================================================================ */
   section("2. Rapor Geçerlilik Durumu");
   addKeyValueTable([
     ["Durum", consolidated.rapor_gecerlilik.durum, "Nihai rapor mu", consolidated.rapor_gecerlilik.nihai_rapor_mu ? "Evet" : "Hayır"],
@@ -427,8 +587,44 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     ],
   ]);
 
+  /* ================================================================ */
+  /*  BÖLÜM 3 — Yönetici Özeti                                        */
+  /* ================================================================ */
   section("3. Yönetici Özeti");
   const oz = consolidated.yonetici_ozeti;
+
+  // Özet istatistik kartları
+  ensureSpace(24);
+  const cardW = (contentW - 6) / 4;
+  const cardH = 18;
+  const cardY = y;
+  const statCards: { label: string; value: string | number; color: [number, number, number] }[] = [
+    { label: "Toplam Risk", value: oz.toplam_gercek_isg_riski, color: C.navy },
+    { label: "Kritik", value: oz.kritik, color: [220, 38, 38] },
+    { label: "Yüksek", value: oz.yuksek, color: [249, 115, 22] },
+    { label: "Orta / Düşük", value: `${oz.orta} / ${oz.dusuk_izleme}`, color: C.teal },
+  ];
+  for (let i = 0; i < statCards.length; i++) {
+    const cx = margin + i * (cardW + 2);
+    const card = statCards[i];
+    doc.setFillColor(...C.slate50);
+    doc.setDrawColor(...card.color);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(cx, cardY, cardW, cardH, 2, 2, "FD");
+    doc.setFillColor(...card.color);
+    doc.rect(cx, cardY, 2.5, cardH, "F");
+    doc.setFont(fontFamily, "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(...card.color);
+    doc.text(String(card.value), cx + cardW / 2 + 1, cardY + 10, { align: "center" });
+    doc.setFont(fontFamily, "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(...C.slate500);
+    doc.text(card.label, cx + cardW / 2 + 1, cardY + 15, { align: "center" });
+  }
+  y = cardY + cardH + 6;
+
+  // Detay tablosu
   addSimpleTable(
     ["Gösterge", "Değer", "Gösterge", "Değer"],
     [
@@ -441,14 +637,12 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         "DÖF adayı",
         oz.dof_adayi,
       ],
-      ["Kritik", oz.kritik, "Yüksek", oz.yuksek],
-      ["Orta", oz.orta, "Düşük / izleme", oz.dusuk_izleme],
       ["Doküman doğrulama", oz.dokuman_dogrulama_maddesi, "Kapsam dışı / sistemsel uyarı", oz.kapsam_disi_sistemsel_uyari],
     ],
-    { fontSize: 8 },
+    { fontSize: 8.5 },
   );
   if (!oz.gercek_risk_sayimi_guvenilir_mi) {
-    line(oz.toplam_gercek_isg_riski_notu, 8, "normal", [185, 28, 28]);
+    line(oz.toplam_gercek_isg_riski_notu, 8.5, "normal", C.red);
   }
   if (oz.basarisiz_analiz > 0) {
     alertBox(
@@ -461,6 +655,9 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   addNumberedListTable("7 gün içinde aksiyonlar", oz.yedi_gun_aksiyonlari, 10);
   if (data.analysisNote) line(asText(data.analysisNote), 9);
 
+  /* ================================================================ */
+  /*  BÖLÜM 4 — Görsel Kapsam Kontrol Tablosu                         */
+  /* ================================================================ */
   section("4. Görsel Kapsam Kontrol Tablosu");
   autoTable(doc, {
     startY: y,
@@ -475,12 +672,24 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       scopeDecisionLabel(g.scope_decision),
       truncate(asText(g.scope_reason), 80),
     ]),
-    styles: { font: fontFamily, fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
-    headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: "bold" },
+    styles: {
+      font: fontFamily,
+      fontSize: 7.5,
+      cellPadding: 2.5,
+      overflow: "linebreak",
+      valign: "top",
+      lineColor: C.slate200,
+      lineWidth: 0.15,
+    },
+    headStyles: { fillColor: C.navyMid, textColor: 255, fontStyle: "bold", cellPadding: 3 },
+    alternateRowStyles: { fillColor: C.slate50 },
   });
   y = syncYAfterTable(doc, y);
-  y += 6;
+  y += 4;
 
+  /* ================================================================ */
+  /*  BÖLÜM 5 — Metodoloji                                            */
+  /* ================================================================ */
   section("5. Metodoloji ve Fine-Kinney");
   line(
     data.method === "fine_kinney"
@@ -488,7 +697,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       : asText(data.methodLabel),
     9,
   );
-  consolidated.rapor_bilgisi.sinirlamalar.forEach((s) => line(`• ${s}`, 8));
+  consolidated.rapor_bilgisi.sinirlamalar.forEach((s) => line(`• ${s}`, 8.5));
 
   if (data.participants.length > 0) {
     section("Analiz Ekibi");
@@ -496,7 +705,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       ["No", "Ad Soyad", "Rol", "Unvan", "Sertifika No"],
       data.participants.map((p, i) => [i + 1, p.fullName, p.role, p.title, p.certificateNo]),
       {
-        fontSize: 8,
+        fontSize: 8.5,
         columnStyles: {
           0: { cellWidth: 12 },
           1: { cellWidth: 42 },
@@ -506,12 +715,15 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     );
   }
 
+  /* ================================================================ */
+  /*  BÖLÜM 6 — Konsolide Risk Kayıt Tablosu                          */
+  /* ================================================================ */
   section("6. Konsolide Risk Kayıt Tablosu");
-  const allFindings = sections
+  const allFindings = sections_data
     .filter((s) => s.scopeDecision !== "exclude" && s.sceneType !== "non_workplace")
     .flatMap((s) => s.findings);
   if (allFindings.length > 0) {
-    ensureSpace(20);
+    ensureSpace(22);
     autoTable(doc, {
       startY: y,
       margin: { left: margin, right: margin },
@@ -528,9 +740,17 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         truncate(f.immediateAction ?? findingActionText(f), 70),
         asText(f.confidenceLevelTr, "-"),
       ]),
-      styles: { font: fontFamily, fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
-      headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: "bold" },
-      alternateRowStyles: { fillColor: [248, 250, 252] },
+      styles: {
+        font: fontFamily,
+        fontSize: 7.5,
+        cellPadding: 2.5,
+        overflow: "linebreak",
+        valign: "top",
+        lineColor: C.slate200,
+        lineWidth: 0.15,
+      },
+      headStyles: { fillColor: C.navyMid, textColor: 255, fontStyle: "bold", cellPadding: 3 },
+      alternateRowStyles: { fillColor: C.slate50 },
       columnStyles: {
         0: { cellWidth: 14 },
         1: { cellWidth: 28 },
@@ -543,6 +763,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
           if (f) {
             hook.cell.styles.fillColor = riskClassFill(f.riskClass);
             hook.cell.styles.textColor = 255;
+            hook.cell.styles.fontStyle = "bold";
           }
         }
       },
@@ -555,49 +776,79 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     line("Başarıyla analiz edilen görsellerde kayıtlı risk bulgusu yok (saha güvenli görünüm).", 9);
   }
 
-  if (sections.length === 0) {
+  /* ================================================================ */
+  /*  BÖLÜM 7 — Görsel Bazlı Analiz                                   */
+  /* ================================================================ */
+  if (sections_data.length === 0) {
     section("7. Görsel Bazlı Analiz");
     line("Bu rapora aktarılmış görsel bulunamadı. Analiz tamamlanmadan export alındıysa görselleri yükleyip analizi yeniden çalıştırın.", 9);
   }
 
   let firstVisualSection = true;
-  for (const sec of sections) {
+  for (const sec of sections_data) {
     if (firstVisualSection) {
       section("7. Görsel Bazlı Analiz");
       firstVisualSection = false;
     } else {
       doc.addPage();
-      y = margin + 6;
+      y = 16;
       addPageHeaderFooter();
     }
 
     const gCode = `G${sec.imageIndex}`;
     const excluded = sec.scopeDecision === "exclude" || sec.isgKapsamindaMi === false || sec.sceneType === "non_workplace";
-    line(`${gCode} — ${displayFileName(sec.fileName, sec.imageIndex)}`, 11, "bold");
+
+    // Görsel başlık bandı
+    ensureSpace(12);
+    doc.setFillColor(...C.slate100);
+    doc.setDrawColor(...C.gold);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(margin, y, contentW, 10, 1.5, 1.5, "FD");
+    doc.setFillColor(...C.navy);
+    doc.roundedRect(margin, y, 18, 10, 1.5, 0, "F");
+    doc.rect(margin + 5, y, 13, 10, "F");
+    doc.setFont(fontFamily, "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(...C.white);
+    doc.text(gCode, margin + 9, y + 6.5, { align: "center" });
+    doc.setFont(fontFamily, "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(...C.navy);
+    doc.text(displayFileName(sec.fileName, sec.imageIndex), margin + 21, y + 6.5);
+    y += 14;
+    doc.setTextColor(...C.text);
+
+    // Görsel meta bilgileri
     addKeyValueTable(
       [
         ["Saha tanımı", sec.areaLocation || sec.rowTitle, "Analiz durumu", analysisStatusLabel(sec.imageAnalysisStatus ?? sec.analysisStatus)],
         ["Sahne tipi", sceneTypeLabel(sec.sceneType), "Kapsam kararı", scopeDecisionLabel(sec.scopeDecision)],
         ["Risk sayısı", sec.riskCount ?? sec.findingCount, "Kapsam gerekçesi", sec.scopeReason],
       ],
-      { fontSize: 8 },
+      { fontSize: 8.5 },
     );
+
     if (sec.imageLimitations && sec.imageLimitations.length > 0) {
       addSimpleTable(
         ["Görsel sınırlılıkları"],
         sec.imageLimitations.map((lim) => [lim]),
-        { fontSize: 8, headerColor: [180, 83, 9] },
+        { fontSize: 8.5, headerColor: C.orange },
       );
     }
 
+    // Görsel (çerçeveli)
     const dataUrl = sec.dataUrl ?? "";
     if (dataUrl.startsWith("data:image/")) {
       try {
-        ensureSpace(52);
+        ensureSpace(58);
         const format = dataUrl.includes("image/png") ? "PNG" : "JPEG";
-        const imgW = width - margin * 2;
-        doc.addImage(dataUrl, format, margin, y, imgW, imgW * 0.52, undefined, "FAST");
-        y += imgW * 0.52 + 4;
+        const imgW = contentW;
+        const imgH = imgW * 0.52;
+        doc.setDrawColor(...C.slate200);
+        doc.setLineWidth(0.3);
+        doc.roundedRect(margin - 0.5, y - 0.5, imgW + 1, imgH + 1, 1, 1, "S");
+        doc.addImage(dataUrl, format, margin, y, imgW, imgH, undefined, "FAST");
+        y += imgH + 5;
       } catch (e) {
         console.warn("[pdf-field-report] image skip", e);
       }
@@ -605,7 +856,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
     if (excluded) {
       alertBox("Bu görsel İSG risk analizi kapsamı dışında değerlendirildi; Fine-Kinney risk tablosu oluşturulmaz.");
-      line(`Gerekçe: ${asText(sec.scopeReason)}`, 8);
+      line(`Gerekçe: ${asText(sec.scopeReason)}`, 8.5);
       continue;
     }
 
@@ -628,7 +879,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         addSimpleTable(
           ["İnşaat sahası zorunlu kontrol", "Durum"],
           Object.entries(sec.constructionChecklistNotes),
-          { fontSize: 8, headerColor: [180, 83, 9] },
+          { fontSize: 8.5, headerColor: C.orange },
         );
       }
       continue;
@@ -638,12 +889,13 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       if (sec.zeroRiskAllowed) {
         line("Bu görselde iş güvenliği tehlikesi gözlemlenmedi (başarılı analiz, sıfır risk izinli).", 9);
       } else {
-        line("Bu görselde otomatik risk üretilmedi; saha doğrulaması önerilir.", 9, "normal", [180, 83, 9]);
+        line("Bu görselde otomatik risk üretilmedi; saha doğrulaması önerilir.", 9, "normal", C.orange);
       }
       continue;
     }
 
-    ensureSpace(16);
+    // Görsel risk tablosu
+    ensureSpace(18);
     autoTable(doc, {
       startY: y,
       margin: { left: margin, right: margin },
@@ -659,9 +911,17 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         riskClassLabelTr(f.riskClass),
         truncate(f.immediateAction ?? findingActionText(f), 70),
       ]),
-      styles: { font: fontFamily, fontSize: 7, cellPadding: 1.6, overflow: "linebreak", valign: "top" },
-      headStyles: { fillColor: [30, 41, 59], textColor: 255 },
-      alternateRowStyles: { fillColor: [248, 250, 252] },
+      styles: {
+        font: fontFamily,
+        fontSize: 7.5,
+        cellPadding: 2.5,
+        overflow: "linebreak",
+        valign: "top",
+        lineColor: C.slate200,
+        lineWidth: 0.15,
+      },
+      headStyles: { fillColor: C.navyMid, textColor: 255, fontStyle: "bold", cellPadding: 3 },
+      alternateRowStyles: { fillColor: C.slate50 },
       columnStyles: {
         0: { cellWidth: 14 },
         1: { cellWidth: 30 },
@@ -674,15 +934,39 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
           if (f) {
             hook.cell.styles.fillColor = riskClassFill(f.riskClass);
             hook.cell.styles.textColor = 255;
+            hook.cell.styles.fontStyle = "bold";
           }
         }
       },
     });
     y = syncYAfterTable(doc, y);
 
+    // Risk detay fişleri (renkli kenar çubuklu)
     for (const f of sec.findings) {
-      ensureSpace(24);
-      subsection(`${f.riskCode ?? "R?"} — Risk Detay Fişi`);
+      ensureSpace(28);
+
+      // Risk sınıfı renk çubuğu
+      const accent = riskClassAccent(f.riskClass);
+      doc.setFillColor(...accent);
+      doc.rect(margin, y, 2.5, 8, "F");
+      doc.setFont(fontFamily, "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(...accent);
+      doc.text(`${f.riskCode ?? "R?"} — Risk Detay Fişi`, margin + 5, y + 5.5);
+
+      // Sınıf rozeti
+      const badgeText = riskClassLabelTr(f.riskClass).toLocaleUpperCase("tr-TR");
+      const badgeW = doc.getTextWidth(badgeText) + 8;
+      doc.setFillColor(...riskClassFill(f.riskClass));
+      doc.roundedRect(width - margin - badgeW, y, badgeW, 8, 1.5, 1.5, "F");
+      doc.setFont(fontFamily, "bold");
+      doc.setFontSize(8);
+      doc.setTextColor(...C.white);
+      doc.text(badgeText, width - margin - badgeW / 2, y + 5.5, { align: "center" });
+
+      y += 12;
+      doc.setTextColor(...C.text);
+
       addKeyValueTable(
         [
           ["Risk başlığı", f.title, "Kategori", f.category],
@@ -694,34 +978,48 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
           ["Sorumlu / termin", [f.responsible, f.deadline].filter(Boolean).join(" / "), "Tamamlanma kanıtı", f.completionProof],
           ["Artık risk", f.residualRiskNote, "Mevzuat bağlamı", findingLegalText(f)],
         ],
-        { fontSize: 7, labelWidth: 30 },
+        { fontSize: 7.5, labelWidth: 30 },
       );
     }
   }
 
+  /* ================================================================ */
+  /*  BÖLÜM 8 — Öncelikli Aksiyon Listesi                             */
+  /* ================================================================ */
   if (consolidated.oncelikli_aksiyon_listesi.length > 0) {
     doc.addPage();
-    y = margin + 6;
+    y = 16;
     addPageHeaderFooter();
     section("8. Öncelikli Aksiyon Listesi");
     addNumberedListTable("Aksiyon", consolidated.oncelikli_aksiyon_listesi, 20);
   }
 
+  /* ================================================================ */
+  /*  BÖLÜM 9 — Saha Doğrulama Kontrol Listesi                        */
+  /* ================================================================ */
   if (consolidated.saha_dogrulama_checklisti.length > 0) {
     section("9. Saha Doğrulama Kontrol Listesi");
     addNumberedListTable("Kontrol maddesi", consolidated.saha_dogrulama_checklisti, 24);
   }
 
+  /* ================================================================ */
+  /*  BÖLÜM 10 — Mevzuat ve Standart Referansları                     */
+  /* ================================================================ */
   if (consolidated.mevzuat_referanslari.length > 0) {
-    section("10. Mevzuat ve Standart Referansları (özet)");
+    section("10. Mevzuat ve Standart Referansları");
     addSimpleTable(
       ["Referans"],
       consolidated.mevzuat_referanslari.map((t) => [truncate(t, 220)]),
-      { fontSize: 8 },
+      { fontSize: 8.5 },
     );
   }
 
+  /* ================================================================ */
+  /*  BÖLÜM 11 — Onay, İmza ve Doğrulama                              */
+  /* ================================================================ */
   section("11. Onay, İmza ve Doğrulama");
+
+  // İmza tablosu
   addSimpleTable(
     ["Rol", "Ad Soyad", "Unvan", "Tarih", "İmza"],
     [
@@ -730,12 +1028,12 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       ["İşveren / İşveren vekili", "", "", "", ""],
     ],
     {
-      fontSize: 8,
-      minCellHeight: 12,
-      headerColor: [30, 41, 59],
+      fontSize: 9,
+      minCellHeight: 14,
+      headerColor: C.navyMid,
       columnStyles: {
-        0: { cellWidth: 34 },
-        4: { cellWidth: 34 },
+        0: { cellWidth: 36, fillColor: C.goldPale, fontStyle: "bold", textColor: C.navy },
+        4: { cellWidth: 36 },
       },
     },
   );
@@ -745,20 +1043,62 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     ["Doğrulama notu", data.shareUrl || "QR kod; firma, tarih, yöntem, bulgu sayısı ve rapor üretim zamanını içerir.", "Uyarı", "Basılı kopya, saha doğrulaması ve yetkili imzalarla birlikte geçerli kabul edilmelidir."],
   ]);
 
+  // Son QR kodu
   if (verificationQrDataUrl.startsWith("data:image/")) {
     try {
-      ensureSpace(42);
-      doc.addImage(verificationQrDataUrl, "PNG", margin, y, 34, 34, undefined, "FAST");
+      ensureSpace(48);
+
+      // QR çerçeve alanı
+      doc.setFillColor(...C.slate50);
+      doc.setDrawColor(...C.gold);
+      doc.setLineWidth(0.4);
+      doc.roundedRect(margin, y, contentW, 40, 2, 2, "FD");
+
+      // QR kod
+      const qrSize = 32;
+      doc.setFillColor(...C.white);
+      doc.roundedRect(margin + 3, y + 4, qrSize, qrSize, 1, 1, "F");
+      doc.addImage(verificationQrDataUrl, "PNG", margin + 4, y + 5, qrSize - 2, qrSize - 2, undefined, "FAST");
+
+      // QR açıklama metinleri
+      const qrTextX = margin + qrSize + 8;
+      doc.setFont(fontFamily, "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(...C.navy);
+      doc.text("Rapor Doğrulama", qrTextX, y + 10);
+
       doc.setFont(fontFamily, "normal");
       doc.setFontSize(8);
-      doc.setTextColor(71, 85, 105);
-      doc.text("QR kodu taratarak rapor bağlantısını veya rapor kimlik özetini doğrulayın.", margin + 40, y + 10);
-      doc.text(data.shareUrl ? truncate(data.shareUrl, 92) : "Kayıtlı paylaşım bağlantısı yoksa QR rapor kimlik verisini taşır.", margin + 40, y + 16);
-      y += 38;
-      doc.setTextColor(15, 23, 42);
+      doc.setTextColor(...C.slate500);
+      doc.text("QR kodu taratarak rapor bağlantısını veya rapor kimlik", qrTextX, y + 17);
+      doc.text("özetini doğrulayın.", qrTextX, y + 22);
+
+      doc.setFontSize(7.5);
+      if (data.shareUrl) {
+        doc.text(truncate(data.shareUrl, 80), qrTextX, y + 29);
+      } else {
+        doc.text("Kayıtlı paylaşım bağlantısı yoksa QR rapor kimlik verisini taşır.", qrTextX, y + 29);
+      }
+
+      y += 44;
+      doc.setTextColor(...C.text);
     } catch (e) {
       console.warn("[pdf-field-report] qr skip", e);
     }
+  }
+
+  // Sayfa toplam sayısı güncelleme
+  totalPages = doc.getNumberOfPages();
+  for (let p = 2; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFont(fontFamily, "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(...C.slate400);
+    const existing = `Sayfa ${p}`;
+    const updated = `Sayfa ${p} / ${totalPages}`;
+    doc.setFillColor(...C.white);
+    doc.rect(width / 2 - 15, pageHeight - 10, 30, 6, "F");
+    doc.text(updated, width / 2, pageHeight - 7, { align: "center" });
   }
 
   return new Uint8Array(doc.output("arraybuffer"));
