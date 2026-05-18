@@ -296,9 +296,9 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
   /* ---------- Sayfa alanı kontrolü ---------- */
   const ensureSpace = (height = 14) => {
-    if (y + height <= pageHeight - 18) return;
+    if (y + height <= pageHeight - 14) return;
     doc.addPage();
-    y = 16;
+    y = 15;
     addPageHeaderFooter();
   };
 
@@ -320,15 +320,15 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
   /* ---------- Bölüm başlığı (altın çubuk) ---------- */
   const section = (title: string) => {
-    ensureSpace(18);
-    y += y <= 20 ? 0 : 6;
+    ensureSpace(16);
+    y += y <= 20 ? 0 : 4;
     doc.setFillColor(...C.gold);
-    doc.rect(margin, y, 2.5, 9, "F");
+    doc.rect(margin, y, 2.5, 8.5, "F");
     doc.setFont(fontFamily, "bold");
-    doc.setFontSize(13);
+    doc.setFontSize(12.5);
     doc.setTextColor(...C.navy);
-    doc.text(title.toLocaleUpperCase("tr-TR"), margin + 6, y + 6.5);
-    y += 13;
+    doc.text(title.toLocaleUpperCase("tr-TR"), margin + 6, y + 6.2);
+    y += 11;
     doc.setTextColor(...C.text);
     doc.setFont(fontFamily, "normal");
   };
@@ -376,7 +376,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       tableLineColor: C.slate200,
       tableLineWidth: 0.15,
     });
-    y = syncYAfterTable(doc, y, 5);
+    y = syncYAfterTable(doc, y, 3);
   };
 
   const addKeyValueTable = (
@@ -409,22 +409,22 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       tableLineColor: C.slate200,
       tableLineWidth: 0.15,
     });
-    y = syncYAfterTable(doc, y, 5);
+    y = syncYAfterTable(doc, y, 3);
   };
 
   /* ---------- Numaralı liste (tablo değil, paragraf) ---------- */
   const addNumberedListBlock = (title: string, rows: string[], limit = 12) => {
     if (rows.length === 0) return;
-    ensureSpace(14);
+    ensureSpace(12);
 
     // Başlık şeridi
     doc.setFillColor(...C.tealDark);
-    doc.rect(margin, y, contentW, 6.5, "F");
+    doc.rect(margin, y, contentW, 6, "F");
     doc.setFont(fontFamily, "bold");
     doc.setFontSize(8.5);
     doc.setTextColor(...C.white);
-    doc.text(title, margin + 3, y + 4.5);
-    y += 6.5;
+    doc.text(title, margin + 3, y + 4.2);
+    y += 6;
 
     // Numaralı satırlar
     doc.setTextColor(...C.text);
@@ -432,8 +432,8 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     for (let i = 0; i < items.length; i++) {
       const text = `${i + 1}. ${items[i]}`;
       const wrapped = doc.splitTextToSize(text, contentW - 6) as string[];
-      const lineH = 4.2;
-      const blockH = wrapped.length * lineH + 4;
+      const lineH = 4;
+      const blockH = wrapped.length * lineH + 3;
       ensureSpace(blockH);
 
       // Alternatif arkaplan
@@ -445,14 +445,14 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       doc.setFont(fontFamily, "normal");
       doc.setFontSize(8.5);
       doc.setTextColor(...C.text);
-      let lineY = y + 3.5;
+      let lineY = y + 3.2;
       for (const w of wrapped) {
         doc.text(w, margin + 3, lineY);
         lineY += lineH;
       }
       y += blockH;
     }
-    y += 4;
+    y += 3;
   };
 
   // Geri uyumluluk
@@ -812,7 +812,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         }
       },
     });
-    y = syncYAfterTable(doc, y, 5);
+    y = syncYAfterTable(doc, y, 3);
   } else if (incomplete) {
     line("Konsolide tablo üretilemedi: bir veya daha fazla görsel analiz edilemedi. Başarısız analiz 0 risk sayılmaz.", 9);
   } else {
@@ -833,9 +833,9 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       section("7. Görsel Bazlı Analiz");
       firstVisualSection = false;
     } else {
-      // Doğal akış — sadece görsel başlık + meta + görsel için yer yoksa sayfa kır
-      y += 6;
-      ensureSpace(80);
+      // Doğal akış — başlık + meta için yeterli yer varsa devam et
+      y += 4;
+      ensureSpace(36);
     }
 
     const gCode = `G${sec.imageIndex}`;
@@ -883,15 +883,15 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     const dataUrl = sec.dataUrl ?? "";
     if (dataUrl.startsWith("data:image/")) {
       try {
-        ensureSpace(58);
         const format = dataUrl.includes("image/png") ? "PNG" : "JPEG";
         const imgW = contentW;
-        const imgH = imgW * 0.52;
+        const imgH = imgW * 0.5;
+        ensureSpace(imgH + 6);
         doc.setDrawColor(...C.slate200);
         doc.setLineWidth(0.3);
         doc.roundedRect(margin - 0.5, y - 0.5, imgW + 1, imgH + 1, 1, 1, "S");
         doc.addImage(dataUrl, format, margin, y, imgW, imgH, undefined, "FAST");
-        y += imgH + 5;
+        y += imgH + 4;
       } catch (e) {
         console.warn("[pdf-field-report] image skip", e);
       }
@@ -986,11 +986,11 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         }
       },
     });
-    y = syncYAfterTable(doc, y, 5);
+    y = syncYAfterTable(doc, y, 3);
 
     // Risk detay fişleri (renkli kenar çubuklu)
     for (const f of sec.findings) {
-      ensureSpace(28);
+      ensureSpace(22);
 
       // Risk sınıfı renk çubuğu
       const accent = riskClassAccent(f.riskClass);
@@ -1011,7 +1011,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       doc.setTextColor(...C.white);
       doc.text(badgeText, width - margin - badgeW / 2, y + 5.5, { align: "center" });
 
-      y += 12;
+      y += 10;
       doc.setTextColor(...C.text);
 
       addKeyValueTable(
@@ -1034,7 +1034,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   /*  BÖLÜM 8 — Öncelikli Aksiyon Listesi                             */
   /* ================================================================ */
   if (reportJson.actions.length > 0) {
-    ensureSpace(40);
+    ensureSpace(26);
     section("8. Öncelikli Aksiyon Listesi");
     addNumberedListBlock("Aksiyon", reportJson.actions, 20);
   }
@@ -1043,7 +1043,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   /*  BÖLÜM 9 — Saha Doğrulama Kontrol Listesi                        */
   /* ================================================================ */
   if (reportJson.verificationChecklist.length > 0) {
-    ensureSpace(40);
+    ensureSpace(26);
     section("9. Saha Doğrulama Kontrol Listesi");
     addNumberedListBlock("Kontrol maddesi", reportJson.verificationChecklist, 24);
   }
@@ -1052,7 +1052,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   /*  BÖLÜM 10 — Mevzuat ve Standart Referansları                     */
   /* ================================================================ */
   if (reportJson.legalReferences.length > 0) {
-    ensureSpace(30);
+    ensureSpace(22);
     section("10. Mevzuat ve Standart Referansları");
     addNumberedListBlock("Referans", reportJson.legalReferences, 20);
   }
