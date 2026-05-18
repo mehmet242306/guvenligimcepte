@@ -112,9 +112,71 @@ function tableY(doc: InstanceType<typeof import("jspdf").jsPDF>, fallback: numbe
   return (doc as PdfTable).lastAutoTable?.finalY ?? fallback;
 }
 
+function sceneTypeLabel(value: unknown): string {
+  switch (String(value || "")) {
+    case "construction_site":
+      return "İnşaat sahası";
+    case "industrial_site":
+      return "Endüstriyel saha";
+    case "warehouse":
+      return "Depo / lojistik alanı";
+    case "office":
+      return "Ofis";
+    case "workplace":
+      return "İşyeri";
+    case "non_workplace":
+      return "İşyeri dışı";
+    case "unclear":
+    case "unknown":
+      return "Belirsiz";
+    default:
+      return asText(value);
+  }
+}
+
+function analysisStatusLabel(value: unknown): string {
+  switch (String(value || "")) {
+    case "success":
+      return "Başarılı";
+    case "partial":
+      return "Kısmi analiz";
+    case "failed":
+      return "Analiz başarısız";
+    case "pending":
+      return "Beklemede";
+    case "manual_required":
+      return "Manuel doğrulama gerekli";
+    default:
+      return asText(value);
+  }
+}
+
+function scopeDecisionLabel(value: unknown): string {
+  switch (String(value || "")) {
+    case "analyze":
+      return "Analize dahil";
+    case "exclude":
+      return "Kapsam dışı";
+    case "manual_review_required":
+      return "Manuel inceleme gerekli";
+    default:
+      return asText(value);
+  }
+}
+
+function displayFileName(value: unknown, index?: number): string {
+  const fileName = asText(value, index ? `Görsel ${index}` : "Görsel");
+  const extension = fileName.match(/\.[a-z0-9]{2,5}$/i)?.[0] ?? "";
+  const base = extension ? fileName.slice(0, -extension.length) : fileName;
+  const looksGenerated = base.length > 34 && !base.includes("-") && !base.includes("_") && !base.includes(" ");
+  if (looksGenerated) return `${index ? `Görsel ${index}` : "Görsel"}${extension}`;
+  return truncate(fileName, 54);
+}
+
 export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExportData): Promise<Uint8Array> {
   const { jsPDF } = await import("jspdf");
   const autoTable = (await import("jspdf-autotable")).default;
+  const QRCode = await import("qrcode");
 
   const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
   const fontFamily = (await ensurePdfUnicodeFont(doc)) ? "NotoSans" : "helvetica";
@@ -254,18 +316,69 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
   const consolidated = buildFieldReportConsolidatedJson(data);
   const sections = resolveExportImageSections(data);
+  const verificationPayload =
+    data.shareUrl ||
+    JSON.stringify({
+      document: "RiskNova Saha Risk Analizi",
+      company: data.companyName || "Rapor",
+      date: reportDate,
+      title: reportTitle,
+      method: data.methodLabel,
+      findings: data.realTotalFindings ?? data.totalFindings,
+      critical: data.criticalCount,
+      generatedAt: new Date().toISOString(),
+    });
+  const verificationQrDataUrl =
+    data.shareQrDataUrl ||
+    (await QRCode.toDataURL(verificationPayload, {
+      errorCorrectionLevel: "M",
+      margin: 1,
+      width: 220,
+    }).catch((error) => {
+      console.warn("[pdf-field-report] qr generate skip", error);
+      return "";
+    }));
 
   // Kapak
-  line(reportTitle, 18, "bold");
-  line("RiskNova — Saha Risk Analizi", 10, "bold", [212, 160, 23]);
+  doc.setFillColor(15, 23, 42);
+  doc.rect(0, 0, width, 38, "F");
+  doc.setFont(fontFamily, "bold");
+  doc.setFontSize(18);
+  doc.setTextColor(255, 255, 255);
+  doc.text("Risk Değerlendirme Raporu", margin, 18);
+  doc.setFontSize(9);
+  doc.text("RiskNova | Saha Risk Analizi | Denetim ve aksiyon takip dokümanı", margin, 28);
+  if (verificationQrDataUrl.startsWith("data:image/")) {
+    try {
+      doc.addImage(verificationQrDataUrl, "PNG", width - margin - 27, 7, 24, 24, undefined, "FAST");
+      doc.setFont(fontFamily, "normal");
+      doc.setFontSize(6);
+      doc.text("QR doğrulama", width - margin - 15, 35, { align: "center" });
+    } catch (e) {
+      console.warn("[pdf-field-report] cover qr skip", e);
+    }
+  }
+  doc.setTextColor(15, 23, 42);
+  y = 48;
+  line(reportTitle, 16, "bold");
   addKeyValueTable(
     [
       ["Firma", data.companyName, "Tarih", reportDate],
       ["Lokasyon", [data.location, data.department].filter(Boolean).join(" / "), "Yöntem", data.methodLabel],
       ["Sektör", data.companySector, "Tehlike sınıfı", data.companyHazardClass],
       ["Adres", data.companyAddress, "Rapor durumu", incomplete ? "Eksik analiz / doğrulama gerekli" : "Teslim edilebilir"],
+      ["Rapor türü", "Fotoğraf destekli saha risk değerlendirmesi", "Doğrulama", data.shareUrl ? "Dijital rapor bağlantılı QR" : "Rapor kimliği QR"],
     ],
     { fontSize: 9 },
+  );
+  addSimpleTable(
+    ["Teslim Özeti", "Açıklama"],
+    [
+      ["Kapsam", "Yüklenen saha görselleri üzerinden İSG risklerinin tespiti, önceliklendirilmesi ve aksiyon planına dönüştürülmesi."],
+      ["Yöntem", data.method === "fine_kinney" ? "Fine-Kinney P x F x S risk skorlama yaklaşımı." : asText(data.methodLabel)],
+      ["Sınır", "Bu rapor fotoğraf ve kullanıcı girdilerine dayanır; belge, eğitim, izin, ekipman sertifikası ve saha ölçümü gerektiren hususlar ayrıca doğrulanmalıdır."],
+    ],
+    { fontSize: 8, headerColor: [15, 118, 110], columnStyles: { 0: { cellWidth: 34 } } },
   );
   if (incomplete) {
     alertBox(
@@ -278,7 +391,14 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   y = margin + 6;
   addPageHeaderFooter();
 
-  section("1. Rapor Geçerlilik Durumu");
+  section("1. Amaç, Kapsam ve Rapor Esası");
+  addKeyValueTable([
+    ["Amaç", "Sahada gözlenen İSG tehlikelerini karar verilebilir risk kayıtlarına dönüştürmek.", "Kapsam", `${sections.length} görsel, ${data.realTotalFindings ?? data.totalFindings} risk bulgusu`],
+    ["Dayanak", "Yüklenen fotoğraflar, kullanıcı satır açıklamaları ve seçilen risk metodolojisi.", "Kısıt", "Tek fotoğraf frekans, eğitim, sertifika, izin ve ölçüm kayıtlarını tek başına kanıtlamaz."],
+    ["Çıktı", "Konsolide risk kayıt tablosu, görsel bazlı analiz, öncelikli aksiyon listesi ve doğrulama kontrol listesi.", "QR", data.shareUrl ? "Dijital rapor bağlantısı içerir." : "Rapor kimlik özetini içerir."],
+  ]);
+
+  section("2. Rapor Geçerlilik Durumu");
   addKeyValueTable([
     ["Durum", consolidated.rapor_gecerlilik.durum, "Nihai rapor mu", consolidated.rapor_gecerlilik.nihai_rapor_mu ? "Evet" : "Hayır"],
     [
@@ -289,7 +409,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     ],
   ]);
 
-  section("2. Yönetici Özeti");
+  section("3. Yönetici Özeti");
   const oz = consolidated.yonetici_ozeti;
   addSimpleTable(
     ["Gösterge", "Değer", "Gösterge", "Değer"],
@@ -323,18 +443,18 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   addNumberedListTable("7 gün içinde aksiyonlar", oz.yedi_gun_aksiyonlari, 10);
   if (data.analysisNote) line(asText(data.analysisNote), 9);
 
-  section("3. Görsel Kapsam Kontrol Tablosu");
+  section("4. Görsel Kapsam Kontrol Tablosu");
   autoTable(doc, {
     startY: y,
     margin: { left: margin, right: margin },
     head: [["Kod", "Dosya", "Sahne", "Kapsam", "Durum", "Karar", "Gerekçe"]],
-    body: consolidated.gorsel_kapsam_kontrolu.map((g) => [
+    body: consolidated.gorsel_kapsam_kontrolu.map((g, index) => [
       asText(g.gorsel_kodu),
-      truncate(asText(g.dosya_adi), 28),
-      asText(g.scene_type),
+      displayFileName(g.dosya_adi, index + 1),
+      sceneTypeLabel(g.scene_type),
       g.isg_kapsaminda_mi ? "İSG kapsamında" : "Kapsam dışı",
-      asText(g.image_analysis_status),
-      asText(g.scope_decision),
+      analysisStatusLabel(g.image_analysis_status),
+      scopeDecisionLabel(g.scope_decision),
       truncate(asText(g.scope_reason), 80),
     ]),
     styles: { font: fontFamily, fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
@@ -343,7 +463,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   y = tableY(doc, y + 35);
   y += 6;
 
-  section("4. Metodoloji ve Fine-Kinney");
+  section("5. Metodoloji ve Fine-Kinney");
   line(
     data.method === "fine_kinney"
       ? "Fine-Kinney: Skor = P (olasılık) × F (maruziyet/frekans) × S (şiddet). P/F/S gerekçeleri saha fotoğrafı ve varsayımlarla birlikte raporlanır; frekans tek karede kesin değildir."
@@ -368,7 +488,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     );
   }
 
-  section("5. Konsolide Risk Kayıt Tablosu");
+  section("6. Konsolide Risk Kayıt Tablosu");
   const allFindings = sections
     .filter((s) => s.scopeDecision !== "exclude" && s.sceneType !== "non_workplace")
     .flatMap((s) => s.findings);
@@ -418,18 +538,18 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     line("Başarıyla analiz edilen görsellerde kayıtlı risk bulgusu yok (saha güvenli görünüm).", 9);
   }
 
-  section("6. Görsel Bazlı Analiz");
+  section("7. Görsel Bazlı Analiz");
   for (const sec of sections) {
     doc.addPage();
     y = margin + 6;
     addPageHeaderFooter();
 
     const gCode = `G${sec.imageIndex}`;
-    line(`${gCode} — ${sec.fileName}`, 11, "bold");
+    line(`${gCode} — ${displayFileName(sec.fileName, sec.imageIndex)}`, 11, "bold");
     addKeyValueTable(
       [
-        ["Saha tanımı", sec.areaLocation || sec.rowTitle, "Analiz durumu", sec.analysisStatusLabel],
-        ["Sahne tipi", sec.sceneType, "Kapsam kararı", sec.scopeDecision],
+        ["Saha tanımı", sec.areaLocation || sec.rowTitle, "Analiz durumu", analysisStatusLabel(sec.imageAnalysisStatus ?? sec.analysisStatus)],
+        ["Sahne tipi", sceneTypeLabel(sec.sceneType), "Kapsam kararı", scopeDecisionLabel(sec.scopeDecision)],
         ["Risk sayısı", sec.riskCount ?? sec.findingCount, "Kapsam gerekçesi", sec.scopeReason],
       ],
       { fontSize: 8 },
@@ -549,17 +669,17 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     doc.addPage();
     y = margin + 6;
     addPageHeaderFooter();
-    section("7. Öncelikli Aksiyon Listesi");
+    section("8. Öncelikli Aksiyon Listesi");
     addNumberedListTable("Aksiyon", consolidated.oncelikli_aksiyon_listesi, 20);
   }
 
   if (consolidated.saha_dogrulama_checklisti.length > 0) {
-    section("8. Saha Doğrulama Kontrol Listesi");
+    section("9. Saha Doğrulama Kontrol Listesi");
     addNumberedListTable("Kontrol maddesi", consolidated.saha_dogrulama_checklisti, 24);
   }
 
   if (consolidated.mevzuat_referanslari.length > 0) {
-    section("9. Mevzuat ve Standart Referansları (özet)");
+    section("10. Mevzuat ve Standart Referansları (özet)");
     addSimpleTable(
       ["Referans"],
       consolidated.mevzuat_referanslari.map((t) => [truncate(t, 220)]),
@@ -567,18 +687,43 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     );
   }
 
-  if (data.shareUrl || data.shareQrDataUrl) {
-    section("Doğrulama");
-    if (data.shareUrl) line(`Paylaşım: ${data.shareUrl}`, 8);
-    const qr = data.shareQrDataUrl ?? "";
-    if (qr.startsWith("data:image/")) {
-      try {
-        ensureSpace(36);
-        doc.addImage(qr, "PNG", margin, y, 28, 28, undefined, "FAST");
-        y += 32;
-      } catch (e) {
-        console.warn("[pdf-field-report] qr skip", e);
-      }
+  section("11. Onay, İmza ve Doğrulama");
+  addSimpleTable(
+    ["Rol", "Ad Soyad", "Unvan", "Tarih", "İmza"],
+    [
+      ["Hazırlayan", data.participants[0]?.fullName || "", data.participants[0]?.title || data.participants[0]?.role || "", reportDate, ""],
+      ["Kontrol eden", "", "", "", ""],
+      ["İşveren / İşveren vekili", "", "", "", ""],
+    ],
+    {
+      fontSize: 8,
+      minCellHeight: 12,
+      headerColor: [30, 41, 59],
+      columnStyles: {
+        0: { cellWidth: 34 },
+        4: { cellWidth: 34 },
+      },
+    },
+  );
+
+  addKeyValueTable([
+    ["QR içeriği", data.shareUrl ? "Dijital rapor bağlantısı" : "Rapor kimlik özeti", "Rapor tarihi", reportDate],
+    ["Doğrulama notu", data.shareUrl || "QR kod; firma, tarih, yöntem, bulgu sayısı ve rapor üretim zamanını içerir.", "Uyarı", "Basılı kopya, saha doğrulaması ve yetkili imzalarla birlikte geçerli kabul edilmelidir."],
+  ]);
+
+  if (verificationQrDataUrl.startsWith("data:image/")) {
+    try {
+      ensureSpace(42);
+      doc.addImage(verificationQrDataUrl, "PNG", margin, y, 34, 34, undefined, "FAST");
+      doc.setFont(fontFamily, "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(71, 85, 105);
+      doc.text("QR kodu taratarak rapor bağlantısını veya rapor kimlik özetini doğrulayın.", margin + 40, y + 10);
+      doc.text(data.shareUrl ? truncate(data.shareUrl, 92) : "Kayıtlı paylaşım bağlantısı yoksa QR rapor kimlik verisini taşır.", margin + 40, y + 16);
+      y += 38;
+      doc.setTextColor(15, 23, 42);
+    } catch (e) {
+      console.warn("[pdf-field-report] qr skip", e);
     }
   }
 
