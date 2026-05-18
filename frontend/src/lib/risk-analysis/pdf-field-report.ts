@@ -26,6 +26,7 @@ import {
   syncYAfterTable,
   writeParagraph,
 } from "@/lib/risk-analysis/pdf-layout-helpers";
+import { fitImageInBox, parseImageDimensions } from "@/lib/risk-analysis/image-utils";
 
 /* ------------------------------------------------------------------ */
 /*  Premium renk paleti                                                */
@@ -865,7 +866,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     const gCode = `G${sec.imageIndex}`;
     const excluded = sec.scopeDecision === "exclude" || sec.isgKapsamindaMi === false || sec.sceneType === "non_workplace";
 
-    // Görsel başlık bandı
+    // Görsel başlık bandı (tam genişlik)
     ensureSpace(12);
     doc.setFillColor(...C.slate100);
     doc.setDrawColor(...C.gold);
@@ -882,58 +883,118 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     doc.setFontSize(10);
     doc.setTextColor(...C.navy);
     doc.text(displayFileName(sec.fileName, sec.imageIndex), margin + 21, y + 6.5);
-    y += 14;
+    y += 13;
     doc.setTextColor(...C.text);
 
-    // Görsel meta bilgileri
-    addKeyValueTable(
-      [
-        ["Saha tanımı", sec.areaLocation || sec.rowTitle, "Analiz durumu", analysisStatusLabel(sec.imageAnalysisStatus ?? sec.analysisStatus)],
-        ["Sahne tipi", sceneTypeLabel(sec.sceneType), "Kapsam kararı", scopeDecisionLabel(sec.scopeDecision)],
-        ["Risk sayısı", sec.riskCount ?? sec.findingCount, "Kapsam gerekçesi", sec.scopeReason],
-      ],
-      { fontSize: 8.5 },
-    );
+    /* ---------- SIDE-BY-SIDE: SOL Foto kutusu + SAĞ Meta tablosu ---------- */
+    const dataUrl = sec.dataUrl ?? "";
+    const photoBoxW = 62;
+    const photoBoxH = 62;
+    const gapBetween = 4;
+    const metaX = margin + photoBoxW + gapBetween;
+    const metaW = contentW - photoBoxW - gapBetween;
 
+    ensureSpace(photoBoxH + 4);
+    const sideStartY = y;
+
+    // SOL: Fotoğraf kutusu (sabit boyut, görsel oranı korunur)
+    if (dataUrl.startsWith("data:image/")) {
+      try {
+        const format = dataUrl.includes("image/png") ? "PNG" : "JPEG";
+        // Kutu arka planı + çerçeve
+        doc.setFillColor(...C.slate50);
+        doc.setDrawColor(...C.slate200);
+        doc.setLineWidth(0.3);
+        doc.roundedRect(margin, sideStartY, photoBoxW, photoBoxH, 1.5, 1.5, "FD");
+
+        // Görseli kutuya en-boy korunarak sığdır
+        const dims = parseImageDimensions(dataUrl);
+        if (dims) {
+          const fit = fitImageInBox(dims.w, dims.h, photoBoxW - 1, photoBoxH - 1);
+          doc.addImage(
+            dataUrl,
+            format,
+            margin + 0.5 + fit.offsetX,
+            sideStartY + 0.5 + fit.offsetY,
+            fit.drawW,
+            fit.drawH,
+            undefined,
+            "FAST",
+          );
+        } else {
+          // Boyut belirlenemedi — kutuya tam yerleştir (en kötü ihtimal hafif distortion)
+          doc.addImage(
+            dataUrl,
+            format,
+            margin + 0.5,
+            sideStartY + 0.5,
+            photoBoxW - 1,
+            photoBoxH - 1,
+            undefined,
+            "FAST",
+          );
+        }
+      } catch (e) {
+        console.warn("[pdf-field-report] photo box skip", e);
+      }
+    } else {
+      // Görsel yoksa boş kutu
+      doc.setFillColor(...C.slate50);
+      doc.setDrawColor(...C.slate200);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(margin, sideStartY, photoBoxW, photoBoxH, 1.5, 1.5, "FD");
+      doc.setFont(fontFamily, "normal");
+      doc.setFontSize(7);
+      doc.setTextColor(...C.slate400);
+      doc.text("Görsel yok", margin + photoBoxW / 2, sideStartY + photoBoxH / 2, { align: "center" });
+      doc.setTextColor(...C.text);
+    }
+
+    // SAĞ: Meta bilgileri (autoTable, custom left margin)
+    const metaTracker = trackedFinalY(sideStartY);
+    autoTable(doc, {
+      startY: sideStartY,
+      margin: { left: metaX, right: margin },
+      body: [
+        ["Saha tanımı", truncate(asText(sec.areaLocation || sec.rowTitle), 140)],
+        ["Analiz durumu", analysisStatusLabel(sec.imageAnalysisStatus ?? sec.analysisStatus)],
+        ["Sahne tipi", sceneTypeLabel(sec.sceneType)],
+        ["Kapsam kararı", scopeDecisionLabel(sec.scopeDecision)],
+        ["Risk sayısı", String(sec.riskCount ?? sec.findingCount ?? "-")],
+        ["Kapsam gerekçesi", truncate(asText(sec.scopeReason), 140)],
+      ],
+      styles: {
+        font: fontFamily,
+        fontSize: 8,
+        cellPadding: { top: 2, right: 2.5, bottom: 2, left: 2.5 },
+        overflow: "linebreak",
+        valign: "top",
+        halign: "left",
+        minCellHeight: 7,
+        lineColor: C.slate200,
+        lineWidth: 0.15,
+        textColor: C.text,
+      },
+      columnStyles: {
+        0: { cellWidth: 32, fillColor: C.goldPale, fontStyle: "bold", textColor: C.navy },
+      },
+      tableWidth: metaW,
+      rowPageBreak: "auto",
+      didDrawPage: metaTracker.capture,
+    });
+
+    // En uzun taraf neyse y'yi oraya hizala
+    const photoEndY = sideStartY + photoBoxH;
+    const metaEndY = metaTracker.get();
+    y = Math.max(photoEndY, metaEndY) + 4;
+
+    // Görsel sınırlılıkları (tam genişlik, opsiyonel)
     if (sec.imageLimitations && sec.imageLimitations.length > 0) {
       addSimpleTable(
         ["Görsel sınırlılıkları"],
         sec.imageLimitations.map((lim) => [lim]),
         { fontSize: 8.5, headerColor: C.orange },
       );
-    }
-
-    // Görsel — kalan alana göre adaptif boyutlandırma (boşluk bırakmaz)
-    const dataUrl = sec.dataUrl ?? "";
-    if (dataUrl.startsWith("data:image/")) {
-      try {
-        const format = dataUrl.includes("image/png") ? "PNG" : "JPEG";
-        const imgW = contentW;
-        const idealH = 65;          // ideal yükseklik (öncekinden ~30% daha küçük)
-        const minH = 36;            // minimum kabul edilebilir yükseklik
-
-        const availableH = pageHeight - 14 - y - 3;
-
-        let imgH: number;
-        if (availableH >= idealH) {
-          imgH = idealH;
-        } else if (availableH >= minH) {
-          // Kalan alana sığdır — boşluk bırakmasın
-          imgH = availableH;
-        } else {
-          // Çok az yer var, yeni sayfaya geç
-          ensureSpace(idealH + 4);
-          imgH = idealH;
-        }
-
-        doc.setDrawColor(...C.slate200);
-        doc.setLineWidth(0.3);
-        doc.roundedRect(margin - 0.5, y - 0.5, imgW + 1, imgH + 1, 1, 1, "S");
-        doc.addImage(dataUrl, format, margin, y, imgW, imgH, undefined, "FAST");
-        y += imgH + 3;
-      } catch (e) {
-        console.warn("[pdf-field-report] image skip", e);
-      }
     }
 
     if (excluded) {
