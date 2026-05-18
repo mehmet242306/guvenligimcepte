@@ -21,10 +21,11 @@ export function measureWrappedTextHeight(
   text: string,
   maxWidth: number,
   fontSize: number,
+  lineHeightFactor = 1.2,
 ): number {
   const wrapped = doc.splitTextToSize(text, maxWidth) as string[];
-  const lineHeight = fontSize * 0.42;
-  return wrapped.length * lineHeight + 2;
+  const lineHeight = fontSize * 0.42 * lineHeightFactor;
+  return wrapped.length * lineHeight + 3;
 }
 
 /** Çok satırlı metin — her satır ayrı Y ile çizilir (üst üste binme olmaz) */
