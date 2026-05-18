@@ -34,7 +34,13 @@ import {
 /* Types                                                               */
 /* ================================================================== */
 
-export type ImageAnalysisStatus = "success" | "failed" | "pending" | "manual_required";
+export type ImageAnalysisStatus = "success" | "failed" | "pending" | "manual_required" | "partial";
+
+export type SceneType =
+  | "construction_site"
+  | "workplace"
+  | "non_workplace"
+  | "unknown";
 
 export type ExportImage = {
   imageId: string;
@@ -50,6 +56,10 @@ export type ExportImage = {
   photoQuality?: "good" | "moderate" | "poor";
   analysisStatus?: ImageAnalysisStatus;
   analysisError?: string;
+  imageAnalysisStatus?: ImageAnalysisStatus;
+  riskCount?: number | null;
+  sceneType?: SceneType;
+  zeroRiskAllowed?: boolean;
 };
 
 export type ExportImageSection = {
@@ -64,6 +74,14 @@ export type ExportImageSection = {
   findingCount: number;
   dataUrl?: string;
   imageLimitations?: string[];
+  imageAnalysisStatus?: ImageAnalysisStatus;
+  /** null = analiz başarısız; 0 yazılmaz */
+  riskCount?: number | null;
+  sceneType?: SceneType;
+  zeroRiskAllowed?: boolean;
+  documentCheckItems?: string[];
+  failureRecoveryActions?: string[];
+  constructionChecklistNotes?: Record<string, string>;
   findings: ExportFinding[];
 };
 
@@ -147,6 +165,8 @@ export type RiskAnalysisExportData = {
   dofCandidateCount: number;
   failedImageCount?: number;
   pendingImageCount?: number;
+  partialImageCount?: number;
+  reportIncomplete?: boolean;
   date: string;
   shareQrDataUrl?: string;
   shareUrl?: string;

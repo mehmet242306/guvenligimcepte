@@ -9,7 +9,12 @@ import {
   findingLegalText,
   resolveExportImageSections,
 } from "@/lib/risk-analysis/field-export-sections";
-import { buildFieldReportConsolidatedJson } from "@/lib/risk-analysis/field-report-json";
+import { buildFieldReportConsolidatedJson, FAILED_ANALYSIS_WARNING } from "@/lib/risk-analysis/field-report-json";
+import {
+  FAILED_IMAGE_NOTE,
+  isReportIncomplete,
+  reportTitleWithValidity,
+} from "@/lib/risk-analysis/field-report-validity";
 import {
   formatFineKinneyBlock,
   formatMatrixBlock,
@@ -78,8 +83,25 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   const width = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const reportDate = asText(data.date, new Date().toLocaleDateString("tr-TR"));
-  const reportTitle = asText(data.analysisTitle, "Saha Risk Analizi Raporu");
+  const baseTitle = asText(data.analysisTitle, "Saha Risk Analizi Raporu");
+  const incomplete = data.reportIncomplete ?? isReportIncomplete(data);
+  const reportTitle = reportTitleWithValidity(baseTitle, incomplete);
   let y = margin;
+
+  const alertBox = (text: string) => {
+    const wrapped = doc.splitTextToSize(text, width - margin * 2 - 8) as string[];
+    const h = wrapped.length * 4.2 + 8;
+    ensureSpace(h);
+    doc.setFillColor(254, 226, 226);
+    doc.setDrawColor(185, 28, 28);
+    doc.roundedRect(margin, y, width - margin * 2, h, 2, 2, "FD");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(127, 29, 29);
+    doc.text(wrapped, margin + 4, y + 6);
+    y += h + 4;
+    doc.setTextColor(15, 23, 42);
+  };
 
   const addPageHeaderFooter = () => {
     const page = doc.getNumberOfPages();
@@ -129,6 +151,11 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   line(`Lokasyon: ${asText([data.location, data.department].filter(Boolean).join(" / "))}`, 10);
   line(`Tarih: ${reportDate}`, 10);
   line(`Yöntem: ${asText(data.methodLabel)}`, 10);
+  if (incomplete) {
+    alertBox(
+      consolidated.rapor_durumu.uyari || FAILED_ANALYSIS_WARNING,
+    );
+  }
   addPageHeaderFooter();
 
   doc.addPage();
@@ -137,10 +164,20 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
   section("1. Yönetici Özeti");
   const oz = consolidated.yonetici_ozeti;
-  line(`Toplam görsel: ${oz.toplam_gorsel} | Toplam gerçek bulgu: ${oz.toplam_bulgu}`, 9);
-  line(`Kritik: ${oz.kritik} | Yüksek: ${oz.yuksek} | Orta: ${oz.orta} | Düşük/izleme: ${oz.dusuk}`, 9);
-  line(`DÖF adayı (tüm bulgular): ${data.dofCandidateCount}`, 9);
-  if (data.failedImageCount) line(`Analiz başarısız görsel: ${data.failedImageCount}`, 9, "normal", [185, 28, 28]);
+  line(`Analiz geçerlilik: ${oz.analiz_gecerlilik_durumu}`, 9, incomplete ? "bold" : "normal", incomplete ? [185, 28, 28] : [15, 23, 42]);
+  line(
+    `Toplam görsel: ${oz.toplam_gorsel} | Başarılı: ${oz.basarili_analiz} | Kısmi: ${oz.kismi_analiz} | Başarısız: ${oz.basarisiz_analiz}`,
+    9,
+  );
+  line(`Toplam gerçek risk bulgusu (yalnızca başarılı analizler): ${oz.toplam_gercek_risk}`, 9);
+  line(`Kritik: ${oz.kritik} | Yüksek: ${oz.yuksek} | Orta: ${oz.orta} | Düşük/izleme: ${oz.dusuk_izleme}`, 9);
+  line(`Doküman doğrulama maddesi: ${oz.dokuman_dogrulama}`, 9);
+  line(`DÖF adayı: ${data.dofCandidateCount}`, 9);
+  if (oz.basarisiz_analiz > 0) {
+    alertBox(
+      `${oz.basarisiz_analiz} görsel analiz edilemedi. Bu görseller için 0 risk anlamına gelmez. Yeniden analiz veya manuel doğrulama zorunludur.`,
+    );
+  }
 
   if (oz.acil_durdurma_gerekenler.length > 0) {
     line("Acil durdurma / derhal müdahale gereken işler:", 9, "bold");
@@ -214,8 +251,10 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     y = (doc as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 40;
     y += 6;
     addPageHeaderFooter();
+  } else if (incomplete) {
+    line("Konsolide tablo üretilemedi: bir veya daha fazla görsel analiz edilemedi. Başarısız analiz 0 risk sayılmaz.", 9);
   } else {
-    line("Kayıtlı gerçek risk bulgusu yok.", 9);
+    line("Başarıyla analiz edilen görsellerde kayıtlı risk bulgusu yok (saha güvenli görünüm).", 9);
   }
 
   section("4. Görsel Bazlı Analiz");
@@ -246,13 +285,39 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       }
     }
 
-    if (sec.analysisStatus !== "success" || sec.findings.length === 0) {
-      line(
-        sec.analysisStatus !== "success"
-          ? "Bu görsel için otomatik risk üretilmedi. Saha doğrulaması veya yeniden analiz gerekir."
-          : "Bu görselde kayıtlı risk bulunmuyor.",
-        9,
-      );
+    const secFailed =
+      sec.analysisStatus === "failed" ||
+      sec.analysisStatus === "manual_required" ||
+      sec.imageAnalysisStatus === "failed" ||
+      sec.imageAnalysisStatus === "manual_required";
+
+    if (secFailed) {
+      alertBox(FAILED_IMAGE_NOTE);
+      if (sec.analysisError) line(`Hata: ${sec.analysisError}`, 8);
+      if (sec.failureRecoveryActions && sec.failureRecoveryActions.length > 0) {
+        line("Yapılacaklar:", 9, "bold");
+        sec.failureRecoveryActions.forEach((a) => line(`• ${a}`, 8));
+      }
+      if (sec.documentCheckItems && sec.documentCheckItems.length > 0) {
+        line("Doküman kontrol maddeleri:", 9, "bold");
+        sec.documentCheckItems.forEach((d) => line(`• ${d}`, 8));
+      }
+      if (sec.constructionChecklistNotes) {
+        line("İnşaat sahası zorunlu kontrol listesi:", 9, "bold");
+        for (const [k, v] of Object.entries(sec.constructionChecklistNotes)) {
+          line(`• ${k}: ${v}`, 8);
+        }
+      }
+      line(`Risk sayısı: değerlendirilemedi (null)`, 8, "bold", [185, 28, 28]);
+      continue;
+    }
+
+    if (sec.findings.length === 0) {
+      if (sec.zeroRiskAllowed) {
+        line("Bu görselde iş güvenliği tehlikesi gözlemlenmedi (başarılı analiz, sıfır risk izinli).", 9);
+      } else {
+        line("Bu görselde otomatik risk üretilmedi; saha doğrulaması önerilir.", 9, "normal", [180, 83, 9]);
+      }
       continue;
     }
 

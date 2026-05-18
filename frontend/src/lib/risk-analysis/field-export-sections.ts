@@ -28,9 +28,13 @@ export function resolveExportImageSections(data: RiskAnalysisExportData): Export
       analysisStatus: status,
       analysisStatusLabel: imageAnalysisStatusLabel(status),
       analysisError: img.analysisError,
-      findingCount: findings.length,
+      findingCount: status === "success" ? findings.length : 0,
+      riskCount: status === "success" ? findings.length : null,
+      imageAnalysisStatus: img.imageAnalysisStatus ?? status,
+      sceneType: img.sceneType,
+      zeroRiskAllowed: img.zeroRiskAllowed,
       dataUrl: img.dataUrl,
-      findings,
+      findings: status === "success" ? findings : [],
     };
   });
 }

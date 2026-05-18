@@ -96,6 +96,15 @@ import {
   isSyntheticOrFailedFinding,
 } from "@/lib/risk-analysis/finding-quality";
 import { compressImageForAnalysis } from "@/lib/risk-analysis/compress-image-for-analysis";
+import {
+  buildConstructionDocumentChecks,
+  buildConstructionVerificationChecklist,
+  buildFailureRecoveryActions,
+  CONSTRUCTION_MANDATORY_RISK_HEADINGS,
+  looksLikeConstructionContext,
+} from "@/lib/risk-analysis/construction-site-checklist";
+import type { SceneType } from "@/lib/risk-analysis-export";
+import { isReportIncomplete } from "@/lib/risk-analysis/field-report-validity";
 import { downloadServerExport } from "@/lib/billing/server-export-client";
 import { MAX_IMAGES_PER_UPLOAD_BATCH, MAX_RISK_ANALYSIS_IMAGES_TOTAL } from "@/lib/risk-analysis/upload-limits";
 import {
@@ -208,6 +217,13 @@ type ImageMeta = {
   imageRelevance: "relevant" | "irrelevant" | "not_real_photo";
   imageDescription: string;
   imageLimitations?: string[];
+  sceneType?: SceneType;
+  zeroRiskAllowed?: boolean;
+  riskCount?: number | null;
+  imageAnalysisStatus?: ImageAnalysisStatus;
+  documentCheckItems?: string[];
+  constructionChecklistNotes?: Record<string, string>;
+  failureRecoveryActions?: string[];
   analysisStatus?: ImageAnalysisStatus;
   analysisError?: string;
   retryAttempts?: number;
@@ -279,6 +295,58 @@ type AiImageAnalysisResult = {
   error?: string;
   stage?: string;
 };
+
+function parseSceneTypeFromApi(data: Record<string, unknown>): SceneType | undefined {
+  const pa = (data.preAnalysis ?? data.pre_analysis) as Record<string, unknown> | undefined;
+  const st = String(pa?.scene_type ?? data.scene_type ?? "").trim();
+  if (st === "construction_site" || st === "workplace" || st === "non_workplace" || st === "unknown") {
+    return st;
+  }
+  return undefined;
+}
+
+function enrichFailedImageMeta(
+  meta: ImageMeta,
+  fileName: string,
+  rowTitle: string,
+  description: string,
+): ImageMeta {
+  const construction = looksLikeConstructionContext(
+    rowTitle,
+    description,
+    fileName,
+    meta.areaSummary,
+    meta.imageDescription,
+  );
+  const failureRecoveryActions = buildFailureRecoveryActions(fileName);
+  if (!construction) {
+    return {
+      ...meta,
+      analysisStatus: "failed",
+      imageAnalysisStatus: "failed",
+      riskCount: null,
+      zeroRiskAllowed: false,
+      failureRecoveryActions,
+    };
+  }
+  const constructionChecklistNotes: Record<string, string> = {};
+  const lines = buildConstructionVerificationChecklist();
+  CONSTRUCTION_MANDATORY_RISK_HEADINGS.forEach((heading, i) => {
+    constructionChecklistNotes[heading] =
+      lines[i]?.replace(/^[^:]+:\s*/, "") ?? "değerlendirilemedi; saha doğrulaması zorunlu";
+  });
+  return {
+    ...meta,
+    analysisStatus: "failed",
+    imageAnalysisStatus: "failed",
+    riskCount: null,
+    sceneType: "construction_site",
+    zeroRiskAllowed: false,
+    documentCheckItems: buildConstructionDocumentChecks(),
+    constructionChecklistNotes,
+    failureRecoveryActions,
+  };
+}
 
 /* ================================================================== */
 /* Constants & catalogs                                                */
@@ -1957,6 +2025,23 @@ export function RiskAnalysisClient() {
         imageLimitations: Array.isArray(data.imageLimitations)
           ? data.imageLimitations.map((x: unknown) => String(x))
           : [],
+        sceneType: parseSceneTypeFromApi(data),
+        zeroRiskAllowed: data.zero_risk_allowed === true,
+        riskCount:
+          typeof data.risk_count === "number"
+            ? data.risk_count
+            : Array.isArray(data.risks)
+              ? data.risks.length
+              : null,
+        imageAnalysisStatus:
+          data.image_analysis_status === "partial"
+            ? "partial"
+            : data.image_analysis_status === "failed"
+              ? "failed"
+              : "success",
+        documentCheckItems: Array.isArray(data.dokuman_kontrol_maddeleri)
+          ? data.dokuman_kontrol_maddeleri.map((x: unknown) => String(x))
+          : [],
         analysisStatus: "success",
         ...(okDiag ? { aiDiagnostics: okDiag } : {}),
       };
@@ -2181,12 +2266,15 @@ export function RiskAnalysisClient() {
         });
         const { findings: aiFindings, meta } = analysis;
         const imageGlobalIndex = processedImages;
-        newImageMeta[img.id] = {
+        const baseMeta: ImageMeta = {
           ...meta,
           analysisStatus: analysis.error ? "failed" : meta.analysisStatus ?? "success",
           analysisError: analysis.error ?? meta.analysisError,
           retryAttempts: meta.retryAttempts ?? 0,
         };
+        newImageMeta[img.id] = analysis.error
+          ? enrichFailedImageMeta(baseMeta, img.file.name, line.title, line.description)
+          : baseMeta;
 
         if (analysis.error) {
           analysisErrors.push(`${img.file.name}: ${analysis.error}`);
@@ -2864,6 +2952,7 @@ JSON formatında döndür:
     let globalImageIndex = 0;
     let failedImageCount = 0;
     let pendingImageCount = 0;
+    let partialImageCount = 0;
 
     for (const result of results) {
       const sourceLine = lineMap.get(result.rowId);
@@ -2873,8 +2962,9 @@ JSON formatında döndür:
         const meta = imageMetaMap[img.id];
         const status: ImageAnalysisStatus =
           meta?.analysisStatus ?? (meta?.analysisError ? "failed" : "success");
-        if (status === "failed") failedImageCount += 1;
-        if (status === "pending" || status === "manual_required") pendingImageCount += 1;
+        if (status === "failed" || status === "manual_required") failedImageCount += 1;
+        if (status === "partial") partialImageCount += 1;
+        if (status === "pending") pendingImageCount += 1;
 
         const imgFindings = filterRealFindings(result.findings.filter((f) => f.imageId === img.id));
         const exportFindings = imgFindings.map((f) => mapFindingToExport(f, result.rowTitle));
@@ -2888,6 +2978,7 @@ JSON formatında döndür:
           sourceLine.description?.trim() ||
           result.rowTitle;
 
+        const failed = status === "failed" || status === "manual_required";
         imageSections.push({
           imageIndex: globalImageIndex,
           imageId: img.id,
@@ -2897,10 +2988,17 @@ JSON formatında döndür:
           analysisStatus: status,
           analysisStatusLabel: imageAnalysisStatusLabel(status),
           analysisError: meta?.analysisError,
-          findingCount: exportFindings.length,
+          findingCount: failed ? 0 : exportFindings.length,
+          riskCount: failed ? null : exportFindings.length,
+          imageAnalysisStatus: meta?.imageAnalysisStatus ?? status,
+          sceneType: meta?.sceneType,
+          zeroRiskAllowed: meta?.zeroRiskAllowed,
           dataUrl: dataUrl || undefined,
           imageLimitations: meta?.imageLimitations,
-          findings: exportFindings,
+          documentCheckItems: meta?.documentCheckItems,
+          constructionChecklistNotes: meta?.constructionChecklistNotes,
+          failureRecoveryActions: meta?.failureRecoveryActions,
+          findings: failed ? [] : exportFindings,
         });
 
         if (dataUrl) {
@@ -2950,6 +3048,9 @@ JSON formatında döndür:
       dofCandidateCount,
       failedImageCount: failedImageCount || undefined,
       pendingImageCount: pendingImageCount || undefined,
+      partialImageCount: partialImageCount || undefined,
+      reportIncomplete:
+        failedImageCount > 0 || pendingImageCount > 0 || partialImageCount > 0 ? true : undefined,
       date: new Date().toLocaleDateString(intlLocaleTag(locale as Locale)),
       shareUrl: shareUrl || undefined,
       shareQrDataUrl: shareQrDataUrl || undefined,

@@ -2,7 +2,7 @@
  * Saha risk analizi — gerçek risk / sentetik fallback / API hata ayrımı.
  */
 
-export type ImageAnalysisStatus = "success" | "failed" | "pending" | "manual_required";
+export type ImageAnalysisStatus = "success" | "failed" | "pending" | "manual_required" | "partial";
 
 const SYNTHETIC_TITLE_PATTERN =
   /(?:ai\s*yanit\w*\s*alinamad|ai\s*yanıt\w*\s*alınamad|manuel\s*dogrulama\s*gerek|saha\s*risk\s*envanteri|analiz\s*tamamlanamad|timeout|api\s*hatas|high\s*risk$)/i;
@@ -46,6 +46,8 @@ export function imageAnalysisStatusLabel(status: ImageAnalysisStatus): string {
       return "Başarısız — yeniden deneme veya manuel doğrulama gerekli";
     case "manual_required":
       return "Manuel risk girişi gerekli";
+    case "partial":
+      return "Kısmi analiz — saha doğrulaması gerekli";
     default:
       return "Analiz bekliyor";
   }

@@ -1,12 +1,44 @@
 /**
- * Saha Risk Analizi — konsolide JSON (PDF/Word öncesi veri yapısı).
+ * Saha Risk Analizi — konsolide JSON (v4 — başarısız analiz güvenliği).
  */
 
 import type { ExportFinding, RiskAnalysisExportData } from "@/lib/risk-analysis-export";
-import { exportTotalFindings, findingActionText, resolveExportImageSections } from "@/lib/risk-analysis/field-export-sections";
+import {
+  exportTotalFindings,
+  findingActionText,
+  resolveExportImageSections,
+} from "@/lib/risk-analysis/field-export-sections";
 import { riskClassLabelTr } from "@/lib/risk-analysis/finding-quality";
+import {
+  buildReportValidityBlock,
+  countImagesByStatus,
+  FAILED_ANALYSIS_WARNING,
+  FAILED_IMAGE_NOTE,
+} from "@/lib/risk-analysis/field-report-validity";
 
 export type FieldReportConsolidatedJson = {
+  rapor_durumu: {
+    analiz_gecerli_mi: boolean;
+    gecersizlik_nedeni: string;
+    uyari: string;
+    analiz_gecerlilik_durumu: string;
+  };
+  yonetici_ozeti: {
+    toplam_gorsel: number;
+    basarili_analiz: number;
+    kismi_analiz: number;
+    basarisiz_analiz: number;
+    toplam_gercek_risk: number;
+    kritik: number;
+    yuksek: number;
+    orta: number;
+    dusuk_izleme: number;
+    dokuman_dogrulama: number;
+    analiz_gecerlilik_durumu: string;
+    acil_durdurma_gerekenler: string[];
+    ilk_24_saat_aksiyonlari: string[];
+    yedi_gun_aksiyonlari: string[];
+  };
   rapor_bilgisi: {
     firma: string;
     lokasyon: string;
@@ -15,23 +47,7 @@ export type FieldReportConsolidatedJson = {
     hazirlayan: string;
     sinirlamalar: string[];
   };
-  yonetici_ozeti: {
-    toplam_gorsel: number;
-    toplam_bulgu: number;
-    kritik: number;
-    yuksek: number;
-    orta: number;
-    dusuk: number;
-    acil_durdurma_gerekenler: string[];
-    ilk_24_saat_aksiyonlari: string[];
-    yedi_gun_aksiyonlari: string[];
-  };
-  gorseller: Array<{
-    gorsel_kodu: string;
-    saha_tanimi: string;
-    gorsel_sinirlamalari: string[];
-    riskler: Array<Record<string, unknown>>;
-  }>;
+  gorseller: Array<Record<string, unknown>>;
   oncelikli_aksiyon_listesi: string[];
   saha_dogrulama_checklisti: string[];
   mevzuat_referanslari: string[];
@@ -47,7 +63,7 @@ function mapFindingToReportRisk(f: ExportFinding, gCode: string, rIdx: number): 
     risk_kodu: f.riskCode ?? `${gCode}-R${rIdx}`,
     baslik: f.title,
     kategori: f.category,
-    gozlemlenen_kanit: f.observedEvidence ?? f.recommendation?.slice(0, 500) ?? "",
+    gozlemlenen_kanit: f.observedEvidence ?? "",
     dogrulanacak_bilgi: f.verificationNeeded ?? "",
     olasi_sonuc: f.possibleOutcome ?? "",
     mevcut_kontrol: f.currentControl ?? "",
@@ -63,7 +79,6 @@ function mapFindingToReportRisk(f: ExportFinding, gCode: string, rIdx: number): 
     acil_aksiyon: f.immediateAction ?? findingActionText(f),
     duzeltici_faaliyet: f.correctiveAction ?? "",
     onleyici_faaliyet: f.preventiveAction ?? "",
-    artik_risk: f.residualRiskNote ?? "",
     sorumlu: f.responsible ?? "",
     termin: f.deadline ?? "",
     tamamlanma_kaniti: f.completionProof ?? "",
@@ -71,9 +86,19 @@ function mapFindingToReportRisk(f: ExportFinding, gCode: string, rIdx: number): 
   };
 }
 
+function countDocumentChecks(sections: ReturnType<typeof resolveExportImageSections>): number {
+  let n = 0;
+  for (const s of sections) {
+    n += s.documentCheckItems?.length ?? 0;
+  }
+  return n;
+}
+
 export function buildFieldReportConsolidatedJson(data: RiskAnalysisExportData): FieldReportConsolidatedJson {
   const sections = resolveExportImageSections(data);
   const allFindings = sections.flatMap((s) => s.findings);
+  const imgCounts = countImagesByStatus(sections);
+  const raporDurumu = buildReportValidityBlock(data);
   const kritik = countByClass(allFindings, "critical");
   const yuksek = countByClass(allFindings, "high");
   const orta = countByClass(allFindings, "medium");
@@ -101,6 +126,21 @@ export function buildFieldReportConsolidatedJson(data: RiskAnalysisExportData): 
     for (const lim of sec.imageLimitations ?? []) {
       if (lim.trim()) dogrulamaSet.add(lim.trim());
     }
+    for (const d of sec.documentCheckItems ?? []) {
+      if (d.trim()) dogrulamaSet.add(d.trim());
+    }
+    for (const a of sec.failureRecoveryActions ?? []) {
+      if (a.trim()) dogrulamaSet.add(a.trim());
+    }
+    if (sec.analysisStatus !== "success") {
+      dogrulamaSet.add(FAILED_IMAGE_NOTE);
+    }
+    const notes = sec.constructionChecklistNotes;
+    if (notes) {
+      for (const [k, v] of Object.entries(notes)) {
+        dogrulamaSet.add(`${k}: ${v}`);
+      }
+    }
   }
 
   const mevzuatSet = new Set<string>();
@@ -124,41 +164,61 @@ export function buildFieldReportConsolidatedJson(data: RiskAnalysisExportData): 
       ? data.participants.map((p) => `${p.fullName} (${p.role})`).join(", ")
       : "RiskNova AI destekli saha analizi";
 
+  const sinirlamalar = [
+    "Analiz yalnızca yüklenen fotoğraflara dayanır.",
+    raporDurumu.uyari,
+    data.analysisNote || "",
+  ].filter(Boolean);
+
   return {
+    rapor_durumu: raporDurumu,
+    yonetici_ozeti: {
+      toplam_gorsel: sections.length,
+      basarili_analiz: imgCounts.basarili,
+      kismi_analiz: imgCounts.kismi,
+      basarisiz_analiz: imgCounts.basarisiz,
+      toplam_gercek_risk: exportTotalFindings(data),
+      kritik,
+      yuksek,
+      orta,
+      dusuk_izleme: dusuk,
+      dokuman_dogrulama: countDocumentChecks(sections),
+      analiz_gecerlilik_durumu: raporDurumu.analiz_gecerlilik_durumu,
+      acil_durdurma_gerekenler: acilDurdurma,
+      ilk_24_saat_aksiyonlari: ilk24,
+      yedi_gun_aksiyonlari: yediGun,
+    },
     rapor_bilgisi: {
       firma: data.companyName || "-",
       lokasyon: [data.location, data.department].filter(Boolean).join(" / ") || "-",
       tarih: data.date || "-",
       yontem: data.methodLabel || "Fine-Kinney",
       hazirlayan: participants,
-      sinirlamalar: [
-        "Analiz yalnızca yüklenen fotoğraflara dayanır; görünmeyen alanlar saha doğrulaması gerektirir.",
-        data.failedImageCount ? `${data.failedImageCount} görselde otomatik analiz başarısız.` : "",
-        data.analysisNote || "",
-      ].filter(Boolean),
-    },
-    yonetici_ozeti: {
-      toplam_gorsel: sections.length,
-      toplam_bulgu: exportTotalFindings(data),
-      kritik,
-      yuksek,
-      orta,
-      dusuk,
-      acil_durdurma_gerekenler: acilDurdurma,
-      ilk_24_saat_aksiyonlari: ilk24,
-      yedi_gun_aksiyonlari: yediGun,
+      sinirlamalar,
     },
     gorseller: sections.map((sec) => {
       const gCode = `G${sec.imageIndex}`;
+      const st = sec.imageAnalysisStatus ?? sec.analysisStatus;
+      const failed = st === "failed" || st === "manual_required";
       return {
         gorsel_kodu: gCode,
+        dosya_adi: sec.fileName,
+        scene_type: sec.sceneType ?? "unknown",
+        image_analysis_status: st,
+        risk_count: failed ? null : (sec.riskCount ?? sec.findings.length),
+        zero_risk_allowed: sec.zeroRiskAllowed ?? false,
         saha_tanimi: sec.areaLocation || sec.rowTitle || sec.fileName,
-        gorsel_sinirlamalari: sec.imageLimitations ?? [],
-        riskler: sec.findings.map((f, idx) => mapFindingToReportRisk(f, gCode, idx + 1)),
+        sinirlamalar: sec.imageLimitations ?? [],
+        riskler: failed ? [] : sec.findings.map((f, idx) => mapFindingToReportRisk(f, gCode, idx + 1)),
+        dokuman_kontrol_maddeleri: sec.documentCheckItems ?? [],
+        analiz_basarisizsa_yapilacaklar: failed ? sec.failureRecoveryActions ?? [] : [],
+        analiz_notu: failed ? FAILED_IMAGE_NOTE : undefined,
       };
     }),
     oncelikli_aksiyon_listesi: oncelikli,
-    saha_dogrulama_checklisti: Array.from(dogrulamaSet).slice(0, 40),
+    saha_dogrulama_checklisti: Array.from(dogrulamaSet).slice(0, 50),
     mevzuat_referanslari: Array.from(mevzuatSet).slice(0, 30),
   };
 }
+
+export { FAILED_ANALYSIS_WARNING };

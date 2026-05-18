@@ -862,6 +862,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: fallbackUserMessage,
+          analysis_status: "failed",
+          image_analysis_status: "failed",
+          risk_count: null,
+          zero_risk_allowed: false,
+          risks: [],
           degraded: true,
           retryable: true,
           stage: "anthropic_timeout",
@@ -987,6 +992,9 @@ export async function POST(request: NextRequest) {
         });
         return NextResponse.json({
           analysis_status: "failed",
+          image_analysis_status: "failed",
+          risk_count: null,
+          zero_risk_allowed: false,
           analysis_error: visionValidation.error ?? "Görsel analizi tamamlanamadı.",
           risks: [],
           faces: parsed.faces ?? [],
@@ -1286,9 +1294,23 @@ export async function POST(request: NextRequest) {
       httpStatus: 200,
     });
 
+    const riskList = Array.isArray(parsed.risks) ? parsed.risks : [];
+    const imageAnalysisStatus =
+      typeof parsed.image_analysis_status === "string"
+        ? parsed.image_analysis_status
+        : typeof parsed.preAnalysis?.image_analysis_status === "string"
+          ? parsed.preAnalysis.image_analysis_status
+          : "success";
+
     return NextResponse.json({
       analysis_status: "success",
-      risks: parsed.risks ?? [],
+      image_analysis_status: imageAnalysisStatus,
+      risk_count: riskList.length,
+      zero_risk_allowed: parsed.zero_risk_allowed === true,
+      preAnalysis: parsed.preAnalysis ?? null,
+      checklist_notlari: parsed.checklist_notlari ?? null,
+      dokuman_kontrol_maddeleri: parsed.dokuman_kontrol_maddeleri ?? [],
+      risks: riskList,
       faces: parsed.faces ?? [],
       positiveObservations: parsed.positiveObservations ?? [],
       photoQuality: parsed.photoQuality ?? { level: "good", note: "" },
