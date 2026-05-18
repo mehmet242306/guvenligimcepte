@@ -785,7 +785,7 @@ export async function POST(request: NextRequest) {
     try {
       response = await client.messages.create({
         model: visionModel,
-        max_tokens: 8192,
+        max_tokens: mode === "fast" ? 4096 : 8192,
         temperature: 0.2,
         system: mode === "fast" ? buildFastSystemPrompt(outputLocale) : buildSystemPrompt(method, outputLocale),
         messages: [
@@ -1103,7 +1103,8 @@ export async function POST(request: NextRequest) {
     const interpretationModel = getAnthropicModel();
     let interpretationStageStatus: "completed" | "skipped" | "failed" = "skipped";
     let interpretationMemoryMatchCount = 0;
-    if (Array.isArray(parsed.risks) && parsed.risks.length > 0) {
+    // Hızlı mod: vision çıktısı yeterli; ikinci Sonnet turu zaman aşımına yol açar.
+    if (Array.isArray(parsed.risks) && parsed.risks.length > 0 && mode !== "fast") {
       try {
         const interpretationMemory = await buildRiskMemoryContextFromText({
           organizationId: auth.organizationId,

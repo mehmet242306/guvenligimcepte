@@ -95,6 +95,7 @@ import {
   imageAnalysisStatusLabel,
   isSyntheticOrFailedFinding,
 } from "@/lib/risk-analysis/finding-quality";
+import { compressImageForAnalysis } from "@/lib/risk-analysis/compress-image-for-analysis";
 import { downloadServerExport } from "@/lib/billing/server-export-client";
 import { MAX_IMAGES_PER_UPLOAD_BATCH, MAX_RISK_ANALYSIS_IMAGES_TOTAL } from "@/lib/risk-analysis/upload-limits";
 import {
@@ -1774,14 +1775,48 @@ export function RiskAnalysisClient() {
     }
   }
 
-  /** Nova AI Vision ile tek gorsel analiz et */
+  function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /** Nova AI Vision ile tek gorsel analiz et (sıkıştırma + otomatik yeniden deneme) */
   async function analyzeImageWithAI(
     imageFile: File,
     imageId: string,
     rowContext: { title: string; description: string },
   ): Promise<AiImageAnalysisResult> {
+    const maxAttempts = 3;
+    let lastResult: AiImageAnalysisResult | null = null;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      if (attempt > 1) {
+        await sleep(2000 * attempt);
+      }
+      lastResult = await analyzeImageWithAIOnce(imageFile, imageId, rowContext, attempt);
+      if (!lastResult.error) return lastResult;
+      const retryable =
+        lastResult.stage === "anthropic_timeout" ||
+        lastResult.stage === "api_failed" ||
+        /timeout|zaman a[sş]ım|502|503|504|retryable/i.test(lastResult.error);
+      if (!retryable || attempt >= maxAttempts) return lastResult;
+    }
+    return lastResult ?? { findings: [], meta: { imageId, faces: [], positiveObservations: [], photoQuality: { level: "good", note: "" }, areaSummary: "", personCount: 0, imageRelevance: "relevant", imageDescription: "" }, error: "Analiz başarısız", stage: "client" };
+  }
+
+  async function analyzeImageWithAIOnce(
+    imageFile: File,
+    imageId: string,
+    rowContext: { title: string; description: string },
+    attempt: number,
+  ): Promise<AiImageAnalysisResult> {
     try {
-      const { base64, mimeType } = await fileToBase64(imageFile);
+      const compressed = await compressImageForAnalysis(imageFile);
+      const { base64, mimeType } = compressed;
+      if (attempt === 1 && compressed.originalBytes > compressed.compressedBytes) {
+        console.info(
+          `[analyze] ${imageFile.name}: ${Math.round(compressed.originalBytes / 1024)}KB → ${Math.round(compressed.compressedBytes / 1024)}KB`,
+        );
+      }
       // Firma sektör bağlamı — AI sektörel checklist için kullanır.
       const companyContext = selectedCompany
         ? {
@@ -1849,36 +1884,21 @@ export function RiskAnalysisClient() {
         }
 
         const stage = typeof errBody?.stage === "string" ? errBody.stage : `http_${res.status}`;
-        const canContinueWithFallback =
-          errBody?.degraded === true ||
-          errBody?.retryable === true ||
-          res.status === 502 ||
-          res.status === 503 ||
-          res.status === 504;
-
         const errDiag = parseAnalyzeRiskDiagnosticsFromApi(errBody?.diagnostics);
-
-        if (canContinueWithFallback) {
-          return {
-            findings: [],
-            meta: {
-              ...emptyMeta,
-              analysisStatus: "failed",
-              analysisError: message,
-              areaSummary: "",
-              imageDescription: imageFile.name,
-              ...(errDiag ? { aiDiagnostics: errDiag } : {}),
-            },
-            error: message,
-            stage,
-          };
-        }
 
         return {
           findings: [],
-          meta: errDiag ? { ...emptyMeta, aiDiagnostics: errDiag } : emptyMeta,
+          meta: {
+            ...emptyMeta,
+            analysisStatus: "failed",
+            analysisError: message,
+            areaSummary: "",
+            imageDescription: imageFile.name,
+            retryAttempts: attempt,
+            ...(errDiag ? { aiDiagnostics: errDiag } : {}),
+          },
           error: message,
-          stage,
+          stage: res.status === 504 ? "anthropic_timeout" : stage,
         };
       }
 
@@ -2117,6 +2137,10 @@ export function RiskAnalysisClient() {
         setSetupMessage(trRiskScoring("wizard.messages.analyzingRowImage", { row: li + 1, fileName: img.file.name }));
         setSetupMessageType("success");
 
+        if (processedImages > 1) {
+          await sleep(500);
+        }
+
         const analysis = await analyzeImageWithAI(img.file, img.id, {
           title: line.title,
           description: line.description,
@@ -2127,6 +2151,7 @@ export function RiskAnalysisClient() {
           ...meta,
           analysisStatus: analysis.error ? "failed" : meta.analysisStatus ?? "success",
           analysisError: analysis.error ?? meta.analysisError,
+          retryAttempts: meta.retryAttempts ?? 0,
         };
 
         if (analysis.error) {
@@ -2181,9 +2206,9 @@ export function RiskAnalysisClient() {
     const totalPositive = Object.values(newImageMeta).reduce((s, m) => s + m.positiveObservations.length, 0);
     if (successfulImages === 0) {
       setAnalysisMessage(trRiskScoring("wizard.messages.analysisFailed"));
-      setSetupMessage(trRiskScoring("wizard.messages.analysisFailedDetail", {
-        detail: analysisErrors[0] ?? trRiskScoring("wizard.messages.genericAiError"),
-      }));
+      setSetupMessage(
+        `AI analizi tamamlanamadı (${analysisErrors.length} görsel). Görseller sıkıştırılarak yeniden denenebilir veya manuel risk girişiyle devam edebilirsiniz. İlk hata: ${analysisErrors[0] ?? trRiskScoring("wizard.messages.genericAiError")}`,
+      );
       setSetupMessageType("error");
       setIsAnalyzing(false);
       return false;
@@ -2206,6 +2231,39 @@ export function RiskAnalysisClient() {
   async function runAnalyzeAndShowResults() {
     const ok = await handleAnalyze();
     if (ok) setStep(4);
+  }
+
+  async function retryAllFailedImages() {
+    const targets: { rowId: string; imageId: string }[] = [];
+    for (const line of lines) {
+      for (const img of line.images) {
+        const st = imageMetaMap[img.id]?.analysisStatus;
+        if (st === "failed" || st === "manual_required") {
+          targets.push({ rowId: line.id, imageId: img.id });
+        }
+      }
+    }
+    if (targets.length === 0) return;
+    setIsAnalyzing(true);
+    setSetupMessage(`${targets.length} görsel yeniden analiz ediliyor…`);
+    setSetupMessageType("success");
+    for (const t of targets) {
+      await retryFailedImage(t.rowId, t.imageId);
+      await sleep(600);
+    }
+    setIsAnalyzing(false);
+    const ok = results.some((r) => filterRealFindings(r.findings).length > 0);
+    if (ok) {
+      setSetupMessage("Yeniden analiz tamamlandı. Sonuçları görüntüleyebilirsiniz.");
+      setSetupMessageType("success");
+      setStep(4);
+    }
+  }
+
+  async function continueWithManualEntry() {
+    setSetupMessage("Manuel risk girişi için sonuç adımına geçildi. Pin modu ile risk ekleyebilirsiniz.");
+    setSetupMessageType("warning");
+    setStep(4);
   }
 
   async function retryFailedImage(rowId: string, imageId: string) {
@@ -3730,6 +3788,20 @@ JSON formatında döndür:
                 </div>
               </div>
             </button>
+
+            {!isAnalyzing &&
+              Object.values(imageMetaMap).some(
+                (m) => m.analysisStatus === "failed" || m.analysisStatus === "manual_required",
+              ) && (
+              <div className="flex flex-wrap gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950/40">
+                <Button type="button" variant="outline" size="sm" className="rounded-lg" onClick={() => { void retryAllFailedImages(); }}>
+                  Başarısız görselleri yeniden analiz et
+                </Button>
+                <Button type="button" variant="accent" size="sm" className="rounded-lg" onClick={() => { void continueWithManualEntry(); }}>
+                  Manuel girişle devam et
+                </Button>
+              </div>
+            )}
 
             {/* Yeni Satir + Toplu Yukle — yan yana full width, belirgin */}
             <div className="grid grid-cols-2 gap-3">
