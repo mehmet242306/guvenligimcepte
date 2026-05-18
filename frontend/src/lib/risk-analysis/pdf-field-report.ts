@@ -605,6 +605,91 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     alertBox(consolidated.rapor_durumu.uyari || FAILED_ANALYSIS_WARNING);
   }
 
+  /* ---------- GENEL DURUM ÖZETİ PANELİ ---------- */
+  const oz_kapak = consolidated.yonetici_ozeti;
+  y += 4;
+
+  // Başlık şeridi
+  doc.setFillColor(...C.navy);
+  doc.rect(margin, y, contentW, 7, "F");
+  doc.setFillColor(...C.gold);
+  doc.rect(margin, y, 3, 7, "F");
+  doc.setFont(fontFamily, "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(...C.white);
+  doc.text("GENEL DURUM ÖZETİ", margin + 6, y + 5);
+  y += 7;
+
+  // Risk sınıfı kartları (4 adet)
+  const kCardW = (contentW - 9) / 4;
+  const kCardH = 18;
+  const kCardY = y;
+  const kCards: { label: string; value: string | number; color: [number, number, number] }[] = [
+    { label: "KRİTİK", value: oz_kapak.kritik ?? 0, color: [220, 38, 38] },
+    { label: "YÜKSEK", value: oz_kapak.yuksek ?? 0, color: [249, 115, 22] },
+    { label: "ORTA", value: oz_kapak.orta ?? 0, color: [234, 179, 8] },
+    { label: "DÜŞÜK / İZLEME", value: oz_kapak.dusuk_izleme ?? 0, color: [34, 197, 94] },
+  ];
+  for (let i = 0; i < kCards.length; i++) {
+    const cx = margin + i * (kCardW + 3);
+    const k = kCards[i];
+    doc.setFillColor(...C.slate50);
+    doc.setDrawColor(...k.color);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(cx, kCardY, kCardW, kCardH, 2, 2, "FD");
+    doc.setFillColor(...k.color);
+    doc.rect(cx, kCardY, 3, kCardH, "F");
+    doc.setFont(fontFamily, "bold");
+    doc.setFontSize(15);
+    doc.setTextColor(...k.color);
+    doc.text(String(k.value), cx + kCardW / 2 + 1.5, kCardY + 10, { align: "center" });
+    doc.setFont(fontFamily, "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(...C.slate500);
+    doc.text(k.label, cx + kCardW / 2 + 1.5, kCardY + 15, { align: "center" });
+  }
+  y = kCardY + kCardH + 4;
+
+  // Özet bilgi tablosu
+  addKeyValueTable(
+    [
+      ["Toplam görsel", String(oz_kapak.toplam_gorsel ?? 0), "Toplam risk bulgusu", String(oz_kapak.toplam_gercek_isg_riski ?? 0)],
+      ["Başarılı analiz", String(oz_kapak.basarili_analiz ?? 0), "Manuel doğrulama", String(oz_kapak.basarisiz_analiz ?? 0)],
+      ["DÖF adayı", String(oz_kapak.dof_adayi ?? 0), "Acil aksiyon", String((oz_kapak.acil_durdurma_gerekenler ?? []).length)],
+    ],
+    { fontSize: 8.5 },
+  );
+
+  // Hazırlayan bilgisi
+  if (data.participants && data.participants.length > 0) {
+    y += 1;
+    doc.setFillColor(...C.tealDark);
+    doc.rect(margin, y, contentW, 6, "F");
+    doc.setFillColor(...C.gold);
+    doc.rect(margin, y, 3, 6, "F");
+    doc.setFont(fontFamily, "bold");
+    doc.setFontSize(8);
+    doc.setTextColor(...C.white);
+    doc.text("HAZIRLAYAN", margin + 6, y + 4.2);
+    y += 6;
+
+    const p = data.participants[0];
+    doc.setFillColor(...C.slate50);
+    doc.setDrawColor(...C.slate200);
+    doc.setLineWidth(0.2);
+    doc.rect(margin, y, contentW, 10, "FD");
+    doc.setFont(fontFamily, "bold");
+    doc.setFontSize(9.5);
+    doc.setTextColor(...C.navy);
+    doc.text(asText(p.fullName), margin + 4, y + 4.5);
+    doc.setFont(fontFamily, "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(...C.slate500);
+    const titleParts = [p.title, p.role, p.certificateNo ? `Sertifika: ${p.certificateNo}` : ""].filter(Boolean);
+    doc.text(titleParts.join("  |  "), margin + 4, y + 8.5);
+    y += 10;
+  }
+
   // Kapak altbilgisi
   doc.setDrawColor(...C.gold);
   doc.setLineWidth(0.3);
