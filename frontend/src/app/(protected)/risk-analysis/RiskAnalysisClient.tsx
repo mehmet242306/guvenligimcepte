@@ -219,6 +219,18 @@ type ImageMeta = {
   imageLimitations?: string[];
   sceneType?: SceneType;
   zeroRiskAllowed?: boolean;
+  isgKapsamindaMi?: boolean;
+  scopeDecision?: "analyze" | "exclude" | "manual_review_required";
+  scopeReason?: string;
+  containsWorkers?: boolean;
+  containsWorkActivity?: boolean;
+  containsWorkAtHeight?: boolean;
+  containsOpenEdge?: boolean;
+  containsScaffoldOrPlatform?: boolean;
+  containsLadder?: boolean;
+  containsRebar?: boolean;
+  containsMachinery?: boolean;
+  containsPpeIssue?: boolean;
   riskCount?: number | null;
   imageAnalysisStatus?: ImageAnalysisStatus;
   documentCheckItems?: string[];
@@ -299,10 +311,32 @@ type AiImageAnalysisResult = {
 function parseSceneTypeFromApi(data: Record<string, unknown>): SceneType | undefined {
   const pa = (data.preAnalysis ?? data.pre_analysis) as Record<string, unknown> | undefined;
   const st = String(pa?.scene_type ?? data.scene_type ?? "").trim();
-  if (st === "construction_site" || st === "workplace" || st === "non_workplace" || st === "unknown") {
+  if (
+    st === "construction_site" ||
+    st === "industrial_site" ||
+    st === "warehouse" ||
+    st === "office" ||
+    st === "non_workplace" ||
+    st === "unclear" ||
+    st === "workplace" ||
+    st === "unknown"
+  ) {
     return st;
   }
   return undefined;
+}
+
+function parseScopeDecisionFromApi(data: Record<string, unknown>): ImageMeta["scopeDecision"] | undefined {
+  const pa = (data.preAnalysis ?? data.pre_analysis) as Record<string, unknown> | undefined;
+  const value = String(pa?.scope_decision ?? data.scope_decision ?? "").trim();
+  if (value === "analyze" || value === "exclude" || value === "manual_review_required") return value;
+  return undefined;
+}
+
+function booleanFromPreAnalysis(data: Record<string, unknown>, key: string): boolean | undefined {
+  const pa = (data.preAnalysis ?? data.pre_analysis) as Record<string, unknown> | undefined;
+  const raw = pa?.[key] ?? data[key];
+  return typeof raw === "boolean" ? raw : undefined;
 }
 
 function enrichFailedImageMeta(
@@ -326,6 +360,7 @@ function enrichFailedImageMeta(
       imageAnalysisStatus: "failed",
       riskCount: null,
       zeroRiskAllowed: false,
+      scopeDecision: "manual_review_required",
       failureRecoveryActions,
     };
   }
@@ -342,6 +377,9 @@ function enrichFailedImageMeta(
     riskCount: null,
     sceneType: "construction_site",
     zeroRiskAllowed: false,
+    isgKapsamindaMi: true,
+    scopeDecision: "manual_review_required",
+    scopeReason: "İnşaat sahası bağlamı olası; analiz başarısız olduğu için manuel doğrulama gerekli.",
     documentCheckItems: buildConstructionDocumentChecks(),
     constructionChecklistNotes,
     failureRecoveryActions,
@@ -2027,6 +2065,22 @@ export function RiskAnalysisClient() {
           : [],
         sceneType: parseSceneTypeFromApi(data),
         zeroRiskAllowed: data.zero_risk_allowed === true,
+        isgKapsamindaMi: booleanFromPreAnalysis(data, "isg_kapsaminda_mi"),
+        scopeDecision: parseScopeDecisionFromApi(data),
+        scopeReason: String(
+          ((data.preAnalysis ?? data.pre_analysis) as Record<string, unknown> | undefined)?.scope_reason ??
+            data.scope_reason ??
+            "",
+        ).trim() || undefined,
+        containsWorkers: booleanFromPreAnalysis(data, "contains_workers"),
+        containsWorkActivity: booleanFromPreAnalysis(data, "contains_work_activity"),
+        containsWorkAtHeight: booleanFromPreAnalysis(data, "contains_work_at_height"),
+        containsOpenEdge: booleanFromPreAnalysis(data, "contains_open_edge"),
+        containsScaffoldOrPlatform: booleanFromPreAnalysis(data, "contains_scaffold_or_platform"),
+        containsLadder: booleanFromPreAnalysis(data, "contains_ladder"),
+        containsRebar: booleanFromPreAnalysis(data, "contains_rebar"),
+        containsMachinery: booleanFromPreAnalysis(data, "contains_machinery"),
+        containsPpeIssue: booleanFromPreAnalysis(data, "contains_ppe_issue"),
         riskCount:
           typeof data.risk_count === "number"
             ? data.risk_count
@@ -2046,8 +2100,8 @@ export function RiskAnalysisClient() {
         ...(okDiag ? { aiDiagnostics: okDiag } : {}),
       };
 
-      // Uygunsuz gorsel — risk analizi yapilamaz
-      if (meta.imageRelevance !== "relevant") {
+      // Uygunsuz/kapsam dışı görsel — risk analizi ve Fine-Kinney uygulanmaz.
+      if (meta.imageRelevance !== "relevant" || meta.scopeDecision === "exclude") {
         return { findings: [], meta };
       }
 
@@ -2993,6 +3047,18 @@ JSON formatında döndür:
           imageAnalysisStatus: meta?.imageAnalysisStatus ?? status,
           sceneType: meta?.sceneType,
           zeroRiskAllowed: meta?.zeroRiskAllowed,
+          isgKapsamindaMi: meta?.isgKapsamindaMi,
+          scopeDecision: meta?.scopeDecision,
+          scopeReason: meta?.scopeReason,
+          containsWorkers: meta?.containsWorkers,
+          containsWorkActivity: meta?.containsWorkActivity,
+          containsWorkAtHeight: meta?.containsWorkAtHeight,
+          containsOpenEdge: meta?.containsOpenEdge,
+          containsScaffoldOrPlatform: meta?.containsScaffoldOrPlatform,
+          containsLadder: meta?.containsLadder,
+          containsRebar: meta?.containsRebar,
+          containsMachinery: meta?.containsMachinery,
+          containsPpeIssue: meta?.containsPpeIssue,
           dataUrl: dataUrl || undefined,
           imageLimitations: meta?.imageLimitations,
           documentCheckItems: meta?.documentCheckItems,
@@ -3015,6 +3081,20 @@ JSON formatında döndür:
             photoQuality: meta?.photoQuality?.level ?? "good",
             analysisStatus: status,
             analysisError: meta?.analysisError,
+            sceneType: meta?.sceneType,
+            zeroRiskAllowed: meta?.zeroRiskAllowed,
+            isgKapsamindaMi: meta?.isgKapsamindaMi,
+            scopeDecision: meta?.scopeDecision,
+            scopeReason: meta?.scopeReason,
+            containsWorkers: meta?.containsWorkers,
+            containsWorkActivity: meta?.containsWorkActivity,
+            containsWorkAtHeight: meta?.containsWorkAtHeight,
+            containsOpenEdge: meta?.containsOpenEdge,
+            containsScaffoldOrPlatform: meta?.containsScaffoldOrPlatform,
+            containsLadder: meta?.containsLadder,
+            containsRebar: meta?.containsRebar,
+            containsMachinery: meta?.containsMachinery,
+            containsPpeIssue: meta?.containsPpeIssue,
           });
         }
       }

@@ -85,8 +85,24 @@ export function validateVisionResponse(parsed: Record<string, any>): VisionValid
     return { ok: true, parsed, invalidRiskCount };
   }
 
-  const requiresRisks =
-    relevance === "relevant" || relevance === "irrelevant" || relevance === "not_workplace";
+  if (relevance === "not_workplace") {
+    parsed.risks = [];
+    parsed.risk_count = 0;
+    parsed.zero_risk_allowed = false;
+    parsed.preAnalysis = {
+      ...(parsed.preAnalysis && typeof parsed.preAnalysis === "object" ? parsed.preAnalysis : {}),
+      scene_type: "non_workplace",
+      isg_kapsaminda_mi: false,
+      image_analysis_status: "success",
+      zero_risk_allowed: false,
+      scope_decision: "exclude",
+      scope_reason:
+        "Bu görsel işyeri / saha / mesleki faaliyet içermediği için İSG risk analizinden hariç tutuldu.",
+    };
+    return { ok: true, parsed, invalidRiskCount };
+  }
+
+  const requiresRisks = relevance === "relevant" || relevance === "irrelevant";
 
   if (requiresRisks && validRisks.length === 0) {
     return {

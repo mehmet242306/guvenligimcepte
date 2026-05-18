@@ -4,7 +4,6 @@
 
 import type { ExportFinding, RiskAnalysisExportData } from "@/lib/risk-analysis-export";
 import {
-  exportTotalFindings,
   findingActionText,
   findingLegalText,
   resolveExportImageSections,
@@ -142,7 +141,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
   const consolidated = buildFieldReportConsolidatedJson(data);
   const sections = resolveExportImageSections(data);
-  const totalReal = exportTotalFindings(data);
+  const totalReal = consolidated.yonetici_ozeti.toplam_gercek_isg_riski;
 
   // Kapak
   line(reportTitle, 18, "bold");
@@ -162,17 +161,24 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   y = margin + 6;
   addPageHeaderFooter();
 
-  section("1. Yönetici Özeti");
+  section("1. Rapor Geçerlilik Durumu");
+  line(`Durum: ${consolidated.rapor_gecerlilik.durum}`, 10, incomplete ? "bold" : "normal", incomplete ? [185, 28, 28] : [15, 23, 42]);
+  line(`Nihai rapor mu: ${consolidated.rapor_gecerlilik.nihai_rapor_mu ? "Evet" : "Hayır"}`, 9);
+  consolidated.rapor_gecerlilik.gecersizlik_nedenleri.forEach((n) => line(`• ${n}`, 8, "normal", [185, 28, 28]));
+  consolidated.rapor_gecerlilik.kritik_uyarilar.forEach((n) => line(`• ${n}`, 8, "normal", [185, 28, 28]));
+
+  section("2. Yönetici Özeti");
   const oz = consolidated.yonetici_ozeti;
   line(`Analiz geçerlilik: ${oz.analiz_gecerlilik_durumu}`, 9, incomplete ? "bold" : "normal", incomplete ? [185, 28, 28] : [15, 23, 42]);
   line(
-    `Toplam görsel: ${oz.toplam_gorsel} | Başarılı: ${oz.basarili_analiz} | Kısmi: ${oz.kismi_analiz} | Başarısız: ${oz.basarisiz_analiz}`,
+    `Toplam görsel: ${oz.toplam_gorsel} | İSG kapsamında: ${oz.isg_kapsamindaki_gorsel} | Kapsam dışı: ${oz.kapsam_disi_gorsel}`,
     9,
   );
-  line(`Toplam gerçek risk bulgusu (yalnızca başarılı analizler): ${oz.toplam_gercek_risk}`, 9);
+  line(`Başarılı: ${oz.basarili_analiz} | Kısmi: ${oz.kismi_analiz} | Başarısız: ${oz.basarisiz_analiz}`, 9);
+  line(`Toplam gerçek İSG risk bulgusu: ${oz.toplam_gercek_isg_riski}`, 9);
   line(`Kritik: ${oz.kritik} | Yüksek: ${oz.yuksek} | Orta: ${oz.orta} | Düşük/izleme: ${oz.dusuk_izleme}`, 9);
-  line(`Doküman doğrulama maddesi: ${oz.dokuman_dogrulama}`, 9);
-  line(`DÖF adayı: ${data.dofCandidateCount}`, 9);
+  line(`Doküman doğrulama maddesi: ${oz.dokuman_dogrulama_maddesi} | Kapsam dışı / sistemsel uyarı: ${oz.kapsam_disi_sistemsel_uyari}`, 9);
+  line(`DÖF adayı: ${oz.dof_adayi}`, 9);
   if (oz.basarisiz_analiz > 0) {
     alertBox(
       `${oz.basarisiz_analiz} görsel analiz edilemedi. Bu görseller için 0 risk anlamına gelmez. Yeniden analiz veya manuel doğrulama zorunludur.`,
@@ -193,7 +199,27 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   }
   if (data.analysisNote) line(asText(data.analysisNote), 9);
 
-  section("2. Metodoloji ve Fine-Kinney");
+  section("3. Görsel Kapsam Kontrol Tablosu");
+  autoTable(doc, {
+    startY: y,
+    margin: { left: margin, right: margin },
+    head: [["Kod", "Dosya", "Sahne", "Kapsam", "Durum", "Karar", "Gerekçe"]],
+    body: consolidated.gorsel_kapsam_kontrolu.map((g) => [
+      asText(g.gorsel_kodu),
+      truncate(asText(g.dosya_adi), 28),
+      asText(g.scene_type),
+      g.isg_kapsaminda_mi ? "İSG kapsamında" : "Kapsam dışı",
+      asText(g.image_analysis_status),
+      asText(g.scope_decision),
+      truncate(asText(g.scope_reason), 80),
+    ]),
+    styles: { font: "helvetica", fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
+    headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: "bold" },
+  });
+  y = (doc as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 35;
+  y += 6;
+
+  section("4. Metodoloji ve Fine-Kinney");
   line(
     data.method === "fine_kinney"
       ? "Fine-Kinney: Skor = P (olasılık) × F (maruziyet/frekans) × S (şiddet). P/F/S gerekçeleri saha fotoğrafı ve varsayımlarla birlikte raporlanır; frekans tek karede kesin değildir."
@@ -209,8 +235,10 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     });
   }
 
-  section("3. Konsolide Risk Kayıt Tablosu");
-  const allFindings = sections.flatMap((s) => s.findings);
+  section("5. Konsolide Risk Kayıt Tablosu");
+  const allFindings = sections
+    .filter((s) => s.scopeDecision !== "exclude" && s.sceneType !== "non_workplace")
+    .flatMap((s) => s.findings);
   if (allFindings.length > 0) {
     ensureSpace(20);
     autoTable(doc, {

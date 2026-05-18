@@ -2,7 +2,7 @@
  * Saha Risk Analizi — denetime uygun prompt kuralları (Fine-Kinney / inşaat sahası).
  */
 
-export const FIELD_REPORT_PROMPT_VERSION = "v4.0-failed-analysis-safety";
+export const FIELD_REPORT_PROMPT_VERSION = "v4.1-isg-scope-qc";
 
 export function buildFieldReportExpertRules(method: string): string {
   const fkBlock =
@@ -18,7 +18,9 @@ KRİTİK GÜVENLİK:
 - Analiz başarısızsa ASLA "risk yok" veya risks=[] ile başarılı dönme.
 - analysis_status="failed", risk_count=null (0 YAZMA), risks=[].
 - "Kayıtlı risk yok" ifadesi kullanma.
-- zero_risk_allowed yalnızca image_analysis_status=success VE scene_type=non_workplace/güvenli ofis VE görünür tehlike yok ise true.
+- İSG dışı görseli risk tablosuna çevirme. Ev, aile, çocuk, bebek, sosyal ortam veya kişisel fotoğraf varsa scope_decision="exclude", scene_type="non_workplace", isg_kapsaminda_mi=false, risk_count=0, zero_risk_allowed=false, risks=[].
+- Kapsam dışı görsele Fine-Kinney puanı, DÖF, sorumlu, termin veya mevzuat bağlama üretme.
+- zero_risk_allowed kapsam dışı görseller için kullanılmaz; yalnızca başarılı analiz edilmiş gerçek İSG görselinde görünür tehlike yoksa true olabilir.
 - scene_type=construction_site ise zero_risk_allowed=false; risks boş bırakılamaz (başarılı analizde).
 
 İNŞAAT GÖRSELİ (çalışan/yükseklik/kenar/iskele/merdiven/donatı/kazı/makine varsa):
@@ -33,6 +35,8 @@ GÖRSEL KURALLARI:
 5. KKD görünmüyorsa: "görselde gözlemlenemiyor; saha doğrulaması gerekli".
 6. MYK/belge → dokuman_kontrol_maddeleri; risk puanına dahil etme.
 7. Aynı tehlikeyi tekrarlama; grupla.
+8. "Belgesiz işçi", "MYK yok", "eğitim yok", "sağlık raporu yok" gibi belge durumları görselden tespit edilemez; dokuman_kontrol_maddeleri alanına yazılır.
+9. Mevzuat maddesi uydurma; emin değilsen legalContextSummary="Mevzuat doğrulaması gerekli" yaz.
 
 ${fkBlock}
 ÇIKTI: Yalnızca JSON. Markdown yok.
@@ -51,15 +55,23 @@ export function buildFieldReportFastUserJsonExample(method: string): string {
   "risk_count": 2,
   "zero_risk_allowed": false,
   "preAnalysis": {
+    "gorsel_kodu": "G1",
+    "dosya_adi": "",
     "scene_type": "construction_site",
+    "isg_kapsaminda_mi": true,
     "contains_workers": true,
+    "contains_work_activity": true,
     "contains_work_at_height": true,
     "contains_open_edge": true,
     "contains_scaffold_or_platform": false,
     "contains_ladder": false,
     "contains_rebar": true,
+    "contains_machinery": false,
+    "contains_ppe_issue": false,
     "image_analysis_status": "success",
-    "zero_risk_allowed": false
+    "zero_risk_allowed": false,
+    "scope_decision": "analyze",
+    "scope_reason": "Görsel şantiye / mesleki faaliyet içeriyor."
   },
   "checklist_notlari": {
     "yuksekten_dusme": "değerlendirildi",
@@ -101,5 +113,8 @@ export function buildFieldReportFastUserJsonExample(method: string): string {
 }
 
 Başarısız analiz örneği (görsel okunamadığında):
-{"analysis_status":"failed","image_analysis_status":"failed","risk_count":null,"zero_risk_allowed":false,"risks":[],"analysis_error":"Görsel analiz edilemedi"}`;
+{"analysis_status":"failed","image_analysis_status":"failed","risk_count":null,"zero_risk_allowed":false,"preAnalysis":{"scene_type":"unclear","isg_kapsaminda_mi":false,"image_analysis_status":"failed","zero_risk_allowed":false,"scope_decision":"manual_review_required","scope_reason":"Görsel analiz edilemedi; 0 risk anlamına gelmez."},"risks":[],"analysis_error":"Görsel analiz edilemedi"}
+
+Kapsam dışı görsel örneği:
+{"analysis_status":"success","image_analysis_status":"success","risk_count":0,"zero_risk_allowed":false,"preAnalysis":{"scene_type":"non_workplace","isg_kapsaminda_mi":false,"contains_workers":false,"contains_work_activity":false,"contains_work_at_height":false,"contains_open_edge":false,"contains_scaffold_or_platform":false,"contains_ladder":false,"contains_rebar":false,"contains_machinery":false,"contains_ppe_issue":false,"image_analysis_status":"success","zero_risk_allowed":false,"scope_decision":"exclude","scope_reason":"Bu görsel işyeri / saha / mesleki faaliyet içermediği için İSG risk analizinden hariç tutuldu."},"imageRelevance":"not_workplace","risks":[]}`;
 }

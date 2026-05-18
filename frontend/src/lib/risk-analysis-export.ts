@@ -38,8 +38,12 @@ export type ImageAnalysisStatus = "success" | "failed" | "pending" | "manual_req
 
 export type SceneType =
   | "construction_site"
-  | "workplace"
+  | "industrial_site"
+  | "warehouse"
+  | "office"
   | "non_workplace"
+  | "unclear"
+  | "workplace"
   | "unknown";
 
 export type ExportImage = {
@@ -60,6 +64,18 @@ export type ExportImage = {
   riskCount?: number | null;
   sceneType?: SceneType;
   zeroRiskAllowed?: boolean;
+  isgKapsamindaMi?: boolean;
+  scopeDecision?: "analyze" | "exclude" | "manual_review_required";
+  scopeReason?: string;
+  containsWorkers?: boolean;
+  containsWorkActivity?: boolean;
+  containsWorkAtHeight?: boolean;
+  containsOpenEdge?: boolean;
+  containsScaffoldOrPlatform?: boolean;
+  containsLadder?: boolean;
+  containsRebar?: boolean;
+  containsMachinery?: boolean;
+  containsPpeIssue?: boolean;
 };
 
 export type ExportImageSection = {
@@ -79,6 +95,18 @@ export type ExportImageSection = {
   riskCount?: number | null;
   sceneType?: SceneType;
   zeroRiskAllowed?: boolean;
+  isgKapsamindaMi?: boolean;
+  scopeDecision?: "analyze" | "exclude" | "manual_review_required";
+  scopeReason?: string;
+  containsWorkers?: boolean;
+  containsWorkActivity?: boolean;
+  containsWorkAtHeight?: boolean;
+  containsOpenEdge?: boolean;
+  containsScaffoldOrPlatform?: boolean;
+  containsLadder?: boolean;
+  containsRebar?: boolean;
+  containsMachinery?: boolean;
+  containsPpeIssue?: boolean;
   documentCheckItems?: string[];
   failureRecoveryActions?: string[];
   constructionChecklistNotes?: Record<string, string>;

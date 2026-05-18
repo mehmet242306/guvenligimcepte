@@ -31,7 +31,13 @@ export function isReportIncomplete(data: RiskAnalysisExportData): boolean {
   const failed = (data.failedImageCount ?? 0) > 0 || (data.pendingImageCount ?? 0) > 0;
   const sections = resolveExportImageSections(data);
   const { basarisiz, kismi } = countImagesByStatus(sections);
-  return failed || basarisiz > 0 || kismi > 0;
+  const constructionZeroRisk = sections.some((s) =>
+    s.sceneType === "construction_site" &&
+    s.analysisStatus === "success" &&
+    s.imageAnalysisStatus !== "failed" &&
+    s.findings.length === 0
+  );
+  return failed || basarisiz > 0 || kismi > 0 || constructionZeroRisk;
 }
 
 export function reportTitleWithValidity(baseTitle: string, incomplete: boolean): string {
@@ -43,11 +49,21 @@ export function buildReportValidityBlock(data: RiskAnalysisExportData) {
   const sections = resolveExportImageSections(data);
   const counts = countImagesByStatus(sections);
   const incomplete = isReportIncomplete(data);
-  return {
-    analiz_gecerli_mi: !incomplete,
-    gecersizlik_nedeni: incomplete
+  const constructionZeroRisk = sections.some((s) =>
+    s.sceneType === "construction_site" &&
+    s.analysisStatus === "success" &&
+    s.imageAnalysisStatus !== "failed" &&
+    s.findings.length === 0
+  );
+  const reasons = [
+    counts.basarisiz > 0 || counts.kismi > 0
       ? `${counts.basarisiz} görsel analiz edilemedi; ${counts.kismi} görsel kısmi/beklemede.`
       : "",
+    constructionZeroRisk ? "İnşaat sahasında 0 risk kabul edilmez." : "",
+  ].filter(Boolean);
+  return {
+    analiz_gecerli_mi: !incomplete,
+    gecersizlik_nedeni: incomplete ? reasons.join(" ") : "",
     uyari: incomplete ? FAILED_ANALYSIS_WARNING : "",
     analiz_gecerlilik_durumu: incomplete ? "Eksik / geçersiz — yeniden değerlendirme gerekli" : "Geçerli",
   };

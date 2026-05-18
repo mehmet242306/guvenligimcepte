@@ -39,9 +39,9 @@ export const ALL_RISK_ANALYSIS_METHODS: RiskAnalysisMethod[] = [
 /** Kısa tutulur (token/süre); uzun kanun listesi modelin bağlamını şişiriyordu ve yanıtı geciktiriyordu. */
 const LEGAL_PROMPT = `
 MEVZUAT:
-Her risk i\u00E7in en az 1, tercihen 2 ger\u00E7ek T\u00FCrkiye \u0130SG referans\u0131 (madde/f\u0131kra ile).
-Uygun oldu\u011Fundan emin ol: 6331 say\u0131l\u0131 Kanun; \u0130\u015F Sa\u011Fl\u0131\u011F\u0131 ve G\u00FCvenli\u011Fi Risk De\u011Ferlendirmesi Y\u00F6netmeli\u011Fi; \u0130\u015F Ekipmanlar\u0131/KKD/Yang\u0131n (2007/12937)/Elektrik \u0130\u00E7 Tesisleri/Makine Emniyeti/yap\u0131 \u0130\u015Fleri/kimyasal/el ile ta\u015F\u0131ma/\u0130\u015Faretler/acil durum y\u00F6netmelikleri \u2014 sahaya ve risk t\u00FCr\u00FCne g\u00F6re se\u00E7.
-Tekrar etme; T\u00DCRK\u00C7E; sadece JSON.`;
+Yalnız emin olduğun gerçek Türkiye İSG referanslarını yaz. Madde/fıkra uydurma.
+Emin değilsen legalReferences=[] ve legalContextSummary="Mevzuat doğrulaması gerekli" yaz.
+Kapsam dışı veya analiz başarısız görsellere mevzuat bağlama. Tekrar etme; TÜRKÇE; sadece JSON.`;
 
 /* ================================================================== */
 /* Method-specific prompt sections                                     */
@@ -84,7 +84,7 @@ ZORUNLU KURALLAR:
 
 3. DUBLE TESP\u0130T YASAK: "Eldiven eksik" ve "Eldiven kullan\u0131lm\u0131yor" ayn\u0131 tespittir.
 
-4. "G\u00D6R\u00DCNM\u00DCYOR" KEL\u0130MES\u0130 YASAK.
+4. Kesin görülemeyen KKD/yaşam hattı için "görselde gözlemlenemiyor; saha doğrulaması gerekli" yaz. "Yok" diye kesin hüküm verme.
 
 FINE-KINNEY PARAMETRELER\u0130:
 Olas\u0131l\u0131k (L) \u00D7 \u015Eiddet (S) \u00D7 Maruziyet (E) = Risk Skoru
@@ -104,7 +104,7 @@ G\u00F6rseldeki duruma g\u00F6re GER\u00C7EK\u00C7\u0130 de\u011Ferler se\u00E7.
 KURAL #0'\u0131 \u00D6NCE OKU ve UYGULA.
 
 1. VAR OLAN KKD'Y\u0130 "YOK" DEME.
-2. "G\u00D6R\u00DCNM\u00DCYOR" YASAK.
+2. Kesin görülemeyen kontrol için "görselde gözlemlenemiyor; saha doğrulaması gerekli" yaz.
 3. \u0130NSANSIZ ERGONOM\u0130 YASAK.
 4. C\u0130DD\u0130YET ABARTMA YASAK: Maksimum skor 5\u00D75=25. Her \u015Fey 25 olamaz.
 
@@ -150,7 +150,7 @@ Sapma: K\u0131lavuz kelime + parametre = sapma a\u00E7\u0131klamas\u0131`,
 1. VAR OLAN KKD'Y\u0130 "YOK" DEME: Kural #0'a bak.
 2. YAPISAL SPEK\u00DCLASYON YASAK: Avizenin \u00E7atla\u011F\u0131 G\u00D6R\u00DCNM\u00DCYORSA risk YAZMA.
 3. ARKA PLAN KKD YASAK.
-4. "G\u00D6R\u00DCNM\u00DCYOR" KEL\u0130MES\u0130 YASAK.
+4. Kesin görülemeyen bariyer için "görselde gözlemlenemiyor; saha doğrulaması gerekli" yaz.
 5. BAR\u0130YER SAYARKEN SADECE G\u00D6R\u00DCNEN BAR\u0130YERLER\u0130 SAY.
 
 BOW-TIE PARAMETRELER\u0130:
@@ -181,7 +181,7 @@ Sistem Kritikli\u011Fi (1-5)`,
    \u00D6NCE BAK: Y\u00FCz\u00FCnde b\u00FCy\u00FCk siyah maske var m\u0131? Varsa YAZMA.
    Ellere bak: Kal\u0131n deri eldiven var m\u0131? Varsa YAZMA.
 3. HER MADDE "KR\u0130T\u0130K YETERS\u0130ZL\u0130K" DE\u011E\u0130LD\u0130R.
-4. "G\u00D6R\u00DCNM\u00DCYOR" KEL\u0130MES\u0130 YASAK.
+4. Kesin görülemeyen kontrol için "görselde gözlemlenemiyor; saha doğrulaması gerekli" yaz.
 
 CHECKLIST PARAMETRELER\u0130:
 Kontrol Maddeleri: Her madde i\u00E7in metin + durum + a\u011F\u0131rl\u0131k
@@ -226,6 +226,8 @@ Sen deneyimli bir A sınıfı İSG uzmanısın. Görevin görseldeki riskleri te
 
 ANA KURAL:
 - Görsel gerçek bir saha, tesis, işyeri, teknik alan, depo, atölye, şantiye, açık alan, elektrik alanı, yangın/kimyasal/makine/depolama/zemin/geçiş durumu içeriyorsa "risks" dizisi boş olamaz.
+- Ev, aile, çocuk, bebek, sosyal ortam, kişisel fotoğraf veya iş dışı görüntü varsa imageRelevance="not_workplace", preAnalysis.scene_type="non_workplace", preAnalysis.scope_decision="exclude", risk_count=0, zero_risk_allowed=false ve risks=[] döndür. Bu görsellere Fine-Kinney, DÖF, termin, sorumlu veya mevzuat üretme.
+- Analiz başarısızsa analysis_status="failed", image_analysis_status="failed", risk_count=null, zero_risk_allowed=false döndür; bu durum 0 risk değildir.
 - Risk tespit etmek birincil görevdir. Olumlu gözlem, çekingenlik veya yanlış pozitif korkusu risk tespitinin önüne geçemez.
 - Görünür tehlike kaynağını risk olarak yaz. Emin olmadığın ayrıntıyı kesin iddia etme; "doğrulanmalı", "kontrol edilmeli", "görsel kanıtı sınırlı" diliyle yaz.
 - Kaza olmuş olması gerekmez. Kaza potansiyeli, kontrol eksikliği, uygunsuzluk, doğrulama gerektiren kritik durum ve maruziyet ihtimali de risk kaydıdır.
@@ -257,8 +259,8 @@ Her gerçek görselde şu başlıkları sırayla tara ve görünür unsur varsa 
 - Risk konumlarını yaklaşık ver; mükemmel koordinat bekleme.
 - Anotasyon KARE olmalıdır: boxW ve boxH eşit değer olmalı. Kare, riskin görünür kaynağını veya riskli alan grubunu içine almalı; yalnız pin vermek yeterli değildir.
 - positiveObservations ikincildir. Risk varsa önce risks dizisini doldur. positiveObservations boş kalabilir.
-- imageRelevance gerçek fotoğrafsa "relevant" olmalıdır.
-- Sadece tamamen ilgisiz, gerçek saha/işyeri/tehlike içermeyen görselde risks boş olabilir.
+- imageRelevance gerçek işyeri/saha fotoğrafıysa "relevant" olmalıdır; iş dışı gerçek fotoğraf için "not_workplace" kullan.
+- Sadece tamamen ilgisiz, iş dışı veya gerçek saha/işyeri/tehlike içermeyen görselde risks boş olabilir.
 - Türkçe yaz. Sadece geçerli JSON döndür.
 `;
 
@@ -281,7 +283,7 @@ export function buildUserPrompt(method: RiskAnalysisMethod, locale: string): str
 
   return `Bu görseli İSG uzmanı gibi incele ve risk envanteri çıkar.
 Gerçek saha/tesis/işyeri/teknik alan görselinde risks dizisini boş bırakma.
-Gerçek işyeri fotoğrafında imageRelevance mutlaka "relevant" olmalı (aksi sadece tamamen ilgisiz konu veya gerçek fotoğraf olmayan görsel için).
+Gerçek işyeri fotoğrafında imageRelevance mutlaka "relevant" olmalı. İş dışı gerçek fotoğraf için imageRelevance="not_workplace" kullan ve risk üretme.
 Gördüğün her tehlike kaynağını, uygunsuzluğu, kontrol eksikliğini veya doğrulanması gereken kritik durumu ayrı risk olarak yaz.
 Emin olmadığın ayrıntıyı kesin iddia etme; ama görünen tehlike kaynağını silme.
 Her tespit için belirtilen yöntem parametrelerini görselden doğrudan analiz ederek ver.${methodBlock}
@@ -289,6 +291,28 @@ Her tespit için belirtilen yöntem parametrelerini görselden doğrudan analiz 
 JSON format\u0131:
 {
   "analysis_status": "success",
+  "image_analysis_status": "success",
+  "risk_count": 1,
+  "zero_risk_allowed": false,
+  "preAnalysis": {
+    "gorsel_kodu": "G1",
+    "dosya_adi": "",
+    "scene_type": "construction_site | industrial_site | warehouse | office | non_workplace | unclear",
+    "isg_kapsaminda_mi": true,
+    "contains_workers": true,
+    "contains_work_activity": true,
+    "contains_work_at_height": false,
+    "contains_open_edge": false,
+    "contains_scaffold_or_platform": false,
+    "contains_ladder": false,
+    "contains_rebar": false,
+    "contains_machinery": false,
+    "contains_ppe_issue": false,
+    "image_analysis_status": "success",
+    "zero_risk_allowed": false,
+    "scope_decision": "analyze | exclude | manual_review_required",
+    "scope_reason": "Kapsam kararının kısa gerekçesi"
+  },
   "imageRelevance": "relevant | not_real_photo | not_workplace",
   "imageDescription": "G\u00F6rselin k\u0131sa tan\u0131m\u0131",
   "photoQuality": {
