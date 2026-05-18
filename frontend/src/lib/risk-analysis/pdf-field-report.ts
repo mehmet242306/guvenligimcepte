@@ -105,6 +105,13 @@ function truncate(text: string, max: number): string {
   return `${t.slice(0, max - 1)}…`;
 }
 
+type PdfTable = { lastAutoTable?: { finalY: number } };
+type TableCell = string | number | boolean | null | undefined;
+
+function tableY(doc: InstanceType<typeof import("jspdf").jsPDF>, fallback: number): number {
+  return (doc as PdfTable).lastAutoTable?.finalY ?? fallback;
+}
+
 export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExportData): Promise<Uint8Array> {
   const { jsPDF } = await import("jspdf");
   const autoTable = (await import("jspdf-autotable")).default;
@@ -174,16 +181,92 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     line(title, 12, "bold");
   };
 
+  const addSimpleTable = (
+    head: string[],
+    body: TableCell[][],
+    options: {
+      fontSize?: number;
+      headerColor?: [number, number, number];
+      columnStyles?: Record<number, Record<string, unknown>>;
+      minCellHeight?: number;
+    } = {},
+  ) => {
+    ensureSpace(18);
+    autoTable(doc, {
+      startY: y,
+      margin: { left: margin, right: margin },
+      head: [head],
+      body: body.map((row) => row.map((cell) => asText(cell))),
+      styles: {
+        font: fontFamily,
+        fontSize: options.fontSize ?? 8,
+        cellPadding: 2,
+        overflow: "linebreak",
+        valign: "top",
+        minCellHeight: options.minCellHeight,
+        lineColor: [226, 232, 240],
+        lineWidth: 0.1,
+      },
+      headStyles: {
+        fillColor: options.headerColor ?? [30, 41, 59],
+        textColor: 255,
+        fontStyle: "bold",
+      },
+      alternateRowStyles: { fillColor: [248, 250, 252] },
+      columnStyles: options.columnStyles,
+    });
+    y = tableY(doc, y + 20) + 6;
+  };
+
+  const addKeyValueTable = (
+    rows: TableCell[][],
+    options: { labelWidth?: number; fontSize?: number; headerColor?: [number, number, number] } = {},
+  ) => {
+    ensureSpace(16);
+    autoTable(doc, {
+      startY: y,
+      margin: { left: margin, right: margin },
+      body: rows.map((row) => row.map((cell) => asText(cell))),
+      styles: {
+        font: fontFamily,
+        fontSize: options.fontSize ?? 8,
+        cellPadding: 2,
+        overflow: "linebreak",
+        valign: "top",
+        lineColor: [226, 232, 240],
+        lineWidth: 0.1,
+      },
+      columnStyles: {
+        0: { cellWidth: options.labelWidth ?? 38, fillColor: options.headerColor ?? [241, 245, 249], fontStyle: "bold" },
+        2: { cellWidth: options.labelWidth ?? 38, fillColor: options.headerColor ?? [241, 245, 249], fontStyle: "bold" },
+      },
+    });
+    y = tableY(doc, y + 16) + 6;
+  };
+
+  const addNumberedListTable = (title: string, rows: string[], limit = 12) => {
+    if (rows.length === 0) return;
+    addSimpleTable([title], rows.slice(0, limit).map((item, index) => [`${index + 1}. ${truncate(item, 180)}`]), {
+      fontSize: 8,
+      headerColor: [15, 118, 110],
+    });
+  };
+
   const consolidated = buildFieldReportConsolidatedJson(data);
   const sections = resolveExportImageSections(data);
 
   // Kapak
   line(reportTitle, 18, "bold");
   line("RiskNova — Saha Risk Analizi", 10, "bold", [212, 160, 23]);
-  line(`Firma: ${asText(data.companyName)}`, 10);
-  line(`Lokasyon: ${asText([data.location, data.department].filter(Boolean).join(" / "))}`, 10);
-  line(`Tarih: ${reportDate}`, 10);
-  line(`Yöntem: ${asText(data.methodLabel)}`, 10);
+  addKeyValueTable(
+    [
+      ["Firma", data.companyName, "Tarih", reportDate],
+      ["Lokasyon", [data.location, data.department].filter(Boolean).join(" / "), "Yöntem", data.methodLabel],
+      ["Sektör", data.companySector, "Tehlike sınıfı", data.companyHazardClass],
+      ["Adres", data.companyAddress, "Rapor durumu", incomplete ? "Eksik analiz / doğrulama gerekli" : "Teslim edilebilir"],
+    ],
+    { fontSize: 9 },
+  );
   if (incomplete) {
     alertBox(
       consolidated.rapor_durumu.uyari || FAILED_ANALYSIS_WARNING,
@@ -196,51 +279,48 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   addPageHeaderFooter();
 
   section("1. Rapor Geçerlilik Durumu");
-  line(`Durum: ${consolidated.rapor_gecerlilik.durum}`, 10, incomplete ? "bold" : "normal", incomplete ? [185, 28, 28] : [15, 23, 42]);
-  line(`Nihai rapor mu: ${consolidated.rapor_gecerlilik.nihai_rapor_mu ? "Evet" : "Hayır"}`, 9);
-  consolidated.rapor_gecerlilik.gecersizlik_nedenleri.forEach((n) => line(`• ${n}`, 8, "normal", [185, 28, 28]));
-  consolidated.rapor_gecerlilik.kritik_uyarilar.forEach((n) => line(`• ${n}`, 8, "normal", [185, 28, 28]));
+  addKeyValueTable([
+    ["Durum", consolidated.rapor_gecerlilik.durum, "Nihai rapor mu", consolidated.rapor_gecerlilik.nihai_rapor_mu ? "Evet" : "Hayır"],
+    [
+      "Geçersizlik nedenleri",
+      consolidated.rapor_gecerlilik.gecersizlik_nedenleri.join("\n") || "-",
+      "Kritik uyarılar",
+      consolidated.rapor_gecerlilik.kritik_uyarilar.join("\n") || "-",
+    ],
+  ]);
 
   section("2. Yönetici Özeti");
   const oz = consolidated.yonetici_ozeti;
-  line(`Analiz geçerlilik: ${oz.analiz_gecerlilik_durumu}`, 9, incomplete ? "bold" : "normal", incomplete ? [185, 28, 28] : [15, 23, 42]);
-  line(
-    `Toplam görsel: ${oz.toplam_gorsel} | İSG kapsamında: ${oz.isg_kapsamindaki_gorsel} | Kapsam dışı: ${oz.kapsam_disi_gorsel}`,
-    9,
-  );
-  line(`Başarılı: ${oz.basarili_analiz} | Kısmi: ${oz.kismi_analiz} | Başarısız: ${oz.basarisiz_analiz}`, 9);
-  line(
-    `Toplam gerçek İSG risk bulgusu: ${
-      oz.gercek_risk_sayimi_guvenilir_mi ? String(oz.toplam_gercek_isg_riski) : "Değerlendirilemedi"
-    }`,
-    9,
-    oz.gercek_risk_sayimi_guvenilir_mi ? "normal" : "bold",
-    oz.gercek_risk_sayimi_guvenilir_mi ? [15, 23, 42] : [185, 28, 28],
+  addSimpleTable(
+    ["Gösterge", "Değer", "Gösterge", "Değer"],
+    [
+      ["Analiz geçerlilik", oz.analiz_gecerlilik_durumu, "Toplam görsel", oz.toplam_gorsel],
+      ["İSG kapsamında", oz.isg_kapsamindaki_gorsel, "Kapsam dışı", oz.kapsam_disi_gorsel],
+      ["Başarılı analiz", oz.basarili_analiz, "Kısmi / başarısız", `${oz.kismi_analiz} / ${oz.basarisiz_analiz}`],
+      [
+        "Gerçek İSG risk bulgusu",
+        oz.gercek_risk_sayimi_guvenilir_mi ? String(oz.toplam_gercek_isg_riski) : "Değerlendirilemedi",
+        "DÖF adayı",
+        oz.dof_adayi,
+      ],
+      ["Kritik", oz.kritik, "Yüksek", oz.yuksek],
+      ["Orta", oz.orta, "Düşük / izleme", oz.dusuk_izleme],
+      ["Doküman doğrulama", oz.dokuman_dogrulama_maddesi, "Kapsam dışı / sistemsel uyarı", oz.kapsam_disi_sistemsel_uyari],
+    ],
+    { fontSize: 8 },
   );
   if (!oz.gercek_risk_sayimi_guvenilir_mi) {
     line(oz.toplam_gercek_isg_riski_notu, 8, "normal", [185, 28, 28]);
   }
-  line(`Kritik: ${oz.kritik} | Yüksek: ${oz.yuksek} | Orta: ${oz.orta} | Düşük/izleme: ${oz.dusuk_izleme}`, 9);
-  line(`Doküman doğrulama maddesi: ${oz.dokuman_dogrulama_maddesi} | Kapsam dışı / sistemsel uyarı: ${oz.kapsam_disi_sistemsel_uyari}`, 9);
-  line(`DÖF adayı: ${oz.dof_adayi}`, 9);
   if (oz.basarisiz_analiz > 0) {
     alertBox(
       `${oz.basarisiz_analiz} görsel analiz edilemedi. Bu görseller için 0 risk anlamına gelmez. Yeniden analiz veya manuel doğrulama zorunludur.`,
     );
   }
 
-  if (oz.acil_durdurma_gerekenler.length > 0) {
-    line("Acil durdurma / derhal müdahale gereken işler:", 9, "bold");
-    oz.acil_durdurma_gerekenler.slice(0, 6).forEach((t) => line(`• ${truncate(t, 200)}`, 8));
-  }
-  if (oz.ilk_24_saat_aksiyonlari.length > 0) {
-    line("İlk 24 saat aksiyonları:", 9, "bold");
-    oz.ilk_24_saat_aksiyonlari.slice(0, 8).forEach((t) => line(`• ${truncate(t, 200)}`, 8));
-  }
-  if (oz.yedi_gun_aksiyonlari.length > 0) {
-    line("7 gün içinde aksiyonlar:", 9, "bold");
-    oz.yedi_gun_aksiyonlari.slice(0, 10).forEach((t) => line(`• ${truncate(t, 200)}`, 8));
-  }
+  addNumberedListTable("Acil durdurma / derhal müdahale gereken işler", oz.acil_durdurma_gerekenler, 6);
+  addNumberedListTable("İlk 24 saat aksiyonları", oz.ilk_24_saat_aksiyonlari, 8);
+  addNumberedListTable("7 gün içinde aksiyonlar", oz.yedi_gun_aksiyonlari, 10);
   if (data.analysisNote) line(asText(data.analysisNote), 9);
 
   section("3. Görsel Kapsam Kontrol Tablosu");
@@ -260,7 +340,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     styles: { font: fontFamily, fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
     headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: "bold" },
   });
-  y = (doc as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 35;
+  y = tableY(doc, y + 35);
   y += 6;
 
   section("4. Metodoloji ve Fine-Kinney");
@@ -274,9 +354,18 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
   if (data.participants.length > 0) {
     section("Analiz Ekibi");
-    data.participants.forEach((p, i) => {
-      line(`${i + 1}. ${p.fullName} — ${p.role}${p.title ? ` / ${p.title}` : ""}`, 9);
-    });
+    addSimpleTable(
+      ["No", "Ad Soyad", "Rol", "Unvan", "Sertifika No"],
+      data.participants.map((p, i) => [i + 1, p.fullName, p.role, p.title, p.certificateNo]),
+      {
+        fontSize: 8,
+        columnStyles: {
+          0: { cellWidth: 12 },
+          1: { cellWidth: 42 },
+          2: { cellWidth: 38 },
+        },
+      },
+    );
   }
 
   section("5. Konsolide Risk Kayıt Tablosu");
@@ -320,7 +409,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         }
       },
     });
-    y = (doc as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 40;
+    y = tableY(doc, y + 40);
     y += 6;
     addPageHeaderFooter();
   } else if (incomplete) {
@@ -329,7 +418,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     line("Başarıyla analiz edilen görsellerde kayıtlı risk bulgusu yok (saha güvenli görünüm).", 9);
   }
 
-  section("4. Görsel Bazlı Analiz");
+  section("6. Görsel Bazlı Analiz");
   for (const sec of sections) {
     doc.addPage();
     y = margin + 6;
@@ -337,11 +426,20 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
     const gCode = `G${sec.imageIndex}`;
     line(`${gCode} — ${sec.fileName}`, 11, "bold");
-    line(`Saha tanımı: ${asText(sec.areaLocation || sec.rowTitle)}`, 9);
-    line(`Durum: ${sec.analysisStatusLabel}`, 9);
+    addKeyValueTable(
+      [
+        ["Saha tanımı", sec.areaLocation || sec.rowTitle, "Analiz durumu", sec.analysisStatusLabel],
+        ["Sahne tipi", sec.sceneType, "Kapsam kararı", sec.scopeDecision],
+        ["Risk sayısı", sec.riskCount ?? sec.findingCount, "Kapsam gerekçesi", sec.scopeReason],
+      ],
+      { fontSize: 8 },
+    );
     if (sec.imageLimitations && sec.imageLimitations.length > 0) {
-      line("Görsel sınırlılıkları:", 9, "bold");
-      sec.imageLimitations.forEach((lim) => line(`• ${lim}`, 8));
+      addSimpleTable(
+        ["Görsel sınırlılıkları"],
+        sec.imageLimitations.map((lim) => [lim]),
+        { fontSize: 8, headerColor: [180, 83, 9] },
+      );
     }
 
     const dataUrl = sec.dataUrl ?? "";
@@ -365,22 +463,20 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
     if (secFailed) {
       alertBox(FAILED_IMAGE_NOTE);
-      if (sec.analysisError) line(`Hata: ${sec.analysisError}`, 8);
+      if (sec.analysisError) addKeyValueTable([["Hata", sec.analysisError, "Risk sayısı", "Değerlendirilemedi"]]);
       if (sec.failureRecoveryActions && sec.failureRecoveryActions.length > 0) {
-        line("Yapılacaklar:", 9, "bold");
-        sec.failureRecoveryActions.forEach((a) => line(`• ${a}`, 8));
+        addNumberedListTable("Yapılacaklar", sec.failureRecoveryActions);
       }
       if (sec.documentCheckItems && sec.documentCheckItems.length > 0) {
-        line("Doküman kontrol maddeleri:", 9, "bold");
-        sec.documentCheckItems.forEach((d) => line(`• ${d}`, 8));
+        addNumberedListTable("Doküman kontrol maddeleri", sec.documentCheckItems);
       }
       if (sec.constructionChecklistNotes) {
-        line("İnşaat sahası zorunlu kontrol listesi:", 9, "bold");
-        for (const [k, v] of Object.entries(sec.constructionChecklistNotes)) {
-          line(`• ${k}: ${v}`, 8);
-        }
+        addSimpleTable(
+          ["İnşaat sahası zorunlu kontrol", "Durum"],
+          Object.entries(sec.constructionChecklistNotes),
+          { fontSize: 8, headerColor: [180, 83, 9] },
+        );
       }
-      line(`Risk sayısı: değerlendirilemedi (null)`, 8, "bold", [185, 28, 28]);
       continue;
     }
 
@@ -397,41 +493,55 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     autoTable(doc, {
       startY: y,
       margin: { left: margin, right: margin },
-      head: [["Kod", "Risk", "P", "F", "S", "Skor", "Sınıf"]],
+      head: [["Kod", "Risk", "Kanıt / Olası Sonuç", "P", "F", "S", "Skor", "Sınıf", "Aksiyon"]],
       body: sec.findings.map((f) => [
         asText(f.riskCode),
-        truncate(f.title, 50),
+        truncate(f.title, 42),
+        truncate([f.observedEvidence, f.possibleOutcome].filter(Boolean).join("\n"), 90),
         f.fkDetails ? String(f.fkDetails.likelihood) : "-",
         f.fkDetails ? String(f.fkDetails.exposure) : "-",
         f.fkDetails ? String(f.fkDetails.severity) : "-",
         String(Math.round(f.score)),
         riskClassLabelTr(f.riskClass),
+        truncate(f.immediateAction ?? findingActionText(f), 70),
       ]),
-      styles: { font: fontFamily, fontSize: 8, cellPadding: 2 },
+      styles: { font: fontFamily, fontSize: 7, cellPadding: 1.6, overflow: "linebreak", valign: "top" },
       headStyles: { fillColor: [30, 41, 59], textColor: 255 },
+      alternateRowStyles: { fillColor: [248, 250, 252] },
+      columnStyles: {
+        0: { cellWidth: 14 },
+        1: { cellWidth: 30 },
+        2: { cellWidth: 40 },
+        8: { cellWidth: 34 },
+      },
+      didParseCell: (hook) => {
+        if (hook.section === "body" && hook.column.index === 7) {
+          const f = sec.findings[hook.row.index];
+          if (f) {
+            hook.cell.styles.fillColor = riskClassFill(f.riskClass);
+            hook.cell.styles.textColor = 255;
+          }
+        }
+      },
     });
-    y = (doc as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 20;
+    y = tableY(doc, y + 20);
     y += 4;
 
     for (const f of sec.findings) {
-      doc.addPage();
-      y = margin + 6;
-      addPageHeaderFooter();
-      line(`${f.riskCode ?? "R?"} — ${f.title}`, 11, "bold");
-      line(`Kategori: ${f.category} | Sınıf: ${riskClassLabelTr(f.riskClass)} | Güven: ${asText(f.confidenceLevelTr)}`, 9);
-      if (f.observedEvidence) line(`Gözlemlenen kanıt: ${f.observedEvidence}`, 8);
-      if (f.verificationNeeded) line(`Saha doğrulaması gerekli: ${f.verificationNeeded}`, 8);
-      if (f.possibleOutcome) line(`Olası sonuç: ${f.possibleOutcome}`, 8);
-      if (f.currentControl) line(`Mevcut kontrol: ${f.currentControl}`, 8);
-      line(scoreDetailForFinding(f), 8);
-      line(`Acil aksiyon: ${f.immediateAction ?? findingActionText(f)}`, 8);
-      if (f.correctiveAction) line(`Düzeltici faaliyet: ${f.correctiveAction}`, 8);
-      if (f.preventiveAction) line(`Önleyici faaliyet: ${f.preventiveAction}`, 8);
-      if (f.residualRiskNote) line(`Önlem sonrası artık risk: ${f.residualRiskNote}`, 8);
-      if (f.responsible) line(`Sorumlu: ${f.responsible}`, 8);
-      if (f.deadline) line(`Termin: ${f.deadline}`, 8);
-      if (f.completionProof) line(`Tamamlanma kanıtı: ${f.completionProof}`, 8);
-      line(`Mevzuat bağlamı: ${findingLegalText(f)}`, 8);
+      section(`${f.riskCode ?? "R?"} — Risk Detay Fişi`);
+      addKeyValueTable(
+        [
+          ["Risk başlığı", f.title, "Kategori", f.category],
+          ["Sınıf / skor", `${riskClassLabelTr(f.riskClass)} / ${Math.round(f.score)}`, "Güven", f.confidenceLevelTr],
+          ["Puan gerekçesi", scoreDetailForFinding(f), "Mevcut kontrol", f.currentControl],
+          ["Gözlemlenen kanıt", f.observedEvidence, "Olası sonuç", f.possibleOutcome],
+          ["Acil aksiyon", f.immediateAction ?? findingActionText(f), "Doğrulama", f.verificationNeeded],
+          ["Düzeltici faaliyet", f.correctiveAction, "Önleyici faaliyet", f.preventiveAction],
+          ["Sorumlu / termin", [f.responsible, f.deadline].filter(Boolean).join(" / "), "Tamamlanma kanıtı", f.completionProof],
+          ["Artık risk", f.residualRiskNote, "Mevzuat bağlamı", findingLegalText(f)],
+        ],
+        { fontSize: 7, labelWidth: 30 },
+      );
     }
   }
 
@@ -439,18 +549,22 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     doc.addPage();
     y = margin + 6;
     addPageHeaderFooter();
-    section("5. Öncelikli Aksiyon Listesi");
-    consolidated.oncelikli_aksiyon_listesi.forEach((t) => line(t, 8));
+    section("7. Öncelikli Aksiyon Listesi");
+    addNumberedListTable("Aksiyon", consolidated.oncelikli_aksiyon_listesi, 20);
   }
 
   if (consolidated.saha_dogrulama_checklisti.length > 0) {
-    section("6. Saha Doğrulama Kontrol Listesi");
-    consolidated.saha_dogrulama_checklisti.forEach((t, i) => line(`${i + 1}. ${t}`, 8));
+    section("8. Saha Doğrulama Kontrol Listesi");
+    addNumberedListTable("Kontrol maddesi", consolidated.saha_dogrulama_checklisti, 24);
   }
 
   if (consolidated.mevzuat_referanslari.length > 0) {
-    section("7. Mevzuat ve Standart Referansları (özet)");
-    consolidated.mevzuat_referanslari.forEach((t) => line(`• ${truncate(t, 220)}`, 8));
+    section("9. Mevzuat ve Standart Referansları (özet)");
+    addSimpleTable(
+      ["Referans"],
+      consolidated.mevzuat_referanslari.map((t) => [truncate(t, 220)]),
+      { fontSize: 8 },
+    );
   }
 
   if (data.shareUrl || data.shareQrDataUrl) {
