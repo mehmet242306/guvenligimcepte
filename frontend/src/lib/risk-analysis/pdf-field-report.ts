@@ -10,6 +10,7 @@ import {
   resolveExportImageSections,
 } from "@/lib/risk-analysis/field-export-sections";
 import { buildFieldReportConsolidatedJson, FAILED_ANALYSIS_WARNING } from "@/lib/risk-analysis/field-report-json";
+import { buildRiskAnalysisReportJson } from "@/lib/risk-analysis/report-json";
 import {
   FAILED_IMAGE_NOTE,
   isReportIncomplete,
@@ -317,24 +318,6 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     });
   };
 
-  const subsection = (text: string) => {
-    ensureSpace(12);
-    y += 3;
-    doc.setFillColor(...C.gold);
-    doc.circle(margin + 1.5, y - 1, 1, "F");
-    y = writeParagraph(doc, {
-      text,
-      x: margin + 5,
-      y: y - 2.5,
-      maxWidth: contentW - 5,
-      fontFamily,
-      fontSize: 11,
-      style: "bold",
-      color: C.navy,
-    });
-    y += 1;
-  };
-
   /* ---------- Bölüm başlığı (altın çubuk) ---------- */
   const section = (title: string) => {
     ensureSpace(18);
@@ -428,16 +411,18 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   /* ================================================================ */
   const consolidated = buildFieldReportConsolidatedJson(data);
   const sections_data = resolveExportImageSections(data);
+  const reportJson = buildRiskAnalysisReportJson(data);
   const verificationPayload =
     data.shareUrl ||
     JSON.stringify({
       document: "RiskNova Saha Risk Analizi",
-      company: data.companyName || "Rapor",
-      date: reportDate,
-      title: reportTitle,
-      method: data.methodLabel,
-      findings: data.realTotalFindings ?? data.totalFindings,
-      critical: data.criticalCount,
+      reportId: reportJson.reportMeta.reportId,
+      company: reportJson.reportMeta.companyName,
+      date: reportJson.reportMeta.reportDate,
+      title: reportJson.reportMeta.title,
+      method: reportJson.reportMeta.method,
+      findings: reportJson.summary.totalFindings,
+      critical: reportJson.summary.criticalCount,
       generatedAt: new Date().toISOString(),
     });
   const verificationQrDataUrl =
@@ -568,7 +553,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
   section("1. Amaç, Kapsam ve Rapor Esası");
   addKeyValueTable([
-    ["Amaç", "Sahada gözlenen İSG tehlikelerini karar verilebilir risk kayıtlarına dönüştürmek.", "Kapsam", `${sections_data.length} görsel, ${data.realTotalFindings ?? data.totalFindings} risk bulgusu`],
+    ["Amaç", "Sahada gözlenen İSG tehlikelerini karar verilebilir risk kayıtlarına dönüştürmek.", "Kapsam", `${reportJson.summary.totalImages} görsel, ${reportJson.summary.totalFindings} risk bulgusu`],
     ["Dayanak", "Yüklenen fotoğraflar, kullanıcı satır açıklamaları ve seçilen risk metodolojisi.", "Kısıt", "Tek fotoğraf frekans, eğitim, sertifika, izin ve ölçüm kayıtlarını tek başına kanıtlamaz."],
     ["Çıktı", "Konsolide risk kayıt tablosu, görsel bazlı analiz, öncelikli aksiyon listesi ve doğrulama kontrol listesi.", "QR", data.shareUrl ? "Dijital rapor bağlantısı içerir." : "Rapor kimlik özetini içerir."],
   ]);
@@ -986,30 +971,30 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   /* ================================================================ */
   /*  BÖLÜM 8 — Öncelikli Aksiyon Listesi                             */
   /* ================================================================ */
-  if (consolidated.oncelikli_aksiyon_listesi.length > 0) {
+  if (reportJson.actions.length > 0) {
     doc.addPage();
     y = 16;
     addPageHeaderFooter();
     section("8. Öncelikli Aksiyon Listesi");
-    addNumberedListTable("Aksiyon", consolidated.oncelikli_aksiyon_listesi, 20);
+    addNumberedListTable("Aksiyon", reportJson.actions, 20);
   }
 
   /* ================================================================ */
   /*  BÖLÜM 9 — Saha Doğrulama Kontrol Listesi                        */
   /* ================================================================ */
-  if (consolidated.saha_dogrulama_checklisti.length > 0) {
+  if (reportJson.verificationChecklist.length > 0) {
     section("9. Saha Doğrulama Kontrol Listesi");
-    addNumberedListTable("Kontrol maddesi", consolidated.saha_dogrulama_checklisti, 24);
+    addNumberedListTable("Kontrol maddesi", reportJson.verificationChecklist, 24);
   }
 
   /* ================================================================ */
   /*  BÖLÜM 10 — Mevzuat ve Standart Referansları                     */
   /* ================================================================ */
-  if (consolidated.mevzuat_referanslari.length > 0) {
+  if (reportJson.legalReferences.length > 0) {
     section("10. Mevzuat ve Standart Referansları");
     addSimpleTable(
       ["Referans"],
-      consolidated.mevzuat_referanslari.map((t) => [truncate(t, 220)]),
+      reportJson.legalReferences.map((t) => [truncate(t, 220)]),
       { fontSize: 8.5 },
     );
   }
@@ -1022,11 +1007,13 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   // İmza tablosu
   addSimpleTable(
     ["Rol", "Ad Soyad", "Unvan", "Tarih", "İmza"],
-    [
-      ["Hazırlayan", data.participants[0]?.fullName || "", data.participants[0]?.title || data.participants[0]?.role || "", reportDate, ""],
-      ["Kontrol eden", "", "", "", ""],
-      ["İşveren / İşveren vekili", "", "", "", ""],
-    ],
+    reportJson.approvals.map((approval) => [
+      approval.role,
+      approval.fullName,
+      approval.title,
+      approval.date,
+      approval.signature,
+    ]),
     {
       fontSize: 9,
       minCellHeight: 14,
@@ -1094,7 +1081,6 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     doc.setFont(fontFamily, "normal");
     doc.setFontSize(7);
     doc.setTextColor(...C.slate400);
-    const existing = `Sayfa ${p}`;
     const updated = `Sayfa ${p} / ${totalPages}`;
     doc.setFillColor(...C.white);
     doc.rect(width / 2 - 15, pageHeight - 10, 30, 6, "F");

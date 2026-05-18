@@ -41,8 +41,8 @@ export async function POST(request: NextRequest) {
   try {
     const exportData = parsed.data.data as { companyName?: string; date?: string };
     if (parsed.data.format === "json") {
-      const { buildFieldReportConsolidatedJson } = await import("@/lib/risk-analysis/field-report-json");
-      const json = buildFieldReportConsolidatedJson(
+      const { buildRiskAnalysisReportJson } = await import("@/lib/risk-analysis/report-json");
+      const json = buildRiskAnalysisReportJson(
         parsed.data.data as import("@/lib/risk-analysis-export").RiskAnalysisExportData,
       );
       const fileName = `Saha-Risk-Analizi-${safeFilePart(exportData.companyName)}-${safeFilePart(

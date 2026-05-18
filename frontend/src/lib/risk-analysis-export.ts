@@ -171,6 +171,12 @@ export type ExportParticipant = {
 };
 
 export type RiskAnalysisExportData = {
+  reportId?: string;
+  organizationId?: string;
+  companyId?: string;
+  sourceType?: "risk_analysis" | "field_analysis";
+  preparedBy?: string;
+  status?: string;
   analysisTitle: string;
   analysisNote: string;
   companyName: string;
@@ -1030,7 +1036,6 @@ export async function generateRiskAnalysisExcelBlob(data: RiskAnalysisExportData
   ws.addRow([]); // Bos satir
 
   const headers = ["Risk ID", "Tespit", "Kategori", "Risk Sınıfı", "Skor", "Skor Detayı", "DÖF", "Tespit Detayı", "Mevzuat / RAG", "Alınacak Önlem"];
-  let globalIdx = 0;
 
   for (const sec of sections) {
     const sectionRow = ws.addRow([
@@ -1077,7 +1082,6 @@ export async function generateRiskAnalysisExcelBlob(data: RiskAnalysisExportData
     });
 
     sec.findings.forEach((f, fi) => {
-      globalIdx++;
       const mDetail = methodScoreDetail(f);
       const mevzuat = findingLegalText(f);
       const row = ws.addRow([
