@@ -333,6 +333,19 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     doc.setFont(fontFamily, "normal");
   };
 
+  /* ---------- Tablo Y izleyici (autoTable v5 finalY bazen yanlış) ---------- */
+  const trackedFinalY = (startY: number) => {
+    let lastY = startY;
+    return {
+      capture: (data: { cursor?: { y?: number } | null }) => {
+        if (data.cursor && typeof data.cursor.y === "number") {
+          lastY = data.cursor.y;
+        }
+      },
+      get: () => lastY,
+    };
+  };
+
   /* ---------- Tablolar ---------- */
   const addSimpleTable = (
     head: string[],
@@ -344,8 +357,9 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       minCellHeight?: number;
     } = {},
   ) => {
-    ensureSpace(22);
+    ensureSpace(20);
     const fs = options.fontSize ?? 8.5;
+    const tracker = trackedFinalY(y);
     autoTable(doc, {
       startY: y,
       margin: { left: margin, right: margin },
@@ -354,11 +368,11 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       styles: {
         font: fontFamily,
         fontSize: fs,
-        cellPadding: { top: 3, right: 3, bottom: 3, left: 3 },
+        cellPadding: { top: 2.5, right: 3, bottom: 2.5, left: 3 },
         overflow: "linebreak",
         valign: "top",
         halign: "left",
-        minCellHeight: options.minCellHeight ?? 8,
+        minCellHeight: options.minCellHeight ?? 7,
         lineColor: C.slate200,
         lineWidth: 0.15,
         textColor: C.text,
@@ -367,24 +381,26 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         fillColor: options.headerColor ?? C.navyMid,
         textColor: 255,
         fontStyle: "bold",
-        cellPadding: { top: 3, right: 3, bottom: 3, left: 3 },
-        minCellHeight: 9,
+        minCellHeight: 8,
       },
       alternateRowStyles: { fillColor: C.slate50 },
       columnStyles: options.columnStyles,
-      rowPageBreak: "avoid",
+      rowPageBreak: "auto",
       tableLineColor: C.slate200,
       tableLineWidth: 0.15,
+      didDrawPage: tracker.capture,
     });
-    y = syncYAfterTable(doc, y, 3);
+    // tracker.capture didDrawPage'den gerçek cursor.y verir — finalY'ye göre daha güvenilir
+    y = tracker.get() + 2;
   };
 
   const addKeyValueTable = (
     rows: TableCell[][],
     options: { labelWidth?: number; fontSize?: number; headerColor?: [number, number, number] } = {},
   ) => {
-    ensureSpace(18);
+    ensureSpace(16);
     const fs = options.fontSize ?? 8.5;
+    const tracker = trackedFinalY(y);
     autoTable(doc, {
       startY: y,
       margin: { left: margin, right: margin },
@@ -392,11 +408,11 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       styles: {
         font: fontFamily,
         fontSize: fs,
-        cellPadding: { top: 3, right: 3, bottom: 3, left: 3 },
+        cellPadding: { top: 2.5, right: 3, bottom: 2.5, left: 3 },
         overflow: "linebreak",
         valign: "top",
         halign: "left",
-        minCellHeight: 8,
+        minCellHeight: 7,
         lineColor: C.slate200,
         lineWidth: 0.15,
         textColor: C.text,
@@ -405,11 +421,13 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         0: { cellWidth: options.labelWidth ?? 38, fillColor: options.headerColor ?? C.goldPale, fontStyle: "bold", textColor: C.navy },
         2: { cellWidth: options.labelWidth ?? 38, fillColor: options.headerColor ?? C.goldPale, fontStyle: "bold", textColor: C.navy },
       },
-      rowPageBreak: "avoid",
+      rowPageBreak: "auto",
       tableLineColor: C.slate200,
       tableLineWidth: 0.15,
+      didDrawPage: tracker.capture,
     });
-    y = syncYAfterTable(doc, y, 3);
+    // tracker.capture didDrawPage'den gerçek cursor.y verir — finalY'ye göre daha güvenilir
+    y = tracker.get() + 2;
   };
 
   /* ---------- Numaralı liste (tablo değil, paragraf) ---------- */
@@ -696,36 +714,40 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   /*  BÖLÜM 4 — Görsel Kapsam Kontrol Tablosu                         */
   /* ================================================================ */
   section("4. Görsel Kapsam Kontrol Tablosu");
-  autoTable(doc, {
-    startY: y,
-    margin: { left: margin, right: margin },
-    head: [["Kod", "Dosya", "Sahne", "Kapsam", "Durum", "Karar", "Gerekçe"]],
-    body: consolidated.gorsel_kapsam_kontrolu.map((g, index) => [
-      asText(g.gorsel_kodu),
-      displayFileName(g.dosya_adi, index + 1),
-      sceneTypeLabel(g.scene_type),
-      g.isg_kapsaminda_mi ? "İSG kapsamında" : "Kapsam dışı",
-      analysisStatusLabel(g.image_analysis_status),
-      scopeDecisionLabel(g.scope_decision),
-      truncate(asText(g.scope_reason), 80),
-    ]),
-    styles: {
-      font: fontFamily,
-      fontSize: 7.5,
-      cellPadding: { top: 2.5, right: 2.5, bottom: 2.5, left: 2.5 },
-      overflow: "linebreak",
-      valign: "top",
-      halign: "left",
-      minCellHeight: 8,
-      lineColor: C.slate200,
-      lineWidth: 0.15,
-      textColor: C.text,
-    },
-    headStyles: { fillColor: C.navyMid, textColor: 255, fontStyle: "bold", minCellHeight: 9 },
-    alternateRowStyles: { fillColor: C.slate50 },
-    rowPageBreak: "avoid",
-  });
-  y = syncYAfterTable(doc, y, 5);
+  {
+    const tracker = trackedFinalY(y);
+    autoTable(doc, {
+      startY: y,
+      margin: { left: margin, right: margin },
+      head: [["Kod", "Dosya", "Sahne", "Kapsam", "Durum", "Karar", "Gerekçe"]],
+      body: consolidated.gorsel_kapsam_kontrolu.map((g, index) => [
+        asText(g.gorsel_kodu),
+        displayFileName(g.dosya_adi, index + 1),
+        sceneTypeLabel(g.scene_type),
+        g.isg_kapsaminda_mi ? "İSG kapsamında" : "Kapsam dışı",
+        analysisStatusLabel(g.image_analysis_status),
+        scopeDecisionLabel(g.scope_decision),
+        truncate(asText(g.scope_reason), 80),
+      ]),
+      styles: {
+        font: fontFamily,
+        fontSize: 7.5,
+        cellPadding: { top: 2.5, right: 2.5, bottom: 2.5, left: 2.5 },
+        overflow: "linebreak",
+        valign: "top",
+        halign: "left",
+        minCellHeight: 7,
+        lineColor: C.slate200,
+        lineWidth: 0.15,
+        textColor: C.text,
+      },
+      headStyles: { fillColor: C.navyMid, textColor: 255, fontStyle: "bold", minCellHeight: 8 },
+      alternateRowStyles: { fillColor: C.slate50 },
+      rowPageBreak: "auto",
+      didDrawPage: tracker.capture,
+    });
+    y = tracker.get() + 2;
+  }
 
   /* ================================================================ */
   /*  BÖLÜM 5 — Metodoloji                                            */
@@ -763,7 +785,8 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     .filter((s) => s.scopeDecision !== "exclude" && s.sceneType !== "non_workplace")
     .flatMap((s) => s.findings);
   if (allFindings.length > 0) {
-    ensureSpace(22);
+    ensureSpace(20);
+    const tracker = trackedFinalY(y);
     autoTable(doc, {
       startY: y,
       margin: { left: margin, right: margin },
@@ -787,12 +810,12 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         overflow: "linebreak",
         valign: "top",
         halign: "left",
-        minCellHeight: 8,
+        minCellHeight: 7,
         lineColor: C.slate200,
         lineWidth: 0.15,
         textColor: C.text,
       },
-      headStyles: { fillColor: C.navyMid, textColor: 255, fontStyle: "bold", minCellHeight: 9 },
+      headStyles: { fillColor: C.navyMid, textColor: 255, fontStyle: "bold", minCellHeight: 8 },
       alternateRowStyles: { fillColor: C.slate50 },
       columnStyles: {
         0: { cellWidth: 14 },
@@ -800,7 +823,8 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         2: { cellWidth: 38 },
         8: { cellWidth: 32 },
       },
-      rowPageBreak: "avoid",
+      rowPageBreak: "auto",
+      didDrawPage: tracker.capture,
       didParseCell: (hook) => {
         if (hook.section === "body" && hook.column.index === 7) {
           const f = allFindings[hook.row.index];
@@ -812,7 +836,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         }
       },
     });
-    y = syncYAfterTable(doc, y, 3);
+    y = tracker.get() + 2;
   } else if (incomplete) {
     line("Konsolide tablo üretilemedi: bir veya daha fazla görsel analiz edilemedi. Başarısız analiz 0 risk sayılmaz.", 9);
   } else {
@@ -938,7 +962,8 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     }
 
     // Görsel risk tablosu
-    ensureSpace(18);
+    ensureSpace(16);
+    const visualTracker = trackedFinalY(y);
     autoTable(doc, {
       startY: y,
       margin: { left: margin, right: margin },
@@ -961,12 +986,12 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         overflow: "linebreak",
         valign: "top",
         halign: "left",
-        minCellHeight: 8,
+        minCellHeight: 7,
         lineColor: C.slate200,
         lineWidth: 0.15,
         textColor: C.text,
       },
-      headStyles: { fillColor: C.navyMid, textColor: 255, fontStyle: "bold", minCellHeight: 9 },
+      headStyles: { fillColor: C.navyMid, textColor: 255, fontStyle: "bold", minCellHeight: 8 },
       alternateRowStyles: { fillColor: C.slate50 },
       columnStyles: {
         0: { cellWidth: 14 },
@@ -974,7 +999,8 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         2: { cellWidth: 40 },
         8: { cellWidth: 34 },
       },
-      rowPageBreak: "avoid",
+      rowPageBreak: "auto",
+      didDrawPage: visualTracker.capture,
       didParseCell: (hook) => {
         if (hook.section === "body" && hook.column.index === 7) {
           const f = sec.findings[hook.row.index];
@@ -986,7 +1012,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         }
       },
     });
-    y = syncYAfterTable(doc, y, 3);
+    y = visualTracker.get() + 2;
 
     // Risk detay fişleri (renkli kenar çubuklu)
     for (const f of sec.findings) {
