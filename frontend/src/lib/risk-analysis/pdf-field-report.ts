@@ -1,5 +1,5 @@
 /**
- * Saha risk analizi — görsel bazlı profesyonel PDF çıktısı.
+ * Saha risk analizi — denetime uygun PDF (tablolar, UTF-8 Türkçe, Fine-Kinney).
  */
 
 import type { ExportFinding, RiskAnalysisExportData } from "@/lib/risk-analysis-export";
@@ -9,8 +9,8 @@ import {
   findingLegalText,
   resolveExportImageSections,
 } from "@/lib/risk-analysis/field-export-sections";
+import { buildFieldReportConsolidatedJson } from "@/lib/risk-analysis/field-report-json";
 import {
-  formatActionTurkish,
   formatFineKinneyBlock,
   formatMatrixBlock,
   riskClassLabelTr,
@@ -22,6 +22,22 @@ function asText(value: unknown, fallback = "-"): string {
   return text || fallback;
 }
 
+function riskClassFill(riskClass: string): [number, number, number] {
+  switch (riskClass) {
+    case "critical":
+      return [127, 29, 29];
+    case "high":
+      return [234, 88, 12];
+    case "medium":
+      return [202, 138, 4];
+    case "low":
+    case "follow_up":
+      return [22, 163, 74];
+    default:
+      return [100, 116, 139];
+  }
+}
+
 function scoreDetailForFinding(f: ExportFinding): string {
   if (f.scoreDetail) return f.scoreDetail;
   if (f.fkDetails) {
@@ -31,6 +47,9 @@ function scoreDetailForFinding(f: ExportFinding): string {
       severity: f.fkDetails.severity,
       score: f.score,
       riskClass: f.riskClass,
+      pRationale: f.fkPRationale,
+      fRationale: f.fkFRationale,
+      sRationale: f.fkSRationale,
     });
   }
   if (f.matrixDetails) {
@@ -41,35 +60,43 @@ function scoreDetailForFinding(f: ExportFinding): string {
       riskClass: f.riskClass,
     });
   }
-  if (f.paramDetails && f.paramDetails.length > 0) {
-    return f.paramDetails.map((p) => `${p.code}: ${(p.value * 100).toFixed(0)}%`).join(", ");
-  }
   return f.scoreLabel || String(f.score);
 }
 
-function tableRowSummary(f: ExportFinding): string {
-  const code = f.riskCode || "-";
-  const params =
-    f.fkDetails
-      ? `P=${f.fkDetails.likelihood} F=${f.fkDetails.exposure} S=${f.fkDetails.severity}`
-      : f.matrixDetails
-        ? `O=${f.matrixDetails.likelihood} S=${f.matrixDetails.severity}`
-        : "";
-  return `${code} | ${f.title} | ${f.category} | ${params} | Skor=${Math.round(f.score)} | ${riskClassLabelTr(f.riskClass)}`;
+function truncate(text: string, max: number): string {
+  const t = text.trim();
+  if (t.length <= max) return t;
+  return `${t.slice(0, max - 1)}…`;
 }
 
 export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExportData): Promise<Uint8Array> {
   const { jsPDF } = await import("jspdf");
-  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const autoTable = (await import("jspdf-autotable")).default;
+
+  const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
   const margin = 14;
   const width = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
+  const reportDate = asText(data.date, new Date().toLocaleDateString("tr-TR"));
+  const reportTitle = asText(data.analysisTitle, "Saha Risk Analizi Raporu");
   let y = margin;
 
+  const addPageHeaderFooter = () => {
+    const page = doc.getNumberOfPages();
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text(reportTitle, margin, 10);
+    doc.text(reportDate, width - margin, 10, { align: "right" });
+    doc.text(`Sayfa ${page}`, width / 2, pageHeight - 8, { align: "center" });
+    doc.setTextColor(15, 23, 42);
+  };
+
   const ensureSpace = (height = 12) => {
-    if (y + height <= pageHeight - margin) return;
+    if (y + height <= pageHeight - margin - 10) return;
     doc.addPage();
-    y = margin;
+    y = margin + 6;
+    addPageHeaderFooter();
   };
 
   const line = (text: string, size = 10, style: "normal" | "bold" = "normal", color: [number, number, number] = [15, 23, 42]) => {
@@ -82,49 +109,61 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     y += wrapped.length * (size * 0.42) + 3;
   };
 
-  const label = (name: string, value: unknown) => line(`${name}: ${asText(value)}`, 9);
-
   const section = (title: string) => {
-    ensureSpace(12);
-    y += y === margin ? 0 : 3;
+    ensureSpace(14);
+    y += y === margin ? 0 : 4;
     doc.setDrawColor(212, 160, 23);
     doc.line(margin, y, width - margin, y);
     y += 6;
-    line(title, 12, "bold", [15, 23, 42]);
+    line(title, 12, "bold");
   };
 
+  const consolidated = buildFieldReportConsolidatedJson(data);
   const sections = resolveExportImageSections(data);
   const totalReal = exportTotalFindings(data);
-  const criticalHigh = data.criticalCount;
 
   // Kapak
-  line(asText(data.analysisTitle, "Risk Analizi Raporu"), 18, "bold");
+  line(reportTitle, 18, "bold");
   line("RiskNova — Saha Risk Analizi", 10, "bold", [212, 160, 23]);
-  label("Firma", data.companyName);
-  label("Tarih", data.date);
-  label("Yöntem", data.methodLabel);
-  label("Lokasyon", data.location);
-  label("Bölüm", data.department);
+  line(`Firma: ${asText(data.companyName)}`, 10);
+  line(`Lokasyon: ${asText([data.location, data.department].filter(Boolean).join(" / "))}`, 10);
+  line(`Tarih: ${reportDate}`, 10);
+  line(`Yöntem: ${asText(data.methodLabel)}`, 10);
+  addPageHeaderFooter();
 
-  section("Yönetici Özeti");
-  label("Toplam gerçek bulgu", totalReal);
-  label("Kritik/yüksek bulgu", criticalHigh);
-  label("DÖF adayı", data.dofCandidateCount);
-  if (data.failedImageCount) label("Analiz başarısız görsel", data.failedImageCount);
-  if (data.pendingImageCount) label("Analiz bekleyen görsel", data.pendingImageCount);
+  doc.addPage();
+  y = margin + 6;
+  addPageHeaderFooter();
+
+  section("1. Yönetici Özeti");
+  const oz = consolidated.yonetici_ozeti;
+  line(`Toplam görsel: ${oz.toplam_gorsel} | Toplam gerçek bulgu: ${oz.toplam_bulgu}`, 9);
+  line(`Kritik: ${oz.kritik} | Yüksek: ${oz.yuksek} | Orta: ${oz.orta} | Düşük/izleme: ${oz.dusuk}`, 9);
+  line(`DÖF adayı (tüm bulgular): ${data.dofCandidateCount}`, 9);
+  if (data.failedImageCount) line(`Analiz başarısız görsel: ${data.failedImageCount}`, 9, "normal", [185, 28, 28]);
+
+  if (oz.acil_durdurma_gerekenler.length > 0) {
+    line("Acil durdurma / derhal müdahale gereken işler:", 9, "bold");
+    oz.acil_durdurma_gerekenler.slice(0, 6).forEach((t) => line(`• ${truncate(t, 200)}`, 8));
+  }
+  if (oz.ilk_24_saat_aksiyonlari.length > 0) {
+    line("İlk 24 saat aksiyonları:", 9, "bold");
+    oz.ilk_24_saat_aksiyonlari.slice(0, 8).forEach((t) => line(`• ${truncate(t, 200)}`, 8));
+  }
+  if (oz.yedi_gun_aksiyonlari.length > 0) {
+    line("7 gün içinde aksiyonlar:", 9, "bold");
+    oz.yedi_gun_aksiyonlari.slice(0, 10).forEach((t) => line(`• ${truncate(t, 200)}`, 8));
+  }
   if (data.analysisNote) line(asText(data.analysisNote), 9);
 
-  section("Yöntem ve Skor Ölçeği");
+  section("2. Metodoloji ve Fine-Kinney");
   line(
     data.method === "fine_kinney"
-      ? "Fine-Kinney: Skor = Olasılık (P) × Maruziyet/Frekans (F) × Şiddet (S). Sınıflandırma skor bandına göre yapılır."
-      : data.method === "l_matrix"
-        ? "5×5 L Matrisi: Skor = Olasılık × Şiddet."
-        : data.method === "r_skor"
-          ? "R-Skor 2D: RiskNova çok boyutlu parametreleri ve sınıflandırma kullanılır."
-          : asText(data.methodLabel),
+      ? "Fine-Kinney: Skor = P (olasılık) × F (maruziyet/frekans) × S (şiddet). P/F/S gerekçeleri saha fotoğrafı ve varsayımlarla birlikte raporlanır; frekans tek karede kesin değildir."
+      : asText(data.methodLabel),
     9,
   );
+  consolidated.rapor_bilgisi.sinirlamalar.forEach((s) => line(`• ${s}`, 8));
 
   if (data.participants.length > 0) {
     section("Analiz Ekibi");
@@ -133,79 +172,153 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     });
   }
 
-  section("Görsel Bazlı Risk Analizleri");
-  for (const sec of sections) {
+  section("3. Konsolide Risk Kayıt Tablosu");
+  const allFindings = sections.flatMap((s) => s.findings);
+  if (allFindings.length > 0) {
     ensureSpace(20);
-    line(`Görsel ${sec.imageIndex}: ${sec.fileName}`, 11, "bold");
-    label("Alan/lokasyon", sec.areaLocation || sec.rowTitle);
-    label("Görsel analiz durumu", sec.analysisStatusLabel);
-    if (sec.analysisError) label("Açıklama", sec.analysisError);
-    label("Tespit edilen risk sayısı", sec.analysisStatus === "success" ? sec.findingCount : 0);
+    autoTable(doc, {
+      startY: y,
+      margin: { left: margin, right: margin },
+      head: [["Kod", "Risk Başlığı", "Gözlemlenen Kanıt", "P", "F", "S", "Skor", "Sınıf", "Acil Aksiyon", "Güven"]],
+      body: allFindings.map((f) => [
+        asText(f.riskCode),
+        truncate(f.title, 60),
+        truncate(f.observedEvidence ?? f.recommendation, 80),
+        f.fkDetails ? String(f.fkDetails.likelihood) : "-",
+        f.fkDetails ? String(f.fkDetails.exposure) : "-",
+        f.fkDetails ? String(f.fkDetails.severity) : "-",
+        String(Math.round(f.score)),
+        riskClassLabelTr(f.riskClass),
+        truncate(f.immediateAction ?? findingActionText(f), 70),
+        asText(f.confidenceLevelTr, "-"),
+      ]),
+      styles: { font: "helvetica", fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
+      headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [248, 250, 252] },
+      columnStyles: {
+        0: { cellWidth: 14 },
+        1: { cellWidth: 28 },
+        2: { cellWidth: 38 },
+        8: { cellWidth: 32 },
+      },
+      didParseCell: (hook) => {
+        if (hook.section === "body" && hook.column.index === 7) {
+          const f = allFindings[hook.row.index];
+          if (f) {
+            hook.cell.styles.fillColor = riskClassFill(f.riskClass);
+            hook.cell.styles.textColor = 255;
+          }
+        }
+      },
+    });
+    y = (doc as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 40;
+    y += 6;
+    addPageHeaderFooter();
+  } else {
+    line("Kayıtlı gerçek risk bulgusu yok.", 9);
+  }
+
+  section("4. Görsel Bazlı Analiz");
+  for (const sec of sections) {
+    doc.addPage();
+    y = margin + 6;
+    addPageHeaderFooter();
+
+    const gCode = `G${sec.imageIndex}`;
+    line(`${gCode} — ${sec.fileName}`, 11, "bold");
+    line(`Saha tanımı: ${asText(sec.areaLocation || sec.rowTitle)}`, 9);
+    line(`Durum: ${sec.analysisStatusLabel}`, 9);
+    if (sec.imageLimitations && sec.imageLimitations.length > 0) {
+      line("Görsel sınırlılıkları:", 9, "bold");
+      sec.imageLimitations.forEach((lim) => line(`• ${lim}`, 8));
+    }
 
     const dataUrl = sec.dataUrl ?? "";
     if (dataUrl.startsWith("data:image/")) {
       try {
         ensureSpace(52);
-        line("Anotasyonlu görsel", 9, "bold");
         const format = dataUrl.includes("image/png") ? "PNG" : "JPEG";
         const imgW = width - margin * 2;
-        doc.addImage(dataUrl, format, margin, y, imgW, imgW * 0.55, undefined, "FAST");
-        y += imgW * 0.55 + 4;
+        doc.addImage(dataUrl, format, margin, y, imgW, imgW * 0.52, undefined, "FAST");
+        y += imgW * 0.52 + 4;
       } catch (e) {
         console.warn("[pdf-field-report] image skip", e);
       }
     }
 
     if (sec.analysisStatus !== "success" || sec.findings.length === 0) {
-      if (sec.analysisStatus !== "success") {
-        line("Bu görsel için otomatik risk üretilmedi. Manuel doğrulama veya yeniden analiz gerekir.", 9);
-      } else {
-        line("Bu görselde kayıtlı risk bulunmuyor.", 9);
-      }
-      y += 2;
+      line(
+        sec.analysisStatus !== "success"
+          ? "Bu görsel için otomatik risk üretilmedi. Saha doğrulaması veya yeniden analiz gerekir."
+          : "Bu görselde kayıtlı risk bulunmuyor.",
+        9,
+      );
       continue;
     }
 
-    line("Risk tablosu", 10, "bold");
-    sec.findings.forEach((f, idx) => {
-      ensureSpace(14);
-      line(`${idx + 1}. ${tableRowSummary(f)}`, 9);
+    ensureSpace(16);
+    autoTable(doc, {
+      startY: y,
+      margin: { left: margin, right: margin },
+      head: [["Kod", "Risk", "P", "F", "S", "Skor", "Sınıf"]],
+      body: sec.findings.map((f) => [
+        asText(f.riskCode),
+        truncate(f.title, 50),
+        f.fkDetails ? String(f.fkDetails.likelihood) : "-",
+        f.fkDetails ? String(f.fkDetails.exposure) : "-",
+        f.fkDetails ? String(f.fkDetails.severity) : "-",
+        String(Math.round(f.score)),
+        riskClassLabelTr(f.riskClass),
+      ]),
+      styles: { font: "helvetica", fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: [30, 41, 59], textColor: 255 },
     });
+    y = (doc as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 20;
+    y += 4;
 
-    sec.findings.forEach((f) => {
-      ensureSpace(28);
-      line(`${f.riskCode || "R?"} — ${f.title}`, 10, "bold");
-      line(`Kategori: ${f.category} | Sınıf: ${riskClassLabelTr(f.riskClass)}`, 9);
+    for (const f of sec.findings) {
+      doc.addPage();
+      y = margin + 6;
+      addPageHeaderFooter();
+      line(`${f.riskCode ?? "R?"} — ${f.title}`, 11, "bold");
+      line(`Kategori: ${f.category} | Sınıf: ${riskClassLabelTr(f.riskClass)} | Güven: ${asText(f.confidenceLevelTr)}`, 9);
+      if (f.observedEvidence) line(`Gözlemlenen kanıt: ${f.observedEvidence}`, 8);
+      if (f.verificationNeeded) line(`Saha doğrulaması gerekli: ${f.verificationNeeded}`, 8);
+      if (f.possibleOutcome) line(`Olası sonuç: ${f.possibleOutcome}`, 8);
+      if (f.currentControl) line(`Mevcut kontrol: ${f.currentControl}`, 8);
       line(scoreDetailForFinding(f), 8);
-      line(`Önerilen kontrol / acil aksiyon: ${findingActionText(f)}`, 8);
-      if (f.recommendation) line(`Mevcut durum / öneri: ${f.recommendation}`, 8);
+      line(`Acil aksiyon: ${f.immediateAction ?? findingActionText(f)}`, 8);
       if (f.correctiveAction) line(`Düzeltici faaliyet: ${f.correctiveAction}`, 8);
       if (f.preventiveAction) line(`Önleyici faaliyet: ${f.preventiveAction}`, 8);
+      if (f.residualRiskNote) line(`Önlem sonrası artık risk: ${f.residualRiskNote}`, 8);
       if (f.responsible) line(`Sorumlu: ${f.responsible}`, 8);
       if (f.deadline) line(`Termin: ${f.deadline}`, 8);
-      if (f.residualRiskNote) line(`Önlem sonrası artık risk: ${f.residualRiskNote}`, 8);
-      line(`Mevzuat/RAG bağlamı: ${findingLegalText(f)}`, 8);
-    });
+      if (f.completionProof) line(`Tamamlanma kanıtı: ${f.completionProof}`, 8);
+      line(`Mevzuat bağlamı: ${findingLegalText(f)}`, 8);
+    }
   }
 
-  const priority = sections
-    .flatMap((s) => s.findings)
-    .filter((f) => f.riskClass === "critical" || f.riskClass === "high")
-    .slice(0, 15);
+  if (consolidated.oncelikli_aksiyon_listesi.length > 0) {
+    doc.addPage();
+    y = margin + 6;
+    addPageHeaderFooter();
+    section("5. Öncelikli Aksiyon Listesi");
+    consolidated.oncelikli_aksiyon_listesi.forEach((t) => line(t, 8));
+  }
 
-  if (priority.length > 0) {
-    section("Öncelikli Aksiyon Listesi");
-    priority.forEach((f, i) => {
-      line(
-        `${i + 1}. [${f.riskCode || "-"}] ${f.title} — ${findingActionText(f)}`,
-        9,
-      );
-    });
+  if (consolidated.saha_dogrulama_checklisti.length > 0) {
+    section("6. Saha Doğrulama Kontrol Listesi");
+    consolidated.saha_dogrulama_checklisti.forEach((t, i) => line(`${i + 1}. ${t}`, 8));
+  }
+
+  if (consolidated.mevzuat_referanslari.length > 0) {
+    section("7. Mevzuat ve Standart Referansları (özet)");
+    consolidated.mevzuat_referanslari.forEach((t) => line(`• ${truncate(t, 220)}`, 8));
   }
 
   if (data.shareUrl || data.shareQrDataUrl) {
     section("Doğrulama");
-    if (data.shareUrl) line(`Paylaşım bağlantısı: ${data.shareUrl}`, 8);
+    if (data.shareUrl) line(`Paylaşım: ${data.shareUrl}`, 8);
     const qr = data.shareQrDataUrl ?? "";
     if (qr.startsWith("data:image/")) {
       try {
@@ -216,6 +329,12 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         console.warn("[pdf-field-report] qr skip", e);
       }
     }
+  }
+
+  const pageCount = doc.getNumberOfPages();
+  for (let p = 1; p <= pageCount; p++) {
+    doc.setPage(p);
+    addPageHeaderFooter();
   }
 
   return new Uint8Array(doc.output("arraybuffer"));

@@ -6,7 +6,7 @@ import { requireAuth } from "@/lib/supabase/api-auth";
 export const maxDuration = 60;
 
 const exportSchema = z.object({
-  format: z.enum(["pdf", "word", "excel"]),
+  format: z.enum(["pdf", "word", "excel", "json"]),
   data: z.unknown(),
 });
 
@@ -40,6 +40,22 @@ export async function POST(request: NextRequest) {
 
   try {
     const exportData = parsed.data.data as { companyName?: string; date?: string };
+    if (parsed.data.format === "json") {
+      const { buildFieldReportConsolidatedJson } = await import("@/lib/risk-analysis/field-report-json");
+      const json = buildFieldReportConsolidatedJson(
+        parsed.data.data as import("@/lib/risk-analysis-export").RiskAnalysisExportData,
+      );
+      const fileName = `Saha-Risk-Analizi-${safeFilePart(exportData.companyName)}-${safeFilePart(
+        exportData.date || new Date().toISOString().split("T")[0],
+      )}.json`;
+      return new NextResponse(JSON.stringify(json, null, 2), {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Disposition": `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`,
+        },
+      });
+    }
+
     if (parsed.data.format === "pdf") {
       const fileName = `Risk-Analizi-${safeFilePart(exportData.companyName)}-${safeFilePart(
         exportData.date || new Date().toISOString().split("T")[0],

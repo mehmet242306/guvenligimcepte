@@ -2,9 +2,14 @@
   analyzeRiskSystemLanguageSuffix,
   analyzeRiskUserLanguageSuffix,
 } from "@/lib/ai/output-language";
+import {
+  buildFieldReportExpertRules,
+  buildFieldReportFastUserJsonExample,
+  FIELD_REPORT_PROMPT_VERSION,
+} from "@/lib/risk-analysis/field-report-prompt";
 
 /** `/api/analyze-risk` ile senkron tutun (cache/observability). */
-export const RISK_ANALYSIS_PROMPT_VERSION = "v2.7-square-annotation-general-scene";
+export const RISK_ANALYSIS_PROMPT_VERSION = FIELD_REPORT_PROMPT_VERSION;
 
 export type RiskAnalysisMethod =
   | "r_skor"
@@ -326,67 +331,26 @@ JSON format\u0131:
 }` + analyzeRiskUserLanguageSuffix(locale);
 }
 
-export function buildFastSystemPrompt(locale: string): string {
-  return `Sen A sinifi ISG uzmani gibi calisan bir gorsel risk analiz motorusun.
-
-GOREV:
-- Gercek saha, isyeri, depo, atelye, santiye, teknik alan veya ofis fotografinda risks dizisini bos birakma.
-- Sadece gorunen veya makul saha kontrolu gerektiren riskleri yaz.
-- Riskleri gorselin genel saha durumu uzerinden degerlendir: acik kanal, kablo, bariyer, zemin, pano, ekipman ve erisim iliskisini birlikte yorumla.
-- Emin olmadigin ayrintiyi kesin iddia etme; "sahada dogrulanmali" dili kullan.
-- Sadece gecerli JSON dondur. Markdown, aciklama, kod blogu yok.
-
+export function buildFastSystemPrompt(locale: string, method: RiskAnalysisMethod = "fine_kinney"): string {
+  return (
+    `Sen görsel tabanlı saha risk analizi motorusun. Çıktı PDF raporuna ve Fine-Kinney kaydına dönüştürülecektir.` +
+    buildFieldReportExpertRules(method) +
+    `
 ZORUNLU TARAMA:
-elektrik/kablo/pano, yangin/yanici/gaz, zemin-gecis-duzen, yukseklik-bosluk-kazi,
-makine/ekipman, kimyasal-basincli kap, depolama-istif, KKD/davranis, acil durum/levha.
+elektrik/kablo/pano, yangin, zemin-geçiş, yükseklik-düşme-kazi, makine, kimyasal, depolama, KKD, acil durum.
 
-HER RISK ICIN:
-title, category, severity(low|medium|high|critical), confidence(0-1),
-recommendation, correctiveActionRequired, pinX, pinY, boxX, boxY, boxW, boxH,
-r2dParams(c1..c9), fkParams, matrixParams, legalReferences alanlarini doldur.
-Anotasyon kare olmali: boxW ve boxH ayni sayi olmali; kare riskli bolgeyi icine almali.
-
-Turkiye ISG mevzuatini kisa ve gercek referanslarla yaz.` + analyzeRiskSystemLanguageSuffix(locale);
+ANOTASYON: boxW ve boxH aynı (kare); riskli bölgeyi içine al.
+En fazla 5 somut risk; gerçek saha fotoğrafında en az 1 risk.` +
+    analyzeRiskSystemLanguageSuffix(locale)
+  );
 }
 
 export function buildFastUserPrompt(method: RiskAnalysisMethod, locale: string): string {
-  return `Gorseli hizli modda analiz et. En fazla 4 somut risk yaz; gercek isyeri/saha fotografiysa en az 1 risk zorunlu.
+  const maxRisks = method === "fine_kinney" ? 5 : 4;
+  return `Görseli hızlı modda analiz et. En fazla ${maxRisks} somut risk; gerçek işyeri/saha fotoğrafıysa en az 1 risk zorunlu.
+Seçilen yöntem: ${method}
 
-Secilen yontem: ${method}
-
-JSON:
-{
-  "analysis_status": "success",
-  "imageRelevance": "relevant | not_real_photo | not_workplace",
-  "imageDescription": "kisa gorsel tanimi",
-  "photoQuality": { "level": "good|moderate|poor", "note": "kisa not" },
-  "areaSummary": "kisa saha ozeti",
-  "personCount": 0,
-  "faces": [],
-  "positiveObservations": [],
-  "risks": [
-    {
-      "title": "somut risk",
-      "category": "kategori",
-      "severity": "medium",
-      "confidence": 0.78,
-      "recommendation": "Somut duzeltici onlem. Sorumlu ve kontrol beklentisi. Sahada dogrulama notu.",
-      "correctiveActionRequired": true,
-      "pinX": 50,
-      "pinY": 50,
-      "boxX": 40,
-      "boxY": 40,
-      "boxW": 24,
-      "boxH": 24,
-      "r2dParams": {"c1":0.5,"c2":0.2,"c3":0.2,"c4":0.1,"c5":0.2,"c6":0.3,"c7":0.2,"c8":0.1,"c9":0.3},
-      "fkParams": {"likelihood":3,"severity":7,"exposure":3},
-      "matrixParams": {"likelihood":3,"severity":3},
-      "legalReferences": [
-        {"law":"6331 sayili Is Sagligi ve Guvenligi Kanunu","article":"Madde 4","description":"Isveren riskleri onlemek ve gerekli tedbirleri almakla yukumludur."}
-      ]
-    }
-  ]
-}` + analyzeRiskUserLanguageSuffix(locale);
+${buildFieldReportFastUserJsonExample(method)}` + analyzeRiskUserLanguageSuffix(locale);
 }
 
 /** Anthropic’a giden tam metinler (debug / şeffaflık sayfası). */

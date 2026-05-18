@@ -63,6 +63,7 @@ export type ExportImageSection = {
   analysisError?: string;
   findingCount: number;
   dataUrl?: string;
+  imageLimitations?: string[];
   findings: ExportFinding[];
 };
 
@@ -103,6 +104,17 @@ export type ExportFinding = {
   responsible?: string;
   deadline?: string;
   residualRiskNote?: string;
+  /** Saha raporu — gözlemlenen kanıt */
+  observedEvidence?: string;
+  verificationNeeded?: string;
+  possibleOutcome?: string;
+  currentControl?: string;
+  confidenceLevelTr?: string;
+  immediateAction?: string;
+  completionProof?: string;
+  fkPRationale?: string;
+  fkFRationale?: string;
+  fkSRationale?: string;
 };
 
 export type ExportParticipant = {

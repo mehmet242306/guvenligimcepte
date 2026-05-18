@@ -96,6 +96,18 @@ export function formatActionTurkish(action: string, riskClass: string): string {
   return a;
 }
 
+export function buildFineKinneyRationaleFromFkParams(
+  fkParams?: Record<string, unknown> | null,
+): string | undefined {
+  if (!fkParams || typeof fkParams !== "object") return undefined;
+  const parts = [
+    fkParams.pRationale ? `P gerekçesi: ${String(fkParams.pRationale)}` : "",
+    fkParams.fRationale ? `F gerekçesi: ${String(fkParams.fRationale)}` : "",
+    fkParams.sRationale ? `S gerekçesi: ${String(fkParams.sRationale)}` : "",
+  ].filter(Boolean);
+  return parts.length > 0 ? parts.join("\n") : undefined;
+}
+
 export function formatFineKinneyBlock(details: {
   likelihood: number;
   severity: number;
@@ -103,14 +115,24 @@ export function formatFineKinneyBlock(details: {
   score: number;
   riskClass: string;
   rationale?: string;
+  pRationale?: string;
+  fRationale?: string;
+  sRationale?: string;
 }): string {
+  const rationale =
+    details.rationale ??
+    buildFineKinneyRationaleFromFkParams({
+      pRationale: details.pRationale,
+      fRationale: details.fRationale,
+      sRationale: details.sRationale,
+    });
   return [
     `Fine-Kinney: P (Olasılık) = ${details.likelihood}`,
     `F (Maruziyet/Frekans) = ${details.exposure}`,
     `S (Şiddet) = ${details.severity}`,
     `Skor = P × F × S = ${Math.round(details.score)}`,
     `Sınıf = ${riskClassLabelTr(details.riskClass)}`,
-    details.rationale ? `Gerekçe: ${details.rationale}` : "",
+    rationale ? rationale : "",
   ]
     .filter(Boolean)
     .join("\n");

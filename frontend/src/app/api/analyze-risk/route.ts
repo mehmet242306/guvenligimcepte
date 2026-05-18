@@ -794,7 +794,7 @@ export async function POST(request: NextRequest) {
         model: visionModel,
         max_tokens: mode === "fast" ? 4096 : 8192,
         temperature: 0.2,
-        system: mode === "fast" ? buildFastSystemPrompt(outputLocale) : buildSystemPrompt(method, outputLocale),
+        system: mode === "fast" ? buildFastSystemPrompt(outputLocale, method) : buildSystemPrompt(method, outputLocale),
         messages: [
           {
             role: "user",

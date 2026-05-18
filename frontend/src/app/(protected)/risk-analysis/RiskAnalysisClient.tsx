@@ -207,6 +207,7 @@ type ImageMeta = {
   personCount: number;
   imageRelevance: "relevant" | "irrelevant" | "not_real_photo";
   imageDescription: string;
+  imageLimitations?: string[];
   analysisStatus?: ImageAnalysisStatus;
   analysisError?: string;
   retryAttempts?: number;
@@ -251,6 +252,18 @@ type VisualFinding = {
   jsaResult: JSAResult | null;
   lopaValues: LOPAValues;
   lopaResult: LOPAResult | null;
+  observedEvidence?: string;
+  verificationNeeded?: string;
+  possibleOutcome?: string;
+  currentControl?: string;
+  confidenceLevelTr?: string;
+  immediateAction?: string;
+  preventiveActionText?: string;
+  residualRisk?: string;
+  completionProof?: string;
+  fkPRationale?: string;
+  fkFRationale?: string;
+  fkSRationale?: string;
 };
 
 type LineResult = {
@@ -1941,6 +1954,9 @@ export function RiskAnalysisClient() {
               ? "irrelevant"
               : "relevant",
         imageDescription: data.imageDescription ?? "",
+        imageLimitations: Array.isArray(data.imageLimitations)
+          ? data.imageLimitations.map((x: unknown) => String(x))
+          : [],
         analysisStatus: "success",
         ...(okDiag ? { aiDiagnostics: okDiag } : {}),
       };
@@ -2060,6 +2076,24 @@ export function RiskAnalysisClient() {
         } else if (scored.r2dResult && scored.r2dResult.score < 0.40) {
           scored.correctiveActionRequired = false;
         }
+
+        const fkRaw = risk.fkParams as Record<string, unknown> | undefined;
+        scored.observedEvidence = String(risk.gozlemlenen_kanit ?? risk.observedEvidence ?? "").trim() || undefined;
+        scored.verificationNeeded = String(risk.dogrulanacak_bilgi ?? risk.verificationNeeded ?? "").trim() || undefined;
+        scored.possibleOutcome = String(risk.olasi_sonuc ?? risk.possibleOutcome ?? "").trim() || undefined;
+        scored.currentControl = String(risk.mevcut_kontrol ?? risk.currentControl ?? "").trim() || undefined;
+        scored.confidenceLevelTr = String(risk.guven_duzeyi ?? risk.confidenceLevel ?? "").trim() || undefined;
+        scored.immediateAction = String(risk.acil_aksiyon ?? risk.immediateAction ?? "").trim() || undefined;
+        scored.preventiveActionText = String(risk.preventiveAction ?? "").trim() || undefined;
+        scored.residualRisk = String(risk.artik_risk ?? risk.residualRisk ?? "").trim() || undefined;
+        scored.completionProof = String(risk.tamamlanma_kaniti ?? "").trim() || undefined;
+        if (fkRaw?.pRationale) scored.fkPRationale = String(fkRaw.pRationale);
+        if (fkRaw?.fRationale) scored.fkFRationale = String(fkRaw.fRationale);
+        if (fkRaw?.sRationale) scored.fkSRationale = String(fkRaw.sRationale);
+        if (typeof risk.correctiveAction === "string" && risk.correctiveAction.trim()) {
+          scored.recommendation = risk.correctiveAction.trim();
+        }
+
         return scored;
       }).filter((f) => !isSyntheticOrFailedFinding(f));
 
@@ -2689,6 +2723,9 @@ JSON formatında döndür:
               severity: f.fkValues.severity,
               score: sc.score,
               riskClass: rc,
+              pRationale: f.fkPRationale,
+              fRationale: f.fkFRationale,
+              sRationale: f.fkSRationale,
             })
           : method === "l_matrix" && f.matrixResult
             ? formatMatrixBlock({
@@ -2796,14 +2833,25 @@ JSON formatında döndür:
           : undefined,
         legalReferences: f.legalReferences.length > 0 ? f.legalReferences : undefined,
         legalContext: f.legalContextSummary || formatLegalContextForRisk(f.category, f.legalReferences),
+        observedEvidence: f.observedEvidence,
+        verificationNeeded: f.verificationNeeded,
+        possibleOutcome: f.possibleOutcome,
+        currentControl: f.currentControl,
+        confidenceLevelTr: f.confidenceLevelTr,
+        immediateAction: f.immediateAction ?? formatActionTurkish(sc.action, rc),
         correctiveAction: f.recommendation?.slice(0, 400),
-        preventiveAction: sc.action ? formatActionTurkish(sc.action, rc) : undefined,
+        preventiveAction: f.preventiveActionText ?? (sc.action ? formatActionTurkish(sc.action, rc) : undefined),
         responsible: "İSG uzmanı / alan sorumlusu (atanacak)",
         deadline: f.correctiveActionRequired ? "7 gün içinde" : "30 gün içinde",
+        completionProof: f.completionProof ?? "Fotoğraf, tutanak, kontrol listesi",
         residualRiskNote:
-          rc === "low" || rc === "follow_up"
+          f.residualRisk ??
+          (rc === "low" || rc === "follow_up"
             ? "Önlemler sonrası izleme düzeyinde artık risk"
-            : "Önlemler uygulandıktan sonra yeniden değerlendirme gerekir",
+            : "Önlemler uygulandıktan sonra yeniden değerlendirme gerekir"),
+        fkPRationale: f.fkPRationale,
+        fkFRationale: f.fkFRationale,
+        fkSRationale: f.fkSRationale,
       };
     };
 
@@ -2851,6 +2899,7 @@ JSON formatında döndür:
           analysisError: meta?.analysisError,
           findingCount: exportFindings.length,
           dataUrl: dataUrl || undefined,
+          imageLimitations: meta?.imageLimitations,
           findings: exportFindings,
         });
 
@@ -2907,15 +2956,15 @@ JSON formatında döndür:
     };
   }
 
-  async function exportRiskReport(format: "pdf" | "word" | "excel") {
+  async function exportRiskReport(format: "pdf" | "word" | "excel" | "json") {
     setExportQuotaMessage(null);
     const d = await buildExportData();
+    const ext =
+      format === "word" ? "docx" : format === "excel" ? "xlsx" : format === "json" ? "json" : "pdf";
     const result = await downloadServerExport({
       url: "/api/risk-analysis/export",
       payload: { format, data: d },
-      fallbackFileName: `Risk-Analizi-${d.companyName || "Rapor"}-${d.date}.${
-        format === "word" ? "docx" : format === "excel" ? "xlsx" : "pdf"
-      }`,
+      fallbackFileName: `Risk-Analizi-${d.companyName || "Rapor"}-${d.date}.${ext}`,
     });
     if (!result.ok) {
       setExportQuotaMessage(result.message);
@@ -3976,6 +4025,7 @@ JSON formatında döndür:
             <div className="col-span-2 rounded-2xl border border-border bg-card px-4 py-3 text-center sm:col-span-3 lg:col-span-6">
               <p className="eyebrow mb-1.5">{trRiskScoring("wizard.common.report")}</p>
               <div className="flex flex-wrap justify-center gap-2">
+                <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[5rem] rounded-xl px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-900/20" onClick={() => void exportRiskReport("json")} disabled={results.length === 0}>JSON</Button>
                 <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[5rem] rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" onClick={() => void exportRiskReport("pdf")} disabled={results.length === 0}>PDF</Button>
                 <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[5rem] rounded-xl px-3 text-xs font-bold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20" onClick={() => void exportRiskReport("word")} disabled={results.length === 0}>Word</Button>
                 <Button type="button" variant="outline" className="h-9 min-h-[44px] min-w-[5rem] rounded-xl px-3 text-xs font-bold text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20" onClick={() => void exportRiskReport("excel")} disabled={results.length === 0}>Excel</Button>
