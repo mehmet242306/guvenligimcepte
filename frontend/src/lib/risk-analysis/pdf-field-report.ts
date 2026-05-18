@@ -20,6 +20,38 @@ import {
   riskClassLabelTr,
 } from "@/lib/risk-analysis/finding-quality";
 
+let notoSansFontPromise: Promise<{ regular: string; bold: string } | null> | null = null;
+
+async function fetchFontAsBase64(url: string): Promise<string> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Font indirilemedi: ${response.status}`);
+  const buffer = await response.arrayBuffer();
+  return Buffer.from(buffer).toString("base64");
+}
+
+async function ensurePdfUnicodeFont(doc: InstanceType<typeof import("jspdf").jsPDF>): Promise<boolean> {
+  notoSansFontPromise ??= (async () => {
+    try {
+      const [regular, bold] = await Promise.all([
+        fetchFontAsBase64("https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts@main/hinted/ttf/NotoSans/NotoSans-Regular.ttf"),
+        fetchFontAsBase64("https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts@main/hinted/ttf/NotoSans/NotoSans-Bold.ttf"),
+      ]);
+      return { regular, bold };
+    } catch (error) {
+      console.warn("[pdf-field-report] Noto Sans font yüklenemedi; helvetica fallback kullanılacak.", error);
+      return null;
+    }
+  })();
+
+  const fonts = await notoSansFontPromise;
+  if (!fonts) return false;
+  doc.addFileToVFS("NotoSans-Regular.ttf", fonts.regular);
+  doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
+  doc.addFileToVFS("NotoSans-Bold.ttf", fonts.bold);
+  doc.addFont("NotoSans-Bold.ttf", "NotoSans", "bold");
+  return true;
+}
+
 function asText(value: unknown, fallback = "-"): string {
   if (value === null || value === undefined) return fallback;
   const text = String(value).trim();
@@ -78,6 +110,8 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   const autoTable = (await import("jspdf-autotable")).default;
 
   const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
+  const fontFamily = (await ensurePdfUnicodeFont(doc)) ? "NotoSans" : "helvetica";
+  doc.setFont(fontFamily, "normal");
   const margin = 14;
   const width = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -94,17 +128,18 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     doc.setFillColor(254, 226, 226);
     doc.setDrawColor(185, 28, 28);
     doc.roundedRect(margin, y, width - margin * 2, h, 2, 2, "FD");
-    doc.setFont("helvetica", "bold");
+    doc.setFont(fontFamily, "bold");
     doc.setFontSize(9);
     doc.setTextColor(127, 29, 29);
     doc.text(wrapped, margin + 4, y + 6);
     y += h + 4;
     doc.setTextColor(15, 23, 42);
+    doc.setFont(fontFamily, "normal");
   };
 
   const addPageHeaderFooter = () => {
-    const page = doc.getNumberOfPages();
-    doc.setFont("helvetica", "normal");
+    const page = doc.getCurrentPageInfo().pageNumber;
+    doc.setFont(fontFamily, "normal");
     doc.setFontSize(8);
     doc.setTextColor(100, 116, 139);
     doc.text(reportTitle, margin, 10);
@@ -121,7 +156,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
   };
 
   const line = (text: string, size = 10, style: "normal" | "bold" = "normal", color: [number, number, number] = [15, 23, 42]) => {
-    doc.setFont("helvetica", style);
+    doc.setFont(fontFamily, style);
     doc.setFontSize(size);
     doc.setTextColor(...color);
     const wrapped = doc.splitTextToSize(text, width - margin * 2) as string[];
@@ -141,7 +176,6 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
 
   const consolidated = buildFieldReportConsolidatedJson(data);
   const sections = resolveExportImageSections(data);
-  const totalReal = consolidated.yonetici_ozeti.toplam_gercek_isg_riski;
 
   // Kapak
   line(reportTitle, 18, "bold");
@@ -175,7 +209,17 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
     9,
   );
   line(`Başarılı: ${oz.basarili_analiz} | Kısmi: ${oz.kismi_analiz} | Başarısız: ${oz.basarisiz_analiz}`, 9);
-  line(`Toplam gerçek İSG risk bulgusu: ${oz.toplam_gercek_isg_riski}`, 9);
+  line(
+    `Toplam gerçek İSG risk bulgusu: ${
+      oz.gercek_risk_sayimi_guvenilir_mi ? String(oz.toplam_gercek_isg_riski) : "Değerlendirilemedi"
+    }`,
+    9,
+    oz.gercek_risk_sayimi_guvenilir_mi ? "normal" : "bold",
+    oz.gercek_risk_sayimi_guvenilir_mi ? [15, 23, 42] : [185, 28, 28],
+  );
+  if (!oz.gercek_risk_sayimi_guvenilir_mi) {
+    line(oz.toplam_gercek_isg_riski_notu, 8, "normal", [185, 28, 28]);
+  }
   line(`Kritik: ${oz.kritik} | Yüksek: ${oz.yuksek} | Orta: ${oz.orta} | Düşük/izleme: ${oz.dusuk_izleme}`, 9);
   line(`Doküman doğrulama maddesi: ${oz.dokuman_dogrulama_maddesi} | Kapsam dışı / sistemsel uyarı: ${oz.kapsam_disi_sistemsel_uyari}`, 9);
   line(`DÖF adayı: ${oz.dof_adayi}`, 9);
@@ -213,7 +257,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
       asText(g.scope_decision),
       truncate(asText(g.scope_reason), 80),
     ]),
-    styles: { font: "helvetica", fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
+    styles: { font: fontFamily, fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
     headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: "bold" },
   });
   y = (doc as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 35;
@@ -257,7 +301,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         truncate(f.immediateAction ?? findingActionText(f), 70),
         asText(f.confidenceLevelTr, "-"),
       ]),
-      styles: { font: "helvetica", fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
+      styles: { font: fontFamily, fontSize: 7, cellPadding: 1.5, overflow: "linebreak", valign: "top" },
       headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: "bold" },
       alternateRowStyles: { fillColor: [248, 250, 252] },
       columnStyles: {
@@ -363,7 +407,7 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         String(Math.round(f.score)),
         riskClassLabelTr(f.riskClass),
       ]),
-      styles: { font: "helvetica", fontSize: 8, cellPadding: 2 },
+      styles: { font: fontFamily, fontSize: 8, cellPadding: 2 },
       headStyles: { fillColor: [30, 41, 59], textColor: 255 },
     });
     y = (doc as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 20;
@@ -422,12 +466,6 @@ export async function generateFieldRiskAnalysisPdfBytes(data: RiskAnalysisExport
         console.warn("[pdf-field-report] qr skip", e);
       }
     }
-  }
-
-  const pageCount = doc.getNumberOfPages();
-  for (let p = 1; p <= pageCount; p++) {
-    doc.setPage(p);
-    addPageHeaderFooter();
   }
 
   return new Uint8Array(doc.output("arraybuffer"));

@@ -60,6 +60,8 @@ export type FieldReportConsolidatedJson = {
     sistemsel_uyari: number;
     kapsam_disi_sistemsel_uyari: number;
     dof_adayi: number;
+    gercek_risk_sayimi_guvenilir_mi: boolean;
+    toplam_gercek_isg_riski_notu: string;
     analiz_gecerlilik_durumu: string;
     acil_durdurma_gerekenler: string[];
     ilk_24_saat_aksiyonlari: string[];
@@ -336,6 +338,11 @@ export function buildFieldReportConsolidatedJson(data: RiskAnalysisExportData): 
       sistemsel_uyari: failedSections.length + excludedSections.length,
       kapsam_disi_sistemsel_uyari: failedSections.length + excludedSections.length,
       dof_adayi: data.dofCandidateCount,
+      gercek_risk_sayimi_guvenilir_mi: failedSections.length === 0,
+      toplam_gercek_isg_riski_notu:
+        failedSections.length > 0
+          ? "Değerlendirilemedi: İSG kapsamındaki bazı görseller analiz başarısız olduğu için 0 risk anlamına gelmez."
+          : `${allFindings.length} gerçek İSG risk bulgusu`,
       analiz_gecerlilik_durumu: raporDurumu.analiz_gecerlilik_durumu,
       acil_durdurma_gerekenler: acilDurdurma,
       ilk_24_saat_aksiyonlari: ilk24,

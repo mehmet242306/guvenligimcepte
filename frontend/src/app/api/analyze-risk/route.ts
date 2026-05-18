@@ -1,6 +1,7 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
+import { jsonrepair } from "jsonrepair";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import { createServiceClient, enforceRateLimit, logSecurityEvent, resolveAiDailyLimit } from "@/lib/security/server";
@@ -930,46 +931,53 @@ export async function POST(request: NextRequest) {
     try {
       parsed = JSON.parse(jsonStr);
     } catch (parseErr) {
-      const preview = jsonStr.slice(0, 500);
-      const tailPreview = jsonStr.slice(-200);
-      console.warn(
-        "[analyze-risk] Claude JSON parse failed:",
-        parseErr instanceof Error ? parseErr.message : String(parseErr),
-        "| preview:", preview,
-        "| tail:", tailPreview,
-      );
-      await logErrorEvent({
-        level: "error",
-        source: "analyze-risk",
-        endpoint: "/api/analyze-risk",
-        message: "Claude response JSON parse failed",
-        context: {
-          method,
-          preview: preview.slice(0, 300),
-          parseError: parseErr instanceof Error ? parseErr.message : String(parseErr),
-          outputTokens: response.usage?.output_tokens ?? 0,
-        },
-        userId: auth.userId,
-        organizationId: auth.organizationId,
-      });
-      const diagnostics = buildAnalyzeRiskDiagnostics({
-        ok: false,
-        stage: "anthropic_json_parse_failed",
-        startTime,
-        visionModel,
-        mimeType,
-        imageBase64Length: imageBase64.length,
-        httpStatus: 502,
-      });
-      return NextResponse.json(
-        {
-          error: "Anthropic risk yorumu islenemedi. Lutfen analizi yeniden baslatin.",
-          stage: "anthropic_reasoning",
-          retryable: true,
-          diagnostics,
-        },
-        { status: 502 },
-      );
+      try {
+        const repaired = jsonrepair(jsonStr);
+        const repairedParsed = JSON.parse(repaired);
+        parsed = repairedParsed && typeof repairedParsed === "object" ? repairedParsed : {};
+        console.warn("[analyze-risk] Claude JSON parse failed but jsonrepair recovered the response.");
+      } catch {
+        const preview = jsonStr.slice(0, 500);
+        const tailPreview = jsonStr.slice(-200);
+        console.warn(
+          "[analyze-risk] Claude JSON parse failed:",
+          parseErr instanceof Error ? parseErr.message : String(parseErr),
+          "| preview:", preview,
+          "| tail:", tailPreview,
+        );
+        await logErrorEvent({
+          level: "error",
+          source: "analyze-risk",
+          endpoint: "/api/analyze-risk",
+          message: "Claude response JSON parse failed",
+          context: {
+            method,
+            preview: preview.slice(0, 300),
+            parseError: parseErr instanceof Error ? parseErr.message : String(parseErr),
+            outputTokens: response.usage?.output_tokens ?? 0,
+          },
+          userId: auth.userId,
+          organizationId: auth.organizationId,
+        });
+        const diagnostics = buildAnalyzeRiskDiagnostics({
+          ok: false,
+          stage: "anthropic_json_parse_failed",
+          startTime,
+          visionModel,
+          mimeType,
+          imageBase64Length: imageBase64.length,
+          httpStatus: 502,
+        });
+        return NextResponse.json(
+          {
+            error: "Anthropic risk yorumu islenemedi. Lutfen analizi yeniden baslatin.",
+            stage: "anthropic_reasoning",
+            retryable: true,
+            diagnostics,
+          },
+          { status: 502 },
+        );
+      }
     }
 
     const visionValidation = validateVisionResponse(parsed);
