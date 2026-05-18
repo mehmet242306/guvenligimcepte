@@ -802,6 +802,15 @@ export function RiskTab({ company }: { company: CompanyRecord }) {
                     </div>
                     {/* İşlem butonları */}
                     <div className="flex items-center gap-1 ml-4">
+                      <Link href={`/reports/${a.id}/interactive`} className="rounded-xl px-2.5 py-2 text-[11px] font-semibold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-900/20 transition-colors" title="Etkileşimli raporu aç">
+                        Rapor
+                      </Link>
+                      <Link href={`/reports/${a.id}/print`} className="rounded-xl px-2.5 py-2 text-[11px] font-semibold text-slate-700 hover:bg-secondary dark:text-slate-300 transition-colors" title="Print görünümünü aç">
+                        Print
+                      </Link>
+                      <Link href={`/api/risk-analysis/export/${a.id}`} className="rounded-xl px-2.5 py-2 text-[11px] font-semibold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors" title="Profesyonel PDF indir">
+                        PDF
+                      </Link>
                       {a.status !== "archived" && (
                         <button type="button" className="rounded-xl p-2.5 text-amber-600 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-900/20 transition-colors" onClick={() => handleArchive(a.id)} title={t("archiveTitle")}>
                           <Archive size={18} strokeWidth={2} />
@@ -1268,9 +1277,15 @@ function AnalysisDetailPanel({ analysis, onClose, company }: { analysis: FullAss
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 rounded-xl border border-border/60 bg-secondary/30 p-1">
-            <button type="button" onClick={() => void handleExport("pdf")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/20" title={t("exportPdfTitle")}>
-              {exporting === "pdf" ? "..." : "PDF"}
-            </button>
+            <Link href={`/reports/${analysis.id}/interactive`} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-emerald-700 transition-colors hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-900/20" title="Etkileşimli raporu aç">
+              Rapor
+            </Link>
+            <Link href={`/reports/${analysis.id}/print`} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-slate-700 transition-colors hover:bg-secondary dark:text-slate-300" title="Print görünümünü aç">
+              Print
+            </Link>
+            <Link href={`/api/risk-analysis/export/${analysis.id}`} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" title={t("exportPdfTitle")}>
+              PDF
+            </Link>
             <button type="button" onClick={() => void handleExport("word")} disabled={exporting !== null} className="rounded-lg px-3 py-1.5 text-[11px] font-semibold text-blue-600 transition-colors hover:bg-blue-50 disabled:opacity-50 dark:text-blue-400 dark:hover:bg-blue-900/20" title={t("exportWordTitle")}>
               {exporting === "word" ? "..." : "Word"}
             </button>
