@@ -46,10 +46,19 @@ export function getAnthropicModel() {
 /** Risk analizi gorsel endpoint'i icin model. Kritik tespit katmani Opus kullanir. */
 const DEFAULT_RISK_VISION_MODEL = "claude-opus-4-7" as const;
 
+/** Saha sihirbazi hizli mod — Opus zaman asimina yol acar; Sonnet yeterli. */
+const DEFAULT_RISK_FAST_VISION_MODEL = "claude-sonnet-4-6" as const;
+
 export function getRiskAnalysisVisionModel(): string {
   const explicit = process.env.RISK_ANALYSIS_ANTHROPIC_MODEL?.trim();
   if (explicit) return explicit;
   return DEFAULT_RISK_VISION_MODEL;
+}
+
+export function getRiskAnalysisFastVisionModel(): string {
+  const explicit = process.env.RISK_ANALYSIS_FAST_ANTHROPIC_MODEL?.trim();
+  if (explicit) return explicit;
+  return DEFAULT_RISK_FAST_VISION_MODEL;
 }
 
 export function getConfiguredAiProviderNames() {

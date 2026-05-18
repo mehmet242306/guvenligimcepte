@@ -2138,7 +2138,7 @@ export function RiskAnalysisClient() {
         setSetupMessageType("success");
 
         if (processedImages > 1) {
-          await sleep(500);
+          await sleep(1200);
         }
 
         const analysis = await analyzeImageWithAI(img.file, img.id, {

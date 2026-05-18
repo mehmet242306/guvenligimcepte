@@ -4,7 +4,12 @@ import { z } from "zod";
 import { logAiUsage, logErrorEvent } from "@/lib/admin-observability/server";
 import { requireAuth } from "@/lib/supabase/api-auth";
 import { createServiceClient, enforceRateLimit, logSecurityEvent, resolveAiDailyLimit } from "@/lib/security/server";
-import { getAnthropicKey, getAnthropicModel, getRiskAnalysisVisionModel } from "@/lib/ai/provider-keys";
+import {
+  getAnthropicKey,
+  getAnthropicModel,
+  getRiskAnalysisFastVisionModel,
+  getRiskAnalysisVisionModel,
+} from "@/lib/ai/provider-keys";
 import { consumeEntitlement } from "@/lib/billing/entitlements";
 import {
   buildFastSystemPrompt,
@@ -669,8 +674,6 @@ export async function POST(request: NextRequest) {
     const entitlementResponse = await consumeEntitlement(auth, "risk_analysis");
     if (entitlementResponse) return entitlementResponse;
 
-    const visionModel = getRiskAnalysisVisionModel();
-
     const rawBody = await request.json().catch(() => null);
     const parsedBody = analyzeRiskSchema.safeParse(normalizeAnalyzeRiskPayload(rawBody));
     if (!parsedBody.success) {
@@ -694,6 +697,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { imageBase64, mimeType, method, mode, language: outputLocale, companyContext, rowContext } = parsedBody.data;
+    const visionModel = mode === "fast" ? getRiskAnalysisFastVisionModel() : getRiskAnalysisVisionModel();
 
     if (!imageBase64 || !mimeType) {
       const diagnostics = buildAnalyzeRiskDiagnostics({
@@ -761,13 +765,16 @@ export async function POST(request: NextRequest) {
       ].join("\n");
     })();
 
-    const riskMemory = await buildRiskMemoryContext({
-      organizationId: auth.organizationId,
-      method,
-      outputLocale,
-      companyContext,
-      rowContext,
-    });
+    const riskMemory =
+      mode === "fast"
+        ? { context: "", memoryIds: [] as string[] }
+        : await buildRiskMemoryContext({
+            organizationId: auth.organizationId,
+            method,
+            outputLocale,
+            companyContext,
+            rowContext,
+          });
 
     const augmentedUserPrompt = [
       companyCtxBlock,
@@ -1177,18 +1184,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    try {
-      const ragService = createServiceClient();
-      parsed.risks = await enrichRisksWithLegalRag(
-        ragService,
-        Array.isArray(parsed.risks) ? parsed.risks : [],
-        auth.organizationId,
-      );
-    } catch (ragError) {
-      console.warn(
-        "[analyze-risk] legal RAG enrichment skipped:",
-        ragError instanceof Error ? ragError.message : String(ragError),
-      );
+    if (mode !== "fast") {
+      try {
+        const ragService = createServiceClient();
+        parsed.risks = await enrichRisksWithLegalRag(
+          ragService,
+          Array.isArray(parsed.risks) ? parsed.risks : [],
+          auth.organizationId,
+        );
+      } catch (ragError) {
+        console.warn(
+          "[analyze-risk] legal RAG enrichment skipped:",
+          ragError instanceof Error ? ragError.message : String(ragError),
+        );
+      }
     }
 
     // Debug log
@@ -1255,15 +1264,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    void storeRiskMemory({
-      userId: auth.userId,
-      organizationId: auth.organizationId,
-      method,
-      outputLocale,
-      sourceModel: visionModel,
-      interpretationModel,
-      parsed,
-    });
+    if (mode !== "fast") {
+      void storeRiskMemory({
+        userId: auth.userId,
+        organizationId: auth.organizationId,
+        method,
+        outputLocale,
+        sourceModel: visionModel,
+        interpretationModel,
+        parsed,
+      });
+    }
 
     const successDiagnostics = buildAnalyzeRiskDiagnostics({
       ok: true,

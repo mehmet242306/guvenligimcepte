@@ -4,5 +4,10 @@
       "path": "/api/notifications/recovery",
       "schedule": "0 8 * * *"
     }
-  ]
+  ],
+  "functions": {
+    "src/app/api/analyze-risk/route.ts": {
+      "maxDuration": 300
+    }
+  }
 }

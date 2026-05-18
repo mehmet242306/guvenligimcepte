@@ -3,9 +3,8 @@
  * Büyük telefon fotoğrafları zaman aşımının en sık nedenidir.
  */
 
-const MAX_LONG_EDGE = 1600;
-const JPEG_QUALITY = 0.82;
-const MAX_BYTES_BEFORE_COMPRESS = 900_000; // ~900 KB ham dosya
+const MAX_LONG_EDGE = 1280;
+const JPEG_QUALITY = 0.78;
 
 export type AnalysisImagePayload = {
   base64: string;
@@ -42,16 +41,6 @@ function scaleDimensions(width: number, height: number): { width: number; height
 
 export async function compressImageForAnalysis(file: File): Promise<AnalysisImagePayload> {
   const originalBytes = file.size;
-
-  if (originalBytes <= MAX_BYTES_BEFORE_COMPRESS && file.type === "image/jpeg") {
-    const raw = await readFileAsBase64(file);
-    return {
-      base64: raw.base64,
-      mimeType: "image/jpeg",
-      originalBytes,
-      compressedBytes: Math.round((raw.base64.length * 3) / 4),
-    };
-  }
 
   try {
     const img = await loadImageFromFile(file);
