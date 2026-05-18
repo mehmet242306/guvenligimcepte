@@ -31,6 +31,28 @@ function riskTone(level: string) {
   return "bg-emerald-600 text-white";
 }
 
+function annotationStyle(annotation: RiskReportFinding["annotation"]) {
+  if (!annotation) return null;
+  if (annotation.type === "box") {
+    return {
+      left: `${annotation.x ?? 0}%`,
+      top: `${annotation.y ?? 0}%`,
+      width: `${annotation.width ?? 6}%`,
+      height: `${annotation.height ?? 6}%`,
+    };
+  }
+  if (annotation.type === "point") {
+    return {
+      left: `${annotation.x ?? 0}%`,
+      top: `${annotation.y ?? 0}%`,
+      width: "18px",
+      height: "18px",
+      transform: "translate(-50%, -50%)",
+    };
+  }
+  return null;
+}
+
 export function InteractiveRiskReportClient({ report, reportId }: Props) {
   const allFindings = useMemo(
     () => report.images.flatMap((image) => image.findings.map((finding) => ({ ...finding, imageCode: image.imageCode }))),
@@ -135,18 +157,14 @@ export function InteractiveRiskReportClient({ report, reportId }: Props) {
                   )}
                   {image.findings.map((finding, index) => {
                     const annotation = finding.annotation;
-                    if (!annotation || annotation.type !== "box") return null;
+                    const style = annotationStyle(annotation);
+                    if (!annotation || !style) return null;
                     return (
                       <button
                         key={finding.findingCode}
-                        className="absolute border-2 border-red-500 bg-red-500/10"
+                        className={`absolute border-2 border-red-500 bg-red-500/10 ${annotation.type === "point" ? "rounded-full" : ""}`}
                         onClick={() => setActive({ ...finding, imageCode: image.imageCode })}
-                        style={{
-                          left: `${annotation.x ?? 0}%`,
-                          top: `${annotation.y ?? 0}%`,
-                          width: `${annotation.width ?? 6}%`,
-                          height: `${annotation.height ?? 6}%`,
-                        }}
+                        style={style}
                         title={finding.title}
                         type="button"
                       >

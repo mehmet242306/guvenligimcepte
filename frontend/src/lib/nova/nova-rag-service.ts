@@ -17,7 +17,8 @@ export function formatNovaLegalRagPayload(
   message: string,
   rag: NovaLegalRagPayload,
 ): NovaLegalRagPayload {
-  let { answer, confidence, sources, retrievalMode } = rag;
+  let { answer, confidence, sources } = rag;
+  const { retrievalMode } = rag;
 
   if (confidence < RAG_CONFIDENCE_BADGE_MIN || sources.length === 0) {
     sources = [];

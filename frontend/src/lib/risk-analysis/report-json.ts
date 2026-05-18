@@ -96,6 +96,7 @@ function cleanProfessionalText(value: unknown, fallback = "-"): string {
   return raw
     .replace(/Doğrudan doğrulanmış kaynak bulunamadı\.?/gi, "Saha doğrulaması önerilir.")
     .replace(/dogrudan dogrulanmis kaynak bulunamadi\.?/gi, "Saha doğrulaması önerilir.")
+    .replace(/kaynak bulunamad[ıi]\.?/gi, "Saha doğrulaması önerilir.")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -124,7 +125,46 @@ function uniqueClean(items: Array<string | undefined | null>, limit = 80): strin
   return out;
 }
 
+function normalizeRiskClass(value: unknown): string {
+  const raw = String(value || "").trim().toLocaleLowerCase("tr-TR");
+  if (["critical", "kritik", "çok yüksek", "cok yuksek"].includes(raw)) return "critical";
+  if (["high", "yüksek", "yuksek"].includes(raw)) return "high";
+  if (["medium", "orta"].includes(raw)) return "medium";
+  if (["low", "düşük", "dusuk", "follow_up", "izleme"].includes(raw)) return raw === "follow_up" ? "follow_up" : "low";
+  return raw || "low";
+}
+
+function normalizeAnnotation(value: unknown): RiskReportAnnotation | null {
+  if (!value || typeof value !== "object") return null;
+  const item = value as Record<string, unknown>;
+  const type = item.type === "polygon" || item.type === "point" || item.type === "box" ? item.type : null;
+  if (!type) return null;
+  const num = (key: string) => {
+    const n = Number(item[key]);
+    return Number.isFinite(n) ? n : undefined;
+  };
+  const points = Array.isArray(item.points)
+    ? item.points
+        .map((point) => {
+          const p = point as Record<string, unknown>;
+          const x = Number(p.x);
+          const y = Number(p.y);
+          return Number.isFinite(x) && Number.isFinite(y) ? { x, y } : null;
+        })
+        .filter((point): point is { x: number; y: number } => Boolean(point))
+    : undefined;
+  return {
+    type,
+    x: num("x"),
+    y: num("y"),
+    width: num("width"),
+    height: num("height"),
+    points,
+  };
+}
+
 function mapFinding(finding: ExportFinding, fallbackCode: string): RiskReportFinding {
+  const riskClass = normalizeRiskClass(finding.riskClass);
   return {
     findingCode: text(finding.riskCode, fallbackCode),
     title: cleanProfessionalText(finding.title),
@@ -135,7 +175,7 @@ function mapFinding(finding: ExportFinding, fallbackCode: string): RiskReportFin
     frequency: finding.fkDetails?.exposure ?? null,
     severity: finding.fkDetails?.severity ?? finding.matrixDetails?.severity ?? null,
     score: Math.round(Number(finding.score) || 0),
-    riskClass: cleanProfessionalText(finding.riskClass),
+    riskClass,
     confidence: cleanProfessionalText(finding.confidenceLevelTr ?? finding.confidence),
     existingControls: cleanProfessionalText(finding.currentControl),
     emergencyAction: cleanProfessionalText(finding.immediateAction ?? findingActionText(finding)),
@@ -147,7 +187,7 @@ function mapFinding(finding: ExportFinding, fallbackCode: string): RiskReportFin
     completionEvidence: cleanProfessionalText(finding.completionProof),
     residualRisk: cleanProfessionalText(finding.residualRiskNote),
     legalContext: cleanProfessionalText(findingLegalText(finding)),
-    annotation: null,
+    annotation: normalizeAnnotation((finding as unknown as Record<string, unknown>).annotation),
   };
 }
 
